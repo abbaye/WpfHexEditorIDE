@@ -1,38 +1,42 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "NetCDF Data File",
-  "version": "1.13",
+  "version": "1.14",
   "extensions": [
     ".nc",
     ".netcdf"
   ],
-  "description": "Network Common Data Form - Scientific data",
+  "description": "Network Common Data Form (NetCDF) is a self-describing, machine-independent binary data format created by Unidata for storing array-oriented scientific data. Classic NetCDF-3 files begin with the 4-byte magic 'CDF\x01' (version 1) or 'CDF\x02' (version 2, 64-bit offsets). The format organizes data into named dimensions, variables, and attributes in a header section, followed by variable data. Widely used in atmospheric sciences, oceanography, and climate modelling. NetCDF-4 uses an HDF5 container. The format is endorsed by CF Conventions for geoscience interoperability.",
   "category": "Science",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
-  "references": {
-    "specifications": [
-      "NetCDF Data File Format"
-    ],
-    "WebLinks": [
-      "https://en.wikipedia.org/wiki/NC"
-    ]
-  },
+  "references": [
+    "NetCDF Classic and 64-bit Offset Format v1.0",
+    "Unidata NetCDF User's Guide"
+  ],
+  "WebLinks": [
+    "https://en.wikipedia.org/wiki/NetCDF",
+    "https://www.unidata.ucar.edu/software/netcdf/"
+  ],
   "detection": {
     "signature": "43444601",
     "offset": 0,
     "required": true,
+    "weight": 1.0,
+    "alternativeSignatures": [
+      { "signature": "43444602", "offset": 0, "weight": 1.0, "note": "NetCDF-3 64-bit offset format" }
+    ],
     "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024
+      "minFileSize": 32,
+      "maxSignatureOffset": 0
     }
   },
   "variables": {
     "currentOffset": 0,
-    "dimensions": 0,
-    "dataType": "",
-    "arrayCount": 0,
-    "netcdfMagic": ""
+    "formatVersion": 0,
+    "numRecords": 0,
+    "netcdfMagic": "",
+    "dimListOffset": 0
   },
   "blocks": [
     {
@@ -41,68 +45,136 @@
       "offset": 0,
       "length": 4,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "CDF\\x01 signature",
+      "opacity": 0.85,
+      "description": "NetCDF-3 magic: 43 44 46 01 = 'CDF\\x01' (classic) or 43 44 46 02 = 'CDF\\x02' (64-bit offsets); bytes 0-2 are ASCII 'CDF', byte 3 is format version",
       "storeAs": "netcdfMagic",
-      "valueType": "uint32"
+      "valueType": "hex"
+    },
+    {
+      "type": "field",
+      "name": "Number of Records",
+      "offset": 4,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.5,
+      "description": "Big-endian int32 number of records in the unlimited dimension; 0 if no unlimited dimension is defined in this file",
+      "storeAs": "numRecords",
+      "valueType": "uint32be"
+    },
+    {
+      "type": "field",
+      "name": "Dimension List Tag",
+      "offset": 8,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.4,
+      "description": "Tag for dimension list section: 0x0000000A indicates NC_DIMENSION list follows; 0x00000000 means no dimensions are defined",
+      "storeAs": "dimListTag",
+      "valueType": "uint32be"
+    },
+    {
+      "type": "field",
+      "name": "Dimension Count",
+      "offset": 12,
+      "length": 4,
+      "color": "#FFE66D",
+      "opacity": 0.35,
+          "description": "Big-endian int32 count of dimension definitions; each dimension has a length-prefixed name and a big-endian int32 size value",
+      "storeAs": "dimCount",
+      "valueType": "uint32be"
     },
     {
       "type": "metadata",
-      "name": "Dimensions",
-      "variable": "dimensions",
-      "description": "Dimensions"
+      "name": "Format Version",
+      "variable": "formatVersion",
+      "description": "NetCDF-3 format version: 1 = classic, 2 = 64-bit offset, derived from magic byte 3"
     },
     {
       "type": "metadata",
-      "name": "Data Type",
-      "variable": "dataType",
-      "description": "Data Type"
+      "name": "Number of Records",
+      "variable": "numRecords",
+      "description": "Count of records in the unlimited (record) dimension"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "ValidNetCDFMagic",
+      "description": "Bytes 0-2 must be ASCII 'CDF' (43 44 46) and byte 3 must be 0x01 or 0x02; any other value means the file is not a valid NetCDF-3 file",
+      "offset": 0,
+      "length": 3,
+      "expectedHex": "434446",
+      "severity": "error"
     },
     {
-      "type": "metadata",
-      "name": "Array Count",
-      "variable": "arrayCount",
-      "description": "Array Count"
+      "name": "ValidFormatVersion",
+      "description": "Byte 3 must be 0x01 (classic) or 0x02 (64-bit offsets); a value of 0x05 indicates NetCDF-4 (HDF5 container) not handled by this definition",
+      "offset": 3,
+      "length": 1,
+      "validValues": ["01", "02"],
+      "severity": "warning"
+    }
+  ],
+  "inspector": {
+    "groups": [
+      {
+        "name": "File Header",
+        "fields": [
+          { "label": "Magic (CDF)",      "offset": 0,  "length": 3,  "format": "ascii" },
+          { "label": "Format Version",   "offset": 3,  "length": 1,  "format": "uint8" },
+          { "label": "Num Records",      "offset": 4,  "length": 4,  "format": "uint32be" },
+          { "label": "Dim List Tag",     "offset": 8,  "length": 4,  "format": "uint32be" },
+          { "label": "Dim Count",        "offset": 12, "length": 4,  "format": "uint32be" }
+        ]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "NetCDF Header Summary",
+      "fields": ["netcdfMagic", "numRecords", "dimCount"]
     }
   ],
   "software": [
     "ncview",
     "Panoply",
-    "MATLAB",
-    "Python (netCDF4)"
+    "MATLAB (netcdf toolkit)",
+    "Python netCDF4",
+    "R ncdf4",
+    "NCO (netCDF Operators)",
+    "CDO (Climate Data Operators)"
   ],
   "formatRelationships": {
     "unidata_format": true,
     "self_describing": true,
     "scientific_standard": true,
-    "based_on": "HDF5 (NetCDF-4)"
+    "v4_container": "HDF5",
+    "conventions": "CF-1.x"
   },
   "MimeTypes": [
+    "application/x-netcdf",
     "application/octet-stream"
   ],
-  "Software": [
-    "Hex Editor",
-    "File Viewer",
-    "Archive Manager"
-  ],
   "UseCases": [
-    "File storage",
-    "Data exchange",
-    "Archive"
+    "Atmospheric model output",
+    "Oceanographic time-series",
+    "Climate scenario datasets (CMIP)",
+    "Satellite remote sensing gridded products",
+    "Numerical weather prediction (NWP) output"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 4,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
+    "CompletenessScore": 62,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 6,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
     "PriorityFormat": false,
-    "AutoRefined": true
+    "AutoRefined": false
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32BE": "Read scientific header",
-    "multiply": "Calculate dimensions"
+  "TechnicalDetails": {
+    "endianness": "big-endian",
+    "classicFormatByte": "0x01",
+    "offset64BitFormatByte": "0x02",
+    "hdf5BasedVersion": "NetCDF-4 (byte 0x05)"
   },
   "forensic": {
     "category": "science",
@@ -110,11 +182,15 @@
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Network Common Data Form - Scientific data",
+    "analysisContext": "NetCDF-3 is the dominant format for climate and atmospheric model output. The entire file structure (dimensions, variables, attributes, data offsets) is described in a header that precedes all variable data.",
     "suggestedInspections": [
-      "Validate NetCDF Data File file header, data type, and dimension fields",
-      "Check axis labels, units, and calibration metadata",
-      "Inspect data array boundaries and fill/missing value markers"
+      "Verify magic bytes: 43 44 46 followed by 01 or 02",
+      "Read num_records at offset 4 (big-endian int32) for unlimited dimension size",
+      "Parse dimension list starting at offset 8 — each entry has name length, name string, and size",
+      "Enumerate variable list after dimension list to find all dataset names and shapes",
+      "Check global attribute list for Conventions (e.g. CF-1.8), title, history, institution",
+      "Compute expected data offsets from variable records and validate against file size",
+      "A byte-3 value of 0x05 means the file is NetCDF-4/HDF5 — use HDF5 parsing rules instead"
     ]
   }
 }

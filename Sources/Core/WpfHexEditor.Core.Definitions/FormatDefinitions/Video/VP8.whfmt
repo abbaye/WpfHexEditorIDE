@@ -1,20 +1,20 @@
-﻿{
+{
   "diffMode": "binary",
-  "formatName": "VP8 Video",
-  "version": "1.14",
+  "formatName": "VP8 Video (IVF)",
+  "version": "1.15",
   "extensions": [
     ".vp8",
     ".ivf"
   ],
-  "description": "VP8 video codec, open video compression format developed by Google",
+  "description": "VP8 is an open, royalty-free video codec developed by On2 Technologies and released by Google in 2010. VP8 elementary streams are typically stored in the IVF (Indeo Video Format) container for testing and development. IVF files begin with 'DKIF' (0x44 0x4B 0x49 0x46), followed by version (uint16 LE, =0), header length (uint16 LE, =32), FourCC 'VP80' (4B), width (uint16 LE), height (uint16 LE), frame rate numerator (uint32 LE), frame rate denominator (uint32 LE), and frame count (uint32 LE). In production, VP8 is carried in WebM containers. A VP8 bitstream frame begins with a 3-byte uncompressed data chunk: bits 0=key_frame (0=keyframe, 1=interframe), bits 3-1=version (0-3), bit 4=show_frame, bits 14-5=first_part_size (10 bits). Key frames additionally have 3 bytes: start_code 0x9D 0x01 0x2A, then width and height (14 bits each) with scaling flags.",
   "category": "Video",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "RFC 6386 - VP8 Data Format and Decoding Guide",
-      "Google VP8 Codec Specification",
-      "WebM VP8 Video Codec"
+      "RFC 6386 — VP8 Data Format and Decoding Guide",
+      "WebM VP8 Video Codec — Google",
+      "VP8 Bitstream Specification — On2 Technologies"
     ],
     "WebLinks": [
       "https://www.rfc-editor.org/rfc/rfc6386.html",
@@ -24,108 +24,215 @@
     ]
   },
   "detection": {
-    "signature": "444B4946",
-    "offset": 0,
+    "signatures": [
+      { "value": "444B4946", "offset": 0, "label": "'DKIF' IVF container magic", "weight": 1.0 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 1.0,
     "required": true,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 5.0, "max": 7.8 },
     "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024
+      "minFileSize": 32,
+      "maxSignatureOffset": 0,
+      "note": "IVF 'DKIF' magic is shared by VP8, VP9, and AV1. FourCC at offset 8 distinguishes: 'VP80'=VP8, 'VP90'=VP9, 'AV01'=AV1."
     }
   },
   "variables": {
-    "width": 0,
-    "height": 0,
-    "frameRate": 0,
-    "duration": 0,
-    "ivfHeader": 0,
-    "totalPixels": 0
+    "ivfSignature": "",
+    "ivfVersion": 0,
+    "ivfFourCC": "",
+    "videoWidth": 0,
+    "videoHeight": 0,
+    "frameCount": 0
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "IVF Header",
+      "name": "IVF Signature",
       "offset": 0,
       "length": 4,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "DKIF - IVF container header for VP8",
-      "storeAs": "ivfHeader",
-      "valueType": "uint32"
+      "opacity": 0.45,
+      "description": "IVF container signature 'DKIF' (0x44 0x4B 0x49 0x46). Used by VP8, VP9, and AV1 IVF test streams from libvpx and libaom toolchains.",
+      "storeAs": "ivfSignature",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "IVF Version",
+      "offset": 4,
+      "length": 2,
+      "color": "#4ECDC4",
+      "opacity": 0.30,
+      "description": "IVF format version (little-endian uint16). Must be 0.",
+      "storeAs": "ivfVersion",
+      "valueType": "uint16",
+      "endianness": "little",
+      "valueMap": { "0": "IVF version 0" }
+    },
+    {
+      "type": "field",
+      "name": "Codec FourCC",
+      "offset": 8,
+      "length": 4,
+      "color": "#FFE66D",
+      "opacity": 0.40,
+      "description": "4-byte ASCII FourCC identifying the video codec. 'VP80' = VP8 (Google/On2), 'VP90' = VP9, 'AV01' = AV1.",
+      "storeAs": "ivfFourCC",
+      "valueType": "ascii",
+      "valueMap": {
+        "VP80": "VP8 (Google/On2 Technologies)",
+        "VP90": "VP9 (Google)",
+        "AV01": "AV1 (AOMedia)"
+      }
+    },
+    {
+      "type": "field",
+      "name": "Video Width",
+      "offset": 12,
+      "length": 2,
+      "color": "#C7CEEA",
+      "opacity": 0.25,
+      "description": "Frame width in pixels (little-endian uint16).",
+      "storeAs": "videoWidth",
+      "valueType": "uint16",
+      "endianness": "little"
+    },
+    {
+      "type": "field",
+      "name": "Video Height",
+      "offset": 14,
+      "length": 2,
+      "color": "#C7CEEA",
+      "opacity": 0.25,
+      "description": "Frame height in pixels (little-endian uint16).",
+      "storeAs": "videoHeight",
+      "valueType": "uint16",
+      "endianness": "little"
+    },
+    {
+      "type": "field",
+      "name": "Frame Count",
+      "offset": 24,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.25,
+      "description": "Total number of frames (little-endian uint32). May be 0 for streaming captures.",
+      "storeAs": "frameCount",
+      "valueType": "uint32",
+      "endianness": "little"
+    },
+    {
+      "type": "metadata",
+      "name": "Codec FourCC",
+      "variable": "ivfFourCC",
+      "description": "VP80=VP8, VP90=VP9, AV01=AV1"
     },
     {
       "type": "metadata",
       "name": "Resolution",
-      "variable": "width",
-      "description": "Resolution"
-    },
-    {
-      "type": "metadata",
-      "name": "Frame Rate",
-      "variable": "frameRate",
-      "description": "Frame Rate"
-    },
-    {
-      "type": "metadata",
-      "name": "Total Pixels",
-      "variable": "totalPixels",
-      "description": "Width x Height"
+      "variable": "videoWidth",
+      "description": "Frame width in pixels"
     }
   ],
-  "software": [
-    "Web browsers",
-    "VLC",
-    "WEBM players"
+  "assertions": [
+    {
+      "name": "IVF signature valid",
+      "expression": "ivfSignature == 'DKIF'",
+      "severity": "error",
+      "message": "IVF signature must be 'DKIF' — not a valid IVF container"
+    },
+    {
+      "name": "IVF version is 0",
+      "expression": "ivfVersion == 0",
+      "severity": "error",
+      "message": "IVF version must be 0"
+    }
   ],
-  "formatRelationships": {
-    "category": "Video",
-    "extensions": [
-      ".vp8",
-      ".ivf"
+  "versionDetection": {
+    "field": "ivfFourCC",
+    "versions": {
+      "VP80": "VP8",
+      "VP90": "VP9",
+      "AV01": "AV1"
+    }
+  },
+  "navigation": {
+    "bookmarks": [
+      { "name": "IVF File Header", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
+      { "name": "First Frame", "offset": 32, "icon": "\uE8A5", "color": "#4ECDC4" }
     ]
   },
-  "MimeTypes": [
-    "video/vp8"
-  ],
-  "Software": [
-    "VLC",
-    "Media Player Classic",
-    "HandBrake",
-    "FFmpeg",
-    "MPC-HC"
-  ],
-  "UseCases": [
-    "Video playback",
-    "Video editing",
-    "Encoding",
-    "Streaming"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 4,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "ivfFourCC",
+    "primaryField": "frameCount",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "IVF Header",
+        "icon": "\uE71B",
+        "fields": ["ivfSignature", "ivfVersion", "ivfFourCC", "videoWidth", "videoHeight", "frameCount"]
+      }
+    ]
   },
-  "TechnicalDetails": {
-    "VideoFormat": true
-  },
-  "functions": {
-    "readUInt32LE": "Read video header",
-    "computeFromVariables(width * height, totalPixels)": "Calculate total pixels"
-  },
+  "exportTemplates": [
+    {
+      "name": "IVF/VP8 Header (JSON)",
+      "format": "json",
+      "fields": ["ivfSignature", "ivfVersion", "ivfFourCC", "videoWidth", "videoHeight", "frameCount"]
+    }
+  ],
   "forensic": {
     "category": "video",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "VP8 video codec, open video compression format developed by Google",
+    "analysisContext": "VP8 IVF stream. IVF header: 'DKIF'(4B)+version(2B LE,=0)+headerLen(2B LE,=32)+'VP80'(4B)+width(2B LE)+height(2B LE)+fpsNum(4B LE)+fpsDen(4B LE)+frameCount(4B LE)+unused(4B). Frames at offset 32+: each with 4B size(LE)+8B timestamp(LE)+VP8 frame data. VP8 frame byte 0: bit0=key_frame(0=key), bits3-1=version(0-3), bit4=show_frame, bits14-5=first_part_size. Key frame bytes 1-2=start_code 9D 01 2A, bytes 3-6=width/height(14b each)+2b scaling flags. VP8 used in WebRTC, WebM. Superseded by VP9 and AV1.",
     "suggestedInspections": [
-      "Validate VP8 Video container magic, box/atom sizes, and codec FourCC",
-      "Check track/stream layout, frame index, and timing fields",
-      "Inspect audio-video sync, keyframe distribution, and metadata"
+      "Verify 'DKIF' at offset 0 and 'VP80' at offset 8",
+      "Read width/height at offsets 12/14 (LE uint16)",
+      "First frame at offset 32: byte 0 bit0=0 = keyframe",
+      "Keyframe bytes 1-3: 0x9D 0x01 0x2A = VP8 keyframe start code"
     ]
+  },
+  "software": [
+    "libvpx (Google VP8 encoder/decoder)",
+    "FFmpeg (libvpx)",
+    "VLC media player",
+    "Chrome/Chromium (WebRTC VP8)",
+    "Firefox (WebRTC VP8)"
+  ],
+  "formatRelationships": {
+    "category": "Video",
+    "extensions": [".vp8", ".ivf"],
+    "relatedFormats": ["WEBM", "VP9", "AV1"],
+    "note": "VP8 in IVF container is for testing/development. In production: VP8 is carried in WebM (.webm) with Vorbis/Opus audio. WebRTC uses VP8 for real-time video. Largely superseded by VP9 (2013) and AV1 (2018) for new content."
+  },
+  "MimeTypes": [
+    "video/vp8",
+    "video/webm"
+  ],
+  "UseCases": [
+    "WebRTC real-time video conferencing",
+    "WebM streaming (YouTube legacy)",
+    "libvpx encoder development and testing",
+    "Open-source video codec testing"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 70,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 8,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "VideoFormat": true,
+    "ContainerFormat": "IVF (testing) or WebM (production)",
+    "VideoCodec": "VP8 (On2 Technologies / Google)",
+    "Endianness": "little-endian (IVF header fields)"
   }
 }

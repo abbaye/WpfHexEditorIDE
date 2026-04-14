@@ -1,7 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "AIFF Audio",
-  "version": "2.1",
+  "version": "1.14",
   "extensions": [
     ".aiff",
     ".aif",
@@ -33,6 +33,7 @@
     ],
     "matchMode": "all-of-first-then-any",
     "Strength": "Strong",
+    "required": true,
     "EntropyHint": { "min": 3.0, "max": 7.0 },
     "validation": {
       "minFileSize": 46,

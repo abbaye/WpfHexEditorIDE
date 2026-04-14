@@ -1,40 +1,40 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "NRRD Medical Image",
-  "version": "1.13",
+  "version": "1.14",
   "extensions": [
     ".nrrd",
     ".nhdr"
   ],
-  "description": "Nearly Raw Raster Data medical imaging format",
+  "description": "NRRD (Nearly Raw Raster Data) is a flexible scientific imaging format developed for the Teem toolkit. Files begin with the ASCII magic 'NRRD000' followed by a version digit (e.g. 'NRRD0005'), then text key-value header lines terminated by a blank line, followed by binary voxel data. The header specifies dimensions ('sizes' field), data type ('type' field), encoding ('encoding' field), space directions, and an optional embedded data field. Widely used in ITK/VTK pipelines, 3D Slicer, and the Seg3D segmentation tool for multi-dimensional medical image data.",
   "category": "Medical",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
-  "references": {
-    "specifications": [
-      "NRRD Medical Image Format"
-    ],
-    "WebLinks": [
-      "https://en.wikipedia.org/wiki/NRRD"
-    ]
-  },
+  "references": [
+    "NRRD Format Documentation (Teem)",
+    "http://teem.sourceforge.net/nrrd/format.html"
+  ],
   "detection": {
     "signature": "4E525244303030",
     "offset": 0,
+    "weight": 0.95,
+    "strength": "Strong",
     "required": true,
     "validation": {
-      "minFileSize": 7,
-      "maxSignatureOffset": 1024
+      "minFileSize": 8,
+      "maxSignatureOffset": 0
     }
   },
   "variables": {
     "currentOffset": 0,
+    "nrrdMagic": "",
+    "nrrdVersion": 0,
+    "dataType": "",
+    "dimensions": 0,
+    "encoding": "",
     "width": 0,
     "height": 0,
     "slices": 0,
-    "bitDepth": 0,
-    "nrrdMagic": "",
-    "version": 0,
     "totalPixels": 0
   },
   "blocks": [
@@ -44,91 +44,178 @@
       "offset": 0,
       "length": 7,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "NRRD signature (NRRD000)",
+      "opacity": 0.8,
+      "description": "ASCII 'NRRD000' (7 bytes) identifying the NRRD format; a version digit immediately follows",
       "storeAs": "nrrdMagic",
       "valueType": "ascii"
     },
     {
       "type": "field",
-      "name": "Version",
+      "name": "Version Digit",
       "offset": 7,
       "length": 1,
       "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "NRRD version number",
-      "storeAs": "version",
+      "opacity": 0.5,
+      "description": "Single ASCII digit for NRRD version: '4' or '5' are common (full magic 'NRRD0004' or 'NRRD0005')",
+      "storeAs": "nrrdVersion",
       "valueType": "uint8"
+    },
+    {
+      "type": "field",
+      "name": "Type Header Line",
+      "offset": 0,
+      "length": 24,
+      "color": "#95E1D3",
+      "opacity": 0.4,
+      "description": "Text key 'type: ' followed by voxel type string, e.g. 'float', 'unsigned char', 'short', 'int'",
+      "storeAs": "dataType",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Encoding Header Line",
+      "offset": 0,
+      "length": 24,
+      "color": "#FFE66D",
+      "opacity": 0.4,
+      "description": "Text key 'encoding: ' followed by 'raw', 'gz', 'bz2', 'ascii', or 'hex' indicating data compression",
+      "storeAs": "encoding",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Sizes Header Line",
+      "offset": 0,
+      "length": 32,
+      "color": "#A8DADC",
+      "opacity": 0.4,
+      "description": "Text key 'sizes: ' followed by space-separated dimension sizes matching dimension count",
+      "storeAs": "sizes",
+      "valueType": "ascii"
+    },
+    {
+      "type": "metadata",
+      "name": "NRRD Version",
+      "variable": "nrrdVersion",
+      "description": "NRRD format version (typically 4 or 5)"
+    },
+    {
+      "type": "metadata",
+      "name": "Data Type",
+      "variable": "dataType",
+      "description": "Voxel data type string from 'type:' header key"
+    },
+    {
+      "type": "metadata",
+      "name": "Encoding",
+      "variable": "encoding",
+      "description": "Data encoding from 'encoding:' header key"
     },
     {
       "type": "metadata",
       "name": "Width",
       "variable": "width",
-      "description": "Width"
+      "description": "First size dimension"
     },
     {
       "type": "metadata",
       "name": "Height",
       "variable": "height",
-      "description": "Height"
+      "description": "Second size dimension"
     },
     {
       "type": "metadata",
       "name": "Slices",
       "variable": "slices",
-      "description": "Slices"
+      "description": "Third size dimension"
     },
     {
       "type": "metadata",
-      "name": "Bit Depth",
-      "variable": "bitDepth",
-      "description": "Bit Depth"
-    },
-    {
-      "type": "metadata",
-      "name": "Total Pixels",
+      "name": "Total Voxels",
       "variable": "totalPixels",
-      "description": "Width x Height"
+      "description": "Computed: width × height × slices"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "NRRD magic present",
+      "expression": "nrrdMagic == 'NRRD000'",
+      "severity": "error",
+      "message": "File must begin with ASCII 'NRRD000' followed by a version digit"
+    },
+    {
+      "name": "Valid version digit",
+      "expression": "nrrdVersion >= 48 && nrrdVersion <= 57",
+      "severity": "warning",
+      "message": "Version digit (offset 7) should be ASCII '1' through '9'; version 4 and 5 are most common"
+    }
+  ],
+  "inspector": {
+    "groups": [
+      {
+        "name": "Format Identity",
+        "fields": ["NRRD Magic", "Version Digit"]
+      },
+      {
+        "name": "Data Encoding",
+        "fields": ["Type Header Line", "Encoding Header Line"]
+      },
+      {
+        "name": "Volume Geometry",
+        "fields": ["Sizes Header Line"]
+      },
+      {
+        "name": "Computed",
+        "fields": ["Width", "Height", "Slices", "Total Voxels"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "NRRD Header Summary",
+      "fields": ["nrrdMagic", "nrrdVersion", "dataType", "encoding", "width", "height", "slices"]
     }
   ],
   "software": [
-    "Common file viewers",
-    "Specialized software"
+    "3D Slicer",
+    "Seg3D",
+    "ITK (Insight Toolkit)",
+    "VTK",
+    "Teem toolkit"
   ],
   "formatRelationships": {
-    "category": "Medical",
-    "extensions": [
-      ".nrrd",
-      ".nhdr"
-    ]
+    "toolkit": "Teem (Gordon Kindlmann)",
+    "related": ["NII", "MGH", "ANALYZE"]
   },
   "MimeTypes": [
     "application/octet-stream"
   ],
   "Software": [
-    "Hex Editor",
-    "File Viewer",
-    "Archive Manager"
+    "3D Slicer (native support)",
+    "Seg3D segmentation tool",
+    "ITK/SimpleITK Python",
+    "Teem command-line tools"
   ],
   "UseCases": [
-    "File storage",
-    "Data exchange",
-    "Archive"
+    "Multi-dimensional medical image storage",
+    "Diffusion tensor imaging (DTI) data",
+    "Segmentation label volumes",
+    "Scientific data with embedded metadata"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 32,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 7,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
+    "CompletenessScore": 55,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 12,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
     "PriorityFormat": false,
-    "AutoRefined": true
+    "AutoRefined": false
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32LE": "Read medical header",
-    "extractASCIIString": "Read patient",
-    "computeFromVariables(width * height, totalPixels)": "Calculate total pixels"
+  "TechnicalDetails": {
+    "HeaderFormat": "ASCII text key-value pairs; blank line separates header from data",
+    "EncodingOptions": "raw, gz, bz2, ascii, hex",
+    "DataPlacement": "Embedded after blank line OR in separate .raw file (detached NRRD via .nhdr)",
+    "SpaceDirections": "3x3 matrix in header defining voxel-to-world coordinate transform"
   },
   "forensic": {
     "category": "medical",
@@ -136,11 +223,18 @@
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Nearly Raw Raster Data medical imaging format",
+    "analysisContext": "NRRD files have ASCII text headers followed by binary data after a blank line. The magic 'NRRD000X' at offset 0 is strong. Key header fields: 'type' (data type), 'dimension' (number of axes), 'sizes' (space-separated dimension sizes), 'encoding' (raw/gz/bz2/ascii). For .nhdr detached files, data is in a separate .raw or .gz file referenced by the 'data file:' field.",
     "suggestedInspections": [
-      "Verify NRRD Medical Image preamble, magic bytes, and transfer syntax",
-      "Check image matrix dimensions, voxel spacing, and data type",
-      "Inspect patient/study metadata tags and private sequences"
+      "Verify 'NRRD000' + version digit at offset 0",
+      "Parse ASCII header for 'type', 'dimension', 'sizes', 'encoding' keys",
+      "Find blank line delimiter between header and embedded data",
+      "Check 'encoding' for compression: gz/bz2 require decompression",
+      "For .nhdr: check 'data file:' key for external data reference"
     ]
+  },
+  "functions": {
+    "readUInt32LE": "Read medical header",
+    "extractASCIIString": "Parse text header key-value lines",
+    "computeFromVariables(width * height, totalPixels)": "Calculate total pixels"
   }
 }

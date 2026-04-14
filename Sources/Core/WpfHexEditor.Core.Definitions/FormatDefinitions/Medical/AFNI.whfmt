@@ -1,26 +1,24 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "AFNI BRIK/HEAD",
-  "version": "1.12",
+  "version": "1.13",
   "extensions": [
     ".head",
     ".brik"
   ],
-  "description": "AFNI medical imaging format",
+  "description": "AFNI BRIK/HEAD is a paired neuroimaging format used by the AFNI (Analysis of Functional NeuroImages) software package. The .HEAD file is a plain-text attribute file containing key-value pairs for dataset metadata; it begins with the ASCII string 'type = ' describing the attribute type. The binary .BRIK file contains raw voxel data. Key attributes in .HEAD include DATASET_DIMENSIONS (x,y,z sizes), BRICK_FLOAT_FACS (scale factors), and ORIGIN/DELTA (voxel origin and spacing). Widely used in fMRI analysis and distributed with AFNI tutorial datasets.",
   "category": "Medical",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
-  "references": {
-    "specifications": [
-      "AFNI BRIK/HEAD Format"
-    ],
-    "WebLinks": [
-      "https://en.wikipedia.org/wiki/HEAD"
-    ]
-  },
+  "references": [
+    "AFNI BRIK/HEAD Format Documentation",
+    "https://afni.nimh.nih.gov/pub/dist/doc/program_help/README.environment.html"
+  ],
   "detection": {
     "signature": "7479706520",
     "offset": 0,
+    "weight": 0.5,
+    "strength": "Moderate",
     "required": true,
     "validation": {
       "minFileSize": 5,
@@ -29,72 +27,164 @@
   },
   "variables": {
     "currentOffset": 0,
-    "machineType": "",
-    "sectionCount": 0,
-    "entryPoint": 0,
-    "afniMagic": ""
+    "typeStr": "",
+    "datasetDimensions": "",
+    "brickType": "",
+    "origin": "",
+    "delta": ""
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "AFNI Magic",
+      "name": "HEAD Type Prefix",
       "offset": 0,
       "length": 5,
       "color": "#FF6B6B",
+      "opacity": 0.6,
+      "description": "ASCII 'type ' (0x74797065 20) prefix beginning the first attribute definition in the .HEAD plain-text file",
+      "storeAs": "typeStr",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Attribute Name",
+      "offset": 5,
+      "length": 32,
+      "color": "#4ECDC4",
       "opacity": 0.4,
-      "description": "AFNI signature (type )",
-      "storeAs": "afniMagic",
+      "description": "The attribute name on the first line, e.g. 'string-attribute', 'integer-attribute', or 'float-attribute'",
+      "storeAs": "attrTypeName",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Dataset Dimensions",
+      "offset": 0,
+      "length": 48,
+      "color": "#95E1D3",
+      "opacity": 0.4,
+      "description": "DATASET_DIMENSIONS attribute: 3 integers specifying nx, ny, nz voxel counts",
+      "storeAs": "datasetDimensions",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Origin",
+      "offset": 0,
+      "length": 48,
+      "color": "#FFE66D",
+      "opacity": 0.4,
+      "description": "ORIGIN attribute: x0, y0, z0 coordinates of the first voxel corner in mm",
+      "storeAs": "origin",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Delta",
+      "offset": 0,
+      "length": 48,
+      "color": "#A8DADC",
+      "opacity": 0.4,
+      "description": "DELTA attribute: dx, dy, dz voxel sizes in mm (may be negative indicating reversed axis)",
+      "storeAs": "delta",
       "valueType": "ascii"
     },
     {
       "type": "metadata",
-      "name": "Machine",
-      "variable": "machineType",
-      "description": "Machine"
+      "name": "Type String",
+      "variable": "typeStr",
+      "description": "First token of HEAD file (should be 'type')"
     },
     {
       "type": "metadata",
-      "name": "Sections",
-      "variable": "sectionCount",
-      "description": "Sections"
+      "name": "Dataset Dimensions",
+      "variable": "datasetDimensions",
+      "description": "DATASET_DIMENSIONS attribute: nx ny nz"
+    },
+    {
+      "type": "metadata",
+      "name": "Delta (Voxel Size)",
+      "variable": "delta",
+      "description": "DELTA attribute: voxel spacing in mm per axis"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "HEAD file starts with type",
+      "expression": "typeStr == 'type '",
+      "severity": "error",
+      "message": "AFNI .HEAD files must begin with 'type = ' attribute declaration"
+    },
+    {
+      "name": "File extension is HEAD",
+      "expression": "extension == '.head'",
+      "severity": "info",
+      "message": "AFNI header is a .HEAD text file; paired .BRIK contains binary voxel data"
+    }
+  ],
+  "inspector": {
+    "groups": [
+      {
+        "name": "Format Identity",
+        "fields": ["HEAD Type Prefix", "Attribute Name"]
+      },
+      {
+        "name": "Volume Geometry",
+        "fields": ["Dataset Dimensions", "Origin", "Delta"]
+      },
+      {
+        "name": "Metadata",
+        "fields": ["Type String", "Delta (Voxel Size)"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "AFNI HEAD Summary",
+      "fields": ["typeStr", "datasetDimensions", "origin", "delta"]
     }
   ],
   "software": [
-    "Common file viewers",
-    "Specialized software"
+    "AFNI (Analysis of Functional NeuroImages)",
+    "3d_nii_to_afni conversion scripts",
+    "nibabel (Python)",
+    "SUMA (AFNI surface mapper)"
   ],
   "formatRelationships": {
-    "category": "Medical",
-    "extensions": [
-      ".head",
-      ".brik"
-    ]
+    "companion_file": ".BRIK (binary voxel data)",
+    "related": ["NII", "MGH", "NIFTI2"],
+    "origin": "NIMH/NIH AFNI group"
   },
   "MimeTypes": [
-    "application/octet-stream"
+    "application/octet-stream",
+    "text/plain"
   ],
   "Software": [
-    "Hex Editor",
-    "File Viewer",
-    "Archive Manager"
+    "AFNI analysis package",
+    "3dAFNItoNIFTI conversion tool",
+    "nibabel Python library",
+    "SUMA surface analysis"
   ],
   "UseCases": [
-    "File storage",
-    "Data exchange",
-    "Archive"
+    "fMRI time-series analysis with AFNI",
+    "AFNI tutorial and example datasets",
+    "Legacy neuroimaging data archives",
+    "Cross-package conversion via NIfTI bridge"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 3,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
+    "CompletenessScore": 52,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 8,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
     "PriorityFormat": false,
-    "AutoRefined": true
+    "AutoRefined": false
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32LE": "Read executable header"
+  "TechnicalDetails": {
+    "HeadFormat": "Plain-text key-value attribute file",
+    "BrikFormat": "Raw binary voxel data (endian from HEAD BYTEORDER_STRING)",
+    "TextDetection": "HEAD is text; BRIK is binary",
+    "Endianness": "Specified by BYTEORDER_STRING attribute in .HEAD"
   },
   "forensic": {
     "category": "medical",
@@ -102,11 +192,16 @@
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "AFNI medical imaging format",
+    "analysisContext": "AFNI .HEAD is a plain-text file with 'type = X\\ncount = N\\nvalue_N = ...' attribute blocks. The DATASET_DIMENSIONS attribute gives nx/ny/nz. BYTEORDER_STRING specifies endianness of the .BRIK data. BRICK_TYPES integer codes map to voxel data types (1=short, 3=float, etc.).",
     "suggestedInspections": [
-      "Verify AFNI BRIK/HEAD preamble, magic bytes, and transfer syntax",
-      "Check image matrix dimensions, voxel spacing, and data type",
-      "Inspect patient/study metadata tags and private sequences"
+      "Verify .HEAD file starts with 'type =' ASCII prefix",
+      "Parse DATASET_DIMENSIONS for nx/ny/nz voxel counts",
+      "Read BYTEORDER_STRING to determine .BRIK endianness",
+      "Check BRICK_TYPES for voxel data type per sub-brick",
+      "Inspect BRICK_FLOAT_FACS for per-brick scale factors"
     ]
+  },
+  "functions": {
+    "extractASCIIString": "Parse HEAD attribute key-value pairs"
   }
 }

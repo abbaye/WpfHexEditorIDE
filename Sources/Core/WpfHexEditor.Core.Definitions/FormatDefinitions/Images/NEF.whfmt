@@ -1,130 +1,190 @@
-﻿{
+{
   "diffMode": "binary",
-  "formatName": "Nikon Raw Image",
-  "version": "1.13",
+  "formatName": "Nikon Electronic Format",
+  "version": "1.14",
   "extensions": [
     ".nef"
   ],
-  "description": "Nikon Electronic Format RAW",
+  "description": "NEF (Nikon Electronic Format) is Nikon's proprietary RAW camera image format used in all Nikon DSLR and mirrorless cameras. NEF is a TIFF-based format (little-endian, magic 49 49 2A 00) with Nikon-specific MakerNote data in IFD0 (tag 0x927C). The file structure follows standard TIFF IFD chains. NEF stores multiple image representations: a full-resolution JPEG preview in SubIFD, the actual RAW Bayer sensor data in another SubIFD, and optionally a Nikon RAW thumbnail. Nikon Makernote tags provide lens ID, AF data, white balance presets, picture controls, and capture settings. NEF compression: uncompressed 12/14-bit, lossless compression (Huffman-based), and lossy compressed (LC-NEF). The Nikon proprietary tag 0x001D contains serial number; tag 0x00A7 contains shutter count.",
   "category": "Images",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "image-viewer",
   "references": {
     "specifications": [
-      "Nikon Electronic Format (NEF) - TIFF-based RAW",
-      "NEF RAW Image Format Specification",
-      "Nikon Digital Camera RAW Format"
+      "Nikon NEF RAW Format — TIFF-based",
+      "TIFF 6.0 Specification — Adobe Systems",
+      "Nikon MakerNote Structure Documentation"
     ],
     "WebLinks": [
-      "http://lclevy.free.fr/nef/",
-      "https://docs.fileformat.com/image/nef/",
-      "http://fileformats.archiveteam.org/wiki/Nikon",
-      "https://wiki.archivematica.org/Nikon_Electronic_Format"
+      "https://libopenraw.freedesktop.org/formats/nef/",
+      "https://exiftool.org/TagNames/Nikon.html",
+      "https://www.rawdigger.com/howtouse/nikon-nef",
+      "https://docs.fileformat.com/image/nef/"
     ]
   },
   "detection": {
-    "signature": "49492A00",
-    "offset": 0,
+    "signatures": [
+      { "value": "49492A00", "offset": 0, "label": "TIFF LE header — Nikon NEF little-endian", "weight": 0.7 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.7,
     "required": true,
+    "Strength": "Medium",
+    "EntropyHint": { "min": 4.5, "max": 7.5 },
     "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024
+      "minFileSize": 8,
+      "maxSignatureOffset": 0,
+      "note": "NEF uses TIFF LE magic shared with CR2, ARW, DNG, ORF, RW2. Nikon MakerNote (tag 0x927C in IFD0) with 'Nikon' prefix uniquely identifies NEF."
     }
   },
   "variables": {
-    "currentOffset": 0,
-    "width": 0,
-    "height": 0,
-    "totalPixels": 0,
-    "bitsPerPixel": 0,
-    "tiffHeader": 0
+    "byteOrderMark": 0,
+    "tiffMagic": 0,
+    "ifdOffset": 0
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "TIFF Header",
+      "name": "Byte Order Mark",
       "offset": 0,
-      "length": 4,
+      "length": 2,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "NEF uses TIFF structure",
-      "storeAs": "tiffHeader",
-      "valueType": "uint32"
+      "opacity": 0.45,
+      "description": "TIFF byte order mark: 0x4949 ('II') = little-endian (Intel byte order). All Nikon NEF files use little-endian byte order. The byte order mark determines how all subsequent multi-byte integers are read throughout the TIFF IFD structure.",
+      "storeAs": "byteOrderMark",
+      "valueType": "uint16",
+      "endianness": "little",
+      "valueMap": {
+        "18761": "Little-endian 'II' (Intel) — standard Nikon NEF byte order"
+      }
+    },
+    {
+      "type": "field",
+      "name": "TIFF Magic",
+      "offset": 2,
+      "length": 2,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "TIFF version magic number 42 (0x2A 0x00 little-endian). Standard TIFF magic used by NEF and all TIFF-based RAW formats.",
+      "storeAs": "tiffMagic",
+      "valueType": "uint16",
+      "endianness": "little"
+    },
+    {
+      "type": "field",
+      "name": "IFD0 Offset",
+      "offset": 4,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.35,
+      "description": "Byte offset to first IFD (IFD0). Standard Nikon NEF has IFD0 at offset 8, immediately after the TIFF header. IFD0 contains image dimensions, EXIF pointer, and Nikon MakerNote (tag 0x927C).",
+      "storeAs": "ifdOffset",
+      "valueType": "uint32",
+      "endianness": "little"
     },
     {
       "type": "metadata",
-      "name": "Width",
-      "variable": "width",
-      "description": "Width"
+      "name": "Byte Order",
+      "variable": "byteOrderMark",
+      "description": "TIFF byte order mark: 'II'=LE"
     },
     {
       "type": "metadata",
-      "name": "Height",
-      "variable": "height",
-      "description": "Height"
-    },
-    {
-      "type": "metadata",
-      "name": "Total Pixels",
-      "variable": "totalPixels",
-      "description": "Total Pixels"
+      "name": "IFD0 Offset",
+      "variable": "ifdOffset",
+      "description": "Offset to IFD0 (contains Nikon MakerNote at tag 0x927C)"
     }
   ],
-  "software": [
-    "Image viewers",
-    "GIMP"
+  "assertions": [
+    {
+      "name": "TIFF LE byte order",
+      "expression": "byteOrderMark == 18761",
+      "severity": "error",
+      "message": "NEF byte order must be 0x4949 (little-endian) — Nikon NEF always uses Intel byte order"
+    },
+    {
+      "name": "TIFF magic 42",
+      "expression": "tiffMagic == 42",
+      "severity": "error",
+      "message": "NEF TIFF magic must be 42 at offset 2"
+    }
   ],
-  "formatRelationships": {
-    "category": "Images",
-    "extensions": [
-      ".nef"
+  "navigation": {
+    "bookmarks": [
+      { "name": "TIFF/NEF Header", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" }
     ]
   },
-  "MimeTypes": [
-    "image/nef"
-  ],
-  "Software": [
-    "Photoshop",
-    "GIMP",
-    "Paint.NET",
-    "IrfanView",
-    "XnView"
-  ],
-  "UseCases": [
-    "Image viewing",
-    "Photo editing",
-    "Graphics design",
-    "Web publishing"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 4,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "byteOrderMark",
+    "primaryField": "ifdOffset",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "NEF/TIFF Header",
+        "icon": "\uE71B",
+        "fields": ["byteOrderMark", "tiffMagic", "ifdOffset"]
+      }
+    ]
   },
-  "TechnicalDetails": {
-    "ImagesFormat": true,
-    "BitDepth": 8
-  },
-  "functions": {
-    "readUInt32LE": "Read dimensions",
-    "multiply": "Calculate pixels",
-    "computeFromVariables(width * height, totalPixels)": "Calculate total pixels"
-  },
+  "exportTemplates": [
+    {
+      "name": "NEF Header (JSON)",
+      "format": "json",
+      "fields": ["byteOrderMark", "tiffMagic", "ifdOffset"]
+    }
+  ],
   "forensic": {
     "category": "image",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Nikon Electronic Format RAW",
+    "analysisContext": "Nikon NEF is TIFF LE + Nikon MakerNote. Header: 'II'(2)+42(2,LE)+ifdOffset(4,LE). IFD0 key tags: 0x0100=ImageWidth, 0x0101=ImageLength, 0x8769=ExifIFD, 0x927C=MakerNote. Nikon MakerNote starts with 'Nikon\\x00\\x02\\x00' (8 bytes) then a self-contained TIFF IFD with Nikon-specific tags: 0x001D=SerialNumber, 0x00A7=ShutterCount, 0x0019=ISO. SubIFDs (tag 0x014A): IFD 0=preview JPEG, IFD 1=14-bit Bayer RAW. Compression: 1=uncompressed, 34713=Nikon lossless, 32770=Nikon lossy.",
     "suggestedInspections": [
-      "Validate Nikon Raw Image signature, image dimensions, and color model",
-      "Check pixel data offset, compression type, and scanline alignment",
-      "Inspect color profile (ICC), EXIF metadata, and chunk CRCs"
+      "IFD0 at offset 8: find tag 0x927C (MakerNote) — must start with 'Nikon\\x00\\x02\\x00' to confirm NEF",
+      "Tag 0x00A7 in Nikon MakerNote = shutter count (camera usage indicator)",
+      "Tag 0x001D = camera serial number (forensic identification)",
+      "SubIFD 1 (tag 0x014A) contains 14-bit RAW Bayer data with compression tag"
     ]
+  },
+  "software": [
+    "Nikon Capture NX-D / NX Studio",
+    "Adobe Lightroom / Camera Raw",
+    "Capture One",
+    "darktable",
+    "RawTherapee",
+    "ExifTool"
+  ],
+  "formatRelationships": {
+    "category": "Images",
+    "extensions": [".nef"],
+    "relatedFormats": ["NRW", "TIFF", "DNG"],
+    "note": "NEF is Nikon's primary RAW format for DSLRs. NRW is a simplified variant used in Nikon Coolpix compact cameras. NEF can be converted to DNG with Adobe DNG Converter."
+  },
+  "MimeTypes": [
+    "image/x-nikon-nef",
+    "image/nef"
+  ],
+  "UseCases": [
+    "Nikon DSLR and mirrorless RAW image capture",
+    "Professional photography with 14-bit RAW color depth",
+    "Camera forensics (shutter count, serial number extraction)",
+    "Photo editing with full tonal and white balance flexibility"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 62,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 5,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "ImageFormat": true,
+    "ContainerFormat": "TIFF 6.0 (little-endian) with Nikon MakerNote extension",
+    "Endianness": "little-endian",
+    "RawEncoding": "Uncompressed 12/14-bit, Nikon lossless (34713), or Nikon lossy (32770)",
+    "BitDepth": "12-bit or 14-bit Bayer sensor data"
   }
 }

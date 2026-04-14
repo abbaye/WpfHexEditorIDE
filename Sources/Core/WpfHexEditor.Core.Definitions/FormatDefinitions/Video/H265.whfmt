@@ -1,21 +1,21 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Raw H.265/HEVC",
-  "version": "1.14",
+  "version": "1.15",
   "extensions": [
     ".h265",
     ".265",
     ".hevc"
   ],
-  "description": "Raw H.265/HEVC (High Efficiency Video Coding) elementary stream",
+  "description": "Raw H.265/HEVC (High Efficiency Video Coding) elementary bitstream as defined in ITU-T H.265 and ISO/IEC 23008-2. Like H.264, HEVC uses Annex B byte-stream format with start code prefixes (0x00 0x00 0x00 0x01 long or 0x00 0x00 0x01 short). H.265 uses a 2-byte NALU header: bits 15 (forbidden_zero_bit=0), bits 14-9 (nal_unit_type, 6 bits), bits 8-6 (nuh_layer_id), bits 5-0 (nuh_temporal_id_plus1). Key NALU types: 32=VPS (Video Parameter Set), 33=SPS, 34=PPS, 35=AUD, 1=TRAIL_R (inter), 19=IDR_W_RADL (keyframe). H.265 delivers 40-50% better compression than H.264 at equivalent quality, enabling 4K and 8K streaming. The SPS contains profile_tier_level with profile (Main, Main 10, Main Still Picture) and level.",
   "category": "Video",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "ITU-T H.265 - High Efficiency Video Coding",
-      "ISO/IEC 23008-2 - MPEG-H Part 2 HEVC",
-      "HEVC Standard Specification"
+      "ITU-T H.265 — High Efficiency Video Coding (HEVC)",
+      "ISO/IEC 23008-2 — MPEG-H Part 2 HEVC",
+      "ISO/IEC 14496-15 — HEVC File Format (hvcC)"
     ],
     "WebLinks": [
       "https://www.itu.int/rec/T-REC-H.265",
@@ -25,109 +25,186 @@
     ]
   },
   "detection": {
-    "signature": "00000001",
-    "offset": 0,
+    "signatures": [
+      { "value": "00000001", "offset": 0, "label": "H.265 Annex B long start code (4-byte)", "weight": 0.7 },
+      { "value": "000001", "offset": 0, "label": "H.265 Annex B short start code (3-byte)", "weight": 0.5 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.5,
     "required": true,
+    "Strength": "Medium",
+    "EntropyHint": { "min": 5.5, "max": 7.8 },
     "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024
+      "minFileSize": 6,
+      "note": "H.265 Annex B start code is identical to H.264. Distinguish by NALU header: H.265 has 2-byte header (bits 14-9 = nal_unit_type). HEVC VPS/SPS/PPS types are 32/33/34 — H.264 only uses 7/8. H.265 nal_unit_type 32 (VPS) at stream start is a reliable differentiator."
     }
   },
   "variables": {
-    "width": 0,
-    "height": 0,
-    "frameRate": 0,
-    "duration": 0,
-    "nalUnitStartCode": 0,
-    "totalPixels": 0
+    "startCode": 0,
+    "naluHeaderByte1": 0,
+    "naluHeaderByte2": 0,
+    "naluType": 0
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "NAL Unit Start Code",
+      "name": "Annex B Start Code",
       "offset": 0,
       "length": 4,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "H.265/HEVC NAL Unit start code prefix",
-      "storeAs": "nalUnitStartCode",
-      "valueType": "uint32"
+      "opacity": 0.45,
+      "description": "H.265 Annex B long start code prefix 0x00 0x00 0x00 0x01. Identical to H.264 Annex B start code. The 2-byte NALU header after this start code distinguishes H.265 from H.264 (H.265 uses 6-bit nal_unit_type in bits 14-9 of the 2-byte header). H.265 streams typically begin with VPS (type 32) + SPS (type 33) + PPS (type 34) before the first IDR frame.",
+      "storeAs": "startCode",
+      "valueType": "uint32",
+      "endianness": "big"
+    },
+    {
+      "type": "field",
+      "name": "NALU Header Byte 1",
+      "offset": 4,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "First byte of H.265 2-byte NALU header. Bit 7 = forbidden_zero_bit (must be 0). Bits 6-1 = nal_unit_type (6 bits, upper part). Bit 0 = nuh_layer_id upper bit. Key nal_unit_type values (from combined 2-byte header): 1=TRAIL_R (inter-frame), 19=IDR_W_RADL (keyframe), 32=VPS, 33=SPS, 34=PPS, 35=AUD.",
+      "storeAs": "naluHeaderByte1",
+      "valueType": "uint8",
+      "bitfields": [
+        { "name": "Forbidden Zero Bit", "bits": "7", "description": "Must be 0" },
+        { "name": "NALU Type (bits 5-0 mapped to bits 6-1)", "bits": "6-1", "description": "H.265 6-bit NALU type", "valueMap": { "1": "TRAIL_R (non-keyframe)", "16": "BLA_W_LP", "19": "IDR_W_RADL (keyframe)", "20": "IDR_N_LP", "21": "CRA_NUT", "32": "VPS", "33": "SPS", "34": "PPS", "35": "AUD (Access Unit Delimiter)" } },
+        { "name": "Layer ID (bit 5)", "bits": "0", "description": "Upper bit of nuh_layer_id (6 bits total)" }
+      ]
+    },
+    {
+      "type": "field",
+      "name": "NALU Header Byte 2",
+      "offset": 5,
+      "length": 1,
+      "color": "#95E1D3",
+      "opacity": 0.25,
+      "description": "Second byte of H.265 2-byte NALU header. Bits 7-3 = nuh_layer_id lower 5 bits (for multi-layer HEVC, typically 0 for base layer). Bits 2-0 = nuh_temporal_id_plus1 (temporal sublayer ID + 1, minimum 1, must be non-zero).",
+      "storeAs": "naluHeaderByte2",
+      "valueType": "uint8",
+      "bitfields": [
+        { "name": "Layer ID", "bits": "7-3", "description": "nuh_layer_id lower 5 bits (0 for base layer)" },
+        { "name": "Temporal ID + 1", "bits": "2-0", "description": "nuh_temporal_id_plus1 (must be >= 1; 1 = base temporal layer)" }
+      ]
     },
     {
       "type": "metadata",
-      "name": "Resolution",
-      "variable": "width",
-      "description": "Resolution"
+      "name": "Start Code",
+      "variable": "startCode",
+      "description": "Annex B start code (0x00000001 = 1)"
     },
     {
       "type": "metadata",
-      "name": "Frame Rate",
-      "variable": "frameRate",
-      "description": "Frame Rate"
-    },
-    {
-      "type": "metadata",
-      "name": "Total Pixels",
-      "variable": "totalPixels",
-      "description": "Width x Height"
+      "name": "NALU Header",
+      "variable": "naluHeaderByte1",
+      "description": "First NALU type (32=VPS, 33=SPS, 19=IDR)"
     }
   ],
-  "software": [
-    "Modern players",
-    "VLC",
-    "4K devices"
+  "assertions": [
+    {
+      "name": "Start code valid",
+      "expression": "startCode == 1",
+      "severity": "error",
+      "message": "H.265 Annex B stream must start with 0x00 0x00 0x00 0x01 — not a valid raw HEVC stream"
+    },
+    {
+      "name": "Forbidden zero bit is 0",
+      "expression": "(naluHeaderByte1 & 128) == 0",
+      "severity": "error",
+      "message": "H.265 NALU header forbidden_zero_bit (bit 7) must be 0 — corrupt or non-HEVC data"
+    },
+    {
+      "name": "Temporal ID plus1 is non-zero",
+      "expression": "(naluHeaderByte2 & 7) >= 1",
+      "severity": "warning",
+      "message": "H.265 nuh_temporal_id_plus1 (bits 2-0 of header byte 2) must be >= 1"
+    }
   ],
-  "formatRelationships": {
-    "category": "Video",
-    "extensions": [
-      ".h265",
-      ".265",
-      ".hevc"
+  "navigation": {
+    "bookmarks": [
+      {
+        "name": "First NALU",
+        "offset": 0,
+        "icon": "\uE71B",
+        "color": "#FF6B6B"
+      }
     ]
   },
-  "MimeTypes": [
-    "video/h265"
-  ],
-  "Software": [
-    "VLC",
-    "Media Player Classic",
-    "HandBrake",
-    "FFmpeg",
-    "MPC-HC"
-  ],
-  "UseCases": [
-    "Video playback",
-    "Video editing",
-    "Encoding",
-    "Streaming"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 4,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "naluHeaderByte1",
+    "primaryField": "startCode",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "H.265 NALU Header",
+        "icon": "\uE71B",
+        "fields": ["startCode", "naluHeaderByte1", "naluHeaderByte2"]
+      }
+    ]
   },
-  "TechnicalDetails": {
-    "VideoFormat": true
-  },
-  "functions": {
-    "readUInt32LE": "Read video header",
-    "computeFromVariables(width * height, totalPixels)": "Calculate total pixels"
-  },
+  "exportTemplates": [
+    {
+      "name": "H.265 NALU Header (JSON)",
+      "format": "json",
+      "fields": ["startCode", "naluHeaderByte1", "naluHeaderByte2"]
+    }
+  ],
   "forensic": {
     "category": "video",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Raw H.265/HEVC (High Efficiency Video Coding) elementary stream",
+    "analysisContext": "Raw H.265/HEVC Annex B byte-stream. 2-byte NALU header: byte1=F(1b)+nal_unit_type(6b)+nuh_layer_id_hi(1b), byte2=nuh_layer_id_lo(5b)+nuh_temporal_id_plus1(3b). Typical stream start: VPS(32)+SPS(33)+PPS(34)+IDR(19/20). SPS: profile_tier_level → general_profile_idc (1=Main, 2=Main10, 3=MainStillPicture), general_level_idc/3=level (e.g., 51=L5.1=4K@30fps, 62=L6.2=8K@120fps). SPS also contains: chroma_format_idc(0=mono, 1=4:2:0, 2=4:2:2, 3=4:4:4), bit_depth_luma/chroma_minus8, pic_width/height_in_luma_samples. H.265 in MP4 uses hvcC box (length-prefix, not Annex B).",
     "suggestedInspections": [
-      "Validate Raw H.265/HEVC container magic, box/atom sizes, and codec FourCC",
-      "Check track/stream layout, frame index, and timing fields",
-      "Inspect audio-video sync, keyframe distribution, and metadata"
+      "Verify 0x00 0x00 0x00 0x01 at offset 0 — Annex B start code",
+      "NALU type from bytes 4-5: (byte4 & 0x7E) >> 1. Type 32=VPS, 33=SPS, 34=PPS, 19=IDR",
+      "If first NALU is VPS (type 32), this is H.265 (not H.264 which starts at 32 only in HEVC)",
+      "SPS profile: byte after PPS header → general_profile_idc (1=Main, 2=Main10)",
+      "Check byte 5 bits 2-0 for nuh_temporal_id_plus1 (must be >= 1)"
     ]
+  },
+  "software": [
+    "FFmpeg (hevc parser)",
+    "VLC media player",
+    "x265 encoder",
+    "Apple H.265 hardware encoder/decoder",
+    "NVIDIA NVENC/NVDEC",
+    "HandBrake"
+  ],
+  "formatRelationships": {
+    "category": "Video",
+    "extensions": [".h265", ".265", ".hevc"],
+    "relatedFormats": ["H264", "MP4", "MKV", "TS"],
+    "note": "Raw H.265 Annex B elementary stream — typically encapsulated in MPEG-TS (.ts), MP4 (.mp4 with hvc1/hev1 codec box), or MKV (.mkv). In containers, H.265 may use length-prefixed (hvcC) format. Used in 4K/8K UHD broadcast, streaming (Netflix, YouTube 4K), and HEVC-encoded Blu-ray."
+  },
+  "MimeTypes": [
+    "video/hevc",
+    "video/h265",
+    "video/x-h265"
+  ],
+  "UseCases": [
+    "4K/8K UHD video streaming",
+    "HEVC Blu-ray disc content",
+    "Broadcast HEVC encoding (DVB-T2, ATSC 3.0)",
+    "Mobile 4K recording (iPhone, Android)"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 70,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 5,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "VideoFormat": true,
+    "ContainerFormat": "Raw Annex B elementary bitstream (no container)",
+    "VideoCodec": "H.265/HEVC (ITU-T H.265 / ISO/IEC 23008-2)",
+    "Endianness": "big-endian (start codes and NALU headers)",
+    "MaxResolution": "Up to 8192×4320 (Level 6.2)"
   }
 }

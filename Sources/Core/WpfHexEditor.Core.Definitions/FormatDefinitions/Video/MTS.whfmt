@@ -1,131 +1,190 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "AVCHD Video",
-  "version": "1.13",
+  "version": "1.14",
   "extensions": [
     ".mts",
     ".m2ts"
   ],
-  "description": "AVCHD (Advanced Video Coding High Definition) video format used by camcorders",
+  "description": "MTS is the file extension for AVCHD (Advanced Video Coding High Definition) recordings made by Sony and Panasonic camcorders. AVCHD uses the same 192-byte packet format as Blu-ray M2TS: a 4-byte TP_extra_header (30-bit Arrival Time Stamp + 2 reserved bits) followed by a standard 188-byte MPEG-2 TS packet with sync byte 0x47. AVCHD files are stored in the PRIVATE/AVCHD/BDMV/STREAM/ directory on the recording media. Video codec: H.264/AVC at 1080i, 1080p, or 720p. Audio: AC-3 (Dolby Digital) or LPCM. AVCHD 2.0 adds 3D and 60p support. MTS and M2TS are structurally identical — 'MTS' is the AVCHD camcorder extension while 'M2TS' is the Blu-ray extension.",
   "category": "Video",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "AVCHD Specification - Sony/Panasonic",
-      "BDAV MPEG-2 Transport Stream",
-      "H.264/MPEG-4 AVC Video Codec"
+      "AVCHD Specification Version 2.0 — Sony/Panasonic",
+      "BDAV MPEG-2 Transport Stream — Blu-ray Disc Association",
+      "H.264/MPEG-4 AVC — ITU-T H.264"
     ],
     "WebLinks": [
       "https://en.wikipedia.org/wiki/AVCHD",
       "https://docs.fileformat.com/video/mts/",
-      "https://www.winxdvd.com/resource/avchd-video.htm",
-      "https://fileinfo.com/extension/mts"
+      "https://www.winxdvd.com/resource/avchd-video.htm"
     ]
   },
   "detection": {
-    "signature": "47",
-    "offset": 0,
+    "signatures": [
+      { "value": "47", "offset": 4, "label": "MPEG-TS sync byte 0x47 at offset 4 (after 4-byte ATS prefix)", "weight": 0.8 },
+      { "value": "47", "offset": 0, "label": "MPEG-TS sync byte 0x47 at offset 0", "weight": 0.4 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.4,
     "required": true,
+    "Strength": "Medium",
+    "EntropyHint": { "min": 4.0, "max": 7.5 },
     "validation": {
-      "minFileSize": 1,
-      "maxSignatureOffset": 1024
+      "minFileSize": 192,
+      "note": "MTS/AVCHD uses 192-byte packets identical to M2TS. Sync byte 0x47 at offset 4. Verify 0x47 at offsets 4, 196, 388 for 192-byte stride confirmation."
     }
   },
   "variables": {
-    "width": 0,
-    "height": 0,
-    "frameRate": 0,
-    "duration": 0,
+    "arrivalTimeStamp": 0,
     "syncByte": 0,
-    "totalPixels": 0
+    "packetPID": 0
   },
   "blocks": [
     {
-      "type": "signature",
-      "name": "Sync Byte",
+      "type": "field",
+      "name": "Arrival Time Stamp (ATS)",
       "offset": 0,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "Blu-ray/AVCHD TP_extra_header: 2 reserved bits + 30-bit Arrival Time Stamp (ATS) in 27 MHz clock units (1/27000000 seconds). The ATS enables seamless trick play and accurate seek operations. This 4-byte prefix is the structural differentiator between 192-byte AVCHD/M2TS packets and 188-byte standard MPEG-TS packets.",
+      "storeAs": "arrivalTimeStamp",
+      "valueType": "uint32",
+      "endianness": "big"
+    },
+    {
+      "type": "signature",
+      "name": "TS Sync Byte",
+      "offset": 4,
       "length": 1,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "MPEG-TS sync byte for AVCHD format",
+      "opacity": 0.45,
+      "description": "MPEG-2 Transport Stream sync byte 0x47. At offset 4 in MTS/AVCHD packets (after 4-byte ATS prefix). This byte must be present at every 192-byte boundary for valid AVCHD streams.",
       "storeAs": "syncByte",
       "valueType": "uint8"
     },
     {
-      "type": "metadata",
-      "name": "Resolution",
-      "variable": "width",
-      "description": "Resolution"
+      "type": "field",
+      "name": "Transport Flags + PID High",
+      "offset": 5,
+      "length": 2,
+      "color": "#95E1D3",
+      "opacity": 0.30,
+      "description": "MPEG-2 TS header bytes 2-3: byte1 = TEI/PUSI/priority/PID[12:8], byte2 = PID[7:0]. Identifies the elementary stream PID (0x0000=PAT, 0x0001=CAT, 0x1FFF=null).",
+      "storeAs": "packetPID",
+      "valueType": "uint16",
+      "endianness": "big"
     },
     {
       "type": "metadata",
-      "name": "Frame Rate",
-      "variable": "frameRate",
-      "description": "Frame Rate"
+      "name": "Arrival Time Stamp",
+      "variable": "arrivalTimeStamp",
+      "description": "30-bit ATS (27 MHz clock)"
     },
     {
       "type": "metadata",
-      "name": "Total Pixels",
-      "variable": "totalPixels",
-      "description": "Width x Height"
+      "name": "Sync Byte",
+      "variable": "syncByte",
+      "description": "MPEG-TS sync byte (must be 0x47)"
     }
   ],
-  "software": [
-    "Video cameras",
-    "VLC",
-    "Media players"
+  "assertions": [
+    {
+      "name": "TS sync byte valid",
+      "expression": "syncByte == 71",
+      "severity": "error",
+      "message": "AVCHD/MTS sync byte at offset 4 must be 0x47 (71) — not a valid AVCHD packet"
+    }
   ],
-  "formatRelationships": {
-    "category": "Video",
-    "extensions": [
-      ".mts",
-      ".m2ts"
+  "navigation": {
+    "bookmarks": [
+      {
+        "name": "First MTS Packet",
+        "offset": 0,
+        "icon": "\uE71B",
+        "color": "#FF6B6B"
+      },
+      {
+        "name": "Second MTS Packet",
+        "offset": 192,
+        "icon": "\uE8A5",
+        "color": "#4ECDC4"
+      }
     ]
   },
-  "MimeTypes": [
-    "video/mts"
-  ],
-  "Software": [
-    "VLC",
-    "Media Player Classic",
-    "HandBrake",
-    "FFmpeg",
-    "MPC-HC"
-  ],
-  "UseCases": [
-    "Video playback",
-    "Video editing",
-    "Encoding",
-    "Streaming"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 4,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "syncByte",
+    "primaryField": "arrivalTimeStamp",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "AVCHD/MTS Packet Header",
+        "icon": "\uE71B",
+        "fields": ["arrivalTimeStamp", "syncByte", "packetPID"]
+      }
+    ]
   },
-  "TechnicalDetails": {
-    "VideoFormat": true
-  },
-  "functions": {
-    "readUInt32LE": "Read video header",
-    "computeFromVariables(width * height, totalPixels)": "Calculate total pixels"
-  },
+  "exportTemplates": [
+    {
+      "name": "MTS Packet Header (JSON)",
+      "format": "json",
+      "fields": ["arrivalTimeStamp", "syncByte", "packetPID"]
+    }
+  ],
   "forensic": {
     "category": "video",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "AVCHD (Advanced Video Coding High Definition) video format used by camcorders",
+    "analysisContext": "AVCHD/MTS = 192-byte packets (same as M2TS). Packet: ATS(4B BE, 2 reserved+30b ATS) + TS sync(1B=0x47) + TS header (3B) + payload (183B). Verify stride: 0x47 at offsets 4, 196, 388. H.264 video PID typically 0x1011, AC-3 audio 0x1100. AVCHD directory structure: PRIVATE/AVCHD/BDMV/STREAM/*.MTS. Clip info in PRIVATE/AVCHD/BDMV/CLIPINF/*.CPI. FFmpeg handles MTS as mpegts (auto-detects 192-byte packets).",
     "suggestedInspections": [
-      "Validate AVCHD Video container magic, box/atom sizes, and codec FourCC",
-      "Check track/stream layout, frame index, and timing fields",
-      "Inspect audio-video sync, keyframe distribution, and metadata"
+      "Check 0x47 at offset 4 (not offset 0) — confirms 192-byte AVCHD/M2TS packet format",
+      "Verify 0x47 again at offset 196 (192-byte stride)",
+      "ATS at offset 0 bits 29-0 (30-bit): divide by 27000000 for seconds"
     ]
+  },
+  "software": [
+    "Sony Handycam software",
+    "Panasonic HD Writer",
+    "VLC media player",
+    "FFmpeg (mpegts demuxer)",
+    "HandBrake",
+    "iMovie / Final Cut Pro"
+  ],
+  "formatRelationships": {
+    "category": "Video",
+    "extensions": [".mts", ".m2ts"],
+    "relatedFormats": ["M2TS", "TS", "MP4"],
+    "note": "MTS and M2TS are structurally identical 192-byte MPEG-TS formats. 'MTS' is the AVCHD camcorder convention; 'M2TS' is the Blu-ray disc convention. Both use the same 4-byte ATS prefix + 188-byte TS packet structure."
+  },
+  "MimeTypes": [
+    "video/mp2t",
+    "video/mts"
+  ],
+  "UseCases": [
+    "AVCHD camcorder recording (Sony/Panasonic)",
+    "HD camcorder import and editing",
+    "Archival of consumer HD video",
+    "Conversion to MP4/MKV for editing"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 65,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 5,
+    "ValidationRules": 1,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "VideoFormat": true,
+    "ContainerFormat": "AVCHD / BDAV MPEG-2 TS (192-byte packets)",
+    "PacketSize": "192 bytes (4-byte ATS + 188-byte TS)",
+    "VideoCodecs": "H.264/AVC (1080i, 1080p, 720p)",
+    "AudioCodecs": "AC-3 (Dolby Digital), LPCM"
   }
 }

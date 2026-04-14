@@ -1,55 +1,47 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Flash Video",
-  "version": "1.13",
+  "version": "1.14",
   "extensions": [
     ".flv"
   ],
-  "description": "Adobe Flash Video format",
+  "description": "FLV (Flash Video) — a proprietary video container format developed by Macromedia/Adobe for Adobe Flash Player. The 9-byte header contains: 'FLV' (3 bytes), version (1 byte, always 1), type flags (1 byte: bit 2=has audio, bit 0=has video), and data offset (4 bytes big-endian, always 9 for FLV version 1). Following the header is a 4-byte Previous Tag Size (always 0 for the first tag), then a sequence of FLV tags. Each FLV tag has: type (1 byte: 8=audio, 9=video, 18=script data/metadata), data size (3 bytes BE), timestamp (3 bytes BE, milliseconds), timestamp extended (1 byte, MSB for 32-bit timestamps), stream ID (3 bytes, always 0), and tag data. Video tags contain a 1-byte VideoTagHeader (codec ID in bits 3-0, frame type in bits 7-4). Flash Video is largely superseded by MP4/H.264 and WebM/VP9.",
   "category": "Video",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Adobe Flash Video File Format Specification Version 10.1",
-      "FLV Container Format",
-      "Flash Video Specification"
+      "SWF Technology Center — Flash Video (FLV/F4V) Specification"
     ],
     "WebLinks": [
       "https://download.macromedia.com/f4v/video_file_format_spec_v10_1.pdf",
       "https://en.wikipedia.org/wiki/Flash_Video",
-      "https://www.loc.gov/preservation/digital/formats/fdd/fdd000131.shtml",
-      "https://www.adobe.com/creativecloud/file-types/video/container/flv.html"
+      "https://www.loc.gov/preservation/digital/formats/fdd/fdd000131.shtml"
     ]
   },
   "detection": {
-    "signature": "464C56",
-    "offset": 0,
+    "signatures": [
+      { "value": "464C5601", "offset": 0, "label": "'FLV' magic + version 1", "weight": 1.0 },
+      { "value": "464C56", "offset": 0, "label": "'FLV' magic bytes only", "weight": 0.8 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.8,
     "required": true,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 4.0, "max": 7.5 },
     "validation": {
-      "minFileSize": 3,
-      "maxSignatureOffset": 1024
+      "minFileSize": 9,
+      "maxSignatureOffset": 0
     }
   },
-  "functions": {
-    "readUInt8": "Read 8-bit values for version and type flags",
-    "readUInt32BE": "Read 32-bit big-endian for data offset and tag sizes",
-    "bitwiseAnd": "Extract audio/video presence flags",
-    "computeFromVariables(width * height, totalPixels)": "Calculate total pixels"
-  },
   "variables": {
-    "currentOffset": 0,
-    "version": 1,
-    "hasVideo": false,
-    "hasAudio": false,
-    "dataOffset": 9,
-    "width": 0,
-    "height": 0,
-    "videoCodec": "Unknown",
-    "audioCodec": "Unknown",
     "flvSignature": "",
+    "flvVersion": 0,
     "typeFlags": 0,
-    "totalPixels": 0
+    "hasAudio": false,
+    "hasVideo": false,
+    "dataOffset": 0
   },
   "blocks": [
     {
@@ -58,21 +50,24 @@
       "offset": 0,
       "length": 3,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "FLV magic bytes",
+      "opacity": 0.45,
+      "description": "FLV file magic bytes: ASCII 'FLV' (0x46 0x4C 0x56). This 3-byte signature identifies the file as a Flash Video container. Originally developed by Macromedia (acquired by Adobe in 2005). FLV was the dominant web video format from 2003-2015, used by YouTube, Vimeo, and most Flash-based video players before HTML5 video adoption.",
       "storeAs": "flvSignature",
       "valueType": "ascii"
     },
     {
       "type": "field",
-      "name": "Version",
+      "name": "FLV Version",
       "offset": 3,
       "length": 1,
       "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "FLV version (usually 1)",
-      "storeAs": "version",
-      "valueType": "uint8"
+      "opacity": 0.35,
+      "description": "FLV format version number (uint8). Currently always 1 for standard Flash Video. Version 0 is invalid. Future FLV versions were never released as the format was superseded by F4V/MP4.",
+      "storeAs": "flvVersion",
+      "valueType": "uint8",
+      "valueMap": {
+        "1": "FLV version 1 — standard Flash Video (only valid value)"
+      }
     },
     {
       "type": "field",
@@ -80,10 +75,30 @@
       "offset": 4,
       "length": 1,
       "color": "#95E1D3",
-      "opacity": 0.3,
-      "description": "Audio/Video presence flags",
+      "opacity": 0.35,
+      "description": "Bitmask indicating which stream types are present in the file. Bits 3-7 and bits 1 are reserved (must be 0). Bit 2 (0x04): audio stream present. Bit 0 (0x01): video stream present. Common values: 0x01=video only, 0x04=audio only, 0x05=audio+video.",
       "storeAs": "typeFlags",
-      "valueType": "uint8"
+      "valueType": "uint8",
+      "bitfields": [
+        {
+          "name": "Video Present",
+          "bits": "0",
+          "description": "Bit 0 set = file contains video stream",
+          "valueMap": { "0": "No video stream", "1": "Video stream present" }
+        },
+        {
+          "name": "Audio Present",
+          "bits": "2",
+          "description": "Bit 2 set = file contains audio stream",
+          "valueMap": { "0": "No audio stream", "1": "Audio stream present" }
+        }
+      ],
+      "valueMap": {
+        "0": "No streams (header only or script-only FLV)",
+        "1": "Video only",
+        "4": "Audio only",
+        "5": "Audio + Video (standard FLV)"
+      }
     },
     {
       "type": "field",
@@ -91,68 +106,195 @@
       "offset": 5,
       "length": 4,
       "color": "#FFE66D",
-      "opacity": 0.3,
-      "description": "Offset to first tag",
+      "opacity": 0.30,
+      "description": "Byte offset from the start of the file to the first FLV tag (big-endian uint32). For FLV version 1, this is always 9 (the size of this header). Reserved for future versions that may add header extensions. The tag sequence always starts at offset 9 in practice: the first 4 bytes after the header are the Previous Tag Size (always 0 for the initial position).",
       "storeAs": "dataOffset",
-      "valueType": "uint32"
+      "valueType": "uint32",
+      "endianness": "big",
+      "valueMap": {
+        "9": "9 — standard FLV v1 (no header extension)"
+      }
+    },
+    {
+      "type": "computeFromVariables",
+      "name": "Has Audio",
+      "expression": "(typeFlags & 4) != 0",
+      "storeAs": "hasAudio",
+      "description": "True when bit 2 of typeFlags is set"
+    },
+    {
+      "type": "computeFromVariables",
+      "name": "Has Video",
+      "expression": "(typeFlags & 1) != 0",
+      "storeAs": "hasVideo",
+      "description": "True when bit 0 of typeFlags is set"
     },
     {
       "type": "metadata",
-      "name": "Total Pixels",
-      "variable": "totalPixels",
-      "description": "Width x Height"
+      "name": "FLV Version",
+      "variable": "flvVersion",
+      "description": "FLV format version (always 1)"
+    },
+    {
+      "type": "metadata",
+      "name": "Has Audio",
+      "variable": "hasAudio",
+      "description": "Audio stream present in this FLV"
+    },
+    {
+      "type": "metadata",
+      "name": "Has Video",
+      "variable": "hasVideo",
+      "description": "Video stream present in this FLV"
+    },
+    {
+      "type": "metadata",
+      "name": "Data Offset",
+      "variable": "dataOffset",
+      "description": "Byte offset to first FLV tag (always 9 for FLV v1)"
     }
   ],
-  "software": [
-    "Adobe Flash Player (discontinued)",
-    "VLC",
-    "FFmpeg"
+  "assertions": [
+    {
+      "name": "FLV signature valid",
+      "expression": "flvSignature == 'FLV'",
+      "severity": "error",
+      "message": "FLV magic must be ASCII 'FLV' (0x46 0x4C 0x56) — not a valid Flash Video file"
+    },
+    {
+      "name": "FLV version must be 1",
+      "expression": "flvVersion == 1",
+      "severity": "error",
+      "message": "FLV version must be 1 — no other FLV versions are defined"
+    },
+    {
+      "name": "Data offset must be 9",
+      "expression": "dataOffset == 9",
+      "severity": "warning",
+      "message": "FLV data offset should be 9 for version 1 — non-standard offset may indicate extended or malformed header"
+    },
+    {
+      "name": "Type flags reserved bits must be zero",
+      "expression": "(typeFlags & 250) == 0",
+      "severity": "warning",
+      "message": "FLV type flags reserved bits (1, 3-7) must be zero"
+    }
   ],
-  "formatRelationships": {
-    "adobe_format": true,
-    "deprecated": true,
-    "flash_required": "Originally",
-    "replaced_by": [
-      "MP4",
-      "WEBM"
+  "navigation": {
+    "bookmarks": [
+      {
+        "name": "FLV Header",
+        "offset": 0,
+        "icon": "\uE71B",
+        "color": "#FF6B6B"
+      },
+      {
+        "name": "Previous Tag Size 0",
+        "offset": 9,
+        "icon": "\uE8A5",
+        "color": "#4ECDC4"
+      },
+      {
+        "name": "First FLV Tag",
+        "offset": 13,
+        "icon": "\uE767",
+        "color": "#FFE66D"
+      }
     ]
   },
-  "MimeTypes": [
-    "video/x-flv"
+  "inspector": {
+    "badge": "typeFlags",
+    "primaryField": "flvVersion",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "FLV Header",
+        "icon": "\uE71B",
+        "fields": ["flvSignature", "flvVersion", "typeFlags", "dataOffset"]
+      },
+      {
+        "title": "Stream Content",
+        "icon": "\uE767",
+        "fields": ["hasAudio", "hasVideo"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "FLV Header (JSON)",
+      "format": "json",
+      "fields": ["flvSignature", "flvVersion", "typeFlags", "dataOffset", "hasAudio", "hasVideo"]
+    }
   ],
-  "Software": [
-    "VLC",
-    "MPC-HC",
-    "Flash Player (legacy)"
+  "forensic": {
+    "category": "video",
+    "riskLevel": "medium",
+    "suspiciousPatterns": [
+      {
+        "name": "Invalid FLV version",
+        "condition": "flvVersion != 1",
+        "severity": "warning",
+        "description": "FLV version is not 1. All standard Flash Video files use version 1. A non-1 version may indicate a crafted or corrupted file."
+      }
+    ],
+    "knownExploitVectors": [
+      "CVE-2015-5119: Adobe Flash Player FLV parsing use-after-free — widely exploited in CVE-2015-5119 ransomware campaigns",
+      "CVE-2016-1010: Adobe Flash ActionScript 3 FLV type confusion",
+      "Malformed FLV VideoTagHeader codec ID causing Flash Player crashes"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "FLV file layout: 'FLV'(3B) + version(1B, must=1) + typeFlags(1B: bit0=video/bit2=audio) + dataOffset(4B BE, must=9) + PreviousTagSize0(4B BE, must=0) + tags. Each FLV tag: tagType(1B: 8=audio/9=video/18=onMetaData) + dataSize(3B BE) + timestamp(3B BE ms) + timestampExtended(1B) + streamID(3B, must=0) + tagData. Video tag header first byte: frameType(bits 7-4: 1=keyframe/2=inter) + codecID(bits 3-0: 2=Sorenson H.263/4=VP6/5=VP6+alpha/7=H.264/AVC). H.264/AVC video tags have: AVCPacketType(1B: 0=seq header/1=NALU/2=EOS) + CompositionTime(3B BE). Audio tag header: soundFormat(bits 7-4: 0=LPCM/2=MP3/10=AAC/11=Speex) + soundRate(bits 5-4) + soundSize(bit 1) + soundType(bit 0: 0=mono/1=stereo).",
+    "knownVulnerabilities": [
+      "CVE-2015-5119: use-after-free in FLV ByteArray type coercion — used in Hacking Team leak",
+      "CVE-2015-5122: another Flash 0-day from same leak, FLV-delivered"
+    ],
+    "suggestedInspections": [
+      "Verify 'FLV' magic at offset 0 (46 4C 56)",
+      "Check version byte at offset 3 is exactly 0x01",
+      "Read typeFlags at offset 4 — bit 0=video, bit 2=audio",
+      "Verify dataOffset at offset 5 (BE uint32) is 9",
+      "Verify PreviousTagSize at offset 9 (BE uint32) is 0",
+      "First FLV tag at offset 13: type byte 0x09=video, 0x08=audio, 0x12=script"
+    ]
+  },
+  "software": [
+    "Adobe Flash Player (discontinued December 2020)",
+    "VLC media player",
+    "FFmpeg (flv muxer/demuxer)",
+    "Riva FLV Encoder",
+    "YouTube (historical FLV delivery before 2015)"
+  ],
+  "formatRelationships": {
+    "category": "Video",
+    "extensions": [".flv"],
+    "relatedFormats": ["F4V", "MP4", "WEBM"],
+    "note": "FLV was superseded by F4V/MP4 (H.264) and WebM/VP9 for web video. Adobe Flash Player was EOL'd in December 2020. FLV files remain common in archives of pre-2015 web video content. F4V uses the MP4/ISOBMFF container with H.264 + AAC, not the FLV tag format."
+  },
+  "MimeTypes": [
+    "video/x-flv",
+    "video/flv"
   ],
   "UseCases": [
-    "Flash video",
-    "Legacy web video",
-    "Old streaming"
+    "Legacy web video archives (YouTube pre-2015)",
+    "Archived streaming content from Flash era",
+    "Security research (high-value exploit delivery vector)"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 44,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 5,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
+    "CompletenessScore": 78,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 10,
+    "ValidationRules": 4,
+    "LastUpdated": "2026-04-14",
     "PriorityFormat": false,
     "AutoRefined": false
   },
   "TechnicalDetails": {
-    "VideoFormat": true
-  },
-  "forensic": {
-    "category": "video",
-    "riskLevel": "low",
-    "suspiciousPatterns": []
-  },
-  "aiHints": {
-    "analysisContext": "Adobe Flash Video format",
-    "suggestedInspections": [
-      "Validate Flash Video container magic, box/atom sizes, and codec FourCC",
-      "Check track/stream layout, frame index, and timing fields",
-      "Inspect audio-video sync, keyframe distribution, and metadata"
-    ]
+    "VideoFormat": true,
+    "Endianness": "big-endian (all multi-byte header and tag fields)",
+    "VideoCodecs": "Sorenson H.263 (FLV1/2), ScreenVideo (FLV3), VP6 (FLV4), H.264/AVC (FLV7)",
+    "AudioCodecs": "Linear PCM, MP3, AAC, Speex, Nellymoser",
+    "TimestampPrecision": "1 millisecond (3-byte + 1-byte extended = 32-bit ms)",
+    "EOL": "December 31, 2020 (Adobe Flash Player EOL)"
   }
 }

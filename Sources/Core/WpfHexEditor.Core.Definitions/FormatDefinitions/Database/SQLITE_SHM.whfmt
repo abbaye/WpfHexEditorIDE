@@ -1,7 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "SQLite Shared Memory",
-  "version": "1.12",
+  "version": "1.13",
   "extensions": [
     ".shm",
     "-shm"

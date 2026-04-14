@@ -1,61 +1,134 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Maya ASCII",
-  "version": "1.13",
+  "version": "1.14",
   "extensions": [
     ".ma"
   ],
-  "description": "Autodesk Maya ASCII scene file",
+  "description": "Autodesk Maya ASCII scene file format used for 3D modeling, animation, rigging, and rendering. Maya ASCII files are plain text documents beginning with the comment line '//Maya ASCII' followed by scene metadata including the Maya version, file units, and time range. The format uses a MEL-like command syntax to declare nodes, attributes, connections, and data. MA files are human-readable and diff-friendly but substantially larger than the equivalent binary .mb format. Widely used for version-controlled pipeline assets.",
   "category": "3D",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "Maya ASCII Format"
+      "Autodesk Maya Documentation: Maya ASCII File Format"
     ],
     "WebLinks": [
-      "https://en.wikipedia.org/wiki/MA"
+      "https://en.wikipedia.org/wiki/Autodesk_Maya",
+      "https://help.autodesk.com/view/MAYAUL/2024/ENU/",
+      "https://wiki.fileformat.com/3d/ma/"
     ]
   },
   "detection": {
-    "signature": "2F2F4D61796120415343",
-    "offset": 0,
+    "signatures": [
+      { "value": "2F2F4D61796120415343494920", "offset": 0, "label": "//Maya ASCII header", "weight": 0.9 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.8,
     "required": true,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 3.0, "max": 6.0 },
     "validation": {
-      "minFileSize": 10,
-      "maxSignatureOffset": 1024
+      "minFileSize": 14,
+      "maxSignatureOffset": 0,
+      "note": "The '//Maya ASCII' prefix must appear at offset 0. Case-sensitive ASCII text match."
     }
   },
   "variables": {
-    "currentOffset": 0,
-    "machineType": "",
-    "sectionCount": 0,
-    "entryPoint": 0,
-    "mayaAsciiHeader": ""
+    "mayaAsciiHeader": "",
+    "versionLine": "",
+    "requiresLine": "",
+    "unitsLine": ""
   },
   "blocks": [
     {
       "type": "signature",
       "name": "Maya ASCII Header",
       "offset": 0,
-      "length": 11,
+      "length": 13,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "//Maya ASC signature",
+      "opacity": 0.45,
+      "description": "ASCII text '//Maya ASCII ' at the very beginning of the file. This comment-style header is the definitive signature for Maya ASCII scene files and is always present regardless of Maya version.",
       "storeAs": "mayaAsciiHeader",
       "valueType": "ascii"
     },
     {
-      "type": "metadata",
-      "name": "Machine",
-      "variable": "machineType",
-      "description": "Machine"
+      "type": "field",
+      "name": "Version Line",
+      "offset": 13,
+      "length": 32,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "Continuation of the first line containing the Maya version string that created this file, e.g. '2024'. Immediately follows the '//Maya ASCII ' prefix on the same line before the newline character.",
+      "storeAs": "versionLine",
+      "valueType": "ascii"
     },
     {
-      "type": "metadata",
-      "name": "Sections",
-      "variable": "sectionCount",
-      "description": "Sections"
+      "type": "field",
+      "name": "Requires/FileInfo Section",
+      "offset": 50,
+      "length": 64,
+      "color": "#95E1D3",
+      "opacity": 0.35,
+      "description": "Region containing 'requires' and 'fileInfo' command declarations that list plugin dependencies and metadata. These commands declare the Maya version, used plugins, and file creation metadata required to open the scene.",
+      "storeAs": "requiresLine",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Units/Time Range",
+      "offset": 114,
+      "length": 64,
+      "color": "#FFE66D",
+      "opacity": 0.35,
+      "description": "Region containing 'currentUnit' and 'playbackOptions' commands that define the scene measurement units (cm, m, inches) and animation time range. These globals affect how all subsequent numeric data is interpreted.",
+      "storeAs": "unitsLine",
+      "valueType": "ascii"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "ValidMayaHeader",
+      "expression": "mayaAsciiHeader == '//Maya ASCII '",
+      "severity": "error",
+      "message": "File does not begin with '//Maya ASCII '. This is not a valid Maya ASCII scene file or the file may be a Maya Binary (.mb) file instead."
+    },
+    {
+      "name": "TextContent",
+      "expression": "jsonBrace != 0x00",
+      "severity": "warning",
+      "message": "File contains null bytes near the start, which is unexpected for a text-based Maya ASCII file. The file may be corrupt or mixed with binary data."
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "Maya ASCII Header", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
+      { "name": "Version/Metadata", "offset": 13, "icon": "\uE946", "color": "#4ECDC4" },
+      { "name": "Scene Commands", "offset": 114, "icon": "\uE8B7", "color": "#FFE66D" }
+    ]
+  },
+  "inspector": {
+    "badge": "mayaAsciiHeader",
+    "primaryField": "versionLine",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "File Header",
+        "icon": "\uE71B",
+        "fields": ["mayaAsciiHeader", "versionLine"]
+      },
+      {
+        "title": "Scene Metadata",
+        "icon": "\uE946",
+        "fields": ["requiresLine", "unitsLine"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "MA Header (JSON)",
+      "format": "json",
+      "fields": ["mayaAsciiHeader", "versionLine", "requiresLine"]
     }
   ],
   "software": [
@@ -63,50 +136,45 @@
   ],
   "formatRelationships": {
     "category": "3D",
-    "extensions": [
-      ".ma"
-    ]
+    "extensions": [".ma"],
+    "relatedFormats": ["MB", "FBX", "OBJ"],
+    "note": "Text-based Maya scene; binary counterpart is .mb; human-readable for version control workflows"
   },
   "MimeTypes": [
-    "application/octet-stream"
-  ],
-  "Software": [
-    "Blender",
-    "3ds Max",
-    "Maya",
-    "Cinema 4D",
-    "MeshLab"
+    "application/octet-stream",
+    "text/plain"
   ],
   "UseCases": [
-    "3D modeling",
-    "Rendering",
-    "Animation",
-    "Game development"
+    "3D character animation",
+    "VFX scene authoring",
+    "Version-controlled pipeline assets",
+    "Rigging and skinning"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 3,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
+    "CompletenessScore": 60,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 4,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
     "PriorityFormat": false,
-    "AutoRefined": true
+    "AutoRefined": false
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32LE": "Read executable header"
+  "TechnicalDetails": {
+    "encoding": "ASCII/UTF-8 text",
+    "syntax": "MEL-like command declarations",
+    "externalReferences": true
   },
   "forensic": {
-    "category": "3d-model",
+    "category": "3d",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Autodesk Maya ASCII scene file",
+    "analysisContext": "Autodesk Maya ASCII scene file using MEL-like text syntax. Begins with '//Maya ASCII' header comment. Node definitions, attribute settings, and connections are expressed as text commands.",
     "suggestedInspections": [
-      "Validate Maya ASCII header magic bytes and format version",
-      "Check vertex/face count fields and mesh data boundaries",
-      "Inspect embedded material, texture, and animation references"
+      "Verify '//Maya ASCII' header and extract the Maya version from the first line",
+      "Scan for 'requires' commands to identify plugin dependencies and Maya version requirements",
+      "Look for 'createNode' commands to enumerate scene objects like meshes, cameras, and lights"
     ]
   }
 }

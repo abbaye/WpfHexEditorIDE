@@ -1,117 +1,182 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "ROOT Data File",
-  "version": "1.12",
+  "version": "1.13",
   "extensions": [
     ".root"
   ],
-  "description": "ROOT data analysis framework file format (CERN)",
+  "description": "ROOT is an object-oriented data analysis framework developed by CERN for high-energy physics (HEP). ROOT files store TTree event data, histograms, graphs, and arbitrary C++ objects serialized via ROOT I/O. The file begins with the 4-byte ASCII magic 'root' (0x726F6F74) at offset 0, followed by a 4-byte big-endian version number. The file header (100 bytes) contains the ROOT file version, begin-of-data offset, end-of-file position, seek-key offset, number of bytes in the file, UUID, and compression level. TKey records form a dictionary-like index. ROOT files are used by LHC experiments (ATLAS, CMS), neutrino, and cosmic-ray observatories worldwide.",
   "category": "Science",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
-  "references": {
-    "specifications": [
-      "ROOT Data File Format"
-    ],
-    "WebLinks": [
-      "https://en.wikipedia.org/wiki/ROOT"
-    ]
-  },
+  "references": [
+    "ROOT I/O Format Documentation",
+    "ROOT File Format Internals — ROOT Reference Guide"
+  ],
+  "WebLinks": [
+    "https://en.wikipedia.org/wiki/ROOT_(software)",
+    "https://root.cern/doc/master/classTFile.html"
+  ],
   "detection": {
-    "signature": "726F6F7400",
+    "signature": "726F6F74",
     "offset": 0,
     "required": true,
+    "weight": 1.0,
     "validation": {
-      "minFileSize": 5,
-      "maxSignatureOffset": 1024
+      "minFileSize": 100,
+      "maxSignatureOffset": 0
     }
   },
   "variables": {
     "currentOffset": 0,
-    "dimensions": 0,
-    "dataType": "",
-    "arrayCount": 0,
+    "rootVersion": 0,
+    "beginOffset": 0,
+    "endOffset": 0,
     "rootMagic": "",
-    "version": ""
+    "freeBytes": 0
   },
   "blocks": [
     {
       "type": "signature",
       "name": "ROOT Magic",
       "offset": 0,
-      "length": 5,
+      "length": 4,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "ROOT signature (root\\0)",
+      "opacity": 0.85,
+      "description": "ASCII magic 'root' (72 6F 6F 74) at offset 0 — uniquely identifies a ROOT data file produced by CERN ROOT framework",
       "storeAs": "rootMagic",
       "valueType": "ascii"
     },
     {
       "type": "field",
-      "name": "Version",
-      "offset": 5,
+      "name": "ROOT Version",
+      "offset": 4,
       "length": 4,
       "color": "#4ECDC4",
+      "opacity": 0.5,
+      "description": "Big-endian int32 ROOT file version: major*10000 + minor*100 + patch (e.g. 61204 = ROOT 6.12.04); negative value means the file uses large-file (64-bit) offsets",
+      "storeAs": "rootVersion",
+      "valueType": "int32be"
+    },
+    {
+      "type": "field",
+      "name": "Begin (first key offset)",
+      "offset": 8,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.4,
+      "description": "Big-endian int32 offset in bytes to the first data record (TKey) in the file; typically 100 bytes (after the fixed-size file header)",
+      "storeAs": "beginOffset",
+      "valueType": "int32be"
+    },
+    {
+      "type": "field",
+      "name": "End (last byte offset)",
+      "offset": 12,
+      "length": 4,
+      "color": "#FFE66D",
+      "opacity": 0.35,
+      "description": "Big-endian int32 byte position of the last byte used in the file; for large (>2 GB) files using 64-bit mode this field is 0 and the actual value is at offset 20",
+      "storeAs": "endOffset",
+      "valueType": "int32be"
+    },
+    {
+      "type": "field",
+      "name": "Seek Free (free segment list)",
+      "offset": 16,
+      "length": 4,
+      "color": "#A8E6CF",
       "opacity": 0.3,
-      "description": "ROOT file version",
-      "storeAs": "version",
-      "valueType": "ascii"
+      "description": "Offset to the free-segment list in the file; used to track reusable space after object deletion or file merging operations",
+      "storeAs": "seekFree",
+      "valueType": "int32be"
     },
     {
-      "type": "metadata",
-      "name": "Dimensions",
-      "variable": "dimensions",
-      "description": "Dimensions"
+      "type": "field",
+      "name": "Number of Free Bytes",
+      "offset": 20,
+      "length": 4,
+      "color": "#C7B8EA",
+      "opacity": 0.3,
+      "description": "Total number of free bytes available in the free-segment list; used by ROOT to reclaim deleted-object space before extending the file",
+      "storeAs": "freeBytes",
+      "valueType": "int32be"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "ValidROOTMagic",
+      "description": "Bytes 0-3 must be ASCII 'root' (72 6F 6F 74) — the CERN ROOT file magic; any other bytes mean this is not a valid ROOT data file",
+      "offset": 0,
+      "length": 4,
+      "expectedHex": "726F6F74",
+      "severity": "error"
     },
     {
-      "type": "metadata",
-      "name": "Data Type",
-      "variable": "dataType",
-      "description": "Data Type"
-    },
+      "name": "ValidBeginOffset",
+      "description": "Begin offset at bytes 8-11 must be >= 100 (the minimum ROOT header size); a smaller value indicates a corrupt or truncated ROOT file header",
+      "offset": 8,
+      "length": 4,
+      "minValue": 100,
+      "severity": "warning"
+    }
+  ],
+  "inspector": {
+    "groups": [
+      {
+        "name": "File Header",
+        "fields": [
+          { "label": "Magic 'root'",       "offset": 0,  "length": 4,  "format": "ascii" },
+          { "label": "ROOT Version",        "offset": 4,  "length": 4,  "format": "int32be" },
+          { "label": "Begin Offset",        "offset": 8,  "length": 4,  "format": "int32be" },
+          { "label": "End Offset",          "offset": 12, "length": 4,  "format": "int32be" },
+          { "label": "Seek Free",           "offset": 16, "length": 4,  "format": "int32be" },
+          { "label": "Number Free",         "offset": 20, "length": 4,  "format": "int32be" }
+        ]
+      }
+    ]
+  },
+  "exportTemplates": [
     {
-      "type": "metadata",
-      "name": "Array Count",
-      "variable": "arrayCount",
-      "description": "Array Count"
+      "name": "ROOT File Summary",
+      "fields": ["rootMagic", "rootVersion", "beginOffset", "endOffset"]
     }
   ],
   "software": [
-    "Common file viewers",
-    "Specialized software"
+    "CERN ROOT Framework",
+    "Uproot (Python)",
+    "awkward-array",
+    "ROOT.jl (Julia)"
   ],
   "formatRelationships": {
-    "category": "Science",
-    "extensions": [
-      ".root"
-    ]
+    "hep_standard": true,
+    "used_by": ["ATLAS", "CMS", "LHCb", "ALICE", "IceCube"],
+    "object_model": "TTree, TH1, TGraph, TFile"
   },
   "MimeTypes": [
+    "application/x-root",
     "application/octet-stream"
   ],
-  "Software": [
-    "Hex Editor",
-    "File Viewer",
-    "Archive Manager"
-  ],
   "UseCases": [
-    "File storage",
-    "Data exchange",
-    "Archive"
+    "LHC collision event data storage",
+    "High-energy physics analysis ntuples",
+    "Histogram and graph persistence",
+    "Simulation output for particle physics experiments"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 32,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 5,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
+    "CompletenessScore": 60,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 6,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
     "PriorityFormat": false,
-    "AutoRefined": true
+    "AutoRefined": false
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32BE": "Read scientific header",
-    "multiply": "Calculate dimensions"
+  "TechnicalDetails": {
+    "endianness": "big-endian",
+    "headerSize": 100,
+    "largFileMode": "version < 0 indicates 64-bit offsets",
+    "keyModel": "TKey records with class name, object title, and seek pointer"
   },
   "forensic": {
     "category": "science",
@@ -119,11 +184,14 @@
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "ROOT data analysis framework file format (CERN)",
+    "analysisContext": "ROOT files use a TKey-based index for object navigation. The Uproot Python library enables analysis without ROOT installation. Negative version means big-file (64-bit) mode with 8-byte offsets instead of 4-byte.",
     "suggestedInspections": [
-      "Validate ROOT Data File file header, data type, and dimension fields",
-      "Check axis labels, units, and calibration metadata",
-      "Inspect data array boundaries and fill/missing value markers"
+      "Verify magic 'root' at bytes 0-3",
+      "Read version at bytes 4-7: decode as major=v/10000, minor=(v%10000)/100, patch=v%100",
+      "If version is negative, the file uses 64-bit large-file mode — reinterpret begin/end as 8-byte values",
+      "Begin offset at bytes 8-11 points to the first TKey; navigate to it",
+      "Read TKey: buffer length (4), large flag (2), key length (2), object version (2), object length (4), date/time (4), key string length (2), cycle (2), seek key (4 or 8), seek pdir (4 or 8), class name, object name, object title",
+      "Locate the TOP (TFile object) TKey to find the TFile directory and its key list"
     ]
   }
 }

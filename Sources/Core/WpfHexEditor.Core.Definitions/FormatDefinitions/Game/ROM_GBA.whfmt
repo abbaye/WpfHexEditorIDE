@@ -1,7 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "Game Boy Advance ROM",
-  "version": "2.6",
+  "version": "2.52",
   "extensions": [
     ".gba"
   ],

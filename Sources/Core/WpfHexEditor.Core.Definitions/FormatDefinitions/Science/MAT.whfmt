@@ -1,105 +1,183 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "MATLAB Data File",
-  "version": "1.12",
+  "version": "1.13",
   "extensions": [
     ".mat"
   ],
-  "description": "MATLAB workspace data",
+  "description": "MATLAB .mat files store workspace variables in a binary format. Version 5 (MAT-file Level 5), introduced in MATLAB 5.0, is the most common binary format. It begins with a 116-byte text description field (padded with spaces), followed by 8 bytes of subsystem data offset, a 2-byte version (0x0100 for level 5), and a 2-byte endian indicator ('MI' for little-endian). Each variable is stored as a data element with a 4-byte type tag, 4-byte byte count, and padded data payload. Supports arrays, cell arrays, structures, characters, and sparse matrices. Version 4 .mat files begin with a simple binary header without the 'MATLAB' string marker.",
   "category": "Science",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
-  "references": {
-    "specifications": [
-      "MATLAB Data File Format"
-    ],
-    "WebLinks": [
-      "https://en.wikipedia.org/wiki/MAT"
-    ]
-  },
+  "references": [
+    "MATLAB MAT-File Format R2023a",
+    "MathWorks MAT-File Level 5 Specification"
+  ],
+  "WebLinks": [
+    "https://en.wikipedia.org/wiki/MATLAB",
+    "https://www.mathworks.com/help/matlab/import_export/mat-file-versions.html"
+  ],
   "detection": {
-    "signature": "4D41544C4142",
+    "signature": "4D41544C414220352E30",
     "offset": 0,
     "required": true,
+    "weight": 0.9,
     "validation": {
-      "minFileSize": 6,
-      "maxSignatureOffset": 1024
+      "minFileSize": 128,
+      "maxSignatureOffset": 0
     }
   },
   "variables": {
     "currentOffset": 0,
-    "dimensions": 0,
-    "dataType": "",
-    "arrayCount": 0,
+    "description": "",
+    "version": 0,
+    "endianIndicator": "",
     "matlabHeader": ""
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "MATLAB Header",
+      "name": "MATLAB Description",
       "offset": 0,
-      "length": 6,
+      "length": 116,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "MATLAB signature",
+      "opacity": 0.85,
+      "description": "116-byte text field beginning with 'MATLAB 5.0 MAT-file' followed by optional user text, padded with spaces to exactly 116 bytes",
       "storeAs": "matlabHeader",
       "valueType": "ascii"
     },
     {
-      "type": "metadata",
-      "name": "Dimensions",
-      "variable": "dimensions",
-      "description": "Dimensions"
+      "type": "field",
+      "name": "Subsystem Data Offset",
+      "offset": 116,
+      "length": 8,
+      "color": "#4ECDC4",
+      "opacity": 0.5,
+      "description": "8-byte offset to the subsystem-specific data in the file; used by MATLAB internally; zero means no subsystem data",
+      "storeAs": "subsystemOffset",
+      "valueType": "uint64le"
+    },
+    {
+      "type": "field",
+      "name": "File Version",
+      "offset": 124,
+      "length": 2,
+      "color": "#95E1D3",
+      "opacity": 0.4,
+      "description": "MAT-file version: 0x0100 (256) for Level 5 files; this value is always 0x0100 in all current MATLAB versions",
+      "storeAs": "version",
+      "valueType": "uint16le"
+    },
+    {
+      "type": "field",
+      "name": "Endian Indicator",
+      "offset": 126,
+      "length": 2,
+      "color": "#FFE66D",
+      "opacity": 0.35,
+      "description": "2-byte endian mark: 'MI' (0x4D49) means little-endian (standard x86/ARM); 'IM' (0x494D) means big-endian (uncommon); used to detect byte-swapping on read",
+      "storeAs": "endianIndicator",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "First Data Element Header",
+      "offset": 128,
+      "length": 8,
+      "color": "#A8E6CF",
+      "opacity": 0.3,
+      "description": "First variable element: 4-byte type tag (e.g. 14 = miMATRIX) and 4-byte number of bytes; compressed elements use type 15 (miCOMPRESSED)",
+      "storeAs": "firstElementHeader",
+      "valueType": "bytes"
     },
     {
       "type": "metadata",
-      "name": "Data Type",
-      "variable": "dataType",
-      "description": "Data Type"
+      "name": "File Version",
+      "variable": "version",
+      "description": "MAT-file level version (0x0100 = Level 5)"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "ValidMATLABPrefix",
+      "description": "Bytes 0-9 must begin with ASCII 'MATLAB 5.0' (4D 41 54 4C 41 42 20 35 2E 30) to confirm a valid Level 5 MAT-file",
+      "offset": 0,
+      "length": 10,
+      "expectedHex": "4D41544C414220352E30",
+      "severity": "error"
     },
     {
-      "type": "metadata",
-      "name": "Array Count",
-      "variable": "arrayCount",
-      "description": "Array Count"
+      "name": "ValidEndianMark",
+      "description": "Bytes 126-127 must be 'MI' (4D 49) for standard little-endian MATLAB files; 'IM' indicates big-endian byte-swapped data",
+      "offset": 126,
+      "length": 2,
+      "validValues": ["4D49", "494D"],
+      "severity": "warning"
+    }
+  ],
+  "inspector": {
+    "groups": [
+      {
+        "name": "File Header",
+        "fields": [
+          { "label": "Description Text",      "offset": 0,   "length": 116, "format": "ascii" },
+          { "label": "Subsystem Offset",       "offset": 116, "length": 8,   "format": "uint64le" },
+          { "label": "Version",                "offset": 124, "length": 2,   "format": "hex" },
+          { "label": "Endian Indicator",       "offset": 126, "length": 2,   "format": "ascii" }
+        ]
+      },
+      {
+        "name": "First Variable",
+        "fields": [
+          { "label": "Element Type Tag",  "offset": 128, "length": 4, "format": "uint32le" },
+          { "label": "Element Byte Count","offset": 132, "length": 4, "format": "uint32le" }
+        ]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "MAT File Header",
+      "fields": ["matlabHeader", "version", "endianIndicator"]
     }
   ],
   "software": [
-    "Common file viewers",
-    "Specialized software"
+    "MATLAB",
+    "GNU Octave",
+    "Python scipy.io.loadmat",
+    "Julia MAT.jl",
+    "R R.matlab"
   ],
   "formatRelationships": {
-    "category": "Science",
-    "extensions": [
-      ".mat"
-    ]
+    "matlab_proprietary": true,
+    "compatible_with": ["GNU Octave", "SciPy"],
+    "versions": ["Level 4 (legacy)", "Level 5 (current)", "Level 7.3 (HDF5-based)"]
   },
   "MimeTypes": [
+    "application/x-matlab-data",
     "application/octet-stream"
   ],
-  "Software": [
-    "Hex Editor",
-    "File Viewer",
-    "Archive Manager"
-  ],
   "UseCases": [
-    "File storage",
-    "Data exchange",
-    "Archive"
+    "MATLAB workspace persistence",
+    "Signal processing data exchange",
+    "Machine learning feature storage",
+    "Simulation results archiving",
+    "Interoperability between MATLAB and Python/R"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 4,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
+    "CompletenessScore": 62,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 6,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
     "PriorityFormat": false,
-    "AutoRefined": true
+    "AutoRefined": false
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32BE": "Read scientific header",
-    "multiply": "Calculate dimensions"
+  "TechnicalDetails": {
+    "endianness": "little-endian (default)",
+    "headerSize": 128,
+    "level5Version": "0x0100",
+    "level73": "HDF5-based, detected by HDF5 magic"
   },
   "forensic": {
     "category": "science",
@@ -107,11 +185,14 @@
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "MATLAB workspace data",
+    "analysisContext": "MATLAB Level 5 MAT-files are the standard binary workspace format. Level 7.3 files (.mat with HDF5 magic) require HDF5 parsing. Check the endian indicator before reading any multi-byte fields.",
     "suggestedInspections": [
-      "Validate MATLAB Data File file header, data type, and dimension fields",
-      "Check axis labels, units, and calibration metadata",
-      "Inspect data array boundaries and fill/missing value markers"
+      "Verify bytes 0-9 are 'MATLAB 5.0' to confirm Level 5 format",
+      "Read endian indicator at offset 126 to determine byte order for all subsequent reads",
+      "Parse first data element type tag at offset 128 — type 15 = miCOMPRESSED (zlib-deflated variables)",
+      "For compressed elements, decompress the payload then re-parse as a normal miMATRIX element",
+      "Check for Level 7.3 by looking for HDF5 magic (89 48 44 46) at offset 0 — these are .mat v7.3",
+      "Enumerate all top-level variables by iterating data element headers throughout the file"
     ]
   }
 }

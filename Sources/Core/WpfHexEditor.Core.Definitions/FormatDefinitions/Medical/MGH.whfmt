@@ -1,53 +1,51 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "MGH/MGZ Medical Image",
-  "version": "1.13",
+  "version": "1.14",
   "extensions": [
     ".mgh",
     ".mgz"
   ],
-  "description": "MGH/MGZ FreeSurfer medical image format",
+  "description": "MGH/MGZ is the native volumetric image format of FreeSurfer, developed at the Martinos Center for Biomedical Imaging at MGH (Massachusetts General Hospital). The binary header begins with a big-endian int32 version = 1 at offset 0, followed by width, height, depth (nslices), and nframes as big-endian int32 values. The data type field at offset 20 encodes voxel type (0=uchar, 1=int, 3=float, 4=short). MGZ files are gzip-compressed MGH. Used for cortical surface reconstructions, parcellation labels, and volumetric brain data in FreeSurfer pipelines.",
   "category": "Medical",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
-  "references": {
-    "specifications": [
-      "MGH/MGZ Medical Image Format"
-    ],
-    "WebLinks": [
-      "https://en.wikipedia.org/wiki/MGH"
-    ]
-  },
+  "references": [
+    "FreeSurfer MGH/MGZ Format Documentation",
+    "https://surfer.nmr.mgh.harvard.edu/fswiki/FsTutorial/MghFormat"
+  ],
   "detection": {
     "signature": "00000001",
     "offset": 0,
+    "weight": 0.3,
+    "strength": "Weak",
     "required": true,
     "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024
+      "minFileSize": 90,
+      "maxSignatureOffset": 0
     }
   },
   "variables": {
     "currentOffset": 0,
+    "mghVersion": 0,
     "width": 0,
     "height": 0,
-    "slices": 0,
-    "bitDepth": 0,
-    "version": "",
     "depth": 0,
+    "nframes": 0,
+    "dataType": 0,
     "totalPixels": 0
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "Version",
+      "name": "MGH Version",
       "offset": 0,
       "length": 4,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "MGH version (1)",
-      "storeAs": "version",
-      "valueType": "ascii"
+      "opacity": 0.5,
+      "description": "version: big-endian int32 = 1; identifies MGH format. Note: 0x00000001 is weak as a magic (many files start with zero bytes)",
+      "storeAs": "mghVersion",
+      "valueType": "int32"
     },
     {
       "type": "field",
@@ -55,10 +53,10 @@
       "offset": 4,
       "length": 4,
       "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "Image width",
+      "opacity": 0.5,
+      "description": "width: big-endian int32 — number of voxels in the x dimension",
       "storeAs": "width",
-      "valueType": "uint32"
+      "valueType": "int32"
     },
     {
       "type": "field",
@@ -66,91 +64,155 @@
       "offset": 8,
       "length": 4,
       "color": "#95E1D3",
-      "opacity": 0.3,
-      "description": "Image height",
+      "opacity": 0.5,
+      "description": "height: big-endian int32 — number of voxels in the y dimension",
       "storeAs": "height",
-      "valueType": "uint32"
+      "valueType": "int32"
     },
     {
       "type": "field",
-      "name": "Depth",
+      "name": "Depth (Slices)",
       "offset": 12,
       "length": 4,
       "color": "#FFE66D",
-      "opacity": 0.3,
-      "description": "Image depth",
+      "opacity": 0.5,
+      "description": "depth: big-endian int32 — number of slices in the z dimension",
       "storeAs": "depth",
-      "valueType": "uint32"
+      "valueType": "int32"
+    },
+    {
+      "type": "field",
+      "name": "N Frames",
+      "offset": 16,
+      "length": 4,
+      "color": "#A8DADC",
+      "opacity": 0.4,
+      "description": "nframes: big-endian int32 — number of temporal frames (1 for structural, >1 for fMRI)",
+      "storeAs": "nframes",
+      "valueType": "int32"
+    },
+    {
+      "type": "field",
+      "name": "Data Type",
+      "offset": 20,
+      "length": 4,
+      "color": "#F7DC6F",
+      "opacity": 0.5,
+      "description": "type: big-endian int32 voxel type code: 0=UCHAR(1B), 1=INT(4B), 3=FLOAT(4B), 4=SHORT(2B)",
+      "storeAs": "dataType",
+      "valueType": "int32",
+      "valueMap": {
+        "0": "UCHAR (1 byte)",
+        "1": "INT (4 bytes)",
+        "3": "FLOAT (4 bytes)",
+        "4": "SHORT (2 bytes)"
+      }
     },
     {
       "type": "metadata",
       "name": "Width",
       "variable": "width",
-      "description": "Width"
+      "description": "Volume width in voxels"
     },
     {
       "type": "metadata",
       "name": "Height",
       "variable": "height",
-      "description": "Height"
+      "description": "Volume height in voxels"
     },
     {
       "type": "metadata",
-      "name": "Slices",
-      "variable": "slices",
-      "description": "Slices"
+      "name": "Depth",
+      "variable": "depth",
+      "description": "Number of slices"
     },
     {
       "type": "metadata",
-      "name": "Bit Depth",
-      "variable": "bitDepth",
-      "description": "Bit Depth"
-    },
-    {
-      "type": "metadata",
-      "name": "Total Pixels",
+      "name": "Total Voxels",
       "variable": "totalPixels",
-      "description": "Width x Height"
+      "description": "Computed: width × height × depth"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "MGH version is 1",
+      "expression": "mghVersion == 1",
+      "severity": "warning",
+      "message": "MGH version at offset 0 (big-endian) should equal 1"
+    },
+    {
+      "name": "Valid data type",
+      "expression": "dataType == 0 || dataType == 1 || dataType == 3 || dataType == 4",
+      "severity": "error",
+      "message": "Data type must be 0 (UCHAR), 1 (INT), 3 (FLOAT), or 4 (SHORT)"
+    }
+  ],
+  "inspector": {
+    "groups": [
+      {
+        "name": "Format Identity",
+        "fields": ["MGH Version"]
+      },
+      {
+        "name": "Volume Geometry",
+        "fields": ["Width", "Height", "Depth (Slices)", "N Frames"]
+      },
+      {
+        "name": "Data Encoding",
+        "fields": ["Data Type"]
+      },
+      {
+        "name": "Computed",
+        "fields": ["Total Voxels"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "MGH Header Summary",
+      "fields": ["mghVersion", "width", "height", "depth", "nframes", "dataType"]
     }
   ],
   "software": [
-    "Common file viewers",
-    "Specialized software"
+    "FreeSurfer",
+    "nibabel (Python)",
+    "3D Slicer (FreeSurfer extension)",
+    "mri_convert (FreeSurfer tool)"
   ],
   "formatRelationships": {
-    "category": "Medical",
-    "extensions": [
-      ".mgh",
-      ".mgz"
-    ]
+    "native_to": "FreeSurfer",
+    "compressed_variant": "MGZ (gzip-compressed MGH)",
+    "related": ["NII", "NIFTI2"]
   },
   "MimeTypes": [
     "application/octet-stream"
   ],
   "Software": [
-    "Hex Editor",
-    "File Viewer",
-    "Archive Manager"
+    "FreeSurfer (recon-all pipeline)",
+    "nibabel Python library",
+    "3D Slicer with FreeSurfer extension",
+    "mri_convert command-line tool"
   ],
   "UseCases": [
-    "File storage",
-    "Data exchange",
-    "Archive"
+    "FreeSurfer cortical surface reconstruction outputs",
+    "Brain parcellation atlas volumes",
+    "fMRI data in FreeSurfer native space",
+    "Morphometry and thickness maps"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 44,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 9,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
+    "CompletenessScore": 62,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 10,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
     "PriorityFormat": false,
-    "AutoRefined": true
+    "AutoRefined": false
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32LE": "Read medical header",
-    "extractASCIIString": "Read patient",
-    "computeFromVariables(width * height, totalPixels)": "Calculate total pixels"
+  "TechnicalDetails": {
+    "Endianness": "Big-endian for all header fields",
+    "CompressedVariant": ".mgz is gzip-compressed; same header after decompression",
+    "DataLayout": "Voxel data follows a fixed-size header (typically 284 bytes total with footer)",
+    "RAS": "Rotation/scale matrix in header footer encodes voxel-to-RAS-coordinate transform"
   },
   "forensic": {
     "category": "medical",
@@ -158,11 +220,17 @@
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "MGH/MGZ FreeSurfer medical image format",
+    "analysisContext": "MGH files use big-endian encoding for all header fields. The weak magic (version=1) means context — file extension and dimension sanity — are important for confirmation. MGZ is identical but gzip-compressed; decompress first. The data type field at offset 20 determines bytes-per-voxel. The RAS-to-voxel transform is in the header footer at offset ~28.",
     "suggestedInspections": [
-      "Verify MGH/MGZ Medical Image preamble, magic bytes, and transfer syntax",
-      "Check image matrix dimensions, voxel spacing, and data type",
-      "Inspect patient/study metadata tags and private sequences"
+      "Read version (BE int32) at offset 0: should be 1",
+      "Read width/height/depth/nframes at offsets 4/8/12/16 as BE int32",
+      "Read data type at offset 20: 0=uchar, 1=int, 3=float, 4=short",
+      "For MGZ: decompress gzip stream before parsing",
+      "Check RAS transform matrix in header footer for coordinate space"
     ]
+  },
+  "functions": {
+    "readUInt32BE": "Read all big-endian header int32 fields",
+    "computeFromVariables(width * height, totalPixels)": "Calculate total voxels"
   }
 }

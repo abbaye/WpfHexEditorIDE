@@ -1,40 +1,40 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "BUFR Weather Data",
-  "version": "1.12",
+  "version": "1.13",
   "extensions": [
     ".bufr",
     ".bfr"
   ],
-  "description": "Binary Universal Form for Representation of meteorological data",
+  "description": "Binary Universal Form for the Representation of meteorological data (BUFR) is a WMO standard binary format for encoding observational weather data. A BUFR message begins with the ASCII magic 'BUFR' (0x42554652) at offset 0, followed by a 3-byte big-endian total message length and a 1-byte edition number. The message is divided into numbered sections: Section 0 (indicator), Section 1 (identification with originating center, date/time, data category), Section 2 (optional local data), Section 3 (data descriptor list using F-X-Y descriptors), Section 4 (binary data encoded per the descriptor expansion), and Section 5 ('7777' end marker). BUFR edition 3 and 4 are current.",
   "category": "Science",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
-  "references": {
-    "specifications": [
-      "BUFR Weather Data Format"
-    ],
-    "WebLinks": [
-      "https://en.wikipedia.org/wiki/BUFR"
-    ]
-  },
+  "references": [
+    "WMO Manual on Codes Volume I.2 - BUFR FM 94",
+    "WMO BUFR Edition 4 Technical Document"
+  ],
+  "WebLinks": [
+    "https://en.wikipedia.org/wiki/BUFR",
+    "https://community.wmo.int/activity-areas/wmo-codes/manual-codes/bufr-edition-4"
+  ],
   "detection": {
     "signature": "42554652",
     "offset": 0,
     "required": true,
+    "weight": 1.0,
     "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024
+      "minFileSize": 8,
+      "maxSignatureOffset": 0
     }
   },
   "variables": {
     "currentOffset": 0,
-    "dimensions": 0,
-    "dataType": "",
-    "arrayCount": 0,
+    "totalLength": 0,
+    "edition": 0,
     "bufrMagic": "",
-    "totalLength": "",
-    "edition": 0
+    "masterTable": 0,
+    "originatingCenter": 0
   },
   "blocks": [
     {
@@ -43,89 +43,148 @@
       "offset": 0,
       "length": 4,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "BUFR format signature",
+      "opacity": 0.85,
+      "description": "ASCII magic 'BUFR' (42 55 46 52) at offset 0 — mandatory first 4 bytes of every BUFR message per WMO FM 94",
       "storeAs": "bufrMagic",
-      "valueType": "uint32"
+      "valueType": "ascii"
     },
     {
       "type": "field",
-      "name": "Total Length",
+      "name": "Total Message Length",
       "offset": 4,
       "length": 3,
       "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "Message length in bytes",
+      "opacity": 0.5,
+      "description": "3-byte big-endian unsigned integer giving the total BUFR message length in bytes including all sections and the 'BUFR' identifier",
       "storeAs": "totalLength",
-      "valueType": "uint32"
+      "valueType": "uint24be"
     },
     {
       "type": "field",
-      "name": "Edition",
+      "name": "Edition Number",
       "offset": 7,
       "length": 1,
       "color": "#95E1D3",
-      "opacity": 0.3,
-      "description": "BUFR edition number",
+      "opacity": 0.4,
+      "description": "BUFR edition number: 3 = BUFR edition 3 (older), 4 = BUFR edition 4 (current WMO standard); determines Section 1 layout",
       "storeAs": "edition",
       "valueType": "uint8"
     },
     {
-      "type": "metadata",
-      "name": "Dimensions",
-      "variable": "dimensions",
-      "description": "Dimensions"
+      "type": "field",
+      "name": "Section 1 Length",
+      "offset": 8,
+      "length": 3,
+      "color": "#FFE66D",
+      "opacity": 0.35,
+      "description": "3-byte big-endian length of Section 1 (identification section) in bytes; Section 1 contains originating center, subcenter, master table, data category, date, and time",
+      "storeAs": "section1Length",
+      "valueType": "uint24be"
     },
     {
-      "type": "metadata",
-      "name": "Data Type",
-      "variable": "dataType",
-      "description": "Data Type"
+      "type": "field",
+      "name": "Master Table",
+      "offset": 11,
+      "length": 1,
+      "color": "#A8E6CF",
+      "opacity": 0.3,
+      "description": "Master table number used for decoding: 0 = WMO master table (meteorology), other values are local or special use tables",
+      "storeAs": "masterTable",
+      "valueType": "uint8"
     },
     {
-      "type": "metadata",
-      "name": "Array Count",
-      "variable": "arrayCount",
-      "description": "Array Count"
+      "type": "field",
+      "name": "Originating Center",
+      "offset": 12,
+      "length": 2,
+      "color": "#C7B8EA",
+      "opacity": 0.3,
+      "description": "2-byte big-endian WMO originating/generating center number identifying the data producer (e.g. 98 = ECMWF, 7 = NCEP/US)",
+      "storeAs": "originatingCenter",
+      "valueType": "uint16be"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "ValidBUFRMagic",
+      "description": "Bytes 0-3 must be ASCII 'BUFR' (42 55 46 52) — the WMO mandatory BUFR message identifier; any other value is not a valid BUFR message",
+      "offset": 0,
+      "length": 4,
+      "expectedHex": "42554652",
+      "severity": "error"
+    },
+    {
+      "name": "ValidEditionNumber",
+      "description": "Byte 7 must be 3 or 4 (BUFR edition 3 or 4); editions 1 and 2 are obsolete; edition 5+ is not yet defined",
+      "offset": 7,
+      "length": 1,
+      "validValues": ["03", "04"],
+      "severity": "warning"
+    }
+  ],
+  "inspector": {
+    "groups": [
+      {
+        "name": "Section 0 — Indicator",
+        "fields": [
+          { "label": "Magic 'BUFR'",     "offset": 0, "length": 4, "format": "ascii" },
+          { "label": "Total Length",      "offset": 4, "length": 3, "format": "uint24be" },
+          { "label": "Edition",           "offset": 7, "length": 1, "format": "uint8" }
+        ]
+      },
+      {
+        "name": "Section 1 — Identification",
+        "fields": [
+          { "label": "Section 1 Length",      "offset": 8,  "length": 3, "format": "uint24be" },
+          { "label": "Master Table",           "offset": 11, "length": 1, "format": "uint8" },
+          { "label": "Originating Center",     "offset": 12, "length": 2, "format": "uint16be" }
+        ]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "BUFR Message Header",
+      "fields": ["bufrMagic", "totalLength", "edition", "masterTable", "originatingCenter"]
     }
   ],
   "software": [
-    "Common file viewers",
-    "Specialized software"
+    "ecCodes (ECMWF)",
+    "BUFR2NETCDF",
+    "MetView",
+    "Python eccodes",
+    "BUFRDC"
   ],
   "formatRelationships": {
-    "category": "Science",
-    "extensions": [
-      ".bufr",
-      ".bfr"
-    ]
+    "wmo_standard": true,
+    "related_to": "CREX (ASCII version of BUFR)",
+    "editions": ["Edition 3", "Edition 4"],
+    "producer": "WMO FM 94"
   },
   "MimeTypes": [
+    "application/x-bufr",
     "application/octet-stream"
   ],
-  "Software": [
-    "Hex Editor",
-    "File Viewer",
-    "Archive Manager"
-  ],
   "UseCases": [
-    "File storage",
-    "Data exchange",
-    "Archive"
+    "WMO weather observation exchange",
+    "NWP model input data",
+    "Radiosonde and surface station data",
+    "Satellite and aircraft observations"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 38,
-    "DocumentationLevel": "standard",
+    "CompletenessScore": 62,
+    "DocumentationLevel": "detailed",
     "BlocksDefined": 6,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
     "PriorityFormat": false,
-    "AutoRefined": true
+    "AutoRefined": false
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32BE": "Read scientific header",
-    "multiply": "Calculate dimensions"
+  "TechnicalDetails": {
+    "endianness": "big-endian",
+    "sectionCount": 6,
+    "endMarker": "37373737 (ASCII '7777')",
+    "descriptorFormat": "F-X-Y (2-6-8 bits)"
   },
   "forensic": {
     "category": "science",
@@ -133,11 +192,14 @@
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Binary Universal Form for Representation of meteorological data",
+    "analysisContext": "BUFR is the WMO standard binary format for meteorological observation data. Decoding requires the BUFR master tables and an F-X-Y descriptor expansion engine. ecCodes from ECMWF is the reference decoder.",
     "suggestedInspections": [
-      "Validate BUFR Weather Data file header, data type, and dimension fields",
-      "Check axis labels, units, and calibration metadata",
-      "Inspect data array boundaries and fill/missing value markers"
+      "Verify magic 'BUFR' at bytes 0-3",
+      "Read total message length (3-byte BE int at offset 4) and validate against file size",
+      "Read edition number at byte 7 to select the correct Section 1 layout",
+      "Section 1 for edition 4: decode originating center (2 bytes), subcenter (2), master table (1), data category (1), international subcategory (1), local subcategory (1), master table version (1), local table version (1), reference time (7 bytes)",
+      "Check Section 3 for the list of BUFR F-X-Y descriptors encoding the data types",
+      "Verify end marker '7777' (37 37 37 37) at the final 4 bytes of the message"
     ]
   }
 }

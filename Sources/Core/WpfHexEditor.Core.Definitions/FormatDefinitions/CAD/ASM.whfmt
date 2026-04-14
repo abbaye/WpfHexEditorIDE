@@ -1,7 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "Pro/ENGINEER Assembly",
-  "version": "2.4",
+  "version": "2.32",
   "extensions": [
     ".asm"
   ],

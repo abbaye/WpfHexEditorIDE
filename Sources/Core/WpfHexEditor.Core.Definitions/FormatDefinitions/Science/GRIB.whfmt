@@ -1,40 +1,40 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "GRIB Weather Data",
-  "version": "1.12",
+  "version": "1.13",
   "extensions": [
     ".grib",
     ".grb"
   ],
-  "description": "Gridded Binary meteorological data format",
+  "description": "GRIdded Binary (GRIB) is a WMO standard binary format for meteorological gridded data. Each GRIB edition 1 message starts with the 4-byte ASCII magic 'GRIB' (0x47524942), followed by a 3-byte total message length and a 1-byte edition number (1). The message is organized into sections: Section 0 (indicator), Section 1 (product definition with parameter table, level type, date/time), Section 2 (optional grid definition), Section 3 (optional bitmap), Section 4 (binary data), and Section 5 ('7777' end marker). GRIB edition 1 uses packed integer data with scale factor and reference value encoding. GRIB2 uses a different structure with discipline and category.",
   "category": "Science",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
-  "references": {
-    "specifications": [
-      "GRIB Weather Data Format"
-    ],
-    "WebLinks": [
-      "https://en.wikipedia.org/wiki/GRIB"
-    ]
-  },
+  "references": [
+    "WMO Manual on Codes Volume I.2 - GRIB FM 92 Edition 1",
+    "NCEP GRIB1 Edition 1 Documentation"
+  ],
+  "WebLinks": [
+    "https://en.wikipedia.org/wiki/GRIB",
+    "https://www.nco.ncep.noaa.gov/pmb/docs/grib2/grib2_doc/"
+  ],
   "detection": {
     "signature": "47524942",
     "offset": 0,
     "required": true,
+    "weight": 1.0,
     "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024
+      "minFileSize": 8,
+      "maxSignatureOffset": 0
     }
   },
   "variables": {
     "currentOffset": 0,
-    "dimensions": 0,
-    "dataType": "",
-    "arrayCount": 0,
+    "totalLength": 0,
+    "edition": 0,
     "gribMagic": "",
-    "totalLength": "",
-    "edition": 0
+    "parameterTable": 0,
+    "parameterNumber": 0
   },
   "blocks": [
     {
@@ -43,89 +43,148 @@
       "offset": 0,
       "length": 4,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "GRIB format signature",
+      "opacity": 0.85,
+      "description": "ASCII magic 'GRIB' (47 52 49 42) at offset 0 — mandatory first 4 bytes of every GRIB edition 1 message per WMO FM 92",
       "storeAs": "gribMagic",
-      "valueType": "uint32"
+      "valueType": "ascii"
     },
     {
       "type": "field",
-      "name": "Total Length",
+      "name": "Total Message Length",
       "offset": 4,
       "length": 3,
       "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "Message length in bytes",
+      "opacity": 0.5,
+      "description": "3-byte big-endian unsigned integer for the total GRIB message size in bytes including all sections and the 'GRIB' identifier and '7777' terminator",
       "storeAs": "totalLength",
-      "valueType": "uint32"
+      "valueType": "uint24be"
     },
     {
       "type": "field",
-      "name": "Edition",
+      "name": "Edition Number",
       "offset": 7,
       "length": 1,
       "color": "#95E1D3",
-      "opacity": 0.3,
-      "description": "GRIB edition number (1)",
+      "opacity": 0.4,
+      "description": "GRIB edition number: 1 = GRIB edition 1 (traditional format); edition 2 uses a different structure with discipline field instead of parameter table",
       "storeAs": "edition",
       "valueType": "uint8"
     },
     {
-      "type": "metadata",
-      "name": "Dimensions",
-      "variable": "dimensions",
-      "description": "Dimensions"
+      "type": "field",
+      "name": "Section 1 Length",
+      "offset": 8,
+      "length": 3,
+      "color": "#FFE66D",
+      "opacity": 0.35,
+      "description": "3-byte big-endian length of Section 1 (product definition section) which defines parameter table, center, process ID, grid, flags, level, and reference time",
+      "storeAs": "section1Length",
+      "valueType": "uint24be"
     },
     {
-      "type": "metadata",
-      "name": "Data Type",
-      "variable": "dataType",
-      "description": "Data Type"
+      "type": "field",
+      "name": "Parameter Table Version",
+      "offset": 11,
+      "length": 1,
+      "color": "#A8E6CF",
+      "opacity": 0.3,
+      "description": "Parameter table version number in Section 1; determines how the parameter number byte is interpreted for the meteorological variable name",
+      "storeAs": "parameterTable",
+      "valueType": "uint8"
     },
     {
-      "type": "metadata",
-      "name": "Array Count",
-      "variable": "arrayCount",
-      "description": "Array Count"
+      "type": "field",
+      "name": "Originating Center",
+      "offset": 12,
+      "length": 1,
+      "color": "#C7B8EA",
+      "opacity": 0.3,
+      "description": "WMO originating/generating center code (1 byte in GRIB1 Section 1): 7 = NCEP/US, 98 = ECMWF, 34 = JMA, etc.",
+      "storeAs": "originatingCenter",
+      "valueType": "uint8"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "ValidGRIBMagic",
+      "description": "Bytes 0-3 must be ASCII 'GRIB' (47 52 49 42) — the WMO mandatory message identifier; any other bytes indicate this is not a GRIB edition 1 message",
+      "offset": 0,
+      "length": 4,
+      "expectedHex": "47524942",
+      "severity": "error"
+    },
+    {
+      "name": "GRIBEditionIs1",
+      "description": "Byte 7 should be 0x01 for GRIB edition 1; a value of 0x02 means this is a GRIB2 message requiring the GRIB2 definition instead",
+      "offset": 7,
+      "length": 1,
+      "expectedValue": 1,
+      "severity": "warning"
+    }
+  ],
+  "inspector": {
+    "groups": [
+      {
+        "name": "Section 0 — Indicator",
+        "fields": [
+          { "label": "Magic 'GRIB'",   "offset": 0, "length": 4, "format": "ascii" },
+          { "label": "Total Length",    "offset": 4, "length": 3, "format": "uint24be" },
+          { "label": "Edition",         "offset": 7, "length": 1, "format": "uint8" }
+        ]
+      },
+      {
+        "name": "Section 1 — Product Definition",
+        "fields": [
+          { "label": "Section 1 Length",   "offset": 8,  "length": 3, "format": "uint24be" },
+          { "label": "Parameter Table",     "offset": 11, "length": 1, "format": "uint8" },
+          { "label": "Originating Center",  "offset": 12, "length": 1, "format": "uint8" }
+        ]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "GRIB1 Message Header",
+      "fields": ["gribMagic", "totalLength", "edition", "parameterTable", "originatingCenter"]
     }
   ],
   "software": [
-    "Common file viewers",
-    "Specialized software"
+    "ecCodes (ECMWF)",
+    "wgrib / wgrib2",
+    "GRIB-API",
+    "Python cfgrib / eccodes",
+    "CDO (Climate Data Operators)"
   ],
   "formatRelationships": {
-    "category": "Science",
-    "extensions": [
-      ".grib",
-      ".grb"
-    ]
+    "wmo_standard": true,
+    "successor": "GRIB2",
+    "editions": ["Edition 1", "Edition 2"],
+    "related": "BUFR"
   },
   "MimeTypes": [
+    "application/x-grib",
     "application/octet-stream"
   ],
-  "Software": [
-    "Hex Editor",
-    "File Viewer",
-    "Archive Manager"
-  ],
   "UseCases": [
-    "File storage",
-    "Data exchange",
-    "Archive"
+    "NWP model output (e.g. GFS, ECMWF ENS)",
+    "Weather forecast data distribution",
+    "Reanalysis datasets (ERA5, NCEP/NCAR)",
+    "Climate model gridded output"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 38,
-    "DocumentationLevel": "standard",
+    "CompletenessScore": 62,
+    "DocumentationLevel": "detailed",
     "BlocksDefined": 6,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
     "PriorityFormat": false,
-    "AutoRefined": true
+    "AutoRefined": false
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32BE": "Read scientific header",
-    "multiply": "Calculate dimensions"
+  "TechnicalDetails": {
+    "endianness": "big-endian",
+    "encoding": "packed integer with scale factor and reference value",
+    "endMarker": "37373737 (ASCII '7777')",
+    "sectionCount": 6
   },
   "forensic": {
     "category": "science",
@@ -133,11 +192,15 @@
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Gridded Binary meteorological data format",
+    "analysisContext": "GRIB edition 1 is the legacy WMO gridded binary format still widely used for NWP output. Decoding requires GRIB parameter tables for the originating center. ecCodes is the standard decoder.",
     "suggestedInspections": [
-      "Validate GRIB Weather Data file header, data type, and dimension fields",
-      "Check axis labels, units, and calibration metadata",
-      "Inspect data array boundaries and fill/missing value markers"
+      "Verify magic 'GRIB' at bytes 0-3",
+      "Read total message length (3-byte BE int at offset 4) and validate against file size",
+      "Check edition byte 7: 0x01 = GRIB1, 0x02 = GRIB2 (use GRIB2 definition for edition 2)",
+      "In Section 1: read parameter table version and parameter number to identify the meteorological variable",
+      "Read level type and level value from Section 1 for the vertical coordinate",
+      "Check Section 1 reference time bytes for the forecast base time (century, year, month, day, hour, minute)",
+      "Verify end marker '7777' at the last 4 bytes of the message"
     ]
   }
 }

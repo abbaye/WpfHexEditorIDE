@@ -1,128 +1,188 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Xvid Video",
-  "version": "1.14",
+  "version": "1.15",
   "extensions": [
-    ".xvid"
+    ".xvid",
+    ".avi"
   ],
-  "description": "Xvid MPEG-4 video codec, typically stored in AVI container",
+  "description": "Xvid is an open-source MPEG-4 Part 2 Advanced Simple Profile (ASP) video codec — the open-source counterpart to DivX. Xvid-encoded video is stored in the RIFF/AVI container, beginning with 'RIFF' (0x52 0x49 0x46 0x46) + file size (uint32 LE) + 'AVI ' form type. Xvid is identified by the FourCC 'XVID' (or 'xvid', 'XviD') in the BITMAPINFOHEADER.biCompression field within the AVI stream headers. Xvid and DivX are structurally identical at the container level — only the codec FourCC differs. Xvid was developed as a reverse-engineered open-source clone of DivX 4, released in 2001 after DivX went closed-source. Both implement ISO/IEC 14496-2 MPEG-4 ASP and are cross-compatible at the bitstream level.",
   "category": "Video",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "ISO/IEC 14496-2 - MPEG-4 Part 2 Visual",
-      "Xvid Advanced Simple Profile Implementation",
-      "Open Source MPEG-4 ASP Codec"
+      "ISO/IEC 14496-2 — MPEG-4 Part 2 Visual (ASP)",
+      "Microsoft AVI RIFF File Reference",
+      "Xvid Open Source MPEG-4 ASP Codec"
     ],
     "WebLinks": [
       "https://en.wikipedia.org/wiki/Xvid",
       "https://en.wikipedia.org/wiki/MPEG-4_Part_2",
-      "https://www.videoproc.com/resource/xvid-video-codec.htm"
+      "https://labs.xvid.com/source/"
     ]
   },
   "detection": {
-    "signature": "52494646",
-    "offset": 0,
+    "signatures": [
+      { "value": "52494646", "offset": 0, "label": "'RIFF' AVI container signature", "weight": 0.5 },
+      { "value": "41564920", "offset": 8, "label": "'AVI ' form type confirms AVI container", "weight": 0.8 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.5,
     "required": true,
+    "Strength": "Medium",
+    "EntropyHint": { "min": 4.5, "max": 7.5 },
     "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024
+      "minFileSize": 12,
+      "note": "Xvid uses the RIFF/AVI container — identical to DivX, MPEG-4, and other AVI video. Codec FourCC 'XVID' in the AVI strf chunk distinguishes Xvid from DivX ('DIVX'/'DX50') and other MPEG-4 codecs."
     }
   },
   "variables": {
-    "width": 0,
-    "height": 0,
-    "frameRate": 0,
-    "duration": 0,
-    "riffHeader": 0,
-    "totalPixels": 0
+    "riffSignature": "",
+    "riffFileSize": 0,
+    "aviFormType": ""
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "RIFF Header",
+      "name": "RIFF Signature",
       "offset": 0,
       "length": 4,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "RIFF container header for Xvid",
-      "storeAs": "riffHeader",
-      "valueType": "uint32"
+      "opacity": 0.45,
+      "description": "RIFF container signature 'RIFF' (0x52 0x49 0x46 0x46). Resource Interchange File Format — the container used by AVI, WAV, ANI, and other Microsoft multimedia formats. Xvid video uses the AVI RIFF variant, confirmed by 'AVI ' form type at offset 8.",
+      "storeAs": "riffSignature",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "RIFF File Size",
+      "offset": 4,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.30,
+      "description": "File size minus 8 bytes (little-endian uint32, excludes the 8-byte RIFF/size header). Standard RIFF AVI limit: ~4 GB. OpenDML AVI 2.0 extends beyond 4 GB.",
+      "storeAs": "riffFileSize",
+      "valueType": "uint32",
+      "endianness": "little"
+    },
+    {
+      "type": "field",
+      "name": "AVI Form Type",
+      "offset": 8,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.35,
+      "description": "RIFF form type 'AVI ' (0x41 0x56 0x49 0x20, note trailing space). Confirms this RIFF file is an AVI container. The Xvid codec FourCC ('XVID', 'xvid', or 'XviD') appears inside the AVI strl/strf chunk.",
+      "storeAs": "aviFormType",
+      "valueType": "ascii",
+      "valueMap": {
+        "AVI ": "AVI container (Audio Video Interleaved)",
+        "AVIX": "OpenDML AVI extension (>4 GB)"
+      }
     },
     {
       "type": "metadata",
-      "name": "Resolution",
-      "variable": "width",
-      "description": "Resolution"
+      "name": "RIFF Signature",
+      "variable": "riffSignature",
+      "description": "RIFF container magic"
     },
     {
       "type": "metadata",
-      "name": "Frame Rate",
-      "variable": "frameRate",
-      "description": "Frame Rate"
-    },
-    {
-      "type": "metadata",
-      "name": "Total Pixels",
-      "variable": "totalPixels",
-      "description": "Width x Height"
+      "name": "AVI Form Type",
+      "variable": "aviFormType",
+      "description": "'AVI ' confirms AVI container"
     }
   ],
-  "software": [
-    "XviD codec",
-    "VLC",
-    "Media players"
+  "assertions": [
+    {
+      "name": "RIFF signature valid",
+      "expression": "riffSignature == 'RIFF'",
+      "severity": "error",
+      "message": "RIFF signature must be 'RIFF' — not a valid AVI/Xvid file"
+    },
+    {
+      "name": "AVI form type valid",
+      "expression": "aviFormType == 'AVI '",
+      "severity": "warning",
+      "message": "RIFF form type is not 'AVI ' — may be WAV or other RIFF format"
+    }
   ],
-  "formatRelationships": {
-    "category": "Video",
-    "extensions": [
-      ".xvid"
+  "navigation": {
+    "bookmarks": [
+      { "name": "RIFF Header", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
+      { "name": "LIST hdrl (AVI Header)", "offset": 12, "icon": "\uE8A5", "color": "#4ECDC4" }
     ]
   },
-  "MimeTypes": [
-    "video/xvid"
-  ],
-  "Software": [
-    "VLC",
-    "Media Player Classic",
-    "HandBrake",
-    "FFmpeg",
-    "MPC-HC"
-  ],
-  "UseCases": [
-    "Video playback",
-    "Video editing",
-    "Encoding",
-    "Streaming"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 4,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "aviFormType",
+    "primaryField": "riffFileSize",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "RIFF/AVI Header",
+        "icon": "\uE71B",
+        "fields": ["riffSignature", "riffFileSize", "aviFormType"]
+      }
+    ]
   },
-  "TechnicalDetails": {
-    "VideoFormat": true
-  },
-  "functions": {
-    "readUInt32LE": "Read video header",
-    "computeFromVariables(width * height, totalPixels)": "Calculate total pixels"
-  },
+  "exportTemplates": [
+    {
+      "name": "RIFF/AVI Header (JSON)",
+      "format": "json",
+      "fields": ["riffSignature", "riffFileSize", "aviFormType"]
+    }
+  ],
   "forensic": {
     "category": "video",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Xvid MPEG-4 video codec, typically stored in AVI container",
+    "analysisContext": "Xvid in RIFF/AVI. Same container as DivX. Parse avih chunk (~offset 20): usPerFrame, totalFrames, width, height. strf chunk in video strl: BITMAPINFOHEADER.biCompression = 'XVID' (58564944) or 'xvid' (78766964) or 'XviD' (58766944). Xvid ASP is bitstream-compatible with DivX — decoders handle both FourCCs interchangeably. MPEG-4 ASP bitstream: VO/VOL/VOP headers. VOL (Video Object Layer) contains width, height, aspect_ratio, time_increment_resolution.",
     "suggestedInspections": [
-      "Validate Xvid Video container magic, box/atom sizes, and codec FourCC",
-      "Check track/stream layout, frame index, and timing fields",
-      "Inspect audio-video sync, keyframe distribution, and metadata"
+      "Verify 'RIFF' at offset 0 and 'AVI ' at offset 8",
+      "Locate strf chunk in video stream: check biCompression for 'XVID' / 'xvid'",
+      "avih chunk: usPerFrame → frame rate (1000000/usPerFrame = fps), totalFrames",
+      "idx1 chunk at EOF: frame index for random access"
     ]
+  },
+  "software": [
+    "Xvid codec (open source)",
+    "VLC media player",
+    "Media Player Classic (MPC-HC)",
+    "FFmpeg (avi + libxvid)",
+    "HandBrake"
+  ],
+  "formatRelationships": {
+    "category": "Video",
+    "extensions": [".xvid", ".avi"],
+    "relatedFormats": ["DIVX", "AVI", "MPEG"],
+    "note": "Xvid and DivX share the RIFF/AVI container and MPEG-4 ASP bitstream — distinguishable only by codec FourCC in AVI stream headers. Xvid is the open-source implementation; DivX is the commercial one. Both are superseded by H.264 for modern video distribution."
+  },
+  "MimeTypes": [
+    "video/xvid",
+    "video/x-msvideo"
+  ],
+  "UseCases": [
+    "P2P video sharing (early 2000s)",
+    "DVD ripping to Xvid AVI",
+    "Legacy HTPC video libraries",
+    "Open-source MPEG-4 encoding"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 65,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 5,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "VideoFormat": true,
+    "ContainerFormat": "RIFF/AVI",
+    "VideoCodec": "MPEG-4 Part 2 ASP (FourCC: XVID/xvid/XviD)",
+    "Endianness": "little-endian (all RIFF fields)"
   }
 }

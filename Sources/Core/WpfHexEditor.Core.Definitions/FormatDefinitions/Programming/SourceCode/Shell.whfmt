@@ -1,7 +1,7 @@
 ﻿{
   "diffMode": "text",
   "formatName": "Shell Script",
-  "version": "2.2",
+  "version": "2.13",
   "extensions": [
     ".sh",
     ".bash",

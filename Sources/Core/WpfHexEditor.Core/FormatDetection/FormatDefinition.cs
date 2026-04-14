@@ -254,6 +254,7 @@ namespace WpfHexEditor.Core.FormatDetection
         /// Strength of the signature (for confidence scoring)
         /// Default: Medium for backward compatibility
         /// </summary>
+        [JsonConverter(typeof(SignatureStrengthConverter))]
         public SignatureStrength Strength { get; set; } = SignatureStrength.Medium;
 
         /// <summary>
@@ -356,6 +357,35 @@ namespace WpfHexEditor.Core.FormatDetection
     }
 
     /// <summary>
+    /// Case-insensitive JSON converter for <see cref="SignatureStrength"/>.
+    /// Accepts string names ("strong", "Strong", "STRONG") and integer values (80).
+    /// Falls back to <see cref="SignatureStrength.Medium"/> for unknown values.
+    /// </summary>
+    internal sealed class SignatureStrengthConverter : JsonConverter<SignatureStrength>
+    {
+        public override SignatureStrength Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            if (reader.TokenType == JsonTokenType.Number)
+            {
+                if (reader.TryGetInt32(out int intVal) && Enum.IsDefined(typeof(SignatureStrength), intVal))
+                    return (SignatureStrength)intVal;
+                return SignatureStrength.Medium;
+            }
+            if (reader.TokenType == JsonTokenType.String)
+            {
+                var s = reader.GetString();
+                if (Enum.TryParse<SignatureStrength>(s, ignoreCase: true, out var result))
+                    return result;
+                return SignatureStrength.Medium; // unknown value → safe default
+            }
+            return SignatureStrength.Medium;
+        }
+
+        public override void Write(Utf8JsonWriter writer, SignatureStrength value, JsonSerializerOptions options)
+            => writer.WriteStringValue(value.ToString());
+    }
+
+    /// <summary>
     /// JSON converter that handles ConditionDefinition as either a JSON object or a string expression.
     /// String conditions like "(generalPurposeFlags &amp; 1) == 1" are parsed into Field/Operator/Value
     /// when possible, or stored as an expression string for future evaluation.
@@ -398,7 +428,19 @@ namespace WpfHexEditor.Core.FormatDetection
                                 condition.Operator = reader.GetString();
                                 break;
                             case "value":
-                                condition.Value = reader.GetString();
+                                if (reader.TokenType == JsonTokenType.Number)
+                                {
+                                    if (reader.TryGetInt64(out long lv))
+                                        condition.Value = lv.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                                    else if (reader.TryGetDouble(out double dv))
+                                        condition.Value = dv.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                                    else
+                                        condition.Value = reader.GetDecimal().ToString(System.Globalization.CultureInfo.InvariantCulture);
+                                }
+                                else
+                                {
+                                    condition.Value = reader.GetString();
+                                }
                                 break;
                             case "length":
                                 condition.Length = reader.GetInt32();
@@ -832,9 +874,10 @@ namespace WpfHexEditor.Core.FormatDetection
         public string ColorSpace { get; set; }
 
         /// <summary>
-        /// Sample rate (for audio)
+        /// Sample rate (for audio). Stored as string to accommodate descriptive values
+        /// like "8000 Hz (AMR-NB) / 16000 Hz (AMR-WB)" as well as plain integers.
         /// </summary>
-        public int? SampleRate { get; set; }
+        public string SampleRate { get; set; }
 
         /// <summary>
         /// Container format (for video/audio)

@@ -1,20 +1,20 @@
-﻿{
+{
   "diffMode": "binary",
-  "formatName": "VP9 Video",
-  "version": "1.14",
+  "formatName": "VP9 Video (IVF)",
+  "version": "1.15",
   "extensions": [
     ".vp9",
     ".ivf"
   ],
-  "description": "VP9 video codec, successor to VP8 developed by Google",
+  "description": "VP9 is an open, royalty-free video codec developed by Google as the successor to VP8, released in 2013. VP9 offers approximately 50% better compression than VP8 at equivalent quality. Like VP8 and AV1, VP9 elementary streams use the IVF (Indeo Video Format) container for testing: 'DKIF' signature + FourCC 'VP90'. In production, VP9 is carried in WebM containers. VP9 bitstream frames have a frame tag in the first byte(s): for non-superframes, byte 0 has bit 2 = show_frame, bit 1 = error_resilient, bit 0 = frame_type (0=keyframe). Profile 0 (8-bit 4:2:0) is the common web profile. VP9 is used by YouTube for 1080p+ streaming and supports up to 4K/8K at Profile 2/3 (10/12-bit HDR). Superseded by AV1 for new deployments.",
   "category": "Video",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "VP9 Bitstream Specification",
-      "WebM VP9 Video Codec",
-      "Google VP9 Open Source Codec"
+      "VP9 Bitstream Specification — Google/WebM Project",
+      "WebM VP9 Video Codec — webmproject.org",
+      "ISO/IEC 23091-2 — VP9 codec configuration"
     ],
     "WebLinks": [
       "https://www.webmproject.org/vp9/",
@@ -24,108 +24,241 @@
     ]
   },
   "detection": {
-    "signature": "444B4946",
-    "offset": 0,
+    "signatures": [
+      { "value": "444B4946", "offset": 0, "label": "'DKIF' IVF container magic", "weight": 1.0 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 1.0,
     "required": true,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 5.0, "max": 7.8 },
     "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024
+      "minFileSize": 32,
+      "maxSignatureOffset": 0,
+      "note": "IVF 'DKIF' shared by VP8/VP9/AV1. FourCC at offset 8 must be 'VP90' for VP9."
     }
   },
   "variables": {
-    "width": 0,
-    "height": 0,
-    "frameRate": 0,
-    "duration": 0,
-    "ivfHeader": 0,
-    "totalPixels": 0
+    "ivfSignature": "",
+    "ivfVersion": 0,
+    "ivfFourCC": "",
+    "videoWidth": 0,
+    "videoHeight": 0,
+    "frameRateNumerator": 0,
+    "frameRateDenominator": 0,
+    "frameCount": 0
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "IVF Header",
+      "name": "IVF Signature",
       "offset": 0,
       "length": 4,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "DKIF - IVF container header for VP9",
-      "storeAs": "ivfHeader",
-      "valueType": "uint32"
+      "opacity": 0.45,
+      "description": "IVF container signature 'DKIF' (0x44 0x4B 0x49 0x46). Shared with VP8 and AV1 IVF streams. The FourCC at offset 8 identifies the specific codec.",
+      "storeAs": "ivfSignature",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "IVF Version",
+      "offset": 4,
+      "length": 2,
+      "color": "#4ECDC4",
+      "opacity": 0.30,
+      "description": "IVF format version (little-endian uint16). Must be 0.",
+      "storeAs": "ivfVersion",
+      "valueType": "uint16",
+      "endianness": "little",
+      "valueMap": { "0": "IVF version 0" }
+    },
+    {
+      "type": "field",
+      "name": "Codec FourCC",
+      "offset": 8,
+      "length": 4,
+      "color": "#FFE66D",
+      "opacity": 0.40,
+      "description": "4-byte ASCII FourCC identifying the video codec. 'VP90' = VP9 (Google), 'VP80' = VP8, 'AV01' = AV1.",
+      "storeAs": "ivfFourCC",
+      "valueType": "ascii",
+      "valueMap": {
+        "VP90": "VP9 (Google/YouTube)",
+        "VP80": "VP8 (Google/On2)",
+        "AV01": "AV1 (AOMedia)"
+      }
+    },
+    {
+      "type": "field",
+      "name": "Video Width",
+      "offset": 12,
+      "length": 2,
+      "color": "#C7CEEA",
+      "opacity": 0.25,
+      "description": "Frame width in pixels (little-endian uint16).",
+      "storeAs": "videoWidth",
+      "valueType": "uint16",
+      "endianness": "little"
+    },
+    {
+      "type": "field",
+      "name": "Video Height",
+      "offset": 14,
+      "length": 2,
+      "color": "#C7CEEA",
+      "opacity": 0.25,
+      "description": "Frame height in pixels (little-endian uint16).",
+      "storeAs": "videoHeight",
+      "valueType": "uint16",
+      "endianness": "little"
+    },
+    {
+      "type": "field",
+      "name": "Frame Rate Numerator",
+      "offset": 16,
+      "length": 4,
+      "color": "#B8B8FF",
+      "opacity": 0.25,
+      "description": "Frame rate numerator (little-endian uint32). Frame rate = numerator / denominator.",
+      "storeAs": "frameRateNumerator",
+      "valueType": "uint32",
+      "endianness": "little"
+    },
+    {
+      "type": "field",
+      "name": "Frame Rate Denominator",
+      "offset": 20,
+      "length": 4,
+      "color": "#B8B8FF",
+      "opacity": 0.25,
+      "description": "Frame rate denominator (little-endian uint32).",
+      "storeAs": "frameRateDenominator",
+      "valueType": "uint32",
+      "endianness": "little"
+    },
+    {
+      "type": "field",
+      "name": "Frame Count",
+      "offset": 24,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.25,
+      "description": "Total number of frames (little-endian uint32).",
+      "storeAs": "frameCount",
+      "valueType": "uint32",
+      "endianness": "little"
+    },
+    {
+      "type": "metadata",
+      "name": "Codec FourCC",
+      "variable": "ivfFourCC",
+      "description": "VP90=VP9, VP80=VP8, AV01=AV1"
     },
     {
       "type": "metadata",
       "name": "Resolution",
-      "variable": "width",
-      "description": "Resolution"
-    },
-    {
-      "type": "metadata",
-      "name": "Frame Rate",
-      "variable": "frameRate",
-      "description": "Frame Rate"
-    },
-    {
-      "type": "metadata",
-      "name": "Total Pixels",
-      "variable": "totalPixels",
-      "description": "Width x Height"
+      "variable": "videoWidth",
+      "description": "Frame width in pixels"
     }
   ],
-  "software": [
-    "YouTube",
-    "Chrome",
-    "Modern browsers"
+  "assertions": [
+    {
+      "name": "IVF signature valid",
+      "expression": "ivfSignature == 'DKIF'",
+      "severity": "error",
+      "message": "IVF signature must be 'DKIF' — not a valid IVF container"
+    },
+    {
+      "name": "IVF version is 0",
+      "expression": "ivfVersion == 0",
+      "severity": "error",
+      "message": "IVF version must be 0"
+    }
   ],
-  "formatRelationships": {
-    "category": "Video",
-    "extensions": [
-      ".vp9",
-      ".ivf"
+  "versionDetection": {
+    "field": "ivfFourCC",
+    "versions": {
+      "VP90": "VP9",
+      "VP80": "VP8",
+      "AV01": "AV1"
+    }
+  },
+  "navigation": {
+    "bookmarks": [
+      { "name": "IVF File Header", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
+      { "name": "First Frame", "offset": 32, "icon": "\uE8A5", "color": "#4ECDC4" }
     ]
   },
-  "MimeTypes": [
-    "video/vp9"
-  ],
-  "Software": [
-    "VLC",
-    "Media Player Classic",
-    "HandBrake",
-    "FFmpeg",
-    "MPC-HC"
-  ],
-  "UseCases": [
-    "Video playback",
-    "Video editing",
-    "Encoding",
-    "Streaming"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 4,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "ivfFourCC",
+    "primaryField": "frameCount",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "IVF Header",
+        "icon": "\uE71B",
+        "fields": ["ivfSignature", "ivfVersion", "ivfFourCC", "videoWidth", "videoHeight", "frameRateNumerator", "frameRateDenominator", "frameCount"]
+      }
+    ]
   },
-  "TechnicalDetails": {
-    "VideoFormat": true
-  },
-  "functions": {
-    "readUInt32LE": "Read video header",
-    "computeFromVariables(width * height, totalPixels)": "Calculate total pixels"
-  },
+  "exportTemplates": [
+    {
+      "name": "IVF/VP9 Header (JSON)",
+      "format": "json",
+      "fields": ["ivfSignature", "ivfVersion", "ivfFourCC", "videoWidth", "videoHeight", "frameRateNumerator", "frameRateDenominator", "frameCount"]
+    }
+  ],
   "forensic": {
     "category": "video",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "VP9 video codec, successor to VP8 developed by Google",
+    "analysisContext": "VP9 IVF stream. Header: 'DKIF'(4B)+'VP90'(at offset 8)+width/height(offsets 12/14, LE uint16)+fpsNum/fpsDen(16/20, LE)+frameCount(24, LE). Frames start at offset 32: each = 4B size(LE)+8B timestamp(LE)+VP9 frame. VP9 frame tag byte 0: bit2=show_frame, bit1=error_resilient_mode, bit0=frame_type(0=key). Key frame bytes 1-3: 0x49 0x83 0x42 (VP9 frame_sync_code). VP9 profiles: Profile0=8b 4:2:0, Profile1=8b 4:2:2/4:4:4, Profile2=10/12b 4:2:0, Profile3=10/12b 4:2:2/4:4:4. Used by YouTube 1080p+ and Netflix 4K.",
     "suggestedInspections": [
-      "Validate VP9 Video container magic, box/atom sizes, and codec FourCC",
-      "Check track/stream layout, frame index, and timing fields",
-      "Inspect audio-video sync, keyframe distribution, and metadata"
+      "Verify 'DKIF' at offset 0 and 'VP90' at offset 8",
+      "Read width/height at offsets 12/14 (LE uint16)",
+      "First frame at offset 32: byte 0 bit0=0 = keyframe",
+      "Key frame sync code bytes 1-3: 49 83 42 (VP9 frame_sync_code)"
     ]
+  },
+  "software": [
+    "libvpx (Google VP9 encoder/decoder)",
+    "FFmpeg (libvpx-vp9)",
+    "VLC media player",
+    "YouTube (streaming platform)",
+    "Chrome/Chromium"
+  ],
+  "formatRelationships": {
+    "category": "Video",
+    "extensions": [".vp9", ".ivf"],
+    "relatedFormats": ["WEBM", "VP8", "AV1"],
+    "note": "VP9 in IVF container for testing. Production: VP9 in WebM. YouTube uses VP9 for 1080p+ streaming. Superseded by AV1 for new deployments but VP9 remains widely deployed."
+  },
+  "MimeTypes": [
+    "video/vp9",
+    "video/webm"
+  ],
+  "UseCases": [
+    "YouTube 1080p+ and 4K streaming",
+    "WebM video distribution",
+    "libvpx codec testing",
+    "Google Meet / Chrome video"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 70,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 10,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "VideoFormat": true,
+    "ContainerFormat": "IVF (testing) or WebM (production)",
+    "VideoCodec": "VP9 (Google)",
+    "Endianness": "little-endian (IVF header fields)"
   }
 }

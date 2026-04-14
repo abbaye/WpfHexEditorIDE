@@ -1,130 +1,213 @@
-﻿{
+{
   "diffMode": "binary",
-  "formatName": "Sony Raw Image",
-  "version": "1.13",
+  "formatName": "Sony Alpha RAW",
+  "version": "1.14",
   "extensions": [
     ".arw"
   ],
-  "description": "Sony Alpha RAW camera image",
+  "description": "ARW (Sony Alpha RAW) is Sony's proprietary RAW camera image format used in Sony Alpha DSLRs and mirrorless cameras since 2006. ARW is a TIFF-based format (Little Endian, magic 49 49 2A 00) extended with Sony-specific private IFD tags. The file header follows standard TIFF structure: 2-byte byte order mark ('II'=little-endian), 2-byte magic number (42 = TIFF), 4-byte offset to first IFD. Sony private tags (Tag 0x7200-0x7400 range) store encrypted lens data, WB calibration, and Bayer raw sensor data. ARW versions include ARW 1.0 (older), ARW 2.0 (Sony Exmor, AES-encrypted), ARW 2.1, ARW 2.2, ARW 2.3. The raw sensor data uses Sony's lossy compression for 14-bit RAW packed data.",
   "category": "Images",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "image-viewer",
   "references": {
     "specifications": [
-      "Sony Alpha RAW (ARW) Format - TIFF-based",
-      "Sony RAW File Formats (SRF, SR2, ARW) Documentation",
-      "Digital Photography RAW Formats Information"
+      "Sony Alpha RAW (ARW) Format — TIFF-based",
+      "TIFF 6.0 Specification — Adobe Systems",
+      "EXIF 2.32 Specification — CIPA DC-008"
     ],
     "WebLinks": [
       "https://github.com/lclevy/sony_raw",
       "https://docs.fileformat.com/image/arw/",
-      "http://fileformats.archiveteam.org/wiki/Sony_ARW",
-      "http://lclevy.free.fr/raw/"
+      "http://lclevy.free.fr/raw/",
+      "https://exiftool.org/TagNames/Sony.html"
     ]
   },
   "detection": {
-    "signature": "49492A00",
-    "offset": 0,
+    "signatures": [
+      { "value": "49492A00", "offset": 0, "label": "TIFF LE byte order + magic 42 — Sony ARW/TIFF little-endian header", "weight": 0.7 },
+      { "value": "49492A00 08000000", "offset": 0, "label": "TIFF LE header with IFD at offset 8 (standard ARW layout)", "weight": 0.9 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.7,
     "required": true,
+    "Strength": "Medium",
+    "EntropyHint": { "min": 5.0, "max": 7.5 },
     "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024
+      "minFileSize": 8,
+      "maxSignatureOffset": 0,
+      "note": "ARW shares TIFF LE magic with CR2, DNG, NEF, ORF, RW2, SR2, SRW, PEF. Extension (.arw) and Sony private IFD tags (0x7200-0x7400) distinguish it."
     }
   },
   "variables": {
-    "currentOffset": 0,
-    "width": 0,
-    "height": 0,
-    "totalPixels": 0,
-    "bitsPerPixel": 0,
-    "tiffHeader": 0
+    "byteOrderMark": 0,
+    "tiffMagic": 0,
+    "ifdOffset": 0,
+    "imageWidth": 0,
+    "imageHeight": 0
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "TIFF Header",
+      "name": "Byte Order Mark",
       "offset": 0,
-      "length": 4,
+      "length": 2,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "ARW uses TIFF structure",
-      "storeAs": "tiffHeader",
-      "valueType": "uint32"
+      "opacity": 0.45,
+      "description": "TIFF byte order mark: 0x4949 ('II') = little-endian (Intel byte order). Sony ARW always uses little-endian layout. The alternative 0x4D4D ('MM') = big-endian is used by some camera vendors but not Sony.",
+      "storeAs": "byteOrderMark",
+      "valueType": "uint16",
+      "endianness": "little",
+      "valueMap": {
+        "18761": "Little-endian 'II' (Intel) — standard Sony ARW byte order",
+        "19789": "Big-endian 'MM' (Motorola) — not used in ARW"
+      }
+    },
+    {
+      "type": "field",
+      "name": "TIFF Magic Number",
+      "offset": 2,
+      "length": 2,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "TIFF version magic number: 42 (0x002A little-endian = 0x2A00). All standard TIFF and TIFF-based RAW formats use magic 42. BigTIFF uses 43. ARW uses standard TIFF magic 42.",
+      "storeAs": "tiffMagic",
+      "valueType": "uint16",
+      "endianness": "little",
+      "valueMap": {
+        "42": "Standard TIFF (used by ARW)",
+        "43": "BigTIFF (not used in ARW)"
+      }
+    },
+    {
+      "type": "field",
+      "name": "IFD0 Offset",
+      "offset": 4,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.35,
+      "description": "Byte offset from start of file to the first Image File Directory (IFD0). Standard ARW has IFD0 at offset 8 (immediately after the 8-byte TIFF header). IFD0 contains standard EXIF tags for image width, height, compression, and Sony-specific private tags.",
+      "storeAs": "ifdOffset",
+      "valueType": "uint32",
+      "endianness": "little"
     },
     {
       "type": "metadata",
-      "name": "Width",
-      "variable": "width",
-      "description": "Width"
+      "name": "Byte Order",
+      "variable": "byteOrderMark",
+      "description": "TIFF byte order: 18761='II' (little-endian), 19789='MM' (big-endian)"
     },
     {
       "type": "metadata",
-      "name": "Height",
-      "variable": "height",
-      "description": "Height"
-    },
-    {
-      "type": "metadata",
-      "name": "Total Pixels",
-      "variable": "totalPixels",
-      "description": "Total Pixels"
+      "name": "IFD Offset",
+      "variable": "ifdOffset",
+      "description": "Offset to first Image File Directory (IFD0)"
     }
   ],
-  "software": [
-    "Image viewers",
-    "GIMP"
+  "assertions": [
+    {
+      "name": "TIFF byte order valid",
+      "expression": "byteOrderMark == 18761 || byteOrderMark == 19789",
+      "severity": "error",
+      "message": "ARW byte order mark must be 0x4949 (II, little-endian) or 0x4D4D (MM, big-endian)"
+    },
+    {
+      "name": "TIFF magic 42",
+      "expression": "tiffMagic == 42",
+      "severity": "error",
+      "message": "ARW TIFF magic must be 42 (0x002A) — not a valid TIFF-based ARW file"
+    },
+    {
+      "name": "IFD offset reasonable",
+      "expression": "ifdOffset >= 8",
+      "severity": "warning",
+      "message": "IFD0 offset must be >= 8 (after TIFF header)"
+    }
   ],
-  "formatRelationships": {
-    "category": "Images",
-    "extensions": [
-      ".arw"
+  "navigation": {
+    "bookmarks": [
+      { "name": "TIFF Header", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
+      { "name": "IFD0", "offset": 8, "icon": "\uE8A5", "color": "#95E1D3" }
     ]
   },
-  "MimeTypes": [
-    "image/arw"
-  ],
-  "Software": [
-    "Photoshop",
-    "GIMP",
-    "Paint.NET",
-    "IrfanView",
-    "XnView"
-  ],
-  "UseCases": [
-    "Image viewing",
-    "Photo editing",
-    "Graphics design",
-    "Web publishing"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 4,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "byteOrderMark",
+    "primaryField": "ifdOffset",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "TIFF/ARW Header",
+        "icon": "\uE71B",
+        "fields": ["byteOrderMark", "tiffMagic", "ifdOffset"]
+      }
+    ]
   },
-  "TechnicalDetails": {
-    "ImagesFormat": true,
-    "BitDepth": 8
-  },
-  "functions": {
-    "readUInt32LE": "Read dimensions",
-    "multiply": "Calculate pixels",
-    "computeFromVariables(width * height, totalPixels)": "Calculate total pixels"
-  },
+  "exportTemplates": [
+    {
+      "name": "ARW TIFF Header (JSON)",
+      "format": "json",
+      "fields": ["byteOrderMark", "tiffMagic", "ifdOffset"]
+    }
+  ],
   "forensic": {
     "category": "image",
     "riskLevel": "low",
-    "suspiciousPatterns": []
+    "suspiciousPatterns": [
+      {
+        "name": "Non-standard IFD offset",
+        "condition": "ifdOffset != 8",
+        "severity": "info",
+        "description": "ARW IFD0 at non-standard offset — may indicate modified or non-standard ARW structure"
+      }
+    ]
   },
   "aiHints": {
-    "analysisContext": "Sony Alpha RAW camera image",
+    "analysisContext": "Sony ARW is TIFF LE + Sony private tags. Header: 'II'(2)+42(2,LE)+ifdOffset(4,LE). IFD structure: entry count (2B LE) + entries (12B each: tag(2)+type(2)+count(4)+value/offset(4)). Key Sony IFD tags: 0x7200=SonyRawFileType, 0x7201=SonyToneCurve, 0x7220=PerChannelBlackLevel, 0x7303=WBShifts, 0xC634=DNGPrivateData. ARW 2.0+: AES-128 encrypted data in some private tags. SubIFDs: ExifIFD (tag 0x8769), GPS IFD (tag 0x8825). Raw sensor: SubfileType=0, compression=32767 (Sony ARW lossy) or 32770 (ARW lossless).",
     "suggestedInspections": [
-      "Validate Sony Raw Image signature, image dimensions, and color model",
-      "Check pixel data offset, compression type, and scanline alignment",
-      "Inspect color profile (ICC), EXIF metadata, and chunk CRCs"
+      "Verify 'II' (0x4949) at offset 0 and magic 42 (0x2A00) at offset 2",
+      "IFD0 at offset 8: read entry count (2B LE), then 12B entries for width/height/compression",
+      "Look for tag 0x7200 (SonyRawFileType): 0=ARW 1.0, 1=ARW 2.0",
+      "ExifIFD pointer at tag 0x8769 in IFD0 for camera model and shooting data"
     ]
+  },
+  "software": [
+    "Sony Imaging Edge",
+    "Adobe Lightroom / Camera Raw",
+    "Capture One",
+    "darktable",
+    "RawTherapee",
+    "ExifTool"
+  ],
+  "formatRelationships": {
+    "category": "Images",
+    "extensions": [".arw"],
+    "relatedFormats": ["SR2", "SRF", "TIFF", "DNG"],
+    "note": "ARW is Sony's primary RAW format since 2006. SR2 was the earlier Sony RAW format. SRF was used in Sony Cyber-shot cameras. All are TIFF-based. DNG (Adobe) can losslessly contain ARW data."
+  },
+  "MimeTypes": [
+    "image/x-sony-arw",
+    "image/arw"
+  ],
+  "UseCases": [
+    "Sony Alpha DSLR and mirrorless camera RAW capture",
+    "Professional photo editing and color grading",
+    "Digital asset management (DAM) with RAW workflow",
+    "Forensic image metadata analysis (EXIF, GPS)"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 65,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 5,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "ImageFormat": true,
+    "ContainerFormat": "TIFF 6.0 (little-endian) with Sony private IFD extension",
+    "Endianness": "little-endian",
+    "RawEncoding": "Sony ARW lossy (compression=32767) or lossless (32770)",
+    "BitDepth": "14-bit raw sensor data",
+    "ARWVersions": "ARW 1.0, ARW 2.0 (Exmor+AES), ARW 2.1, ARW 2.2, ARW 2.3"
   }
 }

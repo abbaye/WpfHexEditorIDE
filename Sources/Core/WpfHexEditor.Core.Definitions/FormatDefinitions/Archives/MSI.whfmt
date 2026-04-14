@@ -1,130 +1,199 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Windows Installer Package",
-  "version": "1.12",
-  "extensions": [
-    ".msi"
-  ],
-  "description": "Microsoft Windows Installer package (OLE2)",
+  "version": "1.13",
+  "extensions": [ ".msi", ".msp", ".msm" ],
+  "description": "Windows Installer Package (.msi) is the Microsoft standard for software installation, using the OLE2 Compound File Binary (CFB) container format. The file starts with the standard OLE2 magic D0CF11E0A1B11AE1 (8 bytes), shared with DOC, XLS, PPT, and other OLE2 documents. MSI files are distinguished from other OLE2 containers by their internal stream names, which include Windows Installer-specific entries such as the Database, Tables, Property, and Summary Information streams. MSI files contain a relational database describing installation components, features, files, registry entries, and custom actions.",
   "category": "Archives",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "Windows Installer Package Format",
-      "Microsoft MSI Specification",
-      "COM Structured Storage MSI Database"
+      "Windows Installer Package Format - Microsoft",
+      "COM Structured Storage / Compound File Binary Format",
+      "[MS-CFB]: Compound File Binary File Format"
     ],
     "WebLinks": [
       "https://learn.microsoft.com/en-us/windows/win32/msi/installation-package",
       "https://en.wikipedia.org/wiki/Windows_Installer",
       "https://docs.fileformat.com/executable/msi/",
-      "https://learn.microsoft.com/en-us/windows/win32/msi/windows-installer-portal"
+      "https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-cfb/"
     ]
   },
   "detection": {
-    "signature": "D0CF11E0A1B11AE1",
-    "offset": 0,
+    "signatures": [
+      { "hex": "D0CF11E0A1B11AE1", "offset": 0, "weight": 0.9 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.8,
     "required": true,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 3.0, "max": 7.5 },
     "validation": {
-      "minFileSize": 8,
-      "maxSignatureOffset": 1024
+      "minFileSize": 76,
+      "maxSignatureOffset": 0,
+      "note": "OLE2 magic at offset 0. MSI is distinguished from DOC/XLS/PPT by internal stream names. Extension or stream name content must confirm MSI identity."
     }
   },
-  "functions": {
-    "readUInt32LE": "Read OLE2/CFB header fields (little-endian)",
-    "calculateCRC32": "Calculate CRC-32 for integrity validation"
-  },
   "variables": {
-    "currentOffset": 0,
+    "ole2Signature": "",
     "minorVersion": 0,
-    "ole2Signature": ""
+    "majorVersion": 0,
+    "sectorSize": 0,
+    "totalSectors": 0
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "OLE2 Signature",
+      "name": "OLE2 Magic",
       "offset": 0,
       "length": 8,
       "color": "#FF6B6B",
       "opacity": 0.4,
-      "description": "Microsoft OLE2/CFB header",
+      "description": "OLE2/CFB magic: D0 CF 11 E0 A1 B1 1A E1. Shared by MSI, DOC, XLS, PPT, and all OLE2 documents.",
       "storeAs": "ole2Signature",
-      "valueType": "ascii"
+      "valueType": "bytes"
+    },
+    {
+      "type": "field",
+      "name": "CLSID",
+      "offset": 8,
+      "length": 16,
+      "color": "#4ECDC4",
+      "opacity": 0.4,
+      "description": "Class ID (GUID). Should be all zeros for standard CFB; MSI sets a specific CLSID for installer packages.",
+      "valueType": "bytes"
     },
     {
       "type": "field",
       "name": "Minor Version",
       "offset": 24,
       "length": 2,
-      "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "Format minor version",
+      "color": "#45B7D1",
+      "opacity": 0.4,
+      "description": "CFB minor version (little-endian uint16). Usually 0x003E.",
       "storeAs": "minorVersion",
       "valueType": "uint16"
     },
     {
-      "type": "metadata",
-      "name": "Minor Version",
-      "variable": "minorVersion",
-      "description": "MSI format minor version"
+      "type": "field",
+      "name": "Major Version",
+      "offset": 26,
+      "length": 2,
+      "color": "#96CEB4",
+      "opacity": 0.4,
+      "description": "CFB major version: 3=512-byte sectors, 4=4096-byte sectors (64KB). MSI usually uses v3.",
+      "storeAs": "majorVersion",
+      "valueType": "uint16",
+      "valueMap": {
+        "3": "OLE2 v3 (512-byte sectors)",
+        "4": "OLE2 v4 (4096-byte sectors)"
+      }
+    },
+    {
+      "type": "field",
+      "name": "Byte Order Mark",
+      "offset": 28,
+      "length": 2,
+      "color": "#FFEAA7",
+      "opacity": 0.4,
+      "description": "Byte order: must be 0xFFFE (little-endian). CFB is always little-endian.",
+      "valueType": "uint16"
+    },
+    {
+      "type": "field",
+      "name": "Sector Size Power",
+      "offset": 30,
+      "length": 2,
+      "color": "#DDA0DD",
+      "opacity": 0.4,
+      "description": "Sector size as power of 2: 9=512 bytes (v3), 12=4096 bytes (v4)",
+      "storeAs": "sectorSize",
+      "valueType": "uint16"
     }
   ],
-  "software": [
-    "Windows Installer",
-    "msiexec",
-    "Orca",
-    "InstallShield",
-    "Advanced Installer"
+  "assertions": [
+    { "field": "ole2Signature", "operator": "equals", "value": "D0CF11E0A1B11AE1", "description": "OLE2 magic must match exactly" },
+    { "field": "majorVersion", "operator": "in", "values": [3, 4], "description": "Major version must be 3 or 4" }
   ],
-  "formatRelationships": {
-    "microsoft_format": true,
-    "based_on": "Compound File Binary (CFB)",
-    "related": [
-      "EXE",
-      "CAB"
+  "navigation": {
+    "bookmarks": [
+      { "name": "OLE2 Header", "offset": 0, "description": "OLE2 compound file header starts here" },
+      { "name": "Version Fields", "offset": 24, "description": "Minor and major version at offsets 24-27" },
+      { "name": "Sector Size", "offset": 30, "description": "Sector size power-of-2 field" }
     ]
   },
-  "MimeTypes": [
-    "application/x-msi-compressed"
+  "inspector": {
+    "badge": "MSI",
+    "primaryField": "majorVersion",
+    "showQualityScore": true,
+    "groups": [
+      { "name": "OLE2 Container", "fields": ["ole2Signature", "minorVersion", "majorVersion"] },
+      { "name": "Storage Config", "fields": ["sectorSize"] }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "MSI OLE2 Header (JSON)",
+      "format": "json",
+      "fields": ["ole2Signature", "minorVersion", "majorVersion", "sectorSize"]
+    }
   ],
-  "Software": [
-    "7-Zip",
-    "WinRAR",
-    "WinZip",
-    "PeaZip",
-    "The Unarchiver"
+  "forensic": {
+    "category": "archive",
+    "riskLevel": "medium",
+    "suspiciousPatterns": [
+      "MSI files can contain custom actions (DLLs, EXEs, scripts) executed during install — common malware vector",
+      "Unexpected CLSID at offset 8 may indicate tampered or crafted installer",
+      "Large SummaryInformation stream may hide embedded payloads"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "MSI shares the OLE2 magic (D0CF11E0A1B11AE1) with DOC, XLS, and PPT. MSI identity is confirmed by internal stream names: '_Tables', '_Columns', '_StringData', 'Property'. The relational database inside describes installation actions. Custom actions in the 'CustomAction' table are a major malware vector.",
+    "suggestedInspections": [
+      "Verify OLE2 magic at offset 0 (D0CF11E0A1B11AE1)",
+      "Read major version at offset 26 to determine sector size (512 or 4096 bytes)",
+      "Parse internal stream/storage directory to identify MSI-specific streams",
+      "Check 'CustomAction' table for DLL, EXE, or script actions — common malware vectors",
+      "Inspect SummaryInformation stream for product name, manufacturer, and version"
+    ]
+  },
+  "software": [
+    "Windows Installer (msiexec.exe)",
+    "Orca (Microsoft MSI editor)",
+    "InstallShield",
+    "Advanced Installer",
+    "WiX Toolset",
+    "7-Zip"
   ],
+  "formatRelationships": {
+    "category": "Archives",
+    "extensions": [".msi", ".msp", ".msm"],
+    "relatedFormats": ["DOC", "XLS", "PPT", "CAB", "EXE"],
+    "note": "MSI shares OLE2 magic with legacy Office formats (DOC/XLS/PPT). Stream names distinguish MSI from other OLE2 files. CAB files are often embedded within MSI as compressed storage."
+  },
+  "MimeTypes": [ "application/x-msi", "application/vnd.ms-msi" ],
   "UseCases": [
-    "File compression",
-    "Archive storage",
-    "Backup",
-    "Distribution"
+    "Windows software installation packages",
+    "Software deployment via Group Policy / SCCM",
+    "Patch files (.msp) and merge modules (.msm)",
+    "Forensic analysis of installer-based malware"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 32,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 3,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
+    "CompletenessScore": 62,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 6,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
     "PriorityFormat": false,
-    "AutoRefined": true
+    "AutoRefined": false
   },
   "TechnicalDetails": {
     "ArchivesFormat": true,
-    "SupportsEncryption": false
-  },
-  "forensic": {
-    "category": "archive",
-    "riskLevel": "low",
-    "suspiciousPatterns": []
-  },
-  "aiHints": {
-    "analysisContext": "Microsoft Windows Installer package (OLE2)",
-    "suggestedInspections": [
-      "Verify Windows Installer Package file header, compression method, and stored CRCs",
-      "Check central directory or entry table for consistency",
-      "Inspect individual entry sizes for truncation or overflow"
-    ]
+    "SupportsEncryption": false,
+    "ContainerFormat": "OLE2 / Compound File Binary",
+    "Endianness": "little-endian",
+    "SectorSizes": [512, 4096],
+    "Note": "MSI shares OLE2 magic with DOC/XLS/PPT; stream names inside distinguish the format"
   }
 }

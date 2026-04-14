@@ -1,120 +1,209 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Canon RAW (CRW)",
-  "version": "1.12",
+  "version": "1.13",
   "extensions": [
     ".crw"
   ],
-  "description": "Canon RAW format (older cameras)",
+  "description": "Canon CRW (Canon RAW Version 1) is Canon's older proprietary RAW format used in early digital SLR cameras including the EOS D30, EOS D60, EOS 10D, EOS 300D (Digital Rebel), and several PowerShot G-series compacts. Unlike CR2 (which is TIFF-based), CRW uses the CIFF (Camera Image File Format) container, a Canon-designed hierarchical binary format structurally unrelated to TIFF. The CRW header begins with the little-endian byte order mark 'II' (0x4949) at offset 0, followed by the 2-byte CIFF magic 0x001A (26) at offset 2, two null bytes at offset 4, and the 8-byte ASCII identifier 'HEAPCCDR' starting at offset 6. The full 14-byte canonical prefix is: 49 49 1A 00 00 00 48 45 41 50 43 43 44 52. The IHL (Image Header Length) equals 0x001A = 26 bytes. CIFF stores data in a heap structure with a recursive directory tree. RAW sensor data is 8 or 12-bit, stored in the heap body. CRW was superseded by CR2 starting with the EOS 20D in 2004.",
   "category": "Images",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "image-viewer",
   "references": {
     "specifications": [
-      "Canon CRW Format - Camera Image File Format (CIFF)",
-      "CIFF Specification v1.0 - Canon Proprietary",
-      "Canon RAW Format (CRW) Technical Documentation"
+      "Canon CRW Format — Camera Image File Format (CIFF) Specification",
+      "CIFF Specification v1.0 — Canon Proprietary",
+      "ExifTool Canon RAW (CRW) Technical Documentation",
+      "Canon RAW (CRW) Format Analysis — Dave Coffin"
     ],
     "WebLinks": [
       "https://exiftool.org/canon_raw.html",
       "http://fileformats.archiveteam.org/wiki/Camera_Image_File_Format",
       "https://en.wikipedia.org/wiki/Camera_Image_File_Format",
-      "https://www.leadtools.com/help/sdk/dh/to/file-formats-canon-raw-format-crw.html"
+      "https://libopenraw.freedesktop.org/formats/crw/"
     ]
   },
   "detection": {
-    "signature": "49491A000000484541",
-    "offset": 0,
+    "signatures": [
+      {
+        "pattern": "49491A000000484541504343445200",
+        "offset": 0,
+        "description": "CIFF header: 'II' + magic 0x001A + 0x0000 + 'HEAPCCDR' (14 bytes)"
+      },
+      {
+        "pattern": "49491A000000484541",
+        "offset": 0,
+        "description": "CIFF short prefix: 'II' + 0x001A + 0x0000 + 'HEA' (9 bytes)"
+      }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.9,
     "required": true,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 4.5, "max": 7.5 },
     "validation": {
-      "minFileSize": 9,
-      "maxSignatureOffset": 1024
+      "minFileSize": 14,
+      "maxSignatureOffset": 0,
+      "note": "CRW CIFF magic is not TIFF-based. 'HEAPCCDR' at offset 6 is the definitive identifier. IHL at offset 2 must equal 0x001A (26)."
     }
   },
   "variables": {
-    "machineType": "",
-    "sectionCount": 0,
-    "entryPoint": 0,
-    "crwHeader": ""
+    "crwByteOrder": "",
+    "ciffMagic": 0,
+    "heapID": ""
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "CRW Header",
+      "name": "CRWByteOrder",
       "offset": 0,
-      "length": 9,
+      "length": 2,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "Canon CRW signature",
-      "storeAs": "crwHeader",
+      "opacity": 0.5,
+      "description": "CIFF byte order mark. CRW is always little-endian: 'II' (0x4949).",
+      "storeAs": "crwByteOrder",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "CIFFMagic",
+      "offset": 2,
+      "length": 2,
+      "color": "#FFB347",
+      "opacity": 0.45,
+      "description": "CIFF Image Header Length (IHL). Must be 0x001A (26). Identifies CRW as a CIFF file and specifies header size.",
+      "storeAs": "ciffMagic",
+      "valueType": "uint16",
+      "valueMap": {
+        "26": "CRW CIFF magic 0x001A — Canon Camera Image File Format"
+      }
+    },
+    {
+      "type": "signature",
+      "name": "HeapCCDR",
+      "offset": 6,
+      "length": 8,
+      "color": "#C084FC",
+      "opacity": 0.45,
+      "description": "CIFF heap type identifier. 'HEAPCCDR' identifies Canon CRW heap structure (HEAP + CCDR = Canon Color Digital RAW).",
+      "storeAs": "heapID",
       "valueType": "ascii"
     },
     {
       "type": "metadata",
-      "name": "Machine",
-      "variable": "machineType",
-      "description": "Machine"
+      "name": "CRWByteOrder",
+      "variable": "crwByteOrder",
+      "description": "CIFF byte order mark ('II' = little-endian)"
     },
     {
       "type": "metadata",
-      "name": "Sections",
-      "variable": "sectionCount",
-      "description": "Sections"
+      "name": "HeapID",
+      "variable": "heapID",
+      "description": "CIFF heap identifier (must be 'HEAPCCDR')"
     }
   ],
-  "software": [
-    "Image viewers",
-    "GIMP"
+  "assertions": [
+    {
+      "variable": "crwByteOrder",
+      "operator": "==",
+      "value": "II",
+      "description": "CRW byte order must be 'II' (little-endian, 0x4949)"
+    },
+    {
+      "variable": "heapID",
+      "operator": "==",
+      "value": "HEAPCCDR",
+      "description": "CIFF heap type identifier must be 'HEAPCCDR' at offset 6"
+    }
   ],
-  "formatRelationships": {
-    "category": "Images",
-    "extensions": [
-      ".crw"
+  "navigation": {
+    "bookmarks": [
+      { "name": "CIFF Header", "offset": 0, "description": "CRW byte order mark 'II'" },
+      { "name": "CIFF Magic (IHL)", "offset": 2, "description": "Image Header Length = 0x001A (26)" },
+      { "name": "HEAPCCDR", "offset": 6, "description": "Canonical heap type identifier for Canon CRW" }
     ]
   },
-  "MimeTypes": [
-    "image/crw"
-  ],
-  "Software": [
-    "Photoshop",
-    "GIMP",
-    "Paint.NET",
-    "IrfanView",
-    "XnView"
-  ],
-  "UseCases": [
-    "Image viewing",
-    "Photo editing",
-    "Graphics design",
-    "Web publishing"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 3,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "CRW",
+    "primaryField": "heapID",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "name": "CIFF Header",
+        "fields": ["crwByteOrder", "ciffMagic", "heapID"]
+      }
+    ]
   },
-  "TechnicalDetails": {
-    "ImagesFormat": true,
-    "BitDepth": 8
-  },
-  "functions": {
-    "readUInt32LE": "Read executable header"
-  },
+  "exportTemplates": [
+    {
+      "name": "CRW Header Summary",
+      "fields": ["crwByteOrder", "ciffMagic", "heapID"],
+      "format": "text"
+    }
+  ],
   "forensic": {
     "category": "image",
     "riskLevel": "low",
-    "suspiciousPatterns": []
+    "suspiciousPatterns": [
+      "CIFF IHL not equal to 0x001A (26) suggests truncation or non-standard CIFF variant",
+      "HeapID not 'HEAPCCDR' indicates non-Canon CIFF file or corruption",
+      "Byte order mark not 'II' is invalid for CRW — all Canon CRW files are little-endian"
+    ]
   },
   "aiHints": {
-    "analysisContext": "Canon RAW format (older cameras)",
+    "analysisContext": "Canon CRW RAW camera image using CIFF (Camera Image File Format) container — NOT TIFF-based unlike CR2. Full 14-byte prefix: 49 49 1A 00 00 00 48 45 41 50 43 43 44 52 ('II' + IHL 0x001A + 0x0000 + 'HEAPCCDR'). CIFF stores data in a heap with recursive directory tree. RAW data is 8 or 12-bit sensor. Used in EOS D30/D60/10D/300D and PowerShot G-series.",
     "suggestedInspections": [
-      "Validate Canon RAW (CRW) signature, image dimensions, and color model",
-      "Check pixel data offset, compression type, and scanline alignment",
-      "Inspect color profile (ICC), EXIF metadata, and chunk CRCs"
+      "Confirm 'HEAPCCDR' at offset 6 — this definitively identifies Canon CIFF/CRW",
+      "Verify CIFF IHL (offset 2) = 26 (0x001A) to validate header integrity",
+      "Parse CIFF directory tree starting at heap offset to locate RAW image data record",
+      "Check for embedded JPEG thumbnail in CIFF heap structure"
     ]
+  },
+  "software": [
+    "Adobe Lightroom (legacy)",
+    "Adobe Camera Raw (legacy)",
+    "Capture One",
+    "RawTherapee",
+    "darktable",
+    "Canon ZoomBrowser EX (legacy)",
+    "GIMP (via LibRaw/UFRaw)",
+    "IrfanView",
+    "XnView"
+  ],
+  "formatRelationships": {
+    "category": "Images",
+    "extensions": [".crw"],
+    "relatedFormats": ["CR2", "CR3", "TIFF", "CIFF"],
+    "note": "CRW is Canon's first digital RAW format using the proprietary CIFF container. CR2 (introduced 2004, EOS 20D) replaced CRW and uses a standard TIFF container. CR3 (2018, EOS R) uses ISOBMFF/MP4 container."
+  },
+  "MimeTypes": [
+    "image/crw",
+    "image/x-canon-crw",
+    "image/x-ciff"
+  ],
+  "UseCases": [
+    "Legacy RAW processing from early Canon EOS DSLRs",
+    "Archival of Canon EOS D30/D60/10D/300D image files",
+    "Forensic recovery of Canon CIFF-format RAW data",
+    "Canon RAW format evolution research"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 68,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 5,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "ImagesFormat": true,
+    "BitDepth": "8 or 12",
+    "ByteOrder": "little-endian",
+    "Container": "CIFF (Camera Image File Format) — NOT TIFF",
+    "CIFFMagic": "0x001A (26) = Image Header Length",
+    "HeapIdentifier": "HEAPCCDR",
+    "SensorType": "Bayer",
+    "Compression": "uncompressed or Canon lossless"
   }
 }

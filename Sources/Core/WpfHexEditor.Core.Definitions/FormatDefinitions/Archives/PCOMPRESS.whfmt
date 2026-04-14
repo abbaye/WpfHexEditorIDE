@@ -1,18 +1,16 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Parallel Compression Archive",
-  "version": "1.13",
-  "extensions": [
-    ".pz"
-  ],
-  "description": "Parallel compression archive format optimized for multi-threaded compression and decompression",
+  "version": "1.14",
+  "extensions": [ ".pz" ],
+  "description": "Pcompress is an open-source parallel deduplication and compression utility by Moinak Ghosh. The archive format uses a 'PC' prefix in its magic bytes. Pcompress supports multiple compression backends (LZMA, BZIP2, LZ4, etc.) and inline data deduplication using content-defined chunking. The format is niche with limited third-party tooling. The magic signature 'PC' at offset 0 is weak without additional header validation. Detection confidence is low; the format is primarily encountered in Linux server backup contexts.",
   "category": "Archives",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "PCompress Parallel Deduplication and Compression",
-      "PCompress Archive Format",
+      "PCompress Archive Format Documentation",
       "Chunk-Based Parallel Compression"
     ],
     "WebLinks": [
@@ -22,142 +20,157 @@
     ]
   },
   "detection": {
-    "signature": "50434F4D50",
-    "offset": 0,
-    "required": true,
+    "signatures": [
+      { "hex": "5043", "offset": 0, "weight": 0.5 },
+      { "hex": "504300", "offset": 0, "weight": 0.6 },
+      { "hex": "504301", "offset": 0, "weight": 0.6 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.5,
+    "required": false,
+    "Strength": "Weak",
+    "EntropyHint": { "min": 5.5, "max": 8.0 },
     "validation": {
-      "minFileSize": 5,
-      "maxSignatureOffset": 1024
+      "minFileSize": 16,
+      "maxSignatureOffset": 0,
+      "note": "PC at offset 0 is weak — many binary formats start with printable ASCII. Third byte (version) should be 0x00 or 0x01. Use entropy and file context for confirmation."
     }
   },
   "variables": {
-    "calculatedCRC32": 0,
-    "crc32Valid": false,
-    "originalSize": 0,
-    "compressedSize": 0,
-    "compressionRatio": 0,
     "pcompressMagic": "",
-    "formattedSize": ""
+    "pcompressVersion": 0,
+    "compressionAlgo": 0,
+    "chunkSize": 0,
+    "flags": 0
   },
   "blocks": [
     {
       "type": "signature",
       "name": "PCompress Magic",
       "offset": 0,
-      "length": 5,
+      "length": 2,
       "color": "#FF6B6B",
       "opacity": 0.4,
-      "description": "Magic bytes: 'PCOMP'",
+      "description": "Magic bytes 'PC' (0x50 0x43). Weak signature — only 2 bytes, common ASCII prefix.",
       "storeAs": "pcompressMagic",
       "valueType": "ascii"
     },
     {
-      "type": "data",
-      "name": "Version",
-      "offset": 5,
+      "type": "field",
+      "name": "Format Version",
+      "offset": 2,
       "length": 1,
       "color": "#4ECDC4",
       "opacity": 0.4,
-      "description": "Format version"
+      "description": "Pcompress format version byte. Expected 0x00 or 0x01 for known releases.",
+      "storeAs": "pcompressVersion",
+      "valueType": "uint8"
     },
     {
-      "type": "data",
-      "name": "Algorithm",
-      "offset": 6,
+      "type": "field",
+      "name": "Compression Algorithm",
+      "offset": 3,
       "length": 1,
       "color": "#45B7D1",
       "opacity": 0.4,
-      "description": "Compression algorithm identifier"
+      "description": "Backend compression algorithm identifier (LZMA, BZIP2, LZ4, etc.)",
+      "storeAs": "compressionAlgo",
+      "valueType": "uint8"
     },
     {
-      "type": "data",
+      "type": "field",
       "name": "Chunk Size",
-      "offset": 7,
+      "offset": 4,
       "length": 4,
       "color": "#96CEB4",
       "opacity": 0.4,
-      "description": "Chunk size for parallel processing (little-endian)"
+      "description": "Chunk size for parallel processing and deduplication (little-endian uint32)",
+      "storeAs": "chunkSize",
+      "valueType": "uint32"
     },
     {
-      "type": "metadata",
-      "name": "CRC Valid",
-      "variable": "crc32Valid",
-      "description": "CRC Valid"
-    },
-    {
-      "type": "metadata",
-      "name": "Original Size",
-      "variable": "originalSize",
-      "description": "Original Size"
-    },
-    {
-      "type": "metadata",
-      "name": "Compression Ratio",
-      "variable": "compressionRatio",
-      "description": "Compression Ratio"
-    },
-    {
-      "type": "metadata",
-      "name": "Formatted Size",
-      "variable": "formattedSize",
-      "description": "Human-readable file size"
+      "type": "field",
+      "name": "Flags",
+      "offset": 8,
+      "length": 4,
+      "color": "#FFEAA7",
+      "opacity": 0.4,
+      "description": "Archive flags: deduplication enabled, encryption, checksum type",
+      "storeAs": "flags",
+      "valueType": "uint32"
     }
   ],
-  "software": [
-    "7-Zip",
-    "WinRAR"
+  "assertions": [
+    { "field": "pcompressMagic", "operator": "equals", "value": "PC", "description": "First 2 bytes must be 'PC'" }
   ],
-  "formatRelationships": {
-    "category": "Archives",
-    "extensions": [
-      ".pz"
+  "navigation": {
+    "bookmarks": [
+      { "name": "PCompress Header", "offset": 0, "description": "2-byte magic + version + algorithm + chunk size" }
     ]
   },
-  "MimeTypes": [
-    "application/x-pcompress-compressed"
-  ],
-  "Software": [
-    "7-Zip",
-    "WinRAR",
-    "WinZip",
-    "PeaZip",
-    "The Unarchiver"
-  ],
-  "UseCases": [
-    "File compression",
-    "Archive storage",
-    "Backup",
-    "Distribution"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 8,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "PC",
+    "primaryField": "compressionAlgo",
+    "showQualityScore": true,
+    "groups": [
+      { "name": "Header", "fields": ["pcompressMagic", "pcompressVersion", "compressionAlgo"] },
+      { "name": "Settings", "fields": ["chunkSize", "flags"] }
+    ]
   },
-  "TechnicalDetails": {
-    "ArchivesFormat": true,
-    "SupportsEncryption": false
-  },
-  "functions": {
-    "calculateCRC32": "Validate CRC",
-    "readUInt32LE": "Read size",
-    "formatFileSize(var:compressedSize)": "Format compressedSize as readable size"
-  },
+  "exportTemplates": [
+    {
+      "name": "PCompress Info (JSON)",
+      "format": "json",
+      "fields": ["pcompressVersion", "compressionAlgo", "chunkSize", "flags"]
+    }
+  ],
   "forensic": {
     "category": "archive",
     "riskLevel": "low",
-    "suspiciousPatterns": []
+    "suspiciousPatterns": [
+      "Weak 2-byte magic increases false positive risk",
+      "Pcompress files are rarely encountered outside Linux server environments"
+    ]
   },
   "aiHints": {
-    "analysisContext": "Parallel compression archive format optimized for multi-threaded compression and decompression",
+    "analysisContext": "Pcompress is a niche Linux parallel deduplication tool. Magic 'PC' (2 bytes) is very weak. Files are primarily found in server backup contexts. The format supports pluggable compression (LZMA, LZ4, BZIP2) and inline deduplication. High false-positive rate without additional context.",
     "suggestedInspections": [
-      "Verify Parallel Compression Archive file header, compression method, and stored CRCs",
-      "Check central directory or entry table for consistency",
-      "Inspect individual entry sizes for truncation or overflow"
+      "Verify 'PC' magic at offset 0 (very weak — check additional header bytes)",
+      "Read version byte at offset 2 (expected 0x00 or 0x01)",
+      "Check chunk size at offset 4 for reasonable value (64KB-64MB typical)",
+      "Use high entropy (>6.5) as supporting evidence for compressed data",
+      "Confirm with file context: pcompress files are typical in Linux backup pipelines"
     ]
+  },
+  "software": [
+    "pcompress",
+    "Custom extraction scripts"
+  ],
+  "formatRelationships": {
+    "category": "Archives",
+    "extensions": [".pz"],
+    "relatedFormats": ["LZMA", "LZ4", "BZIP2", "ZSTD"],
+    "note": "Pcompress uses existing compression backends (LZMA, LZ4, etc.) with a parallel chunked wrapper and optional deduplication layer."
+  },
+  "MimeTypes": [ "application/x-pcompress" ],
+  "UseCases": [
+    "Linux server backup with parallel compression",
+    "Data deduplication pipelines",
+    "High-throughput archiving on multi-core systems"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 45,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 5,
+    "ValidationRules": 1,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "ArchivesFormat": true,
+    "SupportsEncryption": true,
+    "Endianness": "little-endian",
+    "Note": "Niche format with very limited documentation. 2-byte magic 'PC' is not reliable for detection without additional header validation."
   }
 }

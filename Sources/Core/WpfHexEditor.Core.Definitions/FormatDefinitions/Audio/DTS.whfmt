@@ -1,124 +1,221 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "DTS Audio",
-  "version": "1.13",
+  "version": "1.14",
   "extensions": [
     ".dts",
     ".dtshd"
   ],
-  "description": "DTS (Digital Theater Systems) multi-channel audio codec",
+  "description": "DTS (Digital Theater Systems) Coherent Acoustics — a lossy multi-channel audio codec used in cinema, Blu-ray, DVD, and home theater systems. Raw DTS Core files start with the 32-bit big-endian sync word 0x7FFE8001. The 5-byte frame header (after sync word) contains: FTYPE (frame type), SHORT (short audio frames count), CPF (CRC present flag), NBLKS (audio sample blocks per frame), FSIZE (frame byte count), AMODE (audio channel arrangement), SFREQ (sample rate), RATE (bitrate), and various coding flags. DTS supports up to 5.1 channels (DTS Core) and up to 7.1 channels with DTS-HD Master Audio (lossless extension). DTS-HD files may contain both the DTS Core substream and the DTS-HD extension substream.",
   "category": "Audio",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "audio-viewer",
   "references": {
     "specifications": [
-      "DTS Coherent Acoustics - ETSI TS 102 114",
+      "ETSI TS 102 114 — DTS Coherent Acoustics Core",
       "DTS Digital Surround Specification",
-      "DTS-HD Master Audio Format"
+      "DTS-HD Master Audio Format — Blu-ray Disc Association"
     ],
     "WebLinks": [
       "https://www.loc.gov/preservation/digital/formats/fdd/fdd000232.shtml",
-      "https://en.wikipedia.org/wiki/DTS,_Inc.",
+      "https://en.wikipedia.org/wiki/DTS_(sound_system)",
       "https://en.wikipedia.org/wiki/DTS-HD_Master_Audio",
       "https://dts.com/"
     ]
   },
   "detection": {
-    "signature": "7FFE8001",
-    "offset": 0,
+    "signatures": [
+      { "value": "7FFE8001", "offset": 0, "label": "DTS Core sync word (big-endian)", "weight": 1.0 },
+      { "value": "FE7F0180", "offset": 0, "label": "DTS Core sync word (16-bit LE byte-swapped)", "weight": 0.8 },
+      { "value": "1FFFE800", "offset": 0, "label": "DTS Core sync word (14-bit packed)", "weight": 0.7 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.7,
     "required": true,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 4.0, "max": 7.5 },
     "validation": {
       "minFileSize": 4,
-      "maxSignatureOffset": 1024
+      "maxSignatureOffset": 0
     }
   },
-  "functions": {
-    "readUInt32BE": "Read 32-bit big-endian for sync word and frame header",
-    "readUInt16BE": "Read 16-bit values for audio configuration",
-    "bitwiseAnd": "Extract frame type, sample rate, and bit rate",
-    "computeFromVariables(sampleRate * channels, samplesPerSecond)": "Calculate samples/second"
-  },
   "variables": {
-    "currentOffset": 0,
-    "frameType": "Unknown",
-    "sampleRate": 48000,
-    "bitrate": 0,
-    "channels": 0,
-    "lfePresent": false,
     "dtsSyncWord": 0,
-    "samplesPerSecond": 0
+    "frameType": 0,
+    "nblks": 0,
+    "sfreq": 0,
+    "amode": 0,
+    "rate": 0
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "DTS Sync Word",
+      "name": "DTS Core Sync Word",
       "offset": 0,
       "length": 4,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "DTS core substream sync word",
+      "opacity": 0.45,
+      "description": "DTS Core substream synchronization word 0x7FFE8001 stored as a 32-bit big-endian unsigned integer. This 4-byte sync word marks the beginning of every DTS Core frame. In 16-bit little-endian byte-swapped mode (SPDIF/AES3 transport), the sync word becomes 0xFE7F0180. In 14-bit packed mode (older encoding) it is 0x1FFFE800.",
       "storeAs": "dtsSyncWord",
       "valueType": "uint32",
-      "endianness": "big"
+      "endianness": "big",
+      "valueMap": {
+        "2147450881": "0x7FFE8001 — DTS Core (big-endian)",
+        "4285530112": "0xFF1F80E8 — DTS-HD substream sync (extension)",
+        "528446464": "0x1FFFE800 — DTS Core (14-bit packed mode)"
+      }
+    },
+    {
+      "type": "field",
+      "name": "Frame Header Word",
+      "offset": 4,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "First 32-bit big-endian word of the DTS frame header following the sync word. Contains multiple packed bitfields: FTYPE (bit 31, 1=normal/0=termination), SHORT (bits 30-26, number of deficient audio blocks), CPF (bit 25, CRC present), NBLKS (bits 24-18, audio sample blocks per frame: value+1, must be 5/6/7 or 8-127), and upper bits of FSIZE (frame size in bytes).",
+      "storeAs": "frameType",
+      "valueType": "uint32",
+      "endianness": "big",
+      "bitfields": [
+        {
+          "name": "Frame Type (FTYPE)",
+          "bits": "31",
+          "description": "Frame type: 1 = normal frame, 0 = termination frame (last in sequence)",
+          "valueMap": {
+            "0": "Termination frame",
+            "1": "Normal frame"
+          }
+        },
+        {
+          "name": "CRC Present (CPF)",
+          "bits": "25",
+          "description": "CRC present flag: 1 = CRC-16 appended to core header, 0 = no CRC",
+          "valueMap": {
+            "0": "No CRC",
+            "1": "CRC-16 present"
+          }
+        }
+      ]
     },
     {
       "type": "metadata",
-      "name": "Samples/Second",
-      "variable": "samplesPerSecond",
-      "description": "Total samples per second"
+      "name": "DTS Sync Word",
+      "variable": "dtsSyncWord",
+      "description": "DTS Core substream sync word (0x7FFE8001)"
     }
   ],
-  "software": [
-    "Home theater systems",
-    "VLC",
-    "Media players"
+  "assertions": [
+    {
+      "name": "DTS sync word valid",
+      "expression": "dtsSyncWord == 2147450881",
+      "severity": "error",
+      "message": "DTS sync word must be 0x7FFE8001 at offset 0 — not a valid DTS Core audio file"
+    }
   ],
-  "formatRelationships": {
-    "category": "Audio",
-    "extensions": [
-      ".dts",
-      ".dtshd"
+  "navigation": {
+    "bookmarks": [
+      {
+        "name": "DTS Core Frame 0",
+        "offset": 0,
+        "icon": "\uE71B",
+        "color": "#FF6B6B"
+      },
+      {
+        "name": "DTS Frame Header",
+        "offset": 4,
+        "icon": "\uE767",
+        "color": "#4ECDC4"
+      }
     ]
   },
-  "MimeTypes": [
-    "audio/dts"
-  ],
-  "Software": [
-    "VLC",
-    "Audacity",
-    "Foobar2000",
-    "MediaMonkey",
-    "Winamp"
-  ],
-  "UseCases": [
-    "Music playback",
-    "Audio editing",
-    "Sound production",
-    "Streaming"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 2,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "dtsSyncWord",
+    "primaryField": "frameType",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "DTS Identity",
+        "icon": "\uE71B",
+        "fields": ["dtsSyncWord"]
+      },
+      {
+        "title": "Frame Header",
+        "icon": "\uE767",
+        "fields": ["frameType"]
+      }
+    ]
   },
-  "TechnicalDetails": {
-    "AudioFormat": true
-  },
+  "exportTemplates": [
+    {
+      "name": "DTS Frame Header (JSON)",
+      "format": "json",
+      "fields": ["dtsSyncWord", "frameType"]
+    }
+  ],
   "forensic": {
     "category": "audio",
     "riskLevel": "low",
-    "suspiciousPatterns": []
+    "suspiciousPatterns": [
+      {
+        "name": "Byte-swapped DTS (SPDIF transport)",
+        "condition": "dtsSyncWord == 4272742400",
+        "severity": "info",
+        "description": "DTS sync word matches the 16-bit little-endian byte-swapped format (0xFE7F0180) used for SPDIF/AES3 digital audio transport. This file may be extracted directly from a SPDIF/IEC 60958 stream rather than stored as raw DTS Core."
+      }
+    ]
   },
   "aiHints": {
-    "analysisContext": "DTS (Digital Theater Systems) multi-channel audio codec",
+    "analysisContext": "DTS Core frame structure (all BE): sync_word(4,BE,=0x7FFE8001) + header_word_1(4,BE: bits 31=FTYPE/30-26=SHORT/25=CPF/24-18=NBLKS/17-4=FSIZE). FSIZE is a 14-bit field spanning two words — actual frame size in bytes = FSIZE + 1. AMODE (audio channel arrangement): 0=mono, 1=dual-mono, 2=stereo, 3=sum-diff, 9=5.1. SFREQ (sample rate): 1=8kHz/6=22.05kHz/7=24kHz/8=32kHz/11=44.1kHz/12=48kHz/13=96kHz/14=192kHz. RATE (bitrate): 0=32kbps/5=96kbps/14=768kbps/15=open/16=variable. DTS-HD extension: look for DTS-HD Master Audio sync word 0x64582025 after the DTS Core frame in .dtshd files. DTS frames are variable length (95-32640 bytes).",
     "suggestedInspections": [
-      "Validate DTS Audio header: sample rate, channels, bit depth, codec ID",
-      "Check frame/block alignment and data chunk boundaries",
-      "Verify metadata tags (ID3, Vorbis comment) are well-formed"
+      "Verify sync word at offset 0: 7F FE 80 01 (big-endian DTS Core)",
+      "Check for byte-swapped sync (SPDIF): FE 7F 01 80",
+      "Extract AMODE bits from header to determine channel layout (stereo=2, 5.1=9)",
+      "Extract SFREQ bits for sample rate (common: 11=44.1kHz, 12=48kHz, 13=96kHz)",
+      "For .dtshd files: scan for DTS-HD extension substream after the Core frames"
     ]
+  },
+  "software": [
+    "VLC media player",
+    "foobar2000",
+    "MPC-HC",
+    "FFmpeg",
+    "Dolby/DTS home theater receivers",
+    "Blu-ray disc players"
+  ],
+  "formatRelationships": {
+    "category": "Audio",
+    "extensions": [".dts", ".dtshd"],
+    "relatedFormats": ["AC3", "EAC3", "TrueHD"],
+    "note": "DTS Core (lossy, up to 5.1ch at 1.5Mbps) is the base layer. DTS-HD High Resolution Audio (lossy extension, up to 6Mbps) and DTS-HD Master Audio (lossless, up to 24.5Mbps) extend the Core stream. Blu-ray requires either TrueHD or DTS-HD MA for lossless audio."
+  },
+  "MimeTypes": [
+    "audio/x-dts",
+    "audio/vnd.dts",
+    "audio/vnd.dts.hd"
+  ],
+  "UseCases": [
+    "Blu-ray and DVD surround sound (DTS-HD Master Audio)",
+    "Cinema multi-channel audio distribution",
+    "Home theater receiver input via SPDIF/HDMI",
+    "CD-compatible DTS music discs (DTS 5.1 Music Disc)"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 68,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 3,
+    "ValidationRules": 1,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "AudioFormat": true,
+    "Endianness": "big-endian (DTS Core bitstream)",
+    "SyncWord": "0x7FFE8001",
+    "FrameSize": "95 to 32640 bytes (variable)",
+    "MaxBitrate": "1.5 Mbps (DTS Core), 6 Mbps (DTS-HD HR), 24.5 Mbps (DTS-HD MA)",
+    "MaxChannels": "5.1 (DTS Core), 7.1 (DTS-HD)",
+    "SampleRates": "8 kHz to 192 kHz",
+    "Lossless": "DTS-HD Master Audio only (Core is lossy)"
   }
 }

@@ -60,21 +60,21 @@
             <StackPanel Orientation="Horizontal">
                 <Button x:Name="NewFileButton" Style="{StaticResource ToolbarButtonStyle}" ToolTip="New Format Definition">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="📄" FontSize="16" Margin="0,0,4,0"/>
+                        <TextBlock Text="&#xEB9F;" FontFamily="Segoe MDL2 Assets" FontSize="14" Margin="0,0,4,0" VerticalAlignment="Center"/>
                         <TextBlock Text="New" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Button>
 
                 <Button x:Name="OpenFileButton" Style="{StaticResource ToolbarButtonStyle}" ToolTip="Open Format Definition">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="📂" FontSize="16" Margin="0,0,4,0"/>
+                        <TextBlock Text="&#xE8E5;" FontFamily="Segoe MDL2 Assets" FontSize="14" Margin="0,0,4,0" VerticalAlignment="Center"/>
                         <TextBlock Text="Open" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Button>
 
                 <Button x:Name="SaveFileButton" Style="{StaticResource ToolbarButtonStyle}" ToolTip="Save Current File">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="💾" FontSize="16" Margin="0,0,4,0"/>
+                        <TextBlock Text="&#xE74E;" FontFamily="Segoe MDL2 Assets" FontSize="14" Margin="0,0,4,0" VerticalAlignment="Center"/>
                         <TextBlock Text="Save" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Button>
@@ -83,14 +83,14 @@
 
                 <Button x:Name="UndoButton" Style="{StaticResource ToolbarButtonStyle}" ToolTip="Undo (Ctrl+Z)">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="↶" FontSize="18" Margin="0,0,4,0"/>
+                        <TextBlock Text="&#xE7A7;" FontFamily="Segoe MDL2 Assets" FontSize="14" Margin="0,0,4,0" VerticalAlignment="Center"/>
                         <TextBlock Text="Undo" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Button>
 
                 <Button x:Name="RedoButton" Style="{StaticResource ToolbarButtonStyle}" ToolTip="Redo (Ctrl+Y)">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="↷" FontSize="18" Margin="0,0,4,0"/>
+                        <TextBlock Text="&#xE7A6;" FontFamily="Segoe MDL2 Assets" FontSize="14" Margin="0,0,4,0" VerticalAlignment="Center"/>
                         <TextBlock Text="Redo" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Button>
@@ -99,14 +99,14 @@
 
                 <Button x:Name="FormatButton" Style="{StaticResource ToolbarButtonStyle}" ToolTip="Format JSON (Ctrl+Shift+F)">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="✨" FontSize="16" Margin="0,0,4,0"/>
+                        <TextBlock Text="&#xE70F;" FontFamily="Segoe MDL2 Assets" FontSize="14" Margin="0,0,4,0" VerticalAlignment="Center"/>
                         <TextBlock Text="Format" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Button>
 
                 <Button x:Name="ValidateButton" Style="{StaticResource ToolbarButtonStyle}" ToolTip="Validate Format Definition">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="✓" FontSize="18" Margin="0,0,4,0"/>
+                        <TextBlock Text="&#xE8FB;" FontFamily="Segoe MDL2 Assets" FontSize="14" Margin="0,0,4,0" VerticalAlignment="Center"/>
                         <TextBlock Text="Validate" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Button>
@@ -134,10 +134,10 @@
 
                 <!-- Errors/Warnings -->
                 <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="0,0,16,0">
-                    <TextBlock Text="❌" Margin="0,0,4,0"/>
+                    <TextBlock Text="&#xEA39;" FontFamily="Segoe MDL2 Assets" FontSize="12" Margin="0,0,4,0" VerticalAlignment="Center"/>
                     <TextBlock x:Name="ErrorCountText" Text="0 Errors"/>
                     <TextBlock Text=" " Margin="4,0"/>
-                    <TextBlock Text="⚠️" Margin="0,0,4,0"/>
+                    <TextBlock Text="&#xE7BA;" FontFamily="Segoe MDL2 Assets" FontSize="12" Margin="0,0,4,0" VerticalAlignment="Center"/>
                     <TextBlock x:Name="WarningCountText" Text="0 Warnings"/>
                 </StackPanel>
 

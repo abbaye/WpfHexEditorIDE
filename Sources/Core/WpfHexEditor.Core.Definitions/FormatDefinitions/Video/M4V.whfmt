@@ -1,128 +1,224 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "iTunes Video",
-  "version": "1.14",
+  "version": "1.15",
   "extensions": [
     ".m4v"
   ],
-  "description": "MPEG-4 video container developed by Apple for iTunes Store",
+  "description": "M4V is an MPEG-4/ISO Base Media File Format (ISOBMFF) container developed by Apple for iTunes Store video distribution. M4V files are nearly identical to MP4 (.mp4) but may contain Apple FairPlay DRM (Digital Rights Management) copy protection. The file starts with an 'ftyp' (File Type) box: box size (4B BE), 'ftyp' type (4B), major brand (4B, typically 'M4V ' or 'mp42'), minor version (4B BE), and compatible brands. M4V major brands include 'M4V ' (protected iTunes video), 'M4VP' (protected), 'mp42', and 'mp41'. H.264 video is stored in an 'avc1' sample entry; AAC audio in 'mp4a'. FairPlay DRM appears as a 'drms' (DRM stream) atom or a 'sinf' (scheme information) box. Without DRM, M4V plays identically to MP4.",
   "category": "Video",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "MPEG-4 Part 14 Container (M4V variant)",
-      "ISO/IEC 14496-1 - MPEG-4 Systems",
-      "Apple FairPlay DRM Container"
+      "MPEG-4 Part 14 — MP4 File Format (M4V variant)",
+      "ISO/IEC 14496-12 — ISO Base Media File Format",
+      "Apple FairPlay DRM Technical Overview"
     ],
     "WebLinks": [
-      "https://en.wikipedia.org/wiki/MP4_file_format",
+      "https://en.wikipedia.org/wiki/M4V",
       "https://cloudinary.com/guides/video-formats/m4v-format-how-it-works-and-m4v-vs-mp4",
-      "https://www.movavi.com/learning-portal/m4v-file.html"
+      "https://developer.apple.com/documentation/fairplay-streaming"
     ]
   },
   "detection": {
-    "signature": "66747970",
-    "offset": 4,
+    "signatures": [
+      { "value": "66747970", "offset": 4, "label": "'ftyp' box type at offset 4 (ISOBMFF)", "weight": 0.6 },
+      { "value": "4D345620", "offset": 8, "label": "'M4V ' major brand (iTunes video)", "weight": 1.0 },
+      { "value": "4D345650", "offset": 8, "label": "'M4VP' major brand (protected iTunes video)", "weight": 1.0 },
+      { "value": "6D703432", "offset": 8, "label": "'mp42' major brand (MPEG-4 v2, common M4V)", "weight": 0.7 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.6,
     "required": true,
+    "Strength": "Medium",
+    "EntropyHint": { "min": 4.5, "max": 7.5 },
     "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024
+      "minFileSize": 20,
+      "note": "'ftyp' at offset 4 is shared with MP4, MOV, 3GP, HEIC, and other ISOBMFF formats. Major brand 'M4V ' or 'M4VP' at offset 8 identifies iTunes video specifically. Without an M4V-specific brand, detection relies on ftyp + compatible brands scan."
     }
   },
   "variables": {
-    "width": 0,
-    "height": 0,
-    "frameRate": 0,
-    "duration": 0,
-    "fileTypeBox": "",
-    "totalPixels": 0
+    "ftypBoxSize": 0,
+    "ftypBoxType": "",
+    "majorBrand": "",
+    "minorVersion": 0
   },
   "blocks": [
     {
+      "type": "field",
+      "name": "ftyp Box Size",
+      "offset": 0,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "Size in bytes of the 'ftyp' box including this field (big-endian uint32). Minimum 20 bytes: 4 (size) + 4 ('ftyp') + 4 (major brand) + 4 (minor version) + 4 (at least one compatible brand). iTunes M4V ftyp boxes typically list 2-4 compatible brands.",
+      "storeAs": "ftypBoxSize",
+      "valueType": "uint32",
+      "endianness": "big"
+    },
+    {
       "type": "signature",
-      "name": "File Type Box",
+      "name": "ftyp Box Type",
       "offset": 4,
       "length": 4,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "ftyp - MP4 file type identifier",
-      "storeAs": "fileTypeBox",
+      "opacity": 0.45,
+      "description": "ISOBMFF File Type box type identifier 'ftyp' (0x66747970). Mandatory first box in all ISOBMFF-derived containers (MP4, M4V, MOV, 3GP, HEIC, etc.). M4V uses 'ftyp' identically to MP4 — the major brand distinguishes them.",
+      "storeAs": "ftypBoxType",
       "valueType": "ascii"
     },
     {
-      "type": "metadata",
-      "name": "Resolution",
-      "variable": "width",
-      "description": "Resolution"
+      "type": "field",
+      "name": "Major Brand",
+      "offset": 8,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.35,
+      "description": "4-byte ASCII brand identifying the ISOBMFF profile. M4V-specific brands: 'M4V ' = iTunes video (protected or unprotected), 'M4VP' = explicitly protected iTunes video. Also common: 'mp42' = MPEG-4 version 2 (may be M4V-compatible), 'mp41' = MPEG-4 version 1.",
+      "storeAs": "majorBrand",
+      "valueType": "ascii",
+      "valueMap": {
+        "M4V ": "iTunes Video (Apple M4V)",
+        "M4VP": "iTunes Video Protected (FairPlay DRM)",
+        "mp42": "MPEG-4 Part 14 version 2 (common M4V/MP4)",
+        "mp41": "MPEG-4 Part 14 version 1",
+        "isom": "ISO Base Media (generic MP4/M4V)"
+      }
+    },
+    {
+      "type": "field",
+      "name": "Minor Version",
+      "offset": 12,
+      "length": 4,
+      "color": "#FFE66D",
+      "opacity": 0.25,
+      "description": "Informational minor version of the major brand specification (big-endian uint32). Often 0. Not used for format detection.",
+      "storeAs": "minorVersion",
+      "valueType": "uint32",
+      "endianness": "big"
     },
     {
       "type": "metadata",
-      "name": "Frame Rate",
-      "variable": "frameRate",
-      "description": "Frame Rate"
+      "name": "Major Brand",
+      "variable": "majorBrand",
+      "description": "M4V brand: 'M4V '=iTunes, 'M4VP'=DRM protected"
     },
     {
       "type": "metadata",
-      "name": "Total Pixels",
-      "variable": "totalPixels",
-      "description": "Width x Height"
+      "name": "ftyp Box Size",
+      "variable": "ftypBoxSize",
+      "description": "File Type box size (minimum 20 bytes)"
     }
   ],
-  "software": [
-    "iTunes",
-    "Apple TV",
-    "VLC"
+  "assertions": [
+    {
+      "name": "ftyp box type valid",
+      "expression": "ftypBoxType == 'ftyp'",
+      "severity": "error",
+      "message": "Box type at offset 4 must be 'ftyp' (0x66747970) — not a valid ISOBMFF/M4V file"
+    },
+    {
+      "name": "ftyp box size reasonable",
+      "expression": "ftypBoxSize >= 20 && ftypBoxSize <= 512",
+      "severity": "warning",
+      "message": "ftyp box size should be 20-512 bytes"
+    }
   ],
-  "formatRelationships": {
-    "category": "Video",
-    "extensions": [
-      ".m4v"
+  "navigation": {
+    "bookmarks": [
+      {
+        "name": "ftyp Box",
+        "offset": 0,
+        "icon": "\uE71B",
+        "color": "#FF6B6B"
+      },
+      {
+        "name": "Major Brand",
+        "offset": 8,
+        "icon": "\uE8A5",
+        "color": "#95E1D3"
+      }
     ]
   },
-  "MimeTypes": [
-    "video/m4v"
-  ],
-  "Software": [
-    "VLC",
-    "Media Player Classic",
-    "HandBrake",
-    "FFmpeg",
-    "MPC-HC"
-  ],
-  "UseCases": [
-    "Video playback",
-    "Video editing",
-    "Encoding",
-    "Streaming"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 4,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "majorBrand",
+    "primaryField": "ftypBoxSize",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "ftyp Box",
+        "icon": "\uE71B",
+        "fields": ["ftypBoxSize", "ftypBoxType", "majorBrand", "minorVersion"]
+      }
+    ]
   },
-  "TechnicalDetails": {
-    "VideoFormat": true
-  },
-  "functions": {
-    "readUInt32LE": "Read video header",
-    "computeFromVariables(width * height, totalPixels)": "Calculate total pixels"
-  },
+  "exportTemplates": [
+    {
+      "name": "M4V ftyp Box (JSON)",
+      "format": "json",
+      "fields": ["ftypBoxSize", "ftypBoxType", "majorBrand", "minorVersion"]
+    }
+  ],
   "forensic": {
     "category": "video",
     "riskLevel": "low",
-    "suspiciousPatterns": []
+    "suspiciousPatterns": [
+      {
+        "name": "FairPlay DRM present",
+        "condition": "majorBrand == 'M4VP'",
+        "severity": "info",
+        "description": "M4VP brand indicates Apple FairPlay DRM protection — file requires authorization for playback"
+      }
+    ]
   },
   "aiHints": {
-    "analysisContext": "MPEG-4 video container developed by Apple for iTunes Store",
+    "analysisContext": "M4V = ISOBMFF (same as MP4). ftyp box: size(4B BE)+ftyp(4B)+brand(4B)+minorVer(4B BE)+compatBrands(4B×N). Major brand 'M4V ' or 'M4VP' = iTunes video. Structure identical to MP4: moov box contains trak/mdia/minf/stbl. Video: avc1 (H.264) or hvc1 (H.265). Audio: mp4a (AAC). FairPlay DRM: sinf box inside avc1, or drms atom type. Non-DRM M4V is structurally identical to .mp4 — only the major brand differs. Apple TV, iTunes, QuickTime play M4V natively; other players need compatible brands list.",
     "suggestedInspections": [
-      "Validate iTunes Video container magic, box/atom sizes, and codec FourCC",
-      "Check track/stream layout, frame index, and timing fields",
-      "Inspect audio-video sync, keyframe distribution, and metadata"
+      "Read major brand at offset 8: 'M4V '=iTunes, 'M4VP'=DRM protected",
+      "Scan compatible brands (offset 16+, 4B each, until ftyp box end) for 'M4V '/'mp42'",
+      "Look for 'drms' or 'sinf' atoms in avc1 box to detect FairPlay DRM",
+      "moov > udta > meta > ilst for iTunes metadata (title, artist, album)"
     ]
+  },
+  "software": [
+    "iTunes / Apple TV",
+    "QuickTime Player",
+    "VLC media player",
+    "FFmpeg (mp4 demuxer)",
+    "HandBrake"
+  ],
+  "formatRelationships": {
+    "category": "Video",
+    "extensions": [".m4v"],
+    "relatedFormats": ["MP4", "MOV", "M4A"],
+    "note": "M4V is an ISOBMFF profile for Apple iTunes video, structurally identical to MP4. The 'M4V ' major brand and optional FairPlay DRM are the only distinctions. Without DRM, M4V files can be renamed to .mp4 and play in any MP4-compatible player."
+  },
+  "MimeTypes": [
+    "video/x-m4v",
+    "video/mp4"
+  ],
+  "UseCases": [
+    "iTunes Store video purchases and rentals",
+    "Apple TV content distribution",
+    "iOS device video playback",
+    "FairPlay DRM-protected video distribution"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 68,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 6,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "VideoFormat": true,
+    "ContainerFormat": "ISO Base Media File Format (ISOBMFF) / MPEG-4 Part 14",
+    "Endianness": "big-endian (all box sizes and multi-byte fields)",
+    "VideoCodecs": "H.264/AVC (avc1), H.265/HEVC (hvc1)",
+    "AudioCodecs": "AAC (mp4a), AC-3 (ac-3)",
+    "DRM": "Apple FairPlay (optional, indicated by M4VP brand or drms/sinf atoms)"
   }
 }

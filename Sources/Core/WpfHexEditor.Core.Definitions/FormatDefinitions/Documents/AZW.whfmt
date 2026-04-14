@@ -1,124 +1,188 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Amazon Kindle eBook",
-  "version": "1.11",
-  "extensions": [
-    ".azw",
-    ".azw3"
-  ],
-  "description": "Amazon Kindle format - Based on Mobipocket",
+  "version": "1.12",
+  "extensions": [ ".azw", ".azw3", ".azw4" ],
+  "description": "AZW (Amazon Kindle format) is Amazon's proprietary eBook format based on the Mobipocket/PalmDOC structure with added DRM. Files use the PalmDB container format: the file begins with a 32-byte PalmDB database name, followed by various header fields. At offset 60, the 4-byte 'type' field contains 'BOOK' and at offset 64, the 'creator' field contains 'MOBI' for AZW/MOBI files. AZW3 (KF8) adds HTML5/CSS3 content within the same PalmDB wrapper but with updated MOBI header fields. AZW4 wraps PDF content. Amazon DRM (Topaz) uses 'TEXt' creator code. Detection requires reading at offset 60-68 for 'BOOKMOBI' signature.",
   "category": "Documents",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "Amazon Kindle eBook Format"
+      "Amazon Kindle Format 8 (KF8) Specification",
+      "Mobipocket eBook Format",
+      "PalmDOC / PDB Format Specification"
     ],
     "WebLinks": [
-      "https://en.wikipedia.org/wiki/AZW"
+      "https://en.wikipedia.org/wiki/AZW",
+      "https://wiki.mobileread.com/wiki/MOBI",
+      "https://wiki.mobileread.com/wiki/AZW",
+      "https://calibre-ebook.com/generated/en/develop.html"
     ]
   },
   "detection": {
-    "signature": "424F4F4B",
-    "offset": 60,
+    "signatures": [
+      { "hex": "424F4F4B4D4F4249", "offset": 60, "weight": 1.0 },
+      { "hex": "424F4F4B", "offset": 60, "weight": 0.7 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.7,
     "required": true,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 2.5, "max": 7.0 },
     "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024
+      "minFileSize": 78,
+      "maxSignatureOffset": 64,
+      "note": "'BOOK' at offset 60, 'MOBI' at offset 64. PalmDB header starts at offset 0. File must be at least 78 bytes."
     }
   },
-  "functions": {
-    "readUInt32BE": "Read 32-bit big-endian for PalmDOC/MOBI header fields",
-    "extractASCIIString": "Extract book title and database name",
-    "readUInt16BE": "Read 16-bit values for record count"
-  },
   "variables": {
-    "currentOffset": 0,
-    "databaseName": "Unknown",
-    "title": "Unknown",
-    "author": "Unknown",
-    "preferredEditor": "hex-editor",
-    "recordCount": 0,
-    "kindleFormat": "AZW",
-    "hasdrm": false,
-    "pdbName": "",
-    "azwType": ""
+    "palmDBName": "",
+    "palmAttributes": 0,
+    "palmType": "",
+    "palmCreator": "",
+    "recordCount": 0
   },
   "blocks": [
     {
       "type": "field",
-      "name": "PDB Name",
+      "name": "PalmDB Database Name",
       "offset": 0,
       "length": 32,
       "color": "#4ECDC4",
       "opacity": 0.3,
-      "description": "Database name",
-      "storeAs": "pdbName",
+      "description": "PalmDB database name (null-padded, up to 31 chars + null). Usually set to the book title.",
+      "storeAs": "palmDBName",
       "valueType": "ascii"
     },
     {
+      "type": "field",
+      "name": "PalmDB Attributes",
+      "offset": 32,
+      "length": 2,
+      "color": "#45B7D1",
+      "opacity": 0.3,
+      "description": "PalmDB attributes flags (big-endian uint16). Bit0=ReadOnly, bit1=DirtyAppInfoArea, etc.",
+      "storeAs": "palmAttributes",
+      "valueType": "uint16"
+    },
+    {
+      "type": "field",
+      "name": "Record Count",
+      "offset": 76,
+      "length": 2,
+      "color": "#96CEB4",
+      "opacity": 0.3,
+      "description": "Number of PalmDB records (big-endian uint16). Each record = one chunk of MOBI data.",
+      "storeAs": "recordCount",
+      "valueType": "uint16"
+    },
+    {
       "type": "signature",
-      "name": "AZW Type",
+      "name": "PalmDB Type",
       "offset": 60,
       "length": 4,
       "color": "#FF6B6B",
       "opacity": 0.4,
-      "description": "BOOK identifier",
-      "storeAs": "azwType",
+      "description": "PalmDB type code: 'BOOK' (0x424F4F4B) for Kindle/MOBI files",
+      "storeAs": "palmType",
       "valueType": "ascii"
+    },
+    {
+      "type": "signature",
+      "name": "PalmDB Creator",
+      "offset": 64,
+      "length": 4,
+      "color": "#FF8C42",
+      "opacity": 0.4,
+      "description": "PalmDB creator code: 'MOBI'=Kindle AZW/AZW3, 'TEXt'=PalmDOC/Topaz, 'DataPlkr'=Plucker",
+      "storeAs": "palmCreator",
+      "valueType": "ascii",
+      "valueMap": {
+        "MOBI": "Kindle AZW / AZW3 (KF8)",
+        "TEXt": "PalmDOC or Amazon Topaz",
+        "DataPlkr": "Plucker eBook"
+      }
     }
   ],
-  "software": [
-    "Amazon Kindle",
-    "Calibre",
-    "Kindle for PC",
-    "Kindle for Mac"
+  "assertions": [
+    { "field": "palmType", "operator": "equals", "value": "BOOK", "description": "Type field at offset 60 must be 'BOOK'" },
+    { "field": "palmCreator", "operator": "equals", "value": "MOBI", "description": "Creator field at offset 64 must be 'MOBI' for AZW/AZW3" }
   ],
-  "formatRelationships": {
-    "category": "Documents",
-    "extensions": [
-      ".azw",
-      ".azw3"
+  "navigation": {
+    "bookmarks": [
+      { "name": "PalmDB Header", "offset": 0, "description": "32-byte database name" },
+      { "name": "Type/Creator", "offset": 60, "description": "'BOOKMOBI' identity fields at offsets 60-67" },
+      { "name": "Record Count", "offset": 76, "description": "Number of PalmDB records" }
     ]
   },
-  "MimeTypes": [
-    "application/azw"
-  ],
-  "Software": [
-    "Amazon Kindle",
-    "Calibre",
-    "Kindle for PC",
-    "Kindle for Mac"
-  ],
-  "UseCases": [
-    "Document viewing",
-    "Reading",
-    "Publishing",
-    "Archival"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 32,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 2,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "AZW",
+    "primaryField": "palmDBName",
+    "showQualityScore": true,
+    "groups": [
+      { "name": "PalmDB Identity", "fields": ["palmType", "palmCreator"] },
+      { "name": "Content", "fields": ["palmDBName", "recordCount"] }
+    ]
   },
-  "TechnicalDetails": {
-    "DocumentFormat": true
-  },
+  "exportTemplates": [
+    {
+      "name": "AZW Kindle Info (JSON)",
+      "format": "json",
+      "fields": ["palmDBName", "palmType", "palmCreator", "recordCount"]
+    }
+  ],
   "forensic": {
     "category": "document",
     "riskLevel": "medium",
-    "suspiciousPatterns": []
+    "suspiciousPatterns": [
+      "DRM-protected AZW files contain encrypted content — extraction may be legally restricted",
+      "AZW files may contain personal reading metadata and annotations linked to Amazon account"
+    ]
   },
   "aiHints": {
-    "analysisContext": "Amazon Kindle format - Based on Mobipocket",
+    "analysisContext": "AZW uses PalmDB container. 'BOOKMOBI' at offset 60-67 is the key identifier (type='BOOK', creator='MOBI'). The MOBI header within record 0 (after PalmDB record list) has further metadata: title, author, language, DRM flag. AZW3 (KF8) uses the same outer structure but includes HTML5 content. Calibre can convert AZW/AZW3 to EPUB.",
     "suggestedInspections": [
-      "Validate Amazon Kindle eBook file signature and container structure",
-      "Check for embedded macros, scripts, or active content",
-      "Inspect document metadata: author, timestamps, revisions"
+      "Verify 'BOOK' at offset 60 and 'MOBI' at offset 64",
+      "Read PalmDB database name at offset 0 (book title, null-padded)",
+      "Read record count at offset 76 (big-endian uint16)",
+      "Parse MOBI header in record 0 for: title offset, author, language, DRM flag",
+      "Check DRM flag in MOBI header — DRM'd AZW requires Amazon device or Calibre DeDRM"
     ]
+  },
+  "software": [
+    "Amazon Kindle (hardware/app)",
+    "Calibre",
+    "Kindle for PC / Mac / iOS / Android",
+    "KFX Input plugin (Calibre)"
+  ],
+  "formatRelationships": {
+    "category": "Documents",
+    "extensions": [".azw", ".azw3", ".azw4"],
+    "relatedFormats": ["MOBI", "EPUB", "PDF"],
+    "note": "AZW is DRM-protected MOBI. AZW3 (KF8) adds HTML5/CSS3. AZW4 wraps PDF. Without DRM, AZW is identical to MOBI."
+  },
+  "MimeTypes": [ "application/vnd.amazon.ebook", "application/azw", "application/x-mobi8-ebook" ],
+  "UseCases": [
+    "Kindle eBook reading",
+    "eBook library management (Calibre)",
+    "Digital publishing for Amazon ecosystem"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 62,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 5,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "DocumentFormat": true,
+    "ContainerFormat": "PalmDB",
+    "Endianness": "big-endian (PalmDB header fields)",
+    "DRMSupport": true,
+    "KeyOffset": 60,
+    "KeySignature": "BOOKMOBI"
   }
 }

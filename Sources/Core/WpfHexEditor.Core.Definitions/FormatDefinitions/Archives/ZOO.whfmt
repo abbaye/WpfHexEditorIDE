@@ -1,11 +1,9 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "ZOO Archive",
-  "version": "1.11",
-  "extensions": [
-    ".zoo"
-  ],
-  "description": "ZOO compressed archive format",
+  "version": "1.12",
+  "extensions": [ ".zoo" ],
+  "description": "ZOO is a compression archive format developed by Rahul Dhesi in the mid-1980s. Files begin with a 20-byte ASCII magic string 'ZOO 2.10 Archive.' followed by 0x1A, then a 4-byte tag value 0xFDC4A7DC at offset 20 which serves as a secondary identifier. ZOO uses LZW and LZSS compression algorithms. The archive contains a linked list of file headers, each pointing to the next entry. ZOO was popular on Unix and MS-DOS systems in the late 1980s and early 1990s before being displaced by ZIP and tar.gz. It is now primarily encountered in digital preservation contexts.",
   "category": "Archives",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
@@ -23,103 +21,160 @@
     ]
   },
   "detection": {
-    "signature": "5A4F4F20",
-    "offset": 0,
+    "signatures": [
+      { "hex": "5A4F4F20322E313020417263686976652E1A", "offset": 0, "weight": 1.0 },
+      { "hex": "5A4F4F20", "offset": 0, "weight": 0.7 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.7,
     "required": true,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 4.0, "max": 7.8 },
     "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024
+      "minFileSize": 24,
+      "maxSignatureOffset": 0,
+      "note": "First 20 bytes: 'ZOO 2.10 Archive.' + 0x1A. Bytes 20-23: 0xFDC4A7DC (secondary tag). Both must match for strong detection."
     }
   },
-  "functions": {
-    "readUInt32LE": "Read archive start offset (little-endian)"
-  },
   "variables": {
-    "currentOffset": 0,
+    "zooMagic": "",
+    "zooTag": 0,
     "archiveStart": 0,
-    "zooMagic": ""
+    "zooType": 0
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "ZOO Magic",
+      "name": "ZOO Text Magic",
       "offset": 0,
-      "length": 4,
+      "length": 20,
       "color": "#FF6B6B",
       "opacity": 0.4,
-      "description": "ZOO archive header",
+      "description": "20-byte ASCII magic: 'ZOO 2.10 Archive.' + 0x1A. The 0x1A byte terminates the string on DOS systems.",
       "storeAs": "zooMagic",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Archive Tag",
+      "offset": 20,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.4,
+      "description": "Secondary identifier tag: 0xFDC4A7DC (little-endian). Used to confirm ZOO archive identity.",
+      "storeAs": "zooTag",
       "valueType": "uint32"
     },
     {
       "type": "field",
-      "name": "Archive Start",
-      "offset": 20,
+      "name": "Start of Archive",
+      "offset": 24,
       "length": 4,
-      "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "Offset to first file",
+      "color": "#45B7D1",
+      "opacity": 0.4,
+      "description": "Byte offset to the first file entry in the linked list (little-endian uint32)",
       "storeAs": "archiveStart",
       "valueType": "uint32"
     },
     {
-      "type": "metadata",
-      "name": "Archive Start Offset",
-      "variable": "archiveStart",
-      "description": "Byte offset to first archived file"
+      "type": "field",
+      "name": "Archive Type",
+      "offset": 28,
+      "length": 1,
+      "color": "#96CEB4",
+      "opacity": 0.4,
+      "description": "Archive type byte. Usually 2 for ZOO 2.10 format.",
+      "storeAs": "zooType",
+      "valueType": "uint8"
+    },
+    {
+      "type": "data",
+      "name": "Comment",
+      "offset": 29,
+      "length": 32,
+      "color": "#FFEAA7",
+      "opacity": 0.3,
+      "description": "Optional archive comment (variable length, null-terminated)"
     }
   ],
-  "software": [
-    "zoo",
-    "7-Zip",
-    "Legacy archivers"
+  "assertions": [
+    { "field": "zooMagic", "operator": "startsWith", "value": "ZOO ", "description": "First 4 bytes must be 'ZOO '" },
+    { "field": "zooTag", "operator": "equals", "value": 4241614524, "description": "Secondary tag must be 0xFDC4A7DC (= 4241614524 decimal)" }
   ],
-  "formatRelationships": {
-    "category": "Archives",
-    "extensions": [
-      ".zoo"
+  "navigation": {
+    "bookmarks": [
+      { "name": "ZOO Magic", "offset": 0, "description": "20-byte text magic 'ZOO 2.10 Archive.'" },
+      { "name": "Archive Tag", "offset": 20, "description": "4-byte secondary identifier 0xFDC4A7DC" },
+      { "name": "First Entry", "offset": 24, "description": "Pointer to first file entry in archive" }
     ]
   },
-  "MimeTypes": [
-    "application/x-zoo-compressed"
-  ],
-  "Software": [
-    "7-Zip",
-    "WinRAR",
-    "WinZip",
-    "PeaZip",
-    "The Unarchiver"
-  ],
-  "UseCases": [
-    "File compression",
-    "Archive storage",
-    "Backup",
-    "Distribution"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 32,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 3,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "ZOO",
+    "primaryField": "zooMagic",
+    "showQualityScore": true,
+    "groups": [
+      { "name": "Identity", "fields": ["zooMagic", "zooTag"] },
+      { "name": "Structure", "fields": ["archiveStart", "zooType"] }
+    ]
   },
-  "TechnicalDetails": {
-    "ArchivesFormat": true,
-    "SupportsEncryption": false
-  },
+  "exportTemplates": [
+    {
+      "name": "ZOO Archive Info (JSON)",
+      "format": "json",
+      "fields": ["zooMagic", "zooTag", "archiveStart", "zooType"]
+    }
+  ],
   "forensic": {
     "category": "archive",
     "riskLevel": "low",
-    "suspiciousPatterns": []
+    "suspiciousPatterns": [
+      "ZOO files outside legacy software contexts are unusual",
+      "Crafted archiveStart pointer could cause directory traversal on vulnerable extractors"
+    ]
   },
   "aiHints": {
-    "analysisContext": "ZOO compressed archive format",
+    "analysisContext": "ZOO archives start with 20-byte text magic 'ZOO 2.10 Archive.' + 0x1A, then 4-byte tag 0xFDC4A7DC at offset 20. The archive is a linked list of file entries, with archiveStart at offset 24 pointing to the first entry. ZOO is now primarily a digital preservation format from the 1985-1995 era.",
     "suggestedInspections": [
-      "Verify ZOO Archive file header, compression method, and stored CRCs",
-      "Check central directory or entry table for consistency",
-      "Inspect individual entry sizes for truncation or overflow"
+      "Verify 20-byte text magic at offset 0: 'ZOO 2.10 Archive.' + 0x1A",
+      "Verify 4-byte tag at offset 20: must be 0xFDC4A7DC",
+      "Read archiveStart at offset 24 to locate first file entry",
+      "Parse linked list of file entries following archiveStart",
+      "Use zoo, booz, or 7-Zip for extraction"
     ]
+  },
+  "software": [
+    "zoo (original Unix tool)",
+    "booz (read-only extractor)",
+    "7-Zip",
+    "The Unarchiver"
+  ],
+  "formatRelationships": {
+    "category": "Archives",
+    "extensions": [".zoo"],
+    "relatedFormats": ["ARC", "ARJ", "LZH", "ZIP"],
+    "note": "ZOO predates ZIP and was popular on Unix/Amiga in the late 1980s. Displaced by ZIP and tar.gz by the mid-1990s."
+  },
+  "MimeTypes": [ "application/x-zoo", "application/x-zoo-compressed" ],
+  "UseCases": [
+    "Digital preservation of 1980s-1990s Unix/Amiga software",
+    "Historical software archaeology",
+    "Legacy archive reading"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 62,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 5,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "ArchivesFormat": true,
+    "SupportsEncryption": false,
+    "Algorithm": "LZSS / LZW",
+    "Endianness": "little-endian",
+    "MagicLength": 20,
+    "SecondaryTag": "0xFDC4A7DC"
   }
 }

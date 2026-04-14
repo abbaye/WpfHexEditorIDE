@@ -1,7 +1,7 @@
 ﻿{
   "diffMode": "semantic",
   "formatName": "XML Markup Source File",
-  "version": "2.2",
+  "version": "2.13",
   "extensions": [
     ".xsl",
     ".xslt",

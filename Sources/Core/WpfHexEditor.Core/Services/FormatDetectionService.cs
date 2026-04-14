@@ -31,13 +31,17 @@ namespace WpfHexEditor.Core.Services
         private static IReadOnlyList<FormatDefinition>? s_sharedFormats;
         private static readonly object s_sharedLock = new();
 
-        private static readonly JsonSerializerOptions s_importOptions = new JsonSerializerOptions
+        // ── Reusable deserialization options (allocated once per process) ─
+        // ImportFromJson is called 463+ times at startup — avoid allocating
+        // a new JsonSerializerOptions on every call.
+        private static readonly JsonSerializerOptions s_importOptions = new()
         {
             PropertyNameCaseInsensitive = true,
-            ReadCommentHandling = JsonCommentHandling.Skip,
-            AllowTrailingCommas = true
+            ReadCommentHandling        = JsonCommentHandling.Skip,
+            AllowTrailingCommas        = true,
+            // SignatureStrength enum-string conversion is handled via [JsonConverter]
+            // on DetectionRule.Strength — no global converter needed here.
         };
-
 
         /// <summary>
         /// Set the shared format catalog used by ALL FormatDetectionService instances.
@@ -276,15 +280,23 @@ namespace WpfHexEditor.Core.Services
                 var tier1 = DetectWithStrongSignatures(data, fileName, contentAnalysis, byteProvider, cts.Token);
                 candidates.AddRange(tier1);
 
-                // Early exit if high-confidence match found
-                if (tier1.Any(c => c.ConfidenceScore >= 0.9))
+                // Score TIER 1 candidates immediately so the early-exit threshold is meaningful.
+                // Without this, ConfidenceScore is 0 on all candidates at this point.
+                if (tier1.Count > 0)
+                    ScoreAndRankCandidates(tier1, fileName, contentAnalysis, data);
+
+                // Early exit: a strong-signature match that is already high-confidence wins outright.
+                // Skip TIER 2/3 entirely — a required signature match must beat any text heuristic.
+                if (tier1.Any(c => c.ConfidenceScore >= 0.7))
                 {
                     return CreateResult(tier1.OrderByDescending(c => c.ConfidenceScore).First(),
                         candidates, contentAnalysis, sw);
                 }
 
-                // TIER 2: Text format detection (if appears to be text)
-                if (contentAnalysis.IsLikelyText)
+                // TIER 2: Text format detection (if appears to be text AND no strong match found).
+                // Skipped when TIER 1 already has a required-signature match — a format like RTF is
+                // text-based but must not be displaced by the Plain Text fallback.
+                if (contentAnalysis.IsLikelyText && tier1.Count == 0)
                 {
                     var tier2 = DetectTextFormats(data, fileName, contentAnalysis, byteProvider, cts.Token);
                     candidates.AddRange(tier2);
@@ -332,8 +344,14 @@ namespace WpfHexEditor.Core.Services
                     return false;
             }
 
-            // v2.0: entropy hint check (fast 512-byte sample)
-            if (format.Detection?.EntropyHint != null)
+            // v2.0: entropy hint check (fast 512-byte sample).
+            // Skipped for Strong/Unique signatures: a verified magic byte sequence is already
+            // definitive proof of identity — entropy filtering only adds false-negative risk for
+            // text-based formats with strong signatures (e.g. RTF, XML, SVG) where entropy varies
+            // widely depending on content. Entropy is useful only for weak/no-signature formats
+            // (e.g. compressed archives where high entropy is the primary signal).
+            if (format.Detection?.EntropyHint != null &&
+                GetSignatureStrength(format.Detection) < SignatureStrength.Strong)
             {
                 double entropy = ComputeEntropy(data);
                 var hint = format.Detection.EntropyHint;

@@ -1,160 +1,187 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Comic Book RAR",
-  "version": "1.13",
-  "extensions": [
-    ".cbr"
-  ],
-  "description": "Comic Book RAR archive format, a RAR file containing sequential images for digital comics",
+  "version": "1.14",
+  "extensions": [ ".cbr" ],
+  "description": "CBR (Comic Book RAR) is a RAR archive containing sequentially named image files (JPEG, PNG, GIF, WEBP) organized to represent pages of a comic book or manga. The format is simply a RAR archive renamed to .cbr — there are no CBR-specific header modifications. RAR4 archives start with 'Rar!' + 0x1A 0x07 0x00 (7 bytes), while RAR5 starts with 'Rar!' + 0x1A 0x07 0x01 0x00 (8 bytes). The CBR identity is determined entirely by the .cbr extension and the presence of image files inside. CBR is the most common comic archive format alongside CBZ (ZIP-based).",
   "category": "Documents",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "RAR 5.0 Archive Format",
-      "RAR File Format Technical Specification"
+      "RAR 5.0 Archive Format Technical Note",
+      "RAR File Format Specification",
+      "Comic Book Archive Format Overview"
     ],
     "WebLinks": [
       "https://www.rarlab.com/technote.htm",
-      "https://en.wikipedia.org/wiki/RAR_(file_format)"
+      "https://en.wikipedia.org/wiki/Comic_book_archive",
+      "https://en.wikipedia.org/wiki/RAR_(file_format)",
+      "https://wiki.mobileread.com/wiki/CBR"
     ]
   },
   "detection": {
-    "signature": "526172211A07",
-    "offset": 0,
+    "signatures": [
+      { "hex": "526172211A0700", "offset": 0, "weight": 1.0 },
+      { "hex": "526172211A070100", "offset": 0, "weight": 1.0 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.9,
     "required": true,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 6.0, "max": 7.9 },
     "validation": {
-      "minFileSize": 6,
-      "maxSignatureOffset": 1024
+      "minFileSize": 20,
+      "maxSignatureOffset": 0,
+      "note": "RAR4: 0x526172211A0700 (7 bytes). RAR5: 0x526172211A070100 (8 bytes). CBR = RAR archive with .cbr extension containing image files."
     }
   },
   "variables": {
-    "fileCount": 0,
-    "totalSize": 0,
-    "compressionMethod": "",
-    "headerCRC": 0,
     "rarSignature": "",
-    "formattedSize": ""
+    "rarVersion": "",
+    "headerCRC": 0,
+    "headerType": 0,
+    "headerFlags": 0
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "RAR Signature",
+      "name": "RAR Magic",
       "offset": 0,
-      "length": 6,
+      "length": 4,
       "color": "#FF6B6B",
       "opacity": 0.4,
-      "description": "RAR archive signature: 'Rar!' 0x1A 0x07 (RAR 4.x)",
+      "description": "RAR magic: 'Rar!' (0x52 0x61 0x72 0x21). Shared by RAR4 and RAR5.",
       "storeAs": "rarSignature",
       "valueType": "ascii"
     },
     {
-      "type": "data",
-      "name": "Header Type",
-      "offset": 6,
-      "length": 2,
+      "type": "field",
+      "name": "RAR Version Marker",
+      "offset": 4,
+      "length": 3,
       "color": "#4ECDC4",
       "opacity": 0.4,
-      "description": "RAR header type"
+      "description": "Version: 0x1A 0x07 0x00 = RAR4, 0x1A 0x07 0x01 = RAR5",
+      "storeAs": "rarVersion",
+      "valueType": "bytes",
+      "valueMap": {
+        "1A0700": "RAR 4.x format",
+        "1A0701": "RAR 5.x format"
+      }
     },
     {
-      "type": "data",
-      "name": "Flags",
-      "offset": 8,
+      "type": "field",
+      "name": "Header CRC",
+      "offset": 7,
       "length": 2,
       "color": "#45B7D1",
       "opacity": 0.4,
-      "description": "RAR header flags"
+      "description": "RAR4: CRC16 of archive header. RAR5: at offset 8, 4-byte CRC32 of header.",
+      "storeAs": "headerCRC",
+      "valueType": "uint16"
     },
     {
-      "type": "data",
-      "name": "Header Size",
-      "offset": 10,
-      "length": 2,
+      "type": "field",
+      "name": "Header Type",
+      "offset": 9,
+      "length": 1,
       "color": "#96CEB4",
       "opacity": 0.4,
-      "description": "RAR header size (little-endian)"
+      "description": "RAR4 header type: 0x73 = archive header, 0x74 = file header, 0x75 = old style comment",
+      "storeAs": "headerType",
+      "valueType": "uint8"
     },
     {
-      "type": "metadata",
-      "name": "File Count",
-      "variable": "fileCount",
-      "description": "File Count"
-    },
-    {
-      "type": "metadata",
-      "name": "Total Size",
-      "variable": "totalSize",
-      "description": "Total Size"
-    },
-    {
-      "type": "metadata",
-      "name": "Compression Method",
-      "variable": "compressionMethod",
-      "description": "Compression Method"
-    },
-    {
-      "type": "metadata",
-      "name": "Formatted Size",
-      "variable": "formattedSize",
-      "description": "Human-readable file size"
+      "type": "field",
+      "name": "Header Flags",
+      "offset": 10,
+      "length": 2,
+      "color": "#FFEAA7",
+      "opacity": 0.4,
+      "description": "Archive header flags: bit0=volume, bit1=comment, bit2=lock, bit4=solid, bit8=encrypted",
+      "storeAs": "headerFlags",
+      "valueType": "uint16"
     }
   ],
+  "assertions": [
+    { "field": "rarSignature", "operator": "equals", "value": "Rar!", "description": "First 4 bytes must be 'Rar!'" }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "RAR Magic", "offset": 0, "description": "'Rar!' signature" },
+      { "name": "Version Marker", "offset": 4, "description": "RAR4 vs RAR5 version discriminator" },
+      { "name": "Archive Header", "offset": 7, "description": "First header: CRC + type + flags" }
+    ]
+  },
+  "inspector": {
+    "badge": "CBR",
+    "primaryField": "rarVersion",
+    "showQualityScore": true,
+    "groups": [
+      { "name": "Format", "fields": ["rarSignature", "rarVersion"] },
+      { "name": "Header", "fields": ["headerType", "headerFlags"] }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "CBR/RAR Info (JSON)",
+      "format": "json",
+      "fields": ["rarSignature", "rarVersion", "headerType", "headerFlags"]
+    }
+  ],
+  "forensic": {
+    "category": "document",
+    "riskLevel": "medium",
+    "suspiciousPatterns": [
+      "CBR files can contain non-image content — inspect archive listing for executables",
+      "RAR5 encryption flag (bit8 in flags) means content is encrypted",
+      "Excessively large CBR files may contain more than just comic images"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "CBR is a RAR archive with .cbr extension. Binary structure is identical to RAR. RAR4 starts 'Rar!' + 0x1A 0x07 0x00; RAR5 adds 0x01 before the null. CBR identity relies on extension + internal image files (jpg/png/gif/webp). Comic readers like CDisplayEx, YACReader, and Kavita use CBR/CBZ as their primary format.",
+    "suggestedInspections": [
+      "Verify 'Rar!' magic at offset 0",
+      "Check byte at offset 6: 0x00=RAR4, 0x01=RAR5",
+      "List archive contents for expected image extensions (.jpg, .png, .gif, .webp)",
+      "Check for unexpected non-image files that could indicate malicious content",
+      "Verify header flags at offset 10 for encryption or multi-volume markers"
+    ]
+  },
   "software": [
     "CDisplayEx",
     "ComicRack",
     "YACReader",
-    "Calibre"
+    "Kavita",
+    "Calibre",
+    "WinRAR"
   ],
   "formatRelationships": {
     "category": "Documents",
-    "extensions": [
-      ".cbr"
-    ]
+    "extensions": [".cbr"],
+    "relatedFormats": ["CBZ", "CBT", "CB7", "RAR", "ZIP"],
+    "note": "CBR = RAR archive. CBZ = ZIP archive. Both contain sequential images for comic reading. CBZ is preferred for open-source tools due to ZIP licensing freedom."
   },
-  "MimeTypes": [
-    "application/cbr"
-  ],
-  "Software": [
-    "CDisplayEx",
-    "ComicRack",
-    "YACReader",
-    "Calibre"
-  ],
+  "MimeTypes": [ "application/vnd.comicbook-rar", "application/x-cbr" ],
   "UseCases": [
-    "Document viewing",
-    "Reading",
-    "Publishing",
-    "Archival"
+    "Digital comic book and manga reading",
+    "Comic library management",
+    "eBook readers for visual content"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 8,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
+    "CompletenessScore": 62,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 5,
+    "ValidationRules": 1,
+    "LastUpdated": "2026-04-14",
     "PriorityFormat": false,
-    "AutoRefined": true
+    "AutoRefined": false
   },
   "TechnicalDetails": {
-    "DocumentFormat": true
-  },
-  "functions": {
-    "readUInt32LE": "Read header",
-    "calculateCRC32": "Validate",
-    "formatFileSize(var:totalSize)": "Format totalSize as readable size"
-  },
-  "forensic": {
-    "category": "document",
-    "riskLevel": "medium",
-    "suspiciousPatterns": []
-  },
-  "aiHints": {
-    "analysisContext": "Comic Book RAR archive format, a RAR file containing sequential images for digital comics",
-    "suggestedInspections": [
-      "Validate Comic Book RAR file signature and container structure",
-      "Check for embedded macros, scripts, or active content",
-      "Inspect document metadata: author, timestamps, revisions"
-    ]
+    "DocumentFormat": true,
+    "ContainerFormat": "RAR (4.x or 5.x)",
+    "Endianness": "little-endian",
+    "Note": "CBR is structurally identical to RAR — only the .cbr extension and image file content distinguish it"
   }
 }

@@ -1,18 +1,16 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "UHA Archive",
-  "version": "1.13",
-  "extensions": [
-    ".uha"
-  ],
-  "description": "UHARC archive format with high compression ratio, developed by Uwe Herklotz",
+  "version": "1.14",
+  "extensions": [ ".uha" ],
+  "description": "UHARC is a high-compression archive format developed by Uwe Herklotz, notable for achieving very high compression ratios using PPMd-based algorithms. The format starts with 'UHA' (0x554841) as a 3-byte ASCII magic at offset 0. The header includes format version, compression flags, and an optional method byte indicating the algorithm: 0=store, 1=LZ77, 2=PPMd. UHARC achieved competitive compression with BZIP2 and early 7-Zip but is now largely abandoned. Files are primarily encountered in legacy software distribution and compression benchmarks.",
   "category": "Archives",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "UHARC Archive Format - Uwe Herklotz",
-      "UHA High Compression Format",
+      "UHA High Compression Algorithm",
       "UHARC Compression Specification"
     ],
     "WebLinks": [
@@ -23,141 +21,159 @@
     ]
   },
   "detection": {
-    "signature": "55484152435300",
-    "offset": 0,
+    "signatures": [
+      { "hex": "554841", "offset": 0, "weight": 0.9 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.85,
     "required": true,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 5.0, "max": 7.8 },
     "validation": {
-      "minFileSize": 7,
-      "maxSignatureOffset": 1024
+      "minFileSize": 10,
+      "maxSignatureOffset": 0,
+      "note": "'UHA' 3-byte magic is fairly unique. Version byte at offset 3 should be a known value (0x01 or 0x02)."
     }
   },
   "variables": {
-    "fileCount": 0,
-    "totalSize": 0,
-    "compressionMethod": "",
-    "headerCRC": 0,
-    "uhaSignature": "",
-    "formattedSize": ""
+    "uhaMagic": "",
+    "uhaVersion": 0,
+    "uhaFlags": 0,
+    "uhaMethod": 0
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "UHA Signature",
+      "name": "UHA Magic",
       "offset": 0,
-      "length": 7,
+      "length": 3,
       "color": "#FF6B6B",
       "opacity": 0.4,
-      "description": "Magic bytes: 'UHARCS' + 0x00",
-      "storeAs": "uhaSignature",
+      "description": "UHA magic bytes: 'UHA' (0x55 0x48 0x41). Strongly identifies UHARC archive format.",
+      "storeAs": "uhaMagic",
       "valueType": "ascii"
     },
     {
-      "type": "data",
-      "name": "Version",
-      "offset": 7,
-      "length": 2,
+      "type": "field",
+      "name": "Format Version",
+      "offset": 3,
+      "length": 1,
       "color": "#4ECDC4",
       "opacity": 0.4,
-      "description": "Format version"
+      "description": "UHARC format version byte (0x01 = v1.x, 0x02 = v2.x)",
+      "storeAs": "uhaVersion",
+      "valueType": "uint8"
     },
     {
-      "type": "data",
-      "name": "Archive Type",
-      "offset": 9,
-      "length": 1,
+      "type": "field",
+      "name": "Archive Flags",
+      "offset": 4,
+      "length": 2,
       "color": "#45B7D1",
       "opacity": 0.4,
-      "description": "Archive type flags"
+      "description": "Archive flags (little-endian uint16): bit0=solid, bit1=encrypted, bit2=multi-volume",
+      "storeAs": "uhaFlags",
+      "valueType": "uint16"
+    },
+    {
+      "type": "field",
+      "name": "Compression Method",
+      "offset": 6,
+      "length": 1,
+      "color": "#96CEB4",
+      "opacity": 0.4,
+      "description": "Compression algorithm: 0=store, 1=LZ77, 2=PPMd",
+      "storeAs": "uhaMethod",
+      "valueType": "uint8",
+      "valueMap": {
+        "0": "Store (no compression)",
+        "1": "LZ77",
+        "2": "PPMd (best compression)"
+      }
     },
     {
       "type": "data",
-      "name": "Directory Offset",
-      "offset": 10,
-      "length": 4,
-      "color": "#96CEB4",
-      "opacity": 0.4,
-      "description": "Offset to file directory (little-endian)"
-    },
-    {
-      "type": "metadata",
-      "name": "File Count",
-      "variable": "fileCount",
-      "description": "File Count"
-    },
-    {
-      "type": "metadata",
-      "name": "Total Size",
-      "variable": "totalSize",
-      "description": "Total Size"
-    },
-    {
-      "type": "metadata",
-      "name": "Compression Method",
-      "variable": "compressionMethod",
-      "description": "Compression Method"
-    },
-    {
-      "type": "metadata",
-      "name": "Formatted Size",
-      "variable": "formattedSize",
-      "description": "Human-readable file size"
+      "name": "Header Extension",
+      "offset": 7,
+      "length": 8,
+      "color": "#FFEAA7",
+      "opacity": 0.3,
+      "description": "Additional header fields: compression level, dictionary size, and other parameters"
     }
   ],
-  "software": [
-    "UHARC",
-    "7-Zip"
+  "assertions": [
+    { "field": "uhaMagic", "operator": "equals", "value": "UHA", "description": "Magic must be 'UHA' (3 ASCII bytes)" }
   ],
-  "formatRelationships": {
-    "category": "Archives",
-    "extensions": [
-      ".uha"
+  "navigation": {
+    "bookmarks": [
+      { "name": "UHA Magic", "offset": 0, "description": "3-byte 'UHA' magic" },
+      { "name": "Version and Flags", "offset": 3, "description": "Version byte + flags + method" }
     ]
   },
-  "MimeTypes": [
-    "application/x-uha-compressed"
-  ],
-  "Software": [
-    "7-Zip",
-    "WinRAR",
-    "WinZip",
-    "PeaZip",
-    "The Unarchiver"
-  ],
-  "UseCases": [
-    "File compression",
-    "Archive storage",
-    "Backup",
-    "Distribution"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 8,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "UHA",
+    "primaryField": "uhaMethod",
+    "showQualityScore": true,
+    "groups": [
+      { "name": "Format Identity", "fields": ["uhaMagic", "uhaVersion"] },
+      { "name": "Compression", "fields": ["uhaMethod", "uhaFlags"] }
+    ]
   },
-  "TechnicalDetails": {
-    "ArchivesFormat": true,
-    "SupportsEncryption": false
-  },
-  "functions": {
-    "readUInt32LE": "Read header",
-    "calculateCRC32": "Validate",
-    "formatFileSize(var:totalSize)": "Format totalSize as readable size"
-  },
+  "exportTemplates": [
+    {
+      "name": "UHA Archive Info (JSON)",
+      "format": "json",
+      "fields": ["uhaMagic", "uhaVersion", "uhaMethod", "uhaFlags"]
+    }
+  ],
   "forensic": {
     "category": "archive",
     "riskLevel": "low",
-    "suspiciousPatterns": []
+    "suspiciousPatterns": [
+      "UHARC files are rarely encountered in modern contexts",
+      "Encrypted UHARC archives (bit1 set in flags) require password for extraction"
+    ]
   },
   "aiHints": {
-    "analysisContext": "UHARC archive format with high compression ratio, developed by Uwe Herklotz",
+    "analysisContext": "UHARC starts with 'UHA' (3 bytes). The compression method byte at offset 6 is key: 0=store, 1=LZ77, 2=PPMd. PPMd mode achieved near-best-in-class compression ratios in early 2000s. The format is largely abandoned; modern tools may have limited support. 7-Zip does not natively support UHARC.",
     "suggestedInspections": [
-      "Verify UHA Archive file header, compression method, and stored CRCs",
-      "Check central directory or entry table for consistency",
-      "Inspect individual entry sizes for truncation or overflow"
+      "Verify 'UHA' magic at offset 0",
+      "Read version at offset 3 (0x01 or 0x02 for known UHARC releases)",
+      "Check method at offset 6: PPMd (2) indicates high-ratio compression",
+      "Check flags at offset 4 for solid mode or encryption",
+      "Use UHARC executable or The Unarchiver for extraction"
     ]
+  },
+  "software": [
+    "UHARC (uha.exe)",
+    "The Unarchiver",
+    "PowerArchiver"
+  ],
+  "formatRelationships": {
+    "category": "Archives",
+    "extensions": [".uha"],
+    "relatedFormats": ["7Z", "BZIP2", "RAR", "ARJ"],
+    "note": "UHARC competed with 7-Zip and RAR in compression ratio benchmarks in the early 2000s. Now largely superseded by 7-Zip LZMA/PPMd and Brotli/ZSTD."
+  },
+  "MimeTypes": [ "application/x-uharc", "application/x-uha-compressed" ],
+  "UseCases": [
+    "Legacy high-ratio software distribution",
+    "Compression benchmarks (historical)",
+    "Digital preservation of 2000s-era archives"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 60,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 5,
+    "ValidationRules": 1,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "ArchivesFormat": true,
+    "SupportsEncryption": true,
+    "Algorithm": "PPMd / LZ77",
+    "Endianness": "little-endian"
   }
 }

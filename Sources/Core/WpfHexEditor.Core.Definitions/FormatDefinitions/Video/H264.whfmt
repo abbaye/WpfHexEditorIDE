@@ -1,21 +1,21 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Raw H.264/AVC",
-  "version": "1.14",
+  "version": "1.15",
   "extensions": [
     ".h264",
     ".264",
     ".avc"
   ],
-  "description": "Raw H.264/MPEG-4 AVC elementary stream video format",
+  "description": "Raw H.264/MPEG-4 AVC (Advanced Video Coding) elementary bitstream as defined in ITU-T H.264 and ISO/IEC 14496-10. Raw AVC bitstreams use Annex B byte-stream format: each Network Abstraction Layer Unit (NALU) is preceded by a start code prefix (0x00 0x00 0x00 0x01 for long start code, or 0x00 0x00 0x01 for short). The NALU header byte follows: bits 7 (forbidden_zero_bit, must be 0), bits 6-5 (nal_ref_idc: 0=non-reference, 1-3=reference), bits 4-0 (nal_unit_type: 1=P-slice, 5=IDR/keyframe, 7=SPS, 8=PPS, 9=AU delimiter). The Sequence Parameter Set (SPS, type 7) contains profile_idc, level_idc, and resolution. Raw H.264 files have no container overhead — they are pure elementary streams suitable for hardware decoders.",
   "category": "Video",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "ITU-T H.264 - Advanced Video Coding",
-      "ISO/IEC 14496-10 - MPEG-4 Part 10 AVC",
-      "H.264/AVC Standard Specification"
+      "ITU-T H.264 — Advanced Video Coding (Rec. H.264)",
+      "ISO/IEC 14496-10 — MPEG-4 Part 10 AVC",
+      "ISO/IEC 14496-15 — AVC File Format"
     ],
     "WebLinks": [
       "https://www.itu.int/rec/T-REC-H.264",
@@ -25,109 +25,164 @@
     ]
   },
   "detection": {
-    "signature": "00000001",
-    "offset": 0,
+    "signatures": [
+      { "value": "00000001", "offset": 0, "label": "H.264 Annex B long start code (4-byte)", "weight": 0.7 },
+      { "value": "000001", "offset": 0, "label": "H.264 Annex B short start code (3-byte)", "weight": 0.5 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.5,
     "required": true,
+    "Strength": "Medium",
+    "EntropyHint": { "min": 5.5, "max": 7.8 },
     "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024
+      "minFileSize": 5,
+      "note": "H.264 Annex B start code 0x000001 or 0x00000001 is shared with H.265/HEVC and other MPEG elementary streams. The NALU type byte after the start code distinguishes H.264 from H.265 (H.265 uses 2-byte NALU header)."
     }
   },
   "variables": {
-    "width": 0,
-    "height": 0,
-    "frameRate": 0,
-    "duration": 0,
-    "nalUnitStartCode": 0,
-    "totalPixels": 0
+    "startCode": 0,
+    "naluHeaderByte": 0,
+    "naluType": 0,
+    "nalRefIdc": 0
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "NAL Unit Start Code",
+      "name": "Annex B Start Code",
       "offset": 0,
       "length": 4,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "H.264 NAL Unit start code prefix",
-      "storeAs": "nalUnitStartCode",
-      "valueType": "uint32"
+      "opacity": 0.45,
+      "description": "H.264 Annex B long start code prefix 0x00 0x00 0x00 0x01 (big-endian uint32 = 1). This 4-byte sequence precedes the first NALU in an Annex B byte-stream. Subsequent NALUs may use either the 4-byte (0x00 0x00 0x00 0x01) or 3-byte (0x00 0x00 0x01) start code. Start code emulation prevention bytes (0x03) prevent false start code matches within NALU data. The long start code is required for the first NALU and for random access points.",
+      "storeAs": "startCode",
+      "valueType": "uint32",
+      "endianness": "big"
+    },
+    {
+      "type": "field",
+      "name": "NALU Header",
+      "offset": 4,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "H.264 Network Abstraction Layer Unit (NALU) header byte. Bit 7 = forbidden_zero_bit (must be 0). Bits 6-5 = nal_ref_idc (0=non-reference, 1-3=priority increasing). Bits 4-0 = nal_unit_type (1=Coded slice non-IDR, 5=IDR keyframe, 6=SEI, 7=SPS, 8=PPS, 9=Access Unit delimiter).",
+      "storeAs": "naluHeaderByte",
+      "valueType": "uint8",
+      "bitfields": [
+        { "name": "Forbidden Zero Bit", "bits": "7", "description": "Must be 0 (H.264 spec violation if 1)" },
+        { "name": "NAL Reference IDC", "bits": "6-5", "description": "0=non-reference, 1-3=reference priority", "valueMap": { "0": "Non-reference NALU", "1": "Low priority reference", "2": "Medium priority reference", "3": "High priority reference" } },
+        { "name": "NALU Type", "bits": "4-0", "description": "Network Abstraction Layer Unit type", "valueMap": { "1": "Non-IDR coded slice (P/B frame)", "2": "Coded slice data partition A", "5": "IDR coded slice (I-frame/keyframe)", "6": "SEI (Supplemental Enhancement Info)", "7": "SPS (Sequence Parameter Set)", "8": "PPS (Picture Parameter Set)", "9": "Access Unit Delimiter", "10": "End of Sequence", "11": "End of Stream" } }
+      ]
     },
     {
       "type": "metadata",
-      "name": "Resolution",
-      "variable": "width",
-      "description": "Resolution"
+      "name": "Start Code",
+      "variable": "startCode",
+      "description": "Annex B start code (0x00000001 = 1)"
     },
     {
       "type": "metadata",
-      "name": "Frame Rate",
-      "variable": "frameRate",
-      "description": "Frame Rate"
-    },
-    {
-      "type": "metadata",
-      "name": "Total Pixels",
-      "variable": "totalPixels",
-      "description": "Width x Height"
+      "name": "NALU Type",
+      "variable": "naluHeaderByte",
+      "description": "First NALU type (7=SPS, 8=PPS, 5=IDR)"
     }
   ],
-  "software": [
-    "All modern players",
-    "VLC",
-    "FFmpeg"
+  "assertions": [
+    {
+      "name": "Start code valid",
+      "expression": "startCode == 1",
+      "severity": "error",
+      "message": "H.264 Annex B stream must start with 0x00 0x00 0x00 0x01 — not a valid raw AVC stream"
+    },
+    {
+      "name": "Forbidden zero bit is 0",
+      "expression": "(naluHeaderByte & 128) == 0",
+      "severity": "error",
+      "message": "NALU header forbidden_zero_bit (bit 7) must be 0 — corrupt or non-H.264 data"
+    }
   ],
-  "formatRelationships": {
-    "category": "Video",
-    "extensions": [
-      ".h264",
-      ".264",
-      ".avc"
+  "navigation": {
+    "bookmarks": [
+      {
+        "name": "First NALU",
+        "offset": 0,
+        "icon": "\uE71B",
+        "color": "#FF6B6B"
+      }
     ]
   },
-  "MimeTypes": [
-    "video/h264"
-  ],
-  "Software": [
-    "VLC",
-    "Media Player Classic",
-    "HandBrake",
-    "FFmpeg",
-    "MPC-HC"
-  ],
-  "UseCases": [
-    "Video playback",
-    "Video editing",
-    "Encoding",
-    "Streaming"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 4,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "naluHeaderByte",
+    "primaryField": "startCode",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "H.264 NALU Header",
+        "icon": "\uE71B",
+        "fields": ["startCode", "naluHeaderByte"]
+      }
+    ]
   },
-  "TechnicalDetails": {
-    "VideoFormat": true
-  },
-  "functions": {
-    "readUInt32LE": "Read video header",
-    "computeFromVariables(width * height, totalPixels)": "Calculate total pixels"
-  },
+  "exportTemplates": [
+    {
+      "name": "H.264 NALU Header (JSON)",
+      "format": "json",
+      "fields": ["startCode", "naluHeaderByte"]
+    }
+  ],
   "forensic": {
     "category": "video",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Raw H.264/MPEG-4 AVC elementary stream video format",
+    "analysisContext": "Raw H.264 Annex B byte-stream. NALU sequence: start code (3 or 4 bytes: 000001 or 00000001) + NALU header (1B) + RBSP data. Typical stream start: SPS (type 7) + PPS (type 8) + IDR (type 5). SPS layout (after header): profile_idc(1B) + constraint_set_flags(1B) + level_idc(1B) + seq_parameter_set_id(UVLC) + ... + pic_width/height_in_mbs_minus1 (UVLC). profile_idc: 66=Baseline, 77=Main, 100=High, 110=High10, 122=High422, 244=High444. level_idc: 30=L3.0, 40=L4.0, 51=L5.1. H.264 in MP4 uses avcC (length-prefixed, not Annex B).",
     "suggestedInspections": [
-      "Validate Raw H.264/AVC container magic, box/atom sizes, and codec FourCC",
-      "Check track/stream layout, frame index, and timing fields",
-      "Inspect audio-video sync, keyframe distribution, and metadata"
+      "Verify 0x00 0x00 0x00 0x01 at offset 0 — Annex B long start code",
+      "Check NALU type at offset 4 bits 4-0: 7=SPS (first in stream), 8=PPS, 5=IDR",
+      "If NALU type is 7 (SPS): byte 5 = profile_idc (66=Baseline, 77=Main, 100=High)",
+      "byte 7 = level_idc × 10 = level (e.g., 51 = Level 5.1 = 4K@30fps)",
+      "Check for emulation prevention bytes (0x000003) in NALU data"
     ]
+  },
+  "software": [
+    "FFmpeg (h264 parser)",
+    "VLC media player",
+    "x264 encoder",
+    "Hardware decoders (Intel QSV, NVENC, AMD VCE)",
+    "All modern video players and streaming platforms"
+  ],
+  "formatRelationships": {
+    "category": "Video",
+    "extensions": [".h264", ".264", ".avc"],
+    "relatedFormats": ["H265", "MP4", "MKV", "TS"],
+    "note": "Raw H.264 Annex B elementary stream — typically encapsulated in MPEG-TS (.ts), MP4 (.mp4), MKV (.mkv), or FLV (.flv). In MP4 containers, H.264 uses the length-prefix (AVCC) format instead of Annex B start codes. The Annex B format is used in broadcast/streaming (MPEG-TS) and raw files."
+  },
+  "MimeTypes": [
+    "video/h264",
+    "video/avc",
+    "video/x-h264"
+  ],
+  "UseCases": [
+    "Broadcast contribution encoding (IPTV, satellite)",
+    "Hardware video encoder output",
+    "Security camera streams (RTSP/ONVIF)",
+    "Video codec development and testing"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 68,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 4,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "VideoFormat": true,
+    "ContainerFormat": "Raw Annex B elementary bitstream (no container)",
+    "VideoCodec": "H.264/AVC (ITU-T H.264 / ISO/IEC 14496-10)",
+    "Endianness": "big-endian (start codes and NALU header)",
+    "MaxResolution": "Up to 8192×4320 (Level 6.2)"
   }
 }

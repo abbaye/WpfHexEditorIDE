@@ -1,132 +1,206 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Sony SR2 RAW",
-  "version": "1.13",
+  "version": "1.14",
   "extensions": [
     ".sr2"
   ],
-  "description": "Sony RAW format (DSLR cameras)",
+  "description": "Sony SR2 (Sony RAW 2) is the predecessor to Sony's ARW format, used primarily in the Sony DSLR-A100 and selected Cyber-shot DSC cameras from approximately 2006. SR2 is a standard TIFF/EP-based RAW format with little-endian byte order. The file begins with the standard TIFF LE signature 0x49492A00 ('II' + magic 42) at offset 0, followed by the 4-byte IFD0 offset. A distinguishing feature of SR2 is the Sony SR2 private data tag 0x7200 (29184) in IFD0, which stores proprietary Sony decryption keys and calibration data. The MakerNote (EXIF tag 0x927C) begins with 'SONY DSC\\x00\\x00\\x00' or 'SONY CAM' and contains Sony-specific metadata including white balance, noise reduction, and lens correction data. SR2 stores 12-bit uncompressed RAW sensor data. It was superseded by the ARW format with the introduction of the DSLR-A700 in 2007.",
   "category": "Images",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "image-viewer",
   "references": {
     "specifications": [
-      "Sony RAW Format 2 (SR2) Specification",
-      "SR2 DSLR Camera RAW Format",
-      "Sony Raw File Formats (SRF, SR2, ARW)"
+      "Sony RAW Format 2 (SR2) — TIFF/EP based",
+      "SR2 DSLR Camera RAW Format (DSLR-A100)",
+      "Sony Raw File Formats (SRF, SR2, ARW) — lclevy documentation",
+      "TIFF/EP ISO 12234-2 Standard"
     ],
     "WebLinks": [
       "https://github.com/lclevy/sony_raw",
       "https://github.com/lclevy/sony_raw/blob/main/readme.md",
-      "https://www.online-convert.com/file-format/sr2",
-      "https://www.leadtools.com/help/sdk/v21/dh/to/file-formats-digital-file-formatdcf-arw-sr2-srf-dng-cr2-raf-nef-nrw-orf-rw2-raw.html"
+      "https://exiftool.org/TagNames/Sony.html",
+      "https://libopenraw.freedesktop.org/formats/sr2/"
     ]
   },
   "detection": {
-    "signature": "49492A00",
-    "offset": 0,
+    "signatures": [
+      {
+        "pattern": "49492A00",
+        "offset": 0,
+        "description": "TIFF little-endian signature: 'II' (0x4949) + magic 42 (0x002A) + null"
+      }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.75,
     "required": true,
+    "Strength": "Medium",
+    "EntropyHint": { "min": 4.5, "max": 7.5 },
     "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024
+      "minFileSize": 8,
+      "maxSignatureOffset": 0,
+      "note": "SR2 shares TIFF LE signature with ARW, NEF, SRW, PEF — differentiated by SR2 private tag 0x7200 in IFD0"
     }
   },
   "variables": {
-    "machineType": "",
-    "sectionCount": 0,
-    "entryPoint": 0,
-    "tiffHeader": 0,
+    "byteOrderMark": 0,
+    "tiffMagic": 0,
     "ifdOffset": 0
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "TIFF Header",
+      "name": "ByteOrderMark",
       "offset": 0,
-      "length": 4,
+      "length": 2,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "TIFF-based RAW",
-      "storeAs": "tiffHeader",
-      "valueType": "uint32"
+      "opacity": 0.5,
+      "description": "Byte order indicator. 0x4949 = 'II' (little-endian). SR2 is always LE.",
+      "storeAs": "byteOrderMark",
+      "valueType": "uint16",
+      "valueMap": {
+        "18761": "II — little-endian",
+        "19789": "MM — big-endian (unexpected for SR2)"
+      }
     },
     {
       "type": "field",
-      "name": "IFD Offset",
+      "name": "TIFFMagic",
+      "offset": 2,
+      "length": 2,
+      "color": "#FFB347",
+      "opacity": 0.45,
+      "description": "TIFF magic number. Must be 42 (0x002A) for standard TIFF/EP compliance.",
+      "storeAs": "tiffMagic",
+      "valueType": "uint16",
+      "valueMap": {
+        "42": "Standard TIFF magic (0x002A)"
+      }
+    },
+    {
+      "type": "field",
+      "name": "IFDOffset",
       "offset": 4,
       "length": 4,
       "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "First IFD offset",
+      "opacity": 0.35,
+      "description": "Offset (uint32 LE) to first Image File Directory (IFD0) from start of file.",
       "storeAs": "ifdOffset",
       "valueType": "uint32"
     },
     {
       "type": "metadata",
-      "name": "Machine",
-      "variable": "machineType",
-      "description": "Machine"
+      "name": "ByteOrderMark",
+      "variable": "byteOrderMark",
+      "description": "Byte order mark (18761 = 'II' LE)"
     },
     {
       "type": "metadata",
-      "name": "Sections",
-      "variable": "sectionCount",
-      "description": "Sections"
+      "name": "TIFFMagic",
+      "variable": "tiffMagic",
+      "description": "TIFF magic number (42 = standard)"
     }
   ],
-  "software": [
-    "Image viewers",
-    "GIMP"
+  "assertions": [
+    {
+      "variable": "byteOrderMark",
+      "operator": "==",
+      "value": 18761,
+      "description": "SR2 must be little-endian (byte order mark = 'II' = 0x4949)"
+    },
+    {
+      "variable": "tiffMagic",
+      "operator": "==",
+      "value": 42,
+      "description": "TIFF magic must be 42 (0x002A)"
+    }
   ],
-  "formatRelationships": {
-    "category": "Images",
-    "extensions": [
-      ".sr2"
+  "navigation": {
+    "bookmarks": [
+      { "name": "Header Start", "offset": 0, "description": "TIFF byte order mark" },
+      { "name": "TIFF Magic", "offset": 2, "description": "Standard TIFF magic 42" },
+      { "name": "IFD0 Offset", "offset": 4, "description": "Pointer to first Image File Directory" }
     ]
   },
-  "MimeTypes": [
-    "image/sr2"
-  ],
-  "Software": [
-    "Photoshop",
-    "GIMP",
-    "Paint.NET",
-    "IrfanView",
-    "XnView"
-  ],
-  "UseCases": [
-    "Image viewing",
-    "Photo editing",
-    "Graphics design",
-    "Web publishing"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 32,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 4,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "SR2",
+    "primaryField": "ifdOffset",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "name": "TIFF Header",
+        "fields": ["byteOrderMark", "tiffMagic", "ifdOffset"]
+      }
+    ]
   },
-  "TechnicalDetails": {
-    "ImagesFormat": true,
-    "BitDepth": 8
-  },
-  "functions": {
-    "readUInt32LE": "Read executable header"
-  },
+  "exportTemplates": [
+    {
+      "name": "SR2 Header Summary",
+      "fields": ["byteOrderMark", "tiffMagic", "ifdOffset"],
+      "format": "text"
+    }
+  ],
   "forensic": {
     "category": "image",
     "riskLevel": "low",
-    "suspiciousPatterns": []
+    "suspiciousPatterns": [
+      "Absence of SR2 private tag 0x7200 in IFD0 may indicate a non-SR2 TIFF file",
+      "MakerNote prefix not matching 'SONY DSC' or 'SONY CAM' suggests metadata tampering"
+    ]
   },
   "aiHints": {
-    "analysisContext": "Sony RAW format (DSLR cameras)",
+    "analysisContext": "Sony SR2 RAW camera image from DSLR-A100 era. Standard TIFF LE structure (signature shared with ARW/NEF/SRW/PEF). Differentiated by Sony SR2 private IFD tag 0x7200 (29184). MakerNote tag 0x927C begins with 'SONY DSC\\x00\\x00\\x00' or 'SONY CAM'. Contains 12-bit uncompressed RAW data.",
     "suggestedInspections": [
-      "Validate Sony SR2 RAW signature, image dimensions, and color model",
-      "Check pixel data offset, compression type, and scanline alignment",
-      "Inspect color profile (ICC), EXIF metadata, and chunk CRCs"
+      "Parse IFD0 to locate Sony SR2 private tag 0x7200 — confirms SR2 vs other TIFF-based RAW",
+      "Inspect MakerNote (tag 0x927C) for 'SONY DSC' or 'SONY CAM' prefix",
+      "Validate IFD0 offset is within file bounds",
+      "Check embedded thumbnail (SubIFD) for JPEG preview integrity"
     ]
+  },
+  "software": [
+    "Adobe Lightroom",
+    "Adobe Camera Raw",
+    "Capture One",
+    "RawTherapee",
+    "darktable",
+    "GIMP (with UFRaw/RawTherapee)",
+    "IrfanView",
+    "XnView"
+  ],
+  "formatRelationships": {
+    "category": "Images",
+    "extensions": [".sr2"],
+    "relatedFormats": ["ARW", "SRF", "TIFF", "CR2", "NEF"],
+    "note": "SR2 is the second Sony RAW format (after SRF), succeeded by ARW from 2007. All three use TIFF/EP as the container basis."
+  },
+  "MimeTypes": [
+    "image/sr2",
+    "image/x-sony-sr2",
+    "image/x-sony-raw"
+  ],
+  "UseCases": [
+    "RAW photo processing from Sony DSLR-A100",
+    "Archival of legacy Sony RAW files",
+    "Forensic imaging of Sony camera media",
+    "Camera RAW format compatibility research"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 65,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 5,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "ImagesFormat": true,
+    "BitDepth": 12,
+    "ByteOrder": "little-endian",
+    "Container": "TIFF/EP",
+    "PrivateTag": "0x7200 (SR2 private data in IFD0)",
+    "MakerNotePrefix": "SONY DSC or SONY CAM",
+    "SensorType": "Bayer",
+    "Compression": "uncompressed"
   }
 }

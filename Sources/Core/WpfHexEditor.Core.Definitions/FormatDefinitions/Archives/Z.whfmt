@@ -1,18 +1,16 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Unix Compress",
-  "version": "1.13",
-  "extensions": [
-    ".z"
-  ],
-  "description": "Unix compress (.Z) format - LZW compression",
+  "version": "1.14",
+  "extensions": [ ".z", ".Z" ],
+  "description": "Unix compress (.Z) is one of the oldest data compression formats on Unix systems, using the LZW (Lempel-Ziv-Welch) algorithm. The 2-byte magic is 0x1F 0x9D at offset 0. The third byte (flags) encodes two critical parameters: bit7 indicates block mode (reset the LZW table when full, recommended), and bits 4-0 encode max_bits (the maximum LZW code size, valid range 9-16). Most compress implementations use max_bits=16. The format is superseded by gzip (.gz) and bzip2 (.bz2) but remains in use on legacy Unix systems and for reading historical archives.",
   "category": "Archives",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Unix Compress .Z File Format",
-      "LZW Compression Algorithm",
+      "LZW Compression Algorithm - Welch (1984)",
       "POSIX compress/uncompress Specification"
     ],
     "WebLinks": [
@@ -23,24 +21,25 @@
     ]
   },
   "detection": {
-    "signature": "1F9D",
-    "offset": 0,
+    "signatures": [
+      { "hex": "1F9D", "offset": 0, "weight": 1.0 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.95,
     "required": true,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 5.5, "max": 7.9 },
     "validation": {
-      "minFileSize": 2,
-      "maxSignatureOffset": 1024
+      "minFileSize": 3,
+      "maxSignatureOffset": 0,
+      "note": "2-byte magic 0x1F 0x9D must match. Third byte flags: bit7=block mode, bits 4-0=max_bits (9-16). max_bits>16 is invalid."
     }
   },
   "variables": {
-    "currentOffset": 0,
-    "calculatedCRC32": 0,
-    "crc32Valid": false,
-    "originalSize": 0,
-    "compressedSize": 0,
-    "compressionRatio": 0,
-    "compressMagic": 0,
-    "compressionMode": 0,
-    "formattedSize": ""
+    "zMagic": 0,
+    "zFlags": 0,
+    "maxBits": 0,
+    "blockMode": false
   },
   "blocks": [
     {
@@ -50,101 +49,119 @@
       "length": 2,
       "color": "#FF6B6B",
       "opacity": 0.4,
-      "description": "Unix compress signature",
-      "storeAs": "compressMagic",
+      "description": "Unix compress magic: 0x1F 0x9D. Note: gzip also starts with 0x1F but uses 0x8B as second byte.",
+      "storeAs": "zMagic",
       "valueType": "uint16"
     },
     {
       "type": "field",
-      "name": "Compression Mode",
+      "name": "Flags Byte",
       "offset": 2,
       "length": 1,
       "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "LZW bits and block mode",
-      "storeAs": "compressionMode",
+      "opacity": 0.4,
+      "description": "Flags: bit7=block_mode (clear LZW table when full), bits 6-5=reserved (must be 0), bits 4-0=max_bits (9-16). Typical: 0x90 = block_mode + max_bits=16.",
+      "storeAs": "zFlags",
       "valueType": "uint8"
     },
     {
-      "type": "metadata",
-      "name": "CRC Valid",
-      "variable": "crc32Valid",
-      "description": "CRC Valid"
+      "type": "data",
+      "name": "Compressed LZW Data",
+      "offset": 3,
+      "length": 64,
+      "color": "#45B7D1",
+      "opacity": 0.3,
+      "description": "LZW compressed data begins at offset 3. The code size starts at (max_bits - 1) bits and grows dynamically."
     },
     {
-      "type": "metadata",
-      "name": "Original Size",
-      "variable": "originalSize",
-      "description": "Original Size"
-    },
-    {
-      "type": "metadata",
-      "name": "Compression Ratio",
-      "variable": "compressionRatio",
-      "description": "Compression Ratio"
-    },
-    {
-      "type": "metadata",
-      "name": "Formatted Size",
-      "variable": "formattedSize",
-      "description": "Human-readable file size"
+      "type": "data",
+      "name": "Derived: Max Bits",
+      "offset": 2,
+      "length": 1,
+      "color": "#96CEB4",
+      "opacity": 0.2,
+      "description": "Derived field: max_bits = flags & 0x1F. Valid range 9-16. Most common: 16 (0x10)."
     }
   ],
-  "software": [
-    "compress/uncompress",
-    "7-Zip"
+  "assertions": [
+    { "field": "zMagic", "operator": "equals", "value": "0x9D1F", "description": "Magic must be 0x1F 0x9D (stored LE as 0x9D1F)" },
+    { "field": "zFlags", "operator": "custom", "description": "Bits 4-0 (max_bits) must be 9-16; bits 6-5 must be 0" }
   ],
-  "formatRelationships": {
-    "category": "Archives",
-    "extensions": [
-      ".z"
+  "navigation": {
+    "bookmarks": [
+      { "name": "Compress Magic", "offset": 0, "description": "2-byte 0x1F 0x9D magic" },
+      { "name": "Flags", "offset": 2, "description": "Block mode + max_bits flags byte" },
+      { "name": "LZW Data", "offset": 3, "description": "Compressed LZW data stream" }
     ]
   },
-  "MimeTypes": [
-    "application/x-z-compressed"
-  ],
-  "Software": [
-    "7-Zip",
-    "WinRAR",
-    "WinZip",
-    "PeaZip",
-    "The Unarchiver"
-  ],
-  "UseCases": [
-    "File compression",
-    "Archive storage",
-    "Backup",
-    "Distribution"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 32,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 6,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": ".Z",
+    "primaryField": "zFlags",
+    "showQualityScore": true,
+    "groups": [
+      { "name": "Header", "fields": ["zMagic", "zFlags"] },
+      { "name": "Derived", "fields": ["maxBits", "blockMode"] }
+    ]
   },
-  "TechnicalDetails": {
-    "ArchivesFormat": true,
-    "SupportsEncryption": false
-  },
-  "functions": {
-    "calculateCRC32": "Validate CRC",
-    "readUInt32LE": "Read size",
-    "formatFileSize(var:compressedSize)": "Format compressedSize as readable size"
-  },
+  "exportTemplates": [
+    {
+      "name": "Unix Compress Header (JSON)",
+      "format": "json",
+      "fields": ["zMagic", "zFlags", "maxBits", "blockMode"]
+    }
+  ],
   "forensic": {
     "category": "archive",
     "riskLevel": "low",
-    "suspiciousPatterns": []
+    "suspiciousPatterns": [
+      "max_bits > 16 is invalid and indicates file corruption or deliberate tampering",
+      "Reserved bits (6-5) set non-zero may indicate non-standard implementation"
+    ]
   },
   "aiHints": {
-    "analysisContext": "Unix compress (.Z) format - LZW compression",
+    "analysisContext": "Unix .Z files use 2-byte magic 0x1F 0x9D (distinct from gzip's 0x1F 0x8B). Third byte encodes: bit7=block_mode (always set in modern files), bits 4-0=max_bits (9-16, default 16). LZW data starts at offset 3, bit-packed. Use uncompress or gzip -d to decompress.",
     "suggestedInspections": [
-      "Verify Unix Compress file header, compression method, and stored CRCs",
-      "Check central directory or entry table for consistency",
-      "Inspect individual entry sizes for truncation or overflow"
+      "Verify magic: byte 0 = 0x1F, byte 1 = 0x9D (not 0x8B = gzip)",
+      "Read flags at offset 2: bit7=block_mode, bits 4-0=max_bits",
+      "Validate max_bits = flags & 0x1F is in range 9-16",
+      "Check reserved bits (6-5) are zero for spec compliance",
+      "Use 'uncompress' or 'zcat' to test decompression"
     ]
+  },
+  "software": [
+    "compress/uncompress (Unix)",
+    "gzip (can decompress .Z)",
+    "7-Zip",
+    "ncompress",
+    "The Unarchiver"
+  ],
+  "formatRelationships": {
+    "category": "Archives",
+    "extensions": [".z", ".Z"],
+    "relatedFormats": ["GZIP", "BZIP2", "LZMA", "XZ"],
+    "note": "0x1F is shared with gzip (0x1F 0x8B). Unix compress (.Z) uses 0x1F 0x9D. Superseded by gzip in the early 1990s."
+  },
+  "MimeTypes": [ "application/x-compress", "application/x-z-compressed" ],
+  "UseCases": [
+    "Legacy Unix software distribution",
+    "Historical archive reading",
+    "Unix system file compression (pre-gzip era)"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 62,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 4,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "ArchivesFormat": true,
+    "SupportsEncryption": false,
+    "Algorithm": "LZW (Lempel-Ziv-Welch)",
+    "Endianness": "little-endian (magic stored LE)",
+    "MaxBitsRange": "9-16",
+    "DefaultMaxBits": 16
   }
 }

@@ -1,7 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "ARJ Archive",
-  "version": "2.1",
+  "version": "1.12",
   "extensions": [
     ".arj"
   ],

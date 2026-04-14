@@ -1,138 +1,218 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Dolby TrueHD",
-  "version": "1.14",
+  "version": "1.15",
   "extensions": [
     ".thd",
     ".truehd"
   ],
-  "description": "Dolby TrueHD lossless multi-channel audio codec for Blu-ray",
+  "description": "Dolby TrueHD — a lossless multi-channel audio codec based on MLP (Meridian Lossless Packing), standardized for Blu-ray Disc. Raw TrueHD files consist of variable-length access units, each with a 4-byte header containing timing and size info followed by the major sync word 0x18E371F3 at offset 4 within the first access unit that contains a major sync. The major sync block (preceded by format info) contains: format sync word (0xBA), channel assignment (8-bit), sample rate code, and peak bitrate code. TrueHD supports up to 8 channels at 192 kHz, 24-bit depth. Blu-ray TrueHD is muxed with AC-3 (Dolby Digital) as a lossy compatibility substream. Dolby Atmos spatial audio is carried as object metadata within TrueHD on Blu-ray.",
   "category": "Audio",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "audio-viewer",
   "references": {
     "specifications": [
       "Dolby TrueHD High-Level Bitstream Description",
-      "Dolby TrueHD Lossless Audio Codec",
-      "MLP for Blu-ray Specification"
+      "MLP (Meridian Lossless Packing) Specification",
+      "Blu-ray Disc Association — TrueHD on Blu-ray"
     ],
     "WebLinks": [
-      "https://developer.dolby.com/globalassets/technology/dolby-truehd/dolbytruehdhighlevelbitstreamdescription.pdf",
-      "https://developer.dolby.com/technology/dolby-audio/dolby-truehd",
+      "https://developer.dolby.com/technology/dolby-audio/dolby-truehd/",
       "https://en.wikipedia.org/wiki/Dolby_TrueHD",
-      "https://grokipedia.com/page/Dolby_TrueHD"
+      "https://www.loc.gov/preservation/digital/formats/fdd/fdd000460.shtml",
+      "https://wiki.multimedia.cx/index.php/TrueHD"
     ]
   },
   "detection": {
     "signature": "18E371F3",
     "offset": 4,
     "required": true,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 4.0, "max": 7.5 },
     "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024
+      "minFileSize": 8,
+      "maxSignatureOffset": 4,
+      "note": "TrueHD/MLP major sync word 0x18E371F3 at offset 4 (after 4-byte access unit header)"
     }
   },
   "variables": {
-    "sampleRate": 0,
-    "channels": 0,
-    "bitDepth": 0,
-    "duration": 0,
+    "accessUnitHeader": 0,
     "truehdSyncWord": 0,
-    "byteRate": 0,
-    "samplesPerSecond": 0
+    "formatSyncByte": 0
   },
   "blocks": [
     {
+      "type": "field",
+      "name": "Access Unit Header",
+      "offset": 0,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "First 4-byte access unit header in the TrueHD bitstream. Contains timing and size information: bits 31-16 = presentation timestamp, bits 15-0 encoded size and flags. In raw .truehd files this precedes the major sync word.",
+      "storeAs": "accessUnitHeader",
+      "valueType": "uint32",
+      "endianness": "big"
+    },
+    {
       "type": "signature",
-      "name": "TrueHD Sync Word",
+      "name": "TrueHD / MLP Major Sync Word",
       "offset": 4,
       "length": 4,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "Dolby TrueHD major sync word",
+      "opacity": 0.45,
+      "description": "TrueHD and MLP major synchronization word 0x18E371F3 stored as a 32-bit big-endian unsigned integer. This 4-byte sync word appears at offset 4 in the first access unit of every TrueHD major sync frame. The same sync word is used by MLP (Meridian Lossless Packing) for DVD-Audio. It marks the beginning of a major sync block that contains format information including channel count, sample rate, and peak bitrate.",
       "storeAs": "truehdSyncWord",
-      "valueType": "uint32"
+      "valueType": "uint32",
+      "endianness": "big"
+    },
+    {
+      "type": "field",
+      "name": "Format Sync Byte",
+      "offset": 8,
+      "length": 1,
+      "color": "#95E1D3",
+      "opacity": 0.35,
+      "description": "Format-specific sync byte following the major sync word. For TrueHD this is 0xBA (186); for MLP this is 0xBB (187). Distinguishes TrueHD from MLP despite sharing the same 0x18E371F3 major sync word.",
+      "storeAs": "formatSyncByte",
+      "valueType": "uint8",
+      "valueMap": {
+        "186": "0xBA — Dolby TrueHD format",
+        "187": "0xBB — MLP (Meridian Lossless Packing) DVD-Audio format"
+      }
     },
     {
       "type": "metadata",
-      "name": "Sample Rate",
-      "variable": "sampleRate",
-      "description": "Sample Rate"
+      "name": "Major Sync Word",
+      "variable": "truehdSyncWord",
+      "description": "TrueHD/MLP major sync word (0x18E371F3)"
     },
     {
       "type": "metadata",
-      "name": "Channels",
-      "variable": "channels",
-      "description": "Channels"
-    },
-    {
-      "type": "metadata",
-      "name": "Byte Rate",
-      "variable": "byteRate",
-      "description": "Calculated byte rate"
-    },
-    {
-      "type": "metadata",
-      "name": "Samples/Second",
-      "variable": "samplesPerSecond",
-      "description": "Total samples per second"
+      "name": "Format Sync Byte",
+      "variable": "formatSyncByte",
+      "description": "0xBA = TrueHD, 0xBB = MLP"
     }
   ],
-  "software": [
-    "VLC Media Player",
-    "foobar2000"
+  "assertions": [
+    {
+      "name": "TrueHD/MLP sync word valid",
+      "expression": "truehdSyncWord == 417988083",
+      "severity": "error",
+      "message": "TrueHD major sync word must be 0x18E371F3 at offset 4 — not a valid TrueHD or MLP file"
+    },
+    {
+      "name": "Format byte is TrueHD",
+      "expression": "formatSyncByte == 186",
+      "severity": "info",
+      "message": "Format sync byte is not 0xBA — file may be MLP (DVD-Audio) not TrueHD"
+    }
   ],
-  "formatRelationships": {
-    "category": "Audio",
-    "extensions": [
-      ".thd",
-      ".truehd"
+  "versionDetection": {
+    "field": "formatSyncByte",
+    "versions": {
+      "186": "Dolby TrueHD (0xBA — Blu-ray lossless)",
+      "187": "MLP — Meridian Lossless Packing (0xBB — DVD-Audio)"
+    }
+  },
+  "navigation": {
+    "bookmarks": [
+      {
+        "name": "First Access Unit",
+        "offset": 0,
+        "icon": "\uE71B",
+        "color": "#FF6B6B"
+      },
+      {
+        "name": "Major Sync Word",
+        "offset": 4,
+        "icon": "\uE767",
+        "color": "#4ECDC4"
+      }
     ]
   },
-  "MimeTypes": [
-    "audio/truehd"
-  ],
-  "Software": [
-    "VLC",
-    "Audacity",
-    "Foobar2000",
-    "MediaMonkey",
-    "Winamp"
-  ],
-  "UseCases": [
-    "Music playback",
-    "Audio editing",
-    "Sound production",
-    "Streaming"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 5,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "formatSyncByte",
+    "primaryField": "truehdSyncWord",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "TrueHD Identity",
+        "icon": "\uE71B",
+        "fields": ["truehdSyncWord", "formatSyncByte"]
+      }
+    ]
   },
-  "TechnicalDetails": {
-    "AudioFormat": true
-  },
-  "functions": {
-    "readUInt32BE": "Read audio header",
-    "computeFromVariables(sampleRate * bitDepth * channels / 8, byteRate)": "Calculate byte rate",
-    "computeFromVariables(sampleRate * channels, samplesPerSecond)": "Calculate samples/second"
-  },
+  "exportTemplates": [
+    {
+      "name": "TrueHD Header (JSON)",
+      "format": "json",
+      "fields": ["truehdSyncWord", "formatSyncByte"]
+    }
+  ],
   "forensic": {
     "category": "audio",
     "riskLevel": "low",
-    "suspiciousPatterns": []
+    "suspiciousPatterns": [
+      {
+        "name": "File is MLP not TrueHD",
+        "condition": "formatSyncByte == 187",
+        "severity": "info",
+        "description": "Format sync byte 0xBB identifies this as MLP (Meridian Lossless Packing) for DVD-Audio, not Dolby TrueHD (0xBA). Both share the same 0x18E371F3 major sync word. TrueHD adds Atmos metadata and extended channel support not present in MLP."
+      }
+    ]
   },
   "aiHints": {
-    "analysisContext": "Dolby TrueHD lossless multi-channel audio codec for Blu-ray",
+    "analysisContext": "TrueHD bitstream: access_unit_header(4B,BE: bits 31-16=presentation_timestamp, bits 15-0=size_flags) + major_sync_word(4B,BE,=0x18E371F3) + format_sync(1B: 0xBA=TrueHD/0xBB=MLP) + format_info. Format info after sync: channel_assignment(8b,defines speaker layout) + sample_rate(4b: 0=48kHz/1=96kHz/2=192kHz/8=44.1kHz/9=88.2kHz/10=176.4kHz) + peak_bitrate_code(4b,peak Mbps estimate) + flags. TrueHD supports: 2-8 channels, 44.1/48/88.2/96/176.4/192 kHz, 24-bit lossless. On Blu-ray: TrueHD is muxed with AC-3 fallback. Dolby Atmos: object metadata in TrueHD extension substreams. Access units are variable length (not fixed frame size). Raw .truehd files extracted from Blu-ray can be decoded by FFmpeg/VLC.",
     "suggestedInspections": [
-      "Validate Dolby TrueHD header: sample rate, channels, bit depth, codec ID",
-      "Check frame/block alignment and data chunk boundaries",
-      "Verify metadata tags (ID3, Vorbis comment) are well-formed"
+      "Check bytes 4-7: 18 E3 71 F3 — TrueHD/MLP major sync word",
+      "Check byte 8: 0xBA = TrueHD, 0xBB = MLP (DVD-Audio)",
+      "Extract sample rate code (4 bits in format info): 0=48kHz, 1=96kHz, 2=192kHz",
+      "Check channel assignment byte for speaker layout",
+      "Dolby Atmos: look for extended substream count > 2 in format info"
     ]
+  },
+  "software": [
+    "VLC media player (with Dolby plugin)",
+    "foobar2000",
+    "MPC-HC",
+    "FFmpeg",
+    "Dolby TrueHD home theater receivers",
+    "Blu-ray disc players (mandatory support)"
+  ],
+  "formatRelationships": {
+    "category": "Audio",
+    "extensions": [".thd", ".truehd"],
+    "relatedFormats": ["MLP", "DTS-HD MA", "AC3"],
+    "note": "TrueHD is based on MLP (Meridian Lossless Packing). TrueHD adds Dolby Atmos support and extended channel counts. On Blu-ray, TrueHD is always paired with an AC-3 compatibility core. DTS-HD Master Audio is TrueHD's main competitor on Blu-ray."
+  },
+  "MimeTypes": [
+    "audio/truehd",
+    "audio/x-truehd"
+  ],
+  "UseCases": [
+    "Blu-ray Disc mandatory audio format option",
+    "Dolby Atmos delivery on Blu-ray and streaming",
+    "Home theater lossless audio",
+    "Reference audio for AV receivers"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 68,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 5,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "AudioFormat": true,
+    "Endianness": "big-endian (bitstream)",
+    "BasedOn": "MLP (Meridian Lossless Packing)",
+    "SyncWord": "0x18E371F3 (shared with MLP)",
+    "FormatByte": "0xBA (TrueHD) vs 0xBB (MLP)",
+    "MaxChannels": "8 (7.1), plus Atmos object metadata",
+    "SampleRates": "44.1/48/88.2/96/176.4/192 kHz",
+    "BitDepth": "24-bit lossless",
+    "MaxBitrate": "18 Mbps (Blu-ray spec)"
   }
 }

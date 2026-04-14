@@ -1,19 +1,19 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Material Exchange Format",
-  "version": "2.4",
+  "version": "2.32",
   "extensions": [
     ".mxf"
   ],
-  "description": "SMPTE standard container format for professional digital video and audio media",
+  "description": "MXF (Material Exchange Format) is a SMPTE standard (ST 377-1) container format for professional digital video and audio used in broadcast, post-production, and digital cinema. MXF files begin with a 16-byte Universal Label (UL) key identifying the Header Partition Pack. The SMPTE UL key starts with 0x06 0x0E 0x2B 0x34 (SMPTE Designator), followed by kind, category, registry, structure, version, and item bytes. The Header Partition Pack key is: 06 0E 2B 34 02 05 01 01 0D 01 02 01 01 02 XX XX (where XX indicates partition type: 01=Header, 02=Body, 03=Footer). After the 16-byte key comes a BER-encoded length, then the partition pack value containing major version (uint16 BE), minor version (uint16 BE), KAG size, this partition byte offset, previous partition byte offset, footer partition byte offset, and header byte count.",
   "category": "Video",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "SMPTE ST 377-1:2019 - MXF File Format Specification",
-      "SMPTE 377M - Material Exchange Format",
-      "RFC 4539 - SMPTE MXF Media Type Registration"
+      "SMPTE ST 377-1:2019 — MXF File Format Specification",
+      "SMPTE 377M — Material Exchange Format",
+      "RFC 4539 — SMPTE MXF Media Type Registration"
     ],
     "WebLinks": [
       "https://pub.smpte.org/latest/st377-1/st377-1-2019.pdf",
@@ -23,105 +23,195 @@
     ]
   },
   "detection": {
-    "signature": "060E2B34020501010D0102010102",
-    "offset": 0,
+    "signatures": [
+      { "value": "060E2B3402050101", "offset": 0, "label": "MXF SMPTE UL Header Partition Pack key prefix (8 bytes)", "weight": 1.0 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 1.0,
     "required": true,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 4.0, "max": 7.5 },
     "validation": {
-      "minFileSize": 14,
-      "maxSignatureOffset": 1024
+      "minFileSize": 20,
+      "maxSignatureOffset": 0,
+      "note": "MXF SMPTE UL key always starts at offset 0 with 06 0E 2B 34 (SMPTE designator). The 8-byte prefix 060E2B3402050101 is the Header Partition Pack identifier."
     }
   },
   "variables": {
-    "dimensions": 0,
-    "dataType": "",
-    "arrayCount": 0,
-    "mxfPartitionPack": ""
+    "smpteDesignator": "",
+    "partitionKind": 0,
+    "partitionType": 0,
+    "mxfMajorVersion": 0,
+    "mxfMinorVersion": 0
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "MXF Partition Pack",
+      "name": "MXF SMPTE Universal Label",
       "offset": 0,
-      "length": 14,
+      "length": 8,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "MXF Universal Label and Partition Pack Key",
-      "storeAs": "mxfPartitionPack",
-      "valueType": "ascii"
+      "opacity": 0.45,
+      "description": "First 8 bytes of the MXF Header Partition Pack Universal Label (UL): 06 0E 2B 34 (SMPTE Designator, 4B) + 02 (kind=Partition Pack) + 05 (category=Structural Metadata) + 01 (registry version) + 01 (structure version). The full 16-byte UL key uniquely identifies the partition type. The SMPTE Designator 06 0E 2B 34 appears at the start of every MXF KLV (Key-Length-Value) element and is unique to SMPTE/MXF.",
+      "storeAs": "smpteDesignator",
+      "valueType": "bytes"
+    },
+    {
+      "type": "field",
+      "name": "Partition Type Byte",
+      "offset": 13,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "Byte 14 (0-indexed: offset 13) of the 16-byte UL key. Identifies the MXF partition type within the file structure.",
+      "storeAs": "partitionType",
+      "valueType": "uint8",
+      "valueMap": {
+        "1": "Header Partition (first partition in file)",
+        "2": "Body Partition (contains essence data)",
+        "3": "Footer Partition (last partition, contains index)"
+      }
+    },
+    {
+      "type": "field",
+      "name": "Open/Closed + Complete Byte",
+      "offset": 14,
+      "length": 1,
+      "color": "#95E1D3",
+      "opacity": 0.30,
+      "description": "Byte 15 of the UL key: partition completion status. 01=Open Incomplete (in-progress recording), 02=Closed Incomplete, 03=Open Complete, 04=Closed Complete. A Closed Complete Header Partition indicates a fully written and valid MXF file.",
+      "storeAs": "partitionKind",
+      "valueType": "uint8",
+      "valueMap": {
+        "1": "Open Incomplete (file being written)",
+        "2": "Closed Incomplete",
+        "3": "Open Complete",
+        "4": "Closed Complete (fully valid file)"
+      }
     },
     {
       "type": "metadata",
-      "name": "Dimensions",
-      "variable": "dimensions",
-      "description": "Dimensions"
+      "name": "SMPTE Designator",
+      "variable": "smpteDesignator",
+      "description": "MXF SMPTE UL prefix (06 0E 2B 34 ...)"
     },
     {
       "type": "metadata",
-      "name": "Data Type",
-      "variable": "dataType",
-      "description": "Data Type"
+      "name": "Partition Type",
+      "variable": "partitionType",
+      "description": "1=Header, 2=Body, 3=Footer"
     },
     {
       "type": "metadata",
-      "name": "Array Count",
-      "variable": "arrayCount",
-      "description": "Array Count"
+      "name": "Partition Completion",
+      "variable": "partitionKind",
+      "description": "1=Open Incomplete, 4=Closed Complete"
     }
   ],
-  "software": [
-    "Adobe Premiere",
-    "Avid Media Composer",
-    "DaVinci Resolve",
-    "FFmpeg"
+  "assertions": [
+    {
+      "name": "MXF partition type valid",
+      "expression": "partitionType >= 1 && partitionType <= 3",
+      "severity": "warning",
+      "message": "MXF partition type should be 1 (Header), 2 (Body), or 3 (Footer)"
+    },
+    {
+      "name": "Partition completion valid",
+      "expression": "partitionKind >= 1 && partitionKind <= 4",
+      "severity": "warning",
+      "message": "MXF partition completion byte should be 1-4 (Open/Closed Incomplete/Complete)"
+    }
   ],
-  "formatRelationships": {
-    "smpte_standard": "SMPTE 377M",
-    "professional_format": true,
-    "alternative_to": "MOV for broadcast"
+  "navigation": {
+    "bookmarks": [
+      {
+        "name": "Header Partition Pack",
+        "offset": 0,
+        "icon": "\uE71B",
+        "color": "#FF6B6B"
+      }
+    ]
   },
-  "MimeTypes": [
-    "video/mxf"
+  "inspector": {
+    "badge": "partitionType",
+    "primaryField": "partitionKind",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "MXF Partition Pack",
+        "icon": "\uE71B",
+        "fields": ["smpteDesignator", "partitionType", "partitionKind"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "MXF Partition Pack (JSON)",
+      "format": "json",
+      "fields": ["smpteDesignator", "partitionType", "partitionKind"]
+    }
   ],
-  "Software": [
-    "VLC",
-    "Media Player Classic",
-    "HandBrake",
-    "FFmpeg",
-    "MPC-HC"
-  ],
-  "UseCases": [
-    "Video playback",
-    "Video editing",
-    "Encoding",
-    "Streaming"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 4,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
-  },
-  "TechnicalDetails": {
-    "VideoFormat": true
-  },
-  "functions": {
-    "readUInt32BE": "Read scientific header",
-    "multiply": "Calculate dimensions"
-  },
   "forensic": {
     "category": "video",
     "riskLevel": "low",
-    "suspiciousPatterns": []
+    "suspiciousPatterns": [
+      {
+        "name": "Open Incomplete partition",
+        "condition": "partitionKind == 1",
+        "severity": "warning",
+        "description": "MXF file has Open Incomplete Header Partition — file may have been abandoned during recording (missing footer)"
+      }
+    ]
   },
   "aiHints": {
-    "analysisContext": "SMPTE standard container format for professional digital video and audio media",
+    "analysisContext": "MXF KLV structure: every element = 16-byte UL key + BER length + value. Header starts with 06 0E 2B 34 02 05 01 01 0D 01 02 01 01 02 XX YY (XX=partition type 01-03, YY=completion 01-04). After partition pack: Header Metadata (Preface, Identification, ContentStorage, MaterialPackage/FilePackage, Tracks). Essence containers: Clip-wrapped or frame-wrapped. Op-codes: OP1a=Single item, OP1b=Gang, OP1c=Batch. Codec GC: D-10/IMX (0D0102010101XX), XDCAM (0D0102010401XX), ProRes (060A2B340101010501010F0000). Footer Partition contains Index Table for random access.",
     "suggestedInspections": [
-      "Validate Material Exchange Format container magic, box/atom sizes, and codec FourCC",
-      "Check track/stream layout, frame index, and timing fields",
-      "Inspect audio-video sync, keyframe distribution, and metadata"
+      "Verify 06 0E 2B 34 at offset 0 — SMPTE Designator",
+      "Byte 13: partition type (01=Header, 03=Footer)",
+      "Byte 14: completion (04=Closed Complete = valid file)",
+      "Parse BER length after 16-byte key: if first byte < 0x80 = 1-byte length; 0x82 = 2-byte length follows",
+      "Look for Preface object (06 0E 2B 34 02 53 01 01 0D 01 01 01 01 01 2F 00) for metadata"
     ]
+  },
+  "software": [
+    "Adobe Premiere Pro",
+    "Avid Media Composer",
+    "DaVinci Resolve",
+    "FFmpeg (mxf demuxer)",
+    "Sony XDCAM tools",
+    "MXFInspect (analysis)"
+  ],
+  "formatRelationships": {
+    "category": "Video",
+    "extensions": [".mxf"],
+    "relatedFormats": ["MOV", "MP4", "TS"],
+    "note": "MXF (SMPTE ST 377-1) is the professional broadcast standard for interchange of audio/video content. Used by Sony XDCAM, Panasonic P2, ARRI, and RED cameras. Operational Patterns (OP-1a, OP-Atom) define the packaging constraint. MXF replaces proprietary formats in broadcast workflows."
+  },
+  "MimeTypes": [
+    "application/mxf",
+    "video/mxf"
+  ],
+  "UseCases": [
+    "Broadcast studio ingest and playout",
+    "Digital cinema post-production",
+    "Professional camera recording (XDCAM, P2, ARRI)",
+    "Archive and preservation of broadcast content"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 68,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 6,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "VideoFormat": true,
+    "ContainerFormat": "MXF KLV (Key-Length-Value) with SMPTE Universal Labels",
+    "Endianness": "big-endian (all multi-byte header fields)",
+    "VideoCodecs": "MPEG-2, AVC/H.264, HEVC/H.265, DNxHD, ProRes, D-10/IMX",
+    "AudioCodecs": "PCM (AES3), Dolby E, AAC",
+    "Standard": "SMPTE ST 377-1:2019"
   }
 }

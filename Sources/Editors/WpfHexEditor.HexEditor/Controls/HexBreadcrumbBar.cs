@@ -295,10 +295,14 @@ public sealed class HexBreadcrumbBar : Border
 
         if (seg.Siblings?.Count > 0)
         {
-            // Build ContextMenu with current + siblings
-            var menu = new ContextMenu { MinWidth = 200 };
-            menu.SetResourceReference(BackgroundProperty, "BC_Background");
+            // Build ContextMenu with current + siblings.
+            var menu = new ContextMenu { MinWidth = 200, HasDropShadow = true };
             menu.SetResourceReference(ContextMenu.BorderBrushProperty, "BC_SeparatorForeground");
+            // Resolve BC_Background and force alpha=255. The ContextMenu Popup host window
+            // uses AllowsTransparency=true by default on themed Windows, which makes any
+            // semi-transparent brush show through to the desktop. We resolve the resource
+            // immediately (before the popup opens) and guarantee a fully-opaque brush.
+            menu.Background = ResolveOpaqueBrush(tb, "BC_Background");
 
             var allItems = new List<BreadcrumbSegment> { seg };
             allItems.AddRange(seg.Siblings);
@@ -367,4 +371,25 @@ public sealed class HexBreadcrumbBar : Border
         VerticalAlignment = VerticalAlignment.Stretch,
         Background = SepLineBrush,
     };
+
+    /// <summary>
+    /// Resolves <paramref name="resourceKey"/> from the element's resource tree and returns
+    /// a fully-opaque <see cref="SolidColorBrush"/>. Falls back to the system menu color
+    /// when the resource is missing or already transparent. This prevents the ContextMenu
+    /// popup from being see-through when the theme brush has alpha &lt; 255.
+    /// </summary>
+    private static SolidColorBrush ResolveOpaqueBrush(FrameworkElement element, string resourceKey)
+    {
+        var raw = element.TryFindResource(resourceKey);
+        Color c;
+        if (raw is SolidColorBrush scb)
+            c = Color.FromArgb(255, scb.Color.R, scb.Color.G, scb.Color.B);
+        else if (raw is Color col)
+            c = Color.FromArgb(255, col.R, col.G, col.B);
+        else
+            c = SystemColors.MenuColor; // guaranteed opaque fallback
+        var brush = new SolidColorBrush(c);
+        brush.Freeze();
+        return brush;
+    }
 }

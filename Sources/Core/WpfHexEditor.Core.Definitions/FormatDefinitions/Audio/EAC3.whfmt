@@ -1,138 +1,198 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Dolby Digital Plus",
-  "version": "1.14",
+  "version": "1.15",
   "extensions": [
     ".eac3",
     ".ec3"
   ],
-  "description": "Dolby Digital Plus (Enhanced AC-3) advanced audio codec",
+  "description": "Dolby Digital Plus (E-AC-3 / Enhanced AC-3) — an advanced lossy multi-channel audio codec standardized in ATSC A/52:2012. Raw E-AC-3 files start with the same 2-byte sync word 0x0B77 as AC-3. The first frame header contains: strmtyp (stream type: independent/dependent/reserved), substreamid, frmsiz (frame size in 16-bit words), fscod (sample rate code), numblkscod (number of audio blocks per sync frame), acmod (audio channel mode), lfeon (LFE channel present). E-AC-3 extends AC-3 with: JOC (Joint Object Coding for Atmos), channel-based mixing, and up to 15.1 channels. Dolby Atmos metadata may be encoded as JOC extension in the enhanced bitstream.",
   "category": "Audio",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "audio-viewer",
   "references": {
     "specifications": [
-      "ATSC A/52:2012 - Digital Audio Compression (AC-3) (E-AC-3)",
-      "ETSI TS 102 366 - E-AC-3 Standard",
+      "ATSC A/52:2012 — Digital Audio Compression (AC-3) (E-AC-3) Standard",
+      "ETSI TS 102 366 — E-AC-3 (Dolby Digital Plus)",
       "Dolby Digital Plus Specification"
     ],
     "WebLinks": [
       "https://www.atsc.org/atsc-documents/a522012-digital-audio-compression-ac-3-e-ac-3-standard-12172012/",
       "https://en.wikipedia.org/wiki/Dolby_Digital_Plus",
-      "http://www.atsc.org/wp-content/uploads/2015/03/A52-201212-17.pdf"
+      "https://www.loc.gov/preservation/digital/formats/fdd/fdd000209.shtml"
     ]
   },
   "detection": {
     "signature": "0B77",
     "offset": 0,
     "required": true,
+    "Strength": "Medium",
+    "EntropyHint": { "min": 4.0, "max": 7.5 },
     "validation": {
-      "minFileSize": 2,
-      "maxSignatureOffset": 1024
+      "minFileSize": 7,
+      "maxSignatureOffset": 0,
+      "note": "0x0B77 is shared with AC-3; E-AC-3 is identified by strmtyp and numblkscod fields in the frame header"
     }
   },
   "variables": {
-    "sampleRate": 0,
-    "channels": 0,
-    "bitDepth": 0,
-    "duration": 0,
     "eAc3SyncWord": 0,
-    "byteRate": 0,
-    "samplesPerSecond": 0
+    "strmtyp": 0,
+    "substreamid": 0,
+    "frmsiz": 0,
+    "fscod": 0,
+    "numblkscod": 0,
+    "acmod": 0,
+    "lfeon": false
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "E-AC-3 Sync Word",
+      "name": "E-AC-3 / AC-3 Sync Word",
       "offset": 0,
       "length": 2,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "Enhanced AC-3 synchronization word",
+      "opacity": 0.45,
+      "description": "Dolby Digital / Dolby Digital Plus synchronization word 0x0B77 stored as a 16-bit big-endian unsigned integer. This sync word is shared by both AC-3 (Dolby Digital) and E-AC-3 (Dolby Digital Plus). The stream type is identified in the BSI (Bit Stream Information) field that follows: bsid <= 10 = AC-3, bsid = 16 = E-AC-3.",
       "storeAs": "eAc3SyncWord",
-      "valueType": "uint16"
+      "valueType": "uint16",
+      "endianness": "big"
+    },
+    {
+      "type": "field",
+      "name": "Frame Header Byte",
+      "offset": 2,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "First byte of E-AC-3 BSI (Bit Stream Information). For E-AC-3 (bsid=16): bits 7-6 encode strmtyp (stream type: 00=independent, 01=dependent, 10=independent with independent reference), bits 5-3 encode substreamid (0-7). For AC-3: this byte contains crc1 (upper 8 bits of frame CRC1). The distinction between AC-3 and E-AC-3 requires reading the bsid field further into the header.",
+      "storeAs": "strmtyp",
+      "valueType": "uint8",
+      "bitfields": [
+        {
+          "name": "strmtyp",
+          "bits": "7-6",
+          "description": "E-AC-3 stream type (in bsid=16 streams only)",
+          "valueMap": {
+            "0": "Independent stream (complete audio program)",
+            "1": "Dependent substream (supplement to independent)",
+            "2": "Independent stream (with independent reference)"
+          }
+        }
+      ]
     },
     {
       "type": "metadata",
-      "name": "Sample Rate",
-      "variable": "sampleRate",
-      "description": "Sample Rate"
+      "name": "Sync Word",
+      "variable": "eAc3SyncWord",
+      "description": "AC-3/E-AC-3 sync word (0x0B77)"
     },
     {
       "type": "metadata",
-      "name": "Channels",
-      "variable": "channels",
-      "description": "Channels"
-    },
-    {
-      "type": "metadata",
-      "name": "Byte Rate",
-      "variable": "byteRate",
-      "description": "Calculated byte rate"
-    },
-    {
-      "type": "metadata",
-      "name": "Samples/Second",
-      "variable": "samplesPerSecond",
-      "description": "Total samples per second"
+      "name": "Stream Type",
+      "variable": "strmtyp",
+      "description": "E-AC-3 stream type: 0=independent, 1=dependent substream"
     }
   ],
-  "software": [
-    "Dolby Digital Plus players",
-    "VLC",
-    "Media players"
+  "assertions": [
+    {
+      "name": "E-AC-3 sync word valid",
+      "expression": "eAc3SyncWord == 2935",
+      "severity": "error",
+      "message": "E-AC-3/AC-3 sync word must be 0x0B77 (2935) at offset 0 — not a valid Dolby Digital Plus file"
+    }
   ],
-  "formatRelationships": {
-    "category": "Audio",
-    "extensions": [
-      ".eac3",
-      ".ec3"
+  "navigation": {
+    "bookmarks": [
+      {
+        "name": "E-AC-3 Frame 0",
+        "offset": 0,
+        "icon": "\uE71B",
+        "color": "#FF6B6B"
+      }
     ]
   },
-  "MimeTypes": [
-    "audio/eac3"
-  ],
-  "Software": [
-    "VLC",
-    "Audacity",
-    "Foobar2000",
-    "MediaMonkey",
-    "Winamp"
-  ],
-  "UseCases": [
-    "Music playback",
-    "Audio editing",
-    "Sound production",
-    "Streaming"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 5,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "strmtyp",
+    "primaryField": "eAc3SyncWord",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "E-AC-3 Identity",
+        "icon": "\uE71B",
+        "fields": ["eAc3SyncWord", "strmtyp"]
+      }
+    ]
   },
-  "TechnicalDetails": {
-    "AudioFormat": true
-  },
-  "functions": {
-    "readUInt32BE": "Read audio header",
-    "computeFromVariables(sampleRate * bitDepth * channels / 8, byteRate)": "Calculate byte rate",
-    "computeFromVariables(sampleRate * channels, samplesPerSecond)": "Calculate samples/second"
-  },
+  "exportTemplates": [
+    {
+      "name": "E-AC-3 Frame Header (JSON)",
+      "format": "json",
+      "fields": ["eAc3SyncWord", "strmtyp"]
+    }
+  ],
   "forensic": {
     "category": "audio",
     "riskLevel": "low",
-    "suspiciousPatterns": []
+    "suspiciousPatterns": [
+      {
+        "name": "AC-3 vs E-AC-3 ambiguity",
+        "condition": "eAc3SyncWord == 2935",
+        "severity": "info",
+        "description": "Sync word 0x0B77 is shared by AC-3 (Dolby Digital, bsid<=10) and E-AC-3 (Dolby Digital Plus, bsid=16). Read the bsid field in the frame header to determine which variant this is. bsid value: 6-8 = Dolby Digital, 16 = Dolby Digital Plus."
+      }
+    ]
   },
   "aiHints": {
-    "analysisContext": "Dolby Digital Plus (Enhanced AC-3) advanced audio codec",
+    "analysisContext": "E-AC-3 (Dolby Digital Plus) frame structure: sync_word(2,BE,=0x0B77) + BSI fields. E-AC-3 bsid=16; AC-3 bsid<=10. E-AC-3 frame header (after sync): strmtyp(2b) + substreamid(3b) + frmsiz(11b,frame size in 16-bit words) + fscod(2b: 0=48kHz/1=44.1kHz/2=32kHz/3=use fscod2) + numblkscod(2b: 0=1block/1=2blocks/2=3blocks/3=6blocks per sync frame) + acmod(3b: 0=ch1+ch2/1=C/2=L+R/3=L+C+R/4=L+R+Ls/5=L+C+R+Ls/6=L+R+Ls+Rs/7=L+C+R+Ls+Rs) + lfeon(1b,LFE present) + bsid(5b,must=16 for E-AC-3). Dolby Atmos encoded as JOC data in E-AC-3. Frame sizes: 0-2047 units of 2 bytes. Independent streams = complete programs; dependent streams = extensions (e.g., LFE or surrounds).",
     "suggestedInspections": [
-      "Validate Dolby Digital Plus header: sample rate, channels, bit depth, codec ID",
-      "Check frame/block alignment and data chunk boundaries",
-      "Verify metadata tags (ID3, Vorbis comment) are well-formed"
+      "Verify sync word at offset 0: 0B 77",
+      "Read bsid (5 bits at specific position in BSI): <=10 = AC-3, =16 = E-AC-3",
+      "For E-AC-3: check strmtyp bits 7-6 of byte 2: 0=independent, 1=dependent substream",
+      "Extract fscod for sample rate: 0=48kHz, 1=44.1kHz, 2=32kHz",
+      "Extract acmod for channel layout (7=5.0, 7+lfeon=5.1)"
     ]
+  },
+  "software": [
+    "VLC media player",
+    "foobar2000",
+    "MPC-HC",
+    "FFmpeg",
+    "Dolby Digital Plus home theater receivers",
+    "Streaming services (Netflix, Amazon Prime — use E-AC-3)"
+  ],
+  "formatRelationships": {
+    "category": "Audio",
+    "extensions": [".eac3", ".ec3"],
+    "relatedFormats": ["AC3", "TrueHD", "DTS"],
+    "note": "E-AC-3 (Dolby Digital Plus) is a backward-compatible extension of AC-3 (Dolby Digital). Both share sync word 0x0B77; the bsid field differentiates them. E-AC-3 is used in Blu-ray, streaming (Netflix mandates it), and ATSC 3.0 broadcasting. Dolby Atmos is distributed as E-AC-3 with JOC (Joint Object Coding) extension."
+  },
+  "MimeTypes": [
+    "audio/eac3",
+    "audio/x-eac3",
+    "audio/vnd.dolby.dd-raw"
+  ],
+  "UseCases": [
+    "Netflix / Amazon Prime / Disney+ streaming audio",
+    "Blu-ray Disc optional audio track",
+    "ATSC 3.0 (NextGen TV) broadcasting",
+    "Dolby Atmos delivery (with JOC extension)"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 65,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 4,
+    "ValidationRules": 1,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "AudioFormat": true,
+    "Endianness": "big-endian (bitstream)",
+    "SyncWord": "0x0B77 (shared with AC-3)",
+    "MaxBitrate": "6144 kbps",
+    "MaxChannels": "15.1 (7.1 in practice, Atmos via JOC)",
+    "SampleRates": "32 kHz, 44.1 kHz, 48 kHz",
+    "BackwardCompatible": "Yes — AC-3 decoders can play the independent substream"
   }
 }

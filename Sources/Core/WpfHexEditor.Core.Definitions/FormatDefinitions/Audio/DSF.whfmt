@@ -1,19 +1,19 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "DSD Stream File",
-  "version": "1.13",
+  "version": "1.14",
   "extensions": [
     ".dsf"
   ],
-  "description": "Sony DSD Stream File format for Direct Stream Digital audio",
+  "description": "DSF (DSD Stream File) — Sony's container format for Direct Stream Digital (DSD) audio. The file has three mandatory chunks: DSD header chunk ('DSD ' 28 bytes), Format chunk ('fmt ' 52 bytes), and Data chunk ('data'). All values are little-endian. The DSD header contains the total file size, pointer to ID3v2 metadata, and offset to the data chunk. The Format chunk specifies the DSD format version (1), channel type, channel count, sample rate, bits per sample (always 1), and sample count. DSF stores DSD samples in interleaved 4096-byte channel blocks. DSD64=2822400 Hz, DSD128=5644800 Hz.",
   "category": "Audio",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "audio-viewer",
   "references": {
     "specifications": [
-      "DSF File Format Specification - Sony Corporation",
-      "DSD Stream File Format",
-      "Direct Stream Digital Audio Standard"
+      "DSF File Format Specification v1.01 — Sony Corporation",
+      "Direct Stream Digital Audio Standard",
+      "DSD Stream File Format — dsd-guide.com"
     ],
     "WebLinks": [
       "https://dsd-guide.com/sites/default/files/white-papers/DSFFileFormatSpec_E.pdf",
@@ -26,106 +26,309 @@
     "signature": "44534420",
     "offset": 0,
     "required": true,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 3.0, "max": 7.5 },
     "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024
+      "minFileSize": 28,
+      "maxSignatureOffset": 0,
+      "note": "DSF DSD header chunk is 28 bytes: 'DSD '(4) + chunkSize(8,LE) + totalFileSize(8,LE) + id3Offset(8,LE)"
     }
   },
-  "functions": {
-    "readUInt64LE": "Read 64-bit little-endian for chunk sizes and sample counts",
-    "readUInt32LE": "Read 32-bit values for format version, sample rate, and channels",
-    "readUInt8": "Read format configuration flags",
-    "computeFromVariables(sampleRate * bitDepth * channels / 8, byteRate)": "Calculate byte rate",
-    "computeFromVariables(sampleRate * channels, samplesPerSecond)": "Calculate samples/second"
-  },
   "variables": {
-    "currentOffset": 0,
-    "chunkSize": 0,
-    "formatVersion": 1,
-    "formatID": 0,
+    "dsdChunkId": "",
+    "dsdChunkSize": 0,
+    "totalFileSize": 0,
+    "id3MetadataOffset": 0,
+    "fmtVersion": 0,
     "channelType": 0,
-    "channels": 2,
-    "sampleRate": 2822400,
-    "bitDepth": 1,
-    "dsfHeader": 0,
-    "byteRate": 0,
-    "samplesPerSecond": 0
+    "channelCount": 0,
+    "sampleRate": 0,
+    "bitsPerSample": 0
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "DSF Header",
+      "name": "DSD Chunk ID",
       "offset": 0,
       "length": 4,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "DSD - DSF file chunk identifier",
-      "storeAs": "dsfHeader",
-      "valueType": "uint32"
+      "opacity": 0.45,
+      "description": "DSF DSD header chunk identifier 'DSD ' (0x44534420, with trailing space). This 4-byte ASCII magic marks the beginning of every DSF file. Unlike DFF which uses big-endian 'FRM8', DSF uses little-endian encoding throughout and begins with this DSD chunk ID.",
+      "storeAs": "dsdChunkId",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "DSD Chunk Size",
+      "offset": 4,
+      "length": 8,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "Size of the DSD header chunk in bytes, stored as a 64-bit little-endian unsigned integer. Per the DSF v1.01 specification this is always 28: 4B chunk ID + 8B this size field + 8B total file size + 8B ID3 offset.",
+      "storeAs": "dsdChunkSize",
+      "valueType": "uint64",
+      "endianness": "little"
+    },
+    {
+      "type": "field",
+      "name": "Total File Size",
+      "offset": 12,
+      "length": 8,
+      "color": "#95E1D3",
+      "opacity": 0.35,
+      "description": "Total size of the DSF file in bytes, stored as a 64-bit little-endian unsigned integer. Used to validate file completeness. If this value differs from the actual file size on disk, the file is likely truncated or corrupted.",
+      "storeAs": "totalFileSize",
+      "valueType": "uint64",
+      "endianness": "little"
+    },
+    {
+      "type": "field",
+      "name": "ID3v2 Metadata Offset",
+      "offset": 20,
+      "length": 8,
+      "color": "#FFE66D",
+      "opacity": 0.30,
+      "description": "Byte offset from the start of the file to the ID3v2 metadata tag, stored as a 64-bit little-endian unsigned integer. A value of 0 means no ID3v2 tag is present. When non-zero, this offset points to an ID3v2 tag appended after the audio data — used to store artist, title, album, and cover art.",
+      "storeAs": "id3MetadataOffset",
+      "valueType": "uint64",
+      "endianness": "little"
+    },
+    {
+      "type": "field",
+      "name": "Format Version",
+      "offset": 40,
+      "length": 4,
+      "color": "#C7CEEA",
+      "opacity": 0.30,
+      "description": "DSF format version number as a 32-bit little-endian unsigned integer, at offset 40 (after 'fmt '(4,offset 28) + fmtChunkSize(8,offset 32) = offset 40). For DSF specification v1.01 this value is always 1.",
+      "storeAs": "fmtVersion",
+      "valueType": "uint32",
+      "endianness": "little",
+      "valueMap": {
+        "1": "DSF Format Version 1 (v1.01 specification)"
+      }
+    },
+    {
+      "type": "field",
+      "name": "Channel Type",
+      "offset": 44,
+      "length": 4,
+      "color": "#B8B8FF",
+      "opacity": 0.30,
+      "description": "Speaker configuration channel type as a 32-bit little-endian unsigned integer. Defines the channel layout for multi-channel DSD audio playback.",
+      "storeAs": "channelType",
+      "valueType": "uint32",
+      "endianness": "little",
+      "valueMap": {
+        "1": "Mono",
+        "2": "Stereo (left + right)",
+        "3": "3 channels (L + R + C)",
+        "4": "Quad (L + R + Ls + Rs)",
+        "5": "4 channels (L + R + Ls + Rs)",
+        "6": "5 channels (L + R + C + Ls + Rs)",
+        "7": "5.1 channels (L + R + C + LFE + Ls + Rs)"
+      }
+    },
+    {
+      "type": "field",
+      "name": "Channel Count",
+      "offset": 48,
+      "length": 4,
+      "color": "#FF6B9D",
+      "opacity": 0.30,
+      "description": "Number of audio channels as a 32-bit little-endian unsigned integer. Must be consistent with channelType. DSF interleaves DSD data in 4096-byte blocks per channel: [4096B ch1][4096B ch2][4096B ch1][4096B ch2]...",
+      "storeAs": "channelCount",
+      "valueType": "uint32",
+      "endianness": "little"
+    },
+    {
+      "type": "field",
+      "name": "Sample Rate",
+      "offset": 52,
+      "length": 4,
+      "color": "#A8E6CF",
+      "opacity": 0.30,
+      "description": "DSD sample rate in Hz as a 32-bit little-endian unsigned integer. DSD uses 1-bit pulse-density modulation at multiples of the CD sample rate: DSD64 (2.8224 MHz) = 64× CD, DSD128 (5.6448 MHz) = 128× CD, DSD256 (11.2896 MHz) = 256× CD.",
+      "storeAs": "sampleRate",
+      "valueType": "uint32",
+      "endianness": "little",
+      "valueMap": {
+        "2822400": "DSD64 — 2.8224 MHz (standard SACD quality)",
+        "5644800": "DSD128 — 5.6448 MHz (high-resolution DSD)",
+        "11289600": "DSD256 — 11.2896 MHz (studio/ultra-high-resolution)",
+        "22579200": "DSD512 — 22.5792 MHz (extreme resolution)"
+      }
+    },
+    {
+      "type": "field",
+      "name": "Bits Per Sample",
+      "offset": 56,
+      "length": 4,
+      "color": "#98D8C8",
+      "opacity": 0.25,
+      "description": "Bits per DSD sample as a 32-bit little-endian unsigned integer. For standard DSD audio this is always 1 (one-bit pulse-density modulation). Samples are packed 8 per byte, LSB first (oldest sample in LSB).",
+      "storeAs": "bitsPerSample",
+      "valueType": "uint32",
+      "endianness": "little",
+      "valueMap": {
+        "1": "1-bit DSD (standard pulse-density modulation)"
+      }
     },
     {
       "type": "metadata",
-      "name": "Byte Rate",
-      "variable": "byteRate",
-      "description": "Calculated byte rate"
+      "name": "DSD Chunk ID",
+      "variable": "dsdChunkId",
+      "description": "'DSD ' — DSF file identifier (with trailing space)"
     },
     {
       "type": "metadata",
-      "name": "Samples/Second",
-      "variable": "samplesPerSecond",
-      "description": "Total samples per second"
+      "name": "Total File Size",
+      "variable": "totalFileSize",
+      "description": "Total DSF file size in bytes"
+    },
+    {
+      "type": "metadata",
+      "name": "Sample Rate",
+      "variable": "sampleRate",
+      "description": "DSD sample rate: 2822400=DSD64, 5644800=DSD128, 11289600=DSD256"
+    },
+    {
+      "type": "metadata",
+      "name": "Channel Count",
+      "variable": "channelCount",
+      "description": "Number of audio channels (1=mono, 2=stereo, 6=5.1)"
     }
   ],
-  "software": [
-    "DSD audio players",
-    "Foobar2000",
-    "Audiophile software"
+  "assertions": [
+    {
+      "name": "DSD chunk ID valid",
+      "expression": "dsdChunkId == 'DSD '",
+      "severity": "error",
+      "message": "DSF file must start with 'DSD ' (0x44534420 with trailing space) — not a valid DSF file"
+    },
+    {
+      "name": "DSD chunk size is 28",
+      "expression": "dsdChunkSize == 28",
+      "severity": "warning",
+      "message": "DSF DSD header chunk size should be 28 bytes per v1.01 specification"
+    },
+    {
+      "name": "Bits per sample is 1",
+      "expression": "bitsPerSample == 1",
+      "severity": "warning",
+      "message": "DSF bits per sample should be 1 for standard DSD audio"
+    },
+    {
+      "name": "Sample rate is known DSD rate",
+      "expression": "sampleRate == 2822400 || sampleRate == 5644800 || sampleRate == 11289600 || sampleRate == 22579200",
+      "severity": "info",
+      "message": "DSF sample rate is not a standard DSD rate — expected 2822400, 5644800, 11289600, or 22579200 Hz"
+    }
   ],
-  "formatRelationships": {
-    "category": "Audio",
-    "extensions": [
-      ".dsf"
+  "navigation": {
+    "bookmarks": [
+      {
+        "name": "DSD Header Chunk",
+        "offset": 0,
+        "icon": "\uE71B",
+        "color": "#FF6B6B"
+      },
+      {
+        "name": "Format Chunk (fmt )",
+        "offset": 28,
+        "icon": "\uE8B7",
+        "color": "#4ECDC4"
+      }
     ]
   },
-  "MimeTypes": [
-    "audio/dsf"
-  ],
-  "Software": [
-    "VLC",
-    "Audacity",
-    "Foobar2000",
-    "MediaMonkey",
-    "Winamp"
-  ],
-  "UseCases": [
-    "Music playback",
-    "Audio editing",
-    "Sound production",
-    "Streaming"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 3,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "sampleRate",
+    "primaryField": "channelCount",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "DSF Container",
+        "icon": "\uE71B",
+        "fields": ["dsdChunkId", "dsdChunkSize", "totalFileSize", "id3MetadataOffset"]
+      },
+      {
+        "title": "Audio Format",
+        "icon": "\uE767",
+        "fields": ["fmtVersion", "channelType", "channelCount", "sampleRate", "bitsPerSample"]
+      }
+    ]
   },
-  "TechnicalDetails": {
-    "AudioFormat": true
-  },
+  "exportTemplates": [
+    {
+      "name": "DSF Header (JSON)",
+      "format": "json",
+      "fields": ["dsdChunkId", "totalFileSize", "id3MetadataOffset", "fmtVersion", "channelType", "channelCount", "sampleRate", "bitsPerSample"]
+    }
+  ],
   "forensic": {
     "category": "audio",
     "riskLevel": "low",
-    "suspiciousPatterns": []
+    "suspiciousPatterns": [
+      {
+        "name": "Non-standard DSD sample rate",
+        "condition": "sampleRate != 2822400 && sampleRate != 5644800 && sampleRate != 11289600 && sampleRate != 22579200",
+        "severity": "info",
+        "description": "DSF file uses an unusual sample rate. Standard DSD rates are 2822400 (DSD64), 5644800 (DSD128), 11289600 (DSD256), 22579200 (DSD512). Non-standard rates may not be supported by all DSD players."
+      }
+    ]
   },
   "aiHints": {
-    "analysisContext": "Sony DSD Stream File format for Direct Stream Digital audio",
+    "analysisContext": "DSF layout (all LE): 'DSD '(4) + dsdChunkSize(8,LE,=28) + totalFileSize(8,LE) + id3Offset(8,LE,0=none). 'fmt '(4) + fmtChunkSize(8,LE,=52) + version(4,LE,=1) + channelType(4,LE: 1=mono/2=stereo/7=5.1) + channelCount(4,LE) + sampleRate(4,LE: 2822400=DSD64/5644800=DSD128) + bitsPerSample(4,LE,=1) + sampleCount(8,LE) + blockSizePerChannel(4,LE,=4096) + reserved(4,LE,=0). 'data'(4) + dataSize(8,LE) + DSD_audio. DSD data is interleaved in 4096-byte blocks per channel. 1-bit samples packed LSB-first. If id3Offset != 0: ID3v2 tag at that byte offset (look for 'ID3' magic 49 44 33).",
     "suggestedInspections": [
-      "Validate DSD Stream File header: sample rate, channels, bit depth, codec ID",
-      "Check frame/block alignment and data chunk boundaries",
-      "Verify metadata tags (ID3, Vorbis comment) are well-formed"
+      "Verify 'DSD ' at offset 0 (44 53 44 20)",
+      "Read total file size at offset 12 (LE uint64) and compare with actual file size",
+      "Read id3Offset at offset 20 (LE uint64) — if non-zero, ID3v2 tag exists at that position",
+      "Read sample rate at offset 52 (LE uint32): 2822400=DSD64, 5644800=DSD128",
+      "Channel type at offset 44: 2=stereo, 7=5.1 surround"
     ]
+  },
+  "software": [
+    "Korg AudioGate",
+    "foobar2000 (with SACD plugin)",
+    "JRiver Media Center",
+    "Roon",
+    "Audirvana",
+    "Sony Music Center"
+  ],
+  "formatRelationships": {
+    "category": "Audio",
+    "extensions": [".dsf"],
+    "relatedFormats": ["DFF", "SACD ISO"],
+    "note": "DSF (Sony) and DFF (Philips) are the two main DSD container formats. DSF uses little-endian 64-bit chunk sizes and 4096-byte interleaved channel blocks. DFF uses big-endian IFF chunks. DSF supports optional ID3v2 tags; DFF uses embedded DIIN chunk for metadata."
+  },
+  "MimeTypes": [
+    "audio/dsf",
+    "audio/x-dsf",
+    "audio/dsd"
+  ],
+  "UseCases": [
+    "Super Audio CD (SACD) audio distribution",
+    "High-resolution DSD music download (HDtracks, Acoustic Sounds)",
+    "Sony Walkman and Hi-Res audio player format",
+    "Audiophile digital music library"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 76,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 12,
+    "ValidationRules": 4,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "AudioFormat": true,
+    "ContainerFormat": "Sony DSF three-chunk structure (DSD + fmt + data)",
+    "Endianness": "little-endian (all DSF numeric fields)",
+    "ChunkSizeWidth": "64-bit little-endian",
+    "DSDEncoding": "1-bit pulse-density modulation, LSB first",
+    "SampleRates": "DSD64=2822400 Hz, DSD128=5644800 Hz, DSD256=11289600 Hz",
+    "BlockInterleaving": "4096 bytes per channel",
+    "MetadataFormat": "ID3v2 tag appended at end of file (offset stored in DSD header)"
   }
 }

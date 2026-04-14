@@ -1,50 +1,54 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "MPEG Transport Stream",
-  "version": "1.11",
+  "version": "1.12",
   "extensions": [
     ".ts",
     ".tsv",
-    ".tsa"
+    ".tsa",
+    ".m2ts",
+    ".mts"
   ],
-  "description": "MPEG-2 Transport Stream container format used for broadcasting and streaming",
+  "description": "MPEG-2 Transport Stream (TS) — a digital broadcast container defined in ISO/IEC 13818-1 and ITU-T H.222.0. A Transport Stream consists of fixed-size 188-byte packets, each starting with sync byte 0x47. The 4-byte packet header contains: sync byte (0x47), transport error indicator (1 bit), payload unit start indicator (1 bit), transport priority (1 bit), PID (13 bits, 0x0000-0x1FFF), scrambling control (2 bits), adaptation field control (2 bits), continuity counter (4 bits). PID 0x0000=PAT (Program Association Table), 0x0001=CAT (Conditional Access Table), 0x0002=TSDT, 0x1FFF=null packet. The PAT maps program numbers to PMT PIDs. PMT lists elementary stream PIDs with stream type codes. TS is used in DVB, ATSC, ISDB digital television, Blu-ray (M2TS with 192-byte packets), and IPTV.",
   "category": "Video",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "ISO/IEC 13818-1 - MPEG-2 Systems Transport Stream",
-      "ITU-T Recommendation H.222.0",
-      "MPEG Transport Stream Standard"
+      "ISO/IEC 13818-1 — MPEG-2 Systems (Transport Stream)",
+      "ITU-T H.222.0 — MPEG-2 Transport Stream",
+      "ETSI EN 300 468 — DVB-SI: Service Information",
+      "ATSC A/53 — ATSC Digital Television Standard"
     ],
     "WebLinks": [
       "https://en.wikipedia.org/wiki/MPEG_transport_stream",
       "https://www.iso.org/standard/74427.html",
-      "https://wiki.multimedia.cx/index.php/MPEG-2_Transport_Stream",
-      "https://tsduck.io/download/docs/mpegts-introduction.pdf"
+      "https://wiki.multimedia.cx/index.php/MPEG-2_Transport_Stream"
     ]
   },
   "detection": {
-    "signature": "47",
-    "offset": 0,
+    "signatures": [
+      { "value": "47", "offset": 0, "label": "MPEG-TS sync byte 0x47 at offset 0 (first packet)", "weight": 0.6 },
+      { "value": "47", "offset": 188, "label": "MPEG-TS sync byte 0x47 at offset 188 (second packet)", "weight": 0.8 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.6,
     "required": true,
+    "Strength": "Medium",
+    "EntropyHint": { "min": 4.0, "max": 7.5 },
     "validation": {
-      "minFileSize": 1,
-      "maxSignatureOffset": 1024
+      "minFileSize": 188,
+      "note": "0x47 single-byte signature is common. Stronger detection: verify 0x47 at offsets 0, 188, 376 (every 188 bytes). M2TS uses 192-byte packets with 4-byte timestamp prefix before the 0x47 sync byte."
     }
   },
-  "functions": {
-    "readUInt8": "Read 8-bit values for sync byte and header flags",
-    "readUInt16BE": "Read 16-bit PID (Packet Identifier)",
-    "bitwiseAnd": "Extract transport error, unit start, priority, and PID",
-    "bitwiseShiftRight": "Parse TS packet header fields"
-  },
   "variables": {
-    "currentOffset": 0,
-    "syncByte": 71,
-    "transportError": false,
-    "payloadStart": false,
+    "syncByte": 0,
+    "transportErrorIndicator": false,
+    "payloadUnitStartIndicator": false,
+    "transportPriority": false,
     "packetPID": 0,
+    "scramblingControl": 0,
+    "adaptationFieldControl": 0,
     "continuityCounter": 0
   },
   "blocks": [
@@ -54,64 +58,179 @@
       "offset": 0,
       "length": 1,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "MPEG-TS sync byte (0x47) appears every 188 bytes",
+      "opacity": 0.45,
+      "description": "MPEG-2 Transport Stream sync byte 0x47 (decimal 71, ASCII 'G'). Present as the first byte of every 188-byte TS packet. Receivers use this byte to establish and maintain packet synchronization. After a data error or seek, re-synchronize by searching for 0x47 occurring every 188 bytes. M2TS (Blu-ray) packets are 192 bytes — 4-byte timestamp + 188-byte TS packet with 0x47 at offset 4.",
       "storeAs": "syncByte",
       "valueType": "uint8"
+    },
+    {
+      "type": "field",
+      "name": "Transport Flags + PID (High Byte)",
+      "offset": 1,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "First byte of the 3-byte transport header field: bit 7 = transport_error_indicator (TEI, 1=uncorrectable error), bit 6 = payload_unit_start_indicator (PUSI, 1=start of PES or PSI section), bit 5 = transport_priority (1=higher priority), bits 4-0 = upper 5 bits of the 13-bit PID.",
+      "storeAs": "transportErrorIndicator",
+      "valueType": "uint8",
+      "bitfields": [
+        { "name": "Transport Error Indicator", "bits": "7", "description": "1 = at least one uncorrectable bit error detected", "valueMap": { "0": "No error", "1": "Bit error — packet may be damaged" } },
+        { "name": "Payload Unit Start", "bits": "6", "description": "1 = payload starts a new PES packet or PSI section", "valueMap": { "0": "Continuation", "1": "Payload start" } },
+        { "name": "Transport Priority", "bits": "5", "description": "1 = higher priority than other packets with same PID" }
+      ]
+    },
+    {
+      "type": "field",
+      "name": "PID Low Byte",
+      "offset": 2,
+      "length": 1,
+      "color": "#95E1D3",
+      "opacity": 0.30,
+      "description": "Lower 8 bits of the 13-bit Packet Identifier (PID). Combined with upper 5 bits from offset 1, forms the full PID (0x0000-0x1FFF). Well-known PIDs: 0x0000=PAT, 0x0001=CAT, 0x0002=TSDT, 0x0010-0x0014=DVB NIT/SDT/BAT/EIT, 0x1FFF=null/stuffing packet.",
+      "storeAs": "packetPID",
+      "valueType": "uint8"
+    },
+    {
+      "type": "field",
+      "name": "Scrambling + Adaptation + Continuity",
+      "offset": 3,
+      "length": 1,
+      "color": "#FFE66D",
+      "opacity": 0.30,
+      "description": "Fourth header byte: bits 7-6 = scrambling_control (00=not scrambled, 01=reserved, 10=even key, 11=odd key), bits 5-4 = adaptation_field_control (00=reserved, 01=payload only, 10=adaptation only, 11=adaptation+payload), bits 3-0 = continuity_counter (0-15, wraps, increments per PID).",
+      "storeAs": "scramblingControl",
+      "valueType": "uint8",
+      "bitfields": [
+        { "name": "Scrambling Control", "bits": "7-6", "description": "00=not scrambled, 10=even key, 11=odd key", "valueMap": { "0": "Not scrambled", "1": "Reserved", "2": "Scrambled (even key)", "3": "Scrambled (odd key)" } },
+        { "name": "Adaptation Field Control", "bits": "5-4", "description": "01=payload only, 10=adaptation only, 11=adaptation+payload", "valueMap": { "1": "Payload only", "2": "Adaptation field only", "3": "Adaptation + Payload" } },
+        { "name": "Continuity Counter", "bits": "3-0", "description": "0-15 rotating counter, increments per PID for payload-carrying packets" }
+      ]
+    },
+    {
+      "type": "metadata",
+      "name": "Sync Byte",
+      "variable": "syncByte",
+      "description": "MPEG-TS sync byte (must be 0x47 = 71)"
+    },
+    {
+      "type": "metadata",
+      "name": "PID",
+      "variable": "packetPID",
+      "description": "Packet identifier (0x0000=PAT, 0x1FFF=null)"
+    },
+    {
+      "type": "metadata",
+      "name": "Scrambling Control",
+      "variable": "scramblingControl",
+      "description": "Scrambling/encryption status of this packet"
     }
   ],
-  "software": [
-    "Media players",
-    "VLC",
-    "TV software"
+  "assertions": [
+    {
+      "name": "Sync byte must be 0x47",
+      "expression": "syncByte == 71",
+      "severity": "error",
+      "message": "MPEG-TS sync byte must be 0x47 (71) — not a valid Transport Stream packet"
+    }
   ],
-  "formatRelationships": {
-    "category": "Video",
-    "extensions": [
-      ".ts",
-      ".tsv",
-      ".tsa"
+  "navigation": {
+    "bookmarks": [
+      {
+        "name": "First TS Packet",
+        "offset": 0,
+        "icon": "\uE71B",
+        "color": "#FF6B6B"
+      },
+      {
+        "name": "Second TS Packet",
+        "offset": 188,
+        "icon": "\uE8A5",
+        "color": "#4ECDC4"
+      }
     ]
   },
-  "MimeTypes": [
-    "video/ts"
-  ],
-  "Software": [
-    "VLC",
-    "Media Player Classic",
-    "HandBrake",
-    "FFmpeg",
-    "MPC-HC"
-  ],
-  "UseCases": [
-    "Video playback",
-    "Video editing",
-    "Encoding",
-    "Streaming"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 1,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "packetPID",
+    "primaryField": "syncByte",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "TS Packet Header",
+        "icon": "\uE71B",
+        "fields": ["syncByte", "transportErrorIndicator", "packetPID", "scramblingControl"]
+      }
+    ]
   },
-  "TechnicalDetails": {
-    "VideoFormat": true
-  },
+  "exportTemplates": [
+    {
+      "name": "TS Packet Header (JSON)",
+      "format": "json",
+      "fields": ["syncByte", "transportErrorIndicator", "packetPID", "scramblingControl"]
+    }
+  ],
   "forensic": {
     "category": "video",
     "riskLevel": "low",
-    "suspiciousPatterns": []
+    "suspiciousPatterns": [
+      {
+        "name": "Scrambled packets",
+        "condition": "(scramblingControl & 192) != 0",
+        "severity": "info",
+        "description": "Packet scrambling control indicates encrypted (scrambled) Transport Stream. DRM/CA system required for decryption."
+      }
+    ]
   },
   "aiHints": {
-    "analysisContext": "MPEG-2 Transport Stream container format used for broadcasting and streaming",
+    "analysisContext": "MPEG-2 TS packet (188 bytes): sync(1B, must=0x47) + flags+PID_high(1B: bit7=TEI/bit6=PUSI/bit5=prio/bits4-0=PID[12:8]) + PID_low(1B: PID[7:0]) + flags_cc(1B: bits7-6=scrambling/bits5-4=AFC/bits3-0=cc). Payload at offset 4. Key PIDs: 0x0000=PAT, 0x0001=CAT, 0x1FFF=null. PAT format: table_id(1B, must=0x00) + section_syntax(1b)+0+reserved(3b)+section_length(12b) + transport_stream_id(2B) + reserved(2b)+version(5b)+current_next(1b) + section_number(1B) + last_section_number(1B) + [program_number(2B)+reserved(3b)+PMT_PID(13b)]× + CRC32(4B). Continuity counter wraps 0-15. M2TS: 192-byte packet = 4-byte extra timestamp + 188-byte TS.",
     "suggestedInspections": [
-      "Validate MPEG Transport Stream container magic, box/atom sizes, and codec FourCC",
-      "Check track/stream layout, frame index, and timing fields",
-      "Inspect audio-video sync, keyframe distribution, and metadata"
+      "Verify 0x47 at offsets 0, 188, 376 to confirm 188-byte packet alignment",
+      "Read first 4 bytes of PAT payload (PID 0x0000, PUSI=1) to find PMT PIDs",
+      "Check scrambling_control bits: non-zero = encrypted stream",
+      "Count null packets (PID 0x1FFF) as % of total — high rate indicates low bitrate or padding",
+      "For M2TS: expect 0x47 at offsets 4, 196, 388 (192-byte packets with 4-byte timestamp)"
     ]
+  },
+  "software": [
+    "VLC media player",
+    "FFmpeg (mpegts muxer/demuxer)",
+    "TSDuck (TS analysis tool)",
+    "DVB analyzers (DVBInspector, Wireshark with TS plugin)",
+    "HandBrake",
+    "MakeMKV (M2TS → MKV)"
+  ],
+  "formatRelationships": {
+    "category": "Video",
+    "extensions": [".ts", ".m2ts", ".mts"],
+    "relatedFormats": ["MPEG", "M2TS", "MTS"],
+    "note": "MPEG-2 TS: 188-byte packets. M2TS (Blu-ray BDMV): 192-byte packets (4-byte TP_extra_header + 188-byte TS). MTS (AVCHD): same 192-byte M2TS packets. All share sync byte 0x47."
+  },
+  "MimeTypes": [
+    "video/mp2t",
+    "video/mpeg",
+    "video/vnd.dlna.mpeg-tts"
+  ],
+  "UseCases": [
+    "DVB-T/DVB-S digital television broadcast",
+    "ATSC North American digital broadcast",
+    "IPTV streaming (UDP multicast)",
+    "Blu-ray (M2TS variant)",
+    "AVCHD camcorder recordings (MTS)"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 72,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 6,
+    "ValidationRules": 1,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "VideoFormat": true,
+    "Endianness": "big-endian (all multi-bit fields in header)",
+    "PacketSize": "188 bytes (TS) or 192 bytes (M2TS/MTS)",
+    "SyncByte": "0x47 every 188 bytes",
+    "PIDRange": "0x0000-0x1FFF (13 bits)",
+    "MaxBitrate": "Theoretical unlimited; practical DVB-T2 up to 50 Mbps"
   }
 }

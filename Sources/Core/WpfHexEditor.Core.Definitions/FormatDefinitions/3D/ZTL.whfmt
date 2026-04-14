@@ -1,124 +1,181 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "ZBrush Tool",
-  "version": "1.13",
+  "version": "1.14",
   "extensions": [
     ".ztl"
   ],
-  "description": "Pixologic ZBrush tool file",
+  "description": "ZBrush Tool (.ztl) is the single-tool export format for Pixologic ZBrush, storing an individual sculpted mesh with all its subtools, subdivision levels, polygroups, UV maps, morph targets, and masking data. Unlike the full-project .zpr format, ZTL files contain only the tool (3D object) data without the canvas state and UI settings. The binary format begins with the 'ZBRH' magic bytes identifying it as a ZBrush binary file. ZTL is the preferred format for sharing individual ZBrush sculpts between artists. The format is proprietary and not publicly documented by Pixologic/Maxon.",
   "category": "3D",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "ZBrush Tool Format"
+      "Pixologic ZBrush (no public file format specification)"
     ],
     "WebLinks": [
-      "https://en.wikipedia.org/wiki/ZTL"
+      "https://en.wikipedia.org/wiki/ZBrush",
+      "https://www.maxon.net/zbrush",
+      "https://wiki.fileformat.com/3d/ztl/"
     ]
   },
   "detection": {
-    "signature": "5A544F4F4C",
-    "offset": 0,
+    "signatures": [
+      { "value": "5A425248", "offset": 0, "label": "'ZBRH' ZBrush header magic", "weight": 0.8 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.7,
     "required": true,
+    "Strength": "Medium",
+    "EntropyHint": { "min": 4.0, "max": 7.5 },
     "validation": {
-      "minFileSize": 5,
-      "maxSignatureOffset": 1024
+      "minFileSize": 16,
+      "maxSignatureOffset": 0,
+      "note": "'ZBRH' at offset 0 is shared with ZPR; .ztl extension distinguishes the single-tool save from full .zpr project files."
     }
   },
   "variables": {
-    "currentOffset": 0,
-    "polyCount": 0,
-    "pointCount": 0,
-    "version": 0,
-    "zbrushToolSignature": ""
+    "zbrhMagic": "",
+    "versionField": 0,
+    "toolDataOffset": 0,
+    "subtoolFlags": 0
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "ZBrush Tool Signature",
+      "name": "ZBRH Magic",
       "offset": 0,
-      "length": 5,
+      "length": 4,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "ZTOOL magic bytes",
-      "storeAs": "zbrushToolSignature",
+      "opacity": 0.45,
+      "description": "4-byte ASCII magic 'ZBRH' (0x5A 0x42 0x52 0x48) identifying a ZBrush binary format file. Shared between ZTL tool files and ZPR project files. File extension (.ztl vs .zpr) disambiguates between single-tool and full-project saves.",
+      "storeAs": "zbrhMagic",
       "valueType": "ascii"
     },
     {
       "type": "field",
-      "name": "Version",
-      "offset": 5,
+      "name": "Format Version",
+      "offset": 4,
       "length": 4,
       "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "Tool version",
-      "storeAs": "version",
-      "valueType": "ascii"
+      "opacity": 0.35,
+      "description": "4-byte field following ZBRH likely encoding the ZBrush format version or revision identifier. Helps distinguish tool files saved by different ZBrush versions. Exact semantics are proprietary and undocumented.",
+      "storeAs": "versionField",
+      "valueType": "uint32"
     },
     {
-      "type": "metadata",
-      "name": "Polygon Count",
-      "variable": "polyCount",
-      "description": "Polygon Count"
+      "type": "field",
+      "name": "Tool Data Offset",
+      "offset": 8,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.35,
+      "description": "4-byte field that may indicate the byte offset to the main tool mesh data block within the ZTL file. ZBrush tool files organize geometry, subdivision levels, and subtool lists in internal sections accessed via offsets.",
+      "storeAs": "toolDataOffset",
+      "valueType": "uint32"
     },
     {
-      "type": "metadata",
-      "name": "Point Count",
-      "variable": "pointCount",
-      "description": "Point Count"
+      "type": "field",
+      "name": "Subtool/Flags Region",
+      "offset": 12,
+      "length": 16,
+      "color": "#FFE66D",
+      "opacity": 0.35,
+      "description": "16-byte extended header region of the ZTL file that may encode tool flags, subdivision level count, polygon count, or subtool list pointers. Exact layout is proprietary and may vary between ZBrush release versions.",
+      "storeAs": "subtoolFlags",
+      "valueType": "bytes"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "ValidZbrhMagic",
+      "expression": "zbrhMagic == 'ZBRH'",
+      "severity": "error",
+      "message": "ZBrush 'ZBRH' magic not found at offset 0. This is not a valid ZBrush tool file. The file may be corrupt or not a ZBrush binary file."
+    },
+    {
+      "name": "ProprietaryNote",
+      "expression": "true",
+      "severity": "warning",
+      "message": "ZBrush Tool (.ztl) uses a proprietary undocumented binary format. Full interpretation requires the ZBrush application. Only header bytes can be reliably analyzed by hex inspection."
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "ZBRH Header", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
+      { "name": "Version / Format", "offset": 4, "icon": "\uE946", "color": "#4ECDC4" },
+      { "name": "Tool Data", "offset": 12, "icon": "\uE8B7", "color": "#FFE66D" }
+    ]
+  },
+  "inspector": {
+    "badge": "zbrhMagic",
+    "primaryField": "versionField",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "ZBrush Header",
+        "icon": "\uE71B",
+        "fields": ["zbrhMagic", "versionField"]
+      },
+      {
+        "title": "Tool Data",
+        "icon": "\uE8B7",
+        "fields": ["toolDataOffset", "subtoolFlags"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "ZTL Header (JSON)",
+      "format": "json",
+      "fields": ["zbrhMagic", "versionField", "toolDataOffset"]
     }
   ],
   "software": [
-    "ZBrush"
+    "Pixologic ZBrush",
+    "Maxon ZBrush"
   ],
   "formatRelationships": {
     "category": "3D",
-    "extensions": [
-      ".ztl"
-    ]
+    "extensions": [".ztl"],
+    "relatedFormats": ["ZPR", "OBJ", "FBX"],
+    "note": "Single-tool ZBrush save; lighter than full .zpr project; same ZBRH magic; proprietary undocumented format"
   },
   "MimeTypes": [
     "application/octet-stream"
   ],
-  "Software": [
-    "Blender",
-    "3ds Max",
-    "Maya",
-    "Cinema 4D",
-    "MeshLab"
-  ],
   "UseCases": [
-    "3D modeling",
-    "Rendering",
-    "Animation",
-    "Game development"
+    "Digital sculpt asset sharing",
+    "Character mesh exchange between artists",
+    "High-subdivision sculpt archiving",
+    "Game character creation"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 32,
-    "DocumentationLevel": "standard",
+    "CompletenessScore": 52,
+    "DocumentationLevel": "detailed",
     "BlocksDefined": 4,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
     "PriorityFormat": false,
-    "AutoRefined": true
+    "AutoRefined": false
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32LE": "Read ZBrush tool header",
-    "multiply": "Calculate polygon count"
+  "TechnicalDetails": {
+    "encoding": "binary-proprietary",
+    "specification": "undocumented",
+    "sharedMagicWith": ["ZPR"],
+    "developed_by": "Pixologic (now Maxon)"
   },
   "forensic": {
-    "category": "3d-model",
+    "category": "3d",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Pixologic ZBrush tool file",
+    "analysisContext": "ZBrush single-tool save file with 'ZBRH' magic at offset 0. Proprietary binary format storing sculpted mesh with subtools and subdivision levels. ZBRH magic is shared with ZPR; extension disambiguates.",
     "suggestedInspections": [
-      "Validate ZBrush Tool header magic bytes and format version",
-      "Check vertex/face count fields and mesh data boundaries",
-      "Inspect embedded material, texture, and animation references"
+      "Verify 'ZBRH' magic at offset 0; distinguish from ZPR by the .ztl file extension",
+      "Inspect bytes 4-12 for version and data offset indicators",
+      "Note that complete parsing requires ZBrush; hex analysis is limited to header region identification"
     ]
   }
 }

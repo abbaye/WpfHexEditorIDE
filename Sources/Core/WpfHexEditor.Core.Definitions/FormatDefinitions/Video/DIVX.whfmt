@@ -1,128 +1,201 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "DivX Video",
-  "version": "2.5",
+  "version": "2.42",
   "extensions": [
-    ".divx"
+    ".divx",
+    ".avi"
   ],
-  "description": "DivX MPEG-4 Part 2 video codec container format",
+  "description": "DivX is a brand of MPEG-4 Part 2 Advanced Simple Profile (ASP) video codec created by DivX LLC. DivX-encoded video is almost always stored in the AVI (Audio Video Interleaved) RIFF container. AVI files begin with the 4-byte RIFF signature (0x52 0x49 0x46 0x46), followed by file size (uint32 LE), and the 4-byte form type 'AVI ' (0x41 0x56 0x49 0x20). The DivX codec is identified by the FourCC 'DIVX', 'DX50', 'DX40', or 'DIV3' in the BITMAPINFOHEADER.biCompression field within the AVI stream header (avih/strf chunks). DivX 3 used a cracked Microsoft MPEG-4 codec; DivX 4/5 are proper MPEG-4 ASP implementations. Modern DivX 6+ also supports H.264.",
   "category": "Video",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "ISO/IEC 14496-2 - MPEG-4 Part 2 Visual",
-      "MPEG-4 Advanced Simple Profile (ASP)",
-      "DivX Codec Specification"
+      "ISO/IEC 14496-2 — MPEG-4 Part 2 Visual (ASP)",
+      "Microsoft AVI RIFF File Reference",
+      "DivX Codec Specification — DivX LLC"
     ],
     "WebLinks": [
       "https://en.wikipedia.org/wiki/DivX",
       "https://en.wikipedia.org/wiki/MPEG-4_Part_2",
-      "https://www.loc.gov/preservation/digital/formats/fdd/fdd000069.shtml"
+      "https://www.loc.gov/preservation/digital/formats/fdd/fdd000069.shtml",
+      "https://wiki.multimedia.cx/index.php/DivX"
     ]
   },
   "detection": {
-    "signature": "52494646",
-    "offset": 0,
+    "signatures": [
+      { "value": "52494646", "offset": 0, "label": "'RIFF' AVI container (shared with WAV/ANI)", "weight": 0.5 },
+      { "value": "41564920", "offset": 8, "label": "'AVI ' form type — confirms AVI container", "weight": 0.8 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.5,
     "required": true,
+    "Strength": "Medium",
+    "EntropyHint": { "min": 4.5, "max": 7.5 },
     "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024
+      "minFileSize": 12,
+      "note": "RIFF signature at offset 0 is shared with WAV, ANI, and other RIFF formats. 'AVI ' at offset 8 confirms an AVI container. DivX is identified by codec FourCC in AVI stream headers — no unique file-level signature."
     }
   },
   "variables": {
-    "width": 0,
-    "height": 0,
-    "frameRate": 0,
-    "duration": 0,
-    "riffHeader": 0,
-    "totalPixels": 0
+    "riffSignature": "",
+    "riffFileSize": 0,
+    "aviFormType": ""
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "RIFF Header",
+      "name": "RIFF Signature",
       "offset": 0,
       "length": 4,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "RIFF container header for DivX",
-      "storeAs": "riffHeader",
-      "valueType": "uint32"
+      "opacity": 0.45,
+      "description": "RIFF container signature 'RIFF' (0x52 0x49 0x46 0x46). The Resource Interchange File Format (RIFF) is a tagged chunk container used by AVI, WAV, ANI, and other Microsoft multimedia formats. DivX video uses the AVI RIFF variant — confirmed by 'AVI ' form type at offset 8.",
+      "storeAs": "riffSignature",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "RIFF File Size",
+      "offset": 4,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.30,
+      "description": "File size minus 8 bytes (little-endian uint32, excludes RIFF signature and this field). Maximum valid RIFF size is 0xFFFFFFFF (4 GB) for standard AVI. OpenDML/AVI 2.0 extends beyond 4 GB using RIFF-AVIX chunks.",
+      "storeAs": "riffFileSize",
+      "valueType": "uint32",
+      "endianness": "little"
+    },
+    {
+      "type": "field",
+      "name": "AVI Form Type",
+      "offset": 8,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.35,
+      "description": "RIFF form type identifier. 'AVI ' (0x41 0x56 0x49 0x20, note trailing space) identifies this RIFF file as an AVI container. DivX-encoded video and Xvid/MPEG-4 video are commonly stored in AVI. The DivX codec FourCC ('DIVX', 'DX50') appears later in the strf chunk of the video stream.",
+      "storeAs": "aviFormType",
+      "valueType": "ascii",
+      "valueMap": {
+        "AVI ": "AVI container (Audio Video Interleaved)",
+        "AVIX": "OpenDML AVI extension (AVI 2.0 >4GB)"
+      }
     },
     {
       "type": "metadata",
-      "name": "Resolution",
-      "variable": "width",
-      "description": "Resolution"
+      "name": "RIFF Signature",
+      "variable": "riffSignature",
+      "description": "RIFF container magic ('RIFF')"
     },
     {
       "type": "metadata",
-      "name": "Frame Rate",
-      "variable": "frameRate",
-      "description": "Frame Rate"
-    },
-    {
-      "type": "metadata",
-      "name": "Total Pixels",
-      "variable": "totalPixels",
-      "description": "Width x Height"
+      "name": "AVI Form Type",
+      "variable": "aviFormType",
+      "description": "RIFF form type ('AVI ' confirms AVI container)"
     }
   ],
-  "software": [
-    "DivX Player",
-    "VLC",
-    "Media players"
+  "assertions": [
+    {
+      "name": "RIFF signature valid",
+      "expression": "riffSignature == 'RIFF'",
+      "severity": "error",
+      "message": "RIFF signature must be 'RIFF' (52 49 46 46) — not a valid AVI/DivX file"
+    },
+    {
+      "name": "AVI form type valid",
+      "expression": "aviFormType == 'AVI '",
+      "severity": "warning",
+      "message": "RIFF form type is not 'AVI ' — may be WAV, ANI, or other RIFF format rather than DivX/AVI video"
+    }
   ],
-  "formatRelationships": {
-    "category": "Video",
-    "extensions": [
-      ".divx"
+  "navigation": {
+    "bookmarks": [
+      {
+        "name": "RIFF Header",
+        "offset": 0,
+        "icon": "\uE71B",
+        "color": "#FF6B6B"
+      },
+      {
+        "name": "LIST hdrl (AVI Header)",
+        "offset": 12,
+        "icon": "\uE8A5",
+        "color": "#4ECDC4"
+      }
     ]
   },
-  "MimeTypes": [
-    "video/divx"
-  ],
-  "Software": [
-    "VLC",
-    "Media Player Classic",
-    "HandBrake",
-    "FFmpeg",
-    "MPC-HC"
-  ],
-  "UseCases": [
-    "Video playback",
-    "Video editing",
-    "Encoding",
-    "Streaming"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 4,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "aviFormType",
+    "primaryField": "riffFileSize",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "RIFF/AVI Header",
+        "icon": "\uE71B",
+        "fields": ["riffSignature", "riffFileSize", "aviFormType"]
+      }
+    ]
   },
-  "TechnicalDetails": {
-    "VideoFormat": true
-  },
-  "functions": {
-    "readUInt32LE": "Read video header",
-    "computeFromVariables(width * height, totalPixels)": "Calculate total pixels"
-  },
+  "exportTemplates": [
+    {
+      "name": "RIFF/AVI Header (JSON)",
+      "format": "json",
+      "fields": ["riffSignature", "riffFileSize", "aviFormType"]
+    }
+  ],
   "forensic": {
     "category": "video",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "DivX MPEG-4 Part 2 video codec container format",
+    "analysisContext": "DivX video in RIFF/AVI container. RIFF structure: 'RIFF'(4B) + size(4B LE) + 'AVI '(4B) + LIST hdrl + LIST movi + idx1. 'hdrl' list: avih(AVI main header: usPerFrame, maxBytesPerSec, totalFrames, streams, width, height) + strl lists (strf contains BITMAPINFOHEADER). DivX FourCC in biCompression: 'DIVX'=DivX5+, 'DX50'=DivX5, 'DX40'=DivX4, 'DIV3'=DivX3 (MS MPEG-4), 'XVID'=Xvid. Audio strf = WAVEFORMATEX (wFormatTag 0x0001=PCM, 0x0055=MP3). idx1 at end: frame index (ckid+flags+offset+size).",
     "suggestedInspections": [
-      "Validate DivX Video container magic, box/atom sizes, and codec FourCC",
-      "Check track/stream layout, frame index, and timing fields",
-      "Inspect audio-video sync, keyframe distribution, and metadata"
+      "Verify 'RIFF' at offset 0 and 'AVI ' at offset 8",
+      "Parse avih chunk (offset ~20): usPerFrame → frame rate, totalFrames, width/height",
+      "Find strf chunk in video strl list: check biCompression for 'DIVX'/'DX50'/'XVID' FourCC",
+      "Check idx1 chunk at end of file for frame index completeness"
     ]
+  },
+  "software": [
+    "DivX Player",
+    "VLC media player",
+    "Media Player Classic (MPC-HC)",
+    "FFmpeg (avi demuxer)",
+    "HandBrake"
+  ],
+  "formatRelationships": {
+    "category": "Video",
+    "extensions": [".divx", ".avi"],
+    "relatedFormats": ["AVI", "XVID", "MPEG"],
+    "note": "DivX uses the RIFF/AVI container — the same as Xvid, MPEG-4 Part 2, and other Windows video formats. No unique file signature distinguishes DivX from other AVI files; only the codec FourCC in the AVI stream header identifies it as DivX."
+  },
+  "MimeTypes": [
+    "video/divx",
+    "video/x-msvideo",
+    "video/avi"
+  ],
+  "UseCases": [
+    "DVD ripping to DivX (early 2000s era)",
+    "Peer-to-peer video sharing (Napster/KaZaA era)",
+    "Legacy DivX-certified set-top box playback",
+    "Home theater PC video libraries"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 65,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 5,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "VideoFormat": true,
+    "ContainerFormat": "RIFF/AVI (Audio Video Interleaved)",
+    "Endianness": "little-endian (all RIFF chunk sizes and AVI fields)",
+    "VideoCodec": "MPEG-4 Part 2 ASP (FourCC: DIVX/DX50/DX40/DIV3)",
+    "AudioCodecs": "MP3, AC-3, AAC (in later DivX versions)"
   }
 }

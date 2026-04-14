@@ -1,7 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "TLS Session Ticket",
-  "version": "1.13",
+  "version": "1.14",
   "extensions": [
     ".ticket",
     ".session"

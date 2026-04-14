@@ -1,121 +1,178 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "RINEX GNSS Data",
-  "version": "1.12",
+  "version": "1.13",
   "extensions": [
     ".rnx",
     ".obs",
     ".nav"
   ],
-  "description": "Receiver Independent Exchange Format for GNSS data",
+  "description": "Receiver Independent Exchange Format (RINEX) is the standard ASCII text format for GNSS raw observation and navigation data. Developed by the Astronomical Institute, University of Berne (AIUB) in 1989 for GPS and extended to GLONASS, Galileo, BeiDou, QZSS, and SBAS. RINEX 2.x observation files begin with a header block terminated by 'END OF HEADER', where each line has fixed-column metadata labels. RINEX 3.x and 4.x use similar structure with extended satellite system codes. The version number is in columns 1-9 of the first header line. File types include Observation (O), Navigation (N), Meteorological (M), and Clock (C) files. Used for precise positioning, timing, and atmospheric sounding.",
   "category": "Science",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
-  "references": {
-    "specifications": [
-      "RINEX GNSS Data Format"
-    ],
-    "WebLinks": [
-      "https://en.wikipedia.org/wiki/RNX"
-    ]
-  },
+  "references": [
+    "RINEX Version 3.05 Specification — IGS RINEX Working Group 2021",
+    "RINEX Version 4.01 Specification — IGS 2023"
+  ],
+  "WebLinks": [
+    "https://en.wikipedia.org/wiki/RINEX",
+    "https://files.igs.org/pub/data/format/rinex305.pdf"
+  ],
   "detection": {
     "signature": "2020202020",
     "offset": 0,
     "required": false,
+    "weight": 0.25,
     "validation": {
-      "minFileSize": 5,
-      "maxSignatureOffset": 1024
+      "minFileSize": 80,
+      "maxSignatureOffset": 0
     }
   },
   "variables": {
     "currentOffset": 0,
-    "dimensions": 0,
-    "dataType": "",
-    "arrayCount": 0,
-    "header": "",
-    "version": ""
+    "rinexVersion": "",
+    "fileType": "",
+    "gnssSystem": "",
+    "programName": "",
+    "runBy": "",
+    "header": ""
   },
   "blocks": [
     {
       "type": "field",
-      "name": "Header",
+      "name": "First Header Line",
       "offset": 0,
       "length": 80,
       "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "First RINEX header line (80 chars)",
+      "opacity": 0.4,
+      "description": "First RINEX header line (exactly 80 characters): columns 1-9 contain the version number (e.g. '     2.11' or '     3.05'), columns 21-30 = file type, columns 41-60 = GNSS system",
       "storeAs": "header",
       "valueType": "ascii"
     },
     {
       "type": "field",
-      "name": "Version",
+      "name": "RINEX Version Field",
       "offset": 0,
       "length": 9,
       "color": "#FF6B6B",
+      "opacity": 0.6,
+      "description": "Columns 1-9: right-justified version number string (e.g. '     2.11', '     3.05', '     4.01') identifying the RINEX standard version and enabling format-specific parsing",
+      "storeAs": "rinexVersion",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "File Type",
+      "offset": 20,
+      "length": 1,
+      "color": "#95E1D3",
       "opacity": 0.4,
-      "description": "RINEX version number",
-      "storeAs": "version",
+      "description": "Single character at column 21 indicating file type: 'O' = observation, 'N' = navigation, 'M' = meteorological, 'C' = clock, 'G' = GPS nav (RINEX 2 only)",
+      "storeAs": "fileType",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "GNSS System",
+      "offset": 40,
+      "length": 1,
+      "color": "#FFE66D",
+      "opacity": 0.35,
+      "description": "Single character at column 41 for RINEX 3+: 'G' = GPS, 'R' = GLONASS, 'E' = Galileo, 'C' = BeiDou, 'J' = QZSS, 'S' = SBAS, 'M' = mixed constellation",
+      "storeAs": "gnssSystem",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Second Header Line",
+      "offset": 80,
+      "length": 80,
+      "color": "#A8E6CF",
+      "opacity": 0.3,
+      "description": "Second header line containing program name (columns 1-20), run-by agency (21-40), and creation date/time (41-60) identifying the software and operator that created the file",
+      "storeAs": "secondHeaderLine",
       "valueType": "ascii"
     },
     {
       "type": "metadata",
-      "name": "Dimensions",
-      "variable": "dimensions",
-      "description": "Dimensions"
+      "name": "RINEX Version",
+      "variable": "rinexVersion",
+      "description": "RINEX format version string parsed from columns 1-9 of the first header line"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "ValidVersionNumber",
+      "description": "Columns 1-9 of first line (offset 0-8) must contain a numeric version string padded with spaces; presence of non-numeric non-space characters suggests a non-RINEX file",
+      "offset": 0,
+      "length": 9,
+      "severity": "warning"
     },
     {
-      "type": "metadata",
-      "name": "Data Type",
-      "variable": "dataType",
-      "description": "Data Type"
-    },
+      "name": "HeaderEndMarker",
+      "description": "RINEX files must contain the string 'END OF HEADER' in column 61-73 of one of the header lines; absence indicates a truncated or non-RINEX file",
+      "pattern": "END OF HEADER",
+      "severity": "warning"
+    }
+  ],
+  "inspector": {
+    "groups": [
+      {
+        "name": "File Header",
+        "fields": [
+          { "label": "Version (cols 1-9)",   "offset": 0,  "length": 9,  "format": "ascii" },
+          { "label": "File Type (col 21)",   "offset": 20, "length": 1,  "format": "ascii" },
+          { "label": "GNSS System (col 41)", "offset": 40, "length": 1,  "format": "ascii" },
+          { "label": "Full First Line",      "offset": 0,  "length": 80, "format": "ascii" },
+          { "label": "Second Line",          "offset": 80, "length": 80, "format": "ascii" }
+        ]
+      }
+    ]
+  },
+  "exportTemplates": [
     {
-      "type": "metadata",
-      "name": "Array Count",
-      "variable": "arrayCount",
-      "description": "Array Count"
+      "name": "RINEX Header Summary",
+      "fields": ["rinexVersion", "fileType", "gnssSystem", "programName"]
     }
   ],
   "software": [
-    "Common file viewers",
-    "Specialized software"
+    "RTKLIB",
+    "Bernese GNSS Software",
+    "TEQC (Unavco)",
+    "gfzrnx",
+    "Python georinex / hatanaka"
   ],
   "formatRelationships": {
-    "category": "Science",
-    "extensions": [
-      ".rnx",
-      ".obs",
-      ".nav"
-    ]
+    "gnss_standard": true,
+    "produced_by": "GNSS receivers (Trimble, Leica, Septentrio, u-blox)",
+    "versions": ["RINEX 2.11", "RINEX 3.05", "RINEX 4.01"],
+    "related": ["SP3", "ANTEX", "IONEX"]
   },
   "MimeTypes": [
+    "text/plain",
     "application/octet-stream"
   ],
-  "Software": [
-    "Hex Editor",
-    "File Viewer",
-    "Archive Manager"
-  ],
   "UseCases": [
-    "File storage",
-    "Data exchange",
-    "Archive"
+    "Precise GNSS orbit and clock determination",
+    "Atmospheric sounding (ionosphere/troposphere)",
+    "Post-processing kinematic positioning",
+    "IGS global tracking network data"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 27,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 5,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
+    "CompletenessScore": 55,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 6,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
     "PriorityFormat": false,
-    "AutoRefined": true
+    "AutoRefined": false
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32BE": "Read scientific header",
-    "multiply": "Calculate dimensions"
+  "TechnicalDetails": {
+    "encoding": "ASCII text, fixed-column format",
+    "lineLength": 80,
+    "versionField": "columns 1-9",
+    "labelField": "columns 61-80 of each header line"
   },
   "forensic": {
     "category": "science",
@@ -123,11 +180,14 @@
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Receiver Independent Exchange Format for GNSS data",
+    "analysisContext": "RINEX is a fixed-column ASCII format without a binary magic. The version number in columns 1-9 and 'END OF HEADER' marker are the reliable identifiers. RINEX 2 observation files use GPS time of day; RINEX 3+ use GPS week and seconds.",
     "suggestedInspections": [
-      "Validate RINEX GNSS Data file header, data type, and dimension fields",
-      "Check axis labels, units, and calibration metadata",
-      "Inspect data array boundaries and fill/missing value markers"
+      "Read columns 1-9 of line 1 for version number (right-justified float, e.g. '     3.05')",
+      "Read column 21 of line 1 for file type: O/N/M/C identifies observation/navigation/met/clock",
+      "Parse all header lines until 'END OF HEADER' in columns 61-73",
+      "For observation files: extract 'SYS / # / OBS TYPES' header for the observable list per GNSS system",
+      "For RINEX 2 nav: epoch lines start with PRN/year/month/day/hour/minute/second + 3 clock parameters",
+      "For RINEX 3 nav: epoch lines start with '>' followed by GNSS system and satellite identifier"
     ]
   }
 }

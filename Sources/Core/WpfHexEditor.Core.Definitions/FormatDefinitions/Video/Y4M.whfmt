@@ -1,19 +1,18 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "YUV4MPEG2",
-  "version": "2.4",
+  "version": "2.32",
   "extensions": [
     ".y4m"
   ],
-  "description": "YUV4MPEG2 uncompressed video format used by the mjpegtools project",
+  "description": "YUV4MPEG2 (Y4M) is an uncompressed video container format used by the mjpegtools project and widely adopted by codec testing tools (x264, x265, FFmpeg, libaom). The file begins with an ASCII text header starting with 'YUV4MPEG2' followed by space-separated parameter tags (each a letter + value): W=width, H=height, F=frame_rate (numerator:denominator), I=interlacing (p=progressive, t=top-first, b=bottom-first), A=aspect_ratio (width:height), C=colorspace (420, 422, 444, mono). The header ends with a newline (0x0A). Each frame is preceded by the ASCII string 'FRAME' followed by optional frame parameters and a newline. Frame data is raw YCbCr planar data (Y plane first, then Cb, then Cr). Y4M provides lossless, exact uncompressed video for codec input/output comparison and quality analysis.",
   "category": "Video",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "YUV4MPEG2 Stream Format",
-      "mjpegtools Video Stream Format",
-      "Uncompressed YCbCr 4:2:0 Format"
+      "YUV4MPEG2 Stream Format — mjpegtools project",
+      "Y4M Format Documentation — wiki.multimedia.cx"
     ],
     "WebLinks": [
       "https://wiki.multimedia.cx/index.php/YUV4MPEG2",
@@ -22,112 +21,147 @@
     ]
   },
   "detection": {
-    "signature": "595556344D50454732",
-    "offset": 0,
+    "signatures": [
+      { "value": "595556344D504547322057", "offset": 0, "label": "'YUV4MPEG2 W' — header with width parameter start", "weight": 1.0 },
+      { "value": "595556344D504547 32", "offset": 0, "label": "'YUV4MPEG2' signature prefix (9 bytes)", "weight": 0.9 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.9,
     "required": true,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 4.0, "max": 6.5 },
     "validation": {
-      "minFileSize": 9,
-      "maxSignatureOffset": 1024
+      "minFileSize": 20,
+      "maxSignatureOffset": 0,
+      "note": "Y4M files always start with the ASCII text 'YUV4MPEG2' at offset 0. The space-separated header parameters follow on the same line before the first 0x0A newline."
     }
   },
   "variables": {
+    "y4mHeader": "",
     "videoWidth": 0,
     "videoHeight": 0,
-    "frameRate": 0,
-    "durationSeconds": 0,
-    "codec": "",
-    "y4mHeader": ""
+    "frameRate": "",
+    "interlacing": "",
+    "colorspace": ""
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "Y4M Header",
+      "name": "Y4M Signature",
       "offset": 0,
       "length": 9,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "YUV4MPEG2 file signature",
+      "opacity": 0.45,
+      "description": "YUV4MPEG2 file signature: ASCII text 'YUV4MPEG2' (0x59 0x55 0x56 0x34 0x4D 0x50 0x45 0x47 0x32). This 9-byte ASCII header uniquely identifies Y4M uncompressed video files. Unlike binary formats, Y4M uses a human-readable text header for all parameters, making it easily inspectable in a text editor. The '4' in 'YUV4MPEG2' refers to YCbCr 4:x:x sampling; 'MPEG2' is the version identifier of this container format, not a reference to MPEG-2 video compression.",
       "storeAs": "y4mHeader",
       "valueType": "ascii"
     },
     {
+      "type": "field",
+      "name": "Header Space Separator",
+      "offset": 9,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.25,
+      "description": "ASCII space (0x20) separating the signature from the first parameter tag. Y4M header is entirely ASCII text until the first 0x0A newline.",
+      "storeAs": "videoWidth",
+      "valueType": "uint8"
+    },
+    {
       "type": "metadata",
-      "name": "Video Width",
+      "name": "Y4M Signature",
+      "variable": "y4mHeader",
+      "description": "YUV4MPEG2 file identifier (ASCII)"
+    },
+    {
+      "type": "metadata",
+      "name": "Header Parameters",
       "variable": "videoWidth",
-      "description": "Video width in pixels"
-    },
-    {
-      "type": "metadata",
-      "name": "Video Height",
-      "variable": "videoHeight",
-      "description": "Video height in pixels"
-    },
-    {
-      "type": "metadata",
-      "name": "Frame Rate",
-      "variable": "frameRate",
-      "description": "Frames per second"
-    },
-    {
-      "type": "metadata",
-      "name": "Duration",
-      "variable": "durationSeconds",
-      "description": "Total duration in seconds"
+      "description": "W=width H=height F=fps I=interlace A=aspect C=colorspace"
     }
   ],
-  "software": [
-    "Video editors",
-    "FFmpeg",
-    "YUV tools"
+  "assertions": [
+    {
+      "name": "Y4M signature valid",
+      "expression": "y4mHeader == 'YUV4MPEG'",
+      "severity": "error",
+      "message": "Y4M file must start with 'YUV4MPEG2' ASCII signature"
+    }
   ],
-  "formatRelationships": {
-    "category": "Video",
-    "extensions": [
-      ".y4m"
+  "navigation": {
+    "bookmarks": [
+      { "name": "Y4M Header", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" }
     ]
   },
-  "MimeTypes": [
-    "video/y4m"
-  ],
-  "Software": [
-    "VLC",
-    "Media Player Classic",
-    "HandBrake",
-    "FFmpeg",
-    "MPC-HC"
-  ],
-  "UseCases": [
-    "Video playback",
-    "Video editing",
-    "Encoding",
-    "Streaming"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 5,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "y4mHeader",
+    "primaryField": "videoWidth",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "Y4M File Header",
+        "icon": "\uE71B",
+        "fields": ["y4mHeader", "videoWidth"]
+      }
+    ]
   },
-  "TechnicalDetails": {
-    "VideoFormat": true
-  },
-  "functions": {
-    "readUInt32LE": "Read video metadata"
-  },
+  "exportTemplates": [
+    {
+      "name": "Y4M Header (JSON)",
+      "format": "json",
+      "fields": ["y4mHeader"]
+    }
+  ],
   "forensic": {
     "category": "video",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "YUV4MPEG2 uncompressed video format used by the mjpegtools project",
+    "analysisContext": "Y4M header is plain ASCII until first 0x0A. Format: 'YUV4MPEG2 W<width> H<height> F<num>:<den> I<p|t|b|m> A<w>:<h> C<420|422|444|mono>\\n'. Example: 'YUV4MPEG2 W1920 H1080 F30:1 Ip A0:0 C420\\n'. After header: frames as 'FRAME\\n' + raw YCbCr planes. Frame size: Y plane = W×H, Cb = W/2×H/2 (4:2:0), Cr = same. Total frame size 4:2:0: W×H×1.5 bytes. FFmpeg output: ffmpeg -i input.mp4 output.y4m. Used by x264/x265 as input for quality testing. Very large files — 1920×1080 @30fps = ~178 MB/s.",
     "suggestedInspections": [
-      "Validate YUV4MPEG2 container magic, box/atom sizes, and codec FourCC",
-      "Check track/stream layout, frame index, and timing fields",
-      "Inspect audio-video sync, keyframe distribution, and metadata"
+      "Read first line (until 0x0A): 'YUV4MPEG2 W<w> H<h> F<n>:<d> I<x> ...'",
+      "Parse W= tag for width, H= tag for height",
+      "Parse C= tag: '420' (most common), '422', '444', 'mono'",
+      "First frame at (header_length+1): 'FRAME' + optional params + 0x0A + raw pixels"
     ]
+  },
+  "software": [
+    "FFmpeg (y4m muxer/demuxer)",
+    "x264 / x265 (Y4M input)",
+    "libaom / aomenc (Y4M input)",
+    "mjpegtools",
+    "VLC media player"
+  ],
+  "formatRelationships": {
+    "category": "Video",
+    "extensions": [".y4m"],
+    "relatedFormats": ["MJPEG", "H264", "H265"],
+    "note": "Y4M is the standard lossless uncompressed video interchange format for codec development. Used as input/output for x264, x265, aomenc, and other encoders/decoders for quality measurement (PSNR, SSIM). Very large files — not suitable for distribution."
+  },
+  "MimeTypes": [
+    "video/x-yuv4mpeg"
+  ],
+  "UseCases": [
+    "Video codec input for quality testing (x264/x265/AV1)",
+    "Lossless video processing pipeline",
+    "PSNR/SSIM quality metric reference",
+    "FFmpeg uncompressed video output"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 65,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 4,
+    "ValidationRules": 1,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "VideoFormat": true,
+    "ContainerFormat": "Plain text header + raw YCbCr planar frames",
+    "VideoCodec": "Uncompressed YCbCr (4:2:0, 4:2:2, 4:4:4, monochrome)",
+    "Endianness": "N/A (raw pixel data, byte order per colorspace)",
+    "HeaderFormat": "ASCII text line (W/H/F/I/A/C parameters)"
   }
 }

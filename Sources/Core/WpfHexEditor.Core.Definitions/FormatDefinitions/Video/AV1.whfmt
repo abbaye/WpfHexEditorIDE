@@ -1,20 +1,20 @@
-﻿{
+{
   "diffMode": "binary",
-  "formatName": "AV1 Video",
-  "version": "1.14",
+  "formatName": "AV1 Video (IVF)",
+  "version": "1.15",
   "extensions": [
     ".av1",
     ".ivf"
   ],
-  "description": "AOMedia Video 1 (AV1) open, royalty-free video coding format",
+  "description": "AV1 (AOMedia Video 1) is an open, royalty-free video coding format developed by the Alliance for Open Media. Raw AV1 bitstreams and VP8/VP9/AV1 elementary streams are typically wrapped in the IVF (Indeo Video Format) container for testing and interchange. IVF files begin with a 32-byte header: signature 'DKIF' (0x44 0x4B 0x49 0x46), version (uint16 LE, must be 0), header length (uint16 LE, typically 32), FourCC (4B, e.g., 'AV01', 'VP80', 'VP90'), width (uint16 LE), height (uint16 LE), frame rate numerator (uint32 LE), frame rate denominator (uint32 LE), frame count (uint32 LE), unused (uint32 LE). Each frame is preceded by an 8-byte frame header: frame size (uint32 LE), timestamp (uint64 LE). AV1 offers 30-50% better compression than VP9/H.265 at equivalent quality.",
   "category": "Video",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "AV1 Bitstream & Decoding Process Specification",
-      "AOMedia Video 1 Codec",
-      "AV1 Open Source Standard"
+      "AV1 Bitstream & Decoding Process Specification v1.0.0 — AOMedia",
+      "IVF Container Format — codec.webm.org",
+      "ISO/IEC 23091-3 — AV1 image/video file format"
     ],
     "WebLinks": [
       "https://aomedia.org/specifications/av1/",
@@ -24,110 +24,273 @@
     ]
   },
   "detection": {
-    "signature": "444B4946",
-    "offset": 0,
+    "signatures": [
+      { "value": "444B4946", "offset": 0, "label": "'DKIF' IVF container magic", "weight": 1.0 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 1.0,
     "required": true,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 5.0, "max": 7.8 },
     "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024
+      "minFileSize": 32,
+      "maxSignatureOffset": 0,
+      "note": "IVF 'DKIF' magic is shared by VP8, VP9, and AV1 IVF streams. The FourCC at offset 8 distinguishes the codec: 'AV01'=AV1, 'VP80'=VP8, 'VP90'=VP9."
     }
   },
   "variables": {
-    "width": 0,
-    "height": 0,
-    "frameRate": 0,
-    "duration": 0,
-    "ivfHeader": 0,
-    "totalPixels": 0
+    "ivfSignature": "",
+    "ivfVersion": 0,
+    "ivfHeaderLength": 0,
+    "ivfFourCC": "",
+    "videoWidth": 0,
+    "videoHeight": 0,
+    "frameRateNumerator": 0,
+    "frameRateDenominator": 0,
+    "frameCount": 0
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "IVF Header",
+      "name": "IVF Signature",
       "offset": 0,
       "length": 4,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "DKIF - IVF container header for AV1",
-      "storeAs": "ivfHeader",
-      "valueType": "uint32"
+      "opacity": 0.45,
+      "description": "IVF container signature 'DKIF' (0x44 0x4B 0x49 0x46). This 4-byte magic marks the Indeo Video Format (IVF) container, used as a lightweight wrapper for raw VP8, VP9, and AV1 elementary bitstreams in WebM/AOM codec toolchains. 'DKIF' stands for the container's historical roots; it has no relation to Indeo video. IVF is used extensively in libvpx and libaom test vectors.",
+      "storeAs": "ivfSignature",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "IVF Version",
+      "offset": 4,
+      "length": 2,
+      "color": "#4ECDC4",
+      "opacity": 0.30,
+      "description": "IVF format version (little-endian uint16). Must be 0 for all current IVF files. No other version has been defined.",
+      "storeAs": "ivfVersion",
+      "valueType": "uint16",
+      "endianness": "little",
+      "valueMap": { "0": "IVF version 0 (only valid value)" }
+    },
+    {
+      "type": "field",
+      "name": "Header Length",
+      "offset": 6,
+      "length": 2,
+      "color": "#95E1D3",
+      "opacity": 0.25,
+      "description": "Length of the IVF file header in bytes (little-endian uint16). Standard value is 32. Frames begin at this offset.",
+      "storeAs": "ivfHeaderLength",
+      "valueType": "uint16",
+      "endianness": "little"
+    },
+    {
+      "type": "field",
+      "name": "Codec FourCC",
+      "offset": 8,
+      "length": 4,
+      "color": "#FFE66D",
+      "opacity": 0.40,
+      "description": "4-byte ASCII FourCC identifying the video codec stored in this IVF file. 'AV01' = AV1 (AOMedia Video 1), 'VP80' = VP8 (On2/Google), 'VP90' = VP9 (Google). This field is the definitive codec identifier when the IVF container is shared between multiple codecs.",
+      "storeAs": "ivfFourCC",
+      "valueType": "ascii",
+      "valueMap": {
+        "AV01": "AV1 (AOMedia Video 1)",
+        "VP80": "VP8 (Google/WebM)",
+        "VP90": "VP9 (Google/YouTube)"
+      }
+    },
+    {
+      "type": "field",
+      "name": "Video Width",
+      "offset": 12,
+      "length": 2,
+      "color": "#C7CEEA",
+      "opacity": 0.25,
+      "description": "Frame width in pixels (little-endian uint16). Combined with height, defines the display resolution.",
+      "storeAs": "videoWidth",
+      "valueType": "uint16",
+      "endianness": "little"
+    },
+    {
+      "type": "field",
+      "name": "Video Height",
+      "offset": 14,
+      "length": 2,
+      "color": "#C7CEEA",
+      "opacity": 0.25,
+      "description": "Frame height in pixels (little-endian uint16). Combined with width, defines the display resolution.",
+      "storeAs": "videoHeight",
+      "valueType": "uint16",
+      "endianness": "little"
+    },
+    {
+      "type": "field",
+      "name": "Frame Rate Numerator",
+      "offset": 16,
+      "length": 4,
+      "color": "#B8B8FF",
+      "opacity": 0.25,
+      "description": "Frame rate numerator (little-endian uint32). Frame rate = numerator / denominator. Common: 30000/1001 = 29.97 fps, 25/1 = 25 fps, 24000/1001 = 23.976 fps.",
+      "storeAs": "frameRateNumerator",
+      "valueType": "uint32",
+      "endianness": "little"
+    },
+    {
+      "type": "field",
+      "name": "Frame Rate Denominator",
+      "offset": 20,
+      "length": 4,
+      "color": "#B8B8FF",
+      "opacity": 0.25,
+      "description": "Frame rate denominator (little-endian uint32). Divides the numerator to yield the actual frame rate in frames per second.",
+      "storeAs": "frameRateDenominator",
+      "valueType": "uint32",
+      "endianness": "little"
+    },
+    {
+      "type": "field",
+      "name": "Frame Count",
+      "offset": 24,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.25,
+      "description": "Total number of video frames in the IVF file (little-endian uint32). May be 0 if not known at time of creation (streaming or live capture mode).",
+      "storeAs": "frameCount",
+      "valueType": "uint32",
+      "endianness": "little"
+    },
+    {
+      "type": "metadata",
+      "name": "Codec FourCC",
+      "variable": "ivfFourCC",
+      "description": "Video codec: AV01=AV1, VP80=VP8, VP90=VP9"
     },
     {
       "type": "metadata",
       "name": "Resolution",
-      "variable": "width",
-      "description": "Resolution"
-    },
-    {
-      "type": "metadata",
-      "name": "Frame Rate",
-      "variable": "frameRate",
-      "description": "Frame Rate"
-    },
-    {
-      "type": "metadata",
-      "name": "Total Pixels",
-      "variable": "totalPixels",
-      "description": "Width x Height"
+      "variable": "videoWidth",
+      "description": "Frame width in pixels"
     }
   ],
-  "software": [
-    "Modern browsers",
-    "VLC",
-    "AV1 players"
+  "assertions": [
+    {
+      "name": "IVF signature valid",
+      "expression": "ivfSignature == 'DKIF'",
+      "severity": "error",
+      "message": "IVF signature must be 'DKIF' (44 4B 49 46) — not a valid IVF container"
+    },
+    {
+      "name": "IVF version is 0",
+      "expression": "ivfVersion == 0",
+      "severity": "error",
+      "message": "IVF version must be 0 — unknown IVF version"
+    },
+    {
+      "name": "Header length is 32",
+      "expression": "ivfHeaderLength == 32",
+      "severity": "warning",
+      "message": "IVF header length should be 32 bytes — non-standard header"
+    }
   ],
-  "formatRelationships": {
-    "category": "Video",
-    "extensions": [
-      ".av1",
-      ".ivf"
-    ],
-    "aom_format": true,
-    "royalty_free": true
+  "versionDetection": {
+    "field": "ivfFourCC",
+    "versions": {
+      "AV01": "AV1 (AOMedia Video 1)",
+      "VP80": "VP8 (Google/On2)",
+      "VP90": "VP9 (Google)"
+    }
   },
-  "MimeTypes": [
-    "video/av1"
+  "navigation": {
+    "bookmarks": [
+      {
+        "name": "IVF File Header",
+        "offset": 0,
+        "icon": "\uE71B",
+        "color": "#FF6B6B"
+      },
+      {
+        "name": "First Frame",
+        "offset": 32,
+        "icon": "\uE8A5",
+        "color": "#4ECDC4"
+      }
+    ]
+  },
+  "inspector": {
+    "badge": "ivfFourCC",
+    "primaryField": "frameCount",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "IVF Header",
+        "icon": "\uE71B",
+        "fields": ["ivfSignature", "ivfVersion", "ivfFourCC", "videoWidth", "videoHeight", "frameRateNumerator", "frameRateDenominator", "frameCount"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "IVF Header (JSON)",
+      "format": "json",
+      "fields": ["ivfSignature", "ivfVersion", "ivfFourCC", "videoWidth", "videoHeight", "frameRateNumerator", "frameRateDenominator", "frameCount"]
+    }
   ],
-  "Software": [
-    "VLC",
-    "Media Player Classic",
-    "HandBrake",
-    "FFmpeg",
-    "MPC-HC"
-  ],
-  "UseCases": [
-    "Video playback",
-    "Video editing",
-    "Encoding",
-    "Streaming"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 4,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
-  },
-  "TechnicalDetails": {
-    "VideoFormat": true
-  },
-  "functions": {
-    "readUInt32LE": "Read video header",
-    "computeFromVariables(width * height, totalPixels)": "Calculate total pixels"
-  },
   "forensic": {
     "category": "video",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "AOMedia Video 1 (AV1) open, royalty-free video coding format",
+    "analysisContext": "IVF container for AV1/VP8/VP9 bitstreams. Header: 'DKIF'(4B) + version(2B LE, =0) + headerLen(2B LE, =32) + fourCC(4B ASCII: AV01/VP80/VP90) + width(2B LE) + height(2B LE) + fpsNumerator(4B LE) + fpsDenominator(4B LE) + frameCount(4B LE) + unused(4B). Frame prefix: frameSize(4B LE) + timestamp(8B LE, in timebase units). First AV1 OBU in each frame: OBU type in bits 7-3 of first byte (type 1=Sequence Header, type 6=Frame OBU). AV1 Sequence Header OBU identifies profile (0=Main, 1=High, 2=Professional) and tier/level.",
     "suggestedInspections": [
-      "Validate AV1 Video container magic, box/atom sizes, and codec FourCC",
-      "Check track/stream layout, frame index, and timing fields",
-      "Inspect audio-video sync, keyframe distribution, and metadata"
+      "Verify 'DKIF' at offset 0 (44 4B 49 46)",
+      "Read FourCC at offset 8: 'AV01'=AV1, 'VP80'=VP8, 'VP90'=VP9",
+      "Read videoWidth/videoHeight at offsets 12 and 14 (LE uint16)",
+      "First frame at offset 32: 4B size + 8B timestamp, then OBU data",
+      "AV1 first OBU byte: bits 7-3 = OBU type (1=SequenceHeader contains profile/level)"
     ]
+  },
+  "software": [
+    "FFmpeg (libavcodec AV1 decoder)",
+    "VLC media player (via dav1d)",
+    "Chromium/Chrome (native AV1)",
+    "Firefox (native AV1)",
+    "dav1d (reference AV1 decoder)",
+    "libaom (AOMedia reference codec)"
+  ],
+  "formatRelationships": {
+    "category": "Video",
+    "extensions": [".av1", ".ivf"],
+    "relatedFormats": ["WEBM", "MP4", "VP8", "VP9"],
+    "note": "IVF (.ivf) is a lightweight elementary stream container for VP8, VP9, and AV1. In production: AV1 is carried in WebM (.webm) or MP4 (.mp4/'.av1') containers. Raw .av1 files are rare in the wild; IVF is the standard interchange format for codec testing and tool interop."
+  },
+  "MimeTypes": [
+    "video/AV1",
+    "video/x-ivf"
+  ],
+  "UseCases": [
+    "AV1 codec testing and development (libaom, dav1d)",
+    "WebRTC AV1 video transport",
+    "Streaming platform encoding (YouTube, Netflix)",
+    "Open-source video distribution"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 72,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 11,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "VideoFormat": true,
+    "ContainerFormat": "IVF (Indeo Video Format container)",
+    "VideoCodec": "AV1 (AOMedia Video 1), VP8, or VP9",
+    "Endianness": "little-endian (all IVF header fields)",
+    "CompressionRatio": "30-50% better than VP9/H.265 at equivalent quality (AV1)"
   }
 }

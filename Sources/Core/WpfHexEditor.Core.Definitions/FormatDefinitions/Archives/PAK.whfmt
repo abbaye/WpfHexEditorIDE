@@ -1,43 +1,46 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "PAK Archive",
-  "version": "1.11",
-  "extensions": [
-    ".pak"
-  ],
-  "description": "PAK archive format commonly used in game engines (Quake, Unreal Engine) for packaging game assets and resources",
+  "version": "1.12",
+  "extensions": [ ".pak" ],
+  "description": "PAK is an ambiguous extension used by multiple archive formats. The original PAK format is derived from ARC by Thom Henderson and uses the same 0x1A magic byte at offset 0 with a type byte at offset 1. However, the widely-known Quake PAK format uses the magic 'PACK' (0x50414343) at offset 0 followed by the directory offset and size (both LE uint32). Unreal Engine PAK, Valve VPK, and other game engines also use .pak but with different signatures. Detection is unreliable for the old ARC-derived PAK; Quake-style PACK magic provides reliable detection for game asset archives.",
   "category": "Archives",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "Quake PAK File Format",
-      "Unreal Engine PAK Container",
-      "id Software PAK Archive Specification"
+      "Quake PAK File Format - id Software",
+      "id Software PAK Archive Specification",
+      "ARC-derived PAK format"
     ],
     "WebLinks": [
       "https://quakewiki.org/wiki/.pak",
       "http://fileformats.archiveteam.org/wiki/Quake_PAK",
-      "https://unrealpak.com/",
-      "https://developer.valvesoftware.com/wiki/PAK"
+      "https://developer.valvesoftware.com/wiki/PAK",
+      "https://unrealpak.com/"
     ]
   },
   "detection": {
-    "signature": "5041434B",
-    "offset": 0,
-    "required": true,
+    "signatures": [
+      { "hex": "5041434B", "offset": 0, "weight": 1.0 },
+      { "hex": "1A", "offset": 0, "weight": 0.4 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.4,
+    "required": false,
+    "Strength": "Weak",
+    "EntropyHint": { "min": 1.0, "max": 7.5 },
     "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024
+      "minFileSize": 12,
+      "maxSignatureOffset": 0,
+      "note": "PACK (0x50414343) at offset 0 = Quake-style PAK (reliable). 0x1A at offset 0 = old ARC-derived PAK (weak, extension required). Many game engines use .pak with entirely different signatures."
     }
   },
-  "functions": {
-    "readUInt32LE": "Read directory offset and size (little-endian)"
-  },
   "variables": {
+    "pakSignature": "",
     "directoryOffset": 0,
     "directorySize": 0,
-    "pakSignature": ""
+    "fileCount": 0
   },
   "blocks": [
     {
@@ -47,92 +50,132 @@
       "length": 4,
       "color": "#FF6B6B",
       "opacity": 0.4,
-      "description": "Magic bytes: 'PACK'",
+      "description": "Magic bytes: 'PACK' (0x50 0x41 0x43 0x4B) for Quake-style PAK. Old ARC-derived PAK starts with 0x1A.",
       "storeAs": "pakSignature",
       "valueType": "ascii"
     },
     {
-      "type": "data",
+      "type": "field",
       "name": "Directory Offset",
       "offset": 4,
       "length": 4,
       "color": "#4ECDC4",
       "opacity": 0.4,
-      "description": "Offset to directory table (little-endian)"
+      "description": "Byte offset to the file directory table (Quake PAK, little-endian uint32)",
+      "storeAs": "directoryOffset",
+      "valueType": "uint32"
     },
     {
-      "type": "data",
+      "type": "field",
       "name": "Directory Size",
       "offset": 8,
       "length": 4,
       "color": "#45B7D1",
       "opacity": 0.4,
-      "description": "Size of directory table (little-endian)"
+      "description": "Size of the directory table in bytes (Quake PAK, little-endian uint32). Each entry is 64 bytes.",
+      "storeAs": "directorySize",
+      "valueType": "uint32"
     },
     {
-      "type": "metadata",
-      "name": "Directory Offset",
-      "variable": "directoryOffset",
-      "description": "Byte offset to file directory table"
+      "type": "data",
+      "name": "File Data Region",
+      "offset": 12,
+      "length": 64,
+      "color": "#96CEB4",
+      "opacity": 0.3,
+      "description": "Beginning of packed file data. Actual content follows immediately after the 12-byte header."
     },
     {
-      "type": "metadata",
-      "name": "Directory Size (bytes)",
-      "variable": "directorySize",
-      "description": "Size of the directory table"
+      "type": "data",
+      "name": "Directory Entries",
+      "offset": 0,
+      "length": 64,
+      "color": "#FFEAA7",
+      "opacity": 0.3,
+      "description": "Each directory entry: filename (56B null-padded) + offset (4B LE) + size (4B LE) = 64 bytes total. Offset is from directoryOffset."
     }
   ],
-  "software": [
-    "QuakePak",
-    "Game extractors",
-    "7-Zip"
+  "assertions": [
+    {
+      "field": "pakSignature",
+      "operator": "in",
+      "values": ["PACK"],
+      "description": "Quake-style PAK must start with 'PACK' magic. Old ARC-derived PAK starts with 0x1A."
+    }
   ],
-  "formatRelationships": {
-    "category": "Archives",
-    "extensions": [
-      ".pak"
+  "navigation": {
+    "bookmarks": [
+      { "name": "PAK Header", "offset": 0, "description": "4-byte magic + 8 bytes of directory info" },
+      { "name": "Directory Table", "offset": 0, "description": "Jump to directoryOffset for the file list" }
     ]
   },
-  "MimeTypes": [
-    "application/x-pak-compressed"
-  ],
-  "Software": [
-    "7-Zip",
-    "WinRAR",
-    "WinZip",
-    "PeaZip",
-    "The Unarchiver"
-  ],
-  "UseCases": [
-    "File compression",
-    "Archive storage",
-    "Backup",
-    "Distribution"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 5,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "PAK",
+    "primaryField": "pakSignature",
+    "showQualityScore": true,
+    "groups": [
+      { "name": "Header", "fields": ["pakSignature", "directoryOffset", "directorySize"] },
+      { "name": "Contents", "fields": ["fileCount"] }
+    ]
   },
-  "TechnicalDetails": {
-    "ArchivesFormat": true,
-    "SupportsEncryption": false
-  },
+  "exportTemplates": [
+    {
+      "name": "PAK Header Info (JSON)",
+      "format": "json",
+      "fields": ["pakSignature", "directoryOffset", "directorySize"]
+    }
+  ],
   "forensic": {
     "category": "archive",
     "riskLevel": "low",
-    "suspiciousPatterns": []
+    "suspiciousPatterns": [
+      "PAK files from unknown sources may contain game engine exploits targeting asset parsers",
+      "Crafted directory offset pointing outside file bounds indicates corruption or attack"
+    ]
   },
   "aiHints": {
-    "analysisContext": "PAK archive format commonly used in game engines (Quake, Unreal Engine) for packaging game assets and resour...",
+    "analysisContext": "PAK is a heavily overloaded extension. The Quake PAK format starts with 'PACK' (0x50414343) at offset 0, followed by directory offset and size (LE uint32 each). Directory entries are 64 bytes each (56-byte null-padded name + 4-byte offset + 4-byte size). Other .pak users: Unreal Engine (different magic), Valve VPK, Westwood PACK, etc.",
     "suggestedInspections": [
-      "Verify PAK Archive file header, compression method, and stored CRCs",
-      "Check central directory or entry table for consistency",
-      "Inspect individual entry sizes for truncation or overflow"
+      "Check first 4 bytes: 'PACK' = Quake-style PAK; 0x1A = ARC-derived PAK",
+      "For Quake PAK: read directoryOffset at bytes 4-7 and directorySize at bytes 8-11",
+      "Compute file count: directorySize / 64",
+      "Verify directoryOffset is within file bounds",
+      "Parse directory entries: each is 56-byte filename + 4-byte offset + 4-byte size"
     ]
+  },
+  "software": [
+    "Quake engine tools",
+    "QuakePak",
+    "PAK Explorer",
+    "7-Zip (plugin)",
+    "Dragon UnPACKer"
+  ],
+  "formatRelationships": {
+    "category": "Archives",
+    "extensions": [".pak"],
+    "relatedFormats": ["ARC", "ZIP", "VPK", "UPK"],
+    "note": "PAK extension is shared by many different formats. Quake PACK magic is strong; ARC-derived 0x1A is weak. Other game engines use .pak with completely different structures."
+  },
+  "MimeTypes": [ "application/x-pak", "application/x-quake-pak" ],
+  "UseCases": [
+    "Game asset packaging (Quake, Half-Life engine games)",
+    "Legacy software distribution (ARC-derived)",
+    "Embedded resource containers"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 58,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 5,
+    "ValidationRules": 1,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "ArchivesFormat": true,
+    "SupportsEncryption": false,
+    "Endianness": "little-endian (Quake PACK)",
+    "DirectoryEntrySize": 64,
+    "Note": "PAK extension is shared by Quake PACK, ARC-derived PAK, Unreal Engine PAK, and others. 'PACK' magic identifies Quake variant."
   }
 }

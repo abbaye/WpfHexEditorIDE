@@ -1,7 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "PlayStation 2 Disc Image",
-  "version": "1.13",
+  "version": "1.14",
   "extensions": [
     ".iso",
     ".bin"

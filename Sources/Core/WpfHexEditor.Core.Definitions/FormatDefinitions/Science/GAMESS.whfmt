@@ -1,38 +1,39 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "GAMESS Output",
-  "version": "1.12",
+  "version": "1.13",
   "extensions": [
     ".log",
     ".out"
   ],
-  "description": "GAMESS quantum chemistry program output",
+  "description": "GAMESS (General Atomic and Molecular Electronic Structure System) is a widely used quantum chemistry program developed at Iowa State University. GAMESS output files are plain ASCII text logs that begin with a banner of asterisks ('*') followed by version and copyright information. The output includes molecular geometry in Cartesian and Z-matrix coordinates, basis set summary, SCF/DFT/MP2/CCSD iteration tables, molecular orbital coefficients, Hessian and frequency data, and molecular properties. Files use the .log or .out extension. Because they share extensions with general log files, content-based detection is required. The GAMESS banner pattern '**' at line 1 and 'GAMESS VERSION' or 'GAMESS' in the first 2000 bytes distinguish genuine GAMESS output.",
   "category": "Science",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
-  "references": {
-    "specifications": [
-      "GAMESS Output Format"
-    ],
-    "WebLinks": [
-      "https://en.wikipedia.org/wiki/LOG"
-    ]
-  },
+  "references": [
+    "GAMESS User's Manual — Iowa State University",
+    "Schmidt et al., J. Comput. Chem. 14, 1347 (1993)"
+  ],
+  "WebLinks": [
+    "https://www.msg.chem.iastate.edu/gamess/",
+    "https://en.wikipedia.org/wiki/GAMESS_(US)"
+  ],
   "detection": {
     "signature": "2A2A2A2A2A2A",
     "offset": 0,
     "required": false,
+    "weight": 0.5,
     "validation": {
-      "minFileSize": 6,
-      "maxSignatureOffset": 1024
+      "minFileSize": 100,
+      "maxSignatureOffset": 0
     }
   },
   "variables": {
     "currentOffset": 0,
-    "fileCount": 0,
-    "version": "",
-    "indexOffset": 0,
-    "headerBanner": ""
+    "headerBanner": "",
+    "versionLine": "",
+    "gamessVersion": "",
+    "executionDate": ""
   },
   "blocks": [
     {
@@ -41,67 +42,128 @@
       "offset": 0,
       "length": 80,
       "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "GAMESS output header",
+      "opacity": 0.4,
+      "description": "First line of GAMESS output: a row of asterisks '******...' decorating the program banner header; typically 72-80 asterisk characters",
       "storeAs": "headerBanner",
       "valueType": "ascii"
     },
     {
-      "type": "metadata",
-      "name": "File Count",
-      "variable": "fileCount",
-      "description": "File Count"
+      "type": "field",
+      "name": "Version Line",
+      "offset": 80,
+      "length": 80,
+      "color": "#FF6B6B",
+      "opacity": 0.5,
+      "description": "Second line containing the GAMESS program version string such as 'GAMESS VERSION = 25 JAN 2020 (R1)' identifying the release and patch level",
+      "storeAs": "versionLine",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Copyright / Institution Line",
+      "offset": 160,
+      "length": 80,
+      "color": "#95E1D3",
+      "opacity": 0.35,
+      "description": "Third banner line: copyright notice from Iowa State University and the Gordon research group identifying the originating institution and licensing terms",
+      "storeAs": "copyrightLine",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Execution Timestamp",
+      "offset": 240,
+      "length": 80,
+      "color": "#FFE66D",
+      "opacity": 0.35,
+      "description": "Execution date and time line (often within the first 400 bytes): wall-clock time, hostname, and operating system of the machine that ran the calculation",
+      "storeAs": "executionDate",
+      "valueType": "ascii"
     },
     {
       "type": "metadata",
-      "name": "Version",
-      "variable": "version",
-      "description": "Version"
+      "name": "GAMESS Version",
+      "variable": "gamessVersion",
+      "description": "GAMESS version string parsed from the version line"
     },
     {
       "type": "metadata",
-      "name": "Index Offset",
-      "variable": "indexOffset",
-      "description": "Index Offset"
+      "name": "Execution Date",
+      "variable": "executionDate",
+      "description": "Date and time of the GAMESS calculation run"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "StarterAsterisks",
+      "description": "Byte 0 must be '*' (0x2A) — GAMESS output files universally begin with a row of asterisks; any other first character means this is not a GAMESS output file",
+      "offset": 0,
+      "length": 1,
+      "expectedHex": "2A",
+      "severity": "warning"
+    },
+    {
+      "name": "GAMESSKeywordPresent",
+      "description": "The string 'GAMESS' must appear within the first 512 bytes of the file to confirm this is genuine GAMESS output and not a generic asterisk-decorated log file",
+      "maxOffset": 512,
+      "pattern": "GAMESS",
+      "severity": "warning"
+    }
+  ],
+  "inspector": {
+    "groups": [
+      {
+        "name": "File Header",
+        "fields": [
+          { "label": "Banner Line 1",   "offset": 0,   "length": 80, "format": "ascii" },
+          { "label": "Version Line",    "offset": 80,  "length": 80, "format": "ascii" },
+          { "label": "Copyright Line",  "offset": 160, "length": 80, "format": "ascii" },
+          { "label": "Timestamp Line",  "offset": 240, "length": 80, "format": "ascii" }
+        ]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "GAMESS Run Summary",
+      "fields": ["versionLine", "executionDate"]
     }
   ],
   "software": [
-    "Common file viewers",
-    "Specialized software"
+    "GAMESS (US)",
+    "PC GAMESS / Firefly",
+    "wxMacMolPlt",
+    "Molden",
+    "Avogadro"
   ],
   "formatRelationships": {
-    "category": "Science",
-    "extensions": [
-      ".log",
-      ".out"
-    ]
+    "quantum_chemistry": true,
+    "related_to": ["Gaussian output", "ORCA output", "NWChem output"],
+    "generic_extension_conflict": [".log", ".out"]
   },
   "MimeTypes": [
+    "text/plain",
     "application/octet-stream"
   ],
-  "Software": [
-    "Hex Editor",
-    "File Viewer",
-    "Archive Manager"
-  ],
   "UseCases": [
-    "File storage",
-    "Data exchange",
-    "Archive"
+    "Molecular energy and geometry optimization output",
+    "Vibrational frequency analysis log",
+    "Molecular orbital and electron density output",
+    "Quantum chemistry benchmark data"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 21,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 4,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
+    "CompletenessScore": 50,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 6,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
     "PriorityFormat": false,
-    "AutoRefined": true
+    "AutoRefined": false
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32LE": "Read game header",
-    "extractASCIIString": "Read file list"
+  "TechnicalDetails": {
+    "encoding": "ASCII text",
+    "sectionDelimiters": "--- and *** decorations",
+    "detectionStrategy": "content-based (keyword 'GAMESS' within first 512 bytes)"
   },
   "forensic": {
     "category": "science",
@@ -109,11 +171,14 @@
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "GAMESS quantum chemistry program output",
+    "analysisContext": "GAMESS output files share .log/.out extensions with many programs. Detection requires finding 'GAMESS VERSION' or 'GAMESS' keyword within the banner. Output structure is section-based with labeled tables for each calculation stage.",
     "suggestedInspections": [
-      "Validate GAMESS Output file header, data type, and dimension fields",
-      "Check axis labels, units, and calibration metadata",
-      "Inspect data array boundaries and fill/missing value markers"
+      "Verify first byte is '*' and search for 'GAMESS VERSION' within first 512 bytes",
+      "Parse version string between 'GAMESS VERSION = ' and end of line for release identification",
+      "Search for 'COORDINATES (BOHR)' or 'COORDINATES (ANGSTROMS)' for molecular geometry",
+      "Search for 'FINAL RHF ENERGY' or 'FINAL DFT ENERGY' or 'FINAL MP2 ENERGY' for total energy",
+      "Find 'FREQUENCIES IN CM**-1' section for vibrational frequency data",
+      "Check for 'NORMAL TERMINATION' at end of file to verify successful completion"
     ]
   }
 }

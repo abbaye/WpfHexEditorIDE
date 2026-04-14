@@ -80,6 +80,7 @@ namespace WpfHexEditor.Plugins.ParsedFields.Views
                     },
                     leftFixedElements: new FrameworkElement[] { RefreshButton });
                 Dispatcher.InvokeAsync(_overflowManager.CaptureNaturalWidths, DispatcherPriority.Loaded);
+                RebuildExportTemplatesInMenu();
             };
         }
 
@@ -218,6 +219,7 @@ namespace WpfHexEditor.Plugins.ParsedFields.Views
             {
                 _formatInfo = value;
                 OnPropertyChanged();
+                RebuildExportTemplatesInMenu();
             }
         }
 
@@ -704,6 +706,88 @@ namespace WpfHexEditor.Plugins.ParsedFields.Views
         private void ReferencesInfoButton_Click(object sender, RoutedEventArgs e)
         {
             ReferencesPopup.IsOpen = !ReferencesPopup.IsOpen;
+        }
+
+        private void FormatInfoCollapseButton_Click(object sender, RoutedEventArgs e)
+        {
+            bool isVisible = FormatInfoScrollViewer.Visibility == Visibility.Visible;
+            FormatInfoScrollViewer.Visibility = isVisible ? Visibility.Collapsed : Visibility.Visible;
+            FormatInfoCollapseButton.Content = isVisible ? "\uE974" : "\uE972";
+        }
+
+        private void RebuildExportTemplatesInMenu()
+        {
+            if (ExportContextMenu == null) return;
+
+            var toRemove = new System.Collections.Generic.List<object>();
+            foreach (var item in ExportContextMenu.Items)
+            {
+                if (item is FrameworkElement fe && fe.Tag is string t && t == "whfmt-template")
+                    toRemove.Add(item);
+            }
+            foreach (var item in toRemove)
+                ExportContextMenu.Items.Remove(item);
+
+            var templates = FormatInfo?.ExportTemplates;
+            if (templates == null || templates.Count == 0) return;
+
+            ExportContextMenu.Items.Add(new Separator { Tag = "whfmt-template" });
+
+            foreach (var tmpl in templates)
+            {
+                var mi = new MenuItem { Header = tmpl.Name, Tag = "whfmt-template" };
+                if (!string.IsNullOrEmpty(tmpl.Icon))
+                    mi.Icon = new TextBlock { Text = tmpl.Icon, FontSize = 11 };
+                var captured = tmpl;
+                mi.Click += (s, ev) => ExportTemplate_Click_Execute(captured);
+                ExportContextMenu.Items.Add(mi);
+            }
+        }
+
+        private void ExportTemplate_Click_Execute(WpfHexEditor.Core.Interfaces.ExportTemplateItem template)
+        {
+            var fields = ParsedFields;
+            if (fields == null || fields.Count == 0) return;
+
+            var sb = new System.Text.StringBuilder();
+            string extension;
+            if (template.Format == "json")       extension = "json";
+            else if (template.Format == "csv")   extension = "csv";
+            else if (template.Format == "c-struct") extension = "h";
+            else if (template.Format == "python-bytes") extension = "py";
+            else if (template.Format == "xml")   extension = "xml";
+            else                                 extension = "txt";
+
+            if (template.Format == "json")
+            {
+                sb.AppendLine("{");
+                for (int i = 0; i < fields.Count; i++)
+                {
+                    var f = fields[i];
+                    var comma = i < fields.Count - 1 ? "," : "";
+                    sb.AppendLine("  \"" + f.Name + "\": \"" + f.ActiveFormattedValue + "\"" + comma);
+                }
+                sb.AppendLine("}");
+            }
+            else if (template.Format == "csv")
+            {
+                sb.AppendLine("Name,Offset,Length,Value");
+                foreach (var f in fields)
+                    sb.AppendLine("\"" + f.Name + "\"," + f.Offset + "," + f.Length + ",\"" + f.ActiveFormattedValue + "\"");
+            }
+            else
+            {
+                foreach (var f in fields)
+                    sb.AppendLine(f.Name + ": " + f.ActiveFormattedValue);
+            }
+
+            var dlg = new Microsoft.Win32.SaveFileDialog
+            {
+                Filter = template.Format.ToUpper() + " files (*." + extension + ")|*." + extension + "|All files (*.*)|*.*",
+                FileName = "Export_" + (FormatInfo?.Name?.Replace(" ", "_") ?? "Format") + "." + extension
+            };
+            if (dlg.ShowDialog() == true)
+                System.IO.File.WriteAllText(dlg.FileName, sb.ToString());
         }
 
         /// <summary>
@@ -1435,44 +1519,18 @@ namespace WpfHexEditor.Plugins.ParsedFields.Views
                 });
             }
 
-            // Validation summary chip
+            // Validation summary chip — only show errors; skip "All Valid" when it's the only insight
             int totalFields = FilteredFields?.Count ?? 0;
             int invalidCount = FilteredFields?.Count(f => !f.IsValid) ?? 0;
-            if (totalFields > 0)
+            if (totalFields > 0 && invalidCount > 0)
             {
-                if (invalidCount == 0)
+                InsightChips.Add(new InsightChip
                 {
-                    InsightChips.Add(new InsightChip
-                    {
-                        Icon = "\u2713", // check mark
-                        Value = "All Valid",
-                        Background = HexBrush("#E8F5E9"),
-                        TextForeground = HexBrush("#2B2B2B")
-                    });
-                }
-                else
-                {
-                    InsightChips.Add(new InsightChip
-                    {
-                        Icon = "\u26A0", // warning
-                        Value = $"{invalidCount} Error{(invalidCount > 1 ? "s" : "")}",
-                        Background = HexBrush("#FFEBEE"),
-                        TextForeground = HexBrush("#2B2B2B")
-                    });
-                }
-            }
-
-            // D6 â€” Vulnerability chips from aiHints.knownVulnerabilities
-            if (FormatInfo?.AiVulnerabilities?.Count > 0)
-            {
-                foreach (var v in FormatInfo.AiVulnerabilities)
-                    InsightChips.Add(new InsightChip
-                    {
-                        Icon           = "\u26A0",
-                        Value          = v.Text,
-                        Background     = HexBrush("#FFF3CD"),
-                        TextForeground = HexBrush("#7A4F00")
-                    });
+                    Icon = "\u26A0", // warning
+                    Value = $"{invalidCount} Error{(invalidCount > 1 ? "s" : "")}",
+                    Background = HexBrush("#FFEBEE"),
+                    TextForeground = HexBrush("#2B2B2B")
+                });
             }
 
             // Update visibility

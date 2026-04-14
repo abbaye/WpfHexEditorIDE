@@ -1,141 +1,185 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Object File Format",
-  "version": "1.14",
+  "version": "1.15",
   "extensions": [
     ".off"
   ],
-  "description": "Geomview Object File Format",
+  "description": "Object File Format (OFF) is a simple text-based 3D polygon mesh format developed by Geomview. An OFF file begins with the keyword 'OFF' on the first line followed by a newline, then a count line specifying the number of vertices, faces, and edges, followed by vertex coordinates (one per line, 3 floats), and face definitions (starting with the vertex count followed by vertex indices). Optional header variants include COFF (with color), NOFF (with normals), and CNOFF (both). OFF is widely used in computational geometry and mesh processing research.",
   "category": "3D",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "Object File Format Format"
+      "Geomview OFF File Format Reference"
     ],
     "WebLinks": [
-      "https://en.wikipedia.org/wiki/OFF"
+      "https://en.wikipedia.org/wiki/OFF_(file_format)",
+      "https://segeval.cs.princeton.edu/public/off_format.html",
+      "https://wiki.fileformat.com/3d/off/"
     ]
   },
   "detection": {
-    "signature": "4F46460A",
-    "offset": 0,
+    "signatures": [
+      { "value": "4F46460A", "offset": 0, "label": "'OFF\\n' header signature", "weight": 0.8 },
+      { "value": "4F464620", "offset": 0, "label": "'OFF ' header (space variant)", "weight": 0.6 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.6,
     "required": true,
+    "Strength": "Medium",
+    "EntropyHint": { "min": 2.5, "max": 5.5 },
     "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024
+      "minFileSize": 8,
+      "maxSignatureOffset": 0,
+      "note": "First 3 bytes must be 'OFF' followed by newline or space. Optional prefixes COFF/NOFF also valid."
     }
   },
   "variables": {
-    "currentOffset": 0,
+    "offHeader": "",
+    "countLine": "",
     "vertexCount": 0,
-    "faceCount": 0,
-    "materialCount": 0,
-    "fileSize": 0,
-    "offHeader": 0,
-    "formattedSize": ""
+    "faceCount": 0
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "OFF Header",
+      "name": "OFF Header Keyword",
       "offset": 0,
       "length": 4,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "OFF\\n signature",
+      "opacity": 0.45,
+      "description": "4-byte ASCII string 'OFF\\n' (0x4F 0x46 0x46 0x0A) that opens every standard OFF file. The keyword 'OFF' identifies the format; the newline terminates the first line. Variants COFF, NOFF, CNOFF are also valid first lines.",
       "storeAs": "offHeader",
-      "valueType": "uint32"
+      "valueType": "ascii"
     },
     {
       "type": "field",
-      "name": "Vertex Count",
+      "name": "Count Line",
       "offset": 4,
-      "length": 8,
+      "length": 32,
       "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "Number of vertices (ASCII)",
+      "opacity": 0.35,
+      "description": "Second line of the OFF file containing three space-separated integers: vertex count, face count, and edge count (edge count is optional and often 0). These values define the expected data block sizes.",
+      "storeAs": "countLine",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "First Vertex Line",
+      "offset": 36,
+      "length": 48,
+      "color": "#95E1D3",
+      "opacity": 0.35,
+      "description": "Region containing the first vertex position line in the OFF file. Each vertex line has three floating-point coordinates X, Y, Z separated by spaces. Optional additional floats may represent RGBA color (COFF variant).",
       "storeAs": "vertexCount",
-      "valueType": "uint64"
+      "valueType": "ascii"
     },
     {
-      "type": "metadata",
-      "name": "Vertex Count",
-      "variable": "vertexCount",
-      "description": "Vertex Count"
+      "type": "field",
+      "name": "Face Data Region",
+      "offset": 84,
+      "length": 64,
+      "color": "#FFE66D",
+      "opacity": 0.35,
+      "description": "Region of the file containing face definitions. Each face line begins with the number of vertices in the face followed by the zero-based vertex indices. Triangular faces start with 3, quads with 4, n-gons with their vertex count.",
+      "storeAs": "faceCount",
+      "valueType": "ascii"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "ValidOffHeader",
+      "expression": "offHeader == 'OFF\\n' || offHeader == 'OFF '",
+      "severity": "error",
+      "message": "File does not begin with 'OFF' keyword. This is not a valid OFF file. Check for COFF or NOFF variants which begin with those prefixes instead."
     },
     {
-      "type": "metadata",
-      "name": "Face Count",
-      "variable": "faceCount",
-      "description": "Face Count"
-    },
+      "name": "TextFile",
+      "expression": "true",
+      "severity": "warning",
+      "message": "OFF is a text-based format. Ensure the file uses consistent line endings (LF or CRLF) as some parsers are sensitive to mixed line endings."
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "OFF Header", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
+      { "name": "Counts Line", "offset": 4, "icon": "\uE946", "color": "#4ECDC4" },
+      { "name": "Vertex Data", "offset": 36, "icon": "\uE8B7", "color": "#95E1D3" }
+    ]
+  },
+  "inspector": {
+    "badge": "offHeader",
+    "primaryField": "countLine",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "File Header",
+        "icon": "\uE71B",
+        "fields": ["offHeader", "countLine"]
+      },
+      {
+        "title": "Geometry Data",
+        "icon": "\uE8B7",
+        "fields": ["vertexCount", "faceCount"]
+      }
+    ]
+  },
+  "exportTemplates": [
     {
-      "type": "metadata",
-      "name": "Material Count",
-      "variable": "materialCount",
-      "description": "Material Count"
-    },
-    {
-      "type": "metadata",
-      "name": "Formatted Size",
-      "variable": "formattedSize",
-      "description": "Human-readable file size"
+      "name": "OFF Header (JSON)",
+      "format": "json",
+      "fields": ["offHeader", "countLine"]
     }
   ],
   "software": [
+    "Geomview",
     "MeshLab",
     "Blender",
-    "3D viewers"
+    "CGAL",
+    "OpenMesh"
   ],
   "formatRelationships": {
     "category": "3D",
-    "extensions": [
-      ".off"
-    ]
+    "extensions": [".off"],
+    "relatedFormats": ["PLY", "OBJ", "STL"],
+    "note": "Simple text polygon format used in computational geometry research; variants include COFF, NOFF, CNOFF"
   },
   "MimeTypes": [
-    "application/octet-stream"
-  ],
-  "Software": [
-    "Blender",
-    "3ds Max",
-    "Maya",
-    "Cinema 4D",
-    "MeshLab"
+    "application/octet-stream",
+    "text/plain"
   ],
   "UseCases": [
-    "3D modeling",
-    "Rendering",
-    "Animation",
-    "Game development"
+    "Computational geometry research",
+    "Mesh processing pipelines",
+    "3D shape analysis",
+    "Academic dataset distribution"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 32,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 6,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
+    "CompletenessScore": 58,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 4,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
     "PriorityFormat": false,
-    "AutoRefined": true
+    "AutoRefined": false
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32LE": "Read mesh data",
-    "multiply": "Calculate vertices",
-    "formatFileSize(var:fileSize)": "Format fileSize as readable size"
+  "TechnicalDetails": {
+    "encoding": "ASCII text",
+    "variants": ["OFF", "COFF", "NOFF", "CNOFF"],
+    "coordinateSystem": "right-handed"
   },
   "forensic": {
-    "category": "3d-model",
+    "category": "3d",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Geomview Object File Format",
+    "analysisContext": "Geomview Object File Format — simple ASCII polygon mesh starting with 'OFF' keyword. Second line has vertex/face/edge counts. Widely used in computational geometry research and mesh processing tools.",
     "suggestedInspections": [
-      "Validate Object File Format header magic bytes and format version",
-      "Check vertex/face count fields and mesh data boundaries",
-      "Inspect embedded material, texture, and animation references"
+      "Verify 'OFF' keyword on first line and check for variant prefixes like COFF or NOFF",
+      "Parse the count line (second line) to determine mesh complexity",
+      "Examine vertex and face data for consistency with the declared vertex and face counts"
     ]
   }
 }

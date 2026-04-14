@@ -1,125 +1,186 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Cinema 4D",
-  "version": "1.13",
+  "version": "1.14",
   "extensions": [
     ".c4d"
   ],
-  "description": "Maxon Cinema 4D scene file",
+  "description": "Maxon Cinema 4D proprietary binary scene file format used for 3D modeling, animation, motion graphics, and rendering. The format uses an undocumented proprietary binary structure with no publicly available specification. Detection relies primarily on file extension and heuristic byte patterns found near the start of the file. Cinema 4D scenes may contain geometry, materials, lights, cameras, particle systems, dynamics, and animation tracks. The format is not officially documented by Maxon and reverse engineering is required for parsing.",
   "category": "3D",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "Cinema 4D Format"
+      "Maxon Cinema 4D (no public specification available)"
     ],
     "WebLinks": [
-      "https://en.wikipedia.org/wiki/C4D"
+      "https://en.wikipedia.org/wiki/Cinema_4D",
+      "https://www.maxon.net/cinema-4d",
+      "https://wiki.fileformat.com/3d/c4d/"
     ]
   },
   "detection": {
-    "signature": "433444",
-    "offset": 0,
-    "required": true,
+    "signatures": [
+      { "value": "433444", "offset": 0, "label": "C4D ASCII prefix (heuristic)", "weight": 0.4 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.3,
+    "required": false,
+    "Strength": "Weak",
+    "EntropyHint": { "min": 3.0, "max": 7.5 },
     "validation": {
-      "minFileSize": 3,
-      "maxSignatureOffset": 1024
+      "minFileSize": 16,
+      "maxSignatureOffset": 128,
+      "note": "C4D has no official public magic. Detection is extension-based with weak heuristic byte pattern. Proprietary format: no public specification available."
     }
   },
   "variables": {
-    "currentOffset": 0,
-    "machineType": "",
-    "sectionCount": 0,
-    "entryPoint": 0,
-    "c4dSignature": "",
-    "version": 0
+    "c4dPrefix": "",
+    "headerByte4": 0,
+    "headerByte5": 0,
+    "headerByte6": 0,
+    "headerByte7": 0
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "C4D Signature",
+      "name": "C4D Prefix Bytes",
       "offset": 0,
       "length": 3,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "C4D magic bytes",
-      "storeAs": "c4dSignature",
+      "opacity": 0.45,
+      "description": "First 3 bytes of the Cinema 4D file. No official public magic bytes exist for this format; detection is primarily extension-based. The proprietary binary structure is undocumented by Maxon.",
+      "storeAs": "c4dPrefix",
       "valueType": "ascii"
     },
     {
       "type": "field",
-      "name": "Version",
+      "name": "Header Byte 4",
       "offset": 3,
-      "length": 2,
+      "length": 1,
       "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "Cinema 4D version",
-      "storeAs": "version",
-      "valueType": "uint16"
+      "opacity": 0.35,
+      "description": "Fourth byte in the Cinema 4D file header area. The internal format version or type marker may appear here, but the meaning is undocumented and may vary between Cinema 4D versions.",
+      "storeAs": "headerByte4",
+      "valueType": "uint8"
     },
     {
-      "type": "metadata",
-      "name": "Machine",
-      "variable": "machineType",
-      "description": "Machine"
+      "type": "field",
+      "name": "Header Byte 5",
+      "offset": 4,
+      "length": 1,
+      "color": "#95E1D3",
+      "opacity": 0.35,
+      "description": "Fifth byte in the Cinema 4D file header area. Part of the proprietary binary header whose structure varies across Cinema 4D releases and is not publicly documented.",
+      "storeAs": "headerByte5",
+      "valueType": "uint8"
     },
     {
-      "type": "metadata",
-      "name": "Sections",
-      "variable": "sectionCount",
-      "description": "Sections"
+      "type": "field",
+      "name": "Header Bytes 6-9",
+      "offset": 5,
+      "length": 4,
+      "color": "#FFE66D",
+      "opacity": 0.35,
+      "description": "Bytes 6 through 9 of the Cinema 4D file. In some versions these may contain a build number, revision, or internal type identifier. Exact semantics are proprietary and undocumented.",
+      "storeAs": "headerByte6",
+      "valueType": "uint32"
+    },
+    {
+      "type": "field",
+      "name": "Extended Header Region",
+      "offset": 9,
+      "length": 8,
+      "color": "#C3A6FF",
+      "opacity": 0.35,
+      "description": "8-byte region following initial header area in Cinema 4D files. May contain internal object count, scene flags, or format revision markers depending on Cinema 4D version. Not reverse-engineered reliably.",
+      "storeAs": "headerByte7",
+      "valueType": "bytes"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "FileSizeReasonable",
+      "expression": "fileSize >= 16",
+      "severity": "warning",
+      "message": "File is smaller than 16 bytes. A valid Cinema 4D file should contain at least a minimal scene header. The file may be corrupt or empty."
+    },
+    {
+      "name": "ProprietaryFormatNote",
+      "expression": "true",
+      "severity": "warning",
+      "message": "Cinema 4D (.c4d) uses a proprietary undocumented binary format. Full parsing requires the Maxon SDK or Cinema 4D application. Hex inspection is limited to header region analysis."
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "File Start", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
+      { "name": "Header Region", "offset": 3, "icon": "\uE946", "color": "#4ECDC4" }
+    ]
+  },
+  "inspector": {
+    "badge": "c4dPrefix",
+    "primaryField": "headerByte4",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "Header Bytes",
+        "icon": "\uE71B",
+        "fields": ["c4dPrefix", "headerByte4", "headerByte5", "headerByte6"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "C4D Header (JSON)",
+      "format": "json",
+      "fields": ["c4dPrefix", "headerByte4", "headerByte5", "headerByte6"]
     }
   ],
   "software": [
     "Cinema 4D",
-    "After Effects"
+    "After Effects (via C4D integration)"
   ],
   "formatRelationships": {
     "category": "3D",
-    "extensions": [
-      ".c4d"
-    ]
+    "extensions": [".c4d"],
+    "relatedFormats": ["FBX", "OBJ", "GLTF"],
+    "note": "Proprietary Maxon format with no public specification; interchange typically done via FBX or Alembic export"
   },
   "MimeTypes": [
     "application/octet-stream"
   ],
-  "Software": [
-    "Blender",
-    "3ds Max",
-    "Maya",
-    "Cinema 4D",
-    "MeshLab"
-  ],
   "UseCases": [
+    "Motion graphics",
     "3D modeling",
-    "Rendering",
-    "Animation",
-    "Game development"
+    "VFX and compositing",
+    "Architectural visualization"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 32,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 4,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
+    "CompletenessScore": 50,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 5,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
     "PriorityFormat": false,
-    "AutoRefined": true
+    "AutoRefined": false
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32LE": "Read executable header"
+  "TechnicalDetails": {
+    "encoding": "binary-proprietary",
+    "specification": "undocumented",
+    "detectionMethod": "extension + heuristic"
   },
   "forensic": {
-    "category": "3d-model",
+    "category": "3d",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Maxon Cinema 4D scene file",
+    "analysisContext": "Proprietary Maxon Cinema 4D binary scene format with no public specification. Detection relies on file extension and weak byte heuristics. Full parsing requires the Maxon SDK.",
     "suggestedInspections": [
-      "Validate Cinema 4D header magic bytes and format version",
-      "Check vertex/face count fields and mesh data boundaries",
-      "Inspect embedded material, texture, and animation references"
+      "Identify file by extension since no reliable public magic bytes are documented",
+      "Inspect first 128 bytes for recognizable string patterns such as 'MAXON' or 'C4D'",
+      "Note that the format is proprietary; report only structural observations without assuming field semantics"
     ]
   }
 }

@@ -1,39 +1,47 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "3D Studio Model",
-  "version": "1.13",
+  "version": "1.14",
   "extensions": [
     ".3ds"
   ],
-  "description": "Autodesk 3D Studio mesh format",
+  "description": "Autodesk 3D Studio mesh format used widely for 3D modeling, rendering, and animation interchange. The format uses a hierarchical chunk-based binary structure where every element is a chunk with a 2-byte ID and a 4-byte length. The root chunk ID 0x4D4D (MAIN3DS) contains sub-chunks for geometry, materials, lights, cameras, and animation keyframes. Widely supported across 3D applications as a legacy interchange format.",
   "category": "3D",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "3D Studio Model Format"
+      "Autodesk 3D Studio File Format Specification",
+      "3DS Chunk Reference by Jeff Lewis"
     ],
     "WebLinks": [
-      "https://en.wikipedia.org/wiki/3DS"
+      "https://en.wikipedia.org/wiki/3DS",
+      "https://wiki.fileformat.com/3d/3ds/",
+      "http://www.martinreddy.net/gfx/3d/3DS.spec"
     ]
   },
   "detection": {
-    "signature": "4D4D",
-    "offset": 0,
+    "signatures": [
+      { "value": "4D4D", "offset": 0, "label": "MAIN3DS chunk ID", "weight": 0.8 },
+      { "value": "3D3D", "offset": 0, "label": "EDIT3DS chunk ID (alternate root)", "weight": 0.6 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.6,
     "required": true,
+    "Strength": "Medium",
+    "EntropyHint": { "min": 3.0, "max": 7.5 },
     "validation": {
-      "minFileSize": 2,
-      "maxSignatureOffset": 1024
+      "minFileSize": 6,
+      "maxSignatureOffset": 0,
+      "note": "Root chunk ID must appear at byte 0; chunk length at bytes 2-5 must be <= file size"
     }
   },
   "variables": {
-    "currentOffset": 0,
-    "vertexCount": 0,
-    "faceCount": 0,
-    "materialCount": 0,
-    "fileSize": 0,
     "primaryChunkId": 0,
     "chunkLength": 0,
+    "editChunkId": 0,
+    "objectChunkId": 0,
+    "meshVersion": 0,
     "formattedSize": ""
   },
   "blocks": [
@@ -43,100 +51,161 @@
       "offset": 0,
       "length": 2,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "Main chunk identifier (0x4D4D)",
+      "opacity": 0.45,
+      "description": "Root chunk identifier 0x4D4D (MAIN3DS). This magic value marks the beginning of a 3DS binary file and identifies the outermost container chunk that wraps all scene data.",
       "storeAs": "primaryChunkId",
       "valueType": "uint16"
     },
     {
       "type": "field",
-      "name": "Chunk Length",
+      "name": "Primary Chunk Length",
       "offset": 2,
       "length": 4,
       "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "Length of main chunk",
+      "opacity": 0.35,
+      "description": "Total byte length of the primary MAIN3DS chunk including its header. This value should equal the file size for a well-formed 3DS file with a single root chunk.",
       "storeAs": "chunkLength",
       "valueType": "uint32"
     },
     {
-      "type": "metadata",
-      "name": "Vertex Count",
-      "variable": "vertexCount",
-      "description": "Vertex Count"
+      "type": "field",
+      "name": "Edit3DS Sub-Chunk ID",
+      "offset": 6,
+      "length": 2,
+      "color": "#95E1D3",
+      "opacity": 0.35,
+      "description": "Sub-chunk identifier 0x3D3D (EDIT3DS) that begins the editable mesh section containing geometry, material, and object definitions for the 3D scene.",
+      "storeAs": "editChunkId",
+      "valueType": "uint16"
     },
     {
-      "type": "metadata",
-      "name": "Face Count",
-      "variable": "faceCount",
-      "description": "Face Count"
+      "type": "field",
+      "name": "Edit3DS Chunk Length",
+      "offset": 8,
+      "length": 4,
+      "color": "#FFE66D",
+      "opacity": 0.35,
+      "description": "Byte length of the EDIT3DS sub-chunk covering all geometry, materials, lights, and cameras. Parsing this boundary identifies the end of editable mesh data.",
+      "storeAs": "meshVersion",
+      "valueType": "uint32"
     },
     {
-      "type": "metadata",
-      "name": "Material Count",
-      "variable": "materialCount",
-      "description": "Material Count"
+      "type": "field",
+      "name": "Mesh Version Chunk ID",
+      "offset": 12,
+      "length": 2,
+      "color": "#C3A6FF",
+      "opacity": 0.35,
+      "description": "Chunk ID 0x3D3E (MESH_VERSION) that stores the mesh format version number used in this file, allowing parsers to handle version-specific data layouts correctly.",
+      "storeAs": "objectChunkId",
+      "valueType": "uint16"
     },
     {
-      "type": "metadata",
-      "name": "Formatted Size",
-      "variable": "formattedSize",
-      "description": "Human-readable file size"
+      "type": "field",
+      "name": "Mesh Version Value",
+      "offset": 18,
+      "length": 4,
+      "color": "#F7B731",
+      "opacity": 0.35,
+      "description": "4-byte little-endian integer specifying the mesh format version. Typical values are 3 or 4, corresponding to 3DS Max export revisions. Higher values may use extended chunk types.",
+      "storeAs": "formattedSize",
+      "valueType": "uint32"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "ValidRootChunk",
+      "expression": "primaryChunkId == 0x4D4D || primaryChunkId == 0x3D3D",
+      "severity": "error",
+      "message": "File does not start with a recognized 3DS root chunk ID (0x4D4D or 0x3D3D). The file may be corrupt or not a valid 3DS file."
+    },
+    {
+      "name": "ChunkLengthSane",
+      "expression": "chunkLength >= 6",
+      "severity": "warning",
+      "message": "Primary chunk length is smaller than the minimum valid chunk size of 6 bytes. The file may be truncated or malformed."
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "MAIN3DS Root", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
+      { "name": "EDIT3DS Geometry", "offset": 6, "icon": "\uE8B7", "color": "#4ECDC4" },
+      { "name": "Mesh Version", "offset": 12, "icon": "\uE946", "color": "#FFE66D" }
+    ]
+  },
+  "inspector": {
+    "badge": "primaryChunkId",
+    "primaryField": "chunkLength",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "Chunk Header",
+        "icon": "\uE71B",
+        "fields": ["primaryChunkId", "chunkLength"]
+      },
+      {
+        "title": "Edit Mesh",
+        "icon": "\uE8B7",
+        "fields": ["editChunkId", "meshVersion"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "3DS Header (JSON)",
+      "format": "json",
+      "fields": ["primaryChunkId", "chunkLength", "editChunkId", "meshVersion", "objectChunkId"]
     }
   ],
   "software": [
     "Autodesk 3ds Max",
     "Blender",
-    "Maya"
-  ],
-  "formatRelationships": {
-    "category": "3D",
-    "extensions": [
-      ".3ds"
-    ]
-  },
-  "MimeTypes": [
-    "application/octet-stream"
-  ],
-  "Software": [
-    "Blender",
-    "3ds Max",
     "Maya",
     "Cinema 4D",
     "MeshLab"
   ],
+  "formatRelationships": {
+    "category": "3D",
+    "extensions": [".3ds"],
+    "relatedFormats": ["MAX", "OBJ", "FBX"],
+    "note": "Legacy binary mesh format superseded by FBX and glTF for interchange"
+  },
+  "MimeTypes": [
+    "application/octet-stream",
+    "image/x-3ds"
+  ],
   "UseCases": [
-    "3D modeling",
-    "Rendering",
-    "Animation",
-    "Game development"
+    "3D modeling interchange",
+    "Legacy asset import",
+    "Game development pipeline",
+    "Architectural visualization"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 32,
-    "DocumentationLevel": "standard",
+    "CompletenessScore": 62,
+    "DocumentationLevel": "detailed",
     "BlocksDefined": 6,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
     "PriorityFormat": false,
-    "AutoRefined": true
+    "AutoRefined": false
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32LE": "Read mesh data",
-    "multiply": "Calculate vertices",
-    "formatFileSize(var:fileSize)": "Format fileSize as readable size"
+  "TechnicalDetails": {
+    "encoding": "binary-little-endian",
+    "chunkBased": true,
+    "maxFileSize": "2GB",
+    "rootChunkIds": ["0x4D4D", "0x3D3D"]
   },
   "forensic": {
-    "category": "3d-model",
+    "category": "3d",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Autodesk 3D Studio mesh format",
+    "analysisContext": "Chunk-based binary 3D mesh format from Autodesk 3D Studio. Each chunk has a 2-byte ID and 4-byte length allowing recursive traversal of nested geometry, material, light, and animation data.",
     "suggestedInspections": [
-      "Validate 3D Studio Model header magic bytes and format version",
-      "Check vertex/face count fields and mesh data boundaries",
-      "Inspect embedded material, texture, and animation references"
+      "Verify root chunk ID is 0x4D4D and chunk length matches file size",
+      "Enumerate sub-chunks to locate EDIT3DS (0x3D3D) and OBJECT (0x4100) sections",
+      "Inspect material and texture reference chunks for embedded asset paths"
     ]
   }
 }

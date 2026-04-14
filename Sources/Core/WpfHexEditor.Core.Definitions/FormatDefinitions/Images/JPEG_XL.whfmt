@@ -1,7 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "JPEG XL Image",
-  "version": "1.12",
+  "version": "1.13",
   "extensions": [
     ".jxl"
   ],

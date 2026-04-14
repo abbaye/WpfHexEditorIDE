@@ -1,130 +1,178 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Motion JPEG",
-  "version": "1.14",
+  "version": "1.15",
   "extensions": [
     ".mjpeg",
     ".mjpg"
   ],
-  "description": "Motion JPEG video format where each frame is a separate JPEG image",
+  "description": "Motion JPEG (MJPEG or M-JPEG) is a video compression format where each frame of video is independently compressed as a JPEG image. Unlike inter-frame codecs (H.264, MPEG-2), MJPEG has no temporal prediction — each frame is a self-contained JPEG. MJPEG files typically start with a JPEG SOI (Start of Image) marker 0xFF 0xD8, followed by the first JPEG segment marker. Common continuation markers: 0xFF 0xE0 (JFIF APP0), 0xFF 0xE1 (EXIF APP1), 0xFF 0xDB (DQT — quantization table), 0xFF 0xC0 (SOF0 — frame dimensions). MJPEG is stored raw (frame sequence without container), in AVI (MJPG FourCC), in QuickTime MOV (jpeg codec), or as multipart/x-mixed-replace streams (HTTP MJPEG streaming for IP cameras). Each JPEG frame ends with 0xFF 0xD9 (EOI).",
   "category": "Video",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "ISO/IEC 10918-1 - Digital Compression and Coding",
-      "JFIF File Format Specification",
-      "ITU-T T.81"
+      "ISO/IEC 10918-1 — JPEG Digital Compression and Coding",
+      "ITU-T T.81 — JPEG Standard",
+      "JFIF File Interchange Format v1.02"
     ],
     "WebLinks": [
+      "https://en.wikipedia.org/wiki/Motion_JPEG",
       "https://www.w3.org/Graphics/JPEG/",
-      "https://jpeg.org/jpeg/",
-      "https://en.wikipedia.org/wiki/JPEG"
+      "https://jpeg.org/jpeg/"
     ]
   },
   "detection": {
-    "signature": "FFD8FF",
-    "offset": 0,
+    "signatures": [
+      { "value": "FFD8FFE0", "offset": 0, "label": "JPEG SOI + JFIF APP0 marker — MJPEG frame start", "weight": 1.0 },
+      { "value": "FFD8FFE1", "offset": 0, "label": "JPEG SOI + EXIF APP1 marker — MJPEG frame start", "weight": 0.9 },
+      { "value": "FFD8FF", "offset": 0, "label": "JPEG SOI marker (generic)", "weight": 0.6 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.6,
     "required": true,
+    "Strength": "Medium",
+    "EntropyHint": { "min": 6.0, "max": 7.8 },
     "validation": {
       "minFileSize": 3,
-      "maxSignatureOffset": 1024
+      "note": "MJPEG starts with JPEG SOI 0xFF 0xD8 — shared with JPEG images. MJPEG raw streams have multiple consecutive JPEG frames (SOI...EOI sequences). In AVI containers, RIFF/AVI magic precedes the frame data; frames use MJPG FourCC."
     }
   },
   "variables": {
+    "jpegSoiMarker": 0,
+    "jpegApp0Marker": 0,
     "jpegWidth": 0,
-    "jpegHeight": 0,
-    "jpegComponents": 0,
-    "frameRate": 0,
-    "jpegSoiMarker": "",
-    "totalPixels": 0
+    "jpegHeight": 0
   },
   "blocks": [
     {
       "type": "signature",
       "name": "JPEG SOI Marker",
       "offset": 0,
-      "length": 3,
+      "length": 2,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "JPEG Start of Image marker",
+      "opacity": 0.45,
+      "description": "JPEG Start of Image (SOI) marker 0xFF 0xD8. This 2-byte sequence marks the beginning of every JPEG data unit, including each frame in an MJPEG stream. Every JPEG/MJPEG frame starts with 0xFF 0xD8 and ends with EOI marker 0xFF 0xD9. In a raw MJPEG stream, consecutive SOI markers identify frame boundaries.",
       "storeAs": "jpegSoiMarker",
-      "valueType": "ascii"
+      "valueType": "uint16",
+      "endianness": "big",
+      "valueMap": { "65496": "JPEG SOI marker (0xFF 0xD8)" }
+    },
+    {
+      "type": "field",
+      "name": "First Segment Marker",
+      "offset": 2,
+      "length": 2,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "First JPEG segment marker after SOI. Common values: 0xFFE0 = JFIF APP0 (JFIF metadata), 0xFFE1 = APP1 (EXIF), 0xFFDB = DQT (quantization table, often first in MJPEG camera streams), 0xFFC0 = SOF0 (Baseline DCT frame header with width/height), 0xFFDA = SOS (Start of Scan).",
+      "storeAs": "jpegApp0Marker",
+      "valueType": "uint16",
+      "endianness": "big",
+      "valueMap": {
+        "65504": "0xFFE0 APP0 — JFIF header",
+        "65505": "0xFFE1 APP1 — EXIF/XMP",
+        "65499": "0xFFDB DQT — quantization table",
+        "65472": "0xFFC0 SOF0 — Baseline DCT frame header",
+        "65498": "0xFFDA SOS — Start of Scan (compressed data)"
+      }
     },
     {
       "type": "metadata",
-      "name": "Frame Width",
-      "variable": "jpegWidth",
-      "description": "Frame Width"
+      "name": "JPEG SOI",
+      "variable": "jpegSoiMarker",
+      "description": "JPEG Start of Image (0xFFD8 = 65496)"
     },
     {
       "type": "metadata",
-      "name": "Frame Height",
-      "variable": "jpegHeight",
-      "description": "Frame Height"
-    },
-    {
-      "type": "metadata",
-      "name": "Total Pixels",
-      "variable": "totalPixels",
-      "description": "Width x Height"
+      "name": "First Segment",
+      "variable": "jpegApp0Marker",
+      "description": "First JPEG segment marker"
     }
   ],
-  "software": [
-    "Video editors",
-    "VLC",
-    "Surveillance software"
+  "assertions": [
+    {
+      "name": "JPEG SOI marker valid",
+      "expression": "jpegSoiMarker == 65496",
+      "severity": "error",
+      "message": "MJPEG/JPEG must start with SOI marker 0xFF 0xD8 (65496) — not a valid JPEG/MJPEG stream"
+    }
   ],
-  "formatRelationships": {
-    "category": "Video",
-    "extensions": [
-      ".mjpeg",
-      ".mjpg"
+  "navigation": {
+    "bookmarks": [
+      { "name": "First JPEG Frame (SOI)", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" }
     ]
   },
-  "MimeTypes": [
-    "video/mjpeg"
-  ],
-  "Software": [
-    "VLC",
-    "Media Player Classic",
-    "HandBrake",
-    "FFmpeg",
-    "MPC-HC"
-  ],
-  "UseCases": [
-    "Video playback",
-    "Video editing",
-    "Encoding",
-    "Streaming"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 4,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "jpegSoiMarker",
+    "primaryField": "jpegApp0Marker",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "MJPEG Frame Header",
+        "icon": "\uE71B",
+        "fields": ["jpegSoiMarker", "jpegApp0Marker"]
+      }
+    ]
   },
-  "TechnicalDetails": {
-    "VideoFormat": true
-  },
-  "functions": {
-    "parseJPEGDimensions": "Extract frame dimensions from JPEG data",
-    "computeFromVariables(jpegWidth * jpegHeight, totalPixels)": "Calculate total pixels"
-  },
+  "exportTemplates": [
+    {
+      "name": "MJPEG Frame Header (JSON)",
+      "format": "json",
+      "fields": ["jpegSoiMarker", "jpegApp0Marker"]
+    }
+  ],
   "forensic": {
     "category": "video",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Motion JPEG video format where each frame is a separate JPEG image",
+    "analysisContext": "MJPEG = sequence of JPEG frames. Raw MJPEG: consecutive JPEG frames (FFD8...FFD9 blocks). AVI MJPEG: RIFF/AVI with MJPG FourCC in strf biCompression, frames in movi as 00dc chunks. IP camera MJPEG: HTTP multipart/x-mixed-replace stream (MIME boundaries between frames). Each JPEG frame: SOI(FFD8) + segments (FFC0/SOF0 contains width/height at bytes 5-8: 2B height BE + 2B width BE) + SOS(FFDA) + compressed data + EOI(FFD9). MJPEG quality: quantization tables in FFDB segment. DRI(FFDD) segment sets restart interval.",
     "suggestedInspections": [
-      "Validate Motion JPEG container magic, box/atom sizes, and codec FourCC",
-      "Check track/stream layout, frame index, and timing fields",
-      "Inspect audio-video sync, keyframe distribution, and metadata"
+      "Verify 0xFF 0xD8 at offset 0 — JPEG SOI",
+      "Bytes 2-3: segment marker. 0xFFE0 = JFIF, 0xFFDB = quantization table (camera MJPEG)",
+      "Find SOF0 (0xFFC0) segment: bytes +5/+7 = height/width (BE uint16)",
+      "Count SOI (0xFFD8) occurrences to estimate frame count in raw MJPEG stream"
     ]
+  },
+  "software": [
+    "FFmpeg (mjpeg decoder/encoder)",
+    "VLC media player",
+    "IP camera software (Axis, Hikvision)",
+    "OBS Studio",
+    "Video surveillance systems"
+  ],
+  "formatRelationships": {
+    "category": "Video",
+    "extensions": [".mjpeg", ".mjpg"],
+    "relatedFormats": ["JPEG", "AVI", "MOV"],
+    "note": "MJPEG has no unique container signature — it starts with JPEG SOI 0xFFD8 shared with still JPEG images. MJPEG is also stored in AVI (RIFF magic, MJPG FourCC) and QuickTime MOV. IP cameras stream MJPEG over HTTP as multipart/x-mixed-replace. Advantage: random access to any frame (no inter-frame dependencies)."
+  },
+  "MimeTypes": [
+    "video/mjpeg",
+    "video/x-motion-jpeg",
+    "multipart/x-mixed-replace"
+  ],
+  "UseCases": [
+    "IP camera and CCTV streaming (RTSP/HTTP)",
+    "Video surveillance and recording",
+    "USB webcam capture (V4L2 MJPEG)",
+    "Low-latency video monitoring"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 65,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 4,
+    "ValidationRules": 1,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "VideoFormat": true,
+    "ContainerFormat": "Raw JPEG frame sequence, AVI (MJPG FourCC), or QuickTime MOV",
+    "VideoCodec": "JPEG (intra-frame only, no temporal prediction)",
+    "Endianness": "big-endian (JPEG markers and segment lengths)"
   }
 }

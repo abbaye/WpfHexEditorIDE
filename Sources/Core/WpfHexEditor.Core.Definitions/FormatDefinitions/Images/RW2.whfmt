@@ -1,11 +1,11 @@
-﻿{
+{
   "diffMode": "binary",
-  "formatName": "Panasonic Raw Image",
-  "version": "1.13",
+  "formatName": "Panasonic RW2 RAW",
+  "version": "1.14",
   "extensions": [
     ".rw2"
   ],
-  "description": "Panasonic RAW camera image",
+  "description": "Panasonic RW2 is the proprietary RAW image format used in Panasonic Lumix digital cameras. Although structurally derived from TIFF, RW2 deviates from the TIFF standard by using a non-standard magic number at offset 2: 0x0055 (decimal 85) instead of the standard TIFF magic value 42 (0x002A). The file begins with the little-endian byte order mark 'II' (0x4949) at offset 0, followed by the 2-byte RW2-specific magic 0x0055 at offset 2, and then the 4-byte IFD0 offset at offset 4. The RAW sensor data is typically 12-bit Bayer pattern (RGGB). Panasonic MakerNote data (EXIF tag 0x927C) starts with the ASCII string 'Panasonic' followed by null padding. RW2 files contain a full-resolution RAW image plus an embedded JPEG thumbnail. Supported by Lightroom, Capture One, RawTherapee, darktable, and Panasonic's own SILKYPIX-based software.",
   "category": "Images",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "image-viewer",
@@ -13,118 +13,193 @@
     "specifications": [
       "Panasonic RAW Version 2 (RW2) Format",
       "Panasonic Lumix RAW Image Specification",
-      "RW2 TIFF-based RAW Format"
+      "RW2 TIFF-derived RAW Format with custom magic 0x0055",
+      "ExifTool RW2 Tag Reference"
     ],
     "WebLinks": [
       "http://fileformats.archiveteam.org/wiki/Panasonic_RAW/RW2",
       "https://libopenraw.freedesktop.org/formats/rw2/",
-      "https://www.aftershotpro.com/en/pages/rw2-file/",
-      "https://www.paintshoppro.com/en/pages/rw2-file/"
+      "https://exiftool.org/TagNames/PanasonicRaw.html",
+      "https://www.rawdigger.com/howtouse/panasonic-rw2-raw-files"
     ]
   },
   "detection": {
-    "signature": "49492A00",
-    "offset": 0,
+    "signatures": [
+      {
+        "pattern": "49490055",
+        "offset": 0,
+        "description": "RW2 byte order mark (II = LE) + Panasonic magic 0x0055"
+      }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.85,
     "required": true,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 4.5, "max": 7.5 },
     "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024
+      "minFileSize": 8,
+      "maxSignatureOffset": 0,
+      "note": "RW2 magic differs from TIFF at offset 2: must be 0x0055 not 0x002A"
     }
   },
   "variables": {
-    "currentOffset": 0,
-    "width": 0,
-    "height": 0,
-    "totalPixels": 0,
-    "bitsPerPixel": 0,
-    "tiffHeader": 0
+    "byteOrderMark": 0,
+    "rw2Magic": 0,
+    "ifdOffset": 0
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "TIFF Header",
+      "name": "ByteOrderMark",
       "offset": 0,
-      "length": 4,
+      "length": 2,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "RW2 uses TIFF structure",
-      "storeAs": "tiffHeader",
+      "opacity": 0.5,
+      "description": "Byte order indicator: 0x4949 = 'II' (little-endian). RW2 is always LE.",
+      "storeAs": "byteOrderMark",
+      "valueType": "uint16",
+      "valueMap": {
+        "18761": "II — little-endian (Panasonic RW2)"
+      }
+    },
+    {
+      "type": "field",
+      "name": "RW2Magic",
+      "offset": 2,
+      "length": 2,
+      "color": "#FFB347",
+      "opacity": 0.45,
+      "description": "Panasonic RW2-specific magic number at offset 2. Value 85 (0x0055) identifies RW2; standard TIFF uses 42 (0x002A).",
+      "storeAs": "rw2Magic",
+      "valueType": "uint16",
+      "valueMap": {
+        "85": "Panasonic RW2 magic (0x0055)",
+        "42": "Standard TIFF magic (not RW2)"
+      }
+    },
+    {
+      "type": "field",
+      "name": "IFDOffset",
+      "offset": 4,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "Offset (uint32 LE) to the first Image File Directory (IFD0) from start of file.",
+      "storeAs": "ifdOffset",
       "valueType": "uint32"
     },
     {
       "type": "metadata",
-      "name": "Width",
-      "variable": "width",
-      "description": "Width"
+      "name": "ByteOrderMark",
+      "variable": "byteOrderMark",
+      "description": "Byte order mark value (18761 = 'II' LE)"
     },
     {
       "type": "metadata",
-      "name": "Height",
-      "variable": "height",
-      "description": "Height"
-    },
-    {
-      "type": "metadata",
-      "name": "Total Pixels",
-      "variable": "totalPixels",
-      "description": "Total Pixels"
+      "name": "RW2Magic",
+      "variable": "rw2Magic",
+      "description": "RW2 magic number (85 = Panasonic proprietary, 42 = standard TIFF)"
     }
   ],
-  "software": [
-    "Image viewers",
-    "GIMP"
+  "assertions": [
+    {
+      "variable": "byteOrderMark",
+      "operator": "==",
+      "value": 18761,
+      "description": "Byte order must be 'II' (little-endian, 0x4949)"
+    },
+    {
+      "variable": "rw2Magic",
+      "operator": "==",
+      "value": 85,
+      "description": "RW2 magic must be 0x0055 (85), distinguishing RW2 from standard TIFF"
+    }
   ],
-  "formatRelationships": {
-    "category": "Images",
-    "extensions": [
-      ".rw2"
+  "navigation": {
+    "bookmarks": [
+      { "name": "Header Start", "offset": 0, "description": "RW2 byte order mark" },
+      { "name": "RW2 Magic", "offset": 2, "description": "Panasonic proprietary magic 0x0055" },
+      { "name": "IFD0 Offset", "offset": 4, "description": "Pointer to first Image File Directory" }
     ]
   },
-  "MimeTypes": [
-    "image/rw2"
-  ],
-  "Software": [
-    "Photoshop",
-    "GIMP",
-    "Paint.NET",
-    "IrfanView",
-    "XnView"
-  ],
-  "UseCases": [
-    "Image viewing",
-    "Photo editing",
-    "Graphics design",
-    "Web publishing"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 4,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "RW2",
+    "primaryField": "rw2Magic",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "name": "File Header",
+        "fields": ["byteOrderMark", "rw2Magic", "ifdOffset"]
+      }
+    ]
   },
-  "TechnicalDetails": {
-    "ImagesFormat": true,
-    "BitDepth": 8
-  },
-  "functions": {
-    "readUInt32LE": "Read dimensions",
-    "multiply": "Calculate pixels",
-    "computeFromVariables(width * height, totalPixels)": "Calculate total pixels"
-  },
+  "exportTemplates": [
+    {
+      "name": "RW2 Header Summary",
+      "fields": ["byteOrderMark", "rw2Magic", "ifdOffset"],
+      "format": "text"
+    }
+  ],
   "forensic": {
     "category": "image",
     "riskLevel": "low",
-    "suspiciousPatterns": []
+    "suspiciousPatterns": [
+      "RW2 magic 0x0055 replaced with 0x002A suggests TIFF masquerading or corruption",
+      "Unexpected byte order mark (not 0x4949) indicates non-standard or tampered file"
+    ]
   },
   "aiHints": {
-    "analysisContext": "Panasonic RAW camera image",
+    "analysisContext": "Panasonic RW2 RAW camera image. Distinguish from standard TIFF by magic byte 0x0055 at offset 2. Always little-endian. Contains 12-bit Bayer RAW sensor data and Panasonic MakerNote (tag 0x927C, prefix 'Panasonic\\x00\\x00\\x00').",
     "suggestedInspections": [
-      "Validate Panasonic Raw Image signature, image dimensions, and color model",
-      "Check pixel data offset, compression type, and scanline alignment",
-      "Inspect color profile (ICC), EXIF metadata, and chunk CRCs"
+      "Verify RW2 magic 0x0055 at offset 2 — standard TIFF would have 0x002A",
+      "Parse IFD0 to locate MakerNote tag 0x927C and confirm 'Panasonic' prefix",
+      "Locate embedded JPEG thumbnail in IFD structure",
+      "Validate 12-bit Bayer sensor data layout (RGGB pattern typical for Lumix)"
     ]
+  },
+  "software": [
+    "Adobe Lightroom",
+    "Capture One",
+    "RawTherapee",
+    "darktable",
+    "SILKYPIX Developer Studio",
+    "GIMP (with UFRaw/RawTherapee)",
+    "IrfanView",
+    "XnView"
+  ],
+  "formatRelationships": {
+    "category": "Images",
+    "extensions": [".rw2"],
+    "relatedFormats": ["TIFF", "ARW", "NEF", "CR2", "ORF"],
+    "note": "RW2 is TIFF-derived but uses non-standard magic 0x0055 instead of 42. Panasonic's successor format is RWL for Leica-branded Lumix cameras."
+  },
+  "MimeTypes": [
+    "image/rw2",
+    "image/x-panasonic-rw2",
+    "image/x-panasonic-raw"
+  ],
+  "UseCases": [
+    "Professional RAW photo editing from Panasonic Lumix cameras",
+    "Forensic imaging of Panasonic camera media",
+    "Archival of lossless 12-bit sensor data",
+    "Photogrammetry and color-science workflows"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 66,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 5,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "ImagesFormat": true,
+    "BitDepth": 12,
+    "ByteOrder": "little-endian",
+    "Container": "TIFF-derived (non-standard magic)",
+    "MakerNotePrefix": "Panasonic\\x00\\x00\\x00",
+    "SensorType": "Bayer (RGGB)",
+    "Compression": "uncompressed or lossless"
   }
 }

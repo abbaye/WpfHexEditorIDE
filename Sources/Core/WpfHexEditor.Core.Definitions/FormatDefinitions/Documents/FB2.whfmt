@@ -1,46 +1,46 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "FictionBook 2.0",
-  "version": "1.11",
-  "extensions": [
-    ".fb2"
-  ],
-  "description": "FictionBook 2.0 e-book format, XML-based format popular in Russia for fiction books",
+  "version": "1.13",
+  "extensions": [ ".fb2", ".fb2.zip" ],
+  "description": "FictionBook 2.0 (FB2) is an XML-based eBook format developed in Russia and widely used for fiction literature. Files begin with a standard XML declaration '<?xml version=\"1.0\"' followed by a root element '<FictionBook xmlns=\"http://www.gribuser.ru/xml/fictionbook/2.0\"'. The format encodes text content, inline images (base64), and rich metadata (title, author, genre, publisher, date) in a single XML file. FB2 files may be distributed as plain .fb2 XML files or compressed as .fb2.zip. Detection is XML-based and weak for binary detection — '<?xml' at offset 0 has high false-positive rate; the 'FictionBook' namespace string provides stronger confirmation.",
   "category": "Documents",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "FictionBook 2.0 Format"
+      "FictionBook 2.0 XML Schema Specification",
+      "FictionBook Format Documentation",
+      "gribuser.ru FictionBook 2.0 DTD"
     ],
     "WebLinks": [
-      "https://en.wikipedia.org/wiki/FB2"
+      "https://en.wikipedia.org/wiki/FictionBook",
+      "https://wiki.mobileread.com/wiki/FB2",
+      "https://github.com/gribuser/fb2",
+      "http://www.gribuser.ru/xml/fictionbook/2.0/"
     ]
   },
   "detection": {
-    "signature": "3C3F786D6C",
-    "offset": 0,
-    "required": true,
+    "signatures": [
+      { "hex": "3C3F786D6C", "offset": 0, "weight": 0.4 },
+      { "hex": "EFBBBF3C3F786D6C", "offset": 0, "weight": 0.4 },
+      { "hex": "3C46696374696F6E426F6F6B", "offset": 0, "weight": 0.7 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.4,
+    "required": false,
+    "Strength": "Weak",
+    "EntropyHint": { "min": 3.0, "max": 6.5 },
     "validation": {
-      "minFileSize": 5,
-      "maxSignatureOffset": 1024
+      "minFileSize": 100,
+      "maxSignatureOffset": 3,
+      "note": "'<?xml' at offset 0 (or after UTF-8 BOM EF BB BF) has high false-positive rate. Look for 'FictionBook' namespace in first 512 bytes for strong confirmation. May also be gzip/ZIP compressed."
     }
   },
-  "functions": {
-    "extractUTF8String": "Extract XML elements (title, author, publisher) from FB2 metadata",
-    "extractASCIIString": "Extract XML tag names and attributes",
-    "readUInt8": "Read XML characters for parsing"
-  },
   "variables": {
-    "currentOffset": 0,
-    "title": "Unknown",
-    "author": "Unknown",
-    "preferredEditor": "hex-editor",
-    "publisher": "Unknown",
-    "language": "ru",
-    "genre": "Unknown",
-    "date": "Unknown",
-    "xmlDeclaration": ""
+    "xmlDeclaration": "",
+    "xmlEncoding": "",
+    "fictionBookVersion": ""
   },
   "blocks": [
     {
@@ -50,79 +50,118 @@
       "length": 5,
       "color": "#FF6B6B",
       "opacity": 0.4,
-      "description": "XML declaration: '<?xml'",
+      "description": "XML prolog: '<?xml'. May be preceded by UTF-8 BOM (EF BB BF) or UTF-16 BOM (FF FE / FE FF).",
       "storeAs": "xmlDeclaration",
       "valueType": "ascii"
     },
     {
-      "type": "data",
-      "name": "XML Version",
+      "type": "field",
+      "name": "XML Version/Encoding",
       "offset": 5,
-      "length": 20,
+      "length": 40,
       "color": "#4ECDC4",
-      "opacity": 0.4,
-      "description": "XML version and encoding declaration"
+      "opacity": 0.3,
+      "description": "XML declaration attributes: version='1.0' encoding='utf-8' (or other encoding)",
+      "storeAs": "xmlEncoding",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "FictionBook Root Element",
+      "offset": 45,
+      "length": 60,
+      "color": "#45B7D1",
+      "opacity": 0.3,
+      "description": "FictionBook root element with namespace: '<FictionBook xmlns=\"http://www.gribuser.ru/xml/fictionbook/2.0\">'",
+      "storeAs": "fictionBookVersion",
+      "valueType": "ascii"
     },
     {
       "type": "data",
-      "name": "FictionBook Root",
-      "offset": 25,
-      "length": 50,
-      "color": "#45B7D1",
-      "opacity": 0.4,
-      "description": "FictionBook root element with namespace"
+      "name": "Description Section",
+      "offset": 105,
+      "length": 64,
+      "color": "#96CEB4",
+      "opacity": 0.3,
+      "description": "FB2 <description> element containing <title-info> (book title, author, genre), <publish-info>, and <document-info>"
     }
   ],
+  "assertions": [
+    { "field": "xmlDeclaration", "operator": "startsWith", "value": "<?xml", "description": "File must start with XML declaration (optionally after BOM)" }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "XML Declaration", "offset": 0, "description": "<?xml prolog" },
+      { "name": "FictionBook Root", "offset": 45, "description": "Root element with FB2 namespace" }
+    ]
+  },
+  "inspector": {
+    "badge": "FB2",
+    "primaryField": "xmlEncoding",
+    "showQualityScore": true,
+    "groups": [
+      { "name": "XML Structure", "fields": ["xmlDeclaration", "xmlEncoding"] },
+      { "name": "FB2 Identity", "fields": ["fictionBookVersion"] }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "FB2 XML Info (JSON)",
+      "format": "json",
+      "fields": ["xmlDeclaration", "xmlEncoding", "fictionBookVersion"]
+    }
+  ],
+  "forensic": {
+    "category": "document",
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      "FB2 XML can embed script-like content via processing instructions",
+      "Deeply nested XML or very large inline base64 images could cause parser DoS"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "FB2 is plain XML. Detection must search for 'FictionBook' namespace string in the first 512 bytes. Files start with '<?xml' (optionally after UTF-8 BOM). The root element is '<FictionBook xmlns=\"http://www.gribuser.ru/xml/fictionbook/2.0\">'. Compressed FB2 (.fb2.zip or .fb2.gz) will show ZIP/GZIP magic instead. FBReader and Calibre are primary tools.",
+    "suggestedInspections": [
+      "Check first 3 bytes for UTF-8 BOM (EF BB BF) or start of <?xml",
+      "Search for 'FictionBook' within first 512 bytes for strong FB2 confirmation",
+      "Look for 'gribuser.ru/xml/fictionbook' namespace URI",
+      "Check if file is actually ZIP-compressed (.fb2.zip) by checking for PK magic",
+      "Parse <title-info> for book title, author, genre, and language"
+    ]
+  },
   "software": [
     "FBReader",
     "Calibre",
     "Cool Reader",
-    "Sumatra PDF"
+    "Sumatra PDF",
+    "Foliate"
   ],
   "formatRelationships": {
     "category": "Documents",
-    "extensions": [
-      ".fb2"
-    ]
+    "extensions": [".fb2", ".fb2.zip"],
+    "relatedFormats": ["EPUB", "MOBI", "AZW", "HTML"],
+    "note": "FB2 is an XML format popular in Russian-language eBook communities. EPUB is the more internationally adopted XML eBook format."
   },
-  "MimeTypes": [
-    "application/fb2"
-  ],
-  "Software": [
-    "FBReader",
-    "Calibre",
-    "Cool Reader",
-    "Sumatra PDF"
-  ],
+  "MimeTypes": [ "application/fb2+xml", "text/fb2+xml" ],
   "UseCases": [
-    "Document viewing",
-    "Reading",
-    "Publishing",
-    "Archival"
+    "Russian-language fiction eBook distribution",
+    "eBook library management and conversion",
+    "Digital publishing with rich metadata"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 3,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
+    "CompletenessScore": 52,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 4,
+    "ValidationRules": 1,
+    "LastUpdated": "2026-04-14",
     "PriorityFormat": false,
-    "AutoRefined": true
+    "AutoRefined": false
   },
   "TechnicalDetails": {
-    "DocumentFormat": true
-  },
-  "forensic": {
-    "category": "document",
-    "riskLevel": "medium",
-    "suspiciousPatterns": []
-  },
-  "aiHints": {
-    "analysisContext": "FictionBook 2.0 e-book format, XML-based format popular in Russia for fiction books",
-    "suggestedInspections": [
-      "Validate FictionBook 2.0 file signature and container structure",
-      "Check for embedded macros, scripts, or active content",
-      "Inspect document metadata: author, timestamps, revisions"
-    ]
+    "DocumentFormat": true,
+    "ContainerFormat": "XML",
+    "Encoding": "UTF-8 (most common), UTF-16, Windows-1251",
+    "SupportsCompression": true,
+    "Note": "Weak binary detection — XML-based format requires content inspection for FB2 identity"
   }
 }

@@ -196,7 +196,7 @@
     }
   ],
   "TechnicalDetails": {
-    "platform": ["Game Boy Advance", "Super Nintendo", "SNES", "GBA"],
+    "platform": "Game Boy Advance / Super Nintendo (SNES/GBA)",
     "bitsPerPixel": "2 / 4 / 8 (varies by mode)",
     "tileSize": "8x8 (standard); 16x16 for double-size GBA sprites",
     "encoding": {

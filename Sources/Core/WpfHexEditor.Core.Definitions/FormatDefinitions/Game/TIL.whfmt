@@ -188,7 +188,7 @@
     }
   ],
   "TechnicalDetails": {
-    "platform": ["RPG Maker 2000/2003", "Tiled Map Editor", "GameMaker Studio 1/2", "Custom retro/indie engines"],
+    "platform": "RPG Maker 2000/2003 / Tiled Map Editor / GameMaker Studio 1/2 / Custom retro engines",
     "bitsPerPixel": "2 / 4 / 8 (engine-dependent)",
     "tileSize": "8x8 (most common); 16x16, 32x32, 48x48 for some engines",
     "encoding": "Engine-dependent. Common: 2bpp MSB-first packed (NES-style), 4bpp nibble-packed (GBA-style), 8bpp linear (256-color)",

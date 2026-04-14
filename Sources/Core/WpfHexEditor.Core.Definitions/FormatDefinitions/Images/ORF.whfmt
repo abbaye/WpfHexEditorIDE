@@ -1,130 +1,195 @@
-﻿{
+{
   "diffMode": "binary",
-  "formatName": "Olympus Raw Image",
-  "version": "1.13",
+  "formatName": "Olympus RAW Format",
+  "version": "1.14",
   "extensions": [
     ".orf"
   ],
-  "description": "Olympus RAW Format camera image",
+  "description": "ORF (Olympus RAW Format) is Olympus's proprietary RAW camera image format used in Olympus and OM System DSLR/mirrorless cameras. ORF uses two TIFF byte order variants: 0x4F52 ('OR') for some Olympus cameras, and the standard TIFF 0x4949 ('II') little-endian with ORF-specific magic values 0x4952 or 0x4F52 or 0x524F instead of standard TIFF magic 42. The Olympus magic word distinguishes ORF from standard TIFF and other RAW formats. IFD0 contains standard EXIF tags plus Olympus MakerNote (tag 0x927C) starting with 'OLYMP\\x00' or 'OLYMPUS\\x00II'.",
   "category": "Images",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "image-viewer",
   "references": {
     "specifications": [
-      "Olympus RAW Format (ORF) - TIFF-based",
-      "ORF Digital Camera RAW Format",
-      "Olympus Proprietary RAW Image Format"
+      "Olympus RAW Format (ORF) — Modified TIFF",
+      "TIFF 6.0 Specification — Adobe Systems"
     ],
     "WebLinks": [
-      "http://fileformats.archiveteam.org/wiki/Olympus_ORF",
-      "https://en.wikipedia.org/wiki/ORF_format",
-      "https://learnandsupport.getolympus.com/learn-center/photography-tips/basics-of-photography/why-shoot-in-raw",
-      "https://www.aftershotpro.com/en/pages/orf-file/"
+      "https://libopenraw.freedesktop.org/formats/orf/",
+      "https://exiftool.org/TagNames/Olympus.html",
+      "https://docs.fileformat.com/image/orf/"
     ]
   },
   "detection": {
-    "signature": "49492A00",
-    "offset": 0,
+    "signatures": [
+      { "value": "49495249", "offset": 0, "label": "'IIRI' — Olympus ORF LE with magic 0x4952", "weight": 1.0 },
+      { "value": "49494F52", "offset": 0, "label": "'IIOR' — Olympus ORF variant magic 0x4F52", "weight": 1.0 },
+      { "value": "4F524F52", "offset": 0, "label": "'OROR' — older Olympus ORF magic", "weight": 0.9 },
+      { "value": "49492A00", "offset": 0, "label": "TIFF LE — some Olympus ORF use standard magic", "weight": 0.5 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.5,
     "required": true,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 4.5, "max": 7.5 },
     "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024
+      "minFileSize": 8,
+      "maxSignatureOffset": 0,
+      "note": "ORF has unique magic values 0x4952 or 0x4F52 instead of standard TIFF magic 42. Combined with .orf extension this is strong identification."
     }
   },
   "variables": {
-    "currentOffset": 0,
-    "width": 0,
-    "height": 0,
-    "totalPixels": 0,
-    "bitsPerPixel": 0,
-    "tiffHeader": 0
+    "byteOrderMark": 0,
+    "orfMagic": 0,
+    "ifdOffset": 0
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "TIFF Header",
+      "name": "Byte Order Mark",
       "offset": 0,
-      "length": 4,
+      "length": 2,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "ORF uses TIFF structure",
-      "storeAs": "tiffHeader",
-      "valueType": "uint32"
+      "opacity": 0.45,
+      "description": "TIFF/ORF byte order mark. Olympus ORF uses: 0x4949 ('II') = little-endian (standard TIFF, modern Olympus), 0x4F52 ('OR') = Olympus-specific variant (older cameras). Determines integer interpretation throughout the file.",
+      "storeAs": "byteOrderMark",
+      "valueType": "uint16",
+      "endianness": "little",
+      "valueMap": {
+        "18761": "Little-endian 'II' — modern Olympus ORF",
+        "20306": "'OR' byte order — older Olympus camera variant"
+      }
+    },
+    {
+      "type": "field",
+      "name": "ORF Magic",
+      "offset": 2,
+      "length": 2,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "Olympus RAW magic number. Unlike standard TIFF (magic=42), Olympus ORF uses proprietary magic values: 0x5249='RI', 0x524F='RO', or 0x4F52='OR'. Standard TIFF magic 42 is also used in some Olympus models.",
+      "storeAs": "orfMagic",
+      "valueType": "uint16",
+      "endianness": "little",
+      "valueMap": {
+        "42": "Standard TIFF magic — some Olympus models",
+        "18769": "ORF magic 0x4952 'RI'",
+        "20562": "ORF magic 0x4F52 'OR'",
+        "21071": "ORF magic 0x524F 'RO'"
+      }
+    },
+    {
+      "type": "field",
+      "name": "IFD0 Offset",
+      "offset": 4,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.35,
+      "description": "Byte offset to first Image File Directory (IFD0). Contains image width/height, EXIF pointer (tag 0x8769), and Olympus MakerNote (tag 0x927C).",
+      "storeAs": "ifdOffset",
+      "valueType": "uint32",
+      "endianness": "little"
     },
     {
       "type": "metadata",
-      "name": "Width",
-      "variable": "width",
-      "description": "Width"
+      "name": "Byte Order",
+      "variable": "byteOrderMark",
+      "description": "ORF byte order: 18761='II' LE, 20306='OR' Olympus"
     },
     {
       "type": "metadata",
-      "name": "Height",
-      "variable": "height",
-      "description": "Height"
-    },
-    {
-      "type": "metadata",
-      "name": "Total Pixels",
-      "variable": "totalPixels",
-      "description": "Total Pixels"
+      "name": "ORF Magic",
+      "variable": "orfMagic",
+      "description": "Olympus RAW magic: 42=TIFF std, 18769/20562/21071=ORF proprietary"
     }
   ],
-  "software": [
-    "Image viewers",
-    "GIMP"
+  "assertions": [
+    {
+      "name": "Byte order valid",
+      "expression": "byteOrderMark == 18761 || byteOrderMark == 20306",
+      "severity": "error",
+      "message": "ORF byte order must be 0x4949 ('II') or 0x4F52 ('OR')"
+    },
+    {
+      "name": "ORF or TIFF magic valid",
+      "expression": "orfMagic == 42 || orfMagic == 18769 || orfMagic == 20562 || orfMagic == 21071",
+      "severity": "warning",
+      "message": "ORF magic should be 42, 0x4952, 0x4F52, or 0x524F"
+    }
   ],
-  "formatRelationships": {
-    "category": "Images",
-    "extensions": [
-      ".orf"
+  "navigation": {
+    "bookmarks": [
+      { "name": "ORF Header", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" }
     ]
   },
-  "MimeTypes": [
-    "image/orf"
-  ],
-  "Software": [
-    "Photoshop",
-    "GIMP",
-    "Paint.NET",
-    "IrfanView",
-    "XnView"
-  ],
-  "UseCases": [
-    "Image viewing",
-    "Photo editing",
-    "Graphics design",
-    "Web publishing"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 4,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "orfMagic",
+    "primaryField": "byteOrderMark",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "ORF Header",
+        "icon": "\uE71B",
+        "fields": ["byteOrderMark", "orfMagic", "ifdOffset"]
+      }
+    ]
   },
-  "TechnicalDetails": {
-    "ImagesFormat": true,
-    "BitDepth": 8
-  },
-  "functions": {
-    "readUInt32LE": "Read dimensions",
-    "multiply": "Calculate pixels",
-    "computeFromVariables(width * height, totalPixels)": "Calculate total pixels"
-  },
+  "exportTemplates": [
+    {
+      "name": "ORF Header (JSON)",
+      "format": "json",
+      "fields": ["byteOrderMark", "orfMagic", "ifdOffset"]
+    }
+  ],
   "forensic": {
     "category": "image",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Olympus RAW Format camera image",
+    "analysisContext": "Olympus ORF: bytes 0-1=byteOrder(4949=II, 4F52=OR), bytes 2-3=magic(4952/4F52/524F or 2A00). IFD0 at offset 8. Key tags: 0x0100=Width, 0x0101=Height, 0x8769=ExifIFD, 0x927C=MakerNote. Olympus MakerNote starts with 'OLYMP\\x00' + self-contained TIFF IFD. RAW data in SubIFD (tag 0x014A).",
     "suggestedInspections": [
-      "Validate Olympus Raw Image signature, image dimensions, and color model",
-      "Check pixel data offset, compression type, and scanline alignment",
-      "Inspect color profile (ICC), EXIF metadata, and chunk CRCs"
+      "Check bytes 0-3: 4949+5249/4F52/524F = ORF specific magic combination",
+      "Olympus MakerNote (tag 0x927C) starts with 'OLYMP\\x00' — confirms ORF",
+      "SubIFD (tag 0x014A) offset points to 12-bit Bayer RAW sensor data"
     ]
+  },
+  "software": [
+    "Olympus Workspace",
+    "Adobe Lightroom / Camera Raw",
+    "Capture One",
+    "darktable",
+    "RawTherapee"
+  ],
+  "formatRelationships": {
+    "category": "Images",
+    "extensions": [".orf"],
+    "relatedFormats": ["TIFF", "DNG"],
+    "note": "ORF is used by Olympus (now OM System) cameras. Non-standard magic values distinguish ORF from other TIFF-based RAW formats. Can be converted to DNG with Adobe DNG Converter."
+  },
+  "MimeTypes": [
+    "image/x-olympus-orf",
+    "image/orf"
+  ],
+  "UseCases": [
+    "Olympus/OM System DSLR and mirrorless RAW capture",
+    "Micro Four Thirds camera RAW workflow",
+    "Photo editing with full RAW flexibility"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 65,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 5,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "ImageFormat": true,
+    "ContainerFormat": "Modified TIFF with Olympus proprietary magic values",
+    "Endianness": "little-endian or big-endian depending on camera",
+    "RawEncoding": "12-bit Bayer sensor data, lossless or uncompressed",
+    "OlympusMagicValues": "0x4952, 0x4F52, 0x524F (distinguishes from standard TIFF)"
   }
 }

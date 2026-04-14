@@ -1,121 +1,234 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "RealMedia",
-  "version": "1.13",
+  "version": "1.14",
   "extensions": [
     ".rm",
+    ".rmvb",
     ".ra"
   ],
-  "description": "RealMedia multimedia container format developed by RealNetworks",
+  "description": "RealMedia (.rm) — a proprietary multimedia container format developed by RealNetworks for streaming audio and video over the internet. The file begins with the 4-byte magic '.RMF' (0x2E524D46). The 18-byte RealMedia File Header (RMFF) contains: magic (4B), object size (4B BE), object version (2B BE, must be 0 or 1), file version (4B BE), number of headers (4B BE). Following the file header are PROP (Properties), MDPR (Media Properties per stream), CONT (Content Description, optional), and DATA (audio/video chunk data) objects, each identified by a 4-byte tag. RealVideo uses proprietary RV10-RV40 codecs; RealAudio uses Cook, ATRAC3, or SIPRO codecs. .rmvb (RealMedia Variable Bitrate) uses the same container with VBR encoding.",
   "category": "Video",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "RealMedia Container Format Specification",
-      "RealNetworks Proprietary Format",
-      "RealVideo and RealAudio Codec Container"
+      "RealMedia Container Format Specification — RealNetworks",
+      "RealMedia File Format (RMFF) — wiki.multimedia.cx"
     ],
     "WebLinks": [
       "https://en.wikipedia.org/wiki/RealMedia",
       "https://wiki.multimedia.cx/index.php/RealMedia",
-      "https://docs.fileformat.com/video/rm/",
-      "https://fileinfo.com/extension/rm"
+      "https://www.loc.gov/preservation/digital/formats/fdd/fdd000051.shtml"
     ]
   },
   "detection": {
-    "signature": "2E524D46",
-    "offset": 0,
+    "signatures": [
+      { "value": "2E524D46", "offset": 0, "label": "'.RMF' RealMedia File magic", "weight": 1.0 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 1.0,
     "required": true,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 4.0, "max": 7.5 },
     "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024
+      "minFileSize": 18,
+      "maxSignatureOffset": 0
     }
   },
   "variables": {
-    "machineType": "",
-    "sectionCount": 0,
-    "entryPoint": 0,
-    "rmfHeader": 0
+    "rmfMagic": "",
+    "objectSize": 0,
+    "objectVersion": 0,
+    "fileVersion": 0,
+    "numHeaders": 0
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "RMF Header",
+      "name": "RMF Magic",
       "offset": 0,
       "length": 4,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": ".RMF - RealMedia File header",
-      "storeAs": "rmfHeader",
-      "valueType": "uint32"
+      "opacity": 0.45,
+      "description": "RealMedia File magic '.RMF' (0x2E 0x52 0x4D 0x46). The leading dot (0x2E) and capital letters 'R', 'M', 'F' identify this as a RealMedia File Format container. This 4-byte signature is used for all RealMedia files including .rm (video+audio), .rmvb (variable bitrate), and .ra (audio only with RMFF header).",
+      "storeAs": "rmfMagic",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "RMF Object Size",
+      "offset": 4,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "Total size in bytes of the RMFF header object including magic and this size field (big-endian uint32). For standard RMFF version 0, this is always 18 (4+4+2+4+4). Version 1 may have a different size.",
+      "storeAs": "objectSize",
+      "valueType": "uint32",
+      "endianness": "big"
+    },
+    {
+      "type": "field",
+      "name": "Object Version",
+      "offset": 8,
+      "length": 2,
+      "color": "#95E1D3",
+      "opacity": 0.30,
+      "description": "Version of the RMFF header object (big-endian uint16). Must be 0 or 1. Version 0 = standard RealMedia. Version 1 = extended header.",
+      "storeAs": "objectVersion",
+      "valueType": "uint16",
+      "endianness": "big",
+      "valueMap": {
+        "0": "RMFF version 0 — standard RealMedia",
+        "1": "RMFF version 1 — extended"
+      }
+    },
+    {
+      "type": "field",
+      "name": "File Version",
+      "offset": 10,
+      "length": 4,
+      "color": "#FFE66D",
+      "opacity": 0.30,
+      "description": "Version of the file format (big-endian uint32). Common value: 0x00000000 (version 0). This is distinct from the object version and indicates the overall file format revision.",
+      "storeAs": "fileVersion",
+      "valueType": "uint32",
+      "endianness": "big"
+    },
+    {
+      "type": "field",
+      "name": "Number of Headers",
+      "offset": 14,
+      "length": 4,
+      "color": "#C7CEEA",
+      "opacity": 0.25,
+      "description": "Count of header objects following the RMFF header (big-endian uint32). Minimum 1 (PROP object). Typical: 4-6 (PROP + MDPR × streams + CONT + DATA).",
+      "storeAs": "numHeaders",
+      "valueType": "uint32",
+      "endianness": "big"
     },
     {
       "type": "metadata",
-      "name": "Machine",
-      "variable": "machineType",
-      "description": "Machine"
+      "name": "RMF Magic",
+      "variable": "rmfMagic",
+      "description": "RealMedia file magic '.RMF'"
     },
     {
       "type": "metadata",
-      "name": "Sections",
-      "variable": "sectionCount",
-      "description": "Sections"
+      "name": "Object Version",
+      "variable": "objectVersion",
+      "description": "RMFF object version (0 or 1)"
+    },
+    {
+      "type": "metadata",
+      "name": "Number of Headers",
+      "variable": "numHeaders",
+      "description": "Count of header objects (PROP + MDPR × N + CONT + DATA)"
     }
   ],
-  "software": [
-    "RealPlayer",
-    "VLC"
+  "assertions": [
+    {
+      "name": "RMF magic valid",
+      "expression": "rmfMagic == '.RMF'",
+      "severity": "error",
+      "message": "RealMedia magic must be '.RMF' (2E 52 4D 46) — not a valid RealMedia file"
+    },
+    {
+      "name": "Object version is 0 or 1",
+      "expression": "objectVersion == 0 || objectVersion == 1",
+      "severity": "warning",
+      "message": "RMFF object version must be 0 or 1 — unexpected version"
+    }
   ],
-  "formatRelationships": {
-    "category": "Video",
-    "extensions": [
-      ".rm",
-      ".ra"
+  "navigation": {
+    "bookmarks": [
+      {
+        "name": "RMFF Header",
+        "offset": 0,
+        "icon": "\uE71B",
+        "color": "#FF6B6B"
+      },
+      {
+        "name": "PROP Object (typical)",
+        "offset": 18,
+        "icon": "\uE8A5",
+        "color": "#4ECDC4"
+      }
     ]
   },
-  "MimeTypes": [
-    "video/rm"
-  ],
-  "Software": [
-    "VLC",
-    "Media Player Classic",
-    "HandBrake",
-    "FFmpeg",
-    "MPC-HC"
-  ],
-  "UseCases": [
-    "Video playback",
-    "Video editing",
-    "Encoding",
-    "Streaming"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 3,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "rmfMagic",
+    "primaryField": "numHeaders",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "RMFF Header",
+        "icon": "\uE71B",
+        "fields": ["rmfMagic", "objectSize", "objectVersion", "fileVersion", "numHeaders"]
+      }
+    ]
   },
-  "TechnicalDetails": {
-    "VideoFormat": true
-  },
-  "functions": {
-    "readUInt32LE": "Read executable header"
-  },
+  "exportTemplates": [
+    {
+      "name": "RealMedia Header (JSON)",
+      "format": "json",
+      "fields": ["rmfMagic", "objectSize", "objectVersion", "fileVersion", "numHeaders"]
+    }
+  ],
   "forensic": {
     "category": "video",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "RealMedia multimedia container format developed by RealNetworks",
+    "analysisContext": "RealMedia RMFF structure: '.RMF'(4B) + objectSize(4B BE) + objectVersion(2B BE, 0-1) + fileVersion(4B BE) + numHeaders(4B BE). Header objects follow: each with 4-byte tag + 4-byte size(BE) + 2-byte version + data. Object tags: 'PROP'(stream properties), 'MDPR'(media properties per stream), 'CONT'(content description), 'DATA'(chunk data start), 'INDX'(index). PROP fields: maxBitRate, avgBitRate, maxPacketSize, avgPacketSize, numPackets, duration(ms), preroll(ms), indexOffset, dataOffset, numStreams, flags. Each stream has an MDPR with stream type MIME (video/x-pn-realvideo, audio/x-pn-realaudio) and codec FourCC (RV10-RV40, cook, ATRC, sipr).",
     "suggestedInspections": [
-      "Validate RealMedia container magic, box/atom sizes, and codec FourCC",
-      "Check track/stream layout, frame index, and timing fields",
-      "Inspect audio-video sync, keyframe distribution, and metadata"
+      "Verify '.RMF' at offset 0 (2E 52 4D 46)",
+      "Read numHeaders at offset 14 (BE uint32) — typically 3-6",
+      "Find 'PROP' object at offset 18 for bitrate and duration",
+      "Find 'MDPR' objects for each stream's codec ID (MIME type)",
+      "Find 'DATA' object tag — marks start of audio/video chunk data"
     ]
+  },
+  "software": [
+    "RealPlayer (primary)",
+    "VLC media player",
+    "FFmpeg (rm demuxer)",
+    "MPC-HC",
+    "Media Player Classic"
+  ],
+  "formatRelationships": {
+    "category": "Video",
+    "extensions": [".rm", ".rmvb", ".ra"],
+    "relatedFormats": ["RMVB", "AVI", "MP4"],
+    "note": "RealMedia (.rm) uses fixed-bitrate streams; RMVB (RealMedia Variable Bitrate) uses VBR encoding. Both use the same RMFF container starting with '.RMF'. RealAudio (.ra) files may use RMFF or the older RealAudio 1.0 format starting with '.ra\\xFD' or '.RMF'. RealMedia dominated streaming video from 1997-2005."
+  },
+  "MimeTypes": [
+    "video/vnd.rn-realvideo",
+    "video/x-pn-realvideo",
+    "audio/vnd.rn-realaudio",
+    "application/vnd.rn-realmedia"
+  ],
+  "UseCases": [
+    "Legacy streaming video archives (late 1990s-2000s era)",
+    "Online video portals using RealPlayer",
+    "Historical streaming content archival"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 68,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 7,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "VideoFormat": true,
+    "ContainerFormat": "RealMedia File Format (RMFF)",
+    "Endianness": "big-endian (all multi-byte fields)",
+    "VideoCodecs": "RV10, RV20, RV30, RV40 (RealVideo)",
+    "AudioCodecs": "Cook, ATRAC3, Sipro, ACELP",
+    "Streaming": "Designed for real-time streaming over RTSP"
   }
 }

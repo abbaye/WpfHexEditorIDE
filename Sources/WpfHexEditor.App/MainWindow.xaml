@@ -176,7 +176,7 @@
                             </MenuItem.Icon>
                             <MenuItem Header="_Solution..." Click="OnNewSolution" InputGestureText="Ctrl+Shift+N">
                                 <MenuItem.Icon>
-                                    <TextBlock Text="&#xE8B7;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                    <TextBlock Text="&#xE8F1;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                                Foreground="{DynamicResource DockMenuForegroundBrush}"
                                                HorizontalAlignment="Center" VerticalAlignment="Center" />
                                 </MenuItem.Icon>
@@ -207,7 +207,7 @@
                             </MenuItem.Icon>
                             <MenuItem Header="_Solution/Project..." Click="OnOpenSolutionOrProject" InputGestureText="Ctrl+Shift+O">
                                 <MenuItem.Icon>
-                                    <TextBlock Text="&#xE8B7;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                    <TextBlock Text="&#xE8B5;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                                Foreground="{DynamicResource DockMenuForegroundBrush}"
                                                HorizontalAlignment="Center" VerticalAlignment="Center" />
                                 </MenuItem.Icon>
@@ -268,7 +268,7 @@
                         </MenuItem>
                         <MenuItem Header="Save _All" Click="OnSaveAll" InputGestureText="Ctrl+Shift+S">
                             <MenuItem.Icon>
-                                <TextBlock Text="&#xE792;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                <TextBlock Text="&#xE78C;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>
@@ -294,14 +294,14 @@
                             </MenuItem.Icon>
                             <MenuItem Header="_New Workspace…" Click="OnNewWorkspace">
                                 <MenuItem.Icon>
-                                    <TextBlock Text="&#xE8A5;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                    <TextBlock Text="&#xF16A;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                                Foreground="{DynamicResource DockMenuForegroundBrush}"
                                                HorizontalAlignment="Center" VerticalAlignment="Center" />
                                 </MenuItem.Icon>
                             </MenuItem>
                             <MenuItem Header="_Open Workspace…" Click="OnOpenWorkspace">
                                 <MenuItem.Icon>
-                                    <TextBlock Text="&#xE8B5;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                    <TextBlock Text="&#xE8A9;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                                Foreground="{DynamicResource DockMenuForegroundBrush}"
                                                HorizontalAlignment="Center" VerticalAlignment="Center" />
                                 </MenuItem.Icon>
@@ -346,7 +346,7 @@
                         <!-- Recent Files ► -->
                         <MenuItem x:Name="RecentFilesMenuItem" Header="Recent _Files">
                             <MenuItem.Icon>
-                                <TextBlock Text="&#xE8A5;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                <TextBlock Text="&#xE81C;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>
@@ -356,7 +356,7 @@
                         <Separator />
                         <MenuItem Header="E_xit" Click="OnExit" InputGestureText="Alt+F4">
                             <MenuItem.Icon>
-                                <TextBlock Text="&#xE8BB;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                <TextBlock Text="&#xE7E8;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>
@@ -474,7 +474,7 @@
                         </MenuItem>
                         <MenuItem Header="Format _Selection" Click="OnFormatSelection" InputGestureText="Ctrl+K, Ctrl+F">
                             <MenuItem.Icon>
-                                <TextBlock Text="&#xE70F;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                <TextBlock Text="&#xEF20;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>
@@ -525,14 +525,14 @@
                               IsEnabled="{Binding IsBuildMenuEnabled, ElementName=ThisWindow}">
                         <MenuItem Header="Build _Solution" Click="OnBuildSolution" InputGestureText="Ctrl+Shift+B">
                             <MenuItem.Icon>
-                                <TextBlock Text="&#xE8B1;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                <TextBlock Text="&#xE768;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>
                         </MenuItem>
                         <MenuItem Header="Build _Project" Click="OnBuildProject" InputGestureText="F7">
                             <MenuItem.Icon>
-                                <TextBlock Text="&#xE8B1;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                <TextBlock Text="&#xE768;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </MenuItem.Icon>

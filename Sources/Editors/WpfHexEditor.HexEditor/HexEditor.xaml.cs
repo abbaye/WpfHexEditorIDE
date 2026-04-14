@@ -94,6 +94,14 @@ namespace WpfHexEditor.HexEditor
         {
             InitializeComponent();
 
+            // Seed scrollbar brushes from the DP defaults so DynamicResource in the template
+            // has a value even when no App theme is loaded (standalone / designer mode).
+            // ApplyThemeFromResources() will overwrite these with the active theme colors later.
+            Resources["ScrollBarBrush"]          = new System.Windows.Media.SolidColorBrush(ScrollBarBackgroundColor);
+            Resources["ScrollBarThumbBrush"]     = new System.Windows.Media.SolidColorBrush(ScrollBarThumbColor);
+            Resources["ScrollBarThumbHoverBrush"] = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(0xA8, 0xA8, 0xA8));
+            Resources["ScrollBarThumbDragBrush"]  = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(0xC8, 0xC8, 0xC8));
+
             // Initialize custom background blocks system
             InitializeCustomBackgroundBlocks();
 
@@ -145,6 +153,14 @@ namespace WpfHexEditor.HexEditor
             {
                 RefreshColumnHeader();
                 ApplyThemeFromResources();
+
+                // Explicitly apply the App-level implicit ScrollBar style to VerticalScroll.
+                // WPF implicit style lookup walks the logical tree, but UserControl elements
+                // declared in XAML sometimes resolve before the control is fully integrated
+                // into the App's logical tree. Assigning explicitly here guarantees the
+                // themed style (from Docking/ContentControls.xaml) is applied after Loaded.
+                if (TryFindResource(typeof(System.Windows.Controls.Primitives.ScrollBar)) is Style sbStyle)
+                    VerticalScroll.Style = sbStyle;
 
                 // Wire window-level mouse handlers so auto-scroll continues when the mouse
                 // leaves the HexViewport boundary (e.g. into docking tabs or the title bar).

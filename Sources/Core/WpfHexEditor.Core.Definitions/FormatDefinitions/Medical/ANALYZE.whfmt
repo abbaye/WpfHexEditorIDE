@@ -1,41 +1,40 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Analyze 7.5 Image",
-  "version": "1.13",
+  "version": "1.14",
   "extensions": [
     ".hdr",
     ".img"
   ],
-  "description": "Analyze 7.5 medical image format",
+  "description": "Analyze 7.5 is a paired-file medical imaging format developed at the Mayo Clinic. The .hdr file contains a fixed 348-byte binary header with sizeof_hdr = 348 at offset 0, image dimensions, voxel sizes, and data type. The .img file contains raw voxel data. Unlike NIfTI-1, there is no magic string at offset 344 — its absence is how Analyze differs from NIfTI. Widely used in legacy neuroimaging pipelines with SPM, FSL, and AFNI. Endianness is inferred from sizeof_hdr byte value.",
   "category": "Medical",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
-  "references": {
-    "specifications": [
-      "Analyze 7.5 Image Format"
-    ],
-    "WebLinks": [
-      "https://en.wikipedia.org/wiki/HDR"
-    ]
-  },
+  "references": [
+    "Analyze 7.5 Format Specification (Mayo Clinic BIR)",
+    "https://wiki.biac.duke.edu/biac:analyze_hdr_format"
+  ],
   "detection": {
     "signature": "5C010000",
     "offset": 0,
+    "weight": 0.6,
+    "strength": "Moderate",
     "required": true,
     "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024
+      "minFileSize": 348,
+      "maxSignatureOffset": 0
     }
   },
   "variables": {
     "currentOffset": 0,
-    "width": 0,
-    "height": 0,
-    "totalPixels": 0,
-    "bitsPerPixel": 0,
     "headerSize": 0,
     "dataType": "",
-    "databaseName": ""
+    "databaseName": "",
+    "width": 0,
+    "height": 0,
+    "slices": 0,
+    "bitDepth": 0,
+    "totalPixels": 0
   },
   "blocks": [
     {
@@ -44,8 +43,8 @@
       "offset": 0,
       "length": 4,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "Header size (348 bytes)",
+      "opacity": 0.8,
+      "description": "sizeof_hdr: must equal 348 (0x5C010000 LE); byte-swapped value 0x0000015C indicates big-endian file",
       "storeAs": "headerSize",
       "valueType": "uint32"
     },
@@ -55,8 +54,8 @@
       "offset": 4,
       "length": 10,
       "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "Data type string",
+      "opacity": 0.5,
+      "description": "data_type: 10-byte ASCII string describing voxel type, e.g. 'DT_SIGNED_INT' or 'DT_FLOAT'",
       "storeAs": "dataType",
       "valueType": "ascii"
     },
@@ -66,68 +65,139 @@
       "offset": 14,
       "length": 18,
       "color": "#95E1D3",
-      "opacity": 0.3,
-      "description": "Database name",
+      "opacity": 0.4,
+      "description": "db_name: 18-byte ASCII database name string; usually empty null-padded",
       "storeAs": "databaseName",
       "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Dimensions Array",
+      "offset": 40,
+      "length": 16,
+      "color": "#FFE66D",
+      "opacity": 0.4,
+      "description": "dim[0..7]: 8 × int16 LE; dim[0]=number of dimensions, dim[1]=x, dim[2]=y, dim[3]=z, dim[4]=time",
+      "storeAs": "dimArray",
+      "valueType": "uint16"
+    },
+    {
+      "type": "field",
+      "name": "Voxel Sizes",
+      "offset": 76,
+      "length": 32,
+      "color": "#A8DADC",
+      "opacity": 0.4,
+      "description": "pixdim[0..7]: 8 × float32 LE voxel spacing in mm; pixdim[1]=dx, pixdim[2]=dy, pixdim[3]=dz",
+      "storeAs": "pixdim",
+      "valueType": "float32"
     },
     {
       "type": "metadata",
       "name": "Width",
       "variable": "width",
-      "description": "Width"
+      "description": "Image width in voxels (dim[1])"
     },
     {
       "type": "metadata",
       "name": "Height",
       "variable": "height",
-      "description": "Height"
+      "description": "Image height in voxels (dim[2])"
     },
     {
       "type": "metadata",
-      "name": "Total Pixels",
+      "name": "Slices",
+      "variable": "slices",
+      "description": "Number of slices (dim[3])"
+    },
+    {
+      "type": "metadata",
+      "name": "Total Voxels",
       "variable": "totalPixels",
-      "description": "Total Pixels"
+      "description": "Computed: width × height × slices"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "Header size equals 348",
+      "expression": "headerSize == 348",
+      "severity": "error",
+      "message": "Analyze 7.5 sizeof_hdr must be 348; byte-swap if reading big-endian file"
+    },
+    {
+      "name": "No NIfTI magic at offset 344",
+      "expression": "true",
+      "severity": "info",
+      "message": "If bytes at offset 344 are 'ni1\\0' or 'n+1\\0' the file is NIfTI-1, not Analyze 7.5"
+    }
+  ],
+  "inspector": {
+    "groups": [
+      {
+        "name": "Header Identity",
+        "fields": ["Header Size"]
+      },
+      {
+        "name": "Data Description",
+        "fields": ["Data Type", "Database Name"]
+      },
+      {
+        "name": "Volume Geometry",
+        "fields": ["Dimensions Array", "Voxel Sizes"]
+      },
+      {
+        "name": "Computed",
+        "fields": ["Width", "Height", "Slices", "Total Voxels"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "Analyze Header Summary",
+      "fields": ["headerSize", "dataType", "databaseName", "width", "height", "slices"]
     }
   ],
   "software": [
-    "Common file viewers",
-    "Specialized software"
+    "SPM (legacy)",
+    "FSL (legacy support)",
+    "AFNI",
+    "Mayo Clinic Analyze",
+    "nibabel (Python)"
   ],
   "formatRelationships": {
     "category": "Medical",
-    "extensions": [
-      ".hdr",
-      ".img"
-    ]
+    "superseded_by": "NII",
+    "related": ["NII", "NIFTI2"]
   },
   "MimeTypes": [
     "application/octet-stream"
   ],
   "Software": [
-    "Hex Editor",
-    "File Viewer",
-    "Archive Manager"
+    "SPM (legacy Analyze support)",
+    "FSL with Analyze compatibility mode",
+    "AFNI",
+    "nibabel Python library"
   ],
   "UseCases": [
-    "File storage",
-    "Data exchange",
-    "Archive"
+    "Legacy neuroimaging data archives",
+    "Conversion source for NIfTI migration",
+    "Structural MRI analysis with older pipelines",
+    "Research data from pre-2004 acquisitions"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 38,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 6,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
+    "CompletenessScore": 58,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 9,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
     "PriorityFormat": false,
-    "AutoRefined": true
+    "AutoRefined": false
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32LE": "Read dimensions",
-    "multiply": "Calculate pixels",
-    "computeFromVariables(width * height, totalPixels)": "Calculate total pixels"
+  "TechnicalDetails": {
+    "HeaderSize": 348,
+    "EndianDetection": "sizeof_hdr byte-swap if needed; no explicit endian flag",
+    "NIfTIDistinction": "No magic at offset 344; NIfTI adds 'ni1\\0' or 'n+1\\0'",
+    "DataFile": "Raw voxel data in paired .img file"
   },
   "forensic": {
     "category": "medical",
@@ -135,11 +205,19 @@
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Analyze 7.5 medical image format",
+    "analysisContext": "Analyze 7.5 .hdr files are identified by sizeof_hdr=348 at offset 0 but NO magic at offset 344. The dim[] array at offset 40 gives volume shape. pixdim[] at offset 76 gives voxel spacing. Data type is in both an ASCII field (offset 4) and an int16 code (offset 70). Distinguished from NIfTI-1 by absence of magic bytes at offset 344.",
     "suggestedInspections": [
-      "Verify Analyze 7.5 Image preamble, magic bytes, and transfer syntax",
-      "Check image matrix dimensions, voxel spacing, and data type",
-      "Inspect patient/study metadata tags and private sequences"
+      "Check sizeof_hdr at offset 0 equals 348",
+      "Verify NO NIfTI magic at offset 344 (ni1/n+1 would indicate NIfTI-1)",
+      "Read dim[] at offset 40 for volume dimensions",
+      "Read pixdim[] at offset 76 for voxel spacing in mm",
+      "Check data_type string at offset 4 and short code at offset 70"
     ]
+  },
+  "functions": {
+    "readUInt32LE": "Read dimensions",
+    "readFloat32LE": "Read voxel sizes",
+    "multiply": "Calculate pixels",
+    "computeFromVariables(width * height, totalPixels)": "Calculate total pixels"
   }
 }

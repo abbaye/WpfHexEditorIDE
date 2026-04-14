@@ -1,104 +1,192 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Digital Negative",
-  "version": "1.13",
+  "version": "1.14",
   "extensions": [
     ".dng"
   ],
-  "description": "Adobe Digital Negative RAW format",
+  "description": "DNG (Digital Negative) is an open RAW image format created by Adobe in 2004 to provide a universal, archival-quality RAW container. DNG is a strict extension of TIFF 6.0 with additional private IFD tags defined in the DNG specification. The header follows TIFF: byte order mark (II=LE or MM=BE), TIFF magic 42, IFD0 offset. DNG-specific tags: 0xC612=DNGVersion (4-byte major.minor.patch.build), 0xC613=DNGBackwardVersion, 0xC614=UniqueCameraModel, 0xC621=ColorMatrix1, 0xC622=ColorMatrix2 (color calibration matrices), 0xC634=DNGPrivateData (manufacturer private data), 0xC715=PreviewApplicationName. DNG SubIFDs contain the actual RAW sensor data (usually CFA=Color Filter Array pattern). DNG versions: 1.0 (2004), 1.1, 1.2, 1.3, 1.4 (2012, floating point RAW), 1.5 (2017, depth maps), 1.6 (2020).",
   "category": "Images",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "image-viewer",
   "references": {
     "specifications": [
-      "Adobe Digital Negative (DNG) Specification v1.7.0.0",
-      "DNG Format - TIFF/EP Extension",
-      "ISO 12234-4 Digital Negative Format"
+      "Adobe DNG Specification 1.6.0.0",
+      "TIFF 6.0 Specification — Adobe Systems",
+      "EXIF 2.32 Specification — CIPA DC-008"
     ],
     "WebLinks": [
-      "https://helpx.adobe.com/content/dam/help/en/photoshop/pdf/DNG_Spec_1_7_0_0.pdf",
-      "https://helpx.adobe.com/camera-raw/digital-negative.html",
-      "https://www.loc.gov/preservation/digital/formats/fdd/fdd000628.shtml",
-      "https://en.wikipedia.org/wiki/Digital_Negative"
+      "https://helpx.adobe.com/camera-raw/using/adobe-dng-converter.html",
+      "https://helpx.adobe.com/content/dam/help/en/photoshop/pdf/dng_spec_1_6_0_0.pdf",
+      "https://www.loc.gov/preservation/digital/formats/fdd/fdd000188.shtml"
     ]
   },
   "detection": {
-    "signature": "49492A00",
-    "offset": 0,
+    "signatures": [
+      { "value": "49492A00", "offset": 0, "label": "TIFF LE header — DNG little-endian", "weight": 0.6 },
+      { "value": "4D4D002A", "offset": 0, "label": "TIFF BE header — DNG big-endian (rare)", "weight": 0.6 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.6,
     "required": true,
+    "Strength": "Medium",
+    "EntropyHint": { "min": 4.5, "max": 7.5 },
     "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024
+      "minFileSize": 8,
+      "maxSignatureOffset": 0,
+      "note": "DNG uses TIFF magic shared with many formats. DNG tag 0xC612 (DNGVersion) in IFD0 uniquely identifies DNG. Extension (.dng) combined with TIFF magic is the primary detection method."
     }
   },
   "variables": {
-    "currentOffset": 0,
-    "tiffHeader": 0
+    "byteOrderMark": 0,
+    "tiffMagic": 0,
+    "ifdOffset": 0
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "TIFF Header",
+      "name": "Byte Order Mark",
       "offset": 0,
-      "length": 4,
+      "length": 2,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "DNG uses TIFF structure",
-      "storeAs": "tiffHeader",
-      "valueType": "uint32"
+      "opacity": 0.45,
+      "description": "TIFF byte order indicator: 0x4949 ('II') = little-endian, 0x4D4D ('MM') = big-endian. DNG files are typically little-endian when converted from Canon/Nikon/Sony, but some cameras produce big-endian DNG (Hasselblad, some Phase One). The byte order governs all multi-byte integer interpretation throughout the TIFF/DNG structure.",
+      "storeAs": "byteOrderMark",
+      "valueType": "uint16",
+      "endianness": "little",
+      "valueMap": {
+        "18761": "Little-endian 'II' (Intel) — most DNG files",
+        "19789": "Big-endian 'MM' (Motorola) — some medium format cameras"
+      }
+    },
+    {
+      "type": "field",
+      "name": "TIFF Magic",
+      "offset": 2,
+      "length": 2,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "TIFF version magic: 42 (0x002A) = standard TIFF used by all DNG versions. BigTIFF (magic 43) is not used in any released DNG specification version.",
+      "storeAs": "tiffMagic",
+      "valueType": "uint16",
+      "endianness": "little"
+    },
+    {
+      "type": "field",
+      "name": "IFD0 Offset",
+      "offset": 4,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.35,
+      "description": "Byte offset to first Image File Directory (IFD0). Typically 8 in DNG files. IFD0 contains standard TIFF tags (image dimensions, photometric interpretation) and all DNG-specific private tags (0xC612-0xC7xx).",
+      "storeAs": "ifdOffset",
+      "valueType": "uint32",
+      "endianness": "little"
+    },
+    {
+      "type": "metadata",
+      "name": "Byte Order",
+      "variable": "byteOrderMark",
+      "description": "TIFF byte order: 18761='II' LE, 19789='MM' BE"
+    },
+    {
+      "type": "metadata",
+      "name": "IFD0 Offset",
+      "variable": "ifdOffset",
+      "description": "Offset to first IFD (contains DNGVersion tag 0xC612)"
     }
   ],
-  "software": [
-    "Image viewers",
-    "GIMP"
+  "assertions": [
+    {
+      "name": "TIFF byte order valid",
+      "expression": "byteOrderMark == 18761 || byteOrderMark == 19789",
+      "severity": "error",
+      "message": "DNG byte order must be 0x4949 (II) or 0x4D4D (MM)"
+    },
+    {
+      "name": "TIFF magic 42",
+      "expression": "tiffMagic == 42",
+      "severity": "error",
+      "message": "DNG TIFF magic must be 42 at offset 2"
+    }
   ],
-  "formatRelationships": {
-    "category": "Images",
-    "extensions": [
-      ".dng"
+  "navigation": {
+    "bookmarks": [
+      { "name": "TIFF/DNG Header", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" }
     ]
   },
-  "MimeTypes": [
-    "image/dng"
-  ],
-  "Software": [
-    "Photoshop",
-    "GIMP",
-    "Paint.NET",
-    "IrfanView",
-    "XnView"
-  ],
-  "UseCases": [
-    "Image viewing",
-    "Photo editing",
-    "Graphics design",
-    "Web publishing"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 1,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "byteOrderMark",
+    "primaryField": "ifdOffset",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "DNG/TIFF Header",
+        "icon": "\uE71B",
+        "fields": ["byteOrderMark", "tiffMagic", "ifdOffset"]
+      }
+    ]
   },
-  "TechnicalDetails": {
-    "ImagesFormat": true,
-    "BitDepth": 8
-  },
-  "functions": {},
+  "exportTemplates": [
+    {
+      "name": "DNG Header (JSON)",
+      "format": "json",
+      "fields": ["byteOrderMark", "tiffMagic", "ifdOffset"]
+    }
+  ],
   "forensic": {
     "category": "image",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Adobe Digital Negative RAW format",
+    "analysisContext": "DNG is TIFF 6.0 + Adobe private tags. Header: byteOrder(2)+magic42(2,LE)+ifdOffset(4,LE). IFD0 required DNG tags: 0xC612=DNGVersion (4B: major.minor.patch.build e.g. 01 04 00 00 = DNG 1.4), 0xC613=DNGBackwardVersion, 0xC614=UniqueCameraModel (string). Color calibration: 0xC621=ColorMatrix1 (3x3 rational, D50), 0xC622=ColorMatrix2 (D65). RAW data: in SubIFD (tag 0x014A) with CFAPattern(0x828E), CFAPlaneColor(0xC616). Lossless JPEG compression (code 34892) or uncompressed (code 1). Active area: 0xC68D=ActiveArea. Preview: standard TIFF thumbnail in IFD1.",
     "suggestedInspections": [
-      "Validate Digital Negative signature, image dimensions, and color model",
-      "Check pixel data offset, compression type, and scanline alignment",
-      "Inspect color profile (ICC), EXIF metadata, and chunk CRCs"
+      "Read IFD0 at offset 8: find tag 0xC612 (DNGVersion) for DNG spec version",
+      "Tag 0xC614 (UniqueCameraModel) identifies originating camera",
+      "SubIFD (tag 0x014A) contains the actual RAW sensor data",
+      "Tags 0xC621/0xC622 (ColorMatrix1/2) are color calibration for accurate reproduction"
     ]
+  },
+  "software": [
+    "Adobe Lightroom / Camera Raw / DNG Converter",
+    "Capture One",
+    "darktable",
+    "RawTherapee",
+    "ExifTool",
+    "dcraw"
+  ],
+  "formatRelationships": {
+    "category": "Images",
+    "extensions": [".dng"],
+    "relatedFormats": ["TIFF", "CR2", "CR3", "NEF", "ARW", "ORF"],
+    "note": "DNG is an open standard designed to replace proprietary RAW formats. Adobe DNG Converter converts CR2, NEF, ARW, ORF, RAF, and most other RAW formats to DNG. iOS 14+ and some Android cameras (Leica, Google Pixel) natively produce DNG."
+  },
+  "MimeTypes": [
+    "image/x-adobe-dng",
+    "image/dng"
+  ],
+  "UseCases": [
+    "Universal RAW archival format (replaces proprietary formats)",
+    "iOS and Android native RAW capture",
+    "Digital asset management with long-term RAW preservation",
+    "Color calibration target storage and ICC profile embedding"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 62,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 5,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "ImageFormat": true,
+    "ContainerFormat": "TIFF 6.0 with Adobe DNG private tags (0xC612-0xC7xx)",
+    "Endianness": "little-endian (typical) or big-endian",
+    "Compression": "Lossless JPEG (34892), JPEG-2000 (34713), or uncompressed (1)",
+    "BitDepth": "8, 16, 32-bit (floating point in DNG 1.4+)",
+    "DNGVersions": "1.0 (2004), 1.1, 1.2, 1.3, 1.4 (float), 1.5 (depth), 1.6 (2020)"
   }
 }

@@ -1,130 +1,188 @@
-﻿{
+{
   "diffMode": "binary",
-  "formatName": "Fujifilm Raw Image",
-  "version": "1.13",
+  "formatName": "Fujifilm RAW",
+  "version": "1.14",
   "extensions": [
     ".raf"
   ],
-  "description": "Fujifilm RAW camera image",
+  "description": "RAF (RAW Fujifilm) is Fujifilm's proprietary RAW camera image format used in Fujifilm X-series, GFX, and FinePix cameras. Unlike most RAW formats, RAF does NOT use TIFF structure. RAF starts with a unique 16-byte ASCII header: 'FUJIFILMCCD-RAW ' (hex: 46 55 4A 49 46 49 4C 4D 43 43 44 2D 52 41 57 20). After the 16-byte magic, a 4-byte ASCII format version string follows (e.g., '0201'). At offset 20: a 32-byte null-padded ASCII camera model string. The JPEG preview and RAW sensor data are found via a directory at offset 84. Fujifilm X-Trans uses a unique 6x6 pixel repeating color filter array instead of the standard Bayer 2x2 pattern, requiring specialized demosaicing algorithms.",
   "category": "Images",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "image-viewer",
   "references": {
     "specifications": [
-      "Fujifilm RAF (RAW Image File) Format",
-      "RAF Proprietary Camera Format",
-      "Fuji RAW Image Specification"
+      "Fujifilm RAF RAW Format — proprietary non-TIFF",
+      "Fujifilm X-Trans CFA Documentation"
     ],
     "WebLinks": [
       "https://libopenraw.freedesktop.org/formats/raf/",
-      "https://docs.fileformat.com/image/raf/",
-      "http://fileformats.archiveteam.org/wiki/Fujifilm_RAF",
-      "https://www.paintshoppro.com/en/pages/raf-file/"
+      "https://exiftool.org/TagNames/FujiFilm.html",
+      "https://www.rawdigger.com/howtouse/fuji-raf-format"
     ]
   },
   "detection": {
-    "signature": "46554A4946494C4D",
-    "offset": 0,
+    "signatures": [
+      { "value": "46554A4946494C4D43434452415720", "offset": 0, "label": "'FUJIFILMCCD-RAW ' — Fujifilm RAF 15-byte magic", "weight": 1.0 },
+      { "value": "46554A4946494C4D", "offset": 0, "label": "'FUJIFILM' — RAF first 8 bytes", "weight": 0.9 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.9,
     "required": true,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 4.5, "max": 7.5 },
     "validation": {
-      "minFileSize": 8,
-      "maxSignatureOffset": 1024
+      "minFileSize": 84,
+      "maxSignatureOffset": 0,
+      "note": "RAF has a completely unique ASCII header 'FUJIFILMCCD-RAW ' — NOT TIFF-based."
     }
   },
   "variables": {
-    "currentOffset": 0,
-    "width": 0,
-    "height": 0,
-    "totalPixels": 0,
-    "bitsPerPixel": 0,
-    "rafSignature": ""
+    "rafMagic": "",
+    "rafVersion": "",
+    "cameraModel": ""
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "RAF Signature",
+      "name": "RAF Magic Header",
       "offset": 0,
-      "length": 8,
+      "length": 16,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "FUJIFILM signature",
-      "storeAs": "rafSignature",
+      "opacity": 0.45,
+      "description": "Fujifilm RAF unique 16-byte ASCII magic: 'FUJIFILMCCD-RAW ' (46 55 4A 49 46 49 4C 4D 43 43 44 2D 52 41 57 20). The trailing space (0x20) at byte 15 is part of the magic and must be present. This header is completely unique to Fujifilm RAF and does not overlap with any TIFF-based format.",
+      "storeAs": "rafMagic",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Format Version",
+      "offset": 16,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "4-byte ASCII format version string identifying the RAF format variant. '0100'=v1.0 (older FinePix), '0201'=v2.1 (X-series, most common), '0300'=v3.0 (newer X/GFX cameras).",
+      "storeAs": "rafVersion",
+      "valueType": "ascii",
+      "valueMap": {
+        "0100": "RAF v1.0 — older Fujifilm FinePix cameras",
+        "0201": "RAF v2.1 — Fujifilm X-series (most common)",
+        "0300": "RAF v3.0 — newer X-series/GFX cameras"
+      }
+    },
+    {
+      "type": "field",
+      "name": "Camera Model",
+      "offset": 20,
+      "length": 32,
+      "color": "#95E1D3",
+      "opacity": 0.35,
+      "description": "ASCII camera model string null-padded to 32 bytes, e.g., 'X-T3', 'X100V', 'GFX 100S'. Uniquely identifies the Fujifilm camera that captured the RAW file.",
+      "storeAs": "cameraModel",
       "valueType": "ascii"
     },
     {
       "type": "metadata",
-      "name": "Width",
-      "variable": "width",
-      "description": "Width"
+      "name": "RAF Magic",
+      "variable": "rafMagic",
+      "description": "'FUJIFILMCCD-RAW ' — Fujifilm RAF unique identifier"
     },
     {
       "type": "metadata",
-      "name": "Height",
-      "variable": "height",
-      "description": "Height"
+      "name": "Format Version",
+      "variable": "rafVersion",
+      "description": "RAF format version (e.g., '0201')"
     },
     {
       "type": "metadata",
-      "name": "Total Pixels",
-      "variable": "totalPixels",
-      "description": "Total Pixels"
+      "name": "Camera Model",
+      "variable": "cameraModel",
+      "description": "Fujifilm camera model (e.g., 'X-T3', 'GFX 100S')"
     }
   ],
-  "software": [
-    "Image viewers",
-    "GIMP"
+  "assertions": [
+    {
+      "name": "RAF magic valid",
+      "expression": "rafMagic == 'FUJIFILMCCD-RAW '",
+      "severity": "error",
+      "message": "RAF must start with 'FUJIFILMCCD-RAW ' — not a valid Fujifilm RAF file"
+    }
   ],
-  "formatRelationships": {
-    "category": "Images",
-    "extensions": [
-      ".raf"
+  "navigation": {
+    "bookmarks": [
+      { "name": "RAF Header", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
+      { "name": "Camera Model", "offset": 20, "icon": "\uE8A5", "color": "#95E1D3" }
     ]
   },
-  "MimeTypes": [
-    "image/raf"
-  ],
-  "Software": [
-    "Photoshop",
-    "GIMP",
-    "Paint.NET",
-    "IrfanView",
-    "XnView"
-  ],
-  "UseCases": [
-    "Image viewing",
-    "Photo editing",
-    "Graphics design",
-    "Web publishing"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 4,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "rafVersion",
+    "primaryField": "cameraModel",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "RAF Header",
+        "icon": "\uE71B",
+        "fields": ["rafMagic", "rafVersion", "cameraModel"]
+      }
+    ]
   },
-  "TechnicalDetails": {
-    "ImagesFormat": true,
-    "BitDepth": 8
-  },
-  "functions": {
-    "readUInt32LE": "Read dimensions",
-    "multiply": "Calculate pixels",
-    "computeFromVariables(width * height, totalPixels)": "Calculate total pixels"
-  },
+  "exportTemplates": [
+    {
+      "name": "RAF Header (JSON)",
+      "format": "json",
+      "fields": ["rafMagic", "rafVersion", "cameraModel"]
+    }
+  ],
   "forensic": {
     "category": "image",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Fujifilm RAW camera image",
+    "analysisContext": "Fujifilm RAF is NOT TIFF-based. Layout: magic(16,ASCII='FUJIFILMCCD-RAW ')+version(4,ASCII)+model(32,ASCII)+padding(32). At offset 84: directory with 3 entries (8B each: offset+length, 4B BE each) for JPEG preview, CFA RAW data, and EXIF data. RAW sensor: 12-bit Bayer (older) or 14-bit X-Trans 6x6 CFA (X-series). X-Trans 6x6 pattern requires non-standard demosaicing. RAF uses big-endian for directory offsets.",
     "suggestedInspections": [
-      "Validate Fujifilm Raw Image signature, image dimensions, and color model",
-      "Check pixel data offset, compression type, and scanline alignment",
-      "Inspect color profile (ICC), EXIF metadata, and chunk CRCs"
+      "Verify 'FUJIFILMCCD-RAW ' at offset 0 (16 bytes ASCII including trailing space)",
+      "Version at offset 16 (4 bytes): '0201' = X-series, '0300' = newer GFX/X cameras",
+      "Camera model at offset 20 (32 bytes ASCII, null-padded)",
+      "Directory at offset 84: 3x (offset(4B BE)+length(4B BE)) for JPEG/RAW/EXIF"
     ]
+  },
+  "software": [
+    "Fujifilm X RAW STUDIO",
+    "Adobe Lightroom / Camera Raw",
+    "Capture One",
+    "darktable",
+    "RawTherapee",
+    "ExifTool"
+  ],
+  "formatRelationships": {
+    "category": "Images",
+    "extensions": [".raf"],
+    "relatedFormats": ["DNG"],
+    "note": "RAF is unique among camera RAW formats — not TIFF-based. Fujifilm X-Trans 6x6 CFA requires special demosaicing. Adobe DNG Converter can convert RAF to DNG."
+  },
+  "MimeTypes": [
+    "image/x-fujifilm-raf",
+    "image/raf"
+  ],
+  "UseCases": [
+    "Fujifilm X-series and GFX camera RAW capture",
+    "X-Trans CFA sensor RAW processing",
+    "Professional photography with Fujifilm film simulation"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 68,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 6,
+    "ValidationRules": 1,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "ImageFormat": true,
+    "ContainerFormat": "Proprietary Fujifilm RAF (NOT TIFF-based)",
+    "Endianness": "big-endian for directory offsets; RAW data varies",
+    "RawEncoding": "12-bit Bayer (older) or 14-bit X-Trans 6x6 CFA (X-series)",
+    "CFAPattern": "X-Trans 6x6 repeating pattern (unique to Fujifilm)"
   }
 }

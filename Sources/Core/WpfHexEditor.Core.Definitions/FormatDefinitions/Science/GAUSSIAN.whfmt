@@ -1,36 +1,42 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Gaussian Cube File",
-  "version": "1.14",
+  "version": "1.15",
   "extensions": [
     ".cube",
     ".cub"
   ],
-  "description": "Gaussian volumetric data cube format",
+  "description": "Gaussian Cube format is a plain-text volumetric data format originating from the Gaussian quantum chemistry software. It stores 3D scalar fields such as electron density, electrostatic potential, molecular orbitals, and spin density on a regular Cartesian grid. The file begins with two free-form comment lines, followed by an origin/atom-count line, three axis-vector lines (NA, x1 x2 x3; NB, y1 y2 y3; NC, z1 z2 z3), and one line per atom with Z number and position. The volumetric data follows as space-separated float values in row-major order. Positive atom count = Bohr units; negative = Angstrom. Widely used in computational chemistry for orbital visualization tools like VMD, Avogadro, and Vesta.",
   "category": "Science",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
-  "references": {
-    "specifications": [
-      "Gaussian Cube File Format"
-    ],
-    "WebLinks": [
-      "https://en.wikipedia.org/wiki/CUBE"
-    ]
-  },
+  "references": [
+    "Gaussian 16 Cube File Format Documentation",
+    "Cubegen utility manual — Gaussian Inc."
+  ],
+  "WebLinks": [
+    "https://gaussian.com/cubegen/",
+    "https://en.wikipedia.org/wiki/Gaussian_(software)"
+  ],
   "detection": {
     "signature": "00",
     "offset": 0,
     "required": false,
+    "weight": 0.2,
     "validation": {
-      "minFileSize": 1,
-      "maxSignatureOffset": 1024
+      "minFileSize": 60,
+      "maxSignatureOffset": 0
     }
   },
   "variables": {
     "currentOffset": 0,
     "commentLine1": "",
-    "commentLine2": ""
+    "commentLine2": "",
+    "originLine": "",
+    "atomCount": 0,
+    "nx": 0,
+    "ny": 0,
+    "nz": 0
   },
   "blocks": [
     {
@@ -39,8 +45,8 @@
       "offset": 0,
       "length": 80,
       "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "First comment line",
+      "opacity": 0.4,
+      "description": "First free-form comment line describing the volumetric data content, e.g. 'Electron density from SCF calculation' or orbital label; not parsed structurally",
       "storeAs": "commentLine1",
       "valueType": "ascii"
     },
@@ -50,58 +56,140 @@
       "offset": 80,
       "length": 80,
       "color": "#95E1D3",
-      "opacity": 0.3,
-      "description": "Second comment line",
+      "opacity": 0.35,
+      "description": "Second free-form comment line, often used for calculation method, basis set, or additional descriptive text identifying the quantum chemistry calculation",
       "storeAs": "commentLine2",
       "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Origin / Atom Count Line",
+      "offset": 160,
+      "length": 80,
+      "color": "#FF6B6B",
+      "opacity": 0.5,
+      "description": "Third line: integer atom count (negative = Angstrom units; positive = Bohr) followed by three floats for the grid origin X, Y, Z coordinates in Bohr or Angstrom",
+      "storeAs": "originLine",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "X-Axis Vector Line",
+      "offset": 240,
+      "length": 80,
+      "color": "#FFE66D",
+      "opacity": 0.35,
+      "description": "Fourth line: integer number of voxels along X (NA) followed by three floats for the X-axis step vector in Bohr; NA negative indicates angstrom unit for this axis",
+      "storeAs": "xAxisLine",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Y/Z-Axis Vector Lines",
+      "offset": 320,
+      "length": 160,
+      "color": "#A8E6CF",
+      "opacity": 0.3,
+      "description": "Fifth and sixth lines: number of voxels and step vectors for Y and Z axes; together with the X line they define the complete 3D grid geometry",
+      "storeAs": "yzAxisLines",
+      "valueType": "ascii"
+    },
+    {
+      "type": "metadata",
+      "name": "Atom Count",
+      "variable": "atomCount",
+      "description": "Number of atoms in the molecule (absolute value of integer in the origin line)"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "MinimumCubeFileSize",
+      "description": "A valid Gaussian Cube file must have at least 6 header lines before atom and data records; files under 480 bytes cannot contain a meaningful Cube header",
+      "minFileSize": 480,
+      "severity": "warning"
+    },
+    {
+      "name": "NumericOriginLine",
+      "description": "Line 3 must begin with an integer (atom count) followed by three floating-point numbers for the grid origin; non-numeric content indicates a malformed Cube file",
+      "offset": 160,
+      "length": 10,
+      "severity": "info"
+    }
+  ],
+  "inspector": {
+    "groups": [
+      {
+        "name": "Header Lines",
+        "fields": [
+          { "label": "Comment 1",          "offset": 0,   "length": 80, "format": "ascii" },
+          { "label": "Comment 2",          "offset": 80,  "length": 80, "format": "ascii" },
+          { "label": "Origin / Atom Count","offset": 160, "length": 80, "format": "ascii" },
+          { "label": "X-Axis Vector",      "offset": 240, "length": 80, "format": "ascii" },
+          { "label": "Y-Axis Vector",      "offset": 320, "length": 80, "format": "ascii" },
+          { "label": "Z-Axis Vector",      "offset": 400, "length": 80, "format": "ascii" }
+        ]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "Cube File Header",
+      "fields": ["commentLine1", "commentLine2", "originLine", "xAxisLine"]
     }
   ],
   "software": [
-    "Common file viewers",
-    "Specialized software"
+    "Gaussian",
+    "ORCA",
+    "NWChem",
+    "VMD",
+    "VESTA",
+    "Avogadro",
+    "Multiwfn"
   ],
   "formatRelationships": {
-    "category": "Science",
-    "extensions": [
-      ".cube",
-      ".cub"
-    ]
+    "computational_chemistry": true,
+    "related_to": ["XSF", "CHGCAR (VASP)", "MO (Molden)"],
+    "visualization_tools": ["VMD", "Avogadro", "PyMol", "VESTA"]
   },
   "MimeTypes": [
-    "application/octet-stream"
-  ],
-  "Software": [
-    "Hex Editor",
-    "File Viewer",
-    "Archive Manager"
+    "chemical/x-gaussian-cube",
+    "text/plain"
   ],
   "UseCases": [
-    "File storage",
-    "Data exchange",
-    "Archive"
+    "Electron density visualization",
+    "Molecular orbital plotting",
+    "Electrostatic potential maps",
+    "Spin density analysis"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 27,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 2,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
+    "CompletenessScore": 55,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 6,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
     "PriorityFormat": false,
-    "AutoRefined": true
+    "AutoRefined": false
   },
-  "TechnicalDetails": {},
-  "functions": {},
+  "TechnicalDetails": {
+    "encoding": "ASCII text",
+    "units": "Bohr (positive atom count) or Angstrom (negative atom count)",
+    "dataOrder": "row-major (X outermost, Z innermost)",
+    "floatFormat": "6E13.5 per line (standard Gaussian output)"
+  },
   "forensic": {
     "category": "science",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Gaussian volumetric data cube format",
+    "analysisContext": "Gaussian Cube files lack a binary magic — identification relies on the 2-comment + origin + 3-axis + atom structure. The sign of the atom count determines units. The data grid is NA x NB x NC float values.",
     "suggestedInspections": [
-      "Validate Gaussian Cube File file header, data type, and dimension fields",
-      "Check axis labels, units, and calibration metadata",
-      "Inspect data array boundaries and fill/missing value markers"
+      "Read lines 1-2 as free-form comments — they often name the property (density, potential, orbital index)",
+      "Parse line 3: atom_count (int) + 3 floats (origin XYZ); negative atom_count = Angstrom units",
+      "Parse lines 4-6: each is N_steps (int) + 3 floats (step vector); N_steps defines grid dimensions",
+      "Read |atom_count| atom lines: Z_number + charge + X + Y + Z",
+      "Volumetric data begins on the next line: NA*NB*NC float values in E13.5 format",
+      "If atom_count is negative, a second Cube data block may follow for spin density"
     ]
   }
 }

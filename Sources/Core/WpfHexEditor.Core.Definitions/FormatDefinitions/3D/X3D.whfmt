@@ -1,39 +1,46 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Extensible 3D",
-  "version": "1.14",
+  "version": "1.15",
   "extensions": [
     ".x3d"
   ],
-  "description": "Web3D X3D format (XML based)",
+  "description": "Extensible 3D (X3D) is an XML-based royalty-free open standard for 3D computer graphics maintained by the Web3D Consortium. X3D is the successor to VRML and is designed for web-based real-time 3D content. X3D files are XML documents starting with an XML declaration '<?xml' followed by the DOCTYPE and a root 'X3D' element with a 'version' attribute. X3D supports geometry, appearance, animation, scripting, sensors, and networking components. The format has multiple encoding profiles: XML (.x3d), Classic VRML (.x3dv), and binary compressed (.x3db). XML X3D is the most common encoding used with web browsers.",
   "category": "3D",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "Extensible 3D Format"
+      "ISO/IEC 19775 X3D Abstract Specification",
+      "Web3D X3D Specification v4.0"
     ],
     "WebLinks": [
-      "https://en.wikipedia.org/wiki/X3D"
+      "https://www.web3d.org/standards",
+      "https://en.wikipedia.org/wiki/X3D",
+      "https://wiki.fileformat.com/3d/x3d/"
     ]
   },
   "detection": {
-    "signature": "3C3F786D6C",
-    "offset": 0,
-    "required": true,
+    "signatures": [
+      { "value": "3C3F786D6C", "offset": 0, "label": "'<?xml' XML declaration", "weight": 0.5 },
+      { "value": "3C5833442076657273696F6E", "offset": 0, "label": "'<X3D version' root element (no XML decl)", "weight": 0.7 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.4,
+    "required": false,
+    "Strength": "Weak",
+    "EntropyHint": { "min": 3.0, "max": 6.5 },
     "validation": {
-      "minFileSize": 5,
-      "maxSignatureOffset": 1024
+      "minFileSize": 20,
+      "maxSignatureOffset": 0,
+      "note": "X3D starts with '<?xml' or directly with '<X3D'. Detection is weak as '<?xml' is shared with many XML formats; the 'X3D' root element is the definitive identifier."
     }
   },
   "variables": {
-    "currentOffset": 0,
-    "vertexCount": 0,
-    "faceCount": 0,
-    "materialCount": 0,
-    "fileSize": 0,
     "xmlDeclaration": "",
-    "formattedSize": ""
+    "doctypeOrX3D": "",
+    "x3dVersion": "",
+    "headSection": ""
   },
   "blocks": [
     {
@@ -42,89 +49,139 @@
       "offset": 0,
       "length": 5,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "<?xml header",
+      "opacity": 0.45,
+      "description": "5-byte ASCII string '<?xml' that begins the XML declaration. Present in most X3D files but optional; some X3D files begin directly with the '<X3D' root element. Shared with all XML-based formats; not a reliable standalone identifier.",
       "storeAs": "xmlDeclaration",
       "valueType": "ascii"
     },
     {
-      "type": "metadata",
-      "name": "Vertex Count",
-      "variable": "vertexCount",
-      "description": "Vertex Count"
+      "type": "field",
+      "name": "DOCTYPE or X3D Root",
+      "offset": 5,
+      "length": 64,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "Region after the XML declaration containing either the XML version/encoding attributes, a DOCTYPE declaration referencing the X3D DTD, or the opening '<X3D' root element. The 'X3D' element name with a 'version' attribute is the definitive identifier.",
+      "storeAs": "doctypeOrX3D",
+      "valueType": "ascii"
     },
     {
-      "type": "metadata",
-      "name": "Face Count",
-      "variable": "faceCount",
-      "description": "Face Count"
+      "type": "field",
+      "name": "X3D Version Attribute",
+      "offset": 69,
+      "length": 64,
+      "color": "#95E1D3",
+      "opacity": 0.35,
+      "description": "Region containing the X3D root element's attributes including 'version' (e.g. '3.3', '4.0') and 'profile' (e.g. 'Interchange', 'Interactive', 'Immersive', 'Full'). These declare compatibility requirements for X3D browsers.",
+      "storeAs": "x3dVersion",
+      "valueType": "ascii"
     },
     {
-      "type": "metadata",
-      "name": "Material Count",
-      "variable": "materialCount",
-      "description": "Material Count"
+      "type": "field",
+      "name": "Head Section",
+      "offset": 133,
+      "length": 64,
+      "color": "#FFE66D",
+      "opacity": 0.35,
+      "description": "Region of the X3D file containing the 'head' element which may include component declarations, metadata key-value pairs, and external prototype declarations. The 'head' precedes the 'Scene' element in well-formed X3D files.",
+      "storeAs": "headSection",
+      "valueType": "ascii"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "StartsWithXmlOrX3D",
+      "expression": "xmlDeclaration == '<?xml' || xmlDeclaration == '<X3D '",
+      "severity": "warning",
+      "message": "File does not start with '<?xml' or '<X3D'. This may not be an X3D file. Verify the file contains an X3D root element."
     },
     {
-      "type": "metadata",
-      "name": "Formatted Size",
-      "variable": "formattedSize",
-      "description": "Human-readable file size"
+      "name": "NotBinaryEncoding",
+      "expression": "xmlDeclaration != 'X3D\\x00\\x00'",
+      "severity": "warning",
+      "message": "File may be X3D binary encoding (.x3db). Binary X3D has different structure from XML X3D. Consider using a different analysis approach."
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "XML Declaration", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
+      { "name": "X3D Root Element", "offset": 69, "icon": "\uE946", "color": "#95E1D3" },
+      { "name": "Head/Scene", "offset": 133, "icon": "\uE8B7", "color": "#FFE66D" }
+    ]
+  },
+  "inspector": {
+    "badge": "xmlDeclaration",
+    "primaryField": "x3dVersion",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "XML Header",
+        "icon": "\uE71B",
+        "fields": ["xmlDeclaration", "doctypeOrX3D"]
+      },
+      {
+        "title": "X3D Structure",
+        "icon": "\uE8B7",
+        "fields": ["x3dVersion", "headSection"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "X3D Header (JSON)",
+      "format": "json",
+      "fields": ["xmlDeclaration", "x3dVersion"]
     }
   ],
   "software": [
-    "Web browsers",
-    "X3D viewers",
-    "Blender"
+    "Web browsers (via WebGL/X3DOM)",
+    "X3D-Edit",
+    "Blender",
+    "FreeWRL",
+    "Instant Reality"
   ],
   "formatRelationships": {
     "category": "3D",
-    "extensions": [
-      ".x3d"
-    ]
+    "extensions": [".x3d"],
+    "relatedFormats": ["GLTF", "GLB", "VRML"],
+    "note": "XML-based VRML successor; maintained by Web3D Consortium; encoding profiles include XML, VRML classic, and binary"
   },
   "MimeTypes": [
-    "application/octet-stream"
-  ],
-  "Software": [
-    "Blender",
-    "3ds Max",
-    "Maya",
-    "Cinema 4D",
-    "MeshLab"
+    "model/x3d+xml",
+    "application/xml"
   ],
   "UseCases": [
-    "3D modeling",
-    "Rendering",
-    "Animation",
-    "Game development"
+    "Web-based interactive 3D",
+    "Virtual reality authoring",
+    "3D visualization in browsers",
+    "Scientific data visualization"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 5,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
+    "CompletenessScore": 55,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 4,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
     "PriorityFormat": false,
-    "AutoRefined": true
+    "AutoRefined": false
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32LE": "Read mesh data",
-    "multiply": "Calculate vertices",
-    "formatFileSize(var:fileSize)": "Format fileSize as readable size"
+  "TechnicalDetails": {
+    "encoding": "XML text",
+    "standard": "ISO/IEC 19775",
+    "profiles": ["Core", "Interchange", "Interactive", "Immersive", "Full"],
+    "maintainer": "Web3D Consortium"
   },
   "forensic": {
-    "category": "3d-model",
+    "category": "3d",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Web3D X3D format (XML based)",
+    "analysisContext": "XML-based Extensible 3D format from the Web3D Consortium. Starts with '<?xml' XML declaration followed by DOCTYPE and 'X3D' root element with version and profile attributes. Successor to VRML for web 3D.",
     "suggestedInspections": [
-      "Validate Extensible 3D header magic bytes and format version",
-      "Check vertex/face count fields and mesh data boundaries",
-      "Inspect embedded material, texture, and animation references"
+      "Locate the 'X3D' root element and extract 'version' and 'profile' attributes",
+      "Identify component declarations in the head element to determine which X3D feature set is required",
+      "Enumerate Transform and Shape nodes in the Scene to understand the scene graph structure"
     ]
   }
 }

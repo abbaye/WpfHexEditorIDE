@@ -1,156 +1,180 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Qpress Compression",
-  "version": "1.13",
-  "extensions": [
-    ".qp",
-    ".qpress"
-  ],
-  "description": "Qpress archive format using QuickLZ compression, commonly used for MySQL/MariaDB backups",
+  "version": "1.14",
+  "extensions": [ ".qp", ".qpress" ],
+  "description": "Qpress is a high-speed file archiver using the QuickLZ compression algorithm, developed by Jonatan Ruuth. It was adopted by Percona XtraBackup and MariaDB Backup as the default compression format for InnoDB tablespace backups. The file begins with the 8-byte ASCII magic 'qpress10' (0x7170726573733130) which identifies both the format and its version. Each archived file is stored as a series of compressed blocks prefixed with block headers. Percona deprecated QuickLZ support in 2022 in favor of ZSTD, making qpress files primarily encountered in legacy database backup restoration scenarios.",
   "category": "Archives",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "Qpress QuickLZ Compression",
-      "Qpress Archive Format for MySQL/MariaDB",
+      "Qpress QuickLZ Compression Format",
+      "Qpress Archive Format for MySQL/MariaDB Backup",
       "QuickLZ Algorithm Specification"
     ],
     "WebLinks": [
       "https://www.percona.com/blog/the-deprecation-of-qpress-quicklz-compression-algorithm/",
       "https://mariadb.com/kb/en/mariabackup-options/",
-      "https://www.percona.com/blog/compression-for-innodb-backup/"
+      "https://www.percona.com/blog/compression-for-innodb-backup/",
+      "http://www.quicklz.com/"
     ]
   },
   "detection": {
-    "signature": "7170730100",
-    "offset": 0,
+    "signatures": [
+      { "hex": "7170726573733130", "offset": 0, "weight": 1.0 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.95,
     "required": true,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 5.0, "max": 7.8 },
     "validation": {
-      "minFileSize": 5,
-      "maxSignatureOffset": 1024
+      "minFileSize": 20,
+      "maxSignatureOffset": 0,
+      "note": "Full 8-byte ASCII magic 'qpress10' must match exactly at offset 0"
     }
   },
   "variables": {
-    "calculatedCRC32": 0,
-    "crc32Valid": false,
-    "originalSize": 0,
-    "compressedSize": 0,
-    "compressionRatio": 0,
     "qpressMagic": "",
-    "formattedSize": ""
+    "firstBlockType": 0,
+    "compressedBlockSize": 0,
+    "originalBlockSize": 0
   },
   "blocks": [
     {
       "type": "signature",
       "name": "Qpress Magic",
       "offset": 0,
-      "length": 3,
+      "length": 8,
       "color": "#FF6B6B",
       "opacity": 0.4,
-      "description": "Magic bytes: 'qps'",
+      "description": "8-byte ASCII magic 'qpress10' (0x7170726573733130). Encodes both format name and version number.",
       "storeAs": "qpressMagic",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "First Block Type",
+      "offset": 8,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.4,
+      "description": "Block type marker: 'f' (0x66) = file block, 'E' (0x45) = end-of-file block",
+      "storeAs": "firstBlockType",
+      "valueType": "uint8",
+      "valueMap": {
+        "102": "File block ('f')",
+        "69": "End-of-file block ('E')"
+      }
+    },
+    {
+      "type": "field",
+      "name": "Compressed Block Size",
+      "offset": 9,
+      "length": 4,
+      "color": "#45B7D1",
+      "opacity": 0.4,
+      "description": "Size of the compressed data in this block (little-endian uint32)",
+      "storeAs": "compressedBlockSize",
+      "valueType": "uint32"
+    },
+    {
+      "type": "field",
+      "name": "Original Block Size",
+      "offset": 13,
+      "length": 4,
+      "color": "#96CEB4",
+      "opacity": 0.4,
+      "description": "Original (uncompressed) size of the data in this block (little-endian uint32)",
+      "storeAs": "originalBlockSize",
       "valueType": "uint32"
     },
     {
       "type": "data",
-      "name": "Version",
-      "offset": 3,
-      "length": 2,
-      "color": "#4ECDC4",
-      "opacity": 0.4,
-      "description": "Format version (0x01 0x00 for version 1.0)"
-    },
-    {
-      "type": "data",
-      "name": "File Entry",
-      "offset": 5,
-      "length": 11,
-      "color": "#45B7D1",
-      "opacity": 0.4,
-      "description": "First file entry header"
-    },
-    {
-      "type": "metadata",
-      "name": "CRC Valid",
-      "variable": "crc32Valid",
-      "description": "CRC Valid"
-    },
-    {
-      "type": "metadata",
-      "name": "Original Size",
-      "variable": "originalSize",
-      "description": "Original Size"
-    },
-    {
-      "type": "metadata",
-      "name": "Compression Ratio",
-      "variable": "compressionRatio",
-      "description": "Compression Ratio"
-    },
-    {
-      "type": "metadata",
-      "name": "Formatted Size",
-      "variable": "formattedSize",
-      "description": "Human-readable file size"
+      "name": "Compressed Data",
+      "offset": 17,
+      "length": 32,
+      "color": "#FFEAA7",
+      "opacity": 0.3,
+      "description": "QuickLZ compressed data payload of the first block"
     }
   ],
-  "software": [
-    "7-Zip",
-    "WinRAR"
+  "assertions": [
+    { "field": "qpressMagic", "operator": "equals", "value": "qpress10", "description": "Magic must be 'qpress10' (8 ASCII bytes)" }
   ],
-  "formatRelationships": {
-    "category": "Archives",
-    "extensions": [
-      ".qp",
-      ".qpress"
+  "navigation": {
+    "bookmarks": [
+      { "name": "Qpress Magic", "offset": 0, "description": "8-byte 'qpress10' magic" },
+      { "name": "First Block Header", "offset": 8, "description": "Block type + compressed/original size" },
+      { "name": "First Block Data", "offset": 17, "description": "QuickLZ compressed payload" }
     ]
   },
-  "MimeTypes": [
-    "application/x-qpress-compressed"
-  ],
-  "Software": [
-    "7-Zip",
-    "WinRAR",
-    "WinZip",
-    "PeaZip",
-    "The Unarchiver"
-  ],
-  "UseCases": [
-    "File compression",
-    "Archive storage",
-    "Backup",
-    "Distribution"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 7,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "QP",
+    "primaryField": "qpressMagic",
+    "showQualityScore": true,
+    "groups": [
+      { "name": "Format Identity", "fields": ["qpressMagic"] },
+      { "name": "First Block", "fields": ["firstBlockType", "compressedBlockSize", "originalBlockSize"] }
+    ]
   },
-  "TechnicalDetails": {
-    "ArchivesFormat": true,
-    "SupportsEncryption": false
-  },
-  "functions": {
-    "calculateCRC32": "Validate CRC",
-    "readUInt32LE": "Read size",
-    "formatFileSize(var:compressedSize)": "Format compressedSize as readable size"
-  },
+  "exportTemplates": [
+    {
+      "name": "Qpress Block Info (JSON)",
+      "format": "json",
+      "fields": ["qpressMagic", "firstBlockType", "compressedBlockSize", "originalBlockSize"]
+    }
+  ],
   "forensic": {
     "category": "archive",
     "riskLevel": "low",
-    "suspiciousPatterns": []
+    "suspiciousPatterns": [
+      "Qpress files outside database backup context are unusual",
+      "Mismatched compressed/original sizes may indicate corruption or truncation"
+    ]
   },
   "aiHints": {
-    "analysisContext": "Qpress archive format using QuickLZ compression, commonly used for MySQL/MariaDB backups",
+    "analysisContext": "Qpress files start with 'qpress10' (8 bytes). They are almost exclusively MySQL/MariaDB InnoDB tablespace backups created by Percona XtraBackup or MariaDB Backup. Each file contains QuickLZ-compressed blocks. Percona deprecated qpress in 2022 in favor of ZSTD. Restoration requires qpress tool or xtrabackup --decompress.",
     "suggestedInspections": [
-      "Verify Qpress Compression file header, compression method, and stored CRCs",
-      "Check central directory or entry table for consistency",
-      "Inspect individual entry sizes for truncation or overflow"
+      "Verify 8-byte magic 'qpress10' at offset 0",
+      "Read first block type at offset 8 (0x66='f'=file block, 0x45='E'=end)",
+      "Compare compressedBlockSize vs originalBlockSize for compression ratio",
+      "Check for database context: qpress files are typically named *.ibd.qp or *.frm.qp",
+      "Use qpress -dv or percona xtrabackup --decompress for extraction"
     ]
+  },
+  "software": [
+    "qpress",
+    "Percona XtraBackup",
+    "MariaDB Backup (mariabackup)"
+  ],
+  "formatRelationships": {
+    "category": "Archives",
+    "extensions": [".qp", ".qpress"],
+    "relatedFormats": ["ZSTD", "LZ4"],
+    "note": "Qpress was the default compression for Percona XtraBackup until 2022 when ZSTD replaced it. Files are almost exclusively MySQL/MariaDB backup artifacts."
+  },
+  "MimeTypes": [ "application/x-qpress" ],
+  "UseCases": [
+    "MySQL/MariaDB InnoDB tablespace backup compression",
+    "Legacy database backup restoration",
+    "Database forensics and data recovery"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 62,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 5,
+    "ValidationRules": 1,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "ArchivesFormat": true,
+    "SupportsEncryption": false,
+    "Algorithm": "QuickLZ",
+    "Endianness": "little-endian",
+    "BlockTypes": { "0x66": "file block", "0x45": "end-of-file block" }
   }
 }

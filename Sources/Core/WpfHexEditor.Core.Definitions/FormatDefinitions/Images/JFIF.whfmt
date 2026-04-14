@@ -1,7 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "JFIF Image",
-  "version": "2.1",
+  "version": "1.16",
   "extensions": [
     ".jfif",
     ".jfi",
@@ -42,6 +42,7 @@
     ],
     "matchMode": "all",
     "MinimumScore": 0.8,
+    "required": true,
     "Strength": "Strong",
     "EntropyHint": { "min": 6.0, "max": 7.8 },
     "validation": {

@@ -1,133 +1,232 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "NIfTI Medical Image",
-  "version": "2.5",
+  "version": "2.42",
   "extensions": [
     ".nii"
   ],
-  "description": "Neuroimaging Informatics Technology Initiative",
+  "description": "NIfTI-1 (Neuroimaging Informatics Technology Initiative) is the successor to the Analyze 7.5 format for neuroimaging data. The header begins with sizeof_hdr = 348 (0x5C010000 LE) at offset 0. At offset 344 a 4-byte magic distinguishes single-file (.nii = 'n+1\\0') from paired header (.hdr = 'ni1\\0'). Dimensions, voxel sizes (pixdim), data type, and data offset (vox_offset) are encoded in the 348-byte header. Data follows immediately for .nii files. Used extensively with FSL, SPM, AFNI, and 3D Slicer.",
   "category": "Medical",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
-  "references": {
-    "specifications": [
-      "NIfTI Medical Image Format"
-    ],
-    "WebLinks": [
-      "https://en.wikipedia.org/wiki/NII"
-    ]
-  },
+  "references": [
+    "NIfTI-1 Data Format Specification (R. Cox, 2004)",
+    "https://nifti.nimh.nih.gov/nifti-1"
+  ],
   "detection": {
-    "signature": "00",
+    "signature": "5C010000",
     "offset": 0,
-    "required": false,
+    "weight": 0.8,
+    "strength": "Moderate",
+    "required": true,
     "validation": {
-      "minFileSize": 1,
-      "maxSignatureOffset": 1024
+      "minFileSize": 348,
+      "maxSignatureOffset": 0
     }
   },
   "variables": {
     "currentOffset": 0,
+    "headerSize": 0,
+    "magic": "",
+    "dataType": 0,
     "width": 0,
     "height": 0,
     "slices": 0,
     "bitDepth": 0,
-    "headerSize": 0,
+    "voxOffset": 0,
     "totalPixels": 0
   },
   "blocks": [
     {
-      "type": "field",
+      "type": "signature",
       "name": "Header Size",
       "offset": 0,
       "length": 4,
-      "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "348 bytes",
+      "color": "#FF6B6B",
+      "opacity": 0.8,
+      "description": "sizeof_hdr: must equal 348 (0x5C010000 LE) for NIfTI-1; used to distinguish from NIfTI-2 (540)",
       "storeAs": "headerSize",
       "valueType": "uint32"
+    },
+    {
+      "type": "field",
+      "name": "Data Type Code",
+      "offset": 70,
+      "length": 2,
+      "color": "#4ECDC4",
+      "opacity": 0.5,
+      "description": "datatype field: voxel data type code (2=uint8, 4=int16, 8=int32, 16=float32, 64=float64, 512=uint16)",
+      "storeAs": "dataType",
+      "valueType": "uint16",
+      "valueMap": {
+        "2": "UINT8",
+        "4": "INT16",
+        "8": "INT32",
+        "16": "FLOAT32",
+        "64": "FLOAT64",
+        "512": "UINT16"
+      }
+    },
+    {
+      "type": "field",
+      "name": "Dimensions",
+      "offset": 40,
+      "length": 16,
+      "color": "#95E1D3",
+      "opacity": 0.4,
+      "description": "dim[0..7]: dim[0] is number of dimensions (1-7); dim[1]=x, dim[2]=y, dim[3]=z slices, dim[4]=time points",
+      "storeAs": "dimArray",
+      "valueType": "uint16"
+    },
+    {
+      "type": "field",
+      "name": "Voxel Offset",
+      "offset": 108,
+      "length": 4,
+      "color": "#FFE66D",
+      "opacity": 0.4,
+      "description": "vox_offset: byte offset from file start where voxel data begins; 352.0 for standard single-file NIfTI",
+      "storeAs": "voxOffset",
+      "valueType": "float32"
+    },
+    {
+      "type": "field",
+      "name": "NIfTI Magic",
+      "offset": 344,
+      "length": 4,
+      "color": "#A8DADC",
+      "opacity": 0.6,
+      "description": "magic: 'ni1\\0' for paired .hdr/.img files or 'n+1\\0' for single .nii file",
+      "storeAs": "magic",
+      "valueType": "ascii"
     },
     {
       "type": "metadata",
       "name": "Width",
       "variable": "width",
-      "description": "Width"
+      "description": "Image width in voxels (dim[1])"
     },
     {
       "type": "metadata",
       "name": "Height",
       "variable": "height",
-      "description": "Height"
+      "description": "Image height in voxels (dim[2])"
     },
     {
       "type": "metadata",
       "name": "Slices",
       "variable": "slices",
-      "description": "Slices"
+      "description": "Number of slices in z dimension (dim[3])"
     },
     {
       "type": "metadata",
-      "name": "Bit Depth",
-      "variable": "bitDepth",
-      "description": "Bit Depth"
-    },
-    {
-      "type": "metadata",
-      "name": "Total Pixels",
+      "name": "Total Voxels",
       "variable": "totalPixels",
-      "description": "Width x Height"
+      "description": "Computed product: width × height × slices"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "Header size equals 348",
+      "expression": "headerSize == 348",
+      "severity": "error",
+      "message": "NIfTI-1 sizeof_hdr must be exactly 348; value 540 indicates NIfTI-2"
+    },
+    {
+      "name": "Valid magic",
+      "expression": "magic == 'ni1\\0' || magic == 'n+1\\0'",
+      "severity": "warning",
+      "message": "Magic at offset 344 should be 'ni1\\0' (paired) or 'n+1\\0' (single-file)"
+    }
+  ],
+  "inspector": {
+    "groups": [
+      {
+        "name": "Header Identity",
+        "fields": ["Header Size", "NIfTI Magic"]
+      },
+      {
+        "name": "Voxel Geometry",
+        "fields": ["Dimensions", "Voxel Offset"]
+      },
+      {
+        "name": "Data Encoding",
+        "fields": ["Data Type Code"]
+      },
+      {
+        "name": "Computed",
+        "fields": ["Width", "Height", "Slices", "Total Voxels"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "NIfTI Header Summary",
+      "fields": ["headerSize", "magic", "dataType", "voxOffset", "width", "height", "slices"]
     }
   ],
   "software": [
     "FSL",
     "SPM",
     "AFNI",
-    "3D Slicer"
+    "3D Slicer",
+    "nibabel (Python)"
   ],
   "formatRelationships": {
     "nifti_format": true,
     "successor_to": "ANALYZE",
-    "neuroimaging_standard": true
+    "neuroimaging_standard": true,
+    "related": ["NIFTI2", "ANALYZE"]
   },
   "MimeTypes": [
     "application/octet-stream"
   ],
   "Software": [
-    "Hex Editor",
-    "File Viewer",
-    "Archive Manager"
+    "FSL (FMRIB Software Library)",
+    "SPM (Statistical Parametric Mapping)",
+    "AFNI (Analysis of Functional NeuroImages)",
+    "3D Slicer",
+    "nibabel Python library"
   ],
   "UseCases": [
-    "File storage",
-    "Data exchange",
-    "Archive"
+    "fMRI and structural MRI neuroimaging",
+    "Brain atlas and segmentation data",
+    "Diffusion tensor imaging (DTI/DWI)",
+    "Machine learning medical image datasets"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 21,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 6,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
+    "CompletenessScore": 60,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 9,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
     "PriorityFormat": false,
-    "AutoRefined": true
+    "AutoRefined": false
   },
-  "TechnicalDetails": {},
+  "TechnicalDetails": {
+    "Endianness": "Little-endian (primary); big-endian detected by sizeof_hdr > 65536",
+    "HeaderSize": 348,
+    "SingleFile": "vox_offset >= 352; magic = 'n+1\\0'",
+    "PairedFiles": "magic = 'ni1\\0'; data in .img file"
+  },
   "forensic": {
     "category": "medical",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Neuroimaging Informatics Technology Initiative",
+    "analysisContext": "NIfTI-1 is identified by sizeof_hdr=348 at offset 0 and magic at offset 344. Big-endian files have sizeof_hdr byte-swapped to 0x0000015C. The dim[] array at offset 40 defines the volume shape. vox_offset at offset 108 locates pixel data. Distinguish from NIfTI-2 (sizeof_hdr=540) and Analyze 7.5 (no magic at 344).",
     "suggestedInspections": [
-      "Verify NIfTI Medical Image preamble, magic bytes, and transfer syntax",
-      "Check image matrix dimensions, voxel spacing, and data type",
-      "Inspect patient/study metadata tags and private sequences"
+      "Check sizeof_hdr at offset 0: 348 = NIfTI-1, 540 = NIfTI-2",
+      "Read magic at offset 344: 'n+1\\0' single-file vs 'ni1\\0' paired",
+      "Parse dim[] array at offset 40 for volume dimensions",
+      "Check datatype (offset 70) and bitpix (offset 72) for voxel encoding",
+      "Use vox_offset to locate pixel data start"
     ]
   },
   "functions": {
-    "readUInt32LE": "Read medical header",
-    "extractASCIIString": "Read patient",
+    "readUInt32LE": "Read headerSize and integer fields",
+    "readFloat32LE": "Read vox_offset and pixdim values",
     "computeFromVariables(width * height, totalPixels)": "Calculate total pixels"
   }
 }

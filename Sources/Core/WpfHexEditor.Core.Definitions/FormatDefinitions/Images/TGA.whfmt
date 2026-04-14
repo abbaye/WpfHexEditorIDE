@@ -1,7 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "TGA Image",
-  "version": "2.1",
+  "version": "1.14",
   "extensions": [
     ".tga",
     ".tpic",
@@ -43,6 +43,7 @@
     ],
     "matchMode": "any",
     "MinimumScore": 0.3,
+    "required": true,
     "Strength": "Medium",
     "EntropyHint": { "min": 3.0, "max": 7.8 },
     "validation": {

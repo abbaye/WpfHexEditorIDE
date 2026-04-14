@@ -1,119 +1,195 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "HDF4 Data File",
-  "version": "1.12",
+  "version": "1.13",
   "extensions": [
     ".hdf",
     ".hdf4"
   ],
-  "description": "Hierarchical Data Format v4",
+  "description": "Hierarchical Data Format version 4 (HDF4) is the predecessor to HDF5, developed by NCSA in the late 1980s. HDF4 stores multidimensional scientific arrays, raster images, palettes, scientific datasets (SDS), annotations, and virtual data sets (Vdata/Vgroup). It uses a tag-reference pair model where each data object is identified by a 2-byte tag and a 2-byte reference number. The 4-byte magic number 0x0E031301 at offset 0 uniquely identifies HDF4 files. NASA EOS products (MODIS, ASTER) and older climate archives widely use HDF4. The format is superseded by HDF5 but remains relevant for legacy data access.",
   "category": "Science",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
-  "references": {
-    "specifications": [
-      "HDF4 Data File Format"
-    ],
-    "WebLinks": [
-      "https://en.wikipedia.org/wiki/HDF"
-    ]
-  },
+  "references": [
+    "HDF4 Reference Manual v4.3",
+    "NASA EOS Data Products in HDF4"
+  ],
+  "WebLinks": [
+    "https://en.wikipedia.org/wiki/Hierarchical_Data_Format",
+    "https://www.hdfgroup.org/solutions/hdf4/"
+  ],
   "detection": {
     "signature": "0E031301",
     "offset": 0,
     "required": true,
+    "weight": 1.0,
     "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024
+      "minFileSize": 512,
+      "maxSignatureOffset": 0
     }
   },
   "variables": {
     "currentOffset": 0,
-    "dimensions": 0,
-    "dataType": "",
-    "arrayCount": 0,
-    "hdf4Signature": ""
+    "tagCount": 0,
+    "firstTagOffset": 0,
+    "hdf4Signature": "",
+    "fileVersion": ""
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "HDF4 Signature",
+      "name": "HDF4 Magic",
       "offset": 0,
       "length": 4,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "HDF4 format signature",
+      "opacity": 0.85,
+      "description": "HDF4 4-byte magic number 0x0E031301 at offset 0 — mandatory identifier for all HDF4 files including HDF-EOS2 products",
       "storeAs": "hdf4Signature",
-      "valueType": "ascii"
+      "valueType": "hex"
+    },
+    {
+      "type": "field",
+      "name": "DD Block Count",
+      "offset": 4,
+      "length": 2,
+      "color": "#4ECDC4",
+      "opacity": 0.5,
+      "description": "Number of data descriptor (DD) entries in the first DD block; each entry is 12 bytes containing tag, reference, offset, and length",
+      "storeAs": "tagCount",
+      "valueType": "uint16be"
+    },
+    {
+      "type": "field",
+      "name": "Next DD Block Offset",
+      "offset": 6,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.4,
+      "description": "Absolute offset to the next data descriptor block (0xFFFFFFFF if this is the last DD block in the file)",
+      "storeAs": "nextDDOffset",
+      "valueType": "uint32be"
+    },
+    {
+      "type": "field",
+      "name": "First DD Entry",
+      "offset": 10,
+      "length": 12,
+      "color": "#FFE66D",
+      "opacity": 0.35,
+          "description": "First data descriptor entry: 2-byte tag identifying object type, 2-byte reference number, 4-byte data offset, 4-byte data length in bytes",
+      "storeAs": "firstDDEntry",
+      "valueType": "bytes"
     },
     {
       "type": "metadata",
-      "name": "Dimensions",
-      "variable": "dimensions",
-      "description": "Dimensions"
+      "name": "Tag Count",
+      "variable": "tagCount",
+      "description": "Number of tag-reference pairs in the first descriptor block"
     },
     {
       "type": "metadata",
-      "name": "Data Type",
-      "variable": "dataType",
-      "description": "Data Type"
+      "name": "File Version",
+      "variable": "fileVersion",
+      "description": "HDF4 library version string stored in the file version tag"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "ValidHDF4Magic",
+      "description": "Bytes 0-3 must equal 0E 03 13 01 — the HDF4 magic constant; any other value means the file is not a valid HDF4 container",
+      "offset": 0,
+      "length": 4,
+      "expectedHex": "0E031301",
+      "severity": "error"
     },
     {
-      "type": "metadata",
-      "name": "Array Count",
-      "variable": "arrayCount",
-      "description": "Array Count"
+      "name": "MinimumFileSize",
+      "description": "A valid HDF4 file must be at least 512 bytes to contain a meaningful header and at least one data descriptor block",
+      "minFileSize": 512,
+      "severity": "warning"
+    }
+  ],
+  "inspector": {
+    "groups": [
+      {
+        "name": "File Header",
+        "fields": [
+          { "label": "Magic Number",       "offset": 0, "length": 4,  "format": "hex" },
+          { "label": "DD Block Count",     "offset": 4, "length": 2,  "format": "uint16be" },
+          { "label": "Next DD Block Ptr",  "offset": 6, "length": 4,  "format": "uint32be" }
+        ]
+      },
+      {
+        "name": "First Data Descriptor",
+        "fields": [
+          { "label": "Tag",       "offset": 10, "length": 2, "format": "uint16be" },
+          { "label": "Reference", "offset": 12, "length": 2, "format": "uint16be" },
+          { "label": "Offset",    "offset": 14, "length": 4, "format": "uint32be" },
+          { "label": "Length",    "offset": 18, "length": 4, "format": "uint32be" }
+        ]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "HDF4 Header Summary",
+      "fields": ["hdf4Signature", "tagCount", "firstDDEntry"]
     }
   ],
   "software": [
-    "Common file viewers",
-    "Specialized software"
+    "HDFView",
+    "MATLAB (hdfread)",
+    "Python pyhdf",
+    "IDL",
+    "NASA Panoply",
+    "GDAL (HDF4 driver)"
   ],
   "formatRelationships": {
-    "category": "Science",
-    "extensions": [
-      ".hdf",
-      ".hdf4"
-    ]
+    "hdf_group": true,
+    "predecessor_to": "HDF5",
+    "used_by": ["NASA EOS", "MODIS", "ASTER", "MISR"],
+    "eos_variant": "HDF-EOS2"
   },
   "MimeTypes": [
+    "application/x-hdf",
     "application/octet-stream"
   ],
-  "Software": [
-    "Hex Editor",
-    "File Viewer",
-    "Archive Manager"
-  ],
   "UseCases": [
-    "File storage",
-    "Data exchange",
-    "Archive"
+    "NASA Earth Observation System (EOS) products",
+    "Remote sensing data archives",
+    "Legacy climate model datasets",
+    "MODIS and ASTER satellite products"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 4,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
+    "CompletenessScore": 60,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 6,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
     "PriorityFormat": false,
-    "AutoRefined": true
+    "AutoRefined": false
   },
-  "TechnicalDetails": {},
+  "TechnicalDetails": {
+    "endianness": "big-endian",
+    "tagModel": "tag-reference pairs",
+    "ddEntrySize": 12,
+    "magicBytes": "0E031301"
+  },
   "forensic": {
     "category": "science",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Hierarchical Data Format v4",
+    "analysisContext": "HDF4 uses a flat tag-reference data model rather than a hierarchy. NASA EOS products (MODIS level-1 and level-2) are the most common HDF4 files encountered. Reading requires traversing DD blocks to build an object catalog.",
     "suggestedInspections": [
-      "Validate HDF4 Data File file header, data type, and dimension fields",
-      "Check axis labels, units, and calibration metadata",
-      "Inspect data array boundaries and fill/missing value markers"
+      "Verify 4-byte magic 0E 03 13 01 at offset 0",
+      "Read DD block count at offset 4 (big-endian uint16) to know how many tag entries follow",
+      "Iterate DD entries (each 12 bytes) to build a catalog of all objects by tag type",
+      "Look for tag 0x001C (VERSION) to find the HDF library version string",
+      "Look for tag 0x03E8 (SDS_NDG) to enumerate scientific datasets",
+      "Follow the linked list of DD blocks via the 'next DD block' pointer chain",
+      "Check for HDF-EOS metadata in a string data object for geolocation information"
     ]
-  },
-  "functions": {
-    "readUInt32BE": "Read scientific header",
-    "multiply": "Calculate dimensions"
   }
 }

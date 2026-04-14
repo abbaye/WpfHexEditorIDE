@@ -1,12 +1,9 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Snappy Compression",
-  "version": "1.11",
-  "extensions": [
-    ".snappy",
-    ".sz"
-  ],
-  "description": "Snappy compressed stream format developed by Google, optimized for speed rather than compression ratio",
+  "version": "1.12",
+  "extensions": [ ".snappy", ".sz" ],
+  "description": "Snappy is a lossless fast compression library developed by Google, designed for very high speed rather than maximum compression ratio. The Snappy framing format wraps raw Snappy compressed data with a stream identifier chunk and per-chunk CRC32 checksums. The stream starts with a 10-byte identifier: 0xFF 0x06 0x00 0x00 followed by the 6-byte ASCII string 'sNaPpY'. This is followed by data chunks, uncompressed chunks, padding chunks, and skippable chunks. Snappy is widely used in Apache Hadoop, Apache Kafka, LevelDB, Cassandra, and other big-data infrastructure.",
   "category": "Archives",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
@@ -14,7 +11,7 @@
     "specifications": [
       "Snappy Framing Format Specification",
       "Google Snappy Compression Algorithm",
-      "Snappy Stream Format"
+      "Snappy Stream Format v1.5"
     ],
     "WebLinks": [
       "https://github.com/google/snappy/blob/main/framing_format.txt",
@@ -24,117 +21,173 @@
     ]
   },
   "detection": {
-    "signature": "FF06000073",
-    "offset": 0,
+    "signatures": [
+      { "hex": "FF060000734E615070 59", "offset": 0, "weight": 1.0 },
+      { "hex": "FF06000073", "offset": 0, "weight": 0.9 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.9,
     "required": true,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 5.5, "max": 7.9 },
     "validation": {
-      "minFileSize": 5,
-      "maxSignatureOffset": 1024
+      "minFileSize": 10,
+      "maxSignatureOffset": 0,
+      "note": "Stream identifier chunk: 0xFF + 3-byte chunk length (0x060000 LE = 6) + 6-byte 'sNaPpY'"
     }
   },
-  "functions": {
-    "calculateCRC32": "Calculate CRC-32 for chunk integrity"
-  },
   "variables": {
-    "chunkType": 0,
-    "chunkLength": 0,
-    "streamIdentifier": ""
+    "streamIdentifier": "",
+    "firstChunkType": 0,
+    "firstChunkLength": 0
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "Stream Identifier",
+      "name": "Stream Identifier Chunk Type",
       "offset": 0,
-      "length": 10,
+      "length": 1,
       "color": "#FF6B6B",
       "opacity": 0.4,
-      "description": "Snappy stream identifier: 0xFF 0x06 0x00 0x00 'sNaPpY'",
+      "description": "Chunk type 0xFF = stream identifier chunk. Always the first chunk in a Snappy framing stream.",
+      "valueType": "uint8"
+    },
+    {
+      "type": "field",
+      "name": "Identifier Chunk Length",
+      "offset": 1,
+      "length": 3,
+      "color": "#4ECDC4",
+      "opacity": 0.4,
+      "description": "Length of identifier chunk data = 6 (little-endian 24-bit). Always 0x06 0x00 0x00.",
+      "valueType": "uint24"
+    },
+    {
+      "type": "signature",
+      "name": "Stream Magic",
+      "offset": 4,
+      "length": 6,
+      "color": "#45B7D1",
+      "opacity": 0.4,
+      "description": "6-byte ASCII string 'sNaPpY' (0x73 0x4E 0x61 0x50 0x70 0x59) — the stream identifier payload.",
       "storeAs": "streamIdentifier",
       "valueType": "ascii"
     },
     {
-      "type": "data",
-      "name": "Chunk Type",
+      "type": "field",
+      "name": "First Data Chunk Type",
       "offset": 10,
       "length": 1,
-      "color": "#4ECDC4",
+      "color": "#96CEB4",
       "opacity": 0.4,
-      "description": "Chunk type identifier (0x00=compressed, 0x01=uncompressed, 0xFE=padding)"
+      "description": "Type of first data chunk: 0x00=compressed data, 0x01=uncompressed data, 0xFE=padding, 0x80-0xFD=skippable",
+      "storeAs": "firstChunkType",
+      "valueType": "uint8",
+      "valueMap": {
+        "0": "Compressed data chunk",
+        "1": "Uncompressed data chunk",
+        "254": "Padding chunk",
+        "255": "Stream identifier (should not repeat)"
+      }
+    },
+    {
+      "type": "field",
+      "name": "First Data Chunk Length",
+      "offset": 11,
+      "length": 3,
+      "color": "#FFEAA7",
+      "opacity": 0.4,
+      "description": "Length of first data chunk (little-endian 24-bit). Includes 4-byte masked CRC32.",
+      "storeAs": "firstChunkLength",
+      "valueType": "uint24"
     },
     {
       "type": "data",
-      "name": "Chunk Length",
-      "offset": 11,
-      "length": 3,
-      "color": "#45B7D1",
+      "name": "Chunk CRC32",
+      "offset": 14,
+      "length": 4,
+      "color": "#DDA0DD",
       "opacity": 0.4,
-      "description": "Chunk data length (little-endian, 24-bit)"
-    },
-    {
-      "type": "metadata",
-      "name": "Chunk Type",
-      "variable": "chunkType",
-      "description": "Type of data chunk (0x00=compressed, 0x01=uncompressed)"
-    },
-    {
-      "type": "metadata",
-      "name": "Chunk Length (bytes)",
-      "variable": "chunkLength",
-      "description": "Length of chunk data in bytes"
+      "description": "Masked CRC32 of uncompressed chunk data. Mask = ((crc >> 15) | (crc << 17)) + 0xA282EAD8"
     }
   ],
-  "software": [
-    "Snappy tools",
-    "Hadoop",
-    "Databases"
+  "assertions": [
+    { "field": "streamIdentifier", "operator": "equals", "value": "sNaPpY", "description": "Bytes 4-9 must be ASCII 'sNaPpY'" }
   ],
-  "formatRelationships": {
-    "category": "Archives",
-    "extensions": [
-      ".snappy",
-      ".sz"
+  "navigation": {
+    "bookmarks": [
+      { "name": "Stream Identifier", "offset": 0, "description": "10-byte stream identifier chunk: 0xFF + length + 'sNaPpY'" },
+      { "name": "First Data Chunk", "offset": 10, "description": "First data chunk header (type + length + CRC)" }
     ]
   },
-  "MimeTypes": [
-    "application/x-snappy-compressed"
-  ],
-  "Software": [
-    "7-Zip",
-    "WinRAR",
-    "WinZip",
-    "PeaZip",
-    "The Unarchiver"
-  ],
-  "UseCases": [
-    "File compression",
-    "Archive storage",
-    "Backup",
-    "Distribution"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 5,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "SZ",
+    "primaryField": "streamIdentifier",
+    "showQualityScore": true,
+    "groups": [
+      { "name": "Stream Header", "fields": ["streamIdentifier"] },
+      { "name": "First Chunk", "fields": ["firstChunkType", "firstChunkLength"] }
+    ]
   },
-  "TechnicalDetails": {
-    "ArchivesFormat": true,
-    "SupportsEncryption": false
-  },
+  "exportTemplates": [
+    {
+      "name": "Snappy Stream Info (JSON)",
+      "format": "json",
+      "fields": ["streamIdentifier", "firstChunkType", "firstChunkLength"]
+    }
+  ],
   "forensic": {
     "category": "archive",
     "riskLevel": "low",
-    "suspiciousPatterns": []
+    "suspiciousPatterns": [
+      "Snappy data in unexpected contexts may indicate data exfiltration tools using big-data compression",
+      "Skippable chunks (0x80-0xFD) could conceal hidden payloads"
+    ]
   },
   "aiHints": {
-    "analysisContext": "Snappy compressed stream format developed by Google, optimized for speed rather than compression ratio",
+    "analysisContext": "Snappy framing format starts with a 10-byte stream identifier: 0xFF (chunk type) + 0x060000 (length=6, LE 24-bit) + 'sNaPpY' (6 ASCII bytes). Data chunks follow: 0x00=compressed, 0x01=uncompressed. Each chunk has a masked CRC32. Widely used in Hadoop, Kafka, LevelDB. The unframed raw Snappy format (no magic) is also common.",
     "suggestedInspections": [
-      "Verify Snappy Compression file header, compression method, and stored CRCs",
-      "Check central directory or entry table for consistency",
-      "Inspect individual entry sizes for truncation or overflow"
+      "Verify first byte is 0xFF (stream identifier chunk type)",
+      "Verify bytes 1-3 are 0x06 0x00 0x00 (chunk length = 6)",
+      "Verify bytes 4-9 are ASCII 'sNaPpY'",
+      "Read first data chunk type at offset 10 (0x00=compressed, 0x01=uncompressed)",
+      "Validate masked CRC32 at offset 14 against decompressed chunk data"
     ]
+  },
+  "software": [
+    "Google Snappy CLI",
+    "Apache Hadoop",
+    "Apache Kafka",
+    "LevelDB / RocksDB",
+    "Apache Cassandra",
+    "Parquet file format"
+  ],
+  "formatRelationships": {
+    "category": "Archives",
+    "extensions": [".snappy", ".sz"],
+    "relatedFormats": ["LZ4", "ZSTD", "BROTLI", "GZIP"],
+    "note": "Snappy prioritizes speed over ratio like LZ4. The framing format (.snappy/.sz) wraps raw Snappy streams. Raw Snappy (no framing) has no magic and is undetectable as standalone files."
+  },
+  "MimeTypes": [ "application/x-snappy-framed", "application/x-snappy-compressed" ],
+  "UseCases": [
+    "Big-data infrastructure compression (Hadoop, Kafka, Parquet)",
+    "LevelDB/RocksDB block compression",
+    "Real-time data streaming compression"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 65,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 6,
+    "ValidationRules": 1,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "ArchivesFormat": true,
+    "SupportsEncryption": false,
+    "Algorithm": "Snappy (LZ77 variant)",
+    "Endianness": "little-endian",
+    "ChunkTypes": { "0x00": "compressed", "0x01": "uncompressed", "0xFE": "padding", "0xFF": "stream identifier" }
   }
 }

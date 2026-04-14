@@ -14,6 +14,40 @@ A full-featured WPF hex editor UserControl for .NET 8. Successor to [WPFHexaEdit
 dotnet add package WPFHexaEditor
 ```
 
+## What's New in 3.1.1
+
+- **Fix**: `TechnicalDetails.SampleRate` changed from `int?` to `string?` — AMR and OPUS had descriptive values like `"8000 Hz (AMR-NB) / 16000 Hz (AMR-WB)"` that were silently dropped
+- **Fix**: `MOBI.whfmt` references structure corrected — was an array wrapping an object, must be a plain object
+- **Fix**: `GFX.whfmt`, `TIL.whfmt`, `CHR.whfmt` Platform field corrected — was a string array, must be a single string
+- **Fix**: 5 `.whfmt` files with invalid `Strength` values corrected (`"strong"` → `"Strong"`, `"moderate"` → `"Medium"`)
+- **Perf**: `JsonSerializerOptions` in `ImportFromJson` is now a `static readonly` field — avoids 463+ allocations at startup
+
+## What's New in 3.1.0
+
+### Format Detection — Major Overhaul
+
+- **Fix**: `SignatureStrength` enum now correctly deserialized from `.whfmt` files — `"Strength": "Strong"` was silently falling back to `None(0)` due to missing `JsonStringEnumConverter`, causing all TIER 1 strong-signature formats (PE, ELF, RTF, and hundreds more) to be excluded from detection. Root cause of all format mis-detections since 3.0.0.
+- **Fix**: TIER 1 candidates are now scored before the early-exit check — confidence threshold was evaluated on unscored candidates (all `ConfidenceScore = 0`), so the early-exit never triggered and TIER 2 (plain-text heuristic) displaced correct TIER 1 matches (e.g. RTF detected as "Plain Text").
+- **Fix**: TIER 2 text-heuristic detection is now suppressed when TIER 1 has a match — prevents plain-text fallback from overriding a verified magic-byte signature match.
+- **Fix**: Entropy check is skipped for `Strong`/`Unique` signatures — a verified magic byte sequence is definitive proof of identity; entropy filtering only added false negatives for text-based formats with strong signatures (RTF, XML, SVG).
+- **Fix**: `EmbeddedFormatCatalog.GetAll()` is now fully thread-safe (double-checked lock + `volatile`) — race condition between `PreWarm()` background thread and UI thread could produce an empty catalog on first access.
+- **Fix**: 5 `.whfmt` definitions with invalid `Strength` values corrected (`"strong"` → `"Strong"`, `"moderate"` → `"Medium"`).
+- **Fix**: `required: true` added to 10 `.whfmt` definitions that were missing it (RTF, DJVU, AIFF, OPUS, AVIF, JFIF, JPEG2000, PCX, TGA, TIFF).
+- **Robustness**: `SignatureStrengthConverter` now accepts case-insensitive strings (`"strong"`, `"Strong"`, `"STRONG"`), integer values (`80`), and falls back to `Medium` for any unknown value — never throws.
+
+### Format Definitions — 463 Files Updated
+
+- **Fix**: Removed `/* */` block-comment file headers from all 463 `.whfmt` definitions (fixes [#229](https://github.com/abbaye/WpfHexEditorIDE/issues/229)) — these headers preceded the opening `{` and could cause `JsonReaderException` on first load.
+- **Feat**: Version numbers bumped across all 455+ `.whfmt` definitions.
+- **Feat**: `.whfmt` enrichment pass — improved descriptions, detection rules, and export templates across multiple categories.
+
+### UI / Controls
+
+- **Fix**: `HexBreadcrumbBar` segment dropdown (ContextMenu) is now fully opaque in standalone WPF apps — `BC_Background` brush alpha is forced to 255 before assignment, preventing see-through popup in apps without the IDE theme host.
+- **Fix**: ScrollBar theming consistency fix.
+- **Feat**: `IconGlyphs` constants class for Segoe MDL2 Assets glyph codes.
+- **Feat**: `ParsedFields` panel export templates.
+
 ## What's New in 3.0.8
 
 - **Fix**: `JsonReaderException` no longer thrown in `EmbeddedFormatCatalog.LoadHeader` on first run — removed fragile `/* */` file headers from all 463 `.whfmt` format definitions (fixes [#229](https://github.com/abbaye/WpfHexEditorIDE/issues/229))
@@ -84,7 +118,7 @@ All bundled inside the package — zero external NuGet dependencies:
 | WpfHexEditor.HexEditor | HexEditor UserControl (main entry point) |
 | WpfHexEditor.Core | Byte providers, format detection, search, undo/redo |
 | WpfHexEditor.Core.BinaryAnalysis | Cross-platform binary analysis (no WPF dependency) |
-| WpfHexEditor.Core.Definitions | 400+ embedded format definitions (.whfmt) |
+| WpfHexEditor.Core.Definitions | 463 embedded format definitions (.whfmt) |
 | WpfHexEditor.Editor.Core | Shared editor abstractions |
 | WpfHexEditor.ColorPicker | Color picker control for settings |
 | WpfHexEditor.HexBox | Hex display control |

@@ -1,40 +1,40 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "MDL Molfile",
-  "version": "1.14",
+  "version": "1.15",
   "extensions": [
     ".mol"
   ],
-  "description": "MDL Molfile chemical structure format",
+  "description": "MDL Molfile (V2000/V3000) is a standard ASCII-text chemical structure format developed by Molecular Design Limited and now part of the Biovia/CTFILE specification. A Molfile begins with three header lines: molecule name (up to 80 chars), program/user/date/dimensions info line (80 chars), and a comment line (80 chars). The counts line follows with atom count, bond count, atom list count, obsolete fields, and a version tag ('V2000' or 'V3000'). Atom block records follow with X/Y/Z coordinates, element symbol, and charge. Bond block records define connectivity. MDL Molfiles are the universal input format for cheminformatics tools, databases (PubChem, ChEMBL), and structure editors.",
   "category": "Science",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
-  "references": {
-    "specifications": [
-      "MDL Molfile Format"
-    ],
-    "WebLinks": [
-      "https://en.wikipedia.org/wiki/MOL"
-    ]
-  },
+  "references": [
+    "Biovia CTFILE Formats 2020",
+    "MDL Information Systems CTFile 2003 Specification"
+  ],
+  "WebLinks": [
+    "https://en.wikipedia.org/wiki/Chemical_table_file",
+    "https://www.daylight.com/dayhtml/doc/theory/theory.mol.html"
+  ],
   "detection": {
     "signature": "00",
     "offset": 0,
     "required": false,
+    "weight": 0.3,
     "validation": {
-      "minFileSize": 1,
+      "minFileSize": 30,
       "maxSignatureOffset": 1024
     }
   },
   "variables": {
     "currentOffset": 0,
-    "fileSize": 0,
-    "version": 0,
-    "format": "",
     "moleculeName": "",
     "headerLine2": "",
     "comment": "",
-    "formattedSize": ""
+    "countsLine": "",
+    "atomCount": 0,
+    "bondCount": 0
   },
   "blocks": [
     {
@@ -43,88 +43,135 @@
       "offset": 0,
       "length": 80,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "First line: molecule name",
+      "opacity": 0.6,
+      "description": "First header line: molecule name or compound identifier up to 80 ASCII characters; blank line is valid; often contains IUPAC name or registry number",
       "storeAs": "moleculeName",
       "valueType": "ascii"
     },
     {
       "type": "field",
-      "name": "Header Line 2",
+      "name": "Program / Timestamp Line",
       "offset": 80,
       "length": 80,
       "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "User/program/date/etc",
+      "opacity": 0.4,
+      "description": "Second header line (80 chars): columns 1-2 = user initials, 3-10 = program name, 11-20 = date/time (MMDDYYHHmm), 21-22 = dimensional codes (2D/3D), 23-34 = scaling factors",
       "storeAs": "headerLine2",
       "valueType": "ascii"
     },
     {
       "type": "field",
-      "name": "Comment",
+      "name": "Comment Line",
       "offset": 160,
       "length": 80,
       "color": "#95E1D3",
-      "opacity": 0.3,
-      "description": "Comment line",
+      "opacity": 0.35,
+      "description": "Third header line: free-form comment text up to 80 characters; may contain registry numbers, source database ID, or literature reference",
       "storeAs": "comment",
       "valueType": "ascii"
     },
     {
-      "type": "metadata",
-      "name": "File Size",
-      "variable": "fileSize",
-      "description": "File Size"
+      "type": "field",
+      "name": "Counts Line",
+      "offset": 240,
+      "length": 80,
+      "color": "#FFE66D",
+      "opacity": 0.4,
+      "description": "Counts line (fixed columns): aaabbblllfffcccsssxxxrrrpppiiimmmvvvvvv — atom count (3), bond count (3), atom lists (3), obsolete fields, and version tag V2000 or V3000",
+      "storeAs": "countsLine",
+      "valueType": "ascii"
     },
     {
       "type": "metadata",
-      "name": "Version",
-      "variable": "version",
-      "description": "Version"
+      "name": "Atom Count",
+      "variable": "atomCount",
+      "description": "Number of atoms in the atom block, parsed from columns 1-3 of the counts line"
     },
     {
       "type": "metadata",
-      "name": "Formatted Size",
-      "variable": "formattedSize",
-      "description": "Human-readable file size"
+      "name": "Bond Count",
+      "variable": "bondCount",
+      "description": "Number of bonds in the bond block, parsed from columns 4-6 of the counts line"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "HasCountsLine",
+      "description": "A valid Molfile must have at least 4 lines before the atom block; files shorter than 240 bytes cannot contain a valid header plus counts line",
+      "minFileSize": 240,
+      "severity": "warning"
+    },
+    {
+      "name": "ValidVersionTag",
+      "description": "Columns 35-39 of the counts line (offset ~274) should contain 'V2000' or 'V3000'; absence suggests a very old V1 format with 6-character coordinates",
+      "offset": 274,
+      "length": 5,
+      "validAsciiValues": ["V2000", "V3000"],
+      "severity": "info"
+    }
+  ],
+  "inspector": {
+    "groups": [
+      {
+        "name": "Header",
+        "fields": [
+          { "label": "Molecule Name",     "offset": 0,   "length": 80, "format": "ascii" },
+          { "label": "Program/Timestamp", "offset": 80,  "length": 80, "format": "ascii" },
+          { "label": "Comment",           "offset": 160, "length": 80, "format": "ascii" }
+        ]
+      },
+      {
+        "name": "Counts",
+        "fields": [
+          { "label": "Counts Line", "offset": 240, "length": 80, "format": "ascii" }
+        ]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "Molfile Header",
+      "fields": ["moleculeName", "comment", "countsLine"]
     }
   ],
   "software": [
-    "Common file viewers",
-    "Specialized software"
+    "ChemDraw",
+    "MarvinSketch",
+    "OpenBabel",
+    "RDKit",
+    "DataWarrior",
+    "Avogadro"
   ],
   "formatRelationships": {
-    "category": "Science",
-    "extensions": [
-      ".mol"
-    ]
+    "cheminformatics": true,
+    "container_format": "SDF (multiple Molfiles)",
+    "related": ["SDF", "RXN", "RDF", "MOL2"],
+    "databases": ["PubChem", "ChEMBL", "ChemSpider"]
   },
   "MimeTypes": [
+    "chemical/x-mdl-molfile",
     "application/octet-stream"
   ],
-  "Software": [
-    "Hex Editor",
-    "File Viewer",
-    "Archive Manager"
-  ],
   "UseCases": [
-    "File storage",
-    "Data exchange",
-    "Archive"
+    "Chemical structure exchange",
+    "Drug discovery and QSAR modeling",
+    "PubChem and ChEMBL downloads",
+    "Cheminformatics pipeline input"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 33,
-    "DocumentationLevel": "standard",
+    "CompletenessScore": 57,
+    "DocumentationLevel": "detailed",
     "BlocksDefined": 6,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
     "PriorityFormat": false,
-    "AutoRefined": true
+    "AutoRefined": false
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32LE": "Read file header",
-    "formatFileSize(var:fileSize)": "Format fileSize as readable size"
+  "TechnicalDetails": {
+    "encoding": "ASCII text, fixed-column format",
+    "headerLines": 3,
+    "atomBlockFormat": "xxxxx.xxxxyyyyy.yyyyzzzzz.zzzz aaa dd ccc sss hhh bbb vvv HHH rrriiimmmnnneee",
+    "bondBlockFormat": "111222tttsssxxxrrrccc"
   },
   "forensic": {
     "category": "science",
@@ -132,11 +179,15 @@
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "MDL Molfile chemical structure format",
+    "analysisContext": "MDL Molfiles are the universal chemical structure exchange format. Detection is by the V2000/V3000 tag in the counts line, not a binary magic. SDF files concatenate multiple Molfiles separated by '$$$$' lines.",
     "suggestedInspections": [
-      "Validate MDL Molfile file header, data type, and dimension fields",
-      "Check axis labels, units, and calibration metadata",
-      "Inspect data array boundaries and fill/missing value markers"
+      "Read line 1 for molecule name; blank is valid",
+      "Read line 4 (counts line) columns 1-3 for atom count and columns 4-6 for bond count",
+      "Check columns 35-39 of counts line for version tag V2000 or V3000",
+      "Parse atom block: one line per atom with X, Y, Z (Angstrom, 10.4f), element (3 chars), charge code",
+      "Parse bond block: one line per bond with atom1 index, atom2 index, bond type (1=single, 2=double, 3=triple)",
+      "Detect V3000 by 'M  V30 BEGIN CTAB' line — this format uses a different block structure",
+      "Look for 'M  END' to identify the end of molecule data"
     ]
   }
 }

@@ -1,124 +1,199 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Flash MP4 Video",
-  "version": "1.13",
+  "version": "1.14",
   "extensions": [
     ".f4v",
     ".f4p",
     ".f4a",
     ".f4b"
   ],
-  "description": "Adobe Flash MP4-based video container format",
+  "description": "F4V is an ISOBMFF (ISO Base Media File Format) based container developed by Adobe for Flash Player and Adobe Media Server. F4V superseded the older FLV format for H.264/AAC content in Flash Player 9.0.115+. F4V files begin with an 'ftyp' box: size (4B BE), 'ftyp' type (4B), major brand 'f4v ' (4B), minor version (4B BE), and compatible brands. The F4V major brand is 'f4v ' (0x66 0x34 0x76 0x20). F4V variants: .f4p = protected (Adobe Access DRM), .f4a = audio only, .f4b = audio book. F4V is structurally identical to MPEG-4 Part 14 (.mp4) with 'f4v '-specific compatible brand. The moov atom contains trak/mdia/minf/stbl boxes with H.264 video (avc1) and AAC audio (mp4a).",
   "category": "Video",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "ISO/IEC 14496-12 - ISO Base Media File Format",
-      "ISO/IEC 14496-14 - MP4 File Format"
+      "ISO/IEC 14496-12 — ISO Base Media File Format",
+      "ISO/IEC 14496-14 — MP4 File Format",
+      "Adobe F4V File Format Specification v1.0"
     ],
     "WebLinks": [
+      "https://en.wikipedia.org/wiki/Flash_Video#F4V",
       "https://mpeg.chiariglione.org/standards/mpeg-4",
-      "https://en.wikipedia.org/wiki/MPEG-4_Part_14"
+      "https://www.loc.gov/preservation/digital/formats/fdd/fdd000341.shtml"
     ]
   },
   "detection": {
-    "signature": "66747970663476",
-    "offset": 4,
+    "signatures": [
+      { "value": "66747970", "offset": 4, "label": "'ftyp' box type at offset 4 (ISOBMFF)", "weight": 0.6 },
+      { "value": "66347620", "offset": 8, "label": "'f4v ' major brand — F4V Flash video", "weight": 1.0 },
+      { "value": "66347670", "offset": 8, "label": "'f4vp' major brand — F4V protected", "weight": 1.0 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.6,
     "required": true,
+    "Strength": "Medium",
+    "EntropyHint": { "min": 4.5, "max": 7.5 },
     "validation": {
-      "minFileSize": 7,
-      "maxSignatureOffset": 1024
+      "minFileSize": 16,
+      "note": "'ftyp' at offset 4 shared with all ISOBMFF formats. 'f4v ' or 'f4vp' major brand at offset 8 identifies F4V specifically."
     }
   },
-  "functions": {
-    "readUInt32BE": "Read 32-bit big-endian for box sizes and timestamps",
-    "extractASCIIString": "Extract box type identifiers (ftyp, moov, mdat)",
-    "readUInt16BE": "Read 16-bit values for video dimensions",
-    "computeFromVariables(width * height, totalPixels)": "Calculate total pixels"
-  },
   "variables": {
-    "currentOffset": 0,
-    "majorBrand": "f4v",
-    "width": 0,
-    "height": 0,
-    "duration": 0,
-    "videoCodec": "H.264",
-    "audioCodec": "AAC",
-    "fileTypeBox": "",
-    "totalPixels": 0
+    "ftypBoxSize": 0,
+    "ftypBoxType": "",
+    "majorBrand": "",
+    "minorVersion": 0
   },
   "blocks": [
     {
+      "type": "field",
+      "name": "ftyp Box Size",
+      "offset": 0,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "Size in bytes of the 'ftyp' File Type box (big-endian uint32). Minimum 20 bytes (size + 'ftyp' + brand + version + 1 compat brand).",
+      "storeAs": "ftypBoxSize",
+      "valueType": "uint32",
+      "endianness": "big"
+    },
+    {
       "type": "signature",
-      "name": "File Type Box",
+      "name": "ftyp Box Type",
       "offset": 4,
-      "length": 7,
+      "length": 4,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "ftypf4v - Flash Video file type",
-      "storeAs": "fileTypeBox",
+      "opacity": 0.45,
+      "description": "ISOBMFF box type identifier 'ftyp' (0x66747970). Mandatory first box in all ISOBMFF-derived formats. F4V places 'ftyp' at offset 4 (after the 4-byte size), identical to MP4 and 3GP.",
+      "storeAs": "ftypBoxType",
       "valueType": "ascii"
     },
     {
+      "type": "field",
+      "name": "Major Brand",
+      "offset": 8,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.35,
+      "description": "4-byte ASCII brand identifying the ISOBMFF profile. F4V brands: 'f4v ' = standard Adobe Flash Video, 'f4vp' = F4V with Adobe Access DRM protection. Compatible brands typically include 'mp42', 'isom'.",
+      "storeAs": "majorBrand",
+      "valueType": "ascii",
+      "valueMap": {
+        "f4v ": "F4V — Adobe Flash Video (H.264/AAC)",
+        "f4vp": "F4VP — Adobe Flash Video Protected (Adobe Access DRM)",
+        "f4a ": "F4A — Flash Audio only",
+        "f4b ": "F4B — Flash Audio Book"
+      }
+    },
+    {
+      "type": "field",
+      "name": "Minor Version",
+      "offset": 12,
+      "length": 4,
+      "color": "#FFE66D",
+      "opacity": 0.25,
+      "description": "Informational minor version (big-endian uint32). Often 0.",
+      "storeAs": "minorVersion",
+      "valueType": "uint32",
+      "endianness": "big"
+    },
+    {
       "type": "metadata",
-      "name": "Total Pixels",
-      "variable": "totalPixels",
-      "description": "Width x Height"
+      "name": "Major Brand",
+      "variable": "majorBrand",
+      "description": "'f4v '=Flash video, 'f4vp'=DRM protected"
+    },
+    {
+      "type": "metadata",
+      "name": "ftyp Box Size",
+      "variable": "ftypBoxSize",
+      "description": "File Type box size"
     }
   ],
-  "software": [
-    "Flash players",
-    "VLC",
-    "FFmpeg"
+  "assertions": [
+    {
+      "name": "ftyp box type valid",
+      "expression": "ftypBoxType == 'ftyp'",
+      "severity": "error",
+      "message": "Box type at offset 4 must be 'ftyp' — not a valid ISOBMFF/F4V file"
+    }
   ],
-  "formatRelationships": {
-    "category": "Video",
-    "extensions": [
-      ".f4v",
-      ".f4p",
-      ".f4a"
+  "navigation": {
+    "bookmarks": [
+      { "name": "ftyp Box", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
+      { "name": "Major Brand", "offset": 8, "icon": "\uE8A5", "color": "#95E1D3" }
     ]
   },
-  "MimeTypes": [
-    "video/f4v"
-  ],
-  "Software": [
-    "VLC",
-    "Media Player Classic",
-    "HandBrake",
-    "FFmpeg",
-    "MPC-HC"
-  ],
-  "UseCases": [
-    "Video playback",
-    "Video editing",
-    "Encoding",
-    "Streaming"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 2,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "majorBrand",
+    "primaryField": "ftypBoxSize",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "ftyp Box",
+        "icon": "\uE71B",
+        "fields": ["ftypBoxSize", "ftypBoxType", "majorBrand", "minorVersion"]
+      }
+    ]
   },
-  "TechnicalDetails": {
-    "VideoFormat": true
-  },
+  "exportTemplates": [
+    {
+      "name": "F4V ftyp Box (JSON)",
+      "format": "json",
+      "fields": ["ftypBoxSize", "ftypBoxType", "majorBrand", "minorVersion"]
+    }
+  ],
   "forensic": {
     "category": "video",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Adobe Flash MP4-based video container format",
+    "analysisContext": "F4V = ISOBMFF like MP4. ftyp: size(4B BE)+'ftyp'(4B)+brand(4B)+'f4v '(with space!)+version(4B BE)+compatBrands. Video: avc1 box (H.264/AVC). Audio: mp4a (AAC-LC). DRM: 'f4vp' brand + Adobe Access encryption in sinf box. Structure identical to MP4: moov > trak > mdia > minf > stbl contains sample tables. F4V uses 'moov' at end (streaming servers use 'moov' at start via fast-start). Adobe ended Flash support in 2020; F4V is legacy.",
     "suggestedInspections": [
-      "Validate Flash MP4 Video container magic, box/atom sizes, and codec FourCC",
-      "Check track/stream layout, frame index, and timing fields",
-      "Inspect audio-video sync, keyframe distribution, and metadata"
+      "Verify 'ftyp' at offset 4 and 'f4v ' at offset 8 (note trailing space in brand)",
+      "Check compatible brands (offset 16+) for 'mp42', 'isom'",
+      "moov box contains trak for video (avc1) and audio (mp4a)",
+      "Look for 'f4vp' brand or Adobe Access 'sinf' box for DRM"
     ]
+  },
+  "software": [
+    "Adobe Flash Player (legacy, EOL 2020)",
+    "Adobe Media Server",
+    "VLC media player",
+    "FFmpeg (mp4 demuxer)"
+  ],
+  "formatRelationships": {
+    "category": "Video",
+    "extensions": [".f4v", ".f4p", ".f4a", ".f4b"],
+    "relatedFormats": ["FLV", "MP4", "M4V"],
+    "note": "F4V is an ISOBMFF/MP4 profile for Adobe Flash. Structurally identical to MP4 with 'f4v ' major brand. F4V superseded FLV for H.264 content in Flash Player. Adobe Flash EOL in 2020 makes F4V legacy — content typically migrated to MP4/HLS/DASH."
+  },
+  "MimeTypes": [
+    "video/x-f4v",
+    "video/mp4"
+  ],
+  "UseCases": [
+    "Adobe Flash Player H.264 streaming (legacy)",
+    "Adobe Media Server content delivery",
+    "Flash-based video platform archives"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 65,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 6,
+    "ValidationRules": 1,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "VideoFormat": true,
+    "ContainerFormat": "ISOBMFF / MPEG-4 Part 14 (F4V profile)",
+    "Endianness": "big-endian (all box sizes)",
+    "VideoCodecs": "H.264/AVC (avc1)",
+    "AudioCodecs": "AAC-LC (mp4a)"
   }
 }

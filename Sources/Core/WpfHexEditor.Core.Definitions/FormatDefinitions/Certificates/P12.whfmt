@@ -1,7 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "PKCS#12 Certificate",
-  "version": "1.12",
+  "version": "1.13",
   "extensions": [
     ".p12",
     ".pfx"

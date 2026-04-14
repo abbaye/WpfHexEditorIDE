@@ -1,53 +1,58 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "3ds Max",
-  "version": "1.14",
+  "version": "1.15",
   "extensions": [
     ".max"
   ],
-  "description": "Autodesk 3ds Max scene file (OLE2 Compound Document)",
+  "description": "Autodesk 3ds Max native scene file stored in an OLE2 Compound Document (Structured Storage) container — the same binary container format used by legacy Microsoft Office documents. The file begins with the standard OLE2 magic bytes D0 CF 11 E0 A1 B1 1A E1. Inside the container, 3ds Max stores its scene data in named streams. Detection requires noting that OLE2 magic is shared with .doc, .xls, and .ppt files; disambiguation relies on file extension or internal stream names. The format supports full 3ds Max scenes with geometry, modifiers, materials, lights, cameras, and animation.",
   "category": "3D",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "3ds Max Format"
+      "Microsoft Compound File Binary Format (OLE2)",
+      "Autodesk 3ds Max SDK Documentation"
     ],
     "WebLinks": [
-      "https://en.wikipedia.org/wiki/MAX"
+      "https://en.wikipedia.org/wiki/3ds_Max",
+      "https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-cfb/",
+      "https://wiki.fileformat.com/3d/max/"
     ]
   },
   "detection": {
-    "signature": "D0CF11E0A1B11AE1",
-    "offset": 0,
+    "signatures": [
+      { "value": "D0CF11E0A1B11AE1", "offset": 0, "label": "OLE2 Compound Document magic", "weight": 0.7 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.6,
     "required": true,
+    "Strength": "Medium",
+    "EntropyHint": { "min": 4.0, "max": 7.5 },
     "validation": {
-      "minFileSize": 8,
-      "maxSignatureOffset": 1024
+      "minFileSize": 512,
+      "maxSignatureOffset": 0,
+      "note": "OLE2 magic is shared with .doc/.xls/.ppt. Disambiguation requires .max extension or checking internal stream names for 3ds Max identifiers."
     }
   },
   "variables": {
-    "currentOffset": 0,
-    "vertexCount": 0,
-    "faceCount": 0,
-    "materialCount": 0,
-    "fileSize": 0,
-    "ole2Signature": "",
+    "ole2Magic": "",
     "minorVersion": 0,
     "majorVersion": 0,
-    "formattedSize": ""
+    "byteOrder": 0,
+    "sectorSize": 0
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "OLE2 Signature",
+      "name": "OLE2 Magic",
       "offset": 0,
       "length": 8,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "OLE2 compound document signature",
-      "storeAs": "ole2Signature",
-      "valueType": "ascii"
+      "opacity": 0.45,
+      "description": "8-byte OLE2 Compound Document magic bytes D0 CF 11 E0 A1 B1 1A E1. This signature identifies any OLE2 structured storage container, including 3ds Max .max files, legacy Office documents, and other OLE2-based formats.",
+      "storeAs": "ole2Magic",
+      "valueType": "bytes"
     },
     {
       "type": "field",
@@ -55,8 +60,8 @@
       "offset": 24,
       "length": 2,
       "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "OLE2 minor version",
+      "opacity": 0.35,
+      "description": "OLE2 compound file minor version number at offset 24, stored as little-endian uint16. Typically 0x003E for standard compound files. Used by parsers to select compatible reading strategy.",
       "storeAs": "minorVersion",
       "valueType": "uint16"
     },
@@ -66,34 +71,77 @@
       "offset": 26,
       "length": 2,
       "color": "#95E1D3",
-      "opacity": 0.3,
-      "description": "OLE2 major version",
+      "opacity": 0.35,
+      "description": "OLE2 compound file major version number at offset 26, stored as little-endian uint16. Value 3 uses 512-byte sectors; value 4 uses 4096-byte mini-sectors. Determines the FAT sector layout.",
       "storeAs": "majorVersion",
       "valueType": "uint16"
     },
     {
-      "type": "metadata",
-      "name": "Vertex Count",
-      "variable": "vertexCount",
-      "description": "Vertex Count"
+      "type": "field",
+      "name": "Byte Order Mark",
+      "offset": 28,
+      "length": 2,
+      "color": "#FFE66D",
+      "opacity": 0.35,
+      "description": "Byte order identifier at offset 28. Value 0xFFFE indicates little-endian byte order (standard for all modern OLE2 files). Big-endian (0xFEFF) is theoretically defined but not used in practice.",
+      "storeAs": "byteOrder",
+      "valueType": "uint16"
     },
     {
-      "type": "metadata",
-      "name": "Face Count",
-      "variable": "faceCount",
-      "description": "Face Count"
+      "type": "field",
+      "name": "Sector Size Power",
+      "offset": 30,
+      "length": 2,
+      "color": "#C3A6FF",
+      "opacity": 0.35,
+      "description": "Sector size as a power of 2 at offset 30. Value 9 means 512-byte sectors (standard for version 3), value 12 means 4096-byte sectors (version 4). Determines the granularity of FAT allocation.",
+      "storeAs": "sectorSize",
+      "valueType": "uint16"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "ValidOle2Magic",
+      "expression": "ole2Magic == 'D0CF11E0A1B11AE1'",
+      "severity": "error",
+      "message": "OLE2 magic bytes not found. This is not a valid OLE2 Compound Document container. The .max file may be corrupt or not a 3ds Max scene file."
     },
     {
-      "type": "metadata",
-      "name": "Material Count",
-      "variable": "materialCount",
-      "description": "Material Count"
-    },
+      "name": "ValidByteOrder",
+      "expression": "byteOrder == 0xFFFE",
+      "severity": "warning",
+      "message": "Byte order mark is not 0xFFFE (little-endian). Unexpected byte order in OLE2 container; file may be malformed."
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "OLE2 Header", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
+      { "name": "Version Fields", "offset": 24, "icon": "\uE946", "color": "#4ECDC4" },
+      { "name": "FAT Parameters", "offset": 28, "icon": "\uE8B7", "color": "#FFE66D" }
+    ]
+  },
+  "inspector": {
+    "badge": "majorVersion",
+    "primaryField": "minorVersion",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "OLE2 Container",
+        "icon": "\uE71B",
+        "fields": ["ole2Magic", "minorVersion", "majorVersion"]
+      },
+      {
+        "title": "Sector Layout",
+        "icon": "\uE8B7",
+        "fields": ["byteOrder", "sectorSize"]
+      }
+    ]
+  },
+  "exportTemplates": [
     {
-      "type": "metadata",
-      "name": "Formatted Size",
-      "variable": "formattedSize",
-      "description": "Human-readable file size"
+      "name": "MAX/OLE2 Header (JSON)",
+      "format": "json",
+      "fields": ["ole2Magic", "minorVersion", "majorVersion", "byteOrder", "sectorSize"]
     }
   ],
   "software": [
@@ -101,52 +149,45 @@
   ],
   "formatRelationships": {
     "category": "3D",
-    "extensions": [
-      ".max"
-    ]
+    "extensions": [".max"],
+    "relatedFormats": ["3DS", "FBX", "OBJ"],
+    "note": "OLE2 magic shared with legacy Office formats; disambiguation by extension or internal stream names"
   },
   "MimeTypes": [
     "application/octet-stream"
   ],
-  "Software": [
-    "Blender",
-    "3ds Max",
-    "Maya",
-    "Cinema 4D",
-    "MeshLab"
-  ],
   "UseCases": [
-    "3D modeling",
-    "Rendering",
-    "Animation",
-    "Game development"
+    "3D scene authoring in 3ds Max",
+    "Architectural visualization",
+    "Game asset creation",
+    "VFX scene storage"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 38,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 7,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
+    "CompletenessScore": 60,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 5,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
     "PriorityFormat": false,
-    "AutoRefined": true
+    "AutoRefined": false
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32LE": "Read mesh data",
-    "multiply": "Calculate vertices",
-    "formatFileSize(var:fileSize)": "Format fileSize as readable size"
+  "TechnicalDetails": {
+    "container": "OLE2 Compound Document",
+    "encoding": "binary-little-endian",
+    "sectorBased": true,
+    "sharedMagicWith": ["DOC", "XLS", "PPT"]
   },
   "forensic": {
-    "category": "3d-model",
+    "category": "3d",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Autodesk 3ds Max scene file (OLE2 Compound Document)",
+    "analysisContext": "Autodesk 3ds Max scene file using OLE2 Compound Document container. Same magic as legacy Office files. Scene data stored in named internal streams. Sector size varies by OLE2 version.",
     "suggestedInspections": [
-      "Validate 3ds Max header magic bytes and format version",
-      "Check vertex/face count fields and mesh data boundaries",
-      "Inspect embedded material, texture, and animation references"
+      "Confirm OLE2 magic and read major version to determine sector size (512 or 4096 bytes)",
+      "Parse the directory stream to enumerate internal stream names and identify Max-specific streams",
+      "Note that the OLE2 magic alone does not confirm .max — file extension is required for disambiguation"
     ]
   }
 }

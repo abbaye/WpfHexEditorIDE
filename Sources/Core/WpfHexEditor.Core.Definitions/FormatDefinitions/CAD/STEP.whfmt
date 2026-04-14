@@ -1,7 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "STEP 3D Model",
-  "version": "1.13",
+  "version": "1.14",
   "extensions": [
     ".step",
     ".stp"

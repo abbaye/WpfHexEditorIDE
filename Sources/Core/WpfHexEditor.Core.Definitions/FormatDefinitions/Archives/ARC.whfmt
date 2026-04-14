@@ -1,11 +1,9 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "ARC Archive",
-  "version": "1.12",
-  "extensions": [
-    ".arc"
-  ],
-  "description": "ARC archive format, one of the earliest archive formats for MS-DOS, created by System Enhancement Associates",
+  "version": "1.13",
+  "extensions": [ ".arc" ],
+  "description": "ARC is one of the earliest MS-DOS archive formats, created by System Enhancement Associates (SEA) in 1985. It stores multiple files with compression using various methods: type 1=stored (no compression), type 2=packed (RLE), type 3=squeezed (Huffman), types 4-6=crunched (LZW variants), types 7-9=squashed (improved LZW). Each entry begins with 0x1A followed by a compression type byte. The format predates ZIP and influenced many later archival tools. Despite its age, ARC files remain relevant for digital preservation of 1980s software archives.",
   "category": "Archives",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
@@ -23,24 +21,29 @@
     ]
   },
   "detection": {
-    "signature": "1A",
-    "offset": 0,
+    "signatures": [
+      { "hex": "1A", "offset": 0, "weight": 0.7 },
+      { "hex": "1A01", "offset": 0, "weight": 0.9 },
+      { "hex": "1A02", "offset": 0, "weight": 0.9 },
+      { "hex": "1A08", "offset": 0, "weight": 0.9 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.7,
     "required": true,
+    "Strength": "Medium",
+    "EntropyHint": { "min": 0.5, "max": 7.5 },
     "validation": {
-      "minFileSize": 1,
-      "maxSignatureOffset": 1024
+      "minFileSize": 30,
+      "maxSignatureOffset": 0,
+      "note": "Byte at offset 0 must be 0x1A; byte at offset 1 must be 1-9 for valid entry type"
     }
   },
-  "functions": {
-    "readUInt32LE": "Read compressed file size (little-endian)",
-    "extractASCIIString": "Extract filename from header",
-    "formatFileSize(var:compressedSize)": "Format compressedSize as readable size"
-  },
   "variables": {
+    "archiveMarker": 0,
     "compressionMethod": 0,
     "fileName": "",
     "compressedSize": 0,
-    "archiveMarker": 0,
+    "uncompressedSize": 0,
     "formattedSize": ""
   },
   "blocks": [
@@ -51,113 +54,179 @@
       "length": 1,
       "color": "#FF6B6B",
       "opacity": 0.4,
-      "description": "Archive marker byte (0x1A)",
+      "description": "ARC entry marker byte (0x1A). Every entry in an ARC file begins with this byte.",
       "storeAs": "archiveMarker",
       "valueType": "uint8"
     },
     {
-      "type": "data",
-      "name": "Compression Method",
+      "type": "field",
+      "name": "Compression Type",
       "offset": 1,
       "length": 1,
       "color": "#4ECDC4",
       "opacity": 0.4,
-      "description": "Compression method (0x00=stored, 0x01-0x09=various methods)"
+      "description": "Compression method: 1=stored, 2=packed (RLE), 3=squeezed (Huffman), 4-6=crunched, 7-9=squashed",
+      "storeAs": "compressionMethod",
+      "valueType": "uint8",
+      "valueMap": {
+        "1": "Stored (uncompressed)",
+        "2": "Packed (RLE)",
+        "3": "Squeezed (Huffman)",
+        "4": "Crunched v1",
+        "5": "Crunched v2",
+        "6": "Crunched v3",
+        "7": "Squashed",
+        "8": "Squashed v2",
+        "9": "Squashed v3"
+      }
     },
     {
-      "type": "data",
+      "type": "field",
       "name": "Filename",
       "offset": 2,
       "length": 13,
       "color": "#45B7D1",
       "opacity": 0.4,
-      "description": "Filename (null-terminated, 8.3 format)"
+      "description": "Null-terminated filename in 8.3 DOS format (up to 12 chars + null terminator)",
+      "storeAs": "fileName",
+      "valueType": "ascii"
     },
     {
-      "type": "data",
+      "type": "field",
       "name": "Compressed Size",
       "offset": 15,
       "length": 4,
       "color": "#96CEB4",
       "opacity": 0.4,
-      "description": "Compressed file size (little-endian)"
+      "description": "Size of compressed data for this entry (little-endian uint32)",
+      "storeAs": "compressedSize",
+      "valueType": "uint32"
     },
     {
-      "type": "metadata",
-      "name": "Compression Method",
-      "variable": "compressionMethod",
-      "description": "Compression algorithm used (0=stored, 1-9=various)"
+      "type": "field",
+      "name": "File Date",
+      "offset": 19,
+      "length": 2,
+      "color": "#FFEAA7",
+      "opacity": 0.4,
+      "description": "MS-DOS packed date: bits 15-9=year-1980, bits 8-5=month, bits 4-0=day",
+      "valueType": "uint16"
     },
     {
-      "type": "metadata",
-      "name": "File Name",
-      "variable": "fileName",
-      "description": "Name of first archived file (8.3 format)"
+      "type": "field",
+      "name": "File Time",
+      "offset": 21,
+      "length": 2,
+      "color": "#DDA0DD",
+      "opacity": 0.4,
+      "description": "MS-DOS packed time: bits 15-11=hours, bits 10-5=minutes, bits 4-0=seconds/2",
+      "valueType": "uint16"
     },
     {
-      "type": "metadata",
-      "name": "Compressed Size (bytes)",
-      "variable": "compressedSize",
-      "description": "Size of compressed file data"
+      "type": "field",
+      "name": "CRC-16",
+      "offset": 23,
+      "length": 2,
+      "color": "#F0A500",
+      "opacity": 0.4,
+      "description": "CRC-16 checksum of uncompressed file data",
+      "valueType": "uint16"
     },
     {
-      "type": "metadata",
-      "name": "Formatted Size",
-      "variable": "formattedSize",
-      "description": "Human-readable file size"
+      "type": "field",
+      "name": "Uncompressed Size",
+      "offset": 25,
+      "length": 4,
+      "color": "#98D8C8",
+      "opacity": 0.4,
+      "description": "Original uncompressed file size (little-endian uint32)",
+      "storeAs": "uncompressedSize",
+      "valueType": "uint32"
     }
   ],
+  "assertions": [
+    { "field": "archiveMarker", "operator": "equals", "value": 26, "description": "First byte must be 0x1A (ARC entry marker)" },
+    { "field": "compressionMethod", "operator": "between", "min": 1, "max": 9, "description": "Compression type must be 1-9 for valid ARC entries" }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "First Entry Header", "offset": 0, "description": "ARC first file entry starts here" },
+      { "name": "First Filename", "offset": 2, "description": "Filename of the first archived file" }
+    ]
+  },
+  "inspector": {
+    "badge": "ARC",
+    "primaryField": "fileName",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "name": "Entry Header",
+        "fields": ["archiveMarker", "compressionMethod", "fileName"]
+      },
+      {
+        "name": "Size Information",
+        "fields": ["compressedSize", "uncompressedSize"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "ARC Entry Info (JSON)",
+      "format": "json",
+      "fields": ["fileName", "compressionMethod", "compressedSize", "uncompressedSize"]
+    }
+  ],
+  "forensic": {
+    "category": "archive",
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      "Type byte outside range 1-9 may indicate corrupt or non-standard ARC",
+      "Null filename could indicate end-of-archive marker or corruption"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "ARC is one of the earliest PC archive formats (1985). Each entry header starts with 0x1A + type byte (1-9). Type 20 (0x1A at both positions) signals end-of-archive. The format predates ZIP and is primarily encountered in vintage software preservation contexts.",
+    "suggestedInspections": [
+      "Verify entry marker (0x1A) and valid compression type (1-9) at offsets 0-1",
+      "Read filename at offset 2 (13 bytes, null-terminated, 8.3 format)",
+      "Compare compressedSize vs uncompressedSize to assess compression ratio",
+      "Scan for end-of-archive marker (0x1A 0x00)",
+      "Verify CRC-16 at offset 23 against decompressed data"
+    ]
+  },
   "software": [
-    "ARC",
+    "ARC (SEA)",
     "7-Zip",
+    "PeaZip",
+    "The Unarchiver",
     "Archive utilities"
   ],
   "formatRelationships": {
     "category": "Archives",
-    "extensions": [
-      ".arc"
-    ]
+    "extensions": [".arc"],
+    "relatedFormats": ["PAK", "ARJ", "ZIP", "LZH"],
+    "note": "PAK format is derived from ARC and shares the 0x1A magic byte. ARC influenced ARJ, ZIP, and LZH designs."
   },
-  "MimeTypes": [
-    "application/x-arc-compressed"
-  ],
-  "Software": [
-    "7-Zip",
-    "WinRAR",
-    "WinZip",
-    "PeaZip",
-    "The Unarchiver"
-  ],
+  "MimeTypes": [ "application/x-arc-compressed" ],
   "UseCases": [
-    "File compression",
-    "Archive storage",
-    "Backup",
-    "Distribution"
+    "Legacy software distribution (1985-1990s era)",
+    "Digital preservation of vintage MS-DOS archives",
+    "Historical software archaeology"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
+    "CompletenessScore": 62,
+    "DocumentationLevel": "detailed",
     "BlocksDefined": 8,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
     "PriorityFormat": false,
-    "AutoRefined": true
+    "AutoRefined": false
   },
   "TechnicalDetails": {
     "ArchivesFormat": true,
-    "SupportsEncryption": false
-  },
-  "forensic": {
-    "category": "archive",
-    "riskLevel": "low",
-    "suspiciousPatterns": []
-  },
-  "aiHints": {
-    "analysisContext": "ARC archive format, one of the earliest archive formats for MS-DOS, created by System Enhancement Associates",
-    "suggestedInspections": [
-      "Verify ARC Archive file header, compression method, and stored CRCs",
-      "Check central directory or entry table for consistency",
-      "Inspect individual entry sizes for truncation or overflow"
-    ]
+    "SupportsEncryption": false,
+    "CompressionMethods": ["stored", "RLE", "Huffman", "LZW"],
+    "Endianness": "little-endian",
+    "MaxFilenameLength": 12
   }
 }

@@ -1,30 +1,33 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "FITS Astronomical Data",
-  "version": "1.13",
+  "version": "1.14",
   "extensions": [
     ".fits",
     ".fit"
   ],
-  "description": "Flexible Image Transport System - Astronomy",
+  "description": "Flexible Image Transport System (FITS) is the standard data format used in astronomy for storing, transmitting, and manipulating scientific datasets. Developed in 1981 and standardized by IAU, FITS files consist of a series of Header-Data Units (HDUs). Each HDU begins with a fixed-length 2880-byte header containing ASCII keyword=value cards, followed by an optional data array. The primary HDU may contain an N-dimensional array (NAXIS), with subsequent extensions holding images, binary tables, or ASCII tables. Widely used by NASA, ESA, and major observatories worldwide.",
   "category": "Science",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "FITS Astronomical Data Format"
+      "FITS Astronomical Data Format",
+      "FITS Standard 4.0 (2018) - IAU FITS Working Group"
     ],
     "WebLinks": [
-      "https://en.wikipedia.org/wiki/FITS"
+      "https://en.wikipedia.org/wiki/FITS",
+      "https://fits.gsfc.nasa.gov/fits_standard.html"
     ]
   },
   "detection": {
     "signature": "53494D504C4520203D",
     "offset": 0,
     "required": true,
+    "weight": 1.0,
     "validation": {
-      "minFileSize": 9,
-      "maxSignatureOffset": 1024
+      "minFileSize": 2880,
+      "maxSignatureOffset": 0
     }
   },
   "variables": {
@@ -32,88 +35,173 @@
     "dimensions": 0,
     "dataType": "",
     "arrayCount": 0,
-    "fitsHeader": ""
+    "fitsHeader": "",
+    "bitpix": 0,
+    "naxis": 0
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "FITS Header",
+      "name": "FITS Signature",
       "offset": 0,
       "length": 9,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "SIMPLE  =",
+      "opacity": 0.85,
+      "description": "FITS mandatory keyword 'SIMPLE  =' (9 ASCII bytes) indicating a conforming FITS file at offset 0",
       "storeAs": "fitsHeader",
       "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Primary HDU Header Block",
+      "offset": 0,
+      "length": 2880,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "First 2880-byte header block containing fixed-format 80-byte ASCII keyword=value cards including SIMPLE, BITPIX, NAXIS, and END",
+      "storeAs": "primaryHeader",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "BITPIX Card",
+      "offset": 80,
+      "length": 80,
+      "color": "#95E1D3",
+      "opacity": 0.4,
+      "description": "BITPIX keyword card specifying bits per data element: 8=uint8, 16=int16, 32=int32, -32=float32, -64=float64",
+      "storeAs": "bitpixCard",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "NAXIS Card",
+      "offset": 160,
+      "length": 80,
+      "color": "#FFE66D",
+      "opacity": 0.35,
+      "description": "NAXIS keyword card indicating the number of data axes in the primary array (0 means no data array follows the header)",
+      "storeAs": "naxisCard",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Data Array",
+      "offset": 2880,
+      "length": 0,
+      "color": "#A8E6CF",
+      "opacity": 0.25,
+      "description": "Primary data array padded to a multiple of 2880 bytes; element format defined by BITPIX and dimensions by NAXIS/NAXISn cards",
+      "storeAs": "dataArray",
+      "valueType": "bytes"
     },
     {
       "type": "metadata",
       "name": "Dimensions",
       "variable": "dimensions",
-      "description": "Dimensions"
+      "description": "Number of data axes (NAXIS value) parsed from header"
     },
     {
       "type": "metadata",
       "name": "Data Type",
       "variable": "dataType",
-      "description": "Data Type"
+      "description": "Element data type derived from BITPIX value in the header"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "ValidSIMPLE",
+      "description": "Bytes 0-8 must equal ASCII 'SIMPLE  =' confirming a valid FITS file primary header; any mismatch indicates a corrupt or non-FITS file",
+      "offset": 0,
+      "length": 9,
+      "expectedHex": "53494D504C4520203D",
+      "severity": "error"
     },
     {
-      "type": "metadata",
-      "name": "Array Count",
-      "variable": "arrayCount",
-      "description": "Array Count"
+      "name": "HeaderBlockSize",
+      "description": "FITS header blocks must be multiples of 2880 bytes; a file shorter than 2880 bytes cannot contain a valid primary HDU header block",
+      "minFileSize": 2880,
+      "severity": "warning"
+    }
+  ],
+  "inspector": {
+    "groups": [
+      {
+        "name": "Primary Header",
+        "fields": [
+          { "label": "Signature",    "offset": 0,   "length": 9,  "format": "ascii" },
+          { "label": "BITPIX Card",  "offset": 80,  "length": 80, "format": "ascii" },
+          { "label": "NAXIS Card",   "offset": 160, "length": 80, "format": "ascii" },
+          { "label": "Header Block", "offset": 0,   "length": 2880, "format": "hex" }
+        ]
+      },
+      {
+        "name": "Data Array",
+        "fields": [
+          { "label": "Data Start",  "offset": 2880, "length": 16, "format": "hex" }
+        ]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "FITS Header Summary",
+      "fields": ["fitsHeader", "bitpixCard", "naxisCard"]
     }
   ],
   "software": [
     "DS9",
     "IRAF",
     "AstroPy",
-    "Astronomy software"
+    "CFITSIO",
+    "Aladin",
+    "TopCat"
   ],
   "formatRelationships": {
     "astronomy_standard": true,
     "nasa_format": true,
-    "self_describing": true
+    "self_describing": true,
+    "extensions_supported": ["Image", "BinTable", "Table"]
   },
   "MimeTypes": [
-    "application/octet-stream"
-  ],
-  "Software": [
-    "Hex Editor",
-    "File Viewer",
-    "Archive Manager"
+    "image/fits",
+    "application/fits"
   ],
   "UseCases": [
-    "File storage",
-    "Data exchange",
-    "Archive"
+    "Astronomical image storage",
+    "Spectral data archiving",
+    "Multi-dimensional scientific arrays",
+    "NASA/ESA mission data distribution"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 4,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
+    "CompletenessScore": 62,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 7,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
     "PriorityFormat": false,
-    "AutoRefined": true
+    "AutoRefined": false
   },
-  "TechnicalDetails": {},
+  "TechnicalDetails": {
+    "endianness": "big-endian",
+    "headerBlockSize": 2880,
+    "cardLength": 80,
+    "cardsPerBlock": 36
+  },
   "forensic": {
     "category": "science",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Flexible Image Transport System - Astronomy",
+    "analysisContext": "FITS is the principal interchange format for astronomical datasets from space observatories and ground telescopes. Each file is self-describing via ASCII header cards.",
     "suggestedInspections": [
-      "Validate FITS Astronomical Data file header, data type, and dimension fields",
-      "Check axis labels, units, and calibration metadata",
-      "Inspect data array boundaries and fill/missing value markers"
+      "Verify SIMPLE=T card is present and value is 'T' (conforming file)",
+      "Parse BITPIX to determine element data type: 8/16/32/-32/-64",
+      "Count NAXIS and read NAXISn cards to reconstruct array dimensions",
+      "Check END card presence; its absence means a truncated header block",
+      "Inspect extensions (XTENSION keyword) for Image, BinTable, or Table HDUs",
+      "Validate that data array length equals product of NAXISn values times |BITPIX|/8, padded to 2880 bytes"
     ]
-  },
-  "functions": {
-    "readUInt32BE": "Read scientific header",
-    "multiply": "Calculate dimensions"
   }
 }

@@ -1,22 +1,22 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "AMR-WB Audio",
-  "version": "1.14",
+  "version": "1.15",
   "extensions": [
     ".awb"
   ],
-  "description": "Adaptive Multi-Rate Wideband audio codec for improved speech quality",
+  "description": "AMR-WB (Adaptive Multi-Rate Wideband) — a wideband speech codec standardized by 3GPP (TS 26.171) for 3G/4G mobile networks, also known as G.722.2. The .awb file format starts with the 9-byte header '#!AMR-WB\\n' (0x2321414D522D57420A). Frames follow: each has a 1-byte TOC (Table of Contents) header where bits 7-4 encode the mode (0-8 for 6.6-23.85 kbps), bit 3 = quality flag (1=good), bits 2-0 = padding zeros. AMR-WB uses 16000 Hz sample rate (wideband vs AMR-NB at 8000 Hz), with 20ms frames of 320 samples. AMR-WB is used for HD Voice (VoLTE) in 4G/LTE networks. Note: .awb files are identical in structure to AMR-WB files (.amr with AMR-WB content).",
   "category": "Audio",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "audio-viewer",
   "references": {
     "specifications": [
-      "3GPP TS 26.173 - AMR-WB Speech Codec C-Source Code",
-      "3GPP TS 26.171 - AMR-WB General Description",
-      "Adaptive Multi-Rate Wideband Audio Codec"
+      "3GPP TS 26.171 — AMR-WB General Description",
+      "3GPP TS 26.173 — AMR-WB Speech Codec C-Source Code",
+      "ITU-T G.722.2 — AMR-WB",
+      "RFC 4867 — RTP Payload Format for AMR and AMR-WB"
     ],
     "WebLinks": [
-      "https://www.tech-invite.com/3m26/tinv-3gpp-26-173.html",
       "https://www.tech-invite.com/3m26/tinv-3gpp-26-171.html",
       "https://en.wikipedia.org/wiki/Adaptive_Multi-Rate_Wideband",
       "https://www.loc.gov/preservation/digital/formats/fdd/fdd000255.shtml"
@@ -26,111 +26,185 @@
     "signature": "2321414D522D57420A",
     "offset": 0,
     "required": true,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 3.0, "max": 6.0 },
     "validation": {
       "minFileSize": 9,
-      "maxSignatureOffset": 1024
+      "maxSignatureOffset": 0
     }
   },
   "variables": {
-    "sampleRate": 0,
-    "channels": 0,
-    "bitDepth": 0,
-    "duration": 0,
     "amrWbHeader": "",
-    "byteRate": 0,
-    "samplesPerSecond": 0
+    "firstFrameToc": 0
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "AMR-WB Header",
+      "name": "AMR-WB File Header",
       "offset": 0,
       "length": 9,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "#!AMR-WB - AMR Wideband file signature",
+      "opacity": 0.45,
+      "description": "AMR-WB storage format magic '#!AMR-WB\\n' (0x23 0x21 0x41 0x4D 0x52 0x2D 0x57 0x42 0x0A). This 9-byte sequence is the 3GPP-standardized header for AMR-WB single-channel audio storage. Distinguishes wideband AMR-WB (.awb) from narrowband AMR-NB ('#!AMR\\n', 6 bytes).",
       "storeAs": "amrWbHeader",
       "valueType": "ascii"
     },
     {
-      "type": "metadata",
-      "name": "Sample Rate",
-      "variable": "sampleRate",
-      "description": "Sample Rate"
+      "type": "field",
+      "name": "First Frame TOC",
+      "offset": 9,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "First AMR-WB frame Table of Contents (TOC) byte. Bits 7-4 encode the frame type (AMR-WB mode 0-8 for bitrates 6.6-23.85 kbps). Bit 3 is the quality flag (1=good frame). Bits 2-0 are padding zeros.",
+      "storeAs": "firstFrameToc",
+      "valueType": "uint8",
+      "bitfields": [
+        {
+          "name": "Frame Type (Mode)",
+          "bits": "7-4",
+          "description": "AMR-WB codec mode determining bitrate",
+          "valueMap": {
+            "0": "Mode 0 — 6.60 kbps",
+            "1": "Mode 1 — 8.85 kbps",
+            "2": "Mode 2 — 12.65 kbps",
+            "3": "Mode 3 — 14.25 kbps",
+            "4": "Mode 4 — 15.85 kbps",
+            "5": "Mode 5 — 18.25 kbps",
+            "6": "Mode 6 — 19.85 kbps",
+            "7": "Mode 7 — 23.05 kbps",
+            "8": "Mode 8 — 23.85 kbps (highest quality)",
+            "9": "SID — Silence Insertion Descriptor",
+            "15": "NO_DATA — empty frame"
+          }
+        },
+        {
+          "name": "Quality Flag",
+          "bits": "3",
+          "description": "Frame quality: 1=good, 0=bad (error concealment applied)",
+          "valueMap": {
+            "0": "Bad frame",
+            "1": "Good frame"
+          }
+        }
+      ]
     },
     {
       "type": "metadata",
-      "name": "Channels",
-      "variable": "channels",
-      "description": "Channels"
+      "name": "AMR-WB Header",
+      "variable": "amrWbHeader",
+      "description": "'#!AMR-WB\\n' — AMR Wideband file magic"
     },
     {
       "type": "metadata",
-      "name": "Byte Rate",
-      "variable": "byteRate",
-      "description": "Calculated byte rate"
-    },
-    {
-      "type": "metadata",
-      "name": "Samples/Second",
-      "variable": "samplesPerSecond",
-      "description": "Total samples per second"
+      "name": "First Frame TOC",
+      "variable": "firstFrameToc",
+      "description": "First frame TOC byte (bits 7-4 = mode, bit 3 = quality)"
     }
   ],
-  "software": [
-    "Game audio tools",
-    "CRI Middleware"
+  "assertions": [
+    {
+      "name": "AMR-WB header valid",
+      "expression": "amrWbHeader == '#!AMR-WB'",
+      "severity": "error",
+      "message": "AMR-WB file must start with '#!AMR-WB\\n' (0x2321414D522D57420A) — not a valid AMR-WB file"
+    }
   ],
-  "formatRelationships": {
-    "category": "Audio",
-    "extensions": [
-      ".awb"
+  "navigation": {
+    "bookmarks": [
+      {
+        "name": "AMR-WB Header",
+        "offset": 0,
+        "icon": "\uE71B",
+        "color": "#FF6B6B"
+      },
+      {
+        "name": "First Frame",
+        "offset": 9,
+        "icon": "\uE767",
+        "color": "#4ECDC4"
+      }
     ]
   },
-  "MimeTypes": [
-    "audio/awb"
-  ],
-  "Software": [
-    "VLC",
-    "Audacity",
-    "Foobar2000",
-    "MediaMonkey",
-    "Winamp"
-  ],
-  "UseCases": [
-    "Music playback",
-    "Audio editing",
-    "Sound production",
-    "Streaming"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 5,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "amrWbHeader",
+    "primaryField": "firstFrameToc",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "AMR-WB Identity",
+        "icon": "\uE71B",
+        "fields": ["amrWbHeader"]
+      },
+      {
+        "title": "First Frame",
+        "icon": "\uE767",
+        "fields": ["firstFrameToc"]
+      }
+    ]
   },
-  "TechnicalDetails": {
-    "AudioFormat": true
-  },
-  "functions": {
-    "readUInt32BE": "Read audio header",
-    "computeFromVariables(sampleRate * bitDepth * channels / 8, byteRate)": "Calculate byte rate",
-    "computeFromVariables(sampleRate * channels, samplesPerSecond)": "Calculate samples/second"
-  },
+  "exportTemplates": [
+    {
+      "name": "AMR-WB Header (JSON)",
+      "format": "json",
+      "fields": ["amrWbHeader", "firstFrameToc"]
+    }
+  ],
   "forensic": {
     "category": "audio",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Adaptive Multi-Rate Wideband audio codec for improved speech quality",
+    "analysisContext": "AMR-WB storage format: '#!AMR-WB\\n'(9B: 23 21 41 4D 52 2D 57 42 0A) + frames. Each frame: 1-byte TOC (bits 7-4=mode 0-15, bit 3=quality, bits 2-0=padding) + payload. AMR-WB frame sizes by mode: mode0=17B, mode1=23B, mode2=32B, mode3=36B, mode4=40B, mode5=46B, mode6=50B, mode7=58B, mode8=60B, SID=5B, NO_DATA=0B. Sample rate: 16000 Hz (wideband), 20ms per frame = 320 samples. Total frames × 20ms = duration. AMR-WB is used for HD Voice (VoLTE) in LTE networks.",
     "suggestedInspections": [
-      "Validate AMR-WB Audio header: sample rate, channels, bit depth, codec ID",
-      "Check frame/block alignment and data chunk boundaries",
-      "Verify metadata tags (ID3, Vorbis comment) are well-formed"
+      "Verify '#!AMR-WB\\n' at offset 0: 23 21 41 4D 52 2D 57 42 0A",
+      "Read first TOC byte at offset 9: bits 7-4 = mode (0-8 valid), bit 3 = quality",
+      "Mode 8 (23.85 kbps) is highest quality AMR-WB mode",
+      "Frame count × 20ms = total audio duration",
+      "Compare with AMR-NB ('#!AMR\\n', 6B, 8000 Hz) vs AMR-WB ('#!AMR-WB\\n', 9B, 16000 Hz)"
     ]
+  },
+  "software": [
+    "Android voice recorder (AWB output)",
+    "VLC media player",
+    "FFmpeg (libopencore-amrwb)",
+    "3GPP reference implementation",
+    "Nokia/Samsung mobile devices"
+  ],
+  "formatRelationships": {
+    "category": "Audio",
+    "extensions": [".awb"],
+    "relatedFormats": ["AMR", "3GP", "GSM"],
+    "note": "AMR-WB (.awb) is the wideband variant of AMR-NB (.amr). AMR-WB operates at 16000 Hz (wideband) vs AMR-NB at 8000 Hz (narrowband). AMR-WB frame header '#!AMR-WB\\n' (9 bytes) vs AMR-NB '#!AMR\\n' (6 bytes). AMR-WB is ITU-T G.722.2 and the basis for EVS (Enhanced Voice Services) in 5G."
+  },
+  "MimeTypes": [
+    "audio/amr-wb",
+    "audio/awb"
+  ],
+  "UseCases": [
+    "Mobile voice recordings on Android/iOS (AMR-WB mode)",
+    "VoLTE/HD Voice speech codec",
+    "3GPP multimedia messaging (MMS) wideband",
+    "Voice memos requiring better quality than narrowband AMR"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 70,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 4,
+    "ValidationRules": 1,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "AudioFormat": true,
+    "HeaderMagic": "'#!AMR-WB\\n' (9 bytes)",
+    "SampleRate": "16000 Hz (wideband)",
+    "Channels": "Mono only",
+    "FrameDuration": "20ms per frame",
+    "SamplesPerFrame": "320 samples",
+    "BitrateRange": "6.60 to 23.85 kbps",
+    "Standard": "3GPP TS 26.171 / ITU-T G.722.2"
   }
 }

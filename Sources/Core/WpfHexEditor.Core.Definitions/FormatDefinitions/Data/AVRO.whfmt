@@ -1,37 +1,35 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Apache Avro",
-  "version": "1.12",
+  "version": "1.13",
   "extensions": [
     ".avro"
   ],
-  "description": "Apache Avro binary data format",
+  "description": "Apache Avro is a row-oriented binary serialization format with a self-describing schema. Files begin with the 4-byte magic 'Obj\\x01' (0x4F626A01) at offset 0, followed by a JSON-encoded schema embedded as an Avro map in the file header, and a 16-byte sync marker used to separate data blocks. Each data block contains a count of objects, compressed bytes count, and compressed serialized data. Avro supports DEFLATE, SNAPPY, and NULL compression. Widely used in Apache Kafka, Hadoop, and data pipeline systems requiring schema evolution.",
   "category": "Data",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
-  "references": {
-    "specifications": [
-      "Apache Avro Format"
-    ],
-    "WebLinks": [
-      "https://en.wikipedia.org/wiki/AVRO"
-    ]
-  },
+  "references": [
+    "Apache Avro Object Container File Specification",
+    "https://avro.apache.org/docs/current/specification/"
+  ],
   "detection": {
     "signature": "4F626A01",
     "offset": 0,
+    "weight": 1.0,
+    "strength": "Strong",
     "required": true,
     "validation": {
       "minFileSize": 4,
-      "maxSignatureOffset": 1024
+      "maxSignatureOffset": 0
     }
   },
   "variables": {
     "currentOffset": 0,
-    "machineType": "",
-    "sectionCount": 0,
-    "entryPoint": 0,
-    "avroMagic": ""
+    "avroMagic": "",
+    "codecName": "",
+    "schemaJson": "",
+    "syncMarker": ""
   },
   "blocks": [
     {
@@ -40,59 +38,152 @@
       "offset": 0,
       "length": 4,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "Obj\\x01 signature",
+      "opacity": 0.8,
+      "description": "ASCII 'Obj' + byte 0x01 (0x4F626A01) at offset 0; identifies an Avro object container file",
       "storeAs": "avroMagic",
-      "valueType": "uint32"
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Header Map Count",
+      "offset": 4,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.5,
+      "description": "Avro long-encoded count of header metadata key-value pairs (variable-length zigzag encoding)",
+      "storeAs": "headerMapCount",
+      "valueType": "uint8"
+    },
+    {
+      "type": "field",
+      "name": "Codec Key",
+      "offset": 0,
+      "length": 14,
+      "color": "#95E1D3",
+      "opacity": 0.4,
+      "description": "Header map entry with key 'avro.codec' (Avro bytes-encoded string) specifying compression: 'null', 'deflate', 'snappy'",
+      "storeAs": "codecName",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Schema JSON",
+      "offset": 0,
+      "length": 64,
+      "color": "#FFE66D",
+      "opacity": 0.4,
+      "description": "Header map entry with key 'avro.schema' containing the JSON-encoded Avro schema for the file's records",
+      "storeAs": "schemaJson",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Sync Marker",
+      "offset": 0,
+      "length": 16,
+      "color": "#A8DADC",
+      "opacity": 0.5,
+      "description": "16-byte randomly-generated sync marker at end of header and between data blocks for integrity checking",
+      "storeAs": "syncMarker",
+      "valueType": "bytes"
     },
     {
       "type": "metadata",
-      "name": "Machine",
-      "variable": "machineType",
-      "description": "Machine"
+      "name": "Avro Magic",
+      "variable": "avroMagic",
+      "description": "4-byte container file magic 'Obj\\x01'"
     },
     {
       "type": "metadata",
-      "name": "Sections",
-      "variable": "sectionCount",
-      "description": "Sections"
+      "name": "Codec",
+      "variable": "codecName",
+      "description": "Compression codec from avro.codec header entry"
+    },
+    {
+      "type": "metadata",
+      "name": "Schema",
+      "variable": "schemaJson",
+      "description": "JSON Avro schema from avro.schema header entry"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "Avro magic 4 bytes",
+      "expression": "avroMagic[0] == 0x4F && avroMagic[1] == 0x62 && avroMagic[2] == 0x6A && avroMagic[3] == 0x01",
+      "severity": "error",
+      "message": "File must start with 0x4F 0x62 0x6A 0x01 ('Obj' + version byte 1)"
+    },
+    {
+      "name": "Valid codec",
+      "expression": "codecName == 'null' || codecName == 'deflate' || codecName == 'snappy'",
+      "severity": "warning",
+      "message": "avro.codec should be 'null', 'deflate', or 'snappy'; other codecs are non-standard"
+    }
+  ],
+  "inspector": {
+    "groups": [
+      {
+        "name": "File Identity",
+        "fields": ["Avro Magic"]
+      },
+      {
+        "name": "Header Metadata",
+        "fields": ["Header Map Count", "Codec Key", "Schema JSON"]
+      },
+      {
+        "name": "Block Framing",
+        "fields": ["Sync Marker"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "Avro File Summary",
+      "fields": ["avroMagic", "codecName", "schemaJson", "syncMarker"]
     }
   ],
   "software": [
-    "Common file viewers",
-    "Specialized software"
+    "Apache Kafka (Avro + Schema Registry)",
+    "Apache Hadoop",
+    "Apache Spark",
+    "Confluent Platform",
+    "fastavro (Python)"
   ],
   "formatRelationships": {
-    "category": "Data",
-    "extensions": [
-      ".avro"
-    ]
+    "schema_encoding": "JSON embedded in binary container",
+    "related": ["PARQUET", "ORC"],
+    "ecosystem": "Apache Hadoop / Kafka"
   },
   "MimeTypes": [
-    "application/octet-stream"
+    "application/octet-stream",
+    "avro/binary"
   ],
   "Software": [
-    "Hex Editor",
-    "File Viewer",
-    "Archive Manager"
+    "Apache Kafka with Avro serializer",
+    "Apache Spark (native Avro support)",
+    "fastavro Python library",
+    "Confluent Schema Registry"
   ],
   "UseCases": [
-    "File storage",
-    "Data exchange",
-    "Archive"
+    "Kafka topic message serialization with schema evolution",
+    "Hadoop data interchange format",
+    "Event sourcing and audit log storage",
+    "Data pipeline schema versioning"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 3,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
+    "CompletenessScore": 58,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 8,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
     "PriorityFormat": false,
-    "AutoRefined": true
+    "AutoRefined": false
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32LE": "Read executable header"
+  "TechnicalDetails": {
+    "MagicBytes": "4F 62 6A 01 ('Obj' + version 1)",
+    "Encoding": "Avro binary encoding with zigzag long for lengths",
+    "Compression": "Per data block; codec in header",
+    "SchemaStorage": "JSON-encoded schema in 'avro.schema' header map entry"
   },
   "forensic": {
     "category": "data",
@@ -100,11 +191,17 @@
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Apache Avro binary data format",
+    "analysisContext": "Avro object container files start with 0x4F626A01. The header is an Avro map (count + key-value pairs with Avro bytes encoding for values). Keys 'avro.schema' (JSON) and 'avro.codec' ('null'/'deflate'/'snappy') are the most important. After the header map comes a 16-byte sync marker. Data blocks follow with count/bytecount/data/syncmarker structure.",
     "suggestedInspections": [
-      "Validate Apache Avro schema header and encoding markers",
-      "Check nested structure depth and field type tags",
-      "Inspect string encodings and numeric value boundaries"
+      "Verify 0x4F626A01 at offset 0",
+      "Parse zigzag-encoded long at offset 4 for header map entry count",
+      "Extract 'avro.codec' and 'avro.schema' header map entries",
+      "Locate 16-byte sync marker at end of header",
+      "Parse data blocks: count (long) + byte_count (long) + compressed data + sync marker"
     ]
+  },
+  "functions": {
+    "readUInt32LE": "Read block counts",
+    "extractASCIIString": "Read schema JSON and codec strings"
   }
 }

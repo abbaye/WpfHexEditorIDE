@@ -1,20 +1,20 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "μ-law Audio",
-  "version": "1.14",
+  "version": "1.15",
   "extensions": [
     ".ulaw",
     ".ul",
     ".mu"
   ],
-  "description": "μ-law (mu-law) algorithm compressed audio format used in telephony",
+  "description": "μ-law (mu-law) — an ITU-T G.711 logarithmic companding algorithm for 8-bit PCM encoding of voice audio, used in North American and Japanese PSTN telephony. μ-law .ulaw/.ul files typically use the AU/SND container format starting with '.snd' (0x2E736E64), with the μ-law encoding specified in the AU header encoding field (value 1 = G.711 μ-law). Raw μ-law is headerless 8-bit encoded audio at 8000 Hz. The μ-law algorithm maps a 14-bit linear PCM value to 8 bits using a piecewise logarithmic compression curve. μ-law is used in North America (T1 circuits) and Japan; A-law is used in Europe (E1 circuits). Both produce 64 kbps at 8000 Hz mono.",
   "category": "Audio",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "audio-viewer",
   "references": {
     "specifications": [
-      "ITU-T Recommendation G.711 - PCM of Voice Frequencies",
-      "μ-law (mu-law) Logarithmic Companding Algorithm",
+      "ITU-T G.711 — PCM of Voice Frequencies",
+      "μ-law logarithmic companding algorithm",
       "G.711 Telephony Codec Standard"
     ],
     "WebLinks": [
@@ -25,116 +25,224 @@
     ]
   },
   "detection": {
-    "signature": "2E736E64",
-    "offset": 0,
+    "signatures": [
+      { "value": "2E736E64", "offset": 0, "label": "'.snd' AU/SND container header (may contain μ-law)", "weight": 0.7 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.7,
     "required": true,
+    "Strength": "Medium",
+    "EntropyHint": { "min": 3.0, "max": 5.5 },
     "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024
+      "minFileSize": 24,
+      "note": "μ-law audio is typically stored in AU/SND container (0x2E736E64). Raw headerless μ-law has no magic bytes. AU encoding field value 1 = G.711 μ-law."
     }
   },
   "variables": {
+    "sndMagic": "",
+    "dataOffset": 0,
+    "dataSize": 0,
+    "encoding": 0,
     "sampleRate": 0,
-    "channels": 0,
-    "bitDepth": 0,
-    "duration": 0,
-    "auSndHeader": 0,
-    "byteRate": 0,
-    "samplesPerSecond": 0
+    "channels": 0
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "AU/SND Header",
+      "name": "AU/SND Magic",
       "offset": 0,
       "length": 4,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": ".snd - Audio file header for μ-law",
-      "storeAs": "auSndHeader",
-      "valueType": "uint32"
+      "opacity": 0.45,
+      "description": "AU/SND file magic '.snd' (0x2E736E64). μ-law audio is commonly stored in the AU container format. The container's encoding field at offset 12 specifies the codec: value 1 = G.711 μ-law (North America/Japan PSTN).",
+      "storeAs": "sndMagic",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Data Offset",
+      "offset": 4,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "Byte offset from the start of the file to the audio data, stored as a 32-bit big-endian unsigned integer. Minimum 24 bytes (fixed AU header size). Larger values indicate annotation text or padding between header and audio data.",
+      "storeAs": "dataOffset",
+      "valueType": "uint32",
+      "endianness": "big"
+    },
+    {
+      "type": "field",
+      "name": "Data Size",
+      "offset": 8,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.35,
+      "description": "Size of the audio data in bytes as a 32-bit big-endian unsigned integer. Value 0xFFFFFFFF (4294967295) means unknown — used for streaming audio recorded without pre-determined length.",
+      "storeAs": "dataSize",
+      "valueType": "uint32",
+      "endianness": "big",
+      "valueMap": {
+        "4294967295": "Unknown data size (streaming: 0xFFFFFFFF)"
+      }
+    },
+    {
+      "type": "field",
+      "name": "Encoding",
+      "offset": 12,
+      "length": 4,
+      "color": "#FFE66D",
+      "opacity": 0.35,
+      "description": "Audio encoding format as a 32-bit big-endian unsigned integer. Value 1 = G.711 μ-law (8-bit companded, 8000 Hz telephony). The μ-law algorithm maps a 14-bit linear PCM sample to 8 bits using a logarithmic compression curve defined in ITU-T G.711 Annex A.",
+      "storeAs": "encoding",
+      "valueType": "uint32",
+      "endianness": "big",
+      "valueMap": {
+        "1": "μ-law (G.711 mu-law, North America/Japan PSTN)",
+        "2": "8-bit linear PCM",
+        "3": "16-bit linear PCM",
+        "27": "A-law (G.711 A-law, European PSTN)"
+      }
+    },
+    {
+      "type": "field",
+      "name": "Sample Rate",
+      "offset": 16,
+      "length": 4,
+      "color": "#C7CEEA",
+      "opacity": 0.30,
+      "description": "Sample rate in Hz as a 32-bit big-endian unsigned integer. For G.711 μ-law telephony this is always 8000 Hz (the ITU-T G.711 standard for narrowband voice codec at 64 kbps).",
+      "storeAs": "sampleRate",
+      "valueType": "uint32",
+      "endianness": "big",
+      "valueMap": {
+        "8000": "8000 Hz — G.711 narrowband telephony (64 kbps)"
+      }
+    },
+    {
+      "type": "field",
+      "name": "Channels",
+      "offset": 20,
+      "length": 4,
+      "color": "#B8B8FF",
+      "opacity": 0.25,
+      "description": "Number of audio channels as a 32-bit big-endian unsigned integer. G.711 μ-law telephony is always mono (1 channel).",
+      "storeAs": "channels",
+      "valueType": "uint32",
+      "endianness": "big"
+    },
+    {
+      "type": "metadata",
+      "name": "Encoding",
+      "variable": "encoding",
+      "description": "AU encoding: 1 = G.711 μ-law, 27 = G.711 A-law"
     },
     {
       "type": "metadata",
       "name": "Sample Rate",
       "variable": "sampleRate",
-      "description": "Sample Rate"
+      "description": "Sample rate (8000 Hz for G.711 telephony)"
     },
     {
       "type": "metadata",
       "name": "Channels",
       "variable": "channels",
-      "description": "Channels"
-    },
-    {
-      "type": "metadata",
-      "name": "Byte Rate",
-      "variable": "byteRate",
-      "description": "Calculated byte rate"
-    },
-    {
-      "type": "metadata",
-      "name": "Samples/Second",
-      "variable": "samplesPerSecond",
-      "description": "Total samples per second"
+      "description": "Channel count (1 = mono for G.711)"
     }
   ],
-  "software": [
-    "Audio codecs",
-    "Telephony software"
+  "assertions": [
+    {
+      "name": "AU magic valid",
+      "expression": "sndMagic == '.snd'",
+      "severity": "error",
+      "message": "μ-law audio in AU container must start with '.snd' (0x2E736E64)"
+    },
+    {
+      "name": "Encoding is μ-law",
+      "expression": "encoding == 1",
+      "severity": "info",
+      "message": "Encoding field is not 1 (G.711 μ-law) — may be A-law (27) or other AU encoding"
+    }
   ],
-  "formatRelationships": {
-    "category": "Audio",
-    "extensions": [
-      ".ulaw",
-      ".ul",
-      ".mu"
+  "inspector": {
+    "badge": "encoding",
+    "primaryField": "sampleRate",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "AU/SND Header",
+        "icon": "\uE71B",
+        "fields": ["sndMagic", "dataOffset", "dataSize"]
+      },
+      {
+        "title": "μ-law Encoding",
+        "icon": "\uE767",
+        "fields": ["encoding", "sampleRate", "channels"]
+      }
     ]
   },
-  "MimeTypes": [
-    "audio/ulaw"
+  "exportTemplates": [
+    {
+      "name": "μ-law AU Header (JSON)",
+      "format": "json",
+      "fields": ["sndMagic", "dataOffset", "dataSize", "encoding", "sampleRate", "channels"]
+    }
   ],
-  "Software": [
-    "VLC",
-    "Audacity",
-    "Foobar2000",
-    "MediaMonkey",
-    "Winamp"
-  ],
-  "UseCases": [
-    "Music playback",
-    "Audio editing",
-    "Sound production",
-    "Streaming"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 5,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
-  },
-  "TechnicalDetails": {
-    "AudioFormat": true
-  },
-  "functions": {
-    "readUInt32BE": "Read audio header",
-    "computeFromVariables(sampleRate * bitDepth * channels / 8, byteRate)": "Calculate byte rate",
-    "computeFromVariables(sampleRate * channels, samplesPerSecond)": "Calculate samples/second"
-  },
   "forensic": {
     "category": "audio",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "μ-law (mu-law) algorithm compressed audio format used in telephony",
+    "analysisContext": "μ-law G.711 audio: AU/SND container '.snd'(4B) + dataOffset(4,BE) + dataSize(4,BE,0xFFFFFFFF=streaming) + encoding(4,BE: 1=μ-law/27=A-law) + sampleRate(4,BE,=8000) + channels(4,BE,=1). Raw headerless μ-law: 8-bit samples at 8000 Hz, 64 kbps. μ-law companding maps 14-bit linear PCM to 8 bits. North American/Japanese PSTN standard. A-law is the European equivalent. Both defined in ITU-T G.711.",
     "suggestedInspections": [
-      "Validate μ-law Audio header: sample rate, channels, bit depth, codec ID",
-      "Check frame/block alignment and data chunk boundaries",
-      "Verify metadata tags (ID3, Vorbis comment) are well-formed"
+      "Verify '.snd' at offset 0 (2E 73 6E 64) for AU container",
+      "Read encoding at offset 12 (BE uint32): 1 = μ-law, 27 = A-law",
+      "Read sample rate at offset 16: 8000 Hz for G.711 telephony",
+      "Data starts at dataOffset (typically 24): raw 8-bit μ-law samples"
     ]
+  },
+  "software": [
+    "Audacity (with G.711 μ-law plugin)",
+    "FFmpeg (pcm_mulaw codec)",
+    "SoX (Sound eXchange)",
+    "Asterisk PBX",
+    "VLC media player"
+  ],
+  "formatRelationships": {
+    "category": "Audio",
+    "extensions": [".ulaw", ".ul", ".mu"],
+    "relatedFormats": ["ALAW", "AU", "WAV"],
+    "note": "μ-law (mu-law) and A-law are the two G.711 companding variants. μ-law is used in North American T1 circuits and Japan; A-law in European E1 circuits. μ-law has slightly better dynamic range for high-level signals. Both encode 8 bits at 8000 Hz for 64 kbps voice."
+  },
+  "MimeTypes": [
+    "audio/basic",
+    "audio/G711-ulaw",
+    "audio/x-ulaw",
+    "audio/ulaw"
+  ],
+  "UseCases": [
+    "North American PSTN telephone voice recording",
+    "VoIP G.711 μ-law codec (SIP, H.323)",
+    "Asterisk and Cisco telephony systems",
+    "Sun/NeXT workstation audio (historical)"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 65,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 9,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "AudioFormat": true,
+    "ContainerFormat": "AU/SND (when containerized) or raw headerless",
+    "Endianness": "big-endian (AU header fields)",
+    "Encoding": "G.711 μ-law logarithmic companding",
+    "SampleRate": "8000 Hz (G.711 standard)",
+    "BitDepth": "8 bits per sample (companded from 14-bit linear)",
+    "Bitrate": "64 kbps",
+    "Channels": "Mono (1 channel)"
   }
 }

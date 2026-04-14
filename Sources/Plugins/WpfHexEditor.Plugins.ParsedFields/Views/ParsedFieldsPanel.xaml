@@ -566,6 +566,7 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
                     <!-- References info button — far left, visible only when whfmt has references/weblinks -->
@@ -614,7 +615,27 @@
                                    Foreground="{DynamicResource PFP_CategoryBadgeForegroundBrush}"
                                    Text="{Binding FormatInfo.Category}"/>
                     </Border>
+
+                    <!-- Collapse/expand the format info body (col 4) — starts collapsed -->
+                    <Button x:Name="FormatInfoCollapseButton"
+                            Grid.Column="4"
+                            Content="&#xE974;"
+                            ToolTip="Collapse format info"
+                            Style="{DynamicResource PanelIconButtonStyle}"
+                            FontFamily="Segoe MDL2 Assets"
+                            FontSize="10"
+                            Margin="4,0,0,0"
+                            VerticalAlignment="Center"
+                            Click="FormatInfoCollapseButton_Click"/>
                 </Grid>
+
+                <!-- Body: MaxHeight caps growth so the fields list stays accessible; scrolls when content overflows -->
+                <ScrollViewer x:Name="FormatInfoScrollViewer"
+                              VerticalScrollBarVisibility="Auto"
+                              HorizontalScrollBarVisibility="Disabled"
+                              MaxHeight="180"
+                              Visibility="Collapsed">
+                <StackPanel>
 
                 <!-- Proxy element: stays in the visual tree so the Popup can reach the DataContext.
                      Popup content is not in the visual tree and cannot use RelativeSource/ElementName
@@ -823,36 +844,6 @@
                     </ItemsControl>
                 </StackPanel>
 
-                <!-- D5 — Export templates from whfmt exportTemplates -->
-                <StackPanel Margin="0,6,0,0"
-                            Visibility="{Binding FormatInfo.HasExportTemplates, Converter={StaticResource BoolToVisibilityConverter}}">
-                    <TextBlock Text="&#xE78C;  Export As"
-                               FontSize="10" FontWeight="SemiBold" Margin="0,0,0,4"
-                               Foreground="{DynamicResource DockMenuForegroundBrush}" Opacity="0.7"/>
-                    <ItemsControl ItemsSource="{Binding FormatInfo.ExportTemplates}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <WrapPanel Orientation="Horizontal"/>
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Button Margin="0,0,5,3"
-                                        Padding="6,2"
-                                        Tag="{Binding}"
-                                        Click="ExportTemplate_Click"
-                                        ToolTip="{Binding Format}"
-                                        Style="{DynamicResource {x:Static ToolBar.ButtonStyleKey}}">
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="{Binding Icon}" FontSize="11" Margin="0,0,4,0"/>
-                                        <TextBlock Text="{Binding Name}" FontSize="10"/>
-                                    </StackPanel>
-                                </Button>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </StackPanel>
-
                 <!-- D6 — AI Analysis: from whfmt aiHints -->
                 <StackPanel Margin="0,6,0,0"
                             Visibility="{Binding FormatInfo.HasAiHints,
@@ -1055,6 +1046,9 @@
 
                     </StackPanel>
                 </StackPanel>
+
+                </StackPanel>
+                </ScrollViewer>
 
             </StackPanel>
         </Border>

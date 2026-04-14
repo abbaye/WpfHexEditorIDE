@@ -1,102 +1,211 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "RealMedia Variable Bitrate",
-  "version": "1.14",
+  "version": "1.15",
   "extensions": [
     ".rmvb"
   ],
-  "description": "RealMedia variable bitrate container developed by RealNetworks",
+  "description": "RMVB (RealMedia Variable Bitrate) is a variant of the RealMedia container format developed by RealNetworks. RMVB uses the same RMFF (RealMedia File Format) container as standard .rm files, beginning with the 4-byte magic '.RMF' (0x2E 0x52 0x4D 0x46). The difference from .rm is the use of variable bitrate encoding rather than constant bitrate — RMVB allocates more bits to complex scenes and fewer to simple scenes, achieving better quality at lower average bitrate. The RMFF header structure is identical to RM: magic '.RMF' + object size (uint32 BE) + object version (uint16 BE, 0 or 1) + file version (uint32 BE) + numHeaders (uint32 BE). Following objects include PROP (Properties with VBR flag), MDPR (Media Properties per stream with RV30/RV40 video codec), CONT (optional Content Description), and DATA objects. RMVB dominated Asian (particularly Chinese) online video distribution from 2000-2012.",
   "category": "Video",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "RealMedia Variable Bitrate Format",
-      "RMVB Container Extension",
-      "RealNetworks Variable Bitrate Encoding"
+      "RealMedia File Format (RMFF) — RealNetworks",
+      "RealMedia Variable Bitrate Technical Overview — RealNetworks",
+      "wiki.multimedia.cx — RealMedia"
     ],
     "WebLinks": [
       "https://en.wikipedia.org/wiki/RMVB",
-      "https://docs.fileformat.com/video/rmvb/",
-      "https://www.hitpaw.com/video-format-definition-tips/rmvb-file.html"
+      "https://wiki.multimedia.cx/index.php/RealMedia",
+      "https://docs.fileformat.com/video/rmvb/"
     ]
   },
   "detection": {
-    "signature": "2E524D46",
-    "offset": 0,
+    "signatures": [
+      { "value": "2E524D46", "offset": 0, "label": "'.RMF' RealMedia File magic (shared with .rm)", "weight": 1.0 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 1.0,
     "required": true,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 4.5, "max": 7.5 },
     "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024
+      "minFileSize": 18,
+      "maxSignatureOffset": 0,
+      "note": "RMVB uses the same '.RMF' magic as .rm. Distinction requires inspecting PROP object VBR flag or MDPR stream codec (RV30/RV40 for RMVB vs RV10/RV20 for older .rm). File extension is the primary differentiator."
     }
   },
   "variables": {
-    "rmfHeader": 0
+    "rmfMagic": "",
+    "objectSize": 0,
+    "objectVersion": 0,
+    "fileVersion": 0,
+    "numHeaders": 0
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "RMF Header",
+      "name": "RMF Magic",
       "offset": 0,
       "length": 4,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": ".RMF - RealMedia File header",
-      "storeAs": "rmfHeader",
-      "valueType": "uint32"
+      "opacity": 0.45,
+      "description": "RealMedia File Format magic '.RMF' (0x2E 0x52 0x4D 0x46). Identical in both .rm (constant bitrate) and .rmvb (variable bitrate) files. The leading dot (0x2E) is a Unix file marker convention; 'R', 'M', 'F' identify RealMedia Format. All RMVB files use this magic — the VBR nature is indicated by the PROP object flags, not the magic bytes.",
+      "storeAs": "rmfMagic",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "RMF Object Size",
+      "offset": 4,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "Total size in bytes of the RMFF header object including magic and this field (big-endian uint32). Standard value: 18 for RMFF version 0 (4+4+2+4+4).",
+      "storeAs": "objectSize",
+      "valueType": "uint32",
+      "endianness": "big"
+    },
+    {
+      "type": "field",
+      "name": "Object Version",
+      "offset": 8,
+      "length": 2,
+      "color": "#95E1D3",
+      "opacity": 0.30,
+      "description": "RMFF header object version (big-endian uint16). 0 = standard RealMedia (most RMVB files), 1 = extended header. Version 0 is standard for all RMVB content.",
+      "storeAs": "objectVersion",
+      "valueType": "uint16",
+      "endianness": "big",
+      "valueMap": {
+        "0": "RMFF version 0 — standard (used by all RMVB)",
+        "1": "RMFF version 1 — extended header"
+      }
+    },
+    {
+      "type": "field",
+      "name": "Number of Headers",
+      "offset": 14,
+      "length": 4,
+      "color": "#FFE66D",
+      "opacity": 0.25,
+      "description": "Count of header objects following the RMFF header (big-endian uint32). Typical RMVB: PROP + 2 MDPR (video/audio) + optional CONT + DATA = 4-5 headers.",
+      "storeAs": "numHeaders",
+      "valueType": "uint32",
+      "endianness": "big"
+    },
+    {
+      "type": "metadata",
+      "name": "RMF Magic",
+      "variable": "rmfMagic",
+      "description": "RealMedia magic '.RMF'"
+    },
+    {
+      "type": "metadata",
+      "name": "Number of Headers",
+      "variable": "numHeaders",
+      "description": "Count of RMFF header objects"
     }
   ],
-  "software": [
-    "RealPlayer",
-    "VLC",
-    "KMPlayer"
+  "assertions": [
+    {
+      "name": "RMF magic valid",
+      "expression": "rmfMagic == '.RMF'",
+      "severity": "error",
+      "message": "RealMedia magic must be '.RMF' (2E 52 4D 46) — not a valid RMVB file"
+    },
+    {
+      "name": "Object version is 0 or 1",
+      "expression": "objectVersion == 0 || objectVersion == 1",
+      "severity": "warning",
+      "message": "RMFF object version must be 0 or 1"
+    }
   ],
-  "formatRelationships": {
-    "category": "Video",
-    "extensions": [
-      ".rmvb"
+  "navigation": {
+    "bookmarks": [
+      {
+        "name": "RMFF Header",
+        "offset": 0,
+        "icon": "\uE71B",
+        "color": "#FF6B6B"
+      },
+      {
+        "name": "PROP Object (typical)",
+        "offset": 18,
+        "icon": "\uE8A5",
+        "color": "#4ECDC4"
+      }
     ]
   },
-  "MimeTypes": [
-    "video/rmvb"
-  ],
-  "Software": [
-    "VLC",
-    "Media Player Classic",
-    "HandBrake",
-    "FFmpeg",
-    "MPC-HC"
-  ],
-  "UseCases": [
-    "Video playback",
-    "Video editing",
-    "Encoding",
-    "Streaming"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 1,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "rmfMagic",
+    "primaryField": "numHeaders",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "RMFF Header",
+        "icon": "\uE71B",
+        "fields": ["rmfMagic", "objectSize", "objectVersion", "fileVersion", "numHeaders"]
+      }
+    ]
   },
-  "TechnicalDetails": {
-    "VideoFormat": true
-  },
-  "functions": {},
+  "exportTemplates": [
+    {
+      "name": "RMVB RMFF Header (JSON)",
+      "format": "json",
+      "fields": ["rmfMagic", "objectSize", "objectVersion", "numHeaders"]
+    }
+  ],
   "forensic": {
     "category": "video",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "RealMedia variable bitrate container developed by RealNetworks",
+    "analysisContext": "RMVB = RealMedia VBR, same RMFF container as .rm. Magic '.RMF'(4B)+size(4B BE)+ver(2B BE)+fileVer(4B BE)+numHeaders(4B BE). At offset 18: PROP object ('PROP'+size+ver+maxBitRate+avgBitRate+maxPacketSize+avgPacketSize+numPackets+duration+preroll+indexOffset+dataOffset+numStreams+flags). VBR indicated by avgBitRate << maxBitRate in PROP. MDPR per stream contains MIME type: video/x-pn-realvideo (RV30/RV40 for RMVB), audio/x-pn-realaudio (Cook/ATRC). RMVB popular for Chinese fansub distribution (2003-2012).",
     "suggestedInspections": [
-      "Validate RealMedia Variable Bitrate container magic, box/atom sizes, and codec FourCC",
-      "Check track/stream layout, frame index, and timing fields",
-      "Inspect audio-video sync, keyframe distribution, and metadata"
+      "Verify '.RMF' at offset 0 (2E 52 4D 46)",
+      "Read numHeaders at offset 14 (BE uint32) — typically 4-5",
+      "PROP at offset 18: compare maxBitRate vs avgBitRate — large ratio confirms VBR",
+      "MDPR objects: check MIME type for video/x-pn-realvideo (codec RV30/RV40)"
     ]
+  },
+  "software": [
+    "RealPlayer",
+    "VLC media player",
+    "KMPlayer",
+    "FFmpeg (rm demuxer)"
+  ],
+  "formatRelationships": {
+    "category": "Video",
+    "extensions": [".rmvb"],
+    "relatedFormats": ["RM"],
+    "note": "RMVB uses the identical RMFF container as .rm. The only format-level difference is VBR encoding (indicated in PROP flags and the large maxBitRate/avgBitRate ratio). RMVB dominated Asian online video in the 2000s; largely superseded by H.264/MP4."
+  },
+  "MimeTypes": [
+    "video/vnd.rn-realvideo",
+    "application/vnd.rn-realmedia-vbr"
+  ],
+  "UseCases": [
+    "Asian (Chinese) online video distribution (2000s-2010s)",
+    "Fansub anime and drama distribution",
+    "Legacy RealPlayer streaming archives"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 65,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 6,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "VideoFormat": true,
+    "ContainerFormat": "RealMedia File Format (RMFF) — VBR variant",
+    "Endianness": "big-endian",
+    "VideoCodecs": "RV30, RV40 (RealVideo 9/10)",
+    "AudioCodecs": "Cook, ATRAC3 (ATRC)"
   }
 }

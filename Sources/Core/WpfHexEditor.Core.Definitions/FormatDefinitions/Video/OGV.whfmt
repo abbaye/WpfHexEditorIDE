@@ -1,103 +1,241 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Ogg Video",
-  "version": "1.14",
+  "version": "1.15",
   "extensions": [
     ".ogv",
     ".ogm"
   ],
-  "description": "Ogg container format for video, part of the Xiph.Org Foundation's Ogg project",
+  "description": "OGV (Ogg Video) — an Ogg container file carrying Theora video (and typically Vorbis or Opus audio). OGV uses the same Ogg page structure as .ogg (RFC 3533): every page begins with the 4-byte 'OggS' capture pattern (0x4F676753), followed by a 1-byte version (must be 0), header type flags, 64-bit granule position, stream serial, sequence number, CRC-32, segment count, and segment table. The first page BOS header for the Theora video stream starts with 0x80 + 'theora' (7 bytes). OGM (.ogm) is an unofficial variant predating OGV, created by MPlayer/Haali developers. Theora is a free, open video codec derived from VP3 (On2 Technologies). OGV is used in open-source video distribution and HTML5 <video> elements.",
   "category": "Video",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "RFC 3533 - The Ogg Encapsulation Format",
-      "Ogg Bitstream Format"
+      "RFC 3533 — The Ogg Encapsulation Format Version 0",
+      "Theora I Specification — xiph.org/theora/",
+      "Theora/Vorbis I Specification — xiph.org"
     ],
     "WebLinks": [
       "https://www.ietf.org/rfc/rfc3533.txt",
-      "https://xiph.org/ogg/doc/",
+      "https://theora.org/doc/",
+      "https://en.wikipedia.org/wiki/Theora",
       "https://en.wikipedia.org/wiki/Ogg"
     ]
   },
   "detection": {
-    "signature": "4F676753",
-    "offset": 0,
+    "signatures": [
+      { "value": "4F676753", "offset": 0, "label": "'OggS' Ogg capture pattern", "weight": 0.6 },
+      { "value": "8074686F657261", "offset": 28, "label": "0x80+'theora' Theora ID header in first Ogg page", "weight": 1.0 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.6,
     "required": true,
+    "Strength": "Medium",
+    "EntropyHint": { "min": 4.0, "max": 7.5 },
     "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024
+      "minFileSize": 28,
+      "note": "OGV uses 'OggS' (0x4F676753) shared with OGG audio. Differentiate by Theora BOS header starting with 0x80+'theora' at offset 28 (after 28-byte Ogg page header + 1-byte segment table). The signature 0x80 distinguishes Theora (video) from Vorbis (audio, 0x01) and Opus (audio, 'OpusHead')."
     }
   },
   "variables": {
-    "oggHeader": 0
+    "oggSignature": "",
+    "oggVersion": 0,
+    "headerTypeFlag": 0,
+    "serialNumber": 0,
+    "pageSequenceNumber": 0,
+    "crcChecksum": 0,
+    "numPageSegments": 0
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "Ogg Header",
+      "name": "OggS Capture Pattern",
       "offset": 0,
       "length": 4,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "OggS - Ogg bitstream format signature",
-      "storeAs": "oggHeader",
-      "valueType": "uint32"
+      "opacity": 0.45,
+      "description": "Ogg capture pattern 'OggS' (0x4F 0x67 0x67 0x53). Identical in OGG audio, OGV video, and OPUS. Every Ogg page in the file starts with this 4-byte sequence. See OGG.whfmt for full Ogg page structure documentation.",
+      "storeAs": "oggSignature",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Stream Version",
+      "offset": 4,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.30,
+      "description": "Ogg stream version — must be 0 per RFC 3533.",
+      "storeAs": "oggVersion",
+      "valueType": "uint8",
+      "valueMap": { "0": "RFC 3533 version 0 (only valid value)" }
+    },
+    {
+      "type": "field",
+      "name": "Header Type Flags",
+      "offset": 5,
+      "length": 1,
+      "color": "#95E1D3",
+      "opacity": 0.30,
+      "description": "Ogg page type flags: bit 0 = continuation, bit 1 = BOS, bit 2 = EOS. First Theora page has BOS (bit 1 set) = 0x02.",
+      "storeAs": "headerTypeFlag",
+      "valueType": "uint8",
+      "bitfields": [
+        { "name": "Continuation", "bits": "0", "description": "Continuation of previous packet" },
+        { "name": "BOS", "bits": "1", "description": "Beginning of stream (first page)" },
+        { "name": "EOS", "bits": "2", "description": "End of stream (last page)" }
+      ]
+    },
+    {
+      "type": "field",
+      "name": "Stream Serial Number",
+      "offset": 14,
+      "length": 4,
+      "color": "#FFE66D",
+      "opacity": 0.25,
+      "description": "Unique identifier for the Theora video logical bitstream (little-endian uint32). Randomly assigned at stream creation. In multiplexed OGV files, audio and video streams have different serial numbers.",
+      "storeAs": "serialNumber",
+      "valueType": "uint32",
+      "endianness": "little"
+    },
+    {
+      "type": "field",
+      "name": "Page CRC-32",
+      "offset": 22,
+      "length": 4,
+      "color": "#B8B8FF",
+      "opacity": 0.25,
+      "description": "CRC-32 checksum of the entire Ogg page (polynomial 0x04C11DB7, little-endian). Computed with this field zeroed.",
+      "storeAs": "crcChecksum",
+      "valueType": "uint32",
+      "endianness": "little"
+    },
+    {
+      "type": "field",
+      "name": "Number of Page Segments",
+      "offset": 26,
+      "length": 1,
+      "color": "#C44569",
+      "opacity": 0.25,
+      "description": "Number of segment lacing table entries (1-255). For the Theora ID header page, typically 1.",
+      "storeAs": "numPageSegments",
+      "valueType": "uint8"
+    },
+    {
+      "type": "metadata",
+      "name": "Ogg Signature",
+      "variable": "oggSignature",
+      "description": "Ogg capture pattern ('OggS')"
+    },
+    {
+      "type": "metadata",
+      "name": "Serial Number",
+      "variable": "serialNumber",
+      "description": "Video stream identifier"
     }
   ],
-  "software": [
-    "VLC",
-    "Firefox",
-    "Web browsers"
+  "assertions": [
+    {
+      "name": "OggS capture pattern valid",
+      "expression": "oggSignature == 'OggS'",
+      "severity": "error",
+      "message": "OGV capture pattern must be 'OggS' (4F 67 67 53) — not a valid Ogg video file"
+    },
+    {
+      "name": "Ogg version is 0",
+      "expression": "oggVersion == 0",
+      "severity": "error",
+      "message": "Ogg stream version must be 0 (RFC 3533)"
+    }
   ],
-  "formatRelationships": {
-    "category": "Video",
-    "extensions": [
-      ".ogv",
-      ".ogm"
+  "navigation": {
+    "bookmarks": [
+      {
+        "name": "First Ogg Page (BOS)",
+        "offset": 0,
+        "icon": "\uE71B",
+        "color": "#FF6B6B"
+      },
+      {
+        "name": "Theora ID Header",
+        "offset": 28,
+        "icon": "\uE8A5",
+        "color": "#4ECDC4"
+      }
     ]
   },
-  "MimeTypes": [
-    "video/ogv"
-  ],
-  "Software": [
-    "VLC",
-    "Media Player Classic",
-    "HandBrake",
-    "FFmpeg",
-    "MPC-HC"
-  ],
-  "UseCases": [
-    "Video playback",
-    "Video editing",
-    "Encoding",
-    "Streaming"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 1,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "headerTypeFlag",
+    "primaryField": "serialNumber",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "Ogg Page",
+        "icon": "\uE71B",
+        "fields": ["oggSignature", "oggVersion", "headerTypeFlag", "serialNumber", "crcChecksum"]
+      }
+    ]
   },
-  "TechnicalDetails": {
-    "VideoFormat": true
-  },
-  "functions": {},
+  "exportTemplates": [
+    {
+      "name": "OGV Header (JSON)",
+      "format": "json",
+      "fields": ["oggSignature", "oggVersion", "headerTypeFlag", "serialNumber", "crcChecksum"]
+    }
+  ],
   "forensic": {
     "category": "video",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Ogg container format for video, part of the Xiph.Org Foundation's Ogg project",
+    "analysisContext": "OGV = Ogg container with Theora video. Same Ogg page structure as OGG.whfmt. Theora BOS ID header at offset 28 (after 27-byte Ogg header + 1 segment table byte): 0x80+'theora'(7B) + VMAJ(1B,must=3) + VMIN(1B) + VREV(1B) + FMBW(2B) + FMBH(2B) + PICW(3B) + PICH(3B) + PICX(1B) + PICY(1B) + FRN(4B,frame rate numerator) + FRD(4B,denominator) + PARN(3B) + PARD(3B) + CS(1B,colorspace) + NOMBR(3B,nominal bitrate) + QUAL(6b)+KFGSHIFT(5b)+PF(2b)+res(3b). VMAJ must be 3 for Theora 1.x.",
     "suggestedInspections": [
-      "Validate Ogg Video container magic, box/atom sizes, and codec FourCC",
-      "Check track/stream layout, frame index, and timing fields",
-      "Inspect audio-video sync, keyframe distribution, and metadata"
+      "Verify 'OggS' at offset 0 (4F 67 67 53)",
+      "Check byte at offset 28: 0x80 = Theora ID header type",
+      "Bytes 29-35: should be ASCII 'theora' (74 68 65 6F 72 61)",
+      "Byte 36 = VMAJ (Theora major version, must be 3)",
+      "Read FMBW/FMBH (offsets 40-43): frame macroblocks width/height × 16 = frame size"
     ]
+  },
+  "software": [
+    "VLC media player",
+    "Firefox (HTML5 <video>)",
+    "FFmpeg (theora encoder/decoder)",
+    "libtheora (Xiph reference)",
+    "Audacity (can handle Ogg audio tracks)"
+  ],
+  "formatRelationships": {
+    "category": "Video",
+    "extensions": [".ogv", ".ogm"],
+    "relatedFormats": ["OGG", "OPUS", "WEBM"],
+    "note": "OGV (Ogg Video) carries Theora video + Vorbis or Opus audio in the Ogg container. .ogm is an older unofficial variant. Theora (free VP3 derivative) was superseded by VP8/WebM and VP9 for open video distribution. HTML5 <video> supports OGV in Firefox and Chrome."
+  },
+  "MimeTypes": [
+    "video/ogg",
+    "video/ogv"
+  ],
+  "UseCases": [
+    "Open-source video distribution",
+    "HTML5 <video> (Firefox/Chrome)",
+    "Wikimedia Commons video uploads",
+    "Legacy open video from Xiph.Org era"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 65,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 8,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "VideoFormat": true,
+    "ContainerFormat": "Ogg (RFC 3533)",
+    "VideoCodec": "Theora (VP3 derivative)",
+    "AudioCodecs": "Vorbis, Opus",
+    "Endianness": "little-endian (Ogg page headers)"
   }
 }

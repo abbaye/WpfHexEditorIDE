@@ -1,7 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "DjVu Document",
-  "version": "2.1",
+  "version": "1.15",
   "extensions": [
     ".djvu",
     ".djv"
@@ -46,6 +46,7 @@
     ],
     "matchMode": "any",
     "MinimumScore": 0.7,
+    "required": true,
     "Strength": "Strong",
     "EntropyHint": { "min": 4.0, "max": 7.5 },
     "validation": {

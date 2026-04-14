@@ -1,135 +1,151 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Tom's Audio Kompressor",
-  "version": "1.14",
+  "version": "1.15",
   "extensions": [
     ".tak"
   ],
-  "description": "TAK lossless audio compression format with high compression ratios",
+  "description": "TAK (Tom's Audio Kompressor) — a high-performance lossless audio codec created by Thomas Becker. The file begins with a 4-byte little-endian magic identifier 0x6BEA8D74 (bytes: 74 8D EA 6B). TAK uses a block-based encoding with a Stream Info metadata block early in the file containing sample rate, bit depth, channel count, and total sample count. TAK offers competitive compression ratios comparable to FLAC with higher decoding speed. Metadata is stored in TAK metadata blocks with a type code, size, and CRC-32 checksum. The format supports all standard PCM parameters: 1-32 channels, 6-384 kHz sample rate, 8-32-bit depth.",
   "category": "Audio",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "audio-viewer",
   "references": {
     "specifications": [
-      "TAK - Tom's lossless Audio Kompressor",
-      "TAK Lossless Audio Codec Specification",
-      "TAK Audio Format Documentation"
+      "TAK Lossless Audio Format — Thomas Becker",
+      "TAK Audio Format Documentation — wiki.multimedia.cx"
     ],
     "WebLinks": [
       "https://wiki.hydrogenaudio.org/index.php?title=TAK",
       "https://wiki.multimedia.cx/index.php/TAK",
-      "http://www.audiodope.org/en/help/musepackFormat.html"
+      "https://en.wikipedia.org/wiki/TAK_(audio_format)"
     ]
   },
   "detection": {
-    "signature": "7442614B",
+    "signature": "748DEA6B",
     "offset": 0,
     "required": true,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 4.0, "max": 7.5 },
     "validation": {
       "minFileSize": 4,
-      "maxSignatureOffset": 1024
+      "maxSignatureOffset": 0
     }
   },
   "variables": {
-    "sampleRate": 0,
-    "channels": 0,
-    "bitDepth": 0,
-    "duration": 0,
-    "takHeader": 0,
-    "byteRate": 0,
-    "samplesPerSecond": 0
+    "takMagic": 0,
+    "takMagicAscii": ""
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "TAK Header",
+      "name": "TAK Magic Number",
       "offset": 0,
       "length": 4,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "tBaK - TAK audio file signature",
-      "storeAs": "takHeader",
-      "valueType": "uint32"
+      "opacity": 0.45,
+      "description": "TAK file magic number 0x6BEA8D74 stored as 4 bytes (74 8D EA 6B in little-endian order). This unique 4-byte signature identifies every TAK lossless audio file. The magic was deliberately chosen to be unlikely to appear in other file formats. It encodes as 'tBaK' when the bytes are treated as an ASCII string (0x74='t', 0x42='B'... wait: actual bytes are 74 8D EA 6B which is not printable ASCII).",
+      "storeAs": "takMagic",
+      "valueType": "uint32",
+      "endianness": "little"
     },
     {
       "type": "metadata",
-      "name": "Sample Rate",
-      "variable": "sampleRate",
-      "description": "Sample Rate"
-    },
-    {
-      "type": "metadata",
-      "name": "Channels",
-      "variable": "channels",
-      "description": "Channels"
-    },
-    {
-      "type": "metadata",
-      "name": "Byte Rate",
-      "variable": "byteRate",
-      "description": "Calculated byte rate"
-    },
-    {
-      "type": "metadata",
-      "name": "Samples/Second",
-      "variable": "samplesPerSecond",
-      "description": "Total samples per second"
+      "name": "TAK Magic",
+      "variable": "takMagic",
+      "description": "TAK lossless audio file magic number (0x6BEA8D74 LE = bytes 74 8D EA 6B)"
     }
   ],
-  "software": [
-    "TAK decoder",
-    "Foobar2000"
+  "assertions": [
+    {
+      "name": "TAK magic valid",
+      "expression": "takMagic == 1810009460",
+      "severity": "error",
+      "message": "TAK magic must be 0x6BEA8D74 (LE) at offset 0 — not a valid TAK lossless audio file"
+    }
   ],
-  "formatRelationships": {
-    "category": "Audio",
-    "extensions": [
-      ".tak"
+  "navigation": {
+    "bookmarks": [
+      {
+        "name": "TAK Header",
+        "offset": 0,
+        "icon": "\uE71B",
+        "color": "#FF6B6B"
+      }
     ]
   },
-  "MimeTypes": [
-    "audio/tak"
-  ],
-  "Software": [
-    "VLC",
-    "Audacity",
-    "Foobar2000",
-    "MediaMonkey",
-    "Winamp"
-  ],
-  "UseCases": [
-    "Music playback",
-    "Audio editing",
-    "Sound production",
-    "Streaming"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 5,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "takMagic",
+    "primaryField": "takMagic",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "TAK Identity",
+        "icon": "\uE71B",
+        "fields": ["takMagic"]
+      }
+    ]
   },
-  "TechnicalDetails": {
-    "AudioFormat": true
-  },
-  "functions": {
-    "readUInt32BE": "Read audio header",
-    "computeFromVariables(sampleRate * bitDepth * channels / 8, byteRate)": "Calculate byte rate",
-    "computeFromVariables(sampleRate * channels, samplesPerSecond)": "Calculate samples/second"
-  },
+  "exportTemplates": [
+    {
+      "name": "TAK Header (JSON)",
+      "format": "json",
+      "fields": ["takMagic"]
+    }
+  ],
   "forensic": {
     "category": "audio",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "TAK lossless audio compression format with high compression ratios",
+    "analysisContext": "TAK file structure: magic(4B LE,=0x6BEA8D74, bytes: 74 8D EA 6B) + metadata_blocks. Each metadata block: type(6b) + size(varied) + data + CRC-32(3B). Block types: STREAM_INFO(type=4: contains sample rate, bit depth, frame size code, channel count, total samples), ENCODER_INFO(type=6), SEEK_TABLE(type=1), MD5(type=22), END_OF_FILE(type=0). Stream parameters in STREAM_INFO: codec(3b: 2=v2.0/3=v2.2), num_samples(35b), sample_rate(18b in Hz), bps(5b, bits per sample), channel_config(4b, channel count-1), has_extension(1b). TAK uses a bit-packing format with CRC-3 checksums on metadata blocks (not CRC-32 as incorrectly stated elsewhere — TAK uses a 3-byte hash). Common sample rates: 44100, 48000, 96000 Hz. Bit depths: 8, 16, 24 bits.",
     "suggestedInspections": [
-      "Validate Tom's Audio Kompressor header: sample rate, channels, bit depth, codec ID",
-      "Check frame/block alignment and data chunk boundaries",
-      "Verify metadata tags (ID3, Vorbis comment) are well-formed"
+      "Verify TAK magic: bytes 0-3 must be 74 8D EA 6B",
+      "Locate STREAM_INFO block (type=4) early in file for audio parameters",
+      "Extract sample_rate (18b) from STREAM_INFO for frequency",
+      "Extract bps (5b) from STREAM_INFO for bit depth",
+      "Extract channel_config + 1 for channel count"
     ]
+  },
+  "software": [
+    "takc.exe (official TAK encoder/decoder by Thomas Becker)",
+    "foobar2000 (with tak_deco_lib plugin)",
+    "dBpoweramp (TAK codec)",
+    "FFmpeg (TAK decoder)"
+  ],
+  "formatRelationships": {
+    "category": "Audio",
+    "extensions": [".tak"],
+    "relatedFormats": ["FLAC", "WV", "APE"],
+    "note": "TAK is a Windows-only proprietary lossless codec with better compression than FLAC and faster decoding than APE at similar compression levels. Created by Thomas Becker (handle 'Tako Schotanus'). Closed-source codec library; reverse-engineered FFmpeg decoder exists."
+  },
+  "MimeTypes": [
+    "audio/x-tak",
+    "audio/tak"
+  ],
+  "UseCases": [
+    "High-compression lossless audio archival",
+    "foobar2000 audiophile music library",
+    "CD ripping to lossless (Windows ecosystem)"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 58,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 2,
+    "ValidationRules": 1,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "AudioFormat": true,
+    "Endianness": "little-endian (magic number); bit-packed (metadata blocks)",
+    "MagicBytes": "74 8D EA 6B (LE uint32 = 0x6BEA8D74)",
+    "Lossless": true,
+    "MaxChannels": "32",
+    "SampleRates": "6 Hz to 384 kHz",
+    "BitDepths": "8 to 32-bit",
+    "OpenSource": false,
+    "Platform": "Windows (official), FFmpeg (decoder only)"
   }
 }

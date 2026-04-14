@@ -1,7 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "Mobipocket eBook",
-  "version": "2.1",
+  "version": "1.13",
   "extensions": [
     ".mobi",
     ".prc",
@@ -11,21 +11,19 @@
   "category": "Documents",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
-  "references": [
-    {
-      "specifications": [
-        "Mobipocket File Format Technical Specification — Mobipocket SA",
-        "Palm Database Format (PDB) — Palm OS Programmer's Companion",
-        "KF7/KF8 (Kindle Format) reverse-engineered specification — Calibre project"
-      ],
-      "WebLinks": [
-        "https://wiki.mobileread.com/wiki/MOBI",
-        "https://wiki.mobileread.com/wiki/MOBI6",
-        "https://en.wikipedia.org/wiki/Mobipocket",
-        "https://www.loc.gov/preservation/digital/formats/fdd/fdd000472.shtml"
-      ]
-    }
-  ],
+  "references": {
+    "specifications": [
+      "Mobipocket File Format Technical Specification — Mobipocket SA",
+      "Palm Database Format (PDB) — Palm OS Programmer's Companion",
+      "KF7/KF8 (Kindle Format) reverse-engineered specification — Calibre project"
+    ],
+    "WebLinks": [
+      "https://wiki.mobileread.com/wiki/MOBI",
+      "https://wiki.mobileread.com/wiki/MOBI6",
+      "https://en.wikipedia.org/wiki/Mobipocket",
+      "https://www.loc.gov/preservation/digital/formats/fdd/fdd000472.shtml"
+    ]
+  },
   "detection": {
     "signature": "424F4F4B4D4F4249",
     "offset": 60,

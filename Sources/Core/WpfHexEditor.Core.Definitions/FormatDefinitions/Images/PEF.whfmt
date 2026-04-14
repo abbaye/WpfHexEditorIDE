@@ -1,132 +1,212 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Pentax PEF RAW",
-  "version": "1.13",
+  "version": "1.14",
   "extensions": [
     ".pef"
   ],
-  "description": "Pentax Electronic File (RAW)",
+  "description": "PEF (Pentax Electronic Format) is the proprietary RAW image format used in Pentax DSLR cameras (K-series: K10D, K20D, K-5, K-3, K-1) and the Pentax 645D medium-format system. Unlike most TIFF-based RAW formats which are exclusively little-endian, PEF can be either little-endian ('II', 0x4949) or big-endian ('MM', 0x4D4D), making byte-order detection essential. In both cases the TIFF magic number at offset 2 is 42 (0x002A in LE, 0x2A00 in BE). The IFD0 offset follows at bytes 4–7. The Pentax MakerNote (EXIF tag 0x927C) begins with 'AOC\\x00' in older cameras or 'PENTAX \\x00' in newer K-series bodies. PEF uses lossless Huffman compression for the 12 or 14-bit Bayer RAW sensor data, distinguishing it from uncompressed competitors. The 645D uses a 40-megapixel medium-format sensor and produces larger PEF files with 14-bit depth.",
   "category": "Images",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "image-viewer",
   "references": {
     "specifications": [
-      "Pentax Electronic File (PEF) - TIFF/EP Format",
-      "Pentax RAW Image Format Specification",
-      "PEF Lossless Huffman Compression"
+      "Pentax Electronic File (PEF) — TIFF/EP-based with lossless Huffman",
+      "Pentax RAW Image Format Specification (K-series)",
+      "PEF Lossless Huffman Compression Documentation",
+      "TIFF/EP ISO 12234-2 Standard"
     ],
     "WebLinks": [
       "http://fileformats.archiveteam.org/wiki/Pentax_PEF",
-      "https://www.online-convert.com/file-format/pef",
-      "http://www.panix.com/~johnf/raw/",
-      "https://libopenraw.freedesktop.org/formats/pef/"
+      "https://exiftool.org/TagNames/Pentax.html",
+      "https://libopenraw.freedesktop.org/formats/pef/",
+      "https://rawpedia.rawtherapee.com/Supported_Cameras"
     ]
   },
   "detection": {
-    "signature": "49492A00",
-    "offset": 0,
+    "signatures": [
+      {
+        "pattern": "49492A00",
+        "offset": 0,
+        "description": "TIFF little-endian: 'II' + magic 42 (LE)"
+      },
+      {
+        "pattern": "4D4D002A",
+        "offset": 0,
+        "description": "TIFF big-endian: 'MM' + magic 42 (BE)"
+      }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.75,
     "required": true,
+    "Strength": "Medium",
+    "EntropyHint": { "min": 4.5, "max": 7.5 },
     "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024
+      "minFileSize": 8,
+      "maxSignatureOffset": 0,
+      "note": "PEF uniquely supports both LE and BE byte orders. Differentiated from other TIFF RAW formats by Pentax MakerNote prefix 'AOC\\x00' or 'PENTAX \\x00' in tag 0x927C"
     }
   },
   "variables": {
-    "machineType": "",
-    "sectionCount": 0,
-    "entryPoint": 0,
-    "tiffHeader": 0,
+    "byteOrderMark": 0,
+    "tiffMagic": 0,
     "ifdOffset": 0
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "TIFF Header",
+      "name": "ByteOrderMark",
       "offset": 0,
-      "length": 4,
+      "length": 2,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "TIFF-based RAW (little-endian)",
-      "storeAs": "tiffHeader",
-      "valueType": "uint32"
+      "opacity": 0.5,
+      "description": "Byte order indicator. 0x4949 = 'II' (little-endian); 0x4D4D = 'MM' (big-endian). PEF supports both.",
+      "storeAs": "byteOrderMark",
+      "valueType": "uint16",
+      "valueMap": {
+        "18761": "II — little-endian (K-series, most Pentax DSLRs)",
+        "19789": "MM — big-endian (some older Pentax models)"
+      }
     },
     {
       "type": "field",
-      "name": "IFD Offset",
+      "name": "TIFFMagic",
+      "offset": 2,
+      "length": 2,
+      "color": "#FFB347",
+      "opacity": 0.45,
+      "description": "TIFF magic number. 42 in both LE (0x002A) and BE (0x2A00) byte orders.",
+      "storeAs": "tiffMagic",
+      "valueType": "uint16",
+      "valueMap": {
+        "42": "Standard TIFF magic (LE read: 0x002A)",
+        "10752": "Standard TIFF magic (BE read: 0x2A00)"
+      }
+    },
+    {
+      "type": "field",
+      "name": "IFDOffset",
       "offset": 4,
       "length": 4,
       "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "First IFD offset",
+      "opacity": 0.35,
+      "description": "Offset (uint32, byte order per header) to first Image File Directory (IFD0).",
       "storeAs": "ifdOffset",
       "valueType": "uint32"
     },
     {
       "type": "metadata",
-      "name": "Machine",
-      "variable": "machineType",
-      "description": "Machine"
+      "name": "ByteOrderMark",
+      "variable": "byteOrderMark",
+      "description": "Byte order mark (18761='II' LE, 19789='MM' BE)"
     },
     {
       "type": "metadata",
-      "name": "Sections",
-      "variable": "sectionCount",
-      "description": "Sections"
+      "name": "TIFFMagic",
+      "variable": "tiffMagic",
+      "description": "TIFF magic number (42 in native byte order)"
     }
   ],
-  "software": [
-    "Image viewers",
-    "GIMP"
+  "assertions": [
+    {
+      "variable": "byteOrderMark",
+      "operator": "in",
+      "value": [18761, 19789],
+      "description": "Byte order must be 'II' (LE, 18761) or 'MM' (BE, 19789)"
+    },
+    {
+      "variable": "tiffMagic",
+      "operator": "in",
+      "value": [42, 10752],
+      "description": "TIFF magic must be 42 in native byte order (42 LE or 10752 BE)"
+    }
   ],
-  "formatRelationships": {
-    "category": "Images",
-    "extensions": [
-      ".pef"
+  "navigation": {
+    "bookmarks": [
+      { "name": "Header Start", "offset": 0, "description": "TIFF byte order mark (II or MM)" },
+      { "name": "TIFF Magic", "offset": 2, "description": "Standard TIFF magic 42" },
+      { "name": "IFD0 Offset", "offset": 4, "description": "Pointer to first Image File Directory" }
     ]
   },
-  "MimeTypes": [
-    "image/pef"
-  ],
-  "Software": [
-    "Photoshop",
-    "GIMP",
-    "Paint.NET",
-    "IrfanView",
-    "XnView"
-  ],
-  "UseCases": [
-    "Image viewing",
-    "Photo editing",
-    "Graphics design",
-    "Web publishing"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 32,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 4,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "PEF",
+    "primaryField": "byteOrderMark",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "name": "TIFF Header",
+        "fields": ["byteOrderMark", "tiffMagic", "ifdOffset"]
+      }
+    ]
   },
-  "TechnicalDetails": {
-    "ImagesFormat": true,
-    "BitDepth": 8
-  },
-  "functions": {
-    "readUInt32LE": "Read executable header"
-  },
+  "exportTemplates": [
+    {
+      "name": "PEF Header Summary",
+      "fields": ["byteOrderMark", "tiffMagic", "ifdOffset"],
+      "format": "text"
+    }
+  ],
   "forensic": {
     "category": "image",
     "riskLevel": "low",
-    "suspiciousPatterns": []
+    "suspiciousPatterns": [
+      "MakerNote tag 0x927C not starting with 'AOC\\x00' or 'PENTAX ' suggests non-PEF TIFF file",
+      "Invalid byte order mark (not 'II' or 'MM') indicates file corruption or forgery"
+    ]
   },
   "aiHints": {
-    "analysisContext": "Pentax Electronic File (RAW)",
+    "analysisContext": "Pentax PEF RAW camera image. Unique among TIFF-based RAW formats in supporting both little-endian ('II') and big-endian ('MM') byte orders. TIFF magic is 42 in both cases. Differentiated by Pentax MakerNote (tag 0x927C) beginning with 'AOC\\x00' (older) or 'PENTAX \\x00' (K-series). Uses lossless Huffman compression for 12 or 14-bit Bayer sensor data.",
     "suggestedInspections": [
-      "Validate Pentax PEF RAW signature, image dimensions, and color model",
-      "Check pixel data offset, compression type, and scanline alignment",
-      "Inspect color profile (ICC), EXIF metadata, and chunk CRCs"
+      "Detect byte order from first 2 bytes ('II' vs 'MM') before parsing any multi-byte values",
+      "Parse IFD0 MakerNote tag 0x927C and verify 'AOC\\x00' or 'PENTAX ' prefix",
+      "Validate compression tag in IFD0 — PEF uses lossless Huffman (compression tag value 32867 or 65000)",
+      "Check 645D-specific tags for medium-format 40MP sensor geometry"
     ]
+  },
+  "software": [
+    "Adobe Lightroom",
+    "Adobe Camera Raw",
+    "Capture One",
+    "RawTherapee",
+    "darktable",
+    "Pentax Digital Camera Utility",
+    "GIMP (via LibRaw)",
+    "IrfanView",
+    "XnView"
+  ],
+  "formatRelationships": {
+    "category": "Images",
+    "extensions": [".pef"],
+    "relatedFormats": ["TIFF", "DNG", "CR2", "NEF", "ORF"],
+    "note": "PEF is the only common TIFF-based RAW format to support both LE and BE byte orders. Pentax also supports DNG as an alternative export from K-series bodies."
+  },
+  "MimeTypes": [
+    "image/pef",
+    "image/x-pentax-pef",
+    "image/x-pentax-raw"
+  ],
+  "UseCases": [
+    "RAW photo processing from Pentax K-series DSLRs and 645D medium format",
+    "Lossless compressed RAW archival",
+    "Forensic imaging of Pentax camera media",
+    "Big-endian TIFF RAW format research and testing"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 67,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 5,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "ImagesFormat": true,
+    "BitDepth": "12 or 14",
+    "ByteOrder": "little-endian or big-endian",
+    "Container": "TIFF/EP",
+    "MakerNotePrefix": "AOC\\x00 (older) or PENTAX \\x00 (K-series)",
+    "SensorType": "Bayer",
+    "Compression": "lossless Huffman"
   }
 }

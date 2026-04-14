@@ -1,132 +1,207 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Sigma X3F RAW",
-  "version": "1.13",
+  "version": "1.14",
   "extensions": [
     ".x3f"
   ],
-  "description": "Sigma Foveon X3 RAW format",
+  "description": "X3F (Foveon X3 Format) is Sigma's proprietary RAW image format for cameras using the Foveon X3 layered CMOS sensor. Unlike Bayer-pattern sensors that capture one color per pixel and require demosaicing, the Foveon X3 sensor captures full RGB data at every pixel location using three stacked photodiode layers, theoretically delivering higher color fidelity without interpolation. The X3F format has two magic variants: 'FOVb' (0x464F5662) for newer files produced by Sigma SD/DP/fp cameras from approximately 2003 onward, and 'FOVx' (0x464F5678) for the earliest X3F files. After the 4-byte magic, a 4-byte little-endian version number appears at offset 4, followed by a 16-byte unique file identifier (UUID-like) at offset 8. The file contains multiple data sections indexed by a directory at the end of the file. X3F stores RAW sensor data, compressed preview images, and metadata. Sigma's SIGMA Photo Pro software is the primary RAW processor, with limited third-party support via LibRaw.",
   "category": "Images",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "image-viewer",
+  "references": [
+    "Sigma X3F RAW Format — Foveon X3 Sensor",
+    "X3F File Format Specification (reverse-engineered via x3f_tools)",
+    "Foveon X3 Direct Image Sensor Technology",
+    "LibRaw X3F Decoder Source"
+  ],
   "references": {
     "specifications": [
-      "Sigma X3F RAW Format - Foveon Sensor",
-      "X3F Proprietary RAW Image Format",
-      "Sigma Foveon X3 Camera Format"
+      "Sigma X3F RAW Format — Foveon X3 Sensor",
+      "X3F File Format Specification (x3f_tools project)",
+      "Foveon X3 Direct Image Sensor Technology Overview",
+      "LibRaw X3F Decoder Documentation"
     ],
     "WebLinks": [
       "https://libopenraw.freedesktop.org/formats/x3f/",
       "http://fileformats.archiveteam.org/wiki/X3F",
-      "http://www.sigma-sd.com/SD15/technology-capability.html",
-      "https://www.vertopal.com/en/format/x3f"
+      "https://github.com/danderson/x3f_tools",
+      "https://www.libraw.org/docs/Foveon-notes.html"
     ]
   },
   "detection": {
-    "signature": "464F5678",
-    "offset": 0,
+    "signatures": [
+      {
+        "pattern": "464F5662",
+        "offset": 0,
+        "description": "'FOVb' — Sigma X3F v2+ magic (newer cameras)"
+      },
+      {
+        "pattern": "464F5678",
+        "offset": 0,
+        "description": "'FOVx' — Sigma X3F v1 magic (earliest X3F files)"
+      }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.88,
     "required": true,
+    "Strength": "strong",
+    "EntropyHint": { "min": 4.5, "max": 7.5 },
     "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024
+      "minFileSize": 24,
+      "maxSignatureOffset": 0,
+      "note": "Both 'FOVb' and 'FOVx' are valid X3F magic values. 'FOVb' is the dominant variant in all modern Sigma/Foveon cameras."
     }
   },
   "variables": {
-    "machineType": "",
-    "sectionCount": 0,
-    "entryPoint": 0,
     "x3fMagic": "",
-    "version": ""
+    "x3fVersion": 0,
+    "x3fUID": ""
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "X3F Magic",
+      "name": "X3FMagic",
       "offset": 0,
       "length": 4,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "FOVx signature",
+      "opacity": 0.5,
+      "description": "X3F format magic. 'FOVb' (0x464F5662) for v2+ Sigma cameras; 'FOVx' (0x464F5678) for earliest X3F files.",
       "storeAs": "x3fMagic",
+      "valueType": "ascii",
+      "valueMap": {
+        "FOVb": "Sigma X3F v2+ (all modern Foveon cameras)",
+        "FOVx": "Sigma X3F v1 (earliest format variant)"
+      }
+    },
+    {
+      "type": "field",
+      "name": "X3FVersion",
+      "offset": 4,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "X3F format version number (uint32 LE). Encodes major.minor version of the X3F container spec.",
+      "storeAs": "x3fVersion",
       "valueType": "uint32"
     },
     {
       "type": "field",
-      "name": "Version",
-      "offset": 4,
-      "length": 4,
-      "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "Format version",
-      "storeAs": "version",
-      "valueType": "ascii"
+      "name": "X3FUID",
+      "offset": 8,
+      "length": 16,
+      "color": "#A8E6CF",
+      "opacity": 0.35,
+      "description": "16-byte unique file identifier (UUID-like). Unique per capture; used for file tracking and deduplication.",
+      "storeAs": "x3fUID",
+      "valueType": "bytes"
     },
     {
       "type": "metadata",
-      "name": "Machine",
-      "variable": "machineType",
-      "description": "Machine"
+      "name": "X3FMagic",
+      "variable": "x3fMagic",
+      "description": "X3F format magic ('FOVb' or 'FOVx')"
     },
     {
       "type": "metadata",
-      "name": "Sections",
-      "variable": "sectionCount",
-      "description": "Sections"
+      "name": "X3FVersion",
+      "variable": "x3fVersion",
+      "description": "X3F container version number (uint32 LE)"
     }
   ],
-  "software": [
-    "Image viewers",
-    "GIMP"
+  "assertions": [
+    {
+      "variable": "x3fMagic",
+      "operator": "in",
+      "value": ["FOVb", "FOVx"],
+      "description": "X3F magic must be 'FOVb' (v2+) or 'FOVx' (v1)"
+    }
   ],
-  "formatRelationships": {
-    "category": "Images",
-    "extensions": [
-      ".x3f"
+  "navigation": {
+    "bookmarks": [
+      { "name": "X3F Magic", "offset": 0, "description": "Foveon X3F magic: 'FOVb' or 'FOVx'" },
+      { "name": "Format Version", "offset": 4, "description": "X3F container version (uint32 LE)" },
+      { "name": "File UID", "offset": 8, "description": "16-byte unique file identifier" }
     ]
   },
-  "MimeTypes": [
-    "image/x3f"
-  ],
-  "Software": [
-    "Photoshop",
-    "GIMP",
-    "Paint.NET",
-    "IrfanView",
-    "XnView"
-  ],
-  "UseCases": [
-    "Image viewing",
-    "Photo editing",
-    "Graphics design",
-    "Web publishing"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 32,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 4,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "X3F",
+    "primaryField": "x3fMagic",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "name": "X3F Header",
+        "fields": ["x3fMagic", "x3fVersion", "x3fUID"]
+      }
+    ]
   },
-  "TechnicalDetails": {
-    "ImagesFormat": true,
-    "BitDepth": 8
-  },
-  "functions": {
-    "readUInt32LE": "Read executable header"
-  },
+  "exportTemplates": [
+    {
+      "name": "X3F Header Summary",
+      "fields": ["x3fMagic", "x3fVersion", "x3fUID"],
+      "format": "text"
+    }
+  ],
   "forensic": {
     "category": "image",
     "riskLevel": "low",
-    "suspiciousPatterns": []
+    "suspiciousPatterns": [
+      "Magic not 'FOVb' or 'FOVx' at offset 0 indicates non-X3F file or corruption",
+      "Duplicate UID values across files from a single camera session may indicate cloning or replay"
+    ]
   },
   "aiHints": {
-    "analysisContext": "Sigma Foveon X3 RAW format",
+    "analysisContext": "Sigma X3F RAW camera image using Foveon X3 layered sensor (full RGB at every pixel, no Bayer demosaicing). Magic is 'FOVb' (0x464F5662) for v2+ or 'FOVx' (0x464F5678) for v1. Version uint32 at offset 4; 16-byte UID at offset 8. File directory located at the end of the file (tail-anchored structure, not header-anchored). Supported cameras: Sigma SD series, DP Merrill/Quattro, fp series.",
     "suggestedInspections": [
-      "Validate Sigma X3F RAW signature, image dimensions, and color model",
-      "Check pixel data offset, compression type, and scanline alignment",
-      "Inspect color profile (ICC), EXIF metadata, and chunk CRCs"
+      "Identify magic variant: 'FOVb' (modern) vs 'FOVx' (legacy) to select appropriate parser",
+      "Read X3F version at offset 4 to determine spec version and feature availability",
+      "Parse file directory from tail of file to enumerate data sections (IMAGE, PROP, CAMF)",
+      "Locate CAMF section for camera metadata and calibration data"
     ]
+  },
+  "software": [
+    "SIGMA Photo Pro",
+    "Adobe Lightroom (via Camera Raw plugin)",
+    "Capture One",
+    "RawTherapee (via LibRaw)",
+    "darktable (via LibRaw)",
+    "IrfanView",
+    "XnView"
+  ],
+  "formatRelationships": {
+    "category": "Images",
+    "extensions": [".x3f"],
+    "relatedFormats": ["DNG", "TIFF"],
+    "note": "X3F is Sigma's exclusive RAW format, tied to Foveon X3 sensor technology. Not related to TIFF. Sigma fp cameras can also output DNG as an alternative to X3F."
+  },
+  "MimeTypes": [
+    "image/x3f",
+    "image/x-sigma-x3f",
+    "image/x-foveon-x3f"
+  ],
+  "UseCases": [
+    "RAW photo processing from Sigma SD/DP/fp Foveon cameras",
+    "Foveon sensor research and color science analysis",
+    "Forensic imaging of Sigma camera media",
+    "Demosaicing-free RAW workflow study"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 66,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 5,
+    "ValidationRules": 1,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "ImagesFormat": true,
+    "BitDepth": "12 or 14",
+    "ByteOrder": "little-endian",
+    "Container": "X3F proprietary (NOT TIFF)",
+    "MagicVariants": "FOVb (v2+), FOVx (v1)",
+    "SensorType": "Foveon X3 layered (full RGB per pixel, no Bayer)",
+    "DirectoryLocation": "tail-anchored (end of file)",
+    "Compression": "uncompressed or Sigma lossless"
   }
 }

@@ -1,7 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "BPS Patch",
-  "version": "1.1",
+  "version": "1.02",
   "extensions": [
     ".bps"
   ],

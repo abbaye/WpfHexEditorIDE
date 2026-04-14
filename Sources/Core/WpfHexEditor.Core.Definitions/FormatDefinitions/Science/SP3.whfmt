@@ -1,119 +1,183 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "SP3 Orbit Data",
-  "version": "1.12",
+  "version": "1.13",
   "extensions": [
     ".sp3",
     ".eph"
   ],
-  "description": "Standard Product 3 GPS precise orbit format",
+  "description": "Standard Product 3 (SP3) is an ASCII text format for precise GNSS satellite orbit and clock data produced by IGS analysis centers and the NGA. SP3 files start with '#' followed by a version character: 'a' (SP3-a), 'c' (SP3-c), or 'd' (SP3-d). The header includes orbit type, number of epochs, data used, GPS/GNSS start epoch, epoch interval, satellite list, accuracy exponents, and file descriptor. Each epoch line starts with '*' followed by date/time. Satellite position records start with 'P' (position in km, clock in microseconds) or 'V' (velocity in dm/s). SP3-d added support for multi-GNSS constellations. Widely used for precise point positioning (PPP).",
   "category": "Science",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
-  "references": {
-    "specifications": [
-      "SP3 Orbit Data Format"
-    ],
-    "WebLinks": [
-      "https://en.wikipedia.org/wiki/SP3"
-    ]
-  },
+  "references": [
+    "IGS SP3-d File Format Definition v1.0",
+    "IGS Product File Formats — SP3-c"
+  ],
+  "WebLinks": [
+    "https://en.wikipedia.org/wiki/SP3_(file_format)",
+    "https://files.igs.org/pub/data/format/sp3d.pdf"
+  ],
   "detection": {
-    "signature": "2373",
+    "signature": "2363",
     "offset": 0,
     "required": true,
+    "weight": 0.7,
+    "alternativeSignatures": [
+      { "signature": "2361", "offset": 0, "weight": 0.7, "note": "SP3-a version marker" }
+    ],
     "validation": {
-      "minFileSize": 2,
-      "maxSignatureOffset": 1024
+      "minFileSize": 80,
+      "maxSignatureOffset": 0
     }
   },
   "variables": {
     "currentOffset": 0,
-    "dimensions": 0,
-    "dataType": "",
-    "arrayCount": 0,
-    "sp3Magic": 0,
-    "version": 0
+    "sp3Magic": "",
+    "version": "",
+    "orbitType": "",
+    "numEpochs": 0,
+    "dataUsed": ""
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "SP3 Magic",
+      "name": "SP3 Version Marker",
       "offset": 0,
       "length": 2,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "SP3 signature (#)",
+      "opacity": 0.85,
+      "description": "SP3 file begins with '#' (0x23) followed by version letter: 'a' (SP3-a), 'c' (SP3-c), or 'd' (SP3-d); this 2-byte prefix uniquely identifies an SP3 orbit file",
       "storeAs": "sp3Magic",
-      "valueType": "uint16"
+      "valueType": "ascii"
     },
     {
       "type": "field",
-      "name": "Version",
+      "name": "Orbit Type Flag",
       "offset": 2,
       "length": 1,
       "color": "#4ECDC4",
+      "opacity": 0.5,
+      "description": "Single character orbit type: 'P' = position, 'V' = velocity; determines whether each satellite record contains position only or position and velocity",
+      "storeAs": "orbitType",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "First Epoch Line",
+      "offset": 0,
+      "length": 60,
+      "color": "#95E1D3",
+      "opacity": 0.4,
+      "description": "First header line (60 chars): version+orbit_type, year, month, day, hour, minute, second (GPS start epoch), number of epochs, data used, coordinate system, orbit type, agency",
+      "storeAs": "firstHeaderLine",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Second Header Line",
+      "offset": 60,
+      "length": 60,
+      "color": "#FFE66D",
+      "opacity": 0.35,
+      "description": "Second header line: GPS week, seconds of week, epoch interval (seconds), modified Julian date start day, fractional day; critical for time-tag reconstruction",
+      "storeAs": "secondHeaderLine",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Satellite Count Line",
+      "offset": 120,
+      "length": 60,
+      "color": "#A8E6CF",
       "opacity": 0.3,
-      "description": "SP3 version (a/c/d)",
-      "storeAs": "version",
-      "valueType": "uint8"
+      "description": "Third header line ('+' prefix): number of satellites (integer) followed by up to 17 satellite IDs in the format G01, G02, R01, E01 etc. for GPS/GLONASS/Galileo",
+      "storeAs": "satelliteCountLine",
+      "valueType": "ascii"
     },
     {
       "type": "metadata",
-      "name": "Dimensions",
-      "variable": "dimensions",
-      "description": "Dimensions"
+      "name": "Number of Epochs",
+      "variable": "numEpochs",
+      "description": "Total number of epochs in this SP3 file parsed from the first header line"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "ValidSP3Prefix",
+      "description": "Byte 0 must be '#' (0x23) — the mandatory SP3 file header indicator; any other value means the file does not conform to SP3 format",
+      "offset": 0,
+      "length": 1,
+      "expectedHex": "23",
+      "severity": "error"
     },
     {
-      "type": "metadata",
-      "name": "Data Type",
-      "variable": "dataType",
-      "description": "Data Type"
-    },
+      "name": "ValidVersionChar",
+      "description": "Byte 1 must be 'a' (0x61), 'c' (0x63), or 'd' (0x64) indicating SP3 version a, c, or d; 'b' is not a defined SP3 version",
+      "offset": 1,
+      "length": 1,
+      "validValues": ["61", "63", "64"],
+      "severity": "warning"
+    }
+  ],
+  "inspector": {
+    "groups": [
+      {
+        "name": "File Header",
+        "fields": [
+          { "label": "Version Marker", "offset": 0,   "length": 2,  "format": "ascii" },
+          { "label": "Orbit Type",     "offset": 2,   "length": 1,  "format": "ascii" },
+          { "label": "First Line",     "offset": 0,   "length": 60, "format": "ascii" },
+          { "label": "Second Line",    "offset": 60,  "length": 60, "format": "ascii" },
+          { "label": "Sat Count Line", "offset": 120, "length": 60, "format": "ascii" }
+        ]
+      }
+    ]
+  },
+  "exportTemplates": [
     {
-      "type": "metadata",
-      "name": "Array Count",
-      "variable": "arrayCount",
-      "description": "Array Count"
+      "name": "SP3 Header Summary",
+      "fields": ["sp3Magic", "orbitType", "firstHeaderLine", "secondHeaderLine"]
     }
   ],
   "software": [
-    "Common file viewers",
-    "Specialized software"
+    "RTKLIB",
+    "GIPSY-OASIS",
+    "Bernese GNSS Software",
+    "GSAC (Geodata Server Access Client)",
+    "Python georinex"
   ],
   "formatRelationships": {
-    "category": "Science",
-    "extensions": [
-      ".sp3",
-      ".eph"
-    ]
+    "gnss_format": true,
+    "produced_by": "IGS analysis centers",
+    "related_to": "RINEX",
+    "versions": ["SP3-a", "SP3-c", "SP3-d"]
   },
   "MimeTypes": [
+    "text/plain",
     "application/octet-stream"
   ],
-  "Software": [
-    "Hex Editor",
-    "File Viewer",
-    "Archive Manager"
-  ],
   "UseCases": [
-    "File storage",
-    "Data exchange",
-    "Archive"
+    "Precise Point Positioning (PPP)",
+    "GNSS orbit and clock product distribution",
+    "IGS final/rapid/ultra-rapid orbit products",
+    "Satellite navigation system validation"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 32,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 5,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
+    "CompletenessScore": 57,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 6,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
     "PriorityFormat": false,
-    "AutoRefined": true
+    "AutoRefined": false
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32BE": "Read scientific header",
-    "multiply": "Calculate dimensions"
+  "TechnicalDetails": {
+    "encoding": "ASCII text",
+    "lineLength": 60,
+    "positionUnits": "km",
+    "clockUnits": "microseconds",
+    "velocityUnits": "dm/s"
   },
   "forensic": {
     "category": "science",
@@ -121,11 +185,14 @@
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Standard Product 3 GPS precise orbit format",
+    "analysisContext": "SP3 is a fixed-column ASCII format. Satellite positions are in ECEF km and clocks in microseconds. Epoch records start with '*'. SP3-d extends to multi-GNSS by prefixing satellite IDs with constellation letters (G=GPS, R=GLONASS, E=Galileo, C=BeiDou).",
     "suggestedInspections": [
-      "Validate SP3 Orbit Data file header, data type, and dimension fields",
-      "Check axis labels, units, and calibration metadata",
-      "Inspect data array boundaries and fill/missing value markers"
+      "Verify byte 0 is '#' and byte 1 is 'a', 'c', or 'd' for the SP3 version",
+      "Parse first header line columns: version (c1-2), orbit type (c3), start epoch (c4-31), num_epochs (c33-39), data used (c41-45), coord sys (c47-50), orbit type (c52-54), agency (c56-60)",
+      "Read GPS week and epoch interval from second header line",
+      "Count '+' lines for the satellite list; SP3-d uses letter-prefixed IDs",
+      "Each epoch starts with '*' and contains YYYY MM DD HH MM SS.ssssss",
+      "Position records: 'P' + satellite ID + X + Y + Z (km, 14.6f) + clock (microseconds, 14.6f)"
     ]
   }
 }

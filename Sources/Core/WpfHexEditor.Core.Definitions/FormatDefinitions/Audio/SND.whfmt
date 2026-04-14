@@ -1,136 +1,292 @@
-﻿{
+{
   "diffMode": "binary",
-  "formatName": "Sound File",
-  "version": "2.5",
+  "formatName": "NeXT/Sun Sound File",
+  "version": "2.42",
   "extensions": [
-    ".snd"
+    ".snd",
+    ".au"
   ],
-  "description": "Generic sound file format used by various systems",
+  "description": "AU/SND — the NeXT/Sun Microsystems audio file format, introduced with the NeXTSTEP operating system and adopted by Sun Microsystems. Files begin with the 4-byte magic '.snd' (0x2E736E64). The 24-byte fixed header contains: data offset (minimum 24), data size (0xFFFFFFFF = streaming), encoding type (1=μ-law, 2=8-bit PCM, 3=16-bit PCM, 4=24-bit, 5=32-bit, 6=float32, 7=float64, 27=A-law), sample rate in Hz, and channel count. All header fields are big-endian (network byte order). The AU format is the historical default audio format on Unix workstations and is still used by Java (javax.sound.sampled), Asterisk PBX, and legacy VoIP systems. Encodings 1 (μ-law) and 27 (A-law) are the G.711 telephony variants.",
   "category": "Audio",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "audio-viewer",
   "references": {
     "specifications": [
-      "NeXT/Sun Soundfile Format Specification",
-      "Digital Sound File Format (.snd)",
-      "Sun Microsystems Audio File Standard"
+      "NeXTSTEP Sound Format — Apple/NeXT",
+      "Sun Microsystems AU File Format",
+      "ITU-T G.711 — PCM of Voice Frequencies (for μ-law and A-law encodings)"
     ],
     "WebLinks": [
-      "http://soundfile.sapp.org/doc/NextFormat/",
-      "https://en.wikipedia.org/wiki/Digital_sound_file_formats_using_the_.snd_extension",
-      "https://www.file-recovery.com/au-signature-format.htm",
-      "http://fileformats.archiveteam.org/wiki/AU"
+      "https://en.wikipedia.org/wiki/Au_file_format",
+      "https://en.wikipedia.org/wiki/NeXTSTEP",
+      "https://www.loc.gov/preservation/digital/formats/fdd/fdd000119.shtml",
+      "https://pubs.opengroup.org/external/auformat.html"
     ]
   },
   "detection": {
-    "signature": "2E736E64",
-    "offset": 0,
+    "signatures": [
+      { "value": "2E736E64", "offset": 0, "label": "'.snd' AU/SND magic — NeXT/Sun sound file", "weight": 1.0 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 1.0,
     "required": true,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 2.5, "max": 6.5 },
     "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024
+      "minFileSize": 24,
+      "maxSignatureOffset": 0
     }
   },
   "variables": {
+    "sndMagic": "",
+    "dataOffset": 0,
+    "dataSize": 0,
+    "encoding": 0,
     "sampleRate": 0,
-    "channels": 0,
-    "bitDepth": 0,
-    "duration": 0,
-    "sndHeader": 0,
-    "byteRate": 0,
-    "samplesPerSecond": 0
+    "channels": 0
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "SND Header",
+      "name": "AU/SND Magic",
       "offset": 0,
       "length": 4,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": ".snd - Sound file header",
-      "storeAs": "sndHeader",
-      "valueType": "uint32"
+      "opacity": 0.45,
+      "description": "AU/SND file magic '.snd' (0x2E736E64). The four ASCII bytes '.', 's', 'n', 'd' (0x2E, 0x73, 0x6E, 0x64) mark the start of a NeXT/Sun audio file. This format was the native audio format of NeXTSTEP (1989) and was adopted by Sun Microsystems for Solaris and other Unix workstations. Still the native format for Java audio (javax.sound.sampled.AudioSystem).",
+      "storeAs": "sndMagic",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Data Offset",
+      "offset": 4,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "Byte offset from the start of the file to the audio sample data, as a 32-bit big-endian unsigned integer. The minimum legal value is 24 (the size of the fixed AU header). Values larger than 24 indicate that annotation text (null-terminated ASCII) follows the fixed header and precedes the audio samples.",
+      "storeAs": "dataOffset",
+      "valueType": "uint32",
+      "endianness": "big"
+    },
+    {
+      "type": "field",
+      "name": "Data Size",
+      "offset": 8,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.35,
+      "description": "Size of the audio sample data in bytes as a 32-bit big-endian unsigned integer. The sentinel value 0xFFFFFFFF (4294967295) means the data size is unknown — used for streaming audio or piped recordings where the total length is not determined at recording time. Java's AudioInputStream commonly produces AU files with this sentinel value.",
+      "storeAs": "dataSize",
+      "valueType": "uint32",
+      "endianness": "big",
+      "valueMap": {
+        "4294967295": "Unknown/streaming (0xFFFFFFFF sentinel — common in Java AudioInputStream)"
+      }
+    },
+    {
+      "type": "field",
+      "name": "Encoding",
+      "offset": 12,
+      "length": 4,
+      "color": "#FFE66D",
+      "opacity": 0.35,
+      "description": "Audio encoding format as a 32-bit big-endian unsigned integer. Defines how each audio sample is stored. G.711 telephony variants (μ-law=1, A-law=27) are the most common. PCM variants (2=8-bit, 3=16-bit, 4=24-bit, 5=32-bit) provide uncompressed audio. Floating-point variants (6=float32, 7=float64) are used in professional audio. Encoding 3 (16-bit linear PCM, big-endian) is the most common lossless encoding for NeXT/Sun workstation audio.",
+      "storeAs": "encoding",
+      "valueType": "uint32",
+      "endianness": "big",
+      "valueMap": {
+        "1": "G.711 μ-law (8-bit companded, North American/Japanese PSTN)",
+        "2": "8-bit linear PCM (unsigned)",
+        "3": "16-bit linear PCM (big-endian, signed)",
+        "4": "24-bit linear PCM (big-endian, signed)",
+        "5": "32-bit linear PCM (big-endian, signed)",
+        "6": "32-bit IEEE 754 floating-point",
+        "7": "64-bit IEEE 754 floating-point (double precision)",
+        "23": "4-bit CCITT G.721 ADPCM (32 kbps)",
+        "24": "CCITT G.722 ADPCM",
+        "25": "CCITT G.723 ADPCM",
+        "27": "G.711 A-law (8-bit companded, European PSTN)"
+      }
+    },
+    {
+      "type": "field",
+      "name": "Sample Rate",
+      "offset": 16,
+      "length": 4,
+      "color": "#C7CEEA",
+      "opacity": 0.30,
+      "description": "Sample rate in Hz as a 32-bit big-endian unsigned integer. Common values: 8000 Hz (G.711 telephony, VoIP), 22050 Hz (half CD quality), 44100 Hz (CD quality), 48000 Hz (professional/broadcast standard). The AU format supports any sample rate; the value is not constrained to standard rates.",
+      "storeAs": "sampleRate",
+      "valueType": "uint32",
+      "endianness": "big",
+      "valueMap": {
+        "8000": "8000 Hz — G.711 telephony (μ-law/A-law VoIP)",
+        "22050": "22050 Hz — half CD quality (multimedia)",
+        "44100": "44100 Hz — CD quality",
+        "48000": "48000 Hz — professional/broadcast standard"
+      }
+    },
+    {
+      "type": "field",
+      "name": "Channels",
+      "offset": 20,
+      "length": 4,
+      "color": "#B8B8FF",
+      "opacity": 0.25,
+      "description": "Number of audio channels as a 32-bit big-endian unsigned integer. Mono (1) is standard for G.711 telephony; stereo (2) is common for workstation music and multimedia. Samples are interleaved: left/right/left/right for stereo.",
+      "storeAs": "channels",
+      "valueType": "uint32",
+      "endianness": "big",
+      "valueMap": {
+        "1": "Mono",
+        "2": "Stereo (interleaved L/R)",
+        "4": "Quadraphonic",
+        "6": "5.1 surround"
+      }
+    },
+    {
+      "type": "metadata",
+      "name": "Encoding",
+      "variable": "encoding",
+      "description": "AU encoding: 1=μ-law, 3=16-bit PCM, 27=A-law (see full valueMap)"
     },
     {
       "type": "metadata",
       "name": "Sample Rate",
       "variable": "sampleRate",
-      "description": "Sample Rate"
+      "description": "Sample rate in Hz"
     },
     {
       "type": "metadata",
       "name": "Channels",
       "variable": "channels",
-      "description": "Channels"
-    },
-    {
-      "type": "metadata",
-      "name": "Byte Rate",
-      "variable": "byteRate",
-      "description": "Calculated byte rate"
-    },
-    {
-      "type": "metadata",
-      "name": "Samples/Second",
-      "variable": "samplesPerSecond",
-      "description": "Total samples per second"
+      "description": "Channel count (1=mono, 2=stereo)"
     }
   ],
-  "software": [
-    "Sound editors",
-    "Legacy audio software"
+  "assertions": [
+    {
+      "name": "AU magic valid",
+      "expression": "sndMagic == '.snd'",
+      "severity": "error",
+      "message": "AU/SND file must start with '.snd' (0x2E736E64) — not a valid NeXT/Sun sound file"
+    },
+    {
+      "name": "Data offset at least 24",
+      "expression": "dataOffset >= 24",
+      "severity": "error",
+      "message": "Data offset must be >= 24 (minimum AU fixed header size) — invalid AU header"
+    },
+    {
+      "name": "Encoding is known",
+      "expression": "encoding >= 1 && encoding <= 27",
+      "severity": "warning",
+      "message": "Encoding value outside known AU encoding range (1-27) — may be an extended or proprietary encoding"
+    }
   ],
-  "formatRelationships": {
-    "category": "Audio",
-    "extensions": [
-      ".snd"
+  "navigation": {
+    "bookmarks": [
+      {
+        "name": "AU Header",
+        "offset": 0,
+        "icon": "\uE71B",
+        "color": "#FF6B6B"
+      },
+      {
+        "name": "Audio Data",
+        "offset": 24,
+        "icon": "\uE767",
+        "color": "#4ECDC4"
+      }
     ]
   },
-  "MimeTypes": [
-    "audio/snd"
-  ],
-  "Software": [
-    "VLC",
-    "Audacity",
-    "Foobar2000",
-    "MediaMonkey",
-    "Winamp"
-  ],
-  "UseCases": [
-    "Music playback",
-    "Audio editing",
-    "Sound production",
-    "Streaming"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 5,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "encoding",
+    "primaryField": "sampleRate",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "AU/SND Header",
+        "icon": "\uE71B",
+        "fields": ["sndMagic", "dataOffset", "dataSize"]
+      },
+      {
+        "title": "Audio Format",
+        "icon": "\uE767",
+        "fields": ["encoding", "sampleRate", "channels"]
+      }
+    ]
   },
-  "TechnicalDetails": {
-    "AudioFormat": true
-  },
-  "functions": {
-    "readUInt32BE": "Read audio header",
-    "computeFromVariables(sampleRate * bitDepth * channels / 8, byteRate)": "Calculate byte rate",
-    "computeFromVariables(sampleRate * channels, samplesPerSecond)": "Calculate samples/second"
-  },
+  "exportTemplates": [
+    {
+      "name": "AU Header (JSON)",
+      "format": "json",
+      "fields": ["sndMagic", "dataOffset", "dataSize", "encoding", "sampleRate", "channels"]
+    }
+  ],
   "forensic": {
     "category": "audio",
     "riskLevel": "low",
-    "suspiciousPatterns": []
+    "suspiciousPatterns": [
+      {
+        "name": "Data offset anomaly",
+        "condition": "dataOffset < 24 || dataOffset > 65536",
+        "severity": "warning",
+        "description": "Data offset outside normal range. Values < 24 are structurally invalid; values > 64K suggest an unusually large annotation block or header manipulation."
+      }
+    ]
   },
   "aiHints": {
-    "analysisContext": "Generic sound file format used by various systems",
+    "analysisContext": "AU/SND NeXT/Sun sound format: '.snd'(4B) + dataOffset(4,BE,min=24) + dataSize(4,BE,0xFFFFFFFF=streaming) + encoding(4,BE: 1=μ-law/3=16-bit PCM/27=A-law) + sampleRate(4,BE) + channels(4,BE). Audio samples start at dataOffset (typically 24). For μ-law/A-law (encoding 1/27): 8-bit companded samples, 8000 Hz, mono, 64 kbps — used in telephony and VoIP. For 16-bit PCM (encoding 3): big-endian signed shorts at any sample rate — common in Java audio and NeXT workstation recordings. Duration = dataSize / (sampleRate × channels × bytesPerSample). Java AudioInputStream commonly writes dataSize=0xFFFFFFFF (unknown).",
     "suggestedInspections": [
-      "Validate Sound File header: sample rate, channels, bit depth, codec ID",
-      "Check frame/block alignment and data chunk boundaries",
-      "Verify metadata tags (ID3, Vorbis comment) are well-formed"
+      "Verify '.snd' magic at offset 0: 2E 73 6E 64",
+      "Read encoding at offset 12 (BE uint32): 1=μ-law, 3=16-bit PCM, 27=A-law",
+      "Confirm dataOffset >= 24; annotation text (if any) at bytes 24..dataOffset-1",
+      "For dataSize=0xFFFFFFFF: streaming file — compute duration from actual file size",
+      "Duration (seconds) = dataSize / (sampleRate × channels × bytesPerSample)"
     ]
+  },
+  "software": [
+    "Java (javax.sound.sampled — native AU format)",
+    "SoX (Sound eXchange)",
+    "Audacity",
+    "FFmpeg (au muxer/demuxer)",
+    "VLC media player",
+    "NeXTSTEP/OpenStep audio subsystem"
+  ],
+  "formatRelationships": {
+    "category": "Audio",
+    "extensions": [".snd", ".au"],
+    "relatedFormats": ["ULAW", "ALAW", "WAV", "AIFF"],
+    "note": "AU/SND is the NeXT/Sun workstation audio format. The .snd extension is historically Unix; .au is the Java/cross-platform convention. Both share the same binary format. μ-law (encoding 1) and A-law (encoding 27) are the G.711 telephony variants; they distinguish ULAW.whfmt and ALAW.whfmt. The AU format is big-endian throughout (unlike WAV which is little-endian)."
+  },
+  "MimeTypes": [
+    "audio/basic",
+    "audio/x-au",
+    "audio/au"
+  ],
+  "UseCases": [
+    "Java application audio (javax.sound.sampled default format)",
+    "NeXTSTEP and OpenStep workstation recordings",
+    "Unix system sounds and alert tones",
+    "VoIP G.711 μ-law and A-law telephony audio"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 70,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 9,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "AudioFormat": true,
+    "ContainerFormat": "Self-contained (NeXT/Sun AU format)",
+    "Endianness": "big-endian (all header fields and PCM samples)",
+    "SupportedEncodings": "μ-law, A-law, 8/16/24/32-bit PCM, float32, float64, ADPCM variants",
+    "SampleRates": "Any (8000, 22050, 44100, 48000 Hz most common)",
+    "Channels": "1 (mono) to 6 (5.1)",
+    "Origin": "NeXTSTEP (1989) / Sun Microsystems"
   }
 }

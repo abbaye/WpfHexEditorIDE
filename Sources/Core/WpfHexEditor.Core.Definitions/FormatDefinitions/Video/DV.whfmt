@@ -1,20 +1,20 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Digital Video",
-  "version": "1.14",
+  "version": "1.15",
   "extensions": [
     ".dv",
     ".dif"
   ],
-  "description": "Digital Video format for storing digital video, commonly used in camcorders",
+  "description": "DV (Digital Video) is an international standard (IEC 61834) for encoding digital video, commonly used in consumer and professional camcorders from the 1990s-2000s. Raw DV files consist of a sequence of fixed-size DV frames (120000 bytes/frame at 25 Mbps for SD PAL, or 100800 bytes/frame for NTSC). Each DV frame is composed of Sequences (DIF blocks): a header DIF block (3 bytes: SCT=section type, STA=station, QNO=sequence number), then subcode, VAUX, and audio DIF blocks. The raw DV elementary stream starts with DIF block header byte 0x1F 0x07 0x00 for a header section. DV is also encapsulated in AVI (Type-1 or Type-2), QuickTime MOV, or MXF containers. The DIF section code distinguishes DV25 (2 channels), DVCPRO 25/50, and DVCPRO HD.",
   "category": "Video",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "IEC 61834 - Digital Video (DV) Standard",
-      "DV Blue Book Specification",
-      "RFC 6469 - RTP Payload Format for DV (IEC 61834)"
+      "IEC 61834 — Digital Video (DV) Standard (Parts 1-6)",
+      "IEC 61834-2 — SD 25 Mbps Recording",
+      "RFC 6469 — RTP Payload Format for DV (IEC 61834)"
     ],
     "WebLinks": [
       "https://en.wikipedia.org/wiki/DV_(video_format)",
@@ -24,108 +24,153 @@
     ]
   },
   "detection": {
-    "signature": "1F0700",
-    "offset": 0,
+    "signatures": [
+      { "value": "1F0700", "offset": 0, "label": "DV DIF header block (SCT=0x1F, STA=0x07, QNO=0x00)", "weight": 0.9 },
+      { "value": "3F0700", "offset": 0, "label": "DV DIF subcode block start (alternate)", "weight": 0.6 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.6,
     "required": true,
+    "Strength": "Medium",
+    "EntropyHint": { "min": 5.0, "max": 7.5 },
     "validation": {
-      "minFileSize": 3,
-      "maxSignatureOffset": 1024
+      "minFileSize": 120000,
+      "note": "Raw DV elementary streams have 120000-byte PAL frames or 100800-byte NTSC frames. The first 3 bytes identify the DIF block header section. DV in AVI uses RIFF magic (52494646) instead."
     }
   },
   "variables": {
-    "width": 0,
-    "height": 0,
-    "frameRate": 0,
-    "duration": 0,
-    "dvHeader": "",
-    "totalPixels": 0
+    "difSectionCode": 0,
+    "difBlockNum": 0,
+    "difSequenceNum": 0
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "DV Header",
+      "name": "DIF Block Header",
       "offset": 0,
       "length": 3,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "DV file header marker",
-      "storeAs": "dvHeader",
-      "valueType": "ascii"
+      "opacity": 0.45,
+      "description": "DV DIF (Digital Interface Format) block header bytes. Byte 0 = section type (SCT, bits 7-5) + station (STA, bits 4-1) + flag (bit 0). Byte 1 = sequence number (QNO, bits 7-4) + DIF block number (DBN, bits 3-0). Byte 2 = reserved (0x00). SCT=0 (header section), STA=0x0F, QNO=0 is the standard header DIF block start. DV frames contain 12 sequences (NTSC) or 12 sequences (PAL) of 150 DIF blocks each.",
+      "storeAs": "difSectionCode",
+      "valueType": "uint8",
+      "bitfields": [
+        { "name": "Section Type (SCT)", "bits": "7-5", "description": "DIF block section type", "valueMap": { "0": "Header section", "1": "Subcode section", "2": "VAUX section", "3": "Audio section", "4": "Video section" } },
+        { "name": "Station (STA)", "bits": "4-1", "description": "Station identifier" },
+        { "name": "Reserved", "bits": "0", "description": "Must be 0" }
+      ]
+    },
+    {
+      "type": "field",
+      "name": "Sequence / Block Number",
+      "offset": 1,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.30,
+      "description": "Sequence number (bits 7-4) and DIF block number within sequence (bits 3-0). Together with the section type, identifies the position of this DIF block within the DV frame structure.",
+      "storeAs": "difBlockNum",
+      "valueType": "uint8",
+      "bitfields": [
+        { "name": "Sequence Number", "bits": "7-4", "description": "Sequence number within DV frame (0-11 for PAL/NTSC)" },
+        { "name": "DIF Block Number", "bits": "3-0", "description": "DIF block number within section" }
+      ]
     },
     {
       "type": "metadata",
-      "name": "Resolution",
-      "variable": "width",
-      "description": "Resolution"
-    },
-    {
-      "type": "metadata",
-      "name": "Frame Rate",
-      "variable": "frameRate",
-      "description": "Frame Rate"
-    },
-    {
-      "type": "metadata",
-      "name": "Total Pixels",
-      "variable": "totalPixels",
-      "description": "Width x Height"
+      "name": "DIF Section Code",
+      "variable": "difSectionCode",
+      "description": "DV DIF block section type (0=Header)"
     }
   ],
-  "software": [
-    "Video editors",
-    "VLC",
-    "FFmpeg"
+  "assertions": [
+    {
+      "name": "DIF section type is header",
+      "expression": "(difSectionCode & 224) == 0",
+      "severity": "warning",
+      "message": "First DIF block section type should be Header (SCT=0, bits 7-5) for a raw DV elementary stream"
+    }
   ],
-  "formatRelationships": {
-    "category": "Video",
-    "extensions": [
-      ".dv",
-      ".dif"
+  "navigation": {
+    "bookmarks": [
+      {
+        "name": "First DIF Block",
+        "offset": 0,
+        "icon": "\uE71B",
+        "color": "#FF6B6B"
+      }
     ]
   },
-  "MimeTypes": [
-    "video/dv"
-  ],
-  "Software": [
-    "VLC",
-    "Media Player Classic",
-    "HandBrake",
-    "FFmpeg",
-    "MPC-HC"
-  ],
-  "UseCases": [
-    "Video playback",
-    "Video editing",
-    "Encoding",
-    "Streaming"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 4,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "difSectionCode",
+    "primaryField": "difBlockNum",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "DV DIF Block Header",
+        "icon": "\uE71B",
+        "fields": ["difSectionCode", "difBlockNum"]
+      }
+    ]
   },
-  "TechnicalDetails": {
-    "VideoFormat": true
-  },
-  "functions": {
-    "readUInt32LE": "Read video header",
-    "computeFromVariables(width * height, totalPixels)": "Calculate total pixels"
-  },
+  "exportTemplates": [
+    {
+      "name": "DV DIF Header (JSON)",
+      "format": "json",
+      "fields": ["difSectionCode", "difBlockNum"]
+    }
+  ],
   "forensic": {
     "category": "video",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Digital Video format for storing digital video, commonly used in camcorders",
+    "analysisContext": "Raw DV elementary stream (IEC 61834). Structure: sequence of 150-DIF-block sequences. Each DIF block = 80 bytes: 3B header (SCT+STA+QNO/DBN+reserved) + 77B data. Frame layout: 1 Header DIF + 2 Subcode DIF + 3 VAUX DIF + 9 Audio DIF + 135 Video DIF = 150 DIF blocks per sequence. PAL: 12 sequences × 150 × 80B = 144000B/frame at 25fps = 3.6 MB/s, 25 Mbps. NTSC: 10 sequences/frame = 120000B. DVCPRO50: 300 DIF blocks/sequence. Embedded audio: 2ch/4ch 48kHz 16-bit PCM in audio DIF blocks.",
     "suggestedInspections": [
-      "Validate Digital Video container magic, box/atom sizes, and codec FourCC",
-      "Check track/stream layout, frame index, and timing fields",
-      "Inspect audio-video sync, keyframe distribution, and metadata"
+      "Verify byte 0 bits 7-5 = 000 (Header section) for raw DV elementary stream",
+      "Frame size: 120000 bytes (NTSC 30fps) or 144000 bytes (PAL 25fps)",
+      "Look for VAUX data (section type 2) containing recording date/time",
+      "Check sequence count for DV25 vs DVCPRO50 vs DVCPRO HD variants"
     ]
+  },
+  "software": [
+    "FFmpeg (dv demuxer)",
+    "VLC media player",
+    "Kdenlive",
+    "Final Cut Pro",
+    "Adobe Premiere Pro",
+    "dvgrab (Linux capture tool)"
+  ],
+  "formatRelationships": {
+    "category": "Video",
+    "extensions": [".dv", ".dif"],
+    "relatedFormats": ["AVI", "MOV", "MXF"],
+    "note": "Raw DV (.dv/.dif) is a headerless elementary bitstream. DV is also stored in AVI (Type-1 or Type-2 DV-AVI, detected by RIFF magic), QuickTime MOV (.mov), and MXF (.mxf). The raw DV format is identified only by the DIF block structure — no separate file header exists."
+  },
+  "MimeTypes": [
+    "video/dv",
+    "video/x-dv"
+  ],
+  "UseCases": [
+    "MiniDV camcorder recording and playback",
+    "Professional broadcast DV/DVCPRO recording",
+    "Video capture from DV/Firewire devices",
+    "Legacy digital video archival"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 65,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 3,
+    "ValidationRules": 1,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "VideoFormat": true,
+    "ContainerFormat": "Raw DV elementary stream (DIF blocks) or encapsulated in AVI/MOV/MXF",
+    "VideoCodec": "DV25 (DVCAM, MiniDV), DVCPRO 25/50, DVCPRO HD",
+    "AudioCodecs": "PCM 48kHz 16-bit (2 or 4 channels in DIF audio blocks)",
+    "FrameSize": "120000 bytes/frame (NTSC) or 144000 bytes/frame (PAL) for DV25"
   }
 }

@@ -1,122 +1,222 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Blu-ray MPEG-2 Transport Stream",
-  "version": "1.12",
+  "version": "1.13",
   "extensions": [
     ".m2ts"
   ],
-  "description": "Blu-ray Disc Audio-Video (BDAV) MPEG-2 Transport Stream container",
+  "description": "M2TS (Blu-ray BDAV MPEG-2 Transport Stream) — the video container format used on Blu-ray Disc Audio-Video (BDAV) content. M2TS uses 192-byte packets instead of the standard 188-byte MPEG-2 TS packets. Each M2TS packet has a 4-byte TP_extra_header (Arrival Time Stamp, 30 bits, plus 2 reserved bits) prepended to the standard 188-byte MPEG-2 TS packet starting with sync byte 0x47. M2TS files are stored in the BDMV/STREAM/ directory on Blu-ray discs as 5-digit numbered files (e.g., 00001.m2ts). Typical video codecs: H.264/AVC (MPEG-4 AVC) and H.265/HEVC (Ultra HD Blu-ray). Audio codecs: AC-3, Dolby TrueHD, DTS-HD Master Audio, LPCM. Subtitles use PGS (Presentation Graphic Stream).",
   "category": "Video",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "Blu-ray Disc Format 2.B - BDAV MPEG-2 Transport Stream",
-      "ITU-T H.222.0 | ISO/IEC 13818-1",
-      "MPEG-2 Transport Stream for Blu-ray"
+      "Blu-ray Disc Format 2.B — BDAV MPEG-2 Transport Stream",
+      "ITU-T H.222.0 | ISO/IEC 13818-1 — MPEG-2 Transport Stream",
+      "Blu-ray Disc Association — BD-ROM Application Format Specifications"
     ],
     "WebLinks": [
       "https://www.loc.gov/preservation/digital/formats/fdd/fdd000636.shtml",
       "https://en.wikipedia.org/wiki/.m2ts",
       "https://en.wikipedia.org/wiki/MPEG-2_transport_stream",
-      "https://docs.fileformat.com/video/m2ts/"
+      "https://wiki.multimedia.cx/index.php/Blu-ray"
     ]
   },
   "detection": {
-    "signature": "47",
-    "offset": 0,
+    "signatures": [
+      { "value": "47", "offset": 4, "label": "MPEG-TS sync byte 0x47 at offset 4 (after 4-byte ATS prefix)", "weight": 0.8 },
+      { "value": "47", "offset": 0, "label": "MPEG-TS sync byte 0x47 at offset 0 (standard TS without ATS)", "weight": 0.5 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.5,
     "required": true,
+    "Strength": "Medium",
+    "EntropyHint": { "min": 4.0, "max": 7.5 },
     "validation": {
-      "minFileSize": 1,
-      "maxSignatureOffset": 1024
+      "minFileSize": 192,
+      "note": "M2TS uses 192-byte packets: 4-byte ATS prefix + 188-byte TS packet. Sync byte 0x47 is at offset 4, 196, 388, etc. Standard .ts files have 0x47 at 0, 188, 376. Check both offsets to distinguish."
     }
   },
-  "functions": {
-    "readUInt8": "Read 8-bit values for sync byte and header flags",
-    "readUInt16BE": "Read 16-bit PID (Packet Identifier)",
-    "readUInt32BE": "Read 32-bit timestamp prefix for Blu-ray",
-    "bitwiseAnd": "Extract PID and flags from TS header",
-    "computeFromVariables(width * height, totalPixels)": "Calculate total pixels"
-  },
   "variables": {
-    "currentOffset": 0,
-    "syncByte": 71,
-    "timestampPrefix": 0,
+    "arrivalTimeStamp": 0,
+    "syncByte": 0,
     "packetPID": 0,
-    "width": 0,
-    "height": 0,
-    "videoCodec": "H.264/H.265",
-    "totalPixels": 0
+    "scramblingControl": 0
   },
   "blocks": [
     {
-      "type": "signature",
-      "name": "Sync Byte",
+      "type": "field",
+      "name": "Arrival Time Stamp (ATS)",
       "offset": 0,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "Blu-ray TP_extra_header: 2 reserved bits (must be 00) + 30-bit Arrival Time Stamp (ATS) in units of 1/27000000 seconds (27 MHz clock). The ATS records the arrival time of the first byte of the TS packet, used for synchronization and trick play. This 4-byte prefix distinguishes M2TS (192-byte packets) from standard MPEG-TS (188-byte packets).",
+      "storeAs": "arrivalTimeStamp",
+      "valueType": "uint32",
+      "endianness": "big",
+      "bitfields": [
+        { "name": "Reserved", "bits": "31-30", "description": "Must be 00" },
+        { "name": "Arrival Time Stamp", "bits": "29-0", "description": "30-bit ATS in 1/27MHz units" }
+      ]
+    },
+    {
+      "type": "signature",
+      "name": "TS Sync Byte",
+      "offset": 4,
       "length": 1,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "MPEG-TS sync byte for Blu-ray format",
+      "opacity": 0.45,
+      "description": "MPEG-2 Transport Stream sync byte 0x47 (decimal 71, ASCII 'G'). Located at offset 4 (after the 4-byte ATS prefix) in M2TS packets. Every 192-byte M2TS packet contains this byte at positions 4, 196, 388, etc. This is the primary M2TS identification point: 0x47 at offset 4 and at offset 196.",
       "storeAs": "syncByte",
       "valueType": "uint8"
     },
     {
+      "type": "field",
+      "name": "Transport Flags + PID High",
+      "offset": 5,
+      "length": 1,
+      "color": "#95E1D3",
+      "opacity": 0.30,
+      "description": "MPEG-2 TS packet header byte 2: bit 7=TEI (transport error), bit 6=PUSI (payload unit start), bit 5=priority, bits 4-0=PID upper 5 bits.",
+      "storeAs": "packetPID",
+      "valueType": "uint8",
+      "bitfields": [
+        { "name": "Transport Error Indicator", "bits": "7", "description": "1 = uncorrectable error in this packet" },
+        { "name": "Payload Unit Start", "bits": "6", "description": "1 = new PES packet or PSI section starts" },
+        { "name": "Transport Priority", "bits": "5", "description": "1 = higher priority" }
+      ]
+    },
+    {
+      "type": "field",
+      "name": "Scrambling + Adaptation + CC",
+      "offset": 7,
+      "length": 1,
+      "color": "#FFE66D",
+      "opacity": 0.25,
+      "description": "TS packet header byte 4: bits 7-6=scrambling (00=clear), bits 5-4=adaptation field control (01=payload only, 11=both), bits 3-0=continuity counter (0-15).",
+      "storeAs": "scramblingControl",
+      "valueType": "uint8",
+      "bitfields": [
+        { "name": "Scrambling Control", "bits": "7-6", "description": "00=not scrambled, 10=even key, 11=odd key" },
+        { "name": "Adaptation Field Control", "bits": "5-4", "description": "01=payload only, 10=adaptation only, 11=both" },
+        { "name": "Continuity Counter", "bits": "3-0", "description": "0-15 rotating per PID" }
+      ]
+    },
+    {
       "type": "metadata",
-      "name": "Total Pixels",
-      "variable": "totalPixels",
-      "description": "Width x Height"
+      "name": "Arrival Time Stamp",
+      "variable": "arrivalTimeStamp",
+      "description": "Blu-ray 30-bit ATS (27 MHz clock units)"
+    },
+    {
+      "type": "metadata",
+      "name": "Sync Byte",
+      "variable": "syncByte",
+      "description": "MPEG-TS sync byte (must be 0x47 = 71)"
     }
   ],
-  "software": [
-    "Blu-ray players",
-    "VLC",
-    "Media players"
+  "assertions": [
+    {
+      "name": "TS sync byte valid",
+      "expression": "syncByte == 71",
+      "severity": "error",
+      "message": "MPEG-TS sync byte at offset 4 must be 0x47 (71) — not a valid M2TS packet"
+    },
+    {
+      "name": "ATS reserved bits are zero",
+      "expression": "(arrivalTimeStamp & 3221225472) == 0",
+      "severity": "warning",
+      "message": "M2TS ATS reserved bits (bits 31-30) should be 00"
+    }
   ],
-  "formatRelationships": {
-    "category": "Video",
-    "extensions": [
-      ".m2ts"
+  "navigation": {
+    "bookmarks": [
+      {
+        "name": "First M2TS Packet",
+        "offset": 0,
+        "icon": "\uE71B",
+        "color": "#FF6B6B"
+      },
+      {
+        "name": "Second M2TS Packet",
+        "offset": 192,
+        "icon": "\uE8A5",
+        "color": "#4ECDC4"
+      }
     ]
   },
-  "MimeTypes": [
-    "video/m2ts"
-  ],
-  "Software": [
-    "VLC",
-    "Media Player Classic",
-    "HandBrake",
-    "FFmpeg",
-    "MPC-HC"
-  ],
-  "UseCases": [
-    "Video playback",
-    "Video editing",
-    "Encoding",
-    "Streaming"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 2,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "syncByte",
+    "primaryField": "arrivalTimeStamp",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "M2TS Packet Header",
+        "icon": "\uE71B",
+        "fields": ["arrivalTimeStamp", "syncByte", "packetPID", "scramblingControl"]
+      }
+    ]
   },
-  "TechnicalDetails": {
-    "VideoFormat": true
-  },
+  "exportTemplates": [
+    {
+      "name": "M2TS Packet Header (JSON)",
+      "format": "json",
+      "fields": ["arrivalTimeStamp", "syncByte", "packetPID", "scramblingControl"]
+    }
+  ],
   "forensic": {
     "category": "video",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Blu-ray Disc Audio-Video (BDAV) MPEG-2 Transport Stream container",
+    "analysisContext": "M2TS = 192-byte packets: 4B TP_extra_header (2 reserved bits + 30-bit ATS in 27MHz units) + 188B TS packet (sync 0x47 + 3B header + payload). ATS clock: 27000000 ticks/second. Verify 0x47 at offsets 4, 196, 388 (192-byte stride). Standard MPEG-TS has 0x47 at 0, 188, 376 (188-byte stride). Blu-ray PIDs: video typically 0x1011, audio 0x1100+, PGS subtitles 0x1200+. CLIP information (.clpi files) map timestamps to byte offsets. MakeMKV/FFmpeg can remux M2TS to MKV.",
     "suggestedInspections": [
-      "Validate Blu-ray MPEG-2 Transport Stream container magic, box/atom sizes, and codec FourCC",
-      "Check track/stream layout, frame index, and timing fields",
-      "Inspect audio-video sync, keyframe distribution, and metadata"
+      "Verify 0x47 at offset 4 (M2TS) vs offset 0 (standard MPEG-TS)",
+      "Check 0x47 at offset 196 to confirm 192-byte packet stride",
+      "ATS at offset 0 (4B BE): 2 reserved bits + 30-bit 27MHz timestamp",
+      "Scrambling control at offset 7 bits 7-6: non-zero = encrypted (AACS protected Blu-ray)"
     ]
+  },
+  "software": [
+    "MakeMKV (M2TS → MKV remux)",
+    "VLC media player",
+    "FFmpeg (mpegts demuxer, 192-byte packets)",
+    "TSDuck (TS analysis)",
+    "Blu-ray players (Sony, Panasonic, etc.)"
+  ],
+  "formatRelationships": {
+    "category": "Video",
+    "extensions": [".m2ts"],
+    "relatedFormats": ["TS", "MTS", "MKV"],
+    "note": "M2TS (192-byte packets) vs MPEG-TS (188-byte packets): M2TS adds a 4-byte ATS prefix per packet for Blu-ray timing. MTS (.mts) is the AVCHD camcorder variant using the same 192-byte M2TS packet format. Both share the 0x47 sync byte — the distinguishing factor is packet stride (192 vs 188 bytes)."
+  },
+  "MimeTypes": [
+    "video/mp2t",
+    "video/vnd.dlna.mpeg-tts"
+  ],
+  "UseCases": [
+    "Blu-ray Disc video content (BDMV/STREAM/*.m2ts)",
+    "Ultra HD Blu-ray (HEVC video)",
+    "BDAV recording to BD-RE/BD-R media",
+    "Blu-ray ripping and archival (MakeMKV)"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 70,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 6,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "VideoFormat": true,
+    "ContainerFormat": "BDAV MPEG-2 TS (192-byte packets with 4-byte ATS prefix)",
+    "Endianness": "big-endian (ATS and TS header fields)",
+    "PacketSize": "192 bytes (4-byte ATS + 188-byte TS packet)",
+    "VideoCodecs": "H.264/AVC, H.265/HEVC (Ultra HD Blu-ray)",
+    "AudioCodecs": "AC-3, Dolby TrueHD, DTS-HD MA, LPCM"
   }
 }

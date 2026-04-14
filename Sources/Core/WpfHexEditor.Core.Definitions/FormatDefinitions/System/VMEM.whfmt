@@ -1,7 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "Virtual Memory Dump",
-  "version": "1.13",
+  "version": "1.14",
   "extensions": [
     ".vmem",
     ".vmsn"

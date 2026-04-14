@@ -1,7 +1,7 @@
 ﻿{
   "diffMode": "semantic",
   "formatName": "Markdown Document",
-  "version": "1.1",
+  "version": "1.02",
   "extensions": [
     ".md",
     ".markdown",

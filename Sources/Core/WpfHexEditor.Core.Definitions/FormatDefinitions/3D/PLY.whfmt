@@ -1,133 +1,184 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Polygon File Format",
-  "version": "1.13",
+  "version": "1.14",
   "extensions": [
     ".ply"
   ],
-  "description": "Stanford PLY 3D mesh format",
+  "description": "Stanford PLY (Polygon File Format) is a versatile 3D mesh format developed at Stanford University for storing 3D scanner output. Every PLY file begins with the ASCII text header 'ply\\n' followed by a format declaration ('format ascii 1.0', 'format binary_little_endian 1.0', or 'format binary_big_endian 1.0'), then element and property declarations, and an 'end_header' line. The data section follows in either ASCII or binary encoding. PLY supports arbitrary properties per vertex and face, making it suitable for colored point clouds, meshes with normals, and annotated data from 3D scanners.",
   "category": "3D",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "Polygon File Format Format"
+      "Stanford PLY File Format Specification by Greg Turk (1994)"
     ],
     "WebLinks": [
-      "https://en.wikipedia.org/wiki/PLY"
+      "https://en.wikipedia.org/wiki/PLY_(file_format)",
+      "https://paulbourke.net/dataformats/ply/",
+      "https://wiki.fileformat.com/3d/ply/"
     ]
   },
   "detection": {
-    "signature": "706C790A",
-    "offset": 0,
+    "signatures": [
+      { "value": "706C790A", "offset": 0, "label": "'ply\\n' ASCII header", "weight": 1.0 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.9,
     "required": true,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 2.5, "max": 6.5 },
     "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024
+      "minFileSize": 20,
+      "maxSignatureOffset": 0,
+      "note": "Exact 4-byte sequence 0x706C790A ('ply\\n') at offset 0. Case-sensitive. Both ASCII and binary PLY use this same text header."
     }
   },
   "variables": {
-    "currentOffset": 0,
-    "dimensions": 0,
-    "dataType": "",
-    "arrayCount": 0,
-    "plyHeader": 0,
-    "formatLine": ""
+    "plyMagic": "",
+    "formatLine": "",
+    "elementLine": "",
+    "endHeader": ""
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "PLY Header",
+      "name": "PLY Magic",
       "offset": 0,
       "length": 4,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "ply\\n signature",
-      "storeAs": "plyHeader",
-      "valueType": "uint32"
+      "opacity": 0.45,
+      "description": "4-byte ASCII magic 'ply\\n' (0x70 0x6C 0x79 0x0A) that uniquely identifies a Stanford PLY file. This reliable marker appears at the absolute start of both ASCII and binary-encoded PLY files with identical content.",
+      "storeAs": "plyMagic",
+      "valueType": "ascii"
     },
     {
       "type": "field",
       "name": "Format Line",
       "offset": 4,
-      "length": 20,
+      "length": 40,
       "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "format ascii/binary 1.0",
+      "opacity": 0.35,
+      "description": "ASCII text line immediately following the magic that declares the encoding format. One of: 'format ascii 1.0', 'format binary_little_endian 1.0', or 'format binary_big_endian 1.0'. Determines how the data section must be parsed.",
       "storeAs": "formatLine",
       "valueType": "ascii"
     },
     {
-      "type": "metadata",
-      "name": "Dimensions",
-      "variable": "dimensions",
-      "description": "Dimensions"
+      "type": "field",
+      "name": "Element Declarations",
+      "offset": 44,
+      "length": 64,
+      "color": "#95E1D3",
+      "opacity": 0.35,
+      "description": "Region of the ASCII header containing 'element' declarations that define the named data sections (e.g., 'element vertex 12345', 'element face 23456'). Each element declaration is followed by property type lines.",
+      "storeAs": "elementLine",
+      "valueType": "ascii"
     },
     {
-      "type": "metadata",
-      "name": "Data Type",
-      "variable": "dataType",
-      "description": "Data Type"
+      "type": "field",
+      "name": "End Header Marker",
+      "offset": 108,
+      "length": 12,
+      "color": "#FFE66D",
+      "opacity": 0.35,
+      "description": "The 'end_header\\n' text marker that terminates the ASCII header section. The binary or ASCII data section begins immediately after this marker. Its position varies based on the number of element and property declarations.",
+      "storeAs": "endHeader",
+      "valueType": "ascii"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "ValidPlyMagic",
+      "expression": "plyMagic == 'ply\\n'",
+      "severity": "error",
+      "message": "PLY magic 'ply\\n' not found at offset 0. This is not a valid PLY file. Ensure the file has not been corrupted or had its header stripped."
     },
     {
-      "type": "metadata",
-      "name": "Array Count",
-      "variable": "arrayCount",
-      "description": "Array Count"
+      "name": "FormatDeclared",
+      "expression": "formatLine != ''",
+      "severity": "warning",
+      "message": "Format declaration line after PLY magic is empty or missing. A valid PLY file must declare its encoding format (ascii, binary_little_endian, or binary_big_endian)."
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "PLY Magic", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
+      { "name": "Format Declaration", "offset": 4, "icon": "\uE946", "color": "#4ECDC4" },
+      { "name": "Element Declarations", "offset": 44, "icon": "\uE8B7", "color": "#95E1D3" }
+    ]
+  },
+  "inspector": {
+    "badge": "plyMagic",
+    "primaryField": "formatLine",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "Header",
+        "icon": "\uE71B",
+        "fields": ["plyMagic", "formatLine"]
+      },
+      {
+        "title": "Schema",
+        "icon": "\uE8B7",
+        "fields": ["elementLine", "endHeader"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "PLY Header (JSON)",
+      "format": "json",
+      "fields": ["plyMagic", "formatLine", "elementLine"]
     }
   ],
   "software": [
     "MeshLab",
     "Blender",
-    "CloudCompare"
+    "CloudCompare",
+    "Open3D",
+    "PCL (Point Cloud Library)"
   ],
   "formatRelationships": {
     "category": "3D",
-    "extensions": [
-      ".ply"
-    ]
+    "extensions": [".ply"],
+    "relatedFormats": ["OBJ", "OFF", "STL"],
+    "note": "Flexible format for 3D scanner output; supports arbitrary per-vertex and per-face properties; ASCII and binary variants"
   },
   "MimeTypes": [
-    "application/octet-stream"
-  ],
-  "Software": [
-    "Blender",
-    "3ds Max",
-    "Maya",
-    "Cinema 4D",
-    "MeshLab"
+    "application/octet-stream",
+    "model/ply"
   ],
   "UseCases": [
-    "3D modeling",
-    "Rendering",
-    "Animation",
-    "Game development"
+    "3D scanner data storage",
+    "Point cloud representation",
+    "Academic mesh datasets",
+    "Photogrammetry output"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 32,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 5,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
+    "CompletenessScore": 62,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 4,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
     "PriorityFormat": false,
-    "AutoRefined": true
+    "AutoRefined": false
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32BE": "Read scientific header",
-    "multiply": "Calculate dimensions"
+  "TechnicalDetails": {
+    "headerEncoding": "ASCII text always",
+    "dataEncoding": "ascii / binary_little_endian / binary_big_endian",
+    "customProperties": true
   },
   "forensic": {
-    "category": "3d-model",
+    "category": "3d",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Stanford PLY 3D mesh format",
+    "analysisContext": "Stanford PLY mesh/point-cloud format. Always has ASCII text header starting with 'ply\\n'. Format line determines encoding. Custom property declarations allow storing color, normals, curvature, etc.",
     "suggestedInspections": [
-      "Validate Polygon File Format header magic bytes and format version",
-      "Check vertex/face count fields and mesh data boundaries",
-      "Inspect embedded material, texture, and animation references"
+      "Verify 'ply\\n' magic and read format line to determine encoding (ASCII or binary variant)",
+      "Parse element/property declarations to understand vertex and face schema",
+      "Locate 'end_header\\n' to find the start of data, then parse vertex and face blocks accordingly"
     ]
   }
 }

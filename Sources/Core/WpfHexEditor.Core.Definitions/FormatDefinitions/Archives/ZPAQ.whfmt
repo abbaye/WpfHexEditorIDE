@@ -1,11 +1,9 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "ZPAQ Archive",
-  "version": "1.13",
-  "extensions": [
-    ".zpaq"
-  ],
-  "description": "ZPAQ incremental archiver format",
+  "version": "1.14",
+  "extensions": [ ".zpaq" ],
+  "description": "ZPAQ is a journaling and incremental archiver by Matt Mahoney using context-mixing compression for near-maximum compression ratios. The file format uses 'zPAQ' (0x7A504151) as a 4-byte magic at offset 0, sometimes followed by block header bytes. ZPAQ also has an alternate 7-byte block marker 0x37 0x6B 0x53 0x74 0xA0 0x31 0x83 used internally. ZPAQ archives are append-only journals: adding files creates new versions without modifying existing data, making the format excellent for backup with version history. The compression uses PAQ-derived algorithms with extremely high ratios but slow speed.",
   "category": "Archives",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
@@ -13,7 +11,7 @@
     "specifications": [
       "ZPAQ Incremental Archiver Specification - Matt Mahoney",
       "ZPAQ Compression Algorithm",
-      "ZPAQ Journaling Archive Format"
+      "ZPAQ Journaling Archive Format v7.15"
     ],
     "WebLinks": [
       "https://mattmahoney.net/dc/zpaqdoc.html",
@@ -23,115 +21,162 @@
     ]
   },
   "detection": {
-    "signature": "7A5041517E",
-    "offset": 0,
+    "signatures": [
+      { "hex": "7A504151", "offset": 0, "weight": 1.0 },
+      { "hex": "376B5374A0318300", "offset": 0, "weight": 0.9 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.9,
     "required": true,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 6.5, "max": 8.0 },
     "validation": {
-      "minFileSize": 5,
-      "maxSignatureOffset": 1024
+      "minFileSize": 8,
+      "maxSignatureOffset": 0,
+      "note": "Primary: 'zPAQ' (0x7A504151) at offset 0. Alternate block header: 0x37 0x6B 0x53 0x74 0xA0 0x31 0x83 (7 bytes)."
     }
   },
   "variables": {
-    "currentOffset": 0,
-    "fileCount": 0,
-    "totalSize": 0,
-    "compressionMethod": "",
-    "headerCRC": 0,
     "zpaqMagic": "",
-    "formattedSize": ""
+    "zpaqLevel": 0,
+    "blockType": 0,
+    "blockSize": 0
   },
   "blocks": [
     {
       "type": "signature",
       "name": "ZPAQ Magic",
       "offset": 0,
-      "length": 5,
+      "length": 4,
       "color": "#FF6B6B",
       "opacity": 0.4,
-      "description": "zPAQ\\x7E signature",
+      "description": "ZPAQ magic: 'zPAQ' (0x7A 0x50 0x41 0x51). Primary identifier for ZPAQ archives.",
       "storeAs": "zpaqMagic",
       "valueType": "ascii"
     },
     {
-      "type": "metadata",
-      "name": "File Count",
-      "variable": "fileCount",
-      "description": "File Count"
+      "type": "field",
+      "name": "Compression Level",
+      "offset": 4,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.4,
+      "description": "ZPAQ compression level (1-5). Higher levels use more memory and achieve better compression. Level 5 can use 1.5GB RAM.",
+      "storeAs": "zpaqLevel",
+      "valueType": "uint8"
     },
     {
-      "type": "metadata",
-      "name": "Total Size",
-      "variable": "totalSize",
-      "description": "Total Size"
+      "type": "field",
+      "name": "Block Type",
+      "offset": 5,
+      "length": 1,
+      "color": "#45B7D1",
+      "opacity": 0.4,
+      "description": "Block type identifier: 1=add files, 2=delete files (journaling operation)",
+      "storeAs": "blockType",
+      "valueType": "uint8",
+      "valueMap": {
+        "1": "Add files block",
+        "2": "Delete files block"
+      }
     },
     {
-      "type": "metadata",
-      "name": "Compression Method",
-      "variable": "compressionMethod",
-      "description": "Compression Method"
+      "type": "field",
+      "name": "Block Size",
+      "offset": 6,
+      "length": 4,
+      "color": "#96CEB4",
+      "opacity": 0.4,
+      "description": "Compressed block size in bytes (little-endian uint32)",
+      "storeAs": "blockSize",
+      "valueType": "uint32"
     },
     {
-      "type": "metadata",
-      "name": "Formatted Size",
-      "variable": "formattedSize",
-      "description": "Human-readable file size"
+      "type": "data",
+      "name": "Compressed Journal Data",
+      "offset": 10,
+      "length": 32,
+      "color": "#FFEAA7",
+      "opacity": 0.3,
+      "description": "Context-mixing compressed journal entries containing file metadata and compressed data"
     }
   ],
-  "software": [
-    "ZPAQ",
-    "Compression benchmarks"
+  "assertions": [
+    { "field": "zpaqMagic", "operator": "equals", "value": "zPAQ", "description": "Magic must be 'zPAQ' (4 ASCII bytes)" }
   ],
-  "formatRelationships": {
-    "category": "Archives",
-    "extensions": [
-      ".zpaq"
+  "navigation": {
+    "bookmarks": [
+      { "name": "ZPAQ Magic", "offset": 0, "description": "4-byte 'zPAQ' magic" },
+      { "name": "First Block", "offset": 4, "description": "Level + block type + block size" },
+      { "name": "Journal Data", "offset": 10, "description": "Compressed journal entries" }
     ]
   },
-  "MimeTypes": [
-    "application/x-zpaq-compressed"
-  ],
-  "Software": [
-    "7-Zip",
-    "WinRAR",
-    "WinZip",
-    "PeaZip",
-    "The Unarchiver"
-  ],
-  "UseCases": [
-    "File compression",
-    "Archive storage",
-    "Backup",
-    "Distribution"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 5,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "ZPAQ",
+    "primaryField": "zpaqLevel",
+    "showQualityScore": true,
+    "groups": [
+      { "name": "Identity", "fields": ["zpaqMagic"] },
+      { "name": "Block Info", "fields": ["zpaqLevel", "blockType", "blockSize"] }
+    ]
   },
-  "TechnicalDetails": {
-    "ArchivesFormat": true,
-    "SupportsEncryption": false
-  },
-  "functions": {
-    "readUInt32LE": "Read header",
-    "calculateCRC32": "Validate",
-    "formatFileSize(var:totalSize)": "Format totalSize as readable size"
-  },
+  "exportTemplates": [
+    {
+      "name": "ZPAQ Archive Info (JSON)",
+      "format": "json",
+      "fields": ["zpaqMagic", "zpaqLevel", "blockType", "blockSize"]
+    }
+  ],
   "forensic": {
     "category": "archive",
     "riskLevel": "low",
-    "suspiciousPatterns": []
+    "suspiciousPatterns": [
+      "High RAM requirements (up to 1.5GB for level 5) could indicate decompression bomb risk",
+      "ZPAQ's append-only journal makes tampering with content without detection difficult"
+    ]
   },
   "aiHints": {
-    "analysisContext": "ZPAQ incremental archiver format",
+    "analysisContext": "ZPAQ starts with 'zPAQ' (4 bytes). It is a journaling archiver: each operation appends a new block, creating a version history. Level byte controls compression algorithm complexity (1=fast, 5=maximum compression ~1.5GB RAM). ZPAQ achieves among the best compression ratios available but is slow. Alternate block magic 0x37 0x6B 0x53 0x74 0xA0 0x31 0x83 appears in multi-block archives.",
     "suggestedInspections": [
-      "Verify ZPAQ Archive file header, compression method, and stored CRCs",
-      "Check central directory or entry table for consistency",
-      "Inspect individual entry sizes for truncation or overflow"
+      "Verify 'zPAQ' magic at offset 0",
+      "Read compression level at offset 4 (1-5 expected)",
+      "Check block type at offset 5: 1=add, 2=delete (journaling ops)",
+      "Use zpaq l archive.zpaq to list contents without extraction",
+      "Note high memory requirements for decompression at level 4-5"
     ]
+  },
+  "software": [
+    "zpaq (Matt Mahoney)",
+    "7-Zip (limited support)",
+    "WinZQAP"
+  ],
+  "formatRelationships": {
+    "category": "Archives",
+    "extensions": [".zpaq"],
+    "relatedFormats": ["7Z", "BROTLI", "ZSTD"],
+    "note": "ZPAQ uses PAQ-derived context mixing for near-maximum compression. Trades speed and memory for ratio. The append-only journal is unique among archive formats."
+  },
+  "MimeTypes": [ "application/x-zpaq", "application/x-zpaq-compressed" ],
+  "UseCases": [
+    "Long-term backup with version history",
+    "Maximum-ratio compression for archival",
+    "Incremental backup with journaling"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 62,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 5,
+    "ValidationRules": 1,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "ArchivesFormat": true,
+    "SupportsEncryption": false,
+    "Algorithm": "Context mixing (PAQ-derived)",
+    "Endianness": "little-endian",
+    "Journaling": true,
+    "MaxRAM": "1.5GB (level 5)"
   }
 }

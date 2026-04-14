@@ -1,132 +1,205 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Samsung SRW RAW",
-  "version": "1.13",
+  "version": "1.14",
   "extensions": [
     ".srw"
   ],
-  "description": "Samsung RAW format",
+  "description": "Samsung SRW is the proprietary RAW image format used in Samsung NX-series mirrorless cameras, including the NX5, NX10, NX20, NX30, and NX1. SRW files use the standard TIFF little-endian container (signature 0x49492A00) compliant with the TIFF/EP standard (ISO 12234-2). Like other TIFF-based RAW formats (ARW, NEF, PEF), the IFD0 offset is stored at bytes 4–7. Samsung-specific metadata is embedded in the MakerNote tag (EXIF 0x927C), which begins with the ASCII string 'Samsung'. The RAW sensor data is typically 12 or 14-bit Bayer-pattern. Samsung discontinued its NX camera line in 2016, making SRW a legacy format; however, files remain common in photography archives. SRW is supported by Adobe Lightroom, Capture One, RawTherapee, darktable, and third-party tools via LibRaw.",
   "category": "Images",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "image-viewer",
   "references": {
     "specifications": [
-      "Samsung RAW (SRW) Image Format",
-      "Samsung Camera RAW Specification",
-      "SRW TIFF-based RAW Format"
+      "Samsung SRW RAW Image Format — TIFF/EP based",
+      "Samsung NX Camera RAW Specification",
+      "SRW MakerNote Structure via ExifTool",
+      "TIFF/EP ISO 12234-2 Standard"
     ],
     "WebLinks": [
       "http://fileformats.archiveteam.org/wiki/Samsung_SRW",
-      "https://www.file-extensions.org/srw-file-extension-samsung-raw-picture-image",
-      "https://www.cleverfiles.com/howto/recover-deleted-srw.html",
-      "https://howto.reaconverter.com/convert-srw-photos/"
+      "https://exiftool.org/TagNames/Samsung.html",
+      "https://libopenraw.freedesktop.org/formats/srw/",
+      "https://rawpedia.rawtherapee.com/Supported_Cameras"
     ]
   },
   "detection": {
-    "signature": "49492A00",
-    "offset": 0,
+    "signatures": [
+      {
+        "pattern": "49492A00",
+        "offset": 0,
+        "description": "TIFF little-endian signature: 'II' (0x4949) + magic 42 (0x002A) + null"
+      }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.75,
     "required": true,
+    "Strength": "Medium",
+    "EntropyHint": { "min": 4.5, "max": 7.5 },
     "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024
+      "minFileSize": 8,
+      "maxSignatureOffset": 0,
+      "note": "SRW shares TIFF LE signature with ARW, SR2, NEF, PEF — differentiated by Samsung MakerNote prefix 'Samsung' in tag 0x927C"
     }
   },
   "variables": {
-    "machineType": "",
-    "sectionCount": 0,
-    "entryPoint": 0,
-    "tiffHeader": 0,
+    "byteOrderMark": 0,
+    "tiffMagic": 0,
     "ifdOffset": 0
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "TIFF Header",
+      "name": "ByteOrderMark",
       "offset": 0,
-      "length": 4,
+      "length": 2,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "TIFF-based RAW",
-      "storeAs": "tiffHeader",
-      "valueType": "uint32"
+      "opacity": 0.5,
+      "description": "Byte order indicator. 0x4949 = 'II' (little-endian). SRW is always LE.",
+      "storeAs": "byteOrderMark",
+      "valueType": "uint16",
+      "valueMap": {
+        "18761": "II — little-endian",
+        "19789": "MM — big-endian (unexpected for SRW)"
+      }
     },
     {
       "type": "field",
-      "name": "IFD Offset",
+      "name": "TIFFMagic",
+      "offset": 2,
+      "length": 2,
+      "color": "#FFB347",
+      "opacity": 0.45,
+      "description": "TIFF magic number. Must be 42 (0x002A) for standard TIFF/EP compliance.",
+      "storeAs": "tiffMagic",
+      "valueType": "uint16",
+      "valueMap": {
+        "42": "Standard TIFF magic (0x002A)"
+      }
+    },
+    {
+      "type": "field",
+      "name": "IFDOffset",
       "offset": 4,
       "length": 4,
       "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "First IFD offset",
+      "opacity": 0.35,
+      "description": "Offset (uint32 LE) to first Image File Directory (IFD0) from start of file.",
       "storeAs": "ifdOffset",
       "valueType": "uint32"
     },
     {
       "type": "metadata",
-      "name": "Machine",
-      "variable": "machineType",
-      "description": "Machine"
+      "name": "ByteOrderMark",
+      "variable": "byteOrderMark",
+      "description": "Byte order mark (18761 = 'II' LE)"
     },
     {
       "type": "metadata",
-      "name": "Sections",
-      "variable": "sectionCount",
-      "description": "Sections"
+      "name": "TIFFMagic",
+      "variable": "tiffMagic",
+      "description": "TIFF magic number (42 = standard)"
     }
   ],
-  "software": [
-    "Image viewers",
-    "GIMP"
+  "assertions": [
+    {
+      "variable": "byteOrderMark",
+      "operator": "==",
+      "value": 18761,
+      "description": "SRW must be little-endian (byte order mark = 'II' = 0x4949)"
+    },
+    {
+      "variable": "tiffMagic",
+      "operator": "==",
+      "value": 42,
+      "description": "TIFF magic must be 42 (0x002A)"
+    }
   ],
-  "formatRelationships": {
-    "category": "Images",
-    "extensions": [
-      ".srw"
+  "navigation": {
+    "bookmarks": [
+      { "name": "Header Start", "offset": 0, "description": "TIFF byte order mark" },
+      { "name": "TIFF Magic", "offset": 2, "description": "Standard TIFF magic 42" },
+      { "name": "IFD0 Offset", "offset": 4, "description": "Pointer to first Image File Directory" }
     ]
   },
-  "MimeTypes": [
-    "image/srw"
-  ],
-  "Software": [
-    "Photoshop",
-    "GIMP",
-    "Paint.NET",
-    "IrfanView",
-    "XnView"
-  ],
-  "UseCases": [
-    "Image viewing",
-    "Photo editing",
-    "Graphics design",
-    "Web publishing"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 32,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 4,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "SRW",
+    "primaryField": "ifdOffset",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "name": "TIFF Header",
+        "fields": ["byteOrderMark", "tiffMagic", "ifdOffset"]
+      }
+    ]
   },
-  "TechnicalDetails": {
-    "ImagesFormat": true,
-    "BitDepth": 8
-  },
-  "functions": {
-    "readUInt32LE": "Read executable header"
-  },
+  "exportTemplates": [
+    {
+      "name": "SRW Header Summary",
+      "fields": ["byteOrderMark", "tiffMagic", "ifdOffset"],
+      "format": "text"
+    }
+  ],
   "forensic": {
     "category": "image",
     "riskLevel": "low",
-    "suspiciousPatterns": []
+    "suspiciousPatterns": [
+      "MakerNote tag 0x927C not starting with 'Samsung' suggests non-SRW TIFF file or metadata stripping",
+      "IFD0 offset pointing outside file bounds indicates corruption"
+    ]
   },
   "aiHints": {
-    "analysisContext": "Samsung SRW RAW - image format",
+    "analysisContext": "Samsung SRW RAW camera image from NX-series mirrorless cameras. Standard TIFF LE structure (signature shared with ARW/NEF/SR2/PEF). Differentiated by Samsung MakerNote (tag 0x927C) beginning with 'Samsung'. Sensor data is 12 or 14-bit Bayer-pattern RAW.",
     "suggestedInspections": [
-      "Validate Samsung SRW RAW signature, image dimensions, and color model",
-      "Check pixel data offset, compression type, and scanline alignment",
-      "Inspect color profile (ICC), EXIF metadata, and chunk CRCs"
+      "Parse IFD0 MakerNote tag 0x927C and verify 'Samsung' ASCII prefix",
+      "Validate IFD0 offset is within file bounds",
+      "Check embedded JPEG thumbnail in SubIFD for preview integrity",
+      "Inspect Samsung-specific tags for white balance, lens, and NX model metadata"
     ]
+  },
+  "software": [
+    "Adobe Lightroom",
+    "Adobe Camera Raw",
+    "Capture One",
+    "RawTherapee",
+    "darktable",
+    "GIMP (via LibRaw)",
+    "IrfanView",
+    "XnView"
+  ],
+  "formatRelationships": {
+    "category": "Images",
+    "extensions": [".srw"],
+    "relatedFormats": ["TIFF", "ARW", "NEF", "CR2", "PEF"],
+    "note": "SRW is Samsung's only RAW format, used exclusively in NX-series cameras. Samsung exited the camera hardware business in 2016; SRW is now a legacy format."
+  },
+  "MimeTypes": [
+    "image/srw",
+    "image/x-samsung-srw",
+    "image/x-samsung-raw"
+  ],
+  "UseCases": [
+    "RAW photo processing from Samsung NX-series cameras",
+    "Archival of legacy Samsung NX camera files",
+    "Forensic imaging of Samsung camera storage media",
+    "Camera RAW format compatibility and migration research"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 65,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 5,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "ImagesFormat": true,
+    "BitDepth": "12 or 14",
+    "ByteOrder": "little-endian",
+    "Container": "TIFF/EP",
+    "MakerNotePrefix": "Samsung",
+    "SensorType": "Bayer",
+    "Compression": "uncompressed or lossless"
   }
 }

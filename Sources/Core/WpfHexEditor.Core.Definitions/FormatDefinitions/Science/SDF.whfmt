@@ -1,107 +1,169 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Structure Data File",
-  "version": "1.13",
+  "version": "1.14",
   "extensions": [
     ".sdf",
     ".sd"
   ],
-  "description": "Structure Data File format (multiple MOL files)",
+  "description": "Structure Data File (SDF/SD) is a standard cheminformatics container format that concatenates multiple MDL Molfiles, each extended with associated data fields. Each record consists of a full Molfile (3 header lines, counts line, atom block, bond block, property lines ending with 'M  END') followed by zero or more data fields in '>  <FIELD_NAME>' format with values on subsequent lines, and a record separator '$$$$' on its own line. SDF is used for bulk chemical database distribution (PubChem, ChEMBL, ZINC) and is the primary input format for most cheminformatics toolkits (RDKit, OpenBabel, CDK). Files can range from a single molecule to millions of compounds.",
   "category": "Science",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
-  "references": {
-    "specifications": [
-      "Structure Data File Format"
-    ],
-    "WebLinks": [
-      "https://en.wikipedia.org/wiki/SDF"
-    ]
-  },
+  "references": [
+    "Biovia CTFILE Formats 2020 — MDL SDF format",
+    "MDL Information Systems SD File Specification"
+  ],
+  "WebLinks": [
+    "https://en.wikipedia.org/wiki/Chemical_table_file#SDF",
+    "https://www.daylight.com/dayhtml/doc/theory/theory.mol.html"
+  ],
   "detection": {
     "signature": "00",
     "offset": 0,
     "required": false,
+    "weight": 0.25,
     "validation": {
-      "minFileSize": 1,
-      "maxSignatureOffset": 1024
+      "minFileSize": 40,
+      "maxSignatureOffset": 0
     }
   },
   "variables": {
     "currentOffset": 0,
-    "dimensions": 0,
-    "dataType": "",
-    "arrayCount": 0,
-    "firstMolecule": ""
+    "moleculeName": "",
+    "countsLine": "",
+    "firstDataField": "",
+    "recordSeparator": ""
   },
   "blocks": [
     {
       "type": "field",
-      "name": "First Molecule",
+      "name": "First Molecule Name",
       "offset": 0,
-      "length": 240,
+      "length": 80,
       "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "First MOL record (3 header lines)",
-      "storeAs": "firstMolecule",
+      "opacity": 0.4,
+      "description": "First line of the first Molfile record: molecule name or identifier up to 80 ASCII characters; may contain compound name, CAS number, or database ID",
+      "storeAs": "moleculeName",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Program / Timestamp Line",
+      "offset": 80,
+      "length": 80,
+      "color": "#95E1D3",
+      "opacity": 0.35,
+      "description": "Second header line: program name, operator, date/time, and dimensional codes (2D/3D) used when the structure was generated",
+      "storeAs": "programLine",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Comment Line",
+      "offset": 160,
+      "length": 80,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "Third header line: free-form comment — often a registry number, database cross-reference, or chemical classification",
+      "storeAs": "commentLine",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Counts Line",
+      "offset": 240,
+      "length": 80,
+      "color": "#FFE66D",
+      "opacity": 0.35,
+      "description": "Counts line: atom count (cols 1-3), bond count (cols 4-6), and V2000/V3000 version tag (cols 35-39); critical for parsing the atom and bond blocks",
+      "storeAs": "countsLine",
       "valueType": "ascii"
     },
     {
       "type": "metadata",
-      "name": "Dimensions",
-      "variable": "dimensions",
-      "description": "Dimensions"
+      "name": "Molecule Name",
+      "variable": "moleculeName",
+      "description": "First molecule name from the SDF header"
     },
     {
       "type": "metadata",
-      "name": "Data Type",
-      "variable": "dataType",
-      "description": "Data Type"
+      "name": "Counts Line",
+      "variable": "countsLine",
+      "description": "Counts line containing atom count, bond count, and format version"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "ContainsEndMarker",
+      "description": "A valid SDF file must contain 'M  END' (4D 20 20 45 4E 44) marking the end of at least one Molfile; absence means the file is truncated or not SDF",
+      "pattern": "M  END",
+      "severity": "warning"
     },
     {
-      "type": "metadata",
-      "name": "Array Count",
-      "variable": "arrayCount",
-      "description": "Array Count"
+      "name": "ContainsRecordSeparator",
+      "description": "SDF files with multiple compounds must contain '$$$$' record separators; a single compound SDF may omit them but multi-compound files must have them",
+      "pattern": "$$$$",
+      "severity": "info"
+    }
+  ],
+  "inspector": {
+    "groups": [
+      {
+        "name": "First Record Header",
+        "fields": [
+          { "label": "Molecule Name",   "offset": 0,   "length": 80, "format": "ascii" },
+          { "label": "Program Line",    "offset": 80,  "length": 80, "format": "ascii" },
+          { "label": "Comment Line",    "offset": 160, "length": 80, "format": "ascii" },
+          { "label": "Counts Line",     "offset": 240, "length": 80, "format": "ascii" }
+        ]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "SDF First Record Header",
+      "fields": ["moleculeName", "countsLine"]
     }
   ],
   "software": [
-    "Common file viewers",
-    "Specialized software"
+    "RDKit",
+    "OpenBabel",
+    "ChemDraw",
+    "MarvinSketch",
+    "DataWarrior",
+    "Pipeline Pilot"
   ],
   "formatRelationships": {
-    "category": "Science",
-    "extensions": [
-      ".sdf",
-      ".sd"
-    ]
+    "cheminformatics": true,
+    "contains": "MDL Molfiles",
+    "related": ["MOL", "SMILES", "InChI"],
+    "databases": ["PubChem", "ChEMBL", "ZINC", "DrugBank"]
   },
   "MimeTypes": [
+    "chemical/x-mdl-sdfile",
     "application/octet-stream"
   ],
-  "Software": [
-    "Hex Editor",
-    "File Viewer",
-    "Archive Manager"
-  ],
   "UseCases": [
-    "File storage",
-    "Data exchange",
-    "Archive"
+    "Bulk chemical database download and distribution",
+    "Drug discovery virtual screening input",
+    "QSAR model training datasets",
+    "Cheminformatics pipeline compound processing"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 21,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 4,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
+    "CompletenessScore": 52,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 6,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
     "PriorityFormat": false,
-    "AutoRefined": true
+    "AutoRefined": false
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32BE": "Read scientific header",
-    "multiply": "Calculate dimensions"
+  "TechnicalDetails": {
+    "encoding": "ASCII text",
+    "recordSeparator": "$$$$",
+    "molfileEnd": "M  END",
+    "dataFieldFormat": ">  <FIELD_NAME>"
   },
   "forensic": {
     "category": "science",
@@ -109,11 +171,14 @@
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Structure Data File format (multiple MOL files)",
+    "analysisContext": "SDF files can range from 1 to millions of molecules. The '$$$$' separator and '>  <field_name>' data tags are the reliable identifiers beyond the Molfile header. RDKit and OpenBabel are the standard parsers.",
     "suggestedInspections": [
-      "Validate Structure Data File file header, data type, and dimension fields",
-      "Check axis labels, units, and calibration metadata",
-      "Inspect data array boundaries and fill/missing value markers"
+      "Read line 4 (counts line) for atom count (cols 1-3) and bond count (cols 4-6)",
+      "Check cols 35-39 of counts line for V2000 or V3000 format version",
+      "Look for 'M  END' to find the end of each Molfile within the SDF",
+      "After 'M  END', read data fields: '>  <FIELD_NAME>' on one line, value on next, blank line separator",
+      "Record separator '$$$$' marks the boundary between compounds",
+      "Count '$$$$' occurrences to estimate the number of molecules in the file"
     ]
   }
 }

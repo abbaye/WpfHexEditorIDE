@@ -211,7 +211,7 @@
     }
   ],
   "TechnicalDetails": {
-    "platform": ["NES", "Famicom", "Game Boy", "Game Boy Color", "Game Boy Advance (2bpp mode)"],
+    "platform": "NES / Famicom / Game Boy / Game Boy Color / Game Boy Advance (2bpp mode)",
     "bitsPerPixel": 2,
     "tileSize": "8x8",
     "encoding": "2-plane linear (plane-0 LSB bytes 0–7, plane-1 MSB bytes 8–15 per tile)",

@@ -1,130 +1,239 @@
-﻿{
+{
   "diffMode": "binary",
-  "formatName": "Canon Raw Image",
-  "version": "1.13",
+  "formatName": "Canon RAW v2",
+  "version": "1.14",
   "extensions": [
     ".cr2"
   ],
-  "description": "Canon RAW v2 camera image",
+  "description": "CR2 (Canon RAW version 2) is Canon's primary RAW camera image format used in Canon EOS DSLRs from 2004 to 2018 (replaced by CR3 from 2018). CR2 is a TIFF-based format with a unique 4-byte CR2 identifier at offset 8: 'CR' (0x43 0x52), version major (0x02), version minor (0x00). The standard TIFF 8-byte header precedes this: byte order 'II' (little-endian), TIFF magic 42, IFD0 offset. IFD0 contains standard EXIF tags plus Canon Maker Notes (tag 0x927C) with detailed camera settings. CR2 stores 4 IFDs: IFD0=full-resolution JPEG preview, IFD1=small JPEG thumbnail, IFD2=raw sensor data (uncompressed 14-bit), IFD3=JPEG-compressed small RAW. The Bayer raw sensor data uses lossless Huffman compression defined in RFC 2301.",
   "category": "Images",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "image-viewer",
   "references": {
     "specifications": [
-      "Canon RAW 2 (CR2) Format - TIFF-based",
-      "Inside the Canon RAW Format Version 2",
-      "Canon CR2 EXIF and Metadata Structure"
+      "Canon RAW 2 (CR2) Format — TIFF-based with Canon extension",
+      "TIFF 6.0 Specification — Adobe Systems",
+      "Inside the Canon RAW Format — Laurent Clévy"
     ],
     "WebLinks": [
       "http://lclevy.free.fr/cr2/",
-      "http://fileformats.archiveteam.org/wiki/Canon_RAW_2",
-      "https://docs.fileformat.com/image/cr2/",
-      "https://libopenraw.freedesktop.org/formats/cr2/"
+      "https://libopenraw.freedesktop.org/formats/cr2/",
+      "https://exiftool.org/TagNames/Canon.html",
+      "https://docs.fileformat.com/image/cr2/"
     ]
   },
   "detection": {
-    "signature": "49492A00",
-    "offset": 0,
+    "signatures": [
+      { "value": "49492A00", "offset": 0, "label": "TIFF LE header — Canon CR2 base signature", "weight": 0.6 },
+      { "value": "4352", "offset": 8, "label": "'CR' — Canon RAW identifier at offset 8", "weight": 1.0 },
+      { "value": "49492A000800000043520200", "offset": 0, "label": "Full CR2 header: TIFF LE + IFD@8 + 'CR' v2.0", "weight": 1.0 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.6,
     "required": true,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 5.0, "max": 7.5 },
     "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024
+      "minFileSize": 12,
+      "maxSignatureOffset": 0,
+      "note": "CR2 is uniquely identified by 'CR' at offset 8. Without offset-8 check, TIFF magic alone cannot distinguish CR2 from TIFF/DNG/NEF/ARW."
     }
   },
   "variables": {
-    "currentOffset": 0,
-    "width": 0,
-    "height": 0,
-    "totalPixels": 0,
-    "bitsPerPixel": 0,
-    "tiffHeader": 0
+    "byteOrderMark": 0,
+    "tiffMagic": 0,
+    "ifdOffset": 0,
+    "cr2Identifier": "",
+    "cr2VersionMajor": 0,
+    "cr2VersionMinor": 0
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "TIFF Header",
+      "name": "Byte Order Mark",
       "offset": 0,
-      "length": 4,
+      "length": 2,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "CR2 uses TIFF structure",
-      "storeAs": "tiffHeader",
-      "valueType": "uint32"
+      "opacity": 0.45,
+      "description": "TIFF byte order mark: 0x4949 ('II') = little-endian (Intel). Canon CR2 always uses little-endian byte order. The standard byte order applies to all multi-byte integers in the TIFF IFD structure.",
+      "storeAs": "byteOrderMark",
+      "valueType": "uint16",
+      "endianness": "little",
+      "valueMap": {
+        "18761": "Little-endian 'II' (Intel) — standard Canon CR2 byte order"
+      }
+    },
+    {
+      "type": "field",
+      "name": "TIFF Magic",
+      "offset": 2,
+      "length": 2,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "TIFF version magic number 42 (0x2A 0x00 little-endian). Standard TIFF magic used by all TIFF-based formats including CR2.",
+      "storeAs": "tiffMagic",
+      "valueType": "uint16",
+      "endianness": "little"
+    },
+    {
+      "type": "field",
+      "name": "IFD0 Offset",
+      "offset": 4,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.35,
+      "description": "Byte offset to the first TIFF IFD (IFD0). In CR2, IFD0 starts at offset 16 (after the 8-byte TIFF header + 4-byte 'CR' identifier + 2-byte version). Some CR2 files have IFD0 at offset 8.",
+      "storeAs": "ifdOffset",
+      "valueType": "uint32",
+      "endianness": "little"
+    },
+    {
+      "type": "signature",
+      "name": "CR2 Identifier",
+      "offset": 8,
+      "length": 2,
+      "color": "#FF6B6B",
+      "opacity": 0.50,
+      "description": "Canon RAW unique identifier: ASCII 'CR' (0x43 0x52) at offset 8. This 2-byte marker is Canon's proprietary extension to the TIFF header and uniquely identifies CR2 files among all TIFF-based RAW formats. No other TIFF-based format uses 'CR' at offset 8.",
+      "storeAs": "cr2Identifier",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "CR2 Version Major",
+      "offset": 10,
+      "length": 1,
+      "color": "#FFE66D",
+      "opacity": 0.35,
+      "description": "CR2 format version major number. Value 0x02 = CR2 version 2 (used by all Canon EOS DSLR RAW files). Version 1 was used internally by Canon but not commercially released.",
+      "storeAs": "cr2VersionMajor",
+      "valueType": "uint8",
+      "valueMap": {
+        "2": "CR2 version 2 — all Canon EOS DSLRs"
+      }
+    },
+    {
+      "type": "field",
+      "name": "CR2 Version Minor",
+      "offset": 11,
+      "length": 1,
+      "color": "#FFE66D",
+      "opacity": 0.25,
+      "description": "CR2 format version minor number. Value 0x00 for all released CR2 files.",
+      "storeAs": "cr2VersionMinor",
+      "valueType": "uint8"
     },
     {
       "type": "metadata",
-      "name": "Width",
-      "variable": "width",
-      "description": "Width"
+      "name": "Canon CR2 ID",
+      "variable": "cr2Identifier",
+      "description": "'CR' — Canon RAW v2 unique identifier at offset 8"
     },
     {
       "type": "metadata",
-      "name": "Height",
-      "variable": "height",
-      "description": "Height"
-    },
-    {
-      "type": "metadata",
-      "name": "Total Pixels",
-      "variable": "totalPixels",
-      "description": "Total Pixels"
+      "name": "IFD Offset",
+      "variable": "ifdOffset",
+      "description": "Offset to first IFD (Image File Directory)"
     }
   ],
-  "software": [
-    "Image viewers",
-    "GIMP"
+  "assertions": [
+    {
+      "name": "TIFF byte order LE",
+      "expression": "byteOrderMark == 18761",
+      "severity": "error",
+      "message": "CR2 byte order must be 0x4949 ('II', little-endian) — Canon RAW always uses Intel byte order"
+    },
+    {
+      "name": "TIFF magic 42",
+      "expression": "tiffMagic == 42",
+      "severity": "error",
+      "message": "TIFF magic at offset 2 must be 42 — not a valid TIFF-based CR2 file"
+    },
+    {
+      "name": "CR2 identifier present",
+      "expression": "cr2Identifier == 'CR'",
+      "severity": "error",
+      "message": "Canon RAW identifier 'CR' must be at offset 8 — not a valid CR2 file (may be generic TIFF)"
+    }
   ],
-  "formatRelationships": {
-    "category": "Images",
-    "extensions": [
-      ".cr2"
+  "navigation": {
+    "bookmarks": [
+      { "name": "TIFF/CR2 Header", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
+      { "name": "Canon CR2 ID", "offset": 8, "icon": "\uE8A5", "color": "#FFE66D" }
     ]
   },
-  "MimeTypes": [
-    "image/cr2"
-  ],
-  "Software": [
-    "Photoshop",
-    "GIMP",
-    "Paint.NET",
-    "IrfanView",
-    "XnView"
-  ],
-  "UseCases": [
-    "Image viewing",
-    "Photo editing",
-    "Graphics design",
-    "Web publishing"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 4,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "cr2Identifier",
+    "primaryField": "cr2VersionMajor",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "CR2 Header",
+        "icon": "\uE71B",
+        "fields": ["byteOrderMark", "tiffMagic", "ifdOffset", "cr2Identifier", "cr2VersionMajor", "cr2VersionMinor"]
+      }
+    ]
   },
-  "TechnicalDetails": {
-    "ImagesFormat": true,
-    "BitDepth": 8
-  },
-  "functions": {
-    "readUInt32LE": "Read dimensions",
-    "multiply": "Calculate pixels",
-    "computeFromVariables(width * height, totalPixels)": "Calculate total pixels"
-  },
+  "exportTemplates": [
+    {
+      "name": "CR2 Header (JSON)",
+      "format": "json",
+      "fields": ["byteOrderMark", "tiffMagic", "ifdOffset", "cr2Identifier", "cr2VersionMajor"]
+    }
+  ],
   "forensic": {
     "category": "image",
     "riskLevel": "low",
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Canon RAW v2 camera image",
+    "analysisContext": "Canon CR2 layout (all LE): 'II'(2)+42(2,LE)+ifdOffset(4,LE)+'CR'(2)+vMajor(1)+vMinor(1). ifdOffset typically 16. CR2 has 4 IFDs: IFD0 (full JPEG preview), IFD1 (thumbnail), IFD2 (RAW 14-bit Bayer), IFD3 (sRAW/mRAW compressed). Key IFD0 tags: 256=ImageWidth, 257=ImageLength, 513=JPEGInterchangeFormat (preview offset), 0x927C=MakerNote (Canon). In IFD2: tag 0xC640=CR2Slices (row count for Huffman), 0x111=StripOffsets (raw data offset), 0x117=StripByteCounts. Raw data is lossless Huffman-coded 14-bit Bayer RGGB.",
     "suggestedInspections": [
-      "Validate Canon Raw Image signature, image dimensions, and color model",
-      "Check pixel data offset, compression type, and scanline alignment",
-      "Inspect color profile (ICC), EXIF metadata, and chunk CRCs"
+      "Verify 'II'+42+offset at 0-7, then 'CR'+0x02+0x00 at bytes 8-11",
+      "Read IFD0 at ifdOffset: entry count + 12B entries for width/height/preview",
+      "IFD2 contains raw pixel data: StripOffsets(0x111) + StripByteCounts(0x117)",
+      "Canon MakerNote at tag 0x927C contains camera model, settings, serial number"
     ]
+  },
+  "software": [
+    "Canon Digital Photo Professional (DPP)",
+    "Adobe Lightroom / Camera Raw",
+    "Capture One",
+    "darktable",
+    "RawTherapee",
+    "ExifTool"
+  ],
+  "formatRelationships": {
+    "category": "Images",
+    "extensions": [".cr2"],
+    "relatedFormats": ["CR3", "CRW", "TIFF", "DNG"],
+    "note": "CR2 replaced Canon's earlier CRW format in 2004. CR3 (HEIF-based) replaced CR2 in newer Canon cameras from 2018. CR2 can be converted losslessly to DNG using Adobe DNG Converter."
+  },
+  "MimeTypes": [
+    "image/x-canon-cr2",
+    "image/cr2"
+  ],
+  "UseCases": [
+    "Canon EOS DSLR RAW image capture and editing",
+    "Professional photography workflow",
+    "Digital asset management with Canon RAW",
+    "EXIF metadata extraction and forensic analysis"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 70,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 8,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "ImageFormat": true,
+    "ContainerFormat": "TIFF 6.0 (little-endian) with Canon CR2 extension header at offset 8",
+    "Endianness": "little-endian",
+    "RawEncoding": "Lossless Huffman-coded 14-bit Bayer RGGB sensor data",
+    "BitDepth": "14-bit RAW",
+    "IFDLayout": "4 IFDs: IFD0=JPEG preview, IFD1=thumbnail, IFD2=14-bit RAW, IFD3=sRAW"
   }
 }

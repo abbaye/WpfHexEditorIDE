@@ -1,12 +1,9 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "LZO Compression",
-  "version": "1.13",
-  "extensions": [
-    ".lzo",
-    ".lzop"
-  ],
-  "description": "LZO compressed file format using Lempel-Ziv-Oberhumer algorithm, optimized for decompression speed",
+  "version": "1.14",
+  "extensions": [ ".lzo", ".lzop" ],
+  "description": "LZO (Lempel-Ziv-Oberhumer) is a lossless compression algorithm by Markus F.X.J. Oberhumer, designed for extremely fast decompression speed at the expense of compression ratio. The lzop wrapper format adds a 9-byte magic header, version info, flags, and per-block checksums. The magic is 0x89 'LZO' followed by 0x0D 0x0A 0x1A 0x0A. After the magic: version (2B BE), library version (2B BE), version needed (2B BE), compression method (1B: 1=LZO1X-1, 2=LZO1X-1(15), 3=LZO1X-999), level (1B), and flags (4B BE) controlling checksum type (CRC32 or Adler32).",
   "category": "Archives",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
@@ -24,21 +21,30 @@
     ]
   },
   "detection": {
-    "signature": "894C5A4F",
-    "offset": 0,
+    "signatures": [
+      { "hex": "896C5A4F000D0A1A0A", "offset": 0, "weight": 1.0 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.9,
     "required": true,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 5.0, "max": 7.8 },
     "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024
+      "minFileSize": 30,
+      "maxSignatureOffset": 0,
+      "note": "Full 9-byte magic must match exactly at offset 0"
     }
   },
   "variables": {
-    "calculatedCRC32": 0,
-    "crc32Valid": false,
+    "lzoMagic": "",
+    "lzoVersion": 0,
+    "lzoLibVersion": 0,
+    "lzoMethod": 0,
+    "lzoLevel": 0,
+    "lzoFlags": 0,
     "originalSize": 0,
     "compressedSize": 0,
-    "compressionRatio": 0,
-    "lzoMagic": "",
+    "crc32Valid": false,
     "formattedSize": ""
   },
   "blocks": [
@@ -46,121 +52,162 @@
       "type": "signature",
       "name": "LZO Magic",
       "offset": 0,
-      "length": 4,
+      "length": 9,
       "color": "#FF6B6B",
       "opacity": 0.4,
-      "description": "Magic bytes: 0x89 'LZO'",
+      "description": "lzop magic: 0x89 'LZO' 0x00 0x0D 0x0A 0x1A 0x0A (9 bytes). Similar structure to PNG/gzip magic to survive text-mode transfers.",
       "storeAs": "lzoMagic",
-      "valueType": "uint32"
+      "valueType": "bytes"
     },
     {
-      "type": "data",
+      "type": "field",
       "name": "Version",
-      "offset": 4,
+      "offset": 9,
       "length": 2,
       "color": "#4ECDC4",
       "opacity": 0.4,
-      "description": "LZOP version (big-endian)"
+      "description": "lzop format version (big-endian uint16). e.g. 0x1030 = version 1.0.3",
+      "storeAs": "lzoVersion",
+      "valueType": "uint16"
     },
     {
-      "type": "data",
+      "type": "field",
       "name": "Library Version",
-      "offset": 6,
+      "offset": 11,
       "length": 2,
       "color": "#45B7D1",
       "opacity": 0.4,
-      "description": "LZO library version required"
+      "description": "LZO library version used to compress (big-endian uint16)",
+      "storeAs": "lzoLibVersion",
+      "valueType": "uint16"
     },
     {
-      "type": "data",
+      "type": "field",
       "name": "Version Needed",
-      "offset": 8,
+      "offset": 13,
       "length": 2,
       "color": "#96CEB4",
       "opacity": 0.4,
-      "description": "Minimum version needed to extract"
+      "description": "Minimum lzop version required to decompress (big-endian uint16)",
+      "valueType": "uint16"
     },
     {
-      "type": "metadata",
-      "name": "CRC-32 Valid",
-      "variable": "crc32Valid",
-      "description": "Checksum validation result"
+      "type": "field",
+      "name": "Compression Method",
+      "offset": 15,
+      "length": 1,
+      "color": "#FFEAA7",
+      "opacity": 0.4,
+      "description": "LZO method: 1=LZO1X-1 (fast), 2=LZO1X-1(15) (very fast), 3=LZO1X-999 (best compression)",
+      "storeAs": "lzoMethod",
+      "valueType": "uint8",
+      "valueMap": {
+        "1": "LZO1X-1 (default)",
+        "2": "LZO1X-1(15)",
+        "3": "LZO1X-999 (best)"
+      }
     },
     {
-      "type": "metadata",
-      "name": "Original Size",
-      "variable": "originalSize",
-      "description": "Uncompressed size in bytes"
+      "type": "field",
+      "name": "Compression Level",
+      "offset": 16,
+      "length": 1,
+      "color": "#DDA0DD",
+      "opacity": 0.4,
+      "description": "Compression level (1-9, only used with LZO1X-999)",
+      "storeAs": "lzoLevel",
+      "valueType": "uint8"
     },
     {
-      "type": "metadata",
-      "name": "Compression Ratio",
-      "variable": "compressionRatio",
-      "description": "Compression percentage"
-    },
-    {
-      "type": "metadata",
-      "name": "Formatted Size",
-      "variable": "formattedSize",
-      "description": "Human-readable file size"
+      "type": "field",
+      "name": "Flags",
+      "offset": 17,
+      "length": 4,
+      "color": "#F0A500",
+      "opacity": 0.4,
+      "description": "Flags (big-endian uint32): bit0=STDIN, bit2=MULTIPART, bit8=CRC32, bit9=ADLER32",
+      "storeAs": "lzoFlags",
+      "valueType": "uint32"
     }
   ],
-  "software": [
-    "LZO tools",
-    "Compression libraries"
+  "assertions": [
+    { "field": "lzoMagic", "operator": "equals", "value": "896C5A4F000D0A1A0A", "description": "9-byte LZO magic must match exactly" },
+    { "field": "lzoMethod", "operator": "between", "min": 1, "max": 3, "description": "Compression method must be 1, 2, or 3" }
   ],
-  "formatRelationships": {
-    "category": "Archives",
-    "extensions": [
-      ".lzo",
-      ".lzop"
+  "navigation": {
+    "bookmarks": [
+      { "name": "LZO Magic", "offset": 0, "description": "9-byte lzop file magic" },
+      { "name": "Version Info", "offset": 9, "description": "Version, library version, and version needed fields" },
+      { "name": "Compression Settings", "offset": 15, "description": "Method, level, and flags" }
     ]
   },
-  "MimeTypes": [
-    "application/x-lzo-compressed"
-  ],
-  "Software": [
-    "7-Zip",
-    "WinRAR",
-    "WinZip",
-    "PeaZip",
-    "The Unarchiver"
-  ],
-  "UseCases": [
-    "File compression",
-    "Archive storage",
-    "Backup",
-    "Distribution"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 8,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "LZO",
+    "primaryField": "lzoMethod",
+    "showQualityScore": true,
+    "groups": [
+      { "name": "Magic", "fields": ["lzoMagic"] },
+      { "name": "Version", "fields": ["lzoVersion", "lzoLibVersion"] },
+      { "name": "Compression", "fields": ["lzoMethod", "lzoLevel", "lzoFlags"] }
+    ]
   },
-  "TechnicalDetails": {
-    "ArchivesFormat": true,
-    "SupportsEncryption": false
-  },
-  "functions": {
-    "calculateCRC32": "Validate CRC checksum",
-    "readUInt32LE": "Read header fields",
-    "formatFileSize(var:compressedSize)": "Format compressedSize as readable size"
-  },
+  "exportTemplates": [
+    {
+      "name": "LZO Header Info (JSON)",
+      "format": "json",
+      "fields": ["lzoVersion", "lzoMethod", "lzoLevel", "lzoFlags"]
+    }
+  ],
   "forensic": {
     "category": "archive",
     "riskLevel": "low",
-    "suspiciousPatterns": []
+    "suspiciousPatterns": [
+      "MULTIPART flag (bit2) set may indicate split archives that span multiple files"
+    ]
   },
   "aiHints": {
-    "analysisContext": "LZO compressed file format using Lempel-Ziv-Oberhumer algorithm, optimized for decompression speed",
+    "analysisContext": "LZO lzop wrapper files start with a 9-byte magic 0x89 'LZO' 0x00 0x0D 0x0A 0x1A 0x0A. The compression method byte (offset 15) is critical: 1=LZO1X-1 (most common, best speed), 3=LZO1X-999 (best ratio). Flags at offset 17 indicate checksum type (CRC32 vs Adler32). LZO is widely used in embedded systems and Linux kernel.",
     "suggestedInspections": [
-      "Verify LZO Compression file header, compression method, and stored CRCs",
-      "Check central directory or entry table for consistency",
-      "Inspect individual entry sizes for truncation or overflow"
+      "Verify full 9-byte magic at offset 0",
+      "Read compression method at offset 15 and map to LZO algorithm variant",
+      "Check flags at offset 17 for CRC32 (bit8) or Adler32 (bit9) checksum type",
+      "Verify version fields for compatibility (version needed <= available library version)"
     ]
+  },
+  "software": [
+    "lzop",
+    "7-Zip",
+    "Linux kernel LZO driver",
+    "OpenWRT",
+    "Android (boot image compression)"
+  ],
+  "formatRelationships": {
+    "category": "Archives",
+    "extensions": [".lzo", ".lzop"],
+    "relatedFormats": ["LZ4", "ZSTD", "GZIP", "LZMA"],
+    "note": "LZO prioritizes decompression speed over ratio. LZ4 is a modern alternative with similar characteristics but better tooling."
+  },
+  "MimeTypes": [ "application/x-lzop", "application/x-lzo-compressed" ],
+  "UseCases": [
+    "Embedded systems and firmware compression",
+    "Real-time data compression in databases",
+    "Linux kernel initramfs compression",
+    "Android boot images"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 65,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 7,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "ArchivesFormat": true,
+    "SupportsEncryption": false,
+    "Algorithm": "LZO1X (Lempel-Ziv-Oberhumer)",
+    "Endianness": "big-endian for header, little-endian for data blocks",
+    "ChecksumTypes": ["CRC32", "Adler32"]
   }
 }

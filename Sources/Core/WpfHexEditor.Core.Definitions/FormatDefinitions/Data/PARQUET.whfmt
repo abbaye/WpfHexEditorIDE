@@ -1,94 +1,181 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Apache Parquet",
-  "version": "1.12",
+  "version": "1.13",
   "extensions": [
     ".parquet"
   ],
-  "description": "Apache Parquet columnar storage format",
+  "description": "Apache Parquet is an open-source columnar storage format optimized for analytical workloads in distributed computing environments. Files begin with the 4-byte magic 'PAR1' (0x50415231) at offset 0 and also end with the same 4-byte magic at EOF-4, sandwiching a footer containing Thrift-encoded schema and row group metadata. The columnar layout enables high compression ratios and efficient predicate pushdown. Supports nested data via Dremel encoding. Widely used in Apache Spark, Hive, Impala, AWS Athena, and the Hadoop ecosystem for big data analytics.",
   "category": "Data",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
-  "references": {
-    "specifications": [
-      "Apache Parquet Format"
-    ],
-    "WebLinks": [
-      "https://en.wikipedia.org/wiki/PARQUET"
-    ]
-  },
+  "references": [
+    "Apache Parquet Format Specification",
+    "https://parquet.apache.org/docs/file-format/"
+  ],
   "detection": {
-    "signature": "504152",
+    "signature": "50415231",
     "offset": 0,
+    "weight": 1.0,
+    "strength": "Strong",
     "required": true,
     "validation": {
-      "minFileSize": 3,
-      "maxSignatureOffset": 1024
+      "minFileSize": 8,
+      "maxSignatureOffset": 0
     }
   },
   "variables": {
     "currentOffset": 0,
-    "machineType": "",
-    "sectionCount": 0,
-    "entryPoint": 0,
-    "parquetMagic": ""
+    "parquetMagic": "",
+    "footerLength": 0,
+    "numRowGroups": 0,
+    "numRows": 0,
+    "schemaVersion": 0
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "Parquet Magic",
+      "name": "Parquet Magic (Header)",
       "offset": 0,
-      "length": 3,
+      "length": 4,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "PAR1 signature",
+      "opacity": 0.8,
+      "description": "ASCII 'PAR1' (0x50415231) at offset 0; identifies the start of a valid Apache Parquet file",
       "storeAs": "parquetMagic",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Row Group Data Start",
+      "offset": 4,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.4,
+      "description": "First 4 bytes of first row group data (after header magic); contains encoded column chunk data pages",
+      "storeAs": "firstDataBytes",
       "valueType": "uint32"
     },
     {
-      "type": "metadata",
-      "name": "Machine",
-      "variable": "machineType",
-      "description": "Machine"
+      "type": "field",
+      "name": "Footer Length",
+      "offset": -8,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.6,
+      "description": "4-byte LE int32 at EOF-8: byte length of the Thrift-encoded FileMetaData footer (excludes the 8-byte magic+length suffix)",
+      "storeAs": "footerLength",
+      "valueType": "uint32"
+    },
+    {
+      "type": "field",
+      "name": "Parquet Magic (Footer)",
+      "offset": -4,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.8,
+      "description": "Duplicate 'PAR1' (0x50415231) at EOF-4 confirming valid file termination; validate both header and footer magic",
+      "storeAs": "footerMagic",
+      "valueType": "ascii"
     },
     {
       "type": "metadata",
-      "name": "Sections",
-      "variable": "sectionCount",
-      "description": "Sections"
+      "name": "Footer Length",
+      "variable": "footerLength",
+      "description": "Byte size of the Thrift FileMetaData footer"
+    },
+    {
+      "type": "metadata",
+      "name": "Number of Row Groups",
+      "variable": "numRowGroups",
+      "description": "Row group count from FileMetaData"
+    },
+    {
+      "type": "metadata",
+      "name": "Total Rows",
+      "variable": "numRows",
+      "description": "Total number of rows from FileMetaData.num_rows"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "Header magic is PAR1",
+      "expression": "parquetMagic == 'PAR1'",
+      "severity": "error",
+      "message": "First 4 bytes must be ASCII 'PAR1'"
+    },
+    {
+      "name": "Footer magic is PAR1",
+      "expression": "footerMagic == 'PAR1'",
+      "severity": "error",
+      "message": "Last 4 bytes (EOF-4) must also be ASCII 'PAR1'; truncated file if absent"
+    }
+  ],
+  "inspector": {
+    "groups": [
+      {
+        "name": "File Frame",
+        "fields": ["Parquet Magic (Header)", "Parquet Magic (Footer)"]
+      },
+      {
+        "name": "Footer Metadata",
+        "fields": ["Footer Length"]
+      },
+      {
+        "name": "Dataset Statistics",
+        "fields": ["Number of Row Groups", "Total Rows"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "Parquet File Summary",
+      "fields": ["parquetMagic", "footerLength", "numRowGroups", "numRows"]
     }
   ],
   "software": [
-    "Common file viewers",
-    "Specialized software"
+    "Apache Spark",
+    "Apache Hive",
+    "Apache Impala",
+    "AWS Athena / AWS Glue",
+    "DuckDB",
+    "Pandas (pyarrow)",
+    "Apache Arrow"
   ],
   "formatRelationships": {
-    "category": "Data",
-    "extensions": [
-      ".parquet"
-    ]
+    "ecosystem": "Apache Hadoop",
+    "encoding": "Dremel nested columnar",
+    "related": ["AVRO", "ORC", "ARROW"]
   },
   "MimeTypes": [
-    "application/octet-stream"
+    "application/octet-stream",
+    "application/vnd.apache.parquet"
   ],
   "Software": [
-    "Hex Editor",
-    "File Viewer",
-    "Archive Manager"
+    "Apache Spark (native support)",
+    "DuckDB (fast local queries)",
+    "pandas with pyarrow",
+    "Apache Arrow IPC bridge"
   ],
   "UseCases": [
-    "File storage",
-    "Data exchange",
-    "Archive"
+    "Big data analytics and data lakehouse storage",
+    "ETL pipeline intermediate format",
+    "Machine learning training data storage",
+    "Cloud data warehouse (Athena, BigQuery, Snowflake)"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 3,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
+    "CompletenessScore": 60,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 7,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
     "PriorityFormat": false,
-    "AutoRefined": true
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "MagicLocation": "Bytes 0-3 AND EOF-4 to EOF-1",
+    "FooterEncoding": "Apache Thrift compact protocol",
+    "ColumnCompression": "SNAPPY, GZIP, LZ4, ZSTD, BROTLI",
+    "Endianness": "Little-endian for footer length field"
   },
   "forensic": {
     "category": "data",
@@ -96,15 +183,17 @@
     "suspiciousPatterns": []
   },
   "aiHints": {
-    "analysisContext": "Apache Parquet columnar storage format",
+    "analysisContext": "Parquet files have 'PAR1' magic at both offset 0 and EOF-4. The footer length (int32 LE) at EOF-8 tells you where to seek for the Thrift-encoded FileMetaData. The footer contains the full schema, row group locations, and statistics. Row group data is between the header magic and footer. Validate both magic positions to confirm file integrity.",
     "suggestedInspections": [
-      "Validate Apache Parquet schema header and encoding markers",
-      "Check nested structure depth and field type tags",
-      "Inspect string encodings and numeric value boundaries"
+      "Verify 'PAR1' at offset 0",
+      "Seek to EOF-4 and verify 'PAR1' footer magic",
+      "Read int32 LE at EOF-8 for footer byte length",
+      "Parse Thrift-encoded FileMetaData for schema and row group offsets",
+      "Check column encoding and compression codec per column chunk"
     ]
   },
-  "TechnicalDetails": {},
   "functions": {
-    "readUInt32LE": "Read executable header"
+    "readUInt32LE": "Read footer length",
+    "extractASCIIString": "Read PAR1 magic bytes"
   }
 }

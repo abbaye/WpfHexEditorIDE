@@ -1,120 +1,208 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Meridian Lossless Packing",
-  "version": "1.13",
+  "version": "1.14",
   "extensions": [
     ".mlp"
   ],
-  "description": "Meridian Lossless Packing lossless audio compression for DVD-Audio",
+  "description": "MLP (Meridian Lossless Packing) — a lossless audio compression codec developed by Meridian Audio, used for DVD-Audio and as the foundation of Dolby TrueHD. Raw MLP files consist of access units, each with a 4-byte header followed by the major sync word 0x18E371F3 at offset 4 in major sync frames. The format sync byte 0xBB (187) distinguishes MLP from TrueHD (0xBA). MLP supports up to 6 channels, 192 kHz, and 24-bit depth. DVD-Audio uses MLP for lossless surround sound tracks, while Dolby TrueHD is the Blu-ray successor built on MLP.",
   "category": "Audio",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "audio-viewer",
-  "references": {
-    "specifications": [
-      "Meridian Lossless Packing Specification",
-      "MLP DVD-Audio Standard",
-      "Packed PCM Audio Codec"
-    ],
+  "references": [
+    {
+      "name": "Meridian Lossless Packing (MLP) Specification",
+      "url": "https://www.ambisonic.net/pdf/mlp_pr.pdf"
+    }
+  ],
+  "referencesWebLinks": {
     "WebLinks": [
-      "https://www.ambisonic.net/pdf/mlp_pr.pdf",
       "https://en.wikipedia.org/wiki/Meridian_Lossless_Packing",
       "https://wiki.hydrogenaudio.org/index.php?title=Meridian_Lossless_Packing",
-      "https://www.meridian-audio.info/public/mlp_jap_new%5B2521%5D.pdf"
+      "https://wiki.multimedia.cx/index.php/MLP"
     ]
   },
   "detection": {
     "signature": "18E371F3",
     "offset": 4,
     "required": true,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 4.0, "max": 7.5 },
     "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024
+      "minFileSize": 9,
+      "maxSignatureOffset": 4,
+      "note": "MLP/TrueHD major sync word 0x18E371F3 at offset 4; format byte at offset 8: 0xBB=MLP, 0xBA=TrueHD"
     }
   },
   "variables": {
-    "crc32Valid": false,
-    "originalSize": 0,
-    "compressionRatio": 0,
-    "mlpSyncWord": 0
+    "accessUnitHeader": 0,
+    "mlpSyncWord": 0,
+    "formatSyncByte": 0
   },
   "blocks": [
     {
+      "type": "field",
+      "name": "Access Unit Header",
+      "offset": 0,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "First 4-byte access unit header containing timing and size fields as a 32-bit big-endian unsigned integer. The upper 16 bits encode the presentation timestamp and the lower 16 bits encode the access unit size and flags.",
+      "storeAs": "accessUnitHeader",
+      "valueType": "uint32",
+      "endianness": "big"
+    },
+    {
       "type": "signature",
-      "name": "MLP Sync Word",
+      "name": "MLP / TrueHD Major Sync Word",
       "offset": 4,
       "length": 4,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "MLP major sync word",
+      "opacity": 0.45,
+      "description": "MLP and TrueHD major synchronization word 0x18E371F3 (417988083) stored as a 32-bit big-endian unsigned integer. This sync word appears at the start of every major sync frame, establishing format parameters. The format sync byte at offset 8 identifies MLP (0xBB=187) versus TrueHD (0xBA=186).",
       "storeAs": "mlpSyncWord",
-      "valueType": "uint32"
+      "valueType": "uint32",
+      "endianness": "big"
+    },
+    {
+      "type": "field",
+      "name": "Format Sync Byte",
+      "offset": 8,
+      "length": 1,
+      "color": "#95E1D3",
+      "opacity": 0.35,
+      "description": "Format-specific sync byte at offset 8 distinguishing MLP from TrueHD. MLP uses 0xBB (187); TrueHD uses 0xBA (186). Both formats share the same 0x18E371F3 major sync word. This byte is the definitive discriminator when a file claims to be either format.",
+      "storeAs": "formatSyncByte",
+      "valueType": "uint8",
+      "valueMap": {
+        "187": "0xBB — MLP (Meridian Lossless Packing) for DVD-Audio",
+        "186": "0xBA — Dolby TrueHD for Blu-ray"
+      }
     },
     {
       "type": "metadata",
-      "name": "CRC Valid",
-      "variable": "crc32Valid",
-      "description": "CRC Valid"
+      "name": "MLP Sync Word",
+      "variable": "mlpSyncWord",
+      "description": "MLP/TrueHD major sync word (0x18E371F3)"
     },
     {
       "type": "metadata",
-      "name": "Original Size",
-      "variable": "originalSize",
-      "description": "Original Size"
+      "name": "Format Sync Byte",
+      "variable": "formatSyncByte",
+      "description": "0xBB = MLP (DVD-Audio), 0xBA = TrueHD (Blu-ray)"
     }
   ],
-  "software": [
-    "Dolby TrueHD players",
-    "Blu-ray players"
+  "assertions": [
+    {
+      "name": "MLP/TrueHD sync word valid",
+      "expression": "mlpSyncWord == 417988083",
+      "severity": "error",
+      "message": "MLP major sync word must be 0x18E371F3 at offset 4 — not a valid MLP or TrueHD file"
+    },
+    {
+      "name": "Format byte is MLP",
+      "expression": "formatSyncByte == 187",
+      "severity": "info",
+      "message": "Format sync byte is not 0xBB — file may be TrueHD (0xBA) not MLP"
+    }
   ],
-  "formatRelationships": {
-    "category": "Audio",
-    "extensions": [
-      ".mlp"
+  "versionDetection": {
+    "field": "formatSyncByte",
+    "versions": {
+      "187": "MLP — Meridian Lossless Packing (DVD-Audio)",
+      "186": "Dolby TrueHD (Blu-ray lossless)"
+    }
+  },
+  "navigation": {
+    "bookmarks": [
+      {
+        "name": "First Access Unit",
+        "offset": 0,
+        "icon": "\uE71B",
+        "color": "#FF6B6B"
+      }
     ]
   },
-  "MimeTypes": [
-    "audio/mlp"
-  ],
-  "Software": [
-    "VLC",
-    "Audacity",
-    "Foobar2000",
-    "MediaMonkey",
-    "Winamp"
-  ],
-  "UseCases": [
-    "Music playback",
-    "Audio editing",
-    "Sound production",
-    "Streaming"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 3,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "formatSyncByte",
+    "primaryField": "mlpSyncWord",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "MLP Identity",
+        "icon": "\uE71B",
+        "fields": ["mlpSyncWord", "formatSyncByte"]
+      }
+    ]
   },
-  "TechnicalDetails": {
-    "AudioFormat": true
-  },
-  "functions": {
-    "calculateCRC32": "Validate CRC",
-    "readUInt32LE": "Read size"
-  },
+  "exportTemplates": [
+    {
+      "name": "MLP Header (JSON)",
+      "format": "json",
+      "fields": ["mlpSyncWord", "formatSyncByte"]
+    }
+  ],
   "forensic": {
     "category": "audio",
     "riskLevel": "low",
-    "suspiciousPatterns": []
+    "suspiciousPatterns": [
+      {
+        "name": "File is TrueHD not MLP",
+        "condition": "formatSyncByte == 186",
+        "severity": "info",
+        "description": "Format sync byte 0xBA identifies this as Dolby TrueHD (Blu-ray), not MLP (DVD-Audio). Both share the same major sync word 0x18E371F3. TrueHD extends MLP with additional channel configurations and Dolby Atmos support."
+      }
+    ]
   },
   "aiHints": {
-    "analysisContext": "Meridian Lossless Packing lossless audio compression for DVD-Audio",
+    "analysisContext": "MLP/TrueHD bitstream: access_unit_header(4B,BE) + major_sync_word(4B,BE,=0x18E371F3) + format_sync(1B: 0xBB=MLP/0xBA=TrueHD). MLP format info after sync: channel_assignment + sample_rate(4b: 0=48kHz/1=96kHz/2=192kHz/8=44.1kHz) + peak_bitrate_code. MLP specifications: max 6 channels (5.1), max 192 kHz, 24-bit lossless. Used in DVD-Audio for high-resolution surround sound. Dolby TrueHD is the Blu-ray successor: same sync word, 0xBA format byte, adds 8-channel (7.1) and Atmos support.",
     "suggestedInspections": [
-      "Validate Meridian Lossless Packing header: sample rate, channels, bit depth, codec ID",
-      "Check frame/block alignment and data chunk boundaries",
-      "Verify metadata tags (ID3, Vorbis comment) are well-formed"
+      "Check bytes 4-7: 18 E3 71 F3 — MLP/TrueHD major sync word",
+      "Check byte 8: 0xBB (187) = MLP, 0xBA (186) = TrueHD",
+      "Extract sample rate code from format info for frequency identification",
+      "MLP max channels: 6 (5.1); TrueHD max: 8 (7.1) + Atmos"
     ]
+  },
+  "software": [
+    "Nero Digital",
+    "foobar2000 (with MLP plugin)",
+    "VLC media player",
+    "FFmpeg",
+    "DVD-Audio players"
+  ],
+  "formatRelationships": {
+    "category": "Audio",
+    "extensions": [".mlp"],
+    "relatedFormats": ["TrueHD", "DTS", "PCM"],
+    "note": "MLP (Meridian Lossless Packing) was developed for DVD-Audio (2000) by Meridian Audio. Dolby licensed MLP as the basis for TrueHD on Blu-ray. Format sync byte 0xBB=MLP; 0xBA=TrueHD. MLP is limited to 5.1 channels at up to 192 kHz; TrueHD extends to 7.1 channels and Atmos."
+  },
+  "MimeTypes": [
+    "audio/mlp",
+    "audio/x-mlp"
+  ],
+  "UseCases": [
+    "DVD-Audio disc lossless audio tracks",
+    "High-resolution surround sound archival",
+    "Reference audio for DVD-Audio players",
+    "Predecessor technology to Dolby TrueHD"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 66,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 5,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "AudioFormat": true,
+    "Endianness": "big-endian (bitstream)",
+    "SyncWord": "0x18E371F3 (shared with TrueHD)",
+    "FormatByte": "0xBB (MLP) vs 0xBA (TrueHD)",
+    "MaxChannels": "6 (5.1 surround)",
+    "SampleRates": "44.1/48/88.2/96/176.4/192 kHz",
+    "BitDepth": "up to 24-bit lossless",
+    "UseCase": "DVD-Audio high-resolution surround sound"
   }
 }

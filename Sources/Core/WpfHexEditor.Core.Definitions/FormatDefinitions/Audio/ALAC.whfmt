@@ -1,132 +1,239 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Apple Lossless Audio Codec",
-  "version": "2.4",
+  "version": "2.32",
   "extensions": [
     ".alac",
     ".m4a"
   ],
-  "description": "Apple Lossless Audio Codec for lossless compression of digital music",
+  "description": "ALAC (Apple Lossless Audio Codec) — an open-source lossless audio compression format developed by Apple, stored in an ISOBMFF/MP4 container. The file begins with an ftyp box (at offset 0) declaring the major brand. ALAC stored in .m4a files uses the brand 'alac' or 'M4A '. The audio codec is identified by the FourCC 'alac' inside the stsd box within the trak>mdia>minf>stbl hierarchy. The 'alac' codec box contains: version (4B), frameLength (samples per frame, typically 4096), compatibleVersion (0), bitDepth (16/24/32), tuningCurrentBackOff, tuningMaxBackOff, byteStreamVersion, numChannels, maxRun, maxFrameBytes, avgBitRate, sampleRate. ALAC supports 1-8 channels, 16/20/24/32-bit depth, and 1 Hz to 384 kHz sample rates.",
   "category": "Audio",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "audio-viewer",
   "references": {
     "specifications": [
-      "Apple Lossless Audio Codec Specification",
-      "ALAC Open Source Format",
-      "Apple Lossless in MPEG-4 Container"
+      "Apple Lossless Audio Codec Specification (open-sourced 2011)",
+      "ALAC Open Source — github.com/macosforge/alac",
+      "MPEG-4 Part 14 (ISO/IEC 14496-14) — ISOBMFF container"
     ],
     "WebLinks": [
       "https://macosforge.github.io/alac/",
       "https://github.com/macosforge/alac",
       "https://en.wikipedia.org/wiki/Apple_Lossless_Audio_Codec",
-      "https://docs.fileformat.com/audio/alac/"
+      "https://wiki.multimedia.cx/index.php/Apple_Lossless"
     ]
   },
   "detection": {
-    "signature": "66747970",
-    "offset": 4,
+    "signatures": [
+      { "value": "6674797061 6C6163", "offset": 4, "label": "ftyp alac brand — ALAC in M4A/ALAC container", "weight": 1.0 },
+      { "value": "667479704D344120", "offset": 4, "label": "ftyp M4A  brand — ALAC may be in M4A container", "weight": 0.5 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.5,
     "required": true,
+    "Strength": "Medium",
+    "EntropyHint": { "min": 3.0, "max": 7.5 },
     "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024
+      "minFileSize": 24,
+      "note": "ALAC is always in an ISOBMFF container — ftyp box at offset 0-3 (box size), 'ftyp' at offset 4. ALAC codec FourCC inside stsd box is definitive."
     }
   },
-  "functions": {
-    "readUInt32BE": "Read 32-bit big-endian for MP4 box sizes and atom headers",
-    "extractASCIIString": "Extract box type identifiers (ftyp, alac, moov)",
-    "readUInt16BE": "Read 16-bit values for audio configuration",
-    "computeFromVariables(sampleRate * bitDepth * channels / 8, byteRate)": "Calculate byte rate",
-    "computeFromVariables(sampleRate * channels, samplesPerSecond)": "Calculate samples/second"
-  },
   "variables": {
-    "currentOffset": 0,
-    "boxSize": 0,
-    "majorBrand": "Unknown",
-    "sampleRate": 0,
-    "channels": 0,
-    "bitDepth": 16,
-    "duration": 0,
-    "fileTypeBox": "",
-    "byteRate": 0,
-    "samplesPerSecond": 0
+    "ftypBoxSize": 0,
+    "ftypBoxType": "",
+    "majorBrand": "",
+    "minorVersion": 0
   },
   "blocks": [
     {
+      "type": "field",
+      "name": "ftyp Box Size",
+      "offset": 0,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "Size of the ftyp (File Type) box in bytes as a 32-bit big-endian unsigned integer. Includes the 8-byte box header (4B size + 4B type) plus major brand (4B), minor version (4B), and compatible brands list (4B each). Typical ALAC ftyp boxes are 20-36 bytes.",
+      "storeAs": "ftypBoxSize",
+      "valueType": "uint32",
+      "endianness": "big"
+    },
+    {
       "type": "signature",
-      "name": "File Type Box",
+      "name": "ftyp Box Type",
       "offset": 4,
       "length": 4,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "ftyp - MP4 container for ALAC",
-      "storeAs": "fileTypeBox",
+      "opacity": 0.45,
+      "description": "ISOBMFF box type identifier 'ftyp' (0x66747970). The File Type box must be the first box in an ISOBMFF file containing ALAC audio. It declares the container brand and compatible formats.",
+      "storeAs": "ftypBoxType",
       "valueType": "ascii"
     },
     {
-      "type": "metadata",
-      "name": "Byte Rate",
-      "variable": "byteRate",
-      "description": "Calculated byte rate"
+      "type": "field",
+      "name": "Major Brand",
+      "offset": 8,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.35,
+      "description": "Primary format brand as a 4-byte ASCII code. For ALAC-only files this is typically 'alac' (0x616C6163). When stored in iTunes-compatible M4A containers, the brand may be 'M4A ' or 'isom'. The definitive ALAC codec identification is the FourCC 'alac' inside moov>trak>mdia>minf>stbl>stsd.",
+      "storeAs": "majorBrand",
+      "valueType": "ascii",
+      "valueMap": {
+        "alac": "ALAC — Apple Lossless Audio in ALAC container",
+        "M4A ": "M4A — iTunes audio container (may contain ALAC or AAC)",
+        "isom": "ISOBMFF — generic ISO Base Media (check stsd for 'alac' codec)",
+        "iso2": "ISOBMFF v2 — check stsd for codec identification",
+        "mp42": "MPEG-4 Part 2 base — check stsd for codec"
+      }
+    },
+    {
+      "type": "field",
+      "name": "Minor Version",
+      "offset": 12,
+      "length": 4,
+      "color": "#FFE66D",
+      "opacity": 0.25,
+      "description": "Minor version of the major brand specification as a 32-bit big-endian unsigned integer. For ALAC files this is typically 0. Informational — decoders should not use this for compatibility decisions.",
+      "storeAs": "minorVersion",
+      "valueType": "uint32",
+      "endianness": "big"
     },
     {
       "type": "metadata",
-      "name": "Samples/Second",
-      "variable": "samplesPerSecond",
-      "description": "Total samples per second"
+      "name": "ftyp Box Type",
+      "variable": "ftypBoxType",
+      "description": "'ftyp' — ISOBMFF File Type box identifier"
+    },
+    {
+      "type": "metadata",
+      "name": "Major Brand",
+      "variable": "majorBrand",
+      "description": "Container brand: 'alac'=pure ALAC, 'M4A '=iTunes, 'isom'=generic ISOBMFF"
+    },
+    {
+      "type": "metadata",
+      "name": "Minor Version",
+      "variable": "minorVersion",
+      "description": "Minor version of major brand specification"
     }
   ],
-  "software": [
-    "iTunes",
-    "Apple Music",
-    "foobar2000",
-    "VLC"
+  "assertions": [
+    {
+      "name": "ftyp box type is ftyp",
+      "expression": "ftypBoxType == 'ftyp'",
+      "severity": "error",
+      "message": "Box type at offset 4 must be 'ftyp' — not a valid ISOBMFF/ALAC container"
+    },
+    {
+      "name": "ftyp box size is reasonable",
+      "expression": "ftypBoxSize >= 8 && ftypBoxSize <= 256",
+      "severity": "warning",
+      "message": "ftyp box size outside expected range (8-256 bytes)"
+    }
   ],
-  "formatRelationships": {
-    "apple_format": true,
-    "open_source_since": "2011",
-    "container": "MP4/M4A",
-    "alternative_to": "FLAC"
+  "versionDetection": {
+    "field": "majorBrand",
+    "versions": {
+      "alac": "ALAC native container",
+      "M4A ": "iTunes M4A container (may be ALAC or AAC)",
+      "isom": "Generic ISOBMFF — codec-dependent",
+      "iso2": "ISOBMFF v2 — codec-dependent"
+    }
   },
-  "MimeTypes": [
-    "audio/alac"
-  ],
-  "Software": [
-    "VLC",
-    "Audacity",
-    "Foobar2000",
-    "MediaMonkey",
-    "Winamp"
-  ],
-  "UseCases": [
-    "Music playback",
-    "Audio editing",
-    "Sound production",
-    "Streaming"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 3,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "navigation": {
+    "bookmarks": [
+      {
+        "name": "ftyp Box",
+        "offset": 0,
+        "icon": "\uE71B",
+        "color": "#FF6B6B"
+      }
+    ]
   },
-  "TechnicalDetails": {
-    "AudioFormat": true
+  "inspector": {
+    "badge": "majorBrand",
+    "primaryField": "ftypBoxType",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "ISOBMFF ftyp Box",
+        "icon": "\uE71B",
+        "fields": ["ftypBoxType", "ftypBoxSize", "majorBrand", "minorVersion"]
+      }
+    ]
   },
+  "exportTemplates": [
+    {
+      "name": "ALAC ftyp Box (JSON)",
+      "format": "json",
+      "fields": ["ftypBoxType", "ftypBoxSize", "majorBrand", "minorVersion"]
+    }
+  ],
   "forensic": {
     "category": "audio",
     "riskLevel": "low",
-    "suspiciousPatterns": []
+    "suspiciousPatterns": [
+      {
+        "name": "Ambiguous brand — may be AAC not ALAC",
+        "condition": "majorBrand == 'M4A ' || majorBrand == 'isom'",
+        "severity": "info",
+        "description": "File uses a generic ISOBMFF brand (M4A  or isom). This container may hold either ALAC (lossless) or AAC (lossy) audio. To confirm codec, navigate to moov>trak>mdia>minf>stbl>stsd and check for 'alac' vs 'mp4a' codec FourCC."
+      }
+    ]
   },
   "aiHints": {
-    "analysisContext": "Apple Lossless Audio Codec for lossless compression of digital music",
+    "analysisContext": "ALAC is always in an ISOBMFF container (same as M4A/MP4). Layout: ftyp_box_size(4,BE) + 'ftyp'(4) + majorBrand(4,ASCII) + minorVersion(4,BE) + compatBrands. Definitive ALAC identification: navigate to moov>trak>mdia>minf>stbl>stsd and look for 'alac' codec FourCC (0x616C6163). The 'alac' specific box inside stsd: version(4,BE) + frameLength(4,BE,typically 4096) + compatibleVersion(1) + bitDepth(1: 16/24/32) + backOff fields + numChannels(1) + maxRun(2,BE) + maxFrameBytes(4,BE) + avgBitRate(4,BE) + sampleRate(4,BE). ALAC supports: 1-8 channels, 16/20/24/32-bit, 1Hz-384kHz. iTunes M4A with ALAC uses 'M4A ' brand; pure ALAC containers use 'alac' brand. Open sourced by Apple in 2011 under Apache License.",
     "suggestedInspections": [
-      "Validate Apple Lossless Audio Codec header: sample rate, channels, bit depth, codec ID",
-      "Check frame/block alignment and data chunk boundaries",
-      "Verify metadata tags (ID3, Vorbis comment) are well-formed"
+      "Check ftyp at offset 4: 'alac' brand = pure ALAC container, 'M4A ' = iTunes (check codec)",
+      "Navigate moov>trak>mdia>minf>stbl>stsd for codec FourCC: 'alac'=lossless, 'mp4a'=AAC",
+      "Inside 'alac' box: bitDepth byte (offset +9 from alac FourCC) = 16/24/32",
+      "numChannels byte in alac box: 1=mono, 2=stereo, 6=5.1",
+      "avgBitRate in alac box (4B BE) for encoding efficiency info"
     ]
+  },
+  "software": [
+    "iTunes / Apple Music",
+    "QuickTime Player",
+    "foobar2000",
+    "VLC media player",
+    "FFmpeg",
+    "iOS / macOS native (all Apple devices)"
+  ],
+  "formatRelationships": {
+    "category": "Audio",
+    "extensions": [".alac", ".m4a"],
+    "relatedFormats": ["M4A", "AAC", "FLAC"],
+    "note": "ALAC is Apple's lossless alternative to FLAC. Both are lossless but ALAC uses ISOBMFF/MP4 containers (compatible with iTunes/QuickTime), while FLAC uses Ogg-based or standalone containers. Apple open-sourced ALAC in 2011. ALAC .m4a files share the same ftyp structure as AAC .m4a files — the 'alac' codec FourCC in stsd is the definitive identifier."
+  },
+  "MimeTypes": [
+    "audio/alac",
+    "audio/x-m4a",
+    "audio/mp4"
+  ],
+  "UseCases": [
+    "iTunes / Apple Music lossless streaming (Apple Lossless Audio)",
+    "iPhone/iPad/Mac native lossless audio",
+    "CD ripping to lossless for Apple ecosystem",
+    "Final Cut Pro / Logic Pro audio assets"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 68,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 7,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "AudioFormat": true,
+    "ContainerFormat": "ISOBMFF (ISO Base Media File Format) / MP4",
+    "Endianness": "big-endian (all ISOBMFF box fields)",
+    "Lossless": true,
+    "BitDepths": "16, 20, 24, 32-bit",
+    "SampleRates": "1 Hz to 384 kHz",
+    "MaxChannels": "8 channels",
+    "FrameLength": "4096 samples per frame (default)",
+    "OpenSourced": "2011 (Apache License 2.0)"
   }
 }
