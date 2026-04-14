@@ -191,7 +191,7 @@ public partial class MainWindow
             () => _ = (_compareFileLaunchService?.ReopenLastAsync() ?? Task.CompletedTask));
         Reg(CommandIds.View.EntropyAnalysis,"Entropy Analysis…",     "View",    null,             null,
             () => OnEntropyAnalysis(this, null!));
-        Reg(CommandIds.View.Terminal,      "Terminal",               "View",    null,             "\uE756",
+        Reg(CommandIds.View.Terminal,      "Terminal",               "View",    "Ctrl+OemTilde",  "\uE756",
             () => OnOpenTerminal(this, null!));
         Reg(CommandIds.View.Options,       "Options…",               "View",    null,             "\uE713",
             () => OnSettings(this, null!));

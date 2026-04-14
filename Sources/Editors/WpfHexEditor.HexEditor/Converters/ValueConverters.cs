@@ -37,9 +37,7 @@ namespace WpfHexEditor.HexEditor.Converters
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
+            => Binding.DoNothing;
     }
 
     /// <summary>
@@ -84,9 +82,7 @@ namespace WpfHexEditor.HexEditor.Converters
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
+            => Binding.DoNothing;
     }
 
     /// <summary>
@@ -104,9 +100,7 @@ namespace WpfHexEditor.HexEditor.Converters
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
+            => Binding.DoNothing;
     }
 
     /// <summary>
@@ -124,9 +118,7 @@ namespace WpfHexEditor.HexEditor.Converters
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
+            => Binding.DoNothing;
     }
 
     /// <summary>
@@ -217,8 +209,6 @@ namespace WpfHexEditor.HexEditor.Converters
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
+            => Binding.DoNothing;
     }
 }

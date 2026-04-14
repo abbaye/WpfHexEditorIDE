@@ -404,6 +404,56 @@
                     <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE946;" FontSize="13"/>
                 </Button>
 
+                <Popup x:Name="PART_MetadataPopup"
+                       PlacementTarget="{Binding ElementName=PART_MetadataBtn}"
+                       Placement="Bottom"
+                       StaysOpen="False"
+                       AllowsTransparency="True">
+                    <Border Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
+                            BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
+                            BorderThickness="1"
+                            Padding="12"
+                            MinWidth="260">
+                        <Grid x:Name="PART_MetadataGrid">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="8"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <!-- Row 0: Title -->
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Title" FontWeight="SemiBold" Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                            <TextBlock Grid.Row="0" Grid.Column="2" x:Name="PART_Meta_Title" TextWrapping="Wrap"/>
+                            <!-- Row 1: Author -->
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Author" FontWeight="SemiBold" Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" Margin="0,4,0,0"/>
+                            <TextBlock Grid.Row="1" Grid.Column="2" x:Name="PART_Meta_Author" Margin="0,4,0,0"/>
+                            <!-- Row 2: Format -->
+                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Format" FontWeight="SemiBold" Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" Margin="0,4,0,0"/>
+                            <TextBlock Grid.Row="2" Grid.Column="2" x:Name="PART_Meta_Format" Margin="0,4,0,0"/>
+                            <!-- Row 3: MIME -->
+                            <TextBlock Grid.Row="3" Grid.Column="0" Text="MIME" FontWeight="SemiBold" Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" Margin="0,4,0,0"/>
+                            <TextBlock Grid.Row="3" Grid.Column="2" x:Name="PART_Meta_Mime" Margin="0,4,0,0"/>
+                            <!-- Row 4: Created -->
+                            <TextBlock Grid.Row="4" Grid.Column="0" Text="Created" FontWeight="SemiBold" Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" Margin="0,4,0,0"/>
+                            <TextBlock Grid.Row="4" Grid.Column="2" x:Name="PART_Meta_Created" Margin="0,4,0,0"/>
+                            <!-- Row 5: Modified -->
+                            <TextBlock Grid.Row="5" Grid.Column="0" Text="Modified" FontWeight="SemiBold" Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" Margin="0,4,0,0"/>
+                            <TextBlock Grid.Row="5" Grid.Column="2" x:Name="PART_Meta_Modified" Margin="0,4,0,0"/>
+                            <!-- Row 6: Macros badge -->
+                            <TextBlock Grid.Row="6" Grid.Column="0" Text="Macros" FontWeight="SemiBold" Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" Margin="0,4,0,0"/>
+                            <TextBlock Grid.Row="6" Grid.Column="2" x:Name="PART_Meta_Macros" Margin="0,4,0,0"/>
+                        </Grid>
+                    </Border>
+                </Popup>
+
                 <Button x:Name="PART_ExportBtn"
                         Style="{StaticResource DocActionButtonStyle}"
                         DockPanel.Dock="Right"

@@ -24,7 +24,7 @@ public sealed class ProgressToPercentStringConverter : IValueConverter
     }
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        => throw new NotSupportedException();
+        => Binding.DoNothing;
 }
 
 /// <summary>Converts a double progress to Visibility: &gt; 0 → Visible, else Collapsed.</summary>
@@ -40,7 +40,7 @@ public sealed class ProgressToVisibilityConverter : IValueConverter
     }
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        => throw new NotSupportedException();
+        => Binding.DoNothing;
 }
 
 /// <summary>
@@ -68,5 +68,5 @@ public sealed class ValueToProgressConverter : IValueConverter
     }
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        => throw new NotSupportedException();
+        => Binding.DoNothing;
 }

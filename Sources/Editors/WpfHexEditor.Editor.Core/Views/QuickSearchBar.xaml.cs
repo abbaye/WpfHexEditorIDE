@@ -277,7 +277,7 @@ namespace WpfHexEditor.Editor.Core.Views
             => value is bool b && b ? Visibility.Visible : Visibility.Collapsed;
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-            => throw new NotImplementedException();
+            => Binding.DoNothing;
     }
 
     /// <summary>
@@ -290,6 +290,6 @@ namespace WpfHexEditor.Editor.Core.Views
             => string.IsNullOrEmpty(value as string) ? Visibility.Visible : Visibility.Collapsed;
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-            => throw new NotImplementedException();
+            => Binding.DoNothing;
     }
 }

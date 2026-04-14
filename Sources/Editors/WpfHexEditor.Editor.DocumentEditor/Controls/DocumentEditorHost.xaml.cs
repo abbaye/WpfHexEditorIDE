@@ -597,8 +597,84 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
     private void OnStructureModeClicked(object sender, RoutedEventArgs e) => ViewMode = DocumentViewMode.Structure;
     private void OnForensicModeClicked(object sender, RoutedEventArgs e)  => IsForensicMode = PART_ForensicBtn.IsChecked == true;
     private void OnSaveClicked(object sender, RoutedEventArgs e)          => Save();
-    private void OnExportClicked(object sender, RoutedEventArgs e)        { /* TODO: export dialog */ }
-    private void OnMetadataClicked(object sender, RoutedEventArgs e)      { /* TODO: metadata flyout */ }
+    private void OnExportClicked(object sender, RoutedEventArgs e)
+    {
+        if (_vm?.Model is null) return;
+
+        var savers = _ideContext?.ExtensionRegistry
+                         .GetExtensions<IDocumentSaver>()
+                     ?? [];
+
+        // Build SaveFileDialog filter from registered savers
+        var filterParts = savers
+            .Select(s => $"{s.SaverName}|*{string.Join(";*", s.SupportedExtensions)}")
+            .ToList();
+        filterParts.Add("All Files|*.*");
+
+        var dlg = new Microsoft.Win32.SaveFileDialog
+        {
+            Title            = "Export Document",
+            Filter           = string.Join("|", filterParts),
+            FileName         = System.IO.Path.GetFileName(_vm.Model.FilePath),
+            InitialDirectory = System.IO.Path.GetDirectoryName(_vm.Model.FilePath) ?? string.Empty,
+        };
+
+        if (dlg.ShowDialog() != true) return;
+
+        var targetPath = dlg.FileName;
+        var saver      = savers.FirstOrDefault(s => s.CanSave(targetPath));
+        if (saver is null)
+        {
+            StatusMessage?.Invoke(this, $"No saver registered for '{System.IO.Path.GetExtension(targetPath)}'.");
+            return;
+        }
+
+        _ = ExportToAsync(saver, targetPath);
+    }
+
+    private async Task ExportToAsync(IDocumentSaver saver, string targetPath)
+    {
+        if (_vm?.Model is null) return;
+        try
+        {
+            IsBusy = true;
+            var tmp = targetPath + ".tmp";
+            await using (var fs = File.Create(tmp))
+                await saver.SaveAsync(_vm.Model, fs);
+            if (File.Exists(targetPath)) File.Delete(targetPath);
+            File.Move(tmp, targetPath);
+            StatusMessage?.Invoke(this, $"Exported — {System.IO.Path.GetFileName(targetPath)}");
+        }
+        catch (Exception ex)
+        {
+            StatusMessage?.Invoke(this, $"Export failed: {ex.Message}");
+            OutputMessage?.Invoke(this, $"[DocEditor] Export error: {ex}");
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+
+    private void OnMetadataClicked(object sender, RoutedEventArgs e)
+    {
+        var meta = _vm?.Model?.Metadata;
+        if (meta is null) return;
+
+        PART_Meta_Title.Text    = string.IsNullOrEmpty(meta.Title)         ? "—" : meta.Title;
+        PART_Meta_Author.Text   = string.IsNullOrEmpty(meta.Author)        ? "—" : meta.Author;
+        PART_Meta_Format.Text   = string.IsNullOrEmpty(meta.FormatVersion) ? "—" : meta.FormatVersion;
+        PART_Meta_Mime.Text     = string.IsNullOrEmpty(meta.MimeType)      ? "—" : meta.MimeType;
+        PART_Meta_Created.Text  = meta.CreatedUtc.HasValue
+            ? meta.CreatedUtc.Value.ToLocalTime().ToString("g")
+            : "—";
+        PART_Meta_Modified.Text = meta.ModifiedUtc.HasValue
+            ? meta.ModifiedUtc.Value.ToLocalTime().ToString("g")
+            : "—";
+        PART_Meta_Macros.Text   = meta.HasMacros ? "Yes" : "No";
+
+        PART_MetadataPopup.IsOpen = true;
+    }
 
     // ── Page Setup flyout ────────────────────────────────────────────────────
 
