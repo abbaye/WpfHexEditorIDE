@@ -1,7 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "Windows Registry File",
-  "version": "1.12",
+  "version": "1.13",
   "extensions": [
     ".reg"
   ],

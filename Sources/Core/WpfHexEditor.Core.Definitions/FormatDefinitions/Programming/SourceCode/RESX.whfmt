@@ -1,7 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": ".NET XML Resource File",
-  "version": "2.1",
+  "version": "2.2",
   "extensions": [
     ".resx"
   ],

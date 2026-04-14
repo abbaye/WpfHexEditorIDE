@@ -1,7 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "Nintendo Wii U Image",
-  "version": "1.14",
+  "version": "1.15",
   "extensions": [
     ".wud",
     ".wux"

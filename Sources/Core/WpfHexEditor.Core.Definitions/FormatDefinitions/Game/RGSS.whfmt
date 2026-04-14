@@ -1,7 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "RPG Maker Encrypted Archive",
-  "version": "1.13",
+  "version": "1.14",
   "extensions": [
     ".rgssad",
     ".rgss2a",

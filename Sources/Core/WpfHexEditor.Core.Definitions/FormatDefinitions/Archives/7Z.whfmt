@@ -1,7 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "7-Zip Archive",
-  "version": "2.0",
+  "version": "2.1",
   "extensions": [
     ".7z"
   ],

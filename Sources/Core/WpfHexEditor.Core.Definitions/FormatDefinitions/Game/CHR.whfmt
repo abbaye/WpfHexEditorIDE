@@ -1,7 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "NES / Game Boy Character ROM",
-  "version": "2.2",
+  "version": "2.3",
   "extensions": [
     ".chr"
   ],

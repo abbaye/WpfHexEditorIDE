@@ -1,7 +1,7 @@
 ﻿{
   "diffMode": "text",
   "formatName": "TypeScript Source File",
-  "version": "2.1",
+  "version": "2.2",
   "extensions": [
     ".ts",
     ".tsx",

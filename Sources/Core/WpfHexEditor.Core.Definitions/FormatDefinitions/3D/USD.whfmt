@@ -1,7 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "Universal Scene Description",
-  "version": "1.12",
+  "version": "1.13",
   "extensions": [
     ".usd"
   ],

@@ -1,7 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "ASN.1 DER Encoding",
-  "version": "1.10",
+  "version": "1.11",
   "extensions": [
     ".der",
     ".cer"

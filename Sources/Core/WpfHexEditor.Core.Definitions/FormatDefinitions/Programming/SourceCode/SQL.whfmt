@@ -1,7 +1,7 @@
 ﻿{
   "diffMode": "text",
   "formatName": "SQL Source File",
-  "version": "2.1",
+  "version": "2.2",
   "extensions": [
     ".sql",
     ".ddl",

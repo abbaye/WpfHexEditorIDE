@@ -1,7 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "Super Nintendo ROM",
-  "version": "3.2",
+  "version": "3.3",
   "extensions": [
     ".smc",
     ".sfc"

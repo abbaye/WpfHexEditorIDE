@@ -1,7 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "Cloud Point File",
-  "version": "2.4",
+  "version": "2.5",
   "extensions": [
     ".cxf"
   ],

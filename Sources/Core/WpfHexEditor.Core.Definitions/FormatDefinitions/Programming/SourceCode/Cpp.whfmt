@@ -1,7 +1,7 @@
 ﻿{
   "diffMode": "text",
   "formatName": "C++ Source File",
-  "version": "2.1",
+  "version": "2.2",
   "extensions": [
     ".cpp",
     ".cc",

@@ -1,7 +1,7 @@
 ﻿{
   "diffMode": "text",
   "formatName": "Batch Script",
-  "version": "2.1",
+  "version": "2.2",
   "extensions": [
     ".bat",
     ".cmd"

@@ -1,7 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "Amazon Kindle eBook",
-  "version": "1.10",
+  "version": "1.11",
   "extensions": [
     ".azw",
     ".azw3"

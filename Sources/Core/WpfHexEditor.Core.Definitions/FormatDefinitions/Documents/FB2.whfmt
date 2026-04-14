@@ -1,7 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "FictionBook 2.0",
-  "version": "1.10",
+  "version": "1.11",
   "extensions": [
     ".fb2"
   ],

@@ -1,7 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "BLF Event Log",
-  "version": "1.12",
+  "version": "1.13",
   "extensions": [
     ".blf"
   ],

@@ -1,7 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "SQLite Write-Ahead Log",
-  "version": "1.11",
+  "version": "1.12",
   "extensions": [
     ".wal",
     "-wal"

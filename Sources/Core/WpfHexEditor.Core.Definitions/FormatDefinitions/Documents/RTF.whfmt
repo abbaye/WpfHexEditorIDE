@@ -1,7 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "Rich Text Format",
-  "version": "2.0",
+  "version": "2.1",
   "extensions": [
     ".rtf",
     ".rtx"

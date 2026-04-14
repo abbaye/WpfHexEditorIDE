@@ -1,6 +1,6 @@
 ﻿{
   "formatName": "JSON Data",
-  "version": "2.1",
+  "version": "2.2",
   "extensions": [
     ".json"
   ],

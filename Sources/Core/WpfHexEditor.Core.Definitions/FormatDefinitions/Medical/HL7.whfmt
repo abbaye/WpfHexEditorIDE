@@ -1,7 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "HL7 Message",
-  "version": "1.11",
+  "version": "1.12",
   "extensions": [
     ".hl7",
     ".txt"

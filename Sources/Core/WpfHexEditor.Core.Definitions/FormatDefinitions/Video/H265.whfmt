@@ -1,7 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "Raw H.265/HEVC",
-  "version": "1.13",
+  "version": "1.14",
   "extensions": [
     ".h265",
     ".265",

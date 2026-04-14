@@ -1,7 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "Unity Asset Bundle",
-  "version": "1.12",
+  "version": "1.13",
   "extensions": [
     ".unity3d"
   ],

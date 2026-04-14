@@ -1,7 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "Quake BSP Map",
-  "version": "1.12",
+  "version": "1.13",
   "extensions": [
     ".bsp"
   ],

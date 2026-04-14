@@ -1,19 +1,19 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "DSD Interchange File Format",
-  "version": "1.12",
+  "version": "2.1",
   "extensions": [
     ".dff"
   ],
-  "description": "Philips DSDIFF format for Direct Stream Digital audio interchange",
+  "description": "DSDIFF (DSD Interchange File Format) — the Philips-developed IFF-based container for Direct Stream Digital (DSD) audio, used in Super Audio CDs (SACD). The file begins with a 12-byte FRM8 header: 4-byte ASCII 'FRM8' chunk ID, an 8-byte big-endian chunk size (total file size minus 12), and 4-byte ASCII form type 'DSD '. Child chunks follow: FVER (4-byte format version, e.g., 0x01050000 = v1.5.0.0), PROP (properties container with SND chunk for sample rate, channel count, and bit order), and the audio data chunk (DSD for raw 1-bit DSD stream or DST for compressed DSD). DSD sample rate multiples: DSD64=2822400 Hz, DSD128=5644800 Hz, DSD256=11289600 Hz.",
   "category": "Audio",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "audio-viewer",
   "references": {
     "specifications": [
-      "DSDIFF 1.5 - Direct Stream Digital Interchange File Format",
-      "Philips DSD Specification",
-      "DSD Audio Format Standard"
+      "DSDIFF 1.5 Specification — Philips",
+      "Sony/Philips Super Audio CD Specification",
+      "DSD Audio Format Standard — dsd-guide.com"
     ],
     "WebLinks": [
       "https://www.sonicstudio.com/pdf/dsd/DSDIFF_1.5_Spec.pdf",
@@ -23,100 +23,207 @@
     ]
   },
   "detection": {
-    "signature": "46524D38",
-    "offset": 0,
+    "signatures": [
+      { "value": "46524D38", "offset": 0, "label": "FRM8 — DSDIFF IFF root chunk", "weight": 1.0 },
+      { "value": "44534420", "offset": 12, "label": "DSD  — DSDIFF form type identifier", "weight": 0.9 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 1.0,
     "required": true,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 3.0, "max": 7.5 },
     "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024
+      "minFileSize": 16,
+      "maxSignatureOffset": 0
     }
   },
-  "functions": {
-    "readUInt64BE": "Read 64-bit big-endian for IFF chunk sizes",
-    "readUInt32BE": "Read 32-bit values for sample rate and channel count",
-    "extractASCIIString": "Extract chunk identifiers (FRM8, DSD, FVER, PROP)",
-    "computeFromVariables(sampleRate * channels, samplesPerSecond)": "Calculate samples/second"
-  },
   "variables": {
-    "currentOffset": 0,
-    "formSize": 0,
-    "formType": "Unknown",
-    "formatVersion": 0,
-    "sampleRate": 2822400,
-    "channels": 2,
-    "channelType": "Unknown",
-    "dffHeader": 0,
-    "samplesPerSecond": 0
+    "frmChunk": "",
+    "chunkSize": 0,
+    "formType": "",
+    "fverVersion": 0
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "DFF Header",
+      "name": "FRM8 Chunk ID",
       "offset": 0,
       "length": 4,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "FRM8 - IFF container for DSD",
-      "storeAs": "dffHeader",
-      "valueType": "uint32"
+      "opacity": 0.45,
+      "description": "DSDIFF root chunk identifier 'FRM8' (0x46524D38). The 'FRM8' chunk is the outermost IFF container for all DSDIFF data. Unlike classic IFF which uses 32-bit chunk sizes, DSDIFF uses 64-bit big-endian sizes to support large high-resolution DSD files.",
+      "storeAs": "frmChunk",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "FRM8 Chunk Size",
+      "offset": 4,
+      "length": 8,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "Total size of the DSDIFF file content minus 12 bytes (the FRM8 header: 4B chunk ID + 8B size field itself), stored as a 64-bit big-endian unsigned integer. All bytes of all child chunks are included in this count. A 500 MB DFF file will have this value approximately 500×1048576 - 12.",
+      "storeAs": "chunkSize",
+      "valueType": "uint64",
+      "endianness": "big"
+    },
+    {
+      "type": "field",
+      "name": "Form Type (DSD )",
+      "offset": 12,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.35,
+      "description": "DSDIFF form type identifier 'DSD ' (0x44534420, note trailing space). This 4-byte ASCII code distinguishes DSDIFF from other IFF-based formats. The trailing space is significant and must be present. All DSDIFF child chunks begin at offset 16.",
+      "storeAs": "formType",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "FVER Version",
+      "offset": 28,
+      "length": 4,
+      "color": "#FFE66D",
+      "opacity": 0.35,
+      "description": "DSDIFF specification version stored as a 32-bit big-endian unsigned integer, at offset 28 (after 'FVER'(4) + size(8) + padding at offset 16). Encoded as 4 version bytes: major.minor.patch.build. Version 0x01050000 = 1.5.0.0 is the current DSDIFF 1.5 specification used by all modern DFF files.",
+      "storeAs": "fverVersion",
+      "valueType": "uint32",
+      "endianness": "big",
+      "valueMap": {
+        "16973824": "DSDIFF v1.5.0.0 (0x01050000) — current specification",
+        "16777216": "DSDIFF v1.0.0.0 (0x01000000) — original version"
+      }
     },
     {
       "type": "metadata",
-      "name": "Samples/Second",
-      "variable": "samplesPerSecond",
-      "description": "Total samples per second"
+      "name": "FRM8 Chunk ID",
+      "variable": "frmChunk",
+      "description": "'FRM8' — DSDIFF IFF root chunk identifier"
+    },
+    {
+      "type": "metadata",
+      "name": "Form Type",
+      "variable": "formType",
+      "description": "'DSD ' — DSDIFF form type (trailing space required)"
+    },
+    {
+      "type": "metadata",
+      "name": "Format Version",
+      "variable": "fverVersion",
+      "description": "DSDIFF spec version (0x01050000 = v1.5.0.0)"
     }
   ],
-  "software": [
-    "DSD audio players",
-    "Foobar2000",
-    "Audiophile software"
+  "assertions": [
+    {
+      "name": "FRM8 signature valid",
+      "expression": "frmChunk == 'FRM8'",
+      "severity": "error",
+      "message": "DSDIFF root chunk must be 'FRM8' at offset 0 — not a valid DSDIFF/DFF file"
+    },
+    {
+      "name": "Form type is DSD ",
+      "expression": "formType == 'DSD '",
+      "severity": "error",
+      "message": "DSDIFF form type at offset 12 must be 'DSD ' (with trailing space) — not a valid DSDIFF container"
+    }
   ],
-  "formatRelationships": {
-    "category": "Audio",
-    "extensions": [
-      ".dff"
+  "navigation": {
+    "bookmarks": [
+      {
+        "name": "FRM8 Root Chunk",
+        "offset": 0,
+        "icon": "\uE71B",
+        "color": "#FF6B6B"
+      },
+      {
+        "name": "DSDIFF Child Chunks",
+        "offset": 16,
+        "icon": "\uE767",
+        "color": "#4ECDC4"
+      }
     ]
   },
-  "MimeTypes": [
-    "audio/dff"
-  ],
-  "Software": [
-    "VLC",
-    "Audacity",
-    "Foobar2000",
-    "MediaMonkey",
-    "Winamp"
-  ],
-  "UseCases": [
-    "Music playback",
-    "Audio editing",
-    "Sound production",
-    "Streaming"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 26,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 2,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "formType",
+    "primaryField": "fverVersion",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "DSDIFF Identity",
+        "icon": "\uE71B",
+        "fields": ["frmChunk", "formType", "fverVersion", "chunkSize"]
+      }
+    ]
   },
-  "TechnicalDetails": {
-    "AudioFormat": true
-  },
+  "exportTemplates": [
+    {
+      "name": "DSDIFF Header (JSON)",
+      "format": "json",
+      "fields": ["frmChunk", "formType", "fverVersion", "chunkSize"]
+    }
+  ],
   "forensic": {
     "category": "audio",
     "riskLevel": "low",
-    "suspiciousPatterns": []
+    "suspiciousPatterns": [
+      {
+        "name": "Invalid DSDIFF form type",
+        "condition": "formType != 'DSD '",
+        "severity": "warning",
+        "description": "DSDIFF form type at offset 12 is not 'DSD '. May indicate a corrupted file or a non-DSDIFF IFF container that happens to use the FRM8 chunk ID."
+      }
+    ]
   },
   "aiHints": {
-    "analysisContext": "Philips DSDIFF format for Direct Stream Digital audio interchange",
+    "analysisContext": "DSDIFF layout (all BE): 'FRM8'(4) + chunkSize(8,BE uint64) + 'DSD '(4) + child chunks. Each chunk: chunkID(4,ASCII) + chunkSize(8,BE uint64) + data. Key child chunks: FVER (version=0x01050000), PROP (properties container — sub-chunks: FS=sample rate 4B BE: 2822400=DSD64/5644800=DSD128/11289600=DSD256, CHNL=channels 2B BE + 4B IDs each, CMPR=compression 4B: 'DSD '=uncompressed/'DST '=DST lossless, ABSS=absolute start time), DSD (raw 1-bit DSD bitstream, size = sampleCount*channels/8), DST (DST-compressed audio frames). DSD audio is 1-bit PDM at 64x CD sample rate. SACD uses DSD64. DST is losslessly compressed DSD.",
     "suggestedInspections": [
-      "Validate DSD Interchange File Format header: sample rate, channels, bit depth, codec ID",
-      "Check frame/block alignment and data chunk boundaries",
-      "Verify metadata tags (ID3, Vorbis comment) are well-formed"
+      "Verify 'FRM8' at offset 0 and 'DSD ' at offset 12",
+      "Read FVER version at offset 28: 0x01050000 = v1.5",
+      "Find PROP chunk (after FVER) and its SND  sub-container for audio properties",
+      "In PROP>SND : FS=sample rate (2822400=DSD64, 5644800=DSD128), CHNL=channel count",
+      "CMPR in PROP>SND : 'DSD '=raw uncompressed, 'DST '=DST lossless compression"
     ]
+  },
+  "software": [
+    "Korg AudioGate",
+    "foobar2000 (with SACD plugin)",
+    "Sonoma Wire Works DSD Master",
+    "JRiver Media Center",
+    "Roon",
+    "VLC (partial SACD support)"
+  ],
+  "formatRelationships": {
+    "category": "Audio",
+    "extensions": [".dff"],
+    "relatedFormats": ["DSF", "SACD ISO"],
+    "note": "DFF (Philips) and DSF (Sony) are the two main DSD container formats. DFF uses big-endian 64-bit IFF chunks; DSF uses little-endian sizes with a separate DSD data header. Both carry 1-bit DSD audio at multiples of 2.8224 MHz."
+  },
+  "MimeTypes": [
+    "audio/dff",
+    "audio/x-dff",
+    "audio/dsd"
+  ],
+  "UseCases": [
+    "Super Audio CD (SACD) audio archival and playback",
+    "High-resolution DSD music distribution (HDtracks, Acoustic Sounds)",
+    "Studio DSD recording and mastering",
+    "SACD ISO extraction workflow"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 72,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 7,
+    "ValidationRules": 2,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "AudioFormat": true,
+    "ContainerFormat": "IFF (Interchange File Format) variant with 64-bit chunk sizes",
+    "Endianness": "big-endian (all DSDIFF chunk sizes and numeric fields)",
+    "DSDEncoding": "1-bit pulse-density modulation (PDM)",
+    "SampleRates": "DSD64=2822400 Hz, DSD128=5644800 Hz, DSD256=11289600 Hz",
+    "CompressionOption": "DST lossless compression or raw DSD bitstream"
   }
 }

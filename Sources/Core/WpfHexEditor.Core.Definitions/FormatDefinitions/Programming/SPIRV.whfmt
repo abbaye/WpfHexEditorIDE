@@ -1,7 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "SPIR-V Binary",
-  "version": "1.11",
+  "version": "1.12",
   "extensions": [
     ".spv",
     ".spirv"

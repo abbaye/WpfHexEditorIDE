@@ -1,7 +1,7 @@
 ﻿{
   "diffMode": "text",
   "formatName": "Perl Script",
-  "version": "2.1",
+  "version": "2.2",
   "extensions": [
     ".pl",
     ".pm",

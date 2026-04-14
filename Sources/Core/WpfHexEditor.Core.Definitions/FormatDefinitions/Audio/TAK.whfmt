@@ -1,7 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "Tom's Audio Kompressor",
-  "version": "1.13",
+  "version": "1.14",
   "extensions": [
     ".tak"
   ],

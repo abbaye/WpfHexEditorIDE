@@ -1,7 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "DTS Audio",
-  "version": "1.12",
+  "version": "1.13",
   "extensions": [
     ".dts",
     ".dtshd"

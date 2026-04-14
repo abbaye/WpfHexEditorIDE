@@ -1,7 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "MINC Medical Image",
-  "version": "1.13",
+  "version": "1.14",
   "extensions": [
     ".mnc",
     ".minc"

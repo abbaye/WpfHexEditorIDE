@@ -1,7 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "ICO Windows Icon",
-  "version": "2.0",
+  "version": "2.1",
   "extensions": [
     ".ico",
     ".cur"

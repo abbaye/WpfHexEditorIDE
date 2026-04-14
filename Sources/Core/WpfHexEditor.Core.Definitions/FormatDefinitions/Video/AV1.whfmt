@@ -1,7 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "AV1 Video",
-  "version": "1.13",
+  "version": "1.14",
   "extensions": [
     ".av1",
     ".ivf"
