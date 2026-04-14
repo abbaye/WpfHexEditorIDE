@@ -428,7 +428,19 @@ namespace WpfHexEditor.Core.FormatDetection
                                 condition.Operator = reader.GetString();
                                 break;
                             case "value":
-                                condition.Value = reader.GetString();
+                                if (reader.TokenType == JsonTokenType.Number)
+                                {
+                                    if (reader.TryGetInt64(out long lv))
+                                        condition.Value = lv.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                                    else if (reader.TryGetDouble(out double dv))
+                                        condition.Value = dv.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                                    else
+                                        condition.Value = reader.GetDecimal().ToString(System.Globalization.CultureInfo.InvariantCulture);
+                                }
+                                else
+                                {
+                                    condition.Value = reader.GetString();
+                                }
                                 break;
                             case "length":
                                 condition.Length = reader.GetInt32();
