@@ -13,6 +13,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="20"/>
         </Grid.RowDefinitions>
 
         <!-- Toolbar -->
@@ -46,5 +47,13 @@
                    Margin="4,2" FontSize="11"
                    Foreground="{DynamicResource TE_LineNumberForeground}"
                    Text="Open a .chr/.til/.gfx file to view tile graphics"/>
+
+        <!-- Palette strip -->
+        <Border Grid.Row="3"
+                Background="{DynamicResource TE_LineNumberBackground}"
+                BorderThickness="0,1,0,0"
+                BorderBrush="{DynamicResource Panel_ToolbarBorderBrush}">
+            <UniformGrid x:Name="PaletteStrip" Rows="1" Columns="16" Height="18"/>
+        </Border>
     </Grid>
 </UserControl>

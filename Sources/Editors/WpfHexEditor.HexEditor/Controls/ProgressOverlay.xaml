@@ -18,74 +18,72 @@
         <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
     </UserControl.Resources>
 
-    <!-- Semi-transparent background overlay -->
-    <Border Background="#CC000000">
-        <Border Background="White"
-                CornerRadius="8"
+    <!-- Semi-transparent backdrop -->
+    <Border Background="#AA000000">
+        <Border Background="{DynamicResource ProgressOverlay_DialogBackground}"
+                CornerRadius="6"
                 Padding="24"
                 MaxWidth="450"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
-                BorderBrush="#CCCCCC"
+                BorderBrush="{DynamicResource ProgressOverlay_DialogBorder}"
                 BorderThickness="1">
             <Border.Effect>
-                <DropShadowEffect Color="Black"
-                                  BlurRadius="15"
-                                  ShadowDepth="3"
-                                  Opacity="0.3"/>
+                <DropShadowEffect Color="Black" BlurRadius="20" ShadowDepth="4" Opacity="0.4"/>
             </Border.Effect>
 
             <StackPanel>
                 <!-- Operation Title -->
                 <TextBlock Text="{Binding OperationTitle}"
                            FontWeight="Bold"
-                           FontSize="18"
-                           Foreground="#333333"
+                           FontSize="16"
+                           Foreground="{DynamicResource ProgressOverlay_TitleForeground}"
                            TextWrapping="Wrap"
-                           Margin="0,0,0,16"/>
+                           Margin="0,0,0,12"/>
 
                 <!-- Status Message -->
                 <TextBlock Text="{Binding StatusMessage}"
-                           FontSize="14"
-                           Foreground="#666666"
+                           FontSize="13"
+                           Foreground="{DynamicResource ProgressOverlay_TextForeground}"
                            TextWrapping="Wrap"
-                           Margin="0,0,0,16"
-                           MinHeight="20"/>
+                           Margin="0,0,0,14"
+                           MinHeight="18"/>
 
                 <!-- Progress Bar -->
-                <pb:LinearProgressBar Progress="{Binding ProgressPercentage, Converter={x:Static pbc:ValueToProgressConverter.Instance}, ConverterParameter=100}"
-                                      BarHeight="24"
-                                      Height="24"
-                                      Margin="0,0,0,8"
-                                      IsIndeterminate="{Binding IsIndeterminate}"
-                                      ShowPercentage="True"/>
+                <pb:LinearProgressBar
+                    Progress="{Binding ProgressPercentage,
+                               Converter={x:Static pbc:ValueToProgressConverter.Instance},
+                               ConverterParameter=100}"
+                    BarHeight="20"
+                    Height="20"
+                    Margin="0,0,0,8"
+                    IsIndeterminate="{Binding IsIndeterminate}"
+                    ShowPercentage="True"/>
 
                 <!-- Progress Text -->
                 <TextBlock Text="{Binding ProgressText}"
-                           FontSize="13"
-                           Foreground="#666666"
+                           FontSize="12"
+                           Foreground="{DynamicResource ProgressOverlay_TextForeground}"
                            HorizontalAlignment="Center"
-                           Margin="0,0,0,16"/>
+                           Margin="0,0,0,14"/>
 
                 <!-- Cancel Button -->
                 <Button Content="{DynamicResource ProgressButtonCancel}"
                         Command="{Binding CancelCommand}"
                         Visibility="{Binding CanCancel, Converter={StaticResource BoolToVisibilityConverter}}"
-                        Padding="20,8"
+                        Padding="20,6"
                         MinWidth="100"
                         HorizontalAlignment="Center"
-                        Background="White"
-                        BorderBrush="#CCCCCC"
+                        Background="{DynamicResource ProgressOverlay_ButtonBackground}"
+                        BorderBrush="{DynamicResource ProgressOverlay_ButtonBorder}"
+                        Foreground="{DynamicResource ProgressOverlay_TitleForeground}"
                         BorderThickness="1">
                     <Button.Style>
                         <Style TargetType="Button">
                             <Setter Property="Cursor" Value="Hand"/>
                             <Style.Triggers>
                                 <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter Property="Background" Value="#F0F0F0"/>
-                                </Trigger>
-                                <Trigger Property="IsPressed" Value="True">
-                                    <Setter Property="Background" Value="#E0E0E0"/>
+                                    <Setter Property="Background" Value="{DynamicResource ProgressOverlay_ButtonHover}"/>
                                 </Trigger>
                             </Style.Triggers>
                         </Style>

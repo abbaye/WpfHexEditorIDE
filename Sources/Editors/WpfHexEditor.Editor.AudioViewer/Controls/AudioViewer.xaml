@@ -14,6 +14,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="22"/>
         </Grid.RowDefinitions>
 
@@ -63,8 +64,80 @@
                                       OffsetRequested="OnWaveOffsetRequested"/>
         </Border>
 
+        <!-- Transport bar (Row 2) — hidden when format does not support playback -->
+        <Border x:Name="TransportBar"
+                Grid.Row="2"
+                Visibility="Collapsed"
+                Background="{DynamicResource TE_LineNumberBackground}"
+                BorderThickness="0,1,0,0"
+                BorderBrush="{DynamicResource Panel_ToolbarBorderBrush}"
+                Height="30">
+            <DockPanel Margin="6,0" LastChildFill="True">
+
+                <!-- Play/Pause toggle -->
+                <Button x:Name="PlayPauseBtn"
+                        DockPanel.Dock="Left"
+                        Width="26" Height="22"
+                        Margin="0,0,2,0"
+                        ToolTip="Play / Pause (Space)"
+                        Style="{DynamicResource PanelIconButtonStyle}"
+                        Click="OnPlayPauseClicked">
+                    <TextBlock x:Name="PlayPauseGlyph"
+                               Text="&#xE768;"
+                               FontFamily="Segoe MDL2 Assets"
+                               FontSize="12"
+                               Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
+                </Button>
+
+                <!-- Stop -->
+                <Button x:Name="StopBtn"
+                        DockPanel.Dock="Left"
+                        Width="26" Height="22"
+                        Margin="0,0,6,0"
+                        ToolTip="Stop"
+                        Style="{DynamicResource PanelIconButtonStyle}"
+                        Click="OnStopClicked">
+                    <TextBlock Text="&#xE71A;"
+                               FontFamily="Segoe MDL2 Assets"
+                               FontSize="12"
+                               Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
+                </Button>
+
+                <!-- Current position label -->
+                <TextBlock x:Name="PositionLabel"
+                           DockPanel.Dock="Left"
+                           Text="0:00"
+                           FontSize="11"
+                           VerticalAlignment="Center"
+                           MinWidth="34"
+                           Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
+                           Margin="0,0,4,0"/>
+
+                <!-- Duration label -->
+                <TextBlock x:Name="DurationLabel"
+                           DockPanel.Dock="Right"
+                           Text="0:00"
+                           FontSize="11"
+                           VerticalAlignment="Center"
+                           MinWidth="34"
+                           TextAlignment="Right"
+                           Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
+                           Margin="4,0,0,0"/>
+
+                <!-- Seek slider (fills remaining space) -->
+                <Slider x:Name="SeekSlider"
+                        VerticalAlignment="Center"
+                        Minimum="0" Maximum="1"
+                        SmallChange="0.01"
+                        LargeChange="0.05"
+                        IsMoveToPointEnabled="True"
+                        Thumb.DragStarted="OnSeekDragStarted"
+                        Thumb.DragCompleted="OnSeekDragCompleted"/>
+            </DockPanel>
+        </Border>
+
         <!-- Status bar -->
-        <Border Grid.Row="2"
+        <Border Grid.Row="3"
                 Background="{DynamicResource TE_LineNumberBackground}"
                 BorderThickness="0,1,0,0"
                 BorderBrush="{DynamicResource Panel_ToolbarForegroundBrush}">

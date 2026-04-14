@@ -17,7 +17,9 @@ using System.IO;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Threading;
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.SDK.UI;
@@ -34,6 +36,15 @@ public sealed partial class AudioViewer : UserControl, IDocumentEditor, IOpenabl
     private CancellationTokenSource? _cts;
     private ToolbarOverflowManager _overflowManager = null!;
     private AudioHeader _header;
+
+    // ── Playback ──────────────────────────────────────────────────────────────
+    private MediaPlayer?      _player;
+    private DispatcherTimer?  _positionTimer;
+    private bool              _isSeeking;
+    private bool              _isPlaying;
+
+    private static readonly HashSet<string> _playbackFormats =
+        new(StringComparer.OrdinalIgnoreCase) { "WAV", "MP3" };
 
     public AudioViewer()
     {
@@ -118,6 +129,7 @@ public sealed partial class AudioViewer : UserControl, IDocumentEditor, IOpenabl
     public void Close()
     {
         _cts?.Cancel();
+        CleanupPlayer();
         _filePath = string.Empty;
         WaveCanvas.SetPeaks(null);
         FormatInfoLabel.Text = "Audio";
@@ -150,6 +162,7 @@ public sealed partial class AudioViewer : UserControl, IDocumentEditor, IOpenabl
                 FormatInfoLabel.Text = BuildFormatLabel(_header);
                 StatusText.Text      = BuildStatusLabel(_header, filePath);
                 SetBusy(false);
+                InitPlayer(filePath, _header);
             });
 
             StatusMessage?.Invoke(this, $"{_header.FormatName}  ·  {_header.ChannelCount}ch  ·  {_header.SampleRate} Hz");
@@ -526,6 +539,109 @@ public sealed partial class AudioViewer : UserControl, IDocumentEditor, IOpenabl
         IsBusy = busy;
         BusyOverlay.Visibility = busy ? Visibility.Visible : Visibility.Collapsed;
     }
+
+    // -- Playback ---------------------------------------------------------
+
+    private void InitPlayer(string filePath, AudioHeader header)
+    {
+        CleanupPlayer();
+
+        if (!_playbackFormats.Contains(header.FormatName))
+        {
+            TransportBar.Visibility = Visibility.Collapsed;
+            return;
+        }
+
+        _player = new MediaPlayer();
+        _player.MediaOpened += (s, e) =>
+        {
+            var dur = _player.NaturalDuration;
+            if (dur.HasTimeSpan)
+            {
+                SeekSlider.Maximum  = dur.TimeSpan.TotalSeconds;
+                DurationLabel.Text  = FormatTime(dur.TimeSpan);
+            }
+            TransportBar.Visibility = Visibility.Visible;
+        };
+        _player.MediaEnded += (s, e) => StopPlayback();
+        _player.MediaFailed += (s, e) =>
+        {
+            TransportBar.Visibility = Visibility.Collapsed;
+            StatusText.Text = $"Playback unavailable: {e.ErrorException?.Message}";
+        };
+        _player.Open(new Uri(filePath, UriKind.Absolute));
+
+        _positionTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(100) };
+        _positionTimer.Tick += (s, e) =>
+        {
+            if (_isSeeking || _player is null || !_isPlaying) return;
+            var pos = _player.Position.TotalSeconds;
+            SeekSlider.Value    = pos;
+            PositionLabel.Text  = FormatTime(_player.Position);
+            double max          = SeekSlider.Maximum;
+            WaveCanvas.PlayheadFraction = max > 0 ? pos / max : 0;
+        };
+    }
+
+    private void CleanupPlayer()
+    {
+        _positionTimer?.Stop();
+        _positionTimer = null;
+        _player?.Stop();
+        _player?.Close();
+        _player    = null;
+        _isPlaying = false;
+        _isSeeking = false;
+    }
+
+    private void StopPlayback()
+    {
+        _player?.Stop();
+        _isPlaying              = false;
+        PlayPauseGlyph.Text     = "\uE768"; // ▶
+        WaveCanvas.PlayheadFraction = 0;
+        SeekSlider.Value        = 0;
+        PositionLabel.Text      = "0:00";
+        _positionTimer?.Stop();
+    }
+
+    private void OnPlayPauseClicked(object sender, RoutedEventArgs e)
+    {
+        if (_player is null) return;
+        if (_isPlaying)
+        {
+            _player.Pause();
+            _isPlaying          = false;
+            PlayPauseGlyph.Text = "\uE768"; // ▶
+            _positionTimer?.Stop();
+        }
+        else
+        {
+            _player.Play();
+            _isPlaying          = true;
+            PlayPauseGlyph.Text = "\uE769"; // ⏸
+            _positionTimer?.Start();
+        }
+    }
+
+    private void OnStopClicked(object sender, RoutedEventArgs e)
+        => StopPlayback();
+
+    private void OnSeekDragStarted(object sender, DragStartedEventArgs e)
+        => _isSeeking = true;
+
+    private void OnSeekDragCompleted(object sender, DragCompletedEventArgs e)
+    {
+        _isSeeking = false;
+        if (_player is null) return;
+        _player.Position = TimeSpan.FromSeconds(SeekSlider.Value);
+        if (_isPlaying) _player.Play();
+    }
+
+    private static string FormatTime(TimeSpan t)
+        => t.TotalHours >= 1
+            ? $"{(int)t.TotalHours}:{t.Minutes:D2}:{t.Seconds:D2}"
+            : $"{t.Minutes}:{t.Seconds:D2}";
 
     // -- Event Handlers ---------------------------------------------------
 

@@ -956,4 +956,24 @@
     <SolidColorBrush x:Key="GC_BlameHashForeground"        Color="#CE9178"/>
     <SolidColorBrush x:Key="GC_BranchPickerHoverBackground" Color="#2A2D2E"/>
     <SolidColorBrush x:Key="GC_SectionHeaderForeground"    Color="#888888"/>
-    <SolidColorBrush x:Key="GC_StashForeground"            Color="#B0B0B0"/></ResourceDictionary>
+    <SolidColorBrush x:Key="GC_StashForeground"            Color="#B0B0B0"/>
+
+    <!-- DiffViewer semantic badge colors -->
+    <SolidColorBrush x:Key="DiffViewer_ModifiedBrush"          Color="#CC4444"/>
+    <SolidColorBrush x:Key="DiffViewer_AddedBrush"             Color="#44AA44"/>
+    <SolidColorBrush x:Key="DiffViewer_DeletedBrush"           Color="#CC8800"/>
+    <SolidColorBrush x:Key="DiffViewer_BadgeForeground"        Color="#FFFFFF"/>
+
+    <!-- ProgressOverlay modal dialog -->
+    <SolidColorBrush x:Key="ProgressOverlay_DialogBackground"  Color="#2D2D30"/>
+    <SolidColorBrush x:Key="ProgressOverlay_DialogBorder"      Color="#3F3F46"/>
+    <SolidColorBrush x:Key="ProgressOverlay_TitleForeground"   Color="#F1F1F1"/>
+    <SolidColorBrush x:Key="ProgressOverlay_TextForeground"    Color="#AAAAAA"/>
+    <SolidColorBrush x:Key="ProgressOverlay_ButtonBackground"  Color="#3F3F46"/>
+    <SolidColorBrush x:Key="ProgressOverlay_ButtonBorder"      Color="#555555"/>
+    <SolidColorBrush x:Key="ProgressOverlay_ButtonHover"       Color="#505050"/>
+
+    <!-- ImageViewer crop handles -->
+    <SolidColorBrush x:Key="ImageViewer_CropHandleFill"        Color="#E0E0E0"/>
+    <SolidColorBrush x:Key="ImageViewer_CropHandleStroke"      Color="#555555"/>
+</ResourceDictionary>

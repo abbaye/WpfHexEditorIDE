@@ -200,42 +200,42 @@ Architecture Notes:
                     </Rectangle>
 
                     <!-- 8 crop resize handles (corners + edge midpoints) -->
-                    <Rectangle x:Name="CropHandleTL" Width="9" Height="9" Fill="White" Stroke="#333333" StrokeThickness="1"
+                    <Rectangle x:Name="CropHandleTL" Width="9" Height="9" Fill="{DynamicResource ImageViewer_CropHandleFill}" Stroke="{DynamicResource ImageViewer_CropHandleStroke}" StrokeThickness="1"
                                Cursor="SizeNWSE" Visibility="Collapsed" Panel.ZIndex="10"
                                MouseLeftButtonDown="CropHandle_MouseLeftButtonDown"
                                MouseMove="CropHandle_MouseMove"
                                MouseLeftButtonUp="CropHandle_MouseLeftButtonUp"/>
-                    <Rectangle x:Name="CropHandleTC" Width="9" Height="9" Fill="White" Stroke="#333333" StrokeThickness="1"
+                    <Rectangle x:Name="CropHandleTC" Width="9" Height="9" Fill="{DynamicResource ImageViewer_CropHandleFill}" Stroke="{DynamicResource ImageViewer_CropHandleStroke}" StrokeThickness="1"
                                Cursor="SizeNS" Visibility="Collapsed" Panel.ZIndex="10"
                                MouseLeftButtonDown="CropHandle_MouseLeftButtonDown"
                                MouseMove="CropHandle_MouseMove"
                                MouseLeftButtonUp="CropHandle_MouseLeftButtonUp"/>
-                    <Rectangle x:Name="CropHandleTR" Width="9" Height="9" Fill="White" Stroke="#333333" StrokeThickness="1"
+                    <Rectangle x:Name="CropHandleTR" Width="9" Height="9" Fill="{DynamicResource ImageViewer_CropHandleFill}" Stroke="{DynamicResource ImageViewer_CropHandleStroke}" StrokeThickness="1"
                                Cursor="SizeNESW" Visibility="Collapsed" Panel.ZIndex="10"
                                MouseLeftButtonDown="CropHandle_MouseLeftButtonDown"
                                MouseMove="CropHandle_MouseMove"
                                MouseLeftButtonUp="CropHandle_MouseLeftButtonUp"/>
-                    <Rectangle x:Name="CropHandleML" Width="9" Height="9" Fill="White" Stroke="#333333" StrokeThickness="1"
+                    <Rectangle x:Name="CropHandleML" Width="9" Height="9" Fill="{DynamicResource ImageViewer_CropHandleFill}" Stroke="{DynamicResource ImageViewer_CropHandleStroke}" StrokeThickness="1"
                                Cursor="SizeWE" Visibility="Collapsed" Panel.ZIndex="10"
                                MouseLeftButtonDown="CropHandle_MouseLeftButtonDown"
                                MouseMove="CropHandle_MouseMove"
                                MouseLeftButtonUp="CropHandle_MouseLeftButtonUp"/>
-                    <Rectangle x:Name="CropHandleMR" Width="9" Height="9" Fill="White" Stroke="#333333" StrokeThickness="1"
+                    <Rectangle x:Name="CropHandleMR" Width="9" Height="9" Fill="{DynamicResource ImageViewer_CropHandleFill}" Stroke="{DynamicResource ImageViewer_CropHandleStroke}" StrokeThickness="1"
                                Cursor="SizeWE" Visibility="Collapsed" Panel.ZIndex="10"
                                MouseLeftButtonDown="CropHandle_MouseLeftButtonDown"
                                MouseMove="CropHandle_MouseMove"
                                MouseLeftButtonUp="CropHandle_MouseLeftButtonUp"/>
-                    <Rectangle x:Name="CropHandleBL" Width="9" Height="9" Fill="White" Stroke="#333333" StrokeThickness="1"
+                    <Rectangle x:Name="CropHandleBL" Width="9" Height="9" Fill="{DynamicResource ImageViewer_CropHandleFill}" Stroke="{DynamicResource ImageViewer_CropHandleStroke}" StrokeThickness="1"
                                Cursor="SizeNESW" Visibility="Collapsed" Panel.ZIndex="10"
                                MouseLeftButtonDown="CropHandle_MouseLeftButtonDown"
                                MouseMove="CropHandle_MouseMove"
                                MouseLeftButtonUp="CropHandle_MouseLeftButtonUp"/>
-                    <Rectangle x:Name="CropHandleBC" Width="9" Height="9" Fill="White" Stroke="#333333" StrokeThickness="1"
+                    <Rectangle x:Name="CropHandleBC" Width="9" Height="9" Fill="{DynamicResource ImageViewer_CropHandleFill}" Stroke="{DynamicResource ImageViewer_CropHandleStroke}" StrokeThickness="1"
                                Cursor="SizeNS" Visibility="Collapsed" Panel.ZIndex="10"
                                MouseLeftButtonDown="CropHandle_MouseLeftButtonDown"
                                MouseMove="CropHandle_MouseMove"
                                MouseLeftButtonUp="CropHandle_MouseLeftButtonUp"/>
-                    <Rectangle x:Name="CropHandleBR" Width="9" Height="9" Fill="White" Stroke="#333333" StrokeThickness="1"
+                    <Rectangle x:Name="CropHandleBR" Width="9" Height="9" Fill="{DynamicResource ImageViewer_CropHandleFill}" Stroke="{DynamicResource ImageViewer_CropHandleStroke}" StrokeThickness="1"
                                Cursor="SizeNWSE" Visibility="Collapsed" Panel.ZIndex="10"
                                MouseLeftButtonDown="CropHandle_MouseLeftButtonDown"
                                MouseMove="CropHandle_MouseMove"

@@ -56,8 +56,10 @@ public sealed class WaveformDrawingCanvas : FrameworkElement
     private static readonly Brush  _brushCenter;
     private static readonly Brush  _brushHover;
     private static readonly Brush  _brushSeparator;
+    private static readonly Brush  _brushPlayhead;
     private static readonly Pen    _penCenter;
     private static readonly Pen    _penSeparator;
+    private static readonly Pen    _penPlayhead;
 
     static WaveformDrawingCanvas()
     {
@@ -79,14 +81,32 @@ public sealed class WaveformDrawingCanvas : FrameworkElement
         _brushCenter   = FB(128, 128, 128, 80);       // gray  — center line
         _brushHover    = FB(255, 255, 255, 22);       // white tint — hover column
         _brushSeparator = FB(128, 128, 128, 40);      // gray  — L/R divider
+        _brushPlayhead = FB(255, 255, 255, 200);      // bright white — playhead line
         _penCenter     = FP(_brushCenter, 1);
         _penSeparator  = FP(_brushSeparator, 1);
+        _penPlayhead   = FP(_brushPlayhead, 1.5);
     }
 
     // ── State ─────────────────────────────────────────────────────────────────
 
     private WaveformPeaks? _peaks;
-    private int            _hoverCol = -1;
+    private int            _hoverCol     = -1;
+    private double         _playheadFrac = -1;  // -1 = hidden
+
+    /// <summary>
+    /// Fraction (0.0–1.0) of the playback position across the waveform.
+    /// Set to -1 to hide. Setting any value triggers a redraw.
+    /// </summary>
+    public double PlayheadFraction
+    {
+        get => _playheadFrac;
+        set
+        {
+            if (Math.Abs(_playheadFrac - value) < 0.0001) return;
+            _playheadFrac = value;
+            InvalidateVisual();
+        }
+    }
 
     // ── Events ────────────────────────────────────────────────────────────────
 
@@ -101,8 +121,9 @@ public sealed class WaveformDrawingCanvas : FrameworkElement
     /// <summary>Sets peak data and triggers a full redraw.</summary>
     public void SetPeaks(WaveformPeaks? peaks)
     {
-        _peaks    = peaks;
-        _hoverCol = -1;
+        _peaks        = peaks;
+        _hoverCol     = -1;
+        _playheadFrac = -1;
         InvalidateVisual();
     }
 
@@ -157,6 +178,13 @@ public sealed class WaveformDrawingCanvas : FrameworkElement
         {
             double hx = _hoverCol * scaleX;
             dc.DrawRectangle(_brushHover, null, new Rect(hx, 0, Math.Max(scaleX, 1), h));
+        }
+
+        // ── Playhead line ──────────────────────────────────────────────────────
+        if (_playheadFrac >= 0 && _playheadFrac <= 1)
+        {
+            double px = _playheadFrac * w;
+            dc.DrawLine(_penPlayhead, new Point(px, 0), new Point(px, h));
         }
     }
 

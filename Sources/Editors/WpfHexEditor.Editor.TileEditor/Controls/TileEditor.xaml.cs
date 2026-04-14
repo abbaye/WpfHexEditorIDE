@@ -206,10 +206,24 @@ public sealed partial class TileEditor : UserControl, IDocumentEditor, IOpenable
         // Grayscale palette (2bpp = 4 shades, 4bpp = 16, 8bpp = 256)
         int colors = 1 << _bpp;
         var palette = new System.Windows.Media.Color[colors];
+        int swatchColors = Math.Min(colors, 16);
         for (int i = 0; i < colors; i++)
         {
             byte v = (byte)(255 - (i * 255 / Math.Max(1, colors - 1)));
             palette[i] = System.Windows.Media.Color.FromRgb(v, v, v);
+        }
+
+        // Update palette strip (up to 16 swatches)
+        PaletteStrip.Children.Clear();
+        PaletteStrip.Columns = swatchColors;
+        for (int i = 0; i < swatchColors; i++)
+        {
+            var swatch = new System.Windows.Shapes.Rectangle
+            {
+                Fill = new System.Windows.Media.SolidColorBrush(palette[i]),
+                ToolTip = $"Color {i}: #{palette[i].R:X2}{palette[i].G:X2}{palette[i].B:X2}"
+            };
+            PaletteStrip.Children.Add(swatch);
         }
 
         for (int t = 0; t < tileCount && t < 4096; t++) // cap at 4096 tiles
