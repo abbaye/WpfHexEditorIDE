@@ -6,6 +6,43 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versioning: 
 
 ---
 
+## [0.6.4.10] — 2026-04-13 — Column Highlight Defaults + Shared Undo Engine
+
+### 🔧 Changed
+
+- **Column highlight defaults** — `ShowColumnHighlight` and `ShowAsciiColumnHighlight` in `HexEditorDefaultSettings` now default to `false` to reduce visual noise out-of-the-box
+
+### ✨ Added
+
+- **HexEditor ↔ CodeEditor shared undo engine** — unified `UndoEngine` across all editors (`IUndoAwareEditor` contract, `HexByteUndoEntry`, `DocumentBuffer` undo wiring via `ByteProvider`); `Ctrl+Z/Y` history is now shared across editor types (ADR-UNDO-01 continuation, feat #107)
+
+---
+
+## [0.6.4.9] — 2026-04-13 — BCB Fixes, ByteProvider NuGet, UI Polish & CI
+
+### ✨ Added
+
+- **ByteProvider extraction** — `ByteProvider` promoted to a standalone `WpfHexEditor.Core.ByteProvider` library and published as a standalone NuGet package; `IUndoAwareEditor` interface + `HexByteUndoEntry` added; `DocumentBuffer` undo wiring; ByteProvider regression test suite added
+- **GoToPosition dialog** — new dialog for jumping directly to a byte offset in the hex view
+- **NuGet CI pipeline** — generic publish workflow covering all 23 packages; `WpfTerminal` made standalone (bundles Core, Core.Events, SDK + satellite assemblies)
+- **LSP semantic highlighting** — semantic token colorization wired in Code Editor
+
+### 🔧 Changed
+
+- **Context menu polish** — drop shadow + accent band on all context menus; MDL2 icons; Light theme ContextMenu aligned with Dark theme style
+- **MarkdownEditor WebView2 refactor** — HWND resize fix for fullscreen, context menu wiring, find bar wiring; WebView2 `WindowsFormsHost` sizing corrected
+
+### 🐛 Fixed
+
+- **BCB freeze (Render-priority navigation guard)** — BreadcrumbBar (`BCB`) was freezing on rapid navigation; fix: Render-priority dispatcher guard prevents mouse re-dispatch loop during visual tree rebuild
+- **BCB visual tree lock** — locked BCB visual tree during navigation to prevent a secondary mouse re-dispatch loop causing a freeze
+- **BCB infinite rebuild loop** — resolved double-rebuild per click and phantom empty row caused by XAML/code-behind duplication
+- **Bookmark chip re-render** — stopped re-rendering bookmark chips on every navigation tick; only rebuilds on actual bookmark set changes
+- **Bookmark chip MouseDown re-dispatch** — prevented `MouseDown` event re-dispatch loop from bookmark chips
+- **HexEditor drag-selection auto-scroll** — window-level mouse capture now used for both HexEditor and TextEditor; scroll continues while the cursor is outside the control boundary
+
+---
+
 ## [0.6.4.8] — 2026-04-08 — Window Menu, Win32 Fullscreen, Docking Overlay Polish
 
 ### ✨ Added

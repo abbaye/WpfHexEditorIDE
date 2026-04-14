@@ -6,7 +6,7 @@
 
 [![.NET](https://img.shields.io/badge/.NET-8.0--windows-512BD4?logo=dotnet)](https://dotnet.microsoft.com/)
   [![Platform](https://img.shields.io/badge/Platform-Windows%20WPF-0078D4?logo=windows)](https://github.com/abbaye/WpfHexEditorIDE)
-  [![IDE Version](https://img.shields.io/badge/IDE-v0.6.4.8-6A0DAD?logo=visualstudiocode&logoColor=white)](https://github.com/abbaye/WpfHexEditorIDE/releases)
+  [![IDE Version](https://img.shields.io/badge/IDE-v0.6.4.10-6A0DAD?logo=visualstudiocode&logoColor=white)](https://github.com/abbaye/WpfHexEditorIDE/releases)
   [![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
   [![Status](https://img.shields.io/badge/Status-Active%20Development-orange)](https://github.com/abbaye/WpfHexEditorIDE/commits/master)
   [![Roadmap](https://img.shields.io/badge/Roadmap-ROADMAP.md-brightgreen)](docs/ROADMAP.md)
@@ -16,7 +16,7 @@
 
   > 🚧 **Active Development** — New features, editors and panels are added regularly. Contributions welcome!
   >
-  > 📅 *Last revised: 2026-04-08*
+  > 📅 *Last revised: 2026-04-13*
 
   <br/>
 
@@ -239,21 +239,20 @@ Open `WpfHexEditorControl.sln`, set **WpfHexEditor.App** as startup project, pre
 
 | Feature | Status | # |
 |---------|--------|---|
-| **Code Editor Phase 2** — remaining: peek definition (`Alt+F12`), gutter change markers, code minimap, expand/collapse all folds | 🔧 ~93% | #158–168 |
+| **Code Editor** — ~99% complete: all major features shipped; remaining: inline value hints (debug variable overlay) | 🔧 ~99% | #84 |
+| **LSP Engine / SmartComplete** — remaining: inline value hints | 🔧 ~96% | #85–86 |
+| **MSBuild & VS Solution** — remaining: VB.NET item group editing, nested solution folders | 🔧 ~97% | #101–103 |
+| **Assembly Explorer + Decompilation** — remaining: plugin panel improvements, PDB source-link matching | 🔧 ~92% | #104–106 |
+| **Document Model** — HexEditor ↔ CodeEditor shared undo engine ✅; remaining: multi-editor collaboration | 🔧 ~70% | #107 |
+| **Plugin Sandbox** — remaining: gRPC migration, hot-reload from sandbox | 🔧 ~75% | #81 |
 | **.NET Debugger** — UI complete (menus, toolbar, breakpoints, explorer), remaining: runtime attach and debug launch | 🔧 ~60% | #44, #90 |
-| **Assembly Explorer Phase 2** — full ILSpy backend, ECMA-335 token→offset, hex sync, PDB source-link | 🔧 ~75% | #104–106, #186 |
-| **Integrated Terminal Phase 2** — ANSI/Xterm emulation, split panes, SSH/WSL, macro recording | 🔧 ~70% | #92, #180 |
-| **Document Model Phase 2** — multi-editor collaboration, cross-editor undo/redo unification | 🔧 ~70% | #107 |
-| **LSP Phase 3 + Roslyn** — Roslyn in-process ✅ done, remaining: F# parser, cross-language symbol resolution | 🔧 ~60% | #190–193 |
-| **Code Intelligence** — AI Assistant ✅ done, SmartComplete ✅ done, remaining: inline ghost-text completions, AI refactoring | 🔧 ~70% | #86–89 |
-| **In-IDE Plugin Development** — hot-reload ✅ done, remaining: integrated scaffolding, debug-in-IDE, packaging UI | 🔧 ~40% | #138 |
 
 **Planned:**
 
 | Feature | Status | # |
 |---------|--------|---|
 | **Editors Phase 2** — TextEditor LSP, DiffViewer 3-way merge, AudioViewer playback, TileEditor pixel tools | 🔜 Planned | #169–178 |
-| **Git Integration** — commit/push/pull/branch, inline gutter diff, blame | 🔜 Planned | #91 |
+| **Git Integration** — ✅ Done v0.6.4.7 — full VS-style Git client, blame gutter, stash, history | ✅ Done | #91 |
 | **Plugin Marketplace & Auto-Update** — online registry, signed packages, auto-update | 🔜 Planned | #41–43 |
 | **IDE Localization Engine** — full i18n for IDE UI (EN/FR initial, plugin-provided translations) | 🔜 Planned | #100 |
 | **Installable Package** — MSI / MSIX / WinGet, auto-update channel, no SDK required | 🔜 Planned | #109 |
@@ -264,6 +263,23 @@ Open `WpfHexEditorControl.sln`, set **WpfHexEditor.App** as startup project, pre
 
 | Feature | Version |
 |---------|---------|
+| **HexEditor ↔ CodeEditor Shared Undo Engine** — unified `UndoEngine` across all editors, `IUndoAwareEditor`, `HexByteUndoEntry`, `DocumentBuffer` undo wiring | v0.6.4.10 |
+| **HexEditor Column Highlight defaults** — `ShowColumnHighlight` and `ShowAsciiColumnHighlight` now `false` by default | v0.6.4.10 |
+| **BCB freeze fix** — Render-priority navigation guard eliminates BreadcrumbBar freeze on rapid navigation | v0.6.4.9 |
+| **BCB infinite rebuild fix** — resolved BreadcrumbBar double-rebuild loop and phantom empty row | v0.6.4.9 |
+| **ByteProvider extraction** — `ByteProvider` promoted to standalone `WpfHexEditor.Core.ByteProvider` library and NuGet package | v0.6.4.9 |
+| **Context menu polish** — drop shadow, accent band, MDL2 icons; Light theme ContextMenu refinements | v0.6.4.9 |
+| **LSP semantic highlighting** — semantic token colorization wired in Code Editor | v0.6.4.9 |
+| **MarkdownEditor WebView2 refactor** — HWND resize fix for fullscreen, context menu, find bar wiring | v0.6.4.9 |
+| **Drag-selection auto-scroll** — window-level mouse capture for HexEditor and TextEditor drag-scroll | v0.6.4.9 |
+| **NuGet CI pipeline** — generic publish workflow covering all 23 packages | v0.6.4.9 |
+| **Tab Groups** — `ITabGroupService`, split horizontal/vertical, 16 `TG_*` theme tokens, 77 integration tests | v0.6.4.6 |
+| **Lazy Plugin Loading** — manifest-driven stubs, single-click activation, panel state persistence | v0.6.4.6 |
+| **Document Structure Panel** — 8 providers (LSP/JSON/XML/Markdown/INI/Binary/Folding/Outline) | v0.6.4.6 |
+| **Roslyn Semantic Inline Hints** — `IReferenceCountProvider`, whfmt-driven `CanProvide`, hover tooltip | v0.6.4.6 |
+| **Ctrl+Click Links & Emails** — toggleable URL/email Ctrl+Click in CodeEditor and TextEditor | v0.6.4.6 |
+| **Window Menu** — Close/Close All, Next/Previous Document, Full Screen (`F11`) via Win32 | v0.6.4.8 |
+| **Win32 Fullscreen** — native fullscreen toggle, hides title bar and chrome | v0.6.4.8 |
 | **AI Assistant Plugin** — multi-provider AI chat with 5 built-in providers, 25 MCP IDE tools, streaming responses, inline code apply, @mentions for context, conversation history | v0.6.4.3 |
 | **Roslyn Integration** — in-process C#/VB.NET code analysis replacing external OmniSharp process | v0.6.4.3 |
 | **Document Editor** — WYSIWYG rich document editing for RTF, DOCX, and ODT with formatting toolbar, tables, styles panel, find/replace, page settings | v0.6.4.1 |
