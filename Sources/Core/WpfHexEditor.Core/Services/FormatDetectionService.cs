@@ -1124,7 +1124,14 @@ namespace WpfHexEditor.Core.Services
                 {
                     PropertyNameCaseInsensitive = true,
                     ReadCommentHandling = JsonCommentHandling.Skip,
-                    AllowTrailingCommas = true
+                    AllowTrailingCommas = true,
+                    // Required: SignatureStrength and other enums are stored as strings in .whfmt files
+                    // (e.g. "Strength": "Strong"). Without this converter they silently deserialize to
+                    // default(0) = None, which causes all Strong/Unique formats to be excluded from TIER 1.
+                    // null naming policy = case-insensitive match for PascalCase enum values
+                    // ("Strong", "Unique", "Medium", "Weak", "None") as written in .whfmt files.
+                    Converters = { new System.Text.Json.Serialization.JsonStringEnumConverter(
+                        namingPolicy: null, allowIntegerValues: true) }
                 };
 
                 var format = JsonSerializer.Deserialize<FormatDefinition>(json, options);
