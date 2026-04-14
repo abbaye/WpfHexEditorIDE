@@ -647,6 +647,15 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             _targetScrollOffset     = 0;
             _horizontalScrollOffset = 0;
 
+            // Clear word highlights so stale decorations don't bleed into the new document.
+            _wordHighlights.Clear();
+            _wordHighlightLines.Clear();
+            _wordHighlightLineSet.Clear();
+            _wordHighlightWord        = string.Empty;
+            _wordHighlightLen         = 0;
+            _wordHighlightTrackedLine = -1;
+            _wordHighlightTrackedCol  = -1;
+
             UpdateVirtualization();
             RebuildMaxLineLength(); // O(n) scan at doc swap — acceptable
 
@@ -670,6 +679,15 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             _currentScrollOffset    = 0;
             _targetScrollOffset     = 0;
             _horizontalScrollOffset = 0;
+
+            // Clear word highlights so stale decorations don't bleed into the reloaded content.
+            _wordHighlights.Clear();
+            _wordHighlightLines.Clear();
+            _wordHighlightLineSet.Clear();
+            _wordHighlightWord        = string.Empty;
+            _wordHighlightLen         = 0;
+            _wordHighlightTrackedLine = -1;
+            _wordHighlightTrackedCol  = -1;
 
             // Clear undo history — loaded content is the new baseline.
             _undoEngine.Reset();

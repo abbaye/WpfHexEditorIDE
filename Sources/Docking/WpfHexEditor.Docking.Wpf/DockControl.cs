@@ -143,6 +143,23 @@ public class DockControl : ContentControl, IDockHost, IDisposable
             typeof(DockControl),
             new PropertyMetadata(null));
 
+    public static readonly DependencyProperty ShowGroupNumberBadgeProperty =
+        DependencyProperty.Register(
+            nameof(ShowGroupNumberBadge),
+            typeof(bool),
+            typeof(DockControl),
+            new PropertyMetadata(false, (d, _) => ((DockControl)d).AssignGroupBadges()));
+
+    /// <summary>
+    /// When <see langword="true"/>, a "Group N" badge is overlaid on each document tab bar
+    /// while multiple tab groups are open. Default: <see langword="false"/>.
+    /// </summary>
+    public bool ShowGroupNumberBadge
+    {
+        get => (bool)GetValue(ShowGroupNumberBadgeProperty);
+        set => SetValue(ShowGroupNumberBadgeProperty, value);
+    }
+
     /// <summary>
     /// Settings for the document tab bar (placement, multi-row, colorization, etc.).
     /// Shared with the active <see cref="DocumentTabHost"/> and serialized in the layout.
@@ -1248,8 +1265,8 @@ public class DockControl : ContentControl, IDockHost, IDisposable
         {
             CornerRadius        = new CornerRadius(8),
             Padding             = new Thickness(6, 1, 6, 1),
-            Margin              = new Thickness(0, 4, 8, 0),
-            HorizontalAlignment = HorizontalAlignment.Right,
+            Margin              = new Thickness(8, 4, 0, 0),
+            HorizontalAlignment = HorizontalAlignment.Left,
             VerticalAlignment   = VerticalAlignment.Top,
             IsHitTestVisible    = false,
         };
@@ -1369,14 +1386,14 @@ public class DockControl : ContentControl, IDockHost, IDisposable
     {
         if (Layout is null) return;
         var hosts = Layout.GetAllDocumentHosts().ToList();
-        bool showBadge = hosts.Count > 1;
+        bool showBadge = ShowGroupNumberBadge && hosts.Count > 1;
 
         for (int i = 0; i < hosts.Count; i++)
         {
             if (_tabControlCache.TryGetValue(hosts[i], out var tabControl)
                 && tabControl is DocumentTabHost docTabHost)
             {
-                docTabHost.GroupIndex   = i + 1;
+                docTabHost.GroupIndex     = i + 1;
                 docTabHost.ShowGroupBadge = showBadge;
             }
         }

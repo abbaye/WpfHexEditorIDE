@@ -302,6 +302,16 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             typeof(CodeEditor),
             new InputGestureCollection { new KeyGesture(Key.D, ModifierKeys.Control) });
 
+        /// <summary>
+        /// Routed command for "Refresh Highlights" — Ctrl+Shift+R.
+        /// Forces an immediate clear and re-request of all highlight layers.
+        /// </summary>
+        public static readonly RoutedUICommand RefreshHighlightsCommand = new(
+            "Refresh Highlights",
+            "RefreshHighlights",
+            typeof(CodeEditor),
+            new InputGestureCollection { new KeyGesture(Key.R, ModifierKeys.Control | ModifierKeys.Shift) });
+
         #endregion
 
         #region Fields - Validation (Phase 5)
@@ -679,7 +689,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         private const double LineNumberWidth = 60;
         private const double LineNumberMargin = 5;
         private const double TextAreaLeftOffset = 70; // LineNumberWidth + margin
-        private const double ScrollBarThickness = 12.0;
+        private const double ScrollBarThickness = 17.0;
         private const double SelectionCornerRadius = 3.0;
 
         // Extra vertical space reserved at the top of each line slot for InlineHints hints.
@@ -1077,6 +1087,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                         var enabled = (bool)e.NewValue;
                         ce._semanticTokensLayer.Visibility = enabled ? Visibility.Visible : Visibility.Collapsed;
                         ce._semanticTokensLayer.SetLspClient(enabled ? ce._lspClient : null);
+                        if (!enabled) ce._semanticTokensLayer.SetContext(null, 0, 0, 0, 0);
                     }));
 
         [Category("Features")]
@@ -2860,6 +2871,16 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             SetResourceReference(SyntaxDeprecatedColorProperty,       "CE_Operator");
             SetResourceReference(SyntaxErrorColorProperty,            "CE_Error");
 
+            // Apply themed scrollbar style — CodeEditor creates scrollbars in C# before being
+            // attached to the visual tree, so the implicit ScrollBar style from the theme
+            // ResourceDictionary is not resolved at construction time. Apply it explicitly here,
+            // after the element is loaded and the App resource tree is accessible.
+            if (TryFindResource(typeof(System.Windows.Controls.Primitives.ScrollBar)) is Style sbStyle)
+            {
+                if (_vScrollBar != null) _vScrollBar.Style = sbStyle;
+                if (_hScrollBar != null) _hScrollBar.Style = sbStyle;
+            }
+
             // Invalidate rainbow scope guide pen cache so it picks up new theme colors.
             _rainbowGuidePens = null;
             _rainbowGuideActivePens = null;
@@ -3742,6 +3763,30 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             };
             contextMenu.Items.Add(wsMenu);
 
+            // Refresh Highlights — Ctrl+Shift+R
+            contextMenu.Items.Add(new Separator());
+            var miRefreshHighlights = new MenuItem
+            {
+                Header           = "_Refresh Highlights",
+                InputGestureText = "Ctrl+Shift+R",
+                Icon             = MakeMenuIcon("\uE72C")
+            };
+            miRefreshHighlights.Click += (_, _) => RefreshHighlights();
+            // RoutedUICommand.CanExecute cannot route back to the editor once the ContextMenu
+            // takes focus. Update IsEnabled directly when the menu opens instead.
+            contextMenu.Opened += (_, _) => miRefreshHighlights.IsEnabled = _currentFilePath is not null;
+            contextMenu.Items.Add(miRefreshHighlights);
+
+            // Re-analyze Folding
+            var miReanalyzeFolding = new MenuItem
+            {
+                Header = "Re-anal_yze Folding",
+                Icon   = MakeMenuIcon("\uE8A0")
+            };
+            miReanalyzeFolding.Click += (_, _) => ReanalyzeFolding();
+            contextMenu.Opened += (_, _) => miReanalyzeFolding.IsEnabled = IsFoldingEnabled && _currentFilePath is not null;
+            contextMenu.Items.Add(miReanalyzeFolding);
+
             // Set context menu
             ContextMenu = contextMenu;
 
@@ -3804,6 +3849,12 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 SelectNextOccurrenceCommand,
                 (_, _) => SelectNextOccurrence(),
                 (_, e) => e.CanExecute = _document is not null));
+
+            // Refresh Highlights (Ctrl+Shift+R) — force clear + re-request all highlight layers.
+            CommandBindings.Add(new CommandBinding(
+                RefreshHighlightsCommand,
+                (_, _) => RefreshHighlights(),
+                (_, e) => e.CanExecute = _currentFilePath is not null));
         }
 
         /// <summary>

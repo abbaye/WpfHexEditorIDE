@@ -68,6 +68,10 @@
     <Color x:Key="HexEditor_TblEndLineColor">#888888</Color>
 
     <!-- Brushes -->
+    <SolidColorBrush x:Key="ScrollBarBrush"           Color="{StaticResource HexEditor_ScrollBarBackgroundColor}"/>
+    <SolidColorBrush x:Key="ScrollBarThumbBrush"      Color="{StaticResource HexEditor_ScrollBarThumbColor}"/>
+    <SolidColorBrush x:Key="ScrollBarThumbHoverBrush" Color="#888888"/>
+    <SolidColorBrush x:Key="ScrollBarThumbDragBrush"  Color="#555555"/>
     <SolidColorBrush x:Key="DockBackgroundBrush" Color="{StaticResource DockBackgroundColor}" />
     <SolidColorBrush x:Key="DockBorderBrush" Color="{StaticResource DockBorderColor}" />
     <SolidColorBrush x:Key="DockTabActiveBrush" Color="{StaticResource DockTabActiveColor}" />

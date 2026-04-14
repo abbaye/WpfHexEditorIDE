@@ -42,6 +42,11 @@ internal sealed class CodeScrollMarkerPanel : FrameworkElement
     private const double TickWidth  = 4.0;
     private const double TickHeight = 3.0;
 
+    // Width of the visible track at rest (must match the TrackBorder initial width in XAML).
+    // The scrollbar panel is arranged over the full reserved width (ScrollBarThickness = 17px),
+    // but the visible track is right-aligned at TrackRestWidth px — ticks must center on that.
+    private const double TrackRestWidth = 12.0;
+
     #endregion
 
     #region Static brushes
@@ -147,8 +152,10 @@ internal sealed class CodeScrollMarkerPanel : FrameworkElement
         if (ActualHeight <= TopMargin + BottomMargin)
             return;
 
-        double drawableH = ActualHeight - TopMargin - BottomMargin;
-        double tickX     = (ActualWidth - TickWidth) / 2.0;
+        double drawableH  = ActualHeight - TopMargin - BottomMargin;
+        // Center ticks within the visible track (right-aligned at TrackRestWidth inside the panel).
+        double trackLeft = ActualWidth - TrackRestWidth;
+        double tickX     = trackLeft + (TrackRestWidth - TickWidth) / 2.0;
 
         // Selection block — rendered first so word-highlight ticks and caret sit on top.
         if (_selectionStart >= 0 && _selectionEnd > _selectionStart)

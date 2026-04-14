@@ -141,6 +141,44 @@ public sealed class EmbeddedFormatCatalog : IEmbeddedFormatCatalog
             e.Extensions.Any(x => x.Equals(ext, StringComparison.OrdinalIgnoreCase)));
     }
 
+    /// <inheritdoc/>
+    public IReadOnlyList<string> GetCompatibleEditorIds(string filePath)
+    {
+        var ext = Path.GetExtension(filePath)?.ToLowerInvariant();
+        if (string.IsNullOrEmpty(ext)) return [];
+
+        var entry = GetByExtension(ext);
+        if (entry is null) return [];
+
+        var ids = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
+            "hex-editor"   // always compatible
+        };
+
+        if (entry.PreferredEditor is not null)
+            ids.Add(entry.PreferredEditor);
+
+        if (entry.IsTextFormat)
+        {
+            ids.Add("code-editor");
+            ids.Add("text-editor");
+        }
+
+        switch (entry.Category)
+        {
+            case "Images": ids.Add("image-viewer");  break;
+            case "Audio":  ids.Add("audio-viewer");  break;
+        }
+
+        if (entry.PreferredEditor == "structure-editor")
+            ids.Add("structure-editor");
+
+        if (entry.DiffMode == "text")
+            ids.Add("diff-viewer");
+
+        return [.. ids];
+    }
+
     /// <summary>
     /// Pre-warms the JSON cache for all embedded format entries by reading
     /// every resource key into <see cref="_jsonCache"/>.

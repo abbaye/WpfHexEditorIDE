@@ -33,6 +33,7 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
     private readonly ISourceOutlineService      _sourceOutline  = new SourceOutlineEngine();
     private SolutionExplorerNodeVm? _contextMenuTarget;
     private IReadOnlyList<IEditorFactory> _editorFactories = [];
+    private IEmbeddedFormatCatalog?       _formatCatalog;
 
     // Plugin-contributed context menu items resolver (set by MainWindow after UIRegistry is ready)
     private Func<string, string?, IReadOnlyList<SolutionContextMenuItem>>? _contextMenuContributorResolver;
@@ -128,6 +129,10 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
     /// <inheritdoc/>
     public void SetEditorRegistry(IReadOnlyList<IEditorFactory> factories)
         => _editorFactories = factories;
+
+    /// <inheritdoc/>
+    public void SetFormatCatalog(IEmbeddedFormatCatalog catalog)
+        => _formatCatalog = catalog;
 
     /// <summary>
     /// Updates the build-dirty indicator on the matching project node.
@@ -784,7 +789,8 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
     /// <summary>
     /// Rebuilds the "Open With ›" submenu items for <paramref name="filePath"/>.
     /// The "Hex Editor" item is always present; additional items are added for each
-    /// registered factory whose <see cref="IEditorFactory.CanOpen"/> returns true.
+    /// registered factory that is compatible with the file's whfmt-detected format.
+    /// Falls back to <see cref="IEditorFactory.CanOpen"/> when the format is not in the catalog.
     /// </summary>
     private void RebuildOpenWithSubmenu(string? filePath)
     {
@@ -794,9 +800,18 @@ public partial class SolutionExplorerPanel : UserControl, ISolutionExplorerPanel
 
         if (filePath is null) return;
 
+        var compatibleIds = _formatCatalog?.GetCompatibleEditorIds(filePath) ?? [];
+
         foreach (var factory in _editorFactories)
         {
-            if (!factory.CanOpen(filePath)) continue;
+            // Skip hex-editor — already present as the permanent first item
+            if (factory.Descriptor.Id == WellKnownEditorIds.HexEditor) continue;
+
+            var isCompatible = compatibleIds.Count > 0
+                ? compatibleIds.Contains(factory.Descriptor.Id)
+                : factory.CanOpen(filePath);
+
+            if (!isCompatible) continue;
             OpenWithMenuItem.Items.Add(MakeOpenWithSubItem(factory.Descriptor.DisplayName, factory.Descriptor.Id));
         }
     }

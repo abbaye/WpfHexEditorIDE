@@ -114,6 +114,16 @@ public sealed class LspSemanticTokensLayer : FrameworkElement
         _lastVisibleLine  = lastLine;
         _charWidth        = charWidth;
         _lineHeight       = lineHeight;
+
+        // Immediately clear stale tokens when the document is closed so that
+        // highlights don't persist across the 1 000ms debounce window.
+        if (filePath is null)
+        {
+            _debounce.Stop();
+            ClearTokens();
+            return;
+        }
+
         RequestRefresh();
     }
 

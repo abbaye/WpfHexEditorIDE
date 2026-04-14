@@ -285,9 +285,9 @@ public sealed class TabGroupSettings
 
     /// <summary>
     /// When true, a "Group N" badge is shown on each document tab bar
-    /// only while multiple groups are open. Default: true.
+    /// only while multiple groups are open. Default: false.
     /// </summary>
-    public bool ShowGroupNumberBadge { get; set; } = true;
+    public bool ShowGroupNumberBadge { get; set; } = false;
 }
 
 // ─── Command Palette ──────────────────────────────────────────────────────────

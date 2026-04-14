@@ -160,6 +160,13 @@ public interface ISolutionExplorerPanel
     void SetEditorRegistry(IReadOnlyList<IEditorFactory> factories);
 
     /// <summary>
+    /// Provides the format catalog so the panel can filter "Open With ›" items by
+    /// whfmt-detected compatible editors instead of relying solely on <see cref="IEditorFactory.CanOpen"/>.
+    /// Call this once after <see cref="SetEditorRegistry"/>, before the panel is shown.
+    /// </summary>
+    void SetFormatCatalog(IEmbeddedFormatCatalog catalog);
+
+    /// <summary>
     /// Fired when the user chooses "Include in Project" on a physical file node
     /// (visible only in Show All Files mode when the file is not yet part of the project).
     /// </summary>

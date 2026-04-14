@@ -813,12 +813,17 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             }
 
             // Push updated viewport context to LSP overlay layers (debounced internally).
-            if (ShowLspInlayHints)
-                _lspInlayHintsLayer.SetContext(_currentFilePath, _firstVisibleLine, _lastVisibleLine, _charWidth, _lineHeight, _horizontalScrollOffset);
-            if (ShowLspDeclarationHints)
-                _lspDeclarationHintsLayer.SetContext(_currentFilePath, _firstVisibleLine, _lastVisibleLine, _charWidth, _lineHeight, BuildVisibleSourceLines(), _horizontalScrollOffset);
-            if (EnableSemanticHighlighting)
-                _semanticTokensLayer.SetContext(_currentFilePath, _firstVisibleLine, _lastVisibleLine, _charWidth, _lineHeight);
+            // Guard: only push when a file is open — passing null here would re-arm the debounce
+            // and overwrite a deliberate SetContext(null) clear issued by Close() or RefreshHighlights().
+            if (_currentFilePath is not null)
+            {
+                if (ShowLspInlayHints)
+                    _lspInlayHintsLayer.SetContext(_currentFilePath, _firstVisibleLine, _lastVisibleLine, _charWidth, _lineHeight, _horizontalScrollOffset);
+                if (ShowLspDeclarationHints)
+                    _lspDeclarationHintsLayer.SetContext(_currentFilePath, _firstVisibleLine, _lastVisibleLine, _charWidth, _lineHeight, BuildVisibleSourceLines(), _horizontalScrollOffset);
+                if (EnableSemanticHighlighting)
+                    _semanticTokensLayer.SetContext(_currentFilePath, _firstVisibleLine, _lastVisibleLine, _charWidth, _lineHeight);
+            }
 
             // Sticky scroll header: refresh only when the true scroll-line changes.
             // Guard: never call InvalidateArrange() unconditionally inside OnRender —

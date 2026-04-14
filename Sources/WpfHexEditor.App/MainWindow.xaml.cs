@@ -65,6 +65,7 @@ using WpfHexEditor.Core.Options;
 using WpfHexEditor.Editor.Core.Views;
 using WpfHexEditor.Editor.CodeEditor.Controls;
 using WpfHexEditor.Core.AssemblyAnalysis.Services;
+using WpfHexEditor.SDK.Contracts;
 using WpfHexEditor.SDK.Descriptors;
 using WpfHexEditor.Core.Commands;
 using CodeEditorControl = WpfHexEditor.Editor.CodeEditor.Controls.CodeEditor;
@@ -1621,8 +1622,10 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             OnPropertyChanged(nameof(ActiveStartupProjectName));
             OnPropertyChanged(nameof(CanRunStartupProject));
         };
-        // Provide the editor registry so the panel can build the "Open With ›" submenu
+        // Provide the editor registry and format catalog so the panel can build
+        // the "Open With ›" submenu filtered by whfmt-detected compatible editors.
         panel.SetEditorRegistry(_editorRegistry.GetAll());
+        panel.SetFormatCatalog(EmbeddedFormatCatalog.Instance);
 
         // Wire plugin-contributed context menu items: queries UIRegistry on every right-click.
         // Deferred lambda: _ideHostContext may not be set yet at panel creation time — that's fine,
@@ -2696,10 +2699,16 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         var currentName = usedFactory?.Descriptor.DisplayName ?? "Hex Editor";
         var currentId   = usedFactory?.Descriptor.Id          ?? "hex-editor";
 
-        // Build the list of alternative editors for the InfoBar buttons
-        var alternatives = _editorRegistry.GetAll()
-            .Where(f => f != usedFactory && f.CanOpen(filePath))
-            .ToList();
+        // Build the list of alternative editors for the InfoBar buttons.
+        // Use whfmt-detected compatible IDs when available; fall back to CanOpen for unknown formats.
+        var compatibleIds = EmbeddedFormatCatalog.Instance.GetCompatibleEditorIds(filePath);
+        var alternatives = compatibleIds.Count > 0
+            ? _editorRegistry.GetAll()
+                  .Where(f => f != usedFactory && compatibleIds.Contains(f.Descriptor.Id))
+                  .ToList()
+            : _editorRegistry.GetAll()
+                  .Where(f => f != usedFactory && f.CanOpen(filePath))
+                  .ToList();
 
         var bar = new DocumentInfoBar();
         bar.Configure(
@@ -5641,6 +5650,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     private void OnOptionsSettingsChanged()
     {
         ApplyThemeFromSettings();
+        ApplyUISettings();
 
         // Re-apply per-editor-type settings (scroll speed, zoom, …) to all open editors
         // so that option changes take effect immediately without requiring a file re-open.
@@ -5752,7 +5762,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     private void ApplyUISettings()
     {
-        DockHost.ApplyHighlightMode(AppSettingsService.Instance.Current.UI.ActivePanelHighlight);
+        var s = AppSettingsService.Instance.Current;
+        DockHost.ApplyHighlightMode(s.UI.ActivePanelHighlight);
+        DockHost.ShowGroupNumberBadge = s.TabGroups.ShowGroupNumberBadge;
     }
 
     private void ApplyDockCornerRadius()

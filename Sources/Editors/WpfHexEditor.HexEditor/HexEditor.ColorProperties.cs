@@ -470,7 +470,7 @@ namespace WpfHexEditor.HexEditor
 
         public static readonly DependencyProperty ScrollBarBackgroundColorProperty =
             DependencyProperty.Register(nameof(ScrollBarBackgroundColor), typeof(Color), typeof(HexEditor),
-                new PropertyMetadata(Color.FromRgb(0xF0, 0xF0, 0xF0), OnScrollBarBackgroundColorChanged));
+                new PropertyMetadata(Color.FromRgb(0x1E, 0x1E, 0x1E), OnScrollBarBackgroundColorChanged));
 
         private static void OnScrollBarBackgroundColorChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -493,7 +493,7 @@ namespace WpfHexEditor.HexEditor
 
         public static readonly DependencyProperty ScrollBarThumbColorProperty =
             DependencyProperty.Register(nameof(ScrollBarThumbColor), typeof(Color), typeof(HexEditor),
-                new PropertyMetadata(Color.FromRgb(0xCD, 0xCD, 0xCD), OnScrollBarThumbColorChanged));
+                new PropertyMetadata(Color.FromRgb(0x68, 0x68, 0x68), OnScrollBarThumbColorChanged));
 
         private static void OnScrollBarThumbColorChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
