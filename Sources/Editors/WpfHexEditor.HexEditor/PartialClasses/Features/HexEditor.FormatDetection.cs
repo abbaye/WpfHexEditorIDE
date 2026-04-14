@@ -16,10 +16,12 @@
 // ==========================================================
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using System.Windows.Media;
 using WpfHexEditor.Core.FormatDetection;
 using WpfHexEditor.Core.Events;
 using WpfHexEditor.Core.Services;
@@ -43,6 +45,15 @@ namespace WpfHexEditor.HexEditor
         // and JSON deserialization on the UI thread.
         private static (FormatDefinition Format, string Category)[]? s_parsedEmbeddedFormats;
         private static readonly object s_parsedFormatsLock = new object();
+
+        // ── Load-failure tracking (standalone pipeline) ───────────────────────
+        private readonly List<FormatLoadFailure> _formatLoadFailures = new();
+
+        /// <summary>
+        /// Format definitions that failed to load during <see cref="InitializeFormatDetection"/>.
+        /// Empty on a healthy initialization. In standalone mode, failures are surfaced in the StatusBar.
+        /// </summary>
+        public IReadOnlyList<FormatLoadFailure> FormatLoadFailures => _formatLoadFailures;
 
         #endregion
 
@@ -262,11 +273,21 @@ namespace WpfHexEditor.HexEditor
 
                 // Update the LoadedFormatCount property for UI display
                 LoadedFormatCount = totalLoaded;
+
+                // Surface load failures in the StatusBar (standalone mode)
+                if (_formatLoadFailures.Count > 0 && StatusText is not null)
+                {
+                    StatusText.Text = $"⚠ {_formatLoadFailures.Count} whfmt failed to load";
+                    StatusText.Foreground = Brushes.Red;
+                    StatusText.ToolTip = string.Join("\n",
+                        _formatLoadFailures.Select(f => $"{f.Source}: {f.Reason}"));
+                }
             }
             catch (Exception ex)
             {
                 // Silently ignore format loading errors
                 LoadedFormatCount = totalLoaded; // Update even if there was an error
+                System.Diagnostics.Debug.WriteLine($"[FormatDetection] Critical error: {ex.Message}");
             }
         }
 
@@ -367,11 +388,15 @@ namespace WpfHexEditor.HexEditor
                                 list.Add((format, entry.Category));
                             }
                             else
+                            {
                                 System.Diagnostics.Debug.WriteLine($"[FormatDetection] REJECTED (null format): {entry.ResourceKey}");
+                                _formatLoadFailures.Add(new FormatLoadFailure(entry.ResourceKey, "ImportFromJson returned null"));
+                            }
                         }
                         catch (Exception ex)
                         {
                             System.Diagnostics.Debug.WriteLine($"[FormatDetection] Error loading {entry.ResourceKey}: {ex.Message}");
+                            _formatLoadFailures.Add(new FormatLoadFailure(entry.ResourceKey, ex.Message));
                         }
                     }
                     // Only commit to the static cache when we got a meaningful result.

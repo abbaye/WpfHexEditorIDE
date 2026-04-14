@@ -29,6 +29,12 @@ namespace WpfHexEditor.Core.Interfaces
         /// <summary>Number of loaded format definitions.</summary>
         int FormatCount { get; }
 
+        /// <summary>
+        /// Formats that failed to load during <see cref="Initialize"/>. Empty on a healthy catalog.
+        /// Check this after initialization to surface broken whfmt files to the user.
+        /// </summary>
+        IReadOnlyList<FormatLoadFailure> LoadFailures { get; }
+
         /// <summary>Whether the catalog has been initialized.</summary>
         bool IsInitialized { get; }
 
