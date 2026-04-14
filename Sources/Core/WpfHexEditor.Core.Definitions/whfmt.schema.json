@@ -57,7 +57,7 @@
     },
     "preferredEditor": {
       "type": "string",
-      "enum": ["code-editor", "structure-editor", "hex-editor", "text-editor", "tbl-editor"],
+      "enum": ["code-editor", "structure-editor", "hex-editor", "text-editor", "tbl-editor", "tile-editor"],
       "description": "Preferred editor factory ID for files matching this format"
     },
     "diffMode": {

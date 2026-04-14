@@ -1,0 +1,261 @@
+/* ============================================================
+   Format:    Generic Tile Set (Multi-Engine)
+   Category:  Game
+   Ext:       .til
+   Editor:    tile-editor
+   Desc:      Generic tile graphics blob used by multiple retro and indie game engines.
+              Used by RPG Maker (tileset binary), Tiled Map Editor tile exports,
+              GameMaker tile data, and numerous custom engines.
+              No fixed standard — may start with a 4-byte uint32 LE tile count header
+              or be a pure raw binary tile blob.
+              BPP varies by engine: 2bpp and 4bpp most common.
+   Variables: fileSize, tileCount2bpp, tileCount4bpp, tileCount8bpp,
+              possibleHeaderSize, formattedSize
+   Detection: extension-only (no magic bytes — format is engine-dependent)
+   Updated:   2026-04-13
+   ============================================================ */
+{
+  "diffMode": "binary",
+  "formatName": "Generic Tile Set",
+  "version": "2.2",
+  "extensions": [
+    ".til"
+  ],
+  "description": "Generic tile graphics blob used by multiple retro and indie game engines. The .til extension is used by RPG Maker tileset binary exports, Tiled Map Editor tile data, GameMaker Studio tile assets, and hundreds of custom game engines. No universal file header — format structure depends entirely on the source engine. Common encodings: 2bpp (16 bytes/tile 8x8) for NES-style engines, 4bpp (32 bytes/tile) for GBA-style or palettized engines, 8bpp (64 bytes/tile) for 256-color engines. Some engines prepend a 4-byte uint32 tile count.",
+  "category": "Game",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "tile-editor",
+  "mimeTypes": [
+    "application/octet-stream"
+  ],
+  "software": [
+    "RPG Maker (all versions)",
+    "Tiled Map Editor",
+    "GameMaker Studio 1/2",
+    "Tile Layer Pro",
+    "CrystalTile2",
+    "Tile Molester",
+    "YY-CHR",
+    "Custom game engines (retro/indie)"
+  ],
+  "useCases": [
+    "RPG Maker tileset editing and replacement",
+    "Tiled Map Editor custom tile graphics",
+    "GameMaker Studio tile asset management",
+    "Indie game tile graphics editing",
+    "Retro game engine asset extraction",
+    "Custom engine tile format reverse engineering"
+  ],
+  "references": {
+    "specifications": [
+      "RPG Maker Tileset Format — community reverse-engineering documentation",
+      "Tiled Map Editor File Formats — mapeditor.org",
+      "GameMaker Tile Data Format — YoYo Games documentation",
+      "Generic Tile Format (GTF) — homebrew community spec"
+    ],
+    "WebLinks": [
+      "https://doc.mapeditor.org/en/stable/reference/tmx-map-format/",
+      "https://manual.gamemaker.io/monthly/en/The_Asset_Editors/Tile_Sets.htm",
+      "https://www.rpgmakerweb.com/",
+      "https://wiki.nesdev.org/w/index.php/CHR_ROM_vs_CHR_RAM"
+    ]
+  },
+  "detection": {
+    "required": false,
+    "validation": {
+      "min_file_size": 16,
+      "notes": "No magic bytes. Detected by .til extension only. File structure is engine-dependent. Check first 4 bytes: if uint32 LE value equals (fileSize - 4) / bytesPerTile, likely has a tile-count header."
+    }
+  },
+  "variables": {
+    "fileSize": 0,
+    "tileCount2bpp": 0,
+    "tileCount4bpp": 0,
+    "tileCount8bpp": 0,
+    "possibleHeaderSize": 4,
+    "formattedSize": ""
+  },
+  "functions": {
+    "computeFromVariables(fileSize / 16, tileCount2bpp)": "Tile count at 2bpp (16 bytes per 8x8 tile)",
+    "computeFromVariables(fileSize / 32, tileCount4bpp)": "Tile count at 4bpp (32 bytes per 8x8 tile)",
+    "computeFromVariables(fileSize / 64, tileCount8bpp)": "Tile count at 8bpp (64 bytes per 8x8 tile)",
+    "formatFileSize(var:fileSize)": "Human-readable file size"
+  },
+  "blocks": [
+    {
+      "type": "metadata",
+      "name": "File Size",
+      "variable": "formattedSize",
+      "description": "Total file size. No universal constraint — depends on engine. Check divisibility by 16, 32, or 64."
+    },
+    {
+      "type": "computeFromVariables",
+      "expression": "fileSize / 16",
+      "storeAs": "tileCount2bpp",
+      "description": "Tile count if 2bpp format (16 bytes per 8x8 tile)"
+    },
+    {
+      "type": "computeFromVariables",
+      "expression": "fileSize / 32",
+      "storeAs": "tileCount4bpp",
+      "description": "Tile count if 4bpp format (32 bytes per 8x8 tile)"
+    },
+    {
+      "type": "computeFromVariables",
+      "expression": "fileSize / 64",
+      "storeAs": "tileCount8bpp",
+      "description": "Tile count if 8bpp format (64 bytes per 8x8 tile)"
+    },
+    {
+      "type": "metadata",
+      "name": "Tile Count (2bpp interpretation)",
+      "variable": "tileCount2bpp",
+      "description": "Possible tile count if file is 2bpp NES-style (16 bytes per 8x8 tile, 4 colors)"
+    },
+    {
+      "type": "metadata",
+      "name": "Tile Count (4bpp interpretation)",
+      "variable": "tileCount4bpp",
+      "description": "Possible tile count if file is 4bpp palettized (32 bytes per 8x8 tile, 16 colors)"
+    },
+    {
+      "type": "metadata",
+      "name": "Tile Count (8bpp interpretation)",
+      "variable": "tileCount8bpp",
+      "description": "Possible tile count if file is 8bpp 256-color (64 bytes per 8x8 tile, 256 colors)"
+    },
+    {
+      "type": "field",
+      "name": "Possible Engine Header (uint32 LE tile count)",
+      "offset": 0,
+      "length": 4,
+      "color": "#C0C0C0",
+      "opacity": 0.2,
+      "description": "Some engines (RPG Maker variants, custom loaders) prepend a 4-byte uint32 LE tile count. If first 4 bytes read as a small integer (e.g., 64–4096) and (fileSize - 4) / tileSize = that value, this is likely a header.",
+      "valueType": "uint32"
+    },
+    {
+      "type": "field",
+      "name": "Tile 0 Data (2bpp baseline)",
+      "offset": 0,
+      "length": 16,
+      "color": "#FFB347",
+      "opacity": 0.2,
+      "description": "First 8x8 tile assuming 2bpp NES-style encoding (16 bytes). If file has a 4-byte header, actual tile data starts at offset 4.",
+      "valueType": "bytes"
+    },
+    {
+      "type": "field",
+      "name": "Tile 1 Data (2bpp baseline)",
+      "offset": 16,
+      "length": 16,
+      "color": "#FFB347",
+      "opacity": 0.15,
+      "description": "Second 8x8 tile at 2bpp. Pattern repeats for all tiles in file.",
+      "valueType": "bytes"
+    },
+    {
+      "type": "metadata",
+      "name": "Multi-Engine Origin",
+      "variable": "formattedSize",
+      "description": "The .til extension is used by many unrelated engines. Key disambiguation: (1) RPG Maker 2000/2003 uses indexed 16-color or 256-color tiles in a proprietary format; (2) Tiled exports raw tile strips; (3) GameMaker uses a custom binary tile sheet; (4) Custom engines vary widely. Use file size and context to determine encoding."
+    },
+    {
+      "type": "metadata",
+      "name": "RPG Maker Specifics",
+      "variable": "tileCount4bpp",
+      "description": "RPG Maker 2000/2003 .til files are palettized 8bpp bitmaps representing tileset sheets (256 colors, exported as raw pixel grids). RPG Maker XP/VX/MV use PNG for tilesets instead. If the .til came from an old RPG Maker project, interpret as 8bpp 256-color rows (not 8x8 tile grid)."
+    },
+    {
+      "type": "metadata",
+      "name": "Tiled Map Editor Specifics",
+      "variable": "tileCount2bpp",
+      "description": "Tiled Map Editor (.tmx) uses PNG/BMP tileset images. A .til file from Tiled is typically an exported tile data binary. Modern Tiled workflow uses JSON/XML — raw .til files are from older exports or custom loaders."
+    },
+    {
+      "type": "metadata",
+      "name": "GameMaker Studio Specifics",
+      "variable": "tileCount4bpp",
+      "description": "GameMaker .til files contain compiled tileset data with a proprietary header. The tile pixel data is 32-bit BGRA (4 bytes per pixel). Tile dimensions vary (16x16, 32x32, 48x48 common). If from GameMaker, set TileEditor to 8bpp as a baseline, though visual results may not be accurate without the engine's format parser."
+    },
+    {
+      "type": "metadata",
+      "name": "Custom Engine Note",
+      "variable": "formattedSize",
+      "description": "When source engine is unknown: try all three BPP modes (2, 4, 8) in TileEditor, and both tile sizes (8x8, 16x16). Look for recognizable patterns (character outlines, repeated motifs) to identify the correct format. File size divisibility gives strong hints: divisible by 16 → 2bpp; divisible by 32 → 4bpp; divisible by 64 → 8bpp."
+    },
+    {
+      "type": "metadata",
+      "name": "Palette Information",
+      "variable": "tileCount4bpp",
+      "description": "2bpp → 4 colors per tile; 4bpp → 16 colors per tile from 16-entry sub-palette; 8bpp → 256 colors from full palette. Palette data is typically stored separately (in a companion .pal, .plt, or embedded in the ROM/game data). TileEditor renders tiles in grayscale by default."
+    },
+    {
+      "type": "metadata",
+      "name": "TileEditor Usage Hint",
+      "variable": "tileCount2bpp",
+      "description": "Open in WpfHexEditor TileEditor → try BPP=2 (16 bytes/tile) first for NES-style engines, BPP=4 (32 bytes/tile) for GBA/SNES-style or RPG Maker, BPP=8 (64 bytes/tile) for 256-color engines. Toggle TileSize=8x8 vs 16x16 to find visible tile boundaries."
+    },
+    {
+      "type": "metadata",
+      "name": "Generic Fallback Advice",
+      "variable": "formattedSize",
+      "description": "If the file source is unknown and no patterns are visible: (1) Open in HexEditor to inspect first 32 bytes for any recognizable header magic or ASCII strings; (2) Try Entropy Viewer to identify compressed regions; (3) Search for repeating 16/32/64-byte patterns using Find/Replace; (4) Compare file size against known tileset sizes (e.g., 256 tiles × 32 bytes = 8192 bytes for 4bpp)."
+    }
+  ],
+  "TechnicalDetails": {
+    "platform": ["RPG Maker 2000/2003", "Tiled Map Editor", "GameMaker Studio 1/2", "Custom retro/indie engines"],
+    "bitsPerPixel": "2 / 4 / 8 (engine-dependent)",
+    "tileSize": "8x8 (most common); 16x16, 32x32, 48x48 for some engines",
+    "encoding": "Engine-dependent. Common: 2bpp MSB-first packed (NES-style), 4bpp nibble-packed (GBA-style), 8bpp linear (256-color)",
+    "colorDepth": "4 / 16 / 256 colors depending on BPP",
+    "compression": "Usually none (raw dump); some engines use LZ77 or RLE",
+    "headerVariants": "None (pure blob) or 4-byte uint32 LE tile count, or engine-specific struct"
+  },
+  "forensic": {
+    "category": "game-graphics",
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      "File size not a multiple of 16, 32, or 64 — may indicate non-tile data or engine-specific header",
+      "First 4 bytes read as a plausible tile count but rest of file doesn't align — possible header variant",
+      "All-zero content — blank tileset or extraction failure",
+      "Visible compressed data patterns (high entropy) — may need decompression before opening in TileEditor"
+    ]
+  },
+  "navigation": {
+    "bookmarks": [
+      { "name": "Byte 0 (possible header or tile 0)", "offset": 0,    "description": "Start of file — check for 4-byte tile count header or direct tile data" },
+      { "name": "Byte 4 (tile 0 if header present)",  "offset": 4,    "description": "Tile 0 start if file has a 4-byte count header" },
+      { "name": "Row 16 tiles (2bpp) ",                "offset": 256,  "description": "16th tile at 2bpp — one display row in TileEditor" },
+      { "name": "Row 16 tiles (4bpp)",                 "offset": 512,  "description": "16th tile at 4bpp — one display row in TileEditor" },
+      { "name": "4KB boundary",                        "offset": 4096, "description": "Quarter-bank boundary" },
+      { "name": "8KB boundary",                        "offset": 8192, "description": "8KB / one CHR-bank equivalent" }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "Generic .til tile set blob — engine-dependent format with no universal header. Most common: 2bpp (16 bytes/tile) or 4bpp (32 bytes/tile) 8x8 tile grid.",
+    "suggestedInspections": [
+      "Check file size divisibility: mod 16 = 0 → 2bpp candidate; mod 32 = 0 → 4bpp candidate; mod 64 = 0 → 8bpp candidate",
+      "Inspect first 4 bytes as uint32 LE — if small plausible integer and (fileSize-4)/tileSize = that value, header present",
+      "Look for repeating 16 or 32-byte patterns that suggest tile data",
+      "Search for non-zero entropy regions vs zero padding to identify actual tile content",
+      "If source engine is known, apply its specific format: RPG Maker → 8bpp; NES-style → 2bpp; GBA-style → 4bpp",
+      "Try TileEditor at multiple BPP values (2, 4, 8) and look for recognizable visual patterns"
+    ]
+  },
+  "format_relationships": {
+    "category": "Game",
+    "parentFormats": ["Engine-specific project files (.rmxp, .rpgproject, .yyp, .tmx)"],
+    "relatedFormats": [".chr", ".gfx", ".pal", ".plt", ".tmx", ".yy"],
+    "extensions": [".til"]
+  },
+  "QualityMetrics": {
+    "CompletenessScore": 75,
+    "DocumentationLevel": "comprehensive",
+    "BlocksDefined": 18,
+    "ValidationRules": 4,
+    "LastUpdated": "2026-04-13",
+    "PriorityFormat": true,
+    "AutoRefined": false
+  }
+}

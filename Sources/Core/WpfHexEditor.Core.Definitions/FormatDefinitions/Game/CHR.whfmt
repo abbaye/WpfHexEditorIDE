@@ -1,0 +1,291 @@
+/* ============================================================
+   Format:    NES / Game Boy Character ROM
+   Category:  Game
+   Ext:       .chr
+   Editor:    tile-editor
+   Desc:      Raw tile graphics dump from NES or Game Boy cartridge CHR ROM.
+              No file header — pure binary 2bpp tile data starting at offset 0.
+              Each 8x8 tile = 16 bytes (2-plane: plane-0 bytes 0–7, plane-1 bytes 8–15).
+              8KB banks (0x2000 bytes) = 512 tiles per bank.
+   Variables: fileSize, bankCount, tileCount, bytesPerTile, bankSize, bppMode,
+              planesPerTile, formattedSize, formattedTileCount, formattedBankCount
+   Detection: extension-only (no magic bytes)
+   Updated:   2026-04-13
+   ============================================================ */
+{
+  "diffMode": "binary",
+  "formatName": "NES / Game Boy Character ROM",
+  "version": "2.2",
+  "extensions": [
+    ".chr"
+  ],
+  "description": "Raw CHR ROM tile graphics dump from Nintendo Entertainment System or Game Boy cartridges. Contains 8x8 pixel tiles encoded as 2-bit-per-pixel (2bpp) 2-plane data with no file header. Each tile is 16 bytes: first 8 bytes are bit-plane 0 (LSB), last 8 bytes are bit-plane 1 (MSB), giving 4 palette indices per pixel.",
+  "category": "Game",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "tile-editor",
+  "mimeTypes": [
+    "application/octet-stream"
+  ],
+  "software": [
+    "YY-CHR",
+    "Tile Layer Pro",
+    "Tilemap Studio",
+    "NESST",
+    "Mesen (emulator debugger)",
+    "BGB (Game Boy emulator debugger)",
+    "FCEUX (NES emulator)"
+  ],
+  "useCases": [
+    "NES ROM hacking — edit sprite and background tiles",
+    "Game Boy ROM hacking — modify character graphics",
+    "Retro game asset extraction",
+    "Pixel art archaeology",
+    "Fan translation graphics editing",
+    "Game reverse engineering"
+  ],
+  "references": {
+    "specifications": [
+      "NES CHR ROM Format — nesdev.org wiki",
+      "iNES ROM Format Specification v1.0",
+      "NES 2.0 Format Specification",
+      "Game Boy CPU Manual — Nintendo, 1998",
+      "Pan Docs — Game Boy Technical Reference"
+    ],
+    "WebLinks": [
+      "https://wiki.nesdev.org/w/index.php/CHR_ROM_vs_CHR_RAM",
+      "https://wiki.nesdev.org/w/index.php/PPU_pattern_tables",
+      "https://gbdev.io/pandocs/Tile_Data.html",
+      "https://en.wikipedia.org/wiki/Nintendo_Entertainment_System"
+    ]
+  },
+  "detection": {
+    "required": false,
+    "validation": {
+      "min_file_size": 16,
+      "notes": "No magic bytes. Detected by .chr extension only. File size should be a multiple of 16 (bytes per tile) or 8192 (bytes per bank)."
+    }
+  },
+  "variables": {
+    "fileSize": 0,
+    "bankCount": 0,
+    "tileCount": 0,
+    "bytesPerTile": 16,
+    "bankSize": 8192,
+    "bppMode": 2,
+    "planesPerTile": 2,
+    "formattedSize": "",
+    "formattedTileCount": "",
+    "formattedBankCount": ""
+  },
+  "functions": {
+    "computeFromVariables(fileSize / 16, tileCount)": "Total tile count at 2bpp (16 bytes/tile)",
+    "computeFromVariables(fileSize / 8192, bankCount)": "CHR bank count (8KB = 0x2000 bytes per bank)",
+    "formatFileSize(var:fileSize)": "Human-readable file size"
+  },
+  "blocks": [
+    {
+      "type": "metadata",
+      "name": "File Size",
+      "variable": "formattedSize",
+      "description": "Total file size (should be a multiple of 8192 bytes = one CHR bank)"
+    },
+    {
+      "type": "computeFromVariables",
+      "expression": "fileSize / 16",
+      "storeAs": "tileCount",
+      "description": "Total 8x8 tile count at 2bpp (16 bytes per tile)"
+    },
+    {
+      "type": "computeFromVariables",
+      "expression": "fileSize / 8192",
+      "storeAs": "bankCount",
+      "description": "CHR ROM bank count (one bank = 8192 bytes = 512 tiles)"
+    },
+    {
+      "type": "metadata",
+      "name": "Tile Count",
+      "variable": "tileCount",
+      "description": "Total 8x8 tiles in file (2bpp, 16 bytes each)"
+    },
+    {
+      "type": "metadata",
+      "name": "Bank Count",
+      "variable": "bankCount",
+      "description": "Number of 8KB CHR banks (0x2000 bytes each). NES hardware uses 8KB banks."
+    },
+    {
+      "type": "metadata",
+      "name": "Bits Per Pixel",
+      "variable": "bppMode",
+      "description": "2 bpp — NES/GB 2-plane encoding. Each pixel needs 2 bits from 2 separate bitplanes."
+    },
+    {
+      "type": "metadata",
+      "name": "Planes Per Tile",
+      "variable": "planesPerTile",
+      "description": "2 planes: plane-0 (LSB, bytes 0–7) and plane-1 (MSB, bytes 8–15) per 8x8 tile"
+    },
+    {
+      "type": "metadata",
+      "name": "Bytes Per Tile",
+      "variable": "bytesPerTile",
+      "description": "16 bytes per 8x8 tile: 8 bytes bit-plane 0 + 8 bytes bit-plane 1"
+    },
+    {
+      "type": "metadata",
+      "name": "Pixel Encoding",
+      "variable": "bppMode",
+      "description": "Pixel color index = (plane0_bit << 0) | (plane1_bit << 1). Result is 0–3, mapped to 4-color palette. Bit order within each byte: bit 7 = leftmost pixel, bit 0 = rightmost."
+    },
+    {
+      "type": "metadata",
+      "name": "Bank 0 — Background Region",
+      "variable": "bankSize",
+      "description": "NES PPU pattern table 0 (0x0000–0x0FFF): background tiles, 256 tiles × 16 bytes = 4096 bytes"
+    },
+    {
+      "type": "metadata",
+      "name": "Bank 0 — Sprite Region",
+      "variable": "bankSize",
+      "description": "NES PPU pattern table 1 (0x1000–0x1FFF): sprite tiles, 256 tiles × 16 bytes = 4096 bytes"
+    },
+    {
+      "type": "field",
+      "name": "Bank 0 — Tile Data",
+      "offset": 0,
+      "length": 8192,
+      "color": "#50C878",
+      "opacity": 0.15,
+      "description": "First CHR bank: 512 tiles × 16 bytes. NES PPU maps this to pattern tables at $0000–$1FFF.",
+      "valueType": "bytes"
+    },
+    {
+      "type": "metadata",
+      "name": "Bank 0 Tile Count",
+      "variable": "bankSize",
+      "description": "512 tiles per 8KB bank — 256 background + 256 sprite tiles in standard NES mapping"
+    },
+    {
+      "type": "field",
+      "name": "Bank 1 — Tile Data",
+      "offset": 8192,
+      "length": 8192,
+      "color": "#95E1D3",
+      "opacity": 0.15,
+      "description": "Second CHR bank (if present): tiles 512–1023. Present in 16KB+ CHR ROM files.",
+      "valueType": "bytes"
+    },
+    {
+      "type": "metadata",
+      "name": "Bit-Plane 0 Layout",
+      "variable": "planesPerTile",
+      "description": "Plane 0 = bytes [0–7] of each tile. Each byte encodes 8 pixels (bits 7→0 = pixels 0→7). Provides the LSB of each pixel's 2-bit color index."
+    },
+    {
+      "type": "metadata",
+      "name": "Bit-Plane 1 Layout",
+      "variable": "planesPerTile",
+      "description": "Plane 1 = bytes [8–15] of each tile. Provides the MSB of each pixel's 2-bit color index. Combined with plane 0: colorIndex = (plane0[row] >> (7-col) & 1) | ((plane1[row] >> (7-col) & 1) << 1)"
+    },
+    {
+      "type": "metadata",
+      "name": "Palette Size",
+      "variable": "bppMode",
+      "description": "4 colors per tile (2bpp → indices 0–3). NES hardware maps these to a 4-color sub-palette selected by the attribute table."
+    },
+    {
+      "type": "metadata",
+      "name": "Compatible Tile Editors",
+      "variable": "formattedSize",
+      "description": "YY-CHR, Tile Layer Pro, NESST, Tilemap Studio, Mesen PPU viewer, BGB VRAM viewer. Open in WpfHexEditor TileEditor: set BPP=2, TileSize=8x8."
+    },
+    {
+      "type": "metadata",
+      "name": "NES PPU Pattern Table Note",
+      "variable": "bppMode",
+      "description": "NES PPU reads CHR ROM directly. Pattern table 0 ($0000) typically contains background tiles; pattern table 1 ($1000) contains sprite tiles. The PPUCTRL register (bit 4) selects which table is active."
+    },
+    {
+      "type": "metadata",
+      "name": "Game Boy Variant",
+      "variable": "bppMode",
+      "description": "Game Boy uses identical 2-plane 2bpp 8x8 tile encoding. Tiles stored in VRAM at 0x8000–0x97FF. GBC adds color palette support (CGB mode) but the tile encoding remains the same."
+    },
+    {
+      "type": "metadata",
+      "name": "ROM Hacking Context",
+      "variable": "formattedSize",
+      "description": "CHR files are extracted from .nes ROMs (iNES format) starting at offset 16 + (PRG_banks × 16384). CHR banks follow immediately. Standard tools: extract with FCEUX ROM editor, edit with YY-CHR, re-insert with ROM patcher."
+    },
+    {
+      "type": "metadata",
+      "name": "TileEditor Usage Hint",
+      "variable": "bppMode",
+      "description": "Open in WpfHexEditor TileEditor → select BPP=2, TileSize=8x8 for correct NES/GB rendering. The editor renders a MSB-packed approximation which closely matches the 2-plane NES output for solid-color sprites."
+    }
+  ],
+  "TechnicalDetails": {
+    "platform": ["NES", "Famicom", "Game Boy", "Game Boy Color", "Game Boy Advance (2bpp mode)"],
+    "bitsPerPixel": 2,
+    "tileSize": "8x8",
+    "encoding": "2-plane linear (plane-0 LSB bytes 0–7, plane-1 MSB bytes 8–15 per tile)",
+    "bankSize": "8192 bytes (8KB) = 512 tiles",
+    "colorDepth": "4 colors per tile from a 4-entry sub-palette",
+    "compression": "none",
+    "byteOrder": "big-endian bit order within bytes (bit 7 = leftmost pixel)"
+  },
+  "forensic": {
+    "category": "game-graphics",
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      "File size not a multiple of 16 (incomplete tile)",
+      "File size not a multiple of 8192 (incomplete bank — possible truncation)",
+      "All-zero tiles may indicate CHR RAM (no static graphics)"
+    ]
+  },
+  "navigation": {
+    "bookmarks": [
+      { "name": "Bank 0 Start",      "offset": 0,     "description": "First CHR bank — 512 tiles" },
+      { "name": "Bank 0 Mid (Sprites)", "offset": 4096, "description": "NES pattern table 1 boundary within bank 0" },
+      { "name": "Bank 1 Start",      "offset": 8192,  "description": "Second CHR bank (if present)" },
+      { "name": "Bank 2 Start",      "offset": 16384, "description": "Third CHR bank (if present)" },
+      { "name": "Bank 3 Start",      "offset": 24576, "description": "Fourth CHR bank (if present)" }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "NES/GB CHR ROM — raw 2bpp tile graphics, no header. Each 16-byte unit is one 8x8 tile in 2-plane format.",
+    "suggestedInspections": [
+      "Verify file size is a multiple of 16 (complete tiles) and ideally 8192 (complete banks)",
+      "Check for repeating 16-byte patterns — may indicate empty/blank tiles or padding",
+      "Identify non-zero tile regions to find actual graphics vs padding",
+      "Count banks: fileSize / 8192 = bank count. Standard NES CHR ROMs: 1–16 banks",
+      "Look for sprite/background tile split at every 4096-byte boundary within each bank",
+      "All-zero content may indicate CHR RAM variant (graphics loaded at runtime)"
+    ]
+  },
+  "software": [
+    "YY-CHR",
+    "Tile Layer Pro",
+    "NESST",
+    "Tilemap Studio",
+    "Mesen (NES emulator)",
+    "FCEUX (NES emulator)",
+    "BGB (Game Boy emulator)",
+    "WpfHexEditor TileEditor"
+  ],
+  "format_relationships": {
+    "category": "Game",
+    "parentFormats": [".nes (iNES ROM — CHR data starts at offset 16 + PRG_size)"],
+    "relatedFormats": [".nes", ".gb", ".gbc", ".gba", ".gfx", ".til"],
+    "extensions": [".chr"]
+  },
+  "QualityMetrics": {
+    "CompletenessScore": 82,
+    "DocumentationLevel": "comprehensive",
+    "BlocksDefined": 22,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-13",
+    "PriorityFormat": true,
+    "AutoRefined": false
+  }
+}

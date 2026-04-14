@@ -1,0 +1,271 @@
+/* ============================================================
+   Format:    GBA / SNES Raw Tile Graphics
+   Category:  Game
+   Ext:       .gfx
+   Editor:    tile-editor
+   Desc:      Raw tile graphics blob extracted from Game Boy Advance or SNES ROM.
+              No file header — pure binary tile data at offset 0.
+              GBA most common: 4bpp (32 bytes/tile 8x8), MSB-first packed.
+              SNES: 4bpp interleaved 2-plane (32 bytes/tile) or 2bpp (16 bytes/tile).
+              GBA 8bpp mode: 64 bytes per tile.
+   Variables: fileSize, tileCount4bpp, tileCount2bpp, tileCount8bpp,
+              defaultBytesPerTile, formattedSize
+   Detection: extension-only (no magic bytes)
+   Updated:   2026-04-13
+   ============================================================ */
+{
+  "diffMode": "binary",
+  "formatName": "GBA / SNES Raw Tile Graphics",
+  "version": "2.2",
+  "extensions": [
+    ".gfx"
+  ],
+  "description": "Raw tile graphics data extracted from Game Boy Advance (GBA) or Super Nintendo (SNES) ROMs. No file header — pure binary tile pixels starting at offset 0. GBA typically uses 4bpp MSB-first packed format (32 bytes per 8x8 tile); SNES uses 4bpp interleaved 2-plane pairs or 2bpp planar format. GBA 256-color mode uses 8bpp (64 bytes per tile).",
+  "category": "Game",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "tile-editor",
+  "mimeTypes": [
+    "application/octet-stream"
+  ],
+  "software": [
+    "GBA Graphics Editor (GBE)",
+    "Tile Molester",
+    "Tile Layer Pro",
+    "YY-CHR",
+    "VisualBoyAdvance-M (debugger)",
+    "Snes9x (debugger)",
+    "CrystalTile2",
+    "Grit (GBA graphics converter)"
+  ],
+  "useCases": [
+    "GBA ROM hacking — edit sprite and background tile graphics",
+    "SNES ROM hacking — modify character and background tiles",
+    "Retro game asset extraction and replacement",
+    "Pixel art archaeology",
+    "Game reverse engineering",
+    "Fan translation graphics localization"
+  ],
+  "references": {
+    "specifications": [
+      "GBA Tile Data Format — GBATEK Technical Reference",
+      "SNES PPU Tile Format — SNES Development Manual",
+      "GBA Programming Manual — Nintendo, 2001",
+      "Mode 7 and BG tile formats — fullsnes.txt (nocash)"
+    ],
+    "WebLinks": [
+      "https://problemkaputt.de/gbatek.htm#lcdobjvram",
+      "https://snes.nesdev.org/wiki/VRAM",
+      "https://problemkaputt.de/fullsnes.htm",
+      "https://www.coranac.com/tonc/text/bitmaps.htm"
+    ]
+  },
+  "detection": {
+    "required": false,
+    "validation": {
+      "min_file_size": 32,
+      "notes": "No magic bytes. Detected by .gfx extension only. File size should ideally be a multiple of 32 (4bpp tile size) or 16 (2bpp tile size)."
+    }
+  },
+  "variables": {
+    "fileSize": 0,
+    "tileCount4bpp": 0,
+    "tileCount2bpp": 0,
+    "tileCount8bpp": 0,
+    "defaultBytesPerTile": 32,
+    "formattedSize": ""
+  },
+  "functions": {
+    "computeFromVariables(fileSize / 32, tileCount4bpp)": "Tile count at 4bpp — 32 bytes per 8x8 tile (GBA standard, SNES 4bpp)",
+    "computeFromVariables(fileSize / 16, tileCount2bpp)": "Tile count at 2bpp — 16 bytes per 8x8 tile (SNES 2bpp, NES-style)",
+    "computeFromVariables(fileSize / 64, tileCount8bpp)": "Tile count at 8bpp — 64 bytes per 8x8 tile (GBA 256-color mode)",
+    "formatFileSize(var:fileSize)": "Human-readable file size"
+  },
+  "blocks": [
+    {
+      "type": "metadata",
+      "name": "File Size",
+      "variable": "formattedSize",
+      "description": "Total file size. Should be a multiple of 32 (4bpp) or 16 (2bpp)."
+    },
+    {
+      "type": "computeFromVariables",
+      "expression": "fileSize / 32",
+      "storeAs": "tileCount4bpp",
+      "description": "Tile count at 4bpp (32 bytes/tile — GBA standard)"
+    },
+    {
+      "type": "computeFromVariables",
+      "expression": "fileSize / 16",
+      "storeAs": "tileCount2bpp",
+      "description": "Tile count at 2bpp (16 bytes/tile — SNES 2bpp / NES-style)"
+    },
+    {
+      "type": "computeFromVariables",
+      "expression": "fileSize / 64",
+      "storeAs": "tileCount8bpp",
+      "description": "Tile count at 8bpp (64 bytes/tile — GBA 256-color mode)"
+    },
+    {
+      "type": "metadata",
+      "name": "Tile Count (4bpp — GBA default)",
+      "variable": "tileCount4bpp",
+      "description": "8x8 tiles at 4bpp (32 bytes each). Most GBA games use 4bpp for sprites and BG layers."
+    },
+    {
+      "type": "metadata",
+      "name": "Tile Count (2bpp — SNES 2bpp mode)",
+      "variable": "tileCount2bpp",
+      "description": "8x8 tiles at 2bpp (16 bytes each). Used by SNES text/UI layers and some backgrounds."
+    },
+    {
+      "type": "metadata",
+      "name": "Tile Count (8bpp — GBA 256-color)",
+      "variable": "tileCount8bpp",
+      "description": "8x8 tiles at 8bpp (64 bytes each). GBA 256-color background mode (BG_CNT bit 7 set)."
+    },
+    {
+      "type": "metadata",
+      "name": "Default Bytes Per Tile",
+      "variable": "defaultBytesPerTile",
+      "description": "32 bytes is the GBA 4bpp tile size — the most common format for .gfx files"
+    },
+    {
+      "type": "metadata",
+      "name": "GBA 4bpp Encoding",
+      "variable": "tileCount4bpp",
+      "description": "GBA 4bpp: each byte holds 2 pixels (low nibble = pixel 0, high nibble = pixel 1). Row-major scan left-to-right, top-to-bottom. 4 bytes per row × 8 rows = 32 bytes/tile. 16 colors per tile from a 16-entry palette."
+    },
+    {
+      "type": "metadata",
+      "name": "SNES 4bpp Encoding",
+      "variable": "tileCount4bpp",
+      "description": "SNES 4bpp: 2 interleaved 2-plane pairs per tile. Bytes 0–15: planes 0+1 interleaved (2 bytes/row × 8 rows). Bytes 16–31: planes 2+3 interleaved. Pixel color = bits from all 4 planes combined (plane0 LSB → plane3 MSB)."
+    },
+    {
+      "type": "metadata",
+      "name": "SNES 2bpp Encoding",
+      "variable": "tileCount2bpp",
+      "description": "SNES 2bpp: 2 planes interleaved, 1 pair per row (byte[2n]=plane0, byte[2n+1]=plane1). 16 bytes per tile, 4 colors per tile from a 4-entry sub-palette."
+    },
+    {
+      "type": "metadata",
+      "name": "GBA 8bpp Encoding",
+      "variable": "tileCount8bpp",
+      "description": "GBA 8bpp: one byte per pixel, linear layout. 8 bytes per row × 8 rows = 64 bytes/tile. 256 colors from a single 256-entry palette. Used in BG mode 0/1 with BG_CNT bit 7 set."
+    },
+    {
+      "type": "field",
+      "name": "Tile 0 Data (4bpp baseline)",
+      "offset": 0,
+      "length": 32,
+      "color": "#4EA0FF",
+      "opacity": 0.2,
+      "description": "First 8x8 tile at 4bpp (GBA standard). 32 bytes: 4 bytes/row × 8 rows. Low nibble = left pixel, high nibble = right pixel.",
+      "valueType": "bytes"
+    },
+    {
+      "type": "field",
+      "name": "Tile 1 Data (4bpp baseline)",
+      "offset": 32,
+      "length": 32,
+      "color": "#4EA0FF",
+      "opacity": 0.15,
+      "description": "Second 8x8 tile at 4bpp. Pattern continues for remaining tiles.",
+      "valueType": "bytes"
+    },
+    {
+      "type": "metadata",
+      "name": "Palette Sizes",
+      "variable": "defaultBytesPerTile",
+      "description": "2bpp → 4 colors; 4bpp → 16 colors (from a 16-entry 15bpp GBA palette); 8bpp → 256 colors (from a 256-entry 15bpp GBA palette). GBA palette format: 16-bit BGR555 (2 bytes per color)."
+    },
+    {
+      "type": "metadata",
+      "name": "GBA VRAM Layout Note",
+      "variable": "formattedSize",
+      "description": "GBA VRAM base: 0x06000000. Tile data for BG layers at 0x06000000–0x0600FFFF (64KB). Sprite tile data at 0x06010000–0x06017FFF (32KB). Tile data organized in 16KB charblocks (CBB0–CBB3 for BG, SBB for sprites)."
+    },
+    {
+      "type": "metadata",
+      "name": "SNES VRAM Layout Note",
+      "variable": "formattedSize",
+      "description": "SNES VRAM is 64KB at addresses 0x0000–0xFFFF (PPU internal). BG tile data typically at 0x0000–0x3FFF; sprite (OBJ) data at 0x6000–0x7FFF. Tilemap at separate VRAM area."
+    },
+    {
+      "type": "metadata",
+      "name": "Extraction Tools",
+      "variable": "formattedSize",
+      "description": "Common extraction tools: Grit (GBA graphics converter), CrystalTile2 (universal), Tile Molester, UNLZ-GBA (for LZ77-compressed graphics). Many GBA .gfx files are LZ77-decompressed before being saved as .gfx."
+    },
+    {
+      "type": "metadata",
+      "name": "TileEditor Usage Hint",
+      "variable": "defaultBytesPerTile",
+      "description": "Open in WpfHexEditor TileEditor → select BPP=4 for GBA sprites/backgrounds, BPP=2 for SNES 2bpp layers, BPP=8 for GBA 256-color backgrounds. TileSize=8x8 for most cases; 16x16 for double-size sprites."
+    },
+    {
+      "type": "metadata",
+      "name": "ROM Hacking Context",
+      "variable": "formattedSize",
+      "description": "GBA .gfx files are typically extracted by locating LZSS/LZ77 compressed blocks in the ROM (GBA BIOS decompression at 0x0800F0F8), decompressing them, then saving the raw tile data. Re-insertion requires recompression and patching the ROM pointer table."
+    }
+  ],
+  "TechnicalDetails": {
+    "platform": ["Game Boy Advance", "Super Nintendo", "SNES", "GBA"],
+    "bitsPerPixel": "2 / 4 / 8 (varies by mode)",
+    "tileSize": "8x8 (standard); 16x16 for double-size GBA sprites",
+    "encoding": {
+      "gba_4bpp": "MSB-first nibble-packed: low nibble = pixel 0, high nibble = pixel 1, 4 bytes/row",
+      "gba_8bpp": "Linear: one byte per pixel, 8 bytes/row",
+      "snes_4bpp": "Interleaved 2-plane pairs: planes 0+1 in bytes 0–15, planes 2+3 in bytes 16–31",
+      "snes_2bpp": "Interleaved: plane-0 and plane-1 bytes alternating, 2 bytes/row"
+    },
+    "colorDepth": "4bpp → 16 colors; 8bpp → 256 colors; 2bpp → 4 colors",
+    "compression": "none (raw dump; source ROM may use LZ77)",
+    "paletteFormat": "GBA: 15-bit BGR555 (2 bytes/color); SNES: 15-bit BGR555"
+  },
+  "forensic": {
+    "category": "game-graphics",
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      "File size not a multiple of 32 or 16 (incomplete tile — possible extraction error)",
+      "All-zero content — empty tile bank or failed decompression",
+      "Repeating 32-byte pattern — likely padding or compressed data not yet decompressed"
+    ]
+  },
+  "navigation": {
+    "bookmarks": [
+      { "name": "Tile 0", "offset": 0,    "description": "First tile (32 bytes at 4bpp)" },
+      { "name": "Tile 16", "offset": 512, "description": "17th tile — second display row (16 tiles/row in TileEditor)" },
+      { "name": "Tile 32", "offset": 1024, "description": "33rd tile — third display row" },
+      { "name": "Tile 256", "offset": 8192, "description": "Tile 256 — one 8KB charblock boundary" },
+      { "name": "Tile 512", "offset": 16384, "description": "Tile 512 — two 8KB charblocks" }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "GBA/SNES raw tile graphics — no header, pure binary pixel data. Most common: GBA 4bpp (32 bytes/tile 8x8). May be LZ77-decompressed output.",
+    "suggestedInspections": [
+      "Verify file size is a multiple of 32 (4bpp) or 16 (2bpp); non-multiples suggest extraction errors",
+      "Check for repeating 32-byte blocks — may indicate padding or failed decompression",
+      "Identify non-zero regions: these are actual tile data vs blank padding tiles",
+      "Count tiles: fileSize/32 at 4bpp; compare against expected sprite/tileset size",
+      "All-zero content likely means LZ77-compressed data that was not decompressed first",
+      "Pattern at bytes 0–3 of each 32-byte block: low nibble = pixel column 0, high nibble = pixel column 1"
+    ]
+  },
+  "format_relationships": {
+    "category": "Game",
+    "parentFormats": [".gba (GBA ROM — GFX data embedded, often LZ77 compressed)", ".smc / .sfc (SNES ROM)"],
+    "relatedFormats": [".chr", ".til", ".gba", ".smc", ".sfc"],
+    "extensions": [".gfx"]
+  },
+  "QualityMetrics": {
+    "CompletenessScore": 78,
+    "DocumentationLevel": "comprehensive",
+    "BlocksDefined": 20,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-13",
+    "PriorityFormat": true,
+    "AutoRefined": false
+  }
+}
