@@ -116,8 +116,8 @@ public sealed class AutoHideBarHoverPreview
             Child              = _border,
             AllowsTransparency = true,
             Placement          = PlacementMode.Right,  // overridden by ConfigurePlacement()
-            StaysOpen          = false,
-            IsHitTestVisible   = false   // pointer events pass through
+            StaysOpen          = true,   // false would create a Win32 mouse-capture HWND that suppresses WPF MouseLeave on the bar
+            IsHitTestVisible   = false   // pointer events pass through → button/bar MouseLeave still fires normally
         };
 
         // -- Hover timer ------------------------------------------------------
