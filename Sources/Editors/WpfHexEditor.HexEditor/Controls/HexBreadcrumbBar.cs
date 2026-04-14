@@ -337,19 +337,25 @@ public sealed class HexBreadcrumbBar : Border
     }
 
     /// <summary>
-    /// Raises NavigateRequested after setting _navigating=true, then clears it via
-    /// BeginInvoke(Input) once all pending mouse events from the current click are drained.
-    /// This prevents SetSegments/SetBookmarks from calling Children.Clear() while a mouse
-    /// event is still on the call stack, which would cause WPF to re-dispatch MouseDown to
-    /// the freshly created element → infinite NavigateRequested loop.
+    /// Raises NavigateRequested with _navigating=true so that SetSegments/SetBookmarks
+    /// cannot mutate the visual tree (Children.Clear) synchronously during the call.
+    /// The primary protection is HexEditor._bcNavigationPending (Render-priority deferred);
+    /// _navigating here is a defence-in-depth for any synchronous re-entry path.
     /// </summary>
     private void RaiseNavigateRequested(long offset, int length)
     {
         _navigating = true;
-        NavigateRequested?.Invoke(this, new BreadcrumbNavigateEventArgs { Offset = offset, Length = length });
-        // Drain all pending input events before allowing visual tree mutations.
-        Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Input,
-            () => _navigating = false);
+        try
+        {
+            NavigateRequested?.Invoke(this, new BreadcrumbNavigateEventArgs { Offset = offset, Length = length });
+        }
+        finally
+        {
+            // Clear synchronously after the full NavigateRequested call chain returns.
+            // At this point the mouse event is still on the stack, but _bcNavigationPending
+            // in HexEditor (cleared at Render priority) ensures SetSegments is never reached.
+            _navigating = false;
+        }
     }
 
     // ── Helpers ────────────────────────────────────────────────────────────────

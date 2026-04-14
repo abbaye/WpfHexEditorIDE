@@ -25,10 +25,15 @@ public partial class HexEditor
     private HexBreadcrumbBar? _breadcrumbBar;
     private CustomBackgroundBlock? _bcLastBlock;
     private bool _bcLastBlockWasNull;    // disambiguates null from "not yet set"
-    private bool _bcUpdating;            // re-entrancy guard
     private bool _bcBookmarksRendered;   // true once SetBookmarks has been called for the current format
     private List<FormatNavigationBookmark>? _bcCachedBookmarks;
     private List<BreadcrumbSection>? _bcSections;
+
+    // Set to true when OnBreadcrumbNavigate processes a click; cleared only when
+    // UpdateBreadcrumb is called from a non-navigation source (real cursor move).
+    // While true, UpdateBreadcrumb only updates the offset text — it never calls
+    // SetSegments/SetBookmarks, so Children.Clear() never runs during a mouse event.
+    private bool _bcNavigationPending;
 
     public event EventHandler<BreadcrumbEnrichEventArgs>? BreadcrumbEnrichRequested;
 
@@ -97,13 +102,14 @@ public partial class HexEditor
 
     private void OnBreadcrumbNavigate(object? sender, BreadcrumbNavigateEventArgs e)
     {
-        // Layer 1 guard: block UpdateBreadcrumb re-entry while SetPosition/SelectionStop
-        // are being committed (they fire OnSelectionChanged → UpdateBreadcrumb spuriously).
-        // Layer 2 guard lives in HexBreadcrumbBar._navigating: it blocks SetSegments/SetBookmarks
-        // from doing Children.Clear() while the originating mouse event is still on the stack.
-        // Both layers are needed — this one prevents the double rebuild, the other prevents
-        // the WPF MouseDown re-dispatch loop on newly created visual elements.
-        _bcUpdating = true;
+        // Block all visual tree mutations (SetSegments / SetBookmarks → Children.Clear) while
+        // we are still inside the mouse event chain. We set _bcNavigationPending=true here and
+        // clear it in the deferred action below, which runs at Render priority — after WPF has
+        // fully processed and closed the originating MouseDown / MenuItem.Click event.
+        // Until then, UpdateBreadcrumb() only refreshes the offset text and exits early,
+        // so RenderPathSegments (which does Children.Clear + re-Add) is never called.
+        _bcNavigationPending = true;
+
         SetPosition(e.Offset);
         if (e.Length > 0 && e.Length <= 256)
             SelectionStop = e.Offset + e.Length - 1;
@@ -112,11 +118,11 @@ public partial class HexEditor
         _bcLastBlock = null;
         _bcLastBlockWasNull = false;
 
-        // Defer to Input priority — same priority used by HexBreadcrumbBar._navigating reset,
-        // so the visual rebuild happens exactly once after both guards are cleared.
-        Dispatcher.BeginInvoke(DispatcherPriority.Input, () =>
+        // Use Render priority (higher than Input) so the flag is cleared and the rebuild
+        // runs in a single dispatcher frame, after all input processing is done.
+        Dispatcher.BeginInvoke(DispatcherPriority.Render, () =>
         {
-            _bcUpdating = false;
+            _bcNavigationPending = false;
             UpdateBreadcrumb();
         });
     }
@@ -125,13 +131,20 @@ public partial class HexEditor
 
     internal void UpdateBreadcrumb()
     {
-        if (_bcUpdating) return;
         if (_breadcrumbBar is null || _breadcrumbBar.Visibility != Visibility.Visible) return;
 
         var offset = SelectionStart >= 0 ? SelectionStart : 0;
         var selLen = (SelectionStop > SelectionStart) ? SelectionStop - SelectionStart + 1 : 0;
 
+        // Always update the offset text — it is safe (no Children.Clear).
         _breadcrumbBar.UpdateOffsetOnly(offset, selLen);
+
+        // Do NOT rebuild segments while a BCB navigation click is still being processed.
+        // SetSegments → RenderPathSegments does Children.Clear() + re-Add, which causes WPF
+        // to re-dispatch MouseLeftButtonDown to the newly created element → infinite loop.
+        // The deferred Render-priority action in OnBreadcrumbNavigate clears this flag and
+        // calls UpdateBreadcrumb() again once the visual tree is safe to mutate.
+        if (_bcNavigationPending) return;
 
         var block = _customBackgroundService.GetBlockAt(offset);
 
@@ -190,6 +203,7 @@ public partial class HexEditor
     {
         _bcLastBlock = null;
         _bcLastBlockWasNull = false;
+        _bcNavigationPending = false;
         _bcCachedBookmarks = null;
         _bcBookmarksRendered = false; // allow SetBookmarks on next UpdateBreadcrumb
         _bcSections = null;           // force section index rebuild on next update
