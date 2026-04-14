@@ -14,6 +14,14 @@ A full-featured WPF hex editor UserControl for .NET 8. Successor to [WPFHexaEdit
 dotnet add package WPFHexaEditor
 ```
 
+## What's New in 3.1.2
+
+- **Fix**: Corrupted or malformed `.whfmt` files no longer crash the IDE — load failures are captured in `FormatLoadFailure` and surfaced in the StatusBar (`⚠ N whfmt failed to load`) instead of propagating exceptions
+- **Perf**: `EmbeddedFormatCatalog` singleton and lazy caches modernized — `LazyInitializer.EnsureInitialized` replaces manual double-checked lock; `GetAll()` / `GetCategories()` now return `IReadOnlySet<T>` backed by `FrozenSet<T>` for better thread safety and lookup performance
+- **Test**: `MakeEntries(rethrow: true)` / `MakeCategories()` exposed as `public static` factory methods — enables `LoadResourcesTest` build-gate that fails immediately if any embedded `.whfmt` resource is corrupt before it ships in a NuGet package
+- **Feat**: New format definition `ROM_SNES_SRM` (SNES save RAM)
+- **Fix**: `.whfmt` `references` schema v2 — standardized across Game and Archives categories
+
 ## What's New in 3.1.1.1
 
 - **Fix**: Invalid `\x` JSON escape sequences in `HDF5.whfmt`, `NETCDF.whfmt`, `NPY.whfmt` — `\x89`, `\x01`, `\x02`, `\x93` are not valid JSON escapes and caused `JsonReaderException` in `EmbeddedFormatCatalog.LoadHeader`. Replaced with human-readable hex notation.
