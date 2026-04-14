@@ -328,8 +328,14 @@ namespace WpfHexEditor.Core.Services
                     return false;
             }
 
-            // v2.0: entropy hint check (fast 512-byte sample)
-            if (format.Detection?.EntropyHint != null)
+            // v2.0: entropy hint check (fast 512-byte sample).
+            // Skipped for Strong/Unique signatures: a verified magic byte sequence is already
+            // definitive proof of identity — entropy filtering only adds false-negative risk for
+            // text-based formats with strong signatures (e.g. RTF, XML, SVG) where entropy varies
+            // widely depending on content. Entropy is useful only for weak/no-signature formats
+            // (e.g. compressed archives where high entropy is the primary signal).
+            if (format.Detection?.EntropyHint != null &&
+                GetSignatureStrength(format.Detection) < SignatureStrength.Strong)
             {
                 double entropy = ComputeEntropy(data);
                 var hint = format.Detection.EntropyHint;
