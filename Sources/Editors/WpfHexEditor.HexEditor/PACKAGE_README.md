@@ -14,6 +14,10 @@ A full-featured WPF hex editor UserControl for .NET 8. Successor to [WPFHexaEdit
 dotnet add package WPFHexaEditor
 ```
 
+## What's New in 3.1.2
+
+- **Fix**: Invalid `\x` JSON escape sequences in `HDF5.whfmt`, `NETCDF.whfmt`, `NPY.whfmt` — `\x89`, `\x01`, `\x02`, `\x93` are not valid JSON escapes and caused `JsonReaderException` in `EmbeddedFormatCatalog.LoadHeader`. Replaced with human-readable hex notation.
+
 ## What's New in 3.1.1
 
 - **Fix**: `TechnicalDetails.SampleRate` changed from `int?` to `string?` — AMR and OPUS had descriptive values like `"8000 Hz (AMR-NB) / 16000 Hz (AMR-WB)"` that were silently dropped
