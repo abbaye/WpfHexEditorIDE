@@ -46,6 +46,13 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
         public void Undo()
         {
+            // In shared mode, route through the shared engine which calls Revert() on the entry.
+            if (_sharedUndoEngine is not null)
+            {
+                SharedUndo();
+                return;
+            }
+
             if (!_undoEngine.CanUndo) return;
 
             try
@@ -68,6 +75,13 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
         public void Redo()
         {
+            // In shared mode, route through the shared engine which calls Apply() on the entry.
+            if (_sharedUndoEngine is not null)
+            {
+                SharedRedo();
+                return;
+            }
+
             if (!_undoEngine.CanRedo) return;
 
             try
@@ -257,6 +271,11 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 var entry = new Models.CodeEditorUndoEntry(kind, e.Position, recordedText);
                 _undoEngine.Push(entry);
                 // _isDirty + events are handled by OnUndoEngineStateChanged via StateChanged.
+
+                // Dual-push: also promote to the shared engine when co-editing.
+                // _suppressLocalUndoRedo guard prevents re-push during replay.
+                if (!_suppressLocalUndoRedo)
+                    PushToSharedEngine(entry);
             }
 
             // Phase 5: Trigger validation with debounce
@@ -688,14 +707,16 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         public TextSelection Selection => _selection;
 
         /// <summary>
-        /// Check if can undo
+        /// Check if can undo. Delegates to the shared engine when co-editing,
+        /// or to the local <c>_undoEngine</c> in standalone mode.
         /// </summary>
-        public bool CanUndo => _undoEngine.CanUndo;
+        public bool CanUndo => _sharedUndoEngine?.CanUndo ?? _undoEngine.CanUndo;
 
         /// <summary>
-        /// Check if can redo
+        /// Check if can redo. Delegates to the shared engine when co-editing,
+        /// or to the local <c>_undoEngine</c> in standalone mode.
         /// </summary>
-        public bool CanRedo => _undoEngine.CanRedo;
+        public bool CanRedo => _sharedUndoEngine?.CanRedo ?? _undoEngine.CanRedo;
 
         /// <summary>Number of available undo steps.</summary>
         public int UndoCount => _undoEngine.UndoCount;
@@ -800,6 +821,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             _breakpointGutterControl?.SetFilePath(_currentFilePath);
             if (_smartCompletePopup is not null) _smartCompletePopup.CurrentFilePath = filePath;
             _undoEngine.MarkSaved();  // Stamp save-point so Undo can detect "back to clean".
+            MarkSharedSaved();        // Also stamp the shared engine when co-editing.
             _changeTracker.MarkSavePoint(_document.Lines.Select(l => l.Text).ToList());
             _lspClient?.SaveDocument(filePath);
             _isDirty = false;

@@ -109,12 +109,38 @@ jobs:
           --configuration Release `
           --no-restore
 
-    - name: 📦 Create NuGet packages
-      run: |
-        dotnet pack Sources/WPFHexaEditor/WpfHexEditorCore.csproj `
-          --configuration Release --no-build --output ./artifacts
-        dotnet pack Sources/WpfHexEditor.SDK/WpfHexEditor.SDK.csproj `
-          --configuration Release --no-build --output ./artifacts
+     - name: 📦 Create NuGet packages
+       shell: pwsh
+       run: |
+         $projects = @(
+           'Sources/Controls/WpfHexEditor.ColorPicker/WpfHexEditor.ColorPicker.csproj',
+           'Sources/Controls/WpfHexEditor.Terminal/WpfHexEditor.Terminal.csproj',
+           'Sources/Core/WpfHexEditor.Core.BinaryAnalysis/WpfHexEditor.Core.BinaryAnalysis.csproj',
+           'Sources/Core/WpfHexEditor.Core.ByteProvider/WpfHexEditor.Core.ByteProvider.csproj',
+           'Sources/Core/WpfHexEditor.Core.Decompiler/WpfHexEditor.Core.Decompiler.csproj',
+           'Sources/Docking/WpfHexEditor.Docking.Core/WpfHexEditor.Docking.Core.csproj',
+           'Sources/Docking/WpfHexEditor.Docking.Wpf/WpfHexEditor.Docking.Wpf.csproj',
+           'Sources/Editors/WpfHexEditor.Editor.AudioViewer/WpfHexEditor.Editor.AudioViewer.csproj',
+           'Sources/Editors/WpfHexEditor.Editor.CodeEditor/WpfHexEditor.Editor.CodeEditor.csproj',
+           'Sources/Editors/WpfHexEditor.Editor.DiffViewer/WpfHexEditor.Editor.DiffViewer.csproj',
+           'Sources/Editors/WpfHexEditor.Editor.DisassemblyViewer/WpfHexEditor.Editor.DisassemblyViewer.csproj',
+           'Sources/Editors/WpfHexEditor.Editor.DocumentEditor.Core/WpfHexEditor.Editor.DocumentEditor.Core.csproj',
+           'Sources/Editors/WpfHexEditor.Editor.DocumentEditor/WpfHexEditor.Editor.DocumentEditor.csproj',
+           'Sources/Editors/WpfHexEditor.Editor.EntropyViewer/WpfHexEditor.Editor.EntropyViewer.csproj',
+           'Sources/Editors/WpfHexEditor.Editor.ImageViewer/WpfHexEditor.Editor.ImageViewer.csproj',
+           'Sources/Editors/WpfHexEditor.Editor.MarkdownEditor.Core/WpfHexEditor.Editor.MarkdownEditor.Core.csproj',
+           'Sources/Editors/WpfHexEditor.Editor.MarkdownEditor/WpfHexEditor.Editor.MarkdownEditor.csproj',
+           'Sources/Editors/WpfHexEditor.Editor.ScriptEditor/WpfHexEditor.Editor.ScriptEditor.csproj',
+           'Sources/Editors/WpfHexEditor.Editor.StructureEditor/WpfHexEditor.Editor.StructureEditor.csproj',
+           'Sources/Editors/WpfHexEditor.Editor.TextEditor/WpfHexEditor.Editor.TextEditor.csproj',
+           'Sources/Editors/WpfHexEditor.Editor.TileEditor/WpfHexEditor.Editor.TileEditor.csproj',
+           'Sources/Editors/WpfHexEditor.HexEditor/WpfHexEditor.HexEditor.csproj',
+           'Sources/Plugins/WpfHexEditor.SDK/WpfHexEditor.SDK.csproj'
+         )
+         foreach ($proj in $projects) {
+           Write-Host "📦 Packing $proj"
+           dotnet pack $proj --configuration Release --no-build --output ./artifacts/nuget
+         }
 
     - name: 📤 Upload NuGet package artifact
       uses: actions/upload-artifact@v4

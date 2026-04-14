@@ -135,10 +135,10 @@ public sealed class HexEditorDefaultSettings
     // -- Column / Row Highlight -------------------------------------------
 
     /// <summary>Show the active-column stripe in the hex byte panel.</summary>
-    public bool ShowColumnHighlight { get; set; } = true;
+    public bool ShowColumnHighlight { get; set; } = false;
 
     /// <summary>Show the active-column stripe in the ASCII panel.</summary>
-    public bool ShowAsciiColumnHighlight { get; set; } = true;
+    public bool ShowAsciiColumnHighlight { get; set; } = false;
 
     /// <summary>Show the active-row (line) highlight behind the cursor row.</summary>
     public bool ShowRowHighlight { get; set; } = true;

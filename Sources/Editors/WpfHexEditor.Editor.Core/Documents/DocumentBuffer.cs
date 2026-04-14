@@ -11,6 +11,7 @@
 // ==========================================================
 
 using System.Windows.Threading;
+using WpfHexEditor.Editor.Core.Undo;
 
 namespace WpfHexEditor.Editor.Core.Documents;
 
@@ -34,6 +35,20 @@ internal sealed class DocumentBuffer : IDocumentBuffer
 
     public int    Version { get { lock (_lock) return _version; } }
     public string Text    { get { lock (_lock) return _text;    } }
+
+    // -- IDocumentBuffer : Shared undo engine ------------------------------
+
+    private UndoEngine? _sharedUndoEngine;
+
+    /// <inheritdoc/>
+    public UndoEngine? SharedUndoEngine => _sharedUndoEngine;
+
+    /// <summary>
+    /// Returns the shared <see cref="UndoEngine"/> for this buffer, creating it
+    /// lazily on first call. Only <c>DocumentManager</c> should call this.
+    /// </summary>
+    internal UndoEngine GetOrCreateSharedUndoEngine()
+        => _sharedUndoEngine ??= new UndoEngine();
 
     // -- IDocumentBuffer : Event -------------------------------------------
 

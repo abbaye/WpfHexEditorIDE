@@ -106,8 +106,7 @@ public sealed class HexEditorServiceImpl : IHexEditorService
     public void WriteBytes(long offset, byte[] data)
     {
         if (_activeEditor is null || data.Length == 0) return;
-        // TODO: wire to HexEditor's SetByte / paste API when available.
-        // Stub: no-op until the HexEditor write API is exposed.
+        _activeEditor.ModifyBytes(offset, data);
     }
 
     public IReadOnlyList<long> SearchHex(string hexPattern)

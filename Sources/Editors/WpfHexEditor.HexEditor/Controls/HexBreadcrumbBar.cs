@@ -70,6 +70,13 @@ public sealed class HexBreadcrumbBar : Border
     private long _selectionLength;
     private List<BreadcrumbSegment> _segments = new();
 
+    // Guard: true while NavigateRequested is pending dispatch.
+    // Prevents SetSegments/SetBookmarks from mutating the visual tree (Children.Clear + re-Add)
+    // while a mouse event is still on the call stack — WPF would otherwise re-dispatch
+    // MouseLeftButtonDown to the newly created element at the same screen position,
+    // causing NavigateRequested to fire again in an infinite loop.
+    private bool _navigating;
+
     // ── Static ────────────────────────────────────────────────────────────────
     private static readonly Brush SepLineBrush;
     private static readonly FontFamily MdlFont = new("Segoe MDL2 Assets");
@@ -166,6 +173,10 @@ public sealed class HexBreadcrumbBar : Border
     /// <summary>Rebuild path segments (debounced call from HexEditor).</summary>
     public void SetSegments(List<BreadcrumbSegment>? segments)
     {
+        // Do not mutate the visual tree while a navigation click is still being processed.
+        // Children.Clear() + re-Add during a MouseDown causes WPF to re-dispatch the event
+        // to the newly created element → NavigateRequested fires again → infinite loop.
+        if (_navigating) return;
         _segments = segments ?? new();
         RenderPathSegments();
     }
@@ -173,6 +184,7 @@ public sealed class HexBreadcrumbBar : Border
     /// <summary>Sets navigation bookmark chips.</summary>
     public void SetBookmarks(IEnumerable<FormatNavigationBookmark>? bookmarks)
     {
+        if (_navigating) return;
         _bookmarkPanel.Children.Clear();
         var list = bookmarks?.ToList();
         if (list == null || list.Count == 0) { _separator2.Visibility = Visibility.Collapsed; return; }
@@ -207,7 +219,7 @@ public sealed class HexBreadcrumbBar : Border
             {
                 if (s is Border b && b.Tag is long bmOff)
                 {
-                    NavigateRequested?.Invoke(this, new BreadcrumbNavigateEventArgs { Offset = bmOff });
+                    RaiseNavigateRequested(bmOff, 0);
                     ev.Handled = true;
                 }
             };
@@ -313,8 +325,7 @@ public sealed class HexBreadcrumbBar : Border
         }
         else
         {
-            NavigateRequested?.Invoke(this, new BreadcrumbNavigateEventArgs
-                { Offset = seg.Offset, Length = seg.Length });
+            RaiseNavigateRequested(seg.Offset, seg.Length);
         }
         e.Handled = true;
     }
@@ -322,12 +333,28 @@ public sealed class HexBreadcrumbBar : Border
     private void OnMenuItemClick(object sender, RoutedEventArgs e)
     {
         if (sender is MenuItem mi && mi.Tag is BreadcrumbSegment item)
+            RaiseNavigateRequested(item.Offset, item.Length);
+    }
+
+    /// <summary>
+    /// Raises NavigateRequested with _navigating=true so that SetSegments/SetBookmarks
+    /// cannot mutate the visual tree (Children.Clear) synchronously during the call.
+    /// The primary protection is HexEditor._bcNavigationPending (Render-priority deferred);
+    /// _navigating here is a defence-in-depth for any synchronous re-entry path.
+    /// </summary>
+    private void RaiseNavigateRequested(long offset, int length)
+    {
+        _navigating = true;
+        try
         {
-            NavigateRequested?.Invoke(this, new BreadcrumbNavigateEventArgs
-            {
-                Offset = item.Offset,
-                Length = item.Length,
-            });
+            NavigateRequested?.Invoke(this, new BreadcrumbNavigateEventArgs { Offset = offset, Length = length });
+        }
+        finally
+        {
+            // Clear synchronously after the full NavigateRequested call chain returns.
+            // At this point the mouse event is still on the stack, but _bcNavigationPending
+            // in HexEditor (cleared at Render priority) ensures SetSegments is never reached.
+            _navigating = false;
         }
     }
 

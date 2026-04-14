@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Threading;
 using WpfHexEditor.Core;
 using WpfHexEditor.Core.Interfaces;
 using WpfHexEditor.HexEditor.Controls;
@@ -23,8 +24,16 @@ public partial class HexEditor
 {
     private HexBreadcrumbBar? _breadcrumbBar;
     private CustomBackgroundBlock? _bcLastBlock;
+    private bool _bcLastBlockWasNull;    // disambiguates null from "not yet set"
+    private bool _bcBookmarksRendered;   // true once SetBookmarks has been called for the current format
     private List<FormatNavigationBookmark>? _bcCachedBookmarks;
     private List<BreadcrumbSection>? _bcSections;
+
+    // Set to true when OnBreadcrumbNavigate processes a click; cleared only when
+    // UpdateBreadcrumb is called from a non-navigation source (real cursor move).
+    // While true, UpdateBreadcrumb only updates the offset text — it never calls
+    // SetSegments/SetBookmarks, so Children.Clear() never runs during a mouse event.
+    private bool _bcNavigationPending;
 
     public event EventHandler<BreadcrumbEnrichEventArgs>? BreadcrumbEnrichRequested;
 
@@ -82,26 +91,40 @@ public partial class HexEditor
     {
         if (_breadcrumbBar is not null) return;
 
-        _breadcrumbBar = new HexBreadcrumbBar();
-        _breadcrumbBar.NavigateRequested += OnBreadcrumbNavigate;
+        // The breadcrumb bar is already declared in the XAML template (x:Name="BreadcrumbBar").
+        // Re-use that instance instead of injecting a second one into the grid at runtime,
+        // which would produce a duplicate empty row above the real bar.
+        _breadcrumbBar = this.FindName("BreadcrumbBar") as HexBreadcrumbBar;
+        if (_breadcrumbBar is null) return;
 
-        if (Content is Grid rootGrid)
-        {
-            rootGrid.RowDefinitions.Insert(0, new RowDefinition { Height = GridLength.Auto });
-            foreach (UIElement child in rootGrid.Children)
-                Grid.SetRow(child, Grid.GetRow(child) + 1);
-            Grid.SetRow(_breadcrumbBar, 0);
-            Grid.SetColumnSpan(_breadcrumbBar, rootGrid.ColumnDefinitions.Count > 0
-                ? rootGrid.ColumnDefinitions.Count : 1);
-            rootGrid.Children.Add(_breadcrumbBar);
-        }
+        _breadcrumbBar.NavigateRequested += OnBreadcrumbNavigate;
     }
 
     private void OnBreadcrumbNavigate(object? sender, BreadcrumbNavigateEventArgs e)
     {
+        // Block all visual tree mutations (SetSegments / SetBookmarks → Children.Clear) while
+        // we are still inside the mouse event chain. We set _bcNavigationPending=true here and
+        // clear it in the deferred action below, which runs at Render priority — after WPF has
+        // fully processed and closed the originating MouseDown / MenuItem.Click event.
+        // Until then, UpdateBreadcrumb() only refreshes the offset text and exits early,
+        // so RenderPathSegments (which does Children.Clear + re-Add) is never called.
+        _bcNavigationPending = true;
+
         SetPosition(e.Offset);
         if (e.Length > 0 && e.Length <= 256)
             SelectionStop = e.Offset + e.Length - 1;
+
+        // Invalidate block cache so the deferred rebuild picks up the new position.
+        _bcLastBlock = null;
+        _bcLastBlockWasNull = false;
+
+        // Use Render priority (higher than Input) so the flag is cleared and the rebuild
+        // runs in a single dispatcher frame, after all input processing is done.
+        Dispatcher.BeginInvoke(DispatcherPriority.Render, () =>
+        {
+            _bcNavigationPending = false;
+            UpdateBreadcrumb();
+        });
     }
 
     // ── Update ────────────────────────────────────────────────────────────────
@@ -113,11 +136,27 @@ public partial class HexEditor
         var offset = SelectionStart >= 0 ? SelectionStart : 0;
         var selLen = (SelectionStop > SelectionStart) ? SelectionStop - SelectionStart + 1 : 0;
 
+        // Always update the offset text — it is safe (no Children.Clear).
         _breadcrumbBar.UpdateOffsetOnly(offset, selLen);
 
+        // Do NOT rebuild segments while a BCB navigation click is still being processed.
+        // SetSegments → RenderPathSegments does Children.Clear() + re-Add, which causes WPF
+        // to re-dispatch MouseLeftButtonDown to the newly created element → infinite loop.
+        // The deferred Render-priority action in OnBreadcrumbNavigate clears this flag and
+        // calls UpdateBreadcrumb() again once the visual tree is safe to mutate.
+        if (_bcNavigationPending) return;
+
         var block = _customBackgroundService.GetBlockAt(offset);
-        if (block == _bcLastBlock && _bcLastBlock != null) return;
+
+        // Early-exit when the cursor is still inside the same block.
+        // _bcLastBlockWasNull tracks the previous null state so that "null block → null block"
+        // (cursor moving through untagged bytes) also triggers the early exit instead of
+        // rebuilding the segment list on every keystroke / mouse move.
+        bool blockIsNull = block is null;
+        if (block == _bcLastBlock && blockIsNull == _bcLastBlockWasNull) return;
+
         _bcLastBlock = block;
+        _bcLastBlockWasNull = blockIsNull;
 
         // Ensure section index
         if (_bcSections == null)
@@ -146,16 +185,28 @@ public partial class HexEditor
 
         _breadcrumbBar.SetSegments(segments);
 
-        if (_bcCachedBookmarks == null)
-            _bcCachedBookmarks = ResolveBreadcrumbBookmarks();
-        _breadcrumbBar.SetBookmarks(_bcCachedBookmarks);
+        // Bookmarks are format-level data: they never change during normal navigation.
+        // Only call SetBookmarks once per format load (or after ResetBreadcrumbCache).
+        // Calling it on every UpdateBreadcrumb causes Children.Clear() while a bookmark
+        // chip's MouseDown is still on the call stack → WPF re-dispatches the event to
+        // the newly-created chip at the same position → infinite NavigateRequested loop.
+        if (!_bcBookmarksRendered)
+        {
+            if (_bcCachedBookmarks == null)
+                _bcCachedBookmarks = ResolveBreadcrumbBookmarks();
+            _breadcrumbBar.SetBookmarks(_bcCachedBookmarks);
+            _bcBookmarksRendered = true;
+        }
     }
 
     internal void ResetBreadcrumbCache()
     {
         _bcLastBlock = null;
+        _bcLastBlockWasNull = false;
+        _bcNavigationPending = false;
         _bcCachedBookmarks = null;
-        _bcSections = null; // force rebuild on next update
+        _bcBookmarksRendered = false; // allow SetBookmarks on next UpdateBreadcrumb
+        _bcSections = null;           // force section index rebuild on next update
     }
 
     // ── Section index building ────────────────────────────────────────────────

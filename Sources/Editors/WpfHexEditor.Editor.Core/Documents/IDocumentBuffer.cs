@@ -20,6 +20,8 @@
 //       marshalled to the WPF Dispatcher before raising.
 // ==========================================================
 
+using WpfHexEditor.Editor.Core.Undo;
+
 namespace WpfHexEditor.Editor.Core.Documents;
 
 /// <summary>
@@ -51,6 +53,14 @@ public interface IDocumentBuffer
 
     /// <summary>Fired on the WPF Dispatcher thread after every successful <see cref="SetText"/> call.</summary>
     event EventHandler<DocumentBufferChangedEventArgs> Changed;
+
+    /// <summary>
+    /// Shared undo/redo engine for this buffer.
+    /// Non-null only when at least one editor implementing <see cref="IUndoAwareEditor"/>
+    /// has been attached via <c>DocumentManager</c>.
+    /// <c>null</c> in standalone usage (no <c>DocumentManager</c> involved).
+    /// </summary>
+    UndoEngine? SharedUndoEngine { get; }
 }
 
 /// <summary>

@@ -96,7 +96,9 @@ public partial class DocumentTextPane : UserControl
     /// </summary>
     public void ApplyFormat(string format)
     {
-        // TODO: push TextEditUndoEntry to model.UndoEngine for full edit support
+        if (_model is null) return;
+        // Phase 11: style-change undo requires a StyleChangeUndoEntry (not yet defined).
+        // TextEditUndoEntry covers text mutations only. Blocked until renderer exposes SelectedBlock + style API.
     }
 
     public void ShowLoading(string message = "Loading…") => PART_Renderer.ShowLoading(message);

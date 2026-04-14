@@ -14,11 +14,13 @@
 
   <ItemGroup>
     <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
+    <Using Include="System.IO" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Plugins\WpfHexEditor.PluginHost\WpfHexEditor.PluginHost.csproj" />
     <ProjectReference Include="..\..\Plugins\WpfHexEditor.SDK\WpfHexEditor.SDK.csproj" />
+    <ProjectReference Include="..\..\Core\WpfHexEditor.Core.Events\WpfHexEditor.Core.Events.csproj" />
   </ItemGroup>
 
 </Project>

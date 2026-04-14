@@ -1,0 +1,130 @@
+name: Publish NuGet Package
+
+# Trigger: push a tag matching  <PackageId>/v<semver>
+# Examples:
+#   git tag WPFHexaEditor/v3.0.5           && git push --tags
+#   git tag WpfHexEditor.SDK/v2.0.1        && git push --tags
+#   git tag WpfCodeEditor/v0.9.6.7         && git push --tags
+#   git tag WpfHexEditor.Core.ByteProvider/v1.0.2 && git push --tags
+#
+# All 23 packages are supported. See the PACKAGE_MAP below.
+
+on:
+  push:
+    tags:
+      - '*/v*'
+
+  workflow_dispatch:
+    inputs:
+      package_id:
+        description: 'PackageId (e.g. WPFHexaEditor)'
+        required: true
+      version:
+        description: 'Version (e.g. 3.0.5)'
+        required: true
+
+jobs:
+  publish:
+    name: Pack + Publish — ${{ github.ref_name }}
+    runs-on: windows-latest
+
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.x'
+
+      # ── Resolve package from tag or manual input ──────────────────────────
+
+      - name: 🔍 Resolve package
+        id: resolve
+        shell: pwsh
+        run: |
+          # Map PackageId → relative .csproj path
+          $map = @{
+            'WpfColorPicker'                            = 'Sources/Controls/WpfHexEditor.ColorPicker/WpfHexEditor.ColorPicker.csproj'
+            'WpfTerminal'                               = 'Sources/Controls/WpfHexEditor.Terminal/WpfHexEditor.Terminal.csproj'
+            'WpfHexEditor.Core.BinaryAnalysis'          = 'Sources/Core/WpfHexEditor.Core.BinaryAnalysis/WpfHexEditor.Core.BinaryAnalysis.csproj'
+            'WpfHexEditor.Core.ByteProvider'            = 'Sources/Core/WpfHexEditor.Core.ByteProvider/WpfHexEditor.Core.ByteProvider.csproj'
+            'WpfHexEditor.Core.Decompiler'              = 'Sources/Core/WpfHexEditor.Core.Decompiler/WpfHexEditor.Core.Decompiler.csproj'
+            'WpfHexEditor.Docking.Core'                 = 'Sources/Docking/WpfHexEditor.Docking.Core/WpfHexEditor.Docking.Core.csproj'
+            'WpfDocking'                                = 'Sources/Docking/WpfHexEditor.Docking.Wpf/WpfHexEditor.Docking.Wpf.csproj'
+            'WpfHexEditor.Editor.AudioViewer'           = 'Sources/Editors/WpfHexEditor.Editor.AudioViewer/WpfHexEditor.Editor.AudioViewer.csproj'
+            'WpfCodeEditor'                             = 'Sources/Editors/WpfHexEditor.Editor.CodeEditor/WpfHexEditor.Editor.CodeEditor.csproj'
+            'WpfHexEditor.Editor.DiffViewer'            = 'Sources/Editors/WpfHexEditor.Editor.DiffViewer/WpfHexEditor.Editor.DiffViewer.csproj'
+            'WpfHexEditor.Editor.DisassemblyViewer'     = 'Sources/Editors/WpfHexEditor.Editor.DisassemblyViewer/WpfHexEditor.Editor.DisassemblyViewer.csproj'
+            'WpfHexEditor.Editor.DocumentEditor.Core'   = 'Sources/Editors/WpfHexEditor.Editor.DocumentEditor.Core/WpfHexEditor.Editor.DocumentEditor.Core.csproj'
+            'WpfHexEditor.Editor.DocumentEditor'        = 'Sources/Editors/WpfHexEditor.Editor.DocumentEditor/WpfHexEditor.Editor.DocumentEditor.csproj'
+            'WpfHexEditor.Editor.EntropyViewer'         = 'Sources/Editors/WpfHexEditor.Editor.EntropyViewer/WpfHexEditor.Editor.EntropyViewer.csproj'
+            'WpfHexEditor.Editor.ImageViewer'           = 'Sources/Editors/WpfHexEditor.Editor.ImageViewer/WpfHexEditor.Editor.ImageViewer.csproj'
+            'WpfHexEditor.Editor.MarkdownEditor.Core'   = 'Sources/Editors/WpfHexEditor.Editor.MarkdownEditor.Core/WpfHexEditor.Editor.MarkdownEditor.Core.csproj'
+            'WpfHexEditor.Editor.MarkdownEditor'        = 'Sources/Editors/WpfHexEditor.Editor.MarkdownEditor/WpfHexEditor.Editor.MarkdownEditor.csproj'
+            'WpfHexEditor.Editor.ScriptEditor'          = 'Sources/Editors/WpfHexEditor.Editor.ScriptEditor/WpfHexEditor.Editor.ScriptEditor.csproj'
+            'WpfHexEditor.Editor.StructureEditor'       = 'Sources/Editors/WpfHexEditor.Editor.StructureEditor/WpfHexEditor.Editor.StructureEditor.csproj'
+            'WpfHexEditor.Editor.TextEditor'            = 'Sources/Editors/WpfHexEditor.Editor.TextEditor/WpfHexEditor.Editor.TextEditor.csproj'
+            'WpfHexEditor.Editor.TileEditor'            = 'Sources/Editors/WpfHexEditor.Editor.TileEditor/WpfHexEditor.Editor.TileEditor.csproj'
+            'WPFHexaEditor'                             = 'Sources/Editors/WpfHexEditor.HexEditor/WpfHexEditor.HexEditor.csproj'
+            'WpfHexEditor.SDK'                          = 'Sources/Plugins/WpfHexEditor.SDK/WpfHexEditor.SDK.csproj'
+          }
+
+          if ('${{ github.event_name }}' -eq 'workflow_dispatch') {
+            $packageId = '${{ inputs.package_id }}'
+            $version   = '${{ inputs.version }}'
+          } else {
+            # Tag format: PackageId/vX.Y.Z
+            $tag = '${{ github.ref_name }}'   # e.g. WPFHexaEditor/v3.0.5
+            $parts = $tag -split '/v', 2
+            $packageId = $parts[0]
+            $version   = $parts[1]
+          }
+
+          $csproj = $map[$packageId]
+          if (-not $csproj) {
+            Write-Error "Unknown PackageId '$packageId'. Add it to the PACKAGE_MAP in publish-package.yml."
+            exit 1
+          }
+
+          echo "PACKAGE_ID=$packageId"   >> $env:GITHUB_OUTPUT
+          echo "VERSION=$version"        >> $env:GITHUB_OUTPUT
+          echo "CSPROJ=$csproj"          >> $env:GITHUB_OUTPUT
+          Write-Host "✅ Resolved: $packageId v$version → $csproj"
+
+      # ── Build & pack ──────────────────────────────────────────────────────
+
+      - name: 📦 Restore
+        run: dotnet restore ${{ steps.resolve.outputs.CSPROJ }} --nologo
+
+      - name: 🏗️ Build Release
+        run: |
+          dotnet build ${{ steps.resolve.outputs.CSPROJ }} `
+            -c Release --no-restore --nologo -v minimal
+
+      - name: 📦 Pack
+        run: |
+          dotnet pack ${{ steps.resolve.outputs.CSPROJ }} `
+            -c Release --no-build `
+            -p:Version=${{ steps.resolve.outputs.VERSION }} `
+            --output artifacts/nuget
+        shell: pwsh
+
+      # ── Artifact + publish ────────────────────────────────────────────────
+
+      - name: 📤 Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: nuget-${{ steps.resolve.outputs.PACKAGE_ID }}-${{ steps.resolve.outputs.VERSION }}
+          path: artifacts/nuget/${{ steps.resolve.outputs.PACKAGE_ID }}*.nupkg
+          retention-days: 90
+
+      - name: 🚀 Push to NuGet.org
+        run: |
+          dotnet nuget push artifacts/nuget/${{ steps.resolve.outputs.PACKAGE_ID }}*.nupkg `
+            --api-key ${{ secrets.NUGET_API_KEY }} `
+            --source https://api.nuget.org/v3/index.json `
+            --skip-duplicate
+        shell: pwsh
+
+# Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>

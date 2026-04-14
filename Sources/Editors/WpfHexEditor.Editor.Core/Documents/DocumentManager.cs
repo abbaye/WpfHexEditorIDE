@@ -109,6 +109,15 @@ public sealed class DocumentManager : IDocumentManager
             bufAware.AttachBuffer(buf);
         }
 
+        // Wire shared undo engine when the editor opts into unified undo/redo.
+        // Requires a DocumentBuffer to already exist (i.e. editor also implements IBufferAwareEditor).
+        if (editor is IUndoAwareEditor undoAware && model.Buffer is DocumentBuffer docBuf)
+        {
+            var sharedEngine = docBuf.GetOrCreateSharedUndoEngine();
+            model.SharedUndoEngine = sharedEngine;
+            undoAware.AttachSharedUndo(sharedEngine);
+        }
+
         EditorAttached?.Invoke(this, model);
     }
 
@@ -116,6 +125,13 @@ public sealed class DocumentManager : IDocumentManager
     {
         var model = Find(contentId);
         if (model is null) return;
+
+        // Detach shared undo before buffer/editor so the engine ref is cleared cleanly.
+        if (model.AssociatedEditor is IUndoAwareEditor undoAware)
+        {
+            undoAware.DetachSharedUndo();
+            model.SharedUndoEngine = null;
+        }
 
         // Detach buffer before DetachEditor so the buffer ref is cleared cleanly.
         if (model.AssociatedEditor is IBufferAwareEditor bufAware)

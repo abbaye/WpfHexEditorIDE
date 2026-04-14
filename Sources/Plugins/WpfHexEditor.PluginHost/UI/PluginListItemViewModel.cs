@@ -10,6 +10,7 @@ using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using WpfHexEditor.PluginHost.Services;
 using WpfHexEditor.SDK.Commands;
+using WpfHexEditor.SDK.Contracts.Services;
 using WpfHexEditor.SDK.Models;
 using WpfHexEditor.Core.ViewModels;
 
@@ -21,6 +22,7 @@ namespace WpfHexEditor.PluginHost.UI;
 public sealed class PluginListItemViewModel : ViewModelBase
 {
     private readonly PluginEntry _entry;
+    private readonly IOutputService? _outputService;
 
     // Injected command callbacks from PluginManagerViewModel
     private readonly Action<string> _onEnable;
@@ -70,8 +72,10 @@ public sealed class PluginListItemViewModel : ViewModelBase
         Action<string>? onSuspend = null,
         Action<string>? onCascadeUnload = null,
         Action<string>? onCascadeReload = null,
-        Action<string>? onToggleWatchMode = null)
+        Action<string>? onToggleWatchMode = null,
+        IOutputService? outputService = null)
     {
+        _outputService = outputService;
         _entry = entry ?? throw new ArgumentNullException(nameof(entry));
         _onEnable = onEnable;
         _onDisable = onDisable;
@@ -472,19 +476,15 @@ public sealed class PluginListItemViewModel : ViewModelBase
             // LoadOptions/CreateOptionsPage may do I/O â€” call synchronously here but OK since
             // this getter is triggered by tab selection (UI thread, user interaction, not hot path).
             // Guard: a buggy plugin must not crash the host â€” catch and swallow any plugin exception.
-            // TODO: Put the Debug in the output panel of App instead of the VS debug output, which is invisible to most users and causes crashes when no debugger is attached.
             try
             {
                 opts.LoadOptions();
-
                 _optionsPage = opts.CreateOptionsPage();
             }
             catch (Exception ex)
             {
                 _optionsPageFailed = true;
-                System.Diagnostics.Debug.WriteLine(
-                    $"[PluginManager] CreateOptionsPage threw for plugin '{_entry.Manifest.Id}': {ex}");
-                
+                _outputService?.Error($"[Plugin] CreateOptionsPage threw for '{_entry.Manifest.Id}': {ex.Message}");
                 return null;
             }
 

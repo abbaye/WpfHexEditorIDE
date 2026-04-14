@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using Microsoft.Win32;
 using WpfHexEditor.SDK.Commands;
+using WpfHexEditor.SDK.Contracts.Services;
 using WpfHexEditor.SDK.Models;
 using WpfHexEditor.Core.ViewModels;
 
@@ -26,6 +27,7 @@ public sealed class PluginManagerViewModel : ViewModelBase, IDisposable
 {
     private readonly WpfPluginHost _host;
     private readonly Dispatcher _dispatcher;
+    private readonly IOutputService? _outputService;
     private readonly Func<(int warning, int high, int critical, bool enabled,
                            string normalColor, string warningColor, string highColor, string criticalColor)>? _getMemoryThresholds;
 
@@ -52,14 +54,16 @@ public sealed class PluginManagerViewModel : ViewModelBase, IDisposable
 
 
     public PluginManagerViewModel(
-        WpfPluginHost host, 
+        WpfPluginHost host,
         Dispatcher dispatcher,
         Func<(int warning, int high, int critical, bool enabled,
-              string normalColor, string warningColor, string highColor, string criticalColor)>? getMemoryThresholds = null)
+              string normalColor, string warningColor, string highColor, string criticalColor)>? getMemoryThresholds = null,
+        IOutputService? outputService = null)
     {
-        _host       = host       ?? throw new ArgumentNullException(nameof(host));
-        _dispatcher = dispatcher ?? throw new ArgumentNullException(nameof(dispatcher));
+        _host          = host       ?? throw new ArgumentNullException(nameof(host));
+        _dispatcher    = dispatcher ?? throw new ArgumentNullException(nameof(dispatcher));
         _getMemoryThresholds = getMemoryThresholds;
+        _outputService = outputService;
 
         // Metrics timer â€” only refreshes live CPU/RAM + sparkline history, does NOT rebuild the list
         _metricsTimer = new DispatcherTimer(DispatcherPriority.Background, _dispatcher)
@@ -290,7 +294,8 @@ public sealed class PluginManagerViewModel : ViewModelBase, IDisposable
                 onSuspend: SuspendPlugin,
                 onCascadeUnload: CascadeUnload,
                 onCascadeReload: CascadeReload,
-                onToggleWatchMode: ToggleWatchMode));
+                onToggleWatchMode: ToggleWatchMode,
+                outputService: _outputService));
 
             // Restore Watch Mode state from host
             var newVm = _allItems[^1];

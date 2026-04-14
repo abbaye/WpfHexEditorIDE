@@ -62,6 +62,9 @@ namespace WpfHexEditor.Sample.HexEditor.Views
             _viewModel.FileOpenRequested += OnFileOpenRequested;
             _viewModel.FileSaveRequested += OnFileSaveRequested;
 
+            // Wire up Bookmarks panel
+            _viewModel.ShowBookmarksRequested += OnShowBookmarksRequested;
+
             // Wire up theme changes
             _viewModel.SettingsViewModel.ThemeChanged += OnThemeChanged;
 
@@ -201,6 +204,21 @@ namespace WpfHexEditor.Sample.HexEditor.Views
                     MessageBoxButton.OK,
                     MessageBoxImage.Error);
             }
+        }
+
+        private void OnShowBookmarksRequested(object sender, EventArgs e)
+        {
+            var positions = HexEditorControl.GetBookmarks();
+            if (positions == null || positions.Length == 0)
+            {
+                MessageBox.Show("No bookmarks set.", "Bookmarks", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            var lines = string.Join(Environment.NewLine,
+                System.Linq.Enumerable.Select(positions, p => $"0x{p:X8}"));
+
+            MessageBox.Show(lines, $"Bookmarks ({positions.Length})", MessageBoxButton.OK, MessageBoxImage.None);
         }
 
         private void OnThemeChanged(object sender, string themeName)

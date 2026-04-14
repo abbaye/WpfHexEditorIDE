@@ -20,6 +20,7 @@
 
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using WpfHexEditor.Editor.Core.Undo;
 
 namespace WpfHexEditor.Editor.Core.Documents;
 
@@ -117,6 +118,16 @@ public sealed class DocumentModel : INotifyPropertyChanged
     /// <see cref="IBufferAwareEditor"/> and a <see cref="FilePath"/> is known.
     /// </summary>
     public IDocumentBuffer? Buffer { get; internal set; }
+
+    // -- Shared undo engine (set by DocumentManager when editor is IUndoAwareEditor) --
+
+    /// <summary>
+    /// Shared undo/redo engine, non-null only when the editor implements
+    /// <see cref="IUndoAwareEditor"/> and a <see cref="FilePath"/> is known.
+    /// Exposed so the shell (menu/toolbar) can derive undo/redo headers from the
+    /// shared engine rather than from the per-editor <see cref="IDocumentEditor"/> state.
+    /// </summary>
+    public UndoEngine? SharedUndoEngine { get; internal set; }
 
     // -- Construction ------------------------------------------------------
 

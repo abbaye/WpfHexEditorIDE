@@ -59,25 +59,42 @@ public sealed class SolutionExplorerServiceImpl : ISolutionExplorerService
     public Task SaveFileAsync(string? fileName = null, CancellationToken ct = default)
         => SaveFileHandler is not null ? SaveFileHandler(fileName) : Task.CompletedTask;
 
-    // -- Folder / project / solution management — stubs until UI is wired -----
+    // -- Folder / project / solution management --------------------------------
 
     public Task OpenFolderAsync(string path, CancellationToken ct = default)
-        => Task.CompletedTask;
-
-    public Task OpenProjectAsync(string name, CancellationToken ct = default)
-        => Task.CompletedTask;
-
-    public Task CloseProjectAsync(string name, CancellationToken ct = default)
-        => Task.CompletedTask;
+        => _solutionManager.OpenSolutionAsync(path, ct);
 
     public Task OpenSolutionAsync(string path, CancellationToken ct = default)
-        => Task.CompletedTask;
+        => _solutionManager.OpenSolutionAsync(path, ct);
 
     public Task CloseSolutionAsync(CancellationToken ct = default)
-        => Task.CompletedTask;
+        => _solutionManager.CloseSolutionAsync(ct);
 
-    public Task ReloadSolutionAsync(CancellationToken ct = default)
-        => Task.CompletedTask;
+    public async Task ReloadSolutionAsync(CancellationToken ct = default)
+    {
+        var path = ActiveSolutionPath;
+        if (path is null) return;
+        await _solutionManager.CloseSolutionAsync(ct).ConfigureAwait(false);
+        await _solutionManager.OpenSolutionAsync(path, ct).ConfigureAwait(false);
+    }
+
+    public Task OpenProjectAsync(string projectFilePath, CancellationToken ct = default)
+    {
+        var solution = _solutionManager.CurrentSolution;
+        if (solution is null) return Task.CompletedTask;
+        return _solutionManager.AddExistingProjectAsync(solution, projectFilePath, ct);
+    }
+
+    public Task CloseProjectAsync(string name, CancellationToken ct = default)
+    {
+        var solution = _solutionManager.CurrentSolution;
+        if (solution is null) return Task.CompletedTask;
+        var project = solution.Projects.FirstOrDefault(p =>
+            p.Name == name ||
+            string.Equals(p.ProjectFilePath, name, StringComparison.OrdinalIgnoreCase));
+        if (project is null) return Task.CompletedTask;
+        return _solutionManager.RemoveProjectAsync(solution, project, ct);
+    }
 
     public IReadOnlyList<string> GetFilesInDirectory(string path)
     {

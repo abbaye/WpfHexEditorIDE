@@ -99,9 +99,7 @@ namespace WpfHexEditor.HexEditor.Search.Views
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
+            => System.Windows.Data.Binding.DoNothing;
     }
 
     /// <summary>
@@ -119,9 +117,7 @@ namespace WpfHexEditor.HexEditor.Search.Views
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
+            => System.Windows.Data.Binding.DoNothing;
     }
 
     #endregion

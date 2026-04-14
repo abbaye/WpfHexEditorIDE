@@ -14,6 +14,12 @@ A full-featured WPF hex editor UserControl for .NET 8. Successor to [WPFHexaEdit
 dotnet add package WPFHexaEditor
 ```
 
+## What's New in 3.0.5
+
+- **Fix**: BCB (Custom Background Block) visual tree locked during navigation to prevent mouse re-dispatch loop
+- **Fix**: Bookmark chip `MouseDown` re-dispatch loop eliminated
+- **Fix**: Bookmark chips no longer re-render on every navigation — repaint only on actual changes
+
 ## What's New in 3.0.4
 
 - **Fix**: `ResourceReferenceKeyNotFoundException` no longer thrown in standalone WPF apps — `GetThemeColor` now uses `TryFindResource` instead of `FindResource` (fixes [#228](https://github.com/abbaye/WpfHexEditorIDE/issues/228))

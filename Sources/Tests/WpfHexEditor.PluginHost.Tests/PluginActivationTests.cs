@@ -1,5 +1,5 @@
 // ==========================================================
-// Project: WpfHexEditor.PluginHost.Activation.Tests
+// Project: WpfHexEditor.PluginHost.Tests
 // File: PluginActivationTests.cs
 // Description:
 //     Unit tests for PluginEntry state machine, PluginManifest validation,
@@ -10,7 +10,7 @@ using WpfHexEditor.PluginHost;
 using WpfHexEditor.SDK.Models;
 using WpfHexEditor.PluginHost.Services;
 
-namespace WpfHexEditor.PluginHost.Activation.Tests;
+namespace WpfHexEditor.PluginHost.Tests;
 
 [TestClass]
 public sealed class PluginActivationTests

@@ -1,5 +1,5 @@
 // ==========================================================
-// Project: WpfHexEditor.Core.Debugger.Tests
+// Project: WpfHexEditor.Tests
 // File: DebugAdapterRegistryTests.cs
 // Description:
 //     Unit tests for DebugAdapterRegistry, TcpDapTransport,
@@ -9,7 +9,7 @@
 using WpfHexEditor.Core.Debugger.Services;
 using WpfHexEditor.Core.Debugger.Models;
 
-namespace WpfHexEditor.Core.Debugger.Tests;
+namespace WpfHexEditor.Tests;
 
 [TestClass]
 public sealed class DebugAdapterRegistryTests

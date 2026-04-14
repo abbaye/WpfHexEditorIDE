@@ -637,9 +637,6 @@ public sealed class PluginMonitoringViewModel : ViewModelBase, IDisposable
     private readonly IOutputService?  _outputService;
     private MemoryAlertService? _memoryAlertService;
 
-    // DEBUG: Sample counter for logging
-    private long _sampleCount = 0;
-
     // Per-plugin mini-chart lookup (pluginId â†’ ViewModel)
     private readonly Dictionary<string, PluginMiniChartViewModel> _miniCharts =
         new(StringComparer.OrdinalIgnoreCase);
@@ -1168,7 +1165,6 @@ public sealed class PluginMonitoringViewModel : ViewModelBase, IDisposable
 
     public void Refresh()
     {
-        _sampleCount++; // DEBUG: Increment sample counter
         var plugins = _host.GetAllPlugins();
         var loaded  = plugins.Where(p => p.State == PluginState.Loaded).ToList();
         var now     = DateTime.UtcNow;
@@ -1254,16 +1250,6 @@ public sealed class PluginMonitoringViewModel : ViewModelBase, IDisposable
                     ? avgMs / Math.Max(sumExecMs, 0.001) // Proportional to activity
                     : 1.0 / Math.Max(loaded.Count, 1);  // FIX: Equal share for idle plugins
             double weightedCpu = Math.Clamp(totalCpu * weight, 0, 100);
-
-            // DEBUG: Log weight calculation for first 3 plugins
-            if (_sampleCount < 3 || entry.Manifest.Id.Contains("Archive"))
-            {
-                System.Diagnostics.Debug.WriteLine(
-                    $"[METRICS DEBUG] {entry.Manifest.Name}: " +
-                    $"avgMs={avgMs:F2}, weight={weight:F4}, " +
-                    $"totalCpu={totalCpu:F2}%, weightedCpu={weightedCpu:F2}%, " +
-                    $"loaded={loaded.Count}, sumExecMs={sumExecMs:F2}");
-            }
 
             // PHASE 3: Use EstimatedMemoryFootprint if available for more accurate attribution
             long pluginMemEstimate = entry.EstimatedMemoryFootprint > 0 

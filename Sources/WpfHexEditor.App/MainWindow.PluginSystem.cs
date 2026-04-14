@@ -589,22 +589,23 @@ public partial class MainWindow
                 if (_pendingPluginManagerControl is not null && _pluginHost is not null)
                 {
                     var vm = new PluginManagerViewModel(
-                        _pluginHost, 
+                        _pluginHost,
                         Dispatcher,
                         () =>
                         {
                             var ps = AppSettingsService.Instance.Current.PluginSystem;
                             return (
-                                ps.MemoryWarningThresholdMB, 
-                                ps.MemoryHighThresholdMB, 
-                                ps.MemoryCriticalThresholdMB, 
+                                ps.MemoryWarningThresholdMB,
+                                ps.MemoryHighThresholdMB,
+                                ps.MemoryCriticalThresholdMB,
                                 ps.EnableMemoryAlerts,
                                 ps.MemoryNormalColor,
                                 ps.MemoryWarningColor,
                                 ps.MemoryHighColor,
                                 ps.MemoryCriticalColor
                             );
-                        });
+                        },
+                        outputService: _outputService);
                     _pendingPluginManagerControl.DataContext = vm;
                     _pendingPluginManagerControl = null;
                 }
@@ -903,7 +904,7 @@ public partial class MainWindow
         if (_pluginHost is null) return;
         if (ActivateExistingDockPanel(PluginManagerContentId)) return;
 
-        var vm      = new PluginManagerViewModel(_pluginHost, Dispatcher);
+        var vm      = new PluginManagerViewModel(_pluginHost, Dispatcher, outputService: _outputService);
         var control = new PluginManagerControl(vm);
         var item    = new DockItem { ContentId = PluginManagerContentId, Title = "Extension Manager", CanClose = true };
 
@@ -1090,7 +1091,7 @@ public partial class MainWindow
 
         if (_pluginHost is not null)
         {
-            var vm = new PluginManagerViewModel(_pluginHost, Dispatcher);
+            var vm = new PluginManagerViewModel(_pluginHost, Dispatcher, outputService: _outputService);
             control.DataContext = vm;
         }
         else

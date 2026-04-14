@@ -1,59 +1,30 @@
-# WpfHexEditor.BinaryAnalysis
+# WpfHexEditor.Core.BinaryAnalysis
 
-> Binary analysis engine — 40+ data type interpretations, anomaly detection, binary templates, Intel HEX / S-Record support.
+> Cross-platform binary analysis library — zero WPF dependency. 40+ data type interpretations, anomaly detection, binary templates, Intel HEX / S-Record support.
 
-[![.NET](https://img.shields.io/badge/.NET-net8.0--windows-512BD4?logo=dotnet)](https://dotnet.microsoft.com/)
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](../../LICENSE)
+[![.NET](https://img.shields.io/badge/.NET-net8.0-512BD4?logo=dotnet)](https://dotnet.microsoft.com/)
+[![NuGet](https://img.shields.io/nuget/v/WpfHexEditor.Core.BinaryAnalysis?logo=nuget)](https://www.nuget.org/packages/WpfHexEditor.Core.BinaryAnalysis)
+[![License](https://img.shields.io/badge/License-AGPL--3.0-blue.svg)](https://github.com/abbaye/WpfHexEditorControl/blob/master/LICENSE)
 
 ---
 
-## Architecture
+## Services
 
-```mermaid
-graph TB
-    subgraph BA["WpfHexEditor.BinaryAnalysis"]
-
-        subgraph SVC["Services/"]
-            DIS["DataInspectorService\n40+ type interpretations\nat caret position"]
-            DST["DataStatisticsService\nentropy, byte frequency,\npattern statistics"]
-            ADS["AnomalyDetectionService\ndetects suspicious byte patterns\nand structural anomalies"]
-            BTC["BinaryTemplateCompiler\ncompiles .whtmpl templates\nto parsed field definitions"]
-            IHS["IntelHexService\nread/write Intel HEX .hex\nformat (8-bit/16-bit/32-bit)"]
-            SRS["SRecordService\nread/write Motorola S-Record\n(S19/S28/S37)"]
-        end
-
-        subgraph MDL["Models/"]
-            DII["DataInspectorItem\n(type name, value, bytes used)"]
-            FST["FileStatistics\n(entropy, histogram, runs)"]
-            BT["BinaryTemplate\n(field definitions)"]
-        end
-    end
-
-    subgraph CORE["WpfHexEditor.Core"]
-        BP["ByteProvider\n(data access)"]
-    end
-
-    DIS --> BP
-    DST --> BP
-    ADS --> BP
-    BTC --> BP
-    IHS --> BP
-
-    DIS --> DII
-    DST --> FST
-    BTC --> BT
-
-    style DIS fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
-    style ADS fill:#fce4ec,stroke:#c62828,stroke-width:2px
-    style BTC fill:#f3e5f5,stroke:#6a1b9a,stroke-width:2px
-```
+| Service | Description |
+|---|---|
+| `DataInspectorService` | Interprets bytes as 40+ data types simultaneously (int, float, date, GUID, color, network…) |
+| `DataStatisticsService` | Shannon entropy, byte frequency histogram, data type estimation |
+| `AnomalyDetectionService` | Entropy-based detection of suspicious regions, padding, corruption |
+| `BinaryTemplateCompiler` | Compiles C-like `.whtmpl` templates into structured field definitions |
+| `IntelHexService` | Read/write Intel HEX `.hex` format (8-bit / 16-bit / 32-bit) |
+| `SRecordService` | Read/write Motorola S-Record (S19 / S28 / S37) |
 
 ---
 
 ## Project Structure
 
 ```
-WpfHexEditor.BinaryAnalysis/
+WpfHexEditor.Core.BinaryAnalysis/
 ├── Services/
 │   ├── DataInspectorService.cs       ← 40+ type interpretations
 │   ├── DataStatisticsService.cs      ← Entropy, frequency analysis
@@ -72,20 +43,15 @@ WpfHexEditor.BinaryAnalysis/
 
 ## DataInspectorService
 
-Interprets the bytes at the current caret position as 40+ data types simultaneously:
+Interprets the bytes at any offset as 40+ data types simultaneously:
 
-```mermaid
-flowchart LR
-    POS["Caret position\n(byte offset)"] --> DIS["DataInspectorService"]
-
-    DIS --> INT["Integers\nInt8, UInt8\nInt16/32/64 LE+BE\nUInt16/32/64 LE+BE"]
-    DIS --> FLT["Floats\nFloat16, Float32, Float64\nBFloat16"]
-    DIS --> STR["Strings\nASCII, UTF-8, UTF-16 LE+BE\nLatin-1"]
-    DIS --> DATE["Date/Time\nDOS date, Unix epoch\nWindows FILETIME, OLE date"]
-    DIS --> MISC["Misc\nGUID, Color (ARGB)\nBCD, VLQ, bit flags"]
-```
-
-### Usage
+**Supported types:**
+- **Integers** — Int8, UInt8, Int16/32/64 LE+BE, UInt16/32/64 LE+BE
+- **Floats** — Float16, BFloat16, Float32, Float64
+- **Strings** — ASCII, UTF-8, UTF-16 LE+BE, Latin-1
+- **Date/Time** — DOS date, Unix epoch (32/64-bit), Windows FILETIME, OLE date
+- **Network** — IPv4, IPv6, MAC address, port numbers
+- **Misc** — GUID, Color (RGB/RGBA/ARGB/BGR), BCD, VLQ, bit flags, binary, octal
 
 ```csharp
 var service = new DataInspectorService(byteProvider);
@@ -142,7 +108,7 @@ foreach (var a in anomalies)
 
 ## BinaryTemplateCompiler
 
-Compiles `.whtmpl` binary template files into parsed field definitions for the ParsedFieldsPanel:
+Compiles `.whtmpl` binary template files (C-like syntax) into parsed field definitions:
 
 ```csharp
 var compiler = new BinaryTemplateCompiler();
@@ -175,28 +141,13 @@ var records = srecService.ReadFile("program.s19");
 
 ---
 
-## Integration in the IDE
-
-```mermaid
-flowchart TD
-    HE["HexEditor\n(caret position)"] --> |CaretPositionChanged| DIS["DataInspectorService"]
-    DIS --> |IReadOnlyList&lt;DataInspectorItem&gt;| DIP["DataInspectorPanel\n(WpfHexEditor.Panels.BinaryAnalysis)"]
-    DIP --> |displayed in IDE| UI["IDE DataInspector panel"]
-
-    HE --> |ByteProvider| DST["DataStatisticsService"]
-    DST --> |FileStatistics| FSP["FileStatisticsPanel"]
-```
-
----
-
 ## Dependencies
 
-| Project | Why |
-|---------|-----|
-| `WpfHexEditor.Core` | `ByteProvider` for all data access |
+None. Zero external NuGet dependencies. Pure .NET 8.0.
 
 ---
 
 ## License
 
-GNU Affero General Public License v3.0 — Copyright 2026 Derek Tremblay. See [LICENSE](../../LICENSE).
+GNU Affero General Public License v3.0 — Copyright 2026 Derek Tremblay.
+See [LICENSE](https://github.com/abbaye/WpfHexEditorControl/blob/master/LICENSE).
