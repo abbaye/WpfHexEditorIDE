@@ -187,6 +187,11 @@ public sealed class AppSettings
     /// </summary>
     public StructureEditorSettings StructureEditor { get; set; } = new();
 
+    /// <summary>
+    /// Whfmt Format Explorer/Manager preferences (tool window + catalog document).
+    /// </summary>
+    public WhfmtExplorerSettings WhfmtExplorer { get; set; } = new();
+
     // -- Lazy Plugin Persistence --------------------------------------------------
 
     /// <summary>
@@ -1414,4 +1419,34 @@ public sealed class StructureEditorSettings
 
     /// <summary>Maximum file size in bytes that the Test Panel will load into memory. Default: 10 485 760 (10 MB).</summary>
     public long TestPanelMaxBytes { get; set; } = 10 * 1024 * 1024;
+}
+
+public sealed class WhfmtExplorerSettings
+{
+    /// <summary>Show built-in (embedded) format definitions in the browser. Default: true.</summary>
+    public bool ShowBuiltInFormats { get; set; } = true;
+
+    /// <summary>Show user-supplied (adhoc) format definitions in the browser. Default: true.</summary>
+    public bool ShowUserFormats { get; set; } = true;
+
+    /// <summary>Default view mode for the browser panel. One of: "Tree", "Flat". Default: "Tree".</summary>
+    public string DefaultViewMode { get; set; } = "Tree";
+
+    /// <summary>Show quality score badges on format items. Default: true.</summary>
+    public bool ShowQualityScores { get; set; } = true;
+
+    /// <summary>Hide formats whose quality score is below this threshold (0 = show all). Default: 0.</summary>
+    public int QualityScoreThreshold { get; set; } = 0;
+
+    /// <summary>Watch the user format folder for changes and hot-reload new or modified .whfmt files. Default: false.</summary>
+    public bool EnableHotReload { get; set; } = false;
+
+    /// <summary>Show formats that failed to load (displayed with error badge). Default: true.</summary>
+    public bool ShowLoadFailures { get; set; } = true;
+
+    /// <summary>Additional folders to scan for user .whfmt files beyond the default AppData location.</summary>
+    public List<string> AdditionalSearchPaths { get; set; } = [];
+
+    /// <summary>File names (without path) to exclude from the catalog even if found on disk.</summary>
+    public List<string> ExcludedFileNames { get; set; } = [];
 }

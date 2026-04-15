@@ -1480,6 +1480,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             finally { _suppressBufferSync = false; }
 
             _undoEngine.Reset();
+            // Sync TotalLines so the virtualization engine reflects the new content.
+            // Without this, OnRender sees TotalLines=0 and renders blank until the next
+            // SizeChanged event updates the engine. (ADR-002 root cause)
+            UpdateVirtualization();
             InvalidateVisual();
         }
 

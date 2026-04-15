@@ -4153,8 +4153,13 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             }
             // Word wrap: rebuild map when size changes (viewport width affects wrap width).
             if (IsWordWrapEnabled) RebuildWrapMap();
-            // Scrollbar ranges depend on viewport size — trigger layout pass
+            // Scrollbar ranges depend on viewport size — trigger layout pass.
+            // InvalidateVisual() is required here: InvalidateArrange() alone does NOT call
+            // OnRender, so after the first real SizeChanged (ActualHeight goes from 0 to N),
+            // the visible-line range is recalculated but the canvas stays blank until the
+            // next user interaction forces a repaint. (ADR-002)
             InvalidateArrange();
+            InvalidateVisual();
         }
 
         /// <summary>

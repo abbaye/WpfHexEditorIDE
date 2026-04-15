@@ -82,6 +82,10 @@ public static class OptionsPageRegistry
         new("Format Editor (.whfmt)", "General", () => new StructureEditorOptionsPage(), "📋",
             ["whfmt", "block", "validation", "code preview", "structure", "format definition",
              "endianness", "version", "test panel", "debounce", "auto validate"]),
+        new("Format Editor (.whfmt)", "Format Explorer", () => new WhfmtExplorerOptionsPage(), "📋",
+            ["format browser", "catalog", "whfmt explorer", "hot reload", "user formats",
+             "quality score", "adhoc", "additional search paths", "built-in", "load failures",
+             "format manager", "view mode"]),
     ];
 
     /// <summary>

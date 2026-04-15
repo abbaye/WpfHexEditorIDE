@@ -1,0 +1,213 @@
+<UserControl x:Class="WpfHexEditor.Shell.Panels.Panels.WhfmtBrowserPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:WpfHexEditor.Shell.Panels.ViewModels">
+
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
+
+        <!-- Category node header template -->
+        <DataTemplate x:Key="CategoryHeaderTemplate" DataType="{x:Type vm:WhfmtCategoryNodeVm}">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="12"/>
+                <Border CornerRadius="8" Background="#224C9BE8" BorderBrush="#444C9BE8"
+                        BorderThickness="1" Padding="5,0" Margin="6,0,0,0" VerticalAlignment="Center">
+                    <TextBlock Text="{Binding VisibleCount}" FontSize="10"/>
+                </Border>
+                <TextBlock Text="⚠" Foreground="#DD994400" Margin="4,0,0,0" VerticalAlignment="Center"
+                           ToolTip="One or more formats failed to load"
+                           Visibility="{Binding HasFailures, Converter={StaticResource BoolToVisibility}}"/>
+            </StackPanel>
+        </DataTemplate>
+
+        <!-- Format item row template -->
+        <DataTemplate x:Key="FormatItemTemplate" DataType="{x:Type vm:WhfmtFormatItemVm}">
+            <Grid Margin="2,1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="{Binding Name}" FontSize="12"/>
+                    <TextBlock Text="{Binding ExtensionsDisplay}" FontSize="10" Opacity="0.6"
+                               Visibility="{Binding ExtensionsDisplay, Converter={StaticResource BoolToVisibility}}"/>
+                </StackPanel>
+
+                <!-- Quality badge -->
+                <Border Grid.Column="1" CornerRadius="3" Margin="4,0"
+                        Padding="4,1" VerticalAlignment="Center">
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Setter Property="Background" Value="#224C9BE8"/>
+                            <Setter Property="BorderBrush" Value="#444C9BE8"/>
+                            <Setter Property="BorderThickness" Value="1"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsLoadFailure}" Value="True">
+                                    <Setter Property="Background" Value="#22CC4444"/>
+                                    <Setter Property="BorderBrush" Value="#44CC4444"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                    <TextBlock FontSize="10">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Text" Value="{Binding QualityScore, StringFormat={}{0}}"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsLoadFailure}" Value="True">
+                                        <Setter Property="Text" Value="⚠"/>
+                                        <Setter Property="Foreground" Value="#DDAA2222"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                </Border>
+
+                <!-- Source badge (only for user formats) -->
+                <Border Grid.Column="2" CornerRadius="3" Padding="4,1" VerticalAlignment="Center"
+                        Background="#2244AA44" BorderBrush="#4444AA44" BorderThickness="1"
+                        Visibility="{Binding IsUserFormat, Converter={StaticResource BoolToVisibility}}">
+                    <TextBlock Text="User" FontSize="9"/>
+                </Border>
+            </Grid>
+        </DataTemplate>
+
+        <!-- Context menu shared by both TreeView items and ListView items -->
+        <ContextMenu x:Key="FormatItemContextMenu">
+            <MenuItem Header="Open"               Command="{Binding OpenCommand}"/>
+            <MenuItem Header="Open as Read-Only"  Command="{Binding OpenReadOnlyCommand}"/>
+            <Separator/>
+            <MenuItem Header="Export to File…"    Command="{Binding ExportToFileCommand}"/>
+            <MenuItem Header="View JSON"          Command="{Binding ViewJsonCommand}"/>
+            <MenuItem Header="Copy Path"          Command="{Binding CopyPathCommand}"/>
+            <Separator/>
+            <MenuItem Header="Delete"             Command="{Binding DeleteCommand}"/>
+            <MenuItem Header="Reveal in Explorer" Command="{Binding RevealInExplorerCommand}"/>
+        </ContextMenu>
+
+        <Style x:Key="FormatTreeItemStyle" TargetType="TreeViewItem">
+            <Setter Property="ContextMenu" Value="{StaticResource FormatItemContextMenu}"/>
+            <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>      <!-- Toolbar -->
+            <RowDefinition Height="*"/>         <!-- Main content -->
+            <RowDefinition Height="Auto"/>      <!-- Status bar -->
+        </Grid.RowDefinitions>
+
+        <!-- ========================================================== -->
+        <!-- Toolbar                                                      -->
+        <!-- ========================================================== -->
+        <ToolBar Grid.Row="0" ToolBarTray.IsLocked="True" Padding="2">
+            <TextBox x:Name="SearchBox"
+                     Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                     Width="140" VerticalContentAlignment="Center" Padding="4,2"
+                     ToolTip="Search formats (name, category, extension, author)"/>
+
+            <Separator/>
+
+            <ToggleButton x:Name="TreeViewToggle"
+                          IsChecked="{Binding IsTreeView}"
+                          ToolTip="Tree view" Padding="6,2" Content="⊞"/>
+            <ToggleButton IsChecked="{Binding ShowBuiltIns}"
+                          ToolTip="Show built-in formats" Padding="6,2" Content="≡ Built-in"/>
+            <ToggleButton IsChecked="{Binding ShowUserFormats}"
+                          ToolTip="Show user formats" Padding="6,2" Content="≡ User"/>
+
+            <Separator/>
+
+            <Button Command="{Binding RefreshCommand}"    ToolTip="Refresh catalog"   Content="↺" Padding="6,2"/>
+            <Button Command="{Binding AddFormatCommand}"  ToolTip="Add format file…"  Content="+" Padding="6,2"/>
+            <Button Command="{Binding OpenFolderCommand}" ToolTip="Open user folder"  Content="📁" Padding="6,2"/>
+            <ToggleButton IsChecked="{Binding IsWatching}"
+                          Command="{Binding ToggleWatchCommand}"
+                          ToolTip="Watch folder for changes" Content="👁" Padding="6,2"/>
+        </ToolBar>
+
+        <!-- ========================================================== -->
+        <!-- Main: tree + detail split                                    -->
+        <!-- ========================================================== -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" MinWidth="100"/>
+                <ColumnDefinition Width="4"/>
+                <ColumnDefinition Width="220" MinWidth="160"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Tree view -->
+            <TreeView x:Name="FormatTree" Grid.Column="0"
+                      ItemsSource="{Binding CategoryNodes}"
+                      VirtualizingStackPanel.IsVirtualizing="True"
+                      VirtualizingStackPanel.VirtualizationMode="Recycling"
+                      SelectedItemChanged="OnTreeSelectedItemChanged"
+                      MouseDoubleClick="OnTreeDoubleClick"
+                      Visibility="{Binding IsTreeView, Converter={StaticResource BoolToVisibility}}">
+                <TreeView.ItemTemplate>
+                    <HierarchicalDataTemplate DataType="{x:Type vm:WhfmtCategoryNodeVm}"
+                                              ItemsSource="{Binding Items}"
+                                              ItemContainerStyle="{StaticResource FormatTreeItemStyle}">
+                        <ContentPresenter Content="{Binding}"
+                                          ContentTemplate="{StaticResource CategoryHeaderTemplate}"/>
+                        <HierarchicalDataTemplate.ItemTemplate>
+                            <DataTemplate DataType="{x:Type vm:WhfmtFormatItemVm}">
+                                <ContentPresenter Content="{Binding}"
+                                                  ContentTemplate="{StaticResource FormatItemTemplate}"
+                                                  ContextMenu="{StaticResource FormatItemContextMenu}"/>
+                            </DataTemplate>
+                        </HierarchicalDataTemplate.ItemTemplate>
+                    </HierarchicalDataTemplate>
+                </TreeView.ItemTemplate>
+            </TreeView>
+
+            <!-- Flat list view -->
+            <ListView x:Name="FormatList" Grid.Column="0"
+                      ItemsSource="{Binding FlatItems}"
+                      ItemTemplate="{StaticResource FormatItemTemplate}"
+                      VirtualizingStackPanel.IsVirtualizing="True"
+                      SelectionChanged="OnListSelectionChanged"
+                      MouseDoubleClick="OnListDoubleClick"
+                      Visibility="{Binding IsTreeView, Converter={StaticResource BoolToVisibility}}">
+                <ListView.Style>
+                    <Style TargetType="ListView">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsTreeView}" Value="False">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ListView.Style>
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="ContextMenu" Value="{StaticResource FormatItemContextMenu}"/>
+                    </Style>
+                </ListView.ItemContainerStyle>
+            </ListView>
+
+            <!-- Splitter -->
+            <GridSplitter Grid.Column="1" Width="4"
+                          HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                          Background="Transparent" ResizeBehavior="PreviousAndNext"/>
+
+            <!-- Detail panel -->
+            <local:WhfmtFormatDetailPanel x:Name="DetailPanel" Grid.Column="2"
+                                          DataContext="{Binding Detail}"
+                                          xmlns:local="clr-namespace:WpfHexEditor.Shell.Panels.Panels"/>
+        </Grid>
+
+        <!-- ========================================================== -->
+        <!-- Status bar                                                   -->
+        <!-- ========================================================== -->
+        <StatusBar Grid.Row="2" Padding="4,1">
+            <StatusBarItem>
+                <TextBlock Text="{Binding StatusText}" FontSize="10" Opacity="0.7"/>
+            </StatusBarItem>
+        </StatusBar>
+    </Grid>
+</UserControl>

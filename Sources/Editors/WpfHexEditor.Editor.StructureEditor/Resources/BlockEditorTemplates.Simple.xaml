@@ -5,7 +5,8 @@
 
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:vm="clr-namespace:WpfHexEditor.Editor.StructureEditor.ViewModels">
+                    xmlns:vm="clr-namespace:WpfHexEditor.Editor.StructureEditor.ViewModels"
+                    xmlns:ctrl="clr-namespace:WpfHexEditor.Editor.StructureEditor.Controls">
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/WpfHexEditor.Editor.StructureEditor;component/Resources/BlockEditorShared.xaml"/>
@@ -34,24 +35,28 @@
                 </Grid.RowDefinitions>
 
                 <TextBlock Grid.Row="0" Grid.Column="0" Text="Offset"       Style="{StaticResource PropLabel}"/>
-                <TextBox   Grid.Row="0" Grid.Column="1" Style="{StaticResource PropField}"
+                <ctrl:ExpressionTextBox Grid.Row="0" Grid.Column="1" Margin="0,2"
                            Text="{Binding OffsetText, UpdateSourceTrigger=PropertyChanged}"
-                           ToolTip="Integer, var:name, calc:expr, or offset:N"/>
+                           Placeholder="integer, var:name or calc:expr"
+                           ToolTip="Ctrl+Space for autocomplete — integer, var:name, calc:expr, offset:N"/>
 
                 <TextBlock Grid.Row="1" Grid.Column="0" Text="Offset From"  Style="{StaticResource PropLabel}"/>
-                <TextBox   Grid.Row="1" Grid.Column="1" Style="{StaticResource PropField}"
+                <ctrl:ExpressionTextBox Grid.Row="1" Grid.Column="1" Margin="0,2"
                            Text="{Binding OffsetFrom, UpdateSourceTrigger=PropertyChanged}"
-                           ToolTip="Variable name whose value is the base offset"/>
+                           Placeholder="variableName"
+                           ToolTip="Variable name whose value is the base offset — Ctrl+Space for suggestions"/>
 
                 <TextBlock Grid.Row="2" Grid.Column="0" Text="Offset Add"   Style="{StaticResource PropLabel}"/>
-                <TextBox   Grid.Row="2" Grid.Column="1" Style="{StaticResource PropField}"
+                <ctrl:ExpressionTextBox Grid.Row="2" Grid.Column="1" Margin="0,2"
                            Text="{Binding OffsetAddText, UpdateSourceTrigger=PropertyChanged}"
+                           Placeholder="integer or var:name"
                            ToolTip="Additional bytes added to OffsetFrom"/>
 
                 <TextBlock Grid.Row="3" Grid.Column="0" Text="Length"       Style="{StaticResource PropLabel}"/>
-                <TextBox   Grid.Row="3" Grid.Column="1" Style="{StaticResource PropField}"
+                <ctrl:ExpressionTextBox Grid.Row="3" Grid.Column="1" Margin="0,2"
                            Text="{Binding LengthText, UpdateSourceTrigger=PropertyChanged}"
-                           ToolTip="Integer, var:name, or calc:expr"/>
+                           Placeholder="integer, var:name or calc:expr"
+                           ToolTip="Ctrl+Space for autocomplete — integer, var:name, calc:expr"/>
 
                 <TextBlock Grid.Row="4" Grid.Column="0" Text="Value Type"   Style="{StaticResource PropLabel}"/>
                 <ComboBox  Grid.Row="4" Grid.Column="1" Style="{StaticResource PropCombo}"
@@ -72,13 +77,15 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Row="0" Grid.Column="0" Text="Store As"            Style="{StaticResource PropLabel}"/>
-                <TextBox   Grid.Row="0" Grid.Column="1" Style="{StaticResource PropField}"
+                <ctrl:ExpressionTextBox Grid.Row="0" Grid.Column="1" Margin="0,2"
                            Text="{Binding StoreAs, UpdateSourceTrigger=PropertyChanged}"
-                           ToolTip="Variable name to store parsed value"/>
+                           Placeholder="variableName"
+                           ToolTip="Variable name to store parsed value — Ctrl+Space for suggestions"/>
                 <TextBlock Grid.Row="1" Grid.Column="0" Text="Mapped Store As"     Style="{StaticResource PropLabel}"/>
-                <TextBox   Grid.Row="1" Grid.Column="1" Style="{StaticResource PropField}"
+                <ctrl:ExpressionTextBox Grid.Row="1" Grid.Column="1" Margin="0,2"
                            Text="{Binding MappedValueStoreAs, UpdateSourceTrigger=PropertyChanged}"
-                           ToolTip="Variable name for ValueMap-translated value"/>
+                           Placeholder="variableName"
+                           ToolTip="Variable name for ValueMap-translated value — Ctrl+Space for suggestions"/>
             </Grid>
 
             <!-- ValueMap -->

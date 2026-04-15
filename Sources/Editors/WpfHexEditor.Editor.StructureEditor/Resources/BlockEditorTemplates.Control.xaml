@@ -72,21 +72,24 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Row="0" Grid.Column="0" Text="Count"          Style="{StaticResource PropLabel}"/>
-                <TextBox   Grid.Row="0" Grid.Column="1" Style="{StaticResource PropField}"
+                <ctrl:ExpressionTextBox Grid.Row="0" Grid.Column="1" Margin="0,2"
                            Text="{Binding CountText, UpdateSourceTrigger=PropertyChanged}"
-                           ToolTip="Fixed integer or var:name"/>
+                           Placeholder="integer or var:name"
+                           ToolTip="Fixed integer or var:name — Ctrl+Space for suggestions"/>
                 <TextBlock Grid.Row="1" Grid.Column="0" Text="Max Iterations" Style="{StaticResource PropLabel}"/>
                 <TextBox   Grid.Row="1" Grid.Column="1" Style="{StaticResource PropField}"
                            Text="{Binding MaxIterations, UpdateSourceTrigger=PropertyChanged}"
                            ToolTip="Safety cap — integer"/>
                 <TextBlock Grid.Row="2" Grid.Column="0" Text="Index Var"      Style="{StaticResource PropLabel}"/>
-                <TextBox   Grid.Row="2" Grid.Column="1" Style="{StaticResource PropField}"
+                <ctrl:ExpressionTextBox Grid.Row="2" Grid.Column="1" Margin="0,2"
                            Text="{Binding IndexVar, UpdateSourceTrigger=PropertyChanged}"
+                           Placeholder="i"
                            ToolTip="Variable that receives the current iteration index (0-based)"/>
                 <TextBlock Grid.Row="3" Grid.Column="0" Text="Store As"       Style="{StaticResource PropLabel}"/>
-                <TextBox   Grid.Row="3" Grid.Column="1" Style="{StaticResource PropField}"
+                <ctrl:ExpressionTextBox Grid.Row="3" Grid.Column="1" Margin="0,2"
                            Text="{Binding StoreAs, UpdateSourceTrigger=PropertyChanged}"
-                           ToolTip="Variable to store the iteration count after loop completes"/>
+                           Placeholder="variableName"
+                           ToolTip="Variable to store the iteration count after loop completes — Ctrl+Space for suggestions"/>
             </Grid>
 
             <TextBlock Text="Body blocks are shown as children in the tree."

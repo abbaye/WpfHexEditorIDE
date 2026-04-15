@@ -8,10 +8,12 @@
 // Description: Code-behind form for ConditionDefinition editing.
 //              Follows the ConditionRow pattern from BreakpointConditionDialog.
 //              Switches layout when Operator = "expression" (single expr TextBox).
+//              Field box and value box use ExpressionTextBox for autocomplete.
 //////////////////////////////////////////////
 
 using System.Windows;
 using System.Windows.Controls;
+using WpfHexEditor.Editor.StructureEditor.Services;
 using WpfHexEditor.Editor.StructureEditor.ViewModels;
 
 namespace WpfHexEditor.Editor.StructureEditor.Controls;
@@ -26,12 +28,12 @@ internal sealed class ConditionEditorRow : Border
 
     // ── Controls ──────────────────────────────────────────────────────────────
 
-    private readonly ComboBox   _fieldTypeCombo;
-    private readonly TextBox    _fieldBox;
-    private readonly ComboBox   _operatorCombo;
-    private readonly TextBox    _valueBox;
-    private readonly TextBox    _lengthBox;
-    private readonly StackPanel _secondary;
+    private readonly ComboBox            _fieldTypeCombo;
+    private readonly ExpressionTextBox   _fieldBox;
+    private readonly ComboBox            _operatorCombo;
+    private readonly ExpressionTextBox   _valueBox;
+    private readonly TextBox             _lengthBox;
+    private readonly StackPanel          _secondary;
 
     private ConditionViewModel? _vm;
 
@@ -45,14 +47,27 @@ internal sealed class ConditionEditorRow : Border
         _fieldTypeCombo.SelectedIndex = 0;
         _fieldTypeCombo.SelectionChanged += OnFieldTypeChanged;
 
-        _fieldBox = MakeTextBox("offset:0 or var:name or expression", minWidth: 200);
+        _fieldBox = new ExpressionTextBox
+        {
+            Placeholder = "offset:0 or var:name or expression",
+            MinWidth    = 200,
+            MaxWidth    = 360,
+            Margin      = new Thickness(0, 0, 6, 0),
+        };
 
         _operatorCombo = MakeComboBox(110, "equals",
             "equals", "notEquals", "greaterThan", "lessThan", "expression");
         _operatorCombo.SelectedIndex = 0;
         _operatorCombo.SelectionChanged += OnComboChanged;
 
-        _valueBox  = MakeTextBox("Value (hex: 0xFF or decimal)", minWidth: 120);
+        _valueBox = new ExpressionTextBox
+        {
+            Placeholder = "Value (hex: 0xFF or decimal)",
+            MinWidth    = 120,
+            MaxWidth    = 220,
+            Margin      = new Thickness(0, 0, 6, 0),
+        };
+
         _lengthBox = MakeTextBox("1", minWidth: 50, maxWidth: 60);
         _lengthBox.Text = "1";
 
@@ -117,6 +132,13 @@ internal sealed class ConditionEditorRow : Border
         _vm.Length   = len > 0 ? len : 1;
     }
 
+    /// <summary>Injects a live variable source into both expression boxes.</summary>
+    internal void SetVariableSource(IVariableSource source)
+    {
+        _fieldBox.VariableSource = source;
+        _valueBox.VariableSource = source;
+    }
+
     // ── Handlers ─────────────────────────────────────────────────────────────
 
     private void OnFieldTypeChanged(object s, SelectionChangedEventArgs e)
@@ -130,7 +152,6 @@ internal sealed class ConditionEditorRow : Border
     private void RebuildSecondary()
     {
         _secondary.Children.Clear();
-        // Always show operator + value unless field type = Expression
         if (_fieldTypeCombo.SelectedIndex < 2)
         {
             _secondary.Children.Add(new TextBlock
@@ -183,18 +204,7 @@ internal sealed class ConditionEditorRow : Border
         tb.SetResourceReference(Control.ForegroundProperty,  "DockMenuForegroundBrush");
         tb.SetResourceReference(Control.BackgroundProperty,  "DockMenuBackgroundBrush");
         tb.SetResourceReference(Control.BorderBrushProperty, "DockBorderBrush");
-
-        tb.GotFocus  += (_, _) => { if (tb.Text == placeholder) { tb.Text = ""; tb.SetResourceReference(TextBox.ForegroundProperty, "DockMenuForegroundBrush"); } };
-        tb.LostFocus += (_, _) =>
-        {
-            if (string.IsNullOrEmpty(tb.Text))
-            {
-                tb.Text = placeholder;
-                tb.SetResourceReference(TextBox.ForegroundProperty, "SE_PlaceholderForeground");
-            }
-        };
         tb.Text = placeholder;
-        tb.SetResourceReference(TextBox.ForegroundProperty, "SE_PlaceholderForeground");
         return tb;
     }
 }

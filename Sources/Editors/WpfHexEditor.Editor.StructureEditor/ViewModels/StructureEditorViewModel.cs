@@ -50,6 +50,10 @@ internal sealed class StructureEditorViewModel : ViewModelBase
     public ObservableCollection<ChecksumViewModel>      Checksums       { get; } = [];
     public ObservableCollection<ExportTemplateViewModel> ExportTemplates { get; } = [];
 
+    /// <summary>Live variable source for autocomplete — aggregates Variables tab + block tree.</summary>
+    public IVariableSource VariableSource => _variableSource ??= new VariablesViewModelAdapter(Variables, Blocks);
+    private IVariableSource? _variableSource;
+
     // ── Validation ────────────────────────────────────────────────────────────
 
     public ObservableCollection<ValidationSummaryItem> ValidationSummary { get; } = [];

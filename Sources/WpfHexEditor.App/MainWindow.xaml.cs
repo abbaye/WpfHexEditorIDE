@@ -203,6 +203,13 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     // Markdown Outline panel (persistent singleton)
     private WpfHexEditor.Editor.MarkdownEditor.Panels.MarkdownOutlinePanel? _markdownOutlinePanel;
+
+    // Format Browser panel (persistent singleton)
+    private const string FormatBrowserContentId    = "panel-format-browser";
+    private const string FormatCatalogDocContentId = "doc-format-catalog";
+    private WpfHexEditor.Shell.Panels.Panels.WhfmtBrowserPanel? _formatBrowserPanel;
+    private WpfHexEditor.Core.Interfaces.IFormatCatalogService? _formatCatalogService;
+    private WpfHexEditor.Shell.Panels.Services.WhfmtAdHocFormatService? _formatAdHocService;
     private string _lastAppliedTheme = string.Empty;
 
     // TBL dropdown — tracks which project TBL item is applied per hex editor
@@ -1535,6 +1542,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             PluginMonitorContentId         => CreatePluginMonitorPanelContent(),
             PluginManagerContentId         => CreatePluginManagerContent(),
             MarkdownOutlinePanelContentId  => CreateMarkdownOutlinePanelContent(),
+            FormatBrowserContentId         => CreateFormatBrowserContent(),
+            FormatCatalogDocContentId      => CreateFormatCatalogContent(),
             _ when item.ContentId.StartsWith("doc-class-diagram-") => CreateClassDiagramGhostContent(item),
             _ when item.ContentId.StartsWith("doc-new-text-")   => CreateEmptyTextEditorContent(item),
             _ when item.ContentId.StartsWith("doc-new-code-")  => CreateEmptyCodeEditorContent(item),
@@ -1674,6 +1683,161 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         return _markdownOutlinePanel!;
     }
 
+
+    // -- Format Browser / Catalog --------------------------------------------
+
+    private UIElement CreateFormatBrowserContent()
+    {
+        if (_formatBrowserPanel is not null) return _formatBrowserPanel;
+
+        _formatBrowserPanel = new WpfHexEditor.Shell.Panels.Panels.WhfmtBrowserPanel();
+        _formatBrowserPanel.OpenFormatRequested   += OnOpenWhfmtFromBrowser;
+        _formatBrowserPanel.ExportFormatRequested += OnExportWhfmtFromBrowser;
+        _formatBrowserPanel.ViewJsonRequested     += OnViewJsonFromBrowser;
+
+        if (_formatCatalogService is not null)
+        {
+            _formatAdHocService ??= new WpfHexEditor.Shell.Panels.Services.WhfmtAdHocFormatService(
+                WpfHexEditor.Core.Options.AppSettingsService.Instance.Current.WhfmtExplorer);
+
+            _formatBrowserPanel.SetCatalog(
+                WpfHexEditor.Core.Definitions.EmbeddedFormatCatalog.Instance,
+                _formatCatalogService,
+                _formatAdHocService,
+                WpfHexEditor.Core.Options.AppSettingsService.Instance.Current.WhfmtExplorer);
+        }
+
+        return _formatBrowserPanel;
+    }
+
+    private UIElement CreateFormatCatalogContent()
+    {
+        // Catalog document is a virtual tab — always creates a fresh instance
+        // (multiple instances allowed for comparison; not a singleton)
+        var doc = new WpfHexEditor.Shell.Panels.Panels.WhfmtCatalogDocument();
+        if (_formatCatalogService is not null)
+        {
+            _formatAdHocService ??= new WpfHexEditor.Shell.Panels.Services.WhfmtAdHocFormatService(
+                WpfHexEditor.Core.Options.AppSettingsService.Instance.Current.WhfmtExplorer);
+
+            doc.SetCatalog(
+                WpfHexEditor.Core.Definitions.EmbeddedFormatCatalog.Instance,
+                _formatCatalogService,
+                _formatAdHocService,
+                WpfHexEditor.Core.Options.AppSettingsService.Instance.Current.WhfmtExplorer);
+        }
+        doc.OpenFormatsRequested   += OnOpenWhfmtListFromCatalog;
+        doc.ExportFormatsRequested += OnExportWhfmtListFromCatalog;
+        return doc;
+    }
+
+    // ------------------------------------------------------------------
+    // Format Browser event handlers
+    // ------------------------------------------------------------------
+
+    private void OnOpenWhfmtFromBrowser(object? sender,
+        WpfHexEditor.Shell.Panels.ViewModels.FormatOpenRequest req)
+    {
+        if (req.KeyOrPath is null) return;
+
+        string? filePath = null;
+
+        if (req.Source == WpfHexEditor.Shell.Panels.ViewModels.FormatSource.BuiltIn)
+        {
+            // Extract embedded JSON to a temp file so StructureEditorFactory can open it normally
+            var json = WpfHexEditor.Core.Definitions.EmbeddedFormatCatalog.Instance.GetJson(req.KeyOrPath);
+            if (string.IsNullOrEmpty(json)) return;
+
+            var tempDir = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "WpfHexEditor", "Formats");
+            System.IO.Directory.CreateDirectory(tempDir);
+
+            // Use resource key leaf as filename (replace dots with underscores for valid filename)
+            var leaf = System.IO.Path.GetFileName(req.KeyOrPath.Replace('.', '_'));
+            if (!leaf.EndsWith(".whfmt", StringComparison.OrdinalIgnoreCase))
+                leaf += ".whfmt";
+            filePath = System.IO.Path.Combine(tempDir, leaf);
+
+            System.IO.File.WriteAllText(filePath, json);
+        }
+        else
+        {
+            filePath = req.KeyOrPath;
+        }
+
+        if (filePath is null || !System.IO.File.Exists(filePath)) return;
+
+        OpenFileDirectly(filePath);
+
+        // Mark read-only if requested — defer to Loaded so the editor is fully initialized
+        if (req.Mode == WpfHexEditor.Shell.Panels.ViewModels.FormatOpenMode.ReadOnly)
+        {
+            var capturedPath = filePath;
+            Dispatcher.InvokeAsync(() =>
+            {
+                var contentId = "doc-file-" + System.IO.Path.GetFullPath(capturedPath).ToLowerInvariant();
+                if (_contentCache.TryGetValue(contentId, out var element)
+                    && element is WpfHexEditor.Editor.Core.IDocumentEditor docEditor)
+                {
+                    docEditor.IsReadOnly = true;
+                }
+            }, System.Windows.Threading.DispatcherPriority.Loaded);
+        }
+    }
+
+    private void OnExportWhfmtFromBrowser(object? sender, string keyOrPath)
+    {
+        var json = WpfHexEditor.Core.Definitions.EmbeddedFormatCatalog.Instance.GetJson(keyOrPath);
+        if (string.IsNullOrEmpty(json)) return;
+
+        var dlg = new Microsoft.Win32.SaveFileDialog
+        {
+            Title            = "Export Format Definition",
+            Filter           = "Whfmt definitions (*.whfmt)|*.whfmt",
+            FileName         = System.IO.Path.GetFileNameWithoutExtension(keyOrPath) + ".whfmt",
+            OverwritePrompt  = true
+        };
+        if (dlg.ShowDialog(this) == true)
+            System.IO.File.WriteAllText(dlg.FileName, json);
+    }
+
+    private void OnViewJsonFromBrowser(object? sender, string keyOrPath)
+    {
+        string? json = null;
+
+        if (WpfHexEditor.Core.Definitions.EmbeddedFormatCatalog.Instance.GetAll()
+                .Any(e => e.ResourceKey == keyOrPath))
+            json = WpfHexEditor.Core.Definitions.EmbeddedFormatCatalog.Instance.GetJson(keyOrPath);
+        else if (System.IO.File.Exists(keyOrPath))
+            json = System.IO.File.ReadAllText(keyOrPath);
+
+        if (string.IsNullOrEmpty(json)) return;
+
+        // Open in a new read-only CodeEditor document tab
+        var leaf = System.IO.Path.GetFileNameWithoutExtension(keyOrPath) + ".whfmt (JSON)";
+        _documentCounter++;
+        var jsonContentId = $"doc-json-whfmt-{_documentCounter}";
+        var ce = new WpfHexEditor.Editor.CodeEditor.Controls.CodeEditor();
+        ce.LoadText(json);
+        ce.IsReadOnly = true;
+        ce.Language = WpfHexEditor.Core.ProjectSystem.Languages.LanguageRegistry.Instance.FindById("json");
+        StoreContent(jsonContentId, ce);
+        var jsonItem = new DockItem { Title = leaf, ContentId = jsonContentId, CanClose = true };
+        _engine.Dock(jsonItem, _layout.MainDocumentHost, DockDirection.Center);
+        DockHost.RebuildVisualTree();
+    }
+
+    private void OnOpenWhfmtListFromCatalog(object? sender, System.Collections.Generic.IReadOnlyList<string> paths)
+    {
+        foreach (var path in paths)
+            OnOpenWhfmtFromBrowser(sender, new WpfHexEditor.Shell.Panels.ViewModels.FormatOpenRequest(
+                path, WpfHexEditor.Shell.Panels.ViewModels.FormatOpenMode.Editable));
+    }
+
+    private void OnExportWhfmtListFromCatalog(object? sender, System.Collections.Generic.IReadOnlyList<string> paths)
+    {
+        foreach (var path in paths)
+            OnExportWhfmtFromBrowser(sender, path);
+    }
 
     private UIElement CreateErrorPanelContent() => EnsureErrorPanelInstance();
 
@@ -6569,6 +6733,27 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     private void OnShowMarkdownOutline(object sender, RoutedEventArgs e)
         => ShowOrCreatePanel("Markdown Outline", MarkdownOutlinePanelContentId, DockDirection.Left);
+
+    private void OnShowFormatBrowser(object sender, RoutedEventArgs e)
+        => ShowOrCreatePanel("Format Browser", FormatBrowserContentId, DockDirection.Right);
+
+    private void OnShowFormatCatalog(object sender, RoutedEventArgs e)
+    {
+        // Format Catalog is a virtual document tab
+        // If already open, activate it; otherwise create a new instance
+        var existing = _layout.FindItemByContentId(FormatCatalogDocContentId);
+        if (existing is not null)
+        {
+            if (existing.Owner is { } owner) owner.ActiveItem = existing;
+            return;
+        }
+
+        var content = CreateFormatCatalogContent();
+        StoreContent(FormatCatalogDocContentId, content);
+        var item = new DockItem { Title = "Format Catalog", ContentId = FormatCatalogDocContentId, CanClose = true };
+        _engine.Dock(item, _layout.MainDocumentHost, DockDirection.Center);
+        DockHost.RebuildVisualTree();
+    }
 
     private void OnGoToOffset(object sender, RoutedEventArgs e)
     {

@@ -357,6 +357,7 @@ public partial class MainWindow
                 System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) ?? "",
                 "FormatDefinitions");
             formatCatalog.Initialize(embeddedEntries, externalDir);
+            _formatCatalogService = formatCatalog;
             OutputLogger.Info($"[FormatCatalog] {formatCatalog.FormatCount} formats loaded (shared pipeline)");
 
             if (formatCatalog.LoadFailures.Count > 0)

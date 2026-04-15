@@ -76,6 +76,9 @@ public sealed partial class StructureEditor : UserControl, IDocumentEditor, IOpe
             }).ToList();
         });
 
+        // Register variable source for autocomplete in all ExpressionTextBox controls
+        ExpressionContextService.Register(this, _vm.VariableSource);
+
         // Bind child tabs through DataContext
         MetadataTabCtrl.DataContext  = _vm.Metadata;
         DetectionTabCtrl.DataContext = _vm.Detection;
@@ -109,13 +112,6 @@ public sealed partial class StructureEditor : UserControl, IDocumentEditor, IOpe
             ApplyCodeViewDock(_codeViewDock);
             PushJsonToCodeView();
 
-            // Force CodeEditorSplitHost to re-measure after the WPF layout pass
-            // so it picks up its actual ActualHeight (ADR-002 viewport race fix).
-            Dispatcher.InvokeAsync(() =>
-            {
-                _codeView.InvalidateMeasure();
-                _codeView.UpdateLayout();
-            }, DispatcherPriority.Loaded);
         };
 
         // Tab switch → status bar + pop-toolbar context update + code view navigation
@@ -287,6 +283,9 @@ public sealed partial class StructureEditor : UserControl, IDocumentEditor, IOpe
                 _codeView.AttachBuffer(_liveBuffer);
                 _codeView.IsReadOnly = true;
                 PushJsonToCodeView();
+
+                // ADR-002 fix is in CodeEditor.CodeEditor_SizeChanged — no workaround needed here.
+
             });
 
             OperationCompleted?.Invoke(this, new DocumentOperationCompletedEventArgs { Success = true });

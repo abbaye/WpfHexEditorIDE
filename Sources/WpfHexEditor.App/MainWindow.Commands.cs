@@ -158,6 +158,10 @@ public partial class MainWindow
             () => OnShowBookmarks(this, null!));
         Reg(CommandIds.View.MarkdownOutline,"Markdown Outline",      "View",    null,             null,
             () => OnShowMarkdownOutline(this, null!));
+        Reg("View.FormatBrowser",          "Format Browser",         "View",    null,             "\uE8A5",
+            () => OnShowFormatBrowser(this, null!));
+        Reg("View.FormatCatalog",          "Format Catalog",         "View",    null,             "\uE8A5",
+            () => OnShowFormatCatalog(this, null!));
         RegP(CommandIds.View.CompareFiles, "Compare Files…", "View", "Ctrl+Alt+D", null,
             param =>
             {

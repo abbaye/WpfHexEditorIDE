@@ -5,7 +5,8 @@
 
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:vm="clr-namespace:WpfHexEditor.Editor.StructureEditor.ViewModels">
+                    xmlns:vm="clr-namespace:WpfHexEditor.Editor.StructureEditor.ViewModels"
+                    xmlns:ctrl="clr-namespace:WpfHexEditor.Editor.StructureEditor.Controls">
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/WpfHexEditor.Editor.StructureEditor;component/Resources/BlockEditorShared.xaml"/>
@@ -31,13 +32,15 @@
                            ItemsSource="{Binding ActionOptions}"
                            SelectedItem="{Binding Action, UpdateSourceTrigger=PropertyChanged}"/>
                 <TextBlock Grid.Row="1" Grid.Column="0" Text="Variable" Style="{StaticResource PropLabel}"/>
-                <TextBox   Grid.Row="1" Grid.Column="1" Style="{StaticResource PropField}"
+                <ctrl:ExpressionTextBox Grid.Row="1" Grid.Column="1" Margin="0,2"
                            Text="{Binding ActionVariable, UpdateSourceTrigger=PropertyChanged}"
-                           ToolTip="Name of the variable to act on"/>
+                           Placeholder="variableName"
+                           ToolTip="Name of the variable to act on — type to see suggestions (Ctrl+Space)"/>
                 <TextBlock Grid.Row="2" Grid.Column="0" Text="Value"    Style="{StaticResource PropLabel}"/>
-                <TextBox   Grid.Row="2" Grid.Column="1" Style="{StaticResource PropField}"
+                <ctrl:ExpressionTextBox Grid.Row="2" Grid.Column="1" Margin="0,2"
                            Text="{Binding ActionValue, UpdateSourceTrigger=PropertyChanged}"
-                           ToolTip="Value to set / amount to add or subtract"/>
+                           Placeholder="integer or var:name"
+                           ToolTip="Value to set / amount to add or subtract — supports var:name"/>
             </Grid>
         </StackPanel>
     </DataTemplate>
@@ -57,15 +60,15 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Row="0" Grid.Column="0" Text="Expression" Style="{StaticResource PropLabel}"/>
-                <TextBox   Grid.Row="0" Grid.Column="1" Style="{StaticResource PropField}"
-                           AcceptsReturn="True" MinHeight="50"
-                           TextWrapping="Wrap" FontFamily="Consolas" FontSize="10"
+                <ctrl:ExpressionTextBox Grid.Row="0" Grid.Column="1" Margin="0,2"
                            Text="{Binding Expression, UpdateSourceTrigger=PropertyChanged}"
-                           ToolTip="Math expression referencing variables e.g. width * height / 2"/>
+                           Placeholder="calc:width * height / 2"
+                           ToolTip="Math expression using variables and functions — Ctrl+Space for autocomplete"/>
                 <TextBlock Grid.Row="1" Grid.Column="0" Text="Store As" Style="{StaticResource PropLabel}"/>
-                <TextBox   Grid.Row="1" Grid.Column="1" Style="{StaticResource PropField}"
+                <ctrl:ExpressionTextBox Grid.Row="1" Grid.Column="1" Margin="0,2"
                            Text="{Binding StoreAs, UpdateSourceTrigger=PropertyChanged}"
-                           ToolTip="Variable name to store the computed result"/>
+                           Placeholder="variableName"
+                           ToolTip="Variable name to store the computed result — Ctrl+Space for suggestions"/>
             </Grid>
         </StackPanel>
     </DataTemplate>
@@ -87,12 +90,14 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Row="0" Grid.Column="0" Text="Offset"      Style="{StaticResource PropLabel}"/>
-                <TextBox   Grid.Row="0" Grid.Column="1" Style="{StaticResource PropField}"
+                <ctrl:ExpressionTextBox Grid.Row="0" Grid.Column="1" Margin="0,2"
                            Text="{Binding OffsetText, UpdateSourceTrigger=PropertyChanged}"
-                           ToolTip="File offset where the array starts — integer or var:name"/>
+                           Placeholder="integer, var:name or calc:expr"
+                           ToolTip="File offset where the array starts — Ctrl+Space for autocomplete"/>
                 <TextBlock Grid.Row="1" Grid.Column="0" Text="Offset From" Style="{StaticResource PropLabel}"/>
-                <TextBox   Grid.Row="1" Grid.Column="1" Style="{StaticResource PropField}"
+                <ctrl:ExpressionTextBox Grid.Row="1" Grid.Column="1" Margin="0,2"
                            Text="{Binding OffsetFrom, UpdateSourceTrigger=PropertyChanged}"
+                           Placeholder="variableName"
                            ToolTip="Variable used as the base offset for this array"/>
             </Grid>
 
@@ -109,17 +114,20 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Row="0" Grid.Column="0" Text="Count"      Style="{StaticResource PropLabel}"/>
-                <TextBox   Grid.Row="0" Grid.Column="1" Style="{StaticResource PropField}"
+                <ctrl:ExpressionTextBox Grid.Row="0" Grid.Column="1" Margin="0,2"
                            Text="{Binding CountText, UpdateSourceTrigger=PropertyChanged}"
-                           ToolTip="Number of entries — integer or var:name"/>
+                           Placeholder="integer or var:name"
+                           ToolTip="Number of entries — Ctrl+Space for variable suggestions"/>
                 <TextBlock Grid.Row="1" Grid.Column="0" Text="Entry Size" Style="{StaticResource PropLabel}"/>
-                <TextBox   Grid.Row="1" Grid.Column="1" Style="{StaticResource PropField}"
+                <ctrl:ExpressionTextBox Grid.Row="1" Grid.Column="1" Margin="0,2"
                            Text="{Binding EntrySizeText, UpdateSourceTrigger=PropertyChanged}"
-                           ToolTip="Size of each entry in bytes — integer or var:name"/>
+                           Placeholder="integer or var:name"
+                           ToolTip="Size of each entry in bytes — Ctrl+Space for variable suggestions"/>
                 <TextBlock Grid.Row="2" Grid.Column="0" Text="Index Var"  Style="{StaticResource PropLabel}"/>
-                <TextBox   Grid.Row="2" Grid.Column="1" Style="{StaticResource PropField}"
+                <ctrl:ExpressionTextBox Grid.Row="2" Grid.Column="1" Margin="0,2"
                            Text="{Binding IndexVar, UpdateSourceTrigger=PropertyChanged}"
-                           ToolTip="Loop index variable name e.g. i"/>
+                           Placeholder="i"
+                           ToolTip="Loop index variable name (e.g. i)"/>
             </Grid>
 
             <!-- Color cycle -->
@@ -160,9 +168,10 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <TextBlock Grid.Column="0" Text="Discriminant" Style="{StaticResource PropLabel}"/>
-                <TextBox   Grid.Column="1" Style="{StaticResource PropField}"
+                <ctrl:ExpressionTextBox Grid.Column="1" Margin="0,2"
                            Text="{Binding UnionCondition, UpdateSourceTrigger=PropertyChanged}"
-                           ToolTip="Variable that drives the variant selection"/>
+                           Placeholder="variableName"
+                           ToolTip="Variable that drives the variant selection — Ctrl+Space for suggestions"/>
             </Grid>
 
             <TextBlock Text="Variants" Style="{StaticResource SectionHeader}"/>
@@ -226,17 +235,20 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Row="0" Grid.Column="0" Text="Offset"      Style="{StaticResource PropLabel}"/>
-                <TextBox   Grid.Row="0" Grid.Column="1" Style="{StaticResource PropField}"
+                <ctrl:ExpressionTextBox Grid.Row="0" Grid.Column="1" Margin="0,2"
                            Text="{Binding OffsetText, UpdateSourceTrigger=PropertyChanged}"
-                           ToolTip="File offset where the pointer value is read"/>
+                           Placeholder="integer or var:name"
+                           ToolTip="File offset where the pointer value is read — Ctrl+Space for autocomplete"/>
                 <TextBlock Grid.Row="1" Grid.Column="0" Text="Offset From" Style="{StaticResource PropLabel}"/>
-                <TextBox   Grid.Row="1" Grid.Column="1" Style="{StaticResource PropField}"
+                <ctrl:ExpressionTextBox Grid.Row="1" Grid.Column="1" Margin="0,2"
                            Text="{Binding OffsetFrom, UpdateSourceTrigger=PropertyChanged}"
+                           Placeholder="variableName"
                            ToolTip="Variable name used as the base offset"/>
                 <TextBlock Grid.Row="2" Grid.Column="0" Text="Length"      Style="{StaticResource PropLabel}"/>
-                <TextBox   Grid.Row="2" Grid.Column="1" Style="{StaticResource PropField}"
+                <ctrl:ExpressionTextBox Grid.Row="2" Grid.Column="1" Margin="0,2"
                            Text="{Binding LengthText, UpdateSourceTrigger=PropertyChanged}"
-                           ToolTip="Size of the pointer value in bytes (e.g. 4 for uint32)"/>
+                           Placeholder="4"
+                           ToolTip="Size of the pointer value in bytes (e.g. 4 for uint32) — or var:name"/>
             </Grid>
 
             <!-- Target + storage -->
@@ -252,12 +264,14 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Row="0" Grid.Column="0" Text="Target Var" Style="{StaticResource PropLabel}"/>
-                <TextBox   Grid.Row="0" Grid.Column="1" Style="{StaticResource PropField}"
+                <ctrl:ExpressionTextBox Grid.Row="0" Grid.Column="1" Margin="0,2"
                            Text="{Binding TargetVar, UpdateSourceTrigger=PropertyChanged}"
+                           Placeholder="variableName"
                            ToolTip="Variable that will receive the resolved pointer address"/>
                 <TextBlock Grid.Row="1" Grid.Column="0" Text="Store As"   Style="{StaticResource PropLabel}"/>
-                <TextBox   Grid.Row="1" Grid.Column="1" Style="{StaticResource PropField}"
+                <ctrl:ExpressionTextBox Grid.Row="1" Grid.Column="1" Margin="0,2"
                            Text="{Binding StoreAs, UpdateSourceTrigger=PropertyChanged}"
+                           Placeholder="variableName"
                            ToolTip="Variable to store the raw pointer value"/>
                 <TextBlock Grid.Row="2" Grid.Column="0" Text="Label"      Style="{StaticResource PropLabel}"/>
                 <TextBox   Grid.Row="2" Grid.Column="1" Style="{StaticResource PropField}"

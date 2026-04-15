@@ -49,5 +49,13 @@ namespace WpfHexEditor.Core.Interfaces
 
         /// <summary>Raised after the catalog is fully loaded.</summary>
         event EventHandler? CatalogReady;
+
+        /// <summary>
+        /// Optionally raised when a single user-directory format is reloaded
+        /// (e.g. after a FileSystemWatcher change event). The argument is the
+        /// format name. Consumers should update their UI for that format only.
+        /// This event may not be raised on implementations that do bulk reloads.
+        /// </summary>
+        event EventHandler<string>? FormatReloaded;
     }
 }

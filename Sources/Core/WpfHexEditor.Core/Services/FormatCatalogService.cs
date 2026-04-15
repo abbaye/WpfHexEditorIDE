@@ -39,6 +39,9 @@ namespace WpfHexEditor.Core.Services
         public IReadOnlyList<FormatLoadFailure> LoadFailures => _failures;
         public event EventHandler? CatalogReady;
 
+        /// <inheritdoc/>
+        public event EventHandler<string>? FormatReloaded;
+
         /// <summary>
         /// Load all formats from embedded catalog + optional external directory.
         /// Sets <see cref="FormatDetectionService.SetSharedCatalog"/> for all instances.
