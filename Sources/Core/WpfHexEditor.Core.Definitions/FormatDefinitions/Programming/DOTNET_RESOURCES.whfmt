@@ -1,0 +1,340 @@
+{
+  "diffMode": "binary",
+  "formatName": ".NET Resources File",
+  "version": "1.0",
+  "extensions": [ ".resources" ],
+  "description": "Binary .NET resource file compiled from .resx XML by ResGen or MSBuild; starts with magic 0xBEEFCACE and contains typed key-value resource pairs for System.Resources.ResourceManager.",
+  "category": "Programming",
+  "author": "WPFHexaEditor Team",
+  "MimeTypes": [ "application/octet-stream", "application/x-dotnet-resources" ],
+  "UseCases": [
+    "Localization resource bundles embedded in .NET assemblies",
+    "String, image, icon, and binary data resources for WinForms/WPF apps",
+    "Satellite assembly resource extraction",
+    "Reverse engineering localized .NET application strings",
+    "MSBuild intermediate resource compilation artifact"
+  ],
+  "software": [
+    { "name": "MSBuild / ResGen.exe",            "role": "producer" },
+    { "name": "System.Resources.ResourceManager","role": "consumer" },
+    { "name": "ILSpy / dnSpy",                   "role": "consumer" },
+    { "name": "JustDecompile",                   "role": "consumer" },
+    { "name": "ResXResourceReader",              "role": "related" }
+  ],
+  "formatRelationships": {
+    "relatedFormats": [ ".resx (XML source)", ".resw (Windows Store)", "Win32 .res (binary resource)", "PE resource section (.rsrc)" ],
+    "container": null,
+    "notes": "Compiled .resources files are typically embedded in .NET PE assemblies as a manifest resource and are loaded by ResourceManager at runtime."
+  },
+
+  "detection": {
+    "signatures": [
+      {
+        "value": "CEEFCABE",
+        "offset": 0,
+        "label": "BEEFCACE magic stored little-endian as CE CA EF BE",
+        "weight": 80,
+        "required": true
+      },
+      {
+        "value": "01000000",
+        "offset": 4,
+        "label": "ResourceManagerHeaderVersion = 1",
+        "weight": 10,
+        "required": false
+      },
+      {
+        "value": "02000000",
+        "offset": 4,
+        "label": "ResourceManagerHeaderVersion = 2",
+        "weight": 10,
+        "required": false
+      }
+    ],
+    "matchMode": "weighted",
+    "MinimumScore": 80,
+    "Strength": "Strong",
+    "EntropyHint": {
+      "min": 3.0,
+      "max": 6.5,
+      "note": "String-heavy resource files have moderate entropy; image/binary resource files can push entropy higher."
+    },
+    "validation": {
+      "expression": "UINT32_LE(0) == 0xBEEFCACE",
+      "description": "The 32-bit little-endian value at offset 0 must equal 0xBEEFCACE to confirm this is a .NET binary resources file."
+    }
+  },
+
+  "variables": {
+    "magic":                       { "offset": 0,  "length": 4,  "type": "uint32le" },
+    "resourceManagerHeaderVersion":{ "offset": 4,  "length": 4,  "type": "uint32le" },
+    "numBytesToSkip":              { "offset": 8,  "length": 4,  "type": "uint32le" },
+    "classNameLength":             { "offset": 12, "length": 1,  "type": "uint8",   "note": "7-bit encoded length prefix of ResourceReader class name" },
+    "runtimeVersion2Magic":        { "offset": "variable", "length": 4, "type": "uint32le", "note": "RuntimeResourceSet v2 magic = 0xBEEFCACE again" },
+    "runtimeHeaderVersion":        { "offset": "variable", "length": 4, "type": "uint32le" },
+    "numResources":                { "offset": "variable", "length": 4, "type": "uint32le" }
+  },
+
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "BEEFCACE Magic",
+      "offset": 0,
+      "length": 4,
+      "color": "#BF360C",
+      "opacity": 0.9,
+      "description": "32-bit little-endian magic value 0xBEEFCACE (stored as bytes CE CA EF BE) identifying this as a compiled .NET binary resource file created by System.Resources.ResourceWriter.",
+      "storeAs": "magic",
+      "valueType": "uint32",
+      "endianness": "little"
+    },
+    {
+      "type": "field",
+      "name": "ResourceManagerHeaderVersion",
+      "offset": 4,
+      "length": 4,
+      "color": "#E64A19",
+      "opacity": 0.75,
+      "description": "Version of the ResourceManager header format; version 1 is used by .NET Framework 1.0–4.x; version 2 was defined but never shipped in a public runtime release.",
+      "storeAs": "resourceManagerHeaderVersion",
+      "valueType": "uint32",
+      "endianness": "little",
+      "valueMap": {
+        "1": "ResourceManager header v1 (.NET Framework 1.0+)",
+        "2": "ResourceManager header v2 (defined, not publicly shipped)"
+      }
+    },
+    {
+      "type": "field",
+      "name": "NumBytesToSkip",
+      "offset": 8,
+      "length": 4,
+      "color": "#FF7043",
+      "opacity": 0.7,
+      "description": "Number of bytes to skip past the ResourceManager header to reach the RuntimeResourceSet data; allows readers to skip unknown header extensions introduced by newer producers.",
+      "storeAs": "numBytesToSkip",
+      "valueType": "uint32",
+      "endianness": "little"
+    },
+    {
+      "type": "field",
+      "name": "ResourceReader Class Name (7-bit encoded)",
+      "offset": 12,
+      "length": "variable",
+      "color": "#FF8A65",
+      "opacity": 0.75,
+      "description": "BinaryReader-style 7-bit length-encoded string containing the assembly-qualified name of the IResourceReader implementation, typically 'System.Resources.ResourceReader, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089'.",
+      "storeAs": "resourceReaderClassName",
+      "valueType": "dotnet7bitstring"
+    },
+    {
+      "type": "field",
+      "name": "IResourceSet Class Name (7-bit encoded)",
+      "offset": "variable",
+      "length": "variable",
+      "color": "#FFAB91",
+      "opacity": 0.7,
+      "description": "BinaryReader-style 7-bit length-encoded string containing the assembly-qualified name of the IResourceSet implementation, typically 'System.Resources.RuntimeResourceSet, mscorlib, ...'.",
+      "storeAs": "resourceSetClassName",
+      "valueType": "dotnet7bitstring"
+    },
+    {
+      "type": "signature",
+      "name": "RuntimeResourceSet Magic (v2 header)",
+      "offset": "12+numBytesToSkip",
+      "length": 4,
+      "color": "#D84315",
+      "opacity": 0.8,
+      "description": "Second occurrence of 0xBEEFCACE magic at the start of the RuntimeResourceSet version 2 header block, confirming the resource data section is intact.",
+      "storeAs": "runtimeVersion2Magic",
+      "valueType": "uint32",
+      "endianness": "little"
+    },
+    {
+      "type": "field",
+      "name": "RuntimeResourceSet HeaderVersion",
+      "offset": "16+numBytesToSkip",
+      "length": 4,
+      "color": "#F4511E",
+      "opacity": 0.65,
+      "description": "Version of the RuntimeResourceSet data format; version 2 introduced in .NET Framework 2.0 adds pre-serialized type names and hash-based resource lookup tables.",
+      "storeAs": "runtimeHeaderVersion",
+      "valueType": "uint32",
+      "endianness": "little",
+      "valueMap": {
+        "1": "RuntimeResourceSet v1 — .NET Framework 1.0/1.1",
+        "2": "RuntimeResourceSet v2 — .NET Framework 2.0+ with type name table"
+      }
+    },
+    {
+      "type": "field",
+      "name": "Number of Resources",
+      "offset": "20+numBytesToSkip",
+      "length": 4,
+      "color": "#FF6E40",
+      "opacity": 0.7,
+      "description": "Total count of resource key-value pairs stored in this file; used to size the hash table and name/offset arrays that follow in the RuntimeResourceSet header.",
+      "storeAs": "numResources",
+      "valueType": "uint32",
+      "endianness": "little"
+    },
+    {
+      "type": "metadata",
+      "name": "Resource Type Name Table",
+      "offset": "variable",
+      "length": "variable",
+      "color": "#BF360C",
+      "opacity": 0.55,
+      "description": "Array of 7-bit encoded type name strings (v2 only) listing the .NET types of each resource value; allows deserialization without loading all resource data."
+    },
+    {
+      "type": "metadata",
+      "name": "Hash Code Array",
+      "offset": "variable",
+      "length": "4*numResources",
+      "color": "#8D6E63",
+      "opacity": 0.5,
+      "description": "Array of numResources 32-bit hash codes of resource key names; used for O(1) resource lookup by ResourceManager without scanning all key strings."
+    },
+    {
+      "type": "metadata",
+      "name": "Name Offset Array",
+      "offset": "variable",
+      "length": "4*numResources",
+      "color": "#A1887F",
+      "opacity": 0.5,
+      "description": "Array of numResources 32-bit offsets into the Name section giving the byte position of each resource key string; parallel to the Hash Code Array."
+    },
+    {
+      "type": "metadata",
+      "name": "Data Section Offset",
+      "offset": "variable",
+      "length": 4,
+      "color": "#795548",
+      "opacity": 0.55,
+      "description": "32-bit offset to the start of the Data section relative to the beginning of the file; the Data section contains the serialized resource values."
+    },
+    {
+      "type": "repeating",
+      "name": "Resource Key-Value Entries",
+      "offset": "variable",
+      "length": "variable",
+      "color": "#6D4C41",
+      "opacity": 0.5,
+      "description": "Variable-length encoded resource entries; each entry has a 7-bit encoded key string length, the UTF-16LE key, a 7-bit type code, and the serialized value payload."
+    }
+  ],
+
+  "assertions": [
+    {
+      "name": "ValidMagic",
+      "expression": "UINT32_LE(0) == 0xBEEFCACE",
+      "severity": "error",
+      "message": "Magic 0xBEEFCACE not found at offset 0; this is not a valid .NET binary resources file."
+    },
+    {
+      "name": "SupportedHeaderVersion",
+      "expression": "UINT32_LE(4) == 1 || UINT32_LE(4) == 2",
+      "severity": "warning",
+      "message": "ResourceManagerHeaderVersion is not 1 or 2; unknown version may indicate a newer or non-standard resource format."
+    },
+    {
+      "name": "NumBytesToSkipReasonable",
+      "expression": "UINT32_LE(8) < 65536",
+      "severity": "warning",
+      "message": "NumBytesToSkip exceeds 64 KB; this is unusually large and may indicate file corruption or a non-standard resource header."
+    },
+    {
+      "name": "RuntimeVersion2MagicCheck",
+      "expression": "UINT32_LE(12 + UINT32_LE(8)) == 0xBEEFCACE",
+      "severity": "error",
+      "message": "RuntimeResourceSet magic at the computed v2 header offset is missing; the resource data section may be corrupt or the NumBytesToSkip value is incorrect."
+    },
+    {
+      "name": "ResourceCountReasonable",
+      "expression": "UINT32_LE(20 + UINT32_LE(8)) < 100000",
+      "severity": "warning",
+      "message": "Resource count exceeds 100,000; this is implausible for a standard .resources file and may indicate a corrupt header or incorrect offset calculation."
+    }
+  ],
+
+  "navigation": {
+    "bookmarks": [
+      { "name": "BEEFCACE Magic",            "offset": 0,  "description": "Primary .NET resources file magic value" },
+      { "name": "ResourceManager Header",    "offset": 4,  "description": "Version and skip-bytes header" },
+      { "name": "ResourceReader Class Name", "offset": 12, "description": "7-bit encoded assembly-qualified ResourceReader type name" }
+    ]
+  },
+
+  "inspector": {
+    "badge": "RES",
+    "primaryField": "numResources",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "name": "File Header",
+        "fields": [ "magic", "resourceManagerHeaderVersion", "numBytesToSkip" ]
+      },
+      {
+        "name": "Reader & Set Types",
+        "fields": [ "resourceReaderClassName", "resourceSetClassName" ]
+      },
+      {
+        "name": "Resource Data",
+        "fields": [ "runtimeVersion2Magic", "runtimeHeaderVersion", "numResources" ]
+      }
+    ]
+  },
+
+  "exportTemplates": [
+    {
+      "name": "Resources Summary",
+      "format": "text",
+      "template": ".NET Binary Resources\n  Header Version  : {resourceManagerHeaderVersion}\n  Runtime Version : {runtimeHeaderVersion}\n  Resource Count  : {numResources}\n  Skip Bytes      : {numBytesToSkip}"
+    },
+    {
+      "name": "Resources JSON Report",
+      "format": "json",
+      "template": "{ \"format\": \"DotNetResources\", \"headerVersion\": {resourceManagerHeaderVersion}, \"runtimeVersion\": {runtimeHeaderVersion}, \"resourceCount\": {numResources} }"
+    }
+  ],
+
+  "forensic": {
+    "category": "ProgrammingArtifact",
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      { "pattern": "ExecutableInResources",    "description": "Binary resource entries with PE magic (MZ) or script content may indicate payload embedding for dropper malware." },
+      { "pattern": "ObfuscatedClassName",      "description": "ResourceReader class name that does not match known mscorlib types may indicate a custom or malicious deserializer." },
+      { "pattern": "LargeResourceCount",       "description": "Implausibly large resource count or corrupted hash table may indicate anti-analysis tampering of the resource header." }
+    ]
+  },
+
+  "aiHints": {
+    "analysisContext": ".NET binary .resources files pack typed key-value pairs using BinaryWriter encoding. The format uses two nested magic headers and 7-bit integer encoding for string lengths. Version 2 adds a type name table enabling faster typed resource deserialization without loading all values.",
+    "suggestedInspections": [
+      "Verify both BEEFCACE magic values are present — one at offset 0 and one at offset 12+NumBytesToSkip.",
+      "Decode the 7-bit encoded ResourceReader class name to identify the .NET version and public key token.",
+      "Calculate the hash code array and name offset array positions using NumResources to validate the resource index.",
+      "Inspect the Data section for embedded binary blobs (images, icons, audio) that may contain embedded files.",
+      "Check the RuntimeResourceSet version (1 vs 2) to determine if a type name table is present before the hash array."
+    ]
+  },
+
+  "TechnicalDetails": {
+    "specification": "Microsoft .NET ResourceManager binary format — ResourceReader.cs source in dotnet/runtime; ECMA-335 annex on resource embedding; 'Resource File Formats' in .NET documentation",
+    "endianness": "little-endian",
+    "stringEncoding": "7-bit variable-length BinaryWriter encoding for string lengths; UTF-16LE for key strings; UTF-8 for type names",
+    "magicValue": "0xBEEFCACE = 3203399886 decimal",
+    "notes": "The magic appears twice: once in the ResourceManager outer header and once in the RuntimeResourceSet inner header. NumBytesToSkip allows forward compatibility by skipping unknown header extensions."
+  },
+
+  "QualityMetrics": {
+    "CompletenessScore": 90,
+    "DocumentationLevel": "comprehensive",
+    "BlocksDefined": 12,
+    "ValidationRules": 5,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  }
+}

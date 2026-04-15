@@ -1,0 +1,185 @@
+{
+  "diffMode": "binary",
+  "formatName": "LevelDB/RocksDB SSTable",
+  "version": "1.0",
+  "extensions": [".ldb", ".sst"],
+  "description": "LevelDB .ldb and RocksDB .sst files are Sorted String Table (SSTable) files — immutable, sorted key-value stores used as the on-disk format for LevelDB (Google, 2011) and RocksDB (Facebook, 2012). An SSTable contains data blocks (key-value pairs sorted by key), a filter meta block (optional Bloom filter for fast key lookups), a stats meta block, a metaindex block, an index block, and a fixed-size footer. Each data block ends with a restart array and a CRC32 checksum. The footer (48 bytes at EOF) contains the metaindex block handle, index block handle, optional checksum type, and an 8-byte magic number: LevelDB=0x8428752488808FB57 (bytes 57 FB 80 8B 24 75 48 84) or RocksDB=0x8428752488808FB57 variant (F7 CF F4 85 B7 41 E2 88). Used by: Google Chrome (IndexedDB, local storage), Electron apps, VS Code extensions, Node.js (leveldown), TensorFlow serving, Apache Cassandra (SSTable variant).",
+  "category": "Database",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "references": {
+    "specifications": [
+      "LevelDB SSTable format — Google/leveldb GitHub documentation",
+      "RocksDB SST file format — Facebook/rocksdb wiki"
+    ],
+    "WebLinks": [
+      "https://github.com/google/leveldb/blob/main/doc/table_format.md",
+      "https://github.com/facebook/rocksdb/wiki/Rocksdb-BlockBasedTable-Format",
+      "https://github.com/google/leveldb/blob/main/doc/impl.md"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      { "value": "57FB808B24752484", "offset": 0, "label": "LevelDB footer magic at offset 0 (rare — only if file IS the footer)", "weight": 0.1 },
+      { "value": "F7CFF485B741E288", "offset": 0, "label": "RocksDB footer magic at offset 0 (rare)", "weight": 0.1 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.1,
+    "required": false,
+    "Strength": "Weak",
+    "EntropyHint": { "min": 2.0, "max": 7.5 },
+    "validation": {
+      "minFileSize": 48,
+      "maxSignatureOffset": 0,
+      "note": "LevelDB/RocksDB SSTable files have no magic at offset 0. True identification requires reading the last 8 bytes (footer magic): LevelDB=57 FB 80 8B 24 75 48 84, RocksDB=F7 CF F4 85 B7 41 E2 88. Detection is primarily extension-based (.ldb, .sst)."
+    }
+  },
+  "variables": {
+    "sstFirstByte": 0,
+    "sstBlockType": 0
+  },
+  "blocks": [
+    {
+      "type": "field",
+      "name": "First Data Block Byte",
+      "offset": 0,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "First byte of the SSTable file — start of the first data block. LevelDB/RocksDB SSTables begin with data blocks containing sorted key-value pairs. Each data block entry: shared_key_length(varint32) + unshared_key_length(varint32) + value_length(varint32) + key_delta(bytes) + value(bytes). The first restart point shared_length is always 0.",
+      "storeAs": "sstFirstByte",
+      "valueType": "uint8"
+    },
+    {
+      "type": "field",
+      "name": "Second Byte",
+      "offset": 1,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.25,
+      "description": "Second byte of the SSTable — part of the first varint-encoded key length in the first data block entry. VarInt encoding: bit 7 of each byte is continuation flag (1=more bytes follow). Bits 0-6 are 7-bit data chunks assembled LSB-first.",
+      "storeAs": "sstBlockType",
+      "valueType": "uint8"
+    },
+    {
+      "type": "metadata",
+      "name": "SSTable Start",
+      "variable": "sstFirstByte",
+      "description": "First byte of SSTable data block — varint-encoded key entry"
+    },
+    {
+      "type": "metadata",
+      "name": "SSTable Format Note",
+      "variable": "sstBlockType",
+      "description": "Footer magic (last 8 bytes): LevelDB=57 FB 80 8B 24 75 48 84 | RocksDB=F7 CF F4 85 B7 41 E2 88"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "Minimum SSTable size",
+      "expression": "true",
+      "severity": "info",
+      "message": "LevelDB SSTable minimum size is 48 bytes (footer only). Typical .ldb/.sst files range from 2MB to 64MB. Verify file size is at least 48 bytes."
+    },
+    {
+      "name": "LevelDB footer magic",
+      "expression": "true",
+      "severity": "info",
+      "message": "True validation requires reading last 8 bytes: LevelDB magic=57FB808B24752484, RocksDB magic=F7CFF485B741E288. Extension .ldb = LevelDB, .sst = RocksDB or LevelDB depending on version."
+    },
+    {
+      "name": "Block compression type",
+      "expression": "sstFirstByte <= 4",
+      "severity": "warning",
+      "message": "First byte > 4 may indicate unsupported block compression. LevelDB compression types: 0x00=None, 0x01=Snappy, 0x02=Zlib, 0x03=BZip2, 0x04=LZ4."
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "SSTable Start", "offset": 0, "icon": "\uE8D3", "color": "#4ECDC4" }
+    ]
+  },
+  "inspector": {
+    "badge": "sstFirstByte",
+    "primaryField": "sstFirstByte",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "SSTable Header",
+        "icon": "\uE8D3",
+        "fields": ["sstFirstByte", "sstBlockType"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "SSTable Info (JSON)",
+      "format": "json",
+      "fields": ["sstFirstByte", "sstBlockType"]
+    },
+    {
+      "name": "SSTable Summary (Text)",
+      "format": "text",
+      "fields": ["sstFirstByte"]
+    }
+  ],
+  "forensic": {
+    "category": "database",
+    "riskLevel": "medium",
+    "suspiciousPatterns": [
+      {
+        "name": "Chrome/Electron database artifact",
+        "condition": "true",
+        "severity": "info",
+        "description": "LevelDB .ldb files in Chrome/Electron app profiles contain browsing history, IndexedDB storage, localStorage, and extension data. Common forensic artifact locations: %APPDATA%\\Google\\Chrome\\User Data\\Default\\IndexedDB\\, %APPDATA%\\Microsoft\\Teams\\, VS Code workspaceStorage."
+      }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "LevelDB/RocksDB SSTable: no magic at offset 0. Magic at last 8 bytes: LevelDB=57FB808B24752484, RocksDB=F7CFF485B741E288. File layout: [data blocks] + [filter meta block] + [stats block] + [metaindex block] + [index block] + [footer=48B]. Footer: metaindex_handle(varint64x2) + index_handle(varint64x2) + padding + magic(8B). Block entry: shared_len(varint) + unshared_len(varint) + value_len(varint) + key(bytes) + value(bytes). Block trailer: restart_offsets[](uint32 LE) + num_restarts(uint32 LE) + compression_type(1B) + crc32(4B). Tools: ldb (LevelDB CLI), sst_dump (RocksDB CLI), leveldb-viewer. Used by Chrome, Electron, VS Code.",
+    "suggestedInspections": [
+      "Read last 8 bytes to identify LevelDB (57 FB 80 8B 24 75 48 84) vs RocksDB (F7 CF F4 85 B7 41 E2 88)",
+      "Read last 48 bytes (footer): first two varint pairs are metaindex_handle and index_handle offsets",
+      "Forensics: Chrome .ldb files contain serialized JS objects — search for UTF-16 strings at block boundaries",
+      "Block entries start at offset 0 — first entry has shared_length=0 so first 3 varints = 0, key_len, value_len",
+      "Use ldb CLI: `ldb scan --db=<directory>` to enumerate key-value pairs without hex parsing"
+    ]
+  },
+  "software": [
+    "ldb (Google LevelDB command-line tool — scan, dump, repair)",
+    "sst_dump (RocksDB SSTable inspector — prints all keys/values)",
+    "leveldb-viewer (GUI tool for Chrome LevelDB databases)",
+    "Chromium DevTools (reads LevelDB IndexedDB directly)"
+  ],
+  "formatRelationships": {
+    "category": "Database",
+    "extensions": [".ldb", ".sst"],
+    "relatedFormats": ["SQLITE", "LEVELDB_LOG"],
+    "note": ".ldb is the standard LevelDB SSTable extension (Google, 2011). .sst is used by RocksDB (Facebook, 2012, based on LevelDB). Both formats are functionally identical at the SSTable level but differ in footer magic and supported compression codecs. LevelDB supports Snappy only; RocksDB adds Zlib, BZip2, LZ4, Zstd."
+  },
+  "MimeTypes": ["application/octet-stream"],
+  "UseCases": [
+    "Forensic extraction of Chrome browser history and IndexedDB data",
+    "VS Code extension storage and workspace state analysis",
+    "RocksDB compaction monitoring and SST file inspection",
+    "Electron app local storage forensics (.ldb in app profiles)"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 72,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 4,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "Format": "Sorted String Table (SSTable) — immutable sorted key-value file",
+    "LevelDB_Magic": "57 FB 80 8B 24 75 48 84 (last 8 bytes of file)",
+    "RocksDB_Magic": "F7 CF F4 85 B7 41 E2 88 (last 8 bytes of file)",
+    "Footer": "48 bytes at EOF: metaindex_handle(varint) + index_handle(varint) + padding + magic(8B)",
+    "Blocks": "Data blocks, filter block (Bloom), stats block, metaindex block, index block",
+    "Encoding": "Keys sorted lexicographically; varint32/varint64 for lengths and offsets",
+    "Compression": "Per-block: 0x00=None, 0x01=Snappy (LevelDB default), 0x04=LZ4 (RocksDB)"
+  }
+}

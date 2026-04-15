@@ -1,0 +1,380 @@
+{
+  "diffMode": "binary",
+  "formatName": "CPIO Archive",
+  "version": "1.0",
+  "extensions": [".cpio"],
+  "description": "CPIO (Copy In/Out) is a Unix archive format used in Linux initramfs, RPM packages, and system administration. Three main variants exist: 'New ASCII' (SVR4/GNU cpio) with magic '070701' is the most common and used in initramfs; 'New CRC' with magic '070702' adds CRC verification; and the legacy binary format with magic 0x71C7 (little-endian) or 0xC771 (big-endian). Each archive entry consists of a header followed by a null-terminated filename padded to a 4-byte boundary, then file data also padded to a 4-byte boundary. The archive terminates with a special trailer entry named 'TRAILER!!!' (10 bytes). The newc header is 110 bytes with all numeric fields encoded as 8-digit zero-padded uppercase hexadecimal ASCII strings.",
+  "category": "Archives",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "references": {
+    "specifications": [
+      "POSIX.1-2001 cpio Archive Format",
+      "SVR4 cpio(4) New ASCII (newc) Format Specification",
+      "GNU cpio Manual — Format Description"
+    ],
+    "WebLinks": [
+      "https://www.gnu.org/software/cpio/manual/cpio.html",
+      "https://en.wikipedia.org/wiki/Cpio",
+      "https://man7.org/linux/man-pages/man5/cpio.5.html"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      { "value": "303730373031", "offset": 0, "label": "'070701' — CPIO New ASCII (SVR4/newc) format magic", "weight": 1.0 },
+      { "value": "303730373032", "offset": 0, "label": "'070702' — CPIO New CRC format magic", "weight": 1.0 },
+      { "value": "C771", "offset": 0, "label": "0xC771 — CPIO binary format magic (big-endian)", "weight": 0.8 },
+      { "value": "71C7", "offset": 0, "label": "0x71C7 — CPIO binary format magic (little-endian)", "weight": 0.8 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.8,
+    "required": true,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 3.0, "max": 8.0 },
+    "validation": {
+      "minFileSize": 110,
+      "maxSignatureOffset": 0,
+      "note": "New ASCII (newc) format starts with 6 ASCII bytes '070701' or '070702'. Binary format starts with 2-byte magic 0x71C7 or 0xC771. The newc 110-byte header uses 8-digit hex ASCII fields exclusively."
+    }
+  },
+  "variables": {
+    "cpioMagic": "",
+    "cpioIno": "",
+    "cpioMode": "",
+    "cpioUid": "",
+    "cpioGid": "",
+    "cpioNlink": "",
+    "cpioMtime": "",
+    "cpioFilesize": "",
+    "cpioDevmajor": "",
+    "cpioDevminor": "",
+    "cpioRdevmajor": "",
+    "cpioRdevminor": "",
+    "cpioNamesize": "",
+    "cpioCheck": ""
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "CPIO Magic",
+      "offset": 0,
+      "length": 6,
+      "color": "#FF6B6B",
+      "opacity": 0.45,
+      "description": "CPIO format magic identifier: 6 ASCII bytes. '070701' (30 37 30 37 30 31) for New ASCII (newc/SVR4) format — the most common variant, used in Linux initramfs and RPM archives. '070702' (30 37 30 37 30 32) for New CRC format — identical layout but with a CRC32 checksum in the check field. These are literal ASCII digit strings, not binary values.",
+      "storeAs": "cpioMagic",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Inode Number",
+      "offset": 6,
+      "length": 8,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "Inode number of the archived file, stored as an 8-digit zero-padded hexadecimal ASCII string. Used to detect hard links within the archive — entries with the same inode number and device number reference the same file. Only the first occurrence carries the file data; subsequent entries are hard link stubs.",
+      "storeAs": "cpioIno",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "File Mode",
+      "offset": 14,
+      "length": 8,
+      "color": "#95E1D3",
+      "opacity": 0.35,
+      "description": "File mode and permissions stored as an 8-digit zero-padded hexadecimal ASCII string. Encodes both the file type (upper 4 bits: 0x8000=regular, 0x4000=directory, 0xA000=symlink, 0x6000=block device, 0x2000=char device, 0x1000=FIFO) and Unix permission bits (lower 12 bits: owner/group/other rwx plus setuid/setgid/sticky).",
+      "storeAs": "cpioMode",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "User ID",
+      "offset": 22,
+      "length": 8,
+      "color": "#FFE66D",
+      "opacity": 0.35,
+      "description": "Numeric owner user ID stored as an 8-digit zero-padded hexadecimal ASCII string. Represents the Unix UID of the file owner at the time of archiving. For initramfs entries this is typically 0 (root).",
+      "storeAs": "cpioUid",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Group ID",
+      "offset": 30,
+      "length": 8,
+      "color": "#C7CEEA",
+      "opacity": 0.35,
+      "description": "Numeric group ID stored as an 8-digit zero-padded hexadecimal ASCII string. Represents the Unix GID of the file's group at the time of archiving. For initramfs entries this is typically 0 (root).",
+      "storeAs": "cpioGid",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Number of Hard Links",
+      "offset": 38,
+      "length": 8,
+      "color": "#B8B8FF",
+      "opacity": 0.35,
+      "description": "Number of hard links to this file, stored as an 8-digit zero-padded hexadecimal ASCII string. For directories this is at least 2 (self + parent). For regular files, values greater than 1 indicate additional hard link entries elsewhere in the archive sharing the same inode number.",
+      "storeAs": "cpioNlink",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Modification Time",
+      "offset": 46,
+      "length": 8,
+      "color": "#FF6B9D",
+      "opacity": 0.35,
+      "description": "Last modification time stored as an 8-digit zero-padded hexadecimal ASCII string representing a Unix timestamp (seconds since 1970-01-01 00:00:00 UTC). Used to restore the file's modification time during extraction.",
+      "storeAs": "cpioMtime",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "File Size",
+      "offset": 54,
+      "length": 8,
+      "color": "#C44569",
+      "opacity": 0.35,
+      "description": "Size of the file data in bytes, stored as an 8-digit zero-padded hexadecimal ASCII string. For regular files this is the actual content length. For directories and special files this is 0. For symbolic links this is the length of the target path string. The file data follows the filename, padded to the next 4-byte boundary.",
+      "storeAs": "cpioFilesize",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Device Major Number",
+      "offset": 62,
+      "length": 8,
+      "color": "#98D8C8",
+      "opacity": 0.3,
+      "description": "Major number of the device containing the archived file, stored as an 8-digit zero-padded hexadecimal ASCII string. Combined with devminor to uniquely identify the source filesystem device. Used with inode number to detect hard links across devices.",
+      "storeAs": "cpioDevmajor",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Device Minor Number",
+      "offset": 70,
+      "length": 8,
+      "color": "#FFA07A",
+      "opacity": 0.3,
+      "description": "Minor number of the device containing the archived file, stored as an 8-digit zero-padded hexadecimal ASCII string. Combined with devmajor to uniquely identify the source filesystem device.",
+      "storeAs": "cpioDevminor",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Rdev Major Number",
+      "offset": 78,
+      "length": 8,
+      "color": "#A8E6CF",
+      "opacity": 0.3,
+      "description": "Major device number for character and block device entries, stored as an 8-digit zero-padded hexadecimal ASCII string. Only meaningful when the file mode indicates a device node (character 0x2000 or block 0x6000). Zero for regular files and directories.",
+      "storeAs": "cpioRdevmajor",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Rdev Minor Number",
+      "offset": 86,
+      "length": 8,
+      "color": "#D4A5FF",
+      "opacity": 0.3,
+      "description": "Minor device number for character and block device entries, stored as an 8-digit zero-padded hexadecimal ASCII string. Only meaningful when the file mode indicates a device node. Zero for regular files and directories.",
+      "storeAs": "cpioRdevminor",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Filename Size",
+      "offset": 94,
+      "length": 8,
+      "color": "#FFB347",
+      "opacity": 0.35,
+      "description": "Length of the filename including the null terminator, stored as an 8-digit zero-padded hexadecimal ASCII string. The filename immediately follows the 110-byte header and is padded to the next 4-byte boundary. The trailer entry has namesize=0x0000000B (11 bytes for 'TRAILER!!!' + null).",
+      "storeAs": "cpioNamesize",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Checksum",
+      "offset": 102,
+      "length": 8,
+      "color": "#87CEEB",
+      "opacity": 0.3,
+      "description": "CRC32 checksum of the file data, stored as an 8-digit zero-padded hexadecimal ASCII string. For '070701' (newc) format this field is always '00000000'. For '070702' (newc CRC) format this contains the sum of all bytes in the file data, providing integrity verification.",
+      "storeAs": "cpioCheck",
+      "valueType": "ascii"
+    },
+    {
+      "type": "metadata",
+      "name": "Magic String",
+      "variable": "cpioMagic",
+      "description": "CPIO format variant identifier: '070701' (newc) or '070702' (newc CRC)"
+    },
+    {
+      "type": "metadata",
+      "name": "First Entry Inode",
+      "variable": "cpioIno",
+      "description": "Inode number of the first entry in hexadecimal ASCII representation"
+    },
+    {
+      "type": "metadata",
+      "name": "First Entry Mode",
+      "variable": "cpioMode",
+      "description": "File type and permissions of the first entry in hexadecimal ASCII representation"
+    },
+    {
+      "type": "metadata",
+      "name": "First Entry Size",
+      "variable": "cpioFilesize",
+      "description": "File data size of the first entry in hexadecimal ASCII representation"
+    },
+    {
+      "type": "metadata",
+      "name": "First Entry Name Size",
+      "variable": "cpioNamesize",
+      "description": "Filename length (including null) of the first entry in hexadecimal ASCII"
+    },
+    {
+      "type": "metadata",
+      "name": "Checksum Value",
+      "variable": "cpioCheck",
+      "description": "CRC32 checksum — '00000000' for newc (070701), computed value for CRC format (070702)"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "CPIO magic valid",
+      "expression": "cpioMagic == '070701' || cpioMagic == '070702'",
+      "severity": "error",
+      "message": "CPIO newc archive must start with magic '070701' or '070702' — file is not a valid CPIO new ASCII archive."
+    },
+    {
+      "name": "Filename size non-zero",
+      "expression": "cpioNamesize != '00000000'",
+      "severity": "error",
+      "message": "CPIO namesize field must be greater than zero — every entry requires at least a null-terminated filename of 1 byte."
+    },
+    {
+      "name": "Filesize valid hex ASCII",
+      "field": "cpioFilesize",
+      "condition": "cpioFilesize != ''",
+      "severity": "warning",
+      "message": "CPIO filesize field should be a valid 8-digit hexadecimal ASCII string. Empty or malformed value indicates header corruption."
+    },
+    {
+      "name": "Checksum zero for newc format",
+      "expression": "cpioMagic != '070701' || cpioCheck == '00000000'",
+      "severity": "warning",
+      "message": "CPIO newc (070701) format should have checksum field set to '00000000'. Non-zero value in newc format may indicate format mismatch or corruption."
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "CPIO Magic", "offset": 0, "icon": "\uE8B7", "color": "#FF6B6B" },
+      { "name": "File Mode", "offset": 14, "icon": "\uE8B7", "color": "#95E1D3" },
+      { "name": "File Size", "offset": 54, "icon": "\uE8B7", "color": "#C44569" },
+      { "name": "Filename Size", "offset": 94, "icon": "\uE8B7", "color": "#FFB347" },
+      { "name": "Checksum", "offset": 102, "icon": "\uE8B7", "color": "#87CEEB" }
+    ]
+  },
+  "inspector": {
+    "badge": "cpioMagic",
+    "primaryField": "cpioFilesize",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "CPIO Header",
+        "icon": "\uE8B7",
+        "fields": ["cpioMagic", "cpioIno", "cpioMode", "cpioUid", "cpioGid"]
+      },
+      {
+        "title": "Entry Data",
+        "icon": "\uE8A5",
+        "fields": ["cpioNlink", "cpioMtime", "cpioFilesize", "cpioNamesize", "cpioCheck"]
+      },
+      {
+        "title": "Device Numbers",
+        "icon": "\uE964",
+        "fields": ["cpioDevmajor", "cpioDevminor", "cpioRdevmajor", "cpioRdevminor"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "CPIO Header (JSON)",
+      "format": "json",
+      "fields": ["cpioMagic", "cpioIno", "cpioMode", "cpioUid", "cpioGid", "cpioNlink", "cpioMtime", "cpioFilesize", "cpioNamesize", "cpioCheck"]
+    },
+    {
+      "name": "CPIO Entry Summary (Text)",
+      "format": "text",
+      "fields": ["cpioMagic", "cpioMode", "cpioFilesize", "cpioNamesize"]
+    }
+  ],
+  "forensic": {
+    "category": "archive",
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      {
+        "name": "Setuid/setgid binary in archive",
+        "condition": "cpioMode contains setuid or setgid bits",
+        "severity": "warning",
+        "description": "CPIO archive entry has setuid/setgid bits set in file mode. This is common in initramfs but suspicious in user-supplied archives as it may indicate privilege escalation payloads."
+      }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "CPIO newc format: 110-byte ASCII header per entry, all numeric fields as 8-digit hex strings. Filename follows header (padded to 4-byte boundary), then file data (padded to 4-byte boundary). Archive ends with 'TRAILER!!!' entry. Most common in Linux initramfs (cpio.gz) and as the inner archive format of RPM packages. No built-in compression — typically wrapped in gzip.",
+    "suggestedInspections": [
+      "Bytes 0-5: verify magic '070701' (newc) or '070702' (CRC) — all 6 bytes are ASCII digits",
+      "Bytes 54-61: filesize hex string — convert to integer to locate file data boundary",
+      "Bytes 94-101: namesize hex string — convert to find filename at offset 110, then data at 110+padded(namesize)",
+      "Bytes 102-109: check field — must be '00000000' for 070701, CRC32 sum for 070702",
+      "Scan for 'TRAILER!!!' (54 52 41 49 4C 45 52 21 21 21) to locate archive end marker",
+      "For initramfs analysis: decompress outer gzip first, then parse sequential CPIO entries"
+    ]
+  },
+  "software": [
+    "cpio (GNU cpio — standard Unix archive tool)",
+    "rpm2cpio (extract CPIO archive from RPM packages)",
+    "dracut (Linux initramfs generator — creates cpio.gz images)",
+    "mkinitcpio (Arch Linux initramfs creation tool)",
+    "7-Zip (cross-platform archive tool with CPIO support)"
+  ],
+  "formatRelationships": {
+    "category": "Archives",
+    "extensions": [".cpio"],
+    "relatedFormats": ["TAR", "GZIP", "RPM"],
+    "note": "CPIO is the inner archive format of RPM packages (rpm2cpio extracts it). Linux initramfs images are gzip-compressed CPIO archives. Often compared to TAR — both are sequential archive formats, but CPIO has simpler fixed-width headers. Modern Linux favors CPIO for initramfs due to simpler kernel decompression code."
+  },
+  "MimeTypes": ["application/x-cpio"],
+  "UseCases": [
+    "Linux initramfs boot filesystem images (cpio.gz archive)",
+    "RPM package inner archive (rpm2cpio extraction target)",
+    "System backup and restore on Unix/Linux platforms",
+    "Firmware image analysis and embedded system forensics"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 90,
+    "DocumentationLevel": "comprehensive",
+    "BlocksDefined": 20,
+    "ValidationRules": 4,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "Format": "Sequential archive with fixed-width ASCII headers and 4-byte aligned entries",
+    "Magic": "'070701' (newc) or '070702' (CRC) — 6 ASCII bytes at offset 0",
+    "HeaderSize": 110,
+    "FieldEncoding": "8-digit zero-padded uppercase hexadecimal ASCII strings",
+    "BlockAlignment": 4,
+    "TrailerEntry": "'TRAILER!!!' (10 bytes + null) marks end of archive",
+    "Endianness": "N/A for newc (hex ASCII strings); binary variant uses native byte order",
+    "MaxFileSize": "4 GiB (32-bit hex field limit: 0xFFFFFFFF)"
+  }
+}

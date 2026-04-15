@@ -1,0 +1,249 @@
+{
+  "diffMode": "binary",
+  "formatName": "TensorFlow Lite Model",
+  "version": "1.0",
+  "extensions": [ ".tflite" ],
+  "description": "TensorFlow Lite model file using FlatBuffer serialization with 'TFL3' file identifier for optimized on-device machine learning inference on mobile, embedded, and edge TPU platforms.",
+  "category": "MachineLearning",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "MimeTypes": [ "application/x-tflite", "application/octet-stream" ],
+
+  "UseCases": [
+    "Mobile ML inference on Android (ML Kit, TFLite Android API) and iOS (TFLite Swift/ObjC API)",
+    "Edge TPU deployment on Google Coral devices with hardware-accelerated inference",
+    "Microcontroller ML with TensorFlow Lite Micro for sub-milliwatt inference on Cortex-M and RISC-V",
+    "On-device AI for real-time object detection, NLP, speech recognition, and pose estimation"
+  ],
+
+  "software": [
+    { "name": "TensorFlow Lite Interpreter",  "role": "consumer" },
+    { "name": "TFLite Model Maker",           "role": "producer" },
+    { "name": "TensorFlow Converter (tflite_convert)", "role": "producer" },
+    { "name": "Netron",                       "role": "consumer" },
+    { "name": "Android ML Kit",               "role": "consumer" },
+    { "name": "Google Coral Edge TPU Compiler", "role": "consumer" }
+  ],
+
+  "formatRelationships": {
+    "relatedFormats": [ "ONNX", "SAFETENSORS", "SavedModel (TensorFlow)", "TensorRT engine" ],
+    "container": null,
+    "notes": "TFLite files use Google FlatBuffers for zero-copy deserialization, enabling fast model loading without parsing overhead. The 'TFL3' file identifier at offset 4 distinguishes TFLite from other FlatBuffer formats."
+  },
+
+  "references": {
+    "specifications": [
+      "TFLite FlatBuffer Schema (github.com/tensorflow/tensorflow/blob/master/tensorflow/lite/schema/schema.fbs)",
+      "FlatBuffers Specification (google.github.io/flatbuffers/)"
+    ],
+    "WebLinks": [
+      "https://www.tensorflow.org/lite",
+      "https://en.wikipedia.org/wiki/TensorFlow_Lite"
+    ]
+  },
+
+  "detection": {
+    "signatures": [
+      {
+        "value": "54464C33",
+        "offset": 4,
+        "label": "'TFL3' — TensorFlow Lite FlatBuffer file identifier at offset 4",
+        "weight": 100,
+        "required": true
+      }
+    ],
+    "matchMode": "weighted",
+    "MinimumScore": 100,
+    "Strength": "Strong",
+    "EntropyHint": {
+      "min": 4.0,
+      "max": 7.0,
+      "note": "FlatBuffer structural metadata has moderate entropy; quantized model weights (int8) have lower entropy than float32 weights. Fully quantized models typically 4.5-5.5."
+    },
+    "validation": {
+      "minFileSize": 12,
+      "maxSignatureOffset": 4
+    }
+  },
+
+  "variables": {
+    "rootOffset":  { "offset": 0, "length": 4, "type": "uint32le" },
+    "tfliteMagic": { "offset": 4, "length": 4, "type": "ascii" },
+    "firstField":  { "offset": 8, "length": 4, "type": "uint32le" }
+  },
+
+  "blocks": [
+    {
+      "type": "field",
+      "name": "FlatBuffer Root Table Offset",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.9,
+      "description": "32-bit little-endian offset from the start of the buffer to the root Model table. FlatBuffers use this offset for zero-copy access to the root object without full deserialization.",
+      "storeAs": "rootOffset",
+      "valueType": "uint32",
+      "endianness": "little"
+    },
+    {
+      "type": "signature",
+      "name": "TFLite File Identifier",
+      "offset": 4,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.9,
+      "description": "4-byte ASCII file identifier 'TFL3' (0x54 0x46 0x4C 0x33) embedded by FlatBuffers at offset 4; identifies this as a TensorFlow Lite v3 schema model. Older schema versions may use different identifiers.",
+      "storeAs": "tfliteMagic",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Root Table VTable Offset",
+      "offset": 8,
+      "length": 4,
+      "color": "#45B7D1",
+      "opacity": 0.75,
+      "description": "First 4 bytes of the root Model table area; in FlatBuffer encoding this is typically a signed offset to the vtable that defines which fields are present in the Model table.",
+      "storeAs": "firstField",
+      "valueType": "uint32",
+      "endianness": "little"
+    },
+    {
+      "type": "metadata",
+      "name": "Model Table",
+      "offset": "rootOffset",
+      "length": "variable",
+      "color": "#96CEB4",
+      "opacity": 0.65,
+      "description": "FlatBuffer Model root table containing: version (uint32, schema version 3), operator_codes[] (builtin and custom ops), subgraphs[] (computation graphs), description (string), buffers[] (tensor data), metadata[], and signature_defs[]."
+    },
+    {
+      "type": "metadata",
+      "name": "Subgraphs",
+      "offset": "variable",
+      "length": "variable",
+      "color": "#FFEAA7",
+      "opacity": 0.6,
+      "description": "Vector of SubGraph tables each containing: tensors[] (tensor metadata with shape, type, buffer index), operators[] (op references with input/output tensor indices), inputs[], outputs[], and name."
+    },
+    {
+      "type": "data",
+      "name": "Buffer Data Region",
+      "offset": "variable",
+      "length": "variable",
+      "color": "#DDA0DD",
+      "opacity": 0.5,
+      "description": "Array of data buffers referenced by tensor buffer_index; buffer 0 is always empty (sentinel). Remaining buffers contain raw tensor weights in the model's quantization format (float32, float16, int8, uint8, etc.)."
+    }
+  ],
+
+  "assertions": [
+    {
+      "name": "TFLiteMagicValid",
+      "expression": "tfliteMagic == 'TFL3'",
+      "severity": "error",
+      "message": "File identifier at offset 4 is not 'TFL3'; this is not a valid TensorFlow Lite model or uses an unsupported schema version."
+    },
+    {
+      "name": "RootOffsetValid",
+      "expression": "rootOffset > 0 && rootOffset < FILE_SIZE",
+      "severity": "warning",
+      "message": "FlatBuffer root table offset is zero or exceeds file size; the file may be corrupt."
+    },
+    {
+      "name": "FileSizeMinimum",
+      "expression": "FILE_SIZE >= 12",
+      "severity": "error",
+      "message": "File is too small (< 12 bytes) to contain a valid TFLite FlatBuffer header."
+    },
+    {
+      "name": "FileSizeReasonable",
+      "expression": "FILE_SIZE >= 128",
+      "severity": "info",
+      "message": "File is very small for a TFLite model; valid models with at least one operator and buffer are typically several kilobytes."
+    }
+  ],
+
+  "navigation": {
+    "bookmarks": [
+      { "name": "FlatBuffer Root Offset", "offset": 0, "description": "uint32 LE offset to root Model table" },
+      { "name": "TFL3 Identifier",        "offset": 4, "description": "'TFL3' ASCII file identifier" },
+      { "name": "Root Table Area",         "offset": 8, "description": "Start of FlatBuffer root table / vtable region" }
+    ]
+  },
+
+  "inspector": {
+    "badge": "TFLITE",
+    "primaryField": "tfliteMagic",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "name": "FlatBuffer Header",
+        "fields": [ "rootOffset", "tfliteMagic" ]
+      },
+      {
+        "name": "Model Structure",
+        "fields": [ "firstField" ]
+      }
+    ]
+  },
+
+  "exportTemplates": [
+    {
+      "name": "TFLite Header Summary",
+      "format": "text",
+      "template": "TensorFlow Lite Model\n  File ID        : {tfliteMagic}\n  Root Offset    : {rootOffset}\n  Schema         : TFLite v3 FlatBuffer"
+    },
+    {
+      "name": "TFLite JSON Report",
+      "format": "json",
+      "template": "{ \"format\": \"TFLite\", \"fileIdentifier\": \"{tfliteMagic}\", \"rootOffset\": {rootOffset} }"
+    }
+  ],
+
+  "forensic": {
+    "category": "MachineLearningArtifact",
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      { "pattern": "CustomOperator",          "description": "Custom operator codes (BuiltinOperator.CUSTOM) reference external operator implementations that could contain arbitrary native code." },
+      { "pattern": "OversizedBuffers",        "description": "Individual tensor buffers significantly larger than expected for the model architecture may indicate embedded non-model data." },
+      { "pattern": "MetadataPayload",         "description": "Model metadata entries can contain arbitrary key-value data including file paths, training configurations, and dataset references." }
+    ]
+  },
+
+  "aiHints": {
+    "analysisContext": "TFLite files use Google FlatBuffers binary format with the 'TFL3' file identifier. FlatBuffers enable zero-copy deserialization: the root table offset at byte 0 points directly to the Model table, and all nested objects use relative offsets. The Model contains operator_codes (enum-indexed built-in ops or custom op strings), subgraphs (tensor metadata + operator graph), and buffers (raw weight data).",
+    "suggestedInspections": [
+      "Verify the 'TFL3' file identifier at offset 4 to confirm TensorFlow Lite schema version 3.",
+      "Follow the root table offset to locate the Model vtable and enumerate available fields (version, operator_codes, subgraphs, buffers).",
+      "Count and identify operator_codes to determine which TFLite built-in operators the model uses (CONV_2D, FULLY_CONNECTED, SOFTMAX, etc.).",
+      "Examine tensor quantization parameters (scale, zero_point) to identify int8/uint8 quantized models vs float32 models.",
+      "Check for custom operator entries that may require user-provided op implementations at inference time.",
+      "Validate buffer data sizes against tensor shape and dtype to detect truncated or corrupt weight data."
+    ]
+  },
+
+  "TechnicalDetails": {
+    "specification": "TFLite schema: github.com/tensorflow/tensorflow/blob/master/tensorflow/lite/schema/schema.fbs; FlatBuffers: google.github.io/flatbuffers/flatbuffers_internals.html",
+    "endianness": "little-endian (FlatBuffers native encoding)",
+    "serializationFormat": "Google FlatBuffers with file_identifier 'TFL3'",
+    "quantizationFormats": {
+      "float32": "Full precision, largest model size",
+      "float16": "Half precision, ~50% size reduction",
+      "int8": "Post-training or quantization-aware training, ~75% size reduction",
+      "uint8": "Legacy quantization format",
+      "int16x8": "16-bit activations with 8-bit weights for improved accuracy"
+    },
+    "notes": "TFLite models are typically converted from TensorFlow SavedModel or Keras models using tf.lite.TFLiteConverter. The FlatBuffer format enables memory-mapped loading on mobile and embedded devices."
+  },
+
+  "QualityMetrics": {
+    "CompletenessScore": 91,
+    "DocumentationLevel": "comprehensive",
+    "BlocksDefined": 6,
+    "ValidationRules": 4,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": true,
+    "AutoRefined": false
+  }
+}

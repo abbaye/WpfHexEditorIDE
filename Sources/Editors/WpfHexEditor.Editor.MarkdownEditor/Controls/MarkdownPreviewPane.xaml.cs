@@ -136,8 +136,11 @@ public sealed partial class MarkdownPreviewPane : UserControl
         var scaleX = source?.CompositionTarget?.TransformToDevice.M11 ?? 1.0;
         var scaleY = source?.CompositionTarget?.TransformToDevice.M22 ?? 1.0;
 
-        var w = (int)Math.Max(width  * scaleX, 1);
-        var h = (int)Math.Max(height * scaleY, 1);
+        // Subtract the 1 px Margin on each side (2 px per axis) so the HWND does not
+        // occlude the WPF docking selection border rendered beneath the WindowsFormsHost.
+        const double MarginLogical = 2.0;
+        var w = (int)Math.Max((width  - MarginLogical * 2) * scaleX, 1);
+        var h = (int)Math.Max((height - MarginLogical * 2) * scaleY, 1);
 
         // Resize WindowsFormsHost HWND, then walk the entire child chain:
         // WindowsFormsHost → WinForms container → WebView2 WinForms → browser child HWNDs
@@ -326,6 +329,10 @@ public sealed partial class MarkdownPreviewPane : UserControl
             // Show WebView2 host, hide loading overlay
             _webViewHost.Visibility    = Visibility.Visible;
             _loadingOverlay.Visibility = Visibility.Collapsed;
+
+            // Force Win32 HWND tree to match the current WPF slot — SizeChanged will not
+            // fire again if the control is already at its final size when init completes.
+            InvalidateWebViewSize();
 
             // Render any content that arrived before initialization completed
             if (!string.IsNullOrEmpty(_pendingMarkdown))

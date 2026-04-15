@@ -1,0 +1,225 @@
+{
+  "diffMode": "text",
+  "formatName": "Advanced SubStation Alpha",
+  "version": "1.0",
+  "extensions": [ ".ass", ".ssa" ],
+  "description": "Advanced SubStation Alpha (ASS/SSA) is a feature-rich INI-style subtitle format dominant in anime fansubbing; it supports per-character styling, animation, karaoke effects, clipping, motion, and typesetting via override tags in [Events] dialogue lines, with styles defined in [V4+ Styles] and metadata in [Script Info] sections.",
+  "category": "Subtitles",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "text-editor",
+  "MimeTypes": [ "text/x-ssa" ],
+  "UseCases": [
+    "Anime fansubbing with complex typesetting and karaoke effects",
+    "Styled subtitle authoring with per-character colors, fonts, and positioning",
+    "Motion graphics and animated text overlays in video",
+    "Multi-style subtitle tracks in MKV containers"
+  ],
+  "software": [
+    { "name": "Aegisub",           "role": "producer/consumer (primary ASS editor)" },
+    { "name": "libass",            "role": "consumer (subtitle renderer)" },
+    { "name": "xy-VSFilter",       "role": "consumer (DirectShow subtitle filter)" },
+    { "name": "mpv",               "role": "consumer (uses libass)" },
+    { "name": "VLC",               "role": "consumer" },
+    { "name": "FFmpeg",            "role": "producer/consumer" },
+    { "name": "MPC-HC",            "role": "consumer" }
+  ],
+  "references": {
+    "specifications": [ "ASS (Advanced SubStation Alpha) format specification", "SSA v4.00 format specification" ],
+    "WebLinks": [ "https://en.wikipedia.org/wiki/SubStation_Alpha", "http://www.tcax.org/docs/ass-specs.htm" ]
+  },
+  "formatRelationships": {
+    "relatedFormats": [ "SSA (SubStation Alpha v4.00)", "SRT (SubRip)", "VTT (WebVTT)" ],
+    "container": null,
+    "notes": "ASS (v4.00+) is the successor to SSA (v4.00). The key differences: [V4+ Styles] vs [V4 Styles], additional override tags, ScaledBorderAndShadow, and extended alignment numbering. ASS is commonly muxed into MKV containers."
+  },
+
+  "detection": {
+    "signatures": [
+      {
+        "value": "5B53637269707420496E666F5D",
+        "offset": 0,
+        "label": "'[Script Info]' — ASS/SSA mandatory first section header (13 bytes)",
+        "weight": 60,
+        "required": true
+      },
+      {
+        "value": "EFBBBF5B53637269707420496E666F5D",
+        "offset": 0,
+        "label": "UTF-8 BOM (EF BB BF) followed by '[Script Info]' — BOM-prefixed ASS/SSA file",
+        "weight": 60,
+        "required": false
+      }
+    ],
+    "matchMode": "weighted",
+    "MinimumScore": 60,
+    "Strength": "Strong",
+    "EntropyHint": {
+      "min": 3.5,
+      "max": 5.5,
+      "note": "INI-style text with style definitions, dialogue lines, and override tags; entropy reflects structured natural language with markup."
+    },
+    "validation": {
+      "minFileSize": 13,
+      "maxSignatureOffset": 4,
+      "expression": "STRING_ASCII(0, 13) == '[Script Info]' || STRING_ASCII(3, 13) == '[Script Info]'",
+      "description": "File must start with '[Script Info]' section header (optionally preceded by UTF-8 BOM)."
+    }
+  },
+
+  "variables": {
+    "sectionHeader":  { "offset": 0, "length": 13, "type": "ascii" },
+    "postHeaderByte": { "offset": 13, "length": 1,  "type": "uint8" }
+  },
+
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "[Script Info] Header",
+      "offset": 0,
+      "length": 13,
+      "color": "#EF5350",
+      "opacity": 0.8,
+      "description": "13-byte ASCII string '[Script Info]' (0x5B 0x53 0x63 0x72 0x69 0x70 0x74 0x20 0x49 0x6E 0x66 0x6F 0x5D) — mandatory first section of every ASS/SSA file containing Title, ScriptType, PlayResX/Y, and other metadata.",
+      "storeAs": "sectionHeader",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Newline After Header",
+      "offset": 13,
+      "length": 1,
+      "color": "#EF9A9A",
+      "opacity": 0.5,
+      "description": "Newline byte after [Script Info]: 0x0D (CR, followed by LF) or 0x0A (LF). The Script Info section body follows on subsequent lines.",
+      "storeAs": "postHeaderByte",
+      "valueType": "uint8",
+      "valueMap": {
+        "13": "0x0D — Carriage Return (CRLF line ending)",
+        "10": "0x0A — Line Feed (LF line ending)"
+      }
+    },
+    {
+      "type": "metadata",
+      "name": "Script Info Section",
+      "offset": "variable",
+      "length": "variable",
+      "color": "#E57373",
+      "opacity": 0.5,
+      "description": "Key-value metadata: Title, ScriptType (v4.00+ for ASS, v4.00 for SSA), WrapStyle, ScaledBorderAndShadow, PlayResX, PlayResY, YCbCr Matrix, Collisions, Timer."
+    },
+    {
+      "type": "metadata",
+      "name": "Styles Section",
+      "offset": "variable",
+      "length": "variable",
+      "color": "#F48FB1",
+      "opacity": 0.5,
+      "description": "[V4+ Styles] (ASS) or [V4 Styles] (SSA) section: Format line defining field order, then Style lines with Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, BorderStyle, Outline, Shadow, Alignment, MarginL/R/V, Encoding."
+    },
+    {
+      "type": "metadata",
+      "name": "Events Section",
+      "offset": "variable",
+      "length": "variable",
+      "color": "#CE93D8",
+      "opacity": 0.5,
+      "description": "[Events] section: Format line, then Dialogue/Comment lines with Layer, Start, End, Style, Name, MarginL/R/V, Effect, Text. Text field supports override tags: {\\b1}, {\\i1}, {\\pos(x,y)}, {\\move(x1,y1,x2,y2)}, {\\fad(in,out)}, {\\clip()}, {\\t()}, {\\an8}, {\\fn}, {\\fs}, {\\1c&HBBGGRR&}."
+    }
+  ],
+
+  "assertions": [
+    {
+      "name": "ScriptInfoHeader",
+      "expression": "STRING_ASCII(0, 13) == '[Script Info]' || STRING_ASCII(3, 13) == '[Script Info]'",
+      "severity": "error",
+      "message": "File does not start with '[Script Info]' section header; this is not a valid ASS/SSA subtitle file."
+    },
+    {
+      "name": "PostHeaderNewline",
+      "expression": "UINT8(0) == 0xEF || UINT8(13) == 0x0A || UINT8(13) == 0x0D",
+      "severity": "warning",
+      "message": "Expected newline (LF or CRLF) after '[Script Info]' header; the section body may not parse correctly."
+    },
+    {
+      "name": "FileSizeMinimum",
+      "expression": "FILE_SIZE >= 50",
+      "severity": "warning",
+      "message": "File is very small (< 50 bytes); a valid ASS/SSA file requires at minimum [Script Info] with ScriptType and at least one [Events] Dialogue line."
+    }
+  ],
+
+  "navigation": {
+    "bookmarks": [
+      { "name": "[Script Info]",    "offset": 0,  "description": "Script Info section header — 13 bytes ASCII" },
+      { "name": "Post-Header Byte", "offset": 13, "description": "Newline after section header" }
+    ]
+  },
+
+  "inspector": {
+    "badge": "ASS",
+    "primaryField": "sectionHeader",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "name": "File Header",
+        "fields": [ "sectionHeader", "postHeaderByte" ]
+      }
+    ]
+  },
+
+  "exportTemplates": [
+    {
+      "name": "ASS Header Summary",
+      "format": "text",
+      "template": "Advanced SubStation Alpha\n  Section Header : {sectionHeader}\n  Post-Header    : {postHeaderByte} ({postHeaderByte_mapped})"
+    },
+    {
+      "name": "ASS JSON Report",
+      "format": "json",
+      "template": "{ \"format\": \"ASS\", \"sectionHeader\": \"{sectionHeader}\", \"postHeaderByte\": {postHeaderByte} }"
+    }
+  ],
+
+  "forensic": {
+    "category": "MediaSubtitle",
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      { "pattern": "OverrideTagAbuse",     "description": "Excessive or deeply nested override tags ({\\t(...)}, {\\clip(...)}) may cause rendering performance issues or crashes in subtitle renderers." },
+      { "pattern": "ExternalFontReference", "description": "Style definitions referencing unusual font names may indicate an attempt to trigger font loading vulnerabilities in the host application." }
+    ]
+  },
+
+  "aiHints": {
+    "analysisContext": "ASS is an INI-style text subtitle format with three mandatory sections: [Script Info], [V4+ Styles], and [Events]. The '[Script Info]' header at offset 0 provides strong detection. ASS is the dominant format for anime fansubbing due to its rich override tag system for positioning, animation, clipping, and karaoke. Colors use &HAABBGGRR& (BGR, not RGB).",
+    "suggestedInspections": [
+      "Check the ScriptType field in [Script Info] to distinguish ASS (v4.00+) from SSA (v4.00) and determine available features.",
+      "Parse PlayResX and PlayResY to identify the virtual canvas resolution used for absolute positioning in override tags.",
+      "Scan [V4+ Styles] for the number of defined styles and their font/color properties to assess typesetting complexity.",
+      "Search for complex override tags ({\\move}, {\\clip}, {\\t}, {\\fad}) in [Events] Dialogue lines to evaluate animation usage.",
+      "Verify that all Style names referenced in Dialogue lines exist in the [V4+ Styles] section to detect broken style references."
+    ]
+  },
+
+  "TechnicalDetails": {
+    "specification": "ASS format specification (community-maintained): http://www.tcax.org/docs/ass-specs.htm",
+    "endianness": "N/A (text format)",
+    "encoding": "UTF-8 (modern), Shift_JIS or other legacy encodings in older files",
+    "scriptTypes": {
+      "v4.00+": "Advanced SubStation Alpha (ASS) — [V4+ Styles], extended override tags",
+      "v4.00": "SubStation Alpha (SSA) — [V4 Styles], limited override tags"
+    },
+    "colorFormat": "&HAABBGGRR& — hexadecimal, Alpha-Blue-Green-Red order (note: BGR, not RGB)",
+    "overrideTags": "Per-character styling: {\\b}, {\\i}, {\\fn}, {\\fs}, {\\1c}, {\\pos}, {\\move}, {\\fad}, {\\clip}, {\\t}, {\\an}, {\\org}, {\\frz}, {\\fax}, {\\fay}",
+    "notes": "Aegisub is the de facto editor. libass is the reference renderer. xy-VSFilter is the legacy DirectShow renderer. Color ordering (BGR) is a common source of bugs when converting to/from other formats."
+  },
+
+  "QualityMetrics": {
+    "CompletenessScore": 90,
+    "DocumentationLevel": "comprehensive",
+    "BlocksDefined": 5,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": true,
+    "AutoRefined": false
+  }
+}

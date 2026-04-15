@@ -1,0 +1,328 @@
+{
+  "diffMode": "binary",
+  "formatName": "Event Trace Log (ETW)",
+  "version": "1.0",
+  "extensions": [ ".etl" ],
+  "description": "Windows Event Tracing for Windows (ETW) log file produced by System.Diagnostics.Tracing, xperf, WPR, or the NT kernel logger; begins with one or more WMI_BUFFER_HEADER structures of 0x138 bytes each.",
+  "category": "System",
+  "author": "WPFHexaEditor Team",
+  "MimeTypes": [ "application/octet-stream", "application/x-etl" ],
+  "UseCases": [
+    "Windows performance profiling with WPR/xperf/PerfView",
+    "Kernel-mode event capture for scheduler, I/O, memory analysis",
+    ".NET runtime EventPipe tracing (pre-NetTrace format)",
+    "Security audit log capture via ETW providers",
+    "WPA (Windows Performance Analyzer) trace analysis"
+  ],
+  "software": [
+    { "name": "Windows Performance Recorder (WPR)", "role": "producer" },
+    { "name": "xperf / Windows Performance Toolkit",  "role": "producer/consumer" },
+    { "name": "PerfView",                             "role": "consumer" },
+    { "name": "Windows Performance Analyzer (WPA)",   "role": "consumer" },
+    { "name": "tracerpt.exe",                         "role": "consumer" }
+  ],
+  "formatRelationships": {
+    "relatedFormats": [ "NetTrace (.nettrace)", "WEL (.evtx)", "BLG Performance Counter Log" ],
+    "container": null,
+    "notes": "ETL files may be merged (tracerpt /merge) and can contain kernel + user-mode events in a single file. Large sessions produce multi-part .etl files."
+  },
+
+  "detection": {
+    "signatures": [
+      {
+        "value": "0000000000000000",
+        "offset": 0,
+        "label": "WMI_BUFFER_HEADER BufferSize placeholder — extension-primary detection",
+        "weight": 5,
+        "required": false
+      }
+    ],
+    "extensionSignatures": [
+      {
+        "extension": ".etl",
+        "label": "ETW Event Trace Log extension",
+        "weight": 70,
+        "required": true
+      }
+    ],
+    "matchMode": "weighted",
+    "MinimumScore": 60,
+    "Strength": "Weak",
+    "EntropyHint": {
+      "min": 4.0,
+      "max": 7.5,
+      "note": "Event payload entropy varies widely; compressed or encrypted providers push entropy toward 7.5."
+    },
+    "validation": {
+      "expression": "FILE_EXTENSION == '.etl'",
+      "description": "ETW files have no reliable byte-level magic; detection relies primarily on the .etl file extension and structural heuristics of the WMI_BUFFER_HEADER."
+    }
+  },
+
+  "variables": {
+    "bufferSize":       { "offset": 0,   "length": 4,  "type": "uint32le", "description": "WMI_BUFFER_HEADER.BufferSize — total size of this buffer in bytes" },
+    "savedOffset":      { "offset": 4,   "length": 4,  "type": "uint32le", "description": "WMI_BUFFER_HEADER.SavedOffset — offset to the last valid event in the buffer" },
+    "currentOffset":    { "offset": 8,   "length": 4,  "type": "uint32le", "description": "WMI_BUFFER_HEADER.CurrentOffset — current write position" },
+    "referenceCount":   { "offset": 12,  "length": 4,  "type": "int32le",  "description": "WMI_BUFFER_HEADER.ReferenceCount — active reference count" },
+    "timeStampLow":     { "offset": 16,  "length": 4,  "type": "uint32le", "description": "WMI_BUFFER_HEADER.TimeStamp low 32 bits (LARGE_INTEGER)" },
+    "timeStampHigh":    { "offset": 20,  "length": 4,  "type": "uint32le", "description": "WMI_BUFFER_HEADER.TimeStamp high 32 bits (LARGE_INTEGER)" },
+    "sequenceNumber":   { "offset": 24,  "length": 8,  "type": "uint64le", "description": "WMI_BUFFER_HEADER.SequenceNumber — monotonically increasing buffer sequence" },
+    "clockType":        { "offset": 32,  "length": 4,  "type": "uint32le", "description": "WMI_BUFFER_HEADER.Wnode.ClientContext — clock resolution (0=QueryPerformanceCounter, 1=SystemTime, 2=CpuCycles)" },
+    "bufferType":       { "offset": 36,  "length": 4,  "type": "uint32le", "description": "WMI_BUFFER_HEADER.BufferType — 0=generic, 1=rundown, 2=ctx switch, 3=flush" },
+    "loggerName":       { "offset": 292, "length": 64, "type": "utf16le",  "description": "WMI_BUFFER_HEADER.LoggerName — null-terminated wide string name of the ETW session" }
+  },
+
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "WMI_BUFFER_HEADER (First Buffer)",
+      "offset": 0,
+      "length": 312,
+      "color": "#1565C0",
+      "opacity": 0.8,
+      "description": "First WMI_BUFFER_HEADER structure (0x138 = 312 bytes) at the start of the ETL file; contains session metadata, timing info, logger name, and buffer accounting fields used by the ETW runtime.",
+      "storeAs": "firstBufferHeader",
+      "valueType": "struct"
+    },
+    {
+      "type": "field",
+      "name": "BufferSize",
+      "offset": 0,
+      "length": 4,
+      "color": "#1976D2",
+      "opacity": 0.75,
+      "description": "Total size of this WMI buffer in bytes; typically 65536 (64 KB) or a multiple thereof; defines the boundary of the first buffer page in the ETL file.",
+      "storeAs": "bufferSize",
+      "valueType": "uint32",
+      "endianness": "little"
+    },
+    {
+      "type": "field",
+      "name": "SavedOffset",
+      "offset": 4,
+      "length": 4,
+      "color": "#42A5F5",
+      "opacity": 0.65,
+      "description": "Offset within this buffer to the last fully written event record; used during flush to determine valid data boundaries when the buffer is only partially filled.",
+      "storeAs": "savedOffset",
+      "valueType": "uint32",
+      "endianness": "little"
+    },
+    {
+      "type": "field",
+      "name": "CurrentOffset",
+      "offset": 8,
+      "length": 4,
+      "color": "#42A5F5",
+      "opacity": 0.60,
+      "description": "Current write offset within the buffer at the time of capture; events between SavedOffset and CurrentOffset may be incomplete if the session was terminated abnormally.",
+      "storeAs": "currentOffset",
+      "valueType": "uint32",
+      "endianness": "little"
+    },
+    {
+      "type": "field",
+      "name": "Timestamp (LARGE_INTEGER)",
+      "offset": 16,
+      "length": 8,
+      "color": "#26C6DA",
+      "opacity": 0.7,
+      "description": "Buffer creation timestamp as a Windows LARGE_INTEGER (100-nanosecond intervals since January 1, 1601 UTC); determines the absolute time base for events in this buffer.",
+      "storeAs": "timestamp",
+      "valueType": "filetime",
+      "endianness": "little"
+    },
+    {
+      "type": "field",
+      "name": "SequenceNumber",
+      "offset": 24,
+      "length": 8,
+      "color": "#AB47BC",
+      "opacity": 0.65,
+      "description": "Monotonically increasing 64-bit sequence number assigned by the ETW runtime; gaps in sequence numbers across buffers indicate dropped events.",
+      "storeAs": "sequenceNumber",
+      "valueType": "uint64",
+      "endianness": "little"
+    },
+    {
+      "type": "field",
+      "name": "ClockType (ClientContext)",
+      "offset": 32,
+      "length": 4,
+      "color": "#FFA726",
+      "opacity": 0.7,
+      "description": "Clock resolution used for event timestamps in this session; affects timestamp accuracy and overhead during collection.",
+      "storeAs": "clockType",
+      "valueType": "uint32",
+      "endianness": "little",
+      "valueMap": {
+        "0": "QueryPerformanceCounter (highest resolution, ~100ns)",
+        "1": "SystemTime (low resolution, ~15ms)",
+        "2": "CPU cycle counter (very high resolution, skewed by frequency scaling)"
+      }
+    },
+    {
+      "type": "field",
+      "name": "BufferType",
+      "offset": 36,
+      "length": 4,
+      "color": "#EF5350",
+      "opacity": 0.65,
+      "description": "Indicates the purpose of this buffer within the ETW session; distinguishes normal event buffers from rundown, context-switch, or flush buffers.",
+      "storeAs": "bufferType",
+      "valueType": "uint32",
+      "endianness": "little",
+      "valueMap": {
+        "0": "Generic event buffer",
+        "1": "Rundown buffer (session start/stop metadata)",
+        "2": "Context-switch buffer",
+        "3": "Flush buffer"
+      }
+    },
+    {
+      "type": "field",
+      "name": "LoggerName",
+      "offset": 292,
+      "length": 64,
+      "color": "#66BB6A",
+      "opacity": 0.75,
+      "description": "Null-terminated UTF-16LE string holding the ETW session name, e.g. 'NT Kernel Logger', 'EventLog-System', or a custom provider session name up to 31 characters.",
+      "storeAs": "loggerName",
+      "valueType": "utf16string",
+      "endianness": "little"
+    },
+    {
+      "type": "repeating",
+      "name": "ETW Event Records",
+      "offset": 312,
+      "length": "variable",
+      "color": "#78909C",
+      "opacity": 0.5,
+      "description": "Variable-length array of EVENT_RECORD structures following the WMI_BUFFER_HEADER; each record has an EVENT_HEADER (80 bytes) followed by provider-specific UserData payload."
+    },
+    {
+      "type": "metadata",
+      "name": "Subsequent Buffer Pages",
+      "offset": "bufferSize",
+      "length": "variable",
+      "color": "#546E7A",
+      "opacity": 0.45,
+      "description": "Additional WMI_BUFFER_HEADER + event record pages appended sequentially; each page is bufferSize bytes and follows immediately after the previous page."
+    }
+  ],
+
+  "assertions": [
+    {
+      "name": "BufferSizeReasonable",
+      "expression": "UINT32_LE(0) >= 4096 && UINT32_LE(0) <= 16777216",
+      "severity": "warning",
+      "message": "BufferSize is outside the expected range of 4 KB – 16 MB; typical ETW buffers are 64 KB. File may be corrupt or truncated."
+    },
+    {
+      "name": "SavedOffsetWithinBuffer",
+      "expression": "UINT32_LE(4) <= UINT32_LE(0)",
+      "severity": "error",
+      "message": "SavedOffset exceeds BufferSize; this indicates file truncation or memory corruption in the ETW buffer header."
+    },
+    {
+      "name": "CurrentOffsetWithinBuffer",
+      "expression": "UINT32_LE(8) <= UINT32_LE(0)",
+      "severity": "error",
+      "message": "CurrentOffset exceeds BufferSize; the buffer write pointer is past the buffer boundary, indicating a corrupt or truncated ETL file."
+    },
+    {
+      "name": "ValidClockType",
+      "expression": "UINT32_LE(32) <= 2",
+      "severity": "warning",
+      "message": "ClockType (ClientContext) is not a recognized value (0=QPC, 1=SystemTime, 2=CpuCycles); timestamp interpretation may be incorrect."
+    },
+    {
+      "name": "ValidBufferType",
+      "expression": "UINT32_LE(36) <= 3",
+      "severity": "info",
+      "message": "BufferType value is outside the known range (0-3); unknown buffer types may indicate a newer ETW format version."
+    }
+  ],
+
+  "navigation": {
+    "bookmarks": [
+      { "name": "WMI_BUFFER_HEADER[0]", "offset": 0,   "description": "First ETW buffer header — session metadata and timing" },
+      { "name": "Timestamp",            "offset": 16,  "description": "Buffer FILETIME timestamp (100-ns intervals since 1601-01-01)" },
+      { "name": "LoggerName",           "offset": 292, "description": "ETW session name as UTF-16LE string" },
+      { "name": "First Event Record",   "offset": 312, "description": "First EVENT_RECORD following the buffer header" }
+    ]
+  },
+
+  "inspector": {
+    "badge": "ETL",
+    "primaryField": "loggerName",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "name": "Buffer Metadata",
+        "fields": [ "bufferSize", "savedOffset", "currentOffset", "referenceCount" ]
+      },
+      {
+        "name": "Timing",
+        "fields": [ "timeStampLow", "timeStampHigh", "sequenceNumber", "clockType" ]
+      },
+      {
+        "name": "Session",
+        "fields": [ "bufferType", "loggerName" ]
+      }
+    ]
+  },
+
+  "exportTemplates": [
+    {
+      "name": "ETL Buffer Summary",
+      "format": "text",
+      "template": "ETW Event Trace Log\n  Session      : {loggerName}\n  Buffer Size  : {bufferSize} bytes\n  Saved Offset : {savedOffset}\n  Clock Type   : {clockType}\n  Sequence #   : {sequenceNumber}"
+    },
+    {
+      "name": "ETL JSON Report",
+      "format": "json",
+      "template": "{ \"format\": \"ETL\", \"loggerName\": \"{loggerName}\", \"bufferSize\": {bufferSize}, \"clockType\": {clockType}, \"sequenceNumber\": {sequenceNumber} }"
+    }
+  ],
+
+  "forensic": {
+    "category": "SystemTelemetry",
+    "riskLevel": "medium",
+    "suspiciousPatterns": [
+      { "pattern": "KernelLoggerSession",       "description": "NT Kernel Logger sessions capture full process/thread/image-load events; may expose system-wide activity." },
+      { "pattern": "DroppedEvents",             "description": "Gaps in SequenceNumber across buffers indicate dropped events, possibly due to high-frequency malware activity." },
+      { "pattern": "UnknownProviderGUID",       "description": "Event records from unknown provider GUIDs may indicate undocumented or malicious ETW instrumentation." },
+      { "pattern": "TruncatedBuffer",           "description": "CurrentOffset > SavedOffset gap may indicate abnormal session termination; events between may be incomplete." }
+    ]
+  },
+
+  "aiHints": {
+    "analysisContext": "ETW ETL files contain kernel and user-mode event traces with nanosecond-resolution timestamps. They encode process lifecycle, thread scheduling, disk I/O, network activity, and custom provider events. Each buffer page is independently parseable. Dropped events are detectable via sequence number gaps.",
+    "suggestedInspections": [
+      "Check SequenceNumber continuity across buffer pages to detect dropped events or session gaps.",
+      "Identify the LoggerName to determine whether this is a kernel (NT Kernel Logger), security, or application-specific trace.",
+      "Correlate ClockType with event timestamps — CPU cycle counters are skewed on multi-core systems without frequency normalization.",
+      "Look for EventHeader.ProviderId GUIDs matching known security-sensitive providers (e.g., Microsoft-Windows-Security-Auditing).",
+      "Cross-reference process creation events (ProcessStart) with network connection events to build process-to-connection timelines."
+    ]
+  },
+
+  "TechnicalDetails": {
+    "specification": "Windows ETW internals — WMI_BUFFER_HEADER undocumented structure; EVENT_RECORD documented in evntcons.h (Windows SDK); ETL format partially documented in PerfView source (github.com/microsoft/perfview)",
+    "endianness": "little-endian (Windows native)",
+    "headerSize": "0x138 (312) bytes per WMI_BUFFER_HEADER",
+    "typicalBufferSize": "65536 bytes (64 KB) default; configurable via StartTrace BufferSize parameter",
+    "notes": "No standardized file magic; detection is extension-based. The first 4 bytes (BufferSize) are a plausible heuristic (65536 = 0x00010000) but not reliable across all configurations."
+  },
+
+  "QualityMetrics": {
+    "CompletenessScore": 88,
+    "DocumentationLevel": "comprehensive",
+    "BlocksDefined": 10,
+    "ValidationRules": 5,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  }
+}

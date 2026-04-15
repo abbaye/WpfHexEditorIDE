@@ -1,0 +1,378 @@
+{
+  "diffMode": "binary",
+  "formatName": "VHDX Virtual Hard Disk",
+  "version": "1.0",
+  "extensions": [
+    ".vhdx"
+  ],
+  "description": "Microsoft Virtual Hard Disk v2 format with crash-consistent redundant metadata and 64TB support",
+  "category": "Disk",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "references": {
+    "specifications": [
+      "VHDX Format Specification v1.0 (MS-VHDX)",
+      "Microsoft Virtual Hard Disk v2 Technical Reference",
+      "Hyper-V Virtual Hard Disk Specification"
+    ],
+    "WebLinks": [
+      "https://en.wikipedia.org/wiki/VHD_(file_format)#VHDX",
+      "https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-vhdx",
+      "https://github.com/libyal/libvhdi/blob/main/documentation/Virtual%20Hard%20Disk%20(VHD)%20image%20format.asciidoc",
+      "https://learn.microsoft.com/en-us/windows-server/storage/disk-management/manage-virtual-hard-disks"
+    ]
+  },
+  "detection": {
+    "required": true,
+    "validation": {
+      "minFileSize": 8,
+      "maxSignatureOffset": 0
+    },
+    "signatures": [
+      {
+        "value": "7668647866696C65",
+        "offset": 0,
+        "label": "'vhdxfile' — VHDX File Type Identifier at offset 0",
+        "weight": 1.0
+      }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 1.0,
+    "Strength": "Strong",
+    "EntropyHint": {
+      "min": 1.0,
+      "max": 7.5
+    }
+  },
+  "variables": {
+    "currentOffset": 0,
+    "fileTypeId": 0,
+    "creatorByte0": 0,
+    "creatorByte2": 0,
+    "header1Signature": 0,
+    "header1SequenceNumber": 0,
+    "header1Version": 0,
+    "header1LogLength": 0,
+    "header1LogOffset": 0,
+    "regionTable1Signature": 0,
+    "regionTable1EntryCount": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "File Type Identifier",
+      "offset": 0,
+      "length": 8,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "'vhdxfile' ASCII identifier at the start of the file",
+      "storeAs": "fileTypeId",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Creator (UTF-16 Start)",
+      "offset": 8,
+      "length": 2,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "First UTF-16 LE character of the creator tool name",
+      "storeAs": "creatorByte0",
+      "valueType": "uint16"
+    },
+    {
+      "type": "field",
+      "name": "Creator (UTF-16 Byte 2)",
+      "offset": 10,
+      "length": 2,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "description": "Second UTF-16 LE character of the creator tool name",
+      "storeAs": "creatorByte2",
+      "valueType": "uint16"
+    },
+    {
+      "type": "field",
+      "name": "Header 1 Signature",
+      "offset": 65536,
+      "length": 4,
+      "color": "#FFD93D",
+      "opacity": 0.3,
+      "description": "'head' signature of the first redundant VHDX header at 64KB",
+      "storeAs": "header1Signature",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Header 1 Sequence Number",
+      "offset": 65544,
+      "length": 8,
+      "color": "#6C5CE7",
+      "opacity": 0.3,
+      "description": "Sequence number for determining active header (higher wins)",
+      "storeAs": "header1SequenceNumber",
+      "valueType": "uint64"
+    },
+    {
+      "type": "field",
+      "name": "Header 1 Version",
+      "offset": 65588,
+      "length": 2,
+      "color": "#E17055",
+      "opacity": 0.3,
+      "description": "VHDX format version in header 1",
+      "storeAs": "header1Version",
+      "valueType": "uint16"
+    },
+    {
+      "type": "field",
+      "name": "Header 1 Log Length",
+      "offset": 65592,
+      "length": 4,
+      "color": "#00B894",
+      "opacity": 0.3,
+      "description": "Length of the log region in bytes",
+      "storeAs": "header1LogLength",
+      "valueType": "uint32"
+    },
+    {
+      "type": "field",
+      "name": "Header 1 Log Offset",
+      "offset": 65596,
+      "length": 8,
+      "color": "#0984E3",
+      "opacity": 0.3,
+      "description": "Byte offset of the log region within the file",
+      "storeAs": "header1LogOffset",
+      "valueType": "uint64"
+    },
+    {
+      "type": "field",
+      "name": "Region Table 1 Signature",
+      "offset": 196608,
+      "length": 4,
+      "color": "#FDCB6E",
+      "opacity": 0.3,
+      "description": "'regi' signature of the first region table at 192KB",
+      "storeAs": "regionTable1Signature",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Region Table 1 Entry Count",
+      "offset": 196620,
+      "length": 4,
+      "color": "#E84393",
+      "opacity": 0.3,
+      "description": "Number of region table entries (BAT + Metadata regions)",
+      "storeAs": "regionTable1EntryCount",
+      "valueType": "uint32"
+    }
+  ],
+  "software": [
+    "Microsoft Hyper-V",
+    "diskpart",
+    "DISM"
+  ],
+  "formatRelationships": {
+    "category": "Disk",
+    "extensions": [
+      ".vhdx"
+    ],
+    "relatedFormats": [
+      "VHD",
+      "QCOW2",
+      "VMDK",
+      "VDI"
+    ]
+  },
+  "MimeTypes": [
+    "application/x-vhdx",
+    "application/octet-stream"
+  ],
+  "Software": [
+    "Microsoft Hyper-V",
+    "diskpart",
+    "DISM",
+    "qemu-img (convert)",
+    "PowerShell (Mount-VHD / New-VHD)",
+    "7-Zip",
+    "StarWind V2V Converter"
+  ],
+  "UseCases": [
+    "Hyper-V virtual machine disk storage",
+    "Windows Server virtualization",
+    "Azure virtual machine disk uploads",
+    "Forensic analysis of Windows VM disk images",
+    "Disk migration and format conversion",
+    "System backup and disaster recovery"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 89,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 10,
+    "ValidationRules": 4,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": true,
+    "AutoRefined": false
+  },
+  "forensic": {
+    "category": "disk",
+    "riskLevel": "medium",
+    "suspiciousPatterns": [
+      {
+        "name": "Mismatched header sequence numbers",
+        "description": "Header 1 and Header 2 have divergent sequence numbers, indicating possible incomplete write or tampering",
+        "condition": "header1SequenceNumber == 0"
+      },
+      {
+        "name": "Non-empty log region",
+        "description": "A non-zero log length suggests a replay log exists, possibly from an unclean shutdown",
+        "condition": "header1LogLength > 0"
+      }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "Microsoft VHDX virtual hard disk v2 with 1MB-aligned redundant metadata, CRC-32C checksums, and crash-consistent journal",
+    "suggestedInspections": [
+      "Verify 'vhdxfile' file type identifier and 'head' header signatures for format integrity",
+      "Compare Header 1 and Header 2 sequence numbers to determine which header is active",
+      "Check region table for BAT and Metadata region entries with correct GUIDs",
+      "Inspect log region offset and length for evidence of pending replay operations",
+      "Validate CRC-32C checksums in headers and region tables for data integrity",
+      "Examine metadata region for VirtualDiskSize, LogicalSectorSize, and ParentLocator items"
+    ]
+  },
+  "navigation": {
+    "bookmarks": [
+      {
+        "name": "File Type Identifier",
+        "offsetVar": "currentOffset",
+        "icon": "header"
+      },
+      {
+        "name": "Header 1 (64KB)",
+        "offset": 65536,
+        "icon": "header"
+      },
+      {
+        "name": "Header 2 (128KB)",
+        "offset": 131072,
+        "icon": "header"
+      },
+      {
+        "name": "Region Table 1 (192KB)",
+        "offset": 196608,
+        "icon": "table"
+      },
+      {
+        "name": "Log Region",
+        "offsetVar": "header1LogOffset",
+        "icon": "journal"
+      }
+    ]
+  },
+  "TechnicalDetails": {
+    "alignment": "All metadata structures are 1MB aligned for optimal I/O",
+    "redundancy": "Two copies each of headers and region tables for crash consistency",
+    "checksums": "CRC-32C (Castagnoli) used for headers and region tables",
+    "blockAllocation": "BAT (Block Allocation Table) maps virtual blocks to file offsets",
+    "blockSizes": "Configurable block sizes from 1MB to 256MB",
+    "maxDiskSize": "64 TB maximum virtual disk size",
+    "sectorSizes": "Logical sector size 512B or 4KB; physical sector size 512B or 4KB",
+    "journaling": "Write-ahead log for atomic metadata updates",
+    "metadataItems": "VirtualDiskSize, VirtualDiskId, LogicalSectorSize, PhysicalSectorSize, ParentLocator"
+  },
+  "inspector": {
+    "badge": "fileTypeId",
+    "primaryField": "header1Version",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "File Identifier",
+        "icon": "header",
+        "fields": [
+          "fileTypeId",
+          "creatorByte0",
+          "creatorByte2"
+        ]
+      },
+      {
+        "title": "Header 1",
+        "icon": "header",
+        "fields": [
+          "header1Signature",
+          "header1SequenceNumber",
+          "header1Version",
+          "header1LogLength",
+          "header1LogOffset"
+        ]
+      },
+      {
+        "title": "Region Table",
+        "icon": "table",
+        "fields": [
+          "regionTable1Signature",
+          "regionTable1EntryCount"
+        ]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "VHDX Header (JSON)",
+      "format": "json",
+      "fields": [
+        "fileTypeId",
+        "header1Signature",
+        "header1SequenceNumber",
+        "header1Version",
+        "header1LogLength",
+        "header1LogOffset",
+        "regionTable1Signature",
+        "regionTable1EntryCount"
+      ]
+    },
+    {
+      "name": "VHDX Summary (CSV)",
+      "format": "csv",
+      "fields": [
+        "header1Version",
+        "header1SequenceNumber",
+        "header1LogLength",
+        "regionTable1EntryCount"
+      ]
+    }
+  ],
+  "assertions": [
+    {
+      "name": "file type identifier valid",
+      "expression": "fileTypeId == 'vhdxfile'",
+      "severity": "error",
+      "message": "VHDX file type identifier must be 'vhdxfile'"
+    },
+    {
+      "name": "header 1 signature valid",
+      "expression": "header1Signature == 'head'",
+      "severity": "error",
+      "message": "VHDX Header 1 signature must be 'head' at offset 64KB"
+    },
+    {
+      "name": "region table 1 signature valid",
+      "expression": "regionTable1Signature == 'regi'",
+      "severity": "error",
+      "message": "VHDX Region Table 1 signature must be 'regi' at offset 192KB"
+    },
+    {
+      "name": "region table entry count valid",
+      "expression": "regionTable1EntryCount >= 1 && regionTable1EntryCount <= 2047",
+      "severity": "warning",
+      "message": "Region table entry count should be between 1 and 2047"
+    }
+  ],
+  "functions": {
+    "readUInt32LE": "Read little-endian 32-bit header fields",
+    "readUInt64LE": "Read little-endian 64-bit offset and size fields",
+    "readAscii": "Read ASCII signature strings"
+  }
+}

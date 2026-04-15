@@ -1,0 +1,231 @@
+{
+  "diffMode": "text",
+  "formatName": "WARC Web Archive",
+  "version": "1.0",
+  "extensions": [".warc", ".warc.gz"],
+  "description": "WARC (Web ARChive) is an ISO 28500 standard format for storing web crawl data, used by the Internet Archive's Wayback Machine, Common Crawl, and web preservation projects worldwide. A WARC file is a sequence of records, each consisting of a text header followed by a content block. Each record starts with the version line 'WARC/1.0' or 'WARC/1.1' (ASCII). WARC headers are key-value pairs including WARC-Type (warcinfo, request, response, resource, metadata, revisit, conversion, continuation), WARC-Date (ISO 8601), WARC-Record-ID (URN UUID), Content-Length, Content-Type, and WARC-Target-URI. A blank CRLF line separates header from content, and two blank CRLF lines separate consecutive records. Response records contain the full HTTP response including status line, headers, and body.",
+  "category": "Archives",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "references": {
+    "specifications": [
+      "ISO 28500:2017 — WARC File Format",
+      "ISO 28500:2009 — WARC File Format (original edition)",
+      "IIPC WARC Implementation Guidelines"
+    ],
+    "WebLinks": [
+      "https://iipc.github.io/warc-specifications/specifications/warc-format/warc-1.1/",
+      "https://en.wikipedia.org/wiki/WARC_(file_format)",
+      "https://commoncrawl.org/the-data/get-started/"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      { "value": "574152432F312E30", "offset": 0, "label": "'WARC/1.0' — WARC version 1.0 record header (ISO 28500:2009)", "weight": 1.0 },
+      { "value": "574152432F312E31", "offset": 0, "label": "'WARC/1.1' — WARC version 1.1 record header (ISO 28500:2017)", "weight": 1.0 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.9,
+    "required": true,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 3.5, "max": 7.0 },
+    "validation": {
+      "minFileSize": 10,
+      "maxSignatureOffset": 0,
+      "note": "WARC files always begin with 'WARC/1.0' or 'WARC/1.1' (8 ASCII bytes) followed by CRLF. Compressed .warc.gz files must be decompressed first — each record is individually gzip-compressed for random access. Uncompressed WARC is pure text header + binary/text content."
+    }
+  },
+  "variables": {
+    "warcVersion": "",
+    "warcSeparator": "",
+    "warcTypeLine": "",
+    "warcDateLine": ""
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "WARC Version Line",
+      "offset": 0,
+      "length": 8,
+      "color": "#FF6B6B",
+      "opacity": 0.45,
+      "description": "WARC record version identifier: 8 ASCII bytes 'WARC/1.0' (57 41 52 43 2F 31 2E 30) or 'WARC/1.1' (57 41 52 43 2F 31 2E 31). Every WARC record begins with this version line. ISO 28500:2009 defines version 1.0; ISO 28500:2017 defines version 1.1 which adds the 'revisit' profile for deduplication and stricter URI requirements.",
+      "storeAs": "warcVersion",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Version Line Terminator",
+      "offset": 8,
+      "length": 2,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "CRLF (0x0D 0x0A) terminating the version line. WARC mandates CRLF line endings throughout the header section per the ISO 28500 specification. The header continues with key-value pairs on subsequent lines until a blank CRLF line marks the start of the content block.",
+      "storeAs": "warcSeparator",
+      "valueType": "hex",
+      "validation": {
+        "expectedValue": "0D0A"
+      }
+    },
+    {
+      "type": "field",
+      "name": "WARC-Type Header Start",
+      "offset": 10,
+      "length": 10,
+      "color": "#95E1D3",
+      "opacity": 0.35,
+      "description": "Beginning of the first header field, typically 'WARC-Type:' (57 41 52 43 2D 54 79 70 65 3A). The WARC-Type field specifies the record type: 'warcinfo' (crawl metadata), 'request' (HTTP request), 'response' (HTTP response with headers and body), 'resource' (standalone content), 'metadata' (additional info), 'revisit' (deduplicated content), 'conversion' (format-converted content), or 'continuation' (split record).",
+      "storeAs": "warcTypeLine",
+      "valueType": "ascii"
+    },
+    {
+      "type": "metadata",
+      "name": "WARC Version",
+      "variable": "warcVersion",
+      "description": "WARC format version: 'WARC/1.0' (ISO 28500:2009) or 'WARC/1.1' (ISO 28500:2017)"
+    },
+    {
+      "type": "metadata",
+      "name": "Line Terminator",
+      "variable": "warcSeparator",
+      "description": "CRLF line ending after version line — confirms proper WARC formatting"
+    },
+    {
+      "type": "metadata",
+      "name": "First Header Field",
+      "variable": "warcTypeLine",
+      "description": "Start of WARC-Type header — identifies the record type (response, request, warcinfo, etc.)"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "WARC version line valid",
+      "expression": "warcVersion == 'WARC/1.0' || warcVersion == 'WARC/1.1'",
+      "severity": "error",
+      "message": "WARC file must start with 'WARC/1.0' or 'WARC/1.1' — file is not a valid WARC web archive."
+    },
+    {
+      "name": "CRLF line endings required",
+      "field": "warcSeparator",
+      "condition": "warcSeparator == '0D0A'",
+      "severity": "error",
+      "message": "WARC specification requires CRLF (0x0D 0x0A) line endings. LF-only endings violate ISO 28500 and may cause parser failures."
+    },
+    {
+      "name": "WARC-Type header expected",
+      "expression": "warcTypeLine == 'WARC-Type:'",
+      "severity": "warning",
+      "message": "First header after version line is typically 'WARC-Type:'. Different ordering is technically valid but uncommon — may indicate a non-standard WARC generator."
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "WARC Version", "offset": 0, "icon": "\uE8B7", "color": "#FF6B6B" },
+      { "name": "First Header", "offset": 10, "icon": "\uE8B7", "color": "#95E1D3" }
+    ]
+  },
+  "inspector": {
+    "badge": "warcVersion",
+    "primaryField": "warcTypeLine",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "WARC Record Header",
+        "icon": "\uE8B7",
+        "fields": ["warcVersion", "warcSeparator", "warcTypeLine"]
+      },
+      {
+        "title": "Record Info",
+        "icon": "\uE774",
+        "fields": ["warcDateLine"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "WARC Record Header (JSON)",
+      "format": "json",
+      "fields": ["warcVersion", "warcTypeLine"]
+    },
+    {
+      "name": "WARC Summary (Text)",
+      "format": "text",
+      "fields": ["warcVersion", "warcTypeLine"]
+    }
+  ],
+  "forensic": {
+    "category": "archive",
+    "riskLevel": "medium",
+    "suspiciousPatterns": [
+      {
+        "name": "Sensitive HTTP headers in archived responses",
+        "condition": "response records may contain Set-Cookie, Authorization, or session tokens",
+        "severity": "warning",
+        "description": "WARC response records capture complete HTTP responses including authentication cookies, session tokens, Authorization headers, and CSRF tokens. These credentials may still be valid or reveal authentication patterns."
+      },
+      {
+        "name": "Personal data in captured form submissions",
+        "condition": "request records with POST data may contain personal information",
+        "severity": "warning",
+        "description": "WARC request records can contain HTTP POST body data including form submissions with personal information, passwords, credit card numbers, and other sensitive user input captured during the web crawl."
+      },
+      {
+        "name": "Private or restricted page content",
+        "condition": "response records may contain content from authenticated sessions",
+        "severity": "info",
+        "description": "WARC archives may contain web pages captured from authenticated sessions, including private dashboards, internal tools, email content, and documents not intended for public access."
+      }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "WARC is a text-header + binary-content format per ISO 28500. Each record: version line ('WARC/1.0' or 'WARC/1.1') + CRLF headers (WARC-Type, WARC-Date, WARC-Record-ID, Content-Length, Content-Type, WARC-Target-URI) + blank CRLF + content block (Content-Length bytes) + double CRLF separator. For 'response' records, the content block is a full HTTP response (status line + headers + body). Typically distributed as .warc.gz where each record is individually gzip-compressed for random access via CDX index files.",
+    "suggestedInspections": [
+      "Bytes 0-7: verify 'WARC/1.0' or 'WARC/1.1' ASCII magic — confirms uncompressed WARC format",
+      "Bytes 8-9: must be CRLF (0D 0A) — WARC mandates CRLF line endings per ISO 28500",
+      "Search for 'Content-Length:' header to determine content block size and locate record boundaries",
+      "Search for 'WARC-Target-URI:' to identify the archived URL of each record",
+      "Locate double CRLF (0D 0A 0D 0A) sequences to find header-content boundaries and record separators",
+      "For .warc.gz: each record is individually gzip-compressed — look for 1F 8B gzip headers to find record starts"
+    ]
+  },
+  "software": [
+    "Wayback Machine (archive.org — world's largest WARC archive)",
+    "wget (--warc-file flag generates WARC output during crawl)",
+    "Heritrix (Internet Archive's open-source web crawler)",
+    "warcio (Python library for reading and writing WARC files)",
+    "pywb (Webrecorder replay engine for WARC playback)",
+    "CDX Server (index server for random access into WARC archives)"
+  ],
+  "formatRelationships": {
+    "category": "Archives",
+    "extensions": [".warc", ".warc.gz"],
+    "relatedFormats": ["GZIP", "HTTP"],
+    "note": "WARC files are typically distributed as .warc.gz where each record is individually gzip-compressed to support random access via CDX index files. The content blocks of response records contain raw HTTP responses. WARC superseded the older ARC format used by the Internet Archive before 2009. Related: CDX/CDXJ index files map URLs to WARC record offsets."
+  },
+  "MimeTypes": ["application/warc"],
+  "UseCases": [
+    "Web archiving and digital preservation (Internet Archive, national libraries)",
+    "Common Crawl dataset access and large-scale web corpus analysis",
+    "Legal and compliance web snapshots for regulatory evidence",
+    "Digital forensics — recovering cached web pages and browsing activity",
+    "SEO and marketing competitive analysis via historical web captures"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 88,
+    "DocumentationLevel": "comprehensive",
+    "BlocksDefined": 6,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "Format": "Text header + binary/text content block per record, CRLF-delimited",
+    "Standard": "ISO 28500:2017 (version 1.1), ISO 28500:2009 (version 1.0)",
+    "Magic": "'WARC/1.0' or 'WARC/1.1' (8 ASCII bytes) at offset 0",
+    "LineEndings": "CRLF (0x0D 0x0A) mandatory per specification",
+    "RecordTypes": "warcinfo, request, response, resource, metadata, revisit, conversion, continuation",
+    "Compression": "Typically per-record gzip for random access (.warc.gz)",
+    "MaxRecordSize": "No specification limit — Content-Length field determines size"
+  }
+}

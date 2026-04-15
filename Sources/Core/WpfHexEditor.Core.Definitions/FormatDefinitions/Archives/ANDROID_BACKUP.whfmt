@@ -1,0 +1,257 @@
+{
+  "diffMode": "binary",
+  "formatName": "Android Backup",
+  "version": "1.0",
+  "extensions": [".ab"],
+  "description": "Android Backup (.ab) files are produced by `adb backup` (Android Debug Bridge) and contain a full or partial device backup including app data, shared storage, and system settings. The format starts with an ASCII text header terminated by newlines, followed by a TAR archive that may be compressed (zlib deflate) and/or encrypted (AES-256 CBC). Header line 1: 'ANDROID BACKUP' (14 bytes + LF). Line 2: format version number ('1' through '5' + LF). Line 3: compression flag ('1'=compressed, '0'=uncompressed + LF). Line 4: encryption type ('none', 'AES-256' + LF). If AES-256: additional lines carry the PBKDF2 salt (hex), checksum salt (hex), iterations count, master key IV (hex), and master key blob (hex). After the text header, the payload is a standard POSIX TAR archive (optionally zlib-compressed, optionally AES-256 encrypted). Version history: v1=Android 4.0 ICS, v2=Android 4.1 JB (shared storage), v3=Android 4.2 (multi-user), v4=Android 4.4 KitKat, v5=Android 6.0 Marshmallow (full backup API).",
+  "category": "Archives",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "references": {
+    "specifications": [
+      "Android BackupManagerService — AOSP source code",
+      "Android adb backup format — Android Open Source Project documentation"
+    ],
+    "WebLinks": [
+      "https://nelenkov.blogspot.com/2012/06/unpacking-android-backups.html",
+      "https://github.com/nelenkov/android-backup-extractor",
+      "https://developer.android.com/guide/topics/data/autobackup"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      { "value": "414E44524F494420424143 4B55500A", "offset": 0, "label": "'ANDROID BACKUP\\n' — Android adb backup file header (15 bytes)", "weight": 1.0 },
+      { "value": "414E44524F49442042414 34B55500A", "offset": 0, "label": "'ANDROID BACKUP\\n' — Android backup magic (alternate spacing)", "weight": 0.9 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.9,
+    "required": true,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 4.5, "max": 8.0 },
+    "validation": {
+      "minFileSize": 24,
+      "maxSignatureOffset": 0,
+      "note": "Android backup files always start with 'ANDROID BACKUP\\n' (14 ASCII chars + LF = 15 bytes). Followed by version (1-5), compression (0/1), and encryption type lines. High entropy if compressed/encrypted payload."
+    }
+  },
+  "variables": {
+    "abMagic": "",
+    "abVersionByte": 0,
+    "abCompressionFlag": 0,
+    "abEncryptionStart": ""
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "Android Backup Magic",
+      "offset": 0,
+      "length": 15,
+      "color": "#FF6B6B",
+      "opacity": 0.45,
+      "description": "Android backup file identifier: 14 ASCII bytes 'ANDROID BACKUP' (41 4E 44 52 4F 49 44 20 42 41 43 4B 55 50) followed by LF (0x0A). This text header identifies the file as an Android ADB backup created with `adb backup` command. Introduced in Android 4.0 (ICS, API 14). The header is plain ASCII, not binary — the entire preamble is human-readable newline-delimited text.",
+      "storeAs": "abMagic",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Backup Format Version",
+      "offset": 15,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "Single ASCII digit indicating the Android Backup format version followed by LF at offset 16. Version 1=Android 4.0 ICS (app data only), 2=Android 4.1 JB (shared storage added), 3=Android 4.2 (multi-user support), 4=Android 4.4 KitKat, 5=Android 6.0 Marshmallow (full backup API with allowBackup manifest flag). Higher versions may include additional header fields.",
+      "storeAs": "abVersionByte",
+      "valueType": "uint8",
+      "valueMap": {
+        "49": "Version 1 — Android 4.0 ICS (app data only)",
+        "50": "Version 2 — Android 4.1 JB (+ shared storage)",
+        "51": "Version 3 — Android 4.2 (multi-user support)",
+        "52": "Version 4 — Android 4.4 KitKat",
+        "53": "Version 5 — Android 6.0 Marshmallow (full backup)"
+      }
+    },
+    {
+      "type": "field",
+      "name": "Compression Flag",
+      "offset": 17,
+      "length": 1,
+      "color": "#95E1D3",
+      "opacity": 0.35,
+      "description": "Single ASCII character '1' (0x31) or '0' (0x30) at offset 17, indicating whether the TAR payload is compressed with zlib deflate. Value '1' (0x31): payload is zlib-compressed TAR data. Value '0' (0x30): payload is uncompressed TAR data. Followed by LF (0x0A) at offset 18. Most modern backups use compression=1.",
+      "storeAs": "abCompressionFlag",
+      "valueType": "uint8",
+      "valueMap": {
+        "49": "1 — zlib deflate compressed TAR payload",
+        "48": "0 — uncompressed TAR payload"
+      }
+    },
+    {
+      "type": "field",
+      "name": "Encryption Type",
+      "offset": 19,
+      "length": 4,
+      "color": "#FFE66D",
+      "opacity": 0.35,
+      "description": "First 4 bytes of the encryption type string at offset 19 (after compression flag + LF). 'none' (6E 6F 6E 65) = unencrypted TAR follows. 'AES-' (41 45 53 2D) = full string is 'AES-256' — payload encrypted with AES-256 CBC using PBKDF2-derived key. If encrypted, additional header lines follow: userSalt (hex), checksumSalt (hex), rounds (int), masterKeyIV (hex), masterKeyBlob (hex). After last header LF, encrypted data begins.",
+      "storeAs": "abEncryptionStart",
+      "valueType": "ascii",
+      "valueMap": {
+        "none": "No encryption — TAR payload accessible directly",
+        "AES-": "AES-256 CBC encryption — requires password to decrypt"
+      }
+    },
+    {
+      "type": "metadata",
+      "name": "Backup Magic",
+      "variable": "abMagic",
+      "description": "'ANDROID BACKUP' — adb backup file identifier"
+    },
+    {
+      "type": "metadata",
+      "name": "Format Version",
+      "variable": "abVersionByte",
+      "description": "Backup format version (ASCII digit '1'-'5')"
+    },
+    {
+      "type": "metadata",
+      "name": "Compression",
+      "variable": "abCompressionFlag",
+      "description": "Payload compression: '1'=zlib deflate, '0'=raw TAR"
+    },
+    {
+      "type": "metadata",
+      "name": "Encryption",
+      "variable": "abEncryptionStart",
+      "description": "Encryption type: 'none' or 'AES-' (AES-256 CBC)"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "Android Backup magic valid",
+      "expression": "abMagic == 'ANDROID BACKUP'",
+      "severity": "error",
+      "message": "Android backup must start with 'ANDROID BACKUP\\n' — not a valid .ab backup file"
+    },
+    {
+      "name": "Version digit valid",
+      "expression": "abVersionByte >= 49 && abVersionByte <= 57",
+      "severity": "error",
+      "message": "Version byte must be ASCII '1'-'9' (0x31-0x39). Value outside this range indicates corrupt header."
+    },
+    {
+      "name": "Compression flag valid",
+      "expression": "abCompressionFlag == 48 || abCompressionFlag == 49",
+      "severity": "error",
+      "message": "Compression flag must be '0' (uncompressed) or '1' (zlib deflate). Invalid value indicates corrupt or non-standard backup."
+    },
+    {
+      "name": "Encryption type check",
+      "expression": "abEncryptionStart == 'none' || abEncryptionStart == 'AES-'",
+      "severity": "warning",
+      "message": "Encryption type should be 'none' or 'AES-256'. Unknown value may indicate unsupported format variant."
+    },
+    {
+      "name": "Unencrypted backup warning",
+      "expression": "abEncryptionStart == 'AES-'",
+      "severity": "info",
+      "message": "Backup is not encrypted (type='none'). Contains sensitive device data without password protection — potential security risk."
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "Backup Header", "offset": 0, "icon": "\uE8B7", "color": "#FF6B6B" },
+      { "name": "Version Line", "offset": 15, "icon": "\uE8B7", "color": "#4ECDC4" },
+      { "name": "Compression Line", "offset": 17, "icon": "\uE8B7", "color": "#95E1D3" },
+      { "name": "Encryption Line", "offset": 19, "icon": "\uE8B7", "color": "#FFE66D" }
+    ]
+  },
+  "inspector": {
+    "badge": "abEncryptionStart",
+    "primaryField": "abVersionByte",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "Backup Header",
+        "icon": "\uE8B7",
+        "fields": ["abMagic", "abVersionByte", "abCompressionFlag", "abEncryptionStart"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "Android Backup Header (JSON)",
+      "format": "json",
+      "fields": ["abMagic", "abVersionByte", "abCompressionFlag", "abEncryptionStart"]
+    },
+    {
+      "name": "Backup Info (Text)",
+      "format": "text",
+      "fields": ["abVersionByte", "abCompressionFlag", "abEncryptionStart"]
+    }
+  ],
+  "forensic": {
+    "category": "archive",
+    "riskLevel": "high",
+    "suspiciousPatterns": [
+      {
+        "name": "Unencrypted backup",
+        "condition": "abEncryptionStart == 'none'",
+        "severity": "warning",
+        "description": "Backup is not AES-256 encrypted. Contains plaintext TAR archive with full app data, contacts, messages, accounts, and potentially credentials. Common forensic acquisition target."
+      },
+      {
+        "name": "Sensitive data container",
+        "condition": "true",
+        "severity": "info",
+        "description": "Android .ab files may contain: SMS/MMS messages, call logs, app databases (WhatsApp, Signal, banking apps), browser bookmarks/history, credentials stored in apps, photos if shared storage included. High forensic value."
+      }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "Android Backup .ab format: text header + TAR payload. Header: 'ANDROID BACKUP\\n' + version(1-5)\\n + compression(0/1)\\n + encryption(none/AES-256)\\n [+ PBKDF2 params if encrypted]. Payload: zlib-compressed TAR (if compression=1) or plain TAR. TAR contains apps/ directory (per-app data) and shared/ (external storage). Tool: android-backup-extractor (ABE) — `java -jar abe.jar unpack backup.ab backup.tar [password]`. Then: `tar xf backup.tar`. App data at apps/<package>/db/, apps/<package>/f/, apps/<package>/sp/ (SharedPreferences). Each app database is a standard SQLite file.",
+    "suggestedInspections": [
+      "Bytes 0-14: 'ANDROID BACKUP\\n' magic confirmation",
+      "Byte 15: version digit — higher version = more data types included",
+      "Byte 17: '0' or '1' — if '0', TAR starts ~offset 22; if '1', deflate-compressed TAR starts",
+      "Bytes 19+: 'none' = TAR accessible, 'AES-256' = password required for ABE tool",
+      "After unpack: search apps/ for *.db SQLite files — WhatsApp at apps/com.whatsapp/db/msgstore.db"
+    ]
+  },
+  "software": [
+    "adb (Android Debug Bridge — `adb backup -all -apk -shared -f backup.ab`)",
+    "android-backup-extractor (ABE — Java CLI to unpack .ab to .tar)",
+    "Android Backup Extractor GUI (Windows GUI for ABE)",
+    "UFED (Cellebrite forensic tool — reads .ab natively)",
+    "Oxygen Forensics Detective (mobile forensics platform)"
+  ],
+  "formatRelationships": {
+    "category": "Archives",
+    "extensions": [".ab"],
+    "relatedFormats": ["TAR", "ZIP"],
+    "note": "Android .ab payload is a TAR archive (POSIX format), optionally zlib-deflate compressed and AES-256 encrypted. After decryption/decompression with ABE, standard tar tools can extract contents. Android 12+ deprecated `adb backup` in favor of cloud backup APIs. Some forensic tools can acquire .ab from Android devices directly."
+  },
+  "MimeTypes": ["application/octet-stream"],
+  "UseCases": [
+    "Forensic extraction of Android app data (messages, contacts, app databases)",
+    "Device migration — transferring app data between Android devices",
+    "App data backup for sideloaded or non-cloud-backed apps",
+    "Security audit of app data stored in Android backup"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 88,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 8,
+    "ValidationRules": 5,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "Format": "Text header + zlib-compressed TAR (optionally AES-256 encrypted)",
+    "Magic": "'ANDROID BACKUP\\n' (14 ASCII chars + LF = 15 bytes) at offset 0",
+    "Header": "Newline-delimited ASCII: magic + version + compression + encryption [+ PBKDF2 params]",
+    "Payload": "POSIX TAR archive, zlib-compressed if flag=1, AES-256 CBC if encrypted",
+    "Encryption": "AES-256 CBC; key derived via PBKDF2-HMAC-SHA1, 10000 iterations default",
+    "Tool": "android-backup-extractor (ABE): java -jar abe.jar unpack backup.ab backup.tar [password]"
+  }
+}

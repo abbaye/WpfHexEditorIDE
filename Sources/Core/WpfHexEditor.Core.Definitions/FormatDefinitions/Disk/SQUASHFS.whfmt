@@ -1,0 +1,514 @@
+{
+  "diffMode": "binary",
+  "formatName": "SquashFS Filesystem",
+  "version": "1.0",
+  "extensions": [
+    ".squashfs",
+    ".sqfs",
+    ".sfs",
+    ".snap"
+  ],
+  "description": "SquashFS read-only compressed filesystem used in Linux distributions, Snap packages, and embedded systems",
+  "category": "Disk",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "references": {
+    "specifications": [
+      "SquashFS 4.0 Filesystem Specification",
+      "SquashFS Superblock Structure",
+      "Linux Kernel SquashFS Documentation"
+    ],
+    "WebLinks": [
+      "https://en.wikipedia.org/wiki/SquashFS",
+      "https://dr-ं.github.io/squashfs/",
+      "https://github.com/plougher/squashfs-tools",
+      "https://www.kernel.org/doc/html/latest/filesystems/squashfs.html"
+    ]
+  },
+  "detection": {
+    "required": true,
+    "validation": {
+      "minFileSize": 96,
+      "maxSignatureOffset": 0
+    },
+    "signatures": [
+      {
+        "value": "68737173",
+        "offset": 0,
+        "label": "'hsqs' — SquashFS little-endian superblock magic",
+        "weight": 1.0
+      },
+      {
+        "value": "73717368",
+        "offset": 0,
+        "label": "'sqsh' — SquashFS big-endian superblock magic",
+        "weight": 0.9
+      }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.9,
+    "Strength": "Strong",
+    "EntropyHint": {
+      "min": 6.0,
+      "max": 8.0
+    }
+  },
+  "variables": {
+    "currentOffset": 0,
+    "magic": 0,
+    "inodeCount": 0,
+    "modificationTime": 0,
+    "blockSize": 0,
+    "fragmentEntryCount": 0,
+    "compressionId": 0,
+    "blockLog": 0,
+    "flags": 0,
+    "noIds": 0,
+    "versionMajor": 0,
+    "versionMinor": 0,
+    "rootInode": 0,
+    "bytesUsed": 0,
+    "idTableStart": 0,
+    "inodeTableStart": 0,
+    "directoryTableStart": 0,
+    "fragmentTableStart": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "SquashFS Magic",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "'hsqs' (LE) or 'sqsh' (BE) magic identifying a SquashFS superblock",
+      "storeAs": "magic",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Inode Count",
+      "offset": 4,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Total number of inodes in the filesystem",
+      "storeAs": "inodeCount",
+      "valueType": "uint32"
+    },
+    {
+      "type": "field",
+      "name": "Modification Time",
+      "offset": 8,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "description": "Unix timestamp of filesystem creation or last append",
+      "storeAs": "modificationTime",
+      "valueType": "uint32"
+    },
+    {
+      "type": "field",
+      "name": "Block Size",
+      "offset": 12,
+      "length": 4,
+      "color": "#FFD93D",
+      "opacity": 0.3,
+      "description": "Data block size in bytes (typically 131072 = 128KB)",
+      "storeAs": "blockSize",
+      "valueType": "uint32"
+    },
+    {
+      "type": "field",
+      "name": "Fragment Entry Count",
+      "offset": 16,
+      "length": 4,
+      "color": "#A8E6CF",
+      "opacity": 0.3,
+      "description": "Number of fragment table entries",
+      "storeAs": "fragmentEntryCount",
+      "valueType": "uint32"
+    },
+    {
+      "type": "field",
+      "name": "Compression ID",
+      "offset": 20,
+      "length": 2,
+      "color": "#6C5CE7",
+      "opacity": 0.3,
+      "description": "Compression algorithm used for data and metadata blocks",
+      "storeAs": "compressionId",
+      "valueType": "uint16",
+      "valueMap": {
+        "1": "gzip",
+        "2": "lzma",
+        "3": "lzo",
+        "4": "xz",
+        "5": "lz4",
+        "6": "zstd"
+      }
+    },
+    {
+      "type": "field",
+      "name": "Block Log",
+      "offset": 22,
+      "length": 2,
+      "color": "#E17055",
+      "opacity": 0.3,
+      "description": "Log2 of the block size (must match block_size)",
+      "storeAs": "blockLog",
+      "valueType": "uint16"
+    },
+    {
+      "type": "field",
+      "name": "Flags",
+      "offset": 24,
+      "length": 2,
+      "color": "#00B894",
+      "opacity": 0.3,
+      "description": "Superblock flags (uncompressed inodes/data/fragments, no xattrs, exportable, etc.)",
+      "storeAs": "flags",
+      "valueType": "uint16"
+    },
+    {
+      "type": "field",
+      "name": "ID Count",
+      "offset": 26,
+      "length": 2,
+      "color": "#0984E3",
+      "opacity": 0.3,
+      "description": "Number of unique UID/GID entries in the ID lookup table",
+      "storeAs": "noIds",
+      "valueType": "uint16"
+    },
+    {
+      "type": "field",
+      "name": "Version Major",
+      "offset": 28,
+      "length": 2,
+      "color": "#FDCB6E",
+      "opacity": 0.3,
+      "description": "SquashFS major version (must be 4)",
+      "storeAs": "versionMajor",
+      "valueType": "uint16"
+    },
+    {
+      "type": "field",
+      "name": "Version Minor",
+      "offset": 30,
+      "length": 2,
+      "color": "#E84393",
+      "opacity": 0.3,
+      "description": "SquashFS minor version (must be 0)",
+      "storeAs": "versionMinor",
+      "valueType": "uint16"
+    },
+    {
+      "type": "field",
+      "name": "Root Inode",
+      "offset": 32,
+      "length": 8,
+      "color": "#74B9FF",
+      "opacity": 0.3,
+      "description": "Reference to the root directory inode",
+      "storeAs": "rootInode",
+      "valueType": "uint64"
+    },
+    {
+      "type": "field",
+      "name": "Bytes Used",
+      "offset": 40,
+      "length": 8,
+      "color": "#A29BFE",
+      "opacity": 0.3,
+      "description": "Total size of the filesystem image in bytes",
+      "storeAs": "bytesUsed",
+      "valueType": "uint64"
+    },
+    {
+      "type": "field",
+      "name": "ID Table Start",
+      "offset": 48,
+      "length": 8,
+      "color": "#FD79A8",
+      "opacity": 0.3,
+      "description": "Byte offset of the UID/GID lookup table",
+      "storeAs": "idTableStart",
+      "valueType": "uint64"
+    },
+    {
+      "type": "field",
+      "name": "Inode Table Start",
+      "offset": 64,
+      "length": 8,
+      "color": "#55EFC4",
+      "opacity": 0.3,
+      "description": "Byte offset of the inode table",
+      "storeAs": "inodeTableStart",
+      "valueType": "uint64"
+    },
+    {
+      "type": "field",
+      "name": "Directory Table Start",
+      "offset": 72,
+      "length": 8,
+      "color": "#81ECEC",
+      "opacity": 0.3,
+      "description": "Byte offset of the directory table",
+      "storeAs": "directoryTableStart",
+      "valueType": "uint64"
+    },
+    {
+      "type": "field",
+      "name": "Fragment Table Start",
+      "offset": 80,
+      "length": 8,
+      "color": "#FAB1A0",
+      "opacity": 0.3,
+      "description": "Byte offset of the fragment table",
+      "storeAs": "fragmentTableStart",
+      "valueType": "uint64"
+    }
+  ],
+  "software": [
+    "mksquashfs",
+    "unsquashfs",
+    "squashfuse"
+  ],
+  "formatRelationships": {
+    "category": "Disk",
+    "extensions": [
+      ".squashfs",
+      ".sqfs",
+      ".sfs",
+      ".snap"
+    ],
+    "relatedFormats": [
+      "EXT4",
+      "EROFS",
+      "CramFS",
+      "ISO"
+    ]
+  },
+  "MimeTypes": [
+    "application/vnd.squashfs",
+    "application/octet-stream"
+  ],
+  "Software": [
+    "mksquashfs (squashfs-tools)",
+    "unsquashfs (squashfs-tools)",
+    "squashfuse (FUSE mount)",
+    "7-Zip",
+    "file-roller",
+    "snapd (Ubuntu Snap)",
+    "AppImageTool"
+  ],
+  "UseCases": [
+    "Linux live CD and installer root filesystems",
+    "Ubuntu Snap package container format",
+    "AppImage application bundle filesystem layer",
+    "Docker overlay and container image layers",
+    "Embedded Linux firmware root filesystems (OpenWrt, Yocto)",
+    "Read-only system partitions in IoT devices",
+    "Forensic examination of compressed filesystem images"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 92,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 17,
+    "ValidationRules": 5,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": true,
+    "AutoRefined": false
+  },
+  "forensic": {
+    "category": "disk",
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      {
+        "name": "Non-standard compression algorithm",
+        "description": "Compression ID outside commonly expected range may indicate a modified or unusual build",
+        "condition": "compressionId > 6"
+      },
+      {
+        "name": "Unusually large inode count",
+        "description": "Very high inode count could indicate a filesystem packed with many small files for obfuscation",
+        "condition": "inodeCount > 1000000"
+      }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "SquashFS read-only compressed filesystem with block-level compression, used in Linux distributions, Snap packages, and embedded systems",
+    "suggestedInspections": [
+      "Verify 'hsqs' or 'sqsh' magic and confirm version is 4.0 for format integrity",
+      "Check compression algorithm ID and validate it matches a known compressor (gzip/xz/zstd/lz4/lzma/lzo)",
+      "Validate block size is a power of 2 and block_log matches log2(block_size)",
+      "Inspect modification timestamp for filesystem creation timeline analysis",
+      "Examine superblock flags for uncompressed metadata or disabled features",
+      "Calculate expected filesystem size from bytes_used and compare with actual file size"
+    ]
+  },
+  "navigation": {
+    "bookmarks": [
+      {
+        "name": "Superblock",
+        "offsetVar": "currentOffset",
+        "icon": "header"
+      },
+      {
+        "name": "ID Table",
+        "offsetVar": "idTableStart",
+        "icon": "table"
+      },
+      {
+        "name": "Inode Table",
+        "offsetVar": "inodeTableStart",
+        "icon": "table"
+      },
+      {
+        "name": "Directory Table",
+        "offsetVar": "directoryTableStart",
+        "icon": "folder"
+      },
+      {
+        "name": "Fragment Table",
+        "offsetVar": "fragmentTableStart",
+        "icon": "fragment"
+      }
+    ]
+  },
+  "TechnicalDetails": {
+    "formatVersion": "4.0",
+    "endianness": "little (hsqs) or big (sqsh)",
+    "compressionAlgorithms": "gzip (default), lzma, lzo, xz, lz4, zstd — block-level compression",
+    "blockSizes": "Configurable 4KB to 1MB (default 128KB), must be power of 2",
+    "readOnly": "SquashFS is strictly read-only; modifications require full rebuild",
+    "inodeTypes": "Regular file, directory, symlink, block device, char device, FIFO, socket",
+    "deduplication": "Automatic detection and elimination of duplicate data blocks",
+    "fragmentPacking": "Files smaller than block size are packed into shared fragment blocks",
+    "xattrSupport": "Extended attributes stored in a separate xattr table",
+    "exportSupport": "Optional NFS export via inode number lookup table"
+  },
+  "inspector": {
+    "badge": "magic",
+    "primaryField": "compressionId",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "Superblock Identity",
+        "icon": "header",
+        "fields": [
+          "magic",
+          "versionMajor",
+          "versionMinor",
+          "flags"
+        ]
+      },
+      {
+        "title": "Filesystem Metrics",
+        "icon": "chart",
+        "fields": [
+          "inodeCount",
+          "bytesUsed",
+          "blockSize",
+          "blockLog",
+          "noIds"
+        ]
+      },
+      {
+        "title": "Compression",
+        "icon": "compress",
+        "fields": [
+          "compressionId",
+          "fragmentEntryCount"
+        ]
+      },
+      {
+        "title": "Table Offsets",
+        "icon": "table",
+        "fields": [
+          "rootInode",
+          "idTableStart",
+          "inodeTableStart",
+          "directoryTableStart",
+          "fragmentTableStart"
+        ]
+      },
+      {
+        "title": "Timestamp",
+        "icon": "clock",
+        "fields": [
+          "modificationTime"
+        ]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "SquashFS Header (JSON)",
+      "format": "json",
+      "fields": [
+        "magic",
+        "versionMajor",
+        "versionMinor",
+        "inodeCount",
+        "blockSize",
+        "compressionId",
+        "flags",
+        "bytesUsed",
+        "modificationTime"
+      ]
+    },
+    {
+      "name": "SquashFS Summary (CSV)",
+      "format": "csv",
+      "fields": [
+        "versionMajor",
+        "versionMinor",
+        "inodeCount",
+        "blockSize",
+        "compressionId",
+        "bytesUsed"
+      ]
+    }
+  ],
+  "assertions": [
+    {
+      "name": "magic valid",
+      "expression": "magic == 'hsqs' || magic == 'sqsh'",
+      "severity": "error",
+      "message": "SquashFS magic must be 'hsqs' (little-endian) or 'sqsh' (big-endian)"
+    },
+    {
+      "name": "version major is 4",
+      "expression": "versionMajor == 4",
+      "severity": "error",
+      "message": "SquashFS major version must be 4"
+    },
+    {
+      "name": "compression ID valid",
+      "expression": "compressionId >= 1 && compressionId <= 6",
+      "severity": "error",
+      "message": "Compression ID must be 1-6 (gzip/lzma/lzo/xz/lz4/zstd)"
+    },
+    {
+      "name": "block size power of 2",
+      "expression": "blockSize >= 4096 && blockSize <= 1048576",
+      "severity": "warning",
+      "message": "Block size should be a power of 2 between 4KB and 1MB"
+    },
+    {
+      "name": "bytes used non-zero",
+      "expression": "bytesUsed > 0",
+      "severity": "error",
+      "message": "Filesystem bytes used must be greater than zero"
+    }
+  ],
+  "functions": {
+    "readUInt32LE": "Read little-endian 32-bit superblock fields",
+    "readUInt16LE": "Read little-endian 16-bit fields (compression, version, flags)",
+    "readUInt64LE": "Read little-endian 64-bit offset fields",
+    "formatFileSize(var:bytesUsed)": "Format filesystem size as readable size",
+    "formatTimestamp(var:modificationTime)": "Format Unix timestamp as human-readable date"
+  }
+}

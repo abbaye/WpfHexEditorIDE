@@ -1,0 +1,193 @@
+{
+  "diffMode": "text",
+  "formatName": "WebAssembly Text Format",
+  "version": "1.0",
+  "extensions": [".wat", ".wast"],
+  "description": "WAT (WebAssembly Text Format) is the human-readable S-expression representation of WebAssembly modules. Defined in the WebAssembly Core Specification (W3C), WAT files are the textual complement to the binary .wasm format. A WAT module begins with `(module` and contains type definitions, imports, function definitions, exports, memory and table declarations, and global variables. Instructions use a stack-based notation: `i32.add`, `f64.mul`, `local.get`, `call`, `br_if`, etc. WAT is compiled to binary .wasm via tools like `wat2wasm` (WABT toolkit) or `wasm-pack`. WAST (.wast) is an extended format used for WebAssembly test scripts — it adds `assert_return`, `assert_trap`, `assert_invalid`, and `invoke` directives around module definitions. Both formats are pure UTF-8 text with no binary structure.",
+  "category": "Programming",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "code-editor",
+  "references": {
+    "specifications": [
+      "WebAssembly Core Specification — W3C Text Format §6",
+      "WebAssembly Test Script format (WAST) — WABT documentation"
+    ],
+    "WebLinks": [
+      "https://webassembly.github.io/spec/core/text/index.html",
+      "https://github.com/WebAssembly/wabt",
+      "https://developer.mozilla.org/en-US/docs/WebAssembly/Understanding_the_text_format"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      { "value": "286D6F64756C65", "offset": 0, "label": "'(module' — WebAssembly text module declaration", "weight": 0.9 },
+      { "value": "3B3B", "offset": 0, "label": "';; ' — WAT line comment (may precede module declaration)", "weight": 0.3 },
+      { "value": "286D6F64756C65", "offset": 3, "label": "'(module' at offset 3 (after BOM or whitespace)", "weight": 0.7 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.3,
+    "required": false,
+    "Strength": "Medium",
+    "EntropyHint": { "min": 3.5, "max": 5.5 },
+    "validation": {
+      "minFileSize": 8,
+      "maxSignatureOffset": 64,
+      "note": "WAT files are UTF-8 text. The module body begins with '(module' possibly preceded by line comments (;;) or block comments ((; ... ;)). Detection by extension .wat/.wast and presence of '(module'."
+    }
+  },
+  "variables": {
+    "watFirstByte": 0,
+    "watModuleMarker": ""
+  },
+  "blocks": [
+    {
+      "type": "field",
+      "name": "First Character",
+      "offset": 0,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "First byte of the WAT file. Expected: 0x28 '(' for immediate module declaration, or 0x3B ';' for a leading line comment (;; comment\\n), or 0x28 '(' for a block comment (; ... ;). WAT files are pure UTF-8 text S-expressions. No BOM expected (plain ASCII-compatible UTF-8).",
+      "storeAs": "watFirstByte",
+      "valueType": "uint8",
+      "valueMap": {
+        "40": "0x28 '(' — S-expression open paren (module declaration or comment)",
+        "59": "0x3B ';' — Line comment start (;; ...)",
+        "32": "0x20 ' ' — Leading whitespace before module",
+        "10": "0x0A LF — Empty leading line"
+      }
+    },
+    {
+      "type": "field",
+      "name": "Module Keyword Start",
+      "offset": 1,
+      "length": 6,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "description": "Bytes 1-6: expected to be 'module' ASCII (6D 6F 64 75 6C 65) if offset 0 was '('. Together with the opening paren at offset 0, forms the '(module' declaration that wraps the entire WebAssembly module definition in WAT format.",
+      "storeAs": "watModuleMarker",
+      "valueType": "ascii"
+    },
+    {
+      "type": "metadata",
+      "name": "WAT Module Declaration",
+      "variable": "watFirstByte",
+      "description": "Start of WAT S-expression — '(module' wraps entire WebAssembly module"
+    },
+    {
+      "type": "metadata",
+      "name": "Module Keyword",
+      "variable": "watModuleMarker",
+      "description": "'module' keyword following opening paren — confirms WebAssembly Text Format"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "Starts with paren or comment",
+      "expression": "watFirstByte == 40 || watFirstByte == 59 || watFirstByte == 32 || watFirstByte == 10 || watFirstByte == 13",
+      "severity": "warning",
+      "message": "WAT files should start with '(' (module declaration), ';;' (line comment), or whitespace. Unexpected first byte may indicate encoding issue or non-WAT content."
+    },
+    {
+      "name": "Module keyword present",
+      "expression": "watFirstByte == 40",
+      "severity": "info",
+      "message": "File starts with '(' — verify 'module' keyword follows to confirm WAT module format."
+    },
+    {
+      "name": "Text encoding",
+      "expression": "watFirstByte < 128",
+      "severity": "warning",
+      "message": "First byte > 127 — WAT files must be UTF-8 encoded. High byte may indicate wrong encoding or binary content."
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "Module Declaration", "offset": 0, "icon": "\uE8A5", "color": "#4ECDC4" }
+    ]
+  },
+  "inspector": {
+    "badge": "watFirstByte",
+    "primaryField": "watModuleMarker",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "WAT Module Header",
+        "icon": "\uE8A5",
+        "fields": ["watFirstByte", "watModuleMarker"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "WAT Header (JSON)",
+      "format": "json",
+      "fields": ["watFirstByte", "watModuleMarker"]
+    },
+    {
+      "name": "WAT Module Info (Text)",
+      "format": "text",
+      "fields": ["watModuleMarker"]
+    }
+  ],
+  "forensic": {
+    "category": "programming",
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      {
+        "name": "Obfuscated WAT",
+        "condition": "true",
+        "severity": "info",
+        "description": "WAT files compiled from obfuscated or minified sources may lack readable function names and use only indexed references ($0, $1) making reverse engineering harder. Decompiled WASM to WAT via wasm2wat may reveal malicious code patterns."
+      }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "WAT (WebAssembly Text Format): pure UTF-8 S-expression text. Starts with '(module'. Key constructs: (type (func ...)), (import \"env\" \"func\" (func ...)), (func $name (param i32) (result i64) ...), (export \"main\" (func $main)), (memory 1), (table funcref). Instructions: i32.const, i32.add, local.get, local.set, call, br_if, if/else/end, loop, block. WAST adds: (assert_return (invoke \"func\") (i32.const 42)) for testing. Compile WAT to WASM: wat2wasm file.wat -o file.wasm. Disassemble WASM to WAT: wasm2wat file.wasm.",
+    "suggestedInspections": [
+      "Find '(import' declarations to see external function/memory dependencies (imports from 'env' or 'wasi_snapshot_preview1')",
+      "Count '(func' declarations to understand module complexity",
+      "Look for '(export' to identify the public API surface of the module",
+      "Check '(memory' and '(data' segments for embedded binary data or strings",
+      "WAST files: look for 'assert_trap' to find known failure cases in test suites"
+    ]
+  },
+  "software": [
+    "wabt (WebAssembly Binary Toolkit — wat2wasm, wasm2wat, wasm-validate, wasm-objdump)",
+    "wasm-pack (Rust to WASM toolchain — compiles Rust to .wat/.wasm)",
+    "Emscripten (C/C++ to WASM — emcc generates .wasm and optional .wat)",
+    "wat-editor (VS Code extension with WAT syntax highlighting)",
+    "Chrome DevTools (WASM Sources panel shows decompiled WAT)"
+  ],
+  "formatRelationships": {
+    "category": "Programming",
+    "extensions": [".wat", ".wast"],
+    "relatedFormats": ["WASM"],
+    "note": "WAT is the text representation of WASM binary. One-to-one mapping: every .wasm can be disassembled to .wat via wasm2wat, and every .wat can be assembled to .wasm via wat2wasm. WAST (.wast) is a superset used for test scripts — not directly compiled to .wasm. WAT uses S-expression syntax like Lisp/Scheme."
+  },
+  "MimeTypes": ["text/plain", "text/wat"],
+  "UseCases": [
+    "Reading and writing human-readable WebAssembly modules",
+    "Debugging and auditing WASM binaries by disassembling to WAT",
+    "Writing WebAssembly test suites in WAST format",
+    "Learning WebAssembly instruction set and stack machine model",
+    "Reverse engineering compiled WASM to understand logic"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 78,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 4,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "Format": "UTF-8 text S-expression (WebAssembly Text Format, W3C spec)",
+    "Encoding": "UTF-8 (no BOM required)",
+    "Syntax": "S-expressions: (keyword args...) — similar to Lisp/Scheme",
+    "Module": "(module (type ...) (import ...) (func ...) (export ...) (memory ...) (data ...))",
+    "WAST": "Superset of WAT — adds assert_return, assert_trap, invoke for test scripts",
+    "Tooling": "wabt toolkit: wat2wasm (assemble), wasm2wat (disassemble), wasm-validate"
+  }
+}

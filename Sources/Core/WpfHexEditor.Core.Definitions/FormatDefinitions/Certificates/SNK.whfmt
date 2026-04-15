@@ -1,0 +1,345 @@
+{
+  "diffMode": "binary",
+  "formatName": "Strong Name Key (SNK)",
+  "version": "1.0",
+  "extensions": [ ".snk", ".pfx" ],
+  "description": "Microsoft Strong Name Key file containing a CryptoAPI PRIVATEKEYBLOB or PUBLICKEYBLOB structure with an RSA key pair or public key used to sign .NET assemblies for the Global Assembly Cache.",
+  "category": "Certificates",
+  "author": "WPFHexaEditor Team",
+  "MimeTypes": [ "application/octet-stream", "application/x-snk" ],
+  "UseCases": [
+    "Strong-naming .NET assemblies for Global Assembly Cache (GAC) installation",
+    "Delay-signing assemblies during development with public key only",
+    "Verifying assembly identity and preventing tampering at load time",
+    "NuGet package signing and code integrity verification",
+    "MSBuild and dotnet CLI assembly signing pipeline"
+  ],
+  "software": [
+    { "name": "sn.exe (Strong Name Tool)", "role": "producer/consumer" },
+    { "name": "dotnet CLI (dotnet snk)",    "role": "producer" },
+    { "name": "MSBuild AssemblyOriginatorKeyFile", "role": "consumer" },
+    { "name": "ilasm / ildasm",            "role": "consumer" },
+    { "name": "OpenSSL / BouncyCastle",    "role": "related" }
+  ],
+  "formatRelationships": {
+    "relatedFormats": [ "DER (.der)", "PEM (.pem)", "PFX/PKCS#12 (.pfx)", "PE AssemblySignatureKey attribute" ],
+    "container": null,
+    "notes": "SNK files use the CryptoAPI BLOBHEADER format (wincrypt.h). A full key pair (.snk with PRIVATEKEYBLOB) can be converted to PEM via openssl or sn.exe -p. The public key portion is embedded in the AssemblyDef table of signed PE files."
+  },
+
+  "detection": {
+    "signatures": [
+      {
+        "value": "0702000000240000",
+        "offset": 0,
+        "label": "PRIVATEKEYBLOB header: bType=0x07 PRIVATEKEYBLOB, bVersion=0x02, reserved=0x0000, aiKeyAlg=0x2400 CALG_RSA_SIGN",
+        "weight": 70,
+        "required": false
+      },
+      {
+        "value": "52534132",
+        "offset": 8,
+        "label": "RSA2 magic — private key CRT parameters follow",
+        "weight": 20,
+        "required": false
+      },
+      {
+        "value": "0602000000240000",
+        "offset": 0,
+        "label": "PUBLICKEYBLOB header: bType=0x06, bVersion=0x02, reserved=0x0000, aiKeyAlg=0x2400",
+        "weight": 70,
+        "required": false
+      },
+      {
+        "value": "52534131",
+        "offset": 8,
+        "label": "RSA1 magic — public key modulus follows",
+        "weight": 20,
+        "required": false
+      }
+    ],
+    "matchMode": "weighted",
+    "MinimumScore": 70,
+    "Strength": "Strong",
+    "EntropyHint": {
+      "min": 5.5,
+      "max": 7.9,
+      "note": "RSA key material (prime factors, modulus, exponents) is effectively random; high entropy expected in modulus and private exponent fields."
+    },
+    "validation": {
+      "expression": "(UINT8(0) == 0x07 || UINT8(0) == 0x06) && UINT8(1) == 0x02 && UINT16_LE(2) == 0x0000",
+      "description": "Valid SNK files start with a CryptoAPI BLOBHEADER: bType is 6 (public) or 7 (private), bVersion is 2, reserved is 0."
+    }
+  },
+
+  "variables": {
+    "bType":      { "offset": 0,  "length": 1, "type": "uint8"   },
+    "bVersion":   { "offset": 1,  "length": 1, "type": "uint8"   },
+    "reserved":   { "offset": 2,  "length": 2, "type": "uint16le"},
+    "aiKeyAlg":   { "offset": 4,  "length": 4, "type": "uint32le"},
+    "rsaMagic":   { "offset": 8,  "length": 4, "type": "bytes"   },
+    "bitlen":     { "offset": 12, "length": 4, "type": "uint32le"},
+    "pubExp":     { "offset": 16, "length": 4, "type": "uint32le"},
+    "modulus":    { "offset": 20, "length": "bitlen/8", "type": "bytes" }
+  },
+
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "BLOBHEADER — bType",
+      "offset": 0,
+      "length": 1,
+      "color": "#1A237E",
+      "opacity": 0.9,
+      "description": "CryptoAPI BLOBHEADER bType field identifying the key blob type: 0x06 = PUBLICKEYBLOB (public key only), 0x07 = PRIVATEKEYBLOB (full RSA key pair with CRT parameters).",
+      "storeAs": "bType",
+      "valueType": "uint8",
+      "valueMap": {
+        "6":  "PUBLICKEYBLOB — public key only, safe to distribute",
+        "7":  "PRIVATEKEYBLOB — full RSA key pair, MUST be kept secret",
+        "8":  "PLAINTEXTKEYBLOB — symmetric key (unexpected in .snk)",
+        "10": "OPAQUEKEYBLOB — provider-specific format"
+      }
+    },
+    {
+      "type": "field",
+      "name": "BLOBHEADER — bVersion",
+      "offset": 1,
+      "length": 1,
+      "color": "#283593",
+      "opacity": 0.75,
+      "description": "CryptoAPI BLOBHEADER bVersion; must be 2 (CUR_BLOB_VERSION) for all modern Windows CryptoAPI RSA key blobs; version 1 was used in early Windows NT.",
+      "storeAs": "bVersion",
+      "valueType": "uint8",
+      "valueMap": {
+        "2": "CUR_BLOB_VERSION (Windows NT 4.0+)"
+      }
+    },
+    {
+      "type": "field",
+      "name": "BLOBHEADER — Reserved",
+      "offset": 2,
+      "length": 2,
+      "color": "#9E9E9E",
+      "opacity": 0.4,
+      "description": "Reserved field in CryptoAPI BLOBHEADER; must be zero. Non-zero value indicates file corruption or a custom CryptoAPI provider extension.",
+      "storeAs": "reserved",
+      "valueType": "uint16",
+      "endianness": "little"
+    },
+    {
+      "type": "field",
+      "name": "BLOBHEADER — aiKeyAlg",
+      "offset": 4,
+      "length": 4,
+      "color": "#3949AB",
+      "opacity": 0.8,
+      "description": "CryptoAPI algorithm identifier (ALG_ID from wincrypt.h) specifying the intended use of the key; strong-name SNK files always use CALG_RSA_SIGN (0x2400) for signature verification.",
+      "storeAs": "aiKeyAlg",
+      "valueType": "uint32",
+      "endianness": "little",
+      "valueMap": {
+        "9216":  "CALG_RSA_SIGN (0x2400) — RSA signature key, standard for strong-name SNK",
+        "41984": "CALG_RSA_KEYX (0xA400) — RSA key exchange key",
+        "256":   "CALG_MD5 (unexpected in key blob)",
+        "32772": "CALG_SHA1 (unexpected in key blob)"
+      }
+    },
+    {
+      "type": "signature",
+      "name": "RSA Magic",
+      "offset": 8,
+      "length": 4,
+      "color": "#5C6BC0",
+      "opacity": 0.85,
+      "description": "Four-byte ASCII magic within the RSAPUBKEY/RSAPRIVKEY structure: 'RSA1' (0x31415352) for PUBLICKEYBLOB or 'RSA2' (0x32415352) for PRIVATEKEYBLOB with CRT private parameters.",
+      "storeAs": "rsaMagic",
+      "valueType": "bytes",
+      "valueMap": {
+        "52534131": "RSA1 — public key structure (PUBLICKEYBLOB)",
+        "52534132": "RSA2 — private key structure with CRT parameters (PRIVATEKEYBLOB)"
+      }
+    },
+    {
+      "type": "field",
+      "name": "Key Size (bitlen)",
+      "offset": 12,
+      "length": 4,
+      "color": "#7986CB",
+      "opacity": 0.75,
+      "description": "RSA key size in bits; common values are 1024, 2048, or 4096. The modulus field length equals bitlen/8 bytes. Keys shorter than 2048 bits are considered weak by modern standards.",
+      "storeAs": "bitlen",
+      "valueType": "uint32",
+      "endianness": "little",
+      "valueMap": {
+        "1024": "1024-bit RSA — legacy, considered weak (NIST deprecated)",
+        "2048": "2048-bit RSA — minimum recommended key size",
+        "4096": "4096-bit RSA — high security, larger signing overhead"
+      }
+    },
+    {
+      "type": "field",
+      "name": "Public Exponent (pubExp)",
+      "offset": 16,
+      "length": 4,
+      "color": "#9FA8DA",
+      "opacity": 0.7,
+      "description": "RSA public exponent stored as a 32-bit little-endian value; industry standard is 65537 (0x00010001). Small exponents (3, 17) are computationally efficient but deprecated for signing.",
+      "storeAs": "pubExp",
+      "valueType": "uint32",
+      "endianness": "little",
+      "valueMap": {
+        "3":     "e=3 — historically used but vulnerable to small-message attacks",
+        "17":    "e=17 — Fermat prime F2",
+        "65537": "e=65537 — standard Fermat prime F4, recommended"
+      }
+    },
+    {
+      "type": "field",
+      "name": "Modulus (n)",
+      "offset": 20,
+      "length": "bitlen/8",
+      "color": "#3F51B5",
+      "opacity": 0.65,
+      "description": "RSA modulus of bitlen/8 bytes stored in little-endian byte order; the product of two large prime factors p and q. This value is included in the public key embedded in signed .NET assemblies.",
+      "storeAs": "modulus",
+      "valueType": "bytes"
+    },
+    {
+      "type": "metadata",
+      "name": "CRT Private Parameters (PRIVATEKEYBLOB only)",
+      "offset": "20+(bitlen/8)",
+      "length": "variable",
+      "color": "#C5CAE9",
+      "opacity": 0.6,
+      "description": "Chinese Remainder Theorem private key parameters for PRIVATEKEYBLOB: prime1 (p), prime2 (q), exponent1 (d mod p-1), exponent2 (d mod q-1), coefficient (q^-1 mod p), and private exponent (d). Each field is bitlen/16 bytes except privateExponent (bitlen/8 bytes)."
+    }
+  ],
+
+  "assertions": [
+    {
+      "name": "ValidBlobType",
+      "expression": "UINT8(0) == 6 || UINT8(0) == 7",
+      "severity": "error",
+      "message": "bType at offset 0 is not 6 (PUBLICKEYBLOB) or 7 (PRIVATEKEYBLOB); this is not a valid CryptoAPI RSA key blob."
+    },
+    {
+      "name": "BlobVersionIsTwo",
+      "expression": "UINT8(1) == 2",
+      "severity": "warning",
+      "message": "bVersion at offset 1 is not 2 (CUR_BLOB_VERSION); unexpected version may indicate an unsupported or legacy CryptoAPI format."
+    },
+    {
+      "name": "ReservedIsZero",
+      "expression": "UINT16_LE(2) == 0",
+      "severity": "warning",
+      "message": "Reserved field at offset 2 is non-zero; this may indicate file corruption or a non-standard CryptoAPI provider."
+    },
+    {
+      "name": "AlgorithmIsRSASign",
+      "expression": "UINT32_LE(4) == 0x2400",
+      "severity": "info",
+      "message": "aiKeyAlg is not CALG_RSA_SIGN (0x2400); strong-name SNK files are expected to use CALG_RSA_SIGN. This may be a key exchange key rather than a signing key."
+    },
+    {
+      "name": "ValidRSAMagic",
+      "expression": "UINT32_LE(8) == 0x31415352 || UINT32_LE(8) == 0x32415352",
+      "severity": "error",
+      "message": "RSA magic at offset 8 is not 'RSA1' or 'RSA2'; the RSAPUBKEY structure is corrupt or this is not a standard CryptoAPI RSA key blob."
+    },
+    {
+      "name": "KeySizeReasonable",
+      "expression": "UINT32_LE(12) >= 512 && UINT32_LE(12) <= 16384",
+      "severity": "warning",
+      "message": "Key size (bitlen) is outside the range 512–16384 bits; this value is implausible and may indicate a corrupt key blob."
+    },
+    {
+      "name": "WeakKeyWarning",
+      "expression": "UINT32_LE(12) >= 2048",
+      "severity": "info",
+      "message": "RSA key is shorter than 2048 bits; keys of 1024 bits or less are considered cryptographically weak and should not be used for new assemblies."
+    }
+  ],
+
+  "navigation": {
+    "bookmarks": [
+      { "name": "BLOBHEADER",     "offset": 0,  "description": "CryptoAPI BLOBHEADER — bType, bVersion, reserved, aiKeyAlg" },
+      { "name": "RSAPUBKEY",      "offset": 8,  "description": "RSA key structure — magic (RSA1/RSA2), bitlen, pubExp" },
+      { "name": "Modulus",        "offset": 20, "description": "RSA modulus (n) — bitlen/8 bytes little-endian" },
+      { "name": "CRT Parameters", "offset": "20+(bitlen/8)", "description": "Private key CRT factors (PRIVATEKEYBLOB only)" }
+    ]
+  },
+
+  "inspector": {
+    "badge": "SNK",
+    "primaryField": "bType",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "name": "Blob Header",
+        "fields": [ "bType", "bVersion", "reserved", "aiKeyAlg" ]
+      },
+      {
+        "name": "RSA Key",
+        "fields": [ "rsaMagic", "bitlen", "pubExp" ]
+      },
+      {
+        "name": "Key Material",
+        "fields": [ "modulus" ]
+      }
+    ]
+  },
+
+  "exportTemplates": [
+    {
+      "name": "SNK Key Summary",
+      "format": "text",
+      "template": "Strong Name Key\n  Type       : {bType} ({bType_mapped})\n  Algorithm  : {aiKeyAlg} ({aiKeyAlg_mapped})\n  RSA Magic  : {rsaMagic_mapped}\n  Key Size   : {bitlen} bits\n  Public Exp : {pubExp}"
+    },
+    {
+      "name": "SNK JSON Report",
+      "format": "json",
+      "template": "{ \"format\": \"SNK\", \"blobType\": {bType}, \"algorithm\": {aiKeyAlg}, \"keySizeBits\": {bitlen}, \"publicExponent\": {pubExp} }"
+    }
+  ],
+
+  "forensic": {
+    "category": "CryptographicKey",
+    "riskLevel": "high",
+    "suspiciousPatterns": [
+      { "pattern": "PrivateKeyExposed",   "description": "PRIVATEKEYBLOB (bType=7) in a public repository or build artifact exposes the RSA private key, enabling assembly spoofing and signature forgery." },
+      { "pattern": "WeakKeySize",         "description": "RSA key shorter than 2048 bits is cryptographically weak; NIST deprecated 1024-bit keys after 2013." },
+      { "pattern": "NonStandardExponent", "description": "Public exponent other than 65537 may indicate a key generated by unusual tooling; exponent 3 is vulnerable to certain attacks." },
+      { "pattern": "KeyExchangeAlgorithm","description": "aiKeyAlg = CALG_RSA_KEYX in a .snk file is unexpected; strong-name keys should use CALG_RSA_SIGN." }
+    ]
+  },
+
+  "aiHints": {
+    "analysisContext": "SNK files contain CryptoAPI RSA key blobs used to strong-name .NET assemblies. A PRIVATEKEYBLOB includes the full key pair (public modulus, exponent, and CRT private parameters). The public portion is hashed (SHA-1) and embedded in the assembly's strong name identity. Exposure of private SNK files undermines assembly identity guarantees.",
+    "suggestedInspections": [
+      "Check bType to determine if this is a full private key (0x07) or public-only key (0x06) — private keys must never be committed to source control.",
+      "Verify bitlen is at least 2048 bits; 1024-bit strong-name keys are deprecated and should be regenerated.",
+      "Extract the modulus bytes and compute SHA-1 to derive the expected strong name public key token (last 8 bytes reversed).",
+      "Compare the public exponent against 65537 (0x00010001) — non-standard exponents warrant investigation.",
+      "For PRIVATEKEYBLOB, verify the file size matches the expected size: 20 + 5*(bitlen/16) + (bitlen/8) bytes."
+    ]
+  },
+
+  "TechnicalDetails": {
+    "specification": "wincrypt.h BLOBHEADER, RSAPUBKEY structures; Microsoft documentation 'CryptImportKey / CryptExportKey'; ECMA-335 §I.6.2 Strong Names; .NET strong naming specification",
+    "endianness": "little-endian for all multi-byte integer fields",
+    "privateKeyBlobSize": "20 + 5*(bitlen/16) + (bitlen/8) bytes for CRT parameters",
+    "publicKeyBlobSize":  "20 + (bitlen/8) bytes",
+    "notes": "The SNK format is a raw CryptoAPI blob, not a PEM or DER certificate. sn.exe -p extracts the public key. sn.exe -tp displays the public key token. The token is derived as ToLittleEndian(SHA1(publicKey)[12..19])."
+  },
+
+  "QualityMetrics": {
+    "CompletenessScore": 92,
+    "DocumentationLevel": "comprehensive",
+    "BlocksDefined": 9,
+    "ValidationRules": 7,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": true,
+    "AutoRefined": false
+  }
+}

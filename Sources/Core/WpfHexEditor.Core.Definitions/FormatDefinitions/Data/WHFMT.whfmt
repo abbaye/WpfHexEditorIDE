@@ -1,0 +1,416 @@
+{
+  "diffMode": "text",
+  "formatName": "WPFHexaEditor Format Definition",
+  "version": "1.0",
+  "extensions": [
+    ".whfmt"
+  ],
+  "mimeTypes": [
+    "application/json",
+    "application/vnd.wpfhexaeditor.format+json"
+  ],
+  "description": "The .whfmt format is the native format definition schema for WPFHexaEditor. Each .whfmt file is a JSON document that describes a binary or text file format — its detection signatures, header structure, block layout, variables, assertions, forensic patterns, and rendering hints. This is the meta-format: the format definition that describes format definitions themselves. Yes, it is self-referential. Yes, we find it amusing.",
+  "category": "Data",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "structure-editor",
+  "references": {
+    "specifications": [
+      "WPFHexaEditor .whfmt Schema v2",
+      "whfmt.schema.json (embedded in WpfHexEditor.Core.Definitions)"
+    ],
+    "WebLinks": [
+      "https://github.com/abbaye/WpfHexEditorControl"
+    ]
+  },
+  "detection": {
+    "signature": "7B",
+    "offset": 0,
+    "required": false,
+    "Strength": "Weak",
+    "EntropyHint": { "min": 3.5, "max": 5.5 },
+    "validation": {
+      "minFileSize": 50,
+      "note": "A .whfmt file is a JSON document — it starts with '{' (0x7B) or a UTF-8 BOM (0xEF 0xBB 0xBF) followed by '{'. Detection relies primarily on the file extension. The JSON must contain at least 'formatName' and 'extensions' properties to be a valid .whfmt."
+    }
+  },
+  "variables": {
+    "formatName": "",
+    "version": "",
+    "category": "",
+    "extensionCount": 0,
+    "blockCount": 0,
+    "hasDetection": false,
+    "hasBlocks": false,
+    "hasVariables": false,
+    "hasAssertions": false,
+    "hasForensic": false,
+    "hasNavigation": false,
+    "hasInspector": false,
+    "hasAiHints": false,
+    "hasSyntaxDefinition": false,
+    "preferredEditor": "",
+    "diffMode": ""
+  },
+  "blocks": [
+    {
+      "type": "group",
+      "name": "Root Object",
+      "description": "Top-level JSON object. All .whfmt files are JSON documents conforming to whfmt.schema.json.",
+      "color": "#6C5CE7",
+      "opacity": 0.2,
+      "children": [
+        {
+          "type": "field",
+          "name": "formatName",
+          "description": "Human-readable name displayed in the UI and used for format identification. Required.",
+          "color": "#FF6B6B",
+          "opacity": 0.4,
+          "valueType": "string"
+        },
+        {
+          "type": "field",
+          "name": "version",
+          "description": "Semantic version of this format definition (not the binary format it describes). Monotonically increasing — never regress.",
+          "color": "#FFA07A",
+          "opacity": 0.35,
+          "valueType": "string"
+        },
+        {
+          "type": "field",
+          "name": "extensions",
+          "description": "Array of file extensions (including leading dot) that this definition matches. Used by EmbeddedFormatCatalog for lookup.",
+          "color": "#4ECDC4",
+          "opacity": 0.35,
+          "valueType": "string[]"
+        },
+        {
+          "type": "field",
+          "name": "description",
+          "description": "Detailed description of the binary format — its structure, byte layout, endianness, and any other relevant technical information.",
+          "color": "#FFE66D",
+          "opacity": 0.3,
+          "valueType": "string"
+        },
+        {
+          "type": "field",
+          "name": "category",
+          "description": "Organizational category (e.g., Images, Audio, Archives, Programming, Data, System, 3D, CAD, etc.).",
+          "color": "#95E1D3",
+          "opacity": 0.3,
+          "valueType": "string"
+        },
+        {
+          "type": "field",
+          "name": "preferredEditor",
+          "description": "Editor hint for the EditorRegistry. Values: 'hex-editor' (default), 'code-editor', 'structure-editor', 'image-viewer', etc.",
+          "color": "#DDA0DD",
+          "opacity": 0.35,
+          "valueType": "string"
+        },
+        {
+          "type": "field",
+          "name": "diffMode",
+          "description": "Diff strategy: 'binary' for hex-level diffing, 'text' for line-based diffing.",
+          "color": "#87CEEB",
+          "opacity": 0.3,
+          "valueType": "string"
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "name": "detection",
+      "description": "Magic-byte signature and heuristic detection rules. Used by FormatDetector to auto-identify files opened in the hex editor.",
+      "color": "#E74C3C",
+      "opacity": 0.25,
+      "children": [
+        {
+          "type": "field",
+          "name": "detection.signature",
+          "description": "Hex string of magic bytes (e.g., '89504E47' for PNG). Matched at detection.offset.",
+          "color": "#FF6B6B",
+          "opacity": 0.4,
+          "valueType": "string"
+        },
+        {
+          "type": "field",
+          "name": "detection.offset",
+          "description": "Byte offset where the signature starts (typically 0).",
+          "color": "#FFA07A",
+          "opacity": 0.35,
+          "valueType": "uint32"
+        },
+        {
+          "type": "field",
+          "name": "detection.Strength",
+          "description": "Confidence level: 'Strong' (unique magic), 'Moderate' (shared magic), 'Weak' (heuristic).",
+          "color": "#FFE66D",
+          "opacity": 0.35,
+          "valueType": "string"
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "name": "blocks[]",
+      "description": "Array of block definitions that describe the binary layout. Each block has a type (signature, field, group, computed, metadata, etc.), offset, length, color, and description.",
+      "color": "#2ECC71",
+      "opacity": 0.25,
+      "children": [
+        {
+          "type": "field",
+          "name": "block.type",
+          "description": "Block type: 'signature', 'field', 'group', 'computeFromVariables', 'metadata', 'reserved', 'padding', 'array', 'conditional', 'switch', 'bitfield'.",
+          "color": "#4ECDC4",
+          "opacity": 0.4,
+          "valueType": "string"
+        },
+        {
+          "type": "field",
+          "name": "block.name",
+          "description": "Display name for the block shown in the hex editor overlay and the StructureEditor tree.",
+          "color": "#95E1D3",
+          "opacity": 0.35,
+          "valueType": "string"
+        },
+        {
+          "type": "field",
+          "name": "block.offset",
+          "description": "Byte offset from file start (or parent group start for nested blocks).",
+          "color": "#87CEEB",
+          "opacity": 0.35,
+          "valueType": "uint32"
+        },
+        {
+          "type": "field",
+          "name": "block.length",
+          "description": "Length in bytes. Can be a number or a variable expression (e.g., 'var:headerSize').",
+          "color": "#DDA0DD",
+          "opacity": 0.35,
+          "valueType": "uint32"
+        },
+        {
+          "type": "field",
+          "name": "block.color",
+          "description": "Hex color for the overlay highlight in the hex editor (e.g., '#FF6B6B').",
+          "color": "#FFB6C1",
+          "opacity": 0.35,
+          "valueType": "string"
+        },
+        {
+          "type": "field",
+          "name": "block.valueType",
+          "description": "Data type: 'uint8', 'uint16', 'uint32', 'uint64', 'int8'...'int64', 'float32', 'float64', 'ascii', 'utf8', 'utf16', 'hex', 'flags', 'string[]', etc.",
+          "color": "#98D8C8",
+          "opacity": 0.35,
+          "valueType": "string"
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "name": "variables",
+      "description": "Key/value store for parsed values. Blocks with 'storeAs' write here; expressions with 'var:' and 'calc:' read from here.",
+      "color": "#F39C12",
+      "opacity": 0.25
+    },
+    {
+      "type": "group",
+      "name": "assertions[]",
+      "description": "Post-parse validation rules. Each assertion has an expression evaluated against variables, a severity, and a failure message.",
+      "color": "#E74C3C",
+      "opacity": 0.2
+    },
+    {
+      "type": "group",
+      "name": "forensic",
+      "description": "Security analysis metadata — risk level, suspicious patterns, and known exploit vectors for the format.",
+      "color": "#8E44AD",
+      "opacity": 0.2
+    },
+    {
+      "type": "group",
+      "name": "navigation",
+      "description": "Bookmark definitions for quick-jump navigation in the hex editor.",
+      "color": "#3498DB",
+      "opacity": 0.2
+    },
+    {
+      "type": "group",
+      "name": "inspector",
+      "description": "Inspector panel layout — field groupings, badge variable, and primary display field.",
+      "color": "#1ABC9C",
+      "opacity": 0.2
+    },
+    {
+      "type": "group",
+      "name": "aiHints",
+      "description": "Context hints for AI-assisted analysis — analysis context, known vulnerabilities, and suggested inspections.",
+      "color": "#9B59B6",
+      "opacity": 0.2
+    },
+    {
+      "type": "group",
+      "name": "syntaxDefinition",
+      "description": "Optional syntax highlighting definition for text-based formats opened in the CodeEditor. Includes tokenizer rules, formatting rules, and comment styles.",
+      "color": "#E67E22",
+      "opacity": 0.2
+    },
+    {
+      "type": "group",
+      "name": "QualityMetrics",
+      "description": "Self-assessment metadata — completeness score, documentation level, block count, validation rule count, and last update date.",
+      "color": "#16A085",
+      "opacity": 0.2
+    }
+  ],
+  "assertions": [
+    {
+      "name": "formatName required",
+      "expression": "formatName != ''",
+      "severity": "error",
+      "message": "Every .whfmt file must have a non-empty 'formatName'"
+    },
+    {
+      "name": "extensions required",
+      "expression": "extensionCount > 0",
+      "severity": "error",
+      "message": "Every .whfmt file must declare at least one file extension"
+    },
+    {
+      "name": "version required",
+      "expression": "version != ''",
+      "severity": "warning",
+      "message": "A version string is recommended for change tracking"
+    },
+    {
+      "name": "has detection or extension-only",
+      "expression": "hasDetection || extensionCount > 0",
+      "severity": "warning",
+      "message": "Format should have either detection rules or at least one extension for identification"
+    },
+    {
+      "name": "has blocks for binary formats",
+      "expression": "hasBlocks || diffMode == 'text'",
+      "severity": "warning",
+      "message": "Binary format definitions should declare at least one block for hex overlay rendering"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      {
+        "name": "Root Object",
+        "offset": 0,
+        "icon": "\uE943",
+        "color": "#6C5CE7"
+      }
+    ]
+  },
+  "inspector": {
+    "badge": "category",
+    "primaryField": "formatName",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "Identity",
+        "icon": "\uE946",
+        "fields": ["formatName", "version", "category", "diffMode", "preferredEditor"]
+      },
+      {
+        "title": "Structure",
+        "icon": "\uE8A5",
+        "fields": ["extensionCount", "blockCount", "hasDetection", "hasBlocks", "hasVariables", "hasAssertions"]
+      },
+      {
+        "title": "Richness",
+        "icon": "\uE82D",
+        "fields": ["hasForensic", "hasNavigation", "hasInspector", "hasAiHints", "hasSyntaxDefinition"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "WHFMT Summary (JSON)",
+      "format": "json",
+      "fields": ["formatName", "version", "category", "extensionCount", "blockCount", "hasDetection"]
+    }
+  ],
+  "forensic": {
+    "category": "data",
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      {
+        "name": "Missing formatName",
+        "condition": "formatName == ''",
+        "severity": "error",
+        "description": "A .whfmt file without a formatName is invalid and will be rejected by the format catalog."
+      },
+      {
+        "name": "No extensions declared",
+        "condition": "extensionCount == 0",
+        "severity": "error",
+        "description": "Without extensions, the format cannot be matched to any file — it becomes an orphaned definition."
+      },
+      {
+        "name": "Very large block count",
+        "condition": "blockCount > 200",
+        "severity": "warning",
+        "description": "Definitions with 200+ blocks may cause rendering slowdown in the hex editor overlay."
+      }
+    ],
+    "knownExploitVectors": [
+      "JSON injection: malicious 'expression' fields in assertions or computeFromVariables could exploit naive eval() — WPFHexaEditor uses a sandboxed expression parser",
+      "Path traversal: 'formatName' displayed as-is — ensure no XAML injection in the UI binding",
+      "Denial-of-service: deeply nested 'children' in block groups could cause stack overflow in recursive parsers"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "A .whfmt file is a JSON document conforming to whfmt.schema.json. It describes a binary or text file format for the WPFHexaEditor IDE. Root properties: formatName (required string), extensions (required string[]), version, description, category, preferredEditor, diffMode, detection (object with signature/offset/Strength), blocks (array of typed block definitions), variables (key-value store), assertions (validation rules), forensic (security metadata), navigation (bookmarks), inspector (UI panel layout), aiHints (AI context), syntaxDefinition (tokenizer for text formats), QualityMetrics (self-assessment). This is the meta-format — the .whfmt that describes .whfmt files.",
+    "suggestedInspections": [
+      "Verify 'formatName' and 'extensions' are present and non-empty",
+      "Check that all blocks with 'storeAs' reference valid keys in 'variables'",
+      "Validate assertion expressions against declared variables",
+      "Confirm detection.signature is valid hex (even number of hex digits)",
+      "Check QualityMetrics.CompletenessScore is reasonable for the number of sections defined"
+    ]
+  },
+  "software": [
+    "WPFHexaEditor (native)",
+    "Visual Studio Code (with whfmt.schema.json)",
+    "JetBrains Rider (with whfmt.schema.json)",
+    "Any JSON editor"
+  ],
+  "formatRelationships": {
+    "category": "Data",
+    "extensions": [".whfmt"],
+    "note": "The .whfmt format is proprietary to WPFHexaEditor. It is a superset of JSON with domain-specific semantics. Files can be edited in the StructureEditor (visual) or any JSON-aware code editor."
+  },
+  "MimeTypes": [
+    "application/json",
+    "application/vnd.wpfhexaeditor.format+json"
+  ],
+  "UseCases": [
+    "Define binary file format overlays for the WPFHexaEditor hex editor",
+    "Provide detection signatures for automatic format identification",
+    "Document binary format structure for analysis and forensics",
+    "Generate C struct / Python bytes export templates from format layouts",
+    "Provide syntax highlighting definitions for text-based formats"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 92,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 12,
+    "ValidationRules": 5,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": true,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "TextFormat": true,
+    "Encoding": "UTF-8",
+    "Schema": "whfmt.schema.json",
+    "Compression": "none",
+    "HasHeader": false,
+    "SelfReferential": true
+  }
+}

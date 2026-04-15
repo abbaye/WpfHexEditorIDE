@@ -1,0 +1,292 @@
+{
+  "diffMode": "binary",
+  "formatName": "PyTorch Model (ZIP/Pickle)",
+  "version": "1.0",
+  "extensions": [ ".pt", ".pth", ".bin" ],
+  "description": "PyTorch serialized model checkpoint using ZIP container with pickled state dictionaries and raw tensor buffers; the pickle-based format allows arbitrary code execution on load, making untrusted files a serious security risk.",
+  "category": "MachineLearning",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "MimeTypes": [ "application/zip", "application/octet-stream" ],
+
+  "UseCases": [
+    "PyTorch model checkpoint saving and resuming during training (optimizer state, epoch, loss)",
+    "Pre-trained model weight distribution for transfer learning and fine-tuning",
+    "Hugging Face model hub distribution (pre-safetensors era, many models still use .bin format)",
+    "Research model sharing and reproducibility across PyTorch-based ML pipelines"
+  ],
+
+  "software": [
+    { "name": "PyTorch (torch.save / torch.load)",  "role": "producer/consumer" },
+    { "name": "Netron",                             "role": "consumer" },
+    { "name": "fickling (pickle security scanner)",  "role": "consumer" },
+    { "name": "picklescan",                         "role": "consumer" },
+    { "name": "Hugging Face transformers",           "role": "consumer" }
+  ],
+
+  "formatRelationships": {
+    "relatedFormats": [ "SAFETENSORS", "ONNX", "TorchScript (.pt with JIT)", "ZIP" ],
+    "container": "ZIP (PK local file headers)",
+    "notes": "Modern PyTorch torch.save() produces ZIP archives containing archive/data.pkl (pickled state_dict) and archive/data/N (raw tensor buffers). Legacy format uses raw pickle stream starting with opcode 0x80. Migration path: convert to SafeTensors via safetensors.torch.save_file() to eliminate code execution risk."
+  },
+
+  "references": {
+    "specifications": [
+      "PyTorch Serialization (pytorch.org/docs/stable/notes/serialization.html)",
+      "Python Pickle Protocol (docs.python.org/3/library/pickle.html)"
+    ],
+    "WebLinks": [
+      "https://pytorch.org/docs/stable/generated/torch.save.html",
+      "https://en.wikipedia.org/wiki/PyTorch"
+    ]
+  },
+
+  "detection": {
+    "signatures": [
+      {
+        "value": "504B0304",
+        "offset": 0,
+        "label": "ZIP magic (PK\\x03\\x04) — PyTorch ZIP-serialized model",
+        "weight": 50,
+        "required": false
+      },
+      {
+        "value": "80",
+        "offset": 0,
+        "label": "Pickle protocol 2+ opcode (0x80) — legacy PyTorch torch.save format",
+        "weight": 30,
+        "required": false
+      }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 30,
+    "Strength": "Medium",
+    "EntropyHint": {
+      "min": 5.0,
+      "max": 8.0,
+      "note": "ZIP-compressed pickle metadata has moderate entropy; raw tensor buffers (float32/float16/bfloat16 weights) approach entropy 7.5-8.0. ZIP-stored (uncompressed) tensor entries have similar entropy to raw weights."
+    },
+    "validation": {
+      "minFileSize": 16,
+      "maxSignatureOffset": 0
+    }
+  },
+
+  "variables": {
+    "magic":          { "offset": 0, "length": 4, "type": "uint32le" },
+    "zipVersion":     { "offset": 4, "length": 2, "type": "uint16le" },
+    "zipFlags":       { "offset": 6, "length": 2, "type": "uint16le" },
+    "zipCompression": { "offset": 8, "length": 2, "type": "uint16le" }
+  },
+
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "ZIP / Pickle Magic",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.9,
+      "description": "File format identifier: 0x504B0304 ('PK\\x03\\x04') for modern ZIP-serialized PyTorch models, or 0x80 (pickle PROTO opcode) followed by protocol version byte for legacy torch.save format.",
+      "storeAs": "magic",
+      "valueType": "uint32"
+    },
+    {
+      "type": "field",
+      "name": "ZIP Version Needed",
+      "offset": 4,
+      "length": 2,
+      "color": "#4ECDC4",
+      "opacity": 0.8,
+      "description": "ZIP minimum version needed to extract (ZIP format only); PyTorch typically uses version 20 (ZIP 2.0) for stored/deflated entries.",
+      "storeAs": "zipVersion",
+      "valueType": "uint16",
+      "endianness": "little"
+    },
+    {
+      "type": "field",
+      "name": "ZIP General Purpose Flags",
+      "offset": 6,
+      "length": 2,
+      "color": "#45B7D1",
+      "opacity": 0.75,
+      "description": "ZIP general purpose bit flags (ZIP format only); PyTorch models typically use 0x0000 (no encryption, no data descriptor).",
+      "storeAs": "zipFlags",
+      "valueType": "uint16",
+      "endianness": "little"
+    },
+    {
+      "type": "field",
+      "name": "ZIP Compression Method",
+      "offset": 8,
+      "length": 2,
+      "color": "#96CEB4",
+      "opacity": 0.7,
+      "description": "ZIP compression method: 0x00 (stored) for raw tensor buffers, 0x08 (deflate) for pickle data. PyTorch typically stores tensor data uncompressed for memory-mapped access.",
+      "storeAs": "zipCompression",
+      "valueType": "uint16",
+      "endianness": "little",
+      "valueMap": {
+        "0": "Stored (no compression)",
+        "8": "Deflate"
+      }
+    },
+    {
+      "type": "metadata",
+      "name": "ZIP Entry: archive/data.pkl",
+      "offset": "variable",
+      "length": "variable",
+      "color": "#FFEAA7",
+      "opacity": 0.65,
+      "description": "Pickled Python state_dict (OrderedDict) mapping layer name strings to tensor metadata with storage references. WARNING: Pickle protocol allows arbitrary Python code execution including os.system(), subprocess, eval(), and __reduce__() exploits."
+    },
+    {
+      "type": "data",
+      "name": "ZIP Entries: archive/data/N",
+      "offset": "variable",
+      "length": "variable",
+      "color": "#DDA0DD",
+      "opacity": 0.55,
+      "description": "Raw tensor buffer files (archive/data/0, archive/data/1, ...) each containing a single tensor's weight data in its native dtype (float32, float16, bfloat16, int8). Referenced by storage offset in the pickle state_dict."
+    },
+    {
+      "type": "metadata",
+      "name": "ZIP Entry: archive/version",
+      "offset": "variable",
+      "length": "variable",
+      "color": "#C2185B",
+      "opacity": 0.5,
+      "description": "Text file containing the PyTorch serialization version number (e.g., '3'). Version 1 = legacy format, version 2 = ZIP with mmap support, version 3 = current default."
+    }
+  ],
+
+  "assertions": [
+    {
+      "name": "ZIPOrPickleMagic",
+      "expression": "UINT8(0) == 0x50 || UINT8(0) == 0x80",
+      "severity": "error",
+      "message": "First byte is neither 'P' (0x50 for ZIP PK header) nor 0x80 (pickle PROTO opcode); this is not a recognizable PyTorch model file."
+    },
+    {
+      "name": "FileSizeMinimum",
+      "expression": "FILE_SIZE >= 64",
+      "severity": "error",
+      "message": "File is too small (< 64 bytes) to contain a valid PyTorch model with tensor data."
+    },
+    {
+      "name": "SecurityWarning",
+      "expression": "true",
+      "severity": "warning",
+      "message": "PyTorch .pt/.pth files use Python pickle which allows ARBITRARY CODE EXECUTION on load. Never load untrusted files with torch.load(). Use safetensors format instead."
+    },
+    {
+      "name": "FileSizeReasonable",
+      "expression": "FILE_SIZE >= 1024",
+      "severity": "info",
+      "message": "File is very small for a PyTorch model; typical models with weights are at least several kilobytes."
+    }
+  ],
+
+  "navigation": {
+    "bookmarks": [
+      { "name": "ZIP/Pickle Magic",        "offset": 0,  "description": "PK\\x03\\x04 (ZIP) or 0x80 (pickle PROTO opcode)" },
+      { "name": "ZIP Version/Protocol",     "offset": 4,  "description": "ZIP version needed or pickle protocol version byte" },
+      { "name": "ZIP Compression Method",   "offset": 8,  "description": "Stored (0x00) or Deflate (0x08) for first entry" }
+    ]
+  },
+
+  "inspector": {
+    "badge": "PT",
+    "primaryField": "magic",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "name": "Container Header",
+        "fields": [ "magic", "zipVersion", "zipFlags", "zipCompression" ]
+      },
+      {
+        "name": "Security",
+        "fields": [ "magic" ]
+      }
+    ]
+  },
+
+  "exportTemplates": [
+    {
+      "name": "PyTorch Header Summary",
+      "format": "text",
+      "template": "PyTorch Model\n  Magic          : 0x{magic:X8}\n  ZIP Version    : {zipVersion}\n  Compression    : {zipCompression} ({zipCompression_mapped})\n  ⚠ SECURITY: Pickle format — do not load untrusted files"
+    },
+    {
+      "name": "PyTorch JSON Report",
+      "format": "json",
+      "template": "{ \"format\": \"PyTorch\", \"magic\": {magic}, \"zipVersion\": {zipVersion}, \"compression\": {zipCompression}, \"securityRisk\": \"high — pickle allows arbitrary code execution\" }"
+    }
+  ],
+
+  "forensic": {
+    "category": "MachineLearningArtifact",
+    "riskLevel": "high",
+    "suspiciousPatterns": [
+      {
+        "name": "Pickle code execution risk",
+        "condition": "true",
+        "severity": "warning",
+        "description": "PyTorch .pt/.pth files use Python pickle which allows arbitrary code execution on load. NEVER load untrusted .pt files. Use safetensors format instead."
+      },
+      {
+        "name": "Malicious pickle payload",
+        "condition": "true",
+        "severity": "warning",
+        "description": "Attackers can embed os.system(), subprocess, or eval() calls in pickle payloads via __reduce__() or __getstate__(). Scan with fickling or picklescan before loading."
+      },
+      {
+        "name": "Obfuscated pickle opcodes",
+        "condition": "true",
+        "severity": "warning",
+        "description": "Malicious payloads may use GLOBAL, INST, or STACK_GLOBAL opcodes to import dangerous modules (os, subprocess, builtins) and execute arbitrary commands."
+      },
+      {
+        "name": "Unexpected ZIP entries",
+        "condition": "true",
+        "severity": "info",
+        "description": "ZIP entries outside the expected archive/data.pkl and archive/data/N pattern may contain additional pickle payloads, scripts, or exfiltration code."
+      }
+    ]
+  },
+
+  "aiHints": {
+    "analysisContext": "PyTorch model files come in two variants: (1) Modern ZIP format (PK magic) containing archive/data.pkl (pickled state_dict) + archive/data/N (raw tensor buffers) + archive/version. (2) Legacy format starting with pickle PROTO opcode 0x80. Both variants use Python pickle which allows arbitrary code execution — this is the primary security concern. The ZIP variant is produced by torch.save() since PyTorch 1.6+.",
+    "suggestedInspections": [
+      "Check first 4 bytes to distinguish ZIP variant (PK\\x03\\x04) from legacy pickle variant (0x80 + protocol byte).",
+      "For ZIP variant: list all ZIP entries and verify expected structure (archive/data.pkl, archive/data/N, archive/version).",
+      "Scan the pickle stream for dangerous opcodes: GLOBAL (0x63), INST (0x69), STACK_GLOBAL (0x93) that import Python modules.",
+      "Check archive/version content to identify the PyTorch serialization format version (1, 2, or 3).",
+      "Estimate model parameter count from total tensor buffer sizes and assumed dtype (float32 = 4 bytes/param, float16 = 2 bytes/param).",
+      "For security auditing: use fickling or picklescan to decompile the pickle bytecode and detect malicious payloads before loading with torch.load()."
+    ]
+  },
+
+  "TechnicalDetails": {
+    "specification": "PyTorch serialization: pytorch.org/docs/stable/notes/serialization.html; Python pickle: docs.python.org/3/library/pickle.html; ZIP format: pkware.cachefly.net/webdocs/casestudies/APPNOTE.TXT",
+    "endianness": "little-endian (ZIP headers); pickle uses platform-native byte order for some data types",
+    "serializationFormat": "ZIP container with Python pickle + raw tensor buffers",
+    "securityRisk": "CRITICAL — Python pickle allows arbitrary code execution. Malicious .pt files can execute os.system(), install backdoors, or exfiltrate data when loaded with torch.load(). Always use weights_only=True or migrate to SafeTensors format.",
+    "serializationVersions": {
+      "v1": "Legacy raw pickle stream (pre-PyTorch 1.6)",
+      "v2": "ZIP container with mmap support (PyTorch 1.6+)",
+      "v3": "Current default ZIP format (PyTorch 2.0+)"
+    },
+    "notes": "PyTorch 2.0+ defaults to weights_only=False for backward compatibility but warns about security. The torch.load(weights_only=True) flag restricts unpickling to tensor-safe types only. Full migration to SafeTensors is the recommended security mitigation."
+  },
+
+  "QualityMetrics": {
+    "CompletenessScore": 92,
+    "DocumentationLevel": "comprehensive",
+    "BlocksDefined": 7,
+    "ValidationRules": 4,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": true,
+    "AutoRefined": false
+  }
+}

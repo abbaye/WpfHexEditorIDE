@@ -100,6 +100,9 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IBufferAw
     {
         InitializeComponent();
 
+        ScrollView.Loaded      += (_, _) => InvalidateViewportSize();
+        ScrollView.SizeChanged += (_, _) => InvalidateViewportSize();
+
         // Wire ViewModel
         Viewport.Attach(_vm);
         _vm.PropertyChanged += OnVmPropertyChanged;
@@ -336,7 +339,30 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IBufferAw
             ScrollView.HorizontalScrollBarVisibility = value
                 ? ScrollBarVisibility.Disabled
                 : ScrollBarVisibility.Auto;
+            // Star column: ScrollViewer passes finite viewport width to MeasureOverride.
+            // Auto column: content drives horizontal extent (required for horizontal scroll).
+            ViewportGridColumn.Width = value
+                ? new GridLength(1, GridUnitType.Star)
+                : GridLength.Auto;
         }
+    }
+
+    /// <summary>
+    /// Deferred viewport sync — schedules a layout-priority callback that reads
+    /// the ScrollViewer's finalized ViewportWidth/Height and resizes the rendering surface.
+    /// Call after any external layout change (grid rebuild, splitter drag, initial open).
+    /// </summary>
+    public void InvalidateViewportSize()
+    {
+        Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Loaded, () =>
+        {
+            if (Viewport.LineHeight <= 0) return;
+            ViewportGrid.MinWidth = ScrollView.ViewportWidth;
+            if (!Viewport.IsWordWrapEnabled)
+                Viewport.Width = Math.Max(Viewport.EstimatedMaxWidth, ScrollView.ViewportWidth);
+            Viewport.Height = Math.Max(Viewport.TotalHeight + Viewport.LineHeight, ScrollView.ViewportHeight);
+            Viewport.InvalidateVisual();
+        });
     }
 
     // -----------------------------------------------------------------------
@@ -419,12 +445,7 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IBufferAw
     }
 
     /// <inheritdoc/>
-    public void Save()
-    {
-        if (string.IsNullOrEmpty(_vm.FilePath)) return;
-        _vm.SaveFileAsync(_vm.FilePath).GetAwaiter().GetResult();
-        StatusMessage?.Invoke(this, $"Saved: {Path.GetFileName(_vm.FilePath)}");
-    }
+    public void Save() => _ = SaveAsync();
 
     /// <inheritdoc/>
     public async Task SaveAsync(CancellationToken ct = default)
@@ -879,11 +900,15 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IBufferAw
         Viewport.FirstVisibleLine   = firstLine;
         Viewport.HorizontalOffset   = e.HorizontalOffset;
 
-        // Adjust the viewport dimensions to fill the scroll area.
-        // Word wrap: clamp width to viewport (no horizontal extent needed).
-        Viewport.Width  = Viewport.IsWordWrapEnabled
-            ? ScrollView.ViewportWidth
-            : Math.Max(Viewport.EstimatedMaxWidth, ScrollView.ViewportWidth);
+        // Keep the inner grid at least as wide as the visible viewport so the
+        // background fills the full pane after a resize (avoids empty strip on the right).
+        ViewportGrid.MinWidth = ScrollView.ViewportWidth;
+
+        // Word wrap: column is Width="*" so WPF passes the correct finite viewport width
+        // through MeasureOverride automatically — no explicit Width needed.
+        // No-wrap: explicit Width provides the horizontal scroll extent.
+        if (!Viewport.IsWordWrapEnabled)
+            Viewport.Width = Math.Max(Viewport.EstimatedMaxWidth, ScrollView.ViewportWidth);
         Viewport.Height = Math.Max(Viewport.TotalHeight + Viewport.LineHeight, ScrollView.ViewportHeight);
 
         ViewportScrollChanged?.Invoke(this, e);

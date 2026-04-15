@@ -1,0 +1,291 @@
+{
+  "diffMode": "binary",
+  "formatName": ".NET EventPipe Trace (NetTrace)",
+  "version": "1.0",
+  "extensions": [ ".nettrace" ],
+  "description": "EventPipe diagnostic trace file produced by the .NET runtime; starts with the magic string '!FastSerialization.1' followed by a null byte and a stream of tagged serialization objects including MetadataBlocks, EventBlocks, StackBlocks, and SequencePointBlocks.",
+  "category": "Programming",
+  "author": "WPFHexaEditor Team",
+  "MimeTypes": [ "application/octet-stream", "application/x-nettrace" ],
+  "UseCases": [
+    ".NET runtime CPU sampling and performance profiling",
+    "GC allocation and garbage collection event analysis",
+    "Thread contention and lock analysis in managed code",
+    "EventSource / EventCounter data collection",
+    "PerfView, dotnet-trace, and Visual Studio profiler trace files"
+  ],
+  "software": [
+    { "name": "dotnet-trace",                   "role": "producer" },
+    { "name": "Visual Studio Profiler",         "role": "producer/consumer" },
+    { "name": "PerfView",                       "role": "consumer" },
+    { "name": "SpeedScope (via conversion)",    "role": "consumer" },
+    { "name": "Microsoft.Diagnostics.Tracing.TraceEvent", "role": "consumer" }
+  ],
+  "formatRelationships": {
+    "relatedFormats": [ "ETL (.etl)", ".diagsession (ZIP container)", "Speedscope JSON", "Firefox Profiler JSON" ],
+    "container": null,
+    "notes": "NetTrace files use FastSerialization, a custom .NET binary serialization format. They are also embedded in .diagsession ZIP containers produced by Visual Studio."
+  },
+
+  "detection": {
+    "signatures": [
+      {
+        "value": "2146617374536572",
+        "offset": 0,
+        "label": "!FastSerialization.1 — first 8 bytes of ASCII magic",
+        "weight": 60,
+        "required": true
+      },
+      {
+        "value": "69616C697A6174696F6E2E31",
+        "offset": 8,
+        "label": "Continuation of !FastSerialization.1 — 'ialization.1'",
+        "weight": 20,
+        "required": false
+      },
+      {
+        "value": "00",
+        "offset": 20,
+        "label": "Null terminator after magic string",
+        "weight": 10,
+        "required": false
+      }
+    ],
+    "matchMode": "weighted",
+    "MinimumScore": 60,
+    "Strength": "Strong",
+    "EntropyHint": {
+      "min": 4.0,
+      "max": 7.5,
+      "note": "Event payload blocks are often compressed (LZ4 in v4+); compressed blocks approach entropy 7.5. Metadata blocks with type names have lower entropy."
+    },
+    "validation": {
+      "expression": "STRING_ASCII(0, 20) == '!FastSerialization.1'",
+      "description": "The first 20 bytes must be the ASCII string '!FastSerialization.1' to confirm this is a .NET EventPipe NetTrace file."
+    }
+  },
+
+  "variables": {
+    "magic":            { "offset": 0,  "length": 20, "type": "ascii"  },
+    "nullTerminator":   { "offset": 20, "length": 1,  "type": "uint8"  },
+    "firstObjectType":  { "offset": 21, "length": 1,  "type": "uint8"  },
+    "traceObjectTag":   { "offset": 22, "length": 1,  "type": "uint8"  }
+  },
+
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "FastSerialization Magic",
+      "offset": 0,
+      "length": 20,
+      "color": "#880E4F",
+      "opacity": 0.9,
+      "description": "20-byte ASCII magic string '!FastSerialization.1' (0x21 0x46 0x61 0x73 0x74 0x53 0x65 0x72 0x69 0x61 0x6C 0x69 0x7A 0x61 0x74 0x69 0x6F 0x6E 0x2E 0x31) uniquely identifying this as a .NET EventPipe NetTrace file.",
+      "storeAs": "magic",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Null Terminator",
+      "offset": 20,
+      "length": 1,
+      "color": "#AD1457",
+      "opacity": 0.5,
+      "description": "Single null byte (0x00) terminating the magic string in the FastSerialization stream header; its presence confirms the stream was written correctly by the .NET runtime EventPipe writer.",
+      "storeAs": "nullTerminator",
+      "valueType": "uint8"
+    },
+    {
+      "type": "field",
+      "name": "First Object Type Tag",
+      "offset": 21,
+      "length": 1,
+      "color": "#C2185B",
+      "opacity": 0.75,
+      "description": "FastSerialization object type tag for the first object in the stream; expected to be the BeginPrivateObject tag (0x05) indicating the start of the Trace object with format version and timestamp information.",
+      "storeAs": "firstObjectType",
+      "valueType": "uint8",
+      "valueMap": {
+        "1":  "NullReference — null object sentinel",
+        "2":  "BeginObject — start of a named serialized object",
+        "3":  "EndObject — end of current object scope",
+        "4":  "ForwardReference — reference to a previously defined object",
+        "5":  "BeginPrivateObject — start of an anonymous private object (Trace, MetadataBlock, etc.)",
+        "6":  "EndPrivateObject — end of private object scope",
+        "7":  "ForwardDefinition — forward-declares a reference"
+      }
+    },
+    {
+      "type": "metadata",
+      "name": "Trace Object",
+      "offset": 22,
+      "length": "variable",
+      "color": "#E91E63",
+      "opacity": 0.7,
+      "description": "FastSerialization Trace header object containing: format version (int32), minimum reader version (int32), synchronization clock timestamp (int64), wall clock timestamp (SystemTime), trace file path, OS, architecture, and pointer size."
+    },
+    {
+      "type": "repeating",
+      "name": "MetadataBlock Objects",
+      "offset": "variable",
+      "length": "variable",
+      "color": "#9C27B0",
+      "opacity": 0.65,
+      "description": "Variable-count sequence of MetadataBlock objects each describing an event provider GUID, event ID, event name, and field schema used to decode subsequent EventBlock payloads."
+    },
+    {
+      "type": "repeating",
+      "name": "EventBlock Objects",
+      "offset": "variable",
+      "length": "variable",
+      "color": "#7B1FA2",
+      "opacity": 0.6,
+      "description": "Compressed or uncompressed EventBlock objects each containing a batch of runtime events with timestamps, provider references, thread IDs, activity IDs, and variable-length event payload data."
+    },
+    {
+      "type": "repeating",
+      "name": "StackBlock Objects",
+      "offset": "variable",
+      "length": "variable",
+      "color": "#6A1B9A",
+      "opacity": 0.55,
+      "description": "StackBlock objects (introduced in NetTrace v3) containing arrays of call stack frames referenced by stack ID from EventBlock entries; each frame is a 64-bit instruction pointer."
+    },
+    {
+      "type": "repeating",
+      "name": "SequencePointBlock Objects",
+      "offset": "variable",
+      "length": "variable",
+      "color": "#4A148C",
+      "opacity": 0.55,
+      "description": "SequencePointBlock objects (NetTrace v4+, .NET 6+) providing synchronization checkpoints with absolute timestamps; enable partial trace parsing and crash recovery from incomplete files."
+    },
+    {
+      "type": "field",
+      "name": "Stream Terminator (NullReference)",
+      "offset": "end-1",
+      "length": 1,
+      "color": "#CE93D8",
+      "opacity": 0.5,
+      "description": "Single NullReference tag byte (0x01) at the end of the FastSerialization stream indicating no more objects follow; its absence indicates a truncated or incomplete NetTrace file."
+    }
+  ],
+
+  "assertions": [
+    {
+      "name": "ValidMagicString",
+      "expression": "BYTES(0, 20) == [0x21,0x46,0x61,0x73,0x74,0x53,0x65,0x72,0x69,0x61,0x6C,0x69,0x7A,0x61,0x74,0x69,0x6F,0x6E,0x2E,0x31]",
+      "severity": "error",
+      "message": "The 20-byte magic '!FastSerialization.1' is not present at offset 0; this is not a valid .NET EventPipe NetTrace file."
+    },
+    {
+      "name": "NullTerminatorPresent",
+      "expression": "UINT8(20) == 0x00",
+      "severity": "error",
+      "message": "Null terminator missing at offset 20; the FastSerialization magic string must be null-terminated."
+    },
+    {
+      "name": "FirstObjectIsPrivate",
+      "expression": "UINT8(21) == 0x05",
+      "severity": "warning",
+      "message": "First object type tag at offset 21 is not BeginPrivateObject (0x05); the Trace header object may be missing or the file format version is unrecognized."
+    },
+    {
+      "name": "FileSizeMinimum",
+      "expression": "FILE_SIZE >= 64",
+      "severity": "error",
+      "message": "File is too small (< 64 bytes) to contain a valid NetTrace header; file may be empty or severely truncated."
+    },
+    {
+      "name": "FileSizeReasonable",
+      "expression": "FILE_SIZE >= 200",
+      "severity": "info",
+      "message": "File is very small for a NetTrace; a valid trace with at least one event is typically several kilobytes. The file may be an empty trace or a test artifact."
+    }
+  ],
+
+  "navigation": {
+    "bookmarks": [
+      { "name": "FastSerialization Magic", "offset": 0,  "description": "'!FastSerialization.1' ASCII magic — 20 bytes" },
+      { "name": "Null Terminator",         "offset": 20, "description": "Magic string null terminator (0x00)" },
+      { "name": "First Object Tag",        "offset": 21, "description": "BeginPrivateObject tag (0x05) for Trace header object" },
+      { "name": "Trace Header Object",     "offset": 22, "description": "Trace object: format version, timestamps, OS info" }
+    ]
+  },
+
+  "inspector": {
+    "badge": "TRACE",
+    "primaryField": "magic",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "name": "File Header",
+        "fields": [ "magic", "nullTerminator", "firstObjectType" ]
+      },
+      {
+        "name": "Trace Object",
+        "fields": [ "traceObjectTag" ]
+      }
+    ]
+  },
+
+  "exportTemplates": [
+    {
+      "name": "NetTrace Header Summary",
+      "format": "text",
+      "template": ".NET EventPipe NetTrace\n  Magic          : {magic}\n  First Object   : {firstObjectType} ({firstObjectType_mapped})\n  Format         : FastSerialization v1"
+    },
+    {
+      "name": "NetTrace JSON Report",
+      "format": "json",
+      "template": "{ \"format\": \"NetTrace\", \"magic\": \"{magic}\", \"firstObjectType\": {firstObjectType} }"
+    }
+  ],
+
+  "forensic": {
+    "category": "DiagnosticArtifact",
+    "riskLevel": "medium",
+    "suspiciousPatterns": [
+      { "pattern": "SensitiveStringInTrace",    "description": "EventBlock payloads may contain environment variable values, file paths, and command-line arguments captured during profiling." },
+      { "pattern": "HeapSnapshotData",          "description": "GC heap dump events captured in trace may contain application data including strings and object graphs." },
+      { "pattern": "TruncatedTrace",            "description": "Missing NullReference terminator indicates abnormal process termination; events between last SequencePoint and end of file may be incomplete." },
+      { "pattern": "ExceptionEventChain",       "description": "Sequences of Exception events can reveal internal application error handling paths and sensitive operation context." }
+    ]
+  },
+
+  "aiHints": {
+    "analysisContext": "NetTrace files use .NET FastSerialization, a custom tagged binary protocol. The format streams objects of 5 types: Trace (header), MetadataBlock (event schemas), EventBlock (event batches, optionally LZ4-compressed), StackBlock (call stacks), and SequencePointBlock (checkpoints). Format version in the Trace object determines available block types: v1=.NET Core 2.1, v2=.NET Core 3.0, v3=.NET 5, v4=.NET 6+ (SequencePointBlocks), v5=.NET 8+.",
+    "suggestedInspections": [
+      "Verify the Trace object format version to identify the originating .NET runtime version and available block types.",
+      "Count MetadataBlock entries to enumerate all event providers and event IDs captured in this trace.",
+      "Check for LZ4 compression flag in EventBlock headers — compressed blocks require decompression before event parsing.",
+      "Locate SequencePointBlock entries (v4+ only) to identify safe restart points for partial trace parsing.",
+      "Cross-reference stack frames in StackBlock with module load events to resolve instruction pointers to method names.",
+      "Look for Microsoft-Windows-DotNETRuntime provider events to find GC, JIT, exception, and thread events."
+    ]
+  },
+
+  "TechnicalDetails": {
+    "specification": "Microsoft EventPipe format specification: github.com/microsoft/perfview/blob/main/src/TraceEvent/EventPipe/EventPipeFormat.md; FastSerialization: github.com/microsoft/perfview/blob/main/src/FastSerialization/FastSerialization.md",
+    "endianness": "little-endian",
+    "compressionScheme": "EventBlock payloads optionally LZ4-compressed in NetTrace v4+ (.NET 6+)",
+    "formatVersions": {
+      "v1": ".NET Core 2.1 — initial EventPipe format",
+      "v2": ".NET Core 3.0 — improved metadata",
+      "v3": ".NET 5 — StackBlock support",
+      "v4": ".NET 6 — SequencePointBlock, LZ4 compression",
+      "v5": ".NET 8 — additional block types and metadata improvements"
+    },
+    "notes": "The magic '!FastSerialization.1' is also used by other FastSerialization-based formats (e.g., PerfView .perfview.zip internal files) but the .nettrace extension and Trace object structure distinguish EventPipe files."
+  },
+
+  "QualityMetrics": {
+    "CompletenessScore": 91,
+    "DocumentationLevel": "comprehensive",
+    "BlocksDefined": 9,
+    "ValidationRules": 5,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": true,
+    "AutoRefined": false
+  }
+}

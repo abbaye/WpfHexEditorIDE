@@ -35,7 +35,7 @@ public sealed class CodeEditorFactory : IEditorFactory
     public bool CanOpen(string filePath)
     {
         var ext = Path.GetExtension(filePath)?.ToLowerInvariant();
-        if (ext is ".json" or ".whfmt" or ".whjson" or ".whlang") return true;
+        if (ext is ".json" or ".whjson" or ".whlang") return true;
 
         // EditorHint fast-path: language definition carries the preferred editor hint
         // populated from the parent .whfmt "preferredEditor" field.  O(1) after registry warmup.
@@ -172,5 +172,5 @@ file sealed class CodeEditorDescriptor : IEditorDescriptor
     public string Id          => "code-editor";
     public string DisplayName => "Code Editor";
     public string Description => "Multi-language code editor (JSON, .whlang, and any registered language)";
-    public IReadOnlyList<string> SupportedExtensions => [".json", ".whfmt", ".whjson", ".whlang"];
+    public IReadOnlyList<string> SupportedExtensions => [".json", ".whjson", ".whlang"];
 }

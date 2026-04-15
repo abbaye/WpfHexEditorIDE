@@ -1,0 +1,529 @@
+{
+  "diffMode": "binary",
+  "formatName": "Game Boy Color ROM",
+  "version": "1.0",
+  "extensions": [
+    ".gbc"
+  ],
+  "description": "Game Boy Color ROM images (.gbc) contain full cartridge data for the GBC handheld (1998) with MBC banking, double-speed CPU, and extended VRAM/WRAM",
+  "category": "Game",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "references": {
+    "specifications": [
+      "Pan Docs - Game Boy Technical Reference",
+      "Game Boy CPU Manual",
+      "Game Boy Color Cartridge Header Format"
+    ],
+    "WebLinks": [
+      "https://gbdev.io/pandocs/The_Cartridge_Header.html",
+      "https://gbdev.io/pandocs/",
+      "https://en.wikipedia.org/wiki/Game_Boy_Color",
+      "https://gekkio.fi/files/gb-docs/gbctr.pdf"
+    ]
+  },
+  "detection": {
+    "required": true,
+    "validation": {
+      "minFileSize": 336,
+      "maxSignatureOffset": 264
+    },
+    "signatures": [
+      {
+        "value": "CEED6666",
+        "offset": 260,
+        "label": "Nintendo Logo start at offset 0x104 (identical across all licensed GB/GBC ROMs)",
+        "weight": 0.9
+      }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.9,
+    "Strength": "Strong",
+    "EntropyHint": {
+      "min": 3.0,
+      "max": 6.5
+    }
+  },
+  "variables": {
+    "currentOffset": 0,
+    "entryPoint": 0,
+    "nintendoLogo": "",
+    "title": "",
+    "manufacturerCode": "",
+    "cgbFlag": 0,
+    "newLicenseeCode": "",
+    "sgbFlag": 0,
+    "cartridgeType": 0,
+    "romSize": 0,
+    "ramSize": 0,
+    "destinationCode": 0,
+    "oldLicenseeCode": 0,
+    "maskRomVersion": 0,
+    "headerChecksum": 0,
+    "globalChecksum": 0
+  },
+  "blocks": [
+    {
+      "type": "field",
+      "name": "Entry Point",
+      "offset": 256,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "storeAs": "entryPoint",
+      "description": "Boot entry point (typically NOP + JP $0150 = 00 C3 50 01)"
+    },
+    {
+      "type": "signature",
+      "name": "Nintendo Logo",
+      "offset": 260,
+      "length": 48,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "Nintendo bootrom logo bitmap (48 bytes, must match exactly or boot ROM rejects cartridge)",
+      "storeAs": "nintendoLogo",
+      "valueType": "bytes"
+    },
+    {
+      "type": "field",
+      "name": "Title",
+      "offset": 308,
+      "length": 11,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "valueType": "ascii",
+      "storeAs": "title",
+      "description": "Game title in ASCII (null-padded, 11 bytes for GBC-era titles)"
+    },
+    {
+      "type": "field",
+      "name": "Manufacturer Code",
+      "offset": 319,
+      "length": 4,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "valueType": "ascii",
+      "storeAs": "manufacturerCode",
+      "description": "4-character manufacturer code (GBC-era games only)"
+    },
+    {
+      "type": "field",
+      "name": "CGB Flag",
+      "offset": 323,
+      "length": 1,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "valueType": "uint8",
+      "storeAs": "cgbFlag",
+      "description": "0x80=GBC compatible (also runs on DMG), 0xC0=GBC only, 0x00=DMG only",
+      "valueMap": {
+        "0": "DMG only (not GBC)",
+        "128": "GBC compatible (also runs on original Game Boy)",
+        "192": "GBC only (does not run on DMG)"
+      },
+      "validationRules": {
+        "allowedValues": [0, 128, 192]
+      }
+    },
+    {
+      "type": "field",
+      "name": "New Licensee Code",
+      "offset": 324,
+      "length": 2,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "valueType": "ascii",
+      "storeAs": "newLicenseeCode",
+      "description": "2-character licensee code (used when old licensee code = 0x33)"
+    },
+    {
+      "type": "field",
+      "name": "SGB Flag",
+      "offset": 326,
+      "length": 1,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "valueType": "uint8",
+      "storeAs": "sgbFlag",
+      "description": "0x03=Super Game Boy functions supported, 0x00=no SGB"
+    },
+    {
+      "type": "field",
+      "name": "Cartridge Type",
+      "offset": 327,
+      "length": 1,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "valueType": "uint8",
+      "storeAs": "cartridgeType",
+      "description": "Memory Bank Controller type and features",
+      "valueMap": {
+        "0": "ROM Only",
+        "1": "MBC1",
+        "2": "MBC1+RAM",
+        "3": "MBC1+RAM+Battery",
+        "5": "MBC2",
+        "6": "MBC2+Battery",
+        "15": "MBC3+Timer+Battery",
+        "16": "MBC3+Timer+RAM+Battery",
+        "17": "MBC3",
+        "18": "MBC3+RAM",
+        "19": "MBC3+RAM+Battery",
+        "25": "MBC5",
+        "26": "MBC5+RAM",
+        "27": "MBC5+RAM+Battery",
+        "28": "MBC5+Rumble",
+        "29": "MBC5+Rumble+RAM",
+        "30": "MBC5+Rumble+RAM+Battery",
+        "32": "MBC6",
+        "34": "MBC7+Sensor+Rumble+RAM+Battery",
+        "252": "Pocket Camera",
+        "253": "Bandai TAMA5",
+        "254": "HuC3",
+        "255": "HuC1+RAM+Battery"
+      }
+    },
+    {
+      "type": "field",
+      "name": "ROM Size",
+      "offset": 328,
+      "length": 1,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "valueType": "uint8",
+      "storeAs": "romSize",
+      "description": "ROM size code (actual size = 32KB << value)",
+      "valueMap": {
+        "0": "32KB (2 banks)",
+        "1": "64KB (4 banks)",
+        "2": "128KB (8 banks)",
+        "3": "256KB (16 banks)",
+        "4": "512KB (32 banks)",
+        "5": "1MB (64 banks)",
+        "6": "2MB (128 banks)",
+        "7": "4MB (256 banks)",
+        "8": "8MB (512 banks)"
+      },
+      "validationRules": {
+        "min": 0,
+        "max": 8
+      }
+    },
+    {
+      "type": "field",
+      "name": "RAM Size",
+      "offset": 329,
+      "length": 1,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "valueType": "uint8",
+      "storeAs": "ramSize",
+      "description": "External RAM size code",
+      "valueMap": {
+        "0": "None",
+        "1": "Unused",
+        "2": "8KB (1 bank)",
+        "3": "32KB (4 banks)",
+        "4": "128KB (16 banks)",
+        "5": "64KB (8 banks)"
+      },
+      "validationRules": {
+        "min": 0,
+        "max": 5
+      }
+    },
+    {
+      "type": "field",
+      "name": "Destination Code",
+      "offset": 330,
+      "length": 1,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "valueType": "uint8",
+      "storeAs": "destinationCode",
+      "description": "0x00=Japan, 0x01=International (non-Japan)",
+      "valueMap": {
+        "0": "Japan",
+        "1": "International (non-Japan)"
+      },
+      "validationRules": {
+        "allowedValues": [0, 1]
+      }
+    },
+    {
+      "type": "field",
+      "name": "Old Licensee Code",
+      "offset": 331,
+      "length": 1,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "valueType": "uint8",
+      "storeAs": "oldLicenseeCode",
+      "description": "Old licensee code (0x33 = use new licensee code at 0x144)"
+    },
+    {
+      "type": "field",
+      "name": "Mask ROM Version",
+      "offset": 332,
+      "length": 1,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "valueType": "uint8",
+      "storeAs": "maskRomVersion",
+      "description": "Game revision number (usually 0x00)"
+    },
+    {
+      "type": "field",
+      "name": "Header Checksum",
+      "offset": 333,
+      "length": 1,
+      "color": "#FF6B9D",
+      "opacity": 0.3,
+      "valueType": "uint8",
+      "storeAs": "headerChecksum",
+      "description": "8-bit checksum: x=0; for i=0x134..0x14C: x=x-mem[i]-1; lower 8 bits"
+    },
+    {
+      "type": "field",
+      "name": "Global Checksum",
+      "offset": 334,
+      "length": 2,
+      "color": "#FF6B9D",
+      "opacity": 0.3,
+      "valueType": "uint16",
+      "storeAs": "globalChecksum",
+      "description": "16-bit big-endian sum of all ROM bytes except 0x14E-0x14F (not verified by hardware)"
+    },
+    {
+      "type": "metadata",
+      "name": "Format",
+      "variable": "title",
+      "description": "Game Title"
+    },
+    {
+      "type": "metadata",
+      "name": "CGB Mode",
+      "variable": "cgbFlag",
+      "description": "CGB Compatibility Flag"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "Nintendo Logo signature valid",
+      "expression": "nintendoLogo[0..4] == 0xCEED6666",
+      "severity": "error",
+      "message": "Nintendo Logo at offset 0x104 must start with bytes CE ED 66 66"
+    },
+    {
+      "name": "CGB flag indicates Game Boy Color",
+      "expression": "cgbFlag == 128 || cgbFlag == 192",
+      "severity": "warning",
+      "message": "CGB flag is 0x00 (DMG only, not a GBC ROM); expected 0x80 (compatible) or 0xC0 (GBC only)"
+    },
+    {
+      "name": "Cartridge type is recognized MBC",
+      "expression": "cartridgeType <= 34 || cartridgeType >= 252",
+      "severity": "warning",
+      "message": "Cartridge type value does not match a known Memory Bank Controller type"
+    },
+    {
+      "name": "ROM size code within valid range",
+      "expression": "romSize >= 0 && romSize <= 8",
+      "severity": "error",
+      "message": "ROM size code must be 0-8 (32KB to 8MB)"
+    }
+  ],
+  "inspector": {
+    "badge": "title",
+    "primaryField": "cgbFlag",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "Game Identity",
+        "icon": "game",
+        "fields": [
+          "title",
+          "manufacturerCode",
+          "cgbFlag",
+          "destinationCode"
+        ]
+      },
+      {
+        "title": "Cartridge Hardware",
+        "icon": "chip",
+        "fields": [
+          "cartridgeType",
+          "romSize",
+          "ramSize",
+          "sgbFlag"
+        ]
+      },
+      {
+        "title": "Licensing",
+        "icon": "info",
+        "fields": [
+          "newLicenseeCode",
+          "oldLicenseeCode",
+          "maskRomVersion"
+        ]
+      },
+      {
+        "title": "Verification",
+        "icon": "checksum",
+        "fields": [
+          "entryPoint",
+          "nintendoLogo",
+          "headerChecksum",
+          "globalChecksum"
+        ]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "GBC Header (JSON)",
+      "format": "json",
+      "fields": [
+        "title",
+        "manufacturerCode",
+        "cgbFlag",
+        "cartridgeType",
+        "romSize",
+        "ramSize",
+        "destinationCode",
+        "headerChecksum",
+        "globalChecksum"
+      ]
+    },
+    {
+      "name": "GBC Summary (CSV)",
+      "format": "csv",
+      "fields": [
+        "title",
+        "cgbFlag",
+        "cartridgeType",
+        "romSize",
+        "ramSize",
+        "destinationCode"
+      ]
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      {
+        "name": "Entry Point",
+        "offset": 256,
+        "icon": "code"
+      },
+      {
+        "name": "Nintendo Logo",
+        "offset": 260,
+        "icon": "signature"
+      },
+      {
+        "name": "Game Title",
+        "offset": 308,
+        "icon": "text"
+      },
+      {
+        "name": "CGB Flag",
+        "offset": 323,
+        "icon": "flag"
+      },
+      {
+        "name": "Cartridge Type",
+        "offset": 327,
+        "icon": "chip"
+      },
+      {
+        "name": "Header Checksum",
+        "offset": 333,
+        "icon": "checksum"
+      }
+    ]
+  },
+  "software": [
+    "BGB (GBC emulator and debugger)",
+    "Gambatte (accurate GBC emulator)",
+    "mGBA (multi-platform GB/GBC/GBA emulator)",
+    "SameBoy (accurate GB/GBC emulator)",
+    "RGBDS (Game Boy assembler toolchain)"
+  ],
+  "formatRelationships": {
+    "category": "Game",
+    "extensions": [
+      ".gbc"
+    ],
+    "relatedFormats": [
+      "ROM_GB"
+    ]
+  },
+  "MimeTypes": [
+    "application/x-gameboy-color-rom"
+  ],
+  "Software": [
+    "BGB (GBC emulator and debugger)",
+    "Gambatte (accurate GBC emulator)",
+    "mGBA (multi-platform GB/GBC/GBA emulator)",
+    "SameBoy (accurate GB/GBC emulator)",
+    "RGBDS (Game Boy assembler toolchain)"
+  ],
+  "UseCases": [
+    "GBC game emulation and testing",
+    "ROM hacking (Pokemon Crystal, Zelda DX, etc.)",
+    "Homebrew development with RGBDS toolchain",
+    "Game preservation and archival"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 92,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 17,
+    "ValidationRules": 4,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": true,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "endianness": "little",
+    "processor": "Sharp LR35902 (Z80-like) at 4.19MHz normal / 8.39MHz double-speed (GBC)",
+    "memoryMap": "32KB ROM (0x0000-0x7FFF) + switchable banks via MBC; 8KB VRAM (2 banks GBC); 8KB WRAM (8 banks GBC)",
+    "display": "160x144 pixels, up to 56 colors on screen simultaneously (GBC palette)",
+    "gbcEnhancements": "Double-speed CPU mode, extra VRAM bank, 7 extra WRAM banks, DMA improvements, infrared communication",
+    "bootValidation": "Nintendo Logo at 0x104 is checked by boot ROM — invalid logo = cartridge rejected by hardware",
+    "checksumAlgorithm": "Header: x=0; for i=0x134..0x14C: x=x-mem[i]-1. Global: 16-bit BE sum of all bytes except 0x14E-0x14F",
+    "mbcBanking": "MBC1/MBC3/MBC5 provide ROM banking (up to 8MB) and optional RAM banking with battery backup"
+  },
+  "forensic": {
+    "category": "game",
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      {
+        "name": "Invalid Nintendo Logo",
+        "description": "Nintendo Logo bytes at 0x104 do not match expected values, indicating a homebrew or corrupted ROM",
+        "condition": "nintendoLogo[0..4] != 0xCEED6666"
+      },
+      {
+        "name": "Header checksum mismatch",
+        "description": "Header checksum at 0x14D does not match computed value over 0x134-0x14C, indicating modification",
+        "condition": "headerChecksum == 0"
+      }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "Game Boy Color ROM cartridge with Sharp LR35902 CPU, MBC memory banking, and hardware boot ROM validation",
+    "suggestedInspections": [
+      "Verify Nintendo Logo at offset 0x104 matches the fixed 48-byte bitmap (first 4 bytes: CE ED 66 66)",
+      "Check CGB flag at 0x143 to confirm GBC compatibility (0x80=compatible, 0xC0=GBC only)",
+      "Validate cartridge type byte against known MBC types to determine banking and feature support",
+      "Inspect ROM/RAM size codes and verify actual file size matches expected ROM size (32KB << romSize)",
+      "Compute header checksum over bytes 0x134-0x14C and compare with stored value at 0x14D",
+      "Examine entry point at 0x100 for expected NOP+JP pattern (00 C3 50 01)"
+    ]
+  },
+  "functions": {
+    "readUInt8": "Read 8-bit header fields (flags, checksums, size codes)",
+    "readUInt16BE": "Read big-endian 16-bit global checksum",
+    "extractASCIIString": "Read game title and licensee codes"
+  }
+}

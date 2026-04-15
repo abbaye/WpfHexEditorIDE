@@ -15,6 +15,8 @@ using System.Text.Json.Serialization;
 using System.Windows.Threading;
 using WpfHexEditor.Core.FormatDetection;
 using WpfHexEditor.Core.ViewModels;
+using WpfHexEditor.Editor.Core;
+using WpfHexEditor.Editor.Core.Validation;
 
 namespace WpfHexEditor.Editor.StructureEditor.ViewModels;
 

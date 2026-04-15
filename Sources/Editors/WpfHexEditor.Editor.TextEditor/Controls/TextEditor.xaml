@@ -27,10 +27,12 @@
                       Focusable="False"
                       Background="{DynamicResource TE_Background}"
                       ScrollChanged="ScrollView_ScrollChanged">
-            <Grid>
-                <!-- Minimum width so horizontal scrollbar appears -->
+            <Grid x:Name="ViewportGrid">
+                <!-- Auto column for no-wrap (content drives horizontal extent).
+                     Switched to * in code-behind when word wrap is on so MeasureOverride
+                     receives a finite available width instead of infinity. -->
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition x:Name="ViewportGridColumn" Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <local:TextViewport x:Name="Viewport"
                                     HorizontalAlignment="Stretch"

@@ -1,0 +1,450 @@
+{
+  "diffMode": "binary",
+  "formatName": "QCOW2 Virtual Disk",
+  "version": "1.0",
+  "extensions": [
+    ".qcow2",
+    ".qcow"
+  ],
+  "description": "QEMU Copy-On-Write v2 virtual disk image format with snapshot and encryption support",
+  "category": "Disk",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "references": {
+    "specifications": [
+      "QCOW2 Image Format Specification",
+      "QEMU Block Layer Documentation",
+      "QCOW2 v3 Extended Header Format"
+    ],
+    "WebLinks": [
+      "https://en.wikipedia.org/wiki/Qcow",
+      "https://github.com/qemu/qemu/blob/master/docs/interop/qcow2.txt",
+      "https://formats.kaitai.io/qcow2/",
+      "https://www.qemu.org/docs/master/system/images.html"
+    ]
+  },
+  "detection": {
+    "required": true,
+    "validation": {
+      "minFileSize": 72,
+      "maxSignatureOffset": 0
+    },
+    "signatures": [
+      {
+        "value": "514649FB",
+        "offset": 0,
+        "label": "'QFI\\xFB' — QCOW2 container magic at offset 0",
+        "weight": 1.0
+      }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 1.0,
+    "Strength": "Strong",
+    "EntropyHint": {
+      "min": 1.0,
+      "max": 8.0
+    }
+  },
+  "variables": {
+    "currentOffset": 0,
+    "magic": 0,
+    "qcowVersion": 0,
+    "backingFileOffset": 0,
+    "backingFileSize": 0,
+    "clusterBits": 0,
+    "virtualSize": 0,
+    "cryptMethod": 0,
+    "l1Size": 0,
+    "l1TableOffset": 0,
+    "refcountTableOffset": 0,
+    "refcountTableClusters": 0,
+    "nbSnapshots": 0,
+    "snapshotsOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "QCOW2 Magic",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "QFI\\xFB magic signature (0x514649FB)",
+      "storeAs": "magic",
+      "valueType": "uint32",
+      "endianness": "big"
+    },
+    {
+      "type": "field",
+      "name": "Version",
+      "offset": 4,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "QCOW format version (2 or 3)",
+      "storeAs": "qcowVersion",
+      "valueType": "uint32",
+      "endianness": "big",
+      "valueMap": {
+        "2": "QCOW2",
+        "3": "QCOW2 v3 (extended features)"
+      }
+    },
+    {
+      "type": "field",
+      "name": "Backing File Offset",
+      "offset": 8,
+      "length": 8,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "description": "Offset to backing file name string (0 if no backing file)",
+      "storeAs": "backingFileOffset",
+      "valueType": "uint64",
+      "endianness": "big"
+    },
+    {
+      "type": "field",
+      "name": "Backing File Size",
+      "offset": 16,
+      "length": 4,
+      "color": "#A8E6CF",
+      "opacity": 0.3,
+      "description": "Length of the backing file name in bytes",
+      "storeAs": "backingFileSize",
+      "valueType": "uint32",
+      "endianness": "big"
+    },
+    {
+      "type": "field",
+      "name": "Cluster Bits",
+      "offset": 20,
+      "length": 4,
+      "color": "#FFD93D",
+      "opacity": 0.3,
+      "description": "Log2 of cluster size (typically 16 = 64KB clusters)",
+      "storeAs": "clusterBits",
+      "valueType": "uint32",
+      "endianness": "big"
+    },
+    {
+      "type": "field",
+      "name": "Virtual Size",
+      "offset": 24,
+      "length": 8,
+      "color": "#6C5CE7",
+      "opacity": 0.3,
+      "description": "Virtual disk size in bytes",
+      "storeAs": "virtualSize",
+      "valueType": "uint64",
+      "endianness": "big"
+    },
+    {
+      "type": "field",
+      "name": "Encryption Method",
+      "offset": 32,
+      "length": 4,
+      "color": "#E17055",
+      "opacity": 0.3,
+      "description": "Encryption method used for the image",
+      "storeAs": "cryptMethod",
+      "valueType": "uint32",
+      "endianness": "big",
+      "valueMap": {
+        "0": "None",
+        "1": "AES-128-CBC (deprecated)",
+        "2": "LUKS"
+      }
+    },
+    {
+      "type": "field",
+      "name": "L1 Table Size",
+      "offset": 36,
+      "length": 4,
+      "color": "#00B894",
+      "opacity": 0.3,
+      "description": "Number of entries in the active L1 table",
+      "storeAs": "l1Size",
+      "valueType": "uint32",
+      "endianness": "big"
+    },
+    {
+      "type": "field",
+      "name": "L1 Table Offset",
+      "offset": 40,
+      "length": 8,
+      "color": "#0984E3",
+      "opacity": 0.3,
+      "description": "Offset into the image file of the active L1 table",
+      "storeAs": "l1TableOffset",
+      "valueType": "uint64",
+      "endianness": "big"
+    },
+    {
+      "type": "field",
+      "name": "Refcount Table Offset",
+      "offset": 48,
+      "length": 8,
+      "color": "#FDCB6E",
+      "opacity": 0.3,
+      "description": "Offset into the image file of the refcount table",
+      "storeAs": "refcountTableOffset",
+      "valueType": "uint64",
+      "endianness": "big"
+    },
+    {
+      "type": "field",
+      "name": "Refcount Table Clusters",
+      "offset": 56,
+      "length": 4,
+      "color": "#E84393",
+      "opacity": 0.3,
+      "description": "Number of clusters occupied by the refcount table",
+      "storeAs": "refcountTableClusters",
+      "valueType": "uint32",
+      "endianness": "big"
+    },
+    {
+      "type": "field",
+      "name": "Number of Snapshots",
+      "offset": 60,
+      "length": 4,
+      "color": "#74B9FF",
+      "opacity": 0.3,
+      "description": "Number of snapshots contained in the image",
+      "storeAs": "nbSnapshots",
+      "valueType": "uint32",
+      "endianness": "big"
+    },
+    {
+      "type": "field",
+      "name": "Snapshots Offset",
+      "offset": 64,
+      "length": 8,
+      "color": "#A29BFE",
+      "opacity": 0.3,
+      "description": "Offset into the image file of the snapshot table",
+      "storeAs": "snapshotsOffset",
+      "valueType": "uint64",
+      "endianness": "big"
+    }
+  ],
+  "software": [
+    "QEMU (qemu-img)",
+    "libvirt",
+    "virt-manager"
+  ],
+  "formatRelationships": {
+    "category": "Disk",
+    "extensions": [
+      ".qcow2",
+      ".qcow"
+    ],
+    "relatedFormats": [
+      "VHD",
+      "VHDX",
+      "VMDK",
+      "VDI",
+      "RAW"
+    ]
+  },
+  "MimeTypes": [
+    "application/x-qemu-disk",
+    "application/octet-stream"
+  ],
+  "Software": [
+    "QEMU (qemu-img)",
+    "libvirt",
+    "virt-manager",
+    "VirtualBox (import)",
+    "guestfish (libguestfs)",
+    "nbdkit",
+    "qemu-nbd"
+  ],
+  "UseCases": [
+    "Virtual machine disk storage",
+    "Snapshot-based backup and rollback",
+    "Thin provisioning of virtual disks",
+    "Incremental disk image chains via backing files",
+    "Encrypted virtual disk images with LUKS",
+    "Forensic analysis of VM disk contents"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 90,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 13,
+    "ValidationRules": 5,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": true,
+    "AutoRefined": false
+  },
+  "forensic": {
+    "category": "disk",
+    "riskLevel": "medium",
+    "suspiciousPatterns": [
+      {
+        "name": "Encrypted QCOW2 image",
+        "description": "Image uses AES or LUKS encryption, contents not directly inspectable",
+        "condition": "cryptMethod > 0"
+      },
+      {
+        "name": "Backing file chain",
+        "description": "Image depends on an external backing file which may contain additional data",
+        "condition": "backingFileOffset > 0"
+      }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "QEMU Copy-On-Write v2 virtual disk image with two-level cluster lookup, reference counting, and optional encryption",
+    "suggestedInspections": [
+      "Verify QFI magic signature and QCOW version field for format integrity",
+      "Check cluster_bits value is within valid range (9-21) for sane cluster sizes",
+      "Inspect encryption method and warn if deprecated AES-128-CBC is in use",
+      "Examine backing file offset to detect snapshot chain dependencies",
+      "Validate L1 table offset and size for consistency with virtual disk size",
+      "Check refcount table integrity for leaked or corrupt clusters"
+    ]
+  },
+  "navigation": {
+    "bookmarks": [
+      {
+        "name": "QCOW2 Header",
+        "offsetVar": "currentOffset",
+        "icon": "header"
+      },
+      {
+        "name": "L1 Table",
+        "offsetVar": "l1TableOffset",
+        "icon": "table"
+      },
+      {
+        "name": "Refcount Table",
+        "offsetVar": "refcountTableOffset",
+        "icon": "table"
+      },
+      {
+        "name": "Snapshot Table",
+        "offsetVar": "snapshotsOffset",
+        "icon": "snapshot"
+      }
+    ]
+  },
+  "TechnicalDetails": {
+    "headerSize": 72,
+    "endianness": "big",
+    "addressingScheme": "Two-level lookup: L1 table points to L2 tables, L2 entries point to data clusters",
+    "clusterManagement": "Copy-on-write via reference counting; clusters shared between snapshots",
+    "backingFiles": "Overlay images reference a parent backing file for unmodified clusters",
+    "encryption": "Optional per-image AES-128-CBC (v1, deprecated) or LUKS (v2, recommended)",
+    "compression": "Per-cluster zlib or zstd compression (v3)",
+    "snapshotSupport": "Internal snapshots stored in snapshot table with L1 table copies",
+    "maxVirtualSize": "Effectively unlimited (64-bit virtual size field)"
+  },
+  "inspector": {
+    "badge": "magic",
+    "primaryField": "qcowVersion",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "QCOW2 Header",
+        "icon": "header",
+        "fields": [
+          "magic",
+          "qcowVersion",
+          "virtualSize",
+          "clusterBits"
+        ]
+      },
+      {
+        "title": "Encryption",
+        "icon": "lock",
+        "fields": [
+          "cryptMethod"
+        ]
+      },
+      {
+        "title": "Backing File",
+        "icon": "link",
+        "fields": [
+          "backingFileOffset",
+          "backingFileSize"
+        ]
+      },
+      {
+        "title": "Tables and Snapshots",
+        "icon": "table",
+        "fields": [
+          "l1Size",
+          "l1TableOffset",
+          "refcountTableOffset",
+          "refcountTableClusters",
+          "nbSnapshots",
+          "snapshotsOffset"
+        ]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "QCOW2 Header (JSON)",
+      "format": "json",
+      "fields": [
+        "magic",
+        "qcowVersion",
+        "virtualSize",
+        "clusterBits",
+        "cryptMethod",
+        "l1Size",
+        "l1TableOffset",
+        "nbSnapshots"
+      ]
+    },
+    {
+      "name": "QCOW2 Summary (CSV)",
+      "format": "csv",
+      "fields": [
+        "qcowVersion",
+        "virtualSize",
+        "clusterBits",
+        "cryptMethod",
+        "nbSnapshots"
+      ]
+    }
+  ],
+  "assertions": [
+    {
+      "name": "magic valid",
+      "expression": "magic == 0x514649FB",
+      "severity": "error",
+      "message": "QCOW2 magic must be 0x514649FB (QFI\\xFB)"
+    },
+    {
+      "name": "version valid",
+      "expression": "qcowVersion == 2 || qcowVersion == 3",
+      "severity": "error",
+      "message": "QCOW version must be 2 or 3"
+    },
+    {
+      "name": "cluster bits range",
+      "expression": "clusterBits >= 9 && clusterBits <= 21",
+      "severity": "error",
+      "message": "Cluster bits must be between 9 (512B) and 21 (2MB)"
+    },
+    {
+      "name": "crypt method valid",
+      "expression": "cryptMethod >= 0 && cryptMethod <= 2",
+      "severity": "warning",
+      "message": "Encryption method must be 0 (none), 1 (AES), or 2 (LUKS)"
+    },
+    {
+      "name": "virtual size non-zero",
+      "expression": "virtualSize > 0",
+      "severity": "error",
+      "message": "Virtual disk size must be greater than zero"
+    }
+  ],
+  "functions": {
+    "readUInt32BE": "Read big-endian 32-bit header fields",
+    "readUInt64BE": "Read big-endian 64-bit offset and size fields",
+    "formatFileSize(var:virtualSize)": "Format virtual disk size as readable size"
+  }
+}

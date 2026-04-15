@@ -1,0 +1,444 @@
+{
+  "diffMode": "binary",
+  "formatName": "Nintendo 3DS ROM",
+  "version": "1.0",
+  "extensions": [
+    ".3ds",
+    ".cia"
+  ],
+  "description": "Nintendo 3DS ROM images in NCSD (.3ds) and CIA formats with RSA-2048 signatures, NCCH partitions, and AES-128-CTR encryption",
+  "category": "Game",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "references": {
+    "specifications": [
+      "3DBrew NCSD Format Documentation",
+      "3DBrew NCCH Format Documentation",
+      "Nintendo 3DS Cartridge Header Specification"
+    ],
+    "WebLinks": [
+      "https://www.3dbrew.org/wiki/NCSD",
+      "https://www.3dbrew.org/wiki/NCCH",
+      "https://www.3dbrew.org/wiki/CIA",
+      "https://en.wikipedia.org/wiki/Nintendo_3DS"
+    ]
+  },
+  "detection": {
+    "required": true,
+    "validation": {
+      "minFileSize": 512,
+      "maxSignatureOffset": 260
+    },
+    "signatures": [
+      {
+        "value": "4E435344",
+        "offset": 256,
+        "label": "'NCSD' — Nintendo 3DS cartridge image header at offset 0x100",
+        "weight": 1.0
+      },
+      {
+        "value": "4E434348",
+        "offset": 256,
+        "label": "'NCCH' — Nintendo 3DS NCCH partition magic at offset 0x100 (CIA extracted content)",
+        "weight": 0.7
+      }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.7,
+    "Strength": "Strong",
+    "EntropyHint": {
+      "min": 4.0,
+      "max": 7.5
+    }
+  },
+  "variables": {
+    "currentOffset": 0,
+    "rsaSignature": "",
+    "ncsdMagic": "",
+    "imageSize": 0,
+    "mediaId": 0,
+    "partitionsFsType": 0,
+    "partitionsCryptType": 0,
+    "partition0Offset": 0,
+    "partition0Size": 0,
+    "partition1Offset": 0,
+    "partition1Size": 0,
+    "exheaderHash": "",
+    "additionalHeaderSize": 0,
+    "sectorZeroOffset": 0,
+    "flags": 0
+  },
+  "blocks": [
+    {
+      "type": "field",
+      "name": "RSA-2048 Signature",
+      "offset": 0,
+      "length": 256,
+      "color": "#636E72",
+      "opacity": 0.3,
+      "valueType": "bytes",
+      "storeAs": "rsaSignature",
+      "description": "RSA-2048 SHA-256 signature of the NCSD header"
+    },
+    {
+      "type": "signature",
+      "name": "NCSD Magic",
+      "offset": 256,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "'NCSD' magic identifying this as a Nintendo 3DS cartridge image",
+      "storeAs": "ncsdMagic",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Image Size",
+      "offset": 260,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "storeAs": "imageSize",
+      "description": "Image size in media units (1 media unit = 0x200 bytes)"
+    },
+    {
+      "type": "field",
+      "name": "Media ID",
+      "offset": 264,
+      "length": 8,
+      "color": "#FDCB6E",
+      "opacity": 0.3,
+      "valueType": "uint64",
+      "storeAs": "mediaId",
+      "description": "Title ID of the cartridge content"
+    },
+    {
+      "type": "field",
+      "name": "Partitions FS Type",
+      "offset": 272,
+      "length": 8,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "valueType": "bytes",
+      "storeAs": "partitionsFsType",
+      "description": "Filesystem types for each of the 8 partitions"
+    },
+    {
+      "type": "field",
+      "name": "Partitions Crypt Type",
+      "offset": 280,
+      "length": 8,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "valueType": "bytes",
+      "storeAs": "partitionsCryptType",
+      "description": "Encryption types for each of the 8 partitions"
+    },
+    {
+      "type": "field",
+      "name": "Partition 0 Offset",
+      "offset": 288,
+      "length": 4,
+      "color": "#6C5CE7",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "storeAs": "partition0Offset",
+      "description": "Game content partition offset in media units (partition 0 = main game NCCH)"
+    },
+    {
+      "type": "field",
+      "name": "Partition 0 Size",
+      "offset": 292,
+      "length": 4,
+      "color": "#6C5CE7",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "storeAs": "partition0Size",
+      "description": "Game content partition size in media units"
+    },
+    {
+      "type": "field",
+      "name": "Partition 1 Offset",
+      "offset": 296,
+      "length": 4,
+      "color": "#E17055",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "storeAs": "partition1Offset",
+      "description": "Manual/eManual partition offset in media units"
+    },
+    {
+      "type": "field",
+      "name": "Partition 1 Size",
+      "offset": 300,
+      "length": 4,
+      "color": "#E17055",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "storeAs": "partition1Size",
+      "description": "Manual/eManual partition size in media units"
+    },
+    {
+      "type": "field",
+      "name": "ExHeader Hash",
+      "offset": 352,
+      "length": 32,
+      "color": "#FF6B9D",
+      "opacity": 0.3,
+      "valueType": "bytes",
+      "storeAs": "exheaderHash",
+      "description": "SHA-256 hash of the extended header"
+    },
+    {
+      "type": "field",
+      "name": "Additional Header Size",
+      "offset": 384,
+      "length": 4,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "storeAs": "additionalHeaderSize",
+      "description": "Additional header size in bytes"
+    },
+    {
+      "type": "field",
+      "name": "Sector Zero Offset",
+      "offset": 388,
+      "length": 4,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "storeAs": "sectorZeroOffset",
+      "description": "Offset of sector zero within the NCSD image"
+    },
+    {
+      "type": "field",
+      "name": "Flags",
+      "offset": 392,
+      "length": 8,
+      "color": "#00B894",
+      "opacity": 0.3,
+      "valueType": "bytes",
+      "storeAs": "flags",
+      "description": "Partition flags (media type, crypto method, media unit size)"
+    },
+    {
+      "type": "metadata",
+      "name": "Format",
+      "variable": "ncsdMagic",
+      "description": "NCSD Magic"
+    },
+    {
+      "type": "metadata",
+      "name": "Media ID",
+      "variable": "mediaId",
+      "description": "Title ID"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "NCSD magic valid",
+      "expression": "ncsdMagic == 'NCSD'",
+      "severity": "error",
+      "message": "NCSD header magic at offset 0x100 must be 'NCSD' (4E 43 53 44)"
+    },
+    {
+      "name": "Image size non-zero",
+      "expression": "imageSize > 0",
+      "severity": "error",
+      "message": "Image size in media units must be greater than zero"
+    },
+    {
+      "name": "First partition has valid offset",
+      "expression": "partition0Offset > 0",
+      "severity": "error",
+      "message": "Partition 0 (game content) offset must be non-zero to contain valid NCCH data"
+    },
+    {
+      "name": "First partition has valid size",
+      "expression": "partition0Size > 0",
+      "severity": "warning",
+      "message": "Partition 0 (game content) size should be non-zero for a valid cartridge image"
+    }
+  ],
+  "inspector": {
+    "badge": "ncsdMagic",
+    "primaryField": "imageSize",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "NCSD Header",
+        "icon": "header",
+        "fields": [
+          "ncsdMagic",
+          "imageSize",
+          "mediaId"
+        ]
+      },
+      {
+        "title": "Partition Table",
+        "icon": "folder",
+        "fields": [
+          "partition0Offset",
+          "partition0Size",
+          "partition1Offset",
+          "partition1Size"
+        ]
+      },
+      {
+        "title": "Security",
+        "icon": "lock",
+        "fields": [
+          "rsaSignature",
+          "exheaderHash",
+          "partitionsCryptType"
+        ]
+      },
+      {
+        "title": "Configuration",
+        "icon": "settings",
+        "fields": [
+          "partitionsFsType",
+          "flags",
+          "additionalHeaderSize",
+          "sectorZeroOffset"
+        ]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "3DS Header (JSON)",
+      "format": "json",
+      "fields": [
+        "ncsdMagic",
+        "imageSize",
+        "mediaId",
+        "partition0Offset",
+        "partition0Size",
+        "partition1Offset",
+        "partition1Size",
+        "flags"
+      ]
+    },
+    {
+      "name": "3DS Partitions (CSV)",
+      "format": "csv",
+      "fields": [
+        "partition0Offset",
+        "partition0Size",
+        "partition1Offset",
+        "partition1Size"
+      ]
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      {
+        "name": "RSA Signature",
+        "offset": 0,
+        "icon": "lock"
+      },
+      {
+        "name": "NCSD Magic",
+        "offset": 256,
+        "icon": "signature"
+      },
+      {
+        "name": "Partition Table",
+        "offset": 288,
+        "icon": "folder"
+      },
+      {
+        "name": "ExHeader Hash",
+        "offset": 352,
+        "icon": "checksum"
+      }
+    ]
+  },
+  "software": [
+    "Citra (3DS emulator)",
+    "GodMode9 (3DS filesystem tool)",
+    "3DSExplorer (ROM analysis)",
+    "ctrtool (NCCH/NCSD extraction)",
+    "makerom (3DS ROM builder)"
+  ],
+  "formatRelationships": {
+    "category": "Game",
+    "extensions": [
+      ".3ds",
+      ".cia"
+    ],
+    "relatedFormats": [
+      "ROM_NDS"
+    ]
+  },
+  "MimeTypes": [
+    "application/x-nintendo-3ds-rom"
+  ],
+  "Software": [
+    "Citra (3DS emulator)",
+    "GodMode9 (3DS filesystem tool)",
+    "3DSExplorer (ROM analysis)",
+    "ctrtool (NCCH/NCSD extraction)",
+    "makerom (3DS ROM builder)"
+  ],
+  "UseCases": [
+    "3DS game emulation and testing",
+    "ROM dumping and archival",
+    "Homebrew development and sideloading",
+    "Game modding and translation patches"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 90,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 16,
+    "ValidationRules": 4,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": true,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "endianness": "little",
+    "containerFormat": "NCSD = 8 NCCH partitions; each NCCH = ExHeader + ExeFS (code) + RomFS (data)",
+    "encryption": "RSA-2048 signatures + AES-128-CTR content encryption per partition",
+    "mediaUnit": "1 media unit = 0x200 bytes (512 bytes); all offsets/sizes in media units",
+    "exeFS": "Contains .code (ARM11 executable), icon resource, and banner data",
+    "romFS": "Read-only filesystem using IVFC hash tree verification (4 levels)",
+    "partitionLayout": "P0=Game, P1=Manual, P2=Download Play child, P6=New3DS update, P7=Update data",
+    "processor": "ARM11 MPCore (dual/quad core, up to 268MHz) + ARM9 (security processor)"
+  },
+  "forensic": {
+    "category": "game",
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      {
+        "name": "Decrypted partition detected",
+        "description": "Partition crypto type indicates no encryption, which may mean the ROM has been decrypted for emulator use",
+        "condition": "partitionsCryptType == 0"
+      },
+      {
+        "name": "Zero-filled RSA signature",
+        "description": "RSA signature area is zeroed out, indicating a modified or unsigned ROM dump",
+        "condition": "rsaSignature == 0"
+      }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "Nintendo 3DS cartridge image in NCSD format with RSA-2048 signed header, 8-partition NCCH layout, and AES-128-CTR encryption",
+    "suggestedInspections": [
+      "Verify 'NCSD' magic at offset 0x100 confirms valid 3DS cartridge dump",
+      "Check partition 0 offset and size for main game NCCH content presence",
+      "Inspect RSA-2048 signature validity (zeroed signature indicates modified ROM)",
+      "Validate image size in media units matches expected file size (imageSize * 0x200)",
+      "Examine partition crypto types to determine encryption state per partition",
+      "Check ExHeader SHA-256 hash for integrity of extended header data"
+    ]
+  },
+  "functions": {
+    "readUInt32LE": "Read little-endian 32-bit header fields",
+    "readUInt64LE": "Read little-endian 64-bit fields (media ID)",
+    "readBytes": "Read raw byte arrays (RSA signature, hash)"
+  }
+}

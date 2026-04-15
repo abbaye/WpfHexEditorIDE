@@ -1,0 +1,231 @@
+{
+  "diffMode": "binary",
+  "formatName": "SafeTensors",
+  "version": "1.0",
+  "extensions": [ ".safetensors" ],
+  "description": "Hugging Face SafeTensors format for secure ML model weight storage; uses an 8-byte LE header size followed by a JSON metadata header and raw tensor data, eliminating arbitrary code execution risks inherent in pickle-based formats.",
+  "category": "MachineLearning",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "MimeTypes": [ "application/octet-stream" ],
+
+  "UseCases": [
+    "Safe ML model weight storage without arbitrary code execution risk (unlike pickle-based .pt files)",
+    "Hugging Face Model Hub distribution for LLMs (LLaMA, Mistral, Stable Diffusion, etc.)",
+    "Fast zero-copy tensor loading with memory-mapped I/O for inference pipelines",
+    "Cross-framework weight sharing between PyTorch, TensorFlow, JAX, and Rust ML frameworks"
+  ],
+
+  "software": [
+    { "name": "Hugging Face transformers",  "role": "producer/consumer" },
+    { "name": "safetensors (Python)",       "role": "producer/consumer" },
+    { "name": "safetensors (Rust crate)",   "role": "producer/consumer" },
+    { "name": "llama.cpp",                  "role": "consumer" },
+    { "name": "Netron",                     "role": "consumer" }
+  ],
+
+  "formatRelationships": {
+    "relatedFormats": [ "PYTORCH", "ONNX", "GGUF", "TFLITE" ],
+    "container": null,
+    "notes": "SafeTensors was created by Hugging Face as a security-first alternative to PyTorch's pickle-based .pt format. The format is intentionally simple: a fixed 8-byte header size, a JSON metadata section, and contiguous raw tensor data. No code execution is possible."
+  },
+
+  "references": {
+    "specifications": [
+      "SafeTensors Format Specification (github.com/huggingface/safetensors)"
+    ],
+    "WebLinks": [
+      "https://huggingface.co/docs/safetensors/",
+      "https://github.com/huggingface/safetensors"
+    ]
+  },
+
+  "detection": {
+    "signatures": [
+      {
+        "value": "7B",
+        "offset": 8,
+        "label": "JSON header start '{' at offset 8 (after 8-byte LE header_size)",
+        "weight": 60,
+        "required": true
+      }
+    ],
+    "matchMode": "weighted",
+    "MinimumScore": 60,
+    "Strength": "Medium",
+    "EntropyHint": {
+      "min": 5.0,
+      "max": 8.0,
+      "note": "Raw tensor data (float32/float16/bfloat16 weights) has high entropy approaching 7.5-8.0. The JSON header section has lower entropy around 4.5-5.5."
+    },
+    "validation": {
+      "minFileSize": 16,
+      "maxSignatureOffset": 8
+    }
+  },
+
+  "variables": {
+    "headerSize":     { "offset": 0, "length": 8, "type": "uint64le" },
+    "jsonStartByte":  { "offset": 8, "length": 1, "type": "uint8" },
+    "jsonSecondByte": { "offset": 9, "length": 1, "type": "uint8" }
+  },
+
+  "blocks": [
+    {
+      "type": "field",
+      "name": "Header Size",
+      "offset": 0,
+      "length": 8,
+      "color": "#FF6B6B",
+      "opacity": 0.9,
+      "description": "8-byte unsigned 64-bit little-endian integer specifying the exact byte length of the JSON metadata header that follows. Typical values range from a few hundred bytes (small models) to several megabytes (LLMs with thousands of tensor entries).",
+      "storeAs": "headerSize",
+      "valueType": "uint64",
+      "endianness": "little"
+    },
+    {
+      "type": "signature",
+      "name": "JSON Header Start",
+      "offset": 8,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.85,
+      "description": "First byte of the JSON metadata header; must be 0x7B ('{') indicating the start of a JSON object mapping tensor names to their dtype, shape, and data_offsets.",
+      "storeAs": "jsonStartByte",
+      "valueType": "uint8"
+    },
+    {
+      "type": "field",
+      "name": "JSON Second Byte",
+      "offset": 9,
+      "length": 1,
+      "color": "#45B7D1",
+      "opacity": 0.75,
+      "description": "Second byte of the JSON header; typically 0x22 ('\"') for the opening quote of the first tensor name key, or 0x0A (newline) if the JSON is pretty-printed, or 0x5F ('_') if the first key is '__metadata__'.",
+      "storeAs": "jsonSecondByte",
+      "valueType": "uint8"
+    },
+    {
+      "type": "metadata",
+      "name": "JSON Metadata Header",
+      "offset": 8,
+      "length": "headerSize",
+      "color": "#96CEB4",
+      "opacity": 0.65,
+      "description": "Complete JSON object mapping tensor names to {dtype, shape, data_offsets:[start,end]} entries. May also contain a '__metadata__' key with format version, framework origin, and conversion metadata. Supported dtypes: BOOL, U8, I8, I16, I32, I64, F16, BF16, F32, F64, F8_E4M3, F8_E5M2."
+    },
+    {
+      "type": "data",
+      "name": "Raw Tensor Data",
+      "offset": "8 + headerSize",
+      "length": "remaining",
+      "color": "#DDA0DD",
+      "opacity": 0.5,
+      "description": "Contiguous raw tensor data region; tensors are concatenated in the order defined by data_offsets in the JSON header. Each tensor's bytes are stored without padding or alignment between them. Data types are stored in their native binary representation (e.g., F32 = IEEE 754 single-precision, F16 = IEEE 754 half-precision, BF16 = bfloat16)."
+    }
+  ],
+
+  "assertions": [
+    {
+      "name": "HeaderSizePositive",
+      "expression": "headerSize > 0 && headerSize < 104857600",
+      "severity": "error",
+      "message": "Header size must be between 1 and 100MB; a zero or excessively large header size indicates file corruption."
+    },
+    {
+      "name": "JsonHeaderStartBrace",
+      "expression": "jsonStartByte == 0x7B",
+      "severity": "error",
+      "message": "Byte at offset 8 is not '{' (0x7B); the JSON metadata header is missing or corrupt."
+    },
+    {
+      "name": "FileSizeConsistent",
+      "expression": "FILE_SIZE > headerSize + 8",
+      "severity": "warning",
+      "message": "File size is not larger than header_size + 8; there may be no tensor data or the header size is incorrect."
+    },
+    {
+      "name": "FileSizeMinimum",
+      "expression": "FILE_SIZE >= 16",
+      "severity": "error",
+      "message": "File is too small (< 16 bytes) to contain a valid SafeTensors header."
+    }
+  ],
+
+  "navigation": {
+    "bookmarks": [
+      { "name": "Header Size",         "offset": 0, "description": "8-byte LE uint64 — length of JSON metadata header" },
+      { "name": "JSON Header Start",   "offset": 8, "description": "Start of JSON metadata (should be '{' = 0x7B)" },
+      { "name": "Tensor Data Region",  "offset": "8 + headerSize", "description": "Raw tensor data begins after JSON header" }
+    ]
+  },
+
+  "inspector": {
+    "badge": "SAFE",
+    "primaryField": "headerSize",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "name": "File Structure",
+        "fields": [ "headerSize", "jsonStartByte", "jsonSecondByte" ]
+      },
+      {
+        "name": "Format Info",
+        "fields": [ "headerSize" ]
+      }
+    ]
+  },
+
+  "exportTemplates": [
+    {
+      "name": "SafeTensors Header Summary",
+      "format": "text",
+      "template": "SafeTensors Model\n  Header Size    : {headerSize} bytes\n  JSON Start     : 0x{jsonStartByte:X2}\n  Tensor Data At : offset {headerSize} + 8"
+    },
+    {
+      "name": "SafeTensors JSON Report",
+      "format": "json",
+      "template": "{ \"format\": \"SafeTensors\", \"headerSize\": {headerSize}, \"jsonStartByte\": {jsonStartByte} }"
+    }
+  ],
+
+  "forensic": {
+    "category": "MachineLearningArtifact",
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      { "pattern": "OversizedHeader",       "description": "JSON header larger than 50MB may indicate malicious padding, embedded data, or an attempt to cause memory exhaustion during parsing." },
+      { "pattern": "MismatchedDataOffsets",  "description": "Tensor data_offsets that overlap, exceed file size, or leave gaps may indicate corruption or deliberate tampering." },
+      { "pattern": "MemorizedTrainingData",  "description": "Tensor weights may inadvertently encode memorized training data that can be extracted via model inversion attacks." }
+    ]
+  },
+
+  "aiHints": {
+    "analysisContext": "SafeTensors uses a minimal binary layout: 8-byte LE header_size + JSON header + raw tensor bytes. The JSON header is the authoritative index of all tensors; each entry specifies dtype (F32/F16/BF16/etc.), shape (dimension array), and data_offsets [start, end] relative to the tensor data region. The format was designed to be simple enough that parsing cannot trigger code execution.",
+    "suggestedInspections": [
+      "Read the 8-byte header_size to determine the JSON header boundary and tensor data start offset.",
+      "Parse the JSON header to enumerate all tensor names, dtypes, shapes, and data_offsets for integrity validation.",
+      "Verify that all data_offsets are contiguous, non-overlapping, and within the file size bounds.",
+      "Check for a '__metadata__' key in the JSON header containing format version and framework origin info.",
+      "Compare total tensor data size (sum of all tensor byte counts from shape * dtype size) against actual file size minus header.",
+      "Identify the model architecture from tensor naming conventions (e.g., 'model.layers.0.self_attn.q_proj.weight' for transformer models)."
+    ]
+  },
+
+  "TechnicalDetails": {
+    "specification": "SafeTensors format: github.com/huggingface/safetensors/blob/main/safetensors/src/lib.rs",
+    "endianness": "little-endian (header_size is uint64 LE; tensor data uses native dtype byte order)",
+    "supportedDtypes": [ "BOOL", "U8", "I8", "I16", "I32", "I64", "F16", "BF16", "F32", "F64", "F8_E4M3", "F8_E5M2" ],
+    "securityModel": "Pure data format — no code execution, no pickle, no arbitrary object deserialization. Safe to load from untrusted sources.",
+    "notes": "Large models (70B+ parameters) are typically sharded across multiple .safetensors files with a JSON index file (model.safetensors.index.json) mapping tensor names to shard filenames."
+  },
+
+  "QualityMetrics": {
+    "CompletenessScore": 90,
+    "DocumentationLevel": "comprehensive",
+    "BlocksDefined": 5,
+    "ValidationRules": 4,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": true,
+    "AutoRefined": false
+  }
+}

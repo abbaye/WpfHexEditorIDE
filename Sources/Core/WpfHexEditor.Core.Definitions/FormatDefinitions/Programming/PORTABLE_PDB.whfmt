@@ -1,0 +1,354 @@
+{
+  "diffMode": "binary",
+  "formatName": "Portable PDB",
+  "version": "1.0",
+  "extensions": [ ".pdb" ],
+  "description": "Portable Program Database file — ECMA-335 CLI Metadata Root containing debug symbols, sequence points, local variable names, and source document links for .NET assemblies.",
+  "category": "Programming",
+  "author": "WPFHexaEditor Team",
+  "MimeTypes": [ "application/x-portable-pdb", "application/octet-stream" ],
+  "UseCases": [
+    "Debug symbol loading by .NET runtime and debuggers",
+    "Source link resolution during stack trace symbolication",
+    "Code coverage tooling and test result reporting",
+    "Decompiler source mapping (e.g., ILSpy, dnSpy)"
+  ],
+  "software": [
+    { "name": "dotnet build / Roslyn compiler", "role": "producer" },
+    { "name": "Visual Studio Debugger", "role": "consumer" },
+    { "name": "dnSpy / ILSpy", "role": "consumer" },
+    { "name": "dotnet-symbol", "role": "consumer" }
+  ],
+  "formatRelationships": {
+    "relatedFormats": [ "PE/COFF (.dll, .exe)", "Windows PDB (.pdb, legacy)", "Source Link JSON" ],
+    "container": null,
+    "embeddedIn": "Portable PDB can be embedded inside a PE image as a debug directory entry of type 17 (EmbeddedPortablePdb)."
+  },
+
+  "detection": {
+    "signatures": [
+      {
+        "value": "42534A42",
+        "offset": 0,
+        "label": "CLI Metadata Root magic BSJB",
+        "weight": 60,
+        "required": true
+      },
+      {
+        "value": "0100",
+        "offset": 4,
+        "label": "MajorVersion = 1",
+        "weight": 15,
+        "required": false
+      },
+      {
+        "value": "0100",
+        "offset": 6,
+        "label": "MinorVersion = 1",
+        "weight": 10,
+        "required": false
+      },
+      {
+        "value": "00000000",
+        "offset": 8,
+        "label": "Reserved field must be zero",
+        "weight": 5,
+        "required": false
+      }
+    ],
+    "matchMode": "weighted",
+    "MinimumScore": 60,
+    "Strength": "Strong",
+    "EntropyHint": {
+      "min": 3.5,
+      "max": 7.8,
+      "note": "Metadata strings and GUID heaps give moderate entropy; compressed blob heaps can be high."
+    },
+    "validation": {
+      "expression": "UINT32(0) == 0x424A5342",
+      "description": "BSJB signature validates this is a CLI metadata root — shared by PE metadata and standalone Portable PDB files."
+    }
+  },
+
+  "variables": {
+    "signature":       { "offset": 0,  "length": 4,  "type": "bytes" },
+    "majorVersion":    { "offset": 4,  "length": 2,  "type": "uint16le" },
+    "minorVersion":    { "offset": 6,  "length": 2,  "type": "uint16le" },
+    "reserved":        { "offset": 8,  "length": 4,  "type": "uint32le" },
+    "versionLength":   { "offset": 12, "length": 4,  "type": "uint32le" },
+    "versionString":   { "offset": 16, "length": "versionLength", "type": "utf8string" },
+    "flags":           { "offset": "16+versionLength", "length": 2, "type": "uint16le" },
+    "streamCount":     { "offset": "18+versionLength", "length": 2, "type": "uint16le" }
+  },
+
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "CLI Metadata Root Signature",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF5722",
+      "opacity": 0.85,
+      "description": "Four-byte magic 'BSJB' (0x42534A42) identifying this as an ECMA-335 CLI Metadata Root, present in both PE images and standalone Portable PDB files.",
+      "storeAs": "signature",
+      "valueType": "bytes"
+    },
+    {
+      "type": "field",
+      "name": "MajorVersion",
+      "offset": 4,
+      "length": 2,
+      "color": "#2196F3",
+      "opacity": 0.7,
+      "description": "CLI metadata root major version number; always 1 for all known CLI implementations including .NET Framework and .NET Core.",
+      "storeAs": "majorVersion",
+      "valueType": "uint16",
+      "endianness": "little"
+    },
+    {
+      "type": "field",
+      "name": "MinorVersion",
+      "offset": 6,
+      "length": 2,
+      "color": "#2196F3",
+      "opacity": 0.6,
+      "description": "CLI metadata root minor version number; always 1 for all known CLI implementations.",
+      "storeAs": "minorVersion",
+      "valueType": "uint16",
+      "endianness": "little"
+    },
+    {
+      "type": "field",
+      "name": "Reserved",
+      "offset": 8,
+      "length": 4,
+      "color": "#9E9E9E",
+      "opacity": 0.4,
+      "description": "Reserved field, must be zero per ECMA-335 specification §II.24.2.1; non-zero value indicates file corruption or non-standard producer.",
+      "storeAs": "reserved",
+      "valueType": "uint32",
+      "endianness": "little"
+    },
+    {
+      "type": "field",
+      "name": "VersionLength",
+      "offset": 12,
+      "length": 4,
+      "color": "#4CAF50",
+      "opacity": 0.7,
+      "description": "Length in bytes of the version string that follows, padded to the next 4-byte boundary; typical values are 12 (v4.0.30319) or 12 (PDB v1.0).",
+      "storeAs": "versionLength",
+      "valueType": "uint32",
+      "endianness": "little"
+    },
+    {
+      "type": "field",
+      "name": "VersionString",
+      "offset": 16,
+      "length": "versionLength",
+      "color": "#8BC34A",
+      "opacity": 0.8,
+      "description": "Null-terminated UTF-8 version string padded to a 4-byte boundary, e.g. 'v4.0.30319' for .NET Framework or 'PDB v1.0' for Portable PDB documents.",
+      "storeAs": "versionString",
+      "valueType": "utf8string"
+    },
+    {
+      "type": "field",
+      "name": "Flags",
+      "offset": "16+versionLength",
+      "length": 2,
+      "color": "#FF9800",
+      "opacity": 0.6,
+      "description": "Metadata root flags; currently reserved and must be zero per ECMA-335 §II.24.2.1.",
+      "storeAs": "flags",
+      "valueType": "uint16",
+      "endianness": "little"
+    },
+    {
+      "type": "field",
+      "name": "StreamCount",
+      "offset": "18+versionLength",
+      "length": 2,
+      "color": "#9C27B0",
+      "opacity": 0.7,
+      "description": "Number of metadata stream headers that follow immediately after this field; Portable PDB files typically have 5 streams: #Pdb, #~, #Strings, #GUID, #Blob.",
+      "storeAs": "streamCount",
+      "valueType": "uint16",
+      "endianness": "little"
+    },
+    {
+      "type": "metadata",
+      "name": "StreamHeaders",
+      "offset": "20+versionLength",
+      "length": "variable",
+      "color": "#673AB7",
+      "opacity": 0.6,
+      "description": "Array of StreamCount stream header entries, each containing a 4-byte offset, 4-byte size, and null-padded name aligned to a 4-byte boundary."
+    },
+    {
+      "type": "metadata",
+      "name": "#Pdb Stream (Portable PDB specific)",
+      "offset": "computed",
+      "length": "variable",
+      "color": "#E91E63",
+      "opacity": 0.75,
+      "description": "Portable PDB-specific stream containing the PDB ID GUID (20 bytes), entry point token, referenced type system tables bitmask, and type-forwarding data."
+    },
+    {
+      "type": "metadata",
+      "name": "#~ Compressed Metadata Tables",
+      "offset": "computed",
+      "length": "variable",
+      "color": "#00BCD4",
+      "opacity": 0.7,
+      "description": "Compressed metadata table stream (ECMA-335 §II.24.2.6) containing rows for Document, MethodDebugInformation, LocalScope, LocalVariable, and StateMachineMethod tables."
+    },
+    {
+      "type": "metadata",
+      "name": "#Strings Heap",
+      "offset": "computed",
+      "length": "variable",
+      "color": "#FF5722",
+      "opacity": 0.55,
+      "description": "String heap referenced by metadata table rows; contains UTF-8 null-terminated strings such as local variable names, document file paths, and language GUIDs."
+    },
+    {
+      "type": "metadata",
+      "name": "#GUID Heap",
+      "offset": "computed",
+      "length": "variable",
+      "color": "#795548",
+      "opacity": 0.55,
+      "description": "GUID heap storing 16-byte GUIDs for language identifiers, hash algorithms (SHA-1, SHA-256), document checksums, and the PDB ID used to match PDB to PE."
+    },
+    {
+      "type": "metadata",
+      "name": "#Blob Heap",
+      "offset": "computed",
+      "length": "variable",
+      "color": "#607D8B",
+      "opacity": 0.55,
+      "description": "Blob heap storing variable-length binary data including source file checksums, sequence point encoded data, import scope data, and custom debug information payloads."
+    }
+  ],
+
+  "assertions": [
+    {
+      "name": "ValidMagic",
+      "expression": "UINT32(0) == 0x424A5342",
+      "severity": "error",
+      "message": "CLI Metadata Root magic 'BSJB' not found at offset 0; file is not a valid Portable PDB or CLI metadata root."
+    },
+    {
+      "name": "MajorVersionIsOne",
+      "expression": "UINT16_LE(4) == 1",
+      "severity": "warning",
+      "message": "MajorVersion at offset 4 is not 1; all known CLI implementations use MajorVersion=1 per ECMA-335 §II.24.2.1."
+    },
+    {
+      "name": "MinorVersionIsOne",
+      "expression": "UINT16_LE(6) == 1",
+      "severity": "warning",
+      "message": "MinorVersion at offset 6 is not 1; expected value is 1 per ECMA-335 §II.24.2.1."
+    },
+    {
+      "name": "ReservedIsZero",
+      "expression": "UINT32_LE(8) == 0",
+      "severity": "warning",
+      "message": "Reserved field at offset 8 is non-zero; this may indicate file corruption or a non-conforming producer."
+    },
+    {
+      "name": "VersionLengthAligned",
+      "expression": "(UINT32_LE(12) % 4) == 0",
+      "severity": "warning",
+      "message": "VersionLength is not a multiple of 4; the version string must be padded to a 4-byte boundary per ECMA-335."
+    },
+    {
+      "name": "FlagsAreZero",
+      "expression": "UINT16_LE(16 + UINT32_LE(12)) == 0",
+      "severity": "info",
+      "message": "Flags field is non-zero; currently reserved and should be zero per ECMA-335 §II.24.2.1."
+    }
+  ],
+
+  "navigation": {
+    "bookmarks": [
+      { "name": "Metadata Root Header", "offset": 0,    "description": "ECMA-335 CLI Metadata Root — BSJB signature and version info" },
+      { "name": "VersionString",         "offset": 16,   "description": "Null-terminated version string, e.g. 'PDB v1.0' or 'v4.0.30319'" },
+      { "name": "StreamHeaders Start",   "offset": "20+versionLength", "description": "Array of stream header entries (offset/size/name)" }
+    ]
+  },
+
+  "inspector": {
+    "badge": "PDB",
+    "primaryField": "versionString",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "name": "Identification",
+        "fields": [ "signature", "majorVersion", "minorVersion" ]
+      },
+      {
+        "name": "Version",
+        "fields": [ "versionLength", "versionString" ]
+      },
+      {
+        "name": "Stream Directory",
+        "fields": [ "flags", "streamCount" ]
+      }
+    ]
+  },
+
+  "exportTemplates": [
+    {
+      "name": "PDB Header Summary",
+      "format": "text",
+      "template": "Portable PDB\n  Version : {versionString}\n  Streams : {streamCount}\n  Format  : ECMA-335 CLI Metadata Root"
+    },
+    {
+      "name": "PDB JSON Report",
+      "format": "json",
+      "template": "{ \"format\": \"PortablePDB\", \"version\": \"{versionString}\", \"streamCount\": {streamCount}, \"majorVersion\": {majorVersion}, \"minorVersion\": {minorVersion} }"
+    }
+  ],
+
+  "forensic": {
+    "category": "ProgrammingArtifact",
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      { "pattern": "ReservedNonZero",       "description": "Reserved field at offset 8 is non-zero; possible file tampering or non-standard tool." },
+      { "pattern": "UnexpectedVersionString","description": "Version string does not match known .NET runtime versions; may indicate an obfuscation tool or custom CLI producer." },
+      { "pattern": "ZeroStreamCount",        "description": "StreamCount is zero; a valid Portable PDB must have at least the #Pdb and #~ streams." }
+    ]
+  },
+
+  "aiHints": {
+    "analysisContext": "Portable PDB files use the ECMA-335 CLI Metadata Root structure and contain .NET debug symbols including sequence points, local variable scopes, source document paths, and source link information for remote source retrieval.",
+    "suggestedInspections": [
+      "Verify the PDB ID GUID in the #Pdb stream matches the CodeView debug entry in the corresponding PE file.",
+      "Check the MethodDebugInformation table in the #~ stream for sequence point data encoding source line mappings.",
+      "Inspect #Blob heap entries for source file checksums (SHA-1 or SHA-256) used to validate source integrity.",
+      "Look for embedded source in the CustomDebugInformation table (PortableCustomDebugInfoKinds.EmbeddedSource).",
+      "Cross-reference VersionString 'PDB v1.0' vs 'v4.0.30319' to distinguish standalone Portable PDB from embedded CLI metadata."
+    ]
+  },
+
+  "TechnicalDetails": {
+    "specification": "ECMA-335 6th Edition §II.24.2.1 — Metadata Root; Microsoft Portable PDB specification (github.com/dotnet/runtime/blob/main/docs/design/specs/PortablePdb-Metadata.md)",
+    "endianness": "little-endian",
+    "alignment": "4-byte boundary for version string and stream names",
+    "compressionScheme": "#~ stream uses compressed row counts per ECMA-335 §II.24.2.6",
+    "hashAlgorithms": [ "SHA-1 (legacy)", "SHA-256 (recommended)" ],
+    "notes": "The BSJB magic is shared with PE-embedded CLI metadata; extension .pdb and the absence of a PE DOS header distinguish standalone Portable PDB files."
+  },
+
+  "QualityMetrics": {
+    "CompletenessScore": 92,
+    "DocumentationLevel": "comprehensive",
+    "BlocksDefined": 14,
+    "ValidationRules": 6,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": true,
+    "AutoRefined": false
+  }
+}

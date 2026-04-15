@@ -12,7 +12,9 @@ using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using WpfHexEditor.Editor.CodeEditor.Services;
 using WpfHexEditor.Editor.Core;
+using WpfHexEditor.Editor.Core.Validation;
 using WpfHexEditor.Editor.StructureEditor.ViewModels;
 
 namespace WpfHexEditor.Editor.StructureEditor.Controls;
@@ -26,6 +28,7 @@ public sealed partial class StructureEditor : UserControl, IDocumentEditor, IOpe
     // ── State ─────────────────────────────────────────────────────────────────
 
     private readonly StructureEditorViewModel _vm = new();
+    private readonly FormatSchemaValidator    _schemaValidator = new();
     private string _filePath = string.Empty;
 
     // ── Constructor ───────────────────────────────────────────────────────────
@@ -42,6 +45,20 @@ public sealed partial class StructureEditor : UserControl, IDocumentEditor, IOpe
         PasteCommand     = new ViewModels.RelayCommand(() => { }, () => false);
         DeleteCommand    = new ViewModels.RelayCommand(() => { }, () => false);
         SelectAllCommand = new ViewModels.RelayCommand(() => { }, () => false);
+
+        // Wire FormatSchemaValidator (4-layer: JSON syntax, schema, rules, semantic)
+        _vm.SetValidator(async json =>
+        {
+            var errors = await Task.Run(() => _schemaValidator.Validate(json));
+            return errors.Select(e => new ValidationSummaryItem
+            {
+                Severity = (ValidationSeverity)(int)e.Severity,
+                Message  = e.Message,
+                Line     = e.Line,
+                Column   = e.Column,
+                Layer    = e.Layer.ToString(),
+            }).ToList();
+        });
 
         // Bind child tabs through DataContext
         MetadataTabCtrl.DataContext  = _vm.Metadata;

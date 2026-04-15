@@ -1,0 +1,429 @@
+{
+  "diffMode": "binary",
+  "formatName": "Apple File System (APFS)",
+  "version": "1.0",
+  "extensions": [],
+  "description": "Apple File System container superblock with copy-on-write B-tree structure and per-volume encryption",
+  "category": "Disk",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "references": {
+    "specifications": [
+      "Apple File System Reference (developer.apple.com)",
+      "APFS Container and Volume Superblock Specification",
+      "Apple APFS Filesystem Internals"
+    ],
+    "WebLinks": [
+      "https://en.wikipedia.org/wiki/Apple_File_System",
+      "https://developer.apple.com/support/downloads/Apple-File-System-Reference.pdf",
+      "https://github.com/sgan81/apfs-fuse",
+      "https://blog.cugu.eu/post/apfs/"
+    ]
+  },
+  "detection": {
+    "required": true,
+    "validation": {
+      "minFileSize": 104,
+      "maxSignatureOffset": 36
+    },
+    "signatures": [
+      {
+        "value": "4E585342",
+        "offset": 32,
+        "label": "'NXSB' — APFS Container Superblock magic at offset 32",
+        "weight": 1.0
+      }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 1.0,
+    "Strength": "Strong",
+    "EntropyHint": {
+      "min": 1.0,
+      "max": 7.0
+    }
+  },
+  "variables": {
+    "currentOffset": 0,
+    "objChecksum": 0,
+    "objOid": 0,
+    "objXid": 0,
+    "objType": 0,
+    "objSubtype": 0,
+    "nxMagic": 0,
+    "nxBlockSize": 0,
+    "nxBlockCount": 0,
+    "nxFeatures": 0,
+    "nxReadonlyFeatures": 0,
+    "nxIncompatFeatures": 0,
+    "nxUuid": 0,
+    "nxNextOid": 0,
+    "nxNextXid": 0
+  },
+  "blocks": [
+    {
+      "type": "field",
+      "name": "Object Checksum",
+      "offset": 0,
+      "length": 8,
+      "color": "#636E72",
+      "opacity": 0.3,
+      "description": "Fletcher-64 checksum of the entire block",
+      "storeAs": "objChecksum",
+      "valueType": "uint64"
+    },
+    {
+      "type": "field",
+      "name": "Object Identifier",
+      "offset": 8,
+      "length": 8,
+      "color": "#B2BEC3",
+      "opacity": 0.3,
+      "description": "Unique object identifier within the container",
+      "storeAs": "objOid",
+      "valueType": "uint64"
+    },
+    {
+      "type": "field",
+      "name": "Transaction Identifier",
+      "offset": 16,
+      "length": 8,
+      "color": "#DFE6E9",
+      "opacity": 0.3,
+      "description": "Transaction identifier (monotonically increasing)",
+      "storeAs": "objXid",
+      "valueType": "uint64"
+    },
+    {
+      "type": "field",
+      "name": "Object Type",
+      "offset": 24,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Object type (0x01 = NX_SUPERBLOCK)",
+      "storeAs": "objType",
+      "valueType": "uint32",
+      "valueMap": {
+        "1": "NX_SUPERBLOCK (Container Superblock)"
+      }
+    },
+    {
+      "type": "field",
+      "name": "Object Subtype",
+      "offset": 28,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "description": "Object subtype (0 for container superblock)",
+      "storeAs": "objSubtype",
+      "valueType": "uint32"
+    },
+    {
+      "type": "signature",
+      "name": "APFS Magic",
+      "offset": 32,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "'NXSB' magic identifying this as an APFS Container Superblock",
+      "storeAs": "nxMagic",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Block Size",
+      "offset": 36,
+      "length": 4,
+      "color": "#FFD93D",
+      "opacity": 0.3,
+      "description": "Container block size in bytes (typically 4096)",
+      "storeAs": "nxBlockSize",
+      "valueType": "uint32"
+    },
+    {
+      "type": "field",
+      "name": "Block Count",
+      "offset": 40,
+      "length": 8,
+      "color": "#6C5CE7",
+      "opacity": 0.3,
+      "description": "Total number of blocks in the container",
+      "storeAs": "nxBlockCount",
+      "valueType": "uint64"
+    },
+    {
+      "type": "field",
+      "name": "Features",
+      "offset": 48,
+      "length": 8,
+      "color": "#E17055",
+      "opacity": 0.3,
+      "description": "Container feature flags",
+      "storeAs": "nxFeatures",
+      "valueType": "uint64"
+    },
+    {
+      "type": "field",
+      "name": "Read-Only Compatible Features",
+      "offset": 56,
+      "length": 8,
+      "color": "#00B894",
+      "opacity": 0.3,
+      "description": "Read-only compatible feature flags",
+      "storeAs": "nxReadonlyFeatures",
+      "valueType": "uint64"
+    },
+    {
+      "type": "field",
+      "name": "Incompatible Features",
+      "offset": 64,
+      "length": 8,
+      "color": "#0984E3",
+      "opacity": 0.3,
+      "description": "Incompatible feature flags (bit0=v1, bit1=fusion, bit8=sealed volumes)",
+      "storeAs": "nxIncompatFeatures",
+      "valueType": "uint64"
+    },
+    {
+      "type": "field",
+      "name": "Container UUID",
+      "offset": 72,
+      "length": 16,
+      "color": "#FDCB6E",
+      "opacity": 0.3,
+      "description": "Universally unique identifier for this APFS container",
+      "storeAs": "nxUuid",
+      "valueType": "bytes"
+    },
+    {
+      "type": "field",
+      "name": "Next Object Identifier",
+      "offset": 88,
+      "length": 8,
+      "color": "#E84393",
+      "opacity": 0.3,
+      "description": "Next object identifier to be allocated",
+      "storeAs": "nxNextOid",
+      "valueType": "uint64"
+    },
+    {
+      "type": "field",
+      "name": "Next Transaction Identifier",
+      "offset": 96,
+      "length": 8,
+      "color": "#A29BFE",
+      "opacity": 0.3,
+      "description": "Next transaction identifier to be assigned",
+      "storeAs": "nxNextXid",
+      "valueType": "uint64"
+    }
+  ],
+  "software": [
+    "diskutil (macOS)",
+    "apfs-fuse (Linux)",
+    "Paragon APFS for Windows"
+  ],
+  "formatRelationships": {
+    "category": "Disk",
+    "extensions": [],
+    "relatedFormats": [
+      "HFS+",
+      "EXT4",
+      "BTRFS",
+      "ZFS"
+    ]
+  },
+  "MimeTypes": [
+    "application/octet-stream"
+  ],
+  "Software": [
+    "diskutil (macOS)",
+    "apfs-fuse (Linux)",
+    "Paragon APFS for Windows",
+    "iBoot / IPSW restore tools",
+    "The Sleuth Kit (experimental APFS support)",
+    "BlackBag BlackLight (forensics)",
+    "Reincubate iPhone Backup Extractor"
+  ],
+  "UseCases": [
+    "macOS and iOS primary filesystem analysis",
+    "Apple device forensic imaging and examination",
+    "APFS snapshot enumeration and timeline reconstruction",
+    "FileVault encrypted volume investigation",
+    "Fusion Drive tiering analysis (SSD+HDD)",
+    "iOS backup and IPSW firmware inspection"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 90,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 14,
+    "ValidationRules": 4,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": true,
+    "AutoRefined": false
+  },
+  "forensic": {
+    "category": "disk",
+    "riskLevel": "medium",
+    "suspiciousPatterns": [
+      {
+        "name": "FileVault encryption enabled",
+        "description": "Container may use per-volume encryption (FileVault), preventing direct content inspection",
+        "condition": "nxFeatures > 0"
+      },
+      {
+        "name": "Sealed volume detected",
+        "description": "Incompatible features bit 8 set, indicating a sealed (signed) system volume",
+        "condition": "nxIncompatFeatures > 0"
+      }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "Apple File System container superblock with copy-on-write B-tree, per-volume encryption, and snapshot support",
+    "suggestedInspections": [
+      "Verify 'NXSB' magic at offset 32 and object type field for container superblock identity",
+      "Validate Fletcher-64 checksum in the object header against the computed block checksum",
+      "Check block size is a valid power of 2 (typically 4096) and block count is non-zero",
+      "Inspect incompatible feature flags for Fusion Drive and sealed volume indicators",
+      "Examine container UUID for cross-referencing with volume superblocks",
+      "Analyze transaction identifier sequence for timeline reconstruction"
+    ]
+  },
+  "navigation": {
+    "bookmarks": [
+      {
+        "name": "Object Header",
+        "offsetVar": "currentOffset",
+        "icon": "header"
+      },
+      {
+        "name": "NXSB Magic",
+        "offset": 32,
+        "icon": "signature"
+      },
+      {
+        "name": "Container UUID",
+        "offset": 72,
+        "icon": "id"
+      }
+    ]
+  },
+  "TechnicalDetails": {
+    "endianness": "little",
+    "objectHeader": "All objects share a 32-byte header: checksum(8B) + oid(8B) + xid(8B) + type(4B) + subtype(4B)",
+    "checksumAlgorithm": "Fletcher-64 over the entire block (with checksum field zeroed during computation)",
+    "dataStructure": "Copy-on-write B-tree filesystem with container and volume superblocks",
+    "containerModel": "Container holds one or more volumes with shared space pool",
+    "encryption": "Per-file or per-volume encryption; FileVault uses per-volume keys",
+    "snapshots": "Atomic point-in-time snapshots via transaction identifier fencing",
+    "clones": "Instant file cloning via shared data extents with reference counting",
+    "fusionDrive": "SSD+HDD tiering managed at the container level",
+    "sealedVolumes": "macOS signed system volumes (Big Sur+) with cryptographic integrity"
+  },
+  "inspector": {
+    "badge": "nxMagic",
+    "primaryField": "nxBlockSize",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "Object Header",
+        "icon": "header",
+        "fields": [
+          "objChecksum",
+          "objOid",
+          "objXid",
+          "objType",
+          "objSubtype"
+        ]
+      },
+      {
+        "title": "Container Superblock",
+        "icon": "disk",
+        "fields": [
+          "nxMagic",
+          "nxBlockSize",
+          "nxBlockCount",
+          "nxUuid"
+        ]
+      },
+      {
+        "title": "Feature Flags",
+        "icon": "flag",
+        "fields": [
+          "nxFeatures",
+          "nxReadonlyFeatures",
+          "nxIncompatFeatures"
+        ]
+      },
+      {
+        "title": "Allocation State",
+        "icon": "counter",
+        "fields": [
+          "nxNextOid",
+          "nxNextXid"
+        ]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "APFS Container Header (JSON)",
+      "format": "json",
+      "fields": [
+        "objChecksum",
+        "objOid",
+        "objXid",
+        "objType",
+        "nxMagic",
+        "nxBlockSize",
+        "nxBlockCount",
+        "nxUuid",
+        "nxFeatures",
+        "nxIncompatFeatures"
+      ]
+    },
+    {
+      "name": "APFS Summary (CSV)",
+      "format": "csv",
+      "fields": [
+        "nxBlockSize",
+        "nxBlockCount",
+        "nxFeatures",
+        "nxIncompatFeatures",
+        "nxNextOid",
+        "nxNextXid"
+      ]
+    }
+  ],
+  "assertions": [
+    {
+      "name": "NXSB magic valid",
+      "expression": "nxMagic == 'NXSB'",
+      "severity": "error",
+      "message": "APFS container superblock magic must be 'NXSB' at offset 32"
+    },
+    {
+      "name": "object type is container superblock",
+      "expression": "objType == 1",
+      "severity": "error",
+      "message": "Object type must be 1 (NX_SUPERBLOCK) for container superblock"
+    },
+    {
+      "name": "block size is power of 2",
+      "expression": "nxBlockSize >= 512 && nxBlockSize <= 65536",
+      "severity": "error",
+      "message": "Block size must be a power of 2 between 512 and 65536 bytes"
+    },
+    {
+      "name": "block count non-zero",
+      "expression": "nxBlockCount > 0",
+      "severity": "error",
+      "message": "Container block count must be greater than zero"
+    }
+  ],
+  "functions": {
+    "readUInt32LE": "Read little-endian 32-bit fields",
+    "readUInt64LE": "Read little-endian 64-bit fields",
+    "readBytes": "Read raw byte arrays (UUID, checksum)"
+  }
+}

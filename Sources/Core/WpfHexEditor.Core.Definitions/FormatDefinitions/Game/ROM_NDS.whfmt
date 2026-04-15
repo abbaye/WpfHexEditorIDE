@@ -1,0 +1,638 @@
+{
+  "diffMode": "binary",
+  "formatName": "Nintendo DS ROM",
+  "version": "1.0",
+  "extensions": [
+    ".nds"
+  ],
+  "description": "Nintendo DS ROM images (.nds) contain full cartridge data for the NDS handheld (2004) with dual-CPU ARM9/ARM7 architecture and NitroFS filesystem",
+  "category": "Game",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "references": {
+    "specifications": [
+      "GBATEK - NDS Technical Specification",
+      "Nintendo DS Cartridge Header Format",
+      "NDS ROM Header Documentation"
+    ],
+    "WebLinks": [
+      "http://problemkaputt.de/gbatek.htm#dscartridgeheader",
+      "https://dsibrew.org/wiki/NDS_Format",
+      "https://en.wikipedia.org/wiki/Nintendo_DS",
+      "https://www.romhacking.net/documents/nds/"
+    ]
+  },
+  "detection": {
+    "required": true,
+    "validation": {
+      "minFileSize": 512,
+      "maxSignatureOffset": 200
+    },
+    "signatures": [
+      {
+        "value": "24FFAE51",
+        "offset": 192,
+        "label": "Nintendo DS Logo data start at offset 0xC0 (identical across all licensed NDS ROMs)",
+        "weight": 1.0
+      }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 1.0,
+    "Strength": "Strong",
+    "EntropyHint": {
+      "min": 3.0,
+      "max": 7.0
+    }
+  },
+  "variables": {
+    "currentOffset": 0,
+    "gameTitle": "",
+    "gameCode": "",
+    "makerCode": "",
+    "unitCode": 0,
+    "encryptionSeedSelect": 0,
+    "deviceCapacity": 0,
+    "ndsRegion": 0,
+    "romVersion": 0,
+    "autostart": 0,
+    "arm9RomOffset": 0,
+    "arm9EntryAddress": 0,
+    "arm9RamAddress": 0,
+    "arm9Size": 0,
+    "arm7RomOffset": 0,
+    "arm7EntryAddress": 0,
+    "arm7RamAddress": 0,
+    "arm7Size": 0,
+    "fntOffset": 0,
+    "fntSize": 0,
+    "fatOffset": 0,
+    "fatSize": 0,
+    "iconTitleOffset": 0,
+    "romSize": 0,
+    "headerSize": 0,
+    "nintendoLogo": "",
+    "logoChecksum": 0,
+    "headerChecksum": 0
+  },
+  "blocks": [
+    {
+      "type": "field",
+      "name": "Game Title",
+      "offset": 0,
+      "length": 12,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "valueType": "ascii",
+      "storeAs": "gameTitle",
+      "description": "Game title in ASCII (null-padded, e.g. 'POKEMON D')"
+    },
+    {
+      "type": "field",
+      "name": "Game Code",
+      "offset": 12,
+      "length": 4,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "valueType": "ascii",
+      "storeAs": "gameCode",
+      "description": "4-character game code (e.g. 'ADAE' = Pokemon Diamond US)"
+    },
+    {
+      "type": "field",
+      "name": "Maker Code",
+      "offset": 16,
+      "length": 2,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "valueType": "ascii",
+      "storeAs": "makerCode",
+      "description": "2-character maker code (e.g. '01' = Nintendo)"
+    },
+    {
+      "type": "field",
+      "name": "Unit Code",
+      "offset": 18,
+      "length": 1,
+      "color": "#FFE66D",
+      "opacity": 0.3,
+      "valueType": "uint8",
+      "storeAs": "unitCode",
+      "description": "0x00=NDS, 0x02=NDS+DSi, 0x03=DSi only",
+      "valueMap": {
+        "0": "Nintendo DS",
+        "2": "NDS + DSi Enhanced",
+        "3": "DSi Exclusive"
+      },
+      "validationRules": {
+        "allowedValues": [0, 2, 3]
+      }
+    },
+    {
+      "type": "field",
+      "name": "Encryption Seed Select",
+      "offset": 19,
+      "length": 1,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "valueType": "uint8",
+      "storeAs": "encryptionSeedSelect",
+      "description": "Encryption seed index for Secure Area"
+    },
+    {
+      "type": "field",
+      "name": "Device Capacity",
+      "offset": 20,
+      "length": 1,
+      "color": "#95E1D3",
+      "opacity": 0.3,
+      "valueType": "uint8",
+      "storeAs": "deviceCapacity",
+      "description": "Cartridge size = 128KB << value"
+    },
+    {
+      "type": "field",
+      "name": "NDS Region",
+      "offset": 30,
+      "length": 1,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "valueType": "uint8",
+      "storeAs": "ndsRegion",
+      "description": "Region byte (0x00 = normal)"
+    },
+    {
+      "type": "field",
+      "name": "ROM Version",
+      "offset": 31,
+      "length": 1,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "valueType": "uint8",
+      "storeAs": "romVersion",
+      "description": "Game revision number"
+    },
+    {
+      "type": "field",
+      "name": "Autostart",
+      "offset": 32,
+      "length": 1,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "valueType": "uint8",
+      "storeAs": "autostart",
+      "description": "Bit 2: skip health/safety screen"
+    },
+    {
+      "type": "field",
+      "name": "ARM9 ROM Offset",
+      "offset": 36,
+      "length": 4,
+      "color": "#6C5CE7",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "storeAs": "arm9RomOffset",
+      "description": "ARM9 binary offset within the ROM file"
+    },
+    {
+      "type": "field",
+      "name": "ARM9 Entry Address",
+      "offset": 40,
+      "length": 4,
+      "color": "#6C5CE7",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "storeAs": "arm9EntryAddress",
+      "description": "ARM9 entry point address in RAM"
+    },
+    {
+      "type": "field",
+      "name": "ARM9 RAM Address",
+      "offset": 44,
+      "length": 4,
+      "color": "#6C5CE7",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "storeAs": "arm9RamAddress",
+      "description": "ARM9 load address in RAM"
+    },
+    {
+      "type": "field",
+      "name": "ARM9 Size",
+      "offset": 48,
+      "length": 4,
+      "color": "#6C5CE7",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "storeAs": "arm9Size",
+      "description": "ARM9 binary size in bytes"
+    },
+    {
+      "type": "field",
+      "name": "ARM7 ROM Offset",
+      "offset": 52,
+      "length": 4,
+      "color": "#E17055",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "storeAs": "arm7RomOffset",
+      "description": "ARM7 binary offset within the ROM file"
+    },
+    {
+      "type": "field",
+      "name": "ARM7 Entry Address",
+      "offset": 56,
+      "length": 4,
+      "color": "#E17055",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "storeAs": "arm7EntryAddress",
+      "description": "ARM7 entry point address in RAM"
+    },
+    {
+      "type": "field",
+      "name": "ARM7 RAM Address",
+      "offset": 60,
+      "length": 4,
+      "color": "#E17055",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "storeAs": "arm7RamAddress",
+      "description": "ARM7 load address in RAM"
+    },
+    {
+      "type": "field",
+      "name": "ARM7 Size",
+      "offset": 64,
+      "length": 4,
+      "color": "#E17055",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "storeAs": "arm7Size",
+      "description": "ARM7 binary size in bytes"
+    },
+    {
+      "type": "field",
+      "name": "FNT Offset",
+      "offset": 68,
+      "length": 4,
+      "color": "#00B894",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "storeAs": "fntOffset",
+      "description": "File Name Table offset in ROM"
+    },
+    {
+      "type": "field",
+      "name": "FNT Size",
+      "offset": 72,
+      "length": 4,
+      "color": "#00B894",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "storeAs": "fntSize",
+      "description": "File Name Table size in bytes"
+    },
+    {
+      "type": "field",
+      "name": "FAT Offset",
+      "offset": 76,
+      "length": 4,
+      "color": "#00B894",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "storeAs": "fatOffset",
+      "description": "File Allocation Table offset in ROM"
+    },
+    {
+      "type": "field",
+      "name": "FAT Size",
+      "offset": 80,
+      "length": 4,
+      "color": "#00B894",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "storeAs": "fatSize",
+      "description": "File Allocation Table size in bytes"
+    },
+    {
+      "type": "field",
+      "name": "Icon/Title Offset",
+      "offset": 104,
+      "length": 4,
+      "color": "#FDCB6E",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "storeAs": "iconTitleOffset",
+      "description": "Offset to icon/title banner data (32x32 icon + titles in 6 languages)"
+    },
+    {
+      "type": "field",
+      "name": "ROM Size",
+      "offset": 128,
+      "length": 4,
+      "color": "#FF6B9D",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "storeAs": "romSize",
+      "description": "Used ROM size in bytes (may differ from actual file size)"
+    },
+    {
+      "type": "field",
+      "name": "Header Size",
+      "offset": 132,
+      "length": 4,
+      "color": "#C7CEEA",
+      "opacity": 0.3,
+      "valueType": "uint32",
+      "storeAs": "headerSize",
+      "description": "Header size (0x4000 = 16KB including secure area)"
+    },
+    {
+      "type": "signature",
+      "name": "Nintendo Logo",
+      "offset": 192,
+      "length": 156,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "Compressed Nintendo bitmap (156 bytes, identical across all licensed NDS cartridges)",
+      "storeAs": "nintendoLogo",
+      "valueType": "bytes"
+    },
+    {
+      "type": "field",
+      "name": "Logo Checksum",
+      "offset": 348,
+      "length": 2,
+      "color": "#FF6B9D",
+      "opacity": 0.3,
+      "valueType": "uint16",
+      "storeAs": "logoChecksum",
+      "description": "CRC-16 of Nintendo Logo data"
+    },
+    {
+      "type": "field",
+      "name": "Header Checksum",
+      "offset": 350,
+      "length": 2,
+      "color": "#FF6B9D",
+      "opacity": 0.3,
+      "valueType": "uint16",
+      "storeAs": "headerChecksum",
+      "description": "CRC-16 of header bytes 0x000-0x15D"
+    },
+    {
+      "type": "metadata",
+      "name": "Format",
+      "variable": "gameTitle",
+      "description": "Game Title"
+    },
+    {
+      "type": "metadata",
+      "name": "Game Code",
+      "variable": "gameCode",
+      "description": "Game Code"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "Nintendo Logo signature valid",
+      "expression": "nintendoLogo[0..4] == 0x24FFAE51",
+      "severity": "error",
+      "message": "Nintendo DS Logo at offset 0xC0 must start with bytes 24 FF AE 51"
+    },
+    {
+      "name": "Unit code within valid range",
+      "expression": "unitCode == 0 || unitCode == 2 || unitCode == 3",
+      "severity": "error",
+      "message": "Unit code must be 0x00 (NDS), 0x02 (NDS+DSi), or 0x03 (DSi only)"
+    },
+    {
+      "name": "ARM9 binary size is valid",
+      "expression": "arm9Size > 0 && arm9Size < 4194304",
+      "severity": "error",
+      "message": "ARM9 binary size must be > 0 and < 4MB (0x400000)"
+    },
+    {
+      "name": "ARM7 binary size is non-zero",
+      "expression": "arm7Size > 0",
+      "severity": "error",
+      "message": "ARM7 binary size must be greater than zero"
+    },
+    {
+      "name": "Header checksum coverage note",
+      "expression": "headerChecksum > 0",
+      "severity": "warning",
+      "message": "Header checksum (CRC-16) at 0x15E covers bytes 0x000-0x15D; verify manually if needed"
+    }
+  ],
+  "inspector": {
+    "badge": "gameTitle",
+    "primaryField": "gameCode",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "Game Identity",
+        "icon": "game",
+        "fields": [
+          "gameTitle",
+          "gameCode",
+          "makerCode",
+          "unitCode",
+          "romVersion"
+        ]
+      },
+      {
+        "title": "ARM9 Processor",
+        "icon": "cpu",
+        "fields": [
+          "arm9RomOffset",
+          "arm9EntryAddress",
+          "arm9RamAddress",
+          "arm9Size"
+        ]
+      },
+      {
+        "title": "ARM7 Processor",
+        "icon": "cpu",
+        "fields": [
+          "arm7RomOffset",
+          "arm7EntryAddress",
+          "arm7RamAddress",
+          "arm7Size"
+        ]
+      },
+      {
+        "title": "NitroFS Filesystem",
+        "icon": "folder",
+        "fields": [
+          "fntOffset",
+          "fntSize",
+          "fatOffset",
+          "fatSize"
+        ]
+      },
+      {
+        "title": "ROM Metadata",
+        "icon": "info",
+        "fields": [
+          "romSize",
+          "headerSize",
+          "deviceCapacity",
+          "iconTitleOffset"
+        ]
+      },
+      {
+        "title": "Checksums",
+        "icon": "checksum",
+        "fields": [
+          "logoChecksum",
+          "headerChecksum"
+        ]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "NDS Header (JSON)",
+      "format": "json",
+      "fields": [
+        "gameTitle",
+        "gameCode",
+        "makerCode",
+        "unitCode",
+        "arm9RomOffset",
+        "arm9Size",
+        "arm7RomOffset",
+        "arm7Size",
+        "romSize",
+        "headerChecksum"
+      ]
+    },
+    {
+      "name": "NDS Summary (CSV)",
+      "format": "csv",
+      "fields": [
+        "gameTitle",
+        "gameCode",
+        "makerCode",
+        "unitCode",
+        "deviceCapacity",
+        "romSize",
+        "arm9Size",
+        "arm7Size"
+      ]
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      {
+        "name": "Game Title",
+        "offset": 0,
+        "icon": "text"
+      },
+      {
+        "name": "ARM9 Code Info",
+        "offset": 36,
+        "icon": "cpu"
+      },
+      {
+        "name": "ARM7 Code Info",
+        "offset": 52,
+        "icon": "cpu"
+      },
+      {
+        "name": "NitroFS Tables",
+        "offset": 68,
+        "icon": "folder"
+      },
+      {
+        "name": "Nintendo Logo",
+        "offset": 192,
+        "icon": "signature"
+      },
+      {
+        "name": "Header Checksum",
+        "offset": 350,
+        "icon": "checksum"
+      }
+    ]
+  },
+  "software": [
+    "DeSmuME (NDS emulator)",
+    "melonDS (NDS emulator)",
+    "no$gba (NDS/GBA emulator and debugger)",
+    "NDSTool (ROM extract/rebuild utility)",
+    "CrystalTile2 (NDS ROM editor)"
+  ],
+  "formatRelationships": {
+    "category": "Game",
+    "extensions": [
+      ".nds"
+    ],
+    "relatedFormats": [
+      "ROM_3DS",
+      "ROM_GBA"
+    ]
+  },
+  "MimeTypes": [
+    "application/x-nintendo-ds-rom"
+  ],
+  "Software": [
+    "DeSmuME (NDS emulator)",
+    "melonDS (NDS emulator)",
+    "no$gba (NDS/GBA emulator and debugger)",
+    "NDSTool (ROM extract/rebuild utility)",
+    "CrystalTile2 (NDS ROM editor)"
+  ],
+  "UseCases": [
+    "NDS game emulation and testing",
+    "ROM hacking and fan translations",
+    "NDS homebrew development",
+    "Game preservation and archival"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 90,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 29,
+    "ValidationRules": 5,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": true,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "endianness": "little",
+    "dualCPU": "ARM9 (main, 67MHz) + ARM7 (sub, 33MHz for sound/WiFi/touchscreen)",
+    "filesystem": "NitroFS — File Name Table (FNT) + File Allocation Table (FAT)",
+    "overlays": "ARM9/ARM7 overlay tables for dynamic code loading",
+    "secureArea": "Bytes 0x4000-0x7FFF encrypted with Blowfish (required for DS hardware boot)",
+    "banner": "Icon/Title at iconTitleOffset: 32x32 icon bitmap + titles in 6 languages (JP/EN/FR/DE/IT/ES)",
+    "headerSize": "4096 bytes (0x1000) logical header; 16KB (0x4000) including secure area padding"
+  },
+  "forensic": {
+    "category": "game",
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      {
+        "name": "Secure area decrypted",
+        "description": "Secure Area (0x4000-0x7FFF) may be decrypted in dumped ROMs, indicating a modified or homebrew cartridge",
+        "condition": "arm9RomOffset == 0x4000"
+      }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "Nintendo DS ROM cartridge with dual-CPU ARM9/ARM7 architecture, NitroFS filesystem, and Blowfish-encrypted secure area",
+    "suggestedInspections": [
+      "Verify Nintendo Logo at offset 0xC0 matches the fixed 156-byte bitmap (first 4 bytes: 24 FF AE 51)",
+      "Validate ARM9 and ARM7 ROM offsets point within file bounds and sizes are reasonable",
+      "Check FNT/FAT table offsets and sizes for NitroFS filesystem integrity",
+      "Inspect unit code to determine NDS/DSi compatibility mode",
+      "Verify CRC-16 header checksum at 0x15E against computed value over bytes 0x000-0x15D",
+      "Examine icon/title banner offset for game metadata extraction"
+    ]
+  },
+  "functions": {
+    "readUInt32LE": "Read little-endian 32-bit header fields",
+    "readUInt16LE": "Read little-endian 16-bit checksums",
+    "extractASCIIString": "Read game title and codes"
+  }
+}

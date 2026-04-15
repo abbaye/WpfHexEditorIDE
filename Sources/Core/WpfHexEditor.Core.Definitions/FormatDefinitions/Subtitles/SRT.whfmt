@@ -1,0 +1,217 @@
+{
+  "diffMode": "text",
+  "formatName": "SubRip Subtitle",
+  "version": "1.0",
+  "extensions": [ ".srt" ],
+  "description": "SRT (SubRip) is the most widely used plain-text subtitle format; each entry consists of a sequential integer, a timestamp range (HH:MM:SS,mmm --> HH:MM:SS,mmm), and one or more lines of subtitle text supporting basic HTML tags (<b>, <i>, <u>, <font>), separated by blank lines. Encoding is typically UTF-8 with optional BOM.",
+  "category": "Subtitles",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "text-editor",
+  "MimeTypes": [ "text/plain", "application/x-subrip" ],
+  "UseCases": [
+    "Movie and TV show subtitle files for media players",
+    "Video accessibility and closed captioning workflows",
+    "Subtitle translation and localization pipelines",
+    "Streaming platform caption ingestion (Netflix, YouTube)"
+  ],
+  "software": [
+    { "name": "VLC",              "role": "consumer" },
+    { "name": "MPC-HC",           "role": "consumer" },
+    { "name": "Subtitle Edit",    "role": "producer/consumer" },
+    { "name": "Aegisub",          "role": "producer/consumer" },
+    { "name": "HandBrake",        "role": "consumer" },
+    { "name": "FFmpeg (ffprobe)", "role": "consumer" }
+  ],
+  "references": {
+    "specifications": [ "SubRip SRT Format (de facto standard, no formal specification)" ],
+    "WebLinks": [ "https://en.wikipedia.org/wiki/SubRip" ]
+  },
+  "formatRelationships": {
+    "relatedFormats": [ "VTT (WebVTT)", "ASS (Advanced SubStation Alpha)", "SSA (SubStation Alpha)", "SUB (MicroDVD)" ],
+    "container": null,
+    "notes": "SRT is the simplest subtitle format; it can be converted to/from VTT, ASS, and other formats with minimal loss for basic styling."
+  },
+
+  "detection": {
+    "signatures": [
+      {
+        "value": "310D0A",
+        "offset": 0,
+        "label": "'1\\r\\n' — first SRT sequence number with CRLF line ending",
+        "weight": 25,
+        "required": false
+      },
+      {
+        "value": "310A",
+        "offset": 0,
+        "label": "'1\\n' — first SRT sequence number with LF line ending",
+        "weight": 25,
+        "required": false
+      },
+      {
+        "value": "EFBBBF31",
+        "offset": 0,
+        "label": "UTF-8 BOM (EF BB BF) followed by '1' — BOM-prefixed SRT file",
+        "weight": 35,
+        "required": false
+      }
+    ],
+    "matchMode": "weighted",
+    "MinimumScore": 25,
+    "Strength": "Weak",
+    "EntropyHint": {
+      "min": 3.0,
+      "max": 5.5,
+      "note": "Plain text subtitle content with timestamps and short dialogue lines; entropy is typical of natural language UTF-8 text."
+    },
+    "validation": {
+      "minFileSize": 2,
+      "maxSignatureOffset": 4
+    }
+  },
+
+  "variables": {
+    "firstByte":  { "offset": 0, "length": 1, "type": "uint8" },
+    "secondByte": { "offset": 1, "length": 1, "type": "uint8" },
+    "thirdByte":  { "offset": 2, "length": 1, "type": "uint8" }
+  },
+
+  "blocks": [
+    {
+      "type": "field",
+      "name": "First Byte",
+      "offset": 0,
+      "length": 1,
+      "color": "#42A5F5",
+      "opacity": 0.6,
+      "description": "First byte of the file: 0x31 ('1') for the first sequence number, or 0xEF for the start of a UTF-8 BOM.",
+      "storeAs": "firstByte",
+      "valueType": "uint8",
+      "valueMap": {
+        "49": "'1' — first subtitle sequence number",
+        "239": "0xEF — UTF-8 BOM start byte"
+      }
+    },
+    {
+      "type": "field",
+      "name": "Second Byte",
+      "offset": 1,
+      "length": 1,
+      "color": "#66BB6A",
+      "opacity": 0.5,
+      "description": "Second byte: 0x0D (CR) or 0x0A (LF) after sequence number '1', or 0xBB for BOM continuation.",
+      "storeAs": "secondByte",
+      "valueType": "uint8",
+      "valueMap": {
+        "13": "0x0D — Carriage Return (CRLF line ending)",
+        "10": "0x0A — Line Feed (LF line ending)",
+        "187": "0xBB — UTF-8 BOM continuation byte"
+      }
+    },
+    {
+      "type": "metadata",
+      "name": "Subtitle Entries",
+      "offset": "variable",
+      "length": "variable",
+      "color": "#AB47BC",
+      "opacity": 0.5,
+      "description": "Sequential subtitle entries each consisting of: sequence number (integer), timestamp line (HH:MM:SS,mmm --> HH:MM:SS,mmm), one or more lines of subtitle text, and a blank line separator."
+    }
+  ],
+
+  "assertions": [
+    {
+      "name": "FirstByteIsSequenceOrBOM",
+      "expression": "UINT8(0) == 0x31 || UINT8(0) == 0xEF",
+      "severity": "error",
+      "message": "First byte is neither '1' (0x31) nor UTF-8 BOM start (0xEF); file may not be a valid SRT subtitle."
+    },
+    {
+      "name": "BOMContinuationValid",
+      "expression": "UINT8(0) != 0xEF || (UINT8(1) == 0xBB && UINT8(2) == 0xBF)",
+      "severity": "error",
+      "message": "UTF-8 BOM is incomplete; expected EF BB BF but continuation bytes do not match."
+    },
+    {
+      "name": "FileSizeMinimum",
+      "expression": "FILE_SIZE >= 10",
+      "severity": "warning",
+      "message": "File is extremely small (< 10 bytes); a valid SRT file requires at least one complete subtitle entry with sequence number, timestamp, and text."
+    }
+  ],
+
+  "navigation": {
+    "bookmarks": [
+      { "name": "File Start / BOM",      "offset": 0, "description": "First byte: sequence number '1' or UTF-8 BOM" },
+      { "name": "First Timestamp Region", "offset": 2, "description": "Approximate start of the first timestamp line (HH:MM:SS,mmm --> HH:MM:SS,mmm)" }
+    ]
+  },
+
+  "inspector": {
+    "badge": "SRT",
+    "primaryField": "firstByte",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "name": "File Header",
+        "fields": [ "firstByte", "secondByte" ]
+      },
+      {
+        "name": "Format Info",
+        "fields": [ "thirdByte" ]
+      }
+    ]
+  },
+
+  "exportTemplates": [
+    {
+      "name": "SRT Header Summary",
+      "format": "text",
+      "template": "SubRip Subtitle (SRT)\n  First Byte : {firstByte} ({firstByte_mapped})\n  Second Byte: {secondByte} ({secondByte_mapped})"
+    },
+    {
+      "name": "SRT JSON Report",
+      "format": "json",
+      "template": "{ \"format\": \"SRT\", \"firstByte\": {firstByte}, \"secondByte\": {secondByte} }"
+    }
+  ],
+
+  "forensic": {
+    "category": "MediaSubtitle",
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      { "pattern": "EmbeddedScriptTags",   "description": "SRT text lines may contain HTML-like tags; malformed or unexpected tags could indicate injection attempts in vulnerable players." },
+      { "pattern": "ExcessiveEntryCount",   "description": "An abnormally high number of subtitle entries may indicate a fuzzing artifact or corrupted file." }
+    ]
+  },
+
+  "aiHints": {
+    "analysisContext": "SRT is a plain-text subtitle format with no binary structure. Each entry is: sequence number, timestamp range (HH:MM:SS,mmm --> HH:MM:SS,mmm), subtitle text, blank line. Detection relies on the first byte being '1' or a UTF-8 BOM, making signature matching inherently weak.",
+    "suggestedInspections": [
+      "Check whether the file starts with a UTF-8 BOM (EF BB BF) and note the encoding for correct text rendering.",
+      "Verify that the first non-BOM content is a sequence number '1' followed by a valid timestamp line.",
+      "Scan for HTML formatting tags (<b>, <i>, <u>, <font>) in subtitle text lines to assess styling complexity.",
+      "Validate timestamp ordering to ensure all entries have non-overlapping, monotonically increasing time ranges.",
+      "Check for encoding anomalies — mixed UTF-8 and Latin-1 bytes can cause garbled subtitle display."
+    ]
+  },
+
+  "TechnicalDetails": {
+    "specification": "No formal specification; de facto standard defined by SubRip tool behavior and widespread player support.",
+    "endianness": "N/A (text format)",
+    "encoding": "UTF-8 (with optional BOM), or legacy ANSI/Latin-1/Windows-1252",
+    "timestampFormat": "HH:MM:SS,mmm --> HH:MM:SS,mmm (comma as decimal separator, not period)",
+    "htmlTags": "Supported: <b>, <i>, <u>, <font color=\"...\">. Player support varies.",
+    "notes": "SRT has no header or footer; the file is purely sequential entries. Empty lines between entries are mandatory separators."
+  },
+
+  "QualityMetrics": {
+    "CompletenessScore": 88,
+    "DocumentationLevel": "comprehensive",
+    "BlocksDefined": 3,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": true,
+    "AutoRefined": false
+  }
+}

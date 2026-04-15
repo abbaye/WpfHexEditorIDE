@@ -10,7 +10,7 @@
 using System.Globalization;
 using System.Windows.Data;
 using System.Windows.Media;
-using WpfHexEditor.Editor.StructureEditor.ViewModels;
+using WpfHexEditor.Editor.Core.Validation;
 
 namespace WpfHexEditor.Editor.StructureEditor.Controls;
 

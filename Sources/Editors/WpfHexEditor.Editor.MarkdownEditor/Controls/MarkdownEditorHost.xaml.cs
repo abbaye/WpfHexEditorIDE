@@ -681,9 +681,10 @@ public sealed partial class MarkdownEditorHost : UserControl,
                 break;
         }
 
-        // Force the WebView2 HWND to match the new layout slot via SetWindowPos.
-        // WPF arrange passes do not propagate to Win32 children after grid rebuilds.
+        // Force child controls to match the new layout slot — WPF arrange passes
+        // do not propagate reliably to Win32 children or custom viewports after grid rebuilds.
         _preview.InvalidateWebViewSize();
+        _editor.InvalidateViewportSize();
     }
 
     private void BuildHorizontalLayout(bool editorFirst,

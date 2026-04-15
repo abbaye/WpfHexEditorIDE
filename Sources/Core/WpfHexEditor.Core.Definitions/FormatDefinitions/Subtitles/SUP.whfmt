@@ -1,0 +1,254 @@
+{
+  "diffMode": "binary",
+  "formatName": "PGS Blu-ray Subtitle",
+  "version": "1.0",
+  "extensions": [ ".sup" ],
+  "description": "PGS (Presentation Graphic Stream) is the bitmap-based subtitle format used on Blu-ray discs; each display event is a sequence of segments starting with the 'PG' magic (0x50 0x47), containing RLE-encoded palette-indexed images with 90 kHz PTS/DTS timestamps, palette definitions (PDS), object bitmaps (ODS), composition control (PCS), window definitions (WDS), and end-of-display markers.",
+  "category": "Subtitles",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "MimeTypes": [ "application/x-pgs" ],
+  "UseCases": [
+    "Blu-ray disc subtitle tracks (HDMV specification)",
+    "MKV-embedded PGS subtitle streams extracted from Blu-ray rips",
+    "Forced subtitle overlay for foreign language segments",
+    "Subtitle extraction and OCR conversion (PGS to SRT via Tesseract)"
+  ],
+  "software": [
+    { "name": "BDSup2Sub",         "role": "consumer (convert SUP to SRT/VobSub)" },
+    { "name": "mkvtoolnix",        "role": "producer/consumer (mux SUP into MKV)" },
+    { "name": "Subtitle Edit",     "role": "consumer (OCR + edit)" },
+    { "name": "PGSEdit",           "role": "producer/consumer" },
+    { "name": "FFmpeg",            "role": "consumer (extract from Blu-ray/MKV)" }
+  ],
+  "references": {
+    "specifications": [ "Blu-ray Disc Association HDMV Presentation Graphic Stream specification" ],
+    "WebLinks": [ "https://en.wikipedia.org/wiki/Presentation_Graphic_Stream", "https://blog.thescorpius.com/index.php/2017/07/15/presentation-graphic-stream-sup-files-bluray-subtitle-format/" ]
+  },
+  "formatRelationships": {
+    "relatedFormats": [ "VobSub (.sub/.idx — DVD bitmap subtitles)", "SRT (text — via OCR conversion)", "HDMV Interactive Graphics" ],
+    "container": "Blu-ray HDMV transport stream, MKV (Matroska)",
+    "notes": "PGS is purely bitmap-based — there is no embedded text. Converting to text formats (SRT, VTT) requires OCR. PGS is part of the Blu-ray HDMV specification alongside Interactive Graphics (IG)."
+  },
+
+  "detection": {
+    "signatures": [
+      {
+        "value": "5047",
+        "offset": 0,
+        "label": "'PG' — Presentation Graphic Stream segment header magic",
+        "weight": 60,
+        "required": true
+      }
+    ],
+    "matchMode": "weighted",
+    "MinimumScore": 60,
+    "Strength": "Strong",
+    "EntropyHint": {
+      "min": 2.0,
+      "max": 6.5,
+      "note": "RLE-encoded bitmap data varies widely in entropy; simple solid-color subtitles have low entropy while anti-aliased or complex glyphs approach higher values."
+    },
+    "validation": {
+      "minFileSize": 13,
+      "maxSignatureOffset": 0,
+      "expression": "STRING_ASCII(0, 2) == 'PG'",
+      "description": "First two bytes must be 'PG' (0x50 0x47) — the PGS segment header magic."
+    }
+  },
+
+  "variables": {
+    "magic":        { "offset": 0,  "length": 2, "type": "ascii" },
+    "pts":          { "offset": 2,  "length": 4, "type": "uint32be" },
+    "dts":          { "offset": 6,  "length": 4, "type": "uint32be" },
+    "segmentType":  { "offset": 10, "length": 1, "type": "uint8" },
+    "segmentSize":  { "offset": 11, "length": 2, "type": "uint16be" }
+  },
+
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "PG Magic",
+      "offset": 0,
+      "length": 2,
+      "color": "#FF7043",
+      "opacity": 0.9,
+      "description": "2-byte ASCII magic 'PG' (0x50 0x47) identifying the start of a Presentation Graphic Stream segment.",
+      "storeAs": "magic",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Presentation Timestamp (PTS)",
+      "offset": 2,
+      "length": 4,
+      "color": "#FFA726",
+      "opacity": 0.7,
+      "description": "32-bit big-endian Presentation TimeStamp in 90 kHz clock units; divide by 90000 to get seconds. Indicates when this subtitle segment should be displayed.",
+      "storeAs": "pts",
+      "valueType": "uint32",
+      "endianness": "big"
+    },
+    {
+      "type": "field",
+      "name": "Decoding Timestamp (DTS)",
+      "offset": 6,
+      "length": 4,
+      "color": "#FFB74D",
+      "opacity": 0.6,
+      "description": "32-bit big-endian Decoding TimeStamp in 90 kHz clock units; typically 0 for PGS since decode and present happen simultaneously.",
+      "storeAs": "dts",
+      "valueType": "uint32",
+      "endianness": "big"
+    },
+    {
+      "type": "field",
+      "name": "Segment Type",
+      "offset": 10,
+      "length": 1,
+      "color": "#FF8A65",
+      "opacity": 0.8,
+      "description": "Segment type identifier byte determining the content and structure of the segment data payload.",
+      "storeAs": "segmentType",
+      "valueType": "uint8",
+      "valueMap": {
+        "20": "0x14 — PDS (Palette Definition Segment): 256-entry YCbCr+Alpha palette",
+        "21": "0x15 — ODS (Object Definition Segment): RLE-encoded bitmap data",
+        "22": "0x16 — PCS (Presentation Composition Segment): display control and object placement",
+        "23": "0x17 — WDS (Window Definition Segment): display area rectangle",
+        "128": "0x80 — END (End of Display Set): marks completion of a subtitle epoch"
+      }
+    },
+    {
+      "type": "field",
+      "name": "Segment Size",
+      "offset": 11,
+      "length": 2,
+      "color": "#FFAB91",
+      "opacity": 0.6,
+      "description": "16-bit big-endian size in bytes of the segment data payload immediately following this header. END segments typically have size 0.",
+      "storeAs": "segmentSize",
+      "valueType": "uint16",
+      "endianness": "big"
+    },
+    {
+      "type": "metadata",
+      "name": "Segment Data",
+      "offset": 13,
+      "length": "variable",
+      "color": "#FFCCBC",
+      "opacity": 0.4,
+      "description": "Variable-length segment payload: PDS contains palette entries (Y, Cr, Cb, Alpha per index); ODS contains RLE-encoded 8-bit palette-indexed bitmap; PCS contains composition state, object positions, and palette references; WDS contains window rectangle coordinates."
+    }
+  ],
+
+  "assertions": [
+    {
+      "name": "PGMagicValid",
+      "expression": "UINT8(0) == 0x50 && UINT8(1) == 0x47",
+      "severity": "error",
+      "message": "First two bytes are not 'PG' (0x50 0x47); this is not a valid PGS Blu-ray subtitle file."
+    },
+    {
+      "name": "SegmentTypeKnown",
+      "expression": "UINT8(10) == 0x14 || UINT8(10) == 0x15 || UINT8(10) == 0x16 || UINT8(10) == 0x17 || UINT8(10) == 0x80",
+      "severity": "warning",
+      "message": "First segment type byte is not a recognized PGS segment type (expected PDS=0x14, ODS=0x15, PCS=0x16, WDS=0x17, END=0x80)."
+    },
+    {
+      "name": "FileSizeMinimum",
+      "expression": "FILE_SIZE >= 13",
+      "severity": "error",
+      "message": "File is too small (< 13 bytes) to contain a complete PGS segment header (2B magic + 4B PTS + 4B DTS + 1B type + 2B size)."
+    },
+    {
+      "name": "SegmentSizeConsistent",
+      "expression": "UINT8(10) == 0x80 || UINT16BE(11) > 0",
+      "severity": "warning",
+      "message": "Non-END segment has zero data size; PDS, ODS, PCS, and WDS segments should contain payload data."
+    }
+  ],
+
+  "navigation": {
+    "bookmarks": [
+      { "name": "PG Magic",       "offset": 0,  "description": "'PG' segment header magic (2 bytes)" },
+      { "name": "PTS",            "offset": 2,  "description": "Presentation TimeStamp (4 bytes, uint32 BE, 90kHz)" },
+      { "name": "DTS",            "offset": 6,  "description": "Decoding TimeStamp (4 bytes, uint32 BE, 90kHz)" },
+      { "name": "Segment Type",   "offset": 10, "description": "Segment type: PDS/ODS/PCS/WDS/END" },
+      { "name": "Segment Size",   "offset": 11, "description": "Payload size (2 bytes, uint16 BE)" },
+      { "name": "Segment Data",   "offset": 13, "description": "Start of segment payload data" }
+    ]
+  },
+
+  "inspector": {
+    "badge": "PGS",
+    "primaryField": "magic",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "name": "Segment Header",
+        "fields": [ "magic", "pts", "dts", "segmentType", "segmentSize" ]
+      }
+    ]
+  },
+
+  "exportTemplates": [
+    {
+      "name": "PGS Segment Header Summary",
+      "format": "text",
+      "template": "PGS Blu-ray Subtitle\n  Magic        : {magic}\n  PTS          : {pts} (÷90000 = seconds)\n  DTS          : {dts}\n  Segment Type : {segmentType} ({segmentType_mapped})\n  Segment Size : {segmentSize} bytes"
+    },
+    {
+      "name": "PGS JSON Report",
+      "format": "json",
+      "template": "{ \"format\": \"PGS\", \"magic\": \"{magic}\", \"pts\": {pts}, \"dts\": {dts}, \"segmentType\": {segmentType}, \"segmentSize\": {segmentSize} }"
+    }
+  ],
+
+  "forensic": {
+    "category": "MediaSubtitle",
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      { "pattern": "OversizedBitmap",       "description": "ODS segments with unusually large RLE-decoded bitmap dimensions (exceeding 1920x1080) may indicate a malformed or crafted file." },
+      { "pattern": "MissingEndSegment",     "description": "Display sets without a terminating END segment (0x80) indicate a truncated file or incomplete Blu-ray rip." },
+      { "pattern": "ExcessivePaletteSwaps", "description": "Frequent PDS segments with different palettes may indicate steganographic data hidden in palette index assignments." }
+    ]
+  },
+
+  "aiHints": {
+    "analysisContext": "PGS is a binary bitmap-based subtitle format from the Blu-ray HDMV specification. Each segment starts with 'PG' (2B) + PTS (4B BE) + DTS (4B BE) + type (1B) + size (2B) = 13-byte header. Segment types: PDS (0x14, palette), ODS (0x15, RLE bitmap), PCS (0x16, composition), WDS (0x17, window), END (0x80). A display set is an epoch of PCS+WDS+PDS+ODS+END. No text content — OCR required for text extraction.",
+    "suggestedInspections": [
+      "Parse the first segment header to extract PTS and convert from 90kHz clock to human-readable timestamp (PTS / 90000 = seconds).",
+      "Identify the segment type of the first segment — a PCS (0x16) at epoch start indicates a new display set beginning.",
+      "Count the total number of display sets by scanning for PCS segments with composition_state = epoch_start (0x80).",
+      "Check ODS segments for bitmap dimensions to verify they fit within the expected 1920x1080 Blu-ray resolution.",
+      "Verify each display set is properly terminated with an END segment (0x80) to detect truncated or corrupted files."
+    ]
+  },
+
+  "TechnicalDetails": {
+    "specification": "Blu-ray Disc Association HDMV specification — Presentation Graphic Stream (not publicly available; reverse-engineered documentation widely used)",
+    "endianness": "big-endian (all multi-byte fields)",
+    "maxResolution": "1920x1080 (Full HD Blu-ray)",
+    "clockRate": "90 kHz (PTS/DTS values in 90000 ticks per second, standard MPEG-2 clock)",
+    "segmentTypes": {
+      "0x14": "PDS — Palette Definition Segment: up to 256 entries, each 5 bytes (index, Y, Cr, Cb, Alpha)",
+      "0x15": "ODS — Object Definition Segment: RLE-encoded 8-bit palette-indexed bitmap",
+      "0x16": "PCS — Presentation Composition Segment: width, height, framerate, composition_number, composition_state (normal/acquisition/epoch_start), palette_id, object list",
+      "0x17": "WDS — Window Definition Segment: window count, then (window_id, x, y, width, height) per window",
+      "0x80": "END — End of Display Set: zero-length payload, marks completion of current subtitle epoch"
+    },
+    "rleEncoding": "Palette-indexed 8-bit pixels; run-length encoded with special escape sequences for line breaks and color runs",
+    "notes": "PGS is purely bitmap — no text is stored. Converting to SRT/VTT requires OCR (e.g., Tesseract via PGS2SRT or Subtitle Edit). Maximum 256 palette colors per PDS. Typically the first segment of a display set is PCS."
+  },
+
+  "QualityMetrics": {
+    "CompletenessScore": 92,
+    "DocumentationLevel": "comprehensive",
+    "BlocksDefined": 6,
+    "ValidationRules": 4,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": true,
+    "AutoRefined": false
+  }
+}

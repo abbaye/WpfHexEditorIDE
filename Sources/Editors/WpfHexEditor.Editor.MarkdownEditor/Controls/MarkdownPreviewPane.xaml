@@ -26,9 +26,12 @@
          item can be updated dynamically when fullscreen state changes. -->
 
     <Grid>
-        <!-- WebView2 (WinForms) inside WindowsFormsHost — Stretch ensures the HWND fills its Grid cell -->
+        <!-- WebView2 (WinForms) inside WindowsFormsHost — Stretch ensures the HWND fills its Grid cell.
+             Margin="1" keeps the HWND 1 px away from the panel edge so the docking selection
+             border (drawn in WPF below the HWND) is not occluded by the Win32 airspace surface. -->
         <WindowsFormsHost x:Name="_webViewHost"
                           Visibility="Collapsed"
+                          Margin="2"
                           HorizontalAlignment="Stretch"
                           VerticalAlignment="Stretch" />
 

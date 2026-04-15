@@ -1,0 +1,213 @@
+{
+  "diffMode": "text",
+  "formatName": "WebVTT Subtitle",
+  "version": "1.0",
+  "extensions": [ ".vtt" ],
+  "description": "WebVTT (Web Video Text Tracks) is the W3C standard subtitle and caption format for HTML5 video; files must begin with the ASCII string 'WEBVTT' followed by a space/tab/newline or EOF, then cue blocks with timestamps (HH:MM:SS.mmm --> HH:MM:SS.mmm), optional cue settings, STYLE/REGION/NOTE blocks, and CSS ::cue pseudo-element styling.",
+  "category": "Subtitles",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "text-editor",
+  "MimeTypes": [ "text/vtt" ],
+  "UseCases": [
+    "HTML5 <track> element for video captions and subtitles in web browsers",
+    "Live streaming subtitle delivery (HLS, DASH)",
+    "YouTube and Twitch closed caption files",
+    "Web accessibility compliance (WCAG 2.1 Level AA/AAA)"
+  ],
+  "software": [
+    { "name": "Chrome/Firefox/Safari", "role": "consumer (native <track> support)" },
+    { "name": "VLC",                   "role": "consumer" },
+    { "name": "Subtitle Edit",         "role": "producer/consumer" },
+    { "name": "FFmpeg",                "role": "producer/consumer" },
+    { "name": "YouTube Studio",        "role": "producer/consumer" }
+  ],
+  "references": {
+    "specifications": [ "W3C WebVTT: The Web Video Text Tracks Format (https://www.w3.org/TR/webvtt1/)" ],
+    "WebLinks": [ "https://en.wikipedia.org/wiki/WebVTT", "https://developer.mozilla.org/en-US/docs/Web/API/WebVTT_API" ]
+  },
+  "formatRelationships": {
+    "relatedFormats": [ "SRT (SubRip)", "TTML (Timed Text Markup Language)", "CEA-608/708 Captions" ],
+    "container": null,
+    "notes": "WebVTT evolved from SRT with added features: cue settings, CSS styling, regions, and metadata notes. Most SRT files can be trivially converted to VTT."
+  },
+
+  "detection": {
+    "signatures": [
+      {
+        "value": "574542565454",
+        "offset": 0,
+        "label": "'WEBVTT' — Web Video Text Tracks mandatory file header",
+        "weight": 60,
+        "required": true
+      },
+      {
+        "value": "EFBBBF574542565454",
+        "offset": 0,
+        "label": "UTF-8 BOM (EF BB BF) followed by 'WEBVTT' — BOM-prefixed WebVTT file",
+        "weight": 60,
+        "required": false
+      }
+    ],
+    "matchMode": "weighted",
+    "MinimumScore": 60,
+    "Strength": "Strong",
+    "EntropyHint": {
+      "min": 3.0,
+      "max": 5.5,
+      "note": "Plain text with timestamps, cue settings, and natural language content; entropy is comparable to other text-based subtitle formats."
+    },
+    "validation": {
+      "minFileSize": 6,
+      "maxSignatureOffset": 4,
+      "expression": "STRING_ASCII(0, 6) == 'WEBVTT' || STRING_ASCII(3, 6) == 'WEBVTT'",
+      "description": "File must begin with 'WEBVTT' (optionally preceded by UTF-8 BOM)."
+    }
+  },
+
+  "variables": {
+    "magic":        { "offset": 0, "length": 6, "type": "ascii" },
+    "postHeader":   { "offset": 6, "length": 1, "type": "uint8" }
+  },
+
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "WEBVTT Header",
+      "offset": 0,
+      "length": 6,
+      "color": "#26A69A",
+      "opacity": 0.8,
+      "description": "6-byte ASCII magic string 'WEBVTT' (0x57 0x45 0x42 0x56 0x54 0x54) — mandatory first bytes of every WebVTT file per W3C specification.",
+      "storeAs": "magic",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Post-Header Byte",
+      "offset": 6,
+      "length": 1,
+      "color": "#4DB6AC",
+      "opacity": 0.6,
+      "description": "Byte immediately after 'WEBVTT': must be 0x0A (LF), 0x0D (CR), 0x20 (space), or 0x09 (tab). Space/tab indicates an optional header description follows on the same line.",
+      "storeAs": "postHeader",
+      "valueType": "uint8",
+      "valueMap": {
+        "10": "0x0A — Line Feed (header-only, no description)",
+        "13": "0x0D — Carriage Return",
+        "32": "0x20 — Space (header description follows)",
+        "9":  "0x09 — Tab (header description follows)"
+      }
+    },
+    {
+      "type": "metadata",
+      "name": "Cue Blocks",
+      "offset": "variable",
+      "length": "variable",
+      "color": "#80CBC4",
+      "opacity": 0.5,
+      "description": "Sequence of cue blocks: optional cue ID, timestamp line (HH:MM:SS.mmm --> HH:MM:SS.mmm with optional settings: position, line, align, size, vertical), and cue payload text with optional voice (<v>), class (<c>), bold (<b>), italic (<i>) tags."
+    },
+    {
+      "type": "metadata",
+      "name": "STYLE / REGION / NOTE Blocks",
+      "offset": "variable",
+      "length": "variable",
+      "color": "#B2DFDB",
+      "opacity": 0.4,
+      "description": "Optional STYLE blocks (embedded CSS for ::cue pseudo-element), REGION blocks (spatial positioning definitions), and NOTE blocks (metadata comments not rendered to the user)."
+    }
+  ],
+
+  "assertions": [
+    {
+      "name": "MagicIsWEBVTT",
+      "expression": "STRING_ASCII(0, 6) == 'WEBVTT' || STRING_ASCII(3, 6) == 'WEBVTT'",
+      "severity": "error",
+      "message": "File does not start with 'WEBVTT' (with or without BOM); this is not a valid WebVTT file per the W3C specification."
+    },
+    {
+      "name": "PostHeaderByteValid",
+      "expression": "UINT8(0) == 0xEF || UINT8(6) == 0x0A || UINT8(6) == 0x0D || UINT8(6) == 0x20 || UINT8(6) == 0x09 || FILE_SIZE == 6",
+      "severity": "warning",
+      "message": "Byte after 'WEBVTT' header is not a valid delimiter (space, tab, newline, or EOF); some parsers may reject this file."
+    },
+    {
+      "name": "FileSizeMinimum",
+      "expression": "FILE_SIZE >= 6",
+      "severity": "error",
+      "message": "File is smaller than 6 bytes; cannot contain the mandatory 'WEBVTT' header string."
+    }
+  ],
+
+  "navigation": {
+    "bookmarks": [
+      { "name": "WEBVTT Magic",      "offset": 0, "description": "'WEBVTT' 6-byte ASCII header" },
+      { "name": "Post-Header Byte",  "offset": 6, "description": "Delimiter after header: space, tab, or newline" }
+    ]
+  },
+
+  "inspector": {
+    "badge": "VTT",
+    "primaryField": "magic",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "name": "File Header",
+        "fields": [ "magic", "postHeader" ]
+      }
+    ]
+  },
+
+  "exportTemplates": [
+    {
+      "name": "WebVTT Header Summary",
+      "format": "text",
+      "template": "WebVTT Subtitle\n  Magic       : {magic}\n  Post-Header : {postHeader} ({postHeader_mapped})"
+    },
+    {
+      "name": "WebVTT JSON Report",
+      "format": "json",
+      "template": "{ \"format\": \"WebVTT\", \"magic\": \"{magic}\", \"postHeaderByte\": {postHeader} }"
+    }
+  ],
+
+  "forensic": {
+    "category": "MediaSubtitle",
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      { "pattern": "EmbeddedCSS",          "description": "STYLE blocks can contain CSS that may be used for fingerprinting or overlay attacks in vulnerable player implementations." },
+      { "pattern": "MalformedTimestamps",   "description": "Non-monotonic or overlapping timestamps may indicate a corrupted or manually tampered file." }
+    ]
+  },
+
+  "aiHints": {
+    "analysisContext": "WebVTT is the W3C standard text-based caption format for HTML5 video. The 'WEBVTT' magic at offset 0 provides strong detection. The format supports cue settings (position, line, align, size, vertical), CSS styling via ::cue, REGION blocks for spatial layout, and NOTE blocks for comments.",
+    "suggestedInspections": [
+      "Verify the 'WEBVTT' header magic and check whether an optional description string follows on the header line.",
+      "Scan for STYLE blocks to identify embedded CSS rules that affect cue rendering via the ::cue pseudo-element.",
+      "Check for REGION definitions to determine if the file uses multi-region spatial subtitle positioning.",
+      "Validate cue timestamp ordering and detect any overlapping or out-of-order time ranges.",
+      "Look for voice tags (<v speaker>) to identify multi-speaker caption files used in accessibility workflows."
+    ]
+  },
+
+  "TechnicalDetails": {
+    "specification": "W3C WebVTT: The Web Video Text Tracks Format — https://www.w3.org/TR/webvtt1/",
+    "endianness": "N/A (text format)",
+    "encoding": "UTF-8 mandatory (per W3C spec); BOM permitted but not required",
+    "timestampFormat": "HH:MM:SS.mmm --> HH:MM:SS.mmm (period as decimal separator, unlike SRT which uses comma)",
+    "cueSettings": "position:X%, line:Y, align:start|center|end, size:X%, vertical:rl|lr",
+    "styling": "CSS ::cue pseudo-element; inline tags: <b>, <i>, <u>, <c.class>, <v speaker>, <lang>, <ruby>/<rt>",
+    "notes": "WebVTT is the recommended caption format for all modern web video. It supersedes SRT for web use cases and provides features comparable to TTML with simpler authoring."
+  },
+
+  "QualityMetrics": {
+    "CompletenessScore": 89,
+    "DocumentationLevel": "comprehensive",
+    "BlocksDefined": 4,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": true,
+    "AutoRefined": false
+  }
+}

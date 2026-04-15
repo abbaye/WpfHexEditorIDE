@@ -1,0 +1,367 @@
+{
+  "diffMode": "binary",
+  "formatName": "Visual Studio Diagnostic Session",
+  "version": "1.0",
+  "extensions": [ ".diagsession" ],
+  "description": "Visual Studio diagnostic session container — a ZIP archive holding one or more .nettrace EventPipe traces, diagnostics.json session metadata, and optional memory dump files produced by the VS Performance Profiler.",
+  "category": "Programming",
+  "author": "WPFHexaEditor Team",
+  "MimeTypes": [ "application/zip", "application/x-diagsession" ],
+  "UseCases": [
+    "Visual Studio CPU Usage profiling session export",
+    "Memory allocation profiling and heap snapshot storage",
+    ".NET async await performance diagnostics",
+    "Sharing profiling sessions across development teams",
+    "Offline analysis of production application performance"
+  ],
+  "software": [
+    { "name": "Visual Studio Performance Profiler", "role": "producer/consumer" },
+    { "name": "dotnet-trace (via conversion)",      "role": "related" },
+    { "name": "VSDiagnostics.exe",                  "role": "producer" },
+    { "name": "PerfView (via .nettrace export)",     "role": "consumer" }
+  ],
+  "formatRelationships": {
+    "relatedFormats": [ ".nettrace (embedded)", "ZIP (.zip)", "ETL (.etl)", ".dmp (memory dump)" ],
+    "container": "ZIP (PKZIP / Info-ZIP format, DEFLATE or STORE compression)",
+    "notes": "diagsession files are standard ZIP archives. The internal structure includes at least one .nettrace file and a diagnostics.json manifest. Older VS versions may also embed .etl files."
+  },
+
+  "detection": {
+    "signatures": [
+      {
+        "value": "504B0304",
+        "offset": 0,
+        "label": "ZIP local file header magic PK\\x03\\x04",
+        "weight": 50,
+        "required": true
+      },
+      {
+        "value": "504B0506",
+        "offset": "end-22",
+        "label": "ZIP End of Central Directory record",
+        "weight": 20,
+        "required": false
+      }
+    ],
+    "extensionSignatures": [
+      {
+        "extension": ".diagsession",
+        "label": "Visual Studio diagnostic session extension",
+        "weight": 30,
+        "required": false
+      }
+    ],
+    "matchMode": "weighted",
+    "MinimumScore": 50,
+    "Strength": "Medium",
+    "EntropyHint": {
+      "min": 6.0,
+      "max": 7.9,
+      "note": "ZIP DEFLATE-compressed entries have near-maximum entropy. STORE-mode entries (e.g. .nettrace that is already LZ4-compressed) also have high entropy."
+    },
+    "validation": {
+      "expression": "UINT32_BE(0) == 0x504B0304",
+      "description": "ZIP local file header magic PK\\x03\\x04 (0x504B0304 big-endian) at offset 0 identifies this as a ZIP container; the .diagsession extension further narrows it to a Visual Studio diagnostic session."
+    }
+  },
+
+  "variables": {
+    "zipSignature":        { "offset": 0,  "length": 4, "type": "bytes" },
+    "versionNeeded":       { "offset": 4,  "length": 2, "type": "uint16le" },
+    "generalPurposeBits":  { "offset": 6,  "length": 2, "type": "uint16le" },
+    "compressionMethod":   { "offset": 8,  "length": 2, "type": "uint16le" },
+    "lastModTime":         { "offset": 10, "length": 2, "type": "uint16le" },
+    "lastModDate":         { "offset": 12, "length": 2, "type": "uint16le" },
+    "crc32":               { "offset": 14, "length": 4, "type": "uint32le" },
+    "compressedSize":      { "offset": 18, "length": 4, "type": "uint32le" },
+    "uncompressedSize":    { "offset": 22, "length": 4, "type": "uint32le" },
+    "fileNameLength":      { "offset": 26, "length": 2, "type": "uint16le" },
+    "extraFieldLength":    { "offset": 28, "length": 2, "type": "uint16le" },
+    "firstEntryFileName":  { "offset": 30, "length": "fileNameLength", "type": "utf8string" }
+  },
+
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "ZIP Local File Header Signature",
+      "offset": 0,
+      "length": 4,
+      "color": "#1B5E20",
+      "opacity": 0.9,
+      "description": "PKZIP local file header magic bytes 'PK\\x03\\x04' (0x504B0304) marking the start of the first ZIP entry; present at the very beginning of all non-split diagsession files.",
+      "storeAs": "zipSignature",
+      "valueType": "bytes"
+    },
+    {
+      "type": "field",
+      "name": "Version Needed to Extract",
+      "offset": 4,
+      "length": 2,
+      "color": "#2E7D32",
+      "opacity": 0.7,
+      "description": "Minimum ZIP specification version required to extract this entry; 20 (v2.0) for DEFLATE, 10 (v1.0) for STORE, 45 (v4.5) for ZIP64 extensions used in large diagsession files.",
+      "storeAs": "versionNeeded",
+      "valueType": "uint16",
+      "endianness": "little",
+      "valueMap": {
+        "10": "v1.0 — STORE only",
+        "20": "v2.0 — DEFLATE compression",
+        "45": "v4.5 — ZIP64 extensions",
+        "63": "v6.3 — Strong encryption"
+      }
+    },
+    {
+      "type": "field",
+      "name": "General Purpose Bit Flag",
+      "offset": 6,
+      "length": 2,
+      "color": "#388E3C",
+      "opacity": 0.65,
+      "description": "ZIP general purpose bit flags controlling encryption, data descriptor presence, and UTF-8 filename encoding for the first entry in the diagsession archive.",
+      "storeAs": "generalPurposeBits",
+      "valueType": "uint16",
+      "endianness": "little",
+      "bitfields": [
+        { "bit": 0, "name": "Encrypted",         "description": "Entry is encrypted (not standard in diagsession files)" },
+        { "bit": 3, "name": "DataDescriptor",     "description": "Data descriptor with CRC-32 and sizes follows compressed data" },
+        { "bit": 11, "name": "UTF8Filename",      "description": "Filename and comment are UTF-8 encoded (bit 11 = EFS flag)" }
+      ]
+    },
+    {
+      "type": "field",
+      "name": "Compression Method",
+      "offset": 8,
+      "length": 2,
+      "color": "#43A047",
+      "opacity": 0.7,
+      "description": "ZIP compression method applied to the first entry; DEFLATE (8) is most common in diagsession files, but .nettrace entries may use STORE (0) since they contain LZ4-compressed event blocks.",
+      "storeAs": "compressionMethod",
+      "valueType": "uint16",
+      "endianness": "little",
+      "valueMap": {
+        "0": "STORE — no compression (used for pre-compressed .nettrace content)",
+        "8": "DEFLATE — standard ZIP compression",
+        "9": "DEFLATE64 — enhanced deflate",
+        "12": "BZIP2 compression",
+        "14": "LZMA compression"
+      }
+    },
+    {
+      "type": "field",
+      "name": "Last Modified Time (MS-DOS)",
+      "offset": 10,
+      "length": 2,
+      "color": "#66BB6A",
+      "opacity": 0.6,
+      "description": "Last modified time of the first entry in MS-DOS packed time format (bits 15-11 hours, 10-5 minutes, 4-0 two-second intervals); useful for approximate session capture time estimation.",
+      "storeAs": "lastModTime",
+      "valueType": "uint16",
+      "endianness": "little"
+    },
+    {
+      "type": "field",
+      "name": "Last Modified Date (MS-DOS)",
+      "offset": 12,
+      "length": 2,
+      "color": "#81C784",
+      "opacity": 0.6,
+      "description": "Last modified date of the first entry in MS-DOS packed date format (bits 15-9 year offset from 1980, 8-5 month, 4-0 day); combined with time field gives the entry creation timestamp.",
+      "storeAs": "lastModDate",
+      "valueType": "uint16",
+      "endianness": "little"
+    },
+    {
+      "type": "field",
+      "name": "CRC-32",
+      "offset": 14,
+      "length": 4,
+      "color": "#A5D6A7",
+      "opacity": 0.65,
+      "description": "CRC-32 checksum of the uncompressed content of the first ZIP entry; used to verify extraction integrity. Zero when the Data Descriptor bit (bit 3) is set in the general purpose flags.",
+      "storeAs": "crc32",
+      "valueType": "uint32",
+      "endianness": "little"
+    },
+    {
+      "type": "field",
+      "name": "Compressed Size",
+      "offset": 18,
+      "length": 4,
+      "color": "#4CAF50",
+      "opacity": 0.65,
+      "description": "Compressed size in bytes of the first entry's data payload; for .nettrace entries with STORE method this equals the uncompressed size of the NetTrace file.",
+      "storeAs": "compressedSize",
+      "valueType": "uint32",
+      "endianness": "little"
+    },
+    {
+      "type": "field",
+      "name": "Uncompressed Size",
+      "offset": 22,
+      "length": 4,
+      "color": "#388E3C",
+      "opacity": 0.65,
+      "description": "Original uncompressed size in bytes of the first entry's data; gives the actual size of the .nettrace or diagnostics.json content before ZIP compression.",
+      "storeAs": "uncompressedSize",
+      "valueType": "uint32",
+      "endianness": "little"
+    },
+    {
+      "type": "field",
+      "name": "File Name Length",
+      "offset": 26,
+      "length": 2,
+      "color": "#2E7D32",
+      "opacity": 0.7,
+      "description": "Byte length of the file name field immediately following the extra field length; used to locate and read the name of the first ZIP entry within the diagsession archive.",
+      "storeAs": "fileNameLength",
+      "valueType": "uint16",
+      "endianness": "little"
+    },
+    {
+      "type": "field",
+      "name": "First Entry File Name",
+      "offset": 30,
+      "length": "fileNameLength",
+      "color": "#1B5E20",
+      "opacity": 0.8,
+      "description": "UTF-8 or CP437-encoded name of the first file inside the diagsession ZIP archive; typically a GUID-based name or 'session.nettrace' for the primary EventPipe trace file.",
+      "storeAs": "firstEntryFileName",
+      "valueType": "utf8string"
+    },
+    {
+      "type": "metadata",
+      "name": "ZIP Central Directory",
+      "offset": "end-computed",
+      "length": "variable",
+      "color": "#558B2F",
+      "opacity": 0.55,
+      "description": "ZIP Central Directory records listing all entries in the diagsession archive with their names, sizes, offsets, and metadata; located before the End of Central Directory record at the end of the file."
+    },
+    {
+      "type": "metadata",
+      "name": "End of Central Directory",
+      "offset": "end-22",
+      "length": 22,
+      "color": "#33691E",
+      "opacity": 0.6,
+      "description": "PKZIP End of Central Directory record ('PK\\x05\\x06') containing the total entry count, central directory size and offset, and optional ZIP comment; marks the logical end of the diagsession archive."
+    }
+  ],
+
+  "assertions": [
+    {
+      "name": "ValidZipMagic",
+      "expression": "UINT32_BE(0) == 0x504B0304",
+      "severity": "error",
+      "message": "ZIP local file header magic 'PK\\x03\\x04' not found at offset 0; this is not a valid diagsession or ZIP file."
+    },
+    {
+      "name": "CompressionMethodKnown",
+      "expression": "UINT16_LE(8) == 0 || UINT16_LE(8) == 8 || UINT16_LE(8) == 9 || UINT16_LE(8) == 12 || UINT16_LE(8) == 14",
+      "severity": "warning",
+      "message": "Compression method is not a recognized ZIP algorithm; the diagsession archive may use an unsupported compression scheme."
+    },
+    {
+      "name": "CompressedSizeNonZero",
+      "expression": "UINT32_LE(18) > 0 || (UINT16_LE(6) & 0x0008) != 0",
+      "severity": "warning",
+      "message": "Compressed size is zero and DataDescriptor flag is not set; the first ZIP entry appears to be empty."
+    },
+    {
+      "name": "FileNameLengthReasonable",
+      "expression": "UINT16_LE(26) > 0 && UINT16_LE(26) < 260",
+      "severity": "warning",
+      "message": "First entry file name length is 0 or exceeds 260 characters; the diagsession archive may have a corrupt local file header."
+    },
+    {
+      "name": "NotEncrypted",
+      "expression": "(UINT16_LE(6) & 0x0001) == 0",
+      "severity": "info",
+      "message": "The first ZIP entry has the encrypted flag set; diagsession archives are not normally encrypted and this may prevent parsing the embedded .nettrace content."
+    }
+  ],
+
+  "navigation": {
+    "bookmarks": [
+      { "name": "ZIP Local File Header",    "offset": 0,  "description": "First PKZIP local file header — PK\\x03\\x04 magic" },
+      { "name": "Compression Method",       "offset": 8,  "description": "ZIP compression method (0=STORE, 8=DEFLATE)" },
+      { "name": "Compressed/Uncompressed",  "offset": 18, "description": "Compressed (4B) and uncompressed (4B) sizes of first entry" },
+      { "name": "First Entry Name",         "offset": 30, "description": "File name of first ZIP entry (typically .nettrace or diagnostics.json)" }
+    ]
+  },
+
+  "inspector": {
+    "badge": "DIAG",
+    "primaryField": "firstEntryFileName",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "name": "ZIP Container",
+        "fields": [ "zipSignature", "versionNeeded", "compressionMethod" ]
+      },
+      {
+        "name": "First Entry",
+        "fields": [ "compressedSize", "uncompressedSize", "crc32", "firstEntryFileName" ]
+      },
+      {
+        "name": "Entry Flags",
+        "fields": [ "generalPurposeBits", "lastModTime", "lastModDate" ]
+      }
+    ]
+  },
+
+  "exportTemplates": [
+    {
+      "name": "DiagSession Summary",
+      "format": "text",
+      "template": "Visual Studio Diagnostic Session\n  Container      : ZIP archive\n  First Entry    : {firstEntryFileName}\n  Compressed     : {compressedSize} bytes\n  Uncompressed   : {uncompressedSize} bytes\n  Compression    : {compressionMethod} ({compressionMethod_mapped})"
+    },
+    {
+      "name": "DiagSession JSON Report",
+      "format": "json",
+      "template": "{ \"format\": \"DiagSession\", \"container\": \"ZIP\", \"firstEntry\": \"{firstEntryFileName}\", \"compressedSize\": {compressedSize}, \"uncompressedSize\": {uncompressedSize}, \"compressionMethod\": {compressionMethod} }"
+    }
+  ],
+
+  "forensic": {
+    "category": "DiagnosticArtifact",
+    "riskLevel": "medium",
+    "suspiciousPatterns": [
+      { "pattern": "SensitivePathInDiagnostics",  "description": "diagnostics.json inside the archive may contain full file system paths, process names, and environment information from the profiled machine." },
+      { "pattern": "HeapDumpEmbedded",            "description": "Some diagsession variants embed .dmp memory dump files which may contain sensitive in-memory data including credentials and encryption keys." },
+      { "pattern": "EncryptedEntries",            "description": "Encrypted ZIP entries in a diagsession file are unusual and may indicate non-standard tooling or deliberate obfuscation." },
+      { "pattern": "NetTraceWithEventPayloads",   "description": "Embedded .nettrace files may contain EventSource event payloads capturing application-level data passed to tracing APIs." }
+    ]
+  },
+
+  "aiHints": {
+    "analysisContext": "diagsession files are standard ZIP archives produced by Visual Studio's Performance Profiler. The primary payload is one or more .nettrace EventPipe files. The diagnostics.json manifest describes the profiling session parameters, target process, and collection configuration. The ZIP structure can be parsed with any ZIP library before extracting the embedded .nettrace content for analysis.",
+    "suggestedInspections": [
+      "List all ZIP entries to identify the .nettrace files, diagnostics.json manifest, and any embedded .dmp memory dumps.",
+      "Extract and parse diagnostics.json to determine the profiling session type (CPU, memory, async), target process name, and collection duration.",
+      "Locate the primary .nettrace entry and verify its FastSerialization.1 magic after decompression.",
+      "Check ZIP entry timestamps (MS-DOS format) to reconstruct the approximate session capture date and time.",
+      "Look for multiple .nettrace entries in the archive — Visual Studio may split long sessions across multiple trace files.",
+      "Inspect general purpose bit flags for encryption or UTF-8 filename indicators that may affect ZIP parsing."
+    ]
+  },
+
+  "TechnicalDetails": {
+    "specification": "PKWARE ZIP Application Note (APPNOTE.TXT) v6.3.9; Visual Studio diagsession format is undocumented but follows ZIP+JSON+NetTrace conventions observable in VS 2019+",
+    "endianness": "little-endian (ZIP format standard)",
+    "containerFormat": "ZIP (PKZIP APPNOTE.TXT compatible)",
+    "knownInternalFiles": [ "*.nettrace", "diagnostics.json", "metadata.json", "*.dmp" ],
+    "notes": "The diagsession extension distinguishes it from generic ZIP files. Older Visual Studio versions (2017 and earlier) used .diagsession files with different internal layouts, sometimes containing .etl files instead of .nettrace."
+  },
+
+  "QualityMetrics": {
+    "CompletenessScore": 90,
+    "DocumentationLevel": "comprehensive",
+    "BlocksDefined": 13,
+    "ValidationRules": 5,
+    "LastUpdated": "2026-04-14",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  }
+}

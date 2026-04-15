@@ -18,9 +18,9 @@
     <EmbeddedResource Include="FormatDefinitions\**\*.grammar" />
   </ItemGroup>
 
-  <!-- JSON Schema files distributed alongside the assembly -->
+  <!-- JSON Schema files embedded in the assembly (accessible via GetManifestResourceStream) -->
   <ItemGroup>
-    <None Include="*.schema.json" CopyToOutputDirectory="PreserveNewest" />
+    <EmbeddedResource Include="*.schema.json" />
   </ItemGroup>
 
   <ItemGroup>

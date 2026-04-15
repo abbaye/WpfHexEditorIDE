@@ -2,64 +2,73 @@
 // GNU Affero General Public License v3.0 - 2026
 // Author : Derek Tremblay (derektremblay666@gmail.com)
 // Contributors: Claude Sonnet 4.6
-// Project: WpfHexEditor.Editor.CodeEditor
-// File: Models/ValidationError.cs
-// Description: Validation error model for the CodeEditor assembly.
-//              WpfHexEditor.Editor.Core defines its own canonical
-//              ValidationError / ValidationSeverity / ValidationLayer.
-//              The two sets share identical ordinals so that cross-assembly
-//              int casts are safe.
+// Project: WpfHexEditor.Editor.Core
+// File: ValidationError.cs
+// Description: Validation error model shared across all editor modules.
+//              Moved from WpfHexEditor.Editor.CodeEditor.Models so that
+//              StructureEditor (and future editors) can reference it without
+//              taking a dependency on the CodeEditor assembly.
 //////////////////////////////////////////////
 
-namespace WpfHexEditor.Editor.CodeEditor.Models;
+namespace WpfHexEditor.Editor.Core.Validation;
 
 /// <summary>Severity level of a validation diagnostic.</summary>
 public enum ValidationSeverity
 {
-    /// <summary>Informational — no action required.</summary>
-    Info    = 0,
-    /// <summary>Non-critical issue.</summary>
-    Warning = 1,
-    /// <summary>Critical error.</summary>
-    Error   = 2,
+    /// <summary>Informational message — no action required.</summary>
+    Info,
+    /// <summary>Non-critical issue that should be reviewed.</summary>
+    Warning,
+    /// <summary>Critical error that prevents the format from working.</summary>
+    Error,
 }
 
 /// <summary>Validation layer that detected the diagnostic.</summary>
 public enum ValidationLayer
 {
-    /// <summary>Layer 1: JSON syntax.</summary>
-    JsonSyntax  = 0,
-    /// <summary>Layer 2: Schema compliance.</summary>
-    Schema      = 1,
-    /// <summary>Layer 3: Format-specific rules.</summary>
-    FormatRules = 2,
-    /// <summary>Layer 4: Semantic errors.</summary>
-    Semantic    = 3,
-    /// <summary>Layer 5: External Language Server diagnostics.</summary>
-    Lsp         = 4,
+    /// <summary>Layer 1: JSON syntax errors.</summary>
+    JsonSyntax,
+    /// <summary>Layer 2: Missing required properties (schema compliance).</summary>
+    Schema,
+    /// <summary>Layer 3: Format-specific rule violations.</summary>
+    FormatRules,
+    /// <summary>Layer 4: Semantic errors (invalid references, etc.).</summary>
+    Semantic,
+    /// <summary>Layer 5: Diagnostics from an external Language Server.</summary>
+    Lsp,
 }
 
 /// <summary>
 /// A single validation diagnostic with source location and severity.
-/// Produced by <c>FormatSchemaValidator</c> and LSP integration.
+/// Produced by <c>FormatSchemaValidator</c> and any LSP integration.
 /// </summary>
 public class ValidationError
 {
     /// <summary>Line number where the error occurs (0-based).</summary>
     public int Line { get; set; }
+
     /// <summary>Column where the error starts (0-based).</summary>
     public int Column { get; set; }
-    /// <summary>Length of the error span (for underlining).</summary>
+
+    /// <summary>Length of the error span (used for underlining).</summary>
     public int Length { get; set; }
+
     /// <summary>Human-readable error message.</summary>
     public string Message { get; set; } = string.Empty;
-    /// <summary>Severity level.</summary>
+
+    /// <summary>Severity level of this diagnostic.</summary>
     public ValidationSeverity Severity { get; set; }
-    /// <summary>Optional error code.</summary>
+
+    /// <summary>Optional error code for categorisation.</summary>
     public string ErrorCode { get; set; } = string.Empty;
+
     /// <summary>Validation layer that produced this diagnostic.</summary>
     public ValidationLayer Layer { get; set; }
-    /// <summary>Sub-system that produced this error (e.g. "lsp", "schema").</summary>
+
+    /// <summary>
+    /// Identifies the sub-system that produced this error (e.g. "lsp", "schema").
+    /// Used to selectively replace error sets on incremental updates.
+    /// </summary>
     public string? Source { get; set; }
 
     /// <summary>Initialises a diagnostic with default Error severity.</summary>
