@@ -78,6 +78,7 @@
                            ToolTip="Fixed integer or var:name — Ctrl+Space for suggestions"/>
                 <TextBlock Grid.Row="1" Grid.Column="0" Text="Max Iterations" Style="{StaticResource PropLabel}"/>
                 <TextBox   Grid.Row="1" Grid.Column="1" Style="{StaticResource PropField}"
+                           ctrl:InputFilter.NumericOnly="True"
                            Text="{Binding MaxIterations, UpdateSourceTrigger=PropertyChanged}"
                            ToolTip="Safety cap — integer"/>
                 <TextBlock Grid.Row="2" Grid.Column="0" Text="Index Var"      Style="{StaticResource PropLabel}"/>

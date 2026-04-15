@@ -119,7 +119,7 @@ internal sealed class ExpressionTextBox : Grid
             Margin            = new Thickness(4, 0, 4, 0),
             FontSize          = 11,
         };
-        _placeholder.SetResourceReference(TextBlock.ForegroundProperty, "DockMenuForegroundBrush");
+        _placeholder.SetResourceReference(TextBlock.ForegroundProperty, "SE_PlaceholderForeground");
 
         _box = new TextBox
         {

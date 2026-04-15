@@ -164,6 +164,33 @@ public partial class MainWindow
             ToolTip:          null,
             IsBuiltIn:        true));
 
+        // Format Editor (.whfmt)
+        _viewMenuOrganizer.RegisterBuiltInEntry(new ViewMenuEntry(
+            Id:               "View.FormatBrowser",
+            Header:           "_Format Browser",
+            GestureText:      null,
+            IconGlyph:        "\uE8A5",
+            Command:          new RelayCommand(_ => OnShowFormatBrowser(this, null!)),
+            CommandParameter: null,
+            Group:            "Format Editor",
+            Category:         ViewMenuClassifier.EditorsCode,
+            DockSide:         "Right",
+            ToolTip:          "Browse and manage built-in and user .whfmt format definitions",
+            IsBuiltIn:        true));
+
+        _viewMenuOrganizer.RegisterBuiltInEntry(new ViewMenuEntry(
+            Id:               "View.FormatCatalog",
+            Header:           "_Format Catalog",
+            GestureText:      null,
+            IconGlyph:        "\uE8A5",
+            Command:          new RelayCommand(_ => OnShowFormatCatalog(this, null!)),
+            CommandParameter: null,
+            Group:            "Format Editor",
+            Category:         ViewMenuClassifier.EditorsCode,
+            DockSide:         "Center",
+            ToolTip:          "Open the Format Catalog document tab (all formats in a sortable grid)",
+            IsBuiltIn:        true));
+
         // Analysis
         _viewMenuOrganizer.RegisterBuiltInEntry(new ViewMenuEntry(
             Id:               CommandIds.View.EntropyAnalysis,

@@ -716,6 +716,8 @@ namespace WpfHexEditor.Core.FormatDetection
     }
 
     /// <summary>A single forensic detection pattern.</summary>
+    /// <remarks>Tolerant: accepts a plain JSON string (legacy) or a full object.</remarks>
+    [JsonConverter(typeof(ForensicPatternConverter))]
     public class ForensicPattern
     {
         /// <summary>Display name for this pattern.</summary>
@@ -1102,5 +1104,84 @@ namespace WpfHexEditor.Core.FormatDetection
 
         public override void Write(Utf8JsonWriter writer, FormatReferences value, JsonSerializerOptions options)
             => JsonSerializer.Serialize(writer, value, new JsonSerializerOptions { PropertyNamingPolicy = null });
+    }
+
+    /// <summary>
+    /// Tolerant converter for <see cref="ForensicPattern"/>.
+    /// Accepts either a JSON object (current schema) or a plain string (legacy .whfmt files
+    /// that stored descriptions as bare strings instead of structured objects).
+    /// Write always emits the full object to preserve round-trip fidelity.
+    /// </summary>
+    internal sealed class ForensicPatternConverter : JsonConverter<ForensicPattern>
+    {
+        public override ForensicPattern Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            if (reader.TokenType == JsonTokenType.String)
+            {
+                // Legacy: plain string → use as both Name and Description, no executable Condition.
+                var text = reader.GetString() ?? string.Empty;
+                return new ForensicPattern { Name = text, Description = text, Severity = "warning" };
+            }
+
+            if (reader.TokenType == JsonTokenType.Null)
+            {
+                reader.Read();
+                return new ForensicPattern();
+            }
+
+            if (reader.TokenType != JsonTokenType.StartObject)
+            {
+                reader.Skip();
+                return new ForensicPattern();
+            }
+
+            // Manual object read to avoid recursion caused by [JsonConverter] attribute on the class.
+            var result = new ForensicPattern();
+            while (reader.Read() && reader.TokenType != JsonTokenType.EndObject)
+            {
+                if (reader.TokenType != JsonTokenType.PropertyName) continue;
+                var propName = reader.GetString();
+                reader.Read(); // advance to value
+
+                switch (propName?.ToLowerInvariant())
+                {
+                    case "name":
+                        result.Name = reader.TokenType == JsonTokenType.String
+                            ? reader.GetString() : null;
+                        break;
+                    case "condition":
+                        result.Condition = reader.TokenType == JsonTokenType.String
+                            ? reader.GetString() : null;
+                        break;
+                    case "entropythreshold":
+                        result.EntropyThreshold = reader.TokenType == JsonTokenType.Number
+                            ? reader.GetDouble() : null;
+                        break;
+                    case "severity":
+                        result.Severity = reader.TokenType == JsonTokenType.String
+                            ? (reader.GetString() ?? "warning") : "warning";
+                        break;
+                    case "description":
+                        result.Description = reader.TokenType == JsonTokenType.String
+                            ? reader.GetString() : null;
+                        break;
+                    default:
+                        reader.Skip();
+                        break;
+                }
+            }
+            return result;
+        }
+
+        public override void Write(Utf8JsonWriter writer, ForensicPattern value, JsonSerializerOptions options)
+        {
+            writer.WriteStartObject();
+            if (value.Name        is not null) writer.WriteString("name",             value.Name);
+            if (value.Condition   is not null) writer.WriteString("condition",        value.Condition);
+            if (value.EntropyThreshold.HasValue) writer.WriteNumber("entropyThreshold", value.EntropyThreshold.Value);
+            writer.WriteString("severity", value.Severity ?? "warning");
+            if (value.Description is not null) writer.WriteString("description",      value.Description);
+            writer.WriteEndObject();
+        }
     }
 }

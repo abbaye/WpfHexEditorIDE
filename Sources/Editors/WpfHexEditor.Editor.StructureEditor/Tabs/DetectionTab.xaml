@@ -42,8 +42,8 @@
                 </Style>
             </StackPanel.Resources>
 
-            <!-- ── Legacy Signature ─────────────────────────────────── -->
-            <TextBlock Text="Legacy Signature" Style="{StaticResource SH}"/>
+            <!-- ── Signature ────────────────────────────────────────── -->
+            <TextBlock Text="Signature" Style="{StaticResource SH}"/>
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -60,10 +60,12 @@
                 <TextBox   Grid.Row="0" Grid.Column="1" Style="{StaticResource Fld}"
                            FontFamily="Consolas"
                            Text="{Binding Signature, UpdateSourceTrigger=PropertyChanged}"
+                           PreviewTextInput="OnHexOnly"
                            ToolTip="Hex bytes without spaces, e.g. 89504E47 for PNG"/>
 
                 <TextBlock Grid.Row="1" Grid.Column="0" Text="Offset"     Style="{StaticResource Lbl}"/>
                 <TextBox   Grid.Row="1" Grid.Column="1" Style="{StaticResource Fld}"
+                           PreviewTextInput="OnNumericOnly"
                            Text="{Binding Offset, UpdateSourceTrigger=PropertyChanged}"/>
 
                 <TextBlock Grid.Row="2" Grid.Column="0" Text="Strength"   Style="{StaticResource Lbl}"/>
@@ -108,9 +110,11 @@
                                 <TextBox Grid.Column="0" Style="{StaticResource Fld}" Margin="0,0,4,0"
                                          FontFamily="Consolas"
                                          Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}"
+                                         PreviewTextInput="OnHexOnly"
                                          ToolTip="Hex value"/>
                                 <TextBox Grid.Column="1" Style="{StaticResource Fld}" Margin="0,0,4,0"
                                          Text="{Binding Offset, UpdateSourceTrigger=PropertyChanged}"
+                                         PreviewTextInput="OnNumericOnly"
                                          ToolTip="Offset"/>
                                 <TextBox Grid.Column="2" Style="{StaticResource Fld}" Margin="0,0,4,0"
                                          Text="{Binding Label, UpdateSourceTrigger=PropertyChanged}"

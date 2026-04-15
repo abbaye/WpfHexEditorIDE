@@ -8,6 +8,7 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:ctrl="clr-namespace:WpfHexEditor.Editor.StructureEditor.Controls"
+             xmlns:cp="clr-namespace:WpfHexEditor.ColorPicker.Controls;assembly=WpfHexEditor.ColorPicker"
              Background="{DynamicResource TE_Background}">
 
     <UserControl.Resources>
@@ -140,8 +141,8 @@
                                              Text="{Binding OffsetVar, UpdateSourceTrigger=PropertyChanged}"
                                              Placeholder="variableName"
                                              ToolTip="Variable holding the byte offset — Ctrl+Space for suggestions"/>
-                                    <TextBox Style="{StaticResource Fld}" Width="70" Margin="0,0,4,0"
-                                             Text="{Binding BookmarkColor, UpdateSourceTrigger=PropertyChanged}" ToolTip="Color #RRGGBB"/>
+                                    <cp:ColorPicker ShowAlphaChannel="False" Margin="0,0,4,0"
+                                                    SelectedColor="{Binding BookmarkColor, Converter={x:Static ctrl:HexStringToColorConverter.Instance}, UpdateSourceTrigger=PropertyChanged}"/>
                                     <Button Style="{StaticResource RemBtn}" Command="{Binding RemoveCommand}"/>
                                 </StackPanel>
                             </DataTemplate>

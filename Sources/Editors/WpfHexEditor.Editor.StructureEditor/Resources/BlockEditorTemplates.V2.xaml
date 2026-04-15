@@ -6,7 +6,8 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:vm="clr-namespace:WpfHexEditor.Editor.StructureEditor.ViewModels"
-                    xmlns:ctrl="clr-namespace:WpfHexEditor.Editor.StructureEditor.Controls">
+                    xmlns:ctrl="clr-namespace:WpfHexEditor.Editor.StructureEditor.Controls"
+                    xmlns:cp="clr-namespace:WpfHexEditor.ColorPicker.Controls;assembly=WpfHexEditor.ColorPicker">
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/WpfHexEditor.Editor.StructureEditor;component/Resources/BlockEditorShared.xaml"/>
@@ -136,9 +137,8 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal" Margin="0,2">
-                            <TextBox Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}"
-                                     Width="120" Style="{StaticResource PropField}" Margin="0,0,4,0"
-                                     ToolTip="CSS hex color e.g. #4488FF"/>
+                            <cp:ColorPicker ShowAlphaChannel="False" Margin="0,0,4,0"
+                                            SelectedColor="{Binding Value, Converter={x:Static ctrl:HexStringToColorConverter.Instance}, UpdateSourceTrigger=PropertyChanged}"/>
                             <Button Content="✕" FontSize="10" Padding="3,1"
                                     Command="{Binding RemoveCommand}"
                                     Background="Transparent" BorderThickness="0"

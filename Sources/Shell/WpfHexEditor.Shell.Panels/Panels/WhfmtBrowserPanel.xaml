@@ -125,7 +125,7 @@
             <Button Command="{Binding RefreshCommand}"    ToolTip="Refresh catalog"   Content="↺" Padding="6,2"/>
             <Button Command="{Binding AddFormatCommand}"  ToolTip="Add format file…"  Content="+" Padding="6,2"/>
             <Button Command="{Binding OpenFolderCommand}" ToolTip="Open user folder"  Content="📁" Padding="6,2"/>
-            <ToggleButton IsChecked="{Binding IsWatching}"
+            <ToggleButton IsChecked="{Binding IsWatching, Mode=OneWay}"
                           Command="{Binding ToggleWatchCommand}"
                           ToolTip="Watch folder for changes" Content="👁" Padding="6,2"/>
         </ToolBar>

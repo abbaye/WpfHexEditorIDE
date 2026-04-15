@@ -71,6 +71,7 @@ public static class ViewMenuClassifier
         ["Testing"]          = Testing,
         ["Grammar"]          = EditorsCode,
         ["AssemblyExplorer"] = EditorsCode,
+        ["Format Editor"]    = EditorsCode,
         ["Tools"]            = CustomParser,
     };
 

@@ -169,9 +169,11 @@
                         </Grid.RowDefinitions>
                         <TextBlock Grid.Row="0" Grid.Column="0" Text="Min Value"       Style="{StaticResource PropLabel}"/>
                         <TextBox   Grid.Row="0" Grid.Column="1" Style="{StaticResource PropField}"
+                                   ctrl:InputFilter.NumericOnly="True"
                                    Text="{Binding MinValue, UpdateSourceTrigger=PropertyChanged}"/>
                         <TextBlock Grid.Row="1" Grid.Column="0" Text="Max Value"       Style="{StaticResource PropLabel}"/>
                         <TextBox   Grid.Row="1" Grid.Column="1" Style="{StaticResource PropField}"
+                                   ctrl:InputFilter.NumericOnly="True"
                                    Text="{Binding MaxValue, UpdateSourceTrigger=PropertyChanged}"/>
                         <TextBlock Grid.Row="2" Grid.Column="0" Text="Pattern (regex)"  Style="{StaticResource PropLabel}"/>
                         <TextBox   Grid.Row="2" Grid.Column="1" Style="{StaticResource PropField}"

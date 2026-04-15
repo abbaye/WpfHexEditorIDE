@@ -70,6 +70,7 @@ internal sealed class ConditionEditorRow : Border
 
         _lengthBox = MakeTextBox("1", minWidth: 50, maxWidth: 60);
         _lengthBox.Text = "1";
+        InputFilter.SetNumericOnly(_lengthBox, true);
 
         _secondary = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(0, 6, 0, 0) };
 
