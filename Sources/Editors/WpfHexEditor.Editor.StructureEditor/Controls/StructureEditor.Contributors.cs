@@ -11,6 +11,8 @@
 
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Windows;
+using System.Windows.Controls;
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Editor.Core.Validation;
 
@@ -26,11 +28,11 @@ public sealed partial class StructureEditor : IEditorToolbarContributor, IStatus
 
     private EditorToolbarItem? _tbAddBlock;
     private EditorToolbarItem? _tbCodeView;
+    private EditorToolbarItem? _tbLayout;
 
     // Tracks whether the live code view split pane is open
-    private bool _codeViewVisible;
-
-    private const double CodeViewWidth = 360d;
+    private bool   _codeViewVisible;
+    private string _codeViewDock = "Right"; // "Left" | "Right" | "Top" | "Bottom"
 
     private void InitToolbarItems()
     {
@@ -49,9 +51,25 @@ public sealed partial class StructureEditor : IEditorToolbarContributor, IStatus
         };
         _tbCodeView = new EditorToolbarItem
         {
-            Icon    = "\uE943",   // Segoe MDL2 "Code" glyph
+            Icon    = "\uE943",
             Tooltip = "Toggle Live Code View",
             Command = new ViewModels.RelayCommand(ToggleCodeView),
+        };
+
+        var layoutItems = new ObservableCollection<EditorToolbarItem>
+        {
+            new() { Label = "Code Right",   Icon = "\uE8A0", Command = new ViewModels.RelayCommand(() => ApplyCodeViewDock("Right"))  },
+            new() { Label = "Code Left",    Icon = "\uE8A0", Command = new ViewModels.RelayCommand(() => ApplyCodeViewDock("Left"))   },
+            new() { Label = "Code Bottom",  Icon = "\uE8A0", Command = new ViewModels.RelayCommand(() => ApplyCodeViewDock("Bottom")) },
+            new() { Label = "Code Top",     Icon = "\uE8A0", Command = new ViewModels.RelayCommand(() => ApplyCodeViewDock("Top"))    },
+        };
+        _tbLayout = new EditorToolbarItem
+        {
+            Icon          = "\uF57E",
+            Label         = "Layout",
+            Tooltip       = "Code view layout",
+            IsEnabled     = false,   // enabled only when code view is visible
+            DropdownItems = layoutItems,
         };
 
         ToolbarItems.Add(tbValidate);
@@ -59,6 +77,7 @@ public sealed partial class StructureEditor : IEditorToolbarContributor, IStatus
         ToolbarItems.Add(_tbAddBlock);
         ToolbarItems.Add(new EditorToolbarItem { IsSeparator = true });
         ToolbarItems.Add(_tbCodeView);
+        ToolbarItems.Add(_tbLayout);
     }
 
     private void UpdateToolbarState()
@@ -70,19 +89,128 @@ public sealed partial class StructureEditor : IEditorToolbarContributor, IStatus
     private void ToggleCodeView()
     {
         _codeViewVisible = !_codeViewVisible;
+        if (_tbLayout is not null) _tbLayout.IsEnabled = _codeViewVisible;
 
         if (_codeViewVisible)
         {
-            SplitterCol.Width  = new System.Windows.GridLength(4);
-            CodeViewCol.Width  = new System.Windows.GridLength(CodeViewWidth);
-            // Push a fresh snapshot so the panel isn't blank on first open
+            ApplyCodeViewDock(_codeViewDock);
             PushJsonToCodeView();
         }
         else
         {
-            SplitterCol.Width  = new System.Windows.GridLength(0);
-            CodeViewCol.Width  = new System.Windows.GridLength(0);
+            CollapseCodeView();
         }
+    }
+
+    /// <summary>
+    /// Reconfigures the split Grid for the requested dock position.
+    /// The SplitGrid starts life as a 3-column grid (Right layout).
+    /// For Top/Bottom we switch to a 3-row grid; for Left we reorder columns.
+    /// </summary>
+    internal void ApplyCodeViewDock(string dock)
+    {
+        _codeViewDock = dock;
+        if (!_codeViewVisible) return;
+
+        var star    = new GridLength(1, GridUnitType.Star);
+        var splSize = new GridLength(4);
+        var zero    = new GridLength(0);
+
+        // Reset both axes to zero first
+        SplitGrid.ColumnDefinitions.Clear();
+        SplitGrid.RowDefinitions.Clear();
+
+        switch (dock)
+        {
+            case "Right":
+                SplitGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = star, MinWidth = 260 });
+                SplitGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = splSize });
+                SplitGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = star });
+
+                Grid.SetColumn(MainTabs,        0); Grid.SetRow(MainTabs,        0);
+                Grid.SetColumn(SplitSplitter,   1); Grid.SetRow(SplitSplitter,   0);
+                Grid.SetColumn(CodeViewBorder,  2); Grid.SetRow(CodeViewBorder,  0);
+
+                SplitSplitter.Width            = 4;
+                SplitSplitter.Height           = double.NaN;
+                SplitSplitter.HorizontalAlignment = HorizontalAlignment.Stretch;
+                SplitSplitter.VerticalAlignment   = VerticalAlignment.Stretch;
+                SplitSplitter.ResizeDirection  = GridResizeDirection.Columns;
+                break;
+
+            case "Left":
+                SplitGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = star });
+                SplitGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = splSize });
+                SplitGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = star, MinWidth = 260 });
+
+                Grid.SetColumn(CodeViewBorder,  0); Grid.SetRow(CodeViewBorder,  0);
+                Grid.SetColumn(SplitSplitter,   1); Grid.SetRow(SplitSplitter,   0);
+                Grid.SetColumn(MainTabs,        2); Grid.SetRow(MainTabs,        0);
+
+                SplitSplitter.Width            = 4;
+                SplitSplitter.Height           = double.NaN;
+                SplitSplitter.HorizontalAlignment = HorizontalAlignment.Stretch;
+                SplitSplitter.VerticalAlignment   = VerticalAlignment.Stretch;
+                SplitSplitter.ResizeDirection  = GridResizeDirection.Columns;
+                break;
+
+            case "Top":
+                SplitGrid.RowDefinitions.Add(new RowDefinition { Height = star });
+                SplitGrid.RowDefinitions.Add(new RowDefinition { Height = splSize });
+                SplitGrid.RowDefinitions.Add(new RowDefinition { Height = star, MinHeight = 120 });
+
+                Grid.SetRow(CodeViewBorder,  0); Grid.SetColumn(CodeViewBorder,  0);
+                Grid.SetRow(SplitSplitter,   1); Grid.SetColumn(SplitSplitter,   0);
+                Grid.SetRow(MainTabs,        2); Grid.SetColumn(MainTabs,        0);
+
+                SplitSplitter.Height           = 4;
+                SplitSplitter.Width            = double.NaN;
+                SplitSplitter.HorizontalAlignment = HorizontalAlignment.Stretch;
+                SplitSplitter.VerticalAlignment   = VerticalAlignment.Stretch;
+                SplitSplitter.ResizeDirection  = GridResizeDirection.Rows;
+                break;
+
+            case "Bottom":
+            default:
+                SplitGrid.RowDefinitions.Add(new RowDefinition { Height = star, MinHeight = 120 });
+                SplitGrid.RowDefinitions.Add(new RowDefinition { Height = splSize });
+                SplitGrid.RowDefinitions.Add(new RowDefinition { Height = star });
+
+                Grid.SetRow(MainTabs,        0); Grid.SetColumn(MainTabs,        0);
+                Grid.SetRow(SplitSplitter,   1); Grid.SetColumn(SplitSplitter,   0);
+                Grid.SetRow(CodeViewBorder,  2); Grid.SetColumn(CodeViewBorder,  0);
+
+                SplitSplitter.Height           = 4;
+                SplitSplitter.Width            = double.NaN;
+                SplitSplitter.HorizontalAlignment = HorizontalAlignment.Stretch;
+                SplitSplitter.VerticalAlignment   = VerticalAlignment.Stretch;
+                SplitSplitter.ResizeDirection  = GridResizeDirection.Rows;
+                break;
+        }
+
+        // Overlays (pop-toolbar trigger + popup + dirty indicator) always stay in the TabControl cell
+        var tabCol = dock == "Left" ? 2 : 0;
+        var tabRow = (dock == "Top" || dock == "Bottom") ? (dock == "Top" ? 2 : 0) : 0;
+        Grid.SetColumn(PopToolbarTrigger, tabCol); Grid.SetRow(PopToolbarTrigger, tabRow);
+        Grid.SetColumn(PopToolbarPopup,   tabCol); Grid.SetRow(PopToolbarPopup,   tabRow);
+        Grid.SetColumn(DirtyIndicator,    tabCol); Grid.SetRow(DirtyIndicator,    tabRow);
+    }
+
+    private void CollapseCodeView()
+    {
+        // Restore original 3-column layout (collapsed)
+        SplitGrid.RowDefinitions.Clear();
+        SplitGrid.ColumnDefinitions.Clear();
+        SplitGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star), MinWidth = 260 });
+        SplitGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(0) });
+        SplitGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(0) });
+
+        Grid.SetColumn(MainTabs,        0); Grid.SetRow(MainTabs,        0);
+        Grid.SetColumn(SplitSplitter,   1); Grid.SetRow(SplitSplitter,   0);
+        Grid.SetColumn(CodeViewBorder,  2); Grid.SetRow(CodeViewBorder,  0);
+        Grid.SetColumn(PopToolbarTrigger, 0); Grid.SetRow(PopToolbarTrigger, 0);
+        Grid.SetColumn(PopToolbarPopup,   0); Grid.SetRow(PopToolbarPopup,   0);
+        Grid.SetColumn(DirtyIndicator,    0); Grid.SetRow(DirtyIndicator,    0);
     }
 
     // ── Diagnostics (IDE Error List) ─────────────────────────────────────────

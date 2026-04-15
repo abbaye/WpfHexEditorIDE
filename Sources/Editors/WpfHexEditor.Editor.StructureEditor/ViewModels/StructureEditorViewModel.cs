@@ -64,6 +64,13 @@ internal sealed class StructureEditorViewModel : ViewModelBase
     private bool _isDirty;
     public bool IsDirty { get => _isDirty; private set { if (SetField(ref _isDirty, value)) DirtyChanged?.Invoke(this, EventArgs.Empty); } }
 
+    /// <summary>
+    /// Fired on every content change, regardless of <see cref="IsDirty"/> state.
+    /// Unlike <see cref="DirtyChanged"/>, this fires on every <see cref="MarkDirty"/> call,
+    /// making it suitable for driving live preview refresh timers.
+    /// </summary>
+    public event EventHandler? ContentChanged;
+
     // ── JSON options ──────────────────────────────────────────────────────────
 
     internal static readonly JsonSerializerOptions LoadOptions = new()
@@ -268,6 +275,7 @@ internal sealed class StructureEditorViewModel : ViewModelBase
     private void MarkDirty()
     {
         IsDirty = true;
+        ContentChanged?.Invoke(this, EventArgs.Empty);
         _debounce?.Stop();
         _debounce?.Start();
     }

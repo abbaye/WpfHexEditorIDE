@@ -247,8 +247,10 @@ namespace WpfHexEditor.HexEditor
         /// </param>
         public void OpenNew(string displayName = "New1.bin")
         {
-            // Reuse OpenMemory with an empty buffer
-            OpenMemory([], readOnly: false);
+            // Seed with one 0x00 byte so the cursor can be placed and the editor
+            // is immediately usable. Switch to Insert mode so typing appends bytes.
+            OpenMemory([0x00], readOnly: false);
+            EditMode = WpfHexEditor.Core.Models.EditMode.Insert;
 
             // Mark as new unsaved file — flags declared in HexEditor.DocumentEditor.cs
             _isNewUnsavedFile   = true;

@@ -72,7 +72,7 @@
         </Grid.RowDefinitions>
 
         <!-- ── Main content: visual editor | splitter | live code view ─── -->
-        <Grid Grid.Row="0">
+        <Grid Grid.Row="0" x:Name="SplitGrid">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" MinWidth="260"/>
                 <ColumnDefinition x:Name="SplitterCol" Width="0"/>
@@ -125,6 +125,7 @@
 
             <!-- ── Col 1 : Splitter ────────────────────────────────────── -->
             <GridSplitter Grid.Column="1"
+                          x:Name="SplitSplitter"
                           Width="4"
                           HorizontalAlignment="Stretch"
                           Background="{DynamicResource DockBorderBrush}"

@@ -24,6 +24,7 @@ public sealed partial class StructurePopToolbar : UserControl
     public event EventHandler? RedoRequested;
     public event EventHandler? AddBlockRequested;
     public event EventHandler? DuplicateRequested;
+    public event EventHandler? ToggleCodeViewRequested;
 
     // ── Block operations visibility ──────────────────────────────────────────
 
@@ -45,10 +46,11 @@ public sealed partial class StructurePopToolbar : UserControl
 
     // ── Click handlers ───────────────────────────────────────────────────────
 
-    private void OnSaveClicked(object s, RoutedEventArgs e)      => SaveRequested?.Invoke(this, EventArgs.Empty);
-    private void OnValidateClicked(object s, RoutedEventArgs e)  => ValidateRequested?.Invoke(this, EventArgs.Empty);
-    private void OnUndoClicked(object s, RoutedEventArgs e)      => UndoRequested?.Invoke(this, EventArgs.Empty);
-    private void OnRedoClicked(object s, RoutedEventArgs e)      => RedoRequested?.Invoke(this, EventArgs.Empty);
-    private void OnAddBlockClicked(object s, RoutedEventArgs e)  => AddBlockRequested?.Invoke(this, EventArgs.Empty);
-    private void OnDuplicateClicked(object s, RoutedEventArgs e) => DuplicateRequested?.Invoke(this, EventArgs.Empty);
+    private void OnSaveClicked(object s, RoutedEventArgs e)           => SaveRequested?.Invoke(this, EventArgs.Empty);
+    private void OnValidateClicked(object s, RoutedEventArgs e)       => ValidateRequested?.Invoke(this, EventArgs.Empty);
+    private void OnUndoClicked(object s, RoutedEventArgs e)           => UndoRequested?.Invoke(this, EventArgs.Empty);
+    private void OnRedoClicked(object s, RoutedEventArgs e)           => RedoRequested?.Invoke(this, EventArgs.Empty);
+    private void OnAddBlockClicked(object s, RoutedEventArgs e)       => AddBlockRequested?.Invoke(this, EventArgs.Empty);
+    private void OnDuplicateClicked(object s, RoutedEventArgs e)      => DuplicateRequested?.Invoke(this, EventArgs.Empty);
+    private void OnToggleCodeViewClicked(object s, RoutedEventArgs e) => ToggleCodeViewRequested?.Invoke(this, EventArgs.Empty);
 }

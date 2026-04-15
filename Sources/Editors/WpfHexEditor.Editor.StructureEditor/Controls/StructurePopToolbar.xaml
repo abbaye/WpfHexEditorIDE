@@ -93,6 +93,16 @@
                 <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE7A6;" FontSize="13"/>
             </Button>
 
+            <Separator Style="{StaticResource PopSepStyle}"/>
+
+            <!-- Toggle Live Code View -->
+            <Button x:Name="PART_ToggleCodeViewBtn"
+                    Style="{StaticResource PopBtnStyle}"
+                    ToolTip="Toggle Live Code View"
+                    Click="OnToggleCodeViewClicked">
+                <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE943;" FontSize="13"/>
+            </Button>
+
             <!-- Group 3: Block operations (visible when Blocks tab is active) -->
             <Separator x:Name="PART_BlockSep" Style="{StaticResource PopSepStyle}" Visibility="Collapsed"/>
 

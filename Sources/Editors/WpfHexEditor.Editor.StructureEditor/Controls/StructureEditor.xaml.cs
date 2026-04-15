@@ -94,7 +94,7 @@ public sealed partial class StructureEditor : UserControl, IDocumentEditor, IOpe
         InitToolbarItems();
         InitStatusBarItems();
 
-        // Tab switch → status bar + pop-toolbar context update
+        // Tab switch → status bar + pop-toolbar context update + code view navigation
         MainTabs.SelectionChanged += (_, _) =>
         {
             RefreshStatusBarItems();
@@ -102,15 +102,37 @@ public sealed partial class StructureEditor : UserControl, IDocumentEditor, IOpe
             PopToolbar.SetBlockOperationsVisible(MainTabs.SelectedIndex == 2);
             if (MainTabs.SelectedIndex == 5) // Quality tab
                 _vm.QualityMetrics.Refresh(_vm.Blocks, _vm.Variables);
+
+            // Navigate live code view to the selected tab's JSON section root
+            var key = MainTabs.SelectedIndex switch
+            {
+                0 => "\"formatName\"",
+                1 => "\"detection\"",
+                2 => "\"blocks\"",
+                3 => "\"variables\"",
+                4 => "\"assertions\"",
+                5 => "\"qualityMetrics\"",
+                _ => (string?)null,
+            };
+            if (key is not null) NavigateCodeViewTo(key);
+        };
+
+        // Block selection → navigate code view to the block's JSON entry
+        _vm.Blocks.PropertyChanged += (_, e) =>
+        {
+            if (e.PropertyName == nameof(BlocksViewModel.SelectedBlock)
+                && _vm.Blocks.SelectedBlock is { } blk)
+                NavigateCodeViewTo($"\"name\": \"{blk.Name}\"");
         };
 
         // Pop-toolbar events
-        PopToolbar.SaveRequested      += (_, _) => SaveFile();
-        PopToolbar.ValidateRequested  += (_, _) => _vm.TriggerValidationNow();
-        PopToolbar.UndoRequested      += (_, _) => _vm.Undo();
-        PopToolbar.RedoRequested      += (_, _) => _vm.Redo();
-        PopToolbar.AddBlockRequested  += (_, _) => BlocksTabCtrl.RequestAddBlock();
-        PopToolbar.DuplicateRequested += (_, _) => _vm.Blocks.DuplicateCommand.Execute(null);
+        PopToolbar.SaveRequested           += (_, _) => SaveFile();
+        PopToolbar.ValidateRequested       += (_, _) => _vm.TriggerValidationNow();
+        PopToolbar.UndoRequested           += (_, _) => _vm.Undo();
+        PopToolbar.RedoRequested           += (_, _) => _vm.Redo();
+        PopToolbar.AddBlockRequested       += (_, _) => BlocksTabCtrl.RequestAddBlock();
+        PopToolbar.DuplicateRequested      += (_, _) => _vm.Blocks.DuplicateCommand.Execute(null);
+        PopToolbar.ToggleCodeViewRequested += (_, _) => ToggleCodeView();
 
         // Preload schema for tooltips
         WhfmtSchemaProvider.Instance.EnsureLoaded();
@@ -137,8 +159,8 @@ public sealed partial class StructureEditor : UserControl, IDocumentEditor, IOpe
         // Insert CodeEditorSplitHost into the XAML placeholder border
         CodeViewBorder.Child = _codeView;
 
-        // Schedule dirty → code-view refresh
-        _vm.DirtyChanged += (_, _) =>
+        // Restart refresh timer on every content change (not just dirty transitions)
+        _vm.ContentChanged += (_, _) =>
         {
             _refreshTimer?.Stop();
             _refreshTimer?.Start();
@@ -237,6 +259,7 @@ public sealed partial class StructureEditor : UserControl, IDocumentEditor, IOpe
                 // (Re)create the live buffer for the new file path and attach it
                 _liveBuffer = new LiveWhfmtBuffer(filePath);
                 _codeView.AttachBuffer(_liveBuffer);
+                _codeView.IsReadOnly = true;
                 PushJsonToCodeView();
             });
 
@@ -346,5 +369,31 @@ public sealed partial class StructureEditor : UserControl, IDocumentEditor, IOpe
     {
         if (_liveBuffer is null) return;
         _liveBuffer.SetText(_vm.SerializeToJson());
+    }
+
+    // ── Live code view navigation ─────────────────────────────────────────────
+
+    /// <summary>
+    /// Finds the 1-based line number of the first occurrence of <paramref name="searchText"/>
+    /// in the current live buffer. Returns 1 if not found.
+    /// </summary>
+    private int FindLineInJson(string searchText)
+    {
+        var text = _liveBuffer?.Text;
+        if (string.IsNullOrEmpty(text)) return 1;
+        var idx = text.IndexOf(searchText, StringComparison.Ordinal);
+        if (idx < 0) return 1;
+        return text[..idx].Count(c => c == '\n') + 1;
+    }
+
+    /// <summary>
+    /// Scrolls the live code view to the line containing <paramref name="searchText"/>.
+    /// No-op when the code view is hidden or the buffer is not yet attached.
+    /// </summary>
+    private void NavigateCodeViewTo(string searchText)
+    {
+        if (_liveBuffer is null || !_codeViewVisible) return;
+        var line = FindLineInJson(searchText);
+        ((INavigableDocument)_codeView).NavigateTo(line, 1);
     }
 }
