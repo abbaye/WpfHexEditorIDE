@@ -1,6 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft-07/schema#",
-  "$id": "https://wpfhexeditor.dev/schemas/whfmt/v2.2",
+  "$id": "https://wpfhexeditor.dev/schemas/whfmt/v2.3",
+  "schemaVersion": "2.3",
   "title": "WpfHexEditor Format Definition (.whfmt)",
   "description": "Schema for .whfmt format definition files used by WpfHexEditor to parse, colorize, and analyze binary file structures.",
   "type": "object",
@@ -189,6 +190,14 @@
           "minimum": 0, "maximum": 1,
           "default": 0.7,
           "description": "Minimum confidence for auto-selection"
+        },
+        "validation": {
+          "type": "object",
+          "description": "Additional validation constraints for detection",
+          "properties": {
+            "minFileSize": { "type": "integer", "minimum": 0, "description": "Minimum file size in bytes required for this format" },
+            "note": { "type": "string", "description": "Human-readable note about detection heuristics" }
+          }
         }
       }
     },
@@ -235,7 +244,7 @@
       "properties": {
         "type": {
           "type": "string",
-          "enum": ["signature", "field", "metadata", "conditional", "loop", "action", "computeFromVariables", "repeating", "union", "nested", "pointer"],
+          "enum": ["signature", "field", "group", "metadata", "conditional", "loop", "action", "computeFromVariables", "repeating", "union", "nested", "pointer"],
           "description": "Block type"
         },
         "name": { "type": "string", "description": "Name/description of this block" },
@@ -388,7 +397,8 @@
       "properties": {
         "category": { "type": "string" },
         "extensions": { "type": "array", "items": { "type": "string" } },
-        "relatedFormats": { "type": "array", "items": { "type": "string" } }
+        "relatedFormats": { "type": "array", "items": { "type": "string" } },
+        "note": { "type": "string", "description": "Narrative note about format relationships or ecosystem context" }
       }
     },
 
@@ -398,12 +408,18 @@
         "primaryExtension": { "type": "string" },
         "definedFields": { "type": "integer" },
         "compressionMethod": { "type": "string" },
+        "compression": { "type": "string", "description": "Alias for compressionMethod" },
         "archivesFormat": { "type": "boolean" },
         "imagesFormat": { "type": "boolean" },
         "executablesFormat": { "type": "boolean" },
         "audioFormat": { "type": "boolean" },
         "videoFormat": { "type": "boolean" },
         "documentFormat": { "type": "boolean" },
+        "textFormat": { "type": "boolean", "description": "True if this is a text-based (non-binary) format" },
+        "encoding": { "type": "string", "description": "Default character encoding (e.g., 'UTF-8', 'ASCII')" },
+        "schema": { "type": "string", "description": "Schema file or specification name that governs this format" },
+        "hasHeader": { "type": "boolean", "description": "True if the format has a fixed-size header" },
+        "selfReferential": { "type": "boolean", "description": "True if this format can describe itself" },
         "bitDepth": { "type": "integer" },
         "colorSpace": { "type": "string" },
         "sampleRate": { "type": "integer" },
@@ -479,6 +495,11 @@
         "knownMaliciousPatterns": {
           "type": "array",
           "items": { "$ref": "#/$defs/ForensicPattern" }
+        },
+        "knownExploitVectors": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Free-text descriptions of known exploit vectors or attack surfaces for this format"
         }
       }
     },
@@ -511,10 +532,11 @@
 
     "NavigationBookmark": {
       "type": "object",
-      "required": ["name", "offsetVar"],
+      "required": ["name"],
       "properties": {
         "name": { "type": "string", "description": "Display name (e.g., 'Entry Point')" },
-        "offsetVar": { "type": "string", "description": "Variable whose value is the target offset" },
+        "offsetVar": { "type": "string", "description": "Variable whose value is the target offset (dynamic)" },
+        "offset": { "type": "integer", "minimum": 0, "description": "Fixed byte offset for the bookmark (static)" },
         "icon": { "type": "string", "description": "Segoe MDL2 glyph character" },
         "color": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" }
       }

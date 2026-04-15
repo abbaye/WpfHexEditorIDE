@@ -1,7 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "WPFHexaEditor Format Definition",
-  "version": "1.0",
+  "version": "1.1",
   "extensions": [
     ".whfmt"
   ],
@@ -18,7 +18,7 @@
       "WPFHexaEditor .whfmt Schema v2",
       "whfmt.schema.json (embedded in WpfHexEditor.Core.Definitions)"
     ],
-    "WebLinks": [
+    "webLinks": [
       "https://github.com/abbaye/WpfHexEditorControl"
     ]
   },
@@ -26,8 +26,8 @@
     "signature": "7B",
     "offset": 0,
     "required": false,
-    "Strength": "Weak",
-    "EntropyHint": { "min": 3.5, "max": 5.5 },
+    "strength": "Weak",
+    "entropyHint": { "min": 3.5, "max": 5.5 },
     "validation": {
       "minFileSize": 50,
       "note": "A .whfmt file is a JSON document — it starts with '{' (0x7B) or a UTF-8 BOM (0xEF 0xBB 0xBF) followed by '{'. Detection relies primarily on the file extension. The JSON must contain at least 'formatName' and 'extensions' properties to be a valid .whfmt."
@@ -385,32 +385,28 @@
     "extensions": [".whfmt"],
     "note": "The .whfmt format is proprietary to WPFHexaEditor. It is a superset of JSON with domain-specific semantics. Files can be edited in the StructureEditor (visual) or any JSON-aware code editor."
   },
-  "MimeTypes": [
-    "application/json",
-    "application/vnd.wpfhexaeditor.format+json"
-  ],
-  "UseCases": [
+  "useCases": [
     "Define binary file format overlays for the WPFHexaEditor hex editor",
     "Provide detection signatures for automatic format identification",
     "Document binary format structure for analysis and forensics",
     "Generate C struct / Python bytes export templates from format layouts",
     "Provide syntax highlighting definitions for text-based formats"
   ],
-  "QualityMetrics": {
-    "CompletenessScore": 92,
-    "DocumentationLevel": "detailed",
-    "BlocksDefined": 12,
-    "ValidationRules": 5,
-    "LastUpdated": "2026-04-14",
-    "PriorityFormat": true,
-    "AutoRefined": false
+  "qualityMetrics": {
+    "completenessScore": 92,
+    "documentationLevel": "detailed",
+    "blocksDefined": 12,
+    "validationRules": 5,
+    "lastUpdated": "2026-04-14",
+    "priorityFormat": true,
+    "autoRefined": false
   },
-  "TechnicalDetails": {
-    "TextFormat": true,
-    "Encoding": "UTF-8",
-    "Schema": "whfmt.schema.json",
-    "Compression": "none",
-    "HasHeader": false,
-    "SelfReferential": true
+  "technicalDetails": {
+    "textFormat": true,
+    "encoding": "UTF-8",
+    "schema": "whfmt.schema.json",
+    "compression": "none",
+    "hasHeader": false,
+    "selfReferential": true
   }
 }
