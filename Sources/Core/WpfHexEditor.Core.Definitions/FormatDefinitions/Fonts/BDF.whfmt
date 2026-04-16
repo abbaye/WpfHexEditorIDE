@@ -1,109 +1,169 @@
 {
-  "formatName": "Glyph Bitmap Distribution Format",
-  "version": "1.0",
-  "author": "WPFHexaEditor Team",
-  "lastUpdated": "2026-04-15",
-  "description": "Adobe BDF (Glyph Bitmap Distribution Format) — a human-readable plain-text font format for X Window System bitmap fonts; contains pixel-level glyph bitmaps with XLFD names, widely used in Unix terminal emulators and embedded displays.",
+  "formatName": "Bitmap Distribution Format (BDF)",
+  "version": "1.1",
   "extensions": [ ".bdf" ],
-  "category": "Fonts",
   "diffMode": "text",
-  "signatures": [
+  "description": "Bitmap Distribution Format is a text-based X11 bitmap font format developed by Adobe. Each glyph is described as a named block with bounding box and hexadecimal bitmap rows.",
+  "category": "Fonts",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "CodeEditor",
+  "references": [
+    "https://adobe-type-tools.github.io/font-tech-notes/pdfs/5005.BDF_Spec.pdf",
+    "https://www.x.org/docs/XFree86/bdf.pdf"
+  ],
+  "MimeTypes": [ "application/x-font-bdf", "font/bdf" ],
+  "UseCases": [
+    "X11 bitmap font authoring and distribution",
+    "Embedded system font development",
+    "Legacy terminal and console font creation",
+    "Font format research and conversion"
+  ],
+  "software": [
+    { "name": "FontForge", "role": "Font editor with BDF import/export",  "platform": "Multi", "url": "https://fontforge.org" },
+    { "name": "bdftopcf",  "role": "BDF to PCF compiler (X11 utilities)", "platform": "Unix" },
+    { "name": "gbdfed",    "role": "GNOME BDF font editor",               "platform": "Linux" },
+    { "name": "mkfontdir", "role": "X11 font directory utility",          "platform": "Unix" }
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "value": "5354415254464F4E54",
+        "offset": 0,
+        "label": "'STARTFONT' ASCII keyword at start of file",
+        "weight": 1.0
+      }
+    ],
+    "matchMode": "first",
+    "MinimumScore": 88,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 3.5, "max": 5.5 }
+  },
+  "variables": [
+    { "name": "bdfStartFont",   "offset": 0,  "size": 9, "type": "ascii", "storeAs": "bdfStartFont",   "description": "Keyword 'STARTFONT' on first line" },
+    { "name": "bdfVersion",     "offset": 10, "size": 3, "type": "ascii", "storeAs": "bdfVersion",
+      "description": "BDF spec version on first line (e.g. '2.1' or '2.2')",
+      "valueMap": { "2.1": "BDF spec version 2.1", "2.2": "BDF spec version 2.2" } },
+    { "name": "bdfFirstByte",   "offset": 0,  "size": 1, "type": "uint8", "storeAs": "bdfFirstByte",   "description": "First byte of file, always 'S' (0x53)" },
+    { "name": "bdfFontName",    "offset": "line FONT",          "size": "line", "type": "ascii", "storeAs": "bdfFontName",    "description": "FONT keyword value: XLFD font name string" },
+    { "name": "bdfPointSize",   "offset": "line SIZE",          "size": "line", "type": "ascii", "storeAs": "bdfPointSize",   "description": "SIZE keyword: point size, x-dpi, y-dpi" },
+    { "name": "bdfBoundingBox", "offset": "line FONTBOUNDINGBOX","size": "line","type": "ascii", "storeAs": "bdfBoundingBox", "description": "FONTBOUNDINGBOX: width height x-offset y-offset" },
+    { "name": "bdfCharsCount",  "offset": "line CHARS",         "size": "line", "type": "ascii", "storeAs": "bdfCharsCount",  "description": "CHARS keyword: total number of glyph definitions" }
+  ],
+  "blocks": [
     {
-      "value": "5354415254464F4E5420",
+      "name": "GlobalHeader",
       "offset": 0,
-      "label": "'STARTFONT ' — BDF text font header keyword (10 bytes ASCII)",
-      "weight": 1.0,
-      "strength": "Strong"
+      "description": "Global BDF header: STARTFONT version, FONT name, SIZE, FONTBOUNDINGBOX and global properties",
+      "color": "#1E90FF",
+      "fields": [ "bdfStartFont", "bdfVersion", "bdfFontName", "bdfPointSize", "bdfBoundingBox" ]
+    },
+    {
+      "name": "PropertiesBlock",
+      "offset": "after global header",
+      "description": "Optional STARTPROPERTIES...ENDPROPERTIES block with X font properties",
+      "color": "#32CD32"
+    },
+    {
+      "name": "CharCountLine",
+      "offset": "before first STARTCHAR",
+      "description": "CHARS n declaration giving total glyph count",
+      "color": "#FFA500",
+      "fields": [ "bdfCharsCount" ]
+    },
+    {
+      "name": "GlyphDefinitions",
+      "offset": "CHARS line + 1",
+      "description": "Sequence of STARTCHAR...ENDCHAR blocks, one per glyph with encoding, metrics and bitmap",
+      "color": "#FF6347"
+    },
+    {
+      "name": "EndOfFont",
+      "offset": "last line",
+      "description": "ENDFONT keyword terminating the file",
+      "color": "#9370DB"
     }
   ],
-  "maxSignatureOffset": 10,
-  "structure": {
-    "format": "text",
-    "topLevelKeywords": [
-      { "keyword": "STARTFONT",      "description": "File start marker + version (e.g. STARTFONT 2.1)" },
-      { "keyword": "FONT",           "description": "XLFD (X Logical Font Description) name string" },
-      { "keyword": "SIZE",           "description": "Point size, x-resolution, y-resolution in DPI" },
-      { "keyword": "FONTBOUNDINGBOX","description": "Global bounding box: width height xOffset yOffset" },
-      { "keyword": "STARTPROPERTIES","description": "Begin optional font-level property block" },
-      { "keyword": "ENDPROPERTIES",  "description": "End font-level property block" },
-      { "keyword": "CHARS",          "description": "Number of glyphs that follow" },
-      { "keyword": "ENDFONT",        "description": "File end marker" }
-    ],
-    "glyphKeywords": [
-      { "keyword": "STARTCHAR",  "description": "Begin glyph block; followed by glyph name string" },
-      { "keyword": "ENCODING",   "description": "Unicode or platform code point (decimal)" },
-      { "keyword": "SWIDTH",     "description": "Scalable width (device-independent width in 1/1000 point units)" },
-      { "keyword": "DWIDTH",     "description": "Device width in pixels (horizontal advance)" },
-      { "keyword": "BBX",        "description": "Bounding box: width height xOffset yOffset" },
-      { "keyword": "BITMAP",     "description": "Begins hex bitmap rows (one hex row per text line)" },
-      { "keyword": "ENDCHAR",    "description": "End glyph block" }
-    ],
-    "fields": [
-      { "offset": 0,  "size": 10, "name": "bdfMagic",  "type": "ascii", "description": "'STARTFONT ' — file identification keyword", "storeAs": "bdfMagic" },
-      { "offset": 0,  "size": 1,  "name": "firstByte", "type": "uint8", "description": "First byte: 'S' (0x53) confirms BDF text format", "storeAs": "bdfFirst" }
+  "assertions": [
+    { "id": "A1", "expression": "bdfStartFont == 'STARTFONT'",        "severity": "error",   "message": "File must begin with STARTFONT keyword" },
+    { "id": "A2", "expression": "bdfVersion in ['2.1', '2.2']",       "severity": "warning", "message": "BDF version should be 2.1 or 2.2" },
+    { "id": "A3", "expression": "bdfFirstByte == 83",                 "severity": "error",   "message": "First byte must be 'S' (0x53)" },
+    { "id": "A4", "expression": "file contains 'ENDFONT'",            "severity": "error",   "message": "BDF file must end with ENDFONT keyword" },
+    { "id": "A5", "expression": "bdfCharsCount is positive integer",  "severity": "warning", "message": "CHARS count should be a positive integer" }
+  ],
+  "navigation": {
+    "rootLabel": "BDF Font",
+    "entries": [
+      { "label": "Global Header",     "blockRef": "GlobalHeader" },
+      { "label": "Properties Block",  "blockRef": "PropertiesBlock" },
+      { "label": "Char Count",        "blockRef": "CharCountLine" },
+      { "label": "Glyph Definitions", "blockRef": "GlyphDefinitions" },
+      { "label": "End of Font",       "blockRef": "EndOfFont" }
     ]
   },
   "inspector": {
-    "displayFields": [ "bdfMagic", "bdfFirst" ],
-    "tooltips": {
-      "bdfMagic":  "First 10 bytes must be 'STARTFONT ' (including trailing space)",
-      "bdfFirst":  "Must be 0x53 ('S'); a non-ASCII first byte indicates binary corruption"
-    }
-  },
-  "assertions": [
-    { "id": "A1", "field": "bdfFirst", "operator": "eq",         "value": 83,          "description": "First byte must be 0x53 ('S')" },
-    { "id": "A2", "field": "bdfMagic", "operator": "startsWith", "value": "STARTFONT", "description": "File must begin with 'STARTFONT'" }
-  ],
-  "navigation": {
-    "bookmarks": [
-      { "offset": 0, "label": "STARTFONT Header",       "color": "#E74C3C" }
+    "badge": "BDF",
+    "primaryField": "bdfFontName",
+    "groups": [
+      { "name": "Identity",    "fields": [ "bdfStartFont", "bdfVersion", "bdfFontName" ] },
+      { "name": "Metrics",     "fields": [ "bdfPointSize", "bdfBoundingBox" ] },
+      { "name": "Glyph Count", "fields": [ "bdfCharsCount" ] }
     ]
   },
   "exportTemplates": [
     {
-      "name": "BDF Summary",
-      "fields": [ "bdfMagic" ],
-      "format": "text"
+      "name": "Font Summary",
+      "format": "text",
+      "template": "Format: BDF v{bdfVersion}\nFont: {bdfFontName}\nSize: {bdfPointSize}\nBounding Box: {bdfBoundingBox}\nGlyphs: {bdfCharsCount}"
     },
     {
-      "name": "BDF Metadata JSON",
-      "fields": [ "bdfMagic" ],
-      "format": "json"
+      "name": "CSV Metadata",
+      "format": "csv",
+      "template": "Field,Value\nVersion,{bdfVersion}\nFontName,{bdfFontName}\nPointSize,{bdfPointSize}\nBoundingBox,{bdfBoundingBox}\nCharsCount,{bdfCharsCount}"
     }
   ],
-  "aiHints": [
-    "BDF is a plain-text format; open as text for human inspection. The 'STARTFONT 2.1' version line is the standard; 2.2 is an extension with additional properties.",
-    "XLFD font names follow a strict 14-field dash-separated convention: foundry-family-weight-slant-setwidth-additional-pixel-point-xres-yres-spacing-avgwidth-registry-encoding.",
-    "Each glyph's BITMAP section contains hexadecimal rows, one row per line, where each hex digit pair represents 8 pixels (MSB to LSB, left to right).",
-    "The ENCODING field uses -1 for unencoded glyphs; standard positive values are Unicode code points (or Latin-1 for pre-Unicode fonts).",
-    "BDF files are typically converted to PCF (Portable Compiled Format) by bdftopcf for runtime use by X11; BDF is the source, PCF is the compiled form.",
-    "Common resolutions are 75dpi (screen) and 100dpi (high-resolution); SIZE line specifies both X and Y DPI so non-square pixels are supported."
-  ],
   "forensic": {
-    "riskLevel": "low",
-    "notes": [
-      "BDF is plain text; no binary execution risk.",
-      "Malformed or very large BDF files with pathological glyph counts have caused memory issues in some X11 font loaders — validate CHARS count.",
-      "BDF files sometimes contain non-public font metadata including internal foundry codes or proprietary XLFD extensions."
+    "riskLevel": "LOW",
+    "suspiciousPatterns": [
+      "CHARS count does not match actual STARTCHAR/ENDCHAR block count — corrupt or truncated",
+      "Missing ENDFONT keyword — file truncated",
+      "Non-hex characters in BITMAP rows — data corruption",
+      "ENCODING values outside Unicode range without proper private-use encoding"
+    ],
+    "hidingTechniques": [
+      "Arbitrary data in COMMENT lines throughout the file",
+      "Non-standard property names in STARTPROPERTIES block",
+      "Extra content after ENDFONT keyword"
+    ],
+    "timestampFields": [ "Optional COMMENT lines may contain date strings" ],
+    "notes": "BDF uses XLFD (X Logical Font Description) naming convention for the FONT property. The BITMAP section uses uppercase hexadecimal rows, each representing one row of the glyph."
+  },
+  "aiHints": {
+    "analysisContext": "BDF is a line-oriented text format. Detection is by the 'STARTFONT' keyword at line 1 followed by a version string. Validation requires checking keyword structure: STARTFONT, FONT, SIZE, FONTBOUNDINGBOX, CHARS, then STARTCHAR/ENDCHAR blocks, then ENDFONT.",
+    "suggestedInspections": [
+      "Verify file begins with 'STARTFONT' followed by a valid version string (2.1 or 2.2)",
+      "Confirm FONT line contains a valid XLFD font name string",
+      "Count STARTCHAR/ENDCHAR block pairs and compare against CHARS declaration",
+      "Validate each BITMAP section contains the correct number of hex rows per glyph bounding box height",
+      "Check that ENDFONT appears as the last non-empty line"
     ]
   },
   "formatRelationships": [
-    { "format": "PCF", "relationship": "compiled-form", "note": "PCF is the binary compiled form of BDF generated by bdftopcf for X11 runtime use." },
-    { "format": "PSF", "relationship": "related",        "note": "PSF (PC Screen Font) is a simpler binary bitmap font format for Linux console." }
+    { "format": "PCF",  "relationship": "derivative", "description": "PCF is the compiled binary form of BDF for X11 use" },
+    { "format": "PSF2", "relationship": "sibling",    "description": "PSF2 is a binary bitmap font format for Linux console use" },
+    { "format": "OTF",  "relationship": "sibling",    "description": "OpenType is the modern scalable font format that supersedes BDF" }
   ],
-  "software": [
-    { "name": "bdftopcf",      "role": "Compile BDF to PCF binary format" },
-    { "name": "FontForge",     "role": "Professional font editor with BDF import/export" },
-    { "name": "xfontsel",      "role": "X11 font selector and BDF browser" },
-    { "name": "mkfontscale",   "role": "Generate font.scale from BDF files" },
-    { "name": "X11",           "role": "Runtime font server consuming BDF/PCF" }
-  ],
-  "useCases": [
-    "X Window System bitmap font authoring and distribution",
-    "Terminal emulator custom font creation",
-    "Embedded display font design for small screens",
-    "Legacy Unix system font preservation"
-  ],
-  "technicalDetails": "Adobe BDF v2.1 (1993). Human-readable text format for pixel-level bitmap fonts. Each glyph specifies a bounding box and rows of hexadecimal pixel data (1 bit per pixel). XLFD names provide structured metadata for X11 font matching. SWIDTH (scalable width) and DWIDTH (device width) specify advance width for proportional and monospace fonts. Standard format for X11 source fonts; PCF is the binary compiled runtime form. Widely used in embedded systems, terminal emulators, and retro computing environments.",
-  "completenessScore": 78
+  "TechnicalDetails": {
+    "encoding": "ASCII text, CRLF or LF line endings",
+    "bitmapFormat": "Hexadecimal rows, MSB first, padded to byte boundary",
+    "glyphMetrics": "device-pixel BBX per glyph plus global FONTBOUNDINGBOX",
+    "characterEncodings": "ENCODING keyword per glyph (ISO-8859-1, Unicode, or -1 for non-standard)",
+    "specVersion": "2.2",
+    "compilerTool": "bdftopcf"
+  },
+  "QualityMetrics": {
+    "CompletenessScore": 90,
+    "LastUpdated": "2026-04-15",
+    "ReviewedBy": "WPFHexaEditor Team",
+    "KnownLimitations": "Text format with line-oriented parsing; field offsets are logical (line-based) not byte-absolute."
+  }
 }

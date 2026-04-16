@@ -1,0 +1,228 @@
+{
+  "diffMode": "binary",
+  "formatName": "Joblib / scikit-learn Serialized Model",
+  "version": "1.0",
+  "extensions": [".joblib", ".pkl"],
+  "description": "Joblib serialization format used by scikit-learn and other Python ML libraries. Joblib files use Python's pickle protocol (versions 2-5) for object serialization, optionally with numpy array mmap files for large arrays. The magic bytes are 0x80 followed by the protocol version byte. WARNING: Pickle deserialization executes arbitrary Python code — loading untrusted .joblib or .pkl files is a critical security risk.",
+  "category": "MachineLearning",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "HexEditor",
+  "references": [
+    "https://joblib.readthedocs.io/en/latest/persistence.html",
+    "https://scikit-learn.org/stable/model_persistence.html",
+    "https://docs.python.org/3/library/pickle.html"
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "offset": 0,
+        "value": "8005",
+        "label": "Pickle protocol 5 (Python 3.8+)",
+        "weight": 0.8
+      },
+      {
+        "offset": 0,
+        "value": "8004",
+        "label": "Pickle protocol 4 (Python 3.4+)",
+        "weight": 0.8
+      },
+      {
+        "offset": 0,
+        "value": "8003",
+        "label": "Pickle protocol 3 (Python 3.0+)",
+        "weight": 0.8
+      },
+      {
+        "offset": 0,
+        "value": "8002",
+        "label": "Pickle protocol 2 (Python 2.3+)",
+        "weight": 0.7
+      }
+    ],
+    "matchMode": "Best",
+    "MinimumScore": 0.7,
+    "Strength": "Medium",
+    "EntropyHint": "High — pickled numpy arrays and model weights have near-random byte distributions in raw_data sections"
+  },
+  "variables": [
+    {
+      "name": "joblibProto",
+      "offset": 0,
+      "size": 1,
+      "type": "uint8",
+      "description": "Pickle magic byte: always 0x80 (PROTO opcode)"
+    },
+    {
+      "name": "joblibProtoVer",
+      "offset": 1,
+      "size": 1,
+      "type": "uint8",
+      "description": "Pickle protocol version byte",
+      "valueMap": {
+        "2": "Protocol 2 (Python 2.3+)",
+        "3": "Protocol 3 (Python 3.0+)",
+        "4": "Protocol 4 (Python 3.4+)",
+        "5": "Protocol 5 (Python 3.8+)"
+      }
+    },
+    {
+      "name": "joblibOpcode",
+      "offset": 2,
+      "size": 1,
+      "type": "uint8",
+      "description": "First pickle opcode after PROTO: 0x95=FRAME (proto 4+), 0x28='(' MARK, or module/class GLOBAL"
+    },
+    {
+      "name": "joblibFrameSize",
+      "offset": 3,
+      "size": 8,
+      "type": "uint64",
+      "endian": "LE",
+      "description": "FRAME size (8-byte LE uint64) if opcode is 0x95; total frame payload length"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "PickleHeader",
+      "offset": 0,
+      "size": 2,
+      "description": "Pickle magic (0x80) + protocol version byte (2-5)"
+    },
+    {
+      "name": "FrameOpcode",
+      "offset": 2,
+      "size": 1,
+      "description": "First opcode: 0x95=FRAME header present (protocol 4+), others indicate direct pickle stream"
+    },
+    {
+      "name": "FrameSizeOrPayload",
+      "offset": 3,
+      "size": 8,
+      "description": "FRAME size as 8-byte LE uint64 (if FRAME opcode), or start of pickle stream opcodes"
+    },
+    {
+      "name": "ModuleReference",
+      "offset": 11,
+      "size": 32,
+      "description": "Module and class name references (GLOBAL, STACK_GLOBAL opcodes) identifying pickled Python objects"
+    },
+    {
+      "name": "ModelParameters",
+      "offset": 43,
+      "size": 64,
+      "description": "Pickled model hyperparameters, feature names, and coefficient arrays"
+    }
+  ],
+  "assertions": [
+    {
+      "variable": "joblibProto",
+      "operator": "==",
+      "value": 128,
+      "description": "First byte must be 0x80 (pickle PROTO opcode)",
+      "level": "Error"
+    },
+    {
+      "variable": "joblibProtoVer",
+      "operator": "between",
+      "value": [2, 5],
+      "description": "Pickle protocol version must be 2-5",
+      "level": "Error"
+    },
+    {
+      "variable": "joblibProtoVer",
+      "operator": ">=",
+      "value": 2,
+      "description": "Protocol 2+ is required for joblib/scikit-learn compatibility",
+      "level": "Warning"
+    }
+  ],
+  "navigation": {
+    "entryPoint": 0,
+    "sections": [
+      { "name": "Pickle Header", "offset": 0, "size": 2 },
+      { "name": "Frame Header", "offset": 2, "size": 9 },
+      { "name": "Object Graph", "offset": 11, "size": 64 }
+    ]
+  },
+  "inspector": {
+    "badge": "PKL",
+    "primaryField": "joblibProtoVer",
+    "groups": [
+      {
+        "name": "Pickle Identity",
+        "fields": ["joblibProto", "joblibProtoVer"]
+      },
+      {
+        "name": "Stream Structure",
+        "fields": ["joblibOpcode", "joblibFrameSize"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "JOBLIB Header Summary",
+      "format": "text",
+      "template": "Format: Joblib/Pickle\nPickle Magic: 0x{joblibProto:X2}\nProtocol: {joblibProtoVer}\nFirst Opcode: 0x{joblibOpcode:X2}"
+    },
+    {
+      "name": "JOBLIB JSON Report",
+      "format": "json",
+      "template": "{ \"format\": \"JOBLIB\", \"pickleProto\": {joblibProto}, \"protoVersion\": {joblibProtoVer}, \"firstOpcode\": {joblibOpcode} }"
+    }
+  ],
+  "forensic": {
+    "riskLevel": "HIGH",
+    "notes": "CRITICAL: Python pickle deserialization executes arbitrary code. A maliciously crafted .joblib or .pkl file can achieve remote code execution when loaded with joblib.load() or pickle.load(). This is one of the most dangerous serialization formats for untrusted sources. Never load pickle files from unknown sources.",
+    "suspiciousPatterns": [
+      "GLOBAL or STACK_GLOBAL opcodes referencing os.system, subprocess, eval, exec — code execution indicators",
+      "REDUCE opcode following a GLOBAL for built-in callable — classic pickle exploit pattern",
+      "Unusually small file size for a trained model — may contain a pure exploit payload with no model data",
+      "Protocol version 2 in a file claiming to be Python 3.8+ scikit-learn output — version mismatch",
+      "BUILD or INST opcodes with unusual module paths suggesting custom malicious modules"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "Joblib serialization builds on Python pickle (protocol 2-5). The magic is 0x80 followed by the protocol version byte. Protocol 4+ adds FRAME headers (0x95) for large object support. scikit-learn models store hyperparameters, feature names, and numpy arrays. Joblib may also produce companion .npy files for large arrays.",
+    "suggestedInspections": [
+      "Verify first byte is 0x80 (PROTO opcode) and second byte is the protocol version (2-5); mismatch indicates corruption or a non-pickle file.",
+      "Check the third byte: 0x95 (FRAME opcode, protocol 4+) followed by 8-byte frame size; any other value means a direct pickle stream without framing.",
+      "Scan for GLOBAL/STACK_GLOBAL opcode (0x63/'c' or 0x8C) followed by module.class strings — this reveals which Python classes are being deserialized.",
+      "Look for REDUCE (0x52/'R') following a GLOBAL for os.system, subprocess.Popen, or builtins.eval — these are code execution exploit patterns.",
+      "Inspect all string literals in the opcode stream (SHORT_BINSTRING, BINUNICODE, BINUNICODE8) for suspicious URLs, shell commands, or base64 payloads."
+    ]
+  },
+  "software": [
+    { "name": "scikit-learn", "platform": "Python", "url": "https://scikit-learn.org/" },
+    { "name": "joblib", "platform": "Python", "url": "https://joblib.readthedocs.io/" },
+    { "name": "pickletools (stdlib)", "platform": "Python", "url": "https://docs.python.org/3/library/pickletools.html" },
+    { "name": "fickling", "platform": "Python", "url": "https://github.com/trailofbits/fickling" },
+    { "name": "Modelscan", "platform": "Python", "url": "https://github.com/protectai/modelscan" }
+  ],
+  "formatRelationships": [
+    { "format": "ONNX", "relationship": "alternative", "note": "ONNX is a safe cross-platform alternative to pickle for ML model interchange" },
+    { "format": "PMML", "relationship": "alternative", "note": "PMML is a safe XML-based alternative for classical ML model portability" },
+    { "format": "PYBITCODE", "relationship": "ecosystem", "note": "Both are Python ecosystem binary formats; .pyc is bytecode, .pkl is object serialization" }
+  ],
+  "MimeTypes": ["application/octet-stream", "application/x-pickle"],
+  "UseCases": [
+    "scikit-learn model persistence and loading for production inference",
+    "Python ML pipeline serialization including preprocessors and transformers",
+    "Jupyter notebook model checkpointing for iterative experimentation"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 88,
+    "LastUpdated": "2026-04-15",
+    "ReviewedBy": "WPFHexaEditor Team"
+  },
+  "TechnicalDetails": {
+    "magicByte": "0x80 (pickle PROTO opcode)",
+    "protocolVersions": {
+      "2": "Python 2.3+, basic binary pickle",
+      "3": "Python 3.0+, bytes objects support",
+      "4": "Python 3.4+, large object FRAME support, STACK_GLOBAL",
+      "5": "Python 3.8+, out-of-band buffer support for numpy"
+    },
+    "jobbibExtensions": "Large numpy arrays may be written as companion .npy/.npz mmap files alongside the main .joblib",
+    "securityNote": "Pickle RCE is well-documented: CVE-2019-10160 and numerous academic papers on ML supply chain attacks"
+  }
+}

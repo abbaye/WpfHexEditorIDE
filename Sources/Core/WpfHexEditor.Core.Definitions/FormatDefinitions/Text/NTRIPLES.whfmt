@@ -1,0 +1,178 @@
+{
+  "diffMode": "text",
+  "formatName": "RDF N-Triples",
+  "version": "1.0",
+  "extensions": [ ".nt", ".ntriples" ],
+  "description": "N-Triples is an RDF (Resource Description Framework) serialization format standardized by W3C. Each line is a triple: a subject (IRI in <> or blank node _:name), a predicate (IRI in <>), and an object (IRI, blank node, or literal), terminated by a period. Blank lines and comment lines starting with '#' are allowed. N-Triples is a subset of Turtle with no prefixes or base IRIs, making it trivially line-oriented and suitable for streaming and diff operations. Used for knowledge graphs, linked data, semantic web datasets, and large RDF dataset exchange.",
+  "category": "Text",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "code-editor",
+  "references": {
+    "specifications": [
+      "W3C N-Triples Specification (RDF 1.1)",
+      "W3C RDF 1.1 Primer",
+      "SPARQL 1.1 Query Language"
+    ],
+    "WebLinks": [
+      "https://www.w3.org/TR/n-triples/",
+      "https://en.wikipedia.org/wiki/N-Triples",
+      "https://www.w3.org/RDF/",
+      "https://www.w3.org/TR/turtle/"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      { "hex": "3C68747470", "offset": 0, "label": "'<http' — IRI subject at start of file (common RDF URI pattern)", "weight": 0.7 },
+      { "hex": "5F3A", "offset": 0, "label": "'_:' — blank node subject at start of file", "weight": 0.5 },
+      { "hex": "23", "offset": 0, "label": "'#' — comment line at start of N-Triples file", "weight": 0.3 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.3,
+    "required": false,
+    "Strength": "Weak",
+    "EntropyHint": { "min": 3.5, "max": 5.0 },
+    "validation": {
+      "minFileSize": 5,
+      "maxSignatureOffset": 0,
+      "note": "N-Triples are line-oriented RDF text. Each data line: subject predicate object '.'. Subject is '<IRI>' or '_:blank'. .nt extension is the primary identifier."
+    }
+  },
+  "variables": {
+    "ntFirstChar": 0,
+    "ntUriStart": ""
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "First Character",
+      "offset": 0,
+      "length": 1,
+      "color": "#FF6B6B",
+      "opacity": 0.35,
+      "description": "First character of N-Triples file: '<' (IRI subject), '_' (blank node), '#' (comment), or whitespace.",
+      "storeAs": "ntFirstChar",
+      "valueType": "uint8",
+      "valueMap": {
+        "60": "< IRI/URI subject",
+        "95": "_: blank node",
+        "35": "# comment"
+      }
+    },
+    {
+      "type": "field",
+      "name": "First Triple Start",
+      "offset": 0,
+      "length": 5,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "'<http' or '_:' — start of first subject identifier.",
+      "storeAs": "ntUriStart",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "First Line Preview",
+      "offset": 0,
+      "length": 128,
+      "color": "#45B7D1",
+      "opacity": 0.2,
+      "description": "First line of N-Triples for subject-predicate-object structure verification.",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Dataset Sample",
+      "offset": 128,
+      "length": 256,
+      "color": "#FFEAA7",
+      "opacity": 0.15,
+      "description": "Extended content sample for namespace and vocabulary identification.",
+      "valueType": "ascii"
+    }
+  ],
+  "assertions": [
+    { "field": "ntFirstChar", "operator": "in", "value": [60, 95, 35, 32, 9, 10, 13], "description": "First char must be '<', '_:', '#', or whitespace — valid N-Triples start characters" },
+    { "field": "ntUriStart", "operator": "notEmpty", "value": true, "description": "First triple content must be readable" },
+    { "field": "ntFirstChar", "operator": "greaterThan", "value": 0, "description": "File must not be empty" }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "Document Start", "offset": 0, "description": "First triple or comment in N-Triples file" }
+    ]
+  },
+  "inspector": {
+    "badge": "NT",
+    "primaryField": "ntUriStart",
+    "showQualityScore": true,
+    "groups": [
+      { "name": "Triple Start", "fields": ["ntFirstChar", "ntUriStart"] }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "N-Triples File Info (JSON)",
+      "format": "json",
+      "fields": ["ntFirstChar", "ntUriStart"]
+    },
+    {
+      "name": "N-Triples Header (Text)",
+      "format": "text",
+      "fields": ["ntUriStart"]
+    }
+  ],
+  "forensic": {
+    "category": "data",
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      { "name": "PII in RDF literals", "condition": "true", "description": "RDF datasets may contain personal data (names, emails, identifiers) as literal values — review for GDPR compliance.", "severity": "info" }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "N-Triples is a simple line-based RDF format. Each line: subject predicate object . (terminated by period). Subjects and predicates are IRIs in angle brackets '<http://...>'. Objects can be IRIs, blank nodes ('_:name'), or literals ('\"value\"^^<datatype>'). Comments start with '#'. N-Triples is a line-by-line subset of Turtle RDF. Common vocabularies: RDF, RDFS, OWL, FOAF, schema.org, Dublin Core.",
+    "suggestedInspections": [
+      "Check first character: '<' (IRI), '_:' (blank node), or '#' (comment)",
+      "Verify line structure: subject predicate object period (.)",
+      "Identify vocabulary IRIs used (schema.org, foaf, rdf, rdfs, owl)",
+      "Count unique subjects to estimate dataset scale",
+      "Look for typed literals: '\"value\"^^<http://www.w3.org/2001/XMLSchema#type>'",
+      "Check for language-tagged literals: '\"text\"@en' for multilingual data"
+    ]
+  },
+  "software": [
+    "Apache Jena (Java RDF toolkit)",
+    "RDFLib (Python RDF library)",
+    "Virtuoso (RDF triple store)",
+    "Stardog",
+    "GraphDB",
+    "Turtle/N-Triples validators (W3C RDF Validator)"
+  ],
+  "formatRelationships": {
+    "category": "Text",
+    "extensions": [".nt", ".ntriples"],
+    "relatedFormats": ["XML", "DOCBOOK", "CSV"],
+    "note": "N-Triples is a line-oriented subset of Turtle RDF. Related RDF formats include Turtle (.ttl), N-Quads (.nq), JSON-LD (.jsonld), and RDF/XML (.rdf). N-Triples is preferred for large dataset streaming."
+  },
+  "MimeTypes": [ "application/n-triples", "text/plain" ],
+  "UseCases": [
+    "Knowledge graph data exchange",
+    "Linked Open Data dataset distribution",
+    "Semantic web RDF dataset streaming",
+    "Wikidata, DBpedia, and schema.org data dumps",
+    "Large-scale RDF data import/export"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 85,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 4,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-15",
+    "ReviewedBy": "WPFHexaEditor Team"
+  },
+  "TechnicalDetails": {
+    "Encoding": "UTF-8",
+    "NoMagic": true,
+    "LineOriented": true,
+    "W3CStandard": "RDF 1.1 N-Triples (W3C Recommendation)",
+    "Note": "No binary magic. Detection by .nt extension and '<http' or '_:' line-start patterns."
+  }
+}

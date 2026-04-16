@@ -1,119 +1,203 @@
 {
   "diffMode": "binary",
   "formatName": "MessagePack",
-  "version": "2.33",
-  "extensions": [
-    ".msgpack",
-    ".mp"
-  ],
-  "description": "MessagePack binary serialization format",
+  "version": "1.0",
+  "extensions": [".msgpack", ".mp", ".mpk"],
+  "description": "MessagePack is a binary serialization format designed to be compact and fast, often called 'binary JSON'. No file magic — format is identified by the type-tag structure of each value. The first byte encodes both type and, in many cases, a compact value. Format values: nil (0xC0), false (0xC2), true (0xC3), integers (fixint, int8-64, uint8-64), floats (float32/64), strings (fixstr, str8/16/32), bytes (bin8/16/32), arrays (fixarray, array16/32), maps (fixmap, map16/32), and ext types.",
   "category": "Data",
   "author": "WPFHexaEditor Team",
-  "preferredEditor": "hex-editor",
-  "references": {
-    "specifications": [
-      "MessagePack Format"
-    ],
-    "WebLinks": [
-      "https://en.wikipedia.org/wiki/MSGPACK"
-    ]
-  },
+  "preferredEditor": "HexEditor",
+  "references": [
+    "https://msgpack.org/",
+    "https://github.com/msgpack/msgpack/blob/master/spec.md",
+    "https://en.wikipedia.org/wiki/MessagePack"
+  ],
   "detection": {
-    "required": false,
-    "validation": {
-      "minFileSize": 1,
-      "maxSignatureOffset": 1024
-    },
     "signatures": [
-      {
-        "value": "00",
-        "offset": 0,
-        "label": "MSGPACK magic",
-        "weight": 1.0
-      }
+      { "value": "82", "offset": 0, "label": "fixmap 2 items (common in configs)", "weight": 0.3 },
+      { "value": "81", "offset": 0, "label": "fixmap 1 item", "weight": 0.2 },
+      { "value": "93", "offset": 0, "label": "fixarray 3 items", "weight": 0.2 },
+      { "value": "C0", "offset": 0, "label": "nil value", "weight": 0.2 }
     ],
     "matchMode": "any",
-    "MinimumScore": 1.0,
-    "Strength": "Weak"
+    "MinimumScore": 0.2,
+    "Strength": "Weak",
+    "validation": {
+      "rules": [
+        { "type": "info", "message": "MessagePack has no magic bytes; detection is heuristic based on first-byte type tags" }
+      ]
+    }
   },
-  "variables": {
-    "currentOffset": 0,
-    "crc32Valid": false,
-    "originalSize": 0,
-    "compressionRatio": 0
-  },
-  "blocks": [
+  "variables": [
     {
-      "type": "data",
-      "name": "MessagePack Data",
+      "name": "mpFirstByte",
       "offset": 0,
-      "length": 256,
-      "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "MessagePack binary data"
+      "size": 1,
+      "type": "uint8",
+      "storeAs": "mpFirstByte",
+      "description": "First byte encodes type tag and often a compact value",
+      "valueMap": {
+        "192": "nil (0xC0)",
+        "194": "false (0xC2)",
+        "195": "true (0xC3)",
+        "200": "int8 (0xC8)",
+        "202": "float32 (0xCA)",
+        "203": "float64 (0xCB)",
+        "204": "uint8 (0xCC)",
+        "205": "uint16 (0xCD)",
+        "206": "uint32 (0xCE)",
+        "207": "uint64 (0xCF)",
+        "208": "int8 (0xD0)",
+        "220": "array16 (0xDC)",
+        "222": "map16 (0xDE)"
+      }
     },
     {
-      "type": "metadata",
-      "name": "CRC Valid",
-      "variable": "crc32Valid",
-      "description": "CRC Valid"
-    },
-    {
-      "type": "metadata",
-      "name": "Original Size",
-      "variable": "originalSize",
-      "description": "Original Size"
+      "name": "mpSecondByte",
+      "offset": 1,
+      "size": 1,
+      "type": "uint8",
+      "storeAs": "mpSecondByte",
+      "description": "Second byte — meaning depends on first byte type tag"
     }
   ],
-  "software": [
-    "Common file viewers",
-    "Specialized software"
+  "blocks": [
+    {
+      "name": "RootValue",
+      "offset": 0,
+      "size": 4,
+      "description": "Root MessagePack value starting at offset 0. First byte encodes type. For maps/arrays, subsequent bytes are the element count followed by key-value or element entries.",
+      "fields": [
+        { "name": "TypeTag", "offset": 0, "size": 1, "type": "uint8" },
+        { "name": "SecondByte", "offset": 1, "size": 1, "type": "uint8" }
+      ]
+    },
+    {
+      "name": "TypeGuide",
+      "offset": 0,
+      "size": 0,
+      "description": "fixint positive: 0x00-0x7F. fixint negative: 0xE0-0xFF. fixmap: 0x80-0x8F. fixarray: 0x90-0x9F. fixstr: 0xA0-0xBF. nil: 0xC0. false: 0xC2. true: 0xC3. float32: 0xCA. float64: 0xCB. uint8-64: 0xCC-0xCF. int8-64: 0xD0-0xD3. fixext: 0xD4-0xD8. str8/16/32: 0xD9-0xDB. array16/32: 0xDC-0xDD. map16/32: 0xDE-0xDF.",
+      "fields": []
+    },
+    {
+      "name": "RawData",
+      "offset": 0,
+      "size": -1,
+      "description": "Raw MessagePack binary stream — no fixed structure, recursive type-tag parsing required",
+      "fields": []
+    },
+    {
+      "name": "InspectionNote",
+      "offset": 0,
+      "size": 0,
+      "description": "MessagePack requires recursive descent parsing starting at offset 0. No fixed-size header exists. Use msgpack-cli or Python msgpack library to decode.",
+      "fields": []
+    }
   ],
-  "formatRelationships": {
-    "category": "Data",
-    "extensions": [
-      ".msgpack",
-      ".mp"
+  "assertions": [
+    {
+      "id": "assert_info_format",
+      "type": "info",
+      "severity": "info",
+      "message": "MessagePack has no magic bytes. Detection is heuristic. Confirm format via context (file extension, API contract, or application documentation)."
+    },
+    {
+      "id": "assert_first_byte_range",
+      "field": "mpFirstByte",
+      "operator": "lessThanOrEqual",
+      "value": 255,
+      "severity": "info",
+      "message": "First byte type tag is in range (all uint8 values are valid MessagePack type codes)"
+    },
+    {
+      "id": "assert_nil_check",
+      "field": "mpFirstByte",
+      "operator": "notEquals",
+      "value": 0,
+      "severity": "info",
+      "message": "First byte 0x00 is a positive fixint zero — valid MessagePack but unusual as root value"
+    }
+  ],
+  "navigation": {
+    "entryPoints": [
+      { "name": "Root Value", "offset": 0 }
+    ],
+    "jumpTable": [
+      { "label": "Root Type Tag (byte 0)", "offset": 0 }
     ]
   },
-  "MimeTypes": [
-    "application/octet-stream"
-  ],
-  "Software": [
-    "Hex Editor",
-    "File Viewer",
-    "Archive Manager"
-  ],
-  "UseCases": [
-    "File storage",
-    "Data exchange",
-    "Archive"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 3,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-04-14",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "MP",
+    "primaryField": "mpFirstByte",
+    "groups": [
+      {
+        "name": "Root Value",
+        "fields": ["mpFirstByte", "mpSecondByte"]
+      }
+    ]
   },
+  "exportTemplates": [
+    {
+      "name": "MessagePack Root Byte Summary",
+      "format": "text",
+      "template": "MessagePack Data\nFirst Byte (type tag): 0x{mpFirstByte:X2}\nSecond Byte          : 0x{mpSecondByte:X2}"
+    },
+    {
+      "name": "MessagePack Header CSV",
+      "format": "csv",
+      "template": "Field,Value\nFirstByte,{mpFirstByte}\nSecondByte,{mpSecondByte}"
+    }
+  ],
   "forensic": {
-    "category": "data",
     "riskLevel": "low",
-    "suspiciousPatterns": []
+    "suspiciousPatterns": [
+      "Deeply nested maps/arrays (> 32 levels) — possible stack overflow attack on parsers",
+      "ext type with undocumented type codes — possible custom payload encoding",
+      "Very large array/map counts (> 10M) — possible denial of service via memory exhaustion",
+      "Interleaved ext type 0x00 — reserved; non-standard usage may indicate obfuscation"
+    ]
   },
   "aiHints": {
-    "analysisContext": "MessagePack binary serialization format",
+    "analysisContext": "MessagePack has no magic bytes — format is identified entirely by the recursive type-tag structure. First byte encodes both type and sometimes value (fixint 0x00-0x7F, fixmap 0x80-0x8F, fixarray 0x90-0x9F, fixstr 0xA0-0xBF, negative fixint 0xE0-0xFF). Use msgpack-cli or Python msgpack.unpackb() to decode. Common in Redis, Fluentd, NATS, and high-performance RPC systems.",
     "suggestedInspections": [
-      "Validate MessagePack schema header and encoding markers",
-      "Check nested structure depth and field type tags",
-      "Inspect string encodings and numeric value boundaries"
+      "Check first byte type tag to identify root value type (map, array, scalar)",
+      "If fixmap (0x80-0x8F): low nibble is key count; decode key-value pairs recursively",
+      "If fixarray (0x90-0x9F): low nibble is element count; decode elements recursively",
+      "Scan for ext type markers (0xC7-0xC9 / 0xD4-0xD8) to identify extended type usage",
+      "Use Python msgpack.unpackb(data, raw=False) for full recursive decode",
+      "Measure file size vs decoded element count to detect padding or trailing data"
     ]
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "calculateCRC32": "Validate CRC",
-    "readUInt32LE": "Read size"
+  "software": [
+    { "name": "msgpack-cli", "vendor": "Open source (msgpack.org)", "platform": "Cross-platform" },
+    { "name": "Python msgpack", "vendor": "Open source", "platform": "Python" },
+    { "name": "Redis (uses MessagePack internally in some modules)", "vendor": "Redis", "platform": "Cross-platform" }
+  ],
+  "formatRelationships": [
+    { "format": "CBOR", "relation": "sibling", "note": "CBOR (RFC 7049) has similar type-tag design but different byte assignments and standard tag registry" },
+    { "format": "JSON", "relation": "binaryEquivalent", "note": "MessagePack is a binary-compact alternative to JSON with the same data model" }
+  ],
+  "MimeTypes": [
+    "application/octet-stream",
+    "application/msgpack",
+    "application/x-msgpack"
+  ],
+  "UseCases": [
+    "High-performance RPC and IPC serialization",
+    "Redis pub/sub message encoding",
+    "Fluentd log record format",
+    "Mobile and IoT API payloads where bandwidth is constrained"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 83,
+    "LastUpdated": "2026-04-15"
+  },
+  "TechnicalDetails": {
+    "headerSize": 0,
+    "endian": "big",
+    "magic": "none",
+    "typeModel": "Single-byte type tag encodes type and small values; multi-byte follows for larger values",
+    "extTypes": "0xC7 ext8, 0xC8 ext16, 0xC9 ext32, 0xD4-0xD8 fixext1-16",
+    "notes": "MessagePack integers are big-endian. Maps and arrays are recursively encoded. No schema embedded — external schema required for type interpretation beyond primitive types."
   }
 }

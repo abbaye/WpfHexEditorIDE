@@ -1,93 +1,179 @@
 {
   "formatName": "NUT Multimedia Container",
-  "version": "1.0",
-  "author": "WPFHexaEditor Team",
-  "lastUpdated": "2026-04-15",
-  "description": "NUT open multimedia container format (.nut) — designed by the FFmpeg and MPlayer communities as a simple, extensible alternative to AVI/MKV with CRC-32 error detection and variable-length integer encoding.",
+  "version": "1.1",
   "extensions": [ ".nut" ],
-  "category": "Video",
   "diffMode": "binary",
-  "signatures": [
+  "description": "NUT is an open multimedia container format developed by the FFmpeg project. Designed for simplicity and seeking efficiency with variable-length integer encoding throughout.",
+  "category": "Video",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "HexEditor",
+  "references": [
+    "https://ffmpeg.org/~michael/nut.txt",
+    "https://wiki.multimedia.cx/index.php/NUT"
+  ],
+  "MimeTypes": [ "video/x-nut", "application/x-nut" ],
+  "UseCases": [
+    "FFmpeg stream muxing and testing",
+    "Open multimedia container research",
+    "Lossless video archival",
+    "Custom codec container packaging"
+  ],
+  "software": [
+    { "name": "FFmpeg", "role": "Primary encoder/decoder/muxer/demuxer", "platform": "Multi", "url": "https://ffmpeg.org" },
+    { "name": "mplayer","role": "NUT demuxer support",                   "platform": "Multi" },
+    { "name": "VLC",    "role": "Limited NUT playback support",          "platform": "Multi" }
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "value": "F6E2F4ADEC3B2B00",
+        "offset": 0,
+        "label": "NUT file magic (8 bytes: F6 E2 F4 AD EC 3B 2B 00)",
+        "weight": 1.0
+      }
+    ],
+    "matchMode": "first",
+    "MinimumScore": 88,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 4.5, "max": 7.5 }
+  },
+  "variables": [
+    { "name": "nutMagic",        "offset": 0, "size": 8, "type": "bytes", "storeAs": "nutMagic",
+      "description": "NUT file identifier: F6 E2 F4 AD EC 3B 2B 00" },
+    { "name": "nutFirstType",    "offset": 8, "size": 1, "type": "uint8", "storeAs": "nutFirstType",
+      "description": "First byte after magic, identifies first packet type prefix" },
+    { "name": "nutVersion",      "offset": "variable", "size": "vint", "type": "vint", "storeAs": "nutVersion",
+      "description": "NUT stream version (variable-length integer, typically 3)" },
+    { "name": "nutStreamCount",  "offset": "variable", "size": "vint", "type": "vint", "storeAs": "nutStreamCount",
+      "description": "Number of streams in the container" },
+    { "name": "nutMaxDistance",  "offset": "variable", "size": "vint", "type": "vint", "storeAs": "nutMaxDistance",
+      "description": "Maximum distance between keyframes for seeking" },
+    { "name": "nutTimeBaseCount","offset": "variable", "size": "vint", "type": "vint", "storeAs": "nutTimeBaseCount",
+      "description": "Number of time bases defined in main header" }
+  ],
+  "blocks": [
     {
-      "value": "F6E2F4AD",
+      "name": "FileMagic",
       "offset": 0,
-      "label": "NUT file header magic — first 4 bytes of the 8-byte NUT container identifier",
-      "weight": 1.0,
-      "strength": "Strong"
+      "size": 8,
+      "description": "8-byte NUT file magic identifier",
+      "color": "#1E90FF",
+      "fields": [ "nutMagic" ]
+    },
+    {
+      "name": "MainHeader",
+      "offset": 8,
+      "description": "NUT main header packet containing version, stream count, time bases and frame table",
+      "color": "#32CD32",
+      "fields": [ "nutFirstType", "nutVersion", "nutStreamCount", "nutMaxDistance", "nutTimeBaseCount" ]
+    },
+    {
+      "name": "StreamHeaders",
+      "offset": "after main header",
+      "description": "Per-stream header packets defining codec, dimensions, sample rate, etc.",
+      "color": "#FFA500"
+    },
+    {
+      "name": "SyncPoints",
+      "offset": "interspersed",
+      "description": "Sync point packets providing random-access seek positions",
+      "color": "#FF6347"
+    },
+    {
+      "name": "DataFrames",
+      "offset": "after stream headers",
+      "description": "Encoded media data frame packets (video/audio/subtitle)",
+      "color": "#9370DB"
+    },
+    {
+      "name": "Index",
+      "offset": "near end of file",
+      "description": "Optional NUT index packet for fast seeking",
+      "color": "#20B2AA"
     }
   ],
-  "maxSignatureOffset": 4,
-  "structure": {
-    "fields": [
-      { "offset": 0, "size": 8, "name": "file_magic", "type": "bytes", "description": "8-byte NUT file magic: 0xF6E2F4ADEC3B2B00", "storeAs": "nutMagic" }
-    ],
-    "notes": "NUT uses variable-length integer (vint) encoding similar to EBML. After the 8-byte file magic, the first packet is a main header containing stream count, time base list, and chapter info. Each packet has: 8-byte startcode + forward_ptr(vint) + checksum(CRC-32 4B) + data.",
-    "packetStartcodes": [
-      { "code": "0x7A561F5F4551B0F4", "name": "main_header",    "description": "Main file header with global stream metadata" },
-      { "code": "0x11405BF2F9DBD794", "name": "stream_header",  "description": "Per-stream header (codec, time base, sample rate)" },
-      { "code": "0xE4ADEECA4569F4D0", "name": "syncpoint",      "description": "Synchronisation point for seeking" },
-      { "code": "0xDD672F23E64EDEA4", "name": "index",          "description": "Optional seekable index packet" },
-      { "code": "0xAB68B596BA7786CB", "name": "info",           "description": "Optional metadata info packet (title, artist, etc.)" }
+  "assertions": [
+    { "id": "A1", "expression": "nutMagic == [0xF6, 0xE2, 0xF4, 0xAD, 0xEC, 0x3B, 0x2B, 0x00]", "severity": "error",   "message": "NUT file magic must be F6 E2 F4 AD EC 3B 2B 00" },
+    { "id": "A2", "expression": "nutVersion >= 2",                                                 "severity": "warning", "message": "NUT version should be >= 2" },
+    { "id": "A3", "expression": "nutStreamCount >= 1",                                             "severity": "warning", "message": "NUT file should have at least one stream" },
+    { "id": "A4", "expression": "nutMaxDistance > 0",                                              "severity": "warning", "message": "Max distance must be positive for seeking" },
+    { "id": "A5", "expression": "nutTimeBaseCount >= 1",                                           "severity": "warning", "message": "At least one time base must be defined" }
+  ],
+  "navigation": {
+    "rootLabel": "NUT Container",
+    "entries": [
+      { "label": "File Magic",     "blockRef": "FileMagic" },
+      { "label": "Main Header",    "blockRef": "MainHeader" },
+      { "label": "Stream Headers", "blockRef": "StreamHeaders" },
+      { "label": "Sync Points",    "blockRef": "SyncPoints" },
+      { "label": "Data Frames",    "blockRef": "DataFrames" },
+      { "label": "Index",          "blockRef": "Index" }
     ]
   },
   "inspector": {
-    "displayFields": [ "nutMagic" ],
-    "tooltips": {
-      "nutMagic": "8-byte magic: F6 E2 F4 AD EC 3B 2B 00 — unique to NUT container format"
-    }
-  },
-  "assertions": [
-    { "id": "A1", "field": "nutMagic", "operator": "startsWith", "value": "F6E2F4AD", "description": "First 4 bytes must match NUT magic 0xF6E2F4AD" }
-  ],
-  "navigation": {
-    "bookmarks": [
-      { "offset": 0, "label": "NUT File Magic (8B)",      "color": "#E74C3C" },
-      { "offset": 8, "label": "Main Header Packet Start", "color": "#3498DB" }
+    "badge": "NUT",
+    "primaryField": "nutVersion",
+    "groups": [
+      { "name": "Identity",       "fields": [ "nutMagic", "nutFirstType" ] },
+      { "name": "Container Info", "fields": [ "nutVersion", "nutStreamCount", "nutMaxDistance", "nutTimeBaseCount" ] }
     ]
   },
   "exportTemplates": [
     {
-      "name": "NUT Header Summary",
-      "fields": [ "nutMagic" ],
-      "format": "text"
+      "name": "Container Summary",
+      "format": "text",
+      "template": "Format: NUT Multimedia Container\nVersion: {nutVersion}\nStreams: {nutStreamCount}\nTime Bases: {nutTimeBaseCount}\nMax Distance: {nutMaxDistance}"
     },
     {
-      "name": "NUT Metadata JSON",
-      "fields": [ "nutMagic" ],
-      "format": "json"
+      "name": "CSV Metadata",
+      "format": "csv",
+      "template": "Field,Value\nVersion,{nutVersion}\nStreamCount,{nutStreamCount}\nMaxDistance,{nutMaxDistance}\nTimeBaseCount,{nutTimeBaseCount}"
     }
   ],
-  "aiHints": [
-    "NUT's 8-byte magic (0xF6E2F4ADEC3B2B00) was chosen to be highly unique and not occur in common binary files — false positives are extremely rare.",
-    "NUT uses variable-length integers (vint) extensively: values ≤ 126 encode in 1 byte; larger values use a prefix byte to indicate the total byte count.",
-    "Every NUT packet includes a CRC-32 checksum covering the packet header — corruption detection is built into the format at the packet level.",
-    "The forward_ptr vint in each packet header allows players to skip unknown packets without understanding their content, enabling forward compatibility.",
-    "NUT was never widely adopted; ffmpeg and mplayer support it but most consumer tools do not — MKV and MP4 dominate the container space.",
-    "Seek points are optional (index packet); without an index, players must linearly scan to find syncpoints for non-sequential access."
-  ],
   "forensic": {
-    "riskLevel": "low",
-    "notes": [
-      "NUT files contain compressed audio/video streams wrapped in CRC-validated packets; no executable content.",
-      "Rarely encountered outside of FFmpeg-based tools and academic codec testing.",
-      "CRC-32 checksums allow reliable detection of file corruption or tampering."
+    "riskLevel": "LOW",
+    "suspiciousPatterns": [
+      "File magic mismatch — wrong format or corrupt",
+      "Truncated main header — file cut before first stream header",
+      "Inconsistent CRC in header packet — data corruption",
+      "Frame packet sizes pointing outside file bounds"
+    ],
+    "hidingTechniques": [
+      "Extra data in reserved fields of header packets",
+      "Appended data after the index packet at end-of-file",
+      "Non-standard packet type codes embedding arbitrary data"
+    ],
+    "timestampFields": [],
+    "notes": "NUT uses variable-length integers (vint) and Elias coding throughout. All packets include a CRC-32 for integrity checking. The format was designed as an alternative to Matroska."
+  },
+  "aiHints": {
+    "analysisContext": "NUT is a packet-based container where all fields after the 8-byte magic use variable-length integer encoding. Parsing requires sequential reading from the magic through the main header then stream headers. CRC checksums on all major packets enable corruption detection.",
+    "suggestedInspections": [
+      "Verify the 8-byte file magic F6 E2 F4 AD EC 3B 2B 00 at offset 0",
+      "Parse the main header packet using variable-length integer decoder to extract version and stream count",
+      "Verify CRC-32 of the main header packet",
+      "Walk stream header packets to identify codec types, dimensions and sample rates",
+      "Check for presence of index packet at end of file which enables efficient seeking"
     ]
   },
   "formatRelationships": [
-    { "format": "MKV",  "relationship": "alternative", "note": "MKV (Matroska) is the dominant open container; NUT was designed as a simpler alternative." },
-    { "format": "AVI",  "relationship": "alternative", "note": "NUT was partly designed to address AVI limitations (no vfr, 4GB limit, etc.)." }
+    { "format": "MKV", "relationship": "sibling",  "description": "Matroska (MKV) was the alternative open container that NUT was designed to compete with" },
+    { "format": "AVI", "relationship": "ancestor", "description": "AVI is the legacy container NUT aimed to improve upon" },
+    { "format": "OGV", "relationship": "sibling",  "description": "Ogg/OGV is another open multimedia container format" }
   ],
-  "software": [
-    { "name": "ffmpeg",   "role": "Primary NUT mux/demux implementation" },
-    { "name": "mplayer",  "role": "NUT playback support" },
-    { "name": "VLC",      "role": "NUT support via libavformat (ffmpeg)" }
-  ],
-  "useCases": [
-    "Codec research and FFmpeg pipeline testing",
-    "Open container format for lossless or intermediate video",
-    "Academic multimedia format comparison studies",
-    "FFmpeg internal test vector storage"
-  ],
-  "technicalDetails": "NUT multimedia container designed by the FFmpeg and MPlayer developers. Uses variable-length integer (vint) encoding and 8-byte startcodes for each packet type. CRC-32 checksums on all headers provide integrity verification. Supports arbitrary codecs via FourCC and any time base as rational numbers. The format specification is public. Despite technical merits (simplicity, CRC, extensibility) NUT was not widely adopted; Matroska (MKV) became the standard open container.",
-  "completenessScore": 75
+  "TechnicalDetails": {
+    "endianness": "Big-Endian for integers, variable-length encoded",
+    "minimumFileSize": 9,
+    "magicSize": 8,
+    "integerEncoding": "Variable-length (vint / Elias gamma)",
+    "checksumAlgorithm": "CRC-32",
+    "syncPointInterval": "configurable via maxDistance",
+    "specVersion": "3"
+  },
+  "QualityMetrics": {
+    "CompletenessScore": 89,
+    "LastUpdated": "2026-04-15",
+    "ReviewedBy": "WPFHexaEditor Team",
+    "KnownLimitations": "Variable-length integer encoding throughout makes static offset-based field parsing impractical; fields are marked as 'variable' offset."
+  }
 }

@@ -1,0 +1,218 @@
+{
+  "diffMode": "text",
+  "formatName": "AMBER Molecular Dynamics Trajectory",
+  "version": "1.0",
+  "extensions": [
+    ".mdcrd",
+    ".crd",
+    ".nc"
+  ],
+  "description": "The AMBER molecular dynamics trajectory format (MDCRD) is a text-based coordinate file produced by the AMBER and AMBER-compatible (CHARMM, NAMD, OpenMM) simulation engines. Each trajectory begins with a one-line title, then contains frames of Cartesian coordinates formatted as 10F8.3 (10 values per line, 8 characters wide with 3 decimal places). Coordinates are written in the order x1 y1 z1 x2 y2 z2 ... for all atoms in a frame. If the system has periodic boundary conditions (a solvent box), an additional line at the end of each frame provides the box dimensions (a b c in Angstroms) and optionally angles (alpha beta gamma). The binary NetCDF AMBER trajectory format uses HDF5-like CDF magic ('CDF\x01') and is identified by the extension .nc or .nctraj. AMBER trajectories are analyzed using cpptraj, PTRAJ, VMD, and MDAnalysis to compute RMSD, RMSF, clustering, PCA, and free energy landscapes.",
+  "category": "Science",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "text-editor",
+  "references": {
+    "specifications": [
+      "AMBER 2023 Reference Manual — Section 5.7 MDCRD trajectory format",
+      "NetCDF AMBER Trajectory Convention (AMBER-NC-FORMAT)",
+      "AmberTools cpptraj documentation"
+    ],
+    "WebLinks": [
+      "https://ambermd.org/FileFormats.php",
+      "https://ambermd.org/doc12/Amber12.pdf",
+      "https://mdanalysis.org/docs/documentation_pages/coordinates/AMBER.html"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      {
+        "value": "414D424552",
+        "offset": 0,
+        "label": "'AMBER' — trajectory title line starting with AMBER keyword",
+        "weight": 0.5
+      }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.3,
+    "required": false,
+    "Strength": "Weak",
+    "EntropyHint": { "min": 2.5, "max": 5.0 },
+    "validation": {
+      "minFileSize": 20,
+      "maxSignatureOffset": 0,
+      "note": "AMBER MDCRD: line 1 is title (any text). Coordinates start line 2, formatted 10F8.3 (e.g. '  -3.0250  -2.5810   3.2140...'). Binary NetCDF variant: magic bytes 43 44 46 01 ('CDF\\x01') at offset 0."
+    }
+  },
+  "variables": {
+    "amberTitle": "",
+    "amberFirstByte": 0
+  },
+  "blocks": [
+    {
+      "type": "field",
+      "name": "Trajectory Title Line",
+      "offset": 0,
+      "length": 5,
+      "color": "#FF6B6B",
+      "opacity": 0.45,
+      "description": "First line of the AMBER MDCRD file: free-text title string up to 80 characters. May contain the simulation name, date, system description, or AMBER software version. Terminated by a newline. AMBER tools write titles such as 'Cpptraj Generated trajectory' or system names from the topology file. The title is purely informational.",
+      "storeAs": "amberTitle",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "First Byte",
+      "offset": 0,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "First byte of the file. For text MDCRD: any printable ASCII character beginning the title line. For binary NetCDF AMBER (.nc): 0x43 ('C') from the NetCDF magic 'CDF\\x01'. For AMBER restart files (.rst7, .inpcrd): also text format beginning with a title line.",
+      "storeAs": "amberFirstByte",
+      "valueType": "uint8"
+    },
+    {
+      "type": "field",
+      "name": "Coordinate Frame 1",
+      "offset": "dynamic",
+      "length": "dynamic",
+      "color": "#95E1D3",
+      "opacity": 0.30,
+      "description": "First trajectory frame: atomic Cartesian coordinates formatted as 10F8.3 per line. Each atom contributes three values (x, y, z) in Angstroms. For N atoms, frame occupies ceil(3N/10) lines. Coordinates are absolute (not delta-encoded). Example line: '  -3.0250  -2.5810   3.2140   1.8920  -0.7610   2.3450   0.1230  -1.5670   4.8920   2.1340'.",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Periodic Box Dimensions",
+      "offset": "dynamic",
+      "length": "dynamic",
+      "color": "#FFE66D",
+      "opacity": 0.30,
+      "description": "Optional periodic box line at end of each frame, present when the simulation used explicit solvent with periodic boundary conditions. Format: three F8.3 values (a b c lengths in Angstroms) followed optionally by three more values (alpha beta gamma angles in degrees, default 90.0 for rectangular boxes). e.g. '  48.2150  48.2150  48.2150  90.0000  90.0000  90.0000'.",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "NetCDF Binary Header",
+      "offset": 0,
+      "length": 4,
+      "color": "#C3A6FF",
+      "opacity": 0.35,
+      "description": "For binary NetCDF AMBER trajectories (.nc): 4-byte NetCDF magic 'CDF\\x01' (43 44 46 01). NetCDF AMBER files contain dimensions (atom count, frame count, spatial=3), variables (coordinates as float32, velocities, cell_lengths, cell_angles), and global attributes (Conventions='AMBER', ConventionVersion='1.0', application, program, programVersion, title).",
+      "valueType": "hex"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "TitleLinePresent",
+      "expression": "line1Length > 0",
+      "severity": "info",
+      "message": "AMBER MDCRD first line is the trajectory title. Empty titles are allowed but uncommon."
+    },
+    {
+      "name": "CoordinateLineFormat",
+      "expression": "line2MatchesF8_3Pattern",
+      "severity": "info",
+      "message": "Coordinate lines should match 10F8.3 format (8-character wide fields with 3 decimal places). Different spacing may indicate a non-standard AMBER variant."
+    },
+    {
+      "name": "NetCDFMagic",
+      "expression": "bytes0to3 == 0x43444601 || isTextFormat",
+      "severity": "warning",
+      "message": "File does not start with AMBER title text or NetCDF magic 'CDF\\x01'. May not be a valid AMBER trajectory."
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "Title Line", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
+      { "name": "Frame 1 Coordinates", "offset": "dynamic", "icon": "\uE8B7", "color": "#95E1D3" },
+      { "name": "Box Dimensions", "offset": "dynamic", "icon": "\uE946", "color": "#FFE66D" }
+    ]
+  },
+  "inspector": {
+    "badge": "amberFirstByte",
+    "primaryField": "amberTitle",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "Trajectory Header",
+        "icon": "\uE71B",
+        "fields": ["amberTitle", "amberFirstByte"]
+      },
+      {
+        "title": "Coordinate Data",
+        "icon": "\uE8B7",
+        "fields": ["coordinateFrame1", "periodicBoxDimensions", "netcdfBinaryHeader"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "AMBER Trajectory Metadata (JSON)",
+      "format": "json",
+      "fields": ["trajectoryTitle", "frameCount", "atomCount", "hasPeriodicBox", "format"]
+    },
+    {
+      "name": "Frame 1 Coordinates (CSV)",
+      "format": "csv",
+      "fields": ["atomIndex", "x", "y", "z"]
+    }
+  ],
+  "forensic": {
+    "category": "science",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "AMBER MDCRD text trajectory: line 1 = title, then frames. Each frame: ceil(3*N/10) lines of 10F8.3 coordinates (x1,y1,z1,x2,y2,z2,...), optionally followed by 1 line of box dimensions (a b c [alpha beta gamma]). No frame delimiter — reader must know atom count N from topology (.prmtop). Frame count = (total coordinate lines) / ceil(3N/10). Binary NetCDF AMBER: magic CDF\\x01, CDF format (not HDF5). AMBER restart (.rst7): exactly 2 lines of coordinates (positions then velocities) for all atoms.",
+    "suggestedInspections": [
+      "Check first 4 bytes for 0x43 44 46 01 ('CDF\\x01') to distinguish binary NetCDF from text MDCRD format",
+      "For text MDCRD: count lines after title and divide by expected coordinate lines per frame to determine frame count",
+      "Inspect periodic box line (if present): rectangular box has angles near 90.0; non-orthogonal boxes indicate triclinic periodic cells",
+      "Parse coordinate lines as 10 x F8.3 fields and validate all values are finite floats in range -9999.999 to 9999.999 Angstroms",
+      "For NetCDF variant: read global attributes Conventions (should be 'AMBER') and ConventionVersion, and dimensions atom/frame/spatial",
+      "Detect unwrapped vs wrapped coordinates: atoms with |x| or |y| or |z| > box_length/2 indicate unwrapped periodic images"
+    ]
+  },
+  "software": [
+    "AMBER MD (ambermd.org)",
+    "cpptraj (trajectory analysis)",
+    "VMD (Visual Molecular Dynamics)",
+    "MDAnalysis (Python library)",
+    "GROMACS (with AMBER topology)",
+    "NAMD",
+    "OpenMM"
+  ],
+  "formatRelationships": {
+    "category": "Science",
+    "extensions": [".mdcrd", ".crd", ".nc"],
+    "relatedFormats": ["NETCDF", "HDF5", "DCD", "XTC", "GAMESS_LOG"],
+    "note": "AMBER MDCRD is the classic text trajectory format. The binary AMBER NetCDF format (.nc) replaces it for large simulations due to faster I/O and smaller file sizes. GROMACS uses XTC/TRR formats; NAMD and CHARMM use DCD. All can be interconverted with MDAnalysis, VMD, or cpptraj."
+  },
+  "MimeTypes": [
+    "text/plain",
+    "application/x-netcdf"
+  ],
+  "UseCases": [
+    "Molecular dynamics (MD) trajectory storage and analysis",
+    "Protein folding simulation analysis",
+    "Free energy perturbation (FEP) calculations",
+    "RMSD/RMSF computation for conformational analysis",
+    "Clustering and principal component analysis (PCA) of MD ensembles"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 83,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 5,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-15",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "encoding": "Text (10F8.3) or binary NetCDF",
+    "coordinateFormat": "10F8.3 per line (8 char wide, 3 decimal places)",
+    "atomCountSource": "AMBER topology file (.prmtop)",
+    "optionalBox": "a b c [alpha beta gamma] per frame",
+    "netcdfConvention": "AMBER convention v1.0"
+  }
+}

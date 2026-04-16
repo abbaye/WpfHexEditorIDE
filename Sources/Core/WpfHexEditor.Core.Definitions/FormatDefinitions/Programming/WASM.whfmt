@@ -1,162 +1,221 @@
 {
   "diffMode": "binary",
-  "formatName": "WebAssembly Binary",
-  "version": "1.14",
-  "extensions": [
-    ".wasm"
-  ],
-  "description": "WebAssembly binary format",
+  "formatName": "WebAssembly Binary Module",
+  "version": "1.0",
+  "extensions": [".wasm"],
+  "description": "WebAssembly binary module format — a portable, sandboxed instruction set designed for safe execution in web browsers and server-side runtimes. Files start with the 4-byte magic '\\u0000asm' (0x00 0x61 0x73 0x6D) followed by a 4-byte LE version number (currently 1). The body consists of typed sections identified by a 1-byte section ID and LEB128-encoded size.",
   "category": "Programming",
   "author": "WPFHexaEditor Team",
-  "preferredEditor": "hex-editor",
-  "references": {
-    "specifications": [
-      "WebAssembly Binary Format"
-    ],
-    "WebLinks": [
-      "https://en.wikipedia.org/wiki/WASM"
-    ]
-  },
+  "preferredEditor": "HexEditor",
+  "references": [
+    "https://webassembly.github.io/spec/core/binary/",
+    "https://developer.mozilla.org/en-US/docs/WebAssembly/Understanding_the_text_format",
+    "https://github.com/WebAssembly/spec"
+  ],
   "detection": {
-    "required": true,
-    "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024
-    },
     "signatures": [
       {
-        "value": "0061736D",
         "offset": 0,
-        "label": "WASM magic",
+        "value": "0061736D",
+        "label": "'\\u0000asm' WebAssembly binary magic",
         "weight": 1.0
       }
     ],
-    "matchMode": "any",
-    "MinimumScore": 1.0,
-    "Strength": "Strong"
+    "matchMode": "First",
+    "MinimumScore": 0.95,
+    "Strength": "Strong",
+    "EntropyHint": "Moderate — LEB128-encoded structural data with dense binary code sections; code sections have high entropy"
   },
-  "functions": {
-    "readUInt32LE": "Read 32-bit little-endian for magic and version",
-    "readUInt8": "Read section types and LEB128 encoded sizes",
-    "calculateSHA256": "Calculate SHA256 hash for module integrity"
-  },
-  "variables": {
-    "currentOffset": 0,
-    "version": 1,
-    "sections": 0,
-    "functions": 0,
-    "imports": 0,
-    "exports": 0,
-    "memory": 0,
-    "tables": 0,
-    "wasmMagic": ""
-  },
-  "blocks": [
+  "variables": [
     {
-      "type": "signature",
-      "name": "WASM Magic",
+      "name": "wasmMagic",
       "offset": 0,
-      "length": 4,
-      "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "\\0asm magic number",
-      "storeAs": "wasmMagic",
-      "valueType": "uint32"
+      "size": 4,
+      "type": "hex",
+      "description": "Magic bytes: 00 61 73 6D ('\\u0000asm')"
     },
     {
-      "type": "field",
-      "name": "Version",
+      "name": "wasmVersion",
       "offset": 4,
-      "length": 4,
-      "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "WebAssembly version",
-      "storeAs": "version",
-      "valueType": "ascii"
+      "size": 4,
+      "type": "uint32",
+      "endian": "LE",
+      "description": "Module format version — must be 1 for the current WASM specification"
+    },
+    {
+      "name": "wasmFirstSection",
+      "offset": 8,
+      "size": 1,
+      "type": "uint8",
+      "description": "First section ID byte",
+      "valueMap": {
+        "0": "Custom",
+        "1": "Type",
+        "2": "Import",
+        "3": "Function",
+        "4": "Table",
+        "5": "Memory",
+        "6": "Global",
+        "7": "Export",
+        "8": "Start",
+        "9": "Element",
+        "10": "Code",
+        "11": "Data",
+        "12": "DataCount"
+      }
+    },
+    {
+      "name": "wasmFirstSectionSize",
+      "offset": 9,
+      "size": 4,
+      "type": "uint32",
+      "endian": "LEB128",
+      "description": "LEB128-encoded size of the first section in bytes"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "ModuleMagic",
+      "offset": 0,
+      "size": 4,
+      "description": "WebAssembly magic: bytes 00 61 73 6D"
+    },
+    {
+      "name": "ModuleVersion",
+      "offset": 4,
+      "size": 4,
+      "description": "Module version (uint32 LE) — must be 1"
+    },
+    {
+      "name": "TypeSection",
+      "offset": 8,
+      "size": 32,
+      "description": "Type section (ID=1) declaring function signatures used in the module"
+    },
+    {
+      "name": "ImportSection",
+      "offset": 40,
+      "size": 32,
+      "description": "Import section (ID=2) listing external functions, tables, memories, and globals"
+    },
+    {
+      "name": "FunctionSection",
+      "offset": 72,
+      "size": 16,
+      "description": "Function section (ID=3) mapping function indices to type signatures"
+    },
+    {
+      "name": "CodeSection",
+      "offset": 88,
+      "size": 64,
+      "description": "Code section (ID=10) containing function bodies as byte expressions"
     }
   ],
   "assertions": [
     {
-      "name": "WASM magic",
-      "expression": "wasmMagic == 1836278016",
-      "severity": "error",
-      "message": "Invalid WebAssembly magic — expected 0x6D736100"
+      "variable": "wasmMagic",
+      "operator": "==",
+      "value": "0061736D",
+      "description": "Magic must be 00 61 73 6D ('\\u0000asm')",
+      "level": "Error"
+    },
+    {
+      "variable": "wasmVersion",
+      "operator": "==",
+      "value": 1,
+      "description": "Module version must be 1 per current WASM specification",
+      "level": "Error"
+    },
+    {
+      "variable": "wasmFirstSection",
+      "operator": "in",
+      "value": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+      "description": "First section ID must be a valid WASM section identifier",
+      "level": "Warning"
     }
   ],
-  "forensic": {
-    "category": "programming",
-    "riskLevel": "medium",
-    "suspiciousPatterns": []
-  },
-  "aiHints": {
-    "analysisContext": "WebAssembly binary format",
-    "suggestedInspections": [
-      "Verify WebAssembly Binary magic number and format version identifier",
-      "Check symbol/string table integrity and section boundaries",
-      "Inspect code section offsets, relocations, and debug info"
+  "navigation": {
+    "entryPoint": 0,
+    "sections": [
+      { "name": "Module Header", "offset": 0, "size": 8 },
+      { "name": "First Section", "offset": 8, "size": 1 }
     ]
   },
-  "software": [
-    "Web browsers",
-    "Node.js",
-    "Wasmer",
-    "Wasmtime"
-  ],
-  "formatRelationships": {
-    "w3c_standard": true,
-    "portable": true,
-    "complements": "JavaScript",
-    "alternative_to": "Native executables"
-  },
-  "MimeTypes": [
-    "application/octet-stream"
-  ],
-  "Software": [
-    "Visual Studio",
-    "GCC",
-    "LLVM",
-    "IDA Pro",
-    "Ghidra"
-  ],
-  "UseCases": [
-    "Software development",
-    "Compilation",
-    "Linking",
-    "Analysis"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 57,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 2,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-04-14",
-    "PriorityFormat": false,
-    "AutoRefined": true
-  },
-  "TechnicalDetails": {},
   "inspector": {
-    "badge": "wasmMagic",
-    "primaryField": "version",
-    "showQualityScore": true,
+    "badge": "WASM",
+    "primaryField": "wasmVersion",
     "groups": [
       {
-        "title": "WebAssembly Binary",
-        "icon": "",
-        "fields": [
-          "wasmMagic",
-          "version"
-        ]
+        "name": "Module Header",
+        "fields": ["wasmMagic", "wasmVersion"]
+      },
+      {
+        "name": "Section Map",
+        "fields": ["wasmFirstSection", "wasmFirstSectionSize"]
       }
     ]
   },
   "exportTemplates": [
     {
-      "name": "WebAssembly Binary Header (JSON)",
+      "name": "WASM Header Summary",
+      "format": "text",
+      "template": "Format: WebAssembly Binary\nMagic: {wasmMagic}\nVersion: {wasmVersion}\nFirst Section: {wasmFirstSection}"
+    },
+    {
+      "name": "WASM JSON Report",
       "format": "json",
-      "fields": [
-        "wasmMagic",
-        "version"
-      ]
+      "template": "{ \"format\": \"WASM\", \"magic\": \"{wasmMagic}\", \"version\": {wasmVersion}, \"firstSection\": {wasmFirstSection} }"
     }
-  ]
+  ],
+  "forensic": {
+    "riskLevel": "MEDIUM",
+    "notes": "WASM modules execute in a sandboxed environment but can be used to obfuscate malicious logic, implement cryptojacking, or exploit JIT compiler vulnerabilities in browser engines.",
+    "suspiciousPatterns": [
+      "Obfuscated imports from 'env' module with unusual function names suggesting browser API abuse",
+      "Missing type or export sections — may indicate an obfuscated or malformed module",
+      "Code section of unusually high entropy indicating packed or encrypted instruction streams",
+      "Custom sections (ID=0) containing unexpected binary payloads or exploit shellcode"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "WebAssembly binary modules start with the 4-byte magic '\\u0000asm' (0x00 0x61 0x73 0x6D) followed by a 4-byte LE version (currently 1). The remainder is a sequence of typed sections with LEB128-encoded sizes. Key sections: Type (1), Import (2), Function (3), Table (4), Memory (5), Global (6), Export (7), Start (8), Code (10). Tools: wasm-objdump, wasm-decompile (wabt), Binaryen, Emscripten.",
+    "suggestedInspections": [
+      "Verify magic bytes 00 61 73 6D and version 01 00 00 00 at offsets 0 and 4 respectively.",
+      "Parse the Type section (ID=1) to enumerate all function signatures and identify the module's interface contract.",
+      "Inspect the Import section (ID=2) for host environment dependencies — 'env' imports may indicate Emscripten origin; 'wasi_snapshot_preview1' indicates WASI runtime.",
+      "Check the Export section (ID=7) for exported functions, memories, and tables to understand the module's public surface.",
+      "Examine Custom sections (ID=0): 'name' section contains debug symbols; 'sourceMappingURL' links to a .wasm.map; unexpected custom sections may carry hidden payloads."
+    ]
+  },
+  "software": [
+    { "name": "wabt (WebAssembly Binary Toolkit)", "platform": "Windows/macOS/Linux", "url": "https://github.com/WebAssembly/wabt" },
+    { "name": "Emscripten", "platform": "Windows/macOS/Linux", "url": "https://emscripten.org/" },
+    { "name": "Binaryen", "platform": "Windows/macOS/Linux", "url": "https://github.com/WebAssembly/binaryen" },
+    { "name": "Wasmer", "platform": "Windows/macOS/Linux", "url": "https://wasmer.io/" },
+    { "name": "Wasmtime", "platform": "Windows/macOS/Linux", "url": "https://wasmtime.dev/" }
+  ],
+  "formatRelationships": [
+    { "format": "WASM_MAP", "relationship": "companion", "note": "Source maps link WASM binary offsets back to original source lines" },
+    { "format": "CLASS_JAVA", "relationship": "alternative", "note": "Both are portable bytecode formats; WASM is language-agnostic while CLASS targets JVM" },
+    { "format": "MSIL_NGEN", "relationship": "alternative", "note": "WASM and MSIL are both portable intermediate representations with different runtime targets" }
+  ],
+  "MimeTypes": ["application/wasm"],
+  "UseCases": [
+    "High-performance web application logic compiled from C/C++/Rust",
+    "Server-side edge computing with WASI runtimes",
+    "Portable plugin systems and sandboxed extension architectures"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 88,
+    "LastUpdated": "2026-04-15",
+    "ReviewedBy": "WPFHexaEditor Team"
+  },
+  "TechnicalDetails": {
+    "magicBytes": "00 61 73 6D",
+    "versionBytes": "01 00 00 00 (LE uint32 = 1)",
+    "sectionEncoding": "LEB128 variable-length integers for sizes and indices",
+    "endianness": "Little-Endian (fixed-width fields); LEB128 (variable fields)",
+    "minimumFileSize": 8,
+    "specificationVersion": "WebAssembly Core Specification 2.0"
+  }
 }

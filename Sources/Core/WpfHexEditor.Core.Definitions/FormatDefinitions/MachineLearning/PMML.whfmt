@@ -1,0 +1,210 @@
+{
+  "diffMode": "text",
+  "formatName": "Predictive Model Markup Language (PMML)",
+  "version": "1.0",
+  "extensions": [".pmml"],
+  "description": "Predictive Model Markup Language (PMML) is an XML-based standard for representing predictive analytics and machine learning models. Developed by the Data Mining Group (DMG), PMML enables model portability between tools such as SAS, SPSS, R, and Python scikit-learn. The root element is <PMML> with a version attribute (e.g. '4.4', '4.3', '3.2'). Files start with an optional XML declaration followed by the PMML root element.",
+  "category": "MachineLearning",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "HexEditor",
+  "references": [
+    "https://dmg.org/pmml/v4-4/GeneralStructure.html",
+    "https://en.wikipedia.org/wiki/Predictive_Model_Markup_Language",
+    "https://github.com/jpmml/jpmml-evaluator"
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "offset": 0,
+        "value": "3C504D4D4C",
+        "label": "'<PMML' root element",
+        "weight": 1.0
+      },
+      {
+        "offset": 0,
+        "value": "3C3F786D6C",
+        "label": "'<?xml' XML declaration before PMML root",
+        "weight": 0.4
+      },
+      {
+        "offset": 0,
+        "value": "EFBBBF3C3F786D6C",
+        "label": "UTF-8 BOM + '<?xml' XML declaration",
+        "weight": 0.4
+      }
+    ],
+    "matchMode": "Best",
+    "MinimumScore": 0.4,
+    "Strength": "Medium",
+    "EntropyHint": "Low — plain XML text with numeric coefficient values"
+  },
+  "variables": [
+    {
+      "name": "pmmlFirstByte",
+      "offset": 0,
+      "size": 1,
+      "type": "uint8",
+      "description": "First byte: 0x3C '<' for direct XML or PMML root, 0xEF for UTF-8 BOM"
+    },
+    {
+      "name": "pmmlRoot",
+      "offset": 0,
+      "size": 5,
+      "type": "ascii",
+      "description": "First 5 bytes: '<PMML' if no XML declaration, or '<?xml'"
+    },
+    {
+      "name": "pmmlXmlDecl",
+      "offset": 0,
+      "size": 5,
+      "type": "ascii",
+      "description": "XML declaration start if present"
+    },
+    {
+      "name": "pmmlVersion",
+      "offset": 6,
+      "size": 20,
+      "type": "ascii",
+      "description": "PMML version attribute string, e.g. version='4.4'"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "XMLDeclaration",
+      "offset": 0,
+      "size": 40,
+      "description": "Optional XML prolog '<?xml version=\"1.0\" encoding=\"UTF-8\"?>'"
+    },
+    {
+      "name": "PMMLRootElement",
+      "offset": 0,
+      "size": 60,
+      "description": "<PMML version=\"4.4\" xmlns=\"http://www.dmg.org/PMML-4_4\"> root element"
+    },
+    {
+      "name": "HeaderElement",
+      "offset": 60,
+      "size": 120,
+      "description": "<Header> section with copyright, description, Application, and Timestamp metadata"
+    },
+    {
+      "name": "DataDictionary",
+      "offset": 180,
+      "size": 100,
+      "description": "<DataDictionary> defining input features, types, and value domains"
+    },
+    {
+      "name": "ModelDefinition",
+      "offset": 280,
+      "size": 128,
+      "description": "Model element (e.g. <RegressionModel>, <TreeModel>, <NeuralNetwork>) with algorithm-specific structure"
+    }
+  ],
+  "assertions": [
+    {
+      "variable": "pmmlFirstByte",
+      "operator": "in",
+      "value": [60, 239],
+      "description": "File must start with '<' (0x3C) or UTF-8 BOM (0xEF)",
+      "level": "Warning"
+    },
+    {
+      "variable": "pmmlRoot",
+      "operator": "containsOneOf",
+      "value": ["<PMML", "<?xml"],
+      "description": "File must start with PMML root or XML declaration",
+      "level": "Warning"
+    },
+    {
+      "variable": "pmmlVersion",
+      "operator": "containsOneOf",
+      "value": ["3.", "4."],
+      "description": "PMML version should be in the 3.x or 4.x range",
+      "level": "Info"
+    }
+  ],
+  "navigation": {
+    "entryPoint": 0,
+    "sections": [
+      { "name": "XML Declaration", "offset": 0, "size": 40 },
+      { "name": "PMML Root", "offset": 40, "size": 60 },
+      { "name": "Header", "offset": 100, "size": 120 },
+      { "name": "Data Dictionary", "offset": 220, "size": 100 }
+    ]
+  },
+  "inspector": {
+    "badge": "PMML",
+    "primaryField": "pmmlVersion",
+    "groups": [
+      {
+        "name": "Identity",
+        "fields": ["pmmlFirstByte", "pmmlRoot"]
+      },
+      {
+        "name": "Version",
+        "fields": ["pmmlVersion", "pmmlXmlDecl"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "PMML Header Summary",
+      "format": "text",
+      "template": "Format: PMML\nRoot: {pmmlRoot}\nVersion hint: {pmmlVersion}"
+    },
+    {
+      "name": "PMML JSON Report",
+      "format": "json",
+      "template": "{ \"format\": \"PMML\", \"root\": \"{pmmlRoot}\", \"versionHint\": \"{pmmlVersion}\" }"
+    }
+  ],
+  "forensic": {
+    "riskLevel": "LOW",
+    "notes": "PMML is a passive XML model description format. Risk is limited to XML parser vulnerabilities (XXE, entity expansion). Model coefficients could leak training data via membership inference.",
+    "suspiciousPatterns": [
+      "DOCTYPE declarations with SYSTEM or PUBLIC entities — potential XXE injection vector",
+      "Deeply nested XML elements or large PMML files causing XML parser memory exhaustion",
+      "Model coefficients that precisely match known training samples — potential data leakage",
+      "Missing or unexpected xmlns namespace values suggesting a non-standard PMML variant"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "PMML is an XML format for ML model interchange. The root element is <PMML version='4.4' xmlns='http://www.dmg.org/PMML-4_4'>. The standard supports regression, decision trees, neural networks, SVM, clustering, and association rules. Tools: JPMML, sklearn2pmml, SAS, SPSS.",
+    "suggestedInspections": [
+      "Verify '<PMML' root element (with or without '<?xml' declaration); check version attribute for 3.x or 4.x series.",
+      "Locate the <Header> element to extract model provenance: Application name/version, description, copyright, and creation Timestamp.",
+      "Identify the model type element (RegressionModel, TreeModel, NeuralNetwork, SupportVectorMachineModel, ClusteringModel) to classify the algorithm.",
+      "Inspect <DataDictionary> to enumerate input features, data types (continuous, categorical), and valid value ranges.",
+      "Check <MiningSchema> inside the model for field usage (active, predicted, supplementary) to understand input/output mapping."
+    ]
+  },
+  "software": [
+    { "name": "sklearn2pmml", "platform": "Python", "url": "https://github.com/jpmml/sklearn2pmml" },
+    { "name": "JPMML Evaluator", "platform": "Java", "url": "https://github.com/jpmml/jpmml-evaluator" },
+    { "name": "SAS Enterprise Miner", "platform": "Windows/Linux", "url": "https://www.sas.com/" },
+    { "name": "IBM SPSS Modeler", "platform": "Windows/Linux", "url": "https://www.ibm.com/products/spss-modeler" }
+  ],
+  "formatRelationships": [
+    { "format": "ONNX", "relationship": "alternative", "note": "ONNX is binary protobuf and supports deep learning; PMML is XML and targets classical ML models" },
+    { "format": "JOBLIB", "relationship": "alternative", "note": "JOBLIB/pickle is Python-specific; PMML is cross-platform XML" },
+    { "format": "DOCBOOK", "relationship": "unrelated", "note": "Both are XML-based but serve entirely different purposes" }
+  ],
+  "MimeTypes": ["application/pmml+xml", "text/xml"],
+  "UseCases": [
+    "ML model portability between SAS, SPSS, R, and Python environments",
+    "Regulatory-compliant model deployment in financial and insurance sectors",
+    "Model documentation and audit trail for compliance reporting"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 85,
+    "LastUpdated": "2026-04-15",
+    "ReviewedBy": "WPFHexaEditor Team"
+  },
+  "TechnicalDetails": {
+    "xmlNamespace": "http://www.dmg.org/PMML-4_4 (version-specific)",
+    "supportedVersions": ["3.0", "3.1", "3.2", "4.0", "4.1", "4.2", "4.3", "4.4"],
+    "supportedModels": ["RegressionModel", "TreeModel", "NeuralNetwork", "SupportVectorMachineModel", "ClusteringModel", "AssociationModel", "NaiveBayesModel"],
+    "encoding": "UTF-8 (recommended), other XML-supported encodings",
+    "detectionNote": "Content inspection required — '<?xml' has high false-positive rate; must confirm <PMML> root element"
+  }
+}

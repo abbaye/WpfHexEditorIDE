@@ -1,0 +1,192 @@
+{
+  "diffMode": "binary",
+  "formatName": ".NET Native Image (NGen Compiled)",
+  "version": "1.0",
+  "extensions": [ ".ni.dll", ".ni.exe", ".dll", ".exe" ],
+  "description": "NGen (Native Image Generator) produces machine-native compiled images from .NET assemblies for faster startup. NGen images are PE (Portable Executable) files with the 'MZ' magic at offset 0, containing a CLR header (data directory index 14 in the PE Optional Header) that identifies the file as a .NET managed image. NGen images include a CORCOMPILE_HEADER embedded in a special '.cormeta' or native section. They are stored in the Native Image Cache (%WINDIR%\\assembly\\NativeImages_*). In .NET 6+ NGen is superseded by ReadyToRun (R2R) images which use the same PE container with R2R-specific sections.",
+  "category": "Programming",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "references": [
+    "PE/COFF Specification (Microsoft)",
+    "ECMA-335 Common Language Infrastructure",
+    ".NET Runtime CORCOMPILE_HEADER documentation",
+    "ReadyToRun File Format"
+  ],
+  "references": {
+    "specifications": [
+      "PE/COFF Specification (Microsoft)",
+      "ECMA-335 Common Language Infrastructure",
+      ".NET Runtime CORCOMPILE_HEADER",
+      "ReadyToRun File Format Specification"
+    ],
+    "WebLinks": [
+      "https://en.wikipedia.org/wiki/Native_Image_Generator",
+      "https://learn.microsoft.com/en-us/dotnet/framework/tools/ngen-exe-native-image-generator",
+      "https://github.com/dotnet/runtime/blob/main/src/coreclr/inc/corcompile.h",
+      "https://github.com/dotnet/runtime/blob/main/docs/design/coreclr/botr/readytorun-format.md"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      { "hex": "4D5A", "offset": 0, "label": "'MZ' DOS/PE header — NGen native image is a PE file", "weight": 0.5 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.3,
+    "required": true,
+    "Strength": "Weak",
+    "EntropyHint": { "min": 5.0, "max": 7.5 },
+    "validation": {
+      "minFileSize": 64,
+      "maxSignatureOffset": 0,
+      "note": "NGen images are PE files with 'MZ' at offset 0. The .ni.dll/.ni.exe extension is the primary differentiator. CLR data directory (index 14) presence and native image-specific sections (.cormeta, READYTORUN_HEADER) confirm identity."
+    }
+  },
+  "variables": {
+    "niMzMagic": "",
+    "niPeOffset": 0,
+    "niClrVersion": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "MZ Magic",
+      "offset": 0,
+      "length": 2,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "DOS/PE 'MZ' magic (0x4D 0x5A). Present in all PE executables including NGen images.",
+      "storeAs": "niMzMagic",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "DOS Stub",
+      "offset": 2,
+      "length": 58,
+      "color": "#96CEB4",
+      "opacity": 0.2,
+      "description": "DOS stub program. Rarely executed. Contains DOS header fields.",
+      "valueType": "bytes"
+    },
+    {
+      "type": "field",
+      "name": "PE Header Offset",
+      "offset": 60,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.4,
+      "description": "Offset to PE signature 'PE\\0\\0' (uint32 LE at offset 0x3C in DOS header).",
+      "storeAs": "niPeOffset",
+      "valueType": "uint32"
+    },
+    {
+      "type": "field",
+      "name": "CLR Version (from DataDir[14])",
+      "offset": 0,
+      "length": 4,
+      "color": "#45B7D1",
+      "opacity": 0.3,
+      "description": "CLR runtime version from PE Optional Header data directory entry 14. Confirms .NET managed image.",
+      "storeAs": "niClrVersion",
+      "valueType": "uint32"
+    },
+    {
+      "type": "field",
+      "name": "Section Headers",
+      "offset": 0,
+      "length": 0,
+      "color": "#FFEAA7",
+      "opacity": 0.2,
+      "description": "PE section table. NGen images contain native code sections. R2R images include READYTORUN_HEADER.",
+      "valueType": "bytes"
+    }
+  ],
+  "assertions": [
+    { "field": "niMzMagic", "operator": "equals", "value": "MZ", "description": "Magic must be 'MZ' — PE file format" },
+    { "field": "niPeOffset", "operator": "greaterThan", "value": 0, "description": "PE header offset must be positive" },
+    { "field": "niPeOffset", "operator": "lessThan", "value": 4096, "description": "PE header offset must be within reasonable range (< 4096)" }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "MZ Magic", "offset": 0, "description": "DOS 'MZ' magic bytes" },
+      { "name": "PE Offset (e_lfanew)", "offset": 60, "description": "Offset to 'PE\\0\\0' signature (uint32 LE)" }
+    ]
+  },
+  "inspector": {
+    "badge": "NI",
+    "primaryField": "niPeOffset",
+    "showQualityScore": true,
+    "groups": [
+      { "name": "PE Identity", "fields": ["niMzMagic", "niPeOffset"] },
+      { "name": "CLR Info", "fields": ["niClrVersion"] }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "NGen Image Header (JSON)",
+      "format": "json",
+      "fields": ["niMzMagic", "niPeOffset", "niClrVersion"]
+    },
+    {
+      "name": "NGen PE Summary (CSV)",
+      "format": "csv",
+      "fields": ["niMzMagic", "niPeOffset"]
+    }
+  ],
+  "forensic": {
+    "category": "executable",
+    "riskLevel": "medium",
+    "suspiciousPatterns": [
+      { "name": "NGen image tampering", "condition": "true", "description": "NGen images can be replaced in the native image cache to hijack .NET application execution.", "severity": "warning" },
+      { "name": "Unsigned native image", "condition": "true", "description": "If the source assembly is signed but the NGen image is not, the image may have been tampered with.", "severity": "warning" }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "NGen native images are PE files identified by the .ni.dll/.ni.exe extension and CLR data directory entry 14. The MZ magic at offset 0 is shared with all PE files. Confirm .NET origin by reading the PE Optional Header's data directory [14] (CLR Runtime Header). NGen images are stored in %WINDIR%\\assembly\\NativeImages_*. .NET 6+ uses ReadyToRun (.R2R) images which also use PE with a READYTORUN_HEADER in a named section.",
+    "suggestedInspections": [
+      "Verify 'MZ' magic at offset 0",
+      "Read e_lfanew at offset 0x3C to find PE signature offset",
+      "Verify 'PE\\0\\0' at the PE offset",
+      "Check PE Optional Header data directory entry 14 for CLR runtime header presence",
+      "Look for '.cormeta' section or 'READYTORUN_HEADER' to confirm NGen/R2R image",
+      "Compare NGen image hash against source assembly to detect tampering"
+    ]
+  },
+  "software": [
+    "ngen.exe (.NET Framework NGen)",
+    "dotnet publish (ReadyToRun generation for .NET 6+)",
+    "ILSpy",
+    "dnSpy",
+    "PE Explorer"
+  ],
+  "formatRelationships": {
+    "category": "Programming",
+    "extensions": [".ni.dll", ".ni.exe"],
+    "relatedFormats": ["MSIL", "EXE", "DLL", "PORTABLE_PDB"],
+    "note": "NGen images are the .NET Framework equivalent of ReadyToRun images in .NET 5+. Both use PE container format with CLR data directory."
+  },
+  "MimeTypes": [ "application/octet-stream", "application/vnd.microsoft.portable-executable" ],
+  "UseCases": [
+    ".NET application startup performance optimization",
+    "Windows system component pre-compilation",
+    "Forensic analysis of native image cache tampering",
+    "Security auditing of pre-compiled .NET assemblies"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 85,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 5,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-15",
+    "ReviewedBy": "WPFHexaEditor Team"
+  },
+  "TechnicalDetails": {
+    "ContainerFormat": "PE (Portable Executable)",
+    "Endianness": "little-endian",
+    "ClrDataDirectory": "Index 14 in PE Optional Header data directory",
+    "NativeImageCache": "%WINDIR%\\assembly\\NativeImages_*",
+    "ModernEquivalent": "ReadyToRun (R2R) in .NET 5+",
+    "Note": "Weak detection — MZ magic is shared with all PE files. Use .ni.dll/.ni.exe extension + CLR data dir for confident identification."
+  }
+}

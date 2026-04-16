@@ -1,202 +1,157 @@
 {
-  "diffMode": "binary",
-  "formatName": "lzip Compressed Archive",
+  "formatName": "Lzip Compressed File",
   "version": "1.0",
-  "extensions": [".lz"],
-  "description": "lzip compressed archive format using LZMA algorithm with integrated CRC-32 integrity checking. Multimember format supporting parallel compression (plzip). Member footer (20 bytes) at end of each member.",
+  "diffMode": "binary",
+  "extensions": [ ".lz" ],
+  "description": "Lzip is a lossless data compressor based on the LZMA algorithm. Files begin with a 4-byte ASCII magic 'LZIP' followed by a version byte and a dictionary-size byte encoding both base exponent and mantissa in bits 0-4 and 5-7 respectively.",
   "category": "Archives",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
-  "references": {
-    "specifications": [
-      "lzip manual — https://www.nongnu.org/lzip/manual/lzip_manual.html",
-      "LZMA SDK specification — Igor Pavlov",
-      "lzip file format v1 specification"
-    ],
-    "WebLinks": [
-      "https://www.nongnu.org/lzip/",
-      "https://en.wikipedia.org/wiki/Lzip",
-      "https://www.nongnu.org/lzip/manual/lzip_manual.html#File-format"
-    ]
-  },
+  "MimeTypes": [ "application/x-lzip" ],
+  "UseCases": [
+    "Source distribution compression on Linux/Unix systems",
+    "Backup archiving with CRC32 integrity verification",
+    "Multi-member streaming compression"
+  ],
+  "references": [
+    "https://www.nongnu.org/lzip/manual/lzip_manual.html",
+    "https://www.nongnu.org/lzip/lzip.html",
+    "https://datatracker.ietf.org/doc/html/draft-diaz-lzip"
+  ],
+  "software": [
+    { "name": "lzip", "url": "https://www.nongnu.org/lzip/", "role": "Reference implementation" },
+    { "name": "plzip", "url": "https://www.nongnu.org/lzip/plzip.html", "role": "Parallel lzip compressor" },
+    { "name": "7-Zip", "url": "https://www.7-zip.org/", "role": "General archive tool with lzip support via plugin" }
+  ],
+  "formatRelationships": [
+    { "format": "LZMA", "relationship": "Uses LZMA compression algorithm internally" },
+    { "format": "XZ", "relationship": "XZ also uses LZMA but with a different container and header structure" },
+    { "format": "GZIP", "relationship": "Similar single-file compressor concept; uses DEFLATE instead of LZMA" }
+  ],
   "detection": {
     "signatures": [
       {
-        "value": "4C5A4950",
         "offset": 0,
-        "label": "'LZIP' — lzip compressed archive magic at offset 0 (ASCII 'LZIP')",
+        "value": "4C5A4950",
+        "label": "'LZIP' ASCII magic",
         "weight": 1.0
       }
     ],
-    "matchMode": "any",
-    "MinimumScore": 1.0,
-    "required": true,
+    "matchMode": "first",
+    "MinimumScore": 82,
     "Strength": "Strong",
-    "EntropyHint": { "min": 7.2, "max": 8.0 },
-    "validation": {
-      "minFileSize": 26
-    }
+    "EntropyHint": { "min": 7.5, "max": 8.0, "note": "Compressed LZMA payload yields near-maximum entropy" },
+    "validation": "First 4 bytes must be ASCII 'LZIP' (0x4C 0x5A 0x49 0x50). Byte at offset 4 is the format version (must be 1). Byte at offset 5 encodes dictionary size: bits 0-4 = base exponent (12..29), bits 5-7 = mantissa (0..7)."
   },
-  "variables": {
-    "lzipMagic": "",
-    "lzipVersion": 0,
-    "lzipDictSize": 0,
-    "lzipDictBase": 0,
-    "lzipDictMultiplier": 0
-  },
+  "variables": [
+    { "name": "lzipMagic",        "type": "ascii",  "offset": 0, "length": 4, "description": "ASCII magic string 'LZIP'" },
+    { "name": "lzipVersion",      "type": "uint8",  "offset": 4, "length": 1, "description": "Format version; must be 1", "valueMap": { "1": "LZIP v1" } },
+    { "name": "lzipDictSizeByte", "type": "uint8",  "offset": 5, "length": 1, "description": "Bits 0-4: base-2 exponent (12..29); bits 5-7: mantissa (0..7). Actual dict size = (2 + mantissa) << exponent" },
+    { "name": "lzipMemberSize",   "type": "uint64", "offset": 6, "length": 8, "endian": "little", "description": "Total member size in bytes including header and 20-byte trailer" }
+  ],
   "blocks": [
     {
-      "type": "signature",
-      "name": "LZIP Magic",
+      "name": "MemberHeader",
       "offset": 0,
-      "length": 4,
-      "color": "#FF6B6B",
-      "opacity": 0.45,
-      "description": "ASCII 'LZIP' — four-byte magic identifying a valid lzip compressed stream or member. Every lzip member begins with this sequence. Multimember files contain multiple such headers concatenated sequentially.",
-      "storeAs": "lzipMagic",
-      "valueType": "ascii",
-      "endianness": "little"
+      "length": 6,
+      "description": "Lzip member header: magic (4 B) + version (1 B) + dictionary-size byte (1 B)",
+      "fields": [
+        { "name": "Magic",        "variable": "lzipMagic",        "offset": 0, "length": 4 },
+        { "name": "Version",      "variable": "lzipVersion",      "offset": 4, "length": 1 },
+        { "name": "DictSizeByte", "variable": "lzipDictSizeByte", "offset": 5, "length": 1 }
+      ]
     },
     {
-      "type": "field",
-      "name": "Format Version",
-      "offset": 4,
-      "length": 1,
-      "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "lzip format version byte. Currently always 1 (0x01). Version 0 was used during early development and is considered obsolete. Any value other than 1 indicates a future incompatible format revision.",
-      "storeAs": "lzipVersion",
-      "valueType": "uint8",
-      "endianness": "little",
-      "valueMap": {
-        "0": "Version 0 (obsolete development format)",
-        "1": "Version 1 (current, stable format)"
-      }
+      "name": "LZMAStream",
+      "offset": 6,
+      "length": -1,
+      "description": "Raw LZMA-compressed data stream occupying the bulk of the member (variable length)"
     },
     {
-      "type": "field",
-      "name": "Coded Dictionary Size",
+      "name": "MemberTrailer",
+      "offset": -20,
+      "length": 20,
+      "description": "Trailer appended at end of each member: CRC32 (4 B) + uncompressed data size (8 B) + member size (8 B)",
+      "fields": [
+        { "name": "CRC32",      "offset": 0,  "length": 4 },
+        { "name": "DataSize",   "offset": 4,  "length": 8 },
+        { "name": "MemberSize", "variable": "lzipMemberSize", "offset": 12, "length": 8 }
+      ]
+    },
+    {
+      "name": "DictionarySizeAnnotation",
       "offset": 5,
       "length": 1,
-      "color": "#95E1D3",
-      "opacity": 0.3,
-      "description": "Packed LZMA dictionary size field. Bits 0-4 = size_base (0-29 representing log2 of base size). Bits 5-7 = size_multiplier (0-7). Actual dictionary size = 2^(5*(size_base/9)) * (1 + size_multiplier*2/9). Valid dict sizes range from 4 KiB (12) to 512 MiB (29).",
-      "storeAs": "lzipDictSize",
-      "valueType": "uint8",
-      "endianness": "little"
+      "description": "Virtual annotation block: decoded dictionary size derived from DictSizeByte bit fields"
     }
   ],
   "assertions": [
-    {
-      "name": "LZIP magic valid",
-      "expression": "lzipMagic == 'LZIP'",
-      "severity": "error",
-      "message": "Magic bytes are not 'LZIP' — file is not a valid lzip compressed archive"
-    },
-    {
-      "name": "Format version is 1",
-      "expression": "lzipVersion == 1",
-      "severity": "error",
-      "message": "lzip version byte is not 1 — format is either obsolete (v0) or an unknown future version"
-    },
-    {
-      "name": "Dictionary size bits within valid range",
-      "expression": "(lzipDictSize & 0x1F) <= 29",
-      "severity": "error",
-      "message": "Coded dictionary size base (bits 0-4) exceeds 29 — maximum valid LZMA dict size is 512 MiB (base=29)"
-    }
+    { "id": "A1", "description": "Magic must equal 'LZIP'",         "expression": "lzipMagic == 'LZIP'" },
+    { "id": "A2", "description": "Version must be 1",               "expression": "lzipVersion == 1" },
+    { "id": "A3", "description": "DictSizeByte must be a valid byte (0-255); lower 5 bits should be in range 12-29 for valid exponent", "expression": "lzipDictSizeByte < 256" }
   ],
   "navigation": {
-    "bookmarks": [
-      {
-        "name": "Member Magic",
-        "offset": 0,
-        "icon": "\uE8B7",
-        "color": "#FF6B6B"
-      },
-      {
-        "name": "LZMA Stream",
-        "offset": 6,
-        "icon": "\uE8A5",
-        "color": "#4ECDC4"
-      }
-    ]
+    "entryPoint": "MemberHeader",
+    "structure": [ "MemberHeader", "LZMAStream", "MemberTrailer" ],
+    "notes": "Lzip files may contain multiple concatenated members. Each member begins with a 6-byte header and ends with a 20-byte trailer. After the first member trailer, scan for the next 'LZIP' magic to locate subsequent members."
   },
   "inspector": {
-    "badge": "lzipVersion",
-    "primaryField": "lzipMagic",
-    "showQualityScore": true,
+    "badge": "LZ",
+    "primaryField": "lzipVersion",
     "groups": [
       {
-        "title": "Member Header",
-        "icon": "\uE8B7",
-        "fields": ["lzipMagic", "lzipVersion", "lzipDictSize"]
+        "name": "Header Fields",
+        "fields": [ "lzipMagic", "lzipVersion", "lzipDictSizeByte" ]
       },
       {
-        "title": "Dictionary Info",
-        "icon": "\uE9D9",
-        "fields": ["lzipDictBase", "lzipDictMultiplier"]
+        "name": "Member Metadata",
+        "fields": [ "lzipMemberSize" ]
       }
     ]
   },
   "exportTemplates": [
     {
-      "name": "LZIP Header (JSON)",
-      "format": "json",
-      "fields": ["lzipMagic", "lzipVersion", "lzipDictSize"]
+      "name": "Summary CSV",
+      "format": "csv",
+      "fields": [ "lzipMagic", "lzipVersion", "lzipDictSizeByte", "lzipMemberSize" ]
     },
     {
-      "name": "LZIP Header (text)",
-      "format": "text",
-      "fields": ["lzipMagic", "lzipVersion", "lzipDictSize"]
+      "name": "Header JSON",
+      "format": "json",
+      "fields": [ "lzipMagic", "lzipVersion", "lzipDictSizeByte", "lzipMemberSize" ]
     }
   ],
   "forensic": {
-    "category": "archive",
-    "riskLevel": "low",
-    "suspiciousPatterns": [],
-    "knownExploitVectors": [
-      "Decompression bombs via excessively large uncompressed output"
+    "riskLevel": "LOW",
+    "notes": "Lzip is rarely used for malware delivery but can wrap arbitrary payloads. Always verify CRC32 in the trailer against decompressed data before trusting content.",
+    "suspiciousPatterns": [
+      "Version byte not equal to 1",
+      "MemberSize field does not match actual physical file size",
+      "CRC32 trailer validation failure indicating corruption or tampering",
+      "Dictionary size exponent outside valid range 12-29"
     ]
   },
   "aiHints": {
-    "analysisContext": "lzip archive using LZMA algorithm. Very high entropy (7.2-8.0) due to LZMA compression. Footer at EOF-20 contains CRC-32 (4B), data size (8B), member size (8B). Multimember files can be split and processed in parallel with plzip.",
+    "analysisContext": "Lzip is a single-file LZMA-based compressor. Each file consists of one or more concatenated members with a 6-byte header and 20-byte trailer. The payload entropy should approach 8.0. Dictionary size is encoded in a single byte using split bit fields.",
     "suggestedInspections": [
-      "Verify CRC-32 at EOF-4 against decompressed data to detect corruption",
-      "Check member_size at EOF-12 matches actual file size for single-member archives",
-      "Validate data_size at EOF-12 for reasonable uncompressed output (decompression bomb check)",
-      "Inspect coded_dict_size byte — unusually large dictionary (base>25) indicates large memory requirement",
-      "Check for multimember format by scanning for additional LZIP magic after first member"
+      "Verify CRC32 in the 20-byte trailer matches decompressed content to confirm data integrity",
+      "Decode dictionary size byte: exponent = bits[0..4], mantissa = bits[5..7]; actual dict = (2+mantissa) << exponent",
+      "Check for multiple concatenated members by scanning for 'LZIP' magic after each trailer",
+      "Compare the member size field in the trailer against the physical file size to detect truncation",
+      "Run entropy analysis on the LZMA payload; values significantly below 7.5 may indicate padding or partial decompression"
     ]
   },
-  "software": ["lzip", "plzip", "tarlz", "pdlzip", "clzip", "zutils"],
-  "formatRelationships": {
-    "category": "Archives",
-    "extensions": [".lz"],
-    "relatedFormats": ["GZIP", "XZ", "BZIP2", "ZSTD"]
-  },
-  "MimeTypes": ["application/x-lzip"],
-  "UseCases": [
-    "Source tarball distribution (tarlz)",
-    "High-integrity compression with CRC-32 verification",
-    "Parallel compression of large files (plzip)",
-    "GNU project distribution archives"
-  ],
   "TechnicalDetails": {
-    "Algorithm": "LZMA (Lempel-Ziv-Markov chain)",
-    "IntegrityCheck": "CRC-32 per member (last 4 bytes before sizes)",
-    "FooterLayout": "CRC-32(4B) + data_size(8B uint64 LE) + member_size(8B uint64 LE) at EOF",
-    "DictSizeFormula": "2^(5*(size_base/9)) * (1 + size_multiplier*2/9), range 4KiB to 512MiB",
-    "MultimemberSupport": true,
-    "MaxMemberSize": "2^63 bytes"
+    "endianness": "Little-endian for multi-byte fields in trailer",
+    "headerSize": 6,
+    "trailerSize": 20,
+    "compressionAlgorithm": "LZMA (Lempel-Ziv-Markov chain Algorithm)",
+    "dictionarySizeEncoding": "Bits 0-4: base-2 exponent (valid: 12-29), bits 5-7: mantissa (0-7); size = (2 + mantissa) << exponent",
+    "integrityCheck": "CRC32 over uncompressed data stored in last 4 bytes of each member trailer"
   },
   "QualityMetrics": {
-    "CompletenessScore": 78,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 3,
-    "ValidationRules": 3,
+    "CompletenessScore": 88,
     "LastUpdated": "2026-04-15",
-    "PriorityFormat": false,
-    "AutoRefined": false
+    "ReviewedBy": "WPFHexaEditor Team"
   }
 }

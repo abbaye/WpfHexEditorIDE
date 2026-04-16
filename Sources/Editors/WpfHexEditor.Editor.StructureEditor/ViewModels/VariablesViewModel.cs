@@ -25,11 +25,53 @@ internal sealed class VariableItemViewModel : ViewModelBase
     private string _description = "";
 
     public string Key         { get => _key;         set { if (SetField(ref _key, value))         RaiseChanged(); } }
-    public string Type        { get => _type;        set { if (SetField(ref _type, value))        RaiseChanged(); } }
-    public string Value       { get => _value;       set { if (SetField(ref _value, value))       RaiseChanged(); } }
     public string Description { get => _description; set { if (SetField(ref _description, value)) RaiseChanged(); } }
 
-    public static IReadOnlyList<string> TypeOptions { get; } = ["string", "int", "float", "bool"];
+    public string Type
+    {
+        get => _type;
+        set
+        {
+            if (!SetField(ref _type, value)) return;
+            // Coerce value to a valid default for the new type
+            if (value == "bool" && !bool.TryParse(_value, out _)) Value = "false";
+            OnPropertyChanged(nameof(IsBool));
+            OnPropertyChanged(nameof(IsInt));
+            OnPropertyChanged(nameof(IsFloat));
+            OnPropertyChanged(nameof(IsString));
+            OnPropertyChanged(nameof(IsHex));
+            RaiseChanged();
+        }
+    }
+
+    public string Value
+    {
+        get => _value;
+        set
+        {
+            if (SetField(ref _value, value))
+            {
+                OnPropertyChanged(nameof(BoolValue));
+                RaiseChanged();
+            }
+        }
+    }
+
+    // ── Type helpers for DataTemplate selection ───────────────────────────
+    public bool IsBool   => _type == "bool";
+    public bool IsInt    => _type == "int";
+    public bool IsFloat  => _type == "float";
+    public bool IsHex    => _type == "hex";
+    public bool IsString => _type == "string";
+
+    /// <summary>Two-way bool binding for the CheckBox cell template.</summary>
+    public bool BoolValue
+    {
+        get => bool.TryParse(_value, out var b) && b;
+        set => Value = value ? "true" : "false";
+    }
+
+    public static IReadOnlyList<string> TypeOptions { get; } = ["string", "int", "float", "bool", "hex"];
 
     public System.Windows.Input.ICommand RemoveCommand =>
         new RelayCommand(() => RemoveRequested?.Invoke(this, EventArgs.Empty));
@@ -69,9 +111,10 @@ internal sealed class VariablesViewModel : ViewModelBase
                 long   => "int",
                 float  => "float",
                 double => "float",
-                _ when bool.TryParse(valStr, out _)  => "bool",
-                _ when long.TryParse(valStr, out _)  => "int",
-                _ when double.TryParse(valStr, out _) => "float",
+                _ when bool.TryParse(valStr, out _)   => "bool",
+                _ when valStr.StartsWith("0x", StringComparison.OrdinalIgnoreCase) => "hex",
+                _ when long.TryParse(valStr, out _)   => "int",
+                _ when double.TryParse(valStr, out _)  => "float",
                 _ => "string"
             };
             AddItem(kv.Key, type, valStr);
@@ -86,9 +129,10 @@ internal sealed class VariablesViewModel : ViewModelBase
             if (string.IsNullOrWhiteSpace(item.Key)) continue;
             def.Variables[item.Key] = item.Type switch
             {
-                "int"   when long.TryParse(item.Value, out var n)     => (object)n,
-                "float" when double.TryParse(item.Value, out var d)   => (object)d,
-                "bool"  when bool.TryParse(item.Value, out var b)     => (object)b,
+                "int"   when long.TryParse(item.Value, out var n)                                       => (object)n,
+                "float" when double.TryParse(item.Value, out var d)                                     => (object)d,
+                "bool"  when bool.TryParse(item.Value, out var b)                                       => (object)b,
+                "hex"   when long.TryParse(item.Value.TrimStart('0', 'x'), System.Globalization.NumberStyles.HexNumber, null, out var h) => (object)h,
                 _ => item.Value
             };
         }

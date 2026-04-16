@@ -1,0 +1,173 @@
+{
+  "diffMode": "text",
+  "formatName": "DocBook XML Documentation",
+  "version": "1.0",
+  "extensions": [ ".xml", ".docbook", ".dbk" ],
+  "description": "DocBook is an XML (and formerly SGML) schema for authoring technical documentation, books, articles, and reference manuals. Originally created by HaL Computer Systems and O'Reilly & Associates, it is now maintained by OASIS. DocBook files use a rich set of semantic elements including <book>, <article>, <chapter>, <section>, <para>, <programlisting>, and cross-references. They are processed by XSL stylesheets (docbook-xsl) to produce PDF, HTML, ePub, and man pages. DocBook 5.x uses XML namespaces (http://docbook.org/ns/docbook).",
+  "category": "Documents",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "code-editor",
+  "references": {
+    "specifications": [
+      "DocBook 5.2 Specification (OASIS)",
+      "DocBook: The Definitive Guide",
+      "DocBook XML DTD v4.5"
+    ],
+    "WebLinks": [
+      "https://docbook.org/",
+      "https://en.wikipedia.org/wiki/DocBook",
+      "https://tdg.docbook.org/",
+      "https://www.oasis-open.org/committees/docbook/"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      { "hex": "3C626F6F6B", "offset": 0, "label": "'<book' — DocBook book root element", "weight": 0.6 },
+      { "hex": "3C61727469636C65", "offset": 0, "label": "'<article' — DocBook article root element", "weight": 0.6 },
+      { "hex": "3C7365743E", "offset": 0, "label": "'<set>' — DocBook set root element", "weight": 0.5 },
+      { "hex": "3C3F786D6C", "offset": 0, "label": "'<?xml' — XML declaration before DocBook root", "weight": 0.3 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.3,
+    "required": false,
+    "Strength": "Weak",
+    "EntropyHint": { "min": 3.5, "max": 5.0 },
+    "validation": {
+      "minFileSize": 20,
+      "maxSignatureOffset": 0,
+      "note": "DocBook files start with '<book', '<article>', '<set>', or '<?xml'. Confirm by DocBook namespace or DOCTYPE. .dbk and .docbook extensions are more specific than .xml."
+    }
+  },
+  "variables": {
+    "docbookRoot": ""
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "Root Element",
+      "offset": 0,
+      "length": 8,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "DocBook root element: '<book', '<article', '<set', or '<?xml' declaration.",
+      "storeAs": "docbookRoot",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "XML Declaration / DOCTYPE",
+      "offset": 0,
+      "length": 64,
+      "color": "#4ECDC4",
+      "opacity": 0.25,
+      "description": "First 64 bytes for namespace or DOCTYPE identification.",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Document Content Preview",
+      "offset": 64,
+      "length": 128,
+      "color": "#45B7D1",
+      "opacity": 0.2,
+      "description": "Content preview for identifying DocBook element vocabulary.",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Namespace Declaration",
+      "offset": 0,
+      "length": 256,
+      "color": "#FFEAA7",
+      "opacity": 0.15,
+      "description": "Extended area to detect DocBook namespace: 'http://docbook.org/ns/docbook'.",
+      "valueType": "ascii"
+    }
+  ],
+  "assertions": [
+    { "field": "docbookRoot", "operator": "startsWithAny", "value": ["<book", "<arti", "<set>", "<?xml", "<chap", "<sect"], "description": "File must start with a known DocBook root element or XML declaration" },
+    { "field": "docbookRoot", "operator": "notEmpty", "value": true, "description": "Root element must be readable" },
+    { "field": "docbookRoot", "operator": "startsWith", "value": "<", "description": "DocBook files are XML text starting with '<'" }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "Document Root", "offset": 0, "description": "DocBook root element (book/article/set) or XML declaration" },
+      { "name": "Namespace Area", "offset": 5, "description": "Expected DocBook 5.x namespace or 4.x DOCTYPE declaration" }
+    ]
+  },
+  "inspector": {
+    "badge": "DocBook",
+    "primaryField": "docbookRoot",
+    "showQualityScore": true,
+    "groups": [
+      { "name": "Document Structure", "fields": ["docbookRoot"] }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "DocBook File Info (JSON)",
+      "format": "json",
+      "fields": ["docbookRoot"]
+    },
+    {
+      "name": "DocBook Header (Text)",
+      "format": "text",
+      "fields": ["docbookRoot"]
+    }
+  ],
+  "forensic": {
+    "category": "document",
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      { "name": "External entity injection (XXE)", "condition": "contains DOCTYPE with SYSTEM entity", "description": "DocBook XML files with DOCTYPE declarations may be vulnerable to XXE injection if parsed with unsafe XML parsers.", "severity": "warning" },
+      { "name": "Embedded executable content", "condition": "contains programlisting with suspicious code", "description": "DocBook programlisting elements may contain embedded scripts for copy-paste injection.", "severity": "info" }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "DocBook is a semantic XML schema for technical documentation. DocBook 4.x uses a DTD with DOCTYPE declarations; DocBook 5.x uses an XML namespace 'http://docbook.org/ns/docbook'. Root elements are <book>, <article>, <set>, <chapter>, or <reference>. Files with .dbk or .docbook extension are reliably DocBook; .xml files require namespace/element inspection. Output is produced via XSL-FO or docbook-xsl stylesheets.",
+    "suggestedInspections": [
+      "Check for '<book', '<article', '<set', or '<chapter' root elements",
+      "Look for DocBook 5.x namespace: 'xmlns=\"http://docbook.org/ns/docbook\"'",
+      "Look for DocBook 4.x DOCTYPE: '//OASIS//DTD DocBook XML' or '//OASIS//DTD DocBook SGML'",
+      "Identify document structure: chapters, sections, appendices, bibliography",
+      "Check for xi:include XInclude directives that reference external files",
+      "Scan for DocBook info block: <info>/<bookinfo> with author, publisher, pubdate"
+    ]
+  },
+  "software": [
+    "DocBook XSL stylesheets",
+    "xmllint (libxml2)",
+    "oXygen XML Editor",
+    "Publican",
+    "AsciiDoctor (conversion from AsciiDoc)",
+    "dblatex (PDF output)"
+  ],
+  "formatRelationships": {
+    "category": "Documents",
+    "extensions": [".xml", ".docbook", ".dbk"],
+    "relatedFormats": ["XML", "ASCIIDOC", "RST", "DOCX", "HTML"],
+    "note": "DocBook is commonly converted to HTML, PDF, ePub, and man pages via XSL stylesheets. AsciiDoc and RST can both produce DocBook XML as an intermediate output."
+  },
+  "MimeTypes": [ "application/docbook+xml", "text/xml" ],
+  "UseCases": [
+    "Technical book and article authoring",
+    "Software documentation (man pages, guides)",
+    "Multi-format publishing from single source",
+    "Open-source project documentation (Linux kernel docs, GNOME, etc.)"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 85,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 4,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-15",
+    "ReviewedBy": "WPFHexaEditor Team"
+  },
+  "TechnicalDetails": {
+    "DocumentFormat": true,
+    "SchemaVersions": ["DocBook SGML 3.x", "DocBook XML 4.x", "DocBook 5.x (RelaxNG/Schematron)"],
+    "Encoding": "UTF-8",
+    "ProcessingTools": "XSL-FO, docbook-xsl, dblatex, Publican",
+    "Note": "No binary magic. Detected by root element name and/or namespace. .dbk/.docbook are unambiguous; .xml files require deeper inspection."
+  }
+}

@@ -1,0 +1,195 @@
+{
+  "diffMode": "text",
+  "formatName": "OpenSSH Certificate",
+  "version": "1.0",
+  "extensions": [ ".pub" ],
+  "description": "OpenSSH certificate format for host and user authentication. Certificates are ASCII text files containing a key type string, a base64-encoded binary blob, and an optional comment, separated by single spaces on one line. Certificate types: ssh-rsa-cert-v01@openssh.com (RSA), ecdsa-sha2-nistp256-cert-v01@openssh.com (ECDSA P-256), ecdsa-sha2-nistp384-cert-v01@openssh.com, ecdsa-sha2-nistp521-cert-v01@openssh.com, ssh-ed25519-cert-v01@openssh.com (Ed25519). The base64-decoded binary blob begins with a length-prefixed key type string followed by certificate fields: nonce (32 random bytes), public key material, serial (uint64), type (1=user, 2=host), key_id (string), valid principals (name-list), valid_after (uint64 Unix time), valid_before (uint64 Unix time), critical_options (name-list), extensions (name-list), reserved, signature_key (signer's public key), and signature. Certificates are signed by a Certificate Authority (CA) and enable certificate-based SSH authentication without per-host authorized_keys management.",
+  "category": "Crypto",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "TextEditor",
+  "references": [
+    "https://man.openbsd.org/ssh-keygen#CERTIFICATES",
+    "https://cvsweb.openbsd.org/src/usr.bin/ssh/PROTOCOL.certkeys",
+    "https://smallstep.com/blog/use-ssh-certificates/"
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "value": "7373682D7273612D636572742D763031406F70656E7373682E636F6D",
+        "offset": 0,
+        "label": "'ssh-rsa-cert-v01@openssh.com' — RSA OpenSSH certificate key type prefix",
+        "weight": 0.9
+      },
+      {
+        "value": "65636473612D736861322D6E69737470323536",
+        "offset": 0,
+        "label": "'ecdsa-sha2-nistp256' — ECDSA P-256 key type prefix",
+        "weight": 0.8
+      },
+      {
+        "value": "7373682D6564323535313963657274",
+        "offset": 0,
+        "label": "'ssh-ed25519cert' — Ed25519 certificate prefix (partial)",
+        "weight": 0.8
+      }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.6,
+    "Strength": "Medium",
+    "validation": "Line must start with a known SSH certificate key type string followed by a space (0x20) and then a base64-encoded string starting with 'AAAA'. Comment field is optional after the second space."
+  },
+  "variables": {},
+  "blocks": [
+    {
+      "name": "opensshCertKeyType",
+      "offset": 0,
+      "size": 28,
+      "type": "ascii",
+      "description": "Certificate key type string — ASCII text starting at offset 0; the full key type identifier such as 'ssh-rsa-cert-v01@openssh.com' (28 chars), 'ecdsa-sha2-nistp256-cert-v01@openssh.com' (40 chars), or 'ssh-ed25519-cert-v01@openssh.com' (32 chars); terminated by a space (0x20) before the base64 blob",
+      "storeAs": "opensshCertKeyType"
+    },
+    {
+      "name": "opensshSpace",
+      "offset": 28,
+      "size": 1,
+      "type": "uint8",
+      "description": "Field separator space — 1-byte ASCII space character (0x20) at offset 28 (after 'ssh-rsa-cert-v01@openssh.com'); separates the key type string from the base64-encoded certificate blob",
+      "storeAs": "opensshSpace"
+    },
+    {
+      "name": "opensshBase64Start",
+      "offset": 29,
+      "size": 4,
+      "type": "ascii",
+      "description": "Base64 blob start — 4 ASCII characters at offset 29; a valid OpenSSH certificate base64 blob begins with 'AAAA' because the binary blob starts with a 4-byte big-endian length prefix for the key type string, and base64('\\x00\\x00\\x00') = 'AAAA'",
+      "storeAs": "opensshBase64Start"
+    },
+    {
+      "name": "opensshFullLine",
+      "offset": 0,
+      "size": 200,
+      "type": "ascii",
+      "description": "Certificate line sample — first 200 ASCII bytes of the certificate file; format: '<key-type> <base64-blob> [<comment>]\\n'; the comment field (optional) typically contains the certificate serial number, principal name, or CA identifier",
+      "storeAs": "opensshFullLine"
+    }
+  ],
+  "assertions": [
+    {
+      "field": "opensshCertKeyType",
+      "op": "startsWith",
+      "value": "ssh-",
+      "description": "Certificate key type must start with 'ssh-' or 'ecdsa-' indicating a valid OpenSSH key type identifier"
+    },
+    {
+      "field": "opensshSpace",
+      "op": "eq",
+      "value": 32,
+      "description": "Character at position after key type string must be ASCII space (0x20 = decimal 32)"
+    },
+    {
+      "field": "opensshBase64Start",
+      "op": "eq",
+      "value": "AAAA",
+      "description": "Base64 blob must start with 'AAAA' — the base64 encoding of the initial 3 zero bytes that prefix the key type length field in the binary blob"
+    }
+  ],
+  "navigation": {
+    "entryPoint": "opensshCertKeyType",
+    "sections": [
+      { "name": "Key Type String", "offset": 0, "size": 28 },
+      { "name": "Field Separator", "offset": 28, "size": 1 },
+      { "name": "Base64 Certificate Blob", "offset": 29, "description": "Base64-encoded binary certificate data" },
+      { "name": "Optional Comment", "offset": 0, "description": "Third space-separated field — certificate description or identifier" }
+    ]
+  },
+  "inspector": {
+    "badge": "SSH",
+    "primaryField": "opensshCertKeyType",
+    "groups": [
+      {
+        "name": "Key Type",
+        "fields": [ "opensshCertKeyType" ]
+      },
+      {
+        "name": "Blob Header",
+        "fields": [ "opensshSpace", "opensshBase64Start" ]
+      },
+      {
+        "name": "Full Line Sample",
+        "fields": [ "opensshFullLine" ]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "SSH Certificate Summary",
+      "format": "txt",
+      "template": "OpenSSH Certificate\n===================\nKey Type : {opensshCertKeyType}\nBase64   : {opensshBase64Start}...\nFull Line: {opensshFullLine}\n"
+    },
+    {
+      "name": "SSH Certificate Forensic Report (CSV)",
+      "format": "csv",
+      "template": "Field,Value\nKeyType,{opensshCertKeyType}\nSpaceSeparator,{opensshSpace}\nBase64Start,{opensshBase64Start}\nFullLineSample,{opensshFullLine}\n"
+    }
+  ],
+  "forensic": {
+    "importance": "MEDIUM",
+    "riskLevel": "medium",
+    "notes": "OpenSSH certificates are public key material and do not contain private keys. However, they reveal authentication scope (principals/hostnames), CA identity, validity window, and assigned privileges. A certificate with type=2 (host certificate) reveals server identity. A certificate with type=1 (user certificate) reveals authorized principals. Certificate serial numbers and key IDs are useful for correlation. The signing CA's public key fingerprint can be used to trace the issuing authority. Compromised certificates may grant unauthorized SSH access if the CA key was stolen.",
+    "indicators": [
+      "Line starts with certificate key type string",
+      "Base64 blob starts with 'AAAA'",
+      "Extension -cert.pub or .pub",
+      "Contains '@openssh.com' in key type for certificate (vs plain key)"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "OpenSSH certificates extend the standard SSH public key format by adding CA signature, validity period, principals list, and extensions. They are ASCII text files formatted identically to regular SSH public keys but with a certificate-specific key type string. The binary blob (base64-decoded) contains the full certificate structure with serial number, validity dates, and authorized principals.",
+    "suggestedInspections": [
+      "Decode the base64 blob and extract the certificate serial number, validity_after, and valid_before timestamps for timeline analysis",
+      "Extract the key_id field from the decoded blob — this typically contains the username or host for which the certificate was issued",
+      "Identify the valid principals list to determine what accounts/hosts this certificate can authenticate to",
+      "Extract the CA signature_key from the decoded blob and compute its fingerprint to identify the issuing Certificate Authority",
+      "Check the extensions field for force-command or source-address restrictions that may limit certificate usage",
+      "Verify validity period — certificates past valid_before are expired and should no longer be accepted by properly configured servers"
+    ]
+  },
+  "software": [
+    { "name": "OpenSSH ssh-keygen", "vendor": "OpenBSD Project", "url": "https://man.openbsd.org/ssh-keygen" },
+    { "name": "step-cli", "vendor": "Smallstep", "url": "https://smallstep.com/docs/step-cli/" },
+    { "name": "Teleport", "vendor": "Gravitational", "url": "https://goteleport.com" },
+    { "name": "HashiCorp Vault (SSH secrets engine)", "vendor": "HashiCorp", "url": "https://developer.hashicorp.com/vault/docs/secrets/ssh" },
+    { "name": "PuTTY", "vendor": "Simon Tatham", "url": "https://www.putty.org" }
+  ],
+  "formatRelationships": [
+    { "format": "SSH_KEY", "relationship": "OpenSSH certificates extend the SSH public key format by adding CA signature and validity metadata" },
+    { "format": "X509", "relationship": "X.509 certificates serve the same authentication purpose for TLS; OpenSSH certs use a simpler binary format specific to SSH" },
+    { "format": "CSR", "relationship": "CSRs are used to request X.509 certificates; OpenSSH has no CSR equivalent — certificates are signed directly by the CA" }
+  ],
+  "MimeTypes": [ "text/plain", "application/x-pem-file" ],
+  "UseCases": [
+    "Certificate-based SSH authentication replacing per-host authorized_keys",
+    "Short-lived credential issuance for zero-trust SSH access",
+    "Host certificate verification to prevent TOFU (Trust On First Use) attacks",
+    "Centralized SSH access control via Certificate Authority",
+    "Forensic audit of SSH access credentials and CA trust chains"
+  ],
+  "QualityMetrics": {
+    "LastUpdated": "2026-04-15",
+    "CompletenessScore": 83,
+    "ReviewedBy": "WPFHexaEditor Team"
+  },
+  "TechnicalDetails": {
+    "encoding": "ASCII text, single line",
+    "blobEncoding": "Base64 RFC 4648",
+    "binaryFormat": "OpenSSH wire format — length-prefixed strings and big-endian integers",
+    "certificateTypes": { "1": "user certificate", "2": "host certificate" },
+    "supportedKeyTypes": [
+      "ssh-rsa-cert-v01@openssh.com",
+      "ecdsa-sha2-nistp256-cert-v01@openssh.com",
+      "ecdsa-sha2-nistp384-cert-v01@openssh.com",
+      "ecdsa-sha2-nistp521-cert-v01@openssh.com",
+      "ssh-ed25519-cert-v01@openssh.com"
+    ]
+  }
+}

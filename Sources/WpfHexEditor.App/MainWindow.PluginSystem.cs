@@ -359,6 +359,9 @@ public partial class MainWindow
             formatCatalog.Initialize(embeddedEntries, externalDir);
             _formatCatalogService = formatCatalog;
             OutputLogger.Info($"[FormatCatalog] {formatCatalog.FormatCount} formats loaded (shared pipeline)");
+            // If the Format Browser panel was already created (layout restore), wire it now.
+            Dispatcher.InvokeAsync(InitFormatBrowserCatalog,
+                System.Windows.Threading.DispatcherPriority.Background);
 
             if (formatCatalog.LoadFailures.Count > 0)
             {

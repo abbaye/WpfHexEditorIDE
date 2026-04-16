@@ -1,199 +1,299 @@
 {
   "diffMode": "binary",
-  "formatName": "Android DEX File",
-  "version": "1.15",
-  "extensions": [
-    ".dex"
-  ],
-  "description": "Dalvik Executable - Android bytecode",
+  "formatName": "Android Dalvik Executable (DEX)",
+  "version": "1.0",
+  "extensions": [".dex", ".odex", ".cdex"],
+  "description": "Android Dalvik Executable format — the bytecode container used by the Android Dalvik VM and ART (Android RunTime). DEX files package classes, methods, fields, strings, and bytecode from compiled Android applications. The magic is 'dex\\n' (64 65 78 0A) at offset 0 followed by a 3-byte ASCII version string ('035', '036', '037', '038', '039', '040') and a null terminator. Header size is always 0x70 (112) bytes.",
   "category": "Programming",
   "author": "WPFHexaEditor Team",
-  "preferredEditor": "hex-editor",
-  "references": {
-    "specifications": [
-      "Android DEX File Format"
-    ],
-    "WebLinks": [
-      "https://en.wikipedia.org/wiki/DEX"
-    ]
-  },
+  "preferredEditor": "HexEditor",
+  "references": [
+    "https://source.android.com/docs/core/runtime/dex-format",
+    "https://android.googlesource.com/platform/art/+/master/dex/",
+    "https://github.com/JesusFreke/smali"
+  ],
   "detection": {
-    "required": true,
-    "validation": {
-      "minFileSize": 4,
-      "maxSignatureOffset": 1024
-    },
     "signatures": [
       {
-        "value": "6465780A",
         "offset": 0,
-        "label": "DEX magic",
+        "value": "6465780A30333500",
+        "label": "'dex\\n035\\0' — Android 5.0+",
+        "weight": 1.0
+      },
+      {
+        "offset": 0,
+        "value": "6465780A30333600",
+        "label": "'dex\\n036\\0' — Android 6.0",
+        "weight": 1.0
+      },
+      {
+        "offset": 0,
+        "value": "6465780A30333700",
+        "label": "'dex\\n037\\0' — Android 7.0",
+        "weight": 1.0
+      },
+      {
+        "offset": 0,
+        "value": "6465780A30333800",
+        "label": "'dex\\n038\\0' — ART/Android 8.0",
+        "weight": 1.0
+      },
+      {
+        "offset": 0,
+        "value": "6465780A30333900",
+        "label": "'dex\\n039\\0' — Android 10+",
+        "weight": 1.0
+      },
+      {
+        "offset": 0,
+        "value": "6465780A30343000",
+        "label": "'dex\\n040\\0' — Android 13+",
         "weight": 1.0
       }
     ],
-    "matchMode": "any",
-    "MinimumScore": 1.0,
-    "Strength": "Strong"
+    "matchMode": "Best",
+    "MinimumScore": 0.9,
+    "Strength": "Strong",
+    "EntropyHint": "Moderate — string table has low entropy; bytecode sections have moderate entropy; class data is structured binary"
   },
-  "functions": {
-    "readUInt32LE": "Read 32-bit little-endian for checksum, file size, and counts",
-    "extractASCIIString": "Extract DEX version string",
-    "calculateCRC32": "Verify Adler32 checksum",
-    "calculateSHA256": "Verify SHA-1 signature (20 bytes at offset 12)",
-    "formatFileSize(var:fileSize)": "Format fileSize as readable size"
-  },
-  "variables": {
-    "currentOffset": 0,
-    "version": "Unknown",
-    "checksum": 0,
-    "sha1": "Unknown",
-    "fileSize": 0,
-    "headerSize": 112,
-    "stringIds": 0,
-    "typeIds": 0,
-    "methodIds": 0,
-    "classIds": 0,
-    "dexMagic": "",
-    "sha1Signature": "",
-    "formattedSize": ""
-  },
-  "blocks": [
+  "variables": [
     {
-      "type": "signature",
-      "name": "DEX Magic",
+      "name": "dexMagic",
       "offset": 0,
-      "length": 4,
-      "color": "#FF6B6B",
-      "opacity": 0.4,
-      "description": "dex\\n signature",
-      "storeAs": "dexMagic",
-      "valueType": "uint32"
+      "size": 4,
+      "type": "ascii",
+      "description": "Magic bytes 'dex\\n' (64 65 78 0A)"
     },
     {
-      "type": "field",
-      "name": "Version",
+      "name": "dexVersion",
       "offset": 4,
-      "length": 4,
-      "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "DEX format version",
-      "storeAs": "version",
-      "valueType": "ascii"
+      "size": 3,
+      "type": "ascii",
+      "description": "DEX format version string ('035' through '040')"
     },
     {
-      "type": "field",
-      "name": "Checksum",
+      "name": "dexNullTerm",
+      "offset": 7,
+      "size": 1,
+      "type": "uint8",
+      "description": "Null terminator after version (must be 0x00)"
+    },
+    {
+      "name": "dexChecksum",
       "offset": 8,
-      "length": 4,
-      "color": "#95E1D3",
-      "opacity": 0.3,
-      "description": "Adler32 checksum",
-      "storeAs": "checksum",
-      "valueType": "uint32"
+      "size": 4,
+      "type": "uint32",
+      "endian": "LE",
+      "description": "Adler-32 checksum of the file from offset 12 onward"
     },
     {
-      "type": "field",
-      "name": "SHA-1 Signature",
+      "name": "dexSha1",
       "offset": 12,
-      "length": 20,
-      "color": "#FFE66D",
-      "opacity": 0.3,
-      "description": "SHA-1 hash of file",
-      "storeAs": "sha1Signature",
-      "valueType": "ascii"
+      "size": 20,
+      "type": "hex",
+      "description": "SHA-1 signature of the file from offset 32 onward (20 bytes)"
     },
     {
-      "type": "metadata",
-      "name": "Formatted Size",
-      "variable": "formattedSize",
-      "description": "Human-readable file size"
+      "name": "dexFileSize",
+      "offset": 32,
+      "size": 4,
+      "type": "uint32",
+      "endian": "LE",
+      "description": "Total file size in bytes"
+    },
+    {
+      "name": "dexHeaderSize",
+      "offset": 36,
+      "size": 4,
+      "type": "uint32",
+      "endian": "LE",
+      "description": "Header size — must be 0x70 (112) for standard DEX"
+    },
+    {
+      "name": "dexEndianTag",
+      "offset": 40,
+      "size": 4,
+      "type": "uint32",
+      "endian": "LE",
+      "description": "Endian tag — 0x12345678 for LE, 0x78563412 for BE",
+      "valueMap": {
+        "305419896": "Little-Endian (standard)",
+        "2018915346": "Big-Endian (non-standard)"
+      }
+    },
+    {
+      "name": "dexStringCount",
+      "offset": 56,
+      "size": 4,
+      "type": "uint32",
+      "endian": "LE",
+      "description": "Number of string identifiers in the string_ids list"
+    },
+    {
+      "name": "dexClassCount",
+      "offset": 96,
+      "size": 4,
+      "type": "uint32",
+      "endian": "LE",
+      "description": "Number of class definitions"
     }
   ],
-  "forensic": {
-    "category": "programming",
-    "riskLevel": "medium",
-    "suspiciousPatterns": []
-  },
-  "aiHints": {
-    "analysisContext": "Dalvik Executable - Android bytecode",
-    "suggestedInspections": [
-      "Verify Android DEX File magic number and format version identifier",
-      "Check symbol/string table integrity and section boundaries",
-      "Inspect code section offsets, relocations, and debug info"
+  "blocks": [
+    {
+      "name": "MagicAndVersion",
+      "offset": 0,
+      "size": 8,
+      "description": "'dex\\n' magic + 3-byte version + null terminator"
+    },
+    {
+      "name": "Checksum",
+      "offset": 8,
+      "size": 4,
+      "description": "Adler-32 checksum of bytes from offset 12 to end"
+    },
+    {
+      "name": "SHA1Signature",
+      "offset": 12,
+      "size": 20,
+      "description": "SHA-1 hash of bytes from offset 32 to end"
+    },
+    {
+      "name": "FileAndHeaderSize",
+      "offset": 32,
+      "size": 8,
+      "description": "Total file size (4B) and header size (4B, must be 0x70)"
+    },
+    {
+      "name": "EndianTag",
+      "offset": 40,
+      "size": 4,
+      "description": "Endian tag: 0x12345678 LE, 0x78563412 BE"
+    },
+    {
+      "name": "StringAndTypeIds",
+      "offset": 56,
+      "size": 16,
+      "description": "String ID count, offset, type ID count, offset"
+    },
+    {
+      "name": "ClassDefinitions",
+      "offset": 96,
+      "size": 8,
+      "description": "Class definition count and offset into the class_defs list"
+    }
+  ],
+  "assertions": [
+    {
+      "variable": "dexMagic",
+      "operator": "==",
+      "value": "dex\n",
+      "description": "Magic must be 'dex\\n'",
+      "level": "Error"
+    },
+    {
+      "variable": "dexHeaderSize",
+      "operator": "==",
+      "value": 112,
+      "description": "Header size must be 0x70 (112) for a standard DEX file",
+      "level": "Error"
+    },
+    {
+      "variable": "dexStringCount",
+      "operator": ">",
+      "value": 0,
+      "description": "A valid DEX file must contain at least one string identifier",
+      "level": "Warning"
+    }
+  ],
+  "navigation": {
+    "entryPoint": 0,
+    "sections": [
+      { "name": "Header", "offset": 0, "size": 112 },
+      { "name": "String IDs", "offset": 112, "size": 0 },
+      { "name": "Type IDs", "offset": 0, "size": 0 },
+      { "name": "Class Defs", "offset": 0, "size": 0 }
     ]
   },
-  "software": [
-    "Android Runtime (ART)",
-    "Dalvik VM",
-    "Android tools"
-  ],
-  "formatRelationships": {
-    "android_format": true,
-    "contained_in": "APK",
-    "replaces": "Java CLASS on Android",
-    "optimized_for": "Mobile devices"
-  },
-  "MimeTypes": [
-    "application/octet-stream"
-  ],
-  "Software": [
-    "Visual Studio",
-    "GCC",
-    "LLVM",
-    "IDA Pro",
-    "Ghidra"
-  ],
-  "UseCases": [
-    "Software development",
-    "Compilation",
-    "Linking",
-    "Analysis"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 65,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 5,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-04-14",
-    "PriorityFormat": false,
-    "AutoRefined": true
-  },
-  "TechnicalDetails": {},
   "inspector": {
-    "badge": "dexMagic",
-    "primaryField": "version",
-    "showQualityScore": true,
+    "badge": "DEX",
+    "primaryField": "dexVersion",
     "groups": [
       {
-        "title": "Android DEX File",
-        "icon": "",
-        "fields": [
-          "dexMagic",
-          "version",
-          "checksum",
-          "sha1Signature"
-        ]
+        "name": "Identity",
+        "fields": ["dexMagic", "dexVersion", "dexEndianTag"]
+      },
+      {
+        "name": "Integrity",
+        "fields": ["dexChecksum", "dexSha1"]
+      },
+      {
+        "name": "Structure",
+        "fields": ["dexFileSize", "dexHeaderSize", "dexStringCount", "dexClassCount"]
       }
     ]
   },
   "exportTemplates": [
     {
-      "name": "Android DEX File Header (JSON)",
+      "name": "DEX Header Summary",
+      "format": "text",
+      "template": "Format: Android DEX v{dexVersion}\nFile Size: {dexFileSize} bytes\nClasses: {dexClassCount}\nStrings: {dexStringCount}\nChecksum: {dexChecksum}"
+    },
+    {
+      "name": "DEX JSON Report",
       "format": "json",
-      "fields": [
-        "dexMagic",
-        "version",
-        "checksum",
-        "sha1Signature"
-      ]
+      "template": "{ \"format\": \"DEX\", \"version\": \"{dexVersion}\", \"fileSize\": {dexFileSize}, \"classCount\": {dexClassCount}, \"stringCount\": {dexStringCount} }"
     }
   ],
-  "assertions": [
-    {
-      "name": "magic valid",
-      "expression": "dexMagic != 0",
-      "severity": "warning",
-      "message": "DEX magic field is zero — possible detection failure"
-    }
-  ]
+  "forensic": {
+    "riskLevel": "HIGH",
+    "notes": "DEX files from APK packages are a primary vector for Android malware. Obfuscated or packed DEX files may contain hidden payloads loaded via reflection. Checksums can be intentionally corrupted to defeat static analysis tools.",
+    "suspiciousPatterns": [
+      "Adler-32 checksum mismatch — file may have been patched after compilation",
+      "SHA-1 signature mismatch — deliberate integrity bypass",
+      "Unusually high class count for application size — may indicate reflection-heavy obfuscation",
+      "dexVersion '036' or above combined with suspicious string patterns indicating dex-patcher tools",
+      "Class names following obfuscation patterns (single chars: a, b, c) suggesting ProGuard or DexGuard"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "Android DEX files are compiled from Java/Kotlin sources via d8 or dx toolchains. The header (0x70 bytes) contains checksums, string/type/method/class counts and offsets. APK files are ZIP archives containing classes.dex (and classes2.dex for multidex). Tools: dex2jar, smali/baksmali, jadx, apktool.",
+    "suggestedInspections": [
+      "Verify magic 'dex\\n' and version string at offsets 0-7; version '040' indicates Android 13+ features.",
+      "Validate Adler-32 checksum at offset 8 against bytes from offset 12 to EOF to detect post-compilation patching.",
+      "Validate SHA-1 signature at offset 12 against bytes from offset 32 to EOF.",
+      "Check header size at offset 36 — any value other than 0x70 (112) indicates a non-standard or malformed DEX.",
+      "Examine string pool for suspicious Java class names, URL literals, or base64-encoded payloads that suggest runtime code loading."
+    ]
+  },
+  "software": [
+    { "name": "jadx", "platform": "Windows/macOS/Linux", "url": "https://github.com/skylot/jadx" },
+    { "name": "dex2jar", "platform": "Windows/macOS/Linux", "url": "https://github.com/pxb1988/dex2jar" },
+    { "name": "apktool", "platform": "Windows/macOS/Linux", "url": "https://apktool.org/" },
+    { "name": "smali/baksmali", "platform": "Windows/macOS/Linux", "url": "https://github.com/JesusFreke/smali" },
+    { "name": "Android Studio", "platform": "Windows/macOS/Linux", "url": "https://developer.android.com/studio" }
+  ],
+  "formatRelationships": [
+    { "format": "CLASS_JAVA", "relationship": "alternative", "note": "DEX is Android's alternative to Java .class bytecode; compiled by d8 from Java/Kotlin sources" },
+    { "format": "ONNX", "relationship": "unrelated", "note": "No direct relationship; both are binary executable/model formats" }
+  ],
+  "MimeTypes": ["application/vnd.android.dex", "application/x-android-dex"],
+  "UseCases": [
+    "Android application bytecode packaging inside APK files",
+    "Android malware analysis and reverse engineering",
+    "Dalvik/ART runtime performance profiling"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 88,
+    "LastUpdated": "2026-04-15",
+    "ReviewedBy": "WPFHexaEditor Team"
+  },
+  "TechnicalDetails": {
+    "magicBytes": "64 65 78 0A (dex\\n)",
+    "versionStrings": ["035", "036", "037", "038", "039", "040"],
+    "headerSize": "0x70 (112 bytes) — fixed",
+    "endianness": "Little-Endian (standard); endian tag at offset 40 confirms",
+    "checksumAlgorithm": "Adler-32 from offset 12",
+    "signatureAlgorithm": "SHA-1 from offset 32",
+    "multidexSupport": "Multiple DEX files in APK: classes.dex, classes2.dex, classesN.dex"
+  }
 }

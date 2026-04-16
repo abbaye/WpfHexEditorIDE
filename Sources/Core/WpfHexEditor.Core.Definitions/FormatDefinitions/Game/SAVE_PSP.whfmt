@@ -1,0 +1,219 @@
+{
+  "diffMode": "binary",
+  "formatName": "PlayStation Portable PARAM.SFO",
+  "version": "1.0",
+  "extensions": [".sfo", ".pbp"],
+  "description": "PARAM.SFO (System File Object) is the metadata format used by PlayStation Portable (PSP), PlayStation 3, PlayStation 4, PlayStation Vita, and PlayStation 5 to store game and application metadata. The file begins with the 4-byte magic '\\x00PSF' (00 50 53 46), followed by a version field (0x00000101 = v1.1, the standard version), key table offset, data table offset, and number of index entries. Each index entry in the index table references a key (null-terminated string from the key table) and a value (from the data table, typed as UTF-8 string, uint32, or raw byte array). Core parameters stored in PARAM.SFO for PSP titles: TITLE (game display name), TITLE_ID (9-char ID like ULUS-10xxx), DISC_ID (9-char), DISC_VERSION (e.g. '1.00'), PSP_SYSTEM_VER (minimum firmware required), PARENTAL_LEVEL (uint32 0-11), CATEGORY (UG=UMD Game, MG=memory stick game, ME=PSP mini), BOOTABLE (uint32, 1=bootable). Used in PSP's EBOOT.PBP, save data folders (SceGameData), and memory stick directory structure.",
+  "category": "Game",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "references": {
+    "specifications": [
+      "PARAM.SFO format documentation — PSDevWiki / PSXDEV",
+      "PSP SDK PARAM.SFO specification (leaked)",
+      "PS3 System Software SFO parameter documentation"
+    ],
+    "WebLinks": [
+      "https://www.psdevwiki.com/ps3/PARAM.SFO",
+      "https://www.psdevwiki.com/psp/PARAM.SFO",
+      "https://en.wikipedia.org/wiki/PlayStation_Portable"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      {
+        "value": "00505346",
+        "offset": 0,
+        "label": "'\\x00PSF' — PARAM.SFO magic bytes",
+        "weight": 1.0
+      }
+    ],
+    "matchMode": "first",
+    "MinimumScore": 0.9,
+    "Strength": "Strong",
+    "EntropyHint": "Medium — structured binary table with mixed binary and UTF-8 text"
+  },
+  "variables": {
+    "sfoMagic": "",
+    "sfoVersion": 0,
+    "sfoKeyTableStart": 0,
+    "sfoDataTableStart": 0,
+    "sfoNumEntries": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "SFO Magic",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.85,
+      "description": "4-byte file magic: 0x00 0x50 0x53 0x46 ('\\x00PSF'). The null byte at position 0 is intentional and part of the magic signature. This signature identifies all PARAM.SFO files across PSP, PS3, PS4, PS Vita, and PS5 platforms. Files named PARAM.SFO are mandatory in PSP game directories and save data folders.",
+      "storeAs": "sfoMagic",
+      "valueType": "hex"
+    },
+    {
+      "type": "field",
+      "name": "SFO Version",
+      "offset": 4,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.6,
+      "description": "4-byte little-endian uint32 format version. Standard value: 0x00000101 (decimal 257) corresponding to SFO version 1.1. This version has been consistent across all PlayStation platforms (PSP, PS3, PS4, PSVita, PS5). Other version values (0x00000100 = v1.0, very rare) may appear in early development kits.",
+      "storeAs": "sfoVersion",
+      "valueType": "uint32",
+      "valueMap": {
+        "257": "v1.1 (0x00000101) — standard",
+        "256": "v1.0 (0x00000100) — early devkit"
+      }
+    },
+    {
+      "type": "field",
+      "name": "Key Table Offset",
+      "offset": 8,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.5,
+      "description": "4-byte LE uint32 offset from file start to the key table section. The key table contains null-terminated UTF-8 strings for each parameter name (e.g. 'TITLE\\x00', 'CATEGORY\\x00', 'DISC_ID\\x00'). Keys are sorted alphabetically and the offset into the key table is stored in each index entry's key_offset field.",
+      "storeAs": "sfoKeyTableStart",
+      "valueType": "uint32"
+    },
+    {
+      "type": "field",
+      "name": "Data Table Offset",
+      "offset": 12,
+      "length": 4,
+      "color": "#FFE66D",
+      "opacity": 0.5,
+      "description": "4-byte LE uint32 offset from file start to the data table section. The data table contains the raw values for all parameters. Three value formats: UTF-8 string (type 0x0204, null-padded to max_len), uint32 (type 0x0404, 4 bytes LE), raw byte array (type 0x0004, arbitrary bytes). The index table entry provides data_offset (relative to data table start), data_len (actual length), and data_max_len (allocated size).",
+      "storeAs": "sfoDataTableStart",
+      "valueType": "uint32"
+    },
+    {
+      "type": "field",
+      "name": "Number of Index Entries",
+      "offset": 16,
+      "length": 4,
+      "color": "#C3A6FF",
+      "opacity": 0.5,
+      "description": "4-byte LE uint32 count of parameter entries in the index table. Typical PSP game PARAM.SFO has 8-15 entries. Each index entry is 16 bytes: key_offset (uint16 LE), data_fmt (uint16 LE: 0x0004=binary, 0x0204=string, 0x0404=uint32), data_len (uint32 LE, actual), data_max_len (uint32 LE, allocated), data_offset (uint32 LE, from data_table_start). Index table starts immediately after file header at offset 20.",
+      "storeAs": "sfoNumEntries",
+      "valueType": "uint32"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "SFOMagicValid",
+      "expression": "sfoMagic[0] == 0x00 && sfoMagic[1] == 0x50 && sfoMagic[2] == 0x53 && sfoMagic[3] == 0x46",
+      "severity": "error",
+      "message": "Magic bytes do not match '\\x00PSF'. File is not a valid PARAM.SFO file."
+    },
+    {
+      "name": "SFOVersionIsV11",
+      "expression": "sfoVersion == 257",
+      "severity": "warning",
+      "message": "SFO version is not 0x00000101 (v1.1). Non-standard version may indicate a prototype or modified file."
+    },
+    {
+      "name": "NumEntriesPositive",
+      "expression": "sfoNumEntries > 0",
+      "severity": "error",
+      "message": "Number of index entries is 0. PARAM.SFO file is empty or corrupt."
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "SFO Header", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
+      { "name": "Index Table", "offset": 20, "icon": "\uE946", "color": "#4ECDC4" },
+      { "name": "Key Table", "offset": "dynamic", "icon": "\uE8B7", "color": "#95E1D3" }
+    ]
+  },
+  "inspector": {
+    "badge": "SFO",
+    "primaryField": "sfoMagic",
+    "groups": [
+      {
+        "title": "SFO Header",
+        "icon": "\uE71B",
+        "fields": ["sfoMagic", "sfoVersion", "sfoKeyTableStart", "sfoDataTableStart", "sfoNumEntries"]
+      },
+      {
+        "title": "Game Metadata",
+        "icon": "\uE946",
+        "fields": ["TITLE", "TITLE_ID", "CATEGORY", "DISC_VERSION", "BOOTABLE"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "PARAM.SFO Parameters (JSON)",
+      "format": "json",
+      "fields": ["magic", "version", "numEntries", "TITLE", "TITLE_ID", "CATEGORY", "DISC_VERSION", "PSP_SYSTEM_VER", "PARENTAL_LEVEL"]
+    },
+    {
+      "name": "All Parameters (CSV)",
+      "format": "csv",
+      "fields": ["paramName", "dataType", "value", "maxLength"]
+    }
+  ],
+  "forensic": {
+    "riskLevel": "LOW",
+    "notes": "Game metadata only; no PHI. TITLE_ID can be used to identify specific game titles and editions for copyright/piracy investigation.",
+    "suspiciousPatterns": [
+      "TITLE_ID not matching known PSP/PS3/PS4 title registry (possible pirated or modded game)",
+      "BOOTABLE=1 in a save data SFO (save data should not be bootable)",
+      "Oversized data values exceeding data_max_len (buffer overflow risk in system software)"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "PARAM.SFO binary format: 20-byte fixed header + index table + key table + data table. Header: magic(4B), version(uint32 LE = 0x101), keyTableOffset(uint32 LE), dataTableOffset(uint32 LE), numEntries(uint32 LE). Index table: numEntries x 16-byte entries, each: keyOffset(uint16 LE, from keyTableStart), dataFmt(uint16 LE: 4=binary, 0x204=string, 0x404=uint32), dataLen(uint32 LE), dataMaxLen(uint32 LE), dataOffset(uint32 LE, from dataTableStart). Key table: concatenated null-terminated strings. Data table: packed values. PSP keys: TITLE, TITLE_ID, DISC_ID, DISC_VERSION, PSP_SYSTEM_VER, PARENTAL_LEVEL(uint32), CATEGORY(2-char: UG/ME/MG/WG), BOOTABLE(uint32).",
+    "suggestedInspections": [
+      "Read magic at offset 0 (expect 00 50 53 46) and version at offset 4 (expect 01 01 00 00 LE) to validate the SFO file header",
+      "Read numEntries at offset 16 and iterate the index table at offset 20 (16 bytes per entry) to enumerate all parameters",
+      "For each index entry: use key_offset to read null-terminated key name from key table, use data_offset+data_fmt to read typed value",
+      "Extract CATEGORY parameter to identify content type: UG=UMD Game, ME=PSP Mini, MG=Memory Stick Game, WG=WlanGame",
+      "Extract TITLE_ID (9 chars, format ULUS-10xxx or UCES-00xxx) to identify the game for copyright/preservation research",
+      "Check PARENTAL_LEVEL uint32 value (0=not set, 1-11=parental rating levels per regional standard)"
+    ]
+  },
+  "software": [
+    { "name": "PPSSPP (PSP emulator)", "url": "https://www.ppsspp.org" },
+    { "name": "psp-save-tool (homebrew utility)", "url": "https://github.com/pspdev" },
+    { "name": "psptool / SFO Editor", "url": "https://www.psdevwiki.com" },
+    { "name": "PSP Filer (file manager homebrew)", "url": "https://www.psp-homebrew.eu" }
+  ],
+  "formatRelationships": [
+    { "format": "ROM_PSP", "relation": "container — PSP ISO/CSO game discs contain PARAM.SFO" },
+    { "format": "SAVE_PS1", "relation": "sibling — PS1 uses different save format (MCS/VGS)" },
+    { "format": "ROM_PS3", "relation": "sibling — PS3 games also use PARAM.SFO in their directory structure" },
+    { "format": "ROM_PS4", "relation": "sibling — PS4/PS5 use PARAM.SFO in PKG container format" }
+  ],
+  "MimeTypes": [
+    "application/x-playstation-sfo",
+    "application/octet-stream"
+  ],
+  "UseCases": [
+    "PSP/PS3/PS4/PS5 game identification and cataloging",
+    "Save data management and backup utilities",
+    "Homebrew application metadata for PSP custom firmware",
+    "Game preservation research and ROM hashing verification",
+    "Parental control and content rating verification"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 86,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 5,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-15",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "encoding": "binary little-endian",
+    "headerSize": "20 bytes fixed",
+    "indexEntrySize": "16 bytes",
+    "valueTypes": "0x0004=binary, 0x0204=UTF-8 string (null-padded), 0x0404=uint32",
+    "platforms": "PSP, PS3, PS4, PS Vita, PS5",
+    "standardVersion": "v1.1 (0x00000101)"
+  }
+}

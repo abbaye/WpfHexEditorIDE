@@ -1,0 +1,213 @@
+{
+  "diffMode": "binary",
+  "formatName": "Apache Arrow Feather",
+  "version": "1.0",
+  "extensions": [".feather", ".arrow", ".ipc"],
+  "description": "Apache Arrow Feather format for fast columnar data storage. Feather v1 uses the magic 'FEATHER1' (0x4645415448455231) at offset 0. Feather v2 (also Apache Arrow IPC file format) uses 'ARROW1\\u0000' (0x4152524F573100 followed by a padding byte) at offset 0. Both versions store columnar data with Arrow's in-memory format enabling near-zero-copy reads. Feather v2/Arrow IPC uses a Flatbuffers-encoded schema and record batch footers. Commonly produced by pandas, R arrow package, and Apache Spark.",
+  "category": "Data",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "HexEditor",
+  "references": [
+    "https://arrow.apache.org/docs/format/Columnar.html#ipc-file-format",
+    "https://github.com/wesm/feather",
+    "https://arrow.apache.org/docs/python/feather.html",
+    "https://en.wikipedia.org/wiki/Apache_Arrow"
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "value": "4645415448455231",
+        "offset": 0,
+        "label": "'FEATHER1' Feather v1 magic",
+        "weight": 0.8
+      },
+      {
+        "value": "4152524F5731",
+        "offset": 0,
+        "label": "'ARROW1' Arrow IPC / Feather v2 magic (6 bytes + 2-byte padding)",
+        "weight": 1.0
+      }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.7,
+    "Strength": "Strong",
+    "validation": {
+      "rules": [
+        { "field": "featherMagic", "operator": "in", "value": ["FEATHER1", "ARROW1"] }
+      ]
+    }
+  },
+  "variables": [
+    {
+      "name": "featherMagic",
+      "offset": 0,
+      "size": 8,
+      "type": "ascii",
+      "storeAs": "featherMagic",
+      "description": "8-byte magic: 'FEATHER1' for v1 or 'ARROW1\\u0000\\u0000' for v2/Arrow IPC"
+    },
+    {
+      "name": "featherVersion",
+      "offset": 8,
+      "size": 4,
+      "type": "uint32",
+      "endian": "LE",
+      "storeAs": "featherVersion",
+      "description": "Format version (Feather v1 only; Arrow IPC uses Flatbuffers footer)",
+      "valueMap": {
+        "1": "Feather v1",
+        "2": "Feather v2 / Arrow IPC"
+      }
+    }
+  ],
+  "blocks": [
+    {
+      "name": "FileMagic",
+      "offset": 0,
+      "size": 8,
+      "description": "8-byte file magic: 'FEATHER1' (Feather v1) or 'ARROW1\\u0000\\u0000' (Feather v2 / Arrow IPC)",
+      "fields": [
+        { "name": "Magic", "offset": 0, "size": 8, "type": "ascii" }
+      ]
+    },
+    {
+      "name": "FeatherV1Header",
+      "offset": 8,
+      "size": 8,
+      "description": "Feather v1: 4-byte version (LE) + 4-byte reserved. Feather v2/Arrow IPC: continuation of padding after magic.",
+      "fields": [
+        { "name": "Version", "offset": 8, "size": 4, "type": "uint32", "endian": "LE" },
+        { "name": "Reserved", "offset": 12, "size": 4, "type": "uint32", "endian": "LE" }
+      ]
+    },
+    {
+      "name": "ColumnData",
+      "offset": 8,
+      "size": -1,
+      "description": "Feather v1: array of column descriptors (FlatBuffers encoded CTable). Arrow IPC: sequence of record batch IPC messages with Flatbuffers Schema and RecordBatch messages.",
+      "fields": []
+    },
+    {
+      "name": "FooterMagic",
+      "offset": -6,
+      "size": 6,
+      "description": "Arrow IPC footer: 4-byte footer length (LE int32) + 'ARROW1' (6 bytes) at EOF. Feather v1 does not have a footer magic.",
+      "fields": [
+        { "name": "FooterLength", "offset": -10, "size": 4, "type": "uint32", "endian": "LE" },
+        { "name": "TrailingMagic", "offset": -6, "size": 6, "type": "ascii" }
+      ]
+    }
+  ],
+  "assertions": [
+    {
+      "id": "assert_magic",
+      "field": "featherMagic",
+      "operator": "startsWith",
+      "value": "FEATHER",
+      "severity": "warning",
+      "message": "Magic does not start with 'FEATHER'; check for 'ARROW1' Arrow IPC format"
+    },
+    {
+      "id": "assert_magic_arrow",
+      "type": "info",
+      "severity": "info",
+      "message": "If magic starts with 'ARROW1', file is Arrow IPC / Feather v2; footer magic 'ARROW1' should also appear at EOF-6"
+    },
+    {
+      "id": "assert_version_known",
+      "field": "featherVersion",
+      "operator": "in",
+      "value": [1, 2],
+      "severity": "info",
+      "message": "Feather v1 version field should be 1 or 2"
+    }
+  ],
+  "navigation": {
+    "entryPoints": [
+      { "name": "File Magic", "offset": 0 },
+      { "name": "Header / Version", "offset": 8 },
+      { "name": "Column Data", "offset": 16 }
+    ],
+    "jumpTable": [
+      { "label": "Magic (offset 0)", "offset": 0 },
+      { "label": "Version (offset 8)", "offset": 8 },
+      { "label": "Footer Magic (EOF-6)", "offset": -6 }
+    ]
+  },
+  "inspector": {
+    "badge": "FT",
+    "primaryField": "featherMagic",
+    "groups": [
+      {
+        "name": "Identification",
+        "fields": ["featherMagic", "featherVersion"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "Feather File Summary",
+      "format": "text",
+      "template": "Apache Arrow Feather File\nMagic  : {featherMagic}\nVersion: {featherVersion}"
+    },
+    {
+      "name": "Feather Header CSV",
+      "format": "csv",
+      "template": "Field,Value\nMagic,{featherMagic}\nVersion,{featherVersion}"
+    }
+  ],
+  "forensic": {
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      "Header magic present but footer magic absent (Arrow IPC) — file truncated",
+      "Version field mismatched with magic type — possible format confusion",
+      "Unexpectedly large schema Flatbuffers — possible metadata injection or schema bloat",
+      "Null bitmaps indicating all-null columns — possible data scrubbing artifact"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "Feather v1: magic 'FEATHER1' + 4-byte version + FlatBuffers CTable descriptor per column. Feather v2 / Arrow IPC file: magic 'ARROW1\\u0000\\u0000' at offset 0, also 'ARROW1' at EOF-6, with 4-byte footer length at EOF-10. Flatbuffers-encoded Schema and RecordBatch messages. Near-zero-copy reads possible via memory-mapping.",
+    "suggestedInspections": [
+      "Check magic at offset 0: 'FEATHER1' (v1) or 'ARROW1\\u0000\\u0000' (v2/IPC)",
+      "For Arrow IPC: verify trailing 'ARROW1' magic at EOF-6 and read footer length at EOF-10",
+      "Parse Flatbuffers Schema message to get column names, types, and nullability",
+      "Inspect record batch count and row counts for data volume estimation",
+      "Check compression codec per column chunk (ZSTD, LZ4, NONE)",
+      "Compare file entropy across column regions to detect encrypted or high-entropy columns"
+    ]
+  },
+  "software": [
+    { "name": "Apache Arrow (pyarrow)", "vendor": "Apache", "platform": "Python" },
+    { "name": "R arrow package", "vendor": "Apache", "platform": "R" },
+    { "name": "Apache Spark", "vendor": "Apache", "platform": "Cross-platform" }
+  ],
+  "formatRelationships": [
+    { "format": "PARQUET", "relation": "sibling", "note": "Parquet is optimized for storage; Feather/Arrow IPC optimized for in-memory and fast I/O" },
+    { "format": "ARROW_IPC", "relation": "sameFormat", "note": "Feather v2 IS the Arrow IPC file format with different extension conventions" }
+  ],
+  "MimeTypes": [
+    "application/octet-stream",
+    "application/vnd.apache.arrow.file"
+  ],
+  "UseCases": [
+    "Fast pandas DataFrame persistence to disk",
+    "Cross-language columnar data exchange (Python/R/Julia)",
+    "Arrow Flight data transfer format",
+    "ML feature store snapshots with zero-copy access"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 84,
+    "LastUpdated": "2026-04-15"
+  },
+  "TechnicalDetails": {
+    "headerSize": 8,
+    "endian": "little",
+    "signatureOffset": 0,
+    "signatureLength": 8,
+    "magicV1": "FEATHER1 (0x4645415448455231)",
+    "magicV2": "ARROW1\\u0000\\u0000 (0x4152524F57310000)",
+    "schemaEncoding": "FlatBuffers (Feather v1 CTable; Arrow IPC Schema message)",
+    "compression": ["LZ4", "ZSTD", "NONE"],
+    "notes": "Feather v2 is identical to the Arrow IPC file format. Both have magic at BOF and EOF. Feather v1 is legacy and lacks the Arrow IPC footer structure."
+  }
+}

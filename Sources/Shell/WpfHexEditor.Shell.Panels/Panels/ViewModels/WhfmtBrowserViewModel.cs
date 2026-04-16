@@ -142,7 +142,10 @@ public sealed class WhfmtBrowserViewModel : ViewModelBase, IDisposable
         OpenFolderCommand  = new RelayCommand(OnOpenFolder,  () => _adHocSvc is not null);
         ToggleWatchCommand = new RelayCommand(OnToggleWatch, () => _adHocSvc is not null);
         ToggleViewCommand  = new RelayCommand(() => IsTreeView = !IsTreeView);
+        ClearSearchCommand = new RelayCommand(() => SearchText = string.Empty);
     }
+
+    public ICommand ClearSearchCommand { get; }
 
     // ------------------------------------------------------------------
     // Initialization

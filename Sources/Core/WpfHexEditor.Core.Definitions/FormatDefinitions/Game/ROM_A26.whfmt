@@ -1,200 +1,191 @@
 {
   "diffMode": "binary",
-  "formatName": "Atari 2600 ROM",
-  "version": "1.16",
-  "extensions": [
-    ".a26",
-    ".bin"
-  ],
-  "description": "Atari 2600 ROM cartridge format (raw binary, no header)",
+  "formatName": "Atari 2600 ROM Cartridge Image",
+  "version": "1.0",
+  "extensions": [".a26", ".bin", ".rom"],
+  "description": "Atari 2600 ROM cartridge image is a raw binary dump of an Atari 2600 (VCS) game cartridge. The format has no header — it is a flat binary image of the cartridge ROM. The Atari 2600 uses a MOS 6507 CPU (a pin-limited 6502 variant) running at 1.19 MHz. The 6507 has a 13-bit address bus giving 8KB of addressable space. Cartridges typically use bank switching to exceed this limit. Standard sizes: 2KB (2048 bytes), 4KB (4096 bytes), 8KB (F8 banking), 16KB (F6 banking), 32KB (F4 banking). The 6507 reset vector is stored little-endian at the last two bytes of the 4KB ROM page (offset 0xFFFC in 65xx address space). Common bank-switching schemes: F8 (Atari 8KB), F6 (Atari 16KB), F4 (Atari 32KB), E0 (Parker Bros 8KB), FE (Activision 8KB), E7 (M-Network 12KB). The Atari 2600 is significant as the first mass-market programmable home video game console, launched in 1977.",
   "category": "Game",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
-      "Atari 2600 Hardware Specification",
-      "6507 CPU Programming Reference",
-      "Atari 2600 ROM Cartridge Format"
+      "Atari 2600 Hardware Specification — problemkaputt.de/2k6specs.htm",
+      "MOS 6502/6507 CPU Reference Manual",
+      "Atari 2600 Bank Switching Guide (Stella emulator documentation)"
     ],
     "WebLinks": [
       "https://www.atarihq.com/danb/a2600.shtml",
       "https://problemkaputt.de/2k6specs.htm",
-      "https://www.randomterrain.com/atari-2600-memories-tutorial-andrew-davie-05.html",
-      "https://en.wikipedia.org/wiki/Atari_2600"
+      "https://en.wikipedia.org/wiki/Atari_2600",
+      "https://stella-emu.github.io/"
     ]
   },
   "detection": {
-    "offset": 0,
-    "required": false,
-    "validation": {
-      "minFileSize": 1,
-      "maxSignatureOffset": 1024
-    },
-    "signatures": [
-      {
-        "value": "00",
-        "offset": 0,
-        "label": "Raw ROM data (Atari 2600 — no standard file header)",
-        "weight": 1.0
-      }
-    ],
+    "signatures": [],
     "matchMode": "any",
-    "MinimumScore": 0.3,
-    "Strength": "Weak"
+    "MinimumScore": 0.1,
+    "Strength": "Weak",
+    "EntropyHint": "Medium — 6502 machine code with data and sprite tables, moderate entropy"
   },
   "variables": {
-    "currentOffset": 0,
-    "fileCount": 0,
-    "totalSize": 0,
-    "format": "",
-    "romData": "",
-    "resetVector": 0,
-    "irqVector": 0,
-    "formattedSize": ""
+    "a26FirstByte": 0,
+    "a26ResetLow": 0,
+    "a26ResetHigh": 0,
+    "resetVector": 0
   },
   "blocks": [
     {
       "type": "field",
-      "name": "ROM Data",
+      "name": "ROM Data Start",
       "offset": 0,
-      "length": 4096,
+      "length": 4,
       "color": "#95E1D3",
-      "opacity": 0.3,
-      "valueType": "ascii",
-      "description": "Raw 2600 ROM code and data (typically 4KB for standard carts)",
-      "storeAs": "romData"
+      "opacity": 0.30,
+      "description": "First 4 bytes of raw 6507 machine code or data. Atari 2600 ROMs begin at the cartridge-defined start address (mapped by bank switching). For a 4KB ROM mapped to 0xF000-0xFFFF, the code typically begins with initialization code or interrupt vectors. No magic bytes or header are present.",
+      "storeAs": "a26FirstByte",
+      "valueType": "uint8"
     },
     {
       "type": "field",
-      "name": "Reset Vector",
-      "offset": 4092,
-      "length": 2,
+      "name": "Reset Vector Low",
+      "offset": "dynamic",
+      "length": 1,
       "color": "#FF6B6B",
-      "opacity": 0.4,
-      "valueType": "uint16",
-      "description": "6507 CPU reset vector (last 2 bytes for 4KB ROM, little-endian)",
-      "storeAs": "resetVector",
-      "endianness": "big"
+      "opacity": 0.55,
+      "description": "Low byte of the 6507 reset vector stored at the cartridge's equivalent of CPU address 0xFFFC. For a standard 4KB ROM, this is at file offset 0xFFFC (4092). For a 2KB ROM, it's at offset 0x07FC (2044). The reset vector is a LE uint16 pointing to the start of the game's initialization code. Both bytes should be 0xF0-0xFF for a valid 2600 ROM.",
+      "storeAs": "a26ResetLow",
+      "valueType": "uint8"
     },
     {
       "type": "field",
-      "name": "IRQ Vector",
-      "offset": 4094,
-      "length": 2,
+      "name": "Reset Vector High",
+      "offset": "dynamic",
+      "length": 1,
       "color": "#4ECDC4",
-      "opacity": 0.3,
-      "valueType": "uint16",
-      "description": "6507 IRQ vector (little-endian)",
-      "storeAs": "irqVector",
-      "endianness": "big"
+      "opacity": 0.50,
+      "description": "High byte of the 6507 reset vector. For a valid 2600 ROM, this should be in the range 0xF0-0xFF (pointing into ROM address space). Values outside this range indicate an unusual bank-switching scheme or a non-standard ROM image.",
+      "storeAs": "a26ResetHigh",
+      "valueType": "uint8"
     },
     {
-      "type": "metadata",
-      "name": "File Count",
-      "variable": "fileCount",
-      "description": "File Count"
-    },
-    {
-      "type": "metadata",
-      "name": "Total Size",
-      "variable": "totalSize",
-      "description": "Total Size"
-    },
-    {
-      "type": "metadata",
-      "name": "Format",
-      "variable": "format",
-      "description": "Format"
-    },
-    {
-      "type": "metadata",
-      "name": "Formatted Size",
-      "variable": "formattedSize",
-      "description": "Human-readable file size"
+      "type": "field",
+      "name": "IRQ/BRK Vector",
+      "offset": "dynamic",
+      "length": 2,
+      "color": "#FFE66D",
+      "opacity": 0.35,
+      "description": "The 6502/6507 IRQ/BRK vector stored at CPU address 0xFFFE-0xFFFF (last 2 bytes of the 4KB ROM page). On the 2600, the IRQ line is not connected to the 6507's /IRQ pin (it uses only the NMI and RESET vectors). Many ROMs duplicate or zero-fill these bytes."
     }
   ],
-  "software": [
-    "Emulators",
-    "Game engines"
+  "assertions": [
+    {
+      "name": "FileSizeIsCommonROMSize",
+      "expression": "fileSize in [2048, 4096, 8192, 12288, 16384, 32768, 65536]",
+      "severity": "info",
+      "message": "File size is not a standard Atari 2600 ROM size. Standard sizes: 2KB, 4KB, 8KB, 12KB (E7), 16KB (F6), 32KB (F4), 64KB. Non-standard size may indicate a multi-load or unusual mapper."
+    },
+    {
+      "name": "ResetVectorInROMRange",
+      "expression": "a26ResetHigh >= 0xF0",
+      "severity": "info",
+      "message": "Reset vector high byte is below 0xF0. For standard 4KB ROMs, the reset vector should point to 0xFxxx address space. May indicate a bank-switched ROM with different vector mapping."
+    },
+    {
+      "name": "NonZeroContent",
+      "expression": "a26FirstByte != 0xFF || notAllFF",
+      "severity": "warning",
+      "message": "ROM appears to contain all 0xFF bytes. May be an erased/blank ROM image rather than a valid game dump."
+    }
   ],
-  "formatRelationships": {
-    "category": "Game",
-    "extensions": [
-      ".a26",
-      ".bin"
-    ]
-  },
-  "MimeTypes": [
-    "application/octet-stream"
-  ],
-  "Software": [
-    "Emulator",
-    "ROM Manager",
-    "RetroArch",
-    "Hex Editor",
-    "Game Debugger"
-  ],
-  "UseCases": [
-    "Gaming",
-    "ROM hacking",
-    "Emulation",
-    "Preservation"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 7,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-04-14",
-    "PriorityFormat": false,
-    "AutoRefined": true
-  },
-  "TechnicalDetails": {
-    "Platform": "Atari 2600"
-  },
-  "functions": {
-    "extractASCIIString": "Read filenames",
-    "readUInt32LE": "Read sizes",
-    "formatFileSize(var:totalSize)": "Format totalSize as readable size"
-  },
-  "forensic": {
-    "category": "game",
-    "riskLevel": "low",
-    "suspiciousPatterns": []
-  },
-  "aiHints": {
-    "analysisContext": "Atari 2600 ROM cartridge format (raw binary, no header)",
-    "suggestedInspections": [
-      "Validate Atari 2600 ROM container magic and version header",
-      "Check resource/asset table entries and data block offsets",
-      "Inspect compression flags, checksums, and embedded file boundaries"
+  "navigation": {
+    "bookmarks": [
+      { "name": "ROM Start", "offset": 0, "icon": "\uE71B", "color": "#95E1D3" },
+      { "name": "Reset Vector", "offset": 4092, "icon": "\uE946", "color": "#FF6B6B" },
+      { "name": "IRQ Vector", "offset": 4094, "icon": "\uE8B7", "color": "#FFE66D" }
     ]
   },
   "inspector": {
-    "badge": "romData",
-    "primaryField": "resetVector",
-    "showQualityScore": true,
+    "badge": "A26",
+    "primaryField": "a26FirstByte",
     "groups": [
       {
-        "title": "Atari 2600 ROM",
-        "icon": "",
-        "fields": [
-          "romData",
-          "resetVector",
-          "irqVector"
-        ]
+        "title": "ROM Image",
+        "icon": "\uE71B",
+        "fields": ["a26FirstByte", "a26ResetLow", "a26ResetHigh"]
+      },
+      {
+        "title": "CPU Vectors",
+        "icon": "\uE946",
+        "fields": ["resetVector", "irqVector"]
       }
     ]
   },
   "exportTemplates": [
     {
-      "name": "Atari 2600 ROM Header (JSON)",
+      "name": "ROM Metadata (JSON)",
       "format": "json",
-      "fields": [
-        "romData",
-        "resetVector",
-        "irqVector"
-      ]
+      "fields": ["fileSize", "romSizeKB", "resetVector", "estimatedMapper", "firstInstruction"]
+    },
+    {
+      "name": "ROM Analysis (CSV)",
+      "format": "csv",
+      "fields": ["offset", "hexValue", "disassembly", "label"]
     }
-  ]
+  ],
+  "forensic": {
+    "riskLevel": "LOW",
+    "notes": "Retro game ROM images; relevant for digital preservation and copyright investigation.",
+    "suspiciousPatterns": [
+      "File size not matching known Atari 2600 ROM sizes (possible data fragment or wrong format)",
+      "Reset vector pointing to 0x0000 (null vector — invalid ROM dump)",
+      "All bytes identical (erased EPROM image)"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "Atari 2600 ROM is a raw binary 6507 machine code image with no header. 6507 = 6502 with 13-bit address bus (8KB max). ROM mapped to upper address space. Standard 4KB ROM: file offset 0xFFFC-0xFFFD = reset vector (LE uint16, should be 0xFxxx). Standard 2KB ROM: reset at offset 0x07FC. Bank switchers: F8(8KB, switches on reads to 0x1FF8/0x1FF9), F6(16KB, 0x1FF6-0x1FF9), F4(32KB, 0x1FF4-0x1FFB), E0(Parker Bros), FE(Activision). Detect mapper by file size and ROM content patterns. No official file header exists; NTSC vs PAL can sometimes be detected by timing constants in init code.",
+    "suggestedInspections": [
+      "Determine file size to infer ROM size category (2KB/4KB=standard, 8KB=F8 mapper, 16KB=F6, 32KB=F4)",
+      "For 4KB ROM: read reset vector at file offset 0xFFFC-0xFFFC (2 bytes LE) — should be 0xFxxx for valid dump",
+      "For 2KB ROM: read reset vector at offset 0x07FC-0x07FD; vector high byte should be 0xFx",
+      "Scan for bank-switching hotspot reads (0x1FF8/0x1FF9 patterns) to identify F8-style 8KB mappers",
+      "Search for ASCII text strings (title screens, credits) at likely data regions to identify the game",
+      "Compare first 256 bytes CRC against known ROM database (No-Intro, TOSEC) for game identification"
+    ]
+  },
+  "software": [
+    { "name": "Stella (Atari 2600 emulator)", "url": "https://stella-emu.github.io/" },
+    { "name": "RetroArch (multi-system)", "url": "https://www.retroarch.com" },
+    { "name": "MESS/MAME (reference emulator)", "url": "https://www.mamedev.org" },
+    { "name": "ClrMamePro (ROM manager)", "url": "https://mamedev.emulab.it/clrmamepro/" }
+  ],
+  "formatRelationships": [
+    { "format": "ROM_NES", "relation": "sibling — NES ROM has iNES header; 2600 is headerless" },
+    { "format": "ROM_GBA", "relation": "sibling — later generation handheld ROM" },
+    { "format": "SAVE_PSP", "relation": "unrelated — different platform save format" }
+  ],
+  "MimeTypes": ["application/octet-stream", "application/x-atari-2600-rom"],
+  "UseCases": [
+    "Atari 2600 game emulation and preservation",
+    "Retro game development and ROM hacking",
+    "Digital heritage and video game history research",
+    "EPROM flashing for reproduction cartridges",
+    "6502 assembly language study and reverse engineering"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 81,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 4,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-15",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "platform": "Atari 2600 (VCS)",
+    "cpu": "MOS 6507 (6502 with 13-bit address bus)",
+    "clockSpeed": "1.19 MHz NTSC, 1.18 MHz PAL",
+    "addressSpace": "8KB max (0x0000-0x1FFF via 13-bit bus)",
+    "standardROMs": "2KB, 4KB; bank-switched: 8KB-64KB",
+    "resetVectorOffset": "0xFFFC-0xFFFF (last 4 bytes of 4KB ROM page)"
+  }
 }

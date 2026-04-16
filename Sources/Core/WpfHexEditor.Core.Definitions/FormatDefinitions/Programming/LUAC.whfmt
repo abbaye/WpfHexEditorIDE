@@ -1,0 +1,198 @@
+{
+  "diffMode": "binary",
+  "formatName": "Lua Compiled Bytecode",
+  "version": "1.0",
+  "extensions": [ ".luac", ".lua" ],
+  "description": "Lua compiled bytecode files are produced by the Lua compiler (luac) from Lua source scripts. Every compiled chunk begins with the 4-byte magic 0x1B 0x4C 0x75 0x61 ('\\x1BLua'), followed by a 1-byte version (0x54 = Lua 5.4, 0x53 = Lua 5.3, 0x52 = Lua 5.2, 0x51 = Lua 5.1), a format byte (0 = official), and a 6-byte LUAC_DATA integrity sequence (0x19 0x93 0x0D 0x0A 0x1A 0x0A). Lua 5.4 added instruction size and integer/float size fields. Lua bytecode encodes functions, constants, upvalues, and debug info as serialized Lua function prototypes.",
+  "category": "Programming",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "references": {
+    "specifications": [
+      "Lua 5.4 Reference Manual — The Bytecode Format",
+      "luac man page",
+      "A No-Frills Introduction to Lua 5 VM Instructions"
+    ],
+    "WebLinks": [
+      "https://www.lua.org/manual/5.4/",
+      "https://en.wikipedia.org/wiki/Lua_(programming_language)",
+      "https://luaforge.net/projects/luadec/",
+      "http://luaforge.net/docman/view.php/83/98/ANoFrillsIntroToLua51VMInstructions.pdf"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      { "hex": "1B4C7561", "offset": 0, "label": "'\\x1BLua' — Lua compiled bytecode magic", "weight": 1.0 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.85,
+    "required": true,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 3.5, "max": 7.0 },
+    "validation": {
+      "minFileSize": 12,
+      "maxSignatureOffset": 0,
+      "note": "0x1B4C7561 at offset 0 is definitive. Version byte at offset 4 must be 0x50..0x54. LUAC_DATA integrity bytes at offset 6 should be 19 93 0D 0A 1A 0A."
+    }
+  },
+  "variables": {
+    "luacMagic": "",
+    "luacVersion": 0,
+    "luacFormat": 0,
+    "luacData": ""
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "Lua Magic",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.5,
+      "description": "Lua bytecode magic: 0x1B 0x4C 0x75 0x61 ('\\x1BLua'). Present in all Lua compiled chunks.",
+      "storeAs": "luacMagic",
+      "valueType": "hex"
+    },
+    {
+      "type": "field",
+      "name": "Lua Version",
+      "offset": 4,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.45,
+      "description": "Lua version byte: 0x54=Lua5.4, 0x53=Lua5.3, 0x52=Lua5.2, 0x51=Lua5.1, 0x50=Lua5.0.",
+      "storeAs": "luacVersion",
+      "valueType": "uint8",
+      "valueMap": {
+        "80": "Lua 5.0",
+        "81": "Lua 5.1",
+        "82": "Lua 5.2",
+        "83": "Lua 5.3",
+        "84": "Lua 5.4"
+      }
+    },
+    {
+      "type": "field",
+      "name": "Format",
+      "offset": 5,
+      "length": 1,
+      "color": "#45B7D1",
+      "opacity": 0.35,
+      "description": "Format byte: 0 = official Lua format. Non-zero indicates a custom/modified VM.",
+      "storeAs": "luacFormat",
+      "valueType": "uint8"
+    },
+    {
+      "type": "field",
+      "name": "LUAC_DATA Integrity",
+      "offset": 6,
+      "length": 6,
+      "color": "#FFEAA7",
+      "opacity": 0.35,
+      "description": "LUAC_DATA: 6-byte integrity sequence (0x19 0x93 0x0D 0x0A 0x1A 0x0A). Validates byte order and encoding.",
+      "storeAs": "luacData",
+      "valueType": "hex"
+    },
+    {
+      "type": "field",
+      "name": "Size Fields",
+      "offset": 12,
+      "length": 4,
+      "color": "#DDA0DD",
+      "opacity": 0.3,
+      "description": "Lua 5.4: instruction size (1B), integer size (1B), float size (1B), magic integer check (8B), magic float check (8B).",
+      "valueType": "bytes"
+    }
+  ],
+  "assertions": [
+    { "field": "luacMagic", "operator": "equals", "value": "1B4C7561", "description": "Magic must be 0x1B4C7561 ('\\x1BLua')" },
+    { "field": "luacVersion", "operator": "between", "value": [80, 84], "description": "Version must be 0x50..0x54 (Lua 5.0..5.4)" },
+    { "field": "luacFormat", "operator": "equals", "value": 0, "description": "Format must be 0 for official Lua bytecode" }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "Lua Magic", "offset": 0, "description": "'\\x1BLua' magic 4 bytes" },
+      { "name": "Version", "offset": 4, "description": "Lua version byte (0x51=5.1 .. 0x54=5.4)" },
+      { "name": "Format", "offset": 5, "description": "Format byte (0 = official)" },
+      { "name": "LUAC_DATA", "offset": 6, "description": "6-byte integrity sequence" },
+      { "name": "Function Prototype", "offset": 12, "description": "Top-level function prototype (size fields + code)" }
+    ]
+  },
+  "inspector": {
+    "badge": "LuaC",
+    "primaryField": "luacVersion",
+    "showQualityScore": true,
+    "groups": [
+      { "name": "Identity", "fields": ["luacMagic", "luacVersion"] },
+      { "name": "Format & Integrity", "fields": ["luacFormat", "luacData"] }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "Lua Bytecode Header (JSON)",
+      "format": "json",
+      "fields": ["luacMagic", "luacVersion", "luacFormat", "luacData"]
+    },
+    {
+      "name": "Lua Bytecode Summary (CSV)",
+      "format": "csv",
+      "fields": ["luacMagic", "luacVersion", "luacFormat"]
+    }
+  ],
+  "forensic": {
+    "category": "executable",
+    "riskLevel": "medium",
+    "suspiciousPatterns": [
+      { "name": "Non-zero format byte", "condition": "luacFormat != 0", "description": "Non-zero format byte may indicate a patched or custom Lua VM — embedded malware sometimes uses modified Lua runtimes.", "severity": "warning" },
+      { "name": "Version mismatch with runtime", "condition": "luacVersion not matching host Lua", "description": "Bytecode version mismatch causes runtime errors; may indicate cross-version injection.", "severity": "info" },
+      { "name": "Obfuscated constant strings", "condition": "true", "description": "Lua bytecode string constants may contain encoded payloads or shellcode. Decompile to inspect.", "severity": "info" }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "Lua compiled bytecode begins with 0x1B4C7561 ('\\x1BLua'). Version byte at offset 4: 0x54=5.4, 0x53=5.3, 0x52=5.2, 0x51=5.1. Format byte at offset 5 must be 0 for official builds. LUAC_DATA at offset 6 (19 93 0D 0A 1A 0A) validates encoding. The top-level function prototype follows at offset 12+. Decompile with unluac or luadec.",
+    "suggestedInspections": [
+      "Verify 0x1B4C7561 magic at offset 0",
+      "Read version byte at offset 4 to identify Lua version (0x54=5.4)",
+      "Check format byte at offset 5 — non-zero indicates custom/modified VM",
+      "Verify LUAC_DATA integrity bytes at offset 6 (19 93 0D 0A 1A 0A)",
+      "Decompile with unluac or luadec to recover Lua source structure",
+      "Scan string constants in the function prototype for URLs, payloads, or credentials"
+    ]
+  },
+  "software": [
+    "luac (Lua compiler)",
+    "lua (Lua interpreter)",
+    "unluac (decompiler)",
+    "luadec (decompiler for Lua 5.1/5.2)",
+    "LuaJIT (alternative Lua VM with different bytecode)"
+  ],
+  "formatRelationships": {
+    "category": "Programming",
+    "extensions": [".luac", ".lua"],
+    "relatedFormats": ["PYBITCODE", "WASM", "CLASS_JAVA"],
+    "note": "LuaJIT produces a completely different bytecode format (not compatible with standard luac). Always check the magic to distinguish. Lua source files (.lua) have no binary magic."
+  },
+  "MimeTypes": [ "application/x-lua", "application/octet-stream" ],
+  "UseCases": [
+    "Game scripting (World of Warcraft, Roblox, Corona SDK)",
+    "Embedded scripting in applications (nginx, Redis, Wireshark)",
+    "Faster Lua distribution without source",
+    "Forensic analysis of game mods and embedded scripts"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 88,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 5,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-15",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "Endianness": "platform-dependent (stored in header)",
+    "MagicNumber": "0x1B4C7561",
+    "VersionMapping": "0x51=5.1, 0x52=5.2, 0x53=5.3, 0x54=5.4",
+    "LuaJIT": "LuaJIT uses magic 0x1B4C4A01 (not compatible)",
+    "Note": "LUAC_DATA integrity sequence at offset 6 catches byte-order and encoding issues at load time."
+  }
+}

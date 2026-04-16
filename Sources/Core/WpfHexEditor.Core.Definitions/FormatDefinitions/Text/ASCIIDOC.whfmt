@@ -1,0 +1,171 @@
+{
+  "diffMode": "text",
+  "formatName": "AsciiDoc Document",
+  "version": "1.0",
+  "extensions": [ ".adoc", ".asciidoc", ".asc" ],
+  "description": "AsciiDoc is a lightweight markup language for technical documentation, designed to be feature-rich while remaining readable as plain text. It was created by Stuart Rackham and is now maintained as an open specification. AsciiDoc documents start with a level-0 title ('= Title'), document attributes (':attribute: value'), or section headings ('== Section'). AsciiDoc natively supports admonitions (NOTE:, WARNING:), tables, includes, source code listings, cross-references, and bibliography. AsciiDoctor is the primary modern processor generating HTML5, PDF (via Asciidoctor-PDF), DocBook, and ePub output.",
+  "category": "Text",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "code-editor",
+  "references": {
+    "specifications": [
+      "AsciiDoc Language Specification (AsciiDoc Working Group)",
+      "Asciidoctor Documentation",
+      "AsciiDoc Syntax Quick Reference"
+    ],
+    "WebLinks": [
+      "https://asciidoc.org/",
+      "https://asciidoctor.org/docs/asciidoc-syntax-quick-reference/",
+      "https://en.wikipedia.org/wiki/AsciiDoc",
+      "https://docs.asciidoctor.org/"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      { "hex": "3D20", "offset": 0, "label": "'= ' AsciiDoc document title (level 0 heading)", "weight": 0.6 },
+      { "hex": "3D3D20", "offset": 0, "label": "'== ' AsciiDoc section title (level 1)", "weight": 0.4 },
+      { "hex": "3A646F63747970653A", "offset": 0, "label": "':doctype:' document attribute at start", "weight": 0.7 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.2,
+    "required": false,
+    "Strength": "Weak",
+    "EntropyHint": { "min": 3.5, "max": 5.5 },
+    "validation": {
+      "minFileSize": 1,
+      "maxSignatureOffset": 0,
+      "note": "AsciiDoc has no binary magic. Extension (.adoc, .asciidoc, .asc) is the primary identifier. '= Title', '== Section', ':attribute:' patterns confirm AsciiDoc content."
+    }
+  },
+  "variables": {
+    "adocFirstByte": 0,
+    "adocTitleStart": ""
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "First Byte",
+      "offset": 0,
+      "length": 1,
+      "color": "#FF6B6B",
+      "opacity": 0.3,
+      "description": "First byte: 0x3D='=' (title/heading), 0x3A=':' (document attribute), 0x2F='/' (comment), 0x5B='[' (block attribute).",
+      "storeAs": "adocFirstByte",
+      "valueType": "uint8"
+    },
+    {
+      "type": "field",
+      "name": "Title Start",
+      "offset": 0,
+      "length": 2,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "'= ' or '==' document title or section heading start.",
+      "storeAs": "adocTitleStart",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Document Header",
+      "offset": 0,
+      "length": 128,
+      "color": "#45B7D1",
+      "opacity": 0.2,
+      "description": "First 128 bytes for title, author line, attribute declarations.",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Attribute Block",
+      "offset": 128,
+      "length": 128,
+      "color": "#FFEAA7",
+      "opacity": 0.15,
+      "description": "Extended scan for ':attribute:' header entries (doctype, toc, icons, etc.).",
+      "valueType": "ascii"
+    }
+  ],
+  "assertions": [
+    { "field": "adocFirstByte", "operator": "lessThan", "value": 128, "description": "AsciiDoc is plain text — first byte must be in ASCII range" },
+    { "field": "adocFirstByte", "operator": "greaterThan", "value": 0, "description": "File must not be empty" },
+    { "field": "adocTitleStart", "operator": "notEmpty", "value": true, "description": "Title start must be readable" }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "Document Start", "offset": 0, "description": "AsciiDoc title ('= Title'), attribute, or comment" }
+    ]
+  },
+  "inspector": {
+    "badge": "ADoc",
+    "primaryField": "adocTitleStart",
+    "showQualityScore": true,
+    "groups": [
+      { "name": "Document Start", "fields": ["adocFirstByte", "adocTitleStart"] }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "AsciiDoc File Info (JSON)",
+      "format": "json",
+      "fields": ["adocFirstByte", "adocTitleStart"]
+    },
+    {
+      "name": "AsciiDoc Header (Text)",
+      "format": "text",
+      "fields": ["adocTitleStart"]
+    }
+  ],
+  "forensic": {
+    "category": "document",
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      { "name": "include:: directives", "condition": "contains include::", "description": "AsciiDoc include directives can reference sensitive files if processed in an unsafe environment.", "severity": "info" }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "AsciiDoc is a feature-rich text markup language commonly used for O'Reilly books, Red Hat documentation, and the Git project documentation. Level-0 title starts with '= Title'. Document attributes use ':name: value' syntax. Section levels use == (h2), === (h3), etc. Admonitions: NOTE:, TIP:, WARNING:, CAUTION:, IMPORTANT:. Source listings: [source,language] block.",
+    "suggestedInspections": [
+      "Check for '= Document Title' at start — level 0 heading is unique to AsciiDoc",
+      "Look for ':doctype:', ':toc:', ':icons:', ':author:' document attribute declarations",
+      "Identify section levels: == (2), === (3), ==== (4)",
+      "Check for include:: directives referencing external files",
+      "Look for [source,language] code listing blocks and [NOTE]/[WARNING]/[TIP] admonition blocks",
+      "Inspect for bibliography and cross-reference markers (<<anchor,text>>)"
+    ]
+  },
+  "software": [
+    "Asciidoctor (Ruby/Java processor)",
+    "Asciidoctor-PDF",
+    "VS Code with AsciiDoc extension",
+    "IntelliJ AsciiDoc Plugin",
+    "Antora (AsciiDoc site generator)"
+  ],
+  "formatRelationships": {
+    "category": "Text",
+    "extensions": [".adoc", ".asciidoc", ".asc"],
+    "relatedFormats": ["RST", "MARKDOWN", "DOCBOOK", "HTML"],
+    "note": "AsciiDoc is used for O'Reilly books, Red Hat documentation, and git-scm.com. Asciidoctor can output DocBook XML, HTML5, PDF, ePub. More feature-rich than Markdown."
+  },
+  "MimeTypes": [ "text/asciidoc", "text/plain" ],
+  "UseCases": [
+    "Technical book authoring (O'Reilly, Packt)",
+    "Enterprise documentation (Red Hat, Spring)",
+    "Git project documentation (git-scm.com)",
+    "Multi-format publishing from single source"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 85,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 4,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-15",
+    "ReviewedBy": "WPFHexaEditor Team"
+  },
+  "TechnicalDetails": {
+    "Encoding": "UTF-8",
+    "NoMagic": true,
+    "PrimaryProcessor": "Asciidoctor",
+    "OutputFormats": ["HTML5", "PDF", "DocBook", "ePub", "man pages"],
+    "Note": "No binary magic. Detection by extension (.adoc, .asciidoc) and '= Title' / ':attribute:' patterns."
+  }
+}

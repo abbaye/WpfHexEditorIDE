@@ -1,0 +1,279 @@
+{
+  "formatName": "JFFS2 Flash Filesystem",
+  "version": "1.0",
+  "diffMode": "binary",
+  "extensions": [
+    ".jffs2",
+    ".img"
+  ],
+  "description": "JFFS2 (Journalling Flash File System version 2) is a writable, log-structured filesystem for NOR and NAND flash memory. Each node begins with a 2-byte magic: 0x1985 in little-endian storage (bytes: 0x85 0x19) or 0x8519 in big-endian.",
+  "category": "Firmware",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "MimeTypes": [
+    "application/x-jffs2"
+  ],
+  "UseCases": [
+    "Embedded Linux writable filesystem on NOR flash",
+    "Firmware update partition storage on embedded devices",
+    "Router and IoT device configuration persistence"
+  ],
+  "references": [
+    "https://sourceware.org/jffs2/",
+    "https://www.kernel.org/doc/html/latest/filesystems/jffs2.html",
+    "https://github.com/torvalds/linux/blob/master/include/linux/jffs2.h"
+  ],
+  "software": [
+    {
+      "name": "mkfs.jffs2",
+      "url": "https://sourceware.org/jffs2/",
+      "role": "JFFS2 image creator"
+    },
+    {
+      "name": "Jefferson",
+      "url": "https://github.com/sviehb/jefferson",
+      "role": "JFFS2 filesystem extractor for analysis"
+    },
+    {
+      "name": "binwalk",
+      "url": "https://github.com/ReFirmLabs/binwalk",
+      "role": "Firmware analysis tool detecting JFFS2"
+    }
+  ],
+  "formatRelationships": [
+    {
+      "format": "JFFS",
+      "relationship": "JFFS2 is a major revision of the original JFFS with improved garbage collection"
+    },
+    {
+      "format": "SQUASHFS",
+      "relationship": "SquashFS is read-only with higher compression; JFFS2 is writable"
+    },
+    {
+      "format": "UBIFS",
+      "relationship": "UBIFS supersedes JFFS2 for large NAND flash with better scalability"
+    }
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "offset": 0,
+        "value": "8519",
+        "label": "0x1985 stored LE (bytes 85 19) — standard JFFS2",
+        "weight": 1.0
+      },
+      {
+        "offset": 0,
+        "value": "1985",
+        "label": "0x8519 BE JFFS2 magic",
+        "weight": 0.9
+      }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 82,
+    "Strength": "Strong",
+    "EntropyHint": {
+      "min": 4.0,
+      "max": 8.0,
+      "note": "Compressed nodes have high entropy; clean marker nodes have low entropy"
+    },
+    "validation": "First 2 bytes must be 0x85 0x19 (LE) or 0x19 0x85 (BE). NodeType at offset 2 must be a known JFFS2 type. TotalLength at offset 4 must be > 0 and reasonable."
+  },
+  "variables": [
+    {
+      "name": "jffs2Magic",
+      "type": "uint16",
+      "offset": 0,
+      "length": 2,
+      "endian": "little",
+      "description": "Node magic: 0x1985 for valid JFFS2 node"
+    },
+    {
+      "name": "jffs2NodeType",
+      "type": "uint16",
+      "offset": 2,
+      "length": 2,
+      "endian": "little",
+      "description": "Node type",
+      "valueMap": {
+        "49153": "DIRENT",
+        "49154": "INODE",
+        "49156": "CLEANMARKER",
+        "49166": "SUMMARY",
+        "49167": "XATTR",
+        "49168": "XREF"
+      }
+    },
+    {
+      "name": "jffs2TotalLength",
+      "type": "uint32",
+      "offset": 4,
+      "length": 4,
+      "endian": "little",
+      "description": "Total node length in bytes including header and data"
+    },
+    {
+      "name": "jffs2HeaderCRC",
+      "type": "uint32",
+      "offset": 8,
+      "length": 4,
+      "endian": "little",
+      "description": "CRC32 over node header (excluding this field)"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "RawNode",
+      "offset": 0,
+      "length": 12,
+      "description": "JFFS2 raw node header (12 bytes): magic + type + total_len + hdr_crc",
+      "fields": [
+        {
+          "name": "Magic",
+          "variable": "jffs2Magic",
+          "offset": 0,
+          "length": 2
+        },
+        {
+          "name": "NodeType",
+          "variable": "jffs2NodeType",
+          "offset": 2,
+          "length": 2
+        },
+        {
+          "name": "TotalLength",
+          "variable": "jffs2TotalLength",
+          "offset": 4,
+          "length": 4
+        },
+        {
+          "name": "HeaderCRC",
+          "variable": "jffs2HeaderCRC",
+          "offset": 8,
+          "length": 4
+        }
+      ]
+    },
+    {
+      "name": "DirentNode",
+      "offset": 0,
+      "length": -1,
+      "description": "Directory entry node: parent inode + version + inode + name_crc + name"
+    },
+    {
+      "name": "InodeNode",
+      "offset": 0,
+      "length": -1,
+      "description": "Inode data node: inode number + version + mode + size + compressed data"
+    },
+    {
+      "name": "CleanMarker",
+      "offset": 0,
+      "length": 12,
+      "description": "Clean marker node indicating erased and writable erase block"
+    }
+  ],
+  "assertions": [
+    {
+      "id": "A1",
+      "description": "Magic must be 0x1985 (LE) or 0x8519 (BE)",
+      "expression": "jffs2Magic == 0x1985 || jffs2Magic == 0x8519"
+    },
+    {
+      "id": "A2",
+      "description": "TotalLength must be > 0",
+      "expression": "jffs2TotalLength > 0"
+    },
+    {
+      "id": "A3",
+      "description": "HeaderCRC must match computed CRC32 over first 8 bytes",
+      "expression": "jffs2HeaderCRC is valid CRC32"
+    }
+  ],
+  "navigation": {
+    "entryPoint": "RawNode",
+    "structure": [
+      "RawNode",
+      "DirentNode",
+      "InodeNode",
+      "CleanMarker"
+    ],
+    "notes": "JFFS2 is a log-structured filesystem; nodes appear in write order, not tree order. Nodes are padded to 4-byte boundaries. Free space is filled with 0xFF (erased flash state)."
+  },
+  "inspector": {
+    "badge": "JFF",
+    "primaryField": "jffs2NodeType",
+    "groups": [
+      {
+        "name": "Node Header",
+        "fields": [
+          "jffs2Magic",
+          "jffs2NodeType",
+          "jffs2TotalLength",
+          "jffs2HeaderCRC"
+        ]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "Node Summary CSV",
+      "format": "csv",
+      "fields": [
+        "jffs2Magic",
+        "jffs2NodeType",
+        "jffs2TotalLength",
+        "jffs2HeaderCRC"
+      ]
+    },
+    {
+      "name": "Node Header JSON",
+      "format": "json",
+      "fields": [
+        "jffs2Magic",
+        "jffs2NodeType",
+        "jffs2TotalLength",
+        "jffs2HeaderCRC"
+      ]
+    }
+  ],
+  "forensic": {
+    "riskLevel": "MEDIUM",
+    "notes": "JFFS2 log structure retains outdated node versions until garbage collection. Deleted or overwritten files may be recoverable by scanning the raw image for older inode versions.",
+    "suspiciousPatterns": [
+      "HeaderCRC mismatches indicating node corruption or tampering",
+      "Duplicate inode numbers with conflicting data (indicating rollback attack or corruption)",
+      "DIRENT nodes pointing to executable files in unexpected locations",
+      "Residual sensitive data in superseded inode versions before GC"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "JFFS2 stores all modifications as new nodes appended to the log. The filesystem is reconstructed at mount time by scanning all valid nodes. Obsolete nodes coexist with current nodes until garbage collection reclaims them.",
+    "suggestedInspections": [
+      "Scan entire image for all nodes with magic 0x1985 and verify each HeaderCRC",
+      "Collect all DIRENT and INODE nodes, group by inode number, and select highest version for current state",
+      "Identify older inode versions for deleted or overwritten files to recover historical data",
+      "Inspect CLEANMARKER placement to identify erase block boundaries and unwritten regions",
+      "Check for SUMMARY nodes that list all valid nodes in an erase block for faster analysis"
+    ]
+  },
+  "TechnicalDetails": {
+    "endianness": "Little-endian (standard); big-endian variants exist for MIPS/PowerPC targets",
+    "nodeHeaderSize": 12,
+    "alignment": 4,
+    "erasedFlashValue": "0xFF",
+    "nodeTypes": {
+      "0xE001": "DIRENT (directory entry)",
+      "0xE002": "INODE (data node)",
+      "0xE003": "CLEANMARKER",
+      "0xE00E": "SUMMARY",
+      "0xE00F": "XATTR",
+      "0xE010": "XREF"
+    }
+  },
+  "QualityMetrics": {
+    "CompletenessScore": 86,
+    "LastUpdated": "2026-04-15",
+    "ReviewedBy": "WPFHexaEditor Team"
+  }
+}

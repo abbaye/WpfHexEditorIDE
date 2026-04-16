@@ -1,0 +1,194 @@
+{
+  "diffMode": "binary",
+  "formatName": "Java Class Bytecode",
+  "version": "1.0",
+  "extensions": [ ".class" ],
+  "description": "Java Class files contain JVM bytecode produced by the Java compiler (javac). Every valid .class file begins with the 4-byte magic 0xCAFEBABE, followed by a 2-byte minor version and a 2-byte major version (big-endian). Major version 45 = Java 1.1, 52 = Java 8, 61 = Java 17, 65 = Java 21. The constant pool count at offset 8 (uint16 BE) indicates the number of constant pool entries. Class files encode class/interface definitions, methods, fields, and debug information. They are executed by the JVM or processed by tools like ProGuard, R8, and dex2jar.",
+  "category": "Programming",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "references": {
+    "specifications": [
+      "Java Virtual Machine Specification — The class File Format",
+      "JVM Spec Chapter 4 (Oracle)",
+      "JSR-292: Supporting Dynamically Typed Languages on JVM"
+    ],
+    "WebLinks": [
+      "https://docs.oracle.com/javase/specs/jvms/se21/html/jvms-4.html",
+      "https://en.wikipedia.org/wiki/Java_class_file",
+      "https://wiki.openjdk.org/display/HotSpot/Bytecode+Manipulation"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      { "hex": "CAFEBABE", "offset": 0, "label": "0xCAFEBABE — Java Class magic number", "weight": 1.0 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.9,
+    "required": true,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 4.0, "max": 7.5 },
+    "validation": {
+      "minFileSize": 10,
+      "maxSignatureOffset": 0,
+      "note": "0xCAFEBABE at offset 0 is definitive. Major version at offset 6 (uint16 BE) should be in range 45..67 for Java 1.1..Java 23."
+    }
+  },
+  "variables": {
+    "javaMagic": 0,
+    "javaMinorVersion": 0,
+    "javaMajorVersion": 0,
+    "javaConstantPoolCount": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "Java Magic",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.5,
+      "description": "0xCAFEBABE — the universal Java class file magic number.",
+      "storeAs": "javaMagic",
+      "valueType": "uint32"
+    },
+    {
+      "type": "field",
+      "name": "Minor Version",
+      "offset": 4,
+      "length": 2,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "JVM minor version (uint16 BE). Typically 0 for modern class files; 65535 for preview features.",
+      "storeAs": "javaMinorVersion",
+      "valueType": "uint16"
+    },
+    {
+      "type": "field",
+      "name": "Major Version",
+      "offset": 6,
+      "length": 2,
+      "color": "#45B7D1",
+      "opacity": 0.45,
+      "description": "JVM major version (uint16 BE). Maps to Java version: 45=Java1.1, 52=Java8, 55=Java11, 61=Java17, 65=Java21.",
+      "storeAs": "javaMajorVersion",
+      "valueType": "uint16",
+      "valueMap": {
+        "45": "Java 1.1", "46": "Java 1.2", "47": "Java 1.3", "48": "Java 1.4",
+        "49": "Java 5", "50": "Java 6", "51": "Java 7", "52": "Java 8",
+        "53": "Java 9", "54": "Java 10", "55": "Java 11", "56": "Java 12",
+        "57": "Java 13", "58": "Java 14", "59": "Java 15", "60": "Java 16",
+        "61": "Java 17", "62": "Java 18", "63": "Java 19", "64": "Java 20",
+        "65": "Java 21", "66": "Java 22", "67": "Java 23"
+      }
+    },
+    {
+      "type": "field",
+      "name": "Constant Pool Count",
+      "offset": 8,
+      "length": 2,
+      "color": "#FFEAA7",
+      "opacity": 0.4,
+      "description": "Number of constant pool entries (uint16 BE). Actual entries = count - 1 (1-indexed).",
+      "storeAs": "javaConstantPoolCount",
+      "valueType": "uint16"
+    }
+  ],
+  "assertions": [
+    { "field": "javaMagic", "operator": "equals", "value": 3405691582, "description": "Magic must be 0xCAFEBABE (3405691582 decimal)" },
+    { "field": "javaMajorVersion", "operator": "between", "value": [45, 67], "description": "Major version must be in range 45..67 (Java 1.1..Java 23)" },
+    { "field": "javaConstantPoolCount", "operator": "greaterThan", "value": 0, "description": "Constant pool count must be greater than 0" }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "Magic (CAFEBABE)", "offset": 0, "description": "Java class magic 0xCAFEBABE" },
+      { "name": "Minor Version", "offset": 4, "description": "JVM minor version (uint16 BE)" },
+      { "name": "Major Version", "offset": 6, "description": "JVM major version — determines Java release" },
+      { "name": "Constant Pool Count", "offset": 8, "description": "Number of constant pool entries" }
+    ]
+  },
+  "inspector": {
+    "badge": "CLASS",
+    "primaryField": "javaMajorVersion",
+    "showQualityScore": true,
+    "groups": [
+      { "name": "Identity", "fields": ["javaMagic"] },
+      { "name": "Version", "fields": ["javaMinorVersion", "javaMajorVersion"] },
+      { "name": "Structure", "fields": ["javaConstantPoolCount"] }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "Java Class Header (JSON)",
+      "format": "json",
+      "fields": ["javaMagic", "javaMinorVersion", "javaMajorVersion", "javaConstantPoolCount"]
+    },
+    {
+      "name": "Java Class Forensic Report (CSV)",
+      "format": "csv",
+      "fields": ["javaMagic", "javaMajorVersion", "javaConstantPoolCount"]
+    }
+  ],
+  "forensic": {
+    "category": "executable",
+    "riskLevel": "medium",
+    "suspiciousPatterns": [
+      { "name": "Hardcoded credentials in constant pool", "condition": "true", "description": "Java constant pool strings may contain hardcoded passwords, API keys, JDBC connection strings, or internal URLs.", "severity": "warning" },
+      { "name": "Obfuscated class names", "condition": "true", "description": "Short or meaningless class/method names in constant pool indicate ProGuard/R8 obfuscation — may hide malicious logic.", "severity": "info" },
+      { "name": "Reflection API usage", "condition": "true", "description": "Constant pool references to java.lang.reflect may indicate dynamic class loading or deserialization exploitation.", "severity": "warning" },
+      { "name": "Deserialization gadget chains", "condition": "true", "description": "References to ObjectInputStream.readObject or known gadget classes (CommonsCollections, Spring) indicate potential RCE risk.", "severity": "critical" }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "Java Class files always begin with 0xCAFEBABE (4 bytes, big-endian). The major version at offset 6 directly maps to the Java release (52=Java8, 55=Java11, 61=Java17). The constant pool follows at offset 10 and contains all strings, class references, method signatures, and field descriptors used by the class. Security analysis should focus on constant pool strings for credentials and class/method references for dangerous APIs.",
+    "suggestedInspections": [
+      "Verify 0xCAFEBABE magic at offset 0",
+      "Read major version at offset 6 to determine minimum JVM requirement",
+      "Count constant pool entries (offset 8) and scan for suspicious string constants",
+      "Check for java.lang.Runtime, ProcessBuilder, or ObjectInputStream references in constant pool",
+      "Look for hardcoded URLs, passwords, API keys, or JDBC connection strings",
+      "Identify class access flags after constant pool to determine if this is a class, interface, enum, or annotation",
+      "Use javap -c -verbose to disassemble bytecode for full method inspection"
+    ]
+  },
+  "software": [
+    "javac (Java Compiler)",
+    "javap (Java Disassembler)",
+    "ProGuard / R8 (obfuscator)",
+    "JD-GUI (decompiler)",
+    "CFR / Fernflower (decompilers)",
+    "Ghidra (with JVM plugin)",
+    "Android dex2jar"
+  ],
+  "formatRelationships": {
+    "category": "Programming",
+    "extensions": [".class"],
+    "relatedFormats": ["JAR", "DEX", "MSIL", "WASM"],
+    "note": "Java .class files are bundled in JAR archives. Android converts .class to DEX via d8/dx. Kotlin and Scala also produce .class files targeting the JVM."
+  },
+  "MimeTypes": [ "application/java-vm", "application/x-java-class" ],
+  "UseCases": [
+    "JVM bytecode execution",
+    "Java/Kotlin/Scala/Groovy compilation output",
+    "Reverse engineering and decompilation",
+    "Android APK pipeline (class to DEX)",
+    "Security analysis for credential and gadget chain detection"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 90,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 4,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-15",
+    "PriorityFormat": true,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "Endianness": "big-endian",
+    "MagicNumber": "0xCAFEBABE",
+    "MagicOffset": 0,
+    "VersionField": "major version at offset 6 (uint16 BE)",
+    "ConstantPool": "variable-length structure at offset 10",
+    "SecurityRisk": "MEDIUM — constant pool may expose credentials; deserialization gadget chains are HIGH risk"
+  }
+}

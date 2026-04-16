@@ -1,142 +1,195 @@
 # WPFHexaEditor
 
-A full-featured WPF hex editor UserControl for .NET 8. Successor to [WPFHexaEditor](https://www.nuget.org/packages/WPFHexaEditor/).
-
-## Quick Start
-
-```xml
-<Window xmlns:hexe="clr-namespace:WpfHexEditor.HexEditor;assembly=WpfHexEditor.HexEditor">
-    <hexe:HexEditor FileName="C:\path\to\file.bin" />
-</Window>
-```
+A full-featured WPF hex editor `UserControl` for .NET 8.  
+Drop it into any WPF window — no IDE, no plugin host, no external dependencies.
 
 ```
 dotnet add package WPFHexaEditor
 ```
 
+---
+
+## Quick Start
+
+### 1 — Add the namespace
+
+```xml
+<Window
+    xmlns:hexe="clr-namespace:WpfHexEditor.HexEditor;assembly=WpfHexEditor.HexEditor">
+```
+
+### 2 — Place the control
+
+```xml
+<hexe:HexEditor x:Name="HexEdit" />
+```
+
+### 3 — Open a file
+
+```csharp
+HexEdit.FileName = @"C:\path\to\file.bin";
+```
+
+### 4 — Open a stream
+
+```csharp
+HexEdit.Stream = File.OpenRead("data.bin");
+```
+
+### 5 — Read or modify bytes
+
+```csharp
+// Read
+byte b = HexEdit.GetByte(offset);
+
+// Write (adds to undo stack)
+HexEdit.SetByte(offset, 0xFF);
+
+// Undo / redo
+HexEdit.Undo();
+HexEdit.Redo();
+
+// Save
+HexEdit.SubmitChanges();          // save to original file
+HexEdit.SubmitChanges("out.bin"); // save to new file
+```
+
+### Standalone setup (no IDE host)
+
+Merge the resource dictionary so themes and brushes resolve correctly:
+
+```xml
+<!-- App.xaml -->
+<Application.Resources>
+    <ResourceDictionary>
+        <ResourceDictionary.MergedDictionaries>
+            <ResourceDictionary Source="pack://application:,,,/WpfHexEditor.HexEditor;component/Resources/Dictionary/Generic.xaml" />
+        </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+</Application.Resources>
+```
+
+Context menus use opaque backgrounds by default. No extra theming is needed.
+
+---
+
+## Features
+
+### Viewing & Navigation
+- Hex + ASCII panels with configurable column count
+- Column and row cursor highlighting
+- Line numbers and offset display (hex / decimal)
+- Scroll marker panel
+- Column ruler
+- Go to offset (Ctrl+G)
+- Read-only mode
+
+### Editing
+- In-place byte editing in hex or ASCII panel
+- Multi-byte selection with keyboard and mouse
+- Drag-selection auto-scroll
+- Undo / redo with UndoGroup transactions and coalescence
+- Undo history dropdown
+- Cut / copy / paste
+- Fill selection with value
+
+### Format Detection
+- 600+ built-in format definitions (.whfmt) — auto-detection on open
+- Format field overlay — semi-transparent colored blocks over detected structures
+- Syntax coloring driven by format rules
+- Shannon entropy, byte distribution, anomaly detection
+
+### Search
+- Find (hex sequence, ASCII text, regex)
+- Match case / whole word
+- Search result highlighting with scroll-bar tick marks
+
+### Import / Export
+- Intel HEX (.hex) import/export
+- Motorola S-Record (.srec/.s19) import/export
+- Binary template compiler (010 Editor compatible)
+- ParsedFields export templates
+
+### UI Controls
+- `HexBreadcrumbBar` — visual structure navigator
+- `HexScrollMarkerPanel` — overview of bookmarks, search hits, and changes
+- Settings panel with auto-generated UI and ColorPicker
+
+### Settings
+- Full `DependencyProperty` API for programmatic control
+- JSON settings persistence (export / import)
+- `ByteToolTipDisplayMode`, `ByteToolTipDetailLevel`, `MouseWheelSpeed`, `FontSize`, `BytePerLine`, and 30+ more
+
+---
+
+## What's New in 3.1.3
+
+- **Feat**: 155+ new `.whfmt` format definitions added (Groups C–J) — total now exceeds 600 definitions.
+- **Feat**: `FormatSchemaValidator` wired — `.whfmt` files are now validated against schema v2.3 at load time; violations are reported via `FormatLoadFailure`.
+- **Feat**: `.whfmt` schema bumped to v2.3 — `references` and `detection` fields unified across all categories.
+- **Fix**: Stream operations — contributor enhancements to stream-backed byte provider edge cases.
+- **Fix**: `ForensicPattern` tolerant converter — invalid pattern values no longer throw; fallback to `null` with log entry.
+- **New**: `InputFilter` control — reusable filter-bar `UserControl` for hex/byte input.
+- **New**: `HexStringToColorConverter` — XAML binding converter for hex color strings.
+
 ## What's New in 3.1.2
 
-- **Fix**: Corrupted or malformed `.whfmt` files no longer crash the IDE — load failures are captured in `FormatLoadFailure` and surfaced in the StatusBar (`⚠ N whfmt failed to load`) instead of propagating exceptions
-- **Perf**: `EmbeddedFormatCatalog` singleton and lazy caches modernized — `LazyInitializer.EnsureInitialized` replaces manual double-checked lock; `GetAll()` / `GetCategories()` now return `IReadOnlySet<T>` backed by `FrozenSet<T>` for better thread safety and lookup performance
-- **Test**: `MakeEntries(rethrow: true)` / `MakeCategories()` exposed as `public static` factory methods — enables `LoadResourcesTest` build-gate that fails immediately if any embedded `.whfmt` resource is corrupt before it ships in a NuGet package
-- **Feat**: New format definition `ROM_SNES_SRM` (SNES save RAM)
-- **Fix**: `.whfmt` `references` schema v2 — standardized across Game and Archives categories
-
-## What's New in 3.1.1.1
-
-- **Fix**: Invalid `\x` JSON escape sequences in `HDF5.whfmt`, `NETCDF.whfmt`, `NPY.whfmt` — `\x89`, `\x01`, `\x02`, `\x93` are not valid JSON escapes and caused `JsonReaderException` in `EmbeddedFormatCatalog.LoadHeader`. Replaced with human-readable hex notation.
+- **Fix**: Corrupted or malformed `.whfmt` files no longer crash the IDE — load failures are captured in `FormatLoadFailure` and surfaced in the StatusBar (`⚠ N whfmt failed to load`) instead of propagating exceptions.
+- **Perf**: `EmbeddedFormatCatalog` singleton and lazy caches modernized — `LazyInitializer.EnsureInitialized` replaces manual double-checked lock; `GetAll()` / `GetCategories()` now return `IReadOnlySet<T>` backed by `FrozenSet<T>` for better thread safety and lookup performance.
+- **Test**: `MakeEntries(rethrow: true)` / `MakeCategories()` exposed as `public static` factory methods — enables `LoadResourcesTest` build gate.
+- **Feat**: New format definition `ROM_SNES_SRM` (SNES save RAM).
+- **Fix**: `.whfmt` `references` schema v2 standardized across Game and Archives categories.
 
 ## What's New in 3.1.1
 
-- **Fix**: `TechnicalDetails.SampleRate` changed from `int?` to `string?` — AMR and OPUS had descriptive values like `"8000 Hz (AMR-NB) / 16000 Hz (AMR-WB)"` that were silently dropped
-- **Fix**: `MOBI.whfmt` references structure corrected — was an array wrapping an object, must be a plain object
-- **Fix**: `GFX.whfmt`, `TIL.whfmt`, `CHR.whfmt` Platform field corrected — was a string array, must be a single string
-- **Fix**: 5 `.whfmt` files with invalid `Strength` values corrected (`"strong"` → `"Strong"`, `"moderate"` → `"Medium"`)
-- **Perf**: `JsonSerializerOptions` in `ImportFromJson` is now a `static readonly` field — avoids 463+ allocations at startup
+- **Fix**: `TechnicalDetails.SampleRate` changed from `int?` to `string?`.
+- **Fix**: `MOBI.whfmt` references structure corrected.
+- **Fix**: `GFX.whfmt`, `TIL.whfmt`, `CHR.whfmt` Platform field corrected.
+- **Fix**: 5 `.whfmt` files with invalid `Strength` values corrected.
+- **Perf**: `JsonSerializerOptions` in `ImportFromJson` is now a `static readonly` field — avoids 463+ allocations at startup.
 
 ## What's New in 3.1.0
 
-### Format Detection — Major Overhaul
-
-- **Fix**: `SignatureStrength` enum now correctly deserialized from `.whfmt` files — `"Strength": "Strong"` was silently falling back to `None(0)` due to missing `JsonStringEnumConverter`, causing all TIER 1 strong-signature formats (PE, ELF, RTF, and hundreds more) to be excluded from detection. Root cause of all format mis-detections since 3.0.0.
-- **Fix**: TIER 1 candidates are now scored before the early-exit check — confidence threshold was evaluated on unscored candidates (all `ConfidenceScore = 0`), so the early-exit never triggered and TIER 2 (plain-text heuristic) displaced correct TIER 1 matches (e.g. RTF detected as "Plain Text").
-- **Fix**: TIER 2 text-heuristic detection is now suppressed when TIER 1 has a match — prevents plain-text fallback from overriding a verified magic-byte signature match.
-- **Fix**: Entropy check is skipped for `Strong`/`Unique` signatures — a verified magic byte sequence is definitive proof of identity; entropy filtering only added false negatives for text-based formats with strong signatures (RTF, XML, SVG).
-- **Fix**: `EmbeddedFormatCatalog.GetAll()` is now fully thread-safe (double-checked lock + `volatile`) — race condition between `PreWarm()` background thread and UI thread could produce an empty catalog on first access.
-- **Fix**: 5 `.whfmt` definitions with invalid `Strength` values corrected (`"strong"` → `"Strong"`, `"moderate"` → `"Medium"`).
-- **Fix**: `required: true` added to 10 `.whfmt` definitions that were missing it (RTF, DJVU, AIFF, OPUS, AVIF, JFIF, JPEG2000, PCX, TGA, TIFF).
-- **Robustness**: `SignatureStrengthConverter` now accepts case-insensitive strings (`"strong"`, `"Strong"`, `"STRONG"`), integer values (`80`), and falls back to `Medium` for any unknown value — never throws.
-
-### Format Definitions — 463 Files Updated
-
-- **Fix**: Removed `/* */` block-comment file headers from all 463 `.whfmt` definitions (fixes [#229](https://github.com/abbaye/WpfHexEditorIDE/issues/229)) — these headers preceded the opening `{` and could cause `JsonReaderException` on first load.
-- **Feat**: Version numbers bumped across all 455+ `.whfmt` definitions.
-- **Feat**: `.whfmt` enrichment pass — improved descriptions, detection rules, and export templates across multiple categories.
-
-### UI / Controls
-
-- **Fix**: `HexBreadcrumbBar` segment dropdown (ContextMenu) is now fully opaque in standalone WPF apps — `BC_Background` brush alpha is forced to 255 before assignment, preventing see-through popup in apps without the IDE theme host.
-- **Fix**: ScrollBar theming consistency fix.
-- **Feat**: `IconGlyphs` constants class for Segoe MDL2 Assets glyph codes.
-- **Feat**: `ParsedFields` panel export templates.
-
-## What's New in 3.0.8
-
-- **Fix**: `JsonReaderException` no longer thrown in `EmbeddedFormatCatalog.LoadHeader` on first run — removed fragile `/* */` file headers from all 463 `.whfmt` format definitions (fixes [#229](https://github.com/abbaye/WpfHexEditorIDE/issues/229))
-- **Fix**: BCB (Custom Background Block) visual tree locked during navigation to prevent mouse re-dispatch loop
-- **Fix**: Bookmark chip `MouseDown` re-dispatch loop eliminated
-- **Fix**: Bookmark chips no longer re-render on every navigation — repaint only on actual changes
+- **Fix**: `SignatureStrength` enum now correctly deserialized — was silently falling back to `None(0)`, causing all TIER 1 strong-signature formats to be excluded from detection.
+- **Fix**: TIER 1 candidates scored before early-exit check.
+- **Fix**: TIER 2 text-heuristic suppressed when TIER 1 has a match.
+- **Fix**: Entropy check skipped for `Strong`/`Unique` signatures.
+- **Fix**: `EmbeddedFormatCatalog.GetAll()` fully thread-safe.
+- **Fix**: 463 `.whfmt` block-comment headers removed (fixes [#229](https://github.com/abbaye/WpfHexEditorIDE/issues/229)).
+- **Fix**: `HexBreadcrumbBar` ContextMenu fully opaque in standalone apps.
 
 ## What's New in 3.0.4
 
-- **Fix**: `ResourceReferenceKeyNotFoundException` no longer thrown in standalone WPF apps — `GetThemeColor` now uses `TryFindResource` instead of `FindResource` (fixes [#228](https://github.com/abbaye/WpfHexEditorIDE/issues/228))
-- **Fix**: Drag-selection auto-scroll — cross-panel mouse boundary no longer stops scrolling in HexEditor (fixes [#227](https://github.com/abbaye/WpfHexEditorIDE/issues/227))
-- **Fix**: Column/row highlight tracks cursor position correctly on vertical scroll
-- **Feat**: Context menu — drop shadow, MDL2 icons, accent band, light theme styling
-
-## What's New in 3.0.3
-
-- **Fix**: `AllowCustomBackgroundBlock` dependency property is now obsolete and has no effect. Custom background blocks render automatically when blocks are added via `AddCustomBackgroundBlock()`. Use `AddCustomBackgroundBlock()` / `ClearCustomBackgroundBlock()` as the sole control point.
-- **Localization**: 18 satellite assemblies now bundled in the package (ar-SA, de-DE, es-ES, fr-FR, ja-JP, zh-CN, and 12 more). No separate install required.
-
-## What's New in 3.0.2
-
-- Column ruler support
-- Scroll marker panel improvements
-- Format detection performance improvements
+- **Fix**: `ResourceReferenceKeyNotFoundException` no longer thrown in standalone WPF apps (fixes [#228](https://github.com/abbaye/WpfHexEditorIDE/issues/228)).
+- **Fix**: Drag-selection auto-scroll — cross-panel mouse boundary no longer stops scrolling (fixes [#227](https://github.com/abbaye/WpfHexEditorIDE/issues/227)).
+- **Fix**: Column/row highlight tracks cursor on vertical scroll.
+- **Feat**: Context menu — drop shadow, MDL2 icons, accent band, light theme.
 
 ## What's New in 3.0.0 (since WPFHexaEditor 2.1.7)
 
-### Breaking Changes
-- **Target framework**: .NET 8.0-windows (dropped .NET Framework 4.7 and .NET Core 3.1)
-- **Namespace renamed**: `WPFHexaEditor` → `WpfHexEditor.HexEditor`
-- **Assembly renamed**: `WPFHexaEditor.dll` → `WpfHexEditor.HexEditor.dll`
-- **Modular architecture**: core logic extracted into separate assemblies (Core, BinaryAnalysis, Definitions, Editor.Core)
+**Breaking changes**: .NET 8.0-windows only, namespace `WPFHexaEditor` → `WpfHexEditor.HexEditor`, assembly renamed, modular architecture.  
+See full changelog in the [GitHub repository](https://github.com/abbaye/WpfHexEditorIDE).
 
-### Performance
-- GlyphRun-based text renderer — replaces FormattedText, eliminates per-glyph allocation
-- LineVisualPool — object pooling for visible line elements, zero GC pressure on scroll
-- HexLookup table — O(1) byte-to-hex conversion via precomputed 256-entry table
-- TBL key buffer — zero-allocation custom table encoding
-- DrawingContext renderers for HexBox and ProgressBar controls
-- Cached DPI, FormattedText, and Pens — 25-55ms → 5-8ms render time in docking scenarios
-- Dirty-line tracking — only re-render lines that changed, not the full viewport
-- Mouse hover overlay — eliminated full re-render on mouse move
-
-### New Features
-- **400+ built-in format definitions** (.whfmt) — automatic format detection and syntax coloring for PE, ELF, ZIP, PNG, PDF, MP3, SQLite, and hundreds more
-- **Column and row highlighting** — visual cursor tracking across hex and ASCII panels
-- **Undo/redo overhaul** — UndoGroup composite, transactions, coalescence, history dropdown
-- **Binary analysis** — Shannon entropy, byte distribution, anomaly detection, data type estimation
-- **Intel HEX / S-Record** — import/export support
-- **Binary template compiler** — 010 Editor compatible C-like templates
-- **Format field overlay** — semi-transparent colored blocks over detected format structures
-- **Settings UI** — dynamic property editor with ColorPicker for all editor properties
-- **IDocumentEditor interface** — standardized editor contract for hosting frameworks
-
-### Bug Fixes
-- Row highlight now updates on vertical scroll
-- Null guard on UpdateColumnHighlight
-- FileSystemWatcher re-fire suppressed during ReloadFromDisk
-- ByteToolTipDisplayMode/DetailLevel DP defaults synced to HexViewport at init
-- MouseWheelSpeed DP implemented in scroll handler
+---
 
 ## Included Assemblies
 
 All bundled inside the package — zero external NuGet dependencies:
 
 | Assembly | Purpose |
-|----------|---------|
-| WpfHexEditor.HexEditor | HexEditor UserControl (main entry point) |
+|---|---|
+| WpfHexEditor.HexEditor | `HexEditor` UserControl — main entry point |
 | WpfHexEditor.Core | Byte providers, format detection, search, undo/redo |
 | WpfHexEditor.Core.BinaryAnalysis | Cross-platform binary analysis (no WPF dependency) |
-| WpfHexEditor.Core.Definitions | 463 embedded format definitions (.whfmt) |
+| WpfHexEditor.Core.Definitions | 600+ embedded format definitions (.whfmt) |
 | WpfHexEditor.Editor.Core | Shared editor abstractions |
-| WpfHexEditor.ColorPicker | Color picker control for settings |
-| WpfHexEditor.HexBox | Hex display control |
+| WpfHexEditor.ColorPicker | Color picker control (settings panel) |
+| WpfHexEditor.HexBox | Hex display rendering control |
 | WpfHexEditor.ProgressBar | Progress bar control |
 
 **Localizations**: ar-SA, de-DE, es-419, es-ES, fr-CA, fr-FR, hi-IN, it-IT, ja-JP, ko-KR, nl-NL, pl-PL, pt-BR, pt-PT, ru-RU, sv-SE, tr-TR, zh-CN
+
+---
 
 ## License
 

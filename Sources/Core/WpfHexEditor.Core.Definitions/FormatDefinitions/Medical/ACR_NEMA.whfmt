@@ -1,0 +1,230 @@
+{
+  "diffMode": "binary",
+  "formatName": "ACR-NEMA 2.0 Medical Imaging",
+  "version": "1.0",
+  "extensions": [
+    ".acr",
+    ".dcm"
+  ],
+  "description": "ACR-NEMA (American College of Radiology - National Electrical Manufacturers Association) version 2.0 is the precursor to the modern DICOM 3.0 standard, published in 1988 as NEMA PS 3. Unlike DICOM 3.0, ACR-NEMA 2.0 files have no 128-byte preamble and no 'DICM' magic signature — they begin directly with a data element tag. ACR-NEMA uses implicit VR (Value Representation) little-endian encoding for all data elements. The tag structure is: Group (2 bytes LE uint16) + Element (2 bytes LE uint16) + Value Length (4 bytes LE uint32) + Value. Group 0008 contains Identifying Information (modality, study date, referring physician), Group 0010 contains Patient Information (name, ID, birthdate, sex), Group 0018 contains Acquisition Parameters, Group 0020 contains Relationship information (patient/study/series/image IDs), and Group 0028 contains Image Pixel attributes (rows, columns, pixel spacing, bits allocated). ACR-NEMA is still encountered in legacy PACS archives, older CT/MRI scanners, and forensic healthcare investigations.",
+  "category": "Medical",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "references": {
+    "specifications": [
+      "NEMA PS 3 ACR-NEMA Standard (1985, 1988 revision 2.0)",
+      "DICOM 3.0 Standard PS3.5 — Data Structure and Encoding",
+      "DICOM Standard Part 10 — Media Storage and File Format"
+    ],
+    "WebLinks": [
+      "https://dicom.nema.org/medical/dicom/current/output/html/part05.html",
+      "https://en.wikipedia.org/wiki/ACR-NEMA",
+      "https://www.dclunie.com/medical-image-faq/html/part2.html"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      {
+        "value": "0800",
+        "offset": 0,
+        "label": "Group 0008 (Identifying Info) tag — implicit VR little-endian ACR-NEMA",
+        "weight": 0.6
+      }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.3,
+    "required": false,
+    "Strength": "Weak",
+    "EntropyHint": { "min": 3.0, "max": 7.0 },
+    "validation": {
+      "minFileSize": 8,
+      "maxSignatureOffset": 0,
+      "note": "ACR-NEMA has no magic bytes. Starts with group tag 0x0008 (LE: 08 00) or 0x0004 (LE: 04 00) at offset 0. Group must be < 0x8000. Element must be even-numbered for standard tags. Value length at offset 4 is a 32-bit LE uint. Distinguish from DICOM by absence of 128-byte preamble + 'DICM' at offset 128."
+    }
+  },
+  "variables": {
+    "acrGroup": 0,
+    "acrElement": 0,
+    "acrValueLength": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "First Data Element Group Tag",
+      "offset": 0,
+      "length": 2,
+      "color": "#FF6B6B",
+      "opacity": 0.45,
+      "description": "Group number of the first data element, stored as 2-byte little-endian uint16. For ACR-NEMA, valid group values at offset 0 are: 0x0004 (File Meta Directory — rare), 0x0008 (Identifying Information), 0x0010 (Patient Information), 0x0018 (Acquisition Parameters), 0x0020 (Relationship). All standard DICOM/ACR-NEMA groups are even-numbered. Groups 0x0001, 0x0003, 0x0005, 0x0007, 0x0009 are private/retired.",
+      "storeAs": "acrGroup",
+      "valueType": "uint16"
+    },
+    {
+      "type": "field",
+      "name": "First Data Element Tag",
+      "offset": 2,
+      "length": 2,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "Element number within the group, stored as 2-byte little-endian uint16. All standard element numbers in ACR-NEMA are even. Odd element numbers (xxxx,0001 etc.) are private creator tags. Common first elements: (0008,0001)=Length to End (retired), (0008,0016)=SOP Class UID, (0008,0018)=SOP Instance UID, (0008,0020)=Study Date, (0008,0060)=Modality (CT, MR, CR, DX, US, NM, PT).",
+      "storeAs": "acrElement",
+      "valueType": "uint16"
+    },
+    {
+      "type": "field",
+      "name": "Value Length",
+      "offset": 4,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.35,
+      "description": "4-byte little-endian uint32 giving the length in bytes of the data element value. In implicit VR, there is no VR field between the tag and the length (unlike DICOM 3.0 explicit VR where 2-byte VR 'CS', 'DA', 'LO' etc. precedes the length). Special value 0xFFFFFFFF indicates undefined length (used for sequences and encapsulated pixel data). ACR-NEMA does not use Item delimiters for fixed-length items.",
+      "storeAs": "acrValueLength",
+      "valueType": "uint32"
+    },
+    {
+      "type": "field",
+      "name": "Group 0010 Patient Info",
+      "offset": "dynamic",
+      "length": "dynamic",
+      "color": "#FFE66D",
+      "opacity": 0.35,
+      "description": "Patient Information group (0010,xxxx) containing PHI: (0010,0010) Patient Name in DICOM PN format 'Last^First^Middle^Prefix^Suffix', (0010,0020) Patient ID (MRN), (0010,0030) Patient Birthdate (YYYYMMDD), (0010,0040) Patient Sex ('M'/'F'/'O'). These elements are critical for patient identification and subject to HIPAA de-identification requirements under Safe Harbor or Expert Determination methods.",
+      "valueType": "hex"
+    },
+    {
+      "type": "field",
+      "name": "Group 0028 Pixel Parameters",
+      "offset": "dynamic",
+      "length": "dynamic",
+      "color": "#C3A6FF",
+      "opacity": 0.30,
+      "description": "Image Pixel group (0028,xxxx): (0028,0010) Rows, (0028,0011) Columns, (0028,0030) Pixel Spacing (row/col spacing in mm), (0028,0100) Bits Allocated (8 or 16), (0028,0101) Bits Stored, (0028,0103) Pixel Representation (0=unsigned, 1=2's complement signed), (0028,1050) Window Center, (0028,1051) Window Width for display LUT. Followed by (7FE0,0010) Pixel Data containing the raw image matrix.",
+      "valueType": "hex"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "GroupTagLessThan8000",
+      "expression": "acrGroup < 0x8000",
+      "severity": "error",
+      "message": "First group tag >= 0x8000. ACR-NEMA and DICOM standard tags use even groups < 0x8000 (private tags use odd groups). This may not be an ACR-NEMA file."
+    },
+    {
+      "name": "ElementTagIsEven",
+      "expression": "(acrElement % 2) == 0",
+      "severity": "warning",
+      "message": "First element tag is odd. Standard ACR-NEMA/DICOM element tags are even. Odd elements are private. First element of an ACR-NEMA file should typically be a standard tag."
+    },
+    {
+      "name": "NoDICMMagic",
+      "expression": "bytes128to131 != 0x4449434D",
+      "severity": "info",
+      "message": "No 'DICM' magic at offset 128. Confirmed ACR-NEMA (pre-DICOM) file, or DICOM without preamble. Modern DICOM 3.0 files have a 128-byte preamble followed by 'DICM'."
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "First Data Element", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
+      { "name": "Patient Info (0010)", "offset": "dynamic", "icon": "\uE9D9", "color": "#FFE66D" },
+      { "name": "Pixel Parameters (0028)", "offset": "dynamic", "icon": "\uE8B7", "color": "#C3A6FF" }
+    ]
+  },
+  "inspector": {
+    "badge": "acrGroup",
+    "primaryField": "acrElement",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "First Tag Header",
+        "icon": "\uE71B",
+        "fields": ["acrGroup", "acrElement", "acrValueLength"]
+      },
+      {
+        "title": "Patient Information",
+        "icon": "\uE9D9",
+        "fields": ["patientName", "patientId", "patientBirthDate", "patientSex"]
+      },
+      {
+        "title": "Image Parameters",
+        "icon": "\uE8B7",
+        "fields": ["rows", "columns", "bitsAllocated", "pixelSpacing", "modality"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "ACR-NEMA Tag Summary (JSON)",
+      "format": "json",
+      "fields": ["group", "element", "valueLength", "modality", "studyDate", "rows", "columns"]
+    },
+    {
+      "name": "Patient Record (CSV — PHI)",
+      "format": "csv",
+      "fields": ["patientName", "patientId", "patientBirthDate", "patientSex", "studyDate", "modality"]
+    }
+  ],
+  "forensic": {
+    "category": "medical",
+    "riskLevel": "high",
+    "phi": true,
+    "regulation": "HIPAA 45 CFR 164.514 de-identification, GDPR Article 9",
+    "suspiciousPatterns": [
+      "Patient Name (0010,0010) containing identifiable information in archival or transmitted files",
+      "Patient ID (0010,0020) containing national identifier (SSN, NHS number) instead of facility MRN",
+      "StudyDate (0008,0020) and PatientBirthDate (0010,0030) together enabling re-identification",
+      "Burned-in patient annotation in Pixel Data (7FE0,0010)"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "ACR-NEMA 2.0 binary: implicit VR little-endian. Tag structure: group(uint16 LE) + element(uint16 LE) + length(uint32 LE) + value. No preamble, no 'DICM' magic. Key groups: 0008=Identifying, 0010=Patient, 0018=Acquisition, 0020=Relationship, 0028=Image Pixel, 7FE0=Pixel Data. Distinguish from DICOM: check if bytes 128-131 are 'DICM'; if not, likely ACR-NEMA or DICOM without preamble. Modality in (0008,0060): CT=computed tomography, MR=magnetic resonance, CR=computed radiography, DX=digital X-ray, US=ultrasound, NM=nuclear medicine, PT=PET.",
+    "suggestedInspections": [
+      "Read first 6 bytes: group (uint16 LE) + element (uint16 LE) + value length (uint32 LE); verify group < 0x8000 and element is even",
+      "Scan for (0010,0010) Patient Name tag and (0010,0020) Patient ID to identify PHI presence for de-identification audit",
+      "Locate (0008,0060) Modality element (typically group 0008, element 0060) to identify imaging device type",
+      "Find (7FE0,0010) Pixel Data element (group=0x7FE0, element=0x0010) to locate start of image data",
+      "Compare first 132 bytes: if bytes 128-131 are 0x44 49 43 4D ('DICM'), file is DICOM 3.0 with preamble; otherwise ACR-NEMA or DICOM without preamble",
+      "Check (0028,0100) Bits Allocated and (0028,0103) Pixel Representation to determine pixel data type (8-bit unsigned, 16-bit signed CT HU values)"
+    ]
+  },
+  "software": [
+    "OsiriX / Horos (macOS DICOM viewer)",
+    "RadiAnt DICOM Viewer",
+    "3D Slicer",
+    "DCMTK (open-source toolkit)",
+    "Orthanc DICOM Server",
+    "MicroDicom (Windows)",
+    "Weasis"
+  ],
+  "formatRelationships": {
+    "category": "Medical",
+    "extensions": [".acr", ".dcm"],
+    "relatedFormats": ["DICOM", "DICOM_SR", "NIFTI", "ANALYZE", "MGH"],
+    "note": "ACR-NEMA 2.0 (1988) evolved into DICOM 3.0 (1993). DICOM adds: 128-byte preamble + 'DICM' magic, explicit VR encoding option, Media Storage SOP Classes, network protocols (DIMSE, C-STORE, C-FIND, C-MOVE). Most legacy ACR-NEMA files can be read by DICOM software using implicit VR little-endian transfer syntax (1.2.840.10008.1.2)."
+  },
+  "MimeTypes": [
+    "application/dicom",
+    "application/octet-stream"
+  ],
+  "UseCases": [
+    "Legacy PACS archive migration and forensic investigation",
+    "CT/MRI image archival from late 1980s and early 1990s scanners",
+    "Medical imaging research with historical datasets",
+    "HIPAA de-identification of legacy imaging records"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 87,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 5,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-15",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "encoding": "binary, implicit VR little-endian",
+    "tagStructure": "group(2B) + element(2B) + length(4B) + value",
+    "noPreamble": true,
+    "noMagicBytes": true,
+    "predecessor": "ACR-NEMA 2.0 (1988) — superseded by DICOM 3.0 (1993)"
+  }
+}

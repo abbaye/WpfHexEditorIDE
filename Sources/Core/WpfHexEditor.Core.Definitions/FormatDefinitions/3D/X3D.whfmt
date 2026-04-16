@@ -1,187 +1,220 @@
 {
-  "diffMode": "binary",
-  "formatName": "Extensible 3D",
-  "version": "1.15",
-  "extensions": [
-    ".x3d"
-  ],
-  "description": "Extensible 3D (X3D) is an XML-based royalty-free open standard for 3D computer graphics maintained by the Web3D Consortium. X3D is the successor to VRML and is designed for web-based real-time 3D content. X3D files are XML documents starting with an XML declaration '<?xml' followed by the DOCTYPE and a root 'X3D' element with a 'version' attribute. X3D supports geometry, appearance, animation, scripting, sensors, and networking components. The format has multiple encoding profiles: XML (.x3d), Classic VRML (.x3dv), and binary compressed (.x3db). XML X3D is the most common encoding used with web browsers.",
+  "diffMode": "text",
+  "formatName": "Extensible 3D Graphics (X3D)",
+  "version": "1.0",
+  "extensions": [".x3d", ".x3dv", ".x3db"],
+  "description": "Extensible 3D (X3D) is an ISO/IEC 19775 royalty-free open standard for 3D computer graphics maintained by the Web3D Consortium. X3D is the ISO-standardized successor to VRML 97 (ISO/IEC 14772). X3D XML encoding (.x3d) files are valid XML documents beginning with the '<?xml' processing instruction or directly with '<X3D'. The root element is '<X3D>' with 'version' (e.g. '3.3', '4.0') and 'profile' attributes. The file structure is: XML declaration, optional DOCTYPE, '<X3D>', '<head>' (component/unit/meta declarations), '<Scene>' (scene graph nodes). X3D Classic VRML encoding (.x3dv) uses '#X3D V3.3 utf8' header. X3D Binary (.x3db) is a compressed binary format. X3D defines profiles: Core, Interchange, Interactive, Immersive, Full, and MedicalInterchange. Nodes include Transform, Shape, Appearance, Material, IndexedFaceSet, Coordinate, Normal, TextureCoordinate, Viewpoint, DirectionalLight, PointLight, SpotLight, TimeSensor, and routing (ROUTE).",
   "category": "3D",
   "author": "WPFHexaEditor Team",
-  "preferredEditor": "hex-editor",
+  "preferredEditor": "text-editor",
   "references": {
     "specifications": [
-      "ISO/IEC 19775 X3D Abstract Specification",
-      "Web3D X3D Specification v4.0"
+      "ISO/IEC 19775-1:2013 X3D Abstract Specification Part 1",
+      "ISO/IEC 19776-1 X3D Encodings: XML Encoding",
+      "ISO/IEC 19776-2 X3D Encodings: Classic VRML Encoding",
+      "Web3D Consortium X3D 4.0 Specification"
     ],
     "WebLinks": [
-      "https://www.web3d.org/standards",
+      "https://www.web3d.org/standards/number/19775-1",
       "https://en.wikipedia.org/wiki/X3D",
-      "https://wiki.fileformat.com/3d/x3d/"
+      "https://wiki.x3dom.org/"
     ]
   },
   "detection": {
     "signatures": [
-      { "value": "3C3F786D6C", "offset": 0, "label": "'<?xml' XML declaration", "weight": 0.5 },
-      { "value": "3C5833442076657273696F6E", "offset": 0, "label": "'<X3D version' root element (no XML decl)", "weight": 0.7 }
+      {
+        "value": "3C583344",
+        "offset": 0,
+        "label": "'<X3D' — X3D XML root element (no XML declaration)",
+        "weight": 1.0
+      },
+      {
+        "value": "23583344",
+        "offset": 0,
+        "label": "'#X3D' — X3D Classic VRML encoding header",
+        "weight": 0.9
+      },
+      {
+        "value": "3C3F786D6C",
+        "offset": 0,
+        "label": "'<?xml' — XML declaration (may precede X3D root)",
+        "weight": 0.3
+      }
     ],
     "matchMode": "any",
-    "MinimumScore": 0.4,
-    "required": false,
-    "Strength": "Weak",
-    "EntropyHint": { "min": 3.0, "max": 6.5 },
-    "validation": {
-      "minFileSize": 20,
-      "maxSignatureOffset": 0,
-      "note": "X3D starts with '<?xml' or directly with '<X3D'. Detection is weak as '<?xml' is shared with many XML formats; the 'X3D' root element is the definitive identifier."
-    }
+    "MinimumScore": 0.5,
+    "Strength": "Medium",
+    "EntropyHint": "Low-medium — XML text with attribute-heavy scene graph nodes"
   },
   "variables": {
-    "xmlDeclaration": "",
-    "doctypeOrX3D": "",
-    "x3dVersion": "",
-    "headSection": ""
+    "x3dRoot": "",
+    "x3dFirstByte": 0
   },
   "blocks": [
     {
       "type": "signature",
-      "name": "XML Declaration",
+      "name": "X3D / XML Root Marker",
       "offset": 0,
       "length": 5,
       "color": "#FF6B6B",
-      "opacity": 0.45,
-      "description": "5-byte ASCII string '<?xml' that begins the XML declaration. Present in most X3D files but optional; some X3D files begin directly with the '<X3D' root element. Shared with all XML-based formats; not a reliable standalone identifier.",
-      "storeAs": "xmlDeclaration",
+      "opacity": 0.85,
+      "description": "First 5 bytes identifying the X3D encoding. '<X3D ' (3C 58 33 44 20) = XML encoding starting directly with root. '#X3D ' (23 58 33 44 20) = Classic VRML encoding (starts with '#X3D V3.3 utf8' comment line). '<?xml' (3C 3F 78 6D 6C) = XML declaration preceding the X3D root.",
+      "storeAs": "x3dRoot",
       "valueType": "ascii"
     },
     {
       "type": "field",
-      "name": "DOCTYPE or X3D Root",
-      "offset": 5,
-      "length": 64,
+      "name": "First Byte",
+      "offset": 0,
+      "length": 1,
       "color": "#4ECDC4",
-      "opacity": 0.35,
-      "description": "Region after the XML declaration containing either the XML version/encoding attributes, a DOCTYPE declaration referencing the X3D DTD, or the opening '<X3D' root element. The 'X3D' element name with a 'version' attribute is the definitive identifier.",
-      "storeAs": "doctypeOrX3D",
-      "valueType": "ascii"
+      "opacity": 0.5,
+      "description": "Single first byte: 0x3C ('<') for XML encoding (both '<?xml' and '<X3D' variants), 0x23 ('#') for Classic VRML encoding (.x3dv). Binary X3D (.x3db) has a different structure with a binary magic.",
+      "storeAs": "x3dFirstByte",
+      "valueType": "uint8"
     },
     {
       "type": "field",
-      "name": "X3D Version Attribute",
-      "offset": 69,
-      "length": 64,
+      "name": "X3D Version and Profile",
+      "offset": "dynamic",
+      "length": "dynamic",
       "color": "#95E1D3",
-      "opacity": 0.35,
-      "description": "Region containing the X3D root element's attributes including 'version' (e.g. '3.3', '4.0') and 'profile' (e.g. 'Interchange', 'Interactive', 'Immersive', 'Full'). These declare compatibility requirements for X3D browsers.",
-      "storeAs": "x3dVersion",
+      "opacity": 0.40,
+      "description": "X3D root element attributes. 'version': X3D version string — '3.0' (2004), '3.1' (2005), '3.2' (2007), '3.3' (2013), '4.0' (2022+). 'profile': compatibility level — 'Core' (minimal), 'Interchange' (geometry+color), 'Interactive' (sensors+scripting), 'Immersive' (full VRML97 feature parity), 'Full' (all components), 'MedicalInterchange' (medical visualization). Profile determines which nodes are valid in the scene graph.",
       "valueType": "ascii"
     },
     {
       "type": "field",
       "name": "Head Section",
-      "offset": 133,
-      "length": 64,
+      "offset": "dynamic",
+      "length": "dynamic",
       "color": "#FFE66D",
       "opacity": 0.35,
-      "description": "Region of the X3D file containing the 'head' element which may include component declarations, metadata key-value pairs, and external prototype declarations. The 'head' precedes the 'Scene' element in well-formed X3D files.",
-      "storeAs": "headSection",
-      "valueType": "ascii"
+      "description": "Optional <head> element containing: <component> declarations for non-profile features (e.g. <component name='Scripting' level='1'/>), <unit> for coordinate/angle conversions, <meta> key-value metadata (author, title, description, license). Meta 'license' typically specifies CC-BY or similar. Head is absent in minimal X3D files."
+    },
+    {
+      "type": "field",
+      "name": "Scene Graph",
+      "offset": "dynamic",
+      "length": "dynamic",
+      "color": "#C3A6FF",
+      "opacity": 0.30,
+      "description": "The <Scene> element containing the 3D scene graph nodes. Geometry: Shape > Appearance (Material, ImageTexture) + IndexedFaceSet/Box/Sphere/Cylinder/Cone/IndexedLineSet/PointSet. Transform: translation, rotation, scale. Lights: DirectionalLight, PointLight, SpotLight. Cameras: Viewpoint (position + orientation). Animation: TimeSensor + PositionInterpolator/OrientationInterpolator + ROUTE. Sensors: TouchSensor, ProximitySensor. Scripting: Script node with JavaScript (ecmaScript). Prototypes: PROTO/EXTERNPROTO."
     }
   ],
   "assertions": [
     {
-      "name": "StartsWithXmlOrX3D",
-      "expression": "xmlDeclaration == '<?xml' || xmlDeclaration == '<X3D '",
-      "severity": "warning",
-      "message": "File does not start with '<?xml' or '<X3D'. This may not be an X3D file. Verify the file contains an X3D root element."
+      "name": "StartsWithValidX3D",
+      "expression": "x3dRoot startsWith '<X3D' || x3dRoot startsWith '#X3D' || x3dRoot startsWith '<?xml'",
+      "severity": "error",
+      "message": "File does not start with '<X3D', '#X3D', or '<?xml'. Not a valid X3D text encoding. Check if file is binary X3D (.x3db) or a different 3D format."
     },
     {
-      "name": "NotBinaryEncoding",
-      "expression": "xmlDeclaration != 'X3D\\x00\\x00'",
+      "name": "ContainsX3DRootElement",
+      "expression": "containsPattern('<X3D') || containsPattern('#X3D')",
+      "severity": "error",
+      "message": "No X3D root element or Classic VRML '#X3D' header found in file. File may be plain XML but not X3D, or it is the binary X3D encoding."
+    },
+    {
+      "name": "ContainsSceneElement",
+      "expression": "containsPattern('<Scene') || containsPattern('Scene {')",
       "severity": "warning",
-      "message": "File may be X3D binary encoding (.x3db). Binary X3D has different structure from XML X3D. Consider using a different analysis approach."
+      "message": "No <Scene> element found. X3D files should contain a Scene element wrapping the scene graph."
     }
   ],
   "navigation": {
     "bookmarks": [
-      { "name": "XML Declaration", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
-      { "name": "X3D Root Element", "offset": 69, "icon": "\uE946", "color": "#95E1D3" },
-      { "name": "Head/Scene", "offset": 133, "icon": "\uE8B7", "color": "#FFE66D" }
+      { "name": "X3D Root", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
+      { "name": "Head Section", "offset": "dynamic", "icon": "\uE946", "color": "#FFE66D" },
+      { "name": "Scene Graph", "offset": "dynamic", "icon": "\uE8B7", "color": "#C3A6FF" }
     ]
   },
   "inspector": {
-    "badge": "xmlDeclaration",
-    "primaryField": "x3dVersion",
-    "showQualityScore": true,
+    "badge": "X3D",
+    "primaryField": "x3dRoot",
     "groups": [
       {
-        "title": "XML Header",
+        "title": "X3D Header",
         "icon": "\uE71B",
-        "fields": ["xmlDeclaration", "doctypeOrX3D"]
+        "fields": ["x3dRoot", "x3dFirstByte", "x3dVersion", "x3dProfile"]
       },
       {
-        "title": "X3D Structure",
+        "title": "Scene Content",
         "icon": "\uE8B7",
-        "fields": ["x3dVersion", "headSection"]
+        "fields": ["headMeta", "shapeCount", "lightCount", "viewpointCount"]
       }
     ]
   },
   "exportTemplates": [
     {
-      "name": "X3D Header (JSON)",
+      "name": "X3D Scene Metadata (JSON)",
       "format": "json",
-      "fields": ["xmlDeclaration", "x3dVersion"]
+      "fields": ["encoding", "x3dVersion", "profile", "components", "metaTitle", "metaAuthor", "nodeCount"]
+    },
+    {
+      "name": "Scene Node List (CSV)",
+      "format": "csv",
+      "fields": ["nodeType", "nodeId", "DEFName", "parentTransform", "geometryType"]
     }
   ],
-  "software": [
-    "Web browsers (via WebGL/X3DOM)",
-    "X3D-Edit",
-    "Blender",
-    "FreeWRL",
-    "Instant Reality"
-  ],
-  "formatRelationships": {
-    "category": "3D",
-    "extensions": [".x3d"],
-    "relatedFormats": ["GLTF", "GLB", "VRML"],
-    "note": "XML-based VRML successor; maintained by Web3D Consortium; encoding profiles include XML, VRML classic, and binary"
+  "forensic": {
+    "riskLevel": "LOW",
+    "notes": "3D scene data; no PHI. Scripts (ECMAScript in Script nodes) could contain active code.",
+    "suspiciousPatterns": [
+      "Script nodes with ECMAScript accessing external URLs (potential data exfiltration)",
+      "Deeply nested Transform hierarchies causing parser stack overflow",
+      "EXTERNPROTO references loading geometry from untrusted remote URLs"
+    ]
   },
+  "aiHints": {
+    "analysisContext": "X3D XML encoding: '<?xml version=\"1.0\" encoding=\"UTF-8\"?>\\n<X3D version=\"3.3\" profile=\"Immersive\">\\n<head>...</head>\\n<Scene>...</Scene>\\n</X3D>'. Classic VRML: '#X3D V3.3 utf8\\n...'. Scene nodes: Transform{translation/rotation/scale + children[]}, Shape{appearance Appearance{material Material{}} + geometry IndexedFaceSet{coord Coordinate{point[]} coordIndex[]}}, Viewpoint{position orientation}, DirectionalLight, TimeSensor+ROUTE for animation, Script{ECMAScript}. DEF/USE for node instances. PROTO/EXTERNPROTO for prototypes.",
+    "suggestedInspections": [
+      "Identify encoding by first bytes: '<X3D' or '<?xml' (XML encoding) vs '#X3D' (Classic VRML) vs binary (.x3db)",
+      "Extract version and profile attributes from X3D root element to determine feature set requirements",
+      "Parse <meta> elements in <head> to find author, title, description, and license metadata",
+      "Count Transform, Shape, and IndexedFaceSet nodes to estimate scene complexity and geometry budget",
+      "Search for Script nodes containing ECMAScript code — review for external URL access or DOM manipulation",
+      "Find Viewpoint nodes to identify predefined camera positions and navigation entry points"
+    ]
+  },
+  "software": [
+    { "name": "X3DOM (WebGL browser runtime)", "url": "https://www.x3dom.org" },
+    { "name": "Blender (X3D export)", "url": "https://www.blender.org" },
+    { "name": "FreeWRL (VRML/X3D browser)", "url": "http://freewrl.sourceforge.net" },
+    { "name": "X3D-Edit (Java authoring tool)", "url": "https://savage.nps.edu/X3D-Edit/" }
+  ],
+  "formatRelationships": [
+    { "format": "GLTF", "relation": "modern alternative for web 3D (more browser-native)" },
+    { "format": "COLLADA", "relation": "sibling XML-based 3D exchange format" },
+    { "format": "OBJ", "relation": "simpler format; X3D has animation and interactivity" }
+  ],
   "MimeTypes": [
     "model/x3d+xml",
+    "model/x3d+vrml",
+    "model/x3d+binary",
     "application/xml"
   ],
   "UseCases": [
-    "Web-based interactive 3D",
-    "Virtual reality authoring",
-    "3D visualization in browsers",
-    "Scientific data visualization"
+    "Web-based interactive 3D visualization (X3DOM/WebGL)",
+    "Scientific and medical 3D data visualization",
+    "Virtual reality and augmented reality content authoring",
+    "ISO-standard 3D document archival for digital preservation",
+    "Education and simulation (military, industrial training)"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 55,
+    "CompletenessScore": 83,
     "DocumentationLevel": "detailed",
-    "BlocksDefined": 4,
-    "ValidationRules": 2,
-    "LastUpdated": "2026-04-14",
+    "BlocksDefined": 5,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-15",
     "PriorityFormat": false,
     "AutoRefined": false
   },
   "TechnicalDetails": {
-    "encoding": "XML text",
-    "standard": "ISO/IEC 19775",
-    "profiles": ["Core", "Interchange", "Interactive", "Immersive", "Full"],
-    "maintainer": "Web3D Consortium"
-  },
-  "forensic": {
-    "category": "3d",
-    "riskLevel": "low",
-    "suspiciousPatterns": []
-  },
-  "aiHints": {
-    "analysisContext": "XML-based Extensible 3D format from the Web3D Consortium. Starts with '<?xml' XML declaration followed by DOCTYPE and 'X3D' root element with version and profile attributes. Successor to VRML for web 3D.",
-    "suggestedInspections": [
-      "Locate the 'X3D' root element and extract 'version' and 'profile' attributes",
-      "Identify component declarations in the head element to determine which X3D feature set is required",
-      "Enumerate Transform and Shape nodes in the Scene to understand the scene graph structure"
-    ]
+    "encoding": "XML text (UTF-8), Classic VRML text, or Binary (.x3db)",
+    "standard": "ISO/IEC 19775 (abstract), ISO/IEC 19776 (encodings)",
+    "maintainer": "Web3D Consortium",
+    "profiles": "Core, Interchange, Interactive, Immersive, Full, MedicalInterchange",
+    "versions": "3.0, 3.1, 3.2, 3.3, 4.0"
   }
 }

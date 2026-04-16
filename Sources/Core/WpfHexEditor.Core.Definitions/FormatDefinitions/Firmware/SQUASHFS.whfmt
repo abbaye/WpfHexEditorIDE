@@ -1,0 +1,306 @@
+{
+  "formatName": "SquashFS Filesystem",
+  "version": "1.0",
+  "diffMode": "binary",
+  "extensions": [
+    ".sqfs",
+    ".sfs",
+    ".squashfs"
+  ],
+  "description": "SquashFS is a compressed read-only filesystem commonly used in embedded Linux firmware, live CDs, and container images. Multiple magic variants exist: 'sqsh' (0x73717368 LE), 'hsqs' (0x68737173 BE), and 'qshs' (0x71737368 alternative).",
+  "category": "Firmware",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "MimeTypes": [
+    "application/x-squashfs"
+  ],
+  "UseCases": [
+    "Embedded Linux firmware for routers, IoT devices, and appliances",
+    "Live Linux distribution root filesystems",
+    "Container image layers and AppImage package filesystems"
+  ],
+  "references": [
+    "https://dr-emann.github.io/squashfs/",
+    "https://github.com/plougher/squashfs-tools/blob/master/SQUASHFS-TOOLS-README",
+    "https://www.kernel.org/doc/html/latest/filesystems/squashfs.html"
+  ],
+  "software": [
+    {
+      "name": "mksquashfs",
+      "url": "https://github.com/plougher/squashfs-tools",
+      "role": "Reference SquashFS creator"
+    },
+    {
+      "name": "unsquashfs",
+      "url": "https://github.com/plougher/squashfs-tools",
+      "role": "SquashFS extraction tool"
+    },
+    {
+      "name": "binwalk",
+      "url": "https://github.com/ReFirmLabs/binwalk",
+      "role": "Firmware analysis and extraction tool"
+    }
+  ],
+  "formatRelationships": [
+    {
+      "format": "JFFS2",
+      "relationship": "JFFS2 is a writable flash filesystem; SquashFS is read-only with higher compression"
+    },
+    {
+      "format": "UBIFS",
+      "relationship": "UBIFS provides wear-leveling for NAND; SquashFS is typically used over UBI volumes"
+    },
+    {
+      "format": "cramfs",
+      "relationship": "cramfs is a simpler predecessor to SquashFS with smaller size limits"
+    }
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "offset": 0,
+        "value": "73717368",
+        "label": "'sqsh' LE magic",
+        "weight": 1.0
+      },
+      {
+        "offset": 0,
+        "value": "68737173",
+        "label": "'hsqs' BE magic",
+        "weight": 1.0
+      },
+      {
+        "offset": 0,
+        "value": "71737368",
+        "label": "'qshs' alternative magic",
+        "weight": 0.7
+      }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 82,
+    "Strength": "Strong",
+    "EntropyHint": {
+      "min": 6.0,
+      "max": 8.0,
+      "note": "Compressed filesystem data yields high entropy"
+    },
+    "validation": "Magic at offset 0 must be one of the known SquashFS magic values. InodeCount at offset 4 must be > 0. BlockSize at offset 12 must be >= 4096 and a power of 2."
+  },
+  "variables": [
+    {
+      "name": "sqfsMagic",
+      "type": "hex",
+      "offset": 0,
+      "length": 4,
+      "description": "SquashFS magic bytes (LE or BE variant)"
+    },
+    {
+      "name": "sqfsInodeCount",
+      "type": "uint32",
+      "offset": 4,
+      "length": 4,
+      "endian": "little",
+      "description": "Number of inodes in the filesystem"
+    },
+    {
+      "name": "sqfsModTime",
+      "type": "uint32",
+      "offset": 8,
+      "length": 4,
+      "endian": "little",
+      "description": "Filesystem creation/modification time (Unix timestamp)"
+    },
+    {
+      "name": "sqfsBlockSize",
+      "type": "uint32",
+      "offset": 12,
+      "length": 4,
+      "endian": "little",
+      "description": "Data block size in bytes (must be power of 2, 4096-1048576)"
+    },
+    {
+      "name": "sqfsCompression",
+      "type": "uint16",
+      "offset": 20,
+      "length": 2,
+      "endian": "little",
+      "description": "Compression algorithm",
+      "valueMap": {
+        "1": "zlib",
+        "2": "lzma",
+        "3": "lzo",
+        "4": "xz",
+        "5": "lz4",
+        "6": "zstd"
+      }
+    }
+  ],
+  "blocks": [
+    {
+      "name": "Superblock",
+      "offset": 0,
+      "length": 96,
+      "description": "SquashFS superblock (96 bytes): magic, inode count, modification time, block size, compression, flags, inode/fragment/export table offsets",
+      "fields": [
+        {
+          "name": "Magic",
+          "variable": "sqfsMagic",
+          "offset": 0,
+          "length": 4
+        },
+        {
+          "name": "InodeCount",
+          "variable": "sqfsInodeCount",
+          "offset": 4,
+          "length": 4
+        },
+        {
+          "name": "ModTime",
+          "variable": "sqfsModTime",
+          "offset": 8,
+          "length": 4
+        },
+        {
+          "name": "BlockSize",
+          "variable": "sqfsBlockSize",
+          "offset": 12,
+          "length": 4
+        },
+        {
+          "name": "Compression",
+          "variable": "sqfsCompression",
+          "offset": 20,
+          "length": 2
+        }
+      ]
+    },
+    {
+      "name": "InodeTable",
+      "offset": -1,
+      "length": -1,
+      "description": "Compressed inode metadata table"
+    },
+    {
+      "name": "DirectoryTable",
+      "offset": -1,
+      "length": -1,
+      "description": "Compressed directory entry table"
+    },
+    {
+      "name": "FragmentTable",
+      "offset": -1,
+      "length": -1,
+      "description": "Table of fragment blocks for tail packing"
+    }
+  ],
+  "assertions": [
+    {
+      "id": "A1",
+      "description": "Magic must be a known SquashFS variant",
+      "expression": "sqfsMagic in ['73717368','68737173','71737368']"
+    },
+    {
+      "id": "A2",
+      "description": "InodeCount must be > 0",
+      "expression": "sqfsInodeCount > 0"
+    },
+    {
+      "id": "A3",
+      "description": "BlockSize must be >= 4096",
+      "expression": "sqfsBlockSize >= 4096"
+    }
+  ],
+  "navigation": {
+    "entryPoint": "Superblock",
+    "structure": [
+      "Superblock",
+      "InodeTable",
+      "DirectoryTable",
+      "FragmentTable"
+    ],
+    "notes": "Root inode offset stored at superblock offset 64 (8B). Inode and directory tables are compressed using the selected algorithm. Fragment table at superblock offset 48."
+  },
+  "inspector": {
+    "badge": "SQF",
+    "primaryField": "sqfsCompression",
+    "groups": [
+      {
+        "name": "Superblock",
+        "fields": [
+          "sqfsMagic",
+          "sqfsInodeCount",
+          "sqfsModTime",
+          "sqfsBlockSize"
+        ]
+      },
+      {
+        "name": "Compression",
+        "fields": [
+          "sqfsCompression"
+        ]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "Superblock CSV",
+      "format": "csv",
+      "fields": [
+        "sqfsMagic",
+        "sqfsInodeCount",
+        "sqfsModTime",
+        "sqfsBlockSize",
+        "sqfsCompression"
+      ]
+    },
+    {
+      "name": "Superblock JSON",
+      "format": "json",
+      "fields": [
+        "sqfsMagic",
+        "sqfsInodeCount",
+        "sqfsModTime",
+        "sqfsBlockSize",
+        "sqfsCompression"
+      ]
+    }
+  ],
+  "forensic": {
+    "riskLevel": "MEDIUM",
+    "notes": "SquashFS images in firmware often contain hardcoded credentials, private keys, and backdoors. Modification time can indicate when firmware was built. Compression algorithm type reveals toolchain era.",
+    "suspiciousPatterns": [
+      "Hardcoded credentials in /etc/passwd, /etc/shadow, or configuration files",
+      "Private SSH or TLS keys embedded in filesystem",
+      "SUID/SGID binaries outside standard system paths",
+      "Unusual setuid shell executables or backdoor scripts in startup directories"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "SquashFS is a read-only compressed filesystem. Metadata (inodes, directories) is stored in compressed metadata blocks. Data blocks are individually compressed. Fragment blocks enable efficient storage of small files.",
+    "suggestedInspections": [
+      "Identify compression algorithm from superblock to select appropriate decompressor",
+      "Decompress inode table starting at offset stored in superblock to enumerate filesystem entries",
+      "Scan /etc directory entries for hardcoded credentials and sensitive configuration",
+      "Check modification timestamp to estimate firmware build date",
+      "Look for world-writable directories or SUID binaries that may indicate intentional backdoors"
+    ]
+  },
+  "TechnicalDetails": {
+    "endianness": "Little-endian for LE magic variant; big-endian for BE magic variant",
+    "superbockSize": 96,
+    "metadataBlockSize": 8192,
+    "compressionAlgorithms": [
+      "zlib",
+      "lzma",
+      "lzo",
+      "xz",
+      "lz4",
+      "zstd"
+    ]
+  },
+  "QualityMetrics": {
+    "CompletenessScore": 88,
+    "LastUpdated": "2026-04-15",
+    "ReviewedBy": "WPFHexaEditor Team"
+  }
+}

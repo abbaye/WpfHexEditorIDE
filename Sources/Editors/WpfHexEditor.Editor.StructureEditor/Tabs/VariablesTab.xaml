@@ -7,6 +7,7 @@
 <UserControl x:Class="WpfHexEditor.Editor.StructureEditor.Tabs.VariablesTab"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:ctrl="clr-namespace:WpfHexEditor.Editor.StructureEditor.Controls"
              Background="{DynamicResource TE_Background}">
 
     <Grid Margin="8">
@@ -66,12 +67,56 @@
                 </Style>
                 <!-- Themed ComboBox for the Type column -->
                 <Style x:Key="TypeCombo" TargetType="ComboBox" BasedOn="{StaticResource {x:Type ComboBox}}">
-                    <Setter Property="FontSize"   Value="11"/>
-                    <Setter Property="Padding"    Value="2,1"/>
-                    <Setter Property="Background" Value="{DynamicResource TE_Background}"/>
-                    <Setter Property="Foreground" Value="{DynamicResource TE_Foreground}"/>
+                    <Setter Property="FontSize"        Value="11"/>
+                    <Setter Property="Padding"         Value="2,1"/>
+                    <Setter Property="Background"      Value="{DynamicResource TE_Background}"/>
+                    <Setter Property="Foreground"      Value="{DynamicResource TE_Foreground}"/>
                     <Setter Property="BorderThickness" Value="0"/>
                 </Style>
+                <!-- Shared TextBox style for value cells -->
+                <Style x:Key="ValBox" TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+                    <Setter Property="FontFamily"      Value="Consolas"/>
+                    <Setter Property="FontSize"        Value="11"/>
+                    <Setter Property="Padding"         Value="4,2"/>
+                    <Setter Property="BorderThickness" Value="0"/>
+                    <Setter Property="Background"      Value="Transparent"/>
+                    <Setter Property="Foreground"      Value="{DynamicResource TE_Foreground}"/>
+                </Style>
+
+                <!-- ── Value cell templates (display) ──────────────────── -->
+                <DataTemplate x:Key="ValBoolDisplay">
+                    <CheckBox IsChecked="{Binding BoolValue, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                              VerticalAlignment="Center" Margin="4,0"
+                              Foreground="{DynamicResource TE_Foreground}"/>
+                </DataTemplate>
+                <DataTemplate x:Key="ValIntDisplay">
+                    <TextBox Style="{StaticResource ValBox}"
+                             ctrl:InputFilter.NumericOnly="True"
+                             Text="{Binding Value, UpdateSourceTrigger=LostFocus}"/>
+                </DataTemplate>
+                <DataTemplate x:Key="ValFloatDisplay">
+                    <TextBox Style="{StaticResource ValBox}"
+                             ctrl:InputFilter.DecimalOnly="True"
+                             Text="{Binding Value, UpdateSourceTrigger=LostFocus}"/>
+                </DataTemplate>
+                <DataTemplate x:Key="ValHexDisplay">
+                    <TextBox Style="{StaticResource ValBox}"
+                             ctrl:InputFilter.HexOnly="True"
+                             Text="{Binding Value, UpdateSourceTrigger=LostFocus}"
+                             ToolTip="Hex digits only (e.g. FF, 4D5A)"/>
+                </DataTemplate>
+                <DataTemplate x:Key="ValStringDisplay">
+                    <TextBox Style="{StaticResource ValBox}"
+                             Text="{Binding Value, UpdateSourceTrigger=LostFocus}"/>
+                </DataTemplate>
+
+                <!-- ── Template selector ───────────────────────────────── -->
+                <ctrl:VariableValueTemplateSelector x:Key="ValueSelector"
+                    BoolTemplate="{StaticResource ValBoolDisplay}"
+                    IntTemplate="{StaticResource ValIntDisplay}"
+                    FloatTemplate="{StaticResource ValFloatDisplay}"
+                    HexTemplate="{StaticResource ValHexDisplay}"
+                    StringTemplate="{StaticResource ValStringDisplay}"/>
             </DataGrid.Resources>
 
             <DataGrid.Columns>
@@ -98,10 +143,9 @@
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
 
-                <!-- Initial Value -->
-                <DataGridTextColumn Header="Initial Value" Width="100"
-                                    Binding="{Binding Value, UpdateSourceTrigger=LostFocus}"
-                                    FontFamily="Consolas"/>
+                <!-- Initial Value — control varies by Type -->
+                <DataGridTemplateColumn Header="Initial Value" Width="120"
+                                        CellTemplateSelector="{StaticResource ValueSelector}"/>
 
                 <!-- Description -->
                 <DataGridTextColumn Header="Description" Width="*"

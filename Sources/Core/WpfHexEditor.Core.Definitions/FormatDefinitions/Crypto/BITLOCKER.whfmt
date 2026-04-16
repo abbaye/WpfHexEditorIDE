@@ -1,0 +1,227 @@
+{
+  "diffMode": "binary",
+  "formatName": "BitLocker Encrypted Volume",
+  "version": "1.0",
+  "extensions": [ ".vhd", ".img" ],
+  "description": "BitLocker Drive Encryption volume format used by Microsoft Windows. The volume begins with a modified FAT/NTFS boot sector whose OEM ID at offset 3 is '-FVE-FS-' (8 bytes: 0x2D 0x46 0x56 0x45 0x2D 0x46 0x53 0x2D) instead of the usual 'NTFS    ' or 'MSDOS5.0'. BitLocker replaces the standard BPB (BIOS Parameter Block) with a FVE (Full Volume Encryption) header that records the encryption method, volume header offset, metadata block locations, and GUID. The encryption method is stored in the FVE metadata and maps to: 0x2003=AES-CBC 128-bit, 0x2004=AES-CBC 256-bit, 0x2005=AES-XTS 128-bit, 0x2006=AES-XTS 256-bit. The entire volume payload is encrypted; only the first sector header fields are plaintext. Three copies of FVE metadata exist at different offsets for redundancy. BitLocker uses a VMK (Volume Master Key) protected by a KP (Key Protector) which may be a password, TPM, recovery key, or smart card.",
+  "category": "Crypto",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "HexEditor",
+  "references": [
+    "https://docs.microsoft.com/en-us/windows/security/information-protection/bitlocker/bitlocker-overview",
+    "https://github.com/libyal/libbde/blob/main/documentation/BitLocker%20Drive%20Encryption%20(BDE)%20format.asciidoc",
+    "https://en.wikipedia.org/wiki/BitLocker"
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "value": "2D4656452D46532D",
+        "offset": 3,
+        "label": "'-FVE-FS-' — BitLocker OEM ID at offset 3 of boot sector (replaces NTFS/FAT OEM field)",
+        "weight": 1.0
+      }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.9,
+    "Strength": "Strong",
+    "EntropyHint": {
+      "min": 7.5,
+      "max": 8.0,
+      "description": "High entropy expected due to AES-XTS or AES-CBC full-volume encryption; entropy near 8.0 over payload sectors"
+    },
+    "validation": "Verify OEM ID bytes at offset 3 equal exactly 2D 46 56 45 2D 46 53 2D; bytesPerSector field at offset 11 must be one of 512, 1024, 2048, or 4096"
+  },
+  "variables": {},
+  "blocks": [
+    {
+      "name": "btlkJmpBoot",
+      "offset": 0,
+      "size": 3,
+      "type": "bytes",
+      "description": "Jump boot instruction — 3 bytes at offset 0; standard x86 jump opcode (0xEB xx 0x90 or 0xE9 xx xx) used in all FAT/NTFS-compatible boot sectors before the OEM ID",
+      "storeAs": "btlkJmpBoot"
+    },
+    {
+      "name": "btlkSignature",
+      "offset": 3,
+      "size": 8,
+      "type": "ascii",
+      "description": "BitLocker OEM ID signature — 8 bytes at offset 3; ASCII value '-FVE-FS-' (0x2D 0x46 0x56 0x45 0x2D 0x46 0x53 0x2D); this string uniquely identifies a BitLocker-encrypted volume and replaces the standard 'NTFS    ' or 'MSDOS5.0' OEM identifier",
+      "storeAs": "btlkSignature"
+    },
+    {
+      "name": "btlkBytesPerSector",
+      "offset": 11,
+      "size": 2,
+      "type": "uint16",
+      "endian": "LE",
+      "description": "Bytes per sector — 2-byte little-endian unsigned integer at offset 11; valid values are 512, 1024, 2048, or 4096 matching the underlying storage sector size; part of the BIOS Parameter Block structure inherited from FAT/NTFS layout",
+      "storeAs": "btlkBytesPerSector",
+      "valueMap": {
+        "512": "512 bytes/sector (standard HDD/SSD)",
+        "1024": "1024 bytes/sector",
+        "2048": "2048 bytes/sector (optical/advanced format)",
+        "4096": "4096 bytes/sector (4Kn Advanced Format)"
+      }
+    },
+    {
+      "name": "btlkSectorsPerCluster",
+      "offset": 13,
+      "size": 1,
+      "type": "uint8",
+      "description": "Sectors per cluster — 1-byte unsigned integer at offset 13; power-of-two value (1, 2, 4, 8, 16, 32, 64) indicating the allocation unit size; determines the cluster size = bytesPerSector * sectorsPerCluster",
+      "storeAs": "btlkSectorsPerCluster"
+    },
+    {
+      "name": "btlkEncMethod",
+      "offset": 236,
+      "size": 4,
+      "type": "uint32",
+      "endian": "LE",
+      "description": "Encryption method identifier — 4-byte little-endian unsigned integer located within the FVE metadata area; specifies the symmetric encryption algorithm and key size used for the volume: 0x2003=AES-CBC 128-bit (with Elephant Diffuser), 0x2004=AES-CBC 256-bit (with Elephant Diffuser), 0x2005=AES-XTS 128-bit (Windows 10+), 0x2006=AES-XTS 256-bit (Windows 10+). Note: actual FVE metadata offset varies; this field is illustrative of the FVE header structure",
+      "storeAs": "btlkEncMethod",
+      "valueMap": {
+        "0x2003": "AES-CBC 128-bit",
+        "0x2004": "AES-CBC 256-bit",
+        "0x2005": "AES-XTS 128-bit",
+        "0x2006": "AES-XTS 256-bit"
+      }
+    },
+    {
+      "name": "btlkFveMetadata1Offset",
+      "offset": 176,
+      "size": 8,
+      "type": "uint64",
+      "endian": "LE",
+      "description": "FVE metadata block 1 offset — 8-byte little-endian unsigned integer at offset 176 in the BitLocker boot sector pointing to the first copy of the Full Volume Encryption metadata structure; BitLocker stores three redundant copies of this metadata",
+      "storeAs": "btlkFveMetadata1Offset"
+    },
+    {
+      "name": "btlkVolumeGuid",
+      "offset": 160,
+      "size": 16,
+      "type": "bytes",
+      "description": "BitLocker volume GUID — 16 bytes at offset 160 in the FVE boot sector storing the GUID that uniquely identifies this BitLocker volume; used by Windows to locate the correct key protector in the TPM or Active Directory",
+      "storeAs": "btlkVolumeGuid"
+    }
+  ],
+  "assertions": [
+    {
+      "field": "btlkSignature",
+      "op": "eq",
+      "value": "-FVE-FS-",
+      "description": "OEM ID must equal '-FVE-FS-' to confirm BitLocker encryption; any other value indicates a non-BitLocker volume"
+    },
+    {
+      "field": "btlkBytesPerSector",
+      "op": "in",
+      "value": [ 512, 1024, 2048, 4096 ],
+      "description": "Bytes per sector must be a valid power-of-two sector size (512, 1024, 2048, or 4096)"
+    },
+    {
+      "field": "btlkSectorsPerCluster",
+      "op": "in",
+      "value": [ 1, 2, 4, 8, 16, 32, 64 ],
+      "description": "Sectors per cluster must be a power of two between 1 and 64"
+    }
+  ],
+  "navigation": {
+    "entryPoint": "btlkJmpBoot",
+    "sections": [
+      { "name": "Boot Sector Header", "offset": 0, "size": 512 },
+      { "name": "FVE Metadata (primary)", "offsetVar": "btlkFveMetadata1Offset", "size": 65536 },
+      { "name": "Encrypted Payload", "offset": 2097152, "description": "Encrypted volume content — offsets vary by configuration" }
+    ]
+  },
+  "inspector": {
+    "badge": "BL",
+    "primaryField": "btlkSignature",
+    "groups": [
+      {
+        "name": "Volume Identity",
+        "fields": [ "btlkSignature", "btlkVolumeGuid" ]
+      },
+      {
+        "name": "Geometry",
+        "fields": [ "btlkBytesPerSector", "btlkSectorsPerCluster" ]
+      },
+      {
+        "name": "Encryption",
+        "fields": [ "btlkEncMethod", "btlkFveMetadata1Offset" ]
+      },
+      {
+        "name": "Boot Code",
+        "fields": [ "btlkJmpBoot" ]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "BitLocker Volume Summary",
+      "format": "txt",
+      "template": "BitLocker Volume\n================\nSignature : {btlkSignature}\nVolume GUID: {btlkVolumeGuid}\nBytes/Sector: {btlkBytesPerSector}\nSectors/Cluster: {btlkSectorsPerCluster}\nEncryption Method: {btlkEncMethod}\nFVE Metadata Offset: {btlkFveMetadata1Offset}\n"
+    },
+    {
+      "name": "BitLocker Forensic Report (CSV)",
+      "format": "csv",
+      "template": "Field,Value\nSignature,{btlkSignature}\nVolumeGUID,{btlkVolumeGuid}\nBytesPerSector,{btlkBytesPerSector}\nSectorsPerCluster,{btlkSectorsPerCluster}\nEncryptionMethod,{btlkEncMethod}\nFVEMetadata1Offset,{btlkFveMetadata1Offset}\n"
+    }
+  ],
+  "forensic": {
+    "importance": "HIGH",
+    "riskLevel": "critical",
+    "notes": "BitLocker-encrypted volumes contain fully encrypted payloads — file contents are inaccessible without the VMK (Volume Master Key) or a valid key protector (TPM state, recovery key, password, or smart card certificate). Forensic acquisition must capture the raw volume image before decryption. Recovery keys may be backed up to Active Directory, Azure AD, or Microsoft Account. The FVE metadata area (three redundant copies) contains key protector information and algorithm identifiers. Use tools such as BitCracker, Elcomsoft Forensic Disk Decryptor, or libbitlocker for analysis. The GUID at offset 160 can be used to query AD for an escrowed recovery key.",
+    "indicators": [
+      "OEM ID '-FVE-FS-' at offset 3",
+      "High entropy (>7.5 bits/byte) throughout payload sectors",
+      "Three FVE metadata block offsets in first sector",
+      "BitLocker GUID at offset 160"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "BitLocker is Microsoft's full-volume encryption solution integrated into Windows Vista and later. The volume header mimics a FAT/NTFS BPB layout but replaces the OEM ID with '-FVE-FS-'. The payload is encrypted with AES-CBC (older) or AES-XTS (Windows 10+). Three redundant FVE metadata copies protect against corruption. The VMK is wrapped by one or more key protectors stored in the FVE metadata.",
+    "suggestedInspections": [
+      "Verify '-FVE-FS-' OEM ID at offset 3 and confirm no corruption in the first 512 bytes",
+      "Locate all three FVE metadata copies using pointers in the boot sector and compare for consistency",
+      "Extract the BitLocker GUID and query Active Directory or Microsoft Account for an escrowed recovery key",
+      "Identify the encryption method (AES-CBC vs AES-XTS) and key size from the FVE metadata to assess decryption feasibility",
+      "Measure payload entropy — values near 8.0 bits/byte confirm active encryption; lower values may indicate partial encryption or a decrypted mount",
+      "Check for key protector types in FVE metadata: TPM, password, recovery key, smart card, or network unlock"
+    ]
+  },
+  "software": [
+    { "name": "BitLocker Drive Encryption", "vendor": "Microsoft", "url": "https://docs.microsoft.com/en-us/windows/security/information-protection/bitlocker/" },
+    { "name": "Elcomsoft Forensic Disk Decryptor", "vendor": "Elcomsoft", "url": "https://www.elcomsoft.com/efdd.html" },
+    { "name": "libbde", "vendor": "libyal / Joachim Metz", "url": "https://github.com/libyal/libbde" },
+    { "name": "Autopsy (BitLocker plugin)", "vendor": "Basis Technology", "url": "https://www.autopsy.com" },
+    { "name": "FTK Imager", "vendor": "AccessData / Exterro", "url": "https://www.exterro.com/ftk-imager" }
+  ],
+  "formatRelationships": [
+    { "format": "LUKS", "relationship": "Equivalent full-volume encryption for Linux (LUKS) vs Windows (BitLocker)" },
+    { "format": "VERACRYPT", "relationship": "VeraCrypt can create volumes that coexist with BitLocker-managed partitions; both use AES" },
+    { "format": "NTFS", "relationship": "BitLocker encrypts NTFS volumes; the decrypted content is an NTFS file system" },
+    { "format": "VHD", "relationship": "BitLocker-encrypted VHD/VHDX container files use the same FVE header structure" }
+  ],
+  "MimeTypes": [ "application/octet-stream" ],
+  "UseCases": [
+    "Full-disk encryption of Windows system and data drives",
+    "Portable encrypted VHD containers",
+    "Compliance-driven data protection (HIPAA, PCI-DSS, SOX)",
+    "Forensic acquisition and analysis of encrypted Windows systems",
+    "Recovery key extraction and volume decryption in digital forensics"
+  ],
+  "QualityMetrics": {
+    "LastUpdated": "2026-04-15",
+    "CompletenessScore": 88,
+    "ReviewedBy": "WPFHexaEditor Team"
+  },
+  "TechnicalDetails": {
+    "headerSize": 512,
+    "minimumFileSize": 4096,
+    "endianness": "LittleEndian",
+    "encryptionAlgorithms": [ "AES-CBC-128", "AES-CBC-256", "AES-XTS-128", "AES-XTS-256" ],
+    "keyDerivation": "PBKDF2 (password protector) or TPM-sealed key",
+    "metadataRedundancy": 3,
+    "fveMetadataCopies": "Three copies stored at offsets recorded in boot sector at offsets 176, 184, 192"
+  }
+}

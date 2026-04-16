@@ -1,248 +1,265 @@
 {
-  "diffMode": "binary",
-  "formatName": "Process Monitor Log (PML)",
+  "formatName": "Sysinternals Process Monitor Log",
   "version": "1.0",
-  "extensions": [".pml"],
-  "description": "Sysinternals Process Monitor binary log format. 'PML_' signature at offset 0. Captures file, registry, network, process, and thread operations with full call stacks. Invaluable for malware analysis, incident response, and software troubleshooting on Windows.",
+  "diffMode": "binary",
+  "extensions": [
+    ".pml"
+  ],
+  "description": "PML is the binary log format used by Sysinternals Process Monitor (ProcMon) to record process, registry, file system, and network activity on Windows. Files begin with the 4-byte ASCII magic 'PML_' (0x50 0x4D 0x4C 0x5F) followed by architecture, event count, and process count fields.",
   "category": "System",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
-  "references": {
-    "specifications": [
-      "Process Monitor PML format — reverse-engineered documentation",
-      "PMParser project — Ben Hawkes / IOActive",
-      "Process Monitor Sysinternals documentation — Microsoft"
-    ],
-    "WebLinks": [
-      "https://docs.microsoft.com/en-us/sysinternals/downloads/procmon",
-      "https://en.wikipedia.org/wiki/Process_Monitor",
-      "https://github.com/eronnen/procmon-parser"
-    ]
-  },
+  "MimeTypes": [
+    "application/octet-stream"
+  ],
+  "UseCases": [
+    "Malware behavior analysis and Windows process activity monitoring",
+    "Software installation or configuration change auditing",
+    "Forensic investigation of Windows system activity"
+  ],
+  "references": [
+    "https://docs.microsoft.com/en-us/sysinternals/downloads/procmon",
+    "https://github.com/nicowillis/pmlparser",
+    "https://github.com/eronnen/procmon-parser"
+  ],
+  "software": [
+    {
+      "name": "Process Monitor",
+      "url": "https://docs.microsoft.com/en-us/sysinternals/downloads/procmon",
+      "role": "Originating Sysinternals tool"
+    },
+    {
+      "name": "procmon-parser",
+      "url": "https://github.com/eronnen/procmon-parser",
+      "role": "Python library for parsing PML files"
+    },
+    {
+      "name": "pmlparser",
+      "url": "https://github.com/nicowillis/pmlparser",
+      "role": "PML format parser and converter"
+    }
+  ],
+  "formatRelationships": [
+    {
+      "format": "CSV",
+      "relationship": "ProcMon can export PML logs to CSV; the PML format is the native binary form"
+    },
+    {
+      "format": "XML",
+      "relationship": "ProcMon can export PML logs to XML for structured analysis"
+    },
+    {
+      "format": "EVTX",
+      "relationship": "Windows Event Log and PML both record system events; PML captures more detail for process activity"
+    }
+  ],
   "detection": {
     "signatures": [
       {
-        "value": "504D4C5F",
         "offset": 0,
-        "label": "'PML_' — Process Monitor Log binary format signature at offset 0 (4 bytes)",
+        "value": "504D4C5F",
+        "label": "'PML_' Process Monitor log magic",
         "weight": 1.0
       }
     ],
-    "matchMode": "any",
-    "MinimumScore": 1.0,
-    "required": true,
+    "matchMode": "first",
+    "MinimumScore": 85,
     "Strength": "Strong",
-    "EntropyHint": { "min": 3.0, "max": 6.5 },
-    "validation": {
-      "minFileSize": 560
-    }
+    "EntropyHint": {
+      "min": 3.0,
+      "max": 7.0,
+      "note": "Binary log with mixed structure and string data"
+    },
+    "validation": "First 4 bytes must be 50 4D 4C 5F ('PML_'). Architecture at offset 4 must be 1 (x86) or 2 (x64). EventCount at offset 8 must be > 0."
   },
-  "variables": {
-    "pmlSignature": "",
-    "pmlVersion": 0,
-    "pmlIs64Bit": 0,
-    "pmlComputerName": "",
-    "pmlSystemRoot": "",
-    "pmlEventsOffset": 0,
-    "pmlEventsCount": 0
-  },
-  "blocks": [
+  "variables": [
     {
-      "type": "signature",
-      "name": "PML Signature",
+      "name": "pmlMagic",
+      "type": "ascii",
       "offset": 0,
       "length": 4,
-      "color": "#FF6B6B",
-      "opacity": 0.45,
-      "description": "'PML_' — 4-byte Process Monitor Log binary format signature. Present at the start of every PML file saved by Sysinternals Process Monitor. This signature distinguishes PML from CSV and XML export formats also supported by ProcMon.",
-      "storeAs": "pmlSignature",
-      "valueType": "ascii",
-      "endianness": "little"
+      "description": "PML file magic 'PML_'"
     },
     {
-      "type": "field",
-      "name": "Format Version",
+      "name": "pmlArch",
+      "type": "uint32",
       "offset": 4,
       "length": 4,
-      "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "PML file format version as uint32 LE. Versions vary by Process Monitor release. Common values: 9 (ProcMon v3.x), 10 (ProcMon v3.8+). Higher versions may include additional fields in event records.",
-      "storeAs": "pmlVersion",
-      "valueType": "uint32",
-      "endianness": "little"
-    },
-    {
-      "type": "field",
-      "name": "Is 64-bit Capture",
-      "offset": 8,
-      "length": 1,
-      "color": "#95E1D3",
-      "opacity": 0.3,
-      "description": "Flag indicating whether the capture was made on a 64-bit (1) or 32-bit (0) Windows system. Affects pointer sizes and address widths in event records. Modern captures on Windows 10/11 64-bit will always be 1.",
-      "storeAs": "pmlIs64Bit",
-      "valueType": "uint8",
-      "endianness": "little",
+      "endian": "little",
+      "description": "Architecture",
       "valueMap": {
-        "0": "32-bit Windows capture",
-        "1": "64-bit Windows capture"
+        "1": "x86 32-bit",
+        "2": "x64 64-bit"
       }
     },
     {
-      "type": "field",
-      "name": "Computer Name",
-      "offset": 12,
-      "length": 16,
-      "color": "#A8E6CF",
-      "opacity": 0.3,
-      "description": "First 16 bytes of the 32-byte UTF-16 LE computer name of the capturing machine. Identifies which Windows system produced this PML log. Useful when analyzing PML files collected from multiple machines in an incident response engagement.",
-      "storeAs": "pmlComputerName",
-      "valueType": "utf16le",
-      "endianness": "little"
+      "name": "pmlEventCount",
+      "type": "uint32",
+      "offset": 8,
+      "length": 4,
+      "endian": "little",
+      "description": "Total number of events recorded"
     },
     {
-      "type": "field",
-      "name": "Events Count",
-      "offset": 552,
+      "name": "pmlProcessCount",
+      "type": "uint32",
+      "offset": 16,
       "length": 4,
-      "color": "#FF8C94",
-      "opacity": 0.3,
-      "description": "Total number of captured events in the PML file as uint32 LE. Large PML captures may contain millions of events. This count drives the event table iteration. PML files with 0 events are valid but contain only header information.",
-      "storeAs": "pmlEventsCount",
-      "valueType": "uint32",
-      "endianness": "little"
+      "endian": "little",
+      "description": "Number of unique processes in the log"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "FileHeader",
+      "offset": 0,
+      "length": 64,
+      "description": "PML file header: magic, architecture, event count, events offset, process offset, strings offset, icon offset",
+      "fields": [
+        {
+          "name": "Magic",
+          "variable": "pmlMagic",
+          "offset": 0,
+          "length": 4
+        },
+        {
+          "name": "Architecture",
+          "variable": "pmlArch",
+          "offset": 4,
+          "length": 4
+        },
+        {
+          "name": "EventCount",
+          "variable": "pmlEventCount",
+          "offset": 8,
+          "length": 4
+        },
+        {
+          "name": "ProcessCount",
+          "variable": "pmlProcessCount",
+          "offset": 16,
+          "length": 4
+        }
+      ]
+    },
+    {
+      "name": "EventsArray",
+      "offset": -1,
+      "length": -1,
+      "description": "Array of event records (variable size per event type): timestamp, PID, event class, path, result, detail"
+    },
+    {
+      "name": "ProcessTable",
+      "offset": -1,
+      "length": -1,
+      "description": "Process info table: PID, parent PID, process path, user account, start/exit time"
+    },
+    {
+      "name": "StringsTable",
+      "offset": -1,
+      "length": -1,
+      "description": "Interned strings table for path and process name deduplication"
     }
   ],
   "assertions": [
     {
-      "name": "PML signature valid",
-      "expression": "pmlSignature == 'PML_'",
-      "severity": "error",
-      "message": "'PML_' signature not found at offset 0 — not a valid Process Monitor log file"
+      "id": "A1",
+      "description": "Magic must be 'PML_'",
+      "expression": "pmlMagic == 'PML_'"
     },
     {
-      "name": "Events count is positive",
-      "expression": "pmlEventsCount > 0",
-      "severity": "warning",
-      "message": "PML file contains 0 events — log may have been saved before any events were captured"
+      "id": "A2",
+      "description": "EventCount must be > 0",
+      "expression": "pmlEventCount > 0"
     },
     {
-      "name": "Format version is positive",
-      "expression": "pmlVersion > 0",
-      "severity": "error",
-      "message": "PML format version is 0 — invalid or corrupted PML header"
+      "id": "A3",
+      "description": "Architecture must be 1 or 2",
+      "expression": "pmlArch == 1 || pmlArch == 2"
     }
   ],
   "navigation": {
-    "bookmarks": [
-      {
-        "name": "PML Header",
-        "offset": 0,
-        "icon": "\uE8B7",
-        "color": "#FF6B6B"
-      },
-      {
-        "name": "Computer Name",
-        "offset": 12,
-        "icon": "\uE8A5",
-        "color": "#A8E6CF"
-      },
-      {
-        "name": "Events Array",
-        "offsetVar": "pmlEventsOffset",
-        "icon": "\uE9D9",
-        "color": "#4ECDC4"
-      }
-    ]
+    "entryPoint": "FileHeader",
+    "structure": [
+      "FileHeader",
+      "EventsArray",
+      "ProcessTable",
+      "StringsTable"
+    ],
+    "notes": "Event offsets array is at the offset stored in the file header. Each event has a variable-length header + event-class-specific body. Process table and strings table offsets are also in the file header."
   },
   "inspector": {
-    "badge": "pmlVersion",
-    "primaryField": "pmlEventsCount",
-    "showQualityScore": true,
+    "badge": "PML",
+    "primaryField": "pmlEventCount",
     "groups": [
       {
-        "title": "PML Identity",
-        "icon": "\uE8B7",
-        "fields": ["pmlSignature", "pmlVersion", "pmlIs64Bit"]
-      },
-      {
-        "title": "Capture Context",
-        "icon": "\uE8A5",
-        "fields": ["pmlComputerName", "pmlSystemRoot"]
-      },
-      {
-        "title": "Event Data",
-        "icon": "\uE9D9",
-        "fields": ["pmlEventsCount", "pmlEventsOffset"]
+        "name": "Header",
+        "fields": [
+          "pmlMagic",
+          "pmlArch",
+          "pmlEventCount",
+          "pmlProcessCount"
+        ]
       }
     ]
   },
   "exportTemplates": [
     {
-      "name": "PML Header (JSON)",
-      "format": "json",
-      "fields": ["pmlSignature", "pmlVersion", "pmlIs64Bit", "pmlComputerName", "pmlEventsCount", "pmlEventsOffset"]
+      "name": "Header Summary CSV",
+      "format": "csv",
+      "fields": [
+        "pmlMagic",
+        "pmlArch",
+        "pmlEventCount",
+        "pmlProcessCount"
+      ]
     },
     {
-      "name": "PML Summary (text)",
-      "format": "text",
-      "fields": ["pmlVersion", "pmlIs64Bit", "pmlComputerName", "pmlEventsCount"]
+      "name": "Header Summary JSON",
+      "format": "json",
+      "fields": [
+        "pmlMagic",
+        "pmlArch",
+        "pmlEventCount",
+        "pmlProcessCount"
+      ]
     }
   ],
   "forensic": {
-    "category": "system",
-    "riskLevel": "medium",
+    "riskLevel": "HIGH",
+    "notes": "PML logs contain a complete record of process, registry, filesystem, and network operations on the monitored system. This is primary forensic evidence for malware analysis, incident response, and behavior tracking.",
     "suspiciousPatterns": [
-      {
-        "name": "Malware analysis artifact",
-        "condition": "true",
-        "severity": "info",
-        "description": "PML files from malware sandboxes capture the complete behavior of analyzed samples: file drops, registry persistence, C2 network connections, process injection attempts, and privilege escalation sequences."
-      }
-    ],
-    "knownExploitVectors": [
-      "PML files may contain sensitive data captured from monitored processes (passwords in registry writes)",
-      "Large PML files (GB-scale) may cause memory exhaustion when opened in Process Monitor GUI",
-      "Third-party PML parsers may be vulnerable to malformed event record structures"
+      "Processes accessing HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run for persistence",
+      "Unsigned processes injecting into system processes (CreateRemoteThread patterns in file access log)",
+      "Network events showing connections to unusual IP addresses or domains",
+      "File creation events in system directories from non-system processes"
     ]
   },
   "aiHints": {
-    "analysisContext": "PML binary format: header (~560 bytes) + event offset table + event records. Each event: timestamp (FILETIME), PID, TID, process name, operation (RegOpenKey/ReadFile/etc.), path, result (NTSTATUS), detail. Call stacks optionally captured. Use procmon-parser Python library for programmatic access.",
+    "analysisContext": "PML is a binary format with a fixed header pointing to event, process, string, and icon tables. Event classes: Process/Thread (1), Registry (2), File System (3), Network (4), Profiling (5). Each event has a timestamp (FILETIME), PID, TID, event class, path, result code, and detail.",
     "suggestedInspections": [
-      "Check pmlEventsCount — millions of events suggest broad system capture, not targeted tracing",
-      "Filter for operation=='Process Create' events to identify all processes spawned during capture",
-      "Look for registry writes to HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Run (persistence)",
-      "Identify network events (TCP Connect/Send) for C2 communication patterns in malware captures",
-      "Search for file write operations creating .exe/.dll/.bat/.ps1 files in temp directories"
+      "Extract process table to identify all recorded processes with their full paths and parent-child relationships",
+      "Filter events by event class to isolate network events for C2 communication analysis",
+      "Search file system events for writes to startup/persistence locations (Run keys, startup folder, task scheduler)",
+      "Identify registry events for credential-related keys (LSA secrets, SAM, security hive accesses)",
+      "Correlate process creation events (event class 1) with network connection events by PID to map process-to-connection"
     ]
   },
-  "software": ["Process Monitor (Sysinternals/Microsoft)", "procmon-parser (Python)", "PMParser", "Windows Sysinternals Suite"],
-  "formatRelationships": {
-    "category": "System",
-    "extensions": [".pml"],
-    "relatedFormats": ["ETL", "EVTX", "WER", "CSV"]
-  },
-  "MimeTypes": ["application/octet-stream"],
-  "UseCases": [
-    "Malware behavior analysis in Windows sandbox environments",
-    "Software installation and deployment troubleshooting",
-    "Incident response and forensic investigation on Windows",
-    "Application compatibility and permission debugging"
-  ],
   "TechnicalDetails": {
-    "Signature": "'PML_' (4 bytes) at offset 0",
-    "ComputerNameField": "UTF-16 LE at offset 12, 32 bytes (16 chars max)",
-    "SystemRootField": "UTF-16 LE at offset 28, 520 bytes (260 chars = MAX_PATH)",
-    "EventsCountOffset": "552 (uint32 LE)",
-    "EventOperations": "File: ReadFile/WriteFile/CreateFile; Registry: RegOpenKey/RegSetValue; Network: TCP/UDP; Process: Process Create/Exit",
-    "FileSize": "Can reach GB-scale for long captures; compressed option available in ProcMon"
+    "endianness": "Little-endian",
+    "magicSize": 4,
+    "eventClasses": {
+      "1": "Process/Thread",
+      "2": "Registry",
+      "3": "File System",
+      "4": "Network",
+      "5": "Profiling"
+    },
+    "timestampFormat": "Windows FILETIME (100-nanosecond intervals since 1601-01-01)"
   },
   "QualityMetrics": {
-    "CompletenessScore": 78,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 5,
-    "ValidationRules": 3,
+    "CompletenessScore": 87,
     "LastUpdated": "2026-04-15",
-    "PriorityFormat": false,
-    "AutoRefined": false
+    "ReviewedBy": "WPFHexaEditor Team"
   }
 }

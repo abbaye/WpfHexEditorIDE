@@ -1,0 +1,213 @@
+{
+  "diffMode": "text",
+  "formatName": "FASTQ DNA Sequencing Reads",
+  "version": "1.0",
+  "extensions": [".fastq", ".fq", ".fastq.gz"],
+  "description": "FASTQ is a text-based format for storing nucleotide sequences together with their per-base quality scores. Each record spans exactly four lines: (1) a sequence identifier line beginning with '@', (2) the raw nucleotide sequence using characters A, C, G, T, and N for ambiguous bases, (3) a separator line beginning with '+' (optionally followed by the same identifier), and (4) the quality score string encoded as ASCII characters where each character minus 33 gives the Phred quality score (range Q0-Q93). FASTQ is the standard output format for Illumina, PacBio, and Oxford Nanopore sequencing instruments. It is paired with FASTA files for reference genome alignment using tools such as BWA, Bowtie2, HISAT2, and STAR.",
+  "category": "Science",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "text-editor",
+  "references": {
+    "specifications": [
+      "Cock PJ et al. (2010) The Sanger FASTQ file format for sequences with quality scores, NAR 38(6):1767-71",
+      "Illumina BCL to FASTQ conversion documentation",
+      "NCBI SRA FASTQ format specification"
+    ],
+    "WebLinks": [
+      "https://en.wikipedia.org/wiki/FASTQ_format",
+      "https://www.ncbi.nlm.nih.gov/sra/docs/submitformats/",
+      "https://support.illumina.com/help/BaseSpace_Sequence_Hub_OLH_009008/Content/Source/Informatics/BS/FileFormat_FASTQ-files_swBS.htm"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      {
+        "value": "40",
+        "offset": 0,
+        "label": "'@' — FASTQ record identifier line start",
+        "weight": 0.7
+      }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.4,
+    "Strength": "Medium",
+    "EntropyHint": "Low — text format with restricted alphabet (A/C/G/T/N + quality ASCII)"
+  },
+  "variables": {
+    "fastqAtSign": 0,
+    "fastqFirstIdByte": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "Record Identifier Marker",
+      "offset": 0,
+      "length": 1,
+      "color": "#FF6B6B",
+      "opacity": 0.45,
+      "description": "Single '@' character (0x40) that marks the start of a FASTQ record identifier line. Every FASTQ record begins with this byte. The '@' is immediately followed by a read name (instrument ID, flow cell, lane, tile, x, y coordinates for Illumina) and optional description separated by a space.",
+      "storeAs": "fastqAtSign",
+      "valueType": "uint8"
+    },
+    {
+      "type": "field",
+      "name": "First ID Byte",
+      "offset": 1,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "First character of the read identifier following the '@' marker. For Illumina reads this is typically a letter or digit from the instrument serial number. For SRA-downloaded reads it is often 'S', 'E', or 'D' (SRR, ERR, DRR accession prefixes).",
+      "storeAs": "fastqFirstIdByte",
+      "valueType": "uint8"
+    },
+    {
+      "type": "field",
+      "name": "Sequence Line",
+      "offset": "dynamic",
+      "length": "dynamic",
+      "color": "#95E1D3",
+      "opacity": 0.30,
+      "description": "Nucleotide sequence using IUPAC single-letter codes. Primary characters: A (adenine), C (cytosine), G (guanine), T (thymine), N (ambiguous). The length of this line defines the read length (typically 75-300 bp for short reads, up to 1 Mb for long reads).",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Separator Line",
+      "offset": "dynamic",
+      "length": "dynamic",
+      "color": "#FFE66D",
+      "opacity": 0.30,
+      "description": "Separator line beginning with '+' (0x2B). May contain a repeat of the sequence identifier or nothing after the '+'. Serves as a visual delimiter between the sequence and quality score lines.",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Quality Score Line",
+      "offset": "dynamic",
+      "length": "dynamic",
+      "color": "#C3A6FF",
+      "opacity": 0.30,
+      "description": "Per-base quality scores encoded as ASCII characters. The Phred quality score Q = ASCII(char) - 33. Phred+33 encoding (Illumina 1.8+): '!' = Q0, 'I' = Q40. Score Q30 means 99.9% base-call accuracy. Must be exactly the same length as the sequence line.",
+      "valueType": "ascii"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "FirstByteIsAt",
+      "expression": "fastqAtSign == 0x40",
+      "severity": "error",
+      "message": "First byte is not '@' (0x40). File is not a valid FASTQ file. Check if file is gzip-compressed (.fastq.gz) and needs decompression before parsing."
+    },
+    {
+      "name": "QualityAsciiRange",
+      "expression": "qualityBytesInRange(33, 126)",
+      "severity": "info",
+      "message": "Quality score characters should be in ASCII range 33 ('!') to 126 ('~'). Values outside this range indicate non-standard encoding or file corruption."
+    },
+    {
+      "name": "PlusLineSeparator",
+      "expression": "line3StartsWithPlus",
+      "severity": "warning",
+      "message": "Line 3 of the first record should start with '+'. Missing separator line indicates malformed FASTQ."
+    },
+    {
+      "name": "SequenceQualityLengthMatch",
+      "expression": "sequenceLength == qualityLength",
+      "severity": "error",
+      "message": "Sequence length does not match quality score length. FASTQ requires these to be identical per record."
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "Record 1 Identifier", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
+      { "name": "Sequence Line", "offset": "dynamic", "icon": "\uE8B7", "color": "#95E1D3" },
+      { "name": "Quality Scores", "offset": "dynamic", "icon": "\uE9D9", "color": "#C3A6FF" }
+    ]
+  },
+  "inspector": {
+    "badge": "FQ",
+    "primaryField": "fastqFirstIdByte",
+    "groups": [
+      {
+        "title": "Record Header",
+        "icon": "\uE71B",
+        "fields": ["fastqAtSign", "fastqFirstIdByte"]
+      },
+      {
+        "title": "Sequence Data",
+        "icon": "\uE8B7",
+        "fields": ["sequenceLine", "separatorLine", "qualityLine"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "FASTQ Record Header (JSON)",
+      "format": "json",
+      "fields": ["fastqAtSign", "fastqFirstIdByte"]
+    },
+    {
+      "name": "FASTQ Stats (CSV)",
+      "format": "csv",
+      "fields": ["readId", "sequenceLength", "averageQuality", "minQuality", "maxQuality"]
+    }
+  ],
+  "forensic": {
+    "riskLevel": "LOW",
+    "notes": "FASTQ files may contain patient genomic data; handle as PHI in clinical settings.",
+    "suspiciousPatterns": [
+      "Quality scores outside 33-126 ASCII range may indicate data corruption or non-standard encoding",
+      "Binary bytes embedded in sequence lines (possible corruption or steganography)",
+      "Non-IUPAC characters in nucleotide sequence lines"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "FASTQ is a 4-line-per-record text format. Line 1: '@' + read ID (Illumina: @instrument:run:flowcell:lane:tile:x:y). Line 2: nucleotide sequence (ACGTN). Line 3: '+' separator. Line 4: quality scores (Phred+33 ASCII). For gzip-compressed files (.fastq.gz), decompress first. Read count = total lines / 4.",
+    "suggestedInspections": [
+      "Verify first byte is 0x40 ('@') and line 3 starts with '+' for FASTQ record structure validation",
+      "Count total lines and divide by 4 to determine read count; check for non-divisible line count (truncated file)",
+      "Decode quality score line: subtract 33 from each ASCII value to get Phred Q scores; flag reads with mean Q < 20",
+      "Inspect read ID format to identify sequencing platform: Illumina, PacBio, or Oxford Nanopore",
+      "Check N-content in sequence line: high N% indicates low-quality base calls or adapter contamination",
+      "Scan for adapter sequences (TruSeq: AGATCGGAAGAGC, Nextera: CTGTCTCTTATACACATCT) in sequence lines"
+    ]
+  },
+  "software": [
+    "FastQC (quality control)",
+    "Trimmomatic (adapter trimming)",
+    "BWA (alignment)",
+    "STAR (RNA-seq aligner)",
+    "GATK (variant calling)",
+    "MultiQC (aggregated QC reports)"
+  ],
+  "formatRelationships": [
+    { "format": "FASTA", "relation": "parent — FASTQ extends FASTA with quality scores" },
+    { "format": "SAM/BAM", "relation": "output — aligned FASTQ reads stored in SAM/BAM" },
+    { "format": "VCF_GENOMICS", "relation": "downstream — variant calls derived from aligned FASTQ" },
+    { "format": "NETCDF", "relation": "unrelated — both are scientific data formats" }
+  ],
+  "MimeTypes": ["text/plain", "application/x-fastq"],
+  "UseCases": [
+    "Next-generation sequencing (NGS) data storage and exchange",
+    "Whole genome sequencing (WGS) and whole exome sequencing (WES) pipelines",
+    "RNA-seq transcriptomics analysis",
+    "Metagenomics and amplicon sequencing",
+    "Clinical genomics for variant calling and diagnostics"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 84,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 5,
+    "ValidationRules": 4,
+    "LastUpdated": "2026-04-15",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "encoding": "UTF-8 text (ASCII subset)",
+    "compression": "optional gzip (fastq.gz)",
+    "recordStructure": "4 lines per read",
+    "qualityEncoding": "Phred+33 (Sanger/Illumina 1.8+)",
+    "maxReadLength": "platform-dependent (Illumina: 300bp, PacBio/Nanopore: >100kb)"
+  }
+}

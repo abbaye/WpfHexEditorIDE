@@ -1,0 +1,218 @@
+{
+  "diffMode": "text",
+  "formatName": "Macromolecular CIF (mmCIF/PDBx)",
+  "version": "1.0",
+  "extensions": [
+    ".cif",
+    ".mmcif",
+    ".ent"
+  ],
+  "description": "The macromolecular Crystallographic Information File (mmCIF, also called PDBx/mmCIF) is the successor to the legacy PDB flat-file format for storing three-dimensional structures of biological macromolecules. Developed by the International Union of Crystallography (IUCr) and adopted by the Worldwide Protein Data Bank (wwPDB) as the mandatory deposition format since 2019, mmCIF uses the STAR (Self-Defining Text Archival and Retrieval) syntax. Files begin with 'data_' followed by a data block identifier, then contain key-value pairs (_category.keyword value) or loop_ tables for multi-row data. Critical categories include _atom_site (atomic coordinates), _entity (molecular entities), _cell (unit cell dimensions), _symmetry (space group), _struct (structure description), and _refine (crystallographic refinement statistics). The format supports unlimited structure size, mandatory metadata, and strict type validation.",
+  "category": "Science",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "text-editor",
+  "references": {
+    "specifications": [
+      "PDBx/mmCIF Data Dictionary v5 (wwPDB, 2019)",
+      "IUCr CIF Core Dictionary (coreCIF)",
+      "STAR file format specification (Hall, 1991)"
+    ],
+    "WebLinks": [
+      "https://mmcif.wwpdb.org/",
+      "https://www.rcsb.org/docs/programmatic-access/file-download-services",
+      "https://en.wikipedia.org/wiki/Crystallographic_Information_File"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      {
+        "value": "646174615F",
+        "offset": 0,
+        "label": "'data_' — CIF data block identifier keyword",
+        "weight": 0.9
+      }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.6,
+    "required": false,
+    "Strength": "Medium",
+    "EntropyHint": { "min": 3.0, "max": 5.5 },
+    "validation": {
+      "minFileSize": 10,
+      "maxSignatureOffset": 0,
+      "note": "All mmCIF files begin with 'data_' followed immediately by the data block identifier (no space). PDB entries use the 4-character PDB ID as identifier (e.g., 'data_1ABC'). Contains _atom_site loop with ATOM and HETATM records."
+    }
+  },
+  "variables": {
+    "cifDataKeyword": "",
+    "cifBlockId": ""
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "CIF Data Keyword",
+      "offset": 0,
+      "length": 5,
+      "color": "#FF6B6B",
+      "opacity": 0.45,
+      "description": "The 5-character ASCII keyword 'data_' that opens every CIF/mmCIF data block. This is mandatory per the STAR format specification (Hall 1991) and the IUCr CIF standard. The 'data_' keyword must appear at the very start of the file (offset 0) with no preceding whitespace or BOM.",
+      "storeAs": "cifDataKeyword",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Data Block Identifier",
+      "offset": 5,
+      "length": 8,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "Block identifier immediately following 'data_' — no space allowed. For PDB structures: 4-character PDB ID (e.g., '1CRN', '6LU7', '7BV2'). For small molecules: CSD refcode or CCDC identifier. For computational structures: AlphaFold accession (AF-P00533-F1) or custom label. Terminated by whitespace or newline.",
+      "storeAs": "cifBlockId",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Category Blocks",
+      "offset": "dynamic",
+      "length": "dynamic",
+      "color": "#95E1D3",
+      "opacity": 0.30,
+      "description": "Sequence of CIF category definitions. Single-value items: '_category.keyword   value' on one line. Multi-row tables use 'loop_' followed by column headers ('_category.col1', '_category.col2', ...) then data rows. The _atom_site loop is the largest block, containing one row per atom: id, type_symbol, label_atom_id, label_comp_id (residue), label_asym_id (chain), label_seq_id, Cartn_x, Cartn_y, Cartn_z, occupancy, B_iso_or_equiv.",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Atom Site Loop",
+      "offset": "dynamic",
+      "length": "dynamic",
+      "color": "#FFE66D",
+      "opacity": 0.30,
+      "description": "The _atom_site loop_ table containing atomic coordinates. Mandatory columns: _atom_site.group_PDB (ATOM/HETATM), _atom_site.id (serial), _atom_site.type_symbol (element), _atom_site.label_atom_id, _atom_site.label_comp_id (residue name), _atom_site.label_asym_id (chain), _atom_site.label_seq_id, _atom_site.Cartn_x, _atom_site.Cartn_y, _atom_site.Cartn_z, _atom_site.occupancy, _atom_site.B_iso_or_equiv. ATOM records are protein/DNA backbone; HETATM are ligands, waters, and modified residues.",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Cell Parameters",
+      "offset": "dynamic",
+      "length": "dynamic",
+      "color": "#C3A6FF",
+      "opacity": 0.30,
+      "description": "Unit cell dimensions from _cell category: _cell.length_a, _cell.length_b, _cell.length_c (in Angstroms), _cell.angle_alpha, _cell.angle_beta, _cell.angle_gamma (in degrees). Combined with _symmetry.space_group_name_H-M (Hermann-Mauguin notation) defines the crystallographic asymmetric unit for crystal structures.",
+      "valueType": "ascii"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "StartsWithDataKeyword",
+      "expression": "cifDataKeyword == 'data_'",
+      "severity": "error",
+      "message": "File does not begin with 'data_'. Not a valid CIF/mmCIF file. Check for BOM characters or incorrect file encoding."
+    },
+    {
+      "name": "ContainsAtomSite",
+      "expression": "containsPattern('_atom_site')",
+      "severity": "info",
+      "message": "No _atom_site category found. mmCIF files for macromolecular structures should contain atomic coordinates in this category."
+    },
+    {
+      "name": "BlockIdNotEmpty",
+      "expression": "cifBlockId != ''",
+      "severity": "warning",
+      "message": "Data block identifier is empty or whitespace. CIF files should have a meaningful block ID following 'data_'."
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "Data Block Header", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
+      { "name": "Atom Site Loop", "offset": "dynamic", "icon": "\uE8B7", "color": "#FFE66D" },
+      { "name": "Cell Parameters", "offset": "dynamic", "icon": "\uE946", "color": "#C3A6FF" }
+    ]
+  },
+  "inspector": {
+    "badge": "cifDataKeyword",
+    "primaryField": "cifBlockId",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "CIF Block Header",
+        "icon": "\uE71B",
+        "fields": ["cifDataKeyword", "cifBlockId"]
+      },
+      {
+        "title": "Structure Data",
+        "icon": "\uE8B7",
+        "fields": ["atomSiteLoop", "cellParameters"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "mmCIF Header Summary (JSON)",
+      "format": "json",
+      "fields": ["cifDataKeyword", "cifBlockId", "resolution", "spaceGroup", "atomCount"]
+    },
+    {
+      "name": "Atom Coordinates (CSV)",
+      "format": "csv",
+      "fields": ["atomId", "element", "residueName", "chainId", "seqId", "x", "y", "z", "occupancy", "bFactor"]
+    }
+  ],
+  "forensic": {
+    "category": "science",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "mmCIF/PDBx STAR-format text file. Structure: 'data_BLOCKID\\n' then CIF items. Single items: '_cat.key   value'. Tables: 'loop_\\n_cat.col1\\n_cat.col2\\n...\\nval1 val2\\nval1 val2...'. Key categories: _entry.id (PDB ID), _entity (chains/molecules), _entity_poly (polymer sequences), _cell (unit cell), _symmetry (space group), _atom_site (coordinates), _refine (R-factors), _pdbx_database_status (deposition date). PDB IDs are 4 chars (digit + 3 alphanumeric). AlphaFold2 structures use 'AF-' prefix. B-factors > 80 indicate disordered regions.",
+    "suggestedInspections": [
+      "Extract _entry.id value to identify the PDB accession code, then cross-reference with RCSB PDB for metadata",
+      "Parse _atom_site loop columns to extract all C-alpha positions for protein backbone visualization",
+      "Read _refine.ls_R_factor_R_work and _refine.ls_R_factor_R_free to assess crystallographic quality (R-free < 0.25 is acceptable)",
+      "Check _cell and _symmetry categories to identify space group and unit cell parameters for crystal packing analysis",
+      "Count ATOM vs HETATM records to determine protein/nucleic acid chain length and number of ligand/water molecules",
+      "Inspect _struct_conn for disulfide bridges (SS bonds), hydrogen bonds, and metal coordination bonds"
+    ]
+  },
+  "software": [
+    "PyMOL (visualization)",
+    "UCSF Chimera/ChimeraX",
+    "CCP4 suite (crystallography)",
+    "Phenix (structure refinement)",
+    "REFMAC5",
+    "GEMMI (CIF parsing library)",
+    "Biopython (Bio.PDB)"
+  ],
+  "formatRelationships": {
+    "category": "Science",
+    "extensions": [".cif", ".mmcif", ".ent"],
+    "relatedFormats": ["PDB_PROTEIN", "SDF_CHEM", "MOL2", "XYZ"],
+    "note": "mmCIF replaced the legacy PDB flat-file format (.pdb/.ent) as the wwPDB mandatory format in 2019. The PDB flat-file format is limited to 99,999 atoms; mmCIF has no such limit. Both formats can be downloaded from RCSB PDB (rcsb.org) and PDBe (ebi.ac.uk/pdbe). AlphaFold2 model repository uses mmCIF exclusively."
+  },
+  "MimeTypes": [
+    "chemical/x-cif",
+    "text/plain"
+  ],
+  "UseCases": [
+    "wwPDB structure deposition and archival",
+    "Protein structure visualization and analysis",
+    "Crystallographic data archival (small molecule and macromolecular)",
+    "AlphaFold2 predicted structure distribution",
+    "Structural bioinformatics pipelines"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 86,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 5,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-15",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "encoding": "ASCII text (STAR format)",
+    "syntax": "CIF/STAR: key-value and loop_ tables",
+    "coordinateUnit": "Angstrom",
+    "standardBody": "wwPDB / IUCr",
+    "mandatoryCategories": "_atom_site, _entity, _cell, _symmetry, _struct, _entry"
+  }
+}

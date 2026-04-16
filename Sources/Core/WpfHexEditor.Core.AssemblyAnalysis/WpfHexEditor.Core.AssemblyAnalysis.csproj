@@ -9,6 +9,8 @@
     <!-- No WPF, no Windows dependency — pure BCL library for use by plugins and tests. -->
     <!-- System.Reflection.Metadata and System.Reflection.PortableExecutable are BCL
          inbox assemblies in net8.0 — no NuGet PackageReference required. -->
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

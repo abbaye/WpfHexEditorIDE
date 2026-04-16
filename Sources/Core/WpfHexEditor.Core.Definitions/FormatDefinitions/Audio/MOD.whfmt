@@ -1,111 +1,181 @@
 {
-  "formatName": "Amiga ProTracker Module",
-  "version": "1.0",
-  "author": "WPFHexaEditor Team",
-  "lastUpdated": "2026-04-15",
-  "description": "Amiga ProTracker MOD format — the original 4-channel tracker module with 31 samples, used extensively in the demoscene and early game audio on Amiga and DOS platforms.",
-  "extensions": [ ".mod", ".nst", ".m15" ],
-  "category": "Audio",
+  "formatName": "ProTracker MOD Module",
+  "version": "1.1",
+  "extensions": [ ".mod" ],
   "diffMode": "binary",
-  "signatures": [
-    { "value": "4D2E4B2E", "offset": 1080, "label": "'M.K.' — ProTracker 4-channel module",  "weight": 0.9, "strength": "Medium" },
-    { "value": "43484E34", "offset": 1080, "label": "'4CHN' — 4-channel variant",             "weight": 0.8, "strength": "Medium" },
-    { "value": "4348 4E36", "offset": 1080, "label": "'6CHN' — 6-channel module",             "weight": 0.8, "strength": "Medium" },
-    { "value": "4348 4E38", "offset": 1080, "label": "'8CHN' — 8-channel module",             "weight": 0.8, "strength": "Medium" },
-    { "value": "464C5434", "offset": 1080, "label": "'FLT4' — StarTracker 4-channel",         "weight": 0.7, "strength": "Medium" }
+  "description": "Amiga ProTracker MOD music module. Stores up to 31 samples, a pattern order table and packed pattern data. The 4-byte tag at offset 1080 identifies channel count and variant.",
+  "category": "Audio",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "HexEditor",
+  "references": [
+    "https://wiki.openmpt.org/Development:_Formats/MOD",
+    "https://www.aes.id.au/modformat.html"
   ],
-  "maxSignatureOffset": 1084,
-  "structure": {
-    "fields": [
-      { "offset": 0,    "size": 20,  "name": "song_name",      "type": "ascii",   "description": "Song title (null-padded 20 bytes)",              "storeAs": "modTitle" },
-      { "offset": 20,   "size": 930, "name": "sample_headers", "type": "bytes",   "description": "31 sample headers × 30 bytes each (name/length/finetune/vol/loop)" },
-      { "offset": 950,  "size": 1,   "name": "song_length",    "type": "uint8",   "description": "Number of patterns in playback sequence (1–128)", "storeAs": "modLength" },
-      { "offset": 951,  "size": 1,   "name": "restart_pos",    "type": "uint8",   "description": "Restart position or 0x7F (legacy Noisetracker)" },
-      { "offset": 952,  "size": 128, "name": "pattern_table",  "type": "bytes",   "description": "128-byte pattern order sequence" },
-      { "offset": 1080, "size": 4,   "name": "marker",         "type": "ascii",   "description": "Format marker: 'M.K.', '4CHN', '6CHN', '8CHN', 'FLT4', etc.", "storeAs": "modMarker" }
+  "MimeTypes": [ "audio/mod", "audio/x-mod", "audio/x-protracker" ],
+  "UseCases": [
+    "Amiga game and demo music playback",
+    "Chiptune preservation and archiving",
+    "Cross-platform retro audio exchange",
+    "Tracker music education"
+  ],
+  "software": [
+    { "name": "ProTracker",   "role": "Original Amiga authoring tool",     "platform": "Amiga" },
+    { "name": "OpenMPT",      "role": "Modern multi-format editor/player", "platform": "Windows", "url": "https://openmpt.org" },
+    { "name": "MilkyTracker", "role": "Cross-platform MOD editor",         "platform": "Multi",   "url": "https://milkytracker.org" },
+    { "name": "VLC",          "role": "Playback via libmodplug",            "platform": "Multi" }
+  ],
+  "detection": {
+    "signatures": [
+      { "value": "4D2E4B2E", "offset": 1080, "label": "'M.K.' ProTracker 4-channel",    "weight": 1.0 },
+      { "value": "4D214B21", "offset": 1080, "label": "'M!K!' ProTracker >64 patterns", "weight": 0.9 },
+      { "value": "464C5434", "offset": 1080, "label": "'FLT4' StarTrekker 4-channel",   "weight": 0.8 },
+      { "value": "464C5438", "offset": 1080, "label": "'FLT8' StarTrekker 8-channel",   "weight": 0.8 },
+      { "value": "36434851", "offset": 1080, "label": "'6CHN' 6-channel variant",        "weight": 0.7 },
+      { "value": "38434851", "offset": 1080, "label": "'8CHN' 8-channel variant",        "weight": 0.7 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 88,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 3.0, "max": 7.0 }
+  },
+  "variables": [
+    { "name": "modSongTitle",  "offset": 0,    "size": 20,  "type": "ascii", "storeAs": "modSongTitle",  "description": "Song title, null-padded to 20 bytes" },
+    { "name": "modFormatTag",  "offset": 1080, "size": 4,   "type": "ascii", "storeAs": "modFormatTag",
+      "description": "4-character tag identifying variant and channel count",
+      "valueMap": { "M.K.": "ProTracker 4ch", "M!K!": "ProTracker 4ch >64 patterns", "FLT4": "StarTrekker 4ch", "FLT8": "StarTrekker 8ch", "6CHN": "6-channel", "8CHN": "8-channel" } },
+    { "name": "modSongLength", "offset": 950,  "size": 1,   "type": "uint8", "storeAs": "modSongLength", "description": "Number of positions in the song (max 128)" },
+    { "name": "modRestartPos", "offset": 951,  "size": 1,   "type": "uint8", "storeAs": "modRestartPos", "description": "Restart position (0x7F = no restart)" },
+    { "name": "modOrderTable", "offset": 952,  "size": 128, "type": "bytes", "storeAs": "modOrderTable", "description": "Pattern play order, 128 bytes each holding a pattern index" },
+    { "name": "modSample1Name","offset": 20,   "size": 22,  "type": "ascii", "storeAs": "modSample1Name","description": "First sample name (samples start at offset 20, 30 bytes each)" }
+  ],
+  "blocks": [
+    {
+      "name": "SongTitle",
+      "offset": 0,
+      "size": 20,
+      "description": "Song title string, null-padded",
+      "color": "#1E90FF",
+      "fields": [ "modSongTitle" ]
+    },
+    {
+      "name": "SampleHeaders",
+      "offset": 20,
+      "size": 930,
+      "description": "31 sample headers of 30 bytes each (name 22B, length 2B, finetune 1B, volume 1B, repeat offset 2B, repeat length 2B)",
+      "color": "#32CD32"
+    },
+    {
+      "name": "SongInfo",
+      "offset": 950,
+      "size": 130,
+      "description": "Song length, restart position and 128-byte order table",
+      "color": "#FFA500",
+      "fields": [ "modSongLength", "modRestartPos", "modOrderTable" ]
+    },
+    {
+      "name": "FormatTag",
+      "offset": 1080,
+      "size": 4,
+      "description": "4-byte tag identifying format variant and channel count",
+      "color": "#FF6347",
+      "fields": [ "modFormatTag" ]
+    },
+    {
+      "name": "PatternData",
+      "offset": 1084,
+      "sizeExpression": "numPatterns * channels * 64 * 4",
+      "description": "Raw pattern data: 64 rows per pattern, each row has one 4-byte note cell per channel",
+      "color": "#9370DB"
+    },
+    {
+      "name": "SampleData",
+      "offset": "computed after patterns",
+      "description": "Raw 8-bit signed PCM sample data for all 31 sample slots",
+      "color": "#DAA520"
+    }
+  ],
+  "assertions": [
+    { "id": "A1", "expression": "modSongLength <= 128",      "severity": "error",   "message": "Song length must not exceed 128 positions" },
+    { "id": "A2", "expression": "modFormatTag is known tag", "severity": "warning", "message": "Unrecognised format tag at offset 1080" },
+    { "id": "A3", "expression": "modRestartPos <= 127",      "severity": "warning", "message": "Restart position should be <= 127 or 0x7F" }
+  ],
+  "navigation": {
+    "rootLabel": "MOD Module",
+    "entries": [
+      { "label": "Song Title",    "blockRef": "SongTitle" },
+      { "label": "Sample Headers","blockRef": "SampleHeaders" },
+      { "label": "Song Info",     "blockRef": "SongInfo" },
+      { "label": "Format Tag",    "blockRef": "FormatTag" },
+      { "label": "Pattern Data",  "blockRef": "PatternData" },
+      { "label": "Sample Data",   "blockRef": "SampleData" }
     ]
   },
   "inspector": {
-    "displayFields": [ "modTitle", "modLength", "modMarker" ],
-    "valueMaps": {
-      "modMarker": {
-        "M.K.": "ProTracker 4-channel",
-        "4CHN": "4-channel (variant)",
-        "6CHN": "6-channel",
-        "8CHN": "8-channel",
-        "FLT4": "StarTracker 4-channel",
-        "FLT8": "StarTracker 8-channel",
-        "M!K!": "ProTracker extended (>64 patterns)"
-      }
-    },
-    "tooltips": {
-      "modTitle":   "Song title stored as plain ASCII, up to 20 characters",
-      "modLength":  "Must be 1–128; represents number of patterns in play sequence",
-      "modMarker":  "4-byte tag at offset 1080 identifies channel count and sub-variant"
-    }
-  },
-  "assertions": [
-    { "id": "A1", "field": "modLength", "operator": "between",  "value": [1, 128], "description": "Song length must be between 1 and 128" },
-    { "id": "A2", "field": "modMarker", "operator": "inSet",    "value": ["M.K.", "4CHN", "6CHN", "8CHN", "FLT4", "FLT8", "M!K!", "OCTA", "CD81"], "description": "Marker must be a recognised MOD variant tag" },
-    { "id": "A3", "field": "restart_pos", "operator": "lte",    "value": 127,      "description": "Restart position must not exceed pattern table length" }
-  ],
-  "navigation": {
-    "bookmarks": [
-      { "offset": 0,    "label": "Song Title",          "color": "#3498DB" },
-      { "offset": 20,   "label": "Sample Headers Start", "color": "#9B59B6" },
-      { "offset": 950,  "label": "Song Length",          "color": "#F39C12" },
-      { "offset": 952,  "label": "Pattern Order Table",  "color": "#27AE60" },
-      { "offset": 1080, "label": "Format Marker (M.K.)", "color": "#E74C3C" },
-      { "offset": 1084, "label": "Pattern Data Start",   "color": "#1ABC9C" }
+    "badge": "MOD",
+    "primaryField": "modSongTitle",
+    "groups": [
+      { "name": "Identity",      "fields": [ "modSongTitle", "modFormatTag" ] },
+      { "name": "Song Structure","fields": [ "modSongLength", "modRestartPos" ] },
+      { "name": "First Sample",  "fields": [ "modSample1Name" ] }
     ]
   },
   "exportTemplates": [
     {
-      "name": "MOD Header Summary",
-      "fields": [ "modTitle", "modMarker", "modLength" ],
-      "format": "text"
+      "name": "Module Summary",
+      "format": "text",
+      "template": "Title: {modSongTitle}\nFormat Tag: {modFormatTag}\nSong Length: {modSongLength}\nRestart Position: {modRestartPos}"
     },
     {
-      "name": "MOD Metadata JSON",
-      "fields": [ "modTitle", "modMarker", "modLength", "restart_pos" ],
-      "format": "json"
+      "name": "CSV Metadata",
+      "format": "csv",
+      "template": "Field,Value\nSongTitle,{modSongTitle}\nFormatTag,{modFormatTag}\nSongLength,{modSongLength}\nRestartPos,{modRestartPos}"
     }
   ],
-  "aiHints": [
-    "The marker at offset 1080 is the most reliable detection point; files without a known marker may be 15-sample 'M15' MODs (no marker, only Noisetracker 1.x).",
-    "The original Amiga MOD supports exactly 4 channels on hardware; 6CHN/8CHN markers indicate PC-era extensions not playable on real Amiga without software mixing.",
-    "Each sample header (30 bytes) stores length as 16-bit big-endian word-count (multiply by 2 for byte size); finetune is in the low nibble of byte 24.",
-    "Song length at offset 950 indicates how many entries of the 128-byte pattern table are used; bytes beyond that index are irrelevant filler.",
-    "Pattern data follows immediately after offset 1084: each pattern is 64 rows × channel_count × 4 bytes = 1024 bytes for a 4-channel MOD.",
-    "Signed 8-bit PCM sample data follows all pattern data at the tail of the file, in order of sample headers 1–31."
-  ],
   "forensic": {
-    "riskLevel": "low",
-    "notes": [
-      "MOD files contain only music data; no executable content.",
-      "Song title and sample name fields (22 bytes each) sometimes contain hidden messages or credits.",
-      "Buffer overflows in libmikmod/libxmp with very large sample counts have been patched; ensure library is up to date."
+    "riskLevel": "LOW",
+    "suspiciousPatterns": [
+      "Missing or unknown format tag at offset 1080 — may be a headerless or corrupted file",
+      "modSongLength > 128 — corrupt or deliberately malformed",
+      "Sample lengths summing beyond file size — truncated or fake sample descriptors"
+    ],
+    "hidingTechniques": [
+      "Data appended after last sample block",
+      "Steganographic payload in unused sample slots or zero-length sample headers",
+      "Extra channels encoded in non-standard tags to confuse players"
+    ],
+    "timestampFields": [],
+    "notes": "MOD is the original Amiga tracker format; thousands of demoscene and game files exist. No integrated timestamp or author metadata beyond the song title field."
+  },
+  "aiHints": {
+    "analysisContext": "MOD is a simple binary tracker module: fixed 20-byte title, 31 sample descriptors of 30 bytes each, a 130-byte song/order section, a 4-byte format tag, then pattern data and sample PCM data. The format tag at 1080 is the primary structural identifier.",
+    "suggestedInspections": [
+      "Confirm format tag at offset 1080 is one of the known variants (M.K., M!K!, FLT4, FLT8, 6CHN, 8CHN)",
+      "Validate modSongLength is in range 1-128 and that all order table entries reference valid patterns",
+      "Check sample length fields against actual file size to detect truncation",
+      "Inspect null bytes in sample name fields for steganographic content",
+      "Count pattern data size based on highest pattern index in order table vs file size"
     ]
   },
   "formatRelationships": [
-    { "format": "XM",  "relationship": "successor",    "note": "FastTracker 2 XM extends MOD with envelopes and 32 channels." },
-    { "format": "S3M", "relationship": "contemporary",  "note": "ScreamTracker 3 S3M was inspired by MOD for PC platforms." },
-    { "format": "IT",  "relationship": "successor",     "note": "Impulse Tracker IT is the most advanced evolution of the MOD lineage." }
+    { "format": "XM",  "relationship": "descendant", "description": "XM extends MOD with instruments, envelopes and 16-bit samples" },
+    { "format": "S3M", "relationship": "sibling",    "description": "S3M uses a similar cell-based pattern layout with more channels" },
+    { "format": "IT",  "relationship": "descendant", "description": "IT is a further evolution with advanced DSP and sample features" }
   ],
-  "software": [
-    { "name": "ProTracker",   "role": "Original Amiga authoring tool (1987)" },
-    { "name": "OpenMPT",      "role": "Modern multi-format tracker (Windows)" },
-    { "name": "MilkyTracker", "role": "Cross-platform FT2/MOD editor" },
-    { "name": "XMPlay",       "role": "Lightweight module player" },
-    { "name": "DeliPlayer",   "role": "Amiga/Windows multi-format player" },
-    { "name": "libxmp",       "role": "C library for module playback" }
-  ],
-  "useCases": [
-    "Demoscene and Amiga chiptune archive playback",
-    "Retro game music research and extraction",
-    "Music education — learning tracker composition",
-    "Lightweight audio for embedded or nostalgic applications"
-  ],
-  "technicalDetails": "Original Amiga module format originated with Ultimate Soundtracker (1987), refined by ProTracker. Fixed 4 channels on Amiga hardware using Paula chip DMA. 31 samples (15 for legacy M15/NST). Sample data is signed 8-bit PCM. Rows=64 per pattern; each cell encodes note (period), sample index, and effect command (4-bit + 12-bit). Finetune adjusts the sample pitch by ±7 semitone fractions using period table lookup.",
-  "completenessScore": 84
+  "TechnicalDetails": {
+    "endianness": "Big-Endian (Amiga origin)",
+    "minimumFileSize": 1084,
+    "headerSize": 1084,
+    "patternCellSize": 4,
+    "rowsPerPattern": 64,
+    "maxSamples": 31,
+    "maxPatternOrderEntries": 128,
+    "sampleEncoding": "Signed 8-bit PCM",
+    "specVariants": [ "M.K.", "M!K!", "FLT4", "FLT8", "6CHN", "8CHN", "CD81", "OKTA" ]
+  },
+  "QualityMetrics": {
+    "CompletenessScore": 91,
+    "LastUpdated": "2026-04-15",
+    "ReviewedBy": "WPFHexaEditor Team",
+    "KnownLimitations": "Pattern count derived from max(orderTable)+1; exact sample offsets require cumulative size calculation."
+  }
 }

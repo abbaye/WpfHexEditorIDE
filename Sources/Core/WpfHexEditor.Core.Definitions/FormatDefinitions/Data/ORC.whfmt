@@ -1,150 +1,216 @@
 {
   "diffMode": "binary",
   "formatName": "Apache ORC",
-  "version": "1.15",
-  "extensions": [
-    ".orc"
-  ],
-  "description": "Apache Optimized Row Columnar file format",
+  "version": "1.0",
+  "extensions": [".orc"],
+  "description": "Apache Optimized Row Columnar (ORC) file format for the Hadoop ecosystem. Files begin with the 3-byte magic 'ORC' (0x4F5243) at offset 0. ORC stores data in row groups called stripes, each containing index data, row data, and stripe footer. A file-level footer (Protobuf-encoded) contains schema, statistics, and stripe locations. Supports ZLIB, SNAPPY, LZO, LZ4, and ZSTD compression. Originated at Facebook/Hortonworks for Hive optimization.",
   "category": "Data",
   "author": "WPFHexaEditor Team",
-  "preferredEditor": "hex-editor",
-  "references": {
-    "specifications": [
-      "Apache ORC Format"
-    ],
-    "WebLinks": [
-      "https://en.wikipedia.org/wiki/ORC"
-    ]
-  },
+  "preferredEditor": "HexEditor",
+  "references": [
+    "https://orc.apache.org/specification/",
+    "https://github.com/apache/orc",
+    "https://en.wikipedia.org/wiki/Apache_ORC"
+  ],
   "detection": {
-    "required": true,
-    "validation": {
-      "minFileSize": 3,
-      "maxSignatureOffset": 1024
-    },
     "signatures": [
       {
         "value": "4F5243",
         "offset": 0,
-        "label": "ORC magic",
+        "label": "'ORC' header magic (3 bytes)",
         "weight": 1.0
       }
     ],
-    "matchMode": "any",
-    "MinimumScore": 1.0,
-    "Strength": "Medium"
+    "matchMode": "first",
+    "MinimumScore": 0.9,
+    "Strength": "Strong",
+    "EntropyHint": {
+      "min": 4.0,
+      "max": 8.0,
+      "note": "Entropy varies with compression codec"
+    },
+    "validation": {
+      "rules": [
+        { "field": "orcMagic", "operator": "startsWith", "value": "ORC" }
+      ]
+    }
   },
-  "variables": {
-    "currentOffset": 0,
-    "machineType": "",
-    "sectionCount": 0,
-    "entryPoint": 0,
-    "orcMagic": ""
-  },
-  "blocks": [
+  "variables": [
     {
-      "type": "signature",
-      "name": "ORC Magic",
+      "name": "orcMagic",
       "offset": 0,
-      "length": 3,
-      "color": "#00A699",
-      "opacity": 0.4,
-      "description": "ORC file signature",
+      "size": 3,
+      "type": "ascii",
       "storeAs": "orcMagic",
-      "valueType": "uint32"
+      "description": "3-byte ORC header magic 'ORC'"
     },
     {
-      "type": "metadata",
-      "name": "Machine",
-      "variable": "machineType",
-      "description": "Machine"
+      "name": "orcVersionByte",
+      "offset": 3,
+      "size": 1,
+      "type": "uint8",
+      "storeAs": "orcVersionByte",
+      "description": "Byte following magic — typically 0x01 in modern ORC v1 files"
     },
     {
-      "type": "metadata",
-      "name": "Sections",
-      "variable": "sectionCount",
-      "description": "Sections"
+      "name": "orcPostscriptLength",
+      "offset": -1,
+      "size": 1,
+      "type": "uint8",
+      "storeAs": "orcPostscriptLength",
+      "description": "Last byte of file: length of the PostScript (Protobuf) at the end of the file"
     }
   ],
-  "software": [
-    "Common file viewers",
-    "Specialized software"
-  ],
-  "formatRelationships": {
-    "category": "Data",
-    "extensions": [
-      ".orc"
-    ]
-  },
-  "MimeTypes": [
-    "application/octet-stream"
-  ],
-  "Software": [
-    "Hex Editor",
-    "File Viewer",
-    "Archive Manager"
-  ],
-  "UseCases": [
-    "File storage",
-    "Data exchange",
-    "Archive"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 51,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 3,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-04-14",
-    "PriorityFormat": false,
-    "AutoRefined": true
-  },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32LE": "Read executable header"
-  },
-  "forensic": {
-    "category": "data",
-    "riskLevel": "low",
-    "suspiciousPatterns": []
-  },
-  "aiHints": {
-    "analysisContext": "Apache Optimized Row Columnar file format",
-    "suggestedInspections": [
-      "Validate Apache ORC schema header and encoding markers",
-      "Check nested structure depth and field type tags",
-      "Inspect string encodings and numeric value boundaries"
-    ]
-  },
-  "inspector": {
-    "badge": "orcMagic",
-    "primaryField": "orcMagic",
-    "showQualityScore": true,
-    "groups": [
-      {
-        "title": "Apache ORC",
-        "icon": "",
-        "fields": [
-          "orcMagic"
-        ]
-      }
-    ]
-  },
-  "exportTemplates": [
+  "blocks": [
     {
-      "name": "Apache ORC Header (JSON)",
-      "format": "json",
+      "name": "HeaderMagic",
+      "offset": 0,
+      "size": 3,
+      "description": "ASCII 'ORC' magic at offset 0 identifying an Apache ORC file",
       "fields": [
-        "orcMagic"
+        { "name": "Magic", "offset": 0, "size": 3, "type": "ascii" }
+      ]
+    },
+    {
+      "name": "VersionByte",
+      "offset": 3,
+      "size": 1,
+      "description": "ORC version byte immediately following the magic",
+      "fields": [
+        { "name": "VersionByte", "offset": 3, "size": 1, "type": "uint8" }
+      ]
+    },
+    {
+      "name": "StripeData",
+      "offset": 4,
+      "size": -1,
+      "description": "One or more stripes each containing index, row data, and stripe footer (Protobuf-encoded)",
+      "fields": []
+    },
+    {
+      "name": "PostScript",
+      "offset": -1,
+      "size": 1,
+      "description": "Last byte of ORC file: the PostScript length. The PostScript (Protobuf) is located immediately before this byte and contains compression codec and footer length.",
+      "fields": [
+        { "name": "PostScriptLength", "offset": -1, "size": 1, "type": "uint8" }
       ]
     }
   ],
   "assertions": [
     {
-      "name": "magic valid",
-      "expression": "orcMagic != 0",
+      "id": "assert_magic",
+      "field": "orcMagic",
+      "operator": "equals",
+      "value": "ORC",
+      "severity": "error",
+      "message": "ORC magic 'ORC' not found at offset 0"
+    },
+    {
+      "id": "assert_postscript_length",
+      "field": "orcPostscriptLength",
+      "operator": "greaterThan",
+      "value": 0,
       "severity": "warning",
-      "message": "ORC magic field is zero — possible detection failure"
+      "message": "PostScript length at EOF-1 is zero — file may be truncated"
+    },
+    {
+      "id": "assert_version_byte",
+      "field": "orcVersionByte",
+      "operator": "equals",
+      "value": 1,
+      "severity": "info",
+      "message": "ORC version byte at offset 3 is not 1 — may indicate non-standard ORC version"
     }
-  ]
+  ],
+  "navigation": {
+    "entryPoints": [
+      { "name": "Header Magic", "offset": 0 },
+      { "name": "PostScript Length", "offset": -1 }
+    ],
+    "jumpTable": [
+      { "label": "ORC Magic (offset 0)", "offset": 0 },
+      { "label": "PostScript Length (EOF-1)", "offset": -1 }
+    ]
+  },
+  "inspector": {
+    "badge": "ORC",
+    "primaryField": "orcMagic",
+    "groups": [
+      {
+        "name": "Identification",
+        "fields": ["orcMagic", "orcVersionByte"]
+      },
+      {
+        "name": "File Tail",
+        "fields": ["orcPostscriptLength"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "ORC File Summary",
+      "format": "text",
+      "template": "Apache ORC File\nMagic       : {orcMagic}\nVersionByte : {orcVersionByte}\nPostscript  : {orcPostscriptLength} bytes"
+    },
+    {
+      "name": "ORC Header CSV",
+      "format": "csv",
+      "template": "Field,Value\nMagic,{orcMagic}\nVersionByte,{orcVersionByte}\nPostscriptLength,{orcPostscriptLength}"
+    }
+  ],
+  "forensic": {
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      "PostScript length of 0 at EOF-1 — file truncated or corrupted",
+      "Magic 'ORC' present but PostScript Protobuf unparseable — header spoofing",
+      "Stripe count in footer far exceeds expected for file size — possible metadata injection",
+      "Statistics in footer inconsistent with row data — possible data tampering"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "Apache ORC files start with 3-byte 'ORC' magic. The file tail is: [PostScript bytes] + [1-byte postscript length] at EOF. The PostScript (Protobuf) contains the compression codec and the file footer length. Navigate backward from EOF-1 to read the PostScript, then the file footer, which has schema (Protobuf TypeDescription) and stripe information.",
+    "suggestedInspections": [
+      "Verify 'ORC' magic at offset 0",
+      "Read last byte (EOF-1) for PostScript length",
+      "Parse Protobuf PostScript at EOF-1-postscriptLen to get compression codec and footer length",
+      "Parse Protobuf FileFooter for schema, stripe count, and statistics",
+      "Check stripe metadata: offset, indexLength, dataLength, footerLength",
+      "Validate compression codec reported in PostScript matches stripe data entropy"
+    ]
+  },
+  "software": [
+    { "name": "Apache Hive", "vendor": "Apache", "platform": "Cross-platform" },
+    { "name": "Apache Spark", "vendor": "Apache", "platform": "Cross-platform" },
+    { "name": "DuckDB", "vendor": "DuckDB Labs", "platform": "Cross-platform" }
+  ],
+  "formatRelationships": [
+    { "format": "PARQUET", "relation": "sibling", "note": "Both are columnar formats for the Hadoop ecosystem; ORC originated in Hive" },
+    { "format": "AVRO", "relation": "sibling", "note": "Avro is row-oriented while ORC is columnar" }
+  ],
+  "MimeTypes": [
+    "application/octet-stream",
+    "application/vnd.apache.orc"
+  ],
+  "UseCases": [
+    "Apache Hive and Spark analytics at scale",
+    "Data lakehouse storage with predicate pushdown",
+    "Columnar compression for OLAP workloads",
+    "ETL intermediate format for Hadoop pipelines"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 84,
+    "LastUpdated": "2026-04-15"
+  },
+  "TechnicalDetails": {
+    "headerSize": 3,
+    "endian": "little",
+    "signatureOffset": 0,
+    "signatureLength": 3,
+    "magicValue": "ORC",
+    "footerEncoding": "Protocol Buffers (protobuf)",
+    "columnCompression": ["ZLIB", "SNAPPY", "LZO", "LZ4", "ZSTD", "NONE"],
+    "structureUnits": "stripes (row groups of 250 MB default)",
+    "notes": "ORC file tail: read last byte for postscript length, then postscript Protobuf, then file footer Protobuf. Three levels of statistics: file, stripe, and row group (10000 rows default)."
+  }
 }

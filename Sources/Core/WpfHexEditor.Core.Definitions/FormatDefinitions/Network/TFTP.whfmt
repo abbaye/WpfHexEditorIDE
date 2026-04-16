@@ -1,0 +1,230 @@
+{
+  "diffMode": "binary",
+  "formatName": "TFTP Packet (Trivial File Transfer Protocol)",
+  "version": "1.0",
+  "extensions": [ ".tftp" ],
+  "description": "Trivial File Transfer Protocol packet format as defined in RFC 1350 (updated by RFC 2347, 2348, 2349). TFTP is a simple UDP-based file transfer protocol using port 69 for initial requests. All multi-byte fields are big-endian. Packet types: opcode 1=RRQ Read Request (filename + mode), 2=WRQ Write Request (filename + mode), 3=DATA (block number uint16 BE + up to 512 bytes of data), 4=ACK Acknowledgement (block number uint16 BE), 5=ERROR (error code uint16 BE + error message string + NUL). RRQ/WRQ packets contain: opcode uint16 BE, filename (NUL-terminated ASCII), mode (NUL-terminated ASCII: 'netascii', 'octet', 'mail'). RFC 2347 adds OACK (option acknowledgment, opcode 6) for options negotiation (blksize, timeout, tsize, windowsize). TFTP uses a stop-and-wait protocol — each DATA packet must be ACKed before the next is sent. Transfer ends when a DATA packet smaller than blksize (default 512) is received. Error codes: 0=not defined, 1=file not found, 2=access violation, 3=disk full, 4=illegal TFTP operation, 5=unknown transfer ID, 6=file already exists, 7=no such user.",
+  "category": "Network",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "HexEditor",
+  "references": [
+    "https://www.rfc-editor.org/rfc/rfc1350",
+    "https://www.rfc-editor.org/rfc/rfc2347",
+    "https://www.rfc-editor.org/rfc/rfc2348"
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "value": "0001",
+        "offset": 0,
+        "label": "TFTP RRQ — Read Request opcode (opcode=1 big-endian)",
+        "weight": 0.8
+      },
+      {
+        "value": "0002",
+        "offset": 0,
+        "label": "TFTP WRQ — Write Request opcode (opcode=2 big-endian)",
+        "weight": 0.8
+      },
+      {
+        "value": "0003",
+        "offset": 0,
+        "label": "TFTP DATA — Data packet opcode (opcode=3 big-endian)",
+        "weight": 0.7
+      },
+      {
+        "value": "0004",
+        "offset": 0,
+        "label": "TFTP ACK — Acknowledgement opcode (opcode=4 big-endian)",
+        "weight": 0.7
+      },
+      {
+        "value": "0005",
+        "offset": 0,
+        "label": "TFTP ERROR — Error packet opcode (opcode=5 big-endian)",
+        "weight": 0.8
+      }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.6,
+    "Strength": "Medium",
+    "validation": "Opcode at offset 0-1 must be 1, 2, 3, 4, or 5 (big-endian uint16). Opcode 6 is OACK for options. For RRQ/WRQ: filename must be NUL-terminated ASCII. For DATA: block number at offset 2-3 >= 1. For ACK: exactly 4 bytes total. For ERROR: error code 0-7 at offset 2-3."
+  },
+  "variables": {},
+  "blocks": [
+    {
+      "name": "tftpOpcode",
+      "offset": 0,
+      "size": 2,
+      "type": "uint16",
+      "endian": "BE",
+      "description": "TFTP opcode — 2-byte big-endian unsigned integer at offset 0; identifies the packet type: 1=RRQ Read Request, 2=WRQ Write Request, 3=DATA data block, 4=ACK acknowledgement, 5=ERROR error notification, 6=OACK options acknowledgment (RFC 2347)",
+      "storeAs": "tftpOpcode",
+      "valueMap": {
+        "1": "RRQ (Read Request)",
+        "2": "WRQ (Write Request)",
+        "3": "DATA — data block with block number",
+        "4": "ACK — acknowledgement of block",
+        "5": "ERROR — error notification",
+        "6": "OACK — options acknowledgment (RFC 2347)"
+      }
+    },
+    {
+      "name": "tftpBlock",
+      "offset": 2,
+      "size": 2,
+      "type": "uint16",
+      "endian": "BE",
+      "description": "Block number — 2-byte big-endian unsigned integer at offset 2; present in DATA packets (block number of this data block, starting at 1) and ACK packets (block number being acknowledged, 0 = initial WRQ ACK); wraps around from 65535 to 0 for large transfers (RFC 2347 rollover option)",
+      "storeAs": "tftpBlock"
+    },
+    {
+      "name": "tftpErrorCode",
+      "offset": 2,
+      "size": 2,
+      "type": "uint16",
+      "endian": "BE",
+      "description": "Error code — 2-byte big-endian unsigned integer at offset 2 in ERROR packets (opcode=5); specifies the error type: 0=not defined, 1=file not found, 2=access violation, 3=disk full or allocation exceeded, 4=illegal TFTP operation, 5=unknown transfer ID, 6=file already exists, 7=no such user",
+      "storeAs": "tftpErrorCode",
+      "valueMap": {
+        "0": "Not defined — see error message",
+        "1": "File not found",
+        "2": "Access violation",
+        "3": "Disk full or allocation exceeded",
+        "4": "Illegal TFTP operation",
+        "5": "Unknown transfer ID",
+        "6": "File already exists",
+        "7": "No such user"
+      }
+    },
+    {
+      "name": "tftpFilename",
+      "offset": 2,
+      "size": 64,
+      "type": "ascii",
+      "description": "Filename — NUL-terminated ASCII string at offset 2 in RRQ (opcode=1) and WRQ (opcode=2) packets; contains the name of the file to be read or written; followed by the transfer mode string ('netascii', 'octet', or 'mail') after the NUL terminator",
+      "storeAs": "tftpFilename"
+    },
+    {
+      "name": "tftpData",
+      "offset": 4,
+      "size": 512,
+      "type": "bytes",
+      "description": "Data payload — up to 512 bytes at offset 4 in DATA packets (opcode=3); the last DATA packet in a transfer is identified by having fewer than 512 bytes (or exactly 512 bytes only if OACK blksize was negotiated to a different value); used to reconstruct file content by sequencing DATA packets by block number",
+      "storeAs": "tftpData"
+    }
+  ],
+  "assertions": [
+    {
+      "field": "tftpOpcode",
+      "op": "in",
+      "value": [ 1, 2, 3, 4, 5, 6 ],
+      "description": "Opcode must be 1 (RRQ), 2 (WRQ), 3 (DATA), 4 (ACK), 5 (ERROR), or 6 (OACK)"
+    },
+    {
+      "field": "tftpBlock",
+      "op": "gte",
+      "value": 0,
+      "description": "Block number must be >= 0; block 0 in ACK is the initial WRQ acknowledgement; DATA block numbers start at 1"
+    },
+    {
+      "field": "tftpErrorCode",
+      "op": "in",
+      "value": [ 0, 1, 2, 3, 4, 5, 6, 7 ],
+      "description": "Error code in ERROR packets must be 0-7 as defined in RFC 1350"
+    }
+  ],
+  "navigation": {
+    "entryPoint": "tftpOpcode",
+    "sections": [
+      { "name": "Opcode", "offset": 0, "size": 2 },
+      { "name": "Block/Error/Filename Field", "offset": 2, "size": 2 },
+      { "name": "Data / Error Message / Mode", "offset": 4, "description": "Content depends on opcode — data bytes, NUL-terminated strings, or error message" }
+    ]
+  },
+  "inspector": {
+    "badge": "TFTP",
+    "primaryField": "tftpOpcode",
+    "groups": [
+      {
+        "name": "Packet Type",
+        "fields": [ "tftpOpcode" ]
+      },
+      {
+        "name": "Transfer Control",
+        "fields": [ "tftpBlock", "tftpErrorCode" ]
+      },
+      {
+        "name": "Payload",
+        "fields": [ "tftpFilename", "tftpData" ]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "TFTP Packet Summary",
+      "format": "txt",
+      "template": "TFTP Packet\n===========\nOpcode    : {tftpOpcode}\nBlock No  : {tftpBlock}\nError Code: {tftpErrorCode}\nFilename  : {tftpFilename}\nData (512B): {tftpData}\n"
+    },
+    {
+      "name": "TFTP Forensic Report (CSV)",
+      "format": "csv",
+      "template": "Field,Value\nOpcode,{tftpOpcode}\nBlockNumber,{tftpBlock}\nErrorCode,{tftpErrorCode}\nFilename,{tftpFilename}\n"
+    }
+  ],
+  "forensic": {
+    "importance": "MEDIUM",
+    "riskLevel": "medium",
+    "notes": "TFTP has no authentication or encryption — all transfers are cleartext. Captured TFTP traffic can reveal network device configurations (router configs, firmware images), boot files (PXE boot, DHCP tftp-server option), and operational data. RRQ/WRQ filenames are plaintext and reveal target file paths. TFTP is commonly used for network device provisioning and firmware updates — compromised TFTP servers can deliver malicious firmware. Unauthorized TFTP write requests (WRQ) to network devices are a serious security indicator.",
+    "indicators": [
+      "Opcode 1 (RRQ) or 2 (WRQ) at offset 0-1",
+      "NUL-terminated filename after opcode",
+      "UDP port 69 in encapsulating transport header",
+      "Mode string 'octet' or 'netascii' after filename",
+      "Sequential DATA packets with block numbers starting at 1"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "TFTP is a minimal UDP-based file transfer protocol with no authentication. It is commonly used for PXE boot file serving, network device configuration backup/restore, and firmware distribution. All packets begin with a 2-byte big-endian opcode. The protocol uses a simple stop-and-wait acknowledgment mechanism with sequential block numbers.",
+    "suggestedInspections": [
+      "Extract all RRQ and WRQ filenames from captured packets to identify what files were transferred and in what direction",
+      "Reconstruct file content by sequencing DATA packets by block number and concatenating payload bytes",
+      "Look for WRQ (opcode 2) requests which indicate write operations — unauthorized writes to network devices are a major security concern",
+      "Check for network device configuration filenames (e.g., 'startup-config', 'running-config', '*.cfg') which reveal sensitive infrastructure data",
+      "Identify the TFTP server IP from the UDP source port 69 responses to locate the provisioning infrastructure",
+      "Look for firmware image filenames (.bin, .img, .firmware) in RRQ requests indicating device upgrade or provisioning operations"
+    ]
+  },
+  "software": [
+    { "name": "Wireshark (TFTP dissector)", "vendor": "Wireshark Foundation", "url": "https://www.wireshark.org" },
+    { "name": "tftpd-hpa", "vendor": "H. Peter Anvin", "url": "https://git.kernel.org/pub/scm/network/tftp/tftp-hpa.git" },
+    { "name": "Cisco TFTP Server", "vendor": "Cisco", "url": "https://www.cisco.com" },
+    { "name": "SolarWinds TFTP Server", "vendor": "SolarWinds", "url": "https://www.solarwinds.com/free-tools/free-tftp-server" },
+    { "name": "PumpKIN (TFTP client/server)", "vendor": "Klever Group", "url": "http://kin.klever.net/pumpkin/" }
+  ],
+  "formatRelationships": [
+    { "format": "PCAP", "relationship": "TFTP packets are typically analyzed within pcap/pcapng captures; they appear as UDP datagrams" },
+    { "format": "RADIUS_PACKET", "relationship": "RADIUS and TFTP are both UDP-based protocols used in network device management infrastructure" }
+  ],
+  "MimeTypes": [ "application/octet-stream" ],
+  "UseCases": [
+    "PXE network boot file serving",
+    "Network device configuration backup and restore",
+    "Embedded device firmware distribution",
+    "Diskless workstation booting",
+    "Forensic analysis of network provisioning traffic"
+  ],
+  "QualityMetrics": {
+    "LastUpdated": "2026-04-15",
+    "CompletenessScore": 85,
+    "ReviewedBy": "WPFHexaEditor Team"
+  },
+  "TechnicalDetails": {
+    "udpPort": 69,
+    "defaultBlockSize": 512,
+    "endianness": "BigEndian",
+    "authentication": "none",
+    "encryption": "none",
+    "rfcs": [ "RFC 1350", "RFC 2347 (options)", "RFC 2348 (block size)", "RFC 2349 (timeout/tsize)" ]
+  }
+}

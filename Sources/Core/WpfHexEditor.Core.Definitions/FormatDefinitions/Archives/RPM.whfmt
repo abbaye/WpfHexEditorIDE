@@ -1,296 +1,150 @@
 {
-  "diffMode": "binary",
   "formatName": "RPM Package",
   "version": "1.0",
-  "extensions": [".rpm", ".src.rpm"],
-  "description": "RPM Package Manager binary or source package. Lead (96 bytes) followed by Signature Header, Main Header with tagged metadata, and cpio.gz/xz/zst payload containing the actual files.",
+  "diffMode": "binary",
+  "extensions": [ ".rpm" ],
+  "description": "RPM is the recursive package manager format used by Red Hat, Fedora, CentOS, SUSE, and related Linux distributions. The file begins with a 4-byte magic (0xED 0xAB 0xEE 0xDB) followed by major/minor version bytes and a 2-byte big-endian package type.",
   "category": "Archives",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
-  "references": {
-    "specifications": [
-      "LSB RPM File Format Specification",
-      "RPM.org Package Format Documentation",
-      "Maximum RPM — Ed Bailey (Red Hat)"
-    ],
-    "WebLinks": [
-      "https://rpm.org/devel_doc/file_format.html",
-      "https://en.wikipedia.org/wiki/RPM_Package_Manager",
-      "https://refspecs.linuxbase.org/LSB_4.1.0/LSB-Core-generic/LSB-Core-generic/pkgformat.html"
-    ]
-  },
+  "MimeTypes": [ "application/x-rpm", "application/x-redhat-package-manager" ],
+  "UseCases": [
+    "Linux software distribution on RPM-based systems",
+    "Package integrity verification via GPG signatures embedded in header",
+    "Forensic analysis of installed or staged software packages"
+  ],
+  "references": [
+    "https://rpm.org/devel_doc/file_format.html",
+    "https://github.com/rpm-software-management/rpm/blob/master/doc/manual/format.md",
+    "https://refspecs.linuxbase.org/LSB_3.1.0/LSB-Core-generic/LSB-Core-generic/pkgformat.html"
+  ],
+  "software": [
+    { "name": "RPM",       "url": "https://rpm.org/",              "role": "Reference package manager" },
+    { "name": "DNF/YUM",   "url": "https://rpm.org/",              "role": "High-level package managers consuming RPM files" },
+    { "name": "7-Zip",     "url": "https://www.7-zip.org/",        "role": "Can extract RPM payload (CPIO inside)" }
+  ],
+  "formatRelationships": [
+    { "format": "CPIO",    "relationship": "RPM payload is a compressed CPIO archive" },
+    { "format": "GZIP",    "relationship": "Classic RPMs compress the CPIO payload with gzip" },
+    { "format": "XZ",      "relationship": "Modern RPMs (v4+) typically use XZ-compressed CPIO payload" }
+  ],
   "detection": {
     "signatures": [
       {
-        "value": "EDABEEDB",
         "offset": 0,
-        "label": "0xEDABEEDB — RPM Lead magic (big-endian), first 4 bytes of every RPM package file",
+        "value": "EDABEEDB",
+        "label": "RPM lead magic bytes 0xED 0xAB 0xEE 0xDB",
         "weight": 1.0
       }
     ],
-    "matchMode": "any",
-    "MinimumScore": 1.0,
-    "required": true,
+    "matchMode": "first",
+    "MinimumScore": 85,
     "Strength": "Strong",
-    "EntropyHint": { "min": 5.0, "max": 8.0 },
-    "validation": {
-      "minFileSize": 96
-    }
+    "EntropyHint": { "min": 6.0, "max": 8.0, "note": "Compressed payload raises overall entropy; header sections have lower entropy" },
+    "validation": "Bytes 0-3 must be ED AB EE DB. Byte 4 (major version) must be 3 or 4. Bytes 6-7 (big-endian type) must be 0 (binary) or 1 (source RPM)."
   },
-  "variables": {
-    "rpmMagic": "",
-    "rpmMajor": 0,
-    "rpmMinor": 0,
-    "rpmType": 0,
-    "rpmArchitecture": 0,
-    "rpmName": "",
-    "rpmOs": 0,
-    "rpmSignatureType": 0
-  },
+  "variables": [
+    { "name": "rpmMagic",  "type": "hex",    "offset": 0, "length": 4, "description": "RPM lead magic: ED AB EE DB" },
+    { "name": "rpmMajor",  "type": "uint8",  "offset": 4, "length": 1, "description": "Major version", "valueMap": { "3": "RPMv3", "4": "RPMv4" } },
+    { "name": "rpmMinor",  "type": "uint8",  "offset": 5, "length": 1, "description": "Minor version (typically 0)" },
+    { "name": "rpmType",   "type": "uint16", "offset": 6, "length": 2, "endian": "big", "description": "Package type", "valueMap": { "0": "Binary RPM", "1": "Source RPM" } },
+    { "name": "rpmArch",   "type": "uint16", "offset": 8, "length": 2, "endian": "big", "description": "Architecture number (e.g. 1=x86, 9=x86_64)" }
+  ],
   "blocks": [
     {
-      "type": "signature",
-      "name": "RPM Lead Magic",
+      "name": "Lead",
       "offset": 0,
-      "length": 4,
-      "color": "#FF6B6B",
-      "opacity": 0.45,
-      "description": "0xED 0xAB 0xEE 0xDB — RPM magic number identifying a valid RPM package. This big-endian 4-byte value is the primary identifier for all RPM packages regardless of version, architecture, or OS target.",
-      "storeAs": "rpmMagic",
-      "valueType": "hex",
-      "endianness": "big"
+      "length": 96,
+      "description": "RPM lead section (96 bytes): magic, version, type, arch, name, OS, signature type",
+      "fields": [
+        { "name": "Magic",   "variable": "rpmMagic",  "offset": 0, "length": 4 },
+        { "name": "Major",   "variable": "rpmMajor",  "offset": 4, "length": 1 },
+        { "name": "Minor",   "variable": "rpmMinor",  "offset": 5, "length": 1 },
+        { "name": "Type",    "variable": "rpmType",   "offset": 6, "length": 2 },
+        { "name": "Arch",    "variable": "rpmArch",   "offset": 8, "length": 2 }
+      ]
     },
     {
-      "type": "field",
-      "name": "Major Version",
-      "offset": 4,
-      "length": 1,
-      "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "RPM Lead major version number. Must be 3 (0x03) for all modern RPM packages. Earlier values (1, 2) indicate ancient pre-release formats no longer supported by current tooling.",
-      "storeAs": "rpmMajor",
-      "valueType": "uint8",
-      "endianness": "little"
+      "name": "SignatureHeader",
+      "offset": 96,
+      "length": -1,
+      "description": "RPM signature header section (variable length, aligned to 8-byte boundary). Contains GPG/PGP signature tags."
     },
     {
-      "type": "field",
-      "name": "Minor Version",
-      "offset": 5,
-      "length": 1,
-      "color": "#4ECDC4",
-      "opacity": 0.2,
-      "description": "RPM Lead minor version number. Typically 0 (0x00) for all current RPM packages. This field has been 0 since the format stabilized at version 3.0.",
-      "storeAs": "rpmMinor",
-      "valueType": "uint8",
-      "endianness": "little"
+      "name": "MainHeader",
+      "offset": -1,
+      "length": -1,
+      "description": "RPM main header section containing package metadata tags (name, version, release, description, file list, dependencies)"
     },
     {
-      "type": "field",
-      "name": "Package Type",
-      "offset": 6,
-      "length": 2,
-      "color": "#95E1D3",
-      "opacity": 0.3,
-      "description": "RPM package type as big-endian 16-bit value. 0=Binary RPM (installable package), 1=Source RPM (SRPM, contains spec file and source tarballs for rebuilding). Affects how the payload should be interpreted.",
-      "storeAs": "rpmType",
-      "valueType": "uint16",
-      "endianness": "big",
-      "valueMap": {
-        "0": "Binary RPM (installable package for target architecture)",
-        "1": "Source RPM — SRPM (contains spec file and source tarballs)"
-      }
-    },
-    {
-      "type": "field",
-      "name": "Architecture",
-      "offset": 8,
-      "length": 2,
-      "color": "#A8E6CF",
-      "opacity": 0.3,
-      "description": "Target CPU architecture as big-endian 16-bit code. Maps to RPM architecture strings used in package naming conventions (e.g., x86_64, aarch64). Value 0 means noarch (architecture-independent).",
-      "storeAs": "rpmArchitecture",
-      "valueType": "uint16",
-      "endianness": "big",
-      "valueMap": {
-        "0": "noarch — Architecture-independent",
-        "1": "x86 (i386/i686)",
-        "3": "sparc",
-        "6": "x86_64",
-        "12": "aarch64 (ARM 64-bit)",
-        "14": "riscv64"
-      }
-    },
-    {
-      "type": "field",
-      "name": "Package Name (Lead)",
-      "offset": 10,
-      "length": 16,
-      "color": "#FFE66D",
-      "opacity": 0.3,
-      "description": "First 16 bytes of the 66-byte null-padded ASCII package name stored in the Lead section. This is a legacy field; the authoritative package name is in the Main Header tag NAME (1000). Truncated here for display.",
-      "storeAs": "rpmName",
-      "valueType": "ascii",
-      "endianness": "little"
-    },
-    {
-      "type": "field",
-      "name": "Target OS",
-      "offset": 76,
-      "length": 2,
-      "color": "#F8B500",
-      "opacity": 0.3,
-      "description": "Target operating system as big-endian 16-bit code. Value 1=Linux is the only value used in practice for modern RPM packages. This field is largely informational and not used for installation decisions.",
-      "storeAs": "rpmOs",
-      "valueType": "uint16",
-      "endianness": "big",
-      "valueMap": {
-        "1": "Linux",
-        "255": "Other/unspecified"
-      }
-    },
-    {
-      "type": "field",
-      "name": "Signature Type",
-      "offset": 78,
-      "length": 2,
-      "color": "#FF8C94",
-      "opacity": 0.3,
-      "description": "Signature section type. Must be 5 (0x0005) for all modern RPM packages — indicates the Header Signature format. Values other than 5 indicate obsolete signature formats from early RPM versions.",
-      "storeAs": "rpmSignatureType",
-      "valueType": "uint16",
-      "endianness": "big",
-      "valueMap": {
-        "5": "Header-based signature (modern RPM)",
-        "0": "No signature (very old format)"
-      }
+      "name": "Payload",
+      "offset": -1,
+      "length": -1,
+      "description": "Compressed CPIO archive containing the actual package files (typically gzip or xz compressed)"
     }
   ],
   "assertions": [
-    {
-      "name": "RPM magic valid",
-      "expression": "rpmMagic == 'EDABEEDB'",
-      "severity": "error",
-      "message": "Lead magic 0xEDABEEDB not found — file is not a valid RPM package"
-    },
-    {
-      "name": "Major version is 3",
-      "expression": "rpmMajor == 3",
-      "severity": "error",
-      "message": "RPM major version is not 3 — ancient or unsupported RPM format"
-    },
-    {
-      "name": "Package type is binary or source",
-      "expression": "rpmType == 0 || rpmType == 1",
-      "severity": "error",
-      "message": "RPM package type is neither Binary (0) nor Source (1) — invalid or corrupted Lead section"
-    }
+    { "id": "A1", "description": "Magic bytes must be ED AB EE DB",    "expression": "rpmMagic == 'EDABEEDB'" },
+    { "id": "A2", "description": "Major version must be 3 or 4",       "expression": "rpmMajor == 3 || rpmMajor == 4" },
+    { "id": "A3", "description": "Package type must be 0 (binary) or 1 (source)", "expression": "rpmType == 0 || rpmType == 1" }
   ],
   "navigation": {
-    "bookmarks": [
-      {
-        "name": "Lead Section",
-        "offset": 0,
-        "icon": "\uE8B7",
-        "color": "#FF6B6B"
-      },
-      {
-        "name": "Signature Header",
-        "offset": 96,
-        "icon": "\uE8A5",
-        "color": "#4ECDC4"
-      }
-    ]
+    "entryPoint": "Lead",
+    "structure": [ "Lead", "SignatureHeader", "MainHeader", "Payload" ],
+    "notes": "After the 96-byte lead, signature and main headers begin with an 8-byte header magic (8E AD E8 01 00 00 00 00) followed by nindex (4B BE) and hsize (4B BE). Payload starts after the aligned main header."
   },
   "inspector": {
-    "badge": "rpmType",
-    "primaryField": "rpmName",
-    "showQualityScore": true,
+    "badge": "RPM",
+    "primaryField": "rpmMajor",
     "groups": [
       {
-        "title": "Lead Header",
-        "icon": "\uE8B7",
-        "fields": ["rpmMagic", "rpmMajor", "rpmMinor"]
-      },
-      {
-        "title": "Package Identity",
-        "icon": "\uE8A5",
-        "fields": ["rpmType", "rpmArchitecture", "rpmName", "rpmOs"]
-      },
-      {
-        "title": "Signature Info",
-        "icon": "\uE9D9",
-        "fields": ["rpmSignatureType"]
+        "name": "Lead",
+        "fields": [ "rpmMagic", "rpmMajor", "rpmMinor", "rpmType", "rpmArch" ]
       }
     ]
   },
   "exportTemplates": [
     {
-      "name": "RPM Lead (JSON)",
-      "format": "json",
-      "fields": ["rpmMagic", "rpmMajor", "rpmMinor", "rpmType", "rpmArchitecture", "rpmName", "rpmOs", "rpmSignatureType"]
+      "name": "Package Summary CSV",
+      "format": "csv",
+      "fields": [ "rpmMagic", "rpmMajor", "rpmMinor", "rpmType", "rpmArch" ]
     },
     {
-      "name": "RPM Lead (text)",
-      "format": "text",
-      "fields": ["rpmMagic", "rpmMajor", "rpmMinor", "rpmType", "rpmArchitecture", "rpmName", "rpmOs"]
+      "name": "Lead JSON",
+      "format": "json",
+      "fields": [ "rpmMagic", "rpmMajor", "rpmMinor", "rpmType", "rpmArch" ]
     }
   ],
   "forensic": {
-    "category": "archive",
-    "riskLevel": "medium",
+    "riskLevel": "MEDIUM",
+    "notes": "RPM packages can contain arbitrary executables and scripts. GPG signature in the signature header should be verified before installation. Unsigned packages or packages with mismatched signatures are high-risk.",
     "suspiciousPatterns": [
-      {
-        "name": "Source RPM submitted as binary",
-        "condition": "rpmType == 1",
-        "severity": "info",
-        "description": "This is a Source RPM (SRPM) — it contains build scripts and source code, not installable binaries. Inspect spec file for post-install scriptlets."
-      }
-    ],
-    "knownExploitVectors": [
-      "Pre/post install scriptlets run as root during package installation",
-      "RPATH manipulation in packaged binaries",
-      "Malicious cpio payload with path traversal entries",
-      "Weak GPG signature or missing signature (install with --nodeps --nosignature)"
+      "Missing or invalid GPG signature in signature header",
+      "Source RPM (type=1) deployed to production system",
+      "Architecture field mismatching the target system",
+      "Payload compression algorithm different from declared compression tag"
     ]
   },
   "aiHints": {
-    "analysisContext": "RPM package with 96-byte Lead section. Signature Header follows at offset 96 (magic 8EADE801). Main Header (same magic) follows after 8-byte alignment. cpio archive payload at end contains actual files. Key tags: NAME=1000, VERSION=1001, RELEASE=1002, ARCH=1022, LICENSE=1014, PACKAGER=1015.",
+    "analysisContext": "RPM files have a fixed 96-byte lead followed by variable-length header sections using a tag-based structure. The payload is a compressed CPIO archive. Header tags use a 16-byte index entry format (tag id + type + offset + count).",
     "suggestedInspections": [
-      "Verify GPG signature in Signature Header (tag 1002=RSA, 1007=DSA) before trusting package content",
-      "Extract and review %pre, %post, %preun, %postun scriptlets in Main Header for malicious commands",
-      "Inspect cpio payload for unexpected SUID/SGID bits on files (mode bits in cpio headers)",
-      "Check package vendor and packager tags against trusted repositories",
-      "Verify payload compression algorithm in PAYLOADCOMPRESSOR tag (4021) matches actual stream magic"
+      "Verify GPG/PGP signature in the signature header section for package authenticity",
+      "Decode main header tags to extract package name, version, release, and architecture strings",
+      "Identify payload compression algorithm from PAYLOADCOMPRESSOR tag (1125) to select correct decompressor",
+      "List embedded file paths from FILEPATHS tags to assess package contents before extraction",
+      "Check REQUIRENAME/REQUIREVERSION tags for dependency declarations"
     ]
   },
-  "software": ["rpm", "dnf", "yum", "zypper", "alien", "rpm2cpio"],
-  "formatRelationships": {
-    "category": "Archives",
-    "extensions": [".rpm", ".src.rpm"],
-    "relatedFormats": ["CPIO", "GZIP", "XZ", "ZSTD", "DEB"]
-  },
-  "MimeTypes": ["application/x-rpm", "application/x-srpm"],
-  "UseCases": [
-    "Linux package installation on Red Hat, Fedora, SUSE, openSUSE, CentOS, RHEL, Rocky, Alma",
-    "Software distribution with GPG signing and dependency tracking",
-    "Source package (SRPM) for reproducible builds",
-    "Package inspection and forensic analysis with rpm2cpio"
-  ],
   "TechnicalDetails": {
-    "LeadSize": "96 bytes",
-    "SignatureHeaderMagic": "0x8EADE801",
-    "MainHeaderMagic": "0x8EADE801",
-    "PayloadFormats": "cpio.gz, cpio.xz, cpio.zst (rpm 4.17+)",
-    "KeyTags": "NAME=1000, VERSION=1001, RELEASE=1002, ARCH=1022, PACKAGER=1015, LICENSE=1014, PAYLOADCOMPRESSOR=4021",
-    "SignatureAlignment": "Headers are 8-byte aligned"
+    "endianness": "Big-endian for all header multi-byte fields",
+    "leadSize": 96,
+    "headerMagic": "8E AD E8 01 00 00 00 00",
+    "tagIndexEntrySize": 16,
+    "payloadFormats": [ "cpio.gz", "cpio.xz", "cpio.lzma", "cpio.bz2", "cpio.zst" ]
   },
   "QualityMetrics": {
-    "CompletenessScore": 82,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 8,
-    "ValidationRules": 3,
+    "CompletenessScore": 87,
     "LastUpdated": "2026-04-15",
-    "PriorityFormat": false,
-    "AutoRefined": false
+    "ReviewedBy": "WPFHexaEditor Team"
   }
 }

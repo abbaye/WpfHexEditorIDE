@@ -1,0 +1,194 @@
+{
+  "diffMode": "binary",
+  "formatName": "OCSP Response (Online Certificate Status Protocol)",
+  "version": "1.0",
+  "extensions": [ ".ocsp", ".der" ],
+  "description": "Online Certificate Status Protocol response as defined in RFC 6960 (updated from RFC 2560). OCSP enables real-time certificate revocation checking without downloading full CRLs. The response is a DER-encoded ASN.1 structure: OCSPResponse ::= SEQUENCE { responseStatus ENUMERATED { good(0), revoked(1), unknown(2) }, ... } — wait, the outer is: OCSPResponse ::= SEQUENCE { responseStatus OCSPResponseStatus, responseBytes [0] EXPLICIT ResponseBytes OPTIONAL }. ResponseStatus ENUMERATED: 0=successful, 1=malformedRequest, 2=internalError, 3=tryLater, 4=(unused), 5=sigRequired, 6=unauthorized. The ResponseBytes contain a responseType OID (id-pkix-ocsp-basic = 1.3.6.1.5.5.7.48.1.1) and a BasicOCSPResponse DER blob. BasicOCSPResponse contains: tbsResponseData (version, responderID, producedAt, responses array with certStatus and thisUpdate/nextUpdate/revocationTime), signatureAlgorithm, signature, and optional certs. OCSP stapling (TLS Certificate Status Request extension) embeds OCSP responses in TLS handshakes.",
+  "category": "Certificates",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "HexEditor",
+  "references": [
+    "https://www.rfc-editor.org/rfc/rfc6960",
+    "https://www.rfc-editor.org/rfc/rfc2560",
+    "https://letsencrypt.org/docs/glossary/#def-OCSP"
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "value": "3082",
+        "offset": 0,
+        "label": "DER SEQUENCE tag 0x30 with 2-byte length — outer OCSPResponse ASN.1 structure",
+        "weight": 0.4
+      }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.3,
+    "Strength": "Weak",
+    "validation": "First byte must be 0x30 (ASN.1 SEQUENCE). The ENUMERATED responseStatus value typically appears at offset 4-6. Valid responseStatus values are 0, 1, 2, 3, 5, 6. File size typically 500-5000 bytes for a basic OCSP response."
+  },
+  "variables": {},
+  "blocks": [
+    {
+      "name": "ocspSequence",
+      "offset": 0,
+      "size": 1,
+      "type": "uint8",
+      "description": "ASN.1 outer SEQUENCE tag — 1-byte unsigned integer at offset 0; must be 0x30 (decimal 48) which is the ASN.1 SEQUENCE/SEQUENCE-OF universal tag; this is the opening byte of the OCSPResponse DER structure",
+      "storeAs": "ocspSequence"
+    },
+    {
+      "name": "ocspLength",
+      "offset": 1,
+      "size": 3,
+      "type": "bytes",
+      "description": "DER length encoding — bytes at offset 1; if first byte is 0x82 then the following 2 bytes are the big-endian content length; if 0x81 then one length byte follows; if < 0x80 then this byte itself is the length; typical OCSP responses have lengths in the range 200-4000 bytes",
+      "storeAs": "ocspLength"
+    },
+    {
+      "name": "ocspStatus",
+      "offset": 4,
+      "size": 1,
+      "type": "uint8",
+      "description": "OCSP response status — 1-byte ENUMERATED value at approximately offset 4 (after outer SEQUENCE header); actual offset may vary by 1-2 bytes based on length encoding; values: 0=successful (response contains certificate status), 1=malformedRequest, 2=internalError, 3=tryLater (retry later), 5=sigRequired (request must be signed), 6=unauthorized (responder not authorized for this certificate)",
+      "storeAs": "ocspStatus",
+      "valueMap": {
+        "0": "successful — response contains certificate status data",
+        "1": "malformedRequest — request syntax error",
+        "2": "internalError — OCSP responder internal error",
+        "3": "tryLater — service unavailable, retry",
+        "5": "sigRequired — request must be signed",
+        "6": "unauthorized — responder not authorized"
+      }
+    },
+    {
+      "name": "ocspResponseTypeOid",
+      "offset": 8,
+      "size": 11,
+      "type": "bytes",
+      "description": "Response type OID — 11 bytes at approximately offset 8 (after responseStatus and ResponseBytes SEQUENCE header); DER-encoded OID for id-pkix-ocsp-basic: 06 09 2B 06 01 05 05 07 30 01 01 (OID 1.3.6.1.5.5.7.48.1.1); this identifies the BasicOCSPResponse format which is the standard response type",
+      "storeAs": "ocspResponseTypeOid"
+    },
+    {
+      "name": "ocspProducedAt",
+      "offset": 0,
+      "size": 15,
+      "type": "ascii",
+      "description": "producedAt timestamp — 15-byte ASN.1 GeneralizedTime at variable offset within BasicOCSPResponse tbsResponseData; format: YYYYMMDDHHMMSSZ (e.g., '20260415120000Z'); indicates when the OCSP responder generated the response; forensically important for validity window analysis",
+      "storeAs": "ocspProducedAt"
+    }
+  ],
+  "assertions": [
+    {
+      "field": "ocspSequence",
+      "op": "eq",
+      "value": 48,
+      "description": "First byte must be 0x30 (decimal 48) — ASN.1 SEQUENCE tag required for all DER-encoded OCSPResponse structures"
+    },
+    {
+      "field": "ocspStatus",
+      "op": "in",
+      "value": [ 0, 1, 2, 3, 5, 6 ],
+      "description": "ResponseStatus ENUMERATED value must be one of the defined values: 0 (successful), 1 (malformedRequest), 2 (internalError), 3 (tryLater), 5 (sigRequired), 6 (unauthorized); value 4 is explicitly not used"
+    },
+    {
+      "field": "ocspLength",
+      "op": "info",
+      "value": null,
+      "description": "INFO: OCSP response size typically 500-5000 bytes; much larger files may be OCSP responses with embedded CA certificate chains"
+    }
+  ],
+  "navigation": {
+    "entryPoint": "ocspSequence",
+    "sections": [
+      { "name": "Outer OCSPResponse SEQUENCE", "offset": 0, "size": 4 },
+      { "name": "ResponseStatus", "offset": 4, "size": 3 },
+      { "name": "ResponseBytes", "offset": 7, "description": "Explicit [0] wrapper containing responseType OID and BasicOCSPResponse" },
+      { "name": "BasicOCSPResponse", "offset": 0, "description": "tbsResponseData, signatureAlgorithm, signature, optional certs" }
+    ]
+  },
+  "inspector": {
+    "badge": "OCSP",
+    "primaryField": "ocspStatus",
+    "groups": [
+      {
+        "name": "Response Status",
+        "fields": [ "ocspSequence", "ocspStatus" ]
+      },
+      {
+        "name": "Structure",
+        "fields": [ "ocspLength", "ocspResponseTypeOid" ]
+      },
+      {
+        "name": "Validity",
+        "fields": [ "ocspProducedAt" ]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "OCSP Response Summary",
+      "format": "txt",
+      "template": "OCSP Response\n=============\nOuter Tag    : 0x{ocspSequence}\nLength Bytes : {ocspLength}\nStatus Code  : {ocspStatus}\nResponse OID : {ocspResponseTypeOid}\nProduced At  : {ocspProducedAt}\n"
+    },
+    {
+      "name": "OCSP Forensic Report (CSV)",
+      "format": "csv",
+      "template": "Field,Value\nOuterTag,{ocspSequence}\nLengthBytes,{ocspLength}\nResponseStatus,{ocspStatus}\nResponseTypeOID,{ocspResponseTypeOid}\nProducedAt,{ocspProducedAt}\n"
+    }
+  ],
+  "forensic": {
+    "importance": "MEDIUM",
+    "riskLevel": "low",
+    "notes": "OCSP responses are typically transient network artifacts but may be cached or stapled in TLS session records. The producedAt timestamp reveals when the CA's OCSP responder was queried. A revoked certificate status (certStatus=revoked) with revocationTime and revocationReason is forensically significant. OCSP stapling artifacts in TLS handshake logs can confirm whether a server was presenting valid certificate status at a specific time.",
+    "indicators": [
+      "DER SEQUENCE 0x30 at offset 0",
+      "Extension .ocsp or .der",
+      "Response status ENUMERATED value near start",
+      "id-pkix-ocsp-basic OID (1.3.6.1.5.5.7.48.1.1)",
+      "GeneralizedTime producedAt timestamp"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "OCSP responses are DER-encoded ASN.1 structures carrying real-time certificate status from a CA's OCSP responder. The outer OCSPResponse contains a status code and optionally a BasicOCSPResponse with per-certificate revocation status, timestamps, and a CA signature. They are used in TLS certificate validation and may appear as network traffic artifacts or cached stapled responses.",
+    "suggestedInspections": [
+      "Parse the responseStatus ENUMERATED value to determine if the response indicates a successful status check or an error condition",
+      "Extract the producedAt and nextUpdate timestamps to determine the validity window of the cached OCSP response",
+      "Check certStatus in the SingleResponse — 'good', 'revoked' (with revocationTime and reason), or 'unknown'",
+      "Verify the responder signature to confirm the response was issued by a trusted CA OCSP responder",
+      "Extract the responderID (byName or byKey) to identify which CA authority signed the response",
+      "Look for embedded CA certificates in the certs field of BasicOCSPResponse for chain-building analysis"
+    ]
+  },
+  "software": [
+    { "name": "OpenSSL (ocsp command)", "vendor": "OpenSSL Software Foundation", "url": "https://www.openssl.org/docs/man3.0/man1/openssl-ocsp.html" },
+    { "name": "Wireshark (TLS dissector)", "vendor": "Wireshark Foundation", "url": "https://www.wireshark.org" },
+    { "name": "Bouncy Castle", "vendor": "Legion of the Bouncy Castle", "url": "https://www.bouncycastle.org" },
+    { "name": "ASN.1 Editor (BER/DER viewer)", "vendor": "Various", "url": "https://www.lapo.it/asn1js/" },
+    { "name": "certutil (Windows)", "vendor": "Microsoft", "url": "https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/certutil" }
+  ],
+  "formatRelationships": [
+    { "format": "X509", "relationship": "OCSP responses carry revocation status for X.509 certificates; the certID in the request references the serial number and issuer of an X.509 cert" },
+    { "format": "CSR", "relationship": "OCSP is used to verify the status of certificates that were originally issued following a CSR" },
+    { "format": "SMIME", "relationship": "S/MIME clients query OCSP to verify certificate validity before encrypting or verifying signatures" }
+  ],
+  "MimeTypes": [ "application/ocsp-response", "application/octet-stream" ],
+  "UseCases": [
+    "Real-time TLS certificate revocation checking",
+    "OCSP stapling in TLS/HTTPS servers",
+    "PKI certificate lifecycle management",
+    "Forensic analysis of certificate validity at a point in time",
+    "Automated certificate monitoring and alerting"
+  ],
+  "QualityMetrics": {
+    "LastUpdated": "2026-04-15",
+    "CompletenessScore": 82,
+    "ReviewedBy": "WPFHexaEditor Team"
+  },
+  "TechnicalDetails": {
+    "encoding": "DER (Distinguished Encoding Rules) binary ASN.1",
+    "outerStructure": "OCSPResponse SEQUENCE containing responseStatus ENUMERATED and optional responseBytes",
+    "innerStructure": "BasicOCSPResponse SEQUENCE containing tbsResponseData, signatureAlgorithm, signature",
+    "typicalSize": "500 to 5000 bytes",
+    "rfcs": [ "RFC 6960", "RFC 2560", "RFC 5019" ]
+  }
+}

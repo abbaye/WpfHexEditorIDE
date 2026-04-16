@@ -1,0 +1,197 @@
+{
+  "diffMode": "binary",
+  "formatName": "S/MIME Signed or Encrypted Message (PKCS#7 / CMS)",
+  "version": "1.0",
+  "extensions": [ ".p7s", ".p7m", ".p7c", ".p7b" ],
+  "description": "S/MIME (Secure/Multipurpose Internet Mail Extensions) cryptographic message format based on PKCS#7 / CMS (Cryptographic Message Syntax, RFC 5652). Used for email signing, encryption, and certificate distribution. File variants by extension: .p7s = detached signature (SignedData), .p7m = enveloped/encrypted message (EnvelopedData or AuthEnvelopedData), .p7c = certificates-only (degenerate SignedData with no content), .p7b = certificate chain or CRL. Two encoding formats: PEM ('-----BEGIN PKCS7-----' header) or DER binary. CMS ContentTypes: SignedData (1.2.840.113549.1.7.2), EnvelopedData (1.2.840.113549.1.7.3), DigestedData (1.2.840.113549.1.7.5), EncryptedData (1.2.840.113549.1.7.6), AuthenticatedData (1.2.840.113549.1.9.16.1.2), AuthEnvelopedData (1.2.840.113549.1.9.16.1.23). SignedData contains: version, digestAlgorithms, encapContentInfo, certificates, CRLs, signerInfos. EnvelopedData contains: version, originatorInfo, recipientInfos, encryptedContentInfo.",
+  "category": "Certificates",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "HexEditor",
+  "references": [
+    "https://www.rfc-editor.org/rfc/rfc5652",
+    "https://www.rfc-editor.org/rfc/rfc8551",
+    "https://www.iana.org/assignments/smime-content-types/"
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "value": "2D2D2D2D2D424547494E20504B435337",
+        "offset": 0,
+        "label": "'-----BEGIN PKCS7' — PEM-encoded PKCS#7 / CMS structure (S/MIME)",
+        "weight": 1.0
+      },
+      {
+        "value": "3082",
+        "offset": 0,
+        "label": "DER PKCS#7 — ASN.1 SEQUENCE outer wrapper of ContentInfo structure",
+        "weight": 0.5
+      }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.4,
+    "Strength": "Medium",
+    "validation": "PEM: must start with '-----BEGIN PKCS7-----'. DER: first byte 0x30, followed by content OID 1.2.840.113549.1.7.x (PKCS#7 content types). File extension provides strong disambiguation: .p7s=signature, .p7m=encrypted, .p7c=certs, .p7b=cert bundle."
+  },
+  "variables": {},
+  "blocks": [
+    {
+      "name": "smimePemOrDer",
+      "offset": 0,
+      "size": 16,
+      "type": "ascii",
+      "description": "Encoding format indicator — 16 ASCII bytes at offset 0; for PEM encoding: '-----BEGIN PKCS7' (16 chars) followed by '-----\\n'; for DER encoding: first byte is 0x30 followed by ASN.1 DER structure; presence of '-----' confirms PEM wrapping around a DER payload",
+      "storeAs": "smimePemOrDer"
+    },
+    {
+      "name": "smimeFirstByte",
+      "offset": 0,
+      "size": 1,
+      "type": "uint8",
+      "description": "First byte — 1-byte unsigned integer at offset 0; 0x2D (45) for PEM-encoded PKCS#7, 0x30 (48) for DER-encoded PKCS#7 (ASN.1 SEQUENCE tag)",
+      "storeAs": "smimeFirstByte"
+    },
+    {
+      "name": "smimeContentTypeOid",
+      "offset": 4,
+      "size": 11,
+      "type": "bytes",
+      "description": "ContentType OID — 11 bytes at approximately offset 4 in DER ContentInfo; DER-encoded OID for SignedData: 06 09 2A 86 48 86 F7 0D 01 07 02 (1.2.840.113549.1.7.2); for EnvelopedData: 06 09 2A 86 48 86 F7 0D 01 07 03 (1.2.840.113549.1.7.3); identifies the CMS content type",
+      "storeAs": "smimeContentTypeOid"
+    },
+    {
+      "name": "smimeDerLength",
+      "offset": 1,
+      "size": 3,
+      "type": "bytes",
+      "description": "DER outer length — bytes at offset 1; 0x82 followed by 2-byte big-endian content length for structures > 127 bytes; typical S/MIME structures range from 1 KB to several MB depending on content and attached certificates",
+      "storeAs": "smimeDerLength"
+    },
+    {
+      "name": "smimeCmsVersion",
+      "offset": 0,
+      "size": 3,
+      "type": "bytes",
+      "description": "CMS version integer — 3 bytes at variable offset within SignedData or EnvelopedData; ASN.1 INTEGER encoding: 0x02 0x01 followed by version value; SignedData versions: 1=no attribute certs, 3=attribute certs, 4=KEK recipients, 5=PasswordRecipientInfo; EnvelopedData versions: 0=v0, 2=originator, 3=KEK, 4=PWRI",
+      "storeAs": "smimeCmsVersion"
+    }
+  ],
+  "assertions": [
+    {
+      "field": "smimeFirstByte",
+      "op": "in",
+      "value": [ 45, 48 ],
+      "description": "First byte must be 0x2D (PEM '-') or 0x30 (DER SEQUENCE); no other values are valid for PKCS#7/CMS files"
+    },
+    {
+      "field": "smimePemOrDer",
+      "op": "info",
+      "value": null,
+      "description": "INFO: Extension provides reliable disambiguation — .p7s=detached signature, .p7m=enveloped data, .p7c=certs-only, .p7b=certificate bundle/chain"
+    },
+    {
+      "field": "smimeContentTypeOid",
+      "op": "info",
+      "value": null,
+      "description": "INFO: ContentType OID in DER determines the CMS type — 1.2.840.113549.1.7.2=SignedData, 1.2.840.113549.1.7.3=EnvelopedData; use OpenSSL to parse"
+    }
+  ],
+  "navigation": {
+    "entryPoint": "smimeFirstByte",
+    "sections": [
+      { "name": "PEM Header / DER Outer ContentInfo", "offset": 0, "size": 4 },
+      { "name": "ContentType OID", "offset": 4, "size": 11 },
+      { "name": "CMS Content (SignedData / EnvelopedData)", "offset": 15, "description": "Main CMS payload — variable length" }
+    ]
+  },
+  "inspector": {
+    "badge": "SMIME",
+    "primaryField": "smimePemOrDer",
+    "groups": [
+      {
+        "name": "Encoding",
+        "fields": [ "smimeFirstByte", "smimePemOrDer" ]
+      },
+      {
+        "name": "CMS Structure",
+        "fields": [ "smimeDerLength", "smimeContentTypeOid", "smimeCmsVersion" ]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "S/MIME Structure Summary",
+      "format": "txt",
+      "template": "S/MIME Message (PKCS#7 / CMS)\n==============================\nFirst Byte     : 0x{smimeFirstByte} (0x2D=PEM, 0x30=DER)\nPEM/DER Header : {smimePemOrDer}\nDER Length     : {smimeDerLength}\nContentType OID: {smimeContentTypeOid}\nCMS Version    : {smimeCmsVersion}\n"
+    },
+    {
+      "name": "S/MIME Forensic Report (CSV)",
+      "format": "csv",
+      "template": "Field,Value\nFirstByte,{smimeFirstByte}\nPemOrDer,{smimePemOrDer}\nDerLength,{smimeDerLength}\nContentTypeOID,{smimeContentTypeOid}\nCmsVersion,{smimeCmsVersion}\n"
+    }
+  ],
+  "forensic": {
+    "importance": "HIGH",
+    "riskLevel": "high",
+    "notes": "S/MIME files carry cryptographically protected email content. .p7m EnvelopedData files contain encrypted message content and can only be decrypted with the recipient's private key. .p7s SignedData files contain signed content with signer certificate — the signer's identity (DN, email) is embedded in plaintext in the SignerInfo certificates. .p7b certificate bundles can reveal PKI hierarchy and organizational certificate infrastructure. Forensic value: signer identity, encryption algorithm, recipient certificate serial number, message timestamp.",
+    "indicators": [
+      "PEM '-----BEGIN PKCS7-----' header",
+      "DER ASN.1 0x30 start with PKCS#7 OID",
+      "Extensions .p7s, .p7m, .p7c, .p7b",
+      "SignedData contains signer certificate with identity",
+      "EnvelopedData contains encrypted content"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "S/MIME uses PKCS#7/CMS to provide email signing (.p7s), encryption (.p7m), and certificate distribution (.p7b/.p7c). The format is based on ASN.1 DER with optional PEM wrapping. Signed messages embed the signer's certificate chain. Encrypted messages contain recipient certificate references (issuer+serial or SKI) that identify who can decrypt the content.",
+    "suggestedInspections": [
+      "Determine CMS content type from the ContentType OID — SignedData (signing), EnvelopedData (encryption), or degenerate SignedData (cert bundle)",
+      "For SignedData: extract embedded signer certificates to identify the message author by DN and email address",
+      "For EnvelopedData: extract RecipientInfo to identify the intended recipient by certificate serial number or subject key identifier",
+      "Check the signing time attribute in SignerInfo for the claimed message timestamp",
+      "Verify the digital signature on SignedData to confirm message authenticity and detect tampering",
+      "For .p7b bundles: enumerate all embedded certificates and CRLs to map the organizational PKI hierarchy"
+    ]
+  },
+  "software": [
+    { "name": "OpenSSL (smime command)", "vendor": "OpenSSL Software Foundation", "url": "https://www.openssl.org/docs/man3.0/man1/openssl-smime.html" },
+    { "name": "Mozilla Thunderbird", "vendor": "Mozilla Foundation", "url": "https://www.thunderbird.net" },
+    { "name": "Microsoft Outlook", "vendor": "Microsoft", "url": "https://www.microsoft.com/en-us/microsoft-365/outlook" },
+    { "name": "Bouncy Castle CMS API", "vendor": "Legion of the Bouncy Castle", "url": "https://www.bouncycastle.org" },
+    { "name": "ASN.1 Decoder (lapo.it)", "vendor": "Various", "url": "https://www.lapo.it/asn1js/" }
+  ],
+  "formatRelationships": [
+    { "format": "X509", "relationship": "S/MIME uses X.509 certificates for signing and encryption; certificates are embedded in SignedData and referenced in EnvelopedData" },
+    { "format": "OCSP", "relationship": "S/MIME clients use OCSP to verify certificate validity before trusting signatures" },
+    { "format": "CSR", "relationship": "S/MIME certificates are obtained via CSR submission to an email CA (e.g., Comodo, GlobalSign)" },
+    { "format": "GPG_KEYRING", "relationship": "GPG/PGP provides equivalent email encryption functionality to S/MIME but uses a different format and trust model (web of trust vs PKI)" }
+  ],
+  "MimeTypes": [
+    "application/pkcs7-mime",
+    "application/pkcs7-signature",
+    "application/x-pkcs7-certificates",
+    "application/x-pkcs7-certreqresp"
+  ],
+  "UseCases": [
+    "Signed and encrypted email (S/MIME email clients)",
+    "Certificate distribution and chain building (.p7b)",
+    "Code signing and timestamping",
+    "Forensic analysis of signed email authenticity",
+    "Digital evidence envelope creation"
+  ],
+  "QualityMetrics": {
+    "LastUpdated": "2026-04-15",
+    "CompletenessScore": 85,
+    "ReviewedBy": "WPFHexaEditor Team"
+  },
+  "TechnicalDetails": {
+    "contentTypes": {
+      "1.2.840.113549.1.7.2": "SignedData",
+      "1.2.840.113549.1.7.3": "EnvelopedData",
+      "1.2.840.113549.1.7.5": "DigestedData",
+      "1.2.840.113549.1.7.6": "EncryptedData",
+      "1.2.840.113549.1.9.16.1.23": "AuthEnvelopedData"
+    },
+    "encodingFormats": [ "DER (binary)", "PEM (base64 with '-----BEGIN PKCS7-----' header)" ],
+    "rfcs": [ "RFC 5652 (CMS)", "RFC 8551 (S/MIME v4)", "RFC 2315 (PKCS#7 legacy)" ]
+  }
+}

@@ -1695,39 +1695,61 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         _formatBrowserPanel.ExportFormatRequested += OnExportWhfmtFromBrowser;
         _formatBrowserPanel.ViewJsonRequested     += OnViewJsonFromBrowser;
 
-        if (_formatCatalogService is not null)
-        {
-            _formatAdHocService ??= new WpfHexEditor.Shell.Panels.Services.WhfmtAdHocFormatService(
-                WpfHexEditor.Core.Options.AppSettingsService.Instance.Current.WhfmtExplorer);
-
-            _formatBrowserPanel.SetCatalog(
-                WpfHexEditor.Core.Definitions.EmbeddedFormatCatalog.Instance,
-                _formatCatalogService,
-                _formatAdHocService,
-                WpfHexEditor.Core.Options.AppSettingsService.Instance.Current.WhfmtExplorer);
-        }
-
+        InitFormatBrowserCatalog();
         return _formatBrowserPanel;
+    }
+
+    /// <summary>
+    /// Wires catalog data into the Format Browser.
+    /// Safe to call multiple times — idempotent once the service is available.
+    /// Called at panel creation and again from PluginSystem after catalog init.
+    /// </summary>
+    internal void InitFormatBrowserCatalog()
+    {
+        if (_formatBrowserPanel is null || _formatCatalogService is null) return;
+
+        _formatAdHocService ??= new WpfHexEditor.Shell.Panels.Services.WhfmtAdHocFormatService(
+            WpfHexEditor.Core.Options.AppSettingsService.Instance.Current.WhfmtExplorer);
+
+        _formatBrowserPanel.SetCatalog(
+            WpfHexEditor.Core.Definitions.EmbeddedFormatCatalog.Instance,
+            _formatCatalogService,
+            _formatAdHocService,
+            WpfHexEditor.Core.Options.AppSettingsService.Instance.Current.WhfmtExplorer);
     }
 
     private UIElement CreateFormatCatalogContent()
     {
-        // Catalog document is a virtual tab — always creates a fresh instance
-        // (multiple instances allowed for comparison; not a singleton)
+        // Catalog document is a virtual tab — always creates a fresh instance.
+        // SetCatalog is also wired to the Loaded event so layout-restore
+        // (where _formatCatalogService may not be assigned yet) still works.
         var doc = new WpfHexEditor.Shell.Panels.Panels.WhfmtCatalogDocument();
-        if (_formatCatalogService is not null)
+        doc.OpenFormatsRequested   += OnOpenWhfmtListFromCatalog;
+        doc.ExportFormatsRequested += OnExportWhfmtListFromCatalog;
+
+        void ApplyCatalog()
         {
+            if (_formatCatalogService is null) return;
             _formatAdHocService ??= new WpfHexEditor.Shell.Panels.Services.WhfmtAdHocFormatService(
                 WpfHexEditor.Core.Options.AppSettingsService.Instance.Current.WhfmtExplorer);
-
             doc.SetCatalog(
                 WpfHexEditor.Core.Definitions.EmbeddedFormatCatalog.Instance,
                 _formatCatalogService,
                 _formatAdHocService,
                 WpfHexEditor.Core.Options.AppSettingsService.Instance.Current.WhfmtExplorer);
         }
-        doc.OpenFormatsRequested   += OnOpenWhfmtListFromCatalog;
-        doc.ExportFormatsRequested += OnExportWhfmtListFromCatalog;
+
+        if (_formatCatalogService is not null)
+        {
+            ApplyCatalog();
+        }
+        else
+        {
+            // Defer until after PluginSystem finishes catalog init.
+            doc.Loaded += (_, _) => Dispatcher.InvokeAsync(ApplyCatalog,
+                System.Windows.Threading.DispatcherPriority.Background);
+        }
+
         return doc;
     }
 

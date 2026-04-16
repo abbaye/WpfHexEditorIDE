@@ -1,198 +1,225 @@
 {
-  "diffMode": "binary",
-  "formatName": "UDF Filesystem",
+  "formatName": "Universal Disk Format",
   "version": "1.0",
-  "extensions": [".udf", ".iso", ".img"],
-  "description": "Universal Disk Format (ISO 13346 / ECMA-167) filesystem used on DVD-Video, Blu-ray, DVD-RAM, and CD-RW. Identified by NSR02 or NSR03 Volume Recognition Sequence at sector 16 (offset 32768 for 2048-byte sectors). Coexists with ISO 9660.",
+  "diffMode": "binary",
+  "extensions": [
+    ".udf",
+    ".iso",
+    ".img"
+  ],
+  "description": "UDF (Universal Disk Format, ECMA-167) is used on optical media such as DVD and Blu-ray. The Volume Recognition Sequence (VRS) at byte offset 32768 contains the identifier 'NSR02' for UDF 1.x or 'NSR03' for UDF 2.x.",
   "category": "Disk",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
-  "references": {
-    "specifications": [
-      "ECMA-167: Volume and File Structure for Write-Once and Rewritable Media — 3rd Edition",
-      "OSTA UDF Specification 2.60",
-      "ISO 13346 — Volume and file structure for write-once and rewritable media"
-    ],
-    "WebLinks": [
-      "http://www.osta.org/specs/index.htm",
-      "https://en.wikipedia.org/wiki/Universal_Disk_Format",
-      "https://ecma-international.org/publications-and-standards/standards/ecma-167/"
-    ]
-  },
+  "MimeTypes": [
+    "application/x-iso9660-image",
+    "application/octet-stream"
+  ],
+  "UseCases": [
+    "DVD and Blu-ray optical disc filesystem",
+    "Packet-writing for rewritable optical media",
+    "Cross-platform disc image distribution"
+  ],
+  "references": [
+    "https://www.ecma-international.org/publications-and-standards/standards/ecma-167/",
+    "https://www.osta.org/specs/index.htm"
+  ],
+  "software": [
+    {
+      "name": "mkudffs",
+      "url": "https://github.com/pali/udftools",
+      "role": "Linux UDF formatter"
+    },
+    {
+      "name": "ImgBurn",
+      "url": "https://www.imgburn.com/",
+      "role": "Windows optical disc burning"
+    },
+    {
+      "name": "The Sleuth Kit",
+      "url": "https://www.sleuthkit.org/",
+      "role": "Forensic toolkit with UDF analysis"
+    }
+  ],
+  "formatRelationships": [
+    {
+      "format": "ISO9660",
+      "relationship": "UDF often coexists with ISO 9660 on optical discs for backward compatibility"
+    },
+    {
+      "format": "HFS+",
+      "relationship": "Hybrid discs may include HFS+ volume for macOS compatibility"
+    }
+  ],
   "detection": {
     "signatures": [
       {
-        "value": "4E53523032",
         "offset": 32768,
-        "label": "'NSR02' — UDF 1.50/2.00 Volume Recognition Sequence at sector 16 (offset 32768 for 2048B sectors)",
+        "value": "4E53523032",
+        "label": "'NSR02' UDF 1.x Volume Recognition Sequence",
         "weight": 1.0
       },
       {
-        "value": "4E53523033",
         "offset": 32768,
-        "label": "'NSR03' — UDF 2.01+ Volume Recognition Sequence at sector 16",
-        "weight": 1.0
+        "value": "4E53523033",
+        "label": "'NSR03' UDF 2.x Volume Recognition Sequence",
+        "weight": 0.9
       }
     ],
     "matchMode": "any",
-    "MinimumScore": 1.0,
-    "required": true,
+    "MinimumScore": 82,
     "Strength": "Strong",
-    "EntropyHint": { "min": 1.0, "max": 7.5 },
-    "validation": {
-      "minFileSize": 32780,
-      "maxSignatureOffset": 32773
+    "EntropyHint": {
+      "min": 3.0,
+      "max": 8.0,
+      "note": "System area before VRS has low entropy"
+    },
+    "validation": "5 bytes at offset 32768 must be 'NSR02' or 'NSR03'. System area (0-32767) should be zeros or ISO 9660 VDs."
+  },
+  "variables": [
+    {
+      "name": "udfVrsIdent",
+      "type": "ascii",
+      "offset": 32768,
+      "length": 5,
+      "description": "VRS identifier: 'NSR02' or 'NSR03'"
+    },
+    {
+      "name": "udfStructType",
+      "type": "uint8",
+      "offset": 32773,
+      "length": 1,
+      "description": "Volume structure descriptor type"
     }
-  },
-  "variables": {
-    "udfVrsType": 0,
-    "udfStdId": "",
-    "udfVersion": 0
-  },
+  ],
   "blocks": [
     {
-      "type": "field",
-      "name": "VRS Descriptor Type",
-      "offset": 32761,
-      "length": 1,
-      "color": "#808080",
-      "opacity": 0.2,
-      "description": "Volume Structure Descriptor type byte at the start of the Volume Recognition Sequence descriptor at sector 16. Must be 0 for all Volume Structure Descriptors (BEA01, NSR02, NSR03, TEA01). Any non-zero value indicates a non-UDF or corrupted VRS.",
-      "storeAs": "udfVrsType",
-      "valueType": "uint8",
-      "endianness": "little"
+      "name": "SystemArea",
+      "offset": 0,
+      "length": 32768,
+      "description": "System area (16 sectors at 2048 B each): may contain ISO 9660 VDs or zeros"
     },
     {
-      "type": "signature",
-      "name": "Standard Identifier",
-      "offset": 32762,
-      "length": 5,
-      "color": "#FF6B6B",
-      "opacity": 0.45,
-      "description": "'NSR02' or 'NSR03' — 5-byte ECMA-167 standard identifier in the Volume Recognition Sequence at sector 16. NSR02 = UDF 1.50 or 2.00 (OSTA UDF revisions ≤ 2.00). NSR03 = UDF 2.01 through 2.60. This is the definitive UDF identifier within the ISO 9660 VRS framework.",
-      "storeAs": "udfStdId",
-      "valueType": "ascii",
-      "endianness": "little"
+      "name": "VRS",
+      "offset": 32768,
+      "length": 2048,
+      "description": "Volume Recognition Sequence at sector 16",
+      "fields": [
+        {
+          "name": "VrsIdent",
+          "variable": "udfVrsIdent",
+          "offset": 0,
+          "length": 5
+        },
+        {
+          "name": "StructType",
+          "variable": "udfStructType",
+          "offset": 5,
+          "length": 1
+        }
+      ]
     },
     {
-      "type": "field",
-      "name": "VRS Version",
-      "offset": 32767,
-      "length": 1,
-      "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "Volume Recognition Sequence descriptor version. Must be 1 for all current ECMA-167 Volume Structure Descriptors. Stored at offset 7 within the 8-byte VRS descriptor (relative to sector 16 start at offset 32761).",
-      "storeAs": "udfVersion",
-      "valueType": "uint8",
-      "endianness": "little"
+      "name": "VDS1",
+      "offset": -1,
+      "length": -1,
+      "description": "Main Volume Descriptor Sequence: partition, logical volume, terminating descriptors"
+    },
+    {
+      "name": "FileSetDescriptor",
+      "offset": -1,
+      "length": -1,
+      "description": "File Set Descriptor pointing to root directory ICB"
     }
   ],
   "assertions": [
     {
-      "name": "NSR standard ID valid",
-      "expression": "udfStdId == 'NSR02' || udfStdId == 'NSR03'",
-      "severity": "error",
-      "message": "UDF Standard Identifier is not 'NSR02' or 'NSR03' at sector 16 — not a valid UDF volume"
+      "id": "A1",
+      "description": "VRS identifier must start with 'NSR0'",
+      "expression": "udfVrsIdent starts with 'NSR0'"
     },
     {
-      "name": "VRS type is zero",
-      "expression": "udfVrsType == 0",
-      "severity": "error",
-      "message": "VRS descriptor type is not 0 — ECMA-167 requires type=0 for Volume Structure Descriptors"
+      "id": "A2",
+      "description": "VRS version must be '2' or '3'",
+      "expression": "udfVrsIdent[4] == '2' || udfVrsIdent[4] == '3'"
     },
     {
-      "name": "VRS version is 1",
-      "expression": "udfVersion == 1",
-      "severity": "warning",
-      "message": "VRS version is not 1 — non-standard or future ECMA-167 revision detected"
+      "id": "A3",
+      "description": "udfStructType must be a valid byte value",
+      "expression": "udfStructType >= 0"
     }
   ],
-  "navigation": [
-    {
-      "name": "Volume Recognition Sequence",
-      "offset": 32768,
-      "icon": "\uE8B7",
-      "color": "#FF6B6B"
-    },
-    {
-      "name": "AVDP (Anchor VDP)",
-      "offset": 524288,
-      "icon": "\uE8A5",
-      "color": "#4ECDC4"
-    }
-  ],
+  "navigation": {
+    "entryPoint": "VRS",
+    "structure": [
+      "SystemArea",
+      "VRS",
+      "VDS1",
+      "FileSetDescriptor"
+    ],
+    "notes": "AVDP (Anchor Volume Descriptor Pointer) at sector 256 points to main and reserve VDS. UDF sector size is typically 2048 bytes."
+  },
   "inspector": {
-    "badge": "udfStdId",
-    "primaryField": "udfVersion",
-    "showQualityScore": true,
+    "badge": "UDF",
+    "primaryField": "udfVrsIdent",
     "groups": [
       {
-        "title": "UDF Recognition",
-        "icon": "\uE8B7",
-        "fields": ["udfVrsType", "udfStdId", "udfVersion"]
+        "name": "Volume Recognition",
+        "fields": [
+          "udfVrsIdent",
+          "udfStructType"
+        ]
       }
     ]
   },
   "exportTemplates": [
     {
-      "name": "UDF VRS (JSON)",
-      "format": "json",
-      "fields": ["udfVrsType", "udfStdId", "udfVersion"]
+      "name": "VRS Summary CSV",
+      "format": "csv",
+      "fields": [
+        "udfVrsIdent",
+        "udfStructType"
+      ]
     },
     {
-      "name": "UDF VRS (text)",
-      "format": "text",
-      "fields": ["udfStdId", "udfVersion"]
+      "name": "VRS JSON",
+      "format": "json",
+      "fields": [
+        "udfVrsIdent",
+        "udfStructType"
+      ]
     }
   ],
   "forensic": {
-    "category": "disk",
-    "riskLevel": "low",
-    "suspiciousPatterns": [],
-    "knownExploitVectors": [
-      "UDF parsing vulnerabilities in kernel drivers (historical CVEs in Linux and Windows UDF drivers)",
-      "Malformed UDF structures causing buffer overflows during automount"
+    "riskLevel": "LOW",
+    "notes": "Hybrid ISO9660+UDF images may expose different file content per filesystem driver, enabling steganographic hiding.",
+    "suspiciousPatterns": [
+      "Discrepancy between ISO9660 and UDF directory trees on a hybrid disc",
+      "Non-zero system area containing unexpected data before the VRS",
+      "Logical volume integrity descriptor flagging open (unmounted) state",
+      "Invalid partition descriptor start/length values"
     ]
   },
   "aiHints": {
-    "analysisContext": "UDF VRS is at sector 16. For 2048B sectors: offset 32768. Anchor VDP (AVDP) at sector 256 (offset 524288). Contains pointers to Main VDS and Reserve VDS. Partition Descriptor + Logical Volume Descriptor + File Set Descriptor chain leads to files. UDF coexists with ISO 9660 on DVD-Video and Blu-ray.",
+    "analysisContext": "UDF uses ECMA-167 structures: AVDP, VDS, LVD, FSD, and ICBs. Key structures located via sector offsets. All multi-byte values use mixed endianness per ECMA-167.",
     "suggestedInspections": [
-      "Check both NSR02 and NSR03 identifiers — some discs have both for backward compatibility",
-      "Read Anchor VDP at offset 524288 (sector 256) to locate Main Volume Descriptor Sequence",
-      "Verify ECMA-167 sector size (2048 bytes for optical, 512 bytes for hard disk UDF)",
-      "Look for BEA01 and TEA01 extent markers at sectors 14 and 18 (Extended Area Descriptor)",
-      "On DVD-Video, check for VIDEO_TS directory in UDF file system for content identification"
+      "Locate AVDP at sector 256 and extract Main VDS location to find partition and logical volume descriptors",
+      "Parse Logical Volume Descriptor to identify partition map type (Type 1 simple, Type 2 virtual/sparable)",
+      "Follow File Set Descriptor root ICB to enumerate root directory and subdirectories",
+      "Check Logical Volume Integrity Descriptor for open/close state and recorded file count",
+      "On hybrid discs compare ISO9660 directory tree with UDF directory tree for hidden content"
     ]
   },
-  "software": ["mkudffs", "udftools", "ImgBurn", "Nero", "macOS (native)", "Windows (native DVD support)"],
-  "formatRelationships": {
-    "category": "Disk",
-    "extensions": [".udf", ".iso", ".img"],
-    "relatedFormats": ["ISO9660", "HFS_PLUS", "JOLIET", "DVD_VIDEO"]
-  },
-  "MimeTypes": ["application/x-udf", "application/x-iso9660-image"],
-  "UseCases": [
-    "DVD-Video and Blu-ray disc filesystem",
-    "DVD-RAM and CD-RW rewritable media",
-    "Optical disc mastering and archival",
-    "Windows DVD burning (Vista and later uses UDF 2.50)"
-  ],
   "TechnicalDetails": {
-    "Standard": "ECMA-167 / ISO 13346 / OSTA UDF",
-    "VRSLocation": "Sector 16 (offset 32768 for 2048B sectors)",
-    "UDFRevisions": "1.02, 1.50, 2.00, 2.01, 2.50, 2.60",
-    "NSR02Covers": "UDF 1.50 and 2.00",
-    "NSR03Covers": "UDF 2.01 through 2.60",
-    "AVDPLocation": "Sector 256 (or last sector - 256)",
-    "CoexistsWithISO9660": true
+    "endianness": "Mixed per ECMA-167",
+    "vrsOffset": 32768,
+    "sectorSize": 2048,
+    "avdpSector": 256,
+    "ecmaStandard": "ECMA-167 3rd edition"
   },
   "QualityMetrics": {
-    "CompletenessScore": 75,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 3,
-    "ValidationRules": 3,
+    "CompletenessScore": 85,
     "LastUpdated": "2026-04-15",
-    "PriorityFormat": false,
-    "AutoRefined": false
+    "ReviewedBy": "WPFHexaEditor Team"
   }
 }

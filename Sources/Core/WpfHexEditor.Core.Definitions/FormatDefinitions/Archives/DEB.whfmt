@@ -1,213 +1,155 @@
 {
-  "diffMode": "binary",
   "formatName": "Debian Package",
   "version": "1.0",
-  "extensions": [".deb", ".udeb"],
-  "description": "Debian package format based on the Unix ar archive. Contains three members: debian-binary (format version), control.tar.* (metadata and maintainer scripts), and data.tar.* (installed files). Used by dpkg/apt on Debian, Ubuntu, and derivatives.",
+  "diffMode": "binary",
+  "extensions": [ ".deb", ".udeb" ],
+  "description": "Debian package format (.deb) is an AR archive containing a debian-binary version file, a control.tar archive, and a data.tar archive. The AR magic '!<arch>\n' (0x21 0x3C 0x61 0x72 0x63 0x68 0x3E 0x0A) appears at offset 0.",
   "category": "Archives",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
-  "references": {
-    "specifications": [
-      "Debian Policy Manual — Chapter 12 (deb format)",
-      "deb(5) manual page",
-      "ar(1) format specification — SysV/POSIX ar"
-    ],
-    "WebLinks": [
-      "https://www.debian.org/doc/debian-policy/ch-controlfields.html",
-      "https://en.wikipedia.org/wiki/Deb_(file_format)",
-      "https://man7.org/linux/man-pages/man5/deb.5.html"
-    ]
-  },
+  "MimeTypes": [ "application/vnd.debian.binary-package", "application/x-deb" ],
+  "UseCases": [
+    "Software distribution on Debian, Ubuntu, and derivative Linux systems",
+    "Package integrity verification via checksums in control archive",
+    "Forensic inspection of installed or staged Debian packages"
+  ],
+  "references": [
+    "https://www.debian.org/doc/debian-policy/ch-controlfields.html",
+    "https://wiki.debian.org/Teams/Dpkg/Spec/Format",
+    "https://man7.org/linux/man-pages/man5/deb.5.html"
+  ],
+  "software": [
+    { "name": "dpkg",     "url": "https://wiki.debian.org/dpkg",           "role": "Reference package manager" },
+    { "name": "apt",      "url": "https://wiki.debian.org/Apt",            "role": "High-level package manager for .deb files" },
+    { "name": "7-Zip",    "url": "https://www.7-zip.org/",                 "role": "Can extract .deb AR structure and inner archives" }
+  ],
+  "formatRelationships": [
+    { "format": "AR",    "relationship": "Outer container is an AR archive (Unix ar format)" },
+    { "format": "TAR",   "relationship": "control.tar and data.tar members are tar archives" },
+    { "format": "GZIP",  "relationship": "Inner tar members are commonly gzip-compressed (.tar.gz)" },
+    { "format": "XZ",    "relationship": "Modern .deb packages use xz-compressed inner archives (.tar.xz)" }
+  ],
   "detection": {
     "signatures": [
       {
-        "value": "213C617263683E0A",
         "offset": 0,
-        "label": "'!<arch>\\n' — Unix ar archive magic. All .deb files are ar archives with this 8-byte header at offset 0.",
+        "value": "213C617263683E0A",
+        "label": "'!<arch>\n' AR magic",
         "weight": 1.0
       }
     ],
-    "matchMode": "any",
-    "MinimumScore": 1.0,
-    "required": true,
+    "matchMode": "first",
+    "MinimumScore": 82,
     "Strength": "Strong",
-    "EntropyHint": { "min": 5.0, "max": 8.0 },
-    "validation": {
-      "minFileSize": 68
-    }
+    "EntropyHint": { "min": 5.0, "max": 8.0, "note": "AR header has low entropy; compressed inner archives have high entropy" },
+    "validation": "Bytes 0-7 must be '!<arch>\n' (21 3C 61 72 63 68 3E 0A). First AR member identifier at offset 8 (16 bytes) should contain 'debian-binary' to confirm this is a .deb rather than a generic AR archive."
   },
-  "variables": {
-    "debMagic": "",
-    "debEntry1Name": "",
-    "debEntry1Size": "",
-    "debFormatVersion": ""
-  },
+  "variables": [
+    { "name": "debArMagic",     "type": "ascii",  "offset": 0,  "length": 8,  "description": "AR archive magic: '!<arch>\n'" },
+    { "name": "debFirstIdent",  "type": "ascii",  "offset": 8,  "length": 16, "description": "First AR member identifier, should be 'debian-binary   '" },
+    { "name": "debFileSize",    "type": "ascii",  "offset": 48, "length": 10, "description": "File size of first AR member (ASCII decimal, right-padded with spaces)" }
+  ],
   "blocks": [
     {
-      "type": "signature",
-      "name": "ar Archive Magic",
+      "name": "ARMagic",
       "offset": 0,
       "length": 8,
-      "color": "#FF6B6B",
-      "opacity": 0.45,
-      "description": "'!<arch>\\n' — Standard Unix ar archive magic (8 bytes). This is the global ar header present at the start of every .deb file. The ar format dates to Unix V7 and is used here purely as a container; dpkg understands only the specific 3-member layout of Debian packages.",
-      "storeAs": "debMagic",
-      "valueType": "ascii",
-      "endianness": "little"
+      "description": "AR archive magic header '!<arch>\n'",
+      "fields": [
+        { "name": "Magic", "variable": "debArMagic", "offset": 0, "length": 8 }
+      ]
     },
     {
-      "type": "field",
-      "name": "First Entry Filename",
+      "name": "DebianBinaryMember",
       "offset": 8,
-      "length": 8,
-      "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "First 8 bytes of the ar entry filename field at offset 8. Should begin with 'debian-bi' (short for 'debian-binary   '). The filename field is 16 bytes total, space-padded to 16 characters as required by the ar format.",
-      "storeAs": "debEntry1Name",
-      "valueType": "ascii",
-      "endianness": "little"
+      "length": 60,
+      "description": "First AR member header (60 bytes): identifier 'debian-binary   ' + timestamp + uid + gid + mode + size + end marker",
+      "fields": [
+        { "name": "Identifier", "variable": "debFirstIdent", "offset": 0,  "length": 16 },
+        { "name": "FileSize",   "variable": "debFileSize",   "offset": 40, "length": 10 }
+      ]
     },
     {
-      "type": "field",
-      "name": "First Entry File Size",
-      "offset": 48,
-      "length": 10,
-      "color": "#95E1D3",
-      "opacity": 0.3,
-      "description": "Size of the first ar entry (debian-binary) as a decimal ASCII string in a 10-byte field. For debian-binary the content is '2.0\\n' so this should be '4         ' (value 4 padded with spaces).",
-      "storeAs": "debEntry1Size",
-      "valueType": "ascii",
-      "endianness": "little"
+      "name": "ControlArchiveMember",
+      "offset": -1,
+      "length": -1,
+      "description": "AR member containing control.tar (or control.tar.gz/xz/zst) with package metadata"
+    },
+    {
+      "name": "DataArchiveMember",
+      "offset": -1,
+      "length": -1,
+      "description": "AR member containing data.tar (or data.tar.gz/xz/zst) with actual package files"
     }
   ],
   "assertions": [
-    {
-      "name": "ar magic valid",
-      "expression": "debMagic == '!<arch>\\n'",
-      "severity": "error",
-      "message": "ar magic '!<arch>\\n' not found at offset 0 — file is not a valid Debian package"
-    },
-    {
-      "name": "First member is debian-binary",
-      "expression": "debEntry1Name == 'debian-bi'",
-      "severity": "error",
-      "message": "First ar member is not 'debian-binary' — invalid or corrupted .deb structure"
-    },
-    {
-      "name": "Package format version is 2.0",
-      "expression": "debEntry1Size == '4         '",
-      "severity": "warning",
-      "message": "debian-binary size is not 4 bytes — package format version string may differ from expected '2.0\\n'"
-    }
+    { "id": "A1", "description": "AR magic must be '!<arch>\n'",           "expression": "debArMagic == '!<arch>\n'" },
+    { "id": "A2", "description": "First member identifier must contain 'debian'", "expression": "debFirstIdent contains 'debian'" },
+    { "id": "A3", "description": "File size field must be a numeric ASCII string", "expression": "debFileSize is numeric ASCII" }
   ],
   "navigation": {
-    "bookmarks": [
-      {
-        "name": "ar Magic",
-        "offset": 0,
-        "icon": "\uE8B7",
-        "color": "#FF6B6B"
-      },
-      {
-        "name": "debian-binary Entry",
-        "offset": 8,
-        "icon": "\uE8A5",
-        "color": "#4ECDC4"
-      },
-      {
-        "name": "debian-binary Content",
-        "offset": 68,
-        "icon": "\uE8F4",
-        "color": "#95E1D3"
-      }
-    ]
+    "entryPoint": "ARMagic",
+    "structure": [ "ARMagic", "DebianBinaryMember", "ControlArchiveMember", "DataArchiveMember" ],
+    "notes": "Each AR member header is 60 bytes. Member data follows immediately and is padded to even-byte boundary with '\n'. Members: debian-binary (version string '2.0\n'), control.tar.*, data.tar.*"
   },
   "inspector": {
-    "badge": "debFormatVersion",
-    "primaryField": "debEntry1Name",
-    "showQualityScore": true,
+    "badge": "DEB",
+    "primaryField": "debFirstIdent",
     "groups": [
       {
-        "title": "ar Archive Header",
-        "icon": "\uE8B7",
-        "fields": ["debMagic"]
+        "name": "AR Container",
+        "fields": [ "debArMagic", "debFirstIdent" ]
       },
       {
-        "title": "Package Identity",
-        "icon": "\uE8A5",
-        "fields": ["debEntry1Name", "debEntry1Size", "debFormatVersion"]
+        "name": "Member Metadata",
+        "fields": [ "debFileSize" ]
       }
     ]
   },
   "exportTemplates": [
     {
-      "name": "DEB Header (JSON)",
-      "format": "json",
-      "fields": ["debMagic", "debEntry1Name", "debEntry1Size", "debFormatVersion"]
+      "name": "Package Summary CSV",
+      "format": "csv",
+      "fields": [ "debArMagic", "debFirstIdent", "debFileSize" ]
     },
     {
-      "name": "DEB Header (text)",
-      "format": "text",
-      "fields": ["debMagic", "debEntry1Name", "debFormatVersion"]
+      "name": "AR Header JSON",
+      "format": "json",
+      "fields": [ "debArMagic", "debFirstIdent", "debFileSize" ]
     }
   ],
   "forensic": {
-    "category": "archive",
-    "riskLevel": "medium",
+    "riskLevel": "MEDIUM",
+    "notes": "Debian packages can contain arbitrary executables, pre/post-install scripts, and configuration files. The control archive contains maintainer scripts (preinst, postinst, prerm, postrm) which execute as root. Inspect these carefully.",
     "suspiciousPatterns": [
-      {
-        "name": "Maintainer scripts present",
-        "condition": "true",
-        "severity": "info",
-        "description": "All .deb packages may contain preinst, postinst, prerm, postrm scripts executed as root by dpkg during install/remove. Always review control.tar.* scripts before installation."
-      }
-    ],
-    "knownExploitVectors": [
-      "Malicious postinst/preinst scripts executed as root by dpkg",
-      "Path traversal in data.tar member filenames",
-      "Symlink attacks in data.tar exploiting dpkg extraction order",
-      "Conffile hijacking via /etc paths in data.tar"
+      "Missing debian-binary member as first AR member",
+      "debian-binary version string other than '2.0'",
+      "Maintainer scripts (postinst/preinst) containing obfuscated or encoded commands",
+      "Unexpected AR member names beyond the standard three members",
+      "Data archive containing files targeting sensitive system paths"
     ]
   },
   "aiHints": {
-    "analysisContext": "Debian .deb is an ar archive with exactly 3 members: debian-binary (format version '2.0'), control.tar.gz/xz/zst (maintainer metadata + scripts), data.tar.gz/xz/zst (installed files). Compression choice depends on dpkg version: gz (old), xz (modern), zst (dpkg 1.21+).",
+    "analysisContext": "A .deb file is a Unix AR archive containing exactly three members in order: 'debian-binary' (plain text version '2.0\n'), 'control.tar.*' (package metadata and scripts), and 'data.tar.*' (installable files). The control member contains the package name, version, dependencies, and maintainer scripts.",
     "suggestedInspections": [
-      "Extract and read control.tar.*/control file for package name, version, maintainer, and dependencies",
-      "Review control.tar.*/postinst and preinst scripts for malicious commands executed as root",
-      "Inspect data.tar.* file list for unexpected SUID/SGID binaries or /etc conffiles",
-      "Verify debian-binary content is exactly '2.0\\n' — any other value indicates non-standard format",
-      "Check for ar member names beyond the standard three — unexpected members may indicate tampering"
+      "Extract and read debian-binary member to confirm version string is '2.0'",
+      "Decompress and inspect control.tar for package name, version, architecture, and dependency fields",
+      "Examine maintainer scripts (preinst, postinst, prerm, postrm) for suspicious shell commands",
+      "List data.tar file paths to identify target installation directories",
+      "Compare declared checksums in control/md5sums against actual data.tar file hashes"
     ]
   },
-  "software": ["dpkg", "apt", "apt-get", "gdebi", "alien", "dpkg-deb"],
-  "formatRelationships": {
-    "category": "Archives",
-    "extensions": [".deb", ".udeb"],
-    "relatedFormats": ["AR", "CPIO", "GZIP", "XZ", "ZSTD", "RPM"]
-  },
-  "MimeTypes": ["application/vnd.debian.binary-package", "application/x-deb"],
-  "UseCases": [
-    "Linux package installation on Debian, Ubuntu, Linux Mint, Raspberry Pi OS",
-    "Software distribution with dependency resolution via apt",
-    "Micro-package (udeb) for Debian Installer",
-    "Package inspection and forensic analysis with dpkg-deb --extract"
-  ],
   "TechnicalDetails": {
-    "ContainerFormat": "Unix ar archive",
-    "Members": "debian-binary, control.tar.*, data.tar.*",
-    "FormatVersion": "2.0 (current since Debian 0.93)",
-    "CompressionOptions": ".gz (legacy), .xz (modern, dpkg 1.17+), .zst (dpkg 1.21+)",
-    "ControlScripts": "preinst, postinst, prerm, postrm (executed as root)",
-    "arEntryHeaderSize": "60 bytes per member header"
+    "outerContainer": "Unix AR archive format",
+    "arMemberHeaderSize": 60,
+    "members": [ "debian-binary", "control.tar.*", "data.tar.*" ],
+    "controlCompressionFormats": [ ".tar.gz", ".tar.xz", ".tar.zst", ".tar.bz2" ],
+    "dataCompressionFormats":    [ ".tar.gz", ".tar.xz", ".tar.zst", ".tar.bz2" ],
+    "debianBinaryVersion": "2.0"
   },
   "QualityMetrics": {
-    "CompletenessScore": 80,
-    "DocumentationLevel": "standard",
-    "BlocksDefined": 3,
-    "ValidationRules": 3,
+    "CompletenessScore": 86,
     "LastUpdated": "2026-04-15",
-    "PriorityFormat": false,
-    "AutoRefined": false
+    "ReviewedBy": "WPFHexaEditor Team"
   }
 }

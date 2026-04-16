@@ -1,100 +1,59 @@
 {
   "diffMode": "binary",
-  "formatName": "ONNX (Open Neural Network Exchange)",
+  "formatName": "ONNX Neural Network Model",
   "version": "1.0",
-  "extensions": [ ".onnx" ],
-  "description": "Open Neural Network Exchange model file using Protocol Buffers serialization for cross-framework ML model interoperability between PyTorch, TensorFlow, and inference runtimes.",
+  "extensions": [".onnx"],
+  "description": "Open Neural Network Exchange (ONNX) model file using Protocol Buffers serialization. ONNX provides cross-framework ML model interoperability between PyTorch, TensorFlow, and inference runtimes such as ONNX Runtime, TensorRT, and OpenVINO. Files are serialized ModelProto protobuf messages with no fixed magic bytes; detection relies on protobuf tag heuristics and file extension.",
   "category": "MachineLearning",
   "author": "WPFHexaEditor Team",
-  "preferredEditor": "hex-editor",
-  "MimeTypes": [ "application/octet-stream", "application/x-onnx" ],
-
-  "UseCases": [
-    "Cross-framework ML model interchange between PyTorch, TensorFlow, and other training frameworks",
-    "Optimized inference deployment via ONNX Runtime, TensorRT, and OpenVINO",
-    "Edge AI and mobile inference with model quantization and optimization",
-    "Model validation, visualization, and architecture inspection with Netron"
+  "preferredEditor": "HexEditor",
+  "references": [
+    "https://onnx.ai/",
+    "https://github.com/onnx/onnx/blob/main/docs/IR.md",
+    "https://github.com/onnx/onnx/blob/main/onnx/onnx.proto",
+    "https://en.wikipedia.org/wiki/Open_Neural_Network_Exchange"
   ],
-
-  "software": [
-    { "name": "ONNX Runtime",       "role": "consumer" },
-    { "name": "Netron",             "role": "consumer" },
-    { "name": "PyTorch (torch.onnx.export)", "role": "producer" },
-    { "name": "tf2onnx",            "role": "producer" },
-    { "name": "TensorRT",           "role": "consumer" },
-    { "name": "OpenVINO",           "role": "consumer" },
-    { "name": "onnxruntime-web",    "role": "consumer" }
-  ],
-
-  "formatRelationships": {
-    "relatedFormats": [ "TFLITE", "SAFETENSORS", "PYTORCH", "TorchScript" ],
-    "container": null,
-    "notes": "ONNX files are Protocol Buffers-serialized ModelProto messages. The format is defined by the ONNX spec and uses protobuf wire format encoding, meaning there are no fixed magic bytes — detection relies on extension and heuristic analysis of the first protobuf tag byte."
-  },
-
-  "references": {
-    "specifications": [
-      "ONNX IR Specification (github.com/onnx/onnx/blob/main/docs/IR.md)",
-      "ONNX Operators (github.com/onnx/onnx/blob/main/docs/Operators.md)"
-    ],
-    "WebLinks": [
-      "https://onnx.ai/",
-      "https://en.wikipedia.org/wiki/Open_Neural_Network_Exchange"
-    ]
-  },
-
   "detection": {
     "signatures": [
       {
-        "value": "08",
         "offset": 0,
-        "label": "Protobuf field 1 tag (ir_version varint) — common ONNX start byte",
-        "weight": 30,
-        "required": false
+        "value": "08",
+        "label": "Protobuf field 1 tag (ir_version varint) — common ONNX start byte 0x08",
+        "weight": 0.5
+      },
+      {
+        "offset": 0,
+        "value": "0A",
+        "label": "Protobuf field 1 length-delimited — alternative ONNX start",
+        "weight": 0.3
       }
     ],
-    "matchMode": "weighted",
-    "MinimumScore": 30,
+    "matchMode": "Best",
+    "MinimumScore": 0.3,
     "Strength": "Weak",
-    "EntropyHint": {
-      "min": 4.0,
-      "max": 7.5,
-      "note": "Model weights (initializer tensors) are high entropy; protobuf structural metadata and operator names have moderate entropy around 4.0-5.5."
-    },
-    "validation": {
-      "minFileSize": 8,
-      "maxSignatureOffset": 0
-    }
+    "EntropyHint": "Mixed — protobuf structural metadata at moderate entropy (4.0-5.5); initializer weight tensors at high entropy (6.5-8.0)"
   },
-
-  "variables": {
-    "protobufTag":   { "offset": 0, "length": 1, "type": "uint8" },
-    "irVersion":     { "offset": 1, "length": 1, "type": "uint8" },
-    "thirdByte":     { "offset": 2, "length": 1, "type": "uint8" }
-  },
-
-  "blocks": [
+  "variables": [
     {
-      "type": "signature",
-      "name": "Protobuf Tag Byte",
+      "name": "onnxProtoTag",
       "offset": 0,
-      "length": 1,
-      "color": "#FF6B6B",
-      "opacity": 0.9,
-      "description": "First protobuf tag byte; for ONNX ModelProto field 1 (ir_version) with wire type 0 (varint), this is 0x08. Other starting tags are possible if ir_version is omitted.",
-      "storeAs": "protobufTag",
-      "valueType": "uint8"
+      "size": 1,
+      "type": "uint8",
+      "description": "First protobuf tag byte; 0x08 = field 1 varint (ir_version)"
     },
     {
-      "type": "field",
-      "name": "IR Version",
+      "name": "onnxFirstValue",
       "offset": 1,
-      "length": 1,
-      "color": "#4ECDC4",
-      "opacity": 0.8,
-      "description": "Varint-encoded ONNX Intermediate Representation version; common values: 3 (ONNX 1.2), 4 (ONNX 1.3), 5 (ONNX 1.4), 6 (ONNX 1.6), 7 (ONNX 1.7), 8 (ONNX 1.8), 9 (ONNX 1.14). Single-byte varint for values 1-127.",
-      "storeAs": "irVersion",
-      "valueType": "uint8",
+      "size": 4,
+      "type": "hex",
+      "description": "First 4 bytes after the tag — varint-encoded ir_version"
+    },
+    {
+      "name": "onnxIrVersion",
+      "offset": 1,
+      "size": 1,
+      "type": "uint8",
+      "description": "ONNX IR version (single-byte varint for values 1-127)",
       "valueMap": {
         "3": "ONNX IR v3 (ONNX 1.2)",
         "4": "ONNX IR v4 (ONNX 1.3)",
@@ -107,151 +66,169 @@
       }
     },
     {
-      "type": "field",
-      "name": "Next Protobuf Tag",
+      "name": "onnxNextTag",
       "offset": 2,
-      "length": 1,
-      "color": "#45B7D1",
-      "opacity": 0.7,
-      "description": "Next protobuf field tag after ir_version; typically 0x12 (field 2, wire type 2 = length-delimited) for producer_name, or 0x42 (field 8, wire type 2) for opset_import.",
-      "storeAs": "thirdByte",
-      "valueType": "uint8"
-    },
-    {
-      "type": "metadata",
-      "name": "Producer Info",
-      "offset": "variable",
-      "length": "variable",
-      "color": "#96CEB4",
-      "opacity": 0.65,
-      "description": "Protobuf string fields for producer_name (field 2) and producer_version (field 3); common values include 'pytorch', 'tf2onnx', 'onnxruntime', 'onnxmltools'."
-    },
-    {
-      "type": "metadata",
-      "name": "Opset Import Table",
-      "offset": "variable",
-      "length": "variable",
-      "color": "#FFEAA7",
-      "opacity": 0.6,
-      "description": "Repeated opset_import messages (field 8) specifying operator set domain and version; default domain '' uses ONNX standard operators, 'ai.onnx.ml' for ML operators."
-    },
-    {
-      "type": "metadata",
-      "name": "Graph Definition",
-      "offset": "variable",
-      "length": "variable",
-      "color": "#DDA0DD",
-      "opacity": 0.55,
-      "description": "GraphProto message (field 7) containing the computation graph: node[] (operators), initializer[] (weight tensors), input[] and output[] (tensor type/shape), and doc_string."
+      "size": 1,
+      "type": "uint8",
+      "description": "Second protobuf tag: 0x12 = producer_name (field 2), 0x42 = opset_import (field 8)"
     }
   ],
-
+  "blocks": [
+    {
+      "name": "ProtobufTag",
+      "offset": 0,
+      "size": 1,
+      "description": "First protobuf field tag byte; 0x08 for ir_version (field 1, wire type 0)"
+    },
+    {
+      "name": "IRVersion",
+      "offset": 1,
+      "size": 1,
+      "description": "Varint-encoded ONNX Intermediate Representation version"
+    },
+    {
+      "name": "ProducerMetadata",
+      "offset": 2,
+      "size": 32,
+      "description": "Producer name and version fields (field 2, 3) identifying the originating framework"
+    },
+    {
+      "name": "OpsetImport",
+      "offset": 34,
+      "size": 16,
+      "description": "Opset import table (field 8) specifying operator set domain and version"
+    },
+    {
+      "name": "GraphProto",
+      "offset": 50,
+      "size": 64,
+      "description": "GraphProto (field 7) containing node[], initializer[], input[], output[] definitions"
+    },
+    {
+      "name": "InitializerTensors",
+      "offset": 114,
+      "size": 128,
+      "description": "Weight tensor data in initializer[] — constitutes the majority of file size for non-trivial models"
+    }
+  ],
   "assertions": [
     {
-      "name": "ProtobufTagField1",
-      "expression": "protobufTag == 0x08",
-      "severity": "warning",
-      "message": "First byte is not 0x08 (protobuf field 1, varint wire type); this may not be a standard ONNX file or ir_version field may be absent."
+      "variable": "onnxProtoTag",
+      "operator": "==",
+      "value": 8,
+      "description": "First byte should be 0x08 (protobuf field 1, varint wire type)",
+      "level": "Warning"
     },
     {
-      "name": "IRVersionInRange",
-      "expression": "irVersion >= 1 && irVersion <= 15",
-      "severity": "warning",
-      "message": "IR version is outside expected range 1-15; the file may use an unrecognized ONNX specification version."
+      "variable": "onnxIrVersion",
+      "operator": "between",
+      "value": [1, 15],
+      "description": "IR version should be in range 1-15",
+      "level": "Warning"
     },
     {
-      "name": "FileSizeMinimum",
-      "expression": "FILE_SIZE >= 32",
-      "severity": "error",
-      "message": "File is too small (< 32 bytes) to contain a valid ONNX model with graph definition."
+      "variable": "onnxIrVersion",
+      "operator": ">",
+      "value": 0,
+      "description": "IR version must be positive",
+      "level": "Error"
     },
     {
-      "name": "FileSizeReasonable",
-      "expression": "FILE_SIZE >= 256",
-      "severity": "info",
-      "message": "File is very small for an ONNX model; typical models with weights are at least several kilobytes."
+      "variable": "onnxProtoTag",
+      "operator": "in",
+      "value": [8, 10, 18, 26, 34, 42, 50, 58, 66],
+      "description": "First tag byte must be a valid protobuf wire type 0 or 2 tag",
+      "level": "Info"
     }
   ],
-
   "navigation": {
-    "bookmarks": [
-      { "name": "Protobuf Tag",    "offset": 0, "description": "First protobuf tag byte (0x08 for ir_version)" },
-      { "name": "IR Version",      "offset": 1, "description": "ONNX IR version (varint, typically 3-10)" },
-      { "name": "Next Field Tag",  "offset": 2, "description": "Second protobuf field tag (producer_name or opset_import)" }
+    "entryPoint": 0,
+    "sections": [
+      { "name": "Protobuf Tag", "offset": 0, "size": 1 },
+      { "name": "IR Version", "offset": 1, "size": 1 },
+      { "name": "Producer Metadata", "offset": 2, "size": 32 }
     ]
   },
-
   "inspector": {
     "badge": "ONNX",
-    "primaryField": "irVersion",
-    "showQualityScore": true,
+    "primaryField": "onnxIrVersion",
     "groups": [
       {
         "name": "Protobuf Header",
-        "fields": [ "protobufTag", "irVersion", "thirdByte" ]
+        "fields": ["onnxProtoTag", "onnxIrVersion", "onnxNextTag"]
       },
       {
-        "name": "Model Metadata",
-        "fields": [ "irVersion" ]
+        "name": "Model Bytes",
+        "fields": ["onnxFirstValue"]
       }
     ]
   },
-
   "exportTemplates": [
     {
       "name": "ONNX Header Summary",
       "format": "text",
-      "template": "ONNX Model\n  Tag Byte       : 0x{protobufTag:X2}\n  IR Version     : {irVersion} ({irVersion_mapped})\n  Next Tag       : 0x{thirdByte:X2}"
+      "template": "Format: ONNX Model\nTag Byte: 0x{onnxProtoTag:X2}\nIR Version: {onnxIrVersion}\nNext Tag: 0x{onnxNextTag:X2}"
     },
     {
       "name": "ONNX JSON Report",
       "format": "json",
-      "template": "{ \"format\": \"ONNX\", \"protobufTag\": {protobufTag}, \"irVersion\": {irVersion} }"
+      "template": "{ \"format\": \"ONNX\", \"protoTag\": {onnxProtoTag}, \"irVersion\": {onnxIrVersion} }"
     }
   ],
-
   "forensic": {
-    "category": "MachineLearningArtifact",
-    "riskLevel": "low",
+    "riskLevel": "LOW",
+    "notes": "ONNX files are passive ML model definitions and do not execute code directly. Risk arises from large initializer tensors that may inadvertently contain training data fragments.",
     "suspiciousPatterns": [
-      { "pattern": "UnusuallyLargeModel",       "description": "ONNX models over 2GB may indicate full-precision LLM weights or bloated unoptimized graphs." },
-      { "pattern": "CustomOperatorDomain",       "description": "Non-standard opset domain strings may indicate proprietary or experimental operators." },
-      { "pattern": "EmbeddedTrainingData",       "description": "Initializer tensors may inadvertently contain training data fragments or memorized samples." }
+      "Unusually large initializer tensors (>2 GB) may indicate LLM weights or unoptimized graphs",
+      "Custom operator domain strings may indicate proprietary or experimental operators with unknown behavior",
+      "Embedded metadata_props may contain training configuration or dataset provenance information",
+      "Producer name 'unknown' or missing may indicate manual file construction or obfuscation"
     ]
   },
-
   "aiHints": {
-    "analysisContext": "ONNX files use Protocol Buffers wire format to serialize a ModelProto message. There are no fixed magic bytes; the first byte is typically 0x08 (protobuf field 1 tag for ir_version). The model contains a GraphProto with nodes (operators), initializer tensors (weights), and input/output tensor shape information. ONNX opset versions determine which operators are available.",
+    "analysisContext": "ONNX files are Protocol Buffers (protobuf) serializations of a ModelProto message. No fixed magic bytes exist; the first byte is typically 0x08 (protobuf field 1 tag for ir_version varint). The graph contains nodes (operators), initializer tensors (weights), and input/output shape information. Use Netron for visual graph inspection.",
     "suggestedInspections": [
-      "Check the ir_version varint at offset 1 to identify the ONNX specification version and supported operator set.",
-      "Scan for producer_name string (field 2) to identify the originating framework (pytorch, tf2onnx, onnxmltools, etc.).",
-      "Examine opset_import entries to verify operator set compatibility with the target inference runtime.",
-      "Look for custom_ops or non-standard domain strings that may require specialized runtime extensions.",
-      "Estimate model size by locating initializer tensor data regions, which contain the majority of file bytes.",
-      "Check for metadata_props entries that may contain training configuration, dataset info, or model card data."
+      "Check the first byte: 0x08 indicates field 1 (ir_version) present; decode the following varint to get the ONNX IR version.",
+      "Scan for producer_name string (protobuf field 2) to identify the originating framework: 'pytorch', 'tf2onnx', 'onnxmltools', 'onnxruntime'.",
+      "Examine opset_import entries (field 8) to verify operator set compatibility with the target inference runtime and detect non-standard domains.",
+      "Estimate model complexity by counting node entries in the GraphProto (field 7); locate initializer tensors to determine model size distribution.",
+      "Check metadata_props (repeated key-value pairs) for training dataset info, license strings, or model card data.",
+      "For large files (>2 GB), look for external data format where tensor data is stored in separate files referenced by the ONNX protobuf."
     ]
   },
-
-  "TechnicalDetails": {
-    "specification": "ONNX specification: github.com/onnx/onnx/blob/main/docs/IR.md; Protocol Buffers schema: github.com/onnx/onnx/blob/main/onnx/onnx.proto",
-    "endianness": "protobuf-defined (varint encoding, little-endian for fixed-width fields)",
-    "serializationFormat": "Google Protocol Buffers (protobuf) wire format",
-    "modelStructure": {
-      "ModelProto": "Top-level container with ir_version, opset_import[], producer_name, producer_version, domain, model_version, doc_string, graph, metadata_props[]",
-      "GraphProto": "Computation graph with node[] (operators), initializer[] (weight tensors), input[], output[], value_info[]",
-      "NodeProto": "Single operator: op_type, input[], output[], attribute[], domain",
-      "TensorProto": "Tensor data: dims[], data_type, raw_data or typed arrays"
-    },
-    "notes": "ONNX models larger than 2GB require external data format where tensor data is stored in separate files alongside the .onnx protobuf file."
-  },
-
+  "software": [
+    { "name": "Netron", "platform": "Windows/macOS/Linux/Web", "url": "https://netron.app/" },
+    { "name": "ONNX Runtime", "platform": "Windows/macOS/Linux", "url": "https://onnxruntime.ai/" },
+    { "name": "PyTorch (torch.onnx.export)", "platform": "Windows/macOS/Linux", "url": "https://pytorch.org/" },
+    { "name": "tf2onnx", "platform": "Windows/macOS/Linux", "url": "https://github.com/onnx/tensorflow-onnx" },
+    { "name": "TensorRT", "platform": "Linux/Windows", "url": "https://developer.nvidia.com/tensorrt" }
+  ],
+  "formatRelationships": [
+    { "format": "JOBLIB", "relationship": "alternative", "note": "JOBLIB/pickle is scikit-learn's serialization; ONNX is framework-neutral protobuf" },
+    { "format": "PMML", "relationship": "alternative", "note": "PMML is XML-based ML model interchange; ONNX is protobuf binary and supports deep learning" }
+  ],
+  "MimeTypes": ["application/octet-stream", "application/x-onnx"],
+  "UseCases": [
+    "Cross-framework ML model interchange between PyTorch, TensorFlow, and other training frameworks",
+    "Optimized inference deployment via ONNX Runtime, TensorRT, and OpenVINO",
+    "Edge AI and mobile inference with model quantization and optimization",
+    "Model validation, visualization, and architecture inspection"
+  ],
   "QualityMetrics": {
     "CompletenessScore": 88,
-    "DocumentationLevel": "comprehensive",
-    "BlocksDefined": 6,
-    "ValidationRules": 4,
-    "LastUpdated": "2026-04-14",
-    "PriorityFormat": true,
-    "AutoRefined": false
+    "LastUpdated": "2026-04-15",
+    "ReviewedBy": "WPFHexaEditor Team"
+  },
+  "TechnicalDetails": {
+    "serializationFormat": "Google Protocol Buffers (protobuf) wire format",
+    "schemaFile": "github.com/onnx/onnx/blob/main/onnx/onnx.proto",
+    "endianness": "Protobuf-defined (varint encoding; fixed-width tensor fields are little-endian)",
+    "modelStructure": {
+      "ModelProto": "ir_version, opset_import[], producer_name, producer_version, domain, model_version, graph, metadata_props[]",
+      "GraphProto": "node[] (operators), initializer[] (weight tensors), input[], output[], value_info[]",
+      "NodeProto": "op_type, input[], output[], attribute[], domain",
+      "TensorProto": "dims[], data_type, raw_data or typed float/int arrays"
+    },
+    "externalDataNote": "Models > 2 GB use external data format: tensor data in separate files alongside the .onnx protobuf"
   }
 }

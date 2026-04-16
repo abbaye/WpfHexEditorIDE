@@ -1,0 +1,233 @@
+{
+  "diffMode": "binary",
+  "formatName": "OSPF Routing Protocol Packet",
+  "version": "1.0",
+  "extensions": [ ".ospf", ".cap" ],
+  "description": "Open Shortest Path First (OSPF) routing protocol packet format. OSPF is a link-state interior gateway protocol (IGP) defined in RFC 2328 (OSPFv2 for IPv4) and RFC 5340 (OSPFv3 for IPv6). OSPF packets are carried directly in IP protocol number 89 (no TCP/UDP). The OSPF packet header is 24 bytes: version (1B), type (1B), packet length uint16 BE, router ID uint32 BE (dotted-quad), area ID uint32 BE, checksum uint16 BE, auth type uint16 BE (0=none, 1=simple password, 2=MD5 cryptographic), authentication data (8B). Packet types: 1=Hello (neighbor discovery and keepalive), 2=DBD Database Description (topology database exchange), 3=LSR Link State Request, 4=LSU Link State Update (contains LSAs), 5=LSAck Link State Acknowledgement. Hello packets contain: network mask, hello interval uint16, options, router priority, dead interval uint32, designated router IP, backup DR IP, and neighbor list. LSA types: 1=Router LSA, 2=Network LSA, 3=Summary LSA (ABR), 4=ASBR Summary LSA, 5=AS External LSA, 7=NSSA External (OSPFv2); OSPFv3 uses different LSA type space.",
+  "category": "Network",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "HexEditor",
+  "references": [
+    "https://www.rfc-editor.org/rfc/rfc2328",
+    "https://www.rfc-editor.org/rfc/rfc5340",
+    "https://www.cisco.com/c/en/us/support/docs/ip/open-shortest-path-first-ospf/7039-1.html"
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "value": "02",
+        "offset": 0,
+        "label": "OSPF version 2 — OSPFv2 for IPv4 networks (RFC 2328)",
+        "weight": 0.5
+      },
+      {
+        "value": "03",
+        "offset": 0,
+        "label": "OSPF version 3 — OSPFv3 for IPv6 networks (RFC 5340)",
+        "weight": 0.5
+      }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.4,
+    "Strength": "Weak",
+    "validation": "Version byte at offset 0 must be 2 or 3. Type byte at offset 1 must be 1-5. Packet length at offset 2-3 must be >= 24. Router ID and Area ID at offsets 4-7 and 8-11 should be valid IPv4 addresses (dotted-quad format). Files typically captured via pcap with IP protocol 89."
+  },
+  "variables": {},
+  "blocks": [
+    {
+      "name": "ospfVersion",
+      "offset": 0,
+      "size": 1,
+      "type": "uint8",
+      "description": "OSPF protocol version — 1-byte unsigned integer at offset 0; value 2 = OSPFv2 (RFC 2328, IPv4 networks), value 3 = OSPFv3 (RFC 5340, IPv6 networks); no other values are defined",
+      "storeAs": "ospfVersion",
+      "valueMap": {
+        "2": "OSPFv2 — IPv4 networks (RFC 2328)",
+        "3": "OSPFv3 — IPv6 networks (RFC 5340)"
+      }
+    },
+    {
+      "name": "ospfType",
+      "offset": 1,
+      "size": 1,
+      "type": "uint8",
+      "description": "OSPF packet type — 1-byte unsigned integer at offset 1; determines the packet's role in the OSPF protocol: 1=Hello (neighbor discovery and DR/BDR election), 2=DBD Database Description (master-slave topology sync), 3=LSR Link State Request (request specific LSAs), 4=LSU Link State Update (carries one or more LSAs), 5=LSAck Link State Acknowledgement (confirm LSA receipt)",
+      "storeAs": "ospfType",
+      "valueMap": {
+        "1": "Hello — neighbor discovery and keepalive",
+        "2": "DBD — Database Description",
+        "3": "LSR — Link State Request",
+        "4": "LSU — Link State Update (contains LSAs)",
+        "5": "LSAck — Link State Acknowledgement"
+      }
+    },
+    {
+      "name": "ospfPacketLength",
+      "offset": 2,
+      "size": 2,
+      "type": "uint16",
+      "endian": "BE",
+      "description": "Total packet length — 2-byte big-endian unsigned integer at offset 2; includes the 24-byte fixed header plus all payload bytes; minimum value is 24 (header only for minimal Hello); maximum determined by IP MTU (typically 1500 bytes for Ethernet)",
+      "storeAs": "ospfPacketLength"
+    },
+    {
+      "name": "ospfRouterId",
+      "offset": 4,
+      "size": 4,
+      "type": "uint32",
+      "endian": "BE",
+      "description": "Router ID — 4-byte big-endian unsigned integer at offset 4; a 32-bit identifier unique within the OSPF domain; typically set to the highest IP address on the router or a loopback interface address; displayed in dotted-quad notation; forensically useful for identifying specific routers",
+      "storeAs": "ospfRouterId"
+    },
+    {
+      "name": "ospfAreaId",
+      "offset": 8,
+      "size": 4,
+      "type": "uint32",
+      "endian": "BE",
+      "description": "Area ID — 4-byte big-endian unsigned integer at offset 8; identifies the OSPF area this packet originates from; displayed in dotted-quad notation; area 0.0.0.0 (backbone area) is required in all OSPF networks; other areas (e.g., 0.0.0.1, 0.0.0.2) are non-backbone areas",
+      "storeAs": "ospfAreaId"
+    },
+    {
+      "name": "ospfChecksum",
+      "offset": 12,
+      "size": 2,
+      "type": "uint16",
+      "endian": "BE",
+      "description": "OSPF checksum — 2-byte big-endian unsigned integer at offset 12; standard IP checksum (one's complement of one's complement sum) computed over the entire OSPF packet (excluding authentication data bytes 16-23); 0x0000 when MD5 authentication is in use",
+      "storeAs": "ospfChecksum"
+    },
+    {
+      "name": "ospfAuthType",
+      "offset": 14,
+      "size": 2,
+      "type": "uint16",
+      "endian": "BE",
+      "description": "Authentication type — 2-byte big-endian unsigned integer at offset 14; 0=no authentication, 1=simple cleartext password (8 bytes at offset 16), 2=MD5 cryptographic authentication (key ID and MD5 digest appended)",
+      "storeAs": "ospfAuthType",
+      "valueMap": {
+        "0": "No authentication",
+        "1": "Simple password (cleartext 8 bytes at offset 16)",
+        "2": "MD5 cryptographic authentication"
+      }
+    }
+  ],
+  "assertions": [
+    {
+      "field": "ospfVersion",
+      "op": "in",
+      "value": [ 2, 3 ],
+      "description": "OSPF version must be 2 (OSPFv2 for IPv4) or 3 (OSPFv3 for IPv6)"
+    },
+    {
+      "field": "ospfType",
+      "op": "in",
+      "value": [ 1, 2, 3, 4, 5 ],
+      "description": "Packet type must be 1 (Hello), 2 (DBD), 3 (LSR), 4 (LSU), or 5 (LSAck)"
+    },
+    {
+      "field": "ospfPacketLength",
+      "op": "gte",
+      "value": 24,
+      "description": "Packet length must be >= 24 bytes (minimum OSPF header size)"
+    }
+  ],
+  "navigation": {
+    "entryPoint": "ospfVersion",
+    "sections": [
+      { "name": "OSPF Fixed Header", "offset": 0, "size": 24 },
+      { "name": "Hello Packet Body", "offset": 24, "description": "Present when type=1; contains network mask, intervals, DR/BDR, neighbor list" },
+      { "name": "DBD Packet Body", "offset": 24, "description": "Present when type=2; contains MTU, options, flags, DD sequence number, LSA headers" },
+      { "name": "LSU Packet Body", "offset": 24, "description": "Present when type=4; contains count of LSAs followed by LSA array" }
+    ]
+  },
+  "inspector": {
+    "badge": "OSPF",
+    "primaryField": "ospfType",
+    "groups": [
+      {
+        "name": "Protocol Identity",
+        "fields": [ "ospfVersion", "ospfType" ]
+      },
+      {
+        "name": "Routing Identity",
+        "fields": [ "ospfRouterId", "ospfAreaId" ]
+      },
+      {
+        "name": "Integrity",
+        "fields": [ "ospfChecksum", "ospfAuthType", "ospfPacketLength" ]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "OSPF Packet Summary",
+      "format": "txt",
+      "template": "OSPF Packet Header\n==================\nVersion      : {ospfVersion}\nType         : {ospfType}\nPacket Length: {ospfPacketLength}\nRouter ID    : {ospfRouterId}\nArea ID      : {ospfAreaId}\nChecksum     : 0x{ospfChecksum}\nAuth Type    : {ospfAuthType}\n"
+    },
+    {
+      "name": "OSPF Forensic Report (CSV)",
+      "format": "csv",
+      "template": "Field,Value\nVersion,{ospfVersion}\nType,{ospfType}\nPacketLength,{ospfPacketLength}\nRouterId,{ospfRouterId}\nAreaId,{ospfAreaId}\nChecksum,{ospfChecksum}\nAuthType,{ospfAuthType}\n"
+    }
+  ],
+  "forensic": {
+    "importance": "MEDIUM",
+    "riskLevel": "medium",
+    "notes": "OSPF packets captured in pcap files reveal network topology — router IDs, area structure, and link-state database content. LSU packets contain Router LSAs showing all router interface addresses and costs, enabling full topology mapping. OSPF Hello packets reveal neighbor relationships and DR/BDR election results. Cleartext authentication (type 1) exposes 8-byte passwords. OSPF injection attacks (rogue LSA flooding) can redirect traffic — captured malicious LSU packets are forensic evidence. Router IDs are persistent identifiers useful for infrastructure attribution.",
+    "indicators": [
+      "Version byte 0x02 or 0x03 at offset 0",
+      "IP protocol 89 in encapsulating IP header",
+      "Router ID in dotted-quad format at offset 4",
+      "Area ID 0.0.0.0 = backbone area",
+      "Type 4 (LSU) packets contain full topology data"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "OSPF operates directly on top of IP (protocol 89) and uses multicast addresses 224.0.0.5 (AllSPFRouters) and 224.0.0.6 (AllDRouters). The 24-byte fixed header is common to all packet types. Each OSPF packet type has a distinct body structure. In captured pcap files OSPF packets appear as IP datagrams with no transport layer header.",
+    "suggestedInspections": [
+      "Map all Router IDs found in Hello packets to build a list of active OSPF routers in the captured network segment",
+      "Parse LSU packets (type 4) to extract Router LSAs and Network LSAs for full topology reconstruction",
+      "Check authentication type — cleartext password (type 1) at offset 16-23 reveals 8-byte network password",
+      "Identify the Area ID to understand network segmentation — backbone (0.0.0.0) vs non-backbone areas",
+      "Look for unusually frequent LSU packets with identical LSA sequence numbers which may indicate a replay or injection attack",
+      "Extract DR and BDR addresses from Hello packets to identify the designated routers and potential single points of failure"
+    ]
+  },
+  "software": [
+    { "name": "Wireshark (OSPF dissector)", "vendor": "Wireshark Foundation", "url": "https://www.wireshark.org" },
+    { "name": "tcpdump", "vendor": "The Tcpdump Group", "url": "https://www.tcpdump.org" },
+    { "name": "Cisco IOS / IOS-XE", "vendor": "Cisco", "url": "https://www.cisco.com" },
+    { "name": "FRRouting (FRR)", "vendor": "Linux Foundation", "url": "https://frrouting.org" },
+    { "name": "Scapy", "vendor": "Philippe Biondi", "url": "https://scapy.net" }
+  ],
+  "formatRelationships": [
+    { "format": "BGP_UPDATE", "relationship": "BGP is an exterior gateway protocol; OSPF is an interior gateway protocol; both build routing tables but at different scopes" },
+    { "format": "ISAKMP", "relationship": "ISAKMP/IKE is used to secure OSPF routing infrastructure; OSPFv3 uses IPsec for authentication" },
+    { "format": "PCAP", "relationship": "OSPF packets are typically captured and analyzed within pcap/pcapng files from network taps or router debug captures" }
+  ],
+  "MimeTypes": [ "application/octet-stream" ],
+  "UseCases": [
+    "Network topology discovery and documentation",
+    "Routing protocol troubleshooting",
+    "Security analysis of OSPF authentication weaknesses",
+    "Forensic reconstruction of network topology from captured traffic",
+    "OSPF injection attack detection and analysis"
+  ],
+  "QualityMetrics": {
+    "LastUpdated": "2026-04-15",
+    "CompletenessScore": 85,
+    "ReviewedBy": "WPFHexaEditor Team"
+  },
+  "TechnicalDetails": {
+    "ipProtocol": 89,
+    "headerSize": 24,
+    "minimumPacketSize": 24,
+    "multicastAddresses": {
+      "AllSPFRouters": "224.0.0.5",
+      "AllDRouters": "224.0.0.6"
+    },
+    "endianness": "BigEndian",
+    "rfcs": [ "RFC 2328 (OSPFv2)", "RFC 5340 (OSPFv3)" ]
+  }
+}

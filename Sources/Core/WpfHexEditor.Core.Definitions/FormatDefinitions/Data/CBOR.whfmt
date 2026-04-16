@@ -1,132 +1,193 @@
 {
   "diffMode": "binary",
   "formatName": "CBOR (Concise Binary Object Representation)",
-  "version": "1.15",
-  "extensions": [
-    ".cbor"
-  ],
-  "description": "CBOR binary data format (RFC 7049)",
+  "version": "1.0",
+  "extensions": [".cbor", ".cborseq"],
+  "description": "CBOR is a binary data format specified in RFC 7049 (updated in RFC 8949). It has no file magic — format is identified by the type-tag structure. The first byte encodes a major type in bits 7-5 and additional info in bits 4-0. Major types: 0=unsigned int, 1=negative int, 2=byte string, 3=text string, 4=array, 5=map, 6=tag (semantic annotation), 7=simple/float. CBOR supports streaming, self-describing tags, indefinite-length encoding, and a rich tag registry (tag 0=datetime, tag 1=epoch time, tag 37=UUID, etc.). Used in COSE, CWT, FIDO2/WebAuthn, and CoAP protocols.",
   "category": "Data",
   "author": "WPFHexaEditor Team",
-  "preferredEditor": "hex-editor",
-  "references": {
-    "specifications": [
-      "CBOR (Concise Binary Object Representation) Format"
-    ],
-    "WebLinks": [
-      "https://en.wikipedia.org/wiki/CBOR"
-    ]
-  },
+  "preferredEditor": "HexEditor",
+  "references": [
+    "https://www.rfc-editor.org/rfc/rfc8949",
+    "https://cbor.io/",
+    "https://www.iana.org/assignments/cbor-tags/cbor-tags.xhtml",
+    "https://en.wikipedia.org/wiki/CBOR"
+  ],
   "detection": {
-    "required": false,
-    "validation": {
-      "minFileSize": 1,
-      "maxSignatureOffset": 1024
-    },
     "signatures": [
-      {
-        "value": "00",
-        "offset": 0,
-        "label": "CBOR magic",
-        "weight": 1.0
-      }
+      { "value": "A2", "offset": 0, "label": "CBOR map with 2 items (0xA2)", "weight": 0.3 },
+      { "value": "81", "offset": 0, "label": "CBOR array with 1 item (0x81)", "weight": 0.2 },
+      { "value": "F6", "offset": 0, "label": "CBOR null (0xF6)", "weight": 0.2 }
     ],
     "matchMode": "any",
-    "MinimumScore": 1.0,
-    "Strength": "Weak"
+    "MinimumScore": 0.2,
+    "Strength": "Weak",
+    "validation": {
+      "rules": [
+        { "type": "info", "message": "CBOR has no file magic. Detection is heuristic based on first-byte type structure." }
+      ]
+    }
   },
-  "variables": {
-    "currentOffset": 0,
-    "vertexCount": 0,
-    "faceCount": 0,
-    "materialCount": 0,
-    "fileSize": 0,
-    "formattedSize": ""
-  },
-  "blocks": [
+  "variables": [
     {
-      "type": "data",
-      "name": "CBOR Data",
+      "name": "cborFirstByte",
       "offset": 0,
-      "length": 256,
-      "color": "#4ECDC4",
-      "opacity": 0.4,
-      "description": "CBOR binary object data"
+      "size": 1,
+      "type": "uint8",
+      "storeAs": "cborFirstByte",
+      "description": "First CBOR data item byte: bits 7-5 = major type, bits 4-0 = additional info"
     },
     {
-      "type": "metadata",
-      "name": "Vertex Count",
-      "variable": "vertexCount",
-      "description": "Vertex Count"
-    },
-    {
-      "type": "metadata",
-      "name": "Face Count",
-      "variable": "faceCount",
-      "description": "Face Count"
-    },
-    {
-      "type": "metadata",
-      "name": "Material Count",
-      "variable": "materialCount",
-      "description": "Material Count"
-    },
-    {
-      "type": "metadata",
-      "name": "Formatted Size",
-      "variable": "formattedSize",
-      "description": "Human-readable file size"
+      "name": "cborMajorTypeDerived",
+      "offset": 0,
+      "size": 1,
+      "type": "uint8",
+      "storeAs": "cborMajorTypeDerived",
+      "description": "Major type derived from bits 7-5 of first byte: 0=uint, 1=nint, 2=bstr, 3=tstr, 4=array, 5=map, 6=tag, 7=simple/float"
     }
   ],
-  "software": [
-    "Common file viewers",
-    "Specialized software"
+  "blocks": [
+    {
+      "name": "RootItem",
+      "offset": 0,
+      "size": 4,
+      "description": "Root CBOR data item. First byte encodes major type (bits 7-5) and additional info (bits 4-0). Additional info 24=1-byte follows, 25=2-byte, 26=4-byte, 27=8-byte, 31=indefinite length.",
+      "fields": [
+        { "name": "InitialByte", "offset": 0, "size": 1, "type": "uint8" }
+      ]
+    },
+    {
+      "name": "MajorTypeGuide",
+      "offset": 0,
+      "size": 0,
+      "description": "CBOR major type encoding: 0x00-0x1B=uint, 0x20-0x3B=nint, 0x40-0x5B=bstr, 0x60-0x7B=tstr, 0x80-0x9B=array, 0xA0-0xBB=map, 0xC0-0xDB=tag, 0xE0-0xFF=simple/float. 0xF4=false, 0xF5=true, 0xF6=null, 0xF7=undefined. 0xF9=float16, 0xFA=float32, 0xFB=float64.",
+      "fields": []
+    },
+    {
+      "name": "TagRegistry",
+      "offset": 0,
+      "size": 0,
+      "description": "CBOR tag numbers (major type 6): 0=datetime string, 1=epoch datetime, 2=positive bignum, 3=negative bignum, 16=COSE Encrypt0, 18=COSE Sign1, 37=UUID, 55799=self-described CBOR (magic 0xD9D9F7).",
+      "fields": []
+    },
+    {
+      "name": "RawStream",
+      "offset": 0,
+      "size": -1,
+      "description": "Raw CBOR byte stream requiring recursive descent parsing from offset 0",
+      "fields": []
+    }
   ],
-  "formatRelationships": {
-    "category": "Data",
-    "extensions": [
-      ".cbor"
+  "assertions": [
+    {
+      "id": "assert_info_no_magic",
+      "type": "info",
+      "severity": "info",
+      "message": "CBOR has no file magic. Self-described CBOR begins with 0xD9D9F7 (tag 55799). Confirm format via context."
+    },
+    {
+      "id": "assert_major_type_valid",
+      "field": "cborFirstByte",
+      "operator": "lessThanOrEqual",
+      "value": 255,
+      "severity": "info",
+      "message": "First byte is in valid range — all byte values are valid CBOR initial bytes"
+    },
+    {
+      "id": "assert_self_described",
+      "type": "note",
+      "severity": "info",
+      "message": "If file starts with 0xD9D9F7, it is a self-described CBOR file (tag 55799 wraps the root item)"
+    }
+  ],
+  "navigation": {
+    "entryPoints": [
+      { "name": "Root Data Item", "offset": 0 }
+    ],
+    "jumpTable": [
+      { "label": "Initial Byte (offset 0)", "offset": 0 }
     ]
   },
-  "MimeTypes": [
-    "application/octet-stream"
-  ],
-  "Software": [
-    "Hex Editor",
-    "File Viewer",
-    "Archive Manager"
-  ],
-  "UseCases": [
-    "File storage",
-    "Data exchange",
-    "Archive"
-  ],
-  "QualityMetrics": {
-    "CompletenessScore": 50,
-    "DocumentationLevel": "basic",
-    "BlocksDefined": 5,
-    "ValidationRules": 0,
-    "LastUpdated": "2026-04-14",
-    "PriorityFormat": false,
-    "AutoRefined": true
+  "inspector": {
+    "badge": "CB",
+    "primaryField": "cborFirstByte",
+    "groups": [
+      {
+        "name": "Root Item",
+        "fields": ["cborFirstByte", "cborMajorTypeDerived"]
+      }
+    ]
   },
-  "TechnicalDetails": {},
-  "functions": {
-    "readUInt32LE": "Read mesh data",
-    "multiply": "Calculate vertices",
-    "formatFileSize(var:fileSize)": "Format fileSize as readable size"
-  },
+  "exportTemplates": [
+    {
+      "name": "CBOR Root Byte Summary",
+      "format": "text",
+      "template": "CBOR Data Item\nFirst Byte    : 0x{cborFirstByte:X2}\nMajor Type    : {cborMajorTypeDerived}"
+    },
+    {
+      "name": "CBOR Root Byte CSV",
+      "format": "csv",
+      "template": "Field,Value\nFirstByte,{cborFirstByte}\nMajorType,{cborMajorTypeDerived}"
+    }
+  ],
   "forensic": {
-    "category": "data",
     "riskLevel": "low",
-    "suspiciousPatterns": []
+    "suspiciousPatterns": [
+      "Deeply nested arrays/maps (> 32 levels) — possible parser stack exhaustion",
+      "Indefinite-length items (0xFF break code absent) — malformed or truncated stream",
+      "Tag 0x00 (datetime) on non-string content — type confusion",
+      "COSE tags (16, 18) in unexpected contexts — possible signature forgery probing"
+    ]
   },
   "aiHints": {
-    "analysisContext": "CBOR binary data format (RFC 7049)",
+    "analysisContext": "CBOR initial byte: top 3 bits = major type (0-7), low 5 bits = additional info. Additional info < 24 means the value IS the info. 24=uint8 follows, 25=uint16, 26=uint32, 27=uint64. 31=indefinite length. Self-described CBOR starts with 0xD9D9F7 (tag 55799). Used in COSE (FIDO2), CWT (CBOR Web Tokens), CTAP2 (WebAuthn), and CoAP protocols.",
     "suggestedInspections": [
-      "Validate CBOR (Concise Binary Object Representation) schema header and encoding markers",
-      "Check nested structure depth and field type tags",
-      "Inspect string encodings and numeric value boundaries"
+      "Check if file starts with 0xD9D9F7 (self-described CBOR tag 55799)",
+      "Determine major type from bits 7-5 of first byte (0=uint,1=nint,2=bstr,3=tstr,4=array,5=map,6=tag,7=simple)",
+      "If major type 6 (tag), read tag number then decode wrapped item",
+      "Look for COSE tags (16=Encrypt0, 17=Encrypt, 18=Sign1, 98=Sign) for cryptographic structures",
+      "Use cbor2 Python library or cbor.me online tool for full decode",
+      "Check for indefinite-length encoding (additional info 31) with 0xFF break codes"
     ]
+  },
+  "software": [
+    { "name": "cbor2 (Python)", "vendor": "Open source", "platform": "Python" },
+    { "name": "cbor.me", "vendor": "cbor.me", "platform": "Web" },
+    { "name": "tinycbor", "vendor": "Intel", "platform": "C/Embedded" }
+  ],
+  "formatRelationships": [
+    { "format": "MSGPACK", "relation": "sibling", "note": "MessagePack and CBOR have similar type-tag designs but different byte layouts and semantics" },
+    { "format": "JSON", "relation": "binaryEquivalent", "note": "CBOR shares JSON's data model with added tags and binary types" }
+  ],
+  "MimeTypes": [
+    "application/cbor",
+    "application/cbor-seq"
+  ],
+  "UseCases": [
+    "FIDO2/WebAuthn CTAP2 protocol messages",
+    "COSE (CBOR Object Signing and Encryption) structures",
+    "CoAP IoT protocol payloads",
+    "CWT (CBOR Web Tokens) as compact JWT alternative"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 84,
+    "LastUpdated": "2026-04-15"
+  },
+  "TechnicalDetails": {
+    "headerSize": 0,
+    "endian": "big",
+    "magic": "none (self-described variant uses 0xD9D9F7)",
+    "rfc": "RFC 8949 (STD 94), obsoletes RFC 7049",
+    "majorTypes": {
+      "0": "unsigned integer",
+      "1": "negative integer",
+      "2": "byte string",
+      "3": "text string (UTF-8)",
+      "4": "array",
+      "5": "map",
+      "6": "tag",
+      "7": "simple values and floats"
+    },
+    "notes": "CBOR integers are big-endian. The indefinite-length encoding (ai=31) requires a 0xFF break code to terminate sequences. Tag 55799 (0xD9D9F7) provides self-description without changing semantics."
   }
 }

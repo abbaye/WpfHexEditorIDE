@@ -1,0 +1,169 @@
+{
+  "diffMode": "text",
+  "formatName": "reStructuredText",
+  "version": "1.0",
+  "extensions": [ ".rst", ".rest" ],
+  "description": "reStructuredText (RST) is a plaintext markup syntax and parser system developed by David Goodger as part of the Docutils project. It is the standard documentation format for Python projects and the Sphinx documentation generator. RST uses directive-based markup (.. directive::), section titles underlined/overlined with =, -, ~, #, etc., inline roles (:role:`text`), footnotes, cross-references, and code blocks. Unlike Markdown, RST has a formal specification and consistent parser. RST files are text-only with no binary magic.",
+  "category": "Text",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "code-editor",
+  "references": {
+    "specifications": [
+      "reStructuredText Markup Specification (Docutils)",
+      "Sphinx Documentation — RST Primer",
+      "PEP 12 — Sample reStructuredText PEP Template"
+    ],
+    "WebLinks": [
+      "https://docutils.sourceforge.io/rst.html",
+      "https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html",
+      "https://en.wikipedia.org/wiki/ReStructuredText"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      { "hex": "2E2E20", "offset": 0, "label": "'.. ' RST comment or directive at start of file", "weight": 0.5 },
+      { "hex": "3D3D3D3D", "offset": 0, "label": "'====' RST section title overline or underline", "weight": 0.4 },
+      { "hex": "2323232323", "offset": 0, "label": "'#####' RST top-level section title marker", "weight": 0.4 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.2,
+    "required": false,
+    "Strength": "Weak",
+    "EntropyHint": { "min": 3.5, "max": 5.5 },
+    "validation": {
+      "minFileSize": 1,
+      "maxSignatureOffset": 0,
+      "note": "RST has no binary magic. Extension (.rst, .rest) is the primary identifier. '.. ' directives, section underlines (=, -, ~), and ':role:' patterns confirm RST content."
+    }
+  },
+  "variables": {
+    "rstFirstByte": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "First Byte",
+      "offset": 0,
+      "length": 1,
+      "color": "#FF6B6B",
+      "opacity": 0.3,
+      "description": "First byte of RST file: 0x2E='.' (directive), 0x3D='=' (title underline), 0x23='#' (overline title).",
+      "storeAs": "rstFirstByte",
+      "valueType": "uint8"
+    },
+    {
+      "type": "field",
+      "name": "Document Header",
+      "offset": 0,
+      "length": 80,
+      "color": "#4ECDC4",
+      "opacity": 0.2,
+      "description": "First 80 bytes for title, directive, or comment detection.",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Content Preview",
+      "offset": 80,
+      "length": 128,
+      "color": "#45B7D1",
+      "opacity": 0.15,
+      "description": "Extended content for RST pattern recognition (roles, directives, hyperlink targets).",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Section Structure",
+      "offset": 0,
+      "length": 256,
+      "color": "#FFEAA7",
+      "opacity": 0.1,
+      "description": "Wider scan for RST section underlines and cross-reference patterns.",
+      "valueType": "ascii"
+    }
+  ],
+  "assertions": [
+    { "field": "rstFirstByte", "operator": "lessThan", "value": 128, "description": "RST is plain text — first byte must be in ASCII range" },
+    { "field": "rstFirstByte", "operator": "greaterThan", "value": 0, "description": "File must not be empty" },
+    { "field": "rstFirstByte", "operator": "notEquals", "value": 0, "description": "File must contain readable content" }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "Document Start", "offset": 0, "description": "RST document start: title, directive, or comment" }
+    ]
+  },
+  "inspector": {
+    "badge": "RST",
+    "primaryField": "rstFirstByte",
+    "showQualityScore": true,
+    "groups": [
+      { "name": "Document Start", "fields": ["rstFirstByte"] }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "RST File Info (JSON)",
+      "format": "json",
+      "fields": ["rstFirstByte"]
+    },
+    {
+      "name": "RST Header (Text)",
+      "format": "text",
+      "fields": ["rstFirstByte"]
+    }
+  ],
+  "forensic": {
+    "category": "document",
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      { "name": "Embedded code execution directives", "condition": "contains .. exec::", "description": "RST exec directives can execute arbitrary code when processed by some Sphinx extensions.", "severity": "warning" },
+      { "name": "External include directives", "condition": "contains .. include::", "description": "RST include directives reference external files — may include sensitive content if processed in a misconfigured environment.", "severity": "info" }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "RST is the standard Python documentation format used by Sphinx. No binary magic — identified by extension and content. Key patterns: '.. directive::' (two dots + space), section titles underlined/overlined with =, -, ~, #, ^, *, ', '`', ':role:`text`' inline roles, '.. code-block:: python' for code, '.. _label:' for hyperlink targets.",
+    "suggestedInspections": [
+      "Check extension: .rst or .rest are reliable identifiers",
+      "Look for '.. ' directives at start of file or after blank lines",
+      "Identify section title patterns: text followed by underline of =, -, ~, #, ^ characters",
+      "Check for Sphinx-specific directives: .. toctree::, .. automodule::, .. code-block::",
+      "Look for inline roles: :ref:, :func:, :class:, :mod: (Sphinx cross-references)",
+      "Check for .. include:: and .. exec:: directives that reference external files"
+    ]
+  },
+  "software": [
+    "Sphinx (Python documentation generator)",
+    "Docutils (RST parser and transformer)",
+    "pandoc (RST to Markdown/HTML/PDF conversion)",
+    "ReadTheDocs (hosted RST/Sphinx documentation)",
+    "VS Code with RST extension"
+  ],
+  "formatRelationships": {
+    "category": "Text",
+    "extensions": [".rst", ".rest"],
+    "relatedFormats": ["MARKDOWN", "ASCIIDOC", "DOCBOOK", "HTML"],
+    "note": "RST is the standard for Python project documentation (PEPs, CPython docs, NumPy, Django). Sphinx processes RST to HTML, PDF, ePub. Pandoc converts between RST, Markdown, and AsciiDoc."
+  },
+  "MimeTypes": [ "text/x-rst", "text/plain" ],
+  "UseCases": [
+    "Python project documentation (Sphinx)",
+    "Python Enhancement Proposals (PEPs)",
+    "ReadTheDocs hosted documentation",
+    "Scientific computing project documentation (NumPy, SciPy, Pandas)"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 85,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 4,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-15",
+    "ReviewedBy": "WPFHexaEditor Team"
+  },
+  "TechnicalDetails": {
+    "Encoding": "UTF-8",
+    "NoMagic": true,
+    "SpecificationBody": "Docutils project",
+    "ProcessingTools": "Sphinx, Docutils, pandoc",
+    "Note": "No binary magic. Detection by extension (.rst, .rest) and '.. ' directive patterns."
+  }
+}

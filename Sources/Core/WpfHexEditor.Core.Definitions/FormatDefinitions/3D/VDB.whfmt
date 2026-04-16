@@ -1,0 +1,213 @@
+{
+  "diffMode": "binary",
+  "formatName": "OpenVDB Sparse Volume",
+  "version": "1.0",
+  "extensions": [".vdb"],
+  "description": "OpenVDB is an Academy Award-winning open-source C++ library and file format for the storage, editing, and rendering of sparse volumetric data. Originally developed at DreamWorks Animation, OpenVDB is now maintained by the Academy Software Foundation (ASWF). A .vdb file stores one or more named grids, each representing a three-dimensional function sampled on a sparse tree structure (VDB B+tree). The file begins with the ASCII magic '/VDB ' (5 bytes: 2F 56 44 42 20) followed by a 3-digit ASCII file format version, then a library version block, and metadata. Each grid has a name, value type (float, double, int32, Vec3f, bool, etc.), grid class (UNKNOWN, LEVEL_SET, FOG_VOLUME, STAGGERED), transform (linear or nonlinear), and sparse tree data. Compression per grid: NONE (0), ZIP (1), ACTIVE_MASK+ZIP (2), or BLOSC (4).",
+  "category": "3D",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "references": {
+    "specifications": [
+      "OpenVDB File Format Specification — https://academysoftwarefoundation.github.io/openvdb/",
+      "OpenVDB 10.x source: openvdb/io/File.cc, Archive.cc",
+      "ASWF OpenVDB GitHub repository"
+    ],
+    "WebLinks": [
+      "https://www.openvdb.org/",
+      "https://github.com/AcademySoftwareFoundation/openvdb",
+      "https://en.wikipedia.org/wiki/OpenVDB"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      {
+        "value": "2F56444220",
+        "offset": 0,
+        "label": "'/VDB ' — OpenVDB file magic (5 bytes)",
+        "weight": 1.0
+      }
+    ],
+    "matchMode": "first",
+    "MinimumScore": 0.9,
+    "Strength": "Strong",
+    "EntropyHint": "High — compressed sparse volumetric tree data"
+  },
+  "variables": {
+    "vdbMagic": "",
+    "vdbVersionStr": "",
+    "vdbCompression": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "VDB Magic",
+      "offset": 0,
+      "length": 5,
+      "color": "#FF6B6B",
+      "opacity": 0.85,
+      "description": "5-byte ASCII magic '/VDB ' (0x2F 0x56 0x44 0x42 0x20) identifying this as an OpenVDB volume file. The forward slash prefix and trailing space are part of the magic and must match exactly. This magic was chosen to be human-readable and distinct from binary format magic bytes.",
+      "storeAs": "vdbMagic",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "File Format Version",
+      "offset": 5,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.5,
+      "description": "4-byte little-endian uint32 file format version. Common values: 224 (0xE0, OpenVDB 3.x), 226 (OpenVDB 5.x), 230 (OpenVDB 8.x), 233 (OpenVDB 10.x). The version determines which grid types, compression codecs, and metadata keys are supported. Backward-compatible reads are supported for older versions.",
+      "storeAs": "vdbVersionStr",
+      "valueType": "uint32"
+    },
+    {
+      "type": "field",
+      "name": "Library Version",
+      "offset": 9,
+      "length": 8,
+      "color": "#95E1D3",
+      "opacity": 0.4,
+      "description": "Two 4-byte LE uint32 values: library major version followed by library minor version. E.g., major=10, minor=0 for OpenVDB 10.0. Followed by 'Has Grid Offsets' flag (1 byte), then compression codec byte, then metadata count (uint32 LE) and key-value metadata pairs."
+    },
+    {
+      "type": "field",
+      "name": "Compression Codec",
+      "offset": 17,
+      "length": 1,
+      "color": "#FFE66D",
+      "opacity": 0.45,
+      "description": "1-byte compression codec for the archive. 0=COMPRESS_NONE (uncompressed), 1=COMPRESS_ZIP (zlib deflate), 2=COMPRESS_ACTIVE_MASK (active voxel bit mask + ZIP), 4=COMPRESS_BLOSC (Blosc LZ4/LZ4HC/Zstd/Zlib). Individual grids may override the archive-level codec.",
+      "storeAs": "vdbCompression",
+      "valueType": "uint8",
+      "valueMap": {
+        "0": "None",
+        "1": "Zip (zlib)",
+        "2": "Active mask + Zip",
+        "4": "Blosc"
+      }
+    },
+    {
+      "type": "field",
+      "name": "Grid Descriptors",
+      "offset": "dynamic",
+      "length": "dynamic",
+      "color": "#C3A6FF",
+      "opacity": 0.30,
+      "description": "Per-grid descriptor entries. Each: grid name (string), grid type (e.g. 'Tree_float_5_4_3'), instance parent (string), grid byte offset (uint64 LE), block byte offset (uint64 LE), end byte offset (uint64 LE). Followed by grid metadata (key-value pairs) and grid transform (linear/nonlinear, voxel size, translation). Finally the VDB B+tree data: root node, internal nodes (fan-out 32^3 or 16^3), leaf nodes (8^3 voxels)."
+    }
+  ],
+  "assertions": [
+    {
+      "name": "VDBMagicValid",
+      "expression": "vdbMagic == '/VDB '",
+      "severity": "error",
+      "message": "Magic bytes do not match '/VDB '. File is not a valid OpenVDB archive."
+    },
+    {
+      "name": "VersionInRange",
+      "expression": "vdbFormatVersion >= 200 && vdbFormatVersion <= 300",
+      "severity": "warning",
+      "message": "File format version outside known range [200-300]. May be from a future or very old OpenVDB version."
+    },
+    {
+      "name": "CompressionCodecKnown",
+      "expression": "vdbCompression in [0, 1, 2, 4]",
+      "severity": "warning",
+      "message": "Unknown compression codec value. Valid values: 0=None, 1=Zip, 2=ActiveMask+Zip, 4=Blosc."
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "VDB Magic", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
+      { "name": "Version Info", "offset": 5, "icon": "\uE946", "color": "#4ECDC4" },
+      { "name": "Grid Data", "offset": "dynamic", "icon": "\uE8B7", "color": "#C3A6FF" }
+    ]
+  },
+  "inspector": {
+    "badge": "VDB",
+    "primaryField": "vdbMagic",
+    "groups": [
+      {
+        "title": "Archive Header",
+        "icon": "\uE71B",
+        "fields": ["vdbMagic", "vdbVersionStr", "vdbCompression"]
+      },
+      {
+        "title": "Grid Info",
+        "icon": "\uE8B7",
+        "fields": ["gridName", "gridType", "gridClass", "voxelSize"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "VDB Archive Summary (JSON)",
+      "format": "json",
+      "fields": ["magic", "fileFormatVersion", "libraryVersion", "compressionCodec", "gridCount", "gridNames"]
+    },
+    {
+      "name": "Grid Descriptors (CSV)",
+      "format": "csv",
+      "fields": ["gridIndex", "gridName", "gridType", "gridClass", "voxelSize", "activeVoxelCount", "backgroundValue"]
+    }
+  ],
+  "forensic": {
+    "riskLevel": "LOW",
+    "notes": "VFX and simulation data only; no PHI or sensitive content expected.",
+    "suspiciousPatterns": [
+      "Embedded executable payloads in grid metadata string values",
+      "Oversized metadata sections indicating header injection attempts",
+      "Zero active voxel count with large file size (data stored as passive voxels)"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "OpenVDB binary format. Magic: '/VDB ' (5B). Then uint32 LE file format version. Then uint32 LE lib major + uint32 LE lib minor. 1B has-grid-offsets flag. 1B compression codec (0=none, 1=zip, 2=activemask+zip, 4=blosc). uint32 LE metadata count, then metadata entries (name string + typeName string + value). uint32 LE grid count. Per grid: GridDescriptor with name, type, byteOffset, blockOffset, endByteOffset. Grid = transform + VDB B+tree (root/internal/leaf nodes). Level set grids have gridClass='LEVEL_SET', voxelSize defining narrow band width.",
+    "suggestedInspections": [
+      "Verify magic '/VDB ' at offset 0 and read uint32 file format version to identify OpenVDB library generation",
+      "Read compression codec byte to determine which decompressor (zip/blosc) is needed for grid data",
+      "Enumerate grid descriptors to list all named grids: note names (e.g. 'density', 'temperature', 'vel'), types (float, Vec3f), and class (FOG_VOLUME, LEVEL_SET)",
+      "For level set grids: check 'voxelSize' metadata to determine narrow band width in world units and surface extraction threshold",
+      "Inspect archive metadata (version, creator, software) for production pipeline provenance",
+      "Count active voxels per grid to estimate memory footprint after decompression"
+    ]
+  },
+  "software": [
+    { "name": "Houdini (SideFX)", "url": "https://www.sidefx.com" },
+    { "name": "Blender (OpenVDB import/export)", "url": "https://www.blender.org" },
+    { "name": "Cinema 4D", "url": "https://www.maxon.net" },
+    { "name": "NVIDIA Omniverse", "url": "https://www.nvidia.com/en-us/omniverse/" }
+  ],
+  "formatRelationships": [
+    { "format": "BLEND", "relation": "consumer — Blender imports VDB for volume shading" },
+    { "format": "USD", "relation": "container — USD references VDB assets for scene composition" },
+    { "format": "ABC", "relation": "sibling — Alembic stores geometry caches; VDB stores volumetric data" }
+  ],
+  "MimeTypes": [
+    "application/x-openvdb",
+    "application/octet-stream"
+  ],
+  "UseCases": [
+    "VFX smoke, fire, and cloud simulation storage (film production)",
+    "Medical CT/MRI volume data conversion for artistic use",
+    "Level set surface representation for collision detection",
+    "Procedural volume generation and fracture simulation",
+    "Real-time rendering volumes in game engines (Unreal, Unity)"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 84,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 5,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-15",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "encoding": "binary LE with optional compression per grid",
+    "treeStructure": "B+tree with root/internal/leaf nodes (fan-out configurable)",
+    "defaultLeafSize": "8x8x8 voxels per leaf node",
+    "compressionCodecs": "None, Zip (zlib), ActiveMask+Zip, Blosc",
+    "gridTypes": "float, double, int32, int64, bool, Vec3f, Vec3d, PointDataGrid"
+  }
+}

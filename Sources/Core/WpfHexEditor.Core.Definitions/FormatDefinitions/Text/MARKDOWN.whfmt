@@ -1,0 +1,179 @@
+{
+  "diffMode": "text",
+  "formatName": "Markdown Document",
+  "version": "1.0",
+  "extensions": [ ".md", ".markdown", ".mkd", ".mdown" ],
+  "description": "Markdown is a lightweight markup language created by John Gruber in 2004 designed to be readable as plain text while converting to HTML. It supports headings (# ATX-style or underline Setext-style), emphasis (*italic* **bold**), lists (- or *), links ([text](url)), images (![alt](url)), code blocks (``` fenced or indented), blockquotes (>), and horizontal rules (---). Variants include CommonMark, GitHub Flavored Markdown (GFM), MultiMarkdown, and Pandoc Markdown. Markdown files are text with no binary magic — identified by extension and text patterns.",
+  "category": "Text",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "code-editor",
+  "references": {
+    "specifications": [
+      "CommonMark Specification",
+      "GitHub Flavored Markdown (GFM) Specification",
+      "John Gruber's original Markdown syntax"
+    ],
+    "WebLinks": [
+      "https://commonmark.org/",
+      "https://spec.commonmark.org/",
+      "https://github.github.com/gfm/",
+      "https://daringfireball.net/projects/markdown/"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      { "hex": "23", "offset": 0, "label": "'#' ATX-style heading — common Markdown document start", "weight": 0.4 },
+      { "hex": "EFBBBF23", "offset": 0, "label": "UTF-8 BOM + '#' heading", "weight": 0.5 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.2,
+    "required": false,
+    "Strength": "Weak",
+    "EntropyHint": { "min": 3.5, "max": 5.5 },
+    "validation": {
+      "minFileSize": 1,
+      "maxSignatureOffset": 3,
+      "note": "Markdown has no strict magic. Extension (.md, .markdown) is the primary identifier. Text content patterns (# headings, ** bold, ``` code blocks) provide secondary confirmation."
+    }
+  },
+  "variables": {
+    "mdFirstByte": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "First Byte / BOM",
+      "offset": 0,
+      "length": 1,
+      "color": "#FF6B6B",
+      "opacity": 0.3,
+      "description": "First byte: 0x23='#' (ATX heading), 0xEF=UTF-8 BOM, 0x2D='-' (list/rule), 0x3D='=' (Setext heading), 0x60='`' (code block).",
+      "storeAs": "mdFirstByte",
+      "valueType": "uint8",
+      "valueMap": {
+        "35": "# ATX heading",
+        "45": "- list item or --- rule",
+        "42": "* bold/italic/list",
+        "91": "[ link reference",
+        "96": "` inline code or fenced block",
+        "60": "< HTML block or comment",
+        "239": "UTF-8 BOM (0xEF)"
+      }
+    },
+    {
+      "type": "field",
+      "name": "Document Header Preview",
+      "offset": 0,
+      "length": 80,
+      "color": "#4ECDC4",
+      "opacity": 0.2,
+      "description": "First 80 bytes for heading and frontmatter detection (YAML frontmatter starts with ---).",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Content Sample",
+      "offset": 80,
+      "length": 128,
+      "color": "#45B7D1",
+      "opacity": 0.15,
+      "description": "Extended content sample for pattern recognition.",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "YAML Frontmatter",
+      "offset": 0,
+      "length": 3,
+      "color": "#FFEAA7",
+      "opacity": 0.25,
+      "description": "YAML frontmatter delimiter: '---' (2D 2D 2D) at start of file indicates Hugo/Jekyll/Pandoc-style frontmatter.",
+      "valueType": "ascii"
+    }
+  ],
+  "assertions": [
+    { "field": "mdFirstByte", "operator": "lessThan", "value": 128, "description": "Markdown is plain text — first byte must be in ASCII range" },
+    { "field": "mdFirstByte", "operator": "greaterThan", "value": 0, "description": "File must not be empty" },
+    { "field": "mdFirstByte", "operator": "notEquals", "value": 0, "description": "File must contain at least one byte" }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "Document Start", "offset": 0, "description": "First character of Markdown document or YAML frontmatter" }
+    ]
+  },
+  "inspector": {
+    "badge": "MD",
+    "primaryField": "mdFirstByte",
+    "showQualityScore": true,
+    "groups": [
+      { "name": "Document Start", "fields": ["mdFirstByte"] }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "Markdown File Info (JSON)",
+      "format": "json",
+      "fields": ["mdFirstByte"]
+    },
+    {
+      "name": "Markdown Header (Text)",
+      "format": "text",
+      "fields": ["mdFirstByte"]
+    }
+  ],
+  "forensic": {
+    "category": "document",
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      { "name": "Embedded HTML", "condition": "contains <script or <iframe", "description": "Markdown processors may render embedded HTML including scripts. Depends on renderer security configuration.", "severity": "warning" },
+      { "name": "Malicious links", "condition": "contains javascript: links", "description": "Markdown link syntax [text](javascript:...) can execute JS in insecure renderers.", "severity": "warning" }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "Markdown is plain text with no binary signature. Primary identification is by file extension (.md, .markdown). Content patterns: '# Heading' (ATX), underline headings (Setext), YAML frontmatter (---), fenced code blocks (```), bold (**text**), italic (*text*), links ([text](url)). CommonMark is the canonical spec; GitHub Flavored Markdown (GFM) adds tables, strikethrough, task lists, and auto-links.",
+    "suggestedInspections": [
+      "Check extension: .md or .markdown are reliable identifiers",
+      "Look for '# ' ATX headings or '---' YAML frontmatter at start of file",
+      "Identify Markdown dialect: GFM tables (|col|col|), task lists (- [ ]), or MultiMarkdown extensions",
+      "Check for embedded HTML blocks — may contain scripts if renderer is not sanitizing",
+      "Inspect links for javascript: URLs or suspicious external references",
+      "Look for YAML frontmatter metadata (title, author, date, tags) between --- delimiters"
+    ]
+  },
+  "software": [
+    "pandoc",
+    "GitHub (GFM renderer)",
+    "Hugo / Jekyll (static site generators)",
+    "VS Code (with Markdown preview)",
+    "Typora",
+    "Obsidian"
+  ],
+  "formatRelationships": {
+    "category": "Text",
+    "extensions": [".md", ".markdown", ".mkd", ".mdown"],
+    "relatedFormats": ["RST", "ASCIIDOC", "HTML", "DOCBOOK"],
+    "note": "Markdown is the most widely used lightweight markup language. RST is used in Python/Sphinx docs. AsciiDoc is used for technical books. All three can convert to HTML/PDF via processors."
+  },
+  "MimeTypes": [ "text/markdown", "text/x-markdown" ],
+  "UseCases": [
+    "README files for software projects",
+    "Documentation and wikis",
+    "Blog posts and static site generation",
+    "Note-taking and knowledge management (Obsidian, Notion)",
+    "Technical writing and e-book authoring"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 85,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 4,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-15",
+    "ReviewedBy": "WPFHexaEditor Team"
+  },
+  "TechnicalDetails": {
+    "Encoding": "UTF-8 (with or without BOM)",
+    "NoMagic": true,
+    "Dialects": ["CommonMark", "GitHub Flavored Markdown (GFM)", "MultiMarkdown", "Pandoc Markdown"],
+    "Note": "No binary magic. Detection is purely by file extension and text content patterns."
+  }
+}

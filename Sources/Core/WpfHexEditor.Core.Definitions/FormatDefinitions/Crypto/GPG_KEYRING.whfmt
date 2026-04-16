@@ -1,0 +1,227 @@
+{
+  "diffMode": "binary",
+  "formatName": "OpenPGP / GPG Keyring",
+  "version": "1.0",
+  "extensions": [ ".gpg", ".pgp", ".skr", ".pkr" ],
+  "description": "OpenPGP keyring and message file format as defined in RFC 4880 (and draft RFC 4880bis). Files consist of a sequence of packets each prefixed by a 1-byte packet tag. Bit 7 of the tag is always 1. Bits 6 determines the format: 0=old format (bits 5-2=type, 1-0=length type), 1=new format (bits 5-0=type). Old-format public key packet: tag byte 0x99 (10 011 001b) = type 6 public key, 2-byte length. Old-format secret key packet: tag byte 0x95 = type 5 secret key. New-format packets use 0xC0 | type. Common packet types: 1=Public-Key Encrypted Session Key, 2=Signature, 3=Symmetric-Key Encrypted Session Key, 4=One-Pass Signature, 5=Secret Key, 6=Public Key, 7=Secret Subkey, 8=Compressed Data, 9=Symmetrically Encrypted Data, 11=Literal Data, 12=Trust, 13=User ID, 14=Public Subkey, 17=User Attribute, 18=Sym. Encrypted and Integrity Protected Data, 19=Modification Detection Code. Key versions: 3 (PGP 2.x legacy, MD5+RSA), 4 (OpenPGP RFC 4880, SHA-1 fingerprint), 5 (OpenPGP v5 draft, SHA-256 fingerprint).",
+  "category": "Crypto",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "HexEditor",
+  "references": [
+    "https://www.rfc-editor.org/rfc/rfc4880",
+    "https://www.iana.org/assignments/pgp-parameters/pgp-parameters.xhtml",
+    "https://gnupg.org/documentation/",
+    "https://openpgp.dev/book/"
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "value": "9901",
+        "offset": 0,
+        "label": "0x99 0x01 — OpenPGP old-format public key packet (tag type 6) with 2-byte length starting 0x01xx",
+        "weight": 0.8
+      },
+      {
+        "value": "9501",
+        "offset": 0,
+        "label": "0x95 0x01 — OpenPGP old-format secret key packet (tag type 5) with 2-byte length starting 0x01xx",
+        "weight": 0.9
+      },
+      {
+        "value": "C57B",
+        "offset": 0,
+        "label": "0xC5 0x7B — OpenPGP new-format secret key packet (type 5) with 123-byte length",
+        "weight": 0.7
+      },
+      {
+        "value": "C67B",
+        "offset": 0,
+        "label": "0xC6 0x7B — OpenPGP new-format public key packet (type 6) with 123-byte length",
+        "weight": 0.7
+      }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.6,
+    "Strength": "Strong",
+    "validation": "First byte must have bit 7 set (value >= 0x80). If bit 6 is 0 (old format), bits 5-2 encode the packet type (must be 1-19). If bit 6 is 1 (new format), bits 5-0 encode type. Packet version byte (offset 3 for old format) must be 3, 4, or 5."
+  },
+  "variables": {},
+  "blocks": [
+    {
+      "name": "gpgPacketTag",
+      "offset": 0,
+      "size": 1,
+      "type": "uint8",
+      "description": "OpenPGP packet tag byte — 1-byte unsigned integer at offset 0; bit 7 must always be 1 (0x80 mask); bit 6 indicates format: 0=old format (bits 5-2=packet type, bits 1-0=length type: 0=1B, 1=2B, 2=4B, 3=indeterminate), 1=new format (bits 5-0=packet type); common values: 0x99=old public key, 0x95=old secret key, 0xC5=new secret key, 0xC6=new public key, 0xCB=new literal data, 0xD1=new user ID",
+      "storeAs": "gpgPacketTag"
+    },
+    {
+      "name": "gpgPacketLength",
+      "offset": 1,
+      "size": 2,
+      "type": "uint16",
+      "endian": "BE",
+      "description": "Packet length field — 2-byte big-endian unsigned integer at offset 1 for old-format packets with 2-byte length type (bits 1-0 of tag = 1); for new-format packets the length encoding is variable: single byte 0-191 = literal length, 192-223 = two-byte partial, 224-254 = partial body, 255 = five-byte length",
+      "storeAs": "gpgPacketLength"
+    },
+    {
+      "name": "gpgKeyVersion",
+      "offset": 3,
+      "size": 1,
+      "type": "uint8",
+      "description": "Key packet version — 1-byte unsigned integer at offset 3 (old format with 2-byte length) or offset 2 (new format); specifies the OpenPGP key format version: 3=PGP 2.x legacy (MD5, RSA only, 4-byte key ID), 4=OpenPGP RFC 4880 (SHA-1 fingerprint, multiple algorithms), 5=OpenPGP v5 draft (SHA-256 fingerprint, post-quantum readiness)",
+      "storeAs": "gpgKeyVersion",
+      "valueMap": {
+        "3": "PGP 2.x legacy — MD5 + RSA, 4-byte key ID",
+        "4": "OpenPGP RFC 4880 — SHA-1 fingerprint, all algorithms",
+        "5": "OpenPGP v5 draft — SHA-256 fingerprint, post-quantum ready"
+      }
+    },
+    {
+      "name": "gpgKeyCreationTime",
+      "offset": 4,
+      "size": 4,
+      "type": "uint32",
+      "endian": "BE",
+      "description": "Key creation timestamp — 4-byte big-endian Unix timestamp (seconds since 1970-01-01 00:00:00 UTC) at offset 4 in a version 4 or 5 public/secret key packet; records when the key was generated; forensically important for key age and validity period determination",
+      "storeAs": "gpgKeyCreationTime"
+    },
+    {
+      "name": "gpgPublicKeyAlgorithm",
+      "offset": 8,
+      "size": 1,
+      "type": "uint8",
+      "description": "Public key algorithm identifier — 1-byte unsigned integer at offset 8 in a version 4 key packet (after 4-byte creation time); specifies the asymmetric algorithm: 1/2/3=RSA, 16=Elgamal (encrypt-only), 17=DSA, 18=ECDH, 19=ECDSA, 22=EdDSA (Ed25519), 25=AEDH, 26=AEDSA",
+      "storeAs": "gpgPublicKeyAlgorithm",
+      "valueMap": {
+        "1": "RSA (Encrypt or Sign)",
+        "2": "RSA Encrypt-Only",
+        "3": "RSA Sign-Only",
+        "16": "Elgamal (Encrypt-Only)",
+        "17": "DSA (Digital Signature Algorithm)",
+        "18": "ECDH (Elliptic Curve Diffie-Hellman)",
+        "19": "ECDSA (Elliptic Curve DSA)",
+        "22": "EdDSA (Ed25519)"
+      }
+    }
+  ],
+  "assertions": [
+    {
+      "field": "gpgPacketTag",
+      "op": "bitwiseAnd",
+      "value": 128,
+      "expected": 128,
+      "description": "Bit 7 of packet tag must be 1 (value & 0x80 == 0x80); any OpenPGP packet tag must have the high bit set"
+    },
+    {
+      "field": "gpgKeyVersion",
+      "op": "in",
+      "value": [ 3, 4, 5 ],
+      "description": "Key version must be 3 (PGP 2.x), 4 (RFC 4880), or 5 (v5 draft)"
+    },
+    {
+      "field": "gpgPacketTag",
+      "op": "gte",
+      "value": 128,
+      "description": "Packet tag value must be >= 0x80 confirming bit 7 is always set in valid OpenPGP packets"
+    }
+  ],
+  "navigation": {
+    "entryPoint": "gpgPacketTag",
+    "sections": [
+      { "name": "First Packet Tag", "offset": 0, "size": 1 },
+      { "name": "First Packet Length", "offset": 1, "size": 2 },
+      { "name": "First Packet Body", "offset": 3, "description": "Variable length; key version, creation time, algorithm" }
+    ]
+  },
+  "inspector": {
+    "badge": "PGP",
+    "primaryField": "gpgPacketTag",
+    "groups": [
+      {
+        "name": "Packet Header",
+        "fields": [ "gpgPacketTag", "gpgPacketLength" ]
+      },
+      {
+        "name": "Key Metadata",
+        "fields": [ "gpgKeyVersion", "gpgKeyCreationTime", "gpgPublicKeyAlgorithm" ]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "GPG Key Summary",
+      "format": "txt",
+      "template": "OpenPGP / GPG Keyring\n=====================\nPacket Tag   : 0x{gpgPacketTag}\nPacket Length: {gpgPacketLength}\nKey Version  : {gpgKeyVersion}\nCreated (UTC): {gpgKeyCreationTime}\nAlgorithm    : {gpgPublicKeyAlgorithm}\n"
+    },
+    {
+      "name": "GPG Forensic Report (CSV)",
+      "format": "csv",
+      "template": "Field,Value\nPacketTag,{gpgPacketTag}\nPacketLength,{gpgPacketLength}\nKeyVersion,{gpgKeyVersion}\nCreationTimestamp,{gpgKeyCreationTime}\nPublicKeyAlgorithm,{gpgPublicKeyAlgorithm}\n"
+    }
+  ],
+  "forensic": {
+    "importance": "HIGH",
+    "riskLevel": "high",
+    "notes": "GPG keyring files contain private keys (SKR/secret keyrings) or public keys (PKR). Secret key files (.gpg with packet tag 0x95/0xC5) are particularly sensitive — they may contain unencrypted or passphrase-protected private key material. Version 3 keys (MD5 fingerprint) are cryptographically weak and should be flagged. The key creation timestamp provides timeline evidence. Keyring files found on a suspect's system can reveal identity, communication partners, and encrypted data targets. Use 'gpg --list-keys', 'gpg --export', or pgpdump for structured analysis.",
+    "indicators": [
+      "Packet tag byte >= 0x80 at offset 0",
+      "Extension .gpg, .pgp, .skr, or .pkr",
+      "Key creation timestamp at offset 4",
+      "RSA/DSA/ECDSA algorithm byte at offset 8",
+      "Secret key packets (0x95, 0xC5) indicate private key material"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "OpenPGP keyrings follow a self-delimiting packet structure. Each file is a sequence of tagged packets where the first byte encodes packet type and length format. Key packets (types 5 and 6) contain version, creation time, and algorithm-specific MPI (Multi-Precision Integer) parameters. Secret key packets may be encrypted with a symmetric cipher using a passphrase-derived key (S2K — String-to-Key).",
+    "suggestedInspections": [
+      "Identify all packet types in the file by walking the packet chain — look for secret key packets (type 5/7) which contain private key material",
+      "Extract key creation timestamps and compare against known timelines for the investigation",
+      "Check key algorithm — version 3 (MD5) and short RSA keys (<2048 bits) are cryptographically weak",
+      "Look for User ID packets (type 13) which contain the owner's name and email address in plaintext",
+      "Detect S2K (String-to-Key) parameters in secret key packets to determine if private keys are passphrase-protected",
+      "Cross-reference fingerprints against public key servers (keys.openpgp.org) to identify key owners"
+    ]
+  },
+  "software": [
+    { "name": "GnuPG (GPG)", "vendor": "GNU Project / Werner Koch", "url": "https://gnupg.org" },
+    { "name": "Kleopatra", "vendor": "KDE / Intevation GmbH", "url": "https://www.openpgp.org/software/kleopatra/" },
+    { "name": "pgpdump", "vendor": "kazu-yamamoto", "url": "https://github.com/kazu-yamamoto/pgpdump" },
+    { "name": "Sequoia PGP", "vendor": "Sequoia-PGP", "url": "https://sequoia-pgp.org" },
+    { "name": "OpenPGP.js", "vendor": "ProtonMail / openpgpjs", "url": "https://openpgpjs.org" }
+  ],
+  "formatRelationships": [
+    { "format": "PGP", "relationship": "PGP is the proprietary predecessor; OpenPGP (RFC 4880) is the open standard derived from PGP 5.x" },
+    { "format": "PKCS7", "relationship": "PKCS#7 (CMS) is the X.509-based equivalent for S/MIME signed/encrypted data; OpenPGP uses its own packet format" },
+    { "format": "SSH_KEY", "relationship": "SSH keys may be imported into GPG as authentication subkeys; both formats store asymmetric key material" }
+  ],
+  "MimeTypes": [ "application/pgp-keys", "application/pgp-encrypted", "application/pgp-signature" ],
+  "UseCases": [
+    "Email encryption and signing (e.g., Thunderbird + Enigmail/native OpenPGP)",
+    "File encryption and digital signatures",
+    "Software package signing and verification",
+    "SSH key authentication via GPG agent",
+    "Forensic recovery of encrypted communications"
+  ],
+  "QualityMetrics": {
+    "LastUpdated": "2026-04-15",
+    "CompletenessScore": 87,
+    "ReviewedBy": "WPFHexaEditor Team"
+  },
+  "TechnicalDetails": {
+    "packetStructure": "Self-delimiting packet chain; each packet has a tag byte, variable-length length field, and body",
+    "keyFingerprint": {
+      "v3": "MD5 of key material (16 bytes)",
+      "v4": "SHA-1 of key packet body (20 bytes)",
+      "v5": "SHA-256 of key packet body (32 bytes)"
+    },
+    "minimumFileSize": 3,
+    "endianness": "BigEndian",
+    "rfc": "RFC 4880",
+    "supportedAlgorithms": {
+      "public_key": [ "RSA", "DSA", "ECDH", "ECDSA", "EdDSA (Ed25519)" ],
+      "symmetric": [ "AES-128", "AES-192", "AES-256", "3DES", "Twofish" ],
+      "hash": [ "SHA-1", "SHA-256", "SHA-384", "SHA-512", "RIPEMD-160" ]
+    }
+  }
+}
