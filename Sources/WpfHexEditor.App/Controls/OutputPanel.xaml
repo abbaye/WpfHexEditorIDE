@@ -8,6 +8,9 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              Background="{DynamicResource DockBackgroundBrush}">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -27,17 +30,24 @@
                            Margin="4,0,6,0"
                            FontSize="12" />
                 <ComboBox x:Name="SourceComboBox"
-                          Width="150"
+                          Width="160"
                           SelectedIndex="0"
                           VerticalAlignment="Center"
                           FontSize="12"
                           SelectionChanged="OnSourceChanged">
-                    <ComboBoxItem Content="General" />
-                    <ComboBoxItem Content="Plugin System" />
-                    <ComboBoxItem Content="Build" />
-                    <ComboBoxItem Content="Debug" />
-                    <ComboBoxItem Content="Unit Testing" />
-                    <ComboBoxItem Content="Language Server" />
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <Ellipse x:Name="UnreadDot"
+                                         Width="7" Height="7"
+                                         Fill="#4EC9B0"
+                                         Margin="0,0,6,0"
+                                         VerticalAlignment="Center"
+                                         Visibility="{Binding HasUnread, Converter={StaticResource BoolToVisibility}}" />
+                                <TextBlock Text="{Binding Name}" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
                 </ComboBox>
                 <Button Content="&#xD7;"
                         ToolTip="Clear All"
