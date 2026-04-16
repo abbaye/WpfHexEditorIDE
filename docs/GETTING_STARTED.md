@@ -39,7 +39,7 @@ In your `.csproj`:
 </ItemGroup>
 ```
 
-> **NuGet:** The V1 legacy package (`WPFHexaEditor`) is still on NuGet but is no longer maintained. V2 NuGet packaging is planned. For now, use project references.
+> **NuGet:** All major controls are available on NuGet — `WPFHexaEditor`, `WpfCodeEditor`, `WpfDocking`, `WpfColorPicker`, `WpfTerminal`, and the cross-platform `whfmt.FileFormatCatalog` (690+ format definitions). See the [main README](../README.md#-ui-controls--nuget-packages) for install commands.
 
 ### Step 2 — Add the Namespace
 

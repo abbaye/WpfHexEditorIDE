@@ -1,12 +1,17 @@
-# 🎉 Bibliothèque de 400 Formats - WPFHexaEditor
+# 🎉 Format Definition Library — WpfHexEditor
 
-## Vue d'ensemble
+## Overview
 
-**Total** : **400 définitions JSON** ✨
-**Catégories** : **20 catégories**
-**Build** : ✅ 0 erreurs
-**Tests** : ✅ Validés
-**Date** : 2026-02-22
+**Total**: **690+ .whfmt definitions** (schema v2.3)
+**Categories**: **27 categories**
+**Syntax grammars**: **35 languages**
+**Build**: ✅ 0 errors
+**Tests**: ✅ Validated
+**Date**: 2026-04-15
+**NuGet**: [`whfmt.FileFormatCatalog`](https://www.nuget.org/packages/whfmt.FileFormatCatalog/) — cross-platform `net8.0`
+
+> **Note:** Category counts below are from the original 400-format milestone (2026-02-22).
+> The catalog has since grown to 690+ definitions with 27 categories. See [CHANGELOG](../CHANGELOG.md) for details.
 
 ---
 

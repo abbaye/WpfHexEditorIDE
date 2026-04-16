@@ -2,7 +2,7 @@
 
 Complete documentation for the WpfHexEditor IDE.
 
-**Last Updated:** 2026-04-02
+**Last Updated:** 2026-04-15
 
 ---
 
@@ -70,20 +70,22 @@ Complete documentation for the WpfHexEditor IDE.
 
 ### Infrastructure
 
-- **[Editor Core](../Sources/WpfHexEditor.Editor.Core/README.md)** — `IDocumentEditor`, shared editor contracts
-- **[SDK](../Sources/WpfHexEditor.SDK/README.md)** — Plugin SDK extension points
-- **[Events](../Sources/WpfHexEditor.Events/README.md)** — IDE-wide event bus + all domain events
-- **[LSP](../Sources/WpfHexEditor.LSP/README.md)** — Language intelligence engine
-- **[BuildSystem](../Sources/WpfHexEditor.BuildSystem/README.md)** — Build orchestration + adapter contracts
-- **[Core.SourceAnalysis](../Sources/WpfHexEditor.Core.SourceAnalysis/README.md)** — Regex-based outline engine (BCL-only)
-- **[ProjectSystem](../Sources/WpfHexEditor.ProjectSystem/README.md)** — Solution/project model
-- **[Terminal](../Sources/WpfHexEditor.Terminal/README.md)** — Integrated terminal panel
-- **[PluginHost](../Sources/WpfHexEditor.PluginHost/README.md)** — Plugin discovery + loading
-- **[Docking Core](../Sources/WpfHexEditor.Docking.Core/README.md)** — Docking engine contracts
-- **[Core.Roslyn](../Sources/WpfHexEditor.Core.Roslyn/README.md)** — In-process Roslyn C#/VB.NET analysis
-- **[Core.Workspaces](../Sources/WpfHexEditor.Core.Workspaces/README.md)** — `.whidews` workspace engine
-- **[Core.Diff](../Sources/WpfHexEditor.Core.Diff/README.md)** — Myers/Binary/Semantic diff algorithms
-- **[Core.MCP](../Sources/WpfHexEditor.Core.MCP/README.md)** — Model Context Protocol support
+- **[Editor Core](../Sources/Editors/WpfHexEditor.Editor.Core/README.md)** — `IDocumentEditor`, shared editor contracts
+- **[Core.Contracts](../Sources/Core/WpfHexEditor.Core.Contracts/)** — `IEmbeddedFormatCatalog`, `EmbeddedFormatEntry`, `FormatCategory`, `SchemaName` — cross-platform `net8.0`
+- **[Core.Definitions](../Sources/Core/WpfHexEditor.Core.Definitions/README.md)** — 690+ embedded `.whfmt` definitions; published as [`whfmt.FileFormatCatalog`](../doc/whfmt-FileFormatCatalog-guide.md) NuGet
+- **[SDK](../Sources/Plugins/WpfHexEditor.SDK/README.md)** — Plugin SDK extension points
+- **[Events](../Sources/Core/WpfHexEditor.Core.Events/README.md)** — IDE-wide event bus + all domain events
+- **[LSP](../Sources/Core/WpfHexEditor.Core.LSP.Client/README.md)** — Language Server Protocol 3.17 client
+- **[BuildSystem](../Sources/Core/WpfHexEditor.Core.BuildSystem/README.md)** — Build orchestration + adapter contracts
+- **[Core.SourceAnalysis](../Sources/Core/WpfHexEditor.Core.SourceAnalysis/README.md)** — Regex-based outline engine (BCL-only)
+- **[ProjectSystem](../Sources/Core/WpfHexEditor.Core.ProjectSystem/README.md)** — Solution/project model
+- **[Terminal](../Sources/Controls/WpfHexEditor.Terminal/README.md)** — Integrated terminal panel
+- **[PluginHost](../Sources/Plugins/WpfHexEditor.PluginHost/README.md)** — Plugin discovery + loading
+- **[Docking Core](../Sources/Docking/WpfHexEditor.Docking.Core/README.md)** — Docking engine contracts
+- **[Core.Roslyn](../Sources/Core/WpfHexEditor.Core.Roslyn/README.md)** — In-process Roslyn C#/VB.NET analysis
+- **[Core.Workspaces](../Sources/Core/WpfHexEditor.Core.Workspaces/README.md)** — `.whidews` workspace engine
+- **[Core.Diff](../Sources/Core/WpfHexEditor.Core.Diff/README.md)** — Myers/Binary/Semantic diff algorithms
+- **[Core.MCP](../Sources/Core/WpfHexEditor.Core.MCP/README.md)** — Model Context Protocol support
 
 ### Plugins
 
@@ -125,15 +127,16 @@ Complete documentation for the WpfHexEditor IDE.
 
 ## 📋 Features
 
-- **[Format Detection (400+)](features/FormatDetection_400.md)** — Auto-detection for 400+ file formats
-- **[Format Definition Schema](FormatDefinition_Schema.md)** — `.whfmt` binary template format
+- **[Format Detection (690+)](features/FormatDetection_400.md)** — Auto-detection for 690+ file formats via magic bytes, extensions, MIME types
+- **[Format Definition Schema](FormatDefinition_Schema.md)** — `.whfmt` binary template format (schema v2.3)
+- **[whfmt.FileFormatCatalog Guide](../doc/whfmt-FileFormatCatalog-guide.md)** — NuGet package API reference, architecture, L1–L3 integration guides
 
 ---
 
 ## 🔗 Resources
 
 - **[Main README](../README.md)** — Project overview and feature table
-- **[CHANGELOG](CHANGELOG.md)** — Version history (v0.5.0 → v0.6.4.3)
+- **[CHANGELOG](CHANGELOG.md)** — Version history (v0.5.0 → v0.6.4.75)
 - **[ROADMAP](ROADMAP.md)** — Planned features and progress
 - **[CONTRIBUTING](../.github/CONTRIBUTING.md)** — How to contribute
 - **[SECURITY](../.github/SECURITY.md)** — Security policy

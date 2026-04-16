@@ -69,7 +69,7 @@
 | 🧩 **Plugin System** | Open SDK (`IWpfHexEditorPluginV2`), `.whxplugin` packages, `PluginManager`, hot-unload, permissions |
 | 💻 **Terminal** | 31+ built-in commands, `HxScriptEngine`, mode indicator (Interactive/Script/ReadOnly), session export |
 | 📊 **Plugin Monitoring** | Real-time per-plugin CPU% + memory charts, `PerformanceCounter` + GC, rolling history |
-| 🔍 **400+ Format Detection** | Format-aware editor routing, `EmbeddedFormatCatalog`, `preferredEditor` key |
+| 🔍 **690+ Format Detection** | Format-aware editor routing, `EmbeddedFormatCatalog`, `preferredEditor` key |
 | ⌨️ **Inline Search** | `Ctrl+F` quick bar + `Ctrl+Shift+F` advanced dialog (Hex/Text/Regex/TBL/Wildcard) |
 | 🎛️ **Options** | VS2026-style settings tab — theme, display, editing, behavior, plugins, auto-save |
 

@@ -6,6 +6,43 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) · Versioning: 
 
 ---
 
+## [0.6.4.75] — 2026-04-15 — Structure Editor, 690+ Formats, whfmt.FileFormatCatalog NuGet
+
+### ✨ Added
+
+- **whfmt.FileFormatCatalog v1.0.0 NuGet** — new cross-platform `net8.0` NuGet package (`dotnet add package whfmt.FileFormatCatalog`); extracts the embedded format catalog as a standalone library with `EmbeddedFormatCatalog` singleton, `DetectFromBytes(ReadOnlySpan<byte>)` magic-byte detection, `GetByExtension`, `GetByMimeType`, `GetByCategory`, `GetSchemaJson`, `GetCompatibleEditorIds`; zero external dependencies; includes full API guide (`whfmt-FileFormatCatalog-guide.md`)
+- **WpfHexEditor.Core.Contracts** — new `net8.0` assembly containing `IEmbeddedFormatCatalog`, `EmbeddedFormatEntry`, `FormatSignature`, `FormatCategory` enum (27 categories), `SchemaName` enum (5 schemas); breaks WPF dependency from Core.Definitions enabling cross-platform NuGet
+- **Structure Editor (~30%)** — new visual `.whfmt` binary template editor: block DataGrid with field types/offsets, drag-drop block reordering, `Ctrl+F` search, validation pipeline, undo/redo, `StructurePopToolbar`, `BlockTypeBadge`, `LiveWhfmtBuffer`, `VariablesTab` redesign, `TestTab` with live binary preview, variable cross-reference validation, expression `SmartComplete`, options page, `SimpleBlockInterpreter` enhancements, `ForensicPattern` tolerant converter
+- **WhfmtExplorer browser panels** — `WhfmtBrowserPanel` and `WhfmtCatalogDocument` for browsing and inspecting all embedded format definitions from within the IDE; category filtering, detail view, format JSON preview
+- **+230 new .whfmt definitions** — catalog expanded from ~460 to 690+ format definitions across multiple batch additions (Groups C/D/E +60, Groups F/G/H/I/J +51, +50 additional formats, +30 formats, +14 formats); covers new categories and enriches existing ones
+- **whfmt schema v2.3** — schema upgraded with `references`, `forensicPatterns`, `variables` blocks; all existing definitions aligned to v2.3
+- **Format Browser/Catalog view menu entries** — View menu integration for WhfmtBrowser and WhfmtCatalog panels
+- **`InputFilter` control** — reusable input filter control for hex/decimal/text validation
+- **`HexStringToColorConverter`** — value converter for displaying hex color strings as color swatches
+- **WHFMT_LOADING_PIPELINE documentation** — internal documentation of the whfmt load pipeline architecture
+
+### 🔧 Changed
+
+- **EmbeddedFormatCatalog refactor** — integrated PR #230; resource key prefix updated from `WpfHexEditor.Definitions.FormatDefinitions.` to `WpfHexEditor.Core.Definitions.FormatDefinitions.`; `LoadHeader` extended to extract `MimeTypes` and `Signatures` fields; `FrozenSet<T>` + `LazyInitializer` for thread-safe caching
+- **Core.Definitions target framework** — `net8.0-windows` → `net8.0` (cross-platform); ProjectRef changed from Editor.Core → Core.Contracts with `PrivateAssets=all` + DLL bundling
+- **whfmt schema v2 updates** — Data, Database, Disk, Images, Programming, System, Text, Game, Archives categories updated to schema v2 format; references block added across definitions
+- **WPFHexaEditor NuGet bumps** — 3.0.8 → 3.1.0 → 3.1.1 → 3.1.1.1 → 3.1.2 through iterative format detection fixes
+- **WhfmtBrowserPanel + WhfmtCatalogDocument XAML improvements** — layout refinements, theme alignment
+
+### 🐛 Fixed
+
+- **Corrupted whfmt crash guard** — corrupted `.whfmt` files no longer crash the IDE; load failures surfaced via `FormatLoadFailure` (OutputLogger red/yellow for IDE, StatusText red for standalone)
+- **Format detection pipeline** — thread-safe `GetAll()` + self-healing parsed-formats cache; TIER 1 scored before early-exit; TIER 2 blocked when strong match found; entropy check skipped for Strong/Unique signatures
+- **SignatureStrength converter** — global `JsonStringEnumConverter` replaced with targeted `[JsonConverter]` + custom converter handling Number/String/unknown gracefully
+- **Invalid JSON escapes** — fixed `\x` hex escapes in HDF5, NETCDF, NPY whfmt files (invalid in JSON)
+- **Missing required:true** — added to 10 .whfmt definitions missing the field
+- **whfmt schema issues (#229)** — addressed issues reported by tecAmoRaller
+- **TextEditor viewport fix** — viewport line-count sync corrected
+- **Format definition version alignment** — all 690+ definitions version-bumped consistently
+- **`/* */` file headers removed** — stripped non-JSON comment headers from all whfmt definitions (JSONC guard fix)
+
+---
+
 ## [0.6.4.10] — 2026-04-13 — Column Highlight Defaults + Shared Undo Engine
 
 ### 🔧 Changed
