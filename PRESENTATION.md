@@ -71,7 +71,7 @@ mindmap
 ## 3. Chiffres clés
 
 ```
-Version actuelle        : 0.6.4.75
+Version actuelle        : 0.6.4.82
 Projets de production   : 91  (104 total — 13 samples/tests exclus)
   dont Editors          : 24 projets
   dont Plugins          : 32 projets
@@ -447,6 +447,6 @@ gantt
 
 ---
 
-*WpfHexEditor Studio — v0.6.4.75 — .NET 8.0 / WPF / Windows*  
+*WpfHexEditor Studio — v0.6.4.82 — .NET 8.0 / WPF / Windows*  
 *Développé par abbaye avec Claude, ChatGPT, GitHub Copilot*  
 *Statistiques extraites automatiquement du dépôt git le 2026-04-16*
