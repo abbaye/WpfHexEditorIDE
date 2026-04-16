@@ -1,0 +1,203 @@
+{
+  "diffMode": "binary",
+  "formatName": "Cineon Image File",
+  "version": "1.0",
+  "extensions": [
+    ".cin"
+  ],
+  "description": "Cineon digital film format — developed by Kodak for digital intermediate workflows in motion picture post-production. The file starts with a 4-byte magic number (0x802A5FD7 big-endian or byte-swapped little-endian). Contains a generic file header, image header, and optional orientation/film/origination headers followed by 10-bit log-encoded pixel data.",
+  "category": "Images",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "references": {
+    "specifications": [
+      "SMPTE 268M — Cineon Image File Format",
+      "Cineon Digital Film System documentation (Kodak)"
+    ],
+    "WebLinks": [
+      "https://en.wikipedia.org/wiki/Cineon",
+      "https://www.smpte.org/standards"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      { "value": "802A5FD7", "offset": 0, "label": "Cineon magic (big-endian 0x802A5FD7)", "weight": 1.0 },
+      { "value": "D75F2A80", "offset": 0, "label": "Cineon magic (little-endian swapped)", "weight": 0.9 }
+    ],
+    "required": true,
+    "Strength": "Strong",
+    "MinimumScore": 0.8,
+    "validation": {
+      "minFileSize": 2048
+    }
+  },
+  "variables": {
+    "cinMagic": 0,
+    "cinImageOffset": 0,
+    "cinHeaderSize": 0,
+    "cinIndustryHeaderSize": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "Cineon Magic Number",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.45,
+      "description": "4-byte magic number: 0x802A5FD7 (big-endian) or 0xD75F2A80 (little-endian). Identifies the file as Cineon and determines byte order for all subsequent multi-byte fields.",
+      "storeAs": "cinMagic",
+      "valueType": "uint32",
+      "endianness": "big"
+    },
+    {
+      "type": "field",
+      "name": "Image Data Offset",
+      "offset": 4,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "4-byte uint32 big-endian: byte offset to the start of image pixel data from the beginning of the file.",
+      "storeAs": "cinImageOffset",
+      "valueType": "uint32",
+      "endianness": "big"
+    },
+    {
+      "type": "field",
+      "name": "Generic Header Size",
+      "offset": 8,
+      "length": 4,
+      "color": "#FFEAA7",
+      "opacity": 0.35,
+      "description": "4-byte uint32 big-endian: size of the generic file header in bytes.",
+      "storeAs": "cinHeaderSize",
+      "valueType": "uint32",
+      "endianness": "big"
+    },
+    {
+      "type": "field",
+      "name": "Industry Header Size",
+      "offset": 12,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.30,
+      "description": "4-byte uint32 big-endian: size of the industry-specific header in bytes.",
+      "storeAs": "cinIndustryHeaderSize",
+      "valueType": "uint32",
+      "endianness": "big"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "Cineon magic number valid",
+      "expression": "cinMagic == 0x802A5FD7 || cinMagic == 0xD75F2A80",
+      "severity": "error",
+      "message": "File must start with Cineon magic 0x802A5FD7 (BE) or 0xD75F2A80 (LE)"
+    },
+    {
+      "name": "Image offset is reasonable",
+      "expression": "cinImageOffset > 0 && cinImageOffset < fileSize",
+      "severity": "warning",
+      "message": "Image data offset should point within the file"
+    },
+    {
+      "name": "Minimum file size for headers",
+      "expression": "fileSize >= 2048",
+      "severity": "error",
+      "message": "Cineon file must be at least 2048 bytes to contain required headers"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "Magic", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
+      { "name": "Image Offset", "offset": 4, "icon": "\uE8A5", "color": "#4ECDC4" },
+      { "name": "Header Size", "offset": 8, "icon": "\uE9D9", "color": "#FFEAA7" }
+    ]
+  },
+  "inspector": {
+    "badge": "cinMagic",
+    "primaryField": "cinMagic",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "Cineon File Header",
+        "icon": "\uE71B",
+        "fields": ["cinMagic", "cinImageOffset", "cinHeaderSize", "cinIndustryHeaderSize"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "Cineon Header (JSON)",
+      "format": "json",
+      "fields": ["cinMagic", "cinImageOffset", "cinHeaderSize", "cinIndustryHeaderSize"]
+    },
+    {
+      "name": "cineon_header_t (C struct)",
+      "format": "c-struct",
+      "structName": "cineon_file_header",
+      "fields": ["cinMagic", "cinImageOffset", "cinHeaderSize", "cinIndustryHeaderSize"]
+    }
+  ],
+  "forensic": {
+    "category": "images",
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      {
+        "name": "Byte order mismatch",
+        "condition": "cinMagic == 0xD75F2A80",
+        "severity": "info",
+        "description": "Little-endian Cineon file — less common than big-endian. All multi-byte fields must be read in LE order."
+      }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "Cineon: magic(4B 0x802A5FD7 BE), imageOffset(4B), genericHeaderSize(4B), industryHeaderSize(4B), variableHeaderSize(4B), totalFileSize(4B), version(32B ASCII), fileName(100B ASCII), createDate(12B), createTime(12B). Image header at offset 200: orientation(1B), numElements(1B), then per-element: dataSign(1B), refLow(4B), refHigh(4B), bitSize(1B), packing(2B), encoding(2B), dataOffset(4B), endOfLinePad(4B), endOfImagePad(4B), description(32B). Pixel data: typically 10-bit log density, 3 channels (RGB), packed.",
+    "suggestedInspections": [
+      "Check magic for endianness (0x802A5FD7 = BE, 0xD75F2A80 = LE)",
+      "Read image data offset and verify it points within file",
+      "Parse image element for bit depth (typically 10-bit) and packing method",
+      "Extract creation date/time from generic header"
+    ]
+  },
+  "software": [
+    "DaVinci Resolve",
+    "Nuke (Foundry)",
+    "Shake (Apple, legacy)",
+    "OpenImageIO (oiiotool)",
+    "ImageMagick"
+  ],
+  "formatRelationships": {
+    "category": "Images",
+    "extensions": [".cin"],
+    "relatedFormats": ["DPX"],
+    "containerVariant": "DPX (SMPTE 268M-2003) is the successor to Cineon with expanded metadata and data type support"
+  },
+  "MimeTypes": [
+    "image/x-cineon",
+    "application/octet-stream"
+  ],
+  "UseCases": [
+    "Digital intermediate (DI) workflows in film post-production",
+    "Film scanning and digital archival of motion picture frames",
+    "Color grading pipeline interchange format",
+    "Visual effects compositing source material"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 86,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 4,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-16",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "FileType": "Digital film image format",
+    "BitDepth": "Typically 10-bit logarithmic density",
+    "Channels": "RGB (3 elements typical)",
+    "Packing": "Method A (32-bit word, 2 padding bits) or Method B",
+    "Endianness": "Determined by magic number (0x802A5FD7=BE, 0xD75F2A80=LE)",
+    "HeaderSize": "Generic(300B) + Image(varies) + Orientation + Film + Origination"
+  }
+}

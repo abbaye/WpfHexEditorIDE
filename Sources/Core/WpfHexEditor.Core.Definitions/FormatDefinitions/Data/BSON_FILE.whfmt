@@ -1,0 +1,206 @@
+{
+  "diffMode": "binary",
+  "formatName": "BSON Document File",
+  "version": "1.0",
+  "extensions": [".bson"],
+  "description": "BSON (Binary JSON) is a binary serialization format used by MongoDB for document storage and network transfer. Each BSON document starts with a 4-byte little-endian uint32 indicating the total document size (including the size field itself), followed by typed element entries, and terminated by a null byte (0x00). Element types include Double (0x01), String (0x02), Document (0x03), Array (0x04), Binary (0x05), and others.",
+  "category": "Data",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "references": [
+    "https://bsonspec.org/spec.html",
+    "https://www.mongodb.com/docs/manual/reference/bson-types/",
+    "https://en.wikipedia.org/wiki/BSON"
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "value": "",
+        "offset": 0,
+        "label": "BSON document starts with uint32 LE total size",
+        "weight": 0.3
+      }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.2,
+    "Strength": "Weak",
+    "validation": {
+      "rules": [
+        { "field": "bsonDocSize", "operator": "greaterThan", "value": 5 }
+      ]
+    }
+  },
+  "variables": [
+    {
+      "name": "bsonDocSize",
+      "offset": 0,
+      "size": 4,
+      "type": "uint32",
+      "endian": "little",
+      "storeAs": "bsonDocSize",
+      "description": "Total size of the BSON document in bytes (including this 4-byte field)"
+    },
+    {
+      "name": "bsonFirstElemType",
+      "offset": 4,
+      "size": 1,
+      "type": "uint8",
+      "storeAs": "bsonFirstElemType",
+      "description": "Type byte of the first element in the document",
+      "valueMap": {
+        "1": "Double",
+        "2": "String",
+        "3": "Document",
+        "4": "Array",
+        "5": "Binary",
+        "8": "Boolean",
+        "9": "UTC datetime",
+        "10": "Null",
+        "16": "Int32",
+        "18": "Int64"
+      }
+    }
+  ],
+  "blocks": [
+    {
+      "name": "DocumentSize",
+      "offset": 0,
+      "size": 4,
+      "description": "4-byte LE uint32 total document size including this field and trailing null",
+      "fields": [
+        { "name": "Size", "offset": 0, "size": 4, "type": "uint32" }
+      ]
+    },
+    {
+      "name": "FirstElement",
+      "offset": 4,
+      "size": 1,
+      "description": "Type byte of the first BSON element (0x01=Double, 0x02=String, etc.)",
+      "fields": [
+        { "name": "ElementType", "offset": 4, "size": 1, "type": "uint8" }
+      ]
+    },
+    {
+      "name": "ElementData",
+      "offset": 5,
+      "size": -1,
+      "description": "Element name (C-string) followed by typed value data, repeated for each element",
+      "fields": []
+    },
+    {
+      "name": "Terminator",
+      "offset": -1,
+      "size": 1,
+      "description": "Null byte (0x00) terminating the BSON document",
+      "fields": []
+    }
+  ],
+  "assertions": [
+    {
+      "id": "assert_min_size",
+      "field": "bsonDocSize",
+      "operator": "greaterThan",
+      "value": 5,
+      "severity": "error",
+      "message": "BSON document size must be > 5 (4B size + 1B null terminator minimum)"
+    },
+    {
+      "id": "assert_element_type_valid",
+      "field": "bsonFirstElemType",
+      "operator": "greaterThan",
+      "value": 0,
+      "severity": "warning",
+      "message": "First element type is 0x00 (null terminator) — document contains no elements"
+    },
+    {
+      "id": "assert_size_reasonable",
+      "field": "bsonDocSize",
+      "operator": "lessThan",
+      "value": 16777216,
+      "severity": "warning",
+      "message": "BSON document exceeds 16 MB — MongoDB default max document size"
+    }
+  ],
+  "navigation": {
+    "entryPoints": [
+      { "name": "Document Size", "offset": 0 },
+      { "name": "First Element", "offset": 4 }
+    ],
+    "jumpTable": [
+      { "label": "Document Size (uint32 LE)", "offset": 0 },
+      { "label": "First Element Type", "offset": 4 }
+    ]
+  },
+  "inspector": {
+    "badge": "BS",
+    "primaryField": "bsonDocSize",
+    "groups": [
+      {
+        "name": "Document",
+        "fields": ["bsonDocSize", "bsonFirstElemType"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "BSON Document Summary",
+      "format": "text",
+      "template": "BSON Document\nTotal Size     : {bsonDocSize} bytes\nFirst Elem Type: {bsonFirstElemType}"
+    },
+    {
+      "name": "BSON Document CSV",
+      "format": "csv",
+      "template": "Field,Value\nDocumentSize,{bsonDocSize}\nFirstElementType,{bsonFirstElemType}"
+    }
+  ],
+  "forensic": {
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      "Document size doesn't match actual file size — truncation or concatenation",
+      "Unknown element type bytes — corrupted or non-standard BSON",
+      "Document size exceeds 16 MB MongoDB limit — custom or tampered data",
+      "Missing null terminator at expected offset"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "BSON documents are length-prefixed with a uint32 LE size at offset 0. Each element is: type byte + C-string name + typed value. Type 0x00 terminates the document. Documents can be nested (type 0x03) and arrays are documents with numeric string keys (type 0x04). MongoDB limits documents to 16 MB by default.",
+    "suggestedInspections": [
+      "Read uint32 LE at offset 0 for total document size",
+      "Parse element type byte at offset 4 to identify first field type",
+      "Walk elements: type(1B) + name(C-string) + value(type-dependent size)",
+      "Verify null terminator at offset (bsonDocSize - 1)"
+    ]
+  },
+  "software": [
+    { "name": "MongoDB", "vendor": "MongoDB Inc.", "platform": "Cross-platform" },
+    { "name": "mongodump / mongorestore", "vendor": "MongoDB Inc.", "platform": "Cross-platform" },
+    { "name": "bsondump", "vendor": "MongoDB Inc.", "platform": "Cross-platform" }
+  ],
+  "formatRelationships": [
+    { "format": "JSON", "relation": "parent", "note": "BSON is a binary encoding of JSON-like documents with extended types" },
+    { "format": "UBJSON", "relation": "sibling", "note": "Both are binary JSON variants; UBJSON uses type markers, BSON uses length-prefixed documents" }
+  ],
+  "MimeTypes": [
+    "application/bson",
+    "application/octet-stream"
+  ],
+  "UseCases": [
+    "MongoDB document storage and wire protocol",
+    "mongodump binary backup files",
+    "Cross-language binary data interchange with rich types",
+    "Embedded document databases using BSON serialization"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 84,
+    "LastUpdated": "2026-04-16"
+  },
+  "TechnicalDetails": {
+    "headerSize": 4,
+    "endian": "little",
+    "signatureOffset": 0,
+    "signatureLength": 0,
+    "encoding": "Length-prefixed documents with typed elements",
+    "maxDocumentSize": 16777216,
+    "notes": "No magic bytes — detection relies on extension and size validation. First 4 bytes are uint32 LE total size."
+  }
+}

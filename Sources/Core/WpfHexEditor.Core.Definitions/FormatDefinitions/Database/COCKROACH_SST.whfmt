@@ -1,0 +1,177 @@
+{
+  "diffMode": "binary",
+  "formatName": "CockroachDB RocksDB SSTable",
+  "version": "1.0",
+  "extensions": [".sst"],
+  "description": "CockroachDB historically uses RocksDB-format SSTables with the standard RocksDB footer magic 0xF7CFF485B741E288. These sorted string tables store key-value pairs in compressed data blocks with index and filter blocks. Newer CockroachDB versions use Pebble with its own magic, but legacy and imported SSTables retain the RocksDB signature. Detection is weak due to shared .sst extension.",
+  "category": "Database",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "references": [
+    "https://github.com/facebook/rocksdb/wiki/Rocksdb-BlockBasedTable-Format",
+    "https://cockroachlabs.com/docs/stable/architecture/storage-layer.html",
+    "https://github.com/cockroachdb/cockroach"
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "value": "F7CFF485B741E288",
+        "offset": 0,
+        "label": "RocksDB footer magic (CockroachDB uses RocksDB SST)",
+        "weight": 0.3
+      }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.2,
+    "Strength": "Weak",
+    "validation": {
+      "rules": []
+    }
+  },
+  "variables": [
+    {
+      "name": "cockroachFirstByte",
+      "offset": 0,
+      "size": 1,
+      "type": "uint8",
+      "storeAs": "cockroachFirstByte",
+      "description": "First byte of the SSTable file (start of first data block)"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "DataBlock",
+      "offset": 0,
+      "size": -1,
+      "description": "First data block with sorted key-value entries and restart array",
+      "fields": [
+        { "name": "FirstByte", "offset": 0, "size": 1, "type": "uint8" }
+      ]
+    },
+    {
+      "name": "FilterBlock",
+      "offset": -1,
+      "size": -1,
+      "description": "Bloom filter block for fast negative lookups",
+      "fields": []
+    },
+    {
+      "name": "IndexBlock",
+      "offset": -1,
+      "size": -1,
+      "description": "Index block mapping last keys to data block handles",
+      "fields": []
+    },
+    {
+      "name": "Footer",
+      "offset": -1,
+      "size": 48,
+      "description": "48-byte footer: metaindex handle + index handle + padding + 8-byte RocksDB magic 0xF7CFF485B741E288",
+      "fields": []
+    }
+  ],
+  "assertions": [
+    {
+      "id": "assert_first_byte_valid",
+      "field": "cockroachFirstByte",
+      "operator": "greaterThanOrEqual",
+      "value": 0,
+      "severity": "info",
+      "message": "First byte readable for SSTable analysis"
+    },
+    {
+      "id": "assert_not_empty",
+      "field": "cockroachFirstByte",
+      "operator": "notEquals",
+      "value": -1,
+      "severity": "warning",
+      "message": "File should contain valid SSTable data"
+    },
+    {
+      "id": "assert_min_size",
+      "field": "cockroachFirstByte",
+      "operator": "greaterThanOrEqual",
+      "value": 0,
+      "severity": "info",
+      "message": "SST file must be at least 48 bytes for a valid footer"
+    }
+  ],
+  "navigation": {
+    "entryPoints": [
+      { "name": "First Data Block", "offset": 0 }
+    ],
+    "jumpTable": [
+      { "label": "File Start", "offset": 0 }
+    ]
+  },
+  "inspector": {
+    "badge": "CR",
+    "primaryField": "cockroachFirstByte",
+    "groups": [
+      {
+        "name": "Identification",
+        "fields": ["cockroachFirstByte"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "CockroachDB SST Summary",
+      "format": "text",
+      "template": "CockroachDB RocksDB SSTable\nFirst Byte: 0x{cockroachFirstByte:X2}"
+    },
+    {
+      "name": "CockroachDB SST CSV",
+      "format": "csv",
+      "template": "Field,Value\nFirstByte,0x{cockroachFirstByte:X2}"
+    }
+  ],
+  "forensic": {
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      "RocksDB footer magic missing — not a valid RocksDB SST",
+      "Block checksum failures — file corruption or intentional modification",
+      "Properties block missing expected CockroachDB metadata keys"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "CockroachDB RocksDB SSTables use the standard RocksDB block-based table format. The 8-byte footer magic 0xF7CFF485B741E288 is at the end of the file. Data blocks use prefix-delta compression. CockroachDB adds custom table properties for MVCC timestamps and range metadata.",
+    "suggestedInspections": [
+      "Scan last 48 bytes for RocksDB footer magic 0xF7CFF485B741E288",
+      "Parse metaindex and index block handles from footer",
+      "Check for CockroachDB-specific properties in properties block",
+      "Verify data block CRC32c checksums for integrity"
+    ]
+  },
+  "software": [
+    { "name": "CockroachDB", "vendor": "Cockroach Labs", "platform": "Cross-platform" },
+    { "name": "sst_dump (RocksDB)", "vendor": "Facebook", "platform": "Cross-platform" },
+    { "name": "ldb tool", "vendor": "Facebook / RocksDB", "platform": "Cross-platform" }
+  ],
+  "formatRelationships": [
+    { "format": "PEBBLE_SST", "relation": "variant", "note": "Newer CockroachDB uses Pebble magic; this is the legacy RocksDB format" },
+    { "format": "ROCKSDB_SST", "relation": "same", "note": "Identical format to standard RocksDB SSTables" }
+  ],
+  "MimeTypes": [
+    "application/octet-stream"
+  ],
+  "UseCases": [
+    "CockroachDB MVCC storage layer (legacy/imported SSTables)",
+    "Bulk data import via AddSSTable",
+    "Backup and restore SSTable snapshots",
+    "Cross-version data migration"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 82,
+    "LastUpdated": "2026-04-16"
+  },
+  "TechnicalDetails": {
+    "footerSize": 48,
+    "endian": "little",
+    "signatureOffset": -48,
+    "signatureLength": 8,
+    "magicValue": "F7CFF485B741E288",
+    "compression": "Snappy, LZ4, ZSTD, or none per block",
+    "notes": "Footer magic at end of file. Weak detection since .sst extension is shared with Pebble, LevelDB, and RocksDB variants."
+  }
+}

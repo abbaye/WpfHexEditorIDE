@@ -1,0 +1,187 @@
+{
+  "diffMode": "text",
+  "formatName": "XYZ Chemical Coordinates",
+  "version": "1.0",
+  "extensions": [
+    ".xyz"
+  ],
+  "description": "XYZ molecular coordinate file — simple plain-text format for specifying molecular geometry. Line 1 contains the atom count (integer), line 2 is a comment/title, and subsequent lines list element symbol followed by x y z Cartesian coordinates in angstroms. Widely used in computational chemistry.",
+  "category": "Science",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "code-editor",
+  "references": {
+    "specifications": [
+      "XYZ file format — Open Babel documentation",
+      "XYZ format — en.wikipedia.org/wiki/XYZ_file_format"
+    ],
+    "WebLinks": [
+      "https://en.wikipedia.org/wiki/XYZ_file_format",
+      "https://openbabel.org/docs/dev/FileFormats/XYZ_cartesian_coordinates_format.html"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      { "value": "20", "offset": 0, "label": "space or digit (atom count on line 1)", "weight": 0.2 }
+    ],
+    "required": false,
+    "Strength": "Weak",
+    "MinimumScore": 0.2,
+    "validation": {
+      "minFileSize": 10
+    }
+  },
+  "variables": {
+    "xyzFirstByte": 0
+  },
+  "blocks": [
+    {
+      "type": "field",
+      "name": "First Byte",
+      "offset": 0,
+      "length": 1,
+      "color": "#FF6B6B",
+      "opacity": 0.45,
+      "description": "First byte of the file — typically a digit character representing the start of the atom count integer on line 1.",
+      "storeAs": "xyzFirstByte",
+      "valueType": "uint8"
+    },
+    {
+      "type": "field",
+      "name": "Atom Count Line",
+      "offset": 0,
+      "length": 10,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "Line 1: integer atom count. The number of atoms whose coordinates follow in the file."
+    },
+    {
+      "type": "field",
+      "name": "Comment Line",
+      "offset": 10,
+      "length": 40,
+      "color": "#FFEAA7",
+      "opacity": 0.35,
+      "description": "Line 2: free-form comment or title string. Often contains energy, method, or molecule name."
+    },
+    {
+      "type": "field",
+      "name": "Coordinate Data",
+      "offset": 50,
+      "length": 50,
+      "color": "#95E1D3",
+      "opacity": 0.30,
+      "description": "Lines 3+: per-atom data. Each line has element symbol (e.g. C, H, O, N) followed by three floating-point x y z Cartesian coordinates in angstroms."
+    }
+  ],
+  "assertions": [
+    {
+      "name": "File has content",
+      "expression": "fileSize > 10",
+      "severity": "error",
+      "message": "XYZ file is too small to contain valid molecular data"
+    },
+    {
+      "name": "First byte is printable ASCII",
+      "expression": "xyzFirstByte >= 32 && xyzFirstByte <= 126",
+      "severity": "warning",
+      "message": "First byte should be a printable ASCII character (digit for atom count)"
+    },
+    {
+      "name": "Likely starts with digit or whitespace",
+      "expression": "xyzFirstByte >= 48 && xyzFirstByte <= 57 || xyzFirstByte == 32",
+      "severity": "warning",
+      "message": "XYZ files typically start with a digit (atom count) or leading whitespace"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "Atom Count", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
+      { "name": "Coordinates", "offset": 50, "icon": "\uE9D9", "color": "#95E1D3" }
+    ]
+  },
+  "inspector": {
+    "badge": "xyzFirstByte",
+    "primaryField": "xyzFirstByte",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "XYZ Header",
+        "icon": "\uE71B",
+        "fields": ["xyzFirstByte"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "XYZ Header (JSON)",
+      "format": "json",
+      "fields": ["xyzFirstByte"]
+    },
+    {
+      "name": "xyz_header_t (C struct)",
+      "format": "c-struct",
+      "structName": "xyz_header",
+      "fields": ["xyzFirstByte"]
+    }
+  ],
+  "forensic": {
+    "category": "science",
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      {
+        "name": "Non-numeric first line",
+        "condition": "xyzFirstByte < 48 || xyzFirstByte > 57",
+        "severity": "info",
+        "description": "First byte is not a digit — XYZ line 1 should be an integer atom count."
+      }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "XYZ format: line 1 = integer atom count, line 2 = comment/title, lines 3..N+2 = 'ElementSymbol x y z' with coordinates in angstroms. Multi-frame XYZ files concatenate multiple frames. Very simple, no binary data.",
+    "suggestedInspections": [
+      "Parse line 1 as integer atom count",
+      "Verify lines 3+ have format: element_symbol float float float",
+      "Check for multi-frame (repeated atom-count lines)",
+      "Validate element symbols against periodic table"
+    ]
+  },
+  "software": [
+    "Open Babel",
+    "Avogadro",
+    "VMD (Visual Molecular Dynamics)",
+    "Jmol",
+    "ASE (Atomic Simulation Environment)"
+  ],
+  "formatRelationships": {
+    "category": "Science",
+    "extensions": [".xyz"],
+    "relatedFormats": ["LAMMPS_DUMP", "GAUSSIAN_FCHK", "PDB"],
+    "containerVariant": "Extended XYZ adds properties in comment line; multi-frame XYZ concatenates frames"
+  },
+  "MimeTypes": [
+    "chemical/x-xyz",
+    "text/plain"
+  ],
+  "UseCases": [
+    "Molecular geometry specification for quantum chemistry codes",
+    "Visualization of molecular structures in 3D viewers",
+    "Data exchange between computational chemistry programs",
+    "Molecular dynamics trajectory storage (multi-frame XYZ)"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 82,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 4,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-16",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "FileType": "Plain-text molecular coordinate file",
+    "Encoding": "ASCII",
+    "LineStructure": "Line 1: atom count, Line 2: comment, Lines 3+: element x y z",
+    "CoordinateUnit": "Angstroms",
+    "MultiFrame": true
+  }
+}

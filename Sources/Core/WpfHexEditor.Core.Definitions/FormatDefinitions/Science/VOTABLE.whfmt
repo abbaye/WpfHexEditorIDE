@@ -1,0 +1,191 @@
+{
+  "diffMode": "text",
+  "formatName": "VOTable (Virtual Observatory Table)",
+  "version": "1.0",
+  "extensions": [
+    ".vot",
+    ".xml"
+  ],
+  "description": "VOTable — XML-based format defined by the International Virtual Observatory Alliance (IVOA) for exchanging tabular astronomical data. The root element is <VOTABLE> with optional namespace and version attributes. Contains RESOURCE, TABLE, FIELD, and DATA elements for catalog and survey data.",
+  "category": "Science",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "code-editor",
+  "references": {
+    "specifications": [
+      "VOTable Format Definition — ivoa.net/documents/VOTable/",
+      "IVOA VOTable 1.4 Recommendation"
+    ],
+    "WebLinks": [
+      "https://www.ivoa.net/documents/VOTable/",
+      "https://en.wikipedia.org/wiki/VOTable",
+      "https://www.ivoa.net/"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      { "value": "3C564F5441424C45", "offset": 0, "label": "'<VOTABLE' root element", "weight": 1.0 },
+      { "value": "3C3F786D6C", "offset": 0, "label": "'<?xml' before VOTABLE", "weight": 0.3 }
+    ],
+    "required": true,
+    "Strength": "Strong",
+    "MinimumScore": 0.3,
+    "validation": {
+      "minFileSize": 50
+    }
+  },
+  "variables": {
+    "votableRoot": ""
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "Root Element",
+      "offset": 0,
+      "length": 8,
+      "color": "#FF6B6B",
+      "opacity": 0.45,
+      "description": "ASCII '<VOTABLE' — the root XML element identifying this as a VOTable document.",
+      "storeAs": "votableRoot",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "XML Declaration",
+      "offset": 0,
+      "length": 38,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "Optional XML declaration '<?xml version=\"1.0\"?>' preceding the VOTABLE root element."
+    },
+    {
+      "type": "field",
+      "name": "VOTABLE Attributes",
+      "offset": 8,
+      "length": 60,
+      "color": "#FFEAA7",
+      "opacity": 0.35,
+      "description": "VOTABLE element attributes: version (e.g. '1.4'), xmlns namespace URI, and optional xmlns:xsi schema instance."
+    },
+    {
+      "type": "field",
+      "name": "RESOURCE Section",
+      "offset": 68,
+      "length": 40,
+      "color": "#95E1D3",
+      "opacity": 0.30,
+      "description": "First RESOURCE element containing TABLE definitions, FIELD metadata, and DATA sections with astronomical catalog entries."
+    }
+  ],
+  "assertions": [
+    {
+      "name": "Starts with <VOTABLE or <?xml",
+      "expression": "votableRoot == '<VOTABLE' || votableRoot == '<?xml ve'",
+      "severity": "error",
+      "message": "VOTable must start with '<VOTABLE' root element or '<?xml' declaration"
+    },
+    {
+      "name": "File has content",
+      "expression": "fileSize > 50",
+      "severity": "error",
+      "message": "VOTable file is too small to contain valid XML structure"
+    },
+    {
+      "name": "Root element is ASCII",
+      "expression": "votableRoot != ''",
+      "severity": "warning",
+      "message": "Root element should be readable ASCII text"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "VOTABLE Root", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
+      { "name": "RESOURCE", "offset": 68, "icon": "\uE9D9", "color": "#95E1D3" }
+    ]
+  },
+  "inspector": {
+    "badge": "votableRoot",
+    "primaryField": "votableRoot",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "VOTable Header",
+        "icon": "\uE71B",
+        "fields": ["votableRoot"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "VOTable Header (JSON)",
+      "format": "json",
+      "fields": ["votableRoot"]
+    },
+    {
+      "name": "votable_header_t (C struct)",
+      "format": "c-struct",
+      "structName": "votable_header",
+      "fields": ["votableRoot"]
+    }
+  ],
+  "forensic": {
+    "category": "science",
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      {
+        "name": "Missing VOTABLE root",
+        "condition": "votableRoot != '<VOTABLE'",
+        "severity": "info",
+        "description": "Root element is not '<VOTABLE' — may be preceded by XML declaration or this is not a VOTable file."
+      }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "VOTable: XML format. Root <VOTABLE version='1.x'> contains <RESOURCE> with <TABLE>, <FIELD name='' datatype=''/>, <DATA><TABLEDATA><TR><TD>values</TD></TR></TABLEDATA></DATA>. Data types: char, int, float, double. Can also use BINARY or FITS streaming.",
+    "suggestedInspections": [
+      "Parse VOTABLE version attribute",
+      "Count RESOURCE and TABLE elements",
+      "Extract FIELD definitions (name, datatype, unit)",
+      "Check DATA encoding (TABLEDATA/BINARY/BINARY2/FITS)"
+    ]
+  },
+  "software": [
+    "TOPCAT (Tool for OPerations on Catalogues And Tables)",
+    "Aladin (CDS sky atlas)",
+    "Astropy (Python astronomy library)",
+    "SAOImage DS9",
+    "stilts (Starlink Tables Infrastructure)"
+  ],
+  "formatRelationships": {
+    "category": "Science",
+    "extensions": [".vot", ".xml"],
+    "relatedFormats": ["FITS_IMAGE", "CSV"],
+    "containerVariant": "VOTable can embed FITS binary data or reference external FITS files"
+  },
+  "MimeTypes": [
+    "application/x-votable+xml",
+    "text/xml"
+  ],
+  "UseCases": [
+    "Astronomical catalog data exchange (IVOA services)",
+    "Virtual Observatory query results (ConeSearch, TAP)",
+    "Sky survey data distribution",
+    "Multi-wavelength cross-matching of astronomical sources"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 84,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 4,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-16",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "FileType": "XML-based astronomical table format",
+    "Encoding": "UTF-8",
+    "RootElement": "VOTABLE",
+    "Namespace": "http://www.ivoa.net/xml/VOTable",
+    "DataEncodings": ["TABLEDATA (XML inline)", "BINARY", "BINARY2", "FITS"],
+    "Endianness": "N/A (XML text) or big-endian (BINARY stream)"
+  }
+}

@@ -1,0 +1,194 @@
+{
+  "diffMode": "binary",
+  "formatName": "Hangul Word Processor Document",
+  "version": "1.0",
+  "extensions": [".hwp", ".hwpx"],
+  "description": "HWP (Hangul Word Processor) is the dominant word processing format in South Korea, developed by Hancom. HWP files use OLE2 Compound File format (magic 0xD0CF11E0A1B11AE1) with a 'HWP Document File' internal stream. HWPX is the modern XML variant using ZIP packaging (magic 0x504B0304). HWP is required for Korean government document submissions and is the most widely used document format in South Korea, supporting Korean-specific typography and layout features.",
+  "category": "Documents",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "references": [
+    "https://en.wikipedia.org/wiki/Hangul_(word_processor)",
+    "https://www.hancom.com/",
+    "https://github.com/nicholashagen/jhwp"
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "value": "D0CF11E0A1B11AE1",
+        "offset": 0,
+        "label": "OLE2 for HWP (Hangul Word Processor)",
+        "weight": 0.5
+      },
+      {
+        "value": "504B0304",
+        "offset": 0,
+        "label": "ZIP for HWPX (HWP modern XML format)",
+        "weight": 0.4
+      }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.3,
+    "Strength": "Medium",
+    "validation": {
+      "rules": []
+    }
+  },
+  "variables": [
+    {
+      "name": "hwpContainerMagic",
+      "offset": 0,
+      "size": 8,
+      "type": "hex",
+      "storeAs": "hwpContainerMagic",
+      "description": "8-byte container magic — OLE2 (D0CF11E0...) for HWP or PK (504B0304...) for HWPX"
+    },
+    {
+      "name": "hwpFirstByte",
+      "offset": 0,
+      "size": 1,
+      "type": "uint8",
+      "storeAs": "hwpFirstByte",
+      "description": "First byte for quick format identification (0xD0 = OLE2/HWP, 0x50 = ZIP/HWPX)"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "ContainerMagic",
+      "offset": 0,
+      "size": 8,
+      "description": "Container format magic: OLE2 for classic HWP or ZIP for HWPX",
+      "fields": [
+        { "name": "Magic", "offset": 0, "size": 8, "type": "hex" }
+      ]
+    },
+    {
+      "name": "ContainerHeader",
+      "offset": 8,
+      "size": -1,
+      "description": "OLE2 header (68 bytes) or ZIP local file header (26 bytes) depending on container type",
+      "fields": []
+    },
+    {
+      "name": "DocumentStream",
+      "offset": -1,
+      "size": -1,
+      "description": "HWP: 'HWP Document File' OLE2 stream; HWPX: Contents/content.hpf XML entry",
+      "fields": []
+    },
+    {
+      "name": "BodyContent",
+      "offset": -1,
+      "size": -1,
+      "description": "Document body: sections, paragraphs, character shapes, and Korean typography data",
+      "fields": []
+    }
+  ],
+  "assertions": [
+    {
+      "id": "assert_container_magic",
+      "field": "hwpFirstByte",
+      "operator": "greaterThan",
+      "value": 0,
+      "severity": "error",
+      "message": "First byte must indicate OLE2 (0xD0) or ZIP (0x50) container"
+    },
+    {
+      "id": "assert_ole2_or_zip",
+      "field": "hwpContainerMagic",
+      "operator": "notEquals",
+      "value": "",
+      "severity": "error",
+      "message": "Container magic not recognized — expected OLE2 or ZIP"
+    },
+    {
+      "id": "assert_not_empty",
+      "field": "hwpFirstByte",
+      "operator": "notEquals",
+      "value": 0,
+      "severity": "warning",
+      "message": "File starts with null byte — not a valid HWP/HWPX document"
+    }
+  ],
+  "navigation": {
+    "entryPoints": [
+      { "name": "Container Magic", "offset": 0 }
+    ],
+    "jumpTable": [
+      { "label": "Container Magic", "offset": 0 }
+    ]
+  },
+  "inspector": {
+    "badge": "HW",
+    "primaryField": "hwpContainerMagic",
+    "groups": [
+      {
+        "name": "Container",
+        "fields": ["hwpContainerMagic", "hwpFirstByte"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "HWP Document Summary",
+      "format": "text",
+      "template": "Hangul Word Processor Document\nContainer Magic: {hwpContainerMagic}\nFirst Byte    : 0x{hwpFirstByte:X2}"
+    },
+    {
+      "name": "HWP Document CSV",
+      "format": "csv",
+      "template": "Field,Value\nContainerMagic,{hwpContainerMagic}\nFirstByte,0x{hwpFirstByte:X2}"
+    }
+  ],
+  "forensic": {
+    "riskLevel": "medium",
+    "suspiciousPatterns": [
+      "Neither OLE2 nor ZIP magic — not a valid HWP/HWPX file",
+      "OLE2 without 'HWP Document File' stream — may be DOC/XLS instead",
+      "HWPX ZIP without Contents/content.hpf — incomplete or wrong format",
+      "Embedded scripts or macros in HWP document streams"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "HWP uses OLE2 with a 'HWP Document File' stream containing the file header (signature, version, flags). The file header starts with 'HWP Document File' ASCII string. Key streams: FileHeader, BodyText/SectionN, DocInfo, BinData. HWPX is ZIP-based with Contents/content.hpf (XML), Contents/header.xml, and Contents/SectionN.xml entries.",
+    "suggestedInspections": [
+      "Check first byte: 0xD0 for OLE2/HWP or 0x50 for ZIP/HWPX",
+      "For OLE2: enumerate directory for 'HWP Document File' stream",
+      "For ZIP: look for Contents/content.hpf and header.xml entries",
+      "Parse FileHeader stream for HWP version and document properties"
+    ]
+  },
+  "software": [
+    { "name": "Hancom Office (Hangul)", "vendor": "Hancom", "platform": "Windows / macOS / Linux" },
+    { "name": "LibreOffice", "vendor": "The Document Foundation", "platform": "Cross-platform" },
+    { "name": "pyhwp", "vendor": "Open source", "platform": "Python" }
+  ],
+  "formatRelationships": [
+    { "format": "DOC", "relation": "sibling", "note": "Both use OLE2 container for legacy versions; HWP is Korea-specific" },
+    { "format": "OOXML_STRICT", "relation": "sibling", "note": "HWPX is XML-in-ZIP similar to OOXML packaging" },
+    { "format": "WPS", "relation": "sibling", "note": "Both are OLE2-based word processing formats from their respective markets" }
+  ],
+  "MimeTypes": [
+    "application/x-hwp",
+    "application/vnd.hancom.hwp",
+    "application/vnd.hancom.hwpx"
+  ],
+  "UseCases": [
+    "Korean government document submissions (mandatory format)",
+    "Korean enterprise and academic word processing",
+    "Korean-specific typography and layout features",
+    "Cross-format conversion for international collaboration"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 83,
+    "LastUpdated": "2026-04-16"
+  },
+  "TechnicalDetails": {
+    "headerSize": 8,
+    "endian": "little",
+    "signatureOffset": 0,
+    "signatureLength": 8,
+    "container": "OLE2 (HWP) or ZIP (HWPX)",
+    "notes": "HWP uses OLE2 with 'HWP Document File' stream. HWPX uses ZIP with Contents/ directory. Both share container magic with other formats — stream/entry names distinguish HWP."
+  }
+}

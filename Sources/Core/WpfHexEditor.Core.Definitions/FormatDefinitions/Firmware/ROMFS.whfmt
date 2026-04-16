@@ -1,0 +1,251 @@
+{
+  "formatName": "RomFS Filesystem",
+  "version": "1.0",
+  "diffMode": "binary",
+  "extensions": [
+    ".romfs"
+  ],
+  "description": "ROM filesystem (romfs) is a simple read-only filesystem used in Linux for initial RAM disks and embedded systems. The magic string '-rom1fs\\0' (0x2D726F6D31667300) at offset 0 identifies the volume, followed by size, checksum, and volume name.",
+  "category": "Firmware",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "MimeTypes": [
+    "application/x-romfs"
+  ],
+  "UseCases": [
+    "Linux initial RAM disk (initrd) for early boot filesystems",
+    "Embedded system read-only firmware filesystems",
+    "Small footprint ROM-based storage for microcontrollers",
+    "Legacy Linux boot process with ROM-based root filesystem"
+  ],
+  "references": [
+    "https://www.kernel.org/doc/html/latest/filesystems/romfs.html",
+    "https://github.com/torvalds/linux/blob/master/fs/romfs/super.c",
+    "https://en.wikipedia.org/wiki/Romfs"
+  ],
+  "software": [
+    {
+      "name": "genromfs",
+      "url": "https://romfs.sourceforge.net/",
+      "role": "RomFS image generator"
+    },
+    {
+      "name": "mount -t romfs",
+      "url": "https://man7.org/linux/man-pages/man8/mount.8.html",
+      "role": "Mount romfs images on Linux"
+    },
+    {
+      "name": "file",
+      "url": "https://www.darwinsys.com/file/",
+      "role": "Identify romfs images by magic"
+    }
+  ],
+  "formatRelationships": [
+    {
+      "format": "CRAMFS",
+      "relationship": "cramfs is a compressed read-only filesystem; romfs is uncompressed and simpler"
+    },
+    {
+      "format": "SQUASHFS",
+      "relationship": "SquashFS replaced romfs for most embedded read-only filesystem needs"
+    }
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "offset": 0,
+        "value": "2D726F6D31667300",
+        "label": "RomFS magic '-rom1fs\\0'",
+        "weight": 1.0
+      }
+    ],
+    "matchMode": "first",
+    "MinimumScore": 92,
+    "Strength": "Strong",
+    "EntropyHint": {
+      "min": 4.0,
+      "max": 7.0,
+      "note": "Uncompressed file data with directory structures produces moderate to high entropy"
+    },
+    "validation": "First 8 bytes must be '-rom1fs\\0' (0x2D726F6D31667300). Full size at offset 8 must be > 0. Checksum at offset 12 must validate."
+  },
+  "variables": [
+    {
+      "name": "romfsMagic",
+      "type": "ascii",
+      "offset": 0,
+      "length": 8,
+      "description": "RomFS magic: '-rom1fs\\u0000'"
+    },
+    {
+      "name": "romfsFullSize",
+      "type": "uint32",
+      "offset": 8,
+      "length": 4,
+      "endian": "big",
+      "description": "Total filesystem size in bytes"
+    },
+    {
+      "name": "romfsChecksum",
+      "type": "uint32",
+      "offset": 12,
+      "length": 4,
+      "endian": "big",
+      "description": "Checksum of the first 512 bytes (simple 32-bit sum)"
+    },
+    {
+      "name": "romfsVolumeName",
+      "type": "ascii",
+      "offset": 16,
+      "length": 16,
+      "description": "Volume name string, null-terminated and padded to 16-byte boundary"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "SuperBlock",
+      "offset": 0,
+      "length": 32,
+      "description": "RomFS superblock: 8-byte magic, 4-byte full size, 4-byte checksum, and null-terminated volume name",
+      "fields": [
+        {
+          "name": "Magic",
+          "variable": "romfsMagic",
+          "offset": 0,
+          "length": 8
+        },
+        {
+          "name": "FullSize",
+          "variable": "romfsFullSize",
+          "offset": 8,
+          "length": 4
+        },
+        {
+          "name": "Checksum",
+          "variable": "romfsChecksum",
+          "offset": 12,
+          "length": 4
+        },
+        {
+          "name": "VolumeName",
+          "variable": "romfsVolumeName",
+          "offset": 16,
+          "length": 16
+        }
+      ]
+    },
+    {
+      "name": "RootDirectory",
+      "offset": 32,
+      "length": -1,
+      "description": "Root directory entry containing the first file header (next offset, spec info, size, checksum, name)"
+    },
+    {
+      "name": "FileHeaders",
+      "offset": -1,
+      "length": -1,
+      "description": "Linked list of file header entries (32 bytes each minimum) describing files, directories, symlinks, and devices"
+    },
+    {
+      "name": "FileData",
+      "offset": -1,
+      "length": -1,
+      "description": "Raw uncompressed file data following each file header, 16-byte aligned"
+    }
+  ],
+  "assertions": [
+    {
+      "id": "A1",
+      "description": "Magic must be '-rom1fs\\u0000'",
+      "expression": "romfsMagic == '-rom1fs\\u0000'"
+    },
+    {
+      "id": "A2",
+      "description": "Full size must be greater than zero",
+      "expression": "romfsFullSize > 0"
+    },
+    {
+      "id": "A3",
+      "description": "Full size should be at least 32 bytes (minimum superblock)",
+      "expression": "romfsFullSize >= 32"
+    }
+  ],
+  "navigation": {
+    "entryPoint": "SuperBlock",
+    "structure": [
+      "SuperBlock",
+      "RootDirectory",
+      "FileHeaders",
+      "FileData"
+    ],
+    "notes": "File headers are 16-byte aligned. Each header contains: next pointer (high 28 bits) + type (low 4 bits), spec info, size, checksum, and null-terminated name. Type: 0=hardlink, 1=directory, 2=regular, 3=symlink, 4=block, 5=char, 6=socket, 7=fifo."
+  },
+  "inspector": {
+    "badge": "ROMFS",
+    "primaryField": "romfsVolumeName",
+    "groups": [
+      {
+        "name": "Superblock",
+        "fields": [
+          "romfsMagic",
+          "romfsFullSize",
+          "romfsChecksum",
+          "romfsVolumeName"
+        ]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "RomFS Superblock CSV",
+      "format": "csv",
+      "fields": [
+        "romfsMagic",
+        "romfsFullSize",
+        "romfsChecksum",
+        "romfsVolumeName"
+      ]
+    },
+    {
+      "name": "RomFS Superblock JSON",
+      "format": "json",
+      "fields": [
+        "romfsMagic",
+        "romfsFullSize",
+        "romfsChecksum",
+        "romfsVolumeName"
+      ]
+    }
+  ],
+  "forensic": {
+    "riskLevel": "MEDIUM",
+    "notes": "RomFS images in firmware may contain boot-critical files. Modified romfs images in embedded devices can introduce persistent backdoors in read-only partitions.",
+    "suspiciousPatterns": [
+      "Checksum mismatch indicating post-creation modification",
+      "Unexpected setuid files in embedded system romfs",
+      "Symlinks pointing outside the romfs filesystem boundary",
+      "Hidden files (dot-prefixed names) in firmware romfs images"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "RomFS is a simple read-only filesystem with a linked-list structure. The superblock has an 8-byte magic, 4-byte size, 4-byte checksum, and a volume name. File entries are linked via next pointers with the low 4 bits encoding the file type. All entries are 16-byte aligned.",
+    "suggestedInspections": [
+      "Verify the superblock checksum against computed sum of first 512 bytes",
+      "Walk the file header linked list to enumerate all filesystem entries",
+      "Check file type bits in next pointer for unexpected device or socket entries",
+      "Compare romfsFullSize against actual file size for truncation detection"
+    ]
+  },
+  "TechnicalDetails": {
+    "superblockSize": 32,
+    "entryAlignment": 16,
+    "endianness": "Big-endian",
+    "checksumAlgorithm": "Simple 32-bit sum of first 512 bytes",
+    "maxFilenameLength": "Variable, null-terminated, padded to 16-byte boundary"
+  },
+  "QualityMetrics": {
+    "CompletenessScore": 86,
+    "LastUpdated": "2026-04-16",
+    "ReviewedBy": "WPFHexaEditor Team"
+  }
+}

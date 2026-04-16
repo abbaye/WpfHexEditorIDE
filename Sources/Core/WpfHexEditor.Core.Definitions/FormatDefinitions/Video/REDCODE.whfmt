@@ -1,0 +1,222 @@
+{
+  "diffMode": "binary",
+  "formatName": "RED Digital Cinema RAW",
+  "version": "1.0",
+  "extensions": [
+    ".r3d"
+  ],
+  "description": "REDCODE RAW (.R3D) is the proprietary wavelet-compressed raw video format used by RED Digital Cinema cameras (RED ONE, EPIC, SCARLET, WEAPON, MONSTRO, KOMODO, V-RAPTOR). REDCODE preserves the sensor's Bayer-pattern raw data using visually lossless wavelet compression at configurable ratios (3:1 to 22:1). R3D files are structured as a container with embedded metadata, audio, and compressed raw video frames. The format supports resolutions from 2K to 8K with wide dynamic range and color science metadata for professional cinematography workflows.",
+  "category": "Video",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "references": {
+    "specifications": [
+      "RED Digital Cinema REDCODE RAW format (proprietary)",
+      "RED SDK — R3D file access library"
+    ],
+    "WebLinks": [
+      "https://en.wikipedia.org/wiki/Red_Digital_Cinema",
+      "https://www.red.com/red-tech",
+      "https://www.red.com/download/r3d-sdk"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      {
+        "value": "524544",
+        "offset": 0,
+        "label": "'RED' — RED Digital Cinema magic",
+        "weight": 0.9
+      }
+    ],
+    "matchMode": "allOf",
+    "MinimumScore": 82,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 6.0, "max": 7.95 },
+    "validation": {
+      "minFileSize": 16,
+      "maxSignatureOffset": 0
+    }
+  },
+  "variables": {
+    "redMagic": "",
+    "redVersion": 0,
+    "redWidth": 0,
+    "redHeight": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "RED Magic",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.45,
+      "description": "RED Digital Cinema file signature. The first bytes identify this as an R3D REDCODE RAW file from a RED camera system.",
+      "storeAs": "redMagic",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Container Version",
+      "offset": 4,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "R3D container version number (32-bit little-endian unsigned). Determines the container structure and metadata layout. Newer RED cameras produce higher version numbers with additional metadata fields.",
+      "storeAs": "redVersion",
+      "valueType": "uint32",
+      "endianness": "little"
+    },
+    {
+      "type": "field",
+      "name": "Frame Width",
+      "offset": 8,
+      "length": 2,
+      "color": "#95E1D3",
+      "opacity": 0.35,
+      "description": "Sensor frame width in pixels (16-bit little-endian unsigned). RED cameras capture at native sensor resolution: 4096 (4K), 4608 (4.5K), 5120 (5K), 6144 (6K), 8192 (8K).",
+      "storeAs": "redWidth",
+      "valueType": "uint16",
+      "endianness": "little"
+    },
+    {
+      "type": "field",
+      "name": "Frame Height",
+      "offset": 10,
+      "length": 2,
+      "color": "#FFE66D",
+      "opacity": 0.35,
+      "description": "Sensor frame height in pixels (16-bit little-endian unsigned). Height varies by aspect ratio and sensor model.",
+      "storeAs": "redHeight",
+      "valueType": "uint16",
+      "endianness": "little"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "RED magic present",
+      "expression": "redMagic != ''",
+      "severity": "error",
+      "message": "File must begin with RED Digital Cinema signature"
+    },
+    {
+      "name": "Width valid",
+      "expression": "redWidth > 0",
+      "severity": "error",
+      "message": "Frame width must be greater than zero"
+    },
+    {
+      "name": "Height valid",
+      "expression": "redHeight > 0",
+      "severity": "error",
+      "message": "Frame height must be greater than zero"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      {
+        "name": "RED Header",
+        "offset": 0,
+        "icon": "\uE71B",
+        "color": "#FF6B6B"
+      },
+      {
+        "name": "Dimensions",
+        "offset": 8,
+        "icon": "\uE9D9",
+        "color": "#95E1D3"
+      }
+    ]
+  },
+  "inspector": {
+    "badge": "redMagic",
+    "primaryField": "redWidth",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "Container",
+        "icon": "\uE71B",
+        "fields": ["redMagic", "redVersion"]
+      },
+      {
+        "title": "Dimensions",
+        "icon": "\uE9D9",
+        "fields": ["redWidth", "redHeight"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "REDCODE Header (JSON)",
+      "format": "json",
+      "fields": ["redMagic", "redVersion", "redWidth", "redHeight"]
+    },
+    {
+      "name": "red_header_t (C struct)",
+      "format": "c-struct",
+      "structName": "red_header",
+      "fields": ["redMagic", "redVersion", "redWidth", "redHeight"]
+    }
+  ],
+  "forensic": {
+    "category": "video",
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      {
+        "name": "Unusual resolution",
+        "condition": "redWidth < 1920 || redHeight < 1080",
+        "severity": "info",
+        "description": "Resolution below Full HD is unusual for RED cameras — may be a cropped or proxy file."
+      }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "R3D container structure: RED magic header + version + metadata atoms + compressed REDCODE RAW frames + optional audio tracks. REDCODE uses wavelet compression on Bayer-pattern raw sensor data. Compression ratios selectable: 3:1 (highest quality) to 22:1 (proxy). Metadata includes: ISO, white balance, lens data, gyroscope, GPS, timecode, color science version (IPP2). R3D files can span multiple 'clips' (R3D/R3D1/R3D2...) for long recordings exceeding 4GB FAT32 limits.",
+    "suggestedInspections": [
+      "Verify RED magic bytes at file start",
+      "Parse container version to identify camera generation and metadata layout",
+      "Extract frame dimensions for resolution and aspect ratio identification",
+      "Look for embedded metadata atoms (ISO, white balance, timecode, lens data)"
+    ]
+  },
+  "software": [
+    "REDCINE-X PRO",
+    "DaVinci Resolve",
+    "Adobe Premiere Pro"
+  ],
+  "formatRelationships": {
+    "category": "Video",
+    "extensions": [".r3d"],
+    "relatedFormats": ["ARRIRAW", "CinemaDNG", "ProRes"],
+    "containerVariant": "RED proprietary container with REDCODE RAW frames"
+  },
+  "MimeTypes": [
+    "video/x-r3d"
+  ],
+  "UseCases": [
+    "Digital cinema camera originals (RED cameras)",
+    "Feature film and commercial production",
+    "High-end television production (4K-8K)",
+    "Raw video archival with maximum post-production flexibility"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 82,
+    "DocumentationLevel": "comprehensive",
+    "BlocksDefined": 4,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-16",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "VideoFormat": true,
+    "CompressionMethod": "Wavelet-based raw compression (visually lossless to lossy)",
+    "Endianness": "little-endian",
+    "RawBayerData": true,
+    "CompressionRatios": "3:1 to 22:1",
+    "MaxResolution": "8192x4320 (8K Full Format)",
+    "BitDepth": "16-bit half-float linear (decoded)",
+    "IntraFrameOnly": true
+  }
+}

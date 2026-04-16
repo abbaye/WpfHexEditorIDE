@@ -1,0 +1,265 @@
+{
+  "formatName": "MQTT Packet",
+  "version": "1.0",
+  "diffMode": "binary",
+  "extensions": [
+    ".mqtt"
+  ],
+  "description": "MQTT (Message Queuing Telemetry Transport) is a lightweight publish-subscribe messaging protocol designed for constrained IoT devices and low-bandwidth networks. Each packet begins with a fixed header byte encoding the packet type and flags.",
+  "category": "IoT",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "MimeTypes": [
+    "application/mqtt"
+  ],
+  "UseCases": [
+    "IoT device telemetry and sensor data publishing",
+    "Home automation command and control messaging",
+    "Industrial SCADA system monitoring over constrained networks",
+    "Mobile push notification backend communication"
+  ],
+  "references": [
+    "https://docs.oasis-open.org/mqtt/mqtt/v5.0/mqtt-v5.0.html",
+    "https://mqtt.org/mqtt-specification/",
+    "https://en.wikipedia.org/wiki/MQTT"
+  ],
+  "software": [
+    {
+      "name": "Mosquitto",
+      "url": "https://mosquitto.org/",
+      "role": "Open-source MQTT broker and client tools"
+    },
+    {
+      "name": "MQTT Explorer",
+      "url": "https://mqtt-explorer.com/",
+      "role": "MQTT topic visualization and debugging tool"
+    },
+    {
+      "name": "Wireshark",
+      "url": "https://www.wireshark.org/",
+      "role": "Network protocol analyzer with MQTT dissector"
+    }
+  ],
+  "formatRelationships": [
+    {
+      "format": "COAP_MESSAGE",
+      "relationship": "CoAP is a RESTful alternative to MQTT for constrained IoT devices"
+    },
+    {
+      "format": "PROTOBUF",
+      "relationship": "MQTT payloads often use Protocol Buffers for structured data encoding"
+    }
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "offset": 0,
+        "value": "10",
+        "label": "CONNECT packet type 1 (0x10)",
+        "weight": 0.6
+      },
+      {
+        "offset": 0,
+        "value": "20",
+        "label": "CONNACK packet type 2 (0x20)",
+        "weight": 0.6
+      },
+      {
+        "offset": 0,
+        "value": "30",
+        "label": "PUBLISH packet type 3 (0x30)",
+        "weight": 0.5
+      }
+    ],
+    "matchMode": "best",
+    "MinimumScore": 82,
+    "Strength": "Weak",
+    "EntropyHint": {
+      "min": 3.0,
+      "max": 7.0,
+      "note": "Variable entropy depending on payload content; control packets are low entropy"
+    },
+    "validation": "First byte high nibble must be a valid packet type (1-15). Remaining length uses variable-length encoding (1-4 bytes). CONNECT packet must contain protocol name 'MQTT' or 'MQIsdp'."
+  },
+  "variables": [
+    {
+      "name": "mqttFixedHeader",
+      "type": "uint8",
+      "offset": 0,
+      "length": 1,
+      "description": "Fixed header: high nibble = packet type, low nibble = flags",
+      "valueMap": {
+        "16": "CONNECT",
+        "32": "CONNACK",
+        "48": "PUBLISH",
+        "64": "PUBACK",
+        "128": "SUBSCRIBE",
+        "144": "SUBACK",
+        "192": "PINGREQ",
+        "208": "PINGRESP",
+        "224": "DISCONNECT"
+      }
+    },
+    {
+      "name": "mqttRemainingLength",
+      "type": "uint8",
+      "offset": 1,
+      "length": 1,
+      "description": "Remaining length (first byte; may extend to 4 bytes for values > 127)"
+    },
+    {
+      "name": "mqttPacketType",
+      "type": "uint8",
+      "offset": -1,
+      "length": 1,
+      "description": "Derived packet type (high nibble >> 4 of fixed header)"
+    },
+    {
+      "name": "mqttFlags",
+      "type": "uint8",
+      "offset": -1,
+      "length": 1,
+      "description": "Derived flags (low nibble of fixed header): DUP, QoS, RETAIN"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "FixedHeader",
+      "offset": 0,
+      "length": 2,
+      "description": "MQTT fixed header: 1 byte packet type + flags, followed by variable-length remaining length",
+      "fields": [
+        {
+          "name": "TypeAndFlags",
+          "variable": "mqttFixedHeader",
+          "offset": 0,
+          "length": 1
+        },
+        {
+          "name": "RemainingLength",
+          "variable": "mqttRemainingLength",
+          "offset": 1,
+          "length": 1
+        }
+      ]
+    },
+    {
+      "name": "VariableHeader",
+      "offset": 2,
+      "length": -1,
+      "description": "Variable header content depending on packet type (protocol name, connect flags, topic name, packet ID)"
+    },
+    {
+      "name": "Payload",
+      "offset": -1,
+      "length": -1,
+      "description": "Packet payload: CONNECT has client ID/credentials, PUBLISH has message data, SUBSCRIBE has topic filters"
+    },
+    {
+      "name": "Properties",
+      "offset": -1,
+      "length": -1,
+      "description": "MQTT 5.0 properties section with typed key-value pairs for extended metadata"
+    }
+  ],
+  "assertions": [
+    {
+      "id": "A1",
+      "description": "Packet type (high nibble) must be 1-15",
+      "expression": "mqttFixedHeader >= 16 && mqttFixedHeader <= 255"
+    },
+    {
+      "id": "A2",
+      "description": "Remaining length first byte must be valid",
+      "expression": "mqttRemainingLength >= 0"
+    },
+    {
+      "id": "A3",
+      "description": "CONNECT packets (type 1) must have remaining length > 0",
+      "expression": "mqttFixedHeader != 16 || mqttRemainingLength > 0"
+    }
+  ],
+  "navigation": {
+    "entryPoint": "FixedHeader",
+    "structure": [
+      "FixedHeader",
+      "VariableHeader",
+      "Payload",
+      "Properties"
+    ],
+    "notes": "Remaining length uses variable-length encoding: each byte uses 7 data bits + 1 continuation bit (MSB). Maximum 4 bytes encoding values up to 268,435,455. MQTT 5.0 adds a properties section with typed identifiers."
+  },
+  "inspector": {
+    "badge": "MQTT",
+    "primaryField": "mqttFixedHeader",
+    "groups": [
+      {
+        "name": "Fixed Header",
+        "fields": [
+          "mqttFixedHeader",
+          "mqttRemainingLength"
+        ]
+      },
+      {
+        "name": "Derived",
+        "fields": [
+          "mqttPacketType",
+          "mqttFlags"
+        ]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "MQTT Packet CSV",
+      "format": "csv",
+      "fields": [
+        "mqttFixedHeader",
+        "mqttRemainingLength",
+        "mqttPacketType",
+        "mqttFlags"
+      ]
+    },
+    {
+      "name": "MQTT Packet JSON",
+      "format": "json",
+      "fields": [
+        "mqttFixedHeader",
+        "mqttRemainingLength",
+        "mqttPacketType",
+        "mqttFlags"
+      ]
+    }
+  ],
+  "forensic": {
+    "riskLevel": "MEDIUM",
+    "notes": "MQTT traffic may contain IoT device credentials, sensor data, and control commands. Unencrypted MQTT (port 1883) exposes all data in cleartext. Topic names reveal device topology and naming conventions.",
+    "suspiciousPatterns": [
+      "CONNECT packets with plaintext credentials (username/password)",
+      "PUBLISH to system topics ($SYS) attempting broker configuration changes",
+      "Wildcard SUBSCRIBE (# or +) attempting to intercept all device messages",
+      "Abnormally large PUBLISH payloads that may indicate data exfiltration"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "MQTT packets use a compact binary encoding with a 1-byte type/flags header and variable-length remaining length. Packet types include CONNECT, PUBLISH, SUBSCRIBE, and their acknowledgments. MQTT 5.0 adds a properties section with typed key-value pairs.",
+    "suggestedInspections": [
+      "Decode the fixed header to identify packet type and QoS level",
+      "Parse variable-length remaining length encoding (1-4 bytes)",
+      "For CONNECT packets, extract protocol name/version and connect flags",
+      "For PUBLISH packets, extract topic name and message payload"
+    ]
+  },
+  "TechnicalDetails": {
+    "fixedHeaderSize": "2-5 bytes (1 type + 1-4 remaining length)",
+    "maxPacketSize": "268,435,455 bytes (256 MB)",
+    "versions": "3.1, 3.1.1, 5.0",
+    "defaultPort": "1883 (TCP), 8883 (TLS)",
+    "qosLevels": "0 (at most once), 1 (at least once), 2 (exactly once)"
+  },
+  "QualityMetrics": {
+    "CompletenessScore": 85,
+    "LastUpdated": "2026-04-16",
+    "ReviewedBy": "WPFHexaEditor Team"
+  }
+}

@@ -1,0 +1,190 @@
+{
+  "diffMode": "text",
+  "formatName": "Gaussian Formatted Checkpoint (FCHK)",
+  "version": "1.0",
+  "extensions": [
+    ".fchk",
+    ".fch"
+  ],
+  "description": "Gaussian formatted checkpoint file — human-readable text file containing results from Gaussian quantum chemistry calculations. Line 1 is the title/job name, line 2 specifies calculation type, method, and basis set. Subsequent lines are keyword-value pairs with scalar or array data for molecular orbitals, energies, and geometry.",
+  "category": "Science",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "code-editor",
+  "references": {
+    "specifications": [
+      "Gaussian FCHK format — gaussian.com/formchk/",
+      "Gaussian 16 manual — gaussian.com/man/"
+    ],
+    "WebLinks": [
+      "https://gaussian.com/formchk/",
+      "https://gaussian.com/",
+      "https://en.wikipedia.org/wiki/Gaussian_(software)"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      { "value": "4375727265", "offset": 0, "label": "'Curre' start of 'Current cartesian coordinates' or title line", "weight": 0.5 }
+    ],
+    "required": false,
+    "Strength": "Medium",
+    "MinimumScore": 0.4,
+    "validation": {
+      "minFileSize": 100
+    }
+  },
+  "variables": {
+    "fchkTitleByte": 0
+  },
+  "blocks": [
+    {
+      "type": "field",
+      "name": "Title Byte",
+      "offset": 0,
+      "length": 1,
+      "color": "#FF6B6B",
+      "opacity": 0.45,
+      "description": "First byte of the FCHK file title line. The title is a free-form string describing the job.",
+      "storeAs": "fchkTitleByte",
+      "valueType": "uint8"
+    },
+    {
+      "type": "field",
+      "name": "Title Line",
+      "offset": 0,
+      "length": 72,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "Line 1: title/job name string, up to 72 characters. Describes the calculation performed."
+    },
+    {
+      "type": "field",
+      "name": "Calculation Info Line",
+      "offset": 72,
+      "length": 72,
+      "color": "#FFEAA7",
+      "opacity": 0.35,
+      "description": "Line 2: calculation type (SP/FOPT/FREQ), method (HF/DFT/MP2), and basis set (STO-3G/6-31G*/cc-pVDZ)."
+    },
+    {
+      "type": "field",
+      "name": "Keyword-Value Pairs",
+      "offset": 144,
+      "length": 80,
+      "color": "#95E1D3",
+      "opacity": 0.30,
+      "description": "Lines 3+: keyword-value entries. Format: 'KeywordName' (40 chars) + type flag (I/R/C/H/L) + N=count or scalar value. Array data follows on subsequent lines."
+    }
+  ],
+  "assertions": [
+    {
+      "name": "File has content",
+      "expression": "fileSize > 100",
+      "severity": "error",
+      "message": "FCHK file is too small to contain valid Gaussian checkpoint data"
+    },
+    {
+      "name": "Title byte is printable ASCII",
+      "expression": "fchkTitleByte >= 32 && fchkTitleByte <= 126",
+      "severity": "warning",
+      "message": "First byte should be printable ASCII (title line)"
+    },
+    {
+      "name": "Not a binary file",
+      "expression": "fchkTitleByte != 0",
+      "severity": "error",
+      "message": "FCHK is a formatted (text) checkpoint — null bytes indicate wrong format (use .chk for binary)"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "Title", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
+      { "name": "Calc Info", "offset": 72, "icon": "\uE8A5", "color": "#FFEAA7" }
+    ]
+  },
+  "inspector": {
+    "badge": "fchkTitleByte",
+    "primaryField": "fchkTitleByte",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "FCHK Header",
+        "icon": "\uE71B",
+        "fields": ["fchkTitleByte"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "FCHK Header (JSON)",
+      "format": "json",
+      "fields": ["fchkTitleByte"]
+    },
+    {
+      "name": "fchk_header_t (C struct)",
+      "format": "c-struct",
+      "structName": "fchk_header",
+      "fields": ["fchkTitleByte"]
+    }
+  ],
+  "forensic": {
+    "category": "science",
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      {
+        "name": "Binary content in formatted checkpoint",
+        "condition": "fchkTitleByte < 32",
+        "severity": "warning",
+        "description": "Non-printable bytes found — this may be a binary .chk file rather than a formatted .fchk file."
+      }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "Gaussian FCHK: line 1=title (72 chars), line 2=calc type+method+basis, then keyword-value pairs. Each keyword line: name(40 chars), type(I=int,R=real,C=char,H=logical,L=logical), N=array_size or value. Array data follows in fixed-format columns. Common keys: 'Number of atoms', 'Total Energy', 'Current cartesian coordinates'.",
+    "suggestedInspections": [
+      "Read line 2 to identify calculation type, method, and basis set",
+      "Search for 'Number of atoms' keyword to get atom count",
+      "Search for 'Total Energy' keyword to extract computed energy",
+      "Verify keyword-value pair formatting (40-char name + type + value)"
+    ]
+  },
+  "software": [
+    "Gaussian 16/09",
+    "GaussView",
+    "Open Babel",
+    "Multiwfn",
+    "Avogadro"
+  ],
+  "formatRelationships": {
+    "category": "Science",
+    "extensions": [".fchk", ".fch"],
+    "relatedFormats": ["XYZ_CHEM", "GAUSSIAN_LOG"],
+    "containerVariant": ".chk = binary checkpoint (Gaussian-native); .fchk = formatted/portable version via formchk utility"
+  },
+  "MimeTypes": [
+    "chemical/x-gaussian-checkpoint",
+    "text/plain"
+  ],
+  "UseCases": [
+    "Quantum chemistry result storage and exchange",
+    "Wavefunction analysis (Multiwfn, NBO)",
+    "Visualization of molecular orbitals and electron density",
+    "Restarting or continuing Gaussian calculations"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 82,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 4,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-16",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "FileType": "Formatted (text) quantum chemistry checkpoint",
+    "Encoding": "ASCII",
+    "LineWidth": 72,
+    "KeywordFieldWidth": 40,
+    "TypeFlags": "I=Integer, R=Real, C=Character, H=Logical, L=Logical",
+    "Endianness": "N/A (text format)"
+  }
+}

@@ -1,0 +1,170 @@
+{
+  "diffMode": "text",
+  "formatName": "Minisign Signature",
+  "version": "1.0",
+  "extensions": [".minisig"],
+  "description": "Minisign digital signature file — a text-based signature format created by Frank Denis (jedisct1). Contains an untrusted comment line, a trusted comment line, and a base64-encoded Ed25519 signature. Minisign is designed for simple, secure file signing without the complexity of GPG or S/MIME.",
+  "category": "Crypto",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "code-editor",
+  "references": [
+    "https://jedisct1.github.io/minisign/",
+    "https://github.com/jedisct1/minisign",
+    "https://man.archlinux.org/man/minisign.1"
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "value": "756E74727573746564",
+        "offset": 0,
+        "label": "'untrusted' — minisign signature comment line",
+        "weight": 0.9
+      }
+    ],
+    "matchMode": "Best",
+    "MinimumScore": 0.8,
+    "Strength": "Strong",
+    "EntropyHint": "Low — text file with base64-encoded signature"
+  },
+  "variables": [
+    {
+      "name": "minisignComment",
+      "offset": 0,
+      "size": 18,
+      "type": "ascii",
+      "description": "First line prefix — 'untrusted comment:'"
+    },
+    {
+      "name": "minisignAlgo",
+      "offset": 0,
+      "size": 2,
+      "type": "ascii",
+      "description": "Signature algorithm identifier in base64 signature"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "UntrustedComment",
+      "offset": 0,
+      "size": 0,
+      "description": "Line 1: 'untrusted comment: <user-provided comment>'"
+    },
+    {
+      "name": "SignatureData",
+      "offset": 0,
+      "size": 0,
+      "description": "Line 2: base64-encoded signature (algorithm ID + key ID + signature)"
+    },
+    {
+      "name": "TrustedComment",
+      "offset": 0,
+      "size": 0,
+      "description": "Line 3: 'trusted comment: <timestamp + file hash>'"
+    },
+    {
+      "name": "GlobalSignature",
+      "offset": 0,
+      "size": 0,
+      "description": "Line 4: base64-encoded global signature over signature + trusted comment"
+    }
+  ],
+  "assertions": [
+    {
+      "variable": "minisignComment",
+      "operator": "startsWith",
+      "value": "untrusted comment",
+      "description": "First line must start with 'untrusted comment'",
+      "level": "Error"
+    },
+    {
+      "variable": "minisignComment",
+      "operator": "!=",
+      "value": "",
+      "description": "Comment line must not be empty",
+      "level": "Error"
+    },
+    {
+      "variable": "minisignAlgo",
+      "operator": "!=",
+      "value": "",
+      "description": "Algorithm identifier must be present",
+      "level": "Warning"
+    }
+  ],
+  "navigation": {
+    "entryPoint": 0,
+    "sections": [
+      { "name": "Untrusted Comment", "offset": 0, "size": 0 },
+      { "name": "Signature", "offset": 0, "size": 0 },
+      { "name": "Trusted Comment", "offset": 0, "size": 0 },
+      { "name": "Global Signature", "offset": 0, "size": 0 }
+    ]
+  },
+  "inspector": {
+    "badge": "MINISIGN",
+    "primaryField": "minisignComment",
+    "groups": [
+      {
+        "name": "Signature",
+        "fields": ["minisignComment", "minisignAlgo"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "Minisign Summary",
+      "format": "text",
+      "template": "Format: Minisign Signature\nComment: {minisignComment}"
+    },
+    {
+      "name": "Minisign JSON Report",
+      "format": "json",
+      "template": "{ \"format\": \"Minisign\", \"comment\": \"{minisignComment}\" }"
+    }
+  ],
+  "forensic": {
+    "riskLevel": "LOW",
+    "notes": "Minisign signatures verify file integrity and authenticity. The untrusted comment is user-controlled and should not be relied upon for security decisions.",
+    "suspiciousPatterns": [
+      "Untrusted comment containing misleading version or origin claims",
+      "Signature file without corresponding signed file",
+      "Trusted comment with future timestamp"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "Minisign is a simple Ed25519-based file signing tool. Signature files have 4 lines: untrusted comment, base64 signature, trusted comment, and global signature.",
+    "suggestedInspections": [
+      "Verify 'untrusted comment:' prefix on line 1.",
+      "Decode the base64 signature on line 2 to extract the algorithm ID and key ID.",
+      "Check the trusted comment on line 3 for timestamp and file hash.",
+      "Validate the global signature on line 4 covers both the signature and trusted comment."
+    ]
+  },
+  "software": [
+    { "name": "minisign", "platform": "Windows/macOS/Linux", "url": "https://jedisct1.github.io/minisign/" },
+    { "name": "rsign2", "platform": "Windows/macOS/Linux", "url": "https://github.com/nickolasgasworthy/rsign2" },
+    { "name": "signify", "platform": "OpenBSD/Linux", "url": "https://man.openbsd.org/signify" }
+  ],
+  "formatRelationships": [
+    { "format": "SIGNIFY", "relationship": "similar", "note": "Minisign and signify share a similar text-based signature format" },
+    { "format": "PGP", "relationship": "alternative", "note": "Minisign is designed as a simpler alternative to PGP detached signatures" }
+  ],
+  "MimeTypes": ["text/plain"],
+  "UseCases": [
+    "Software release verification",
+    "File integrity and authenticity checking",
+    "Package manager signature validation"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 85,
+    "LastUpdated": "2026-04-16",
+    "ReviewedBy": "WPFHexaEditor Team"
+  },
+  "TechnicalDetails": {
+    "signatureAlgorithm": "Ed25519 (pure or prehashed)",
+    "encoding": "Base64 for signature data",
+    "lineCount": 4,
+    "keyIdSize": "8 bytes",
+    "signatureSize": "64 bytes (Ed25519)"
+  }
+}

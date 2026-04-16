@@ -1,0 +1,206 @@
+{
+  "diffMode": "binary",
+  "formatName": "Android OAT (Ahead-of-Time Compiled DEX)",
+  "version": "1.0",
+  "extensions": [".oat", ".odex"],
+  "description": "Android OAT file — the ahead-of-time compiled native code produced by the ART (Android RunTime) dex2oat compiler from DEX bytecode. OAT files embed the original DEX data alongside native machine code for the target ISA (ARM, ARM64, x86, x86_64). The magic is 'oat\\0' at offset 0, followed by a version string and Adler-32 checksum.",
+  "category": "Programming",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "HexEditor",
+  "references": [
+    "https://source.android.com/docs/core/runtime",
+    "https://android.googlesource.com/platform/art/+/master/runtime/oat.h",
+    "https://lief-project.github.io/doc/latest/tutorials/10_android_formats.html"
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "value": "6F617400",
+        "offset": 0,
+        "label": "'oat\\u0000' OAT magic",
+        "weight": 1.0
+      }
+    ],
+    "matchMode": "Best",
+    "MinimumScore": 0.9,
+    "Strength": "Strong",
+    "EntropyHint": "Mixed — OAT header is structured binary; native code sections have high entropy; embedded DEX has moderate entropy"
+  },
+  "variables": [
+    {
+      "name": "oatMagic",
+      "offset": 0,
+      "size": 4,
+      "type": "ascii",
+      "description": "OAT magic — 'oat\\u0000'"
+    },
+    {
+      "name": "oatVersion",
+      "offset": 4,
+      "size": 4,
+      "type": "ascii",
+      "description": "OAT version string (e.g., '199\\u0000', '225\\u0000')"
+    },
+    {
+      "name": "oatChecksum",
+      "offset": 8,
+      "size": 4,
+      "type": "uint32",
+      "endian": "LE",
+      "description": "Adler-32 checksum of the OAT file"
+    },
+    {
+      "name": "oatISA",
+      "offset": 12,
+      "size": 4,
+      "type": "uint32",
+      "endian": "LE",
+      "description": "Instruction Set Architecture",
+      "valueMap": {
+        "1": "ARM",
+        "2": "ARM64",
+        "3": "MIPS",
+        "5": "X86",
+        "6": "X86_64"
+      }
+    }
+  ],
+  "blocks": [
+    {
+      "name": "OatHeader",
+      "offset": 0,
+      "size": 16,
+      "description": "OAT header: magic(4) + version(4) + checksum(4) + ISA(4)"
+    },
+    {
+      "name": "KeyValueStore",
+      "offset": 16,
+      "size": 0,
+      "description": "Key-value pairs with compilation options and boot classpath info"
+    },
+    {
+      "name": "DexFileHeaders",
+      "offset": 0,
+      "size": 0,
+      "description": "OatDexFile entries referencing embedded DEX data"
+    },
+    {
+      "name": "NativeCode",
+      "offset": 0,
+      "size": 0,
+      "description": "AOT-compiled native machine code for each method"
+    },
+    {
+      "name": "EmbeddedDex",
+      "offset": 0,
+      "size": 0,
+      "description": "Original DEX bytecode embedded within the OAT file"
+    }
+  ],
+  "assertions": [
+    {
+      "variable": "oatMagic",
+      "operator": "==",
+      "value": "oat\u0000",
+      "description": "Magic must be 'oat\\0'",
+      "level": "Error"
+    },
+    {
+      "variable": "oatISA",
+      "operator": ">",
+      "value": 0,
+      "description": "ISA must be a known instruction set (1=ARM, 2=ARM64, 5=X86, 6=X86_64)",
+      "level": "Error"
+    },
+    {
+      "variable": "oatChecksum",
+      "operator": "!=",
+      "value": 0,
+      "description": "Checksum should not be zero for a valid OAT file",
+      "level": "Warning"
+    }
+  ],
+  "navigation": {
+    "entryPoint": 0,
+    "sections": [
+      { "name": "OAT Header", "offset": 0, "size": 16 },
+      { "name": "Key-Value Store", "offset": 16, "size": 0 },
+      { "name": "DEX Files", "offset": 0, "size": 0 },
+      { "name": "Native Code", "offset": 0, "size": 0 }
+    ]
+  },
+  "inspector": {
+    "badge": "OAT",
+    "primaryField": "oatVersion",
+    "groups": [
+      {
+        "name": "Identity",
+        "fields": ["oatMagic", "oatVersion", "oatISA"]
+      },
+      {
+        "name": "Integrity",
+        "fields": ["oatChecksum"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "OAT Summary",
+      "format": "text",
+      "template": "Format: Android OAT\nVersion: {oatVersion}\nISA: {oatISA}\nChecksum: {oatChecksum}"
+    },
+    {
+      "name": "OAT JSON Report",
+      "format": "json",
+      "template": "{ \"format\": \"OAT\", \"version\": \"{oatVersion}\", \"isa\": {oatISA}, \"checksum\": {oatChecksum} }"
+    }
+  ],
+  "forensic": {
+    "riskLevel": "HIGH",
+    "notes": "OAT files contain native machine code that executes directly on the CPU. Patched OAT files can bypass DEX-level security checks. Checksum mismatches indicate tampering.",
+    "suspiciousPatterns": [
+      "Adler-32 checksum mismatch — OAT may have been patched after compilation",
+      "ISA mismatch with device architecture — possible cross-compiled payload",
+      "Embedded DEX with obfuscated class names alongside native code with suspicious symbols",
+      "OAT version string not matching any known Android release"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "Android OAT files are AOT-compiled DEX produced by dex2oat. They embed original DEX bytecode alongside native code. The header contains magic, version, checksum, and ISA.",
+    "suggestedInspections": [
+      "Verify 'oat\\0' magic at offset 0 and parse the version string at offset 4.",
+      "Read the ISA field at offset 12 to determine the target architecture (ARM, ARM64, X86, X86_64).",
+      "Validate the Adler-32 checksum at offset 8 to detect post-compilation tampering.",
+      "Locate embedded DEX data and compare against the original APK's classes.dex.",
+      "Inspect the key-value store for dex2oat compilation flags and boot classpath references."
+    ]
+  },
+  "software": [
+    { "name": "dex2oat (Android SDK)", "platform": "Linux", "url": "https://source.android.com/docs/core/runtime" },
+    { "name": "oatdump", "platform": "Linux", "url": "https://android.googlesource.com/platform/art/+/master/oatdump/" },
+    { "name": "LIEF", "platform": "Windows/macOS/Linux", "url": "https://lief-project.github.io/" }
+  ],
+  "formatRelationships": [
+    { "format": "DEX", "relationship": "contains", "note": "OAT embeds original DEX bytecode" },
+    { "format": "ELF", "relationship": "container", "note": "OAT files are typically wrapped in an ELF container" }
+  ],
+  "MimeTypes": ["application/x-android-oat", "application/octet-stream"],
+  "UseCases": [
+    "Android ART runtime ahead-of-time compilation",
+    "Android malware analysis (native code inspection)",
+    "Android performance profiling and optimization"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 88,
+    "LastUpdated": "2026-04-16",
+    "ReviewedBy": "WPFHexaEditor Team"
+  },
+  "TechnicalDetails": {
+    "magicBytes": "6F 61 74 00 (oat\\0)",
+    "endianness": "Little-Endian",
+    "checksumAlgorithm": "Adler-32",
+    "isaValues": { "1": "ARM", "2": "ARM64", "3": "MIPS", "5": "X86", "6": "X86_64" },
+    "containerFormat": "Typically wrapped in ELF (.so on Android)",
+    "compiler": "dex2oat (part of ART)"
+  }
+}

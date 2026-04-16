@@ -1,0 +1,169 @@
+{
+  "diffMode": "binary",
+  "formatName": "SurrealDB Database",
+  "version": "1.0",
+  "extensions": [".surreal", ".db"],
+  "description": "SurrealDB is a multi-model database supporting document, graph, and relational paradigms with a SQL-like query language (SurrealQL). SurrealDB can persist data to various backends including RocksDB and TiKV. The native file format lacks a well-known magic signature, making detection extension-based only with weak confidence. Files may contain embedded RocksDB or custom storage engine data.",
+  "category": "Database",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "references": [
+    "https://surrealdb.com/docs",
+    "https://github.com/surrealdb/surrealdb",
+    "https://en.wikipedia.org/wiki/SurrealDB"
+  ],
+  "detection": {
+    "signatures": [],
+    "matchMode": "any",
+    "MinimumScore": 0.1,
+    "Strength": "Weak",
+    "validation": {
+      "rules": []
+    }
+  },
+  "variables": [
+    {
+      "name": "surrealFirstByte",
+      "offset": 0,
+      "size": 1,
+      "type": "uint8",
+      "storeAs": "surrealFirstByte",
+      "description": "First byte of the SurrealDB file for initial analysis"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "Header",
+      "offset": 0,
+      "size": 1,
+      "description": "File start — no known fixed header structure for SurrealDB native files",
+      "fields": [
+        { "name": "FirstByte", "offset": 0, "size": 1, "type": "uint8" }
+      ]
+    },
+    {
+      "name": "StorageEngine",
+      "offset": 1,
+      "size": -1,
+      "description": "Backend storage engine data (RocksDB, TiKV, or memory-mapped)",
+      "fields": []
+    },
+    {
+      "name": "DocumentStore",
+      "offset": -1,
+      "size": -1,
+      "description": "Document and graph record storage region",
+      "fields": []
+    },
+    {
+      "name": "IndexData",
+      "offset": -1,
+      "size": -1,
+      "description": "Secondary index data for query optimization",
+      "fields": []
+    }
+  ],
+  "assertions": [
+    {
+      "id": "assert_readable",
+      "field": "surrealFirstByte",
+      "operator": "greaterThanOrEqual",
+      "value": 0,
+      "severity": "info",
+      "message": "File is readable for SurrealDB analysis"
+    },
+    {
+      "id": "assert_not_empty",
+      "field": "surrealFirstByte",
+      "operator": "notEquals",
+      "value": -1,
+      "severity": "warning",
+      "message": "File should not be empty"
+    },
+    {
+      "id": "assert_extension_match",
+      "field": "surrealFirstByte",
+      "operator": "greaterThanOrEqual",
+      "value": 0,
+      "severity": "info",
+      "message": "Detection is extension-based only — verify contents manually"
+    }
+  ],
+  "navigation": {
+    "entryPoints": [
+      { "name": "File Start", "offset": 0 }
+    ],
+    "jumpTable": [
+      { "label": "File Start", "offset": 0 }
+    ]
+  },
+  "inspector": {
+    "badge": "SR",
+    "primaryField": "surrealFirstByte",
+    "groups": [
+      {
+        "name": "Identification",
+        "fields": ["surrealFirstByte"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "SurrealDB File Summary",
+      "format": "text",
+      "template": "SurrealDB Database\nFirst Byte: 0x{surrealFirstByte:X2}\nNote: Extension-based detection only"
+    },
+    {
+      "name": "SurrealDB File CSV",
+      "format": "csv",
+      "template": "Field,Value\nFirstByte,0x{surrealFirstByte:X2}"
+    }
+  ],
+  "forensic": {
+    "riskLevel": "medium",
+    "suspiciousPatterns": [
+      "No known magic — cannot verify file authenticity by signature alone",
+      "Embedded RocksDB data may contain its own integrity markers",
+      "Multi-model data may include graph edges referencing external records"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "SurrealDB uses pluggable storage backends (RocksDB for disk, TiKV for distributed). The on-disk format depends on the chosen backend. Files with .surreal extension may contain serialized SurrealQL export data or native storage engine files. Manual inspection of the first bytes can help identify the underlying storage engine.",
+    "suggestedInspections": [
+      "Check first bytes for RocksDB or other storage engine signatures",
+      "Look for SurrealQL text markers in export files",
+      "Inspect for key-value encoding patterns typical of the storage backend",
+      "Verify file size consistency with expected database content"
+    ]
+  },
+  "software": [
+    { "name": "SurrealDB Server", "vendor": "SurrealDB Ltd", "platform": "Cross-platform" },
+    { "name": "surreal CLI", "vendor": "SurrealDB Ltd", "platform": "Cross-platform" },
+    { "name": "Surrealist (GUI)", "vendor": "SurrealDB Ltd", "platform": "Cross-platform" }
+  ],
+  "formatRelationships": [
+    { "format": "ROCKSDB_SST", "relation": "backend", "note": "SurrealDB can use RocksDB as its storage engine" },
+    { "format": "TIKV", "relation": "backend", "note": "SurrealDB can use TiKV for distributed storage" }
+  ],
+  "MimeTypes": [
+    "application/octet-stream"
+  ],
+  "UseCases": [
+    "Multi-model database storage (document, graph, relational)",
+    "Real-time collaborative application backends",
+    "SurrealQL query-driven data persistence",
+    "Edge computing and embedded database scenarios"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 82,
+    "LastUpdated": "2026-04-16"
+  },
+  "TechnicalDetails": {
+    "headerSize": 0,
+    "endian": "unknown",
+    "signatureOffset": -1,
+    "signatureLength": 0,
+    "storageEngine": "Pluggable: RocksDB (disk), TiKV (distributed), memory",
+    "notes": "No fixed magic signature. Detection relies on file extension. Underlying format depends on configured storage backend."
+  }
+}

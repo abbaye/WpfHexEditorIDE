@@ -1,0 +1,255 @@
+{
+  "diffMode": "binary",
+  "formatName": "PGS Blu-ray Subtitles",
+  "version": "1.0",
+  "extensions": [
+    ".sup"
+  ],
+  "description": "PGS (Presentation Graphic Stream) is the bitmap-based subtitle format used in Blu-ray Disc media, defined in the Blu-ray Disc specification (part of HDMV). Unlike text-based subtitle formats, PGS renders pre-rasterized subtitle images with full color palette support, anti-aliasing, and transparency. Each PGS segment begins with a 'PG' (0x5047) magic marker followed by PTS/DTS timestamps, segment type, and segment data. PGS supports up to 256 palette entries and multiple object definitions per display set for complex multilingual or forced subtitle scenarios.",
+  "category": "Subtitles",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "references": {
+    "specifications": [
+      "Blu-ray Disc Specification — HDMV PGS Subtitle Stream",
+      "US Patent 7912305 — Subtitle decoding for BD"
+    ],
+    "WebLinks": [
+      "https://en.wikipedia.org/wiki/Presentation_Graphic_Stream",
+      "https://blog.thescash.com/2016/11/24/understanding-pgs-sup-subtitles/",
+      "https://wiki.multimedia.cx/index.php/PGS"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      {
+        "value": "5047",
+        "offset": 0,
+        "label": "'PG' PGS segment magic",
+        "weight": 1.0
+      }
+    ],
+    "matchMode": "allOf",
+    "MinimumScore": 85,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 2.0, "max": 6.5 },
+    "validation": {
+      "minFileSize": 13,
+      "maxSignatureOffset": 0
+    }
+  },
+  "variables": {
+    "pgsMagic": "",
+    "pgsPTS": 0,
+    "pgsDTS": 0,
+    "pgsSegType": 0,
+    "pgsSegLength": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "PG Magic",
+      "offset": 0,
+      "length": 2,
+      "color": "#FF6B6B",
+      "opacity": 0.45,
+      "description": "PGS segment synchronization marker: ASCII 'PG' (0x5047). Every PGS segment begins with this 2-byte identifier. Multiple segments form a complete display set.",
+      "storeAs": "pgsMagic",
+      "valueType": "ascii",
+      "validation": {
+        "expectedValue": "PG"
+      }
+    },
+    {
+      "type": "field",
+      "name": "Presentation Timestamp (PTS)",
+      "offset": 2,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "Presentation timestamp in 90 kHz clock ticks (32-bit big-endian unsigned). Determines when this subtitle segment should be displayed. Divide by 90000 to get seconds. PTS ordering defines the subtitle timeline.",
+      "storeAs": "pgsPTS",
+      "valueType": "uint32",
+      "endianness": "big"
+    },
+    {
+      "type": "field",
+      "name": "Decode Timestamp (DTS)",
+      "offset": 6,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.35,
+      "description": "Decode timestamp in 90 kHz clock ticks (32-bit big-endian unsigned). Specifies when the segment should be decoded (may differ from PTS for out-of-order processing). Often set to 0 in PGS streams.",
+      "storeAs": "pgsDTS",
+      "valueType": "uint32",
+      "endianness": "big"
+    },
+    {
+      "type": "field",
+      "name": "Segment Type",
+      "offset": 10,
+      "length": 1,
+      "color": "#FFE66D",
+      "opacity": 0.35,
+      "description": "PGS segment type identifier (8-bit unsigned). Defines the purpose and structure of the segment data that follows.",
+      "storeAs": "pgsSegType",
+      "valueType": "uint8",
+      "valueMap": {
+        "20": "PDS \u2014 Palette Definition",
+        "21": "ODS \u2014 Object Definition",
+        "22": "PCS \u2014 Presentation Composition",
+        "128": "WDS \u2014 Window Definition",
+        "129": "END \u2014 End of Display Set"
+      }
+    },
+    {
+      "type": "field",
+      "name": "Segment Length",
+      "offset": 11,
+      "length": 2,
+      "color": "#DDA0DD",
+      "opacity": 0.35,
+      "description": "Size in bytes of the segment data that follows this header (16-bit big-endian unsigned). Does not include the 13-byte segment header itself.",
+      "storeAs": "pgsSegLength",
+      "valueType": "uint16",
+      "endianness": "big"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "PG magic valid",
+      "expression": "pgsMagic == 'PG'",
+      "severity": "error",
+      "message": "PGS segment must begin with 'PG' marker (0x5047)"
+    },
+    {
+      "name": "Segment type known",
+      "expression": "pgsSegType == 20 || pgsSegType == 21 || pgsSegType == 22 || pgsSegType == 128 || pgsSegType == 129",
+      "severity": "warning",
+      "message": "Segment type should be a known PGS type (0x14-0x16, 0x80, 0x81)"
+    },
+    {
+      "name": "PTS non-zero",
+      "expression": "pgsPTS > 0 || pgsSegType == 129",
+      "severity": "info",
+      "message": "PTS is zero — expected for END segments but unusual for other segment types"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      {
+        "name": "PG Segment Header",
+        "offset": 0,
+        "icon": "\uE71B",
+        "color": "#FF6B6B"
+      },
+      {
+        "name": "Timestamps",
+        "offset": 2,
+        "icon": "\uE8A5",
+        "color": "#4ECDC4"
+      },
+      {
+        "name": "Segment Data",
+        "offset": 13,
+        "icon": "\uE9D9",
+        "color": "#FFE66D"
+      }
+    ]
+  },
+  "inspector": {
+    "badge": "pgsSegType",
+    "primaryField": "pgsPTS",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "Segment Header",
+        "icon": "\uE71B",
+        "fields": ["pgsMagic", "pgsSegType", "pgsSegLength"]
+      },
+      {
+        "title": "Timestamps",
+        "icon": "\uE8A5",
+        "fields": ["pgsPTS", "pgsDTS"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "PGS Segment (JSON)",
+      "format": "json",
+      "fields": ["pgsMagic", "pgsPTS", "pgsDTS", "pgsSegType", "pgsSegLength"]
+    },
+    {
+      "name": "pgs_segment_t (C struct)",
+      "format": "c-struct",
+      "structName": "pgs_segment",
+      "fields": ["pgsMagic", "pgsPTS", "pgsDTS", "pgsSegType", "pgsSegLength"]
+    }
+  ],
+  "forensic": {
+    "category": "subtitles",
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      {
+        "name": "Unknown segment type",
+        "condition": "pgsSegType != 20 && pgsSegType != 21 && pgsSegType != 22 && pgsSegType != 128 && pgsSegType != 129",
+        "severity": "warning",
+        "description": "Segment type is not a recognized PGS type — may indicate corrupted data or a non-standard extension."
+      },
+      {
+        "name": "Zero-length segment",
+        "condition": "pgsSegLength == 0 && pgsSegType != 129",
+        "severity": "warning",
+        "description": "Segment has zero data length — expected only for END segments (type 0x81)."
+      }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "PGS segment structure: 'PG'(2B) + PTS(4B BE, 90kHz) + DTS(4B BE) + segType(1B) + segLength(2B BE) + data(segLength bytes). Segment types: PCS(0x16) defines composition (video size, comp state, palette/object references), WDS(0x80) defines display windows, PDS(0x14) defines 256-entry RGBA palette, ODS(0x15) defines RLE-compressed bitmap object, END(0x81) terminates display set. A display set consists of: PCS + WDS + PDS + ODS(s) + END. Bitmap RLE encoding: 0x00 = escape, then 0x00=EOL, 0xCCNN=run of N pixels color CC.",
+    "suggestedInspections": [
+      "Verify 'PG' marker at each segment boundary",
+      "Parse PCS to determine video dimensions and composition state",
+      "Extract palette from PDS segments for color analysis",
+      "Decode ODS RLE bitmap data to verify subtitle image integrity"
+    ]
+  },
+  "software": [
+    "BDSup2Sub",
+    "MKVToolNix",
+    "FFmpeg"
+  ],
+  "formatRelationships": {
+    "category": "Subtitles",
+    "extensions": [".sup"],
+    "relatedFormats": ["SUP", "VobSub", "DVB_SUB"],
+    "containerVariant": "Standalone .sup file or embedded in M2TS/MKV"
+  },
+  "MimeTypes": [
+    "application/x-pgs"
+  ],
+  "UseCases": [
+    "Blu-ray Disc subtitle rendering (mandatory BD format)",
+    "Extracting and converting Blu-ray subtitles for remuxing",
+    "Bitmap subtitle overlay for languages requiring complex rendering",
+    "Forced subtitle tracks for foreign-language dialogue in Blu-ray media"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 86,
+    "DocumentationLevel": "comprehensive",
+    "BlocksDefined": 5,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-16",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "BitmapSubtitles": true,
+    "TimestampResolution": "90 kHz (MPEG-2 clock)",
+    "MaxPaletteEntries": 256,
+    "PaletteFormat": "RGBA (YCbCr internally)",
+    "BitmapCompression": "Run-Length Encoding (RLE)",
+    "SegmentHeaderSize": "13 bytes",
+    "MaxObjectSize": "16 MB per ODS"
+  }
+}

@@ -1,0 +1,285 @@
+{
+  "formatName": "Android Sparse Image",
+  "version": "1.0",
+  "diffMode": "binary",
+  "extensions": [
+    ".simg",
+    ".img"
+  ],
+  "description": "Android sparse image format used for efficient storage and flashing of partition images. The magic 0xED26FF3A identifies sparse images that contain a mix of raw data chunks, fill chunks, and dont-care chunks to represent large disk images compactly.",
+  "category": "Firmware",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "MimeTypes": [
+    "application/x-android-sparse-image"
+  ],
+  "UseCases": [
+    "Android device flashing via fastboot",
+    "Factory image distribution for Android devices",
+    "OTA update payload storage for partition images",
+    "Embedded system disk image distribution"
+  ],
+  "references": [
+    "https://android.googlesource.com/platform/system/core/+/master/libsparse/sparse_format.h",
+    "https://source.android.com/docs/core/architecture/bootloader/flashing-updating",
+    "https://en.wikipedia.org/wiki/Android_software_development#Fastboot"
+  ],
+  "software": [
+    {
+      "name": "simg2img",
+      "url": "https://android.googlesource.com/platform/system/core/+/master/libsparse/",
+      "role": "Convert sparse image to raw image"
+    },
+    {
+      "name": "img2simg",
+      "url": "https://android.googlesource.com/platform/system/core/+/master/libsparse/",
+      "role": "Convert raw image to sparse image"
+    },
+    {
+      "name": "fastboot",
+      "url": "https://developer.android.com/tools/releases/platform-tools",
+      "role": "Flash sparse images to Android devices"
+    }
+  ],
+  "formatRelationships": [
+    {
+      "format": "EXT4",
+      "relationship": "Sparse images typically contain ext4 filesystem partitions"
+    },
+    {
+      "format": "F2FS",
+      "relationship": "Some Android partitions use F2FS wrapped in sparse format"
+    }
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "offset": 0,
+        "value": "3AFF26ED",
+        "label": "Android sparse image magic 0xED26FF3A (LE bytes: 3A FF 26 ED)",
+        "weight": 1.0
+      }
+    ],
+    "matchMode": "first",
+    "MinimumScore": 90,
+    "Strength": "Strong",
+    "EntropyHint": {
+      "min": 3.0,
+      "max": 7.5,
+      "note": "Mix of raw data chunks (high entropy) and fill/dont-care chunks (low entropy)"
+    },
+    "validation": "First 4 bytes must be 0xED26FF3A (LE). Block size must be a power of 2 in [4096, 65536]. Major version should be 1."
+  },
+  "variables": [
+    {
+      "name": "sparseMagic",
+      "type": "uint32",
+      "offset": 0,
+      "length": 4,
+      "endian": "little",
+      "description": "Sparse image magic: 0xED26FF3A"
+    },
+    {
+      "name": "sparseMajor",
+      "type": "uint16",
+      "offset": 4,
+      "length": 2,
+      "endian": "little",
+      "description": "Major version (must be 1)"
+    },
+    {
+      "name": "sparseMinor",
+      "type": "uint16",
+      "offset": 6,
+      "length": 2,
+      "endian": "little",
+      "description": "Minor version"
+    },
+    {
+      "name": "sparseBlockSize",
+      "type": "uint32",
+      "offset": 12,
+      "length": 4,
+      "endian": "little",
+      "description": "Block size in bytes (typically 4096)"
+    },
+    {
+      "name": "sparseTotalBlocks",
+      "type": "uint32",
+      "offset": 16,
+      "length": 4,
+      "endian": "little",
+      "description": "Total number of blocks in the output image"
+    },
+    {
+      "name": "sparseTotalChunks",
+      "type": "uint32",
+      "offset": 20,
+      "length": 4,
+      "endian": "little",
+      "description": "Total number of chunks in the sparse image"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "SparseHeader",
+      "offset": 0,
+      "length": 28,
+      "description": "Sparse image file header: magic, version, header size, chunk header size, block size, total blocks, total chunks, and checksum",
+      "fields": [
+        {
+          "name": "Magic",
+          "variable": "sparseMagic",
+          "offset": 0,
+          "length": 4
+        },
+        {
+          "name": "MajorVersion",
+          "variable": "sparseMajor",
+          "offset": 4,
+          "length": 2
+        },
+        {
+          "name": "MinorVersion",
+          "variable": "sparseMinor",
+          "offset": 6,
+          "length": 2
+        },
+        {
+          "name": "BlockSize",
+          "variable": "sparseBlockSize",
+          "offset": 12,
+          "length": 4
+        }
+      ]
+    },
+    {
+      "name": "RawChunks",
+      "offset": -1,
+      "length": -1,
+      "description": "Raw data chunks containing actual block data to write to the output image"
+    },
+    {
+      "name": "FillChunks",
+      "offset": -1,
+      "length": -1,
+      "description": "Fill chunks specifying a 4-byte fill value repeated across multiple blocks"
+    },
+    {
+      "name": "DontCareChunks",
+      "offset": -1,
+      "length": -1,
+      "description": "Dont-care chunks representing blocks that need not be written (unallocated space)"
+    }
+  ],
+  "assertions": [
+    {
+      "id": "A1",
+      "description": "Magic must be 0xED26FF3A",
+      "expression": "sparseMagic == 0xED26FF3A"
+    },
+    {
+      "id": "A2",
+      "description": "Block size must be a power of 2 in [4096, 65536]",
+      "expression": "sparseBlockSize >= 4096 && sparseBlockSize <= 65536"
+    },
+    {
+      "id": "A3",
+      "description": "Major version must be 1",
+      "expression": "sparseMajor == 1"
+    }
+  ],
+  "navigation": {
+    "entryPoint": "SparseHeader",
+    "structure": [
+      "SparseHeader",
+      "RawChunks",
+      "FillChunks",
+      "DontCareChunks"
+    ],
+    "notes": "Each chunk has a 12-byte header: chunk type (uint16), reserved (uint16), chunk blocks (uint32), total size (uint32). Chunk types: 0xCAC1=raw, 0xCAC2=fill, 0xCAC3=dont-care, 0xCAC4=CRC32."
+  },
+  "inspector": {
+    "badge": "SPARSE",
+    "primaryField": "sparseMagic",
+    "groups": [
+      {
+        "name": "Header",
+        "fields": [
+          "sparseMagic",
+          "sparseMajor",
+          "sparseMinor",
+          "sparseBlockSize"
+        ]
+      },
+      {
+        "name": "Layout",
+        "fields": [
+          "sparseTotalBlocks",
+          "sparseTotalChunks"
+        ]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "Sparse Header CSV",
+      "format": "csv",
+      "fields": [
+        "sparseMagic",
+        "sparseMajor",
+        "sparseMinor",
+        "sparseBlockSize",
+        "sparseTotalBlocks",
+        "sparseTotalChunks"
+      ]
+    },
+    {
+      "name": "Sparse Header JSON",
+      "format": "json",
+      "fields": [
+        "sparseMagic",
+        "sparseMajor",
+        "sparseMinor",
+        "sparseBlockSize",
+        "sparseTotalBlocks",
+        "sparseTotalChunks"
+      ]
+    }
+  ],
+  "forensic": {
+    "riskLevel": "MEDIUM",
+    "notes": "Sparse images contain partition data that may include user files, credentials, and forensic artifacts. Modified sparse images could flash malicious firmware to devices.",
+    "suspiciousPatterns": [
+      "Sparse image with unexpected total blocks count (partition size manipulation)",
+      "Raw chunks containing known rootkit or bootkit signatures",
+      "CRC32 chunk mismatch indicating post-creation modification",
+      "Sparse image distributed outside official factory image channels"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "Android sparse images use chunk-based compression where only non-zero/non-empty blocks are stored. The format is simple: a 28-byte file header followed by chunk headers (12 bytes each) with optional data. Chunk types are raw (0xCAC1), fill (0xCAC2), dont-care (0xCAC3), and CRC32 (0xCAC4).",
+    "suggestedInspections": [
+      "Walk chunk headers to compute the expanded (raw) image size",
+      "Verify CRC32 chunks against computed checksums of preceding data",
+      "Identify the filesystem type in raw chunks (ext4 superblock at block offset 1)",
+      "Calculate sparse ratio (sparse size / raw size) to assess compression efficiency"
+    ]
+  },
+  "TechnicalDetails": {
+    "headerSize": 28,
+    "chunkHeaderSize": 12,
+    "endianness": "Little-endian",
+    "chunkTypes": {
+      "0xCAC1": "Raw data",
+      "0xCAC2": "Fill (4-byte repeated value)",
+      "0xCAC3": "Dont-care (skip)",
+      "0xCAC4": "CRC32 checksum"
+    }
+  },
+  "QualityMetrics": {
+    "CompletenessScore": 86,
+    "LastUpdated": "2026-04-16",
+    "ReviewedBy": "WPFHexaEditor Team"
+  }
+}

@@ -1,0 +1,210 @@
+{
+  "diffMode": "binary",
+  "formatName": "DuckDB Database",
+  "version": "1.0",
+  "extensions": [".duckdb", ".db"],
+  "description": "DuckDB is an in-process analytical SQL database management system optimized for OLAP workloads. Database files begin with the 4-byte ASCII magic 'DUCK' (0x44554350) at offset 0, followed by an 8-byte little-endian uint64 version at offset 4 and a 4-byte LE uint32 block size at offset 12. DuckDB uses a columnar storage format with compression and vectorized query execution.",
+  "category": "Database",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "references": [
+    "https://duckdb.org/docs/internals/storage",
+    "https://github.com/duckdb/duckdb",
+    "https://en.wikipedia.org/wiki/DuckDB"
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "value": "44554350",
+        "offset": 0,
+        "label": "'DUCK' — DuckDB database file header",
+        "weight": 1.0
+      }
+    ],
+    "matchMode": "first",
+    "MinimumScore": 0.9,
+    "Strength": "Strong",
+    "validation": {
+      "rules": [
+        { "field": "duckdbMagic", "operator": "equals", "value": "DUCK" }
+      ]
+    }
+  },
+  "variables": [
+    {
+      "name": "duckdbMagic",
+      "offset": 0,
+      "size": 4,
+      "type": "ascii",
+      "storeAs": "duckdbMagic",
+      "description": "4-byte ASCII magic 'DUCK' at offset 0"
+    },
+    {
+      "name": "duckdbVersion",
+      "offset": 4,
+      "size": 8,
+      "type": "uint64",
+      "endian": "little",
+      "storeAs": "duckdbVersion",
+      "description": "8-byte LE uint64 storage format version"
+    },
+    {
+      "name": "duckdbBlockSize",
+      "offset": 12,
+      "size": 4,
+      "type": "uint32",
+      "endian": "little",
+      "storeAs": "duckdbBlockSize",
+      "description": "4-byte LE uint32 block size in bytes"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "Magic",
+      "offset": 0,
+      "size": 4,
+      "description": "4-byte ASCII magic 'DUCK'",
+      "fields": [
+        { "name": "MagicASCII", "offset": 0, "size": 4, "type": "ascii" }
+      ]
+    },
+    {
+      "name": "Version",
+      "offset": 4,
+      "size": 8,
+      "description": "Storage format version as uint64 LE — increments with breaking changes",
+      "fields": [
+        { "name": "Version", "offset": 4, "size": 8, "type": "uint64" }
+      ]
+    },
+    {
+      "name": "BlockSize",
+      "offset": 12,
+      "size": 4,
+      "description": "Block size for columnar storage allocation",
+      "fields": [
+        { "name": "BlockSize", "offset": 12, "size": 4, "type": "uint32" }
+      ]
+    },
+    {
+      "name": "Catalog",
+      "offset": 16,
+      "size": -1,
+      "description": "Database catalog containing schema, table, and index metadata",
+      "fields": []
+    }
+  ],
+  "assertions": [
+    {
+      "id": "assert_magic",
+      "field": "duckdbMagic",
+      "operator": "equals",
+      "value": "DUCK",
+      "severity": "error",
+      "message": "DuckDB magic 'DUCK' not found at offset 0"
+    },
+    {
+      "id": "assert_version_nonzero",
+      "field": "duckdbVersion",
+      "operator": "greaterThan",
+      "value": 0,
+      "severity": "warning",
+      "message": "DuckDB version is zero — file may be uninitialized"
+    },
+    {
+      "id": "assert_block_size",
+      "field": "duckdbBlockSize",
+      "operator": "greaterThan",
+      "value": 0,
+      "severity": "error",
+      "message": "DuckDB block size must be positive"
+    }
+  ],
+  "navigation": {
+    "entryPoints": [
+      { "name": "File Magic", "offset": 0 },
+      { "name": "Version", "offset": 4 },
+      { "name": "Block Size", "offset": 12 }
+    ],
+    "jumpTable": [
+      { "label": "Magic 'DUCK'", "offset": 0 },
+      { "label": "Storage Version", "offset": 4 },
+      { "label": "Block Size", "offset": 12 }
+    ]
+  },
+  "inspector": {
+    "badge": "DK",
+    "primaryField": "duckdbMagic",
+    "groups": [
+      {
+        "name": "Identification",
+        "fields": ["duckdbMagic", "duckdbVersion"]
+      },
+      {
+        "name": "Layout",
+        "fields": ["duckdbBlockSize"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "DuckDB Header Summary",
+      "format": "text",
+      "template": "DuckDB Database\nMagic     : {duckdbMagic}\nVersion   : {duckdbVersion}\nBlock Size: {duckdbBlockSize} bytes"
+    },
+    {
+      "name": "DuckDB Header CSV",
+      "format": "csv",
+      "template": "Field,Value\nMagic,{duckdbMagic}\nVersion,{duckdbVersion}\nBlockSize,{duckdbBlockSize}"
+    }
+  ],
+  "forensic": {
+    "riskLevel": "medium",
+    "suspiciousPatterns": [
+      "Magic 'DUCK' missing — not a DuckDB file",
+      "Version mismatch with installed DuckDB — incompatible storage format",
+      "Block size not matching expected defaults — possible tampering",
+      "Catalog metadata corruption — schema inconsistency"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "DuckDB files start with 'DUCK' magic followed by a uint64 LE storage version and uint32 LE block size. The storage version changes with each breaking format change. DuckDB uses columnar storage with lightweight compression (dictionary, bitpacking, RLE). The catalog at the start of the file describes all schemas, tables, and indexes.",
+    "suggestedInspections": [
+      "Verify 'DUCK' magic at offset 0",
+      "Read uint64 LE version at offset 4 and check DuckDB compatibility",
+      "Parse block size at offset 12 for storage layout analysis",
+      "Inspect catalog metadata for schema and table definitions"
+    ]
+  },
+  "software": [
+    { "name": "DuckDB CLI", "vendor": "DuckDB Foundation", "platform": "Cross-platform" },
+    { "name": "DBeaver", "vendor": "DBeaver Corp", "platform": "Cross-platform" },
+    { "name": "Python duckdb package", "vendor": "DuckDB Foundation", "platform": "Python" }
+  ],
+  "formatRelationships": [
+    { "format": "SQLITE", "relation": "sibling", "note": "Both are embedded SQL databases; DuckDB is OLAP-optimized, SQLite is OLTP-optimized" },
+    { "format": "PARQUET", "relation": "companion", "note": "DuckDB natively reads/writes Parquet files for data interchange" }
+  ],
+  "MimeTypes": [
+    "application/octet-stream"
+  ],
+  "UseCases": [
+    "In-process analytical SQL queries on local data",
+    "Data science and exploratory data analysis",
+    "ETL pipeline intermediate storage",
+    "Embedded analytics in applications"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 86,
+    "LastUpdated": "2026-04-16"
+  },
+  "TechnicalDetails": {
+    "headerSize": 16,
+    "endian": "little",
+    "signatureOffset": 0,
+    "signatureLength": 4,
+    "magicValue": "44554350",
+    "storageEngine": "Columnar with lightweight compression (dictionary, bitpacking, RLE)",
+    "notes": "Storage version increments with breaking changes; DuckDB will refuse to open files with incompatible versions"
+  }
+}

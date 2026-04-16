@@ -1,0 +1,213 @@
+{
+  "diffMode": "binary",
+  "formatName": "Smile Binary JSON",
+  "version": "1.0",
+  "extensions": [".smile"],
+  "description": "Smile is a binary data format created by the Jackson JSON library project. It provides a compact binary encoding of JSON data with a 3-byte magic header ':)\\n' (0x3A290A) at offset 0, followed by a version byte (0x00) and a features bitflag byte. Smile supports back-references for repeated strings, raw binary data, and optional header/end markers. It is widely used in Elasticsearch and other JVM-based applications.",
+  "category": "Data",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "references": [
+    "https://github.com/FasterXML/smile-format-specification",
+    "https://github.com/FasterXML/jackson-dataformats-binary",
+    "https://en.wikipedia.org/wiki/Smile_(data_interchange_format)"
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "value": "3A290A",
+        "offset": 0,
+        "label": "':)\\n' — Smile binary JSON header",
+        "weight": 1.0
+      }
+    ],
+    "matchMode": "first",
+    "MinimumScore": 0.9,
+    "Strength": "Strong",
+    "validation": {
+      "rules": [
+        { "field": "smileMagic", "operator": "equals", "value": ":)\n" },
+        { "field": "smileVersion", "operator": "equals", "value": 0 }
+      ]
+    }
+  },
+  "variables": [
+    {
+      "name": "smileMagic",
+      "offset": 0,
+      "size": 3,
+      "type": "ascii",
+      "storeAs": "smileMagic",
+      "description": "3-byte ASCII magic ':)\\n' (colon, close-paren, newline)"
+    },
+    {
+      "name": "smileVersion",
+      "offset": 3,
+      "size": 1,
+      "type": "uint8",
+      "storeAs": "smileVersion",
+      "description": "Version byte — must be 0x00 for current Smile specification"
+    },
+    {
+      "name": "smileFeatures",
+      "offset": 4,
+      "size": 1,
+      "type": "uint8",
+      "storeAs": "smileFeatures",
+      "description": "Feature bitflags: bit 0 = shared string values, bit 1 = shared property names, bit 2 = raw binary"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "Magic",
+      "offset": 0,
+      "size": 3,
+      "description": "3-byte Smile magic header ':)\\n'",
+      "fields": [
+        { "name": "MagicASCII", "offset": 0, "size": 3, "type": "ascii" }
+      ]
+    },
+    {
+      "name": "Version",
+      "offset": 3,
+      "size": 1,
+      "description": "Format version byte (currently always 0x00)",
+      "fields": [
+        { "name": "Version", "offset": 3, "size": 1, "type": "uint8" }
+      ]
+    },
+    {
+      "name": "Features",
+      "offset": 4,
+      "size": 1,
+      "description": "Feature bitflags controlling shared strings, shared names, and raw binary support",
+      "fields": [
+        { "name": "Features", "offset": 4, "size": 1, "type": "uint8" }
+      ]
+    },
+    {
+      "name": "Content",
+      "offset": 5,
+      "size": -1,
+      "description": "Smile-encoded JSON content with token-based encoding",
+      "fields": []
+    }
+  ],
+  "assertions": [
+    {
+      "id": "assert_magic",
+      "field": "smileMagic",
+      "operator": "equals",
+      "value": ":)\n",
+      "severity": "error",
+      "message": "Smile magic ':)\\n' not found at offset 0"
+    },
+    {
+      "id": "assert_version",
+      "field": "smileVersion",
+      "operator": "equals",
+      "value": 0,
+      "severity": "error",
+      "message": "Smile version must be 0x00 for current specification"
+    },
+    {
+      "id": "assert_features_valid",
+      "field": "smileFeatures",
+      "operator": "lessThan",
+      "value": 8,
+      "severity": "warning",
+      "message": "Smile features byte has unknown flags set (only bits 0-2 defined)"
+    }
+  ],
+  "navigation": {
+    "entryPoints": [
+      { "name": "File Magic", "offset": 0 },
+      { "name": "Version", "offset": 3 },
+      { "name": "Features", "offset": 4 },
+      { "name": "Content Start", "offset": 5 }
+    ],
+    "jumpTable": [
+      { "label": "Magic ':)\\n'", "offset": 0 },
+      { "label": "Version Byte", "offset": 3 },
+      { "label": "Feature Flags", "offset": 4 },
+      { "label": "Content", "offset": 5 }
+    ]
+  },
+  "inspector": {
+    "badge": "SM",
+    "primaryField": "smileMagic",
+    "groups": [
+      {
+        "name": "Identification",
+        "fields": ["smileMagic", "smileVersion"]
+      },
+      {
+        "name": "Configuration",
+        "fields": ["smileFeatures"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "Smile Header Summary",
+      "format": "text",
+      "template": "Smile Binary JSON\nMagic   : {smileMagic}\nVersion : {smileVersion}\nFeatures: 0x{smileFeatures:X2}"
+    },
+    {
+      "name": "Smile Header CSV",
+      "format": "csv",
+      "template": "Field,Value\nMagic,{smileMagic}\nVersion,{smileVersion}\nFeatures,0x{smileFeatures:X2}"
+    }
+  ],
+  "forensic": {
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      "Magic ':)\\n' missing — not a Smile file",
+      "Version byte != 0 — unknown or future Smile version",
+      "Unexpected feature flags — possible non-standard encoder",
+      "Back-reference index out of bounds — corruption"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "Smile files start with 3-byte magic ':)\\n' (0x3A290A), version 0x00, and a features byte. Tokens use a single-byte type system: 0x00-0x1F for short ASCII strings, 0x20-0x23 for simple values (empty string, null, false, true), 0x24-0x27 for integers, 0x28-0x2B for floating point. Shared string back-references reduce redundancy.",
+    "suggestedInspections": [
+      "Verify 3-byte magic 0x3A290A at offset 0",
+      "Check version byte at offset 3 is 0x00",
+      "Decode feature flags at offset 4 (shared values, shared names, raw binary)",
+      "Parse first content token at offset 5 to determine root value type"
+    ]
+  },
+  "software": [
+    { "name": "Jackson (FasterXML)", "vendor": "FasterXML", "platform": "JVM" },
+    { "name": "Elasticsearch", "vendor": "Elastic", "platform": "Cross-platform" },
+    { "name": "smile-tool (Python)", "vendor": "Open source", "platform": "Python" }
+  ],
+  "formatRelationships": [
+    { "format": "JSON", "relation": "parent", "note": "Smile is a binary encoding of JSON with back-references and binary support" },
+    { "format": "UBJSON", "relation": "sibling", "note": "Both binary JSON formats; Smile uses token-based encoding, UBJSON uses type markers" },
+    { "format": "MSGPACK", "relation": "sibling", "note": "Both compact binary serialization for JSON-like data" }
+  ],
+  "MimeTypes": [
+    "application/x-jackson-smile",
+    "application/octet-stream"
+  ],
+  "UseCases": [
+    "Elasticsearch internal data serialization",
+    "Jackson-based JVM application binary data interchange",
+    "Compact JSON replacement for high-throughput systems",
+    "Network protocol binary payloads"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 87,
+    "LastUpdated": "2026-04-16"
+  },
+  "TechnicalDetails": {
+    "headerSize": 5,
+    "endian": "big",
+    "signatureOffset": 0,
+    "signatureLength": 3,
+    "magicValue": "3A290A",
+    "encoding": "Token-based with single-byte type markers and shared string back-references",
+    "notes": "Version must be 0. Feature byte bits: 0=shared string values, 1=shared property names, 2=raw binary allowed."
+  }
+}

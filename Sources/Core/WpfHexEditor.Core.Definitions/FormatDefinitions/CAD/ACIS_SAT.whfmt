@@ -1,0 +1,195 @@
+{
+  "diffMode": "text",
+  "formatName": "ACIS SAT (Standard ACIS Text)",
+  "version": "1.0",
+  "extensions": [
+    ".sat",
+    ".sab"
+  ],
+  "description": "ACIS SAT — text-based 3D solid model format from Spatial Corporation's ACIS geometric modeling kernel. Line 1 contains the version number (e.g. '400 0 1 0' for ACIS v4.0). Contains B-rep topology and geometry entities (body, lump, shell, face, edge, vertex, surfaces, curves) in a sequential text encoding. SAB is the binary equivalent.",
+  "category": "CAD",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "code-editor",
+  "references": {
+    "specifications": [
+      "ACIS SAT Format — Spatial Corporation documentation",
+      "3D ACIS Modeler — spatial.com/products/3d-acis-modeling"
+    ],
+    "WebLinks": [
+      "https://www.spatial.com/",
+      "https://en.wikipedia.org/wiki/ACIS",
+      "https://www.spatial.com/products/3d-acis-modeling"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      { "value": "343030", "offset": 0, "label": "'400' ACIS SAT version at line start", "weight": 0.7 },
+      { "value": "373030", "offset": 0, "label": "'700' ACIS v7 SAT header", "weight": 0.6 }
+    ],
+    "required": false,
+    "Strength": "Medium",
+    "MinimumScore": 0.5,
+    "validation": {
+      "minFileSize": 30
+    }
+  },
+  "variables": {
+    "acisVersion": "",
+    "acisSep": 0
+  },
+  "blocks": [
+    {
+      "type": "field",
+      "name": "Version Number",
+      "offset": 0,
+      "length": 3,
+      "color": "#FF6B6B",
+      "opacity": 0.45,
+      "description": "3-byte ASCII version number (e.g. '400' for v4.0, '700' for v7.0, '210' for v21.0). First token on line 1 of the SAT file.",
+      "storeAs": "acisVersion",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Space Separator",
+      "offset": 3,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "1-byte space character (0x20) separating the version number from subsequent header fields on line 1.",
+      "storeAs": "acisSep",
+      "valueType": "uint8"
+    },
+    {
+      "type": "field",
+      "name": "Header Line",
+      "offset": 0,
+      "length": 40,
+      "color": "#FFEAA7",
+      "opacity": 0.35,
+      "description": "Line 1: 'version subversion num_records num_entities' e.g. '400 0 1 0'. Defines the ACIS version and file statistics."
+    },
+    {
+      "type": "field",
+      "name": "Entity Records",
+      "offset": 40,
+      "length": 60,
+      "color": "#95E1D3",
+      "opacity": 0.30,
+      "description": "Entity definition records starting from line 2+. Each entity: 'entity_type $entity_id attributes { ... } #'. Entities include body, lump, shell, face, loop, coedge, edge, vertex, and geometry types."
+    }
+  ],
+  "assertions": [
+    {
+      "name": "Version is digit string",
+      "expression": "acisVersion != '' && acisVersion >= '100'",
+      "severity": "warning",
+      "message": "ACIS version should be a numeric string (e.g. '400', '700', '2100')"
+    },
+    {
+      "name": "Space separator after version",
+      "expression": "acisSep == 32",
+      "severity": "warning",
+      "message": "A space character (0x20) should follow the version number"
+    },
+    {
+      "name": "File has content",
+      "expression": "fileSize > 30",
+      "severity": "error",
+      "message": "SAT file is too small to contain valid ACIS model data"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "Version", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
+      { "name": "Entities", "offset": 40, "icon": "\uE9D9", "color": "#95E1D3" }
+    ]
+  },
+  "inspector": {
+    "badge": "acisVersion",
+    "primaryField": "acisVersion",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "ACIS SAT Header",
+        "icon": "\uE71B",
+        "fields": ["acisVersion", "acisSep"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "ACIS Header (JSON)",
+      "format": "json",
+      "fields": ["acisVersion", "acisSep"]
+    },
+    {
+      "name": "acis_sat_header_t (C struct)",
+      "format": "c-struct",
+      "structName": "acis_sat_header",
+      "fields": ["acisVersion", "acisSep"]
+    }
+  ],
+  "forensic": {
+    "category": "cad",
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      {
+        "name": "Unknown ACIS version",
+        "condition": "acisVersion < '100'",
+        "severity": "info",
+        "description": "Version number is unusually low — may not be a valid ACIS SAT file or uses a very old format version."
+      }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "ACIS SAT: line 1 = 'version subversion num_records num_entities' (e.g. '400 0 1 0'). Then entity records, each terminated with '#'. Entity format: 'entity_type $id attribs { parameters } #'. Key entities: body(lump-ptr), lump(shell-ptr), shell(face-ptr), face(loop-ptr surface-ptr sense), loop(coedge-ptr), coedge(edge-ptr next prev partner sense), edge(vertex-ptr vertex-ptr curve-ptr), vertex(point-ptr). Geometry: plane, cone, sphere, torus, spline. SAB = binary equivalent.",
+    "suggestedInspections": [
+      "Parse line 1 for ACIS version and entity count",
+      "Count body entities to determine number of solid objects",
+      "List face entities and their associated surface types",
+      "Check for assembly structure (multiple bodies in single file)"
+    ]
+  },
+  "software": [
+    "AutoCAD (Autodesk)",
+    "SpaceClaim",
+    "BricsCAD",
+    "CATIA (import via ACIS translator)",
+    "Spatial InterOp"
+  ],
+  "formatRelationships": {
+    "category": "CAD",
+    "extensions": [".sat", ".sab"],
+    "relatedFormats": ["PARASOLID_XT", "STEP", "IGES"],
+    "containerVariant": ".sat = text (readable); .sab = binary (compact); .asat = ACIS assembly text; .asab = ACIS assembly binary"
+  },
+  "MimeTypes": [
+    "application/x-acis-sat",
+    "text/plain"
+  ],
+  "UseCases": [
+    "CAD solid model interchange between ACIS-based applications",
+    "AutoCAD ACIS solid export/import",
+    "B-rep model archival in human-readable text form",
+    "CAD data translation and validation workflows"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 84,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 4,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-16",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "FileType": "Text-based B-rep solid model format",
+    "Encoding": "ASCII",
+    "ModelingKernel": "ACIS (Spatial Corporation)",
+    "TopologyEntities": ["body", "lump", "shell", "subshell", "face", "loop", "coedge", "edge", "vertex"],
+    "GeometryEntities": ["plane", "cone", "sphere", "torus", "spline_surface", "line", "ellipse", "intcurve", "point"],
+    "RecordTerminator": "#",
+    "Endianness": "N/A (text format)"
+  }
+}

@@ -142,7 +142,7 @@ public sealed class LspDeclarationHintsLayer : FrameworkElement
     {
         _debounce.Stop();
 
-        if (_lspClient?.IsInitialized != true || _filePath is null)
+        if (_lspClient?.IsFullyLoaded != true || _filePath is null)
         {
             ClearLens();
             return;

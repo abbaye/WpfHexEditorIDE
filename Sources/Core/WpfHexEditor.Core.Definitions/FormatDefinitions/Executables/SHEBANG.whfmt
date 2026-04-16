@@ -1,0 +1,226 @@
+{
+  "formatName": "Shebang Script",
+  "version": "1.0",
+  "diffMode": "text",
+  "extensions": [],
+  "description": "Unix shebang (#!) script header used by the kernel to determine which interpreter should execute the script file. The first two bytes are always 0x23 0x21 (ASCII '#!') followed by the interpreter path.",
+  "category": "Executables",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "code-editor",
+  "MimeTypes": [
+    "text/x-shellscript",
+    "application/x-sh"
+  ],
+  "UseCases": [
+    "Shell scripts (bash, sh, zsh, fish)",
+    "Python scripts with #!/usr/bin/env python3",
+    "Perl, Ruby, Node.js, and other interpreted language scripts",
+    "CGI scripts on web servers"
+  ],
+  "references": [
+    "https://en.wikipedia.org/wiki/Shebang_(Unix)",
+    "https://man7.org/linux/man-pages/man2/execve.2.html",
+    "https://www.in-ulm.de/~mascheck/various/shebang/"
+  ],
+  "software": [
+    {
+      "name": "bash",
+      "url": "https://www.gnu.org/software/bash/",
+      "role": "Most common shebang target shell"
+    },
+    {
+      "name": "env",
+      "url": "https://www.gnu.org/software/coreutils/",
+      "role": "Portable interpreter lookup via /usr/bin/env"
+    },
+    {
+      "name": "file",
+      "url": "https://www.darwinsys.com/file/",
+      "role": "Magic-based file type identification"
+    }
+  ],
+  "formatRelationships": [
+    {
+      "format": "ELF",
+      "relationship": "ELF binaries are the compiled counterpart; shebang scripts invoke interpreters that are typically ELF executables"
+    },
+    {
+      "format": "BATCH",
+      "relationship": "Windows .bat/.cmd files serve a similar role on Windows platforms"
+    }
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "offset": 0,
+        "value": "2321",
+        "label": "Shebang '#!' magic bytes (0x23 0x21)",
+        "weight": 1.0
+      }
+    ],
+    "matchMode": "first",
+    "MinimumScore": 85,
+    "Strength": "Strong",
+    "EntropyHint": {
+      "min": 2.0,
+      "max": 5.5,
+      "note": "Plain text scripts have moderate entropy; heavily commented scripts lower"
+    },
+    "validation": "First two bytes must be 0x23 0x21 (ASCII '#!'). Interpreter path must start with '/' character."
+  },
+  "variables": [
+    {
+      "name": "shebangMagic",
+      "type": "ascii",
+      "offset": 0,
+      "length": 2,
+      "description": "Shebang magic '#!' (0x2321)"
+    },
+    {
+      "name": "interpreterPath",
+      "type": "ascii",
+      "offset": 2,
+      "length": -1,
+      "description": "Path to the interpreter executable, terminated by newline"
+    },
+    {
+      "name": "interpreterArgs",
+      "type": "ascii",
+      "offset": -1,
+      "length": -1,
+      "description": "Optional arguments passed to the interpreter after the path"
+    },
+    {
+      "name": "firstLineLength",
+      "type": "uint16",
+      "offset": -1,
+      "length": 2,
+      "description": "Length of the shebang line including #! prefix"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "ShebangMagic",
+      "offset": 0,
+      "length": 2,
+      "description": "The '#!' magic bytes that signal the kernel to use an interpreter for execution",
+      "fields": [
+        {
+          "name": "Magic",
+          "variable": "shebangMagic",
+          "offset": 0,
+          "length": 2
+        }
+      ]
+    },
+    {
+      "name": "InterpreterPath",
+      "offset": 2,
+      "length": -1,
+      "description": "Absolute path to the interpreter binary (e.g., /bin/bash, /usr/bin/env python3)"
+    },
+    {
+      "name": "InterpreterArguments",
+      "offset": -1,
+      "length": -1,
+      "description": "Optional arguments following the interpreter path, separated by whitespace"
+    },
+    {
+      "name": "ScriptBody",
+      "offset": -1,
+      "length": -1,
+      "description": "The actual script content following the shebang line, interpreted by the specified interpreter"
+    }
+  ],
+  "assertions": [
+    {
+      "id": "A1",
+      "description": "First two bytes must be '#!' (0x2321)",
+      "expression": "shebangMagic == '#!'"
+    },
+    {
+      "id": "A2",
+      "description": "Interpreter path must start with '/'",
+      "expression": "interpreterPath.startsWith('/')"
+    },
+    {
+      "id": "A3",
+      "description": "Shebang line should not exceed 256 bytes (kernel limit on most systems)",
+      "expression": "firstLineLength <= 256"
+    }
+  ],
+  "navigation": {
+    "entryPoint": "ShebangMagic",
+    "structure": [
+      "ShebangMagic",
+      "InterpreterPath",
+      "InterpreterArguments",
+      "ScriptBody"
+    ],
+    "notes": "The shebang line is limited to ~127-256 bytes depending on the OS. Linux kernel limit is 256 bytes including the '#!' prefix."
+  },
+  "inspector": {
+    "badge": "#!",
+    "primaryField": "interpreterPath",
+    "groups": [
+      {
+        "name": "Shebang",
+        "fields": [
+          "shebangMagic",
+          "interpreterPath",
+          "interpreterArgs"
+        ]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "Shebang Info CSV",
+      "format": "csv",
+      "fields": [
+        "shebangMagic",
+        "interpreterPath",
+        "interpreterArgs"
+      ]
+    },
+    {
+      "name": "Shebang Info JSON",
+      "format": "json",
+      "fields": [
+        "shebangMagic",
+        "interpreterPath",
+        "interpreterArgs"
+      ]
+    }
+  ],
+  "forensic": {
+    "riskLevel": "MEDIUM",
+    "notes": "Shebang scripts can execute arbitrary code. Malicious scripts may use uncommon interpreters or obfuscated paths to evade detection.",
+    "suspiciousPatterns": [
+      "Interpreter path pointing to a non-standard location (e.g., /tmp, /var)",
+      "Use of env with unusual interpreter names to bypass path restrictions",
+      "Shebang line containing shell metacharacters or escape sequences",
+      "Script with executable permission but obfuscated content"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "Shebang (#!) is a two-byte magic number at offset 0 used by Unix-like kernels to identify interpreter scripts. The execve syscall reads this prefix and launches the specified interpreter with the script path as argument.",
+    "suggestedInspections": [
+      "Extract and validate the interpreter path against known safe locations",
+      "Check if the interpreter binary actually exists on the target system",
+      "Analyze script body for obfuscation techniques (base64 encoding, eval chains)",
+      "Detect polyglot scripts that are valid in multiple languages simultaneously"
+    ]
+  },
+  "TechnicalDetails": {
+    "magicBytes": "0x23 0x21",
+    "maxShebangLength": 256,
+    "kernelHandling": "execve() syscall parses #! and re-invokes with interpreter",
+    "portability": "POSIX systems; not natively supported on Windows"
+  },
+  "QualityMetrics": {
+    "CompletenessScore": 84,
+    "LastUpdated": "2026-04-16",
+    "ReviewedBy": "WPFHexaEditor Team"
+  }
+}

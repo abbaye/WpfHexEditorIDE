@@ -1,0 +1,177 @@
+{
+  "diffMode": "binary",
+  "formatName": "EFI Byte Code (EBC)",
+  "version": "1.0",
+  "extensions": [".ebc", ".efi"],
+  "description": "EFI Byte Code executable — a PE (Portable Executable) binary with machine type 0x0EBC, containing platform-independent UEFI bytecode that runs on the EBC virtual machine interpreter built into UEFI firmware. EBC allows writing UEFI drivers and applications that work across all UEFI-supported architectures (x86, x64, ARM, AArch64) without recompilation.",
+  "category": "Programming",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "HexEditor",
+  "references": [
+    "https://uefi.org/specs/UEFI/2.10/24_EFI_Byte_Code_Virtual_Machine.html",
+    "https://en.wikipedia.org/wiki/UEFI#EFI_Byte_Code",
+    "https://tianocore.org/"
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "value": "4D5A",
+        "offset": 0,
+        "label": "'MZ' PE header for EFI Byte Code",
+        "weight": 0.4
+      }
+    ],
+    "matchMode": "Best",
+    "MinimumScore": 0.3,
+    "Strength": "Weak",
+    "EntropyHint": "Moderate — PE headers are structured; EBC bytecode sections have moderate entropy"
+  },
+  "variables": [
+    {
+      "name": "ebcMzMagic",
+      "offset": 0,
+      "size": 2,
+      "type": "ascii",
+      "description": "PE magic — 'MZ'"
+    },
+    {
+      "name": "ebcPeOffset",
+      "offset": 60,
+      "size": 4,
+      "type": "uint32",
+      "endian": "LE",
+      "description": "Offset to PE signature (e_lfanew field at offset 0x3C)"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "DOSHeader",
+      "offset": 0,
+      "size": 64,
+      "description": "DOS MZ header stub"
+    },
+    {
+      "name": "PESignature",
+      "offset": 0,
+      "size": 4,
+      "description": "PE signature 'PE\\0\\0' at offset pointed to by e_lfanew"
+    },
+    {
+      "name": "COFFHeader",
+      "offset": 0,
+      "size": 20,
+      "description": "COFF file header — Machine field should be 0x0EBC for EFI Byte Code"
+    },
+    {
+      "name": "OptionalHeader",
+      "offset": 0,
+      "size": 0,
+      "description": "PE optional header with EFI subsystem type"
+    },
+    {
+      "name": "SectionTable",
+      "offset": 0,
+      "size": 0,
+      "description": "Section headers (.text for EBC bytecode, .reloc for relocations)"
+    }
+  ],
+  "assertions": [
+    {
+      "variable": "ebcMzMagic",
+      "operator": "==",
+      "value": "MZ",
+      "description": "File must start with 'MZ' DOS header",
+      "level": "Error"
+    },
+    {
+      "variable": "ebcPeOffset",
+      "operator": ">",
+      "value": 0,
+      "description": "PE offset must point to a valid location",
+      "level": "Error"
+    },
+    {
+      "variable": "ebcPeOffset",
+      "operator": "<",
+      "value": 1024,
+      "description": "PE offset should be within first 1KB for typical EBC files",
+      "level": "Warning"
+    }
+  ],
+  "navigation": {
+    "entryPoint": 0,
+    "sections": [
+      { "name": "DOS Header", "offset": 0, "size": 64 },
+      { "name": "PE Signature", "offset": 0, "size": 4 },
+      { "name": "COFF Header", "offset": 0, "size": 20 },
+      { "name": "Sections", "offset": 0, "size": 0 }
+    ]
+  },
+  "inspector": {
+    "badge": "EBC",
+    "primaryField": "ebcMzMagic",
+    "groups": [
+      {
+        "name": "PE Header",
+        "fields": ["ebcMzMagic", "ebcPeOffset"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "EBC Summary",
+      "format": "text",
+      "template": "Format: EFI Byte Code\nMagic: {ebcMzMagic}\nPE Offset: {ebcPeOffset}"
+    },
+    {
+      "name": "EBC JSON Report",
+      "format": "json",
+      "template": "{ \"format\": \"EBC\", \"magic\": \"{ebcMzMagic}\", \"peOffset\": {ebcPeOffset} }"
+    }
+  ],
+  "forensic": {
+    "riskLevel": "HIGH",
+    "notes": "EBC drivers execute in UEFI firmware with high privilege. Malicious EBC modules can persist across OS reinstalls as UEFI rootkits. Always verify signing and provenance.",
+    "suspiciousPatterns": [
+      "EBC binary without Authenticode signature",
+      "EBC driver with unexpected section names or unusually large .data section",
+      "EBC module referencing runtime services associated with firmware persistence"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "EBC is a PE executable with machine type 0x0EBC for architecture-independent UEFI drivers. The EBC VM is built into UEFI firmware. Part of the UEFI specification.",
+    "suggestedInspections": [
+      "Verify 'MZ' magic and locate PE signature via e_lfanew at offset 0x3C.",
+      "Check the COFF Machine field — must be 0x0EBC (3772) for EFI Byte Code.",
+      "Inspect the PE optional header Subsystem field for EFI subsystem types.",
+      "Verify Authenticode signature for firmware integrity."
+    ]
+  },
+  "software": [
+    { "name": "EDK II (TianoCore)", "platform": "Windows/macOS/Linux", "url": "https://github.com/tianocore/edk2" },
+    { "name": "UEFITool", "platform": "Windows/macOS/Linux", "url": "https://github.com/LongSoft/UEFITool" },
+    { "name": "PE-bear", "platform": "Windows", "url": "https://github.com/hasherezade/pe-bear" }
+  ],
+  "formatRelationships": [
+    { "format": "PE", "relationship": "parent", "note": "EBC uses PE container format with machine type 0x0EBC" },
+    { "format": "EFI", "relationship": "sibling", "note": "EBC is one of several UEFI executable types alongside native x64/ARM EFI" }
+  ],
+  "MimeTypes": ["application/vnd.microsoft.portable-executable", "application/octet-stream"],
+  "UseCases": [
+    "Architecture-independent UEFI driver development",
+    "UEFI firmware analysis and security auditing",
+    "Cross-platform UEFI application deployment"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 84,
+    "LastUpdated": "2026-04-16",
+    "ReviewedBy": "WPFHexaEditor Team"
+  },
+  "TechnicalDetails": {
+    "magicBytes": "4D 5A (MZ)",
+    "machineType": "0x0EBC (3772 decimal)",
+    "containerFormat": "PE (Portable Executable)",
+    "subsystemTypes": "EFI_APPLICATION (10), EFI_BOOT_SERVICE_DRIVER (11), EFI_RUNTIME_DRIVER (12)",
+    "specification": "UEFI Specification Chapter 24"
+  }
+}

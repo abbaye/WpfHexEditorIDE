@@ -1,0 +1,246 @@
+{
+  "formatName": "Chrome Extension (CRX)",
+  "version": "1.0",
+  "diffMode": "binary",
+  "extensions": [
+    ".crx"
+  ],
+  "description": "Chrome Extension package format (CRX) used by Chromium-based browsers to distribute and install extensions. Begins with ASCII 'Cr24' magic followed by a version number, cryptographic signature header, and a ZIP archive containing the extension files.",
+  "category": "Firmware",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "MimeTypes": [
+    "application/x-chrome-extension"
+  ],
+  "UseCases": [
+    "Chrome/Chromium browser extension distribution",
+    "Edge extension packaging (Chromium-based)",
+    "Browser extension security analysis and review",
+    "Automated extension scanning in enterprise environments"
+  ],
+  "references": [
+    "https://developer.chrome.com/docs/extensions/reference/crx",
+    "https://chromium.googlesource.com/chromium/src/+/main/components/crx_file/crx3.proto",
+    "https://web.archive.org/web/2023/https://developer.chrome.com/docs/extensions/mv3/linux_hosting/"
+  ],
+  "software": [
+    {
+      "name": "Chrome",
+      "url": "https://www.google.com/chrome/",
+      "role": "Primary runtime for CRX extensions"
+    },
+    {
+      "name": "crx3-utils",
+      "url": "https://github.com/nickthecook/crx3",
+      "role": "CRX3 packing and unpacking tools"
+    },
+    {
+      "name": "7-Zip",
+      "url": "https://www.7-zip.org/",
+      "role": "Extract ZIP content from CRX files"
+    }
+  ],
+  "formatRelationships": [
+    {
+      "format": "ZIP",
+      "relationship": "CRX payload is a standard ZIP archive containing extension files"
+    },
+    {
+      "format": "PROTOBUF",
+      "relationship": "CRX3 header uses Protocol Buffers for the signed data structure"
+    }
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "offset": 0,
+        "value": "43723234",
+        "label": "CRX magic 'Cr24' (0x43 0x72 0x32 0x34)",
+        "weight": 1.0
+      }
+    ],
+    "matchMode": "first",
+    "MinimumScore": 92,
+    "Strength": "Strong",
+    "EntropyHint": {
+      "min": 6.0,
+      "max": 8.0,
+      "note": "Cryptographic signatures and compressed ZIP content produce high entropy"
+    },
+    "validation": "First 4 bytes must be 'Cr24' (0x43723234). Version at offset 4 must be 2 or 3. Header size at offset 8 must be reasonable."
+  },
+  "variables": [
+    {
+      "name": "crxMagic",
+      "type": "ascii",
+      "offset": 0,
+      "length": 4,
+      "description": "CRX magic: 'Cr24'"
+    },
+    {
+      "name": "crxVersion",
+      "type": "uint32",
+      "offset": 4,
+      "length": 4,
+      "endian": "little",
+      "description": "CRX format version (2 or 3)",
+      "valueMap": {
+        "2": "CRX2",
+        "3": "CRX3"
+      }
+    },
+    {
+      "name": "crxHeaderSize",
+      "type": "uint32",
+      "offset": 8,
+      "length": 4,
+      "endian": "little",
+      "description": "Size of the header (CRX3: protobuf header length; CRX2: public key length)"
+    },
+    {
+      "name": "crxSignedHeaderData",
+      "type": "hex",
+      "offset": 12,
+      "length": -1,
+      "description": "Signed header data containing extension ID proof and signatures"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "CRXHeader",
+      "offset": 0,
+      "length": 12,
+      "description": "CRX file header: 4-byte magic 'Cr24', 4-byte version, 4-byte header size",
+      "fields": [
+        {
+          "name": "Magic",
+          "variable": "crxMagic",
+          "offset": 0,
+          "length": 4
+        },
+        {
+          "name": "Version",
+          "variable": "crxVersion",
+          "offset": 4,
+          "length": 4
+        },
+        {
+          "name": "HeaderSize",
+          "variable": "crxHeaderSize",
+          "offset": 8,
+          "length": 4
+        }
+      ]
+    },
+    {
+      "name": "SignatureBlock",
+      "offset": 12,
+      "length": -1,
+      "description": "Cryptographic signature block (CRX3: protobuf CrxFileHeader with signed_header_data; CRX2: RSA public key + signature)"
+    },
+    {
+      "name": "ZIPArchive",
+      "offset": -1,
+      "length": -1,
+      "description": "Standard ZIP archive containing manifest.json, scripts, HTML, CSS, and other extension resources"
+    },
+    {
+      "name": "ExtensionManifest",
+      "offset": -1,
+      "length": -1,
+      "description": "manifest.json within the ZIP defining extension permissions, content scripts, and metadata"
+    }
+  ],
+  "assertions": [
+    {
+      "id": "A1",
+      "description": "Magic must be 'Cr24'",
+      "expression": "crxMagic == 'Cr24'"
+    },
+    {
+      "id": "A2",
+      "description": "Version must be 2 or 3",
+      "expression": "crxVersion == 2 || crxVersion == 3"
+    },
+    {
+      "id": "A3",
+      "description": "Header size must be reasonable (< 1 MB)",
+      "expression": "crxHeaderSize < 1048576"
+    }
+  ],
+  "navigation": {
+    "entryPoint": "CRXHeader",
+    "structure": [
+      "CRXHeader",
+      "SignatureBlock",
+      "ZIPArchive",
+      "ExtensionManifest"
+    ],
+    "notes": "CRX3 uses Protocol Buffers for the header. The ZIP archive starts at offset 12 + crxHeaderSize. The ZIP can be extracted directly from that offset."
+  },
+  "inspector": {
+    "badge": "CRX",
+    "primaryField": "crxVersion",
+    "groups": [
+      {
+        "name": "Header",
+        "fields": [
+          "crxMagic",
+          "crxVersion",
+          "crxHeaderSize"
+        ]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "CRX Header CSV",
+      "format": "csv",
+      "fields": [
+        "crxMagic",
+        "crxVersion",
+        "crxHeaderSize"
+      ]
+    },
+    {
+      "name": "CRX Header JSON",
+      "format": "json",
+      "fields": [
+        "crxMagic",
+        "crxVersion",
+        "crxHeaderSize"
+      ]
+    }
+  ],
+  "forensic": {
+    "riskLevel": "HIGH",
+    "notes": "Browser extensions have broad access to browsing data, cookies, and page content. Malicious CRX files are a common attack vector for data exfiltration, credential theft, and ad injection.",
+    "suspiciousPatterns": [
+      "Extension requesting excessive permissions (tabs, webRequest, cookies, all_urls)",
+      "Obfuscated JavaScript in content scripts",
+      "CRX2 format (deprecated, weaker signature scheme)",
+      "Extension ID mismatch between signed header and manifest"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "CRX files are Chrome extension packages with a 'Cr24' magic header, version number, and cryptographic signature protecting the contained ZIP archive. CRX3 uses Protocol Buffers and ECDSA/RSA signatures; CRX2 used raw RSA. The ZIP at the tail contains manifest.json defining all extension capabilities.",
+    "suggestedInspections": [
+      "Verify CRX version and parse header accordingly (CRX2 vs CRX3 differ significantly)",
+      "Extract and analyze manifest.json permissions for security review",
+      "Validate cryptographic signatures against the extension ID",
+      "Scan JavaScript files in the ZIP for known malicious patterns or obfuscation"
+    ]
+  },
+  "TechnicalDetails": {
+    "headerSize": 12,
+    "magicBytes": "0x43 0x72 0x32 0x34 (Cr24)",
+    "crx2KeyFormat": "DER-encoded RSA public key",
+    "crx3HeaderFormat": "Protocol Buffers (CrxFileHeader)",
+    "payloadFormat": "Standard ZIP archive"
+  },
+  "QualityMetrics": {
+    "CompletenessScore": 86,
+    "LastUpdated": "2026-04-16",
+    "ReviewedBy": "WPFHexaEditor Team"
+  }
+}

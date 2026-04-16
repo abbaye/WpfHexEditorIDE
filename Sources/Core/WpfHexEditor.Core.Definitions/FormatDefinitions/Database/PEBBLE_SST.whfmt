@@ -1,0 +1,186 @@
+{
+  "diffMode": "binary",
+  "formatName": "Pebble SSTable",
+  "version": "1.0",
+  "extensions": [".sst"],
+  "description": "Pebble is CockroachDB's storage engine, a Go fork of RocksDB. Pebble SSTable files use a custom footer magic consisting of two rock emoji sequences (0xF09FAAB3F09FAAB3) which may appear near the end of the file. SSTables store sorted key-value pairs in data blocks with index blocks for fast lookup. Detection is medium confidence since the magic is in the footer, not the header.",
+  "category": "Database",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "references": [
+    "https://github.com/cockroachdb/pebble",
+    "https://cockroachlabs.com/docs/stable/architecture/storage-layer.html",
+    "https://github.com/facebook/rocksdb/wiki/Rocksdb-BlockBasedTable-Format"
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "value": "F09FAAB3F09FAAB3",
+        "offset": 0,
+        "label": "Pebble SST footer magic (rocks emoji x2)",
+        "weight": 0.5
+      }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.4,
+    "Strength": "Medium",
+    "validation": {
+      "rules": []
+    }
+  },
+  "variables": [
+    {
+      "name": "pebbleFirstByte",
+      "offset": 0,
+      "size": 1,
+      "type": "uint8",
+      "storeAs": "pebbleFirstByte",
+      "description": "First byte of the SSTable file (typically start of first data block)"
+    },
+    {
+      "name": "pebbleSecondByte",
+      "offset": 1,
+      "size": 1,
+      "type": "uint8",
+      "storeAs": "pebbleSecondByte",
+      "description": "Second byte of the SSTable file"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "DataBlock",
+      "offset": 0,
+      "size": -1,
+      "description": "First data block containing sorted key-value pairs with restart points",
+      "fields": [
+        { "name": "FirstByte", "offset": 0, "size": 1, "type": "uint8" },
+        { "name": "SecondByte", "offset": 1, "size": 1, "type": "uint8" }
+      ]
+    },
+    {
+      "name": "IndexBlock",
+      "offset": -1,
+      "size": -1,
+      "description": "Index block mapping key ranges to data block offsets",
+      "fields": []
+    },
+    {
+      "name": "MetaIndexBlock",
+      "offset": -1,
+      "size": -1,
+      "description": "Meta-index block pointing to filter and properties blocks",
+      "fields": []
+    },
+    {
+      "name": "Footer",
+      "offset": -1,
+      "size": 48,
+      "description": "48-byte footer with metaindex handle, index handle, and 8-byte Pebble magic 0xF09FAAB3F09FAAB3",
+      "fields": []
+    }
+  ],
+  "assertions": [
+    {
+      "id": "assert_first_byte",
+      "field": "pebbleFirstByte",
+      "operator": "greaterThanOrEqual",
+      "value": 0,
+      "severity": "info",
+      "message": "First byte read for SSTable analysis"
+    },
+    {
+      "id": "assert_not_empty",
+      "field": "pebbleSecondByte",
+      "operator": "greaterThanOrEqual",
+      "value": 0,
+      "severity": "info",
+      "message": "File has at least 2 bytes"
+    },
+    {
+      "id": "assert_extension",
+      "field": "pebbleFirstByte",
+      "operator": "notEquals",
+      "value": -1,
+      "severity": "warning",
+      "message": "SST file should contain valid data block content"
+    }
+  ],
+  "navigation": {
+    "entryPoints": [
+      { "name": "First Data Block", "offset": 0 }
+    ],
+    "jumpTable": [
+      { "label": "File Start", "offset": 0 }
+    ]
+  },
+  "inspector": {
+    "badge": "PB",
+    "primaryField": "pebbleFirstByte",
+    "groups": [
+      {
+        "name": "Identification",
+        "fields": ["pebbleFirstByte", "pebbleSecondByte"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "Pebble SST Summary",
+      "format": "text",
+      "template": "Pebble SSTable\nFirst Byte : 0x{pebbleFirstByte:X2}\nSecond Byte: 0x{pebbleSecondByte:X2}"
+    },
+    {
+      "name": "Pebble SST Header CSV",
+      "format": "csv",
+      "template": "Field,Value\nFirstByte,0x{pebbleFirstByte:X2}\nSecondByte,0x{pebbleSecondByte:X2}"
+    }
+  ],
+  "forensic": {
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      "Footer magic missing — file may be truncated or not a Pebble SST",
+      "Checksum mismatch in data blocks — corruption or tampering",
+      "Index block offset beyond file size"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "Pebble SSTables follow RocksDB block-based table format with a custom footer magic. The footer is the last 48 bytes containing metaindex block handle, index block handle, and the 8-byte magic 0xF09FAAB3F09FAAB3. Data blocks use prefix compression with restart points.",
+    "suggestedInspections": [
+      "Read last 48 bytes for footer and verify Pebble magic 0xF09FAAB3F09FAAB3",
+      "Parse block handles (varint64 offset + varint64 size) from footer",
+      "Check data block CRC32c checksums",
+      "Inspect properties block for compression type and key count"
+    ]
+  },
+  "software": [
+    { "name": "CockroachDB", "vendor": "Cockroach Labs", "platform": "Cross-platform" },
+    { "name": "Pebble CLI tools", "vendor": "Cockroach Labs", "platform": "Cross-platform" },
+    { "name": "sst_dump (RocksDB compatible)", "vendor": "Facebook / Open source", "platform": "Cross-platform" }
+  ],
+  "formatRelationships": [
+    { "format": "COCKROACH_SST", "relation": "variant", "note": "Pebble uses its own magic; older CockroachDB versions used RocksDB SST format directly" },
+    { "format": "ROCKSDB_SST", "relation": "parent", "note": "Pebble SST format is derived from RocksDB block-based table format" }
+  ],
+  "MimeTypes": [
+    "application/octet-stream"
+  ],
+  "UseCases": [
+    "CockroachDB storage layer sorted string tables",
+    "LSM tree level compaction output",
+    "Range scan and point lookup optimization",
+    "Bulk data ingestion via SSTable ingest"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 82,
+    "LastUpdated": "2026-04-16"
+  },
+  "TechnicalDetails": {
+    "footerSize": 48,
+    "endian": "little",
+    "signatureOffset": -48,
+    "signatureLength": 8,
+    "magicValue": "F09FAAB3F09FAAB3",
+    "compression": "Snappy, LZ4, ZSTD, or none per block",
+    "notes": "Footer magic is at end of file, not beginning. Detection relies on extension and footer scan."
+  }
+}

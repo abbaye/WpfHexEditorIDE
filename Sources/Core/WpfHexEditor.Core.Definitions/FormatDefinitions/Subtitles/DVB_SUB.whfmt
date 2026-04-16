@@ -1,0 +1,237 @@
+{
+  "diffMode": "binary",
+  "formatName": "DVB Subtitle Segments",
+  "version": "1.0",
+  "extensions": [
+    ".dvbsub"
+  ],
+  "description": "DVB (Digital Video Broadcasting) subtitles are bitmap-based subtitle segments defined in ETSI EN 300 743, used in European digital television broadcasts (DVB-T, DVB-S, DVB-C). Each segment begins with a 0x0F sync byte followed by a segment type, page ID, and segment data. DVB subtitles support multiple regions with independent color palettes (CLUTs), object composition with pixel-level RLE encoding, and timed display sets. The format is designed for real-time hardware rendering in set-top boxes with minimal memory and processing requirements.",
+  "category": "Subtitles",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "references": {
+    "specifications": [
+      "ETSI EN 300 743 — DVB Subtitling Systems",
+      "ETSI EN 300 468 — DVB Service Information"
+    ],
+    "WebLinks": [
+      "https://en.wikipedia.org/wiki/DVB_subtitles",
+      "https://www.etsi.org/deliver/etsi_en/300700_300799/300743/",
+      "https://wiki.multimedia.cx/index.php/DVB_Subtitles"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      {
+        "value": "0F",
+        "offset": 0,
+        "label": "0x0F DVB subtitle sync byte",
+        "weight": 0.5
+      }
+    ],
+    "matchMode": "allOf",
+    "MinimumScore": 82,
+    "Strength": "Weak",
+    "EntropyHint": { "min": 2.0, "max": 6.0 },
+    "validation": {
+      "minFileSize": 6,
+      "maxSignatureOffset": 0
+    }
+  },
+  "variables": {
+    "dvbSyncByte": 0,
+    "dvbSegType": 0,
+    "dvbPageId": 0,
+    "dvbSegLength": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "Sync Byte",
+      "offset": 0,
+      "length": 1,
+      "color": "#FF6B6B",
+      "opacity": 0.45,
+      "description": "DVB subtitle segment synchronization byte: 0x0F. Every DVB subtitle segment in the PES subtitle data starts with this byte, enabling parsers to locate segment boundaries within the stream.",
+      "storeAs": "dvbSyncByte",
+      "valueType": "uint8",
+      "validation": {
+        "expectedValue": 15
+      }
+    },
+    {
+      "type": "field",
+      "name": "Segment Type",
+      "offset": 1,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "DVB subtitle segment type identifier (8-bit unsigned). Defines the content and purpose of this segment within the subtitle display set.",
+      "storeAs": "dvbSegType",
+      "valueType": "uint8",
+      "valueMap": {
+        "16": "Page Composition",
+        "17": "Region Composition",
+        "18": "CLUT Definition",
+        "19": "Object Data",
+        "20": "Display Definition",
+        "128": "End of Display Set"
+      }
+    },
+    {
+      "type": "field",
+      "name": "Page ID",
+      "offset": 2,
+      "length": 2,
+      "color": "#95E1D3",
+      "opacity": 0.35,
+      "description": "Page identifier (16-bit big-endian unsigned). Links this segment to a specific subtitle page. Multiple pages can coexist for different subtitle services (e.g., different languages) within the same PES stream.",
+      "storeAs": "dvbPageId",
+      "valueType": "uint16",
+      "endianness": "big"
+    },
+    {
+      "type": "field",
+      "name": "Segment Length",
+      "offset": 4,
+      "length": 2,
+      "color": "#FFE66D",
+      "opacity": 0.35,
+      "description": "Length of the segment data in bytes (16-bit big-endian unsigned). Does not include the 6-byte segment header (sync + type + pageId + length).",
+      "storeAs": "dvbSegLength",
+      "valueType": "uint16",
+      "endianness": "big"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "Sync byte valid",
+      "expression": "dvbSyncByte == 15",
+      "severity": "error",
+      "message": "DVB subtitle sync byte must be 0x0F (15)"
+    },
+    {
+      "name": "Segment type known",
+      "expression": "dvbSegType >= 16 && dvbSegType <= 20 || dvbSegType == 128",
+      "severity": "warning",
+      "message": "Segment type should be a known DVB subtitle segment type (0x10-0x14 or 0x80)"
+    },
+    {
+      "name": "Segment length plausible",
+      "expression": "dvbSegLength >= 0",
+      "severity": "info",
+      "message": "Segment length must be non-negative"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      {
+        "name": "Segment Header",
+        "offset": 0,
+        "icon": "\uE71B",
+        "color": "#FF6B6B"
+      },
+      {
+        "name": "Segment Data",
+        "offset": 6,
+        "icon": "\uE9D9",
+        "color": "#FFE66D"
+      }
+    ]
+  },
+  "inspector": {
+    "badge": "dvbSegType",
+    "primaryField": "dvbPageId",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "Segment Header",
+        "icon": "\uE71B",
+        "fields": ["dvbSyncByte", "dvbSegType"]
+      },
+      {
+        "title": "Page / Data",
+        "icon": "\uE8A5",
+        "fields": ["dvbPageId", "dvbSegLength"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "DVB Segment (JSON)",
+      "format": "json",
+      "fields": ["dvbSyncByte", "dvbSegType", "dvbPageId", "dvbSegLength"]
+    },
+    {
+      "name": "dvb_segment_t (C struct)",
+      "format": "c-struct",
+      "structName": "dvb_segment",
+      "fields": ["dvbSyncByte", "dvbSegType", "dvbPageId", "dvbSegLength"]
+    }
+  ],
+  "forensic": {
+    "category": "subtitles",
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      {
+        "name": "Unknown segment type",
+        "condition": "dvbSegType < 16 || (dvbSegType > 20 && dvbSegType != 128)",
+        "severity": "warning",
+        "description": "Segment type is not a recognized DVB subtitle type — may indicate corrupted stream data."
+      },
+      {
+        "name": "Non-standard sync byte",
+        "condition": "dvbSyncByte != 15",
+        "severity": "error",
+        "description": "Sync byte is not 0x0F — not a valid DVB subtitle segment."
+      }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "DVB subtitle segment layout: syncByte(1B: 0x0F) + segmentType(1B) + pageId(2B BE) + segmentLength(2B BE) + data(segmentLength bytes). Segment types: Page Composition(0x10) defines timeout, state, and region list; Region Composition(0x11) defines region position, CLUT reference, and object list; CLUT Definition(0x12) defines 2/4/8-bit palette entries as Y/Cr/Cb/Alpha; Object Data(0x13) contains pixel-coded or string-coded subtitle graphics; Display Definition(0x14) defines display resolution; End(0x80) terminates display set. RLE encoding: 2-bit, 4-bit, or 8-bit pixel data with run-length codes.",
+    "suggestedInspections": [
+      "Verify 0x0F sync byte at each segment start",
+      "Parse Page Composition for display timeout and page state",
+      "Extract CLUT Definition for palette analysis",
+      "Decode Object Data RLE bitmap for subtitle image verification"
+    ]
+  },
+  "software": [
+    "FFmpeg",
+    "ProjectX",
+    "MKVToolNix"
+  ],
+  "formatRelationships": {
+    "category": "Subtitles",
+    "extensions": [".dvbsub"],
+    "relatedFormats": ["PGS", "VobSub", "Teletext"],
+    "containerVariant": "PES stream within MPEG-TS (DVB transport)"
+  },
+  "MimeTypes": [
+    "application/x-dvb-sub"
+  ],
+  "UseCases": [
+    "European digital television subtitle broadcasting (DVB-T/S/C)",
+    "Set-top box real-time subtitle rendering",
+    "Multi-language subtitle multiplexing in MPEG-TS streams",
+    "DVR recording subtitle extraction and conversion"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 83,
+    "DocumentationLevel": "comprehensive",
+    "BlocksDefined": 4,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-16",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "BitmapSubtitles": true,
+    "SegmentHeaderSize": "6 bytes",
+    "PixelDepths": "2-bit, 4-bit, 8-bit",
+    "MaxPaletteEntries": "4 (2-bit), 16 (4-bit), 256 (8-bit)",
+    "ColorSpace": "YCbCr + Alpha",
+    "Compression": "Run-Length Encoding (RLE)",
+    "Standard": "ETSI EN 300 743"
+  }
+}

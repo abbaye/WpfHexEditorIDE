@@ -1,0 +1,183 @@
+{
+  "diffMode": "binary",
+  "formatName": "CMS (Cryptographic Message Syntax)",
+  "version": "1.0",
+  "extensions": [".cms", ".p7"],
+  "description": "Cryptographic Message Syntax container — a DER-encoded ASN.1 ContentInfo structure that can carry SignedData, EnvelopedData, AuthenticatedData, or other content types. CMS (RFC 5652) is the successor to PKCS#7 and is the foundation for S/MIME email encryption, code signing, and secure document exchange.",
+  "category": "Certificates",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "HexEditor",
+  "references": [
+    "https://datatracker.ietf.org/doc/html/rfc5652",
+    "https://en.wikipedia.org/wiki/Cryptographic_Message_Syntax",
+    "https://datatracker.ietf.org/doc/html/rfc5911"
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "value": "3082",
+        "offset": 0,
+        "label": "DER ContentInfo SEQUENCE",
+        "weight": 0.5
+      }
+    ],
+    "matchMode": "Best",
+    "MinimumScore": 0.4,
+    "Strength": "Weak",
+    "EntropyHint": "Moderate — structured ASN.1 headers with encrypted or signed payload sections"
+  },
+  "variables": [
+    {
+      "name": "cmsSeqTag",
+      "offset": 0,
+      "size": 1,
+      "type": "uint8",
+      "description": "ASN.1 SEQUENCE tag — 0x30"
+    },
+    {
+      "name": "cmsLenByte",
+      "offset": 1,
+      "size": 1,
+      "type": "uint8",
+      "description": "ASN.1 length byte — typically 0x82 for multi-byte length"
+    },
+    {
+      "name": "cmsOidTag",
+      "offset": 4,
+      "size": 1,
+      "type": "uint8",
+      "description": "OID tag byte — 0x06 for OBJECT IDENTIFIER"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "ContentInfoSequence",
+      "offset": 0,
+      "size": 4,
+      "description": "Outer SEQUENCE tag + length for ContentInfo"
+    },
+    {
+      "name": "ContentTypeOID",
+      "offset": 4,
+      "size": 13,
+      "description": "OID identifying content type (signedData, envelopedData, etc.)"
+    },
+    {
+      "name": "ContentField",
+      "offset": 17,
+      "size": 0,
+      "description": "EXPLICIT [0] tagged content — the actual CMS data structure"
+    },
+    {
+      "name": "SignerInfos",
+      "offset": 0,
+      "size": 0,
+      "description": "SET OF SignerInfo structures (for SignedData content type)"
+    }
+  ],
+  "assertions": [
+    {
+      "variable": "cmsSeqTag",
+      "operator": "==",
+      "value": 48,
+      "description": "First byte must be 0x30 (SEQUENCE)",
+      "level": "Error"
+    },
+    {
+      "variable": "cmsOidTag",
+      "operator": "==",
+      "value": 6,
+      "description": "OID tag at offset 4 should be 0x06 (OBJECT IDENTIFIER)",
+      "level": "Warning"
+    },
+    {
+      "variable": "cmsLenByte",
+      "operator": ">=",
+      "value": 128,
+      "description": "Length byte should indicate multi-byte length for typical CMS messages",
+      "level": "Warning"
+    }
+  ],
+  "navigation": {
+    "entryPoint": 0,
+    "sections": [
+      { "name": "ContentInfo Header", "offset": 0, "size": 4 },
+      { "name": "ContentType OID", "offset": 4, "size": 13 },
+      { "name": "Content", "offset": 17, "size": 0 }
+    ]
+  },
+  "inspector": {
+    "badge": "CMS",
+    "primaryField": "cmsSeqTag",
+    "groups": [
+      {
+        "name": "ASN.1 Structure",
+        "fields": ["cmsSeqTag", "cmsLenByte", "cmsOidTag"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "CMS Summary",
+      "format": "text",
+      "template": "Format: CMS (Cryptographic Message Syntax)\nSequence Tag: 0x{cmsSeqTag}\nOID Tag: 0x{cmsOidTag}"
+    },
+    {
+      "name": "CMS JSON Report",
+      "format": "json",
+      "template": "{ \"format\": \"CMS\", \"sequenceTag\": {cmsSeqTag}, \"oidTag\": {cmsOidTag} }"
+    }
+  ],
+  "forensic": {
+    "riskLevel": "MEDIUM",
+    "notes": "CMS containers can carry encrypted data, digital signatures, or certificates. Analyze the ContentType OID to determine the purpose. EnvelopedData may contain sensitive encrypted content.",
+    "suspiciousPatterns": [
+      "SignedData with self-signed or expired certificates",
+      "EnvelopedData using weak encryption algorithms (RC2, DES)",
+      "Unexpected OIDs indicating non-standard content types",
+      "CMS message with missing or invalid signer certificates"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "CMS (RFC 5652) is the ASN.1/DER container format for signed, encrypted, and authenticated data. Successor to PKCS#7. Used in S/MIME, code signing, and timestamping.",
+    "suggestedInspections": [
+      "Parse the outer ContentInfo SEQUENCE and extract the ContentType OID.",
+      "Identify the content type: signedData (1.2.840.113549.1.7.2), envelopedData (.3), etc.",
+      "For SignedData: extract signer certificates and verify the signature chain.",
+      "For EnvelopedData: identify the encryption algorithm and recipient key info."
+    ]
+  },
+  "software": [
+    { "name": "OpenSSL", "platform": "Windows/macOS/Linux", "url": "https://www.openssl.org/" },
+    { "name": "certutil", "platform": "Windows", "url": "https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/certutil" },
+    { "name": "ASN.1 Editor", "platform": "Windows/macOS/Linux", "url": "https://asn1.io/" }
+  ],
+  "formatRelationships": [
+    { "format": "PKCS7", "relationship": "predecessor", "note": "CMS is the modern successor to PKCS#7" },
+    { "format": "SCEP", "relationship": "child", "note": "SCEP messages are CMS containers" },
+    { "format": "TST", "relationship": "child", "note": "RFC 3161 timestamps use CMS SignedData" }
+  ],
+  "MimeTypes": ["application/cms", "application/pkcs7-mime"],
+  "UseCases": [
+    "S/MIME email encryption and signing",
+    "Code signing and Authenticode verification",
+    "Secure document exchange and timestamping"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 84,
+    "LastUpdated": "2026-04-16",
+    "ReviewedBy": "WPFHexaEditor Team"
+  },
+  "TechnicalDetails": {
+    "encoding": "DER (Distinguished Encoding Rules)",
+    "outerStructure": "ContentInfo ::= SEQUENCE { contentType OID, content [0] EXPLICIT ANY }",
+    "contentTypes": {
+      "signedData": "1.2.840.113549.1.7.2",
+      "envelopedData": "1.2.840.113549.1.7.3",
+      "digestedData": "1.2.840.113549.1.7.5",
+      "encryptedData": "1.2.840.113549.1.7.6",
+      "authenticatedData": "1.2.840.113549.1.9.16.1.2"
+    },
+    "rfc": "RFC 5652"
+  }
+}

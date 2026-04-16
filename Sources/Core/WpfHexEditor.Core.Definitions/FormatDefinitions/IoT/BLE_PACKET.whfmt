@@ -1,0 +1,253 @@
+{
+  "formatName": "BLE Packet",
+  "version": "1.0",
+  "diffMode": "binary",
+  "extensions": [
+    ".ble"
+  ],
+  "description": "Bluetooth Low Energy (BLE) link layer packet format used for short-range wireless communication with constrained IoT devices. The packet begins with a 1-byte preamble (0xAA), followed by a 4-byte access address and a variable-length PDU with header and payload.",
+  "category": "IoT",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "MimeTypes": [
+    "application/x-bluetooth-le"
+  ],
+  "UseCases": [
+    "Wearable fitness tracker and health monitor communication",
+    "Smart home device proximity and beacon detection",
+    "Asset tracking via BLE beacons (iBeacon, Eddystone)",
+    "IoT sensor data collection over short-range wireless"
+  ],
+  "references": [
+    "https://www.bluetooth.com/specifications/specs/core-specification-5-4/",
+    "https://en.wikipedia.org/wiki/Bluetooth_Low_Energy",
+    "https://www.bluetooth.com/specifications/specs/core-specification-supplement-11/"
+  ],
+  "software": [
+    {
+      "name": "Wireshark",
+      "url": "https://www.wireshark.org/",
+      "role": "BLE packet dissector for captured frames"
+    },
+    {
+      "name": "nRF Connect",
+      "url": "https://www.nordicsemi.com/Products/Development-tools/nrf-connect-for-desktop",
+      "role": "Nordic BLE development and debugging tool"
+    },
+    {
+      "name": "Ubertooth",
+      "url": "https://github.com/greatscottgadgets/ubertooth",
+      "role": "Open-source BLE packet capture hardware and software"
+    }
+  ],
+  "formatRelationships": [
+    {
+      "format": "ZIGBEE_FRAME",
+      "relationship": "ZigBee is a competing low-power protocol using mesh topology; BLE uses star/mesh"
+    },
+    {
+      "format": "MATTER_TLV",
+      "relationship": "Matter protocol can operate over BLE for device commissioning"
+    }
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "offset": 0,
+        "value": "AA",
+        "label": "BLE preamble byte 0xAA",
+        "weight": 0.4
+      }
+    ],
+    "matchMode": "first",
+    "MinimumScore": 82,
+    "Strength": "Weak",
+    "EntropyHint": {
+      "min": 4.0,
+      "max": 7.0,
+      "note": "Short packets with structured headers and optionally encrypted payloads"
+    },
+    "validation": "First byte should be 0xAA (advertising preamble) or 0x55 (data channel preamble). Access address at offset 1 is 0x8E89BED6 for advertising channels."
+  },
+  "variables": [
+    {
+      "name": "blePreamble",
+      "type": "uint8",
+      "offset": 0,
+      "length": 1,
+      "description": "BLE preamble byte: 0xAA for advertising, 0x55 for data channels"
+    },
+    {
+      "name": "bleAccessAddress",
+      "type": "uint32",
+      "offset": 1,
+      "length": 4,
+      "endian": "little",
+      "description": "Access address: 0x8E89BED6 for advertising, random for data connections"
+    },
+    {
+      "name": "blePduHeader",
+      "type": "uint16",
+      "offset": 5,
+      "length": 2,
+      "endian": "little",
+      "description": "PDU header: type (4 bits), RFU, ChSel, TxAdd, RxAdd, length (8 bits)"
+    },
+    {
+      "name": "blePduType",
+      "type": "uint8",
+      "offset": -1,
+      "length": 1,
+      "description": "Derived PDU type from header bits 3-0"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "PhysicalHeader",
+      "offset": 0,
+      "length": 5,
+      "description": "BLE physical layer header: 1-byte preamble and 4-byte access address",
+      "fields": [
+        {
+          "name": "Preamble",
+          "variable": "blePreamble",
+          "offset": 0,
+          "length": 1
+        },
+        {
+          "name": "AccessAddress",
+          "variable": "bleAccessAddress",
+          "offset": 1,
+          "length": 4
+        }
+      ]
+    },
+    {
+      "name": "PDUHeader",
+      "offset": 5,
+      "length": 2,
+      "description": "Protocol Data Unit header encoding PDU type, address type flags, and payload length",
+      "fields": [
+        {
+          "name": "Header",
+          "variable": "blePduHeader",
+          "offset": 5,
+          "length": 2
+        }
+      ]
+    },
+    {
+      "name": "PDUPayload",
+      "offset": 7,
+      "length": -1,
+      "description": "PDU payload: advertising data (AD structures) or connection data (L2CAP frames)"
+    },
+    {
+      "name": "CRC",
+      "offset": -1,
+      "length": 3,
+      "description": "24-bit CRC computed over PDU header and payload"
+    }
+  ],
+  "assertions": [
+    {
+      "id": "A1",
+      "description": "Preamble must be 0xAA or 0x55",
+      "expression": "blePreamble == 0xAA || blePreamble == 0x55"
+    },
+    {
+      "id": "A2",
+      "description": "Advertising access address must be 0x8E89BED6 when preamble is 0xAA",
+      "expression": "blePreamble != 0xAA || bleAccessAddress == 0x8E89BED6"
+    },
+    {
+      "id": "A3",
+      "description": "PDU length (header byte 2) must not exceed 255",
+      "expression": "blePduHeader >= 0"
+    }
+  ],
+  "navigation": {
+    "entryPoint": "PhysicalHeader",
+    "structure": [
+      "PhysicalHeader",
+      "PDUHeader",
+      "PDUPayload",
+      "CRC"
+    ],
+    "notes": "Advertising PDU types: 0=ADV_IND, 1=ADV_DIRECT_IND, 2=ADV_NONCONN_IND, 3=SCAN_REQ, 4=SCAN_RSP, 5=CONNECT_IND, 6=ADV_SCAN_IND. Data channel PDUs: 0=LL Data continuation, 1=LL Data start, 2=LL Control."
+  },
+  "inspector": {
+    "badge": "BLE",
+    "primaryField": "bleAccessAddress",
+    "groups": [
+      {
+        "name": "Physical",
+        "fields": [
+          "blePreamble",
+          "bleAccessAddress"
+        ]
+      },
+      {
+        "name": "PDU",
+        "fields": [
+          "blePduHeader",
+          "blePduType"
+        ]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "BLE Packet CSV",
+      "format": "csv",
+      "fields": [
+        "blePreamble",
+        "bleAccessAddress",
+        "blePduHeader",
+        "blePduType"
+      ]
+    },
+    {
+      "name": "BLE Packet JSON",
+      "format": "json",
+      "fields": [
+        "blePreamble",
+        "bleAccessAddress",
+        "blePduHeader",
+        "blePduType"
+      ]
+    }
+  ],
+  "forensic": {
+    "riskLevel": "MEDIUM",
+    "notes": "BLE advertising packets are broadcast in cleartext and can be used for tracking. Legacy pairing (JustWorks) provides no MITM protection. BLE 4.0/4.1 connections are vulnerable to passive eavesdropping if pairing is captured.",
+    "suspiciousPatterns": [
+      "Advertising packets with rapidly changing MAC addresses (randomization evasion)",
+      "CONNECT_IND from unauthorized initiators (connection hijacking)",
+      "Excessive SCAN_REQ from a single address (active scanning/fingerprinting)",
+      "Data channel PDUs with unexpected L2CAP lengths (fuzzing or overflow attempts)"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "BLE link layer packets consist of a 1-byte preamble, 4-byte access address, variable-length PDU (2-byte header + payload), and 3-byte CRC. Advertising channels use fixed access address 0x8E89BED6 and 0xAA preamble. Data channels use connection-specific access addresses.",
+    "suggestedInspections": [
+      "Check access address to distinguish advertising from data channel packets",
+      "Decode PDU type to identify the advertising or data PDU variant",
+      "Parse AD structures in advertising payloads for device name, UUID, and manufacturer data",
+      "For data channels, decode L2CAP header to identify ATT/SMP/L2CAP signaling"
+    ]
+  },
+  "TechnicalDetails": {
+    "preambleSize": 1,
+    "accessAddressSize": 4,
+    "advertisingAccessAddress": "0x8E89BED6",
+    "crcSize": 3,
+    "maxPduPayload": "37 bytes (advertising), 251 bytes (data, BLE 4.2+)",
+    "frequency": "2.4 GHz ISM band, 40 channels (3 advertising + 37 data)"
+  },
+  "QualityMetrics": {
+    "CompletenessScore": 84,
+    "LastUpdated": "2026-04-16",
+    "ReviewedBy": "WPFHexaEditor Team"
+  }
+}

@@ -1,0 +1,242 @@
+{
+  "formatName": "Matter TLV",
+  "version": "1.0",
+  "diffMode": "binary",
+  "extensions": [
+    ".matter"
+  ],
+  "description": "Matter protocol Tag-Length-Value (TLV) encoding format used by the Connectivity Standards Alliance (CSA) smart home standard. The control byte encodes element type (bits 4-0) and tag control (bits 7-5) for structured device communication data.",
+  "category": "IoT",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "MimeTypes": [
+    "application/x-matter-tlv"
+  ],
+  "UseCases": [
+    "Matter smart home device attribute encoding",
+    "Cross-ecosystem device commissioning and control (Apple, Google, Amazon)",
+    "Thread and Wi-Fi device communication payloads",
+    "Matter fabric credential and certificate encoding"
+  ],
+  "references": [
+    "https://csa-iot.org/developer-resource/specifications-download-request/",
+    "https://github.com/project-chip/connectedhomeip/blob/master/src/lib/core/TLV.h",
+    "https://en.wikipedia.org/wiki/Matter_(standard)"
+  ],
+  "software": [
+    {
+      "name": "chip-tool",
+      "url": "https://github.com/project-chip/connectedhomeip",
+      "role": "Matter reference implementation CLI for device control"
+    },
+    {
+      "name": "Matter.js",
+      "url": "https://github.com/project-chip/matter.js",
+      "role": "JavaScript/TypeScript Matter implementation"
+    },
+    {
+      "name": "Wireshark",
+      "url": "https://www.wireshark.org/",
+      "role": "Protocol analyzer with Matter dissector plugin"
+    }
+  ],
+  "formatRelationships": [
+    {
+      "format": "ZIGBEE_FRAME",
+      "relationship": "Matter can run over Thread (which shares 802.15.4 with ZigBee)"
+    },
+    {
+      "format": "BLE_PACKET",
+      "relationship": "Matter uses BLE for device commissioning and onboarding"
+    }
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "offset": 0,
+        "value": "15",
+        "label": "Matter TLV Structure element type (0x15)",
+        "weight": 0.4
+      },
+      {
+        "offset": 0,
+        "value": "16",
+        "label": "Matter TLV Array element type (0x16)",
+        "weight": 0.4
+      }
+    ],
+    "matchMode": "best",
+    "MinimumScore": 82,
+    "Strength": "Weak",
+    "EntropyHint": {
+      "min": 3.5,
+      "max": 6.5,
+      "note": "Structured TLV data with typed fields; entropy varies with payload content"
+    },
+    "validation": "First byte control field: bits 4-0 encode element type (0x00-0x18 valid). Bits 7-5 encode tag control (0-7). Structure (0x15) and Array (0x16) are common container start elements."
+  },
+  "variables": [
+    {
+      "name": "matterControl",
+      "type": "uint8",
+      "offset": 0,
+      "length": 1,
+      "description": "Control byte: bits 4-0 = element type, bits 7-5 = tag control"
+    },
+    {
+      "name": "matterTagOrValue",
+      "type": "uint8",
+      "offset": 1,
+      "length": 1,
+      "description": "Tag number or first value byte depending on tag control and element type"
+    },
+    {
+      "name": "matterElementType",
+      "type": "uint8",
+      "offset": -1,
+      "length": 1,
+      "description": "Derived element type from control byte bits 4-0"
+    },
+    {
+      "name": "matterTagControl",
+      "type": "uint8",
+      "offset": -1,
+      "length": 1,
+      "description": "Derived tag control from control byte bits 7-5"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "ControlByte",
+      "offset": 0,
+      "length": 1,
+      "description": "TLV control byte encoding element type and tag control for the first element",
+      "fields": [
+        {
+          "name": "Control",
+          "variable": "matterControl",
+          "offset": 0,
+          "length": 1
+        }
+      ]
+    },
+    {
+      "name": "TagField",
+      "offset": 1,
+      "length": -1,
+      "description": "Tag field (0, 1, 2, 4, or 8 bytes depending on tag control bits)"
+    },
+    {
+      "name": "LengthOrValue",
+      "offset": -1,
+      "length": -1,
+      "description": "Value or length field depending on element type (integers, strings, byte strings, containers)"
+    },
+    {
+      "name": "NestedElements",
+      "offset": -1,
+      "length": -1,
+      "description": "Nested TLV elements within Structure (0x15) or Array (0x16) containers, terminated by End-of-Container (0x18)"
+    }
+  ],
+  "assertions": [
+    {
+      "id": "A1",
+      "description": "Element type (bits 4-0) must be a valid TLV type (0x00-0x18)",
+      "expression": "matterElementType <= 24"
+    },
+    {
+      "id": "A2",
+      "description": "Tag control (bits 7-5) must be 0-7",
+      "expression": "matterTagControl <= 7"
+    },
+    {
+      "id": "A3",
+      "description": "Control byte must not be 0xFF (reserved)",
+      "expression": "matterControl != 255"
+    }
+  ],
+  "navigation": {
+    "entryPoint": "ControlByte",
+    "structure": [
+      "ControlByte",
+      "TagField",
+      "LengthOrValue",
+      "NestedElements"
+    ],
+    "notes": "Element types: 0x00-0x03=Signed int (1/2/4/8 byte), 0x04-0x07=Unsigned int, 0x08=Boolean false, 0x09=Boolean true, 0x0A-0x0B=Float/Double, 0x0C-0x0D=UTF-8 string (1/2 byte length), 0x10-0x11=Byte string, 0x15=Structure, 0x16=Array, 0x17=List, 0x18=End-of-Container."
+  },
+  "inspector": {
+    "badge": "MTLV",
+    "primaryField": "matterControl",
+    "groups": [
+      {
+        "name": "First Element",
+        "fields": [
+          "matterControl",
+          "matterTagOrValue"
+        ]
+      },
+      {
+        "name": "Derived",
+        "fields": [
+          "matterElementType",
+          "matterTagControl"
+        ]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "Matter TLV CSV",
+      "format": "csv",
+      "fields": [
+        "matterControl",
+        "matterTagOrValue",
+        "matterElementType",
+        "matterTagControl"
+      ]
+    },
+    {
+      "name": "Matter TLV JSON",
+      "format": "json",
+      "fields": [
+        "matterControl",
+        "matterTagOrValue",
+        "matterElementType",
+        "matterTagControl"
+      ]
+    }
+  ],
+  "forensic": {
+    "riskLevel": "LOW",
+    "notes": "Matter TLV data contains device attributes, commands, and fabric credentials. Operational certificates and NOC (Node Operational Certificate) chains are encoded in TLV format. Compromised fabric credentials enable device impersonation.",
+    "suspiciousPatterns": [
+      "TLV structures containing unexpectedly large byte strings (potential data exfiltration)",
+      "Malformed container nesting exceeding reasonable depth limits",
+      "NOC certificates with anomalous validity periods or issuers",
+      "Attribute writes to security-sensitive clusters from unauthorized nodes"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "Matter TLV is a compact binary encoding where each element starts with a control byte. The low 5 bits identify the element type (integer, string, boolean, container, etc.) and the high 3 bits determine the tag format. Containers (Structure, Array, List) nest elements and terminate with End-of-Container (0x18).",
+    "suggestedInspections": [
+      "Decode control byte to identify element type and tag control",
+      "Recursively parse container elements until End-of-Container marker",
+      "Map tag numbers to Matter cluster attribute IDs for semantic interpretation",
+      "Validate TLV structure integrity by checking container nesting and termination"
+    ]
+  },
+  "TechnicalDetails": {
+    "controlByteSize": 1,
+    "tagFormats": "Anonymous, context-specific (1 byte), common profile (2/4 bytes), fully qualified (8 bytes)",
+    "integerSizes": "1, 2, 4, 8 bytes (signed and unsigned)",
+    "containerTerminator": "0x18 (End-of-Container)",
+    "maxNestingDepth": "Typically limited by implementation (commonly 32)"
+  },
+  "QualityMetrics": {
+    "CompletenessScore": 83,
+    "LastUpdated": "2026-04-16",
+    "ReviewedBy": "WPFHexaEditor Team"
+  }
+}

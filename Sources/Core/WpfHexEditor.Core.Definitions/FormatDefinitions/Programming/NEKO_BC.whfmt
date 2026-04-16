@@ -1,0 +1,198 @@
+{
+  "diffMode": "binary",
+  "formatName": "Neko VM Bytecode",
+  "version": "1.0",
+  "extensions": [".n"],
+  "description": "Neko Virtual Machine bytecode file — compiled bytecode for the Neko VM, a lightweight virtual machine designed by Nicolas Cannasse. The magic is 'NEKO' (4E 45 4B 4F) at offset 0, followed by global count, field count, and code size. Neko serves as the runtime target for the Haxe programming language and is used in game development and web applications.",
+  "category": "Programming",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "HexEditor",
+  "references": [
+    "https://nekovm.org/",
+    "https://github.com/HaxeFoundation/neko",
+    "https://haxe.org/"
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "value": "4E454B4F",
+        "offset": 0,
+        "label": "'NEKO' Neko VM bytecode",
+        "weight": 1.0
+      }
+    ],
+    "matchMode": "Best",
+    "MinimumScore": 0.9,
+    "Strength": "Strong",
+    "EntropyHint": "Moderate — header is structured; bytecode instructions have moderate entropy; string table is low entropy"
+  },
+  "variables": [
+    {
+      "name": "nekoMagic",
+      "offset": 0,
+      "size": 4,
+      "type": "ascii",
+      "description": "Neko magic — must be 'NEKO'"
+    },
+    {
+      "name": "nekoNglobals",
+      "offset": 4,
+      "size": 4,
+      "type": "uint32",
+      "endian": "LE",
+      "description": "Number of global variables"
+    },
+    {
+      "name": "nekoNfields",
+      "offset": 8,
+      "size": 4,
+      "type": "uint32",
+      "endian": "LE",
+      "description": "Number of field names"
+    },
+    {
+      "name": "nekoCodeSize",
+      "offset": 12,
+      "size": 4,
+      "type": "uint32",
+      "endian": "LE",
+      "description": "Size of the bytecode section in 32-bit words"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "NekoHeader",
+      "offset": 0,
+      "size": 16,
+      "description": "'NEKO' magic + nglobals(4) + nfields(4) + codesize(4)"
+    },
+    {
+      "name": "GlobalTable",
+      "offset": 16,
+      "size": 0,
+      "description": "Global variable definitions (strings, ints, floats, functions)"
+    },
+    {
+      "name": "FieldNames",
+      "offset": 0,
+      "size": 0,
+      "description": "Hashed field name table for object property access"
+    },
+    {
+      "name": "BytecodeSection",
+      "offset": 0,
+      "size": 0,
+      "description": "Neko VM instruction opcodes and operands"
+    },
+    {
+      "name": "DebugInfo",
+      "offset": 0,
+      "size": 0,
+      "description": "Optional debug information with source file and line mappings"
+    }
+  ],
+  "assertions": [
+    {
+      "variable": "nekoMagic",
+      "operator": "==",
+      "value": "NEKO",
+      "description": "Magic must be 'NEKO'",
+      "level": "Error"
+    },
+    {
+      "variable": "nekoNglobals",
+      "operator": ">",
+      "value": 0,
+      "description": "A valid Neko module must have at least one global",
+      "level": "Warning"
+    },
+    {
+      "variable": "nekoCodeSize",
+      "operator": ">",
+      "value": 0,
+      "description": "Code size must be greater than zero",
+      "level": "Error"
+    }
+  ],
+  "navigation": {
+    "entryPoint": 0,
+    "sections": [
+      { "name": "Header", "offset": 0, "size": 16 },
+      { "name": "Globals", "offset": 16, "size": 0 },
+      { "name": "Fields", "offset": 0, "size": 0 },
+      { "name": "Bytecode", "offset": 0, "size": 0 }
+    ]
+  },
+  "inspector": {
+    "badge": "NEKO",
+    "primaryField": "nekoMagic",
+    "groups": [
+      {
+        "name": "Identity",
+        "fields": ["nekoMagic"]
+      },
+      {
+        "name": "Structure",
+        "fields": ["nekoNglobals", "nekoNfields", "nekoCodeSize"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "Neko Summary",
+      "format": "text",
+      "template": "Format: Neko VM Bytecode\nMagic: {nekoMagic}\nGlobals: {nekoNglobals}\nFields: {nekoNfields}\nCode Size: {nekoCodeSize} words"
+    },
+    {
+      "name": "Neko JSON Report",
+      "format": "json",
+      "template": "{ \"format\": \"Neko\", \"magic\": \"{nekoMagic}\", \"globals\": {nekoNglobals}, \"fields\": {nekoNfields}, \"codeSize\": {nekoCodeSize} }"
+    }
+  ],
+  "forensic": {
+    "riskLevel": "LOW",
+    "notes": "Neko bytecode is executed by the Neko VM. Modules can access system resources through built-in and C library bindings. Inspect global table for suspicious function references.",
+    "suspiciousPatterns": [
+      "Neko module with sys_command or process-related globals",
+      "Unusually large code size for the number of globals",
+      "Debug info stripped from a module that should have it"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "Neko VM bytecode starts with 'NEKO' magic followed by global count, field count, and code size (all LE uint32). Used as Haxe runtime target and in game engines.",
+    "suggestedInspections": [
+      "Verify 'NEKO' magic at offset 0.",
+      "Parse header fields: nglobals at offset 4, nfields at offset 8, codesize at offset 12.",
+      "Enumerate the global table to identify function definitions and string constants.",
+      "Check for debug information section after the bytecode for source-level mapping.",
+      "Inspect field names for API surface analysis of the compiled module."
+    ]
+  },
+  "software": [
+    { "name": "Neko VM", "platform": "Windows/macOS/Linux", "url": "https://nekovm.org/" },
+    { "name": "Haxe", "platform": "Windows/macOS/Linux", "url": "https://haxe.org/" },
+    { "name": "nekoc", "platform": "Windows/macOS/Linux", "url": "https://nekovm.org/" }
+  ],
+  "formatRelationships": [
+    { "format": "HAXE", "relationship": "compiled-from", "note": "Neko bytecode can be compiled from Haxe source code" },
+    { "format": "BEAM", "relationship": "similar", "note": "Both are VM bytecode formats with IFF-like headers" }
+  ],
+  "MimeTypes": ["application/x-neko-bytecode", "application/octet-stream"],
+  "UseCases": [
+    "Haxe cross-platform compilation target",
+    "Game development with Haxe/OpenFL",
+    "Web server scripting with Neko"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 87,
+    "LastUpdated": "2026-04-16",
+    "ReviewedBy": "WPFHexaEditor Team"
+  },
+  "TechnicalDetails": {
+    "magicBytes": "4E 45 4B 4F (NEKO)",
+    "endianness": "Little-Endian",
+    "headerSize": "16 bytes (magic + 3 x uint32)",
+    "opcodeWidth": "32-bit words",
+    "vmArchitecture": "Stack-based virtual machine with register hints"
+  }
+}

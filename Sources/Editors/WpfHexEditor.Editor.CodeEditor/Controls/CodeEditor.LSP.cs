@@ -212,6 +212,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             if (_lspClient is not null)
             {
                 _lspClient.DiagnosticsReceived -= OnLspDiagnosticsReceived;
+                _lspClient.FullyLoaded -= OnLspFullyLoaded;
                 if (_currentFilePath is not null)
                     _lspClient.CloseDocument(_currentFilePath);
             }
@@ -233,6 +234,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             if (_lspClient is null) return;
 
             _lspClient.DiagnosticsReceived += OnLspDiagnosticsReceived;
+            _lspClient.FullyLoaded += OnLspFullyLoaded;
 
             // Wire Roslyn reference-count provider (null for non-Roslyn clients → regex fallback).
             _inlineHintsService.SetReferenceCountProvider(
@@ -785,8 +787,33 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             catch { /* LSP unavailable — silently ignore */ }
         }
 
+        /// Called once when the LSP server transitions to fully-loaded.
+        /// Triggers a refresh of all semantic layers so they render immediately.
+        /// </summary>
+        private void OnLspFullyLoaded()
+        {
+            Dispatcher.InvokeAsync(() =>
+            {
+                // Flush any buffered diagnostics that arrived during init.
+                if (_bufferedLspDiagnostics is { } buffered)
+                {
+                    _bufferedLspDiagnostics = null;
+                    ApplyLspDiagnostics(buffered);
+                }
+
+                // Kick all semantic layers so they fetch fresh data now.
+                SchedulePostOpenHighlightRefresh();
+            });
+        }
+
+        /// <summary>Buffered diagnostics received before the server is fully loaded.</summary>
+        private IReadOnlyList<WpfHexEditor.Editor.Core.LSP.LspDiagnostic>? _bufferedLspDiagnostics;
+
+        /// <summary>
         /// Feeds LSP push diagnostics into the editor's validation error list.
         /// Always called on the UI thread (guaranteed by LspClientImpl).
+        /// Diagnostics received before <see cref="ILspClient.IsFullyLoaded"/> are buffered
+        /// to suppress transient init-time noise (same behaviour as Visual Studio).
         /// </summary>
         private void OnLspDiagnosticsReceived(
             object? sender,
@@ -796,36 +823,41 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             if (!new Uri(_currentFilePath).AbsoluteUri.Equals(e.DocumentUri, StringComparison.OrdinalIgnoreCase))
                 return;
 
-            // All mutations must happen on the UI thread — _validationErrors and
-            // _validationByLine are read by OnRender and PerformValidation (UI thread).
-            // Moving the entire mutation + render into a single Dispatcher.InvokeAsync
-            // eliminates the race condition that caused displaced text insertions (BUG-LSP-THREAD).
+            // Buffer diagnostics until the server is fully loaded.
+            if (_lspClient?.IsFullyLoaded != true)
+            {
+                _bufferedLspDiagnostics = e.Diagnostics;
+                return;
+            }
+
             _diagnosticsRenderPending = true;
             var diagnostics = e.Diagnostics; // capture before dispatch
-            Dispatcher.InvokeAsync(() =>
+            Dispatcher.InvokeAsync(() => ApplyLspDiagnostics(diagnostics),
+                System.Windows.Threading.DispatcherPriority.Background);
+        }
+
+        /// <summary>Applies a diagnostics list to the validation error collection and re-renders.</summary>
+        private void ApplyLspDiagnostics(IReadOnlyList<WpfHexEditor.Editor.Core.LSP.LspDiagnostic> diagnostics)
+        {
+            _validationErrors.RemoveAll(v => v.Layer == Models.ValidationLayer.Lsp);
+            foreach (var d in diagnostics)
             {
-                _validationErrors.RemoveAll(v => v.Layer == Models.ValidationLayer.Lsp);
-                foreach (var d in diagnostics)
+                _validationErrors.Add(new Models.ValidationError
                 {
-                    _validationErrors.Add(new Models.ValidationError
-                    {
-                        Line     = d.StartLine,
-                        Column   = d.StartColumn,
-                        Length   = Math.Max(1, d.EndColumn - d.StartColumn),
-                        Message  = d.Message,
-                        Severity = d.Severity == "error"   ? Models.ValidationSeverity.Error
-                                 : d.Severity == "warning" ? Models.ValidationSeverity.Warning
-                                                           : Models.ValidationSeverity.Info,
-                        Layer    = Models.ValidationLayer.Lsp,
-                    });
-                }
-                RebuildValidationIndex();
-                DiagnosticsChanged?.Invoke(this, EventArgs.Empty);
-                _diagnosticsRenderPending = false;
-                InvalidateVisual();
-            // Background priority keeps diagnostics below the Render priority (7) so LSP
-            // burst-init does not block frame rendering during Roslyn workspace startup.
-            }, System.Windows.Threading.DispatcherPriority.Background);
+                    Line     = d.StartLine,
+                    Column   = d.StartColumn,
+                    Length   = Math.Max(1, d.EndColumn - d.StartColumn),
+                    Message  = d.Message,
+                    Severity = d.Severity == "error"   ? Models.ValidationSeverity.Error
+                             : d.Severity == "warning" ? Models.ValidationSeverity.Warning
+                                                       : Models.ValidationSeverity.Info,
+                    Layer    = Models.ValidationLayer.Lsp,
+                });
+            }
+            RebuildValidationIndex();
+            DiagnosticsChanged?.Invoke(this, EventArgs.Empty);
+            _diagnosticsRenderPending = false;
+            InvalidateVisual();
         }
 
         // -- Find All References (LSP) ------------------------------------

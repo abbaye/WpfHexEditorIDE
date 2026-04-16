@@ -1,0 +1,236 @@
+{
+  "formatName": "systemd-coredump (zstd-wrapped)",
+  "version": "1.0",
+  "diffMode": "binary",
+  "extensions": [
+    ".zst"
+  ],
+  "description": "systemd-coredump stores core dumps compressed with zstd (magic 0x28B52FFD). These files contain ELF core dumps wrapped in zstd compression, managed by systemd-coredump and queryable via coredumpctl. Used for post-mortem crash analysis.",
+  "category": "System",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "MimeTypes": [
+    "application/zstd",
+    "application/x-coredump"
+  ],
+  "UseCases": [
+    "Post-mortem debugging of crashed applications",
+    "Automated crash reporting and analysis pipelines",
+    "Security incident investigation (crash-based exploits)",
+    "System stability monitoring via core dump frequency analysis"
+  ],
+  "references": [
+    "https://www.freedesktop.org/software/systemd/man/systemd-coredump.html",
+    "https://facebook.github.io/zstd/zstd_manual.html",
+    "https://man7.org/linux/man-pages/man5/core.5.html"
+  ],
+  "software": [
+    {
+      "name": "coredumpctl",
+      "url": "https://www.freedesktop.org/software/systemd/man/coredumpctl.html",
+      "role": "List, inspect, and extract systemd-managed core dumps"
+    },
+    {
+      "name": "zstd",
+      "url": "https://facebook.github.io/zstd/",
+      "role": "Zstandard compression/decompression utility"
+    },
+    {
+      "name": "gdb",
+      "url": "https://www.gnu.org/software/gdb/",
+      "role": "GNU debugger for core dump analysis"
+    }
+  ],
+  "formatRelationships": [
+    {
+      "format": "ZSTD",
+      "relationship": "Core dump is compressed with zstd; outer format is a zstd frame"
+    },
+    {
+      "format": "ELF",
+      "relationship": "Decompressed content is an ELF core dump (ET_CORE type)"
+    }
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "offset": 0,
+        "value": "28B52FFD",
+        "label": "zstd frame magic (systemd-coredump wrapper)",
+        "weight": 0.6
+      }
+    ],
+    "matchMode": "first",
+    "MinimumScore": 82,
+    "Strength": "Medium",
+    "EntropyHint": {
+      "min": 7.0,
+      "max": 8.0,
+      "note": "zstd-compressed data has near-maximum entropy"
+    },
+    "validation": "First 4 bytes must be 0x28B52FFD (zstd magic). File is typically located in /var/lib/systemd/coredump/. Decompressed content should start with ELF magic 0x7F454C46."
+  },
+  "variables": [
+    {
+      "name": "zstdMagic",
+      "type": "uint32",
+      "offset": 0,
+      "length": 4,
+      "endian": "little",
+      "description": "zstd frame magic: 0xFD2FB528 (stored as 28 B5 2F FD)"
+    },
+    {
+      "name": "zstdFrameHeader",
+      "type": "uint8",
+      "offset": 4,
+      "length": 1,
+      "description": "Frame header descriptor byte (content size flag, checksum flag, dict ID flag)"
+    },
+    {
+      "name": "zstdWindowSize",
+      "type": "uint8",
+      "offset": 5,
+      "length": 1,
+      "description": "Window size descriptor for decompression buffer"
+    },
+    {
+      "name": "coredumpPath",
+      "type": "ascii",
+      "offset": -1,
+      "length": -1,
+      "description": "Expected storage path under /var/lib/systemd/coredump/"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "ZstdFrameHeader",
+      "offset": 0,
+      "length": 6,
+      "description": "zstd frame header: 4-byte magic, frame header descriptor, and window descriptor",
+      "fields": [
+        {
+          "name": "Magic",
+          "variable": "zstdMagic",
+          "offset": 0,
+          "length": 4
+        },
+        {
+          "name": "FrameDescriptor",
+          "variable": "zstdFrameHeader",
+          "offset": 4,
+          "length": 1
+        }
+      ]
+    },
+    {
+      "name": "CompressedBlocks",
+      "offset": 6,
+      "length": -1,
+      "description": "Sequence of zstd compressed blocks containing the ELF core dump data"
+    },
+    {
+      "name": "ELFCoreHeader",
+      "offset": -1,
+      "length": -1,
+      "description": "After decompression: ELF header with type ET_CORE containing register state and memory mappings"
+    },
+    {
+      "name": "CoreNotes",
+      "offset": -1,
+      "length": -1,
+      "description": "After decompression: ELF PT_NOTE segments with process state, signal info, and auxiliary vector"
+    }
+  ],
+  "assertions": [
+    {
+      "id": "A1",
+      "description": "zstd magic must be 0x28B52FFD",
+      "expression": "zstdMagic == 0xFD2FB528"
+    },
+    {
+      "id": "A2",
+      "description": "Frame header descriptor must have valid flag combinations",
+      "expression": "zstdFrameHeader >= 0"
+    },
+    {
+      "id": "A3",
+      "description": "File size should be at least 12 bytes (minimum zstd frame)",
+      "expression": "fileSize >= 12"
+    }
+  ],
+  "navigation": {
+    "entryPoint": "ZstdFrameHeader",
+    "structure": [
+      "ZstdFrameHeader",
+      "CompressedBlocks",
+      "ELFCoreHeader",
+      "CoreNotes"
+    ],
+    "notes": "The zstd frame must be decompressed to access the ELF core dump. coredumpctl handles decompression transparently. Multiple zstd frames may be concatenated."
+  },
+  "inspector": {
+    "badge": "CORE",
+    "primaryField": "zstdMagic",
+    "groups": [
+      {
+        "name": "Zstd Frame",
+        "fields": [
+          "zstdMagic",
+          "zstdFrameHeader",
+          "zstdWindowSize"
+        ]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "Coredump Info CSV",
+      "format": "csv",
+      "fields": [
+        "zstdMagic",
+        "zstdFrameHeader",
+        "zstdWindowSize"
+      ]
+    },
+    {
+      "name": "Coredump Info JSON",
+      "format": "json",
+      "fields": [
+        "zstdMagic",
+        "zstdFrameHeader",
+        "zstdWindowSize"
+      ]
+    }
+  ],
+  "forensic": {
+    "riskLevel": "HIGH",
+    "notes": "Core dumps contain process memory at crash time, potentially including credentials, encryption keys, and sensitive data. They also reveal exploitable crash conditions and memory layout for ASLR bypass.",
+    "suspiciousPatterns": [
+      "Core dumps from security-sensitive processes (sshd, sudo, login, pam)",
+      "Crash signal SIGSEGV or SIGBUS in setuid binaries indicating exploitation attempts",
+      "Multiple core dumps from the same binary in short succession (fuzzing or brute force)",
+      "Core dumps with manipulated timestamps or relocated from standard paths"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "systemd-coredump compresses ELF core dumps with zstd and stores them under /var/lib/systemd/coredump/. The outer layer is a standard zstd frame (magic 0x28B52FFD). Decompressed content is an ELF ET_CORE file with PT_NOTE segments containing register state, signal info, and /proc/PID/maps data.",
+    "suggestedInspections": [
+      "Verify zstd frame integrity before attempting decompression",
+      "After decompression, validate ELF header type is ET_CORE",
+      "Extract PT_NOTE segments for crash signal, register state, and process info",
+      "Scan decompressed memory segments for sensitive data patterns (keys, credentials)"
+    ]
+  },
+  "TechnicalDetails": {
+    "outerFormat": "zstd frame",
+    "innerFormat": "ELF core dump (ET_CORE)",
+    "storagePath": "/var/lib/systemd/coredump/",
+    "compressionLevel": "Default zstd level (typically 3)",
+    "metadataSource": "coredumpctl metadata stored in systemd journal"
+  },
+  "QualityMetrics": {
+    "CompletenessScore": 83,
+    "LastUpdated": "2026-04-16",
+    "ReviewedBy": "WPFHexaEditor Team"
+  }
+}

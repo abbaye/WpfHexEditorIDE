@@ -1,0 +1,195 @@
+{
+  "diffMode": "text",
+  "formatName": "Radiance RGBE/XYZE HDR Image",
+  "version": "1.0",
+  "extensions": [
+    ".hdr",
+    ".rgbe",
+    ".xyze"
+  ],
+  "description": "Radiance RGBE high dynamic range image format — stores HDR pixel data using 4 bytes per pixel (R, G, B, exponent) or (X, Y, Z, exponent). The file begins with a text header starting with '#?RADIANCE' or '#?XYZE', followed by key=value pairs, a blank line, then resolution string and run-length encoded pixel data.",
+  "category": "Images",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "code-editor",
+  "references": {
+    "specifications": [
+      "Radiance HDR format — radsite.lbl.gov/radiance/refer/filefmts.pdf",
+      "Greg Ward, Real Pixels (1991) — Graphics Gems II"
+    ],
+    "WebLinks": [
+      "https://en.wikipedia.org/wiki/RGBE_image_format",
+      "https://www.graphics.cornell.edu/~bjw/rgbe.html",
+      "https://radsite.lbl.gov/radiance/"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      { "value": "233F524144", "offset": 0, "label": "'#?RAD' Radiance RGBE header", "weight": 1.0 },
+      { "value": "233F58595A", "offset": 0, "label": "'#?XYZ' Radiance XYZE header", "weight": 0.9 }
+    ],
+    "required": true,
+    "Strength": "Strong",
+    "MinimumScore": 0.8,
+    "validation": {
+      "minFileSize": 20
+    }
+  },
+  "variables": {
+    "rgbeMagic": "",
+    "rgbeFormatByte": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "Magic Identifier",
+      "offset": 0,
+      "length": 5,
+      "color": "#FF6B6B",
+      "opacity": 0.45,
+      "description": "5-byte ASCII magic: '#?RAD' (start of '#?RADIANCE') for RGBE format, or '#?XYZ' (start of '#?XYZE') for CIE XYZ color space variant.",
+      "storeAs": "rgbeMagic",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Format Line Byte",
+      "offset": 5,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "Byte following the magic — continuation of the header identifier string (e.g. 'I' in 'RADIANCE').",
+      "storeAs": "rgbeFormatByte",
+      "valueType": "uint8"
+    },
+    {
+      "type": "field",
+      "name": "Header Key-Value Pairs",
+      "offset": 11,
+      "length": 40,
+      "color": "#FFEAA7",
+      "opacity": 0.35,
+      "description": "Text header lines with key=value pairs. Common keys: FORMAT (32-bit_rle_rgbe or 32-bit_rle_xyze), EXPOSURE, GAMMA, PRIMARIES, SOFTWARE."
+    },
+    {
+      "type": "field",
+      "name": "Resolution String",
+      "offset": 51,
+      "length": 20,
+      "color": "#95E1D3",
+      "opacity": 0.30,
+      "description": "Resolution line after blank line separator. Format: '-Y height +X width' specifying image dimensions and scanline order."
+    }
+  ],
+  "assertions": [
+    {
+      "name": "Starts with #?RAD or #?XYZ",
+      "expression": "rgbeMagic == '#?RAD' || rgbeMagic == '#?XYZ'",
+      "severity": "error",
+      "message": "File must start with '#?RADIANCE' or '#?XYZE' magic to be a valid Radiance HDR image"
+    },
+    {
+      "name": "File has content",
+      "expression": "fileSize > 20",
+      "severity": "error",
+      "message": "RGBE file is too small to contain header and pixel data"
+    },
+    {
+      "name": "Magic is ASCII text",
+      "expression": "rgbeMagic != ''",
+      "severity": "warning",
+      "message": "Magic identifier should be readable ASCII"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "Magic", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
+      { "name": "Header", "offset": 11, "icon": "\uE8A5", "color": "#FFEAA7" }
+    ]
+  },
+  "inspector": {
+    "badge": "rgbeMagic",
+    "primaryField": "rgbeMagic",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "RGBE Header",
+        "icon": "\uE71B",
+        "fields": ["rgbeMagic", "rgbeFormatByte"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "RGBE Header (JSON)",
+      "format": "json",
+      "fields": ["rgbeMagic", "rgbeFormatByte"]
+    },
+    {
+      "name": "rgbe_header_t (C struct)",
+      "format": "c-struct",
+      "structName": "rgbe_header",
+      "fields": ["rgbeMagic", "rgbeFormatByte"]
+    }
+  ],
+  "forensic": {
+    "category": "images",
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      {
+        "name": "Unknown format variant",
+        "condition": "rgbeMagic != '#?RAD' && rgbeMagic != '#?XYZ'",
+        "severity": "info",
+        "description": "Unrecognized magic — expected '#?RAD' or '#?XYZ'."
+      }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "Radiance HDR: text header '#?RADIANCE\\n' or '#?XYZE\\n', key=value lines (FORMAT=32-bit_rle_rgbe, EXPOSURE=1.0), blank line, resolution '-Y H +X W\\n', then RLE-encoded scanlines. Each pixel: R(1B) G(1B) B(1B) E(1B exponent, bias 128). Real value = mantissa * 2^(E-128). New RLE: scanline starts with 02 02 width_hi width_lo, then per-channel run-length data.",
+    "suggestedInspections": [
+      "Verify '#?RADIANCE' or '#?XYZE' magic string",
+      "Parse FORMAT line to determine RGBE vs XYZE encoding",
+      "Extract resolution from '-Y height +X width' line",
+      "Check EXPOSURE value for tone mapping hints"
+    ]
+  },
+  "software": [
+    "Radiance (Greg Ward)",
+    "HDRShop",
+    "Photoshop (via HDR import)",
+    "ImageMagick",
+    "OpenEXR tools (exr2hdr conversion)"
+  ],
+  "formatRelationships": {
+    "category": "Images",
+    "extensions": [".hdr", ".rgbe", ".xyze"],
+    "relatedFormats": ["EXR", "TIFF_HDR"],
+    "containerVariant": "RGBE = RGB+exponent encoding; XYZE = CIE XYZ+exponent. OpenEXR is the modern HDR alternative."
+  },
+  "MimeTypes": [
+    "image/vnd.radiance",
+    "image/x-hdr"
+  ],
+  "UseCases": [
+    "High dynamic range environment maps for 3D rendering",
+    "Image-based lighting (IBL) in PBR workflows",
+    "HDR photography tone mapping source",
+    "Radiance lighting simulation output"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 84,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 4,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-16",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "FileType": "High dynamic range image (text header + RLE binary data)",
+    "Encoding": "ASCII header + 4-byte RGBE/XYZE pixels with run-length encoding",
+    "PixelFormat": "R(8) G(8) B(8) E(8) — mantissa * 2^(E-128)",
+    "Compression": "Run-length encoding (new-style RLE for scanlines)",
+    "Endianness": "N/A (byte-oriented)",
+    "ColorSpaces": ["RGB (Radiance primaries)", "CIE XYZ"]
+  }
+}

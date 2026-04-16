@@ -1,0 +1,201 @@
+{
+  "diffMode": "binary",
+  "formatName": "Extensible Data Format (XDF)",
+  "version": "1.0",
+  "extensions": [
+    ".xdf"
+  ],
+  "description": "Extensible Data Format (XDF) — binary file format for storing multi-stream time-series data from lab streaming layer (LSL) recordings. Designed for synchronized multimodal data (EEG, eye tracking, motion capture, markers). Header starts with 'XDF' magic followed by version byte. Contains XML stream headers and chunked binary data.",
+  "category": "Medical",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "references": {
+    "specifications": [
+      "XDF specification — github.com/sccn/xdf",
+      "Lab Streaming Layer — github.com/sccn/labstreaminglayer"
+    ],
+    "WebLinks": [
+      "https://github.com/sccn/xdf",
+      "https://github.com/sccn/labstreaminglayer",
+      "https://labstreaminglayer.readthedocs.io/"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      { "value": "584446", "offset": 0, "label": "'XDF' Extensible Data Format header", "weight": 0.9 }
+    ],
+    "required": true,
+    "Strength": "Strong",
+    "MinimumScore": 0.7,
+    "validation": {
+      "minFileSize": 16
+    }
+  },
+  "variables": {
+    "xdfMagic": "",
+    "xdfVersion": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "XDF Magic",
+      "offset": 0,
+      "length": 3,
+      "color": "#FF6B6B",
+      "opacity": 0.45,
+      "description": "3-byte ASCII 'XDF' — magic identifier for Extensible Data Format files.",
+      "storeAs": "xdfMagic",
+      "valueType": "ascii",
+      "validation": { "expectedValue": "XDF" }
+    },
+    {
+      "type": "field",
+      "name": "Version Byte",
+      "offset": 3,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "1-byte unsigned integer version number. Current version is 1.",
+      "storeAs": "xdfVersion",
+      "valueType": "uint8"
+    },
+    {
+      "type": "field",
+      "name": "First Chunk Tag",
+      "offset": 4,
+      "length": 2,
+      "color": "#FFEAA7",
+      "opacity": 0.35,
+      "description": "Chunk length prefix and tag byte. XDF files are a sequence of chunks, each with a variable-length size prefix and a tag byte identifying chunk type (1=FileHeader, 2=StreamHeader, 3=Samples, 4=ClockOffset, 5=Boundary, 6=StreamFooter)."
+    },
+    {
+      "type": "field",
+      "name": "File Header XML",
+      "offset": 6,
+      "length": 50,
+      "color": "#95E1D3",
+      "opacity": 0.30,
+      "description": "XML content of the FileHeader chunk containing file-level metadata (version info and optional application data)."
+    }
+  ],
+  "assertions": [
+    {
+      "name": "XDF magic present",
+      "expression": "xdfMagic == 'XDF'",
+      "severity": "error",
+      "message": "File must start with 'XDF' to be a valid Extensible Data Format file"
+    },
+    {
+      "name": "Minimum file size",
+      "expression": "fileSize >= 16",
+      "severity": "error",
+      "message": "XDF file is too small to contain valid header and chunks"
+    },
+    {
+      "name": "Version is known",
+      "expression": "xdfVersion == 1",
+      "severity": "warning",
+      "message": "Expected XDF version 1 — unknown version may not parse correctly"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "XDF Magic", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
+      { "name": "Version", "offset": 3, "icon": "\uE8A5", "color": "#4ECDC4" },
+      { "name": "First Chunk", "offset": 4, "icon": "\uE9D9", "color": "#FFEAA7" }
+    ]
+  },
+  "inspector": {
+    "badge": "xdfVersion",
+    "primaryField": "xdfMagic",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "XDF Header",
+        "icon": "\uE71B",
+        "fields": ["xdfMagic", "xdfVersion"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "XDF Header (JSON)",
+      "format": "json",
+      "fields": ["xdfMagic", "xdfVersion"]
+    },
+    {
+      "name": "xdf_header_t (C struct)",
+      "format": "c-struct",
+      "structName": "xdf_header",
+      "fields": ["xdfMagic", "xdfVersion"]
+    }
+  ],
+  "forensic": {
+    "category": "medical",
+    "riskLevel": "high",
+    "suspiciousPatterns": [
+      {
+        "name": "Stream headers may contain subject info",
+        "condition": "fileSize > 100",
+        "severity": "info",
+        "description": "XDF stream headers (XML) may contain subject identification, session info, or other PHI in metadata fields."
+      }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "XDF: 'XDF' + version(1B) at offset 0. Then sequence of chunks: each chunk has length prefix (1 or 5 or 9 bytes depending on size), tag byte (1=FileHeader, 2=StreamHeader, 3=Samples, 4=ClockOffset, 5=Boundary, 6=StreamFooter), and payload. StreamHeader/Footer contain XML. Samples chunks: stream_id(4B LE) + timestamp info + sample values. Multi-stream interleaved.",
+    "suggestedInspections": [
+      "Verify 'XDF' magic and version byte",
+      "Parse chunk sequence: read length prefix, tag, payload",
+      "Extract StreamHeader XML for channel count, sampling rate, data type",
+      "Check ClockOffset chunks for time synchronization quality",
+      "Count streams and verify each has matching StreamHeader and StreamFooter"
+    ]
+  },
+  "software": [
+    "LabRecorder (LSL recording app)",
+    "MNE-Python (via pyxdf)",
+    "EEGLAB (via xdfimport plugin)",
+    "SigViewer"
+  ],
+  "formatRelationships": {
+    "category": "Medical",
+    "extensions": [".xdf"],
+    "relatedFormats": ["EDF", "GDF"],
+    "containerVariant": "XDF is multi-stream (LSL); EDF/GDF are single-device. XDF supports arbitrary stream types and rates."
+  },
+  "MimeTypes": [
+    "application/x-xdf",
+    "application/octet-stream"
+  ],
+  "UseCases": [
+    "Multi-modal neuroscience experiment recording (EEG + eye tracking + markers)",
+    "Lab Streaming Layer (LSL) session archival",
+    "Brain-computer interface data collection",
+    "Synchronized multi-device physiological recordings"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 84,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 4,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-16",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "FileType": "Chunked binary multi-stream time-series",
+    "Encoding": "Binary with embedded XML metadata",
+    "ChunkTags": {
+      "1": "FileHeader",
+      "2": "StreamHeader",
+      "3": "Samples",
+      "4": "ClockOffset",
+      "5": "Boundary",
+      "6": "StreamFooter"
+    },
+    "Endianness": "little-endian",
+    "MultiStream": true,
+    "PHI_Risk": "High — XML stream headers may contain subject metadata"
+  }
+}

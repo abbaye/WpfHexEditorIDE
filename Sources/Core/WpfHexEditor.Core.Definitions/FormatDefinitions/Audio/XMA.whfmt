@@ -1,0 +1,230 @@
+{
+  "diffMode": "binary",
+  "formatName": "Xbox XMA Audio",
+  "version": "1.0",
+  "extensions": [
+    ".xma",
+    ".xma2"
+  ],
+  "description": "XMA (Xbox Media Audio) is Microsoft's proprietary audio codec for Xbox 360 and Xbox One consoles, based on a modified version of Windows Media Audio Pro. XMA2 is the updated revision with improved multi-stream support and lower latency. Files use a RIFF container with an 'XMA2' format tag in the fmt chunk. The codec provides high compression ratios while leveraging dedicated hardware decoders on Xbox platforms for zero-CPU-cost audio playback during gameplay.",
+  "category": "Audio",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "references": {
+    "specifications": [
+      "Microsoft Xbox Development Kit — XMA2 Audio Format",
+      "Xbox 360 SDK — XMA Encoder documentation"
+    ],
+    "WebLinks": [
+      "https://wiki.multimedia.cx/index.php/XMA",
+      "https://en.wikipedia.org/wiki/Xbox_Media_Audio",
+      "https://github.com/vgmstream/vgmstream"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      {
+        "value": "52494646",
+        "offset": 0,
+        "label": "RIFF container for XMA",
+        "weight": 0.5
+      },
+      {
+        "value": "584D4132",
+        "offset": 20,
+        "label": "'XMA2' format tag at approx offset 20",
+        "weight": 0.8
+      }
+    ],
+    "matchMode": "allOf",
+    "MinimumScore": 82,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 5.0, "max": 7.9 },
+    "validation": {
+      "minFileSize": 44,
+      "maxSignatureOffset": 0
+    }
+  },
+  "variables": {
+    "xmaRiffMagic": "",
+    "xmaWaveId": "",
+    "xmaFmtId": ""
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "RIFF Magic",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.45,
+      "description": "RIFF container signature: ASCII 'RIFF' (0x52494646). XMA files use the standard RIFF/WAVE container structure.",
+      "storeAs": "xmaRiffMagic",
+      "valueType": "ascii",
+      "validation": {
+        "expectedValue": "RIFF"
+      }
+    },
+    {
+      "type": "field",
+      "name": "RIFF File Size",
+      "offset": 4,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "Total RIFF data size minus 8 bytes (32-bit unsigned little-endian). Represents the payload size of the RIFF container.",
+      "valueType": "uint32",
+      "endianness": "little"
+    },
+    {
+      "type": "field",
+      "name": "WAVE Identifier",
+      "offset": 8,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.35,
+      "description": "RIFF form type: ASCII 'WAVE' (0x57415645). Identifies this as a waveform audio container, same as standard WAV files.",
+      "storeAs": "xmaWaveId",
+      "valueType": "ascii",
+      "validation": {
+        "expectedValue": "WAVE"
+      }
+    },
+    {
+      "type": "field",
+      "name": "Format Chunk ID",
+      "offset": 12,
+      "length": 4,
+      "color": "#FFE66D",
+      "opacity": 0.35,
+      "description": "First chunk identifier, typically 'fmt ' (0x666D7420). The fmt chunk contains the XMA2WAVEFORMAT or XMA2WAVEFORMATEX structure with the 'XMA2' format tag identifying the codec.",
+      "storeAs": "xmaFmtId",
+      "valueType": "ascii"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "RIFF magic valid",
+      "expression": "xmaRiffMagic == 'RIFF'",
+      "severity": "error",
+      "message": "File must begin with RIFF container signature"
+    },
+    {
+      "name": "WAVE form type valid",
+      "expression": "xmaWaveId == 'WAVE'",
+      "severity": "error",
+      "message": "RIFF form type must be 'WAVE' for XMA audio files"
+    },
+    {
+      "name": "Format chunk present",
+      "expression": "xmaFmtId == 'fmt '",
+      "severity": "warning",
+      "message": "First chunk should be 'fmt ' containing the XMA2 format descriptor"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      {
+        "name": "RIFF Header",
+        "offset": 0,
+        "icon": "\uE71B",
+        "color": "#FF6B6B"
+      },
+      {
+        "name": "fmt Chunk",
+        "offset": 12,
+        "icon": "\uE8A5",
+        "color": "#FFE66D"
+      }
+    ]
+  },
+  "inspector": {
+    "badge": "xmaWaveId",
+    "primaryField": "xmaFmtId",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "Container",
+        "icon": "\uE71B",
+        "fields": ["xmaRiffMagic", "xmaWaveId"]
+      },
+      {
+        "title": "Format",
+        "icon": "\uE767",
+        "fields": ["xmaFmtId"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "XMA Header (JSON)",
+      "format": "json",
+      "fields": ["xmaRiffMagic", "xmaWaveId", "xmaFmtId"]
+    },
+    {
+      "name": "xma_header_t (C struct)",
+      "format": "c-struct",
+      "structName": "xma_header",
+      "fields": ["xmaRiffMagic", "xmaWaveId", "xmaFmtId"]
+    }
+  ],
+  "forensic": {
+    "category": "audio",
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      {
+        "name": "Non-WAVE form type",
+        "condition": "xmaWaveId != 'WAVE'",
+        "severity": "error",
+        "description": "RIFF form type is not WAVE — file may be misidentified or corrupted."
+      }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "XMA uses RIFF/WAVE container: 'RIFF'(4B) + size(4B LE) + 'WAVE'(4B) + chunks. The fmt chunk contains XMA2WAVEFORMATEX: wFormatTag(2B, 0x0166 for XMA2) + nChannels(2B) + nSamplesPerSec(4B) + nAvgBytesPerSec(4B) + nBlockAlign(2B) + wBitsPerSample(2B) + cbSize(2B) + XMA2-specific fields. XMA2 adds: NumStreams, ChannelMask, SamplesEncoded, BytesPerBlock, PlayBegin, PlayLength, LoopBegin, LoopLength, LoopCount, EncoderVersion.",
+    "suggestedInspections": [
+      "Verify RIFF + WAVE header and locate fmt chunk",
+      "Check wFormatTag for 0x0165 (XMA1) or 0x0166 (XMA2)",
+      "Parse XMA2-specific fields for stream count and loop parameters",
+      "Validate data chunk size against expected encoded audio length"
+    ]
+  },
+  "software": [
+    "Xbox SDK XMA Encoder",
+    "vgmstream",
+    "FFmpeg (limited XMA support)"
+  ],
+  "formatRelationships": {
+    "category": "Audio",
+    "extensions": [".xma", ".xma2"],
+    "relatedFormats": ["WAV", "WMA", "XWB"],
+    "containerVariant": "RIFF/WAVE with XMA2 codec"
+  },
+  "MimeTypes": [
+    "audio/x-xma"
+  ],
+  "UseCases": [
+    "Xbox 360 and Xbox One game audio playback",
+    "Hardware-accelerated audio decoding on Xbox platforms",
+    "Multi-channel surround sound in console games",
+    "Game audio archives and resource packages"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 82,
+    "DocumentationLevel": "comprehensive",
+    "BlocksDefined": 4,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-16",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "AudioFormat": true,
+    "CompressionMethod": "Lossy (modified WMA Pro)",
+    "Endianness": "little-endian (RIFF container)",
+    "ContainerFormat": "RIFF/WAVE",
+    "FormatTag": "0x0165 (XMA1) or 0x0166 (XMA2)",
+    "HardwareDecoder": true,
+    "TargetPlatform": "Xbox 360 / Xbox One"
+  }
+}

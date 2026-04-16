@@ -1,0 +1,174 @@
+{
+  "diffMode": "binary",
+  "formatName": "Open Virtual Appliance (OVA)",
+  "version": "1.0",
+  "extensions": [".ova"],
+  "description": "Open Virtual Appliance archive format — an uncompressed TAR container packaging an OVF XML descriptor, one or more VMDK virtual disk images, and optional manifest/certificate files. The first entry in the TAR is typically the .ovf descriptor file. OVA is standardized by DMTF as part of the OVF specification and is widely used for VM distribution across hypervisors.",
+  "category": "Virtualization",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "HexEditor",
+  "references": [
+    "https://www.dmtf.org/standards/ovf",
+    "https://en.wikipedia.org/wiki/Open_Virtualization_Format",
+    "https://docs.vmware.com/en/VMware-vSphere/7.0/com.vmware.vsphere.vm_admin.doc/GUID-AE61948B-C2EE-436E-BAFB-3C7209088552.html"
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "value": "",
+        "offset": 0,
+        "label": "TAR header — OVA is uncompressed TAR",
+        "weight": 0.3
+      }
+    ],
+    "matchMode": "Best",
+    "MinimumScore": 0.3,
+    "Strength": "Weak",
+    "EntropyHint": "Low — TAR headers are mostly ASCII; VMDK payload sections have higher entropy"
+  },
+  "variables": [
+    {
+      "name": "ovaFirstByte",
+      "offset": 0,
+      "size": 1,
+      "type": "uint8",
+      "description": "First byte of the TAR archive"
+    },
+    {
+      "name": "ovaTarFilename",
+      "offset": 0,
+      "size": 100,
+      "type": "ascii",
+      "description": "Filename of the first TAR entry, usually *.ovf"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "TarFilename",
+      "offset": 0,
+      "size": 100,
+      "description": "TAR entry filename field — first entry is typically the .ovf descriptor"
+    },
+    {
+      "name": "TarFileMode",
+      "offset": 100,
+      "size": 8,
+      "description": "TAR file mode (octal ASCII)"
+    },
+    {
+      "name": "TarFileSize",
+      "offset": 124,
+      "size": 12,
+      "description": "TAR file size in octal ASCII"
+    },
+    {
+      "name": "TarChecksum",
+      "offset": 148,
+      "size": 8,
+      "description": "TAR header checksum"
+    },
+    {
+      "name": "TarMagic",
+      "offset": 257,
+      "size": 6,
+      "description": "TAR magic field — 'ustar' for POSIX TAR"
+    }
+  ],
+  "assertions": [
+    {
+      "variable": "ovaFirstByte",
+      "operator": "!=",
+      "value": 0,
+      "description": "First byte must not be null — TAR filename starts with a printable character",
+      "level": "Error"
+    },
+    {
+      "variable": "ovaTarFilename",
+      "operator": "contains",
+      "value": ".ovf",
+      "description": "First TAR entry should be the OVF descriptor file",
+      "level": "Warning"
+    },
+    {
+      "variable": "ovaTarFilename",
+      "operator": "!=",
+      "value": "",
+      "description": "TAR filename must not be empty",
+      "level": "Error"
+    }
+  ],
+  "navigation": {
+    "entryPoint": 0,
+    "sections": [
+      { "name": "TAR Header", "offset": 0, "size": 512 },
+      { "name": "OVF Descriptor", "offset": 512, "size": 0 },
+      { "name": "VMDK Payload", "offset": 0, "size": 0 }
+    ]
+  },
+  "inspector": {
+    "badge": "OVA",
+    "primaryField": "ovaTarFilename",
+    "groups": [
+      {
+        "name": "TAR Header",
+        "fields": ["ovaTarFilename", "ovaFirstByte"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "OVA Summary",
+      "format": "text",
+      "template": "Format: OVA (Open Virtual Appliance)\nFirst Entry: {ovaTarFilename}"
+    },
+    {
+      "name": "OVA JSON Report",
+      "format": "json",
+      "template": "{ \"format\": \"OVA\", \"firstEntry\": \"{ovaTarFilename}\" }"
+    }
+  ],
+  "forensic": {
+    "riskLevel": "MEDIUM",
+    "notes": "OVA files can contain full operating system images with potential malware. Always verify the OVF descriptor and scan VMDK contents before importing into a hypervisor.",
+    "suspiciousPatterns": [
+      "OVF descriptor references unexpected network configurations",
+      "VMDK disk image significantly larger than declared in OVF",
+      "Missing or invalid manifest (.mf) file"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "OVA is a TAR archive containing OVF + VMDK for virtual appliance distribution. Used by VMware, VirtualBox, and other hypervisors.",
+    "suggestedInspections": [
+      "Verify the first TAR entry is an .ovf XML descriptor file.",
+      "Check for .mf manifest file with SHA-256 checksums of all entries.",
+      "Inspect the OVF XML for virtual hardware requirements and network configuration.",
+      "Validate VMDK disk images for integrity and expected size."
+    ]
+  },
+  "software": [
+    { "name": "VMware Workstation", "platform": "Windows/Linux", "url": "https://www.vmware.com/products/workstation-pro.html" },
+    { "name": "Oracle VirtualBox", "platform": "Windows/macOS/Linux", "url": "https://www.virtualbox.org/" },
+    { "name": "VMware vSphere", "platform": "Windows/Linux", "url": "https://www.vmware.com/products/vsphere.html" }
+  ],
+  "formatRelationships": [
+    { "format": "OVF", "relationship": "contained", "note": "OVA contains an OVF descriptor as its first TAR entry" },
+    { "format": "VMDK", "relationship": "contained", "note": "OVA contains VMDK virtual disk images" }
+  ],
+  "MimeTypes": ["application/ovf", "application/x-tar"],
+  "UseCases": [
+    "Virtual machine distribution and deployment",
+    "Cross-hypervisor VM portability",
+    "Cloud infrastructure provisioning"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 82,
+    "LastUpdated": "2026-04-16",
+    "ReviewedBy": "WPFHexaEditor Team"
+  },
+  "TechnicalDetails": {
+    "containerFormat": "Uncompressed TAR",
+    "standardBody": "DMTF OVF 2.0",
+    "typicalContents": ".ovf (descriptor), .vmdk (disk), .mf (manifest), .cert (certificate)",
+    "endianness": "N/A (TAR uses ASCII octal for numeric fields)"
+  }
+}

@@ -1,0 +1,217 @@
+{
+  "diffMode": "binary",
+  "formatName": "GoPro CineForm",
+  "version": "1.0",
+  "extensions": [
+    ".cfhd",
+    ".avi",
+    ".mov"
+  ],
+  "description": "GoPro CineForm is a wavelet-based video codec originally developed by CineForm Inc. (acquired by GoPro in 2011). It provides visually lossless compression with fast decode performance, designed for editing workflows. CineForm uses a multi-resolution wavelet decomposition with configurable quality levels (Low to Filmscan). The codec was open-sourced by GoPro in 2017 and is standardized as SMPTE VC-5. Raw CineForm bitstreams begin with the 'CFHD' magic bytes followed by a version byte.",
+  "category": "Video",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "references": {
+    "specifications": [
+      "SMPTE VC-5 — CineForm Bitstream Specification",
+      "GoPro CineForm SDK (open source)"
+    ],
+    "WebLinks": [
+      "https://en.wikipedia.org/wiki/CineForm",
+      "https://github.com/gopro/cineform-sdk",
+      "https://gopro.github.io/cineform-sdk/"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      {
+        "value": "4346484400",
+        "offset": 0,
+        "label": "'CFHD\\0' CineForm header",
+        "weight": 1.0
+      }
+    ],
+    "matchMode": "allOf",
+    "MinimumScore": 90,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 5.0, "max": 7.8 },
+    "validation": {
+      "minFileSize": 8,
+      "maxSignatureOffset": 0
+    }
+  },
+  "variables": {
+    "cineformMagic": "",
+    "cineformVersion": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "CineForm Magic",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.45,
+      "description": "CineForm bitstream signature: ASCII 'CFHD' (0x43464844). Identifies the data as a GoPro CineForm compressed video frame or bitstream.",
+      "storeAs": "cineformMagic",
+      "valueType": "ascii",
+      "validation": {
+        "expectedValue": "CFHD"
+      }
+    },
+    {
+      "type": "field",
+      "name": "Version",
+      "offset": 4,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "CineForm bitstream version number (8-bit unsigned). Determines the feature set and tag/chunk types supported by this bitstream. The null byte after 'CFHD' and then this version byte form part of the initial header.",
+      "storeAs": "cineformVersion",
+      "valueType": "uint8"
+    },
+    {
+      "type": "field",
+      "name": "Tag/Value Header",
+      "offset": 5,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.35,
+      "description": "Start of the CineForm tag-value structure. CineForm uses a tag-length-value encoding for metadata and codec parameters. Tags define image width, height, quality level, channel count, and wavelet decomposition parameters.",
+      "valueType": "uint32",
+      "endianness": "big"
+    },
+    {
+      "type": "field",
+      "name": "Extended Header",
+      "offset": 9,
+      "length": 4,
+      "color": "#FFE66D",
+      "opacity": 0.35,
+      "description": "Continuation of tag-value pairs defining codec parameters including wavelet subband structure, quantization tables, and encoding flags.",
+      "valueType": "uint32",
+      "endianness": "big"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "CineForm magic valid",
+      "expression": "cineformMagic == 'CFHD'",
+      "severity": "error",
+      "message": "File must begin with 'CFHD' signature (0x43464844)"
+    },
+    {
+      "name": "Version plausible",
+      "expression": "cineformVersion >= 0 && cineformVersion <= 255",
+      "severity": "warning",
+      "message": "CineForm version should be a valid uint8 value"
+    },
+    {
+      "name": "Magic is exactly CFHD",
+      "expression": "cineformMagic == 'CFHD'",
+      "severity": "error",
+      "message": "CineForm magic must be exactly 'CFHD'"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      {
+        "name": "CFHD Header",
+        "offset": 0,
+        "icon": "\uE71B",
+        "color": "#FF6B6B"
+      },
+      {
+        "name": "Tag-Value Data",
+        "offset": 5,
+        "icon": "\uE8A5",
+        "color": "#95E1D3"
+      }
+    ]
+  },
+  "inspector": {
+    "badge": "cineformMagic",
+    "primaryField": "cineformVersion",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "Header",
+        "icon": "\uE71B",
+        "fields": ["cineformMagic", "cineformVersion"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "CineForm Header (JSON)",
+      "format": "json",
+      "fields": ["cineformMagic", "cineformVersion"]
+    },
+    {
+      "name": "cineform_header_t (C struct)",
+      "format": "c-struct",
+      "structName": "cineform_header",
+      "fields": ["cineformMagic", "cineformVersion"]
+    }
+  ],
+  "forensic": {
+    "category": "video",
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      {
+        "name": "Unexpected version",
+        "condition": "cineformVersion > 20",
+        "severity": "info",
+        "description": "CineForm version is unusually high — may indicate a newer or non-standard bitstream."
+      }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "GoPro CineForm bitstream: 'CFHD'(4B) + 0x00(1B) + version(1B) + tag-value pairs. Tags are 16-bit IDs with 16-bit sizes, encoding: ImageWidth, ImageHeight, EncodedFormat (YUV422, RGBA4444, Bayer), QualityLevel (1-6: Low/Medium/High/FilmScan1/FilmScan2/Lossless), SubbandCount, ChannelCount, BitsPerComponent. Wavelet: 3-level Haar or LeGall 5/3 decomposition. SMPTE VC-5 standardizes the bitstream syntax. Typically wrapped in AVI or MOV containers.",
+    "suggestedInspections": [
+      "Verify 'CFHD' magic at offset 0",
+      "Parse tag-value pairs for image dimensions and quality level",
+      "Identify encoded pixel format (YUV422 vs RGBA4444 vs Bayer)",
+      "Check quality level tag for compression profile identification"
+    ]
+  },
+  "software": [
+    "GoPro Studio",
+    "FFmpeg",
+    "DaVinci Resolve"
+  ],
+  "formatRelationships": {
+    "category": "Video",
+    "extensions": [".cfhd", ".avi", ".mov"],
+    "relatedFormats": ["ProRes", "DNxHD", "AVI", "MOV"],
+    "containerVariant": "Raw CineForm bitstream (typically inside AVI or MOV)"
+  },
+  "MimeTypes": [
+    "video/x-cineform"
+  ],
+  "UseCases": [
+    "GoPro camera recording and post-production",
+    "Video editing intermediate codec with fast random access",
+    "High-quality archival encoding with wavelet compression",
+    "Open-source video codec for professional workflows (SMPTE VC-5)"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 82,
+    "DocumentationLevel": "comprehensive",
+    "BlocksDefined": 4,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-16",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "VideoFormat": true,
+    "CompressionMethod": "Wavelet-based (Haar / LeGall 5/3)",
+    "Endianness": "big-endian (tag-value structure)",
+    "QualityLevels": "Low, Medium, High, FilmScan1, FilmScan2, Lossless",
+    "ChromaSubsampling": "4:2:2 (standard) or 4:4:4:4 (RGBA)",
+    "BitDepth": "10-bit or 12-bit",
+    "IntraFrameOnly": true,
+    "OpenSource": true
+  }
+}

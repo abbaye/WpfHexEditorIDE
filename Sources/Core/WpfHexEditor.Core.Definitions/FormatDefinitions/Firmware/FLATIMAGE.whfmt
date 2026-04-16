@@ -1,0 +1,220 @@
+{
+  "formatName": "FlatImage",
+  "version": "1.0",
+  "diffMode": "binary",
+  "extensions": [
+    ".flatimg"
+  ],
+  "description": "FlatImage is a portable application packaging format for Linux that bundles an application with its filesystem into a single executable file. Detection relies on file extension as there is no standardized magic signature for this format.",
+  "category": "Firmware",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "MimeTypes": [
+    "application/x-flatimage"
+  ],
+  "UseCases": [
+    "Portable Linux application distribution without installation",
+    "Self-contained application bundles with embedded filesystem",
+    "Sandboxed application execution on Linux desktops",
+    "Application testing across different Linux distributions"
+  ],
+  "references": [
+    "https://github.com/nickthecook/flatimage",
+    "https://en.wikipedia.org/wiki/Portable_application",
+    "https://wiki.archlinux.org/title/Portable_applications"
+  ],
+  "software": [
+    {
+      "name": "flatimage",
+      "url": "https://github.com/nickthecook/flatimage",
+      "role": "FlatImage creation and extraction tool"
+    },
+    {
+      "name": "file",
+      "url": "https://www.darwinsys.com/file/",
+      "role": "File type identification"
+    },
+    {
+      "name": "mount",
+      "url": "https://man7.org/linux/man-pages/man8/mount.8.html",
+      "role": "Mount embedded filesystem images"
+    }
+  ],
+  "formatRelationships": [
+    {
+      "format": "APPIMAGE",
+      "relationship": "AppImage is a similar portable Linux application format with ELF+SquashFS structure"
+    },
+    {
+      "format": "SQUASHFS",
+      "relationship": "FlatImage may embed a SquashFS filesystem for read-only application storage"
+    }
+  ],
+  "detection": {
+    "signatures": [],
+    "matchMode": "first",
+    "MinimumScore": 82,
+    "Strength": "Weak",
+    "EntropyHint": {
+      "min": 5.0,
+      "max": 8.0,
+      "note": "Compressed filesystem data produces high entropy"
+    },
+    "validation": "No magic signature. Detection is extension-based (.flatimg). First bytes may vary depending on the embedded payload type."
+  },
+  "variables": [
+    {
+      "name": "flatimgFirstByte",
+      "type": "uint8",
+      "offset": 0,
+      "length": 1,
+      "description": "First byte of the file (varies by payload type)"
+    },
+    {
+      "name": "flatimgPayloadType",
+      "type": "ascii",
+      "offset": -1,
+      "length": -1,
+      "description": "Inferred payload type based on internal magic detection"
+    },
+    {
+      "name": "flatimgSize",
+      "type": "uint32",
+      "offset": -1,
+      "length": 4,
+      "description": "Total file size in bytes"
+    },
+    {
+      "name": "flatimgMetadata",
+      "type": "ascii",
+      "offset": -1,
+      "length": -1,
+      "description": "Embedded application metadata if present"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "FileStart",
+      "offset": 0,
+      "length": 16,
+      "description": "Initial bytes of the FlatImage file used for payload type detection",
+      "fields": [
+        {
+          "name": "FirstByte",
+          "variable": "flatimgFirstByte",
+          "offset": 0,
+          "length": 1
+        }
+      ]
+    },
+    {
+      "name": "BootstrapCode",
+      "offset": -1,
+      "length": -1,
+      "description": "Optional ELF or shell bootstrap that mounts and executes the embedded application"
+    },
+    {
+      "name": "FilesystemImage",
+      "offset": -1,
+      "length": -1,
+      "description": "Embedded filesystem image (SquashFS, ext4, or other) containing application files"
+    },
+    {
+      "name": "MetadataTrailer",
+      "offset": -1,
+      "length": -1,
+      "description": "Optional trailing metadata with application name, version, and runtime requirements"
+    }
+  ],
+  "assertions": [
+    {
+      "id": "A1",
+      "description": "File must not be empty",
+      "expression": "flatimgFirstByte >= 0"
+    },
+    {
+      "id": "A2",
+      "description": "File size should be at least 1 KB for a valid image",
+      "expression": "flatimgSize >= 1024"
+    },
+    {
+      "id": "A3",
+      "description": "Extension must be .flatimg for positive identification",
+      "expression": "true"
+    }
+  ],
+  "navigation": {
+    "entryPoint": "FileStart",
+    "structure": [
+      "FileStart",
+      "BootstrapCode",
+      "FilesystemImage",
+      "MetadataTrailer"
+    ],
+    "notes": "Without a magic signature, structural analysis requires scanning for known filesystem magic bytes (SquashFS 0x73717368, ext4 0xEF53 at offset 1080, etc.) within the file."
+  },
+  "inspector": {
+    "badge": "FLAT",
+    "primaryField": "flatimgFirstByte",
+    "groups": [
+      {
+        "name": "File Info",
+        "fields": [
+          "flatimgFirstByte",
+          "flatimgPayloadType",
+          "flatimgSize"
+        ]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "FlatImage Info CSV",
+      "format": "csv",
+      "fields": [
+        "flatimgFirstByte",
+        "flatimgPayloadType",
+        "flatimgSize"
+      ]
+    },
+    {
+      "name": "FlatImage Info JSON",
+      "format": "json",
+      "fields": [
+        "flatimgFirstByte",
+        "flatimgPayloadType",
+        "flatimgSize"
+      ]
+    }
+  ],
+  "forensic": {
+    "riskLevel": "MEDIUM",
+    "notes": "Portable application images can bundle arbitrary executables and libraries. Without signature verification, modified images may contain malicious payloads.",
+    "suspiciousPatterns": [
+      "FlatImage downloaded from untrusted sources without checksum verification",
+      "Embedded filesystem containing setuid binaries",
+      "Bootstrap code that modifies host system files outside the sandbox",
+      "Unusually large image for the stated application purpose"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "FlatImage is an extension-based portable application format for Linux without a standardized magic signature. Analysis requires scanning internal contents for known filesystem magic to identify the embedded payload type and structure.",
+    "suggestedInspections": [
+      "Scan for known filesystem magic bytes to identify the embedded image type",
+      "If ELF bootstrap is present, analyze its entry point and mount logic",
+      "Extract the embedded filesystem and enumerate contained executables",
+      "Check for digital signatures or checksums in trailing metadata"
+    ]
+  },
+  "TechnicalDetails": {
+    "noMagic": true,
+    "detectionMethod": "Extension-based (.flatimg)",
+    "possiblePayloads": "SquashFS, ext4, custom filesystem",
+    "platform": "Linux"
+  },
+  "QualityMetrics": {
+    "CompletenessScore": 82,
+    "LastUpdated": "2026-04-16",
+    "ReviewedBy": "WPFHexaEditor Team"
+  }
+}

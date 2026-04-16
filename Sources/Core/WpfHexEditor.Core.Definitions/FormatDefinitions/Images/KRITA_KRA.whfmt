@@ -1,0 +1,188 @@
+{
+  "diffMode": "binary",
+  "formatName": "Krita KRA/ORA Document",
+  "version": "1.0",
+  "extensions": [
+    ".kra",
+    ".ora"
+  ],
+  "description": "Krita KRA native document format — a ZIP container holding the complete editing state of a Krita painting project. Contains maindoc.xml (layer tree and document metadata), mergedimage.png (flattened preview), and individual layer data stored as tiles in directories. ORA (OpenRaster) uses a similar ZIP-based structure with stack.xml.",
+  "category": "Images",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "references": {
+    "specifications": [
+      "Krita KRA format — docs.krita.org/en/general_concepts/file_formats.html",
+      "OpenRaster specification — freedesktop.org/wiki/Specifications/OpenRaster/"
+    ],
+    "WebLinks": [
+      "https://krita.org/",
+      "https://docs.krita.org/",
+      "https://www.freedesktop.org/wiki/Specifications/OpenRaster/"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      { "value": "504B0304", "offset": 0, "label": "PK ZIP container for Krita KRA", "weight": 0.5 }
+    ],
+    "required": true,
+    "Strength": "Medium",
+    "MinimumScore": 0.4,
+    "validation": {
+      "minFileSize": 100
+    }
+  },
+  "variables": {
+    "kraZipMagic": ""
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "ZIP Magic",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.45,
+      "description": "4-byte ZIP local file header signature 'PK' (50 4B 03 04). KRA files are ZIP archives containing document structure and layer data.",
+      "storeAs": "kraZipMagic",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "ZIP Version Needed",
+      "offset": 4,
+      "length": 2,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "2-byte uint16 LE: minimum ZIP version needed to extract. Typically 20 (2.0) for deflate compression."
+    },
+    {
+      "type": "field",
+      "name": "Compression Method",
+      "offset": 8,
+      "length": 2,
+      "color": "#FFEAA7",
+      "opacity": 0.35,
+      "description": "2-byte uint16 LE: compression method for the first entry. 0=stored, 8=deflate."
+    },
+    {
+      "type": "field",
+      "name": "First Entry Filename",
+      "offset": 30,
+      "length": 20,
+      "color": "#95E1D3",
+      "opacity": 0.30,
+      "description": "Filename of the first ZIP entry — in KRA files this is typically 'mimetype' (containing 'application/x-krita') or 'maindoc.xml'."
+    }
+  ],
+  "assertions": [
+    {
+      "name": "ZIP magic present",
+      "expression": "kraZipMagic startsWith 'PK'",
+      "severity": "error",
+      "message": "File must start with PK ZIP signature to be a valid KRA/ORA file"
+    },
+    {
+      "name": "File has content",
+      "expression": "fileSize > 100",
+      "severity": "error",
+      "message": "KRA file is too small to contain a valid ZIP archive"
+    },
+    {
+      "name": "ZIP signature bytes",
+      "expression": "kraZipMagic != ''",
+      "severity": "warning",
+      "message": "ZIP magic should be readable"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "ZIP Header", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
+      { "name": "First Entry", "offset": 30, "icon": "\uE9D9", "color": "#95E1D3" }
+    ]
+  },
+  "inspector": {
+    "badge": "kraZipMagic",
+    "primaryField": "kraZipMagic",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "KRA Container",
+        "icon": "\uE71B",
+        "fields": ["kraZipMagic"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "KRA Container Info (JSON)",
+      "format": "json",
+      "fields": ["kraZipMagic"]
+    },
+    {
+      "name": "kra_header_t (C struct)",
+      "format": "c-struct",
+      "structName": "kra_zip_header",
+      "fields": ["kraZipMagic"]
+    }
+  ],
+  "forensic": {
+    "category": "images",
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      {
+        "name": "Not a ZIP archive",
+        "condition": "kraZipMagic != 'PK'",
+        "severity": "warning",
+        "description": "File does not start with PK signature — may be corrupted or not a KRA/ORA file."
+      }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "KRA = ZIP archive. Key entries: 'mimetype' (first, uncompressed, contains 'application/x-krita'), 'maindoc.xml' (layer tree XML with <IMAGE> root, <layers> with <layer> elements having name/filename/colorspacename/opacity), 'mergedimage.png' (flattened composite), layer directories with tile data. ORA similar: 'mimetype'='image/openraster', 'stack.xml' instead of maindoc.xml, 'mergedimage.png', layer PNGs.",
+    "suggestedInspections": [
+      "Extract and check 'mimetype' entry for 'application/x-krita' or 'image/openraster'",
+      "Parse maindoc.xml (KRA) or stack.xml (ORA) for layer structure",
+      "Verify mergedimage.png exists for thumbnail/preview",
+      "List ZIP entries to identify layer data files"
+    ]
+  },
+  "software": [
+    "Krita",
+    "GIMP (partial ORA support)",
+    "MyPaint (ORA support)",
+    "Scribus (import)"
+  ],
+  "formatRelationships": {
+    "category": "Images",
+    "extensions": [".kra", ".ora"],
+    "relatedFormats": ["GIMP_XCF", "PSD", "ZIP"],
+    "containerVariant": "KRA = Krita-specific; ORA = OpenRaster (open standard); both use ZIP container"
+  },
+  "MimeTypes": [
+    "application/x-krita",
+    "image/openraster"
+  ],
+  "UseCases": [
+    "Digital painting project storage with full layer state",
+    "Illustration and concept art workflow files",
+    "Animation frame storage (Krita animation features)",
+    "Cross-application layer exchange via OpenRaster"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 83,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 4,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-16",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "FileType": "ZIP-based layered image document",
+    "Container": "ZIP (PK 50 4B 03 04)",
+    "KeyEntries": ["mimetype", "maindoc.xml (KRA) / stack.xml (ORA)", "mergedimage.png", "layer data tiles"],
+    "LayerStorage": "Individual tiles stored as binary data in subdirectories",
+    "Compression": "Deflate (ZIP) for entries; layer tiles may use additional compression"
+  }
+}

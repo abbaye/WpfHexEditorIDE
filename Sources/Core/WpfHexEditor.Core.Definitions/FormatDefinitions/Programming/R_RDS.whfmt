@@ -1,0 +1,180 @@
+{
+  "diffMode": "text",
+  "formatName": "R Serialized Data (RDS/RData)",
+  "version": "1.0",
+  "extensions": [".rds", ".rda", ".RData"],
+  "description": "R serialization format — the native binary/ASCII format used by R to serialize R objects to disk via saveRDS() and save(). Version 2 and 3 files start with 'X\\n' (ASCII format) or 'B' (binary format). Many .rds files are additionally gzip-compressed (magic 0x1F8B). Contains R objects including data frames, lists, environments, and functions.",
+  "category": "Programming",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "code-editor",
+  "references": [
+    "https://cran.r-project.org/doc/manuals/r-release/R-ints.html#Serialization-Formats",
+    "https://stat.ethz.ch/R-manual/R-devel/library/base/html/readRDS.html",
+    "https://github.com/wch/r-source/blob/master/src/main/serialize.c"
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "value": "580A",
+        "offset": 0,
+        "label": "'X\\n' R serialization format version 2/3",
+        "weight": 0.8
+      },
+      {
+        "value": "42",
+        "offset": 0,
+        "label": "'B' binary R serialization (non-ASCII)",
+        "weight": 0.5
+      },
+      {
+        "value": "1F8B",
+        "offset": 0,
+        "label": "gzip — many .rds files are gzip-compressed",
+        "weight": 0.4
+      }
+    ],
+    "matchMode": "Best",
+    "MinimumScore": 0.4,
+    "Strength": "Medium",
+    "EntropyHint": "Variable — ASCII format has low entropy; binary format moderate; gzip-compressed has high entropy"
+  },
+  "variables": [
+    {
+      "name": "rdsFormatChar",
+      "offset": 0,
+      "size": 1,
+      "type": "ascii",
+      "description": "Format character — 'X'=ASCII v2/v3, 'B'=binary, 'A'=ASCII v1"
+    },
+    {
+      "name": "rdsNewline",
+      "offset": 1,
+      "size": 1,
+      "type": "uint8",
+      "description": "Newline byte (0x0A) following the format character"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "FormatHeader",
+      "offset": 0,
+      "size": 2,
+      "description": "Format character + newline (for ASCII formats)"
+    },
+    {
+      "name": "VersionInfo",
+      "offset": 2,
+      "size": 0,
+      "description": "Serialization format version, R version that wrote the file"
+    },
+    {
+      "name": "ObjectData",
+      "offset": 0,
+      "size": 0,
+      "description": "Serialized R object tree (SEXP types, attributes, data)"
+    },
+    {
+      "name": "GzipWrapper",
+      "offset": 0,
+      "size": 0,
+      "description": "Optional gzip compression wrapper (when first bytes are 0x1F 0x8B)"
+    }
+  ],
+  "assertions": [
+    {
+      "variable": "rdsFormatChar",
+      "operator": "!=",
+      "value": "",
+      "description": "Format character must be present",
+      "level": "Error"
+    },
+    {
+      "variable": "rdsNewline",
+      "operator": "==",
+      "value": 10,
+      "description": "Second byte should be newline (0x0A) for ASCII format",
+      "level": "Warning"
+    },
+    {
+      "variable": "rdsFormatChar",
+      "operator": "!=",
+      "value": "\u0000",
+      "description": "Format character must not be null",
+      "level": "Error"
+    }
+  ],
+  "navigation": {
+    "entryPoint": 0,
+    "sections": [
+      { "name": "Format Header", "offset": 0, "size": 2 },
+      { "name": "Version Info", "offset": 2, "size": 0 },
+      { "name": "Object Data", "offset": 0, "size": 0 }
+    ]
+  },
+  "inspector": {
+    "badge": "RDS",
+    "primaryField": "rdsFormatChar",
+    "groups": [
+      {
+        "name": "Format",
+        "fields": ["rdsFormatChar", "rdsNewline"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "RDS Summary",
+      "format": "text",
+      "template": "Format: R Serialized Data\nFormat Char: {rdsFormatChar}\nEncoding: ASCII (X) or Binary (B)"
+    },
+    {
+      "name": "RDS JSON Report",
+      "format": "json",
+      "template": "{ \"format\": \"RDS\", \"formatChar\": \"{rdsFormatChar}\" }"
+    }
+  ],
+  "forensic": {
+    "riskLevel": "MEDIUM",
+    "notes": "R serialized objects can contain executable code (functions, expressions). Deserializing untrusted .rds files with readRDS() can execute arbitrary R code. Treat as potentially dangerous input.",
+    "suspiciousPatterns": [
+      "RDS file containing serialized function objects with system() or shell() calls",
+      "Unusually large .rds file for expected data type",
+      "RDS file with embedded environment objects referencing external resources"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "R's native serialization format for saveRDS/save. Starts with 'X\\n' (ASCII) or 'B' (binary). Often gzip-compressed. Contains SEXP objects (data frames, lists, functions).",
+    "suggestedInspections": [
+      "Check first byte: 'X' (ASCII v2/v3), 'B' (binary), 0x1F (gzip-compressed).",
+      "For gzip files, decompress first then check the inner format character.",
+      "Parse version info after the header to determine R version compatibility.",
+      "Scan for serialized function/language objects that could execute code on load."
+    ]
+  },
+  "software": [
+    { "name": "R", "platform": "Windows/macOS/Linux", "url": "https://www.r-project.org/" },
+    { "name": "RStudio", "platform": "Windows/macOS/Linux", "url": "https://posit.co/products/open-source/rstudio/" },
+    { "name": "Python rdata", "platform": "Windows/macOS/Linux", "url": "https://github.com/ofajardo/pyreadr" }
+  ],
+  "formatRelationships": [
+    { "format": "GZIP", "relationship": "wrapper", "note": "RDS files are often gzip-compressed" },
+    { "format": "FEATHER", "relationship": "alternative", "note": "Apache Arrow Feather is a modern alternative for R/Python data exchange" }
+  ],
+  "MimeTypes": ["application/x-r-data", "application/octet-stream"],
+  "UseCases": [
+    "R object persistence and data exchange",
+    "Statistical analysis data storage",
+    "Machine learning model serialization in R"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 84,
+    "LastUpdated": "2026-04-16",
+    "ReviewedBy": "WPFHexaEditor Team"
+  },
+  "TechnicalDetails": {
+    "formatVersions": { "1": "ASCII v1 ('A')", "2": "ASCII v2 ('X')", "3": "ASCII v3 ('X' with ALTREP)" },
+    "compression": "Optional gzip or xz compression",
+    "encoding": "ASCII text or native binary",
+    "objectTypes": "SEXP types: NILSXP, SYMSXP, LISTSXP, CLOSXP, ENVSXP, INTSXP, REALSXP, STRSXP, VECSXP, etc."
+  }
+}

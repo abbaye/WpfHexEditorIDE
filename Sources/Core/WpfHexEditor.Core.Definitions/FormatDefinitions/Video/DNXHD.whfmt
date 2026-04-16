@@ -1,0 +1,223 @@
+{
+  "diffMode": "binary",
+  "formatName": "Avid DNxHD/DNxHR",
+  "version": "1.0",
+  "extensions": [
+    ".dnxhd",
+    ".mxf"
+  ],
+  "description": "DNxHD (Digital Nonlinear Extensible High Definition) and DNxHR (High Resolution) are Avid Technology's professional video codecs designed for multi-generation editing workflows. DNxHD targets HD resolutions (720p/1080i/1080p) while DNxHR extends support to resolutions above HD including 2K, 4K, and 8K. Both are intra-frame DCT-based codecs with fixed or variable bitrate encoding. DNxHD frames begin with a distinctive header pattern (0x00000280 for standard frames) followed by compression ID and frame metadata. Standardized as SMPTE VC-3.",
+  "category": "Video",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "references": {
+    "specifications": [
+      "SMPTE VC-3 — DNxHD/DNxHR Bitstream Specification",
+      "Avid DNxHD Technology Overview"
+    ],
+    "WebLinks": [
+      "https://en.wikipedia.org/wiki/Avid_DNxHD",
+      "https://www.avid.com/alliance-partner-program/codec-sdk",
+      "https://wiki.multimedia.cx/index.php/DNxHD"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      {
+        "value": "0000028001",
+        "offset": 0,
+        "label": "DNxHD frame header",
+        "weight": 0.9
+      }
+    ],
+    "matchMode": "allOf",
+    "MinimumScore": 82,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 5.5, "max": 7.9 },
+    "validation": {
+      "minFileSize": 32,
+      "maxSignatureOffset": 0
+    }
+  },
+  "variables": {
+    "dnxhdHeader": 0,
+    "dnxhdCompId": 0,
+    "dnxhdWidth": 0,
+    "dnxhdHeight": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "Frame Header",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.45,
+      "description": "DNxHD frame header marker (32-bit big-endian). Standard value is 0x00000280 (640 decimal). This value identifies the start of a DNxHD/DNxHR compressed video frame.",
+      "storeAs": "dnxhdHeader",
+      "valueType": "uint32",
+      "endianness": "big"
+    },
+    {
+      "type": "field",
+      "name": "Compression ID",
+      "offset": 4,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "DNxHD compression profile identifier (32-bit big-endian). Encodes the target bitrate, resolution, and quality profile. Common IDs: 1235 (220Mbps 1080p/10bit), 1237 (145Mbps 1080p), 1238 (220Mbps 1080p/8bit), 1241 (220Mbps 1080i), 1253 (36Mbps 1080p proxy).",
+      "storeAs": "dnxhdCompId",
+      "valueType": "uint32",
+      "endianness": "big"
+    },
+    {
+      "type": "field",
+      "name": "Frame Width",
+      "offset": 24,
+      "length": 2,
+      "color": "#95E1D3",
+      "opacity": 0.35,
+      "description": "Frame width in pixels (16-bit big-endian unsigned). Standard DNxHD: 1920 (1080p/i) or 1280 (720p). DNxHR extends to 2048, 3840, 4096, 7680, etc.",
+      "storeAs": "dnxhdWidth",
+      "valueType": "uint16",
+      "endianness": "big"
+    },
+    {
+      "type": "field",
+      "name": "Frame Height",
+      "offset": 26,
+      "length": 2,
+      "color": "#FFE66D",
+      "opacity": 0.35,
+      "description": "Frame height in pixels (16-bit big-endian unsigned). Standard DNxHD: 1080 or 720. DNxHR supports arbitrary heights for 2K/4K/8K content.",
+      "storeAs": "dnxhdHeight",
+      "valueType": "uint16",
+      "endianness": "big"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "Frame header marker valid",
+      "expression": "dnxhdHeader == 640",
+      "severity": "warning",
+      "message": "DNxHD frame header is typically 0x00000280 (640) — other values may indicate a non-standard variant"
+    },
+    {
+      "name": "Compression ID non-zero",
+      "expression": "dnxhdCompId > 0",
+      "severity": "error",
+      "message": "Compression ID must be non-zero to identify the DNxHD/DNxHR profile"
+    },
+    {
+      "name": "Frame dimensions valid",
+      "expression": "dnxhdWidth > 0 && dnxhdHeight > 0",
+      "severity": "error",
+      "message": "Frame width and height must both be greater than zero"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      {
+        "name": "Frame Header",
+        "offset": 0,
+        "icon": "\uE71B",
+        "color": "#FF6B6B"
+      },
+      {
+        "name": "Dimensions",
+        "offset": 24,
+        "icon": "\uE9D9",
+        "color": "#95E1D3"
+      }
+    ]
+  },
+  "inspector": {
+    "badge": "dnxhdCompId",
+    "primaryField": "dnxhdWidth",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "Frame Header",
+        "icon": "\uE71B",
+        "fields": ["dnxhdHeader", "dnxhdCompId"]
+      },
+      {
+        "title": "Dimensions",
+        "icon": "\uE9D9",
+        "fields": ["dnxhdWidth", "dnxhdHeight"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "DNxHD Frame (JSON)",
+      "format": "json",
+      "fields": ["dnxhdHeader", "dnxhdCompId", "dnxhdWidth", "dnxhdHeight"]
+    },
+    {
+      "name": "dnxhd_frame_t (C struct)",
+      "format": "c-struct",
+      "structName": "dnxhd_frame",
+      "fields": ["dnxhdHeader", "dnxhdCompId", "dnxhdWidth", "dnxhdHeight"]
+    }
+  ],
+  "forensic": {
+    "category": "video",
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      {
+        "name": "Unknown compression ID",
+        "condition": "dnxhdCompId < 1235 || dnxhdCompId > 1260",
+        "severity": "info",
+        "description": "Compression ID outside common DNxHD range — may be a DNxHR profile or non-standard configuration."
+      }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "DNxHD/DNxHR frame layout: headerMarker(4B BE, typically 0x00000280) + compressionID(4B BE) + frame metadata fields + macroblock data. The compression ID encodes the profile: target bitrate, bit depth (8 or 10), interlace mode, and resolution class. DNxHR profiles: LB (low bandwidth), SQ (standard quality), HQ (high quality), HQX (high quality 10/12-bit), 444 (4:4:4 12-bit). Frames use 8x8 DCT with variable-length coding. Typically wrapped in MXF (OP1a) or MOV containers.",
+    "suggestedInspections": [
+      "Verify 0x00000280 header marker at offset 0",
+      "Parse compression ID to identify bitrate and quality profile",
+      "Extract frame width and height for resolution identification",
+      "Map compression ID to known DNxHD/DNxHR profile table"
+    ]
+  },
+  "software": [
+    "Avid Media Composer",
+    "FFmpeg",
+    "DaVinci Resolve"
+  ],
+  "formatRelationships": {
+    "category": "Video",
+    "extensions": [".dnxhd", ".mxf"],
+    "relatedFormats": ["MXF", "ProRes", "CINEFORM"],
+    "containerVariant": "Raw DNxHD essence (typically inside MXF OP1a or MOV)"
+  },
+  "MimeTypes": [
+    "video/x-dnxhd"
+  ],
+  "UseCases": [
+    "Professional video editing in Avid Media Composer",
+    "Broadcast television production and delivery",
+    "Multi-generation editing with minimal quality loss",
+    "4K/8K post-production workflows (DNxHR)"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 83,
+    "DocumentationLevel": "comprehensive",
+    "BlocksDefined": 4,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-16",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "VideoFormat": true,
+    "CompressionMethod": "Lossy intra-frame (8x8 DCT with VLC)",
+    "Endianness": "big-endian",
+    "ChromaSubsampling": "4:2:2 (standard) or 4:4:4 (DNxHR 444)",
+    "BitDepth": "8-bit or 10-bit (DNxHD), up to 12-bit (DNxHR HQX/444)",
+    "IntraFrameOnly": true,
+    "Standard": "SMPTE VC-3"
+  }
+}

@@ -1,0 +1,251 @@
+{
+  "formatName": "ZigBee Frame",
+  "version": "1.0",
+  "diffMode": "binary",
+  "extensions": [
+    ".zbee",
+    ".pcap"
+  ],
+  "description": "ZigBee IEEE 802.15.4 MAC frame format used in low-power wireless mesh networks for home automation, industrial monitoring, and smart energy. The frame control field encodes frame type, security, addressing mode, and protocol version.",
+  "category": "IoT",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "MimeTypes": [
+    "application/x-zigbee"
+  ],
+  "UseCases": [
+    "Home automation control (lighting, HVAC, locks)",
+    "Industrial sensor mesh networks for monitoring",
+    "Smart energy metering and demand-response systems",
+    "Healthcare and fitness device communication"
+  ],
+  "references": [
+    "https://csa-iot.org/developer-resource/specifications-download-request/",
+    "https://www.ieee802.org/15/pub/TG4.html",
+    "https://en.wikipedia.org/wiki/Zigbee"
+  ],
+  "software": [
+    {
+      "name": "Wireshark",
+      "url": "https://www.wireshark.org/",
+      "role": "ZigBee protocol dissector for captured frames"
+    },
+    {
+      "name": "KillerBee",
+      "url": "https://github.com/riverloopsec/killerbee",
+      "role": "ZigBee security research and packet injection toolkit"
+    },
+    {
+      "name": "Z-Stack",
+      "url": "https://www.ti.com/tool/Z-STACK",
+      "role": "Texas Instruments ZigBee protocol stack"
+    }
+  ],
+  "formatRelationships": [
+    {
+      "format": "BLE_PACKET",
+      "relationship": "BLE is a competing low-power wireless protocol; ZigBee uses mesh topology"
+    },
+    {
+      "format": "MATTER_TLV",
+      "relationship": "Matter protocol can run over ZigBee's Thread network layer"
+    }
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "offset": 0,
+        "value": "41",
+        "label": "ZigBee frame control: data frame + security disabled (0x41)",
+        "weight": 0.3
+      }
+    ],
+    "matchMode": "first",
+    "MinimumScore": 82,
+    "Strength": "Weak",
+    "EntropyHint": {
+      "min": 4.0,
+      "max": 7.0,
+      "note": "Short frames with addressing and encrypted payloads"
+    },
+    "validation": "Frame control low 3 bits encode frame type (0=Beacon, 1=Data, 2=Ack, 3=MAC Command). Bits 12-13 encode destination addressing mode. Sequence number at offset 2 should increment."
+  },
+  "variables": [
+    {
+      "name": "zbeeFrameControl",
+      "type": "uint16",
+      "offset": 0,
+      "length": 2,
+      "endian": "little",
+      "description": "Frame control: frame type (3 bits), security enabled, frame pending, ack request, PAN ID compression, addressing modes"
+    },
+    {
+      "name": "zbeeSeqNum",
+      "type": "uint8",
+      "offset": 2,
+      "length": 1,
+      "description": "Sequence number for frame deduplication and ordering"
+    },
+    {
+      "name": "zbeeDestPAN",
+      "type": "uint16",
+      "offset": 3,
+      "length": 2,
+      "endian": "little",
+      "description": "Destination PAN (Personal Area Network) identifier"
+    },
+    {
+      "name": "zbeeFrameType",
+      "type": "uint8",
+      "offset": -1,
+      "length": 1,
+      "description": "Derived frame type from control field bits 2-0"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "MACHeader",
+      "offset": 0,
+      "length": 5,
+      "description": "IEEE 802.15.4 MAC header: 2-byte frame control, 1-byte sequence number, 2-byte destination PAN ID",
+      "fields": [
+        {
+          "name": "FrameControl",
+          "variable": "zbeeFrameControl",
+          "offset": 0,
+          "length": 2
+        },
+        {
+          "name": "SequenceNumber",
+          "variable": "zbeeSeqNum",
+          "offset": 2,
+          "length": 1
+        },
+        {
+          "name": "DestPAN",
+          "variable": "zbeeDestPAN",
+          "offset": 3,
+          "length": 2
+        }
+      ]
+    },
+    {
+      "name": "AddressingFields",
+      "offset": 5,
+      "length": -1,
+      "description": "Destination and source addresses (2 or 8 bytes each depending on addressing mode)"
+    },
+    {
+      "name": "NWKHeader",
+      "offset": -1,
+      "length": -1,
+      "description": "ZigBee NWK layer header with frame control, destination, source, radius, and sequence number"
+    },
+    {
+      "name": "APSPayload",
+      "offset": -1,
+      "length": -1,
+      "description": "ZigBee APS layer payload containing cluster commands, attributes, and application data"
+    }
+  ],
+  "assertions": [
+    {
+      "id": "A1",
+      "description": "Frame type (bits 2-0) must be 0-3",
+      "expression": "zbeeFrameType <= 3"
+    },
+    {
+      "id": "A2",
+      "description": "Destination PAN must not be zero for data frames",
+      "expression": "zbeeFrameType != 1 || zbeeDestPAN > 0"
+    },
+    {
+      "id": "A3",
+      "description": "Sequence number should be a valid 8-bit value",
+      "expression": "zbeeSeqNum >= 0 && zbeeSeqNum <= 255"
+    }
+  ],
+  "navigation": {
+    "entryPoint": "MACHeader",
+    "structure": [
+      "MACHeader",
+      "AddressingFields",
+      "NWKHeader",
+      "APSPayload"
+    ],
+    "notes": "ZigBee frames have a layered structure: IEEE 802.15.4 MAC -> ZigBee NWK -> ZigBee APS -> ZCL (ZigBee Cluster Library). Maximum frame size is 127 bytes at the MAC layer. FCS (2 bytes) appended at the end."
+  },
+  "inspector": {
+    "badge": "ZBee",
+    "primaryField": "zbeeFrameControl",
+    "groups": [
+      {
+        "name": "MAC Header",
+        "fields": [
+          "zbeeFrameControl",
+          "zbeeSeqNum",
+          "zbeeDestPAN"
+        ]
+      },
+      {
+        "name": "Derived",
+        "fields": [
+          "zbeeFrameType"
+        ]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "ZigBee Frame CSV",
+      "format": "csv",
+      "fields": [
+        "zbeeFrameControl",
+        "zbeeSeqNum",
+        "zbeeDestPAN",
+        "zbeeFrameType"
+      ]
+    },
+    {
+      "name": "ZigBee Frame JSON",
+      "format": "json",
+      "fields": [
+        "zbeeFrameControl",
+        "zbeeSeqNum",
+        "zbeeDestPAN",
+        "zbeeFrameType"
+      ]
+    }
+  ],
+  "forensic": {
+    "riskLevel": "MEDIUM",
+    "notes": "ZigBee networks use a shared network key that, if compromised, exposes all traffic. The default trust center link key (ZigBeeAlliance09) is widely known. Key transport during device joining is a critical vulnerability window.",
+    "suspiciousPatterns": [
+      "Frames with security disabled in a network that should use encryption",
+      "Network key transport in cleartext during device joining",
+      "Beacon request floods indicating network scanning or reconnaissance",
+      "MAC command frames with forged source addresses for injection attacks"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "ZigBee uses IEEE 802.15.4 at the MAC layer with additional NWK and APS layers. The MAC frame control field (2 bytes LE) encodes frame type, security, acknowledgment, and addressing modes. Typical home automation uses ZCL cluster commands over this stack.",
+    "suggestedInspections": [
+      "Decode frame control to determine frame type and addressing modes",
+      "Parse addressing fields based on the source/destination addressing mode bits",
+      "Check security enabled bit and identify the encryption suite in use",
+      "Extract NWK layer source and destination network addresses for topology mapping"
+    ]
+  },
+  "TechnicalDetails": {
+    "maxFrameSize": 127,
+    "fcsSize": 2,
+    "frequency": "2.4 GHz (worldwide), 868 MHz (EU), 915 MHz (US)",
+    "addressModes": "None, 16-bit short, 64-bit extended",
+    "securitySuites": "AES-CCM-128 (AES-128 with CBC-MAC)"
+  },
+  "QualityMetrics": {
+    "CompletenessScore": 84,
+    "LastUpdated": "2026-04-16",
+    "ReviewedBy": "WPFHexaEditor Team"
+  }
+}

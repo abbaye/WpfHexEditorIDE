@@ -1,0 +1,163 @@
+{
+  "diffMode": "binary",
+  "formatName": "Docker Image (docker save TAR)",
+  "version": "1.0",
+  "extensions": [".tar"],
+  "description": "Docker container image exported via 'docker save' — a TAR archive containing manifest.json, a JSON config file, and multiple layer tarballs. Each layer is a directory with a layer.tar file representing filesystem changes. The manifest.json at the TAR root lists all image tags, config digest, and ordered layer references.",
+  "category": "Virtualization",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "HexEditor",
+  "references": [
+    "https://docs.docker.com/engine/reference/commandline/save/",
+    "https://github.com/moby/moby/blob/master/image/spec/v1.2.md",
+    "https://github.com/opencontainers/image-spec"
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "value": "6D616E6966657374",
+        "offset": 0,
+        "label": "'manifest' in TAR first entry name",
+        "weight": 0.4
+      }
+    ],
+    "matchMode": "Best",
+    "MinimumScore": 0.3,
+    "Strength": "Weak",
+    "EntropyHint": "Mixed — TAR headers are low entropy; compressed layer tarballs have high entropy"
+  },
+  "variables": [
+    {
+      "name": "dockerFirstByte",
+      "offset": 0,
+      "size": 1,
+      "type": "uint8",
+      "description": "First byte of the TAR archive"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "TarHeader",
+      "offset": 0,
+      "size": 512,
+      "description": "First TAR entry header — typically manifest.json"
+    },
+    {
+      "name": "ManifestEntry",
+      "offset": 512,
+      "size": 0,
+      "description": "manifest.json content listing image tags, config, and layers"
+    },
+    {
+      "name": "ConfigBlob",
+      "offset": 0,
+      "size": 0,
+      "description": "Image configuration JSON with architecture, OS, and history"
+    },
+    {
+      "name": "LayerTarballs",
+      "offset": 0,
+      "size": 0,
+      "description": "Layer directories each containing layer.tar with filesystem diffs"
+    }
+  ],
+  "assertions": [
+    {
+      "variable": "dockerFirstByte",
+      "operator": "!=",
+      "value": 0,
+      "description": "First byte must not be null — TAR filename starts with printable character",
+      "level": "Error"
+    },
+    {
+      "variable": "dockerFirstByte",
+      "operator": ">",
+      "value": 31,
+      "description": "First byte should be a printable ASCII character",
+      "level": "Warning"
+    },
+    {
+      "variable": "dockerFirstByte",
+      "operator": "<",
+      "value": 128,
+      "description": "First byte should be within ASCII range",
+      "level": "Warning"
+    }
+  ],
+  "navigation": {
+    "entryPoint": 0,
+    "sections": [
+      { "name": "TAR Header", "offset": 0, "size": 512 },
+      { "name": "Manifest", "offset": 512, "size": 0 },
+      { "name": "Config JSON", "offset": 0, "size": 0 },
+      { "name": "Layers", "offset": 0, "size": 0 }
+    ]
+  },
+  "inspector": {
+    "badge": "DOCKER",
+    "primaryField": "dockerFirstByte",
+    "groups": [
+      {
+        "name": "Container",
+        "fields": ["dockerFirstByte"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "Docker Image Summary",
+      "format": "text",
+      "template": "Format: Docker Image (docker save TAR)\nFirst Byte: {dockerFirstByte}"
+    },
+    {
+      "name": "Docker Image JSON Report",
+      "format": "json",
+      "template": "{ \"format\": \"Docker Image\", \"firstByte\": {dockerFirstByte} }"
+    }
+  ],
+  "forensic": {
+    "riskLevel": "HIGH",
+    "notes": "Docker images contain full filesystem layers. Malicious images may include cryptominers, backdoors, or credential harvesters. Always scan layers with vulnerability scanners before deployment.",
+    "suspiciousPatterns": [
+      "Layer containing SUID binaries or modified system utilities",
+      "Config JSON showing CMD/ENTRYPOINT executing base64-decoded scripts",
+      "Layers with world-writable sensitive directories (/etc, /root)",
+      "Image history showing RUN commands downloading from untrusted URLs"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "Docker images saved via 'docker save' are TAR archives with manifest.json, config JSON, and layer tarballs. Each layer represents filesystem changes.",
+    "suggestedInspections": [
+      "Parse manifest.json to identify image tags, config digest, and layer order.",
+      "Inspect the config JSON for CMD, ENTRYPOINT, ENV, and build history.",
+      "Extract and scan individual layer.tar files for suspicious binaries or scripts.",
+      "Check layer sizes for anomalies — unusually large layers may contain unexpected payloads."
+    ]
+  },
+  "software": [
+    { "name": "Docker", "platform": "Windows/macOS/Linux", "url": "https://www.docker.com/" },
+    { "name": "Podman", "platform": "Linux/macOS", "url": "https://podman.io/" },
+    { "name": "Trivy", "platform": "Windows/macOS/Linux", "url": "https://aquasecurity.github.io/trivy/" }
+  ],
+  "formatRelationships": [
+    { "format": "OCI_IMAGE", "relationship": "alternative", "note": "OCI image layout is the newer standard replacing Docker image format" },
+    { "format": "TAR", "relationship": "parent", "note": "Docker image is a TAR archive" }
+  ],
+  "MimeTypes": ["application/x-tar", "application/vnd.docker.distribution.manifest.v2+json"],
+  "UseCases": [
+    "Container image distribution and backup",
+    "Container security scanning and forensic analysis",
+    "Offline container image transfer between hosts"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 83,
+    "LastUpdated": "2026-04-16",
+    "ReviewedBy": "WPFHexaEditor Team"
+  },
+  "TechnicalDetails": {
+    "containerFormat": "Uncompressed TAR",
+    "manifestFile": "manifest.json at TAR root",
+    "layerFormat": "Each layer is a gzip TAR (layer.tar) in a named directory",
+    "specVersion": "Docker Image Manifest V2 Schema 2 / OCI Image Spec"
+  }
+}

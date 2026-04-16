@@ -1,0 +1,189 @@
+{
+  "diffMode": "text",
+  "formatName": "MaterialX Document",
+  "version": "1.0",
+  "extensions": [
+    ".mtlx"
+  ],
+  "description": "MaterialX — open-standard XML format for describing materials, shading networks, patterns, and geometric transforms in computer graphics. Developed by Lucasfilm/ILM and ratified by the Academy Software Foundation. The root element is <materialx> with version attribute. Contains material definitions, shader nodes, node graphs, and look assignments.",
+  "category": "3D",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "code-editor",
+  "references": {
+    "specifications": [
+      "MaterialX Specification — materialx.org/Specification.html",
+      "ASWF MaterialX — github.com/AcademySoftwareFoundation/MaterialX"
+    ],
+    "WebLinks": [
+      "https://materialx.org/",
+      "https://github.com/AcademySoftwareFoundation/MaterialX",
+      "https://en.wikipedia.org/wiki/MaterialX"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      { "value": "3C6D6174657269616C78", "offset": 0, "label": "'<materialx' root element", "weight": 1.0 },
+      { "value": "3C3F786D6C", "offset": 0, "label": "'<?xml' before materialx", "weight": 0.3 }
+    ],
+    "required": true,
+    "Strength": "Strong",
+    "MinimumScore": 0.3,
+    "validation": {
+      "minFileSize": 30
+    }
+  },
+  "variables": {
+    "mtlxRoot": ""
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "Root Element",
+      "offset": 0,
+      "length": 10,
+      "color": "#FF6B6B",
+      "opacity": 0.45,
+      "description": "ASCII '<materialx' — the root XML element identifying this as a MaterialX document.",
+      "storeAs": "mtlxRoot",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Version Attribute",
+      "offset": 10,
+      "length": 30,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "MaterialX version attribute (e.g. version=\"1.38\") and optional namespace declarations."
+    },
+    {
+      "type": "field",
+      "name": "Material Definitions",
+      "offset": 40,
+      "length": 60,
+      "color": "#FFEAA7",
+      "opacity": 0.35,
+      "description": "Material definitions using <surfacematerial>, <standard_surface>, or <UsdPreviewSurface> nodes with input bindings."
+    },
+    {
+      "type": "field",
+      "name": "Node Graph Section",
+      "offset": 100,
+      "length": 50,
+      "color": "#95E1D3",
+      "opacity": 0.30,
+      "description": "Node graphs (<nodegraph>) containing shader node networks, texture references, and value connections."
+    }
+  ],
+  "assertions": [
+    {
+      "name": "MaterialX root element",
+      "expression": "mtlxRoot == '<materialx' || mtlxRoot == '<?xml vers'",
+      "severity": "error",
+      "message": "File must contain '<materialx' root element or start with XML declaration"
+    },
+    {
+      "name": "File has content",
+      "expression": "fileSize > 30",
+      "severity": "error",
+      "message": "MaterialX file is too small to contain valid XML structure"
+    },
+    {
+      "name": "Root is ASCII",
+      "expression": "mtlxRoot != ''",
+      "severity": "warning",
+      "message": "Root element should be readable ASCII"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "Root Element", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
+      { "name": "Materials", "offset": 40, "icon": "\uE8A5", "color": "#FFEAA7" }
+    ]
+  },
+  "inspector": {
+    "badge": "mtlxRoot",
+    "primaryField": "mtlxRoot",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "MaterialX Header",
+        "icon": "\uE71B",
+        "fields": ["mtlxRoot"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "MaterialX Header (JSON)",
+      "format": "json",
+      "fields": ["mtlxRoot"]
+    },
+    {
+      "name": "mtlx_header_t (C struct)",
+      "format": "c-struct",
+      "structName": "materialx_header",
+      "fields": ["mtlxRoot"]
+    }
+  ],
+  "forensic": {
+    "category": "3d",
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      {
+        "name": "Missing materialx root",
+        "condition": "mtlxRoot != '<materialx'",
+        "severity": "info",
+        "description": "Root element is not '<materialx' — may be preceded by XML declaration."
+      }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "MaterialX: XML with <materialx version='1.38'> root. Contains: <surfacematerial>, <standard_surface> (PBR shading model), <nodegraph> (node networks), <look> (material-to-geometry assignments), <geominfo>. Inputs: <input name='base_color' type='color3' value='0.8, 0.2, 0.1'/>. Nodes connect via 'nodename' and 'output' attributes. Supports inheritance, variants, and collections.",
+    "suggestedInspections": [
+      "Parse materialx version attribute to determine specification level",
+      "List all surfacematerial and standard_surface definitions",
+      "Extract nodegraph structures and their input/output connections",
+      "Check for external file references (texture image paths)"
+    ]
+  },
+  "software": [
+    "USD/Houdini (SideFX)",
+    "Maya (Autodesk)",
+    "MaterialX Viewer (ASWF reference viewer)",
+    "Blender (via MaterialX addon)"
+  ],
+  "formatRelationships": {
+    "category": "3D",
+    "extensions": [".mtlx"],
+    "relatedFormats": ["USD", "GLTF"],
+    "containerVariant": "MaterialX can be embedded in USD as UsdShade material descriptions"
+  },
+  "MimeTypes": [
+    "application/x-materialx+xml",
+    "text/xml"
+  ],
+  "UseCases": [
+    "PBR material interchange between DCC applications",
+    "Look development and shader authoring for VFX pipelines",
+    "USD material assignments in Pixar/ASWF workflows",
+    "Standardized material libraries for 3D content creation"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 83,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 4,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-16",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "FileType": "XML-based material description format",
+    "Encoding": "UTF-8",
+    "RootElement": "materialx",
+    "ShadingModels": ["standard_surface", "UsdPreviewSurface", "gltf_pbr"],
+    "NodeTypes": ["surfacematerial", "nodegraph", "image", "constant", "multiply", "add"],
+    "Endianness": "N/A (XML text)"
+  }
+}

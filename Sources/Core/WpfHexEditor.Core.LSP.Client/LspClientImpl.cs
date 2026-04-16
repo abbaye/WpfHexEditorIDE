@@ -60,9 +60,19 @@ public sealed class LspClientImpl : ILspClient,
     private System.Windows.Threading.DispatcherTimer? _pullDiagTimer;
     private string?                                    _pendingPullUri;    // URI of last changed doc
 
+    // Fully-loaded state — gates semantic layers and diagnostics display.
+    private bool _fullyLoaded;
+    private System.Windows.Threading.DispatcherTimer? _fullyLoadedTimer;
+
     // ── ILspClient: lifecycle ──────────────────────────────────────────────────
 
     public bool IsInitialized { get; private set; }
+
+    /// <inheritdoc/>
+    public bool IsFullyLoaded => _fullyLoaded;
+
+    /// <inheritdoc/>
+    public event Action? FullyLoaded;
 
     /// <summary>Optional diagnostic logger injected by the host.</summary>
     public Action<string>? Logger { get; set; }
@@ -150,6 +160,30 @@ public sealed class LspClientImpl : ILspClient,
         }
 
         IsInitialized = true;
+
+        // Start a fallback timer that transitions to FullyLoaded after 5 seconds.
+        // The first diagnostic batch (push or pull) will also trigger the transition,
+        // whichever comes first — mirroring VS behaviour of suppressing init noise.
+        _fullyLoadedTimer = new System.Windows.Threading.DispatcherTimer(
+            System.TimeSpan.FromSeconds(5),
+            System.Windows.Threading.DispatcherPriority.Background,
+            (_, _) => TransitionToFullyLoaded(),
+            _dispatcher);
+        _fullyLoadedTimer.Start();
+    }
+
+    /// <summary>
+    /// One-shot transition: sets <see cref="IsFullyLoaded"/> and fires the event.
+    /// Safe to call multiple times — only the first call has any effect.
+    /// </summary>
+    private void TransitionToFullyLoaded()
+    {
+        if (_fullyLoaded) return;
+        _fullyLoaded = true;
+        _fullyLoadedTimer?.Stop();
+        _fullyLoadedTimer = null;
+        Logger?.Invoke("Server fully loaded — semantic analysis ready.");
+        FullyLoaded?.Invoke();
     }
 
     // ── ILspClient: document sync ──────────────────────────────────────────────
@@ -493,7 +527,11 @@ public sealed class LspClientImpl : ILspClient,
                 DocumentUri = filePath,
                 Diagnostics = diagnostics,
             };
-            _dispatcher.InvokeAsync(() => DiagnosticsReceived?.Invoke(this, args));
+            _dispatcher.InvokeAsync(() =>
+            {
+                TransitionToFullyLoaded();
+                DiagnosticsReceived?.Invoke(this, args);
+            });
         }
         catch { /* Ignore transient errors — next DidChange will trigger a fresh pull */ }
     }
@@ -538,7 +576,11 @@ public sealed class LspClientImpl : ILspClient,
         };
 
         // Always raise on the UI thread.
-        _dispatcher.InvokeAsync(() => DiagnosticsReceived?.Invoke(this, args));
+        _dispatcher.InvokeAsync(() =>
+        {
+            TransitionToFullyLoaded();
+            DiagnosticsReceived?.Invoke(this, args);
+        });
     }
 
     private static string SeverityToString(int s) => s switch

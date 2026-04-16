@@ -1,0 +1,224 @@
+{
+  "diffMode": "binary",
+  "formatName": "Sony ATRAC Audio",
+  "version": "1.0",
+  "extensions": [
+    ".at3",
+    ".at9",
+    ".aa3"
+  ],
+  "description": "ATRAC (Adaptive Transform Acoustic Coding) is Sony's family of proprietary lossy audio codecs used across PlayStation consoles, MiniDisc, Walkman, and other Sony hardware. ATRAC3 and ATRAC3plus are commonly found in PlayStation Portable (PSP) games, while ATRAC9 is the current-generation codec for PlayStation Vita and PS4. Files typically use a RIFF/WAVE container with Sony-specific format tags. The codec achieves high perceptual quality at low bitrates, optimized for Sony's dedicated DSP hardware decoders.",
+  "category": "Audio",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "references": {
+    "specifications": [
+      "Sony ATRAC3/ATRAC3plus codec documentation",
+      "Sony ATRAC9 specification (PlayStation developer documentation)"
+    ],
+    "WebLinks": [
+      "https://en.wikipedia.org/wiki/Adaptive_Transform_Acoustic_Coding",
+      "https://wiki.multimedia.cx/index.php/ATRAC3",
+      "https://github.com/vgmstream/vgmstream"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      {
+        "value": "52494646",
+        "offset": 0,
+        "label": "RIFF container for ATRAC",
+        "weight": 0.5
+      }
+    ],
+    "matchMode": "allOf",
+    "MinimumScore": 82,
+    "Strength": "Medium",
+    "EntropyHint": { "min": 5.0, "max": 7.9 },
+    "validation": {
+      "minFileSize": 44,
+      "maxSignatureOffset": 0
+    }
+  },
+  "variables": {
+    "atracRiffMagic": "",
+    "atracFileSize": 0,
+    "atracWaveId": ""
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "RIFF Magic",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.45,
+      "description": "RIFF container signature: ASCII 'RIFF' (0x52494646). ATRAC files use the standard RIFF/WAVE container with Sony-specific codec format tags in the fmt chunk.",
+      "storeAs": "atracRiffMagic",
+      "valueType": "ascii",
+      "validation": {
+        "expectedValue": "RIFF"
+      }
+    },
+    {
+      "type": "field",
+      "name": "File Size",
+      "offset": 4,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "Total RIFF data size minus 8 bytes (32-bit unsigned little-endian). Represents the payload size of the entire RIFF container.",
+      "storeAs": "atracFileSize",
+      "valueType": "uint32",
+      "endianness": "little"
+    },
+    {
+      "type": "field",
+      "name": "WAVE Identifier",
+      "offset": 8,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.35,
+      "description": "RIFF form type: ASCII 'WAVE' (0x57415645). Identifies this as a waveform audio container. ATRAC files with .aa3 extension may use 'AEA' form type instead of WAVE.",
+      "storeAs": "atracWaveId",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "First Chunk ID",
+      "offset": 12,
+      "length": 4,
+      "color": "#FFE66D",
+      "opacity": 0.35,
+      "description": "First sub-chunk identifier, typically 'fmt ' for the format descriptor chunk. The fmt chunk contains the ATRAC format tag: 0x0270 (ATRAC3), 0xFFFE (extensible with ATRAC3plus GUID), or Sony-specific tags for ATRAC9.",
+      "valueType": "ascii"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "RIFF magic valid",
+      "expression": "atracRiffMagic == 'RIFF'",
+      "severity": "error",
+      "message": "File must begin with RIFF container signature"
+    },
+    {
+      "name": "File size plausible",
+      "expression": "atracFileSize > 36",
+      "severity": "warning",
+      "message": "RIFF data size should be at least 36 bytes to contain a valid fmt + data chunk"
+    },
+    {
+      "name": "WAVE or AEA form type",
+      "expression": "atracWaveId == 'WAVE'",
+      "severity": "warning",
+      "message": "Form type should be 'WAVE' for standard ATRAC RIFF files"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      {
+        "name": "RIFF Header",
+        "offset": 0,
+        "icon": "\uE71B",
+        "color": "#FF6B6B"
+      },
+      {
+        "name": "WAVE ID",
+        "offset": 8,
+        "icon": "\uE8A5",
+        "color": "#95E1D3"
+      }
+    ]
+  },
+  "inspector": {
+    "badge": "atracWaveId",
+    "primaryField": "atracFileSize",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "Container",
+        "icon": "\uE71B",
+        "fields": ["atracRiffMagic", "atracFileSize", "atracWaveId"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "ATRAC Header (JSON)",
+      "format": "json",
+      "fields": ["atracRiffMagic", "atracFileSize", "atracWaveId"]
+    },
+    {
+      "name": "atrac_header_t (C struct)",
+      "format": "c-struct",
+      "structName": "atrac_header",
+      "fields": ["atracRiffMagic", "atracFileSize", "atracWaveId"]
+    }
+  ],
+  "forensic": {
+    "category": "audio",
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      {
+        "name": "Non-WAVE form type",
+        "condition": "atracWaveId != 'WAVE'",
+        "severity": "info",
+        "description": "Form type is not WAVE — may be an .aa3 (OpenMG Audio) variant using a Sony-proprietary container."
+      },
+      {
+        "name": "Zero file size",
+        "condition": "atracFileSize == 0",
+        "severity": "error",
+        "description": "RIFF data size is zero — file is truncated or corrupted."
+      }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "Sony ATRAC files use RIFF/WAVE container: 'RIFF'(4B) + size(4B LE) + 'WAVE'(4B) + chunks. The fmt chunk wFormatTag identifies the codec variant: 0x0270=ATRAC3, 0xFFFE=extensible (check SubFormat GUID for ATRAC3plus/ATRAC9). ATRAC3: 66150/132300 bps stereo, 1024-sample frames. ATRAC3plus: scalable 48-384 kbps. ATRAC9: configurable via config_data field (4 bytes encoding superframe size, channel config, sample rate). Some files use Sony OpenMG DRM encryption.",
+    "suggestedInspections": [
+      "Verify RIFF + WAVE header at file start",
+      "Parse fmt chunk wFormatTag to identify ATRAC variant (0x0270, 0xFFFE, etc.)",
+      "Check for OpenMG DRM encryption markers in .aa3 files",
+      "Validate data chunk size against expected frame count and bitrate"
+    ]
+  },
+  "software": [
+    "Sony SonicStage",
+    "vgmstream",
+    "FFmpeg (ATRAC3 decode support)"
+  ],
+  "formatRelationships": {
+    "category": "Audio",
+    "extensions": [".at3", ".at9", ".aa3"],
+    "relatedFormats": ["WAV", "OMA", "MP3"],
+    "containerVariant": "RIFF/WAVE with Sony ATRAC codec"
+  },
+  "MimeTypes": [
+    "audio/x-atrac",
+    "audio/x-sony-oma"
+  ],
+  "UseCases": [
+    "PlayStation Portable (PSP) game audio",
+    "PlayStation Vita and PS4 game audio (ATRAC9)",
+    "Sony MiniDisc recording and playback",
+    "Sony Walkman portable audio player content"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 82,
+    "DocumentationLevel": "comprehensive",
+    "BlocksDefined": 4,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-16",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "AudioFormat": true,
+    "CompressionMethod": "Lossy (MDCT-based transform coding)",
+    "Endianness": "little-endian (RIFF container)",
+    "ContainerFormat": "RIFF/WAVE or Sony OpenMG",
+    "Variants": "ATRAC1, ATRAC3, ATRAC3plus, ATRAC9, ATRAC Advanced Lossless",
+    "HardwareDecoder": true,
+    "TargetPlatform": "Sony PlayStation / MiniDisc / Walkman"
+  }
+}

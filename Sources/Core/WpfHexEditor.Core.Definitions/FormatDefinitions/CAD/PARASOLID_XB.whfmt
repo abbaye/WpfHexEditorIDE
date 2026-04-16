@@ -1,0 +1,194 @@
+{
+  "diffMode": "binary",
+  "formatName": "Parasolid XB (Binary Transmit)",
+  "version": "1.0",
+  "extensions": [
+    ".x_b",
+    ".xmt_bin"
+  ],
+  "description": "Parasolid XB — binary transmit format from Siemens' Parasolid geometric modeling kernel. Contains the same B-rep solid model data as the text (.x_t) variant but in a compact binary encoding. The binary header is version-dependent with no universal magic number, making detection extension-based. More efficient for storage and transmission than the text format.",
+  "category": "CAD",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "references": {
+    "specifications": [
+      "Parasolid XB Format Reference — Siemens PLM documentation",
+      "Parasolid modeling kernel — plm.automation.siemens.com"
+    ],
+    "WebLinks": [
+      "https://www.plm.automation.siemens.com/global/en/products/plm-components/parasolid.html",
+      "https://en.wikipedia.org/wiki/Parasolid"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      { "value": "0000", "offset": 0, "label": "Parasolid binary header (version-dependent)", "weight": 0.3 }
+    ],
+    "required": false,
+    "Strength": "Weak",
+    "MinimumScore": 0.2,
+    "validation": {
+      "minFileSize": 32
+    }
+  },
+  "variables": {
+    "parasolidXbFirst": 0,
+    "parasolidXbSecond": 0
+  },
+  "blocks": [
+    {
+      "type": "field",
+      "name": "First Word",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.45,
+      "description": "4-byte uint32 little-endian: first header word. Content is version-dependent — may encode format version or record count.",
+      "storeAs": "parasolidXbFirst",
+      "valueType": "uint32",
+      "endianness": "little"
+    },
+    {
+      "type": "field",
+      "name": "Second Word",
+      "offset": 4,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "4-byte uint32 little-endian: second header word. May contain schema version, entity count, or format flags.",
+      "storeAs": "parasolidXbSecond",
+      "valueType": "uint32",
+      "endianness": "little"
+    },
+    {
+      "type": "field",
+      "name": "Header Region",
+      "offset": 8,
+      "length": 24,
+      "color": "#FFEAA7",
+      "opacity": 0.35,
+      "description": "Extended header region containing Parasolid version, schema identifiers, and entity table metadata."
+    },
+    {
+      "type": "field",
+      "name": "Entity Data Start",
+      "offset": 32,
+      "length": 32,
+      "color": "#95E1D3",
+      "opacity": 0.30,
+      "description": "Beginning of binary-encoded B-rep entity data. Contains topology (body, shell, face, edge, vertex) and geometry (surfaces, curves, points) in compact binary form."
+    }
+  ],
+  "assertions": [
+    {
+      "name": "File has content",
+      "expression": "fileSize > 32",
+      "severity": "error",
+      "message": "Parasolid XB file is too small to contain valid B-rep data"
+    },
+    {
+      "name": "First word readable",
+      "expression": "parasolidXbFirst >= 0",
+      "severity": "info",
+      "message": "First header word read — no universal magic for validation"
+    },
+    {
+      "name": "Reasonable file size",
+      "expression": "fileSize > 100",
+      "severity": "warning",
+      "message": "Parasolid XB files typically contain substantial B-rep data"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "Header Start", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
+      { "name": "Entity Data", "offset": 32, "icon": "\uE9D9", "color": "#95E1D3" }
+    ]
+  },
+  "inspector": {
+    "badge": "parasolidXbFirst",
+    "primaryField": "parasolidXbFirst",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "Parasolid XB Header",
+        "icon": "\uE71B",
+        "fields": ["parasolidXbFirst", "parasolidXbSecond"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "Parasolid XB Header (JSON)",
+      "format": "json",
+      "fields": ["parasolidXbFirst", "parasolidXbSecond"]
+    },
+    {
+      "name": "parasolid_xb_header_t (C struct)",
+      "format": "c-struct",
+      "structName": "parasolid_xb_header",
+      "fields": ["parasolidXbFirst", "parasolidXbSecond"]
+    }
+  ],
+  "forensic": {
+    "category": "cad",
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      {
+        "name": "Very small binary model",
+        "condition": "fileSize < 100",
+        "severity": "info",
+        "description": "File is very small for a binary B-rep model — may be truncated or contain minimal geometry."
+      }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "Parasolid XB: binary encoding of the same B-rep data as .x_t text format. No universal magic number — header structure varies by Parasolid kernel version. Contains binary-encoded entity records for topology (body, shell, face, loop, edge, vertex) and geometry (surface, curve, point). More compact than .x_t but requires Parasolid kernel or compatible translator to parse.",
+    "suggestedInspections": [
+      "Check file extension (.x_b or .xmt_bin) for identification",
+      "Read first 32 bytes to identify potential version/schema information",
+      "Compare file size with equivalent .x_t version if available",
+      "Look for embedded ASCII strings that might indicate Parasolid version"
+    ]
+  },
+  "software": [
+    "Siemens NX (Unigraphics)",
+    "SolidWorks",
+    "Solid Edge",
+    "CADfix (ITI TranscenData)",
+    "Parasolid Bodyshop"
+  ],
+  "formatRelationships": {
+    "category": "CAD",
+    "extensions": [".x_b", ".xmt_bin"],
+    "relatedFormats": ["PARASOLID_XT", "STEP", "IGES"],
+    "containerVariant": ".x_b = binary transmit (compact); .x_t = text transmit (readable); both encode identical Parasolid B-rep data"
+  },
+  "MimeTypes": [
+    "application/x-parasolid-transmit-binary",
+    "application/octet-stream"
+  ],
+  "UseCases": [
+    "Compact CAD model exchange between Parasolid-based applications",
+    "B-rep solid model storage for production CAD systems",
+    "Fast model loading in NX, SolidWorks, Solid Edge workflows",
+    "CAD data archival in space-efficient binary form"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 82,
+    "DocumentationLevel": "minimal",
+    "BlocksDefined": 4,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-16",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "FileType": "Binary B-rep solid model transmit format",
+    "ModelingKernel": "Parasolid (Siemens PLM)",
+    "Endianness": "little-endian (x86 native)",
+    "DetectionMethod": "Extension-based — no standardized magic number",
+    "TopologyEntities": ["body", "shell", "face", "loop", "edge", "vertex"],
+    "GeometryEntities": ["plane", "cylinder", "cone", "sphere", "torus", "bspline_surface", "line", "circle", "bspline_curve"]
+  }
+}

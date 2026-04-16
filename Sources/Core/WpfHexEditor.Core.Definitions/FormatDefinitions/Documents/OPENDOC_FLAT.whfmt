@@ -1,0 +1,195 @@
+{
+  "diffMode": "text",
+  "formatName": "Flat OpenDocument Format",
+  "version": "1.0",
+  "extensions": [".fodt", ".fods", ".fodp", ".fodg"],
+  "description": "Flat ODF (OpenDocument Format) is the single-file XML variant of the standard ODF format. Instead of a ZIP container with multiple XML parts, flat ODF stores everything in one XML file rooted at '<office:document>'. The file may begin with '<?xml' declaration or directly with '<office:document' (hex 3C6F66666963653A646F63756D656E74). Extensions: .fodt (text), .fods (spreadsheet), .fodp (presentation), .fodg (graphics). Useful for version control, diff/merge, and scripted generation of ODF content.",
+  "category": "Documents",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "code-editor",
+  "references": [
+    "https://docs.oasis-open.org/office/OpenDocument/v1.3/",
+    "https://en.wikipedia.org/wiki/OpenDocument",
+    "https://wiki.documentfoundation.org/Faq/General/025"
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "value": "3C6F66666963653A646F63756D656E74",
+        "offset": 0,
+        "label": "'<office:document' flat ODF root",
+        "weight": 1.0
+      },
+      {
+        "value": "3C3F786D6C",
+        "offset": 0,
+        "label": "'<?xml' declaration",
+        "weight": 0.3
+      }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.3,
+    "Strength": "Strong",
+    "validation": {
+      "rules": []
+    }
+  },
+  "variables": [
+    {
+      "name": "flatOdfRoot",
+      "offset": 0,
+      "size": 17,
+      "type": "ascii",
+      "storeAs": "flatOdfRoot",
+      "description": "First 17 bytes — '<office:document' or '<?xml version=\"1'"
+    },
+    {
+      "name": "flatOdfFirstByte",
+      "offset": 0,
+      "size": 1,
+      "type": "uint8",
+      "storeAs": "flatOdfFirstByte",
+      "description": "First byte of the file (expected '<' = 0x3C)"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "XmlDeclaration",
+      "offset": 0,
+      "size": -1,
+      "description": "Optional XML declaration '<?xml version=\"1.0\" encoding=\"UTF-8\"?>'",
+      "fields": [
+        { "name": "RootBytes", "offset": 0, "size": 17, "type": "ascii" }
+      ]
+    },
+    {
+      "name": "OfficeDocument",
+      "offset": -1,
+      "size": -1,
+      "description": "<office:document> root element with ODF namespace declarations and version attribute",
+      "fields": []
+    },
+    {
+      "name": "OfficeMeta",
+      "offset": -1,
+      "size": -1,
+      "description": "<office:meta> section with document metadata (title, creator, dates, statistics)",
+      "fields": []
+    },
+    {
+      "name": "OfficeBody",
+      "offset": -1,
+      "size": -1,
+      "description": "<office:body> containing <office:text>, <office:spreadsheet>, <office:presentation>, or <office:drawing>",
+      "fields": []
+    }
+  ],
+  "assertions": [
+    {
+      "id": "assert_xml_start",
+      "field": "flatOdfFirstByte",
+      "operator": "equals",
+      "value": 60,
+      "severity": "error",
+      "message": "Flat ODF must start with '<' (0x3C) for XML content"
+    },
+    {
+      "id": "assert_root_present",
+      "field": "flatOdfRoot",
+      "operator": "notEquals",
+      "value": "",
+      "severity": "error",
+      "message": "Root element not found — file may be empty or corrupt"
+    },
+    {
+      "id": "assert_not_binary",
+      "field": "flatOdfFirstByte",
+      "operator": "lessThan",
+      "value": 128,
+      "severity": "warning",
+      "message": "First byte is non-ASCII — may be a ZIP-based ODF (.odt/.ods) rather than flat ODF"
+    }
+  ],
+  "navigation": {
+    "entryPoints": [
+      { "name": "File Start", "offset": 0 }
+    ],
+    "jumpTable": [
+      { "label": "XML/Root Element", "offset": 0 }
+    ]
+  },
+  "inspector": {
+    "badge": "FO",
+    "primaryField": "flatOdfRoot",
+    "groups": [
+      {
+        "name": "Identification",
+        "fields": ["flatOdfRoot", "flatOdfFirstByte"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "Flat ODF Summary",
+      "format": "text",
+      "template": "Flat OpenDocument Format\nRoot: {flatOdfRoot}\nFirst Byte: 0x{flatOdfFirstByte:X2}"
+    },
+    {
+      "name": "Flat ODF CSV",
+      "format": "csv",
+      "template": "Field,Value\nRoot,{flatOdfRoot}\nFirstByte,0x{flatOdfFirstByte:X2}"
+    }
+  ],
+  "forensic": {
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      "Missing <office:document> root — not a flat ODF file",
+      "Embedded scripts in <office:scripts> section",
+      "External entity references in XML — potential XXE attack vector",
+      "Binary content encoded as base64 within XML — embedded objects"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "Flat ODF files are single XML documents rooted at <office:document> with ODF namespaces. The document contains inline: <office:meta> (metadata), <office:settings> (app settings), <office:scripts> (macros), <office:font-face-decls> (fonts), <office:styles> (styles), <office:automatic-styles> (auto styles), and <office:body> (content). The body element wraps one of: <office:text>, <office:spreadsheet>, <office:presentation>, or <office:drawing>.",
+    "suggestedInspections": [
+      "Check for '<?xml' or '<office:document' at file start",
+      "Identify document type from body child element (text/spreadsheet/presentation/drawing)",
+      "Extract <office:meta> for document properties and statistics",
+      "Verify ODF namespace declarations on root element"
+    ]
+  },
+  "software": [
+    { "name": "LibreOffice", "vendor": "The Document Foundation", "platform": "Cross-platform" },
+    { "name": "Apache OpenOffice", "vendor": "Apache", "platform": "Cross-platform" },
+    { "name": "Calligra Suite", "vendor": "KDE", "platform": "Cross-platform" }
+  ],
+  "formatRelationships": [
+    { "format": "ODT", "relation": "variant", "note": "Flat ODF is the single-file XML variant of ZIP-based ODF" },
+    { "format": "ABW", "relation": "sibling", "note": "Both single-file XML document formats for word processing" },
+    { "format": "OOXML_STRICT", "relation": "sibling", "note": "Both ISO standard document formats; ODF uses different XML schemas" }
+  ],
+  "MimeTypes": [
+    "application/vnd.oasis.opendocument.text-flat-xml",
+    "application/vnd.oasis.opendocument.spreadsheet-flat-xml",
+    "application/vnd.oasis.opendocument.presentation-flat-xml",
+    "application/vnd.oasis.opendocument.graphics-flat-xml"
+  ],
+  "UseCases": [
+    "Version control-friendly ODF documents (Git-compatible diffs)",
+    "XSLT-based document transformation pipelines",
+    "Scripted generation and manipulation of ODF content",
+    "Single-file document archival without ZIP complexity"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 86,
+    "LastUpdated": "2026-04-16"
+  },
+  "TechnicalDetails": {
+    "headerSize": 0,
+    "endian": "n/a",
+    "signatureOffset": 0,
+    "signatureLength": 17,
+    "encoding": "XML (UTF-8)",
+    "notes": "Flat ODF is the unpackaged XML form of ODF. All styles, metadata, and content in one file. Distinguished from ZIP-based ODF by extension (.fodt vs .odt) and XML root element."
+  }
+}

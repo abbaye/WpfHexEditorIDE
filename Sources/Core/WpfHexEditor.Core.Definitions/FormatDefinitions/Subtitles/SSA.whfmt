@@ -1,0 +1,211 @@
+{
+  "diffMode": "text",
+  "formatName": "SubStation Alpha Subtitles",
+  "version": "1.0",
+  "extensions": [
+    ".ssa",
+    ".ass"
+  ],
+  "description": "SubStation Alpha (SSA) and its successor Advanced SubStation Alpha (ASS) are text-based subtitle formats with rich typographic styling capabilities. Created for anime fansub communities, SSA/ASS supports precise font control, colors, positioning, rotation, animations, karaoke timing, drawing commands, and collision detection. Files begin with '[Script Info]' section header followed by metadata, styles definitions, and dialogue events. ASS extends SSA with additional override tags for transforms, clips, and bezier-curve text paths. The format is widely supported by media players and subtitle editors.",
+  "category": "Subtitles",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "code-editor",
+  "references": {
+    "specifications": [
+      "SubStation Alpha v4.00 Script Format (SSA specification)",
+      "Advanced SubStation Alpha (ASS) specification — moodub.free.fr/video/ass-specs.doc"
+    ],
+    "WebLinks": [
+      "https://en.wikipedia.org/wiki/SubStation_Alpha",
+      "https://aegisub.org/",
+      "http://www.tcax.org/docs/ass-specs.htm"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      {
+        "value": "5B53637269707420496E666F5D",
+        "offset": 0,
+        "label": "'[Script Info]' SSA/ASS header",
+        "weight": 1.0
+      },
+      {
+        "value": "EFBBBF5B536372697074",
+        "offset": 0,
+        "label": "UTF-8 BOM + '[Script' SSA/ASS",
+        "weight": 1.0
+      }
+    ],
+    "matchMode": "anyOf",
+    "MinimumScore": 90,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 1.5, "max": 5.0 },
+    "validation": {
+      "minFileSize": 13,
+      "maxSignatureOffset": 0
+    }
+  },
+  "variables": {
+    "ssaHeader": "",
+    "ssaFirstByte": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "Script Info Header",
+      "offset": 0,
+      "length": 13,
+      "color": "#FF6B6B",
+      "opacity": 0.45,
+      "description": "SSA/ASS section header: ASCII '[Script Info]' (13 bytes). This mandatory first section contains metadata fields including Title, ScriptType (v4.00 for SSA, v4.00+ for ASS), PlayResX/Y, Timer, WrapStyle, and Collisions settings. Files may optionally begin with a UTF-8 BOM (0xEFBBBF) before the section header.",
+      "storeAs": "ssaHeader",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "First Byte",
+      "offset": 0,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "First byte of the file. Either '[' (0x5B) for direct section header start, or 0xEF for UTF-8 BOM prefix. The BOM (EF BB BF) is commonly added by Windows text editors.",
+      "storeAs": "ssaFirstByte",
+      "valueType": "uint8"
+    },
+    {
+      "type": "field",
+      "name": "Styles Section",
+      "offset": 13,
+      "length": 8,
+      "color": "#95E1D3",
+      "opacity": 0.35,
+      "description": "Following [Script Info], the file contains [V4 Styles] (SSA) or [V4+ Styles] (ASS) section defining named text styles with properties: Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL/R/V, Encoding.",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Events Section",
+      "offset": 21,
+      "length": 8,
+      "color": "#FFE66D",
+      "opacity": 0.35,
+      "description": "The [Events] section contains Dialogue lines with format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text. The Text field supports override tags in curly braces: {\\b1}, {\\i1}, {\\pos(x,y)}, {\\fad(t1,t2)}, {\\k<duration>} for karaoke, {\\t(\\frz360)} for animation, {\\clip(x1,y1,x2,y2)} for masking.",
+      "valueType": "ascii"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "Script Info header present",
+      "expression": "ssaHeader == '[Script Info]' || ssaFirstByte == 239",
+      "severity": "error",
+      "message": "File must begin with '[Script Info]' or UTF-8 BOM + '[Script Info]'"
+    },
+    {
+      "name": "First byte valid",
+      "expression": "ssaFirstByte == 91 || ssaFirstByte == 239",
+      "severity": "error",
+      "message": "First byte must be '[' (0x5B) or UTF-8 BOM start (0xEF)"
+    },
+    {
+      "name": "Header is not empty",
+      "expression": "ssaHeader != ''",
+      "severity": "error",
+      "message": "SSA/ASS header section must not be empty"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      {
+        "name": "[Script Info]",
+        "offset": 0,
+        "icon": "\uE71B",
+        "color": "#FF6B6B"
+      }
+    ]
+  },
+  "inspector": {
+    "badge": "ssaHeader",
+    "primaryField": "ssaFirstByte",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "Header",
+        "icon": "\uE71B",
+        "fields": ["ssaHeader", "ssaFirstByte"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "SSA Header (JSON)",
+      "format": "json",
+      "fields": ["ssaHeader", "ssaFirstByte"]
+    },
+    {
+      "name": "Python SSA parser",
+      "format": "python-bytes",
+      "fields": ["ssaHeader"]
+    }
+  ],
+  "forensic": {
+    "category": "subtitles",
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      {
+        "name": "Missing Script Info",
+        "condition": "ssaFirstByte != 91 && ssaFirstByte != 239",
+        "severity": "error",
+        "description": "File does not start with '[' or BOM — not a valid SSA/ASS file."
+      }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "SSA/ASS structure: INI-like sections. [Script Info]: metadata (ScriptType: v4.00 for SSA, v4.00+ for ASS; PlayResX/Y; WrapStyle 0-3; Collisions Normal/Reverse). [V4 Styles]/[V4+ Styles]: Format + Style lines. [Events]: Format + Dialogue lines. ASS override tags: {\\b1}=bold, {\\i1}=italic, {\\fn<Font>}=font, {\\fs<Size>}=size, {\\c&H<BBGGRR>&}=color (note: BGR order), {\\pos(x,y)}=position, {\\move(x1,y1,x2,y2,t1,t2)}=animation, {\\k<dur>}=karaoke, {\\p1}...{\\p0}=drawing mode. Colors use &HAABBGGRR& format.",
+    "suggestedInspections": [
+      "Verify '[Script Info]' at file start (with or without BOM)",
+      "Parse ScriptType field to distinguish SSA v4.00 from ASS v4.00+",
+      "Enumerate defined styles in [V4+ Styles] section",
+      "Check for complex override tags and drawing commands in Dialogue text"
+    ]
+  },
+  "software": [
+    "Aegisub",
+    "VLC media player",
+    "FFmpeg"
+  ],
+  "formatRelationships": {
+    "category": "Subtitles",
+    "extensions": [".ssa", ".ass"],
+    "relatedFormats": ["SRT", "VTT", "TTML"],
+    "containerVariant": "Standalone text file or embedded in MKV"
+  },
+  "MimeTypes": [
+    "text/x-ssa",
+    "text/x-ass"
+  ],
+  "UseCases": [
+    "Anime fansub subtitling with complex typographic effects",
+    "Karaoke timing and styling for music videos",
+    "Styled subtitle rendering in MKV-based media playback",
+    "Sign/song translation overlays with precise positioning and animation"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 84,
+    "DocumentationLevel": "comprehensive",
+    "BlocksDefined": 4,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-16",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "TextFormat": true,
+    "Encoding": "UTF-8 or system codepage",
+    "SectionBased": true,
+    "Sections": "[Script Info], [V4 Styles]/[V4+ Styles], [Events]",
+    "TimingFormat": "H:MM:SS.CC (centisecond precision)",
+    "ColorFormat": "&HAABBGGRR& (alpha, blue, green, red)",
+    "DrawingCommandSupport": true,
+    "AnimationSupport": true
+  }
+}

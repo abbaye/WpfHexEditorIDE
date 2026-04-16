@@ -1,0 +1,246 @@
+{
+  "formatName": "Fat/Universal Binary",
+  "version": "1.0",
+  "diffMode": "binary",
+  "extensions": [],
+  "description": "Apple Fat/Universal binary format allows a single file to contain executables for multiple CPU architectures (e.g., x86_64 and ARM64). The CAFEBABE magic is shared with Java .class files but distinguished by the nfat_arch field.",
+  "category": "Executables",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "MimeTypes": [
+    "application/x-mach-binary",
+    "application/x-universal-binary"
+  ],
+  "UseCases": [
+    "macOS universal binaries supporting Intel and Apple Silicon",
+    "iOS fat binaries targeting multiple ARM architectures",
+    "Apple framework distribution with multi-architecture support",
+    "Cross-architecture macOS application bundles"
+  ],
+  "references": [
+    "https://developer.apple.com/documentation/apple-silicon/building-a-universal-macos-binary",
+    "https://en.wikipedia.org/wiki/Universal_binary",
+    "https://opensource.apple.com/source/xnu/xnu-7195.81.3/EXTERNAL_HEADERS/mach-o/fat.h"
+  ],
+  "software": [
+    {
+      "name": "lipo",
+      "url": "https://developer.apple.com/",
+      "role": "Apple tool to create and manipulate universal binaries"
+    },
+    {
+      "name": "file",
+      "url": "https://www.darwinsys.com/file/",
+      "role": "Magic-based file type identification"
+    },
+    {
+      "name": "otool",
+      "url": "https://developer.apple.com/",
+      "role": "Mach-O object file display tool"
+    }
+  ],
+  "formatRelationships": [
+    {
+      "format": "MACHO",
+      "relationship": "Fat binary is a container wrapping multiple Mach-O slices"
+    },
+    {
+      "format": "JAVA_CLASS",
+      "relationship": "Java .class files share the CAFEBABE magic; nfat_arch value distinguishes them"
+    }
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "offset": 0,
+        "value": "CAFEBABE",
+        "label": "Fat/Universal binary magic (shared with Java .class)",
+        "weight": 0.6
+      }
+    ],
+    "matchMode": "first",
+    "MinimumScore": 82,
+    "Strength": "Medium",
+    "EntropyHint": {
+      "min": 5.0,
+      "max": 7.5,
+      "note": "Contains compiled machine code for multiple architectures"
+    },
+    "validation": "First 4 bytes must be 0xCAFEBABE (BE). Bytes 4-7 (nfat_arch) must be 1-20 to distinguish from Java .class where this field is the minor version (typically 0 or 3-65)."
+  },
+  "variables": [
+    {
+      "name": "fatMagic",
+      "type": "uint32",
+      "offset": 0,
+      "length": 4,
+      "endian": "big",
+      "description": "Fat binary magic: 0xCAFEBABE"
+    },
+    {
+      "name": "fatNfatArch",
+      "type": "uint32",
+      "offset": 4,
+      "length": 4,
+      "endian": "big",
+      "description": "Number of architecture slices (typically 2-4)"
+    },
+    {
+      "name": "fatFirstCpuType",
+      "type": "uint32",
+      "offset": 8,
+      "length": 4,
+      "endian": "big",
+      "description": "CPU type of the first architecture slice"
+    },
+    {
+      "name": "fatFirstCpuSubtype",
+      "type": "uint32",
+      "offset": 12,
+      "length": 4,
+      "endian": "big",
+      "description": "CPU subtype of the first architecture slice"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "FatHeader",
+      "offset": 0,
+      "length": 8,
+      "description": "Fat binary header: 4-byte magic (0xCAFEBABE) and 4-byte architecture count",
+      "fields": [
+        {
+          "name": "Magic",
+          "variable": "fatMagic",
+          "offset": 0,
+          "length": 4
+        },
+        {
+          "name": "NfatArch",
+          "variable": "fatNfatArch",
+          "offset": 4,
+          "length": 4
+        }
+      ]
+    },
+    {
+      "name": "FatArchDescriptors",
+      "offset": 8,
+      "length": -1,
+      "description": "Array of fat_arch structures (20 bytes each) describing CPU type, subtype, offset, size, and alignment for each slice"
+    },
+    {
+      "name": "MachOSlice1",
+      "offset": -1,
+      "length": -1,
+      "description": "First Mach-O binary slice (architecture-specific executable or library)"
+    },
+    {
+      "name": "MachOSlice2",
+      "offset": -1,
+      "length": -1,
+      "description": "Second Mach-O binary slice (additional architecture, typically ARM64 or x86_64)"
+    }
+  ],
+  "assertions": [
+    {
+      "id": "A1",
+      "description": "Magic must be 0xCAFEBABE",
+      "expression": "fatMagic == 0xCAFEBABE"
+    },
+    {
+      "id": "A2",
+      "description": "nfat_arch must be in range [1..20] to distinguish from Java .class",
+      "expression": "fatNfatArch >= 1 && fatNfatArch <= 20"
+    },
+    {
+      "id": "A3",
+      "description": "nfat_arch should be reasonable (typically 2-4 for universal binaries)",
+      "expression": "fatNfatArch <= 10"
+    }
+  ],
+  "navigation": {
+    "entryPoint": "FatHeader",
+    "structure": [
+      "FatHeader",
+      "FatArchDescriptors",
+      "MachOSlice1",
+      "MachOSlice2"
+    ],
+    "notes": "Each fat_arch descriptor is 20 bytes (or 32 bytes for fat_arch_64). Mach-O slices are page-aligned within the file."
+  },
+  "inspector": {
+    "badge": "FAT",
+    "primaryField": "fatNfatArch",
+    "groups": [
+      {
+        "name": "Fat Header",
+        "fields": [
+          "fatMagic",
+          "fatNfatArch"
+        ]
+      },
+      {
+        "name": "First Slice",
+        "fields": [
+          "fatFirstCpuType",
+          "fatFirstCpuSubtype"
+        ]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "Fat Binary CSV",
+      "format": "csv",
+      "fields": [
+        "fatMagic",
+        "fatNfatArch",
+        "fatFirstCpuType",
+        "fatFirstCpuSubtype"
+      ]
+    },
+    {
+      "name": "Fat Binary JSON",
+      "format": "json",
+      "fields": [
+        "fatMagic",
+        "fatNfatArch",
+        "fatFirstCpuType",
+        "fatFirstCpuSubtype"
+      ]
+    }
+  ],
+  "forensic": {
+    "riskLevel": "HIGH",
+    "notes": "Universal binaries can hide malicious code in less-inspected architecture slices. The shared CAFEBABE magic with Java requires careful disambiguation.",
+    "suspiciousPatterns": [
+      "More than 4 architecture slices (unusual for legitimate binaries)",
+      "Architecture slices with mismatched code signatures",
+      "Slice offsets pointing outside the file bounds",
+      "Slices containing different functionality per architecture (architecture-targeted malware)"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "Apple Fat/Universal binaries use 0xCAFEBABE magic followed by a uint32 architecture count. Each fat_arch entry (20 bytes) specifies CPU type, subtype, file offset, size, and alignment. The key disambiguation from Java .class is that nfat_arch is 1-20 while Java minor version is typically 0 or 3-65.",
+    "suggestedInspections": [
+      "Disambiguate from Java .class by checking nfat_arch range [1..20]",
+      "Parse each fat_arch descriptor to enumerate contained architectures",
+      "Verify each Mach-O slice has valid FEEDFACE/FEEDFACF magic at its offset",
+      "Compare code signatures across architecture slices for consistency"
+    ]
+  },
+  "TechnicalDetails": {
+    "headerSize": 8,
+    "fatArchSize": 20,
+    "fatArch64Size": 32,
+    "magicBytes": "0xCAFEBABE",
+    "endianness": "Big-endian header, slices are architecture-dependent",
+    "sliceAlignment": "Page-aligned (typically 4096 or 16384 bytes)"
+  },
+  "QualityMetrics": {
+    "CompletenessScore": 84,
+    "LastUpdated": "2026-04-16",
+    "ReviewedBy": "WPFHexaEditor Team"
+  }
+}

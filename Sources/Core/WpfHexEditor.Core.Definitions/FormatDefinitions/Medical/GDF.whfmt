@@ -1,0 +1,197 @@
+{
+  "diffMode": "text",
+  "formatName": "General Data Format (GDF)",
+  "version": "1.0",
+  "extensions": [
+    ".gdf"
+  ],
+  "description": "General Data Format (GDF) — biosignal file format extending EDF with support for multiple data types (float, double, int8-64), event tables, and improved header fields. Header starts with 'GDF ' followed by version string (e.g. '2.20'). Used for EEG, EMG, ECG, and other physiological recordings in clinical and research settings.",
+  "category": "Medical",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "code-editor",
+  "references": {
+    "specifications": [
+      "GDF specification — arxiv.org/abs/cs/0608052",
+      "BioSig GDF documentation — biosig.sourceforge.net"
+    ],
+    "WebLinks": [
+      "https://arxiv.org/abs/cs/0608052",
+      "https://biosig.sourceforge.net/",
+      "https://en.wikipedia.org/wiki/General_Data_Format_for_Biomedical_Signals"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      { "value": "47444620", "offset": 0, "label": "'GDF ' General Data Format header", "weight": 1.0 }
+    ],
+    "required": true,
+    "Strength": "Strong",
+    "MinimumScore": 0.8,
+    "validation": {
+      "minFileSize": 256
+    }
+  },
+  "variables": {
+    "gdfMagic": "",
+    "gdfVersion": "",
+    "gdfPatientId": ""
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "GDF Magic",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.45,
+      "description": "4-byte ASCII 'GDF ' — magic identifier for General Data Format files.",
+      "storeAs": "gdfMagic",
+      "valueType": "ascii",
+      "validation": { "expectedValue": "GDF " }
+    },
+    {
+      "type": "field",
+      "name": "Version String",
+      "offset": 4,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "4-byte ASCII version number (e.g. '2.20', '1.25'). GDF v2.x is the current standard with extended data types and event tables.",
+      "storeAs": "gdfVersion",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Patient ID",
+      "offset": 8,
+      "length": 66,
+      "color": "#FFEAA7",
+      "opacity": 0.35,
+      "description": "66-byte ASCII patient identification field. May contain patient code, name, or anonymized identifier.",
+      "storeAs": "gdfPatientId",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Recording Information",
+      "offset": 74,
+      "length": 64,
+      "color": "#95E1D3",
+      "opacity": 0.30,
+      "description": "Recording-related metadata fields following patient ID. Contains recording ID, dates, and equipment information depending on GDF version."
+    }
+  ],
+  "assertions": [
+    {
+      "name": "GDF magic present",
+      "expression": "gdfMagic == 'GDF '",
+      "severity": "error",
+      "message": "File must start with 'GDF ' to be a valid General Data Format file"
+    },
+    {
+      "name": "Known GDF version",
+      "expression": "gdfVersion startsWith '1.' || gdfVersion startsWith '2.'",
+      "severity": "warning",
+      "message": "GDF version should be 1.x or 2.x"
+    },
+    {
+      "name": "Minimum file size",
+      "expression": "fileSize >= 256",
+      "severity": "error",
+      "message": "GDF file must be at least 256 bytes for a valid header"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "GDF Magic", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
+      { "name": "Version", "offset": 4, "icon": "\uE8A5", "color": "#4ECDC4" },
+      { "name": "Patient ID", "offset": 8, "icon": "\uE77B", "color": "#FFEAA7" }
+    ]
+  },
+  "inspector": {
+    "badge": "gdfVersion",
+    "primaryField": "gdfMagic",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "GDF Header",
+        "icon": "\uE71B",
+        "fields": ["gdfMagic", "gdfVersion", "gdfPatientId"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "GDF Header (JSON)",
+      "format": "json",
+      "fields": ["gdfMagic", "gdfVersion", "gdfPatientId"]
+    },
+    {
+      "name": "gdf_header_t (C struct)",
+      "format": "c-struct",
+      "structName": "gdf_header",
+      "fields": ["gdfMagic", "gdfVersion", "gdfPatientId"]
+    }
+  ],
+  "forensic": {
+    "category": "medical",
+    "riskLevel": "high",
+    "suspiciousPatterns": [
+      {
+        "name": "Patient identification present",
+        "condition": "gdfPatientId != '' && gdfPatientId != 'X'",
+        "severity": "warning",
+        "description": "Patient ID field contains data — this file may contain Protected Health Information (PHI). Handle per HIPAA/GDPR."
+      }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "GDF: 'GDF ' + version(4B) at offset 0. v2.x header: patientId(66B), 10B reserved, recording start(8B timestamp), recording end/duration, header length(2B uint16=number of 256-byte blocks), equipment ID(8B). Per-channel: label(16B), transducer(80B), physDim(6B), physMin/Max(8B double), digMin/Max(8B double), prefiltering, lowpass, highpass, notch, nSamples, datatype(4B), impedance. Event table at file end.",
+    "suggestedInspections": [
+      "Verify 'GDF ' magic and parse version string",
+      "Check patient ID field for PHI content",
+      "Parse per-channel data type codes (1=int8, 2=uint8, 3=int16, ..., 16=float32, 17=float64)",
+      "Locate event table at end of file (GDF v2.x)"
+    ]
+  },
+  "software": [
+    "BioSig toolbox (MATLAB/Octave)",
+    "MNE-Python",
+    "SigViewer",
+    "EDFbrowser"
+  ],
+  "formatRelationships": {
+    "category": "Medical",
+    "extensions": [".gdf"],
+    "relatedFormats": ["EDF", "BDF"],
+    "containerVariant": "GDF extends EDF with multi-type data, event tables, and improved metadata; BDF is BioSemi 24-bit variant"
+  },
+  "MimeTypes": [
+    "application/x-gdf",
+    "application/octet-stream"
+  ],
+  "UseCases": [
+    "Brain-computer interface (BCI) research recordings",
+    "Multi-channel biosignal storage with mixed data types",
+    "Clinical EEG/EMG/ECG with event annotations",
+    "Neurophysiology research data archival"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 85,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 4,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-16",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "FileType": "General biosignal data format",
+    "Encoding": "ASCII header + multi-type binary data",
+    "FixedHeaderSize": 256,
+    "DataTypes": ["int8", "uint8", "int16", "uint16", "int32", "uint32", "int64", "uint64", "float32", "float64"],
+    "Endianness": "little-endian",
+    "EventTable": "Appended at end of file (GDF v2.x)",
+    "PHI_Risk": "High — patient ID and recording dates in header"
+  }
+}

@@ -1,0 +1,221 @@
+{
+  "diffMode": "binary",
+  "formatName": "CRI HCA Audio",
+  "version": "1.0",
+  "extensions": [
+    ".hca"
+  ],
+  "description": "CRI HCA (High Compression Audio) is a proprietary lossy audio codec developed by CRI Middleware, used extensively in modern video games for high-quality streaming audio. HCA offers better compression ratios than ADX while maintaining perceptual quality comparable to AAC/Vorbis. It supports encryption (used by many Japanese game titles), variable bitrate encoding, and is commonly packaged inside CRI AWB/ACB containers. The header uses a chunk-based structure starting with 'HCA\\0'.",
+  "category": "Audio",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "references": {
+    "specifications": [
+      "CRI HCA specification (reverse-engineered community documentation)",
+      "vgmstream — HCA codec implementation"
+    ],
+    "WebLinks": [
+      "https://wiki.multimedia.cx/index.php/CRI_HCA",
+      "https://github.com/vgmstream/vgmstream",
+      "https://en.wikipedia.org/wiki/CRI_Middleware"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      {
+        "value": "48434100",
+        "offset": 0,
+        "label": "'HCA\\0' CRI HCA audio magic",
+        "weight": 1.0
+      }
+    ],
+    "matchMode": "allOf",
+    "MinimumScore": 85,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 5.0, "max": 7.9 },
+    "validation": {
+      "minFileSize": 8,
+      "maxSignatureOffset": 0
+    }
+  },
+  "variables": {
+    "hcaMagic": "",
+    "hcaVersion": 0,
+    "hcaDataOffset": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "HCA Magic",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.45,
+      "description": "CRI HCA file signature: ASCII 'HCA' followed by a null byte (0x48434100). Identifies the file as a CRI HCA compressed audio stream.",
+      "storeAs": "hcaMagic",
+      "valueType": "ascii",
+      "validation": {
+        "expectedValue": "HCA\u0000"
+      }
+    },
+    {
+      "type": "field",
+      "name": "Version",
+      "offset": 4,
+      "length": 2,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "HCA format version number (16-bit big-endian). Common values: 0x0101 (v1.1), 0x0200 (v2.0), 0x0300 (v3.0). Higher versions support additional features like improved encryption and bitrate modes.",
+      "storeAs": "hcaVersion",
+      "valueType": "uint16",
+      "endianness": "big"
+    },
+    {
+      "type": "field",
+      "name": "Data Offset",
+      "offset": 6,
+      "length": 2,
+      "color": "#95E1D3",
+      "opacity": 0.35,
+      "description": "Offset in bytes from the beginning of the file to the start of the compressed audio data (16-bit big-endian). All header chunks ('fmt', 'comp', 'dec', 'loop', 'ciph', etc.) reside before this offset.",
+      "storeAs": "hcaDataOffset",
+      "valueType": "uint16",
+      "endianness": "big"
+    },
+    {
+      "type": "field",
+      "name": "Format Chunk Marker",
+      "offset": 8,
+      "length": 4,
+      "color": "#FFE66D",
+      "opacity": 0.35,
+      "description": "First sub-chunk type after the main header, typically 'fmt' (0x666D7400) defining the audio stream parameters (channels, sample rate, block count, etc.).",
+      "valueType": "ascii"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "HCA magic valid",
+      "expression": "hcaMagic == 'HCA\u0000'",
+      "severity": "error",
+      "message": "File must begin with 'HCA\\0' signature (0x48434100)"
+    },
+    {
+      "name": "Version plausible",
+      "expression": "hcaVersion > 0",
+      "severity": "warning",
+      "message": "HCA version should be a non-zero value"
+    },
+    {
+      "name": "Data offset plausible",
+      "expression": "hcaDataOffset >= 8",
+      "severity": "error",
+      "message": "Data offset must be at least 8 bytes (after the main header)"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      {
+        "name": "HCA Header",
+        "offset": 0,
+        "icon": "\uE71B",
+        "color": "#FF6B6B"
+      },
+      {
+        "name": "Sub-chunks",
+        "offset": 8,
+        "icon": "\uE8A5",
+        "color": "#FFE66D"
+      }
+    ]
+  },
+  "inspector": {
+    "badge": "hcaVersion",
+    "primaryField": "hcaDataOffset",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "Header",
+        "icon": "\uE71B",
+        "fields": ["hcaMagic", "hcaVersion", "hcaDataOffset"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "HCA Header (JSON)",
+      "format": "json",
+      "fields": ["hcaMagic", "hcaVersion", "hcaDataOffset"]
+    },
+    {
+      "name": "hca_header_t (C struct)",
+      "format": "c-struct",
+      "structName": "hca_header",
+      "fields": ["hcaMagic", "hcaVersion", "hcaDataOffset"]
+    }
+  ],
+  "forensic": {
+    "category": "audio",
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      {
+        "name": "Encrypted HCA",
+        "condition": "hcaVersion >= 0x0200",
+        "severity": "info",
+        "description": "HCA v2.0+ files may use CRI encryption — decryption key required for proper audio decode."
+      },
+      {
+        "name": "Data offset too small",
+        "condition": "hcaDataOffset < 8",
+        "severity": "error",
+        "description": "Data offset is too small, indicating a corrupted or truncated HCA header."
+      }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "CRI HCA layout: 'HCA\\0'(4B) + version(2B BE) + dataOffset(2B BE) + sub-chunks until dataOffset. Sub-chunks: 'fmt\\0'(channels, sampleRate, blockCount, muteFooter, blockSize), 'comp'/'dec'(compression params), 'loop'(loopStart, loopEnd, loopCount), 'ciph'(encryption type: 0=none, 1=basic, 56=keyless), 'rva'(relative volume adjust), 'vbr', 'ath', 'comm'. Audio frames follow at dataOffset, each blockSize bytes with a 2-byte CRC-16 footer.",
+    "suggestedInspections": [
+      "Verify 'HCA\\0' magic at offset 0",
+      "Parse 'fmt' sub-chunk for channel count and sample rate",
+      "Check 'ciph' chunk to determine encryption type (0/1/56)",
+      "Look for 'loop' chunk indicating seamless loop points"
+    ]
+  },
+  "software": [
+    "CRI Middleware Tools",
+    "vgmstream",
+    "HCADecoder"
+  ],
+  "formatRelationships": {
+    "category": "Audio",
+    "extensions": [".hca"],
+    "relatedFormats": ["ADX", "AWB", "ACB"],
+    "containerVariant": "Standalone CRI HCA stream or embedded in AWB/ACB"
+  },
+  "MimeTypes": [
+    "audio/x-hca"
+  ],
+  "UseCases": [
+    "High-quality game audio streaming on modern platforms",
+    "Japanese game music and voice acting (often encrypted)",
+    "Mobile game audio with efficient compression",
+    "Real-time audio decoding in game engines using CRI middleware"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 83,
+    "DocumentationLevel": "comprehensive",
+    "BlocksDefined": 4,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-16",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "AudioFormat": true,
+    "CompressionMethod": "Lossy (MDCT-based, comparable to AAC/Vorbis)",
+    "Endianness": "big-endian",
+    "HeaderSize": "Variable (dataOffset field)",
+    "EncryptionSupport": true,
+    "NativeLoopSupport": true
+  }
+}

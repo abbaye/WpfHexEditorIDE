@@ -1,0 +1,262 @@
+{
+  "formatName": "CoAP Message",
+  "version": "1.0",
+  "diffMode": "binary",
+  "extensions": [
+    ".coap"
+  ],
+  "description": "Constrained Application Protocol (CoAP) is a lightweight RESTful protocol designed for constrained IoT devices and low-power networks. The 4-byte header encodes version, type, token length, method/response code, and message ID for UDP-based communication.",
+  "category": "IoT",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "MimeTypes": [
+    "application/coap"
+  ],
+  "UseCases": [
+    "Constrained IoT device communication over 6LoWPAN/UDP",
+    "Lightweight RESTful API for sensor networks",
+    "Smart building and energy management protocols",
+    "Machine-to-machine (M2M) communication in LWM2M"
+  ],
+  "references": [
+    "https://datatracker.ietf.org/doc/html/rfc7252",
+    "https://coap.technology/",
+    "https://en.wikipedia.org/wiki/Constrained_Application_Protocol"
+  ],
+  "software": [
+    {
+      "name": "libcoap",
+      "url": "https://libcoap.net/",
+      "role": "C library implementing CoAP client and server"
+    },
+    {
+      "name": "Californium",
+      "url": "https://www.eclipse.org/californium/",
+      "role": "Java CoAP framework for IoT applications"
+    },
+    {
+      "name": "Wireshark",
+      "url": "https://www.wireshark.org/",
+      "role": "Network analyzer with CoAP dissector"
+    }
+  ],
+  "formatRelationships": [
+    {
+      "format": "MQTT_PACKET",
+      "relationship": "MQTT is a pub-sub alternative; CoAP uses RESTful request-response over UDP"
+    },
+    {
+      "format": "HTTP",
+      "relationship": "CoAP is designed as a lightweight HTTP analogue for constrained networks"
+    }
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "offset": 0,
+        "value": "40",
+        "label": "CoAP version 1 + type CON (Confirmable, 0x40)",
+        "weight": 0.5
+      },
+      {
+        "offset": 0,
+        "value": "50",
+        "label": "CoAP version 1 + type NON (Non-confirmable, 0x50)",
+        "weight": 0.5
+      },
+      {
+        "offset": 0,
+        "value": "60",
+        "label": "CoAP version 1 + type ACK (Acknowledgment, 0x60)",
+        "weight": 0.5
+      }
+    ],
+    "matchMode": "best",
+    "MinimumScore": 82,
+    "Strength": "Weak",
+    "EntropyHint": {
+      "min": 3.0,
+      "max": 6.5,
+      "note": "Small packets with structured headers; payload entropy varies"
+    },
+    "validation": "First byte bits 7-6 must be 01 (version 1). Bits 5-4 encode message type (0-3). Bits 3-0 encode token length (0-8). Code byte at offset 1 uses class.detail format."
+  },
+  "variables": [
+    {
+      "name": "coapHeader",
+      "type": "uint8",
+      "offset": 0,
+      "length": 1,
+      "description": "CoAP header byte: bits 7-6=version (must be 01), bits 5-4=type, bits 3-0=token length"
+    },
+    {
+      "name": "coapCode",
+      "type": "uint8",
+      "offset": 1,
+      "length": 1,
+      "description": "Method/response code in class.detail format (e.g., 0.01=GET, 2.05=Content)"
+    },
+    {
+      "name": "coapMessageId",
+      "type": "uint16",
+      "offset": 2,
+      "length": 2,
+      "endian": "big",
+      "description": "Message ID for matching requests to responses and deduplication"
+    },
+    {
+      "name": "coapTokenLength",
+      "type": "uint8",
+      "offset": -1,
+      "length": 1,
+      "description": "Derived token length from header bits 3-0 (0-8 bytes)"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "FixedHeader",
+      "offset": 0,
+      "length": 4,
+      "description": "CoAP 4-byte fixed header: version+type+token length, code, and 16-bit message ID",
+      "fields": [
+        {
+          "name": "HeaderByte",
+          "variable": "coapHeader",
+          "offset": 0,
+          "length": 1
+        },
+        {
+          "name": "Code",
+          "variable": "coapCode",
+          "offset": 1,
+          "length": 1
+        },
+        {
+          "name": "MessageId",
+          "variable": "coapMessageId",
+          "offset": 2,
+          "length": 2
+        }
+      ]
+    },
+    {
+      "name": "Token",
+      "offset": 4,
+      "length": -1,
+      "description": "Token field (0-8 bytes) used to correlate requests and responses"
+    },
+    {
+      "name": "Options",
+      "offset": -1,
+      "length": -1,
+      "description": "CoAP options encoded as delta-length TLV entries (Uri-Path, Content-Format, Accept, etc.)"
+    },
+    {
+      "name": "Payload",
+      "offset": -1,
+      "length": -1,
+      "description": "Message payload preceded by 0xFF marker byte, containing application data"
+    }
+  ],
+  "assertions": [
+    {
+      "id": "A1",
+      "description": "Version bits (7-6) must be 01 (version 1)",
+      "expression": "coapHeader >= 64 && coapHeader <= 127"
+    },
+    {
+      "id": "A2",
+      "description": "Token length (bits 3-0) must be 0-8",
+      "expression": "coapTokenLength <= 8"
+    },
+    {
+      "id": "A3",
+      "description": "Code must be a valid method (0.01-0.04) or response (2.xx-5.xx)",
+      "expression": "coapCode >= 0"
+    }
+  ],
+  "navigation": {
+    "entryPoint": "FixedHeader",
+    "structure": [
+      "FixedHeader",
+      "Token",
+      "Options",
+      "Payload"
+    ],
+    "notes": "Options use delta encoding: each option number = previous option number + delta. Payload marker is 0xFF. Methods: 0.01=GET, 0.02=POST, 0.03=PUT, 0.04=DELETE. Responses: 2.01=Created, 2.05=Content, 4.04=Not Found."
+  },
+  "inspector": {
+    "badge": "CoAP",
+    "primaryField": "coapCode",
+    "groups": [
+      {
+        "name": "Header",
+        "fields": [
+          "coapHeader",
+          "coapCode",
+          "coapMessageId"
+        ]
+      },
+      {
+        "name": "Derived",
+        "fields": [
+          "coapTokenLength"
+        ]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "CoAP Message CSV",
+      "format": "csv",
+      "fields": [
+        "coapHeader",
+        "coapCode",
+        "coapMessageId",
+        "coapTokenLength"
+      ]
+    },
+    {
+      "name": "CoAP Message JSON",
+      "format": "json",
+      "fields": [
+        "coapHeader",
+        "coapCode",
+        "coapMessageId",
+        "coapTokenLength"
+      ]
+    }
+  ],
+  "forensic": {
+    "riskLevel": "MEDIUM",
+    "notes": "CoAP traffic over UDP is unencrypted by default. DTLS (CoAPS) provides optional security. Device resource URIs reveal sensor types and capabilities. Observe option enables persistent monitoring.",
+    "suspiciousPatterns": [
+      "Unencrypted CoAP traffic on public networks exposing device data",
+      "PUT/POST requests to actuator resources from unauthorized sources",
+      "Observe option abuse for continuous data exfiltration",
+      "Large payload sizes exceeding typical IoT sensor data bounds"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "CoAP uses a compact 4-byte binary header over UDP. The first byte encodes version (2 bits), message type (2 bits: CON/NON/ACK/RST), and token length (4 bits). Options use delta-length encoding for compact representation of URI paths, content formats, and other metadata.",
+    "suggestedInspections": [
+      "Decode header byte to extract version, type, and token length",
+      "Parse code byte as class.detail to identify method or response status",
+      "Walk options using delta-length decoding to extract URI path and content format",
+      "Locate payload marker (0xFF) to separate options from application data"
+    ]
+  },
+  "TechnicalDetails": {
+    "headerSize": 4,
+    "maxTokenLength": 8,
+    "defaultPort": "5683 (UDP), 5684 (DTLS)",
+    "messageTypes": "CON (0), NON (1), ACK (2), RST (3)",
+    "payloadMarker": "0xFF",
+    "maxMessageSize": "Typically 1024 bytes for constrained networks"
+  },
+  "QualityMetrics": {
+    "CompletenessScore": 84,
+    "LastUpdated": "2026-04-16",
+    "ReviewedBy": "WPFHexaEditor Team"
+  }
+}

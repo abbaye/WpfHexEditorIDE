@@ -1,0 +1,246 @@
+{
+  "diffMode": "binary",
+  "formatName": "Broadcast Wave Format",
+  "version": "1.0",
+  "extensions": [
+    ".bwf",
+    ".wav"
+  ],
+  "description": "Broadcast Wave Format (BWF) is an extension of the Microsoft WAV audio format defined by the European Broadcasting Union (EBU Tech 3285). It adds a mandatory 'bext' (Broadcast Extension) chunk containing metadata for professional broadcast workflows, including originator, origination date/time, time reference, coding history, and UMID. BWF files are widely used in radio, television, and film production for archival and interchange.",
+  "category": "Audio",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "references": {
+    "specifications": [
+      "EBU Tech 3285 — Broadcast Wave Format (BWF)",
+      "EBU Tech 3285 Supplement 1-6 — BWF extensions",
+      "Microsoft RIFF/WAVE specification"
+    ],
+    "WebLinks": [
+      "https://tech.ebu.ch/docs/tech/tech3285.pdf",
+      "https://en.wikipedia.org/wiki/Broadcast_Wave_Format",
+      "https://www.digitizationguidelines.gov/audio-visual/documents/BWF_Embed_Guideline_v3_2021.pdf"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      {
+        "value": "52494646",
+        "offset": 0,
+        "label": "RIFF container",
+        "weight": 0.6
+      },
+      {
+        "value": "62657874",
+        "offset": 12,
+        "label": "'bext' Broadcast Extension chunk (may not be at offset 12 — approximate)",
+        "weight": 0.8
+      }
+    ],
+    "matchMode": "allOf",
+    "MinimumScore": 82,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 3.0, "max": 7.8 },
+    "validation": {
+      "minFileSize": 68,
+      "maxSignatureOffset": 0
+    }
+  },
+  "variables": {
+    "bwfRiffMagic": "",
+    "bwfFileSize": 0,
+    "bwfWaveId": "",
+    "bwfFirstChunkId": ""
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "RIFF Magic",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.45,
+      "description": "RIFF container signature: ASCII 'RIFF' (0x52494646). Identifies this as a RIFF-based file format. All BWF files use the RIFF container.",
+      "storeAs": "bwfRiffMagic",
+      "valueType": "ascii",
+      "validation": {
+        "expectedValue": "RIFF"
+      }
+    },
+    {
+      "type": "field",
+      "name": "File Size",
+      "offset": 4,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "Total file size minus 8 bytes (for 'RIFF' magic and this field), stored as a 32-bit unsigned little-endian integer. Represents the size of the remaining RIFF data.",
+      "storeAs": "bwfFileSize",
+      "valueType": "uint32",
+      "endianness": "little"
+    },
+    {
+      "type": "field",
+      "name": "WAVE Identifier",
+      "offset": 8,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.35,
+      "description": "RIFF form type: ASCII 'WAVE' (0x57415645). Identifies the RIFF file as a waveform audio container. Must be 'WAVE' for both standard WAV and BWF files.",
+      "storeAs": "bwfWaveId",
+      "valueType": "ascii",
+      "validation": {
+        "expectedValue": "WAVE"
+      }
+    },
+    {
+      "type": "field",
+      "name": "First Chunk ID",
+      "offset": 12,
+      "length": 4,
+      "color": "#FFE66D",
+      "opacity": 0.35,
+      "description": "Chunk identifier of the first sub-chunk. In BWF files this is typically 'bext' (Broadcast Extension), though 'fmt ' or 'JUNK' may appear first in some implementations. The presence of a 'bext' chunk anywhere in the file is what distinguishes BWF from plain WAV.",
+      "storeAs": "bwfFirstChunkId",
+      "valueType": "ascii"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "RIFF magic valid",
+      "expression": "bwfRiffMagic == 'RIFF'",
+      "severity": "error",
+      "message": "File must begin with RIFF container signature (0x52494646)"
+    },
+    {
+      "name": "WAVE form type valid",
+      "expression": "bwfWaveId == 'WAVE'",
+      "severity": "error",
+      "message": "RIFF form type must be 'WAVE' for Broadcast Wave Format files"
+    },
+    {
+      "name": "File size plausible",
+      "expression": "bwfFileSize > 36",
+      "severity": "warning",
+      "message": "RIFF data size should be at least 36 bytes to contain a valid fmt chunk and bext chunk"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      {
+        "name": "RIFF Header",
+        "offset": 0,
+        "icon": "\uE71B",
+        "color": "#FF6B6B"
+      },
+      {
+        "name": "WAVE ID",
+        "offset": 8,
+        "icon": "\uE8A5",
+        "color": "#95E1D3"
+      },
+      {
+        "name": "First Chunk",
+        "offset": 12,
+        "icon": "\uE9D9",
+        "color": "#FFE66D"
+      }
+    ]
+  },
+  "inspector": {
+    "badge": "bwfWaveId",
+    "primaryField": "bwfFirstChunkId",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "Container",
+        "icon": "\uE71B",
+        "fields": ["bwfRiffMagic", "bwfFileSize", "bwfWaveId"]
+      },
+      {
+        "title": "Broadcast Extension",
+        "icon": "\uE767",
+        "fields": ["bwfFirstChunkId"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "BWF Header (JSON)",
+      "format": "json",
+      "fields": ["bwfRiffMagic", "bwfFileSize", "bwfWaveId", "bwfFirstChunkId"]
+    },
+    {
+      "name": "bwf_header_t (C struct)",
+      "format": "c-struct",
+      "structName": "bwf_header",
+      "fields": ["bwfRiffMagic", "bwfFileSize", "bwfWaveId", "bwfFirstChunkId"]
+    }
+  ],
+  "forensic": {
+    "category": "audio",
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      {
+        "name": "Missing bext chunk",
+        "condition": "bwfFirstChunkId != 'bext'",
+        "severity": "info",
+        "description": "First chunk is not 'bext' — the bext chunk may appear later in the file, or this may be a plain WAV mislabeled as BWF."
+      },
+      {
+        "name": "File size mismatch",
+        "condition": "bwfFileSize == 0",
+        "severity": "warning",
+        "description": "RIFF data size is zero, indicating a truncated or corrupted file."
+      }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "BWF is a RIFF/WAVE container with a mandatory 'bext' broadcast extension chunk (EBU Tech 3285). Header: 'RIFF'(4B) + fileSize(4B LE) + 'WAVE'(4B) + chunks. The bext chunk contains: Description(256B), Originator(32B), OriginatorReference(32B), OriginationDate(10B), OriginationTime(8B), TimeReferenceLow(4B), TimeReferenceHigh(4B), Version(2B), UMID(64B), LoudnessValue(2B), LoudnessRange(2B), MaxTruePeakLevel(2B), MaxMomentaryLoudness(2B), MaxShortTermLoudness(2B), Reserved(180B), CodingHistory(variable).",
+    "suggestedInspections": [
+      "Verify RIFF + WAVE signature at offset 0-11",
+      "Locate 'bext' chunk and parse broadcast metadata fields",
+      "Check bext version field for EBU Tech 3285 revision compliance",
+      "Validate CodingHistory field for proper formatting (comma-separated key=value pairs)"
+    ]
+  },
+  "software": [
+    "Adobe Audition",
+    "Avid Pro Tools",
+    "iZotope RX"
+  ],
+  "formatRelationships": {
+    "category": "Audio",
+    "extensions": [".bwf", ".wav"],
+    "relatedFormats": ["WAV", "RF64", "AIFF"],
+    "containerVariant": "RIFF/WAVE with EBU bext extension"
+  },
+  "MimeTypes": [
+    "audio/vnd.wave",
+    "audio/wav",
+    "audio/x-wav"
+  ],
+  "UseCases": [
+    "Professional broadcast audio interchange (radio, TV)",
+    "Archival audio preservation with embedded provenance metadata",
+    "Film and television post-production audio delivery",
+    "EBU-compliant audio content exchange between broadcasters"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 84,
+    "DocumentationLevel": "comprehensive",
+    "BlocksDefined": 4,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-16",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "AudioFormat": true,
+    "ContainerFormat": "RIFF",
+    "Endianness": "little-endian",
+    "HeaderSize": "12 bytes (RIFF header) + variable bext chunk",
+    "BextChunkMinSize": "602 bytes (v0) / 858 bytes (v2 with loudness)",
+    "MaxFileSize": "4 GB (RIFF 32-bit limit; RF64 for larger)"
+  }
+}

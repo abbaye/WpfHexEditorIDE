@@ -1,0 +1,206 @@
+{
+  "diffMode": "binary",
+  "formatName": "VP9/VP8 Superframe Index",
+  "version": "1.0",
+  "extensions": [
+    ".vpx",
+    ".ivf"
+  ],
+  "description": "VP9 and VP8 superframes are a bitstream-level packaging mechanism defined in the VP9 specification that bundles multiple compressed video frames into a single access unit. A superframe index is appended to the end of the combined frame data, marked by a specific byte pattern (0xCE marker byte with specific bit patterns). Superframes are used for Scalable Video Coding (SVC) where a base layer and enhancement layers are packed together, and for handling invisible alternate reference frames within a single container packet.",
+  "category": "Video",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "references": {
+    "specifications": [
+      "VP9 Bitstream & Decoding Process Specification — Section 7.1 Superframes",
+      "libvpx source code — vp9/common/vp9_common.h"
+    ],
+    "WebLinks": [
+      "https://www.webmproject.org/vp9/",
+      "https://en.wikipedia.org/wiki/VP9",
+      "https://storage.googleapis.com/downloads.webmproject.org/docs/vp9/vp9-bitstream-specification-v0.6-20160331-draft.pdf"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      {
+        "value": "CE",
+        "offset": 0,
+        "label": "VP9 superframe marker byte 0xCE",
+        "weight": 0.4
+      }
+    ],
+    "matchMode": "allOf",
+    "MinimumScore": 82,
+    "Strength": "Weak",
+    "EntropyHint": { "min": 5.0, "max": 7.95 },
+    "validation": {
+      "minFileSize": 2,
+      "maxSignatureOffset": 0
+    }
+  },
+  "variables": {
+    "vpxMarker": 0,
+    "vpxFrameCount": 0
+  },
+  "blocks": [
+    {
+      "type": "field",
+      "name": "Marker Byte",
+      "offset": 0,
+      "length": 1,
+      "color": "#FF6B6B",
+      "opacity": 0.45,
+      "description": "VP9 superframe marker byte. The value 0xCE (binary 11001110) indicates the start of a superframe index when bits 7-5 are 110 and bits 4-2 encode the frame size field length. This marker also appears at the end of the superframe as a terminator.",
+      "storeAs": "vpxMarker",
+      "valueType": "uint8"
+    },
+    {
+      "type": "field",
+      "name": "Frame Count",
+      "offset": 1,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "Number of sub-frames contained within the superframe (derived from marker byte bits). Typical VP9 superframes contain 2-3 sub-frames: a visible frame and one or more invisible alternate reference frames used for temporal prediction.",
+      "storeAs": "vpxFrameCount",
+      "valueType": "uint8"
+    },
+    {
+      "type": "field",
+      "name": "Frame Size Index",
+      "offset": 2,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.35,
+      "description": "Start of the frame size index table. Each entry is 1-4 bytes (size determined by marker byte bits 4-3) specifying the byte size of each sub-frame within the superframe.",
+      "valueType": "uint32",
+      "endianness": "little"
+    },
+    {
+      "type": "field",
+      "name": "Compressed Data",
+      "offset": 6,
+      "length": 4,
+      "color": "#FFE66D",
+      "opacity": 0.35,
+      "description": "Start of the VP9/VP8 compressed video data. Individual sub-frames are concatenated sequentially, with sizes defined by the superframe index.",
+      "valueType": "uint32",
+      "endianness": "little"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "Marker byte pattern",
+      "expression": "vpxMarker == 206",
+      "severity": "warning",
+      "message": "VP9 superframe marker is typically 0xCE (206) — other values may indicate a different VP9 frame type"
+    },
+    {
+      "name": "Frame count plausible",
+      "expression": "vpxFrameCount >= 1 && vpxFrameCount <= 8",
+      "severity": "warning",
+      "message": "Superframe typically contains 1-8 sub-frames"
+    },
+    {
+      "name": "Marker is non-zero",
+      "expression": "vpxMarker > 0",
+      "severity": "error",
+      "message": "Marker byte must be non-zero"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      {
+        "name": "Superframe Marker",
+        "offset": 0,
+        "icon": "\uE71B",
+        "color": "#FF6B6B"
+      }
+    ]
+  },
+  "inspector": {
+    "badge": "vpxMarker",
+    "primaryField": "vpxFrameCount",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "Superframe Index",
+        "icon": "\uE71B",
+        "fields": ["vpxMarker", "vpxFrameCount"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "VP9 Superframe (JSON)",
+      "format": "json",
+      "fields": ["vpxMarker", "vpxFrameCount"]
+    },
+    {
+      "name": "vpx_superframe_t (C struct)",
+      "format": "c-struct",
+      "structName": "vpx_superframe",
+      "fields": ["vpxMarker", "vpxFrameCount"]
+    }
+  ],
+  "forensic": {
+    "category": "video",
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      {
+        "name": "Non-standard marker",
+        "condition": "vpxMarker != 206",
+        "severity": "info",
+        "description": "Marker byte is not 0xCE — this may not be a VP9 superframe or may use a different marker pattern."
+      }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "VP9 superframe structure: the superframe index is located at the END of the concatenated frame data. Format: marker_byte(1B) + frame_sizes(N * M bytes) + marker_byte(1B). The marker byte encodes: bits 7-5 = 110 (superframe marker), bits 4-3 = bytes_per_framesize - 1, bits 2-0 = frames_in_superframe - 1. Frame sizes are stored as little-endian integers of (bytes_per_framesize) width. The initial 0xCE at offset 0 interpretation is approximate — actual superframe detection requires checking the last byte of the access unit.",
+    "suggestedInspections": [
+      "Check last byte of access unit for superframe marker pattern (bits 7-5 == 110)",
+      "Parse marker byte to extract frame count and frame size field width",
+      "Validate frame size index entries sum to total data length",
+      "Identify sub-frame types (visible vs invisible alt-ref frames)"
+    ]
+  },
+  "software": [
+    "libvpx",
+    "FFmpeg",
+    "Chrome / Firefox (WebM playback)"
+  ],
+  "formatRelationships": {
+    "category": "Video",
+    "extensions": [".vpx", ".ivf"],
+    "relatedFormats": ["VP9", "VP8", "WEBM", "IVF"],
+    "containerVariant": "VP9 superframe within IVF or WebM container"
+  },
+  "MimeTypes": [
+    "video/x-vp9",
+    "video/webm"
+  ],
+  "UseCases": [
+    "VP9 scalable video coding (SVC) layer packaging",
+    "WebRTC video streaming with temporal scalability",
+    "WebM video with invisible reference frames for better compression",
+    "Adaptive bitrate streaming with VP9 SVC layers"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 82,
+    "DocumentationLevel": "comprehensive",
+    "BlocksDefined": 4,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-16",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "VideoFormat": true,
+    "CompressionMethod": "VP9/VP8 (block-based hybrid transform coding)",
+    "Endianness": "little-endian (frame sizes)",
+    "SuperframeMaxFrames": 8,
+    "FrameSizeFieldWidth": "1-4 bytes (encoded in marker)",
+    "MarkerPattern": "bits 7-5 == 110 (binary)"
+  }
+}

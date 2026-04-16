@@ -1,0 +1,269 @@
+{
+  "diffMode": "text",
+  "formatName": "European Data Format (EDF/EDF+)",
+  "version": "1.0",
+  "extensions": [
+    ".edf",
+    ".edf+"
+  ],
+  "description": "European Data Format (EDF) — standard file format for multichannel electrophysiological signals such as EEG, EMG, EOG, and polysomnography. The 256-byte fixed header contains patient ID, recording ID, start date/time, number of signals, and per-signal metadata. Data records follow as 16-bit little-endian integers.",
+  "category": "Medical",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "code-editor",
+  "references": {
+    "specifications": [
+      "EDF specification — edfplus.info/specs/edf.html",
+      "EDF+ specification — edfplus.info/specs/edfplus.html",
+      "Kemp et al. (1992) Electroencephalography and Clinical Neurophysiology"
+    ],
+    "WebLinks": [
+      "https://www.edfplus.info/",
+      "https://en.wikipedia.org/wiki/European_Data_Format",
+      "https://www.edfplus.info/specs/edf.html"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      { "value": "302020202020202020", "offset": 0, "label": "'0       ' EDF version string (8 chars)", "weight": 0.9 }
+    ],
+    "required": true,
+    "Strength": "Strong",
+    "MinimumScore": 0.7,
+    "validation": {
+      "minFileSize": 256
+    }
+  },
+  "variables": {
+    "edfVersion": "",
+    "edfPatientId": "",
+    "edfRecordingId": "",
+    "edfStartDate": "",
+    "edfStartTime": "",
+    "edfHeaderBytes": "",
+    "edfNumRecords": "",
+    "edfRecordDuration": "",
+    "edfNumSignals": ""
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "Version",
+      "offset": 0,
+      "length": 8,
+      "color": "#FF6B6B",
+      "opacity": 0.45,
+      "description": "8-byte ASCII version string. For EDF this is '0' followed by 7 spaces. Identifies the file as EDF format.",
+      "storeAs": "edfVersion",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Patient ID",
+      "offset": 8,
+      "length": 80,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "80-byte ASCII local patient identification. In EDF+ format: subfields for code, sex, birthdate, name separated by spaces.",
+      "storeAs": "edfPatientId",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Recording ID",
+      "offset": 88,
+      "length": 80,
+      "color": "#FFEAA7",
+      "opacity": 0.35,
+      "description": "80-byte ASCII local recording identification. In EDF+: 'Startdate' + date + hospital/technician/equipment info.",
+      "storeAs": "edfRecordingId",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Start Date",
+      "offset": 168,
+      "length": 8,
+      "color": "#95E1D3",
+      "opacity": 0.30,
+      "description": "8-byte ASCII start date of recording in dd.mm.yy format.",
+      "storeAs": "edfStartDate",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Start Time",
+      "offset": 176,
+      "length": 8,
+      "color": "#DDA0DD",
+      "opacity": 0.30,
+      "description": "8-byte ASCII start time of recording in hh.mm.ss format.",
+      "storeAs": "edfStartTime",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Header Bytes",
+      "offset": 184,
+      "length": 8,
+      "color": "#87CEEB",
+      "opacity": 0.30,
+      "description": "8-byte ASCII: total number of header bytes = 256 + (numSignals * 256).",
+      "storeAs": "edfHeaderBytes",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Number of Data Records",
+      "offset": 236,
+      "length": 8,
+      "color": "#98FB98",
+      "opacity": 0.30,
+      "description": "8-byte ASCII: number of data records in the file. -1 if unknown (EDF+).",
+      "storeAs": "edfNumRecords",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Record Duration",
+      "offset": 244,
+      "length": 8,
+      "color": "#F0E68C",
+      "opacity": 0.30,
+      "description": "8-byte ASCII: duration of each data record in seconds (e.g. '1' for 1-second epochs).",
+      "storeAs": "edfRecordDuration",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Number of Signals",
+      "offset": 252,
+      "length": 4,
+      "color": "#FFB6C1",
+      "opacity": 0.30,
+      "description": "4-byte ASCII: number of signals (channels) in each data record.",
+      "storeAs": "edfNumSignals",
+      "valueType": "ascii"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "EDF version string",
+      "expression": "edfVersion startsWith '0'",
+      "severity": "error",
+      "message": "EDF version must start with '0' — this is not a valid EDF file"
+    },
+    {
+      "name": "Number of signals is positive",
+      "expression": "edfNumSignals > 0",
+      "severity": "error",
+      "message": "EDF file must have at least one signal channel"
+    },
+    {
+      "name": "Minimum header size",
+      "expression": "fileSize >= 256",
+      "severity": "error",
+      "message": "EDF file must be at least 256 bytes (fixed header size)"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "Version", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
+      { "name": "Patient ID", "offset": 8, "icon": "\uE77B", "color": "#4ECDC4" },
+      { "name": "Start Date/Time", "offset": 168, "icon": "\uE787", "color": "#95E1D3" },
+      { "name": "Signal Count", "offset": 252, "icon": "\uE9D9", "color": "#FFB6C1" }
+    ]
+  },
+  "inspector": {
+    "badge": "edfNumSignals",
+    "primaryField": "edfVersion",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "EDF Header",
+        "icon": "\uE71B",
+        "fields": ["edfVersion", "edfPatientId", "edfRecordingId", "edfStartDate", "edfStartTime"]
+      },
+      {
+        "title": "Data Structure",
+        "icon": "\uE9D9",
+        "fields": ["edfHeaderBytes", "edfNumRecords", "edfRecordDuration", "edfNumSignals"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "EDF Header (JSON)",
+      "format": "json",
+      "fields": ["edfVersion", "edfPatientId", "edfRecordingId", "edfStartDate", "edfStartTime", "edfNumSignals"]
+    },
+    {
+      "name": "edf_header_t (C struct)",
+      "format": "c-struct",
+      "structName": "edf_header",
+      "fields": ["edfVersion", "edfPatientId", "edfRecordingId", "edfStartDate", "edfStartTime", "edfHeaderBytes", "edfNumRecords", "edfRecordDuration", "edfNumSignals"]
+    }
+  ],
+  "forensic": {
+    "category": "medical",
+    "riskLevel": "high",
+    "suspiciousPatterns": [
+      {
+        "name": "Patient identification present",
+        "condition": "edfPatientId != '' && edfPatientId != 'X'",
+        "severity": "warning",
+        "description": "Patient ID field contains data — this file may contain Protected Health Information (PHI). Handle according to HIPAA/GDPR regulations."
+      }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "EDF header: version(8B '0       '), patientId(80B), recordingId(80B), startDate(8B dd.mm.yy), startTime(8B hh.mm.ss), headerBytes(8B), reserved(44B), numRecords(8B), recordDuration(8B), numSignals(4B). Then per-signal: label(16B), transducer(80B), physDim(8B), physMin(8B), physMax(8B), digMin(8B), digMax(8B), prefiltering(80B), nSamples(8B), reserved(32B). Data: 16-bit LE integers.",
+    "suggestedInspections": [
+      "Verify version field starts with '0' (EDF) or check reserved field for 'EDF+C'/'EDF+D' (EDF+)",
+      "Parse patient ID for PHI (name, birthdate, sex)",
+      "Calculate expected file size: headerBytes + numRecords * sum(nSamples_per_signal) * 2",
+      "Check for EDF+ annotations signal (label 'EDF Annotations')",
+      "Verify physical/digital min/max ranges per signal are valid"
+    ]
+  },
+  "software": [
+    "EDFbrowser",
+    "MNE-Python",
+    "EEGLAB (MATLAB)",
+    "BrainVision Analyzer",
+    "NeuroExplorer"
+  ],
+  "formatRelationships": {
+    "category": "Medical",
+    "extensions": [".edf", ".edf+"],
+    "relatedFormats": ["GDF", "BDF"],
+    "containerVariant": "EDF = original 16-bit; EDF+ = adds annotations and discontinuous recording; BDF = 24-bit BioSemi variant"
+  },
+  "MimeTypes": [
+    "application/x-edf",
+    "application/octet-stream"
+  ],
+  "UseCases": [
+    "EEG (electroencephalography) recording storage",
+    "Polysomnography (sleep study) data files",
+    "Clinical neurophysiology signal archival",
+    "Brain-computer interface research data"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 90,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 9,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-16",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "FileType": "Fixed-header electrophysiological signal format",
+    "Encoding": "ASCII header + 16-bit LE integer data",
+    "FixedHeaderSize": 256,
+    "SignalHeaderSize": 256,
+    "DataResolution": "16-bit signed integer per sample",
+    "Endianness": "little-endian",
+    "PHI_Risk": "High — patient ID, recording ID, dates present in header"
+  }
+}

@@ -1,0 +1,204 @@
+{
+  "diffMode": "text",
+  "formatName": "WebVTT Subtitles",
+  "version": "1.0",
+  "extensions": [
+    ".vtt"
+  ],
+  "description": "WebVTT (Web Video Text Tracks) is a W3C standard text-based subtitle and caption format designed for use with the HTML5 <track> element. WebVTT files begin with the 'WEBVTT' signature optionally followed by a space and header text. The format supports cue timing, positioning, styling (via CSS-like ::cue pseudo-element), vertical text, ruby annotations for East Asian languages, chapters, and metadata tracks. WebVTT is the native caption format for all modern web browsers and streaming platforms.",
+  "category": "Subtitles",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "code-editor",
+  "references": {
+    "specifications": [
+      "W3C WebVTT: The Web Video Text Tracks Format — w3.org/TR/webvtt1/",
+      "WHATWG HTML Living Standard — <track> element"
+    ],
+    "WebLinks": [
+      "https://www.w3.org/TR/webvtt1/",
+      "https://en.wikipedia.org/wiki/WebVTT",
+      "https://developer.mozilla.org/en-US/docs/Web/API/WebVTT_API"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      {
+        "value": "574542565454",
+        "offset": 0,
+        "label": "'WEBVTT' file signature",
+        "weight": 1.0
+      }
+    ],
+    "matchMode": "allOf",
+    "MinimumScore": 90,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 1.5, "max": 5.0 },
+    "validation": {
+      "minFileSize": 6,
+      "maxSignatureOffset": 0
+    }
+  },
+  "variables": {
+    "webvttMagic": "",
+    "webvttSpace": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "WEBVTT Magic",
+      "offset": 0,
+      "length": 6,
+      "color": "#FF6B6B",
+      "opacity": 0.45,
+      "description": "WebVTT file signature: ASCII 'WEBVTT' (0x574542565454). Must appear as the very first 6 bytes of the file (or after an optional UTF-8 BOM). The signature may be followed by a space/tab and optional header text, or immediately by a newline.",
+      "storeAs": "webvttMagic",
+      "valueType": "ascii",
+      "validation": {
+        "expectedValue": "WEBVTT"
+      }
+    },
+    {
+      "type": "field",
+      "name": "Post-Signature Byte",
+      "offset": 6,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "Byte immediately following 'WEBVTT'. Must be a space (0x20), tab (0x09), or newline (0x0A/0x0D) per the W3C specification. A space or tab indicates optional header text follows on the same line.",
+      "storeAs": "webvttSpace",
+      "valueType": "uint8"
+    },
+    {
+      "type": "field",
+      "name": "Header Region",
+      "offset": 7,
+      "length": 8,
+      "color": "#95E1D3",
+      "opacity": 0.35,
+      "description": "Optional header text and region/style definitions that follow the WEBVTT signature line. Regions define viewport positioning areas, and STYLE blocks define CSS-like cue styling rules.",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "First Cue Block",
+      "offset": 15,
+      "length": 8,
+      "color": "#FFE66D",
+      "opacity": 0.35,
+      "description": "Start of the first cue block. Each cue contains: optional cue identifier, timing line (start --> end), optional cue settings (position, align, size, line, vertical), and cue payload text with optional tags (<b>, <i>, <u>, <ruby>, <v>, <c>, <lang>).",
+      "valueType": "ascii"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "WEBVTT magic valid",
+      "expression": "webvttMagic == 'WEBVTT'",
+      "severity": "error",
+      "message": "File must begin with 'WEBVTT' signature"
+    },
+    {
+      "name": "Post-signature byte valid",
+      "expression": "webvttSpace == 32 || webvttSpace == 9 || webvttSpace == 10 || webvttSpace == 13",
+      "severity": "warning",
+      "message": "Byte after 'WEBVTT' should be space (0x20), tab (0x09), or newline (0x0A/0x0D)"
+    },
+    {
+      "name": "Magic is exactly WEBVTT",
+      "expression": "webvttMagic == 'WEBVTT'",
+      "severity": "error",
+      "message": "WebVTT signature must be exactly 'WEBVTT'"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      {
+        "name": "WEBVTT Header",
+        "offset": 0,
+        "icon": "\uE71B",
+        "color": "#FF6B6B"
+      }
+    ]
+  },
+  "inspector": {
+    "badge": "webvttMagic",
+    "primaryField": "webvttSpace",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "Header",
+        "icon": "\uE71B",
+        "fields": ["webvttMagic", "webvttSpace"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "WebVTT Header (JSON)",
+      "format": "json",
+      "fields": ["webvttMagic", "webvttSpace"]
+    },
+    {
+      "name": "Python WebVTT parser",
+      "format": "python-bytes",
+      "fields": ["webvttMagic"]
+    }
+  ],
+  "forensic": {
+    "category": "subtitles",
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      {
+        "name": "Invalid post-signature byte",
+        "condition": "webvttSpace != 32 && webvttSpace != 9 && webvttSpace != 10 && webvttSpace != 13",
+        "severity": "warning",
+        "description": "Byte after 'WEBVTT' is not a valid separator — file may not parse correctly in strict WebVTT implementations."
+      }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "WebVTT structure: 'WEBVTT' + optional header text + blank line + cue blocks. Cue block format: optional ID line, timing line 'HH:MM:SS.mmm --> HH:MM:SS.mmm' with optional settings (vertical:rl, line:0, position:50%, size:50%, align:center), cue text with inline tags. STYLE blocks define ::cue CSS. REGION blocks define viewport regions. NOTE blocks are comments. File must use UTF-8 encoding. BOM (0xEFBBBF) is allowed before 'WEBVTT'.",
+    "suggestedInspections": [
+      "Verify 'WEBVTT' signature at offset 0 (or after BOM)",
+      "Parse cue timing lines for valid '-->' arrow syntax",
+      "Check for STYLE and REGION header blocks",
+      "Validate UTF-8 encoding of cue text content"
+    ]
+  },
+  "software": [
+    "All modern web browsers (Chrome, Firefox, Safari, Edge)",
+    "FFmpeg",
+    "VLC media player"
+  ],
+  "formatRelationships": {
+    "category": "Subtitles",
+    "extensions": [".vtt"],
+    "relatedFormats": ["SRT", "TTML", "SSA"],
+    "containerVariant": "Standalone text file"
+  },
+  "MimeTypes": [
+    "text/vtt"
+  ],
+  "UseCases": [
+    "HTML5 video captions and subtitles via <track> element",
+    "HLS and DASH adaptive streaming subtitle delivery",
+    "Accessibility compliance (WCAG, Section 508) for web video",
+    "YouTube, Netflix, and streaming platform subtitle format"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 83,
+    "DocumentationLevel": "comprehensive",
+    "BlocksDefined": 4,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-16",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "TextFormat": true,
+    "Encoding": "UTF-8 (mandatory)",
+    "TimingFormat": "HH:MM:SS.mmm --> HH:MM:SS.mmm",
+    "StylingSupport": "CSS ::cue pseudo-element",
+    "PositioningSupport": "line, position, size, align, vertical",
+    "InlineTagSupport": "<b>, <i>, <u>, <ruby>, <rt>, <v>, <c>, <lang>"
+  }
+}

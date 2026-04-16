@@ -1,0 +1,238 @@
+{
+  "diffMode": "binary",
+  "formatName": "GIMP XCF Native Image",
+  "version": "1.0",
+  "extensions": [
+    ".xcf"
+  ],
+  "description": "GIMP XCF (eXperimental Computing Facility) native image format — stores the complete editing state including layers, channels, paths, selections, and parasites. The file starts with 'gimp xcf v' (10 bytes) followed by a 3-digit version string and a null byte. Image properties (width, height, color mode) follow immediately after the 14-byte magic header.",
+  "category": "Images",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "references": {
+    "specifications": [
+      "XCF file format — GIMP Developer Wiki",
+      "GIMP source code — gitlab.gnome.org/GNOME/gimp"
+    ],
+    "WebLinks": [
+      "https://gitlab.gnome.org/GNOME/gimp/-/blob/master/devel-docs/xcf.txt",
+      "https://en.wikipedia.org/wiki/XCF_(file_format)",
+      "https://www.gimp.org/"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      { "value": "67696D70207863662076", "offset": 0, "label": "'gimp xcf v' XCF native format", "weight": 1.0 }
+    ],
+    "required": true,
+    "Strength": "Strong",
+    "MinimumScore": 0.9,
+    "validation": {
+      "minFileSize": 26
+    }
+  },
+  "variables": {
+    "xcfMagic": "",
+    "xcfVersion": "",
+    "xcfNull": 0,
+    "xcfWidth": 0,
+    "xcfHeight": 0,
+    "xcfColorMode": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "XCF Magic",
+      "offset": 0,
+      "length": 10,
+      "color": "#FF6B6B",
+      "opacity": 0.45,
+      "description": "10-byte ASCII 'gimp xcf v' — magic identifier for GIMP native image files.",
+      "storeAs": "xcfMagic",
+      "valueType": "ascii",
+      "validation": { "expectedValue": "gimp xcf v" }
+    },
+    {
+      "type": "field",
+      "name": "Version String",
+      "offset": 10,
+      "length": 3,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "3-byte ASCII version number (e.g. '011', '012', '013'). Indicates the XCF format version supported by this file.",
+      "storeAs": "xcfVersion",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Null Terminator",
+      "offset": 13,
+      "length": 1,
+      "color": "#AAAAAA",
+      "opacity": 0.25,
+      "description": "1-byte null terminator (0x00) ending the magic+version string.",
+      "storeAs": "xcfNull",
+      "valueType": "uint8",
+      "validation": { "expectedValue": 0 }
+    },
+    {
+      "type": "field",
+      "name": "Image Width",
+      "offset": 14,
+      "length": 4,
+      "color": "#FFEAA7",
+      "opacity": 0.35,
+      "description": "4-byte uint32 big-endian: canvas width in pixels.",
+      "storeAs": "xcfWidth",
+      "valueType": "uint32",
+      "endianness": "big"
+    },
+    {
+      "type": "field",
+      "name": "Image Height",
+      "offset": 18,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.30,
+      "description": "4-byte uint32 big-endian: canvas height in pixels.",
+      "storeAs": "xcfHeight",
+      "valueType": "uint32",
+      "endianness": "big"
+    },
+    {
+      "type": "field",
+      "name": "Color Mode",
+      "offset": 22,
+      "length": 4,
+      "color": "#DDA0DD",
+      "opacity": 0.30,
+      "description": "4-byte uint32 big-endian: color mode — 0=RGB, 1=Grayscale, 2=Indexed.",
+      "storeAs": "xcfColorMode",
+      "valueType": "uint32",
+      "endianness": "big",
+      "valueMap": {
+        "0": "RGB",
+        "1": "Grayscale",
+        "2": "Indexed"
+      }
+    }
+  ],
+  "assertions": [
+    {
+      "name": "XCF magic present",
+      "expression": "xcfMagic == 'gimp xcf v'",
+      "severity": "error",
+      "message": "File must start with 'gimp xcf v' to be a valid GIMP XCF file"
+    },
+    {
+      "name": "Null terminator",
+      "expression": "xcfNull == 0",
+      "severity": "error",
+      "message": "Byte at offset 13 must be null (0x00) — magic string terminator"
+    },
+    {
+      "name": "Width is positive",
+      "expression": "xcfWidth > 0",
+      "severity": "error",
+      "message": "Image width must be greater than zero"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "XCF Magic", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
+      { "name": "Version", "offset": 10, "icon": "\uE8A5", "color": "#4ECDC4" },
+      { "name": "Dimensions", "offset": 14, "icon": "\uE9D9", "color": "#FFEAA7" }
+    ]
+  },
+  "inspector": {
+    "badge": "xcfVersion",
+    "primaryField": "xcfMagic",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "XCF Header",
+        "icon": "\uE71B",
+        "fields": ["xcfMagic", "xcfVersion", "xcfNull"]
+      },
+      {
+        "title": "Image Properties",
+        "icon": "\uE9D9",
+        "fields": ["xcfWidth", "xcfHeight", "xcfColorMode"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "XCF Header (JSON)",
+      "format": "json",
+      "fields": ["xcfMagic", "xcfVersion", "xcfWidth", "xcfHeight", "xcfColorMode"]
+    },
+    {
+      "name": "xcf_header_t (C struct)",
+      "format": "c-struct",
+      "structName": "xcf_header",
+      "fields": ["xcfMagic", "xcfVersion", "xcfNull", "xcfWidth", "xcfHeight", "xcfColorMode"]
+    }
+  ],
+  "forensic": {
+    "category": "images",
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      {
+        "name": "Very large canvas",
+        "condition": "xcfWidth > 65536 || xcfHeight > 65536",
+        "severity": "warning",
+        "description": "Canvas dimensions exceed 65536 pixels — may be corrupted or intentionally oversized."
+      }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "XCF: 'gimp xcf v' + version(3B) + null(1B) + width(4B BE) + height(4B BE) + colorMode(4B BE: 0=RGB,1=Gray,2=Indexed). Then property list (PROP_END=0 terminates). Then layer pointers (uint32/uint64 offsets, 0-terminated list), channel pointers (same). Each layer/channel has own property list + hierarchy + tile data. Tiles are 64x64, RLE or zlib compressed.",
+    "suggestedInspections": [
+      "Verify 'gimp xcf v' magic and parse version (011/012/013)",
+      "Read canvas width, height, and color mode from header",
+      "Parse image property list for resolution, parasites, color profile",
+      "Count layer and channel pointers to determine layer count"
+    ]
+  },
+  "software": [
+    "GIMP (GNU Image Manipulation Program)",
+    "Krita (read-only XCF support)",
+    "XnView",
+    "ImageMagick"
+  ],
+  "formatRelationships": {
+    "category": "Images",
+    "extensions": [".xcf"],
+    "relatedFormats": ["KRITA_KRA", "PSD"],
+    "containerVariant": "XCF can be gzip-compressed (.xcf.gz) or bzip2-compressed (.xcf.bz2)"
+  },
+  "MimeTypes": [
+    "image/x-xcf",
+    "application/x-gimp-image"
+  ],
+  "UseCases": [
+    "GIMP native project files with full layer/channel preservation",
+    "Non-destructive image editing workflow storage",
+    "Digital art with multiple layers and blend modes",
+    "Photo retouching projects with undo history"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 89,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 6,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-16",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "FileType": "Layered image editing format",
+    "MagicSize": 14,
+    "Endianness": "big-endian",
+    "TileSize": "64x64 pixels",
+    "Compression": ["None", "RLE", "zlib"],
+    "ColorModes": { "0": "RGB", "1": "Grayscale", "2": "Indexed" },
+    "PointerSize": "4 bytes (v011 and below) or 8 bytes (v012+)"
+  }
+}

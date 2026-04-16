@@ -1,0 +1,271 @@
+{
+  "diffMode": "binary",
+  "formatName": "CRI ADX Audio",
+  "version": "1.0",
+  "extensions": [
+    ".adx"
+  ],
+  "description": "CRI ADX is a lossy compressed audio codec developed by CRI Middleware for use in video games, particularly on Sega Dreamcast, PlayStation, and Nintendo platforms. It uses ADPCM-based compression optimized for low CPU overhead during real-time decoding. The format supports loop points natively, making it ideal for game background music. The header starts with 0x8000 followed by a copyright offset, encoding type, block size, sample parameters, and an optional loop structure.",
+  "category": "Audio",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "references": {
+    "specifications": [
+      "CRI ADX specification (reverse-engineered community documentation)",
+      "vgmstream — ADX codec implementation"
+    ],
+    "WebLinks": [
+      "https://en.wikipedia.org/wiki/ADX_(file_format)",
+      "https://wiki.multimedia.cx/index.php/CRI_ADX",
+      "https://github.com/vgmstream/vgmstream"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      {
+        "value": "8000",
+        "offset": 0,
+        "label": "CRI ADX header (0x80 0x00 + copyright offset)",
+        "weight": 0.9
+      }
+    ],
+    "matchMode": "allOf",
+    "MinimumScore": 82,
+    "Strength": "Medium",
+    "EntropyHint": { "min": 4.0, "max": 7.5 },
+    "validation": {
+      "minFileSize": 16,
+      "maxSignatureOffset": 0
+    }
+  },
+  "variables": {
+    "adxMagic": 0,
+    "adxCopyrightOffset": 0,
+    "adxEncoding": 0,
+    "adxBlockSize": 0,
+    "adxBitdepth": 0,
+    "adxChannels": 0,
+    "adxSampleRate": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "ADX Magic",
+      "offset": 0,
+      "length": 2,
+      "color": "#FF6B6B",
+      "opacity": 0.45,
+      "description": "CRI ADX magic bytes: 0x8000. The first byte (0x80) identifies the file as ADX format, and the second byte (0x00) combined with the copyright offset field defines the header structure.",
+      "storeAs": "adxMagic",
+      "valueType": "uint16",
+      "endianness": "big",
+      "validation": {
+        "expectedValue": 32768
+      }
+    },
+    {
+      "type": "field",
+      "name": "Copyright Offset",
+      "offset": 2,
+      "length": 2,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "Offset to the '(c)CRI' copyright string minus 2 (16-bit big-endian unsigned). The actual audio data begins at copyrightOffset + 4. This field also implicitly defines the header length.",
+      "storeAs": "adxCopyrightOffset",
+      "valueType": "uint16",
+      "endianness": "big"
+    },
+    {
+      "type": "field",
+      "name": "Encoding Type",
+      "offset": 4,
+      "length": 1,
+      "color": "#95E1D3",
+      "opacity": 0.35,
+      "description": "ADX encoding type identifier. Defines the ADPCM prediction and compression algorithm used for the audio data blocks.",
+      "storeAs": "adxEncoding",
+      "valueType": "uint8",
+      "valueMap": {
+        "2": "ADX fixed coefficient",
+        "3": "ADX linear prediction",
+        "4": "ADX exponential scale"
+      }
+    },
+    {
+      "type": "field",
+      "name": "Block Size",
+      "offset": 5,
+      "length": 1,
+      "color": "#FFE66D",
+      "opacity": 0.35,
+      "description": "Size in bytes of each ADPCM data block. Common value is 18 bytes (containing 32 4-bit samples per channel). Decoders use this to advance through the interleaved audio data stream.",
+      "storeAs": "adxBlockSize",
+      "valueType": "uint8"
+    },
+    {
+      "type": "field",
+      "name": "Sample Bit Depth",
+      "offset": 6,
+      "length": 1,
+      "color": "#DDA0DD",
+      "opacity": 0.35,
+      "description": "Bit depth per sample. Typically 4 bits for standard ADX ADPCM encoding. Higher values may appear in newer ADX variants.",
+      "storeAs": "adxBitdepth",
+      "valueType": "uint8"
+    },
+    {
+      "type": "field",
+      "name": "Channel Count",
+      "offset": 7,
+      "length": 1,
+      "color": "#87CEEB",
+      "opacity": 0.35,
+      "description": "Number of audio channels. 1 = mono, 2 = stereo. Game audio typically uses 1 or 2 channels, though multi-channel ADX files exist for surround configurations.",
+      "storeAs": "adxChannels",
+      "valueType": "uint8"
+    },
+    {
+      "type": "field",
+      "name": "Sample Rate",
+      "offset": 8,
+      "length": 4,
+      "color": "#FF8C69",
+      "opacity": 0.35,
+      "description": "Audio sample rate in Hz (32-bit big-endian unsigned). Common values: 22050, 32000, 44100, 48000 Hz. Game audio often uses lower rates (22050 Hz) to reduce file size.",
+      "storeAs": "adxSampleRate",
+      "valueType": "uint32",
+      "endianness": "big"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "ADX magic valid",
+      "expression": "adxMagic == 32768",
+      "severity": "error",
+      "message": "ADX magic must be 0x8000 (32768 decimal)"
+    },
+    {
+      "name": "Channel count valid",
+      "expression": "adxChannels >= 1 && adxChannels <= 8",
+      "severity": "error",
+      "message": "ADX channel count must be between 1 and 8"
+    },
+    {
+      "name": "Sample rate plausible",
+      "expression": "adxSampleRate > 0 && adxSampleRate <= 192000",
+      "severity": "warning",
+      "message": "ADX sample rate should be a plausible audio frequency (1-192000 Hz)"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      {
+        "name": "ADX Header",
+        "offset": 0,
+        "icon": "\uE71B",
+        "color": "#FF6B6B"
+      },
+      {
+        "name": "Audio Parameters",
+        "offset": 4,
+        "icon": "\uE767",
+        "color": "#95E1D3"
+      }
+    ]
+  },
+  "inspector": {
+    "badge": "adxSampleRate",
+    "primaryField": "adxChannels",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "Header",
+        "icon": "\uE71B",
+        "fields": ["adxMagic", "adxCopyrightOffset"]
+      },
+      {
+        "title": "Audio Parameters",
+        "icon": "\uE767",
+        "fields": ["adxEncoding", "adxBlockSize", "adxBitdepth", "adxChannels", "adxSampleRate"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "ADX Header (JSON)",
+      "format": "json",
+      "fields": ["adxMagic", "adxCopyrightOffset", "adxEncoding", "adxBlockSize", "adxBitdepth", "adxChannels", "adxSampleRate"]
+    },
+    {
+      "name": "adx_header_t (C struct)",
+      "format": "c-struct",
+      "structName": "adx_header",
+      "fields": ["adxMagic", "adxCopyrightOffset", "adxEncoding", "adxBlockSize", "adxBitdepth", "adxChannels", "adxSampleRate"]
+    }
+  ],
+  "forensic": {
+    "category": "audio",
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      {
+        "name": "Unusual encoding type",
+        "condition": "adxEncoding < 2 || adxEncoding > 4",
+        "severity": "warning",
+        "description": "Encoding type outside known range (2-4) — may be an unknown ADX variant or corrupted header."
+      },
+      {
+        "name": "Zero sample rate",
+        "condition": "adxSampleRate == 0",
+        "severity": "error",
+        "description": "Sample rate is zero, indicating a corrupted or invalid ADX header."
+      }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "CRI ADX layout: magic(2B: 0x8000) + copyrightOffset(2B BE) + encoding(1B) + blockSize(1B) + bitDepth(1B) + channels(1B) + sampleRate(4B BE) + totalSamples(4B BE) + highpassFreq(2B BE) + version(1B) + flags(1B). Version 3 adds loop info at offset 16-23. Version 4 adds encryption flags. Audio data starts at copyrightOffset+4, consisting of interleaved ADPCM blocks of blockSize bytes per channel.",
+    "suggestedInspections": [
+      "Verify 0x8000 magic at offset 0",
+      "Parse copyright offset to locate '(c)CRI' string and determine header end",
+      "Check encoding type (2/3/4) for ADPCM variant identification",
+      "Look for loop start/end sample indices in version 3+ headers"
+    ]
+  },
+  "software": [
+    "CRI Middleware ADX Tools",
+    "vgmstream",
+    "FFmpeg"
+  ],
+  "formatRelationships": {
+    "category": "Audio",
+    "extensions": [".adx"],
+    "relatedFormats": ["HCA", "AWB", "ACB"],
+    "containerVariant": "Standalone CRI ADX stream"
+  },
+  "MimeTypes": [
+    "audio/x-adx"
+  ],
+  "UseCases": [
+    "Video game background music with seamless looping",
+    "Console game audio on Dreamcast, PlayStation, GameCube, Wii",
+    "Real-time audio streaming with low CPU decoding overhead",
+    "Interactive game audio with loop points and cue markers"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 84,
+    "DocumentationLevel": "comprehensive",
+    "BlocksDefined": 7,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-16",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "AudioFormat": true,
+    "CompressionMethod": "Lossy ADPCM (fixed/linear/exponential)",
+    "Endianness": "big-endian",
+    "HeaderSize": "Variable (copyrightOffset + 4)",
+    "BlockSize": "18 bytes typical (32 samples at 4-bit)",
+    "MaxChannels": 8,
+    "NativeLoopSupport": true
+  }
+}

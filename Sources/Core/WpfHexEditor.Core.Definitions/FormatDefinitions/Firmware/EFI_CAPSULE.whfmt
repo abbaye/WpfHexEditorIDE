@@ -1,0 +1,254 @@
+{
+  "formatName": "EFI Firmware Capsule",
+  "version": "1.0",
+  "diffMode": "binary",
+  "extensions": [
+    ".cap",
+    ".fd"
+  ],
+  "description": "UEFI Firmware Capsule format used for firmware updates on UEFI-based systems. The capsule begins with a 16-byte GUID identifying the capsule type, followed by header size, flags, and the firmware image payload. Used by BIOS/UEFI update mechanisms.",
+  "category": "Firmware",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "MimeTypes": [
+    "application/x-uefi-capsule",
+    "application/x-firmware"
+  ],
+  "UseCases": [
+    "UEFI firmware updates for motherboards and embedded systems",
+    "BIOS update capsule delivery via OS-level update mechanisms",
+    "Firmware security analysis and integrity verification",
+    "Supply chain verification of firmware update packages"
+  ],
+  "references": [
+    "https://uefi.org/specs/UEFI/2.10/23_Firmware_Update_and_Reporting.html",
+    "https://github.com/tianocore/edk2/blob/master/MdePkg/Include/Uefi/UefiSpec.h",
+    "https://en.wikipedia.org/wiki/UEFI#Firmware_updates"
+  ],
+  "software": [
+    {
+      "name": "UEFITool",
+      "url": "https://github.com/LongSoft/UEFITool",
+      "role": "UEFI firmware image parser and editor"
+    },
+    {
+      "name": "fwupd",
+      "url": "https://fwupd.org/",
+      "role": "Linux firmware update daemon supporting UEFI capsules"
+    },
+    {
+      "name": "CHIPSEC",
+      "url": "https://github.com/chipsec/chipsec",
+      "role": "Platform security assessment framework for firmware"
+    }
+  ],
+  "formatRelationships": [
+    {
+      "format": "UEFI_FV",
+      "relationship": "Firmware capsules contain UEFI Firmware Volumes with FFS files"
+    },
+    {
+      "format": "PE",
+      "relationship": "UEFI drivers and applications inside capsules are PE32+ executables"
+    }
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "offset": 0,
+        "value": "BD86663B760D3040B70EB5519E2FC5A0",
+        "label": "EFI_FIRMWARE_MANAGEMENT_CAPSULE GUID",
+        "weight": 1.0
+      }
+    ],
+    "matchMode": "first",
+    "MinimumScore": 90,
+    "Strength": "Strong",
+    "EntropyHint": {
+      "min": 5.0,
+      "max": 7.5,
+      "note": "Mix of compressed firmware volumes and PE executables"
+    },
+    "validation": "First 16 bytes must be a recognized EFI capsule GUID. Header size at offset 16 must be >= 28. Image size at offset 24 must match or exceed file size."
+  },
+  "variables": [
+    {
+      "name": "efiCapsuleGuid",
+      "type": "hex",
+      "offset": 0,
+      "length": 16,
+      "description": "Capsule GUID identifying the firmware management type"
+    },
+    {
+      "name": "efiHeaderSize",
+      "type": "uint32",
+      "offset": 16,
+      "length": 4,
+      "endian": "little",
+      "description": "Size of the capsule header in bytes"
+    },
+    {
+      "name": "efiFlags",
+      "type": "uint32",
+      "offset": 20,
+      "length": 4,
+      "endian": "little",
+      "description": "Capsule flags (bit 0: persist across reset, bit 1: populate system table, bit 16: initiate reset)"
+    },
+    {
+      "name": "efiImageSize",
+      "type": "uint32",
+      "offset": 24,
+      "length": 4,
+      "endian": "little",
+      "description": "Total capsule image size including header"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "CapsuleHeader",
+      "offset": 0,
+      "length": 28,
+      "description": "EFI capsule header: 16-byte GUID, 4-byte header size, 4-byte flags, 4-byte image size",
+      "fields": [
+        {
+          "name": "CapsuleGuid",
+          "variable": "efiCapsuleGuid",
+          "offset": 0,
+          "length": 16
+        },
+        {
+          "name": "HeaderSize",
+          "variable": "efiHeaderSize",
+          "offset": 16,
+          "length": 4
+        },
+        {
+          "name": "Flags",
+          "variable": "efiFlags",
+          "offset": 20,
+          "length": 4
+        },
+        {
+          "name": "ImageSize",
+          "variable": "efiImageSize",
+          "offset": 24,
+          "length": 4
+        }
+      ]
+    },
+    {
+      "name": "FirmwareManagementHeader",
+      "offset": 28,
+      "length": -1,
+      "description": "Firmware management capsule header with version, embedded driver count, and payload item count"
+    },
+    {
+      "name": "FirmwarePayload",
+      "offset": -1,
+      "length": -1,
+      "description": "Firmware update payload containing firmware volume images or binary update data"
+    },
+    {
+      "name": "EmbeddedDrivers",
+      "offset": -1,
+      "length": -1,
+      "description": "Optional embedded UEFI drivers executed before applying the firmware update"
+    }
+  ],
+  "assertions": [
+    {
+      "id": "A1",
+      "description": "Capsule GUID must be a recognized EFI capsule type",
+      "expression": "efiCapsuleGuid != '00000000000000000000000000000000'"
+    },
+    {
+      "id": "A2",
+      "description": "Header size must be at least 28 bytes",
+      "expression": "efiHeaderSize >= 28"
+    },
+    {
+      "id": "A3",
+      "description": "Image size must be greater than header size",
+      "expression": "efiImageSize > efiHeaderSize"
+    }
+  ],
+  "navigation": {
+    "entryPoint": "CapsuleHeader",
+    "structure": [
+      "CapsuleHeader",
+      "FirmwareManagementHeader",
+      "FirmwarePayload",
+      "EmbeddedDrivers"
+    ],
+    "notes": "Multiple capsule GUIDs exist for different update types. The firmware management capsule GUID is the most common for modern UEFI updates. Payload items are located at offsets specified in the management header."
+  },
+  "inspector": {
+    "badge": "EFI",
+    "primaryField": "efiCapsuleGuid",
+    "groups": [
+      {
+        "name": "Capsule Header",
+        "fields": [
+          "efiCapsuleGuid",
+          "efiHeaderSize",
+          "efiFlags",
+          "efiImageSize"
+        ]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "EFI Capsule CSV",
+      "format": "csv",
+      "fields": [
+        "efiCapsuleGuid",
+        "efiHeaderSize",
+        "efiFlags",
+        "efiImageSize"
+      ]
+    },
+    {
+      "name": "EFI Capsule JSON",
+      "format": "json",
+      "fields": [
+        "efiCapsuleGuid",
+        "efiHeaderSize",
+        "efiFlags",
+        "efiImageSize"
+      ]
+    }
+  ],
+  "forensic": {
+    "riskLevel": "HIGH",
+    "notes": "Firmware capsules can modify the most privileged code on a system. Malicious firmware updates enable persistent rootkits that survive OS reinstallation. Capsule signature verification is critical.",
+    "suspiciousPatterns": [
+      "Capsule without proper cryptographic signature from the platform vendor",
+      "Embedded drivers not signed by the platform key (PK) or key exchange key (KEK)",
+      "Firmware payload containing known vulnerable SMM modules",
+      "Capsule flags requesting system table population (potential for runtime persistence)"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "EFI capsules use a 16-byte GUID prefix to identify the capsule type, followed by a fixed header (header size, flags, image size). The Firmware Management Capsule GUID enables structured updates with version checking and embedded drivers. Capsules are processed by UEFI firmware during boot.",
+    "suggestedInspections": [
+      "Identify the capsule GUID to determine the update mechanism type",
+      "Parse firmware management header to enumerate update payloads and embedded drivers",
+      "Verify capsule signature against the platform's Secure Boot database",
+      "Extract firmware volumes and scan for known vulnerable UEFI modules"
+    ]
+  },
+  "TechnicalDetails": {
+    "headerSize": 28,
+    "guidSize": 16,
+    "endianness": "Little-endian (fields after GUID)",
+    "guidEncoding": "Mixed-endian (first 3 components LE, last 2 components BE)",
+    "secureBootIntegration": "Capsules should be signed with platform KEK or db key"
+  },
+  "QualityMetrics": {
+    "CompletenessScore": 86,
+    "LastUpdated": "2026-04-16",
+    "ReviewedBy": "WPFHexaEditor Team"
+  }
+}

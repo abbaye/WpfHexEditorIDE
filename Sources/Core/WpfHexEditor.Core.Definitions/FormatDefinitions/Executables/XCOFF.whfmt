@@ -1,0 +1,275 @@
+{
+  "formatName": "XCOFF Executable",
+  "version": "1.0",
+  "diffMode": "binary",
+  "extensions": [
+    ".xcoff",
+    ".o"
+  ],
+  "description": "Extended Common Object File Format (XCOFF) is the executable and object file format used by IBM AIX operating system. It extends COFF with AIX-specific features including TOC-based addressing and loader sections.",
+  "category": "Executables",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "MimeTypes": [
+    "application/x-xcoff",
+    "application/x-aix-executable"
+  ],
+  "UseCases": [
+    "IBM AIX executables and shared libraries",
+    "PowerPC object files compiled on AIX",
+    "AIX kernel extensions and device drivers",
+    "Cross-platform binary analysis involving IBM systems"
+  ],
+  "references": [
+    "https://www.ibm.com/docs/en/aix/7.3?topic=formats-xcoff-object-file-format",
+    "https://en.wikipedia.org/wiki/XCOFF",
+    "https://refspecs.linuxfoundation.org/elf/XCOFF.pdf"
+  ],
+  "software": [
+    {
+      "name": "IBM XL C/C++",
+      "url": "https://www.ibm.com/products/xl-c-aix-compiler-family",
+      "role": "Primary compiler producing XCOFF on AIX"
+    },
+    {
+      "name": "dump (AIX)",
+      "url": "https://www.ibm.com/docs/en/aix/7.3?topic=d-dump-command",
+      "role": "AIX object file dump utility"
+    },
+    {
+      "name": "GNU binutils",
+      "url": "https://www.gnu.org/software/binutils/",
+      "role": "Cross-platform XCOFF analysis via objdump"
+    }
+  ],
+  "formatRelationships": [
+    {
+      "format": "COFF",
+      "relationship": "XCOFF extends COFF with AIX-specific loader and TOC sections"
+    },
+    {
+      "format": "ELF",
+      "relationship": "ELF is the standard on Linux/PowerPC; XCOFF is AIX-specific"
+    }
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "offset": 0,
+        "value": "01DF",
+        "label": "XCOFF32 magic (32-bit AIX executable)",
+        "weight": 1.0
+      },
+      {
+        "offset": 0,
+        "value": "01F7",
+        "label": "XCOFF64 magic (64-bit AIX executable)",
+        "weight": 1.0
+      }
+    ],
+    "matchMode": "best",
+    "MinimumScore": 90,
+    "Strength": "Strong",
+    "EntropyHint": {
+      "min": 4.5,
+      "max": 7.5,
+      "note": "Compiled PowerPC machine code with mixed data sections"
+    },
+    "validation": "First 2 bytes must be 0x01DF (XCOFF32) or 0x01F7 (XCOFF64). Number of sections should be reasonable (<65535)."
+  },
+  "variables": [
+    {
+      "name": "xcoffMagic",
+      "type": "uint16",
+      "offset": 0,
+      "length": 2,
+      "endian": "big",
+      "description": "XCOFF magic number",
+      "valueMap": {
+        "479": "XCOFF32",
+        "503": "XCOFF64"
+      }
+    },
+    {
+      "name": "xcoffNumSections",
+      "type": "uint16",
+      "offset": 2,
+      "length": 2,
+      "endian": "big",
+      "description": "Number of sections in the section header table"
+    },
+    {
+      "name": "xcoffTimestamp",
+      "type": "uint32",
+      "offset": 4,
+      "length": 4,
+      "endian": "big",
+      "description": "File creation timestamp (seconds since epoch)"
+    },
+    {
+      "name": "xcoffSymTableOffset",
+      "type": "uint32",
+      "offset": 8,
+      "length": 4,
+      "endian": "big",
+      "description": "File offset of the symbol table"
+    },
+    {
+      "name": "xcoffNumSyms",
+      "type": "uint32",
+      "offset": 12,
+      "length": 4,
+      "endian": "big",
+      "description": "Number of entries in the symbol table"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "FileHeader",
+      "offset": 0,
+      "length": 20,
+      "description": "XCOFF file header containing magic, section count, timestamps, and symbol table pointers",
+      "fields": [
+        {
+          "name": "Magic",
+          "variable": "xcoffMagic",
+          "offset": 0,
+          "length": 2
+        },
+        {
+          "name": "NumSections",
+          "variable": "xcoffNumSections",
+          "offset": 2,
+          "length": 2
+        },
+        {
+          "name": "Timestamp",
+          "variable": "xcoffTimestamp",
+          "offset": 4,
+          "length": 4
+        }
+      ]
+    },
+    {
+      "name": "OptionalHeader",
+      "offset": 20,
+      "length": -1,
+      "description": "Optional (auxiliary) header with entry point, TOC anchor, and segment sizes"
+    },
+    {
+      "name": "SectionHeaders",
+      "offset": -1,
+      "length": -1,
+      "description": "Section header table describing text, data, BSS, loader, and debug sections"
+    },
+    {
+      "name": "LoaderSection",
+      "offset": -1,
+      "length": -1,
+      "description": "AIX-specific loader section containing import/export symbols and relocation data"
+    }
+  ],
+  "assertions": [
+    {
+      "id": "A1",
+      "description": "Magic must be XCOFF32 (0x01DF) or XCOFF64 (0x01F7)",
+      "expression": "xcoffMagic == 0x01DF || xcoffMagic == 0x01F7"
+    },
+    {
+      "id": "A2",
+      "description": "Number of sections must be greater than zero",
+      "expression": "xcoffNumSections > 0"
+    },
+    {
+      "id": "A3",
+      "description": "Number of sections should be reasonable (< 10000)",
+      "expression": "xcoffNumSections < 10000"
+    }
+  ],
+  "navigation": {
+    "entryPoint": "FileHeader",
+    "structure": [
+      "FileHeader",
+      "OptionalHeader",
+      "SectionHeaders",
+      "LoaderSection"
+    ],
+    "notes": "XCOFF32 file header is 20 bytes, XCOFF64 is 24 bytes. The optional header immediately follows and its size is specified in the file header."
+  },
+  "inspector": {
+    "badge": "XCOFF",
+    "primaryField": "xcoffMagic",
+    "groups": [
+      {
+        "name": "File Header",
+        "fields": [
+          "xcoffMagic",
+          "xcoffNumSections",
+          "xcoffTimestamp"
+        ]
+      },
+      {
+        "name": "Symbol Table",
+        "fields": [
+          "xcoffSymTableOffset",
+          "xcoffNumSyms"
+        ]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "XCOFF Header CSV",
+      "format": "csv",
+      "fields": [
+        "xcoffMagic",
+        "xcoffNumSections",
+        "xcoffTimestamp",
+        "xcoffSymTableOffset",
+        "xcoffNumSyms"
+      ]
+    },
+    {
+      "name": "XCOFF Header JSON",
+      "format": "json",
+      "fields": [
+        "xcoffMagic",
+        "xcoffNumSections",
+        "xcoffTimestamp",
+        "xcoffSymTableOffset",
+        "xcoffNumSyms"
+      ]
+    }
+  ],
+  "forensic": {
+    "riskLevel": "HIGH",
+    "notes": "XCOFF executables on AIX systems may contain kernel extensions or privileged code. Loader section import tables reveal dynamic dependencies.",
+    "suspiciousPatterns": [
+      "Stripped symbol table hiding function names",
+      "Unusual loader section imports suggesting system call interception",
+      "Timestamp set to zero or far-future date indicating tampering",
+      "Sections with writable+executable permissions"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "XCOFF extends COFF with AIX-specific features: a TOC (Table of Contents) for global data addressing, a loader section for runtime linking, and exception handling sections. The format supports both 32-bit and 64-bit variants with different header sizes.",
+    "suggestedInspections": [
+      "Determine 32-bit vs 64-bit from magic and adjust header parsing accordingly",
+      "Parse the loader section to enumerate imported shared libraries and symbols",
+      "Extract the TOC anchor address from the optional header for call analysis",
+      "Verify section alignment constraints specific to AIX memory management"
+    ]
+  },
+  "TechnicalDetails": {
+    "headerSize32": 20,
+    "headerSize64": 24,
+    "endianness": "Big-endian (PowerPC)",
+    "platform": "IBM AIX",
+    "tocAddressing": "Global data accessed via TOC pointer in register R2"
+  },
+  "QualityMetrics": {
+    "CompletenessScore": 85,
+    "LastUpdated": "2026-04-16",
+    "ReviewedBy": "WPFHexaEditor Team"
+  }
+}

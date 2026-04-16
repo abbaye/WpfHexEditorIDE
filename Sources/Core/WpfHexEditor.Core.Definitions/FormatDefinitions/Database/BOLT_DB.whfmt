@@ -1,0 +1,212 @@
+{
+  "diffMode": "binary",
+  "formatName": "BoltDB Database",
+  "version": "1.0",
+  "extensions": [".db"],
+  "description": "BoltDB is a pure Go embedded key-value database inspired by LMDB, using a B+tree structure with copy-on-write pages. The file starts with a 4-byte little-endian magic 0xED0CDAED at offset 0, followed by a 4-byte LE version at offset 4 and a 4-byte LE page size at offset 8 (default 4096). BoltDB is used by etcd, Consul, and many Go applications requiring ACID transactions.",
+  "category": "Database",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "references": [
+    "https://github.com/etcd-io/bbolt",
+    "https://github.com/boltdb/bolt",
+    "https://en.wikipedia.org/wiki/Bolt_(database)"
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "value": "ED0CDAED",
+        "offset": 0,
+        "label": "BoltDB file magic",
+        "weight": 1.0
+      }
+    ],
+    "matchMode": "first",
+    "MinimumScore": 0.9,
+    "Strength": "Strong",
+    "validation": {
+      "rules": [
+        { "field": "boltMagic", "operator": "equals", "value": 3986526957 }
+      ]
+    }
+  },
+  "variables": [
+    {
+      "name": "boltMagic",
+      "offset": 0,
+      "size": 4,
+      "type": "uint32",
+      "endian": "little",
+      "storeAs": "boltMagic",
+      "description": "4-byte LE magic number 0xED0CDAED"
+    },
+    {
+      "name": "boltVersion",
+      "offset": 4,
+      "size": 4,
+      "type": "uint32",
+      "endian": "little",
+      "storeAs": "boltVersion",
+      "description": "4-byte LE file format version"
+    },
+    {
+      "name": "boltPageSize",
+      "offset": 8,
+      "size": 4,
+      "type": "uint32",
+      "endian": "little",
+      "storeAs": "boltPageSize",
+      "description": "4-byte LE page size in bytes (default 4096)"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "Magic",
+      "offset": 0,
+      "size": 4,
+      "description": "4-byte BoltDB magic number 0xED0CDAED in little-endian",
+      "fields": [
+        { "name": "Magic", "offset": 0, "size": 4, "type": "uint32" }
+      ]
+    },
+    {
+      "name": "Version",
+      "offset": 4,
+      "size": 4,
+      "description": "File format version as uint32 LE",
+      "fields": [
+        { "name": "Version", "offset": 4, "size": 4, "type": "uint32" }
+      ]
+    },
+    {
+      "name": "PageSize",
+      "offset": 8,
+      "size": 4,
+      "description": "Page size in bytes, must be a power of 2 (typically 4096)",
+      "fields": [
+        { "name": "PageSize", "offset": 8, "size": 4, "type": "uint32" }
+      ]
+    },
+    {
+      "name": "MetaPage",
+      "offset": 12,
+      "size": -1,
+      "description": "Meta page containing root bucket pointer, freelist page ID, and transaction ID",
+      "fields": []
+    }
+  ],
+  "assertions": [
+    {
+      "id": "assert_magic",
+      "field": "boltMagic",
+      "operator": "equals",
+      "value": 3986526957,
+      "severity": "error",
+      "message": "BoltDB magic 0xED0CDAED not found at offset 0"
+    },
+    {
+      "id": "assert_page_size_power2",
+      "field": "boltPageSize",
+      "operator": "greaterThan",
+      "value": 0,
+      "severity": "error",
+      "message": "BoltDB page size must be a positive power of 2"
+    },
+    {
+      "id": "assert_version_nonzero",
+      "field": "boltVersion",
+      "operator": "greaterThan",
+      "value": 0,
+      "severity": "warning",
+      "message": "BoltDB version is zero — file may be uninitialized"
+    }
+  ],
+  "navigation": {
+    "entryPoints": [
+      { "name": "File Magic", "offset": 0 },
+      { "name": "Version", "offset": 4 },
+      { "name": "Page Size", "offset": 8 }
+    ],
+    "jumpTable": [
+      { "label": "Magic 0xED0CDAED", "offset": 0 },
+      { "label": "Format Version", "offset": 4 },
+      { "label": "Page Size", "offset": 8 }
+    ]
+  },
+  "inspector": {
+    "badge": "BT",
+    "primaryField": "boltMagic",
+    "groups": [
+      {
+        "name": "Identification",
+        "fields": ["boltMagic", "boltVersion"]
+      },
+      {
+        "name": "Layout",
+        "fields": ["boltPageSize"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "BoltDB Header Summary",
+      "format": "text",
+      "template": "BoltDB Database\nMagic    : 0x{boltMagic:X}\nVersion  : {boltVersion}\nPage Size: {boltPageSize} bytes"
+    },
+    {
+      "name": "BoltDB Header CSV",
+      "format": "csv",
+      "template": "Field,Value\nMagic,0x{boltMagic:X}\nVersion,{boltVersion}\nPageSize,{boltPageSize}"
+    }
+  ],
+  "forensic": {
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      "Magic absent — not a BoltDB file or truncated",
+      "Page size not a power of 2 — corruption or tampering",
+      "Freelist page ID pointing beyond file size",
+      "Transaction ID inconsistency between meta pages"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "BoltDB files use a B+tree on top of memory-mapped pages. The first page is a meta page with magic 0xED0CDAED, version, and page size. Two meta pages alternate for crash recovery. Each page has a header: page ID (8B), flags (2B), count (2B), overflow (4B).",
+    "suggestedInspections": [
+      "Verify magic 0xED0CDAED at offset 0",
+      "Read page size at offset 8 and confirm power-of-2",
+      "Locate dual meta pages at page 0 and page 1 for consistency check",
+      "Parse B+tree root bucket from meta page"
+    ]
+  },
+  "software": [
+    { "name": "etcd", "vendor": "CNCF / CoreOS", "platform": "Cross-platform" },
+    { "name": "Consul", "vendor": "HashiCorp", "platform": "Cross-platform" },
+    { "name": "bbolt CLI", "vendor": "etcd-io", "platform": "Cross-platform" }
+  ],
+  "formatRelationships": [
+    { "format": "BADGER", "relation": "sibling", "note": "Both Go embedded KV stores; BoltDB uses B+tree, Badger uses LSM" },
+    { "format": "LMDB", "relation": "parent", "note": "BoltDB design inspired by LMDB's copy-on-write B+tree architecture" }
+  ],
+  "MimeTypes": [
+    "application/octet-stream"
+  ],
+  "UseCases": [
+    "etcd backend storage for Kubernetes cluster state",
+    "HashiCorp Consul and Vault persistent storage",
+    "Embedded ACID transactions in Go applications",
+    "Configuration and metadata storage"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 85,
+    "LastUpdated": "2026-04-16"
+  },
+  "TechnicalDetails": {
+    "headerSize": 12,
+    "endian": "little",
+    "signatureOffset": 0,
+    "signatureLength": 4,
+    "magicValue": "ED0CDAED",
+    "defaultPageSize": 4096,
+    "storageEngine": "B+tree with copy-on-write pages",
+    "notes": "Two meta pages alternate for crash recovery; page size matches OS page size by default"
+  }
+}

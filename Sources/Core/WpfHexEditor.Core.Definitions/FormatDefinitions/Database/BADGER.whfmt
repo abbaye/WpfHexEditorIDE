@@ -1,0 +1,193 @@
+{
+  "diffMode": "binary",
+  "formatName": "Badger Key-Value Database",
+  "version": "1.0",
+  "extensions": [".badger"],
+  "description": "Badger is a fast, embeddable key-value database written in Go by Dgraph Labs. Files use the 8-byte magic header 'BADGER\\u0000\\u0000' (0x4241444745520000) at offset 0, followed by a 4-byte little-endian version number. Badger stores keys and values in LSM trees with a value log for large values, optimized for SSD workloads.",
+  "category": "Database",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "references": [
+    "https://github.com/dgraph-io/badger",
+    "https://dgraph.io/docs/badger/",
+    "https://en.wikipedia.org/wiki/Dgraph"
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "value": "4241444745520000",
+        "offset": 0,
+        "label": "'BADGER\\u0000\\u0000' — Badger database magic header",
+        "weight": 1.0
+      }
+    ],
+    "matchMode": "first",
+    "MinimumScore": 0.9,
+    "Strength": "Strong",
+    "validation": {
+      "rules": [
+        { "field": "badgerMagic", "operator": "equals", "value": "BADGER" }
+      ]
+    }
+  },
+  "variables": [
+    {
+      "name": "badgerMagic",
+      "offset": 0,
+      "size": 8,
+      "type": "ascii",
+      "storeAs": "badgerMagic",
+      "description": "8-byte ASCII magic 'BADGER' followed by two null bytes"
+    },
+    {
+      "name": "badgerVersion",
+      "offset": 8,
+      "size": 4,
+      "type": "uint32",
+      "endian": "little",
+      "storeAs": "badgerVersion",
+      "description": "4-byte LE version number of the Badger file format"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "Magic",
+      "offset": 0,
+      "size": 8,
+      "description": "8-byte Badger magic header: ASCII 'BADGER' + two null padding bytes",
+      "fields": [
+        { "name": "MagicASCII", "offset": 0, "size": 6, "type": "ascii" },
+        { "name": "Padding", "offset": 6, "size": 2, "type": "hex" }
+      ]
+    },
+    {
+      "name": "Version",
+      "offset": 8,
+      "size": 4,
+      "description": "File format version as uint32 LE",
+      "fields": [
+        { "name": "Version", "offset": 8, "size": 4, "type": "uint32" }
+      ]
+    },
+    {
+      "name": "KeyDirectory",
+      "offset": 12,
+      "size": -1,
+      "description": "LSM tree key directory entries following the header",
+      "fields": []
+    },
+    {
+      "name": "ValueLog",
+      "offset": -1,
+      "size": -1,
+      "description": "Value log region storing large values separated from keys",
+      "fields": []
+    }
+  ],
+  "assertions": [
+    {
+      "id": "assert_magic",
+      "field": "badgerMagic",
+      "operator": "contains",
+      "value": "BADGER",
+      "severity": "error",
+      "message": "Badger magic 'BADGER' not found at offset 0"
+    },
+    {
+      "id": "assert_version_nonzero",
+      "field": "badgerVersion",
+      "operator": "greaterThan",
+      "value": 0,
+      "severity": "warning",
+      "message": "Badger version is zero — possibly corrupt or uninitialized file"
+    },
+    {
+      "id": "assert_version_range",
+      "field": "badgerVersion",
+      "operator": "lessThan",
+      "value": 100,
+      "severity": "warning",
+      "message": "Badger version unexpectedly high — possible corruption"
+    }
+  ],
+  "navigation": {
+    "entryPoints": [
+      { "name": "File Magic", "offset": 0 },
+      { "name": "Version", "offset": 8 }
+    ],
+    "jumpTable": [
+      { "label": "Magic 'BADGER'", "offset": 0 },
+      { "label": "Format Version", "offset": 8 }
+    ]
+  },
+  "inspector": {
+    "badge": "BG",
+    "primaryField": "badgerMagic",
+    "groups": [
+      {
+        "name": "Identification",
+        "fields": ["badgerMagic", "badgerVersion"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "Badger Header Summary",
+      "format": "text",
+      "template": "Badger Database\nMagic  : {badgerMagic}\nVersion: {badgerVersion}"
+    },
+    {
+      "name": "Badger Header CSV",
+      "format": "csv",
+      "template": "Field,Value\nMagic,{badgerMagic}\nVersion,{badgerVersion}"
+    }
+  ],
+  "forensic": {
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      "Magic bytes absent — file may be truncated or not a Badger database",
+      "Version mismatch — incompatible Badger library version",
+      "Unexpected trailing data beyond known structure"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "Badger is Dgraph's embeddable Go key-value store. Files begin with 8-byte magic 'BADGER\\u0000\\u0000' followed by a uint32 LE version. The LSM tree stores sorted keys; large values go to a separate value log for write amplification reduction.",
+    "suggestedInspections": [
+      "Verify 8-byte magic 0x4241444745520000 at offset 0",
+      "Read uint32 LE version at offset 8 and check compatibility",
+      "Scan for LSM tree level metadata after header",
+      "Check value log pointer integrity"
+    ]
+  },
+  "software": [
+    { "name": "Dgraph", "vendor": "Dgraph Labs", "platform": "Cross-platform" },
+    { "name": "Badger CLI", "vendor": "Dgraph Labs", "platform": "Cross-platform" },
+    { "name": "Custom Go applications", "vendor": "Open source", "platform": "Cross-platform" }
+  ],
+  "formatRelationships": [
+    { "format": "BOLT_DB", "relation": "sibling", "note": "Both are embedded Go key-value stores; Badger uses LSM, Bolt uses B+tree" },
+    { "format": "LEVELDB", "relation": "sibling", "note": "Badger draws design inspiration from LevelDB's LSM architecture" }
+  ],
+  "MimeTypes": [
+    "application/octet-stream"
+  ],
+  "UseCases": [
+    "Embedded key-value storage in Go applications",
+    "Dgraph graph database backend",
+    "High-performance SSD-optimized data storage",
+    "Cache and session stores"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 82,
+    "LastUpdated": "2026-04-16"
+  },
+  "TechnicalDetails": {
+    "headerSize": 12,
+    "endian": "little",
+    "signatureOffset": 0,
+    "signatureLength": 8,
+    "magicValue": "4241444745520000",
+    "storageEngine": "LSM tree with separate value log",
+    "notes": "Badger v3+ may use different header versions; verify version field for compatibility"
+  }
+}

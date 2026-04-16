@@ -1,0 +1,256 @@
+{
+  "formatName": "utmpx/wtmpx Login Records",
+  "version": "1.0",
+  "diffMode": "binary",
+  "extensions": [
+    ".wtmpx",
+    ".utmpx"
+  ],
+  "description": "Extended utmp (utmpx/wtmpx) login accounting format used on Solaris, macOS, and some BSD systems to record user login sessions, system boots, and runlevel changes. Records are fixed-size structures without a file-level magic signature.",
+  "category": "System",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "MimeTypes": [
+    "application/x-utmpx"
+  ],
+  "UseCases": [
+    "User login and logout session tracking on Unix systems",
+    "System boot and shutdown event recording",
+    "Security audit of user activity and session history",
+    "Forensic timeline reconstruction from accounting records"
+  ],
+  "references": [
+    "https://man7.org/linux/man-pages/man5/utmpx.5.html",
+    "https://docs.oracle.com/cd/E88353_01/html/E37852/utmpx-4.html",
+    "https://en.wikipedia.org/wiki/Utmp"
+  ],
+  "software": [
+    {
+      "name": "last",
+      "url": "https://man7.org/linux/man-pages/man1/last.1.html",
+      "role": "Display recent login records from wtmp/wtmpx"
+    },
+    {
+      "name": "utmpdump",
+      "url": "https://man7.org/linux/man-pages/man1/utmpdump.1.html",
+      "role": "Dump utmp/wtmp records in human-readable format"
+    },
+    {
+      "name": "who",
+      "url": "https://man7.org/linux/man-pages/man1/who.1.html",
+      "role": "Show currently logged-in users from utmp/utmpx"
+    }
+  ],
+  "formatRelationships": [
+    {
+      "format": "UTMP",
+      "relationship": "utmpx is the extended version of utmp with larger fields and additional metadata"
+    },
+    {
+      "format": "SYSTEMD_JOURNAL",
+      "relationship": "On systemd systems, login records are also captured by journald"
+    }
+  ],
+  "detection": {
+    "signatures": [],
+    "matchMode": "first",
+    "MinimumScore": 82,
+    "Strength": "Weak",
+    "EntropyHint": {
+      "min": 2.0,
+      "max": 5.0,
+      "note": "Fixed-size records with many null-padded ASCII fields produce low to moderate entropy"
+    },
+    "validation": "No magic signature. Detection relies on file extension (.utmpx, .wtmpx) and record structure validation. First record ut_type field should be a valid type (1-8)."
+  },
+  "variables": [
+    {
+      "name": "utmp2Type",
+      "type": "uint16",
+      "offset": 0,
+      "length": 2,
+      "endian": "little",
+      "description": "Record type indicating the kind of login event",
+      "valueMap": {
+        "1": "RUN_LVL",
+        "2": "BOOT_TIME",
+        "5": "INIT_PROCESS",
+        "6": "LOGIN_PROCESS",
+        "7": "USER_PROCESS",
+        "8": "DEAD_PROCESS"
+      }
+    },
+    {
+      "name": "utmp2Pid",
+      "type": "uint32",
+      "offset": 4,
+      "length": 4,
+      "endian": "little",
+      "description": "Process ID of the login process"
+    },
+    {
+      "name": "utmp2Line",
+      "type": "ascii",
+      "offset": 8,
+      "length": 32,
+      "description": "Terminal device name (e.g., pts/0, tty1)"
+    },
+    {
+      "name": "utmp2User",
+      "type": "ascii",
+      "offset": 40,
+      "length": 32,
+      "description": "Username of the logged-in user"
+    },
+    {
+      "name": "utmp2Host",
+      "type": "ascii",
+      "offset": 72,
+      "length": 256,
+      "description": "Hostname for remote logins"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "RecordHeader",
+      "offset": 0,
+      "length": 8,
+      "description": "Record type and PID fields identifying the event kind and associated process",
+      "fields": [
+        {
+          "name": "Type",
+          "variable": "utmp2Type",
+          "offset": 0,
+          "length": 2
+        },
+        {
+          "name": "PID",
+          "variable": "utmp2Pid",
+          "offset": 4,
+          "length": 4
+        }
+      ]
+    },
+    {
+      "name": "TerminalInfo",
+      "offset": 8,
+      "length": 32,
+      "description": "Terminal device name (ut_line) identifying the TTY or PTY used for the session"
+    },
+    {
+      "name": "UserInfo",
+      "offset": 40,
+      "length": 32,
+      "description": "Username (ut_user) of the logged-in user, null-padded to field width"
+    },
+    {
+      "name": "HostInfo",
+      "offset": 72,
+      "length": 256,
+      "description": "Remote hostname (ut_host) for network logins, empty for local sessions"
+    }
+  ],
+  "assertions": [
+    {
+      "id": "A1",
+      "description": "Record type must be a valid utmpx type (1-8)",
+      "expression": "utmp2Type >= 1 && utmp2Type <= 8"
+    },
+    {
+      "id": "A2",
+      "description": "PID should be a reasonable process ID (> 0 for non-boot records)",
+      "expression": "utmp2Type == 2 || utmp2Pid > 0"
+    },
+    {
+      "id": "A3",
+      "description": "USER_PROCESS records should have a non-empty username",
+      "expression": "utmp2Type != 7 || utmp2User != ''"
+    }
+  ],
+  "navigation": {
+    "entryPoint": "RecordHeader",
+    "structure": [
+      "RecordHeader",
+      "TerminalInfo",
+      "UserInfo",
+      "HostInfo"
+    ],
+    "notes": "Record size varies by platform: 372 bytes on Linux utmp, 628 bytes on Solaris utmpx. Records are appended sequentially. wtmpx is append-only; utmpx is overwritten per-slot."
+  },
+  "inspector": {
+    "badge": "UTMPX",
+    "primaryField": "utmp2Type",
+    "groups": [
+      {
+        "name": "Record",
+        "fields": [
+          "utmp2Type",
+          "utmp2Pid",
+          "utmp2Line",
+          "utmp2User"
+        ]
+      },
+      {
+        "name": "Network",
+        "fields": [
+          "utmp2Host"
+        ]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "Login Records CSV",
+      "format": "csv",
+      "fields": [
+        "utmp2Type",
+        "utmp2Pid",
+        "utmp2Line",
+        "utmp2User",
+        "utmp2Host"
+      ]
+    },
+    {
+      "name": "Login Records JSON",
+      "format": "json",
+      "fields": [
+        "utmp2Type",
+        "utmp2Pid",
+        "utmp2Line",
+        "utmp2User",
+        "utmp2Host"
+      ]
+    }
+  ],
+  "forensic": {
+    "riskLevel": "HIGH",
+    "notes": "Login records are primary forensic evidence for user session analysis. Attackers commonly tamper with utmp/wtmp files to hide their presence. Missing or inconsistent records indicate log tampering.",
+    "suspiciousPatterns": [
+      "DEAD_PROCESS records without corresponding USER_PROCESS entries",
+      "Gaps in sequential timestamps suggesting deleted records",
+      "USER_PROCESS from unusual terminal devices (e.g., /dev/null)",
+      "Remote logins from unexpected IP addresses or hostnames"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "utmpx/wtmpx files contain fixed-size records appended sequentially. Each record has a type field (BOOT_TIME, USER_PROCESS, DEAD_PROCESS, etc.), process ID, terminal name, username, hostname, and timestamp. Record size is platform-dependent.",
+    "suggestedInspections": [
+      "Determine record size by analyzing repeating structure patterns",
+      "Match USER_PROCESS entries with corresponding DEAD_PROCESS for session duration",
+      "Detect timestamp anomalies indicating record insertion or deletion",
+      "Cross-reference with auth.log or journal for login event correlation"
+    ]
+  },
+  "TechnicalDetails": {
+    "recordSizeLinux": 384,
+    "recordSizeSolaris": 628,
+    "endianness": "Platform-dependent (typically little-endian on x86)",
+    "noMagic": true,
+    "detectionMethod": "Extension-based + structural validation"
+  },
+  "QualityMetrics": {
+    "CompletenessScore": 83,
+    "LastUpdated": "2026-04-16",
+    "ReviewedBy": "WPFHexaEditor Team"
+  }
+}

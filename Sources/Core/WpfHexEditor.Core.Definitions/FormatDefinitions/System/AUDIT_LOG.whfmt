@@ -1,0 +1,231 @@
+{
+  "formatName": "Linux Audit Log",
+  "version": "1.0",
+  "diffMode": "text",
+  "extensions": [
+    ".log"
+  ],
+  "description": "Linux Audit Framework log format produced by auditd. Each line begins with 'type=' followed by the audit event type, timestamp, and key=value fields. Used for security policy enforcement, compliance monitoring, and intrusion detection.",
+  "category": "System",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "code-editor",
+  "MimeTypes": [
+    "text/x-audit-log",
+    "text/plain"
+  ],
+  "UseCases": [
+    "Security compliance auditing (PCI-DSS, HIPAA, SOX)",
+    "System call monitoring and process execution tracking",
+    "File access auditing and integrity monitoring",
+    "Forensic investigation of security incidents on Linux"
+  ],
+  "references": [
+    "https://man7.org/linux/man-pages/man8/auditd.8.html",
+    "https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/security_hardening/auditing-the-system_security-hardening",
+    "https://github.com/linux-audit/audit-userspace"
+  ],
+  "software": [
+    {
+      "name": "auditd",
+      "url": "https://github.com/linux-audit/audit-userspace",
+      "role": "Linux audit daemon that writes audit log files"
+    },
+    {
+      "name": "ausearch",
+      "url": "https://man7.org/linux/man-pages/man8/ausearch.8.html",
+      "role": "Search and filter audit log entries"
+    },
+    {
+      "name": "aureport",
+      "url": "https://man7.org/linux/man-pages/man8/aureport.8.html",
+      "role": "Generate summary reports from audit logs"
+    }
+  ],
+  "formatRelationships": [
+    {
+      "format": "SYSTEMD_JOURNAL",
+      "relationship": "journald captures audit events alongside; audit.log is the authoritative source"
+    },
+    {
+      "format": "SYSLOG",
+      "relationship": "Syslog carries general system logs; audit log is a dedicated security audit trail"
+    }
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "offset": 0,
+        "value": "747970653D",
+        "label": "'type=' prefix identifying a Linux audit log entry",
+        "weight": 0.8
+      }
+    ],
+    "matchMode": "first",
+    "MinimumScore": 82,
+    "Strength": "Medium",
+    "EntropyHint": {
+      "min": 3.0,
+      "max": 5.5,
+      "note": "Structured text with repetitive key=value patterns produces moderate entropy"
+    },
+    "validation": "First line must begin with 'type=' followed by an audit event type name. Lines contain msg=audit(timestamp:serial) format."
+  },
+  "variables": [
+    {
+      "name": "auditType",
+      "type": "ascii",
+      "offset": 0,
+      "length": 5,
+      "description": "The 'type=' keyword prefix identifying an audit record"
+    },
+    {
+      "name": "auditEventType",
+      "type": "ascii",
+      "offset": 5,
+      "length": -1,
+      "description": "Audit event type name (e.g., SYSCALL, EXECVE, PATH, LOGIN)"
+    },
+    {
+      "name": "auditTimestamp",
+      "type": "ascii",
+      "offset": -1,
+      "length": -1,
+      "description": "Audit timestamp in msg=audit(epoch:serial) format"
+    },
+    {
+      "name": "auditSerial",
+      "type": "ascii",
+      "offset": -1,
+      "length": -1,
+      "description": "Serial number linking related audit records in the same event"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "TypePrefix",
+      "offset": 0,
+      "length": 5,
+      "description": "The 'type=' keyword that begins every audit log line",
+      "fields": [
+        {
+          "name": "TypeKeyword",
+          "variable": "auditType",
+          "offset": 0,
+          "length": 5
+        }
+      ]
+    },
+    {
+      "name": "EventType",
+      "offset": 5,
+      "length": -1,
+      "description": "Audit event type identifier (SYSCALL, EXECVE, PATH, CWD, PROCTITLE, etc.)"
+    },
+    {
+      "name": "MessageHeader",
+      "offset": -1,
+      "length": -1,
+      "description": "msg=audit(timestamp:serial) header providing event timing and grouping"
+    },
+    {
+      "name": "KeyValueFields",
+      "offset": -1,
+      "length": -1,
+      "description": "Space-separated key=value pairs containing event-specific data (arch, syscall, success, uid, etc.)"
+    }
+  ],
+  "assertions": [
+    {
+      "id": "A1",
+      "description": "First 5 bytes must be 'type='",
+      "expression": "auditType == 'type='"
+    },
+    {
+      "id": "A2",
+      "description": "Event type must be a recognized audit type name",
+      "expression": "auditEventType != ''"
+    },
+    {
+      "id": "A3",
+      "description": "Log must contain msg=audit() timestamp pattern",
+      "expression": "auditTimestamp != ''"
+    }
+  ],
+  "navigation": {
+    "entryPoint": "TypePrefix",
+    "structure": [
+      "TypePrefix",
+      "EventType",
+      "MessageHeader",
+      "KeyValueFields"
+    ],
+    "notes": "Multiple lines with the same serial number form a single audit event. Common event groups: SYSCALL+PATH+CWD+PROCTITLE for file operations, SYSCALL+EXECVE for process execution."
+  },
+  "inspector": {
+    "badge": "AUDIT",
+    "primaryField": "auditEventType",
+    "groups": [
+      {
+        "name": "Record",
+        "fields": [
+          "auditType",
+          "auditEventType",
+          "auditTimestamp",
+          "auditSerial"
+        ]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "Audit Records CSV",
+      "format": "csv",
+      "fields": [
+        "auditType",
+        "auditEventType",
+        "auditTimestamp",
+        "auditSerial"
+      ]
+    },
+    {
+      "name": "Audit Records JSON",
+      "format": "json",
+      "fields": [
+        "auditType",
+        "auditEventType",
+        "auditTimestamp",
+        "auditSerial"
+      ]
+    }
+  ],
+  "forensic": {
+    "riskLevel": "HIGH",
+    "notes": "Audit logs are the primary security evidence source on Linux. Tampering is a strong indicator of compromise. Gap analysis in serial numbers reveals deleted events.",
+    "suspiciousPatterns": [
+      "Gaps in serial number sequence indicating deleted audit records",
+      "EXECVE events for known attack tools (nc, wget to suspicious URLs, base64 decode chains)",
+      "Sudden stop in audit logging followed by restart (auditd killed and restarted)",
+      "High volume of failed syscalls from a single process (brute force or exploitation attempts)"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "Linux audit log files contain one record per line in 'type=EVENT_TYPE msg=audit(timestamp:serial): key=value ...' format. Related records share the same serial number. Event types include SYSCALL, EXECVE, PATH, CWD, PROCTITLE, USER_LOGIN, USER_AUTH, and many more.",
+    "suggestedInspections": [
+      "Group records by serial number to reconstruct complete audit events",
+      "Extract EXECVE records to build a process execution timeline",
+      "Identify failed authentication attempts via USER_AUTH success=no",
+      "Detect privilege escalation via SYSCALL records with uid changes"
+    ]
+  },
+  "TechnicalDetails": {
+    "encoding": "ASCII text, one record per line",
+    "timestampFormat": "Unix epoch seconds with millisecond precision",
+    "serialGrouping": "Records with same serial number form one event",
+    "defaultPath": "/var/log/audit/audit.log"
+  },
+  "QualityMetrics": {
+    "CompletenessScore": 83,
+    "LastUpdated": "2026-04-16",
+    "ReviewedBy": "WPFHexaEditor Team"
+  }
+}

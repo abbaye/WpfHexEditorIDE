@@ -1,0 +1,201 @@
+{
+  "diffMode": "binary",
+  "formatName": "Universal Binary JSON (UBJSON)",
+  "version": "1.0",
+  "extensions": [".ubj", ".ubjson"],
+  "description": "Universal Binary JSON (UBJSON) is a binary data format designed to be a universal binary encoding for JSON. Each value is preceded by a single-byte type marker: '[' (0x5B) for arrays, '{' (0x7B) for objects, 'T'/'F' for booleans, 'Z' for null, and numeric types like 'U' (uint8), 'i' (int8), 'I' (int16), 'l' (int32), 'L' (int64), 'd' (float32), 'D' (float64). Strings use 'S' followed by a length. UBJSON supports optimized containers with type and count hints.",
+  "category": "Data",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "references": [
+    "https://ubjson.org/",
+    "https://github.com/ubjson/universal-binary-json",
+    "https://en.wikipedia.org/wiki/UBJSON"
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "value": "5B",
+        "offset": 0,
+        "label": "'[' UBJSON array",
+        "weight": 0.3
+      },
+      {
+        "value": "7B",
+        "offset": 0,
+        "label": "'{' UBJSON object",
+        "weight": 0.3
+      }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.2,
+    "Strength": "Weak",
+    "validation": {
+      "rules": []
+    }
+  },
+  "variables": [
+    {
+      "name": "ubjFirstType",
+      "offset": 0,
+      "size": 1,
+      "type": "uint8",
+      "storeAs": "ubjFirstType",
+      "description": "First type marker byte of the UBJSON value",
+      "valueMap": {
+        "91": "[ Array",
+        "123": "{ Object",
+        "84": "T true",
+        "70": "F false",
+        "90": "Z null",
+        "85": "U uint8",
+        "105": "i int8",
+        "73": "I int16",
+        "108": "l int32",
+        "76": "L int64",
+        "100": "d float32",
+        "68": "D float64",
+        "83": "S string",
+        "67": "C char"
+      }
+    }
+  ],
+  "blocks": [
+    {
+      "name": "RootType",
+      "offset": 0,
+      "size": 1,
+      "description": "Root value type marker — typically '[' (array) or '{' (object)",
+      "fields": [
+        { "name": "TypeMarker", "offset": 0, "size": 1, "type": "uint8" }
+      ]
+    },
+    {
+      "name": "ContainerHeader",
+      "offset": 1,
+      "size": -1,
+      "description": "Optional optimized container header with '$' (type) and '#' (count) hints",
+      "fields": []
+    },
+    {
+      "name": "Elements",
+      "offset": -1,
+      "size": -1,
+      "description": "Sequence of typed elements: each is a type marker byte followed by type-specific data",
+      "fields": []
+    },
+    {
+      "name": "ContainerEnd",
+      "offset": -1,
+      "size": 1,
+      "description": "Container end marker ']' or '}' (omitted in count-optimized containers)",
+      "fields": []
+    }
+  ],
+  "assertions": [
+    {
+      "id": "assert_valid_root",
+      "field": "ubjFirstType",
+      "operator": "greaterThan",
+      "value": 0,
+      "severity": "error",
+      "message": "First byte must be a valid UBJSON type marker"
+    },
+    {
+      "id": "assert_common_root",
+      "field": "ubjFirstType",
+      "operator": "greaterThanOrEqual",
+      "value": 65,
+      "severity": "info",
+      "message": "UBJSON root is typically an array '[' (91) or object '{' (123)"
+    },
+    {
+      "id": "assert_not_null_file",
+      "field": "ubjFirstType",
+      "operator": "notEquals",
+      "value": 0,
+      "severity": "warning",
+      "message": "File starts with null byte — not a valid UBJSON document"
+    }
+  ],
+  "navigation": {
+    "entryPoints": [
+      { "name": "Root Value", "offset": 0 }
+    ],
+    "jumpTable": [
+      { "label": "Root Type Marker", "offset": 0 }
+    ]
+  },
+  "inspector": {
+    "badge": "UB",
+    "primaryField": "ubjFirstType",
+    "groups": [
+      {
+        "name": "Identification",
+        "fields": ["ubjFirstType"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "UBJSON File Summary",
+      "format": "text",
+      "template": "Universal Binary JSON\nRoot Type: {ubjFirstType}"
+    },
+    {
+      "name": "UBJSON File CSV",
+      "format": "csv",
+      "template": "Field,Value\nRootType,{ubjFirstType}"
+    }
+  ],
+  "forensic": {
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      "First byte not a known UBJSON type marker — wrong format or corruption",
+      "Mismatched container open/close markers",
+      "Optimized container count exceeding file size",
+      "Deeply nested structures — potential denial of service payload"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "UBJSON encodes each value with a single ASCII type marker byte. Arrays use '[' and ']', objects use '{' and '}'. Optimized containers use '$' (type) and '#' (count) to avoid per-element type markers and end markers. Numeric types are big-endian. Strings are 'S' + length + UTF-8 data.",
+    "suggestedInspections": [
+      "Read first byte to determine root container type (0x5B=array, 0x7B=object)",
+      "Check for optimized container markers '$' (0x24) and '#' (0x23) after root",
+      "Walk type markers to enumerate top-level elements",
+      "Validate nesting depth and container balance"
+    ]
+  },
+  "software": [
+    { "name": "ubjson Python library", "vendor": "Open source", "platform": "Python" },
+    { "name": "Py-UBJSON", "vendor": "Open source", "platform": "Python" },
+    { "name": "ubjson-js", "vendor": "Open source", "platform": "JavaScript" }
+  ],
+  "formatRelationships": [
+    { "format": "BSON_FILE", "relation": "sibling", "note": "Both binary JSON variants; UBJSON is self-describing with type markers, BSON is length-prefixed" },
+    { "format": "MSGPACK", "relation": "sibling", "note": "Both compact binary serialization formats for JSON-like data" },
+    { "format": "SMILE", "relation": "sibling", "note": "Smile is Jackson's binary JSON; UBJSON is format-agnostic" }
+  ],
+  "MimeTypes": [
+    "application/ubjson",
+    "application/octet-stream"
+  ],
+  "UseCases": [
+    "Compact binary JSON interchange between systems",
+    "Embedded systems data serialization",
+    "Game save data and configuration files",
+    "IoT sensor data encoding"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 83,
+    "LastUpdated": "2026-04-16"
+  },
+  "TechnicalDetails": {
+    "headerSize": 1,
+    "endian": "big",
+    "signatureOffset": 0,
+    "signatureLength": 1,
+    "encoding": "Type-marker-prefixed values with big-endian numeric encoding",
+    "notes": "No fixed magic header — detection relies on extension and first byte being a valid type marker"
+  }
+}

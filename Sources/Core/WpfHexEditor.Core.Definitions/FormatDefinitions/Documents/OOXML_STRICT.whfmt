@@ -1,0 +1,182 @@
+{
+  "diffMode": "binary",
+  "formatName": "Office Open XML Strict",
+  "version": "1.0",
+  "extensions": [".docx", ".xlsx", ".pptx"],
+  "description": "OOXML Strict is the ISO/IEC 29500 Strict conformance variant of Office Open XML, distinguished from the more common Transitional variant by using strict XML namespaces (e.g., http://purl.oclc.org/ooxml/...) in [Content_Types].xml and part relationships. Files are ZIP containers (PK magic 0x504B0304) containing XML parts. OOXML Strict is required for some government and archival compliance scenarios. Detection is weak since the ZIP magic is shared with Transitional OOXML.",
+  "category": "Documents",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "references": [
+    "https://www.iso.org/standard/71691.html",
+    "https://en.wikipedia.org/wiki/Office_Open_XML",
+    "https://learn.microsoft.com/en-us/openspecs/office_standards/ms-oe376/"
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "value": "504B0304",
+        "offset": 0,
+        "label": "PK ZIP for OOXML strict",
+        "weight": 0.4
+      }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.3,
+    "Strength": "Weak",
+    "validation": {
+      "rules": []
+    }
+  },
+  "variables": [
+    {
+      "name": "ooxmlStrictZip",
+      "offset": 0,
+      "size": 4,
+      "type": "ascii",
+      "storeAs": "ooxmlStrictZip",
+      "description": "4-byte ZIP magic header (0x504B0304)"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "ZipMagic",
+      "offset": 0,
+      "size": 4,
+      "description": "ZIP local file header signature 'PK' (0x504B0304)",
+      "fields": [
+        { "name": "Signature", "offset": 0, "size": 4, "type": "hex" }
+      ]
+    },
+    {
+      "name": "ZipLocalHeader",
+      "offset": 4,
+      "size": 26,
+      "description": "ZIP local file header with version, compression, and filename fields",
+      "fields": []
+    },
+    {
+      "name": "ContentTypes",
+      "offset": -1,
+      "size": -1,
+      "description": "[Content_Types].xml with strict namespace URIs (purl.oclc.org/ooxml)",
+      "fields": []
+    },
+    {
+      "name": "DocumentParts",
+      "offset": -1,
+      "size": -1,
+      "description": "XML document parts (word/document.xml, xl/workbook.xml, ppt/presentation.xml) using strict schemas",
+      "fields": []
+    }
+  ],
+  "assertions": [
+    {
+      "id": "assert_zip_magic",
+      "field": "ooxmlStrictZip",
+      "operator": "contains",
+      "value": "PK",
+      "severity": "error",
+      "message": "ZIP magic 'PK' not found — OOXML files must be ZIP containers"
+    },
+    {
+      "id": "assert_not_empty",
+      "field": "ooxmlStrictZip",
+      "operator": "notEquals",
+      "value": "",
+      "severity": "error",
+      "message": "File is empty"
+    },
+    {
+      "id": "assert_has_content",
+      "field": "ooxmlStrictZip",
+      "operator": "notEquals",
+      "value": "PK\u0005\u0006",
+      "severity": "warning",
+      "message": "ZIP may be an empty archive"
+    }
+  ],
+  "navigation": {
+    "entryPoints": [
+      { "name": "ZIP Header", "offset": 0 }
+    ],
+    "jumpTable": [
+      { "label": "ZIP Magic 'PK'", "offset": 0 }
+    ]
+  },
+  "inspector": {
+    "badge": "OX",
+    "primaryField": "ooxmlStrictZip",
+    "groups": [
+      {
+        "name": "Container",
+        "fields": ["ooxmlStrictZip"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "OOXML Strict Summary",
+      "format": "text",
+      "template": "Office Open XML Strict\nContainer: ZIP (PK)\nMagic: {ooxmlStrictZip}"
+    },
+    {
+      "name": "OOXML Strict CSV",
+      "format": "csv",
+      "template": "Field,Value\nZipMagic,{ooxmlStrictZip}\nConformance,Strict"
+    }
+  ],
+  "forensic": {
+    "riskLevel": "medium",
+    "suspiciousPatterns": [
+      "ZIP magic absent — not a valid OOXML container",
+      "Missing [Content_Types].xml — corrupt package",
+      "Transitional namespaces mixed with strict — conformance violation",
+      "Embedded macros or ActiveX controls in strict-mode documents",
+      "Unexpected ZIP entries not part of OOXML specification"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "OOXML Strict uses ISO/IEC 29500 strict namespaces (purl.oclc.org/ooxml/) instead of transitional (schemas.openxmlformats.org). The [Content_Types].xml and _rels/.rels entries differentiate strict from transitional. Strict mode prohibits deprecated features like VML and uses only DrawingML. Key parts: word/document.xml (Word), xl/workbook.xml (Excel), ppt/presentation.xml (PowerPoint).",
+    "suggestedInspections": [
+      "Verify ZIP magic 0x504B0304 at offset 0",
+      "Extract [Content_Types].xml and check for strict namespace URIs",
+      "Compare relationship namespaces against strict vs transitional",
+      "Verify absence of deprecated VML markup in document parts"
+    ]
+  },
+  "software": [
+    { "name": "Microsoft Office 365", "vendor": "Microsoft", "platform": "Cross-platform" },
+    { "name": "LibreOffice", "vendor": "The Document Foundation", "platform": "Cross-platform" },
+    { "name": "Apache POI", "vendor": "Apache", "platform": "JVM" }
+  ],
+  "formatRelationships": [
+    { "format": "OOXML", "relation": "variant", "note": "Strict is the ISO-compliant variant of Transitional OOXML" },
+    { "format": "ODF", "relation": "sibling", "note": "Both ISO standard document formats; ODF uses different XML schemas" },
+    { "format": "XPS_FIXED", "relation": "sibling", "note": "Both use OPC ZIP packaging" }
+  ],
+  "MimeTypes": [
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+  ],
+  "UseCases": [
+    "Government and regulatory compliance document archival",
+    "ISO/IEC 29500 strict conformance requirements",
+    "Long-term document preservation without deprecated features",
+    "Cross-vendor interoperability testing"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 83,
+    "LastUpdated": "2026-04-16"
+  },
+  "TechnicalDetails": {
+    "headerSize": 4,
+    "endian": "little",
+    "signatureOffset": 0,
+    "signatureLength": 4,
+    "magicValue": "504B0304",
+    "container": "ZIP (Open Packaging Conventions)",
+    "notes": "Distinguished from Transitional OOXML by strict namespace URIs in [Content_Types].xml. Same ZIP magic as all OPC-based formats."
+  }
+}

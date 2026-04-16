@@ -1,0 +1,220 @@
+{
+  "diffMode": "binary",
+  "formatName": "3GPP Timed Text",
+  "version": "1.0",
+  "extensions": [
+    ".tx3g"
+  ],
+  "description": "TX3G (3GPP Timed Text) is a text-based subtitle format defined in MPEG-4 Part 17 (ISO/IEC 14496-17) and 3GPP TS 26.245, designed for mobile multimedia and MPEG-4 containers. TX3G samples consist of display flags, justification settings, background color, text box coordinates, style records, and UTF-8/UTF-16 text content. The format supports basic styling (font, size, color, bold, italic), text highlighting, scrolling, karaoke, and hyperlinks. TX3G is the native timed text format in MP4, 3GP, and MOV containers.",
+  "category": "Subtitles",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "references": {
+    "specifications": [
+      "ISO/IEC 14496-17 — MPEG-4 Part 17: Streaming Text Format",
+      "3GPP TS 26.245 — Timed Text (3GPP)"
+    ],
+    "WebLinks": [
+      "https://en.wikipedia.org/wiki/MPEG-4_Part_17",
+      "https://wiki.multimedia.cx/index.php/TX3G",
+      "https://developer.apple.com/library/archive/documentation/QuickTime/QTFF/QTFFChap3/qtff3.html"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      {
+        "value": "00000000",
+        "offset": 0,
+        "label": "TX3G text sample with zero display flags",
+        "weight": 0.3
+      }
+    ],
+    "matchMode": "allOf",
+    "MinimumScore": 82,
+    "Strength": "Weak",
+    "EntropyHint": { "min": 1.5, "max": 5.5 },
+    "validation": {
+      "minFileSize": 10,
+      "maxSignatureOffset": 0
+    }
+  },
+  "variables": {
+    "tx3gDisplayFlags": 0,
+    "tx3gHJustify": 0,
+    "tx3gVJustify": 0,
+    "tx3gBgColor": 0
+  },
+  "blocks": [
+    {
+      "type": "field",
+      "name": "Display Flags",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.45,
+      "description": "TX3G display flags (32-bit big-endian unsigned). Bit flags control scrolling direction, continuous karaoke, text wrapping, and other display behaviors. Common value 0x00000000 = no special flags (static centered text).",
+      "storeAs": "tx3gDisplayFlags",
+      "valueType": "uint32",
+      "endianness": "big"
+    },
+    {
+      "type": "field",
+      "name": "Horizontal Justification",
+      "offset": 4,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "Horizontal text justification (8-bit signed integer). 0 = left, 1 = center, -1 = right. Controls horizontal alignment of text within the text box region.",
+      "storeAs": "tx3gHJustify",
+      "valueType": "int8"
+    },
+    {
+      "type": "field",
+      "name": "Vertical Justification",
+      "offset": 5,
+      "length": 1,
+      "color": "#95E1D3",
+      "opacity": 0.35,
+      "description": "Vertical text justification (8-bit signed integer). 0 = top, 1 = center, -1 = bottom. Controls vertical alignment of text within the text box region.",
+      "storeAs": "tx3gVJustify",
+      "valueType": "int8"
+    },
+    {
+      "type": "field",
+      "name": "Background Color RGBA",
+      "offset": 6,
+      "length": 4,
+      "color": "#FFE66D",
+      "opacity": 0.35,
+      "description": "Background color of the text box in RGBA format (32-bit big-endian, 8 bits per component). Typically 0x00000000 for transparent background. The alpha channel (last byte) controls transparency.",
+      "storeAs": "tx3gBgColor",
+      "valueType": "uint32",
+      "endianness": "big"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "Horizontal justification valid",
+      "expression": "tx3gHJustify >= -1 && tx3gHJustify <= 1",
+      "severity": "warning",
+      "message": "Horizontal justification should be -1 (right), 0 (left), or 1 (center)"
+    },
+    {
+      "name": "Vertical justification valid",
+      "expression": "tx3gVJustify >= -1 && tx3gVJustify <= 1",
+      "severity": "warning",
+      "message": "Vertical justification should be -1 (bottom), 0 (top), or 1 (center)"
+    },
+    {
+      "name": "Display flags word present",
+      "expression": "tx3gDisplayFlags >= 0",
+      "severity": "info",
+      "message": "Display flags field must be present (unsigned 32-bit)"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      {
+        "name": "TX3G Sample Header",
+        "offset": 0,
+        "icon": "\uE71B",
+        "color": "#FF6B6B"
+      },
+      {
+        "name": "Background Color",
+        "offset": 6,
+        "icon": "\uE8A5",
+        "color": "#FFE66D"
+      }
+    ]
+  },
+  "inspector": {
+    "badge": "tx3gDisplayFlags",
+    "primaryField": "tx3gHJustify",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "Display Settings",
+        "icon": "\uE71B",
+        "fields": ["tx3gDisplayFlags", "tx3gHJustify", "tx3gVJustify"]
+      },
+      {
+        "title": "Appearance",
+        "icon": "\uE8A5",
+        "fields": ["tx3gBgColor"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "TX3G Sample (JSON)",
+      "format": "json",
+      "fields": ["tx3gDisplayFlags", "tx3gHJustify", "tx3gVJustify", "tx3gBgColor"]
+    },
+    {
+      "name": "tx3g_sample_t (C struct)",
+      "format": "c-struct",
+      "structName": "tx3g_sample",
+      "fields": ["tx3gDisplayFlags", "tx3gHJustify", "tx3gVJustify", "tx3gBgColor"]
+    }
+  ],
+  "forensic": {
+    "category": "subtitles",
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      {
+        "name": "Non-standard justification",
+        "condition": "tx3gHJustify < -1 || tx3gHJustify > 1 || tx3gVJustify < -1 || tx3gVJustify > 1",
+        "severity": "warning",
+        "description": "Justification values outside [-1, 0, 1] range — may cause unpredictable rendering."
+      }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "TX3G sample description (in MP4 stsd box): displayFlags(4B BE) + hJustification(1B) + vJustification(1B) + bgColorRGBA(4B) + textBox(top:2B + left:2B + bottom:2B + right:2B) + styleRecord(startChar:2B + endChar:2B + fontID:2B + faceStyleFlags:1B + fontSize:1B + textColorRGBA:4B) + fontTable(entryCount:2B + entries...). TX3G text samples in mdat: textLength(2B BE) + UTF-8/UTF-16 text + optional modifier boxes ('styl', 'hlit', 'hclr', 'krok', 'href', 'tbox', 'blnk').",
+    "suggestedInspections": [
+      "Parse display flags for scrolling and karaoke mode bits",
+      "Check justification values for valid range (-1, 0, 1)",
+      "Extract background color RGBA for transparency analysis",
+      "Parse text box coordinates to determine subtitle positioning"
+    ]
+  },
+  "software": [
+    "FFmpeg",
+    "MP4Box (GPAC)",
+    "Subler"
+  ],
+  "formatRelationships": {
+    "category": "Subtitles",
+    "extensions": [".tx3g"],
+    "relatedFormats": ["SRT", "TTML", "MOV", "MP4"],
+    "containerVariant": "TX3G track within MP4/3GP/MOV container"
+  },
+  "MimeTypes": [
+    "application/x-tx3g"
+  ],
+  "UseCases": [
+    "Mobile video subtitles in 3GP/MP4 containers",
+    "iTunes/Apple TV subtitle track embedding",
+    "MPEG-4 compliant timed text for streaming platforms",
+    "Subtitle styling in QuickTime MOV files"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 82,
+    "DocumentationLevel": "comprehensive",
+    "BlocksDefined": 4,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-16",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "TextFormat": true,
+    "Encoding": "UTF-8 or UTF-16",
+    "ContainerFormat": "MP4/3GP/MOV (stsd box: tx3g sample entry)",
+    "ColorFormat": "RGBA (8 bits per component)",
+    "JustificationValues": "-1 (right/bottom), 0 (left/top), 1 (center)",
+    "ModifierBoxes": "styl, hlit, hclr, krok, href, tbox, blnk",
+    "Standard": "ISO/IEC 14496-17, 3GPP TS 26.245"
+  }
+}

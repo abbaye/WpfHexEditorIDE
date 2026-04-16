@@ -1,0 +1,262 @@
+{
+  "diffMode": "binary",
+  "formatName": "Apple ProRes",
+  "version": "1.0",
+  "extensions": [
+    ".mov"
+  ],
+  "description": "Apple ProRes is a family of lossy video compression codecs developed by Apple for professional post-production workflows. ProRes is an intra-frame codec (each frame compressed independently) enabling fast random access and efficient editing. Variants include ProRes 422 Proxy, LT, Standard, HQ, and ProRes 4444 (with alpha). Raw ProRes frames begin with a 32-bit frame size followed by the 'icpf' (Image Codec ProRes Frame) identifier. ProRes is the standard intermediate codec for Final Cut Pro and is widely used in broadcast and film post-production.",
+  "category": "Video",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "references": {
+    "specifications": [
+      "Apple ProRes White Paper — apple.com/final-cut-pro/docs/Apple_ProRes_White_Paper.pdf",
+      "SMPTE RDD 36:2015 — Apple ProRes Bitstream Syntax"
+    ],
+    "WebLinks": [
+      "https://support.apple.com/en-us/102715",
+      "https://en.wikipedia.org/wiki/Apple_ProRes",
+      "https://wiki.multimedia.cx/index.php/Apple_ProRes"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      {
+        "value": "69637066",
+        "offset": 4,
+        "label": "'icpf' ProRes frame container",
+        "weight": 0.9
+      }
+    ],
+    "matchMode": "allOf",
+    "MinimumScore": 85,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 5.5, "max": 7.9 },
+    "validation": {
+      "minFileSize": 28,
+      "maxSignatureOffset": 4
+    }
+  },
+  "variables": {
+    "proresFrameSize": 0,
+    "proresFrameId": "",
+    "proresVersion": 0,
+    "proresCreatorId": "",
+    "proresWidth": 0,
+    "proresHeight": 0
+  },
+  "blocks": [
+    {
+      "type": "field",
+      "name": "Frame Size",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.45,
+      "description": "Total size of the ProRes frame in bytes (32-bit big-endian unsigned). Includes the frame header and all compressed slice data. Each frame is independently decodable.",
+      "storeAs": "proresFrameSize",
+      "valueType": "uint32",
+      "endianness": "big"
+    },
+    {
+      "type": "signature",
+      "name": "Frame Identifier",
+      "offset": 4,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.45,
+      "description": "ProRes frame type identifier: ASCII 'icpf' (0x69637066) — Image Codec ProRes Frame. This 4-byte marker identifies the data as a ProRes compressed video frame.",
+      "storeAs": "proresFrameId",
+      "valueType": "ascii",
+      "validation": {
+        "expectedValue": "icpf"
+      }
+    },
+    {
+      "type": "field",
+      "name": "Header Version",
+      "offset": 8,
+      "length": 2,
+      "color": "#95E1D3",
+      "opacity": 0.35,
+      "description": "ProRes frame header version (16-bit big-endian). Indicates the bitstream revision for decoder compatibility.",
+      "storeAs": "proresVersion",
+      "valueType": "uint16",
+      "endianness": "big"
+    },
+    {
+      "type": "field",
+      "name": "Creator ID",
+      "offset": 10,
+      "length": 4,
+      "color": "#FFE66D",
+      "opacity": 0.35,
+      "description": "Four-character code identifying the encoder that created this frame. 'apl0' = Apple encoder. Third-party encoders (FFmpeg, etc.) use their own codes.",
+      "storeAs": "proresCreatorId",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Frame Width",
+      "offset": 20,
+      "length": 2,
+      "color": "#DDA0DD",
+      "opacity": 0.35,
+      "description": "Frame width in pixels (16-bit big-endian unsigned). Must be a multiple of the macroblock size (typically 16 pixels). Common widths: 1920 (HD), 3840 (4K UHD), 4096 (4K DCI).",
+      "storeAs": "proresWidth",
+      "valueType": "uint16",
+      "endianness": "big"
+    },
+    {
+      "type": "field",
+      "name": "Frame Height",
+      "offset": 22,
+      "length": 2,
+      "color": "#87CEEB",
+      "opacity": 0.35,
+      "description": "Frame height in pixels (16-bit big-endian unsigned). Must be a multiple of the macroblock size. Common heights: 1080 (HD), 2160 (4K UHD), 2160 (4K DCI).",
+      "storeAs": "proresHeight",
+      "valueType": "uint16",
+      "endianness": "big"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "ProRes frame ID valid",
+      "expression": "proresFrameId == 'icpf'",
+      "severity": "error",
+      "message": "Frame identifier must be 'icpf' (0x69637066)"
+    },
+    {
+      "name": "Frame width valid",
+      "expression": "proresWidth > 0",
+      "severity": "error",
+      "message": "Frame width must be greater than zero"
+    },
+    {
+      "name": "Frame height valid",
+      "expression": "proresHeight > 0",
+      "severity": "error",
+      "message": "Frame height must be greater than zero"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      {
+        "name": "Frame Header",
+        "offset": 0,
+        "icon": "\uE71B",
+        "color": "#FF6B6B"
+      },
+      {
+        "name": "icpf Marker",
+        "offset": 4,
+        "icon": "\uE8A5",
+        "color": "#4ECDC4"
+      },
+      {
+        "name": "Dimensions",
+        "offset": 20,
+        "icon": "\uE9D9",
+        "color": "#DDA0DD"
+      }
+    ]
+  },
+  "inspector": {
+    "badge": "proresCreatorId",
+    "primaryField": "proresWidth",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "Frame Header",
+        "icon": "\uE71B",
+        "fields": ["proresFrameSize", "proresFrameId", "proresVersion", "proresCreatorId"]
+      },
+      {
+        "title": "Dimensions",
+        "icon": "\uE9D9",
+        "fields": ["proresWidth", "proresHeight"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "ProRes Frame (JSON)",
+      "format": "json",
+      "fields": ["proresFrameSize", "proresFrameId", "proresVersion", "proresCreatorId", "proresWidth", "proresHeight"]
+    },
+    {
+      "name": "prores_frame_t (C struct)",
+      "format": "c-struct",
+      "structName": "prores_frame",
+      "fields": ["proresFrameSize", "proresFrameId", "proresVersion", "proresCreatorId", "proresWidth", "proresHeight"]
+    }
+  ],
+  "forensic": {
+    "category": "video",
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      {
+        "name": "Non-Apple encoder",
+        "condition": "proresCreatorId != 'apl0'",
+        "severity": "info",
+        "description": "Frame was not encoded by Apple's official ProRes encoder — third-party encoder detected."
+      },
+      {
+        "name": "Zero dimensions",
+        "condition": "proresWidth == 0 || proresHeight == 0",
+        "severity": "error",
+        "description": "Frame has zero width or height — corrupted or invalid ProRes frame header."
+      }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "ProRes frame layout: frameSize(4B BE) + 'icpf'(4B) + headerVersion(2B BE) + creatorId(4B ASCII) + headerSize(2B BE) + flags/bitstream info(variable) + width(2B BE @20) + height(2B BE @22) + chroma/alpha flags + quantization matrices + slice data. ProRes is always intra-frame (no inter-frame prediction). Variants distinguished by quantization parameters: 422 Proxy (lowest), 422 LT, 422 Standard, 422 HQ, 4444, 4444 XQ (highest). Typically wrapped in QuickTime MOV container.",
+    "suggestedInspections": [
+      "Verify 'icpf' marker at offset 4",
+      "Parse creator ID to identify encoding software",
+      "Extract width and height for resolution identification",
+      "Check chroma format flags (422 vs 4444) to identify ProRes variant"
+    ]
+  },
+  "software": [
+    "Apple Final Cut Pro",
+    "FFmpeg",
+    "DaVinci Resolve"
+  ],
+  "formatRelationships": {
+    "category": "Video",
+    "extensions": [".mov"],
+    "relatedFormats": ["MOV", "DNxHD", "CINEFORM"],
+    "containerVariant": "Raw ProRes frame essence (typically inside MOV/MXF)"
+  },
+  "MimeTypes": [
+    "video/prores",
+    "video/quicktime"
+  ],
+  "UseCases": [
+    "Professional video editing intermediate codec (Final Cut Pro, Premiere, Resolve)",
+    "Broadcast television post-production and delivery",
+    "Film mastering and digital intermediate workflows",
+    "Camera-to-edit recording on Apple devices and Atomos recorders"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 85,
+    "DocumentationLevel": "comprehensive",
+    "BlocksDefined": 6,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-16",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "VideoFormat": true,
+    "CompressionMethod": "Lossy intra-frame (DCT-based, variable quantization)",
+    "Endianness": "big-endian",
+    "ChromaSubsampling": "4:2:2 (standard) or 4:4:4 (ProRes 4444)",
+    "BitDepth": "10-bit (422) or 12-bit (4444)",
+    "AlphaChannelSupport": "ProRes 4444 and 4444 XQ only",
+    "IntraFrameOnly": true
+  }
+}

@@ -1,0 +1,169 @@
+{
+  "diffMode": "binary",
+  "formatName": "FlexBuffers",
+  "version": "1.0",
+  "extensions": [".flex", ".flexbuf"],
+  "description": "FlexBuffers is a schemaless binary format from Google's FlatBuffers project. Unlike FlatBuffers, FlexBuffers requires no schema and stores type information inline. The root value type and byte width are encoded in the last two bytes of the buffer — there is no header magic. Data is stored bottom-up: leaf values first, then containers referencing them, with the root at the end. Supports maps, vectors, typed vectors, strings, ints, floats, and blobs.",
+  "category": "Data",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "references": [
+    "https://flatbuffers.dev/flexbuffers.html",
+    "https://github.com/google/flatbuffers",
+    "https://google.github.io/flatbuffers/flexbuffers.html"
+  ],
+  "detection": {
+    "signatures": [],
+    "matchMode": "any",
+    "MinimumScore": 0.1,
+    "Strength": "Weak",
+    "validation": {
+      "rules": []
+    }
+  },
+  "variables": [
+    {
+      "name": "flexFirstByte",
+      "offset": 0,
+      "size": 1,
+      "type": "uint8",
+      "storeAs": "flexFirstByte",
+      "description": "First byte of the FlexBuffers buffer (leaf data or padding)"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "LeafData",
+      "offset": 0,
+      "size": -1,
+      "description": "Bottom-up encoded leaf values (integers, floats, strings, blobs)",
+      "fields": [
+        { "name": "FirstByte", "offset": 0, "size": 1, "type": "uint8" }
+      ]
+    },
+    {
+      "name": "Containers",
+      "offset": -1,
+      "size": -1,
+      "description": "Maps and vectors referencing leaf data via relative offsets",
+      "fields": []
+    },
+    {
+      "name": "RootValue",
+      "offset": -1,
+      "size": -1,
+      "description": "Root value data referenced by the root pointer at the end of the buffer",
+      "fields": []
+    },
+    {
+      "name": "RootPointer",
+      "offset": -2,
+      "size": 2,
+      "description": "Last 2 bytes: root byte width and packed root type (type << 2 | byte_width_index)",
+      "fields": []
+    }
+  ],
+  "assertions": [
+    {
+      "id": "assert_readable",
+      "field": "flexFirstByte",
+      "operator": "greaterThanOrEqual",
+      "value": 0,
+      "severity": "info",
+      "message": "File is readable for FlexBuffers analysis"
+    },
+    {
+      "id": "assert_not_empty",
+      "field": "flexFirstByte",
+      "operator": "notEquals",
+      "value": -1,
+      "severity": "warning",
+      "message": "FlexBuffers file should contain at least a root pointer (2 bytes)"
+    },
+    {
+      "id": "assert_min_content",
+      "field": "flexFirstByte",
+      "operator": "greaterThanOrEqual",
+      "value": 0,
+      "severity": "info",
+      "message": "Minimum FlexBuffers buffer is 3 bytes (1B value + 1B byte_width + 1B type)"
+    }
+  ],
+  "navigation": {
+    "entryPoints": [
+      { "name": "Buffer Start", "offset": 0 }
+    ],
+    "jumpTable": [
+      { "label": "Buffer Start (leaf data)", "offset": 0 }
+    ]
+  },
+  "inspector": {
+    "badge": "FX",
+    "primaryField": "flexFirstByte",
+    "groups": [
+      {
+        "name": "Identification",
+        "fields": ["flexFirstByte"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "FlexBuffers Summary",
+      "format": "text",
+      "template": "FlexBuffers\nFirst Byte: 0x{flexFirstByte:X2}\nNote: Root type is in the last 2 bytes of the buffer"
+    },
+    {
+      "name": "FlexBuffers CSV",
+      "format": "csv",
+      "template": "Field,Value\nFirstByte,0x{flexFirstByte:X2}"
+    }
+  ],
+  "forensic": {
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      "No magic header — format identification relies on extension only",
+      "Root type byte indicates unknown type — corruption or version mismatch",
+      "Relative offset references pointing outside buffer bounds"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "FlexBuffers stores data bottom-up with the root pointer in the last 2 bytes. The second-to-last byte is the root byte width (1, 2, 4, or 8). The last byte encodes the root type (upper 6 bits) and byte width index (lower 2 bits). Types include: 0=Null, 1=Int, 2=UInt, 3=Float, 5=String, 6=IndirectInt, 9=Map, 10=Vector, 15=Blob.",
+    "suggestedInspections": [
+      "Read last 2 bytes for root byte width and root type",
+      "Decode root type: type = last_byte >> 2, byte_width_idx = last_byte & 3",
+      "Navigate from root pointer backward through the buffer structure",
+      "Validate relative offsets do not exceed buffer bounds"
+    ]
+  },
+  "software": [
+    { "name": "FlatBuffers library", "vendor": "Google", "platform": "Cross-platform" },
+    { "name": "flatc compiler", "vendor": "Google", "platform": "Cross-platform" },
+    { "name": "FlexBuffers Python/JS bindings", "vendor": "Google", "platform": "Cross-platform" }
+  ],
+  "formatRelationships": [
+    { "format": "FLATBUFFERS", "relation": "parent", "note": "FlexBuffers is the schemaless companion to schema-based FlatBuffers" },
+    { "format": "MSGPACK", "relation": "sibling", "note": "Both schemaless binary serialization formats" }
+  ],
+  "MimeTypes": [
+    "application/octet-stream"
+  ],
+  "UseCases": [
+    "Schemaless binary data interchange in FlatBuffers ecosystems",
+    "Game engine runtime configuration data",
+    "Mobile application settings and state serialization",
+    "IoT device communication payloads"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 82,
+    "LastUpdated": "2026-04-16"
+  },
+  "TechnicalDetails": {
+    "headerSize": 0,
+    "endian": "little",
+    "signatureOffset": -1,
+    "signatureLength": 0,
+    "encoding": "Bottom-up layout with root pointer at end of buffer",
+    "notes": "No magic header. Root type and byte width are in last 2 bytes. All offsets are relative and backward-pointing."
+  }
+}

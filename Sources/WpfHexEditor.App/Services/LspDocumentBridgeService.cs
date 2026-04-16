@@ -176,6 +176,14 @@ internal sealed class LspDocumentBridgeService : IDisposable
 
                 OutputLogger.LspInfo($"Server ready: {entry.LanguageId}");
                 RaiseState(entry, LspServerState.Ready);
+
+                // Subscribe to fully-loaded notification for Output Panel feedback.
+                client.FullyLoaded += () =>
+                {
+                    var msg = $"Server fully loaded: {entry.LanguageId} — diagnostics and semantic analysis ready.";
+                    OutputLogger.LspInfo(msg);
+                    OutputLogger.Info(msg);
+                };
             }
 
             if (_disposed || _bridges.ContainsKey(buffer.FilePath)) return;

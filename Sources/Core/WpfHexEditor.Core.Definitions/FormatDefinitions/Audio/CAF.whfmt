@@ -1,0 +1,234 @@
+{
+  "diffMode": "binary",
+  "formatName": "Core Audio Format",
+  "version": "1.0",
+  "extensions": [
+    ".caf"
+  ],
+  "description": "Core Audio Format (CAF) is Apple's container for audio data, designed to overcome limitations of older formats like AIFF and WAV. CAF supports any audio codec available on macOS/iOS, has no file-size limit (uses 64-bit sizes), and can store multiple channels, metadata, channel layouts, and marker/region data. The file begins with a 'caff' magic word followed by version and flags fields, then a mandatory 'desc' (Audio Description) chunk.",
+  "category": "Audio",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "references": {
+    "specifications": [
+      "Apple Core Audio Format Specification 1.0",
+      "Apple Technical Note TN2195 — Core Audio Overview"
+    ],
+    "WebLinks": [
+      "https://developer.apple.com/library/archive/documentation/MusicAudio/Reference/CAFSpec/",
+      "https://en.wikipedia.org/wiki/Core_Audio_Format"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      {
+        "value": "63616666",
+        "offset": 0,
+        "label": "'caff' Core Audio Format magic",
+        "weight": 1.0
+      }
+    ],
+    "matchMode": "allOf",
+    "MinimumScore": 85,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 3.0, "max": 7.9 },
+    "validation": {
+      "minFileSize": 12,
+      "maxSignatureOffset": 0
+    }
+  },
+  "variables": {
+    "cafMagic": "",
+    "cafVersion": 0,
+    "cafFlags": 0,
+    "cafDescType": ""
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "CAF Magic",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.45,
+      "description": "Core Audio Format file signature: ASCII 'caff' (0x63616666). Unambiguously identifies the file as an Apple CAF container.",
+      "storeAs": "cafMagic",
+      "valueType": "ascii",
+      "validation": {
+        "expectedValue": "caff"
+      }
+    },
+    {
+      "type": "field",
+      "name": "File Version",
+      "offset": 4,
+      "length": 2,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "CAF file format version number (16-bit big-endian unsigned). Currently must be 1. Future versions may define additional chunk types or header changes.",
+      "storeAs": "cafVersion",
+      "valueType": "uint16",
+      "endianness": "big",
+      "validation": {
+        "expectedValue": 1
+      }
+    },
+    {
+      "type": "field",
+      "name": "File Flags",
+      "offset": 6,
+      "length": 2,
+      "color": "#95E1D3",
+      "opacity": 0.35,
+      "description": "Reserved flags field (16-bit big-endian). Must be 0 in version 1. Reserved for future use by Apple.",
+      "storeAs": "cafFlags",
+      "valueType": "uint16",
+      "endianness": "big"
+    },
+    {
+      "type": "field",
+      "name": "Audio Description Chunk Type",
+      "offset": 8,
+      "length": 4,
+      "color": "#FFE66D",
+      "opacity": 0.35,
+      "description": "First chunk type identifier: should be 'desc' (0x64657363) — the mandatory Audio Description chunk. This chunk defines the sample rate, format ID, format flags, bytes per packet, frames per packet, channels per frame, and bits per channel.",
+      "storeAs": "cafDescType",
+      "valueType": "ascii",
+      "validation": {
+        "expectedValue": "desc"
+      }
+    }
+  ],
+  "assertions": [
+    {
+      "name": "CAF magic valid",
+      "expression": "cafMagic == 'caff'",
+      "severity": "error",
+      "message": "File must begin with 'caff' signature (0x63616666)"
+    },
+    {
+      "name": "Version is 1",
+      "expression": "cafVersion == 1",
+      "severity": "error",
+      "message": "CAF file version must be 1 — no other version is currently defined"
+    },
+    {
+      "name": "First chunk is Audio Description",
+      "expression": "cafDescType == 'desc'",
+      "severity": "error",
+      "message": "First chunk must be 'desc' (Audio Description) per CAF specification"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      {
+        "name": "CAF Header",
+        "offset": 0,
+        "icon": "\uE71B",
+        "color": "#FF6B6B"
+      },
+      {
+        "name": "Audio Description Chunk",
+        "offset": 8,
+        "icon": "\uE8A5",
+        "color": "#FFE66D"
+      }
+    ]
+  },
+  "inspector": {
+    "badge": "cafVersion",
+    "primaryField": "cafDescType",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "File Header",
+        "icon": "\uE71B",
+        "fields": ["cafMagic", "cafVersion", "cafFlags"]
+      },
+      {
+        "title": "Audio Description",
+        "icon": "\uE767",
+        "fields": ["cafDescType"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "CAF Header (JSON)",
+      "format": "json",
+      "fields": ["cafMagic", "cafVersion", "cafFlags", "cafDescType"]
+    },
+    {
+      "name": "caf_header_t (C struct)",
+      "format": "c-struct",
+      "structName": "caf_header",
+      "fields": ["cafMagic", "cafVersion", "cafFlags", "cafDescType"]
+    }
+  ],
+  "forensic": {
+    "category": "audio",
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      {
+        "name": "Unknown CAF version",
+        "condition": "cafVersion != 1",
+        "severity": "warning",
+        "description": "CAF version is not 1 — file may use undefined extensions or be corrupted."
+      },
+      {
+        "name": "Missing desc chunk",
+        "condition": "cafDescType != 'desc'",
+        "severity": "error",
+        "description": "First chunk is not 'desc' — mandatory Audio Description chunk is missing or misplaced."
+      }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "CAF file layout: 'caff'(4B) + version(2B BE) + flags(2B BE) + chunks. Each chunk: type(4B ASCII) + size(8B int64 BE) + data. The mandatory first chunk is 'desc' (Audio Description, 32 bytes body): sampleRate(8B float64 BE) + formatID(4B) + formatFlags(4B) + bytesPerPacket(4B) + framesPerPacket(4B) + channelsPerFrame(4B) + bitsPerChannel(4B). Common format IDs: 'lpcm', 'aac ', 'alac', 'ima4', '.mp3'.",
+    "suggestedInspections": [
+      "Verify 'caff' magic and version==1 at file start",
+      "Parse 'desc' chunk to identify codec and channel layout",
+      "Check for 'chan' chunk describing surround channel assignments",
+      "Look for 'data' chunk containing the actual audio payload"
+    ]
+  },
+  "software": [
+    "Apple Logic Pro",
+    "Apple GarageBand",
+    "FFmpeg"
+  ],
+  "formatRelationships": {
+    "category": "Audio",
+    "extensions": [".caf"],
+    "relatedFormats": ["AIFF", "WAV", "M4A", "ALAC"],
+    "containerVariant": "Apple Core Audio container"
+  },
+  "MimeTypes": [
+    "audio/x-caf"
+  ],
+  "UseCases": [
+    "macOS/iOS audio development and playback",
+    "Professional audio production on Apple platforms",
+    "Lossless and lossy audio interchange without file-size limitations",
+    "Multi-channel audio packaging with channel layout metadata"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 84,
+    "DocumentationLevel": "comprehensive",
+    "BlocksDefined": 4,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-16",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "AudioFormat": true,
+    "ContainerFormat": "CAF (chunk-based)",
+    "Endianness": "big-endian",
+    "HeaderSize": "8 bytes",
+    "ChunkHeaderSize": "12 bytes (4B type + 8B size)",
+    "MaxFileSize": "Unlimited (64-bit chunk sizes)",
+    "MaxChannels": "Unlimited"
+  }
+}

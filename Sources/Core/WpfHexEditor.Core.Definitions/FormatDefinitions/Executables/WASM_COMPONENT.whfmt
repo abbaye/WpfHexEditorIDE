@@ -1,0 +1,242 @@
+{
+  "formatName": "WebAssembly Component Model",
+  "version": "1.0",
+  "diffMode": "binary",
+  "extensions": [
+    ".wasm"
+  ],
+  "description": "WebAssembly Component Model binary format extends core WASM with a higher-level composition layer (layer byte 0x0D). Components encapsulate WASM modules with typed interfaces for cross-language interoperability via the WIT IDL.",
+  "category": "Executables",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "MimeTypes": [
+    "application/wasm"
+  ],
+  "UseCases": [
+    "Cross-language component composition in WASI environments",
+    "Serverless edge computing with portable sandboxed components",
+    "Plugin systems using WIT interface definitions",
+    "Microservice composition via component linking"
+  ],
+  "references": [
+    "https://component-model.bytecodealliance.org/",
+    "https://github.com/WebAssembly/component-model",
+    "https://webassembly.github.io/spec/core/binary/modules.html"
+  ],
+  "software": [
+    {
+      "name": "wasm-tools",
+      "url": "https://github.com/bytecodealliance/wasm-tools",
+      "role": "Component model tooling (compose, validate, inspect)"
+    },
+    {
+      "name": "Wasmtime",
+      "url": "https://wasmtime.dev/",
+      "role": "Runtime with component model support"
+    },
+    {
+      "name": "wit-bindgen",
+      "url": "https://github.com/bytecodealliance/wit-bindgen",
+      "role": "WIT interface binding generator for multiple languages"
+    }
+  ],
+  "formatRelationships": [
+    {
+      "format": "WASM",
+      "relationship": "Component Model wraps core WASM modules with typed interfaces; shares the 0x00 0x61 0x73 0x6D prefix"
+    },
+    {
+      "format": "ELF",
+      "relationship": "ELF is the native executable format; WASM components are portable sandboxed alternatives"
+    }
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "offset": 0,
+        "value": "0061736D0D000100",
+        "label": "WASM Component Model v1 (magic + layer 0x0D + version 1)",
+        "weight": 1.0
+      }
+    ],
+    "matchMode": "first",
+    "MinimumScore": 92,
+    "Strength": "Strong",
+    "EntropyHint": {
+      "min": 5.0,
+      "max": 7.5,
+      "note": "LEB128-encoded sections with embedded WASM modules produce high entropy"
+    },
+    "validation": "First 4 bytes must be 0x00 0x61 0x73 0x6D (WASM magic). Bytes 4-5 must be 0x0D 0x00 (component layer). Bytes 6-7 must be 0x01 0x00 (version 1)."
+  },
+  "variables": [
+    {
+      "name": "wasmCompMagic",
+      "type": "hex",
+      "offset": 0,
+      "length": 4,
+      "description": "WASM magic bytes: 0x00 0x61 0x73 0x6D ('\\0asm')"
+    },
+    {
+      "name": "wasmCompLayer",
+      "type": "uint16",
+      "offset": 4,
+      "length": 2,
+      "endian": "little",
+      "description": "Layer identifier: 0x000D for component model (vs 0x0001 for core module)"
+    },
+    {
+      "name": "wasmCompVersion",
+      "type": "uint16",
+      "offset": 6,
+      "length": 2,
+      "endian": "little",
+      "description": "Component model version number (currently 1)"
+    },
+    {
+      "name": "wasmCompFirstSectionId",
+      "type": "uint8",
+      "offset": 8,
+      "length": 1,
+      "description": "First section identifier byte following the header"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "ComponentHeader",
+      "offset": 0,
+      "length": 8,
+      "description": "8-byte header: 4-byte WASM magic, 2-byte layer (0x0D00), 2-byte version",
+      "fields": [
+        {
+          "name": "Magic",
+          "variable": "wasmCompMagic",
+          "offset": 0,
+          "length": 4
+        },
+        {
+          "name": "Layer",
+          "variable": "wasmCompLayer",
+          "offset": 4,
+          "length": 2
+        },
+        {
+          "name": "Version",
+          "variable": "wasmCompVersion",
+          "offset": 6,
+          "length": 2
+        }
+      ]
+    },
+    {
+      "name": "ComponentSections",
+      "offset": 8,
+      "length": -1,
+      "description": "Sequence of component-level sections: module, instance, type, canon, start, import, export"
+    },
+    {
+      "name": "EmbeddedModules",
+      "offset": -1,
+      "length": -1,
+      "description": "Embedded core WASM modules contained within the component, each with its own header"
+    },
+    {
+      "name": "TypeSection",
+      "offset": -1,
+      "length": -1,
+      "description": "Component type definitions including WIT-derived interface types and resource types"
+    }
+  ],
+  "assertions": [
+    {
+      "id": "A1",
+      "description": "WASM magic must be 0x0061736D",
+      "expression": "wasmCompMagic == '0061736D'"
+    },
+    {
+      "id": "A2",
+      "description": "Layer must be 0x000D (component model)",
+      "expression": "wasmCompLayer == 13"
+    },
+    {
+      "id": "A3",
+      "description": "Version must be 1",
+      "expression": "wasmCompVersion == 1"
+    }
+  ],
+  "navigation": {
+    "entryPoint": "ComponentHeader",
+    "structure": [
+      "ComponentHeader",
+      "ComponentSections",
+      "EmbeddedModules",
+      "TypeSection"
+    ],
+    "notes": "Component sections use LEB128 length encoding. Embedded core modules appear as nested binaries with their own 0x0061736D + 0x01000000 headers."
+  },
+  "inspector": {
+    "badge": "WASM-C",
+    "primaryField": "wasmCompLayer",
+    "groups": [
+      {
+        "name": "Header",
+        "fields": [
+          "wasmCompMagic",
+          "wasmCompLayer",
+          "wasmCompVersion"
+        ]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "Component Header CSV",
+      "format": "csv",
+      "fields": [
+        "wasmCompMagic",
+        "wasmCompLayer",
+        "wasmCompVersion"
+      ]
+    },
+    {
+      "name": "Component Header JSON",
+      "format": "json",
+      "fields": [
+        "wasmCompMagic",
+        "wasmCompLayer",
+        "wasmCompVersion"
+      ]
+    }
+  ],
+  "forensic": {
+    "riskLevel": "MEDIUM",
+    "notes": "WASM components run in sandboxed environments but may request WASI capabilities (filesystem, network, sockets). Import declarations reveal requested system access.",
+    "suspiciousPatterns": [
+      "Component requesting excessive WASI capabilities beyond stated purpose",
+      "Embedded modules with obfuscated or stripped names",
+      "Unusually large components that may bundle unexpected payloads",
+      "Import of network or filesystem capabilities in a compute-only context"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "The WASM Component Model extends core WebAssembly with a composition layer identified by bytes 4-5 being 0x0D 0x00 (vs 0x01 0x00 for core modules). Components define typed imports/exports using WIT interfaces and can embed multiple core modules.",
+    "suggestedInspections": [
+      "Verify layer byte distinguishes component (0x0D) from core module (0x01)",
+      "Enumerate embedded core WASM modules by scanning for nested magic headers",
+      "Parse import/export sections to identify WIT interface dependencies",
+      "Check WASI capability requests against expected component functionality"
+    ]
+  },
+  "TechnicalDetails": {
+    "headerSize": 8,
+    "magicBytes": "0x00 0x61 0x73 0x6D",
+    "layerByte": "0x0D for component model",
+    "encoding": "LEB128 for section lengths and indices",
+    "sandboxModel": "Capability-based via WASI"
+  },
+  "QualityMetrics": {
+    "CompletenessScore": 85,
+    "LastUpdated": "2026-04-16",
+    "ReviewedBy": "WPFHexaEditor Team"
+  }
+}

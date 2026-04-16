@@ -1,0 +1,231 @@
+{
+  "formatName": "Kernel Message Log (kmsg)",
+  "version": "1.0",
+  "diffMode": "text",
+  "extensions": [
+    ".kmsg"
+  ],
+  "description": "Linux kernel ring buffer message format as exposed by /dev/kmsg and dmesg. Each line begins with a priority prefix in angle brackets '<N>' where N encodes facility and severity. Used for kernel diagnostics, driver messages, and boot logging.",
+  "category": "System",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "code-editor",
+  "MimeTypes": [
+    "text/x-kmsg",
+    "text/plain"
+  ],
+  "UseCases": [
+    "Kernel boot diagnostics and hardware initialization logging",
+    "Driver error and warning message analysis",
+    "System crash and panic investigation",
+    "Hardware compatibility troubleshooting"
+  ],
+  "references": [
+    "https://man7.org/linux/man-pages/man1/dmesg.1.html",
+    "https://www.kernel.org/doc/html/latest/core-api/printk-basics.html",
+    "https://www.kernel.org/doc/Documentation/ABI/testing/dev-kmsg"
+  ],
+  "software": [
+    {
+      "name": "dmesg",
+      "url": "https://man7.org/linux/man-pages/man1/dmesg.1.html",
+      "role": "Display and control the kernel ring buffer"
+    },
+    {
+      "name": "journalctl -k",
+      "url": "https://www.freedesktop.org/software/systemd/man/journalctl.html",
+      "role": "Show kernel messages via systemd journal"
+    },
+    {
+      "name": "syslog-ng",
+      "url": "https://www.syslog-ng.com/",
+      "role": "Centralized log collection including kernel messages"
+    }
+  ],
+  "formatRelationships": [
+    {
+      "format": "SYSLOG",
+      "relationship": "Kernel messages use syslog priority encoding (facility + severity)"
+    },
+    {
+      "format": "SYSTEMD_JOURNAL",
+      "relationship": "journald captures kernel messages and indexes them with structured metadata"
+    }
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "offset": 0,
+        "value": "3C",
+        "label": "'<' priority prefix character in kernel log line",
+        "weight": 0.5
+      }
+    ],
+    "matchMode": "first",
+    "MinimumScore": 82,
+    "Strength": "Weak",
+    "EntropyHint": {
+      "min": 3.0,
+      "max": 5.0,
+      "note": "ASCII text with repetitive log structure produces moderate entropy"
+    },
+    "validation": "First byte should be '<' (0x3C) followed by a priority number and '>'. Priority value must be 0-191 (facility 0-23 * 8 + severity 0-7)."
+  },
+  "variables": [
+    {
+      "name": "kmsgPriority",
+      "type": "ascii",
+      "offset": 0,
+      "length": 1,
+      "description": "Opening angle bracket '<' of the priority prefix"
+    },
+    {
+      "name": "kmsgPriorityValue",
+      "type": "ascii",
+      "offset": 1,
+      "length": -1,
+      "description": "Priority number (facility*8 + severity), terminated by '>'"
+    },
+    {
+      "name": "kmsgTimestamp",
+      "type": "ascii",
+      "offset": -1,
+      "length": -1,
+      "description": "Monotonic timestamp in seconds since boot (in brackets)"
+    },
+    {
+      "name": "kmsgMessage",
+      "type": "ascii",
+      "offset": -1,
+      "length": -1,
+      "description": "Actual kernel message text after the timestamp"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "PriorityPrefix",
+      "offset": 0,
+      "length": -1,
+      "description": "Priority prefix '<N>' encoding syslog facility (bits 6-3) and severity (bits 2-0)",
+      "fields": [
+        {
+          "name": "OpenBracket",
+          "variable": "kmsgPriority",
+          "offset": 0,
+          "length": 1
+        }
+      ]
+    },
+    {
+      "name": "Timestamp",
+      "offset": -1,
+      "length": -1,
+      "description": "Monotonic kernel timestamp in [seconds.microseconds] format"
+    },
+    {
+      "name": "Subsystem",
+      "offset": -1,
+      "length": -1,
+      "description": "Kernel subsystem or driver name prefix (e.g., 'usb', 'net', 'ext4')"
+    },
+    {
+      "name": "MessageBody",
+      "offset": -1,
+      "length": -1,
+      "description": "Human-readable kernel message text"
+    }
+  ],
+  "assertions": [
+    {
+      "id": "A1",
+      "description": "First character must be '<' (0x3C)",
+      "expression": "kmsgPriority == '<'"
+    },
+    {
+      "id": "A2",
+      "description": "Priority value must be a valid number (0-191)",
+      "expression": "kmsgPriorityValue >= 0 && kmsgPriorityValue <= 191"
+    },
+    {
+      "id": "A3",
+      "description": "Message line must be terminated by newline",
+      "expression": "kmsgMessage != ''"
+    }
+  ],
+  "navigation": {
+    "entryPoint": "PriorityPrefix",
+    "structure": [
+      "PriorityPrefix",
+      "Timestamp",
+      "Subsystem",
+      "MessageBody"
+    ],
+    "notes": "Severity levels: 0=EMERG, 1=ALERT, 2=CRIT, 3=ERR, 4=WARNING, 5=NOTICE, 6=INFO, 7=DEBUG. /dev/kmsg format adds sequence number and flags after priority."
+  },
+  "inspector": {
+    "badge": "KMSG",
+    "primaryField": "kmsgPriorityValue",
+    "groups": [
+      {
+        "name": "Message",
+        "fields": [
+          "kmsgPriority",
+          "kmsgPriorityValue",
+          "kmsgTimestamp",
+          "kmsgMessage"
+        ]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "Kernel Messages CSV",
+      "format": "csv",
+      "fields": [
+        "kmsgPriority",
+        "kmsgPriorityValue",
+        "kmsgTimestamp",
+        "kmsgMessage"
+      ]
+    },
+    {
+      "name": "Kernel Messages JSON",
+      "format": "json",
+      "fields": [
+        "kmsgPriority",
+        "kmsgPriorityValue",
+        "kmsgTimestamp",
+        "kmsgMessage"
+      ]
+    }
+  ],
+  "forensic": {
+    "riskLevel": "MEDIUM",
+    "notes": "Kernel messages reveal hardware configuration, driver loading order, and security-relevant events (SELinux denials, kernel module loading). The ring buffer is fixed-size and older messages are overwritten.",
+    "suspiciousPatterns": [
+      "Kernel module loading from non-standard paths (rootkit insertion)",
+      "SELinux or AppArmor denial messages indicating policy bypass attempts",
+      "USB device connection events at unusual times",
+      "Out-of-memory killer (oom_kill) events indicating resource exhaustion attacks"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "Kernel messages use syslog priority encoding in angle brackets. The /dev/kmsg interface provides structured fields: priority, sequence number, timestamp, flags, and message. dmesg output may omit some structured fields depending on flags.",
+    "suggestedInspections": [
+      "Parse priority to extract facility and severity for filtering",
+      "Build a timeline from monotonic timestamps to correlate events",
+      "Identify kernel module load/unload events for rootkit detection",
+      "Extract hardware enumeration messages for device inventory"
+    ]
+  },
+  "TechnicalDetails": {
+    "encoding": "ASCII text, one message per line",
+    "priorityEncoding": "facility * 8 + severity",
+    "ringBufferSize": "Configurable via log_buf_len kernel parameter (default ~1MB)",
+    "devKmsgFormat": "priority,sequence,timestamp,flags;message"
+  },
+  "QualityMetrics": {
+    "CompletenessScore": 82,
+    "LastUpdated": "2026-04-16",
+    "ReviewedBy": "WPFHexaEditor Team"
+  }
+}

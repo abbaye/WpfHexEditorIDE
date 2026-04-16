@@ -1,0 +1,168 @@
+{
+  "diffMode": "text",
+  "formatName": "age Encryption Key",
+  "version": "1.0",
+  "extensions": [".key", ".txt"],
+  "description": "age encryption private key file — a text file containing an age identity (secret key) prefixed with 'AGE-SECRET-KEY-' followed by a Bech32-encoded X25519 private key. The age tool by Filippo Valsorda is a modern, simple file encryption tool designed to replace GPG for symmetric and asymmetric encryption workflows.",
+  "category": "Crypto",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "code-editor",
+  "references": [
+    "https://age-encryption.org/v1",
+    "https://github.com/FiloSottile/age",
+    "https://pkg.go.dev/filippo.io/age"
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "value": "4147452D5345435245542D4B45592D",
+        "offset": 0,
+        "label": "'AGE-SECRET-KEY-' age key file prefix",
+        "weight": 1.0
+      }
+    ],
+    "matchMode": "Best",
+    "MinimumScore": 0.9,
+    "Strength": "Strong",
+    "EntropyHint": "Low — text file with Bech32-encoded key data"
+  },
+  "variables": [
+    {
+      "name": "ageKeyPrefix",
+      "offset": 0,
+      "size": 15,
+      "type": "ascii",
+      "description": "Key prefix — must be 'AGE-SECRET-KEY-'"
+    },
+    {
+      "name": "ageKeyFirstByte",
+      "offset": 15,
+      "size": 1,
+      "type": "uint8",
+      "description": "First byte of the Bech32-encoded key data"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "KeyPrefix",
+      "offset": 0,
+      "size": 15,
+      "description": "'AGE-SECRET-KEY-' identifier prefix"
+    },
+    {
+      "name": "Bech32Key",
+      "offset": 15,
+      "size": 59,
+      "description": "Bech32-encoded X25519 private key (58 chars + newline)"
+    },
+    {
+      "name": "CommentLines",
+      "offset": 0,
+      "size": 0,
+      "description": "Optional comment lines starting with '#' before the key"
+    },
+    {
+      "name": "PublicKeyComment",
+      "offset": 0,
+      "size": 0,
+      "description": "Comment line containing the corresponding public key"
+    }
+  ],
+  "assertions": [
+    {
+      "variable": "ageKeyPrefix",
+      "operator": "==",
+      "value": "AGE-SECRET-KEY-",
+      "description": "Key must start with 'AGE-SECRET-KEY-'",
+      "level": "Error"
+    },
+    {
+      "variable": "ageKeyFirstByte",
+      "operator": ">",
+      "value": 31,
+      "description": "Key data must be printable ASCII (Bech32 encoding)",
+      "level": "Error"
+    },
+    {
+      "variable": "ageKeyFirstByte",
+      "operator": "<",
+      "value": 128,
+      "description": "Key data must be within ASCII range",
+      "level": "Warning"
+    }
+  ],
+  "navigation": {
+    "entryPoint": 0,
+    "sections": [
+      { "name": "Comments", "offset": 0, "size": 0 },
+      { "name": "Secret Key", "offset": 0, "size": 74 }
+    ]
+  },
+  "inspector": {
+    "badge": "AGE",
+    "primaryField": "ageKeyPrefix",
+    "groups": [
+      {
+        "name": "Key Identity",
+        "fields": ["ageKeyPrefix", "ageKeyFirstByte"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "Age Key Summary",
+      "format": "text",
+      "template": "Format: age Secret Key\nPrefix: {ageKeyPrefix}\nKey Algorithm: X25519"
+    },
+    {
+      "name": "Age Key JSON Report",
+      "format": "json",
+      "template": "{ \"format\": \"age Secret Key\", \"prefix\": \"{ageKeyPrefix}\", \"algorithm\": \"X25519\" }"
+    }
+  ],
+  "forensic": {
+    "riskLevel": "CRITICAL",
+    "notes": "This is a private encryption key. Exposure of this key compromises all files encrypted to the corresponding public key. Immediate rotation is required if found in unauthorized locations.",
+    "suspiciousPatterns": [
+      "Key file found in publicly accessible directory or repository",
+      "Multiple age keys in a single file (potential key harvesting)",
+      "Key file with unexpected permissions (world-readable)"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "age is a modern file encryption tool. Secret keys are Bech32-encoded X25519 private keys prefixed with 'AGE-SECRET-KEY-'. Corresponding public keys start with 'age1'.",
+    "suggestedInspections": [
+      "Verify the 'AGE-SECRET-KEY-' prefix at the start of the key line.",
+      "Check for optional comment lines containing the corresponding public key (starts with 'age1').",
+      "Validate the Bech32 encoding of the key data portion.",
+      "Flag as critical forensic finding — private key material exposure."
+    ]
+  },
+  "software": [
+    { "name": "age", "platform": "Windows/macOS/Linux", "url": "https://github.com/FiloSottile/age" },
+    { "name": "rage", "platform": "Windows/macOS/Linux", "url": "https://github.com/str4d/rage" },
+    { "name": "age-keygen", "platform": "Windows/macOS/Linux", "url": "https://github.com/FiloSottile/age" }
+  ],
+  "formatRelationships": [
+    { "format": "SSH_KEY", "relationship": "alternative", "note": "age can also use SSH keys as recipients" },
+    { "format": "PGP", "relationship": "alternative", "note": "age is designed as a simpler replacement for GPG" }
+  ],
+  "MimeTypes": ["text/plain"],
+  "UseCases": [
+    "File encryption and decryption with age tool",
+    "Secrets management in DevOps pipelines",
+    "Forensic identification of exposed private key material"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 88,
+    "LastUpdated": "2026-04-16",
+    "ReviewedBy": "WPFHexaEditor Team"
+  },
+  "TechnicalDetails": {
+    "keyAlgorithm": "X25519 (Curve25519)",
+    "encoding": "Bech32",
+    "keyPrefix": "AGE-SECRET-KEY-",
+    "publicKeyPrefix": "age1",
+    "keyLength": "74 characters total (prefix + Bech32 data)"
+  }
+}

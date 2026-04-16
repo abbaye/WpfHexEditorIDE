@@ -1,0 +1,175 @@
+{
+  "diffMode": "text",
+  "formatName": "Open Virtualization Format (OVF)",
+  "version": "1.0",
+  "extensions": [".ovf"],
+  "description": "Open Virtualization Format XML descriptor — defines virtual machine hardware configuration, virtual disk references, network interfaces, and deployment options. OVF is standardized by DMTF and serves as the metadata component within OVA archives. The root XML element is <Envelope> from the OVF namespace.",
+  "category": "Virtualization",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "code-editor",
+  "references": [
+    "https://www.dmtf.org/standards/ovf",
+    "https://en.wikipedia.org/wiki/Open_Virtualization_Format",
+    "https://schemas.dmtf.org/ovf/envelope/2/dsp8023_2.0.xsd"
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "value": "3C3F786D6C",
+        "offset": 0,
+        "label": "'<?xml' OVF XML descriptor",
+        "weight": 0.4
+      },
+      {
+        "value": "3C456E76656C6F7065",
+        "offset": 0,
+        "label": "'<Envelope' OVF root element",
+        "weight": 0.9
+      }
+    ],
+    "matchMode": "Best",
+    "MinimumScore": 0.4,
+    "Strength": "Medium",
+    "EntropyHint": "Low — XML text with structured tags and attribute values"
+  },
+  "variables": [
+    {
+      "name": "ovfRoot",
+      "offset": 0,
+      "size": 9,
+      "type": "ascii",
+      "description": "Root element name — expected 'Envelope' or '<?xml'"
+    },
+    {
+      "name": "ovfXmlDecl",
+      "offset": 0,
+      "size": 5,
+      "type": "ascii",
+      "description": "XML declaration prefix '<?xml'"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "XmlDeclaration",
+      "offset": 0,
+      "size": 38,
+      "description": "XML declaration line: <?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+    },
+    {
+      "name": "EnvelopeElement",
+      "offset": 0,
+      "size": 0,
+      "description": "Root <Envelope> element with OVF namespace declarations"
+    },
+    {
+      "name": "ReferencesSection",
+      "offset": 0,
+      "size": 0,
+      "description": "<References> section listing virtual disk file references"
+    },
+    {
+      "name": "VirtualSystemSection",
+      "offset": 0,
+      "size": 0,
+      "description": "<VirtualSystem> defining VM hardware and configuration"
+    }
+  ],
+  "assertions": [
+    {
+      "variable": "ovfXmlDecl",
+      "operator": "==",
+      "value": "<?xml",
+      "description": "File should start with XML declaration",
+      "level": "Warning"
+    },
+    {
+      "variable": "ovfRoot",
+      "operator": "contains",
+      "value": "Envelope",
+      "description": "Root element must be <Envelope> for valid OVF",
+      "level": "Warning"
+    },
+    {
+      "variable": "ovfXmlDecl",
+      "operator": "!=",
+      "value": "",
+      "description": "XML declaration must not be empty",
+      "level": "Error"
+    }
+  ],
+  "navigation": {
+    "entryPoint": 0,
+    "sections": [
+      { "name": "XML Declaration", "offset": 0, "size": 40 },
+      { "name": "Envelope", "offset": 0, "size": 0 },
+      { "name": "References", "offset": 0, "size": 0 },
+      { "name": "VirtualSystem", "offset": 0, "size": 0 }
+    ]
+  },
+  "inspector": {
+    "badge": "OVF",
+    "primaryField": "ovfXmlDecl",
+    "groups": [
+      {
+        "name": "Identity",
+        "fields": ["ovfXmlDecl", "ovfRoot"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "OVF Summary",
+      "format": "text",
+      "template": "Format: OVF (Open Virtualization Format)\nRoot Element: {ovfRoot}"
+    },
+    {
+      "name": "OVF JSON Report",
+      "format": "json",
+      "template": "{ \"format\": \"OVF\", \"rootElement\": \"{ovfRoot}\" }"
+    }
+  ],
+  "forensic": {
+    "riskLevel": "LOW",
+    "notes": "OVF descriptors define VM hardware and can reference external disk images. Check for unexpected network bridge configurations or post-install scripts.",
+    "suspiciousPatterns": [
+      "OVF referencing network adapters in bridge/promiscuous mode",
+      "Post-install script sections with encoded payloads",
+      "Disk references pointing to unexpected external URLs"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "OVF is an XML descriptor for virtual machines, part of the DMTF OVF standard. Usually found inside OVA TAR archives or alongside VMDK files.",
+    "suggestedInspections": [
+      "Parse the XML and verify the OVF namespace is correct (DMTF OVF 2.0 or 1.0).",
+      "Inspect <VirtualHardwareSection> for CPU, memory, and disk allocation.",
+      "Check <References> for disk image file paths and sizes.",
+      "Look for <ProductSection> containing vendor metadata and deployment scripts."
+    ]
+  },
+  "software": [
+    { "name": "VMware Workstation", "platform": "Windows/Linux", "url": "https://www.vmware.com/products/workstation-pro.html" },
+    { "name": "Oracle VirtualBox", "platform": "Windows/macOS/Linux", "url": "https://www.virtualbox.org/" },
+    { "name": "oVirt", "platform": "Linux", "url": "https://www.ovirt.org/" }
+  ],
+  "formatRelationships": [
+    { "format": "OVA", "relationship": "parent", "note": "OVF is typically contained as the first entry in an OVA TAR archive" },
+    { "format": "VMDK", "relationship": "references", "note": "OVF descriptor references VMDK disk images" }
+  ],
+  "MimeTypes": ["application/ovf+xml", "text/xml"],
+  "UseCases": [
+    "Virtual machine hardware description and configuration",
+    "Cross-hypervisor VM metadata exchange",
+    "Automated VM deployment and provisioning"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 83,
+    "LastUpdated": "2026-04-16",
+    "ReviewedBy": "WPFHexaEditor Team"
+  },
+  "TechnicalDetails": {
+    "encoding": "UTF-8 XML",
+    "standardBody": "DMTF OVF 1.0 / 2.0",
+    "rootElement": "<Envelope>",
+    "namespaces": "http://schemas.dmtf.org/ovf/envelope/1 or /2"
+  }
+}

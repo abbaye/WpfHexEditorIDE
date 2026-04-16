@@ -300,6 +300,20 @@ public interface ILspClient : IAsyncDisposable
     /// <summary>Whether <see cref="InitializeAsync"/> has completed successfully.</summary>
     bool IsInitialized { get; }
 
+    /// <summary>
+    /// Whether the server has finished its initial project analysis (solution load,
+    /// first diagnostic pass, etc.). Semantic layers and diagnostics should wait for
+    /// this before rendering to avoid transient init-time noise — the same behaviour
+    /// Visual Studio implements internally.
+    /// </summary>
+    bool IsFullyLoaded { get; }
+
+    /// <summary>
+    /// Raised once when <see cref="IsFullyLoaded"/> transitions from false to true.
+    /// Always fired on the WPF Dispatcher thread.
+    /// </summary>
+    event Action? FullyLoaded;
+
     // ── Document Synchronization ──────────────────────────────────────────────
 
     /// <summary>Sends textDocument/didOpen.</summary>

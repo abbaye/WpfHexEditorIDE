@@ -1,0 +1,207 @@
+{
+  "diffMode": "text",
+  "formatName": "G-code (CNC/3D Printing)",
+  "version": "1.0",
+  "extensions": [
+    ".gcode",
+    ".nc",
+    ".ngc"
+  ],
+  "description": "G-code — numerical control programming language for CNC machines, 3D printers, and laser cutters. Each line contains commands like G0/G1 (linear moves), G2/G3 (arcs), G28 (home), M104 (set temperature), M109 (wait temperature). Comments start with semicolon or parentheses. Used in additive and subtractive manufacturing workflows.",
+  "category": "3D",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "code-editor",
+  "references": {
+    "specifications": [
+      "RS-274 G-code standard (EIA/ISO)",
+      "RepRap G-code reference — reprap.org/wiki/G-code",
+      "LinuxCNC G-code — linuxcnc.org/docs/html/gcode.html"
+    ],
+    "WebLinks": [
+      "https://reprap.org/wiki/G-code",
+      "https://en.wikipedia.org/wiki/G-code",
+      "https://linuxcnc.org/docs/html/gcode.html"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      { "value": "3B", "offset": 0, "label": "';' G-code comment (common file start)", "weight": 0.5 },
+      { "value": "47", "offset": 0, "label": "'G' G-code command (G0/G1/G28)", "weight": 0.5 },
+      { "value": "4D", "offset": 0, "label": "'M' M-code command", "weight": 0.4 }
+    ],
+    "required": false,
+    "Strength": "Weak",
+    "MinimumScore": 0.3,
+    "validation": {
+      "minFileSize": 10
+    }
+  },
+  "variables": {
+    "gcodeFirstByte": 0
+  },
+  "blocks": [
+    {
+      "type": "field",
+      "name": "First Byte",
+      "offset": 0,
+      "length": 1,
+      "color": "#FF6B6B",
+      "opacity": 0.45,
+      "description": "First byte of the G-code file. Common values: ';' (0x3B, comment), 'G' (0x47, G-command), 'M' (0x4D, M-command), '%' (0x25, program delimiter).",
+      "storeAs": "gcodeFirstByte",
+      "valueType": "uint8",
+      "valueMap": {
+        "59": "'; comment",
+        "71": "'G' movement command",
+        "77": "'M' machine command",
+        "37": "'%' program start"
+      }
+    },
+    {
+      "type": "field",
+      "name": "Header Comments",
+      "offset": 0,
+      "length": 80,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "Opening comment lines typically contain slicer information, print settings, filament type, and generation date. Lines start with ';' in most 3D printing G-code."
+    },
+    {
+      "type": "field",
+      "name": "Initialization Block",
+      "offset": 80,
+      "length": 60,
+      "color": "#FFEAA7",
+      "opacity": 0.35,
+      "description": "Initialization commands: G28 (home axes), G90 (absolute positioning), M104/M109 (set/wait extruder temp), M140/M190 (set/wait bed temp), G92 (set position)."
+    },
+    {
+      "type": "field",
+      "name": "Motion Commands",
+      "offset": 140,
+      "length": 60,
+      "color": "#95E1D3",
+      "opacity": 0.30,
+      "description": "G0/G1 linear move commands with X Y Z coordinates and F feed rate. G1 X10.5 Y20.3 Z0.2 F1200 = linear move at 1200mm/min. E parameter for extrusion."
+    }
+  ],
+  "assertions": [
+    {
+      "name": "Printable ASCII content",
+      "expression": "gcodeFirstByte >= 32 && gcodeFirstByte <= 126 || gcodeFirstByte == 10 || gcodeFirstByte == 13",
+      "severity": "warning",
+      "message": "G-code files should contain printable ASCII text"
+    },
+    {
+      "name": "File has content",
+      "expression": "fileSize > 10",
+      "severity": "error",
+      "message": "G-code file is too small to contain valid commands"
+    },
+    {
+      "name": "Likely G-code start character",
+      "expression": "gcodeFirstByte == 59 || gcodeFirstByte == 71 || gcodeFirstByte == 77 || gcodeFirstByte == 37 || gcodeFirstByte == 40 || gcodeFirstByte == 10",
+      "severity": "info",
+      "message": "G-code typically starts with ; G M % or ( characters"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "File Start", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
+      { "name": "Init Block", "offset": 80, "icon": "\uE8A5", "color": "#FFEAA7" }
+    ]
+  },
+  "inspector": {
+    "badge": "gcodeFirstByte",
+    "primaryField": "gcodeFirstByte",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "G-code File",
+        "icon": "\uE71B",
+        "fields": ["gcodeFirstByte"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "G-code Info (JSON)",
+      "format": "json",
+      "fields": ["gcodeFirstByte"]
+    },
+    {
+      "name": "gcode_header_t (C struct)",
+      "format": "c-struct",
+      "structName": "gcode_header",
+      "fields": ["gcodeFirstByte"]
+    }
+  ],
+  "forensic": {
+    "category": "manufacturing",
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      {
+        "name": "Binary content in G-code",
+        "condition": "gcodeFirstByte < 32 && gcodeFirstByte != 10 && gcodeFirstByte != 13",
+        "severity": "warning",
+        "description": "Non-printable byte found — G-code should be plain ASCII text."
+      }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "G-code: line-based plain text. G-commands (geometry): G0=rapid move, G1=linear feed, G2/G3=arc CW/CCW, G28=home, G90=absolute, G91=relative, G92=set position. M-commands (machine): M104=set extruder temp, M109=wait extruder temp, M140=set bed temp, M190=wait bed temp, M106=fan on, M107=fan off, M82=E absolute, M83=E relative. Parameters: X Y Z (position), E (extrusion), F (feed rate mm/min), S (spindle speed/temp).",
+    "suggestedInspections": [
+      "Parse header comments for slicer name, version, and print settings",
+      "Extract temperature commands (M104/M109/M140/M190) with S values",
+      "Calculate total extrusion length from E parameter progression",
+      "Identify layer changes (Z position increments in G1 commands)"
+    ]
+  },
+  "software": [
+    "Cura (Ultimaker)",
+    "PrusaSlicer",
+    "OctoPrint",
+    "Repetier-Host",
+    "LinuxCNC",
+    "Mach3/Mach4"
+  ],
+  "formatRelationships": {
+    "category": "3D",
+    "extensions": [".gcode", ".nc", ".ngc"],
+    "relatedFormats": ["THREE_MF", "STL", "OBJ"],
+    "containerVariant": "G-code is the final machine instruction output; 3MF/STL/OBJ are the input geometry formats to slicers"
+  },
+  "MimeTypes": [
+    "text/x-gcode",
+    "text/plain"
+  ],
+  "UseCases": [
+    "3D printer toolpath instructions (FDM/FFF sliced output)",
+    "CNC milling and turning machine control programs",
+    "Laser cutter/engraver path definitions",
+    "Additive manufacturing build instructions"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 83,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 4,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-16",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "FileType": "Plain-text numerical control program",
+    "Encoding": "ASCII",
+    "LineTerminator": "LF or CRLF",
+    "CommandTypes": {
+      "G": "Geometry/preparatory (movement, units, planes)",
+      "M": "Machine/miscellaneous (spindle, coolant, program control)",
+      "T": "Tool selection",
+      "S": "Spindle speed or temperature",
+      "F": "Feed rate",
+      "N": "Line number"
+    },
+    "Endianness": "N/A (text format)"
+  }
+}

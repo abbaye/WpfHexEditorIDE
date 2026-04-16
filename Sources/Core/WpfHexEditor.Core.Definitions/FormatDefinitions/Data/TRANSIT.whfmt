@@ -1,0 +1,193 @@
+{
+  "diffMode": "binary",
+  "formatName": "Transit Data Format",
+  "version": "1.0",
+  "extensions": [".transit"],
+  "description": "Transit is a data interchange format created by Cognitect (the company behind Clojure and Datomic). It extends JSON and MessagePack with rich type semantics using tagged values. Transit JSON encodes tagged values as two-element arrays like [\"~#'\", \"value\"], starting with 0x5B227E23272022. Transit supports keywords, symbols, UUIDs, dates, URIs, sets, and other types not native to JSON. Used extensively in ClojureScript and Datomic applications.",
+  "category": "Data",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "references": [
+    "https://github.com/cognitect/transit-format",
+    "https://cognitect.github.io/transit-format/",
+    "https://github.com/cognitect/transit-clj"
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "value": "5B227E23272022",
+        "offset": 0,
+        "label": "'[\"~#' \"' Transit JSON tagged value",
+        "weight": 0.7
+      }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.5,
+    "Strength": "Medium",
+    "validation": {
+      "rules": []
+    }
+  },
+  "variables": [
+    {
+      "name": "transitArrayOpen",
+      "offset": 0,
+      "size": 1,
+      "type": "uint8",
+      "storeAs": "transitArrayOpen",
+      "description": "Array open bracket 0x5B '[' — Transit JSON starts with an array"
+    },
+    {
+      "name": "transitTag",
+      "offset": 1,
+      "size": 4,
+      "type": "ascii",
+      "storeAs": "transitTag",
+      "description": "First 4 bytes after '[' — typically '\"~#'' for Transit tagged value"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "ArrayOpen",
+      "offset": 0,
+      "size": 1,
+      "description": "JSON array open bracket '[' (0x5B) starting the Transit document",
+      "fields": [
+        { "name": "Bracket", "offset": 0, "size": 1, "type": "uint8" }
+      ]
+    },
+    {
+      "name": "TagMarker",
+      "offset": 1,
+      "size": 4,
+      "description": "Transit tag prefix '\"~#'' identifying the tagged value type",
+      "fields": [
+        { "name": "Tag", "offset": 1, "size": 4, "type": "ascii" }
+      ]
+    },
+    {
+      "name": "TaggedValue",
+      "offset": 5,
+      "size": -1,
+      "description": "The tagged value payload — type depends on the tag identifier",
+      "fields": []
+    },
+    {
+      "name": "CacheEntries",
+      "offset": -1,
+      "size": -1,
+      "description": "Cached string references using '^' prefix for repeated keys",
+      "fields": []
+    }
+  ],
+  "assertions": [
+    {
+      "id": "assert_array_open",
+      "field": "transitArrayOpen",
+      "operator": "equals",
+      "value": 91,
+      "severity": "error",
+      "message": "Transit JSON must start with '[' (0x5B)"
+    },
+    {
+      "id": "assert_tag_present",
+      "field": "transitTag",
+      "operator": "notEquals",
+      "value": "",
+      "severity": "warning",
+      "message": "Expected Transit tag prefix after opening bracket"
+    },
+    {
+      "id": "assert_valid_start",
+      "field": "transitArrayOpen",
+      "operator": "greaterThan",
+      "value": 0,
+      "severity": "info",
+      "message": "File has content for Transit analysis"
+    }
+  ],
+  "navigation": {
+    "entryPoints": [
+      { "name": "Array Open", "offset": 0 },
+      { "name": "Tag Marker", "offset": 1 }
+    ],
+    "jumpTable": [
+      { "label": "Root Array '['", "offset": 0 },
+      { "label": "Tag Prefix", "offset": 1 }
+    ]
+  },
+  "inspector": {
+    "badge": "TR",
+    "primaryField": "transitArrayOpen",
+    "groups": [
+      {
+        "name": "Identification",
+        "fields": ["transitArrayOpen", "transitTag"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "Transit Header Summary",
+      "format": "text",
+      "template": "Transit Data Format\nArray Open: 0x{transitArrayOpen:X2}\nTag Prefix: {transitTag}"
+    },
+    {
+      "name": "Transit Header CSV",
+      "format": "csv",
+      "template": "Field,Value\nArrayOpen,0x{transitArrayOpen:X2}\nTagPrefix,{transitTag}"
+    }
+  ],
+  "forensic": {
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      "Missing '[' at offset 0 — not Transit JSON format",
+      "Unknown tag identifiers — custom or non-standard Transit extensions",
+      "Cache references ('^') pointing to non-existent entries",
+      "Mixed Transit and plain JSON content"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "Transit JSON uses two-element arrays for tagged values: [\"~#tag\", value]. Common tags: '~#'' (quote), '~#list' (list), '~#set' (set), '~#cmap' (composite map). Scalar extensions use '~:' for keywords, '~$' for symbols, '~u' for UUIDs, '~t' for dates. Cache codes '^0', '^1' etc. replace repeated strings.",
+    "suggestedInspections": [
+      "Check for '[' at offset 0 and Transit tag pattern '\"~#' at offset 1",
+      "Identify the root tag type (quote, list, set, cmap)",
+      "Scan for cache reference patterns '^N' indicating string deduplication",
+      "Parse tagged scalar types: ~: (keyword), ~$ (symbol), ~u (UUID), ~t (date)"
+    ]
+  },
+  "software": [
+    { "name": "transit-clj", "vendor": "Cognitect", "platform": "JVM/Clojure" },
+    { "name": "transit-js", "vendor": "Cognitect", "platform": "JavaScript" },
+    { "name": "transit-python", "vendor": "Cognitect", "platform": "Python" }
+  ],
+  "formatRelationships": [
+    { "format": "JSON", "relation": "parent", "note": "Transit extends JSON with tagged value semantics" },
+    { "format": "MSGPACK", "relation": "sibling", "note": "Transit also has a MessagePack encoding variant" },
+    { "format": "EDN", "relation": "sibling", "note": "EDN is Clojure's native data format; Transit is optimized for cross-language interchange" }
+  ],
+  "MimeTypes": [
+    "application/transit+json",
+    "application/transit+msgpack",
+    "application/octet-stream"
+  ],
+  "UseCases": [
+    "ClojureScript frontend-backend data interchange",
+    "Datomic database query results serialization",
+    "Rich type data exchange between JVM and JavaScript",
+    "API payloads requiring types beyond JSON primitives"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 83,
+    "LastUpdated": "2026-04-16"
+  },
+  "TechnicalDetails": {
+    "headerSize": 1,
+    "endian": "n/a",
+    "signatureOffset": 0,
+    "signatureLength": 7,
+    "magicValue": "5B227E23272022",
+    "encoding": "JSON or MessagePack with tagged value extensions",
+    "notes": "Transit JSON starts with '[\"~#' tag. Transit MessagePack uses equivalent msgpack arrays. Cache entries reduce repeated string overhead."
+  }
+}

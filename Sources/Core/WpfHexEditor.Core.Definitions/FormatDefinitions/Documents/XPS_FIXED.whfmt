@@ -1,0 +1,180 @@
+{
+  "diffMode": "binary",
+  "formatName": "XML Paper Specification (XPS/OXPS)",
+  "version": "1.0",
+  "extensions": [".xps", ".oxps"],
+  "description": "XPS (XML Paper Specification) and OXPS (Open XPS) are fixed-layout document formats developed by Microsoft as alternatives to PDF. XPS files are ZIP containers (PK magic 0x504B0304) containing XAML-based FixedDocumentSequence.fdseq, FixedDocument.fdoc, and FixedPage.fpage files along with [Content_Types].xml. OXPS is the ECMA-388 standardized version using Open Packaging Conventions. Both formats preserve exact page layout with embedded fonts and images.",
+  "category": "Documents",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "references": [
+    "https://en.wikipedia.org/wiki/Open_XML_Paper_Specification",
+    "https://www.ecma-international.org/publications-and-standards/standards/ecma-388/",
+    "https://learn.microsoft.com/en-us/windows/win32/printdocs/documents"
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "value": "504B0304",
+        "offset": 0,
+        "label": "PK ZIP container for XPS",
+        "weight": 0.5
+      }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.4,
+    "Strength": "Medium",
+    "validation": {
+      "rules": []
+    }
+  },
+  "variables": [
+    {
+      "name": "xpsZipMagic",
+      "offset": 0,
+      "size": 4,
+      "type": "ascii",
+      "storeAs": "xpsZipMagic",
+      "description": "4-byte ZIP magic 'PK' header (0x504B0304)"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "ZipMagic",
+      "offset": 0,
+      "size": 4,
+      "description": "ZIP local file header signature 'PK' (0x504B0304)",
+      "fields": [
+        { "name": "Signature", "offset": 0, "size": 4, "type": "hex" }
+      ]
+    },
+    {
+      "name": "ZipLocalHeader",
+      "offset": 4,
+      "size": 26,
+      "description": "ZIP local file header: version, flags, compression, timestamps, sizes, filename",
+      "fields": []
+    },
+    {
+      "name": "ContentTypes",
+      "offset": -1,
+      "size": -1,
+      "description": "[Content_Types].xml entry defining MIME types for XPS parts",
+      "fields": []
+    },
+    {
+      "name": "FixedDocumentSequence",
+      "offset": -1,
+      "size": -1,
+      "description": "FixedDocumentSequence.fdseq — root document listing FixedDocument references",
+      "fields": []
+    }
+  ],
+  "assertions": [
+    {
+      "id": "assert_zip_magic",
+      "field": "xpsZipMagic",
+      "operator": "contains",
+      "value": "PK",
+      "severity": "error",
+      "message": "ZIP magic 'PK' not found — XPS files must be ZIP containers"
+    },
+    {
+      "id": "assert_not_empty",
+      "field": "xpsZipMagic",
+      "operator": "notEquals",
+      "value": "",
+      "severity": "error",
+      "message": "File is empty — cannot be a valid XPS document"
+    },
+    {
+      "id": "assert_valid_zip",
+      "field": "xpsZipMagic",
+      "operator": "notEquals",
+      "value": "PK\u0005\u0006",
+      "severity": "info",
+      "message": "ZIP may be an empty archive (end of central directory only)"
+    }
+  ],
+  "navigation": {
+    "entryPoints": [
+      { "name": "ZIP Header", "offset": 0 }
+    ],
+    "jumpTable": [
+      { "label": "ZIP Magic 'PK'", "offset": 0 }
+    ]
+  },
+  "inspector": {
+    "badge": "XP",
+    "primaryField": "xpsZipMagic",
+    "groups": [
+      {
+        "name": "Container",
+        "fields": ["xpsZipMagic"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "XPS Container Summary",
+      "format": "text",
+      "template": "XPS Document\nContainer: ZIP (PK)\nMagic: {xpsZipMagic}"
+    },
+    {
+      "name": "XPS Container CSV",
+      "format": "csv",
+      "template": "Field,Value\nZipMagic,{xpsZipMagic}\nFormat,XPS/OXPS"
+    }
+  ],
+  "forensic": {
+    "riskLevel": "medium",
+    "suspiciousPatterns": [
+      "ZIP magic absent — not a valid XPS container",
+      "Missing [Content_Types].xml — corrupt or incomplete package",
+      "Missing FixedDocumentSequence.fdseq — not a valid XPS document",
+      "Unexpected executable content inside ZIP entries"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "XPS/OXPS files are ZIP packages following Open Packaging Conventions (OPC). Key entries: [Content_Types].xml (MIME registry), _rels/.rels (root relationships), FixedDocumentSequence.fdseq (document list), Documents/N/FixedDocument.fdoc (page list), Pages/N.fpage (XAML page content). Fonts and images are embedded as ZIP entries.",
+    "suggestedInspections": [
+      "Verify ZIP magic 0x504B0304 at offset 0",
+      "List ZIP entries to find [Content_Types].xml and FixedDocumentSequence.fdseq",
+      "Check content types for XPS-specific MIME types (application/oxps)",
+      "Inspect embedded fonts and images for completeness"
+    ]
+  },
+  "software": [
+    { "name": "Microsoft XPS Viewer", "vendor": "Microsoft", "platform": "Windows" },
+    { "name": "Windows Print to XPS", "vendor": "Microsoft", "platform": "Windows" },
+    { "name": "Okular", "vendor": "KDE", "platform": "Cross-platform" }
+  ],
+  "formatRelationships": [
+    { "format": "PDF", "relation": "sibling", "note": "Both are fixed-layout document formats; XPS uses XAML, PDF uses its own operators" },
+    { "format": "OOXML_STRICT", "relation": "sibling", "note": "Both use OPC (ZIP + [Content_Types].xml) packaging" },
+    { "format": "ZIP", "relation": "container", "note": "XPS is a ZIP-based Open Packaging Convention container" }
+  ],
+  "MimeTypes": [
+    "application/vnd.ms-xpsdocument",
+    "application/oxps"
+  ],
+  "UseCases": [
+    "Windows print spool fixed-layout documents",
+    "Electronic document archival with exact layout preservation",
+    "Cross-application document sharing on Windows platform",
+    "Digital signature and rights management for documents"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 83,
+    "LastUpdated": "2026-04-16"
+  },
+  "TechnicalDetails": {
+    "headerSize": 4,
+    "endian": "little",
+    "signatureOffset": 0,
+    "signatureLength": 4,
+    "magicValue": "504B0304",
+    "container": "ZIP (Open Packaging Conventions)",
+    "notes": "XPS uses ZIP container. Distinguish from other ZIP-based formats by checking for FixedDocumentSequence.fdseq and XPS-specific content types."
+  }
+}

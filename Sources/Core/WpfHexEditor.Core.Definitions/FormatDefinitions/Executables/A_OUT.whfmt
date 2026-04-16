@@ -1,0 +1,271 @@
+{
+  "formatName": "a.out Executable",
+  "version": "1.0",
+  "diffMode": "binary",
+  "extensions": [
+    ".out"
+  ],
+  "description": "The a.out (assembler output) format is one of the earliest Unix executable binary formats, predating ELF and COFF. It defines text, data, and BSS segments with a simple fixed-size header structure.",
+  "category": "Executables",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "MimeTypes": [
+    "application/x-executable",
+    "application/x-aout"
+  ],
+  "UseCases": [
+    "Legacy Unix executables from early BSD and System V systems",
+    "Historical binary analysis and digital archaeology",
+    "Retrocomputing and vintage OS research",
+    "Understanding the evolution of executable formats"
+  ],
+  "references": [
+    "https://en.wikipedia.org/wiki/A.out",
+    "https://man.freebsd.org/cgi/man.cgi?query=a.out&sektion=5",
+    "https://www.bell-labs.com/usr/dmr/www/man51.pdf"
+  ],
+  "software": [
+    {
+      "name": "ld (legacy)",
+      "url": "https://www.gnu.org/software/binutils/",
+      "role": "Historic linker that produced a.out binaries"
+    },
+    {
+      "name": "file",
+      "url": "https://www.darwinsys.com/file/",
+      "role": "Magic-based file type identification"
+    },
+    {
+      "name": "objdump",
+      "url": "https://www.gnu.org/software/binutils/",
+      "role": "Object file disassembler and analyzer"
+    }
+  ],
+  "formatRelationships": [
+    {
+      "format": "ELF",
+      "relationship": "ELF replaced a.out as the standard Unix executable format"
+    },
+    {
+      "format": "COFF",
+      "relationship": "COFF was a transitional format between a.out and ELF"
+    }
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "offset": 0,
+        "value": "0107",
+        "label": "OMAGIC a.out (impure executable)",
+        "weight": 0.7
+      },
+      {
+        "offset": 0,
+        "value": "010B",
+        "label": "NMAGIC a.out (pure executable, read-only text)",
+        "weight": 0.7
+      },
+      {
+        "offset": 0,
+        "value": "0108",
+        "label": "ZMAGIC a.out (demand-paged executable)",
+        "weight": 0.7
+      }
+    ],
+    "matchMode": "best",
+    "MinimumScore": 82,
+    "Strength": "Medium",
+    "EntropyHint": {
+      "min": 4.0,
+      "max": 7.5,
+      "note": "Compiled machine code has moderately high entropy; text and data segments vary"
+    },
+    "validation": "First 2 bytes must be one of 0x0107 (OMAGIC), 0x010B (NMAGIC), or 0x0108 (ZMAGIC). Text and data sizes should be reasonable."
+  },
+  "variables": [
+    {
+      "name": "aoutMagic",
+      "type": "uint16",
+      "offset": 0,
+      "length": 2,
+      "endian": "big",
+      "description": "a.out magic number identifying the executable type"
+    },
+    {
+      "name": "aoutTextSize",
+      "type": "uint32",
+      "offset": 4,
+      "length": 4,
+      "endian": "big",
+      "description": "Size of the text (code) segment in bytes"
+    },
+    {
+      "name": "aoutDataSize",
+      "type": "uint32",
+      "offset": 8,
+      "length": 4,
+      "endian": "big",
+      "description": "Size of the initialized data segment in bytes"
+    },
+    {
+      "name": "aoutBssSize",
+      "type": "uint32",
+      "offset": 12,
+      "length": 4,
+      "endian": "big",
+      "description": "Size of the uninitialized data (BSS) segment in bytes"
+    },
+    {
+      "name": "aoutSymSize",
+      "type": "uint32",
+      "offset": 16,
+      "length": 4,
+      "endian": "big",
+      "description": "Size of the symbol table in bytes"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "Header",
+      "offset": 0,
+      "length": 32,
+      "description": "a.out header containing magic number, segment sizes, entry point, and relocation info sizes",
+      "fields": [
+        {
+          "name": "Magic",
+          "variable": "aoutMagic",
+          "offset": 0,
+          "length": 2
+        },
+        {
+          "name": "TextSize",
+          "variable": "aoutTextSize",
+          "offset": 4,
+          "length": 4
+        },
+        {
+          "name": "DataSize",
+          "variable": "aoutDataSize",
+          "offset": 8,
+          "length": 4
+        }
+      ]
+    },
+    {
+      "name": "TextSegment",
+      "offset": 32,
+      "length": -1,
+      "description": "Executable machine code (text segment) containing the program instructions"
+    },
+    {
+      "name": "DataSegment",
+      "offset": -1,
+      "length": -1,
+      "description": "Initialized data segment containing global and static variables with initial values"
+    },
+    {
+      "name": "SymbolTable",
+      "offset": -1,
+      "length": -1,
+      "description": "Symbol table entries mapping names to addresses for debugging and linking"
+    }
+  ],
+  "assertions": [
+    {
+      "id": "A1",
+      "description": "Magic must be OMAGIC (0x0107), NMAGIC (0x010B), or ZMAGIC (0x0108)",
+      "expression": "aoutMagic == 0x0107 || aoutMagic == 0x010B || aoutMagic == 0x0108"
+    },
+    {
+      "id": "A2",
+      "description": "Text segment size must be greater than zero",
+      "expression": "aoutTextSize > 0"
+    },
+    {
+      "id": "A3",
+      "description": "Data segment size should be reasonable (< 512 MB)",
+      "expression": "aoutDataSize < 536870912"
+    }
+  ],
+  "navigation": {
+    "entryPoint": "Header",
+    "structure": [
+      "Header",
+      "TextSegment",
+      "DataSegment",
+      "SymbolTable"
+    ],
+    "notes": "The a.out header is 32 bytes. Text segment immediately follows. Data segment follows text. Symbol table and string table are at the end."
+  },
+  "inspector": {
+    "badge": "a.out",
+    "primaryField": "aoutMagic",
+    "groups": [
+      {
+        "name": "Header",
+        "fields": [
+          "aoutMagic",
+          "aoutTextSize",
+          "aoutDataSize",
+          "aoutBssSize",
+          "aoutSymSize"
+        ]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "a.out Header CSV",
+      "format": "csv",
+      "fields": [
+        "aoutMagic",
+        "aoutTextSize",
+        "aoutDataSize",
+        "aoutBssSize",
+        "aoutSymSize"
+      ]
+    },
+    {
+      "name": "a.out Header JSON",
+      "format": "json",
+      "fields": [
+        "aoutMagic",
+        "aoutTextSize",
+        "aoutDataSize",
+        "aoutBssSize",
+        "aoutSymSize"
+      ]
+    }
+  ],
+  "forensic": {
+    "riskLevel": "HIGH",
+    "notes": "Legacy a.out binaries lack modern security features like ASLR support. Finding a.out executables on modern systems is highly suspicious and may indicate rootkits targeting old kernel interfaces.",
+    "suspiciousPatterns": [
+      "a.out binary found on a modern system (post-2000) indicating possible legacy exploit",
+      "Symbol table stripped to hide function names",
+      "Unusually large BSS segment suggesting hidden data allocation",
+      "Text segment with low entropy suggesting packed or encrypted code"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "The a.out format is the original Unix executable format from the 1970s. It uses a simple fixed header followed by text, data, text relocations, data relocations, symbol table, and string table. Three magic numbers define the memory layout strategy.",
+    "suggestedInspections": [
+      "Identify the magic type to determine memory layout (OMAGIC/NMAGIC/ZMAGIC)",
+      "Calculate total file size from header fields and verify against actual size",
+      "Parse symbol table entries to identify exported and imported symbols",
+      "Check for relocation entries indicating position-dependent code"
+    ]
+  },
+  "TechnicalDetails": {
+    "headerSize": 32,
+    "magicOMAGIC": "0x0107",
+    "magicNMAGIC": "0x010B",
+    "magicZMAGIC": "0x0108",
+    "endianness": "Platform-dependent (typically big-endian for original PDP-11/VAX)"
+  },
+  "QualityMetrics": {
+    "CompletenessScore": 83,
+    "LastUpdated": "2026-04-16",
+    "ReviewedBy": "WPFHexaEditor Team"
+  }
+}

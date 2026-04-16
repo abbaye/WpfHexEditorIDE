@@ -1,0 +1,186 @@
+{
+  "diffMode": "binary",
+  "formatName": "Open Volume Kernel Library (OpenVKL)",
+  "version": "1.0",
+  "extensions": [
+    ".vkl",
+    ".vol"
+  ],
+  "description": "OpenVKL volume data file — binary volume data used with Intel's Open Volume Kernel Library for high-performance ray tracing of volumetric data. Extension-based detection only; no standardized magic number. Contains structured or unstructured volumetric grids (dense, sparse VDB, AMR, particle) for scientific visualization and rendering applications.",
+  "category": "3D",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "references": {
+    "specifications": [
+      "OpenVKL documentation — openvkl.org",
+      "Intel oneAPI Rendering Toolkit — software.intel.com"
+    ],
+    "WebLinks": [
+      "https://www.openvkl.org/",
+      "https://github.com/openvkl/openvkl",
+      "https://www.ospray.org/"
+    ]
+  },
+  "detection": {
+    "signatures": [],
+    "required": false,
+    "Strength": "Weak",
+    "MinimumScore": 0.1,
+    "validation": {
+      "minFileSize": 8
+    }
+  },
+  "variables": {
+    "openvklFirstByte": 0
+  },
+  "blocks": [
+    {
+      "type": "field",
+      "name": "First Byte",
+      "offset": 0,
+      "length": 1,
+      "color": "#FF6B6B",
+      "opacity": 0.45,
+      "description": "First byte of the volume data file. No standardized magic number — detection relies on file extension (.vkl, .vol).",
+      "storeAs": "openvklFirstByte",
+      "valueType": "uint8"
+    },
+    {
+      "type": "field",
+      "name": "Header Region",
+      "offset": 0,
+      "length": 16,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "First 16 bytes — may contain volume dimensions, voxel type, or format-specific header depending on the data source."
+    },
+    {
+      "type": "field",
+      "name": "Grid Metadata",
+      "offset": 16,
+      "length": 24,
+      "color": "#FFEAA7",
+      "opacity": 0.35,
+      "description": "Potential grid metadata region: dimensions (3x uint32), voxel spacing, origin offset, or VDB tree structure."
+    },
+    {
+      "type": "field",
+      "name": "Voxel Data Start",
+      "offset": 40,
+      "length": 32,
+      "color": "#95E1D3",
+      "opacity": 0.30,
+      "description": "Beginning of voxel data. Format depends on volume type: float32 for structured dense, mixed for VDB sparse grids."
+    }
+  ],
+  "assertions": [
+    {
+      "name": "File has content",
+      "expression": "fileSize > 8",
+      "severity": "error",
+      "message": "Volume file is too small to contain meaningful data"
+    },
+    {
+      "name": "First byte readable",
+      "expression": "openvklFirstByte >= 0",
+      "severity": "info",
+      "message": "First byte read successfully — no magic-based validation available for this format"
+    },
+    {
+      "name": "Reasonable file size",
+      "expression": "fileSize > 64",
+      "severity": "warning",
+      "message": "Volume files typically contain header + voxel data and should be larger than 64 bytes"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "File Start", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
+      { "name": "Data Region", "offset": 40, "icon": "\uE9D9", "color": "#95E1D3" }
+    ]
+  },
+  "inspector": {
+    "badge": "openvklFirstByte",
+    "primaryField": "openvklFirstByte",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "Volume Header",
+        "icon": "\uE71B",
+        "fields": ["openvklFirstByte"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "Volume Header (JSON)",
+      "format": "json",
+      "fields": ["openvklFirstByte"]
+    },
+    {
+      "name": "openvkl_header_t (C struct)",
+      "format": "c-struct",
+      "structName": "openvkl_header",
+      "fields": ["openvklFirstByte"]
+    }
+  ],
+  "forensic": {
+    "category": "3d",
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      {
+        "name": "Very small volume file",
+        "condition": "fileSize < 64",
+        "severity": "info",
+        "description": "File is unusually small for volume data — may be a header-only file or truncated."
+      }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "OpenVKL supports multiple volume types: structuredRegular (dense 3D grid, float/half/uchar voxels), structuredSpherical, VDB (sparse hierarchical, OpenVDB compatible), AMR (adaptive mesh refinement), unstructured (tetrahedral), particle. Raw volume files are typically headerless dense float arrays with dimensions specified externally. VDB files have their own format with 'VDB' magic.",
+    "suggestedInspections": [
+      "Check first bytes for potential VDB magic (0x20 0x42 0x44 0x56 = ' BDV' reversed)",
+      "If headerless raw: infer dimensions from file size / (voxel_size * components)",
+      "Look for float32 NaN/Inf values that might indicate empty regions",
+      "Check file extension (.vkl vs .vol) for format hints"
+    ]
+  },
+  "software": [
+    "Intel OSPRay",
+    "OpenVKL library",
+    "ParaView (with OSPRay backend)",
+    "VTK (Visualization Toolkit)"
+  ],
+  "formatRelationships": {
+    "category": "3D",
+    "extensions": [".vkl", ".vol"],
+    "relatedFormats": ["VDB", "NRRD", "RAW_VOLUME"],
+    "containerVariant": "OpenVKL is the rendering library; volume data may come in VDB, raw, or custom binary formats"
+  },
+  "MimeTypes": [
+    "application/x-openvkl",
+    "application/octet-stream"
+  ],
+  "UseCases": [
+    "Scientific volume visualization and rendering",
+    "Medical imaging volume ray marching",
+    "Fluid simulation volume data rendering",
+    "Cloud and fog rendering in production VFX"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 82,
+    "DocumentationLevel": "minimal",
+    "BlocksDefined": 4,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-16",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "FileType": "Binary volumetric data (format varies)",
+    "VolumeTypes": ["structuredRegular", "structuredSpherical", "VDB", "AMR", "unstructured", "particle"],
+    "VoxelTypes": ["float", "half", "uchar", "short", "ushort", "double"],
+    "Endianness": "Typically little-endian (x86)",
+    "DetectionMethod": "Extension-based only — no standardized magic number"
+  }
+}

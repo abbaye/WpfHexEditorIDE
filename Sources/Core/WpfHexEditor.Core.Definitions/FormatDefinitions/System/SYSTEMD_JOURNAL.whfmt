@@ -1,0 +1,260 @@
+{
+  "formatName": "systemd Journal",
+  "version": "1.0",
+  "diffMode": "binary",
+  "extensions": [
+    ".journal"
+  ],
+  "description": "systemd journal binary log format used by journald to store structured log entries. The file begins with the magic string 'LPKSHHRH' (0x4C504B5348485248) and contains indexed, compressed log records with metadata fields.",
+  "category": "System",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "MimeTypes": [
+    "application/x-systemd-journal"
+  ],
+  "UseCases": [
+    "Linux system log analysis and forensic investigation",
+    "Structured logging with indexed field queries",
+    "Boot-to-boot log persistence and rotation",
+    "Security audit trail on systemd-based Linux distributions"
+  ],
+  "references": [
+    "https://systemd.io/JOURNAL_FILE_FORMAT/",
+    "https://www.freedesktop.org/wiki/Software/systemd/journal-files/",
+    "https://github.com/systemd/systemd/blob/main/src/libsystemd/sd-journal/journal-def.h"
+  ],
+  "software": [
+    {
+      "name": "journalctl",
+      "url": "https://www.freedesktop.org/software/systemd/man/journalctl.html",
+      "role": "Primary journal query and export tool"
+    },
+    {
+      "name": "systemd-journal-remote",
+      "url": "https://www.freedesktop.org/software/systemd/",
+      "role": "Remote journal ingestion daemon"
+    },
+    {
+      "name": "python-systemd",
+      "url": "https://github.com/systemd/python-systemd",
+      "role": "Python bindings for journal access"
+    }
+  ],
+  "formatRelationships": [
+    {
+      "format": "SYSLOG",
+      "relationship": "journald replaces traditional syslog with structured binary logs"
+    },
+    {
+      "format": "AUDIT_LOG",
+      "relationship": "Linux audit log entries are captured and indexed by journald"
+    }
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "offset": 0,
+        "value": "4C504B5348485248",
+        "label": "systemd journal magic 'LPKSHHRH'",
+        "weight": 1.0
+      }
+    ],
+    "matchMode": "first",
+    "MinimumScore": 92,
+    "Strength": "Strong",
+    "EntropyHint": {
+      "min": 4.0,
+      "max": 7.0,
+      "note": "Mix of structured metadata, compressed payloads, and hash tables"
+    },
+    "validation": "First 8 bytes must be 'LPKSHHRH' (0x4C504B5348485248). Compatible and incompatible flags at offsets 8 and 12 define format features."
+  },
+  "variables": [
+    {
+      "name": "journalMagic",
+      "type": "ascii",
+      "offset": 0,
+      "length": 8,
+      "description": "Journal magic string: 'LPKSHHRH'"
+    },
+    {
+      "name": "journalCompatFlags",
+      "type": "uint32",
+      "offset": 8,
+      "length": 4,
+      "endian": "little",
+      "description": "Compatible feature flags (bit 0: SEALED)"
+    },
+    {
+      "name": "journalIncompatFlags",
+      "type": "uint32",
+      "offset": 12,
+      "length": 4,
+      "endian": "little",
+      "description": "Incompatible feature flags (bit 0: COMPRESSED_XZ, bit 1: COMPRESSED_LZ4, bit 2: KEYED_HASH, bit 3: COMPRESSED_ZSTD)"
+    },
+    {
+      "name": "journalState",
+      "type": "uint8",
+      "offset": 16,
+      "length": 1,
+      "description": "Journal state: 0=OFFLINE, 1=ONLINE, 2=ARCHIVED"
+    },
+    {
+      "name": "journalFileId",
+      "type": "hex",
+      "offset": 24,
+      "length": 16,
+      "description": "128-bit unique file identifier"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "FileHeader",
+      "offset": 0,
+      "length": 240,
+      "description": "Journal file header containing magic, flags, state, machine/boot IDs, and object offsets",
+      "fields": [
+        {
+          "name": "Magic",
+          "variable": "journalMagic",
+          "offset": 0,
+          "length": 8
+        },
+        {
+          "name": "CompatFlags",
+          "variable": "journalCompatFlags",
+          "offset": 8,
+          "length": 4
+        },
+        {
+          "name": "IncompatFlags",
+          "variable": "journalIncompatFlags",
+          "offset": 12,
+          "length": 4
+        }
+      ]
+    },
+    {
+      "name": "DataObjects",
+      "offset": -1,
+      "length": -1,
+      "description": "Data objects containing individual field values (KEY=VALUE pairs) stored as hash-indexed blobs"
+    },
+    {
+      "name": "EntryObjects",
+      "offset": -1,
+      "length": -1,
+      "description": "Entry objects referencing sets of data objects that form a complete log entry with timestamp"
+    },
+    {
+      "name": "HashTable",
+      "offset": -1,
+      "length": -1,
+      "description": "Data hash table and field hash table for O(1) lookup of stored field values"
+    }
+  ],
+  "assertions": [
+    {
+      "id": "A1",
+      "description": "Magic must be 'LPKSHHRH'",
+      "expression": "journalMagic == 'LPKSHHRH'"
+    },
+    {
+      "id": "A2",
+      "description": "State must be valid (0=OFFLINE, 1=ONLINE, 2=ARCHIVED)",
+      "expression": "journalState <= 2"
+    },
+    {
+      "id": "A3",
+      "description": "Incompatible flags must not have undefined bits set",
+      "expression": "journalIncompatFlags <= 15"
+    }
+  ],
+  "navigation": {
+    "entryPoint": "FileHeader",
+    "structure": [
+      "FileHeader",
+      "DataObjects",
+      "EntryObjects",
+      "HashTable"
+    ],
+    "notes": "Objects are 8-byte aligned. The header contains offsets to the first and last entry, data hash table, and field hash table. Entries are doubly linked for forward/backward traversal."
+  },
+  "inspector": {
+    "badge": "JRNL",
+    "primaryField": "journalMagic",
+    "groups": [
+      {
+        "name": "Header",
+        "fields": [
+          "journalMagic",
+          "journalCompatFlags",
+          "journalIncompatFlags",
+          "journalState"
+        ]
+      },
+      {
+        "name": "Identity",
+        "fields": [
+          "journalFileId"
+        ]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "Journal Header CSV",
+      "format": "csv",
+      "fields": [
+        "journalMagic",
+        "journalCompatFlags",
+        "journalIncompatFlags",
+        "journalState",
+        "journalFileId"
+      ]
+    },
+    {
+      "name": "Journal Header JSON",
+      "format": "json",
+      "fields": [
+        "journalMagic",
+        "journalCompatFlags",
+        "journalIncompatFlags",
+        "journalState",
+        "journalFileId"
+      ]
+    }
+  ],
+  "forensic": {
+    "riskLevel": "HIGH",
+    "notes": "Journal files contain comprehensive system activity logs critical for forensic investigation. Tampering with journal files can conceal intrusion evidence. SEALED flag enables forward-secure sealing with FSPRG.",
+    "suspiciousPatterns": [
+      "Journal file with state=ONLINE but system is offline (unclean shutdown or active tampering)",
+      "Missing or corrupted hash table entries suggesting selective log deletion",
+      "Gaps in monotonic timestamp sequence indicating removed entries",
+      "SEALED flag absent on security-sensitive systems"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "systemd journal files use a custom binary format with hash-indexed data objects. Each log entry references multiple data objects (one per field like MESSAGE=, _PID=, _COMM=). Compression is per-object (XZ, LZ4, or ZSTD based on incompatible flags).",
+    "suggestedInspections": [
+      "Parse incompatible flags to determine compression algorithm in use",
+      "Walk the entry linked list to reconstruct chronological log entries",
+      "Verify data object hash chains for integrity (detect selective deletion)",
+      "Extract machine-id and boot-id from header for cross-system correlation"
+    ]
+  },
+  "TechnicalDetails": {
+    "headerSize": 240,
+    "objectAlignment": 8,
+    "endianness": "Little-endian",
+    "compressionOptions": "XZ, LZ4, ZSTD (per incompatible flags)",
+    "hashAlgorithm": "SipHash-2-4 (keyed) or Jenkins lookup3 (legacy)"
+  },
+  "QualityMetrics": {
+    "CompletenessScore": 87,
+    "LastUpdated": "2026-04-16",
+    "ReviewedBy": "WPFHexaEditor Team"
+  }
+}

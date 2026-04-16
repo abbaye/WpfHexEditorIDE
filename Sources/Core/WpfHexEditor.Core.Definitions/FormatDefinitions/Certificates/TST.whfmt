@@ -1,0 +1,176 @@
+{
+  "diffMode": "binary",
+  "formatName": "RFC 3161 Timestamp Token (TST)",
+  "version": "1.0",
+  "extensions": [".tst", ".tsr"],
+  "description": "RFC 3161 Time-Stamp Token — a DER-encoded TimeStampResp or TimeStampToken structure containing a CMS SignedData envelope with a TSTInfo content type. Issued by Time Stamping Authorities (TSAs) to provide cryptographic proof that data existed at a specific point in time. Used in digital signatures, code signing, and legal document timestamping.",
+  "category": "Certificates",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "HexEditor",
+  "references": [
+    "https://datatracker.ietf.org/doc/html/rfc3161",
+    "https://en.wikipedia.org/wiki/Trusted_timestamping",
+    "https://datatracker.ietf.org/doc/html/rfc5816"
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "value": "3082",
+        "offset": 0,
+        "label": "DER TimeStampResp SEQUENCE",
+        "weight": 0.5
+      }
+    ],
+    "matchMode": "Best",
+    "MinimumScore": 0.4,
+    "Strength": "Weak",
+    "EntropyHint": "Moderate — DER-encoded ASN.1 with certificate and signature data"
+  },
+  "variables": [
+    {
+      "name": "tstSeqTag",
+      "offset": 0,
+      "size": 1,
+      "type": "uint8",
+      "description": "ASN.1 SEQUENCE tag — 0x30"
+    },
+    {
+      "name": "tstLenByte",
+      "offset": 1,
+      "size": 1,
+      "type": "uint8",
+      "description": "ASN.1 length byte"
+    },
+    {
+      "name": "tstStatusTag",
+      "offset": 4,
+      "size": 1,
+      "type": "uint8",
+      "description": "PKIStatusInfo SEQUENCE tag or status field"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "TimeStampRespSequence",
+      "offset": 0,
+      "size": 4,
+      "description": "Outer SEQUENCE for TimeStampResp"
+    },
+    {
+      "name": "PKIStatusInfo",
+      "offset": 4,
+      "size": 0,
+      "description": "Status information: granted (0), rejection (2), waiting (3)"
+    },
+    {
+      "name": "TimeStampToken",
+      "offset": 0,
+      "size": 0,
+      "description": "CMS SignedData containing TSTInfo (present when status=granted)"
+    },
+    {
+      "name": "TSTInfo",
+      "offset": 0,
+      "size": 0,
+      "description": "TSTInfo ::= SEQUENCE { version, policy, messageImprint, serialNumber, genTime }"
+    }
+  ],
+  "assertions": [
+    {
+      "variable": "tstSeqTag",
+      "operator": "==",
+      "value": 48,
+      "description": "First byte must be 0x30 (SEQUENCE)",
+      "level": "Error"
+    },
+    {
+      "variable": "tstLenByte",
+      "operator": "!=",
+      "value": 0,
+      "description": "Length byte must not be zero",
+      "level": "Error"
+    },
+    {
+      "variable": "tstStatusTag",
+      "operator": "!=",
+      "value": 0,
+      "description": "Status field must be present",
+      "level": "Warning"
+    }
+  ],
+  "navigation": {
+    "entryPoint": 0,
+    "sections": [
+      { "name": "TimeStampResp Header", "offset": 0, "size": 4 },
+      { "name": "PKIStatusInfo", "offset": 4, "size": 0 },
+      { "name": "TimeStampToken", "offset": 0, "size": 0 }
+    ]
+  },
+  "inspector": {
+    "badge": "TST",
+    "primaryField": "tstSeqTag",
+    "groups": [
+      {
+        "name": "ASN.1 Structure",
+        "fields": ["tstSeqTag", "tstLenByte", "tstStatusTag"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "TST Summary",
+      "format": "text",
+      "template": "Format: RFC 3161 Timestamp Token\nSequence Tag: 0x{tstSeqTag}\nStatus Tag: 0x{tstStatusTag}"
+    },
+    {
+      "name": "TST JSON Report",
+      "format": "json",
+      "template": "{ \"format\": \"TST\", \"sequenceTag\": {tstSeqTag}, \"statusTag\": {tstStatusTag} }"
+    }
+  ],
+  "forensic": {
+    "riskLevel": "MEDIUM",
+    "notes": "Timestamp tokens provide legal evidence of when data was signed. Manipulated timestamps can be used to backdate signatures or falsify document creation times.",
+    "suspiciousPatterns": [
+      "Timestamp from untrusted or unknown TSA",
+      "genTime significantly different from expected signing time",
+      "TSA certificate expired or revoked at time of analysis",
+      "messageImprint hash mismatch with signed data"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "RFC 3161 timestamps are CMS SignedData wrappers around TSTInfo. Issued by TSAs to prove data existed at a specific time. Used in eIDAS, Authenticode, and PDF signatures.",
+    "suggestedInspections": [
+      "Parse the PKIStatusInfo to check if the timestamp was granted (status 0).",
+      "Extract the TSTInfo to read genTime (timestamp), serialNumber, and messageImprint.",
+      "Verify the TSA certificate chain in the CMS SignedData.",
+      "Compare the messageImprint hash with the expected hash of the timestamped data."
+    ]
+  },
+  "software": [
+    { "name": "OpenSSL", "platform": "Windows/macOS/Linux", "url": "https://www.openssl.org/" },
+    { "name": "openssl ts", "platform": "Windows/macOS/Linux", "url": "https://www.openssl.org/docs/man3.0/man1/openssl-ts.html" },
+    { "name": "ASN.1 Editor", "platform": "Windows/macOS/Linux", "url": "https://asn1.io/" }
+  ],
+  "formatRelationships": [
+    { "format": "CMS", "relationship": "parent", "note": "TST is a CMS SignedData with TSTInfo content type" },
+    { "format": "PKCS7", "relationship": "parent", "note": "Built on PKCS#7/CMS container format" }
+  ],
+  "MimeTypes": ["application/timestamp-reply", "application/timestamp-query"],
+  "UseCases": [
+    "Digital signature timestamping for legal validity",
+    "Code signing timestamp preservation (Authenticode)",
+    "Document archival with provable creation date"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 83,
+    "LastUpdated": "2026-04-16",
+    "ReviewedBy": "WPFHexaEditor Team"
+  },
+  "TechnicalDetails": {
+    "encoding": "DER (Distinguished Encoding Rules)",
+    "outerStructure": "TimeStampResp ::= SEQUENCE { status PKIStatusInfo, timeStampToken ContentInfo OPTIONAL }",
+    "contentTypeOID": "1.2.840.113549.1.9.16.1.4 (id-smime-ct-TSTInfo)",
+    "rfc": "RFC 3161, RFC 5816 (ESSCertIDv2)"
+  }
+}

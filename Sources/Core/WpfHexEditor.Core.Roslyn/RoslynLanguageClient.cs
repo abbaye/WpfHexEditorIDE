@@ -36,6 +36,7 @@ public sealed class RoslynLanguageClient : ILspClient, IReferenceCountProvider, 
     private readonly RoslynReferenceCountProvider _refCountProvider;
     private string? _lastCompletionFilePath;
     private bool _initialized;
+    private bool _fullyLoaded;
 
     // InlineHints sub-options (configurable from outside)
     private bool _showVarTypeHints = true;
@@ -52,13 +53,27 @@ public sealed class RoslynLanguageClient : ILspClient, IReferenceCountProvider, 
     {
         _workspace = new RoslynWorkspaceManager();
         _analysisService = new BackgroundAnalysisService(_workspace, dispatcher);
-        _analysisService.DiagnosticsReady += (s, e) => DiagnosticsReceived?.Invoke(this, e);
+        _analysisService.DiagnosticsReady += (s, e) =>
+        {
+            if (!_fullyLoaded)
+            {
+                _fullyLoaded = true;
+                FullyLoaded?.Invoke();
+            }
+            DiagnosticsReceived?.Invoke(this, e);
+        };
         _refCountProvider = new RoslynReferenceCountProvider(_workspace);
     }
 
     // ── Lifecycle ──────────────────────────────────────────────────────────────
 
     public bool IsInitialized => _initialized;
+
+    /// <inheritdoc/>
+    public bool IsFullyLoaded => _fullyLoaded;
+
+    /// <inheritdoc/>
+    public event Action? FullyLoaded;
 
     /// <summary>Number of projects in the loaded MSBuild solution (0 if standalone).</summary>
     public int LoadedProjectCount => _workspace.CurrentSolution.ProjectIds.Count;

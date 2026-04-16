@@ -1,0 +1,193 @@
+{
+  "diffMode": "text",
+  "formatName": "AbiWord Document",
+  "version": "1.0",
+  "extensions": [".abw", ".zabw"],
+  "description": "AbiWord Document (ABW) is an XML-based word processing format used by the AbiWord open-source word processor. Files begin with an XML declaration '<?xml' or directly with the '<abiword' root element. The format stores document content, formatting, metadata, styles, and revision history in a single XML file. ZABW is the gzip-compressed variant. AbiWord supports import/export of DOC, DOCX, ODT, RTF, and HTML formats.",
+  "category": "Documents",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "code-editor",
+  "references": [
+    "https://www.abisource.com/",
+    "https://en.wikipedia.org/wiki/AbiWord",
+    "http://www.abisource.com/wiki/AbiWord_Document_Format"
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "value": "3C3F786D6C",
+        "offset": 0,
+        "label": "'<?xml' AbiWord XML header",
+        "weight": 0.4
+      },
+      {
+        "value": "3C616269776F7264",
+        "offset": 0,
+        "label": "'<abiword' root element",
+        "weight": 0.9
+      }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.4,
+    "Strength": "Medium",
+    "validation": {
+      "rules": []
+    }
+  },
+  "variables": [
+    {
+      "name": "abwRoot",
+      "offset": 0,
+      "size": 8,
+      "type": "ascii",
+      "storeAs": "abwRoot",
+      "description": "First 8 bytes — may be '<?xml ve' or '<abiword'"
+    },
+    {
+      "name": "abwFirstByte",
+      "offset": 0,
+      "size": 1,
+      "type": "uint8",
+      "storeAs": "abwFirstByte",
+      "description": "First byte of the file (expected '<' = 0x3C)"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "XmlDeclaration",
+      "offset": 0,
+      "size": -1,
+      "description": "Optional XML declaration '<?xml version=\"1.0\" encoding=\"UTF-8\"?>'",
+      "fields": [
+        { "name": "RootBytes", "offset": 0, "size": 8, "type": "ascii" }
+      ]
+    },
+    {
+      "name": "AbiwordElement",
+      "offset": -1,
+      "size": -1,
+      "description": "<abiword> root element with document metadata attributes (template, styles, version)",
+      "fields": []
+    },
+    {
+      "name": "Sections",
+      "offset": -1,
+      "size": -1,
+      "description": "Document sections containing paragraphs (<p>), character spans (<c>), and formatting",
+      "fields": []
+    },
+    {
+      "name": "Metadata",
+      "offset": -1,
+      "size": -1,
+      "description": "Document metadata: title, creator, description, subject, keywords",
+      "fields": []
+    }
+  ],
+  "assertions": [
+    {
+      "id": "assert_xml_start",
+      "field": "abwFirstByte",
+      "operator": "equals",
+      "value": 60,
+      "severity": "error",
+      "message": "ABW file should start with '<' (0x3C) for XML content"
+    },
+    {
+      "id": "assert_root_present",
+      "field": "abwRoot",
+      "operator": "notEquals",
+      "value": "",
+      "severity": "error",
+      "message": "Root element not found — file may be empty or corrupt"
+    },
+    {
+      "id": "assert_not_binary",
+      "field": "abwFirstByte",
+      "operator": "lessThan",
+      "value": 128,
+      "severity": "warning",
+      "message": "First byte is non-ASCII — may be ZABW (gzip compressed) instead of ABW"
+    }
+  ],
+  "navigation": {
+    "entryPoints": [
+      { "name": "File Start", "offset": 0 }
+    ],
+    "jumpTable": [
+      { "label": "XML/Root Element", "offset": 0 }
+    ]
+  },
+  "inspector": {
+    "badge": "AB",
+    "primaryField": "abwRoot",
+    "groups": [
+      {
+        "name": "Identification",
+        "fields": ["abwRoot", "abwFirstByte"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "AbiWord Document Summary",
+      "format": "text",
+      "template": "AbiWord Document\nRoot: {abwRoot}\nFirst Byte: 0x{abwFirstByte:X2}"
+    },
+    {
+      "name": "AbiWord Document CSV",
+      "format": "csv",
+      "template": "Field,Value\nRoot,{abwRoot}\nFirstByte,0x{abwFirstByte:X2}"
+    }
+  ],
+  "forensic": {
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      "Missing <abiword> root element — wrong format or corrupt XML",
+      "Embedded scripts or external entity references in XML",
+      "Revision history showing unexpected document modifications",
+      "ZABW file without valid gzip header"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "AbiWord ABW files are XML documents rooted at <abiword>. Sections contain <p> (paragraph) and <c> (character run) elements with formatting attributes. Styles are defined in <s> elements. The <metadata> section holds Dublin Core properties. ZABW files are gzip-compressed ABW — first bytes will be 0x1F8B instead of 0x3C.",
+    "suggestedInspections": [
+      "Check for '<?xml' or '<abiword' at file start",
+      "Parse <abiword> attributes for version and template information",
+      "Extract <metadata> section for document properties",
+      "For .zabw files, decompress gzip layer first then analyze XML content"
+    ]
+  },
+  "software": [
+    { "name": "AbiWord", "vendor": "AbiSource", "platform": "Cross-platform" },
+    { "name": "LibreOffice", "vendor": "The Document Foundation", "platform": "Cross-platform" },
+    { "name": "Calligra Words", "vendor": "KDE", "platform": "Cross-platform" }
+  ],
+  "formatRelationships": [
+    { "format": "ODT", "relation": "sibling", "note": "Both open-source word processing formats; ODT is ZIP-based, ABW is single XML" },
+    { "format": "OPENDOC_FLAT", "relation": "sibling", "note": "Both single-file XML document formats" },
+    { "format": "RTF", "relation": "sibling", "note": "AbiWord can import/export RTF as an interchange format" }
+  ],
+  "MimeTypes": [
+    "application/x-abiword",
+    "application/x-abiword-compressed"
+  ],
+  "UseCases": [
+    "AbiWord word processing documents",
+    "Lightweight document creation on Linux systems",
+    "Cross-format document conversion pipeline",
+    "Open-source document archival"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 84,
+    "LastUpdated": "2026-04-16"
+  },
+  "TechnicalDetails": {
+    "headerSize": 0,
+    "endian": "n/a",
+    "signatureOffset": 0,
+    "signatureLength": 8,
+    "encoding": "XML (UTF-8)",
+    "notes": "ABW is plain XML; ZABW is gzip-compressed ABW. Detect ZABW by gzip magic 0x1F8B at offset 0."
+  }
+}

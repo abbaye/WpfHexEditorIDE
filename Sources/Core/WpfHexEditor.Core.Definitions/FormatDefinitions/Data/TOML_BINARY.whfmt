@@ -1,0 +1,170 @@
+{
+  "diffMode": "binary",
+  "formatName": "TOML Binary (Experimental)",
+  "version": "1.0",
+  "extensions": [".tomlb"],
+  "description": "TOML Binary is an experimental binary encoding of TOML (Tom's Obvious Minimal Language) configuration data. Unlike standard TOML which is a text format, TOML Binary aims to provide a compact pre-parsed representation for faster loading. The format has no established standard or well-known magic signature, making detection purely extension-based with weak confidence. This definition serves as a placeholder for emerging binary TOML implementations.",
+  "category": "Data",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "references": [
+    "https://toml.io/en/",
+    "https://github.com/toml-lang/toml",
+    "https://en.wikipedia.org/wiki/TOML"
+  ],
+  "detection": {
+    "signatures": [],
+    "matchMode": "any",
+    "MinimumScore": 0.1,
+    "Strength": "Weak",
+    "validation": {
+      "rules": []
+    }
+  },
+  "variables": [
+    {
+      "name": "tomlbFirstByte",
+      "offset": 0,
+      "size": 1,
+      "type": "uint8",
+      "storeAs": "tomlbFirstByte",
+      "description": "First byte of the TOML Binary file for initial analysis"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "Header",
+      "offset": 0,
+      "size": 1,
+      "description": "File start — no standardized header for experimental TOML Binary",
+      "fields": [
+        { "name": "FirstByte", "offset": 0, "size": 1, "type": "uint8" }
+      ]
+    },
+    {
+      "name": "TableEntries",
+      "offset": 1,
+      "size": -1,
+      "description": "Binary-encoded TOML table entries (key-value pairs with type information)",
+      "fields": []
+    },
+    {
+      "name": "ArrayTables",
+      "offset": -1,
+      "size": -1,
+      "description": "Binary-encoded array of tables sections",
+      "fields": []
+    },
+    {
+      "name": "StringPool",
+      "offset": -1,
+      "size": -1,
+      "description": "Optional deduplicated string pool for key names and string values",
+      "fields": []
+    }
+  ],
+  "assertions": [
+    {
+      "id": "assert_readable",
+      "field": "tomlbFirstByte",
+      "operator": "greaterThanOrEqual",
+      "value": 0,
+      "severity": "info",
+      "message": "File is readable for TOML Binary analysis"
+    },
+    {
+      "id": "assert_not_text_toml",
+      "field": "tomlbFirstByte",
+      "operator": "notEquals",
+      "value": 35,
+      "severity": "info",
+      "message": "First byte is '#' (0x23) — may be a text TOML file, not binary"
+    },
+    {
+      "id": "assert_not_empty",
+      "field": "tomlbFirstByte",
+      "operator": "notEquals",
+      "value": -1,
+      "severity": "warning",
+      "message": "File should contain data"
+    }
+  ],
+  "navigation": {
+    "entryPoints": [
+      { "name": "File Start", "offset": 0 }
+    ],
+    "jumpTable": [
+      { "label": "File Start", "offset": 0 }
+    ]
+  },
+  "inspector": {
+    "badge": "TB",
+    "primaryField": "tomlbFirstByte",
+    "groups": [
+      {
+        "name": "Identification",
+        "fields": ["tomlbFirstByte"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "TOML Binary Summary",
+      "format": "text",
+      "template": "TOML Binary (Experimental)\nFirst Byte: 0x{tomlbFirstByte:X2}\nNote: No standardized format — experimental"
+    },
+    {
+      "name": "TOML Binary CSV",
+      "format": "csv",
+      "template": "Field,Value\nFirstByte,0x{tomlbFirstByte:X2}\nStatus,Experimental"
+    }
+  ],
+  "forensic": {
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      "No standard magic — cannot verify format authenticity",
+      "May actually be a text TOML file with wrong extension",
+      "Non-standard encoding implementations may vary"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "TOML Binary is experimental with no formal specification. Standard TOML is text-based with tables ([section]), key = value pairs, and typed values (strings, integers, floats, booleans, datetimes, arrays, inline tables). A binary encoding would likely preserve this structure with type tags and length prefixes for faster parsing.",
+    "suggestedInspections": [
+      "Check if file is actually text TOML (look for '[', '#', '=' characters)",
+      "Examine first bytes for potential implementation-specific magic",
+      "Look for length-prefixed strings suggesting binary encoding",
+      "Compare file size against expected text TOML equivalent"
+    ]
+  },
+  "software": [
+    { "name": "toml-rs (Rust)", "vendor": "Open source", "platform": "Rust" },
+    { "name": "tomllib (Python 3.11+)", "vendor": "Python", "platform": "Python" },
+    { "name": "BurntSushi/toml (Go)", "vendor": "Open source", "platform": "Go" }
+  ],
+  "formatRelationships": [
+    { "format": "TOML", "relation": "parent", "note": "Binary encoding of the text-based TOML configuration format" },
+    { "format": "MSGPACK", "relation": "sibling", "note": "Both compact binary serialization formats for structured data" },
+    { "format": "JSON", "relation": "sibling", "note": "TOML is a configuration-focused alternative to JSON" }
+  ],
+  "MimeTypes": [
+    "application/octet-stream"
+  ],
+  "UseCases": [
+    "Pre-parsed TOML configuration for fast application startup",
+    "Binary caching of TOML configuration files",
+    "Embedded systems configuration storage",
+    "Build system cached configuration data"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 82,
+    "LastUpdated": "2026-04-16"
+  },
+  "TechnicalDetails": {
+    "headerSize": 0,
+    "endian": "unknown",
+    "signatureOffset": -1,
+    "signatureLength": 0,
+    "encoding": "Experimental binary encoding of TOML data",
+    "notes": "No formal specification exists. This is a placeholder definition for binary TOML implementations. Verify against specific implementation documentation."
+  }
+}

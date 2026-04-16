@@ -1,0 +1,281 @@
+{
+  "diffMode": "binary",
+  "formatName": "Video Game Music Log",
+  "version": "1.0",
+  "extensions": [
+    ".vgm",
+    ".vgz"
+  ],
+  "description": "VGM (Video Game Music) is a logging format that records the exact register writes sent to sound chips in retro gaming hardware. Rather than storing audio samples, VGM files capture the sequence of chip commands at sample-accurate timing, enabling bit-perfect reproduction of the original sound chip output. The format supports over 30 sound chips including SN76489, YM2413, YM2612, and many others. VGM files begin with 'Vgm ' magic, followed by version, chip clock rates, and timing metadata. Optional GD3 tags provide song/game/author metadata.",
+  "category": "Audio",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "references": {
+    "specifications": [
+      "VGM Specification — vgmrips.net/wiki/VGM_Specification",
+      "VGM v1.71 format documentation"
+    ],
+    "WebLinks": [
+      "https://vgmrips.net/wiki/VGM_Specification",
+      "https://en.wikipedia.org/wiki/VGM_(file_format)",
+      "https://github.com/vgmrips"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      {
+        "value": "56676D20",
+        "offset": 0,
+        "label": "'Vgm ' Video Game Music magic",
+        "weight": 1.0
+      }
+    ],
+    "matchMode": "allOf",
+    "MinimumScore": 90,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 2.0, "max": 6.5 },
+    "validation": {
+      "minFileSize": 64,
+      "maxSignatureOffset": 0
+    }
+  },
+  "variables": {
+    "vgmMagic": "",
+    "vgmEofOffset": 0,
+    "vgmVersion": 0,
+    "vgmSN76489Clock": 0,
+    "vgmYM2413Clock": 0,
+    "vgmGD3Offset": 0,
+    "vgmTotalSamples": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "VGM Magic",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.45,
+      "description": "VGM file signature: ASCII 'Vgm ' (0x56676D20, note trailing space). Unambiguously identifies the file as a Video Game Music log.",
+      "storeAs": "vgmMagic",
+      "valueType": "ascii",
+      "validation": {
+        "expectedValue": "Vgm "
+      }
+    },
+    {
+      "type": "field",
+      "name": "EOF Offset",
+      "offset": 4,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "Relative offset from this field's position to the end of the file (32-bit unsigned little-endian). Computed as: actual file size - 4. Used for quick validation of file integrity.",
+      "storeAs": "vgmEofOffset",
+      "valueType": "uint32",
+      "endianness": "little"
+    },
+    {
+      "type": "field",
+      "name": "Version",
+      "offset": 8,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.35,
+      "description": "VGM format version in BCD (Binary-Coded Decimal), stored as 32-bit little-endian. For example: 0x00000171 = version 1.71, 0x00000161 = version 1.61. The version determines which header fields and sound chip commands are valid.",
+      "storeAs": "vgmVersion",
+      "valueType": "uint32",
+      "endianness": "little"
+    },
+    {
+      "type": "field",
+      "name": "SN76489 Clock",
+      "offset": 12,
+      "length": 4,
+      "color": "#FFE66D",
+      "opacity": 0.35,
+      "description": "Clock rate in Hz for the SN76489 PSG (Programmable Sound Generator) chip (32-bit unsigned LE). Value of 0 means this chip is not used. Common: 3579545 Hz (NTSC) or 3546893 Hz (PAL). Used in Sega Master System, Game Gear, Mega Drive, and many arcade machines.",
+      "storeAs": "vgmSN76489Clock",
+      "valueType": "uint32",
+      "endianness": "little"
+    },
+    {
+      "type": "field",
+      "name": "YM2413 Clock",
+      "offset": 16,
+      "length": 4,
+      "color": "#DDA0DD",
+      "opacity": 0.35,
+      "description": "Clock rate in Hz for the YM2413 (OPLL) FM synthesis chip (32-bit unsigned LE). Value of 0 means this chip is not used. Common: 3579545 Hz. Used in Sega Master System (Japanese model), MSX-MUSIC, and some arcade hardware.",
+      "storeAs": "vgmYM2413Clock",
+      "valueType": "uint32",
+      "endianness": "little"
+    },
+    {
+      "type": "field",
+      "name": "GD3 Tag Offset",
+      "offset": 20,
+      "length": 4,
+      "color": "#87CEEB",
+      "opacity": 0.35,
+      "description": "Relative offset from this field's position to the GD3 (Game Data 3) metadata tag block (32-bit unsigned LE). Value of 0 means no GD3 tag is present. GD3 tags contain UTF-16LE strings for track name, game name, system name, author, date, and notes.",
+      "storeAs": "vgmGD3Offset",
+      "valueType": "uint32",
+      "endianness": "little"
+    },
+    {
+      "type": "field",
+      "name": "Total Samples",
+      "offset": 24,
+      "length": 4,
+      "color": "#FF8C69",
+      "opacity": 0.35,
+      "description": "Total number of wait samples in the VGM data stream (32-bit unsigned LE). At 44100 Hz playback rate, divide by 44100 to get duration in seconds. This represents the total playback length excluding any loop repetitions.",
+      "storeAs": "vgmTotalSamples",
+      "valueType": "uint32",
+      "endianness": "little"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "VGM magic valid",
+      "expression": "vgmMagic == 'Vgm '",
+      "severity": "error",
+      "message": "File must begin with 'Vgm ' signature (0x56676D20)"
+    },
+    {
+      "name": "Version is non-zero",
+      "expression": "vgmVersion > 0",
+      "severity": "error",
+      "message": "VGM version must be non-zero (BCD format, e.g. 0x00000171 = v1.71)"
+    },
+    {
+      "name": "EOF offset plausible",
+      "expression": "vgmEofOffset > 0",
+      "severity": "warning",
+      "message": "EOF offset should be non-zero for a valid VGM file"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      {
+        "name": "VGM Header",
+        "offset": 0,
+        "icon": "\uE71B",
+        "color": "#FF6B6B"
+      },
+      {
+        "name": "Chip Clocks",
+        "offset": 12,
+        "icon": "\uE767",
+        "color": "#FFE66D"
+      },
+      {
+        "name": "GD3 Tag Pointer",
+        "offset": 20,
+        "icon": "\uE8A5",
+        "color": "#87CEEB"
+      }
+    ]
+  },
+  "inspector": {
+    "badge": "vgmVersion",
+    "primaryField": "vgmTotalSamples",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "Header",
+        "icon": "\uE71B",
+        "fields": ["vgmMagic", "vgmEofOffset", "vgmVersion"]
+      },
+      {
+        "title": "Sound Chips",
+        "icon": "\uE767",
+        "fields": ["vgmSN76489Clock", "vgmYM2413Clock"]
+      },
+      {
+        "title": "Metadata",
+        "icon": "\uE8A5",
+        "fields": ["vgmGD3Offset", "vgmTotalSamples"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "VGM Header (JSON)",
+      "format": "json",
+      "fields": ["vgmMagic", "vgmEofOffset", "vgmVersion", "vgmSN76489Clock", "vgmYM2413Clock", "vgmGD3Offset", "vgmTotalSamples"]
+    },
+    {
+      "name": "vgm_header_t (C struct)",
+      "format": "c-struct",
+      "structName": "vgm_header",
+      "fields": ["vgmMagic", "vgmEofOffset", "vgmVersion", "vgmSN76489Clock", "vgmYM2413Clock", "vgmGD3Offset", "vgmTotalSamples"]
+    }
+  ],
+  "forensic": {
+    "category": "audio",
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      {
+        "name": "No sound chips defined",
+        "condition": "vgmSN76489Clock == 0 && vgmYM2413Clock == 0",
+        "severity": "info",
+        "description": "Neither SN76489 nor YM2413 clocks are set — check later header offsets for other chip definitions (YM2612, AY-3-8910, etc.)."
+      },
+      {
+        "name": "Zero total samples",
+        "condition": "vgmTotalSamples == 0",
+        "severity": "warning",
+        "description": "Total samples is zero — the file may contain only looped data or be empty."
+      }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "VGM header (192 bytes for v1.71+): 'Vgm '(4B) + eofOffset(4B LE, relative) + version(4B BCD LE) + chip clocks (4B each: SN76489@0x0C, YM2413@0x10, ...) + GD3 offset(4B@0x14) + totalSamples(4B@0x18) + loopOffset(4B@0x1C) + loopSamples(4B@0x20) + rate(4B@0x24) + more chip clocks. VGM data stream follows header: command bytes (0x50=PSG write, 0x51=YM2413, 0x52/53=YM2612, 0x61=wait N samples, 0x62=wait 735, 0x63=wait 882, 0x66=end). VGZ = gzip-compressed VGM.",
+    "suggestedInspections": [
+      "Verify 'Vgm ' magic and parse BCD version number",
+      "Enumerate active sound chips by checking non-zero clock rates",
+      "Parse GD3 tag for track/game/author metadata if offset is non-zero",
+      "Calculate playback duration from totalSamples / 44100"
+    ]
+  },
+  "software": [
+    "VGMPlay",
+    "in_vgm (Winamp plugin)",
+    "vgmstream"
+  ],
+  "formatRelationships": {
+    "category": "Audio",
+    "extensions": [".vgm", ".vgz"],
+    "relatedFormats": ["NSF", "SPC", "GBS", "PSF"],
+    "containerVariant": "VGZ is gzip-compressed VGM"
+  },
+  "MimeTypes": [
+    "audio/x-vgm"
+  ],
+  "UseCases": [
+    "Preserving retro video game music with bit-perfect chip accuracy",
+    "Emulating sound chip output for classic consoles (Sega, MSX, NES, etc.)",
+    "Chiptune music composition and playback",
+    "Archival and study of vintage sound synthesis hardware"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 86,
+    "DocumentationLevel": "comprehensive",
+    "BlocksDefined": 7,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-16",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "AudioFormat": true,
+    "CompressionMethod": "None (command log); VGZ uses gzip",
+    "Endianness": "little-endian",
+    "HeaderSize": "64 bytes (v1.00) to 256 bytes (v1.71+)",
+    "PlaybackRate": "44100 Hz sample-accurate timing",
+    "SupportedChips": "30+ (SN76489, YM2413, YM2612, AY-3-8910, HuC6280, etc.)",
+    "GD3MetadataSupport": true
+  }
+}

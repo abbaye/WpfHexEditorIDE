@@ -1,0 +1,175 @@
+{
+  "diffMode": "text",
+  "formatName": "SOPS Encrypted Secrets",
+  "version": "1.0",
+  "extensions": [".enc.yaml", ".enc.json", ".sops.yaml"],
+  "description": "Mozilla SOPS (Secrets OPerationS) encrypted file — a YAML or JSON file with individually encrypted values and a 'sops' metadata block containing encryption parameters, key groups, and MAC. SOPS supports AWS KMS, GCP KMS, Azure Key Vault, age, and PGP as key management backends. Only values are encrypted; keys remain in plaintext for diff-friendly workflows.",
+  "category": "Crypto",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "code-editor",
+  "references": [
+    "https://github.com/getsops/sops",
+    "https://getsops.io/docs/",
+    "https://mozilla.github.io/sops/"
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "value": "736F70733A",
+        "offset": 0,
+        "label": "'sops:' SOPS metadata block",
+        "weight": 0.7
+      },
+      {
+        "value": "7B22736F7073223A",
+        "offset": 0,
+        "label": "'{\"sops\":' JSON SOPS metadata",
+        "weight": 0.8
+      }
+    ],
+    "matchMode": "Best",
+    "MinimumScore": 0.6,
+    "Strength": "Medium",
+    "EntropyHint": "Mixed — plaintext YAML/JSON keys with high-entropy encrypted values (base64-encoded ciphertext)"
+  },
+  "variables": [
+    {
+      "name": "sopsKeyword",
+      "offset": 0,
+      "size": 5,
+      "type": "ascii",
+      "description": "SOPS metadata key — 'sops:' or '{\"sop'"
+    },
+    {
+      "name": "sopsFirstByte",
+      "offset": 0,
+      "size": 1,
+      "type": "uint8",
+      "description": "First byte — 0x73 ('s') for YAML, 0x7B ('{') for JSON"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "DocumentHeader",
+      "offset": 0,
+      "size": 0,
+      "description": "YAML document start ('---') or JSON opening brace"
+    },
+    {
+      "name": "EncryptedValues",
+      "offset": 0,
+      "size": 0,
+      "description": "Key-value pairs with ENC[...] encrypted value strings"
+    },
+    {
+      "name": "SopsMetadata",
+      "offset": 0,
+      "size": 0,
+      "description": "'sops:' block with kms, gcp_kms, azure_kv, age, pgp key groups and MAC"
+    },
+    {
+      "name": "MACBlock",
+      "offset": 0,
+      "size": 0,
+      "description": "Message Authentication Code for tamper detection"
+    }
+  ],
+  "assertions": [
+    {
+      "variable": "sopsFirstByte",
+      "operator": "!=",
+      "value": 0,
+      "description": "File must not be empty",
+      "level": "Error"
+    },
+    {
+      "variable": "sopsFirstByte",
+      "operator": ">",
+      "value": 31,
+      "description": "First byte must be printable (YAML/JSON text)",
+      "level": "Error"
+    },
+    {
+      "variable": "sopsKeyword",
+      "operator": "!=",
+      "value": "",
+      "description": "SOPS metadata keyword must be present",
+      "level": "Warning"
+    }
+  ],
+  "navigation": {
+    "entryPoint": 0,
+    "sections": [
+      { "name": "Document Header", "offset": 0, "size": 0 },
+      { "name": "Encrypted Data", "offset": 0, "size": 0 },
+      { "name": "SOPS Metadata", "offset": 0, "size": 0 }
+    ]
+  },
+  "inspector": {
+    "badge": "SOPS",
+    "primaryField": "sopsKeyword",
+    "groups": [
+      {
+        "name": "Identity",
+        "fields": ["sopsKeyword", "sopsFirstByte"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "SOPS Summary",
+      "format": "text",
+      "template": "Format: SOPS Encrypted Secrets\nMetadata Key: {sopsKeyword}\nFirst Byte: {sopsFirstByte}"
+    },
+    {
+      "name": "SOPS JSON Report",
+      "format": "json",
+      "template": "{ \"format\": \"SOPS\", \"metadataKey\": \"{sopsKeyword}\", \"firstByte\": {sopsFirstByte} }"
+    }
+  ],
+  "forensic": {
+    "riskLevel": "HIGH",
+    "notes": "SOPS files contain encrypted secrets (API keys, passwords, tokens). While values are encrypted, key names are plaintext and reveal the secret structure. The sops metadata block reveals which KMS keys or age/PGP identities can decrypt the file.",
+    "suspiciousPatterns": [
+      "SOPS file with MAC verification disabled or missing",
+      "Key groups referencing unknown or unauthorized KMS keys",
+      "Encrypted values that have been manually modified (MAC mismatch)",
+      "SOPS metadata referencing deprecated or compromised PGP keys"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "SOPS encrypts individual values in YAML/JSON while keeping keys plaintext. The 'sops' metadata block lists encryption backends (KMS, age, PGP) and a MAC for integrity.",
+    "suggestedInspections": [
+      "Identify the file format (YAML or JSON) from the first byte.",
+      "Locate the 'sops' metadata block to determine which key management systems are used.",
+      "Check the MAC field for integrity verification.",
+      "List the KMS ARNs, age recipients, or PGP fingerprints in the key groups."
+    ]
+  },
+  "software": [
+    { "name": "sops", "platform": "Windows/macOS/Linux", "url": "https://github.com/getsops/sops" },
+    { "name": "age", "platform": "Windows/macOS/Linux", "url": "https://github.com/FiloSottile/age" },
+    { "name": "AWS KMS", "platform": "Cloud", "url": "https://aws.amazon.com/kms/" }
+  ],
+  "formatRelationships": [
+    { "format": "AGE_KEY", "relationship": "uses", "note": "SOPS can use age keys for encryption" },
+    { "format": "PGP", "relationship": "uses", "note": "SOPS can use PGP keys for encryption" }
+  ],
+  "MimeTypes": ["text/yaml", "application/json", "text/plain"],
+  "UseCases": [
+    "Encrypted secrets management in version control",
+    "DevOps/GitOps secrets workflow",
+    "Forensic analysis of leaked encrypted configuration files"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 85,
+    "LastUpdated": "2026-04-16",
+    "ReviewedBy": "WPFHexaEditor Team"
+  },
+  "TechnicalDetails": {
+    "encryptionBackends": "AWS KMS, GCP KMS, Azure Key Vault, age, PGP",
+    "valueEncryption": "AES-256-GCM (default) or ChaCha20-Poly1305",
+    "macAlgorithm": "HMAC-SHA-256 over all encrypted values",
+    "fileFormats": "YAML, JSON, ENV, INI, binary"
+  }
+}

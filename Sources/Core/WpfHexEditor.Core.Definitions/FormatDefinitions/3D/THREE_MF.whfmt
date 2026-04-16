@@ -1,0 +1,188 @@
+{
+  "diffMode": "binary",
+  "formatName": "3D Manufacturing Format (3MF)",
+  "version": "1.0",
+  "extensions": [
+    ".3mf"
+  ],
+  "description": "3MF (3D Manufacturing Format) — ZIP-based open standard for 3D printing developed by the 3MF Consortium (Microsoft, HP, Autodesk, etc.). Contains [Content_Types].xml, 3D/3dmodel.model (XML mesh data with vertices, triangles, materials, and build instructions), and optional texture/thumbnail resources. Designed to replace STL with rich metadata support.",
+  "category": "3D",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "references": {
+    "specifications": [
+      "3MF Core Specification — 3mf.io/specification/",
+      "3MF Consortium — 3mf.io"
+    ],
+    "WebLinks": [
+      "https://3mf.io/",
+      "https://3mf.io/specification/",
+      "https://en.wikipedia.org/wiki/3D_Manufacturing_Format"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      { "value": "504B0304", "offset": 0, "label": "PK ZIP container for 3MF", "weight": 0.5 }
+    ],
+    "required": true,
+    "Strength": "Medium",
+    "MinimumScore": 0.4,
+    "validation": {
+      "minFileSize": 100
+    }
+  },
+  "variables": {
+    "threeMfZipMagic": ""
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "ZIP Magic",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.45,
+      "description": "4-byte ZIP local file header signature 'PK' (50 4B 03 04). 3MF files are ZIP archives conforming to the Open Packaging Conventions (OPC).",
+      "storeAs": "threeMfZipMagic",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "ZIP Version Needed",
+      "offset": 4,
+      "length": 2,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "2-byte uint16 LE: minimum ZIP version to extract. Typically 20 (2.0) for deflate."
+    },
+    {
+      "type": "field",
+      "name": "Compression Method",
+      "offset": 8,
+      "length": 2,
+      "color": "#FFEAA7",
+      "opacity": 0.35,
+      "description": "2-byte uint16 LE: compression method. 0=stored, 8=deflate."
+    },
+    {
+      "type": "field",
+      "name": "First Entry Filename",
+      "offset": 30,
+      "length": 20,
+      "color": "#95E1D3",
+      "opacity": 0.30,
+      "description": "Filename of the first ZIP entry — typically '[Content_Types].xml' or '_rels/.rels' per OPC convention."
+    }
+  ],
+  "assertions": [
+    {
+      "name": "ZIP magic present",
+      "expression": "threeMfZipMagic startsWith 'PK'",
+      "severity": "error",
+      "message": "File must start with PK ZIP signature to be a valid 3MF file"
+    },
+    {
+      "name": "File has content",
+      "expression": "fileSize > 100",
+      "severity": "error",
+      "message": "3MF file is too small to contain valid OPC package"
+    },
+    {
+      "name": "ZIP container readable",
+      "expression": "threeMfZipMagic != ''",
+      "severity": "warning",
+      "message": "ZIP magic should be readable"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "ZIP Header", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
+      { "name": "First Entry", "offset": 30, "icon": "\uE9D9", "color": "#95E1D3" }
+    ]
+  },
+  "inspector": {
+    "badge": "threeMfZipMagic",
+    "primaryField": "threeMfZipMagic",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "3MF Container",
+        "icon": "\uE71B",
+        "fields": ["threeMfZipMagic"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "3MF Container Info (JSON)",
+      "format": "json",
+      "fields": ["threeMfZipMagic"]
+    },
+    {
+      "name": "three_mf_header_t (C struct)",
+      "format": "c-struct",
+      "structName": "three_mf_zip_header",
+      "fields": ["threeMfZipMagic"]
+    }
+  ],
+  "forensic": {
+    "category": "3d",
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      {
+        "name": "Not a ZIP archive",
+        "condition": "threeMfZipMagic != 'PK'",
+        "severity": "warning",
+        "description": "File does not start with PK signature — may be corrupted or not a 3MF file."
+      }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "3MF = OPC (ZIP) package. Key entries: '[Content_Types].xml' (MIME type registry), '_rels/.rels' (root relationships), '3D/3dmodel.model' (XML with <model><resources><object id='1'><mesh><vertices><vertex x='' y='' z=''/></vertices><triangles><triangle v1='' v2='' v3=''/></triangles></mesh></object></resources><build><item objectid='1'/></build></model>). Extensions: materials, production, slice, beam lattice.",
+    "suggestedInspections": [
+      "Extract [Content_Types].xml to verify OPC structure",
+      "Parse 3D/3dmodel.model XML for mesh vertex/triangle counts",
+      "Check for material and color extensions in the model",
+      "List all ZIP entries to identify textures and thumbnails"
+    ]
+  },
+  "software": [
+    "Windows 3D Viewer / 3D Builder",
+    "Cura (Ultimaker)",
+    "PrusaSlicer",
+    "Autodesk Netfabb",
+    "Materialise Magics"
+  ],
+  "formatRelationships": {
+    "category": "3D",
+    "extensions": [".3mf"],
+    "relatedFormats": ["STL", "OBJ", "GCODE"],
+    "containerVariant": "3MF is the rich replacement for STL; uses OPC (ZIP) container like OOXML/DOCX"
+  },
+  "MimeTypes": [
+    "application/vnd.ms-package.3dmanufacturing-3dmodel+xml",
+    "model/3mf"
+  ],
+  "UseCases": [
+    "3D printing model exchange with materials and color",
+    "Additive manufacturing build preparation",
+    "Multi-part assembly printing with build instructions",
+    "Rich 3D model distribution replacing STL"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 83,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 4,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-16",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "FileType": "OPC (ZIP) packaged 3D manufacturing model",
+    "Container": "ZIP with Open Packaging Conventions",
+    "KeyEntries": ["[Content_Types].xml", "_rels/.rels", "3D/3dmodel.model"],
+    "MeshFormat": "XML-encoded vertex/triangle mesh",
+    "Extensions": ["Materials", "Production", "Slice", "Beam Lattice", "Securecontent"]
+  }
+}

@@ -1,0 +1,211 @@
+{
+  "diffMode": "binary",
+  "formatName": "NAIF SPICE Kernel (DAF)",
+  "version": "1.0",
+  "extensions": [
+    ".bsp",
+    ".tpc",
+    ".tls",
+    ".fk",
+    ".pck",
+    ".mk"
+  ],
+  "description": "NAIF SPICE kernel file in Double-precision Array File (DAF) format — used by NASA's SPICE toolkit for spacecraft navigation, planetary ephemerides, instrument pointing, and reference frame data. The file starts with 'DAF/' followed by a file type identifier (SPK, CK, PCK). Contains summary records and double-precision arrays.",
+  "category": "Science",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "references": {
+    "specifications": [
+      "NAIF DAF Required Reading — naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/req/daf.html",
+      "SPICE Toolkit — naif.jpl.nasa.gov/naif/toolkit.html"
+    ],
+    "WebLinks": [
+      "https://naif.jpl.nasa.gov/naif/",
+      "https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/req/daf.html",
+      "https://en.wikipedia.org/wiki/SPICE_(toolkit)"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      { "value": "4441462F", "offset": 0, "label": "'DAF/' NAIF DAF file header", "weight": 1.0 }
+    ],
+    "required": true,
+    "Strength": "Strong",
+    "MinimumScore": 0.8,
+    "validation": {
+      "minFileSize": 1024
+    }
+  },
+  "variables": {
+    "spiceDafMagic": "",
+    "spiceFileType": "",
+    "spiceLocidw": ""
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "DAF Magic",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.45,
+      "description": "ASCII 'DAF/' — the Double-precision Array File magic identifier. All NAIF binary kernel files begin with this 4-byte signature.",
+      "storeAs": "spiceDafMagic",
+      "valueType": "ascii",
+      "validation": { "expectedValue": "DAF/" }
+    },
+    {
+      "type": "field",
+      "name": "File Type",
+      "offset": 4,
+      "length": 3,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "3-byte ASCII file type code: 'SPK' (spacecraft/planet ephemeris), 'CK ' (C-kernel pointing), 'PCK' (planetary constants kernel). Identifies the specific SPICE kernel type within the DAF container.",
+      "storeAs": "spiceFileType",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "LOCIDW (ID Word)",
+      "offset": 16,
+      "length": 8,
+      "color": "#FFEAA7",
+      "opacity": 0.35,
+      "description": "8-byte ASCII identification word from the DAF file record. Repeats the file architecture and type information (e.g. 'DAF/SPK ').",
+      "storeAs": "spiceLocidw",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "ND and NI Counts",
+      "offset": 8,
+      "length": 8,
+      "color": "#95E1D3",
+      "opacity": 0.30,
+      "description": "Two 4-byte integers: ND (number of double-precision summary components) and NI (number of integer summary components). These define the structure of each array summary record in the file."
+    },
+    {
+      "type": "metadata",
+      "name": "DAF Magic",
+      "variable": "spiceDafMagic",
+      "description": "DAF file signature — must be 'DAF/'"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "DAF magic present",
+      "expression": "spiceDafMagic == 'DAF/'",
+      "severity": "error",
+      "message": "File must start with 'DAF/' to be a valid NAIF SPICE kernel"
+    },
+    {
+      "name": "Known file type",
+      "expression": "spiceFileType == 'SPK' || spiceFileType == 'CK ' || spiceFileType == 'PCK'",
+      "severity": "warning",
+      "message": "File type should be SPK, CK, or PCK for standard SPICE kernels"
+    },
+    {
+      "name": "Minimum file size",
+      "expression": "fileSize >= 1024",
+      "severity": "error",
+      "message": "DAF file must be at least 1024 bytes (one file record)"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "DAF Magic", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
+      { "name": "File Type", "offset": 4, "icon": "\uE8A5", "color": "#4ECDC4" },
+      { "name": "LOCIDW", "offset": 16, "icon": "\uE9D9", "color": "#FFEAA7" }
+    ]
+  },
+  "inspector": {
+    "badge": "spiceFileType",
+    "primaryField": "spiceDafMagic",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "DAF Header",
+        "icon": "\uE71B",
+        "fields": ["spiceDafMagic", "spiceFileType", "spiceLocidw"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "DAF Header (JSON)",
+      "format": "json",
+      "fields": ["spiceDafMagic", "spiceFileType", "spiceLocidw"]
+    },
+    {
+      "name": "daf_header_t (C struct)",
+      "format": "c-struct",
+      "structName": "daf_header",
+      "fields": ["spiceDafMagic", "spiceFileType", "spiceLocidw"]
+    }
+  ],
+  "forensic": {
+    "category": "science",
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      {
+        "name": "Unknown kernel type",
+        "condition": "spiceFileType != 'SPK' && spiceFileType != 'CK ' && spiceFileType != 'PCK'",
+        "severity": "info",
+        "description": "File type is not SPK/CK/PCK — may be a less common kernel type or a corrupted header."
+      }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "NAIF DAF format: 'DAF/' + type (SPK/CK/PCK) at offset 0. File record (1024 bytes): LOCIDW(8), ND(4), NI(4), LOCIFN(60), FWARD(4), BWARD(4), FREE(4). Summary records contain ND doubles + NI integers per array. SPK=ephemeris, CK=pointing, PCK=planetary constants.",
+    "suggestedInspections": [
+      "Verify first 4 bytes are 'DAF/' (44 41 46 2F)",
+      "Read file type at offset 4 (SPK, CK, PCK)",
+      "Parse ND and NI from file record to determine summary structure",
+      "Read LOCIFN (internal file name) at offset 16",
+      "Check FWARD/BWARD pointers for summary record chain integrity"
+    ]
+  },
+  "software": [
+    "NAIF SPICE Toolkit (C/Fortran/Python)",
+    "SpiceyPy (Python SPICE wrapper)",
+    "COSMOGRAPHIA (3D visualization)",
+    "JPL Horizons"
+  ],
+  "formatRelationships": {
+    "category": "Science",
+    "extensions": [".bsp", ".tpc", ".tls", ".fk", ".pck", ".mk"],
+    "relatedFormats": ["FITS_IMAGE"],
+    "containerVariant": "DAF is the container; SPK/CK/PCK are content types. Text kernels (.tpc, .tls, .fk, .mk) use a different plain-text format."
+  },
+  "MimeTypes": [
+    "application/x-spice-kernel",
+    "application/octet-stream"
+  ],
+  "UseCases": [
+    "Spacecraft navigation and trajectory computation",
+    "Planetary ephemeris data for mission planning",
+    "Instrument pointing reconstruction (CK kernels)",
+    "Reference frame transformations in space science"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 86,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 5,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-16",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "FileType": "Double-precision Array File (DAF) binary",
+    "RecordSize": 1024,
+    "Endianness": "Platform-dependent (stored in file record)",
+    "SummaryStructure": "ND doubles + NI integers per array",
+    "KernelTypes": {
+      "SPK": "Spacecraft/Planet Kernel (ephemeris)",
+      "CK": "C-Kernel (pointing/attitude)",
+      "PCK": "Planetary Constants Kernel"
+    }
+  }
+}

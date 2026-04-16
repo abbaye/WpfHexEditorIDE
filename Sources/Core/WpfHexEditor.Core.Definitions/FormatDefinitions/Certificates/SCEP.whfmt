@@ -1,0 +1,168 @@
+{
+  "diffMode": "binary",
+  "formatName": "SCEP (Simple Certificate Enrollment Protocol)",
+  "version": "1.0",
+  "extensions": [".scep", ".der"],
+  "description": "Simple Certificate Enrollment Protocol message — a DER-encoded PKCS#7/CMS envelope used for automated certificate enrollment between devices and certificate authorities. SCEP messages wrap CSRs (PKCSReq) or certificate responses (CertRep) inside SignedData or EnvelopedData CMS structures. Widely used in MDM and network device provisioning.",
+  "category": "Certificates",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "HexEditor",
+  "references": [
+    "https://datatracker.ietf.org/doc/html/rfc8894",
+    "https://en.wikipedia.org/wiki/Simple_Certificate_Enrollment_Protocol",
+    "https://learn.microsoft.com/en-us/mem/intune/protect/certificates-scep-configure"
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "value": "3082",
+        "offset": 0,
+        "label": "DER SEQUENCE — SCEP PKCSReq or CertRep",
+        "weight": 0.4
+      }
+    ],
+    "matchMode": "Best",
+    "MinimumScore": 0.3,
+    "Strength": "Weak",
+    "EntropyHint": "Moderate — DER-encoded ASN.1 with embedded encrypted data sections"
+  },
+  "variables": [
+    {
+      "name": "scepSeqTag",
+      "offset": 0,
+      "size": 1,
+      "type": "uint8",
+      "description": "ASN.1 SEQUENCE tag — must be 0x30"
+    },
+    {
+      "name": "scepLenByte",
+      "offset": 1,
+      "size": 1,
+      "type": "uint8",
+      "description": "ASN.1 length byte — 0x82 indicates 2-byte length follows"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "SequenceTag",
+      "offset": 0,
+      "size": 1,
+      "description": "ASN.1 SEQUENCE tag (0x30)"
+    },
+    {
+      "name": "LengthField",
+      "offset": 1,
+      "size": 3,
+      "description": "ASN.1 length field (0x82 + 2-byte length for large messages)"
+    },
+    {
+      "name": "ContentTypeOID",
+      "offset": 4,
+      "size": 11,
+      "description": "OID for signedData (1.2.840.113549.1.7.2) or envelopedData"
+    },
+    {
+      "name": "CMSPayload",
+      "offset": 0,
+      "size": 0,
+      "description": "CMS SignedData or EnvelopedData containing CSR or certificate"
+    }
+  ],
+  "assertions": [
+    {
+      "variable": "scepSeqTag",
+      "operator": "==",
+      "value": 48,
+      "description": "First byte must be 0x30 (ASN.1 SEQUENCE tag)",
+      "level": "Error"
+    },
+    {
+      "variable": "scepLenByte",
+      "operator": "==",
+      "value": 130,
+      "description": "Length byte should be 0x82 for typical SCEP messages",
+      "level": "Warning"
+    },
+    {
+      "variable": "scepSeqTag",
+      "operator": "!=",
+      "value": 0,
+      "description": "Tag must not be null",
+      "level": "Error"
+    }
+  ],
+  "navigation": {
+    "entryPoint": 0,
+    "sections": [
+      { "name": "ASN.1 Header", "offset": 0, "size": 4 },
+      { "name": "ContentType OID", "offset": 4, "size": 11 },
+      { "name": "CMS Payload", "offset": 15, "size": 0 }
+    ]
+  },
+  "inspector": {
+    "badge": "SCEP",
+    "primaryField": "scepSeqTag",
+    "groups": [
+      {
+        "name": "ASN.1 Structure",
+        "fields": ["scepSeqTag", "scepLenByte"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "SCEP Summary",
+      "format": "text",
+      "template": "Format: SCEP Message\nSequence Tag: 0x{scepSeqTag}\nLength Byte: 0x{scepLenByte}"
+    },
+    {
+      "name": "SCEP JSON Report",
+      "format": "json",
+      "template": "{ \"format\": \"SCEP\", \"sequenceTag\": {scepSeqTag}, \"lengthByte\": {scepLenByte} }"
+    }
+  ],
+  "forensic": {
+    "riskLevel": "MEDIUM",
+    "notes": "SCEP messages contain certificate enrollment requests. Rogue SCEP servers can issue unauthorized certificates. SCEP challenge passwords may be embedded in plaintext within the PKCS#10 CSR.",
+    "suspiciousPatterns": [
+      "SCEP request with weak key size (RSA < 2048 bits)",
+      "Challenge password visible in plaintext CSR attributes",
+      "Certificate response with unexpected issuer DN"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "SCEP uses CMS/PKCS#7 envelopes for certificate enrollment. Messages are DER-encoded ASN.1 starting with SEQUENCE tag 0x30. Used heavily in MDM and network device certificate provisioning.",
+    "suggestedInspections": [
+      "Verify the outer SEQUENCE tag (0x30) and parse the ASN.1 length.",
+      "Extract the ContentType OID to determine if this is SignedData or EnvelopedData.",
+      "Decode the inner PKCS#10 CSR to inspect the requested subject and key size.",
+      "Check for challengePassword attribute in the CSR (should not be logged or stored)."
+    ]
+  },
+  "software": [
+    { "name": "OpenSSL", "platform": "Windows/macOS/Linux", "url": "https://www.openssl.org/" },
+    { "name": "Microsoft NDES", "platform": "Windows Server", "url": "https://learn.microsoft.com/en-us/mem/intune/protect/certificates-scep-configure" },
+    { "name": "sscep", "platform": "Linux/macOS", "url": "https://github.com/certnanny/sscep" }
+  ],
+  "formatRelationships": [
+    { "format": "CMS", "relationship": "parent", "note": "SCEP messages are CMS/PKCS#7 envelopes" },
+    { "format": "PKCS7", "relationship": "parent", "note": "SCEP uses PKCS#7 SignedData and EnvelopedData" }
+  ],
+  "MimeTypes": ["application/x-pki-message", "application/x-x509-ca-ra-cert"],
+  "UseCases": [
+    "Automated certificate enrollment for mobile devices",
+    "Network device certificate provisioning",
+    "MDM (Mobile Device Management) certificate workflows"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 84,
+    "LastUpdated": "2026-04-16",
+    "ReviewedBy": "WPFHexaEditor Team"
+  },
+  "TechnicalDetails": {
+    "encoding": "DER (Distinguished Encoding Rules)",
+    "outerStructure": "ASN.1 SEQUENCE → ContentInfo",
+    "contentTypes": "SignedData (1.2.840.113549.1.7.2), EnvelopedData (1.2.840.113549.1.7.3)",
+    "rfc": "RFC 8894 (SCEP)"
+  }
+}

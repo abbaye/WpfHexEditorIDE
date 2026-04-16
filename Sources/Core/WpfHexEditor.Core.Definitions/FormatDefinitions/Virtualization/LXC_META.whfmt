@@ -1,0 +1,154 @@
+{
+  "diffMode": "binary",
+  "formatName": "LXC/LXD Container Metadata",
+  "version": "1.0",
+  "extensions": [".tar", ".tar.gz"],
+  "description": "LXC/LXD container image metadata archive — a TAR (optionally gzip-compressed) containing metadata.yaml describing the container image properties, templates directory for cloud-init or file generation, and a rootfs directory or separate rootfs tarball. Used by LXD and Incus to distribute Linux container base images.",
+  "category": "Virtualization",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "HexEditor",
+  "references": [
+    "https://documentation.ubuntu.com/lxd/en/latest/image-handling/",
+    "https://linuxcontainers.org/lxd/docs/master/image-handling/",
+    "https://github.com/lxc/lxc"
+  ],
+  "detection": {
+    "signatures": [],
+    "matchMode": "Best",
+    "MinimumScore": 0.1,
+    "Strength": "Weak",
+    "EntropyHint": "Variable — uncompressed TAR is low entropy; gzip-compressed variant has high entropy"
+  },
+  "variables": [
+    {
+      "name": "lxcFirstByte",
+      "offset": 0,
+      "size": 1,
+      "type": "uint8",
+      "description": "First byte — 0x1F for gzip, printable ASCII for raw TAR"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "ArchiveHeader",
+      "offset": 0,
+      "size": 10,
+      "description": "Gzip header (if compressed) or TAR header (if uncompressed)"
+    },
+    {
+      "name": "MetadataYaml",
+      "offset": 0,
+      "size": 0,
+      "description": "metadata.yaml with image architecture, creation date, properties"
+    },
+    {
+      "name": "TemplatesDir",
+      "offset": 0,
+      "size": 0,
+      "description": "templates/ directory with cloud-init and file generation templates"
+    },
+    {
+      "name": "RootfsPayload",
+      "offset": 0,
+      "size": 0,
+      "description": "rootfs/ directory or separate rootfs.tar.xz with container filesystem"
+    }
+  ],
+  "assertions": [
+    {
+      "variable": "lxcFirstByte",
+      "operator": "!=",
+      "value": 0,
+      "description": "First byte must not be null",
+      "level": "Error"
+    },
+    {
+      "variable": "lxcFirstByte",
+      "operator": ">",
+      "value": 0,
+      "description": "Archive must have valid first byte",
+      "level": "Warning"
+    },
+    {
+      "variable": "lxcFirstByte",
+      "operator": "<",
+      "value": 256,
+      "description": "First byte within valid range",
+      "level": "Warning"
+    }
+  ],
+  "navigation": {
+    "entryPoint": 0,
+    "sections": [
+      { "name": "Archive Header", "offset": 0, "size": 512 },
+      { "name": "Metadata", "offset": 0, "size": 0 },
+      { "name": "Rootfs", "offset": 0, "size": 0 }
+    ]
+  },
+  "inspector": {
+    "badge": "LXC",
+    "primaryField": "lxcFirstByte",
+    "groups": [
+      {
+        "name": "Container",
+        "fields": ["lxcFirstByte"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "LXC Metadata Summary",
+      "format": "text",
+      "template": "Format: LXC/LXD Container Metadata\nFirst Byte: {lxcFirstByte}"
+    },
+    {
+      "name": "LXC Metadata JSON Report",
+      "format": "json",
+      "template": "{ \"format\": \"LXC Metadata\", \"firstByte\": {lxcFirstByte} }"
+    }
+  ],
+  "forensic": {
+    "riskLevel": "MEDIUM",
+    "notes": "LXC container images contain full Linux root filesystems. Untrusted images may have backdoored system binaries, modified PAM configurations, or rogue cron jobs.",
+    "suspiciousPatterns": [
+      "metadata.yaml with unexpected architecture or expiry fields",
+      "Templates containing shell scripts that download external payloads",
+      "rootfs with modified /etc/passwd or /etc/shadow entries"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "LXC/LXD container images are TAR archives with metadata.yaml and rootfs. Used by LXD and Incus for Linux container provisioning.",
+    "suggestedInspections": [
+      "Check first byte to determine if archive is gzip-compressed (0x1F) or raw TAR.",
+      "Extract and parse metadata.yaml for architecture, creation date, and properties.",
+      "Inspect templates/ directory for cloud-init scripts or post-creation hooks.",
+      "Scan rootfs for modified system binaries, SUID files, or unauthorized SSH keys."
+    ]
+  },
+  "software": [
+    { "name": "LXD", "platform": "Linux", "url": "https://ubuntu.com/lxd" },
+    { "name": "Incus", "platform": "Linux", "url": "https://linuxcontainers.org/incus/" },
+    { "name": "LXC", "platform": "Linux", "url": "https://linuxcontainers.org/lxc/" }
+  ],
+  "formatRelationships": [
+    { "format": "DOCKER_IMAGE", "relationship": "alternative", "note": "Both are container image formats; LXC targets system containers" },
+    { "format": "TAR", "relationship": "parent", "note": "LXC metadata is a TAR archive" }
+  ],
+  "MimeTypes": ["application/x-tar", "application/gzip"],
+  "UseCases": [
+    "Linux system container image distribution",
+    "LXD/Incus base image provisioning",
+    "Container image forensic analysis"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 82,
+    "LastUpdated": "2026-04-16",
+    "ReviewedBy": "WPFHexaEditor Team"
+  },
+  "TechnicalDetails": {
+    "containerFormat": "TAR or gzip TAR",
+    "metadataFile": "metadata.yaml",
+    "rootfsFormat": "Directory tree or separate rootfs.tar.xz",
+    "compressionOptions": "none, gzip, xz, zstd"
+  }
+}

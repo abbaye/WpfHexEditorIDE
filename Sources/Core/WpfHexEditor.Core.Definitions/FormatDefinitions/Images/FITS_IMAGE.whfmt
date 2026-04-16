@@ -1,0 +1,216 @@
+{
+  "diffMode": "binary",
+  "formatName": "FITS (Flexible Image Transport System)",
+  "version": "1.0",
+  "extensions": [
+    ".fits",
+    ".fit",
+    ".fts"
+  ],
+  "description": "FITS (Flexible Image Transport System) — standard astronomical data format endorsed by IAU and NASA. The primary HDU starts with 'SIMPLE  ' keyword at offset 0. Header consists of 80-byte keyword records in 2880-byte blocks. Supports images (N-dimensional arrays), binary tables, and ASCII tables for astronomical catalogs, images, and spectra.",
+  "category": "Images",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "references": {
+    "specifications": [
+      "FITS Standard Document — fits.gsfc.nasa.gov/fits_standard.html",
+      "IAU FITS Working Group — iaufwg.org"
+    ],
+    "WebLinks": [
+      "https://fits.gsfc.nasa.gov/",
+      "https://en.wikipedia.org/wiki/FITS",
+      "https://heasarc.gsfc.nasa.gov/docs/heasarc/fits.html"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      { "value": "53494D504C452020", "offset": 0, "label": "'SIMPLE  ' FITS primary HDU keyword", "weight": 1.0 }
+    ],
+    "required": true,
+    "Strength": "Strong",
+    "MinimumScore": 0.9,
+    "validation": {
+      "minFileSize": 2880
+    }
+  },
+  "variables": {
+    "fitsSimpleKey": "",
+    "fitsEquals": "",
+    "fitsValueT": ""
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "SIMPLE Keyword",
+      "offset": 0,
+      "length": 8,
+      "color": "#FF6B6B",
+      "opacity": 0.45,
+      "description": "8-byte ASCII 'SIMPLE  ' — the first keyword in every conformant FITS primary HDU. Padded with spaces to 8 characters.",
+      "storeAs": "fitsSimpleKey",
+      "valueType": "ascii",
+      "validation": { "expectedValue": "SIMPLE  " }
+    },
+    {
+      "type": "field",
+      "name": "Equals Sign",
+      "offset": 8,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "1-byte ASCII '=' at column 9 — value indicator separating keyword from value in FITS header records.",
+      "storeAs": "fitsEquals",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Conformance Value T",
+      "offset": 29,
+      "length": 1,
+      "color": "#FFEAA7",
+      "opacity": 0.35,
+      "description": "1-byte ASCII 'T' at column 30 — the logical value for SIMPLE keyword. 'T' means the file conforms to the FITS standard.",
+      "storeAs": "fitsValueT",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "BITPIX Record",
+      "offset": 80,
+      "length": 80,
+      "color": "#95E1D3",
+      "opacity": 0.30,
+      "description": "Second 80-byte header record: BITPIX keyword specifying bits per pixel (8, 16, 32, 64 for integers; -32, -64 for IEEE floating point)."
+    },
+    {
+      "type": "field",
+      "name": "NAXIS Record",
+      "offset": 160,
+      "length": 80,
+      "color": "#DDA0DD",
+      "opacity": 0.30,
+      "description": "Third 80-byte header record: NAXIS keyword specifying the number of axes (dimensions) in the data array. 0 for null primary HDU."
+    }
+  ],
+  "assertions": [
+    {
+      "name": "SIMPLE keyword present",
+      "expression": "fitsSimpleKey == 'SIMPLE  '",
+      "severity": "error",
+      "message": "FITS file must start with 'SIMPLE  ' keyword"
+    },
+    {
+      "name": "Conformance flag is T",
+      "expression": "fitsValueT == 'T'",
+      "severity": "warning",
+      "message": "SIMPLE = T expected for standard-conformant FITS files"
+    },
+    {
+      "name": "Minimum block size",
+      "expression": "fileSize >= 2880",
+      "severity": "error",
+      "message": "FITS file must be at least 2880 bytes (one header block)"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "SIMPLE", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
+      { "name": "BITPIX", "offset": 80, "icon": "\uE8A5", "color": "#95E1D3" },
+      { "name": "NAXIS", "offset": 160, "icon": "\uE9D9", "color": "#DDA0DD" }
+    ]
+  },
+  "inspector": {
+    "badge": "fitsSimpleKey",
+    "primaryField": "fitsSimpleKey",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "FITS Primary HDU",
+        "icon": "\uE71B",
+        "fields": ["fitsSimpleKey", "fitsEquals", "fitsValueT"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "FITS Header (JSON)",
+      "format": "json",
+      "fields": ["fitsSimpleKey", "fitsEquals", "fitsValueT"]
+    },
+    {
+      "name": "fits_header_t (C struct)",
+      "format": "c-struct",
+      "structName": "fits_primary_header",
+      "fields": ["fitsSimpleKey", "fitsEquals", "fitsValueT"]
+    }
+  ],
+  "forensic": {
+    "category": "science",
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      {
+        "name": "Non-conformant FITS",
+        "condition": "fitsValueT != 'T'",
+        "severity": "warning",
+        "description": "SIMPLE value is not 'T' — file may not conform to the FITS standard and some readers may reject it."
+      }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "FITS: header = 80-byte records in 2880-byte blocks. Mandatory keywords: SIMPLE(=T), BITPIX(8/16/32/64/-32/-64), NAXIS(0-999), NAXIS1..NAXISn, END. Data follows header, padded to 2880-byte boundary. Extensions: IMAGE, BINTABLE, TABLE (ASCII). Big-endian for all data. WCS keywords (CRPIX, CRVAL, CDELT, CTYPE) define coordinate systems.",
+    "suggestedInspections": [
+      "Verify 'SIMPLE  ' at offset 0 with '= T' value",
+      "Parse BITPIX to determine data type",
+      "Read NAXIS and NAXISn to compute data array dimensions",
+      "Scan for END keyword to find header/data boundary",
+      "Check for extension HDUs (XTENSION keyword at 2880-byte boundaries)"
+    ]
+  },
+  "software": [
+    "SAOImage DS9",
+    "Astropy (Python)",
+    "CFITSIO library",
+    "IRAF",
+    "Aladin (CDS)"
+  ],
+  "formatRelationships": {
+    "category": "Images",
+    "extensions": [".fits", ".fit", ".fts"],
+    "relatedFormats": ["VOTABLE"],
+    "containerVariant": "FITS can contain multiple HDUs (Header Data Units): primary image, image extensions, binary tables, ASCII tables"
+  },
+  "MimeTypes": [
+    "application/fits",
+    "image/fits"
+  ],
+  "UseCases": [
+    "Astronomical image storage (telescope CCD output)",
+    "Spectral data cubes (IFU observations)",
+    "Astronomical catalog tables (binary table extensions)",
+    "Space mission science data archival (HST, JWST, Chandra)"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 87,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 5,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-16",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "FileType": "Block-structured astronomical data format",
+    "BlockSize": 2880,
+    "RecordSize": 80,
+    "Endianness": "big-endian (FITS standard)",
+    "DataTypes": {
+      "8": "uint8",
+      "16": "int16",
+      "32": "int32",
+      "64": "int64",
+      "-32": "float32 (IEEE 754)",
+      "-64": "float64 (IEEE 754)"
+    },
+    "Extensions": ["IMAGE", "BINTABLE", "TABLE"]
+  }
+}

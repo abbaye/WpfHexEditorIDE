@@ -1,0 +1,260 @@
+{
+  "diffMode": "binary",
+  "formatName": "Nintendo BRSTM Audio",
+  "version": "1.0",
+  "extensions": [
+    ".brstm"
+  ],
+  "description": "BRSTM (Binary Revolution Stream) is Nintendo's streaming audio format used primarily on Wii and GameCube consoles. It supports ADPCM, PCM8, and PCM16 codecs with native loop point support for seamless background music playback. The file begins with the 'RSTM' magic identifier followed by a byte-order mark, version, file size, header size, and section count. BRSTM files contain HEAD, ADPC, and DATA sections organized for efficient hardware-accelerated streaming on Nintendo DSP hardware.",
+  "category": "Audio",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "references": {
+    "specifications": [
+      "Nintendo BRSTM format documentation (community reverse-engineered)",
+      "BrawlLib — BRSTM codec implementation"
+    ],
+    "WebLinks": [
+      "https://wiki.vg-resource.com/BRSTM",
+      "https://github.com/libertyernie/brawltools",
+      "https://en.wikipedia.org/wiki/Nintendo_DSP_ADPCM"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      {
+        "value": "5253544D",
+        "offset": 0,
+        "label": "'RSTM' Nintendo BRSTM magic",
+        "weight": 1.0
+      }
+    ],
+    "matchMode": "allOf",
+    "MinimumScore": 85,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 4.0, "max": 7.5 },
+    "validation": {
+      "minFileSize": 16,
+      "maxSignatureOffset": 0
+    }
+  },
+  "variables": {
+    "brstmMagic": "",
+    "brstmBOM": 0,
+    "brstmVersion": 0,
+    "brstmFileSize": 0,
+    "brstmHeaderSize": 0,
+    "brstmNumSections": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "RSTM Magic",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.45,
+      "description": "Nintendo BRSTM file signature: ASCII 'RSTM' (0x5253544D). Identifies the file as a Binary Revolution Stream audio container.",
+      "storeAs": "brstmMagic",
+      "valueType": "ascii",
+      "validation": {
+        "expectedValue": "RSTM"
+      }
+    },
+    {
+      "type": "field",
+      "name": "Byte Order Mark",
+      "offset": 4,
+      "length": 2,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "Byte order mark (BOM) indicating the endianness of multi-byte fields in the file. 0xFEFF = big-endian (standard for Wii/GameCube), 0xFFFE = little-endian.",
+      "storeAs": "brstmBOM",
+      "valueType": "uint16",
+      "endianness": "big",
+      "valueMap": {
+        "65279": "Big-endian (0xFEFF)",
+        "65534": "Little-endian (0xFFFE)"
+      }
+    },
+    {
+      "type": "field",
+      "name": "Version",
+      "offset": 6,
+      "length": 2,
+      "color": "#95E1D3",
+      "opacity": 0.35,
+      "description": "BRSTM format version number (16-bit, endianness per BOM). Common values: 0x0100 (v1.0) for standard Wii BRSTM files.",
+      "storeAs": "brstmVersion",
+      "valueType": "uint16",
+      "endianness": "big"
+    },
+    {
+      "type": "field",
+      "name": "File Size",
+      "offset": 8,
+      "length": 4,
+      "color": "#FFE66D",
+      "opacity": 0.35,
+      "description": "Total file size in bytes (32-bit unsigned, endianness per BOM). Should match the actual file size on disk.",
+      "storeAs": "brstmFileSize",
+      "valueType": "uint32",
+      "endianness": "big"
+    },
+    {
+      "type": "field",
+      "name": "Header Size",
+      "offset": 12,
+      "length": 2,
+      "color": "#DDA0DD",
+      "opacity": 0.35,
+      "description": "Size of the main file header in bytes (16-bit, endianness per BOM). Typically 0x0040 (64 bytes). Includes the magic, BOM, version, file size, and section offset table.",
+      "storeAs": "brstmHeaderSize",
+      "valueType": "uint16",
+      "endianness": "big"
+    },
+    {
+      "type": "field",
+      "name": "Number of Sections",
+      "offset": 14,
+      "length": 2,
+      "color": "#87CEEB",
+      "opacity": 0.35,
+      "description": "Number of data sections in the file (16-bit, endianness per BOM). Standard BRSTM files have 2 or 3 sections: HEAD, ADPC (optional), and DATA.",
+      "storeAs": "brstmNumSections",
+      "valueType": "uint16",
+      "endianness": "big"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "RSTM magic valid",
+      "expression": "brstmMagic == 'RSTM'",
+      "severity": "error",
+      "message": "File must begin with 'RSTM' signature (0x5253544D)"
+    },
+    {
+      "name": "Valid byte order mark",
+      "expression": "brstmBOM == 65279 || brstmBOM == 65534",
+      "severity": "error",
+      "message": "Byte order mark must be 0xFEFF (big-endian) or 0xFFFE (little-endian)"
+    },
+    {
+      "name": "Section count plausible",
+      "expression": "brstmNumSections >= 2 && brstmNumSections <= 4",
+      "severity": "warning",
+      "message": "BRSTM files typically have 2-3 sections (HEAD, ADPC, DATA)"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      {
+        "name": "RSTM Header",
+        "offset": 0,
+        "icon": "\uE71B",
+        "color": "#FF6B6B"
+      },
+      {
+        "name": "BOM / Version",
+        "offset": 4,
+        "icon": "\uE8A5",
+        "color": "#4ECDC4"
+      }
+    ]
+  },
+  "inspector": {
+    "badge": "brstmBOM",
+    "primaryField": "brstmFileSize",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "File Header",
+        "icon": "\uE71B",
+        "fields": ["brstmMagic", "brstmBOM", "brstmVersion"]
+      },
+      {
+        "title": "Structure",
+        "icon": "\uE8B7",
+        "fields": ["brstmFileSize", "brstmHeaderSize", "brstmNumSections"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "BRSTM Header (JSON)",
+      "format": "json",
+      "fields": ["brstmMagic", "brstmBOM", "brstmVersion", "brstmFileSize", "brstmHeaderSize", "brstmNumSections"]
+    },
+    {
+      "name": "brstm_header_t (C struct)",
+      "format": "c-struct",
+      "structName": "brstm_header",
+      "fields": ["brstmMagic", "brstmBOM", "brstmVersion", "brstmFileSize", "brstmHeaderSize", "brstmNumSections"]
+    }
+  ],
+  "forensic": {
+    "category": "audio",
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      {
+        "name": "File size mismatch",
+        "condition": "brstmFileSize == 0",
+        "severity": "error",
+        "description": "Stored file size is zero — file is truncated or corrupted."
+      },
+      {
+        "name": "Unexpected section count",
+        "condition": "brstmNumSections < 2 || brstmNumSections > 4",
+        "severity": "warning",
+        "description": "Section count outside normal range (2-3) — may indicate a non-standard or corrupted BRSTM."
+      }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "Nintendo BRSTM layout: 'RSTM'(4B) + BOM(2B) + version(2B) + fileSize(4B) + headerSize(2B) + numSections(2B) + section offsets(variable). Sections: HEAD (stream info: codec, loop flag, channels, sample rate, loop start, total samples, ADPCM coefficients), ADPC (seek/ADPCM history), DATA (interleaved audio blocks). Codecs: 0=PCM8, 1=PCM16, 2=DSP-ADPCM (4-bit, Nintendo DSP hardware). Endianness determined by BOM at offset 4.",
+    "suggestedInspections": [
+      "Verify 'RSTM' magic and BOM at file start",
+      "Parse HEAD section for codec type and loop parameters",
+      "Validate ADPCM coefficients in HEAD section for DSP codec",
+      "Check DATA section offset and size against total file size"
+    ]
+  },
+  "software": [
+    "BrawlBox / BrawlCrate",
+    "vgmstream",
+    "Audacity (with vgmstream plugin)"
+  ],
+  "formatRelationships": {
+    "category": "Audio",
+    "extensions": [".brstm"],
+    "relatedFormats": ["BCSTM", "BFSTM", "WAV"],
+    "containerVariant": "Nintendo Binary Revolution Stream"
+  },
+  "MimeTypes": [
+    "audio/x-brstm"
+  ],
+  "UseCases": [
+    "Nintendo Wii game background music with seamless looping",
+    "GameCube audio streaming via DSP ADPCM hardware decoder",
+    "Game modding and custom music replacement on Nintendo consoles",
+    "Preserving and analyzing Nintendo game audio archives"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 85,
+    "DocumentationLevel": "comprehensive",
+    "BlocksDefined": 6,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-16",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "AudioFormat": true,
+    "CompressionMethod": "DSP-ADPCM (4-bit), PCM8, or PCM16",
+    "Endianness": "Determined by BOM (typically big-endian)",
+    "HeaderSize": "64 bytes typical",
+    "Sections": "HEAD, ADPC, DATA",
+    "NativeLoopSupport": true,
+    "TargetPlatform": "Nintendo Wii / GameCube"
+  }
+}

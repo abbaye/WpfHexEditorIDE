@@ -1,0 +1,194 @@
+{
+  "diffMode": "text",
+  "formatName": "Parasolid XT (Text Transmit)",
+  "version": "1.0",
+  "extensions": [
+    ".x_t",
+    ".xmt_txt"
+  ],
+  "description": "Parasolid XT — text-based transmit format from Siemens' Parasolid geometric modeling kernel. The file starts with '**PART ' header line followed by version information and schema identifiers. Contains B-rep solid model data (bodies, shells, faces, edges, vertices, curves, surfaces) in a human-readable ASCII representation used for CAD data exchange.",
+  "category": "CAD",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "code-editor",
+  "references": {
+    "specifications": [
+      "Parasolid XT Format Reference — Siemens PLM documentation",
+      "Parasolid modeling kernel — plm.automation.siemens.com/en/products/open/parasolid/"
+    ],
+    "WebLinks": [
+      "https://www.plm.automation.siemens.com/global/en/products/plm-components/parasolid.html",
+      "https://en.wikipedia.org/wiki/Parasolid"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      { "value": "2A2A5041525420", "offset": 0, "label": "'**PART ' Parasolid text header", "weight": 1.0 }
+    ],
+    "required": true,
+    "Strength": "Strong",
+    "MinimumScore": 0.8,
+    "validation": {
+      "minFileSize": 50
+    }
+  },
+  "variables": {
+    "parasolidXtHeader": "",
+    "parasolidXtVersion": ""
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "PART Header",
+      "offset": 0,
+      "length": 7,
+      "color": "#FF6B6B",
+      "opacity": 0.45,
+      "description": "7-byte ASCII '**PART ' — the opening keyword of a Parasolid text transmit file, marking the start of a part definition.",
+      "storeAs": "parasolidXtHeader",
+      "valueType": "ascii",
+      "validation": { "expectedValue": "**PART " }
+    },
+    {
+      "type": "field",
+      "name": "Version String",
+      "offset": 7,
+      "length": 8,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "8-byte ASCII version/schema identifier following the PART header. Indicates the Parasolid kernel version used to generate this file.",
+      "storeAs": "parasolidXtVersion",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Schema Line",
+      "offset": 15,
+      "length": 40,
+      "color": "#FFEAA7",
+      "opacity": 0.35,
+      "description": "Schema definition line containing entity type definitions and version compatibility information."
+    },
+    {
+      "type": "field",
+      "name": "Body Definition",
+      "offset": 55,
+      "length": 50,
+      "color": "#95E1D3",
+      "opacity": 0.30,
+      "description": "First body/topology definition. Parasolid XT encodes B-rep topology (body, shell, face, loop, edge, vertex) and geometry (surface, curve, point) as numbered entity records."
+    }
+  ],
+  "assertions": [
+    {
+      "name": "Starts with **PART",
+      "expression": "parasolidXtHeader == '**PART '",
+      "severity": "error",
+      "message": "File must start with '**PART ' to be a valid Parasolid XT text transmit file"
+    },
+    {
+      "name": "Version is ASCII",
+      "expression": "parasolidXtVersion != ''",
+      "severity": "warning",
+      "message": "Version string should be readable ASCII text"
+    },
+    {
+      "name": "Minimum content",
+      "expression": "fileSize > 50",
+      "severity": "error",
+      "message": "Parasolid XT file is too small to contain valid B-rep data"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "PART Header", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
+      { "name": "Version", "offset": 7, "icon": "\uE8A5", "color": "#4ECDC4" },
+      { "name": "Body Data", "offset": 55, "icon": "\uE9D9", "color": "#95E1D3" }
+    ]
+  },
+  "inspector": {
+    "badge": "parasolidXtVersion",
+    "primaryField": "parasolidXtHeader",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "Parasolid XT Header",
+        "icon": "\uE71B",
+        "fields": ["parasolidXtHeader", "parasolidXtVersion"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "Parasolid XT Header (JSON)",
+      "format": "json",
+      "fields": ["parasolidXtHeader", "parasolidXtVersion"]
+    },
+    {
+      "name": "parasolid_xt_header_t (C struct)",
+      "format": "c-struct",
+      "structName": "parasolid_xt_header",
+      "fields": ["parasolidXtHeader", "parasolidXtVersion"]
+    }
+  ],
+  "forensic": {
+    "category": "cad",
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      {
+        "name": "Truncated part data",
+        "condition": "fileSize < 200",
+        "severity": "info",
+        "description": "File is very small — may be a minimal or truncated Parasolid model."
+      }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "Parasolid XT: text format. Starts with '**PART ' + version line. Then entity records numbered sequentially. Entity types: body, shell, face, loop, edge, vertex (topology); plane, cylinder, cone, sphere, torus, bspline_surface (geometry); line, circle, ellipse, bspline_curve (curves); point (vertices). Each record: entity_number entity_type { field_values }. Supports assemblies, attributes, and named entities.",
+    "suggestedInspections": [
+      "Verify '**PART ' header and extract Parasolid version",
+      "Count body entities to determine number of solid objects",
+      "Parse face entities to understand model topology",
+      "Check for assembly structure (multiple bodies)"
+    ]
+  },
+  "software": [
+    "Siemens NX (Unigraphics)",
+    "SolidWorks",
+    "Solid Edge",
+    "CADfix (ITI TranscenData)",
+    "CATIA (import)"
+  ],
+  "formatRelationships": {
+    "category": "CAD",
+    "extensions": [".x_t", ".xmt_txt"],
+    "relatedFormats": ["PARASOLID_XB", "STEP", "IGES"],
+    "containerVariant": ".x_t = text transmit; .x_b = binary transmit; both encode the same Parasolid B-rep model"
+  },
+  "MimeTypes": [
+    "application/x-parasolid-transmit-text",
+    "text/plain"
+  ],
+  "UseCases": [
+    "CAD model exchange between Parasolid-based applications",
+    "B-rep solid model archival in human-readable format",
+    "Product design data interchange (NX, SolidWorks, Solid Edge)",
+    "CAD data migration and translation workflows"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 85,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 4,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-16",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "FileType": "Text-based B-rep solid model transmit format",
+    "Encoding": "ASCII",
+    "ModelingKernel": "Parasolid (Siemens PLM)",
+    "TopologyEntities": ["body", "shell", "face", "loop", "edge", "vertex"],
+    "GeometryEntities": ["plane", "cylinder", "cone", "sphere", "torus", "bspline_surface", "line", "circle", "bspline_curve"],
+    "Endianness": "N/A (text format)"
+  }
+}

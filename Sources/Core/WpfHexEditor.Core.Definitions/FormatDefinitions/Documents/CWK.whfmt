@@ -1,0 +1,205 @@
+{
+  "diffMode": "binary",
+  "formatName": "ClarisWorks / AppleWorks Document",
+  "version": "1.0",
+  "extensions": [".cwk"],
+  "description": "ClarisWorks (later AppleWorks) is a classic Macintosh integrated office suite that produced .cwk files for word processing, spreadsheets, databases, drawing, painting, and presentations. Files contain a 4-byte reserved region at offset 0, followed by the 4-byte ASCII magic 'BOBO' at offset 4, and a 2-byte big-endian version number at offset 8. The format uses big-endian byte order consistent with classic Mac OS conventions.",
+  "category": "Documents",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "references": [
+    "https://en.wikipedia.org/wiki/AppleWorks",
+    "https://en.wikipedia.org/wiki/ClarisWorks",
+    "https://wiki.fileformat.com/word-processing/cwk/"
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "value": "424F424F",
+        "offset": 4,
+        "label": "'BOBO' ClarisWorks/AppleWorks magic at offset 4",
+        "weight": 0.9
+      }
+    ],
+    "matchMode": "first",
+    "MinimumScore": 0.8,
+    "Strength": "Strong",
+    "validation": {
+      "rules": [
+        { "field": "cwkMagic", "operator": "equals", "value": "BOBO" }
+      ]
+    }
+  },
+  "variables": [
+    {
+      "name": "cwkReserved",
+      "offset": 0,
+      "size": 4,
+      "type": "hex",
+      "storeAs": "cwkReserved",
+      "description": "4-byte reserved region at offset 0 (contents vary by document type)"
+    },
+    {
+      "name": "cwkMagic",
+      "offset": 4,
+      "size": 4,
+      "type": "ascii",
+      "storeAs": "cwkMagic",
+      "description": "4-byte ASCII magic 'BOBO' at offset 4"
+    },
+    {
+      "name": "cwkVersion",
+      "offset": 8,
+      "size": 2,
+      "type": "uint16",
+      "endian": "big",
+      "storeAs": "cwkVersion",
+      "description": "2-byte BE version number at offset 8"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "Reserved",
+      "offset": 0,
+      "size": 4,
+      "description": "4-byte reserved header region (document type or resource fork metadata)",
+      "fields": [
+        { "name": "Reserved", "offset": 0, "size": 4, "type": "hex" }
+      ]
+    },
+    {
+      "name": "Magic",
+      "offset": 4,
+      "size": 4,
+      "description": "4-byte ASCII magic 'BOBO' identifying ClarisWorks/AppleWorks file",
+      "fields": [
+        { "name": "MagicASCII", "offset": 4, "size": 4, "type": "ascii" }
+      ]
+    },
+    {
+      "name": "Version",
+      "offset": 8,
+      "size": 2,
+      "description": "2-byte big-endian version number",
+      "fields": [
+        { "name": "Version", "offset": 8, "size": 2, "type": "uint16" }
+      ]
+    },
+    {
+      "name": "DocumentData",
+      "offset": 10,
+      "size": -1,
+      "description": "Document content: text, spreadsheet cells, drawing objects, or database records depending on type",
+      "fields": []
+    }
+  ],
+  "assertions": [
+    {
+      "id": "assert_magic",
+      "field": "cwkMagic",
+      "operator": "equals",
+      "value": "BOBO",
+      "severity": "error",
+      "message": "ClarisWorks magic 'BOBO' not found at offset 4"
+    },
+    {
+      "id": "assert_version_nonzero",
+      "field": "cwkVersion",
+      "operator": "greaterThan",
+      "value": 0,
+      "severity": "warning",
+      "message": "ClarisWorks version is zero — possibly corrupt"
+    },
+    {
+      "id": "assert_version_range",
+      "field": "cwkVersion",
+      "operator": "lessThan",
+      "value": 100,
+      "severity": "warning",
+      "message": "Version unexpectedly high — possible corruption or unknown variant"
+    }
+  ],
+  "navigation": {
+    "entryPoints": [
+      { "name": "Reserved Header", "offset": 0 },
+      { "name": "BOBO Magic", "offset": 4 },
+      { "name": "Version", "offset": 8 }
+    ],
+    "jumpTable": [
+      { "label": "Reserved", "offset": 0 },
+      { "label": "Magic 'BOBO'", "offset": 4 },
+      { "label": "Version", "offset": 8 }
+    ]
+  },
+  "inspector": {
+    "badge": "CW",
+    "primaryField": "cwkMagic",
+    "groups": [
+      {
+        "name": "Identification",
+        "fields": ["cwkReserved", "cwkMagic", "cwkVersion"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "ClarisWorks Header Summary",
+      "format": "text",
+      "template": "ClarisWorks/AppleWorks Document\nReserved: {cwkReserved}\nMagic   : {cwkMagic}\nVersion : {cwkVersion}"
+    },
+    {
+      "name": "ClarisWorks Header CSV",
+      "format": "csv",
+      "template": "Field,Value\nReserved,{cwkReserved}\nMagic,{cwkMagic}\nVersion,{cwkVersion}"
+    }
+  ],
+  "forensic": {
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      "BOBO magic missing at offset 4 — not a ClarisWorks file",
+      "Version number outside known ClarisWorks/AppleWorks range",
+      "Resource fork data missing on non-Mac systems",
+      "Unexpected data in reserved header region"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "ClarisWorks/AppleWorks files use the 'BOBO' magic at offset 4 with big-endian byte order. The reserved 4 bytes at offset 0 may indicate the document module type (word processing, spreadsheet, drawing, database, painting, presentation). Classic Mac files may also have resource fork data. AppleWorks was discontinued in 2007.",
+    "suggestedInspections": [
+      "Verify 'BOBO' magic at offset 4",
+      "Read uint16 BE version at offset 8",
+      "Analyze reserved bytes at offset 0 for document type hints",
+      "Check for resource fork data (Mac-specific metadata)"
+    ]
+  },
+  "software": [
+    { "name": "AppleWorks", "vendor": "Apple (discontinued)", "platform": "macOS Classic" },
+    { "name": "ClarisWorks", "vendor": "Claris (Apple subsidiary)", "platform": "macOS Classic / Windows" },
+    { "name": "LibreOffice", "vendor": "The Document Foundation", "platform": "Cross-platform" }
+  ],
+  "formatRelationships": [
+    { "format": "DOC", "relation": "sibling", "note": "Contemporary word processing format from Microsoft; CWK is the Apple equivalent" },
+    { "format": "WPS", "relation": "sibling", "note": "Both are legacy integrated office suite formats" }
+  ],
+  "MimeTypes": [
+    "application/x-appleworks",
+    "application/x-clarisworks"
+  ],
+  "UseCases": [
+    "Legacy ClarisWorks/AppleWorks document recovery",
+    "Classic Macintosh document archival and migration",
+    "Digital forensics of vintage Apple office documents",
+    "Document format conversion from legacy Mac applications"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 85,
+    "LastUpdated": "2026-04-16"
+  },
+  "TechnicalDetails": {
+    "headerSize": 10,
+    "endian": "big",
+    "signatureOffset": 4,
+    "signatureLength": 4,
+    "magicValue": "424F424F",
+    "notes": "Big-endian (Motorola byte order) consistent with classic Mac OS. Resource fork may contain additional metadata on HFS/HFS+ volumes."
+  }
+}

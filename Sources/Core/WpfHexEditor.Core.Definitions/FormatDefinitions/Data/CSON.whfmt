@@ -1,0 +1,171 @@
+{
+  "diffMode": "text",
+  "formatName": "CoffeeScript Object Notation (CSON)",
+  "version": "1.0",
+  "extensions": [".cson"],
+  "description": "CSON (CoffeeScript Object Notation) is a text-based data format that uses CoffeeScript syntax for human-readable configuration files. It supports indentation-based nesting, string interpolation, multi-line strings, and comments. CSON was popularized by the Atom text editor for package configuration. Files are plain UTF-8 text with no binary magic signature, making detection extension-based only.",
+  "category": "Data",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "code-editor",
+  "references": [
+    "https://github.com/bevry/cson",
+    "https://github.com/atom/season",
+    "https://coffeescript.org/"
+  ],
+  "detection": {
+    "signatures": [],
+    "matchMode": "any",
+    "MinimumScore": 0.1,
+    "Strength": "Weak",
+    "validation": {
+      "rules": []
+    }
+  },
+  "variables": [
+    {
+      "name": "csonFirstByte",
+      "offset": 0,
+      "size": 1,
+      "type": "uint8",
+      "storeAs": "csonFirstByte",
+      "description": "First byte of the CSON file (typically ASCII letter, quote, or hash for comment)"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "TextContent",
+      "offset": 0,
+      "size": -1,
+      "description": "Full CSON text content — CoffeeScript-syntax key-value pairs with indentation nesting",
+      "fields": [
+        { "name": "FirstByte", "offset": 0, "size": 1, "type": "uint8" }
+      ]
+    },
+    {
+      "name": "RootObject",
+      "offset": 0,
+      "size": -1,
+      "description": "Root-level key-value pairs forming the top-level CSON object",
+      "fields": []
+    },
+    {
+      "name": "NestedObjects",
+      "offset": -1,
+      "size": -1,
+      "description": "Indentation-nested child objects and arrays",
+      "fields": []
+    },
+    {
+      "name": "Comments",
+      "offset": -1,
+      "size": -1,
+      "description": "Lines starting with '#' — CoffeeScript-style comments",
+      "fields": []
+    }
+  ],
+  "assertions": [
+    {
+      "id": "assert_readable",
+      "field": "csonFirstByte",
+      "operator": "greaterThanOrEqual",
+      "value": 0,
+      "severity": "info",
+      "message": "File is readable for CSON analysis"
+    },
+    {
+      "id": "assert_text_content",
+      "field": "csonFirstByte",
+      "operator": "greaterThan",
+      "value": 0,
+      "severity": "warning",
+      "message": "CSON file should start with printable text characters"
+    },
+    {
+      "id": "assert_not_binary",
+      "field": "csonFirstByte",
+      "operator": "lessThan",
+      "value": 128,
+      "severity": "warning",
+      "message": "First byte is non-ASCII — CSON files should be UTF-8 text"
+    }
+  ],
+  "navigation": {
+    "entryPoints": [
+      { "name": "File Start", "offset": 0 }
+    ],
+    "jumpTable": [
+      { "label": "File Start", "offset": 0 }
+    ]
+  },
+  "inspector": {
+    "badge": "CS",
+    "primaryField": "csonFirstByte",
+    "groups": [
+      {
+        "name": "Identification",
+        "fields": ["csonFirstByte"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "CSON File Info",
+      "format": "text",
+      "template": "CoffeeScript Object Notation\nFirst Byte: 0x{csonFirstByte:X2}\nFormat: Text-based (CoffeeScript syntax)"
+    },
+    {
+      "name": "CSON File CSV",
+      "format": "csv",
+      "template": "Field,Value\nFirstByte,0x{csonFirstByte:X2}\nFormat,Text"
+    }
+  ],
+  "forensic": {
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      "Binary content in a text format file — wrong file type or corruption",
+      "String interpolation may execute CoffeeScript expressions if parsed unsafely",
+      "Deeply nested indentation — potential parsing denial of service"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "CSON is a text format using CoffeeScript syntax: unquoted keys, indentation-based nesting, '#' comments, and optional string interpolation. The Atom editor uses CSON for settings, keymaps, and snippets. Two CSON libraries exist: bevry/cson (full CoffeeScript eval) and season (safe subset).",
+    "suggestedInspections": [
+      "Check for UTF-8 BOM or encoding markers at file start",
+      "Identify root-level keys and indentation style (spaces vs tabs)",
+      "Look for '#' comment lines and multi-line string blocks (triple quotes)",
+      "Verify consistent indentation depth throughout the file"
+    ]
+  },
+  "software": [
+    { "name": "Atom Editor", "vendor": "GitHub (archived)", "platform": "Cross-platform" },
+    { "name": "bevry/cson (Node.js)", "vendor": "Bevry", "platform": "Node.js" },
+    { "name": "season (Node.js)", "vendor": "GitHub", "platform": "Node.js" }
+  ],
+  "formatRelationships": [
+    { "format": "JSON", "relation": "parent", "note": "CSON is a more readable alternative to JSON using CoffeeScript syntax" },
+    { "format": "YAML", "relation": "sibling", "note": "Both use indentation-based nesting; YAML is more widely adopted" },
+    { "format": "TOML", "relation": "sibling", "note": "Both are human-readable configuration formats" }
+  ],
+  "MimeTypes": [
+    "text/plain",
+    "application/cson"
+  ],
+  "UseCases": [
+    "Atom editor configuration files (config.cson, keymap.cson)",
+    "Node.js application configuration",
+    "Human-readable data serialization",
+    "Package metadata and settings"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 82,
+    "LastUpdated": "2026-04-16"
+  },
+  "TechnicalDetails": {
+    "headerSize": 0,
+    "endian": "n/a",
+    "signatureOffset": -1,
+    "signatureLength": 0,
+    "encoding": "UTF-8 text with CoffeeScript syntax",
+    "notes": "No binary signature. Text format — best viewed in code editor. Atom editor ecosystem format, now largely superseded by JSON and YAML."
+  }
+}

@@ -1,0 +1,169 @@
+{
+  "diffMode": "text",
+  "formatName": "OpenBSD Signify Signature",
+  "version": "1.0",
+  "extensions": [".sig"],
+  "description": "OpenBSD signify digital signature file — a compact text-based signature format used by OpenBSD for release verification. Contains an untrusted comment line followed by a base64-encoded Ed25519 signature with embedded key number. Signify was created by Ted Unangst for the OpenBSD project as a minimal alternative to PGP.",
+  "category": "Crypto",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "code-editor",
+  "references": [
+    "https://man.openbsd.org/signify",
+    "https://www.openbsd.org/papers/bsdcan-signify.html",
+    "https://github.com/aperezdc/signify"
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "value": "756E74727573746564",
+        "offset": 0,
+        "label": "'untrusted' — signify/OpenBSD signature",
+        "weight": 0.9
+      }
+    ],
+    "matchMode": "Best",
+    "MinimumScore": 0.8,
+    "Strength": "Strong",
+    "EntropyHint": "Low — text file with base64-encoded signature"
+  },
+  "variables": [
+    {
+      "name": "signifyComment",
+      "offset": 0,
+      "size": 18,
+      "type": "ascii",
+      "description": "Comment line prefix — 'untrusted comment:'"
+    },
+    {
+      "name": "signifyBase64Start",
+      "offset": 0,
+      "size": 1,
+      "type": "uint8",
+      "description": "First byte of the base64-encoded signature line"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "UntrustedComment",
+      "offset": 0,
+      "size": 0,
+      "description": "Line 1: 'untrusted comment: <comment text>'"
+    },
+    {
+      "name": "SignatureData",
+      "offset": 0,
+      "size": 0,
+      "description": "Line 2: base64-encoded Ed25519 signature with key number prefix"
+    },
+    {
+      "name": "AlgorithmId",
+      "offset": 0,
+      "size": 2,
+      "description": "First 2 bytes of decoded signature: algorithm identifier ('Ed')"
+    },
+    {
+      "name": "KeyNumber",
+      "offset": 0,
+      "size": 8,
+      "description": "8-byte key number following the algorithm identifier"
+    }
+  ],
+  "assertions": [
+    {
+      "variable": "signifyComment",
+      "operator": "startsWith",
+      "value": "untrusted comment",
+      "description": "First line must start with 'untrusted comment'",
+      "level": "Error"
+    },
+    {
+      "variable": "signifyComment",
+      "operator": "!=",
+      "value": "",
+      "description": "Comment must not be empty",
+      "level": "Error"
+    },
+    {
+      "variable": "signifyBase64Start",
+      "operator": ">",
+      "value": 31,
+      "description": "Base64 line must start with printable character",
+      "level": "Warning"
+    }
+  ],
+  "navigation": {
+    "entryPoint": 0,
+    "sections": [
+      { "name": "Comment Line", "offset": 0, "size": 0 },
+      { "name": "Signature Line", "offset": 0, "size": 0 }
+    ]
+  },
+  "inspector": {
+    "badge": "SIGNIFY",
+    "primaryField": "signifyComment",
+    "groups": [
+      {
+        "name": "Signature",
+        "fields": ["signifyComment", "signifyBase64Start"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "Signify Summary",
+      "format": "text",
+      "template": "Format: OpenBSD Signify Signature\nComment: {signifyComment}"
+    },
+    {
+      "name": "Signify JSON Report",
+      "format": "json",
+      "template": "{ \"format\": \"Signify\", \"comment\": \"{signifyComment}\" }"
+    }
+  ],
+  "forensic": {
+    "riskLevel": "LOW",
+    "notes": "Signify signatures are used to verify OpenBSD releases and packages. The untrusted comment is not cryptographically protected.",
+    "suspiciousPatterns": [
+      "Signature file claiming to be from OpenBSD but with non-standard key number",
+      "Comment containing misleading version or release information",
+      "Signature file for a binary not present in official OpenBSD mirrors"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "OpenBSD signify uses Ed25519 for compact file signatures. Format is 2 lines: untrusted comment + base64 signature (algorithm ID + key number + Ed25519 sig).",
+    "suggestedInspections": [
+      "Verify 'untrusted comment:' prefix on line 1.",
+      "Decode the base64 signature to extract the 2-byte algorithm ID ('Ed') and 8-byte key number.",
+      "Match the key number against known OpenBSD signing keys.",
+      "Validate the Ed25519 signature against the corresponding public key and signed file."
+    ]
+  },
+  "software": [
+    { "name": "signify (OpenBSD)", "platform": "OpenBSD", "url": "https://man.openbsd.org/signify" },
+    { "name": "signify-portable", "platform": "Linux/macOS", "url": "https://github.com/aperezdc/signify" },
+    { "name": "minisign", "platform": "Windows/macOS/Linux", "url": "https://jedisct1.github.io/minisign/" }
+  ],
+  "formatRelationships": [
+    { "format": "MINISIGN", "relationship": "similar", "note": "Minisign extends signify with trusted comments and global signatures" },
+    { "format": "PGP", "relationship": "alternative", "note": "Signify was created as a minimal alternative to PGP" }
+  ],
+  "MimeTypes": ["text/plain"],
+  "UseCases": [
+    "OpenBSD release and package verification",
+    "Firmware and software integrity checking",
+    "Minimal file signing without PGP infrastructure"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 84,
+    "LastUpdated": "2026-04-16",
+    "ReviewedBy": "WPFHexaEditor Team"
+  },
+  "TechnicalDetails": {
+    "signatureAlgorithm": "Ed25519",
+    "encoding": "Base64 for signature data",
+    "lineCount": 2,
+    "algorithmId": "'Ed' (2 bytes)",
+    "keyNumberSize": "8 bytes",
+    "signatureSize": "64 bytes (Ed25519)"
+  }
+}

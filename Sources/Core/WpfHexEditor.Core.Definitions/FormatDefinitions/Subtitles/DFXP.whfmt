@@ -1,0 +1,212 @@
+{
+  "diffMode": "text",
+  "formatName": "DFXP/TTML Subtitles",
+  "version": "1.0",
+  "extensions": [
+    ".dfxp",
+    ".xml"
+  ],
+  "description": "DFXP (Distribution Format Exchange Profile) is a subset of TTML (Timed Text Markup Language), a W3C standard XML-based subtitle format defined in TTML 1.0 and TTML 2.0. DFXP was designed as an interchange format for subtitle distribution across platforms and services. The root element is <tt> with XML namespace declarations for TTML, styling, and layout. DFXP supports rich styling (fonts, colors, backgrounds), region-based positioning, timing with begin/end/dur attributes, and nested inline styling. Netflix, Amazon, and many broadcast standards use TTML/DFXP profiles.",
+  "category": "Subtitles",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "code-editor",
+  "references": {
+    "specifications": [
+      "W3C TTML 1.0 — Timed Text Markup Language — w3.org/TR/ttml1/",
+      "W3C TTML 2.0 — w3.org/TR/ttml2/",
+      "SMPTE ST 2052-1 — TTML for Video (SMPTE-TT)"
+    ],
+    "WebLinks": [
+      "https://www.w3.org/TR/ttml1/",
+      "https://www.w3.org/TR/ttml2/",
+      "https://en.wikipedia.org/wiki/Timed_Text_Markup_Language"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      {
+        "value": "3C747420786D6C3A6C616E67",
+        "offset": 0,
+        "label": "'<tt xml:lang' TTML root",
+        "weight": 0.9
+      },
+      {
+        "value": "3C3F786D6C",
+        "offset": 0,
+        "label": "'<?xml' with tt element",
+        "weight": 0.3
+      }
+    ],
+    "matchMode": "anyOf",
+    "MinimumScore": 82,
+    "Strength": "Medium",
+    "EntropyHint": { "min": 1.5, "max": 5.0 },
+    "validation": {
+      "minFileSize": 12,
+      "maxSignatureOffset": 0
+    }
+  },
+  "variables": {
+    "dfxpRoot": "",
+    "dfxpFirstByte": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "Root Element",
+      "offset": 0,
+      "length": 12,
+      "color": "#FF6B6B",
+      "opacity": 0.45,
+      "description": "Start of the TTML/DFXP root element. Files either begin directly with '<tt xml:lang' or with an XML declaration '<?xml version=\"1.0\"...' followed by the <tt> root element. The <tt> element declares TTML, styling (tts), and layout (ttp) namespaces.",
+      "storeAs": "dfxpRoot",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "First Byte",
+      "offset": 0,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "First byte of the file. Should be '<' (0x3C) for direct XML start, or 0xEF for UTF-8 BOM prefix. The '<' character begins either the XML declaration or the <tt> root element.",
+      "storeAs": "dfxpFirstByte",
+      "valueType": "uint8"
+    },
+    {
+      "type": "field",
+      "name": "XML Declaration / Header",
+      "offset": 1,
+      "length": 8,
+      "color": "#95E1D3",
+      "opacity": 0.35,
+      "description": "Continuation of the XML declaration or root element tag. Contains version, encoding, and namespace declarations that define the TTML profile being used (DFXP, SMPTE-TT, EBU-TT, IMSC, etc.).",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Content Start",
+      "offset": 9,
+      "length": 8,
+      "color": "#FFE66D",
+      "opacity": 0.35,
+      "description": "Beginning of the TTML document content. The <tt> element contains <head> (with <styling> and <layout> children) and <body> (with <div> and <p> timed paragraph elements). Timing uses begin/end or begin/dur attributes.",
+      "valueType": "ascii"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "Starts with XML tag",
+      "expression": "dfxpFirstByte == 60 || dfxpFirstByte == 239",
+      "severity": "error",
+      "message": "File must start with '<' (0x3C) for XML or 0xEF for UTF-8 BOM"
+    },
+    {
+      "name": "Root element present",
+      "expression": "dfxpRoot != ''",
+      "severity": "error",
+      "message": "DFXP/TTML root element must be present"
+    },
+    {
+      "name": "First byte is valid XML start",
+      "expression": "dfxpFirstByte == 60 || dfxpFirstByte == 239 || dfxpFirstByte == 254 || dfxpFirstByte == 255",
+      "severity": "error",
+      "message": "First byte must indicate XML content (< or BOM)"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      {
+        "name": "TTML Root",
+        "offset": 0,
+        "icon": "\uE71B",
+        "color": "#FF6B6B"
+      }
+    ]
+  },
+  "inspector": {
+    "badge": "dfxpRoot",
+    "primaryField": "dfxpFirstByte",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "Document",
+        "icon": "\uE71B",
+        "fields": ["dfxpRoot", "dfxpFirstByte"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "DFXP Header (JSON)",
+      "format": "json",
+      "fields": ["dfxpRoot", "dfxpFirstByte"]
+    },
+    {
+      "name": "Python DFXP parser",
+      "format": "python-bytes",
+      "fields": ["dfxpRoot"]
+    }
+  ],
+  "forensic": {
+    "category": "subtitles",
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      {
+        "name": "Non-XML start",
+        "condition": "dfxpFirstByte != 60 && dfxpFirstByte != 239",
+        "severity": "error",
+        "description": "File does not start with XML content — not a valid DFXP/TTML document."
+      }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "DFXP/TTML XML structure: <?xml version='1.0'?> + <tt xml:lang='en' xmlns='http://www.w3.org/ns/ttml' xmlns:tts='http://www.w3.org/ns/ttml#styling' xmlns:ttp='http://www.w3.org/ns/ttml#parameter'> + <head><styling><style xml:id='s1' tts:color='white' tts:fontSize='20px'/></styling><layout><region xml:id='r1' tts:origin='10% 80%' tts:extent='80% 20%'/></layout></head> + <body><div><p begin='00:00:01.000' end='00:00:04.000' style='s1' region='r1'>Text</p></div></body></tt>. TTML profiles: DFXP (basic), SMPTE-TT (broadcast), EBU-TT (EBU), IMSC (internet).",
+    "suggestedInspections": [
+      "Verify <tt> root element with TTML namespace declaration",
+      "Parse ttp:profile attribute to identify TTML profile (DFXP, IMSC, SMPTE-TT)",
+      "Check <styling> section for defined text styles",
+      "Validate timing attributes (begin/end/dur) on <p> elements"
+    ]
+  },
+  "software": [
+    "Subtitle Edit",
+    "FFmpeg",
+    "Netflix Subtitle Toolkit"
+  ],
+  "formatRelationships": {
+    "category": "Subtitles",
+    "extensions": [".dfxp", ".xml"],
+    "relatedFormats": ["TTML", "VTT", "SRT", "SMPTE-TT"],
+    "containerVariant": "Standalone XML file or embedded in DASH/HLS"
+  },
+  "MimeTypes": [
+    "application/ttml+xml",
+    "application/xml"
+  ],
+  "UseCases": [
+    "Netflix and Amazon Prime Video subtitle delivery (TTML/DFXP profiles)",
+    "Broadcast television subtitle interchange (SMPTE-TT, EBU-TT)",
+    "DASH adaptive streaming subtitle tracks (IMSC profile)",
+    "Cross-platform subtitle format exchange and conversion"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 82,
+    "DocumentationLevel": "comprehensive",
+    "BlocksDefined": 4,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-16",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "TextFormat": true,
+    "Encoding": "UTF-8 (recommended) or UTF-16",
+    "XMLBased": true,
+    "TimingFormat": "HH:MM:SS.mmm or HH:MM:SS:FF (frames)",
+    "StylingNamespace": "http://www.w3.org/ns/ttml#styling",
+    "LayoutNamespace": "http://www.w3.org/ns/ttml#parameter",
+    "Profiles": "DFXP, SMPTE-TT, EBU-TT, IMSC 1.0/1.1",
+    "Standard": "W3C TTML 1.0 / 2.0"
+  }
+}

@@ -1,0 +1,209 @@
+{
+  "diffMode": "binary",
+  "formatName": "Microsoft Works Document",
+  "version": "1.0",
+  "extensions": [".wps", ".xlr", ".wdb"],
+  "description": "Microsoft Works was a consumer-grade office suite that used OLE2 Compound File format (magic 0xD0CF11E0A1B11AE1) as its container. Works documents (.wps for word processing, .xlr for spreadsheets, .wdb for databases) contain Works-specific stream names within the OLE2 structure. The OLE2 header includes minor version at offset 24 and major version at offset 26, both as uint16 LE. Works was discontinued in 2009 but files remain common in legacy archives.",
+  "category": "Documents",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "references": [
+    "https://en.wikipedia.org/wiki/Microsoft_Works",
+    "https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-cfb/",
+    "https://wiki.fileformat.com/word-processing/wps/"
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "value": "D0CF11E0A1B11AE1",
+        "offset": 0,
+        "label": "OLE2/Compound File (MS Works container)",
+        "weight": 0.5
+      }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.4,
+    "Strength": "Medium",
+    "validation": {
+      "rules": []
+    }
+  },
+  "variables": [
+    {
+      "name": "wpsOle2Magic",
+      "offset": 0,
+      "size": 8,
+      "type": "hex",
+      "storeAs": "wpsOle2Magic",
+      "description": "8-byte OLE2 Compound File magic 0xD0CF11E0A1B11AE1"
+    },
+    {
+      "name": "wpsMinorVersion",
+      "offset": 24,
+      "size": 2,
+      "type": "uint16",
+      "endian": "little",
+      "storeAs": "wpsMinorVersion",
+      "description": "OLE2 minor version at offset 24"
+    },
+    {
+      "name": "wpsMajorVersion",
+      "offset": 26,
+      "size": 2,
+      "type": "uint16",
+      "endian": "little",
+      "storeAs": "wpsMajorVersion",
+      "description": "OLE2 major version at offset 26 (3 or 4)"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "OLE2Magic",
+      "offset": 0,
+      "size": 8,
+      "description": "8-byte OLE2 Compound File Binary magic signature",
+      "fields": [
+        { "name": "Magic", "offset": 0, "size": 8, "type": "hex" }
+      ]
+    },
+    {
+      "name": "OLE2Header",
+      "offset": 8,
+      "size": 68,
+      "description": "OLE2 header: CLSID, minor/major version, byte order, sector sizes, FAT/DIFAT info",
+      "fields": [
+        { "name": "MinorVersion", "offset": 24, "size": 2, "type": "uint16" },
+        { "name": "MajorVersion", "offset": 26, "size": 2, "type": "uint16" }
+      ]
+    },
+    {
+      "name": "DirectoryEntries",
+      "offset": -1,
+      "size": -1,
+      "description": "OLE2 directory entries containing Works-specific stream names",
+      "fields": []
+    },
+    {
+      "name": "WorksContent",
+      "offset": -1,
+      "size": -1,
+      "description": "Works document content streams (text, formatting, spreadsheet data, or database records)",
+      "fields": []
+    }
+  ],
+  "assertions": [
+    {
+      "id": "assert_ole2_magic",
+      "field": "wpsOle2Magic",
+      "operator": "equals",
+      "value": "D0CF11E0A1B11AE1",
+      "severity": "error",
+      "message": "OLE2 magic 0xD0CF11E0A1B11AE1 not found at offset 0"
+    },
+    {
+      "id": "assert_major_version",
+      "field": "wpsMajorVersion",
+      "operator": "greaterThan",
+      "value": 0,
+      "severity": "warning",
+      "message": "OLE2 major version is zero — possibly corrupt header"
+    },
+    {
+      "id": "assert_major_version_range",
+      "field": "wpsMajorVersion",
+      "operator": "lessThan",
+      "value": 5,
+      "severity": "warning",
+      "message": "OLE2 major version should be 3 or 4"
+    }
+  ],
+  "navigation": {
+    "entryPoints": [
+      { "name": "OLE2 Magic", "offset": 0 },
+      { "name": "Minor Version", "offset": 24 },
+      { "name": "Major Version", "offset": 26 }
+    ],
+    "jumpTable": [
+      { "label": "OLE2 Magic", "offset": 0 },
+      { "label": "Version Info", "offset": 24 }
+    ]
+  },
+  "inspector": {
+    "badge": "WP",
+    "primaryField": "wpsOle2Magic",
+    "groups": [
+      {
+        "name": "Container",
+        "fields": ["wpsOle2Magic"]
+      },
+      {
+        "name": "Version",
+        "fields": ["wpsMinorVersion", "wpsMajorVersion"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "MS Works Header Summary",
+      "format": "text",
+      "template": "Microsoft Works Document\nOLE2 Magic   : {wpsOle2Magic}\nMinor Version: {wpsMinorVersion}\nMajor Version: {wpsMajorVersion}"
+    },
+    {
+      "name": "MS Works Header CSV",
+      "format": "csv",
+      "template": "Field,Value\nOLE2Magic,{wpsOle2Magic}\nMinorVersion,{wpsMinorVersion}\nMajorVersion,{wpsMajorVersion}"
+    }
+  ],
+  "forensic": {
+    "riskLevel": "medium",
+    "suspiciousPatterns": [
+      "OLE2 magic absent — not a valid Compound File",
+      "Directory entries reference sectors beyond file size",
+      "Works-specific stream names missing — may be a different OLE2 format (DOC, XLS)",
+      "Embedded OLE objects with unexpected content types"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "Microsoft Works files use OLE2 Compound File Binary format. The same magic (0xD0CF11E0A1B11AE1) is shared with DOC, XLS, PPT, and MSG. To confirm a Works file, inspect directory entries for Works-specific stream names. Works .wps is word processing, .xlr is spreadsheet, .wdb is database. OLE2 header at offset 0-75 defines sector sizes and FAT chain.",
+    "suggestedInspections": [
+      "Verify OLE2 magic 0xD0CF11E0A1B11AE1 at offset 0",
+      "Read major/minor version at offsets 26/24 to determine OLE2 variant",
+      "Enumerate directory entries for Works-specific stream names",
+      "Distinguish from DOC/XLS by checking stream name patterns"
+    ]
+  },
+  "software": [
+    { "name": "Microsoft Works (discontinued)", "vendor": "Microsoft", "platform": "Windows" },
+    { "name": "LibreOffice", "vendor": "The Document Foundation", "platform": "Cross-platform" },
+    { "name": "libwps", "vendor": "Open source", "platform": "Cross-platform" }
+  ],
+  "formatRelationships": [
+    { "format": "DOC", "relation": "sibling", "note": "Both use OLE2 container; Works is consumer-grade, Word is professional" },
+    { "format": "XLS", "relation": "sibling", "note": "Works .xlr spreadsheets share OLE2 container with Excel .xls" },
+    { "format": "CWK", "relation": "sibling", "note": "ClarisWorks/AppleWorks was the Mac equivalent of Microsoft Works" }
+  ],
+  "MimeTypes": [
+    "application/vnd.ms-works",
+    "application/x-msworks-wps",
+    "application/x-msworks-xlr"
+  ],
+  "UseCases": [
+    "Legacy Microsoft Works document recovery",
+    "Consumer-grade document format migration",
+    "Digital forensics of vintage Windows office documents",
+    "Format conversion from Works to modern formats"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 84,
+    "LastUpdated": "2026-04-16"
+  },
+  "TechnicalDetails": {
+    "headerSize": 76,
+    "endian": "little",
+    "signatureOffset": 0,
+    "signatureLength": 8,
+    "magicValue": "D0CF11E0A1B11AE1",
+    "container": "OLE2 Compound File Binary",
+    "notes": "OLE2 magic is shared with DOC, XLS, PPT, MSG. Must inspect directory entries to confirm Works format. Discontinued in 2009."
+  }
+}

@@ -1,0 +1,194 @@
+{
+  "diffMode": "text",
+  "formatName": "LAMMPS Dump Trajectory",
+  "version": "1.0",
+  "extensions": [
+    ".lammpstrj",
+    ".dump"
+  ],
+  "description": "LAMMPS dump trajectory file — plain-text output from the LAMMPS molecular dynamics simulator containing per-atom data at successive timesteps. Each snapshot starts with 'ITEM: TIMESTEP' followed by timestep number, atom count, bounding box, and per-atom columns (id, type, x, y, z, etc.).",
+  "category": "Science",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "code-editor",
+  "references": {
+    "specifications": [
+      "LAMMPS dump command — docs.lammps.org/dump.html",
+      "LAMMPS manual — docs.lammps.org/Manual.html"
+    ],
+    "WebLinks": [
+      "https://docs.lammps.org/dump.html",
+      "https://www.lammps.org/",
+      "https://en.wikipedia.org/wiki/LAMMPS"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      { "value": "4954454D3A2054494D455354", "offset": 0, "label": "'ITEM: TIMEST' LAMMPS dump keyword", "weight": 1.0 }
+    ],
+    "required": true,
+    "Strength": "Strong",
+    "MinimumScore": 0.8,
+    "validation": {
+      "minFileSize": 50
+    }
+  },
+  "variables": {
+    "lammpsDumpKeyword": ""
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "ITEM: TIMESTEP Keyword",
+      "offset": 0,
+      "length": 12,
+      "color": "#FF6B6B",
+      "opacity": 0.45,
+      "description": "ASCII keyword 'ITEM: TIMEST' — beginning of the LAMMPS dump section header. The full line reads 'ITEM: TIMESTEP' marking the start of a new snapshot frame in the trajectory.",
+      "storeAs": "lammpsDumpKeyword",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Timestep Value Line",
+      "offset": 15,
+      "length": 10,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "The line immediately following 'ITEM: TIMESTEP' contains the integer timestep number of this snapshot frame."
+    },
+    {
+      "type": "field",
+      "name": "Number of Atoms Section",
+      "offset": 26,
+      "length": 20,
+      "color": "#FFEAA7",
+      "opacity": 0.35,
+      "description": "Section starting with 'ITEM: NUMBER OF ATOMS' followed by the atom count integer on the next line."
+    },
+    {
+      "type": "field",
+      "name": "Box Bounds Section",
+      "offset": 48,
+      "length": 30,
+      "color": "#95E1D3",
+      "opacity": 0.30,
+      "description": "Section starting with 'ITEM: BOX BOUNDS' followed by lines defining the simulation box extents (xlo xhi, ylo yhi, zlo zhi)."
+    },
+    {
+      "type": "metadata",
+      "name": "Dump Keyword",
+      "variable": "lammpsDumpKeyword",
+      "description": "The opening keyword identifying this as a LAMMPS dump file"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "LAMMPS dump keyword present",
+      "expression": "lammpsDumpKeyword == 'ITEM: TIMEST'",
+      "severity": "error",
+      "message": "File must start with 'ITEM: TIMESTEP' keyword to be a valid LAMMPS dump trajectory"
+    },
+    {
+      "name": "File is not empty",
+      "expression": "fileSize > 50",
+      "severity": "error",
+      "message": "LAMMPS dump file is too small to contain a valid snapshot"
+    },
+    {
+      "name": "ASCII text content",
+      "expression": "lammpsDumpKeyword != ''",
+      "severity": "warning",
+      "message": "Dump keyword should be readable ASCII text"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "ITEM: TIMESTEP", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
+      { "name": "Atom Data", "offset": 48, "icon": "\uE9D9", "color": "#95E1D3" }
+    ]
+  },
+  "inspector": {
+    "badge": "lammpsDumpKeyword",
+    "primaryField": "lammpsDumpKeyword",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "LAMMPS Dump Header",
+        "icon": "\uE71B",
+        "fields": ["lammpsDumpKeyword"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "LAMMPS Header (JSON)",
+      "format": "json",
+      "fields": ["lammpsDumpKeyword"]
+    },
+    {
+      "name": "lammps_dump_t (C struct)",
+      "format": "c-struct",
+      "structName": "lammps_dump_header",
+      "fields": ["lammpsDumpKeyword"]
+    }
+  ],
+  "forensic": {
+    "category": "science",
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      {
+        "name": "Truncated snapshot",
+        "condition": "fileSize < 100",
+        "severity": "warning",
+        "description": "File appears truncated — a valid LAMMPS dump should contain at least one complete snapshot with header, atom count, box bounds, and atom data."
+      }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "LAMMPS dump trajectory: plain text, each frame starts with 'ITEM: TIMESTEP', then timestep value, 'ITEM: NUMBER OF ATOMS', count, 'ITEM: BOX BOUNDS', 3 lines of box extents, 'ITEM: ATOMS id type x y z ...', then per-atom lines. Columns are space-separated. Multiple frames concatenated.",
+    "suggestedInspections": [
+      "Verify file starts with 'ITEM: TIMESTEP' keyword",
+      "Count number of snapshot frames by counting 'ITEM: TIMESTEP' occurrences",
+      "Parse atom count from 'ITEM: NUMBER OF ATOMS' section",
+      "Verify column headers in 'ITEM: ATOMS' line match per-atom data columns"
+    ]
+  },
+  "software": [
+    "LAMMPS (Large-scale Atomic/Molecular Massively Parallel Simulator)",
+    "OVITO (Open Visualization Tool)",
+    "VMD (Visual Molecular Dynamics)",
+    "Pizza.py (LAMMPS toolkit)"
+  ],
+  "formatRelationships": {
+    "category": "Science",
+    "extensions": [".lammpstrj", ".dump"],
+    "relatedFormats": ["XYZ_CHEM", "AMBER_TRAJ"],
+    "containerVariant": "LAMMPS also supports binary dump and custom dump formats"
+  },
+  "MimeTypes": [
+    "text/plain",
+    "chemical/x-lammps-dump"
+  ],
+  "UseCases": [
+    "Molecular dynamics trajectory analysis and visualization",
+    "Post-processing of LAMMPS simulation outputs",
+    "Atomistic simulation data archival and sharing",
+    "Material science computational research"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 83,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 5,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-16",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "FileType": "Plain-text molecular dynamics trajectory",
+    "Encoding": "ASCII",
+    "FrameStructure": "ITEM: TIMESTEP → value → ITEM: NUMBER OF ATOMS → count → ITEM: BOX BOUNDS → extents → ITEM: ATOMS → per-atom data",
+    "Endianness": "N/A (text format)",
+    "MultiFrame": true
+  }
+}
