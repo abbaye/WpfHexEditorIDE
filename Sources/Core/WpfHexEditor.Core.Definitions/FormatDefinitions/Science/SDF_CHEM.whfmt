@@ -1,0 +1,242 @@
+{
+  "diffMode": "text",
+  "formatName": "Structure Data File (Chemical)",
+  "version": "1.0",
+  "extensions": [
+    ".sdf",
+    ".mol",
+    ".sd"
+  ],
+  "description": "The Structure Data File (SDF) and MOL file formats are text-based chemical structure interchange formats developed by MDL Information Systems (now BIOVIA/Dassault Systemes). A MOL file contains a single molecule with a fixed header (3 lines: molecule name, program/date line, comment line) followed by a Counts line specifying the number of atoms and bonds, then atom block (x y z symbol) and bond block (atom1 atom2 bondType). SDF is an extension of MOL that concatenates multiple molecule records, each terminated by the '$$$$' delimiter. SDF files are the primary exchange format for chemical databases such as PubChem, ChEMBL, and the Cambridge Structural Database. The V2000 format supports up to 999 atoms; the newer V3000 format (Ctab V3) uses line prefixes 'M  V30 ' and supports unlimited atom counts for proteins and macromolecules.",
+  "category": "Science",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "text-editor",
+  "references": {
+    "specifications": [
+      "MDL MOL file format specification V2000 (CTfile Formats, Accelrys/Dassault)",
+      "BIOVIA CTfile Formats 2020 documentation",
+      "OpenSMILES specification"
+    ],
+    "WebLinks": [
+      "https://en.wikipedia.org/wiki/Chemical_table_file",
+      "https://www.daylight.com/meetings/mug05/Rade/ctfile.pdf",
+      "https://www.3dsbiovia.com/products/collaborative-science/biovia-draw/ctfile-no-fee-registration.html"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      {
+        "value": "0A0A0A",
+        "offset": 0,
+        "label": "Three newlines — SDF/MOL blank title + program + comment header lines",
+        "weight": 0.6
+      },
+      {
+        "value": "4D",
+        "offset": 0,
+        "label": "'M' — MOL counts line start or M END marker prefix",
+        "weight": 0.2
+      }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.2,
+    "required": false,
+    "Strength": "Weak",
+    "EntropyHint": { "min": 2.0, "max": 5.0 },
+    "validation": {
+      "minFileSize": 10,
+      "maxSignatureOffset": 0,
+      "note": "MOL/SDF text format. Look for 'M  END' marker and optional '$$$$' record separator. Counts line at line 4 has fixed-width integer fields for atom count (positions 1-3) and bond count (positions 4-6)."
+    }
+  },
+  "variables": {
+    "sdfFirstByte": 0,
+    "sdfMolfileStart": ""
+  },
+  "blocks": [
+    {
+      "type": "field",
+      "name": "Molecule Name Line",
+      "offset": 0,
+      "length": 1,
+      "color": "#FF6B6B",
+      "opacity": 0.45,
+      "description": "First line of the MOL/SDF file: molecule name or blank. Up to 80 characters. May contain IUPAC name, CAS number, or trade name. If blank, the line still ends with a newline (0x0A). For SDF files this is the name of the first molecule in the dataset.",
+      "storeAs": "sdfFirstByte",
+      "valueType": "uint8"
+    },
+    {
+      "type": "field",
+      "name": "Molfile Header Start",
+      "offset": 1,
+      "length": 3,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "First 3 bytes of the molfile header area. Line 2 contains program name (characters 3-10), user initials (11-12), date/time (13-22), and dimensional codes (20-22, e.g. '2D' or '3D'). Line 3 is a comment line (up to 80 characters). These two lines are followed by the critical Counts line.",
+      "storeAs": "sdfMolfileStart",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Counts Line",
+      "offset": "dynamic",
+      "length": "dynamic",
+      "color": "#95E1D3",
+      "opacity": 0.30,
+      "description": "Fixed-format line 4: atom count (chars 1-3), bond count (4-6), atom list count (7-9, obsolete), chiral flag (15: 0=not chiral, 1=chiral), number of Stext entries (17-18), number of reaction lines (21-22), number of RGP lines (23-24), number of ACL lines (25-26), number of ADD lines (27-28), number of STY lines (29-30), version (V2000 or V3000 at chars 34-39). e.g. ' 14 15  0  0  1  0  0  0  0  0999 V2000'.",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Atom Block",
+      "offset": "dynamic",
+      "length": "dynamic",
+      "color": "#FFE66D",
+      "opacity": 0.30,
+      "description": "Atom table: one line per atom, fixed-format. Fields: x (10 chars, f10.4), y (10 chars), z (10 chars), space, element symbol (3 chars, right-justified), mass difference (2 chars), charge code (3 chars), stereo parity, H count+1, stereo care box, valence, H0 designator, reaction component type, reaction component number, atom mapping number, inversion/retention, exact change. e.g. '    1.0050    0.0000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0'.",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "M  END Terminator",
+      "offset": "dynamic",
+      "length": 6,
+      "color": "#C3A6FF",
+      "opacity": 0.35,
+      "description": "Mandatory MOL file terminator: 'M  END' (followed by newline). All property lines (M  CHG, M  ISO, M  RAD, M  RBC, M  SUB, M  UNS, M  AAL, M  RGP, M  APO, M  ALS, M  ZBO, M  ZCH, M  HYD, M  ZCH) appear before this line. For SDF files, the '$$$$' record separator follows on the next line.",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "SDF Record Separator",
+      "offset": "dynamic",
+      "length": 4,
+      "color": "#F7B731",
+      "opacity": 0.30,
+      "description": "SDF record delimiter: '$$$$' on its own line, separating consecutive molecule entries in an SDF dataset. Each SDF record may contain data fields between M  END and $$$$ using the format '>  <FIELD_NAME>' followed by field value lines. These SD data fields carry properties such as molecular weight, logP, IC50, activity class, and database cross-references.",
+      "valueType": "ascii"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "MEndPresent",
+      "expression": "containsPattern('M  END')",
+      "severity": "warning",
+      "message": "No 'M  END' terminator found. MOL/SDF files require this mandatory end marker. File may be truncated or not a valid chemical structure file."
+    },
+    {
+      "name": "SdfSeparatorPresent",
+      "expression": "containsPattern('\\$\\$\\$\\$')",
+      "severity": "info",
+      "message": "SDF record separator '$$$$' found. This is a multi-molecule SDF dataset. Use an SDF parser to enumerate all molecule records."
+    },
+    {
+      "name": "CountsLineDimensional",
+      "expression": "line4Length >= 39",
+      "severity": "info",
+      "message": "Counts line should be at least 39 characters for V2000 format. Check version flag at positions 34-39 ('V2000' or 'V3000')."
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "Molecule Name", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
+      { "name": "Counts Line (Line 4)", "offset": "dynamic", "icon": "\uE946", "color": "#95E1D3" },
+      { "name": "M  END Marker", "offset": "dynamic", "icon": "\uE8B7", "color": "#C3A6FF" }
+    ]
+  },
+  "inspector": {
+    "badge": "sdfFirstByte",
+    "primaryField": "sdfMolfileStart",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "Molecule Header",
+        "icon": "\uE71B",
+        "fields": ["sdfFirstByte", "sdfMolfileStart"]
+      },
+      {
+        "title": "Structure Data",
+        "icon": "\uE8B7",
+        "fields": ["countsLine", "atomBlock", "mEndTerminator"]
+      },
+      {
+        "title": "SDF Record",
+        "icon": "\uE946",
+        "fields": ["sdfRecordSeparator"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "SDF Molecule Summary (JSON)",
+      "format": "json",
+      "fields": ["moleculeName", "atomCount", "bondCount", "version", "chiralFlag"]
+    },
+    {
+      "name": "Atom Table (CSV)",
+      "format": "csv",
+      "fields": ["atomIndex", "x", "y", "z", "elementSymbol", "charge", "stereo"]
+    }
+  ],
+  "forensic": {
+    "category": "science",
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      "SDF files embedding executable payloads in extended data fields",
+      "Malformed atom coordinates (NaN, Infinity) that crash poorly-written chemistry software"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "MOL/SDF text format. Structure: 3-line header (name, program/date, comment) + counts line + atom block + bond block + properties + M  END. SDF appends SD data fields (>  <FIELD_NAME> / value) and $$$$ record separator per molecule. V2000: max 999 atoms. V3000: M  V30 prefixed lines, unlimited atoms. Atom table: x y z symbol [charge stereo]. Bond table: atom1 atom2 type [stereo]. Bond types: 1=single, 2=double, 3=triple, 4=aromatic, 5=single_or_double, 6=single_or_aromatic, 7=double_or_aromatic, 8=any.",
+    "suggestedInspections": [
+      "Parse counts line (line 4) to extract atom count (chars 1-3) and bond count (chars 4-6), then verify atom/bond block sizes",
+      "Check version string at counts line chars 34-39 ('V2000' vs 'V3000') to select correct parser branch",
+      "Locate 'M  END' terminator and '$$$$' separators to count molecules in SDF dataset",
+      "Inspect M  CHG lines for formal charges on atoms: format 'M  CHG  n  a1 c1  a2 c2...' where n=entry count, a=atom index, c=charge",
+      "Verify 3D coordinates (z != 0.0) vs 2D layout (z = 0.0 for all atoms) to determine if 3D conformation data is present",
+      "Parse SDF data fields between M  END and $$$$ for biological activity data, database IDs (PubChem CID, ChEMBL ID), or calculated properties"
+    ]
+  },
+  "software": [
+    "RDKit (open-source cheminformatics)",
+    "OpenBabel (format converter)",
+    "Marvin (ChemAxon)",
+    "BIOVIA Discovery Studio",
+    "MOE (Chemical Computing Group)",
+    "Schr\u00f6dinger Maestro",
+    "DataWarrior"
+  ],
+  "formatRelationships": {
+    "category": "Science",
+    "extensions": [".sdf", ".mol", ".sd"],
+    "relatedFormats": ["MOL2", "SMILES", "INCHI", "CIF", "PDB_PROTEIN", "XYZ"],
+    "note": "MOL is a single-molecule format; SDF extends it with multiple records and associated data fields. SDF is the primary export format for PubChem, ChEMBL, and ZINC databases. Can be converted to/from SMILES, InChI, and MOL2 using OpenBabel or RDKit."
+  },
+  "MimeTypes": [
+    "chemical/x-mdl-sdfile",
+    "chemical/x-mdl-molfile"
+  ],
+  "UseCases": [
+    "Chemical database distribution (PubChem, ChEMBL, ZINC)",
+    "Drug discovery compound library management",
+    "Molecular docking input preparation",
+    "2D/3D structure visualization and editing",
+    "Quantitative structure-activity relationship (QSAR) modeling"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 85,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 6,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-15",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "encoding": "ASCII text",
+    "lineEnding": "LF or CRLF",
+    "versions": "V2000 (max 999 atoms), V3000 (unlimited)",
+    "recordSeparator": "$$$$",
+    "coordinatePrecision": "f10.4 (4 decimal places)"
+  }
+}

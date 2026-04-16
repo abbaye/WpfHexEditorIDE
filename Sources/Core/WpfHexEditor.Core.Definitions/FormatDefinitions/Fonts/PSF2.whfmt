@@ -1,123 +1,160 @@
 {
-  "formatName": "PC Screen Font (PSF2)",
-  "version": "1.0",
-  "author": "WPFHexaEditor Team",
-  "lastUpdated": "2026-04-15",
-  "description": "Linux PC Screen Font version 2 (.psf, .psfu) — compact binary bitmap font for the Linux virtual console; 32-byte fixed header, 1-bpp glyph bitmaps, optional Unicode mapping table, loaded via setfont at boot.",
+  "formatName": "PC Screen Font v2 (PSF2)",
+  "version": "1.1",
   "extensions": [ ".psf", ".psfu" ],
-  "category": "Fonts",
   "diffMode": "binary",
-  "signatures": [
+  "description": "PC Screen Font version 2 is the standard Linux kernel console bitmap font format. Contains a fixed-size header, an array of fixed-size glyph bitmaps and an optional Unicode mapping table.",
+  "category": "Fonts",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "HexEditor",
+  "references": [
+    "https://www.kernel.org/doc/html/latest/admin-guide/kbd/fonts.html",
+    "https://www.win.tue.nl/~aeb/linux/kbd/font-formats-1.html"
+  ],
+  "MimeTypes": [ "application/x-font-linux-psf", "font/psf" ],
+  "UseCases": [
+    "Linux console font customization",
+    "Kernel initramfs font embedding",
+    "Terminal emulator glyph provision",
+    "Embedded Linux display font delivery"
+  ],
+  "software": [
+    { "name": "psftools",  "role": "PSF font manipulation utilities",       "platform": "Linux" },
+    { "name": "kbd",       "role": "Linux keyboard utilities including setfont", "platform": "Linux" },
+    { "name": "FontForge", "role": "Font editor with PSF export support",   "platform": "Multi", "url": "https://fontforge.org" },
+    { "name": "setfont",   "role": "Linux console font loader",             "platform": "Linux" }
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "value": "72B54A86",
+        "offset": 0,
+        "label": "PSF2 magic: 72 B5 4A 86 (LE uint32 = 0x864AB572)",
+        "weight": 1.0
+      }
+    ],
+    "matchMode": "first",
+    "MinimumScore": 88,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 3.0, "max": 6.5 }
+  },
+  "variables": [
+    { "name": "psf2Magic",         "offset": 0,  "size": 4, "type": "uint32", "endian": "LE", "storeAs": "psf2Magic",
+      "description": "PSF2 magic number 0x864AB572",
+      "valueMap": { "2250006130": "PSF2 magic (0x864AB572)" } },
+    { "name": "psf2Version",       "offset": 4,  "size": 4, "type": "uint32", "endian": "LE", "storeAs": "psf2Version",       "description": "PSF2 version, should be 0" },
+    { "name": "psf2HeaderSize",    "offset": 8,  "size": 4, "type": "uint32", "endian": "LE", "storeAs": "psf2HeaderSize",    "description": "Header size in bytes, must be 32" },
+    { "name": "psf2Flags",         "offset": 12, "size": 4, "type": "uint32", "endian": "LE", "storeAs": "psf2Flags",         "description": "Flags: bit0 = PSF2_HAS_UNICODE_TABLE (Unicode mapping follows glyphs)" },
+    { "name": "psf2NumGlyphs",     "offset": 16, "size": 4, "type": "uint32", "endian": "LE", "storeAs": "psf2NumGlyphs",     "description": "Number of glyphs in the font" },
+    { "name": "psf2BytesPerGlyph", "offset": 20, "size": 4, "type": "uint32", "endian": "LE", "storeAs": "psf2BytesPerGlyph", "description": "Number of bytes per glyph bitmap (= ceil(width/8) * height)" },
+    { "name": "psf2Height",        "offset": 24, "size": 4, "type": "uint32", "endian": "LE", "storeAs": "psf2Height",        "description": "Glyph height in pixels" },
+    { "name": "psf2Width",         "offset": 28, "size": 4, "type": "uint32", "endian": "LE", "storeAs": "psf2Width",         "description": "Glyph width in pixels" }
+  ],
+  "blocks": [
     {
-      "value": "72B54A86",
+      "name": "FileHeader",
       "offset": 0,
-      "label": "PSF2 magic LE uint32 = 0x864AB572 (stored bytes: 72 B5 4A 86)",
-      "weight": 1.0,
-      "strength": "Strong"
+      "size": 32,
+      "description": "32-byte PSF2 fixed header with magic, version, flags, glyph count and dimensions",
+      "color": "#1E90FF",
+      "fields": [ "psf2Magic", "psf2Version", "psf2HeaderSize", "psf2Flags",
+                  "psf2NumGlyphs", "psf2BytesPerGlyph", "psf2Height", "psf2Width" ]
+    },
+    {
+      "name": "GlyphBitmaps",
+      "offset": 32,
+      "sizeExpression": "psf2NumGlyphs * psf2BytesPerGlyph",
+      "description": "Contiguous array of fixed-size glyph bitmaps (MSB first, each row padded to byte boundary)",
+      "color": "#32CD32"
+    },
+    {
+      "name": "UnicodeTable",
+      "offset": "32 + psf2NumGlyphs * psf2BytesPerGlyph",
+      "description": "Optional Unicode mapping table: for each glyph, UTF-8 codepoint sequences terminated by 0xFF, groups separated by 0xFE",
+      "color": "#FFA500"
     }
   ],
-  "maxSignatureOffset": 4,
-  "structure": {
-    "fields": [
-      { "offset": 0,  "size": 4, "name": "magic",           "type": "uint32le", "description": "PSF2 magic: 0x864AB572",                          "storeAs": "psf2Magic" },
-      { "offset": 4,  "size": 4, "name": "version",         "type": "uint32le", "description": "PSF2 version, must be 0" },
-      { "offset": 8,  "size": 4, "name": "headersize",      "type": "uint32le", "description": "Header size in bytes (typically 32)" },
-      { "offset": 12, "size": 4, "name": "flags",           "type": "uint32le", "description": "Bit 0 = has Unicode table (PSFu)" },
-      { "offset": 16, "size": 4, "name": "num_glyph",       "type": "uint32le", "description": "Total number of glyphs in the font",               "storeAs": "psf2GlyphCount" },
-      { "offset": 20, "size": 4, "name": "bytes_per_glyph", "type": "uint32le", "description": "Bytes per glyph: ceil(width/8) × height" },
-      { "offset": 24, "size": 4, "name": "height",          "type": "uint32le", "description": "Glyph height in pixels",                          "storeAs": "psf2Height" },
-      { "offset": 28, "size": 4, "name": "width",           "type": "uint32le", "description": "Glyph width in pixels",                           "storeAs": "psf2Width" }
-    ],
-    "glyphData": {
-      "offset": "headersize",
-      "size": "num_glyph × bytes_per_glyph",
-      "description": "Glyph bitmap data: 1 bpp, rows from top to bottom, each row is ceil(width/8) bytes, MSB = leftmost pixel"
-    },
-    "unicodeTable": {
-      "condition": "flags & 1",
-      "offset": "headersize + num_glyph × bytes_per_glyph",
-      "description": "UTF-8 encoded codepoints per glyph. Entries separated by 0xFE, glyph blocks separated by 0xFF. Each glyph can map multiple Unicode codepoints."
-    }
-  },
-  "inspector": {
-    "displayFields": [ "psf2Magic", "version", "num_glyph", "psf2Width", "psf2Height", "bytes_per_glyph", "flags" ],
-    "valueMaps": {
-      "flags": {
-        "0": "No Unicode table (PSF only)",
-        "1": "Has Unicode table (PSFu — recommended)"
-      }
-    },
-    "tooltips": {
-      "psf2Magic":       "LE uint32 = 0x864AB572; stored in file as bytes 72 B5 4A 86",
-      "num_glyph":       "Typical values: 256 (Latin) or 512 (extended); larger values are valid",
-      "bytes_per_glyph": "= ceil(width/8) × height; e.g. 8×16 font → 1×16 = 16 bytes per glyph",
-      "flags":           "Bit 0 set = Unicode mapping table appended after glyph data"
-    }
-  },
   "assertions": [
-    { "id": "A1", "field": "psf2Magic",  "operator": "eq",  "value": 0x864AB572, "description": "Magic must be 0x864AB572" },
-    { "id": "A2", "field": "version",    "operator": "eq",  "value": 0,          "description": "Version must be 0" },
-    { "id": "A3", "field": "headersize", "operator": "gte", "value": 32,         "description": "Header size must be at least 32 bytes" },
-    { "id": "A4", "field": "num_glyph",  "operator": "gte", "value": 1,          "description": "Must contain at least 1 glyph" },
-    { "id": "A5", "field": "psf2Height", "operator": "gte", "value": 1,          "description": "Glyph height must be positive" },
-    { "id": "A6", "field": "psf2Width",  "operator": "gte", "value": 1,          "description": "Glyph width must be positive" }
+    { "id": "A1", "expression": "psf2Magic == 2250006130", "severity": "error", "message": "PSF2 magic must be 0x864AB572" },
+    { "id": "A2", "expression": "psf2HeaderSize == 32",    "severity": "error", "message": "PSF2 header size must be 32" },
+    { "id": "A3", "expression": "psf2Width > 0",           "severity": "error", "message": "Glyph width must be positive" },
+    { "id": "A4", "expression": "psf2Height > 0",          "severity": "error", "message": "Glyph height must be positive" },
+    { "id": "A5", "expression": "psf2NumGlyphs > 0",       "severity": "error", "message": "Glyph count must be positive" }
   ],
   "navigation": {
-    "bookmarks": [
-      { "offset": 0,  "label": "PSF2 Magic",           "color": "#E74C3C" },
-      { "offset": 4,  "label": "Version / Header Size", "color": "#F39C12" },
-      { "offset": 12, "label": "Flags (Unicode?)",      "color": "#9B59B6" },
-      { "offset": 16, "label": "Glyph Count",           "color": "#3498DB" },
-      { "offset": 20, "label": "Glyph Dimensions",      "color": "#27AE60" },
-      { "offset": 32, "label": "Glyph Bitmap Data",     "color": "#1ABC9C" }
+    "rootLabel": "PSF2 Font",
+    "entries": [
+      { "label": "File Header",   "blockRef": "FileHeader" },
+      { "label": "Glyph Bitmaps", "blockRef": "GlyphBitmaps" },
+      { "label": "Unicode Table", "blockRef": "UnicodeTable" }
+    ]
+  },
+  "inspector": {
+    "badge": "PSF",
+    "primaryField": "psf2NumGlyphs",
+    "groups": [
+      { "name": "Identity",      "fields": [ "psf2Magic", "psf2Version", "psf2HeaderSize" ] },
+      { "name": "Glyph Metrics", "fields": [ "psf2NumGlyphs", "psf2BytesPerGlyph", "psf2Height", "psf2Width" ] },
+      { "name": "Features",      "fields": [ "psf2Flags" ] }
     ]
   },
   "exportTemplates": [
     {
-      "name": "PSF2 Header Summary",
-      "fields": [ "psf2Magic", "version", "num_glyph", "psf2Width", "psf2Height", "bytes_per_glyph", "flags" ],
-      "format": "text"
+      "name": "Font Summary",
+      "format": "text",
+      "template": "Format: PSF2 Console Font\nGlyphs: {psf2NumGlyphs}\nSize: {psf2Width}x{psf2Height} pixels\nBytes/Glyph: {psf2BytesPerGlyph}\nUnicode Table Flag: {psf2Flags}\nHeader Size: {psf2HeaderSize}"
     },
     {
-      "name": "PSF2 Metadata JSON",
-      "fields": [ "psf2Magic", "version", "headersize", "flags", "num_glyph", "bytes_per_glyph", "psf2Width", "psf2Height" ],
-      "format": "json"
+      "name": "CSV Metadata",
+      "format": "csv",
+      "template": "Field,Value\nNumGlyphs,{psf2NumGlyphs}\nWidth,{psf2Width}\nHeight,{psf2Height}\nBytesPerGlyph,{psf2BytesPerGlyph}\nFlags,{psf2Flags}\nVersion,{psf2Version}"
     }
   ],
-  "aiHints": [
-    "PSF2 magic 0x864AB572 is stored little-endian, so the raw bytes in the file are: 72 B5 4A 86 — not 86 4A B5 72.",
-    "PSF1 (legacy) uses magic 0x0436 (2 bytes) and a simpler 4-byte header; PSF2 is identified by the 4-byte 0x864AB572 magic and the 32-byte header.",
-    "The Unicode table (when flags bit 0 = 1) maps glyph indices to UTF-8 codepoints; 0xFE separates sequences for one glyph, 0xFF separates glyphs — the table is fully streaming parseable.",
-    "Most Linux console fonts are 8×16 pixels (1 byte per row × 16 rows = 16 bytes per glyph) for 80×25 terminal display; 12×22 or 16×32 fonts exist for larger terminals.",
-    "setfont (from the kbd package) loads PSF fonts at runtime: 'setfont /usr/share/consolefonts/LatGrkCyr-12x22.psfu.gz'.",
-    "Fonts are stored gzip-compressed in /usr/share/consolefonts/ on Debian/Ubuntu; decompress with zcat before hex analysis."
-  ],
   "forensic": {
-    "riskLevel": "low",
-    "notes": [
-      "PSF files contain only bitmap glyph data; no executable content.",
-      "Custom PSF fonts in /etc/console-setup/ or initramfs are legitimate system configuration; unexpected PSF files elsewhere are unusual.",
-      "Unicode table corruption (missing 0xFF terminators) can cause setfont to read beyond the glyph table — validate table structure."
+    "riskLevel": "LOW",
+    "suspiciousPatterns": [
+      "psf2Magic != 0x864AB572 — wrong format or corrupt",
+      "psf2HeaderSize != 32 — non-standard header, possible fork",
+      "psf2BytesPerGlyph does not match ceil(psf2Width/8)*psf2Height — inconsistent metrics",
+      "Glyph bitmap block size does not match psf2NumGlyphs * psf2BytesPerGlyph — truncated"
+    ],
+    "hidingTechniques": [
+      "Extra data appended after Unicode table",
+      "Payload hidden in padding bits within glyph bitmap rows",
+      "Non-standard Unicode table entries outside standard ranges"
+    ],
+    "timestampFields": [],
+    "notes": "PSF2 replaced the older PSF1 format (magic 0x0436). PSF1 had only 256 or 512 glyphs and 1-byte indices. PSF2 supports up to 2^32 glyphs and multi-codepoint Unicode sequences."
+  },
+  "aiHints": {
+    "analysisContext": "PSF2 has a minimal 32-byte header immediately followed by a contiguous bitmap array. The glyph bitmap section is exactly psf2NumGlyphs * psf2BytesPerGlyph bytes. The Unicode table (if present per flags bit0) uses a sequence-based encoding with 0xFF/0xFE separators.",
+    "suggestedInspections": [
+      "Verify magic bytes 72 B5 4A 86 at offset 0 and header size == 32",
+      "Compute expected bitmap section size as psf2NumGlyphs * psf2BytesPerGlyph and verify against file size",
+      "Check psf2BytesPerGlyph equals ceiling(psf2Width / 8) * psf2Height",
+      "If psf2Flags bit0 is set, parse Unicode table after glyph bitmaps checking for 0xFF terminators and 0xFE separators",
+      "Verify psf2Version == 0; any other value indicates a non-standard PSF2 variant"
     ]
   },
   "formatRelationships": [
-    { "format": "BDF",  "relationship": "related",      "note": "BDF is the X11 source font format; PSF is the Linux console equivalent." },
-    { "format": "PCF",  "relationship": "related",      "note": "PCF is the X11 compiled binary font format for display servers." },
-    { "format": "PSF1", "relationship": "predecessor",  "note": "PSF1 (magic 0x0436) is the legacy Linux console font format superseded by PSF2." }
+    { "format": "BDF", "relationship": "sibling", "description": "BDF is the text-based X11 bitmap font format; PSF2 is the Linux console binary equivalent" },
+    { "format": "PCF", "relationship": "sibling", "description": "PCF is the compiled X11 binary bitmap font format" }
   ],
-  "software": [
-    { "name": "kbd (setfont)",      "role": "Load PSF font into Linux virtual console" },
-    { "name": "console-setup",      "role": "Debian/Ubuntu console font configuration" },
-    { "name": "psftools",           "role": "PSF font creation and conversion utilities" },
-    { "name": "psf2inc",            "role": "Embed PSF glyph data into C header files" },
-    { "name": "FontForge",          "role": "PSF import/export via script extension" }
-  ],
-  "useCases": [
-    "Linux virtual console font customisation",
-    "Initramfs early-boot font for console output",
-    "Embedded Linux display font for serial/VGA terminals",
-    "Retro computing and vintage terminal font design"
-  ],
-  "technicalDetails": "PSF2 (PC Screen Font version 2) introduced with Linux 2.x. Fixed 32-byte header. Glyph data is 1 bit per pixel, stored top-to-bottom, each row ceil(width/8) bytes, MSB = leftmost pixel. The optional Unicode table (PSFu) appends UTF-8 sequences per glyph after the bitmap data, using 0xFE as intra-glyph separator and 0xFF as inter-glyph separator. Maximum practical size: 512 glyphs × 32×32 pixels. setfont is the kernel interface. Fonts live in /usr/share/consolefonts/ typically as .psfu.gz.",
-  "completenessScore": 86
+  "TechnicalDetails": {
+    "endianness": "Little-Endian",
+    "minimumFileSize": 33,
+    "headerSize": 32,
+    "magicValue": "0x864AB572",
+    "magicBytes": "72 B5 4A 86",
+    "bitmapEncoding": "MSB-first, each row padded to byte boundary",
+    "unicodeTerminator": "0xFF per codepoint sequence",
+    "unicodeSeparator": "0xFE between glyph entries",
+    "maxGlyphs": 4294967295
+  },
+  "QualityMetrics": {
+    "CompletenessScore": 93,
+    "LastUpdated": "2026-04-15",
+    "ReviewedBy": "WPFHexaEditor Team",
+    "KnownLimitations": "PSF1 (magic 0x0436) is a distinct older format not covered here. Unicode table parsing requires sequential iteration due to variable-length entries."
+  }
 }

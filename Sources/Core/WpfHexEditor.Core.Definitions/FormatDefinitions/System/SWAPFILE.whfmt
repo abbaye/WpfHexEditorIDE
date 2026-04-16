@@ -1,267 +1,257 @@
 {
-  "diffMode": "binary",
   "formatName": "Linux Swap Space",
   "version": "1.0",
-  "extensions": [".swap", ".swp"],
-  "description": "Linux virtual memory swap space. V2 format identifier 'SWAPSPACE2' at offset 4086 (last 10 bytes of first 4096-byte page). Header contains UUID, label, and bad page list. Remaining pages are raw swapped memory — forensically valuable for credential extraction.",
+  "diffMode": "binary",
+  "extensions": [
+    ".swap",
+    ".swp"
+  ],
+  "description": "Linux swap space is a dedicated partition or file used for virtual memory paging. Version 2 swap areas contain the string 'SWAPSPACE2\\0' at byte offset 4086 (page size - 10). Version 1 uses 'SWAPSPACE\\0' at offset 4086. The first 1 KiB contains kernel-version-specific header info.",
   "category": "System",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
-  "references": {
-    "specifications": [
-      "Linux kernel swap_header structure — include/linux/swap.h",
-      "mkswap(8) manual page",
-      "Linux Kernel Documentation — mm/swapfile.c"
-    ],
-    "WebLinks": [
-      "https://en.wikipedia.org/wiki/Linux_swap_partition",
-      "https://www.kernel.org/doc/html/latest/admin-guide/mm/concepts.html",
-      "https://man7.org/linux/man-pages/man8/mkswap.8.html"
-    ]
-  },
+  "MimeTypes": [
+    "application/octet-stream"
+  ],
+  "UseCases": [
+    "Linux virtual memory extension beyond physical RAM",
+    "Hibernation support (suspend-to-disk) on Linux systems",
+    "Forensic analysis: swap space may contain sensitive process memory pages"
+  ],
+  "references": [
+    "https://www.kernel.org/doc/html/latest/admin-guide/sysctl/vm.html",
+    "https://github.com/torvalds/linux/blob/master/include/linux/swap.h",
+    "https://forensicswiki.xyz/wiki/index.php?title=Linux_swap"
+  ],
+  "software": [
+    {
+      "name": "mkswap",
+      "url": "https://linux.die.net/man/8/mkswap",
+      "role": "Formats a partition or file as swap space"
+    },
+    {
+      "name": "swapon",
+      "url": "https://linux.die.net/man/8/swapon",
+      "role": "Enables a swap partition or file"
+    },
+    {
+      "name": "Volatility",
+      "url": "https://www.volatilityfoundation.org/",
+      "role": "Memory forensics tool that can analyze swap content"
+    }
+  ],
+  "formatRelationships": [
+    {
+      "format": "VMCORE",
+      "relationship": "vmcore captures kernel memory; swap pages complement this with paged-out process memory"
+    },
+    {
+      "format": "COREDUMP_ELF",
+      "relationship": "Process core dumps capture in-RAM memory; swap may hold paged-out segments of the same process"
+    }
+  ],
   "detection": {
     "signatures": [
       {
-        "value": "5357415053504143453200",
         "offset": 4086,
-        "label": "'SWAPSPACE2\\0' — Linux swap v2 identifier at last 10 bytes of first 4096-byte page (offset 4086)",
+        "value": "5357415053504143453200",
+        "label": "'SWAPSPACE2\\0' Linux swap v2 signature",
         "weight": 1.0
       },
       {
-        "value": "535741502D5350414345",
         "offset": 4086,
-        "label": "'SWAP-SPACE' — Linux swap v1 identifier (legacy, kernel < 2.6)",
+        "value": "5357415053504143450000",
+        "label": "'SWAPSPACE\\0' Linux swap v1 signature",
         "weight": 0.8
       }
     ],
     "matchMode": "any",
-    "MinimumScore": 0.8,
-    "required": true,
+    "MinimumScore": 82,
     "Strength": "Strong",
-    "EntropyHint": { "min": 4.0, "max": 8.0 },
-    "validation": {
-      "minFileSize": 4096,
-      "maxSignatureOffset": 4097
-    }
+    "EntropyHint": {
+      "min": 4.0,
+      "max": 8.0,
+      "note": "Active swap areas have high entropy from paged-out process memory"
+    },
+    "validation": "Bytes at offset 4086 (10 bytes) must be 'SWAPSPACE2\\0' for v2 or 'SWAPSPACE\\0' for v1. Version at offset 1024 (4B LE) must be 1. LastPage at offset 1028 must be > 0."
   },
-  "variables": {
-    "swapVersion": 0,
-    "swapLastPage": 0,
-    "swapNrBadpages": 0,
-    "swapUuid": "",
-    "swapLabel": "",
-    "swapMagic": ""
-  },
-  "blocks": [
+  "variables": [
     {
-      "type": "field",
-      "name": "Swap Header Version",
+      "name": "swapFirstByte",
+      "type": "uint8",
       "offset": 0,
+      "length": 1,
+      "description": "First byte of swap header area (raw kernel usage, no structured magic at offset 0)"
+    },
+    {
+      "name": "swapVersion",
+      "type": "uint32",
+      "offset": 1024,
       "length": 4,
-      "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "Swap header version as uint32 LE. For SWAPSPACE2 (v2 format), this field contains 1 (confusingly, the internal version field uses 1 for the v2 format). Value 0 indicates the obsolete v1 format identified by 'SWAP-SPACE' magic. Current kernel always uses v2.",
-      "storeAs": "swapVersion",
-      "valueType": "uint32",
-      "endianness": "little",
+      "endian": "little",
+      "description": "Swap header version",
       "valueMap": {
-        "0": "Swap v1 (legacy, identified by 'SWAP-SPACE' magic)",
-        "1": "Swap v2 (current, identified by 'SWAPSPACE2' magic)"
+        "1": "Linux swap v1"
       }
     },
     {
-      "type": "field",
-      "name": "Last Page",
-      "offset": 4,
+      "name": "swapLastPage",
+      "type": "uint32",
+      "offset": 1028,
       "length": 4,
-      "color": "#95E1D3",
-      "opacity": 0.3,
-      "description": "Index of the last usable swap page as uint32 LE (0-based). Equals (swap_size_bytes / page_size) - 1. For a 4GB swap partition with 4KB pages: last_page = 1048575. Used by the kernel to determine the swap area boundaries.",
-      "storeAs": "swapLastPage",
-      "valueType": "uint32",
-      "endianness": "little"
+      "endian": "little",
+      "description": "Last usable page number (swap size in pages minus 1)"
     },
     {
-      "type": "field",
-      "name": "Number of Bad Pages",
-      "offset": 8,
+      "name": "swapBadPages",
+      "type": "uint32",
+      "offset": 1032,
       "length": 4,
-      "color": "#FF8C94",
-      "opacity": 0.3,
-      "description": "Count of bad (unusable) pages listed in the bad page array as uint32 LE. Physical media defects or intentionally marked pages. The bad page indices follow in an array starting at offset 44 (up to 637 uint32 entries per page).",
-      "storeAs": "swapNrBadpages",
-      "valueType": "uint32",
-      "endianness": "little"
+      "endian": "little",
+      "description": "Number of bad (unusable) pages"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "BootPage",
+      "offset": 0,
+      "length": 1024,
+      "description": "First 1 KiB: traditionally unused or containing boot loader area; first 512 bytes may contain Linux sysv UUID"
     },
     {
-      "type": "field",
-      "name": "UUID",
-      "offset": 12,
-      "length": 16,
-      "color": "#FFE66D",
-      "opacity": 0.3,
-      "description": "16-byte UUID identifying this swap area. Set by mkswap at format time. Used for persistent swap configuration in /etc/fstab via UUID= syntax. Can correlate a swap file/partition with a specific system configuration.",
-      "storeAs": "swapUuid",
-      "valueType": "hex",
-      "endianness": "little"
+      "name": "SwapHeader",
+      "offset": 1024,
+      "length": 3072,
+      "description": "swap_header structure: version, last page, bad pages count, UUID, label, and bad page list",
+      "fields": [
+        {
+          "name": "Version",
+          "variable": "swapVersion",
+          "offset": 0,
+          "length": 4
+        },
+        {
+          "name": "LastPage",
+          "variable": "swapLastPage",
+          "offset": 4,
+          "length": 4
+        },
+        {
+          "name": "BadPages",
+          "variable": "swapBadPages",
+          "offset": 8,
+          "length": 4
+        }
+      ]
     },
     {
-      "type": "field",
-      "name": "Volume Label",
-      "offset": 28,
-      "length": 16,
-      "color": "#A8E6CF",
-      "opacity": 0.3,
-      "description": "Optional 16-byte ASCII volume label for this swap area, null-padded. Set with mkswap -L label. Used for /etc/fstab LABEL= references. Most swap areas have no label (all zeros). If set, provides a human-readable identifier.",
-      "storeAs": "swapLabel",
-      "valueType": "ascii",
-      "endianness": "little"
-    },
-    {
-      "type": "signature",
-      "name": "Swap Magic",
+      "name": "SignaturePage",
       "offset": 4086,
       "length": 10,
-      "color": "#FF6B6B",
-      "opacity": 0.45,
-      "description": "'SWAPSPACE2' or 'SWAP-SPACE' — 10-byte magic at offset 4086, occupying the last 10 bytes of the first 4096-byte page. This location (page 0, last 10 bytes) is fixed regardless of architecture or kernel version. The magic terminates at the exact end of the first page.",
-      "storeAs": "swapMagic",
-      "valueType": "ascii",
-      "endianness": "little"
+      "description": "Swap signature at end of first page: 'SWAPSPACE2' or 'SWAPSPACE'"
+    },
+    {
+      "name": "SwapPages",
+      "offset": 4096,
+      "length": -1,
+      "description": "Paged-out process memory content (4096-byte pages each)"
     }
   ],
   "assertions": [
     {
-      "name": "SWAPSPACE magic present",
-      "expression": "swapMagic == 'SWAPSPACE2' || swapMagic == 'SWAP-SPACE'",
-      "severity": "error",
-      "message": "Swap magic not found at offset 4086 — not a valid Linux swap space"
+      "id": "A1",
+      "description": "Version must be 1",
+      "expression": "swapVersion == 1"
     },
     {
-      "name": "Swap version is 1 (v2 format)",
-      "expression": "swapVersion == 1",
-      "severity": "warning",
-      "message": "Swap header version field is not 1 — may be an obsolete v1 format or corrupted header"
+      "id": "A2",
+      "description": "LastPage must be > 0",
+      "expression": "swapLastPage > 0"
     },
     {
-      "name": "Last page is positive",
-      "expression": "swapLastPage > 0",
-      "severity": "error",
-      "message": "last_page is 0 — swap area has no usable pages (possibly corrupted or zero-length)"
+      "id": "A3",
+      "description": "BadPages must be >= 0",
+      "expression": "swapBadPages >= 0"
     }
   ],
   "navigation": {
-    "bookmarks": [
-      {
-        "name": "Swap Header",
-        "offset": 0,
-        "icon": "\uE8B7",
-        "color": "#4ECDC4"
-      },
-      {
-        "name": "UUID",
-        "offset": 12,
-        "icon": "\uE8A5",
-        "color": "#FFE66D"
-      },
-      {
-        "name": "Swap Magic",
-        "offset": 4086,
-        "icon": "\uE9D9",
-        "color": "#FF6B6B"
-      }
-    ]
+    "entryPoint": "SwapHeader",
+    "structure": [
+      "BootPage",
+      "SwapHeader",
+      "SignaturePage",
+      "SwapPages"
+    ],
+    "notes": "Linux swap v1 header is in the second KiB (offset 1024). Signature is at end of first page (offset 4086). Swap pages begin at offset 4096. Each page is 4096 bytes. UUID is at offset 1036 (16 bytes). Label at offset 1052 (16 bytes)."
   },
   "inspector": {
-    "badge": "swapVersion",
-    "primaryField": "swapLastPage",
-    "showQualityScore": true,
+    "badge": "SWP",
+    "primaryField": "swapVersion",
     "groups": [
       {
-        "title": "Swap Header",
-        "icon": "\uE8B7",
-        "fields": ["swapVersion", "swapLastPage", "swapNrBadpages"]
-      },
-      {
-        "title": "Volume Identity",
-        "icon": "\uE8A5",
-        "fields": ["swapUuid", "swapLabel"]
-      },
-      {
-        "title": "Magic Marker",
-        "icon": "\uE9D9",
-        "fields": ["swapMagic"]
+        "name": "Swap Header",
+        "fields": [
+          "swapFirstByte",
+          "swapVersion",
+          "swapLastPage",
+          "swapBadPages"
+        ]
       }
     ]
   },
   "exportTemplates": [
     {
-      "name": "Swap Header (JSON)",
-      "format": "json",
-      "fields": ["swapVersion", "swapLastPage", "swapNrBadpages", "swapUuid", "swapLabel", "swapMagic"]
+      "name": "Header Summary CSV",
+      "format": "csv",
+      "fields": [
+        "swapVersion",
+        "swapLastPage",
+        "swapBadPages"
+      ]
     },
     {
-      "name": "Swap Header (text)",
-      "format": "text",
-      "fields": ["swapMagic", "swapVersion", "swapLastPage", "swapUuid", "swapLabel"]
+      "name": "Header Summary JSON",
+      "format": "json",
+      "fields": [
+        "swapFirstByte",
+        "swapVersion",
+        "swapLastPage",
+        "swapBadPages"
+      ]
     }
   ],
   "forensic": {
-    "category": "system",
-    "riskLevel": "high",
+    "riskLevel": "MEDIUM",
+    "notes": "Linux swap space may contain plaintext passwords, session tokens, encryption keys, and other sensitive data from paged-out process memory. Even after reboot, swap pages may not be zeroed and prior session data may be recoverable.",
     "suspiciousPatterns": [
-      {
-        "name": "Paged-out credentials in swap",
-        "condition": "true",
-        "severity": "warning",
-        "description": "Swap pages may contain paged-out process memory including: /etc/shadow content, SSH private keys, TLS session keys, browser passwords, sudo tokens, cleartext HTTP POST data, and database credentials."
-      }
-    ],
-    "knownExploitVectors": [
-      "strings command on swap file reveals ASCII credentials and private key material",
-      "Cold boot attack may recover swap content from non-encrypted systems",
-      "Unencrypted swap on systems with LUKS root partition leaks data through swap",
-      "Hibernate image (/dev/sdXY as swap) may contain memory of encrypted sessions"
+      "Swap pages containing recognizable credential patterns (e.g., 'password=', 'token:', 'BEGIN RSA PRIVATE KEY')",
+      "Paged-out heap memory from browser processes containing browsing history or form data",
+      "Kernel stack frames in swap indicating high memory pressure during potential exploitation",
+      "Pages with executable-like content (ELF headers or shellcode patterns) from code injection"
     ]
   },
   "aiHints": {
-    "analysisContext": "Swap space page 0 = 4096-byte header. All subsequent pages are raw swapped memory with no structure. Forensic approach: use 'strings -n 8 swap_file | grep -E pattern' for credential hunting. hibernation image may be stored in swap partition (presence of signature at page 1).",
+    "analysisContext": "Linux swap v1 stores a header in the second KiB with version, last page, bad page count, UUID, and label. Individual 4096-byte swap pages begin at offset 4096 and contain paged-out virtual memory from various processes without structural metadata per page.",
     "suggestedInspections": [
-      "Run strings on the swap file to identify cleartext passwords, private keys, or sensitive URLs",
-      "Check if this is a hibernation image: look for 'S1SUSPEND' or 'LINHIB0001' at page 1 (offset 4096)",
-      "Extract swapUuid to correlate with /etc/fstab or crypttab for encryption status determination",
-      "Calculate swap capacity: (swapLastPage + 1) * 4096 bytes to verify matches partition/file size",
-      "Use volatility3 linux.swap plugin or bulk_extractor for automated credential and PII extraction"
+      "Read UUID at header offset 1036 (16 bytes) to correlate swap with specific system/volume",
+      "Read volume label at header offset 1052 (16 bytes) for human-readable identification",
+      "Calculate total swap size from LastPage field: (LastPage + 1) * 4096 bytes",
+      "Scan page content for recognizable string patterns indicating sensitive data (passwords, keys, tokens)",
+      "Search for ELF magic or x86/ARM shellcode instruction sequences in pages suggesting code injection artifacts"
     ]
   },
-  "software": ["mkswap", "swapon", "swapoff", "strings", "volatility3", "bulk_extractor"],
-  "formatRelationships": {
-    "category": "System",
-    "extensions": [".swap", ".swp"],
-    "relatedFormats": ["VMCORE", "COREDUMP_ELF", "HIBERNATE_IMAGE"]
-  },
-  "MimeTypes": ["application/octet-stream"],
-  "UseCases": [
-    "Linux virtual memory extension beyond physical RAM",
-    "Kernel out-of-memory relief via page eviction to swap",
-    "Hibernation storage (suspend-to-disk)",
-    "Forensic memory artifact containing paged-out process data"
-  ],
   "TechnicalDetails": {
-    "PageSize": "4096 bytes (typical x86_64)",
-    "HeaderPage": "Page 0 = swap_header structure (4096 bytes)",
-    "MagicLocation": "Offset 4086 = last 10 bytes of page 0",
-    "MaxBadPages": "637 entries per page (637 * 4B = 2548B at offsets 44-4085)",
-    "V2Format": "Kernel 2.6+ — always SWAPSPACE2 magic, header version=1",
-    "HibernationSignature": "'S1SUSPEND' or 'LINHIB0001' at page 1 (offset 4096)"
+    "endianness": "Little-endian",
+    "pageSize": 4096,
+    "headerOffset": 1024,
+    "signatureOffset": 4086,
+    "swapPagesStart": 4096,
+    "uuidOffset": 1036,
+    "labelOffset": 1052
   },
   "QualityMetrics": {
-    "CompletenessScore": 83,
-    "DocumentationLevel": "comprehensive",
-    "BlocksDefined": 6,
-    "ValidationRules": 3,
+    "CompletenessScore": 86,
     "LastUpdated": "2026-04-15",
-    "PriorityFormat": false,
-    "AutoRefined": false
+    "ReviewedBy": "WPFHexaEditor Team"
   }
 }

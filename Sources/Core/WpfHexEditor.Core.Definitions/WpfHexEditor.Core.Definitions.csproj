@@ -1,15 +1,42 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0-windows</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <RootNamespace>WpfHexEditor.Core.Definitions</RootNamespace>
     <AssemblyName>WpfHexEditor.Core.Definitions</AssemblyName>
     <LangVersion>preview</LangVersion>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Description>Embedded definition files (.whfmt format definitions) and their catalog services.</Description>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <NoWarn>$(NoWarn);1591</NoWarn>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+
+    <!-- NuGet package metadata -->
+    <PackageId>whfmt.FileFormatCatalog</PackageId>
+    <Version>1.0.0</Version>
+    <AssemblyVersion>1.0.0</AssemblyVersion>
+    <FileVersion>1.0.0</FileVersion>
+    <Authors>Derek Tremblay</Authors>
+    <Company>Derek Tremblay (derektremblay666@gmail.com)</Company>
+    <Product>whfmt.FileFormatCatalog</Product>
+    <Title>whfmt.FileFormatCatalog — 675+ File Format &amp; Language Definitions</Title>
+    <Description>675+ embedded .whfmt definitions for automatic file format detection AND syntax highlighting. Covers 27 binary categories (Archives, Audio, Images, Game, ROMs, Executables...) plus 35 language grammars (C#, Python, JS/TS, CSS, HTML, XAML, SQL, Rust, Go, Java, Kotlin, Swift, YAML, TOML, Markdown, and more). Cross-platform net8.0. Includes EmbeddedFormatCatalog singleton: extension lookup, category browsing, magic-byte detection, MIME type lookup, editor-ID routing, syntax JSON extraction, and PreWarm() for fast startup.</Description>
+    <Copyright>GNU AGPL v3.0 - 2016-2026</Copyright>
+    <PackageTags>binary;format;detection;syntax-highlighting;language-grammar;whfmt;file-format;code-editor;catalog;net8</PackageTags>
+    <PackageProjectUrl>https://github.com/abbaye/WpfHexEditorIDE</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/abbaye/WpfHexEditorIDE</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseExpression>AGPL-3.0-only</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>icon.png</PackageIcon>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+
+    <!-- SourceLink: enables step-through debugging for NuGet consumers -->
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <DebugType>embedded</DebugType>
   </PropertyGroup>
 
   <!-- Embedded definition resources -->
@@ -24,7 +51,30 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Editors\WpfHexEditor.Editor.Core\WpfHexEditor.Editor.Core.csproj" />
+    <None Include="README.md" Pack="true" PackagePath="\" />
+    <None Include="whfmt-FileFormatCatalog-guide.md" Pack="true" PackagePath="\" />
+    <None Include="icon.png" Pack="true" PackagePath="\" />
   </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.*" PrivateAssets="All" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Core.Contracts bundled into the package — consumer zero extra dependencies -->
+    <ProjectReference Include="..\WpfHexEditor.Core.Contracts\WpfHexEditor.Core.Contracts.csproj" PrivateAssets="all" />
+  </ItemGroup>
+
+  <!-- Bundle Core.Contracts DLL + XML into the NuGet lib/ folder -->
+  <PropertyGroup>
+    <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
+  </PropertyGroup>
+  <Target Name="CopyProjectReferencesToPackage" DependsOnTargets="ResolveReferences">
+    <ItemGroup>
+      <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths->WithMetadataValue('ReferenceSourceTarget','ProjectReference'))" />
+      <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths->WithMetadataValue('ReferenceSourceTarget','ProjectReference')->'%(RootDir)%(Directory)%(Filename).xml')"
+                            Condition="Exists('%(RootDir)%(Directory)%(Filename).xml')" />
+    </ItemGroup>
+  </Target>
 
 </Project>

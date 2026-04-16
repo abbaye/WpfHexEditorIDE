@@ -1,0 +1,209 @@
+{
+  "diffMode": "binary",
+  "formatName": "Autodesk 3DS Max Legacy Format",
+  "version": "1.0",
+  "extensions": [".3ds", ".prj"],
+  "description": "The 3DS file format (also called .3DS or 3D Studio format) is the native binary scene format of Autodesk 3D Studio (DOS) and the import/export format for early Autodesk 3ds Max releases. Defined by a hierarchical chunk structure, the file begins with the MAIN3DS chunk (ID 0x4D4D), which contains VERSION (0x0002), EDIT3DS (0x3D3D) for geometry/materials/lights, and KEYF3DS (0xB000) for keyframe animation. The EDIT3DS chunk contains NAMED_OBJECT (0x4000) entries, each identifying meshes (MESH_OBJ, 0x4100), lights (DIR_LIGHT, 0x4600), and cameras (CAMERA_OBJ, 0x4700). Mesh data (MESH_OBJ, 0x4100) contains POINT_ARRAY (0x4110, vertex positions as float32 triplets), FACE_ARRAY (0x4120, index triplets as uint16), TEX_VERTS (0x4140, UV coordinates), and optional MESH_MATRIX (0x4160, 4x3 transformation matrix). The format is limited to 65,535 vertices and faces per mesh, no support for NURBS, and stores only one UV channel. Deprecated in favour of FBX and glTF but still widely encountered in game asset libraries and legacy archives.",
+  "category": "3D",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "references": {
+    "specifications": [
+      "Autodesk 3DS File Format Specification (unofficial, Martin van Velsen 1996)",
+      "Autodesk SDK — 3DS Importer/Exporter documentation"
+    ],
+    "WebLinks": [
+      "https://en.wikipedia.org/wiki/.3ds",
+      "https://paulbourke.net/dataformats/3ds/",
+      "https://docs.fileformat.com/3d/3ds/"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      {
+        "value": "4D4D",
+        "offset": 0,
+        "label": "0x4D4D MAIN3DS chunk — Autodesk 3DS root chunk identifier",
+        "weight": 0.8
+      }
+    ],
+    "matchMode": "first",
+    "MinimumScore": 0.6,
+    "Strength": "Medium",
+    "EntropyHint": "Medium — binary chunk tree with mixed ASCII names and float geometry"
+  },
+  "variables": {
+    "tdsChunkId": 0,
+    "tdsChunkLength": 0,
+    "tdsSubChunkId": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "MAIN3DS Root Chunk ID",
+      "offset": 0,
+      "length": 2,
+      "color": "#FF6B6B",
+      "opacity": 0.85,
+      "description": "2-byte LE uint16 chunk identifier 0x4D4D (decimal 19789) — the MAIN3DS root chunk. Every valid .3DS file begins with this chunk ID. The chunk structure is: ID (uint16 LE) + length (uint32 LE, includes the 6-byte header) + child chunks.",
+      "storeAs": "tdsChunkId",
+      "valueType": "uint16"
+    },
+    {
+      "type": "field",
+      "name": "Root Chunk Length",
+      "offset": 2,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.5,
+      "description": "4-byte LE uint32 total length of the MAIN3DS chunk in bytes, including the 6-byte header (2+4). For a valid file, this value should equal the file size. The chunk length includes all nested child chunk data.",
+      "storeAs": "tdsChunkLength",
+      "valueType": "uint32"
+    },
+    {
+      "type": "field",
+      "name": "First Sub-Chunk ID",
+      "offset": 6,
+      "length": 2,
+      "color": "#95E1D3",
+      "opacity": 0.4,
+      "description": "2-byte LE uint16 ID of the first child chunk within MAIN3DS. Commonly 0x0002 (VERSION — version number as uint32: 3=3D Studio 3.x, 4=3ds Max). Other root-level chunks: 0x3D3D (EDIT3DS — 3D Editor containing scene geometry and materials), 0xB000 (KEYF3DS — keyframe animation data), 0x0001 (M3D_VERSION — alternative version field).",
+      "storeAs": "tdsSubChunkId",
+      "valueType": "uint16"
+    },
+    {
+      "type": "field",
+      "name": "EDIT3DS Chunk (0x3D3D)",
+      "offset": "dynamic",
+      "length": "dynamic",
+      "color": "#FFE66D",
+      "opacity": 0.35,
+      "description": "EDIT3DS chunk (0x3D3D): contains the 3D editor data. Child chunks: NAMED_OBJECT (0x4000, null-terminated name string + sub-chunks for mesh/light/camera), AMBIENT_LIGHT (0x2100), FOG (0x2200), BACKGROUND (0x1200). NAMED_OBJECT contains: MESH_OBJ (0x4100, geometry), DIR_LIGHT (0x4600, directional light), SPOT_LIGHT (0x4610, spot light), CAMERA_OBJ (0x4700, camera eye/target/roll/fov)."
+    },
+    {
+      "type": "field",
+      "name": "Mesh Geometry (POINT_ARRAY/FACE_ARRAY)",
+      "offset": "dynamic",
+      "length": "dynamic",
+      "color": "#C3A6FF",
+      "opacity": 0.30,
+      "description": "Geometry chunks inside MESH_OBJ (0x4100). POINT_ARRAY (0x4110): uint16 vertex count + N float32[3] vertex positions. FACE_ARRAY (0x4120): uint16 face count + N uint16[3] face vertex indices + uint16 face flags (edge visibility bits) per face. TEX_VERTS (0x4140): uint16 UV count + N float32[2] UV coordinates (one-to-one mapping to POINT_ARRAY). MSH_MAT_GROUP (0x4130): material name string + list of face indices. MESH_MATRIX (0x4160): 4x3 float32 mesh transformation matrix (row-major)."
+    }
+  ],
+  "assertions": [
+    {
+      "name": "MAIN3DSChunkId",
+      "expression": "tdsChunkId == 0x4D4D",
+      "severity": "error",
+      "message": "First chunk ID is not 0x4D4D (MAIN3DS). File is not a valid Autodesk .3DS file."
+    },
+    {
+      "name": "ChunkLengthReasonable",
+      "expression": "tdsChunkLength >= 6 && tdsChunkLength <= 536870912",
+      "severity": "warning",
+      "message": "Root chunk length is out of expected range. Very small values indicate corrupt header; extremely large values may be malformed."
+    },
+    {
+      "name": "SubChunkIdKnown",
+      "expression": "tdsSubChunkId in [0x0002, 0x3D3D, 0xB000, 0x0001]",
+      "severity": "info",
+      "message": "First sub-chunk ID is not a well-known 3DS top-level chunk. File may still be valid but uses an uncommon structure."
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "MAIN3DS Root", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
+      { "name": "EDIT3DS Scene", "offset": "dynamic", "icon": "\uE946", "color": "#FFE66D" },
+      { "name": "KEYF3DS Animation", "offset": "dynamic", "icon": "\uE8B7", "color": "#C3A6FF" }
+    ]
+  },
+  "inspector": {
+    "badge": "3DS",
+    "primaryField": "tdsChunkId",
+    "groups": [
+      {
+        "title": "Root Chunk",
+        "icon": "\uE71B",
+        "fields": ["tdsChunkId", "tdsChunkLength", "tdsSubChunkId"]
+      },
+      {
+        "title": "Scene Data",
+        "icon": "\uE8B7",
+        "fields": ["meshCount", "materialCount", "lightCount", "cameraCount"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "3DS File Summary (JSON)",
+      "format": "json",
+      "fields": ["chunkId", "fileVersion", "meshCount", "materialCount", "lightCount", "cameraCount"]
+    },
+    {
+      "name": "Named Object List (CSV)",
+      "format": "csv",
+      "fields": ["objectName", "objectType", "vertexCount", "faceCount", "hasMaterial", "hasUVs"]
+    }
+  ],
+  "forensic": {
+    "riskLevel": "LOW",
+    "notes": "3D scene data only; no PHI or sensitive information expected.",
+    "suspiciousPatterns": [
+      "Root chunk length mismatching file size (truncated or padded file)",
+      "Nested chunk lengths exceeding parent chunk bounds (potential heap overflow in parsers)",
+      "Non-null-terminated object name strings in NAMED_OBJECT (0x4000) chunks"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "3DS binary chunk format. All chunks: uint16 LE chunk_id + uint32 LE total_length (includes 6-byte header) + child chunks or raw data. MAIN3DS(0x4D4D) > VERSION(0x0002, uint32 version) + EDIT3DS(0x3D3D) + KEYF3DS(0xB000). EDIT3DS > NAMED_OBJECT(0x4000, null-term name + sub-chunks) per object. Object sub-chunks: MESH_OBJ(0x4100) for meshes, DIR_LIGHT(0x4600), CAMERA_OBJ(0x4700). MESH_OBJ > POINT_ARRAY(0x4110: uint16 nv + float[nv][3]) + FACE_ARRAY(0x4120: uint16 nf + uint16[nf][3] + flags[nf]) + TEX_VERTS(0x4140) + MSH_MAT_GROUP(0x4130). Max 65535 verts/faces. Single UV channel. Materials in MDATA > MATERIAL(0xAFFF).",
+    "suggestedInspections": [
+      "Read first 6 bytes: uint16 chunk_id (expect 0x4D4D) + uint32 total_length; verify length matches file size",
+      "Navigate to EDIT3DS (0x3D3D) sub-chunk and enumerate NAMED_OBJECT (0x4000) entries to list all scene objects",
+      "For each NAMED_OBJECT: check if it contains MESH_OBJ(0x4100), DIR_LIGHT(0x4600), or CAMERA_OBJ(0x4700) to classify object types",
+      "In MESH_OBJ: read POINT_ARRAY(0x4110) vertex count and FACE_ARRAY(0x4120) face count to assess geometry complexity",
+      "Check if KEYF3DS(0xB000) is present to determine if the file contains keyframe animation data",
+      "Verify all chunk lengths are self-consistent (child chunks sum must equal parent total_length minus 6-byte header)"
+    ]
+  },
+  "software": [
+    { "name": "Autodesk 3ds Max", "url": "https://www.autodesk.com/3dsmax" },
+    { "name": "Blender (3DS import)", "url": "https://www.blender.org" },
+    { "name": "Open Asset Import Library (Assimp)", "url": "https://assimp.org" },
+    { "name": "MeshLab", "url": "https://www.meshlab.net" }
+  ],
+  "formatRelationships": [
+    { "format": "FBX", "relation": "successor — FBX replaced 3DS for Autodesk interchange" },
+    { "format": "OBJ", "relation": "simpler alternative for mesh-only exchange" },
+    { "format": "MAX", "relation": "successor native format for 3ds Max (binary, not .3DS)" },
+    { "format": "GLTF", "relation": "modern web-oriented 3D interchange format" }
+  ],
+  "MimeTypes": [
+    "image/x-3ds",
+    "application/x-3ds",
+    "application/octet-stream"
+  ],
+  "UseCases": [
+    "Legacy 3D game asset libraries from 1990s-2000s",
+    "Architectural visualization model exchange",
+    "Product visualization with simple geometry requirements",
+    "Educational 3D datasets and reference libraries",
+    "Migration of legacy 3D Studio DOS/Max projects to modern pipelines"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 83,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 5,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-15",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "encoding": "binary little-endian chunk tree",
+    "chunkHeader": "uint16 ID + uint32 totalLength (including 6-byte header)",
+    "rootChunkId": "0x4D4D (MAIN3DS)",
+    "vertexLimit": "65535 per named object mesh",
+    "uvChannels": "1 (single UV channel only)",
+    "animationSupport": "keyframe only (KEYF3DS chunk)"
+  }
+}

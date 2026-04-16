@@ -1,0 +1,293 @@
+{
+  "diffMode": "binary",
+  "formatName": "IKE/ISAKMP Key Exchange",
+  "version": "1.0",
+  "extensions": [".ike", ".isakmp"],
+  "description": "Internet Key Exchange (IKE) and Internet Security Association and Key Management Protocol (ISAKMP) packet format. IKEv1 is defined in RFC 2408 (ISAKMP) and RFC 2409 (IKE). IKEv2 is defined in RFC 7296. The ISAKMP header is 28 bytes: 8-byte initiator SPI, 8-byte responder SPI (all-zeros in IKE_SA_INIT), 1-byte next payload type, 1-byte version (major<<4|minor), 1-byte exchange type, 1-byte flags, 4-byte message ID, 4-byte total length. IKEv2 exchange types: 34=IKE_SA_INIT, 35=IKE_AUTH, 36=CREATE_CHILD_SA, 37=INFORMATIONAL. Used for IPsec VPN key negotiation.",
+  "category": "Network",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "HexEditor",
+  "references": [
+    "https://www.rfc-editor.org/rfc/rfc7296",
+    "https://www.rfc-editor.org/rfc/rfc2408",
+    "https://www.iana.org/assignments/ikev2-parameters/ikev2-parameters.xhtml",
+    "https://en.wikipedia.org/wiki/Internet_Security_Association_and_Key_Management_Protocol"
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "value": "0000000000000000",
+        "offset": 8,
+        "label": "Responder SPI all-zeros at offset 8 — IKE_SA_INIT (session not yet established)",
+        "weight": 0.5
+      }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.3,
+    "Strength": "Weak",
+    "validation": {
+      "rules": [
+        { "field": "isakmpTotalLength", "operator": "greaterThanOrEqual", "value": 28 },
+        { "field": "isakmpExchangeType", "operator": "in", "value": [34, 35, 36, 37, 4, 5] }
+      ]
+    }
+  },
+  "variables": [
+    {
+      "name": "isakmpInitSPI",
+      "offset": 0,
+      "size": 8,
+      "type": "hex",
+      "storeAs": "isakmpInitSPI",
+      "description": "8-byte Initiator Security Parameter Index (SPI)"
+    },
+    {
+      "name": "isakmpRespSPI",
+      "offset": 8,
+      "size": 8,
+      "type": "hex",
+      "storeAs": "isakmpRespSPI",
+      "description": "8-byte Responder SPI — all zeros in IKE_SA_INIT before SA is established"
+    },
+    {
+      "name": "isakmpNextPayload",
+      "offset": 16,
+      "size": 1,
+      "type": "uint8",
+      "storeAs": "isakmpNextPayload",
+      "description": "Next payload type (IKEv2: 33=SA, 34=KE, 40=Nonce, 41=Notify, 46=VendorID)",
+      "valueMap": {
+        "0": "None",
+        "33": "SA (Security Association)",
+        "34": "KE (Key Exchange)",
+        "35": "IDi (Identification Initiator)",
+        "36": "IDr (Identification Responder)",
+        "37": "CERT",
+        "38": "CERTREQ",
+        "39": "AUTH",
+        "40": "Nonce",
+        "41": "Notify",
+        "44": "TSi (Traffic Selector Initiator)",
+        "45": "TSr (Traffic Selector Responder)",
+        "46": "SK (Encrypted + Authenticated)"
+      }
+    },
+    {
+      "name": "isakmpVersion",
+      "offset": 17,
+      "size": 1,
+      "type": "uint8",
+      "storeAs": "isakmpVersion",
+      "description": "Version byte: upper nibble = major (2 for IKEv2), lower nibble = minor"
+    },
+    {
+      "name": "isakmpExchangeType",
+      "offset": 18,
+      "size": 1,
+      "type": "uint8",
+      "storeAs": "isakmpExchangeType",
+      "description": "IKEv2 exchange type",
+      "valueMap": {
+        "34": "IKE_SA_INIT",
+        "35": "IKE_AUTH",
+        "36": "CREATE_CHILD_SA",
+        "37": "INFORMATIONAL"
+      }
+    },
+    {
+      "name": "isakmpFlags",
+      "offset": 19,
+      "size": 1,
+      "type": "uint8",
+      "storeAs": "isakmpFlags",
+      "description": "Flags: bit 3 (0x08)=Initiator, bit 4 (0x10)=Version, bit 5 (0x20)=Response"
+    },
+    {
+      "name": "isakmpMessageID",
+      "offset": 20,
+      "size": 4,
+      "type": "uint32",
+      "endian": "BE",
+      "storeAs": "isakmpMessageID",
+      "description": "Message ID (IKEv2): 0 for IKE_SA_INIT, increments per exchange"
+    },
+    {
+      "name": "isakmpTotalLength",
+      "offset": 24,
+      "size": 4,
+      "type": "uint32",
+      "endian": "BE",
+      "storeAs": "isakmpTotalLength",
+      "description": "Total length of the IKE message including header (28 bytes minimum)"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "ISAKMPHeader",
+      "offset": 0,
+      "size": 28,
+      "description": "ISAKMP/IKEv2 fixed 28-byte header",
+      "fields": [
+        { "name": "InitiatorSPI", "offset": 0, "size": 8, "type": "hex" },
+        { "name": "ResponderSPI", "offset": 8, "size": 8, "type": "hex" },
+        { "name": "NextPayload", "offset": 16, "size": 1, "type": "uint8" },
+        { "name": "Version", "offset": 17, "size": 1, "type": "uint8" },
+        { "name": "ExchangeType", "offset": 18, "size": 1, "type": "uint8" },
+        { "name": "Flags", "offset": 19, "size": 1, "type": "uint8" },
+        { "name": "MessageID", "offset": 20, "size": 4, "type": "uint32", "endian": "BE" },
+        { "name": "TotalLength", "offset": 24, "size": 4, "type": "uint32", "endian": "BE" }
+      ]
+    },
+    {
+      "name": "SPIFields",
+      "offset": 0,
+      "size": 16,
+      "description": "8-byte Initiator SPI + 8-byte Responder SPI",
+      "fields": [
+        { "name": "InitiatorSPI", "offset": 0, "size": 8, "type": "hex" },
+        { "name": "ResponderSPI", "offset": 8, "size": 8, "type": "hex" }
+      ]
+    },
+    {
+      "name": "PayloadChain",
+      "offset": 28,
+      "size": -1,
+      "description": "IKEv2 payload chain starting at offset 28. Each payload: 1B next payload, 1B critical flag, 2B payload length, then payload-specific data.",
+      "fields": []
+    },
+    {
+      "name": "VersionAndExchange",
+      "offset": 17,
+      "size": 3,
+      "description": "Version byte, exchange type, and flags",
+      "fields": [
+        { "name": "VersionByte", "offset": 17, "size": 1, "type": "uint8" },
+        { "name": "ExchangeType", "offset": 18, "size": 1, "type": "uint8" },
+        { "name": "Flags", "offset": 19, "size": 1, "type": "uint8" }
+      ]
+    }
+  ],
+  "assertions": [
+    {
+      "id": "assert_total_length",
+      "field": "isakmpTotalLength",
+      "operator": "greaterThanOrEqual",
+      "value": 28,
+      "severity": "error",
+      "message": "Total length must be >= 28 bytes (ISAKMP header size)"
+    },
+    {
+      "id": "assert_exchange_type",
+      "field": "isakmpExchangeType",
+      "operator": "in",
+      "value": [34, 35, 36, 37],
+      "severity": "warning",
+      "message": "IKEv2 exchange type should be one of: 34=IKE_SA_INIT, 35=IKE_AUTH, 36=CREATE_CHILD_SA, 37=INFORMATIONAL"
+    },
+    {
+      "id": "assert_version_major",
+      "type": "info",
+      "severity": "info",
+      "message": "Version byte upper nibble should be 2 for IKEv2. Value 0x20 = IKEv2.0 (major=2, minor=0)."
+    }
+  ],
+  "navigation": {
+    "entryPoints": [
+      { "name": "ISAKMP Header", "offset": 0 },
+      { "name": "Initiator SPI", "offset": 0 },
+      { "name": "Responder SPI", "offset": 8 },
+      { "name": "Payload Chain", "offset": 28 }
+    ],
+    "jumpTable": [
+      { "label": "Initiator SPI (offset 0)", "offset": 0 },
+      { "label": "Responder SPI (offset 8)", "offset": 8 },
+      { "label": "Exchange Type (offset 18)", "offset": 18 },
+      { "label": "Total Length (offset 24)", "offset": 24 },
+      { "label": "First Payload (offset 28)", "offset": 28 }
+    ]
+  },
+  "inspector": {
+    "badge": "IKE",
+    "primaryField": "isakmpExchangeType",
+    "groups": [
+      {
+        "name": "SPIs",
+        "fields": ["isakmpInitSPI", "isakmpRespSPI"]
+      },
+      {
+        "name": "Exchange",
+        "fields": ["isakmpVersion", "isakmpExchangeType", "isakmpFlags"]
+      },
+      {
+        "name": "Framing",
+        "fields": ["isakmpMessageID", "isakmpTotalLength", "isakmpNextPayload"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "ISAKMP Header Summary",
+      "format": "text",
+      "template": "IKE/ISAKMP Packet\nInitiator SPI  : {isakmpInitSPI}\nResponder SPI  : {isakmpRespSPI}\nExchange Type  : {isakmpExchangeType}\nVersion        : {isakmpVersion}\nNext Payload   : {isakmpNextPayload}\nMessage ID     : {isakmpMessageID}\nTotal Length   : {isakmpTotalLength}"
+    },
+    {
+      "name": "ISAKMP Header CSV",
+      "format": "csv",
+      "template": "Field,Value\nInitiatorSPI,{isakmpInitSPI}\nResponderSPI,{isakmpRespSPI}\nExchangeType,{isakmpExchangeType}\nVersion,{isakmpVersion}\nMessageID,{isakmpMessageID}\nTotalLength,{isakmpTotalLength}"
+    }
+  ],
+  "forensic": {
+    "riskLevel": "medium",
+    "suspiciousPatterns": [
+      "Responder SPI all-zeros with exchange type != IKE_SA_INIT — possible spoofed or malformed packet",
+      "Initiator SPI reused across sessions — possible SPI collision or session hijack attempt",
+      "TotalLength < 28 — malformed header, possible fuzzing artifact",
+      "Unknown exchange type — non-standard or experimental IKE variant",
+      "Flags bit 4 (version) set — peer indicates a higher IKE version is supported (version negotiation)"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "IKEv2 header is exactly 28 bytes. A captured IKE_SA_INIT will have responder SPI = 0x0000000000000000. The exchange type byte at offset 18 identifies the IKE phase. Payload chain starts at offset 28: each payload has 1B next-payload, 1B critical, 2B length, then data of (length-4) bytes. The SK (0x2E=46) payload type indicates encrypted content.",
+    "suggestedInspections": [
+      "Verify responder SPI (bytes 8-15) is all-zeros for IKE_SA_INIT exchanges",
+      "Check version byte (offset 17): upper nibble=2 for IKEv2, lower nibble=0",
+      "Determine exchange type at offset 18 (34=INIT, 35=AUTH, 36=CHILD_SA, 37=INFO)",
+      "Parse payload chain from offset 28: each 4-byte payload header has next-payload + critical + length",
+      "Look for SA payload (0x21=33) to identify proposed cipher suites and DH groups",
+      "Check flags byte (offset 19) for Initiator (bit3), Response (bit5), and Version (bit4) bits"
+    ]
+  },
+  "software": [
+    { "name": "Wireshark", "vendor": "Wireshark Foundation", "platform": "Cross-platform" },
+    { "name": "strongSwan", "vendor": "strongSwan Project", "platform": "Linux" },
+    { "name": "OpenIKED", "vendor": "OpenBSD", "platform": "BSD/Linux" }
+  ],
+  "formatRelationships": [
+    { "format": "PCAP", "relation": "containerFormat", "note": "ISAKMP packets are typically captured inside PCAP/PCAPNG files" },
+    { "format": "PCAPNG", "relation": "containerFormat", "note": "ISAKMP packets captured in PCAPNG network capture files" }
+  ],
+  "MimeTypes": [
+    "application/octet-stream"
+  ],
+  "UseCases": [
+    "IPsec VPN key negotiation and SA establishment",
+    "IKEv2 authentication in site-to-site and road-warrior VPN",
+    "Network forensics of VPN traffic",
+    "Security protocol analysis and IDS rule development"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 85,
+    "LastUpdated": "2026-04-15"
+  },
+  "TechnicalDetails": {
+    "headerSize": 28,
+    "endian": "big",
+    "signatureOffset": 8,
+    "signatureLength": 8,
+    "signatureValue": "0000000000000000 (responder SPI in INIT)",
+    "ikeVersions": ["IKEv1 (RFC 2409)", "IKEv2 (RFC 7296)"],
+    "udpPort": 500,
+    "udpPortNAT": 4500,
+    "notes": "IKE runs over UDP port 500. When NAT is detected, IKE switches to UDP port 4500 with a non-ESP marker (4 zero bytes) prepended. The ISAKMP header structure is the same for IKEv1 and IKEv2 but payload types and exchange types differ significantly."
+  }
+}

@@ -1,0 +1,227 @@
+{
+  "diffMode": "binary",
+  "formatName": "MFER Medical Waveform Format",
+  "version": "1.0",
+  "extensions": [
+    ".mwf",
+    ".mfer"
+  ],
+  "description": "MFER (Medical waveform Format Encoding Rules, ISO 22077-1:2015) is an international binary TLV (Tag-Length-Value) standard for encoding physiological waveform data including ECG (electrocardiogram), EEG (electroencephalogram), EMG (electromyogram), blood pressure, and other biosignals. Developed by the Japan Medical Imaging and Technology committee (JIRA) and standardized by ISO, MFER is widely used in Japan for clinical ECG systems. The format uses a TLV structure where each element consists of a tag byte, a length field (1-3 bytes), and a value. Key tags: 0x40 (channel definition), 0x41 (lead info), 0x08 (sampling rate), 0x09 (channel count), 0x05 (block length), 0x06 (block count), 0x0E (start time), 0x0F (end time), 0x1A (patient ID), 0x1B (patient name), 0x1C (patient birthdate), 0x1D (patient sex). Waveform data is stored as signed integer samples in the 0x1E (waveform data) tag.",
+  "category": "Medical",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "references": {
+    "specifications": [
+      "ISO 22077-1:2015 Health informatics — Medical waveform format — Part 1: Encoding rules",
+      "MFER Standard Version 1.9 (JIRA J-MES-MFER-2014)",
+      "ISO 22077-2 through 22077-6 (waveform type-specific parts)"
+    ],
+    "WebLinks": [
+      "https://www.iso.org/standard/57083.html",
+      "https://en.wikipedia.org/wiki/MFER",
+      "https://www.jira-net.or.jp/e/standardization/mfer.html"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      {
+        "value": "40",
+        "offset": 0,
+        "label": "0x40 — MFER channel definition TLV tag",
+        "weight": 0.5
+      }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.3,
+    "required": false,
+    "Strength": "Weak",
+    "EntropyHint": { "min": 3.0, "max": 6.5 },
+    "validation": {
+      "minFileSize": 4,
+      "maxSignatureOffset": 0,
+      "note": "MFER TLV: tag byte at offset 0 is typically 0x40 (channel) or another MFER standard tag. Length field: if bit 7 of first length byte is 0, length is 1 byte; if 0x81, next 1 byte is length; if 0x82, next 2 bytes (big-endian) are length. Inspect tags 0x08 (sampling rate) and 0x09 (channel count) to validate as MFER."
+    }
+  },
+  "variables": {
+    "mferFirstTag": 0,
+    "mferTagLength": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "First TLV Tag Byte",
+      "offset": 0,
+      "length": 1,
+      "color": "#FF6B6B",
+      "opacity": 0.45,
+      "description": "First byte of the MFER file: the tag byte of the first TLV element. MFER tag values: 0x40=channel (Waveform Source Attribute), 0x41=lead (Lead Code), 0x08=sampling rate, 0x09=number of channels, 0x05=block length (samples per block), 0x06=block count, 0x0A=offset (DC offset per channel), 0x0B=null value (invalid sample marker), 0x0C=attr (attribute: byte order=0x00 for big-endian, 0x01 for little-endian), 0x0E=start time, 0x0F=end time, 0x1A=patient ID, 0x1B=patient name, 0x1C=birthdate, 0x1D=sex, 0x1E=waveform data, 0x3F=end tag.",
+      "storeAs": "mferFirstTag",
+      "valueType": "uint8"
+    },
+    {
+      "type": "field",
+      "name": "First TLV Length",
+      "offset": 1,
+      "length": 2,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "Length field of the first TLV element using MFER variable-length encoding (similar to BER-TLV). If length byte < 0x80: value length is that single byte (0-127 bytes). If length byte = 0x81: next 1 byte gives length (0-255). If length byte = 0x82: next 2 bytes (big-endian uint16) give length. MFER does not use 0x83 or 0x84 multi-byte length forms. Maximum single element size is 65535 bytes.",
+      "storeAs": "mferTagLength",
+      "valueType": "uint16"
+    },
+    {
+      "type": "field",
+      "name": "Sampling Rate Tag (0x08)",
+      "offset": "dynamic",
+      "length": "dynamic",
+      "color": "#95E1D3",
+      "opacity": 0.30,
+      "description": "Tag 0x08 (sampling rate): length 2-6 bytes encoding the sampling rate as a rational number (numerator / denominator). Typical ECG sampling rates: 500 Hz, 1000 Hz, 2000 Hz. EEG: 256 Hz, 512 Hz, 1024 Hz. The value is encoded as a MFER 'SamplingRate' structure: exponent (1 byte, signed, power of 10) followed by mantissa (int16 or int32 depending on length). e.g., rate = mantissa * 10^exponent.",
+      "valueType": "hex"
+    },
+    {
+      "type": "field",
+      "name": "Patient Info Tags",
+      "offset": "dynamic",
+      "length": "dynamic",
+      "color": "#FFE66D",
+      "opacity": 0.35,
+      "description": "Patient information TLV elements: 0x1A=Patient ID (ASCII/UTF-8), 0x1B=Patient Name (character set dependent, may be JIS X 0208 or UTF-8), 0x1C=Patient Birthdate (YYYYMMDD or YYYYMMDDHHMMSS in ASCII), 0x1D=Patient Sex (1 byte: 0=unknown, 1=male, 2=female, 9=unspecified). These PHI elements must be handled under HIPAA, GDPR Article 9, and Japan's Act on Protection of Personal Information (APPI).",
+      "valueType": "hex"
+    },
+    {
+      "type": "field",
+      "name": "Waveform Data Tag (0x1E)",
+      "offset": "dynamic",
+      "length": "dynamic",
+      "color": "#C3A6FF",
+      "opacity": 0.30,
+      "description": "Tag 0x1E: raw waveform sample data for all channels. Samples are interleaved or blocked depending on MFER encoding mode. Sample format: signed integers, size defined by tag 0x05 (block length) and resolution. ECG samples are typically 16-bit signed integers representing microvolts or 1/200 mV units. Multiple blocks may be present for continuous recordings. Byte order defined by tag 0x0C attribute (0x00=big-endian, 0x01=little-endian).",
+      "valueType": "hex"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "FirstTagIsValidMFER",
+      "expression": "mferFirstTag in [0x40, 0x41, 0x08, 0x09, 0x05, 0x0E, 0x0C]",
+      "severity": "warning",
+      "message": "First tag byte is not a known MFER TLV tag. Valid first tags are: 0x40 (channel), 0x08 (sampling rate), 0x09 (channel count), 0x0C (attribute). File may not be MFER or tag byte order may be unexpected."
+    },
+    {
+      "name": "TagLengthPositive",
+      "expression": "mferTagLength > 0",
+      "severity": "error",
+      "message": "First TLV element has zero length. MFER elements must have positive length. File may be corrupt or empty."
+    },
+    {
+      "name": "PHIWarning",
+      "expression": "true",
+      "severity": "info",
+      "message": "MFER files contain Protected Health Information (PHI): patient ID, name, birthdate, and physiological waveform data. Handle per HIPAA and applicable privacy regulations."
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "First TLV Element", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
+      { "name": "Sampling Rate", "offset": "dynamic", "icon": "\uE946", "color": "#95E1D3" },
+      { "name": "Waveform Data", "offset": "dynamic", "icon": "\uE8B7", "color": "#C3A6FF" }
+    ]
+  },
+  "inspector": {
+    "badge": "mferFirstTag",
+    "primaryField": "mferTagLength",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "MFER TLV Header",
+        "icon": "\uE71B",
+        "fields": ["mferFirstTag", "mferTagLength"]
+      },
+      {
+        "title": "Waveform Parameters",
+        "icon": "\uE8B7",
+        "fields": ["samplingRateTag", "channelCount", "blockLength", "blockCount"]
+      },
+      {
+        "title": "Patient Information",
+        "icon": "\uE9D9",
+        "fields": ["patientId", "patientName", "birthDate", "sex"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "MFER Tag Dictionary (JSON)",
+      "format": "json",
+      "fields": ["firstTag", "samplingRate", "channelCount", "blockLength", "blockCount", "startTime"]
+    },
+    {
+      "name": "Channel Parameters (CSV)",
+      "format": "csv",
+      "fields": ["channelIndex", "leadCode", "samplingRate", "resolution", "offset"]
+    }
+  ],
+  "forensic": {
+    "category": "medical",
+    "riskLevel": "high",
+    "phi": true,
+    "regulation": "HIPAA 45 CFR 164, GDPR Article 9, Japan APPI",
+    "suspiciousPatterns": [
+      "Patient name in tag 0x1B in plaintext (not de-identified for research use)",
+      "Patient birthdate (tag 0x1C) combined with patient ID enabling re-identification",
+      "ECG waveform data correlated with implantable device serial numbers"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "MFER ISO 22077-1 binary TLV format. Tag byte at offset 0. BER-TLV length encoding: single byte if < 0x80, 0x81+1byte, 0x82+2bytes(BE). Key tags: 0x40=channel, 0x08=sampling rate (mantissa*10^exponent), 0x09=channel count (uint16/uint32), 0x05=block length (samples), 0x06=block count, 0x0C=attribute (byte order: 0=BE, 1=LE), 0x1A=patientId, 0x1B=patientName, 0x1C=birthdate, 0x1D=sex, 0x1E=waveform samples, 0x3F=end. Samples interleaved by channel per block. Common ECG: 12-lead, 500Hz or 1000Hz, 16-bit signed, 1uV/LSB.",
+    "suggestedInspections": [
+      "Parse first TLV tag byte and length to determine element structure and file organization",
+      "Locate tag 0x08 (sampling rate) and decode mantissa/exponent to reconstruct Hz value for the recording",
+      "Find tag 0x09 (channel count) to determine number of physiological channels and expected waveform data size",
+      "Extract tags 0x1A (patient ID), 0x1B (patient name), 0x1C (birthdate) to enumerate PHI for de-identification audit",
+      "Locate tag 0x1E (waveform data) and use channel count, block length, and sample resolution to parse raw signal samples",
+      "Check tag 0x0C byte order attribute (0x00=big-endian, 0x01=little-endian) before parsing any multi-byte numeric values"
+    ]
+  },
+  "software": [
+    "EcgViewer (MFER-capable ECG viewer)",
+    "Kubios HRV (heart rate variability analysis)",
+    "WFDB (PhysioNet waveform tools)",
+    "BioSig (open-source biosignal library)",
+    "MathWorks MATLAB with custom MFER reader",
+    "NeuroKit2 (Python biosignal library)"
+  ],
+  "formatRelationships": {
+    "category": "Medical",
+    "extensions": [".mwf", ".mfer"],
+    "relatedFormats": ["DICOM", "HL7", "FHIR_JSON", "MINISEED"],
+    "note": "MFER is the primary ECG/EEG exchange format in Japanese clinical practice. Alternative ECG formats include: SCP-ECG (ISO 11073-91064, used in Europe), HL7 aECG (XML), DICOM waveform IOD (SOP class 1.2.840.10008.5.1.4.1.1.9.1.x), and FDA XML ECG. MFER maps to DICOM ECG via the DICOM MFER Mapping Supplement."
+  },
+  "MimeTypes": [
+    "application/octet-stream",
+    "application/x-mfer"
+  ],
+  "UseCases": [
+    "Clinical ECG recording and archival in Japanese healthcare",
+    "Physiological waveform exchange between medical devices",
+    "EEG/EMG research data storage",
+    "Cardiac monitoring and Holter ECG storage",
+    "Clinical trial waveform data submission"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 86,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 5,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-15",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "encoding": "binary TLV (Tag-Length-Value)",
+    "lengthEncoding": "BER-TLV variable (1-3 bytes)",
+    "standard": "ISO 22077-1:2015",
+    "byteOrder": "configurable per tag 0x0C (0=big-endian default, 1=little-endian)",
+    "sampleFormat": "signed integer (8/16/32-bit)"
+  }
+}

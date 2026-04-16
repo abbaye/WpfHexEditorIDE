@@ -1,82 +1,335 @@
 <UserControl x:Class="WpfHexEditor.Shell.Panels.Panels.WhfmtBrowserPanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:vm="clr-namespace:WpfHexEditor.Shell.Panels.ViewModels">
+             xmlns:vm="clr-namespace:WpfHexEditor.Shell.Panels.ViewModels"
+             xmlns:local="clr-namespace:WpfHexEditor.Shell.Panels.Panels"
+             Background="{DynamicResource SE_BackgroundBrush}"
+             Foreground="{DynamicResource SE_ForegroundBrush}">
 
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
 
-        <!-- Category node header template -->
+        <!-- ── Toolbar icon button ── -->
+        <Style x:Key="WE_IconButton" TargetType="Button">
+            <Setter Property="Background"        Value="Transparent"/>
+            <Setter Property="BorderThickness"   Value="0"/>
+            <Setter Property="Width"             Value="24"/>
+            <Setter Property="Height"            Value="24"/>
+            <Setter Property="Padding"           Value="4"/>
+            <Setter Property="Cursor"            Value="Hand"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Foreground"        Value="{DynamicResource SE_ForegroundBrush}"/>
+            <Setter Property="ToolTipService.InitialShowDelay" Value="400"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd" Background="{TemplateBinding Background}"
+                                CornerRadius="2" SnapsToDevicePixels="True"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource Panel_ToolbarButtonHoverBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource Panel_ToolbarButtonActiveBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.35"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- ── Toolbar toggle button ── -->
+        <Style x:Key="WE_ToggleButton" TargetType="ToggleButton">
+            <Setter Property="Background"        Value="Transparent"/>
+            <Setter Property="BorderThickness"   Value="0"/>
+            <Setter Property="Width"             Value="24"/>
+            <Setter Property="Height"            Value="24"/>
+            <Setter Property="Padding"           Value="4"/>
+            <Setter Property="Cursor"            Value="Hand"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Foreground"        Value="{DynamicResource SE_ForegroundBrush}"/>
+            <Setter Property="ToolTipService.InitialShowDelay" Value="400"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Border x:Name="Bd" Background="{TemplateBinding Background}"
+                                CornerRadius="2" SnapsToDevicePixels="True"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource Panel_ToolbarButtonHoverBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource SE_AccentBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.35"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- ── Pop-toolbar button (inline on row hover) ── -->
+        <Style x:Key="PopRowButton" TargetType="Button">
+            <Setter Property="Background"        Value="Transparent"/>
+            <Setter Property="BorderThickness"   Value="0"/>
+            <Setter Property="Width"             Value="22"/>
+            <Setter Property="Height"            Value="20"/>
+            <Setter Property="Padding"           Value="3"/>
+            <Setter Property="Cursor"            Value="Hand"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Foreground"        Value="{DynamicResource SE_ForegroundBrush}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd" Background="{TemplateBinding Background}"
+                                CornerRadius="2" SnapsToDevicePixels="True"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource SE_ToolbarButtonHoverBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource SE_ToolbarButtonActiveBrush}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- ── TreeViewItem style ── -->
+        <Style TargetType="TreeViewItem">
+            <Setter Property="Background"                 Value="Transparent"/>
+            <Setter Property="BorderThickness"            Value="0"/>
+            <Setter Property="Padding"                    Value="0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="FocusVisualStyle"           Value="{x:Null}"/>
+            <Setter Property="IsExpanded"                 Value="{Binding IsExpanded, Mode=TwoWay}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TreeViewItem">
+                        <StackPanel>
+                            <Border x:Name="RowBg" Background="Transparent" Height="22">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="3"/>
+                                        <ColumnDefinition Width="16"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <!-- Selection accent bar -->
+                                    <Border x:Name="AccentBar" Grid.Column="0"
+                                            Background="{DynamicResource SE_AccentBrush}"
+                                            Visibility="Collapsed"/>
+
+                                    <!-- Expander arrow -->
+                                    <ToggleButton x:Name="Expander" Grid.Column="1"
+                                                  IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                                                  Style="{x:Null}" Background="Transparent" BorderThickness="0"
+                                                  Focusable="False" ClickMode="Press"
+                                                  Width="16" Height="16" Cursor="Hand">
+                                        <ToggleButton.Template>
+                                            <ControlTemplate TargetType="ToggleButton">
+                                                <TextBlock x:Name="Arrow" Text="▶" FontSize="8"
+                                                           VerticalAlignment="Center" HorizontalAlignment="Center"
+                                                           Foreground="{DynamicResource SE_ForegroundBrush}"
+                                                           Opacity="0.6"/>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsChecked" Value="True">
+                                                        <Setter TargetName="Arrow" Property="Text" Value="▼"/>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </ToggleButton.Template>
+                                    </ToggleButton>
+
+                                    <!-- Header content -->
+                                    <ContentPresenter Grid.Column="2" x:Name="PART_Header"
+                                                      ContentSource="Header"
+                                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                      VerticalAlignment="Center"/>
+
+                                    <!-- Pop-toolbar (shown on hover) -->
+                                    <Border x:Name="PopHost" Grid.Column="3"
+                                            Visibility="Hidden"
+                                            Margin="0,0,4,0" VerticalAlignment="Center">
+                                        <Border Background="{DynamicResource SE_PopToolbarBackground}"
+                                                BorderBrush="{DynamicResource SE_PopToolbarBorderBrush}"
+                                                BorderThickness="1" CornerRadius="3" Padding="1,0">
+                                            <Border.Effect>
+                                                <DropShadowEffect BlurRadius="6" ShadowDepth="1"
+                                                                  Opacity="0.3" Color="Black"/>
+                                            </Border.Effect>
+                                            <StackPanel Orientation="Horizontal">
+                                                <Button x:Name="PopOpenBtn" Style="{StaticResource PopRowButton}"
+                                                        ToolTip="Open in Structure Editor">
+                                                    <TextBlock Text="&#xE7AC;" FontFamily="Segoe MDL2 Assets" FontSize="11"
+                                                               Foreground="{DynamicResource SE_ForegroundBrush}"/>
+                                                </Button>
+                                                <Button x:Name="PopExportBtn" Style="{StaticResource PopRowButton}"
+                                                        ToolTip="Export to file…">
+                                                    <TextBlock Text="&#xE74E;" FontFamily="Segoe MDL2 Assets" FontSize="11"
+                                                               Foreground="{DynamicResource SE_ForegroundBrush}"/>
+                                                </Button>
+                                                <Button x:Name="PopJsonBtn" Style="{StaticResource PopRowButton}"
+                                                        ToolTip="View JSON">
+                                                    <TextBlock Text="&#xE943;" FontFamily="Segoe MDL2 Assets" FontSize="11"
+                                                               Foreground="{DynamicResource SE_ForegroundBrush}"/>
+                                                </Button>
+                                            </StackPanel>
+                                        </Border>
+                                    </Border>
+                                </Grid>
+                            </Border>
+                            <ItemsPresenter x:Name="ItemsHost" Margin="10,0,0,0"/>
+                        </StackPanel>
+
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="HasItems" Value="False">
+                                <Setter TargetName="Expander" Property="Visibility" Value="Hidden"/>
+                            </Trigger>
+                            <Trigger Property="IsExpanded" Value="False">
+                                <Setter TargetName="ItemsHost" Property="Visibility" Value="Collapsed"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="RowBg"    Property="Background" Value="{DynamicResource Panel_ItemSelectedBrush}"/>
+                                <Setter TargetName="AccentBar" Property="Visibility" Value="Visible"/>
+                            </Trigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsSelected"  Value="False"/>
+                                    <Condition Property="IsMouseOver" Value="True"/>
+                                </MultiTrigger.Conditions>
+                                <Setter TargetName="RowBg"    Property="Background" Value="{DynamicResource Panel_ItemHoverBrush}"/>
+                                <Setter TargetName="PopHost"  Property="Visibility" Value="Visible"/>
+                            </MultiTrigger>
+                            <!-- Show pop-toolbar even when selected + hover -->
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsSelected"  Value="True"/>
+                                    <Condition Property="IsMouseOver" Value="True"/>
+                                </MultiTrigger.Conditions>
+                                <Setter TargetName="PopHost" Property="Visibility" Value="Visible"/>
+                            </MultiTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- ── Category node header ── -->
         <DataTemplate x:Key="CategoryHeaderTemplate" DataType="{x:Type vm:WhfmtCategoryNodeVm}">
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="12"/>
-                <Border CornerRadius="8" Background="#224C9BE8" BorderBrush="#444C9BE8"
-                        BorderThickness="1" Padding="5,0" Margin="6,0,0,0" VerticalAlignment="Center">
-                    <TextBlock Text="{Binding VisibleCount}" FontSize="10"/>
+            <StackPanel Orientation="Horizontal" Margin="2,0">
+                <TextBlock Text="&#xED25;" FontFamily="Segoe MDL2 Assets" FontSize="12"
+                           Foreground="{DynamicResource SE_AccentBrush}" Opacity="0.8"
+                           VerticalAlignment="Center" Margin="0,0,5,0"/>
+                <TextBlock Text="{Binding Name}"
+                           FontWeight="SemiBold" FontSize="11"
+                           Foreground="{DynamicResource SE_ForegroundBrush}"
+                           VerticalAlignment="Center"/>
+                <Border CornerRadius="8" Background="{DynamicResource SE_SearchBoxBrush}"
+                        Padding="5,0" Margin="6,0,0,0" VerticalAlignment="Center">
+                    <TextBlock Text="{Binding VisibleCount}" FontSize="10"
+                               Foreground="{DynamicResource SE_ForegroundBrush}" Opacity="0.7"/>
                 </Border>
-                <TextBlock Text="⚠" Foreground="#DD994400" Margin="4,0,0,0" VerticalAlignment="Center"
+                <TextBlock Text="&#xE783;" FontFamily="Segoe MDL2 Assets" FontSize="10"
+                           Margin="5,0,0,0" VerticalAlignment="Center"
+                           Foreground="{DynamicResource Panel_WarningTextBrush}"
                            ToolTip="One or more formats failed to load"
                            Visibility="{Binding HasFailures, Converter={StaticResource BoolToVisibility}}"/>
             </StackPanel>
         </DataTemplate>
 
-        <!-- Format item row template -->
+        <!-- ── Format item row ── -->
         <DataTemplate x:Key="FormatItemTemplate" DataType="{x:Type vm:WhfmtFormatItemVm}">
-            <Grid Margin="2,1">
+            <Grid Height="22">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="16"/>   <!-- icon -->
+                    <ColumnDefinition Width="*"/>    <!-- name -->
+                    <ColumnDefinition Width="Auto"/> <!-- badges -->
                 </Grid.ColumnDefinitions>
 
-                <StackPanel Grid.Column="0">
-                    <TextBlock Text="{Binding Name}" FontSize="12"/>
-                    <TextBlock Text="{Binding ExtensionsDisplay}" FontSize="10" Opacity="0.6"
-                               Visibility="{Binding ExtensionsDisplay, Converter={StaticResource BoolToVisibility}}"/>
-                </StackPanel>
-
-                <!-- Quality badge -->
-                <Border Grid.Column="1" CornerRadius="3" Margin="4,0"
-                        Padding="4,1" VerticalAlignment="Center">
-                    <Border.Style>
-                        <Style TargetType="Border">
-                            <Setter Property="Background" Value="#224C9BE8"/>
-                            <Setter Property="BorderBrush" Value="#444C9BE8"/>
-                            <Setter Property="BorderThickness" Value="1"/>
+                <!-- Format icon -->
+                <TextBlock Grid.Column="0" Text="&#xEBD2;" FontFamily="Segoe MDL2 Assets" FontSize="11"
+                           VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Foreground" Value="{DynamicResource SE_AccentBrush}"/>
+                            <Setter Property="Opacity"    Value="0.7"/>
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding IsLoadFailure}" Value="True">
-                                    <Setter Property="Background" Value="#22CC4444"/>
-                                    <Setter Property="BorderBrush" Value="#44CC4444"/>
+                                    <Setter Property="Foreground" Value="{DynamicResource Panel_WarningTextBrush}"/>
+                                    <Setter Property="Text"       Value="&#xE783;"/>
+                                    <Setter Property="Opacity"    Value="1"/>
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
-                    </Border.Style>
-                    <TextBlock FontSize="10">
-                        <TextBlock.Style>
-                            <Style TargetType="TextBlock">
-                                <Setter Property="Text" Value="{Binding QualityScore, StringFormat={}{0}}"/>
+                    </TextBlock.Style>
+                </TextBlock>
+
+                <!-- Name + extensions -->
+                <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="4,0">
+                    <TextBlock Text="{Binding Name}" FontSize="11"
+                               TextTrimming="CharacterEllipsis"
+                               Foreground="{DynamicResource SE_ForegroundBrush}"/>
+                </StackPanel>
+
+                <!-- Badges (quality + user) -->
+                <StackPanel Grid.Column="2" Orientation="Horizontal"
+                            VerticalAlignment="Center" Margin="2,0,4,0">
+
+                    <!-- Quality badge -->
+                    <Border CornerRadius="3" Padding="4,1" Margin="0,0,3,0">
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="Background" Value="{DynamicResource SE_AccentBrush}"/>
+                                <Setter Property="Opacity"    Value="0.55"/>
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding IsLoadFailure}" Value="True">
-                                        <Setter Property="Text" Value="⚠"/>
-                                        <Setter Property="Foreground" Value="#DDAA2222"/>
+                                        <Setter Property="Visibility" Value="Collapsed"/>
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
-                        </TextBlock.Style>
-                    </TextBlock>
-                </Border>
+                        </Border.Style>
+                        <TextBlock Text="{Binding QualityScore}" FontSize="9"
+                                   Foreground="{DynamicResource SE_ForegroundBrush}"/>
+                    </Border>
 
-                <!-- Source badge (only for user formats) -->
-                <Border Grid.Column="2" CornerRadius="3" Padding="4,1" VerticalAlignment="Center"
-                        Background="#2244AA44" BorderBrush="#4444AA44" BorderThickness="1"
-                        Visibility="{Binding IsUserFormat, Converter={StaticResource BoolToVisibility}}">
-                    <TextBlock Text="User" FontSize="9"/>
-                </Border>
+                    <!-- User source badge -->
+                    <Border CornerRadius="3" Padding="4,1"
+                            Background="{DynamicResource SE_SelectionBorderBrush}" Opacity="0.65"
+                            Visibility="{Binding IsUserFormat, Converter={StaticResource BoolToVisibility}}">
+                        <TextBlock Text="User" FontSize="9"
+                                   Foreground="{DynamicResource SE_ForegroundBrush}"/>
+                    </Border>
+                </StackPanel>
             </Grid>
         </DataTemplate>
 
-        <!-- Context menu shared by both TreeView items and ListView items -->
-        <ContextMenu x:Key="FormatItemContextMenu">
+        <!-- ── Context menu ── -->
+        <ContextMenu x:Key="FormatItemContextMenu"
+                     Background="{DynamicResource SE_BackgroundBrush}"
+                     Foreground="{DynamicResource SE_ForegroundBrush}">
             <MenuItem Header="Open"               Command="{Binding OpenCommand}"/>
             <MenuItem Header="Open as Read-Only"  Command="{Binding OpenReadOnlyCommand}"/>
             <Separator/>
@@ -87,71 +340,200 @@
             <MenuItem Header="Delete"             Command="{Binding DeleteCommand}"/>
             <MenuItem Header="Reveal in Explorer" Command="{Binding RevealInExplorerCommand}"/>
         </ContextMenu>
-
-        <Style x:Key="FormatTreeItemStyle" TargetType="TreeViewItem">
-            <Setter Property="ContextMenu" Value="{StaticResource FormatItemContextMenu}"/>
-            <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>
-        </Style>
     </UserControl.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>      <!-- Toolbar -->
-            <RowDefinition Height="*"/>         <!-- Main content -->
-            <RowDefinition Height="Auto"/>      <!-- Status bar -->
+            <RowDefinition Height="30"/>   <!-- Search bar -->
+            <RowDefinition Height="26"/>   <!-- Toolbar -->
+            <RowDefinition Height="*"/>    <!-- Main content -->
+            <RowDefinition Height="18"/>   <!-- Status bar -->
         </Grid.RowDefinitions>
 
-        <!-- ========================================================== -->
-        <!-- Toolbar                                                      -->
-        <!-- ========================================================== -->
-        <ToolBar Grid.Row="0" ToolBarTray.IsLocked="True" Padding="2">
-            <TextBox x:Name="SearchBox"
-                     Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
-                     Width="140" VerticalContentAlignment="Center" Padding="4,2"
-                     ToolTip="Search formats (name, category, extension, author)"/>
+        <!-- ================================================================ -->
+        <!-- Search bar                                                        -->
+        <!-- ================================================================ -->
+        <Border Grid.Row="0"
+                Background="{DynamicResource SE_SearchBoxBrush}"
+                BorderBrush="{DynamicResource Panel_SearchBoxBorderBrush}"
+                BorderThickness="1" CornerRadius="3"
+                Margin="6,4,6,2">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
 
-            <Separator/>
+                <!-- Search icon -->
+                <TextBlock Grid.Column="0" Text="&#xE721;"
+                           FontFamily="Segoe MDL2 Assets" FontSize="12"
+                           Foreground="{DynamicResource SE_ForegroundBrush}" Opacity="0.45"
+                           VerticalAlignment="Center" Margin="6,0,4,0"/>
 
-            <ToggleButton x:Name="TreeViewToggle"
-                          IsChecked="{Binding IsTreeView}"
-                          ToolTip="Tree view" Padding="6,2" Content="⊞"/>
-            <ToggleButton IsChecked="{Binding ShowBuiltIns}"
-                          ToolTip="Show built-in formats" Padding="6,2" Content="≡ Built-in"/>
-            <ToggleButton IsChecked="{Binding ShowUserFormats}"
-                          ToolTip="Show user formats" Padding="6,2" Content="≡ User"/>
+                <!-- Search input -->
+                <TextBox Grid.Column="1"
+                         Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                         Background="Transparent"
+                         Foreground="{DynamicResource SE_SearchBoxForegroundBrush}"
+                         BorderThickness="0" VerticalContentAlignment="Center"
+                         FontSize="12"
+                         ToolTip="Filter formats by name, category, extension, or author">
+                    <TextBox.Style>
+                        <Style TargetType="TextBox">
+                            <Style.Resources>
+                                <VisualBrush x:Key="CueBanner" TileMode="None" Opacity="0.4"
+                                             Stretch="None" AlignmentX="Left">
+                                    <VisualBrush.Visual>
+                                        <TextBlock Text="Search formats…"
+                                                   Foreground="{DynamicResource SE_ForegroundBrush}"
+                                                   FontStyle="Italic" FontSize="12" Margin="0"/>
+                                    </VisualBrush.Visual>
+                                </VisualBrush>
+                            </Style.Resources>
+                            <Style.Triggers>
+                                <Trigger Property="Text" Value="">
+                                    <Setter Property="Background" Value="{StaticResource CueBanner}"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBox.Style>
+                </TextBox>
 
-            <Separator/>
+                <!-- Clear button -->
+                <Button Grid.Column="2" Style="{StaticResource WE_IconButton}"
+                        Width="20" Height="20" Padding="3" Margin="0,0,2,0"
+                        Command="{Binding ClearSearchCommand}"
+                        Visibility="{Binding SearchText, Converter={StaticResource BoolToVisibility}}"
+                        ToolTip="Clear search">
+                    <TextBlock Text="&#xE711;" FontFamily="Segoe MDL2 Assets" FontSize="10"
+                               Foreground="{DynamicResource SE_ForegroundBrush}" Opacity="0.6"/>
+                </Button>
+            </Grid>
+        </Border>
 
-            <Button Command="{Binding RefreshCommand}"    ToolTip="Refresh catalog"   Content="↺" Padding="6,2"/>
-            <Button Command="{Binding AddFormatCommand}"  ToolTip="Add format file…"  Content="+" Padding="6,2"/>
-            <Button Command="{Binding OpenFolderCommand}" ToolTip="Open user folder"  Content="📁" Padding="6,2"/>
-            <ToggleButton IsChecked="{Binding IsWatching, Mode=OneWay}"
-                          Command="{Binding ToggleWatchCommand}"
-                          ToolTip="Watch folder for changes" Content="👁" Padding="6,2"/>
-        </ToolBar>
+        <!-- ================================================================ -->
+        <!-- Toolbar                                                           -->
+        <!-- ================================================================ -->
+        <Border Grid.Row="1"
+                Background="{DynamicResource Panel_ToolbarBrush}"
+                BorderBrush="{DynamicResource Panel_ToolbarBorderBrush}"
+                BorderThickness="0,0,0,1">
+            <StackPanel Orientation="Horizontal" Margin="4,1">
 
-        <!-- ========================================================== -->
-        <!-- Main: tree + detail split                                    -->
-        <!-- ========================================================== -->
-        <Grid Grid.Row="1">
+                <!-- View toggles: Tree / Flat -->
+                <ToggleButton Style="{StaticResource WE_ToggleButton}"
+                              IsChecked="{Binding IsTreeView}"
+                              ToolTip="Tree view — group by category">
+                    <TextBlock Text="&#xE8EB;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                               Foreground="{DynamicResource SE_ForegroundBrush}"/>
+                </ToggleButton>
+                <ToggleButton x:Name="FlatViewToggle"
+                              Style="{StaticResource WE_ToggleButton}"
+                              ToolTip="Flat list view"
+                              Click="OnFlatViewToggleClick">
+                    <TextBlock Text="&#xE8FD;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                               Foreground="{DynamicResource SE_ForegroundBrush}"/>
+                </ToggleButton>
+
+                <!-- Separator -->
+                <Border Width="1" Height="16" Margin="3,0"
+                        Background="{DynamicResource SE_SeparatorBrush}"
+                        VerticalAlignment="Center"/>
+
+                <!-- Source filter toggles -->
+                <ToggleButton Style="{StaticResource WE_ToggleButton}"
+                              IsChecked="{Binding ShowBuiltIns}"
+                              ToolTip="Show built-in formats">
+                    <TextBlock Text="&#xE8C3;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                               Foreground="{DynamicResource SE_ForegroundBrush}"/>
+                </ToggleButton>
+                <ToggleButton Style="{StaticResource WE_ToggleButton}"
+                              IsChecked="{Binding ShowUserFormats}"
+                              ToolTip="Show user formats">
+                    <TextBlock Text="&#xE77B;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                               Foreground="{DynamicResource SE_ForegroundBrush}"/>
+                </ToggleButton>
+                <ToggleButton Style="{StaticResource WE_ToggleButton}"
+                              ToolTip="Show load failures"
+                              Click="OnShowFailuresToggleClick">
+                    <TextBlock Text="&#xE783;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                               Foreground="{DynamicResource SE_ForegroundBrush}"/>
+                </ToggleButton>
+
+                <!-- Separator -->
+                <Border Width="1" Height="16" Margin="3,0"
+                        Background="{DynamicResource SE_SeparatorBrush}"
+                        VerticalAlignment="Center"/>
+
+                <!-- Action buttons -->
+                <Button Style="{StaticResource WE_IconButton}"
+                        Command="{Binding RefreshCommand}"
+                        ToolTip="Refresh catalog">
+                    <TextBlock Text="&#xE72C;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                               Foreground="{DynamicResource SE_ForegroundBrush}"/>
+                </Button>
+                <Button Style="{StaticResource WE_IconButton}"
+                        Command="{Binding AddFormatCommand}"
+                        ToolTip="Add format file…">
+                    <TextBlock Text="&#xE109;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                               Foreground="{DynamicResource SE_ForegroundBrush}"/>
+                </Button>
+                <Button Style="{StaticResource WE_IconButton}"
+                        Command="{Binding OpenFolderCommand}"
+                        ToolTip="Open user formats folder">
+                    <TextBlock Text="&#xEC50;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                               Foreground="{DynamicResource SE_ForegroundBrush}"/>
+                </Button>
+
+                <!-- Separator -->
+                <Border Width="1" Height="16" Margin="3,0"
+                        Background="{DynamicResource SE_SeparatorBrush}"
+                        VerticalAlignment="Center"/>
+
+                <!-- Hot-reload watch toggle -->
+                <ToggleButton Style="{StaticResource WE_ToggleButton}"
+                              IsChecked="{Binding IsWatching, Mode=OneWay}"
+                              Command="{Binding ToggleWatchCommand}"
+                              ToolTip="Watch folder for changes (hot reload)">
+                    <TextBlock Text="&#xE91B;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                               Foreground="{DynamicResource SE_ForegroundBrush}"/>
+                </ToggleButton>
+            </StackPanel>
+        </Border>
+
+        <!-- ================================================================ -->
+        <!-- Main: list + detail                                               -->
+        <!-- ================================================================ -->
+        <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" MinWidth="100"/>
+                <ColumnDefinition Width="*" MinWidth="120"/>
                 <ColumnDefinition Width="4"/>
-                <ColumnDefinition Width="220" MinWidth="160"/>
+                <ColumnDefinition Width="230" MinWidth="180"/>
             </Grid.ColumnDefinitions>
 
-            <!-- Tree view -->
+            <!-- TreeView (grouped) -->
             <TreeView x:Name="FormatTree" Grid.Column="0"
                       ItemsSource="{Binding CategoryNodes}"
+                      Background="{DynamicResource SE_BackgroundBrush}"
+                      BorderThickness="0"
                       VirtualizingStackPanel.IsVirtualizing="True"
                       VirtualizingStackPanel.VirtualizationMode="Recycling"
                       SelectedItemChanged="OnTreeSelectedItemChanged"
-                      MouseDoubleClick="OnTreeDoubleClick"
-                      Visibility="{Binding IsTreeView, Converter={StaticResource BoolToVisibility}}">
+                      MouseDoubleClick="OnTreeDoubleClick">
+                <TreeView.Style>
+                    <Style TargetType="TreeView">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsTreeView}" Value="True">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TreeView.Style>
                 <TreeView.ItemTemplate>
                     <HierarchicalDataTemplate DataType="{x:Type vm:WhfmtCategoryNodeVm}"
-                                              ItemsSource="{Binding Items}"
-                                              ItemContainerStyle="{StaticResource FormatTreeItemStyle}">
+                                              ItemsSource="{Binding Items}">
                         <ContentPresenter Content="{Binding}"
                                           ContentTemplate="{StaticResource CategoryHeaderTemplate}"/>
                         <HierarchicalDataTemplate.ItemTemplate>
@@ -165,14 +547,16 @@
                 </TreeView.ItemTemplate>
             </TreeView>
 
-            <!-- Flat list view -->
+            <!-- Flat ListView -->
             <ListView x:Name="FormatList" Grid.Column="0"
                       ItemsSource="{Binding FlatItems}"
                       ItemTemplate="{StaticResource FormatItemTemplate}"
+                      Background="{DynamicResource SE_BackgroundBrush}"
+                      BorderThickness="0"
                       VirtualizingStackPanel.IsVirtualizing="True"
+                      VirtualizingStackPanel.VirtualizationMode="Recycling"
                       SelectionChanged="OnListSelectionChanged"
-                      MouseDoubleClick="OnListDoubleClick"
-                      Visibility="{Binding IsTreeView, Converter={StaticResource BoolToVisibility}}">
+                      MouseDoubleClick="OnListDoubleClick">
                 <ListView.Style>
                     <Style TargetType="ListView">
                         <Setter Property="Visibility" Value="Collapsed"/>
@@ -185,7 +569,19 @@
                 </ListView.Style>
                 <ListView.ItemContainerStyle>
                     <Style TargetType="ListViewItem">
-                        <Setter Property="ContextMenu" Value="{StaticResource FormatItemContextMenu}"/>
+                        <Setter Property="Background"                  Value="Transparent"/>
+                        <Setter Property="BorderThickness"             Value="0"/>
+                        <Setter Property="HorizontalContentAlignment"  Value="Stretch"/>
+                        <Setter Property="FocusVisualStyle"            Value="{x:Null}"/>
+                        <Setter Property="ContextMenu"                 Value="{StaticResource FormatItemContextMenu}"/>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="{DynamicResource Panel_ItemHoverBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Background" Value="{DynamicResource Panel_ItemSelectedBrush}"/>
+                            </Trigger>
+                        </Style.Triggers>
                     </Style>
                 </ListView.ItemContainerStyle>
             </ListView>
@@ -193,21 +589,25 @@
             <!-- Splitter -->
             <GridSplitter Grid.Column="1" Width="4"
                           HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                          Background="Transparent" ResizeBehavior="PreviousAndNext"/>
+                          Background="{DynamicResource SE_SeparatorBrush}"
+                          ResizeBehavior="PreviousAndNext"/>
 
             <!-- Detail panel -->
             <local:WhfmtFormatDetailPanel x:Name="DetailPanel" Grid.Column="2"
-                                          DataContext="{Binding Detail}"
-                                          xmlns:local="clr-namespace:WpfHexEditor.Shell.Panels.Panels"/>
+                                          DataContext="{Binding Detail}"/>
         </Grid>
 
-        <!-- ========================================================== -->
-        <!-- Status bar                                                   -->
-        <!-- ========================================================== -->
-        <StatusBar Grid.Row="2" Padding="4,1">
-            <StatusBarItem>
-                <TextBlock Text="{Binding StatusText}" FontSize="10" Opacity="0.7"/>
-            </StatusBarItem>
-        </StatusBar>
+        <!-- ================================================================ -->
+        <!-- Status bar                                                        -->
+        <!-- ================================================================ -->
+        <Border Grid.Row="3"
+                Background="{DynamicResource Panel_StatusBarBackgroundBrush}"
+                BorderBrush="{DynamicResource SE_SeparatorBrush}"
+                BorderThickness="0,1,0,0">
+            <TextBlock Margin="8,0" Text="{Binding StatusText}"
+                       FontSize="10" VerticalAlignment="Center"
+                       Foreground="{DynamicResource SE_ForegroundBrush}" Opacity="0.7"
+                       TextTrimming="CharacterEllipsis"/>
+        </Border>
     </Grid>
 </UserControl>

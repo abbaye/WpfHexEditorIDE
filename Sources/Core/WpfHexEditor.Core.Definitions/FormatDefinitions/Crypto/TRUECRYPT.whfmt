@@ -1,0 +1,193 @@
+{
+  "diffMode": "binary",
+  "formatName": "TrueCrypt / VeraCrypt Legacy Container",
+  "version": "1.0",
+  "extensions": [ ".tc", ".truecrypt" ],
+  "description": "TrueCrypt encrypted volume container format. The entire 512-byte header is encrypted — there is no plaintext magic. The first 64 bytes are a PBKDF2 salt used for key derivation with SHA-512, Whirlpool, or RIPEMD-160. The remaining 448 bytes of the header are encrypted with the derived key using AES, Serpent, or Twofish (or cascades: AES-Twofish, Serpent-AES, Twofish-Serpent, AES-Twofish-Serpent, Serpent-Twofish-AES). After decryption the header contains: magic 'TRUE' (bytes 64-67 decrypted), format version uint16 BE, minimum version to open, CRC-32 of decrypted header bytes 256-511, two 256-bit keys for data encryption, master key checksum, data area size, flags, sector size, and a 192-byte reserved area. Hidden volumes embed a second encrypted header in the last 512 bytes of the volume. VeraCrypt uses the same layout with increased PBKDF2 iterations (500000 for SHA-512 vs 1000 in TrueCrypt) and a different decrypted magic 'VERA'.",
+  "category": "Crypto",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "HexEditor",
+  "references": [
+    "https://github.com/DrWhax/truecrypt-archive/blob/master/doc/TrueCrypt%20Documentation.html",
+    "https://www.veracrypt.fr/en/VeraCrypt%20Volume%20Format%20Specification.html",
+    "https://forensics.wiki/truecrypt/"
+  ],
+  "detection": {
+    "signatures": [],
+    "matchMode": "any",
+    "MinimumScore": 0.1,
+    "Strength": "Weak",
+    "EntropyHint": {
+      "min": 7.8,
+      "max": 8.0,
+      "description": "The entire volume including the 512-byte header is indistinguishable from random data; entropy near 8.0 bits/byte throughout is expected and is the only observable indicator"
+    },
+    "validation": "No plaintext magic exists. Detection relies on: (1) file size is a multiple of 512, (2) file size >= 512 bytes, (3) entropy of first 512 bytes is near 8.0. Extension .tc or .truecrypt increases confidence. Full identification requires offline decryption with a known passphrase."
+  },
+  "variables": {},
+  "blocks": [
+    {
+      "name": "tcSaltBlock",
+      "offset": 0,
+      "size": 64,
+      "type": "bytes",
+      "description": "PBKDF2 salt — 64 bytes at offset 0; cryptographically random salt used as input to the PBKDF2 key derivation function together with the user passphrase; hash algorithm may be SHA-512, Whirlpool, or RIPEMD-160; this is the only portion of the encrypted header that has a defined structural role, though it is indistinguishable from random bytes without a known passphrase",
+      "storeAs": "tcSaltBlock"
+    },
+    {
+      "name": "tcEncryptedHeader",
+      "offset": 64,
+      "size": 448,
+      "type": "bytes",
+      "description": "Encrypted header payload — 448 bytes at offset 64; this region is encrypted with the master key derived from PBKDF2(salt, passphrase); after decryption it contains: magic 'TRUE' or 'VERA' (4B), format version uint16 BE, minimum compatible version uint16 BE, CRC-32 of header bytes 256-511, two 256-bit (32B each) encryption keys, volume size uint64 BE, data area offset uint64 BE, flags uint32, sector size uint32",
+      "storeAs": "tcEncryptedHeader"
+    },
+    {
+      "name": "tcFirstByte",
+      "offset": 0,
+      "size": 1,
+      "type": "uint8",
+      "description": "First byte of the salt block — 1-byte unsigned integer at offset 0; no defined meaning as the entire header is encrypted; present for entropy sampling and format identification purposes",
+      "storeAs": "tcFirstByte"
+    },
+    {
+      "name": "tcVolumePayload",
+      "offset": 512,
+      "size": 65536,
+      "type": "bytes",
+      "description": "Volume payload sample — first 65536 bytes of encrypted data beginning at offset 512 (offset of actual data may differ based on header layout); all bytes are encrypted and indistinguishable from random data; used for entropy measurement and statistical analysis",
+      "storeAs": "tcVolumePayload"
+    },
+    {
+      "name": "tcHiddenVolumeHeaderRegion",
+      "offset": -512,
+      "size": 512,
+      "type": "bytes",
+      "description": "Hidden volume header region — last 512 bytes of the container file (offset = fileSize - 512); TrueCrypt and VeraCrypt store a second encrypted header here for the optional hidden volume; forensically significant because possession of a second passphrase may decrypt a concealed volume with different content",
+      "storeAs": "tcHiddenVolumeHeaderRegion"
+    }
+  ],
+  "assertions": [
+    {
+      "field": "tcSaltBlock",
+      "op": "sizeGte",
+      "value": 64,
+      "description": "File must be at least 512 bytes (64-byte salt + 448-byte encrypted header) to be a valid TrueCrypt/VeraCrypt container"
+    },
+    {
+      "field": "tcFirstByte",
+      "op": "info",
+      "value": null,
+      "description": "INFO: No plaintext assertion possible — the header is fully encrypted. A TrueCrypt container cannot be identified with certainty without a passphrase. Entropy near 8.0 bits/byte over the first 512 bytes is the only structural indicator."
+    },
+    {
+      "field": "tcVolumePayload",
+      "op": "info",
+      "value": null,
+      "description": "INFO: Payload entropy should be 7.9-8.0 bits/byte confirming encryption; values below 7.5 may indicate an unencrypted or partially written container"
+    }
+  ],
+  "navigation": {
+    "entryPoint": "tcSaltBlock",
+    "sections": [
+      { "name": "PBKDF2 Salt", "offset": 0, "size": 64 },
+      { "name": "Encrypted Header", "offset": 64, "size": 448 },
+      { "name": "Encrypted Volume Data", "offset": 512, "description": "Remainder of file — fully encrypted payload" },
+      { "name": "Hidden Volume Header (if present)", "offset": -512, "size": 512 }
+    ]
+  },
+  "inspector": {
+    "badge": "TC",
+    "primaryField": "tcSaltBlock",
+    "groups": [
+      {
+        "name": "Header Region",
+        "fields": [ "tcSaltBlock", "tcEncryptedHeader" ]
+      },
+      {
+        "name": "Entropy Sampling",
+        "fields": [ "tcFirstByte", "tcVolumePayload" ]
+      },
+      {
+        "name": "Hidden Volume",
+        "fields": [ "tcHiddenVolumeHeaderRegion" ]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "TrueCrypt Entropy Analysis",
+      "format": "txt",
+      "template": "TrueCrypt / VeraCrypt Container Analysis\n=========================================\nFirst Byte (salt[0]) : {tcFirstByte}\nNote: All header bytes are encrypted. No plaintext fields available.\nEntropy must be measured externally over the full file.\nHidden volume header: last 512 bytes of container\n"
+    },
+    {
+      "name": "TrueCrypt Forensic Summary (CSV)",
+      "format": "csv",
+      "template": "Field,Value,Notes\nSaltBlock_offset0_64B,{tcSaltBlock},PBKDF2 salt — random\nEncryptedHeader_offset64_448B,{tcEncryptedHeader},AES/Serpent/Twofish encrypted\nFirstByte,{tcFirstByte},No structural meaning\nHiddenVolumeHeader,{tcHiddenVolumeHeaderRegion},Last 512 bytes\n"
+    }
+  ],
+  "forensic": {
+    "importance": "HIGH",
+    "riskLevel": "critical",
+    "notes": "TrueCrypt and VeraCrypt containers are forensically opaque — the entire 512-byte header is encrypted and cannot be distinguished from random data without the correct passphrase and knowledge of the hash/encryption algorithm combination. Key derivation uses PBKDF2 with 1000 iterations (TrueCrypt) or 500000+ iterations (VeraCrypt) against the salt in the first 64 bytes. Supported hash algorithms: SHA-512, Whirlpool, RIPEMD-160. Supported ciphers: AES-256, Serpent-256, Twofish-256, and three-layer cascades (AES-Twofish-Serpent etc.) in XTS mode. The 'plausible deniability' hidden volume embeds a second encrypted volume in the same container file accessible via a different passphrase. Forensic tools: VeraCrypt, TCHunt-ng (detects potential containers by entropy/size heuristics), Passware Kit Forensic (GPU-accelerated dictionary/brute-force), Elcomsoft Forensic Disk Decryptor. Memory forensics may recover the volume master key from RAM.",
+    "indicators": [
+      "File size multiple of 512 bytes",
+      "High entropy (>7.8 bits/byte) across entire file",
+      "Extension .tc or .truecrypt",
+      "No embedded file system signatures",
+      "Possible hidden volume at EOF-512"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "TrueCrypt/VeraCrypt containers have no plaintext magic. The only observable structural feature is a 64-byte PBKDF2 salt at offset 0 followed by 448 bytes of encrypted header data. The entire volume payload is also encrypted. Detection must rely on entropy analysis, file size alignment, and extension matching. VeraCrypt is the actively maintained successor to TrueCrypt (discontinued 2014).",
+    "suggestedInspections": [
+      "Measure Shannon entropy over the first 512 bytes and over the full file — values near 8.0 bits/byte are consistent with encryption",
+      "Check file size alignment to 512-byte sectors; non-aligned files are unlikely TrueCrypt/VeraCrypt containers",
+      "Examine the last 512 bytes of the file for a potential hidden volume header (entropy near 8.0 also expected)",
+      "Search RAM images or hibernation files for XTS-AES master keys using Volatility or Passware forensic tools",
+      "Cross-reference filename and extension (.tc, .truecrypt) with filesystem metadata (creation date, MFT record) for timeline analysis",
+      "Attempt TCHunt-ng signature-less detection using chi-squared randomness test on file blocks"
+    ]
+  },
+  "software": [
+    { "name": "VeraCrypt", "vendor": "IDRIX", "url": "https://www.veracrypt.fr" },
+    { "name": "TrueCrypt (archived)", "vendor": "TrueCrypt Foundation (discontinued 2014)", "url": "https://github.com/DrWhax/truecrypt-archive" },
+    { "name": "TCHunt-ng", "vendor": "Open Source", "url": "https://github.com/keydet89/TCHunt-ng" },
+    { "name": "Passware Kit Forensic", "vendor": "Passware", "url": "https://www.passware.com/kit-forensic/" },
+    { "name": "Elcomsoft Forensic Disk Decryptor", "vendor": "Elcomsoft", "url": "https://www.elcomsoft.com/efdd.html" }
+  ],
+  "formatRelationships": [
+    { "format": "VERACRYPT", "relationship": "VeraCrypt is the direct successor to TrueCrypt using the same container format with stronger PBKDF2 iteration counts and a different decrypted magic ('VERA' vs 'TRUE')" },
+    { "format": "LUKS", "relationship": "LUKS is the Linux equivalent full-volume encryption format; LUKS has a plaintext magic while TrueCrypt does not" },
+    { "format": "BITLOCKER", "relationship": "BitLocker is the Windows equivalent; BitLocker has a plaintext boot sector magic ('-FVE-FS-') unlike TrueCrypt's fully encrypted header" }
+  ],
+  "MimeTypes": [ "application/octet-stream" ],
+  "UseCases": [
+    "Deniable encrypted container storage with hidden volume capability",
+    "Cross-platform portable encrypted drives (Windows/macOS/Linux)",
+    "Secure archival of sensitive files with passphrase protection",
+    "Forensic investigation of encrypted media",
+    "Anti-forensic plausible deniability scenarios"
+  ],
+  "QualityMetrics": {
+    "LastUpdated": "2026-04-15",
+    "CompletenessScore": 85,
+    "ReviewedBy": "WPFHexaEditor Team"
+  },
+  "TechnicalDetails": {
+    "headerSize": 512,
+    "saltSize": 64,
+    "encryptedHeaderSize": 448,
+    "minimumFileSize": 512,
+    "endianness": "BigEndian",
+    "pbkdf2Algorithms": [ "SHA-512", "Whirlpool", "RIPEMD-160" ],
+    "encryptionAlgorithms": [ "AES-256-XTS", "Serpent-256-XTS", "Twofish-256-XTS", "AES-Twofish", "Serpent-AES", "Twofish-Serpent", "AES-Twofish-Serpent", "Serpent-Twofish-AES" ],
+    "pbkdf2Iterations": {
+      "TrueCrypt": 1000,
+      "VeraCrypt_SHA512": 500000,
+      "VeraCrypt_Whirlpool": 500000
+    },
+    "hiddenVolumeSupport": true,
+    "plaintextMagic": false
+  }
+}

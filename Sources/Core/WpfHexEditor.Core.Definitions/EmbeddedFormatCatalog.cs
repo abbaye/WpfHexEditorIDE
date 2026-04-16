@@ -7,17 +7,17 @@
 using System.Collections.Frozen;
 using System.Reflection;
 using System.Text.Json;
-using WpfHexEditor.Editor.Core;
+using WpfHexEditor.Core.Contracts;
 
 namespace WpfHexEditor.Core.Definitions;
 
 /// <summary>
 /// Singleton catalog of the embedded <c>.whfmt</c> format definitions
-/// shipped inside <c>WpfHexEditor.Definitions.dll</c>.
+/// shipped inside <c>WpfHexEditor.Core.Definitions.dll</c>.
 /// <para>
 /// On first call to <see cref="GetAll"/> the catalog performs a lazy scan of
 /// all manifest resources matching the pattern
-/// <c>WpfHexEditor.Definitions.FormatDefinitions.*.whfmt</c> and extracts
+/// <c>WpfHexEditor.Core.Definitions.FormatDefinitions.*.whfmt</c> and extracts
 /// lightweight header information without loading the full block definitions.
 /// </para>
 /// </summary>
@@ -214,6 +214,53 @@ public sealed class EmbeddedFormatCatalog : IEmbeddedFormatCatalog
         return syntaxBlock.GetRawText();
     }
 
+    // -- New public API --------------------------------------------------------
+
+    /// <inheritdoc/>
+    public IReadOnlyList<EmbeddedFormatEntry> GetByCategory(string category)
+        => GetAll()
+            .Where(e => e.Category.Equals(category, StringComparison.OrdinalIgnoreCase))
+            .ToList();
+
+    /// <inheritdoc/>
+    public EmbeddedFormatEntry? DetectFromBytes(ReadOnlySpan<byte> header)
+    {
+        EmbeddedFormatEntry? best = null;
+        double bestScore = 0;
+
+        foreach (var entry in GetAll())
+        {
+            if (entry.Signatures is not { Count: > 0 }) continue;
+            double score = 0;
+            foreach (var sig in entry.Signatures)
+            {
+                var bytes = Convert.FromHexString(sig.Value);
+                if (sig.Offset + bytes.Length > header.Length) continue;
+                if (header.Slice(sig.Offset, bytes.Length).SequenceEqual(bytes))
+                    score += sig.Weight;
+            }
+            if (score > bestScore) { bestScore = score; best = entry; }
+        }
+        return bestScore > 0 ? best : null;
+    }
+
+    /// <inheritdoc/>
+    public EmbeddedFormatEntry? GetByMimeType(string mimeType)
+        => GetAll().FirstOrDefault(e =>
+            e.MimeTypes?.Any(m => m.Equals(mimeType, StringComparison.OrdinalIgnoreCase)) == true);
+
+    /// <inheritdoc/>
+    public string? GetSchemaJson(string schemaName)
+    {
+        var key = DefinitionsAssembly
+            .GetManifestResourceNames()
+            .FirstOrDefault(n => n.EndsWith($"{schemaName}.schema.json", StringComparison.OrdinalIgnoreCase));
+        if (key is null) return null;
+        using var stream = DefinitionsAssembly.GetManifestResourceStream(key)!;
+        using var reader = new StreamReader(stream);
+        return reader.ReadToEnd();
+    }
+
     // -- Private helpers -------------------------------------------------------
 
     private static EmbeddedFormatEntry? LoadHeader(string resourceKey)
@@ -261,7 +308,31 @@ public sealed class EmbeddedFormatCatalog : IEmbeddedFormatCatalog
         // Preferred diff mode declared at the .whfmt root ("text", "semantic", "binary").
         var diffMode = GetString(root, "diffMode");
 
-        return new EmbeddedFormatEntry(resourceKey, name, category, description, extensions, quality, version, author, platform, preferredEditor, isTextFormat, hasSyntaxDef, diffMode);
+        // MimeTypes
+        var mimeTypes = new List<string>();
+        if (root.TryGetProperty("MimeTypes", out var mt) && mt.ValueKind == JsonValueKind.Array)
+            foreach (var m in mt.EnumerateArray())
+                if (m.GetString() is { } ms) mimeTypes.Add(ms);
+
+        // Signatures (detection.signatures)
+        var signatures = new List<FormatSignature>();
+        if (root.TryGetProperty("detection", out var det2) &&
+            det2.TryGetProperty("signatures", out var sigs) &&
+            sigs.ValueKind == JsonValueKind.Array)
+            foreach (var sig in sigs.EnumerateArray())
+            {
+                var val    = sig.TryGetProperty("value",  out var v) ? v.GetString() ?? "" : "";
+                var off    = sig.TryGetProperty("offset", out var o) ? o.GetInt32()       : 0;
+                var weight = sig.TryGetProperty("weight", out var w) ? w.GetDouble()      : 1.0;
+                if (val.Length > 0) signatures.Add(new FormatSignature(val, off, weight));
+            }
+
+        return new EmbeddedFormatEntry(
+            resourceKey, name, category, description, extensions,
+            quality, version, author, platform, preferredEditor,
+            isTextFormat, hasSyntaxDef, diffMode,
+            mimeTypes.Count > 0 ? mimeTypes : null,
+            signatures.Count > 0 ? signatures : null);
     }
 
     private static string? GetString(JsonElement root, string property)
@@ -273,11 +344,11 @@ public sealed class EmbeddedFormatCatalog : IEmbeddedFormatCatalog
 
     /// <summary>
     /// Extracts the category from a resource key like
-    /// <c>WpfHexEditor.Definitions.FormatDefinitions.Archives.ZIP.whfmt</c> → <c>Archives</c>.
+    /// <c>WpfHexEditor.Core.Definitions.FormatDefinitions.Archives.ZIP.whfmt</c> → <c>Archives</c>.
     /// </summary>
     private static string ExtractCategoryFromKey(string key)
     {
-        const string prefix = "WpfHexEditor.Definitions.FormatDefinitions.";
+        const string prefix = "WpfHexEditor.Core.Definitions.FormatDefinitions.";
         if (key.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
         {
             var rest   = key.Substring(prefix.Length);  // "Archives.ZIP.whfmt"

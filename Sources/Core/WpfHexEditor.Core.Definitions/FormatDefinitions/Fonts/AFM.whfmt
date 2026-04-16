@@ -1,0 +1,244 @@
+{
+  "formatName": "Adobe Font Metrics",
+  "version": "1.0",
+  "author": "WPFHexaEditor Team",
+  "lastUpdated": "2026-04-15",
+  "description": "Adobe Font Metrics (.afm) — a plain-text sidecar format accompanying PostScript Type 1 and Type 3 fonts; stores per-glyph advance widths, bounding boxes, kerning pairs, and composite character definitions used by PostScript interpreters, PDF generators, and typesetting engines.",
+  "extensions": [ ".afm" ],
+  "category": "Fonts",
+  "diffMode": "text",
+  "MimeTypes": [ "application/x-font-afm", "text/plain" ],
+  "signatures": [
+    {
+      "value": "5374617274466F6E744D6574726963",
+      "offset": 0,
+      "label": "'StartFontMetrics' — AFM text header keyword (15 bytes ASCII)",
+      "weight": 1.0,
+      "strength": "Strong"
+    }
+  ],
+  "matchMode": "first",
+  "maxSignatureOffset": 15,
+  "detection": {
+    "signatures": [
+      {
+        "value": "5374617274466F6E744D6574726963",
+        "offset": 0,
+        "label": "'StartFontMetrics' — AFM text header keyword",
+        "weight": 1.0,
+        "strength": "Strong"
+      }
+    ],
+    "matchMode": "first",
+    "MinimumScore": 85,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 3.5, "max": 5.5 },
+    "validation": "First 15 bytes must be ASCII 'StartFontMetrics'; file must end with 'EndFontMetrics'."
+  },
+  "preferredEditor": "CodeEditor",
+  "references": [
+    "https://adobe-type-tools.github.io/font-tech-notes/pdfs/5004.AFM_Spec.pdf",
+    "https://www.adobe.com/content/dam/acom/en/devnet/font/pdfs/5004.AFM_Spec.pdf"
+  ],
+  "structure": {
+    "format": "text",
+    "topLevelKeywords": [
+      { "keyword": "StartFontMetrics", "description": "File start marker + AFM version (e.g. StartFontMetrics 4.1)" },
+      { "keyword": "MetricsSets",      "description": "Writing direction(s): 0=horizontal, 1=vertical, 2=both" },
+      { "keyword": "FontName",         "description": "PostScript name of the font (no spaces)" },
+      { "keyword": "FullName",         "description": "Full human-readable font name" },
+      { "keyword": "FamilyName",       "description": "Font family name (e.g. Times, Helvetica)" },
+      { "keyword": "Weight",           "description": "Font weight descriptor (e.g. Regular, Bold, Light)" },
+      { "keyword": "FontBBox",         "description": "Overall font bounding box: llx lly urx ury (in 1/1000 em units)" },
+      { "keyword": "EncodingScheme",   "description": "Encoding vector name (e.g. AdobeStandardEncoding)" },
+      { "keyword": "CapHeight",        "description": "Height of capital letters above baseline" },
+      { "keyword": "XHeight",          "description": "Height of lowercase letters above baseline" },
+      { "keyword": "Ascender",         "description": "Maximum ascender above baseline" },
+      { "keyword": "Descender",        "description": "Maximum descender below baseline (negative)" },
+      { "keyword": "StartCharMetrics", "description": "Begin per-glyph metrics block; followed by glyph count" },
+      { "keyword": "EndCharMetrics",   "description": "End per-glyph metrics block" },
+      { "keyword": "StartKernData",    "description": "Begin kerning data section (optional)" },
+      { "keyword": "EndKernData",      "description": "End kerning data section" },
+      { "keyword": "StartKernPairs",   "description": "Begin kerning pair list; followed by pair count" },
+      { "keyword": "EndKernPairs",     "description": "End kerning pair list" },
+      { "keyword": "StartComposites",  "description": "Begin composite character definitions (optional)" },
+      { "keyword": "EndComposites",    "description": "End composite character definitions" },
+      { "keyword": "EndFontMetrics",   "description": "File end marker; required" }
+    ],
+    "charMetricFields": [
+      { "key": "C",   "description": "Character code in decimal (-1 if unencoded)" },
+      { "key": "WX",  "description": "Horizontal advance width in 1/1000 em units" },
+      { "key": "N",   "description": "Glyph name (PostScript glyph name, e.g. 'A', 'period')" },
+      { "key": "B",   "description": "Glyph bounding box: llx lly urx ury" },
+      { "key": "L",   "description": "Ligature pair: successor glyph name and ligature glyph name" }
+    ],
+    "fields": [
+      { "offset": 0,  "size": 15, "name": "afmMagic",    "type": "ascii", "description": "'StartFontMetrics' — file identification keyword", "storeAs": "afmMagic" },
+      { "offset": 16, "size": 3,  "name": "afmVersion",  "type": "ascii", "description": "AFM spec version (e.g. '4.1')",                       "storeAs": "afmVersion" },
+      { "offset": 0,  "size": 1,  "name": "afmFirstByte","type": "uint8", "description": "First byte: 'S' (0x53) confirms AFM text format",     "storeAs": "afmFirstByte" }
+    ]
+  },
+  "variables": [
+    { "name": "afmMagic",     "source": "field", "fieldName": "afmMagic",     "description": "File identification keyword" },
+    { "name": "afmVersion",   "source": "field", "fieldName": "afmVersion",   "description": "AFM specification version string" },
+    { "name": "afmFirstByte", "source": "field", "fieldName": "afmFirstByte", "description": "First byte of file (must be 0x53 'S')" }
+  ],
+  "blocks": [
+    {
+      "id": "B1",
+      "name": "File Header",
+      "offset": 0,
+      "description": "AFM file identification line: 'StartFontMetrics <version>'",
+      "color": "#E74C3C",
+      "fields": [ "afmMagic", "afmVersion" ]
+    },
+    {
+      "id": "B2",
+      "name": "Global Font Metadata",
+      "description": "Font-level properties: FontName, FullName, FamilyName, Weight, FontBBox, EncodingScheme, CapHeight, XHeight, Ascender, Descender",
+      "color": "#3498DB"
+    },
+    {
+      "id": "B3",
+      "name": "Character Metrics Section",
+      "description": "Per-glyph advance widths, bounding boxes, and ligature pairs between StartCharMetrics / EndCharMetrics",
+      "color": "#27AE60"
+    },
+    {
+      "id": "B4",
+      "name": "Kerning Data Section",
+      "description": "Optional kerning pairs between StartKernData / EndKernData controlling inter-glyph spacing adjustments",
+      "color": "#9B59B6"
+    },
+    {
+      "id": "B5",
+      "name": "Composites Section",
+      "description": "Optional composite character definitions (accented glyphs) between StartComposites / EndComposites",
+      "color": "#F39C12"
+    },
+    {
+      "id": "B6",
+      "name": "File Footer",
+      "description": "EndFontMetrics line marking the end of the AFM file",
+      "color": "#1ABC9C"
+    }
+  ],
+  "assertions": [
+    {
+      "id": "A1",
+      "field": "afmFirstByte",
+      "operator": "eq",
+      "value": 83,
+      "description": "First byte must be 0x53 ('S') — confirms plain-text AFM encoding"
+    },
+    {
+      "id": "A2",
+      "field": "afmMagic",
+      "operator": "startsWith",
+      "value": "StartFontMetrics",
+      "description": "File must begin with the keyword 'StartFontMetrics'"
+    },
+    {
+      "id": "A3",
+      "field": "afmVersion",
+      "operator": "in",
+      "value": [ "4.1", "4.0", "3.0", "2.0" ],
+      "description": "AFM version should be a known specification value (2.0 through 4.1)"
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "offset": 0, "label": "StartFontMetrics",      "color": "#E74C3C" }
+    ],
+    "textMarkers": [
+      { "keyword": "StartCharMetrics", "label": "Glyph Metrics Start", "color": "#27AE60" },
+      { "keyword": "EndCharMetrics",   "label": "Glyph Metrics End",   "color": "#27AE60" },
+      { "keyword": "StartKernPairs",   "label": "Kerning Pairs Start", "color": "#9B59B6" },
+      { "keyword": "EndKernPairs",     "label": "Kerning Pairs End",   "color": "#9B59B6" },
+      { "keyword": "EndFontMetrics",   "label": "File End",            "color": "#E74C3C" }
+    ]
+  },
+  "inspector": {
+    "badge": "AFM",
+    "primaryField": "afmMagic",
+    "groups": [
+      {
+        "name": "Identification",
+        "fields": [ "afmMagic", "afmVersion", "afmFirstByte" ]
+      },
+      {
+        "name": "Detection",
+        "fields": [ "afmMagic" ]
+      }
+    ],
+    "displayFields": [ "afmMagic", "afmVersion" ],
+    "tooltips": {
+      "afmMagic":     "First 15 bytes must be 'StartFontMetrics'",
+      "afmVersion":   "AFM specification version; 4.1 is the current standard",
+      "afmFirstByte": "Must be 0x53 ('S'); a non-ASCII first byte indicates binary corruption or wrong format"
+    }
+  },
+  "exportTemplates": [
+    {
+      "name": "AFM Summary",
+      "fields": [ "afmMagic", "afmVersion" ],
+      "format": "text"
+    },
+    {
+      "name": "AFM Metadata JSON",
+      "fields": [ "afmMagic", "afmVersion", "afmFirstByte" ],
+      "format": "json"
+    }
+  ],
+  "forensic": {
+    "riskLevel": "low",
+    "notes": [
+      "AFM is a plain-text format with no executable content; no binary attack surface.",
+      "AFM files are sidecar companions to PostScript Type 1 font files (.pfb/.pfa); a mismatched AFM/PFB pair can produce corrupted typesetting output.",
+      "Bounding box (FontBBox) and individual glyph BBX values have been exploited in some PostScript interpreters via pathological values causing integer overflow — validate numeric fields.",
+      "AFM files may contain author or vendor metadata in comment lines (lines starting with 'Comment') that can disclose font origin or licensing information."
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "AFM is a plain-text Adobe font metrics file. It contains per-glyph advance widths, bounding boxes, and kerning pairs for PostScript Type 1 fonts. The file always starts with 'StartFontMetrics' and ends with 'EndFontMetrics'. It is not a binary format — open as text for human inspection.",
+    "suggestedInspections": [
+      "Verify the file starts with 'StartFontMetrics' and ends with 'EndFontMetrics' — missing footer indicates truncation.",
+      "Check AFM version (line 1 after keyword): 4.1 is the current standard; older 2.0/3.0 files may lack kerning or composite sections.",
+      "Inspect the FontBBox values for pathological extremes (e.g. urx < llx, extreme negative values) which can indicate a corrupted or adversarially crafted AFM.",
+      "Count the declared number after 'StartCharMetrics N' and verify it matches actual 'C ...' lines between StartCharMetrics and EndCharMetrics.",
+      "Check 'StartKernPairs N' count against actual 'KPX ...' lines — mismatch indicates truncation or hand-editing corruption.",
+      "Inspect EncodingScheme: 'AdobeStandardEncoding' is standard; 'FontSpecific' or custom encodings require careful glyph name mapping."
+    ]
+  },
+  "software": [
+    { "name": "Adobe Font Metrics Tools",  "role": "Original Adobe specification toolchain" },
+    { "name": "FontForge",                 "role": "Open-source font editor with AFM import/export" },
+    { "name": "Ghostscript",               "role": "PostScript/PDF interpreter consuming AFM metrics" },
+    { "name": "TeX / pdfTeX",              "role": "Typesetting engine using AFM for font metrics" },
+    { "name": "dvips",                     "role": "DVI to PostScript converter reading AFM files" },
+    { "name": "CUPS",                      "role": "Linux printing system using AFM for PostScript fonts" }
+  ],
+  "formatRelationships": [
+    { "format": "PFB", "relationship": "sidecar",     "note": "AFM is the metrics sidecar for PFB (PostScript Type 1 binary font); both files are needed for full font use." },
+    { "format": "PFA", "relationship": "sidecar",     "note": "AFM accompanies PFA (PostScript Type 1 ASCII font) in the same role as with PFB." },
+    { "format": "BDF", "relationship": "related",     "note": "BDF is a bitmap font format also using plain-text structure with keyword-based syntax, but for raster rather than outline fonts." },
+    { "format": "OTF", "relationship": "successor",   "note": "OpenType (OTF) embeds font metrics internally; AFM sidecar files are not used with OTF/TTF." },
+    { "format": "PFM", "relationship": "counterpart", "note": "PFM (Printer Font Metrics) is the Windows binary equivalent of AFM for Type 1 fonts on Windows systems." }
+  ],
+  "MimeTypes": [ "application/x-font-afm", "text/plain" ],
+  "UseCases": [
+    "PostScript document typesetting with precise glyph advance-width metrics",
+    "PDF generation with embedded Type 1 font metrics",
+    "TeX/LaTeX font package distribution alongside PFB files",
+    "Font conversion workflows (AFM input for outline font editors)",
+    "Legacy Unix print pipeline font metrics provisioning"
+  ],
+  "QualityMetrics": {
+    "LastUpdated": "2026-04-15",
+    "CompletenessScore": 87,
+    "FieldCoverage": "Core header fields and keyword structure documented",
+    "AssertionCount": 3,
+    "ExportTemplateCount": 2
+  },
+  "TechnicalDetails": "Adobe Font Metrics v4.1 (1998, last revision). Plain-text sidecar format for PostScript Type 1 outline fonts. All numeric values expressed in 1/1000 em units relative to the font's coordinate system. CharMetrics section contains one line per glyph: C (code), WX (advance width), N (glyph name), B (bounding box), and optional L (ligature) fields. KernData section lists KPX (kerning pair X) adjustments in the same 1/1000 em units. AFM 4.1 introduced Direction blocks for CJK vertical writing mode. The format was superseded by embedding metrics inside OTF/TTF tables, but remains essential for Type 1 font workflows in TeX, Ghostscript, and legacy PostScript print pipelines."
+}

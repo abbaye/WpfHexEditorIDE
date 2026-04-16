@@ -1,0 +1,212 @@
+{
+  "diffMode": "binary",
+  "formatName": "KeePass Password Database (KDBX)",
+  "version": "1.0",
+  "extensions": [ ".kdbx", ".kdb" ],
+  "description": "KeePass password manager database format. The file begins with an 8-byte magic signature: 0x03 0xD9 0xA2 0x9A 0x67 0xFB 0x4B 0xB5. Following the magic are two 16-bit version fields (minor then major, both little-endian). Major version 1 = KDB (KeePass 1.x legacy binary format with RC4/AES encryption), version 2 = KDBX2 (XML payload, AES-256/Twofish, Salsa20 stream), version 3 = KDBX3 (improved header with per-field TLV entries, AES-KDF, ChaCha20 inner stream), version 4 = KDBX4 (Argon2 KDF support, HMAC-SHA256 authentication, chunked encrypted payload). KDBX3/4 headers consist of TLV (Type-Length-Value) records: type 1=Comment, 2=CipherID (UUID), 3=CompressionFlags, 4=MasterSeed, 5=TransformSeed, 6=TransformRounds, 7=EncryptionIV, 8=InnerRandomStreamKey, 9=StreamStartBytes (v3), 10=InnerRandomStreamID, 11=KdfParameters (v4), 12=PublicCustomData (v4). The encrypted XML payload contains the group/entry tree with all credentials. All passwords, URLs, notes, and attachments are in the encrypted region.",
+  "category": "Crypto",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "HexEditor",
+  "references": [
+    "https://keepass.info/help/kb/kdbx_4.html",
+    "https://github.com/nicowillis/kdbxformat",
+    "https://github.com/keepassxreboot/keepassxc/blob/develop/docs/kdbx4/kdbx4.txt",
+    "https://forensics.wiki/keepass/"
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "value": "03D9A29A67FB4BB5",
+        "offset": 0,
+        "label": "KeePass KDBX magic — 8 bytes: 0x03 0xD9 0xA2 0x9A 0x67 0xFB 0x4B 0xB5 at offset 0",
+        "weight": 1.0
+      }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.9,
+    "Strength": "Strong",
+    "EntropyHint": {
+      "min": 7.5,
+      "max": 8.0,
+      "description": "Encrypted payload after the header has high entropy due to AES-256 encryption; header TLV region has moderate entropy"
+    },
+    "validation": "Magic at offset 0 must equal 03 D9 A2 9A 67 FB 4B B5. Major version at offset 10 must be 1, 2, 3, or 4. Minor version at offset 8 is informational."
+  },
+  "variables": {},
+  "blocks": [
+    {
+      "name": "kdbxMagic",
+      "offset": 0,
+      "size": 8,
+      "type": "bytes",
+      "description": "KeePass magic signature — 8 bytes at offset 0: 0x03 0xD9 0xA2 0x9A 0x67 0xFB 0x4B 0xB5; this fixed byte sequence uniquely identifies all KeePass database files across all versions (KDB, KDBX2, KDBX3, KDBX4)",
+      "storeAs": "kdbxMagic"
+    },
+    {
+      "name": "kdbxVersionMinor",
+      "offset": 8,
+      "size": 2,
+      "type": "uint16",
+      "endian": "LE",
+      "description": "Minor version number — 2-byte little-endian unsigned integer at offset 8; identifies minor revisions within a major version; informational only for compatibility checks",
+      "storeAs": "kdbxVersionMinor"
+    },
+    {
+      "name": "kdbxVersionMajor",
+      "offset": 10,
+      "size": 2,
+      "type": "uint16",
+      "endian": "LE",
+      "description": "Major version number — 2-byte little-endian unsigned integer at offset 10; determines the database format and encryption scheme: 1=KeePass 1.x KDB (RC4/AES, binary format), 2=KDBX2 (AES-256/Twofish, gzip+XML, no TLV header), 3=KDBX3 (TLV header, AES-KDF, ChaCha20 inner stream), 4=KDBX4 (Argon2 KDF, HMAC-SHA256 authenticated encryption)",
+      "storeAs": "kdbxVersionMajor",
+      "valueMap": {
+        "1": "KeePass 1.x (KDB) — legacy binary format",
+        "2": "KeePass 2.x KDBX2 — AES-256, gzip XML payload",
+        "3": "KeePass 2.x KDBX3 — TLV header, AES-KDF",
+        "4": "KeePass 2.x KDBX4 — Argon2 KDF, HMAC-SHA256"
+      }
+    },
+    {
+      "name": "kdbxFirstTlvType",
+      "offset": 12,
+      "size": 1,
+      "type": "uint8",
+      "description": "First TLV header field type — 1-byte unsigned integer at offset 12 (KDBX3/4); type 2=CipherID (UUID of the symmetric cipher used for the payload), type 3=CompressionFlags, type 4=MasterSeed, type 6=TransformRounds; KDBX2 uses a different fixed header structure",
+      "storeAs": "kdbxFirstTlvType"
+    },
+    {
+      "name": "kdbxFirstTlvLength",
+      "offset": 13,
+      "size": 2,
+      "type": "uint16",
+      "endian": "LE",
+      "description": "First TLV field length — 2-byte little-endian unsigned integer at offset 13 (KDBX3) or 4-byte LE at offset 13 (KDBX4); specifies the number of bytes in the TLV value field that follows",
+      "storeAs": "kdbxFirstTlvLength"
+    },
+    {
+      "name": "kdbxCipherUUID",
+      "offset": 15,
+      "size": 16,
+      "type": "bytes",
+      "description": "Cipher UUID — 16 bytes at offset 15 (KDBX3, if first TLV type=2/CipherID and length=16); identifies the symmetric cipher: AES-256-CBC UUID = {31C1F2E6-BF71-4751-8247-1068A9D61D2B}, Twofish-CBC UUID = {AD68F29F-576F-4BB9-A36A-D47AF965346C}, ChaCha20 UUID = {D6038A2B-8B6F-4CB5-A524-339A31DBB59A}",
+      "storeAs": "kdbxCipherUUID"
+    }
+  ],
+  "assertions": [
+    {
+      "field": "kdbxMagic",
+      "op": "eq",
+      "value": "03D9A29A67FB4BB5",
+      "description": "Magic bytes at offset 0 must equal 03 D9 A2 9A 67 FB 4B B5 to confirm a KeePass database"
+    },
+    {
+      "field": "kdbxVersionMajor",
+      "op": "in",
+      "value": [ 1, 2, 3, 4 ],
+      "description": "Major version must be 1 (KDB), 2 (KDBX2), 3 (KDBX3), or 4 (KDBX4)"
+    },
+    {
+      "field": "kdbxVersionMinor",
+      "op": "gte",
+      "value": 0,
+      "description": "Minor version must be a non-negative integer; typically 0 or 1"
+    }
+  ],
+  "navigation": {
+    "entryPoint": "kdbxMagic",
+    "sections": [
+      { "name": "Magic Signature", "offset": 0, "size": 8 },
+      { "name": "Version Fields", "offset": 8, "size": 4 },
+      { "name": "Header TLV Fields (KDBX3/4)", "offset": 12, "description": "Variable-length TLV records until end-of-header marker (type=0)" },
+      { "name": "Encrypted Payload", "offset": 0, "description": "After header — AES-256 or ChaCha20 encrypted XML tree" }
+    ]
+  },
+  "inspector": {
+    "badge": "KP",
+    "primaryField": "kdbxVersionMajor",
+    "groups": [
+      {
+        "name": "Identification",
+        "fields": [ "kdbxMagic" ]
+      },
+      {
+        "name": "Version",
+        "fields": [ "kdbxVersionMajor", "kdbxVersionMinor" ]
+      },
+      {
+        "name": "Encryption Header",
+        "fields": [ "kdbxFirstTlvType", "kdbxFirstTlvLength", "kdbxCipherUUID" ]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "KeePass Database Summary",
+      "format": "txt",
+      "template": "KeePass Password Database\n=========================\nMagic      : {kdbxMagic}\nMajor Ver  : {kdbxVersionMajor}\nMinor Ver  : {kdbxVersionMinor}\nFirst TLV  : type={kdbxFirstTlvType} len={kdbxFirstTlvLength}\nCipher UUID: {kdbxCipherUUID}\n"
+    },
+    {
+      "name": "KeePass Forensic Report (CSV)",
+      "format": "csv",
+      "template": "Field,Value\nMagic,{kdbxMagic}\nVersionMajor,{kdbxVersionMajor}\nVersionMinor,{kdbxVersionMinor}\nFirstTlvType,{kdbxFirstTlvType}\nFirstTlvLength,{kdbxFirstTlvLength}\nCipherUUID,{kdbxCipherUUID}\n"
+    }
+  ],
+  "forensic": {
+    "importance": "HIGH",
+    "riskLevel": "critical",
+    "notes": "KeePass database files contain all user credentials — passwords, usernames, URLs, notes, and file attachments — in an AES-256 or ChaCha20 encrypted payload. KDBX4 adds HMAC-SHA256 authentication preventing tampering. The database is protected by a composite key: master password, key file, and/or Windows user account (DPAPI). KDBX3 uses AES-KDF with configurable iteration count; KDBX4 supports Argon2d/Argon2id for memory-hard key derivation. Forensic recovery may target: the master password (memory dumps of the keepass.exe process, keyboard logging), the key file (filesystem artifacts), DPAPI master key decryption using Windows credentials. Tools: KeePassXC, hashcat module 13400 (KDBX3) and 31400 (KDBX4), john the Ripper keepass2john.",
+    "indicators": [
+      "Magic 03 D9 A2 9A 67 FB 4B B5 at offset 0",
+      "Extension .kdbx or .kdb",
+      "High entropy encrypted payload after header",
+      "TLV header with cipher UUID and master seed",
+      "Argon2 KDF parameters in KDBX4"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "KeePass is the most widely used open-source password manager. The KDBX format uses authenticated encryption (KDBX4+) or unauthenticated AES-256-CBC (KDBX2/3). The master key is derived from a composite key (password + optional key file + optional OS user account) using AES-KDF or Argon2. The decrypted payload is a gzip-compressed XML tree containing all credential entries.",
+    "suggestedInspections": [
+      "Confirm magic bytes 03 D9 A2 9A 67 FB 4B B5 and extract major version to determine the encryption scheme",
+      "For KDBX3/4: parse TLV header to extract cipher UUID, master seed, KDF parameters, and transformation rounds",
+      "Identify KDF type — AES-KDF iteration count or Argon2 memory/iterations parameters determine brute-force feasibility",
+      "Check for key file references in filesystem artifacts (recent files, shell bags) that may be required for decryption",
+      "Attempt master key recovery from Windows process memory dump of KeePass.exe using volatility keepass plugins",
+      "Use hashcat module 13400 (KDBX3) or 31400 (KDBX4) for offline dictionary/brute-force attacks on the master password"
+    ]
+  },
+  "software": [
+    { "name": "KeePass Password Safe", "vendor": "Dominik Reichl", "url": "https://keepass.info" },
+    { "name": "KeePassXC", "vendor": "KeePassXC Team", "url": "https://keepassxc.org" },
+    { "name": "hashcat", "vendor": "hashcat project", "url": "https://hashcat.net" },
+    { "name": "keepass2john", "vendor": "Openwall / John the Ripper", "url": "https://www.openwall.com/john/" },
+    { "name": "libkeepass", "vendor": "Open Source", "url": "https://github.com/phpwutz/libkeepass" }
+  ],
+  "formatRelationships": [
+    { "format": "LUKS", "relationship": "Both are AES-based encrypted containers; KDBX stores credential data while LUKS stores encrypted file system data" },
+    { "format": "TRUECRYPT", "relationship": "Both use composite key derivation from passphrase; KDBX is a structured credential store vs TrueCrypt's raw block container" },
+    { "format": "PKCS12", "relationship": "PKCS#12 stores certificates and private keys; KDBX stores general credentials; both are passphrase-protected" }
+  ],
+  "MimeTypes": [ "application/x-keepass2", "application/octet-stream" ],
+  "UseCases": [
+    "Personal and enterprise password management",
+    "Secure storage of credentials, API keys, and certificates",
+    "Forensic acquisition of stored passwords during investigations",
+    "Brute-force and dictionary attack target in penetration testing",
+    "Credential recovery for authorized access to encrypted systems"
+  ],
+  "QualityMetrics": {
+    "LastUpdated": "2026-04-15",
+    "CompletenessScore": 90,
+    "ReviewedBy": "WPFHexaEditor Team"
+  },
+  "TechnicalDetails": {
+    "headerSize": "Variable (12 bytes fixed + TLV records)",
+    "minimumFileSize": 70,
+    "endianness": "LittleEndian",
+    "encryptionAlgorithms": [ "AES-256-CBC", "Twofish-256-CBC", "ChaCha20" ],
+    "kdfAlgorithms": [ "AES-KDF", "Argon2d", "Argon2id" ],
+    "innerStreamCiphers": [ "Salsa20", "ChaCha20" ],
+    "payloadFormat": "gzip-compressed XML",
+    "authenticationKDBX4": "HMAC-SHA256 per-block"
+  }
+}

@@ -12,6 +12,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using Microsoft.Win32;
 using WpfHexEditor.Core.Interfaces;
+using WpfHexEditor.Core.Contracts;
 using WpfHexEditor.Core.Options;
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Shell.Panels.Services;

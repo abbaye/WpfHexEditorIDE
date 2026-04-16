@@ -1,0 +1,280 @@
+{
+  "formatName": "UBIFS Filesystem",
+  "version": "1.0",
+  "diffMode": "binary",
+  "extensions": [
+    ".ubifs",
+    ".img"
+  ],
+  "description": "UBIFS (Unsorted Block Image File System) is a filesystem for raw flash memory designed to work with UBI (Unsorted Block Images). The superblock node magic is 0x31181006 stored as LE bytes (31 18 10 06) at offset 0.",
+  "category": "Firmware",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "MimeTypes": [
+    "application/x-ubifs"
+  ],
+  "UseCases": [
+    "Large NAND flash storage on embedded Linux devices",
+    "Android system/userdata partitions on NAND-equipped devices",
+    "High-performance writable flash filesystem with wear leveling"
+  ],
+  "references": [
+    "https://www.kernel.org/doc/html/latest/filesystems/ubifs.html",
+    "http://www.linux-mtd.infradead.org/doc/ubifs.html",
+    "https://github.com/torvalds/linux/blob/master/fs/ubifs/ubifs-media.h"
+  ],
+  "software": [
+    {
+      "name": "mkfs.ubifs",
+      "url": "http://www.linux-mtd.infradead.org/",
+      "role": "UBIFS image creator"
+    },
+    {
+      "name": "ubinize",
+      "url": "http://www.linux-mtd.infradead.org/",
+      "role": "UBI image creator wrapping UBIFS"
+    },
+    {
+      "name": "ubi-utils",
+      "url": "http://www.linux-mtd.infradead.org/",
+      "role": "Tools for working with UBI/UBIFS volumes"
+    }
+  ],
+  "formatRelationships": [
+    {
+      "format": "JFFS2",
+      "relationship": "JFFS2 is a predecessor; UBIFS offers better scalability for large NAND"
+    },
+    {
+      "format": "SQUASHFS",
+      "relationship": "SquashFS is read-only; UBIFS is writable with wear leveling"
+    },
+    {
+      "format": "UBI",
+      "relationship": "UBIFS runs on top of UBI volumes which provide logical erase blocks on raw NAND"
+    }
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "offset": 0,
+        "value": "31181006",
+        "label": "UBIFS superblock magic 0x31181006 (LE bytes: 31 18 10 06)",
+        "weight": 1.0
+      }
+    ],
+    "matchMode": "first",
+    "MinimumScore": 85,
+    "Strength": "Strong",
+    "EntropyHint": {
+      "min": 5.0,
+      "max": 8.0,
+      "note": "Compressed node data has high entropy; index nodes lower"
+    },
+    "validation": "First 4 bytes must be 31 18 10 06. MinIOSize at offset 4 must be > 0 and a power of 2. LEB size at offset 8 must be >= 4096."
+  },
+  "variables": [
+    {
+      "name": "ubifsMagic",
+      "type": "uint32",
+      "offset": 0,
+      "length": 4,
+      "endian": "little",
+      "description": "UBIFS magic: 0x31181006"
+    },
+    {
+      "name": "ubifsMinIOSize",
+      "type": "uint32",
+      "offset": 4,
+      "length": 4,
+      "endian": "little",
+      "description": "Minimum I/O unit size in bytes"
+    },
+    {
+      "name": "ubifsLEBSize",
+      "type": "uint32",
+      "offset": 8,
+      "length": 4,
+      "endian": "little",
+      "description": "Logical Erase Block (LEB) size in bytes"
+    },
+    {
+      "name": "ubifsMaxLEBCount",
+      "type": "uint32",
+      "offset": 12,
+      "length": 4,
+      "endian": "little",
+      "description": "Maximum number of LEBs in the volume"
+    },
+    {
+      "name": "ubifsFlags",
+      "type": "uint32",
+      "offset": 28,
+      "length": 4,
+      "endian": "little",
+      "description": "Filesystem flags (bit 0: big_lpt, bit 1: space_fixup)"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "SuperblockNode",
+      "offset": 0,
+      "length": 160,
+      "description": "UBIFS superblock node: magic, CRC, sequence number, LEB number, key length, node type, and all filesystem parameters",
+      "fields": [
+        {
+          "name": "Magic",
+          "variable": "ubifsMagic",
+          "offset": 0,
+          "length": 4
+        },
+        {
+          "name": "MinIOSize",
+          "variable": "ubifsMinIOSize",
+          "offset": 4,
+          "length": 4
+        },
+        {
+          "name": "LEBSize",
+          "variable": "ubifsLEBSize",
+          "offset": 8,
+          "length": 4
+        },
+        {
+          "name": "MaxLEBCount",
+          "variable": "ubifsMaxLEBCount",
+          "offset": 12,
+          "length": 4
+        },
+        {
+          "name": "Flags",
+          "variable": "ubifsFlags",
+          "offset": 28,
+          "length": 4
+        }
+      ]
+    },
+    {
+      "name": "MasterNode",
+      "offset": -1,
+      "length": -1,
+      "description": "Master node storing current filesystem state, LEB positions of index root and other key structures"
+    },
+    {
+      "name": "IndexTree",
+      "offset": -1,
+      "length": -1,
+      "description": "B-tree index nodes organizing the filesystem key space"
+    },
+    {
+      "name": "DataNodes",
+      "offset": -1,
+      "length": -1,
+      "description": "Data nodes containing compressed file content organized by inode number and offset"
+    }
+  ],
+  "assertions": [
+    {
+      "id": "A1",
+      "description": "Magic must be 0x31181006",
+      "expression": "ubifsMagic == 0x31181006"
+    },
+    {
+      "id": "A2",
+      "description": "MinIOSize must be > 0",
+      "expression": "ubifsMinIOSize > 0"
+    },
+    {
+      "id": "A3",
+      "description": "LEBSize must be >= 4096",
+      "expression": "ubifsLEBSize >= 4096"
+    }
+  ],
+  "navigation": {
+    "entryPoint": "SuperblockNode",
+    "structure": [
+      "SuperblockNode",
+      "MasterNode",
+      "IndexTree",
+      "DataNodes"
+    ],
+    "notes": "Superblock is always in LEB 0. Master nodes are in LEBs 1 and 2 (alternating). Index root location is stored in the master node. All UBIFS nodes have a 24-byte common header with magic, CRC, sequence number, length, and type."
+  },
+  "inspector": {
+    "badge": "UBI",
+    "primaryField": "ubifsLEBSize",
+    "groups": [
+      {
+        "name": "Superblock",
+        "fields": [
+          "ubifsMagic",
+          "ubifsMinIOSize",
+          "ubifsLEBSize",
+          "ubifsMaxLEBCount"
+        ]
+      },
+      {
+        "name": "Flags",
+        "fields": [
+          "ubifsFlags"
+        ]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "Superblock CSV",
+      "format": "csv",
+      "fields": [
+        "ubifsMagic",
+        "ubifsMinIOSize",
+        "ubifsLEBSize",
+        "ubifsMaxLEBCount",
+        "ubifsFlags"
+      ]
+    },
+    {
+      "name": "Superblock JSON",
+      "format": "json",
+      "fields": [
+        "ubifsMagic",
+        "ubifsMinIOSize",
+        "ubifsLEBSize",
+        "ubifsMaxLEBCount",
+        "ubifsFlags"
+      ]
+    }
+  ],
+  "forensic": {
+    "riskLevel": "MEDIUM",
+    "notes": "UBIFS volumes in firmware may contain writable user/system partitions. Wear-leveling history may leave residual data from overwritten files in earlier physical blocks (though managed by UBI layer).",
+    "suspiciousPatterns": [
+      "CRC mismatch in superblock or master node indicating corruption or tampering",
+      "Space fixup flag set indicating incomplete filesystem repair",
+      "Unexpected files in system partitions with recent modification timestamps",
+      "Data nodes for recently deleted inodes not yet garbage-collected"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "UBIFS is a B-tree based filesystem with a key space organized by inode number and block offset. All nodes have a common 24-byte header. The master node tracks current index root and LEB positions of the journal.",
+    "suggestedInspections": [
+      "Parse master node to locate current index root LEB and offset",
+      "Traverse B-tree index from root to enumerate all data and directory entry nodes",
+      "Check CRC32 of each node header to verify integrity",
+      "Identify journal LEBs (bud LEBs listed in master node) for recently written uncommitted data",
+      "Scan for orphan nodes listing inodes deleted during previous unclean unmount"
+    ]
+  },
+  "TechnicalDetails": {
+    "endianness": "Little-endian",
+    "commonNodeHeaderSize": 24,
+    "superblockleb": 0,
+    "masterNodeLEBs": "1 and 2 (alternating for redundancy)",
+    "compression": "Configurable: lzo, zlib, zstd per-node"
+  },
+  "QualityMetrics": {
+    "CompletenessScore": 86,
+    "LastUpdated": "2026-04-15",
+    "ReviewedBy": "WPFHexaEditor Team"
+  }
+}

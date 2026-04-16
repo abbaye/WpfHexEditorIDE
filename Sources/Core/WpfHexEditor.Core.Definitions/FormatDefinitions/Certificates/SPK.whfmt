@@ -1,0 +1,204 @@
+{
+  "diffMode": "binary",
+  "formatName": "SubjectPublicKeyInfo (SPKI / Raw Public Key)",
+  "version": "1.0",
+  "extensions": [ ".pub", ".spki", ".der" ],
+  "description": "SubjectPublicKeyInfo (SPKI) is the ASN.1 DER structure defined in RFC 5480 and X.509 that carries a public key with its algorithm identifier. Structure: SubjectPublicKeyInfo ::= SEQUENCE { algorithm AlgorithmIdentifier { algorithm OBJECT IDENTIFIER, parameters ANY DEFINED BY algorithm OPTIONAL }, subjectPublicKey BIT STRING }. AlgorithmIdentifier OIDs: RSA = 1.2.840.113549.1.1.1 (rsaEncryption), ECDSA/ECDH = 1.2.840.10045.2.1 (id-ecPublicKey), Ed25519 = 1.3.101.112, Ed448 = 1.3.101.113, DSA = 1.2.840.10040.4.1. For RSA: subjectPublicKey BIT STRING contains SEQUENCE { modulus INTEGER, publicExponent INTEGER }. For EC: parameters is the curve OID (P-256 = 1.2.840.10045.3.1.7, P-384 = 1.3.132.0.34, P-521 = 1.3.132.0.35, X25519 = 1.3.101.110). The DER starts with 0x30 (SEQUENCE) followed by 0x81 or 0x82 length encoding. SPKI files may also be PEM-encoded with '-----BEGIN PUBLIC KEY-----' header (note: not '-----BEGIN RSA PUBLIC KEY-----' which is PKCS#1 format).",
+  "category": "Certificates",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "HexEditor",
+  "references": [
+    "https://www.rfc-editor.org/rfc/rfc5480",
+    "https://www.rfc-editor.org/rfc/rfc8410",
+    "https://datatracker.ietf.org/doc/html/rfc3279"
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "value": "3081",
+        "offset": 0,
+        "label": "DER SubjectPublicKeyInfo SEQUENCE — 0x30 tag with 1-byte length (short form, content <= 127 bytes)",
+        "weight": 0.5
+      },
+      {
+        "value": "3082",
+        "offset": 0,
+        "label": "DER SubjectPublicKeyInfo SEQUENCE — 0x30 tag with 2-byte length (long form, typical for RSA-2048+)",
+        "weight": 0.5
+      }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.3,
+    "Strength": "Weak",
+    "validation": "First byte must be 0x30 (ASN.1 SEQUENCE). Second byte 0x81 (1-byte length) or 0x82 (2-byte length). Content at offset 2/4 should be another 0x30 (AlgorithmIdentifier SEQUENCE) followed by an OID tag 0x06. File extension .spki or PEM '-----BEGIN PUBLIC KEY-----' header increases confidence."
+  },
+  "variables": {},
+  "blocks": [
+    {
+      "name": "spkiSequence",
+      "offset": 0,
+      "size": 1,
+      "type": "uint8",
+      "description": "Outer SEQUENCE tag — 1-byte unsigned integer at offset 0; must be 0x30 (decimal 48), the ASN.1 universal SEQUENCE/SEQUENCE-OF tag; this opens the SubjectPublicKeyInfo structure",
+      "storeAs": "spkiSequence"
+    },
+    {
+      "name": "spkiLengthByte",
+      "offset": 1,
+      "size": 1,
+      "type": "uint8",
+      "description": "DER length encoding byte — 1-byte unsigned integer at offset 1; if < 0x80 (128): this is the direct content length; if 0x81: next 1 byte is the content length; if 0x82: next 2 bytes are big-endian content length; RSA-2048 SPKI: 0x82 (2-byte length follows); EC P-256 SPKI: 0x59 (89 bytes direct length)",
+      "storeAs": "spkiLengthByte"
+    },
+    {
+      "name": "spkiAlgoTag",
+      "offset": 4,
+      "size": 2,
+      "type": "bytes",
+      "description": "AlgorithmIdentifier SEQUENCE start — 2 bytes at offset 4 (when length is 2-byte form) or offset 3 (1-byte form); expected: 0x30 0xXX (SEQUENCE) beginning the AlgorithmIdentifier which contains the public key algorithm OID; the inner SEQUENCE length varies by algorithm",
+      "storeAs": "spkiAlgoTag"
+    },
+    {
+      "name": "spkiAlgoOidTag",
+      "offset": 6,
+      "size": 2,
+      "type": "bytes",
+      "description": "Algorithm OID tag and length — 2 bytes at approximately offset 6; expected: 0x06 0xXX (OBJECT IDENTIFIER tag followed by OID byte length); common: 0x06 0x09 for RSA (9-byte OID 1.2.840.113549.1.1.1), 0x06 0x07 for EC (7-byte OID 1.2.840.10045.2.1), 0x06 0x03 for Ed25519 (3-byte OID 1.3.101.112)",
+      "storeAs": "spkiAlgoOidTag"
+    },
+    {
+      "name": "spkiAlgoOid",
+      "offset": 8,
+      "size": 11,
+      "type": "bytes",
+      "description": "Algorithm OID bytes — up to 11 bytes at approximately offset 8; DER-encoded OID identifying the public key algorithm: RSA=2A 86 48 86 F7 0D 01 01 01 (9B), EC=2A 86 48 CE 3D 02 01 (7B), Ed25519=2B 65 70 (3B), Ed448=2B 65 71 (3B), DSA=2A 86 48 CE 38 04 01 (7B)",
+      "storeAs": "spkiAlgoOid"
+    }
+  ],
+  "assertions": [
+    {
+      "field": "spkiSequence",
+      "op": "eq",
+      "value": 48,
+      "description": "First byte must be 0x30 (decimal 48) — ASN.1 SEQUENCE tag required for SubjectPublicKeyInfo outer structure"
+    },
+    {
+      "field": "spkiAlgoTag",
+      "op": "startsWith",
+      "value": "30",
+      "description": "AlgorithmIdentifier must begin with 0x30 (SEQUENCE tag) at the expected offset after the outer length bytes"
+    },
+    {
+      "field": "spkiAlgoOidTag",
+      "op": "startsWith",
+      "value": "06",
+      "description": "INFO: Algorithm OID must start with tag 0x06 (OBJECT IDENTIFIER); this confirms the SubjectPublicKeyInfo AlgorithmIdentifier contains a valid algorithm OID"
+    }
+  ],
+  "navigation": {
+    "entryPoint": "spkiSequence",
+    "sections": [
+      { "name": "Outer SEQUENCE Header", "offset": 0, "size": 4 },
+      { "name": "AlgorithmIdentifier", "offset": 4, "description": "SEQUENCE containing algorithm OID and optional parameters" },
+      { "name": "SubjectPublicKey", "offset": 0, "description": "BIT STRING containing the public key material (offset depends on AlgorithmIdentifier length)" }
+    ]
+  },
+  "inspector": {
+    "badge": "SPKI",
+    "primaryField": "spkiAlgoOid",
+    "groups": [
+      {
+        "name": "Structure Tags",
+        "fields": [ "spkiSequence", "spkiLengthByte" ]
+      },
+      {
+        "name": "Algorithm Identifier",
+        "fields": [ "spkiAlgoTag", "spkiAlgoOidTag", "spkiAlgoOid" ]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "SPKI Structure Summary",
+      "format": "txt",
+      "template": "SubjectPublicKeyInfo (SPKI)\n===========================\nOuter SEQUENCE Tag : 0x{spkiSequence}\nLength Byte        : 0x{spkiLengthByte}\nAlgorithm SEQUENCE : {spkiAlgoTag}\nOID Tag+Len        : {spkiAlgoOidTag}\nAlgorithm OID      : {spkiAlgoOid}\n"
+    },
+    {
+      "name": "SPKI Forensic Report (CSV)",
+      "format": "csv",
+      "template": "Field,Value\nOuterSequenceTag,{spkiSequence}\nLengthByte,{spkiLengthByte}\nAlgorithmSequence,{spkiAlgoTag}\nOidTagAndLength,{spkiAlgoOidTag}\nAlgorithmOid,{spkiAlgoOid}\n"
+    }
+  ],
+  "forensic": {
+    "importance": "LOW",
+    "riskLevel": "low",
+    "notes": "SPKI files contain only public keys — no private key material. Forensic interest is limited to identifying the cryptographic algorithm, key size, and potential correlation with certificates or CSRs containing the same public key. EC key type and curve reveal the security level. RSA modulus size indicates key strength. Matching a found public key to a known certificate can confirm identity.",
+    "indicators": [
+      "DER SEQUENCE 0x30 at offset 0",
+      "AlgorithmIdentifier OID identifies key type",
+      "Extension .pub, .spki, .der",
+      "PEM '-----BEGIN PUBLIC KEY-----' header",
+      "No private key exponent present (public only)"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "SubjectPublicKeyInfo is the standard X.509 public key container format. It wraps a public key with its algorithm identifier in DER ASN.1 encoding. It appears in X.509 certificates, CSRs, TLS handshakes, and standalone .pub/.spki files. The format is defined in RFC 5480 for EC keys and RFC 3279 for RSA/DSA keys.",
+    "suggestedInspections": [
+      "Decode the AlgorithmIdentifier OID to determine the public key type (RSA, ECDSA, Ed25519, DSA) and security level",
+      "For RSA keys: extract the modulus bit length from the BIT STRING to determine key size (2048, 3072, 4096 bits)",
+      "For EC keys: identify the curve OID in the AlgorithmIdentifier parameters (P-256, P-384, P-521, X25519, X448)",
+      "Compute the public key fingerprint (SHA-256 of DER SPKI structure) and compare against known certificate repositories",
+      "Check for weak key parameters — RSA < 2048 bits or EC curves smaller than P-256 are considered cryptographically weak",
+      "Cross-reference the SPKI against X.509 certificates in the same filesystem to find the associated certificate chain"
+    ]
+  },
+  "software": [
+    { "name": "OpenSSL (pkey command)", "vendor": "OpenSSL Software Foundation", "url": "https://www.openssl.org/docs/man3.0/man1/openssl-pkey.html" },
+    { "name": "Java keytool", "vendor": "Oracle / OpenJDK", "url": "https://docs.oracle.com/en/java/javase/17/docs/specs/man/keytool.html" },
+    { "name": "ASN.1 Decoder (lapo.it)", "vendor": "Various", "url": "https://www.lapo.it/asn1js/" },
+    { "name": "Bouncy Castle", "vendor": "Legion of the Bouncy Castle", "url": "https://www.bouncycastle.org" },
+    { "name": "certutil -dump (Windows)", "vendor": "Microsoft", "url": "https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/certutil" }
+  ],
+  "formatRelationships": [
+    { "format": "X509", "relationship": "X.509 certificates embed SPKI as the subjectPublicKeyInfo field containing the certificate subject's public key" },
+    { "format": "CSR", "relationship": "CSRs embed SPKI as the subjectPKInfo field in the CertificationRequestInfo" },
+    { "format": "OPENSSH_CERT", "relationship": "OpenSSH certificates carry the public key in a different binary format; SPKI is the X.509 equivalent" },
+    { "format": "GPG_KEYRING", "relationship": "GPG key packets carry public key material in MPI format; SPKI is the X.509/PKCS format equivalent" }
+  ],
+  "MimeTypes": [ "application/x-pem-file", "application/octet-stream" ],
+  "UseCases": [
+    "Embedding public keys in X.509 certificates and CSRs",
+    "TLS Raw Public Key authentication (RFC 7250)",
+    "Key pinning in certificate transparency",
+    "Standalone public key distribution",
+    "Forensic identification of key material and algorithm parameters"
+  ],
+  "QualityMetrics": {
+    "LastUpdated": "2026-04-15",
+    "CompletenessScore": 82,
+    "ReviewedBy": "WPFHexaEditor Team"
+  },
+  "TechnicalDetails": {
+    "algorithmOIDs": {
+      "RSA": "1.2.840.113549.1.1.1",
+      "EC": "1.2.840.10045.2.1",
+      "DSA": "1.2.840.10040.4.1",
+      "Ed25519": "1.3.101.112",
+      "Ed448": "1.3.101.113",
+      "X25519": "1.3.101.110",
+      "X448": "1.3.101.111"
+    },
+    "ecCurveOIDs": {
+      "P-256": "1.2.840.10045.3.1.7",
+      "P-384": "1.3.132.0.34",
+      "P-521": "1.3.132.0.35"
+    },
+    "typicalSizes": {
+      "RSA-2048": "294 bytes DER",
+      "RSA-4096": "550 bytes DER",
+      "EC-P256": "91 bytes DER",
+      "Ed25519": "44 bytes DER"
+    },
+    "rfcs": [ "RFC 5480", "RFC 3279", "RFC 8410" ]
+  }
+}

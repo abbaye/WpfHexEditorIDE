@@ -1,0 +1,207 @@
+{
+  "diffMode": "binary",
+  "formatName": "Microsoft HTML Help Compiled",
+  "version": "1.0",
+  "extensions": [ ".chm" ],
+  "description": "Microsoft Compiled HTML Help (CHM) is a proprietary binary format introduced with Windows 98. It uses the ITSF (Info-Tech Storage Format) container to store compressed HTML pages, images, index, and table of contents. The 4-byte magic 'ITSF' (0x49545346) appears at offset 0. The format header includes the ITSF version (usually 3), total header length, unknown field, a Windows FILETIME-derived timestamp, and an LCID language ID. CHM files are opened by hh.exe on Windows and have been vectors for HTML-based exploits.",
+  "category": "Documents",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "references": {
+    "specifications": [
+      "Microsoft ITSF / ITS Container Format Specification",
+      "CHM File Format (ITSF v3)",
+      "HTML Help Workshop Documentation"
+    ],
+    "WebLinks": [
+      "https://en.wikipedia.org/wiki/Microsoft_Compiled_HTML_Help",
+      "https://www.nongnu.org/chmspec/latest/",
+      "http://www.russotto.net/chm/itsfformat.html",
+      "https://docs.microsoft.com/en-us/previous-versions/windows/desktop/htmlhelp/html-help-api-overview"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      { "hex": "49545346", "offset": 0, "label": "'ITSF' — ITSF container magic shared by CHM and LIT", "weight": 1.0 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.85,
+    "required": true,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 3.5, "max": 7.5 },
+    "validation": {
+      "minFileSize": 24,
+      "maxSignatureOffset": 0,
+      "note": "'ITSF' at offset 0. Distinguish CHM from LIT by internal directory section names. CHM uses '/::DataSpace/', LIT uses Microsoft Reader DRM sections."
+    }
+  },
+  "variables": {
+    "chmMagic": "",
+    "chmVersion": 0,
+    "chmTotalHeaderLength": 0,
+    "chmUnknown1": 0,
+    "chmTimestamp": 0,
+    "chmLanguageId": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "ITSF Magic",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.5,
+      "description": "ITSF container magic: ASCII 'ITSF' (0x49 0x54 0x53 0x46). Present in both CHM and LIT files.",
+      "storeAs": "chmMagic",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "ITSF Version",
+      "offset": 4,
+      "length": 4,
+      "color": "#4ECDC4",
+      "opacity": 0.4,
+      "description": "ITSF format version (uint32 LE). CHM typically uses version 3. Version 2 is rare.",
+      "storeAs": "chmVersion",
+      "valueType": "uint32",
+      "valueMap": { "2": "ITSF v2", "3": "ITSF v3" }
+    },
+    {
+      "type": "field",
+      "name": "Total Header Length",
+      "offset": 8,
+      "length": 4,
+      "color": "#45B7D1",
+      "opacity": 0.4,
+      "description": "Total length of the ITSF header in bytes (uint32 LE). Defines where the content begins.",
+      "storeAs": "chmTotalHeaderLength",
+      "valueType": "uint32"
+    },
+    {
+      "type": "field",
+      "name": "Unknown Field",
+      "offset": 12,
+      "length": 4,
+      "color": "#96CEB4",
+      "opacity": 0.3,
+      "description": "Unknown reserved field (uint32 LE). Typically 1.",
+      "storeAs": "chmUnknown1",
+      "valueType": "uint32"
+    },
+    {
+      "type": "field",
+      "name": "Timestamp",
+      "offset": 16,
+      "length": 4,
+      "color": "#FFEAA7",
+      "opacity": 0.35,
+      "description": "File creation timestamp derived from Windows FILETIME divided by 10,000,000 (uint32 LE).",
+      "storeAs": "chmTimestamp",
+      "valueType": "uint32"
+    },
+    {
+      "type": "field",
+      "name": "Language ID",
+      "offset": 20,
+      "length": 4,
+      "color": "#DDA0DD",
+      "opacity": 0.35,
+      "description": "Windows LCID identifying the language of the CHM file (uint32 LE).",
+      "storeAs": "chmLanguageId",
+      "valueType": "uint32",
+      "valueMap": { "1033": "English (US)", "1036": "French", "1031": "German", "1041": "Japanese", "2052": "Chinese Simplified" }
+    }
+  ],
+  "assertions": [
+    { "field": "chmMagic", "operator": "equals", "value": "ITSF", "description": "Magic must be 'ITSF'" },
+    { "field": "chmVersion", "operator": "in", "value": [2, 3], "description": "ITSF version must be 2 or 3" },
+    { "field": "chmTotalHeaderLength", "operator": "greaterThan", "value": 0, "description": "Header length must be positive" }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "ITSF Header", "offset": 0, "description": "ITSF magic + version" },
+      { "name": "Header Length", "offset": 8, "description": "Total header length field" },
+      { "name": "Timestamp", "offset": 16, "description": "File creation timestamp (Windows FILETIME / 10^7)" },
+      { "name": "Language ID", "offset": 20, "description": "Windows LCID for file language" }
+    ]
+  },
+  "inspector": {
+    "badge": "CHM",
+    "primaryField": "chmVersion",
+    "showQualityScore": true,
+    "groups": [
+      { "name": "ITSF Container", "fields": ["chmMagic", "chmVersion"] },
+      { "name": "Header Info", "fields": ["chmTotalHeaderLength", "chmUnknown1"] },
+      { "name": "Metadata", "fields": ["chmTimestamp", "chmLanguageId"] }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "CHM Header (JSON)",
+      "format": "json",
+      "fields": ["chmMagic", "chmVersion", "chmTotalHeaderLength", "chmTimestamp", "chmLanguageId"]
+    },
+    {
+      "name": "CHM Forensic Report (CSV)",
+      "format": "csv",
+      "fields": ["chmMagic", "chmVersion", "chmLanguageId", "chmTimestamp"]
+    }
+  ],
+  "forensic": {
+    "category": "document",
+    "riskLevel": "high",
+    "suspiciousPatterns": [
+      { "name": "CHM exploit vector", "condition": "true", "description": "CHM files can embed arbitrary HTML/JavaScript executed by hh.exe. Historically used to deliver malware.", "severity": "critical" },
+      { "name": "ITSF directory traversal", "condition": "true", "description": "ITSF container internal paths can be crafted for directory traversal exploits.", "severity": "warning" },
+      { "name": "Hidden content sections", "condition": "true", "description": "CHM files may contain hidden sections not visible in the TOC. Check all ITSF directory entries.", "severity": "warning" }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "CHM uses the ITSF container (same as LIT eBooks). Magic 'ITSF' at offset 0. ITSF v3 is standard for CHM. The file embeds a compressed filesystem with HTML, images, and HHC/HHK TOC/index files. CHM files have been widely used as malware delivery vectors — always scan embedded HTML/JS. Language ID at offset 20 reveals target locale.",
+    "suggestedInspections": [
+      "Verify 'ITSF' magic at offset 0 and version at offset 4 (expect 3)",
+      "Read header length at offset 8 to locate ITSF directory sections",
+      "Extract LCID at offset 20 to determine target language/locale",
+      "Enumerate all ITSF directory entries for unexpected or hidden content files",
+      "Scan embedded HTML/JS sections for malicious scripts or exploit payloads",
+      "Check for suspicious section names that differ from standard CHM internal structure"
+    ]
+  },
+  "software": [
+    "HTML Help Workshop (Microsoft)",
+    "hh.exe (Windows HTML Help viewer)",
+    "7-Zip (extraction)",
+    "ChmSee (Linux viewer)",
+    "KeyHH"
+  ],
+  "formatRelationships": {
+    "category": "Documents",
+    "extensions": [".chm"],
+    "relatedFormats": ["LIT", "HTMLHELP_CHM", "HTML", "ZIP"],
+    "note": "ITSF container is shared with LIT eBook format. CHM is a compiled version of HTML Help Workshop projects (.hhp + .htm + .hhc + .hhk)."
+  },
+  "MimeTypes": [ "application/vnd.ms-htmlhelp", "application/x-chm" ],
+  "UseCases": [
+    "Windows application help documentation",
+    "Offline HTML documentation distribution",
+    "Legacy software documentation archives",
+    "Forensic investigation of potentially malicious CHM files"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 88,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 6,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-15",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "ContainerFormat": "ITSF (Info-Tech Storage Format) v3",
+    "Endianness": "little-endian",
+    "CompressionFormat": "LZX (Microsoft variant)",
+    "SecurityRisk": "HIGH — CHM files execute HTML/JS via hh.exe",
+    "Note": "ITSF magic 'ITSF' is shared with .lit (Microsoft Reader) files. Distinguish by internal directory section names."
+  }
+}

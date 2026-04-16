@@ -1,122 +1,185 @@
 {
-  "formatName": "Extended Module",
-  "version": "1.0",
-  "author": "WPFHexaEditor Team",
-  "lastUpdated": "2026-04-15",
-  "description": "FastTracker 2 Extended Module format (.xm) — tracker music file with up to 32 channels, 128 instruments, linear or Amiga frequency tables, widely used in demoscene and game audio.",
+  "formatName": "Extended Module (XM)",
+  "version": "1.1",
   "extensions": [ ".xm" ],
-  "category": "Audio",
   "diffMode": "binary",
-  "signatures": [
+  "description": "Extended Module tracker format created by FastTracker II. Stores patterns, instruments, samples and song arrangement for cross-platform chiptune playback.",
+  "category": "Audio",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "HexEditor",
+  "references": [
+    "https://wiki.openmpt.org/Development:_Formats/XM",
+    "https://github.com/milkytracker/MilkyTracker/blob/master/resources/reference/xm-form.txt"
+  ],
+  "MimeTypes": [ "audio/xm", "audio/x-xm", "audio/x-tracker-module" ],
+  "UseCases": [
+    "Retro game music playback",
+    "Demoscene music authoring",
+    "Cross-platform tracker module exchange",
+    "Chiptune archival and preservation"
+  ],
+  "software": [
+    { "name": "FastTracker II", "role": "Primary authoring tool",       "platform": "DOS" },
+    { "name": "OpenMPT",        "role": "Modern editor and player",      "platform": "Windows", "url": "https://openmpt.org" },
+    { "name": "MilkyTracker",   "role": "Cross-platform tracker editor", "platform": "Multi",   "url": "https://milkytracker.org" },
+    { "name": "XMPlay",         "role": "Dedicated player",              "platform": "Windows" }
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "value": "457874656E646564204D6F64756C653A20",
+        "offset": 0,
+        "label": "'Extended Module: ' ASCII header (17 bytes)",
+        "weight": 1.0
+      }
+    ],
+    "matchMode": "first",
+    "MinimumScore": 88,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 3.5, "max": 7.0 }
+  },
+  "variables": [
+    { "name": "xmSignature",      "offset": 0,  "size": 17, "type": "ascii",  "storeAs": "xmSignature",      "description": "Fixed ASCII header 'Extended Module: '" },
+    { "name": "xmModuleName",     "offset": 17, "size": 20, "type": "ascii",  "storeAs": "xmModuleName",     "description": "Module name, null-padded to 20 bytes" },
+    { "name": "xmMagicByte",      "offset": 37, "size": 1,  "type": "uint8",  "storeAs": "xmMagicByte",      "description": "Must be 0x1A (26)" },
+    { "name": "xmTrackerName",    "offset": 38, "size": 20, "type": "ascii",  "storeAs": "xmTrackerName",    "description": "Tracker software name" },
+    { "name": "xmVersion",        "offset": 58, "size": 2,  "type": "uint16", "endian": "LE", "storeAs": "xmVersion",
+      "description": "Format version, 0x0104 = v1.04",
+      "valueMap": { "260": "v1.04 (standard)", "257": "v1.01 (early)" } },
+    { "name": "xmHeaderSize",     "offset": 60, "size": 4,  "type": "uint32", "endian": "LE", "storeAs": "xmHeaderSize",  "description": "Header size from this field, usually 276" },
+    { "name": "xmSongLength",     "offset": 64, "size": 2,  "type": "uint16", "endian": "LE", "storeAs": "xmSongLength",  "description": "Number of entries in pattern order table" },
+    { "name": "xmRestartPos",     "offset": 66, "size": 2,  "type": "uint16", "endian": "LE", "storeAs": "xmRestartPos",  "description": "Restart position for loop" },
+    { "name": "xmChannels",       "offset": 68, "size": 2,  "type": "uint16", "endian": "LE", "storeAs": "xmChannels",    "description": "Number of channels, max 32" },
+    { "name": "xmNumPatterns",    "offset": 70, "size": 2,  "type": "uint16", "endian": "LE", "storeAs": "xmNumPatterns", "description": "Number of patterns" },
+    { "name": "xmNumInstruments", "offset": 72, "size": 2,  "type": "uint16", "endian": "LE", "storeAs": "xmNumInstruments", "description": "Number of instruments, max 128" },
+    { "name": "xmFlags",          "offset": 74, "size": 2,  "type": "uint16", "endian": "LE", "storeAs": "xmFlags",       "description": "Flags: bit0=linear frequency table" },
+    { "name": "xmDefaultTempo",   "offset": 76, "size": 2,  "type": "uint16", "endian": "LE", "storeAs": "xmDefaultTempo","description": "Default tempo in ticks per row" },
+    { "name": "xmDefaultBPM",     "offset": 78, "size": 2,  "type": "uint16", "endian": "LE", "storeAs": "xmDefaultBPM",  "description": "Default beats per minute" }
+  ],
+  "blocks": [
     {
-      "value": "457874656E646564204D6F64756C653A20",
+      "name": "FileHeader",
       "offset": 0,
-      "label": "'Extended Module: ' — FastTracker 2 XM header magic (17 bytes ASCII)",
-      "weight": 1.0,
-      "strength": "Strong"
+      "size": 80,
+      "description": "Fixed XM file header with signature, module name, tracker info and song parameters",
+      "color": "#1E90FF",
+      "fields": [ "xmSignature", "xmModuleName", "xmMagicByte", "xmTrackerName", "xmVersion",
+                  "xmHeaderSize", "xmSongLength", "xmRestartPos", "xmChannels",
+                  "xmNumPatterns", "xmNumInstruments", "xmFlags", "xmDefaultTempo", "xmDefaultBPM" ]
+    },
+    {
+      "name": "PatternOrderTable",
+      "offset": 80,
+      "size": 256,
+      "description": "Pattern order/sequence table, up to 256 one-byte entries each referencing a pattern index",
+      "color": "#32CD32"
+    },
+    {
+      "name": "PatternHeaders",
+      "offset": 336,
+      "sizeExpression": "variable (xmNumPatterns * variablePatternSize)",
+      "description": "Array of pattern headers, each followed by variable-length packed pattern cell data",
+      "color": "#FFA500"
+    },
+    {
+      "name": "InstrumentHeaders",
+      "offset": "computed after patterns",
+      "description": "Array of instrument headers including envelope, vibrato, volume/panning data and sample metadata",
+      "color": "#FF6347"
+    },
+    {
+      "name": "SampleData",
+      "offset": "computed after instrument headers",
+      "description": "Raw delta-encoded signed PCM sample data for all instruments",
+      "color": "#9370DB"
     }
   ],
-  "maxSignatureOffset": 17,
-  "structure": {
-    "fields": [
-      { "offset": 0,   "size": 17,  "name": "id_text",         "type": "ascii",   "description": "Header magic: 'Extended Module: '", "storeAs": "xmMagic" },
-      { "offset": 17,  "size": 20,  "name": "module_name",     "type": "ascii",   "description": "Song title (null-padded)",           "storeAs": "xmTitle" },
-      { "offset": 37,  "size": 1,   "name": "marker",          "type": "uint8",   "description": "EOF marker byte, always 0x1A" },
-      { "offset": 38,  "size": 20,  "name": "tracker_name",    "type": "ascii",   "description": "Tracker software name, e.g. 'FastTracker v2.00'" },
-      { "offset": 58,  "size": 2,   "name": "version",         "type": "uint16le","description": "Format version; 0x0104 = v1.04 (current)",   "storeAs": "xmVersion" },
-      { "offset": 60,  "size": 4,   "name": "header_size",     "type": "uint32le","description": "Header size from this field to end of header" },
-      { "offset": 64,  "size": 2,   "name": "song_length",     "type": "uint16le","description": "Number of patterns in the playback sequence" },
-      { "offset": 66,  "size": 2,   "name": "restart_position","type": "uint16le","description": "Pattern to restart at after end of song" },
-      { "offset": 68,  "size": 2,   "name": "num_channels",    "type": "uint16le","description": "Number of channels (2–32)",               "storeAs": "xmChannels" },
-      { "offset": 70,  "size": 2,   "name": "num_patterns",    "type": "uint16le","description": "Number of patterns stored in the file" },
-      { "offset": 72,  "size": 2,   "name": "num_instruments", "type": "uint16le","description": "Number of instruments (0–128)" },
-      { "offset": 74,  "size": 2,   "name": "flags",           "type": "uint16le","description": "Bit 0: linear frequency table (0=Amiga periods)" },
-      { "offset": 76,  "size": 2,   "name": "default_tempo",   "type": "uint16le","description": "Default tempo in ticks per row" },
-      { "offset": 78,  "size": 2,   "name": "default_bpm",     "type": "uint16le","description": "Default BPM playback speed",              "storeAs": "xmBPM" },
-      { "offset": 80,  "size": 256, "name": "pattern_order",   "type": "bytes",   "description": "Sequence table: 256 pattern index bytes" }
+  "assertions": [
+    { "id": "A1", "expression": "xmMagicByte == 26",       "severity": "error",   "message": "Magic byte at offset 37 must be 0x1A (26)" },
+    { "id": "A2", "expression": "xmVersion >= 256",        "severity": "error",   "message": "XM version must be >= 0x0100" },
+    { "id": "A3", "expression": "xmChannels <= 32",        "severity": "warning", "message": "XM supports at most 32 channels" },
+    { "id": "A4", "expression": "xmNumInstruments <= 128", "severity": "warning", "message": "XM supports at most 128 instruments" },
+    { "id": "A5", "expression": "xmSongLength <= 256",     "severity": "warning", "message": "Pattern order table supports at most 256 entries" }
+  ],
+  "navigation": {
+    "rootLabel": "XM Module",
+    "entries": [
+      { "label": "File Header",  "blockRef": "FileHeader" },
+      { "label": "Order Table",  "blockRef": "PatternOrderTable" },
+      { "label": "Patterns",     "blockRef": "PatternHeaders" },
+      { "label": "Instruments",  "blockRef": "InstrumentHeaders" },
+      { "label": "Sample Data",  "blockRef": "SampleData" }
     ]
   },
   "inspector": {
-    "displayFields": [ "xmTitle", "xmVersion", "xmChannels", "xmBPM" ],
-    "valueMaps": {
-      "xmVersion": {
-        "260": "v1.04 (current standard)"
-      },
-      "flags": {
-        "0": "Amiga frequency table",
-        "1": "Linear frequency table"
-      }
-    },
-    "tooltips": {
-      "xmMagic":    "Must begin with 'Extended Module: ' (17 ASCII bytes)",
-      "xmVersion":  "0x0104 (260) is the only widely-supported version",
-      "xmChannels": "Valid range 2–32 channels",
-      "xmBPM":      "Default playback speed in BPM at song start"
-    }
-  },
-  "assertions": [
-    { "id": "A1", "field": "xmMagic",    "operator": "startsWith", "value": "Extended Module:", "description": "Header must start with 'Extended Module:'" },
-    { "id": "A2", "field": "marker",     "operator": "eq",         "value": 26,                 "description": "Byte 37 must be 0x1A (EOF marker)" },
-    { "id": "A3", "field": "xmVersion",  "operator": "eq",         "value": 260,                "description": "Version must be 0x0104 (v1.04)" },
-    { "id": "A4", "field": "xmChannels", "operator": "between",    "value": [2, 32],             "description": "Channel count must be in range 2–32" }
-  ],
-  "navigation": {
-    "bookmarks": [
-      { "offset": 0,   "label": "Header Magic",         "color": "#E74C3C" },
-      { "offset": 17,  "label": "Song Title",            "color": "#3498DB" },
-      { "offset": 38,  "label": "Tracker Name",          "color": "#9B59B6" },
-      { "offset": 58,  "label": "Format Version",        "color": "#F39C12" },
-      { "offset": 64,  "label": "Song / Channel Info",   "color": "#27AE60" },
-      { "offset": 80,  "label": "Pattern Order Table",   "color": "#1ABC9C" }
+    "badge": "XM",
+    "primaryField": "xmModuleName",
+    "groups": [
+      { "name": "Identity",          "fields": [ "xmSignature", "xmModuleName", "xmTrackerName", "xmVersion" ] },
+      { "name": "Song Parameters",   "fields": [ "xmSongLength", "xmRestartPos", "xmChannels", "xmDefaultTempo", "xmDefaultBPM" ] },
+      { "name": "Structure Counts",  "fields": [ "xmNumPatterns", "xmNumInstruments" ] },
+      { "name": "Technical",         "fields": [ "xmMagicByte", "xmHeaderSize", "xmFlags" ] }
     ]
   },
   "exportTemplates": [
     {
-      "name": "XM Header Summary",
-      "fields": [ "xmTitle", "xmVersion", "xmChannels", "num_patterns", "num_instruments", "xmBPM" ],
-      "format": "text"
+      "name": "Module Summary",
+      "format": "text",
+      "template": "Module: {xmModuleName}\nTracker: {xmTrackerName}\nVersion: {xmVersion}\nChannels: {xmChannels}\nPatterns: {xmNumPatterns}\nInstruments: {xmNumInstruments}\nSong Length: {xmSongLength}\nTempo: {xmDefaultTempo}  BPM: {xmDefaultBPM}"
     },
     {
-      "name": "XM Metadata JSON",
-      "fields": [ "xmTitle", "tracker_name", "xmVersion", "xmChannels", "num_patterns", "num_instruments", "default_tempo", "xmBPM" ],
-      "format": "json"
+      "name": "CSV Metadata",
+      "format": "csv",
+      "template": "Field,Value\nModuleName,{xmModuleName}\nTracker,{xmTrackerName}\nVersion,{xmVersion}\nChannels,{xmChannels}\nPatterns,{xmNumPatterns}\nInstruments,{xmNumInstruments}\nSongLength,{xmSongLength}\nTempo,{xmDefaultTempo}\nBPM,{xmDefaultBPM}"
     }
   ],
-  "aiHints": [
-    "XM files always begin with exactly 'Extended Module: ' (17 bytes including trailing space) — any deviation indicates corruption or a non-XM file.",
-    "Byte 37 (0x1A) is a legacy DOS EOF marker inherited from earlier tracker formats to prevent 'type' from dumping binary to the console.",
-    "Version 0x0104 (260) is the only version in common use; files with other version bytes may not play correctly in most players.",
-    "The flags field (offset 74) bit 0 controls frequency table: 0 = Amiga logarithmic periods (original hardware), 1 = linear table (easier to implement, used by modern trackers).",
-    "Channels must be even (stereo pairs) and range 2–32; odd counts or values outside this range indicate a malformed or non-standard XM.",
-    "Each instrument can have up to 96 samples with independent envelope curves (volume, panning) — the instrument block follows after the 336-byte fixed header."
-  ],
   "forensic": {
-    "riskLevel": "low",
-    "notes": [
-      "XM files contain only audio data (patterns, samples, instrument metadata); no executable code.",
-      "Module title and tracker name fields are plain ASCII and may reveal authorship or creation tool.",
-      "Corrupted or deliberately malformed XMs have been used in buffer-overflow exploits in old libxmp/modplug versions — keep libraries patched."
+    "riskLevel": "LOW",
+    "suspiciousPatterns": [
+      "xmMagicByte != 26 — header tampered or corrupted",
+      "xmChannels > 32 — exceeds spec, possible non-standard fork or exploit",
+      "xmNumInstruments > 128 — exceeds spec, possible overflow attempt",
+      "Null bytes or non-printable characters in xmModuleName or xmTrackerName — possible steganography"
+    ],
+    "hidingTechniques": [
+      "Payload concealed in unused instrument or sample slots",
+      "Extra data appended after the last sample block",
+      "Non-printing characters embedded inside ASCII name fields"
+    ],
+    "timestampFields": [],
+    "notes": "XM files were widely distributed in demoscene and early internet warez. Malformed headers were sometimes crafted to crash older players."
+  },
+  "aiHints": {
+    "analysisContext": "XM is a structured binary tracker module with a fixed 80-byte header followed by a 256-byte order table and variable-length pattern and instrument blocks. Analysis should validate header consistency, count integrity and sample data encoding.",
+    "suggestedInspections": [
+      "Verify xmMagicByte equals 0x1A and xmSignature is exactly 'Extended Module: ' (17 bytes)",
+      "Cross-check xmNumPatterns and xmNumInstruments against actual block count in file",
+      "Inspect delta-encoded sample data blocks for embedded payloads or anomalies",
+      "Check xmTrackerName for unusual or spoofed software identifiers",
+      "Validate xmDefaultTempo and xmDefaultBPM are within typical musical ranges (BPM 32-255)"
     ]
   },
   "formatRelationships": [
-    { "format": "MOD", "relationship": "predecessor", "note": "XM extends the 4-channel Amiga MOD concept to 32 channels with envelopes." },
-    { "format": "IT",  "relationship": "contemporary", "note": "Impulse Tracker IT format is a competing advanced module format with similar goals." },
-    { "format": "S3M", "relationship": "predecessor",  "note": "ScreamTracker 3 S3M influenced XM instrument design." }
+    { "format": "MOD", "relationship": "ancestor", "description": "XM extends the ProTracker MOD format adding instruments, envelopes and 16-bit samples" },
+    { "format": "IT",  "relationship": "sibling",  "description": "Impulse Tracker IT is a contemporary format with similar multi-channel capabilities" },
+    { "format": "S3M", "relationship": "sibling",  "description": "ScreamTracker S3M shares the multi-channel sample-based approach" }
   ],
-  "software": [
-    { "name": "FastTracker 2",  "role": "Original authoring tool (Triton, 1994)" },
-    { "name": "MilkyTracker",   "role": "Cross-platform FT2-compatible editor" },
-    { "name": "OpenMPT",        "role": "Modern Windows module tracker (import/export)" },
-    { "name": "XMPlay",         "role": "Lightweight module player (Windows)" },
-    { "name": "libxmp",         "role": "C library for playback (cross-platform)" },
-    { "name": "VLC",            "role": "Plays XM via libxmp plugin" }
-  ],
-  "useCases": [
-    "Demoscene music authoring and playback",
-    "Retro game soundtracks (DOS/early Windows era)",
-    "Lightweight music format for embedded/mobile platforms",
-    "Chiptune and tracker music archiving"
-  ],
-  "technicalDetails": "FastTracker 2 module format created by Triton (1994). Supports linear or Amiga logarithmic frequency tables. Up to 32 channels and 128 instruments. Each instrument has up to 96 samples with independent volume and panning envelope curves (sustain + loop). Pattern data is event-based: note + instrument index + volume column + effect command per channel per row (64 rows/pattern default). Sample data stored as signed 8-bit or 16-bit PCM at the end of the file.",
-  "completenessScore": 86
+  "TechnicalDetails": {
+    "endianness": "Little-Endian",
+    "minimumFileSize": 336,
+    "headerSize": 80,
+    "patternOrderTableSize": 256,
+    "compressionScheme": "None (pattern cells use run-length packing per row)",
+    "sampleEncoding": "Delta-encoded signed 8-bit or 16-bit PCM",
+    "maxChannels": 32,
+    "maxInstruments": 128,
+    "maxPatterns": 256,
+    "specVersion": "1.04"
+  },
+  "QualityMetrics": {
+    "CompletenessScore": 92,
+    "LastUpdated": "2026-04-15",
+    "ReviewedBy": "WPFHexaEditor Team",
+    "KnownLimitations": "Pattern block sizes are variable and require sequential parsing to compute exact offsets."
+  }
 }

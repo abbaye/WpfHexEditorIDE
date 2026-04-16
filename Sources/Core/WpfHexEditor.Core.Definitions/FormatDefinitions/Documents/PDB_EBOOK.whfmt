@@ -1,0 +1,207 @@
+{
+  "diffMode": "binary",
+  "formatName": "Palm Database e-Book (PalmDOC / Mobipocket)",
+  "version": "1.0",
+  "extensions": [ ".pdb", ".prc", ".mobi" ],
+  "description": "Palm Database (PDB) is the container format used by Palm OS applications and data files, widely adopted for e-books via PalmDOC and Mobipocket formats. The 32-byte name field at offset 0 stores the document title. Attributes and version follow at offsets 32 and 34. The 8-byte type/creator field at offset 60 identifies the content type: 'BOOKMOBI' for Mobipocket, 'TEXtREAd' for PalmDOC, 'REAdmobi' for a Mobipocket variant. Record count at offset 76 specifies the number of PDB records. Mobipocket (.mobi) extends PDB with MOBI header blocks embedded in the first HTML record.",
+  "category": "Documents",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "references": {
+    "specifications": [
+      "Palm File Format Specification",
+      "Mobipocket File Format",
+      "PalmDOC Format",
+      "MobileRead Wiki — PDB/MOBI"
+    ],
+    "WebLinks": [
+      "https://en.wikipedia.org/wiki/PalmDOC",
+      "https://wiki.mobileread.com/wiki/PDB",
+      "https://wiki.mobileread.com/wiki/MOBI",
+      "https://wiki.mobileread.com/wiki/MOBI#MOBI_Header"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      { "hex": "424F4F4B4D4F4249", "offset": 60, "label": "'BOOKMOBI' — Mobipocket PDB type/creator", "weight": 1.0 },
+      { "hex": "5445587452456164", "offset": 60, "label": "'TEXtREAd' — PalmDOC text type/creator", "weight": 0.9 },
+      { "hex": "52454164", "offset": 60, "label": "'REAd' — PalmDOC reader type prefix", "weight": 0.8 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.8,
+    "required": true,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 3.0, "max": 7.5 },
+    "validation": {
+      "minFileSize": 78,
+      "maxSignatureOffset": 64,
+      "note": "Type/creator 8-byte field at offset 60. First 32 bytes are the document title (null-padded ASCII). Record count at offset 76 must be > 0."
+    }
+  },
+  "variables": {
+    "pdbTitle": "",
+    "pdbAttributes": 0,
+    "pdbVersion": 0,
+    "pdbCreateTime": 0,
+    "pdbTypeCreator": "",
+    "pdbRecordCount": 0
+  },
+  "blocks": [
+    {
+      "type": "field",
+      "name": "Document Title",
+      "offset": 0,
+      "length": 32,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "Document/database name (null-padded ASCII, max 31 chars + null terminator).",
+      "storeAs": "pdbTitle",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Attributes",
+      "offset": 32,
+      "length": 2,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "PDB attribute flags (uint16 BE). Bit 1 = read-only, bit 2 = dirty appInfo, bit 3 = backup.",
+      "storeAs": "pdbAttributes",
+      "valueType": "uint16"
+    },
+    {
+      "type": "field",
+      "name": "Version",
+      "offset": 34,
+      "length": 2,
+      "color": "#45B7D1",
+      "opacity": 0.35,
+      "description": "Application-specific version number (uint16 BE).",
+      "storeAs": "pdbVersion",
+      "valueType": "uint16"
+    },
+    {
+      "type": "field",
+      "name": "Creation Time",
+      "offset": 36,
+      "length": 4,
+      "color": "#FFEAA7",
+      "opacity": 0.35,
+      "description": "Creation timestamp (uint32 BE). Palm epoch is Jan 1, 1904 (Mac HFS time) or Jan 1, 1970 (Unix).",
+      "storeAs": "pdbCreateTime",
+      "valueType": "uint32"
+    },
+    {
+      "type": "signature",
+      "name": "Type / Creator",
+      "offset": 60,
+      "length": 8,
+      "color": "#FF6B6B",
+      "opacity": 0.5,
+      "description": "8-byte type+creator field: 'BOOKMOBI' = Mobipocket, 'TEXtREAd' = PalmDOC, 'REAdmobi' = alt Mobipocket.",
+      "storeAs": "pdbTypeCreator",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Record Count",
+      "offset": 76,
+      "length": 2,
+      "color": "#DDA0DD",
+      "opacity": 0.4,
+      "description": "Number of PDB records in the database (uint16 BE). Must be > 0 for a valid e-book.",
+      "storeAs": "pdbRecordCount",
+      "valueType": "uint16"
+    }
+  ],
+  "assertions": [
+    { "field": "pdbTypeCreator", "operator": "containsAny", "value": ["BOOKMOBI", "TEXtREAd", "REAdmobi"], "description": "Type/creator must match a known e-book PDB type" },
+    { "field": "pdbRecordCount", "operator": "greaterThan", "value": 0, "description": "Record count must be greater than 0" },
+    { "field": "pdbTitle", "operator": "notEmpty", "value": true, "description": "Document title should be non-empty" }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "Document Title", "offset": 0, "description": "32-byte null-padded document name" },
+      { "name": "Attributes & Version", "offset": 32, "description": "PDB attributes (2B) + version (2B)" },
+      { "name": "Type / Creator", "offset": 60, "description": "8-byte type+creator identifying e-book format" },
+      { "name": "Record Count", "offset": 76, "description": "Number of PDB records" }
+    ]
+  },
+  "inspector": {
+    "badge": "PDB",
+    "primaryField": "pdbTypeCreator",
+    "showQualityScore": true,
+    "groups": [
+      { "name": "Identity", "fields": ["pdbTitle", "pdbTypeCreator"] },
+      { "name": "Header", "fields": ["pdbAttributes", "pdbVersion", "pdbCreateTime"] },
+      { "name": "Records", "fields": ["pdbRecordCount"] }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "PDB e-Book Header (JSON)",
+      "format": "json",
+      "fields": ["pdbTitle", "pdbTypeCreator", "pdbAttributes", "pdbVersion", "pdbCreateTime", "pdbRecordCount"]
+    },
+    {
+      "name": "PDB Forensic Summary (CSV)",
+      "format": "csv",
+      "fields": ["pdbTitle", "pdbTypeCreator", "pdbRecordCount", "pdbCreateTime"]
+    }
+  ],
+  "forensic": {
+    "category": "document",
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      { "name": "DRM-locked Mobipocket", "condition": "pdbTypeCreator == 'BOOKMOBI'", "description": "BOOKMOBI files may contain Mobipocket DRM. De-DRM tools required for access.", "severity": "info" },
+      { "name": "Unexpected type/creator", "condition": "pdbTypeCreator not in known list", "description": "Unusual type/creator may indicate non-standard or obfuscated PDB content.", "severity": "warning" }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "PDB is a Palm OS container identified by the 8-byte type/creator field at offset 60, not a header magic at offset 0. For e-books: 'BOOKMOBI' = Mobipocket (also used by early Kindle), 'TEXtREAd' = PalmDOC (plain compressed HTML). MOBI extends PDB with MOBI/EXTH headers embedded in record 0. The record list starts at offset 78.",
+    "suggestedInspections": [
+      "Read type/creator at offset 60 to identify e-book subformat (BOOKMOBI vs TEXtREAd)",
+      "Check record count at offset 76 — first record contains the MOBI/PalmDOC header",
+      "For BOOKMOBI: locate MOBI header magic in first record for Mobipocket version",
+      "For TEXtREAd: first record header contains record size and compression type (1=none, 2=PalmDOC LZ77)",
+      "Inspect EXTH block (if present in MOBI) for author, publisher, ISBN, cover image offset",
+      "Verify Palm timestamp at offset 36 (epoch = Jan 1 1904 or 1970 depending on tool)"
+    ]
+  },
+  "software": [
+    "Calibre",
+    "Mobipocket Reader (discontinued)",
+    "Amazon Kindle (early firmware)",
+    "Palm Reader",
+    "KindleGen"
+  ],
+  "formatRelationships": {
+    "category": "Documents",
+    "extensions": [".pdb", ".prc", ".mobi"],
+    "relatedFormats": ["MOBI", "AZW", "EPUB", "LIT"],
+    "note": "MOBI (.mobi) is a Mobipocket file which is itself a PDB container. Early Amazon Kindle AZW files are also MOBI/PDB-based."
+  },
+  "MimeTypes": [ "application/x-mobipocket-ebook", "application/vnd.palm" ],
+  "UseCases": [
+    "Palm OS e-book reading",
+    "Mobipocket and early Kindle e-book distribution",
+    "Legacy e-book library migration",
+    "Digital preservation of Palm-era documents"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 87,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 6,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-15",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "ContainerFormat": "Palm Database (PDB)",
+    "Endianness": "big-endian",
+    "SubFormats": ["PalmDOC", "Mobipocket", "MOBI"],
+    "IdentificationField": "Type/Creator at offset 60 (8 bytes)",
+    "Note": "No fixed magic at offset 0. Identification is by type/creator field + file extension."
+  }
+}

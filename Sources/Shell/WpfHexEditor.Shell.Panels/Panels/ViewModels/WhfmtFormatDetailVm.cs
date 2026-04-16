@@ -12,6 +12,7 @@ using System;
 using System.Linq;
 using System.Windows.Input;
 using WpfHexEditor.Core.Interfaces;
+using WpfHexEditor.Core.Contracts;
 using WpfHexEditor.Core.ViewModels;
 using WpfHexEditor.Editor.Core;
 
@@ -29,6 +30,7 @@ public sealed class WhfmtFormatDetailVm : ViewModelBase
     private string  _category          = string.Empty;
     private string  _platform          = string.Empty;
     private string  _diffMode          = string.Empty;
+    private string  _preferredEditor   = "—";
     private string  _extensionsDisplay = string.Empty;
     private int     _qualityScore;
     private string  _detectionRulesSummary = string.Empty;
@@ -50,6 +52,7 @@ public sealed class WhfmtFormatDetailVm : ViewModelBase
     public string  Category             { get => _category;             set => SetField(ref _category, value); }
     public string  Platform             { get => _platform;             set => SetField(ref _platform, value); }
     public string  DiffMode             { get => _diffMode;             set => SetField(ref _diffMode, value); }
+    public string  PreferredEditor      { get => _preferredEditor;      set => SetField(ref _preferredEditor, value); }
     public string  ExtensionsDisplay    { get => _extensionsDisplay;    set => SetField(ref _extensionsDisplay, value); }
     public int     QualityScore         { get => _qualityScore;         set => SetField(ref _qualityScore, value); }
     public string  DetectionRulesSummary{ get => _detectionRulesSummary;set => SetField(ref _detectionRulesSummary, value); }
@@ -100,8 +103,9 @@ public sealed class WhfmtFormatDetailVm : ViewModelBase
         Version             = item.Version;
         Author              = item.Author;
         Category            = item.Category;
-        Platform            = string.IsNullOrEmpty(item.Platform) ? "—" : item.Platform;
-        DiffMode            = string.IsNullOrEmpty(item.DiffMode) ? "—" : item.DiffMode;
+        Platform            = string.IsNullOrEmpty(item.Platform)         ? "—" : item.Platform;
+        DiffMode            = string.IsNullOrEmpty(item.DiffMode)          ? "—" : item.DiffMode;
+        PreferredEditor     = string.IsNullOrEmpty(item.PreferredEditor)   ? "—" : item.PreferredEditor;
         ExtensionsDisplay   = item.ExtensionsDisplay;
         QualityScore        = item.QualityScore >= 0 ? item.QualityScore : 0;
         IsLoadFailure       = item.IsLoadFailure;
@@ -151,6 +155,7 @@ public sealed class WhfmtFormatDetailVm : ViewModelBase
         Category             = string.Empty;
         Platform             = "—";
         DiffMode             = "—";
+        PreferredEditor      = "—";
         ExtensionsDisplay    = string.Empty;
         QualityScore         = 0;
         DetectionRulesSummary= "—";

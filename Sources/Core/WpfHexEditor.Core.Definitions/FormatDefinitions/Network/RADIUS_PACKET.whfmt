@@ -1,0 +1,223 @@
+{
+  "diffMode": "binary",
+  "formatName": "RADIUS Authentication Packet",
+  "version": "1.0",
+  "extensions": [ ".radius" ],
+  "description": "Remote Authentication Dial-In User Service (RADIUS) packet format as defined in RFC 2865 (authentication/authorization) and RFC 2866 (accounting). RADIUS is a UDP-based AAA (Authentication, Authorization, Accounting) protocol using port 1812 (auth/authz) and port 1813 (accounting). The fixed 20-byte header: Code (1B), Identifier (1B), Length (2B BE), Authenticator (16B). Code values: 1=Access-Request, 2=Access-Accept, 3=Access-Reject, 4=Accounting-Request, 5=Accounting-Response, 11=Access-Challenge, 12=Status-Server (RFC 5997), 13=Status-Client, 255=Reserved. After the header, the packet contains Type-Length-Value (TLV) attributes. Each attribute: Type (1B), Length (1B), Value (variable). Common attribute types: 1=User-Name, 2=User-Password (obfuscated with MD5), 3=CHAP-Password, 4=NAS-IP-Address, 5=NAS-Port, 6=Service-Type, 7=Framed-Protocol, 8=Framed-IP-Address, 11=Filter-ID, 18=Reply-Message, 25=Class, 26=Vendor-Specific (VSA), 27=Session-Timeout, 31=Calling-Station-Id (MAC), 32=NAS-Identifier, 40=Acct-Status-Type, 80=Message-Authenticator (HMAC-MD5, RFC 3579). User-Password is obfuscated (not encrypted) using MD5(shared_secret + authenticator) XOR with password.",
+  "category": "Network",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "HexEditor",
+  "references": [
+    "https://www.rfc-editor.org/rfc/rfc2865",
+    "https://www.rfc-editor.org/rfc/rfc2866",
+    "https://www.rfc-editor.org/rfc/rfc3579"
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "value": "01",
+        "offset": 0,
+        "label": "RADIUS Access-Request (Code 1) — authentication request from NAS",
+        "weight": 0.5
+      },
+      {
+        "value": "02",
+        "offset": 0,
+        "label": "RADIUS Access-Accept (Code 2) — successful authentication response",
+        "weight": 0.5
+      }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.3,
+    "Strength": "Weak",
+    "validation": "Code byte at offset 0 must be 1-13 or 255. Length uint16 BE at offset 2-3 must be >= 20 (header size). Authenticator at offset 4-19 is 16 bytes. Total packet size matches length field. UDP port 1812 or 1813 in encapsulating transport header."
+  },
+  "variables": {},
+  "blocks": [
+    {
+      "name": "radiusCode",
+      "offset": 0,
+      "size": 1,
+      "type": "uint8",
+      "description": "RADIUS packet code — 1-byte unsigned integer at offset 0; identifies the packet type and direction: 1=Access-Request (NAS to server, contains credentials), 2=Access-Accept (server to NAS, authentication success), 3=Access-Reject (authentication failure), 4=Accounting-Request (NAS to accounting server), 5=Accounting-Response (accounting server to NAS), 11=Access-Challenge (server requests more info), 12=Status-Server, 13=Status-Client, 255=Reserved",
+      "storeAs": "radiusCode",
+      "valueMap": {
+        "1": "Access-Request — authentication request",
+        "2": "Access-Accept — authentication success",
+        "3": "Access-Reject — authentication failure",
+        "4": "Accounting-Request",
+        "5": "Accounting-Response",
+        "11": "Access-Challenge — request more auth info",
+        "12": "Status-Server",
+        "13": "Status-Client",
+        "255": "Reserved"
+      }
+    },
+    {
+      "name": "radiusIdentifier",
+      "offset": 1,
+      "size": 1,
+      "type": "uint8",
+      "description": "Packet identifier — 1-byte unsigned integer at offset 1; used to match requests and responses; the NAS assigns an identifier to each Access-Request and the server echoes it in the response; allows multiplexing of multiple concurrent authentication requests",
+      "storeAs": "radiusIdentifier"
+    },
+    {
+      "name": "radiusLength",
+      "offset": 2,
+      "size": 2,
+      "type": "uint16",
+      "endian": "BE",
+      "description": "Total packet length — 2-byte big-endian unsigned integer at offset 2; includes the 20-byte header plus all attribute bytes; minimum 20 (header only), maximum 4096; bytes beyond this length are ignored; bytes shorter than this length indicate a malformed packet",
+      "storeAs": "radiusLength"
+    },
+    {
+      "name": "radiusAuthenticator",
+      "offset": 4,
+      "size": 16,
+      "type": "bytes",
+      "description": "Authenticator — 16 bytes at offset 4; in Access-Request: random 16-byte value used as challenge for User-Password obfuscation (MD5 XOR); in Access-Accept/Reject/Challenge: Response Authenticator = MD5(Code+ID+Length+RequestAuth+Attributes+SharedSecret); the shared secret is never transmitted but both ends must know it",
+      "storeAs": "radiusAuthenticator"
+    },
+    {
+      "name": "radiusFirstAttrType",
+      "offset": 20,
+      "size": 1,
+      "type": "uint8",
+      "description": "First attribute type — 1-byte unsigned integer at offset 20 (first byte of the TLV attribute list); common first attributes: 1=User-Name (username in cleartext), 4=NAS-IP-Address, 5=NAS-Port, 32=NAS-Identifier, 31=Calling-Station-Id (MAC address); Access-Request packets typically start with User-Name (type 1)",
+      "storeAs": "radiusFirstAttrType",
+      "valueMap": {
+        "1": "User-Name (cleartext username)",
+        "2": "User-Password (MD5-obfuscated)",
+        "4": "NAS-IP-Address",
+        "5": "NAS-Port",
+        "6": "Service-Type",
+        "18": "Reply-Message (human-readable text)",
+        "26": "Vendor-Specific (VSA)",
+        "31": "Calling-Station-Id (MAC address)",
+        "32": "NAS-Identifier",
+        "80": "Message-Authenticator (HMAC-MD5)"
+      }
+    },
+    {
+      "name": "radiusFirstAttrLength",
+      "offset": 21,
+      "size": 1,
+      "type": "uint8",
+      "description": "First attribute length — 1-byte unsigned integer at offset 21; total length of the first attribute including the 2-byte type+length prefix; minimum 2, maximum 255; the attribute value occupies bytes from offset 22 to offset 20+length-1",
+      "storeAs": "radiusFirstAttrLength"
+    }
+  ],
+  "assertions": [
+    {
+      "field": "radiusCode",
+      "op": "in",
+      "value": [ 1, 2, 3, 4, 5, 11, 12, 13, 255 ],
+      "description": "Code must be a defined RADIUS packet type: 1-5 (auth/accounting), 11-13 (status), or 255 (reserved)"
+    },
+    {
+      "field": "radiusLength",
+      "op": "gte",
+      "value": 20,
+      "description": "Total packet length must be >= 20 bytes (minimum RADIUS header size)"
+    },
+    {
+      "field": "radiusLength",
+      "op": "lte",
+      "value": 4096,
+      "description": "Total packet length must not exceed 4096 bytes per RFC 2865"
+    }
+  ],
+  "navigation": {
+    "entryPoint": "radiusCode",
+    "sections": [
+      { "name": "RADIUS Fixed Header", "offset": 0, "size": 20 },
+      { "name": "Attribute List", "offset": 20, "description": "Variable-length TLV attributes (Type+Length+Value for each)" }
+    ]
+  },
+  "inspector": {
+    "badge": "RADIUS",
+    "primaryField": "radiusCode",
+    "groups": [
+      {
+        "name": "Packet Identity",
+        "fields": [ "radiusCode", "radiusIdentifier" ]
+      },
+      {
+        "name": "Size and Auth",
+        "fields": [ "radiusLength", "radiusAuthenticator" ]
+      },
+      {
+        "name": "First Attribute",
+        "fields": [ "radiusFirstAttrType", "radiusFirstAttrLength" ]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "RADIUS Packet Summary",
+      "format": "txt",
+      "template": "RADIUS Packet\n=============\nCode         : {radiusCode}\nIdentifier   : {radiusIdentifier}\nLength       : {radiusLength}\nAuthenticator: {radiusAuthenticator}\nFirst Attr   : type={radiusFirstAttrType} len={radiusFirstAttrLength}\n"
+    },
+    {
+      "name": "RADIUS Forensic Report (CSV)",
+      "format": "csv",
+      "template": "Field,Value\nCode,{radiusCode}\nIdentifier,{radiusIdentifier}\nLength,{radiusLength}\nAuthenticator,{radiusAuthenticator}\nFirstAttributeType,{radiusFirstAttrType}\nFirstAttributeLength,{radiusFirstAttrLength}\n"
+    }
+  ],
+  "forensic": {
+    "importance": "HIGH",
+    "riskLevel": "high",
+    "notes": "RADIUS packets carry authentication credentials. User-Name (attribute 1) is cleartext and reveals the username in every Access-Request. User-Password (attribute 2) is obfuscated with MD5+shared_secret — the shared secret can be brute-forced offline if the authenticator is known (captured Access-Request + Access-Accept pair). Access-Request packets reveal NAS-IP-Address, Calling-Station-Id (client MAC), and NAS-Identifier. Reply-Message in Access-Reject may reveal security policy information. Message-Authenticator (attribute 80) HMAC-MD5 can be used to verify or attack the shared secret.",
+    "indicators": [
+      "Code byte 1-13 at offset 0",
+      "UDP port 1812 or 1813",
+      "16-byte authenticator at offset 4",
+      "Attribute type 1 (User-Name) in cleartext",
+      "Access-Request/Accept pair enables shared secret attack"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "RADIUS is the primary AAA protocol for network access control (802.1X wired/wireless, VPN, dial-up). The fixed 20-byte header is followed by variable-length TLV attributes. User-Name is always cleartext. User-Password uses weak MD5-based obfuscation keyed with the shared secret. Captured RADIUS traffic can reveal usernames and enable offline password recovery.",
+    "suggestedInspections": [
+      "Extract all User-Name (type 1) attributes to build a list of authenticated users in the capture period",
+      "Identify Access-Request / Access-Reject pairs to find failed authentication attempts and potential brute-force attacks",
+      "Extract NAS-IP-Address (type 4) and NAS-Identifier (type 32) attributes to map the network access infrastructure",
+      "Capture Access-Request + matching Access-Accept pairs for offline shared secret brute-forcing using tools like freeradius-utils or hashcat",
+      "Look for unusual Code values or missing Message-Authenticator (attribute 80) which indicate potentially forged or malformed packets",
+      "Extract Calling-Station-Id (attribute 31) to identify MAC addresses of authenticating devices for device correlation"
+    ]
+  },
+  "software": [
+    { "name": "FreeRADIUS", "vendor": "FreeRADIUS Project", "url": "https://freeradius.org" },
+    { "name": "Wireshark (RADIUS dissector)", "vendor": "Wireshark Foundation", "url": "https://www.wireshark.org" },
+    { "name": "Cisco ISE", "vendor": "Cisco", "url": "https://www.cisco.com/c/en/us/products/security/identity-services-engine/index.html" },
+    { "name": "radsniff / radtest", "vendor": "FreeRADIUS Project", "url": "https://freeradius.org/radiusd/man/radsniff.html" },
+    { "name": "Network Policy Server (NPS)", "vendor": "Microsoft", "url": "https://docs.microsoft.com/en-us/windows-server/networking/technologies/nps/nps-top" }
+  ],
+  "formatRelationships": [
+    { "format": "ISAKMP", "relationship": "ISAKMP/IKE is used for VPN authentication; RADIUS provides the backend AAA for VPN user credentials" },
+    { "format": "TFTP", "relationship": "Both TFTP and RADIUS are UDP-based network management protocols used in enterprise infrastructure" },
+    { "format": "PCAP", "relationship": "RADIUS packets are captured in pcap/pcapng files for analysis; Wireshark can decode them with the shared secret configured" }
+  ],
+  "MimeTypes": [ "application/octet-stream" ],
+  "UseCases": [
+    "802.1X wired and wireless network authentication",
+    "VPN user authentication and authorization",
+    "Dial-up and PPP authentication",
+    "Network access control (NAC) policy enforcement",
+    "Forensic analysis of authentication events and credential exposure"
+  ],
+  "QualityMetrics": {
+    "LastUpdated": "2026-04-15",
+    "CompletenessScore": 86,
+    "ReviewedBy": "WPFHexaEditor Team"
+  },
+  "TechnicalDetails": {
+    "udpPorts": { "auth": 1812, "accounting": 1813, "legacy_auth": 1645, "legacy_acct": 1646 },
+    "headerSize": 20,
+    "maxPacketSize": 4096,
+    "endianness": "BigEndian",
+    "userPasswordObfuscation": "MD5(shared_secret + authenticator) XOR password (16-byte blocks)",
+    "rfcs": [ "RFC 2865 (auth/authz)", "RFC 2866 (accounting)", "RFC 3579 (EAP support)", "RFC 5997 (status server)" ]
+  }
+}

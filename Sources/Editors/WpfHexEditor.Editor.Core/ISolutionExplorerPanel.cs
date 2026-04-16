@@ -5,6 +5,7 @@
 //////////////////////////////////////////////
 
 using System.Collections.Generic;
+using WpfHexEditor.Core.Contracts;
 
 namespace WpfHexEditor.Editor.Core;
 

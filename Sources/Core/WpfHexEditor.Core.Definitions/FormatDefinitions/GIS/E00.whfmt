@@ -1,0 +1,209 @@
+{
+  "diffMode": "text",
+  "formatName": "ESRI ArcInfo E00 Exchange Format",
+  "version": "1.0",
+  "extensions": [".e00", ".e01", ".e02"],
+  "description": "ESRI ArcInfo E00 (also called ARC/INFO Export Format) is a text-based exchange format for transferring ArcInfo coverages between systems. First introduced with ARC/INFO 3.x in the early 1980s, E00 encodes geographic feature data (arcs, polygons, points, annotations) along with associated attribute tables in a compact, self-describing ASCII structure. The file begins with 'EXP  ' followed by a compression level character (0=uncompressed, 1=partial, 2=full). The remainder contains sections for ARC (line geometry), CNT (centroid), LAB (label point), PAL (polygon arcs), PRJ (projection), TOL (tolerances), IFO (INFO data model), and SIN/EOD (end of data). E00 remains important for legacy GIS migration, cartographic data preservation, and systems that predate modern geodata formats like GeoJSON, GeoPackage, and Shapefile.",
+  "category": "GIS",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "text-editor",
+  "references": {
+    "specifications": [
+      "ESRI ArcInfo Export Format Documentation v7.x",
+      "ESRI ARC/INFO Export/Import command reference"
+    ],
+    "WebLinks": [
+      "https://en.wikipedia.org/wiki/ARC/INFO_Export_format",
+      "https://gdal.org/drivers/vector/avcbin.html",
+      "https://support.esri.com/en-us/knowledge-base/how-to-import-an-e00-file-into-arcgis-000004212"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      {
+        "value": "4558502020",
+        "offset": 0,
+        "label": "'EXP  ' E00 export keyword at file start",
+        "weight": 0.9
+      }
+    ],
+    "matchMode": "first",
+    "MinimumScore": 0.7,
+    "Strength": "Medium",
+    "EntropyHint": "Low-medium — ASCII text with numeric coordinate data"
+  },
+  "variables": {
+    "e00ExportKw": "",
+    "e00Compression": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "EXP Keyword",
+      "offset": 0,
+      "length": 5,
+      "color": "#FF6B6B",
+      "opacity": 0.85,
+      "description": "The 5-character ASCII keyword 'EXP  ' (note two trailing spaces) that identifies this as an ArcInfo E00 export file. Immediately followed by the compression level character.",
+      "storeAs": "e00ExportKw",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Compression Level",
+      "offset": 5,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.5,
+      "description": "Single ASCII digit indicating compression level. '0' (0x30): uncompressed — geometry stored as plain text coordinates. '1' (0x31): partial compression — short runs encoded. '2' (0x32): full compression — run-length encoding for space efficiency. Uncompressed files are directly readable; compressed files require the AVC (ArcInfo Vector Coverage) library or GDAL to decode.",
+      "storeAs": "e00Compression",
+      "valueType": "uint8",
+      "valueMap": {
+        "48": "0 — uncompressed",
+        "49": "1 — partially compressed",
+        "50": "2 — fully compressed"
+      }
+    },
+    {
+      "type": "field",
+      "name": "ARC Section",
+      "offset": "dynamic",
+      "length": "dynamic",
+      "color": "#95E1D3",
+      "opacity": 0.35,
+      "description": "ARC section: begins with 'ARC  ' header, contains arc geometry as sequences of x,y coordinate pairs. Each arc entry: cover-id, user-id, from-node, to-node, left-polygon, right-polygon, number-of-vertices, then vertex pairs (one per line). Terminated by '-1  -1  -1  -1  -1  -1  -1' sentinel line."
+    },
+    {
+      "type": "field",
+      "name": "PAL Section",
+      "offset": "dynamic",
+      "length": "dynamic",
+      "color": "#FFE66D",
+      "opacity": 0.30,
+      "description": "PAL (polygon arc list) section: begins with 'PAL  '. Lists the arcs composing each polygon. Each polygon entry: polygon-id, min-x, min-y, max-x, max-y, arc-count, then arc-id list (positive=counterclockwise, negative=clockwise direction). Used to reconstruct polygon topology from arc geometry."
+    },
+    {
+      "type": "field",
+      "name": "PRJ Section",
+      "offset": "dynamic",
+      "length": "dynamic",
+      "color": "#C3A6FF",
+      "opacity": 0.30,
+      "description": "PRJ (projection) section: defines the map projection and geographic reference system. Contains ESRI-format projection parameters such as Projection, Datum, Units, Spheroid, Parameters, Zone, and False_Easting/Northing. Begins with 'PRJ  ' keyword and ends with 'EOD'. If absent, data is assumed to be in geographic (lat/lon decimal degrees) coordinates."
+    }
+  ],
+  "assertions": [
+    {
+      "name": "StartsWithEXP",
+      "expression": "e00ExportKw == 'EXP  '",
+      "severity": "error",
+      "message": "File does not start with 'EXP  '. Not a valid ArcInfo E00 exchange file."
+    },
+    {
+      "name": "CompressionLevelValid",
+      "expression": "e00Compression in [0x30, 0x31, 0x32]",
+      "severity": "warning",
+      "message": "Compression level byte is not '0', '1', or '2'. Unrecognized compression setting; file may not parse correctly."
+    },
+    {
+      "name": "EODPresent",
+      "expression": "containsPattern('EOD')",
+      "severity": "info",
+      "message": "No 'EOD' end-of-data marker found. E00 files should terminate with an EOD section. File may be truncated."
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "EXP Header", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
+      { "name": "ARC Section", "offset": "dynamic", "icon": "\uE8B7", "color": "#95E1D3" },
+      { "name": "PRJ Section", "offset": "dynamic", "icon": "\uE946", "color": "#C3A6FF" }
+    ]
+  },
+  "inspector": {
+    "badge": "E00",
+    "primaryField": "e00ExportKw",
+    "groups": [
+      {
+        "title": "File Header",
+        "icon": "\uE71B",
+        "fields": ["e00ExportKw", "e00Compression"]
+      },
+      {
+        "title": "Coverage Sections",
+        "icon": "\uE8B7",
+        "fields": ["arcSection", "palSection", "prjSection"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "Coverage Metadata (JSON)",
+      "format": "json",
+      "fields": ["compressionLevel", "arcCount", "polygonCount", "projection", "boundingBox"]
+    },
+    {
+      "name": "Arc Geometry (CSV)",
+      "format": "csv",
+      "fields": ["arcId", "fromNode", "toNode", "leftPolygon", "rightPolygon", "vertexCount"]
+    }
+  ],
+  "forensic": {
+    "riskLevel": "LOW",
+    "notes": "Legacy GIS data; may contain surveyed boundary data or infrastructure layouts of historical significance.",
+    "suspiciousPatterns": [
+      "Coordinates with implausible values (outside -180/+180 or -90/+90 for geographic data)",
+      "Truncated ARC sections indicating incomplete file transfer",
+      "Missing PRJ section leaving coordinate system ambiguous"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "ArcInfo E00 text format. File structure: 'EXP  N' header (N=compression 0/1/2), then named sections. Each section ends with a sentinel value (e.g. '-1 -1 -1 -1 -1 -1 -1' for ARC) or 'EOD'. Sections: ARC (arc topology), CNT (polygon centroids), LAB (label points), PAL (polygon-arc list), PRJ (projection), TOL (build tolerances), IFO (INFO tables with attribute data), SIN (single precision flag). GDAL can read E00 via the AVCBin/AVCE00 driver. Uncompressed E00 is directly parseable as plain text.",
+    "suggestedInspections": [
+      "Read first 6 bytes to confirm 'EXP  ' keyword and extract compression level (0=plain text, 1/2=compressed)",
+      "For uncompressed files: scan for section headers ('ARC  ', 'PAL  ', 'LAB  ', 'PRJ  ', 'IFO  ') to map coverage structure",
+      "Parse ARC section to count arcs and extract bounding coordinates for spatial extent determination",
+      "Find PRJ section to identify the map projection and datum for georeferencing",
+      "Inspect IFO section for attribute table field definitions (column names, types, widths) and data records",
+      "Check for 'EOD' end marker to verify file completeness after potential multi-part split"
+    ]
+  },
+  "software": [
+    { "name": "GDAL (AVCE00 driver)", "url": "https://gdal.org/drivers/vector/avcbin.html" },
+    { "name": "ESRI ArcGIS (Import)", "url": "https://www.esri.com" },
+    { "name": "QGIS", "url": "https://qgis.org" },
+    { "name": "avce00 (open-source library)", "url": "https://github.com/maptools/avce00" }
+  ],
+  "formatRelationships": [
+    { "format": "SHP", "relation": "successor — Shapefile replaced E00 for data exchange" },
+    { "format": "GEOJSON", "relation": "modern equivalent for web GIS workflows" },
+    { "format": "GPKG", "relation": "modern OGC standard replacement" },
+    { "format": "DXF", "relation": "alternative for CAD/GIS interchange" }
+  ],
+  "MimeTypes": [
+    "text/plain",
+    "application/x-esri-e00"
+  ],
+  "UseCases": [
+    "Legacy ArcInfo coverage migration to modern GIS formats",
+    "Historical cartographic data preservation and digitization archives",
+    "Government land boundary and cadastral data from 1980s-2000s",
+    "Academic GIS datasets from pre-Shapefile era",
+    "Forensic GIS investigation of historical infrastructure layouts"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 82,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 5,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-15",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "encoding": "ASCII text (possibly with run-length compression)",
+    "compressionLevels": "0=none, 1=partial, 2=full",
+    "topologyModel": "ARC/NODE — arcs with from/to nodes and left/right polygons",
+    "attributeStorage": "IFO section (ArcInfo INFO tables)",
+    "projectionInfo": "PRJ section (ESRI projection format)"
+  }
+}

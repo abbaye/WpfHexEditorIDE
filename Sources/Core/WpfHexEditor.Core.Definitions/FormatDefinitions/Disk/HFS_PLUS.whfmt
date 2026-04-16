@@ -1,343 +1,274 @@
 {
-  "diffMode": "binary",
-  "formatName": "HFS+ (Mac OS Extended)",
+  "formatName": "HFS+ File System",
   "version": "1.0",
-  "extensions": [".dmg", ".hfs", ".img"],
-  "description": "Apple HFS+ (Hierarchical Filesystem Plus) Volume Header at offset 1024 bytes. Identified by 'H+' (0x482B) magic. Replaced HFS in 1998, succeeded by APFS in macOS 10.13. All fields are big-endian. Supports resource forks, journaling, case-sensitivity (HFSX).",
+  "diffMode": "binary",
+  "extensions": [
+    ".dmg",
+    ".hfs",
+    ".img"
+  ],
+  "description": "HFS+ (Mac OS Extended) is Apple's journaling filesystem introduced in Mac OS 8.1. The volume header is located at byte offset 1024 and starts with the 2-byte signature 0x482B ('H+') for HFS+ or 0x4858 ('HX') for HFSX (case-sensitive variant).",
   "category": "Disk",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
-  "references": {
-    "specifications": [
-      "Apple HFS+ Volume Format Technical Note TN1150",
-      "Mac OS X Internals — Amit Singh (Chapter 12)",
-      "hfsplus(8) Linux manual page"
-    ],
-    "WebLinks": [
-      "https://developer.apple.com/library/archive/technotes/tn/tn1150.html",
-      "https://en.wikipedia.org/wiki/HFS_Plus",
-      "https://github.com/libyal/libfsntfs/blob/main/documentation/HFS%2B%20volume%20format.asciidoc"
-    ]
-  },
+  "MimeTypes": [
+    "application/octet-stream",
+    "application/x-apple-diskimage"
+  ],
+  "UseCases": [
+    "macOS system volume and external drive filesystem",
+    "Apple Time Machine backup disk images",
+    "Digital forensics of macOS devices and disk images"
+  ],
+  "references": [
+    "https://developer.apple.com/library/archive/technotes/tn/tn1150.html",
+    "https://github.com/libyal/libhfsplus/blob/main/documentation/HFS+%20volume%20format.asciidoc",
+    "https://www.nationalarchives.gov.uk/PRONOM/fmt/542"
+  ],
+  "software": [
+    {
+      "name": "hfsplus (Linux)",
+      "url": "https://linux.die.net/man/8/mkfs.hfsplus",
+      "role": "Linux HFS+ formatter and checker"
+    },
+    {
+      "name": "Disk Utility (macOS)",
+      "url": "https://support.apple.com/guide/disk-utility/",
+      "role": "Apple disk management tool"
+    },
+    {
+      "name": "The Sleuth Kit",
+      "url": "https://www.sleuthkit.org/",
+      "role": "Open-source forensic toolkit with HFS+ support"
+    }
+  ],
+  "formatRelationships": [
+    {
+      "format": "HFS",
+      "relationship": "HFS+ supersedes the original HFS (Mac OS Standard) filesystem"
+    },
+    {
+      "format": "APFS",
+      "relationship": "APFS replaces HFS+ on modern macOS (10.13+) and iOS devices"
+    },
+    {
+      "format": "DMG",
+      "relationship": "Apple Disk Images (.dmg) frequently contain HFS+ formatted volumes"
+    }
+  ],
   "detection": {
     "signatures": [
       {
-        "value": "482B",
         "offset": 1024,
-        "label": "'H+' (0x482B) — HFS+ Volume Header signature at offset 1024 (byte 1024 of volume/partition)",
+        "value": "482B",
+        "label": "'H+' HFS+ volume header signature",
         "weight": 1.0
       },
       {
-        "value": "4858",
         "offset": 1024,
-        "label": "'HX' (0x4858) — HFSX case-sensitive Volume Header signature at offset 1024",
+        "value": "4858",
+        "label": "'HX' HFSX case-sensitive volume header signature",
         "weight": 0.9
       }
     ],
     "matchMode": "any",
-    "MinimumScore": 0.9,
-    "required": true,
+    "MinimumScore": 85,
     "Strength": "Strong",
-    "EntropyHint": { "min": 2.0, "max": 7.5 },
-    "validation": {
-      "minFileSize": 4096,
-      "maxSignatureOffset": 1026
-    }
+    "EntropyHint": {
+      "min": 4.0,
+      "max": 8.0,
+      "note": "Journaled volumes have moderate-to-high entropy"
+    },
+    "validation": "2-byte signature at offset 1024 must be 0x482B or 0x4858. Version at offset 1026 (2B BE) must be 4 or 5."
   },
-  "variables": {
-    "hfspSignature": 0,
-    "hfspVersion": 0,
-    "hfspAttributes": 0,
-    "hfspLastMounted": "",
-    "hfspCreateDate": 0,
-    "hfspModifyDate": 0,
-    "hfspFileCount": 0,
-    "hfspFolderCount": 0,
-    "hfspBlockSize": 0,
-    "hfspTotalBlocks": 0,
-    "hfspFreeBlocks": 0
-  },
-  "blocks": [
+  "variables": [
     {
-      "type": "field",
-      "name": "Signature",
+      "name": "hfsPlusSig",
+      "type": "ascii",
       "offset": 1024,
       "length": 2,
-      "color": "#FF6B6B",
-      "opacity": 0.45,
-      "description": "HFS+ Volume Header magic as big-endian uint16. 0x482B ('H+') = HFS+ case-insensitive. 0x4858 ('HX') = HFSX case-sensitive. Located at offset 1024 to allow 512 bytes for boot code and 512 bytes for reserved space on the volume.",
-      "storeAs": "hfspSignature",
-      "valueType": "uint16",
-      "endianness": "big",
-      "valueMap": {
-        "18475": "0x482B — HFS+ (case-insensitive, standard Mac OS Extended)",
-        "18520": "0x4858 — HFSX (case-sensitive HFS+)"
-      }
+      "description": "Volume header signature: 'H+' or 'HX'"
     },
     {
-      "type": "field",
-      "name": "Version",
+      "name": "hfsPlusVersion",
+      "type": "uint16",
       "offset": 1026,
       "length": 2,
-      "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "HFS+ format version as big-endian uint16. Version 4 = standard HFS+ (case-insensitive). Version 5 = HFSX (case-sensitive). These correspond to kHFSPlusVersion and kHFSXVersion constants in Apple's HFS headers.",
-      "storeAs": "hfspVersion",
-      "valueType": "uint16",
-      "endianness": "big",
+      "endian": "big",
+      "description": "Volume header version",
       "valueMap": {
-        "4": "HFS+ version 4 (case-insensitive, standard Mac OS Extended)",
-        "5": "HFSX version 5 (case-sensitive HFS+)"
+        "4": "HFS+ v4",
+        "5": "HFS+ v5 / HFSX"
       }
     },
     {
-      "type": "field",
-      "name": "Volume Attributes",
-      "offset": 1028,
-      "length": 4,
-      "color": "#95E1D3",
-      "opacity": 0.3,
-      "description": "HFS+ volume attribute flags as big-endian uint32. Key bits: bit2=kHFSVolumeUnmountedBit (cleanly unmounted), bit7=kHFSVolumeSparedBlocksBit, bit11=kHFSBootVolumeInconsistent, bit13=kHFSCatalogNodeIDsReused, bit15=kHFSVolumeJournaledBit.",
-      "storeAs": "hfspAttributes",
-      "valueType": "uint32",
-      "endianness": "big"
-    },
-    {
-      "type": "field",
-      "name": "Last Mounted Version",
-      "offset": 1032,
-      "length": 4,
-      "color": "#A8E6CF",
-      "opacity": 0.3,
-      "description": "4-byte ASCII code identifying the last OS to mount this volume. 'HFSJ' = Mac OS X with journaling enabled. '8.10' = Mac OS 8.1-X. '10.0' = macOS 10.x. 'fsck' = fsck_hfs repaired the volume. Used for mount history forensics.",
-      "storeAs": "hfspLastMounted",
-      "valueType": "ascii",
-      "endianness": "big"
-    },
-    {
-      "type": "field",
-      "name": "Create Date (Mac epoch)",
-      "offset": 1040,
-      "length": 4,
-      "color": "#FFE66D",
-      "opacity": 0.3,
-      "description": "Volume creation timestamp as big-endian uint32. Seconds since January 1, 1904 00:00:00 UTC (Mac OS epoch, not Unix epoch). Subtract 2082844800 to convert to Unix timestamp. This timestamp is local time-biased on older Mac OS versions.",
-      "storeAs": "hfspCreateDate",
-      "valueType": "uint32",
-      "endianness": "big"
-    },
-    {
-      "type": "field",
-      "name": "Modify Date",
-      "offset": 1044,
-      "length": 4,
-      "color": "#FFE66D",
-      "opacity": 0.2,
-      "description": "Last modification timestamp of the volume as big-endian uint32 Mac epoch. Updated by the OS whenever the volume content changes. Compare with create date to determine usage history.",
-      "storeAs": "hfspModifyDate",
-      "valueType": "uint32",
-      "endianness": "big"
-    },
-    {
-      "type": "field",
-      "name": "File Count",
+      "name": "hfsPlusFileCount",
+      "type": "uint32",
       "offset": 1056,
       "length": 4,
-      "color": "#FF8C94",
-      "opacity": 0.3,
-      "description": "Total number of files on the volume as big-endian uint32. Does not include folder entries or special HFS+ reserved files (catalog, extents, attributes, startup, alloc). Updated whenever files are created or deleted.",
-      "storeAs": "hfspFileCount",
-      "valueType": "uint32",
-      "endianness": "big"
+      "endian": "big",
+      "description": "Total number of files on volume"
     },
     {
-      "type": "field",
-      "name": "Folder Count",
+      "name": "hfsPlusFolderCount",
+      "type": "uint32",
       "offset": 1060,
       "length": 4,
-      "color": "#FF8C94",
-      "opacity": 0.2,
-      "description": "Total number of folders on the volume as big-endian uint32. Includes all directories but not the root folder itself. The root folder is implicitly defined and not counted in this field.",
-      "storeAs": "hfspFolderCount",
-      "valueType": "uint32",
-      "endianness": "big"
+      "endian": "big",
+      "description": "Total number of folders on volume"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "ReservedBootArea",
+      "offset": 0,
+      "length": 1024,
+      "description": "Reserved boot area (two 512-byte boot blocks, legacy from HFS)"
     },
     {
-      "type": "field",
-      "name": "Block Size",
-      "offset": 1064,
-      "length": 4,
-      "color": "#C5A3FF",
-      "opacity": 0.3,
-      "description": "Allocation block size in bytes as big-endian uint32. Minimum 512 bytes, typically 4096 bytes. Must be a power of 2 and a multiple of 512. Larger block sizes reduce overhead but increase internal fragmentation for small files.",
-      "storeAs": "hfspBlockSize",
-      "valueType": "uint32",
-      "endianness": "big"
+      "name": "VolumeHeader",
+      "offset": 1024,
+      "length": 512,
+      "description": "HFS+ volume header: signature, version, attributes, file/folder counts, B-tree node descriptors",
+      "fields": [
+        {
+          "name": "Signature",
+          "variable": "hfsPlusSig",
+          "offset": 0,
+          "length": 2
+        },
+        {
+          "name": "Version",
+          "variable": "hfsPlusVersion",
+          "offset": 2,
+          "length": 2
+        },
+        {
+          "name": "FileCount",
+          "variable": "hfsPlusFileCount",
+          "offset": 32,
+          "length": 4
+        },
+        {
+          "name": "FolderCount",
+          "variable": "hfsPlusFolderCount",
+          "offset": 36,
+          "length": 4
+        }
+      ]
     },
     {
-      "type": "field",
-      "name": "Total Blocks",
-      "offset": 1068,
-      "length": 4,
-      "color": "#B5EAD7",
-      "opacity": 0.3,
-      "description": "Total number of allocation blocks in the volume as big-endian uint32. Volume capacity = totalBlocks * blockSize. The actual usable data blocks are fewer due to reserved space for the HFS+ internal structures.",
-      "storeAs": "hfspTotalBlocks",
-      "valueType": "uint32",
-      "endianness": "big"
+      "name": "AllocationFile",
+      "offset": -1,
+      "length": -1,
+      "description": "Allocation bitmap file tracking used/free extents"
     },
     {
-      "type": "field",
-      "name": "Free Blocks",
-      "offset": 1072,
-      "length": 4,
-      "color": "#B5EAD7",
-      "opacity": 0.2,
-      "description": "Number of free allocation blocks as big-endian uint32. Free space in bytes = freeBlocks * blockSize. Used to calculate disk usage without mounting. If freeBlocks > totalBlocks the volume is corrupted.",
-      "storeAs": "hfspFreeBlocks",
-      "valueType": "uint32",
-      "endianness": "big"
+      "name": "CatalogFile",
+      "offset": -1,
+      "length": -1,
+      "description": "Catalog B-tree file containing all file and directory records"
     }
   ],
   "assertions": [
     {
-      "name": "HFS+ signature valid",
-      "expression": "hfspSignature == 0x482B || hfspSignature == 0x4858",
-      "severity": "error",
-      "message": "HFS+ signature 'H+' (0x482B) or HFSX 'HX' (0x4858) not found at offset 1024"
+      "id": "A1",
+      "description": "Signature must be 'H+' or 'HX'",
+      "expression": "hfsPlusSig == 'H+' || hfsPlusSig == 'HX'"
     },
     {
-      "name": "Version is 4 or 5",
-      "expression": "hfspVersion == 4 || hfspVersion == 5",
-      "severity": "error",
-      "message": "HFS+ version must be 4 (HFS+) or 5 (HFSX) — invalid or corrupted Volume Header"
+      "id": "A2",
+      "description": "Version must be 4 or 5",
+      "expression": "hfsPlusVersion == 4 || hfsPlusVersion == 5"
     },
     {
-      "name": "Block size is at least 512",
-      "expression": "hfspBlockSize >= 512",
-      "severity": "error",
-      "message": "HFS+ block size must be at least 512 bytes — invalid allocation block size"
+      "id": "A3",
+      "description": "FileCount must be non-negative",
+      "expression": "hfsPlusFileCount >= 0"
     }
   ],
   "navigation": {
-    "bookmarks": [
+    "entryPoint": "VolumeHeader",
+    "structure": [
+      "ReservedBootArea",
+      "VolumeHeader",
+      "AllocationFile",
+      "CatalogFile"
+    ],
+    "notes": "Volume header at offset 1024; alternate volume header at volume end minus 1024 bytes. Catalog B-tree root node found via CatalogFile extent in volume header. All multi-byte values are big-endian."
+  },
+  "inspector": {
+    "badge": "HFS",
+    "primaryField": "hfsPlusVersion",
+    "groups": [
       {
-        "name": "HFS+ Volume Header",
-        "offset": 1024,
-        "icon": "\uE8B7",
-        "color": "#FF6B6B"
-      },
-      {
-        "name": "Volume Timestamps",
-        "offset": 1040,
-        "icon": "\uE787",
-        "color": "#FFE66D"
+        "name": "Volume Header",
+        "fields": [
+          "hfsPlusSig",
+          "hfsPlusVersion"
+        ]
       },
       {
         "name": "Volume Statistics",
-        "offset": 1056,
-        "icon": "\uE9D9",
-        "color": "#C5A3FF"
-      }
-    ]
-  },
-  "inspector": {
-    "badge": "hfspVersion",
-    "primaryField": "hfspFileCount",
-    "showQualityScore": true,
-    "groups": [
-      {
-        "title": "Volume Identity",
-        "icon": "\uE8B7",
-        "fields": ["hfspSignature", "hfspVersion", "hfspLastMounted", "hfspAttributes"]
-      },
-      {
-        "title": "Volume Statistics",
-        "icon": "\uE9D9",
-        "fields": ["hfspFileCount", "hfspFolderCount", "hfspTotalBlocks", "hfspFreeBlocks", "hfspBlockSize"]
-      },
-      {
-        "title": "Timestamps",
-        "icon": "\uE787",
-        "fields": ["hfspCreateDate", "hfspModifyDate"]
+        "fields": [
+          "hfsPlusFileCount",
+          "hfsPlusFolderCount"
+        ]
       }
     ]
   },
   "exportTemplates": [
     {
-      "name": "HFS+ Volume Header (JSON)",
-      "format": "json",
-      "fields": ["hfspSignature", "hfspVersion", "hfspAttributes", "hfspLastMounted", "hfspCreateDate", "hfspModifyDate", "hfspFileCount", "hfspFolderCount", "hfspBlockSize", "hfspTotalBlocks", "hfspFreeBlocks"]
+      "name": "Volume Summary CSV",
+      "format": "csv",
+      "fields": [
+        "hfsPlusSig",
+        "hfsPlusVersion",
+        "hfsPlusFileCount",
+        "hfsPlusFolderCount"
+      ]
     },
     {
-      "name": "HFS+ Summary (text)",
-      "format": "text",
-      "fields": ["hfspVersion", "hfspLastMounted", "hfspFileCount", "hfspFolderCount", "hfspBlockSize", "hfspTotalBlocks", "hfspFreeBlocks"]
+      "name": "Volume Header JSON",
+      "format": "json",
+      "fields": [
+        "hfsPlusSig",
+        "hfsPlusVersion",
+        "hfsPlusFileCount",
+        "hfsPlusFolderCount"
+      ]
     }
   ],
   "forensic": {
-    "category": "disk",
-    "riskLevel": "medium",
+    "riskLevel": "HIGH",
+    "notes": "HFS+ supports resource forks and extended attributes that may hide data invisible to standard file browsers. The journal may contain recently deleted or modified data.",
     "suspiciousPatterns": [
-      {
-        "name": "Volume not cleanly unmounted",
-        "condition": "(hfspAttributes & 4) == 0",
-        "severity": "warning",
-        "description": "kHFSVolumeUnmountedBit (bit 2) is not set — volume was not cleanly unmounted. May indicate sudden power loss or system crash. Run fsck_hfs before trusting metadata."
-      },
-      {
-        "name": "Resource forks may contain hidden data",
-        "condition": "true",
-        "severity": "info",
-        "description": "HFS+ resource forks are stored as extended attributes. Legacy Mac applications stored executable code and data in resource forks. Forensic tools must extract both data and resource forks."
-      }
-    ],
-    "knownExploitVectors": [
-      "Resource forks hide data not visible to tools that only read data forks",
-      "HFS+ case-insensitivity exploits in macOS path handling (CVE-2016-1797 class)",
-      "Journal replay on corrupted HFS+ may expose deleted file content",
-      "Alternate Volume Header at last 512 bytes may differ from primary — inconsistency indicator"
+      "Alternate volume header inconsistent with primary volume header",
+      "Journal containing uncommitted transactions with sensitive file operations",
+      "Extended attributes storing hidden data beyond normal file content",
+      "Orphaned catalog nodes not reachable from the catalog B-tree root"
     ]
   },
   "aiHints": {
-    "analysisContext": "HFS+ Volume Header is at offset 1024 (not 0). Offset 0-1023 is reserved (boot blocks). Alternate Volume Header is at (totalBlocks * blockSize) - 512. B-trees: catalog file, extents file, attributes file. Mac epoch = Jan 1 1904 = Unix epoch - 2082844800. LastMountedVersion reveals OS history.",
+    "analysisContext": "HFS+ organizes data using B-trees: Catalog file for file/directory records, Extents Overflow for fragmented files, Attributes for extended attributes. All B-tree values are big-endian.",
     "suggestedInspections": [
-      "Compare primary Volume Header (offset 1024) with alternate (last 512 bytes) — differences indicate partial corruption",
-      "Check kHFSVolumeUnmountedBit in attributes — if clear, journal replay may be needed",
-      "Read LastMountedVersion to determine which OS last wrote to the volume (forensic provenance)",
-      "Calculate free space: hfspFreeBlocks * hfspBlockSize — compare with macOS Disk Utility for consistency",
-      "On DMG files: HFS+ may be inside an Apple Partition Map or GUID Partition Table — check offset 0 first"
+      "Locate catalog B-tree via CatalogFile extent in volume header and traverse from root node to enumerate all files",
+      "Check journal info block for uncommitted transactions revealing recent deleted file operations",
+      "Scan extended attributes B-tree for hidden data streams attached to files",
+      "Compare primary volume header at offset 1024 with alternate volume header at EOF-1024 for inconsistencies",
+      "Analyze resource forks in catalog records for executable code or hidden payloads"
     ]
   },
-  "software": ["hfsplus (Linux)", "Paragon HFS+ for Windows", "macOS Disk Utility", "fsck_hfs", "hfsdebug"],
-  "formatRelationships": {
-    "category": "Disk",
-    "extensions": [".dmg", ".hfs", ".img"],
-    "relatedFormats": ["HFS", "APFS", "UDF", "FAT32", "DMG"]
-  },
-  "MimeTypes": ["application/octet-stream", "application/x-apple-diskimage"],
-  "UseCases": [
-    "macOS system volumes (pre-APFS, macOS 10.12 and earlier)",
-    "DMG disk image distribution for macOS applications",
-    "Time Machine backup volumes (HFS+ with hard links)",
-    "External drives formatted for Mac compatibility"
-  ],
   "TechnicalDetails": {
-    "VolumeHeaderOffset": "1024 bytes from volume start",
-    "AlternateVolumeHeader": "At (totalBlocks * blockSize) - 512",
-    "Epoch": "January 1, 1904 00:00:00 UTC (Mac OS epoch)",
-    "Endianness": "All fields big-endian",
-    "BTreeFiles": "Catalog (directories+files), Extents (overflow extents), Attributes (xattrs, resource forks)",
-    "MaxFileSize": "8 exabytes (2^63 bytes)",
-    "ReplacedBy": "APFS (Apple File System) in macOS 10.13 High Sierra"
+    "endianness": "Big-endian",
+    "volumeHeaderOffset": 1024,
+    "alternateVolumeHeaderOffset": "EOF - 1024 bytes",
+    "btreeNodeSize": "Default 4096 bytes for catalog",
+    "journalMagic": "0x4A4E4C78 ('JNLx')"
   },
   "QualityMetrics": {
-    "CompletenessScore": 86,
-    "DocumentationLevel": "comprehensive",
-    "BlocksDefined": 11,
-    "ValidationRules": 3,
+    "CompletenessScore": 87,
     "LastUpdated": "2026-04-15",
-    "PriorityFormat": false,
-    "AutoRefined": false
+    "ReviewedBy": "WPFHexaEditor Team"
   }
 }

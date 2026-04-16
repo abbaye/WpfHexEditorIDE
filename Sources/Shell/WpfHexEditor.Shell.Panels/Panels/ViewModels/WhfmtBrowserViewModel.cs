@@ -19,6 +19,7 @@ using WpfHexEditor.Core.FormatDetection;
 using WpfHexEditor.Core.Interfaces;
 using WpfHexEditor.Core.Options;
 using WpfHexEditor.Core.ViewModels;
+using WpfHexEditor.Core.Contracts;
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Shell.Panels.Services;
 
@@ -142,7 +143,10 @@ public sealed class WhfmtBrowserViewModel : ViewModelBase, IDisposable
         OpenFolderCommand  = new RelayCommand(OnOpenFolder,  () => _adHocSvc is not null);
         ToggleWatchCommand = new RelayCommand(OnToggleWatch, () => _adHocSvc is not null);
         ToggleViewCommand  = new RelayCommand(() => IsTreeView = !IsTreeView);
+        ClearSearchCommand = new RelayCommand(() => SearchText = string.Empty);
     }
+
+    public ICommand ClearSearchCommand { get; }
 
     // ------------------------------------------------------------------
     // Initialization

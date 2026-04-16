@@ -1,0 +1,214 @@
+{
+  "diffMode": "binary",
+  "formatName": "Python Bytecode (.pyc)",
+  "version": "1.0",
+  "extensions": [ ".pyc", ".pyo" ],
+  "description": "Python bytecode files (.pyc) are cached compilation outputs produced by the CPython interpreter. Each .pyc begins with a 2-byte version-specific magic number (little-endian uint16), followed by 0x0D 0x0A (CRLF), a 4-byte bitfield (offset 4), and an 8-byte timestamp or source hash depending on the bitfield flags. Python 3.8+ stores files under __pycache__/ with version-tagged names (e.g., module.cpython-311.pyc). The magic number uniquely identifies the CPython version. Python 3.11 magic is 0x6F0D (base), 3.12 is 0x0C0D, etc. The marshal-encoded code object follows at offset 16.",
+  "category": "Programming",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "references": {
+    "specifications": [
+      "CPython Source — Lib/importlib/_bootstrap_external.py",
+      "Python marshal module documentation",
+      "PEP 552 — Deterministic pycs"
+    ],
+    "WebLinks": [
+      "https://en.wikipedia.org/wiki/Python_(programming_language)#Bytecode",
+      "https://nedbatchelder.com/blog/200804/the_structure_of_pyc_files.html",
+      "https://peps.python.org/pep-0552/",
+      "https://github.com/python/cpython/blob/main/Lib/importlib/_bootstrap_external.py"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      { "hex": "550D0D0A", "offset": 0, "label": "Python 3.11 magic (0x550D0D0A)", "weight": 0.9 },
+      { "hex": "620D0D0A", "offset": 0, "label": "Python 3.10 magic (0x620D0D0A)", "weight": 0.9 },
+      { "hex": "550D0D0A", "offset": 0, "label": "Python 3.x magic prefix — bytes 2-3 always 0D 0A", "weight": 0.7 },
+      { "hex": "0D0A", "offset": 2, "label": "PYC bytes 2-3 always 0x0D 0x0A across all Python 3.x", "weight": 0.8 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.6,
+    "required": false,
+    "Strength": "Medium",
+    "EntropyHint": { "min": 4.0, "max": 7.0 },
+    "validation": {
+      "minFileSize": 16,
+      "maxSignatureOffset": 2,
+      "note": "Python 3.x .pyc always has 0x0D 0x0A at bytes 2-3. Magic number varies by version. Python 2.x uses different 4-byte magic patterns without the CRLF."
+    }
+  },
+  "variables": {
+    "pycMagic": 0,
+    "pycCR": 0,
+    "pycLF": 0,
+    "pycBitfield": 0,
+    "pycTimestamp": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "Magic Number",
+      "offset": 0,
+      "length": 2,
+      "color": "#FF6B6B",
+      "opacity": 0.5,
+      "description": "CPython version-specific magic number (uint16 LE). Uniquely identifies the Python version that produced this .pyc.",
+      "storeAs": "pycMagic",
+      "valueType": "uint16",
+      "valueMap": {
+        "3079": "Python 2.6", "3131": "Python 2.7",
+        "3250": "Python 3.0", "3260": "Python 3.1", "3270": "Python 3.2",
+        "3280": "Python 3.3", "3290": "Python 3.4", "3350": "Python 3.5",
+        "3379": "Python 3.6", "3392": "Python 3.7", "3413": "Python 3.8",
+        "3425": "Python 3.9", "3437": "Python 3.10", "3495": "Python 3.11",
+        "3531": "Python 3.12", "3570": "Python 3.13"
+      }
+    },
+    {
+      "type": "field",
+      "name": "Carriage Return (0x0D)",
+      "offset": 2,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Always 0x0D (carriage return). Present in all Python 3.x .pyc files.",
+      "storeAs": "pycCR",
+      "valueType": "uint8"
+    },
+    {
+      "type": "field",
+      "name": "Line Feed (0x0A)",
+      "offset": 3,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "Always 0x0A (line feed). Part of the CRLF pattern at bytes 2-3.",
+      "storeAs": "pycLF",
+      "valueType": "uint8"
+    },
+    {
+      "type": "field",
+      "name": "Bitfield Flags",
+      "offset": 4,
+      "length": 4,
+      "color": "#45B7D1",
+      "opacity": 0.4,
+      "description": "Bitfield (uint32 LE). Bit 0: timestamp-based validation. Bit 1: hash-based validation (PEP 552). Bits 2+: reserved.",
+      "storeAs": "pycBitfield",
+      "valueType": "uint32"
+    },
+    {
+      "type": "field",
+      "name": "Timestamp / Source Hash",
+      "offset": 8,
+      "length": 4,
+      "color": "#FFEAA7",
+      "opacity": 0.4,
+      "description": "If bitfield bit 0 is set: Unix timestamp of source .py file (uint32 LE). If bit 1 is set: source hash (SipHash-13).",
+      "storeAs": "pycTimestamp",
+      "valueType": "uint32"
+    },
+    {
+      "type": "field",
+      "name": "Marshalled Code Object",
+      "offset": 16,
+      "length": 0,
+      "color": "#DDA0DD",
+      "opacity": 0.2,
+      "description": "marshal-encoded code object containing bytecode instructions, constants, names, and co_code.",
+      "valueType": "bytes"
+    }
+  ],
+  "assertions": [
+    { "field": "pycCR", "operator": "equals", "value": 13, "description": "Byte 2 must be 0x0D (CR) — universal Python 3.x .pyc marker" },
+    { "field": "pycLF", "operator": "equals", "value": 10, "description": "Byte 3 must be 0x0A (LF) — universal Python 3.x .pyc marker" },
+    { "field": "pycMagic", "operator": "greaterThan", "value": 3000, "description": "Magic number must be in Python 3.x range (> 3000)" }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "Magic Number", "offset": 0, "description": "CPython version magic (uint16 LE)" },
+      { "name": "CRLF Marker", "offset": 2, "description": "Universal 0x0D 0x0A Python 3.x marker at bytes 2-3" },
+      { "name": "Bitfield", "offset": 4, "description": "PEP 552 bitfield: timestamp vs hash validation mode" },
+      { "name": "Timestamp / Hash", "offset": 8, "description": "Source file timestamp or hash" },
+      { "name": "Code Object", "offset": 16, "description": "marshal-encoded code object (bytecode)" }
+    ]
+  },
+  "inspector": {
+    "badge": "PYC",
+    "primaryField": "pycMagic",
+    "showQualityScore": true,
+    "groups": [
+      { "name": "Version", "fields": ["pycMagic", "pycCR", "pycLF"] },
+      { "name": "Validation", "fields": ["pycBitfield", "pycTimestamp"] }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "PYC Header (JSON)",
+      "format": "json",
+      "fields": ["pycMagic", "pycBitfield", "pycTimestamp"]
+    },
+    {
+      "name": "PYC Version Report (CSV)",
+      "format": "csv",
+      "fields": ["pycMagic", "pycBitfield", "pycTimestamp"]
+    }
+  ],
+  "forensic": {
+    "category": "executable",
+    "riskLevel": "medium",
+    "suspiciousPatterns": [
+      { "name": "Magic version mismatch", "condition": "pycMagic not in known range", "description": "Unknown magic number may indicate a tampered or custom Python build.", "severity": "warning" },
+      { "name": "Obfuscated bytecode", "condition": "true", "description": "Python bytecode can be obfuscated with tools like PyArmor, Nuitka, or custom opcode remapping. Decompilation may fail.", "severity": "info" },
+      { "name": "Malicious code objects", "condition": "true", "description": "Malware may distribute .pyc files to avoid source-level detection. Decompile with uncompyle6/decompile3 for inspection.", "severity": "warning" }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "Python .pyc files begin with a 2-byte magic number (LE) that uniquely identifies the CPython version, followed by 0x0D 0x0A at bytes 2-3 (universal Python 3.x marker). The bitfield at offset 4 controls timestamp vs hash validation (PEP 552). The marshal code object starts at offset 16. Magic values: 3495=Python3.11, 3437=Python3.10, 3413=Python3.8. Decompile with uncompyle6 or decompile3.",
+    "suggestedInspections": [
+      "Check bytes 2-3 for 0x0D 0x0A — universal Python 3.x .pyc marker",
+      "Read 2-byte magic at offset 0 to identify exact CPython version",
+      "Inspect bitfield at offset 4 for PEP 552 hash-based validation flag",
+      "Read timestamp at offset 8 to correlate with source file modification time",
+      "Attempt decompilation with uncompyle6 or decompile3 to recover source code",
+      "Scan marshal code object for suspicious string constants (URLs, base64, exec/eval calls)"
+    ]
+  },
+  "software": [
+    "CPython (Python interpreter)",
+    "uncompyle6 (decompiler for Python 2/3)",
+    "decompile3 (Python 3.x decompiler)",
+    "PyArmor (obfuscator)",
+    "py_compile (standard library compiler)"
+  ],
+  "formatRelationships": {
+    "category": "Programming",
+    "extensions": [".pyc", ".pyo"],
+    "relatedFormats": ["LUAC", "WASM", "CLASS_JAVA", "DEX"],
+    "note": ".pyo is the optimized variant (Python 2.x); Python 3 uses .pyc for both. Files are stored in __pycache__/ directories with version-tagged names."
+  },
+  "MimeTypes": [ "application/x-python-code", "application/octet-stream" ],
+  "UseCases": [
+    "Python bytecode caching for faster import",
+    "Distribution of Python applications without source",
+    "Malware delivery via compiled bytecode",
+    "Reverse engineering and forensic decompilation"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 88,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 6,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-15",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "Endianness": "little-endian",
+    "MagicPattern": "2-byte LE magic + 0x0D 0x0A at bytes 2-3",
+    "CodeObjectEncoding": "Python marshal format at offset 16",
+    "PEP552": "Bitfield at offset 4 enables hash-based validation",
+    "Note": "Python 2.x .pyc uses different 4-byte magic without CRLF. Python 3.x universally has 0x0D 0x0A at bytes 2-3."
+  }
+}

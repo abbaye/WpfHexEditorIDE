@@ -1,358 +1,272 @@
 {
-  "diffMode": "binary",
-  "formatName": "exFAT Filesystem",
+  "formatName": "exFAT File System",
   "version": "1.0",
-  "extensions": [".img", ".exfat"],
-  "description": "Microsoft exFAT (Extended FAT) filesystem boot sector. Identified by 'EXFAT   ' at offset 3 and zeros at offsets 11-63. Designed for flash drives and SD cards exceeding 32GB. Supports files larger than 4GB. No FAT12/16/32 compatibility.",
+  "diffMode": "binary",
+  "extensions": [
+    ".img",
+    ".exfat"
+  ],
+  "description": "exFAT (Extended FAT) is a Microsoft filesystem optimized for flash memory. The VBR OEM name at offset 3 is 'EXFAT   ' (45 58 46 41 54 20 20 20). It removes the 4 GB file size limit of FAT32 and supports volumes up to 128 PB.",
   "category": "Disk",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
-  "references": {
-    "specifications": [
-      "MS-EXFAT: exFAT File System Specification v1.00 (Microsoft Open Specification)",
-      "SDXC/SDHC exFAT requirement — SD Association specification",
-      "exfat-fuse implementation reference"
-    ],
-    "WebLinks": [
-      "https://docs.microsoft.com/en-us/windows/win32/fileio/exfat-specification",
-      "https://en.wikipedia.org/wiki/ExFAT",
-      "https://github.com/relan/exfat"
-    ]
-  },
+  "MimeTypes": [
+    "application/octet-stream"
+  ],
+  "UseCases": [
+    "SDXC cards and USB flash drives exceeding FAT32 4 GB file size limit",
+    "Cross-platform media exchange between Windows, macOS, and Linux",
+    "High-capacity removable storage for video production"
+  ],
+  "references": [
+    "https://docs.microsoft.com/en-us/windows/win32/fileio/exfat-specification",
+    "https://github.com/libexfat/libexfat",
+    "https://wiki.osdev.org/ExFAT"
+  ],
+  "software": [
+    {
+      "name": "mkfs.exfat",
+      "url": "https://github.com/exfatprogs/exfatprogs",
+      "role": "Linux exFAT formatter"
+    },
+    {
+      "name": "Windows Format",
+      "url": "https://docs.microsoft.com/",
+      "role": "Built-in Windows formatter for exFAT"
+    },
+    {
+      "name": "exfat-fuse",
+      "url": "https://github.com/relan/exfat",
+      "role": "FUSE driver for Linux/macOS"
+    }
+  ],
+  "formatRelationships": [
+    {
+      "format": "FAT32",
+      "relationship": "exFAT supersedes FAT32 for flash media"
+    },
+    {
+      "format": "NTFS",
+      "relationship": "NTFS supports larger files but has higher overhead than exFAT for flash"
+    }
+  ],
   "detection": {
     "signatures": [
       {
-        "value": "4558464154202020",
         "offset": 3,
-        "label": "'EXFAT   ' — exFAT OEM name at offset 3 (8 bytes with 3 trailing spaces). Distinguishes exFAT from FAT12/16/32.",
+        "value": "455846415420202020",
+        "label": "'EXFAT   ' OEM name at VBR offset 3",
         "weight": 1.0
       }
     ],
-    "matchMode": "any",
-    "MinimumScore": 1.0,
-    "required": true,
+    "matchMode": "first",
+    "MinimumScore": 85,
     "Strength": "Strong",
-    "EntropyHint": { "min": 0.5, "max": 7.0 },
-    "validation": {
-      "minFileSize": 512,
-      "maxSignatureOffset": 12
-    }
+    "EntropyHint": {
+      "min": 2.0,
+      "max": 8.0,
+      "note": "Boot region has low entropy; data region varies by content"
+    },
+    "validation": "Bytes 3-10 must be 'EXFAT   ' (45 58 46 41 54 20 20 20). BytesPerSectorShift at offset 108 must be 9-12 (512-4096 bytes/sector). VolumeLength at offset 72 must be non-zero."
   },
-  "variables": {
-    "exfatOemName": "",
-    "exfatVolumeLength": 0,
-    "exfatFatOffset": 0,
-    "exfatFatLength": 0,
-    "exfatClusterHeapOffset": 0,
-    "exfatClusterCount": 0,
-    "exfatRootDirCluster": 0,
-    "exfatVolumeSerial": 0,
-    "exfatFsRevision": 0,
-    "exfatVolumeFlags": 0,
-    "exfatBytesPerSectorShift": 0,
-    "exfatSectorsPerClusterShift": 0,
-    "exfatNumberOfFats": 0,
-    "exfatBootSig": 0
-  },
-  "blocks": [
+  "variables": [
     {
-      "type": "field",
-      "name": "Jump Boot",
+      "name": "exfatJmpBoot",
+      "type": "hex",
       "offset": 0,
       "length": 3,
-      "color": "#808080",
-      "opacity": 0.2,
-      "description": "x86 jump instruction bytes at the start of the boot sector. Typically 0xEB 0x76 0x90 for exFAT. This instruction jumps over the BPB fields to the bootstrap code. Required by legacy BIOS for bootable media.",
-      "valueType": "hex",
-      "endianness": "little"
+      "description": "Jump boot instruction (EB 76 90)"
     },
     {
-      "type": "signature",
-      "name": "exFAT OEM Name",
+      "name": "exfatOemName",
+      "type": "ascii",
       "offset": 3,
       "length": 8,
-      "color": "#FF6B6B",
-      "opacity": 0.45,
-      "description": "'EXFAT   ' — 8-byte OEM name with 3 trailing spaces. This is the primary identifier for exFAT volumes. Importantly, offsets 11-63 are ALL ZERO in exFAT — this zero region distinguishes exFAT from FAT12/16/32 which have non-zero BIOS Parameter Block fields there.",
-      "storeAs": "exfatOemName",
-      "valueType": "ascii",
-      "endianness": "little"
+      "description": "OEM name, must be 'EXFAT   '"
     },
     {
-      "type": "field",
-      "name": "Volume Length (sectors)",
+      "name": "exfatVolumeLength",
+      "type": "uint64",
       "offset": 72,
       "length": 8,
-      "color": "#95E1D3",
-      "opacity": 0.3,
-      "description": "Total size of the exFAT volume in sectors as uint64 LE. This 64-bit field allows exFAT to address volumes far larger than FAT32's 32-bit limit. Multiply by 2^BytesPerSectorShift to get bytes.",
-      "storeAs": "exfatVolumeLength",
-      "valueType": "uint64",
-      "endianness": "little"
+      "endian": "little",
+      "description": "Volume length in sectors"
     },
     {
-      "type": "field",
-      "name": "FAT Offset (sectors)",
+      "name": "exfatFatOffset",
+      "type": "uint32",
       "offset": 80,
       "length": 4,
-      "color": "#A8E6CF",
-      "opacity": 0.3,
-      "description": "Sector offset from start of volume to the first FAT as uint32 LE. Typically 24 sectors after the reserved region. Both FAT copies (if NumberOfFats=2 for TexFAT) are located starting at this offset.",
-      "storeAs": "exfatFatOffset",
-      "valueType": "uint32",
-      "endianness": "little"
+      "endian": "little",
+      "description": "FAT region offset in sectors from VBR start"
     },
     {
-      "type": "field",
-      "name": "FAT Length (sectors)",
-      "offset": 84,
-      "length": 4,
-      "color": "#FFE66D",
-      "opacity": 0.3,
-      "description": "Size of each FAT in sectors as uint32 LE. exFAT FAT entries are 4 bytes each (same as FAT32). FAT length must be large enough to cover all clusters in the cluster heap.",
-      "storeAs": "exfatFatLength",
-      "valueType": "uint32",
-      "endianness": "little"
-    },
-    {
-      "type": "field",
-      "name": "Cluster Heap Offset",
-      "offset": 88,
-      "length": 4,
-      "color": "#F8B500",
-      "opacity": 0.3,
-      "description": "Sector offset to the start of the cluster heap (data area) as uint32 LE. In exFAT the cluster heap begins after the reserved area and FAT(s). Cluster 2 is at this offset, mirroring FAT32 convention.",
-      "storeAs": "exfatClusterHeapOffset",
-      "valueType": "uint32",
-      "endianness": "little"
-    },
-    {
-      "type": "field",
-      "name": "Cluster Count",
-      "offset": 92,
-      "length": 4,
-      "color": "#C5A3FF",
-      "opacity": 0.3,
-      "description": "Total number of clusters in the cluster heap as uint32 LE. Determines the maximum number of FAT entries. Maximum value is 0xFFFFFFF5 (theoretical). Practical limit depends on volume size and cluster size.",
-      "storeAs": "exfatClusterCount",
-      "valueType": "uint32",
-      "endianness": "little"
-    },
-    {
-      "type": "field",
-      "name": "Root Directory Cluster",
-      "offset": 96,
-      "length": 4,
-      "color": "#FF8C94",
-      "opacity": 0.3,
-      "description": "Cluster number of the first cluster of the root directory as uint32 LE. The root directory is a regular directory that grows dynamically (unlike FAT32's fixed root_entry_count). Typically cluster 4 or 5.",
-      "storeAs": "exfatRootDirCluster",
-      "valueType": "uint32",
-      "endianness": "little"
-    },
-    {
-      "type": "field",
-      "name": "Filesystem Revision",
-      "offset": 104,
-      "length": 2,
-      "color": "#4ECDC4",
-      "opacity": 0.3,
-      "description": "exFAT specification revision as uint16 LE. Low byte = minor version, high byte = major version. 0x0100 = version 1.00 (current). Used for forward compatibility detection.",
-      "storeAs": "exfatFsRevision",
-      "valueType": "uint16",
-      "endianness": "little",
-      "valueMap": {
-        "256": "exFAT version 1.00 (current specification)"
-      }
-    },
-    {
-      "type": "field",
-      "name": "Bytes Per Sector Shift",
+      "name": "exfatBytesPerSectorShift",
+      "type": "uint8",
       "offset": 108,
       "length": 1,
-      "color": "#B5EAD7",
-      "opacity": 0.3,
-      "description": "Log2 of the bytes per sector. Actual bytes_per_sector = 2^N. Valid range: 9 (512 bytes) to 12 (4096 bytes). SD cards typically use 9 (512B) or 12 (4096B). This indirect encoding allows a 1-byte field to represent the full range of valid sector sizes.",
-      "storeAs": "exfatBytesPerSectorShift",
-      "valueType": "uint8",
-      "endianness": "little",
-      "valueMap": {
-        "9": "512 bytes per sector",
-        "10": "1024 bytes per sector",
-        "11": "2048 bytes per sector",
-        "12": "4096 bytes per sector"
-      }
+      "description": "Log2 of bytes per sector (9=512, 10=1024, 11=2048, 12=4096)"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "VolumeBootRecord",
+      "offset": 0,
+      "length": 512,
+      "description": "exFAT VBR (512 bytes): jump boot + OEM name + zero area + BPB fields + boot code + signature 0x55AA",
+      "fields": [
+        {
+          "name": "JmpBoot",
+          "variable": "exfatJmpBoot",
+          "offset": 0,
+          "length": 3
+        },
+        {
+          "name": "OemName",
+          "variable": "exfatOemName",
+          "offset": 3,
+          "length": 8
+        },
+        {
+          "name": "VolumeLength",
+          "variable": "exfatVolumeLength",
+          "offset": 72,
+          "length": 8
+        },
+        {
+          "name": "FatOffset",
+          "variable": "exfatFatOffset",
+          "offset": 80,
+          "length": 4
+        },
+        {
+          "name": "BytesPerSectorShift",
+          "variable": "exfatBytesPerSectorShift",
+          "offset": 108,
+          "length": 1
+        }
+      ]
     },
     {
-      "type": "field",
-      "name": "Number of FATs",
-      "offset": 110,
-      "length": 1,
-      "color": "#FFD3B6",
-      "opacity": 0.3,
-      "description": "Number of File Allocation Tables. 1 = standard exFAT. 2 = TexFAT (Transaction-safe exFAT, used on some embedded systems for power-failure resilience). Most consumer exFAT volumes use 1 FAT.",
-      "storeAs": "exfatNumberOfFats",
-      "valueType": "uint8",
-      "endianness": "little",
-      "valueMap": {
-        "1": "Standard exFAT (single FAT)",
-        "2": "TexFAT (transaction-safe, two FATs for rollback)"
-      }
+      "name": "BackupVBR",
+      "offset": 6144,
+      "length": 512,
+      "description": "Backup VBR at sector 6 (for 512-byte sectors)"
     },
     {
-      "type": "field",
-      "name": "Boot Signature",
-      "offset": 510,
-      "length": 2,
-      "color": "#FF6B6B",
-      "opacity": 0.5,
-      "description": "Boot sector end signature 0x55 0xAA at offset 510-511. Same as FAT and NTFS — required by BIOS for bootable sector recognition. Must be present in all exFAT boot sectors regardless of whether the volume is actually bootable.",
-      "storeAs": "exfatBootSig",
-      "valueType": "uint16",
-      "endianness": "little"
+      "name": "FATRegion",
+      "offset": -1,
+      "length": -1,
+      "description": "File Allocation Table: 32-bit cluster entries"
+    },
+    {
+      "name": "DataRegion",
+      "offset": -1,
+      "length": -1,
+      "description": "Data clusters containing directory and file data"
     }
   ],
   "assertions": [
     {
-      "name": "exFAT OEM name valid",
-      "expression": "exfatOemName == 'EXFAT   '",
-      "severity": "error",
-      "message": "'EXFAT   ' not found at offset 3 — not a valid exFAT boot sector"
+      "id": "A1",
+      "description": "OEM name must be 'EXFAT   '",
+      "expression": "exfatOemName == 'EXFAT   '"
     },
     {
-      "name": "Boot signature valid",
-      "expression": "exfatBootSig == 0xAA55",
-      "severity": "error",
-      "message": "Boot sector signature 0x55AA missing at offset 510"
+      "id": "A2",
+      "description": "BytesPerSectorShift must be 9-12",
+      "expression": "exfatBytesPerSectorShift >= 9 && exfatBytesPerSectorShift <= 12"
     },
     {
-      "name": "Bytes per sector shift in range",
-      "expression": "exfatBytesPerSectorShift >= 9 && exfatBytesPerSectorShift <= 12",
-      "severity": "error",
-      "message": "BytesPerSectorShift out of valid range [9,12] — not a valid exFAT volume"
-    },
-    {
-      "name": "Number of FATs is 1 or 2",
-      "expression": "exfatNumberOfFats == 1 || exfatNumberOfFats == 2",
-      "severity": "error",
-      "message": "NumberOfFats must be 1 (standard) or 2 (TexFAT) — invalid value detected"
+      "id": "A3",
+      "description": "VolumeLength must be non-zero",
+      "expression": "exfatVolumeLength > 0"
     }
   ],
   "navigation": {
-    "bookmarks": [
-      {
-        "name": "exFAT OEM Name",
-        "offset": 3,
-        "icon": "\uE8B7",
-        "color": "#FF6B6B"
-      },
-      {
-        "name": "Must Be Zero Region",
-        "offset": 11,
-        "icon": "\uE8A5",
-        "color": "#808080"
-      },
-      {
-        "name": "Volume Parameters",
-        "offset": 64,
-        "icon": "\uE9D9",
-        "color": "#4ECDC4"
-      }
-    ]
+    "entryPoint": "VolumeBootRecord",
+    "structure": [
+      "VolumeBootRecord",
+      "BackupVBR",
+      "FATRegion",
+      "DataRegion"
+    ],
+    "notes": "exFAT VBR is 12 sectors (9 parameter sectors + 1 checksum sector). Backup VBR starts at sector 12. FAT follows at FatOffset sectors from start."
   },
   "inspector": {
-    "badge": "exfatFsRevision",
-    "primaryField": "exfatClusterCount",
-    "showQualityScore": true,
+    "badge": "XFT",
+    "primaryField": "exfatOemName",
     "groups": [
       {
-        "title": "exFAT Identity",
-        "icon": "\uE8B7",
-        "fields": ["exfatOemName", "exfatFsRevision", "exfatNumberOfFats"]
+        "name": "VBR Core",
+        "fields": [
+          "exfatJmpBoot",
+          "exfatOemName",
+          "exfatBytesPerSectorShift"
+        ]
       },
       {
-        "title": "Volume Geometry",
-        "icon": "\uE8A5",
-        "fields": ["exfatVolumeLength", "exfatBytesPerSectorShift", "exfatClusterCount", "exfatRootDirCluster"]
-      },
-      {
-        "title": "FAT Layout",
-        "icon": "\uE9D9",
-        "fields": ["exfatFatOffset", "exfatFatLength", "exfatClusterHeapOffset"]
-      },
-      {
-        "title": "Volume Info",
-        "icon": "\uE8F4",
-        "fields": ["exfatVolumeSerial", "exfatVolumeFlags", "exfatBootSig"]
+        "name": "Volume Layout",
+        "fields": [
+          "exfatVolumeLength",
+          "exfatFatOffset"
+        ]
       }
     ]
   },
   "exportTemplates": [
     {
-      "name": "exFAT Boot Sector (JSON)",
-      "format": "json",
-      "fields": ["exfatOemName", "exfatVolumeLength", "exfatFatOffset", "exfatFatLength", "exfatClusterCount", "exfatRootDirCluster", "exfatFsRevision", "exfatBytesPerSectorShift", "exfatNumberOfFats"]
+      "name": "VBR Summary CSV",
+      "format": "csv",
+      "fields": [
+        "exfatOemName",
+        "exfatVolumeLength",
+        "exfatFatOffset",
+        "exfatBytesPerSectorShift"
+      ]
     },
     {
-      "name": "exFAT Summary (text)",
-      "format": "text",
-      "fields": ["exfatOemName", "exfatFsRevision", "exfatVolumeLength", "exfatClusterCount", "exfatBytesPerSectorShift"]
+      "name": "VBR JSON",
+      "format": "json",
+      "fields": [
+        "exfatJmpBoot",
+        "exfatOemName",
+        "exfatVolumeLength",
+        "exfatFatOffset",
+        "exfatBytesPerSectorShift"
+      ]
     }
   ],
   "forensic": {
-    "category": "disk",
-    "riskLevel": "medium",
+    "riskLevel": "MEDIUM",
+    "notes": "exFAT retains deleted file metadata in directory entries. Unlike FAT32 it lacks a duplicate directory structure, making single-pass recovery more complex.",
     "suspiciousPatterns": [
-      {
-        "name": "Non-zero must-be-zero region",
-        "condition": "true",
-        "severity": "warning",
-        "description": "Offsets 11-63 must be all zeros in exFAT. Non-zero values indicate corruption, manual editing, or a misidentified FAT12/16/32 volume."
-      }
-    ],
-    "knownExploitVectors": [
-      "Deleted file recovery — exFAT retains cluster data until reallocated",
-      "exFAT is not journaled — sudden power loss can cause orphaned clusters"
+      "OEM name field tampered (not 'EXFAT   ')",
+      "VBR checksum sector does not match computed checksum",
+      "BytesPerSectorShift outside valid range 9-12",
+      "Deleted directory entries pointing to reallocated clusters"
     ]
   },
   "aiHints": {
-    "analysisContext": "exFAT has no BIOS Parameter Block at offsets 11-63 (all zeros). Boot sector duplication: sectors 0-11 are backed up at sectors 12-23. Cluster heap starts at ClusterHeapOffset. Bitmap, upcase table, and root directory are stored as special files in the cluster heap. No traditional FAT12/16/32 structures.",
+    "analysisContext": "exFAT uses a single FAT table with 32-bit entries. The root directory is located via RootDirectoryCluster field at VBR offset 96. Directory entries are 32-byte structures identified by entry type byte.",
     "suggestedInspections": [
-      "Verify offsets 11-63 are all zero — non-zero values mean this is NOT exFAT",
-      "Read backup boot sector at offset 12*512 and compare with primary sector",
-      "Calculate actual cluster size: 2^BytesPerSectorShift * 2^SectorsPerClusterShift",
-      "Locate allocation bitmap file (DirectoryEntry type 0x81) in root directory for free space analysis",
-      "Check VolumeFlags for ActiveFat, VolumeClean, and MediaFailure bits (offset 106)"
+      "Compute VBR checksum over sectors 0-10 and compare against checksum sector 11",
+      "Locate root directory using RootDirectoryCluster field at VBR offset 96",
+      "Parse directory entry types: 0x85=File, 0xC0=StreamExtension, 0xC1=FileName to enumerate files",
+      "Scan for deleted entries (high bit of entry type byte cleared) to recover deleted file metadata",
+      "Verify FAT consistency by following cluster chains for several files and comparing against directory stream extents"
     ]
   },
-  "software": ["mkexfatfs", "exfatfsck", "exfat-fuse", "DiskGenius", "disklabel", "macOS (native)"],
-  "formatRelationships": {
-    "category": "Disk",
-    "extensions": [".img", ".exfat"],
-    "relatedFormats": ["FAT32", "NTFS", "HFS_PLUS", "APFS"]
-  },
-  "MimeTypes": ["application/octet-stream"],
-  "UseCases": [
-    "SDXC cards (> 32GB, exFAT required by SD Association specification)",
-    "Large USB flash drives requiring files > 4GB",
-    "Windows-to-macOS cross-platform portable storage",
-    "Surface Pro / Surface Go internal storage partitions"
-  ],
   "TechnicalDetails": {
-    "MustBeZero": "Offsets 11-63 must be all zeros (replaces FAT BPB fields)",
-    "BootSectorBackup": "Sectors 12-23 contain identical backup of sectors 0-11",
-    "MaxVolumeSize": "128 PB (2^64 sectors * 512 bytes theoretical)",
-    "MaxFileSize": "128 PB (2^64 bytes)",
-    "TexFAT": "Transaction-safe variant with 2 FATs for embedded/CE environments",
-    "SDXCRequirement": "SD Association mandates exFAT for SDXC cards > 32GB"
+    "endianness": "Little-endian",
+    "vbrSectorCount": 12,
+    "directoryEntrySize": 32,
+    "maxFileSize": "2^64 - 1 bytes (theoretical)",
+    "maxVolumeSize": "2^64 - 1 sectors"
   },
   "QualityMetrics": {
-    "CompletenessScore": 85,
-    "DocumentationLevel": "comprehensive",
-    "BlocksDefined": 12,
-    "ValidationRules": 4,
+    "CompletenessScore": 87,
     "LastUpdated": "2026-04-15",
-    "PriorityFormat": false,
-    "AutoRefined": false
+    "ReviewedBy": "WPFHexaEditor Team"
   }
 }

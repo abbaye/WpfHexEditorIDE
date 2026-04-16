@@ -22,6 +22,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Threading;
+using WpfHexEditor.Core.Contracts;
 using WpfHexEditor.Core.Definitions;
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Editor.Core.Views;

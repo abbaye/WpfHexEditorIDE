@@ -1,176 +1,179 @@
 {
   "diffMode": "binary",
-  "formatName": "Cap'n Proto Binary",
+  "formatName": "Cap'n Proto Binary Message",
   "version": "1.0",
-  "extensions": [
-    ".bin",
-    ".capnp"
-  ],
-  "description": "Cap'n Proto binary serialization format (Kenton Varda, 2013 — ex-Google Protocol Buffers author). No magic bytes. Binary format starts with uint32 LE segment_count (number of segments minus 1) at offset 0, then uint32 LE segment_size_words[] array (one per segment), then 4-byte alignment padding if needed, then segment data. Each segment contains 8-byte words: pointer words (struct/list/capability/inter-segment) or data words. Struct pointer encoding: lower 32-bit half = signed word offset to data section, upper 32-bit half = (data_word_count << 16) | pointer_word_count. List pointer: lower half = offset, upper half = (element_count << 3) | element_size_code. Capability pointer for RPC. Extremely fast read performance — zero-copy, data accessed directly from wire format without deserialization. Used in: Sandstorm.io, IPFS Bitswap, Cloudflare Workers KV, high-performance microservices.",
+  "extensions": [".capnp", ".bin"],
+  "description": "Cap'n Proto binary serialization format (Kenton Varda, 2013). No magic bytes. A message starts with a uint32 LE segment_count (value = number of segments minus 1) at offset 0, then one uint32 LE size entry per segment (in 8-byte words), optional 4-byte padding to reach 8-byte alignment, then the segment data. The first word of segment 0 is the root struct pointer. Struct pointer: low 32 bits = signed word offset (type bits=00), high 32 bits = (data_word_count<<16)|pointer_word_count. Zero-copy: data is accessed directly from wire format without deserialization. Used in IPFS Bitswap, Sandstorm.io, Cloudflare Workers KV, and high-performance microservices.",
   "category": "Data",
   "author": "WPFHexaEditor Team",
-  "preferredEditor": "hex-editor",
-  "references": {
-    "specifications": [
-      "Cap'n Proto encoding specification — capnproto.org/encoding.html",
-      "Cap'n Proto RPC protocol — capnproto.org/rpc.html",
-      "Cap'n Proto schema language — capnproto.org/language.html"
-    ],
-    "WebLinks": [
-      "https://capnproto.org/",
-      "https://github.com/capnproto/capnproto",
-      "https://en.wikipedia.org/wiki/Cap%27n_Proto",
-      "https://kentonv.github.io/capnproto/"
-    ]
-  },
+  "preferredEditor": "HexEditor",
+  "references": [
+    "https://capnproto.org/encoding.html",
+    "https://capnproto.org/language.html",
+    "https://github.com/capnproto/capnproto",
+    "https://en.wikipedia.org/wiki/Cap%27n_Proto"
+  ],
   "detection": {
-    "signatures": [],
+    "signatures": [
+      {
+        "value": "00000000",
+        "offset": 0,
+        "label": "Segment count = 0 (single-segment message — most common)",
+        "weight": 0.3
+      }
+    ],
     "matchMode": "any",
-    "MinimumScore": 0.0,
-    "required": false,
+    "MinimumScore": 0.2,
     "Strength": "Weak",
     "validation": {
-      "minFileSize": 8,
-      "maxSignatureOffset": 0,
-      "note": "Cap'n Proto has no magic bytes. Detection is purely heuristic: segment_count at offset 0 should be small (< 512), first segment size should be consistent with file size. Extension-based detection is the primary signal."
+      "rules": [
+        { "field": "capnpSegmentCount", "operator": "lessThan", "value": 512, "severity": "warning" },
+        { "field": "capnpSeg0Size", "operator": "greaterThan", "value": 0, "severity": "error" }
+      ]
     }
   },
-  "variables": {
-    "segmentCount": 0,
-    "firstSegmentSize": 0,
-    "totalExpectedWords": 0,
-    "rootPointerLow": 0,
-    "rootPointerHigh": 0
-  },
+  "variables": [
+    {
+      "name": "capnpSegmentCount",
+      "offset": 0,
+      "size": 4,
+      "type": "uint32",
+      "endian": "LE",
+      "storeAs": "capnpSegmentCount",
+      "description": "Number of segments minus 1. Value 0 = single-segment message (most common)."
+    },
+    {
+      "name": "capnpSeg0Size",
+      "offset": 4,
+      "size": 4,
+      "type": "uint32",
+      "endian": "LE",
+      "storeAs": "capnpSeg0Size",
+      "description": "Size of first segment in 64-bit words (multiply by 8 for bytes)"
+    }
+  ],
   "blocks": [
     {
-      "type": "field",
-      "name": "Segment Count (minus 1)",
+      "name": "SegmentTable",
       "offset": 0,
-      "length": 4,
-      "color": "#FF6B6B",
-      "opacity": 0.45,
-      "description": "uint32 little-endian count of segments in this Cap'n Proto message, minus 1. A single-segment message has segmentCount = 0 (one segment). A two-segment message has segmentCount = 1. Most Cap'n Proto messages use a single segment (segmentCount = 0) for simplicity. Multi-segment messages are used for large data that spans multiple memory allocations. Cap'n Proto segment table: this field + segmentCount+1 uint32 size entries + optional 4-byte padding to reach 8-byte alignment.",
-      "storeAs": "segmentCount",
-      "valueType": "uint32",
-      "endianness": "little"
+      "size": 8,
+      "description": "Segment table header: uint32 LE segment_count_minus_1, then uint32 LE size per segment (in words), then optional 4B padding for 8-byte alignment",
+      "fields": [
+        { "name": "SegmentCountMinus1", "offset": 0, "size": 4, "type": "uint32", "endian": "LE" },
+        { "name": "Segment0SizeWords", "offset": 4, "size": 4, "type": "uint32", "endian": "LE" }
+      ]
     },
     {
-      "type": "field",
-      "name": "First Segment Size (words)",
-      "offset": 4,
-      "length": 4,
-      "color": "#4ECDC4",
-      "opacity": 0.35,
-      "description": "uint32 little-endian size of the first segment in 64-bit words (8 bytes each). Multiply by 8 to get the byte size of the first segment. For a single-segment message with no padding: total file size = 8 (segment table: 4B count + 4B size) + firstSegmentSize * 8 bytes. The first segment begins at offset 8 (for single-segment) or at the first 8-byte-aligned offset after all segment size entries. The root object of the message is always a struct pointer at the start of the first segment.",
-      "storeAs": "firstSegmentSize",
-      "valueType": "uint32",
-      "endianness": "little"
+      "name": "RootStructPointer",
+      "offset": 8,
+      "size": 8,
+      "description": "First 8-byte word of segment 0 is the root struct pointer. Low 32 bits: pointer type (bits 1-0=00 for struct) and signed word offset to struct data. High 32 bits: (data_word_count<<16) | pointer_word_count.",
+      "fields": [
+        { "name": "RootPointerLow", "offset": 8, "size": 4, "type": "uint32", "endian": "LE" },
+        { "name": "RootPointerHigh", "offset": 12, "size": 4, "type": "uint32", "endian": "LE" }
+      ]
     },
     {
-      "type": "metadata",
-      "name": "Total Expected Words",
-      "variable": "totalExpectedWords",
-      "description": "Sum of all segment sizes in words — total data words expected after the segment table header"
+      "name": "PointerTypeGuide",
+      "offset": 0,
+      "size": 0,
+      "description": "Pointer types (low 2 bits of pointer word): 00=struct, 01=list, 10=inter-segment far pointer, 11=capability. Zero pointer (0x0000000000000000) = null. Struct pointer upper half: bits 31-16=data_word_count, bits 15-0=pointer_word_count.",
+      "fields": []
     },
     {
-      "type": "metadata",
-      "name": "Root Pointer Low",
-      "variable": "rootPointerLow",
-      "description": "Lower 32-bit half of the root struct pointer word at segment start — contains struct pointer type (0) and signed word offset to struct data"
-    },
-    {
-      "type": "metadata",
-      "name": "Root Pointer High",
-      "variable": "rootPointerHigh",
-      "description": "Upper 32-bit half of the root struct pointer word — encodes data word count (bits 31-16) and pointer word count (bits 15-0)"
+      "name": "SegmentData",
+      "offset": 8,
+      "size": -1,
+      "description": "Segment 0 data starting at offset 8 (for single-segment messages): capnpSeg0Size * 8 bytes of 8-byte-aligned word data",
+      "fields": []
     }
   ],
   "assertions": [
     {
-      "name": "Segment count sanity check",
-      "expression": "segmentCount < 512",
+      "id": "assert_segment_count_sane",
+      "field": "capnpSegmentCount",
+      "operator": "lessThan",
+      "value": 512,
       "severity": "warning",
-      "message": "Cap'n Proto segment count exceeds 512 — likely not a valid Cap'n Proto message or file is corrupt"
+      "message": "Segment count >= 512 is abnormal — likely not Cap'n Proto or a crafted message causing parser exhaustion"
+    },
+    {
+      "id": "assert_seg0_size_positive",
+      "field": "capnpSeg0Size",
+      "operator": "greaterThan",
+      "value": 0,
+      "severity": "error",
+      "message": "First segment size must be > 0 words"
+    },
+    {
+      "id": "assert_size_consistent",
+      "type": "info",
+      "severity": "info",
+      "message": "For a single-segment message: expected file size = 8 + capnpSeg0Size * 8 bytes"
     }
   ],
   "navigation": {
-    "bookmarks": [
-      { "name": "Segment Count", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
-      { "name": "First Segment Size", "offset": 4, "icon": "\uE8A5", "color": "#4ECDC4" }
+    "entryPoints": [
+      { "name": "Segment Table", "offset": 0 },
+      { "name": "Root Struct Pointer (Segment 0)", "offset": 8 }
+    ],
+    "jumpTable": [
+      { "label": "Segment Count Minus 1", "offset": 0 },
+      { "label": "Segment 0 Size (words)", "offset": 4 },
+      { "label": "Root Struct Pointer", "offset": 8 }
     ]
   },
   "inspector": {
-    "badge": "segmentCount",
-    "primaryField": "firstSegmentSize",
-    "showQualityScore": true,
+    "badge": "CP",
+    "primaryField": "capnpSeg0Size",
     "groups": [
       {
-        "title": "Segment Table",
-        "icon": "\uE71B",
-        "fields": ["segmentCount", "firstSegmentSize", "totalExpectedWords"]
-      },
-      {
-        "title": "Root Pointer",
-        "icon": "\uE9D9",
-        "fields": ["rootPointerLow", "rootPointerHigh"]
+        "name": "Segment Table",
+        "fields": ["capnpSegmentCount", "capnpSeg0Size"]
       }
     ]
   },
   "exportTemplates": [
     {
-      "name": "Cap'n Proto Header (JSON)",
-      "format": "json",
-      "fields": ["segmentCount", "firstSegmentSize", "totalExpectedWords"]
+      "name": "Cap'n Proto Segment Table Summary",
+      "format": "text",
+      "template": "Cap'n Proto Message\nSegment Count (actual): {capnpSegmentCount} + 1\nSegment 0 Size        : {capnpSeg0Size} words ({capnpSeg0Size} * 8 bytes)"
     },
     {
-      "name": "Cap'n Proto Segment Table (C struct)",
-      "format": "c-struct",
-      "structName": "CAPNP_SEGMENT_TABLE",
-      "fields": ["segmentCount", "firstSegmentSize"]
+      "name": "Cap'n Proto Header CSV",
+      "format": "csv",
+      "template": "Field,Value\nSegmentCountMinus1,{capnpSegmentCount}\nSegment0SizeWords,{capnpSeg0Size}"
     }
   ],
   "forensic": {
-    "category": "data",
     "riskLevel": "low",
     "suspiciousPatterns": [
-      {
-        "name": "Excessive segment count",
-        "condition": "segmentCount >= 512",
-        "severity": "warning",
-        "description": "Cap'n Proto segment count >= 512 is abnormal and may indicate a crafted message intended to cause parser exhaustion via large segment table allocation"
-      },
-      {
-        "name": "First segment size mismatch",
-        "condition": "firstSegmentSize * 8 + 8 > fileSize",
-        "severity": "error",
-        "description": "First segment size exceeds file size — file is truncated or first 8 bytes are not a Cap'n Proto segment table"
-      }
+      "Segment count >= 512 — possible parser heap exhaustion via large segment table",
+      "First segment size * 8 exceeds file size — truncated or malformed message",
+      "Inter-segment far pointers (type=10) pointing outside segment bounds — possible read-beyond attack",
+      "Capability pointer (type=11) outside expected RPC context — unexpected privilege escalation attempt"
     ]
   },
   "aiHints": {
-    "analysisContext": "Cap'n Proto binary framing: [segment_count-1: uint32 LE] + [segment_0_size_words: uint32 LE] + ... + [segment_N_size_words: uint32 LE] + [optional 4B padding if odd number of size entries] + [segment 0 data: segment_0_size_words * 8 bytes] + ... First word of segment 0 is the root struct pointer. Pointer types (low 2 bits): 00=struct, 01=list, 10=inter-segment far, 11=capability. Struct pointer upper 32 bits: data_word_count(16 bits high) + pointer_word_count(16 bits low). Zero pointer = null. Use capnp tool: capnp decode schema.capnp TypeName < file.bin for inspection.",
+    "analysisContext": "Cap'n Proto binary framing: [segment_count-1: uint32 LE] + [segment_0_size_words: uint32 LE] + ... + optional 4B padding + [segment 0 data: size*8 bytes] + .... First word of segment 0 is the root struct pointer. Pointer types (low 2 bits): 00=struct, 01=list, 10=far, 11=cap. Use 'capnp decode schema.capnp TypeName < file.bin' for inspection with schema.",
     "suggestedInspections": [
-      "Read segmentCount (uint32 LE at offset 0) — value 0 means single-segment message",
-      "Read firstSegmentSize (uint32 LE at offset 4) in words — multiply by 8 for bytes",
-      "Verify: segmentCount < 512 and firstSegmentSize * 8 <= remaining file size",
-      "Navigate to first segment start (offset 8 for single-segment) and parse root struct pointer",
-      "Use capnp CLI: capnp decode schema.capnp RootType < file.bin to decode with schema"
+      "Read segmentCount (uint32 LE at offset 0): value 0 means single-segment message",
+      "Read first segment size (uint32 LE at offset 4) in words; multiply by 8 for bytes",
+      "Verify: segmentCount < 512 and seg0Size * 8 <= remaining file size",
+      "Parse root struct pointer at offset 8: low bits type (should be 00=struct), high 32 bits = data/pointer word counts",
+      "Use capnp CLI: 'capnp decode schema.capnp RootType < file.bin' to fully decode with schema",
+      "Check for multi-segment messages: segment table has capnpSegmentCount+1 uint32 size entries"
     ]
   },
   "software": [
-    "capnp (capnproto.org/install.html — official CLI and C++ library)",
-    "capnp-python (pip install pycapnp)",
-    "capnp-go (github.com/capnproto/go-capnp)",
-    "capnp-rust (crates.io/crates/capnp)",
-    "Sandstorm.io (uses Cap'n Proto for all IPC)"
+    { "name": "capnp CLI", "vendor": "capnproto.org", "platform": "Cross-platform" },
+    { "name": "pycapnp", "vendor": "Open source", "platform": "Python" },
+    { "name": "go-capnp", "vendor": "capnproto/go-capnp", "platform": "Go" }
   ],
-  "formatRelationships": {
-    "category": "Data",
-    "extensions": [".bin", ".capnp"],
-    "relatedFormats": ["FLATBUF", "ION", "ARROW_IPC"],
-    "note": "Cap'n Proto and FlatBuffers are both zero-copy binary formats with no global magic. Cap'n Proto has RPC support built in (capnp RPC). FlatBuffers is simpler (no RPC, no streaming). Protocol Buffers requires full deserialization; Cap'n Proto and FlatBuffers do not. The .capnp extension is also used for Cap'n Proto schema definition files (text format, not binary)."
-  },
+  "formatRelationships": [
+    { "format": "FLATBUF", "relation": "sibling", "note": "FlatBuffers is also zero-copy but has a different framing and no RPC support" },
+    { "format": "PROTOBUF", "relation": "alternative", "note": "Protocol Buffers requires full deserialization; Cap'n Proto accesses data zero-copy" }
+  ],
   "MimeTypes": [
     "application/octet-stream",
     "application/x-capnproto"
@@ -179,25 +182,25 @@
     "High-performance microservice IPC without deserialization overhead",
     "IPFS Bitswap protocol message encoding",
     "Sandstorm.io application platform inter-process communication",
-    "Cloudflare Workers KV value storage",
-    "Low-latency financial and telemetry data pipelines"
+    "Cloudflare Workers KV value storage"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 65,
-    "DocumentationLevel": "detailed",
-    "BlocksDefined": 5,
-    "ValidationRules": 1,
-    "LastUpdated": "2026-04-15",
-    "PriorityFormat": false,
-    "AutoRefined": false
+    "CompletenessScore": 84,
+    "LastUpdated": "2026-04-15"
   },
   "TechnicalDetails": {
-    "Magic": "None — no file magic bytes",
-    "Framing": "Segment table: uint32 (count-1) + uint32 segment_size_words[] + 8B aligned segments",
-    "PointerTypes": "Struct (0), List (1), Far/inter-segment (2), Capability (3)",
-    "ZeroCopySupport": true,
-    "RPCSupport": true,
-    "SupportsStreaming": true,
-    "Endianness": "little-endian"
+    "headerSize": 8,
+    "endian": "little",
+    "magic": "none",
+    "framing": "uint32 segment_count-1 + uint32[] segment_size_words + 8B-aligned segment data",
+    "pointerTypes": {
+      "0": "struct pointer",
+      "1": "list pointer",
+      "2": "inter-segment far pointer",
+      "3": "capability pointer (RPC)"
+    },
+    "zeroCopySupport": true,
+    "rpcSupport": true,
+    "notes": "For a single-segment message: file = 8 bytes segment table + seg0_size*8 bytes data. Root struct pointer is always at byte offset 8. capnpSegmentCount value 0 = one segment."
   }
 }

@@ -1,109 +1,176 @@
 {
-  "formatName": "Smacker Video",
-  "version": "1.0",
-  "author": "WPFHexaEditor Team",
-  "lastUpdated": "2026-04-15",
-  "description": "RAD Game Tools Smacker video format (.smk) — paletted 8-bit video with up to 7 audio tracks, used extensively in DOS and early Windows games including Fallout, Warcraft II, and Wing Commander IV.",
-  "extensions": [ ".smk" ],
-  "category": "Video",
+  "formatName": "Smacker Video (RAD Game Tools)",
+  "version": "1.1",
+  "extensions": [ ".smk", ".smk2" ],
   "diffMode": "binary",
-  "signatures": [
-    { "value": "534D4B32", "offset": 0, "label": "'SMK2' — Smacker video version 2", "weight": 1.0, "strength": "Strong" },
-    { "value": "534D4B34", "offset": 0, "label": "'SMK4' — Smacker video version 4", "weight": 1.0, "strength": "Strong" }
+  "description": "Smacker Video is a proprietary video format by RAD Game Tools predecessor to Bink, widely used in DOS/early Windows games for compressed FMV cutscenes. Supports versions SMK2 and SMK4.",
+  "category": "Video",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "HexEditor",
+  "references": [
+    "https://wiki.multimedia.cx/index.php/Smacker_Video",
+    "https://www.radgametools.com"
   ],
-  "maxSignatureOffset": 4,
-  "structure": {
-    "fields": [
-      { "offset": 0,   "size": 4,  "name": "signature",    "type": "ascii",    "description": "'SMK2' or 'SMK4'",                                    "storeAs": "smkSig" },
-      { "offset": 4,   "size": 4,  "name": "width",        "type": "uint32le", "description": "Frame width in pixels",                                "storeAs": "smkWidth" },
-      { "offset": 8,   "size": 4,  "name": "height",       "type": "uint32le", "description": "Frame height in pixels",                               "storeAs": "smkHeight" },
-      { "offset": 12,  "size": 4,  "name": "num_frames",   "type": "uint32le", "description": "Total number of frames",                               "storeAs": "smkFrames" },
-      { "offset": 16,  "size": 4,  "name": "frame_rate",   "type": "int32le",  "description": "Positive = fps; negative = ms per frame; 0 = default" },
-      { "offset": 20,  "size": 4,  "name": "flags",        "type": "uint32le", "description": "Bit0=ring_frame, bit1=Y_interlaced, bit2=Y_doubled" },
-      { "offset": 24,  "size": 28, "name": "audio_size",   "type": "bytes",    "description": "Max compressed audio sizes for 7 audio tracks (4B×7)" },
-      { "offset": 52,  "size": 4,  "name": "trees_size",   "type": "uint32le", "description": "Total size of Huffman tree data" },
-      { "offset": 56,  "size": 4,  "name": "mmap_size",    "type": "uint32le", "description": "Max compressed MMap tree frame size" },
-      { "offset": 60,  "size": 4,  "name": "mclr_size",    "type": "uint32le", "description": "Max compressed MClr tree frame size" },
-      { "offset": 64,  "size": 4,  "name": "full_size",    "type": "uint32le", "description": "Max compressed Full tree frame size" },
-      { "offset": 68,  "size": 4,  "name": "type_size",    "type": "uint32le", "description": "Max compressed Type tree frame size" },
-      { "offset": 72,  "size": 28, "name": "audio_rate",   "type": "bytes",    "description": "Audio sample rates + flags for 7 tracks (4B×7)" },
-      { "offset": 100, "size": 4,  "name": "dummy",        "type": "uint32le", "description": "Unused/padding" }
+  "MimeTypes": [ "video/x-smacker", "video/x-smk" ],
+  "UseCases": [
+    "DOS and early Windows game FMV playback",
+    "Game asset extraction and analysis",
+    "Retro game modding and video replacement",
+    "Legacy video format reverse engineering"
+  ],
+  "software": [
+    { "name": "RAD Video Tools", "role": "Official encoder/decoder",        "platform": "Windows", "url": "https://www.radgametools.com" },
+    { "name": "FFmpeg",          "role": "Open-source decoder",             "platform": "Multi",   "url": "https://ffmpeg.org" },
+    { "name": "VLC",             "role": "Playback via libavcodec",          "platform": "Multi" },
+    { "name": "ScummVM",         "role": "Game engine with SMK support",    "platform": "Multi",   "url": "https://www.scummvm.org" }
+  ],
+  "detection": {
+    "signatures": [
+      { "value": "534D4B32", "offset": 0, "label": "'SMK2' Smacker version 2", "weight": 1.0 },
+      { "value": "534D4B34", "offset": 0, "label": "'SMK4' Smacker version 4", "weight": 1.0 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 88,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 5.0, "max": 7.8 }
+  },
+  "variables": [
+    { "name": "smkMagic",            "offset": 0,  "size": 4, "type": "ascii",  "storeAs": "smkMagic",
+      "description": "Magic: 'SMK2' or 'SMK4'",
+      "valueMap": { "SMK2": "Smacker version 2", "SMK4": "Smacker version 4" } },
+    { "name": "smkWidth",            "offset": 4,  "size": 4, "type": "uint32", "endian": "LE", "storeAs": "smkWidth",            "description": "Video width in pixels" },
+    { "name": "smkHeight",           "offset": 8,  "size": 4, "type": "uint32", "endian": "LE", "storeAs": "smkHeight",           "description": "Video height in pixels" },
+    { "name": "smkFrameCount",       "offset": 12, "size": 4, "type": "uint32", "endian": "LE", "storeAs": "smkFrameCount",       "description": "Total number of frames" },
+    { "name": "smkMsPerFrame",       "offset": 16, "size": 4, "type": "int32",  "endian": "LE", "storeAs": "smkMsPerFrame",       "description": "Milliseconds per frame (positive=ms, negative=fps inverse)" },
+    { "name": "smkLargestFrame",     "offset": 20, "size": 4, "type": "uint32", "endian": "LE", "storeAs": "smkLargestFrame",     "description": "Size of largest frame in bytes" },
+    { "name": "smkFlags",            "offset": 24, "size": 4, "type": "uint32", "endian": "LE", "storeAs": "smkFlags",            "description": "Flags: bit0=ring frame, bit1=Y-doubled, bit2=Y-interlaced" },
+    { "name": "smkAudioSize0",       "offset": 28, "size": 4, "type": "uint32", "endian": "LE", "storeAs": "smkAudioSize0",       "description": "Uncompressed size of audio track 0" },
+    { "name": "smkAudioSize1",       "offset": 32, "size": 4, "type": "uint32", "endian": "LE", "storeAs": "smkAudioSize1",       "description": "Uncompressed size of audio track 1" },
+    { "name": "smkAudioSize2",       "offset": 36, "size": 4, "type": "uint32", "endian": "LE", "storeAs": "smkAudioSize2",       "description": "Uncompressed size of audio track 2" },
+    { "name": "smkTreeSize",         "offset": 64, "size": 4, "type": "uint32", "endian": "LE", "storeAs": "smkTreeSize",         "description": "Total size of Huffman tree data" },
+    { "name": "smkAudioTrackFlags",  "offset": 72, "size": 4, "type": "uint32", "endian": "LE", "storeAs": "smkAudioTrackFlags",  "description": "Audio track compression and channel flags" }
+  ],
+  "blocks": [
+    {
+      "name": "FileHeader",
+      "offset": 0,
+      "size": 104,
+      "description": "104-byte Smacker fixed header with magic, dimensions, frame count and timing",
+      "color": "#1E90FF",
+      "fields": [ "smkMagic", "smkWidth", "smkHeight", "smkFrameCount", "smkMsPerFrame",
+                  "smkLargestFrame", "smkFlags", "smkAudioSize0", "smkAudioSize1", "smkAudioSize2",
+                  "smkTreeSize", "smkAudioTrackFlags" ]
+    },
+    {
+      "name": "FrameSizeTable",
+      "offset": 104,
+      "sizeExpression": "smkFrameCount * 4",
+      "description": "Per-frame size entries (4 bytes each, bit0 = keyframe flag)",
+      "color": "#32CD32"
+    },
+    {
+      "name": "FrameTypeTable",
+      "offset": "after frame size table",
+      "sizeExpression": "smkFrameCount",
+      "description": "Per-frame type bytes indicating which audio tracks are present",
+      "color": "#FFA500"
+    },
+    {
+      "name": "HuffmanTrees",
+      "offset": "after frame type table",
+      "sizeExpression": "smkTreeSize",
+      "description": "Packed Huffman trees used for video decompression",
+      "color": "#FF6347"
+    },
+    {
+      "name": "FrameData",
+      "offset": "after Huffman trees",
+      "description": "Compressed video and audio frame data",
+      "color": "#9370DB"
+    }
+  ],
+  "assertions": [
+    { "id": "A1", "expression": "smkMagic == 'SMK2' or smkMagic == 'SMK4'", "severity": "error",   "message": "Magic must be 'SMK2' or 'SMK4'" },
+    { "id": "A2", "expression": "smkWidth > 0",                              "severity": "error",   "message": "Video width must be positive" },
+    { "id": "A3", "expression": "smkFrameCount > 0",                         "severity": "error",   "message": "Frame count must be positive" },
+    { "id": "A4", "expression": "smkHeight > 0",                             "severity": "error",   "message": "Video height must be positive" },
+    { "id": "A5", "expression": "smkLargestFrame < file size",               "severity": "warning", "message": "Largest frame exceeds file size — corrupt header" }
+  ],
+  "navigation": {
+    "rootLabel": "Smacker Video",
+    "entries": [
+      { "label": "File Header",      "blockRef": "FileHeader" },
+      { "label": "Frame Size Table", "blockRef": "FrameSizeTable" },
+      { "label": "Frame Type Table", "blockRef": "FrameTypeTable" },
+      { "label": "Huffman Trees",    "blockRef": "HuffmanTrees" },
+      { "label": "Frame Data",       "blockRef": "FrameData" }
     ]
   },
   "inspector": {
-    "displayFields": [ "smkSig", "smkWidth", "smkHeight", "smkFrames", "frame_rate" ],
-    "valueMaps": {
-      "smkSig": {
-        "SMK2": "Smacker v2",
-        "SMK4": "Smacker v4 (improved)"
-      }
-    },
-    "tooltips": {
-      "smkSig":      "'SMK2' and 'SMK4' indicate generation; v4 improves compression",
-      "frame_rate":  "Positive value = frames per second; negative value = milliseconds per frame; 0 = use audio rate",
-      "flags":       "Bit 1 (Y_interlaced) and bit 2 (Y_doubled) affect vertical scaling"
-    }
-  },
-  "assertions": [
-    { "id": "A1", "field": "smkSig",    "operator": "inSet", "value": ["SMK2","SMK4"], "description": "Signature must be 'SMK2' or 'SMK4'" },
-    { "id": "A2", "field": "smkWidth",  "operator": "gte",   "value": 1,              "description": "Frame width must be positive" },
-    { "id": "A3", "field": "smkHeight", "operator": "gte",   "value": 1,              "description": "Frame height must be positive" },
-    { "id": "A4", "field": "smkFrames", "operator": "gte",   "value": 1,              "description": "Must contain at least 1 frame" }
-  ],
-  "navigation": {
-    "bookmarks": [
-      { "offset": 0,   "label": "Signature SMK2/4",   "color": "#E74C3C" },
-      { "offset": 4,   "label": "Dimensions",          "color": "#27AE60" },
-      { "offset": 12,  "label": "Frame Count/Rate",    "color": "#3498DB" },
-      { "offset": 24,  "label": "Audio Size Array",    "color": "#9B59B6" },
-      { "offset": 52,  "label": "Huffman Tree Sizes",  "color": "#F39C12" },
-      { "offset": 104, "label": "Frame Offset Table",  "color": "#1ABC9C" }
+    "badge": "SMK",
+    "primaryField": "smkMagic",
+    "groups": [
+      { "name": "Identity",  "fields": [ "smkMagic" ] },
+      { "name": "Video",     "fields": [ "smkWidth", "smkHeight", "smkFrameCount", "smkMsPerFrame", "smkFlags" ] },
+      { "name": "Structure", "fields": [ "smkLargestFrame", "smkTreeSize" ] },
+      { "name": "Audio",     "fields": [ "smkAudioSize0", "smkAudioSize1", "smkAudioSize2", "smkAudioTrackFlags" ] }
     ]
   },
   "exportTemplates": [
     {
-      "name": "SMK Header Summary",
-      "fields": [ "smkSig", "smkWidth", "smkHeight", "smkFrames", "frame_rate", "flags" ],
-      "format": "text"
+      "name": "Video Summary",
+      "format": "text",
+      "template": "Format: {smkMagic}\nResolution: {smkWidth}x{smkHeight}\nFrames: {smkFrameCount}\nMs/Frame: {smkMsPerFrame}\nLargest Frame: {smkLargestFrame} bytes\nHuffman Tree Size: {smkTreeSize} bytes"
     },
     {
-      "name": "SMK Metadata JSON",
-      "fields": [ "smkSig", "smkWidth", "smkHeight", "smkFrames", "frame_rate", "flags", "trees_size" ],
-      "format": "json"
+      "name": "CSV Metadata",
+      "format": "csv",
+      "template": "Field,Value\nMagic,{smkMagic}\nWidth,{smkWidth}\nHeight,{smkHeight}\nFrameCount,{smkFrameCount}\nMsPerFrame,{smkMsPerFrame}\nLargestFrame,{smkLargestFrame}\nTreeSize,{smkTreeSize}"
     }
   ],
-  "aiHints": [
-    "Smacker is a paletted 8-bit (256-color) video format; it cannot represent true-color video — all frames use an embedded palette per keyframe.",
-    "The frame offset table begins at offset 104 and contains num_frames 4-byte entries; the lowest bit of each entry is a keyframe flag (1=keyframe).",
-    "Up to 7 simultaneous audio tracks are supported, each with independent sample rate stored in the audio_rate array at offset 72.",
-    "Huffman trees (MMap, MClr, Full, Type) are stored once in the file header area and reused across all frames — the trees_size field covers all four trees combined.",
-    "frame_rate semantics: positive values are FPS (e.g., 15 = 15fps), negative values are milliseconds per frame (e.g., -67 ≈ 15fps), zero = derive from audio.",
-    "SMK4 introduced improved color table compression over SMK2; both versions are widely encountered in 1990s game archives."
-  ],
   "forensic": {
-    "riskLevel": "low",
-    "notes": [
-      "Smacker files contain only compressed video (8-bit palette) and audio; no executable content.",
-      "Proprietary format with no public specification; ffmpeg reverse-engineered support is read-only.",
-      "Found in nearly all major DOS/early Windows game titles; essential for game preservation research."
+    "riskLevel": "LOW",
+    "suspiciousPatterns": [
+      "Unknown magic other than SMK2/SMK4 — wrong format or corrupt",
+      "smkFrameCount == 0 — empty or invalid file",
+      "smkLargestFrame > file size — corrupt header",
+      "smkTreeSize == 0 — no Huffman trees, likely corrupt"
+    ],
+    "hidingTechniques": [
+      "Extra data appended after last frame block",
+      "Padding in audio track size fields",
+      "Non-standard frame size table entries pointing to extra data"
+    ],
+    "timestampFields": [],
+    "notes": "Smacker was the dominant game video format for DOS/Windows games from 1994-2000. The ring-frame flag enables seamless video looping."
+  },
+  "aiHints": {
+    "analysisContext": "Smacker Video is structured as a fixed 104-byte header, per-frame size and type tables, Huffman trees then frame data. Frame timing is given in milliseconds per frame (positive) or as a rate (negative value). The Huffman trees are essential for video decompression.",
+    "suggestedInspections": [
+      "Verify magic is 'SMK2' or 'SMK4' at offset 0",
+      "Validate smkFrameCount > 0 and smkWidth/smkHeight are reasonable video dimensions",
+      "Inspect smkMsPerFrame: if negative, frame rate = abs(smkMsPerFrame) fps; if positive, ms per frame",
+      "Check smkFlags for ring-frame (loop) and Y-doubling display mode bits",
+      "Sum all frame sizes from the frame size table and verify total matches remaining file size"
     ]
   },
   "formatRelationships": [
-    { "format": "BIK", "relationship": "successor", "note": "Bink replaced Smacker for true-color video in later RAD Game Tools products." }
+    { "format": "BIK", "relationship": "descendant", "description": "Bink Video is the successor format from the same RAD Game Tools" },
+    { "format": "AVI", "relationship": "sibling",    "description": "AVI was a contemporaneous PC video container standard" }
   ],
-  "software": [
-    { "name": "RAD Game Tools",  "role": "Original Smacker SDK (commercial)" },
-    { "name": "ffmpeg",          "role": "Read-only SMK decode (reverse-engineered)" },
-    { "name": "smacker tool",    "role": "RAD command-line SMK utility" },
-    { "name": "DOSBox",          "role": "Plays SMK natively within emulated DOS games" },
-    { "name": "Sfall",           "role": "Fallout 1/2 engine extension with SMK support" }
-  ],
-  "useCases": [
-    "DOS and early Windows game cutscene video playback",
-    "Legacy game data research and extraction",
-    "Game preservation archives for 1990s titles",
-    "Retro game modding: FMV replacement"
-  ],
-  "technicalDetails": "RAD Game Tools Smacker codec (1994). Paletted 256-color video using four Huffman trees (MMap, MClr, Full, Type) for frame delta compression. Up to 7 audio tracks with custom ADPCM audio compression. The frame index table at offset 104 provides seeking. Used in: Fallout 1/2, Star Wars: Dark Forces, Wing Commander IV, Warcraft II, Interplay/Black Isle titles, and hundreds of other DOS/Windows games from 1994–2000.",
-  "completenessScore": 82
+  "TechnicalDetails": {
+    "endianness": "Little-Endian",
+    "minimumFileSize": 104,
+    "headerSize": 104,
+    "maxAudioTracks": 7,
+    "compressionType": "Proprietary Smacker Huffman codec",
+    "audioCodecs": [ "Smacker Audio (DPCM)", "Smacker Audio (16-bit PCM)" ],
+    "versions": [ "SMK2", "SMK4" ]
+  },
+  "QualityMetrics": {
+    "CompletenessScore": 91,
+    "LastUpdated": "2026-04-15",
+    "ReviewedBy": "WPFHexaEditor Team",
+    "KnownLimitations": "SMK4 extended the format with additional audio track flags; exact per-version differences require further research."
+  }
 }

@@ -13,6 +13,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using Microsoft.Win32;
 using WpfHexEditor.Core.Interfaces;
+using WpfHexEditor.Core.Contracts;
 using WpfHexEditor.Core.Options;
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Shell.Panels.Services;
@@ -138,6 +139,15 @@ public partial class WhfmtBrowserPanel : UserControl
 
     private void OnVmViewJsonRequested(object? sender, string keyOrPath)
         => ViewJsonRequested?.Invoke(this, keyOrPath);
+
+    // ------------------------------------------------------------------
+    // Toolbar toggle helpers (XAML can't invert bool bindings without converter)
+    // ------------------------------------------------------------------
+
+    private void OnFlatViewToggleClick(object sender, RoutedEventArgs e)
+        => _vm.IsTreeView = false;
+
+    private void OnShowFailuresToggleClick(object sender, RoutedEventArgs e) { }
 
     // ------------------------------------------------------------------
     // Helpers

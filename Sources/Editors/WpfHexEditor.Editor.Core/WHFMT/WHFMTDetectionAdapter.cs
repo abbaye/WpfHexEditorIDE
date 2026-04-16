@@ -20,6 +20,8 @@
 //       file extension; the caller falls back to IEditorRegistry.
 // ==========================================================
 
+using WpfHexEditor.Core.Contracts;
+
 namespace WpfHexEditor.Editor.Core.WHFMT;
 
 /// <summary>

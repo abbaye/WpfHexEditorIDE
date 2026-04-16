@@ -1,0 +1,213 @@
+{
+  "diffMode": "binary",
+  "formatName": "HDF-EOS NASA Earth Observing System",
+  "version": "1.0",
+  "extensions": [".hdf", ".he4", ".he5", ".h4", ".h5"],
+  "description": "HDF-EOS (Hierarchical Data Format Earth Observing System) is NASA's primary data format for Earth science data products from satellites such as Terra, Aqua, Aura, and Suomi NPP. HDF-EOS extends HDF4 and HDF5 with Earth-specific metadata conventions (ECS Core Metadata, ArchiveMetadata) and three geometric object types: Grid, Swath, and Point. HDF4-based products (MODIS Level-1B, ASTER) use magic 0x0E031301. HDF5-based products (MODIS Collection 6.1+, VIIRS, MOPITT) use the HDF5 magic \\x89HDF\\r\\n\\x1A\\n. Products include land surface temperature, NDVI vegetation indices, aerosol optical depth, ozone concentration, and sea surface temperature.",
+  "category": "GIS",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "references": {
+    "specifications": [
+      "HDF-EOS5 Library and Data Model (HDF Group / NASA GSFC)",
+      "HDF-EOS2 Toolkit Users Guide v3.0",
+      "NASA ECS Data Standards Guide"
+    ],
+    "WebLinks": [
+      "https://hdfeos.org/",
+      "https://lpdaac.usgs.gov/data/get-started-data/collection-overview/missions/modis-overview/",
+      "https://en.wikipedia.org/wiki/HDF-EOS"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      {
+        "value": "0E031301",
+        "offset": 0,
+        "label": "HDF4 magic bytes (0x0E 0x03 0x13 0x01)",
+        "weight": 1.0
+      },
+      {
+        "value": "894844460D0A1A0A",
+        "offset": 0,
+        "label": "HDF5 magic \\x89HDF\\r\\n\\x1A\\n",
+        "weight": 1.0
+      }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.8,
+    "Strength": "Strong",
+    "EntropyHint": "High — compressed scientific array data with mixed-type metadata"
+  },
+  "variables": {
+    "hdfEosMagic": "",
+    "hdfEosVersionHint": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "HDF Magic",
+      "offset": 0,
+      "length": 8,
+      "color": "#FF6B6B",
+      "opacity": 0.85,
+      "description": "HDF magic bytes. HDF4: 4 bytes 0x0E 0x03 0x13 0x01. HDF5: 8 bytes 0x89 0x48 0x44 0x46 0x0D 0x0A 0x1A 0x0A (\\x89HDF\\r\\n\\x1A\\n). The HDF5 magic includes a non-ASCII lead byte, the ASCII string 'HDF', carriage return, line feed, control-Z, and line feed — designed to detect common text-mode corruption.",
+      "storeAs": "hdfEosMagic",
+      "valueType": "hex"
+    },
+    {
+      "type": "field",
+      "name": "Version Hint Byte",
+      "offset": 4,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.5,
+      "description": "Byte at offset 4. For HDF4: part of superblock version chain. For HDF5: 0x46 ('F') — 5th byte of \\x89HDF string. Provides a quick disambiguation between HDF4 and HDF5 without full parsing.",
+      "storeAs": "hdfEosVersionHint",
+      "valueType": "uint8"
+    },
+    {
+      "type": "field",
+      "name": "HDF4 Version Block",
+      "offset": 4,
+      "length": 4,
+      "color": "#95E1D3",
+      "opacity": 0.4,
+      "description": "HDF4: bytes 4-7 contain the HDF4 superblock version and internal file identifier. HDF4 files use a linked-list structure of Data Descriptor (DD) blocks. The version of the HDF4 file format can be queried via HDF4 API Hgetlibversion()."
+    },
+    {
+      "type": "field",
+      "name": "HDF5 Superblock",
+      "offset": 8,
+      "length": 12,
+      "color": "#FFE66D",
+      "opacity": 0.35,
+      "description": "HDF5: bytes 8+ contain the HDF5 superblock. Version byte at offset 8 (0=version 0, 1=version 1, 2=version 2, 3=version 3). Version 0/1: free-space manager info. Version 2: B-tree v2, fractal heap. Superblock contains: signature, version, free-space version, root group symbol table, end-of-file address, and B-tree leaf/internal node K factors."
+    },
+    {
+      "type": "field",
+      "name": "ECS Core Metadata",
+      "offset": "dynamic",
+      "length": "dynamic",
+      "color": "#C3A6FF",
+      "opacity": 0.30,
+      "description": "NASA ECS (EOSDIS Core System) metadata stored as an HDF attribute named 'CoreMetadata.0' or in a root-level HDF Vdata/group. Contains ODL (Object Description Language) formatted metadata including: SHORTNAME (product code, e.g. MOD09GA), VersionID, ArchiveCenter (LAADS DAAC, LP DAAC, etc.), SizeMBECSDataGranule, LocalGranuleID, ProductionDateTime, RangeBeginningDate, RangeEndingDate, BoundingRectangle (WGS84 lat/lon), InputGranule list, GRingPointLatitude/Longitude (polygon boundary)."
+    }
+  ],
+  "assertions": [
+    {
+      "name": "HDF4OrHDF5Magic",
+      "expression": "magic4 == [0x0E,0x03,0x13,0x01] || magic8 == [0x89,0x48,0x44,0x46,0x0D,0x0A,0x1A,0x0A]",
+      "severity": "error",
+      "message": "Neither HDF4 nor HDF5 magic bytes found. File is not a valid HDF-EOS product."
+    },
+    {
+      "name": "EOSMetadataPresent",
+      "expression": "containsPattern('CoreMetadata') || containsPattern('ArchiveMetadata')",
+      "severity": "info",
+      "message": "No ECS metadata attribute found. File may be generic HDF rather than HDF-EOS product."
+    },
+    {
+      "name": "VersionHintValid",
+      "expression": "hdfEosVersionHint > 0",
+      "severity": "info",
+      "message": "Version hint byte at offset 4 should be non-zero for valid HDF4/HDF5 files."
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "HDF Magic", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
+      { "name": "Superblock", "offset": 8, "icon": "\uE946", "color": "#FFE66D" },
+      { "name": "ECS Metadata", "offset": "dynamic", "icon": "\uE8B7", "color": "#C3A6FF" }
+    ]
+  },
+  "inspector": {
+    "badge": "HDF",
+    "primaryField": "hdfEosMagic",
+    "groups": [
+      {
+        "title": "HDF Header",
+        "icon": "\uE71B",
+        "fields": ["hdfEosMagic", "hdfEosVersionHint"]
+      },
+      {
+        "title": "EOS Metadata",
+        "icon": "\uE946",
+        "fields": ["ecsMetadata", "productName", "dateRange"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "HDF-EOS Metadata (JSON)",
+      "format": "json",
+      "fields": ["productShortName", "versionId", "granuleId", "dateRange", "boundingBox", "archiveCenter"]
+    },
+    {
+      "name": "Spatial Coverage (CSV)",
+      "format": "csv",
+      "fields": ["productName", "beginDate", "endDate", "westLon", "eastLon", "southLat", "northLat"]
+    }
+  ],
+  "forensic": {
+    "riskLevel": "LOW",
+    "notes": "Scientific remote sensing data; generally not PHI. May contain location data relevant to specific observations.",
+    "suspiciousPatterns": [
+      "Corrupt magic bytes indicating partial file transfer from DAAC",
+      "Mismatched ECS metadata dates vs embedded geolocation timestamps",
+      "Unexpected compression flags causing silent data corruption"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "HDF-EOS wraps HDF4 (magic 0E031301) or HDF5 (magic 89 48 44 46 0D 0A 1A 0A) with NASA EOS conventions. Three geometric types: Grid (projected raster, e.g. MODIS 1km sinusoidal), Swath (satellite scan geometry, e.g. MODIS L1B), Point (station data). Metadata in ODL format: SHORTNAME (MOD09GA, MYD11A2, etc.), version, date range, bounding box. Data arrays in SDS (HDF4) or Dataset (HDF5). Use h4dump/h5dump to explore structure. Common products: MODIS (Terra=MOD, Aqua=MYD), VIIRS (VNP prefix), ASTER (AST prefix).",
+    "suggestedInspections": [
+      "Check magic: 0E031301=HDF4 (MODIS L1B, ASTER), 89HDF=HDF5 (MODIS C6.1+, VIIRS) to select correct reader",
+      "Extract CoreMetadata.0 attribute via h4dump/h5dump to get product short name, date range, and spatial bounding box",
+      "List all SDS (HDF4) or Dataset (HDF5) names to discover available geophysical variables",
+      "Read scale_factor and add_offset attributes on data arrays to convert packed integers to physical values",
+      "Check fill_value attribute to mask invalid pixels before computing statistics or visualizations",
+      "Inspect GRingPoint latitude/longitude arrays in metadata for exact granule polygon boundary coordinates"
+    ]
+  },
+  "software": [
+    { "name": "NASA Panoply", "url": "https://www.giss.nasa.gov/tools/panoply/" },
+    { "name": "HDFView", "url": "https://www.hdfgroup.org/downloads/hdfview/" },
+    { "name": "GDAL/OGR (HDF4/HDF5 driver)", "url": "https://gdal.org/" },
+    { "name": "Python h5py + netCDF4", "url": "https://h5py.org" }
+  ],
+  "formatRelationships": [
+    { "format": "HDF4", "relation": "base format for EOS2 (MODIS Terra/Aqua classic)" },
+    { "format": "HDF5", "relation": "base format for EOS5 (MODIS Collection 6.1+, VIIRS)" },
+    { "format": "NETCDF", "relation": "sibling — NetCDF-4 uses HDF5 as storage layer" },
+    { "format": "GEOTIFF", "relation": "common export format from HDF-EOS products" }
+  ],
+  "MimeTypes": [
+    "application/x-hdf",
+    "application/x-hdf5",
+    "application/octet-stream"
+  ],
+  "UseCases": [
+    "NASA Earth observation product distribution (MODIS, VIIRS, ASTER, MOPITT)",
+    "Land surface temperature and vegetation index time series analysis",
+    "Atmospheric composition monitoring (aerosol, ozone, CO)",
+    "Climate data record production and validation",
+    "Geospatial analysis with GDAL/Python in GIS workflows"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 83,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 5,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-15",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "baseFormats": "HDF4 (EOS2) and HDF5 (EOS5)",
+    "geometricTypes": "Grid, Swath, Point",
+    "metadataFormat": "ODL (Object Description Language)",
+    "coordSystem": "WGS84 geographic or sinusoidal projection",
+    "compression": "DEFLATE (gzip) or SZIP per variable",
+    "dataTypes": "float32, int16, uint8 (packed with scale/offset)"
+  }
+}

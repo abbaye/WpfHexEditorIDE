@@ -1,0 +1,170 @@
+{
+  "diffMode": "text",
+  "formatName": "WebAssembly Source Map",
+  "version": "1.0",
+  "extensions": [ ".wasm.map", ".map" ],
+  "description": "WebAssembly source maps are JSON files conforming to the Source Map Specification v3 that associate WASM binary bytecode positions with original source code locations. They are produced by compilers like Emscripten, wasm-pack, and AssemblyScript. The file begins with '{\"version\":3' and includes 'sources' (original file paths), 'mappings' (base64 VLQ-encoded position data), and optionally 'sourcesContent' (embedded source text). Source maps enable browser developer tools and debuggers to show original C/C++/Rust/AssemblyScript source rather than WAT assembly when debugging WASM.",
+  "category": "Programming",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "code-editor",
+  "references": {
+    "specifications": [
+      "Source Map Specification v3",
+      "WebAssembly DWARF-based debugging",
+      "Emscripten Source Maps"
+    ],
+    "WebLinks": [
+      "https://sourcemaps.info/spec.html",
+      "https://github.com/WebAssembly/design/issues/1178",
+      "https://emscripten.org/docs/compiling/Building-Projects.html#source-maps",
+      "https://developer.chrome.com/blog/wasm-debugging-2020/"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      { "hex": "7B2276657273696F6E223A33", "offset": 0, "label": "'{\"version\":3' — Source Map v3 JSON header", "weight": 0.8 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.5,
+    "required": false,
+    "Strength": "Medium",
+    "EntropyHint": { "min": 4.0, "max": 5.5 },
+    "validation": {
+      "minFileSize": 20,
+      "maxSignatureOffset": 0,
+      "note": "Source map files start with '{\"version\":3'. The .wasm.map extension provides strong identification context. .map extension alone is ambiguous (could be JavaScript source map)."
+    }
+  },
+  "variables": {
+    "wasmMapStart": 0,
+    "wasmMapVersion": ""
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "JSON Open Brace",
+      "offset": 0,
+      "length": 1,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "JSON object start: '{' (0x7B). Source maps are JSON objects.",
+      "storeAs": "wasmMapStart",
+      "valueType": "uint8"
+    },
+    {
+      "type": "field",
+      "name": "Version Key",
+      "offset": 1,
+      "length": 12,
+      "color": "#4ECDC4",
+      "opacity": 0.4,
+      "description": "'{\"version\":3' — Source Map v3 version declaration.",
+      "storeAs": "wasmMapVersion",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "JSON Content",
+      "offset": 13,
+      "length": 128,
+      "color": "#45B7D1",
+      "opacity": 0.2,
+      "description": "JSON content preview: sources, mappings, names, file fields.",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Mappings Data",
+      "offset": 0,
+      "length": 0,
+      "color": "#FFEAA7",
+      "opacity": 0.15,
+      "description": "Base64 VLQ-encoded 'mappings' field linking WASM offsets to source positions.",
+      "valueType": "ascii"
+    }
+  ],
+  "assertions": [
+    { "field": "wasmMapStart", "operator": "equals", "value": 123, "description": "File must start with '{' (0x7B) — JSON object" },
+    { "field": "wasmMapVersion", "operator": "startsWith", "value": "\"version\":3", "description": "Source map must declare version 3" },
+    { "field": "wasmMapVersion", "operator": "notEmpty", "value": true, "description": "Version field must be readable" }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "JSON Root", "offset": 0, "description": "JSON object start '{'" },
+      { "name": "Version Declaration", "offset": 1, "description": "'\"version\":3' source map version" }
+    ]
+  },
+  "inspector": {
+    "badge": "MAP",
+    "primaryField": "wasmMapVersion",
+    "showQualityScore": true,
+    "groups": [
+      { "name": "Source Map Header", "fields": ["wasmMapStart", "wasmMapVersion"] }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "Source Map Info (JSON)",
+      "format": "json",
+      "fields": ["wasmMapStart", "wasmMapVersion"]
+    },
+    {
+      "name": "Source Map Summary (Text)",
+      "format": "text",
+      "fields": ["wasmMapVersion"]
+    }
+  ],
+  "forensic": {
+    "category": "development",
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      { "name": "Source paths exposed", "condition": "true", "description": "Source maps may expose internal file system paths, developer machine names, or repository structure via 'sources' array.", "severity": "info" },
+      { "name": "Embedded source code", "condition": "sourcesContent present", "description": "If 'sourcesContent' is populated, the original source code is fully embedded in the map file — may expose proprietary logic.", "severity": "warning" }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "WASM source maps are Source Map v3 JSON files linking WASM binary positions to original source (C/C++/Rust/AssemblyScript). They start with '{\"version\":3'. Key fields: 'sources' (file paths), 'mappings' (base64 VLQ), 'names', 'file' (WASM file path). The .wasm.map extension is specific; .map alone could be a JS source map.",
+    "suggestedInspections": [
+      "Verify '{\"version\":3' at start of file",
+      "Check 'file' field for the associated .wasm file path",
+      "Inspect 'sources' array for original source file paths (may reveal internal paths)",
+      "Check if 'sourcesContent' is populated — may contain complete original source code",
+      "Decode 'mappings' base64 VLQ to correlate WASM offsets with source lines",
+      "Look for debug information sections referenced in WASM binary alongside this map"
+    ]
+  },
+  "software": [
+    "Emscripten",
+    "wasm-pack",
+    "AssemblyScript compiler",
+    "Chrome DevTools (WASM debugging)",
+    "Firefox Developer Tools"
+  ],
+  "formatRelationships": {
+    "category": "Programming",
+    "extensions": [".wasm.map", ".map"],
+    "relatedFormats": ["WASM", "SOURCE_MAP", "WAT"],
+    "note": "WASM source maps are the WebAssembly equivalent of JavaScript source maps. Both use Source Map v3 spec. The .wasm.map extension clearly identifies the target as WASM."
+  },
+  "MimeTypes": [ "application/json", "application/octet-stream" ],
+  "UseCases": [
+    "WASM binary debugging in browser DevTools",
+    "Mapping compiled WASM positions to C/C++/Rust source lines",
+    "Post-mortem crash analysis with source context",
+    "Security audit of deployed WASM applications (source exposure risk)"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 85,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 4,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-15",
+    "ReviewedBy": "WPFHexaEditor Team"
+  },
+  "TechnicalDetails": {
+    "Encoding": "UTF-8 JSON",
+    "MappingsEncoding": "Base64 VLQ",
+    "SpecVersion": "Source Map v3",
+    "Note": "WASM source maps are text JSON files, not binary. Detection is by JSON structure + extension. Ambiguous with JS source maps on .map extension alone."
+  }
+}

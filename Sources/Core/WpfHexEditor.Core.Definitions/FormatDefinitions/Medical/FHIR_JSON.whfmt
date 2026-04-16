@@ -1,0 +1,241 @@
+{
+  "diffMode": "text",
+  "formatName": "HL7 FHIR JSON Resource",
+  "version": "1.0",
+  "extensions": [
+    ".json",
+    ".fhir.json"
+  ],
+  "description": "HL7 FHIR (Fast Healthcare Interoperability Resources) is the modern standard for healthcare data exchange, developed by Health Level Seven International (HL7). FHIR R4 (Release 4, published 2019) defines over 140 resource types representing clinical and administrative healthcare data. FHIR JSON encoding requires the 'resourceType' property as the first key in every resource object. Core resource types include: Patient (demographics), Observation (lab results, vital signs), Condition (diagnoses), MedicationRequest (prescriptions), Encounter (visits), DiagnosticReport (reports with embedded Observations), Bundle (collection of resources), Practitioner (clinicians), Organization (providers), AllergyIntolerance, and Procedure. FHIR uses SNOMED CT, LOINC, RxNorm, and ICD-10 coding systems for clinical terminology. FHIR is mandated by the 21st Century Cures Act (US) for patient data access via SMART on FHIR OAuth2 apps.",
+  "category": "Medical",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "text-editor",
+  "references": {
+    "specifications": [
+      "HL7 FHIR R4 Specification (https://hl7.org/fhir/R4/)",
+      "FHIR JSON Format specification (https://hl7.org/fhir/R4/json.html)",
+      "21st Century Cures Act FHIR API requirements (ONC 2020)"
+    ],
+    "WebLinks": [
+      "https://hl7.org/fhir/",
+      "https://www.hl7.org/fhir/r4/resourcelist.html",
+      "https://smarthealthit.org/"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      {
+        "value": "7B0A2020227265736F75726365",
+        "offset": 0,
+        "label": "'{\\n  \"resource' — pretty-printed FHIR JSON resource start",
+        "weight": 0.7
+      },
+      {
+        "value": "7B22726573",
+        "offset": 0,
+        "label": "'{\"res' — compact FHIR JSON with resourceType key",
+        "weight": 0.6
+      }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.5,
+    "required": false,
+    "Strength": "Medium",
+    "EntropyHint": { "min": 3.5, "max": 6.0 },
+    "validation": {
+      "minFileSize": 20,
+      "maxSignatureOffset": 0,
+      "note": "FHIR JSON must start with '{' and contain 'resourceType' as the first or second key. Valid resourceType values are defined in the FHIR R4/R5 specification (e.g., Patient, Observation, Bundle, Encounter)."
+    }
+  },
+  "variables": {
+    "fhirJsonOpen": 0,
+    "fhirResourceType": ""
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "JSON Open Brace",
+      "offset": 0,
+      "length": 1,
+      "color": "#FF6B6B",
+      "opacity": 0.45,
+      "description": "Opening '{' character (0x7B) of the JSON object. FHIR JSON resources must be valid JSON objects at the top level. FHIR Bundles are also JSON objects (not arrays). If the file starts with '[', it is either a JSON array (not standard FHIR) or an NDJson (newline-delimited JSON) export of multiple resources.",
+      "storeAs": "fhirJsonOpen",
+      "valueType": "uint8"
+    },
+    {
+      "type": "field",
+      "name": "Resource Type Declaration",
+      "offset": 1,
+      "length": 13,
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "The 'resourceType' JSON key identifying the FHIR resource class. Per FHIR specification, this must be the first property in any resource JSON object. Common values: 'Patient', 'Observation', 'Condition', 'MedicationRequest', 'Encounter', 'DiagnosticReport', 'Bundle', 'Practitioner', 'Organization', 'AllergyIntolerance', 'Procedure', 'Immunization', 'ServiceRequest', 'Claim'. Bundle type contains an 'entry' array with nested resources.",
+      "storeAs": "fhirResourceType",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Resource ID",
+      "offset": "dynamic",
+      "length": "dynamic",
+      "color": "#95E1D3",
+      "opacity": 0.30,
+      "description": "FHIR resource logical 'id' field — a string of up to 64 characters matching [A-Za-z0-9\\-\\.]{1,64}. Used as the last segment of the resource URL (e.g., 'Patient/12345'). Server-assigned on POST; client-specified on PUT. Alongside 'meta.versionId' (string), 'meta.lastUpdated' (instant), and 'meta.source', forms the full resource identity.",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "FHIR Meta Block",
+      "offset": "dynamic",
+      "length": "dynamic",
+      "color": "#FFE66D",
+      "opacity": 0.30,
+      "description": "Optional 'meta' object containing resource metadata: versionId (string), lastUpdated (dateTime), source (URI), profile (array of canonical URLs for conformance profiles, e.g., 'http://hl7.org/fhir/us/core/StructureDefinition/us-core-patient'), security (Coding array, e.g., 'http://terminology.hl7.org/CodeSystem/v3-Confidentiality#R' for restricted), tag (Coding array). Profiles constrain resource content for specific use cases.",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Clinical Content",
+      "offset": "dynamic",
+      "length": "dynamic",
+      "color": "#C3A6FF",
+      "opacity": 0.30,
+      "description": "Resource-specific clinical content. For Patient: name (HumanName array), birthDate, gender, address, telecom, identifier (MRN, SSN). For Observation: status, category, code (LOINC), subject (Patient ref), effectiveDateTime, valueQuantity/valueCodeableConcept, component (multi-component values). For Bundle: type (collection/transaction/batch/searchset/message), entry array with resource + request/response.",
+      "valueType": "ascii"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "StartsWithOpenBrace",
+      "expression": "fhirJsonOpen == 0x7B",
+      "severity": "error",
+      "message": "File does not start with '{'. FHIR JSON resources must be valid JSON objects. Check if file is NDJson (newline-delimited JSON, one resource per line)."
+    },
+    {
+      "name": "ResourceTypePresent",
+      "expression": "containsPattern('\"resourceType\"')",
+      "severity": "error",
+      "message": "No 'resourceType' key found. All FHIR resources require this mandatory field as the first property."
+    },
+    {
+      "name": "ValidResourceType",
+      "expression": "fhirResourceType matches knownFhirResourceTypes",
+      "severity": "warning",
+      "message": "Unknown FHIR resourceType value. Verify against FHIR R4/R5 resource list. May indicate a custom resource, an extension (resource type starts with uppercase), or a JSON file that is not a FHIR resource."
+    },
+    {
+      "name": "PHIWarning",
+      "expression": "true",
+      "severity": "info",
+      "message": "FHIR resources contain Protected Health Information (PHI) under HIPAA. Handle in compliance with applicable privacy regulations. Do not log or export identifiable patient data."
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "JSON Root", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
+      { "name": "Resource Type", "offset": 1, "icon": "\uE946", "color": "#4ECDC4" },
+      { "name": "Clinical Content", "offset": "dynamic", "icon": "\uE8B7", "color": "#C3A6FF" }
+    ]
+  },
+  "inspector": {
+    "badge": "fhirResourceType",
+    "primaryField": "fhirJsonOpen",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "FHIR Resource Header",
+        "icon": "\uE71B",
+        "fields": ["fhirJsonOpen", "fhirResourceType"]
+      },
+      {
+        "title": "Resource Metadata",
+        "icon": "\uE946",
+        "fields": ["resourceId", "metaBlock"]
+      },
+      {
+        "title": "Clinical Content",
+        "icon": "\uE9D9",
+        "fields": ["clinicalContent"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "FHIR Resource Summary (JSON)",
+      "format": "json",
+      "fields": ["resourceType", "resourceId", "metaVersionId", "metaLastUpdated", "profiles"]
+    },
+    {
+      "name": "FHIR Metadata (CSV)",
+      "format": "csv",
+      "fields": ["resourceType", "resourceId", "lastUpdated", "source", "profiles"]
+    }
+  ],
+  "forensic": {
+    "category": "medical",
+    "riskLevel": "high",
+    "phi": true,
+    "regulation": "HIPAA (45 CFR 164), GDPR Article 9 (health data), 21st Century Cures Act",
+    "suspiciousPatterns": [
+      "Presence of SSN or national identifier in Patient.identifier (identifier type 'SS')",
+      "Unencrypted transmission of Patient demographics (name, DOB, address)",
+      "Bundle resources mixing patient data from multiple patients without consent tracking",
+      "DiagnosticReport resources with embedded base64-encoded images (inline attachments)"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "FHIR R4 JSON. All resources: resourceType (mandatory first key), id (logical id), meta (metadata). Key resources: Patient (demographics: name[], birthDate, gender, address[], identifier[]), Observation (LOINC code, subject ref, value[x], component[]), Bundle (type: collection/transaction/searchset, entry[]{resource,request,response}), DiagnosticReport (code, subject, result[] refs to Observations). FHIR references: {reference: 'ResourceType/id'} or {identifier: ...}. DateTimes use ISO 8601. Codes use {system,code,display} (CodeableConcept). Extensions: {url, value[x]}.",
+    "suggestedInspections": [
+      "Extract 'resourceType' value to identify the FHIR resource class and select the appropriate parser/validator",
+      "For Bundle resources: iterate 'entry' array and extract nested resource types to map the full bundle composition",
+      "Check 'meta.profile' array for conformance profile URLs (e.g., US Core, USCDI, IPS) to validate resource structure constraints",
+      "Identify PHI fields: Patient.name, Patient.birthDate, Patient.identifier, Patient.address, Patient.telecom — flag for privacy audit",
+      "For Observation resources: extract 'code.coding' (LOINC code) and 'value[x]' to reconstruct lab results or vital signs",
+      "Verify 'meta.security' tags for confidentiality codes (V3 Confidentiality: N=normal, R=restricted, V=very restricted) to assess data sensitivity"
+    ]
+  },
+  "software": [
+    "HAPI FHIR Server (Java)",
+    "Microsoft Azure API for FHIR",
+    "Google Cloud Healthcare API",
+    "SMART on FHIR apps",
+    "Firely .NET SDK",
+    "Epic FHIR API",
+    "Cerner FHIR API"
+  ],
+  "formatRelationships": {
+    "category": "Medical",
+    "extensions": [".json", ".fhir.json"],
+    "relatedFormats": ["HL7", "DICOM", "DICOM_SR"],
+    "note": "FHIR R4 is the current production-stable version; R5 (2023) adds new resource types. FHIR also has XML and Turtle RDF serializations. NDJson (.ndjson) is used for bulk data export. FHIR is related to HL7 v2 (pipe-delimited legacy) and HL7 v3 (XML CDA/CCD) standards."
+  },
+  "MimeTypes": [
+    "application/fhir+json",
+    "application/json"
+  ],
+  "UseCases": [
+    "Patient-directed data access (SMART on FHIR apps)",
+    "Healthcare provider and payer data exchange",
+    "Clinical decision support integration",
+    "EHR system interoperability (ONC 21st Century Cures Act mandate)",
+    "Clinical trial data collection and submission"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 88,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 5,
+    "ValidationRules": 4,
+    "LastUpdated": "2026-04-15",
+    "PriorityFormat": true,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "encoding": "UTF-8 JSON",
+    "standard": "HL7 FHIR R4 (4.0.1), R5 (5.0.0)",
+    "mandatoryField": "resourceType (first property)",
+    "codingSystems": "SNOMED CT, LOINC, RxNorm, ICD-10, CPT",
+    "privacyClass": "PHI under HIPAA; Special Category Data under GDPR Art.9"
+  }
+}

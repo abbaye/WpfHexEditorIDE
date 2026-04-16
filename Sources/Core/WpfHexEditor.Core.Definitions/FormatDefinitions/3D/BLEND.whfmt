@@ -1,18 +1,17 @@
 {
   "diffMode": "binary",
-  "formatName": "Blender 3D File",
-  "version": "1.14",
-  "extensions": [
-    ".blend"
-  ],
-  "description": "Native binary scene format for the Blender 3D authoring suite. The file starts with a 12-byte file header containing the 'BLENDER' signature, a pointer-size indicator ('_' for 32-bit, '-' for 64-bit), an endianness indicator ('v' for little-endian, 'V' for big-endian), and a 3-byte Blender version string. Following the header are file blocks, each with a block code, size, old memory address, SDNA index, and data count, forming a complete serialized scene graph including meshes, materials, lights, cameras, and animation data.",
+  "formatName": "Blender Native Scene File",
+  "version": "1.0",
+  "extensions": [".blend"],
+  "description": "Native binary scene format for the Blender 3D authoring suite. The file starts with a 12-byte file header containing the 'BLENDER' signature (7 bytes), a pointer-size indicator ('_' = 0x5F for 64-bit, '-' = 0x2D for 32-bit historically), an endianness indicator ('v' = 0x76 for little-endian, 'V' = 0x56 for big-endian), and a 3-byte Blender version string (e.g. '400' for Blender 4.0). Following the header are file blocks, each with a 4-byte block code, size, old memory address, SDNA index, and data count, forming a complete serialized scene graph including meshes, materials, lights, cameras, and animation data. The DNA1 block contains the type definitions (SDNA) for backward-compatible parsing. Modern Blender (4.x) optionally compresses .blend files with gzip.",
   "category": "3D",
   "author": "WPFHexaEditor Team",
   "preferredEditor": "hex-editor",
   "references": {
     "specifications": [
       "Blender Source Code: source/blender/blenloader",
-      "Blender File Format Documentation by Jeroen Bakker"
+      "Blender File Format Documentation by Jeroen Bakker",
+      "Blender Developer Wiki: File Format"
     ],
     "WebLinks": [
       "https://en.wikipedia.org/wiki/Blender_(software)",
@@ -22,18 +21,17 @@
   },
   "detection": {
     "signatures": [
-      { "value": "424C454E444552", "offset": 0, "label": "BLENDER ASCII signature", "weight": 1.0 }
+      {
+        "value": "424C454E444552",
+        "offset": 0,
+        "label": "'BLENDER' ASCII signature — Blender file magic",
+        "weight": 1.0
+      }
     ],
-    "matchMode": "any",
+    "matchMode": "first",
     "MinimumScore": 0.9,
-    "required": true,
     "Strength": "Strong",
-    "EntropyHint": { "min": 3.5, "max": 7.5 },
-    "validation": {
-      "minFileSize": 12,
-      "maxSignatureOffset": 0,
-      "note": "All 7 bytes of 'BLENDER' must match exactly at offset 0"
-    }
+    "EntropyHint": "Medium-high — binary block structure with mixed ASCII and binary data"
   },
   "variables": {
     "blenderSignature": "",
@@ -50,8 +48,8 @@
       "offset": 0,
       "length": 7,
       "color": "#FF6B6B",
-      "opacity": 0.45,
-      "description": "ASCII string 'BLENDER' identifying this as a Blender native file. This 7-byte magic is unique to Blender and appears at the absolute start of every .blend file regardless of version or platform.",
+      "opacity": 0.85,
+      "description": "7-byte ASCII string 'BLENDER' identifying this as a Blender native file. This magic appears at the absolute start of every .blend file regardless of version or platform. Gzip-compressed .blend files start with 0x1F 0x8B instead; decompress before parsing.",
       "storeAs": "blenderSignature",
       "valueType": "ascii"
     },
@@ -61,10 +59,14 @@
       "offset": 7,
       "length": 1,
       "color": "#4ECDC4",
-      "opacity": 0.35,
-      "description": "Single byte indicating native pointer size: underscore '_' (0x5F) means 32-bit pointers, hyphen '-' (0x2D) means 64-bit pointers. Modern Blender uses 64-bit; this affects all internal address fields in file blocks.",
+      "opacity": 0.50,
+      "description": "Single byte indicating native pointer size: '_' (0x5F) = 64-bit pointers (modern), '-' (0x2D) = 32-bit pointers (historical). Affects all internal address fields in file blocks. Old pointer addresses are stored as-is for SDNA-based loading.",
       "storeAs": "pointerSize",
-      "valueType": "uint8"
+      "valueType": "uint8",
+      "valueMap": {
+        "95": "_ (0x5F) — 64-bit pointers",
+        "45": "- (0x2D) — 32-bit pointers"
+      }
     },
     {
       "type": "field",
@@ -72,10 +74,14 @@
       "offset": 8,
       "length": 1,
       "color": "#95E1D3",
-      "opacity": 0.35,
-      "description": "Byte indicating CPU endianness used when the file was saved: 'v' (0x76) = little-endian (x86/ARM), 'V' (0x56) = big-endian (older PowerPC Macs). Most modern files are little-endian.",
+      "opacity": 0.50,
+      "description": "Byte indicating CPU endianness: 'v' (0x76) = little-endian (x86/ARM — most common), 'V' (0x56) = big-endian (older PowerPC Macs). Most modern files are little-endian.",
       "storeAs": "endianness",
-      "valueType": "uint8"
+      "valueType": "uint8",
+      "valueMap": {
+        "118": "v (0x76) — little-endian",
+        "86": "V (0x56) — big-endian"
+      }
     },
     {
       "type": "field",
@@ -83,8 +89,8 @@
       "offset": 9,
       "length": 3,
       "color": "#FFE66D",
-      "opacity": 0.35,
-      "description": "Three ASCII digit characters encoding the Blender version that created this file, e.g., '293' means Blender 2.93, '300' means 3.0.0, '410' means 4.1.0. Used for backward compatibility.",
+      "opacity": 0.50,
+      "description": "Three ASCII digit characters encoding the Blender version: e.g., '293' = 2.93, '300' = 3.0.0, '410' = 4.1.0, '400' = 4.0.0. Used for backward compatibility when parsing SDNA block structures. Version determines which DNA types are present.",
       "storeAs": "blenderVersion",
       "valueType": "ascii"
     },
@@ -94,8 +100,8 @@
       "offset": 12,
       "length": 4,
       "color": "#C3A6FF",
-      "opacity": 0.35,
-      "description": "4-byte ASCII block type code for the first data block after the header. Common codes: 'REND' (render settings), 'DATA' (generic data), 'DNA1' (structure DNA), 'ENDB' (end of file marker).",
+      "opacity": 0.45,
+      "description": "4-byte ASCII block type code for the first data block after the header. Common codes: 'REND' (render settings), 'DATA' (generic data block), 'DNA1' (structure DNA — type definitions), 'ENDB' (end of file marker). Each block: code(4B) + size(4B LE uint32) + old_addr(4B or 8B) + sdna_index(4B LE) + count(4B LE) + data.",
       "storeAs": "firstBlockCode",
       "valueType": "ascii"
     },
@@ -106,7 +112,7 @@
       "length": 4,
       "color": "#F7B731",
       "opacity": 0.35,
-      "description": "4-byte little-endian integer giving the byte size of the first block data payload, not counting the block header itself. Used by parsers to skip to the next block boundary.",
+      "description": "4-byte LE uint32 byte size of the first block data payload (not including the block header itself). Used by parsers to skip to the next block boundary.",
       "storeAs": "firstBlockSize",
       "valueType": "uint32"
     }
@@ -116,13 +122,19 @@
       "name": "ValidSignature",
       "expression": "blenderSignature == 'BLENDER'",
       "severity": "error",
-      "message": "File signature is not 'BLENDER'. The file is not a valid Blender scene file or may be compressed (Blender can optionally gzip-compress .blend files)."
+      "message": "File signature is not 'BLENDER'. File may be gzip-compressed (starts with 0x1F 0x8B); decompress first, or file is not a Blender scene."
     },
     {
       "name": "ValidPointerSize",
       "expression": "pointerSize == 0x5F || pointerSize == 0x2D",
       "severity": "error",
-      "message": "Pointer size byte is neither '_' (32-bit) nor '-' (64-bit). The file header may be corrupt or this is not a standard Blender file."
+      "message": "Pointer size byte is neither '_' (64-bit, 0x5F) nor '-' (32-bit, 0x2D). File header may be corrupt."
+    },
+    {
+      "name": "ValidEndianness",
+      "expression": "endianness == 0x76 || endianness == 0x56",
+      "severity": "error",
+      "message": "Endianness byte is neither 'v' (little-endian, 0x76) nor 'V' (big-endian, 0x56). Header corrupt."
     }
   ],
   "navigation": {
@@ -133,9 +145,8 @@
     ]
   },
   "inspector": {
-    "badge": "blenderSignature",
+    "badge": "BLEND",
     "primaryField": "blenderVersion",
-    "showQualityScore": true,
     "groups": [
       {
         "title": "File Header",
@@ -154,53 +165,67 @@
       "name": "BLEND Header (JSON)",
       "format": "json",
       "fields": ["blenderSignature", "pointerSize", "endianness", "blenderVersion", "firstBlockCode"]
+    },
+    {
+      "name": "Block Directory (CSV)",
+      "format": "csv",
+      "fields": ["blockIndex", "blockCode", "blockSize", "sdnaIndex", "dataCount", "oldAddress"]
     }
   ],
-  "software": [
-    "Blender"
-  ],
-  "formatRelationships": {
-    "category": "3D",
-    "extensions": [".blend"],
-    "relatedFormats": ["FBX", "OBJ", "GLB"],
-    "note": "Blender native format; not natively supported by other software without import plugins"
+  "forensic": {
+    "riskLevel": "LOW",
+    "notes": "3D scene data only; no PHI expected. May contain embedded images in texture data blocks.",
+    "suspiciousPatterns": [
+      "Gzip magic (1F 8B) at offset 0 indicating compressed .blend that needs decompression before parsing",
+      "DNA1 block absent — required for proper SDNA-based parsing of block data",
+      "Block size values that overlap or exceed file size (corrupt or malicious file)"
+    ]
   },
-  "MimeTypes": [
-    "application/octet-stream",
-    "application/x-blender"
+  "aiHints": {
+    "analysisContext": "Blender native binary scene format with SDNA type system. Header: 'BLENDER'(7B) + pointerSize(1B: 0x5F=64-bit, 0x2D=32-bit) + endian(1B: 0x76=LE, 0x56=BE) + version(3B ASCII: e.g. '400'). Then file blocks. Each block: code(4B ASCII) + size(4B uint32) + old_ptr(4B or 8B depending on pointerSize) + sdna_index(4B) + count(4B) + data. DNA1 block contains struct definitions (SDNA). ENDB block = file end. Key block codes: REND, DATA, CA (camera), OB (object), ME (mesh), MA (material), IM (image), LA (lamp), AR (armature).",
+    "suggestedInspections": [
+      "Read pointer size (offset 7) and endianness (offset 8) to configure correct binary parsing of all subsequent fields",
+      "Decode version string (bytes 9-11) to determine Blender version for SDNA-compatible parsing",
+      "Locate DNA1 block to extract SDNA type definitions for fully typed structure parsing",
+      "Enumerate all block codes to inventory scene content: OB (objects), ME (meshes), MA (materials), CA (cameras), LA (lamps)",
+      "Check for ENDB block as file terminator and verify no blocks extend beyond its position",
+      "Look for IM (image) blocks to find embedded texture data within the .blend file"
+    ]
+  },
+  "software": [
+    "Blender (official)",
+    "io_scene_blend (Python parser)",
+    "blendinfo (CLI analysis tool)",
+    "blend2json (structure extraction)"
   ],
+  "formatRelationships": [
+    { "format": "FBX", "relation": "export target — Blender exports FBX for game engines" },
+    { "format": "GLB", "relation": "export target — Blender exports GLTF/GLB for web 3D" },
+    { "format": "ABC", "relation": "import — Blender reads Alembic geometry caches" },
+    { "format": "VDB", "relation": "import — Blender reads OpenVDB for volume rendering" }
+  ],
+  "MimeTypes": ["application/x-blender", "application/octet-stream"],
   "UseCases": [
-    "3D scene authoring",
-    "Animation and rigging",
-    "VFX pipeline",
-    "Game asset creation"
+    "3D scene authoring and animation",
+    "VFX and film production pipeline",
+    "Game asset creation and rigging",
+    "Architectural visualization",
+    "3D printing model preparation"
   ],
   "QualityMetrics": {
-    "CompletenessScore": 63,
+    "CompletenessScore": 83,
     "DocumentationLevel": "detailed",
     "BlocksDefined": 6,
-    "ValidationRules": 2,
-    "LastUpdated": "2026-04-14",
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-15",
     "PriorityFormat": false,
     "AutoRefined": false
   },
   "TechnicalDetails": {
     "encoding": "binary (platform-dependent endianness)",
-    "compression": "optional gzip",
+    "compression": "optional gzip (1F 8B magic if compressed)",
     "blockBased": true,
-    "dnaSectionPresent": true
-  },
-  "forensic": {
-    "category": "3d",
-    "riskLevel": "low",
-    "suspiciousPatterns": []
-  },
-  "aiHints": {
-    "analysisContext": "Blender native binary scene format with SDNA type system. Header encodes pointer size and endianness. File blocks follow a fixed header structure with type code, size, old pointer, SDNA index, and count fields.",
-    "suggestedInspections": [
-      "Check pointer size and endianness bytes to determine platform origin",
-      "Decode version string to identify which Blender version authored the file",
-      "Locate DNA1 block to recover the internal struct layout for full parsing"
-    ]
+    "dnaSectionPresent": true,
+    "pointerSizes": "64-bit (0x5F '_') or 32-bit (0x2D '-')"
   }
 }

@@ -7,6 +7,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using WpfHexEditor.Core.Contracts;
 using WpfHexEditor.Core.Definitions;
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Editor.Core.Views;

@@ -1,0 +1,211 @@
+{
+  "diffMode": "binary",
+  "formatName": "Alembic 3D Scene Cache",
+  "version": "1.0",
+  "extensions": [".abc"],
+  "description": "Alembic is an open computer graphics interchange framework developed by Sony Pictures Imageworks and Industrial Light & Magic. Alembic files (.abc) store baked geometry caches — positions, normals, UVs, and velocities sampled over time — for visual effects workflows where geometry is simulated or procedurally generated. Since version 1.5, Alembic uses the Ogawa backend by default (magic 'Ogawa' at offset 0: 4F 67 61 77 61). Earlier versions used HDF5 as the storage layer (magic 0x89HDF). The Ogawa format uses a custom tree structure with GroupProperties, ScalarProperties, and ArrayProperties. Core schema types: PolyMesh, SubD, XForm, Camera, NuPatch, Points (particle systems), Curves, Light, FaceSet. Alembic is the de-facto standard for geometry caching in VFX pipelines (Maya, Houdini, 3ds Max, Cinema 4D, Blender).",
+  "category": "3D",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "hex-editor",
+  "references": {
+    "specifications": [
+      "Alembic Open Source Project — https://alembic.io/",
+      "Alembic Ogawa Format Spec — github.com/alembic/alembic/wiki/Ogawa-Format",
+      "Alembic library source: lib/Alembic/AbcCoreOgawa/"
+    ],
+    "WebLinks": [
+      "https://alembic.io/",
+      "https://github.com/alembic/alembic",
+      "https://en.wikipedia.org/wiki/Alembic_(computer_graphics)"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      {
+        "value": "4F67617761",
+        "offset": 0,
+        "label": "'Ogawa' — Alembic Ogawa backend magic (default since v1.5)",
+        "weight": 1.0
+      },
+      {
+        "value": "894844460D0A1A0A",
+        "offset": 0,
+        "label": "HDF5 magic — Alembic legacy HDF5 backend (pre-v1.5)",
+        "weight": 0.7
+      }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.7,
+    "Strength": "Strong",
+    "EntropyHint": "High — compressed geometry cache with floating point arrays"
+  },
+  "variables": {
+    "abcMagic": "",
+    "abcFormatVersion": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "Ogawa Magic",
+      "offset": 0,
+      "length": 5,
+      "color": "#FF6B6B",
+      "opacity": 0.85,
+      "description": "5-byte ASCII string 'Ogawa' (0x4F 0x67 0x61 0x77 0x61) identifying the Alembic Ogawa storage backend. Present in Alembic files created with version 1.5 and later (2012+). The Ogawa backend is faster and more memory-efficient than the legacy HDF5 backend. If magic is 0x89HDF instead, the file uses the legacy HDF5 backend and requires the HDF5 library to read.",
+      "storeAs": "abcMagic",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Ogawa Format Version",
+      "offset": 5,
+      "length": 2,
+      "color": "#4ECDC4",
+      "opacity": 0.5,
+      "description": "2-byte little-endian uint16 Ogawa format version. Current value is 1 (0x0100 in LE). This version number governs the Ogawa stream and group layout — distinct from the Alembic API version stored in file metadata.",
+      "storeAs": "abcFormatVersion",
+      "valueType": "uint16"
+    },
+    {
+      "type": "field",
+      "name": "Ogawa Stream Index",
+      "offset": 7,
+      "length": 8,
+      "color": "#95E1D3",
+      "opacity": 0.4,
+      "description": "8-byte LE uint64 offset to the root OgawaGroup. Ogawa organizes data as a tree of Groups (indexed data containers) and Streams (raw byte arrays). The root group contains the Alembic archive's top-level objects (AbcArchive/ObjectHeader). Each group entry: name, child count, child offsets. Each stream entry: size (uint64) + raw bytes."
+    },
+    {
+      "type": "field",
+      "name": "Alembic Archive Metadata",
+      "offset": "dynamic",
+      "length": "dynamic",
+      "color": "#FFE66D",
+      "opacity": 0.35,
+      "description": "Top-level archive metadata group: contains .prop compound property with Alembic version (API version string), Alembic schema (AbcGeom), application name (Maya, Houdini, etc.), written with (alembic version string), and time sampling objects defining the frame rate and time range of the animation. Also contains the archive's top-level IObject hierarchy representing the scene graph."
+    },
+    {
+      "type": "field",
+      "name": "Geometry Cache Data",
+      "offset": "dynamic",
+      "length": "dynamic",
+      "color": "#C3A6FF",
+      "opacity": 0.30,
+      "description": "Per-frame geometry data stored as typed property arrays. PolyMesh: P (positions, float32 Vec3), N (normals, float32 Vec3), uv (UV coords, float32 Vec2), .faceIndices (int32), .faceCounts (int32). SubD: same layout with subdivision info. XForm: transformation matrix (float64 4x4). Camera: focalLength, aperture, near/far clip. Points: position P (float32 Vec3), velocity (float32 Vec3), width (float32). Data arrays stored as Ogawa streams with possible LZ4 or gzip compression."
+    }
+  ],
+  "assertions": [
+    {
+      "name": "MagicIsOgawaOrHDF5",
+      "expression": "abcMagic == 'Ogawa' || hdf5Magic == [0x89,0x48,0x44,0x46]",
+      "severity": "error",
+      "message": "Neither 'Ogawa' nor HDF5 magic found. File is not a valid Alembic archive."
+    },
+    {
+      "name": "OgawaVersionIsOne",
+      "expression": "abcFormatVersion == 1",
+      "severity": "warning",
+      "message": "Ogawa format version is not 1. Unknown Ogawa version may require a newer Alembic library."
+    },
+    {
+      "name": "HDF5LegacyDetected",
+      "expression": "abcMagic != 'Ogawa' && hdf5MagicPresent",
+      "severity": "info",
+      "message": "Legacy HDF5 backend detected (pre-Alembic 1.5). Use Alembic tools built with HDF5 support to read this file."
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "Ogawa Magic", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
+      { "name": "Root Group Offset", "offset": 7, "icon": "\uE946", "color": "#95E1D3" },
+      { "name": "Archive Metadata", "offset": "dynamic", "icon": "\uE8B7", "color": "#FFE66D" }
+    ]
+  },
+  "inspector": {
+    "badge": "ABC",
+    "primaryField": "abcMagic",
+    "groups": [
+      {
+        "title": "Archive Header",
+        "icon": "\uE71B",
+        "fields": ["abcMagic", "abcFormatVersion"]
+      },
+      {
+        "title": "Scene Graph",
+        "icon": "\uE8B7",
+        "fields": ["archiveMetadata", "topObjectCount", "timeSampling"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "Alembic Archive Info (JSON)",
+      "format": "json",
+      "fields": ["backend", "ogawaVersion", "alembicApiVersion", "application", "frameRange", "objectCount"]
+    },
+    {
+      "name": "Scene Object List (CSV)",
+      "format": "csv",
+      "fields": ["objectPath", "schemaType", "timeSamplingIndex", "propertyCount", "sampleCount"]
+    }
+  ],
+  "forensic": {
+    "riskLevel": "LOW",
+    "notes": "Geometry cache data only; no PHI or sensitive information expected.",
+    "suspiciousPatterns": [
+      "Malformed Ogawa group offsets pointing outside file bounds",
+      "Unusually large metadata strings potentially hiding embedded data",
+      "Mismatched declared vs actual sample counts in geometry arrays"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "Alembic Ogawa binary format. Header: 'Ogawa' (5B) + uint16 LE version (=1) + uint64 LE root group offset. Ogawa Group: uint64 child count, then child entries as [uint64 offset + uint64 size]. Ogawa Stream: uint64 size + raw bytes. Alembic layers on top: archive has .prop compound + top IObjects. Each IObject: name + schema + metadata + .prop compound (scalar/array properties). Schema types: AbcGeom_PolyMesh_v1, AbcGeom_XForm_v3, AbcGeom_Camera_v1, AbcGeom_Points_v1, AbcGeom_Curves_v1. Time sampling stored at archive level; each property references a TimeSampling index.",
+    "suggestedInspections": [
+      "Read first 5 bytes to confirm 'Ogawa' backend vs HDF5 (0x89HDF) legacy backend selection",
+      "For Ogawa: read uint64 root group offset at bytes 7-14 and navigate to archive root group structure",
+      "List top-level IObject names to enumerate scene objects (mesh names, xforms, cameras)",
+      "Identify schema types on leaf objects (PolyMesh, SubD, XForm, Camera, Points) to understand geometry content",
+      "Read archive metadata property for application name (Maya/Houdini), alembicApiVersion, and time sampling frame range",
+      "Check positions array (schema property 'P') sample count to determine number of cached frames"
+    ]
+  },
+  "software": [
+    { "name": "Autodesk Maya (Alembic plugin)", "url": "https://www.autodesk.com/maya" },
+    { "name": "SideFX Houdini", "url": "https://www.sidefx.com" },
+    { "name": "Blender (Alembic I/O)", "url": "https://www.blender.org" },
+    { "name": "Maxon Cinema 4D", "url": "https://www.maxon.net" }
+  ],
+  "formatRelationships": [
+    { "format": "USD", "relation": "complement — USD references ABC geometry caches as payloads" },
+    { "format": "FBX", "relation": "alternative for geometry+animation (less efficient for large caches)" },
+    { "format": "VDB", "relation": "complement — VDB stores volumetric; ABC stores polygon geometry" },
+    { "format": "BLEND", "relation": "consumer — Blender imports ABC for mesh deformation caches" }
+  ],
+  "MimeTypes": [
+    "model/vnd.alembic",
+    "application/octet-stream"
+  ],
+  "UseCases": [
+    "VFX geometry cache interchange between DCC applications",
+    "Crowd simulation baked geometry distribution",
+    "Cloth and fluid simulation output caching",
+    "Film production pipeline interoperability (Maya to Houdini to Nuke)",
+    "Real-time game engine geometry import from simulation"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 84,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 5,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-15",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "encoding": "binary (Ogawa or HDF5)",
+    "ogawaMagic": "4F 67 61 77 61 ('Ogawa')",
+    "defaultBackend": "Ogawa (since Alembic 1.5, 2012)",
+    "compression": "LZ4 or gzip per array property",
+    "schemaTypes": "PolyMesh, SubD, XForm, Camera, Points, Curves, Light, NuPatch, FaceSet"
+  }
+}

@@ -1,0 +1,168 @@
+{
+  "diffMode": "text",
+  "formatName": "Wireless Markup Language (WML)",
+  "version": "1.0",
+  "extensions": [ ".wml", ".wmls" ],
+  "description": "Wireless Markup Language (WML) is an XML-based markup language designed for WAP (Wireless Application Protocol) browsers on mobile devices, primarily feature phones from the late 1990s to early 2000s. WML files typically begin with an XML declaration followed by a DOCTYPE referencing the WAP DTD, or directly with the <wml> root element. WMLScript (.wmls) files contain procedural WML script logic. The format is now obsolete, superseded by XHTML Mobile Profile and eventually HTML5.",
+  "category": "Documents",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "code-editor",
+  "references": {
+    "specifications": [
+      "WAP WML 1.3 Specification",
+      "Wireless Application Protocol Forum — WML DTD",
+      "W3C Mobile Web Initiative"
+    ],
+    "WebLinks": [
+      "https://en.wikipedia.org/wiki/Wireless_Markup_Language",
+      "https://www.w3schools.com/wap/wap_wml.asp",
+      "https://www.openmobilealliance.org/"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      { "hex": "3C776D6C", "offset": 0, "label": "'<wml' — WML direct root element at start of file", "weight": 0.9 },
+      { "hex": "3C3F786D6C", "offset": 0, "label": "'<?xml' XML declaration preceding WML content", "weight": 0.4 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.4,
+    "required": false,
+    "Strength": "Medium",
+    "EntropyHint": { "min": 3.5, "max": 5.5 },
+    "validation": {
+      "minFileSize": 10,
+      "maxSignatureOffset": 0,
+      "note": "WML files start with '<wml' or '<?xml'. Confirm by presence of WAP DTD declaration or <wml> root. .wmls files contain WMLScript procedural code."
+    }
+  },
+  "variables": {
+    "wmlStart": "",
+    "wmlFirstByte": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "Document Start",
+      "offset": 0,
+      "length": 4,
+      "color": "#FF6B6B",
+      "opacity": 0.4,
+      "description": "Start of WML document: '<wml' (direct) or '<?xm' (XML declaration prefix).",
+      "storeAs": "wmlStart",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "First Byte",
+      "offset": 0,
+      "length": 1,
+      "color": "#4ECDC4",
+      "opacity": 0.3,
+      "description": "First byte of file: 0x3C ('<') for XML/WML text.",
+      "storeAs": "wmlFirstByte",
+      "valueType": "uint8"
+    },
+    {
+      "type": "field",
+      "name": "Content Encoding",
+      "offset": 0,
+      "length": 5,
+      "color": "#45B7D1",
+      "opacity": 0.3,
+      "description": "Initial bytes identifying XML declaration or direct WML root element.",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Document Body Preview",
+      "offset": 5,
+      "length": 64,
+      "color": "#FFEAA7",
+      "opacity": 0.2,
+      "description": "First 64 bytes after header for DTD/DOCTYPE/namespace inspection.",
+      "valueType": "ascii"
+    }
+  ],
+  "assertions": [
+    { "field": "wmlFirstByte", "operator": "equals", "value": 60, "description": "File must start with '<' (0x3C) — XML/WML text" },
+    { "field": "wmlStart", "operator": "startsWithAny", "value": ["<wml", "<?xm"], "description": "File must start with '<wml' or '<?xml'" },
+    { "field": "wmlStart", "operator": "notEmpty", "value": true, "description": "Document start must be readable" }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "Document Start", "offset": 0, "description": "WML root element or XML declaration" },
+      { "name": "DOCTYPE/DTD", "offset": 5, "description": "Expected DOCTYPE or namespace reference" }
+    ]
+  },
+  "inspector": {
+    "badge": "WML",
+    "primaryField": "wmlStart",
+    "showQualityScore": true,
+    "groups": [
+      { "name": "Document Header", "fields": ["wmlStart", "wmlFirstByte"] }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "WML File Info (JSON)",
+      "format": "json",
+      "fields": ["wmlStart", "wmlFirstByte"]
+    },
+    {
+      "name": "WML Header (Text)",
+      "format": "text",
+      "fields": ["wmlStart"]
+    }
+  ],
+  "forensic": {
+    "category": "document",
+    "riskLevel": "low",
+    "suspiciousPatterns": [
+      { "name": "Obfuscated WMLScript", "condition": "extension == .wmls", "description": "WMLScript may contain obfuscated logic targeting legacy WAP browsers.", "severity": "info" }
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "WML is an XML-based format for WAP mobile browsers (late 1990s–early 2000s). Files start with '<wml' or an '<?xml' declaration followed by a WAP DTD DOCTYPE. WMLScript (.wmls) files are procedural companions to WML decks. The format is entirely text-based and obsolete — now of historical/forensic interest only.",
+    "suggestedInspections": [
+      "Check for '<wml' root element or '<?xml' declaration at offset 0",
+      "Look for WAP DTD reference: '//WAPFORUM//DTD WML' in DOCTYPE declaration",
+      "Identify WML deck structure: <card> elements within <wml> root",
+      "For .wmls files: check for WMLScript function declarations and variable usage",
+      "Verify character encoding declaration in XML header (UTF-8 vs ISO-8859-1)"
+    ]
+  },
+  "software": [
+    "WAP browsers (Nokia, Openwave, etc.)",
+    "OpenWave Mobile Browser",
+    "Dreamweaver (legacy WAP support)",
+    "Altio WAP Studio"
+  ],
+  "formatRelationships": {
+    "category": "Documents",
+    "extensions": [".wml", ".wmls"],
+    "relatedFormats": ["HTML", "XML", "XHTML", "DOCBOOK"],
+    "note": "WML is a WAP-era XML subset. WMLScript (.wmls) is the procedural companion. Superseded by XHTML Mobile Profile and HTML5."
+  },
+  "MimeTypes": [ "text/vnd.wap.wml", "text/vnd.wap.wmlscript" ],
+  "UseCases": [
+    "Legacy WAP mobile content",
+    "Historical preservation of early mobile web",
+    "Forensic analysis of old mobile device content",
+    "Migration from WAP to modern mobile web"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 85,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 4,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-15",
+    "ReviewedBy": "WPFHexaEditor Team"
+  },
+  "TechnicalDetails": {
+    "DocumentFormat": true,
+    "Encoding": "UTF-8 or ISO-8859-1",
+    "MarkupLanguage": "XML subset for WAP",
+    "Companion": "WMLScript (.wmls)",
+    "Note": "WML is text-only XML. No binary magic. Detection relies on '<wml' element or XML declaration + DOCTYPE."
+  }
+}

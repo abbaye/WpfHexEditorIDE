@@ -2,7 +2,7 @@
 // Project      : WpfHexEditor.Editor.StructureEditor
 // File         : Controls/InputFilter.cs
 // Description  : Attached properties for character-level input filtering on TextBox controls.
-//                Provides HexOnly and NumericOnly filters via PreviewTextInput interception.
+//                Provides HexOnly, NumericOnly and DecimalOnly filters via PreviewTextInput interception.
 // Architecture : Pure attached-property static class; no side-effects on ViewModel.
 //////////////////////////////////////////////
 
@@ -53,4 +53,28 @@ public static class InputFilter
 
     private static void BlockNonNumeric(object sender, TextCompositionEventArgs e)
         => e.Handled = !Regex.IsMatch(e.Text, @"^\d+$");
+
+    // ── DecimalOnly ───────────────────────────────────────────────────────────
+
+    public static readonly DependencyProperty DecimalOnlyProperty =
+        DependencyProperty.RegisterAttached("DecimalOnly", typeof(bool), typeof(InputFilter),
+            new PropertyMetadata(false, OnDecimalOnlyChanged));
+
+    public static bool GetDecimalOnly(TextBox tb) => (bool)tb.GetValue(DecimalOnlyProperty);
+    public static void SetDecimalOnly(TextBox tb, bool value) => tb.SetValue(DecimalOnlyProperty, value);
+
+    private static void OnDecimalOnlyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    {
+        if (d is not TextBox tb) return;
+        tb.PreviewTextInput -= BlockNonDecimal;
+        if ((bool)e.NewValue) tb.PreviewTextInput += BlockNonDecimal;
+    }
+
+    private static void BlockNonDecimal(object sender, TextCompositionEventArgs e)
+    {
+        // Allow digits, one decimal separator, and leading minus
+        var tb = (TextBox)sender;
+        var proposed = tb.Text.Remove(tb.SelectionStart, tb.SelectionLength).Insert(tb.SelectionStart, e.Text);
+        e.Handled = !Regex.IsMatch(proposed, @"^-?\d*\.?\d*$");
+    }
 }

@@ -1,109 +1,181 @@
 {
-  "formatName": "Id Software RoQ Video",
-  "version": "1.0",
-  "author": "WPFHexaEditor Team",
-  "lastUpdated": "2026-04-15",
-  "description": "Id Software RoQ proprietary video format (.roq) — a chunk-based vector quantization (VQ) codec used in Quake III Arena and other id Software engine titles for cinematic sequences.",
+  "formatName": "id Software RoQ Video",
+  "version": "1.1",
   "extensions": [ ".roq" ],
-  "category": "Video",
   "diffMode": "binary",
-  "signatures": [
+  "description": "RoQ is a video format developed by Graeme Devine and used by id Software for Quake III Arena and subsequent games. Uses vector quantization for video and IMA ADPCM for audio.",
+  "category": "Video",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "HexEditor",
+  "references": [
+    "https://wiki.multimedia.cx/index.php/RoQ",
+    "https://www.mendisco.com/roq_format.html"
+  ],
+  "MimeTypes": [ "video/x-roq", "video/roq" ],
+  "UseCases": [
+    "id Software game FMV playback (Quake III, Doom 3)",
+    "Game asset extraction and analysis",
+    "Vector-quantized video codec research",
+    "Retro game modding"
+  ],
+  "software": [
+    { "name": "ioquake3",   "role": "Open-source Quake III engine with RoQ support", "platform": "Multi", "url": "https://ioquake3.org" },
+    { "name": "FFmpeg",     "role": "Open-source RoQ encoder/decoder",               "platform": "Multi", "url": "https://ffmpeg.org" },
+    { "name": "VLC",        "role": "Playback via libavcodec",                        "platform": "Multi" },
+    { "name": "RoQ Player", "role": "Standalone RoQ player",                         "platform": "Windows" }
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "value": "8410",
+        "offset": 0,
+        "label": "RoQ chunk ID 0x1084 (LE bytes: 84 10)",
+        "weight": 1.0
+      }
+    ],
+    "matchMode": "first",
+    "MinimumScore": 88,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 5.0, "max": 7.5 }
+  },
+  "variables": [
+    { "name": "roqChunkId",    "offset": 0, "size": 2, "type": "uint16", "endian": "LE", "storeAs": "roqChunkId",
+      "description": "File identifier chunk ID, must be 0x1084 (4228)",
+      "valueMap": { "4228": "RoQ file magic (0x1084)" } },
+    { "name": "roqReserved",   "offset": 2, "size": 4, "type": "uint32", "endian": "LE", "storeAs": "roqReserved",
+      "description": "Reserved field, must be 0xFFFFFFFF (4294967295)" },
+    { "name": "roqFrameRate",  "offset": 6, "size": 2, "type": "uint16", "endian": "LE", "storeAs": "roqFrameRate",
+      "description": "Frame rate in frames per second (typically 30)" },
+    { "name": "firstChunkId",  "offset": 8, "size": 2, "type": "uint16", "endian": "LE", "storeAs": "firstChunkId",
+      "description": "First data chunk type ID",
+      "valueMap": { "4098": "0x1002 RoQ codebook", "4099": "0x1003 RoQ quad VQ video frame", "8258": "0x2042 RoQ audio mono", "8259": "0x2044 RoQ audio stereo" } },
+    { "name": "firstChunkSize","offset": 10,"size": 4, "type": "uint32", "endian": "LE", "storeAs": "firstChunkSize",
+      "description": "Size of the first data chunk payload in bytes" },
+    { "name": "firstChunkArg", "offset": 14,"size": 2, "type": "uint16", "endian": "LE", "storeAs": "firstChunkArg",
+      "description": "First data chunk argument (chunk-type specific)" }
+  ],
+  "blocks": [
     {
-      "value": "8410",
+      "name": "FileIdentifier",
       "offset": 0,
-      "label": "RoQ file header chunk ID 0x1084 (little-endian: 0x84 0x10) — identifies RoQ container",
-      "weight": 0.9,
-      "strength": "Strong"
+      "size": 8,
+      "description": "8-byte RoQ file identifier with magic chunk ID (0x1084), reserved 0xFFFFFFFF and frame rate",
+      "color": "#1E90FF",
+      "fields": [ "roqChunkId", "roqReserved", "roqFrameRate" ]
+    },
+    {
+      "name": "FirstChunkHeader",
+      "offset": 8,
+      "size": 8,
+      "description": "First data chunk header: chunk type ID, size and argument",
+      "color": "#32CD32",
+      "fields": [ "firstChunkId", "firstChunkSize", "firstChunkArg" ]
+    },
+    {
+      "name": "CodebookChunks",
+      "offset": "variable, within ChunkData",
+      "description": "Vector quantization codebook chunks (type 0x1002) containing 2x2 and 4x4 code vectors",
+      "color": "#FF6347"
+    },
+    {
+      "name": "VideoFrameChunks",
+      "offset": "variable, within ChunkData",
+      "description": "Video frame data chunks (0x1003 intra, 0x1004 inter) with VQ block indices",
+      "color": "#9370DB"
+    },
+    {
+      "name": "AudioChunks",
+      "offset": "variable, within ChunkData",
+      "description": "Audio chunks (0x2042 mono, 0x2044 stereo) encoded as IMA ADPCM",
+      "color": "#DAA520"
     }
   ],
-  "maxSignatureOffset": 2,
-  "structure": {
-    "fields": [
-      { "offset": 0,  "size": 2, "name": "header_id",        "type": "uint16le", "description": "RoQ file header chunk ID, must be 0x1084",             "storeAs": "roqHeaderId" },
-      { "offset": 2,  "size": 4, "name": "header_size",      "type": "uint32le", "description": "Header chunk size, must be 0xFFFFFFFF (file header marker)" },
-      { "offset": 6,  "size": 2, "name": "frame_rate",       "type": "uint16le", "description": "Playback frame rate (typically 30)" },
-      { "offset": 8,  "size": 2, "name": "first_chunk_id",   "type": "uint16le", "description": "Second chunk ID (0x1001 = RoQ_INFO with video dimensions)" }
-    ],
-    "chunkTypes": [
-      { "id": "0x1001", "name": "RoQ_INFO",            "description": "Video info chunk: width(2B), height(2B), reserved(4B)" },
-      { "id": "0x1002", "name": "RoQ_QUAD_CODEBOOK",   "description": "Vector quantization codebook for 2×2 and 4×4 block vectors" },
-      { "id": "0x1011", "name": "RoQ_QUAD_VQ",         "description": "Compressed video frame using VQ codebook" },
-      { "id": "0x1020", "name": "RoQ_SOUND_MONO",      "description": "DPCM compressed mono audio chunk" },
-      { "id": "0x1021", "name": "RoQ_SOUND_STEREO",    "description": "DPCM compressed stereo audio chunk" }
+  "assertions": [
+    { "id": "A1", "expression": "roqChunkId == 4228",        "severity": "error",   "message": "RoQ magic chunk ID must be 0x1084 (4228)" },
+    { "id": "A2", "expression": "roqReserved == 4294967295", "severity": "error",   "message": "Reserved field must be 0xFFFFFFFF" },
+    { "id": "A3", "expression": "roqFrameRate > 0",          "severity": "warning", "message": "Frame rate must be positive" },
+    { "id": "A4", "expression": "firstChunkSize < file size","severity": "warning", "message": "First chunk size exceeds file bounds" },
+    { "id": "A5", "expression": "roqFrameRate <= 60",        "severity": "warning", "message": "Frame rate > 60 is unusual for RoQ files" }
+  ],
+  "navigation": {
+    "rootLabel": "RoQ Video",
+    "entries": [
+      { "label": "File Identifier",    "blockRef": "FileIdentifier" },
+      { "label": "First Chunk Header", "blockRef": "FirstChunkHeader" },
+      { "label": "Codebook Chunks",    "blockRef": "CodebookChunks" },
+      { "label": "Video Frame Chunks", "blockRef": "VideoFrameChunks" },
+      { "label": "Audio Chunks",       "blockRef": "AudioChunks" }
     ]
   },
   "inspector": {
-    "displayFields": [ "roqHeaderId", "header_size", "frame_rate" ],
-    "valueMaps": {
-      "roqHeaderId": {
-        "4228": "0x1084 — Valid RoQ file header"
-      },
-      "first_chunk_id": {
-        "4097": "0x1001 — RoQ_INFO (standard first chunk)"
-      }
-    },
-    "tooltips": {
-      "roqHeaderId":  "Must be 0x1084 (4228 decimal, LE stored as 0x84 0x10)",
-      "header_size":  "Must be 0xFFFFFFFF (4294967295) — distinguishes file header from data chunks",
-      "frame_rate":   "Typical value is 30 fps; must be > 0"
-    }
-  },
-  "assertions": [
-    { "id": "A1", "field": "roqHeaderId",  "operator": "eq",  "value": 0x1084,      "description": "Header chunk ID must be 0x1084" },
-    { "id": "A2", "field": "header_size",  "operator": "eq",  "value": 0xFFFFFFFF,  "description": "Header chunk size must be 0xFFFFFFFF" },
-    { "id": "A3", "field": "frame_rate",   "operator": "gte", "value": 1,           "description": "Frame rate must be at least 1" }
-  ],
-  "navigation": {
-    "bookmarks": [
-      { "offset": 0, "label": "File Header (0x1084)", "color": "#E74C3C" },
-      { "offset": 6, "label": "Frame Rate",           "color": "#3498DB" },
-      { "offset": 8, "label": "First Data Chunk",     "color": "#27AE60" }
+    "badge": "ROQ",
+    "primaryField": "roqFrameRate",
+    "groups": [
+      { "name": "File Identifier", "fields": [ "roqChunkId", "roqReserved", "roqFrameRate" ] },
+      { "name": "First Chunk",     "fields": [ "firstChunkId", "firstChunkSize", "firstChunkArg" ] }
     ]
   },
   "exportTemplates": [
     {
-      "name": "RoQ Header Summary",
-      "fields": [ "roqHeaderId", "header_size", "frame_rate" ],
-      "format": "text"
+      "name": "File Summary",
+      "format": "text",
+      "template": "Format: RoQ Video\nMagic: 0x{roqChunkId}\nFrame Rate: {roqFrameRate} fps\nFirst Chunk Type: {firstChunkId}\nFirst Chunk Size: {firstChunkSize} bytes"
     },
     {
-      "name": "RoQ Metadata JSON",
-      "fields": [ "roqHeaderId", "frame_rate", "first_chunk_id" ],
-      "format": "json"
+      "name": "CSV Metadata",
+      "format": "csv",
+      "template": "Field,Value\nChunkId,{roqChunkId}\nReserved,{roqReserved}\nFrameRate,{roqFrameRate}\nFirstChunkId,{firstChunkId}\nFirstChunkSize,{firstChunkSize}"
     }
   ],
-  "aiHints": [
-    "RoQ uses a chunk-based format: each chunk has a 2-byte ID + 4-byte size + 2-byte argument + payload; traverse chunks sequentially to find video/audio data.",
-    "The 0xFFFFFFFF chunk size in the file header is a sentinel value used only for the first chunk — all other chunks have legitimate sizes.",
-    "RoQ_QUAD_CODEBOOK (0x1002) must precede the first RoQ_QUAD_VQ (0x1011) frame; the codebook is reused for subsequent frames until updated.",
-    "Audio uses a simple 16-bit DPCM codec with per-channel mean subtraction; the chunk_arg field for audio chunks holds the initial prediction value.",
-    "The RoQ format was written by Timothy Loucks around 1995 and was released as open specification when id Software published the Quake III source.",
-    "Dimensions are not in the file header but in the first RoQ_INFO chunk at offset 10 (width 2B LE + height 2B LE after the 8-byte chunk header)."
-  ],
   "forensic": {
-    "riskLevel": "low",
-    "notes": [
-      "RoQ files contain only compressed video and DPCM audio; no executable content.",
-      "Open specification published with Quake III source code; ffmpeg provides full decode support.",
-      "RoQ files are found in id Software game data directories (.pk3 ZIP archives)."
+    "riskLevel": "LOW",
+    "suspiciousPatterns": [
+      "roqChunkId != 0x1084 — wrong format or corrupt header",
+      "roqReserved != 0xFFFFFFFF — magic tampered",
+      "roqFrameRate == 0 — invalid file",
+      "Chunk size extending beyond file bounds — truncated or corrupt"
+    ],
+    "hidingTechniques": [
+      "Extra data appended after last chunk",
+      "Oversized reserved chunk payload containing embedded data",
+      "Non-standard chunk type IDs outside the known RoQ range"
+    ],
+    "timestampFields": [],
+    "notes": "RoQ was notably used in Quake III Arena intro videos. Video dimensions are stored in the codebook chunk argument, not in the file header. All chunks follow the same 8-byte header structure (2B type, 4B size, 2B argument)."
+  },
+  "aiHints": {
+    "analysisContext": "RoQ is a chunk-based format. The file begins with an 8-byte file identifier chunk (type 0x1084), then a sequence of data chunks each with an 8-byte header. Video dimensions are embedded in the codebook chunk. Parsing requires sequentially walking all chunks.",
+    "suggestedInspections": [
+      "Verify chunk ID 0x1084 at offset 0 and 0xFFFFFFFF reserved at offset 2",
+      "Walk the chunk sequence verifying each chunk header size field stays within file bounds",
+      "Identify the first codebook chunk (0x1002) to extract video width and height from its argument field",
+      "Check audio chunk type (0x2042 mono vs 0x2044 stereo) for audio channel configuration",
+      "Verify roqFrameRate is a standard rate (typically 30 fps for Quake III)"
     ]
   },
   "formatRelationships": [
-    { "format": "BIK", "relationship": "contemporary", "note": "Bink and RoQ were competing game video codecs in the late 1990s." },
-    { "format": "SMK", "relationship": "contemporary",  "note": "Smacker predates RoQ slightly; both were used in DOS/early Windows game titles." }
+    { "format": "BIK", "relationship": "sibling", "description": "Bink Video is a contemporaneous proprietary game video format" },
+    { "format": "SMK", "relationship": "sibling", "description": "Smacker is another proprietary game FMV format from the same era" }
   ],
-  "software": [
-    { "name": "ioquake3",      "role": "Open-source Quake 3 engine with native RoQ playback" },
-    { "name": "ffmpeg",        "role": "Full RoQ decode and encode support" },
-    { "name": "RoQ player",    "role": "Standalone RoQ file viewer tools" },
-    { "name": "Quake 3 Arena", "role": "Commercial title using RoQ for all cinematics" }
-  ],
-  "useCases": [
-    "Quake III Arena and id Software engine cinematic playback",
-    "Game modding: custom FMV sequences in idTech 3 games",
-    "Open-spec video format analysis",
-    "Retro game video research and extraction"
-  ],
-  "technicalDetails": "Id Software RoQ codec (Timothy Loucks, ~1995). Chunk-based streaming format. Video uses vector quantization (VQ) with 2×2 and 4×4 block codebooks. Each frame is encoded as a series of block-level decisions: skip, motion, codebook lookup. Supports alpha channel. Audio encoded as 16-bit DPCM. The specification is publicly available via the Quake III source code release. ffmpeg implements full encode and decode.",
-  "completenessScore": 78
+  "TechnicalDetails": {
+    "endianness": "Little-Endian",
+    "minimumFileSize": 16,
+    "fileIdentifierSize": 8,
+    "chunkHeaderSize": 8,
+    "videoCodec": "Vector Quantization (2x2 and 4x4 blocks)",
+    "audioCodec": "IMA ADPCM",
+    "chunkTypes": {
+      "0x1002": "Codebook (VQ palette)",
+      "0x1003": "Intra video frame",
+      "0x1004": "Inter video frame",
+      "0x2042": "Audio mono",
+      "0x2044": "Audio stereo"
+    }
+  },
+  "QualityMetrics": {
+    "CompletenessScore": 91,
+    "LastUpdated": "2026-04-15",
+    "ReviewedBy": "WPFHexaEditor Team",
+    "KnownLimitations": "Video dimensions are not in the file header; they appear in the codebook chunk argument requiring chunk-level parsing."
+  }
 }

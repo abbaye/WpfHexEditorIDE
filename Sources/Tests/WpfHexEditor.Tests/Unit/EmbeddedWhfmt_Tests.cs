@@ -17,7 +17,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using WpfHexEditor.Core.Definitions;
 using WpfHexEditor.Core.FormatDetection;
 using WpfHexEditor.Core.Services;
-using WpfHexEditor.Editor.Core;
+using WpfHexEditor.Core.Contracts;
 
 namespace WpfHexEditor.Tests.Unit
 {

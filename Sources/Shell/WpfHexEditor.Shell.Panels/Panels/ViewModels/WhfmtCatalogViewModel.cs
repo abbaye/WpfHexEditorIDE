@@ -16,6 +16,7 @@ using System.Windows.Input;
 using WpfHexEditor.Core.Interfaces;
 using WpfHexEditor.Core.Options;
 using WpfHexEditor.Core.ViewModels;
+using WpfHexEditor.Core.Contracts;
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Shell.Panels.Services;
 

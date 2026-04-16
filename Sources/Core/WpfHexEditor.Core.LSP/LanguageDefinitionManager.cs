@@ -21,6 +21,7 @@
 
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using WpfHexEditor.Core.Contracts;
 using WpfHexEditor.Core.Definitions;
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Core.LSP.Models;

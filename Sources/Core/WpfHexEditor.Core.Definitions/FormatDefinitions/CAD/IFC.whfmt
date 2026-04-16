@@ -1,0 +1,208 @@
+{
+  "diffMode": "text",
+  "formatName": "Industry Foundation Classes (BIM)",
+  "version": "1.0",
+  "extensions": [".ifc", ".ifczip"],
+  "description": "Industry Foundation Classes (IFC) is an open international standard (ISO 16739) for Building Information Modeling (BIM) data interchange. Published by buildingSMART International, IFC defines a neutral, vendor-independent schema for representing building and infrastructure elements throughout the construction lifecycle. IFC files use the STEP Physical File (SPF) format defined by ISO 10303-21, beginning with the mandatory 'ISO-10303-21;' header line. The file body contains HEADER (file description, name, schema) and DATA sections. Data records use instance notation: #ID = IFCTYPE(attributes...); Core IFC entities: IFCPROJECT, IFCSITE, IFCBUILDING, IFCBUILDINGSTOREY, IFCWALL, IFCWINDOW, IFCDOOR, IFCCOLUMN, IFCBEAM, IFCSLAB, IFCROOF, IFCSTAIR, IFCSPACE, IFCRELCONTAINEDINSPATIALSTRUCTURE, IFCPRODUCTDEFINITIONSHAPE, IFCSHAPEREPRESENTATION. IFC4 (2013) and IFC4x3 (2022) are the current production standards; IFC 2x3 TC1 is widely supported by most BIM software.",
+  "category": "CAD",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "text-editor",
+  "references": {
+    "specifications": [
+      "ISO 16739-1:2018 Industry Foundation Classes — Part 1: Data schema",
+      "ISO 10303-21:2016 STEP Physical File format",
+      "buildingSMART IFC4 Documentation — https://standards.buildingsmart.org/IFC/RELEASE/IFC4/"
+    ],
+    "WebLinks": [
+      "https://www.buildingsmart.org/standards/bsi-standards/industry-foundation-classes/",
+      "https://en.wikipedia.org/wiki/Industry_Foundation_Classes",
+      "https://standards.buildingsmart.org/"
+    ]
+  },
+  "detection": {
+    "signatures": [
+      {
+        "value": "49534F2D31303330332D32313B",
+        "offset": 0,
+        "label": "'ISO-10303-21;' — STEP Physical File mandatory header",
+        "weight": 1.0
+      }
+    ],
+    "matchMode": "first",
+    "MinimumScore": 0.9,
+    "Strength": "Strong",
+    "EntropyHint": "Low-medium — mostly ASCII text with structured instance records"
+  },
+  "variables": {
+    "ifcIsoHeader": "",
+    "ifcSemicolon": 0,
+    "ifcFirstByte": 0
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "ISO-10303-21 Magic",
+      "offset": 0,
+      "length": 13,
+      "color": "#FF6B6B",
+      "opacity": 0.85,
+      "description": "Mandatory 13-character STEP Physical File (SPF) keyword 'ISO-10303-21;' at offset 0. This is the normative header per ISO 10303-21 clause 7. Every IFC-SPF file (uncompressed .ifc) must begin with exactly these bytes. IFC-ZIP (.ifczip) contains the same structure inside a ZIP archive. IFC-XML uses XML root element instead.",
+      "storeAs": "ifcIsoHeader",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "HEADER Section",
+      "offset": 13,
+      "length": "dynamic",
+      "color": "#4ECDC4",
+      "opacity": 0.5,
+      "description": "STEP HEADER section: starts with newline + 'HEADER;' keyword and ends with 'ENDSEC;'. Contains three mandatory entities: FILE_DESCRIPTION (description strings, implementation level '2;1'), FILE_NAME (file path, timestamp, author, organization, preprocessor, originator, authorization), FILE_SCHEMA (IFC schema name: 'IFC4', 'IFC2X3', 'IFC4X3_RC4'). The schema version determines which entities are valid in the DATA section.",
+      "storeAs": "ifcSemicolon",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "DATA Section Opening",
+      "offset": "dynamic",
+      "length": "dynamic",
+      "color": "#95E1D3",
+      "opacity": 0.4,
+      "description": "DATA section: starts with 'DATA;' keyword and ends with 'ENDSEC;'. Contains STEP instance records in the form '#ID = IFCTYPE(attribute1, attribute2, ...);'. Instance IDs are positive integers. Attributes include: strings ('text'), real numbers (1.5), integers (42), enumeration values (.ENUM.), boolean (.TRUE./.FALSE.), null ($), list values ((a,b,c)), and instance references (#ID). Large IFC files may have millions of instance records."
+    },
+    {
+      "type": "field",
+      "name": "Spatial Structure",
+      "offset": "dynamic",
+      "length": "dynamic",
+      "color": "#FFE66D",
+      "opacity": 0.35,
+      "description": "Core IFC spatial hierarchy instances in DATA section: IFCPROJECT (root, contains units and context), IFCSITE (geographic site with lat/lon), IFCBUILDING (building entity), IFCBUILDINGSTOREY (floor/level), IFCSPACE (room definitions). Connected via IFCRELAGGREGATES (spatial containment) and IFCRELCONTAINEDINSPATIALSTRUCTURE (element placement in spaces). Building elements (IFCWALL, IFCWINDOW, IFCDOOR) reference geometry via IFCPRODUCTDEFINITIONSHAPE."
+    },
+    {
+      "type": "field",
+      "name": "Geometry Representations",
+      "offset": "dynamic",
+      "length": "dynamic",
+      "color": "#C3A6FF",
+      "opacity": 0.30,
+      "description": "Geometry in IFC is referenced via IFCSHAPEREPRESENTATION with RepresentationIdentifier ('Body', 'Box', 'Axis') and RepresentationType ('SweptSolid', 'Brep', 'MappedRepresentation', 'Tessellation'). Solid geometry: IFCEXTRUDEDAREASOLID (profile extrusion), IFCFACETEDBREP (B-rep from faces), IFCTRIANGULATEDFACESET (IFC4 tessellation). Placement: IFCLOCALPLACEMENT with IFCAXIS2PLACEMENT3D (origin + axis + refDirection as 3D vectors)."
+    }
+  ],
+  "assertions": [
+    {
+      "name": "StartsWithISOHeader",
+      "expression": "ifcIsoHeader == 'ISO-10303-21;'",
+      "severity": "error",
+      "message": "File does not start with 'ISO-10303-21;'. Not a valid IFC-SPF file. Check if file is IFC-ZIP (extract first), IFC-XML (.ifcxml), or IFC-JSON."
+    },
+    {
+      "name": "ContainsFileSchema",
+      "expression": "containsPattern('FILE_SCHEMA')",
+      "severity": "error",
+      "message": "No FILE_SCHEMA entity found in HEADER. Invalid IFC file — cannot determine IFC schema version (IFC4, IFC2X3, etc.)."
+    },
+    {
+      "name": "ContainsDataSection",
+      "expression": "containsPattern('DATA;')",
+      "severity": "warning",
+      "message": "No DATA section found. IFC file has header but no building model data. File may be an empty or template IFC."
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "ISO Header", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
+      { "name": "HEADER Section", "offset": 13, "icon": "\uE946", "color": "#4ECDC4" },
+      { "name": "DATA Section", "offset": "dynamic", "icon": "\uE8B7", "color": "#FFE66D" }
+    ]
+  },
+  "inspector": {
+    "badge": "IFC",
+    "primaryField": "ifcIsoHeader",
+    "groups": [
+      {
+        "title": "STEP Header",
+        "icon": "\uE71B",
+        "fields": ["ifcIsoHeader", "ifcSchemaVersion", "ifcFileName", "ifcTimestamp"]
+      },
+      {
+        "title": "Building Model",
+        "icon": "\uE8B7",
+        "fields": ["projectName", "siteLocation", "buildingCount", "storeyCount", "elementCount"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "IFC File Metadata (JSON)",
+      "format": "json",
+      "fields": ["schemaVersion", "fileName", "timestamp", "author", "organization", "instanceCount", "entityTypes"]
+    },
+    {
+      "name": "Building Elements (CSV)",
+      "format": "csv",
+      "fields": ["instanceId", "entityType", "globalId", "name", "storey", "material"]
+    }
+  ],
+  "forensic": {
+    "riskLevel": "LOW",
+    "notes": "BIM data may contain sensitive building infrastructure details (security systems, utility layouts). Some instances may carry owner/client personal information in FILE_NAME.",
+    "suspiciousPatterns": [
+      "FILE_NAME entity containing personal email or author identity in professional documents",
+      "Excessively large BREPs or tessellations that cause parser crashes (billion-vertex attacks)",
+      "Circular IFCRELAGGREGATES references causing infinite traversal in BIM viewers"
+    ]
+  },
+  "aiHints": {
+    "analysisContext": "IFC-SPF text format. Structure: 'ISO-10303-21;\\nHEADER;\\n...ENDSEC;\\nDATA;\\n#ID=IFCTYPE(attr...);\\nENDSEC;\\nEND-ISO-10303-21;'. HEADER entities: FILE_DESCRIPTION, FILE_NAME, FILE_SCHEMA (schema name: IFC4/IFC2X3/IFC4X3_RC4). DATA: instance records. Spatial hierarchy: IFCPROJECT > IFCSITE > IFCBUILDING > IFCBUILDINGSTOREY > elements via IFCRELAGGREGATES. Elements: IFCWALL(GlobalId,OwnerHistory,Name,...), IFCWINDOW, IFCDOOR, IFCCOLUMN, IFCBEAM, IFCSLAB. Geometry: IFCPRODUCTDEFINITIONSHAPE > IFCSHAPEREPRESENTATION > IFCEXTRUDEDAREASOLID or IFCFACETEDBREP or IFCTRIANGULATEDFACESET (IFC4+). GlobalId = 22-char base64 encoded GUID.",
+    "suggestedInspections": [
+      "Read FILE_SCHEMA value to identify IFC version (IFC2X3, IFC4, IFC4X3_RC4) and select appropriate parser",
+      "Read FILE_NAME to extract author, timestamp, and application name for provenance metadata",
+      "Count #ID occurrences in DATA section to estimate model size; count specific entity types (IFCWALL, IFCWINDOW)",
+      "Find IFCPROJECT instance to extract project name, description, and unit definitions (SI vs imperial)",
+      "Trace IFCRELAGGREGATES and IFCRELCONTAINEDINSPATIALSTRUCTURE to reconstruct the spatial hierarchy",
+      "Locate IFCGEOGRAPHICELEMENT or IFCSITE coordinates to find GPS/geographic location of the building"
+    ]
+  },
+  "software": [
+    { "name": "Autodesk Revit", "url": "https://www.autodesk.com/revit" },
+    { "name": "ArchiCAD (Graphisoft)", "url": "https://graphisoft.com" },
+    { "name": "FreeCAD (IFC import)", "url": "https://www.freecad.org" },
+    { "name": "IfcOpenShell (open-source)", "url": "https://ifcopenshell.org" }
+  ],
+  "formatRelationships": [
+    { "format": "STEP", "relation": "base format — IFC uses ISO 10303-21 STEP Physical File encoding" },
+    { "format": "DXF", "relation": "older CAD interchange without BIM semantics" },
+    { "format": "DWG", "relation": "Autodesk native format with partial IFC import/export" },
+    { "format": "GLTF", "relation": "geometry visualization export from IFC viewers" }
+  ],
+  "MimeTypes": [
+    "application/x-step",
+    "model/ifc",
+    "text/plain"
+  ],
+  "UseCases": [
+    "BIM data exchange between architects, engineers, and contractors (open BIM)",
+    "Building permit submission to authorities using IFC",
+    "Facility management and digital twin creation",
+    "Clash detection and coordination in construction projects",
+    "Infrastructure project lifecycle management (IFC4x3)"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 85,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 5,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-15",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "encoding": "ASCII text (ISO 10303-21 SPF encoding)",
+    "schema": "IFC4 (ISO 16739-1:2018), IFC2X3 TC1 (widely supported), IFC4x3 (2022)",
+    "instanceFormat": "#ID = IFCTYPE(attributes);",
+    "globalIdFormat": "22-character base64-encoded GUID",
+    "compressionVariant": "IFC-ZIP uses ZIP compression of the SPF text",
+    "xmlVariant": "IFC-XML uses ISO 10303-28 XML encoding"
+  }
+}

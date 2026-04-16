@@ -1,0 +1,225 @@
+{
+  "diffMode": "text",
+  "formatName": "GAMESS Quantum Chemistry Log",
+  "version": "1.0",
+  "extensions": [
+    ".log",
+    ".out",
+    ".gamess"
+  ],
+  "description": "GAMESS (General Atomic and Molecular Electronic Structure System) is a comprehensive quantum chemistry package developed at Iowa State University. GAMESS log/output files contain detailed results from ab initio, DFT (density functional theory), semi-empirical, and molecular mechanics calculations. The output begins with a banner section showing the GAMESS version, run date, and job title, followed by echo of the input deck ($CONTRL, $BASIS, $SYSTEM, $DATA groups). Key result sections include: RHF/UHF/ROHF self-consistent field (SCF) iterations, MP2/CCSD/EOM-CCSD correlation energies, TDDFT excitation spectra, IRC (intrinsic reaction coordinate) paths, geometry optimization cycles, normal mode vibrational frequencies, NMR shielding tensors, and molecular orbitals. The final energy line contains 'TOTAL ENERGY =' followed by the Hartree value.",
+  "category": "Science",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "text-editor",
+  "references": [
+    {
+      "specifications": [
+        "GAMESS User Documentation (Schmidt et al., J. Comput. Chem. 14:1347, 1993)",
+        "GAMESS-US Version 2023 Release Notes",
+        "Gordon Group GAMESS at Iowa State University"
+      ]
+    },
+    {
+      "WebLinks": [
+        "https://www.msg.chem.iastate.edu/gamess/",
+        "https://en.wikipedia.org/wiki/GAMESS_(US)",
+        "https://sciencehpc.eu/software/gamess/"
+      ]
+    }
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "value": "47414D455353",
+        "offset": 0,
+        "label": "'GAMESS' — program name in output file header",
+        "weight": 0.7
+      },
+      {
+        "value": "2A2A2A2A2A2A",
+        "offset": 0,
+        "label": "'******' — GAMESS banner line of asterisks",
+        "weight": 0.4
+      }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 0.3,
+    "required": false,
+    "Strength": "Weak",
+    "EntropyHint": { "min": 3.0, "max": 5.5 },
+    "validation": {
+      "minFileSize": 100,
+      "maxSignatureOffset": 512,
+      "note": "GAMESS logs often begin with a blank line then asterisk banner. Search for 'GAMESS' within first 1KB. Alternatively look for '$CONTRL' (input echo) or 'TOTAL ENERGY =' in the file body."
+    }
+  },
+  "variables": {
+    "gamessFirstLine": ""
+  },
+  "blocks": [
+    {
+      "type": "signature",
+      "name": "GAMESS Banner",
+      "offset": 0,
+      "length": 6,
+      "color": "#FF6B6B",
+      "opacity": 0.45,
+      "description": "GAMESS output file begins with a distinctive banner section. The first recognizable content is often '***' asterisk lines or the literal 'GAMESS' word within the first 512 bytes. The banner includes GAMESS version string (e.g., 'GAMESS VERSION =  1 MAY 2013 (R1)'), execution date/time, the executing node name, and number of cores used. This is followed by the echo of the input file beginning with ' $CONTRL'.",
+      "storeAs": "gamessFirstLine",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Input Echo ($CONTRL)",
+      "offset": "dynamic",
+      "length": "dynamic",
+      "color": "#4ECDC4",
+      "opacity": 0.35,
+      "description": "Echo of the input namelist group $CONTRL containing run type (RUNTYP=ENERGY/OPTIMIZE/HESSIAN/IRC/etc.), SCF type (SCFTYP=RHF/UHF/ROHF/MCSCF/GVB), method (MPLEVL=2 for MP2, DFTTYP=B3LYP for DFT), and convergence settings. Followed by $BASIS (basis set specification), $SYSTEM (memory, scratch), and $DATA (molecular geometry in either Cartesian or internal coordinates).",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "SCF Convergence Section",
+      "offset": "dynamic",
+      "length": "dynamic",
+      "color": "#95E1D3",
+      "opacity": 0.30,
+      "description": "Self-consistent field (SCF) iteration table. Columns: iteration number, total energy (Hartree), energy change (delta E), maximum density matrix element change (delta P), DIIS error. Format: ' ITER EX DEM     TOTAL ENERGY        E CHANGE  DENSITY CHANGE   DIIS ERROR'. Convergence indicated by both delta E and delta P below thresholds (default 1e-5 Hartree and 1e-5 for density). Failed convergence shows 'FAILED TO CONVERGE'.",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Total Energy Result",
+      "offset": "dynamic",
+      "length": "dynamic",
+      "color": "#FFE66D",
+      "opacity": 0.35,
+      "description": "Final total energy line: ' TOTAL ENERGY =   -XXX.XXXXXXXXXX' in Hartree (atomic units). This is the primary result of the calculation. For MP2: 'E(MP2)=' line follows. For CCSD: 'CCSD ENERGY =' line. For DFT: energy already includes exchange-correlation. 1 Hartree = 627.5094 kcal/mol = 2625.5 kJ/mol. Negative energies are correct; more negative = lower energy = more stable.",
+      "valueType": "ascii"
+    },
+    {
+      "type": "field",
+      "name": "Normal Mode Frequencies",
+      "offset": "dynamic",
+      "length": "dynamic",
+      "color": "#C3A6FF",
+      "opacity": 0.30,
+      "description": "Vibrational frequency analysis section (present for RUNTYP=HESSIAN or after optimization). Lists 3N-6 (or 3N-5 for linear) vibrational modes with frequencies in cm^-1, IR intensities in Debye^2/amu/Angstrom^2, reduced masses, and Raman activities. Imaginary frequencies (negative values, prefixed with 'I') indicate transition states or saddle points on the potential energy surface.",
+      "valueType": "ascii"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "ContainsGAMESS",
+      "expression": "containsPatternInFirstKB('GAMESS')",
+      "severity": "warning",
+      "message": "Keyword 'GAMESS' not found in first 1KB. This may not be a GAMESS output file, or the banner is suppressed."
+    },
+    {
+      "name": "TotalEnergyFound",
+      "expression": "containsPattern('TOTAL ENERGY')",
+      "severity": "info",
+      "message": "No 'TOTAL ENERGY' line found. Calculation may not have completed successfully. Check for error messages like 'FATAL ERROR' or 'ABNORMAL TERMINATION'."
+    },
+    {
+      "name": "NormalTermination",
+      "expression": "containsPattern('NORMALLY')",
+      "severity": "info",
+      "message": "GAMESS 'NORMALLY' termination marker not found. The job may have crashed or been interrupted. Search for 'ABNORMAL' or 'FATAL' keywords."
+    }
+  ],
+  "navigation": {
+    "bookmarks": [
+      { "name": "GAMESS Banner", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" },
+      { "name": "Input Echo", "offset": "dynamic", "icon": "\uE946", "color": "#4ECDC4" },
+      { "name": "Total Energy", "offset": "dynamic", "icon": "\uE8B7", "color": "#FFE66D" }
+    ]
+  },
+  "inspector": {
+    "badge": "gamessFirstLine",
+    "primaryField": "gamessFirstLine",
+    "showQualityScore": true,
+    "groups": [
+      {
+        "title": "Job Header",
+        "icon": "\uE71B",
+        "fields": ["gamessFirstLine"]
+      },
+      {
+        "title": "Calculation Results",
+        "icon": "\uE8B7",
+        "fields": ["scfSection", "totalEnergy", "normalModeFrequencies"]
+      }
+    ]
+  },
+  "exportTemplates": [
+    {
+      "name": "GAMESS Results Summary (JSON)",
+      "format": "json",
+      "fields": ["gamessVersion", "runType", "scfType", "totalEnergy", "zpve", "terminationStatus"]
+    },
+    {
+      "name": "Vibrational Frequencies (CSV)",
+      "format": "csv",
+      "fields": ["modeIndex", "frequencyCm1", "irIntensity", "reducedMass", "symmetry"]
+    }
+  ],
+  "forensic": {
+    "category": "science",
+    "riskLevel": "low",
+    "suspiciousPatterns": []
+  },
+  "aiHints": {
+    "analysisContext": "GAMESS output text file. Key markers: 'GAMESS VERSION' (header), ' $CONTRL' (input echo start), 'ITER EX DEM' (SCF table header), 'TOTAL ENERGY =' (final energy), 'FREQUENCY:' (vibrational modes), 'NORMAL COORDINATE' (mode vectors), 'EXECUTION OF GAMESS TERMINATED NORMALLY' or 'ABNORMALLY' (job status). Energy in Hartree (1 Ha = 627.51 kcal/mol). MP2 correlation: look for 'E(MP2)='. Geometry optimization: look for 'OPTTOL' convergence and 'EQUILIBRIUM GEOMETRY LOCATED'. IRC: 'POINT' increments along reaction path.",
+    "suggestedInspections": [
+      "Search for 'TOTAL ENERGY =' to extract final SCF/DFT energy in Hartree; convert to kcal/mol by multiplying by 627.5094",
+      "Grep 'FREQUENCY:' lines to extract all vibrational frequencies in cm^-1; negative (imaginary) frequencies indicate transition state geometry",
+      "Find 'EXECUTION OF GAMESS TERMINATED' line to determine if job completed normally or abnormally",
+      "Extract basis set and method from input echo (between ' $BASIS' and ' $END') to classify the level of theory",
+      "For geometry optimization: find 'EQUILIBRIUM GEOMETRY LOCATED' and the final Cartesian coordinates in $DATA format",
+      "Check for 'OUT OF MEMORY' or 'INSUFFICIENT MEMORY' to diagnose resource failures in the calculation"
+    ]
+  },
+  "software": [
+    "GAMESS-US (Iowa State University)",
+    "PC-GAMESS/Firefly",
+    "Avogadro (visualization)",
+    "GaussView (visualization)",
+    "MacMolPlt",
+    "wxMacMolPlt",
+    "Jmol"
+  ],
+  "formatRelationships": {
+    "category": "Science",
+    "extensions": [".log", ".out", ".gamess"],
+    "relatedFormats": ["GAUSSIAN", "GAMESS", "XYZ", "AMBER_TRAJ"],
+    "note": "GAMESS output format is similar to but distinct from Gaussian (.log) output. Both contain SCF iteration tables and final energies but differ in section headers and formatting. GAMESS input uses Fortran-style namelist groups ($CONTRL, $BASIS); Gaussian uses % directives and route section. Scripts using awk/grep can extract energies from either."
+  },
+  "MimeTypes": [
+    "text/plain"
+  ],
+  "UseCases": [
+    "Ab initio and DFT quantum chemistry calculations",
+    "Geometry optimization and transition state search",
+    "Vibrational frequency analysis and thermochemistry",
+    "Excited state calculations (TDDFT, EOM-CCSD)",
+    "NMR chemical shift prediction"
+  ],
+  "QualityMetrics": {
+    "CompletenessScore": 83,
+    "DocumentationLevel": "detailed",
+    "BlocksDefined": 5,
+    "ValidationRules": 3,
+    "LastUpdated": "2026-04-15",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
+  "TechnicalDetails": {
+    "encoding": "ASCII text",
+    "primaryResult": "TOTAL ENERGY in Hartree",
+    "keyMarkers": "GAMESS VERSION, $CONTRL echo, TOTAL ENERGY, FREQUENCY:, TERMINATED NORMALLY",
+    "energyUnit": "Hartree (1 Ha = 627.5094 kcal/mol)",
+    "softwareFamily": "GAMESS-US (Iowa State) / PC-GAMESS (Firefly)"
+  }
+}

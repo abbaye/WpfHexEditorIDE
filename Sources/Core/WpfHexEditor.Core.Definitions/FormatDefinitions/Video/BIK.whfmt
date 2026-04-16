@@ -1,118 +1,170 @@
 {
-  "formatName": "Bink Video",
-  "version": "1.0",
-  "author": "WPFHexaEditor Team",
-  "lastUpdated": "2026-04-15",
-  "description": "RAD Game Tools Bink Video format (.bik, .bk2) — a proprietary video codec used in thousands of PC and console game titles for cutscenes; Bink2 (2013) introduced significantly improved HD compression.",
-  "extensions": [ ".bik", ".bk2" ],
-  "category": "Video",
+  "formatName": "Bink Video (RAD Game Tools)",
+  "version": "1.1",
+  "extensions": [ ".bik", ".bk2", ".bik2" ],
   "diffMode": "binary",
-  "signatures": [
-    { "value": "42494B66", "offset": 0, "label": "'BIKf' — Bink v1 format variant f", "weight": 1.0, "strength": "Strong" },
-    { "value": "42494B67", "offset": 0, "label": "'BIKg' — Bink v1 format variant g", "weight": 1.0, "strength": "Strong" },
-    { "value": "42494B68", "offset": 0, "label": "'BIKh' — Bink v1 format variant h", "weight": 1.0, "strength": "Strong" },
-    { "value": "42494B69", "offset": 0, "label": "'BIKi' — Bink v1 format variant i", "weight": 1.0, "strength": "Strong" },
-    { "value": "42494B32", "offset": 0, "label": "'BIK2' — Bink v2 (RAD Game Tools, 2013)", "weight": 1.0, "strength": "Strong" }
+  "description": "Bink Video is a proprietary video compression format by RAD Game Tools widely used in video games for full-motion video cutscenes. Supports Bink1 and Bink2 codecs.",
+  "category": "Video",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "HexEditor",
+  "references": [
+    "https://wiki.multimedia.cx/index.php/Bink_Video",
+    "https://www.radgametools.com/bnkmain.htm"
   ],
-  "maxSignatureOffset": 4,
-  "structure": {
-    "fields": [
-      { "offset": 0,  "size": 4,  "name": "signature",         "type": "ascii",    "description": "Codec version tag: 'BIKf'–'BIKi' or 'BIK2'", "storeAs": "bikSig" },
-      { "offset": 4,  "size": 4,  "name": "file_size",         "type": "uint32le", "description": "File size minus 8 bytes" },
-      { "offset": 8,  "size": 4,  "name": "num_frames",        "type": "uint32le", "description": "Total number of video frames" },
-      { "offset": 12, "size": 4,  "name": "largest_frame_size","type": "uint32le", "description": "Size in bytes of the largest frame" },
-      { "offset": 16, "size": 4,  "name": "last_frame",        "type": "uint32le", "description": "Number of the last frame (usually num_frames-1)" },
-      { "offset": 20, "size": 4,  "name": "fps_div",           "type": "uint32le", "description": "Frame rate denominator" },
-      { "offset": 24, "size": 4,  "name": "fps_num",           "type": "uint32le", "description": "Frame rate numerator (FPS = fps_num / fps_div)" },
-      { "offset": 28, "size": 4,  "name": "video_flags",       "type": "uint32le", "description": "Bit 0=grayscale, bit 1=hasAlpha, bit 2=customMatrix" },
-      { "offset": 32, "size": 4,  "name": "width",             "type": "uint32le", "description": "Frame width in pixels",                       "storeAs": "bikWidth" },
-      { "offset": 36, "size": 4,  "name": "height",            "type": "uint32le", "description": "Frame height in pixels",                      "storeAs": "bikHeight" },
-      { "offset": 40, "size": 4,  "name": "num_audio_tracks",  "type": "uint32le", "description": "Number of audio tracks (0–n)" }
+  "MimeTypes": [ "video/vnd.radgametools.bink", "video/x-bink" ],
+  "UseCases": [
+    "Video game cutscene playback",
+    "Game asset extraction and analysis",
+    "Full-motion video reverse engineering",
+    "Game modding and video replacement"
+  ],
+  "software": [
+    { "name": "RAD Video Tools", "role": "Official encoder/decoder/player", "platform": "Windows", "url": "https://www.radgametools.com/bnkdown.htm" },
+    { "name": "FFmpeg",          "role": "Open-source decoder",             "platform": "Multi",   "url": "https://ffmpeg.org" },
+    { "name": "VLC",             "role": "Playback via libavcodec",          "platform": "Multi" },
+    { "name": "BinkPlayer",      "role": "Standalone Bink player",           "platform": "Windows" }
+  ],
+  "detection": {
+    "signatures": [
+      { "value": "42494B66", "offset": 0, "label": "'BIKf' Bink1 variant f", "weight": 1.0 },
+      { "value": "42494B62", "offset": 0, "label": "'BIKb' Bink1 variant b", "weight": 1.0 },
+      { "value": "42494B64", "offset": 0, "label": "'BIKd' Bink1 variant d", "weight": 1.0 },
+      { "value": "42494B67", "offset": 0, "label": "'BIKg' Bink1 variant g", "weight": 1.0 },
+      { "value": "42494B68", "offset": 0, "label": "'BIKh' Bink1 variant h", "weight": 1.0 },
+      { "value": "42494B69", "offset": 0, "label": "'BIKi' Bink1 variant i", "weight": 1.0 },
+      { "value": "42493278", "offset": 0, "label": "'BI2x' Bink2 variant x", "weight": 1.0 },
+      { "value": "4249326C", "offset": 0, "label": "'BI2l' Bink2 variant l", "weight": 0.9 }
+    ],
+    "matchMode": "any",
+    "MinimumScore": 88,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 5.5, "max": 7.8 }
+  },
+  "variables": [
+    { "name": "bikMagic",        "offset": 0,  "size": 4, "type": "ascii",  "storeAs": "bikMagic",       "description": "4-byte magic identifying Bink version and variant" },
+    { "name": "bikFileSize",     "offset": 4,  "size": 4, "type": "uint32", "endian": "LE", "storeAs": "bikFileSize",     "description": "File size minus 8 bytes" },
+    { "name": "bikFrameCount",   "offset": 8,  "size": 4, "type": "uint32", "endian": "LE", "storeAs": "bikFrameCount",   "description": "Total number of video frames" },
+    { "name": "bikLargestFrame", "offset": 12, "size": 4, "type": "uint32", "endian": "LE", "storeAs": "bikLargestFrame", "description": "Size of the largest frame in bytes" },
+    { "name": "bikNumFrames2",   "offset": 16, "size": 4, "type": "uint32", "endian": "LE", "storeAs": "bikNumFrames2",   "description": "Number of frames (alternate field, should equal bikFrameCount)" },
+    { "name": "bikWidth",        "offset": 20, "size": 4, "type": "uint32", "endian": "LE", "storeAs": "bikWidth",        "description": "Video width in pixels" },
+    { "name": "bikHeight",       "offset": 24, "size": 4, "type": "uint32", "endian": "LE", "storeAs": "bikHeight",       "description": "Video height in pixels" },
+    { "name": "bikFpsNum",       "offset": 28, "size": 4, "type": "uint32", "endian": "LE", "storeAs": "bikFpsNum",       "description": "Frame rate numerator" },
+    { "name": "bikFpsDen",       "offset": 32, "size": 4, "type": "uint32", "endian": "LE", "storeAs": "bikFpsDen",       "description": "Frame rate denominator" },
+    { "name": "bikVideoFlags",   "offset": 36, "size": 4, "type": "uint32", "endian": "LE", "storeAs": "bikVideoFlags",   "description": "Video flags: bit0=has alpha plane, bit8=has LoopFromFrame" },
+    { "name": "bikNumTracks",    "offset": 40, "size": 4, "type": "uint32", "endian": "LE", "storeAs": "bikNumTracks",    "description": "Number of audio tracks" }
+  ],
+  "blocks": [
+    {
+      "name": "FileHeader",
+      "offset": 0,
+      "size": 44,
+      "description": "Bink fixed file header with magic, file size, frame count, dimensions and FPS",
+      "color": "#1E90FF",
+      "fields": [ "bikMagic", "bikFileSize", "bikFrameCount", "bikLargestFrame", "bikNumFrames2",
+                  "bikWidth", "bikHeight", "bikFpsNum", "bikFpsDen", "bikVideoFlags", "bikNumTracks" ]
+    },
+    {
+      "name": "AudioTrackHeaders",
+      "offset": 44,
+      "sizeExpression": "bikNumTracks * 12",
+      "description": "Per-audio-track headers (sample rate, channel count, flags)",
+      "color": "#32CD32"
+    },
+    {
+      "name": "FrameOffsetTable",
+      "offset": "after audio headers",
+      "sizeExpression": "(bikFrameCount + 1) * 4",
+      "description": "Frame offset table: (frameCount+1) entries of 4 bytes each giving absolute file offsets",
+      "color": "#FFA500"
+    },
+    {
+      "name": "FrameData",
+      "offset": "after frame offset table",
+      "description": "Compressed video and audio frame data blocks",
+      "color": "#FF6347"
+    }
+  ],
+  "assertions": [
+    { "id": "A1", "expression": "bikFrameCount > 0",                   "severity": "error",   "message": "Frame count must be positive" },
+    { "id": "A2", "expression": "bikWidth > 0",                        "severity": "error",   "message": "Video width must be positive" },
+    { "id": "A3", "expression": "bikHeight > 0",                       "severity": "error",   "message": "Video height must be positive" },
+    { "id": "A4", "expression": "bikFpsDen > 0",                       "severity": "error",   "message": "FPS denominator must be nonzero" },
+    { "id": "A5", "expression": "bikFileSize + 8 == file size",        "severity": "warning", "message": "Declared file size does not match actual file size" }
+  ],
+  "navigation": {
+    "rootLabel": "Bink Video",
+    "entries": [
+      { "label": "File Header",         "blockRef": "FileHeader" },
+      { "label": "Audio Track Headers", "blockRef": "AudioTrackHeaders" },
+      { "label": "Frame Offset Table",  "blockRef": "FrameOffsetTable" },
+      { "label": "Frame Data",          "blockRef": "FrameData" }
     ]
   },
   "inspector": {
-    "displayFields": [ "bikSig", "bikWidth", "bikHeight", "num_frames", "fps_num", "fps_div", "num_audio_tracks" ],
-    "valueMaps": {
-      "bikSig": {
-        "BIKf": "Bink v1 variant f",
-        "BIKg": "Bink v1 variant g",
-        "BIKh": "Bink v1 variant h",
-        "BIKi": "Bink v1 variant i (most common)",
-        "BIK2": "Bink v2 (HD, 2013+)"
-      },
-      "video_flags": {
-        "0": "Full color",
-        "1": "Grayscale",
-        "2": "Has alpha channel",
-        "4": "Custom color matrix"
-      }
-    },
-    "tooltips": {
-      "bikSig":   "First 3 bytes 'BIK' are constant; 4th byte encodes the compression variant",
-      "fps_num":  "FPS = fps_num / fps_div; typical: fps_div=1, fps_num=30",
-      "file_size":"Stored as actual_file_size - 8; add 8 to get true file size"
-    }
-  },
-  "assertions": [
-    { "id": "A1", "field": "bikSig",     "operator": "startsWith", "value": "BIK",  "description": "Signature must start with 'BIK'" },
-    { "id": "A2", "field": "num_frames", "operator": "gte",        "value": 1,      "description": "Must contain at least 1 frame" },
-    { "id": "A3", "field": "bikWidth",   "operator": "gte",        "value": 1,      "description": "Frame width must be positive" },
-    { "id": "A4", "field": "bikHeight",  "operator": "gte",        "value": 1,      "description": "Frame height must be positive" }
-  ],
-  "navigation": {
-    "bookmarks": [
-      { "offset": 0,  "label": "Codec Signature",    "color": "#E74C3C" },
-      { "offset": 8,  "label": "Frame Count",        "color": "#3498DB" },
-      { "offset": 20, "label": "Frame Rate",         "color": "#F39C12" },
-      { "offset": 28, "label": "Video Flags",        "color": "#9B59B6" },
-      { "offset": 32, "label": "Dimensions",         "color": "#27AE60" },
-      { "offset": 40, "label": "Audio Track Count",  "color": "#1ABC9C" }
+    "badge": "BIK",
+    "primaryField": "bikMagic",
+    "groups": [
+      { "name": "Identity",  "fields": [ "bikMagic" ] },
+      { "name": "Video",     "fields": [ "bikWidth", "bikHeight", "bikFpsNum", "bikFpsDen", "bikVideoFlags" ] },
+      { "name": "Structure", "fields": [ "bikFrameCount", "bikLargestFrame", "bikFileSize", "bikNumTracks" ] }
     ]
   },
   "exportTemplates": [
     {
-      "name": "Bink Header Summary",
-      "fields": [ "bikSig", "bikWidth", "bikHeight", "num_frames", "fps_num", "fps_div", "num_audio_tracks" ],
-      "format": "text"
+      "name": "Video Summary",
+      "format": "text",
+      "template": "Format: {bikMagic}\nResolution: {bikWidth}x{bikHeight}\nFrames: {bikFrameCount}\nFPS: {bikFpsNum}/{bikFpsDen}\nAudio Tracks: {bikNumTracks}\nLargest Frame: {bikLargestFrame} bytes"
     },
     {
-      "name": "Bink Metadata JSON",
-      "fields": [ "bikSig", "bikWidth", "bikHeight", "num_frames", "fps_num", "fps_div", "video_flags", "num_audio_tracks", "largest_frame_size" ],
-      "format": "json"
+      "name": "CSV Metadata",
+      "format": "csv",
+      "template": "Field,Value\nMagic,{bikMagic}\nWidth,{bikWidth}\nHeight,{bikHeight}\nFrameCount,{bikFrameCount}\nFpsNum,{bikFpsNum}\nFpsDen,{bikFpsDen}\nAudioTracks,{bikNumTracks}\nLargestFrame,{bikLargestFrame}"
     }
   ],
-  "aiHints": [
-    "Bink is the most widely deployed proprietary game video codec; if you encounter an unknown video in a game data directory, Bink is the first format to check.",
-    "The 4th byte of the signature encodes the specific Bink1 compression variant ('f' through 'i'); 'BIKi' is the most common for Bink1.",
-    "'BIK2' (Bink v2) uses a completely different compression algorithm optimised for HD; the frame structure is not backward compatible with Bink1.",
-    "file_size field stores actual_size - 8, not the full file size — add 8 when computing expected file size for integrity checks.",
-    "Audio track headers follow immediately after offset 44; each track has: sample_rate(4B), flags(4B), track_id(4B). Multiply num_audio_tracks by 12 to skip audio headers.",
-    "Frame index table follows audio headers; each entry is a 4-byte offset (bit 0 = keyframe flag) allowing seeking."
-  ],
   "forensic": {
-    "riskLevel": "low",
-    "notes": [
-      "Bink files contain only compressed video/audio; no executable content.",
-      "Proprietary format with no public specification; ffmpeg reverse-engineered support is read-only.",
-      "Game data extraction tools (binkconv, RAD Video Tools) allow legitimate playback of purchased game content."
+    "riskLevel": "LOW",
+    "suspiciousPatterns": [
+      "bikFileSize + 8 does not match actual file size — truncated or padded",
+      "bikFrameCount == 0 — invalid video",
+      "bikLargestFrame larger than file size — corrupt header",
+      "Frame offsets in table pointing outside file bounds — structural corruption"
+    ],
+    "hidingTechniques": [
+      "Extra data appended after last frame block",
+      "Padding between declared file size and actual EOF",
+      "Embedded data within unused audio track slots"
+    ],
+    "timestampFields": [],
+    "notes": "Bink1 and Bink2 have different internal frame structures. The 4th byte of the magic ('BIKx') identifies the variant. Bink2 files (.bk2) use 'BI2' prefix."
+  },
+  "aiHints": {
+    "analysisContext": "Bink Video uses a compact fixed header followed by per-track audio headers, a frame offset table and compressed frame data. Frame positions are determined by the offset table; the last entry points past the last frame. Frame rate is stored as a numerator/denominator pair.",
+    "suggestedInspections": [
+      "Verify magic is 'BIK' or 'BI2' prefix and identify the codec variant from byte 3",
+      "Validate bikFileSize + 8 matches actual file size",
+      "Inspect frame offset table: confirm entries are monotonically increasing and last entry == file size",
+      "Check bikWidth and bikHeight are nonzero and within reasonable video dimensions",
+      "Compute FPS as bikFpsNum/bikFpsDen and verify it is a standard frame rate (24, 25, 29.97, 30, 60)"
     ]
   },
   "formatRelationships": [
-    { "format": "SMK", "relationship": "predecessor", "note": "Smacker (SMK) is the earlier RAD Game Tools video format, used in DOS games." }
+    { "format": "SMK", "relationship": "sibling", "description": "Smacker Video is the predecessor format from the same RAD Game Tools" },
+    { "format": "AVI", "relationship": "sibling", "description": "AVI is a contemporaneous PC video container format" }
   ],
-  "software": [
-    { "name": "RAD Video Tools",  "role": "Free official Bink player/inspector (Windows)" },
-    { "name": "binkconv",         "role": "RAD Bink conversion utility" },
-    { "name": "ffmpeg",           "role": "Read-only Bink decoding (reverse-engineered)" },
-    { "name": "Unreal Engine",    "role": "Integrated Bink 2 playback SDK" },
-    { "name": "Unity",            "role": "Bink plugin available via RAD" }
-  ],
-  "useCases": [
-    "Game cutscene video playback and extraction",
-    "Video codec analysis in game data research",
-    "Game modding: replacing or extracting FMV sequences",
-    "Legacy game preservation and format identification"
-  ],
-  "technicalDetails": "RAD Game Tools Bink Video (proprietary). Bink1 uses a DCT + wavelet transform hybrid with custom Huffman entropy coding. Bink2 (released 2013) uses a completely redesigned compression pipeline optimised for HD content in modern games. Supports up to 8 audio tracks with custom ADPCM codec. The frame index at the tail of the header provides random seek access. Used in: Mass Effect, BioShock, Borderlands, The Witcher, Call of Duty, and thousands of other titles across PC, Xbox, PS2/3/4, Wii, and mobile platforms.",
-  "completenessScore": 83
+  "TechnicalDetails": {
+    "endianness": "Little-Endian",
+    "minimumFileSize": 44,
+    "headerSize": 44,
+    "frameOffsetEntries": "frameCount + 1",
+    "bink1Variants": [ "BIKb", "BIKd", "BIKf", "BIKg", "BIKh", "BIKi" ],
+    "bink2Variants": [ "BI2x", "BI2l", "BI2f" ],
+    "compressionType": "Proprietary RAD Bink codec",
+    "audioCodecs": [ "Bink Audio (DCT)", "Bink Audio (RDFT)" ]
+  },
+  "QualityMetrics": {
+    "CompletenessScore": 91,
+    "LastUpdated": "2026-04-15",
+    "ReviewedBy": "WPFHexaEditor Team",
+    "KnownLimitations": "Audio track header layout differs between Bink1 and Bink2; exact audio fields require codec-specific parsing."
+  }
 }

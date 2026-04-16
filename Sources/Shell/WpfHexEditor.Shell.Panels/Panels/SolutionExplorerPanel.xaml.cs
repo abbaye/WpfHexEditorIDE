@@ -14,6 +14,7 @@ using System.Windows.Media;
 using WpfHexEditor.Core.ProjectSystem.Languages;
 using WpfHexEditor.Core.SourceAnalysis.Models;
 using WpfHexEditor.Core.SourceAnalysis.Services;
+using WpfHexEditor.Core.Contracts;
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Shell.Panels.Services;
 using WpfHexEditor.Shell.Panels.ViewModels;

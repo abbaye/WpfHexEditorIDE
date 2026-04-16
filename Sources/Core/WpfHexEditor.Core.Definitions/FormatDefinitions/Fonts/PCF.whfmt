@@ -1,122 +1,188 @@
 {
-  "formatName": "Portable Compiled Format Font",
-  "version": "1.0",
-  "author": "WPFHexaEditor Team",
-  "lastUpdated": "2026-04-15",
-  "description": "X11 PCF (Portable Compiled Format) bitmap font — binary compiled form of BDF used at runtime by the X Window System server; table-based structure with per-table endianness flags for portability across architectures.",
+  "formatName": "Portable Compiled Format Font (PCF)",
+  "version": "1.1",
   "extensions": [ ".pcf", ".pcf.gz" ],
-  "category": "Fonts",
   "diffMode": "binary",
-  "signatures": [
+  "description": "Portable Compiled Format is the compiled binary form of BDF bitmap fonts used by the X Window System. Supports multiple tables for glyph bitmaps, metrics, encodings and accelerators.",
+  "category": "Fonts",
+  "author": "WPFHexaEditor Team",
+  "preferredEditor": "HexEditor",
+  "references": [
+    "https://fontforge.org/docs/techref/pcf-format.html",
+    "https://www.x.org/releases/X11R7.7/doc/libXfont/PCF.html"
+  ],
+  "MimeTypes": [ "application/x-font-pcf", "font/pcf" ],
+  "UseCases": [
+    "X11 bitmap font deployment",
+    "Linux terminal and display server fonts",
+    "Embedded system UI font delivery",
+    "X.Org font server configuration"
+  ],
+  "software": [
+    { "name": "bdftopcf",    "role": "BDF to PCF compiler (X11 utilities)", "platform": "Unix" },
+    { "name": "FontForge",   "role": "Font editor with PCF import support",  "platform": "Multi", "url": "https://fontforge.org" },
+    { "name": "mkfontscale", "role": "X11 font directory builder",           "platform": "Unix" },
+    { "name": "Xorg",        "role": "X Window System font server consumer", "platform": "Unix" }
+  ],
+  "detection": {
+    "signatures": [
+      {
+        "value": "01666370",
+        "offset": 0,
+        "label": "PCF magic: 0x01 'fcp' (bytes: 01 66 63 70)",
+        "weight": 1.0
+      }
+    ],
+    "matchMode": "first",
+    "MinimumScore": 88,
+    "Strength": "Strong",
+    "EntropyHint": { "min": 3.5, "max": 6.5 }
+  },
+  "variables": [
+    { "name": "pcfMagic",      "offset": 0,  "size": 4, "type": "bytes",  "storeAs": "pcfMagic",      "description": "PCF magic: 01 66 63 70" },
+    { "name": "pcfTableCount", "offset": 4,  "size": 4, "type": "uint32", "endian": "LE", "storeAs": "pcfTableCount", "description": "Number of table directory entries" },
+    { "name": "tbl0Type",      "offset": 8,  "size": 4, "type": "uint32", "endian": "LE", "storeAs": "tbl0Type",
+      "description": "First table type",
+      "valueMap": {
+        "1":   "PCF_PROPERTIES",
+        "2":   "PCF_ACCELERATORS",
+        "4":   "PCF_METRICS",
+        "8":   "PCF_BITMAPS",
+        "16":  "PCF_INK_METRICS",
+        "32":  "PCF_BDF_ENCODINGS",
+        "64":  "PCF_SWIDTHS",
+        "128": "PCF_GLYPH_NAMES",
+        "256": "PCF_BDF_ACCELERATORS"
+      } },
+    { "name": "tbl0Format", "offset": 12, "size": 4, "type": "uint32", "endian": "LE", "storeAs": "tbl0Format", "description": "First table format flags (endian, bitmap padding)" },
+    { "name": "tbl0Size",   "offset": 16, "size": 4, "type": "uint32", "endian": "LE", "storeAs": "tbl0Size",   "description": "First table size in bytes" },
+    { "name": "tbl0Offset", "offset": 20, "size": 4, "type": "uint32", "endian": "LE", "storeAs": "tbl0Offset", "description": "First table byte offset in file" }
+  ],
+  "blocks": [
     {
-      "value": "01666370",
+      "name": "FileHeader",
       "offset": 0,
-      "label": "'\\x01fcp' — PCF font magic (0x01 'f' 'c' 'p')",
-      "weight": 1.0,
-      "strength": "Strong"
+      "size": 8,
+      "description": "PCF file magic (4 bytes) and table count (4 bytes)",
+      "color": "#1E90FF",
+      "fields": [ "pcfMagic", "pcfTableCount" ]
+    },
+    {
+      "name": "TableDirectory",
+      "offset": 8,
+      "sizeExpression": "pcfTableCount * 16",
+      "description": "Array of 16-byte table directory entries (type, format, size, offset)",
+      "color": "#32CD32",
+      "fields": [ "tbl0Type", "tbl0Format", "tbl0Size", "tbl0Offset" ]
+    },
+    {
+      "name": "PropertiesTable",
+      "offset": "per table directory",
+      "description": "PCF_PROPERTIES table: X font property key-value pairs",
+      "color": "#FFA500"
+    },
+    {
+      "name": "MetricsTable",
+      "offset": "per table directory",
+      "description": "PCF_METRICS table: per-glyph advance width, side bearings and bounding box",
+      "color": "#FF6347"
+    },
+    {
+      "name": "BitmapsTable",
+      "offset": "per table directory",
+      "description": "PCF_BITMAPS table: raw glyph bitmap data",
+      "color": "#9370DB"
+    },
+    {
+      "name": "EncodingsTable",
+      "offset": "per table directory",
+      "description": "PCF_BDF_ENCODINGS table: character encoding to glyph index mapping",
+      "color": "#20B2AA"
     }
   ],
-  "maxSignatureOffset": 4,
-  "structure": {
-    "fields": [
-      { "offset": 0, "size": 4, "name": "header",      "type": "uint32le", "description": "Magic: 0x01666370 ('\\x01fcp')", "storeAs": "pcfMagic" },
-      { "offset": 4, "size": 4, "name": "table_count", "type": "uint32le", "description": "Number of tables in the font file", "storeAs": "pcfTables" }
-    ],
-    "tableDirectory": {
-      "description": "table_count × 16-byte entries starting at offset 8",
-      "entryFields": [
-        { "size": 4, "name": "type",   "type": "uint32le", "description": "Table type bitmask (see valueMaps)" },
-        { "size": 4, "name": "format", "type": "uint32le", "description": "Format flags: byte/bit order, glyph pad, scan unit" },
-        { "size": 4, "name": "size",   "type": "uint32le", "description": "Table data size in bytes" },
-        { "size": 4, "name": "offset", "type": "uint32le", "description": "Byte offset to table data from start of file" }
-      ]
-    }
-  },
-  "inspector": {
-    "displayFields": [ "pcfMagic", "pcfTables" ],
-    "valueMaps": {
-      "tableType": {
-        "1":   "PCF_PROPERTIES — font property list",
-        "2":   "PCF_ACCELERATORS — rendering accelerator data",
-        "4":   "PCF_METRICS — per-glyph metrics (bounding boxes, advances)",
-        "8":   "PCF_BITMAPS — raw glyph bitmap data",
-        "16":  "PCF_INK_METRICS — ink metrics for anti-aliasing",
-        "32":  "PCF_BDF_ENCODINGS — encoding/glyph index mapping",
-        "64":  "PCF_SWIDTHS — scalable widths",
-        "128": "PCF_GLYPH_NAMES — glyph name strings",
-        "256": "PCF_BDF_ACCELERATORS — BDF-compatible accelerators"
-      },
-      "formatBits": {
-        "0": "Default byte/bit order",
-        "1": "Byte order: big-endian",
-        "4": "Bit order: MSB first",
-        "8": "Glyph pad: 2 bytes",
-        "16": "Glyph pad: 4 bytes",
-        "256": "Scan unit: 2 bytes",
-        "512": "Scan unit: 4 bytes"
-      }
-    },
-    "tooltips": {
-      "pcfMagic":  "Must be 0x01666370; the 0x01 byte followed by ASCII 'fcp'",
-      "pcfTables": "Typical PCF font has 8–9 tables covering properties, metrics, bitmaps, and encodings"
-    }
-  },
   "assertions": [
-    { "id": "A1", "field": "pcfMagic",  "operator": "eq",  "value": 0x01666370, "description": "Magic must be 0x01666370 ('\\x01fcp')" },
-    { "id": "A2", "field": "pcfTables", "operator": "gte", "value": 1,          "description": "Must have at least 1 table" }
+    { "id": "A1", "expression": "pcfMagic == [0x01, 0x66, 0x63, 0x70]", "severity": "error",   "message": "PCF magic must be 01 66 63 70" },
+    { "id": "A2", "expression": "pcfTableCount > 0",                     "severity": "error",   "message": "Table count must be positive" },
+    { "id": "A3", "expression": "tbl0Offset < file size",               "severity": "warning", "message": "First table offset must be within file bounds" },
+    { "id": "A4", "expression": "tbl0Size > 0",                         "severity": "warning", "message": "First table must have nonzero size" },
+    { "id": "A5", "expression": "pcfTableCount <= 9",                   "severity": "warning", "message": "PCF typically has at most 9 standard tables" }
   ],
   "navigation": {
-    "bookmarks": [
-      { "offset": 0, "label": "PCF Magic (\\x01fcp)",   "color": "#E74C3C" },
-      { "offset": 4, "label": "Table Count",            "color": "#F39C12" },
-      { "offset": 8, "label": "Table Directory Start",  "color": "#3498DB" }
+    "rootLabel": "PCF Font",
+    "entries": [
+      { "label": "File Header",     "blockRef": "FileHeader" },
+      { "label": "Table Directory", "blockRef": "TableDirectory" },
+      { "label": "Properties",      "blockRef": "PropertiesTable" },
+      { "label": "Metrics",         "blockRef": "MetricsTable" },
+      { "label": "Bitmaps",         "blockRef": "BitmapsTable" },
+      { "label": "Encodings",       "blockRef": "EncodingsTable" }
+    ]
+  },
+  "inspector": {
+    "badge": "PCF",
+    "primaryField": "pcfTableCount",
+    "groups": [
+      { "name": "Identity",    "fields": [ "pcfMagic", "pcfTableCount" ] },
+      { "name": "First Table", "fields": [ "tbl0Type", "tbl0Format", "tbl0Size", "tbl0Offset" ] }
     ]
   },
   "exportTemplates": [
     {
-      "name": "PCF Header Summary",
-      "fields": [ "pcfMagic", "pcfTables" ],
-      "format": "text"
+      "name": "Font Summary",
+      "format": "text",
+      "template": "Format: PCF Compiled Font\nTable Count: {pcfTableCount}\nFirst Table Type: {tbl0Type}\nFirst Table Size: {tbl0Size} bytes\nFirst Table Offset: {tbl0Offset}"
     },
     {
-      "name": "PCF Table Directory JSON",
-      "fields": [ "pcfMagic", "pcfTables" ],
-      "format": "json"
+      "name": "CSV Metadata",
+      "format": "csv",
+      "template": "Field,Value\nTableCount,{pcfTableCount}\nFirstTableType,{tbl0Type}\nFirstTableFormat,{tbl0Format}\nFirstTableSize,{tbl0Size}\nFirstTableOffset,{tbl0Offset}"
     }
   ],
-  "aiHints": [
-    "PCF is the binary compiled version of BDF — use bdftopcf to compile and FontForge to re-export to BDF for source editing.",
-    "Each table's format field encodes independent byte/bit order — a single PCF file can be read on both big-endian and little-endian systems via per-table format inspection.",
-    "The PCF_BITMAPS table (type=8) contains all glyph pixel data packed according to the glyph pad and scan unit flags in the format field.",
-    "PCF_BDF_ENCODINGS (type=32) maps Unicode/Latin-1 code points to glyph indices; missing entries use the default/undefined glyph index.",
-    "PCF files are commonly gzip-compressed on disk (.pcf.gz); X11 decompresses them transparently — the compressed file is not a PCF until decompressed.",
-    "mkfontdir and mkfontscale generate fonts.dir and fonts.scale index files from PCF files in a directory for the X11 font server."
-  ],
   "forensic": {
-    "riskLevel": "low",
-    "notes": [
-      "PCF files contain only font glyph data; no executable content.",
-      "Extremely large PCF files with excessive table counts have caused memory exhaustion in some X11 font server versions.",
-      "PCF files found outside of /usr/share/fonts/ may indicate font injection attempts in multi-user systems."
+    "riskLevel": "LOW",
+    "suspiciousPatterns": [
+      "pcfMagic mismatch — wrong format or corrupt",
+      "pcfTableCount == 0 — empty or truncated file",
+      "Table offsets pointing outside file bounds — corrupt directory",
+      "Table format flags with unknown endian or padding values"
+    ],
+    "hidingTechniques": [
+      "Extra data between table blocks not referenced by directory",
+      "Oversized table size fields including extra bytes",
+      "Non-standard table types not in the PCF spec"
+    ],
+    "timestampFields": [ "FONT_ASCENT and FONT_DESCENT properties may indicate era" ],
+    "notes": "PCF files are often distributed compressed as .pcf.gz. The table format word encodes both endianness (byte order) and bitmap scan-line padding separately for each table."
+  },
+  "aiHints": {
+    "analysisContext": "PCF is an indexed table-based binary font format. The 8-byte header is followed by a 16-byte-per-entry table directory. Each table has its own format word specifying endianness and padding. Tables can appear in any order in the file.",
+    "suggestedInspections": [
+      "Verify magic bytes 01 66 63 70 at offset 0",
+      "Parse table directory: for each entry verify type, format, size and offset are consistent",
+      "Locate PCF_BITMAPS table and validate bitmap array size matches glyph count from metrics",
+      "Check PCF_BDF_ENCODINGS table for encoding range (first/lastCol, first/lastRow) consistency",
+      "Verify all table offsets are non-overlapping and within file bounds"
     ]
   },
   "formatRelationships": [
-    { "format": "BDF", "relationship": "source-form", "note": "BDF is the human-readable source that gets compiled to PCF by bdftopcf." },
-    { "format": "PSF", "relationship": "related",     "note": "PSF is a simpler single-table Linux console bitmap font format." }
+    { "format": "BDF",  "relationship": "parent",  "description": "PCF is compiled from BDF source using bdftopcf" },
+    { "format": "PSF2", "relationship": "sibling", "description": "PSF2 is an alternative binary bitmap font format for Linux console" }
   ],
-  "software": [
-    { "name": "bdftopcf",    "role": "Primary BDF to PCF compiler" },
-    { "name": "mkfontdir",   "role": "Generates X11 font directory index files" },
-    { "name": "xftcache",    "role": "Xft font cache builder" },
-    { "name": "fontconfig",  "role": "Font configuration and PCF indexing" },
-    { "name": "xfontsel",    "role": "X11 PCF font browser and selector" }
-  ],
-  "useCases": [
-    "X11 bitmap font deployment and runtime loading",
-    "Terminal emulator font rendering",
-    "Legacy Unix system font distribution",
-    "Bitmap font archiving and conversion"
-  ],
-  "technicalDetails": "PCF (Portable Compiled Format) generated by bdftopcf. Table-based binary structure with 9 standard table types. Each table has an independent format field encoding byte order, bit order, glyph padding, and scan unit — enabling cross-architecture portability. Glyph bitmap data is row-padded to 1, 2, or 4 bytes. The encoding table maps platform code points to glyph indices. Typically found as .pcf.gz (gzip compressed) in /usr/share/fonts/X11/ on Linux/Unix systems.",
-  "completenessScore": 80
+  "TechnicalDetails": {
+    "endianness": "Per-table (specified in table format flags), typically Little-Endian",
+    "minimumFileSize": 8,
+    "fileHeaderSize": 8,
+    "tableDirectoryEntrySize": 16,
+    "maxStandardTables": 9,
+    "tableTypes": [
+      "PCF_PROPERTIES", "PCF_ACCELERATORS", "PCF_METRICS", "PCF_BITMAPS",
+      "PCF_INK_METRICS", "PCF_BDF_ENCODINGS", "PCF_SWIDTHS", "PCF_GLYPH_NAMES", "PCF_BDF_ACCELERATORS"
+    ]
+  },
+  "QualityMetrics": {
+    "CompletenessScore": 91,
+    "LastUpdated": "2026-04-15",
+    "ReviewedBy": "WPFHexaEditor Team",
+    "KnownLimitations": "Table format word endian/padding bits require per-table interpretation; compressed .pcf.gz requires decompression before parsing."
+  }
 }
