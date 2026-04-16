@@ -2212,7 +2212,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 double x1 = leftEdge + (_glyphRenderer?.ComputeVisualX(whLineText, pos.Column) ?? pos.Column * _charWidth);
                 double x2 = leftEdge + (_glyphRenderer?.ComputeVisualX(whLineText, pos.Column + _wordHighlightLen) ?? (pos.Column + _wordHighlightLen) * _charWidth);
 
-                dc.DrawRectangle(s_wordHighlightBg, s_wordHighlightPen,
+                dc.DrawRectangle(_wordHighlightBg, _wordHighlightPen,
                     new Rect(x1, y, x2 - x1, _lineHeight));
             }
         }

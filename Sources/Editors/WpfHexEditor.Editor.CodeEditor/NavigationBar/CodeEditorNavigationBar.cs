@@ -56,24 +56,29 @@ public sealed class CodeEditorNavigationBar : Grid
     {
         Height = 22;
 
-        // Four columns: Namespace(1*) | Type(1*) | Member(1*) | SplitToggle(Auto)
-        ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-        ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-        ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-        ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+        // Seven columns: Namespace(1*) | Sep | Type(1*) | Sep | Member(1*) | Sep | SplitToggle(Auto)
+        ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }); // 0: Namespace
+        ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });                      // 1: separator
+        ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }); // 2: Type
+        ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });                      // 3: separator
+        ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }); // 4: Member
+        ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });                      // 5: separator (before toggle)
+        ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });                      // 6: SplitToggle
 
         SetResourceReference(BackgroundProperty, "CE_NavBarBg");
 
         _nsCombo     = BuildCombo("(global namespace)"); SetColumn(_nsCombo,     0);
-        _typeCombo   = BuildCombo("(no type)");          SetColumn(_typeCombo,   1);
-        _memberCombo = BuildCombo("(no member)");        SetColumn(_memberCombo, 2);
+        _typeCombo   = BuildCombo("(no type)");          SetColumn(_typeCombo,   2);
+        _memberCombo = BuildCombo("(no member)");        SetColumn(_memberCombo, 4);
 
         _nsCombo    .SelectionChanged += OnNsSelected;
         _typeCombo  .SelectionChanged += OnTypeSelected;
         _memberCombo.SelectionChanged += OnMemberSelected;
 
         Children.Add(_nsCombo);
+        Children.Add(BuildVerticalSeparator(1));
         Children.Add(_typeCombo);
+        Children.Add(BuildVerticalSeparator(3));
         Children.Add(_memberCombo);
 
         // Bottom border — 1 px separator between nav bar and editor content
@@ -84,7 +89,7 @@ public sealed class CodeEditorNavigationBar : Grid
             HorizontalAlignment = HorizontalAlignment.Stretch,
         };
         _bottomBorder.SetResourceReference(Border.BackgroundProperty, "CE_NavBarBorder");
-        SetColumnSpan(_bottomBorder, 4);
+        SetColumnSpan(_bottomBorder, 7);
         Children.Add(_bottomBorder);
     }
 
@@ -96,10 +101,26 @@ public sealed class CodeEditorNavigationBar : Grid
     /// </summary>
     public void Attach(CE editor)
     {
+        if (_editor is not null)
+        {
+            _editor.CaretMoved -= OnCaretMoved;
+            _editor.Loaded     -= OnEditorLoaded;
+        }
+
         _editor = editor;
         editor.CaretMoved += OnCaretMoved;
         // Document is not yet loaded at construction; re-subscribe in Loaded.
         editor.Loaded += OnEditorLoaded;
+    }
+
+    /// <summary>
+    /// Forces a full re-parse and combo refresh. Call after file switch or
+    /// document reload when the Loaded event won't fire again.
+    /// </summary>
+    public void ForceRefresh()
+    {
+        ResubscribeToDocument();
+        ScheduleParse();
     }
 
     /// <summary>
@@ -110,7 +131,7 @@ public sealed class CodeEditorNavigationBar : Grid
     {
         splitToggle.VerticalAlignment = VerticalAlignment.Center;
         splitToggle.Margin            = new Thickness(2, 0, 4, 0);
-        SetColumn(splitToggle, 3);
+        SetColumn(splitToggle, 6);
         Children.Add(splitToggle);
     }
 
@@ -118,15 +139,35 @@ public sealed class CodeEditorNavigationBar : Grid
 
     private void OnEditorLoaded(object sender, RoutedEventArgs e)
     {
-        SubscribeToDocument(_editor?.Document);
+        ResubscribeToDocument();
         ScheduleParse();
     }
 
-    private void SubscribeToDocument(CodeDocument? doc)
+    private CodeDocument? _subscribedDoc;
+
+    /// <summary>
+    /// Unsubscribes from the previously tracked document (if any) and subscribes
+    /// to the editor's current document.  Safe to call multiple times.
+    /// </summary>
+    private void ResubscribeToDocument()
     {
-        if (doc == null) return;
-        doc.TextChanged     += OnDocumentTextChanged;
-        doc.ContentReplaced += OnDocumentContentReplaced;
+        var newDoc = _editor?.Document;
+
+        if (_subscribedDoc == newDoc) return;
+
+        if (_subscribedDoc is not null)
+        {
+            _subscribedDoc.TextChanged     -= OnDocumentTextChanged;
+            _subscribedDoc.ContentReplaced -= OnDocumentContentReplaced;
+        }
+
+        _subscribedDoc = newDoc;
+
+        if (newDoc is not null)
+        {
+            newDoc.TextChanged     += OnDocumentTextChanged;
+            newDoc.ContentReplaced += OnDocumentContentReplaced;
+        }
     }
 
     private void OnDocumentTextChanged(object? sender, ModelTextChangedEventArgs e)
@@ -137,7 +178,7 @@ public sealed class CodeEditorNavigationBar : Grid
 
     // ── Parse pipeline (debounced 500 ms, background thread) ──────────────────
 
-    private void ScheduleParse()
+    private async void ScheduleParse()
     {
         _parseCts?.Cancel();
         _parseCts = new CancellationTokenSource();
@@ -148,18 +189,22 @@ public sealed class CodeEditorNavigationBar : Grid
         // Snapshot on the UI thread before handing off — ObservableCollection is not thread-safe.
         var linesCopy = lines.ToArray();
 
-        Task.Delay(500, ct).ContinueWith(_ =>
+        try
         {
-            if (ct.IsCancellationRequested) return;
+            await Task.Delay(500, ct).ConfigureAwait(false);
             var snapshot = CodeStructureParser.Parse(linesCopy);
-            Dispatcher.InvokeAsync(() =>
+
+            if (ct.IsCancellationRequested) return;
+
+            await Dispatcher.InvokeAsync(() =>
             {
                 if (ct.IsCancellationRequested) return;
                 _snapshot = snapshot;
                 RepopulateAll();
                 RefreshSelections(_editor?.CursorLine ?? 0);
             });
-        }, TaskContinuationOptions.OnlyOnRanToCompletion);
+        }
+        catch (OperationCanceledException) { }
     }
 
     // ── Combo population ──────────────────────────────────────────────────────
@@ -231,6 +276,21 @@ public sealed class CodeEditorNavigationBar : Grid
         if (_updating || _editor == null) return;
         if (_memberCombo.SelectedItem is NavigationBarItem item)
             _editor.NavigateToLine(item.Line);
+    }
+
+    // ── Separator factory ─────────────────────────────────────────────────────
+
+    private static Border BuildVerticalSeparator(int column)
+    {
+        var sep = new Border
+        {
+            Width               = 1,
+            VerticalAlignment   = VerticalAlignment.Stretch,
+            Margin              = new Thickness(0, 3, 0, 3),
+        };
+        sep.SetResourceReference(Border.BackgroundProperty, "CE_NavBarBorder");
+        SetColumn(sep, column);
+        return sep;
     }
 
     // ── ComboBox factory ──────────────────────────────────────────────────────

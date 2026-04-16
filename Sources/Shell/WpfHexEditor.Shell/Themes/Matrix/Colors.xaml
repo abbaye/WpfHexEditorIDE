@@ -766,6 +766,10 @@
     <SolidColorBrush x:Key="CE_StickyScrollForeground" Color="#00FF41" />
     <SolidColorBrush x:Key="CE_StickyScrollBorder"     Color="#004400" />
 
+    <!-- CE_WordHighlight tokens for word-under-caret occurrence highlighting -->
+    <SolidColorBrush x:Key="CE_WordHighlightBackground" Color="#1A00FF00" />
+    <SolidColorBrush x:Key="CE_WordHighlightBorder"     Color="#B400FF00" />
+
     <!-- BDiff tokens (BDiff_*) — inserted by Add-BDiffTokens.ps1 -->
     <SolidColorBrush x:Key="BDiff_EqualByteBrush"            Color="#00000000" />
     <SolidColorBrush x:Key="BDiff_ModifiedByteBrush"         Color="#0A1400" />

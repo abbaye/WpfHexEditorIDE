@@ -664,6 +664,10 @@ public sealed class CodeEditorSplitHost : Grid, IDocumentEditor, IBufferAwareEdi
 
         // Sync breadcrumb bar file path so DocumentSymbolsAsync uses the correct URI.
         _breadcrumbBar.SetFilePath(filePath);
+
+        // Force navigation bar re-parse — the Loaded event won't fire again when
+        // the same editor instance is reused for a different file.
+        _navBar.ForceRefresh();
     }
 
     #endregion

@@ -343,9 +343,12 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         // Active (cursor-containing) scope guide — thicker + more opaque than the passive one.
         private static readonly Pen s_scopeGuideActivePen = MakeFrozenPen(Color.FromArgb(140, 180, 180, 180), 1.5);
 
-        // Word-under-caret highlight assets (VS Code "read highlight" style).
-        private static readonly Brush s_wordHighlightBg  = MakeFrozenBrush(Color.FromArgb(26, 86, 156, 214));
-        private static readonly Pen   s_wordHighlightPen = MakeFrozenPen(Color.FromArgb(180, 86, 156, 214), 1.0);
+        // Word-under-caret highlight assets — resolved from theme resources (CE_WordHighlightBackground / CE_WordHighlightBorder).
+        // Static fallbacks used when theme tokens are missing.
+        private static readonly Brush s_wordHighlightBgFallback  = MakeFrozenBrush(Color.FromArgb(26, 86, 156, 214));
+        private static readonly Pen   s_wordHighlightPenFallback = MakeFrozenPen(Color.FromArgb(180, 86, 156, 214), 1.0);
+        private Brush _wordHighlightBg;
+        private Pen   _wordHighlightPen;
 
         // Bracket matching highlight assets — fixed colors, safe as static frozen fields (OPT-PERF-03).
         private static readonly Brush s_bracketHighlightBrush = MakeFrozenBrush(Color.FromArgb(80, 0, 120, 215));
@@ -2612,6 +2615,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 MinimapRefreshRequested?.Invoke(this, EventArgs.Empty);
             };
 
+            // Resolve theme-aware word highlight brushes (fallback to static defaults).
+            _wordHighlightBg  = s_wordHighlightBgFallback;
+            _wordHighlightPen = s_wordHighlightPenFallback;
+
             // Make focusable for keyboard input
             Focusable = true;
             FocusVisualStyle = null; // No focus rectangle
@@ -2889,6 +2896,31 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // Invalidate rainbow scope guide pen cache so it picks up new theme colors.
             _rainbowGuidePens = null;
             _rainbowGuideActivePens = null;
+
+            // Resolve theme-aware word highlight brushes.
+            RefreshWordHighlightBrushes();
+        }
+
+        /// <summary>
+        /// Resolves word highlight brushes from theme resources (CE_WordHighlightBackground,
+        /// CE_WordHighlightBorder). Falls back to static defaults when tokens are missing.
+        /// </summary>
+        private void RefreshWordHighlightBrushes()
+        {
+            _wordHighlightBg = TryFindResource("CE_WordHighlightBackground") as Brush
+                               ?? s_wordHighlightBgFallback;
+
+            var borderBrush = TryFindResource("CE_WordHighlightBorder") as Brush;
+            if (borderBrush is not null)
+            {
+                var pen = new Pen(borderBrush, 1.0);
+                if (pen.CanFreeze) pen.Freeze();
+                _wordHighlightPen = pen;
+            }
+            else
+            {
+                _wordHighlightPen = s_wordHighlightPenFallback;
+            }
         }
 
         /// <summary>
@@ -3791,6 +3823,17 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             miReanalyzeFolding.Click += (_, _) => ReanalyzeFolding();
             contextMenu.Opened += (_, _) => miReanalyzeFolding.IsEnabled = IsFoldingEnabled && _currentFilePath is not null;
             contextMenu.Items.Add(miReanalyzeFolding);
+
+            // Toggle Word Highlight
+            var miWordHighlight = new MenuItem
+            {
+                Header    = "Word _Highlight",
+                Icon      = MakeMenuIcon("\uE7C1"),  // Highlight glyph
+                IsCheckable = true,
+            };
+            miWordHighlight.Click += (_, _) => EnableWordHighlight = miWordHighlight.IsChecked;
+            contextMenu.Opened += (_, _) => miWordHighlight.IsChecked = EnableWordHighlight;
+            contextMenu.Items.Add(miWordHighlight);
 
             // Set context menu
             ContextMenu = contextMenu;
