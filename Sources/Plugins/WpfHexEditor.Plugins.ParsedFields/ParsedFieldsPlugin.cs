@@ -131,6 +131,9 @@ public sealed class ParsedFieldsPlugin : IWpfHexEditorPlugin
         // ── Bookmark navigation ──────────────────────────────────────────
         _panel.NavigateToOffsetRequested += OnNavigateToOffsetRequested;
 
+        // ── Refresh button — force full reconnect regardless of service state ──
+        _panel.RefreshRequested += OnPanelRefreshRequested;
+
         // ── Template / Grammar EventBus routes ───────────────────────────
         _templateSub = context.EventBus.Subscribe<TemplateApplyRequestedEvent>(OnTemplateApplyRequested);
         _grammarSub  = context.EventBus.Subscribe<GrammarAppliedEvent>(OnGrammarApplied);
@@ -186,7 +189,10 @@ public sealed class ParsedFieldsPlugin : IWpfHexEditorPlugin
         }
 
         if (_panel != null)
+        {
             _panel.NavigateToOffsetRequested -= OnNavigateToOffsetRequested;
+            _panel.RefreshRequested          -= OnPanelRefreshRequested;
+        }
 
         if (_context != null)
         {
@@ -351,12 +357,20 @@ public sealed class ParsedFieldsPlugin : IWpfHexEditorPlugin
     private void OnFocusChanged(object? sender, FocusChangedEventArgs e)
     {
         if (e.ActiveDocument == null) return;
-        if (e.ActiveDocument.ContentId == e.PreviousDocument?.ContentId) return;
 
         // Clear the flag BEFORE any early-out so that transitioning through a
         // FilePath-less tab (Options, empty editor, etc.) doesn't leave the flag
         // stuck at true and silently suppress the next non-hex document update.
         _hexEditorHandledLastSwitch = false;
+
+        // Skip if truly the same document — but compare FilePath rather than ContentId
+        // so that clicking between tab groups with the same ContentId still propagates
+        // (multi-tab-group scenario: same file open in two groups is unusual but we
+        // must not block a cross-group focus switch that re-uses the same ContentId).
+        // We accept the rare double-fire on identical FilePath — it is idempotent.
+        if (e.ActiveDocument.FilePath != null
+            && e.ActiveDocument.FilePath == e.PreviousDocument?.FilePath
+            && e.ActiveDocument.ContentId == e.PreviousDocument?.ContentId) return;
 
         var filePath = e.ActiveDocument.FilePath;
         if (string.IsNullOrEmpty(filePath)) return;
@@ -412,6 +426,40 @@ public sealed class ParsedFieldsPlugin : IWpfHexEditorPlugin
             FilePath   = evt.FilePath,
             SourceKind = "document"
         });
+    }
+
+    // ══════════════════════════════════════════════════════════════════════════
+    // Refresh button — force full reconnect regardless of service state
+    // ══════════════════════════════════════════════════════════════════════════
+
+    /// <summary>
+    /// Handles the panel's Refresh (F5) button.
+    /// Forces a full reconnect cycle so the panel syncs with the current active
+    /// document even when _source or _activeFormat are stale or null (e.g. after
+    /// a multi-tab-group focus switch that did not trigger a panel reconnect).
+    /// </summary>
+    private void OnPanelRefreshRequested(object? sender, EventArgs e)
+    {
+        if (_panel == null || _context == null) return;
+
+        if (_context.HexEditor.IsActive)
+        {
+            // HexEditor path: force disconnect + reconnect to re-attach source and re-parse.
+            _context.HexEditor.DisconnectParsedFieldsPanel();
+            _context.HexEditor.ConnectParsedFieldsPanel(_panel);
+        }
+        else if (_isPreviewActive && _previewService != null)
+        {
+            // Preview path: the FormatParsingService already has a source — just refresh.
+            _previewService.Refresh();
+        }
+        else
+        {
+            // No active source yet — try to activate a preview from the current focus context.
+            var filePath = _context.FocusContext.ActiveDocument?.FilePath;
+            if (!string.IsNullOrEmpty(filePath))
+                ActivatePreview(filePath);
+        }
     }
 
     // ══════════════════════════════════════════════════════════════════════════
