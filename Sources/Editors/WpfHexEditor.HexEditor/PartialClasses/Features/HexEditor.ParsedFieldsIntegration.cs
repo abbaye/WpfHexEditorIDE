@@ -71,10 +71,16 @@ namespace WpfHexEditor.HexEditor
                     editor.AttachDataSourceToParsingService();
 
                 editor._formatParsingService?.ConnectPanel(newPanel);
-                // ConnectPanel already schedules ParseFieldsOnDispatcher if _activeFormat is set.
-                // Only set enriched metadata (no parse trigger).
+
+                // If a format was previously detected on this tab, sync it into the service
+                // so ParseFieldsOnDispatcher runs immediately (ConnectPanel only parses when
+                // _activeFormat is already set on the service — which it isn't on a tab switch
+                // because SyncDetectionResultsToService is only called after auto-detect completes).
                 if (editor._detectedFormat != null)
+                {
+                    editor.SyncDetectionResultsToService();
                     newPanel.SetEnrichedFormat(editor._detectedFormat);
+                }
             }
         }
 
