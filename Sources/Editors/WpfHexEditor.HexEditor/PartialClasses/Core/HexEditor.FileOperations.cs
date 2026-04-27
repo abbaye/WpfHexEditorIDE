@@ -310,17 +310,23 @@ namespace WpfHexEditor.HexEditor
 
                             await Dispatcher.InvokeAsync(() =>
                             {
-                                if (result.Success && result.Blocks?.Count > 0)
+                                if (result.Success && result.Format != null)
                                 {
-                                    ClearCustomBackgroundBlock();
-                                    foreach (var b in result.Blocks)
-                                        AddCustomBackgroundBlock(b);
+                                    // Apply visual background blocks (may be empty for text-only formats)
+                                    if (result.Blocks?.Count > 0)
+                                    {
+                                        ClearCustomBackgroundBlock();
+                                        foreach (var b in result.Blocks)
+                                            AddCustomBackgroundBlock(b);
 
-                                    var fileLen = Length;
-                                    if (fileLen > 0)
-                                        foreach (var b in _customBackgroundService.GetAllBlocks())
-                                            if (b.Length >= fileLen * 0.8) b.ShowInTooltip = false;
+                                        var fileLen = Length;
+                                        if (fileLen > 0)
+                                            foreach (var b in _customBackgroundService.GetAllBlocks())
+                                                if (b.Length >= fileLen * 0.8) b.ShowInTooltip = false;
+                                    }
 
+                                    // Store detection result and refresh parsed fields panel
+                                    // regardless of whether background blocks were produced.
                                     _detectedFormat      = result.Format;
                                     _detectionVariables  = result.Variables;
                                     _detectionCandidates = result.Candidates;
