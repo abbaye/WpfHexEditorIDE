@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "RUP ROM Update Patch",
+  "formatId": "RUP",
   "version": "1.0",
   "extensions": [".rup"],
   "description": "RUP (ROM Update Patch) — a binary patch format used by some retro game ROM patching tools as an alternative or extension to IPS with 4-byte offsets. The most common RUP variant uses the 8-byte magic 'RUPPATCH' (0x52 0x55 0x50 0x50 0x41 0x54 0x43 0x48) at offset 0. The header continues with source_size (4B LE, expected size of source file), target_size (4B LE, expected size of patched output file), total 16 bytes of header. Records follow: offset (4B LE, position in target file), size (2B LE, number of data bytes), data (size bytes). End of patch is indicated by offset field 0xFFFFFFFF (4B). This 4-byte offset scheme supports target files up to 4 GB compared to IPS's 16 MB limit. Some RUP-compatible tools also accept IPS-style 'PATCH' magic for backward compatibility. RUP is less commonly used than IPS, BPS, or UPS but appears in specific retro patching tool ecosystems.",

@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Core Audio Format",
+  "formatId": "CAF",
   "version": "1.0",
   "extensions": [
     ".caf"

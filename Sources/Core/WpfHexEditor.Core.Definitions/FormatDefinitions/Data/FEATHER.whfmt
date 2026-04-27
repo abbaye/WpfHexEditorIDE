@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Apache Arrow Feather",
+  "formatId": "FEATHER",
   "version": "1.0",
   "extensions": [".feather", ".arrow", ".ipc"],
   "description": "Apache Arrow Feather format for fast columnar data storage. Feather v1 uses the magic 'FEATHER1' (0x4645415448455231) at offset 0. Feather v2 (also Apache Arrow IPC file format) uses 'ARROW1\\u0000' (0x4152524F573100 followed by a padding byte) at offset 0. Both versions store columnar data with Arrow's in-memory format enabling near-zero-copy reads. Feather v2/Arrow IPC uses a Flatbuffers-encoded schema and record batch footers. Commonly produced by pandas, R arrow package, and Apache Spark.",

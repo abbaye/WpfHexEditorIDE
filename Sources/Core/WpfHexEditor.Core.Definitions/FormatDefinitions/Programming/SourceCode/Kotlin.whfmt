@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "text",
   "formatName": "Kotlin Source File",
+  "formatId": "Kotlin",
   "version": "2.13",
   "extensions": [
     ".kt",

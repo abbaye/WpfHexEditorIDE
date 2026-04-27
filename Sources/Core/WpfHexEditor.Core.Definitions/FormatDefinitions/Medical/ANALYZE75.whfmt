@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Analyze 7.5 Brain Scan",
+  "formatId": "ANALYZE75",
   "version": "1.0",
   "extensions": [".hdr", ".img"],
   "description": "Analyze 7.5 MRI/CT brain scan format (Mayo Clinic, 1990). Paired files: .hdr (348-byte binary header) + .img (image voxel data). Header: sizeof_hdr(4B LE int32, must be 348) + data_type(10B ASCII) + db_name(18B ASCII) + extents(4B LE, should be 16384) + session_error(2B) + regular(1B, 'r'=0x72) + hkey_un0(1B) + dim[8](int16 LE: dim[0]=ndim, dim[1..7]=sizes) + unused(14B) + datatype(2B LE: 1=1-bit, 2=uint8, 4=int16, 8=int32, 16=float32, 64=float64, 128=RGB24) + bitpix(2B LE) + dim_un0(2B) + pixdim[8](float32 LE: voxel sizes mm) + vox_offset(4B float32) + cal_max(4B float32) + cal_min(4B float32) + glmax(4B LE int32) + glmin(4B LE int32). Superseded by NIfTI (same sizeof_hdr=348 but NIfTI adds magic and orientation fields).",

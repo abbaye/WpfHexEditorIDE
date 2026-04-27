@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "Mach-O Executable",
+  "formatId": "MACH_O",
   "version": "1.13",
   "extensions": [
     "",

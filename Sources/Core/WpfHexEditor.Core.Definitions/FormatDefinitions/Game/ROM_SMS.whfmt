@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "Sega Master System ROM",
+  "formatId": "ROM_SMS",
   "version": "1.13",
   "extensions": [
     ".sms",

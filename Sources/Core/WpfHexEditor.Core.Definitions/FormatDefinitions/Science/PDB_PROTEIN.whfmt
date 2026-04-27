@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "Protein Data Bank (PDB)",
+  "formatId": "PDB_PROTEIN",
   "version": "1.0",
   "extensions": [".pdb", ".ent"],
   "description": "PDB (Protein Data Bank) file format — 3D molecular structure data for proteins, nucleic acids and small molecules. Fixed-width ASCII, 80 characters per line. Record types: HEADER (molecule name, date, PDB ID), TITLE, COMPND, SOURCE, REMARK (numbered annotations), SEQRES (amino acid sequence), ATOM (atomic coordinates: serial, name, altLoc, residueName, chainID, resSeq, x, y, z, occupancy, tempFactor, element, charge), HETATM (heteroatom — water, ligands), CONECT (covalent bonds), TER (chain terminus), END. ATOM/HETATM format: columns 7-11=serial, 13-16=name, 17=altLoc, 18-20=resName, 22=chainID, 23-26=resSeq, 31-38=x float, 39-46=y, 47-54=z, 55-60=occupancy, 61-66=tempFactor. Largely superseded by mmCIF/PDBx for large structures.",

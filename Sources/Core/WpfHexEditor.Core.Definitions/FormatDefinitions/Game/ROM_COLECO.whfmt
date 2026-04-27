@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "ColecoVision ROM",
+  "formatId": "ROM_COLECO",
   "version": "1.0",
   "extensions": [".col", ".cv", ".rom"],
   "description": "ColecoVision cartridge ROM image (Coleco Industries, 1982). The 2-byte ROM header signature at offset 0 identifies the cartridge type: 0xAA 0x55 (standard ColecoVision ROM header) or 0x55 0xAA (alternate orientation used by some later cartridges). After the 2-byte magic: program_start_address (2B LE, initial execution address), then two pairs of unused 2-byte fields (4B each), then program_title_pointer (2B LE). The header occupies the first several bytes of the ROM; game code and data fill the remainder. The Z80 CPU runs at 3.58 MHz. ROM sizes: typically 8 KB to 32 KB. Standard ROM address space: 0x8000-0xFFFF (32 KB cartridge window). The 0xAA55 magic is universally recognised by emulators (ColEm, BlueMSX, MAME) as the ColecoVision cartridge identifier.",

@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "Parasolid XT (Text Transmit)",
+  "formatId": "PARASOLID_XT",
   "version": "1.0",
   "extensions": [
     ".x_t",

@@ -1,5 +1,6 @@
 {
   "formatName": "Sysinternals Process Monitor Log",
+  "formatId": "PROCMON_PML",
   "version": "1.0",
   "diffMode": "binary",
   "extensions": [

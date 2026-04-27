@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "XNA Compiled Content",
+  "formatId": "XNB",
   "version": "1.15",
   "extensions": [
     ".xnb"

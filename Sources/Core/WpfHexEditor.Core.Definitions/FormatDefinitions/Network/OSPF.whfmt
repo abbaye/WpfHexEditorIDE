@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "OSPF Routing Protocol Packet",
+  "formatId": "OSPF",
   "version": "1.0",
   "extensions": [ ".ospf", ".cap" ],
   "description": "Open Shortest Path First (OSPF) routing protocol packet format. OSPF is a link-state interior gateway protocol (IGP) defined in RFC 2328 (OSPFv2 for IPv4) and RFC 5340 (OSPFv3 for IPv6). OSPF packets are carried directly in IP protocol number 89 (no TCP/UDP). The OSPF packet header is 24 bytes: version (1B), type (1B), packet length uint16 BE, router ID uint32 BE (dotted-quad), area ID uint32 BE, checksum uint16 BE, auth type uint16 BE (0=none, 1=simple password, 2=MD5 cryptographic), authentication data (8B). Packet types: 1=Hello (neighbor discovery and keepalive), 2=DBD Database Description (topology database exchange), 3=LSR Link State Request, 4=LSU Link State Update (contains LSAs), 5=LSAck Link State Acknowledgement. Hello packets contain: network mask, hello interval uint16, options, router priority, dead interval uint32, designated router IP, backup DR IP, and neighbor list. LSA types: 1=Router LSA, 2=Network LSA, 3=Summary LSA (ABR), 4=ASBR Summary LSA, 5=AS External LSA, 7=NSSA External (OSPFv2); OSPFv3 uses different LSA type space.",

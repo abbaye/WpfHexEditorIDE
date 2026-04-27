@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Brotli Compressed Data",
+  "formatId": "BROTLI",
   "version": "1.14",
   "extensions": [".br"],
   "description": "Brotli is a lossless data compression algorithm by Google (RFC 7932, 2016). No fixed magic bytes — the stream starts with a window size descriptor byte. Bits 0-1 of byte 0: if 0, WBITS-10 is encoded in bits 2-4 (window = 2^WBITS bytes, WBITS 10-24). Common byte: 0x1B = WBITS 22 = 4MB window (Google default). Brotli achieves 20-26% better ratios than gzip/deflate using context modeling and a static 13,504-word dictionary. Used as HTTP Content-Encoding: br and internally in .woff2 web fonts.",

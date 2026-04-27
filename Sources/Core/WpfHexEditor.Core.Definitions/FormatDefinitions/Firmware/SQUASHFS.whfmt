@@ -1,5 +1,6 @@
 {
   "formatName": "SquashFS Filesystem",
+  "formatId": "SQUASHFS",
   "version": "1.0",
   "diffMode": "binary",
   "extensions": [

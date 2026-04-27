@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "No Cache File",
+  "formatId": "NCF",
   "version": "1.15",
   "extensions": [
     ".ncf"

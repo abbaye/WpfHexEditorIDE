@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "HEIF/HEIC Image",
+  "formatId": "HEIC",
   "version": "1.0",
   "extensions": [".heic", ".heif", ".hif", ".avci"],
   "description": "HEIC/HEIF (High Efficiency Image File Format) is an ISOBMFF container for HEVC-encoded still images and image sequences, standardized as ISO 23008-12. The file begins with an ftyp box at offset 0: box_size (4 bytes, big-endian) + 'ftyp' (4 bytes, 0x66 0x74 0x79 0x70) + major_brand (4 bytes). HEIC brands: 'heic' (0x68 0x65 0x69 0x63) for HEVC single still image, 'heis' for HEVC single image with HDR, 'avci' (0x61 0x76 0x63 0x69) for AVC/H.264 still image. Compatible brands list: 'mif1', 'hevc', 'heic'. Image sequence brands: 'hevc', 'hevs'. The container holds an mdat box with compressed image data and meta/moov boxes for metadata. Exif and XMP metadata stored in iinf/iloc boxes. Apple uses HEIC for iPhone camera output (iOS 11+). Supports alpha channel, burst photography, depth maps, HDR (PQ/HLG transfer functions), wide color gamut (Display P3), and Live Photos ('qtff' compatible brand).",

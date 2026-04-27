@@ -1,6 +1,7 @@
 {
   "diffMode": "semantic",
   "formatName": "YAML (Binary)",
+  "formatId": "YAML",
   "version": "2.4",
   "extensions": [
     ".yaml",

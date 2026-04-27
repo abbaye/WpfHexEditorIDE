@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "text",
   "formatName": "Go Source File",
+  "formatId": "Go",
   "version": "2.13",
   "extensions": [
     ".go"

@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "True Audio",
+  "formatId": "TTA",
   "version": "1.0",
   "extensions": [".tta"],
   "description": "True Audio (TTA) is a real-time lossless audio compression format that achieves compression ratios typically comparable to FLAC. Files begin with a 4-byte ASCII magic: 'TTA1' (0x54544131) for version 1 files or 'TTA2' (0x54544132) for the rarer version 2 variant. The fixed-length 22-byte header contains all essential stream parameters including audio format (PCM or IEEE float), channel count, bits per sample, sample rate, and total sample count. A 32-bit CRC at byte 18 protects the header from corruption. TTA operates on fixed-length 256-sample frames for predictable memory use.",

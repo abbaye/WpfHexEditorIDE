@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "AU Audio",
+  "formatId": "AU",
   "version": "1.13",
   "extensions": [
     ".au",

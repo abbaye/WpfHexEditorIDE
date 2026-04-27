@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "Windows Store Resource File",
+  "formatId": "RESW",
   "version": "2.12",
   "extensions": [
     ".resw"

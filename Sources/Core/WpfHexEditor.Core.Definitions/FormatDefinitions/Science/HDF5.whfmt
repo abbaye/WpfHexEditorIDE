@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "HDF5 Data File",
+  "formatId": "HDF5",
   "version": "1.14",
   "extensions": [
     ".h5",

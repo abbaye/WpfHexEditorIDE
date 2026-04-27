@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "ACR-NEMA 2.0 Medical Imaging",
+  "formatId": "ACR_NEMA",
   "version": "1.0",
   "extensions": [
     ".acr",

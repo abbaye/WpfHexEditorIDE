@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "Windows Heap Dump",
+  "formatId": "HDMP",
   "version": "1.14",
   "extensions": [
     ".hdmp"

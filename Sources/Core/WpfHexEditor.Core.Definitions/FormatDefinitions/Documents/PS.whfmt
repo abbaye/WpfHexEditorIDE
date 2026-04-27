@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "PostScript Document",
+  "formatId": "PS",
   "version": "1.15",
   "extensions": [ ".ps", ".eps", ".ai" ],
   "description": "PostScript is a page description language developed by Adobe Systems in 1982. PostScript files begin with the magic '%!' at offset 0 (0x2521). Full PostScript documents start with '%!PS-Adobe-' followed by the Adobe Document Structuring Convention (DSC) version (e.g., '3.0'). Encapsulated PostScript (EPS) starts with '%!PS-Adobe-3.0 EPSF-3.0'. EPS files are self-contained PostScript fragments that define a bounding box for single-page artwork. Adobe Illustrator (.ai) files before CS are EPS-compatible. The format is text-based and uses ASCII/UTF-8 encoding, making binary detection relatively weak but reliable for the '%!' prefix.",

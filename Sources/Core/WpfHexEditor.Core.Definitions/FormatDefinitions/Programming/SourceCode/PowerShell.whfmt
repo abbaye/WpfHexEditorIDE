@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "text",
   "formatName": "PowerShell Script",
+  "formatId": "PowerShell",
   "version": "2.13",
   "extensions": [
     ".ps1",

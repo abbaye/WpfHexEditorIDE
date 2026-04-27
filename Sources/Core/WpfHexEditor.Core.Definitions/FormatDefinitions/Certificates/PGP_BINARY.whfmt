@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "PGP/GPG Binary Keyring",
+  "formatId": "PGP_BINARY",
   "version": "1.0",
   "extensions": [ ".gpg", ".pgp", ".kbx" ],
   "description": "PGP/GPG binary packet format (RFC 4880). Old-format packet header (bit7=1, bit6=0): bits5-2=packet tag, bits1-0=length type (0=1B, 1=2B, 2=4B, 3=indeterminate). New-format (bit7=1, bit6=1): bits5-0=packet tag, then body length encoding. Common packet tags: 1=Public-Key Encrypted Session Key, 2=Signature, 5=Secret-Key, 6=Public-Key, 7=Secret-Subkey, 11=Literal Data, 14=Public-Subkey. Public Key packet v4: version(1B:4) + timestamp(4B BE: creation time) + algorithm(1B: 1=RSA, 17=DSA, 18=ECDH, 22=EdDSA). Secret Key adds: string-to-key usage(1B: 0=unencrypted, 254=SHA-1 checksum, 255=2-byte checksum) + S2K specifier if encrypted + key material. Signature v4: version(1B:4) + sig_type(1B) + pub_algo(1B) + hash_algo(1B: 2=SHA-1, 8=SHA-256, 10=SHA-512) + hashed_subpackets_count(2B). Keybox (.kbx): different magic 'KB\\x02\\x00'. Common first byte: 0x99 (old-format public key), 0xC5 (new-format secret key), 0xC6 (new-format public key).",

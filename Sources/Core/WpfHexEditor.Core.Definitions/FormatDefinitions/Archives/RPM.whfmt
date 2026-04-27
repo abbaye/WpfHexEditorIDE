@@ -1,5 +1,6 @@
 {
   "formatName": "RPM Package",
+  "formatId": "RPM",
   "version": "1.0",
   "diffMode": "binary",
   "extensions": [ ".rpm" ],

@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Philips PAR/REC",
+  "formatId": "PAR_REC",
   "version": "1.13",
   "extensions": [
     ".par",

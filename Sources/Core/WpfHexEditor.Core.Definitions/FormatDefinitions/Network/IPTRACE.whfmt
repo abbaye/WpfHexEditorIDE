@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "AIX iptrace",
+  "formatId": "IPTRACE",
   "version": "1.15",
   "extensions": [
     ".iptrace"

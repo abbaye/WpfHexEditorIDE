@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "COFF Object File",
+  "formatId": "COFF",
   "version": "1.0",
   "extensions": [ ".obj", ".o" ],
   "description": "COFF (Common Object File Format) — compiled object file produced by a compiler before linking. Used by MSVC (.obj) and GCC/Binutils (.o on Windows via MinGW/Cygwin). The first 2 bytes are the Machine type (uint16 LE). Common values: 0x014C=i386, 0x8664=x86_64 (AMD64), 0xAA64=ARM64 (AArch64), 0x01C4=ARM Thumb-2, 0x0EBC=EFI Byte Code. COFF header is 20 bytes: Machine (2B), NumberOfSections (2B), TimeDateStamp (4B), PointerToSymbolTable (4B), NumberOfSymbols (4B), SizeOfOptionalHeader (2B), Characteristics (2B). For standalone .obj files, SizeOfOptionalHeader is 0. If non-zero, a PE optional header follows and this is the beginning of a PE image.",

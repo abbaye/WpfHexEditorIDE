@@ -10,7 +10,8 @@
 // Description:
 //     Represents a single block definition within a .whfmt format file.
 //     Supports: signature, field, metadata, conditional, loop, action,
-//     computeFromVariables, repeating, union, nested, pointer.
+//     computeFromVariables, repeating, union, nested, pointer, group (v2.3),
+//     header, data (v2.4).
 //
 // Architecture Notes:
 //     Data model parsed from JSON format definitions. Used by FormatScriptInterpreter
@@ -67,6 +68,25 @@ namespace WpfHexEditor.Core.FormatDetection
         /// - "calc:expression": Calculated expression
         /// </summary>
         public object Length { get; set; }
+
+        /// <summary>
+        /// Sentinel pattern — stop reading when this hex byte sequence is encountered.
+        /// Examples: "00" (null terminator), "0D0A" (CRLF), "504B0102" (EOCD magic).
+        /// Supports "var:name" references. When set, Length becomes optional.
+        /// </summary>
+        public string Until { get; set; }
+
+        /// <summary>
+        /// Safety cap in bytes when Until is used and the pattern is never found.
+        /// Defaults to 65536 when Until is set and MaxLength is not specified.
+        /// </summary>
+        public int MaxLength { get; set; }
+
+        /// <summary>
+        /// When true, the Until pattern bytes are included in the field length.
+        /// Defaults to false (pattern bytes excluded from the field).
+        /// </summary>
+        public bool UntilInclusive { get; set; }
 
         /// <summary>
         /// Background color for this block (hex format: "#RRGGBB")
@@ -321,6 +341,20 @@ namespace WpfHexEditor.Core.FormatDetection
 
                 case "pointer":
                     return !string.IsNullOrWhiteSpace(TargetVar);
+
+                // v2.3 group block — logical grouping of sub-fields, no own offset/length required
+                case "group":
+                    return true;
+
+                // v2.4 header block — labeled section overlay; requires offset + length + color
+                case "header":
+                    bool hasHeaderOffset = Offset != null || !string.IsNullOrWhiteSpace(OffsetFrom);
+                    return hasHeaderOffset && Length != null && !string.IsNullOrWhiteSpace(Color);
+
+                // v2.4 data block — raw byte region overlay; requires offset + length
+                case "data":
+                    bool hasDataOffset = Offset != null || !string.IsNullOrWhiteSpace(OffsetFrom);
+                    return hasDataOffset && Length != null;
 
                 default:
                     // Unknown block types silently pass — forward-compatibility

@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Parasolid XB (Binary Transmit)",
+  "formatId": "PARASOLID_XB",
   "version": "1.0",
   "extensions": [
     ".x_b",

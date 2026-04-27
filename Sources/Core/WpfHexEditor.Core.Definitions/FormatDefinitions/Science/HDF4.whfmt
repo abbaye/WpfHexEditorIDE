@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "HDF4 Scientific Data",
+  "formatId": "HDF4",
   "version": "1.0",
   "extensions": [".hdf", ".h4", ".hdf4"],
   "description": "HDF4 (Hierarchical Data Format version 4) — scientific multi-object data format from NCSA. Magic: 0E 03 13 01 (4 bytes at offset 0). HDF4 uses tagged data elements (Data Descriptors — DDs). Each DD: tag(2B BE) + ref(2B BE) + offset(4B BE) + length(4B BE). Key tags: 0x001E=SciData (scientific dataset), 0x0706=Vgroup (group/hierarchy node), 0x0702=Vdata (table structure), 0x0301=RIG (raster image group), 0x022B=DFTAG_SDG (scientific data group). Attribute tag: 0x00AA. HDF4 is superseded by HDF5 but remains in active use for legacy NASA EOS products: MODIS (Terra/Aqua), ASTER, MISR Level 1-2 data products distributed by NASA LAADS DAAC and LP DAAC.",

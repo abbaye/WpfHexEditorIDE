@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "iOS App Store Package",
+  "formatId": "IPA",
   "version": "2.02",
   "extensions": [
     ".ipa"

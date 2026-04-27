@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "RED Digital Cinema RAW",
+  "formatId": "REDCODE",
   "version": "1.0",
   "extensions": [
     ".r3d"

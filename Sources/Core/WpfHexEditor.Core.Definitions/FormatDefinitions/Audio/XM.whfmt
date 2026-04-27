@@ -1,5 +1,6 @@
 {
   "formatName": "Extended Module (XM)",
+  "formatId": "XM",
   "version": "1.1",
   "extensions": [ ".xm" ],
   "diffMode": "binary",

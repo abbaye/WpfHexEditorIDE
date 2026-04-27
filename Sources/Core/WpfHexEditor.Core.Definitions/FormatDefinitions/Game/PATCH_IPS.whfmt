@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "IPS ROM Patch",
+  "formatId": "PATCH_IPS",
   "version": "1.13",
   "extensions": [
     ".ips"

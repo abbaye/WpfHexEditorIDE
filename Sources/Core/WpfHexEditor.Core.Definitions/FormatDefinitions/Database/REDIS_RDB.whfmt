@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Redis RDB Snapshot",
+  "formatId": "REDIS_RDB",
   "version": "1.0",
   "extensions": [
     ".rdb"

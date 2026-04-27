@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Pcompress Archive",
+  "formatId": "PCOMPRESS",
   "version": "1.16",
   "extensions": [".pz"],
   "description": "Pcompress is an open-source parallel deduplication and compression utility by Moinak Ghosh. Archives start with a 2-byte magic 'PC' (0x50 0x43) at offset 0. At offset 2: format version byte. At offset 3: compression algorithm byte (0x00=None, 0x01=Zlib/Deflate, 0x02=Bzip2, 0x03=LZMA, 0x04=LZ4, 0x05=Zstd). At offset 4: chunk size as uint32 LE. At offset 8: flags uint32 LE (bit 0=dedup enabled, bit 1=encryption, bit 2=delta compression). Pcompress supports data deduplication, encryption (AES-256), and parallel compression of large files in configurable chunks.",

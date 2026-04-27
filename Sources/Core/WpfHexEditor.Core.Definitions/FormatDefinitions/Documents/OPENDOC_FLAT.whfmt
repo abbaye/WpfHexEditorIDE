@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "Flat OpenDocument Format",
+  "formatId": "OPENDOC_FLAT",
   "version": "1.0",
   "extensions": [".fodt", ".fods", ".fodp", ".fodg"],
   "description": "Flat ODF (OpenDocument Format) is the single-file XML variant of the standard ODF format. Instead of a ZIP container with multiple XML parts, flat ODF stores everything in one XML file rooted at '<office:document>'. The file may begin with '<?xml' declaration or directly with '<office:document' (hex 3C6F66666963653A646F63756D656E74). Extensions: .fodt (text), .fods (spreadsheet), .fodp (presentation), .fodg (graphics). Useful for version control, diff/merge, and scripted generation of ODF content.",

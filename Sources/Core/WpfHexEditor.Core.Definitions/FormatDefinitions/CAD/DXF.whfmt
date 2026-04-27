@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "AutoCAD DXF",
+  "formatId": "DXF",
   "version": "1.0",
   "extensions": [".dxf"],
   "description": "DXF (Drawing Exchange Format) is AutoCAD's open text-based CAD interchange format created by Autodesk. ASCII DXF starts with '  0' (two spaces + '0') on line 1 followed by 'SECTION' on line 2, then '  2' and 'HEADER' for the first section. The group code system: an integer group code on one line followed by its string or numeric value on the next line. Group code 0 = entity/section type, code 2 = name string, code 1 = primary text, codes 10/20/30 = X/Y/Z coordinates, codes 70-79 = integer flags. Sections: HEADER ($ACADVER, $INSUNITS, $EXTMIN/EXTMAX, etc.), CLASSES, TABLES (layers, linetypes, text styles, dimension styles, block records, UCSs, views), BLOCKS (named block definitions), ENTITIES (LINE, ARC, CIRCLE, LWPOLYLINE, POLYLINE, INSERT, TEXT, MTEXT, DIMENSION, HATCH, SPLINE, 3DFACE, SOLID, ELLIPSE), OBJECTS (non-graphic objects: dictionaries, groups, layouts, plotsettings), THUMBNAILIMAGE (preview PNG), EOF marker. Binary DXF: starts with 'AutoCAD Binary DXF\\r\\n\\x1A\\x00' (22 bytes).",

@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "iTunes Video (M4V)",
+  "formatId": "M4V",
   "version": "1.0",
   "extensions": [".m4v", ".m4p"],
   "description": "M4V is Apple's video file format based on the ISO Base Media File Format (ISO BMFF) container, identical to MP4 but with additional iTunes-specific metadata and optional FairPlay DRM. M4V files begin with a variable-size ftyp box: a uint32BE box size at offset 0, ASCII 'ftyp' at offset 4, and a 4-byte major brand at offset 8. Valid M4V brands include 'M4V ' (0x4D345620), 'M4VH' (M4V HD), and 'M4VP' (M4V progressive). Protected M4P files use FairPlay DRM and can only be played on authorized Apple devices. M4V is used by iTunes Store, Apple TV, and iOS video apps.",

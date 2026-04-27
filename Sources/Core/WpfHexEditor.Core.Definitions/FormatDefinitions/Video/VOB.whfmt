@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "DVD Video Object",
+  "formatId": "VOB",
   "version": "1.0",
   "extensions": [".vob", ".mpg"],
   "description": "DVD Video Object (VOB) files are MPEG-2 Program Stream containers used on DVD-Video discs. Each file begins with the MPEG-2 pack start code 00 00 01 BA, which identifies the start of a Program Stream pack. The byte at offset 4 carries the SCR (System Clock Reference) in its upper 6 bits (with a 01 marker). The mux rate field at offset 10 (3 bytes) declares the multiplexed stream bitrate. VOB files on DVD contain interleaved video (MPEG-2), audio (AC-3, DTS, PCM, or MPEG Audio), and subpicture (subtitle) streams multiplexed together in Program Stream packs.",

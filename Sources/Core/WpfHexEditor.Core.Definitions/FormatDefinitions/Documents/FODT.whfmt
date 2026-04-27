@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "Flat ODF Text Document",
+  "formatId": "FODT",
   "version": "1.0",
   "extensions": [
     ".fodt",

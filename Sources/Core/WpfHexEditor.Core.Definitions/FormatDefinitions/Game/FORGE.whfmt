@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Ubisoft FORGE Archive",
+  "formatId": "FORGE",
   "version": "1.16",
   "extensions": [
     ".forge"

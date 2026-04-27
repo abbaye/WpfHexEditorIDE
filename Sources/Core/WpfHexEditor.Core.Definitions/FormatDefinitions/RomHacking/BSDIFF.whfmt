@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "bsdiff Binary Patch",
+  "formatId": "BSDIFF",
   "version": "1.0",
   "extensions": [ ".bsdiff", ".patch" ],
   "description": "bsdiff binary patch format (Colin Percival, 2003). Used for software update diffs and ROM patches. The 32-byte header consists of: 'BSDIFF40' magic (8B ASCII), ctrl_length (8B LE int64 — byte length of the bzip2-compressed control block), diff_length (8B LE int64 — byte length of the bzip2-compressed diff block), and new_size (8B LE int64 — output file size after patching). After the header: bzip2(ctrl_data) + bzip2(diff_data) + bzip2(extra_data). Applied using bspatch: bspatch old_file new_file patch.bsdiff.",

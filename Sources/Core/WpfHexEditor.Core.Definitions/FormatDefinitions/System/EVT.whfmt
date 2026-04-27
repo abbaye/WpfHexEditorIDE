@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Windows Event Log",
+  "formatId": "EVT",
   "version": "1.14",
   "extensions": [
     ".evt"

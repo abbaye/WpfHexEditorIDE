@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Digital Video (DV)",
+  "formatId": "DV",
   "version": "1.0",
   "extensions": [".dv", ".dif"],
   "description": "Digital Video (DV) is a digital video format introduced in 1996 by a consortium of electronics manufacturers including Sony, Panasonic, and JVC. DV stores video in fixed-size DIF (Digital Interface Format) frames. A standard-definition DV frame is 120,000 bytes (NTSC, 30fps) or 144,000 bytes (PAL, 25fps). Each DIF frame begins with a DIF block identifier byte whose upper nibble is typically 0x1F for header blocks. DV has no formal file magic — identification is purely structural. Files are typically raw DIF streams exported from DV camcorders via FireWire (IEEE 1394) or extracted from AVI/MOV containers.",

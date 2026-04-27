@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Microsoft Access Database",
+  "formatId": "MDB",
   "version": "1.14",
   "extensions": [
     ".mdb"

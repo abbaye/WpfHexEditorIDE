@@ -1,5 +1,6 @@
 {
   "formatName": "Windows Error Reporting File",
+  "formatId": "WER",
   "version": "1.0",
   "diffMode": "text",
   "extensions": [

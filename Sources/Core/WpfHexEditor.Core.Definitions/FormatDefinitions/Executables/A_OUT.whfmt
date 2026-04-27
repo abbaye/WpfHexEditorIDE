@@ -1,5 +1,6 @@
 {
   "formatName": "a.out Executable",
+  "formatId": "A_OUT",
   "version": "1.0",
   "diffMode": "binary",
   "extensions": [

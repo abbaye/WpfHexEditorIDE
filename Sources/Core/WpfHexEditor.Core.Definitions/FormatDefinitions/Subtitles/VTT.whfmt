@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "WebVTT Subtitle",
+  "formatId": "VTT",
   "version": "1.0",
   "extensions": [ ".vtt" ],
   "description": "WebVTT (Web Video Text Tracks) is the W3C standard subtitle and caption format for HTML5 video; files must begin with the ASCII string 'WEBVTT' followed by a space/tab/newline or EOF, then cue blocks with timestamps (HH:MM:SS.mmm --> HH:MM:SS.mmm), optional cue settings, STYLE/REGION/NOTE blocks, and CSS ::cue pseudo-element styling.",

@@ -1,5 +1,6 @@
 {
   "formatName": "CPIO Archive",
+  "formatId": "CPIO",
   "version": "1.0",
   "diffMode": "binary",
   "extensions": [

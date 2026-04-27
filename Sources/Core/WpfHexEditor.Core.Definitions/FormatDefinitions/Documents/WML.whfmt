@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "Wireless Markup Language (WML)",
+  "formatId": "WML",
   "version": "1.0",
   "extensions": [ ".wml", ".wmls" ],
   "description": "Wireless Markup Language (WML) is an XML-based markup language designed for WAP (Wireless Application Protocol) browsers on mobile devices, primarily feature phones from the late 1990s to early 2000s. WML files typically begin with an XML declaration followed by a DOCTYPE referencing the WAP DTD, or directly with the <wml> root element. WMLScript (.wmls) files contain procedural WML script logic. The format is now obsolete, superseded by XHTML Mobile Profile and eventually HTML5.",

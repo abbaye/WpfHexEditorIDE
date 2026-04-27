@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "JFIF Image",
+  "formatId": "JFIF",
   "version": "1.16",
   "extensions": [
     ".jfif",

@@ -1,5 +1,6 @@
 {
   "formatName": "HFS+ File System",
+  "formatId": "HFS_PLUS",
   "version": "1.0",
   "diffMode": "binary",
   "extensions": [

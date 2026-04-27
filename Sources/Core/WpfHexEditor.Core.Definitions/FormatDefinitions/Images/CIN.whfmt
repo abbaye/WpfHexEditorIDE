@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Cineon Image File",
+  "formatId": "CIN",
   "version": "1.0",
   "extensions": [
     ".cin"

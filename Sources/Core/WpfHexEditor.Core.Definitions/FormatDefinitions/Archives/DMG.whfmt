@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "Apple Disk Image",
+  "formatId": "DMG",
   "version": "1.13",
   "extensions": [
     ".dmg"

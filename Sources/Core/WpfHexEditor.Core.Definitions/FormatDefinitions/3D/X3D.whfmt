@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "Extensible 3D Graphics (X3D)",
+  "formatId": "X3D",
   "version": "1.0",
   "extensions": [".x3d", ".x3dv", ".x3db"],
   "description": "Extensible 3D (X3D) is an ISO/IEC 19775 royalty-free open standard for 3D computer graphics maintained by the Web3D Consortium. X3D is the ISO-standardized successor to VRML 97 (ISO/IEC 14772). X3D XML encoding (.x3d) files are valid XML documents beginning with the '<?xml' processing instruction or directly with '<X3D'. The root element is '<X3D>' with 'version' (e.g. '3.3', '4.0') and 'profile' attributes. The file structure is: XML declaration, optional DOCTYPE, '<X3D>', '<head>' (component/unit/meta declarations), '<Scene>' (scene graph nodes). X3D Classic VRML encoding (.x3dv) uses '#X3D V3.3 utf8' header. X3D Binary (.x3db) is a compressed binary format. X3D defines profiles: Core, Interchange, Interactive, Immersive, Full, and MedicalInterchange. Nodes include Transform, Shape, Appearance, Material, IndexedFaceSet, Coordinate, Normal, TextureCoordinate, Viewpoint, DirectionalLight, PointLight, SpotLight, TimeSensor, and routing (ROUTE).",

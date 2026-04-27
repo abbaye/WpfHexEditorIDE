@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Nintendo Switch Package",
+  "formatId": "ROM_NSW",
   "version": "1.16",
   "extensions": [
     ".nsp",

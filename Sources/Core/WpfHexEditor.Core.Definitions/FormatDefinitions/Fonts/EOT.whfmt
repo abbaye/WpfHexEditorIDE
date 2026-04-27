@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Embedded OpenType Font",
+  "formatId": "EOT",
   "version": "2.23",
   "extensions": [
     ".eot"

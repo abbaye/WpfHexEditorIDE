@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "BitTorrent Bencode",
+  "formatId": "BENCODE",
   "version": "1.14",
   "extensions": [
     ".torrent"

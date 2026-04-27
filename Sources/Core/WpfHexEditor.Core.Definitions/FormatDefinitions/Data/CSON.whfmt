@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "CoffeeScript Object Notation (CSON)",
+  "formatId": "CSON",
   "version": "1.0",
   "extensions": [".cson"],
   "description": "CSON (CoffeeScript Object Notation) is a text-based data format that uses CoffeeScript syntax for human-readable configuration files. It supports indentation-based nesting, string interpolation, multi-line strings, and comments. CSON was popularized by the Atom text editor for package configuration. Files are plain UTF-8 text with no binary magic signature, making detection extension-based only.",

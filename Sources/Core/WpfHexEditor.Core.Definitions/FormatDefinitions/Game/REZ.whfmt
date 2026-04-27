@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Game Resource Archive",
+  "formatId": "REZ",
   "version": "1.16",
   "extensions": [
     ".rez"

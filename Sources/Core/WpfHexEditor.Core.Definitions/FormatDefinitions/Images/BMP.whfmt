@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "BMP Image",
+  "formatId": "BMP",
   "version": "2.02",
   "extensions": [
     ".bmp",

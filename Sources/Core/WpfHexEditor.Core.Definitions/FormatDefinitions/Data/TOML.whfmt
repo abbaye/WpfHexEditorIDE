@@ -1,6 +1,7 @@
 {
   "diffMode": "semantic",
   "formatName": "TOML Configuration",
+  "formatId": "TOML",
   "version": "2.4",
   "extensions": [
     ".toml"

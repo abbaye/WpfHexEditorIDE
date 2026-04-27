@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Portable Graymap",
+  "formatId": "PGM",
   "version": "1.14",
   "extensions": [
     ".pgm"

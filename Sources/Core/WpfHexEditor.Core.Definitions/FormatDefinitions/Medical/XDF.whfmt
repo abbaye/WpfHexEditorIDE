@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Extensible Data Format (XDF)",
+  "formatId": "XDF",
   "version": "1.0",
   "extensions": [
     ".xdf"

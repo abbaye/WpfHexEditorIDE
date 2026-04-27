@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Event Trace Log (ETW)",
+  "formatId": "ETL",
   "version": "1.0",
   "extensions": [ ".etl" ],
   "description": "Windows Event Tracing for Windows (ETW) log file produced by System.Diagnostics.Tracing, xperf, WPR, or the NT kernel logger; begins with one or more WMI_BUFFER_HEADER structures of 0x138 bytes each.",

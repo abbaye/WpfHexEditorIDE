@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Commodore 64 Disk Image (D64)",
+  "formatId": "ROM_C64_D64",
   "version": "1.0",
   "extensions": [ ".d64" ],
   "description": "Commodore 64 D64 disk image — standard 1541 floppy disk format. 35 tracks with 17-21 sectors per track × 256 bytes per sector = 174848 bytes standard; 175531 bytes with appended error byte table. Track 18 sector 0 (the BAM — Block Availability Map) is located at byte offset 91392 (0x16500). The BAM first two bytes are 0x12 and 0x01, indicating track 18 sector 1 as the start of the directory. No binary magic at offset 0; detection relies on the BAM structure and file size.",

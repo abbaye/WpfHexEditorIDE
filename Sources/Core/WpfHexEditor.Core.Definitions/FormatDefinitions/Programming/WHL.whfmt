@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "Python Wheel Package",
+  "formatId": "WHL",
   "version": "2.02",
   "extensions": [
     ".whl"

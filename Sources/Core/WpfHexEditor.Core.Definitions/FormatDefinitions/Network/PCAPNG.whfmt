@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "PCAP-NG Capture",
+  "formatId": "PCAPNG",
   "version": "1.0",
   "extensions": [ ".pcapng", ".ntar" ],
   "description": "PCAP-NG (Next Generation) block-based network packet capture format (IETF draft). Section Header Block (SHB): type(4B LE: 0x0A0D0D0A) + block_total_length(4B) + byte_order_magic(4B: 0x1A2B3C4D=LE or 0x4D3C2B1A=BE) + major_version(2B: 1) + minor_version(2B: 0) + section_length(8B: -1 for unknown) + options + block_total_length_repeat(4B). Block types: 0x00000001=Interface Description Block (IDB), 0x00000006=Enhanced Packet Block (EPB), 0x00000003=Simple Packet Block (SPB), 0x0000000A=Name Resolution Block (NRB), 0x00000005=Interface Statistics Block (ISB). IDB: link_type(2B) + reserved(2B) + snap_len(4B) + options. EPB: interface_id(4B) + timestamp_high(4B) + timestamp_low(4B) + capture_len(4B) + packet_len(4B) + data. Link types same as libpcap: 1=Ethernet, 105=802.11 WiFi. Magic 0x0A0D0D0A chosen to detect text-mode line-ending corruption.",

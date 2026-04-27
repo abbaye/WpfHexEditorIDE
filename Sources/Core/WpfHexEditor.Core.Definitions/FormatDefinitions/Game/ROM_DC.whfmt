@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "Sega Dreamcast Disc Image",
+  "formatId": "ROM_DC",
   "version": "1.14",
   "extensions": [
     ".gdi",

@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Sony SR2 RAW",
+  "formatId": "SR2",
   "version": "1.15",
   "extensions": [
     ".sr2"

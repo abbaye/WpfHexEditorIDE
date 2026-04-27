@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "HDF-EOS NASA Earth Observing System",
+  "formatId": "HDF_EOS",
   "version": "1.0",
   "extensions": [".hdf", ".he4", ".he5", ".h4", ".h5"],
   "description": "HDF-EOS (Hierarchical Data Format Earth Observing System) is NASA's primary data format for Earth science data products from satellites such as Terra, Aqua, Aura, and Suomi NPP. HDF-EOS extends HDF4 and HDF5 with Earth-specific metadata conventions (ECS Core Metadata, ArchiveMetadata) and three geometric object types: Grid, Swath, and Point. HDF4-based products (MODIS Level-1B, ASTER) use magic 0x0E031301. HDF5-based products (MODIS Collection 6.1+, VIIRS, MOPITT) use the HDF5 magic \\x89HDF\\r\\n\\x1A\\n. Products include land surface temperature, NDVI vegetation indices, aerosol optical depth, ozone concentration, and sea surface temperature.",

@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "PowerPoint Presentation (Legacy)",
+  "formatId": "PPT",
   "version": "1.13",
   "extensions": [
     ".ppt",

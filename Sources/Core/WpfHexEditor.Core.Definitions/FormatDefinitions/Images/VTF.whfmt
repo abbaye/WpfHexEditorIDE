@@ -1,5 +1,6 @@
 {
   "formatName": "Valve Texture Format",
+  "formatId": "VTF",
   "version": "1.0",
   "author": "WPFHexaEditor Team",
   "lastUpdated": "2026-04-15",

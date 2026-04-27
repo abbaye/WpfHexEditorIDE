@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "ESRI Shapefile",
+  "formatId": "SHP",
   "version": "1.0",
   "extensions": [".shp", ".shx", ".dbf", ".prj", ".cpg"],
   "description": "ESRI Shapefile spatial vector format (ESRI Technical Description, 1998). Magic: 00 00 27 0A (big-endian file code 9994) at offset 0. Header (100 bytes): file_code(4B BE: 9994) + unused(20B) + file_length(4B BE: in 16-bit words) + version(4B LE: 1000) + shape_type(4B LE: 0=Null, 1=Point, 3=Polyline, 5=Polygon, 8=MultiPoint, 11=PointZ, 13=PolylineZ, 15=PolygonZ, 18=MultiPointZ, 21=PointM, 23=PolylineM, 25=PolygonM, 28=MultiPointM, 31=MultiPatch) + Xmin/Ymin/Xmax/Ymax/Zmin/Zmax/Mmin/Mmax (8B LE double each). Companion files: .dbf (attributes in dBASE format), .prj (WKT coordinate reference system), .shx (record index). Multi-format open standard used by QGIS, ArcGIS, GDAL, PostGIS.",

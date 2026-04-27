@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "OpenDocument Spreadsheet",
+  "formatId": "ODS",
   "version": "2.02",
   "extensions": [
     ".ods"

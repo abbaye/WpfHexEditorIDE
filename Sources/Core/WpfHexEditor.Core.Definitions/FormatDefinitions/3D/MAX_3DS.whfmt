@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Autodesk 3DS Max Legacy Format",
+  "formatId": "MAX_3DS",
   "version": "1.0",
   "extensions": [".3ds", ".prj"],
   "description": "The 3DS file format (also called .3DS or 3D Studio format) is the native binary scene format of Autodesk 3D Studio (DOS) and the import/export format for early Autodesk 3ds Max releases. Defined by a hierarchical chunk structure, the file begins with the MAIN3DS chunk (ID 0x4D4D), which contains VERSION (0x0002), EDIT3DS (0x3D3D) for geometry/materials/lights, and KEYF3DS (0xB000) for keyframe animation. The EDIT3DS chunk contains NAMED_OBJECT (0x4000) entries, each identifying meshes (MESH_OBJ, 0x4100), lights (DIR_LIGHT, 0x4600), and cameras (CAMERA_OBJ, 0x4700). Mesh data (MESH_OBJ, 0x4100) contains POINT_ARRAY (0x4110, vertex positions as float32 triplets), FACE_ARRAY (0x4120, index triplets as uint16), TEX_VERTS (0x4140, UV coordinates), and optional MESH_MATRIX (0x4160, 4x3 transformation matrix). The format is limited to 65,535 vertices and faces per mesh, no support for NURBS, and stores only one UV channel. Deprecated in favour of FBX and glTF but still widely encountered in game asset libraries and legacy archives.",

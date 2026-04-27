@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "Sega Genesis/Mega Drive ROM",
+  "formatId": "ROM_GEN",
   "version": "1.13",
   "extensions": [
     ".md",

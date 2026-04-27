@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "XML Paper Specification (XPS/OXPS)",
+  "formatId": "XPS_FIXED",
   "version": "1.0",
   "extensions": [".xps", ".oxps"],
   "description": "XPS (XML Paper Specification) and OXPS (Open XPS) are fixed-layout document formats developed by Microsoft as alternatives to PDF. XPS files are ZIP containers (PK magic 0x504B0304) containing XAML-based FixedDocumentSequence.fdseq, FixedDocument.fdoc, and FixedPage.fpage files along with [Content_Types].xml. OXPS is the ECMA-388 standardized version using Open Packaging Conventions. Both formats preserve exact page layout with embedded fonts and images.",

@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "COLLADA 3D Asset",
+  "formatId": "COLLADA",
   "version": "1.0",
   "extensions": [".dae", ".zae"],
   "description": "COLLADA (Collaborative Design Activity) is an XML-based open standard 3D interchange format maintained by the Khronos Group and standardized as ISO/PAS 17506. Files start with '<?xml' XML declaration or directly with '<COLLADA' as the root element. The COLLADA namespace is 'http://www.collada.org/2005/11/COLLADASchema'. Root element attributes: version='1.4.1' or '1.5.0'. Key sections within the root: <asset> (author, created, modified, unit, up_axis), <library_geometries> (mesh data with <vertices>, <normals>, <texcoords>, and <triangles>/<polylist> index arrays), <library_materials> (material bindings), <library_effects> (shader parameters including diffuse, specular, shininess, transparency), <library_images> (texture file references), <library_controllers> (skin deformers, morph targets), <library_animations> (keyframe data), <library_visual_scenes> and <scene> (scene hierarchy). ZAE is a ZIP-compressed COLLADA with the .dae inside. Used by Blender, Maya, 3ds Max, SketchUp. Largely superseded by glTF 2.0 for web delivery but remains in production pipelines.",

@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "RealMedia (RM/RMVB)",
+  "formatId": "RM",
   "version": "1.0",
   "extensions": [".rm", ".rmvb", ".ra"],
   "description": "RealMedia is a proprietary multimedia container format developed by RealNetworks for streaming and downloading audio/video content. Files begin with the 4-byte ASCII magic '.RMF' (0x2E524D46) followed by a uint32BE header size field and a uint32BE version field (0 or 1). The numHeaders uint32BE field at offset 12 declares the number of top-level chunk objects. RMVB (RealMedia Variable Bitrate) is an extension supporting variable bitrate encoding for improved quality at lower average bitrates. RealMedia was dominant in early internet streaming during the late 1990s and 2000s.",

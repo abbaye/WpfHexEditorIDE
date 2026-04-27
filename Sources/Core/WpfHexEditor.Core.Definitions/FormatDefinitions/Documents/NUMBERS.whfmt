@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "Apple Numbers",
+  "formatId": "NUMBERS",
   "version": "2.02",
   "extensions": [
     ".numbers"

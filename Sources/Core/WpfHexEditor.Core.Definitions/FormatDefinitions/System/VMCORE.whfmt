@@ -1,5 +1,6 @@
 {
   "formatName": "Linux Kernel Crash Dump (vmcore)",
+  "formatId": "VMCORE",
   "version": "1.0",
   "diffMode": "binary",
   "extensions": [

@@ -1,5 +1,6 @@
 {
   "formatName": "Commodore 64 SID Music (PSID/RSID)",
+  "formatId": "SID",
   "version": "1.1",
   "extensions": [ ".sid", ".psid", ".rsid" ],
   "diffMode": "binary",

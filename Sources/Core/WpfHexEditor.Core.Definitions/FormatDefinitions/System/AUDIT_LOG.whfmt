@@ -1,5 +1,6 @@
 {
   "formatName": "Linux Audit Log",
+  "formatId": "AUDIT_LOG",
   "version": "1.0",
   "diffMode": "text",
   "extensions": [

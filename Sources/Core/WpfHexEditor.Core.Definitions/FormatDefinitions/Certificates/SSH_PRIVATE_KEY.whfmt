@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "SSH Private Key (OpenSSH)",
+  "formatId": "SSH_PRIVATE_KEY",
   "version": "1.0",
   "extensions": [ ".pem", ".key", ".id_rsa", ".id_ed25519" ],
   "description": "SSH private key files in OpenSSH native or legacy PEM format. OpenSSH native format (default since OpenSSH 6.5, 2014): '-----BEGIN OPENSSH PRIVATE KEY-----' + base64 + '-----END OPENSSH PRIVATE KEY-----'. Binary structure inside: magic 'openssh-key-v1' + NUL + cipher_name (none or aes256-ctr/cbc) + kdf_name (none or bcrypt) + kdf_options (salt+rounds for bcrypt) + number_of_keys + public_key_data + private_key_data (possibly encrypted). Legacy PEM formats: '-----BEGIN RSA PRIVATE KEY-----' (PKCS#1 RSA), '-----BEGIN DSA PRIVATE KEY-----' (DSA), '-----BEGIN EC PRIVATE KEY-----' (SEC 1 EC), '-----BEGIN PRIVATE KEY-----' (PKCS#8 unencrypted), '-----BEGIN ENCRYPTED PRIVATE KEY-----' (PKCS#8 AES-256-CBC encrypted). Passphrase protection: AES-256-CTR + bcrypt KDF (modern) or AES-128-CBC + MD5 (legacy PEM DEK-Info header). Key types: RSA, ECDSA (P-256/P-384/P-521), Ed25519, FIDO/U2F sk-* variants.",

@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "SSH Known Hosts",
+  "formatId": "SSH_KNOWN_HOSTS",
   "version": "1.0",
   "extensions": [ ".known_hosts" ],
   "description": "SSH known_hosts file (OpenSSH). Each line: hostname_or_ip key_type base64_pubkey [comment]. Key types: ssh-rsa, ssh-dss, ecdsa-sha2-nistp256, ecdsa-sha2-nistp384, ecdsa-sha2-nistp521, ssh-ed25519, sk-ssh-ed25519, sk-ecdsa-sha2-nistp256. Hashed entries start with |1| (HMAC-SHA1 host hashing enabled by ssh-keyscan -H). Comment lines start with #. Negated entries start with ! (hosts to explicitly reject). Wildcards in hostnames supported (*, ?). Comma-separated multiple hostnames for same key. Critical for SSH TOFU (Trust On First Use) security model: tampering enables MITM attacks. Located at ~/.ssh/known_hosts (per-user) or /etc/ssh/ssh_known_hosts (system-wide). Certificate authorities listed with @cert-authority marker.",

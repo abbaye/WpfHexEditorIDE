@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "Motorola S-Record",
+  "formatId": "SREC",
   "version": "1.0",
   "extensions": [".s19", ".s28", ".s37", ".mot", ".srec"],
   "description": "Motorola S-Record ASCII firmware format. S0=header, S1/S2/S3=data (16/24/32-bit address), S7/S8/S9=start address/end. Used for Motorola/Freescale/NXP embedded firmware: HCS08, HC12, ColdFire, Kinetis, M68K. objcopy and srec_cat convert between formats.",

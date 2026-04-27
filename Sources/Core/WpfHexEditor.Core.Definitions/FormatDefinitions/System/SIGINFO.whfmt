@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Visual Studio Performance Report",
+  "formatId": "SIGINFO",
   "version": "1.0",
   "extensions": [
     ".diagsession",

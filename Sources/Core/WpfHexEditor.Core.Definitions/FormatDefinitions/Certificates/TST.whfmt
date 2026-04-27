@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "RFC 3161 Timestamp Token (TST)",
+  "formatId": "TST",
   "version": "1.0",
   "extensions": [".tst", ".tsr"],
   "description": "RFC 3161 Time-Stamp Token — a DER-encoded TimeStampResp or TimeStampToken structure containing a CMS SignedData envelope with a TSTInfo content type. Issued by Time Stamping Authorities (TSAs) to provide cryptographic proof that data existed at a specific point in time. Used in digital signatures, code signing, and legal document timestamping.",

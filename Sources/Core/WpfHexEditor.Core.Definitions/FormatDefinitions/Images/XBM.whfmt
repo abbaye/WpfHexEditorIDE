@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "X BitMap",
+  "formatId": "XBM",
   "version": "1.0",
   "extensions": [".xbm"],
   "description": "XBM (X BitMap) is a C source code text format for storing monochrome bitmaps used in the X Window System. The file starts with '#define name_width N' and '#define name_height N' lines declaring image dimensions. Optional hot-spot lines '#define name_x_hot N' and '#define name_y_hot N' define the cursor hot-spot for cursor bitmaps. The bitmap data follows as a C array declaration: 'static unsigned char name_bits[] = {' containing comma-separated hexadecimal byte literals (e.g. 0x00, 0xFF). Each byte encodes 8 pixels with the least-significant bit (LSB) corresponding to the leftmost pixel. Rows are padded to byte boundaries. The array is terminated by '};'. XBM is used for X11 window manager icons, mouse cursor shapes, and embedded bitmaps compiled directly into C applications. XPM is the color extension; modern alternatives include PNG and SVG.",

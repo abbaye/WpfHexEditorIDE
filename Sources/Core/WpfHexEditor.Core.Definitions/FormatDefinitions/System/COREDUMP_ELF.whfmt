@@ -1,5 +1,6 @@
 {
   "formatName": "ELF Process Core Dump",
+  "formatId": "COREDUMP_ELF",
   "version": "1.0",
   "diffMode": "binary",
   "extensions": [

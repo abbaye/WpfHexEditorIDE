@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Atari 2600 ROM",
+  "formatId": "ROM_ATARI2600",
   "version": "1.0",
   "extensions": [".a26", ".bin", ".rom"],
   "description": "Atari 2600 VCS cartridge ROM image (Atari Inc., 1977). No fixed magic — raw 6507 CPU code (a cost-reduced 6502 variant with a 13-bit address bus). Standard sizes: 2 KB (2048 bytes), 4 KB (4096 bytes), 8 KB (8192 bytes with bank switching), 12 KB, 16 KB, 32 KB, and 64 KB. Common bank-switching schemes: F8 (8 KB, Atari standard), F6 (16 KB), F4 (32 KB), E0 (Parker Bros 8 KB), FE (Activision 8 KB), 3F (Tigervision), E7 (M-Network). The 6502 reset vector is at 0xFFFC/0xFFFD: for a 2 KB ROM the vector mirrors at 0x07FC/0x07FD; for 4 KB at 0x0FFC/0x0FFD. No OS ROM — game code controls every aspect of video generation via the TIA chip's direct register writes. Library: approximately 600 licensed commercial releases plus thousands of homebrews.",

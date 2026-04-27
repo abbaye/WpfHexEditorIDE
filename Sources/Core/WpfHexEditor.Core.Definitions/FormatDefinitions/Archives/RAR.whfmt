@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "RAR Archive",
+  "formatId": "RAR",
   "version": "2.02",
   "extensions": [
     ".rar"

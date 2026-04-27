@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Universal Scene Description (USD/USDC)",
+  "formatId": "USD",
   "version": "1.0",
   "extensions": [".usd", ".usdc", ".usda", ".usdz"],
   "description": "USD (Universal Scene Description) is a scene description framework and file format developed by Pixar and now co-developed with Apple. Binary USDC files begin with the 8-byte ASCII magic 'PXR-USDC' (50 58 52 2D 55 53 44 43). Following the magic: version bytes (uint8 major, uint8 minor, uint8 patch) and a bootstrap header pointing to section tables. USDC binary is a 'crate file' format with a table of contents (TOC) listing all sections. ASCII USDA files start with '#usda 1.0' text. USDZ is a ZIP container (PK magic 50 4B) with an uncompressed .usdc or .usda as the first entry, plus textures and other assets. USD supports: hierarchical scene composition via layers (stronger/weaker), references, payloads (deferred loading), variants, purpose attributes (default/render/proxy/guide), physics schemas (UsdPhysics), skeletal animation (UsdSkel), material networks (UsdShade). Widely used by Pixar RenderMan, Blender, Houdini, Maya, Apple AR Quick Look (iOS 12+), and Apple Vision Pro.",

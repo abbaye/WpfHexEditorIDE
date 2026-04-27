@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "WebM Video",
+  "formatId": "WEBM",
   "version": "1.0",
   "extensions": [".webm"],
   "description": "WebM is an open, royalty-free media container format based on a subset of the Matroska container. Both WebM and Matroska use the EBML (Extensible Binary Meta Language) binary XML encoding, identified by the 4-byte element ID 1A 45 DF A3. WebM restricts the codec set to VP8, VP9, or AV1 for video and Vorbis or Opus for audio. The EBML header element is followed by a Segment element containing Cluster, Track, and Info elements. WebM is the primary video format for the HTML5 video element and is designed for efficient web delivery with low seek latency via WebM cues.",

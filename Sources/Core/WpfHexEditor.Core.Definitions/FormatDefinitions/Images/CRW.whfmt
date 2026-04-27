@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Canon RAW (CRW)",
+  "formatId": "CRW",
   "version": "1.14",
   "extensions": [
     ".crw"

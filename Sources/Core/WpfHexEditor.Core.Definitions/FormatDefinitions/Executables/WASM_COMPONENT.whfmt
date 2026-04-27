@@ -1,5 +1,6 @@
 {
   "formatName": "WebAssembly Component Model",
+  "formatId": "WASM_COMPONENT",
   "version": "1.0",
   "diffMode": "binary",
   "extensions": [

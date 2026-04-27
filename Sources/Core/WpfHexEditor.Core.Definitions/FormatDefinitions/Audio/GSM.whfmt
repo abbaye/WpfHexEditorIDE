@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "GSM 06.10 Audio",
+  "formatId": "GSM",
   "version": "1.0",
   "extensions": [".gsm"],
   "description": "GSM 06.10 is a speech compression standard developed for digital cellular networks. Files consist of a raw sequence of 33-byte frames with no file-level header or magic bytes. Each frame begins with a byte whose upper nibble must equal 0xD (1101 in binary), serving as the only identification marker. The lower nibble carries the first 4 bits of encoded LPC parameters. GSM 06.10 encodes 160 samples of 8 kHz audio (20ms) per 33-byte frame at a fixed 13 kbps bitrate. The absence of a file header makes detection purely heuristic based on frame structure.",

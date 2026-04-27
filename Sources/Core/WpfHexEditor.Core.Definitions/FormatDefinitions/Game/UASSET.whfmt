@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Unreal Engine Asset",
+  "formatId": "UASSET",
   "version": "1.15",
   "extensions": [
     ".uasset",

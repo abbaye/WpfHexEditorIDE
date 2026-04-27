@@ -1,5 +1,6 @@
 {
   "formatName": "Fat/Universal Binary",
+  "formatId": "FAT_BINARY",
   "version": "1.0",
   "diffMode": "binary",
   "extensions": [],

@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "Radiotap 802.11",
+  "formatId": "RADIOTAP",
   "version": "1.13",
   "extensions": [
     ".pcap",

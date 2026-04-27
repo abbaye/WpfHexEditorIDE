@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "InnoDB Tablespace",
+  "formatId": "INNODB",
   "version": "1.0",
   "extensions": [
     ".ibd",

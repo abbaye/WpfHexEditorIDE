@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Quake 3 IBSP Map",
+  "formatId": "BSP_Q3",
   "version": "1.15",
   "extensions": [
     ".bsp"

@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Motion JPEG",
+  "formatId": "MJPEG",
   "version": "1.15",
   "extensions": [
     ".mjpeg",

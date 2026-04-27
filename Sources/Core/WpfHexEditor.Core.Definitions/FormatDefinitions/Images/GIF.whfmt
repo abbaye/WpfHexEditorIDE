@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "GIF Image",
+  "formatId": "GIF",
   "version": "2.02",
   "extensions": [
     ".gif"

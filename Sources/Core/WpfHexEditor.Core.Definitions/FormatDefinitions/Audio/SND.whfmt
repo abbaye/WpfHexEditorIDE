@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "NeXT/Sun Sound File",
+  "formatId": "SND",
   "version": "2.42",
   "extensions": [
     ".snd",

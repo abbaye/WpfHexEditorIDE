@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "NetFlow v5/v9 Capture",
+  "formatId": "NETFLOW",
   "version": "1.0",
   "extensions": [ ".nfcap", ".flow", ".nf" ],
   "description": "NetFlow network traffic flow data (Cisco). v5 header (24 bytes): version(2B BE: 5) + count(2B BE: records per packet) + sys_uptime(4B BE: ms since boot) + unix_secs(4B BE) + unix_nsecs(4B BE) + flow_sequence(4B BE) + engine_type(1B) + engine_id(1B) + sampling_interval(2B BE). v5 flow record (48 bytes): srcaddr(4B) + dstaddr(4B) + nexthop(4B) + input(2B) + output(2B) + dPkts(4B) + dOctets(4B) + first(4B) + last(4B) + srcport(2B) + dstport(2B) + pad1(1B) + tcp_flags(1B) + prot(1B: IP protocol) + tos(1B) + src_as(2B) + dst_as(2B) + src_mask(1B) + dst_mask(1B) + pad2(2B). v9 uses template-based flexible records with version=9. IPFIX (v10) is the IETF standardized version. Files contain one or more NetFlow UDP datagrams concatenated.",

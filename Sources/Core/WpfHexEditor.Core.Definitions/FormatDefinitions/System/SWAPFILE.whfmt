@@ -1,5 +1,6 @@
 {
   "formatName": "Linux Swap Space",
+  "formatId": "SWAPFILE",
   "version": "1.0",
   "diffMode": "binary",
   "extensions": [

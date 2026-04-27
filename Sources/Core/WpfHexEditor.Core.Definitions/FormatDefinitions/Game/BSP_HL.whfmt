@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Half-Life GoldSrc BSP",
+  "formatId": "BSP_HL",
   "version": "1.15",
   "extensions": [
     ".bsp"

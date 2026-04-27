@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Web Open Font Format (WOFF)",
+  "formatId": "WOFF",
   "version": "1.0",
   "extensions": [".woff"],
   "description": "WOFF (Web Open Font Format 1.0) — W3C Recommendation (2012) for web font delivery. Magic: 'wOFF' (77 4F 46 46) at offset 0. Header (44 bytes): magic(4B) + flavor(4B BE: TrueType=0x00010000, CFF/OpenType='OTTO'=0x4F54544F) + length(4B LE total file size) + numTables(2B LE) + reserved(2B must be 0) + totalSfntSize(4B LE uncompressed font size) + majorVersion(2B LE) + minorVersion(2B LE) + metaOffset(4B LE) + metaLength(4B LE) + metaOrigLength(4B LE) + privOffset(4B LE) + privLength(4B LE). Table Directory (at offset 44): tag(4B) + offset(4B LE) + compLength(4B LE) + origLength(4B LE) + origCheckSum(4B LE) per table. Tables are zlib/deflate compressed. Metadata: optional zlib-compressed XML with font name, copyright, license. Contains same glyphs as underlying OTF/TTF but compressed for web delivery.",

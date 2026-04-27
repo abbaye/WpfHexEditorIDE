@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Doom WAD Resource",
+  "formatId": "RES_DOOM",
   "version": "1.15",
   "extensions": [
     ".wad"

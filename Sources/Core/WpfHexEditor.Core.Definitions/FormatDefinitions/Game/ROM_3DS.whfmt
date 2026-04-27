@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Nintendo 3DS ROM",
+  "formatId": "ROM_3DS",
   "version": "1.0",
   "extensions": [
     ".3ds",

@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "MINC Medical Image",
+  "formatId": "MINC",
   "version": "1.0",
   "extensions": [".mnc", ".mnc2"],
   "description": "MINC (Medical Imaging NetCDF) neuroimaging format developed at the Montreal Neurological Institute (MNI). MINC1: based on NetCDF classic format — magic 'CDF\\x01' (43 44 46 01). MINC2: based on HDF5 — magic 89 48 44 46 0D 0A 1A 0A. Provides explicit spatial coordinate system for brain volumes via direction cosines and step/start attributes. Standard variables: image (voxel data), image-min, image-max (intensity normalization). Dimension names: xspace, yspace, zspace, time. Orientation attributes: xspace:direction_cosines = [1,0,0]. Supports arbitrary data types, multi-modal data, and multi-resolution data. Used by AFNI, SPM (via minc2), FSL, FreeSurfer (mri_convert). MNI152 standard brain template distributed as MINC format.",

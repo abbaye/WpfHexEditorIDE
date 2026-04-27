@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "LevelDB/RocksDB SSTable",
+  "formatId": "LEVELDB_SST",
   "version": "1.0",
   "extensions": [".ldb", ".sst"],
   "description": "LevelDB .ldb and RocksDB .sst files are Sorted String Table (SSTable) files — immutable, sorted key-value stores used as the on-disk format for LevelDB (Google, 2011) and RocksDB (Facebook, 2012). An SSTable contains data blocks (key-value pairs sorted by key), a filter meta block (optional Bloom filter for fast key lookups), a stats meta block, a metaindex block, an index block, and a fixed-size footer. Each data block ends with a restart array and a CRC32 checksum. The footer (48 bytes at EOF) contains the metaindex block handle, index block handle, optional checksum type, and an 8-byte magic number: LevelDB=0x8428752488808FB57 (bytes 57 FB 80 8B 24 75 48 84) or RocksDB=0x8428752488808FB57 variant (F7 CF F4 85 B7 41 E2 88). Used by: Google Chrome (IndexedDB, local storage), Electron apps, VS Code extensions, Node.js (leveldown), TensorFlow serving, Apache Cassandra (SSTable variant).",

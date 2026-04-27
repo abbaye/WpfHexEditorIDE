@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "MP4 Video",
+  "formatId": "MP4",
   "version": "2.02",
   "extensions": [
     ".mp4",

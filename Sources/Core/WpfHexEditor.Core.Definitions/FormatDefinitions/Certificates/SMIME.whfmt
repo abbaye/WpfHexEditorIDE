@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "S/MIME Signed or Encrypted Message (PKCS#7 / CMS)",
+  "formatId": "SMIME",
   "version": "1.0",
   "extensions": [ ".p7s", ".p7m", ".p7c", ".p7b" ],
   "description": "S/MIME (Secure/Multipurpose Internet Mail Extensions) cryptographic message format based on PKCS#7 / CMS (Cryptographic Message Syntax, RFC 5652). Used for email signing, encryption, and certificate distribution. File variants by extension: .p7s = detached signature (SignedData), .p7m = enveloped/encrypted message (EnvelopedData or AuthEnvelopedData), .p7c = certificates-only (degenerate SignedData with no content), .p7b = certificate chain or CRL. Two encoding formats: PEM ('-----BEGIN PKCS7-----' header) or DER binary. CMS ContentTypes: SignedData (1.2.840.113549.1.7.2), EnvelopedData (1.2.840.113549.1.7.3), DigestedData (1.2.840.113549.1.7.5), EncryptedData (1.2.840.113549.1.7.6), AuthenticatedData (1.2.840.113549.1.9.16.1.2), AuthEnvelopedData (1.2.840.113549.1.9.16.1.23). SignedData contains: version, digestAlgorithms, encapContentInfo, certificates, CRLs, signerInfos. EnvelopedData contains: version, originatorInfo, recipientInfos, encryptedContentInfo.",

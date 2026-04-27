@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "GGUF LLM Model",
+  "formatId": "GGUF",
   "version": "1.0",
   "extensions": [
     ".gguf"

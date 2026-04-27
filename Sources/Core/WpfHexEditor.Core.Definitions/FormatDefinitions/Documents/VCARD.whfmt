@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "vCard Contact",
+  "formatId": "VCARD",
   "version": "1.0",
   "extensions": [
     ".vcf",

@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "AMBER Molecular Dynamics Trajectory",
+  "formatId": "AMBER_TRAJ",
   "version": "1.0",
   "extensions": [
     ".mdcrd",

@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "Newline Delimited JSON",
+  "formatId": "NDJSON",
   "version": "1.0",
   "extensions": [
     ".ndjson",

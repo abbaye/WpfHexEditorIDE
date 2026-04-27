@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "PlayStation EXE",
+  "formatId": "ROM_PSX",
   "version": "1.14",
   "extensions": [
     ".exe",

@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "XYZ Chemical Coordinates",
+  "formatId": "XYZ_CHEM",
   "version": "1.0",
   "extensions": [
     ".xyz"

@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Oric Atmos Tape / ROM",
+  "formatId": "ROM_ORIC",
   "version": "1.0",
   "extensions": [".tap", ".oric", ".rom"],
   "description": "Tangerine Oric-1 / Oric Atmos tape image or ROM (Tangerine Computer Systems, 1983-1984). TAP format (used by the Euphoric emulator): the binary stream begins with 256 or more 0x16 sync bytes followed by a sync byte count indicator, then the file header block. File header structure: file_type (1B: 0x00=BASIC, 0xFF=machine code), auto_run (1B: 0x80=auto-run, 0x00=manual), end_address (2B big-endian), start_address (2B big-endian), then 0x00 byte, then filename (up to 16 bytes ASCII, NUL-terminated). Data bytes immediately follow the header. The Oric-1 uses a 6502A CPU at 1 MHz. The Oric Atmos (1984) improved the keyboard design; both have 16 KB or 48 KB RAM versions, AY-3-8912 3-channel PSG sound, and a 240x200 resolution mixed text/graphics display. The Oric was particularly popular in France and the UK. ROM images are raw 16 KB or 48 KB binary files containing the Oric BASIC ROM. Detection is primarily by extension due to the repeating 0x16 sync byte pattern being common.",

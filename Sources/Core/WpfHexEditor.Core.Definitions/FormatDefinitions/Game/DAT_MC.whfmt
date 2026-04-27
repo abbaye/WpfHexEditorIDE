@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Minecraft DAT",
+  "formatId": "DAT_MC",
   "version": "1.15",
   "extensions": [
     ".dat"

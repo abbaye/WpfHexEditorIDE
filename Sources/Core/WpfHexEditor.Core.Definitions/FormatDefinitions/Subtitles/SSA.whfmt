@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "SubStation Alpha Subtitles",
+  "formatId": "SSA",
   "version": "1.0",
   "extensions": [
     ".ssa",

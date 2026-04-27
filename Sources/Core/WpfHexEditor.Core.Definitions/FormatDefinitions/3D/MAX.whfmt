@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "3ds Max",
+  "formatId": "MAX",
   "version": "1.15",
   "extensions": [
     ".max"

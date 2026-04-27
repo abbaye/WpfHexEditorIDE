@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "PDF Document",
+  "formatId": "PDF",
   "version": "2.02",
   "extensions": [
     ".pdf"

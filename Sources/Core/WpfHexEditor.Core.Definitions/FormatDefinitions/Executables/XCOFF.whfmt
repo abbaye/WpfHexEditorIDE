@@ -1,5 +1,6 @@
 {
   "formatName": "XCOFF Executable",
+  "formatId": "XCOFF",
   "version": "1.0",
   "diffMode": "binary",
   "extensions": [

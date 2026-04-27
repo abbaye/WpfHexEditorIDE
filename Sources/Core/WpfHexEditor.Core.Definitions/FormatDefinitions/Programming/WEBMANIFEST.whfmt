@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "Web App Manifest",
+  "formatId": "WEBMANIFEST",
   "version": "1.0",
   "extensions": [".webmanifest", ".manifest"],
   "description": "Web App Manifest (W3C standard) — JSON file enabling Progressive Web Apps (PWA). Root JSON object with fields: 'name' (full app name), 'short_name' (launcher/home screen name), 'start_url' (URL to open on app launch), 'display' ('standalone', 'fullscreen', 'minimal-ui', 'browser'), 'background_color' (splash screen color), 'theme_color' (browser chrome color), 'icons' (array of {src, sizes, type} icon objects for various resolutions), 'description', 'lang', 'scope' (navigation scope boundary), 'shortcuts' (quick action list), 'categories', 'screenshots', 'protocol_handlers', 'share_target'. Linked via HTML: <link rel='manifest' href='manifest.webmanifest'>. Enables: add to home screen, splash screen, custom icons, offline mode (with Service Worker), push notifications, and app store publishing (TWA). JSON format — first byte always '{' (0x7B).",

@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "RPG Maker WOLF",
+  "formatId": "WOLF",
   "version": "1.15",
   "extensions": [
     ".wolf"

@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "CBOR (Concise Binary Object Representation)",
+  "formatId": "CBOR",
   "version": "1.0",
   "extensions": [".cbor", ".cborseq"],
   "description": "CBOR is a binary data format specified in RFC 7049 (updated in RFC 8949). It has no file magic — format is identified by the type-tag structure. The first byte encodes a major type in bits 7-5 and additional info in bits 4-0. Major types: 0=unsigned int, 1=negative int, 2=byte string, 3=text string, 4=array, 5=map, 6=tag (semantic annotation), 7=simple/float. CBOR supports streaming, self-describing tags, indefinite-length encoding, and a rich tag registry (tag 0=datetime, tag 1=epoch time, tag 37=UUID, etc.). Used in COSE, CWT, FIDO2/WebAuthn, and CoAP protocols.",

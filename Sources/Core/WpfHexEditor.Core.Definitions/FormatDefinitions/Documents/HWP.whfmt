@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Hangul Word Processor Document",
+  "formatId": "HWP",
   "version": "1.0",
   "extensions": [".hwp", ".hwpx"],
   "description": "HWP (Hangul Word Processor) is the dominant word processing format in South Korea, developed by Hancom. HWP files use OLE2 Compound File format (magic 0xD0CF11E0A1B11AE1) with a 'HWP Document File' internal stream. HWPX is the modern XML variant using ZIP packaging (magic 0x504B0304). HWP is required for Korean government document submissions and is the most widely used document format in South Korea, supporting Korean-specific typography and layout features.",

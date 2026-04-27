@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "Timed Text Markup Language",
+  "formatId": "TTML",
   "version": "1.0",
   "extensions": [
     ".ttml",

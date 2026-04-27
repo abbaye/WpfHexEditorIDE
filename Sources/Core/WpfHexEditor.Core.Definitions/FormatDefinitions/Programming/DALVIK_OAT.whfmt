@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Android OAT (Ahead-of-Time Compiled DEX)",
+  "formatId": "DALVIK_OAT",
   "version": "1.0",
   "extensions": [".oat", ".odex"],
   "description": "Android OAT file — the ahead-of-time compiled native code produced by the ART (Android RunTime) dex2oat compiler from DEX bytecode. OAT files embed the original DEX data alongside native machine code for the target ISA (ARM, ARM64, x86, x86_64). The magic is 'oat\\0' at offset 0, followed by a version string and Adler-32 checksum.",

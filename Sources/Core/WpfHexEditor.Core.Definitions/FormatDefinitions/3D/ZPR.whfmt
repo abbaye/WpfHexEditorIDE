@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "ZBrush Project",
+  "formatId": "ZPR",
   "version": "1.14",
   "extensions": [
     ".zpr"

@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Game Boy Advance Save",
+  "formatId": "SAVE_GBA",
   "version": "1.0",
   "extensions": [".sav", ".gsv", ".sgs"],
   "description": "Game Boy Advance battery-backed save data dumped from cartridge storage. There is no magic header — the file contains raw save data. Storage type and hence file size are the primary discriminators: EEPROM 4 Kbit = 512 bytes (Pokemon Pinball RS, Classic NES series), EEPROM 64 Kbit = 8192 bytes (most common, Zelda: A Link to the Past), SRAM 256 Kbit = 32768 bytes (raw read/write, Mother 3), Flash 512 Kbit = 65536 bytes (Atmel AT29LV512 or Macronix MX29F512, Fire Emblem), Flash 1 Mbit = 131072 bytes (Sanyo LE26FV10 / Macronix MX29L010, Pokemon Ruby/Sapphire). EEPROM uses 64-bit serial access blocks. Flash is sector-erased before write (Macronix: 4 KB sectors, Atmel: full chip). Some emulators (VBA-M, mGBA) prepend a container header. Pokemon RSE saves: 14 sections of 4096 bytes each with a 128-byte footer including a 16-bit checksum per section.",

@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Nintendo DS ROM",
+  "formatId": "ROM_NDS",
   "version": "1.0",
   "extensions": [
     ".nds"

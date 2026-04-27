@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Apache ORC",
+  "formatId": "ORC",
   "version": "1.0",
   "extensions": [".orc"],
   "description": "Apache Optimized Row Columnar (ORC) file format for the Hadoop ecosystem. Files begin with the 3-byte magic 'ORC' (0x4F5243) at offset 0. ORC stores data in row groups called stripes, each containing index data, row data, and stripe footer. A file-level footer (Protobuf-encoded) contains schema, statistics, and stripe locations. Supports ZLIB, SNAPPY, LZO, LZ4, and ZSTD compression. Originated at Facebook/Hortonworks for Hive optimization.",

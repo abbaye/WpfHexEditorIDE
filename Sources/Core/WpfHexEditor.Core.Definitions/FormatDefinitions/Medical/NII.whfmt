@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "NIfTI Medical Image",
+  "formatId": "NII",
   "version": "2.42",
   "extensions": [
     ".nii"

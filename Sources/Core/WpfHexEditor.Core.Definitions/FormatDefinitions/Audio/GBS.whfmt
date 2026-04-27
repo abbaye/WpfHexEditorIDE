@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Game Boy Sound System",
+  "formatId": "GBS",
   "version": "1.0",
   "extensions": [
     ".gbs"

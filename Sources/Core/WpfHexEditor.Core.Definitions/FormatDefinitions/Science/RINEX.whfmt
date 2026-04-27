@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "RINEX GNSS Data",
+  "formatId": "RINEX",
   "version": "1.14",
   "extensions": [
     ".rnx",

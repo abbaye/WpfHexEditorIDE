@@ -1,5 +1,6 @@
 {
   "formatName": "FAT32 File System",
+  "formatId": "FAT32",
   "version": "1.0",
   "diffMode": "binary",
   "extensions": [

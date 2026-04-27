@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Linear Executable (VxD/OS2)",
+  "formatId": "LE",
   "version": "1.0",
   "extensions": [ ".exe", ".vxd", ".386", ".w3" ],
   "description": "LE (Linear Executable) format — Windows 9x VxD virtual device drivers and OS/2 32-bit executables. A DOS MZ stub is followed by the LE header at the e_lfanew offset. LE magic: 'LE' (0x4C 0x45). The LX variant ('LX', 0x4C 0x58) is used for OS/2 2.x. LE header: magic (2B), byte_order (1B: 0=LE), word_order (1B: 0=LE), format_level (4B), cpu_type (2B: 1=286, 2=386, 3=486, 4=Pentium), os_type (2B: 1=OS/2, 2=Windows, 3=DOS, 4=Win386), module_version (4B), module_flags (4B), pages_count (4B), eip and esp objects and values (16B), page_size (4B: typically 4096 bytes). Windows VxD files (extension .386 or .vxd) use LE format with VxD loader flags.",

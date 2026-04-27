@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "AbiWord Document",
+  "formatId": "ABW",
   "version": "1.0",
   "extensions": [".abw", ".zabw"],
   "description": "AbiWord Document (ABW) is an XML-based word processing format used by the AbiWord open-source word processor. Files begin with an XML declaration '<?xml' or directly with the '<abiword' root element. The format stores document content, formatting, metadata, styles, and revision history in a single XML file. ZABW is the gzip-compressed variant. AbiWord supports import/export of DOC, DOCX, ODT, RTF, and HTML formats.",

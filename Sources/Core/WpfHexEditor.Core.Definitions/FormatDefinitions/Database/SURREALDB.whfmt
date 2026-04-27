@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "SurrealDB Database",
+  "formatId": "SURREALDB",
   "version": "1.0",
   "extensions": [".surreal", ".db"],
   "description": "SurrealDB is a multi-model database supporting document, graph, and relational paradigms with a SQL-like query language (SurrealQL). SurrealDB can persist data to various backends including RocksDB and TiKV. The native file format lacks a well-known magic signature, making detection extension-based only with weak confidence. Files may contain embedded RocksDB or custom storage engine data.",

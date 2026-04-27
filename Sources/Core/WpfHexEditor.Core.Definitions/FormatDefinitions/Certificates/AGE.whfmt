@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Age Encryption",
+  "formatId": "AGE",
   "version": "1.0",
   "extensions": [
     ".age"

@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Java Class Bytecode",
+  "formatId": "CLASS_JAVA",
   "version": "1.0",
   "extensions": [ ".class" ],
   "description": "Java Class files contain JVM bytecode produced by the Java compiler (javac). Every valid .class file begins with the 4-byte magic 0xCAFEBABE, followed by a 2-byte minor version and a 2-byte major version (big-endian). Major version 45 = Java 1.1, 52 = Java 8, 61 = Java 17, 65 = Java 21. The constant pool count at offset 8 (uint16 BE) indicates the number of constant pool entries. Class files encode class/interface definitions, methods, fields, and debug information. They are executed by the JVM or processed by tools like ProGuard, R8, and dex2jar.",

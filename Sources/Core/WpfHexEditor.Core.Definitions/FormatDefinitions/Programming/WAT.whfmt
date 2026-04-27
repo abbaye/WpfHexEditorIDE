@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "WebAssembly Text Format",
+  "formatId": "WAT",
   "version": "1.0",
   "extensions": [".wat", ".wast"],
   "description": "WAT (WebAssembly Text Format) is the human-readable S-expression representation of WebAssembly modules. Defined in the WebAssembly Core Specification (W3C), WAT files are the textual complement to the binary .wasm format. A WAT module begins with `(module` and contains type definitions, imports, function definitions, exports, memory and table declarations, and global variables. Instructions use a stack-based notation: `i32.add`, `f64.mul`, `local.get`, `call`, `br_if`, etc. WAT is compiled to binary .wasm via tools like `wat2wasm` (WABT toolkit) or `wasm-pack`. WAST (.wast) is an extended format used for WebAssembly test scripts — it adds `assert_return`, `assert_trap`, `assert_invalid`, and `invoke` directives around module definitions. Both formats are pure UTF-8 text with no binary structure.",

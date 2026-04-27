@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": ".NET Native Image (NGen Compiled)",
+  "formatId": "MSIL_NGEN",
   "version": "1.0",
   "extensions": [ ".ni.dll", ".ni.exe", ".dll", ".exe" ],
   "description": "NGen (Native Image Generator) produces machine-native compiled images from .NET assemblies for faster startup. NGen images are PE (Portable Executable) files with the 'MZ' magic at offset 0, containing a CLR header (data directory index 14 in the PE Optional Header) that identifies the file as a .NET managed image. NGen images include a CORCOMPILE_HEADER embedded in a special '.cormeta' or native section. They are stored in the Native Image Cache (%WINDIR%\\assembly\\NativeImages_*). In .NET 6+ NGen is superseded by ReadyToRun (R2R) images which use the same PE container with R2R-specific sections.",

@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "PyTorch Model (ZIP/Pickle)",
+  "formatId": "PYTORCH",
   "version": "1.0",
   "extensions": [ ".pt", ".pth", ".bin" ],
   "description": "PyTorch serialized model checkpoint using ZIP container with pickled state dictionaries and raw tensor buffers; the pickle-based format allows arbitrary code execution on load, making untrusted files a serious security risk.",

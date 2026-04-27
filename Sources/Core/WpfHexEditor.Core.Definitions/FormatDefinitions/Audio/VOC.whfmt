@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "Creative Voice File",
+  "formatId": "VOC",
   "version": "1.14",
   "extensions": [
     ".voc"

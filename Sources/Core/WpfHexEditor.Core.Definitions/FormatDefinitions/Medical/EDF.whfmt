@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "European Data Format (EDF/EDF+)",
+  "formatId": "EDF",
   "version": "1.0",
   "extensions": [
     ".edf",

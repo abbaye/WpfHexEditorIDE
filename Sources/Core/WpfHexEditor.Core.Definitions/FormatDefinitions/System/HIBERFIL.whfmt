@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "Windows Hibernation File",
+  "formatId": "HIBERFIL",
   "version": "1.14",
   "extensions": [
     ".sys"

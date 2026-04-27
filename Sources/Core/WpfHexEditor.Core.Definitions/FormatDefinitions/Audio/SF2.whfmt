@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "SoundFont 2",
+  "formatId": "SF2",
   "version": "1.0",
   "extensions": [
     ".sf2",

@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": ".env Environment File",
+  "formatId": "ENV_FILE",
   "version": "1.0",
   "extensions": [ ".env", ".env.local", ".env.production" ],
   "description": "dotenv environment variable file format. KEY=VALUE pairs, one per line (POSIX shell convention). Keys: UPPER_CASE_WITH_UNDERSCORES by convention (SCREAMING_SNAKE_CASE). Values: unquoted (raw), double-quoted (\"value\", backslash escapes, variable expansion $VAR or ${VAR} in some loaders), or single-quoted ('value', no escapes, no expansion). Comments: # starting at first non-whitespace character on a line. Inline comments: only supported by some implementations (dotenv-expand). Blank lines ignored. Multi-line values: supported via double-quoted strings with embedded newlines or \n escapes. Variable expansion: $VAR or ${VAR} supported in dotenv-expand for Node.js. Special files: .env (default), .env.local (local overrides, gitignored), .env.development, .env.test, .env.production (environment-specific), .env.development.local. CRITICAL security rule: .env files MUST be in .gitignore — they contain secrets (API keys, database passwords, OAuth tokens, JWT secrets, encryption keys). Used by: Node.js (dotenv package), Python (python-dotenv), Docker Compose (env_file:), Heroku, Vercel, Netlify, many web frameworks.",

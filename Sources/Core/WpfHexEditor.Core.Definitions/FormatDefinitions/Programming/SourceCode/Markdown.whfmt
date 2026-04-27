@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "text",
   "formatName": "Markdown Document",
+  "formatId": "Markdown",
   "version": "2.13",
   "extensions": [
     ".md",

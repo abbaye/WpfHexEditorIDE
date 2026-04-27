@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Microsoft HTML Help Compiled",
+  "formatId": "HTMLHELP_CHM",
   "version": "1.0",
   "extensions": [ ".chm" ],
   "description": "Microsoft Compiled HTML Help (CHM) is a proprietary binary format introduced with Windows 98. It uses the ITSF (Info-Tech Storage Format) container to store compressed HTML pages, images, index, and table of contents. The 4-byte magic 'ITSF' (0x49545346) appears at offset 0. The format header includes the ITSF version (usually 3), total header length, unknown field, a Windows FILETIME-derived timestamp, and an LCID language ID. CHM files are opened by hh.exe on Windows and have been vectors for HTML-based exploits.",

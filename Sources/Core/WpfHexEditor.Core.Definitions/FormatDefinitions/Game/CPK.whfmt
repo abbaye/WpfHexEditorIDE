@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "CRI CPK Archive",
+  "formatId": "CPK",
   "version": "1.15",
   "extensions": [
     ".cpk"

@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Visual Studio Diagnostic Session",
+  "formatId": "DIAGSESSION",
   "version": "1.0",
   "extensions": [ ".diagsession" ],
   "description": "Visual Studio diagnostic session container — a ZIP archive holding one or more .nettrace EventPipe traces, diagnostics.json session metadata, and optional memory dump files produced by the VS Performance Profiler.",

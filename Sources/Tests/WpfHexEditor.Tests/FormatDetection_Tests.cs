@@ -296,6 +296,63 @@ namespace WpfHexEditor.Tests
             Assert.IsTrue(block.IsValid());
         }
 
+        [TestMethod]
+        public void BlockDefinition_Group_IsValid()
+        {
+            var block = new BlockDefinition { Type = "group" };
+            Assert.IsTrue(block.IsValid());
+        }
+
+        [TestMethod]
+        public void BlockDefinition_Header_IsValid()
+        {
+            var block = new BlockDefinition
+            {
+                Type = "header",
+                Name = "File Header",
+                Offset = 0,
+                Length = 16,
+                Color = "#B0BEC5"
+            };
+            Assert.IsTrue(block.IsValid());
+        }
+
+        [TestMethod]
+        public void BlockDefinition_Header_MissingColor_IsInvalid()
+        {
+            var block = new BlockDefinition
+            {
+                Type = "header",
+                Name = "File Header",
+                Offset = 0,
+                Length = 16
+            };
+            Assert.IsFalse(block.IsValid());
+        }
+
+        [TestMethod]
+        public void BlockDefinition_Data_IsValid()
+        {
+            var block = new BlockDefinition
+            {
+                Type = "data",
+                Name = "Payload",
+                Offset = 16,
+                Length = 256
+            };
+            Assert.IsTrue(block.IsValid());
+        }
+
+        [TestMethod]
+        public void FormatDefinition_FormatId_DeserializesCorrectly()
+        {
+            var json = @"{ ""formatName"": ""Test"", ""formatId"": ""test-fmt"" }";
+            var service = new FormatDetectionService();
+            var fmt = service.ImportFromJson(json);
+            Assert.IsNotNull(fmt);
+            Assert.AreEqual("test-fmt", fmt.FormatId);
+        }
+
         #endregion
 
         #region Format Script Interpreter Tests

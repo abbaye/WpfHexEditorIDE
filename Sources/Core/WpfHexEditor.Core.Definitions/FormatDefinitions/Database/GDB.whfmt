@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "InterBase/Firebird Database (Legacy)",
+  "formatId": "GDB",
   "version": "1.14",
   "extensions": [
     ".gdb"

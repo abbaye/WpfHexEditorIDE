@@ -1,5 +1,6 @@
 {
   "formatName": "Windows Imaging Format",
+  "formatId": "WIM",
   "version": "1.0",
   "diffMode": "binary",
   "extensions": [ ".wim", ".esd", ".swm" ],

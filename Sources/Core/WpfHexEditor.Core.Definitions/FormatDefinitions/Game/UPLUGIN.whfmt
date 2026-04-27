@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Unreal Plugin",
+  "formatId": "UPLUGIN",
   "version": "1.15",
   "extensions": [
     ".uplugin"

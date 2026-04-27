@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "DNS Zone File",
+  "formatId": "DNS_ZONE",
   "version": "1.0",
   "extensions": [
     ".zone",

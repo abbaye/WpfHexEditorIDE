@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "TI-99/4A ROM",
+  "formatId": "ROM_TI99",
   "version": "1.0",
   "extensions": [".bin", ".rom", ".rpk"],
   "description": "Texas Instruments TI-99/4A cartridge ROM image (Texas Instruments, 1979). The cartridge header begins at offset 0 with a 2-byte big-endian tag: 0xAA01 identifies a standard ROM-only module; 0xAA02 identifies a mixed ROM and GROM module. The header continues: size (2B BE: number of 8 KB pages), start_address (2B BE: initial execution address or 0x0000), menu_entry (2B BE: pointer to program list in module), auto_start_address (2B BE: address to auto-execute on module insert). The TMS9900 is a 16-bit RISC-like CPU running at 3 MHz with a unique workspace-register model. Cartridge ROM occupies address 0x6000-0x7FFF (8 KB window); larger ROMs use bank switching via memory mapper chips. GROM (Graphics ROM) provides an additional 8 KB at 0x9800-0x9BFF (addressed via I/O ports). Notable games: TI Invaders, Parsec, Alpiner.",

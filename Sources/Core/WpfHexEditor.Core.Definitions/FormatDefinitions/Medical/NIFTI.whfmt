@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "NIfTI Neuroimaging",
+  "formatId": "NIFTI",
   "version": "1.0",
   "extensions": [".nii", ".nii.gz", ".hdr", ".img"],
   "description": "NIfTI (Neuroimaging Informatics Technology Initiative) format for MRI, fMRI, and DTI brain imaging data. NIfTI-1: 348-byte header with magic 'ni1\\x00' (6E 69 31 00) or 'n+1\\x00' (6E 2B 31 00) at offset 344. 'ni1' = paired .hdr/.img files; 'n+1' = single .nii file. NIfTI-2: 540-byte header with magic 'ni2\\x00' or 'n+2\\x00' at offset 4. Header: dim[8](int16 array: dim[0]=ndim, dim[1..7]=sizes), datatype(int16: 2=uint8, 4=int16, 8=int32, 16=float32, 64=float64, 128=RGB24, 256=int8, 512=uint16), pixdim[8](float32 voxel sizes in mm), vox_offset(float32 data start), qform_code and sform_code for spatial orientation (quaternion/sform parameters).",

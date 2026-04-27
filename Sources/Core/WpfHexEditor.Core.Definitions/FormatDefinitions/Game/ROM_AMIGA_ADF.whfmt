@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Amiga Disk Format (ADF)",
+  "formatId": "ROM_AMIGA_ADF",
   "version": "1.0",
   "extensions": [ ".adf" ],
   "description": "Amiga floppy disk image in ADF (Amiga Disk Format). Standard double-density disk: 80 tracks × 2 sides × 11 sectors × 512 bytes = 901120 bytes. High-density variant: 80 × 2 × 22 × 512 = 1802240 bytes. OFS (Old Filing System) disks start with 'DOS' followed by 0x00-0x03. FFS (Fast Filing System) uses 0x01 or 0x05. The bootblock occupies the first two sectors (1024 bytes). The rootblock is at sector 880 (track 40, offset 450560). Disk type is in the first 4 bytes.",

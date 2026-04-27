@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Meridian Lossless Packing",
+  "formatId": "MLP",
   "version": "1.15",
   "extensions": [
     ".mlp"

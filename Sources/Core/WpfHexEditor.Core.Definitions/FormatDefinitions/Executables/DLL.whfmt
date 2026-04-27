@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "Windows DLL",
+  "formatId": "DLL",
   "version": "1.14",
   "extensions": [
     ".dll",

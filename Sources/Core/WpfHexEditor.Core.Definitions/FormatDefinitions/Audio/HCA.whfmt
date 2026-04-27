@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "CRI HCA Audio",
+  "formatId": "HCA",
   "version": "1.0",
   "extensions": [
     ".hca"

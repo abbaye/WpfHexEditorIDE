@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "Windows Executable (PE)",
+  "formatId": "PE_EXE",
   "version": "2.02",
   "extensions": [
     ".exe",

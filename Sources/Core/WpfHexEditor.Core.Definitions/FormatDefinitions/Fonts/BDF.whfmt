@@ -1,5 +1,6 @@
 {
   "formatName": "Bitmap Distribution Format (BDF)",
+  "formatId": "BDF",
   "version": "1.1",
   "extensions": [ ".bdf" ],
   "diffMode": "text",

@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "Apple Pages",
+  "formatId": "PAGES",
   "version": "2.02",
   "extensions": [
     ".pages"

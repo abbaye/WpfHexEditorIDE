@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Atari Lynx ROM",
+  "formatId": "ROM_LYNX",
   "version": "1.0",
   "extensions": [ ".lnx" ],
   "description": "Atari Lynx cartridge ROM image. 64-byte header followed by ROM data. Header contains 'LYNX' magic (4 bytes), version (2B uint16 LE), page_size_bank0 (2B), page_size_bank1 (2B), a second version field (2B), cartName (32B ASCII), manufacturer (16B ASCII), and rotation byte (0=none, 1=rotate left, 2=rotate right), followed by 5 spare bytes.",

@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "OCSP Response (Online Certificate Status Protocol)",
+  "formatId": "OCSP",
   "version": "1.0",
   "extensions": [ ".ocsp", ".der" ],
   "description": "Online Certificate Status Protocol response as defined in RFC 6960 (updated from RFC 2560). OCSP enables real-time certificate revocation checking without downloading full CRLs. The response is a DER-encoded ASN.1 structure: OCSPResponse ::= SEQUENCE { responseStatus ENUMERATED { good(0), revoked(1), unknown(2) }, ... } — wait, the outer is: OCSPResponse ::= SEQUENCE { responseStatus OCSPResponseStatus, responseBytes [0] EXPLICIT ResponseBytes OPTIONAL }. ResponseStatus ENUMERATED: 0=successful, 1=malformedRequest, 2=internalError, 3=tryLater, 4=(unused), 5=sigRequired, 6=unauthorized. The ResponseBytes contain a responseType OID (id-pkix-ocsp-basic = 1.3.6.1.5.5.7.48.1.1) and a BasicOCSPResponse DER blob. BasicOCSPResponse contains: tbsResponseData (version, responderID, producedAt, responses array with certStatus and thisUpdate/nextUpdate/revocationTime), signatureAlgorithm, signature, and optional certs. OCSP stapling (TLS Certificate Status Request extension) embeds OCSP responses in TLS handshakes.",

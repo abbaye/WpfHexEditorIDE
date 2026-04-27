@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "TFTP Packet (Trivial File Transfer Protocol)",
+  "formatId": "TFTP",
   "version": "1.0",
   "extensions": [ ".tftp" ],
   "description": "Trivial File Transfer Protocol packet format as defined in RFC 1350 (updated by RFC 2347, 2348, 2349). TFTP is a simple UDP-based file transfer protocol using port 69 for initial requests. All multi-byte fields are big-endian. Packet types: opcode 1=RRQ Read Request (filename + mode), 2=WRQ Write Request (filename + mode), 3=DATA (block number uint16 BE + up to 512 bytes of data), 4=ACK Acknowledgement (block number uint16 BE), 5=ERROR (error code uint16 BE + error message string + NUL). RRQ/WRQ packets contain: opcode uint16 BE, filename (NUL-terminated ASCII), mode (NUL-terminated ASCII: 'netascii', 'octet', 'mail'). RFC 2347 adds OACK (option acknowledgment, opcode 6) for options negotiation (blksize, timeout, tsize, windowsize). TFTP uses a stop-and-wait protocol — each DATA packet must be ACKed before the next is sent. Transfer ends when a DATA packet smaller than blksize (default 512) is received. Error codes: 0=not defined, 1=file not found, 2=access violation, 3=disk full, 4=illegal TFTP operation, 5=unknown transfer ID, 6=file already exists, 7=no such user.",

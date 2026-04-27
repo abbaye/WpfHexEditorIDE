@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "PGS Blu-ray Subtitle",
+  "formatId": "SUP",
   "version": "1.0",
   "extensions": [ ".sup" ],
   "description": "PGS (Presentation Graphic Stream) is the bitmap-based subtitle format used on Blu-ray discs; each display event is a sequence of segments starting with the 'PG' magic (0x50 0x47), containing RLE-encoded palette-indexed images with 90 kHz PTS/DTS timestamps, palette definitions (PDS), object bitmaps (ODS), composition control (PCS), window definitions (WDS), and end-of-display markers.",

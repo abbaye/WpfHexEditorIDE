@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "Structure Data File (Chemical)",
+  "formatId": "SDF_CHEM",
   "version": "1.0",
   "extensions": [
     ".sdf",

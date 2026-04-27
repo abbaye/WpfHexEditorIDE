@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "ONNX Neural Network Model",
+  "formatId": "ONNX",
   "version": "1.0",
   "extensions": [".onnx"],
   "description": "Open Neural Network Exchange (ONNX) model file using Protocol Buffers serialization. ONNX provides cross-framework ML model interoperability between PyTorch, TensorFlow, and inference runtimes such as ONNX Runtime, TensorRT, and OpenVINO. Files are serialized ModelProto protobuf messages with no fixed magic bytes; detection relies on protobuf tag heuristics and file extension.",

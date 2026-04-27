@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Digital Negative",
+  "formatId": "DNG",
   "version": "1.14",
   "extensions": [
     ".dng"

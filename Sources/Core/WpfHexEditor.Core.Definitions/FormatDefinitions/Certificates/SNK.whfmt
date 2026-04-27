@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Strong Name Key (SNK)",
+  "formatId": "SNK",
   "version": "1.0",
   "extensions": [ ".snk", ".pfx" ],
   "description": "Microsoft Strong Name Key file containing a CryptoAPI PRIVATEKEYBLOB or PUBLICKEYBLOB structure with an RSA key pair or public key used to sign .NET assemblies for the Global Assembly Cache.",

@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "Enterprise Archive",
+  "formatId": "EAR",
   "version": "2.02",
   "extensions": [
     ".ear"

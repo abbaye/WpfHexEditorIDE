@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "semantic",
   "formatName": "XML Document",
+  "formatId": "XML",
   "version": "2.22",
   "extensions": [
     ".xml"

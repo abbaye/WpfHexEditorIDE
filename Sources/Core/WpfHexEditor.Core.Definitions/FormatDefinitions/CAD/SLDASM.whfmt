@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "SolidWorks Assembly",
+  "formatId": "SLDASM",
   "version": "1.15",
   "extensions": [
     ".sldasm",

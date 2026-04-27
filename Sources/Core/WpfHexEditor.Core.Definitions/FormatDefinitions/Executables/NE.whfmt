@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "New Executable (16-bit Windows)",
+  "formatId": "NE",
   "version": "1.0",
   "extensions": [ ".exe", ".dll", ".drv", ".fon" ],
   "description": "NE (New Executable) format — 16-bit Windows 3.x and OS/2 1.x executable. A DOS MZ stub precedes the NE header at the offset stored in e_lfanew (at DOS offset 60). NE magic bytes are 'NE' (0x4E 0x45). The 64-byte NE header contains: magic (2B), linker version and revision (2B), entry table and size offsets (4B), CRC (4B), module flags (2B including SINGLEDATA, MULTIPLEDATA, WINDOWSCOMPAT, WINDOWSAPI), auto_data_seg (2B), heap and stack sizes (4B), initial IP:CS (4B), initial SP:SS (4B), segment count, module reference count, non-resident name table size, and various table offsets. Target OS byte identifies OS/2 (1), Windows (2), or MS-DOS (3-4).",

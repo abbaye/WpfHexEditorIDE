@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": ".NET Resources File",
+  "formatId": "DOTNET_RESOURCES",
   "version": "1.0",
   "extensions": [ ".resources" ],
   "description": "Binary .NET resource file compiled from .resx XML by ResGen or MSBuild; starts with magic 0xBEEFCACE and contains typed key-value resource pairs for System.Resources.ResourceManager.",

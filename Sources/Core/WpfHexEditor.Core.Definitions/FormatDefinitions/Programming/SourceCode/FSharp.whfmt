@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "semantic",
   "formatName": "F# Source File",
+  "formatId": "FSharp",
   "version": "2.13",
   "extensions": [
     ".fs",

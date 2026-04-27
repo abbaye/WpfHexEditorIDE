@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "Open Virtualization Format (OVF)",
+  "formatId": "OVF",
   "version": "1.0",
   "extensions": [".ovf"],
   "description": "Open Virtualization Format XML descriptor — defines virtual machine hardware configuration, virtual disk references, network interfaces, and deployment options. OVF is standardized by DMTF and serves as the metadata component within OVA archives. The root XML element is <Envelope> from the OVF namespace.",

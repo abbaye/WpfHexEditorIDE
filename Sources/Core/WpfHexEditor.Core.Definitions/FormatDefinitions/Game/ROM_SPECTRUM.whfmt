@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "ZX Spectrum Tape / ROM",
+  "formatId": "ROM_SPECTRUM",
   "version": "1.0",
   "extensions": [".tap", ".tzx", ".z80", ".sna", ".szx"],
   "description": "ZX Spectrum emulation file formats covering tape images, state snapshots, and ROM dumps. TZX (most common): magic 'ZXTape!' (7 bytes ASCII, 0x5A 0x58 0x54 0x61 0x70 0x65 0x21) + EOF marker 0x1A + major_version + minor_version. TZX blocks begin at offset 10: each block has a 1-byte block_id followed by block-specific data. Block 0x10 = standard speed data block, 0x11 = turbo speed, 0x12 = pure tone, 0x13 = pulse sequence. TAP format: simple sequence of (length uint16 LE + data) pairs. Z80 snapshot (version 1): 30-byte header starting with A and F register values. SNA snapshot: 27-byte header (I, HL', DE', BC', AF', HL, DE, BC, IY, IX, IFF2, R, AF, SP, IntMode, BorderColor) followed by 49152 bytes of RAM. SZX: ZXST container format used by Spectaculator with magic 'ZXST'.",

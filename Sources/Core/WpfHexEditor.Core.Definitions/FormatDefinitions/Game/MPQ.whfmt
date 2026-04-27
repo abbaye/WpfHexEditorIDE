@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Blizzard MPQ Archive",
+  "formatId": "MPQ",
   "version": "1.16",
   "extensions": [
     ".mpq",

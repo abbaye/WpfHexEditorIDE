@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "ACIS SAT (Standard ACIS Text)",
+  "formatId": "ACIS_SAT",
   "version": "1.0",
   "extensions": [
     ".sat",

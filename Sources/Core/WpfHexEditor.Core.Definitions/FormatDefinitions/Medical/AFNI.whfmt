@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "AFNI BRIK/HEAD",
+  "formatId": "AFNI",
   "version": "1.13",
   "extensions": [
     ".head",

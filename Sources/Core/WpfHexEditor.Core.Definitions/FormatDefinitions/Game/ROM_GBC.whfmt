@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Game Boy Color ROM",
+  "formatId": "ROM_GBC",
   "version": "1.0",
   "extensions": [
     ".gbc"

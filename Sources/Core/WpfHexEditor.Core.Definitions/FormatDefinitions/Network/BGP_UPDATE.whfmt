@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "BGP Update Message",
+  "formatId": "BGP_UPDATE",
   "version": "1.0",
   "extensions": [ ".bgp", ".dump" ],
   "description": "BGP (Border Gateway Protocol) message dump — RFC 4271. All BGP messages share a 19-byte header: marker(16B: all 0xFF, for synchronization and authentication) + length(2B BE: total message length including header, 19-4096 bytes) + type(1B: 1=OPEN, 2=UPDATE, 3=NOTIFICATION, 4=KEEPALIVE, 5=ROUTE-REFRESH RFC 2918). UPDATE message body: withdrawn_routes_length(2B BE) + withdrawn_routes(variable IP prefixes) + total_path_attr_length(2B BE) + path_attributes(variable) + NLRI(variable: network reachability info). Path attribute flags: Optional(bit7) + Transitive(bit6) + Partial(bit5) + Extended-length(bit4). Common attributes: ORIGIN(1: IGP/EGP/incomplete), AS_PATH(2), NEXT_HOP(3), MED(4), LOCAL_PREF(5), COMMUNITIES(8), MP_REACH_NLRI(14, RFC 4760 for IPv6). Used in MRT dump files and RouteViews/RIPE RIS BGP archives.",

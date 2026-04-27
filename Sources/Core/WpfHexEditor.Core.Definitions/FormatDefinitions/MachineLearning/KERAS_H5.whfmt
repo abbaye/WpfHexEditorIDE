@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Keras/HDF5 Model",
+  "formatId": "KERAS_H5",
   "version": "1.0",
   "extensions": [
     ".h5",

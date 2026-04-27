@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "VASP POSCAR",
+  "formatId": "VASP",
   "version": "1.15",
   "extensions": [
     ".vasp",

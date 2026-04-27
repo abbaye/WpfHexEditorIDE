@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "X PixMap",
+  "formatId": "XPM",
   "version": "1.15",
   "extensions": [
     ".xpm"

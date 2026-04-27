@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Palm Database e-Book (PalmDOC / Mobipocket)",
+  "formatId": "PDB_EBOOK",
   "version": "1.0",
   "extensions": [ ".pdb", ".prc", ".mobi" ],
   "description": "Palm Database (PDB) is the container format used by Palm OS applications and data files, widely adopted for e-books via PalmDOC and Mobipocket formats. The 32-byte name field at offset 0 stores the document title. Attributes and version follow at offsets 32 and 34. The 8-byte type/creator field at offset 60 identifies the content type: 'BOOKMOBI' for Mobipocket, 'TEXtREAd' for PalmDOC, 'REAdmobi' for a Mobipocket variant. Record count at offset 76 specifies the number of PDB records. Mobipocket (.mobi) extends PDB with MOBI header blocks embedded in the first HTML record.",

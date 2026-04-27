@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "MIDI Audio",
+  "formatId": "MIDI",
   "version": "1.12",
   "extensions": [
     ".mid",

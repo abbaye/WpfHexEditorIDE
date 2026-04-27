@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Samsung SRW RAW",
+  "formatId": "SRW",
   "version": "1.15",
   "extensions": [
     ".srw"

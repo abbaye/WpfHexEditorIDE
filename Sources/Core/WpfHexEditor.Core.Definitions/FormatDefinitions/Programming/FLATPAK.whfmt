@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Flatpak Application Bundle",
+  "formatId": "FLATPAK",
   "version": "1.0",
   "extensions": [
     ".flatpak"

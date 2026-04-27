@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "PowerPoint Presentation",
+  "formatId": "PPTX",
   "version": "2.02",
   "extensions": [
     ".pptx"

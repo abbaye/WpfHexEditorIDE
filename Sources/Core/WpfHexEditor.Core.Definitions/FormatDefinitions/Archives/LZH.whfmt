@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "LZH Archive",
+  "formatId": "LZH",
   "version": "1.13",
   "extensions": [
     ".lzh",

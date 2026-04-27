@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Comic Book RAR",
+  "formatId": "CBR",
   "version": "1.15",
   "extensions": [ ".cbr" ],
   "description": "CBR (Comic Book RAR) is a RAR archive containing sequentially named image files (JPEG, PNG, GIF, WEBP) organized to represent pages of a comic book or manga. The format is simply a RAR archive renamed to .cbr — there are no CBR-specific header modifications. RAR4 archives start with 'Rar!' + 0x1A 0x07 0x00 (7 bytes), while RAR5 starts with 'Rar!' + 0x1A 0x07 0x01 0x00 (8 bytes). The CBR identity is determined entirely by the .cbr extension and the presence of image files inside. CBR is the most common comic archive format alongside CBZ (ZIP-based).",

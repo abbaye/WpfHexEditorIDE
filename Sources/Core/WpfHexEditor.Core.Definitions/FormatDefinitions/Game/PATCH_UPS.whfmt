@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "UPS ROM Patch",
+  "formatId": "PATCH_UPS",
   "version": "1.14",
   "extensions": [
     ".ups"

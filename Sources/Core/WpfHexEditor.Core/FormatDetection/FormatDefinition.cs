@@ -40,6 +40,13 @@ namespace WpfHexEditor.Core.FormatDetection
         public string Version { get; set; }
 
         /// <summary>
+        /// Unique stable format identifier (optional; defaults to file stem).
+        /// Used for cross-format references and deduplication.
+        /// </summary>
+        [JsonPropertyName("formatId")]
+        public string FormatId { get; set; }
+
+        /// <summary>
         /// File extensions associated with this format (e.g., [".zip", ".jar"])
         /// </summary>
         public List<string> Extensions { get; set; } = new List<string>();
@@ -115,6 +122,13 @@ namespace WpfHexEditor.Core.FormatDetection
         public string DiffMode { get; set; }
 
         /// <summary>
+        /// Source-code language definition (code-editor .whfmt only).
+        /// Contains syntax coloring rules, folding, formatting defaults, and preview snippets.
+        /// </summary>
+        [JsonPropertyName("syntaxDefinition")]
+        public SyntaxDefinition SyntaxDefinition { get; set; }
+
+        /// <summary>
         /// Describes how to detect the format version from file content,
         /// enabling dispatch to version-specific block sets (VersionedBlocks).
         /// </summary>
@@ -136,6 +150,14 @@ namespace WpfHexEditor.Core.FormatDetection
         /// Failures populate the ForensicAlerts panel.
         /// </summary>
         public List<AssertionDefinition> Assertions { get; set; }
+
+        /// <summary>
+        /// Cross-format struct imports. Each entry makes a named block list available
+        /// for use in nested blocks via StructRef.
+        /// Example: { "ref": "structs/PE_OptionalHeader", "as": "PEOpt" }
+        /// → blocks can then use { "type": "nested", "structRef": "PEOpt" }
+        /// </summary>
+        public List<FormatImportDefinition> Imports { get; set; }
 
         /// <summary>
         /// Forensic / security metadata: suspicious patterns, risk level, known attack vectors.
@@ -636,6 +658,18 @@ namespace WpfHexEditor.Core.FormatDetection
     }
 
     /// <summary>Version detection config — reads a field value and maps it to a version string.</summary>
+    /// <summary>
+    /// A cross-format struct import declaration.
+    /// Makes a named block list from another .whfmt format available via StructRef.
+    /// </summary>
+    public class FormatImportDefinition
+    {
+        /// <summary>Format name or path to import (e.g. "structs/PE_OptionalHeader", "ELF").</summary>
+        public string Ref { get; set; }
+        /// <summary>Alias used in structRef blocks (e.g. "PEOpt").</summary>
+        public string As  { get; set; }
+    }
+
     public class FormatVersionDetection
     {
         /// <summary>Variable name set by a prior field block whose value drives version selection.</summary>

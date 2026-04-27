@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Apple Lossless Audio Codec",
+  "formatId": "ALAC",
   "version": "2.32",
   "extensions": [
     ".alac",

@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "BSON (Binary JSON)",
+  "formatId": "BSON",
   "version": "1.14",
   "extensions": [
     ".bson"

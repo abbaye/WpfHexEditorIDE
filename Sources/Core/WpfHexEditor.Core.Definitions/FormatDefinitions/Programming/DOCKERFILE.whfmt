@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "Dockerfile",
+  "formatId": "DOCKERFILE",
   "version": "1.0",
   "extensions": [ ".dockerfile" ],
   "description": "Dockerfile — build instructions for Docker/OCI container images (Moby/BuildKit specification). Text format, one instruction per logical line (continued with backslash \\). Instructions (case-insensitive, uppercase convention): FROM base_image[:tag][@digest] [AS name] — MUST be first non-comment instruction (except ARG before FROM); RUN shell_command — executes during build; COPY [--chown=user:group] src dest — copies files from build context; ADD src dest — COPY + URL download + tar auto-extraction; ENV KEY=VALUE — sets environment variables (persists to container); ARG NAME[=default] — build-time variable (not persisted); EXPOSE port[/protocol] — documents exposed ports; CMD [\"executable\",\"arg\"] — default command, overridden by docker run args; ENTRYPOINT [\"executable\"] — fixed command prefix; WORKDIR /path — sets working directory; USER user[:group] — switches user; VOLUME [\"/data\"] — creates mount point; LABEL key=value — metadata; HEALTHCHECK CMD; SHELL [\"/bin/sh\",\"-c\"]. Multi-stage builds: multiple FROM instructions with AS aliases and COPY --from=stage. Parser directives: # syntax=docker/dockerfile:1, # escape=\\. Comments: # to EOL. Used by Docker, Podman, Buildah, Kaniko, BuildKit.",

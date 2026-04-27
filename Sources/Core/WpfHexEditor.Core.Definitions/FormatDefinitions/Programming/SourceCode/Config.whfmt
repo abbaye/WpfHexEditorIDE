@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "Configuration File",
+  "formatId": "Config",
   "version": "2.12",
   "extensions": [
     ".ini",

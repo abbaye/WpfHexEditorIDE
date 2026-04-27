@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "Photoshop Document",
+  "formatId": "PSD",
   "version": "2.02",
   "extensions": [
     ".psd",

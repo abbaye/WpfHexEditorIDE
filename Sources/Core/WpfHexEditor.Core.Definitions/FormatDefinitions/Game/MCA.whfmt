@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Minecraft Anvil Region",
+  "formatId": "MCA",
   "version": "1.15",
   "extensions": [
     ".mca",

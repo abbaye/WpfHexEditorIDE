@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "Zstandard Compressed",
+  "formatId": "ZSTD",
   "version": "1.12",
   "extensions": [
     ".zst",

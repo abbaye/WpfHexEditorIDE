@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "PlayStation 2 Disc Image",
+  "formatId": "ROM_PS2",
   "version": "1.15",
   "extensions": [
     ".iso",

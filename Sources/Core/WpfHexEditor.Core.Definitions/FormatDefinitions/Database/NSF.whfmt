@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Lotus Notes NSF Database",
+  "formatId": "NSF",
   "version": "1.13",
   "extensions": [
     ".nsf"

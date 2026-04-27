@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Blu-ray MPEG-2 Transport Stream",
+  "formatId": "M2TS",
   "version": "1.0",
   "extensions": [".m2ts", ".mts", ".ts"],
   "description": "M2TS is the Blu-ray Disc container format based on MPEG-2 Transport Stream with a 4-byte Blu-ray source packet (timestamp) prefix prepended to each standard 188-byte TS packet, yielding 192-byte source packets. The MPEG-2 TS sync byte 0x47 appears at offset 4 of each 192-byte packet. Plain TS files (without Blu-ray header) have 0x47 at offset 0. The PID field (13 bits at bits 3-15 of the two bytes after the sync byte) identifies the elementary stream. M2TS is used on Blu-ray Discs and AVCHD camcorders for H.264 and VC-1 encoded high-definition video.",

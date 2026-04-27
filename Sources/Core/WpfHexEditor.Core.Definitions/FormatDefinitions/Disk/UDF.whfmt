@@ -1,5 +1,6 @@
 {
   "formatName": "Universal Disk Format",
+  "formatId": "UDF",
   "version": "1.0",
   "diffMode": "binary",
   "extensions": [

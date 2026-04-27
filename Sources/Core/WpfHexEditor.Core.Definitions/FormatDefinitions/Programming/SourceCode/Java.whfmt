@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "text",
   "formatName": "Java Source File",
+  "formatId": "Java",
   "version": "2.13",
   "extensions": [
     ".java"

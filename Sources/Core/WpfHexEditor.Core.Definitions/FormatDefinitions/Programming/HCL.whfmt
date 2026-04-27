@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "HashiCorp Configuration Language (HCL/Terraform)",
+  "formatId": "HCL",
   "version": "1.0",
   "extensions": [ ".tf", ".hcl", ".tfvars" ],
   "description": "HCL (HashiCorp Configuration Language) — declarative configuration language for HashiCorp tools. HCL native syntax: block_type \"label1\" \"label2\" { attribute = expression }. Core block types: terraform { required_providers, required_version }, provider \"aws\" {}, resource \"aws_instance\" \"web\" {}, data \"aws_ami\" \"latest\" {}, variable \"name\" {}, output \"ip\" {}, module \"vpc\" {}, locals {}. Expressions: string interpolation \"${var.region}\", heredoc <<EOT...EOT, functions (file(), jsondecode(), base64encode(), cidrsubnet()), conditional expr ? val : val, for expressions [for s in var.list : upper(s)]. Variable types: string, number, bool, list(), map(), set(), object(), tuple(), any. .tfvars: variable override files (HCL or JSON). Terraform state: .tfstate (JSON). HCL2 uses zclconf/go-cty type system (Terraform 0.12+). Also used by Packer (build{}), Vault (policy {}), Consul (service {}), Nomad (job {}).",

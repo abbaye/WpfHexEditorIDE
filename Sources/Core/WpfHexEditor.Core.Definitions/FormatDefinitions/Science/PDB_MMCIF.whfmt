@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "Macromolecular CIF (mmCIF/PDBx)",
+  "formatId": "PDB_MMCIF",
   "version": "1.0",
   "extensions": [
     ".cif",

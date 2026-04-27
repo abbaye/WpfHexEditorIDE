@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Atari 7800 ROM",
+  "formatId": "ROM_A78",
   "version": "1.0",
   "extensions": [".a78"],
   "description": "Atari 7800 ProSystem cartridge ROM in the standardised A78 container format. The 128-byte header begins with 0x01 at offset 0 (reserved), followed by the 9-byte ASCII string 'ATARI7800' (0x41 0x54 0x41 0x52 0x49 0x37 0x38 0x30 0x30) at offsets 1-9, then 6 reserved bytes (offsets 10-15), followed by the cart_name (32 bytes ASCII, null-padded) at offsets 16-47, the ROM data length (uint32 BE) at offset 49, the cart_type byte at offset 53, the ctrl1 and ctrl2 bytes at offsets 55 and 56, the TV_type byte at offset 57, the save_type byte at offset 58, and 69 reserved bytes filling to offset 127. ROM data begins at offset 128. Cart types: 0=Normal, 1=SuperGame, 2=SuperGame with RAM. TV types: 0=NTSC, 1=PAL. Save types: 0=None, 1=High Score Cartridge, 2=SaveKey/AtariVox. The 6502C CPU runs at 1.79 MHz (NTSC). The MARIA chip provides 320x200 resolution with up to 25 sprites per scanline.",

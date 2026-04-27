@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Xbox Series X/S Package",
+  "formatId": "ROM_XSX",
   "version": "2.43",
   "extensions": [
     ".xvd",

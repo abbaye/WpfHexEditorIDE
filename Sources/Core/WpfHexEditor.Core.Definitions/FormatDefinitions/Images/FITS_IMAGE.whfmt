@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "FITS (Flexible Image Transport System)",
+  "formatId": "FITS_IMAGE",
   "version": "1.0",
   "extensions": [
     ".fits",

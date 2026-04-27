@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Maya ASCII",
+  "formatId": "MA",
   "version": "1.14",
   "extensions": [
     ".ma"

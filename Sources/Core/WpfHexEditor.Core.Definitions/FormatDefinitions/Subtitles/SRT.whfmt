@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "SubRip Subtitle",
+  "formatId": "SRT",
   "version": "1.0",
   "extensions": [ ".srt" ],
   "description": "SRT (SubRip) is the most widely used plain-text subtitle format; each entry consists of a sequential integer, a timestamp range (HH:MM:SS,mmm --> HH:MM:SS,mmm), and one or more lines of subtitle text supporting basic HTML tags (<b>, <i>, <u>, <font>), separated by blank lines. Encoding is typically UTF-8 with optional BOM.",

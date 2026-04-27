@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "NAIF SPICE Kernel (DAF)",
+  "formatId": "SPICE_KERNEL",
   "version": "1.0",
   "extensions": [
     ".bsp",

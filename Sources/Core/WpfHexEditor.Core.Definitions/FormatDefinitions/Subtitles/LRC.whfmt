@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "LRC Lyrics",
+  "formatId": "LRC",
   "version": "1.0",
   "extensions": [ ".lrc" ],
   "description": "LRC (Lyric) synchronized lyrics format. Plain UTF-8 text where each line begins with a timestamp tag in the format [mm:ss.xx] followed by lyric text. Enhanced LRC (A2 extension) adds word-level timestamps in angle brackets. Header metadata tags: [ar:Artist], [ti:Title], [al:Album], [by:Creator of LRC file], [offset:+/-ms for global timing adjustment]. The first non-empty non-comment character is typically '['. Widely supported in music players, karaoke software, and streaming services including Apple Music and Spotify for synchronized lyric display.",

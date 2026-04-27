@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Snap Package (SquashFS)",
+  "formatId": "SNAP",
   "version": "1.0",
   "extensions": [
     ".snap"

@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "PEM Certificate",
+  "formatId": "PEM",
   "version": "1.13",
   "extensions": [
     ".pem",

@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "AAC Audio",
+  "formatId": "AAC",
   "version": "3.02",
   "extensions": [
     ".aac"

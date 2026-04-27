@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "LZ4 Compressed",
+  "formatId": "LZ4",
   "version": "1.12",
   "extensions": [
     ".lz4"

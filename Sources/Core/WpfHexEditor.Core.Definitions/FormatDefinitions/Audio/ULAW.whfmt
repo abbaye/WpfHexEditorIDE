@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "μ-law Audio",
+  "formatId": "ULAW",
   "version": "1.15",
   "extensions": [
     ".ulaw",

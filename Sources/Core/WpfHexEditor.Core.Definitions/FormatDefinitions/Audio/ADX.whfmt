@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "CRI ADX Audio",
+  "formatId": "ADX",
   "version": "1.0",
   "extensions": [
     ".adx"

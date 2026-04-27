@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "MessagePack",
+  "formatId": "MSGPACK",
   "version": "1.0",
   "extensions": [".msgpack", ".mp", ".mpk"],
   "description": "MessagePack is a binary serialization format designed to be compact and fast, often called 'binary JSON'. No file magic — format is identified by the type-tag structure of each value. The first byte encodes both type and, in many cases, a compact value. Format values: nil (0xC0), false (0xC2), true (0xC3), integers (fixint, int8-64, uint8-64), floats (float32/64), strings (fixstr, str8/16/32), bytes (bin8/16/32), arrays (fixarray, array16/32), maps (fixmap, map16/32), and ext types.",

@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Analyze 7.5 Image",
+  "formatId": "ANALYZE",
   "version": "1.14",
   "extensions": [
     ".hdr",

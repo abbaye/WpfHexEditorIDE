@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "iCalendar",
+  "formatId": "ICAL",
   "version": "1.0",
   "extensions": [
     ".ics",

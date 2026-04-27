@@ -1,5 +1,6 @@
 {
   "formatName": "Android Sparse Image",
+  "formatId": "ANDROID_SPARSE",
   "version": "1.0",
   "diffMode": "binary",
   "extensions": [

@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "ESRI ArcInfo E00 Exchange Format",
+  "formatId": "E00",
   "version": "1.0",
   "extensions": [".e00", ".e01", ".e02"],
   "description": "ESRI ArcInfo E00 (also called ARC/INFO Export Format) is a text-based exchange format for transferring ArcInfo coverages between systems. First introduced with ARC/INFO 3.x in the early 1980s, E00 encodes geographic feature data (arcs, polygons, points, annotations) along with associated attribute tables in a compact, self-describing ASCII structure. The file begins with 'EXP  ' followed by a compression level character (0=uncompressed, 1=partial, 2=full). The remainder contains sections for ARC (line geometry), CNT (centroid), LAB (label point), PAL (polygon arcs), PRJ (projection), TOL (tolerances), IFO (INFO data model), and SIN/EOD (end of data). E00 remains important for legacy GIS migration, cartographic data preservation, and systems that predate modern geodata formats like GeoJSON, GeoPackage, and Shapefile.",

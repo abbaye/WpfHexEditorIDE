@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Apple Core ML Model",
+  "formatId": "MLMODEL",
   "version": "1.0",
   "extensions": [
     ".mlmodel",

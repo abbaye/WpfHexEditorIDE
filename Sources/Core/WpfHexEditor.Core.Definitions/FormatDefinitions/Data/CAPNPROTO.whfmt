@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Cap'n Proto Binary Message",
+  "formatId": "CAPNPROTO",
   "version": "1.0",
   "extensions": [".capnp", ".bin"],
   "description": "Cap'n Proto binary serialization format (Kenton Varda, 2013). No magic bytes. A message starts with a uint32 LE segment_count (value = number of segments minus 1) at offset 0, then one uint32 LE size entry per segment (in 8-byte words), optional 4-byte padding to reach 8-byte alignment, then the segment data. The first word of segment 0 is the root struct pointer. Struct pointer: low 32 bits = signed word offset (type bits=00), high 32 bits = (data_word_count<<16)|pointer_word_count. Zero-copy: data is accessed directly from wire format without deserialization. Used in IPFS Bitswap, Sandstorm.io, Cloudflare Workers KV, and high-performance microservices.",

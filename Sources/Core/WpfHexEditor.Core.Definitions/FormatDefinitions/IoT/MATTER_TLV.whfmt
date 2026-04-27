@@ -1,5 +1,6 @@
 {
   "formatName": "Matter TLV",
+  "formatId": "MATTER_TLV",
   "version": "1.0",
   "diffMode": "binary",
   "extensions": [

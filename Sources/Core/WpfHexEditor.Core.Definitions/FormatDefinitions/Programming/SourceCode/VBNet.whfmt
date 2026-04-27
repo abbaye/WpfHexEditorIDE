@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "semantic",
   "formatName": "VB.NET Source File",
+  "formatId": "VBNet",
   "version": "2.13",
   "extensions": [
     ".vb"

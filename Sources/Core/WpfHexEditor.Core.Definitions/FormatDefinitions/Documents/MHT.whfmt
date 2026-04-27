@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "MHTML Web Archive",
+  "formatId": "MHT",
   "version": "1.0",
   "extensions": [
     ".mht",

@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "VP9 Video (IVF)",
+  "formatId": "VP9",
   "version": "1.15",
   "extensions": [
     ".vp9",

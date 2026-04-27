@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "PlayStation 3 Disc/Package",
+  "formatId": "ROM_PS3",
   "version": "2.52",
   "extensions": [
     ".iso",

@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "Nintendo Wii Disc",
+  "formatId": "ROM_WII",
   "version": "2.52",
   "extensions": [
     ".iso",

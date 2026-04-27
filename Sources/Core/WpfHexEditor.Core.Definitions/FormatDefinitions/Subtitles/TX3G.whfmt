@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "3GPP Timed Text",
+  "formatId": "TX3G",
   "version": "1.0",
   "extensions": [
     ".tx3g"

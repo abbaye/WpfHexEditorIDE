@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "UEFI Firmware Volume",
+  "formatId": "UEFI_FV",
   "version": "1.0",
   "extensions": [".fd", ".rom", ".bin"],
   "description": "UEFI Firmware Volume (FV) container identified by '_FVH' signature at offset 40. Contains UEFI FFS2 filesystem with SEC, PEI, DXE, and BDS phase modules. Common in BIOS flash chips, Surface firmware, and UEFI capsule updates. High security sensitivity.",

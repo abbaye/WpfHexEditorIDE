@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Apple File System (APFS)",
+  "formatId": "APFS",
   "version": "1.0",
   "extensions": [],
   "description": "Apple File System container superblock with copy-on-write B-tree structure and per-volume encryption",

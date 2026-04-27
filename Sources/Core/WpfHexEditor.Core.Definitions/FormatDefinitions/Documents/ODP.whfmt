@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "OpenDocument Presentation",
+  "formatId": "ODP",
   "version": "2.02",
   "extensions": [
     ".odp"

@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "WARC Web Archive",
+  "formatId": "WARC",
   "version": "1.0",
   "extensions": [".warc", ".warc.gz"],
   "description": "WARC (Web ARChive) is an ISO 28500 standard format for storing web crawl data, used by the Internet Archive's Wayback Machine, Common Crawl, and web preservation projects worldwide. A WARC file is a sequence of records, each consisting of a text header followed by a content block. Each record starts with the version line 'WARC/1.0' or 'WARC/1.1' (ASCII). WARC headers are key-value pairs including WARC-Type (warcinfo, request, response, resource, metadata, revisit, conversion, continuation), WARC-Date (ISO 8601), WARC-Record-ID (URN UUID), Content-Length, Content-Type, and WARC-Target-URI. A blank CRLF line separates header from content, and two blank CRLF lines separate consecutive records. Response records contain the full HTTP response including status line, headers, and body.",

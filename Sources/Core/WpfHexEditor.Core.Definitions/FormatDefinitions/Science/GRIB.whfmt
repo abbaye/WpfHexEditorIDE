@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "GRIB Meteorological Data",
+  "formatId": "GRIB",
   "version": "1.0",
   "extensions": [".grib", ".grb", ".grb2", ".grib2"],
   "description": "GRIdded Binary (GRIB) is a WMO (World Meteorological Organization) standard binary format for meteorological and climate gridded data. Each GRIB message begins with the 4-byte ASCII magic 'GRIB' (0x47524942), followed by message length fields and an edition number. GRIB edition 1 (legacy) uses 6 sections: Section 0 Indicator (magic + total length + edition), Section 1 Product Definition (parameter table, center, process ID, grid, level, date/time), optional Section 2 Grid Definition, optional Section 3 Bitmap, Section 4 Binary Data (packed integers with scale factor and reference value), and Section 5 '7777' end marker. GRIB edition 2 (modern) redesigns the section layout with discipline, category, and product subcategory fields for a broader range of geophysical parameters. GRIB is used globally by NWP centers including NOAA/NCEP (GFS), ECMWF, JMA, DWD, and CMC for forecast product dissemination.",

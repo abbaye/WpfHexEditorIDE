@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "FictionBook 2 e-Book",
+  "formatId": "FB2",
   "version": "1.0",
   "extensions": [".fb2", ".fb2.zip"],
   "description": "FictionBook 2 (FB2) is an XML-based e-book format originating from Russia. Each file contains the entire book in a single well-formed XML document with a <FictionBook> root element and the namespace 'http://www.gribuser.ru/xml/fictionbook/2.0'. Inline images are base64-encoded. Rich metadata is stored in <description>/<title-info>. Files may be distributed as plain .fb2 or ZIP-compressed .fb2.zip.",

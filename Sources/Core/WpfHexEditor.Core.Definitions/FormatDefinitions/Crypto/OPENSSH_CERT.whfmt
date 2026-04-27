@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "OpenSSH Certificate",
+  "formatId": "OPENSSH_CERT",
   "version": "1.0",
   "extensions": [ ".pub" ],
   "description": "OpenSSH certificate format for host and user authentication. Certificates are ASCII text files containing a key type string, a base64-encoded binary blob, and an optional comment, separated by single spaces on one line. Certificate types: ssh-rsa-cert-v01@openssh.com (RSA), ecdsa-sha2-nistp256-cert-v01@openssh.com (ECDSA P-256), ecdsa-sha2-nistp384-cert-v01@openssh.com, ecdsa-sha2-nistp521-cert-v01@openssh.com, ssh-ed25519-cert-v01@openssh.com (Ed25519). The base64-decoded binary blob begins with a length-prefixed key type string followed by certificate fields: nonce (32 random bytes), public key material, serial (uint64), type (1=user, 2=host), key_id (string), valid principals (name-list), valid_after (uint64 Unix time), valid_before (uint64 Unix time), critical_options (name-list), extensions (name-list), reserved, signature_key (signer's public key), and signature. Certificates are signed by a Certificate Authority (CA) and enable certificate-based SSH authentication without per-host authorized_keys management.",

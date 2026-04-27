@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "systemd Journal",
+  "formatId": "JOURNAL",
   "version": "1.13",
   "extensions": [
     ".journal"

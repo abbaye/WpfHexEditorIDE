@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "F2FS (Flash-Friendly File System)",
+  "formatId": "F2FS",
   "version": "1.13",
   "extensions": [
     ".f2fs"

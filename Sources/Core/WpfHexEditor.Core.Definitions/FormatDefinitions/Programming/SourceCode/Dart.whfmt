@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "text",
   "formatName": "Dart Source File",
+  "formatId": "Dart",
   "version": "2.13",
   "extensions": [
     ".dart"

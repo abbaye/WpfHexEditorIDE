@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "SOPS Encrypted Secrets",
+  "formatId": "SOPS",
   "version": "1.0",
   "extensions": [".enc.yaml", ".enc.json", ".sops.yaml"],
   "description": "Mozilla SOPS (Secrets OPerationS) encrypted file — a YAML or JSON file with individually encrypted values and a 'sops' metadata block containing encryption parameters, key groups, and MAC. SOPS supports AWS KMS, GCP KMS, Azure Key Vault, age, and PGP as key management backends. Only values are encrypted; keys remain in plaintext for diff-friendly workflows.",

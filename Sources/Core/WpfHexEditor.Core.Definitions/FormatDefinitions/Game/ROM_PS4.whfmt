@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "PlayStation 4 Package",
+  "formatId": "ROM_PS4",
   "version": "2.42",
   "extensions": [
     ".pkg"

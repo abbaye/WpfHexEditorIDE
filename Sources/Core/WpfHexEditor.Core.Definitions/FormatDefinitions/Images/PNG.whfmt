@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "PNG Image",
+  "formatId": "PNG",
   "version": "2.02",
   "extensions": [
     ".png"

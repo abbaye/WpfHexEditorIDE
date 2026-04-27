@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "LAMMPS Dump Trajectory",
+  "formatId": "LAMMPS_DUMP",
   "version": "1.0",
   "extensions": [
     ".lammpstrj",

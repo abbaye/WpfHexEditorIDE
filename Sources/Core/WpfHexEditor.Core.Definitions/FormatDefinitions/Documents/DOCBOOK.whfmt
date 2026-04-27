@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "DocBook XML Documentation",
+  "formatId": "DOCBOOK",
   "version": "1.0",
   "extensions": [ ".xml", ".docbook", ".dbk" ],
   "description": "DocBook is an XML (and formerly SGML) schema for authoring technical documentation, books, articles, and reference manuals. Originally created by HaL Computer Systems and O'Reilly & Associates, it is now maintained by OASIS. DocBook files use a rich set of semantic elements including <book>, <article>, <chapter>, <section>, <para>, <programlisting>, and cross-references. They are processed by XSL stylesheets (docbook-xsl) to produce PDF, HTML, ePub, and man pages. DocBook 5.x uses XML namespaces (http://docbook.org/ns/docbook).",

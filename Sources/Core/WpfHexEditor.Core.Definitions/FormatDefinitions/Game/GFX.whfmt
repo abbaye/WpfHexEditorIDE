@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "GBA / SNES Raw Tile Graphics",
+  "formatId": "GFX",
   "version": "2.3",
   "extensions": [
     ".gfx"

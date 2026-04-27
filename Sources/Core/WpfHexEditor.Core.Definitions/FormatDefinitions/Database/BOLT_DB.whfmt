@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "BoltDB Database",
+  "formatId": "BOLT_DB",
   "version": "1.0",
   "extensions": [".db"],
   "description": "BoltDB is a pure Go embedded key-value database inspired by LMDB, using a B+tree structure with copy-on-write pages. The file starts with a 4-byte little-endian magic 0xED0CDAED at offset 0, followed by a 4-byte LE version at offset 4 and a 4-byte LE page size at offset 8 (default 4096). BoltDB is used by etcd, Consul, and many Go applications requiring ACID transactions.",

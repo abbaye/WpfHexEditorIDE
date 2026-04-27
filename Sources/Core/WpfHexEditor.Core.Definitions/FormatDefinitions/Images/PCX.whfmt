@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "PCX Image",
+  "formatId": "PCX",
   "version": "1.13",
   "extensions": [
     ".pcx",

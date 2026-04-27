@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "VCDIFF Delta Compression",
+  "formatId": "VCDIFF",
   "version": "1.0",
   "extensions": [ ".vcdiff", ".xdelta", ".patch" ],
   "description": "VCDIFF delta compression format as defined in RFC 3284. Used by xdelta3, Google open-vcdiff, and many ROM patching tools. Magic: 3 bytes 0xD6 0xC3 0xC4 followed by version byte (0x00=standard RFC 3284). Header continues with hdr_indicator byte: bit 0 = VCD_DECOMPRESS (secondary compressor), bit 1 = VCD_CODETABLE (custom code table). If VCD_DECOMPRESS is set, an application-specific compressor ID follows as a variable-length field. Used in Chrome auto-updates, game ROM translation and hack patches.",

@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "EFI Byte Code (EBC)",
+  "formatId": "EBC",
   "version": "1.0",
   "extensions": [".ebc", ".efi"],
   "description": "EFI Byte Code executable — a PE (Portable Executable) binary with machine type 0x0EBC, containing platform-independent UEFI bytecode that runs on the EBC virtual machine interpreter built into UEFI firmware. EBC allows writing UEFI drivers and applications that work across all UEFI-supported architectures (x86, x64, ARM, AArch64) without recompilation.",

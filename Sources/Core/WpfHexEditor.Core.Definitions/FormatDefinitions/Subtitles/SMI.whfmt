@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "SAMI Subtitle",
+  "formatId": "SMI",
   "version": "1.0",
   "extensions": [ ".smi", ".sami" ],
   "description": "SAMI (Synchronized Accessible Media Interchange) subtitle format, developed by Microsoft. Text file encoded in UTF-8 or Windows-1252. Begins with the '<SAMI>' or '<sami>' tag. Structure: HEAD section containing a STYLE block with CSS class definitions (e.g. .ENCC for English Closed Captions). BODY section contains SYNC tags with START attribute in milliseconds, each containing a P element with a CLASS attribute matching a CSS language class. Supports multiple language tracks via distinct CSS classes. Commonly used with Windows Media Player.",

@@ -1,5 +1,6 @@
 {
   "formatName": "Shebang Script",
+  "formatId": "SHEBANG",
   "version": "1.0",
   "diffMode": "text",
   "extensions": [],

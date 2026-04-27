@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "MaterialX Document",
+  "formatId": "MATERIALX",
   "version": "1.0",
   "extensions": [
     ".mtlx"

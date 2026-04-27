@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "OpenEXR Image",
+  "formatId": "EXR",
   "version": "1.0",
   "extensions": [".exr"],
   "description": "OpenEXR HDR image format developed by Industrial Light & Magic (ILM) in 2002. Magic: 76 2F 31 01 (little-endian 0x01312F76). Version word: 4 bytes LE — lower 8 bits = file format version (2), bit 9 = single tile, bit 10 = long names, bit 11 = deep data. Header: null-terminated attribute list with name, type, size, and value. Required attributes include channels (chlist), compression (uint8: 0=None,1=RLE,2=ZIPS,3=ZIP,4=PIZ,5=PXR24,6=B44,7=B44A,8=DWAA,9=DWAB), dataWindow (box2i), displayWindow (box2i), lineOrder, pixelAspectRatio, screenWindowCenter, and screenWindowWidth. Pixel types: UINT (0), HALF (1, 16-bit IEEE 754), FLOAT (2, 32-bit IEEE 754). Supports multi-part files, deep data, tiled images, and scanline images. Industry standard for VFX, animation, and HDR photography.",

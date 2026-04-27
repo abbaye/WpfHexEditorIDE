@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "MSBuild Project File",
+  "formatId": "MSB_PROJ",
   "version": "1.0",
   "extensions": [
     ".csproj",

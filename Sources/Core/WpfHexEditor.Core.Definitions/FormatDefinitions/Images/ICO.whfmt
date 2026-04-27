@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "ICO Windows Icon",
+  "formatId": "ICO",
   "version": "1.14",
   "extensions": [
     ".ico",

@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "RADIUS Authentication Packet",
+  "formatId": "RADIUS_PACKET",
   "version": "1.0",
   "extensions": [ ".radius" ],
   "description": "Remote Authentication Dial-In User Service (RADIUS) packet format as defined in RFC 2865 (authentication/authorization) and RFC 2866 (accounting). RADIUS is a UDP-based AAA (Authentication, Authorization, Accounting) protocol using port 1812 (auth/authz) and port 1813 (accounting). The fixed 20-byte header: Code (1B), Identifier (1B), Length (2B BE), Authenticator (16B). Code values: 1=Access-Request, 2=Access-Accept, 3=Access-Reject, 4=Accounting-Request, 5=Accounting-Response, 11=Access-Challenge, 12=Status-Server (RFC 5997), 13=Status-Client, 255=Reserved. After the header, the packet contains Type-Length-Value (TLV) attributes. Each attribute: Type (1B), Length (1B), Value (variable). Common attribute types: 1=User-Name, 2=User-Password (obfuscated with MD5), 3=CHAP-Password, 4=NAS-IP-Address, 5=NAS-Port, 6=Service-Type, 7=Framed-Protocol, 8=Framed-IP-Address, 11=Filter-ID, 18=Reply-Message, 25=Class, 26=Vendor-Specific (VSA), 27=Session-Timeout, 31=Calling-Station-Id (MAC), 32=NAS-Identifier, 40=Acct-Status-Type, 80=Message-Authenticator (HMAC-MD5, RFC 3579). User-Password is obfuscated (not encrypted) using MD5(shared_secret + authenticator) XOR with password.",

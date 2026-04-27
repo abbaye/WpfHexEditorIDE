@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Saturn Internal Save",
+  "formatId": "SAVE_SATURN",
   "version": "1.0",
   "extensions": [".bkr", ".bcr", ".ss"],
   "description": "Sega Saturn internal backup RAM save file. The Saturn stores game saves in the internal backup RAM (BB RAM chip: Seiko S-MOS Systems, 32 KB total, divided into 256 blocks of 128 bytes). Each save directory entry occupies 64 bytes: save_id (11 bytes ASCII, game-specific identifier padded with spaces e.g. 'POWERSLAVE  '), language_code (1 byte: 0=Japanese, 1=English, 2=French, 3=German, 4=Spanish, 5=Italian), comment (10 bytes ASCII, user-visible note), date (4 bytes BCD-encoded date/time), data_size (4 bytes BE: save data size in blocks), block_size (2 bytes BE: fixed 64), start_block (2 bytes BE: block index of first data block). External backup RAM cartridge: 512 KB or 1 MB versions, same format but more blocks. BUP file format (backup file exported to PC) includes an additional header. Japanese Saturn models have 1 MB internal RAM vs 512 KB for US/EU.",

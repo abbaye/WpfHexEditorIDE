@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "PGS Blu-ray Subtitles",
+  "formatId": "PGS",
   "version": "1.0",
   "extensions": [
     ".sup"

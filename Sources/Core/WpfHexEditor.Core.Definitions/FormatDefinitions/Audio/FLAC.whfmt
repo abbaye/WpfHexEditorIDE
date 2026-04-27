@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "FLAC Audio",
+  "formatId": "FLAC",
   "version": "2.02",
   "extensions": [
     ".flac"

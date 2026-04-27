@@ -1,5 +1,6 @@
 {
   "formatName": "Nero Burning ROM Image",
+  "formatId": "NRG",
   "version": "1.0",
   "diffMode": "binary",
   "extensions": [

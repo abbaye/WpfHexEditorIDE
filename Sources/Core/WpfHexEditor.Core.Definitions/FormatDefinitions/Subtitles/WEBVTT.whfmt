@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "WebVTT Subtitles",
+  "formatId": "WEBVTT",
   "version": "1.0",
   "extensions": [
     ".vtt"

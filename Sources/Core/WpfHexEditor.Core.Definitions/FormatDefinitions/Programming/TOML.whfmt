@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "TOML Configuration",
+  "formatId": "TOML",
   "version": "1.0",
   "extensions": [ ".toml" ],
   "description": "TOML (Tom's Obvious Minimal Language) configuration format (Tom Preston-Werner, v1.0 spec 2021). UTF-8 encoded text. Key-value pairs: key = value. Value types: String (\"...\"), Integer (42, 1_000, 0xFF, 0o77, 0b1011), Float (3.14, -0.0, inf, nan), Boolean (true/false only — not yes/no), Datetime (RFC 3339: 1979-05-27T07:32:00Z, offset-date-time, local-date-time, local-date, local-time), Array [1, 2, 3], Inline table {a = 1, b = 2}. Table headers: [table_name]. Array of tables: [[array_table]]. Dotted keys: physical.color = 'orange'. Comments: # to end of line. Bare keys: a-z A-Z 0-9 _ -. Multi-line basic strings: \"\"\"...\"\"\" (with backslash line-ending trimming). Multi-line literal strings: '''...'''. Strings are Unicode, support \\u0041 and \\U00000041 escapes. Used by: Rust (Cargo.toml), Python (pyproject.toml, PEP 518/621), Go modules, Hugo, Gitea, Forgejo, systemd (limited TOML support).",

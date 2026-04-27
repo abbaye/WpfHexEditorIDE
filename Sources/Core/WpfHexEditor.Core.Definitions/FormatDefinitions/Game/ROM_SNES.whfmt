@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Super Nintendo ROM",
+  "formatId": "ROM_SNES",
   "version": "3.24",
   "extensions": [
     ".smc",

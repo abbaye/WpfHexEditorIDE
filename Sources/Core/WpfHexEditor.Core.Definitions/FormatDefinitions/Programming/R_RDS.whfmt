@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "R Serialized Data (RDS/RData)",
+  "formatId": "R_RDS",
   "version": "1.0",
   "extensions": [".rds", ".rda", ".RData"],
   "description": "R serialization format — the native binary/ASCII format used by R to serialize R objects to disk via saveRDS() and save(). Version 2 and 3 files start with 'X\\n' (ASCII format) or 'B' (binary format). Many .rds files are additionally gzip-compressed (magic 0x1F8B). Contains R objects including data frames, lists, environments, and functions.",

@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "G-code (CNC/3D Printing)",
+  "formatId": "GCODE",
   "version": "1.0",
   "extensions": [
     ".gcode",

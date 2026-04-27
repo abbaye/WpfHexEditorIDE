@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "text",
   "formatName": "Shell Script",
+  "formatId": "Shell",
   "version": "2.13",
   "extensions": [
     ".sh",

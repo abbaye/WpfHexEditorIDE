@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "makedumpfile Kernel Dump",
+  "formatId": "KDUMP",
   "version": "1.0",
   "extensions": [
     ".dump",

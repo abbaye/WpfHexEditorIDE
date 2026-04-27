@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "MP3 Audio",
+  "formatId": "MP3",
   "version": "2.02",
   "extensions": [
     ".mp3"

@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "Markdown Document",
+  "formatId": "MARKDOWN",
   "version": "1.0",
   "extensions": [ ".md", ".markdown", ".mkd", ".mdown" ],
   "description": "Markdown is a lightweight markup language created by John Gruber in 2004 designed to be readable as plain text while converting to HTML. It supports headings (# ATX-style or underline Setext-style), emphasis (*italic* **bold**), lists (- or *), links ([text](url)), images (![alt](url)), code blocks (``` fenced or indented), blockquotes (>), and horizontal rules (---). Variants include CommonMark, GitHub Flavored Markdown (GFM), MultiMarkdown, and Pandoc Markdown. Markdown files are text with no binary magic — identified by extension and text patterns.",

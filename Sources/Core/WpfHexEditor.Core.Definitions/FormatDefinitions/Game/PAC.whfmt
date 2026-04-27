@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Game Package",
+  "formatId": "PAC",
   "version": "2.33",
   "extensions": [
     ".pac",

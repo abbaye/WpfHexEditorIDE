@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Autodesk FBX",
+  "formatId": "FBX",
   "version": "1.0",
   "extensions": [".fbx"],
   "description": "Autodesk FBX (Filmbox) is the de-facto standard 3D asset interchange format for the game and film industries. Binary FBX begins with a 23-byte magic: 'Kaydara FBX Binary  ' (20 ASCII characters) + 0x00 + 0x1A + 0x00. The bytes 0x1A and 0x00 after the null are unique terminators. Following the magic, a 4-byte LE uint32 version code identifies the file version: 7100=FBX 7.1, 7200=FBX 7.2, 7300=FBX 7.3, 7400=FBX 7.4 (Autodesk 2014), 7500=FBX 7.5 (Autodesk 2016+), 7700=FBX 7.7 (Autodesk 2020+). Binary FBX nodes: 1-byte name length + name bytes + 4-byte property_count + 4-byte property_list_length + 4-byte end_offset + property array. ASCII FBX starts with '; FBX 7.x.0 project file' comment lines — no binary magic. Supported by 3ds Max, Maya, Blender, Unity, Unreal Engine. Contains geometry, materials, animations, skeletons, blend shapes, cameras, and lights in a single file.",

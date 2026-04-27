@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Android Backup",
+  "formatId": "ANDROID_BACKUP",
   "version": "1.0",
   "extensions": [".ab"],
   "description": "Android Backup (.ab) files are produced by `adb backup` (Android Debug Bridge) and contain a full or partial device backup including app data, shared storage, and system settings. The format starts with an ASCII text header terminated by newlines, followed by a TAR archive that may be compressed (zlib deflate) and/or encrypted (AES-256 CBC). Header line 1: 'ANDROID BACKUP' (14 bytes + LF). Line 2: format version number ('1' through '5' + LF). Line 3: compression flag ('1'=compressed, '0'=uncompressed + LF). Line 4: encryption type ('none', 'AES-256' + LF). If AES-256: additional lines carry the PBKDF2 salt (hex), checksum salt (hex), iterations count, master key IV (hex), and master key blob (hex). After the text header, the payload is a standard POSIX TAR archive (optionally zlib-compressed, optionally AES-256 encrypted). Version history: v1=Android 4.0 ICS, v2=Android 4.1 JB (shared storage), v3=Android 4.2 (multi-user), v4=Android 4.4 KitKat, v5=Android 6.0 Marshmallow (full backup API).",

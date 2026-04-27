@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "ZBrush Tool",
+  "formatId": "ZTL",
   "version": "1.14",
   "extensions": [
     ".ztl"

@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Alembic 3D Scene Cache",
+  "formatId": "ABC",
   "version": "1.0",
   "extensions": [".abc"],
   "description": "Alembic is an open computer graphics interchange framework developed by Sony Pictures Imageworks and Industrial Light & Magic. Alembic files (.abc) store baked geometry caches — positions, normals, UVs, and velocities sampled over time — for visual effects workflows where geometry is simulated or procedurally generated. Since version 1.5, Alembic uses the Ogawa backend by default (magic 'Ogawa' at offset 0: 4F 67 61 77 61). Earlier versions used HDF5 as the storage layer (magic 0x89HDF). The Ogawa format uses a custom tree structure with GroupProperties, ScalarProperties, and ArrayProperties. Core schema types: PolyMesh, SubD, XForm, Camera, NuPatch, Points (particle systems), Curves, Light, FaceSet. Alembic is the de-facto standard for geometry caching in VFX pipelines (Maya, Houdini, 3ds Max, Cinema 4D, Blender).",

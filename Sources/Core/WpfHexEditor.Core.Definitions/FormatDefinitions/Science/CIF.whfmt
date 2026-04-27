@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Crystallographic Information File",
+  "formatId": "CIF",
   "version": "1.14",
   "extensions": [
     ".cif"

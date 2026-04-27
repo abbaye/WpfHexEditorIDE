@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Open Virtual Appliance (OVA)",
+  "formatId": "OVA",
   "version": "1.0",
   "extensions": [".ova"],
   "description": "Open Virtual Appliance archive format — an uncompressed TAR container packaging an OVF XML descriptor, one or more VMDK virtual disk images, and optional manifest/certificate files. The first entry in the TAR is typically the .ovf descriptor file. OVA is standardized by DMTF as part of the OVF specification and is widely used for VM distribution across hypervisors.",

@@ -1,5 +1,6 @@
 {
   "formatName": "Chrome Extension (CRX)",
+  "formatId": "CHROME_CRX",
   "version": "1.0",
   "diffMode": "binary",
   "extensions": [

@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "Nginx Configuration",
+  "formatId": "NGINX_CONF",
   "version": "1.0",
   "extensions": [ ".conf", ".nginx" ],
   "description": "Nginx web server configuration file (Igor Sysoev, 2004). Block-based with curly braces. Directives: directive_name param1 param2; (semicolon-terminated). Blocks: context_name [args] { directives }. Main contexts: main (top-level globals: worker_processes, error_log, pid), events { worker_connections; use epoll; multi_accept; }, http { access_log; include mime.types; gzip; upstream; server {} }, server { listen; server_name; location / {} }, upstream backend { server 127.0.0.1:8080; }, mail {}, stream {} (TCP/UDP proxy). Location matching: = (exact), ^~ (prefix priority), ~ (regex case-sensitive), ~* (regex case-insensitive), / (default prefix). Variables: $uri, $host, $remote_addr, $request_method, $scheme, $ssl_client_cert. Comments: # to EOL. Include directive: include /etc/nginx/conf.d/*.conf. Security directives: ssl_certificate, ssl_certificate_key, ssl_protocols, ssl_ciphers, add_header X-Frame-Options, limit_req_zone, allow/deny, auth_basic_user_file. Sensitive: ssl_certificate_key path, auth_basic passwords. Main config: /etc/nginx/nginx.conf. Site configs: /etc/nginx/sites-enabled/, /etc/nginx/conf.d/.",
