@@ -1082,7 +1082,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
         public static readonly DependencyProperty EnableSemanticHighlightingProperty =
             DependencyProperty.Register(nameof(EnableSemanticHighlighting), typeof(bool), typeof(CodeEditor),
-                new FrameworkPropertyMetadata(true,
+                new FrameworkPropertyMetadata(false,
                     FrameworkPropertyMetadataOptions.AffectsRender,
                     (o, e) =>
                     {

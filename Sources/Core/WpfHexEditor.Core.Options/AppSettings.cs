@@ -697,7 +697,7 @@ public sealed class CodeEditorDefaultSettings
     /// Overlay LSP semantic token colors above the syntactic highlighting (requires Roslyn LSP).
     /// When disabled or when no LSP is active, whfmt drives all coloring unchanged.
     /// </summary>
-    public bool EnableSemanticHighlighting { get; set; } = true;
+    public bool EnableSemanticHighlighting { get; set; } = false;
 
     // -- Changeset (.whchg) -----------------------------------------------
 
