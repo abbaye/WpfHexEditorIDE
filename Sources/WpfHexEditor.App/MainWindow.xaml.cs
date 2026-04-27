@@ -5450,7 +5450,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                     if (toSave.Contains(d.ContentId) &&
                         _contentCache.TryGetValue(d.ContentId, out var c) &&
                         c is IDocumentEditor editor)
-                        editor.SaveCommand?.Execute(null);
+                        await editor.SaveAsync();
                 }
             }
         }
@@ -5750,7 +5750,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 if (toSave.Contains(doc.ContentId) &&
                     _contentCache.TryGetValue(doc.ContentId, out var c) &&
                     c is IDocumentEditor editor)
-                    editor.SaveCommand?.Execute(null);
+                    await editor.SaveAsync();
             }
         }
         return true;

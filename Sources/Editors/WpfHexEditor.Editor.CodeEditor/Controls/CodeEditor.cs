@@ -157,6 +157,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         private readonly WpfHexEditor.Editor.Core.Undo.UndoEngine _undoEngine = new();
         private bool _isInternalEdit = false; // Prevent undo recording during undo/redo
         private bool _isDirty = false;        // IDocumentEditor: unsaved changes flag
+        private bool _isDocumentLoaded = false; // True once content has been fully loaded into the buffer
         private string? _currentFilePath;     // IDocumentEditor: last saved file path
 
         /// <inheritdoc/>

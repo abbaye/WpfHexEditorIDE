@@ -710,6 +710,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             _lineNumberCache.Clear();
             InvalidateMeasure();
             InvalidateVisual();   // Force re-render when content is loaded after initial layout pass
+            _isDocumentLoaded = true; // Content is fully in memory — saves are now safe.
         }
 
         /// <summary>
@@ -821,9 +822,17 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // Snapshot text on the UI thread before switching threads.
             var text = GetText();
 
-            // Guard: never write 0 bytes to a file that already has content on disk.
-            // This prevents catastrophic data loss when the document is empty due to a
-            // timing issue (e.g. OpenAsync not yet complete) or a buffer sync race.
+            // Guard 1: document has not finished loading — never write an unloaded empty buffer.
+            // This is the primary defence against the close-during-startup race where OpenAsync
+            // has not yet populated the document but _isDirty may already be true.
+            if (!_isDocumentLoaded && text.Length == 0)
+            {
+                StatusMessage?.Invoke(this, $"Save aborted — '{Path.GetFileName(filePath)}' has not finished loading.");
+                return;
+            }
+
+            // Guard 2: belt-and-suspenders — never overwrite a non-empty file with 0 bytes even
+            // after load (catches unforeseen buffer-clear races).
             if (text.Length == 0 && File.Exists(filePath) && new FileInfo(filePath).Length > 0)
             {
                 StatusMessage?.Invoke(this, $"Save aborted — document is empty but '{Path.GetFileName(filePath)}' has content on disk.");
@@ -882,6 +891,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         async Task IOpenableDocument.OpenAsync(string filePath, CancellationToken ct)
         {
             ct.ThrowIfCancellationRequested();
+
+            // Mark document as not-loaded while I/O is in flight so that any save
+            // attempted during this window is refused (close-during-startup race guard).
+            _isDocumentLoaded = false;
 
             if (!File.Exists(filePath))
             {
@@ -972,6 +985,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             TitleChanged?.Invoke(this, BuildTitle());
             StatusMessage?.Invoke(this, $"Opened: {Path.GetFileName(filePath)}");
             RefreshJsonStatusBarItems();
+            _isDocumentLoaded = true; // Content is fully in memory — saves are now safe.
         }
 
         /// <summary>

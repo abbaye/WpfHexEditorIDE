@@ -1,6 +1,6 @@
 //////////////////////////////////////////////
 // GNU Affero General Public License v3.0 - 2026
-// Custom CodeEditor - Format Schema Validator (Phase 5)
+// Custom CodeEditor - Format Schema Validator (Phase 6)
 // Author : Claude Sonnet 4.5
 // Contributors: Derek Tremblay (derektremblay666@gmail.com), Claude Sonnet 4.6
 //////////////////////////////////////////////
@@ -34,7 +34,8 @@ namespace WpfHexEditor.Editor.CodeEditor.Services
         {
             "signature", "field", "conditional", "loop", "action",
             "computeFromVariables", "metadata", "data", "header",
-            "pointer", "repeating"
+            "pointer", "repeating",
+            "group", "union", "nested"
         };
         private static readonly string[] ValidFieldTypes =
         {
@@ -323,7 +324,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Services
             }
 
             // Validate loop-specific rules
-            if (block["type"]?.ToString() == "loop")
+            if (block["type"]?.ToString() == "loop" || block["type"]?.ToString() == "repeating")
             {
                 if (!block.ContainsKey("count"))
                 {
@@ -332,6 +333,56 @@ namespace WpfHexEditor.Editor.CodeEditor.Services
                         ValidationSeverity.Error)
                     {
                         ErrorCode = "MISSING_COUNT",
+                        Layer = ValidationLayer.FormatRules
+                    });
+                }
+            }
+
+            // Validate union-specific rules
+            if (block["type"]?.ToString() == "union")
+            {
+                if (!block.ContainsKey("unionCondition") && !block.ContainsKey("variants"))
+                {
+                    errors.Add(new ValidationError(0, 0,
+                        $"Block {blockIndex} is union but missing 'unionCondition' or 'variants' property",
+                        ValidationSeverity.Warning)
+                    {
+                        ErrorCode = "MISSING_UNION_STRUCTURE",
+                        Layer = ValidationLayer.FormatRules
+                    });
+                }
+            }
+
+            // Validate color format (#RRGGBB) if present
+            if (block.ContainsKey("color"))
+            {
+                var color = block["color"]?.ToString();
+                if (!string.IsNullOrEmpty(color) && !Regex.IsMatch(color, @"^#[0-9A-Fa-f]{6}$"))
+                {
+                    errors.Add(new ValidationError(0, 0,
+                        $"Block {blockIndex} has invalid color '{color}'. Must be #RRGGBB hex format (e.g., \"#FF6B6B\")",
+                        ValidationSeverity.Warning)
+                    {
+                        ErrorCode = "INVALID_COLOR_FORMAT",
+                        Layer = ValidationLayer.FormatRules
+                    });
+                }
+            }
+
+            // Validate opacity range [0.0 - 1.0] if present
+            if (block.ContainsKey("opacity"))
+            {
+                if (double.TryParse(block["opacity"]?.ToString(),
+                        System.Globalization.NumberStyles.Float,
+                        System.Globalization.CultureInfo.InvariantCulture,
+                        out var opacity)
+                    && (opacity < 0.0 || opacity > 1.0))
+                {
+                    errors.Add(new ValidationError(0, 0,
+                        $"Block {blockIndex} has invalid opacity '{opacity}'. Must be in range [0.0, 1.0]",
+                        ValidationSeverity.Warning)
+                    {
+                        ErrorCode = "INVALID_OPACITY_RANGE",
                         Layer = ValidationLayer.FormatRules
                     });
                 }
@@ -380,6 +431,57 @@ namespace WpfHexEditor.Editor.CodeEditor.Services
                         ValidationSeverity.Error)
                     {
                         ErrorCode = "INVALID_ENDIANNESS",
+                        Layer = ValidationLayer.FormatRules
+                    });
+                }
+            }
+
+            // Validate color format (#RRGGBB) if present
+            if (field.ContainsKey("color"))
+            {
+                var color = field["color"]?.ToString();
+                if (!string.IsNullOrEmpty(color) && !Regex.IsMatch(color, @"^#[0-9A-Fa-f]{6}$"))
+                {
+                    errors.Add(new ValidationError(0, 0,
+                        $"Block {blockIndex}, Field {fieldIndex} has invalid color '{color}'. Must be #RRGGBB hex format",
+                        ValidationSeverity.Warning)
+                    {
+                        ErrorCode = "INVALID_COLOR_FORMAT",
+                        Layer = ValidationLayer.FormatRules
+                    });
+                }
+            }
+
+            // Validate opacity range [0.0 - 1.0] if present
+            if (field.ContainsKey("opacity"))
+            {
+                if (double.TryParse(field["opacity"]?.ToString(),
+                        System.Globalization.NumberStyles.Float,
+                        System.Globalization.CultureInfo.InvariantCulture,
+                        out var opacity)
+                    && (opacity < 0.0 || opacity > 1.0))
+                {
+                    errors.Add(new ValidationError(0, 0,
+                        $"Block {blockIndex}, Field {fieldIndex} has invalid opacity '{opacity}'. Must be in range [0.0, 1.0]",
+                        ValidationSeverity.Warning)
+                    {
+                        ErrorCode = "INVALID_OPACITY_RANGE",
+                        Layer = ValidationLayer.FormatRules
+                    });
+                }
+            }
+
+            // Validate signature value is a valid hex string
+            if (field.ContainsKey("value"))
+            {
+                var sigValue = field["value"]?.ToString();
+                if (!string.IsNullOrEmpty(sigValue) && !Regex.IsMatch(sigValue, @"^[0-9A-Fa-f\s]+$"))
+                {
+                    errors.Add(new ValidationError(0, 0,
+                        $"Block {blockIndex}, Field {fieldIndex} signature 'value' is not a valid hex string (found '{sigValue}'). Use uppercase hex pairs (e.g., \"504B0304\")",
+                        ValidationSeverity.Warning)
+                    {
+                        ErrorCode = "INVALID_SIGNATURE_HEX",
                         Layer = ValidationLayer.FormatRules
                     });
                 }
@@ -446,13 +548,12 @@ namespace WpfHexEditor.Editor.CodeEditor.Services
         {
             if (token is JsonObject obj)
             {
-                if (obj.ContainsKey("varName"))
+                // varName and storeAs both declare a variable for later var: references
+                foreach (var declaringProp in new[] { "varName", "storeAs", "mappedValueStoreAs", "indexVar" })
                 {
-                    var varName = obj["varName"]?.ToString();
+                    var varName = obj[declaringProp]?.ToString();
                     if (!string.IsNullOrEmpty(varName))
-                    {
                         variables.Add(varName);
-                    }
                 }
 
                 foreach (var prop in obj)

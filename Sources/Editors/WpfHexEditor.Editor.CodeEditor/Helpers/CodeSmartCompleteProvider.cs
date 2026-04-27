@@ -1,6 +1,6 @@
 //////////////////////////////////////////////
 // GNU Affero General Public License v3.0 - 2026
-// Custom CodeEditor - SmartComplete Provider (Phase 4)
+// Custom CodeEditor - SmartComplete Provider (Phase 5)
 // Author : Claude Sonnet 4.5
 // Contributors: Derek Tremblay (derektremblay666@gmail.com), Claude Sonnet 4.6
 //////////////////////////////////////////////
@@ -8,6 +8,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using WpfHexEditor.Core.ProjectSystem.Languages;
 using WpfHexEditor.Editor.CodeEditor.Models;
 
@@ -15,8 +16,8 @@ namespace WpfHexEditor.Editor.CodeEditor.Helpers
 {
     /// <summary>
     /// Provides context-aware SmartComplete suggestions for format definition JSON.
-    /// Phase 4: Root level + blocks contexts.
-    /// Phase 7 will add all contexts, snippets, and tooltips.
+    /// Phase 5: Full property coverage for all block types, field properties,
+    /// detection properties, snippets, and block-type-aware context detection.
     /// </summary>
     public class CodeSmartCompleteProvider
     {
@@ -112,6 +113,105 @@ namespace WpfHexEditor.Editor.CodeEditor.Helpers
                 Documentation = "Array of data blocks that define the file structure",
                 Type = SuggestionType.Property,
                 SortPriority = 80
+            },
+            new SmartCompleteSuggestion
+            {
+                DisplayText = "category",
+                InsertText = "\"category\": \"\"",
+                CursorOffset = -1,
+                Icon = "[cat]",
+                TypeHint = "string",
+                Documentation = "Format category (e.g., \"Archives\", \"Images\", \"Audio\", \"Video\")",
+                Type = SuggestionType.Property,
+                SortPriority = 85
+            },
+            new SmartCompleteSuggestion
+            {
+                DisplayText = "variables",
+                InsertText = "\"variables\": {}",
+                CursorOffset = -1,
+                Icon = "[var]",
+                TypeHint = "object",
+                Documentation = "Named variables shared across blocks (accessible via var: prefix)",
+                Type = SuggestionType.Property,
+                SortPriority = 90
+            },
+            new SmartCompleteSuggestion
+            {
+                DisplayText = "checksums",
+                InsertText = "\"checksums\": []",
+                CursorOffset = -1,
+                Icon = "[chk]",
+                TypeHint = "array",
+                Documentation = "Checksum validation rules (CRC32, SHA256, MD5, etc.)",
+                Type = SuggestionType.Property,
+                SortPriority = 100
+            },
+            new SmartCompleteSuggestion
+            {
+                DisplayText = "assertions",
+                InsertText = "\"assertions\": []",
+                CursorOffset = -1,
+                Icon = "[asr]",
+                TypeHint = "array",
+                Documentation = "Post-parse boolean assertions to validate format integrity",
+                Type = SuggestionType.Property,
+                SortPriority = 101
+            },
+            new SmartCompleteSuggestion
+            {
+                DisplayText = "forensic",
+                InsertText = "\"forensic\": {}",
+                CursorOffset = -1,
+                Icon = "[frn]",
+                TypeHint = "object",
+                Documentation = "Forensic analysis metadata: patterns, indicators, threat context",
+                Type = SuggestionType.Property,
+                SortPriority = 102
+            },
+            new SmartCompleteSuggestion
+            {
+                DisplayText = "navigation",
+                InsertText = "\"navigation\": {}",
+                CursorOffset = -1,
+                Icon = "[nav]",
+                TypeHint = "object",
+                Documentation = "Navigation definitions: bookmarks and pointer targets",
+                Type = SuggestionType.Property,
+                SortPriority = 103
+            },
+            new SmartCompleteSuggestion
+            {
+                DisplayText = "inspector",
+                InsertText = "\"inspector\": {}",
+                CursorOffset = -1,
+                Icon = "[ins]",
+                TypeHint = "object",
+                Documentation = "Parsed fields panel layout configuration",
+                Type = SuggestionType.Property,
+                SortPriority = 104
+            },
+            new SmartCompleteSuggestion
+            {
+                DisplayText = "exportTemplates",
+                InsertText = "\"exportTemplates\": []",
+                CursorOffset = -1,
+                Icon = "[exp]",
+                TypeHint = "array",
+                Documentation = "Export format templates (json, csv, c-struct, python-bytes, xml)",
+                Type = SuggestionType.Property,
+                SortPriority = 105
+            },
+            new SmartCompleteSuggestion
+            {
+                DisplayText = "aiHints",
+                InsertText = "\"aiHints\": {}",
+                CursorOffset = -1,
+                Icon = "[ai]",
+                TypeHint = "object",
+                Documentation = "AI analysis context: hints for automated format interpretation",
+                Type = SuggestionType.Property,
+                SortPriority = 106
             }
         };
 
@@ -172,6 +272,161 @@ namespace WpfHexEditor.Editor.CodeEditor.Helpers
                 Documentation = "Loop count (for loop blocks) - can be number or var: reference",
                 Type = SuggestionType.Property,
                 SortPriority = 50
+            },
+            new SmartCompleteSuggestion
+            {
+                DisplayText = "color",
+                InsertText = "\"color\": \"#\"",
+                CursorOffset = -1,
+                Icon = "[clr]",
+                TypeHint = "string",
+                Documentation = "Hex color for this block (#RRGGBB, e.g., \"#FF6B6B\")",
+                Type = SuggestionType.Property,
+                SortPriority = 60
+            },
+            new SmartCompleteSuggestion
+            {
+                DisplayText = "opacity",
+                InsertText = "\"opacity\": 0.4",
+                Icon = "[opa]",
+                TypeHint = "number",
+                Documentation = "Block highlight opacity in hex editor view (0.0-1.0)",
+                Type = SuggestionType.Property,
+                SortPriority = 61
+            },
+            new SmartCompleteSuggestion
+            {
+                DisplayText = "description",
+                InsertText = "\"description\": \"\"",
+                CursorOffset = -1,
+                Icon = "[dsc]",
+                TypeHint = "string",
+                Documentation = "Detailed description of this block purpose",
+                Type = SuggestionType.Property,
+                SortPriority = 62
+            },
+            new SmartCompleteSuggestion
+            {
+                DisplayText = "storeAs",
+                InsertText = "\"storeAs\": \"\"",
+                CursorOffset = -1,
+                Icon = "[>v]",
+                TypeHint = "string",
+                Documentation = "Variable name to store parsed value for later var: references",
+                Type = SuggestionType.Property,
+                SortPriority = 63
+            },
+            new SmartCompleteSuggestion
+            {
+                DisplayText = "hidden",
+                InsertText = "\"hidden\": false",
+                Icon = "[hid]",
+                TypeHint = "bool",
+                Documentation = "Parse this block but hide it from parsed fields panel",
+                Type = SuggestionType.Property,
+                SortPriority = 64
+            }
+        };
+
+        // Conditional block-specific properties
+        private static readonly List<SmartCompleteSuggestion> ConditionalBlockProperties = new List<SmartCompleteSuggestion>
+        {
+            new SmartCompleteSuggestion
+            {
+                DisplayText = "condition",
+                InsertText = "\"condition\": \"var: == \"",
+                CursorOffset = -1,
+                Icon = "[if]",
+                TypeHint = "string",
+                Documentation = "Boolean expression for conditional block (e.g., var:myFlag == 1)",
+                Type = SuggestionType.Property,
+                SortPriority = 10
+            },
+            new SmartCompleteSuggestion
+            {
+                DisplayText = "then",
+                InsertText = "\"then\": []",
+                CursorOffset = -1,
+                Icon = "[ok]",
+                TypeHint = "array",
+                Documentation = "Blocks/fields to parse when condition is true",
+                Type = SuggestionType.Property,
+                SortPriority = 20
+            },
+            new SmartCompleteSuggestion
+            {
+                DisplayText = "else",
+                InsertText = "\"else\": []",
+                CursorOffset = -1,
+                Icon = "[no]",
+                TypeHint = "array",
+                Documentation = "Blocks/fields to parse when condition is false",
+                Type = SuggestionType.Property,
+                SortPriority = 30
+            }
+        };
+
+        // Loop/repeating block-specific properties
+        private static readonly List<SmartCompleteSuggestion> LoopBlockProperties = new List<SmartCompleteSuggestion>
+        {
+            new SmartCompleteSuggestion
+            {
+                DisplayText = "maxIterations",
+                InsertText = "\"maxIterations\": 1000",
+                Icon = "[max]",
+                TypeHint = "number",
+                Documentation = "Safety cap on iterations to prevent infinite loops (default: 10000)",
+                Type = SuggestionType.Property,
+                SortPriority = 20
+            },
+            new SmartCompleteSuggestion
+            {
+                DisplayText = "indexVar",
+                InsertText = "\"indexVar\": \"i\"",
+                CursorOffset = -1,
+                Icon = "[idx]",
+                TypeHint = "string",
+                Documentation = "Loop index variable name (0-based), accessible via var: in nested blocks",
+                Type = SuggestionType.Property,
+                SortPriority = 30
+            },
+            new SmartCompleteSuggestion
+            {
+                DisplayText = "colorCycle",
+                InsertText = "\"colorCycle\": [\"#4FC3F7\", \"#81C784\"]",
+                CursorOffset = -1,
+                Icon = "[cyc]",
+                TypeHint = "string[]",
+                Documentation = "Hex colors cycled across iterations for visual alternation",
+                Type = SuggestionType.Property,
+                SortPriority = 40
+            }
+        };
+
+        // Union block-specific properties
+        private static readonly List<SmartCompleteSuggestion> UnionBlockProperties = new List<SmartCompleteSuggestion>
+        {
+            new SmartCompleteSuggestion
+            {
+                DisplayText = "unionCondition",
+                InsertText = "\"unionCondition\": \"var:\"",
+                CursorOffset = -1,
+                Icon = "[uni]",
+                TypeHint = "string",
+                Documentation = "Expression selecting which union variant to parse",
+                Type = SuggestionType.Property,
+                SortPriority = 10
+            },
+            new SmartCompleteSuggestion
+            {
+                DisplayText = "variants",
+                InsertText = "\"variants\": []",
+                CursorOffset = -1,
+                Icon = "[vars]",
+                TypeHint = "array",
+                Documentation = "Array of variant block definitions for union parse paths",
+                Type = SuggestionType.Property,
+                SortPriority = 20
             }
         };
 
@@ -252,6 +507,124 @@ namespace WpfHexEditor.Editor.CodeEditor.Helpers
                 Documentation = "Variable name to store this field's value (for use in var: references)",
                 Type = SuggestionType.Property,
                 SortPriority = 70
+            },
+            new SmartCompleteSuggestion
+            {
+                DisplayText = "storeAs",
+                InsertText = "\"storeAs\": \"\"",
+                CursorOffset = -1,
+                Icon = "[>v]",
+                TypeHint = "string",
+                Documentation = "Store parsed field value under this variable name for var: references",
+                Type = SuggestionType.Property,
+                SortPriority = 71
+            },
+            new SmartCompleteSuggestion
+            {
+                DisplayText = "color",
+                InsertText = "\"color\": \"#\"",
+                CursorOffset = -1,
+                Icon = "[clr]",
+                TypeHint = "string",
+                Documentation = "Hex color for this field highlight (#RRGGBB)",
+                Type = SuggestionType.Property,
+                SortPriority = 72
+            },
+            new SmartCompleteSuggestion
+            {
+                DisplayText = "opacity",
+                InsertText = "\"opacity\": 0.4",
+                Icon = "[opa]",
+                TypeHint = "number",
+                Documentation = "Field highlight opacity in hex editor view (0.0-1.0)",
+                Type = SuggestionType.Property,
+                SortPriority = 73
+            },
+            new SmartCompleteSuggestion
+            {
+                DisplayText = "description",
+                InsertText = "\"description\": \"\"",
+                CursorOffset = -1,
+                Icon = "[dsc]",
+                TypeHint = "string",
+                Documentation = "Detailed description shown in parsed fields panel tooltip",
+                Type = SuggestionType.Property,
+                SortPriority = 74
+            },
+            new SmartCompleteSuggestion
+            {
+                DisplayText = "hidden",
+                InsertText = "\"hidden\": false",
+                Icon = "[hid]",
+                TypeHint = "bool",
+                Documentation = "Parse this field but hide it from the parsed fields panel",
+                Type = SuggestionType.Property,
+                SortPriority = 75
+            },
+            new SmartCompleteSuggestion
+            {
+                DisplayText = "valueMap",
+                InsertText = "\"valueMap\": {\n    \"0\": \"\",\n    \"1\": \"\"\n  }",
+                CursorOffset = -4,
+                Icon = "[map]",
+                TypeHint = "object",
+                Documentation = "Maps raw numeric values to human-readable labels",
+                Type = SuggestionType.Property,
+                SortPriority = 76
+            },
+            new SmartCompleteSuggestion
+            {
+                DisplayText = "bitfields",
+                InsertText = "\"bitfields\": [\n    { \"bit\": 0, \"name\": \"\", \"description\": \"\" }\n  ]",
+                CursorOffset = -4,
+                Icon = "[bit]",
+                TypeHint = "array",
+                Documentation = "Bit-level field definitions (each entry: bit, name, description)",
+                Type = SuggestionType.Property,
+                SortPriority = 77
+            },
+            new SmartCompleteSuggestion
+            {
+                DisplayText = "offsetFrom",
+                InsertText = "\"offsetFrom\": \"var:\"",
+                CursorOffset = -1,
+                Icon = "[off]",
+                TypeHint = "string",
+                Documentation = "Compute field offset relative to a stored variable (var: reference)",
+                Type = SuggestionType.Property,
+                SortPriority = 78
+            },
+            new SmartCompleteSuggestion
+            {
+                DisplayText = "offsetAdd",
+                InsertText = "\"offsetAdd\": 0",
+                Icon = "[+of]",
+                TypeHint = "number",
+                Documentation = "Additional bytes added to the computed or absolute offset",
+                Type = SuggestionType.Property,
+                SortPriority = 79
+            },
+            new SmartCompleteSuggestion
+            {
+                DisplayText = "mappedValueStoreAs",
+                InsertText = "\"mappedValueStoreAs\": \"\"",
+                CursorOffset = -1,
+                Icon = "[mv>]",
+                TypeHint = "string",
+                Documentation = "Store the mapped (human-readable) value instead of raw numeric value",
+                Type = SuggestionType.Property,
+                SortPriority = 80
+            },
+            new SmartCompleteSuggestion
+            {
+                DisplayText = "validationRules",
+                InsertText = "\"validationRules\": {}",
+                CursorOffset = -1,
+                Icon = "[vld]",
+                TypeHint = "object",
+                Documentation = "Validation constraints: min, max, pattern (regex), allowedValues",
+                Type = SuggestionType.Property,
+                SortPriority = 81
             }
         };
 
@@ -307,6 +680,66 @@ namespace WpfHexEditor.Editor.CodeEditor.Helpers
                 Documentation = "Action block - performs special operations",
                 Type = SuggestionType.Keyword,
                 SortPriority = 50
+            },
+            new SmartCompleteSuggestion
+            {
+                DisplayText = "group",
+                InsertText = "\"group\"",
+                Icon = "[grp]",
+                TypeHint = "keyword",
+                Documentation = "Group block - visually groups related fields",
+                Type = SuggestionType.Keyword,
+                SortPriority = 60
+            },
+            new SmartCompleteSuggestion
+            {
+                DisplayText = "metadata",
+                InsertText = "\"metadata\"",
+                Icon = "[meta]",
+                TypeHint = "keyword",
+                Documentation = "Metadata block - attaches metadata annotations to a region",
+                Type = SuggestionType.Keyword,
+                SortPriority = 61
+            },
+            new SmartCompleteSuggestion
+            {
+                DisplayText = "union",
+                InsertText = "\"union\"",
+                Icon = "[uni]",
+                TypeHint = "keyword",
+                Documentation = "Union block - overlapping variants parsed at the same offset",
+                Type = SuggestionType.Keyword,
+                SortPriority = 62
+            },
+            new SmartCompleteSuggestion
+            {
+                DisplayText = "nested",
+                InsertText = "\"nested\"",
+                Icon = "[nest]",
+                TypeHint = "keyword",
+                Documentation = "Nested block - embeds a referenced format definition inline",
+                Type = SuggestionType.Keyword,
+                SortPriority = 63
+            },
+            new SmartCompleteSuggestion
+            {
+                DisplayText = "pointer",
+                InsertText = "\"pointer\"",
+                Icon = "[ptr]",
+                TypeHint = "keyword",
+                Documentation = "Pointer block - follows a file pointer to a non-sequential offset",
+                Type = SuggestionType.Keyword,
+                SortPriority = 64
+            },
+            new SmartCompleteSuggestion
+            {
+                DisplayText = "repeating",
+                InsertText = "\"repeating\"",
+                Icon = "[rep]",
+                TypeHint = "keyword",
+                Documentation = "Repeating block - parses a structure repeatedly with colored cycling",
+                Type = SuggestionType.Keyword,
+                SortPriority = 65
             }
         };
 
@@ -375,6 +808,67 @@ namespace WpfHexEditor.Editor.CodeEditor.Helpers
                 Documentation = "Human-readable description of this signature",
                 Type = SuggestionType.Property,
                 SortPriority = 40
+            },
+            new SmartCompleteSuggestion
+            {
+                DisplayText = "weight",
+                InsertText = "\"weight\": 1.0",
+                Icon = "[wgt]",
+                TypeHint = "number",
+                Documentation = "Detection confidence weight for this signature (0.0-1.0)",
+                Type = SuggestionType.Property,
+                SortPriority = 50
+            },
+            new SmartCompleteSuggestion
+            {
+                DisplayText = "minConfidence",
+                InsertText = "\"minConfidence\": 0.7",
+                Icon = "[min]",
+                TypeHint = "number",
+                Documentation = "Minimum confidence threshold to accept this format (0.0-1.0)",
+                Type = SuggestionType.Property,
+                SortPriority = 60
+            },
+            new SmartCompleteSuggestion
+            {
+                DisplayText = "maxConfidence",
+                InsertText = "\"maxConfidence\": 1.0",
+                Icon = "[max]",
+                TypeHint = "number",
+                Documentation = "Maximum confidence cap for this format detection (0.0-1.0)",
+                Type = SuggestionType.Property,
+                SortPriority = 61
+            },
+            new SmartCompleteSuggestion
+            {
+                DisplayText = "minFileSize",
+                InsertText = "\"minFileSize\": 8",
+                Icon = "[sz]",
+                TypeHint = "number",
+                Documentation = "Minimum file size in bytes required to attempt detection",
+                Type = SuggestionType.Property,
+                SortPriority = 70
+            },
+            new SmartCompleteSuggestion
+            {
+                DisplayText = "isTextFormat",
+                InsertText = "\"isTextFormat\": false",
+                Icon = "[txt]",
+                TypeHint = "bool",
+                Documentation = "True if format is text-based (affects encoding detection strategy)",
+                Type = SuggestionType.Property,
+                SortPriority = 80
+            },
+            new SmartCompleteSuggestion
+            {
+                DisplayText = "entropyHints",
+                InsertText = "\"entropyHints\": {}",
+                CursorOffset = -1,
+                Icon = "[ent]",
+                TypeHint = "object",
+                Documentation = "Entropy analysis hints: expectedMin, expectedMax for compressed/encrypted regions",
+                Type = SuggestionType.Property,
+                SortPriority = 90
             }
         };
 
@@ -442,6 +936,61 @@ namespace WpfHexEditor.Editor.CodeEditor.Helpers
                 Documentation = "Complete format definition template",
                 Type = SuggestionType.Snippet,
                 SortPriority = 1
+            },
+            new SmartCompleteSuggestion
+            {
+                DisplayText = "snippet:colored-field",
+                InsertText = "{\n  \"type\": \"field\",\n  \"name\": \"\",\n  \"valueType\": \"uint32\",\n  \"offset\": 0,\n  \"color\": \"#4FC3F7\",\n  \"opacity\": 0.4,\n  \"storeAs\": \"\",\n  \"description\": \"\"\n}",
+                CursorOffset = -4,
+                Icon = "[clr]",
+                TypeHint = "snippet",
+                Documentation = "Field with visual highlight color, opacity, and variable storage",
+                Type = SuggestionType.Snippet,
+                SortPriority = 104
+            },
+            new SmartCompleteSuggestion
+            {
+                DisplayText = "snippet:valuemap-field",
+                InsertText = "{\n  \"type\": \"field\",\n  \"name\": \"\",\n  \"valueType\": \"uint16\",\n  \"offset\": 0,\n  \"color\": \"#CE93D8\",\n  \"opacity\": 0.4,\n  \"valueMap\": {\n    \"0\": \"\",\n    \"1\": \"\"\n  },\n  \"description\": \"\"\n}",
+                CursorOffset = -4,
+                Icon = "[map]",
+                TypeHint = "snippet",
+                Documentation = "Field with a valueMap for human-readable enum labels",
+                Type = SuggestionType.Snippet,
+                SortPriority = 105
+            },
+            new SmartCompleteSuggestion
+            {
+                DisplayText = "snippet:bitfield-entry",
+                InsertText = "{ \"bit\": 0, \"name\": \"\", \"description\": \"\" }",
+                CursorOffset = -4,
+                Icon = "[bit]",
+                TypeHint = "snippet",
+                Documentation = "Single bit-level field entry (used inside a bitfields array)",
+                Type = SuggestionType.Snippet,
+                SortPriority = 106
+            },
+            new SmartCompleteSuggestion
+            {
+                DisplayText = "snippet:conditional-block",
+                InsertText = "{\n  \"type\": \"conditional\",\n  \"name\": \"\",\n  \"condition\": \"var: == 1\",\n  \"then\": [],\n  \"else\": []\n}",
+                CursorOffset = -4,
+                Icon = "[if]",
+                TypeHint = "snippet",
+                Documentation = "Conditional block with then/else branches",
+                Type = SuggestionType.Snippet,
+                SortPriority = 107
+            },
+            new SmartCompleteSuggestion
+            {
+                DisplayText = "snippet:repeating-block",
+                InsertText = "{\n  \"type\": \"repeating\",\n  \"name\": \"\",\n  \"count\": \"var:\",\n  \"indexVar\": \"i\",\n  \"colorCycle\": [\"#4FC3F7\", \"#81C784\"],\n  \"fields\": []\n}",
+                CursorOffset = -4,
+                Icon = "[rep]",
+                TypeHint = "snippet",
+                Documentation = "Repeating block with loop index, colored alternation, and fields",
+                Type = SuggestionType.Snippet,
+                SortPriority = 108
             }
         };
 
@@ -483,6 +1032,21 @@ namespace WpfHexEditor.Editor.CodeEditor.Helpers
 
                     case ContextType.Block:
                         suggestions = new List<SmartCompleteSuggestion>(BlockProperties);
+                        // Merge block-type-specific properties based on the "type" declared in the current block
+                        var blockType = GetCurrentBlockType(context);
+                        if (blockType == "conditional")
+                            suggestions.AddRange(ConditionalBlockProperties);
+                        else if (blockType == "loop" || blockType == "repeating")
+                            suggestions.AddRange(LoopBlockProperties);
+                        else if (blockType == "union")
+                            suggestions.AddRange(UnionBlockProperties);
+                        else if (blockType == null)
+                        {
+                            // Type not yet declared: offer all type-specific props so author sees options
+                            suggestions.AddRange(ConditionalBlockProperties);
+                            suggestions.AddRange(LoopBlockProperties);
+                            suggestions.AddRange(UnionBlockProperties);
+                        }
                         break;
 
                     case ContextType.Field:
@@ -512,7 +1076,11 @@ namespace WpfHexEditor.Editor.CodeEditor.Helpers
                             Snippets.First(s => s.DisplayText == "snippet:signature"),
                             Snippets.First(s => s.DisplayText == "snippet:field"),
                             Snippets.First(s => s.DisplayText == "snippet:loop"),
-                            Snippets.First(s => s.DisplayText == "snippet:conditional")
+                            Snippets.First(s => s.DisplayText == "snippet:conditional"),
+                            Snippets.First(s => s.DisplayText == "snippet:colored-field"),
+                            Snippets.First(s => s.DisplayText == "snippet:valuemap-field"),
+                            Snippets.First(s => s.DisplayText == "snippet:conditional-block"),
+                            Snippets.First(s => s.DisplayText == "snippet:repeating-block")
                         };
                         break;
 
@@ -675,6 +1243,37 @@ namespace WpfHexEditor.Editor.CodeEditor.Helpers
         }
 
         /// <summary>
+        /// Extracts the "type" value of the innermost block object containing the cursor.
+        /// Returns null if no type declaration is found in the enclosing block scope.
+        /// </summary>
+        private string? GetCurrentBlockType(SmartCompleteContext context)
+        {
+            var text = GetTextBeforeCursor(context);
+            if (string.IsNullOrEmpty(text))
+                return null;
+
+            // Walk backward from the cursor to find the start of the enclosing block object
+            int depth = 0;
+            int blockStart = -1;
+            for (int i = text.Length - 1; i >= 0; i--)
+            {
+                if (text[i] == '}') depth++;
+                else if (text[i] == '{')
+                {
+                    if (depth == 0) { blockStart = i; break; }
+                    depth--;
+                }
+            }
+
+            if (blockStart < 0)
+                return null;
+
+            var blockText = text.Substring(blockStart);
+            var match = Regex.Match(blockText, "\"type\"\\s*:\\s*\"([^\"]+)\"");
+            return match.Success ? match.Groups[1].Value : null;
+        }
+
+        /// <summary>
         /// Get all text before cursor position
         /// </summary>
         private string GetTextBeforeCursor(SmartCompleteContext context)
@@ -709,7 +1308,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Helpers
         private enum ContextType
         {
             Root,              // Root level of format definition
-            Block,             // Inside a block object
+            Block,             // Inside a block object (type-aware: merges conditional/loop/union props)
             Field,             // Inside a field object
             BlockTypeValue,    // Value for "type" property in block
             FieldTypeValue,    // Value for "type" property in field
