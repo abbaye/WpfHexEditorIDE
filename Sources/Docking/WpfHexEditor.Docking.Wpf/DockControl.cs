@@ -1375,11 +1375,24 @@ public class DockControl : ContentControl, IDockHost, IDisposable
 
         outer.AddHandler(
             UIElement.PreviewMouseDownEvent,
-            new MouseButtonEventHandler((_, _) => SetActivePanel(overlayBorder)),
+            new MouseButtonEventHandler((_, _) =>
+            {
+                SetActivePanel(overlayBorder);
+                // Fire TrackActivation so ActiveItemChanged reaches all plugins
+                // (ParsedFields, etc.) when the user clicks into a tab group without
+                // switching tabs — SelectionChanged alone misses this cross-group focus.
+                if (host.SelectedItem is TabItem { Tag: DockItem di })
+                    TrackActivation(di);
+            }),
             handledEventsToo: true);
         outer.AddHandler(
             UIElement.GotKeyboardFocusEvent,
-            new KeyboardFocusChangedEventHandler((_, _) => SetActivePanel(overlayBorder)),
+            new KeyboardFocusChangedEventHandler((_, _) =>
+            {
+                SetActivePanel(overlayBorder);
+                if (host.SelectedItem is TabItem { Tag: DockItem di })
+                    TrackActivation(di);
+            }),
             handledEventsToo: true);
 
         _panelBorders.Add(overlayBorder);
