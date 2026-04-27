@@ -645,6 +645,122 @@ internal sealed class QualityMetricsViewModel : ViewModelBase
     private void RaiseChanged() => Changed?.Invoke(this, EventArgs.Empty);
 }
 
+// ── VersionMapEntryViewModel ───────────────────────────────────────────────────
+
+/// <summary>One row in the VersionDetection.Map DataGrid (raw value → version key).</summary>
+internal sealed class VersionMapEntryViewModel : ViewModelBase
+{
+    internal event EventHandler? Changed;
+    internal event EventHandler? RemoveRequested;
+
+    private string _rawValue    = "";
+    private string _versionKey  = "";
+
+    public string RawValue   { get => _rawValue;   set { if (SetField(ref _rawValue, value))   RaiseChanged(); } }
+    public string VersionKey { get => _versionKey; set { if (SetField(ref _versionKey, value)) RaiseChanged(); } }
+
+    public ICommand RemoveCommand => new RelayCommand(() => RemoveRequested?.Invoke(this, EventArgs.Empty));
+
+    private void RaiseChanged() => Changed?.Invoke(this, EventArgs.Empty);
+}
+
+// ── VersioningViewModel ────────────────────────────────────────────────────────
+
+/// <summary>
+/// Wraps FormatVersionDetection + VersionedBlocks.
+/// The VersionedBlocks editor shows each version key with a block-count badge;
+/// full block editing for versioned sets is deferred to raw JSON (structurally complex).
+/// </summary>
+internal sealed class VersioningViewModel : ViewModelBase
+{
+    internal event EventHandler? Changed;
+
+    private string _field = "";
+
+    /// <summary>Variable name whose value drives version selection (e.g. "peFormat").</summary>
+    public string Field { get => _field; set { if (SetField(ref _field, value)) RaiseChanged(); } }
+
+    /// <summary>Raw value → version key mapping (e.g. "0x20b" → "PE32+").</summary>
+    public ObservableCollection<VersionMapEntryViewModel> VersionMap { get; } = [];
+
+    /// <summary>Version keys found in VersionedBlocks (display-only count badge).</summary>
+    public ObservableCollection<VersionedBlockSetInfo> VersionedSets { get; } = [];
+
+    public ICommand AddEntryCommand => new RelayCommand(AddEntry);
+
+    internal void LoadFrom(FormatVersionDetection? vd, Dictionary<string, List<BlockDefinition>>? vb)
+    {
+        Field = vd?.Field ?? "";
+
+        VersionMap.Clear();
+        foreach (var kv in vd?.Map ?? new Dictionary<string, string>())
+        {
+            var vm = new VersionMapEntryViewModel { RawValue = kv.Key, VersionKey = kv.Value };
+            WireEntry(vm);
+            VersionMap.Add(vm);
+        }
+
+        VersionedSets.Clear();
+        foreach (var kv in vb ?? new Dictionary<string, List<BlockDefinition>>())
+            VersionedSets.Add(new VersionedBlockSetInfo(kv.Key, kv.Value?.Count ?? 0));
+    }
+
+    internal (FormatVersionDetection? detection, Dictionary<string, List<BlockDefinition>>? versionedBlocks)
+        Build(Dictionary<string, List<BlockDefinition>>? existingVersionedBlocks)
+    {
+        if (string.IsNullOrEmpty(Field) && VersionMap.Count == 0)
+            return (null, existingVersionedBlocks);
+
+        var detection = new FormatVersionDetection
+        {
+            Field = string.IsNullOrEmpty(Field) ? null : Field,
+            Map   = VersionMap.Count > 0
+                ? VersionMap.ToDictionary(e => e.RawValue, e => e.VersionKey)
+                : null,
+        };
+
+        return (detection, existingVersionedBlocks);
+    }
+
+    private void AddEntry()
+    {
+        var vm = new VersionMapEntryViewModel();
+        WireEntry(vm);
+        VersionMap.Add(vm);
+        RaiseChanged();
+    }
+
+    private void WireEntry(VersionMapEntryViewModel vm)
+    {
+        vm.RemoveRequested += (s, _) => { VersionMap.Remove((VersionMapEntryViewModel)s!); RaiseChanged(); };
+        vm.Changed         += (_, _) => RaiseChanged();
+    }
+
+    private void RaiseChanged() => Changed?.Invoke(this, EventArgs.Empty);
+}
+
+/// <summary>Display-only info about a versioned block set.</summary>
+internal sealed record VersionedBlockSetInfo(string VersionKey, int BlockCount);
+
+// ── ImportViewModel ────────────────────────────────────────────────────────────
+
+/// <summary>One row in the Imports DataGrid (ref → as alias).</summary>
+internal sealed class ImportViewModel : ViewModelBase
+{
+    internal event EventHandler? Changed;
+    internal event EventHandler? RemoveRequested;
+
+    private string _ref = "";
+    private string _as  = "";
+
+    public string Ref { get => _ref; set { if (SetField(ref _ref, value)) RaiseChanged(); } }
+    public string As  { get => _as;  set { if (SetField(ref _as,  value)) RaiseChanged(); } }
+
+    public ICommand RemoveCommand => new RelayCommand(() => RemoveRequested?.Invoke(this, EventArgs.Empty));
+
+    private void RaiseChanged() => Changed?.Invoke(this, EventArgs.Empty);
+}
+
 // ── UnionVariantViewModel ──────────────────────────────────────────────────────
 
 /// <summary>One row in the union variants DataGrid.</summary>

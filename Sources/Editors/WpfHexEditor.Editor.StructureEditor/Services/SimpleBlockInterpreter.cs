@@ -34,14 +34,20 @@ internal sealed class BlockTestResult
 /// Executes a <see cref="FormatDefinition"/> against raw file bytes and returns
 /// per-block test results.
 /// <list type="bullet">
-///   <item>field, signature     — fully parsed</item>
+///   <item>field, signature     — fully parsed, Until sentinel supported</item>
 ///   <item>conditional          — condition evaluated; Then/Else branch executed</item>
 ///   <item>loop                 — iterated up to MaxTestIterations; body blocks executed</item>
 ///   <item>metadata             — variable value shown in ParsedValue</item>
-///   <item>computeFromVariables — skipped (expression evaluation not supported)</item>
-///   <item>action               — skipped (runtime state only)</item>
-///   <item>repeating, union, nested, pointer — skipped</item>
+///   <item>action               — variable mutation applied (increment/decrement/set)</item>
+///   <item>computeFromVariables — result stored if expression is a simple var: or literal</item>
+///   <item>group                — overlay label; child fields executed</item>
+///   <item>header               — overlay section; child fields executed</item>
+///   <item>data                 — raw byte region; hex preview only</item>
+///   <item>repeating            — iterated up to MaxTestIterations; entry fields executed</item>
+///   <item>union, nested, pointer — skipped</item>
 /// </list>
+/// Assertions in <see cref="FormatDefinition.Assertions"/> are evaluated after all blocks
+/// and appended as assertion rows (OK = passed, Warning = failed).
 /// </summary>
 internal sealed class SimpleBlockInterpreter
 {
@@ -71,6 +77,9 @@ internal sealed class SimpleBlockInterpreter
         foreach (var block in def.Blocks ?? [])
             InterpretBlock(block, results);
 
+        // Run assertions after all blocks
+        RunAssertions(def, results);
+
         return results;
     }
 
@@ -97,24 +106,28 @@ internal sealed class SimpleBlockInterpreter
                 results.Add(InterpretMetadata(block));
                 break;
 
-            case "computefromvariables":
-                results.Add(new BlockTestResult
-                {
-                    BlockName = block.Name ?? "",
-                    BlockType = block.Type ?? "",
-                    Status    = "Skipped",
-                    Note      = "Expression evaluation not supported in test mode.",
-                });
+            case "action":
+                results.Add(InterpretAction(block));
                 break;
 
-            case "action":
-                results.Add(new BlockTestResult
-                {
-                    BlockName = block.Name ?? "",
-                    BlockType = block.Type ?? "",
-                    Status    = "Skipped",
-                    Note      = "Action blocks modify runtime state only.",
-                });
+            case "computefromvariables":
+                results.Add(InterpretComputeFromVariables(block));
+                break;
+
+            case "group":
+                InterpretGroup(block, results);
+                break;
+
+            case "header":
+                InterpretHeader(block, results);
+                break;
+
+            case "data":
+                results.Add(InterpretData(block));
+                break;
+
+            case "repeating":
+                InterpretRepeating(block, results);
                 break;
 
             default:
@@ -353,8 +366,18 @@ internal sealed class SimpleBlockInterpreter
             offset = raw;
         }
 
-        // Resolve length
-        int length = (int)ResolveNumber(block.Length, 0);
+        // Resolve length — Until sentinel takes priority over explicit Length
+        int length;
+        if (!string.IsNullOrEmpty(block.Until))
+        {
+            int maxLen = block.MaxLength > 0 ? block.MaxLength : 4096;
+            long? scanned = ScanForwardUntil(offset, block.Until, maxLen, block.UntilInclusive);
+            length = (int)(scanned ?? (int)ResolveNumber(block.Length, maxLen));
+        }
+        else
+        {
+            length = (int)ResolveNumber(block.Length, 0);
+        }
         if (length < 0) length = 0;
 
         // Bounds check
@@ -422,6 +445,333 @@ internal sealed class SimpleBlockInterpreter
             ParsedValue = parsed,
             Status      = status,
             Note        = note,
+        };
+    }
+
+    // ── Action ────────────────────────────────────────────────────────────────
+
+    private BlockTestResult InterpretAction(BlockDefinition block)
+    {
+        var variable = block.Variable ?? "";
+        var action   = block.Action   ?? "increment";
+        long current = _vars.TryGetValue(variable, out var cv) ? ToLong(cv) : 0;
+        long operand = ResolveNumber(block.Value, 1);
+        long result;
+
+        switch (action.ToLowerInvariant())
+        {
+            case "increment":  result = current + operand; break;
+            case "decrement":  result = current - operand; break;
+            case "setvariable":
+            default:           result = operand; break;
+        }
+
+        if (!string.IsNullOrEmpty(variable))
+            _vars[variable] = result;
+
+        return new BlockTestResult
+        {
+            BlockName   = block.Name ?? "",
+            BlockType   = "action",
+            ParsedValue = !string.IsNullOrEmpty(variable) ? $"{variable} = {result}" : "",
+            Status      = "OK",
+            Note        = $"{action} '{variable}' → {result}",
+        };
+    }
+
+    // ── ComputeFromVariables ──────────────────────────────────────────────────
+
+    private BlockTestResult InterpretComputeFromVariables(BlockDefinition block)
+    {
+        // Simple support: if expression is "var:name" or a literal, store result
+        var expr    = block.Expression ?? "";
+        var storeAs = block.StoreAs    ?? "";
+
+        object? resolved = null;
+        if (expr.StartsWith("var:", StringComparison.Ordinal))
+        {
+            var varName = expr[4..];
+            _vars.TryGetValue(varName, out resolved);
+        }
+        else if (long.TryParse(expr, out var num))
+        {
+            resolved = num;
+        }
+
+        string note;
+        if (resolved != null && !string.IsNullOrEmpty(storeAs))
+        {
+            _vars[storeAs] = resolved;
+            note = $"{storeAs} = {resolved}";
+        }
+        else
+        {
+            note = string.IsNullOrEmpty(expr)
+                ? "No expression defined."
+                : $"Expression '{expr}' — full evaluation not supported in test mode.";
+        }
+
+        return new BlockTestResult
+        {
+            BlockName   = block.Name ?? "",
+            BlockType   = "computeFromVariables",
+            ParsedValue = resolved?.ToString() ?? "",
+            Status      = resolved != null ? "OK" : "Skipped",
+            Note        = note,
+        };
+    }
+
+    // ── Group ─────────────────────────────────────────────────────────────────
+
+    private void InterpretGroup(BlockDefinition block, List<BlockTestResult> results)
+    {
+        var children = block.Fields ?? [];
+        results.Add(new BlockTestResult
+        {
+            BlockName  = block.Name ?? "",
+            BlockType  = "group",
+            Status     = "OK",
+            IsSummary  = true,
+            Note       = $"Group — {children.Count} child field(s).",
+        });
+        foreach (var b in children)
+            InterpretBlock(b, results);
+    }
+
+    // ── Header ────────────────────────────────────────────────────────────────
+
+    private void InterpretHeader(BlockDefinition block, List<BlockTestResult> results)
+    {
+        var children = block.Fields ?? [];
+        results.Add(new BlockTestResult
+        {
+            BlockName  = block.Name ?? "",
+            BlockType  = "header",
+            Status     = "OK",
+            IsSummary  = true,
+            Note       = $"Header section — {children.Count} child field(s).",
+        });
+        foreach (var b in children)
+            InterpretBlock(b, results);
+    }
+
+    // ── Data ──────────────────────────────────────────────────────────────────
+
+    private BlockTestResult InterpretData(BlockDefinition block)
+    {
+        long offset = ResolveNumber(block.Offset, -1);
+        int  length = (int)ResolveNumber(block.Length, 0);
+
+        if (offset < 0 || offset >= _bytes.Length)
+        {
+            return new BlockTestResult
+            {
+                BlockName = block.Name ?? "",
+                BlockType = "data",
+                Offset    = offset,
+                Status    = "Error",
+                Note      = $"Offset 0x{offset:X} is beyond file end.",
+            };
+        }
+
+        int safeLen  = (int)Math.Min(length, _bytes.Length - offset);
+        var rawBytes = _bytes[(int)offset..(int)(offset + safeLen)];
+        var previewLen = Math.Min(safeLen, 16);
+        var rawHex = Convert.ToHexString(rawBytes[..previewLen]) + (safeLen > 16 ? "…" : "");
+
+        return new BlockTestResult
+        {
+            BlockName   = block.Name ?? "",
+            BlockType   = "data",
+            Offset      = offset,
+            Length      = safeLen,
+            RawHex      = rawHex,
+            ParsedValue = $"({safeLen} byte{(safeLen == 1 ? "" : "s")} raw data)",
+            Status      = "OK",
+        };
+    }
+
+    // ── Repeating ─────────────────────────────────────────────────────────────
+
+    private void InterpretRepeating(BlockDefinition block, List<BlockTestResult> results)
+    {
+        long rawCount = ResolveNumber(block.Count, -1);
+        if (rawCount < 0)
+        {
+            results.Add(new BlockTestResult
+            {
+                BlockName = block.Name ?? "",
+                BlockType = "repeating",
+                Status    = "Skipped",
+                Note      = "Cannot resolve count — variable not declared.",
+            });
+            return;
+        }
+
+        int  count    = (int)Math.Min(rawCount, MaxTestIterations);
+        var  fields   = block.Fields ?? [];
+        bool capped   = rawCount > MaxTestIterations;
+
+        results.Add(new BlockTestResult
+        {
+            BlockName   = block.Name ?? "",
+            BlockType   = "repeating",
+            Status      = "OK",
+            IsSummary   = true,
+            ParsedValue = $"{count} / {rawCount}",
+            Note        = capped
+                ? $"Repeating: {rawCount} entries declared — capped at {MaxTestIterations} in test mode. {fields.Count} field(s) per entry."
+                : $"Repeating: {count} entr{(count == 1 ? "y" : "ies")} × {fields.Count} field(s).",
+        });
+
+        for (int i = 0; i < count; i++)
+        {
+            if (!string.IsNullOrEmpty(block.IndexVar))
+                _vars[block.IndexVar] = (long)i;
+
+            foreach (var b in fields)
+            {
+                var iterResults = new List<BlockTestResult>();
+                InterpretBlock(b, iterResults);
+                foreach (var r in iterResults)
+                {
+                    results.Add(new BlockTestResult
+                    {
+                        BlockName   = $"[{i}] {r.BlockName}",
+                        BlockType   = r.BlockType,
+                        Offset      = r.Offset,
+                        Length      = r.Length,
+                        RawHex      = r.RawHex,
+                        ParsedValue = r.ParsedValue,
+                        Status      = r.Status,
+                        Note        = r.Note,
+                        IsSummary   = r.IsSummary,
+                    });
+                }
+            }
+        }
+    }
+
+    // ── Until sentinel (simple linear scan) ──────────────────────────────────
+
+    private long? ScanForwardUntil(long startOffset, string untilExpr, int maxLength, bool inclusive)
+    {
+        // Resolve pattern — hex string or var:name (treating var value as hex)
+        byte[]? pattern = null;
+        if (untilExpr.StartsWith("var:", StringComparison.Ordinal))
+        {
+            var varName = untilExpr[4..];
+            if (_vars.TryGetValue(varName, out var vv))
+            {
+                var hexStr = vv?.ToString() ?? "";
+                pattern = TryParseHexPattern(hexStr);
+            }
+        }
+        else
+        {
+            pattern = TryParseHexPattern(untilExpr);
+        }
+
+        if (pattern == null || pattern.Length == 0) return null;
+
+        long end = Math.Min(startOffset + maxLength, _bytes.Length - pattern.Length + 1);
+        for (long i = startOffset; i < end; i++)
+        {
+            bool found = true;
+            for (int j = 0; j < pattern.Length; j++)
+            {
+                if (_bytes[i + j] != pattern[j]) { found = false; break; }
+            }
+            if (found)
+            {
+                long consumed = i - startOffset;
+                return inclusive ? consumed + pattern.Length : consumed;
+            }
+        }
+
+        // Pattern not found — return maxLength as fallback
+        return maxLength;
+    }
+
+    private static byte[]? TryParseHexPattern(string hex)
+    {
+        hex = hex.Replace(" ", "");
+        if (hex.Length == 0 || hex.Length % 2 != 0) return null;
+        try
+        {
+            return Convert.FromHexString(hex);
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    // ── Assertions ────────────────────────────────────────────────────────────
+
+    private void RunAssertions(FormatDefinition def, List<BlockTestResult> results)
+    {
+        if (def.Assertions is not { Count: > 0 }) return;
+
+        results.Add(new BlockTestResult
+        {
+            BlockName = "── Assertions ──",
+            BlockType = "assertion",
+            Status    = "OK",
+            IsSummary = true,
+            Note      = $"{def.Assertions.Count} assertion(s) evaluated.",
+        });
+
+        foreach (var assertion in def.Assertions)
+        {
+            bool passed = EvaluateSimpleAssertion(assertion.Expression);
+            results.Add(new BlockTestResult
+            {
+                BlockName   = assertion.Name ?? "",
+                BlockType   = "assertion",
+                ParsedValue = passed ? "PASSED" : "FAILED",
+                Status      = passed ? "OK" : "Warning",
+                Note        = passed
+                    ? "Assertion passed."
+                    : $"Assertion failed: {assertion.Expression}",
+            });
+        }
+    }
+
+    /// <summary>Evaluates simple boolean assertions in the form "var:X op value".</summary>
+    private bool EvaluateSimpleAssertion(string? expression)
+    {
+        if (string.IsNullOrWhiteSpace(expression)) return false;
+
+        // Simple pattern: "var:name op value"
+        // e.g. "var:magic equals 1234" or "var:count greaterThan 0"
+        var parts = expression.Trim().Split(' ', 3, StringSplitOptions.RemoveEmptyEntries);
+        if (parts.Length != 3) return false;
+
+        var field   = parts[0];
+        var op      = parts[1];
+        var valStr  = parts[2];
+
+        long actual;
+        if (field.StartsWith("var:", StringComparison.Ordinal))
+        {
+            var varName = field[4..];
+            if (!_vars.TryGetValue(varName, out var vv)) return false;
+            actual = ToLong(vv);
+        }
+        else return false;
+
+        long expected = ParseConditionValue(valStr);
+
+        return op.ToLowerInvariant() switch
+        {
+            "equals"        or "==" or "eq" => actual == expected,
+            "notequals"     or "!=" or "ne" => actual != expected,
+            "greaterthan"   or ">"  or "gt" => actual > expected,
+            "lessthan"      or "<"  or "lt" => actual < expected,
+            "greaterorequal" or ">="        => actual >= expected,
+            "lessorequal"    or "<="        => actual <= expected,
+            _                               => false,
         };
     }
 

@@ -406,9 +406,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Services
                     });
                 }
 
-                // String/bytes types should have length
+                // String/bytes types should have length — unless "until" sentinel is used
                 if ((fieldType == "string" || fieldType == "bytes" || fieldType == "ascii" || fieldType == "utf8" || fieldType == "utf16")
-                    && !field.ContainsKey("length"))
+                    && !field.ContainsKey("length") && !field.ContainsKey("until"))
                 {
                     errors.Add(new ValidationError(0, 0,
                         $"Block {blockIndex}, Field {fieldIndex} type '{fieldType}' requires 'length' property",

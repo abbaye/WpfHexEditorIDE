@@ -227,6 +227,28 @@ internal sealed class CtrlClickNavigationService : IDisposable
     {
         if (string.IsNullOrEmpty(word) || lines.Count == 0) return null;
 
+        // whfmt: var:name → find declaration ("storeAs", "varName", "indexVar", "mappedValueStoreAs")
+        string? varRefName = null;
+        if (word.StartsWith("var:", StringComparison.Ordinal))
+            varRefName = word.Substring(4);
+        else if (word.StartsWith("\"var:", StringComparison.Ordinal))
+            varRefName = word.Substring(5).TrimEnd('"');
+
+        if (!string.IsNullOrEmpty(varRefName))
+        {
+            var declLine = FindWhfmtVarDeclaration(lines, varRefName, hoveredLine);
+            if (declLine >= 0)
+                return new CtrlClickTarget(
+                    Line:           hoveredLine,
+                    StartCol:       startCol,
+                    EndCol:         endCol,
+                    SymbolName:     word,
+                    TargetFilePath: filePath,
+                    TargetLine:     declLine,
+                    TargetColumn:   0,
+                    IsExternal:     false);
+        }
+
         var snapshot  = CodeStructureParser.Parse(lines);
         var all       = snapshot.Types.Concat(snapshot.Members).ToList();
 
@@ -245,6 +267,29 @@ internal sealed class CtrlClickNavigationService : IDisposable
             TargetLine:     decl.Line,
             TargetColumn:   0,
             IsExternal:     false);
+    }
+
+    /// <summary>
+    /// Scans whfmt JSON lines for the first line that declares <paramref name="varName"/>
+    /// via "storeAs", "varName", "indexVar", or "mappedValueStoreAs".
+    /// Returns the 0-based line index or -1 if not found.
+    /// </summary>
+    private static int FindWhfmtVarDeclaration(IReadOnlyList<CodeLine> lines, string varName, int excludeLine)
+    {
+        // Patterns: "storeAs": "varName"  |  "varName": "varName"  etc.
+        var declaringProps = new[] { "storeAs", "varName", "indexVar", "mappedValueStoreAs" };
+        for (int i = 0; i < lines.Count; i++)
+        {
+            if (i == excludeLine) continue;
+            var text = lines[i].Text;
+            foreach (var prop in declaringProps)
+            {
+                // e.g. "storeAs": "myVar"
+                if (text.Contains($"\"{prop}\"") && text.Contains($"\"{varName}\""))
+                    return i;
+            }
+        }
+        return -1;
     }
 
     // ── URI helpers ───────────────────────────────────────────────────────────

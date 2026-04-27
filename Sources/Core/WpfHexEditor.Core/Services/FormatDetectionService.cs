@@ -360,34 +360,63 @@ namespace WpfHexEditor.Core.Services
             {
                 var interpreter = new FormatScriptInterpreter(data, format.Variables, byteProvider);
 
+                // v2.0: wire cross-format imports into NestedStructResolver
+                if (format.Imports?.Count > 0)
+                    interpreter.NestedStructResolver = alias => ResolveImportAlias(format.Imports, alias);
+
                 // Execute built-in functions first (populates variables)
                 if (format.Functions != null && format.Functions.Count > 0)
                     interpreter.ExecuteFunctions(format.Functions);
 
                 blocks = interpreter.ExecuteBlocks(format.Blocks);
 
+                // v2.0: version dispatch — run version-specific block set after base blocks
+                if (format.VersionDetection != null && format.VersionedBlocks != null
+                    && !string.IsNullOrWhiteSpace(format.VersionDetection.Field))
+                {
+                    if (interpreter.Variables.TryGetValue(format.VersionDetection.Field, out var rawVer))
+                    {
+                        var rawVerStr = rawVer?.ToString() ?? string.Empty;
+                        string versionKey = null;
+                        if (format.VersionDetection.Map != null)
+                            format.VersionDetection.Map.TryGetValue(rawVerStr, out versionKey);
+                        else
+                            versionKey = rawVerStr;
+
+                        if (versionKey != null && format.VersionedBlocks.TryGetValue(versionKey, out var versionedBlockList))
+                        {
+                            interpreter.Variables["detectedVersion"] = versionKey;
+                            var versionedBlocks = interpreter.ExecuteBlocks(versionedBlockList);
+                            blocks.AddRange(versionedBlocks.Skip(blocks.Count)); // avoid duplicates
+                        }
+                    }
+                }
+
                 // Copy variables from interpreter (includes function results)
                 variables = new Dictionary<string, object>(interpreter.Variables);
 
-                // v2.0: run checksums — any error-severity failure reduces confidence (logged only here)
+                // v2.0: run checksums — store results as variables and log failures
                 if (format.Checksums != null && format.Checksums.Count > 0)
                 {
                     var checksumEngine = new ChecksumEngine();
                     var csResults = checksumEngine.Execute(format.Checksums, data, variables);
                     foreach (var r in csResults)
                     {
+                        variables[$"checksum_{r.Name}_valid"]    = r.IsValid;
+                        variables[$"checksum_{r.Name}_computed"] = r.Computed ?? string.Empty;
                         if (!r.IsValid)
                             Debug.WriteLine($"[FormatDetection] Checksum '{r.Name}' failed: {r.ErrorMessage}");
                     }
                 }
 
-                // v2.0: run assertions — log failures (do not block detection)
+                // v2.0: run assertions — store results as variables, log failures
                 if (format.Assertions != null && format.Assertions.Count > 0)
                 {
                     var runner = new AssertionRunner();
                     var assertResults = runner.Run(format.Assertions, variables);
                     foreach (var r in assertResults)
                     {
+                        variables[$"assertion_{r.Name}_passed"] = r.Passed;
                         if (!r.Passed)
                             Debug.WriteLine($"[FormatDetection] Assertion '{r.Name}' failed: {r.Message}");
                     }
@@ -1077,13 +1106,61 @@ namespace WpfHexEditor.Core.Services
             {
                 var interpreter = new FormatScriptInterpreter(data, format.Variables, byteProvider);
 
+                // v2.0: wire cross-format imports
+                if (format.Imports?.Count > 0)
+                    interpreter.NestedStructResolver = alias => ResolveImportAlias(format.Imports, alias);
+
                 // Execute built-in functions first (populates variables)
                 if (format.Functions != null && format.Functions.Count > 0)
                 {
                     interpreter.ExecuteFunctions(format.Functions);
                 }
 
-                return interpreter.ExecuteBlocks(format.Blocks);
+                var blocks = interpreter.ExecuteBlocks(format.Blocks);
+
+                // v2.0: version dispatch
+                if (format.VersionDetection != null && format.VersionedBlocks != null
+                    && !string.IsNullOrWhiteSpace(format.VersionDetection.Field))
+                {
+                    if (interpreter.Variables.TryGetValue(format.VersionDetection.Field, out var rawVer))
+                    {
+                        var rawVerStr = rawVer?.ToString() ?? string.Empty;
+                        string versionKey = null;
+                        if (format.VersionDetection.Map != null)
+                            format.VersionDetection.Map.TryGetValue(rawVerStr, out versionKey);
+                        else
+                            versionKey = rawVerStr;
+
+                        if (versionKey != null && format.VersionedBlocks.TryGetValue(versionKey, out var vbl))
+                        {
+                            interpreter.Variables["detectedVersion"] = versionKey;
+                            blocks.AddRange(interpreter.ExecuteBlocks(vbl).Skip(blocks.Count));
+                        }
+                    }
+                }
+
+                var vars = new Dictionary<string, object>(interpreter.Variables);
+
+                // Run checksums — failures stored as variables for downstream inspection
+                if (format.Checksums?.Count > 0)
+                {
+                    var csResults = new ChecksumEngine().Execute(format.Checksums, data, vars);
+                    foreach (var r in csResults)
+                    {
+                        interpreter.Variables[$"checksum_{r.Name}_valid"]    = r.IsValid;
+                        interpreter.Variables[$"checksum_{r.Name}_computed"] = r.Computed ?? string.Empty;
+                    }
+                }
+
+                // Run assertions — failures stored as variables
+                if (format.Assertions?.Count > 0)
+                {
+                    var arResults = new AssertionRunner().Run(format.Assertions, vars);
+                    foreach (var r in arResults)
+                        interpreter.Variables[$"assertion_{r.Name}_passed"] = r.Passed;
+                }
+
+                return blocks;
             }
             catch (Exception ex)
             {
@@ -1186,6 +1263,28 @@ namespace WpfHexEditor.Core.Services
 
             return EffectiveFormats.FirstOrDefault(f =>
                 f.FormatName.Equals(name, StringComparison.OrdinalIgnoreCase));
+        }
+
+        /// <summary>
+        /// Resolves a structRef alias from the format's imports list.
+        /// Returns the block list from the referenced format, or null if not found.
+        /// </summary>
+        private List<BlockDefinition> ResolveImportAlias(List<FormatImportDefinition> imports, string alias)
+        {
+            if (imports == null || string.IsNullOrEmpty(alias))
+                return null;
+
+            var import = imports.FirstOrDefault(i =>
+                string.Equals(i.As, alias, StringComparison.OrdinalIgnoreCase));
+
+            if (import?.Ref == null)
+                return null;
+
+            // Look up by FormatName (strip path prefix if any)
+            var refName = System.IO.Path.GetFileNameWithoutExtension(import.Ref);
+            var refFormat = GetFormatByName(refName) ?? GetFormatByName(import.Ref);
+
+            return refFormat?.Blocks;
         }
 
         /// <summary>

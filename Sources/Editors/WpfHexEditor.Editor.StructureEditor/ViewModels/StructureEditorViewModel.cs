@@ -49,6 +49,8 @@ internal sealed class StructureEditorViewModel : ViewModelBase
     public ObservableCollection<AssertionViewModel>     Assertions      { get; } = [];
     public ObservableCollection<ChecksumViewModel>      Checksums       { get; } = [];
     public ObservableCollection<ExportTemplateViewModel> ExportTemplates { get; } = [];
+    public VersioningViewModel Versioning { get; } = new();
+    public ObservableCollection<ImportViewModel> Imports { get; } = [];
 
     /// <summary>Live variable source for autocomplete — aggregates Variables tab + block tree.</summary>
     public IVariableSource VariableSource => _variableSource ??= new VariablesViewModelAdapter(Variables, Blocks);
@@ -128,6 +130,16 @@ internal sealed class StructureEditorViewModel : ViewModelBase
         LoadCollection(Checksums,  def.Checksums,  (vm, c) => vm.LoadFrom(c), () => new ChecksumViewModel());
         LoadCollection(ExportTemplates, def.ExportTemplates, (vm, t) => vm.LoadFrom(t), () => new ExportTemplateViewModel());
 
+        Versioning.LoadFrom(def.VersionDetection, def.VersionedBlocks);
+
+        Imports.Clear();
+        foreach (var imp in def.Imports ?? [])
+        {
+            var vm = new ImportViewModel { Ref = imp.Ref ?? "", As = imp.As ?? "" };
+            WireImport(vm);
+            Imports.Add(vm);
+        }
+
         IsDirty = false;
         if (!_isUndoRedoInProgress)
             UndoRedo.Clear();
@@ -150,6 +162,14 @@ internal sealed class StructureEditorViewModel : ViewModelBase
         def.Assertions      = Assertions.Count > 0 ? [..Assertions.Select(vm => vm.Build())] : null;
         def.Checksums       = Checksums.Count  > 0 ? [..Checksums.Select(vm => vm.Build())]  : null;
         def.ExportTemplates = ExportTemplates.Count > 0 ? [..ExportTemplates.Select(vm => vm.Build())] : null;
+
+        var (vd, vb) = Versioning.Build(def.VersionedBlocks);
+        def.VersionDetection  = vd;
+        def.VersionedBlocks   = vb;
+
+        def.Imports = Imports.Count > 0
+            ? [..Imports.Select(vm => new WpfHexEditor.Core.FormatDetection.FormatImportDefinition { Ref = vm.Ref, As = vm.As })]
+            : null;
 
         return def;
     }
@@ -233,6 +253,20 @@ internal sealed class StructureEditorViewModel : ViewModelBase
         MarkDirty();
     }
 
+    internal void AddImport()
+    {
+        var vm = new ImportViewModel();
+        WireImport(vm);
+        Imports.Add(vm);
+        MarkDirty();
+    }
+
+    private void WireImport(ImportViewModel vm)
+    {
+        vm.RemoveRequested += (s, _) => { Imports.Remove((ImportViewModel)s!); MarkDirty(); };
+        vm.Changed         += (_, _) => MarkDirty();
+    }
+
     // ── Validation debounce ───────────────────────────────────────────────────
 
     private async void OnDebounceElapsed(object? sender, EventArgs e)
@@ -271,6 +305,7 @@ internal sealed class StructureEditorViewModel : ViewModelBase
         Navigation.Changed    += OnChildChanged;
         Inspector.Changed     += OnChildChanged;
         AiHints.Changed       += OnChildChanged;
+        Versioning.Changed    += OnChildChanged;
     }
 
     private void OnChildChanged(object? sender, EventArgs e) => MarkDirty();
