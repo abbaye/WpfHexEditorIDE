@@ -2,8 +2,10 @@
   "diffMode": "text",
   "formatName": "Dockerfile",
   "formatId": "DOCKERFILE",
-  "version": "1.0",
-  "extensions": [ ".dockerfile" ],
+  "version": "1.1",
+  "extensions": [
+    ".dockerfile"
+  ],
   "description": "Dockerfile — build instructions for Docker/OCI container images (Moby/BuildKit specification). Text format, one instruction per logical line (continued with backslash \\). Instructions (case-insensitive, uppercase convention): FROM base_image[:tag][@digest] [AS name] — MUST be first non-comment instruction (except ARG before FROM); RUN shell_command — executes during build; COPY [--chown=user:group] src dest — copies files from build context; ADD src dest — COPY + URL download + tar auto-extraction; ENV KEY=VALUE — sets environment variables (persists to container); ARG NAME[=default] — build-time variable (not persisted); EXPOSE port[/protocol] — documents exposed ports; CMD [\"executable\",\"arg\"] — default command, overridden by docker run args; ENTRYPOINT [\"executable\"] — fixed command prefix; WORKDIR /path — sets working directory; USER user[:group] — switches user; VOLUME [\"/data\"] — creates mount point; LABEL key=value — metadata; HEALTHCHECK CMD; SHELL [\"/bin/sh\",\"-c\"]. Multi-stage builds: multiple FROM instructions with AS aliases and COPY --from=stage. Parser directives: # syntax=docker/dockerfile:1, # escape=\\. Comments: # to EOL. Used by Docker, Podman, Buildah, Kaniko, BuildKit.",
   "category": "Programming",
   "author": "WPFHexaEditor Team",
@@ -22,8 +24,18 @@
   },
   "detection": {
     "signatures": [
-      { "value": "46524F4D20", "offset": 0, "label": "FROM  — Dockerfile FROM instruction at file start (uppercase, followed by space)", "weight": 0.9 },
-      { "value": "23", "offset": 0, "label": "# — Dockerfile comment or parser directive at file start", "weight": 0.2 }
+      {
+        "value": "46524F4D20",
+        "offset": 0,
+        "label": "FROM  — Dockerfile FROM instruction at file start (uppercase, followed by space)",
+        "weight": 0.9
+      },
+      {
+        "value": "23",
+        "offset": 0,
+        "label": "# — Dockerfile comment or parser directive at file start",
+        "weight": 0.2
+      }
     ],
     "matchMode": "any",
     "MinimumScore": 0.2,
@@ -91,7 +103,11 @@
   ],
   "navigation": {
     "bookmarks": [
-      { "name": "FROM Instruction", "offset": 0, "color": "#FF4444" }
+      {
+        "name": "FROM Instruction",
+        "offset": 0,
+        "color": "#FF4444"
+      }
     ]
   },
   "inspector": {
@@ -102,7 +118,10 @@
       {
         "title": "Dockerfile Header",
         "icon": "",
-        "fields": [ "firstByte", "fromKeyword" ]
+        "fields": [
+          "firstByte",
+          "fromKeyword"
+        ]
       }
     ]
   },
@@ -110,12 +129,18 @@
     {
       "name": "Dockerfile Summary (Text)",
       "format": "text",
-      "fields": [ "fromKeyword", "firstByte" ]
+      "fields": [
+        "fromKeyword",
+        "firstByte"
+      ]
     },
     {
       "name": "Dockerfile Metadata (JSON)",
       "format": "json",
-      "fields": [ "firstByte", "fromKeyword" ]
+      "fields": [
+        "firstByte",
+        "fromKeyword"
+      ]
     }
   ],
   "forensic": {
@@ -150,8 +175,14 @@
   ],
   "formatRelationships": {
     "category": "Programming",
-    "extensions": [ ".dockerfile" ],
-    "relatedFormats": [ "YAML", "ENV_FILE", "NGINX_CONF" ],
+    "extensions": [
+      ".dockerfile"
+    ],
+    "relatedFormats": [
+      "YAML",
+      "ENV_FILE",
+      "NGINX_CONF"
+    ],
     "note": "Dockerfiles are typically named 'Dockerfile' without extension. Docker Compose (docker-compose.yml) references Dockerfiles in build: context. OCI Image Specification defines the standard container image format. Podman and Buildah are rootless alternatives that read the same Dockerfile format."
   },
   "MimeTypes": [
@@ -182,5 +213,66 @@
     "ParserDirectives": "# syntax= and # escape= must appear before any other instruction",
     "Layers": "Each RUN, COPY, ADD instruction creates a new image layer",
     "MultiStage": "Multiple FROM instructions; COPY --from=stage for artifact promotion"
+  },
+  "syntaxDefinition": {
+    "id": "dockerfile",
+    "name": "Dockerfile",
+    "extensions": [
+      "Dockerfile",
+      ".dockerfile"
+    ],
+    "lineCommentPrefix": "#",
+    "rules": [
+      {
+        "type": "Comment",
+        "pattern": "^\\s*#.*$"
+      },
+      {
+        "type": "Keyword",
+        "pattern": "^\\s*(?i)(FROM|RUN|CMD|LABEL|EXPOSE|ENV|ADD|COPY|ENTRYPOINT|VOLUME|USER|WORKDIR|ARG|ONBUILD|STOPSIGNAL|HEALTHCHECK|SHELL|MAINTAINER)\\b"
+      },
+      {
+        "type": "String",
+        "pattern": "(\"(?:[^\"\\\\]|\\\\.)*\"|'[^']*')"
+      },
+      {
+        "type": "Variable",
+        "pattern": "\\$\\{?[A-Za-z_][A-Za-z0-9_]*\\}?"
+      },
+      {
+        "type": "Directive",
+        "pattern": "^#\\s*(syntax|escape)\\s*="
+      },
+      {
+        "type": "Number",
+        "pattern": "\\b[0-9]+\\b"
+      }
+    ],
+    "formattingRules": {
+      "indentSize": 4,
+      "useTabs": false,
+      "trimTrailingWhitespace": true,
+      "insertFinalNewline": true
+    },
+    "foldingRules": {
+      "startPatterns": [
+        "^\\s*(?i)(RUN|COPY|ADD|ENV|ARG)\\b"
+      ],
+      "endPatterns": [
+        "(?<!\\\\)$"
+      ]
+    },
+    "ideMetadata": {
+      "isSourceFile": true,
+      "isStructuredDataFile": false,
+      "supportsClassDiagram": false,
+      "supportsSourceOutline": false,
+      "isProjectLanguage": false,
+      "aliases": [
+        "docker"
+      ],
+      "iconGlyph": "",
+      "diffMode": "text"
+    }
   }
 }

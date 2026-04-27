@@ -2,8 +2,11 @@
   "diffMode": "text",
   "formatName": "FictionBook 2 e-Book",
   "formatId": "FB2",
-  "version": "1.0",
-  "extensions": [".fb2", ".fb2.zip"],
+  "version": "1.1",
+  "extensions": [
+    ".fb2",
+    ".fb2.zip"
+  ],
   "description": "FictionBook 2 (FB2) is an XML-based e-book format originating from Russia. Each file contains the entire book in a single well-formed XML document with a <FictionBook> root element and the namespace 'http://www.gribuser.ru/xml/fictionbook/2.0'. Inline images are base64-encoded. Rich metadata is stored in <description>/<title-info>. Files may be distributed as plain .fb2 or ZIP-compressed .fb2.zip.",
   "category": "Documents",
   "author": "WPFHexaEditor Team",
@@ -106,14 +109,20 @@
     {
       "variable": "fb2FirstByte",
       "operator": "in",
-      "value": [60, 239],
+      "value": [
+        60,
+        239
+      ],
       "description": "File must start with '<' (0x3C) or UTF-8 BOM (0xEF)",
       "level": "Warning"
     },
     {
       "variable": "fb2Root",
       "operator": "containsOneOf",
-      "value": ["<FictionBook", "<?xml"],
+      "value": [
+        "<FictionBook",
+        "<?xml"
+      ],
       "description": "File must start with FB2 root element or XML declaration",
       "level": "Warning"
     },
@@ -128,10 +137,26 @@
   "navigation": {
     "entryPoint": 0,
     "sections": [
-      { "name": "XML Declaration / Root", "offset": 0, "size": 40 },
-      { "name": "FictionBook Root Element", "offset": 40, "size": 80 },
-      { "name": "Description", "offset": 120, "size": 200 },
-      { "name": "Body", "offset": 320, "size": 256 }
+      {
+        "name": "XML Declaration / Root",
+        "offset": 0,
+        "size": 40
+      },
+      {
+        "name": "FictionBook Root Element",
+        "offset": 40,
+        "size": 80
+      },
+      {
+        "name": "Description",
+        "offset": 120,
+        "size": 200
+      },
+      {
+        "name": "Body",
+        "offset": 320,
+        "size": 256
+      }
     ]
   },
   "inspector": {
@@ -140,11 +165,17 @@
     "groups": [
       {
         "name": "XML Identity",
-        "fields": ["fb2FirstByte", "fb2Root", "fb2XmlDecl"]
+        "fields": [
+          "fb2FirstByte",
+          "fb2Root",
+          "fb2XmlDecl"
+        ]
       },
       {
         "name": "Encoding",
-        "fields": ["fb2Encoding"]
+        "fields": [
+          "fb2Encoding"
+        ]
       }
     ]
   },
@@ -181,17 +212,49 @@
     ]
   },
   "software": [
-    { "name": "FBReader", "platform": "Android/Linux/Windows", "url": "https://fbreader.org/" },
-    { "name": "Calibre", "platform": "Windows/macOS/Linux", "url": "https://calibre-ebook.com/" },
-    { "name": "Cool Reader", "platform": "Android/Windows", "url": "https://github.com/buggins/coolreader" },
-    { "name": "Foliate", "platform": "Linux", "url": "https://johnfactotum.github.io/foliate/" }
+    {
+      "name": "FBReader",
+      "platform": "Android/Linux/Windows",
+      "url": "https://fbreader.org/"
+    },
+    {
+      "name": "Calibre",
+      "platform": "Windows/macOS/Linux",
+      "url": "https://calibre-ebook.com/"
+    },
+    {
+      "name": "Cool Reader",
+      "platform": "Android/Windows",
+      "url": "https://github.com/buggins/coolreader"
+    },
+    {
+      "name": "Foliate",
+      "platform": "Linux",
+      "url": "https://johnfactotum.github.io/foliate/"
+    }
   ],
   "formatRelationships": [
-    { "format": "EPUB", "relationship": "alternative", "note": "EPUB is the international XML e-book standard; FB2 is popular in Russian-language communities" },
-    { "format": "MOBI", "relationship": "alternative", "note": "MOBI/Kindle is an Amazon-centric alternative" },
-    { "format": "DOCBOOK", "relationship": "sibling", "note": "Both are XML-based document formats; DocBook targets technical documentation" }
+    {
+      "format": "EPUB",
+      "relationship": "alternative",
+      "note": "EPUB is the international XML e-book standard; FB2 is popular in Russian-language communities"
+    },
+    {
+      "format": "MOBI",
+      "relationship": "alternative",
+      "note": "MOBI/Kindle is an Amazon-centric alternative"
+    },
+    {
+      "format": "DOCBOOK",
+      "relationship": "sibling",
+      "note": "Both are XML-based document formats; DocBook targets technical documentation"
+    }
   ],
-  "MimeTypes": ["application/fb2+xml", "text/fb2+xml", "application/x-fictionbook+xml"],
+  "MimeTypes": [
+    "application/fb2+xml",
+    "text/fb2+xml",
+    "application/x-fictionbook+xml"
+  ],
   "UseCases": [
     "Russian-language fiction e-book distribution and reading",
     "e-Book library management and format conversion",
@@ -209,5 +272,67 @@
     "imageEncoding": "Base64 inside <binary id=\"...\" content-type=\"image/jpeg\"> elements",
     "compressionSupport": "ZIP wrapper for .fb2.zip distribution",
     "detectionNote": "Weak binary detection — XML content inspection required for reliable FB2 identification"
+  },
+  "syntaxDefinition": {
+    "blockCommentStart": "<!--",
+    "blockCommentEnd": "-->",
+    "rules": [
+      {
+        "type": "Comment",
+        "pattern": "<!--[\\s\\S]*?-->"
+      },
+      {
+        "type": "Tag",
+        "pattern": "</?[A-Za-z][A-Za-z0-9:_.-]*(?:\\s[^>]*)?>"
+      },
+      {
+        "type": "Attribute",
+        "pattern": "\\b[A-Za-z][A-Za-z0-9:_.-]*(?=\\s*=)"
+      },
+      {
+        "type": "String",
+        "pattern": "(\"[^\"]*\"|'[^']*')"
+      },
+      {
+        "type": "CDataSection",
+        "pattern": "<!\\[CDATA\\[[\\s\\S]*?\\]\\]>"
+      },
+      {
+        "type": "Directive",
+        "pattern": "<\\?[^?]*\\?>"
+      }
+    ],
+    "formattingRules": {
+      "indentSize": 2,
+      "useTabs": false,
+      "trimTrailingWhitespace": true,
+      "insertFinalNewline": true
+    },
+    "foldingRules": {
+      "startPatterns": [
+        "<(?!/)(?!\\?)[A-Za-z]"
+      ],
+      "endPatterns": [
+        "</[A-Za-z]",
+        "/>"
+      ]
+    },
+    "ideMetadata": {
+      "isSourceFile": false,
+      "isStructuredDataFile": true,
+      "supportsClassDiagram": false,
+      "supportsSourceOutline": false,
+      "isProjectLanguage": false,
+      "iconGlyph": "",
+      "diffMode": "semantic",
+      "aliases": [
+        "fictionbook"
+      ]
+    },
+    "id": "fb2",
+    "name": "FictionBook 2 (XML)",
+    "extensions": [
+      ".fb2"
+    ]
   }
 }

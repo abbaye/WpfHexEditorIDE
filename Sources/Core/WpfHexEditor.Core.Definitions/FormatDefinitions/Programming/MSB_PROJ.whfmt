@@ -2,7 +2,7 @@
   "diffMode": "text",
   "formatName": "MSBuild Project File",
   "formatId": "MSB_PROJ",
-  "version": "1.0",
+  "version": "1.1",
   "extensions": [
     ".csproj",
     ".vbproj",
@@ -30,8 +30,18 @@
   },
   "detection": {
     "signatures": [
-      { "value": "3C50726F6A656374", "offset": 0, "label": "<Project — MSBuild project root element at file start", "weight": 0.8 },
-      { "value": "3C3F786D6C", "offset": 0, "label": "<?xml — XML declaration before Project element", "weight": 0.5 }
+      {
+        "value": "3C50726F6A656374",
+        "offset": 0,
+        "label": "<Project — MSBuild project root element at file start",
+        "weight": 0.8
+      },
+      {
+        "value": "3C3F786D6C",
+        "offset": 0,
+        "label": "<?xml — XML declaration before Project element",
+        "weight": 0.5
+      }
     ],
     "matchMode": "any",
     "MinimumScore": 0.3,
@@ -105,7 +115,12 @@
   ],
   "navigation": {
     "bookmarks": [
-      { "name": "File Start", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" }
+      {
+        "name": "File Start",
+        "offset": 0,
+        "icon": "",
+        "color": "#FF6B6B"
+      }
     ]
   },
   "inspector": {
@@ -115,13 +130,19 @@
     "groups": [
       {
         "title": "File Header",
-        "icon": "\uE71B",
-        "fields": ["firstByte", "xmlOrProject"]
+        "icon": "",
+        "fields": [
+          "firstByte",
+          "xmlOrProject"
+        ]
       },
       {
         "title": "Project Properties",
-        "icon": "\uE946",
-        "fields": ["sdkAttribute", "targetFramework"]
+        "icon": "",
+        "fields": [
+          "sdkAttribute",
+          "targetFramework"
+        ]
       }
     ]
   },
@@ -129,12 +150,19 @@
     {
       "name": "MSBuild Project Info (JSON)",
       "format": "json",
-      "fields": ["xmlOrProject", "sdkAttribute", "targetFramework"]
+      "fields": [
+        "xmlOrProject",
+        "sdkAttribute",
+        "targetFramework"
+      ]
     },
     {
       "name": "Project Header summary",
       "format": "text",
-      "fields": ["sdkAttribute", "targetFramework"]
+      "fields": [
+        "sdkAttribute",
+        "targetFramework"
+      ]
     }
   ],
   "forensic": {
@@ -174,8 +202,18 @@
   ],
   "formatRelationships": {
     "category": "Programming",
-    "extensions": [".csproj", ".vbproj", ".fsproj", ".vcxproj", ".props", ".targets"],
-    "relatedFormats": ["NUSPEC", "SOLUTIONFILE"],
+    "extensions": [
+      ".csproj",
+      ".vbproj",
+      ".fsproj",
+      ".vcxproj",
+      ".props",
+      ".targets"
+    ],
+    "relatedFormats": [
+      "NUSPEC",
+      "SOLUTIONFILE"
+    ],
     "note": ".csproj (C#), .vbproj (VB.NET), .fsproj (F#), .vcxproj (C++) all use the same MSBuild XML format with different default properties and imports. .props and .targets are property/target sheets included by other project files."
   },
   "MimeTypes": [
@@ -204,5 +242,81 @@
     "Styles": "SDK-style (Sdk= attribute, .NET Core+) and Classic (ToolsVersion=, .NET Framework)",
     "BuildEngine": "MSBuild 17.x (Visual Studio 2022), dotnet build (cross-platform)",
     "SupportsStreaming": false
+  },
+  "syntaxDefinition": {
+    "id": "msbuild",
+    "name": "MSBuild Project",
+    "extensions": [
+      ".csproj",
+      ".vbproj",
+      ".fsproj",
+      ".props",
+      ".targets",
+      ".msbuild",
+      ".proj"
+    ],
+    "blockCommentStart": "<!--",
+    "blockCommentEnd": "-->",
+    "rules": [
+      {
+        "type": "Comment",
+        "pattern": "<!--[\\s\\S]*?-->"
+      },
+      {
+        "type": "Tag",
+        "pattern": "</?[A-Za-z][A-Za-z0-9:_.-]*(?:\\s[^>]*)?>"
+      },
+      {
+        "type": "Attribute",
+        "pattern": "\\b[A-Za-z][A-Za-z0-9:_.-]*(?=\\s*=)"
+      },
+      {
+        "type": "String",
+        "pattern": "(\"[^\"]*\"|'[^']*')"
+      },
+      {
+        "type": "Keyword",
+        "pattern": "\\b(Project|PropertyGroup|ItemGroup|Target|Import|UsingTask|ItemDefinitionGroup|Choose|When|Otherwise|Sdk|Condition|Include|Exclude|Update|Remove|DependsOnTargets|BeforeTargets|AfterTargets|Returns|Inputs|Outputs|KeepDuplicates)\\b"
+      },
+      {
+        "type": "Variable",
+        "pattern": "\\$\\([A-Za-z_][A-Za-z0-9_.]*\\)|@\\([A-Za-z_][A-Za-z0-9_.]*\\)|%\\([A-Za-z_][A-Za-z0-9_.]*\\)"
+      },
+      {
+        "type": "CDataSection",
+        "pattern": "<!\\[CDATA\\[[\\s\\S]*?\\]\\]>"
+      }
+    ],
+    "formattingRules": {
+      "indentSize": 2,
+      "useTabs": false,
+      "trimTrailingWhitespace": true,
+      "insertFinalNewline": true
+    },
+    "foldingRules": {
+      "startPatterns": [
+        "<(?!/)(?!\\?)[A-Za-z]"
+      ],
+      "endPatterns": [
+        "</[A-Za-z]",
+        "/>"
+      ]
+    },
+    "ideMetadata": {
+      "isSourceFile": false,
+      "isStructuredDataFile": true,
+      "supportsClassDiagram": false,
+      "supportsSourceOutline": true,
+      "isProjectLanguage": false,
+      "aliases": [
+        "csproj",
+        "vbproj",
+        "fsproj",
+        "props",
+        "targets"
+      ],
+      "iconGlyph": "",
+      "diffMode": "semantic"
+    }
   }
 }

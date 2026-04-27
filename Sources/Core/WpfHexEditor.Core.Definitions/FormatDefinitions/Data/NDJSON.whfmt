@@ -2,7 +2,7 @@
   "diffMode": "text",
   "formatName": "Newline Delimited JSON",
   "formatId": "NDJSON",
-  "version": "1.0",
+  "version": "1.1",
   "extensions": [
     ".ndjson",
     ".jsonl",
@@ -27,8 +27,18 @@
   },
   "detection": {
     "signatures": [
-      { "value": "7B", "offset": 0, "label": "{ — First JSON object line", "weight": 0.5 },
-      { "value": "5B", "offset": 0, "label": "[ — First JSON array line", "weight": 0.4 }
+      {
+        "value": "7B",
+        "offset": 0,
+        "label": "{ — First JSON object line",
+        "weight": 0.5
+      },
+      {
+        "value": "5B",
+        "offset": 0,
+        "label": "[ — First JSON array line",
+        "weight": 0.4
+      }
     ],
     "matchMode": "any",
     "MinimumScore": 0.2,
@@ -106,7 +116,12 @@
   ],
   "navigation": {
     "bookmarks": [
-      { "name": "First Record", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" }
+      {
+        "name": "First Record",
+        "offset": 0,
+        "icon": "",
+        "color": "#FF6B6B"
+      }
     ]
   },
   "inspector": {
@@ -116,13 +131,19 @@
     "groups": [
       {
         "title": "File Start",
-        "icon": "\uE71B",
-        "fields": ["firstByte", "secondByte"]
+        "icon": "",
+        "fields": [
+          "firstByte",
+          "secondByte"
+        ]
       },
       {
         "title": "Format Properties",
-        "icon": "\uE946",
-        "fields": ["lineTerminator", "estimatedLineCount"]
+        "icon": "",
+        "fields": [
+          "lineTerminator",
+          "estimatedLineCount"
+        ]
       }
     ]
   },
@@ -130,12 +151,20 @@
     {
       "name": "NDJSON File Info (JSON)",
       "format": "json",
-      "fields": ["firstByte", "lineTerminator", "estimatedLineCount"]
+      "fields": [
+        "firstByte",
+        "lineTerminator",
+        "estimatedLineCount"
+      ]
     },
     {
       "name": "NDJSON summary",
       "format": "text",
-      "fields": ["firstByte", "lineTerminator", "estimatedLineCount"]
+      "fields": [
+        "firstByte",
+        "lineTerminator",
+        "estimatedLineCount"
+      ]
     }
   ],
   "forensic": {
@@ -169,8 +198,16 @@
   ],
   "formatRelationships": {
     "category": "Data",
-    "extensions": [".ndjson", ".jsonl", ".ldjson"],
-    "relatedFormats": ["ION", "ARROW_IPC", "CAPNPROTO"],
+    "extensions": [
+      ".ndjson",
+      ".jsonl",
+      ".ldjson"
+    ],
+    "relatedFormats": [
+      "ION",
+      "ARROW_IPC",
+      "CAPNPROTO"
+    ],
     "note": ".ndjson (Newline Delimited JSON), .jsonl (JSON Lines), and .ldjson (Line Delimited JSON) are functionally identical formats with different naming conventions. All three: one JSON value per line, LF terminated, UTF-8 encoding."
   },
   "MimeTypes": [
@@ -201,5 +238,53 @@
     "SupportsStreaming": true,
     "RandomAccess": false,
     "MaxLineLength": "Unspecified — parsers typically support at least 64 MB per line"
+  },
+  "syntaxDefinition": {
+    "id": "ndjson",
+    "name": "NDJSON / JSON Lines",
+    "extensions": [
+      ".ndjson",
+      ".jsonl",
+      ".ldjson"
+    ],
+    "lineCommentPrefix": "//",
+    "rules": [
+      {
+        "type": "Key",
+        "pattern": "\"(?:[^\"\\\\]|\\\\.)*\"(?=\\s*:)"
+      },
+      {
+        "type": "Keyword",
+        "pattern": "\\b(true|false|null)\\b"
+      },
+      {
+        "type": "Number",
+        "pattern": "-?(?:0|[1-9][0-9]*)(?:\\.[0-9]+)?(?:[eE][+-]?[0-9]+)?"
+      },
+      {
+        "type": "String",
+        "pattern": "\"(?:[^\"\\\\]|\\\\.)*\""
+      }
+    ],
+    "formattingRules": {
+      "indentSize": 0,
+      "useTabs": false,
+      "trimTrailingWhitespace": true,
+      "insertFinalNewline": true
+    },
+    "foldingRules": {},
+    "ideMetadata": {
+      "isSourceFile": false,
+      "isStructuredDataFile": true,
+      "supportsClassDiagram": false,
+      "supportsSourceOutline": false,
+      "isProjectLanguage": false,
+      "aliases": [
+        "jsonlines",
+        "jsonl"
+      ],
+      "iconGlyph": "",
+      "diffMode": "semantic"
+    }
   }
 }

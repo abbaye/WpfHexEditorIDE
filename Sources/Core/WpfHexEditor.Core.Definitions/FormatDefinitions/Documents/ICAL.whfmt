@@ -2,7 +2,7 @@
   "diffMode": "text",
   "formatName": "iCalendar",
   "formatId": "ICAL",
-  "version": "1.0",
+  "version": "1.1",
   "extensions": [
     ".ics",
     ".ical",
@@ -31,7 +31,10 @@
     "required": true,
     "Strength": "Strong",
     "MinimumScore": 0.9,
-    "EntropyHint": { "min": 3.5, "max": 5.5 },
+    "EntropyHint": {
+      "min": 3.5,
+      "max": 5.5
+    },
     "validation": {
       "minFileSize": 50,
       "maxSignatureOffset": 0
@@ -52,7 +55,9 @@
       "description": "iCalendar root component opening marker: ASCII 'BEGIN:VCALENDAR' (15 bytes: 42 45 47 49 4E 3A 56 43 41 4C 45 4E 44 41 52). Every valid iCalendar file must start with this exact string followed by CRLF. The VCALENDAR component wraps all calendar data including version, product ID, and all contained events or tasks.",
       "storeAs": "icalMagic",
       "valueType": "ascii",
-      "validation": { "expectedValue": "BEGIN:VCALENDAR" }
+      "validation": {
+        "expectedValue": "BEGIN:VCALENDAR"
+      }
     },
     {
       "type": "field",
@@ -60,7 +65,7 @@
       "offset": 15,
       "length": 1,
       "color": "#4ECDC4",
-      "opacity": 0.30,
+      "opacity": 0.3,
       "description": "First byte of the CRLF line ending after the BEGIN:VCALENDAR marker. RFC 5545 mandates CRLF (0x0D 0x0A) as the only valid line terminator. A value of 0x0D (CR) indicates standards-compliant line endings. A value of 0x0A (LF only) indicates a Unix-style file that technically violates RFC 5545 but is widely tolerated by calendar clients.",
       "storeAs": "nextByte",
       "valueType": "uint8",
@@ -98,7 +103,12 @@
   ],
   "navigation": {
     "bookmarks": [
-      { "name": "BEGIN:VCALENDAR", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" }
+      {
+        "name": "BEGIN:VCALENDAR",
+        "offset": 0,
+        "icon": "",
+        "color": "#FF6B6B"
+      }
     ]
   },
   "inspector": {
@@ -108,8 +118,11 @@
     "groups": [
       {
         "title": "Calendar Root",
-        "icon": "\uE71B",
-        "fields": ["icalMagic", "nextByte"]
+        "icon": "",
+        "fields": [
+          "icalMagic",
+          "nextByte"
+        ]
       }
     ]
   },
@@ -117,12 +130,17 @@
     {
       "name": "iCalendar header (JSON)",
       "format": "json",
-      "fields": ["icalMagic", "nextByte"]
+      "fields": [
+        "icalMagic",
+        "nextByte"
+      ]
     },
     {
       "name": "iCalendar info (text)",
       "format": "text",
-      "fields": ["icalMagic"]
+      "fields": [
+        "icalMagic"
+      ]
     }
   ],
   "forensic": {
@@ -158,8 +176,14 @@
   ],
   "formatRelationships": {
     "category": "Documents",
-    "extensions": [".ics", ".ical", ".ifb"],
-    "relatedFormats": ["VCARD"],
+    "extensions": [
+      ".ics",
+      ".ical",
+      ".ifb"
+    ],
+    "relatedFormats": [
+      "VCARD"
+    ],
     "containerVariant": ".ifb = iCalendar Free/Busy data only (VFREEBUSY components)"
   },
   "MimeTypes": [
@@ -187,5 +211,64 @@
     "LineEndings": "CRLF (mandatory per RFC 5545)",
     "LineFolding": "Long lines folded at 75 octets with CRLF+SPACE continuation",
     "VersionString": "VERSION:2.0"
+  },
+  "syntaxDefinition": {
+    "id": "ical",
+    "name": "iCalendar (iCal)",
+    "extensions": [
+      ".ics",
+      ".ical",
+      ".ifb"
+    ],
+    "lineCommentPrefix": null,
+    "rules": [
+      {
+        "type": "Keyword",
+        "pattern": "^(BEGIN|END|VERSION|PRODID|CALSCALE|METHOD|VEVENT|VTODO|VJOURNAL|VFREEBUSY|VTIMEZONE|VALARM|STANDARD|DAYLIGHT|VCALENDAR)(?=[:;])"
+      },
+      {
+        "type": "Property",
+        "pattern": "^[A-Z][A-Z0-9-]*(?=[:;])"
+      },
+      {
+        "type": "Parameter",
+        "pattern": ";[A-Z][A-Z0-9-]*(?==)"
+      },
+      {
+        "type": "String",
+        "pattern": "(?<==)[^\\r\\n]*"
+      },
+      {
+        "type": "Directive",
+        "pattern": "^X-[A-Z0-9-]+(?=[:;])"
+      }
+    ],
+    "formattingRules": {
+      "indentSize": 0,
+      "useTabs": false,
+      "trimTrailingWhitespace": false,
+      "insertFinalNewline": true
+    },
+    "foldingRules": {
+      "startPatterns": [
+        "^BEGIN:"
+      ],
+      "endPatterns": [
+        "^END:"
+      ]
+    },
+    "ideMetadata": {
+      "isSourceFile": false,
+      "isStructuredDataFile": true,
+      "supportsClassDiagram": false,
+      "supportsSourceOutline": false,
+      "isProjectLanguage": false,
+      "aliases": [
+        "ics",
+        "vcalendar"
+      ],
+      "iconGlyph": "",
+      "diffMode": "text"
+    }
   }
 }

@@ -2,8 +2,12 @@
   "diffMode": "text",
   "formatName": "HashiCorp Configuration Language (HCL/Terraform)",
   "formatId": "HCL",
-  "version": "1.0",
-  "extensions": [ ".tf", ".hcl", ".tfvars" ],
+  "version": "1.1",
+  "extensions": [
+    ".tf",
+    ".hcl",
+    ".tfvars"
+  ],
   "description": "HCL (HashiCorp Configuration Language) — declarative configuration language for HashiCorp tools. HCL native syntax: block_type \"label1\" \"label2\" { attribute = expression }. Core block types: terraform { required_providers, required_version }, provider \"aws\" {}, resource \"aws_instance\" \"web\" {}, data \"aws_ami\" \"latest\" {}, variable \"name\" {}, output \"ip\" {}, module \"vpc\" {}, locals {}. Expressions: string interpolation \"${var.region}\", heredoc <<EOT...EOT, functions (file(), jsondecode(), base64encode(), cidrsubnet()), conditional expr ? val : val, for expressions [for s in var.list : upper(s)]. Variable types: string, number, bool, list(), map(), set(), object(), tuple(), any. .tfvars: variable override files (HCL or JSON). Terraform state: .tfstate (JSON). HCL2 uses zclconf/go-cty type system (Terraform 0.12+). Also used by Packer (build{}), Vault (policy {}), Consul (service {}), Nomad (job {}).",
   "category": "Programming",
   "author": "WPFHexaEditor Team",
@@ -22,10 +26,30 @@
   },
   "detection": {
     "signatures": [
-      { "value": "7265736F75726365", "offset": 0, "label": "resource — Terraform resource block at file start", "weight": 0.5 },
-      { "value": "74657272616 6 6F726D", "offset": 0, "label": "terraform — Terraform configuration block at file start", "weight": 0.6 },
-      { "value": "70726F7669646572", "offset": 0, "label": "provider — Terraform provider block at file start", "weight": 0.5 },
-      { "value": "23", "offset": 0, "label": "# — HCL comment line at file start", "weight": 0.2 }
+      {
+        "value": "7265736F75726365",
+        "offset": 0,
+        "label": "resource — Terraform resource block at file start",
+        "weight": 0.5
+      },
+      {
+        "value": "74657272616 6 6F726D",
+        "offset": 0,
+        "label": "terraform — Terraform configuration block at file start",
+        "weight": 0.6
+      },
+      {
+        "value": "70726F7669646572",
+        "offset": 0,
+        "label": "provider — Terraform provider block at file start",
+        "weight": 0.5
+      },
+      {
+        "value": "23",
+        "offset": 0,
+        "label": "# — HCL comment line at file start",
+        "weight": 0.2
+      }
     ],
     "matchMode": "any",
     "MinimumScore": 0.2,
@@ -87,7 +111,11 @@
   ],
   "navigation": {
     "bookmarks": [
-      { "name": "File Start", "offset": 0, "color": "#FF6B6B" }
+      {
+        "name": "File Start",
+        "offset": 0,
+        "color": "#FF6B6B"
+      }
     ]
   },
   "inspector": {
@@ -98,7 +126,10 @@
       {
         "title": "File Header",
         "icon": "",
-        "fields": [ "firstByte", "firstWord" ]
+        "fields": [
+          "firstByte",
+          "firstWord"
+        ]
       }
     ]
   },
@@ -106,12 +137,17 @@
     {
       "name": "HCL Summary (Text)",
       "format": "text",
-      "fields": [ "firstWord" ]
+      "fields": [
+        "firstWord"
+      ]
     },
     {
       "name": "HCL Metadata (JSON)",
       "format": "json",
-      "fields": [ "firstByte", "firstWord" ]
+      "fields": [
+        "firstByte",
+        "firstWord"
+      ]
     }
   ],
   "forensic": {
@@ -145,8 +181,17 @@
   ],
   "formatRelationships": {
     "category": "Programming",
-    "extensions": [ ".tf", ".hcl", ".tfvars" ],
-    "relatedFormats": [ "YAML", "TOML", "DOCKERFILE", "ENV_FILE" ],
+    "extensions": [
+      ".tf",
+      ".hcl",
+      ".tfvars"
+    ],
+    "relatedFormats": [
+      "YAML",
+      "TOML",
+      "DOCKERFILE",
+      "ENV_FILE"
+    ],
     "note": "HCL can also be expressed as JSON (all .tf files accept HCL or JSON syntax). YAML is preferred in Kubernetes ecosystems. Pulumi uses TypeScript/Python/Go instead of HCL. CloudFormation uses YAML/JSON. CDK uses programming languages that generate CloudFormation."
   },
   "MimeTypes": [
@@ -177,5 +222,96 @@
     "ExpressionLanguage": "HCL expression language with functions, references, conditionals, for expressions",
     "TypeSystem": "go-cty: string, number, bool, list(), map(), set(), object(), tuple()",
     "StateFile": ".tfstate — JSON format, highly sensitive, contains all resource attributes"
+  },
+  "syntaxDefinition": {
+    "id": "hcl",
+    "name": "HCL / Terraform",
+    "extensions": [
+      ".tf",
+      ".tfvars",
+      ".hcl"
+    ],
+    "lineCommentPrefix": "#",
+    "blockCommentStart": "/*",
+    "blockCommentEnd": "*/",
+    "rules": [
+      {
+        "type": "Comment",
+        "pattern": "(#.*$|//.*$)"
+      },
+      {
+        "type": "BlockComment",
+        "pattern": "/\\*[\\s\\S]*?\\*/"
+      },
+      {
+        "type": "Keyword",
+        "pattern": "\\b(resource|data|variable|output|module|provider|terraform|locals|required_providers|backend|for_each|count|depends_on|lifecycle|provisioner|connection|dynamic|content|iterator|label|default|description|type|sensitive|nullable|validation|condition|error_message)\\b"
+      },
+      {
+        "type": "Type",
+        "pattern": "\\b(string|number|bool|list|map|set|object|tuple|any)\\b"
+      },
+      {
+        "type": "String",
+        "pattern": "\"(?:[^\"\\\\]|\\\\.)*\""
+      },
+      {
+        "type": "Variable",
+        "pattern": "\\b(var|local|module|data|path|terraform|self)\\.[A-Za-z0-9_.]+"
+      },
+      {
+        "type": "Function",
+        "pattern": "\\b[a-z_][a-z0-9_]*(?=\\()"
+      },
+      {
+        "type": "Number",
+        "pattern": "\\b[0-9]+(?:\\.[0-9]+)?\\b"
+      },
+      {
+        "type": "Boolean",
+        "pattern": "\\b(true|false|null)\\b"
+      }
+    ],
+    "formattingRules": {
+      "indentSize": 2,
+      "useTabs": false,
+      "trimTrailingWhitespace": true,
+      "insertFinalNewline": true
+    },
+    "foldingRules": {
+      "startPatterns": [
+        "\\{"
+      ],
+      "endPatterns": [
+        "\\}"
+      ]
+    },
+    "bracketPairs": [
+      {
+        "open": "{",
+        "close": "}"
+      },
+      {
+        "open": "(",
+        "close": ")"
+      },
+      {
+        "open": "[",
+        "close": "]"
+      }
+    ],
+    "ideMetadata": {
+      "isSourceFile": true,
+      "isStructuredDataFile": false,
+      "supportsClassDiagram": false,
+      "supportsSourceOutline": true,
+      "isProjectLanguage": false,
+      "aliases": [
+        "terraform",
+        "tf"
+      ],
+      "iconGlyph": "",
+      "diffMode": "text"
+    }
   }
 }

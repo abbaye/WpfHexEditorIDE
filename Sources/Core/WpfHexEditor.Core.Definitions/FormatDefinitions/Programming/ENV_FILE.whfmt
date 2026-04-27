@@ -2,8 +2,12 @@
   "diffMode": "text",
   "formatName": ".env Environment File",
   "formatId": "ENV_FILE",
-  "version": "1.0",
-  "extensions": [ ".env", ".env.local", ".env.production" ],
+  "version": "1.1",
+  "extensions": [
+    ".env",
+    ".env.local",
+    ".env.production"
+  ],
   "description": "dotenv environment variable file format. KEY=VALUE pairs, one per line (POSIX shell convention). Keys: UPPER_CASE_WITH_UNDERSCORES by convention (SCREAMING_SNAKE_CASE). Values: unquoted (raw), double-quoted (\"value\", backslash escapes, variable expansion $VAR or ${VAR} in some loaders), or single-quoted ('value', no escapes, no expansion). Comments: # starting at first non-whitespace character on a line. Inline comments: only supported by some implementations (dotenv-expand). Blank lines ignored. Multi-line values: supported via double-quoted strings with embedded newlines or \n escapes. Variable expansion: $VAR or ${VAR} supported in dotenv-expand for Node.js. Special files: .env (default), .env.local (local overrides, gitignored), .env.development, .env.test, .env.production (environment-specific), .env.development.local. CRITICAL security rule: .env files MUST be in .gitignore — they contain secrets (API keys, database passwords, OAuth tokens, JWT secrets, encryption keys). Used by: Node.js (dotenv package), Python (python-dotenv), Docker Compose (env_file:), Heroku, Vercel, Netlify, many web frameworks.",
   "category": "Programming",
   "author": "WPFHexaEditor Team",
@@ -22,7 +26,12 @@
   },
   "detection": {
     "signatures": [
-      { "value": "23", "offset": 0, "label": "# — .env file starting with comment line", "weight": 0.3 }
+      {
+        "value": "23",
+        "offset": 0,
+        "label": "# — .env file starting with comment line",
+        "weight": 0.3
+      }
     ],
     "matchMode": "any",
     "MinimumScore": 0.0,
@@ -84,7 +93,11 @@
   ],
   "navigation": {
     "bookmarks": [
-      { "name": "File Start", "offset": 0, "color": "#FF6B6B" }
+      {
+        "name": "File Start",
+        "offset": 0,
+        "color": "#FF6B6B"
+      }
     ]
   },
   "inspector": {
@@ -95,7 +108,10 @@
       {
         "title": "File Header",
         "icon": "",
-        "fields": [ "firstByte", "firstChars" ]
+        "fields": [
+          "firstByte",
+          "firstChars"
+        ]
       }
     ]
   },
@@ -103,12 +119,17 @@
     {
       "name": ".env Summary (Text)",
       "format": "text",
-      "fields": [ "firstChars" ]
+      "fields": [
+        "firstChars"
+      ]
     },
     {
       "name": ".env Metadata (JSON)",
       "format": "json",
-      "fields": [ "firstByte", "firstChars" ]
+      "fields": [
+        "firstByte",
+        "firstChars"
+      ]
     }
   ],
   "forensic": {
@@ -143,8 +164,17 @@
   ],
   "formatRelationships": {
     "category": "Programming",
-    "extensions": [ ".env", ".env.local", ".env.production" ],
-    "relatedFormats": [ "YAML", "TOML", "DOCKERFILE", "NGINX_CONF" ],
+    "extensions": [
+      ".env",
+      ".env.local",
+      ".env.production"
+    ],
+    "relatedFormats": [
+      "YAML",
+      "TOML",
+      "DOCKERFILE",
+      "NGINX_CONF"
+    ],
     "note": ".env files follow the Unix shell assignment syntax convention but are NOT shell scripts — most loaders do not support shell expansion, subshell execution, or conditional logic. Docker Compose extends .env with environment variable substitution. The 12-Factor App methodology recommends environment variables for all configuration."
   },
   "MimeTypes": [
@@ -174,5 +204,63 @@
     "VariableExpansion": "$VAR or ${VAR} (dotenv-expand only, not base dotenv)",
     "Variants": ".env, .env.local, .env.development, .env.test, .env.production, .env.*.local",
     "GitIgnore": "MUST be in .gitignore to prevent credential exposure"
+  },
+  "syntaxDefinition": {
+    "id": "dotenv",
+    "name": ".env File",
+    "extensions": [
+      ".env",
+      ".env.local",
+      ".env.development",
+      ".env.production",
+      ".env.test"
+    ],
+    "lineCommentPrefix": "#",
+    "rules": [
+      {
+        "type": "Comment",
+        "pattern": "^\\s*#.*$"
+      },
+      {
+        "type": "Key",
+        "pattern": "^\\s*[A-Za-z_][A-Za-z0-9_.]*(?=\\s*=)"
+      },
+      {
+        "type": "String",
+        "pattern": "(\"(?:[^\"\\\\]|\\\\.)*\"|'[^']*')"
+      },
+      {
+        "type": "Variable",
+        "pattern": "\\$\\{?[A-Za-z_][A-Za-z0-9_]*\\}?"
+      },
+      {
+        "type": "Keyword",
+        "pattern": "\\b(?i)(export)\\b"
+      },
+      {
+        "type": "Number",
+        "pattern": "(?<==)\\s*[0-9]+(?:\\.[0-9]+)?\\b"
+      }
+    ],
+    "formattingRules": {
+      "indentSize": 0,
+      "useTabs": false,
+      "trimTrailingWhitespace": true,
+      "insertFinalNewline": true
+    },
+    "foldingRules": {},
+    "ideMetadata": {
+      "isSourceFile": false,
+      "isStructuredDataFile": false,
+      "supportsClassDiagram": false,
+      "supportsSourceOutline": false,
+      "isProjectLanguage": false,
+      "aliases": [
+        "env",
+        "dotenv"
+      ],
+      "iconGlyph": "",
+      "diffMode": "text"
+    }
   }
 }

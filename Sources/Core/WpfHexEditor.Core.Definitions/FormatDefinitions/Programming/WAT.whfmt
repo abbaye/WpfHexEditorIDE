@@ -2,8 +2,11 @@
   "diffMode": "text",
   "formatName": "WebAssembly Text Format",
   "formatId": "WAT",
-  "version": "1.0",
-  "extensions": [".wat", ".wast"],
+  "version": "1.1",
+  "extensions": [
+    ".wat",
+    ".wast"
+  ],
   "description": "WAT (WebAssembly Text Format) is the human-readable S-expression representation of WebAssembly modules. Defined in the WebAssembly Core Specification (W3C), WAT files are the textual complement to the binary .wasm format. A WAT module begins with `(module` and contains type definitions, imports, function definitions, exports, memory and table declarations, and global variables. Instructions use a stack-based notation: `i32.add`, `f64.mul`, `local.get`, `call`, `br_if`, etc. WAT is compiled to binary .wasm via tools like `wat2wasm` (WABT toolkit) or `wasm-pack`. WAST (.wast) is an extended format used for WebAssembly test scripts — it adds `assert_return`, `assert_trap`, `assert_invalid`, and `invoke` directives around module definitions. Both formats are pure UTF-8 text with no binary structure.",
   "category": "Programming",
   "author": "WPFHexaEditor Team",
@@ -21,15 +24,33 @@
   },
   "detection": {
     "signatures": [
-      { "value": "286D6F64756C65", "offset": 0, "label": "'(module' — WebAssembly text module declaration", "weight": 0.9 },
-      { "value": "3B3B", "offset": 0, "label": "';; ' — WAT line comment (may precede module declaration)", "weight": 0.3 },
-      { "value": "286D6F64756C65", "offset": 3, "label": "'(module' at offset 3 (after BOM or whitespace)", "weight": 0.7 }
+      {
+        "value": "286D6F64756C65",
+        "offset": 0,
+        "label": "'(module' — WebAssembly text module declaration",
+        "weight": 0.9
+      },
+      {
+        "value": "3B3B",
+        "offset": 0,
+        "label": "';; ' — WAT line comment (may precede module declaration)",
+        "weight": 0.3
+      },
+      {
+        "value": "286D6F64756C65",
+        "offset": 3,
+        "label": "'(module' at offset 3 (after BOM or whitespace)",
+        "weight": 0.7
+      }
     ],
     "matchMode": "any",
     "MinimumScore": 0.3,
     "required": false,
     "Strength": "Medium",
-    "EntropyHint": { "min": 3.5, "max": 5.5 },
+    "EntropyHint": {
+      "min": 3.5,
+      "max": 5.5
+    },
     "validation": {
       "minFileSize": 8,
       "maxSignatureOffset": 64,
@@ -104,7 +125,12 @@
   ],
   "navigation": {
     "bookmarks": [
-      { "name": "Module Declaration", "offset": 0, "icon": "\uE8A5", "color": "#4ECDC4" }
+      {
+        "name": "Module Declaration",
+        "offset": 0,
+        "icon": "",
+        "color": "#4ECDC4"
+      }
     ]
   },
   "inspector": {
@@ -114,8 +140,11 @@
     "groups": [
       {
         "title": "WAT Module Header",
-        "icon": "\uE8A5",
-        "fields": ["watFirstByte", "watModuleMarker"]
+        "icon": "",
+        "fields": [
+          "watFirstByte",
+          "watModuleMarker"
+        ]
       }
     ]
   },
@@ -123,12 +152,17 @@
     {
       "name": "WAT Header (JSON)",
       "format": "json",
-      "fields": ["watFirstByte", "watModuleMarker"]
+      "fields": [
+        "watFirstByte",
+        "watModuleMarker"
+      ]
     },
     {
       "name": "WAT Module Info (Text)",
       "format": "text",
-      "fields": ["watModuleMarker"]
+      "fields": [
+        "watModuleMarker"
+      ]
     }
   ],
   "forensic": {
@@ -162,11 +196,19 @@
   ],
   "formatRelationships": {
     "category": "Programming",
-    "extensions": [".wat", ".wast"],
-    "relatedFormats": ["WASM"],
+    "extensions": [
+      ".wat",
+      ".wast"
+    ],
+    "relatedFormats": [
+      "WASM"
+    ],
     "note": "WAT is the text representation of WASM binary. One-to-one mapping: every .wasm can be disassembled to .wat via wasm2wat, and every .wat can be assembled to .wasm via wat2wasm. WAST (.wast) is a superset used for test scripts — not directly compiled to .wasm. WAT uses S-expression syntax like Lisp/Scheme."
   },
-  "MimeTypes": ["text/plain", "text/wat"],
+  "MimeTypes": [
+    "text/plain",
+    "text/wat"
+  ],
   "UseCases": [
     "Reading and writing human-readable WebAssembly modules",
     "Debugging and auditing WASM binaries by disassembling to WAT",
@@ -190,5 +232,75 @@
     "Module": "(module (type ...) (import ...) (func ...) (export ...) (memory ...) (data ...))",
     "WAST": "Superset of WAT — adds assert_return, assert_trap, invoke for test scripts",
     "Tooling": "wabt toolkit: wat2wasm (assemble), wasm2wat (disassemble), wasm-validate"
+  },
+  "syntaxDefinition": {
+    "id": "wat",
+    "name": "WebAssembly Text (WAT)",
+    "extensions": [
+      ".wat",
+      ".wast"
+    ],
+    "lineCommentPrefix": ";;",
+    "blockCommentStart": "(;",
+    "blockCommentEnd": ";)",
+    "rules": [
+      {
+        "type": "Comment",
+        "pattern": ";;.*$"
+      },
+      {
+        "type": "BlockComment",
+        "pattern": "\\(;[\\s\\S]*?;\\)"
+      },
+      {
+        "type": "Keyword",
+        "pattern": "\\b(module|func|param|result|local|global|memory|table|import|export|data|elem|type|start|block|loop|if|then|else|end|br|br_if|br_table|return|call|call_indirect|unreachable|nop|drop|select|i32|i64|f32|f64|v128|funcref|externref|memory\\.size|memory\\.grow)\\b"
+      },
+      {
+        "type": "String",
+        "pattern": "\"(?:[^\"\\\\]|\\\\.)*\""
+      },
+      {
+        "type": "Number",
+        "pattern": "\\b(?:0x[0-9A-Fa-f_]+|[0-9][0-9_]*(?:\\.[0-9_]+)?(?:[eE][+-]?[0-9]+)?)\\b"
+      },
+      {
+        "type": "Label",
+        "pattern": "\\$[A-Za-z_][A-Za-z0-9_.]*"
+      }
+    ],
+    "formattingRules": {
+      "indentSize": 2,
+      "useTabs": false,
+      "trimTrailingWhitespace": true,
+      "insertFinalNewline": true
+    },
+    "foldingRules": {
+      "startPatterns": [
+        "\\("
+      ],
+      "endPatterns": [
+        "\\)"
+      ]
+    },
+    "bracketPairs": [
+      {
+        "open": "(",
+        "close": ")"
+      }
+    ],
+    "ideMetadata": {
+      "isSourceFile": true,
+      "isStructuredDataFile": false,
+      "supportsClassDiagram": false,
+      "supportsSourceOutline": true,
+      "isProjectLanguage": false,
+      "aliases": [
+        "wast",
+        "webassembly-text"
+      ],
+      "iconGlyph": "",
+      "diffMode": "text"
+    }
   }
 }

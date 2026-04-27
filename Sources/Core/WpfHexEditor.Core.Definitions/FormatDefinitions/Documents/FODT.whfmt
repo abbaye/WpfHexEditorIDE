@@ -2,7 +2,7 @@
   "diffMode": "text",
   "formatName": "Flat ODF Text Document",
   "formatId": "FODT",
-  "version": "1.0",
+  "version": "1.1",
   "extensions": [
     ".fodt",
     ".fods",
@@ -28,13 +28,26 @@
   },
   "detection": {
     "signatures": [
-      { "value": "3C3F786D6C", "offset": 0, "label": "<?xml — XML declaration for Flat ODF", "weight": 0.5 },
-      { "value": "3C6F66666963653A646F63756D656E74", "offset": 0, "label": "<office:document — Flat ODF root element (no XML declaration)", "weight": 0.9 }
+      {
+        "value": "3C3F786D6C",
+        "offset": 0,
+        "label": "<?xml — XML declaration for Flat ODF",
+        "weight": 0.5
+      },
+      {
+        "value": "3C6F66666963653A646F63756D656E74",
+        "offset": 0,
+        "label": "<office:document — Flat ODF root element (no XML declaration)",
+        "weight": 0.9
+      }
     ],
     "required": false,
     "Strength": "Medium",
     "MinimumScore": 0.4,
-    "EntropyHint": { "min": 4.0, "max": 6.0 },
+    "EntropyHint": {
+      "min": 4.0,
+      "max": 6.0
+    },
     "validation": {
       "minFileSize": 200
     }
@@ -65,7 +78,7 @@
       "offset": 0,
       "length": 5,
       "color": "#4ECDC4",
-      "opacity": 0.30,
+      "opacity": 0.3,
       "description": "First 5 bytes of the Flat ODF XML content. For files starting with an XML declaration: '<?xml' (3C 3F 78 6D 6C). For files without an XML declaration, this is the beginning of '<offi' from '<office:document'. Both are valid Flat ODF files — the XML declaration is optional in XML 1.0.",
       "storeAs": "xmlDecl",
       "valueType": "ascii"
@@ -99,7 +112,12 @@
   ],
   "navigation": {
     "bookmarks": [
-      { "name": "XML / Root Start", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" }
+      {
+        "name": "XML / Root Start",
+        "offset": 0,
+        "icon": "",
+        "color": "#FF6B6B"
+      }
     ]
   },
   "inspector": {
@@ -109,8 +127,11 @@
     "groups": [
       {
         "title": "XML Structure",
-        "icon": "\uE71B",
-        "fields": ["xmlDecl", "firstByte"]
+        "icon": "",
+        "fields": [
+          "xmlDecl",
+          "firstByte"
+        ]
       }
     ]
   },
@@ -118,12 +139,17 @@
     {
       "name": "Flat ODF header (JSON)",
       "format": "json",
-      "fields": ["xmlDecl", "firstByte"]
+      "fields": [
+        "xmlDecl",
+        "firstByte"
+      ]
     },
     {
       "name": "Flat ODF info (text)",
       "format": "text",
-      "fields": ["xmlDecl"]
+      "fields": [
+        "xmlDecl"
+      ]
     }
   ],
   "forensic": {
@@ -157,8 +183,18 @@
   ],
   "formatRelationships": {
     "category": "Documents",
-    "extensions": [".fodt", ".fods", ".fodp", ".fodg"],
-    "relatedFormats": ["ODT", "ODS", "ODP", "DOCX"],
+    "extensions": [
+      ".fodt",
+      ".fods",
+      ".fodp",
+      ".fodg"
+    ],
+    "relatedFormats": [
+      "ODT",
+      "ODS",
+      "ODP",
+      "DOCX"
+    ],
     "containerVariant": "Standard ODF: ZIP archive of XML files (.odt/.ods/.odp)"
   },
   "MimeTypes": [
@@ -189,5 +225,71 @@
     "Compression": "None (uncompressed XML, larger than .odt)",
     "Namespace": "urn:oasis:names:tc:opendocument:xmlns:office:1.0",
     "ContainerType": "Single XML file (not ZIP)"
+  },
+  "syntaxDefinition": {
+    "blockCommentStart": "<!--",
+    "blockCommentEnd": "-->",
+    "rules": [
+      {
+        "type": "Comment",
+        "pattern": "<!--[\\s\\S]*?-->"
+      },
+      {
+        "type": "Tag",
+        "pattern": "</?[A-Za-z][A-Za-z0-9:_.-]*(?:\\s[^>]*)?>"
+      },
+      {
+        "type": "Attribute",
+        "pattern": "\\b[A-Za-z][A-Za-z0-9:_.-]*(?=\\s*=)"
+      },
+      {
+        "type": "String",
+        "pattern": "(\"[^\"]*\"|'[^']*')"
+      },
+      {
+        "type": "CDataSection",
+        "pattern": "<!\\[CDATA\\[[\\s\\S]*?\\]\\]>"
+      },
+      {
+        "type": "Directive",
+        "pattern": "<\\?[^?]*\\?>"
+      }
+    ],
+    "formattingRules": {
+      "indentSize": 2,
+      "useTabs": false,
+      "trimTrailingWhitespace": true,
+      "insertFinalNewline": true
+    },
+    "foldingRules": {
+      "startPatterns": [
+        "<(?!/)(?!\\?)[A-Za-z]"
+      ],
+      "endPatterns": [
+        "</[A-Za-z]",
+        "/>"
+      ]
+    },
+    "ideMetadata": {
+      "isSourceFile": false,
+      "isStructuredDataFile": true,
+      "supportsClassDiagram": false,
+      "supportsSourceOutline": false,
+      "isProjectLanguage": false,
+      "iconGlyph": "",
+      "diffMode": "semantic",
+      "aliases": [
+        "flat-odf",
+        "opendocument-flat"
+      ]
+    },
+    "id": "fodt",
+    "name": "Flat OpenDocument (XML)",
+    "extensions": [
+      ".fodt",
+      ".fods",
+      ".fodp",
+      ".fodg"
+    ]
   }
 }

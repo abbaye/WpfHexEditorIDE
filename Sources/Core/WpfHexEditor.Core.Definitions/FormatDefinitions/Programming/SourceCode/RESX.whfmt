@@ -1,8 +1,8 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": ".NET XML Resource File",
   "formatId": "RESX",
-  "version": "2.12",
+  "version": "2.13",
   "extensions": [
     ".resx"
   ],
@@ -51,5 +51,67 @@
       "Check data integrity and field boundaries",
       "Inspect metadata and version information"
     ]
+  },
+  "syntaxDefinition": {
+    "id": "resx",
+    "name": "RESX (.NET Resource)",
+    "extensions": [
+      ".resx"
+    ],
+    "blockCommentStart": "<!--",
+    "blockCommentEnd": "-->",
+    "rules": [
+      {
+        "type": "Comment",
+        "pattern": "<!--[\\s\\S]*?-->"
+      },
+      {
+        "type": "Tag",
+        "pattern": "</?[A-Za-z][A-Za-z0-9:_.-]*(?:\\s[^>]*)?>"
+      },
+      {
+        "type": "Attribute",
+        "pattern": "\b[A-Za-z][A-Za-z0-9:_.-]*(?=\\s*=)"
+      },
+      {
+        "type": "String",
+        "pattern": "(\"[^\"]*\"|'[^']*')"
+      },
+      {
+        "type": "CDataSection",
+        "pattern": "<!\\[CDATA\\[[\\s\\S]*?\\]\\]>"
+      },
+      {
+        "type": "Keyword",
+        "pattern": "\b(name|value|comment|type|mimetype|xml:space|resheader|data|metadata|assembly)\b"
+      }
+    ],
+    "formattingRules": {
+      "indentSize": 2,
+      "useTabs": false,
+      "trimTrailingWhitespace": true,
+      "insertFinalNewline": true
+    },
+    "foldingRules": {
+      "startPatterns": [
+        "<(?!/)(?!\\?)[A-Za-z]"
+      ],
+      "endPatterns": [
+        "</[A-Za-z]",
+        "/>"
+      ]
+    },
+    "ideMetadata": {
+      "isSourceFile": false,
+      "isStructuredDataFile": true,
+      "supportsClassDiagram": false,
+      "supportsSourceOutline": false,
+      "isProjectLanguage": false,
+      "aliases": [
+        "dotnet-resource"
+      ],
+      "iconGlyph": "",
+      "diffMode": "semantic"
+    }
   }
 }

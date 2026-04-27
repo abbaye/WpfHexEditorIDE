@@ -2,8 +2,11 @@
   "diffMode": "text",
   "formatName": "Wireless Markup Language (WML)",
   "formatId": "WML",
-  "version": "1.0",
-  "extensions": [ ".wml", ".wmls" ],
+  "version": "1.1",
+  "extensions": [
+    ".wml",
+    ".wmls"
+  ],
   "description": "Wireless Markup Language (WML) is an XML-based markup language designed for WAP (Wireless Application Protocol) browsers on mobile devices, primarily feature phones from the late 1990s to early 2000s. WML files typically begin with an XML declaration followed by a DOCTYPE referencing the WAP DTD, or directly with the <wml> root element. WMLScript (.wmls) files contain procedural WML script logic. The format is now obsolete, superseded by XHTML Mobile Profile and eventually HTML5.",
   "category": "Documents",
   "author": "WPFHexaEditor Team",
@@ -22,14 +25,27 @@
   },
   "detection": {
     "signatures": [
-      { "hex": "3C776D6C", "offset": 0, "label": "'<wml' — WML direct root element at start of file", "weight": 0.9 },
-      { "hex": "3C3F786D6C", "offset": 0, "label": "'<?xml' XML declaration preceding WML content", "weight": 0.4 }
+      {
+        "hex": "3C776D6C",
+        "offset": 0,
+        "label": "'<wml' — WML direct root element at start of file",
+        "weight": 0.9
+      },
+      {
+        "hex": "3C3F786D6C",
+        "offset": 0,
+        "label": "'<?xml' XML declaration preceding WML content",
+        "weight": 0.4
+      }
     ],
     "matchMode": "any",
     "MinimumScore": 0.4,
     "required": false,
     "Strength": "Medium",
-    "EntropyHint": { "min": 3.5, "max": 5.5 },
+    "EntropyHint": {
+      "min": 3.5,
+      "max": 5.5
+    },
     "validation": {
       "minFileSize": 10,
       "maxSignatureOffset": 0,
@@ -85,14 +101,40 @@
     }
   ],
   "assertions": [
-    { "field": "wmlFirstByte", "operator": "equals", "value": 60, "description": "File must start with '<' (0x3C) — XML/WML text" },
-    { "field": "wmlStart", "operator": "startsWithAny", "value": ["<wml", "<?xm"], "description": "File must start with '<wml' or '<?xml'" },
-    { "field": "wmlStart", "operator": "notEmpty", "value": true, "description": "Document start must be readable" }
+    {
+      "field": "wmlFirstByte",
+      "operator": "equals",
+      "value": 60,
+      "description": "File must start with '<' (0x3C) — XML/WML text"
+    },
+    {
+      "field": "wmlStart",
+      "operator": "startsWithAny",
+      "value": [
+        "<wml",
+        "<?xm"
+      ],
+      "description": "File must start with '<wml' or '<?xml'"
+    },
+    {
+      "field": "wmlStart",
+      "operator": "notEmpty",
+      "value": true,
+      "description": "Document start must be readable"
+    }
   ],
   "navigation": {
     "bookmarks": [
-      { "name": "Document Start", "offset": 0, "description": "WML root element or XML declaration" },
-      { "name": "DOCTYPE/DTD", "offset": 5, "description": "Expected DOCTYPE or namespace reference" }
+      {
+        "name": "Document Start",
+        "offset": 0,
+        "description": "WML root element or XML declaration"
+      },
+      {
+        "name": "DOCTYPE/DTD",
+        "offset": 5,
+        "description": "Expected DOCTYPE or namespace reference"
+      }
     ]
   },
   "inspector": {
@@ -100,26 +142,42 @@
     "primaryField": "wmlStart",
     "showQualityScore": true,
     "groups": [
-      { "name": "Document Header", "fields": ["wmlStart", "wmlFirstByte"] }
+      {
+        "name": "Document Header",
+        "fields": [
+          "wmlStart",
+          "wmlFirstByte"
+        ]
+      }
     ]
   },
   "exportTemplates": [
     {
       "name": "WML File Info (JSON)",
       "format": "json",
-      "fields": ["wmlStart", "wmlFirstByte"]
+      "fields": [
+        "wmlStart",
+        "wmlFirstByte"
+      ]
     },
     {
       "name": "WML Header (Text)",
       "format": "text",
-      "fields": ["wmlStart"]
+      "fields": [
+        "wmlStart"
+      ]
     }
   ],
   "forensic": {
     "category": "document",
     "riskLevel": "low",
     "suspiciousPatterns": [
-      { "name": "Obfuscated WMLScript", "condition": "extension == .wmls", "description": "WMLScript may contain obfuscated logic targeting legacy WAP browsers.", "severity": "info" }
+      {
+        "name": "Obfuscated WMLScript",
+        "condition": "extension == .wmls",
+        "description": "WMLScript may contain obfuscated logic targeting legacy WAP browsers.",
+        "severity": "info"
+      }
     ]
   },
   "aiHints": {
@@ -140,11 +198,22 @@
   ],
   "formatRelationships": {
     "category": "Documents",
-    "extensions": [".wml", ".wmls"],
-    "relatedFormats": ["HTML", "XML", "XHTML", "DOCBOOK"],
+    "extensions": [
+      ".wml",
+      ".wmls"
+    ],
+    "relatedFormats": [
+      "HTML",
+      "XML",
+      "XHTML",
+      "DOCBOOK"
+    ],
     "note": "WML is a WAP-era XML subset. WMLScript (.wmls) is the procedural companion. Superseded by XHTML Mobile Profile and HTML5."
   },
-  "MimeTypes": [ "text/vnd.wap.wml", "text/vnd.wap.wmlscript" ],
+  "MimeTypes": [
+    "text/vnd.wap.wml",
+    "text/vnd.wap.wmlscript"
+  ],
   "UseCases": [
     "Legacy WAP mobile content",
     "Historical preservation of early mobile web",
@@ -165,5 +234,68 @@
     "MarkupLanguage": "XML subset for WAP",
     "Companion": "WMLScript (.wmls)",
     "Note": "WML is text-only XML. No binary magic. Detection relies on '<wml' element or XML declaration + DOCTYPE."
+  },
+  "syntaxDefinition": {
+    "blockCommentStart": "<!--",
+    "blockCommentEnd": "-->",
+    "rules": [
+      {
+        "type": "Comment",
+        "pattern": "<!--[\\s\\S]*?-->"
+      },
+      {
+        "type": "Tag",
+        "pattern": "</?[A-Za-z][A-Za-z0-9:_.-]*(?:\\s[^>]*)?>"
+      },
+      {
+        "type": "Attribute",
+        "pattern": "\\b[A-Za-z][A-Za-z0-9:_.-]*(?=\\s*=)"
+      },
+      {
+        "type": "String",
+        "pattern": "(\"[^\"]*\"|'[^']*')"
+      },
+      {
+        "type": "CDataSection",
+        "pattern": "<!\\[CDATA\\[[\\s\\S]*?\\]\\]>"
+      },
+      {
+        "type": "Directive",
+        "pattern": "<\\?[^?]*\\?>"
+      }
+    ],
+    "formattingRules": {
+      "indentSize": 2,
+      "useTabs": false,
+      "trimTrailingWhitespace": true,
+      "insertFinalNewline": true
+    },
+    "foldingRules": {
+      "startPatterns": [
+        "<(?!/)(?!\\?)[A-Za-z]"
+      ],
+      "endPatterns": [
+        "</[A-Za-z]",
+        "/>"
+      ]
+    },
+    "ideMetadata": {
+      "isSourceFile": false,
+      "isStructuredDataFile": true,
+      "supportsClassDiagram": false,
+      "supportsSourceOutline": false,
+      "isProjectLanguage": false,
+      "iconGlyph": "",
+      "diffMode": "semantic",
+      "aliases": [
+        "wap-wml"
+      ]
+    },
+    "id": "wml",
+    "name": "Wireless Markup Language (WML)",
+    "extensions": [
+      ".wml",
+      ".wmls"
+    ]
   }
 }
