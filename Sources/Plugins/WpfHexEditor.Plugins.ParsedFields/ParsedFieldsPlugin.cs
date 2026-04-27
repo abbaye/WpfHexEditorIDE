@@ -363,15 +363,6 @@ public sealed class ParsedFieldsPlugin : IWpfHexEditorPlugin
         // stuck at true and silently suppress the next non-hex document update.
         _hexEditorHandledLastSwitch = false;
 
-        // Skip if truly the same document — but compare FilePath rather than ContentId
-        // so that clicking between tab groups with the same ContentId still propagates
-        // (multi-tab-group scenario: same file open in two groups is unusual but we
-        // must not block a cross-group focus switch that re-uses the same ContentId).
-        // We accept the rare double-fire on identical FilePath — it is idempotent.
-        if (e.ActiveDocument.FilePath != null
-            && e.ActiveDocument.FilePath == e.PreviousDocument?.FilePath
-            && e.ActiveDocument.ContentId == e.PreviousDocument?.ContentId) return;
-
         var filePath = e.ActiveDocument.FilePath;
         if (string.IsNullOrEmpty(filePath)) return;
 
@@ -381,6 +372,19 @@ public sealed class ParsedFieldsPlugin : IWpfHexEditorPlugin
         {
             // If HexEditor claimed this tab switch, skip — it already reconnected the panel
             if (_hexEditorHandledLastSwitch) return;
+
+            // Cross-group focus: ActiveEditorChanged was suppressed by HexEditorServiceImpl
+            // (ReferenceEquals dedup) when the same HexEditor instance is re-focused from
+            // a different tab group. Detect this case and force a panel reconnect.
+            if (_context?.HexEditor.IsActive == true &&
+                string.Equals(_context.HexEditor.CurrentFilePath, filePath,
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                DeactivatePreview();
+                _context.HexEditor.DisconnectParsedFieldsPanel();
+                _context.HexEditor.ConnectParsedFieldsPanel(_panel);
+                return;
+            }
 
             // Non-hex document — activate preview
             QueueOrExecuteUpdate(new ParsedFieldsUpdateRequestedEvent
