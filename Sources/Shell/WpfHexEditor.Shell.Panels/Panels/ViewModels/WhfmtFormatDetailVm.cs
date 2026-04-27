@@ -9,6 +9,8 @@
 // ==========================================================
 
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Windows.Input;
 using WpfHexEditor.Core.Interfaces;
@@ -40,6 +42,13 @@ public sealed class WhfmtFormatDetailVm : ViewModelBase
     private string? _failureReason;
     private string? _rawJson;
     private bool    _hasSelection;
+    private IReadOnlyList<string>               _specificationsDisplay = [];
+    private IReadOnlyList<string>               _webLinksDisplay       = [];
+    private IReadOnlyList<AssertionDisplayItem> _assertionsSummary     = [];
+    private string                              _aiAnalysisContext     = string.Empty;
+    private IReadOnlyList<string>               _aiVulnerabilities     = [];
+    private int                                 _assertionCount;
+    private int                                 _aiHintCount;
 
     // ------------------------------------------------------------------
     // Display properties
@@ -66,6 +75,22 @@ public sealed class WhfmtFormatDetailVm : ViewModelBase
 
     /// <summary>True when a format item is selected; false when panel shows placeholder text.</summary>
     public bool HasSelection            { get => _hasSelection;         set => SetField(ref _hasSelection, value); }
+
+    // Tab: References
+    public IReadOnlyList<string>               SpecificationsDisplay { get => _specificationsDisplay; set => SetField(ref _specificationsDisplay, value); }
+    public IReadOnlyList<string>               WebLinksDisplay       { get => _webLinksDisplay;       set => SetField(ref _webLinksDisplay, value); }
+    public bool HasReferences => _specificationsDisplay.Count > 0 || _webLinksDisplay.Count > 0;
+
+    // Tab: Assertions
+    public IReadOnlyList<AssertionDisplayItem> AssertionsSummary { get => _assertionsSummary; set => SetField(ref _assertionsSummary, value); }
+    public int  AssertionCount { get => _assertionCount; set => SetField(ref _assertionCount, value); }
+    public bool HasAssertions  => _assertionCount > 0;
+
+    // Tab: AI Hints
+    public string                AiAnalysisContext  { get => _aiAnalysisContext; set => SetField(ref _aiAnalysisContext, value); }
+    public IReadOnlyList<string> AiVulnerabilities  { get => _aiVulnerabilities; set => SetField(ref _aiVulnerabilities, value); }
+    public int  AiHintCount { get => _aiHintCount; set => SetField(ref _aiHintCount, value); }
+    public bool HasAiHints  => _aiHintCount > 0;
 
     // ------------------------------------------------------------------
     // Commands (set by the parent ViewModel after construction)
@@ -141,7 +166,80 @@ public sealed class WhfmtFormatDetailVm : ViewModelBase
                 BlockCount            = 0;
                 DetectionRulesSummary = "—";
             }
+
+            // Enrich with References, Assertions, AiHints
+            if (def is not null)
+            {
+                SpecificationsDisplay = (IReadOnlyList<string>?)def.References?.Specifications ?? [];
+                WebLinksDisplay       = (IReadOnlyList<string>?)def.References?.WebLinks       ?? [];
+
+                if (def.Assertions is { Count: > 0 })
+                {
+                    AssertionCount    = def.Assertions.Count;
+                    AssertionsSummary = def.Assertions
+                        .Select(a => new AssertionDisplayItem(a.Name, a.Expression, a.Severity, a.Message))
+                        .ToList();
+                }
+                else
+                {
+                    AssertionCount    = 0;
+                    AssertionsSummary = [];
+                }
+
+                if (def.AiHints is not null)
+                {
+                    AiAnalysisContext = def.AiHints.AnalysisContext ?? string.Empty;
+                    AiVulnerabilities = (IReadOnlyList<string>?)def.AiHints.KnownVulnerabilities ?? [];
+                    AiHintCount       = (def.AiHints.KnownVulnerabilities?.Count ?? 0)
+                                      + (string.IsNullOrEmpty(def.AiHints.AnalysisContext) ? 0 : 1);
+                }
+                else
+                {
+                    AiAnalysisContext = string.Empty;
+                    AiVulnerabilities = [];
+                    AiHintCount       = 0;
+                }
+            }
+            else
+            {
+                SpecificationsDisplay = [];
+                WebLinksDisplay       = [];
+                AssertionCount        = 0;
+                AssertionsSummary     = [];
+                AiAnalysisContext     = string.Empty;
+                AiVulnerabilities     = [];
+                AiHintCount           = 0;
+            }
+
+            OnPropertyChanged(nameof(HasReferences));
+            OnPropertyChanged(nameof(HasAssertions));
+            OnPropertyChanged(nameof(HasAiHints));
         }
+    }
+
+    /// <summary>
+    /// Lazily loads raw JSONC text. Call when the JSON tab becomes active.
+    /// </summary>
+    public void LoadRawJsonIfNeeded(IEmbeddedFormatCatalog emb, IFormatCatalogService svc)
+    {
+        if (RawJson is not null) return;
+
+        // Try embedded catalog first, then disk
+        var item = svc.FindFormat(Name);
+        if (item is null) return;
+
+        // For user formats there's no resource key — try file path via FindFormat
+        // For built-in formats, IEmbeddedFormatCatalog.GetJson(resourceKey) is the source
+        var entry = emb.GetAll().FirstOrDefault(e => e.Name == Name);
+        if (entry?.ResourceKey is not null)
+        {
+            RawJson = emb.GetJson(entry.ResourceKey);
+            return;
+        }
+
+        // User/adhoc format: locate by convention (the catalog service knows the path)
+        // Fall back gracefully if not available
+        RawJson = "(raw JSON not available for this format source)";
     }
 
     /// <summary>Resets the panel to its empty/no-selection state.</summary>
@@ -164,8 +262,21 @@ public sealed class WhfmtFormatDetailVm : ViewModelBase
         IsLoadFailure        = false;
         FailureReason        = null;
         RawJson              = null;
+        SpecificationsDisplay = [];
+        WebLinksDisplay      = [];
+        AssertionCount       = 0;
+        AssertionsSummary    = [];
+        AiAnalysisContext    = string.Empty;
+        AiVulnerabilities    = [];
+        AiHintCount          = 0;
+        OnPropertyChanged(nameof(HasReferences));
+        OnPropertyChanged(nameof(HasAssertions));
+        OnPropertyChanged(nameof(HasAiHints));
     }
 }
+
+/// <summary>Display model for a single assertion row in the Assertions tab.</summary>
+public sealed record AssertionDisplayItem(string Name, string Expression, string Severity, string Message);
 
 file sealed class DisabledDetailCommand : ICommand
 {

@@ -7,114 +7,11 @@
              Foreground="{DynamicResource SE_ForegroundBrush}">
 
     <UserControl.Resources>
-        <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
-
-        <!-- ── Toolbar icon button ── -->
-        <Style x:Key="WE_IconButton" TargetType="Button">
-            <Setter Property="Background"        Value="Transparent"/>
-            <Setter Property="BorderThickness"   Value="0"/>
-            <Setter Property="Width"             Value="24"/>
-            <Setter Property="Height"            Value="24"/>
-            <Setter Property="Padding"           Value="4"/>
-            <Setter Property="Cursor"            Value="Hand"/>
-            <Setter Property="VerticalAlignment" Value="Center"/>
-            <Setter Property="Foreground"        Value="{DynamicResource SE_ForegroundBrush}"/>
-            <Setter Property="ToolTipService.InitialShowDelay" Value="400"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border x:Name="Bd" Background="{TemplateBinding Background}"
-                                CornerRadius="2" SnapsToDevicePixels="True"
-                                Padding="{TemplateBinding Padding}">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="Bd" Property="Background"
-                                        Value="{DynamicResource Panel_ToolbarButtonHoverBrush}"/>
-                            </Trigger>
-                            <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="Bd" Property="Background"
-                                        Value="{DynamicResource Panel_ToolbarButtonActiveBrush}"/>
-                            </Trigger>
-                            <Trigger Property="IsEnabled" Value="False">
-                                <Setter Property="Opacity" Value="0.35"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <!-- ── Toolbar toggle button ── -->
-        <Style x:Key="WE_ToggleButton" TargetType="ToggleButton">
-            <Setter Property="Background"        Value="Transparent"/>
-            <Setter Property="BorderThickness"   Value="0"/>
-            <Setter Property="Width"             Value="24"/>
-            <Setter Property="Height"            Value="24"/>
-            <Setter Property="Padding"           Value="4"/>
-            <Setter Property="Cursor"            Value="Hand"/>
-            <Setter Property="VerticalAlignment" Value="Center"/>
-            <Setter Property="Foreground"        Value="{DynamicResource SE_ForegroundBrush}"/>
-            <Setter Property="ToolTipService.InitialShowDelay" Value="400"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="ToggleButton">
-                        <Border x:Name="Bd" Background="{TemplateBinding Background}"
-                                CornerRadius="2" SnapsToDevicePixels="True"
-                                Padding="{TemplateBinding Padding}">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="Bd" Property="Background"
-                                        Value="{DynamicResource Panel_ToolbarButtonHoverBrush}"/>
-                            </Trigger>
-                            <Trigger Property="IsChecked" Value="True">
-                                <Setter TargetName="Bd" Property="Background"
-                                        Value="{DynamicResource SE_AccentBrush}"/>
-                            </Trigger>
-                            <Trigger Property="IsEnabled" Value="False">
-                                <Setter Property="Opacity" Value="0.35"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <!-- ── Pop-toolbar button (inline on row hover) ── -->
-        <Style x:Key="PopRowButton" TargetType="Button">
-            <Setter Property="Background"        Value="Transparent"/>
-            <Setter Property="BorderThickness"   Value="0"/>
-            <Setter Property="Width"             Value="22"/>
-            <Setter Property="Height"            Value="20"/>
-            <Setter Property="Padding"           Value="3"/>
-            <Setter Property="Cursor"            Value="Hand"/>
-            <Setter Property="VerticalAlignment" Value="Center"/>
-            <Setter Property="Foreground"        Value="{DynamicResource SE_ForegroundBrush}"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border x:Name="Bd" Background="{TemplateBinding Background}"
-                                CornerRadius="2" SnapsToDevicePixels="True"
-                                Padding="{TemplateBinding Padding}">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="Bd" Property="Background"
-                                        Value="{DynamicResource SE_ToolbarButtonHoverBrush}"/>
-                            </Trigger>
-                            <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="Bd" Property="Background"
-                                        Value="{DynamicResource SE_ToolbarButtonActiveBrush}"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="WhfmtPanelStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
 
         <!-- ── TreeViewItem style ── -->
         <Style TargetType="TreeViewItem">
@@ -339,173 +236,20 @@
             <Separator/>
             <MenuItem Header="Delete"             Command="{Binding DeleteCommand}"/>
             <MenuItem Header="Reveal in Explorer" Command="{Binding RevealInExplorerCommand}"/>
+            <Separator/>
+            <MenuItem Header="Duplicate Format…"        Command="{Binding DuplicateCommand}"/>
+            <MenuItem Header="Edit in Code Editor"      Command="{Binding ViewJsonCommand}"/>
         </ContextMenu>
+        </ResourceDictionary>
     </UserControl.Resources>
 
+    <!-- ── Root grid: content + QuickSearchBar overlay ── -->
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="30"/>   <!-- Search bar -->
-            <RowDefinition Height="26"/>   <!-- Toolbar -->
-            <RowDefinition Height="*"/>    <!-- Main content -->
-            <RowDefinition Height="18"/>   <!-- Status bar -->
-        </Grid.RowDefinitions>
-
-        <!-- ================================================================ -->
-        <!-- Search bar                                                        -->
-        <!-- ================================================================ -->
-        <Border Grid.Row="0"
-                Background="{DynamicResource SE_SearchBoxBrush}"
-                BorderBrush="{DynamicResource Panel_SearchBoxBorderBrush}"
-                BorderThickness="1" CornerRadius="3"
-                Margin="6,4,6,2">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-
-                <!-- Search icon -->
-                <TextBlock Grid.Column="0" Text="&#xE721;"
-                           FontFamily="Segoe MDL2 Assets" FontSize="12"
-                           Foreground="{DynamicResource SE_ForegroundBrush}" Opacity="0.45"
-                           VerticalAlignment="Center" Margin="6,0,4,0"/>
-
-                <!-- Search input -->
-                <TextBox Grid.Column="1"
-                         Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
-                         Background="Transparent"
-                         Foreground="{DynamicResource SE_SearchBoxForegroundBrush}"
-                         BorderThickness="0" VerticalContentAlignment="Center"
-                         FontSize="12"
-                         ToolTip="Filter formats by name, category, extension, or author">
-                    <TextBox.Style>
-                        <Style TargetType="TextBox">
-                            <Style.Resources>
-                                <VisualBrush x:Key="CueBanner" TileMode="None" Opacity="0.4"
-                                             Stretch="None" AlignmentX="Left">
-                                    <VisualBrush.Visual>
-                                        <TextBlock Text="Search formats…"
-                                                   Foreground="{DynamicResource SE_ForegroundBrush}"
-                                                   FontStyle="Italic" FontSize="12" Margin="0"/>
-                                    </VisualBrush.Visual>
-                                </VisualBrush>
-                            </Style.Resources>
-                            <Style.Triggers>
-                                <Trigger Property="Text" Value="">
-                                    <Setter Property="Background" Value="{StaticResource CueBanner}"/>
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </TextBox.Style>
-                </TextBox>
-
-                <!-- Clear button -->
-                <Button Grid.Column="2" Style="{StaticResource WE_IconButton}"
-                        Width="20" Height="20" Padding="3" Margin="0,0,2,0"
-                        Command="{Binding ClearSearchCommand}"
-                        Visibility="{Binding SearchText, Converter={StaticResource BoolToVisibility}}"
-                        ToolTip="Clear search">
-                    <TextBlock Text="&#xE711;" FontFamily="Segoe MDL2 Assets" FontSize="10"
-                               Foreground="{DynamicResource SE_ForegroundBrush}" Opacity="0.6"/>
-                </Button>
-            </Grid>
-        </Border>
-
-        <!-- ================================================================ -->
-        <!-- Toolbar                                                           -->
-        <!-- ================================================================ -->
-        <Border Grid.Row="1"
-                Background="{DynamicResource Panel_ToolbarBrush}"
-                BorderBrush="{DynamicResource Panel_ToolbarBorderBrush}"
-                BorderThickness="0,0,0,1">
-            <StackPanel Orientation="Horizontal" Margin="4,1">
-
-                <!-- View toggles: Tree / Flat -->
-                <ToggleButton Style="{StaticResource WE_ToggleButton}"
-                              IsChecked="{Binding IsTreeView}"
-                              ToolTip="Tree view — group by category">
-                    <TextBlock Text="&#xE8EB;" FontFamily="Segoe MDL2 Assets" FontSize="13"
-                               Foreground="{DynamicResource SE_ForegroundBrush}"/>
-                </ToggleButton>
-                <ToggleButton x:Name="FlatViewToggle"
-                              Style="{StaticResource WE_ToggleButton}"
-                              ToolTip="Flat list view"
-                              Click="OnFlatViewToggleClick">
-                    <TextBlock Text="&#xE8FD;" FontFamily="Segoe MDL2 Assets" FontSize="13"
-                               Foreground="{DynamicResource SE_ForegroundBrush}"/>
-                </ToggleButton>
-
-                <!-- Separator -->
-                <Border Width="1" Height="16" Margin="3,0"
-                        Background="{DynamicResource SE_SeparatorBrush}"
-                        VerticalAlignment="Center"/>
-
-                <!-- Source filter toggles -->
-                <ToggleButton Style="{StaticResource WE_ToggleButton}"
-                              IsChecked="{Binding ShowBuiltIns}"
-                              ToolTip="Show built-in formats">
-                    <TextBlock Text="&#xE8C3;" FontFamily="Segoe MDL2 Assets" FontSize="13"
-                               Foreground="{DynamicResource SE_ForegroundBrush}"/>
-                </ToggleButton>
-                <ToggleButton Style="{StaticResource WE_ToggleButton}"
-                              IsChecked="{Binding ShowUserFormats}"
-                              ToolTip="Show user formats">
-                    <TextBlock Text="&#xE77B;" FontFamily="Segoe MDL2 Assets" FontSize="13"
-                               Foreground="{DynamicResource SE_ForegroundBrush}"/>
-                </ToggleButton>
-                <ToggleButton Style="{StaticResource WE_ToggleButton}"
-                              ToolTip="Show load failures"
-                              Click="OnShowFailuresToggleClick">
-                    <TextBlock Text="&#xE783;" FontFamily="Segoe MDL2 Assets" FontSize="13"
-                               Foreground="{DynamicResource SE_ForegroundBrush}"/>
-                </ToggleButton>
-
-                <!-- Separator -->
-                <Border Width="1" Height="16" Margin="3,0"
-                        Background="{DynamicResource SE_SeparatorBrush}"
-                        VerticalAlignment="Center"/>
-
-                <!-- Action buttons -->
-                <Button Style="{StaticResource WE_IconButton}"
-                        Command="{Binding RefreshCommand}"
-                        ToolTip="Refresh catalog">
-                    <TextBlock Text="&#xE72C;" FontFamily="Segoe MDL2 Assets" FontSize="13"
-                               Foreground="{DynamicResource SE_ForegroundBrush}"/>
-                </Button>
-                <Button Style="{StaticResource WE_IconButton}"
-                        Command="{Binding AddFormatCommand}"
-                        ToolTip="Add format file…">
-                    <TextBlock Text="&#xE109;" FontFamily="Segoe MDL2 Assets" FontSize="13"
-                               Foreground="{DynamicResource SE_ForegroundBrush}"/>
-                </Button>
-                <Button Style="{StaticResource WE_IconButton}"
-                        Command="{Binding OpenFolderCommand}"
-                        ToolTip="Open user formats folder">
-                    <TextBlock Text="&#xEC50;" FontFamily="Segoe MDL2 Assets" FontSize="13"
-                               Foreground="{DynamicResource SE_ForegroundBrush}"/>
-                </Button>
-
-                <!-- Separator -->
-                <Border Width="1" Height="16" Margin="3,0"
-                        Background="{DynamicResource SE_SeparatorBrush}"
-                        VerticalAlignment="Center"/>
-
-                <!-- Hot-reload watch toggle -->
-                <ToggleButton Style="{StaticResource WE_ToggleButton}"
-                              IsChecked="{Binding IsWatching, Mode=OneWay}"
-                              Command="{Binding ToggleWatchCommand}"
-                              ToolTip="Watch folder for changes (hot reload)">
-                    <TextBlock Text="&#xE91B;" FontFamily="Segoe MDL2 Assets" FontSize="13"
-                               Foreground="{DynamicResource SE_ForegroundBrush}"/>
-                </ToggleButton>
-            </StackPanel>
-        </Border>
 
         <!-- ================================================================ -->
         <!-- Main: list + detail                                               -->
         <!-- ================================================================ -->
-        <Grid Grid.Row="2">
+        <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" MinWidth="120"/>
                 <ColumnDefinition Width="4"/>
@@ -598,16 +342,12 @@
         </Grid>
 
         <!-- ================================================================ -->
-        <!-- Status bar                                                        -->
+        <!-- QuickSearchBar overlay (Ctrl+F, floating, draggable)             -->
         <!-- ================================================================ -->
-        <Border Grid.Row="3"
-                Background="{DynamicResource Panel_StatusBarBackgroundBrush}"
-                BorderBrush="{DynamicResource SE_SeparatorBrush}"
-                BorderThickness="0,1,0,0">
-            <TextBlock Margin="8,0" Text="{Binding StatusText}"
-                       FontSize="10" VerticalAlignment="Center"
-                       Foreground="{DynamicResource SE_ForegroundBrush}" Opacity="0.7"
-                       TextTrimming="CharacterEllipsis"/>
-        </Border>
+        <Canvas x:Name="SearchBarCanvas"
+                Panel.ZIndex="5"
+                IsHitTestVisible="False"
+                Background="Transparent"/>
+
     </Grid>
 </UserControl>

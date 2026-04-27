@@ -7,77 +7,11 @@
              Foreground="{DynamicResource SE_ForegroundBrush}">
 
     <UserControl.Resources>
-        <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
-
-        <!-- ── Icon-only toolbar button ── -->
-        <Style x:Key="CatIconButton" TargetType="Button">
-            <Setter Property="Background"        Value="Transparent"/>
-            <Setter Property="BorderThickness"   Value="0"/>
-            <Setter Property="Width"             Value="24"/>
-            <Setter Property="Height"            Value="24"/>
-            <Setter Property="Padding"           Value="4"/>
-            <Setter Property="Cursor"            Value="Hand"/>
-            <Setter Property="VerticalAlignment" Value="Center"/>
-            <Setter Property="Foreground"        Value="{DynamicResource SE_ForegroundBrush}"/>
-            <Setter Property="ToolTipService.InitialShowDelay" Value="400"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border x:Name="Bd" Background="{TemplateBinding Background}"
-                                CornerRadius="2" SnapsToDevicePixels="True"
-                                Padding="{TemplateBinding Padding}">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="Bd" Property="Background"
-                                        Value="{DynamicResource Panel_ToolbarButtonHoverBrush}"/>
-                            </Trigger>
-                            <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="Bd" Property="Background"
-                                        Value="{DynamicResource Panel_ToolbarButtonActiveBrush}"/>
-                            </Trigger>
-                            <Trigger Property="IsEnabled" Value="False">
-                                <Setter Property="Opacity" Value="0.35"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <!-- ── Pop-toolbar button (inline on row hover) ── -->
-        <Style x:Key="PopRowButton" TargetType="Button">
-            <Setter Property="Background"        Value="Transparent"/>
-            <Setter Property="BorderThickness"   Value="0"/>
-            <Setter Property="Width"             Value="22"/>
-            <Setter Property="Height"            Value="20"/>
-            <Setter Property="Padding"           Value="3"/>
-            <Setter Property="Cursor"            Value="Hand"/>
-            <Setter Property="VerticalAlignment" Value="Center"/>
-            <Setter Property="Foreground"        Value="{DynamicResource SE_ForegroundBrush}"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border x:Name="Bd" Background="{TemplateBinding Background}"
-                                CornerRadius="2" SnapsToDevicePixels="True"
-                                Padding="{TemplateBinding Padding}">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="Bd" Property="Background"
-                                        Value="{DynamicResource SE_ToolbarButtonHoverBrush}"/>
-                            </Trigger>
-                            <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="Bd" Property="Background"
-                                        Value="{DynamicResource SE_ToolbarButtonActiveBrush}"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="WhfmtPanelStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
 
         <!-- DataGrid theme overrides -->
         <Style TargetType="DataGrid">
@@ -130,91 +64,14 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
+        </ResourceDictionary>
     </UserControl.Resources>
 
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="26"/>   <!-- Toolbar -->
-            <RowDefinition Height="*"/>    <!-- DataGrid + Detail -->
-            <RowDefinition Height="18"/>   <!-- Status bar -->
-        </Grid.RowDefinitions>
-
-        <!-- ================================================================ -->
-        <!-- Toolbar                                                           -->
-        <!-- ================================================================ -->
-        <Border Grid.Row="0"
-                Background="{DynamicResource Panel_ToolbarBrush}"
-                BorderBrush="{DynamicResource Panel_ToolbarBorderBrush}"
-                BorderThickness="0,0,0,1">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="210"/>
-                </Grid.ColumnDefinitions>
-
-                <!-- Left: action icon buttons -->
-                <StackPanel Grid.Column="0" Orientation="Horizontal" Margin="4,1">
-                    <Button Style="{StaticResource CatIconButton}"
-                            Command="{Binding OpenSelectedCommand}"
-                            ToolTip="Open selected format(s) in Structure Editor">
-                        <TextBlock Text="&#xE7AC;" FontFamily="Segoe MDL2 Assets" FontSize="13"
-                                   Foreground="{DynamicResource SE_ForegroundBrush}"/>
-                    </Button>
-                    <Button Style="{StaticResource CatIconButton}"
-                            Command="{Binding ExportSelectedCommand}"
-                            ToolTip="Export selected format(s) to disk">
-                        <TextBlock Text="&#xE74E;" FontFamily="Segoe MDL2 Assets" FontSize="13"
-                                   Foreground="{DynamicResource SE_ForegroundBrush}"/>
-                    </Button>
-
-                    <Border Width="1" Height="16" Margin="3,0"
-                            Background="{DynamicResource SE_SeparatorBrush}"
-                            VerticalAlignment="Center"/>
-
-                    <Button Style="{StaticResource CatIconButton}"
-                            Command="{Binding AddFormatCommand}"
-                            ToolTip="Add user .whfmt file to catalog">
-                        <TextBlock Text="&#xE109;" FontFamily="Segoe MDL2 Assets" FontSize="13"
-                                   Foreground="{DynamicResource SE_ForegroundBrush}"/>
-                    </Button>
-                    <Button Style="{StaticResource CatIconButton}"
-                            Command="{Binding RefreshCommand}"
-                            ToolTip="Refresh catalog">
-                        <TextBlock Text="&#xE72C;" FontFamily="Segoe MDL2 Assets" FontSize="13"
-                                   Foreground="{DynamicResource SE_ForegroundBrush}"/>
-                    </Button>
-                </StackPanel>
-
-                <!-- Right: search box -->
-                <Border Grid.Column="1"
-                        Background="{DynamicResource SE_SearchBoxBrush}"
-                        BorderBrush="{DynamicResource Panel_SearchBoxBorderBrush}"
-                        BorderThickness="1" CornerRadius="3"
-                        Margin="0,2,6,2">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Text="&#xE721;"
-                                   FontFamily="Segoe MDL2 Assets" FontSize="11"
-                                   VerticalAlignment="Center" Margin="5,0,3,0"
-                                   Foreground="{DynamicResource SE_ForegroundBrush}" Opacity="0.45"/>
-                        <TextBox Grid.Column="1" x:Name="SearchBox"
-                                 Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
-                                 Background="Transparent" BorderThickness="0" FontSize="11"
-                                 Foreground="{DynamicResource SE_SearchBoxForegroundBrush}"
-                                 VerticalContentAlignment="Center"
-                                 ToolTip="Filter by name, category, extension or author"/>
-                    </Grid>
-                </Border>
-            </Grid>
-        </Border>
-
         <!-- ================================================================ -->
         <!-- Main: DataGrid + Detail                                           -->
         <!-- ================================================================ -->
-        <Grid Grid.Row="1">
+        <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" MinHeight="120"/>
                 <RowDefinition Height="4"/>
@@ -416,18 +273,5 @@
             <!-- Detail panel -->
             <local:WhfmtFormatDetailPanel Grid.Row="2" DataContext="{Binding Detail}"/>
         </Grid>
-
-        <!-- ================================================================ -->
-        <!-- Status bar                                                        -->
-        <!-- ================================================================ -->
-        <Border Grid.Row="2"
-                Background="{DynamicResource Panel_StatusBarBackgroundBrush}"
-                BorderBrush="{DynamicResource SE_SeparatorBrush}"
-                BorderThickness="0,1,0,0">
-            <TextBlock Margin="8,0" Text="{Binding StatusText}"
-                       FontSize="10" VerticalAlignment="Center"
-                       Foreground="{DynamicResource SE_ForegroundBrush}" Opacity="0.7"
-                       TextTrimming="CharacterEllipsis"/>
-        </Border>
     </Grid>
 </UserControl>
