@@ -353,11 +353,13 @@ public sealed class ParsedFieldsPlugin : IWpfHexEditorPlugin
         if (e.ActiveDocument == null) return;
         if (e.ActiveDocument.ContentId == e.PreviousDocument?.ContentId) return;
 
+        // Clear the flag BEFORE any early-out so that transitioning through a
+        // FilePath-less tab (Options, empty editor, etc.) doesn't leave the flag
+        // stuck at true and silently suppress the next non-hex document update.
+        _hexEditorHandledLastSwitch = false;
+
         var filePath = e.ActiveDocument.FilePath;
         if (string.IsNullOrEmpty(filePath)) return;
-
-        // Clear the flag — OnActiveEditorChanged will set it back to true if it fires
-        _hexEditorHandledLastSwitch = false;
 
         // Defer to ContextIdle priority (LOWER than Background) so OnActiveEditorChanged
         // (which fires at Background) has already run and set the flag by the time we check.

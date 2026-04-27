@@ -63,6 +63,13 @@ namespace WpfHexEditor.HexEditor
             // Connect new panel to the service
             if (e.NewValue is IParsedFieldsPanel newPanel)
             {
+                // Ensure the data source is attached before connecting the panel so that
+                // ConnectPanel can immediately schedule ParseFieldsOnDispatcher on tab-switch
+                // (the source may be null if the file was opened before the panel was connected,
+                // or after a ClearFormatDetectionState/Detach cycle).
+                if (editor._formatParsingService?.ActiveSource == null && editor.Stream != null)
+                    editor.AttachDataSourceToParsingService();
+
                 editor._formatParsingService?.ConnectPanel(newPanel);
                 // ConnectPanel already schedules ParseFieldsOnDispatcher if _activeFormat is set.
                 // Only set enriched metadata (no parse trigger).

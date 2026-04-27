@@ -283,6 +283,11 @@ namespace WpfHexEditor.HexEditor
                 EditModeText.Text = $"Mode: {_viewModel.EditMode}";
                 RaiseHexStatusChanged();
 
+                // Attach data source to parsing service immediately after file open so that
+                // ConnectPanel (tab-switch) can trigger ParseFieldsOnDispatcher even before
+                // format detection completes or when no format is detected.
+                AttachDataSourceToParsingService();
+
                 // Auto-detect format: snapshot bytes on UI thread, then detect on Task.Run.
                 if (EnableAutoFormatDetection && Stream != null && Stream.Length > 0)
                 {
