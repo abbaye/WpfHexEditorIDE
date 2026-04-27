@@ -5411,7 +5411,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         }
     }
 
-    private void OnCloseAllDocuments(object sender, RoutedEventArgs e)
+    private async void OnCloseAllDocuments(object sender, RoutedEventArgs e)
     {
         var docs = _layout.GetAllGroups()
             .SelectMany(g => g.Items)
