@@ -378,6 +378,12 @@
                                Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                     <Button.ContextMenu>
                         <ContextMenu x:Name="OverflowContextMenu" Opened="OnOverflowMenuOpened">
+                            <!-- TbgSource items -->
+                            <MenuItem x:Name="OverflowSourceItem"
+                                      Header="_Source document..."
+                                      Tag="TbgSource"
+                                      Click="SourceMenuButton_Click"/>
+                            <Separator Tag="TbgSource"/>
                             <!-- TbgActions items -->
                             <MenuItem Header="Field _Actions..."
                                       Tag="TbgActions"
@@ -390,6 +396,36 @@
                         </ContextMenu>
                     </Button.ContextMenu>
                 </Button>
+
+                <!-- Group: TbgSource [−1] — source document selector, collapses before Export -->
+                <StackPanel x:Name="TbgSource"
+                            Orientation="Horizontal"
+                            DockPanel.Dock="Left"
+                            VerticalAlignment="Center">
+                    <Rectangle Style="{DynamicResource PanelToolbarSeparatorStyle}"/>
+                    <Button x:Name="SourceMenuButton"
+                            ToolTip="Select source document for analysis"
+                            Style="{DynamicResource PanelDropdownButtonStyle}"
+                            Click="SourceMenuButton_Click">
+                        <Button.Content>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock x:Name="SourceMenuIcon"
+                                           Text="&#xE72C;"
+                                           FontFamily="Segoe MDL2 Assets" FontSize="11"
+                                           VerticalAlignment="Center" Margin="0,0,4,0"
+                                           Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
+                                <TextBlock x:Name="SourceMenuLabel"
+                                           Text="Auto &#x25BE;"
+                                           VerticalAlignment="Center"
+                                           MaxWidth="120"
+                                           TextTrimming="CharacterEllipsis"/>
+                            </StackPanel>
+                        </Button.Content>
+                        <Button.ContextMenu>
+                            <ContextMenu x:Name="SourceContextMenu" Opened="SourceContextMenu_Opened"/>
+                        </Button.ContextMenu>
+                    </Button>
+                </StackPanel>
 
                 <!-- Group: TbgExport [0] first to collapse -->
                 <StackPanel x:Name="TbgExport"

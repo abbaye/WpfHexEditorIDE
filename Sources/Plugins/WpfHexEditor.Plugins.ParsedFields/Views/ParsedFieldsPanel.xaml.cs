@@ -45,6 +45,10 @@ namespace WpfHexEditor.Plugins.ParsedFields.Views
         private readonly EnrichedFormatViewModel _enrichedVm = new();
         private bool _suppressFilter; // set by BeginBulkUpdate/EndBulkUpdate
 
+        // ── Source selector state ─────────────────────────────────────────
+        private string? _pinnedFilePath;  // null = Auto mode
+        private Func<IReadOnlyList<(string FilePath, string Title)>>? _openDocumentsProvider;
+
         public ParsedFieldsPanel()
         {
             InitializeComponent();
@@ -76,7 +80,8 @@ namespace WpfHexEditor.Plugins.ParsedFields.Views
                     groupsInCollapseOrder: new FrameworkElement[]
                     {
                         TbgExport,   // [0] first to collapse
-                        TbgActions,  // [1] last to collapse
+                        TbgActions,  // [1] second to collapse
+                        TbgSource,   // [2] last to collapse (always useful)
                     },
                     leftFixedElements: new FrameworkElement[] { RefreshButton });
                 Dispatcher.InvokeAsync(_overflowManager.CaptureNaturalWidths, DispatcherPriority.Loaded);
@@ -238,6 +243,11 @@ namespace WpfHexEditor.Plugins.ParsedFields.Views
         /// Event fired when the refresh button is clicked
         /// </summary>
         public event EventHandler RefreshRequested;
+
+        /// <summary>
+        /// Fired when the user selects a specific source document (filePath) or null for Auto mode.
+        /// </summary>
+        public event EventHandler<string?> SourceDocumentSelected;
 
         // GroupName used for enriched format fields injected into the main fields list
         private const string EnrichedGroupName = "Format Metadata";
@@ -525,6 +535,92 @@ namespace WpfHexEditor.Plugins.ParsedFields.Views
         private void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
             RefreshRequested?.Invoke(this, EventArgs.Empty);
+        }
+
+        // ── Source selector ───────────────────────────────────────────────
+
+        /// <summary>
+        /// Registers the callback the plugin uses to supply the current open-document list.
+        /// Called once during plugin initialization.
+        /// </summary>
+        public void SetOpenDocumentsProvider(Func<IReadOnlyList<(string FilePath, string Title)>> provider)
+            => _openDocumentsProvider = provider;
+
+        /// <summary>
+        /// Notifies the panel that a pinned document was closed — revert to Auto.
+        /// Called by the plugin when DocumentUnregistered fires for the pinned path.
+        /// </summary>
+        public void NotifyPinnedDocumentClosed(string filePath)
+        {
+            if (!string.Equals(filePath, _pinnedFilePath, StringComparison.OrdinalIgnoreCase)) return;
+            SetSourceAuto();
+        }
+
+        private void SetSourceAuto()
+        {
+            _pinnedFilePath = null;
+            SourceMenuIcon.Text  = "\uE72C"; // sync icon
+            SourceMenuLabel.Text = "Auto \u25BE";
+        }
+
+        private void SetSourcePinned(string filePath, string title)
+        {
+            _pinnedFilePath = filePath;
+            SourceMenuIcon.Text  = "\uE718"; // pin icon
+            var shortName = System.IO.Path.GetFileName(filePath);
+            SourceMenuLabel.Text = $"{shortName} \u25BE";
+        }
+
+        private void SourceMenuButton_Click(object sender, RoutedEventArgs e)
+        {
+            SourceContextMenu.PlacementTarget = SourceMenuButton;
+            SourceContextMenu.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom;
+            SourceContextMenu.IsOpen = true;
+        }
+
+        private void SourceContextMenu_Opened(object sender, RoutedEventArgs e)
+        {
+            SourceContextMenu.Items.Clear();
+
+            // Auto item
+            var autoItem = new MenuItem
+            {
+                Header     = "Auto (sync with active document)",
+                Icon       = new TextBlock { Text = "\uE72C", FontFamily = new System.Windows.Media.FontFamily("Segoe MDL2 Assets"), FontSize = 11 },
+                IsChecked  = _pinnedFilePath == null,
+                FontWeight = _pinnedFilePath == null ? FontWeights.SemiBold : FontWeights.Normal,
+            };
+            autoItem.Click += (_, _) =>
+            {
+                SetSourceAuto();
+                SourceDocumentSelected?.Invoke(this, null);
+            };
+            SourceContextMenu.Items.Add(autoItem);
+
+            // Open documents list
+            var docs = _openDocumentsProvider?.Invoke();
+            if (docs != null && docs.Count > 0)
+            {
+                SourceContextMenu.Items.Add(new Separator());
+                foreach (var (filePath, title) in docs)
+                {
+                    var fp    = filePath;
+                    var isPinned = string.Equals(fp, _pinnedFilePath, StringComparison.OrdinalIgnoreCase);
+                    var item  = new MenuItem
+                    {
+                        Header     = title,
+                        ToolTip    = fp,
+                        IsChecked  = isPinned,
+                        FontWeight = isPinned ? FontWeights.SemiBold : FontWeights.Normal,
+                    };
+                    item.Click += (_, _) =>
+                    {
+                        SetSourcePinned(fp, title);
+                        SourceDocumentSelected?.Invoke(this, fp);
+                    };
+                    SourceContextMenu.Items.Add(item);
+                }
+            }
         }
 
         /// <summary>
