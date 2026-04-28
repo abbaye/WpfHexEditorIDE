@@ -30,7 +30,7 @@
                     <Button x:Name="RefreshButton"
                             Style="{DynamicResource PanelIconButtonStyle}"
                             Content="&#xE72C;"
-                            ToolTip="Decompile again"
+                            ToolTip="{DynamicResource DisassemblyViewer_RefreshToolTip}"
                             Click="OnRefreshClick"/>
                 </StackPanel>
 
@@ -39,14 +39,14 @@
                         DockPanel.Dock="Right"
                         Visibility="Collapsed"
                         Style="{DynamicResource PanelIconButtonStyle}"
-                        ToolTip="More options"
+                        ToolTip="{DynamicResource DisassemblyViewer_OverflowToolTip}"
                         Click="OnOverflowButtonClick">
                     <TextBlock Text="&#xE712;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                     <Button.ContextMenu>
                         <ContextMenu x:Name="OverflowContextMenu" Opened="OnOverflowMenuOpened">
                             <!-- TbgDisasmActions items -->
-                            <MenuItem Header="Copy All"
+                            <MenuItem Header="{DynamicResource DisassemblyViewer_CopyAllHeader}"
                                       Tag="TbgDisasmActions"
                                       Click="OnCopyAllClick"/>
                         </ContextMenu>
@@ -61,7 +61,7 @@
                     <Button x:Name="CopyAllButton"
                             Style="{DynamicResource PanelIconButtonStyle}"
                             Content="&#xE8C8;"
-                            ToolTip="Copy all"
+                            ToolTip="{DynamicResource DisassemblyViewer_CopyAllToolTip}"
                             Click="OnCopyAllClick"/>
                 </StackPanel>
 
@@ -131,7 +131,7 @@
                                     BarHeight="2"
                                     Height="2"
                                     VerticalAlignment="Top"/>
-            <TextBlock Text="Decompiling…"
+            <TextBlock Text="{DynamicResource DisassemblyViewer_OverlayDecompiling}"
                        HorizontalAlignment="Center"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource TE_LineNumberForeground}"

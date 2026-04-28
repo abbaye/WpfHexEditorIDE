@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfHexEditor.Editor.CodeEditor
+    File        : CodeEditorResources.ko-KR.resx
+    Description : ko-KR translations for CodeEditor UI strings.
+-->
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="CodeEditorSettings_ResetButtonContent" xml:space="preserve">
+    <value>기본값으로 재설정</value>
+  </data>
+  <data name="CodeEditorSettings_ExportButtonContent" xml:space="preserve">
+    <value>설정 내보내기</value>
+  </data>
+  <data name="CodeEditorSettings_ImportButtonContent" xml:space="preserve">
+    <value>설정 가져오기</value>
+  </data>
+  <data name="CodeEditorSettings_ResetButtonToolTip" xml:space="preserve">
+    <value>모든 설정을 기본값으로 재설정합니다</value>
+  </data>
+  <data name="CodeEditorSettings_PreviewHeader" xml:space="preserve">
+    <value>실시간 미리 보기</value>
+  </data>
+  <data name="CodeEditorOptions_FontSection" xml:space="preserve">
+    <value>글꼴</value>
+  </data>
+  <data name="CodeEditorOptions_FontFamilyLabel" xml:space="preserve">
+    <value>글꼴 패밀리:</value>
+  </data>
+  <data name="CodeEditorOptions_FontSizeLabel" xml:space="preserve">
+    <value>크기:</value>
+  </data>
+  <data name="CodeEditorOptions_IndentationSection" xml:space="preserve">
+    <value>들여쓰기</value>
+  </data>
+  <data name="CodeEditorOptions_TabSizeLabel" xml:space="preserve">
+    <value>탭 크기:</value>
+  </data>
+  <data name="CodeEditorOptions_ConvertTabsContent" xml:space="preserve">
+    <value>탭을 공백으로 변환</value>
+  </data>
+  <data name="CodeEditorOptions_AutoIndentLabel" xml:space="preserve">
+    <value>자동 들여쓰기:</value>
+  </data>
+  <data name="CodeEditorOptions_DisplaySection" xml:space="preserve">
+    <value>표시</value>
+  </data>
+  <data name="CodeEditorOptions_ShowLineNumbersContent" xml:space="preserve">
+    <value>줄 번호 표시</value>
+  </data>
+  <data name="CodeEditorOptions_CodeFoldingContent" xml:space="preserve">
+    <value>코드 접기 사용</value>
+  </data>
+  <data name="CodeEditorOptions_FeaturesSection" xml:space="preserve">
+    <value>기능</value>
+  </data>
+  <data name="CodeEditorOptions_SmartCompleteContent" xml:space="preserve">
+    <value>SmartComplete 사용</value>
+  </data>
+  <data name="CodeEditorOptions_SnippetsContent" xml:space="preserve">
+    <value>코드 조각 사용</value>
+  </data>
+  <data name="CodeEditorOptions_MultiCaretContent" xml:space="preserve">
+    <value>다중 커서 편집 사용 (Alt+Click)</value>
+  </data>
+  <data name="CodeEditorOptions_SyntaxColorsSection" xml:space="preserve">
+    <value>구문 색상</value>
+  </data>
+  <data name="CodeEditorOptions_ResetColorsButton" xml:space="preserve">
+    <value>테마로 재설정</value>
+  </data>
+  <data name="CodeEditorOptions_ColorPickButton" xml:space="preserve">
+    <value>선택</value>
+  </data>
+  <data name="FormatScriptEditor_NewToolTip" xml:space="preserve">
+    <value>새 형식 정의</value>
+  </data>
+  <data name="FormatScriptEditor_OpenToolTip" xml:space="preserve">
+    <value>형식 정의 열기</value>
+  </data>
+  <data name="FormatScriptEditor_SaveToolTip" xml:space="preserve">
+    <value>현재 파일 저장</value>
+  </data>
+  <data name="FormatScriptEditor_UndoToolTip" xml:space="preserve">
+    <value>실행 취소 (Ctrl+Z)</value>
+  </data>
+  <data name="FormatScriptEditor_RedoToolTip" xml:space="preserve">
+    <value>다시 실행 (Ctrl+Y)</value>
+  </data>
+  <data name="FormatScriptEditor_NoFileLoaded" xml:space="preserve">
+    <value>로드된 파일 없음</value>
+  </data>
+  <data name="FormatScriptEditor_EmbeddedFormatsHeader" xml:space="preserve">
+    <value>포함된 형식</value>
+  </data>
+  <data name="FormatScriptEditor_ValidationTabHeader" xml:space="preserve">
+    <value>유효성 검사</value>
+  </data>
+  <data name="FormatScriptEditor_SelectTestFileButton" xml:space="preserve">
+    <value>테스트 파일 선택...</value>
+  </data>
+  <data name="FormatScriptEditor_RunTestButton" xml:space="preserve">
+    <value>테스트 실행</value>
+  </data>
+  <data name="CodeEditorSettings_NoEditorMessage" xml:space="preserve">
+    <value>연결된 CodeEditor 컨트롤이 없습니다.</value>
+  </data>
+  <data name="CodeEditorSettings_NoEditorTitle" xml:space="preserve">
+    <value>오류</value>
+  </data>
+  <data name="CodeEditorSettings_ResetConfirmMessage" xml:space="preserve">
+    <value>모든 설정을 기본값으로 재설정하시겠습니까?</value>
+  </data>
+  <data name="CodeEditorSettings_ResetConfirmTitle" xml:space="preserve">
+    <value>재설정 확인</value>
+  </data>
+  <data name="FormatScriptEditor_StatusErrors" xml:space="preserve">
+    <value>{0} 오류</value>
+  </data>
+  <data name="FormatScriptEditor_StatusWarnings" xml:space="preserve">
+    <value>{0} 경고</value>
+  </data>
+  <data name="CodeEditor_ContextMenuSelectAll" xml:space="preserve">
+    <value>모두 선택</value>
+  </data>
+  <data name="CodeEditor_ContextMenuDelete" xml:space="preserve">
+    <value>삭제</value>
+  </data>
+  <data name="CodeEditor_ContextMenuFind" xml:space="preserve">
+    <value>찾기...</value>
+  </data>
+  <data name="CodeEditor_ContextMenuReplace" xml:space="preserve">
+    <value>바꾸기...</value>
+  </data>
+  <data name="CodeEditor_ContextMenuFindAllRefs" xml:space="preserve">
+    <value>모든 참조 찾기</value>
+  </data>
+  <data name="CodeEditor_ContextMenuRenameSymbol" xml:space="preserve">
+    <value>기호 이름 바꾸기</value>
+  </data>
+  <data name="CodeEditor_ContextMenuGoToDefinition" xml:space="preserve">
+    <value>정의로 이동</value>
+  </data>
+  <data name="CodeEditor_ContextMenuFormatDocument" xml:space="preserve">
+    <value>문서 서식 지정</value>
+  </data>
+  <data name="CodeEditor_ContextMenuWordWrap" xml:space="preserve">
+    <value>자동 줄 바꿈</value>
+  </data>
+  <data name="CodeEditor_ContextMenuWhitespaceNone" xml:space="preserve">
+    <value>없음</value>
+  </data>
+  <data name="CodeEditor_ContextMenuWhitespaceAlways" xml:space="preserve">
+    <value>항상</value>
+  </data>
+  <data name="CodeEditor_GoToLineTitle" xml:space="preserve">
+    <value>줄로 이동</value>
+  </data>
+  <data name="CodeEditor_GoToLineButton" xml:space="preserve">
+    <value>확인</value>
+  </data>
+  <data name="CodeEditor_ReferencesCollapseAll" xml:space="preserve">
+    <value>모두 접기</value>
+  </data>
+  <data name="CodeEditor_ReferencesExpandAll" xml:space="preserve">
+    <value>모두 펼치기</value>
+  </data>
+  <data name="CodeEditor_ReferencesTitle" xml:space="preserve">
+    <value>참조 — {0}</value>
+  </data>
+  <data name="CodeEditor_ReferencesRefresh" xml:space="preserve">
+    <value>새로 고침</value>
+  </data>
+  <data name="CodeEditor_BreakpointDisable" xml:space="preserve">
+    <value>비활성화</value>
+  </data>
+  <data name="CodeEditor_BreakpointEnable" xml:space="preserve">
+    <value>활성화</value>
+  </data>
+
+</root>

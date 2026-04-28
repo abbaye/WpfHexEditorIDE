@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="StructureEditor_AddBlockTitle" xml:space="preserve"><value>Blok toevoegen</value></data>
+  <data name="StructureEditor_AddBlockButton" xml:space="preserve"><value>Toevoegen</value></data>
+  <data name="StructureEditor_AddBlockCancel" xml:space="preserve"><value>Annuleren</value></data>
+  <data name="StructureEditor_TabMetadata" xml:space="preserve"><value>Metagegevens</value></data>
+  <data name="StructureEditor_TabDetection" xml:space="preserve"><value>Detectie</value></data>
+  <data name="StructureEditor_TabBlocks" xml:space="preserve"><value>Blokken</value></data>
+  <data name="StructureEditor_TabVariables" xml:space="preserve"><value>Variabelen</value></data>
+  <data name="StructureEditor_TabAdvanced" xml:space="preserve"><value>Geavanceerd</value></data>
+  <data name="StructureEditor_TabQuality" xml:space="preserve"><value>Kwaliteit</value></data>
+  <data name="StructureEditor_TabTest" xml:space="preserve"><value>Test</value></data>
+  <data name="StructureEditor_SaveToolTip" xml:space="preserve"><value>Opslaan (Ctrl+S)</value></data>
+  <data name="StructureEditor_ValidateToolTip" xml:space="preserve"><value>Valideren (Ctrl+Shift+V)</value></data>
+  <data name="StructureEditor_UndoToolTip" xml:space="preserve"><value>Ongedaan maken (Ctrl+Z)</value></data>
+  <data name="StructureEditor_RedoToolTip" xml:space="preserve"><value>Opnieuw (Ctrl+Y)</value></data>
+  <data name="StructureEditor_LiveCodeViewToolTip" xml:space="preserve"><value>Live codeweergave in-/uitschakelen</value></data>
+  <data name="StructureEditor_AddBlockToolTip" xml:space="preserve"><value>Blok toevoegen (Ctrl+N)</value></data>
+  <data name="StructureEditor_DuplicateBlockToolTip" xml:space="preserve"><value>Blok dupliceren (Ctrl+D)</value></data>
+  <data name="StructureEditor_UnsavedChangesToolTip" xml:space="preserve"><value>Niet-opgeslagen wijzigingen</value></data>
+  <data name="StructureEditor_BlocksFilterToolTip" xml:space="preserve"><value>Blokken filteren op naam</value></data>
+  <data name="StructureEditor_BlocksAddMenuItem" xml:space="preserve"><value>Blok toevoegen...</value></data>
+  <data name="StructureEditor_BlocksDuplicateMenuItem" xml:space="preserve"><value>Dupliceren</value></data>
+  <data name="StructureEditor_BlocksRemoveMenuItem" xml:space="preserve"><value>Verwijderen</value></data>
+  <data name="StructureEditor_BlocksMoveUpMenuItem" xml:space="preserve"><value>Omhoog</value></data>
+  <data name="StructureEditor_BlocksMoveDownMenuItem" xml:space="preserve"><value>Omlaag</value></data>
+  <data name="StructureEditor_BlocksCopyJsonMenuItem" xml:space="preserve"><value>Kopiëren als JSON</value></data>
+  <data name="StructureEditor_BlocksPasteMenuItem" xml:space="preserve"><value>Blok plakken</value></data>
+  <data name="StructureEditor_BlocksEmptyLine1" xml:space="preserve"><value>Selecteer een blok om de eigenschappen te bewerken,</value></data>
+  <data name="StructureEditor_BlocksEmptyLine2" xml:space="preserve"><value>of druk op Ctrl+N / rechtsklik om een nieuw blok toe te voegen.</value></data>
+  <data name="StructureEditor_DetectionHexSigLabel" xml:space="preserve"><value>Hex-handtekening</value></data>
+  <data name="StructureEditor_DetectionHexBytesToolTip" xml:space="preserve"><value>Hex-bytes zonder spaties, bijv. 89504E47 voor PNG</value></data>
+  <data name="StructureEditor_DetectionSigLabel" xml:space="preserve"><value>Handtekening</value></data>
+  <data name="StructureEditor_DetectionV2SigsLabel" xml:space="preserve"><value>v2.0-handtekeningen</value></data>
+  <data name="StructureEditor_DetectionMatchModeLabel" xml:space="preserve"><value>Overeenkomstmodus</value></data>
+  <data name="StructureEditor_DetectionHexValueToolTip" xml:space="preserve"><value>Hex-waarde</value></data>
+  <data name="StructureEditor_DetectionOffsetToolTip" xml:space="preserve"><value>Offset</value></data>
+  <data name="StructureEditor_DetectionLabelToolTip" xml:space="preserve"><value>Label</value></data>
+  <data name="StructureEditor_DetectionAddSigButton" xml:space="preserve"><value>＋ Handtekening toevoegen</value></data>
+  <data name="StructureEditor_DetectionEntropyLabel" xml:space="preserve"><value>Entropie-hint</value></data>
+  <data name="StructureEditor_DetectionMinEntropyLabel" xml:space="preserve"><value>Minimale entropie</value></data>
+  <data name="StructureEditor_DetectionMaxEntropyLabel" xml:space="preserve"><value>Maximale entropie</value></data>
+  <data name="StructureEditor_DetectionMinScoreLabel" xml:space="preserve"><value>Minimumscore</value></data>
+  <data name="StructureEditor_DetectionScoreThresholdLabel" xml:space="preserve"><value>Scoredrempel</value></data>
+  <data name="StructureEditor_DetectionContentPatternsLabel" xml:space="preserve"><value>Inhoudspatronen (tekstindelingen)</value></data>
+  <data name="StructureEditor_DetectionRegexToolTip" xml:space="preserve"><value>Regex-patroon</value></data>
+  <data name="StructureEditor_DetectionAddPatternButton" xml:space="preserve"><value>＋ Patroon toevoegen</value></data>
+  <data name="StructureEditor_MetaCoreSection" xml:space="preserve"><value>Algemeen</value></data>
+  <data name="StructureEditor_MetaNameLabel" xml:space="preserve"><value>Indelingsnaam</value></data>
+  <data name="StructureEditor_MetaNameToolTip" xml:space="preserve"><value>Leesbare indelingsnaam (bijv. 'ZIP-archief', 'PNG-afbeelding')</value></data>
+  <data name="StructureEditor_MetaVersionLabel" xml:space="preserve"><value>Versie</value></data>
+  <data name="StructureEditor_MetaVersionToolTip" xml:space="preserve"><value>Versie van deze definitie (bijv. '1.0', '2.0')</value></data>
+  <data name="StructureEditor_MetaAuthorLabel" xml:space="preserve"><value>Auteur</value></data>
+  <data name="StructureEditor_MetaAuthorToolTip" xml:space="preserve"><value>Auteur van dit definitiebestand</value></data>
+  <data name="StructureEditor_MetaCategoryLabel" xml:space="preserve"><value>Categorie</value></data>
+  <data name="StructureEditor_MetaCategoryToolTip" xml:space="preserve"><value>Categorie (automatisch ingesteld vanuit mapstructuur: Archieven, Afbeeldingen, Audio, Video, enz.)</value></data>
+  <data name="StructureEditor_MetaDiffModeLabel" xml:space="preserve"><value>Diff-modus</value></data>
+  <data name="StructureEditor_MetaDiffModeToolTip" xml:space="preserve"><value>Voorkeurs-diff-algoritme voor DiffViewer</value></data>
+  <data name="StructureEditor_MetaPreferredEditorLabel" xml:space="preserve"><value>Voorkeurse editor</value></data>
+  <data name="StructureEditor_MetaPreferredEditorToolTip" xml:space="preserve"><value>Voorkeurs-editor-factory-ID voor bestanden die overeenkomen met deze indeling</value></data>
+  <data name="StructureEditor_MetaDescriptionLabel" xml:space="preserve"><value>Beschrijving</value></data>
+  <data name="StructureEditor_MetaIsTextFormat" xml:space="preserve"><value>Tekstindeling (opent standaard in code-editor)</value></data>
+  <data name="StructureEditor_MetaExtensionsLabel" xml:space="preserve"><value>Bestandsextensies</value></data>
+  <data name="StructureEditor_MetaAddExtensionButton" xml:space="preserve"><value>＋ Extensie toevoegen</value></data>
+  <data name="StructureEditor_MetaMimeTypesLabel" xml:space="preserve"><value>MIME-typen</value></data>
+  <data name="StructureEditor_MetaAddMimeButton" xml:space="preserve"><value>＋ MIME-type toevoegen</value></data>
+  <data name="StructureEditor_MetaSoftwareLabel" xml:space="preserve"><value>Software</value></data>
+  <data name="StructureEditor_MetaAddSoftwareButton" xml:space="preserve"><value>＋ Software toevoegen</value></data>
+  <data name="StructureEditor_QualityComputedSection" xml:space="preserve"><value>Berekende meetwaarden</value></data>
+  <data name="StructureEditor_QualityBlockCoverage" xml:space="preserve"><value>Blokdekking</value></data>
+  <data name="StructureEditor_QualityCompletenessScore" xml:space="preserve"><value>Volledigheidscore</value></data>
+  <data name="StructureEditor_QualityTypeDistribution" xml:space="preserve"><value>Typeverdeling</value></data>
+  <data name="StructureEditor_QualityBlocksLabel" xml:space="preserve"><value>Blokken</value></data>
+  <data name="StructureEditor_QualityDepthLabel" xml:space="preserve"><value>Diepte</value></data>
+  <data name="StructureEditor_QualityVariablesLabel" xml:space="preserve"><value>Variabelen</value></data>
+  <data name="StructureEditor_QualityRulesLabel" xml:space="preserve"><value>Regels</value></data>
+  <data name="StructureEditor_QualityMetadataLabel" xml:space="preserve"><value>Metagegevens</value></data>
+  <data name="StructureEditor_QualityDocLevel" xml:space="preserve"><value>Documentatieniveau</value></data>
+  <data name="StructureEditor_QualityLastUpdated" xml:space="preserve"><value>Laatst bijgewerkt</value></data>
+  <data name="StructureEditor_QualityLastUpdatedToolTip" xml:space="preserve"><value>Indeling: YYYY-MM-DD (automatisch ingevuld bij opslaan)</value></data>
+  <data name="StructureEditor_QualityPriorityFormat" xml:space="preserve"><value>Prioriteitsindeling (top 100)</value></data>
+  <data name="StructureEditor_QualityAutoRefined" xml:space="preserve"><value>Automatisch verfijnd (verrijkt door script — alleen-lezen)</value></data>
+  <data name="StructureEditor_TestSection" xml:space="preserve"><value>Indeling testen met bestand</value></data>
+  <data name="StructureEditor_TestFilePathToolTip" xml:space="preserve"><value>Pad naar het te testen binaire bestand</value></data>
+  <data name="StructureEditor_TestBrowseButton" xml:space="preserve"><value>Bladeren…</value></data>
+  <data name="StructureEditor_TestRunButton" xml:space="preserve"><value>▶ Test uitvoeren</value></data>
+  <data name="StructureEditor_TestCopyToolTip" xml:space="preserve"><value>Resultaten naar klembord kopiëren (TSV)</value></data>
+  <data name="StructureEditor_TestEmptyMessage" xml:space="preserve"><value>Selecteer een bestand en klik op ▶ Test uitvoeren om de huidige indelingsdefinitie te testen.</value></data>
+  <data name="StructureEditor_TestColStatus" xml:space="preserve"><value>Status</value></data>
+  <data name="StructureEditor_TestColBlockName" xml:space="preserve"><value>Bloknaam</value></data>
+  <data name="StructureEditor_TestColType" xml:space="preserve"><value>Type</value></data>
+  <data name="StructureEditor_TestColOffset" xml:space="preserve"><value>Offset</value></data>
+  <data name="StructureEditor_TestColLen" xml:space="preserve"><value>Len.</value></data>
+  <data name="StructureEditor_TestColRaw" xml:space="preserve"><value>Ruw (hex)</value></data>
+  <data name="StructureEditor_TestColParsed" xml:space="preserve"><value>Geparseerde waarde</value></data>
+  <data name="StructureEditor_TestColNote" xml:space="preserve"><value>Opmerking</value></data>
+  <data name="StructureEditor_TestFilterOk" xml:space="preserve"><value>✓ OK</value></data>
+  <data name="StructureEditor_TestFilterWarning" xml:space="preserve"><value>⚠ Waarschuwing</value></data>
+  <data name="StructureEditor_TestFilterError" xml:space="preserve"><value>✕ Fout</value></data>
+  <data name="StructureEditor_TestFilterSkipped" xml:space="preserve"><value>⊘ Overgeslagen</value></data>
+  <data name="StructureEditor_VarsDescription" xml:space="preserve"><value>Initiële variabelen beschikbaar voor de blokinterpreter (bijv. lussentellers, berekende offsets).</value></data>
+  <data name="StructureEditor_VarsFilterToolTip" xml:space="preserve"><value>Variabelen filteren op naam</value></data>
+  <data name="StructureEditor_VarsColName" xml:space="preserve"><value>Variabelenaam</value></data>
+  <data name="StructureEditor_VarsColType" xml:space="preserve"><value>Type</value></data>
+  <data name="StructureEditor_VarsColInitialValue" xml:space="preserve"><value>Beginwaarde</value></data>
+  <data name="StructureEditor_VarsColDescription" xml:space="preserve"><value>Beschrijving</value></data>
+  <data name="StructureEditor_VarsAddButton" xml:space="preserve"><value>＋ Variabele toevoegen</value></data>
+  <data name="StructureEditor_V2AssertionsHeader" xml:space="preserve"><value>Asserties</value></data>
+  <data name="StructureEditor_V2AssertionPlaceholder" xml:space="preserve"><value>var:name equals 0 or calc:expr</value></data>
+  <data name="StructureEditor_V2AssertionToolTip" xml:space="preserve"><value>Booleaanse expressie — Ctrl+Space voor functies en variabelen</value></data>
+  <data name="StructureEditor_V2ChecksumsHeader" xml:space="preserve"><value>Controlesommen</value></data>
+  <data name="StructureEditor_V2VersioningHeader" xml:space="preserve"><value>Versioning (VersionDetection / VersionedBlocks)</value></data>
+  <data name="StructureEditor_V2ImportsHeader" xml:space="preserve"><value>Imports ($ref Compositie)</value></data>
+  <data name="StructureEditor_V2ImportsDescription" xml:space="preserve"><value>ref = indelingsnaam (of structs/Naam), as = alias gebruikt in structRef-blokken.</value></data>
+  <data name="StructureEditor_V2ImportRefToolTip" xml:space="preserve"><value>Indelingsreferentie bijv. structs/PE_OptionalHeader</value></data>
+  <data name="StructureEditor_V2ImportAliasToolTip" xml:space="preserve"><value>Alias in structRef bijv. PEOpt</value></data>
+  <data name="StructureEditor_V2AddImportButton" xml:space="preserve"><value>+ Import toevoegen</value></data>
+  <data name="StructureEditor_V2ForensicHeader" xml:space="preserve"><value>Forensisch</value></data>
+  <data name="StructureEditor_V2NavBookmarksHeader" xml:space="preserve"><value>Navigatiebladwijzers</value></data>
+  <data name="StructureEditor_V2BookmarkPlaceholder" xml:space="preserve"><value>variabelenaam</value></data>
+  <data name="StructureEditor_V2BookmarkToolTip" xml:space="preserve"><value>Variabele met de byte-offset — Ctrl+Space voor suggesties</value></data>
+  <data name="StructureEditor_V2AddBookmarkButton" xml:space="preserve"><value>＋ Bladwijzer toevoegen</value></data>
+  <data name="StructureEditor_V2InspectorLayoutHeader" xml:space="preserve"><value>Inspecteur-indeling</value></data>
+  <data name="StructureEditor_V2ExportTemplatesHeader" xml:space="preserve"><value>Exportsjablonen</value></data>
+  <data name="StructureEditor_V2AddTemplateButton" xml:space="preserve"><value>＋ Sjabloon toevoegen</value></data>
+  <data name="StructureEditor_V2AIHintsHeader" xml:space="preserve"><value>AI-hints</value></data>
+  <data name="StructureEditor_TypeHintField" xml:space="preserve"><value>Een binair veld met een vaste of variabele offset en lengte.</value></data>
+  <data name="StructureEditor_TypeHintSignature" xml:space="preserve"><value>Magic bytes die de indeling identificeren op een specifieke offset.</value></data>
+  <data name="StructureEditor_TypeHintMetadata" xml:space="preserve"><value>Leest een waarde met variabele lengte of een symbolische waarde in een benoemde variabele.</value></data>
+  <data name="StructureEditor_TypeHintConditional" xml:space="preserve"><value>Parseert blokken voorwaardelijk op basis van een veldwaarde of variabele.</value></data>
+  <data name="StructureEditor_TypeHintLoop" xml:space="preserve"><value>Herhaalt een bloklichaam zolang een voorwaarde waar is.</value></data>
+  <data name="StructureEditor_TypeHintAction" xml:space="preserve"><value>Wijzigt een variabele (verhogen, verlagen, setVariabele).</value></data>
+  <data name="StructureEditor_TypeHintCompute" xml:space="preserve"><value>Evalueert een wiskundige expressie en slaat het resultaat op.</value></data>
+  <data name="StructureEditor_TypeHintRepeating" xml:space="preserve"><value>Parseert een array met een vast aantal gestructureerde vermeldingen.</value></data>
+  <data name="StructureEditor_TypeHintUnion" xml:space="preserve"><value>Selecteert een variant-blokset op basis van een discriminantvariabele.</value></data>
+  <data name="StructureEditor_TypeHintNested" xml:space="preserve"><value>Sluit een externe structuurdefinitie in per referentie.</value></data>
+  <data name="StructureEditor_TypeHintPointer" xml:space="preserve"><value>Maakt een navigatieannotatie naar een aangewezen offset.</value></data>
+  <data name="StructureEditor_ValidationErrorCount" xml:space="preserve"><value>{0} fout(en)</value></data>
+  <data name="StructureEditor_ValidationWarningCount" xml:space="preserve"><value>{0} waarschuwing(en)</value></data>
+  <data name="StructureEditor_RawJsonTitle" xml:space="preserve"><value>Onbewerkte JSON — {0}</value></data>
+  <data name="StructureEditor_RawJsonApply" xml:space="preserve"><value>Toepassen</value></data>
+  <data name="StructureEditor_RawJsonCancel" xml:space="preserve"><value>Annuleren</value></data>
+  <data name="StructureEditor_FactoryDisplayName" xml:space="preserve"><value>Structuurbewerker</value></data>
+  <data name="StructureEditor_FactoryDescription" xml:space="preserve"><value>Visuele editor voor .whfmt-structuurdefinitiebestanden. Bewerk blokken, typen, offsets, lengten en kleuren in een DataGrid.</value></data>
+</root>

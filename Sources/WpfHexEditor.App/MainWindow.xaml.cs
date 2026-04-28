@@ -25,6 +25,7 @@ using WpfHexEditor.Shell;
 using WpfHexEditor.App.Controls;
 using WpfHexEditor.App.Dialogs;
 using WpfHexEditor.App.Models;
+using WpfHexEditor.App.Properties;
 using WpfHexEditor.App.Services;
 using WpfHexEditor.Core.Contracts;
 using WpfHexEditor.Editor.Core;
@@ -1013,13 +1014,10 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         Dispatcher.InvokeAsync(async () =>
         {
             var fileList = string.Join("\n  • ", e.AffectedFiles.Select(System.IO.Path.GetFileName));
-            var msg =
-                $"The following files use an older format (v{e.FromVersion}) " +
-                $"that will be upgraded to v{e.ToVersion}:\n\n  • {fileList}\n\n" +
-                $"A backup (.v{e.FromVersion}.bak) will be created for each file.\n\n" +
-                "Upgrade now?";
+            var msg = string.Format(AppResources.App_UpgradeMessagePattern,
+                e.FromVersion, e.ToVersion, "\n", fileList);
 
-            var result = MessageBox.Show(this, msg, "Format Upgrade Required",
+            var result = MessageBox.Show(this, msg, AppResources.App_FormatUpgradeRequired,
                 MessageBoxButton.YesNo, MessageBoxImage.Information,
                 MessageBoxResult.Yes);
 
@@ -1032,7 +1030,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(this, $"Upgrade failed: {ex.Message}", "Format Upgrade",
+                    MessageBox.Show(this, string.Format(AppResources.App_UpgradeFailedMessage, ex.Message), AppResources.App_FormatUpgrade,
                         MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
@@ -1338,19 +1336,19 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         var layout = new DockLayoutRoot();
         var engine = new DockEngine(layout);
 
-        layout.MainDocumentHost.AddItem(new DockItem { Title = "Welcome", ContentId = "doc-welcome" });
+        layout.MainDocumentHost.AddItem(new DockItem { Title = AppResources.App_PanelWelcome, ContentId = "doc-welcome" });
 
-        var seItem = new DockItem { Title = "Solution Explorer", ContentId = SolutionExplorerContentId };
+        var seItem = new DockItem { Title = AppResources.App_PanelSolutionExplorer, ContentId = SolutionExplorerContentId };
         engine.Dock(seItem, layout.MainDocumentHost, DockDirection.Left);
 
         // Error List and Plugin Monitor docked first; Output added last so it is the active tab.
-        var errorsItem = new DockItem { Title = "Error List", ContentId = ErrorPanelContentId };
+        var errorsItem = new DockItem { Title = AppResources.App_PanelErrorList, ContentId = ErrorPanelContentId };
         engine.Dock(errorsItem, layout.MainDocumentHost, DockDirection.Bottom);
 
-        var pluginMonitor = new DockItem { Title = "Extensions Monitor", ContentId = PluginMonitorContentId };
+        var pluginMonitor = new DockItem { Title = AppResources.App_PanelExtensionsMonitor, ContentId = PluginMonitorContentId };
         engine.Dock(pluginMonitor, errorsItem.Owner!, DockDirection.Center);
 
-        var output = new DockItem { Title = "Output", ContentId = "panel-output" };
+        var output = new DockItem { Title = AppResources.App_PanelOutput, ContentId = "panel-output" };
         engine.Dock(output, errorsItem.Owner!, DockDirection.Center);
 
         // Note: analysis panels (DataInspector, StructureOverlay, FormatInfo, FileStatistics,
@@ -1433,7 +1431,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         if (_layout.FindItemByContentId(ErrorPanelContentId) != null) return;
 
-        var item = new DockItem { Title = "Error List", ContentId = ErrorPanelContentId };
+        var item = new DockItem { Title = AppResources.App_PanelErrorList, ContentId = ErrorPanelContentId };
 
         // Prefer to dock alongside the Output panel if it exists
         var outputItem = _layout.FindItemByContentId("panel-output");
@@ -1814,7 +1812,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         var dlg = new Microsoft.Win32.SaveFileDialog
         {
-            Title            = "Export Format Definition",
+            Title            = AppResources.App_ExportFormatDefinitionTitle,
             Filter           = "Whfmt definitions (*.whfmt)|*.whfmt",
             FileName         = System.IO.Path.GetFileNameWithoutExtension(keyOrPath) + ".whfmt",
             OverwritePrompt  = true
@@ -2488,7 +2486,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         }
 
         OutputLogger.Error($"File not found: {filePath}");
-        ShowOrCreatePanel("Output", "panel-output", DockDirection.Bottom);
+        ShowOrCreatePanel(AppResources.App_PanelOutput, "panel-output", DockDirection.Bottom);
         if (ownerItem is not null)
             Dispatcher.InvokeAsync(() => CloseTab(ownerItem, promptIfDirty: false),
                                    System.Windows.Threading.DispatcherPriority.Background);
@@ -2757,7 +2755,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         if (!isNewFile && !File.Exists(filePath))
         {
             OutputLogger.Error($"File not found: {filePath}");
-            ShowOrCreatePanel("Output", "panel-output", DockDirection.Bottom);
+            ShowOrCreatePanel(AppResources.App_PanelOutput, "panel-output", DockDirection.Bottom);
             Dispatcher.InvokeAsync(() => CloseTab(item, promptIfDirty: false),
                                    System.Windows.Threading.DispatcherPriority.Background);
             return new TextBlock
@@ -2796,7 +2794,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             {
                 if (!e.Success)
                     Dispatcher.InvokeAsync(() =>
-                        ShowOrCreatePanel("Output", "panel-output", DockDirection.Bottom));
+                        ShowOrCreatePanel(AppResources.App_PanelOutput, "panel-output", DockDirection.Bottom));
             };
 
             // Apply user settings (scroll speed, etc.) from Options to newly created editors.
@@ -3645,7 +3643,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         {
             MessageBox.Show(
                 $"Failed to load TBL file:\n{string.Join('\n', importResult.Errors)}",
-                "Convert TBL", MessageBoxButton.OK, MessageBoxImage.Warning);
+                AppResources.App_ConvertTbl, MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
 
@@ -3680,8 +3678,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Failed to write TBLX file:\n{ex.Message}",
-                "Convert TBL", MessageBoxButton.OK, MessageBoxImage.Warning);
+            MessageBox.Show(string.Format(AppResources.App_FailedWriteTblx, "\n", ex.Message),
+                AppResources.App_ConvertTbl, MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
 
@@ -3728,7 +3726,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         if (!TryCheckFileAccess(filePath, out var accessError))
         {
             OutputLogger.Error(accessError);
-            ShowOrCreatePanel("Output", "panel-output", DockDirection.Bottom);
+            ShowOrCreatePanel(AppResources.App_PanelOutput, "panel-output", DockDirection.Bottom);
             return;
         }
 
@@ -3816,7 +3814,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             // Fallback: programmatic dialog (context menu without inline editing)
             var win = new Window
             {
-                Title                 = "Rename",
+                Title                 = AppResources.App_RenameTitle,
                 Owner                 = this,
                 Width                 = 380,
                 Height                = 120,
@@ -3875,8 +3873,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         if (e.Project is null) return;
 
         var result = MessageBox.Show(
-            $"Remove '{e.Item.Name}' from the project?\n(The file on disk will not be deleted.)",
-            "Remove from project",
+            string.Format(AppResources.App_RemoveFromProjectMessage, e.Item.Name, "\n"),
+            AppResources.App_RemoveFromProject,
             MessageBoxButton.YesNo,
             MessageBoxImage.Question);
 
@@ -3894,8 +3892,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         if (!File.Exists(path)) return;
 
         var result = MessageBox.Show(
-            $"Delete '{e.Item.Name}' and send it to the Recycle Bin?\n\nThis will also remove it from the project.",
-            "Delete File",
+            string.Format(AppResources.App_DeleteFileMessage, e.Item.Name, "\n"),
+            AppResources.App_DeleteFile,
             MessageBoxButton.YesNo,
             MessageBoxImage.Warning);
 
@@ -4008,9 +4006,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     private void OnSEFolderDeleteRequested(object? sender, FolderDeleteEventArgs e)
     {
         var result = MessageBox.Show(
-            $"Remove folder '{e.Folder.Name}' from the project?\n" +
-            "Items inside will be kept at the project root. The physical directory will not be deleted.",
-            "Remove folder",
+            string.Format(AppResources.App_RemoveFolderMessage, e.Folder.Name, "\n"),
+            AppResources.App_RemoveFolder,
             MessageBoxButton.YesNo,
             MessageBoxImage.Question);
 
@@ -4051,9 +4048,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     private void OnSESolutionFolderDeleteRequested(object? sender, SolutionFolderDeleteRequestedEventArgs e)
     {
         var result = MessageBox.Show(
-            $"Remove solution folder '{e.Folder.Name}'?\n" +
-            "Projects inside will be kept at the solution root.",
-            "Remove solution folder",
+            string.Format(AppResources.App_RemoveSolutionFolderMessage, e.Folder.Name, "\n"),
+            AppResources.App_RemoveSolutionFolder,
             MessageBoxButton.YesNo,
             MessageBoxImage.Question);
 
@@ -4080,7 +4076,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         var dlg = new Microsoft.Win32.OpenFolderDialog
         {
-            Title = "Select the folder to import",
+            Title = AppResources.App_SelectImportFolder,
         };
         if (dlg.ShowDialog() != true) return;
         _ = ImportFolderFromDiskAsync(e.Project, dlg.FolderName, e.ParentFolderId);
@@ -4377,8 +4373,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         var projDir  = Path.GetDirectoryName(e.Project.ProjectFilePath) ?? string.Empty;
         var fileName = Path.GetFileName(e.Item.AbsolutePath);
         var result   = MessageBox.Show(
-            $"Copy \"{fileName}\" into the project directory?\n\n{projDir}\n\nThe original file will not be deleted.",
-            "Import into Project",
+            string.Format(AppResources.App_ImportIntoProjectMessage, fileName, "\n", projDir),
+            AppResources.App_ImportIntoProject,
             MessageBoxButton.YesNo,
             MessageBoxImage.Question);
 
@@ -4950,7 +4946,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             {
                 // Log as Error (red) and reveal the Output panel.
                 OutputLogger.Error(e.ErrorMessage);
-                ShowOrCreatePanel("Output", "panel-output", DockDirection.Bottom);
+                ShowOrCreatePanel(AppResources.App_PanelOutput, "panel-output", DockDirection.Bottom);
                 // RefreshText.Text = $"Error: {e.ErrorMessage}"; // Removed - errors shown in Output panel
 
                 // Silently close the tab whose editor raised the failure.
@@ -5163,7 +5159,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         catch (Exception ex)
         {
             OutputLogger.Error($"Failed to create solution: {ex.Message}");
-            MessageBox.Show($"Failed to create solution:\n{ex.Message}", "Error",
+            MessageBox.Show(string.Format(AppResources.App_FailedCreateSolution, ex.Message), AppResources.App_Error,
                 MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
@@ -5221,7 +5217,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         catch (Exception ex)
         {
             OutputLogger.Error($"Failed to scaffold .NET project: {ex.Message}");
-            MessageBox.Show($"Failed to create project:\n{ex.Message}", "Error",
+            MessageBox.Show(string.Format(AppResources.App_FailedCreateProject, "\n", ex.Message), AppResources.App_Error,
                 MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
@@ -5241,7 +5237,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         catch (Exception ex)
         {
             OutputLogger.Error($"Failed to create solution/project: {ex.Message}");
-            MessageBox.Show($"Failed to create solution/project:\n{ex.Message}", "Error",
+            MessageBox.Show(string.Format(AppResources.App_FailedCreateSolution, ex.Message), AppResources.App_Error,
                 MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
@@ -5258,7 +5254,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         catch (Exception ex)
         {
             OutputLogger.Error($"Failed to create project: {ex.Message}");
-            MessageBox.Show($"Failed to create project:\n{ex.Message}", "Error",
+            MessageBox.Show(string.Format(AppResources.App_FailedCreateProject, "\n", ex.Message), AppResources.App_Error,
                 MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
@@ -5397,7 +5393,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             catch (Exception ex)
             {
                 OutputLogger.Error($"Failed to create file: {ex.Message}");
-                MessageBox.Show($"Failed to create file:\n{ex.Message}", "Error",
+                MessageBox.Show(string.Format(AppResources.App_FailedCreateFile, "\n", ex.Message), AppResources.App_Error,
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -5460,7 +5456,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         {
             Filter     = BuildSolutionFileFilter(),
             DefaultExt = ".whsln",
-            Title      = "Open Solution or Project"
+            Title      = AppResources.App_OpenSolutionProject
         };
 
         if (dlg.ShowDialog() != true) return;
@@ -5477,7 +5473,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         var dlg = new Microsoft.Win32.OpenFolderDialog
         {
-            Title      = "Open Folder",
+            Title      = AppResources.App_OpenFolder,
             Multiselect = false,
         };
 
@@ -5595,7 +5591,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         catch (Exception ex)
         {
             OutputLogger.Error($"Failed to open solution: {ex.Message}");
-            MessageBox.Show($"Failed to open solution:\n{ex.Message}", "Error",
+            MessageBox.Show(string.Format(AppResources.App_FailedOpenSolution, ex.Message), AppResources.App_Error,
                 MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
@@ -5898,7 +5894,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         bool isCode = item.ContentId.StartsWith("doc-new-code-");
         var dlg = new Microsoft.Win32.SaveFileDialog
         {
-            Title      = "Save As",
+            Title      = AppResources.App_SaveAs,
             FileName   = item.Title,
             Filter     = isCode
                 ? "JSON files (*.json)|*.json|All files (*.*)|*.*"
@@ -6018,7 +6014,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         }
         else
         {
-            var item = new DockItem { Title = "Options", ContentId = OptionsContentId };
+            var item = new DockItem { Title = AppResources.App_PanelOptions, ContentId = OptionsContentId };
             _engine.Dock(item, _layout.MainDocumentHost, DockDirection.Center);
             DockHost.RebuildVisualTree();
         }
@@ -6217,7 +6213,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         var dlg = new OpenFileDialog
         {
-            Title  = "Add Existing Item",
+            Title  = AppResources.App_AddExistingItem,
             Filter = "All Files (*.*)|*.*|Binary Files (*.bin;*.rom)|*.bin;*.rom|TBL Files (*.tbl;*.tblx)|*.tbl;*.tblx"
         };
         if (dlg.ShowDialog() != true) return;
@@ -6710,7 +6706,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         var repoRoot = git.GetRepoRoot(activePath);
         if (repoRoot is null)
         {
-            MessageBox.Show("No git repository found for this file.", "Compare with HEAD",
+            MessageBox.Show(AppResources.App_CompareWithHeadNoRepo, AppResources.App_CompareWithHead,
                 MessageBoxButton.OK, MessageBoxImage.Information);
             return;
         }
@@ -6718,7 +6714,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         var tempPath = await git.ExtractRefVersionAsync(repoRoot, "HEAD", activePath);
         if (tempPath is null)
         {
-            MessageBox.Show("Could not extract HEAD version from git.", "Compare with HEAD",
+            MessageBox.Show(AppResources.App_CompareWithHeadNoVersion, AppResources.App_CompareWithHead,
                 MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
@@ -6733,7 +6729,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         var filePath = ActiveHexEditor?.FileName;
         if (string.IsNullOrEmpty(filePath))
         {
-            var dlg = new OpenFileDialog { Title = "Select file for entropy analysis" };
+            var dlg = new OpenFileDialog { Title = AppResources.App_SelectEntropyFile };
             if (dlg.ShowDialog() != true) return;
             filePath = dlg.FileName;
         }
@@ -6757,7 +6753,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     private void OnShowSolutionExplorer(object sender, RoutedEventArgs e)
     {
-        ShowOrCreatePanel("Solution Explorer", SolutionExplorerContentId, DockDirection.Left);
+        ShowOrCreatePanel(AppResources.App_PanelSolutionExplorer, SolutionExplorerContentId, DockDirection.Left);
         // If a singleton already exists but panel was closed, re-dock
         if (_solutionExplorerPanel != null)
             _solutionExplorerPanel.SetSolution(_solutionManager.CurrentSolution);
@@ -6776,16 +6772,16 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             return;
         }
 
-        var item = new DockItem { Title = "Welcome", ContentId = welcomeContentId };
+        var item = new DockItem { Title = AppResources.App_PanelWelcome, ContentId = welcomeContentId };
         _engine.Dock(item, _layout.MainDocumentHost, DockDirection.Center);
         DockHost.RebuildVisualTree();
     }
 
     private void OnShowOutput(object sender, RoutedEventArgs e)
-        => ShowOrCreatePanel("Output", "panel-output", DockDirection.Bottom);
+        => ShowOrCreatePanel(AppResources.App_PanelOutput, "panel-output", DockDirection.Bottom);
 
     private void OnShowErrorPanel(object sender, RoutedEventArgs e)
-        => ShowOrCreatePanel("Error List", ErrorPanelContentId, DockDirection.Bottom);
+        => ShowOrCreatePanel(AppResources.App_PanelErrorList, ErrorPanelContentId, DockDirection.Bottom);
 
     private void OnShowBookmarks(object sender, RoutedEventArgs e)
     {
@@ -6812,7 +6808,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         var content = CreateFormatCatalogContent();
         StoreContent(FormatCatalogDocContentId, content);
-        var item = new DockItem { Title = "Format Catalog", ContentId = FormatCatalogDocContentId, CanClose = true };
+        var item = new DockItem { Title = AppResources.App_PanelFormatCatalog, ContentId = FormatCatalogDocContentId, CanClose = true };
         _engine.Dock(item, _layout.MainDocumentHost, DockDirection.Center);
         DockHost.RebuildVisualTree();
     }
@@ -6901,7 +6897,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     private void EnsureSolutionExplorerVisible()
     {
         if (_layout.FindItemByContentId(SolutionExplorerContentId) == null)
-            ShowOrCreatePanel("Solution Explorer", SolutionExplorerContentId, DockDirection.Left);
+            ShowOrCreatePanel(AppResources.App_PanelSolutionExplorer, SolutionExplorerContentId, DockDirection.Left);
     }
 
     // --- Menu: Layout --------------------------------------------------
@@ -6954,7 +6950,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         catch (Exception ex)
         {
             OutputLogger.Error($"Failed to load layout: {ex.Message}");
-            MessageBox.Show($"Failed to load layout:\n{ex.Message}", "Error",
+            MessageBox.Show(string.Format(AppResources.App_FailedLoadLayout, "\n", ex.Message), AppResources.App_Error,
                 MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }

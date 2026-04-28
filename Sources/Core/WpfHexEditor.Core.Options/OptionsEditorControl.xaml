@@ -176,7 +176,7 @@
                 <!-- Droite : bouton JSON + scope + filtre -->
                 <Button DockPanel.Dock="Right"
                         Style="{StaticResource PanelIconButtonStyle}"
-                        ToolTip="Edit user settings as JSON"
+                        ToolTip="{DynamicResource App_OptionsEditJsonToolTip}"
                         Click="OnEditJson"
                         Margin="4,0,4,0">
                     <TextBlock Text="&#xE8A5;" FontFamily="Segoe MDL2 Assets" FontSize="14"/>
@@ -187,11 +187,11 @@
                           IsEnabled="False"
                           Margin="0,0,8,0"
                           VerticalAlignment="Center">
-                    <ComboBoxItem Content="User (installation)" IsSelected="True"/>
+                    <ComboBoxItem Content="{DynamicResource App_OptionsUserInstallation}" IsSelected="True"/>
                 </ComboBox>
 
                 <TextBlock DockPanel.Dock="Right"
-                           Text="Applies to:"
+                           Text="{DynamicResource App_OptionsAppliesToLabel}"
                            VerticalAlignment="Center"
                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                            Margin="12,0,4,0"/>
@@ -204,7 +204,7 @@
                           SelectionChanged="OnFilterChanged"/>
 
                 <TextBlock DockPanel.Dock="Right"
-                           Text="Filter:"
+                           Text="{DynamicResource App_OptionsFilterLabel}"
                            VerticalAlignment="Center"
                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                            Margin="12,0,4,0"/>
@@ -237,7 +237,7 @@
                         <!-- Watermark placeholder -->
                         <TextBlock x:Name="SearchWatermark"
                                    Grid.Column="1"
-                                   Text="Search settings (Ctrl+F)…"
+                                   Text="{DynamicResource App_OptionsSearchPlaceholder}"
                                    Foreground="{DynamicResource DockMenuForegroundBrush}"
                                    Opacity="0.4"
                                    VerticalAlignment="Center"
@@ -261,7 +261,7 @@
                                 Visibility="Collapsed"
                                 Style="{StaticResource PanelIconButtonStyle}"
                                 Click="OnSearchClear"
-                                ToolTip="Clear (Escape)">
+                                ToolTip="{DynamicResource App_OptionsClearToolTip}">
                             <TextBlock Text="&#xE711;"
                                        FontFamily="Segoe MDL2 Assets"
                                        FontSize="10"/>
@@ -293,7 +293,7 @@
 
                     <!-- Shown when search yields no results -->
                     <TextBlock x:Name="NoResultsText"
-                               Text="No settings found."
+                               Text="{DynamicResource App_OptionsNoResults}"
                                Foreground="{DynamicResource DockMenuForegroundBrush}"
                                Opacity="0.5"
                                FontStyle="Italic"

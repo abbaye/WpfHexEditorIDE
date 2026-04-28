@@ -36,7 +36,7 @@
                         DockPanel.Dock="Right"
                         Visibility="Collapsed"
                         Style="{DynamicResource PanelIconButtonStyle}"
-                        ToolTip="More options"
+                        ToolTip="{DynamicResource AudioViewer_ToolbarOverflowToolTip}"
                         Click="OnOverflowButtonClick">
                     <TextBlock Text="&#xE712;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
@@ -51,7 +51,7 @@
                            Margin="8,0,0,0"
                            Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
                            FontSize="12"
-                           Text="Audio"/>
+                           Text="{DynamicResource AudioViewer_FormatLabel}"/>
             </DockPanel>
         </Border>
 
@@ -79,7 +79,7 @@
                         DockPanel.Dock="Left"
                         Width="26" Height="22"
                         Margin="0,0,2,0"
-                        ToolTip="Play / Pause (Space)"
+                        ToolTip="{DynamicResource AudioViewer_PlayPauseToolTip}"
                         Style="{DynamicResource PanelIconButtonStyle}"
                         Click="OnPlayPauseClicked">
                     <TextBlock x:Name="PlayPauseGlyph"
@@ -94,7 +94,7 @@
                         DockPanel.Dock="Left"
                         Width="26" Height="22"
                         Margin="0,0,6,0"
-                        ToolTip="Stop"
+                        ToolTip="{DynamicResource AudioViewer_StopToolTip}"
                         Style="{DynamicResource PanelIconButtonStyle}"
                         Click="OnStopClicked">
                     <TextBlock Text="&#xE71A;"
@@ -106,7 +106,7 @@
                 <!-- Current position label -->
                 <TextBlock x:Name="PositionLabel"
                            DockPanel.Dock="Left"
-                           Text="0:00"
+                           Text="{DynamicResource AudioViewer_PositionDefault}"
                            FontSize="11"
                            VerticalAlignment="Center"
                            MinWidth="34"
@@ -116,7 +116,7 @@
                 <!-- Duration label -->
                 <TextBlock x:Name="DurationLabel"
                            DockPanel.Dock="Right"
-                           Text="0:00"
+                           Text="{DynamicResource AudioViewer_PositionDefault}"
                            FontSize="11"
                            VerticalAlignment="Center"
                            MinWidth="34"
@@ -146,7 +146,7 @@
                        Margin="8,0,0,0"
                        FontSize="11"
                        Foreground="{DynamicResource TE_LineNumberForeground}"
-                       Text="Open an audio file"/>
+                       Text="{DynamicResource AudioViewer_StatusBarOpenFile}"/>
         </Border>
 
         <!-- Busy overlay -->
@@ -157,7 +157,7 @@
                                     BarHeight="2"
                                     Height="2"
                                     VerticalAlignment="Top"/>
-            <TextBlock Text="Analyzing…"
+            <TextBlock Text="{DynamicResource AudioViewer_OverlayAnalyzing}"
                        HorizontalAlignment="Center"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource TE_LineNumberForeground}"

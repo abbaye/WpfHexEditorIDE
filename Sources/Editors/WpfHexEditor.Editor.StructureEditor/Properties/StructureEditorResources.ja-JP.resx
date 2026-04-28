@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="StructureEditor_AddBlockTitle" xml:space="preserve"><value>ブロックの追加</value></data>
+  <data name="StructureEditor_AddBlockButton" xml:space="preserve"><value>追加</value></data>
+  <data name="StructureEditor_AddBlockCancel" xml:space="preserve"><value>キャンセル</value></data>
+  <data name="StructureEditor_TabMetadata" xml:space="preserve"><value>メタデータ</value></data>
+  <data name="StructureEditor_TabDetection" xml:space="preserve"><value>検出</value></data>
+  <data name="StructureEditor_TabBlocks" xml:space="preserve"><value>ブロック</value></data>
+  <data name="StructureEditor_TabVariables" xml:space="preserve"><value>変数</value></data>
+  <data name="StructureEditor_TabAdvanced" xml:space="preserve"><value>詳細</value></data>
+  <data name="StructureEditor_TabQuality" xml:space="preserve"><value>品質</value></data>
+  <data name="StructureEditor_TabTest" xml:space="preserve"><value>テスト</value></data>
+  <data name="StructureEditor_SaveToolTip" xml:space="preserve"><value>保存 (Ctrl+S)</value></data>
+  <data name="StructureEditor_ValidateToolTip" xml:space="preserve"><value>検証 (Ctrl+Shift+V)</value></data>
+  <data name="StructureEditor_UndoToolTip" xml:space="preserve"><value>元に戻す (Ctrl+Z)</value></data>
+  <data name="StructureEditor_RedoToolTip" xml:space="preserve"><value>やり直す (Ctrl+Y)</value></data>
+  <data name="StructureEditor_LiveCodeViewToolTip" xml:space="preserve"><value>ライブコードビューの切り替え</value></data>
+  <data name="StructureEditor_AddBlockToolTip" xml:space="preserve"><value>ブロックを追加 (Ctrl+N)</value></data>
+  <data name="StructureEditor_DuplicateBlockToolTip" xml:space="preserve"><value>ブロックを複製 (Ctrl+D)</value></data>
+  <data name="StructureEditor_UnsavedChangesToolTip" xml:space="preserve"><value>未保存の変更</value></data>
+  <data name="StructureEditor_BlocksFilterToolTip" xml:space="preserve"><value>名前でブロックをフィルタリング</value></data>
+  <data name="StructureEditor_BlocksAddMenuItem" xml:space="preserve"><value>ブロックを追加...</value></data>
+  <data name="StructureEditor_BlocksDuplicateMenuItem" xml:space="preserve"><value>複製</value></data>
+  <data name="StructureEditor_BlocksRemoveMenuItem" xml:space="preserve"><value>削除</value></data>
+  <data name="StructureEditor_BlocksMoveUpMenuItem" xml:space="preserve"><value>上に移動</value></data>
+  <data name="StructureEditor_BlocksMoveDownMenuItem" xml:space="preserve"><value>下に移動</value></data>
+  <data name="StructureEditor_BlocksCopyJsonMenuItem" xml:space="preserve"><value>JSON としてコピー</value></data>
+  <data name="StructureEditor_BlocksPasteMenuItem" xml:space="preserve"><value>ブロックを貼り付け</value></data>
+  <data name="StructureEditor_BlocksEmptyLine1" xml:space="preserve"><value>プロパティを編集するブロックを選択してください。</value></data>
+  <data name="StructureEditor_BlocksEmptyLine2" xml:space="preserve"><value>または Ctrl+N / 右クリックで新しいブロックを追加してください。</value></data>
+  <data name="StructureEditor_DetectionHexSigLabel" xml:space="preserve"><value>16進シグネチャ</value></data>
+  <data name="StructureEditor_DetectionHexBytesToolTip" xml:space="preserve"><value>スペースなしの16進バイト。例：PNGの場合は89504E47</value></data>
+  <data name="StructureEditor_DetectionSigLabel" xml:space="preserve"><value>シグネチャ</value></data>
+  <data name="StructureEditor_DetectionV2SigsLabel" xml:space="preserve"><value>v2.0 シグネチャ</value></data>
+  <data name="StructureEditor_DetectionMatchModeLabel" xml:space="preserve"><value>マッチモード</value></data>
+  <data name="StructureEditor_DetectionHexValueToolTip" xml:space="preserve"><value>16進値</value></data>
+  <data name="StructureEditor_DetectionOffsetToolTip" xml:space="preserve"><value>オフセット</value></data>
+  <data name="StructureEditor_DetectionLabelToolTip" xml:space="preserve"><value>ラベル</value></data>
+  <data name="StructureEditor_DetectionAddSigButton" xml:space="preserve"><value>＋ シグネチャを追加</value></data>
+  <data name="StructureEditor_DetectionEntropyLabel" xml:space="preserve"><value>エントロピーヒント</value></data>
+  <data name="StructureEditor_DetectionMinEntropyLabel" xml:space="preserve"><value>最小エントロピー</value></data>
+  <data name="StructureEditor_DetectionMaxEntropyLabel" xml:space="preserve"><value>最大エントロピー</value></data>
+  <data name="StructureEditor_DetectionMinScoreLabel" xml:space="preserve"><value>最小スコア</value></data>
+  <data name="StructureEditor_DetectionScoreThresholdLabel" xml:space="preserve"><value>スコアしきい値</value></data>
+  <data name="StructureEditor_DetectionContentPatternsLabel" xml:space="preserve"><value>コンテンツパターン（テキスト形式）</value></data>
+  <data name="StructureEditor_DetectionRegexToolTip" xml:space="preserve"><value>Regex パターン</value></data>
+  <data name="StructureEditor_DetectionAddPatternButton" xml:space="preserve"><value>＋ パターンを追加</value></data>
+  <data name="StructureEditor_MetaCoreSection" xml:space="preserve"><value>基本</value></data>
+  <data name="StructureEditor_MetaNameLabel" xml:space="preserve"><value>フォーマット名</value></data>
+  <data name="StructureEditor_MetaNameToolTip" xml:space="preserve"><value>読みやすいフォーマット名（例：「ZIP アーカイブ」「PNG 画像」）</value></data>
+  <data name="StructureEditor_MetaVersionLabel" xml:space="preserve"><value>バージョン</value></data>
+  <data name="StructureEditor_MetaVersionToolTip" xml:space="preserve"><value>この定義のバージョン（例：「1.0」「2.0」）</value></data>
+  <data name="StructureEditor_MetaAuthorLabel" xml:space="preserve"><value>作成者</value></data>
+  <data name="StructureEditor_MetaAuthorToolTip" xml:space="preserve"><value>この定義ファイルの作成者</value></data>
+  <data name="StructureEditor_MetaCategoryLabel" xml:space="preserve"><value>カテゴリ</value></data>
+  <data name="StructureEditor_MetaCategoryToolTip" xml:space="preserve"><value>カテゴリ（フォルダ構造から自動設定：アーカイブ、画像、音声、動画など）</value></data>
+  <data name="StructureEditor_MetaDiffModeLabel" xml:space="preserve"><value>差分モード</value></data>
+  <data name="StructureEditor_MetaDiffModeToolTip" xml:space="preserve"><value>DiffViewer の優先差分アルゴリズム</value></data>
+  <data name="StructureEditor_MetaPreferredEditorLabel" xml:space="preserve"><value>優先エディタ</value></data>
+  <data name="StructureEditor_MetaPreferredEditorToolTip" xml:space="preserve"><value>このフォーマットに一致するファイルの優先エディタファクトリ ID</value></data>
+  <data name="StructureEditor_MetaDescriptionLabel" xml:space="preserve"><value>説明</value></data>
+  <data name="StructureEditor_MetaIsTextFormat" xml:space="preserve"><value>テキスト形式（デフォルトでコードエディタで開く）</value></data>
+  <data name="StructureEditor_MetaExtensionsLabel" xml:space="preserve"><value>ファイル拡張子</value></data>
+  <data name="StructureEditor_MetaAddExtensionButton" xml:space="preserve"><value>＋ 拡張子を追加</value></data>
+  <data name="StructureEditor_MetaMimeTypesLabel" xml:space="preserve"><value>MIME タイプ</value></data>
+  <data name="StructureEditor_MetaAddMimeButton" xml:space="preserve"><value>＋ MIME タイプを追加</value></data>
+  <data name="StructureEditor_MetaSoftwareLabel" xml:space="preserve"><value>ソフトウェア</value></data>
+  <data name="StructureEditor_MetaAddSoftwareButton" xml:space="preserve"><value>＋ ソフトウェアを追加</value></data>
+  <data name="StructureEditor_QualityComputedSection" xml:space="preserve"><value>計算されたメトリクス</value></data>
+  <data name="StructureEditor_QualityBlockCoverage" xml:space="preserve"><value>ブロックカバレッジ</value></data>
+  <data name="StructureEditor_QualityCompletenessScore" xml:space="preserve"><value>完全性スコア</value></data>
+  <data name="StructureEditor_QualityTypeDistribution" xml:space="preserve"><value>タイプ分布</value></data>
+  <data name="StructureEditor_QualityBlocksLabel" xml:space="preserve"><value>ブロック</value></data>
+  <data name="StructureEditor_QualityDepthLabel" xml:space="preserve"><value>深度</value></data>
+  <data name="StructureEditor_QualityVariablesLabel" xml:space="preserve"><value>変数</value></data>
+  <data name="StructureEditor_QualityRulesLabel" xml:space="preserve"><value>ルール</value></data>
+  <data name="StructureEditor_QualityMetadataLabel" xml:space="preserve"><value>メタデータ</value></data>
+  <data name="StructureEditor_QualityDocLevel" xml:space="preserve"><value>ドキュメントレベル</value></data>
+  <data name="StructureEditor_QualityLastUpdated" xml:space="preserve"><value>最終更新</value></data>
+  <data name="StructureEditor_QualityLastUpdatedToolTip" xml:space="preserve"><value>形式：YYYY-MM-DD（保存時に自動入力）</value></data>
+  <data name="StructureEditor_QualityPriorityFormat" xml:space="preserve"><value>優先フォーマット（上位 100）</value></data>
+  <data name="StructureEditor_QualityAutoRefined" xml:space="preserve"><value>自動精製済み（スクリプトによる強化 — 読み取り専用）</value></data>
+  <data name="StructureEditor_TestSection" xml:space="preserve"><value>ファイルに対してフォーマットをテスト</value></data>
+  <data name="StructureEditor_TestFilePathToolTip" xml:space="preserve"><value>テストするバイナリファイルのパス</value></data>
+  <data name="StructureEditor_TestBrowseButton" xml:space="preserve"><value>参照…</value></data>
+  <data name="StructureEditor_TestRunButton" xml:space="preserve"><value>▶ テスト実行</value></data>
+  <data name="StructureEditor_TestCopyToolTip" xml:space="preserve"><value>結果をクリップボードにコピー (TSV)</value></data>
+  <data name="StructureEditor_TestEmptyMessage" xml:space="preserve"><value>ファイルを選択し、▶ テスト実行をクリックして現在のフォーマット定義をテストしてください。</value></data>
+  <data name="StructureEditor_TestColStatus" xml:space="preserve"><value>ステータス</value></data>
+  <data name="StructureEditor_TestColBlockName" xml:space="preserve"><value>ブロック名</value></data>
+  <data name="StructureEditor_TestColType" xml:space="preserve"><value>タイプ</value></data>
+  <data name="StructureEditor_TestColOffset" xml:space="preserve"><value>オフセット</value></data>
+  <data name="StructureEditor_TestColLen" xml:space="preserve"><value>長さ</value></data>
+  <data name="StructureEditor_TestColRaw" xml:space="preserve"><value>生データ (hex)</value></data>
+  <data name="StructureEditor_TestColParsed" xml:space="preserve"><value>解析値</value></data>
+  <data name="StructureEditor_TestColNote" xml:space="preserve"><value>メモ</value></data>
+  <data name="StructureEditor_TestFilterOk" xml:space="preserve"><value>✓ OK</value></data>
+  <data name="StructureEditor_TestFilterWarning" xml:space="preserve"><value>⚠ 警告</value></data>
+  <data name="StructureEditor_TestFilterError" xml:space="preserve"><value>✕ エラー</value></data>
+  <data name="StructureEditor_TestFilterSkipped" xml:space="preserve"><value>⊘ スキップ</value></data>
+  <data name="StructureEditor_VarsDescription" xml:space="preserve"><value>ブロックインタープリタで使用可能な初期変数（例：ループカウンタ、計算されたオフセット）。</value></data>
+  <data name="StructureEditor_VarsFilterToolTip" xml:space="preserve"><value>名前で変数をフィルタリング</value></data>
+  <data name="StructureEditor_VarsColName" xml:space="preserve"><value>変数名</value></data>
+  <data name="StructureEditor_VarsColType" xml:space="preserve"><value>タイプ</value></data>
+  <data name="StructureEditor_VarsColInitialValue" xml:space="preserve"><value>初期値</value></data>
+  <data name="StructureEditor_VarsColDescription" xml:space="preserve"><value>説明</value></data>
+  <data name="StructureEditor_VarsAddButton" xml:space="preserve"><value>＋ 変数を追加</value></data>
+  <data name="StructureEditor_V2AssertionsHeader" xml:space="preserve"><value>アサーション</value></data>
+  <data name="StructureEditor_V2AssertionPlaceholder" xml:space="preserve"><value>var:name equals 0 or calc:expr</value></data>
+  <data name="StructureEditor_V2AssertionToolTip" xml:space="preserve"><value>ブール式 — Ctrl+Space で関数と変数を表示</value></data>
+  <data name="StructureEditor_V2ChecksumsHeader" xml:space="preserve"><value>チェックサム</value></data>
+  <data name="StructureEditor_V2VersioningHeader" xml:space="preserve"><value>バージョン管理 (VersionDetection / VersionedBlocks)</value></data>
+  <data name="StructureEditor_V2ImportsHeader" xml:space="preserve"><value>インポート ($ref 合成)</value></data>
+  <data name="StructureEditor_V2ImportsDescription" xml:space="preserve"><value>ref = フォーマット名（または structs/名前）、as = structRef ブロックで使用するエイリアス。</value></data>
+  <data name="StructureEditor_V2ImportRefToolTip" xml:space="preserve"><value>フォーマット参照 例：structs/PE_OptionalHeader</value></data>
+  <data name="StructureEditor_V2ImportAliasToolTip" xml:space="preserve"><value>structRef のエイリアス 例：PEOpt</value></data>
+  <data name="StructureEditor_V2AddImportButton" xml:space="preserve"><value>+ インポートを追加</value></data>
+  <data name="StructureEditor_V2ForensicHeader" xml:space="preserve"><value>フォレンジック</value></data>
+  <data name="StructureEditor_V2NavBookmarksHeader" xml:space="preserve"><value>ナビゲーションブックマーク</value></data>
+  <data name="StructureEditor_V2BookmarkPlaceholder" xml:space="preserve"><value>変数名</value></data>
+  <data name="StructureEditor_V2BookmarkToolTip" xml:space="preserve"><value>バイトオフセットを保持する変数 — Ctrl+Space で候補を表示</value></data>
+  <data name="StructureEditor_V2AddBookmarkButton" xml:space="preserve"><value>＋ ブックマークを追加</value></data>
+  <data name="StructureEditor_V2InspectorLayoutHeader" xml:space="preserve"><value>インスペクタレイアウト</value></data>
+  <data name="StructureEditor_V2ExportTemplatesHeader" xml:space="preserve"><value>エクスポートテンプレート</value></data>
+  <data name="StructureEditor_V2AddTemplateButton" xml:space="preserve"><value>＋ テンプレートを追加</value></data>
+  <data name="StructureEditor_V2AIHintsHeader" xml:space="preserve"><value>AI ヒント</value></data>
+  <data name="StructureEditor_TypeHintField" xml:space="preserve"><value>固定または可変のオフセットと長さを持つバイナリフィールド。</value></data>
+  <data name="StructureEditor_TypeHintSignature" xml:space="preserve"><value>特定のオフセットでフォーマットを識別するマジックバイト。</value></data>
+  <data name="StructureEditor_TypeHintMetadata" xml:space="preserve"><value>可変長または記号的な値を名前付き変数に読み込む。</value></data>
+  <data name="StructureEditor_TypeHintConditional" xml:space="preserve"><value>フィールド値または変数に基づいて条件付きでブロックを解析する。</value></data>
+  <data name="StructureEditor_TypeHintLoop" xml:space="preserve"><value>条件が真である間、ブロック本体を繰り返す。</value></data>
+  <data name="StructureEditor_TypeHintAction" xml:space="preserve"><value>変数を変更する（インクリメント、デクリメント、変数設定）。</value></data>
+  <data name="StructureEditor_TypeHintCompute" xml:space="preserve"><value>数式を評価して結果を格納する。</value></data>
+  <data name="StructureEditor_TypeHintRepeating" xml:space="preserve"><value>固定数の構造化エントリの配列を解析する。</value></data>
+  <data name="StructureEditor_TypeHintUnion" xml:space="preserve"><value>判別変数に基づいてバリアントブロックセットを選択する。</value></data>
+  <data name="StructureEditor_TypeHintNested" xml:space="preserve"><value>参照によって外部構造定義を埋め込む。</value></data>
+  <data name="StructureEditor_TypeHintPointer" xml:space="preserve"><value>指定されたオフセットへのナビゲーション注釈を作成する。</value></data>
+  <data name="StructureEditor_ValidationErrorCount" xml:space="preserve"><value>{0} 件のエラー</value></data>
+  <data name="StructureEditor_ValidationWarningCount" xml:space="preserve"><value>{0} 件の警告</value></data>
+  <data name="StructureEditor_RawJsonTitle" xml:space="preserve"><value>生 JSON — {0}</value></data>
+  <data name="StructureEditor_RawJsonApply" xml:space="preserve"><value>適用</value></data>
+  <data name="StructureEditor_RawJsonCancel" xml:space="preserve"><value>キャンセル</value></data>
+  <data name="StructureEditor_FactoryDisplayName" xml:space="preserve"><value>構造エディタ</value></data>
+  <data name="StructureEditor_FactoryDescription" xml:space="preserve"><value>.whfmt 構造定義ファイルのビジュアルエディタ。DataGrid でブロック、タイプ、オフセット、長さ、色を編集します。</value></data>
+</root>

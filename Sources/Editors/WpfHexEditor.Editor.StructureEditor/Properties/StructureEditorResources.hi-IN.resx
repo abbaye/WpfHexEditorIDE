@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="StructureEditor_AddBlockTitle" xml:space="preserve"><value>ब्लॉक जोड़ें</value></data>
+  <data name="StructureEditor_AddBlockButton" xml:space="preserve"><value>जोड़ें</value></data>
+  <data name="StructureEditor_AddBlockCancel" xml:space="preserve"><value>रद्द करें</value></data>
+  <data name="StructureEditor_TabMetadata" xml:space="preserve"><value>मेटाडेटा</value></data>
+  <data name="StructureEditor_TabDetection" xml:space="preserve"><value>पहचान</value></data>
+  <data name="StructureEditor_TabBlocks" xml:space="preserve"><value>ब्लॉक</value></data>
+  <data name="StructureEditor_TabVariables" xml:space="preserve"><value>चर</value></data>
+  <data name="StructureEditor_TabAdvanced" xml:space="preserve"><value>उन्नत</value></data>
+  <data name="StructureEditor_TabQuality" xml:space="preserve"><value>गुणवत्ता</value></data>
+  <data name="StructureEditor_TabTest" xml:space="preserve"><value>परीक्षण</value></data>
+  <data name="StructureEditor_SaveToolTip" xml:space="preserve"><value>सहेजें (Ctrl+S)</value></data>
+  <data name="StructureEditor_ValidateToolTip" xml:space="preserve"><value>मान्य करें (Ctrl+Shift+V)</value></data>
+  <data name="StructureEditor_UndoToolTip" xml:space="preserve"><value>पूर्ववत करें (Ctrl+Z)</value></data>
+  <data name="StructureEditor_RedoToolTip" xml:space="preserve"><value>फिर से करें (Ctrl+Y)</value></data>
+  <data name="StructureEditor_LiveCodeViewToolTip" xml:space="preserve"><value>लाइव कोड दृश्य टॉगल करें</value></data>
+  <data name="StructureEditor_AddBlockToolTip" xml:space="preserve"><value>ब्लॉक जोड़ें (Ctrl+N)</value></data>
+  <data name="StructureEditor_DuplicateBlockToolTip" xml:space="preserve"><value>ब्लॉक डुप्लिकेट करें (Ctrl+D)</value></data>
+  <data name="StructureEditor_UnsavedChangesToolTip" xml:space="preserve"><value>असहेजे परिवर्तन</value></data>
+  <data name="StructureEditor_BlocksFilterToolTip" xml:space="preserve"><value>नाम से ब्लॉक फ़िल्टर करें</value></data>
+  <data name="StructureEditor_BlocksAddMenuItem" xml:space="preserve"><value>ब्लॉक जोड़ें...</value></data>
+  <data name="StructureEditor_BlocksDuplicateMenuItem" xml:space="preserve"><value>डुप्लिकेट</value></data>
+  <data name="StructureEditor_BlocksRemoveMenuItem" xml:space="preserve"><value>हटाएं</value></data>
+  <data name="StructureEditor_BlocksMoveUpMenuItem" xml:space="preserve"><value>ऊपर ले जाएं</value></data>
+  <data name="StructureEditor_BlocksMoveDownMenuItem" xml:space="preserve"><value>नीचे ले जाएं</value></data>
+  <data name="StructureEditor_BlocksCopyJsonMenuItem" xml:space="preserve"><value>JSON के रूप में कॉपी करें</value></data>
+  <data name="StructureEditor_BlocksPasteMenuItem" xml:space="preserve"><value>ब्लॉक पेस्ट करें</value></data>
+  <data name="StructureEditor_BlocksEmptyLine1" xml:space="preserve"><value>गुण संपादित करने के लिए एक ब्लॉक चुनें,</value></data>
+  <data name="StructureEditor_BlocksEmptyLine2" xml:space="preserve"><value>या नया ब्लॉक जोड़ने के लिए Ctrl+N / राइट-क्लिक करें।</value></data>
+  <data name="StructureEditor_DetectionHexSigLabel" xml:space="preserve"><value>हेक्स हस्ताक्षर</value></data>
+  <data name="StructureEditor_DetectionHexBytesToolTip" xml:space="preserve"><value>बिना स्पेस के hex बाइट, जैसे PNG के लिए 89504E47</value></data>
+  <data name="StructureEditor_DetectionSigLabel" xml:space="preserve"><value>हस्ताक्षर</value></data>
+  <data name="StructureEditor_DetectionV2SigsLabel" xml:space="preserve"><value>v2.0 हस्ताक्षर</value></data>
+  <data name="StructureEditor_DetectionMatchModeLabel" xml:space="preserve"><value>मिलान मोड</value></data>
+  <data name="StructureEditor_DetectionHexValueToolTip" xml:space="preserve"><value>hex मान</value></data>
+  <data name="StructureEditor_DetectionOffsetToolTip" xml:space="preserve"><value>ऑफ़सेट</value></data>
+  <data name="StructureEditor_DetectionLabelToolTip" xml:space="preserve"><value>लेबल</value></data>
+  <data name="StructureEditor_DetectionAddSigButton" xml:space="preserve"><value>＋ हस्ताक्षर जोड़ें</value></data>
+  <data name="StructureEditor_DetectionEntropyLabel" xml:space="preserve"><value>एन्ट्रॉपी संकेत</value></data>
+  <data name="StructureEditor_DetectionMinEntropyLabel" xml:space="preserve"><value>न्यूनतम एन्ट्रॉपी</value></data>
+  <data name="StructureEditor_DetectionMaxEntropyLabel" xml:space="preserve"><value>अधिकतम एन्ट्रॉपी</value></data>
+  <data name="StructureEditor_DetectionMinScoreLabel" xml:space="preserve"><value>न्यूनतम स्कोर</value></data>
+  <data name="StructureEditor_DetectionScoreThresholdLabel" xml:space="preserve"><value>स्कोर सीमा</value></data>
+  <data name="StructureEditor_DetectionContentPatternsLabel" xml:space="preserve"><value>सामग्री पैटर्न (पाठ प्रारूप)</value></data>
+  <data name="StructureEditor_DetectionRegexToolTip" xml:space="preserve"><value>Regex पैटर्न</value></data>
+  <data name="StructureEditor_DetectionAddPatternButton" xml:space="preserve"><value>＋ पैटर्न जोड़ें</value></data>
+  <data name="StructureEditor_MetaCoreSection" xml:space="preserve"><value>मुख्य</value></data>
+  <data name="StructureEditor_MetaNameLabel" xml:space="preserve"><value>प्रारूप नाम</value></data>
+  <data name="StructureEditor_MetaNameToolTip" xml:space="preserve"><value>पठनीय प्रारूप नाम (जैसे 'ZIP संग्रह', 'PNG छवि')</value></data>
+  <data name="StructureEditor_MetaVersionLabel" xml:space="preserve"><value>संस्करण</value></data>
+  <data name="StructureEditor_MetaVersionToolTip" xml:space="preserve"><value>इस परिभाषा का संस्करण (जैसे '1.0', '2.0')</value></data>
+  <data name="StructureEditor_MetaAuthorLabel" xml:space="preserve"><value>लेखक</value></data>
+  <data name="StructureEditor_MetaAuthorToolTip" xml:space="preserve"><value>इस परिभाषा फ़ाइल के लेखक</value></data>
+  <data name="StructureEditor_MetaCategoryLabel" xml:space="preserve"><value>श्रेणी</value></data>
+  <data name="StructureEditor_MetaCategoryToolTip" xml:space="preserve"><value>श्रेणी (फ़ोल्डर संरचना से स्वतः सेट: संग्रह, छवियां, ऑडियो, वीडियो, आदि)</value></data>
+  <data name="StructureEditor_MetaDiffModeLabel" xml:space="preserve"><value>Diff मोड</value></data>
+  <data name="StructureEditor_MetaDiffModeToolTip" xml:space="preserve"><value>DiffViewer के लिए पसंदीदा diff एल्गोरिदम</value></data>
+  <data name="StructureEditor_MetaPreferredEditorLabel" xml:space="preserve"><value>पसंदीदा संपादक</value></data>
+  <data name="StructureEditor_MetaPreferredEditorToolTip" xml:space="preserve"><value>इस प्रारूप से मेल खाने वाली फ़ाइलों के लिए पसंदीदा संपादक फ़ैक्टरी ID</value></data>
+  <data name="StructureEditor_MetaDescriptionLabel" xml:space="preserve"><value>विवरण</value></data>
+  <data name="StructureEditor_MetaIsTextFormat" xml:space="preserve"><value>पाठ प्रारूप (डिफ़ॉल्ट रूप से कोड संपादक में खुलता है)</value></data>
+  <data name="StructureEditor_MetaExtensionsLabel" xml:space="preserve"><value>फ़ाइल एक्सटेंशन</value></data>
+  <data name="StructureEditor_MetaAddExtensionButton" xml:space="preserve"><value>＋ एक्सटेंशन जोड़ें</value></data>
+  <data name="StructureEditor_MetaMimeTypesLabel" xml:space="preserve"><value>MIME प्रकार</value></data>
+  <data name="StructureEditor_MetaAddMimeButton" xml:space="preserve"><value>＋ MIME प्रकार जोड़ें</value></data>
+  <data name="StructureEditor_MetaSoftwareLabel" xml:space="preserve"><value>सॉफ़्टवेयर</value></data>
+  <data name="StructureEditor_MetaAddSoftwareButton" xml:space="preserve"><value>＋ सॉफ़्टवेयर जोड़ें</value></data>
+  <data name="StructureEditor_QualityComputedSection" xml:space="preserve"><value>परिकलित मेट्रिक्स</value></data>
+  <data name="StructureEditor_QualityBlockCoverage" xml:space="preserve"><value>ब्लॉक कवरेज</value></data>
+  <data name="StructureEditor_QualityCompletenessScore" xml:space="preserve"><value>पूर्णता स्कोर</value></data>
+  <data name="StructureEditor_QualityTypeDistribution" xml:space="preserve"><value>प्रकार वितरण</value></data>
+  <data name="StructureEditor_QualityBlocksLabel" xml:space="preserve"><value>ब्लॉक</value></data>
+  <data name="StructureEditor_QualityDepthLabel" xml:space="preserve"><value>गहराई</value></data>
+  <data name="StructureEditor_QualityVariablesLabel" xml:space="preserve"><value>चर</value></data>
+  <data name="StructureEditor_QualityRulesLabel" xml:space="preserve"><value>नियम</value></data>
+  <data name="StructureEditor_QualityMetadataLabel" xml:space="preserve"><value>मेटाडेटा</value></data>
+  <data name="StructureEditor_QualityDocLevel" xml:space="preserve"><value>दस्तावेज़ीकरण स्तर</value></data>
+  <data name="StructureEditor_QualityLastUpdated" xml:space="preserve"><value>अंतिम अपडेट</value></data>
+  <data name="StructureEditor_QualityLastUpdatedToolTip" xml:space="preserve"><value>प्रारूप: YYYY-MM-DD (सहेजने पर स्वतः भरा जाता है)</value></data>
+  <data name="StructureEditor_QualityPriorityFormat" xml:space="preserve"><value>प्राथमिकता प्रारूप (शीर्ष 100)</value></data>
+  <data name="StructureEditor_QualityAutoRefined" xml:space="preserve"><value>स्वतः परिष्कृत (स्क्रिप्ट द्वारा समृद्ध — केवल पठन)</value></data>
+  <data name="StructureEditor_TestSection" xml:space="preserve"><value>फ़ाइल पर प्रारूप परीक्षण करें</value></data>
+  <data name="StructureEditor_TestFilePathToolTip" xml:space="preserve"><value>परीक्षण करने के लिए बाइनरी फ़ाइल का पथ</value></data>
+  <data name="StructureEditor_TestBrowseButton" xml:space="preserve"><value>ब्राउज़ करें…</value></data>
+  <data name="StructureEditor_TestRunButton" xml:space="preserve"><value>▶ परीक्षण चलाएं</value></data>
+  <data name="StructureEditor_TestCopyToolTip" xml:space="preserve"><value>परिणाम क्लिपबोर्ड पर कॉपी करें (TSV)</value></data>
+  <data name="StructureEditor_TestEmptyMessage" xml:space="preserve"><value>एक फ़ाइल चुनें और वर्तमान प्रारूप परिभाषा का परीक्षण करने के लिए ▶ परीक्षण चलाएं पर क्लिक करें।</value></data>
+  <data name="StructureEditor_TestColStatus" xml:space="preserve"><value>स्थिति</value></data>
+  <data name="StructureEditor_TestColBlockName" xml:space="preserve"><value>ब्लॉक नाम</value></data>
+  <data name="StructureEditor_TestColType" xml:space="preserve"><value>प्रकार</value></data>
+  <data name="StructureEditor_TestColOffset" xml:space="preserve"><value>ऑफ़सेट</value></data>
+  <data name="StructureEditor_TestColLen" xml:space="preserve"><value>लंबाई</value></data>
+  <data name="StructureEditor_TestColRaw" xml:space="preserve"><value>कच्चा (hex)</value></data>
+  <data name="StructureEditor_TestColParsed" xml:space="preserve"><value>पार्स किया मान</value></data>
+  <data name="StructureEditor_TestColNote" xml:space="preserve"><value>नोट</value></data>
+  <data name="StructureEditor_TestFilterOk" xml:space="preserve"><value>✓ OK</value></data>
+  <data name="StructureEditor_TestFilterWarning" xml:space="preserve"><value>⚠ चेतावनी</value></data>
+  <data name="StructureEditor_TestFilterError" xml:space="preserve"><value>✕ त्रुटि</value></data>
+  <data name="StructureEditor_TestFilterSkipped" xml:space="preserve"><value>⊘ छोड़ा</value></data>
+  <data name="StructureEditor_VarsDescription" xml:space="preserve"><value>ब्लॉक इंटरप्रेटर के लिए उपलब्ध प्रारंभिक चर (जैसे लूप काउंटर, परिकलित ऑफसेट)।</value></data>
+  <data name="StructureEditor_VarsFilterToolTip" xml:space="preserve"><value>नाम से चर फ़िल्टर करें</value></data>
+  <data name="StructureEditor_VarsColName" xml:space="preserve"><value>चर नाम</value></data>
+  <data name="StructureEditor_VarsColType" xml:space="preserve"><value>प्रकार</value></data>
+  <data name="StructureEditor_VarsColInitialValue" xml:space="preserve"><value>प्रारंभिक मान</value></data>
+  <data name="StructureEditor_VarsColDescription" xml:space="preserve"><value>विवरण</value></data>
+  <data name="StructureEditor_VarsAddButton" xml:space="preserve"><value>＋ चर जोड़ें</value></data>
+  <data name="StructureEditor_V2AssertionsHeader" xml:space="preserve"><value>अभिकथन</value></data>
+  <data name="StructureEditor_V2AssertionPlaceholder" xml:space="preserve"><value>var:name equals 0 or calc:expr</value></data>
+  <data name="StructureEditor_V2AssertionToolTip" xml:space="preserve"><value>बूलियन अभिव्यक्ति — Ctrl+Space से फंक्शन और चर देखें</value></data>
+  <data name="StructureEditor_V2ChecksumsHeader" xml:space="preserve"><value>चेकसम</value></data>
+  <data name="StructureEditor_V2VersioningHeader" xml:space="preserve"><value>संस्करण प्रबंधन (VersionDetection / VersionedBlocks)</value></data>
+  <data name="StructureEditor_V2ImportsHeader" xml:space="preserve"><value>आयात ($ref संयोजन)</value></data>
+  <data name="StructureEditor_V2ImportsDescription" xml:space="preserve"><value>ref = प्रारूप नाम (या structs/नाम), as = structRef ब्लॉक में उपयोग किया जाने वाला उपनाम।</value></data>
+  <data name="StructureEditor_V2ImportRefToolTip" xml:space="preserve"><value>प्रारूप संदर्भ जैसे structs/PE_OptionalHeader</value></data>
+  <data name="StructureEditor_V2ImportAliasToolTip" xml:space="preserve"><value>structRef में उपनाम जैसे PEOpt</value></data>
+  <data name="StructureEditor_V2AddImportButton" xml:space="preserve"><value>+ आयात जोड़ें</value></data>
+  <data name="StructureEditor_V2ForensicHeader" xml:space="preserve"><value>फोरेंसिक</value></data>
+  <data name="StructureEditor_V2NavBookmarksHeader" xml:space="preserve"><value>नेविगेशन बुकमार्क</value></data>
+  <data name="StructureEditor_V2BookmarkPlaceholder" xml:space="preserve"><value>चरनाम</value></data>
+  <data name="StructureEditor_V2BookmarkToolTip" xml:space="preserve"><value>बाइट ऑफसेट रखने वाला चर — Ctrl+Space से सुझाव देखें</value></data>
+  <data name="StructureEditor_V2AddBookmarkButton" xml:space="preserve"><value>＋ बुकमार्क जोड़ें</value></data>
+  <data name="StructureEditor_V2InspectorLayoutHeader" xml:space="preserve"><value>इंस्पेक्टर लेआउट</value></data>
+  <data name="StructureEditor_V2ExportTemplatesHeader" xml:space="preserve"><value>निर्यात टेम्पलेट</value></data>
+  <data name="StructureEditor_V2AddTemplateButton" xml:space="preserve"><value>＋ टेम्पलेट जोड़ें</value></data>
+  <data name="StructureEditor_V2AIHintsHeader" xml:space="preserve"><value>AI संकेत</value></data>
+  <data name="StructureEditor_TypeHintField" xml:space="preserve"><value>स्थिर या परिवर्तनशील ऑफसेट और लंबाई वाला बाइनरी फ़ील्ड।</value></data>
+  <data name="StructureEditor_TypeHintSignature" xml:space="preserve"><value>जादुई बाइट जो किसी विशिष्ट ऑफसेट पर प्रारूप की पहचान करते हैं।</value></data>
+  <data name="StructureEditor_TypeHintMetadata" xml:space="preserve"><value>परिवर्तनशील लंबाई या प्रतीकात्मक मान को नामित चर में पढ़ता है।</value></data>
+  <data name="StructureEditor_TypeHintConditional" xml:space="preserve"><value>फ़ील्ड मान या चर के आधार पर सशर्त रूप से ब्लॉक पार्स करता है।</value></data>
+  <data name="StructureEditor_TypeHintLoop" xml:space="preserve"><value>जब तक शर्त सत्य हो ब्लॉक बॉडी दोहराता है।</value></data>
+  <data name="StructureEditor_TypeHintAction" xml:space="preserve"><value>चर को संशोधित करता है (वृद्धि, कमी, चरसेट)।</value></data>
+  <data name="StructureEditor_TypeHintCompute" xml:space="preserve"><value>गणितीय अभिव्यक्ति का मूल्यांकन करता है और परिणाम संग्रहीत करता है।</value></data>
+  <data name="StructureEditor_TypeHintRepeating" xml:space="preserve"><value>संरचित प्रविष्टियों की निश्चित-गणना सरणी पार्स करता है।</value></data>
+  <data name="StructureEditor_TypeHintUnion" xml:space="preserve"><value>विभेदक चर के आधार पर वैरिएंट ब्लॉक सेट चुनता है।</value></data>
+  <data name="StructureEditor_TypeHintNested" xml:space="preserve"><value>संदर्भ द्वारा बाहरी संरचना परिभाषा एम्बेड करता है।</value></data>
+  <data name="StructureEditor_TypeHintPointer" xml:space="preserve"><value>इंगित ऑफसेट के लिए नेविगेशन एनोटेशन बनाता है।</value></data>
+  <data name="StructureEditor_ValidationErrorCount" xml:space="preserve"><value>{0} त्रुटि(यां)</value></data>
+  <data name="StructureEditor_ValidationWarningCount" xml:space="preserve"><value>{0} चेतावनी(यां)</value></data>
+  <data name="StructureEditor_RawJsonTitle" xml:space="preserve"><value>कच्चा JSON — {0}</value></data>
+  <data name="StructureEditor_RawJsonApply" xml:space="preserve"><value>लागू करें</value></data>
+  <data name="StructureEditor_RawJsonCancel" xml:space="preserve"><value>रद्द करें</value></data>
+  <data name="StructureEditor_FactoryDisplayName" xml:space="preserve"><value>संरचना संपादक</value></data>
+  <data name="StructureEditor_FactoryDescription" xml:space="preserve"><value>.whfmt संरचना परिभाषा फ़ाइलों के लिए दृश्य संपादक। DataGrid में ब्लॉक, प्रकार, ऑफसेट, लंबाई और रंग संपादित करें।</value></data>
+</root>

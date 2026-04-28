@@ -1,0 +1,668 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfHexEditor.Editor.CodeEditor
+    File        : CodeEditorResources.resx
+    Description : Localized UI strings for the CodeEditor module.
+                  Keys used across multiple modules belong in CommonResources.resx.
+                  Architecture: hybrid — common in Core.Localization, module-specific here.
+-->
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       CodeEditorSettings.xaml
+       ═══════════════════════════════════════════════════════════════ -->
+
+  <data name="CodeEditorSettings_ResetButtonContent" xml:space="preserve">
+    <value>Reset to Defaults</value>
+  </data>
+  <data name="CodeEditorSettings_ExportButtonContent" xml:space="preserve">
+    <value>Export Settings</value>
+  </data>
+  <data name="CodeEditorSettings_ImportButtonContent" xml:space="preserve">
+    <value>Import Settings</value>
+  </data>
+  <data name="CodeEditorSettings_ResetButtonToolTip" xml:space="preserve">
+    <value>Reset all settings to default values</value>
+  </data>
+  <data name="CodeEditorSettings_ExportButtonToolTip" xml:space="preserve">
+    <value>Export settings to JSON file</value>
+  </data>
+  <data name="CodeEditorSettings_ImportButtonToolTip" xml:space="preserve">
+    <value>Import settings from JSON file</value>
+  </data>
+  <data name="CodeEditorSettings_PreviewHeader" xml:space="preserve">
+    <value>Live Preview</value>
+  </data>
+  <data name="CodeEditorSettings_PreviewPlaceholder" xml:space="preserve">
+    <value>Preview will appear here when a CodeEditor is connected</value>
+  </data>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       CodeEditorOptions.xaml — Font section
+       ═══════════════════════════════════════════════════════════════ -->
+
+  <data name="CodeEditorOptions_FontSection" xml:space="preserve">
+    <value>Font</value>
+  </data>
+  <data name="CodeEditorOptions_FontFamilyLabel" xml:space="preserve">
+    <value>Font family:</value>
+  </data>
+  <data name="CodeEditorOptions_FontSizeLabel" xml:space="preserve">
+    <value>Size:</value>
+  </data>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       CodeEditorOptions.xaml — Indentation section
+       ═══════════════════════════════════════════════════════════════ -->
+
+  <data name="CodeEditorOptions_IndentationSection" xml:space="preserve">
+    <value>Indentation</value>
+  </data>
+  <data name="CodeEditorOptions_TabSizeLabel" xml:space="preserve">
+    <value>Tab size:</value>
+  </data>
+  <data name="CodeEditorOptions_ConvertTabsContent" xml:space="preserve">
+    <value>Convert tabs to spaces</value>
+  </data>
+  <data name="CodeEditorOptions_AutoIndentLabel" xml:space="preserve">
+    <value>Auto-indent:</value>
+  </data>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       CodeEditorOptions.xaml — Display section
+       ═══════════════════════════════════════════════════════════════ -->
+
+  <data name="CodeEditorOptions_DisplaySection" xml:space="preserve">
+    <value>Display</value>
+  </data>
+  <data name="CodeEditorOptions_ShowLineNumbersContent" xml:space="preserve">
+    <value>Show line numbers</value>
+  </data>
+  <data name="CodeEditorOptions_ShowWhitespaceLabel" xml:space="preserve">
+    <value>Show whitespace:</value>
+  </data>
+  <data name="CodeEditorOptions_CodeFoldingContent" xml:space="preserve">
+    <value>Enable code folding</value>
+  </data>
+  <data name="CodeEditorOptions_FoldToggleContent" xml:space="preserve">
+    <value>Toggle fold regions on double-click</value>
+  </data>
+  <data name="CodeEditorOptions_ScopeGuidesContent" xml:space="preserve">
+    <value>Show scope guides</value>
+  </data>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       CodeEditorOptions.xaml — Features section
+       ═══════════════════════════════════════════════════════════════ -->
+
+  <data name="CodeEditorOptions_FeaturesSection" xml:space="preserve">
+    <value>Features</value>
+  </data>
+  <data name="CodeEditorOptions_SmartCompleteContent" xml:space="preserve">
+    <value>Enable SmartComplete</value>
+  </data>
+  <data name="CodeEditorOptions_SnippetsContent" xml:space="preserve">
+    <value>Enable snippets</value>
+  </data>
+  <data name="CodeEditorOptions_MultiCaretContent" xml:space="preserve">
+    <value>Enable multi-caret editing (Alt+Click)</value>
+  </data>
+  <data name="CodeEditorOptions_FindAllRefsContent" xml:space="preserve">
+    <value>Enable Find All References (Shift+F12)</value>
+  </data>
+  <data name="CodeEditorOptions_FindAllRefsToolTip" xml:space="preserve">
+    <value>Requires an active Language Server (LSP) for the current file type</value>
+  </data>
+  <data name="CodeEditorOptions_CodeLensContent" xml:space="preserve">
+    <value>Show Code Lens (inline reference counts)</value>
+  </data>
+  <data name="CodeEditorOptions_CodeLensToolTip" xml:space="preserve">
+    <value>Shows reference count above each declaration. Click the hint to open the References popup.</value>
+  </data>
+  <data name="CodeEditorOptions_WordHighlightContent" xml:space="preserve">
+    <value>Highlight word under caret</value>
+  </data>
+  <data name="CodeEditorOptions_WordHighlightToolTip" xml:space="preserve">
+    <value>Highlights all occurrences of the word under the cursor and shows tick marks on the scroll bar</value>
+  </data>
+  <data name="CodeEditorOptions_BracketColorizeContent" xml:space="preserve">
+    <value>Bracket pair colorization</value>
+  </data>
+  <data name="CodeEditorOptions_BracketColorizeToolTip" xml:space="preserve">
+    <value>Colors brackets with CE_Bracket_1/2/3/4 based on nesting depth (requires bracketPairs in the language's whfmt)</value>
+  </data>
+  <data name="CodeEditorOptions_ColorSwatchContent" xml:space="preserve">
+    <value>Color swatch preview</value>
+  </data>
+  <data name="CodeEditorOptions_ColorSwatchToolTip" xml:space="preserve">
+    <value>Shows a 12×12 color swatch next to color literals (e.g. #FF5733) in CSS, XAML, C# files</value>
+  </data>
+  <data name="CodeEditorOptions_FormatOnSaveContent" xml:space="preserve">
+    <value>Format on Save (Ctrl+S)</value>
+  </data>
+  <data name="CodeEditorOptions_FormatOnSaveToolTip" xml:space="preserve">
+    <value>Automatically formats the document when saving. Uses LSP formatting if available, otherwise applies whfmt indentation rules.</value>
+  </data>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       CodeEditorOptions.xaml — Code Formatting section
+       ═══════════════════════════════════════════════════════════════ -->
+
+  <data name="CodeEditorOptions_CodeFormattingSection" xml:space="preserve">
+    <value>Code Formatting</value>
+  </data>
+  <data name="CodeEditorOptions_CodeFormattingInfo" xml:space="preserve">
+    <value>These settings override the language .whfmt defaults. Leave unchecked checkboxes at their default (indeterminate) state to inherit the language rules.</value>
+  </data>
+  <data name="CodeEditorOptions_TrimTrailingContent" xml:space="preserve">
+    <value>Trim trailing whitespace</value>
+  </data>
+  <data name="CodeEditorOptions_TrimTrailingToolTip" xml:space="preserve">
+    <value>Remove trailing spaces/tabs on each line. Indeterminate = use .whfmt language default.</value>
+  </data>
+  <data name="CodeEditorOptions_InsertFinalNewlineContent" xml:space="preserve">
+    <value>Insert final newline</value>
+  </data>
+  <data name="CodeEditorOptions_InsertFinalNewlineToolTip" xml:space="preserve">
+    <value>Ensure the file ends with exactly one newline. Indeterminate = use .whfmt language default.</value>
+  </data>
+  <data name="CodeEditorOptions_SpaceAfterKeywordsContent" xml:space="preserve">
+    <value>Space after keywords (if, for, while)</value>
+  </data>
+  <data name="CodeEditorOptions_SpaceAfterKeywordsToolTip" xml:space="preserve">
+    <value>Insert a space between control keywords and opening paren: if (...) vs if(...). Indeterminate = .whfmt default.</value>
+  </data>
+  <data name="CodeEditorOptions_SpaceAroundOpsContent" xml:space="preserve">
+    <value>Space around binary operators</value>
+  </data>
+  <data name="CodeEditorOptions_SpaceAroundOpsToolTip" xml:space="preserve">
+    <value>Insert spaces around +, -, *, /, ==, etc. Indeterminate = .whfmt default.</value>
+  </data>
+  <data name="CodeEditorOptions_SpaceAfterCommaContent" xml:space="preserve">
+    <value>Space after commas</value>
+  </data>
+  <data name="CodeEditorOptions_SpaceAfterCommaToolTip" xml:space="preserve">
+    <value>Insert a space after commas in argument/parameter lists. Indeterminate = .whfmt default.</value>
+  </data>
+  <data name="CodeEditorOptions_IndentCaseLabelsContent" xml:space="preserve">
+    <value>Indent case/when labels</value>
+  </data>
+  <data name="CodeEditorOptions_IndentCaseLabelsToolTip" xml:space="preserve">
+    <value>Add one indent level to case/when labels inside switch. Indeterminate = .whfmt default.</value>
+  </data>
+  <data name="CodeEditorOptions_OrganizeImportsContent" xml:space="preserve">
+    <value>Organize imports on format</value>
+  </data>
+  <data name="CodeEditorOptions_OrganizeImportsToolTip" xml:space="preserve">
+    <value>Sort using/import directives alphabetically when formatting. Indeterminate = .whfmt default.</value>
+  </data>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       CodeEditorOptions.xaml — Syntax Colors section
+       ═══════════════════════════════════════════════════════════════ -->
+
+  <data name="CodeEditorOptions_SyntaxColorsSection" xml:space="preserve">
+    <value>Syntax Colors</value>
+  </data>
+  <data name="CodeEditorOptions_ResetColorsButton" xml:space="preserve">
+    <value>Reset to theme</value>
+  </data>
+  <data name="CodeEditorOptions_ColorPickButton" xml:space="preserve">
+    <value>Pick</value>
+  </data>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       FormatScriptEditorControl.xaml — Toolbar
+       ═══════════════════════════════════════════════════════════════ -->
+
+  <data name="FormatScriptEditor_NewToolTip" xml:space="preserve">
+    <value>New Format Definition</value>
+  </data>
+  <data name="FormatScriptEditor_NewText" xml:space="preserve">
+    <value>New</value>
+  </data>
+  <data name="FormatScriptEditor_OpenToolTip" xml:space="preserve">
+    <value>Open Format Definition</value>
+  </data>
+  <data name="FormatScriptEditor_OpenText" xml:space="preserve">
+    <value>Open</value>
+  </data>
+  <data name="FormatScriptEditor_SaveToolTip" xml:space="preserve">
+    <value>Save Current File</value>
+  </data>
+  <data name="FormatScriptEditor_SaveText" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="FormatScriptEditor_UndoToolTip" xml:space="preserve">
+    <value>Undo (Ctrl+Z)</value>
+  </data>
+  <data name="FormatScriptEditor_UndoText" xml:space="preserve">
+    <value>Undo</value>
+  </data>
+  <data name="FormatScriptEditor_RedoToolTip" xml:space="preserve">
+    <value>Redo (Ctrl+Y)</value>
+  </data>
+  <data name="FormatScriptEditor_RedoText" xml:space="preserve">
+    <value>Redo</value>
+  </data>
+  <data name="FormatScriptEditor_FormatToolTip" xml:space="preserve">
+    <value>Format JSON (Ctrl+Shift+F)</value>
+  </data>
+  <data name="FormatScriptEditor_FormatText" xml:space="preserve">
+    <value>Format</value>
+  </data>
+  <data name="FormatScriptEditor_ValidateToolTip" xml:space="preserve">
+    <value>Validate Format Definition</value>
+  </data>
+  <data name="FormatScriptEditor_ValidateText" xml:space="preserve">
+    <value>Validate</value>
+  </data>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       FormatScriptEditorControl.xaml — Status bar / tabs
+       ═══════════════════════════════════════════════════════════════ -->
+
+  <data name="FormatScriptEditor_LineColStatus" xml:space="preserve">
+    <value>Ln 1, Col 1</value>
+  </data>
+  <data name="FormatScriptEditor_ErrorCountStatus" xml:space="preserve">
+    <value>0 Errors</value>
+  </data>
+  <data name="FormatScriptEditor_WarningCountStatus" xml:space="preserve">
+    <value>0 Warnings</value>
+  </data>
+  <data name="FormatScriptEditor_NoFileLoaded" xml:space="preserve">
+    <value>No file loaded</value>
+  </data>
+  <data name="FormatScriptEditor_FileTypeStatus" xml:space="preserve">
+    <value>JSON</value>
+  </data>
+  <data name="FormatScriptEditor_EmbeddedFormatsHeader" xml:space="preserve">
+    <value>Embedded Formats</value>
+  </data>
+  <data name="FormatScriptEditor_EditorTabHeader" xml:space="preserve">
+    <value>Editor</value>
+  </data>
+  <data name="FormatScriptEditor_PreviewTabHeader" xml:space="preserve">
+    <value>Preview</value>
+  </data>
+  <data name="FormatScriptEditor_PreviewPlaceholder" xml:space="preserve">
+    <value>Load a format definition to see preview...</value>
+  </data>
+  <data name="FormatScriptEditor_ValidationTabHeader" xml:space="preserve">
+    <value>Validation</value>
+  </data>
+  <data name="FormatScriptEditor_ValidationResultsHeader" xml:space="preserve">
+    <value>Validation Results</value>
+  </data>
+  <data name="FormatScriptEditor_TestTabHeader" xml:space="preserve">
+    <value>Test</value>
+  </data>
+  <data name="FormatScriptEditor_SelectTestFileButton" xml:space="preserve">
+    <value>Select Test File...</value>
+  </data>
+  <data name="FormatScriptEditor_RunTestButton" xml:space="preserve">
+    <value>Run Test</value>
+  </data>
+  <data name="FormatScriptEditor_TestInstructions" xml:space="preserve">
+    <value>Test your format definition against sample files here.\n\nSelect a file and click 'Run Test' to see parsing results.</value>
+  </data>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       CodeEditorSettings.xaml.cs — Dialog strings
+       ═══════════════════════════════════════════════════════════════ -->
+
+  <data name="CodeEditorSettings_NoEditorMessage" xml:space="preserve">
+    <value>No CodeEditor control is connected.</value>
+  </data>
+  <data name="CodeEditorSettings_NoEditorTitle" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="CodeEditorSettings_ResetConfirmMessage" xml:space="preserve">
+    <value>Are you sure you want to reset all settings to their default values?</value>
+  </data>
+  <data name="CodeEditorSettings_ResetConfirmTitle" xml:space="preserve">
+    <value>Confirm Reset</value>
+  </data>
+  <data name="CodeEditorSettings_ExportDialogTitle" xml:space="preserve">
+    <value>Export Settings</value>
+  </data>
+  <data name="CodeEditorSettings_ExportSuccessMessage" xml:space="preserve">
+    <value>Settings exported successfully to:\n{0}</value>
+  </data>
+  <data name="CodeEditorSettings_ExportSuccessTitle" xml:space="preserve">
+    <value>Export Successful</value>
+  </data>
+  <data name="CodeEditorSettings_ExportFailedMessage" xml:space="preserve">
+    <value>Failed to export settings:\n{0}</value>
+  </data>
+  <data name="CodeEditorSettings_ExportFailedTitle" xml:space="preserve">
+    <value>Export Failed</value>
+  </data>
+  <data name="CodeEditorSettings_ImportDialogTitle" xml:space="preserve">
+    <value>Import Settings</value>
+  </data>
+  <data name="CodeEditorSettings_ImportSuccessMessage" xml:space="preserve">
+    <value>Settings imported successfully from:\n{0}</value>
+  </data>
+  <data name="CodeEditorSettings_ImportSuccessTitle" xml:space="preserve">
+    <value>Import Successful</value>
+  </data>
+  <data name="CodeEditorSettings_ImportFailedMessage" xml:space="preserve">
+    <value>Failed to import settings:\n{0}</value>
+  </data>
+  <data name="CodeEditorSettings_ImportFailedTitle" xml:space="preserve">
+    <value>Import Failed</value>
+  </data>
+  <data name="CodeEditorSettings_ResetCompleteMessage" xml:space="preserve">
+    <value>All settings have been reset to their default values.</value>
+  </data>
+  <data name="CodeEditorSettings_ResetCompleteTitle" xml:space="preserve">
+    <value>Reset Complete</value>
+  </data>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       FormatScriptEditorControl.xaml.cs — Dialog strings
+       ═══════════════════════════════════════════════════════════════ -->
+
+  <data name="FormatScriptEditor_LoadFormatsError" xml:space="preserve">
+    <value>Failed to load embedded formats: {0}</value>
+  </data>
+  <data name="FormatScriptEditor_LoadFormatsErrorTitle" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="FormatScriptEditor_DefaultFileName" xml:space="preserve">
+    <value>Untitled.json</value>
+  </data>
+  <data name="FormatScriptEditor_OpenDialogTitle" xml:space="preserve">
+    <value>Open Format Definition</value>
+  </data>
+  <data name="FormatScriptEditor_SaveDialogTitle" xml:space="preserve">
+    <value>Save Format Definition</value>
+  </data>
+  <data name="FormatScriptEditor_FormatJsonError" xml:space="preserve">
+    <value>Failed to format JSON: {0}</value>
+  </data>
+  <data name="FormatScriptEditor_FormatJsonErrorTitle" xml:space="preserve">
+    <value>Format Error</value>
+  </data>
+  <data name="FormatScriptEditor_LoadFileError" xml:space="preserve">
+    <value>Failed to load file: {0}</value>
+  </data>
+  <data name="FormatScriptEditor_LoadFileErrorTitle" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="FormatScriptEditor_LoadEmbeddedError" xml:space="preserve">
+    <value>Failed to load embedded format: {0}</value>
+  </data>
+  <data name="FormatScriptEditor_LoadEmbeddedErrorTitle" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="FormatScriptEditor_SaveSuccessMessage" xml:space="preserve">
+    <value>File saved successfully!</value>
+  </data>
+  <data name="FormatScriptEditor_SaveSuccessTitle" xml:space="preserve">
+    <value>Success</value>
+  </data>
+  <data name="FormatScriptEditor_SaveFailedMessage" xml:space="preserve">
+    <value>Failed to save file: {0}</value>
+  </data>
+  <data name="FormatScriptEditor_SaveFailedTitle" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="FormatScriptEditor_SaveChangesMessage" xml:space="preserve">
+    <value>Do you want to save changes to the current file?</value>
+  </data>
+  <data name="FormatScriptEditor_SaveChangesTitle" xml:space="preserve">
+    <value>Save Changes</value>
+  </data>
+  <data name="FormatScriptEditor_StatusLineCol" xml:space="preserve">
+    <value>Ln {0}, Col {1}</value>
+  </data>
+  <data name="FormatScriptEditor_StatusErrors" xml:space="preserve">
+    <value>{0} Errors</value>
+  </data>
+  <data name="FormatScriptEditor_StatusWarnings" xml:space="preserve">
+    <value>{0} Warnings</value>
+  </data>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       CodeEditor.cs — Context menu strings
+       ═══════════════════════════════════════════════════════════════ -->
+
+  <data name="CodeEditor_ContextMenuSelectAll" xml:space="preserve">
+    <value>Select All</value>
+  </data>
+  <data name="CodeEditor_ContextMenuDelete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="CodeEditor_ContextMenuFind" xml:space="preserve">
+    <value>Find...</value>
+  </data>
+  <data name="CodeEditor_ContextMenuReplace" xml:space="preserve">
+    <value>Replace...</value>
+  </data>
+  <data name="CodeEditor_ContextMenuFindAllRefs" xml:space="preserve">
+    <value>Find All References</value>
+  </data>
+  <data name="CodeEditor_ContextMenuQuickFix" xml:space="preserve">
+    <value>Quick Fix…</value>
+  </data>
+  <data name="CodeEditor_ContextMenuRenameSymbol" xml:space="preserve">
+    <value>Rename Symbol</value>
+  </data>
+  <data name="CodeEditor_ContextMenuGoToDefinition" xml:space="preserve">
+    <value>Go to Definition</value>
+  </data>
+  <data name="CodeEditor_ContextMenuGoToImplementation" xml:space="preserve">
+    <value>Go to Implementation</value>
+  </data>
+  <data name="CodeEditor_ContextMenuPeekDefinition" xml:space="preserve">
+    <value>Peek Definition</value>
+  </data>
+  <data name="CodeEditor_ContextMenuShowCallHierarchy" xml:space="preserve">
+    <value>Show Call Hierarchy</value>
+  </data>
+  <data name="CodeEditor_ContextMenuShowTypeHierarchy" xml:space="preserve">
+    <value>Show Type Hierarchy</value>
+  </data>
+  <data name="CodeEditor_ContextMenuFormatting" xml:space="preserve">
+    <value>Formatting</value>
+  </data>
+  <data name="CodeEditor_ContextMenuFormatDocument" xml:space="preserve">
+    <value>Format Document</value>
+  </data>
+  <data name="CodeEditor_ContextMenuFormatSelection" xml:space="preserve">
+    <value>Format Selection</value>
+  </data>
+  <data name="CodeEditor_ContextMenuFormatJson" xml:space="preserve">
+    <value>Format JSON</value>
+  </data>
+  <data name="CodeEditor_ContextMenuValidateJson" xml:space="preserve">
+    <value>Validate JSON</value>
+  </data>
+  <data name="CodeEditor_ContextMenuFormattingOptions" xml:space="preserve">
+    <value>Options...</value>
+  </data>
+  <data name="CodeEditor_ContextMenuOutlining" xml:space="preserve">
+    <value>Outlining</value>
+  </data>
+  <data name="CodeEditor_ContextMenuToggleOutlining" xml:space="preserve">
+    <value>Toggle Outlining</value>
+  </data>
+  <data name="CodeEditor_ContextMenuToggleAllOutlining" xml:space="preserve">
+    <value>Toggle All Outlining</value>
+  </data>
+  <data name="CodeEditor_ContextMenuStopOutlining" xml:space="preserve">
+    <value>Stop Outlining</value>
+  </data>
+  <data name="CodeEditor_ContextMenuStopHidingCurrent" xml:space="preserve">
+    <value>Stop Hiding Current</value>
+  </data>
+  <data name="CodeEditor_ContextMenuCollapseToDefs" xml:space="preserve">
+    <value>Collapse to Definitions</value>
+  </data>
+  <data name="CodeEditor_ContextMenuWordWrap" xml:space="preserve">
+    <value>Word Wrap</value>
+  </data>
+  <data name="CodeEditor_ContextMenuColumnRulers" xml:space="preserve">
+    <value>Column Rulers</value>
+  </data>
+  <data name="CodeEditor_ContextMenuShowWhitespace" xml:space="preserve">
+    <value>Show Whitespace</value>
+  </data>
+  <data name="CodeEditor_ContextMenuWhitespaceNone" xml:space="preserve">
+    <value>None</value>
+  </data>
+  <data name="CodeEditor_ContextMenuWhitespaceSelection" xml:space="preserve">
+    <value>Selection Only</value>
+  </data>
+  <data name="CodeEditor_ContextMenuWhitespaceAlways" xml:space="preserve">
+    <value>Always</value>
+  </data>
+  <data name="CodeEditor_ContextMenuRefreshHighlights" xml:space="preserve">
+    <value>Refresh Highlights</value>
+  </data>
+  <data name="CodeEditor_ContextMenuReanalyzeFolding" xml:space="preserve">
+    <value>Re-analyze Folding</value>
+  </data>
+  <data name="CodeEditor_ContextMenuWordHighlight" xml:space="preserve">
+    <value>Word Highlight</value>
+  </data>
+  <data name="CodeEditor_FormatDocumentTransaction" xml:space="preserve">
+    <value>Format Document</value>
+  </data>
+  <data name="CodeEditor_FormatSelectionTransaction" xml:space="preserve">
+    <value>Format Selection</value>
+  </data>
+  <data name="CodeEditor_FormatJsonError" xml:space="preserve">
+    <value>Cannot format — invalid JSON:\n{0}</value>
+  </data>
+  <data name="CodeEditor_FormatJsonErrorTitle" xml:space="preserve">
+    <value>Format Error</value>
+  </data>
+  <data name="CodeEditor_ValidateJsonSuccess" xml:space="preserve">
+    <value>JSON is valid.</value>
+  </data>
+  <data name="CodeEditor_ValidateJsonTitle" xml:space="preserve">
+    <value>Validation</value>
+  </data>
+  <data name="CodeEditor_ValidateJsonError" xml:space="preserve">
+    <value>Invalid JSON: {0}</value>
+  </data>
+  <data name="CodeEditor_ValidateJsonErrorTitle" xml:space="preserve">
+    <value>Validation Error</value>
+  </data>
+  <data name="CodeEditor_GoToLineTitle" xml:space="preserve">
+    <value>Go to Line</value>
+  </data>
+  <data name="CodeEditor_GoToLineLabel" xml:space="preserve">
+    <value>Line number (1 - {0}):</value>
+  </data>
+  <data name="CodeEditor_GoToLineButton" xml:space="preserve">
+    <value>OK</value>
+  </data>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       Other .cs files
+       ═══════════════════════════════════════════════════════════════ -->
+
+  <data name="CodeEditor_BreakpointToggleToolTip" xml:space="preserve">
+    <value>Click to toggle breakpoint</value>
+  </data>
+  <data name="CodeEditor_BreakpointInvalidToolTip" xml:space="preserve">
+    <value>Cannot place breakpoint on this line</value>
+  </data>
+  <data name="CodeEditor_UrlTooltipEmail" xml:space="preserve">
+    <value>Ctrl+Click to send email</value>
+  </data>
+  <data name="CodeEditor_UrlTooltipLink" xml:space="preserve">
+    <value>Ctrl+Click to open</value>
+  </data>
+  <data name="CodeEditor_ReferencesCollapseAll" xml:space="preserve">
+    <value>Collapse all</value>
+  </data>
+  <data name="CodeEditor_ReferencesExpandAll" xml:space="preserve">
+    <value>Expand all</value>
+  </data>
+  <data name="CodeEditor_ReferencesTitle" xml:space="preserve">
+    <value>References — {0}</value>
+  </data>
+  <data name="CodeEditor_ReferencesCounter" xml:space="preserve">
+    <value>{0} reference(s)</value>
+  </data>
+  <data name="CodeEditor_ReferencesRefresh" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
+  <data name="CodeEditor_ReferencesPinTooltip" xml:space="preserve">
+    <value>Pin to Find References panel</value>
+  </data>
+  <data name="CodeEditor_BreakpointDisable" xml:space="preserve">
+    <value>Disable</value>
+  </data>
+  <data name="CodeEditor_BreakpointEnable" xml:space="preserve">
+    <value>Enable</value>
+  </data>
+
+</root>

@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="DocFindReplace_Title" xml:space="preserve"><value>Найти и заменить</value></data>
+  <data name="DocFindReplace_FindLabel" xml:space="preserve"><value>Найти:</value></data>
+  <data name="DocFindReplace_ReplaceLabel" xml:space="preserve"><value>Заменить:</value></data>
+  <data name="DocFindReplace_MatchCase" xml:space="preserve"><value>Учитывать регистр</value></data>
+  <data name="DocFindReplace_WholeWord" xml:space="preserve"><value>Слово целиком</value></data>
+  <data name="DocFindReplace_Regex" xml:space="preserve"><value>Regex</value></data>
+  <data name="DocFindReplace_FindAll" xml:space="preserve"><value>Найти все</value></data>
+  <data name="DocFindReplace_FindNext" xml:space="preserve"><value>Найти далее</value></data>
+  <data name="DocFindReplace_FindPrev" xml:space="preserve"><value>Найти назад</value></data>
+  <data name="DocFindReplace_Replace" xml:space="preserve"><value>Заменить</value></data>
+  <data name="DocFindReplace_ReplaceAll" xml:space="preserve"><value>Заменить все</value></data>
+  <data name="DocFindReplace_Close" xml:space="preserve"><value>Закрыть</value></data>
+  <data name="DocHexPane_HexLabel" xml:space="preserve"><value>Hex</value></data>
+  <data name="DocPageSettings_PageTab" xml:space="preserve"><value>Страница</value></data>
+  <data name="DocPageSettings_FormatLabel" xml:space="preserve"><value>Формат:</value></data>
+  <data name="DocPageSettings_A4Option" xml:space="preserve"><value>A4  (21 × 29.7 cm)</value></data>
+  <data name="DocPageSettings_A3Option" xml:space="preserve"><value>A3  (29.7 × 42 cm)</value></data>
+  <data name="DocPageSettings_A5Option" xml:space="preserve"><value>A5  (14.8 × 21 cm)</value></data>
+  <data name="DocPageSettings_LetterOption" xml:space="preserve"><value>Letter (8.5 × 11 in)</value></data>
+  <data name="DocPageSettings_LegalOption" xml:space="preserve"><value>Legal  (8.5 × 14 in)</value></data>
+  <data name="DocPageSettings_CustomOption" xml:space="preserve"><value>Произвольный</value></data>
+  <data name="DocPageSettings_OrientationLabel" xml:space="preserve"><value>Ориентация:</value></data>
+  <data name="DocPageSettings_Portrait" xml:space="preserve"><value>Книжная</value></data>
+  <data name="DocPageSettings_Landscape" xml:space="preserve"><value>Альбомная</value></data>
+  <data name="DocPageSettings_ColumnsTab" xml:space="preserve"><value>Колонки</value></data>
+  <data name="DocPageSettings_EqualWidths" xml:space="preserve"><value>Одинаковая ширина колонок</value></data>
+  <data name="DocPageSettings_ShowSeparator" xml:space="preserve"><value>Показывать разделитель между колонками</value></data>
+  <data name="DocPageSettings_HeaderFooterTab" xml:space="preserve"><value>Верх./Нижний колонтитул</value></data>
+  <data name="DocPageSettings_HeaderGroup" xml:space="preserve"><value>Верхний колонтитул</value></data>
+  <data name="DocPageSettings_EnableHeader" xml:space="preserve"><value>Включить верхний колонтитул</value></data>
+  <data name="DocPageSettings_DifferentFirstPage" xml:space="preserve"><value>Особое содержимое на первой странице</value></data>
+  <data name="DocPageSettings_SameHeaderLR" xml:space="preserve"><value>Одинаковый верхний колонтитул для левой/правой страниц</value></data>
+  <data name="DocPageSettings_FooterGroup" xml:space="preserve"><value>Нижний колонтитул</value></data>
+  <data name="DocPageSettings_EnableFooter" xml:space="preserve"><value>Включить нижний колонтитул</value></data>
+  <data name="DocPageSettings_BorderTab" xml:space="preserve"><value>Граница</value></data>
+  <data name="DocPageSettings_BorderNone" xml:space="preserve"><value>Нет</value></data>
+  <data name="DocPageSettings_BorderBox" xml:space="preserve"><value>Рамка</value></data>
+  <data name="DocPageSettings_BorderShadow" xml:space="preserve"><value>Тень</value></data>
+  <data name="DocPageSettings_CancelButton" xml:space="preserve"><value>Отмена</value></data>
+  <data name="DocPageSettings_ApplyButton" xml:space="preserve"><value>Применить</value></data>
+  <data name="DocPageSettings_InsideMargin" xml:space="preserve"><value>Внутри:</value></data>
+  <data name="DocPageSettings_OutsideMargin" xml:space="preserve"><value>Снаружи:</value></data>
+  <data name="DocPageSettings_LeftMargin" xml:space="preserve"><value>Слева:</value></data>
+  <data name="DocPageSettings_RightMargin" xml:space="preserve"><value>Справа:</value></data>
+  <data name="DocEditorHost_TextViewToolTip" xml:space="preserve"><value>Текстовый вид</value></data>
+  <data name="DocEditorHost_SplitViewToolTip" xml:space="preserve"><value>Разделённый вид (текст + Hex)</value></data>
+  <data name="DocEditorHost_HexViewToolTip" xml:space="preserve"><value>Hex-вид</value></data>
+  <data name="DocEditorHost_StructureViewToolTip" xml:space="preserve"><value>Вид дерева структуры</value></data>
+  <data name="DocEditorHost_FullViewToolTip" xml:space="preserve"><value>Полный вид (текст + структура + Hex)</value></data>
+  <data name="DocEditorHost_FocusModeToolTip" xml:space="preserve"><value>Режим фокуса — дзен-письмо (Ctrl+Shift+F)</value></data>
+  <data name="DocEditorHost_TextModeLabel" xml:space="preserve"><value>Текст</value></data>
+  <data name="DocEditorHost_SplitModeLabel" xml:space="preserve"><value>Разделённый</value></data>
+  <data name="DocEditorHost_HexModeLabel" xml:space="preserve"><value>Hex</value></data>
+  <data name="DocEditorHost_StructureModeLabel" xml:space="preserve"><value>Структура</value></data>
+  <data name="DocEditorHost_FullModeLabel" xml:space="preserve"><value>Полный</value></data>
+  <data name="DocEditorHost_FocusModeLabel" xml:space="preserve"><value>Фокус</value></data>
+  <data name="DocEditorHost_PageViewToolTip" xml:space="preserve"><value>Постраничный вид — карточки A4/Letter</value></data>
+  <data name="DocEditorHost_DraftViewToolTip" xml:space="preserve"><value>Черновой вид — непрерывная прокрутка, компактные поля</value></data>
+  <data name="DocEditorHost_OutlineViewToolTip" xml:space="preserve"><value>Структурный вид — дерево по центру</value></data>
+  <data name="DocEditorHost_ForensicModeToolTip" xml:space="preserve"><value>Режим криминалистического анализа</value></data>
+  <data name="DocEditorHost_ForensicModeLabel" xml:space="preserve"><value>Криминалистика</value></data>
+  <data name="DocEditorHost_BoldToolTip" xml:space="preserve"><value>Жирный (Ctrl+B)</value></data>
+  <data name="DocEditorHost_ItalicToolTip" xml:space="preserve"><value>Курсив (Ctrl+I)</value></data>
+  <data name="DocEditorHost_UnderlineToolTip" xml:space="preserve"><value>Подчёркнутый (Ctrl+U)</value></data>
+  <data name="DocEditorHost_StrikethroughToolTip" xml:space="preserve"><value>Зачёркнутый</value></data>
+  <data name="DocEditorHost_AlignLeftToolTip" xml:space="preserve"><value>По левому краю</value></data>
+  <data name="DocEditorHost_AlignCenterToolTip" xml:space="preserve"><value>По центру</value></data>
+  <data name="DocEditorHost_AlignRightToolTip" xml:space="preserve"><value>По правому краю</value></data>
+  <data name="DocEditorHost_StyleDropdownToolTip" xml:space="preserve"><value>Стиль абзаца</value></data>
+  <data name="DocEditorHost_StyleNormal" xml:space="preserve"><value>Обычный</value></data>
+  <data name="DocEditorHost_StyleH1" xml:space="preserve"><value>H1</value></data>
+  <data name="DocEditorHost_StyleH2" xml:space="preserve"><value>H2</value></data>
+  <data name="DocEditorHost_StyleH3" xml:space="preserve"><value>H3</value></data>
+  <data name="DocEditorHost_StyleH4" xml:space="preserve"><value>H4</value></data>
+  <data name="DocEditorHost_StyleH5" xml:space="preserve"><value>H5</value></data>
+  <data name="DocEditorHost_StyleH6" xml:space="preserve"><value>H6</value></data>
+  <data name="DocEditorHost_StyleQuote" xml:space="preserve"><value>Цитата</value></data>
+  <data name="DocEditorHost_StyleCode" xml:space="preserve"><value>Code</value></data>
+  <data name="DocEditorHost_StylesPanelToolTip" xml:space="preserve"><value>Стили абзаца (Ctrl+Alt+S)</value></data>
+  <data name="DocEditorHost_PageSetupToolTip" xml:space="preserve"><value>Параметры страницы (формат бумаги, поля, колонки…)</value></data>
+  <data name="DocEditorHost_ZoomOutToolTip" xml:space="preserve"><value>Уменьшить</value></data>
+  <data name="DocEditorHost_ZoomDefault" xml:space="preserve"><value>100%</value></data>
+  <data name="DocEditorHost_ZoomInToolTip" xml:space="preserve"><value>Увеличить</value></data>
+  <data name="DocEditorHost_ReadOnlyToolTip" xml:space="preserve"><value>Только чтение</value></data>
+  <data name="DocEditorHost_MetadataToolTip" xml:space="preserve"><value>Метаданные документа</value></data>
+  <data name="DocEditorHost_ExportToolTip" xml:space="preserve"><value>Экспорт документа</value></data>
+  <data name="DocEditorHost_SaveToolTip" xml:space="preserve"><value>Сохранить</value></data>
+  <data name="DocEditorHost_MetaTitleLabel" xml:space="preserve"><value>Заголовок</value></data>
+  <data name="DocEditorHost_MetaAuthorLabel" xml:space="preserve"><value>Автор</value></data>
+  <data name="DocEditorHost_MetaFormatLabel" xml:space="preserve"><value>Формат</value></data>
+  <data name="DocEditorHost_MetaMimeLabel" xml:space="preserve"><value>MIME</value></data>
+  <data name="DocEditorHost_MetaCreatedLabel" xml:space="preserve"><value>Создан</value></data>
+  <data name="DocEditorHost_MetaModifiedLabel" xml:space="preserve"><value>Изменён</value></data>
+  <data name="DocEditorHost_MetaMacrosLabel" xml:space="preserve"><value>Макросы</value></data>
+  <data name="DocPopToolbar_BoldToolTip" xml:space="preserve"><value>Жирный (Ctrl+B)</value></data>
+  <data name="DocPopToolbar_ItalicToolTip" xml:space="preserve"><value>Курсив (Ctrl+I)</value></data>
+  <data name="DocPopToolbar_UnderlineToolTip" xml:space="preserve"><value>Подчёркнутый (Ctrl+U)</value></data>
+  <data name="DocPopToolbar_CopyTextToolTip" xml:space="preserve"><value>Копировать выделенный текст</value></data>
+  <data name="DocPopToolbar_CopyHexToolTip" xml:space="preserve"><value>Копировать как Hex-байты</value></data>
+  <data name="DocPopToolbar_InspectToolTip" xml:space="preserve"><value>Проверить блок в панели Структура</value></data>
+  <data name="DocPopToolbar_JumpHexToolTip" xml:space="preserve"><value>Перейти к смещению в панели Hex</value></data>
+  <data name="DocStatusBar_PageCountToolTip" xml:space="preserve"><value>Количество страниц</value></data>
+  <data name="DocStatusBar_WordCountToolTip" xml:space="preserve"><value>Количество слов</value></data>
+  <data name="DocStatusBar_ZoomToolTip" xml:space="preserve"><value>Уровень масштаба</value></data>
+  <data name="DocStatusBar_ForensicBadgeToolTip" xml:space="preserve"><value>Нажмите, чтобы открыть панель криминалистики</value></data>
+  <data name="DocStructure_Header" xml:space="preserve"><value>Структура</value></data>
+  <data name="DocStructure_CollapseAllToolTip" xml:space="preserve"><value>Свернуть все</value></data>
+  <data name="DocStructure_ExpandAllToolTip" xml:space="preserve"><value>Развернуть все</value></data>
+  <data name="DocStructure_FilterPlaceholder" xml:space="preserve"><value>Фильтр блоков…</value></data>
+  <data name="DocStructure_ClearFilterToolTip" xml:space="preserve"><value>Очистить фильтр</value></data>
+  <data name="DocStructure_NavigateMenuHeader" xml:space="preserve"><value>Перейти к тексту</value></data>
+  <data name="DocStructure_JumpHexMenuHeader" xml:space="preserve"><value>Перейти к Hex-смещению</value></data>
+  <data name="DocStructure_CopyTextMenuHeader" xml:space="preserve"><value>Копировать текст блока</value></data>
+  <data name="DocStructure_CopyOffsetMenuHeader" xml:space="preserve"><value>Копировать смещение</value></data>
+  <data name="DocEditorHost_DocumentTitle" xml:space="preserve"><value>Документ</value></data>
+  <data name="DocEditorHost_SavedStatus" xml:space="preserve"><value>Сохранено — {0}</value></data>
+  <data name="DocEditorHost_SaveFailedStatus" xml:space="preserve"><value>Ошибка сохранения: {0}</value></data>
+  <data name="DocEditorHost_NoSaverStatus" xml:space="preserve"><value>Нет зарегистрированного обработчика для этого типа файла.</value></data>
+  <data name="DocEditorHost_LoadingMessage" xml:space="preserve"><value>Загрузка документа…</value></data>
+  <data name="DocEditorHost_WaitingForIDE" xml:space="preserve"><value>Ожидание инициализации IDE…</value></data>
+  <data name="DocEditorHost_LoadErrorMessage" xml:space="preserve"><value>Не удалось открыть документ: {0}</value></data>
+  <data name="DocEditorHost_ExportDialogTitle" xml:space="preserve"><value>Экспорт документа</value></data>
+  <data name="DocEditorHost_ExportFailedStatus" xml:space="preserve"><value>Ошибка экспорта: {0}</value></data>
+  <data name="DocEditorHost_ExportedStatus" xml:space="preserve"><value>Экспортировано — {0}</value></data>
+  <data name="DocEditorHost_NoSaverForExport" xml:space="preserve"><value>Нет зарегистрированного обработчика для '{0}'.</value></data>
+  <data name="DocEditorHost_MetaEmptyValue" xml:space="preserve"><value>—</value></data>
+  <data name="DocEditorHost_MetaYesValue" xml:space="preserve"><value>Да</value></data>
+  <data name="DocEditorHost_MetaNoValue" xml:space="preserve"><value>Нет</value></data>
+  <data name="DocEditorHost_ViewModeText" xml:space="preserve"><value>Текст</value></data>
+  <data name="DocEditorHost_ViewModeSplit" xml:space="preserve"><value>Разделённый</value></data>
+  <data name="DocEditorHost_ViewModeHex" xml:space="preserve"><value>Hex</value></data>
+  <data name="DocEditorHost_ViewModeStructure" xml:space="preserve"><value>Структура</value></data>
+  <data name="DocEditorHost_ViewModeFull" xml:space="preserve"><value>Полный</value></data>
+  <data name="DocEditorHost_ViewModeFocus" xml:space="preserve"><value>Фокус</value></data>
+  <data name="DocEditorHost_ReadOnlySuffix" xml:space="preserve"><value> | Только чтение</value></data>
+  <data name="DocStatusBar_DefaultPage" xml:space="preserve"><value>Страница 1</value></data>
+  <data name="DocStatusBar_DefaultWordCount" xml:space="preserve"><value>0 слов</value></data>
+  <data name="DocStatusBar_DefaultZoom" xml:space="preserve"><value>100%</value></data>
+  <data name="DocStatusBar_DefaultViewMode" xml:space="preserve"><value>Разделённый</value></data>
+  <data name="DocStatusBar_FormatPattern" xml:space="preserve"><value>Формат: {0} ({1})</value></data>
+  <data name="DocStatusBar_WordCountPattern" xml:space="preserve"><value>{0:N0} слов</value></data>
+  <data name="DocStatusBar_PagePattern" xml:space="preserve"><value>Страница 1 / {0}</value></data>
+  <data name="DocStatusBar_ZoomPattern" xml:space="preserve"><value>{0:0}%</value></data>
+  <data name="DocHexPane_OffsetPattern" xml:space="preserve"><value>Hex  |  0x{0:X8}</value></data>
+  <data name="DocStyles_Normal" xml:space="preserve"><value>Обычный</value></data>
+  <data name="DocStyles_Heading1" xml:space="preserve"><value>Заголовок 1</value></data>
+  <data name="DocStyles_Heading2" xml:space="preserve"><value>Заголовок 2</value></data>
+  <data name="DocStyles_Heading3" xml:space="preserve"><value>Заголовок 3</value></data>
+  <data name="DocStyles_Heading4" xml:space="preserve"><value>Заголовок 4</value></data>
+  <data name="DocStyles_Heading5" xml:space="preserve"><value>Заголовок 5</value></data>
+  <data name="DocStyles_Heading6" xml:space="preserve"><value>Заголовок 6</value></data>
+  <data name="DocStyles_Quote" xml:space="preserve"><value>Цитата</value></data>
+  <data name="DocStyles_Code" xml:space="preserve"><value>Code</value></data>
+  <data name="DocStyles_Caption" xml:space="preserve"><value>Подпись</value></data>
+  <data name="DocStyles_ListParagraph" xml:space="preserve"><value>Абзац списка</value></data>
+  <data name="DocStyles_IntenseQuote" xml:space="preserve"><value>Выразительная цитата</value></data>
+</root>

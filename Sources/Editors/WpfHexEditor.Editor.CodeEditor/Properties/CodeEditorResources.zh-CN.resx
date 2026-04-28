@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfHexEditor.Editor.CodeEditor
+    File        : CodeEditorResources.zh-CN.resx
+    Description : zh-CN translations for CodeEditor UI strings.
+-->
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="CodeEditorSettings_ResetButtonContent" xml:space="preserve">
+    <value>恢复默认设置</value>
+  </data>
+  <data name="CodeEditorSettings_ExportButtonContent" xml:space="preserve">
+    <value>导出设置</value>
+  </data>
+  <data name="CodeEditorSettings_ImportButtonContent" xml:space="preserve">
+    <value>导入设置</value>
+  </data>
+  <data name="CodeEditorSettings_ResetButtonToolTip" xml:space="preserve">
+    <value>将所有设置重置为默认值</value>
+  </data>
+  <data name="CodeEditorSettings_ExportButtonToolTip" xml:space="preserve">
+    <value>将设置导出到JSON文件</value>
+  </data>
+  <data name="CodeEditorSettings_ImportButtonToolTip" xml:space="preserve">
+    <value>从JSON文件导入设置</value>
+  </data>
+  <data name="CodeEditorSettings_PreviewHeader" xml:space="preserve">
+    <value>实时预览</value>
+  </data>
+  <data name="CodeEditorSettings_PreviewPlaceholder" xml:space="preserve">
+    <value>连接CodeEditor后，预览将在此处显示</value>
+  </data>
+  <data name="CodeEditorOptions_FontSection" xml:space="preserve">
+    <value>字体</value>
+  </data>
+  <data name="CodeEditorOptions_FontFamilyLabel" xml:space="preserve">
+    <value>字体系列：</value>
+  </data>
+  <data name="CodeEditorOptions_FontSizeLabel" xml:space="preserve">
+    <value>大小：</value>
+  </data>
+  <data name="CodeEditorOptions_IndentationSection" xml:space="preserve">
+    <value>缩进</value>
+  </data>
+  <data name="CodeEditorOptions_TabSizeLabel" xml:space="preserve">
+    <value>制表符大小：</value>
+  </data>
+  <data name="CodeEditorOptions_ConvertTabsContent" xml:space="preserve">
+    <value>将制表符转换为空格</value>
+  </data>
+  <data name="CodeEditorOptions_AutoIndentLabel" xml:space="preserve">
+    <value>自动缩进：</value>
+  </data>
+  <data name="CodeEditorOptions_DisplaySection" xml:space="preserve">
+    <value>显示</value>
+  </data>
+  <data name="CodeEditorOptions_ShowLineNumbersContent" xml:space="preserve">
+    <value>显示行号</value>
+  </data>
+  <data name="CodeEditorOptions_ShowWhitespaceLabel" xml:space="preserve">
+    <value>显示空白：</value>
+  </data>
+  <data name="CodeEditorOptions_CodeFoldingContent" xml:space="preserve">
+    <value>启用代码折叠</value>
+  </data>
+  <data name="CodeEditorOptions_FoldToggleContent" xml:space="preserve">
+    <value>双击切换折叠区域</value>
+  </data>
+  <data name="CodeEditorOptions_ScopeGuidesContent" xml:space="preserve">
+    <value>显示范围参考线</value>
+  </data>
+  <data name="CodeEditorOptions_FeaturesSection" xml:space="preserve">
+    <value>功能</value>
+  </data>
+  <data name="CodeEditorOptions_SmartCompleteContent" xml:space="preserve">
+    <value>启用SmartComplete</value>
+  </data>
+  <data name="CodeEditorOptions_SnippetsContent" xml:space="preserve">
+    <value>启用代码片段</value>
+  </data>
+  <data name="CodeEditorOptions_MultiCaretContent" xml:space="preserve">
+    <value>启用多光标编辑 (Alt+Click)</value>
+  </data>
+  <data name="CodeEditorOptions_FindAllRefsContent" xml:space="preserve">
+    <value>启用查找所有引用 (Shift+F12)</value>
+  </data>
+  <data name="CodeEditorOptions_FindAllRefsToolTip" xml:space="preserve">
+    <value>需要当前文件类型的活动语言服务器 (LSP)</value>
+  </data>
+  <data name="CodeEditorOptions_CodeLensContent" xml:space="preserve">
+    <value>显示Code Lens（内联引用计数）</value>
+  </data>
+  <data name="CodeEditorOptions_WordHighlightContent" xml:space="preserve">
+    <value>高亮显示光标下的单词</value>
+  </data>
+  <data name="CodeEditorOptions_BracketColorizeContent" xml:space="preserve">
+    <value>括号对着色</value>
+  </data>
+  <data name="CodeEditorOptions_ColorSwatchContent" xml:space="preserve">
+    <value>颜色样本预览</value>
+  </data>
+  <data name="CodeEditorOptions_FormatOnSaveContent" xml:space="preserve">
+    <value>保存时格式化 (Ctrl+S)</value>
+  </data>
+  <data name="CodeEditorOptions_CodeFormattingSection" xml:space="preserve">
+    <value>代码格式化</value>
+  </data>
+  <data name="CodeEditorOptions_TrimTrailingContent" xml:space="preserve">
+    <value>删除行尾空白</value>
+  </data>
+  <data name="CodeEditorOptions_InsertFinalNewlineContent" xml:space="preserve">
+    <value>插入最终换行符</value>
+  </data>
+  <data name="CodeEditorOptions_SpaceAfterKeywordsContent" xml:space="preserve">
+    <value>关键字后添加空格 (if, for, while)</value>
+  </data>
+  <data name="CodeEditorOptions_SpaceAroundOpsContent" xml:space="preserve">
+    <value>二元运算符周围添加空格</value>
+  </data>
+  <data name="CodeEditorOptions_SpaceAfterCommaContent" xml:space="preserve">
+    <value>逗号后添加空格</value>
+  </data>
+  <data name="CodeEditorOptions_IndentCaseLabelsContent" xml:space="preserve">
+    <value>缩进 case/when 标签</value>
+  </data>
+  <data name="CodeEditorOptions_OrganizeImportsContent" xml:space="preserve">
+    <value>格式化时整理导入</value>
+  </data>
+  <data name="CodeEditorOptions_SyntaxColorsSection" xml:space="preserve">
+    <value>语法颜色</value>
+  </data>
+  <data name="CodeEditorOptions_ResetColorsButton" xml:space="preserve">
+    <value>重置为主题</value>
+  </data>
+  <data name="CodeEditorOptions_ColorPickButton" xml:space="preserve">
+    <value>选择</value>
+  </data>
+  <data name="FormatScriptEditor_NewToolTip" xml:space="preserve">
+    <value>新建格式定义</value>
+  </data>
+  <data name="FormatScriptEditor_OpenToolTip" xml:space="preserve">
+    <value>打开格式定义</value>
+  </data>
+  <data name="FormatScriptEditor_SaveToolTip" xml:space="preserve">
+    <value>保存当前文件</value>
+  </data>
+  <data name="FormatScriptEditor_UndoToolTip" xml:space="preserve">
+    <value>撤消 (Ctrl+Z)</value>
+  </data>
+  <data name="FormatScriptEditor_RedoToolTip" xml:space="preserve">
+    <value>重做 (Ctrl+Y)</value>
+  </data>
+  <data name="FormatScriptEditor_FormatToolTip" xml:space="preserve">
+    <value>格式化JSON (Ctrl+Shift+F)</value>
+  </data>
+  <data name="FormatScriptEditor_ValidateToolTip" xml:space="preserve">
+    <value>验证格式定义</value>
+  </data>
+  <data name="FormatScriptEditor_NoFileLoaded" xml:space="preserve">
+    <value>未加载文件</value>
+  </data>
+  <data name="FormatScriptEditor_EmbeddedFormatsHeader" xml:space="preserve">
+    <value>嵌入格式</value>
+  </data>
+  <data name="FormatScriptEditor_PreviewPlaceholder" xml:space="preserve">
+    <value>加载格式定义以查看预览...</value>
+  </data>
+  <data name="FormatScriptEditor_ValidationTabHeader" xml:space="preserve">
+    <value>验证</value>
+  </data>
+  <data name="FormatScriptEditor_ValidationResultsHeader" xml:space="preserve">
+    <value>验证结果</value>
+  </data>
+  <data name="FormatScriptEditor_SelectTestFileButton" xml:space="preserve">
+    <value>选择测试文件...</value>
+  </data>
+  <data name="FormatScriptEditor_RunTestButton" xml:space="preserve">
+    <value>运行测试</value>
+  </data>
+  <data name="CodeEditorSettings_NoEditorMessage" xml:space="preserve">
+    <value>未连接任何CodeEditor控件。</value>
+  </data>
+  <data name="CodeEditorSettings_NoEditorTitle" xml:space="preserve">
+    <value>错误</value>
+  </data>
+  <data name="CodeEditorSettings_ResetConfirmMessage" xml:space="preserve">
+    <value>确定要将所有设置重置为默认值吗？</value>
+  </data>
+  <data name="CodeEditorSettings_ResetConfirmTitle" xml:space="preserve">
+    <value>确认重置</value>
+  </data>
+  <data name="CodeEditorSettings_ResetCompleteMessage" xml:space="preserve">
+    <value>所有设置已重置为默认值。</value>
+  </data>
+  <data name="CodeEditorSettings_ResetCompleteTitle" xml:space="preserve">
+    <value>重置完成</value>
+  </data>
+  <data name="FormatScriptEditor_SaveSuccessMessage" xml:space="preserve">
+    <value>文件保存成功！</value>
+  </data>
+  <data name="FormatScriptEditor_SaveSuccessTitle" xml:space="preserve">
+    <value>成功</value>
+  </data>
+  <data name="FormatScriptEditor_SaveChangesMessage" xml:space="preserve">
+    <value>是否要保存对当前文件的更改？</value>
+  </data>
+  <data name="FormatScriptEditor_SaveChangesTitle" xml:space="preserve">
+    <value>保存更改</value>
+  </data>
+  <data name="FormatScriptEditor_StatusErrors" xml:space="preserve">
+    <value>{0} 个错误</value>
+  </data>
+  <data name="FormatScriptEditor_StatusWarnings" xml:space="preserve">
+    <value>{0} 个警告</value>
+  </data>
+  <data name="CodeEditor_ContextMenuSelectAll" xml:space="preserve">
+    <value>全选</value>
+  </data>
+  <data name="CodeEditor_ContextMenuDelete" xml:space="preserve">
+    <value>删除</value>
+  </data>
+  <data name="CodeEditor_ContextMenuFind" xml:space="preserve">
+    <value>查找...</value>
+  </data>
+  <data name="CodeEditor_ContextMenuReplace" xml:space="preserve">
+    <value>替换...</value>
+  </data>
+  <data name="CodeEditor_ContextMenuFindAllRefs" xml:space="preserve">
+    <value>查找所有引用</value>
+  </data>
+  <data name="CodeEditor_ContextMenuRenameSymbol" xml:space="preserve">
+    <value>重命名符号</value>
+  </data>
+  <data name="CodeEditor_ContextMenuGoToDefinition" xml:space="preserve">
+    <value>转到定义</value>
+  </data>
+  <data name="CodeEditor_ContextMenuGoToImplementation" xml:space="preserve">
+    <value>转到实现</value>
+  </data>
+  <data name="CodeEditor_ContextMenuFormatDocument" xml:space="preserve">
+    <value>格式化文档</value>
+  </data>
+  <data name="CodeEditor_ContextMenuFormatSelection" xml:space="preserve">
+    <value>格式化选定内容</value>
+  </data>
+  <data name="CodeEditor_ContextMenuWordWrap" xml:space="preserve">
+    <value>自动换行</value>
+  </data>
+  <data name="CodeEditor_ContextMenuWhitespaceNone" xml:space="preserve">
+    <value>无</value>
+  </data>
+  <data name="CodeEditor_ContextMenuWhitespaceSelection" xml:space="preserve">
+    <value>仅选定内容</value>
+  </data>
+  <data name="CodeEditor_ContextMenuWhitespaceAlways" xml:space="preserve">
+    <value>始终</value>
+  </data>
+  <data name="CodeEditor_GoToLineTitle" xml:space="preserve">
+    <value>转到行</value>
+  </data>
+  <data name="CodeEditor_GoToLineLabel" xml:space="preserve">
+    <value>行号 (1 - {0})：</value>
+  </data>
+  <data name="CodeEditor_GoToLineButton" xml:space="preserve">
+    <value>确定</value>
+  </data>
+  <data name="CodeEditor_ReferencesCollapseAll" xml:space="preserve">
+    <value>全部折叠</value>
+  </data>
+  <data name="CodeEditor_ReferencesExpandAll" xml:space="preserve">
+    <value>全部展开</value>
+  </data>
+  <data name="CodeEditor_ReferencesTitle" xml:space="preserve">
+    <value>引用 — {0}</value>
+  </data>
+  <data name="CodeEditor_ReferencesCounter" xml:space="preserve">
+    <value>{0} 个引用</value>
+  </data>
+  <data name="CodeEditor_ReferencesRefresh" xml:space="preserve">
+    <value>刷新</value>
+  </data>
+  <data name="CodeEditor_BreakpointDisable" xml:space="preserve">
+    <value>禁用</value>
+  </data>
+  <data name="CodeEditor_BreakpointEnable" xml:space="preserve">
+    <value>启用</value>
+  </data>
+
+</root>

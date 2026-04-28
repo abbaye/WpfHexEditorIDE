@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+
+  <data name="App_MinimizeToolTip" xml:space="preserve"><value>최소화</value></data>
+  <data name="App_MaximizeToolTip" xml:space="preserve"><value>최대화</value></data>
+  <data name="App_CloseToolTip" xml:space="preserve"><value>닫기</value></data>
+  <data name="App_NotificationsToolTip" xml:space="preserve"><value>알림</value></data>
+  <data name="App_CustomizeLayoutToolTip" xml:space="preserve"><value>레이아웃 사용자 지정 (Ctrl+Shift+L)</value></data>
+  <data name="App_CommandPaletteToolTip" xml:space="preserve"><value>명령 팔레트 (Ctrl+Shift+P)</value></data>
+  <data name="App_WelcomePageToolTip" xml:space="preserve"><value>시작 페이지</value></data>
+
+  <data name="App_Menu_File" xml:space="preserve"><value>파일</value></data>
+  <data name="App_Menu_New" xml:space="preserve"><value>새로 만들기</value></data>
+  <data name="App_Menu_NewSolution" xml:space="preserve"><value>솔루션...</value></data>
+  <data name="App_Menu_NewProject" xml:space="preserve"><value>프로젝트...</value></data>
+  <data name="App_Menu_NewFile" xml:space="preserve"><value>파일...</value></data>
+  <data name="App_Menu_Open" xml:space="preserve"><value>열기</value></data>
+  <data name="App_Menu_OpenSolutionProject" xml:space="preserve"><value>솔루션/프로젝트...</value></data>
+  <data name="App_Menu_OpenFolder" xml:space="preserve"><value>폴더...</value></data>
+  <data name="App_Menu_OpenFile" xml:space="preserve"><value>파일...</value></data>
+  <data name="App_Menu_Close" xml:space="preserve"><value>닫기</value></data>
+  <data name="App_Menu_CloseAllDocuments" xml:space="preserve"><value>모든 문서 닫기</value></data>
+  <data name="App_Menu_CloseSolution" xml:space="preserve"><value>솔루션 닫기</value></data>
+  <data name="App_Menu_Save" xml:space="preserve"><value>저장</value></data>
+  <data name="App_Menu_SaveAll" xml:space="preserve"><value>모두 저장</value></data>
+  <data name="App_Menu_WriteToDisk" xml:space="preserve"><value>디스크에 쓰기</value></data>
+  <data name="App_Menu_Workspace" xml:space="preserve"><value>작업 영역</value></data>
+  <data name="App_Menu_NewWorkspace" xml:space="preserve"><value>새 작업 영역…</value></data>
+  <data name="App_Menu_OpenWorkspace" xml:space="preserve"><value>작업 영역 열기…</value></data>
+  <data name="App_Menu_SaveWorkspace" xml:space="preserve"><value>작업 영역 저장</value></data>
+  <data name="App_Menu_SaveWorkspaceAs" xml:space="preserve"><value>작업 영역을 다른 이름으로 저장…</value></data>
+  <data name="App_Menu_CloseWorkspace" xml:space="preserve"><value>작업 영역 닫기</value></data>
+  <data name="App_Menu_RecentSolutions" xml:space="preserve"><value>최근 솔루션</value></data>
+  <data name="App_Menu_RecentFiles" xml:space="preserve"><value>최근 파일</value></data>
+  <data name="App_Menu_Exit" xml:space="preserve"><value>종료</value></data>
+
+  <data name="App_Menu_Edit" xml:space="preserve"><value>편집</value></data>
+  <data name="App_Menu_Cut" xml:space="preserve"><value>잘라내기</value></data>
+  <data name="App_Menu_Copy" xml:space="preserve"><value>복사</value></data>
+  <data name="App_Menu_Paste" xml:space="preserve"><value>붙여넣기</value></data>
+  <data name="App_Menu_Delete" xml:space="preserve"><value>삭제</value></data>
+  <data name="App_Menu_SelectAll" xml:space="preserve"><value>모두 선택</value></data>
+  <data name="App_Menu_Find" xml:space="preserve"><value>찾기...</value></data>
+  <data name="App_Menu_AdvancedFindReplace" xml:space="preserve"><value>고급 찾기/바꾸기...</value></data>
+  <data name="App_Menu_FindNext" xml:space="preserve"><value>다음 찾기</value></data>
+  <data name="App_Menu_FindPrevious" xml:space="preserve"><value>이전 찾기</value></data>
+  <data name="App_Menu_GoToOffset" xml:space="preserve"><value>오프셋으로 이동…</value></data>
+  <data name="App_Menu_FormatDocument" xml:space="preserve"><value>문서 형식 지정</value></data>
+  <data name="App_Menu_FormatSelection" xml:space="preserve"><value>선택 영역 형식 지정</value></data>
+
+  <data name="App_Menu_View" xml:space="preserve"><value>보기</value></data>
+  <data name="App_Menu_Project" xml:space="preserve"><value>프로젝트</value></data>
+  <data name="App_Menu_AddNewItem" xml:space="preserve"><value>새 항목 추가...</value></data>
+  <data name="App_Menu_AddExistingItem" xml:space="preserve"><value>기존 항목 추가...</value></data>
+  <data name="App_Menu_AddNewProject" xml:space="preserve"><value>새 프로젝트 추가...</value></data>
+  <data name="App_Menu_Properties" xml:space="preserve"><value>속성...</value></data>
+  <data name="App_Menu_Build" xml:space="preserve"><value>빌드</value></data>
+  <data name="App_Menu_BuildSolution" xml:space="preserve"><value>솔루션 빌드</value></data>
+  <data name="App_Menu_BuildProject" xml:space="preserve"><value>프로젝트 빌드</value></data>
+  <data name="App_Menu_RebuildSolution" xml:space="preserve"><value>솔루션 다시 빌드</value></data>
+  <data name="App_Menu_RebuildProject" xml:space="preserve"><value>프로젝트 다시 빌드</value></data>
+  <data name="App_Menu_CleanSolution" xml:space="preserve"><value>솔루션 정리</value></data>
+  <data name="App_Menu_CleanProject" xml:space="preserve"><value>프로젝트 정리</value></data>
+  <data name="App_Menu_CancelBuild" xml:space="preserve"><value>빌드 취소</value></data>
+  <data name="App_Menu_ConfigurationManager" xml:space="preserve"><value>구성 관리자...</value></data>
+  <data name="App_Menu_Debug" xml:space="preserve"><value>디버그</value></data>
+
+  <data name="App_Menu_Window" xml:space="preserve"><value>창</value></data>
+  <data name="App_Menu_CloseDocument" xml:space="preserve"><value>문서 닫기</value></data>
+  <data name="App_Menu_CloseAllButThis" xml:space="preserve"><value>이것 외 모두 닫기</value></data>
+  <data name="App_Menu_CloseAllDocuments2" xml:space="preserve"><value>모든 문서 닫기</value></data>
+  <data name="App_Menu_NextDocument" xml:space="preserve"><value>다음 문서</value></data>
+  <data name="App_Menu_PreviousDocument" xml:space="preserve"><value>이전 문서</value></data>
+  <data name="App_Menu_FullScreen" xml:space="preserve"><value>전체 화면</value></data>
+  <data name="App_Menu_TabGroups" xml:space="preserve"><value>탭 그룹</value></data>
+  <data name="App_Menu_NewVerticalTabGroup" xml:space="preserve"><value>새 세로 탭 그룹</value></data>
+  <data name="App_Menu_NewHorizontalTabGroup" xml:space="preserve"><value>새 가로 탭 그룹</value></data>
+  <data name="App_Menu_MoveToNextTabGroup" xml:space="preserve"><value>다음 탭 그룹으로 이동</value></data>
+  <data name="App_Menu_MoveToPreviousTabGroup" xml:space="preserve"><value>이전 탭 그룹으로 이동</value></data>
+  <data name="App_Menu_CloseTabGroup" xml:space="preserve"><value>탭 그룹 닫기</value></data>
+  <data name="App_Menu_CloseAllTabGroups" xml:space="preserve"><value>모든 탭 그룹 닫기</value></data>
+  <data name="App_Menu_Layout" xml:space="preserve"><value>레이아웃</value></data>
+  <data name="App_Menu_SaveLayout" xml:space="preserve"><value>레이아웃 저장</value></data>
+  <data name="App_Menu_LoadLayout" xml:space="preserve"><value>레이아웃 로드</value></data>
+  <data name="App_Menu_ResetLayout" xml:space="preserve"><value>레이아웃 재설정</value></data>
+  <data name="App_Menu_ToggleLockedLayout" xml:space="preserve"><value>잠긴 레이아웃 전환</value></data>
+
+  <data name="App_Menu_Tools" xml:space="preserve"><value>도구</value></data>
+  <data name="App_Menu_Terminal" xml:space="preserve"><value>터미널</value></data>
+  <data name="App_Menu_Options" xml:space="preserve"><value>옵션...</value></data>
+  <data name="App_Menu_Extensions" xml:space="preserve"><value>확장</value></data>
+  <data name="App_Menu_ExtensionManager" xml:space="preserve"><value>확장 관리자</value></data>
+  <data name="App_Menu_ExtensionsMonitor" xml:space="preserve"><value>확장 모니터</value></data>
+  <data name="App_Menu_ExtensionMarketplace" xml:space="preserve"><value>확장 Marketplace</value></data>
+  <data name="App_Menu_InstallFromFile" xml:space="preserve"><value>파일에서 설치...</value></data>
+  <data name="App_Menu_RefreshAllExtensions" xml:space="preserve"><value>모든 확장 새로 고침</value></data>
+  <data name="App_Menu_ExtensionDevWatch" xml:space="preserve"><value>확장 Dev Watch...</value></data>
+  <data name="App_Menu_ExtensionSystemSettings" xml:space="preserve"><value>확장 시스템 설정...</value></data>
+  <data name="App_Menu_Theme" xml:space="preserve"><value>테마</value></data>
+  <data name="App_Menu_ThemeDark" xml:space="preserve"><value>어두운 테마</value></data>
+  <data name="App_Menu_ThemeVS2022Dark" xml:space="preserve"><value>VS2022 어두운 테마</value></data>
+  <data name="App_Menu_ThemeVisualStudio" xml:space="preserve"><value>Visual Studio</value></data>
+  <data name="App_Menu_ThemeDarkGlass" xml:space="preserve"><value>어두운 유리</value></data>
+  <data name="App_Menu_ThemeCyberpunk" xml:space="preserve"><value>Cyberpunk</value></data>
+  <data name="App_Menu_ThemeSynthwave" xml:space="preserve"><value>Synthwave '84</value></data>
+  <data name="App_Menu_ThemeMatrix" xml:space="preserve"><value>Matrix / Terminal</value></data>
+  <data name="App_Menu_ThemeNord" xml:space="preserve"><value>Nord</value></data>
+  <data name="App_Menu_ThemeDracula" xml:space="preserve"><value>Dracula</value></data>
+  <data name="App_Menu_ThemeGruvbox" xml:space="preserve"><value>Gruvbox Dark</value></data>
+  <data name="App_Menu_ThemeCatppuccinMocha" xml:space="preserve"><value>Catppuccin Mocha</value></data>
+  <data name="App_Menu_ThemeTokyoNight" xml:space="preserve"><value>Tokyo Night</value></data>
+  <data name="App_Menu_ThemeLight" xml:space="preserve"><value>밝은 테마</value></data>
+  <data name="App_Menu_ThemeOffice" xml:space="preserve"><value>Office</value></data>
+  <data name="App_Menu_ThemeCatppuccinLatte" xml:space="preserve"><value>Catppuccin Latte</value></data>
+  <data name="App_Menu_ThemeMinimal" xml:space="preserve"><value>미니멀</value></data>
+  <data name="App_Menu_ThemeForest" xml:space="preserve"><value>숲</value></data>
+  <data name="App_Menu_ThemeHighContrast" xml:space="preserve"><value>고대비</value></data>
+
+  <data name="App_Menu_Image" xml:space="preserve"><value>이미지</value></data>
+  <data name="App_Menu_RotateRight" xml:space="preserve"><value>오른쪽으로 회전</value></data>
+  <data name="App_Menu_RotateLeft" xml:space="preserve"><value>왼쪽으로 회전</value></data>
+  <data name="App_Menu_FlipHorizontal" xml:space="preserve"><value>가로로 뒤집기</value></data>
+  <data name="App_Menu_FlipVertical" xml:space="preserve"><value>세로로 뒤집기</value></data>
+  <data name="App_Menu_CropMode" xml:space="preserve"><value>자르기 모드</value></data>
+  <data name="App_Menu_Resize" xml:space="preserve"><value>크기 조정...</value></data>
+  <data name="App_Menu_Export" xml:space="preserve"><value>내보내기...</value></data>
+  <data name="App_Menu_ResetImage" xml:space="preserve"><value>원본 이미지로 재설정</value></data>
+
+  <data name="App_OptionsEditJsonToolTip" xml:space="preserve"><value>사용자 설정을 JSON으로 편집</value></data>
+  <data name="App_OptionsAppliesToLabel" xml:space="preserve"><value>적용 대상:</value></data>
+  <data name="App_OptionsUserInstallation" xml:space="preserve"><value>사용자(설치)</value></data>
+  <data name="App_OptionsFilterLabel" xml:space="preserve"><value>필터:</value></data>
+  <data name="App_OptionsSearchPlaceholder" xml:space="preserve"><value>설정 검색 (Ctrl+F)…</value></data>
+  <data name="App_OptionsClearToolTip" xml:space="preserve"><value>지우기 (Escape)</value></data>
+  <data name="App_OptionsNoResults" xml:space="preserve"><value>설정을 찾을 수 없습니다.</value></data>
+
+  <data name="App_PasteConflict_Title" xml:space="preserve"><value>파일이 이미 있습니다</value></data>
+  <data name="App_PasteConflict_Rename" xml:space="preserve"><value>이름 바꾸기</value></data>
+  <data name="App_PasteConflict_Skip" xml:space="preserve"><value>건너뛰기</value></data>
+  <data name="App_PasteConflict_CancelAll" xml:space="preserve"><value>모두 취소</value></data>
+  <data name="App_PasteConflict_AlreadyExists1" xml:space="preserve"><value>이름이</value></data>
+  <data name="App_PasteConflict_AlreadyExists2" xml:space="preserve"><value>인 파일이 대상 폴더에 이미 있습니다.</value></data>
+  <data name="App_PasteConflict_Instructions" xml:space="preserve"><value>붙여넣은 파일의 이름을 바꾸려면 새 이름을 입력하거나 아래에서 작업을 선택하세요.</value></data>
+  <data name="App_PasteConflict_NewNameLabel" xml:space="preserve"><value>새 이름:</value></data>
+
+  <data name="App_SaveChanges_Title" xml:space="preserve"><value>변경 내용 저장</value></data>
+  <data name="App_SaveChanges_SelectAll" xml:space="preserve"><value>모두 선택</value></data>
+  <data name="App_SaveChanges_Save" xml:space="preserve"><value>저장</value></data>
+  <data name="App_SaveChanges_DontSave" xml:space="preserve"><value>저장 안 함</value></data>
+  <data name="App_SaveChanges_Cancel" xml:space="preserve"><value>취소</value></data>
+
+  <data name="App_GoToOffset_Title" xml:space="preserve"><value>오프셋으로 이동</value></data>
+  <data name="App_GoToOffset_EnterOffset" xml:space="preserve"><value>오프셋 입력:</value></data>
+  <data name="App_GoToOffset_Hexadecimal" xml:space="preserve"><value>16진수 (0x…)</value></data>
+  <data name="App_GoToOffset_Decimal" xml:space="preserve"><value>10진수</value></data>
+  <data name="App_GoToOffset_Go" xml:space="preserve"><value>이동</value></data>
+  <data name="App_GoToOffset_Cancel" xml:space="preserve"><value>취소</value></data>
+
+  <data name="App_ImportFormat_Title" xml:space="preserve"><value>기본 제공 형식 정의 가져오기</value></data>
+  <data name="App_ImportFormat_VersionLabel" xml:space="preserve"><value>버전:</value></data>
+  <data name="App_ImportFormat_AuthorLabel" xml:space="preserve"><value>작성자:</value></data>
+  <data name="App_ImportFormat_ExtensionsLabel" xml:space="preserve"><value>확장명</value></data>
+  <data name="App_ImportFormat_QualityLabel" xml:space="preserve"><value>품질</value></data>
+  <data name="App_ImportFormat_PreviewLabel" xml:space="preserve"><value>미리 보기</value></data>
+  <data name="App_ImportFormat_DestinationFolder" xml:space="preserve"><value>대상 폴더:</value></data>
+  <data name="App_ImportFormat_Import" xml:space="preserve"><value>가져오기</value></data>
+  <data name="App_ImportFormat_Cancel" xml:space="preserve"><value>취소</value></data>
+
+  <data name="App_ImportSyntax_Title" xml:space="preserve"><value>기본 제공 구문 정의 가져오기</value></data>
+  <data name="App_ImportSyntax_ShowPreview" xml:space="preserve"><value>미리 보기 표시</value></data>
+  <data name="App_ImportSyntax_ExtensionsLabel" xml:space="preserve"><value>확장명</value></data>
+  <data name="App_ImportSyntax_DestinationFolder" xml:space="preserve"><value>대상 폴더:</value></data>
+  <data name="App_ImportSyntax_Import" xml:space="preserve"><value>가져오기</value></data>
+  <data name="App_ImportSyntax_Cancel" xml:space="preserve"><value>취소</value></data>
+
+  <data name="App_PanelWelcome" xml:space="preserve"><value>시작</value></data>
+  <data name="App_PanelSolutionExplorer" xml:space="preserve"><value>솔루션 탐색기</value></data>
+  <data name="App_PanelErrorList" xml:space="preserve"><value>오류 목록</value></data>
+  <data name="App_PanelExtensionsMonitor" xml:space="preserve"><value>확장 모니터</value></data>
+  <data name="App_PanelOutput" xml:space="preserve"><value>출력</value></data>
+  <data name="App_ExportFormatDefinitionTitle" xml:space="preserve"><value>형식 정의 내보내기</value></data>
+  <data name="App_FormatUpgradeRequired" xml:space="preserve"><value>형식 업그레이드 필요</value></data>
+  <data name="App_FormatUpgrade" xml:space="preserve"><value>형식 업그레이드</value></data>
+  <data name="App_ConvertTbl" xml:space="preserve"><value>TBL 변환</value></data>
+  <data name="App_RemoveFromProject" xml:space="preserve"><value>프로젝트에서 제거</value></data>
+  <data name="App_RemoveFromProjectMessage" xml:space="preserve"><value>프로젝트에서 '{0}'을(를) 제거하시겠습니까?\n(디스크의 파일은 삭제되지 않습니다.)</value></data>
+  <data name="App_DeleteFile" xml:space="preserve"><value>파일 삭제</value></data>
+  <data name="App_DeleteFileMessage" xml:space="preserve"><value>'{0}'을(를) 삭제하고 휴지통으로 보내시겠습니까?</value></data>
+  <data name="App_RemoveFolder" xml:space="preserve"><value>폴더 제거</value></data>
+  <data name="App_RemoveSolutionFolder" xml:space="preserve"><value>솔루션 폴더 제거</value></data>
+  <data name="App_SelectImportFolder" xml:space="preserve"><value>가져올 폴더 선택</value></data>
+  <data name="App_OpenSolutionProject" xml:space="preserve"><value>솔루션 또는 프로젝트 열기</value></data>
+  <data name="App_OpenFolder" xml:space="preserve"><value>폴더 열기</value></data>
+  <data name="App_FailedCreateSolution" xml:space="preserve"><value>솔루션을 만들지 못했습니다:\n{0}</value></data>
+  <data name="App_FailedOpenSolution" xml:space="preserve"><value>솔루션을 열지 못했습니다:\n{0}</value></data>
+  <data name="App_RenameTitle" xml:space="preserve"><value>이름 바꾸기</value></data>
+</root>

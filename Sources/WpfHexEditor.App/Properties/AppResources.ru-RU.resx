@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+
+  <data name="App_MinimizeToolTip" xml:space="preserve"><value>Свернуть</value></data>
+  <data name="App_MaximizeToolTip" xml:space="preserve"><value>Развернуть</value></data>
+  <data name="App_CloseToolTip" xml:space="preserve"><value>Закрыть</value></data>
+  <data name="App_NotificationsToolTip" xml:space="preserve"><value>Уведомления</value></data>
+  <data name="App_CustomizeLayoutToolTip" xml:space="preserve"><value>Настроить макет (Ctrl+Shift+L)</value></data>
+  <data name="App_CommandPaletteToolTip" xml:space="preserve"><value>Палитра команд (Ctrl+Shift+P)</value></data>
+  <data name="App_WelcomePageToolTip" xml:space="preserve"><value>Страница приветствия</value></data>
+
+  <data name="App_Menu_File" xml:space="preserve"><value>_Файл</value></data>
+  <data name="App_Menu_New" xml:space="preserve"><value>_Создать</value></data>
+  <data name="App_Menu_NewSolution" xml:space="preserve"><value>_Решение...</value></data>
+  <data name="App_Menu_NewProject" xml:space="preserve"><value>_Проект...</value></data>
+  <data name="App_Menu_NewFile" xml:space="preserve"><value>_Файл...</value></data>
+  <data name="App_Menu_Open" xml:space="preserve"><value>_Открыть</value></data>
+  <data name="App_Menu_OpenSolutionProject" xml:space="preserve"><value>_Решение/Проект...</value></data>
+  <data name="App_Menu_OpenFolder" xml:space="preserve"><value>_Папка...</value></data>
+  <data name="App_Menu_OpenFile" xml:space="preserve"><value>_Файл...</value></data>
+  <data name="App_Menu_Close" xml:space="preserve"><value>_Закрыть</value></data>
+  <data name="App_Menu_CloseAllDocuments" xml:space="preserve"><value>Закрыть _все документы</value></data>
+  <data name="App_Menu_CloseSolution" xml:space="preserve"><value>Закрыть _решение</value></data>
+  <data name="App_Menu_Save" xml:space="preserve"><value>_Сохранить</value></data>
+  <data name="App_Menu_SaveAll" xml:space="preserve"><value>Сохранить _все</value></data>
+  <data name="App_Menu_WriteToDisk" xml:space="preserve"><value>_Записать на диск</value></data>
+  <data name="App_Menu_Workspace" xml:space="preserve"><value>_Рабочая область</value></data>
+  <data name="App_Menu_NewWorkspace" xml:space="preserve"><value>_Новая рабочая область…</value></data>
+  <data name="App_Menu_OpenWorkspace" xml:space="preserve"><value>_Открыть рабочую область…</value></data>
+  <data name="App_Menu_SaveWorkspace" xml:space="preserve"><value>_Сохранить рабочую область</value></data>
+  <data name="App_Menu_SaveWorkspaceAs" xml:space="preserve"><value>Сохранить рабочую область _как…</value></data>
+  <data name="App_Menu_CloseWorkspace" xml:space="preserve"><value>_Закрыть рабочую область</value></data>
+  <data name="App_Menu_RecentSolutions" xml:space="preserve"><value>_Последние решения</value></data>
+  <data name="App_Menu_RecentFiles" xml:space="preserve"><value>_Последние файлы</value></data>
+  <data name="App_Menu_Exit" xml:space="preserve"><value>_Выход</value></data>
+
+  <data name="App_Menu_Edit" xml:space="preserve"><value>_Правка</value></data>
+  <data name="App_Menu_Cut" xml:space="preserve"><value>_Вырезать</value></data>
+  <data name="App_Menu_Copy" xml:space="preserve"><value>_Копировать</value></data>
+  <data name="App_Menu_Paste" xml:space="preserve"><value>_Вставить</value></data>
+  <data name="App_Menu_Delete" xml:space="preserve"><value>_Удалить</value></data>
+  <data name="App_Menu_SelectAll" xml:space="preserve"><value>Выделить _всё</value></data>
+  <data name="App_Menu_Find" xml:space="preserve"><value>_Найти...</value></data>
+  <data name="App_Menu_AdvancedFindReplace" xml:space="preserve"><value>_Расширенный поиск/замена...</value></data>
+  <data name="App_Menu_FindNext" xml:space="preserve"><value>Найти _следующее</value></data>
+  <data name="App_Menu_FindPrevious" xml:space="preserve"><value>Найти _предыдущее</value></data>
+  <data name="App_Menu_GoToOffset" xml:space="preserve"><value>_Перейти к смещению…</value></data>
+  <data name="App_Menu_FormatDocument" xml:space="preserve"><value>Форматировать _документ</value></data>
+  <data name="App_Menu_FormatSelection" xml:space="preserve"><value>Форматировать _выделение</value></data>
+
+  <data name="App_Menu_View" xml:space="preserve"><value>_Вид</value></data>
+  <data name="App_Menu_Project" xml:space="preserve"><value>_Проект</value></data>
+  <data name="App_Menu_AddNewItem" xml:space="preserve"><value>Добавить _новый элемент...</value></data>
+  <data name="App_Menu_AddExistingItem" xml:space="preserve"><value>Добавить _существующий элемент...</value></data>
+  <data name="App_Menu_AddNewProject" xml:space="preserve"><value>Добавить новый _проект...</value></data>
+  <data name="App_Menu_Properties" xml:space="preserve"><value>_Свойства...</value></data>
+  <data name="App_Menu_Build" xml:space="preserve"><value>_Сборка</value></data>
+  <data name="App_Menu_BuildSolution" xml:space="preserve"><value>Собрать _решение</value></data>
+  <data name="App_Menu_BuildProject" xml:space="preserve"><value>Собрать _проект</value></data>
+  <data name="App_Menu_RebuildSolution" xml:space="preserve"><value>_Перестроить решение</value></data>
+  <data name="App_Menu_RebuildProject" xml:space="preserve"><value>Перестроить _проект</value></data>
+  <data name="App_Menu_CleanSolution" xml:space="preserve"><value>_Очистить решение</value></data>
+  <data name="App_Menu_CleanProject" xml:space="preserve"><value>Очистить _проект</value></data>
+  <data name="App_Menu_CancelBuild" xml:space="preserve"><value>_Отменить сборку</value></data>
+  <data name="App_Menu_ConfigurationManager" xml:space="preserve"><value>_Диспетчер конфигураций...</value></data>
+  <data name="App_Menu_Debug" xml:space="preserve"><value>_Отладка</value></data>
+
+  <data name="App_Menu_Window" xml:space="preserve"><value>_Окно</value></data>
+  <data name="App_Menu_CloseDocument" xml:space="preserve"><value>_Закрыть документ</value></data>
+  <data name="App_Menu_CloseAllButThis" xml:space="preserve"><value>Закрыть _все кроме этого</value></data>
+  <data name="App_Menu_CloseAllDocuments2" xml:space="preserve"><value>Закрыть _все документы</value></data>
+  <data name="App_Menu_NextDocument" xml:space="preserve"><value>_Следующий документ</value></data>
+  <data name="App_Menu_PreviousDocument" xml:space="preserve"><value>_Предыдущий документ</value></data>
+  <data name="App_Menu_FullScreen" xml:space="preserve"><value>_Полный экран</value></data>
+  <data name="App_Menu_TabGroups" xml:space="preserve"><value>_Группы вкладок</value></data>
+  <data name="App_Menu_NewVerticalTabGroup" xml:space="preserve"><value>Новая _вертикальная группа вкладок</value></data>
+  <data name="App_Menu_NewHorizontalTabGroup" xml:space="preserve"><value>Новая _горизонтальная группа вкладок</value></data>
+  <data name="App_Menu_MoveToNextTabGroup" xml:space="preserve"><value>Переместить в _следующую группу вкладок</value></data>
+  <data name="App_Menu_MoveToPreviousTabGroup" xml:space="preserve"><value>Переместить в _предыдущую группу вкладок</value></data>
+  <data name="App_Menu_CloseTabGroup" xml:space="preserve"><value>_Закрыть группу вкладок</value></data>
+  <data name="App_Menu_CloseAllTabGroups" xml:space="preserve"><value>Закрыть _все группы вкладок</value></data>
+  <data name="App_Menu_Layout" xml:space="preserve"><value>_Макет</value></data>
+  <data name="App_Menu_SaveLayout" xml:space="preserve"><value>_Сохранить макет</value></data>
+  <data name="App_Menu_LoadLayout" xml:space="preserve"><value>_Загрузить макет</value></data>
+  <data name="App_Menu_ResetLayout" xml:space="preserve"><value>_Сбросить макет</value></data>
+  <data name="App_Menu_ToggleLockedLayout" xml:space="preserve"><value>Переключить _блокировку макета</value></data>
+
+  <data name="App_Menu_Tools" xml:space="preserve"><value>_Сервис</value></data>
+  <data name="App_Menu_Terminal" xml:space="preserve"><value>_Терминал</value></data>
+  <data name="App_Menu_Options" xml:space="preserve"><value>_Параметры...</value></data>
+  <data name="App_Menu_Extensions" xml:space="preserve"><value>_Расширения</value></data>
+  <data name="App_Menu_ExtensionManager" xml:space="preserve"><value>_Диспетчер расширений</value></data>
+  <data name="App_Menu_ExtensionsMonitor" xml:space="preserve"><value>_Монитор расширений</value></data>
+  <data name="App_Menu_ExtensionMarketplace" xml:space="preserve"><value>_Marketplace расширений</value></data>
+  <data name="App_Menu_InstallFromFile" xml:space="preserve"><value>_Установить из файла...</value></data>
+  <data name="App_Menu_RefreshAllExtensions" xml:space="preserve"><value>_Обновить все расширения</value></data>
+  <data name="App_Menu_ExtensionDevWatch" xml:space="preserve"><value>_Dev Watch расширения...</value></data>
+  <data name="App_Menu_ExtensionSystemSettings" xml:space="preserve"><value>_Системные параметры расширений...</value></data>
+  <data name="App_Menu_Theme" xml:space="preserve"><value>_Тема</value></data>
+  <data name="App_Menu_ThemeDark" xml:space="preserve"><value>_Тёмная</value></data>
+  <data name="App_Menu_ThemeVS2022Dark" xml:space="preserve"><value>VS2022 _Тёмная</value></data>
+  <data name="App_Menu_ThemeVisualStudio" xml:space="preserve"><value>_Visual Studio</value></data>
+  <data name="App_Menu_ThemeDarkGlass" xml:space="preserve"><value>Тёмное _стекло</value></data>
+  <data name="App_Menu_ThemeCyberpunk" xml:space="preserve"><value>_Cyberpunk</value></data>
+  <data name="App_Menu_ThemeSynthwave" xml:space="preserve"><value>Synthwave '8_4</value></data>
+  <data name="App_Menu_ThemeMatrix" xml:space="preserve"><value>Matri_x / Terminal</value></data>
+  <data name="App_Menu_ThemeNord" xml:space="preserve"><value>_Nord</value></data>
+  <data name="App_Menu_ThemeDracula" xml:space="preserve"><value>Dr_acula</value></data>
+  <data name="App_Menu_ThemeGruvbox" xml:space="preserve"><value>Gruvbo_x Dark</value></data>
+  <data name="App_Menu_ThemeCatppuccinMocha" xml:space="preserve"><value>Catppuccin _Mocha</value></data>
+  <data name="App_Menu_ThemeTokyoNight" xml:space="preserve"><value>Tokyo _Night</value></data>
+  <data name="App_Menu_ThemeLight" xml:space="preserve"><value>_Светлая</value></data>
+  <data name="App_Menu_ThemeOffice" xml:space="preserve"><value>_Office</value></data>
+  <data name="App_Menu_ThemeCatppuccinLatte" xml:space="preserve"><value>Catppuccin _Latte</value></data>
+  <data name="App_Menu_ThemeMinimal" xml:space="preserve"><value>_Минимальная</value></data>
+  <data name="App_Menu_ThemeForest" xml:space="preserve"><value>_Лес</value></data>
+  <data name="App_Menu_ThemeHighContrast" xml:space="preserve"><value>_Высокий контраст</value></data>
+
+  <data name="App_Menu_Image" xml:space="preserve"><value>_Изображение</value></data>
+  <data name="App_Menu_RotateRight" xml:space="preserve"><value>Повернуть _вправо</value></data>
+  <data name="App_Menu_RotateLeft" xml:space="preserve"><value>Повернуть _влево</value></data>
+  <data name="App_Menu_FlipHorizontal" xml:space="preserve"><value>Отразить _горизонтально</value></data>
+  <data name="App_Menu_FlipVertical" xml:space="preserve"><value>Отразить _вертикально</value></data>
+  <data name="App_Menu_CropMode" xml:space="preserve"><value>Режим _обрезки</value></data>
+  <data name="App_Menu_Resize" xml:space="preserve"><value>_Изменить размер...</value></data>
+  <data name="App_Menu_Export" xml:space="preserve"><value>_Экспортировать...</value></data>
+  <data name="App_Menu_ResetImage" xml:space="preserve"><value>Восстановить _исходное изображение</value></data>
+
+  <data name="App_OptionsEditJsonToolTip" xml:space="preserve"><value>Изменить настройки пользователя как JSON</value></data>
+  <data name="App_OptionsAppliesToLabel" xml:space="preserve"><value>Применяется к:</value></data>
+  <data name="App_OptionsUserInstallation" xml:space="preserve"><value>Пользователь (установка)</value></data>
+  <data name="App_OptionsFilterLabel" xml:space="preserve"><value>Фильтр:</value></data>
+  <data name="App_OptionsSearchPlaceholder" xml:space="preserve"><value>Поиск параметров (Ctrl+F)…</value></data>
+  <data name="App_OptionsClearToolTip" xml:space="preserve"><value>Очистить (Escape)</value></data>
+  <data name="App_OptionsNoResults" xml:space="preserve"><value>Параметры не найдены.</value></data>
+
+  <data name="App_PasteConflict_Title" xml:space="preserve"><value>Файл уже существует</value></data>
+  <data name="App_PasteConflict_Rename" xml:space="preserve"><value>Переименовать</value></data>
+  <data name="App_PasteConflict_Skip" xml:space="preserve"><value>Пропустить</value></data>
+  <data name="App_PasteConflict_CancelAll" xml:space="preserve"><value>Отменить всё</value></data>
+  <data name="App_PasteConflict_AlreadyExists1" xml:space="preserve"><value>Файл с именем</value></data>
+  <data name="App_PasteConflict_AlreadyExists2" xml:space="preserve"><value>уже существует в папке назначения.</value></data>
+  <data name="App_PasteConflict_Instructions" xml:space="preserve"><value>Введите новое имя для переименования вставленного файла или выберите действие ниже.</value></data>
+  <data name="App_PasteConflict_NewNameLabel" xml:space="preserve"><value>Новое имя:</value></data>
+
+  <data name="App_SaveChanges_Title" xml:space="preserve"><value>Сохранить изменения</value></data>
+  <data name="App_SaveChanges_SelectAll" xml:space="preserve"><value>Выбрать всё</value></data>
+  <data name="App_SaveChanges_Save" xml:space="preserve"><value>Сохранить</value></data>
+  <data name="App_SaveChanges_DontSave" xml:space="preserve"><value>Не сохранять</value></data>
+  <data name="App_SaveChanges_Cancel" xml:space="preserve"><value>Отмена</value></data>
+
+  <data name="App_GoToOffset_Title" xml:space="preserve"><value>Перейти к смещению</value></data>
+  <data name="App_GoToOffset_EnterOffset" xml:space="preserve"><value>Введите смещение:</value></data>
+  <data name="App_GoToOffset_Hexadecimal" xml:space="preserve"><value>Шестнадцатеричное (0x…)</value></data>
+  <data name="App_GoToOffset_Decimal" xml:space="preserve"><value>Десятичное</value></data>
+  <data name="App_GoToOffset_Go" xml:space="preserve"><value>Перейти</value></data>
+  <data name="App_GoToOffset_Cancel" xml:space="preserve"><value>Отмена</value></data>
+
+  <data name="App_ImportFormat_Title" xml:space="preserve"><value>Импортировать встроенное определение формата</value></data>
+  <data name="App_ImportFormat_VersionLabel" xml:space="preserve"><value>Версия:</value></data>
+  <data name="App_ImportFormat_AuthorLabel" xml:space="preserve"><value>Автор:</value></data>
+  <data name="App_ImportFormat_ExtensionsLabel" xml:space="preserve"><value>Расширения</value></data>
+  <data name="App_ImportFormat_QualityLabel" xml:space="preserve"><value>Качество</value></data>
+  <data name="App_ImportFormat_PreviewLabel" xml:space="preserve"><value>Предварительный просмотр</value></data>
+  <data name="App_ImportFormat_DestinationFolder" xml:space="preserve"><value>_Папка назначения:</value></data>
+  <data name="App_ImportFormat_Import" xml:space="preserve"><value>_Импортировать</value></data>
+  <data name="App_ImportFormat_Cancel" xml:space="preserve"><value>Отмена</value></data>
+
+  <data name="App_ImportSyntax_Title" xml:space="preserve"><value>Импортировать встроенное определение синтаксиса</value></data>
+  <data name="App_ImportSyntax_ShowPreview" xml:space="preserve"><value>Показать предварительный просмотр</value></data>
+  <data name="App_ImportSyntax_ExtensionsLabel" xml:space="preserve"><value>Расширения</value></data>
+  <data name="App_ImportSyntax_DestinationFolder" xml:space="preserve"><value>_Папка назначения:</value></data>
+  <data name="App_ImportSyntax_Import" xml:space="preserve"><value>_Импортировать</value></data>
+  <data name="App_ImportSyntax_Cancel" xml:space="preserve"><value>Отмена</value></data>
+
+  <data name="App_PanelWelcome" xml:space="preserve"><value>Добро пожаловать</value></data>
+  <data name="App_PanelSolutionExplorer" xml:space="preserve"><value>Обозреватель решений</value></data>
+  <data name="App_PanelErrorList" xml:space="preserve"><value>Список ошибок</value></data>
+  <data name="App_PanelExtensionsMonitor" xml:space="preserve"><value>Монитор расширений</value></data>
+  <data name="App_PanelOutput" xml:space="preserve"><value>Вывод</value></data>
+  <data name="App_ExportFormatDefinitionTitle" xml:space="preserve"><value>Экспортировать определение формата</value></data>
+  <data name="App_FormatUpgradeRequired" xml:space="preserve"><value>Требуется обновление формата</value></data>
+  <data name="App_FormatUpgrade" xml:space="preserve"><value>Обновление формата</value></data>
+  <data name="App_ConvertTbl" xml:space="preserve"><value>Конвертировать TBL</value></data>
+  <data name="App_RemoveFromProject" xml:space="preserve"><value>Удалить из проекта</value></data>
+  <data name="App_RemoveFromProjectMessage" xml:space="preserve"><value>Удалить '{0}' из проекта?\n(Файл на диске удалён не будет.)</value></data>
+  <data name="App_DeleteFile" xml:space="preserve"><value>Удалить файл</value></data>
+  <data name="App_DeleteFileMessage" xml:space="preserve"><value>Удалить '{0}' и отправить в корзину?</value></data>
+  <data name="App_RemoveFolder" xml:space="preserve"><value>Удалить папку</value></data>
+  <data name="App_RemoveSolutionFolder" xml:space="preserve"><value>Удалить папку решения</value></data>
+  <data name="App_SelectImportFolder" xml:space="preserve"><value>Выберите папку для импорта</value></data>
+  <data name="App_OpenSolutionProject" xml:space="preserve"><value>Открыть решение или проект</value></data>
+  <data name="App_OpenFolder" xml:space="preserve"><value>Открыть папку</value></data>
+  <data name="App_FailedCreateSolution" xml:space="preserve"><value>Не удалось создать решение:\n{0}</value></data>
+  <data name="App_FailedOpenSolution" xml:space="preserve"><value>Не удалось открыть решение:\n{0}</value></data>
+  <data name="App_RenameTitle" xml:space="preserve"><value>Переименовать</value></data>
+</root>

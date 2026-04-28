@@ -11,6 +11,7 @@
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
+using WpfHexEditor.Editor.StructureEditor.Properties;
 using WpfHexEditor.Editor.StructureEditor.ViewModels;
 
 namespace WpfHexEditor.Editor.StructureEditor.Controls;
@@ -63,7 +64,7 @@ public sealed partial class ValidationBar : UserControl
     private static void OnCountChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
         var bar = (ValidationBar)d;
-        bar.ErrorCountText.Text   = bar.ErrorCount   > 0 ? $"{bar.ErrorCount} error(s)"   : "";
-        bar.WarningCountText.Text = bar.WarningCount > 0 ? $"{bar.WarningCount} warning(s)" : "";
+        bar.ErrorCountText.Text   = bar.ErrorCount   > 0 ? string.Format(StructureEditorResources.StructureEditor_ValidationErrorCount,   bar.ErrorCount)   : "";
+        bar.WarningCountText.Text = bar.WarningCount > 0 ? string.Format(StructureEditorResources.StructureEditor_ValidationWarningCount, bar.WarningCount) : "";
     }
 }

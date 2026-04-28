@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="StructureEditor_AddBlockTitle" xml:space="preserve"><value>Añadir bloque</value></data>
+  <data name="StructureEditor_AddBlockButton" xml:space="preserve"><value>Añadir</value></data>
+  <data name="StructureEditor_AddBlockCancel" xml:space="preserve"><value>Cancelar</value></data>
+  <data name="StructureEditor_TabMetadata" xml:space="preserve"><value>Metadatos</value></data>
+  <data name="StructureEditor_TabDetection" xml:space="preserve"><value>Detección</value></data>
+  <data name="StructureEditor_TabBlocks" xml:space="preserve"><value>Bloques</value></data>
+  <data name="StructureEditor_TabVariables" xml:space="preserve"><value>Variables</value></data>
+  <data name="StructureEditor_TabAdvanced" xml:space="preserve"><value>Avanzado</value></data>
+  <data name="StructureEditor_TabQuality" xml:space="preserve"><value>Calidad</value></data>
+  <data name="StructureEditor_TabTest" xml:space="preserve"><value>Prueba</value></data>
+  <data name="StructureEditor_SaveToolTip" xml:space="preserve"><value>Guardar (Ctrl+S)</value></data>
+  <data name="StructureEditor_ValidateToolTip" xml:space="preserve"><value>Validar (Ctrl+Shift+V)</value></data>
+  <data name="StructureEditor_UndoToolTip" xml:space="preserve"><value>Deshacer (Ctrl+Z)</value></data>
+  <data name="StructureEditor_RedoToolTip" xml:space="preserve"><value>Rehacer (Ctrl+Y)</value></data>
+  <data name="StructureEditor_LiveCodeViewToolTip" xml:space="preserve"><value>Alternar vista de código en vivo</value></data>
+  <data name="StructureEditor_AddBlockToolTip" xml:space="preserve"><value>Añadir bloque (Ctrl+N)</value></data>
+  <data name="StructureEditor_DuplicateBlockToolTip" xml:space="preserve"><value>Duplicar bloque (Ctrl+D)</value></data>
+  <data name="StructureEditor_UnsavedChangesToolTip" xml:space="preserve"><value>Cambios sin guardar</value></data>
+  <data name="StructureEditor_BlocksFilterToolTip" xml:space="preserve"><value>Filtrar bloques por nombre</value></data>
+  <data name="StructureEditor_BlocksAddMenuItem" xml:space="preserve"><value>Añadir bloque...</value></data>
+  <data name="StructureEditor_BlocksDuplicateMenuItem" xml:space="preserve"><value>Duplicar</value></data>
+  <data name="StructureEditor_BlocksRemoveMenuItem" xml:space="preserve"><value>Eliminar</value></data>
+  <data name="StructureEditor_BlocksMoveUpMenuItem" xml:space="preserve"><value>Subir</value></data>
+  <data name="StructureEditor_BlocksMoveDownMenuItem" xml:space="preserve"><value>Bajar</value></data>
+  <data name="StructureEditor_BlocksCopyJsonMenuItem" xml:space="preserve"><value>Copiar como JSON</value></data>
+  <data name="StructureEditor_BlocksPasteMenuItem" xml:space="preserve"><value>Pegar bloque</value></data>
+  <data name="StructureEditor_BlocksEmptyLine1" xml:space="preserve"><value>Seleccione un bloque para editar sus propiedades,</value></data>
+  <data name="StructureEditor_BlocksEmptyLine2" xml:space="preserve"><value>o pulse Ctrl+N / clic derecho para añadir un nuevo bloque.</value></data>
+  <data name="StructureEditor_DetectionHexSigLabel" xml:space="preserve"><value>Firma hexadecimal</value></data>
+  <data name="StructureEditor_DetectionHexBytesToolTip" xml:space="preserve"><value>Bytes hex sin espacios, p.ej. 89504E47 para PNG</value></data>
+  <data name="StructureEditor_DetectionSigLabel" xml:space="preserve"><value>Firma</value></data>
+  <data name="StructureEditor_DetectionV2SigsLabel" xml:space="preserve"><value>Firmas v2.0</value></data>
+  <data name="StructureEditor_DetectionMatchModeLabel" xml:space="preserve"><value>Modo de coincidencia</value></data>
+  <data name="StructureEditor_DetectionHexValueToolTip" xml:space="preserve"><value>Valor hex</value></data>
+  <data name="StructureEditor_DetectionOffsetToolTip" xml:space="preserve"><value>Desplazamiento</value></data>
+  <data name="StructureEditor_DetectionLabelToolTip" xml:space="preserve"><value>Etiqueta</value></data>
+  <data name="StructureEditor_DetectionAddSigButton" xml:space="preserve"><value>＋ Añadir firma</value></data>
+  <data name="StructureEditor_DetectionEntropyLabel" xml:space="preserve"><value>Indicador de entropía</value></data>
+  <data name="StructureEditor_DetectionMinEntropyLabel" xml:space="preserve"><value>Entropía mínima</value></data>
+  <data name="StructureEditor_DetectionMaxEntropyLabel" xml:space="preserve"><value>Entropía máxima</value></data>
+  <data name="StructureEditor_DetectionMinScoreLabel" xml:space="preserve"><value>Puntuación mínima</value></data>
+  <data name="StructureEditor_DetectionScoreThresholdLabel" xml:space="preserve"><value>Umbral de puntuación</value></data>
+  <data name="StructureEditor_DetectionContentPatternsLabel" xml:space="preserve"><value>Patrones de contenido (formatos de texto)</value></data>
+  <data name="StructureEditor_DetectionRegexToolTip" xml:space="preserve"><value>Patrón Regex</value></data>
+  <data name="StructureEditor_DetectionAddPatternButton" xml:space="preserve"><value>＋ Añadir patrón</value></data>
+  <data name="StructureEditor_MetaCoreSection" xml:space="preserve"><value>General</value></data>
+  <data name="StructureEditor_MetaNameLabel" xml:space="preserve"><value>Nombre del formato</value></data>
+  <data name="StructureEditor_MetaNameToolTip" xml:space="preserve"><value>Nombre legible del formato (p.ej. 'Archivo ZIP', 'Imagen PNG')</value></data>
+  <data name="StructureEditor_MetaVersionLabel" xml:space="preserve"><value>Versión</value></data>
+  <data name="StructureEditor_MetaVersionToolTip" xml:space="preserve"><value>Versión de esta definición (p.ej. '1.0', '2.0')</value></data>
+  <data name="StructureEditor_MetaAuthorLabel" xml:space="preserve"><value>Autor</value></data>
+  <data name="StructureEditor_MetaAuthorToolTip" xml:space="preserve"><value>Autor de este archivo de definición</value></data>
+  <data name="StructureEditor_MetaCategoryLabel" xml:space="preserve"><value>Categoría</value></data>
+  <data name="StructureEditor_MetaCategoryToolTip" xml:space="preserve"><value>Categoría (definida automáticamente desde la estructura de carpetas: Archivos, Imágenes, Audio, Vídeo, etc.)</value></data>
+  <data name="StructureEditor_MetaDiffModeLabel" xml:space="preserve"><value>Modo diff</value></data>
+  <data name="StructureEditor_MetaDiffModeToolTip" xml:space="preserve"><value>Algoritmo diff preferido para DiffViewer</value></data>
+  <data name="StructureEditor_MetaPreferredEditorLabel" xml:space="preserve"><value>Editor preferido</value></data>
+  <data name="StructureEditor_MetaPreferredEditorToolTip" xml:space="preserve"><value>ID de fábrica de editor preferido para archivos que coincidan con este formato</value></data>
+  <data name="StructureEditor_MetaDescriptionLabel" xml:space="preserve"><value>Descripción</value></data>
+  <data name="StructureEditor_MetaIsTextFormat" xml:space="preserve"><value>Formato de texto (se abre en el editor de código por defecto)</value></data>
+  <data name="StructureEditor_MetaExtensionsLabel" xml:space="preserve"><value>Extensiones de archivo</value></data>
+  <data name="StructureEditor_MetaAddExtensionButton" xml:space="preserve"><value>＋ Añadir extensión</value></data>
+  <data name="StructureEditor_MetaMimeTypesLabel" xml:space="preserve"><value>Tipos MIME</value></data>
+  <data name="StructureEditor_MetaAddMimeButton" xml:space="preserve"><value>＋ Añadir tipo MIME</value></data>
+  <data name="StructureEditor_MetaSoftwareLabel" xml:space="preserve"><value>Software</value></data>
+  <data name="StructureEditor_MetaAddSoftwareButton" xml:space="preserve"><value>＋ Añadir software</value></data>
+  <data name="StructureEditor_QualityComputedSection" xml:space="preserve"><value>Métricas calculadas</value></data>
+  <data name="StructureEditor_QualityBlockCoverage" xml:space="preserve"><value>Cobertura de bloques</value></data>
+  <data name="StructureEditor_QualityCompletenessScore" xml:space="preserve"><value>Puntuación de completitud</value></data>
+  <data name="StructureEditor_QualityTypeDistribution" xml:space="preserve"><value>Distribución de tipos</value></data>
+  <data name="StructureEditor_QualityBlocksLabel" xml:space="preserve"><value>Bloques</value></data>
+  <data name="StructureEditor_QualityDepthLabel" xml:space="preserve"><value>Profundidad</value></data>
+  <data name="StructureEditor_QualityVariablesLabel" xml:space="preserve"><value>Variables</value></data>
+  <data name="StructureEditor_QualityRulesLabel" xml:space="preserve"><value>Reglas</value></data>
+  <data name="StructureEditor_QualityMetadataLabel" xml:space="preserve"><value>Metadatos</value></data>
+  <data name="StructureEditor_QualityDocLevel" xml:space="preserve"><value>Nivel de documentación</value></data>
+  <data name="StructureEditor_QualityLastUpdated" xml:space="preserve"><value>Última actualización</value></data>
+  <data name="StructureEditor_QualityLastUpdatedToolTip" xml:space="preserve"><value>Formato: YYYY-MM-DD (se rellena automáticamente al guardar)</value></data>
+  <data name="StructureEditor_QualityPriorityFormat" xml:space="preserve"><value>Formato prioritario (top 100)</value></data>
+  <data name="StructureEditor_QualityAutoRefined" xml:space="preserve"><value>Refinado automáticamente (enriquecido por script — solo lectura)</value></data>
+  <data name="StructureEditor_TestSection" xml:space="preserve"><value>Probar formato con archivo</value></data>
+  <data name="StructureEditor_TestFilePathToolTip" xml:space="preserve"><value>Ruta al archivo binario a probar</value></data>
+  <data name="StructureEditor_TestBrowseButton" xml:space="preserve"><value>Examinar…</value></data>
+  <data name="StructureEditor_TestRunButton" xml:space="preserve"><value>▶ Ejecutar prueba</value></data>
+  <data name="StructureEditor_TestCopyToolTip" xml:space="preserve"><value>Copiar resultados al portapapeles (TSV)</value></data>
+  <data name="StructureEditor_TestEmptyMessage" xml:space="preserve"><value>Seleccione un archivo y haga clic en ▶ Ejecutar prueba para probar la definición del formato actual.</value></data>
+  <data name="StructureEditor_TestColStatus" xml:space="preserve"><value>Estado</value></data>
+  <data name="StructureEditor_TestColBlockName" xml:space="preserve"><value>Nombre del bloque</value></data>
+  <data name="StructureEditor_TestColType" xml:space="preserve"><value>Tipo</value></data>
+  <data name="StructureEditor_TestColOffset" xml:space="preserve"><value>Desplazamiento</value></data>
+  <data name="StructureEditor_TestColLen" xml:space="preserve"><value>Long.</value></data>
+  <data name="StructureEditor_TestColRaw" xml:space="preserve"><value>Bruto (hex)</value></data>
+  <data name="StructureEditor_TestColParsed" xml:space="preserve"><value>Valor analizado</value></data>
+  <data name="StructureEditor_TestColNote" xml:space="preserve"><value>Nota</value></data>
+  <data name="StructureEditor_TestFilterOk" xml:space="preserve"><value>✓ OK</value></data>
+  <data name="StructureEditor_TestFilterWarning" xml:space="preserve"><value>⚠ Advertencia</value></data>
+  <data name="StructureEditor_TestFilterError" xml:space="preserve"><value>✕ Error</value></data>
+  <data name="StructureEditor_TestFilterSkipped" xml:space="preserve"><value>⊘ Omitido</value></data>
+  <data name="StructureEditor_VarsDescription" xml:space="preserve"><value>Variables iniciales disponibles para el intérprete de bloques (p.ej. contadores de bucle, desplazamientos calculados).</value></data>
+  <data name="StructureEditor_VarsFilterToolTip" xml:space="preserve"><value>Filtrar variables por nombre</value></data>
+  <data name="StructureEditor_VarsColName" xml:space="preserve"><value>Nombre de variable</value></data>
+  <data name="StructureEditor_VarsColType" xml:space="preserve"><value>Tipo</value></data>
+  <data name="StructureEditor_VarsColInitialValue" xml:space="preserve"><value>Valor inicial</value></data>
+  <data name="StructureEditor_VarsColDescription" xml:space="preserve"><value>Descripción</value></data>
+  <data name="StructureEditor_VarsAddButton" xml:space="preserve"><value>＋ Añadir variable</value></data>
+  <data name="StructureEditor_V2AssertionsHeader" xml:space="preserve"><value>Aserciones</value></data>
+  <data name="StructureEditor_V2AssertionPlaceholder" xml:space="preserve"><value>var:name equals 0 or calc:expr</value></data>
+  <data name="StructureEditor_V2AssertionToolTip" xml:space="preserve"><value>Expresión booleana — Ctrl+Space para funciones y variables</value></data>
+  <data name="StructureEditor_V2ChecksumsHeader" xml:space="preserve"><value>Sumas de verificación</value></data>
+  <data name="StructureEditor_V2VersioningHeader" xml:space="preserve"><value>Versioning (VersionDetection / VersionedBlocks)</value></data>
+  <data name="StructureEditor_V2ImportsHeader" xml:space="preserve"><value>Importaciones ($ref Composición)</value></data>
+  <data name="StructureEditor_V2ImportsDescription" xml:space="preserve"><value>ref = nombre de formato (o structs/Nombre), as = alias usado en bloques structRef.</value></data>
+  <data name="StructureEditor_V2ImportRefToolTip" xml:space="preserve"><value>Referencia de formato p.ej. structs/PE_OptionalHeader</value></data>
+  <data name="StructureEditor_V2ImportAliasToolTip" xml:space="preserve"><value>Alias en structRef p.ej. PEOpt</value></data>
+  <data name="StructureEditor_V2AddImportButton" xml:space="preserve"><value>+ Añadir importación</value></data>
+  <data name="StructureEditor_V2ForensicHeader" xml:space="preserve"><value>Forense</value></data>
+  <data name="StructureEditor_V2NavBookmarksHeader" xml:space="preserve"><value>Marcadores de navegación</value></data>
+  <data name="StructureEditor_V2BookmarkPlaceholder" xml:space="preserve"><value>nombreVariable</value></data>
+  <data name="StructureEditor_V2BookmarkToolTip" xml:space="preserve"><value>Variable con el desplazamiento en bytes — Ctrl+Space para sugerencias</value></data>
+  <data name="StructureEditor_V2AddBookmarkButton" xml:space="preserve"><value>＋ Añadir marcador</value></data>
+  <data name="StructureEditor_V2InspectorLayoutHeader" xml:space="preserve"><value>Diseño del inspector</value></data>
+  <data name="StructureEditor_V2ExportTemplatesHeader" xml:space="preserve"><value>Plantillas de exportación</value></data>
+  <data name="StructureEditor_V2AddTemplateButton" xml:space="preserve"><value>＋ Añadir plantilla</value></data>
+  <data name="StructureEditor_V2AIHintsHeader" xml:space="preserve"><value>Sugerencias de IA</value></data>
+  <data name="StructureEditor_TypeHintField" xml:space="preserve"><value>Un campo binario con desplazamiento y longitud fijos o variables.</value></data>
+  <data name="StructureEditor_TypeHintSignature" xml:space="preserve"><value>Bytes mágicos que identifican el formato en un desplazamiento específico.</value></data>
+  <data name="StructureEditor_TypeHintMetadata" xml:space="preserve"><value>Lee un valor de longitud variable o simbólico en una variable con nombre.</value></data>
+  <data name="StructureEditor_TypeHintConditional" xml:space="preserve"><value>Analiza bloques condicionalmente según un valor de campo o variable.</value></data>
+  <data name="StructureEditor_TypeHintLoop" xml:space="preserve"><value>Repite el cuerpo de un bloque mientras se cumpla una condición.</value></data>
+  <data name="StructureEditor_TypeHintAction" xml:space="preserve"><value>Modifica una variable (incrementar, decrementar, establecerVariable).</value></data>
+  <data name="StructureEditor_TypeHintCompute" xml:space="preserve"><value>Evalúa una expresión matemática y almacena el resultado.</value></data>
+  <data name="StructureEditor_TypeHintRepeating" xml:space="preserve"><value>Analiza un array de conteo fijo de entradas estructuradas.</value></data>
+  <data name="StructureEditor_TypeHintUnion" xml:space="preserve"><value>Selecciona un conjunto de bloques variante basado en una variable discriminante.</value></data>
+  <data name="StructureEditor_TypeHintNested" xml:space="preserve"><value>Incrusta una definición de estructura externa por referencia.</value></data>
+  <data name="StructureEditor_TypeHintPointer" xml:space="preserve"><value>Crea una anotación de navegación hacia un desplazamiento apuntado.</value></data>
+  <data name="StructureEditor_ValidationErrorCount" xml:space="preserve"><value>{0} error(es)</value></data>
+  <data name="StructureEditor_ValidationWarningCount" xml:space="preserve"><value>{0} advertencia(s)</value></data>
+  <data name="StructureEditor_RawJsonTitle" xml:space="preserve"><value>JSON bruto — {0}</value></data>
+  <data name="StructureEditor_RawJsonApply" xml:space="preserve"><value>Aplicar</value></data>
+  <data name="StructureEditor_RawJsonCancel" xml:space="preserve"><value>Cancelar</value></data>
+  <data name="StructureEditor_FactoryDisplayName" xml:space="preserve"><value>Editor de estructura</value></data>
+  <data name="StructureEditor_FactoryDescription" xml:space="preserve"><value>Editor visual para archivos de definición de estructura .whfmt. Edite bloques, tipos, desplazamientos, longitudes y colores en un DataGrid.</value></data>
+</root>

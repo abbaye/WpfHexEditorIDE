@@ -7,6 +7,7 @@
 //     DocumentCanvasRenderer.SetBlockAttribute("style", styleName).
 // ==========================================================
 using System.Windows.Controls;
+using WpfHexEditor.Editor.DocumentEditor.Properties;
 
 namespace WpfHexEditor.Editor.DocumentEditor.Controls;
 
@@ -14,26 +15,26 @@ public partial class DocumentStylesPanel : UserControl
 {
     public event EventHandler<string>? StyleSelected;
 
-    private static readonly (string Display, string StyleKey, double FontSize, bool Bold)[] Styles =
+    private static (string Display, string StyleKey, double FontSize, bool Bold)[] BuildStyles() =>
     [
-        ("Normal",         "paragraph", 13, false),
-        ("Heading 1",      "heading1",  22, true),
-        ("Heading 2",      "heading2",  18, true),
-        ("Heading 3",      "heading3",  15, true),
-        ("Heading 4",      "heading4",  14, true),
-        ("Heading 5",      "heading5",  13, true),
-        ("Heading 6",      "heading6",  12, true),
-        ("Quote",          "quote",     13, false),
-        ("Code",           "code",      12, false),
-        ("Caption",        "caption",   11, false),
-        ("List Paragraph", "list",      13, false),
-        ("Intense Quote",  "intense",   13, true),
+        (DocumentEditorResources.DocStyles_Normal,        "paragraph", 13, false),
+        (DocumentEditorResources.DocStyles_Heading1,      "heading1",  22, true),
+        (DocumentEditorResources.DocStyles_Heading2,      "heading2",  18, true),
+        (DocumentEditorResources.DocStyles_Heading3,      "heading3",  15, true),
+        (DocumentEditorResources.DocStyles_Heading4,      "heading4",  14, true),
+        (DocumentEditorResources.DocStyles_Heading5,      "heading5",  13, true),
+        (DocumentEditorResources.DocStyles_Heading6,      "heading6",  12, true),
+        (DocumentEditorResources.DocStyles_Quote,         "quote",     13, false),
+        (DocumentEditorResources.DocStyles_Code,          "code",      12, false),
+        (DocumentEditorResources.DocStyles_Caption,       "caption",   11, false),
+        (DocumentEditorResources.DocStyles_ListParagraph, "list",      13, false),
+        (DocumentEditorResources.DocStyles_IntenseQuote,  "intense",   13, true),
     ];
 
     public DocumentStylesPanel()
     {
         InitializeComponent();
-        foreach (var (display, styleKey, fontSize, bold) in Styles)
+        foreach (var (display, styleKey, fontSize, bold) in BuildStyles())
         {
             var item = new ListBoxItem
             {

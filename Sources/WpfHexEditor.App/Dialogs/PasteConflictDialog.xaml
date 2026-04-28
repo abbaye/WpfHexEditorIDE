@@ -8,7 +8,7 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ec="clr-namespace:WpfHexEditor.Editor.Core.Views;assembly=WpfHexEditor.Editor.Core"
-        Title="File Already Exists"
+        Title="{DynamicResource App_PasteConflict_Title}"
         Width="420" SizeToContent="Height"
         MinWidth="340"
         Background="{DynamicResource DockWindowBackgroundBrush}">
@@ -25,14 +25,13 @@
 
         <!-- Conflict message -->
         <TextBlock TextWrapping="Wrap" Margin="0,0,0,6">
-            A file named <Run x:Name="OriginalNameRun" FontWeight="SemiBold"/> already exists
-            in the destination folder.
+            <Run Text="{DynamicResource App_PasteConflict_AlreadyExists1}"/> <Run x:Name="OriginalNameRun" FontWeight="SemiBold"/> <Run Text="{DynamicResource App_PasteConflict_AlreadyExists2}"/>
         </TextBlock>
-        <TextBlock Text="Enter a new name to rename the pasted file, or choose an action below."
+        <TextBlock Text="{DynamicResource App_PasteConflict_Instructions}"
                    TextWrapping="Wrap" Opacity="0.7" Margin="0,0,0,12"/>
 
         <!-- New name input -->
-        <TextBlock Text="New name:" Margin="0,0,0,4" />
+        <TextBlock Text="{DynamicResource App_PasteConflict_NewNameLabel}" Margin="0,0,0,4" />
         <TextBox x:Name="NewNameBox" Margin="0,0,0,4"
                  KeyDown="OnInputKeyDown" />
 
@@ -42,9 +41,9 @@
 
         <!-- Action buttons -->
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,8,0,0">
-            <Button Content="Rename" IsDefault="True" Click="OnRename"   Margin="0,0,8,0" />
-            <Button Content="Skip"                    Click="OnSkip"     Margin="0,0,8,0" />
-            <Button Content="Cancel All"              Click="OnCancelAll" />
+            <Button Content="{DynamicResource App_PasteConflict_Rename}" IsDefault="True" Click="OnRename"   Margin="0,0,8,0" />
+            <Button Content="{DynamicResource App_PasteConflict_Skip}"                    Click="OnSkip"     Margin="0,0,8,0" />
+            <Button Content="{DynamicResource App_PasteConflict_CancelAll}"              Click="OnCancelAll" />
         </StackPanel>
 
     </StackPanel>

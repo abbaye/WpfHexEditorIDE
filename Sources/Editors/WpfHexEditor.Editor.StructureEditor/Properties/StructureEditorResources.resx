@@ -1,0 +1,584 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfHexEditor.Editor.StructureEditor
+    File        : Properties/StructureEditorResources.resx
+    Description : English (neutral) localization strings for the Structure Editor.
+-->
+<root>
+  <!--
+    Microsoft ResX Schema
+
+    Version 2.0
+
+    The primary goals of this format is to allow a simple XML format
+    that can be used by the wide range of tools and the generated code
+    files that will run on the .NET framework.
+
+    The usage of this format is encoded in the "resheader" rows below.
+
+    <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+      <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+      <xsd:element name="root" msdata:IsDataSet="true">
+        <xsd:complexType>
+          <xsd:choice maxOccurs="unbounded">
+            <xsd:element name="metadata">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element name="value" type="xsd:string" minOccurs="0" />
+                </xsd:sequence>
+                <xsd:attribute name="name" use="required" type="xsd:string" />
+                <xsd:attribute name="type" type="xsd:string" />
+                <xsd:attribute name="mimetype" type="xsd:string" />
+                <xsd:attribute ref="xml:space" />
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="assembly">
+              <xsd:complexType>
+                <xsd:attribute name="alias" type="xsd:string" />
+                <xsd:attribute name="name" type="xsd:string" />
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="data">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                  <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+                </xsd:sequence>
+                <xsd:attribute name="name" use="required" type="xsd:string" />
+                <xsd:attribute name="type" type="xsd:string" />
+                <xsd:attribute name="mimetype" type="xsd:string" />
+                <xsd:attribute ref="xml:space" />
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="resheader">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                </xsd:sequence>
+                <xsd:attribute name="name" use="required" type="xsd:string" />
+              </xsd:complexType>
+            </xsd:element>
+          </xsd:choice>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:schema>
+  -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <!-- Add Block Dialog -->
+  <data name="StructureEditor_AddBlockTitle" xml:space="preserve">
+    <value>Add Block</value>
+  </data>
+  <data name="StructureEditor_AddBlockButton" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="StructureEditor_AddBlockCancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+
+  <!-- Tabs -->
+  <data name="StructureEditor_TabMetadata" xml:space="preserve">
+    <value>Metadata</value>
+  </data>
+  <data name="StructureEditor_TabDetection" xml:space="preserve">
+    <value>Detection</value>
+  </data>
+  <data name="StructureEditor_TabBlocks" xml:space="preserve">
+    <value>Blocks</value>
+  </data>
+  <data name="StructureEditor_TabVariables" xml:space="preserve">
+    <value>Variables</value>
+  </data>
+  <data name="StructureEditor_TabAdvanced" xml:space="preserve">
+    <value>Advanced</value>
+  </data>
+  <data name="StructureEditor_TabQuality" xml:space="preserve">
+    <value>Quality</value>
+  </data>
+  <data name="StructureEditor_TabTest" xml:space="preserve">
+    <value>Test</value>
+  </data>
+
+  <!-- Toolbar ToolTips -->
+  <data name="StructureEditor_SaveToolTip" xml:space="preserve">
+    <value>Save (Ctrl+S)</value>
+  </data>
+  <data name="StructureEditor_ValidateToolTip" xml:space="preserve">
+    <value>Validate (Ctrl+Shift+V)</value>
+  </data>
+  <data name="StructureEditor_UndoToolTip" xml:space="preserve">
+    <value>Undo (Ctrl+Z)</value>
+  </data>
+  <data name="StructureEditor_RedoToolTip" xml:space="preserve">
+    <value>Redo (Ctrl+Y)</value>
+  </data>
+  <data name="StructureEditor_LiveCodeViewToolTip" xml:space="preserve">
+    <value>Toggle Live Code View</value>
+  </data>
+  <data name="StructureEditor_AddBlockToolTip" xml:space="preserve">
+    <value>Add block (Ctrl+N)</value>
+  </data>
+  <data name="StructureEditor_DuplicateBlockToolTip" xml:space="preserve">
+    <value>Duplicate block (Ctrl+D)</value>
+  </data>
+  <data name="StructureEditor_UnsavedChangesToolTip" xml:space="preserve">
+    <value>Unsaved changes</value>
+  </data>
+  <data name="StructureEditor_BlocksFilterToolTip" xml:space="preserve">
+    <value>Filter blocks by name</value>
+  </data>
+
+  <!-- Blocks Context Menu -->
+  <data name="StructureEditor_BlocksAddMenuItem" xml:space="preserve">
+    <value>Add Block...</value>
+  </data>
+  <data name="StructureEditor_BlocksDuplicateMenuItem" xml:space="preserve">
+    <value>Duplicate</value>
+  </data>
+  <data name="StructureEditor_BlocksRemoveMenuItem" xml:space="preserve">
+    <value>Remove</value>
+  </data>
+  <data name="StructureEditor_BlocksMoveUpMenuItem" xml:space="preserve">
+    <value>Move Up</value>
+  </data>
+  <data name="StructureEditor_BlocksMoveDownMenuItem" xml:space="preserve">
+    <value>Move Down</value>
+  </data>
+  <data name="StructureEditor_BlocksCopyJsonMenuItem" xml:space="preserve">
+    <value>Copy as JSON</value>
+  </data>
+  <data name="StructureEditor_BlocksPasteMenuItem" xml:space="preserve">
+    <value>Paste Block</value>
+  </data>
+
+  <!-- Blocks Empty State -->
+  <data name="StructureEditor_BlocksEmptyLine1" xml:space="preserve">
+    <value>Select a block to edit its properties,</value>
+  </data>
+  <data name="StructureEditor_BlocksEmptyLine2" xml:space="preserve">
+    <value>or press Ctrl+N / right-click to add a new block.</value>
+  </data>
+
+  <!-- Detection Tab -->
+  <data name="StructureEditor_DetectionHexSigLabel" xml:space="preserve">
+    <value>Hex Signature</value>
+  </data>
+  <data name="StructureEditor_DetectionHexBytesToolTip" xml:space="preserve">
+    <value>Hex bytes without spaces, e.g. 89504E47 for PNG</value>
+  </data>
+  <data name="StructureEditor_DetectionSigLabel" xml:space="preserve">
+    <value>Signature</value>
+  </data>
+  <data name="StructureEditor_DetectionV2SigsLabel" xml:space="preserve">
+    <value>v2.0 Signatures</value>
+  </data>
+  <data name="StructureEditor_DetectionMatchModeLabel" xml:space="preserve">
+    <value>Match Mode</value>
+  </data>
+  <data name="StructureEditor_DetectionHexValueToolTip" xml:space="preserve">
+    <value>Hex value</value>
+  </data>
+  <data name="StructureEditor_DetectionOffsetToolTip" xml:space="preserve">
+    <value>Offset</value>
+  </data>
+  <data name="StructureEditor_DetectionLabelToolTip" xml:space="preserve">
+    <value>Label</value>
+  </data>
+  <data name="StructureEditor_DetectionAddSigButton" xml:space="preserve">
+    <value>＋ Add Signature</value>
+  </data>
+  <data name="StructureEditor_DetectionEntropyLabel" xml:space="preserve">
+    <value>Entropy Hint</value>
+  </data>
+  <data name="StructureEditor_DetectionMinEntropyLabel" xml:space="preserve">
+    <value>Min Entropy</value>
+  </data>
+  <data name="StructureEditor_DetectionMaxEntropyLabel" xml:space="preserve">
+    <value>Max Entropy</value>
+  </data>
+  <data name="StructureEditor_DetectionMinScoreLabel" xml:space="preserve">
+    <value>Minimum Score</value>
+  </data>
+  <data name="StructureEditor_DetectionScoreThresholdLabel" xml:space="preserve">
+    <value>Score Threshold</value>
+  </data>
+  <data name="StructureEditor_DetectionContentPatternsLabel" xml:space="preserve">
+    <value>Content Patterns (text formats)</value>
+  </data>
+  <data name="StructureEditor_DetectionRegexToolTip" xml:space="preserve">
+    <value>Regex pattern</value>
+  </data>
+  <data name="StructureEditor_DetectionAddPatternButton" xml:space="preserve">
+    <value>＋ Add Pattern</value>
+  </data>
+
+  <!-- Metadata Tab -->
+  <data name="StructureEditor_MetaCoreSection" xml:space="preserve">
+    <value>Core</value>
+  </data>
+  <data name="StructureEditor_MetaNameLabel" xml:space="preserve">
+    <value>Format Name</value>
+  </data>
+  <data name="StructureEditor_MetaNameToolTip" xml:space="preserve">
+    <value>Human-readable format name (e.g., 'ZIP Archive', 'PNG Image')</value>
+  </data>
+  <data name="StructureEditor_MetaVersionLabel" xml:space="preserve">
+    <value>Version</value>
+  </data>
+  <data name="StructureEditor_MetaVersionToolTip" xml:space="preserve">
+    <value>Version of this definition (e.g., '1.0', '2.0')</value>
+  </data>
+  <data name="StructureEditor_MetaAuthorLabel" xml:space="preserve">
+    <value>Author</value>
+  </data>
+  <data name="StructureEditor_MetaAuthorToolTip" xml:space="preserve">
+    <value>Author of this definition file</value>
+  </data>
+  <data name="StructureEditor_MetaCategoryLabel" xml:space="preserve">
+    <value>Category</value>
+  </data>
+  <data name="StructureEditor_MetaCategoryToolTip" xml:space="preserve">
+    <value>Category (auto-set from folder structure: Archives, Images, Audio, Video, etc.)</value>
+  </data>
+  <data name="StructureEditor_MetaDiffModeLabel" xml:space="preserve">
+    <value>Diff Mode</value>
+  </data>
+  <data name="StructureEditor_MetaDiffModeToolTip" xml:space="preserve">
+    <value>Preferred diff algorithm for DiffViewer</value>
+  </data>
+  <data name="StructureEditor_MetaPreferredEditorLabel" xml:space="preserve">
+    <value>Preferred Editor</value>
+  </data>
+  <data name="StructureEditor_MetaPreferredEditorToolTip" xml:space="preserve">
+    <value>Preferred editor factory ID for files matching this format</value>
+  </data>
+  <data name="StructureEditor_MetaDescriptionLabel" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="StructureEditor_MetaIsTextFormat" xml:space="preserve">
+    <value>Is text format (opens in Code Editor by default)</value>
+  </data>
+  <data name="StructureEditor_MetaExtensionsLabel" xml:space="preserve">
+    <value>File Extensions</value>
+  </data>
+  <data name="StructureEditor_MetaAddExtensionButton" xml:space="preserve">
+    <value>＋ Add Extension</value>
+  </data>
+  <data name="StructureEditor_MetaMimeTypesLabel" xml:space="preserve">
+    <value>MIME Types</value>
+  </data>
+  <data name="StructureEditor_MetaAddMimeButton" xml:space="preserve">
+    <value>＋ Add MIME Type</value>
+  </data>
+  <data name="StructureEditor_MetaSoftwareLabel" xml:space="preserve">
+    <value>Software</value>
+  </data>
+  <data name="StructureEditor_MetaAddSoftwareButton" xml:space="preserve">
+    <value>＋ Add Software</value>
+  </data>
+
+  <!-- Quality Tab -->
+  <data name="StructureEditor_QualityComputedSection" xml:space="preserve">
+    <value>Computed Metrics</value>
+  </data>
+  <data name="StructureEditor_QualityBlockCoverage" xml:space="preserve">
+    <value>Block Coverage</value>
+  </data>
+  <data name="StructureEditor_QualityCompletenessScore" xml:space="preserve">
+    <value>Completeness Score</value>
+  </data>
+  <data name="StructureEditor_QualityTypeDistribution" xml:space="preserve">
+    <value>Type Distribution</value>
+  </data>
+  <data name="StructureEditor_QualityBlocksLabel" xml:space="preserve">
+    <value>Blocks</value>
+  </data>
+  <data name="StructureEditor_QualityDepthLabel" xml:space="preserve">
+    <value>Depth</value>
+  </data>
+  <data name="StructureEditor_QualityVariablesLabel" xml:space="preserve">
+    <value>Variables</value>
+  </data>
+  <data name="StructureEditor_QualityRulesLabel" xml:space="preserve">
+    <value>Rules</value>
+  </data>
+  <data name="StructureEditor_QualityMetadataLabel" xml:space="preserve">
+    <value>Metadata</value>
+  </data>
+  <data name="StructureEditor_QualityDocLevel" xml:space="preserve">
+    <value>Documentation Level</value>
+  </data>
+  <data name="StructureEditor_QualityLastUpdated" xml:space="preserve">
+    <value>Last Updated</value>
+  </data>
+  <data name="StructureEditor_QualityLastUpdatedToolTip" xml:space="preserve">
+    <value>Format: YYYY-MM-DD (auto-filled on save)</value>
+  </data>
+  <data name="StructureEditor_QualityPriorityFormat" xml:space="preserve">
+    <value>Priority Format (top 100)</value>
+  </data>
+  <data name="StructureEditor_QualityAutoRefined" xml:space="preserve">
+    <value>Auto-refined (enriched by script — read-only)</value>
+  </data>
+
+  <!-- Test Tab -->
+  <data name="StructureEditor_TestSection" xml:space="preserve">
+    <value>Test Format Against File</value>
+  </data>
+  <data name="StructureEditor_TestFilePathToolTip" xml:space="preserve">
+    <value>Path to the binary file to test</value>
+  </data>
+  <data name="StructureEditor_TestBrowseButton" xml:space="preserve">
+    <value>Browse…</value>
+  </data>
+  <data name="StructureEditor_TestRunButton" xml:space="preserve">
+    <value>▶ Run Test</value>
+  </data>
+  <data name="StructureEditor_TestCopyToolTip" xml:space="preserve">
+    <value>Copy results to clipboard (TSV)</value>
+  </data>
+  <data name="StructureEditor_TestEmptyMessage" xml:space="preserve">
+    <value>Select a file and click ▶ Run Test to test the current format definition.</value>
+  </data>
+  <data name="StructureEditor_TestColStatus" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="StructureEditor_TestColBlockName" xml:space="preserve">
+    <value>Block Name</value>
+  </data>
+  <data name="StructureEditor_TestColType" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="StructureEditor_TestColOffset" xml:space="preserve">
+    <value>Offset</value>
+  </data>
+  <data name="StructureEditor_TestColLen" xml:space="preserve">
+    <value>Len</value>
+  </data>
+  <data name="StructureEditor_TestColRaw" xml:space="preserve">
+    <value>Raw (hex)</value>
+  </data>
+  <data name="StructureEditor_TestColParsed" xml:space="preserve">
+    <value>Parsed Value</value>
+  </data>
+  <data name="StructureEditor_TestColNote" xml:space="preserve">
+    <value>Note</value>
+  </data>
+  <data name="StructureEditor_TestFilterOk" xml:space="preserve">
+    <value>✓ OK</value>
+  </data>
+  <data name="StructureEditor_TestFilterWarning" xml:space="preserve">
+    <value>⚠ Warning</value>
+  </data>
+  <data name="StructureEditor_TestFilterError" xml:space="preserve">
+    <value>✕ Error</value>
+  </data>
+  <data name="StructureEditor_TestFilterSkipped" xml:space="preserve">
+    <value>⊘ Skipped</value>
+  </data>
+
+  <!-- Variables Tab -->
+  <data name="StructureEditor_VarsDescription" xml:space="preserve">
+    <value>Initial variables available to the block interpreter (e.g. loop counters, computed offsets).</value>
+  </data>
+  <data name="StructureEditor_VarsFilterToolTip" xml:space="preserve">
+    <value>Filter variables by name</value>
+  </data>
+  <data name="StructureEditor_VarsColName" xml:space="preserve">
+    <value>Variable Name</value>
+  </data>
+  <data name="StructureEditor_VarsColType" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="StructureEditor_VarsColInitialValue" xml:space="preserve">
+    <value>Initial Value</value>
+  </data>
+  <data name="StructureEditor_VarsColDescription" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="StructureEditor_VarsAddButton" xml:space="preserve">
+    <value>＋ Add Variable</value>
+  </data>
+
+  <!-- Advanced Tab — v2 sections -->
+  <data name="StructureEditor_V2AssertionsHeader" xml:space="preserve">
+    <value>Assertions</value>
+  </data>
+  <data name="StructureEditor_V2AssertionPlaceholder" xml:space="preserve">
+    <value>var:name equals 0 or calc:expr</value>
+  </data>
+  <data name="StructureEditor_V2AssertionToolTip" xml:space="preserve">
+    <value>Boolean expression — Ctrl+Space for functions and variables</value>
+  </data>
+  <data name="StructureEditor_V2ChecksumsHeader" xml:space="preserve">
+    <value>Checksums</value>
+  </data>
+  <data name="StructureEditor_V2VersioningHeader" xml:space="preserve">
+    <value>Versioning (VersionDetection / VersionedBlocks)</value>
+  </data>
+  <data name="StructureEditor_V2ImportsHeader" xml:space="preserve">
+    <value>Imports ($ref Composition)</value>
+  </data>
+  <data name="StructureEditor_V2ImportsDescription" xml:space="preserve">
+    <value>ref = format name (or structs/Name), as = alias used in structRef blocks.</value>
+  </data>
+  <data name="StructureEditor_V2ImportRefToolTip" xml:space="preserve">
+    <value>Format ref e.g. structs/PE_OptionalHeader</value>
+  </data>
+  <data name="StructureEditor_V2ImportAliasToolTip" xml:space="preserve">
+    <value>Alias used in structRef e.g. PEOpt</value>
+  </data>
+  <data name="StructureEditor_V2AddImportButton" xml:space="preserve">
+    <value>+ Add Import</value>
+  </data>
+  <data name="StructureEditor_V2ForensicHeader" xml:space="preserve">
+    <value>Forensic</value>
+  </data>
+  <data name="StructureEditor_V2NavBookmarksHeader" xml:space="preserve">
+    <value>Navigation Bookmarks</value>
+  </data>
+  <data name="StructureEditor_V2BookmarkPlaceholder" xml:space="preserve">
+    <value>variableName</value>
+  </data>
+  <data name="StructureEditor_V2BookmarkToolTip" xml:space="preserve">
+    <value>Variable holding the byte offset — Ctrl+Space for suggestions</value>
+  </data>
+  <data name="StructureEditor_V2AddBookmarkButton" xml:space="preserve">
+    <value>＋ Add Bookmark</value>
+  </data>
+  <data name="StructureEditor_V2InspectorLayoutHeader" xml:space="preserve">
+    <value>Inspector Layout</value>
+  </data>
+  <data name="StructureEditor_V2ExportTemplatesHeader" xml:space="preserve">
+    <value>Export Templates</value>
+  </data>
+  <data name="StructureEditor_V2AddTemplateButton" xml:space="preserve">
+    <value>＋ Add Template</value>
+  </data>
+  <data name="StructureEditor_V2AIHintsHeader" xml:space="preserve">
+    <value>AI Hints</value>
+  </data>
+
+  <!-- Block Type Hints -->
+  <data name="StructureEditor_TypeHintField" xml:space="preserve">
+    <value>A binary field with a fixed or variable offset and length.</value>
+  </data>
+  <data name="StructureEditor_TypeHintSignature" xml:space="preserve">
+    <value>Magic bytes that identify the format at a specific offset.</value>
+  </data>
+  <data name="StructureEditor_TypeHintMetadata" xml:space="preserve">
+    <value>Reads a variable-length or symbolic value into a named variable.</value>
+  </data>
+  <data name="StructureEditor_TypeHintConditional" xml:space="preserve">
+    <value>Conditionally parses blocks based on a field value or variable.</value>
+  </data>
+  <data name="StructureEditor_TypeHintLoop" xml:space="preserve">
+    <value>Repeats a block body while a condition is true.</value>
+  </data>
+  <data name="StructureEditor_TypeHintAction" xml:space="preserve">
+    <value>Modifies a variable (increment, decrement, setVariable).</value>
+  </data>
+  <data name="StructureEditor_TypeHintCompute" xml:space="preserve">
+    <value>Evaluates a math expression and stores the result.</value>
+  </data>
+  <data name="StructureEditor_TypeHintRepeating" xml:space="preserve">
+    <value>Parses a fixed-count array of structured entries.</value>
+  </data>
+  <data name="StructureEditor_TypeHintUnion" xml:space="preserve">
+    <value>Selects a variant block set based on a discriminant variable.</value>
+  </data>
+  <data name="StructureEditor_TypeHintNested" xml:space="preserve">
+    <value>Embeds an external struct definition by reference.</value>
+  </data>
+  <data name="StructureEditor_TypeHintPointer" xml:space="preserve">
+    <value>Creates a navigation annotation to a pointed-to offset.</value>
+  </data>
+
+  <!-- Validation / Status -->
+  <data name="StructureEditor_ValidationErrorCount" xml:space="preserve">
+    <value>{0} error(s)</value>
+  </data>
+  <data name="StructureEditor_ValidationWarningCount" xml:space="preserve">
+    <value>{0} warning(s)</value>
+  </data>
+
+  <!-- Raw JSON Panel -->
+  <data name="StructureEditor_RawJsonTitle" xml:space="preserve">
+    <value>Raw JSON — {0}</value>
+  </data>
+  <data name="StructureEditor_RawJsonApply" xml:space="preserve">
+    <value>Apply</value>
+  </data>
+  <data name="StructureEditor_RawJsonCancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+
+  <!-- Factory Registration -->
+  <data name="StructureEditor_FactoryDisplayName" xml:space="preserve">
+    <value>Structure Editor</value>
+  </data>
+  <data name="StructureEditor_FactoryDescription" xml:space="preserve">
+    <value>Visual editor for .whfmt structure definition files. Edit blocks, types, offsets, lengths and colors in a DataGrid.</value>
+  </data>
+</root>

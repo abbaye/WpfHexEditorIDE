@@ -15,6 +15,7 @@ using System.Windows.Media;
 using WpfHexEditor.Core;
 using WpfHexEditor.Editor.DocumentEditor.Core.BinaryMap;
 using WpfHexEditor.Editor.DocumentEditor.Core.Model;
+using WpfHexEditor.Editor.DocumentEditor.Properties;
 
 namespace WpfHexEditor.Editor.DocumentEditor.Controls;
 
@@ -179,7 +180,7 @@ public partial class DocumentHexPane : UserControl
 
     private void UpdateOffsetLabel(long offset)
     {
-        PART_OffsetLabel.Text = $"Hex  |  0x{offset:X8}";
+        PART_OffsetLabel.Text = string.Format(DocumentEditorResources.DocHexPane_OffsetPattern, offset);
     }
 
     // ── Map rebuild ──────────────────────────────────────────────────────────

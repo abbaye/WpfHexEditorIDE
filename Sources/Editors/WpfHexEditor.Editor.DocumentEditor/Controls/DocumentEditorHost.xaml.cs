@@ -25,6 +25,7 @@ using WpfHexEditor.Editor.DocumentEditor.Core.Model;
 using WpfHexEditor.Editor.DocumentEditor.Core.Options;
 using WpfHexEditor.Editor.DocumentEditor.ViewModels;
 using WpfHexEditor.SDK.Contracts;
+using WpfHexEditor.Editor.DocumentEditor.Properties;
 
 namespace WpfHexEditor.Editor.DocumentEditor.Controls;
 
@@ -160,7 +161,7 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
     public bool IsBusy     { get; private set; }
 
     public string Title => _vm is null
-        ? "Document"
+        ? DocumentEditorResources.DocEditorHost_DocumentTitle
         : Path.GetFileName(_vm.Model.FilePath) + (IsDirty ? " *" : string.Empty);
 
     public int    UndoCount       => _vm?.Model.UndoEngine.UndoCount ?? 0;
@@ -210,7 +211,7 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
         var saver = savers.FirstOrDefault(s => s.CanSave(_vm.Model.FilePath));
         if (saver is null)
         {
-            StatusMessage?.Invoke(this, "No saver registered for this file type.");
+            StatusMessage?.Invoke(this, DocumentEditorResources.DocEditorHost_NoSaverStatus);
             return;
         }
 
@@ -227,12 +228,12 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
             _hexHighlightMgr?.Clear();
 
             var fileName = System.IO.Path.GetFileName(_vm.Model.FilePath);
-            StatusMessage?.Invoke(this, $"Saved — {fileName}");
+            StatusMessage?.Invoke(this, string.Format(DocumentEditorResources.DocEditorHost_SavedStatus, fileName));
             TitleChanged?.Invoke(this, Title);
         }
         catch (Exception ex)
         {
-            StatusMessage?.Invoke(this, $"Save failed: {ex.Message}");
+            StatusMessage?.Invoke(this, string.Format(DocumentEditorResources.DocEditorHost_SaveFailedStatus, ex.Message));
             if (File.Exists(tmp)) File.Delete(tmp);
         }
         finally
@@ -263,7 +264,7 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
         await Dispatcher.InvokeAsync(() => PART_TextPane.ShowLoading());
 
         IsBusy = true;
-        OperationStarted?.Invoke(this, new DocumentOperationEventArgs { Title = "Loading document…" });
+        OperationStarted?.Invoke(this, new DocumentOperationEventArgs { Title = DocumentEditorResources.DocEditorHost_LoadingMessage });
 
         var fileName = System.IO.Path.GetFileName(filePath);
         var ctxState = _ideContext is null ? "NULL" : "OK";
@@ -283,7 +284,7 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
                 _pendingFilePath = filePath;
                 OutputMessage?.Invoke(this, $"[DocEditor] DEFERRED — waiting for IDE context. file='{fileName}'");
                 await Dispatcher.InvokeAsync(() =>
-                    PART_TextPane.ShowLoading("Waiting for IDE to initialize…"));
+                    PART_TextPane.ShowLoading(DocumentEditorResources.DocEditorHost_WaitingForIDE));
                 return;
             }
 
@@ -308,7 +309,7 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
         catch (Exception ex)
         {
             OutputMessage?.Invoke(this, $"[DocEditor] ERROR — {ex.GetType().Name}: {ex.Message}");
-            StatusMessage?.Invoke(this, $"Failed to open document: {ex.Message}");
+            StatusMessage?.Invoke(this, string.Format(DocumentEditorResources.DocEditorHost_LoadErrorMessage, ex.Message));
             _ideContext?.Output.Error($"[DocumentEditor] Failed to open '{fileName}': {ex}");
             await Dispatcher.InvokeAsync(() =>
             {
@@ -367,16 +368,16 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
         if (PART_FullModeBtn   is not null) PART_FullModeBtn.IsChecked   = mode == DocumentViewMode.Full;
         if (PART_FocusModeBtn  is not null) PART_FocusModeBtn.IsChecked  = mode == DocumentViewMode.Focus;
 
-        var readOnlySuffix = IsReadOnly ? " | Read Only" : string.Empty;
+        var readOnlySuffix = IsReadOnly ? DocumentEditorResources.DocEditorHost_ReadOnlySuffix : string.Empty;
         PART_StatusBar.ViewModeText = mode switch
         {
-            DocumentViewMode.TextOnly  => "Text" + readOnlySuffix,
-            DocumentViewMode.Split     => "Split" + readOnlySuffix,
-            DocumentViewMode.HexOnly   => "Hex" + readOnlySuffix,
-            DocumentViewMode.Structure => "Structure" + readOnlySuffix,
-            DocumentViewMode.Full      => "Full" + readOnlySuffix,
-            DocumentViewMode.Focus     => "Focus" + readOnlySuffix,
-            _                          => "Split" + readOnlySuffix
+            DocumentViewMode.TextOnly  => DocumentEditorResources.DocEditorHost_ViewModeText      + readOnlySuffix,
+            DocumentViewMode.Split     => DocumentEditorResources.DocEditorHost_ViewModeSplit      + readOnlySuffix,
+            DocumentViewMode.HexOnly   => DocumentEditorResources.DocEditorHost_ViewModeHex       + readOnlySuffix,
+            DocumentViewMode.Structure => DocumentEditorResources.DocEditorHost_ViewModeStructure + readOnlySuffix,
+            DocumentViewMode.Full      => DocumentEditorResources.DocEditorHost_ViewModeFull      + readOnlySuffix,
+            DocumentViewMode.Focus     => DocumentEditorResources.DocEditorHost_ViewModeFocus     + readOnlySuffix,
+            _                          => DocumentEditorResources.DocEditorHost_ViewModeSplit     + readOnlySuffix
         };
     }
 
@@ -613,7 +614,7 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
 
         var dlg = new Microsoft.Win32.SaveFileDialog
         {
-            Title            = "Export Document",
+            Title            = DocumentEditorResources.DocEditorHost_ExportDialogTitle,
             Filter           = string.Join("|", filterParts),
             FileName         = System.IO.Path.GetFileName(_vm.Model.FilePath),
             InitialDirectory = System.IO.Path.GetDirectoryName(_vm.Model.FilePath) ?? string.Empty,
@@ -625,7 +626,8 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
         var saver      = savers.FirstOrDefault(s => s.CanSave(targetPath));
         if (saver is null)
         {
-            StatusMessage?.Invoke(this, $"No saver registered for '{System.IO.Path.GetExtension(targetPath)}'.");
+            var ext = System.IO.Path.GetExtension(targetPath);
+            StatusMessage?.Invoke(this, string.Format(DocumentEditorResources.DocEditorHost_NoSaverForExport, ext));
             return;
         }
 
@@ -643,11 +645,12 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
                 await saver.SaveAsync(_vm.Model, fs);
             if (File.Exists(targetPath)) File.Delete(targetPath);
             File.Move(tmp, targetPath);
-            StatusMessage?.Invoke(this, $"Exported — {System.IO.Path.GetFileName(targetPath)}");
+            var path = System.IO.Path.GetFileName(targetPath);
+            StatusMessage?.Invoke(this, string.Format(DocumentEditorResources.DocEditorHost_ExportedStatus, path));
         }
         catch (Exception ex)
         {
-            StatusMessage?.Invoke(this, $"Export failed: {ex.Message}");
+            StatusMessage?.Invoke(this, string.Format(DocumentEditorResources.DocEditorHost_ExportFailedStatus, ex.Message));
             OutputMessage?.Invoke(this, $"[DocEditor] Export error: {ex}");
         }
         finally
@@ -661,17 +664,17 @@ public partial class DocumentEditorHost : UserControl, IDocumentEditor, IOpenabl
         var meta = _vm?.Model?.Metadata;
         if (meta is null) return;
 
-        PART_Meta_Title.Text    = string.IsNullOrEmpty(meta.Title)         ? "—" : meta.Title;
-        PART_Meta_Author.Text   = string.IsNullOrEmpty(meta.Author)        ? "—" : meta.Author;
-        PART_Meta_Format.Text   = string.IsNullOrEmpty(meta.FormatVersion) ? "—" : meta.FormatVersion;
-        PART_Meta_Mime.Text     = string.IsNullOrEmpty(meta.MimeType)      ? "—" : meta.MimeType;
+        PART_Meta_Title.Text    = string.IsNullOrEmpty(meta.Title)         ? DocumentEditorResources.DocEditorHost_MetaEmptyValue : meta.Title;
+        PART_Meta_Author.Text   = string.IsNullOrEmpty(meta.Author)        ? DocumentEditorResources.DocEditorHost_MetaEmptyValue : meta.Author;
+        PART_Meta_Format.Text   = string.IsNullOrEmpty(meta.FormatVersion) ? DocumentEditorResources.DocEditorHost_MetaEmptyValue : meta.FormatVersion;
+        PART_Meta_Mime.Text     = string.IsNullOrEmpty(meta.MimeType)      ? DocumentEditorResources.DocEditorHost_MetaEmptyValue : meta.MimeType;
         PART_Meta_Created.Text  = meta.CreatedUtc.HasValue
             ? meta.CreatedUtc.Value.ToLocalTime().ToString("g")
-            : "—";
+            : DocumentEditorResources.DocEditorHost_MetaEmptyValue;
         PART_Meta_Modified.Text = meta.ModifiedUtc.HasValue
             ? meta.ModifiedUtc.Value.ToLocalTime().ToString("g")
-            : "—";
-        PART_Meta_Macros.Text   = meta.HasMacros ? "Yes" : "No";
+            : DocumentEditorResources.DocEditorHost_MetaEmptyValue;
+        PART_Meta_Macros.Text   = meta.HasMacros ? DocumentEditorResources.DocEditorHost_MetaYesValue : DocumentEditorResources.DocEditorHost_MetaNoValue;
 
         PART_MetadataPopup.IsOpen = true;
     }

@@ -65,6 +65,7 @@
     <ProjectReference Include="..\..\Core\WpfHexEditor.Core.Definitions\WpfHexEditor.Core.Definitions.csproj" PrivateAssets="all" />
     <ProjectReference Include="..\..\Core\WpfHexEditor.Core.ProjectSystem\WpfHexEditor.Core.ProjectSystem.csproj" PrivateAssets="all" />
     <ProjectReference Include="..\..\Controls\WpfHexEditor.ColorPicker\WpfHexEditor.ColorPicker.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\..\Core\WpfHexEditor.Core.Localization\WpfHexEditor.Core.Localization.csproj" PrivateAssets="all" />
   </ItemGroup>
 
   <!-- Bundle all dependency DLLs into the NuGet package -->

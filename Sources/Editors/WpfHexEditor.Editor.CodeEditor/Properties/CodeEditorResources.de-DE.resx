@@ -1,0 +1,513 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfHexEditor.Editor.CodeEditor
+    File        : CodeEditorResources.de-DE.resx
+    Description : de-DE translations for CodeEditor UI strings.
+-->
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="CodeEditorSettings_ResetButtonContent" xml:space="preserve">
+    <value>Auf Standard zurücksetzen</value>
+  </data>
+  <data name="CodeEditorSettings_ExportButtonContent" xml:space="preserve">
+    <value>Einstellungen exportieren</value>
+  </data>
+  <data name="CodeEditorSettings_ImportButtonContent" xml:space="preserve">
+    <value>Einstellungen importieren</value>
+  </data>
+  <data name="CodeEditorSettings_ResetButtonToolTip" xml:space="preserve">
+    <value>Alle Einstellungen auf Standardwerte zurücksetzen</value>
+  </data>
+  <data name="CodeEditorSettings_ExportButtonToolTip" xml:space="preserve">
+    <value>Einstellungen in eine JSON-Datei exportieren</value>
+  </data>
+  <data name="CodeEditorSettings_ImportButtonToolTip" xml:space="preserve">
+    <value>Einstellungen aus einer JSON-Datei importieren</value>
+  </data>
+  <data name="CodeEditorSettings_PreviewHeader" xml:space="preserve">
+    <value>Live-Vorschau</value>
+  </data>
+  <data name="CodeEditorSettings_PreviewPlaceholder" xml:space="preserve">
+    <value>Vorschau wird angezeigt, wenn ein CodeEditor verbunden ist</value>
+  </data>
+  <data name="CodeEditorOptions_FontSection" xml:space="preserve">
+    <value>Schriftart</value>
+  </data>
+  <data name="CodeEditorOptions_FontFamilyLabel" xml:space="preserve">
+    <value>Schriftfamilie:</value>
+  </data>
+  <data name="CodeEditorOptions_FontSizeLabel" xml:space="preserve">
+    <value>Größe:</value>
+  </data>
+  <data name="CodeEditorOptions_IndentationSection" xml:space="preserve">
+    <value>Einrückung</value>
+  </data>
+  <data name="CodeEditorOptions_TabSizeLabel" xml:space="preserve">
+    <value>Tabulatorgröße:</value>
+  </data>
+  <data name="CodeEditorOptions_ConvertTabsContent" xml:space="preserve">
+    <value>Tabulatoren in Leerzeichen umwandeln</value>
+  </data>
+  <data name="CodeEditorOptions_AutoIndentLabel" xml:space="preserve">
+    <value>Automatische Einrückung:</value>
+  </data>
+  <data name="CodeEditorOptions_DisplaySection" xml:space="preserve">
+    <value>Anzeige</value>
+  </data>
+  <data name="CodeEditorOptions_ShowLineNumbersContent" xml:space="preserve">
+    <value>Zeilennummern anzeigen</value>
+  </data>
+  <data name="CodeEditorOptions_ShowWhitespaceLabel" xml:space="preserve">
+    <value>Leerzeichen anzeigen:</value>
+  </data>
+  <data name="CodeEditorOptions_CodeFoldingContent" xml:space="preserve">
+    <value>Code-Faltung aktivieren</value>
+  </data>
+  <data name="CodeEditorOptions_FoldToggleContent" xml:space="preserve">
+    <value>Faltbereiche per Doppelklick umschalten</value>
+  </data>
+  <data name="CodeEditorOptions_ScopeGuidesContent" xml:space="preserve">
+    <value>Bereichsführungslinien anzeigen</value>
+  </data>
+  <data name="CodeEditorOptions_FeaturesSection" xml:space="preserve">
+    <value>Funktionen</value>
+  </data>
+  <data name="CodeEditorOptions_SmartCompleteContent" xml:space="preserve">
+    <value>SmartComplete aktivieren</value>
+  </data>
+  <data name="CodeEditorOptions_SnippetsContent" xml:space="preserve">
+    <value>Snippets aktivieren</value>
+  </data>
+  <data name="CodeEditorOptions_MultiCaretContent" xml:space="preserve">
+    <value>Multi-Cursor-Bearbeitung aktivieren (Alt+Click)</value>
+  </data>
+  <data name="CodeEditorOptions_FindAllRefsContent" xml:space="preserve">
+    <value>Alle Verweise suchen aktivieren (Shift+F12)</value>
+  </data>
+  <data name="CodeEditorOptions_FindAllRefsToolTip" xml:space="preserve">
+    <value>Erfordert einen aktiven Sprachserver (LSP) für den aktuellen Dateityp</value>
+  </data>
+  <data name="CodeEditorOptions_CodeLensContent" xml:space="preserve">
+    <value>Code Lens anzeigen (Referenzanzahl in der Zeile)</value>
+  </data>
+  <data name="CodeEditorOptions_CodeLensToolTip" xml:space="preserve">
+    <value>Zeigt die Referenzanzahl über jeder Deklaration an. Klicken Sie auf den Hinweis, um das Referenz-Popup zu öffnen.</value>
+  </data>
+  <data name="CodeEditorOptions_WordHighlightContent" xml:space="preserve">
+    <value>Wort unter dem Cursor hervorheben</value>
+  </data>
+  <data name="CodeEditorOptions_WordHighlightToolTip" xml:space="preserve">
+    <value>Hebt alle Vorkommen des Worts unter dem Cursor hervor und zeigt Markierungen in der Bildlaufleiste an</value>
+  </data>
+  <data name="CodeEditorOptions_BracketColorizeContent" xml:space="preserve">
+    <value>Klammerpaar-Einfärbung</value>
+  </data>
+  <data name="CodeEditorOptions_BracketColorizeToolTip" xml:space="preserve">
+    <value>Färbt Klammern mit CE_Bracket_1/2/3/4 basierend auf der Verschachtelungstiefe ein (erfordert bracketPairs im .whfmt der Sprache)</value>
+  </data>
+  <data name="CodeEditorOptions_ColorSwatchContent" xml:space="preserve">
+    <value>Farbmuster-Vorschau</value>
+  </data>
+  <data name="CodeEditorOptions_ColorSwatchToolTip" xml:space="preserve">
+    <value>Zeigt ein 12×12 Farbmuster neben Farbliteralen (z.B. #FF5733) in CSS-, XAML-, C#-Dateien an</value>
+  </data>
+  <data name="CodeEditorOptions_FormatOnSaveContent" xml:space="preserve">
+    <value>Beim Speichern formatieren (Ctrl+S)</value>
+  </data>
+  <data name="CodeEditorOptions_FormatOnSaveToolTip" xml:space="preserve">
+    <value>Formatiert das Dokument automatisch beim Speichern. Verwendet LSP-Formatierung wenn verfügbar, sonst .whfmt-Einrückungsregeln.</value>
+  </data>
+  <data name="CodeEditorOptions_CodeFormattingSection" xml:space="preserve">
+    <value>Code-Formatierung</value>
+  </data>
+  <data name="CodeEditorOptions_CodeFormattingInfo" xml:space="preserve">
+    <value>Diese Einstellungen überschreiben die .whfmt-Standardwerte der Sprache. Lassen Sie nicht aktivierte Kontrollkästchen im unbestimmten Zustand, um die Sprachregeln zu erben.</value>
+  </data>
+  <data name="CodeEditorOptions_TrimTrailingContent" xml:space="preserve">
+    <value>Abschließende Leerzeichen entfernen</value>
+  </data>
+  <data name="CodeEditorOptions_TrimTrailingToolTip" xml:space="preserve">
+    <value>Entfernt abschließende Leerzeichen/Tabulatoren in jeder Zeile. Unbestimmt = .whfmt-Standardwert verwenden.</value>
+  </data>
+  <data name="CodeEditorOptions_InsertFinalNewlineContent" xml:space="preserve">
+    <value>Abschließende Leerzeile einfügen</value>
+  </data>
+  <data name="CodeEditorOptions_InsertFinalNewlineToolTip" xml:space="preserve">
+    <value>Stellt sicher, dass die Datei mit genau einer neuen Zeile endet. Unbestimmt = .whfmt-Standardwert.</value>
+  </data>
+  <data name="CodeEditorOptions_SpaceAfterKeywordsContent" xml:space="preserve">
+    <value>Leerzeichen nach Schlüsselwörtern (if, for, while)</value>
+  </data>
+  <data name="CodeEditorOptions_SpaceAfterKeywordsToolTip" xml:space="preserve">
+    <value>Fügt ein Leerzeichen zwischen Steuerschlüsselwörter und öffnende Klammer ein. Unbestimmt = .whfmt-Standard.</value>
+  </data>
+  <data name="CodeEditorOptions_SpaceAroundOpsContent" xml:space="preserve">
+    <value>Leerzeichen um binäre Operatoren</value>
+  </data>
+  <data name="CodeEditorOptions_SpaceAroundOpsToolTip" xml:space="preserve">
+    <value>Fügt Leerzeichen um +, -, *, /, ==, etc. ein. Unbestimmt = .whfmt-Standard.</value>
+  </data>
+  <data name="CodeEditorOptions_SpaceAfterCommaContent" xml:space="preserve">
+    <value>Leerzeichen nach Kommas</value>
+  </data>
+  <data name="CodeEditorOptions_SpaceAfterCommaToolTip" xml:space="preserve">
+    <value>Fügt ein Leerzeichen nach Kommas in Argument-/Parameterlisten ein. Unbestimmt = .whfmt-Standard.</value>
+  </data>
+  <data name="CodeEditorOptions_IndentCaseLabelsContent" xml:space="preserve">
+    <value>case/when-Beschriftungen einrücken</value>
+  </data>
+  <data name="CodeEditorOptions_IndentCaseLabelsToolTip" xml:space="preserve">
+    <value>Fügt eine Einrückungsebene zu case/when-Beschriftungen im switch hinzu. Unbestimmt = .whfmt-Standard.</value>
+  </data>
+  <data name="CodeEditorOptions_OrganizeImportsContent" xml:space="preserve">
+    <value>Importe beim Formatieren organisieren</value>
+  </data>
+  <data name="CodeEditorOptions_OrganizeImportsToolTip" xml:space="preserve">
+    <value>Sortiert using/import-Direktiven beim Formatieren alphabetisch. Unbestimmt = .whfmt-Standard.</value>
+  </data>
+  <data name="CodeEditorOptions_SyntaxColorsSection" xml:space="preserve">
+    <value>Syntaxfarben</value>
+  </data>
+  <data name="CodeEditorOptions_ResetColorsButton" xml:space="preserve">
+    <value>Auf Theme zurücksetzen</value>
+  </data>
+  <data name="CodeEditorOptions_ColorPickButton" xml:space="preserve">
+    <value>Wählen</value>
+  </data>
+  <data name="FormatScriptEditor_NewToolTip" xml:space="preserve">
+    <value>Neue Formatdefinition</value>
+  </data>
+  <data name="FormatScriptEditor_OpenToolTip" xml:space="preserve">
+    <value>Formatdefinition öffnen</value>
+  </data>
+  <data name="FormatScriptEditor_SaveToolTip" xml:space="preserve">
+    <value>Aktuelle Datei speichern</value>
+  </data>
+  <data name="FormatScriptEditor_UndoToolTip" xml:space="preserve">
+    <value>Rückgängig (Ctrl+Z)</value>
+  </data>
+  <data name="FormatScriptEditor_RedoToolTip" xml:space="preserve">
+    <value>Wiederholen (Ctrl+Y)</value>
+  </data>
+  <data name="FormatScriptEditor_FormatToolTip" xml:space="preserve">
+    <value>JSON formatieren (Ctrl+Shift+F)</value>
+  </data>
+  <data name="FormatScriptEditor_ValidateToolTip" xml:space="preserve">
+    <value>Formatdefinition validieren</value>
+  </data>
+  <data name="FormatScriptEditor_NoFileLoaded" xml:space="preserve">
+    <value>Keine Datei geladen</value>
+  </data>
+  <data name="FormatScriptEditor_EmbeddedFormatsHeader" xml:space="preserve">
+    <value>Eingebettete Formate</value>
+  </data>
+  <data name="FormatScriptEditor_PreviewPlaceholder" xml:space="preserve">
+    <value>Laden Sie eine Formatdefinition, um die Vorschau zu sehen...</value>
+  </data>
+  <data name="FormatScriptEditor_ValidationTabHeader" xml:space="preserve">
+    <value>Validierung</value>
+  </data>
+  <data name="FormatScriptEditor_ValidationResultsHeader" xml:space="preserve">
+    <value>Validierungsergebnisse</value>
+  </data>
+  <data name="FormatScriptEditor_SelectTestFileButton" xml:space="preserve">
+    <value>Testdatei auswählen...</value>
+  </data>
+  <data name="FormatScriptEditor_RunTestButton" xml:space="preserve">
+    <value>Test ausführen</value>
+  </data>
+  <data name="FormatScriptEditor_TestInstructions" xml:space="preserve">
+    <value>Testen Sie Ihre Formatdefinition gegen Beispieldateien hier.\n\nWählen Sie eine Datei aus und klicken Sie auf 'Test ausführen', um die Ergebnisse zu sehen.</value>
+  </data>
+  <data name="CodeEditorSettings_NoEditorMessage" xml:space="preserve">
+    <value>Kein CodeEditor-Steuerelement ist verbunden.</value>
+  </data>
+  <data name="CodeEditorSettings_NoEditorTitle" xml:space="preserve">
+    <value>Fehler</value>
+  </data>
+  <data name="CodeEditorSettings_ResetConfirmMessage" xml:space="preserve">
+    <value>Sind Sie sicher, dass Sie alle Einstellungen auf ihre Standardwerte zurücksetzen möchten?</value>
+  </data>
+  <data name="CodeEditorSettings_ResetConfirmTitle" xml:space="preserve">
+    <value>Zurücksetzen bestätigen</value>
+  </data>
+  <data name="CodeEditorSettings_ExportDialogTitle" xml:space="preserve">
+    <value>Einstellungen exportieren</value>
+  </data>
+  <data name="CodeEditorSettings_ExportSuccessMessage" xml:space="preserve">
+    <value>Einstellungen erfolgreich exportiert nach:\n{0}</value>
+  </data>
+  <data name="CodeEditorSettings_ExportSuccessTitle" xml:space="preserve">
+    <value>Export erfolgreich</value>
+  </data>
+  <data name="CodeEditorSettings_ExportFailedMessage" xml:space="preserve">
+    <value>Fehler beim Exportieren der Einstellungen:\n{0}</value>
+  </data>
+  <data name="CodeEditorSettings_ExportFailedTitle" xml:space="preserve">
+    <value>Export fehlgeschlagen</value>
+  </data>
+  <data name="CodeEditorSettings_ImportDialogTitle" xml:space="preserve">
+    <value>Einstellungen importieren</value>
+  </data>
+  <data name="CodeEditorSettings_ImportSuccessMessage" xml:space="preserve">
+    <value>Einstellungen erfolgreich importiert von:\n{0}</value>
+  </data>
+  <data name="CodeEditorSettings_ImportSuccessTitle" xml:space="preserve">
+    <value>Import erfolgreich</value>
+  </data>
+  <data name="CodeEditorSettings_ImportFailedMessage" xml:space="preserve">
+    <value>Fehler beim Importieren der Einstellungen:\n{0}</value>
+  </data>
+  <data name="CodeEditorSettings_ImportFailedTitle" xml:space="preserve">
+    <value>Import fehlgeschlagen</value>
+  </data>
+  <data name="CodeEditorSettings_ResetCompleteMessage" xml:space="preserve">
+    <value>Alle Einstellungen wurden auf ihre Standardwerte zurückgesetzt.</value>
+  </data>
+  <data name="CodeEditorSettings_ResetCompleteTitle" xml:space="preserve">
+    <value>Zurücksetzen abgeschlossen</value>
+  </data>
+  <data name="FormatScriptEditor_LoadFormatsError" xml:space="preserve">
+    <value>Fehler beim Laden der eingebetteten Formate: {0}</value>
+  </data>
+  <data name="FormatScriptEditor_OpenDialogTitle" xml:space="preserve">
+    <value>Formatdefinition öffnen</value>
+  </data>
+  <data name="FormatScriptEditor_SaveDialogTitle" xml:space="preserve">
+    <value>Formatdefinition speichern</value>
+  </data>
+  <data name="FormatScriptEditor_FormatJsonError" xml:space="preserve">
+    <value>Fehler beim Formatieren von JSON: {0}</value>
+  </data>
+  <data name="FormatScriptEditor_FormatJsonErrorTitle" xml:space="preserve">
+    <value>Formatierungsfehler</value>
+  </data>
+  <data name="FormatScriptEditor_LoadFileError" xml:space="preserve">
+    <value>Fehler beim Laden der Datei: {0}</value>
+  </data>
+  <data name="FormatScriptEditor_LoadEmbeddedError" xml:space="preserve">
+    <value>Fehler beim Laden des eingebetteten Formats: {0}</value>
+  </data>
+  <data name="FormatScriptEditor_SaveSuccessMessage" xml:space="preserve">
+    <value>Datei erfolgreich gespeichert!</value>
+  </data>
+  <data name="FormatScriptEditor_SaveSuccessTitle" xml:space="preserve">
+    <value>Erfolg</value>
+  </data>
+  <data name="FormatScriptEditor_SaveFailedMessage" xml:space="preserve">
+    <value>Fehler beim Speichern der Datei: {0}</value>
+  </data>
+  <data name="FormatScriptEditor_SaveChangesMessage" xml:space="preserve">
+    <value>Möchten Sie die Änderungen an der aktuellen Datei speichern?</value>
+  </data>
+  <data name="FormatScriptEditor_SaveChangesTitle" xml:space="preserve">
+    <value>Änderungen speichern</value>
+  </data>
+  <data name="FormatScriptEditor_StatusErrors" xml:space="preserve">
+    <value>{0} Fehler</value>
+  </data>
+  <data name="FormatScriptEditor_StatusWarnings" xml:space="preserve">
+    <value>{0} Warnungen</value>
+  </data>
+  <data name="CodeEditor_ContextMenuSelectAll" xml:space="preserve">
+    <value>Alles auswählen</value>
+  </data>
+  <data name="CodeEditor_ContextMenuDelete" xml:space="preserve">
+    <value>Löschen</value>
+  </data>
+  <data name="CodeEditor_ContextMenuFind" xml:space="preserve">
+    <value>Suchen...</value>
+  </data>
+  <data name="CodeEditor_ContextMenuReplace" xml:space="preserve">
+    <value>Ersetzen...</value>
+  </data>
+  <data name="CodeEditor_ContextMenuFindAllRefs" xml:space="preserve">
+    <value>Alle Verweise suchen</value>
+  </data>
+  <data name="CodeEditor_ContextMenuQuickFix" xml:space="preserve">
+    <value>Schnellkorrektur…</value>
+  </data>
+  <data name="CodeEditor_ContextMenuRenameSymbol" xml:space="preserve">
+    <value>Symbol umbenennen</value>
+  </data>
+  <data name="CodeEditor_ContextMenuGoToDefinition" xml:space="preserve">
+    <value>Zur Definition gehen</value>
+  </data>
+  <data name="CodeEditor_ContextMenuGoToImplementation" xml:space="preserve">
+    <value>Zur Implementierung gehen</value>
+  </data>
+  <data name="CodeEditor_ContextMenuPeekDefinition" xml:space="preserve">
+    <value>Definition anzeigen</value>
+  </data>
+  <data name="CodeEditor_ContextMenuShowCallHierarchy" xml:space="preserve">
+    <value>Aufrufhierarchie anzeigen</value>
+  </data>
+  <data name="CodeEditor_ContextMenuShowTypeHierarchy" xml:space="preserve">
+    <value>Typhierarchie anzeigen</value>
+  </data>
+  <data name="CodeEditor_ContextMenuFormatting" xml:space="preserve">
+    <value>Formatierung</value>
+  </data>
+  <data name="CodeEditor_ContextMenuFormatDocument" xml:space="preserve">
+    <value>Dokument formatieren</value>
+  </data>
+  <data name="CodeEditor_ContextMenuFormatSelection" xml:space="preserve">
+    <value>Auswahl formatieren</value>
+  </data>
+  <data name="CodeEditor_ContextMenuOutlining" xml:space="preserve">
+    <value>Gliederung</value>
+  </data>
+  <data name="CodeEditor_ContextMenuToggleOutlining" xml:space="preserve">
+    <value>Gliederung umschalten</value>
+  </data>
+  <data name="CodeEditor_ContextMenuToggleAllOutlining" xml:space="preserve">
+    <value>Alle Gliederung umschalten</value>
+  </data>
+  <data name="CodeEditor_ContextMenuStopOutlining" xml:space="preserve">
+    <value>Gliederung beenden</value>
+  </data>
+  <data name="CodeEditor_ContextMenuStopHidingCurrent" xml:space="preserve">
+    <value>Aktuelles nicht mehr ausblenden</value>
+  </data>
+  <data name="CodeEditor_ContextMenuCollapseToDefs" xml:space="preserve">
+    <value>Auf Definitionen reduzieren</value>
+  </data>
+  <data name="CodeEditor_ContextMenuWordWrap" xml:space="preserve">
+    <value>Zeilenumbruch</value>
+  </data>
+  <data name="CodeEditor_ContextMenuColumnRulers" xml:space="preserve">
+    <value>Spaltenlineale</value>
+  </data>
+  <data name="CodeEditor_ContextMenuShowWhitespace" xml:space="preserve">
+    <value>Leerzeichen anzeigen</value>
+  </data>
+  <data name="CodeEditor_ContextMenuWhitespaceNone" xml:space="preserve">
+    <value>Keine</value>
+  </data>
+  <data name="CodeEditor_ContextMenuWhitespaceSelection" xml:space="preserve">
+    <value>Nur Auswahl</value>
+  </data>
+  <data name="CodeEditor_ContextMenuWhitespaceAlways" xml:space="preserve">
+    <value>Immer</value>
+  </data>
+  <data name="CodeEditor_ContextMenuRefreshHighlights" xml:space="preserve">
+    <value>Hervorhebungen aktualisieren</value>
+  </data>
+  <data name="CodeEditor_ContextMenuReanalyzeFolding" xml:space="preserve">
+    <value>Faltung neu analysieren</value>
+  </data>
+  <data name="CodeEditor_ContextMenuWordHighlight" xml:space="preserve">
+    <value>Worthervorhebung</value>
+  </data>
+  <data name="CodeEditor_FormatDocumentTransaction" xml:space="preserve">
+    <value>Dokument formatieren</value>
+  </data>
+  <data name="CodeEditor_FormatSelectionTransaction" xml:space="preserve">
+    <value>Auswahl formatieren</value>
+  </data>
+  <data name="CodeEditor_FormatJsonError" xml:space="preserve">
+    <value>Kann nicht formatieren — ungültiges JSON:\n{0}</value>
+  </data>
+  <data name="CodeEditor_FormatJsonErrorTitle" xml:space="preserve">
+    <value>Formatierungsfehler</value>
+  </data>
+  <data name="CodeEditor_ValidateJsonSuccess" xml:space="preserve">
+    <value>JSON ist gültig.</value>
+  </data>
+  <data name="CodeEditor_ValidateJsonTitle" xml:space="preserve">
+    <value>Validierung</value>
+  </data>
+  <data name="CodeEditor_ValidateJsonError" xml:space="preserve">
+    <value>Ungültiges JSON: {0}</value>
+  </data>
+  <data name="CodeEditor_ValidateJsonErrorTitle" xml:space="preserve">
+    <value>Validierungsfehler</value>
+  </data>
+  <data name="CodeEditor_GoToLineTitle" xml:space="preserve">
+    <value>Zur Zeile gehen</value>
+  </data>
+  <data name="CodeEditor_GoToLineLabel" xml:space="preserve">
+    <value>Zeilennummer (1 - {0}):</value>
+  </data>
+  <data name="CodeEditor_GoToLineButton" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="CodeEditor_BreakpointToggleToolTip" xml:space="preserve">
+    <value>Klicken, um Haltepunkt umzuschalten</value>
+  </data>
+  <data name="CodeEditor_BreakpointInvalidToolTip" xml:space="preserve">
+    <value>Haltepunkt kann auf dieser Zeile nicht gesetzt werden</value>
+  </data>
+  <data name="CodeEditor_UrlTooltipEmail" xml:space="preserve">
+    <value>Ctrl+Klick, um E-Mail zu senden</value>
+  </data>
+  <data name="CodeEditor_UrlTooltipLink" xml:space="preserve">
+    <value>Ctrl+Klick zum Öffnen</value>
+  </data>
+  <data name="CodeEditor_ReferencesCollapseAll" xml:space="preserve">
+    <value>Alle reduzieren</value>
+  </data>
+  <data name="CodeEditor_ReferencesExpandAll" xml:space="preserve">
+    <value>Alle erweitern</value>
+  </data>
+  <data name="CodeEditor_ReferencesTitle" xml:space="preserve">
+    <value>Verweise — {0}</value>
+  </data>
+  <data name="CodeEditor_ReferencesCounter" xml:space="preserve">
+    <value>{0} Verweis(e)</value>
+  </data>
+  <data name="CodeEditor_ReferencesRefresh" xml:space="preserve">
+    <value>Aktualisieren</value>
+  </data>
+  <data name="CodeEditor_ReferencesPinTooltip" xml:space="preserve">
+    <value>An Verweise-Panel anheften</value>
+  </data>
+  <data name="CodeEditor_BreakpointDisable" xml:space="preserve">
+    <value>Deaktivieren</value>
+  </data>
+  <data name="CodeEditor_BreakpointEnable" xml:space="preserve">
+    <value>Aktivieren</value>
+  </data>
+
+</root>

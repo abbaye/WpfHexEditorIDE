@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="StructureEditor_AddBlockTitle" xml:space="preserve"><value>Добавить блок</value></data>
+  <data name="StructureEditor_AddBlockButton" xml:space="preserve"><value>Добавить</value></data>
+  <data name="StructureEditor_AddBlockCancel" xml:space="preserve"><value>Отмена</value></data>
+  <data name="StructureEditor_TabMetadata" xml:space="preserve"><value>Метаданные</value></data>
+  <data name="StructureEditor_TabDetection" xml:space="preserve"><value>Обнаружение</value></data>
+  <data name="StructureEditor_TabBlocks" xml:space="preserve"><value>Блоки</value></data>
+  <data name="StructureEditor_TabVariables" xml:space="preserve"><value>Переменные</value></data>
+  <data name="StructureEditor_TabAdvanced" xml:space="preserve"><value>Дополнительно</value></data>
+  <data name="StructureEditor_TabQuality" xml:space="preserve"><value>Качество</value></data>
+  <data name="StructureEditor_TabTest" xml:space="preserve"><value>Тест</value></data>
+  <data name="StructureEditor_SaveToolTip" xml:space="preserve"><value>Сохранить (Ctrl+S)</value></data>
+  <data name="StructureEditor_ValidateToolTip" xml:space="preserve"><value>Проверить (Ctrl+Shift+V)</value></data>
+  <data name="StructureEditor_UndoToolTip" xml:space="preserve"><value>Отменить (Ctrl+Z)</value></data>
+  <data name="StructureEditor_RedoToolTip" xml:space="preserve"><value>Повторить (Ctrl+Y)</value></data>
+  <data name="StructureEditor_LiveCodeViewToolTip" xml:space="preserve"><value>Переключить просмотр кода в реальном времени</value></data>
+  <data name="StructureEditor_AddBlockToolTip" xml:space="preserve"><value>Добавить блок (Ctrl+N)</value></data>
+  <data name="StructureEditor_DuplicateBlockToolTip" xml:space="preserve"><value>Дублировать блок (Ctrl+D)</value></data>
+  <data name="StructureEditor_UnsavedChangesToolTip" xml:space="preserve"><value>Несохранённые изменения</value></data>
+  <data name="StructureEditor_BlocksFilterToolTip" xml:space="preserve"><value>Фильтровать блоки по имени</value></data>
+  <data name="StructureEditor_BlocksAddMenuItem" xml:space="preserve"><value>Добавить блок...</value></data>
+  <data name="StructureEditor_BlocksDuplicateMenuItem" xml:space="preserve"><value>Дублировать</value></data>
+  <data name="StructureEditor_BlocksRemoveMenuItem" xml:space="preserve"><value>Удалить</value></data>
+  <data name="StructureEditor_BlocksMoveUpMenuItem" xml:space="preserve"><value>Переместить вверх</value></data>
+  <data name="StructureEditor_BlocksMoveDownMenuItem" xml:space="preserve"><value>Переместить вниз</value></data>
+  <data name="StructureEditor_BlocksCopyJsonMenuItem" xml:space="preserve"><value>Копировать как JSON</value></data>
+  <data name="StructureEditor_BlocksPasteMenuItem" xml:space="preserve"><value>Вставить блок</value></data>
+  <data name="StructureEditor_BlocksEmptyLine1" xml:space="preserve"><value>Выберите блок для редактирования его свойств,</value></data>
+  <data name="StructureEditor_BlocksEmptyLine2" xml:space="preserve"><value>или нажмите Ctrl+N / щёлкните правой кнопкой мыши для добавления нового блока.</value></data>
+  <data name="StructureEditor_DetectionHexSigLabel" xml:space="preserve"><value>Шестнадцатеричная сигнатура</value></data>
+  <data name="StructureEditor_DetectionHexBytesToolTip" xml:space="preserve"><value>Байты hex без пробелов, напр. 89504E47 для PNG</value></data>
+  <data name="StructureEditor_DetectionSigLabel" xml:space="preserve"><value>Сигнатура</value></data>
+  <data name="StructureEditor_DetectionV2SigsLabel" xml:space="preserve"><value>Сигнатуры v2.0</value></data>
+  <data name="StructureEditor_DetectionMatchModeLabel" xml:space="preserve"><value>Режим сопоставления</value></data>
+  <data name="StructureEditor_DetectionHexValueToolTip" xml:space="preserve"><value>Hex-значение</value></data>
+  <data name="StructureEditor_DetectionOffsetToolTip" xml:space="preserve"><value>Смещение</value></data>
+  <data name="StructureEditor_DetectionLabelToolTip" xml:space="preserve"><value>Метка</value></data>
+  <data name="StructureEditor_DetectionAddSigButton" xml:space="preserve"><value>＋ Добавить сигнатуру</value></data>
+  <data name="StructureEditor_DetectionEntropyLabel" xml:space="preserve"><value>Подсказка энтропии</value></data>
+  <data name="StructureEditor_DetectionMinEntropyLabel" xml:space="preserve"><value>Минимальная энтропия</value></data>
+  <data name="StructureEditor_DetectionMaxEntropyLabel" xml:space="preserve"><value>Максимальная энтропия</value></data>
+  <data name="StructureEditor_DetectionMinScoreLabel" xml:space="preserve"><value>Минимальный балл</value></data>
+  <data name="StructureEditor_DetectionScoreThresholdLabel" xml:space="preserve"><value>Порог оценки</value></data>
+  <data name="StructureEditor_DetectionContentPatternsLabel" xml:space="preserve"><value>Шаблоны содержимого (текстовые форматы)</value></data>
+  <data name="StructureEditor_DetectionRegexToolTip" xml:space="preserve"><value>Шаблон Regex</value></data>
+  <data name="StructureEditor_DetectionAddPatternButton" xml:space="preserve"><value>＋ Добавить шаблон</value></data>
+  <data name="StructureEditor_MetaCoreSection" xml:space="preserve"><value>Основное</value></data>
+  <data name="StructureEditor_MetaNameLabel" xml:space="preserve"><value>Имя формата</value></data>
+  <data name="StructureEditor_MetaNameToolTip" xml:space="preserve"><value>Читаемое имя формата (напр. 'ZIP-архив', 'PNG-изображение')</value></data>
+  <data name="StructureEditor_MetaVersionLabel" xml:space="preserve"><value>Версия</value></data>
+  <data name="StructureEditor_MetaVersionToolTip" xml:space="preserve"><value>Версия этого определения (напр. '1.0', '2.0')</value></data>
+  <data name="StructureEditor_MetaAuthorLabel" xml:space="preserve"><value>Автор</value></data>
+  <data name="StructureEditor_MetaAuthorToolTip" xml:space="preserve"><value>Автор этого файла определения</value></data>
+  <data name="StructureEditor_MetaCategoryLabel" xml:space="preserve"><value>Категория</value></data>
+  <data name="StructureEditor_MetaCategoryToolTip" xml:space="preserve"><value>Категория (автоматически из структуры папок: Архивы, Изображения, Аудио, Видео и т.д.)</value></data>
+  <data name="StructureEditor_MetaDiffModeLabel" xml:space="preserve"><value>Режим diff</value></data>
+  <data name="StructureEditor_MetaDiffModeToolTip" xml:space="preserve"><value>Предпочтительный алгоритм diff для DiffViewer</value></data>
+  <data name="StructureEditor_MetaPreferredEditorLabel" xml:space="preserve"><value>Предпочтительный редактор</value></data>
+  <data name="StructureEditor_MetaPreferredEditorToolTip" xml:space="preserve"><value>Идентификатор фабрики предпочтительного редактора для файлов, соответствующих этому формату</value></data>
+  <data name="StructureEditor_MetaDescriptionLabel" xml:space="preserve"><value>Описание</value></data>
+  <data name="StructureEditor_MetaIsTextFormat" xml:space="preserve"><value>Текстовый формат (открывается в редакторе кода по умолчанию)</value></data>
+  <data name="StructureEditor_MetaExtensionsLabel" xml:space="preserve"><value>Расширения файлов</value></data>
+  <data name="StructureEditor_MetaAddExtensionButton" xml:space="preserve"><value>＋ Добавить расширение</value></data>
+  <data name="StructureEditor_MetaMimeTypesLabel" xml:space="preserve"><value>MIME-типы</value></data>
+  <data name="StructureEditor_MetaAddMimeButton" xml:space="preserve"><value>＋ Добавить MIME-тип</value></data>
+  <data name="StructureEditor_MetaSoftwareLabel" xml:space="preserve"><value>Программное обеспечение</value></data>
+  <data name="StructureEditor_MetaAddSoftwareButton" xml:space="preserve"><value>＋ Добавить ПО</value></data>
+  <data name="StructureEditor_QualityComputedSection" xml:space="preserve"><value>Вычисленные метрики</value></data>
+  <data name="StructureEditor_QualityBlockCoverage" xml:space="preserve"><value>Покрытие блоков</value></data>
+  <data name="StructureEditor_QualityCompletenessScore" xml:space="preserve"><value>Оценка полноты</value></data>
+  <data name="StructureEditor_QualityTypeDistribution" xml:space="preserve"><value>Распределение типов</value></data>
+  <data name="StructureEditor_QualityBlocksLabel" xml:space="preserve"><value>Блоки</value></data>
+  <data name="StructureEditor_QualityDepthLabel" xml:space="preserve"><value>Глубина</value></data>
+  <data name="StructureEditor_QualityVariablesLabel" xml:space="preserve"><value>Переменные</value></data>
+  <data name="StructureEditor_QualityRulesLabel" xml:space="preserve"><value>Правила</value></data>
+  <data name="StructureEditor_QualityMetadataLabel" xml:space="preserve"><value>Метаданные</value></data>
+  <data name="StructureEditor_QualityDocLevel" xml:space="preserve"><value>Уровень документации</value></data>
+  <data name="StructureEditor_QualityLastUpdated" xml:space="preserve"><value>Последнее обновление</value></data>
+  <data name="StructureEditor_QualityLastUpdatedToolTip" xml:space="preserve"><value>Формат: YYYY-MM-DD (заполняется автоматически при сохранении)</value></data>
+  <data name="StructureEditor_QualityPriorityFormat" xml:space="preserve"><value>Приоритетный формат (топ 100)</value></data>
+  <data name="StructureEditor_QualityAutoRefined" xml:space="preserve"><value>Автоматически улучшен (обогащён скриптом — только для чтения)</value></data>
+  <data name="StructureEditor_TestSection" xml:space="preserve"><value>Проверить формат на файле</value></data>
+  <data name="StructureEditor_TestFilePathToolTip" xml:space="preserve"><value>Путь к тестируемому бинарному файлу</value></data>
+  <data name="StructureEditor_TestBrowseButton" xml:space="preserve"><value>Обзор…</value></data>
+  <data name="StructureEditor_TestRunButton" xml:space="preserve"><value>▶ Запустить тест</value></data>
+  <data name="StructureEditor_TestCopyToolTip" xml:space="preserve"><value>Копировать результаты в буфер обмена (TSV)</value></data>
+  <data name="StructureEditor_TestEmptyMessage" xml:space="preserve"><value>Выберите файл и нажмите ▶ Запустить тест для проверки текущего определения формата.</value></data>
+  <data name="StructureEditor_TestColStatus" xml:space="preserve"><value>Статус</value></data>
+  <data name="StructureEditor_TestColBlockName" xml:space="preserve"><value>Имя блока</value></data>
+  <data name="StructureEditor_TestColType" xml:space="preserve"><value>Тип</value></data>
+  <data name="StructureEditor_TestColOffset" xml:space="preserve"><value>Смещение</value></data>
+  <data name="StructureEditor_TestColLen" xml:space="preserve"><value>Дл.</value></data>
+  <data name="StructureEditor_TestColRaw" xml:space="preserve"><value>Сырые (hex)</value></data>
+  <data name="StructureEditor_TestColParsed" xml:space="preserve"><value>Разобранное значение</value></data>
+  <data name="StructureEditor_TestColNote" xml:space="preserve"><value>Примечание</value></data>
+  <data name="StructureEditor_TestFilterOk" xml:space="preserve"><value>✓ OK</value></data>
+  <data name="StructureEditor_TestFilterWarning" xml:space="preserve"><value>⚠ Предупреждение</value></data>
+  <data name="StructureEditor_TestFilterError" xml:space="preserve"><value>✕ Ошибка</value></data>
+  <data name="StructureEditor_TestFilterSkipped" xml:space="preserve"><value>⊘ Пропущено</value></data>
+  <data name="StructureEditor_VarsDescription" xml:space="preserve"><value>Начальные переменные, доступные интерпретатору блоков (напр. счётчики циклов, вычисленные смещения).</value></data>
+  <data name="StructureEditor_VarsFilterToolTip" xml:space="preserve"><value>Фильтровать переменные по имени</value></data>
+  <data name="StructureEditor_VarsColName" xml:space="preserve"><value>Имя переменной</value></data>
+  <data name="StructureEditor_VarsColType" xml:space="preserve"><value>Тип</value></data>
+  <data name="StructureEditor_VarsColInitialValue" xml:space="preserve"><value>Начальное значение</value></data>
+  <data name="StructureEditor_VarsColDescription" xml:space="preserve"><value>Описание</value></data>
+  <data name="StructureEditor_VarsAddButton" xml:space="preserve"><value>＋ Добавить переменную</value></data>
+  <data name="StructureEditor_V2AssertionsHeader" xml:space="preserve"><value>Утверждения</value></data>
+  <data name="StructureEditor_V2AssertionPlaceholder" xml:space="preserve"><value>var:name equals 0 or calc:expr</value></data>
+  <data name="StructureEditor_V2AssertionToolTip" xml:space="preserve"><value>Булево выражение — Ctrl+Space для функций и переменных</value></data>
+  <data name="StructureEditor_V2ChecksumsHeader" xml:space="preserve"><value>Контрольные суммы</value></data>
+  <data name="StructureEditor_V2VersioningHeader" xml:space="preserve"><value>Версионирование (VersionDetection / VersionedBlocks)</value></data>
+  <data name="StructureEditor_V2ImportsHeader" xml:space="preserve"><value>Импорты ($ref Композиция)</value></data>
+  <data name="StructureEditor_V2ImportsDescription" xml:space="preserve"><value>ref = имя формата (или structs/Имя), as = псевдоним в блоках structRef.</value></data>
+  <data name="StructureEditor_V2ImportRefToolTip" xml:space="preserve"><value>Ссылка на формат напр. structs/PE_OptionalHeader</value></data>
+  <data name="StructureEditor_V2ImportAliasToolTip" xml:space="preserve"><value>Псевдоним в structRef напр. PEOpt</value></data>
+  <data name="StructureEditor_V2AddImportButton" xml:space="preserve"><value>+ Добавить импорт</value></data>
+  <data name="StructureEditor_V2ForensicHeader" xml:space="preserve"><value>Криминалистика</value></data>
+  <data name="StructureEditor_V2NavBookmarksHeader" xml:space="preserve"><value>Навигационные закладки</value></data>
+  <data name="StructureEditor_V2BookmarkPlaceholder" xml:space="preserve"><value>имяПеременной</value></data>
+  <data name="StructureEditor_V2BookmarkToolTip" xml:space="preserve"><value>Переменная с байтовым смещением — Ctrl+Space для подсказок</value></data>
+  <data name="StructureEditor_V2AddBookmarkButton" xml:space="preserve"><value>＋ Добавить закладку</value></data>
+  <data name="StructureEditor_V2InspectorLayoutHeader" xml:space="preserve"><value>Макет инспектора</value></data>
+  <data name="StructureEditor_V2ExportTemplatesHeader" xml:space="preserve"><value>Шаблоны экспорта</value></data>
+  <data name="StructureEditor_V2AddTemplateButton" xml:space="preserve"><value>＋ Добавить шаблон</value></data>
+  <data name="StructureEditor_V2AIHintsHeader" xml:space="preserve"><value>Подсказки ИИ</value></data>
+  <data name="StructureEditor_TypeHintField" xml:space="preserve"><value>Двоичное поле с фиксированным или переменным смещением и длиной.</value></data>
+  <data name="StructureEditor_TypeHintSignature" xml:space="preserve"><value>Магические байты, идентифицирующие формат по определённому смещению.</value></data>
+  <data name="StructureEditor_TypeHintMetadata" xml:space="preserve"><value>Считывает значение переменной длины или символическое значение в именованную переменную.</value></data>
+  <data name="StructureEditor_TypeHintConditional" xml:space="preserve"><value>Условно разбирает блоки на основе значения поля или переменной.</value></data>
+  <data name="StructureEditor_TypeHintLoop" xml:space="preserve"><value>Повторяет тело блока, пока условие истинно.</value></data>
+  <data name="StructureEditor_TypeHintAction" xml:space="preserve"><value>Изменяет переменную (инкремент, декремент, установитьПеременную).</value></data>
+  <data name="StructureEditor_TypeHintCompute" xml:space="preserve"><value>Вычисляет математическое выражение и сохраняет результат.</value></data>
+  <data name="StructureEditor_TypeHintRepeating" xml:space="preserve"><value>Разбирает массив фиксированного числа структурированных записей.</value></data>
+  <data name="StructureEditor_TypeHintUnion" xml:space="preserve"><value>Выбирает набор блоков-вариантов на основе переменной-дискриминанта.</value></data>
+  <data name="StructureEditor_TypeHintNested" xml:space="preserve"><value>Встраивает внешнее определение структуры по ссылке.</value></data>
+  <data name="StructureEditor_TypeHintPointer" xml:space="preserve"><value>Создаёт навигационную аннотацию к указанному смещению.</value></data>
+  <data name="StructureEditor_ValidationErrorCount" xml:space="preserve"><value>{0} ошибка(ок)</value></data>
+  <data name="StructureEditor_ValidationWarningCount" xml:space="preserve"><value>{0} предупреждение(ий)</value></data>
+  <data name="StructureEditor_RawJsonTitle" xml:space="preserve"><value>Сырой JSON — {0}</value></data>
+  <data name="StructureEditor_RawJsonApply" xml:space="preserve"><value>Применить</value></data>
+  <data name="StructureEditor_RawJsonCancel" xml:space="preserve"><value>Отмена</value></data>
+  <data name="StructureEditor_FactoryDisplayName" xml:space="preserve"><value>Редактор структуры</value></data>
+  <data name="StructureEditor_FactoryDescription" xml:space="preserve"><value>Визуальный редактор файлов определения структуры .whfmt. Редактируйте блоки, типы, смещения, длины и цвета в DataGrid.</value></data>
+</root>

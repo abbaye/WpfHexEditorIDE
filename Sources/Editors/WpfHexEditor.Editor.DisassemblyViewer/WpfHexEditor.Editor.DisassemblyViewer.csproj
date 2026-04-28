@@ -25,6 +25,7 @@
     <ProjectReference Include="..\WpfHexEditor.Editor.Core\WpfHexEditor.Editor.Core.csproj" />
     <ProjectReference Include="..\..\Controls\WpfHexEditor.ProgressBar\WpfHexEditor.ProgressBar.csproj" />
     <ProjectReference Include="..\..\Core\WpfHexEditor.Core.Decompiler\WpfHexEditor.Core.Decompiler.csproj" />
+    <ProjectReference Include="..\..\Core\WpfHexEditor.Core.Localization\WpfHexEditor.Core.Localization.csproj" PrivateAssets="all" />
     <ProjectReference Include="..\..\Plugins\WpfHexEditor.SDK\WpfHexEditor.SDK.csproj" />
   </ItemGroup>
 

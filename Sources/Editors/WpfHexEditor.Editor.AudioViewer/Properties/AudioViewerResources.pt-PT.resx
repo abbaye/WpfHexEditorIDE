@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="AudioViewer_ToolbarOverflowToolTip" xml:space="preserve"><value>Mais opções</value></data>
+  <data name="AudioViewer_FormatLabel" xml:space="preserve"><value>Áudio</value></data>
+  <data name="AudioViewer_PlayPauseToolTip" xml:space="preserve"><value>Reproduzir / Pausar (Espaço)</value></data>
+  <data name="AudioViewer_StopToolTip" xml:space="preserve"><value>Parar</value></data>
+  <data name="AudioViewer_PositionDefault" xml:space="preserve"><value>0:00</value></data>
+  <data name="AudioViewer_StatusBarOpenFile" xml:space="preserve"><value>Abrir um ficheiro de áudio</value></data>
+  <data name="AudioViewer_OverlayAnalyzing" xml:space="preserve"><value>A analisar…</value></data>
+</root>

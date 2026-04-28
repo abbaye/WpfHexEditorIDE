@@ -56,19 +56,19 @@
                    Height="22">
             <StatusBarItem>
                 <TextBlock x:Name="LanguageText"
-                           Text="Plain Text"
+                           Text="{DynamicResource TextEditor_LanguageLabelPlainText}"
                            Padding="4,0"/>
             </StatusBarItem>
             <Separator/>
             <StatusBarItem HorizontalAlignment="Right">
                 <TextBlock x:Name="CaretText"
-                           Text="Ln 1, Col 1"
+                           Text="{DynamicResource TextEditor_StatusBarCaretPosition}"
                            Padding="4,0"/>
             </StatusBarItem>
             <Separator/>
             <StatusBarItem>
                 <TextBlock x:Name="EncodingText"
-                           Text="UTF-8"
+                           Text="{DynamicResource TextEditor_StatusBarEncoding}"
                            Padding="4,0"/>
             </StatusBarItem>
         </StatusBar>

@@ -16,6 +16,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using WpfHexEditor.Editor.DocumentEditor.Core.Options;
+using WpfHexEditor.Editor.DocumentEditor.Properties;
 
 namespace WpfHexEditor.Editor.DocumentEditor.Controls;
 
@@ -247,8 +248,8 @@ public partial class DocumentPageSettingsPanel : UserControl
 
     private void ApplyMirrorMarginLabels(bool mirror)
     {
-        PART_MarginLeftLabel.Text  = mirror ? "Inside:"  : "Left:";
-        PART_MarginRightLabel.Text = mirror ? "Outside:" : "Right:";
+        PART_MarginLeftLabel.Text  = mirror ? DocumentEditorResources.DocPageSettings_InsideMargin  : DocumentEditorResources.DocPageSettings_LeftMargin;
+        PART_MarginRightLabel.Text = mirror ? DocumentEditorResources.DocPageSettings_OutsideMargin : DocumentEditorResources.DocPageSettings_RightMargin;
     }
 
     private static double ParseDouble(string? text, double fallback)

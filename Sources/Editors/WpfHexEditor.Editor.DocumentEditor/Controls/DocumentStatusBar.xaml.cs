@@ -13,6 +13,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using WpfHexEditor.Editor.DocumentEditor.Core.Model;
+using WpfHexEditor.Editor.DocumentEditor.Properties;
 
 namespace WpfHexEditor.Editor.DocumentEditor.Controls;
 
@@ -26,7 +27,7 @@ public partial class DocumentStatusBar : UserControl
 
     public static readonly DependencyProperty FormatNameProperty =
         DependencyProperty.Register(nameof(FormatName), typeof(string), typeof(DocumentStatusBar),
-            new PropertyMetadata("—"));
+            new PropertyMetadata(DocumentEditorResources.DocEditorHost_MetaEmptyValue));
 
     public static readonly DependencyProperty FormatTooltipProperty =
         DependencyProperty.Register(nameof(FormatTooltip), typeof(string), typeof(DocumentStatusBar),
@@ -34,11 +35,11 @@ public partial class DocumentStatusBar : UserControl
 
     public static readonly DependencyProperty PageTextProperty =
         DependencyProperty.Register(nameof(PageText), typeof(string), typeof(DocumentStatusBar),
-            new PropertyMetadata("Page 1"));
+            new PropertyMetadata(DocumentEditorResources.DocStatusBar_DefaultPage));
 
     public static readonly DependencyProperty WordCountTextProperty =
         DependencyProperty.Register(nameof(WordCountText), typeof(string), typeof(DocumentStatusBar),
-            new PropertyMetadata("0 words"));
+            new PropertyMetadata(DocumentEditorResources.DocStatusBar_DefaultWordCount));
 
     public static readonly DependencyProperty ForensicAlertCountProperty =
         DependencyProperty.Register(nameof(ForensicAlertCount), typeof(int), typeof(DocumentStatusBar),
@@ -58,11 +59,11 @@ public partial class DocumentStatusBar : UserControl
 
     public static readonly DependencyProperty ZoomTextProperty =
         DependencyProperty.Register(nameof(ZoomText), typeof(string), typeof(DocumentStatusBar),
-            new PropertyMetadata("100%"));
+            new PropertyMetadata(DocumentEditorResources.DocStatusBar_DefaultZoom));
 
     public static readonly DependencyProperty ViewModeTextProperty =
         DependencyProperty.Register(nameof(ViewModeText), typeof(string), typeof(DocumentStatusBar),
-            new PropertyMetadata("Split"));
+            new PropertyMetadata(DocumentEditorResources.DocStatusBar_DefaultViewMode));
 
     // ── Events ────────────────────────────────────────────────────────────────
 
@@ -147,7 +148,7 @@ public partial class DocumentStatusBar : UserControl
     public void BindModel(DocumentModel model, string formatExtension)
     {
         FormatName    = ResolveFormatName(formatExtension);
-        FormatTooltip = $"Format: {FormatName} ({formatExtension.ToUpperInvariant()})";
+        FormatTooltip = string.Format(DocumentEditorResources.DocStatusBar_FormatPattern, FormatName, formatExtension.ToUpperInvariant());
 
         UpdateWordCount(model);
         UpdatePageCount(model);
@@ -160,14 +161,14 @@ public partial class DocumentStatusBar : UserControl
             .Where(b => b.Kind is "paragraph" or "heading" or "run")
             .Sum(b => b.Text.Split(' ', StringSplitOptions.RemoveEmptyEntries).Length);
 
-        WordCountText = $"{words:N0} words";
+        WordCountText = string.Format(DocumentEditorResources.DocStatusBar_WordCountPattern, words);
     }
 
     public void UpdatePageCount(DocumentModel model)
     {
         int sections = model.Blocks.Count(b => b.Kind == "section");
         int pages    = sections > 0 ? sections : Math.Max(1, model.Blocks.Count / 30);
-        PageText = $"Page 1 / {pages}";
+        PageText = string.Format(DocumentEditorResources.DocStatusBar_PagePattern, pages);
     }
 
     public void UpdateForensicCount(DocumentModel model)
@@ -205,7 +206,7 @@ public partial class DocumentStatusBar : UserControl
     private static void OnZoomPercentChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
         if (d is DocumentStatusBar sb)
-            sb.ZoomText = $"{(double)e.NewValue:0}%";
+            sb.ZoomText = string.Format(DocumentEditorResources.DocStatusBar_ZoomPattern, (double)e.NewValue);
     }
 
     // ── Event handlers ───────────────────────────────────────────────────────

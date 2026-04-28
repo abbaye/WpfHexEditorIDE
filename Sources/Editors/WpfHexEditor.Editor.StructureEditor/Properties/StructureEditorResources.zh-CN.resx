@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="StructureEditor_AddBlockTitle" xml:space="preserve"><value>添加块</value></data>
+  <data name="StructureEditor_AddBlockButton" xml:space="preserve"><value>添加</value></data>
+  <data name="StructureEditor_AddBlockCancel" xml:space="preserve"><value>取消</value></data>
+  <data name="StructureEditor_TabMetadata" xml:space="preserve"><value>元数据</value></data>
+  <data name="StructureEditor_TabDetection" xml:space="preserve"><value>检测</value></data>
+  <data name="StructureEditor_TabBlocks" xml:space="preserve"><value>块</value></data>
+  <data name="StructureEditor_TabVariables" xml:space="preserve"><value>变量</value></data>
+  <data name="StructureEditor_TabAdvanced" xml:space="preserve"><value>高级</value></data>
+  <data name="StructureEditor_TabQuality" xml:space="preserve"><value>质量</value></data>
+  <data name="StructureEditor_TabTest" xml:space="preserve"><value>测试</value></data>
+  <data name="StructureEditor_SaveToolTip" xml:space="preserve"><value>保存 (Ctrl+S)</value></data>
+  <data name="StructureEditor_ValidateToolTip" xml:space="preserve"><value>验证 (Ctrl+Shift+V)</value></data>
+  <data name="StructureEditor_UndoToolTip" xml:space="preserve"><value>撤销 (Ctrl+Z)</value></data>
+  <data name="StructureEditor_RedoToolTip" xml:space="preserve"><value>重做 (Ctrl+Y)</value></data>
+  <data name="StructureEditor_LiveCodeViewToolTip" xml:space="preserve"><value>切换实时代码视图</value></data>
+  <data name="StructureEditor_AddBlockToolTip" xml:space="preserve"><value>添加块 (Ctrl+N)</value></data>
+  <data name="StructureEditor_DuplicateBlockToolTip" xml:space="preserve"><value>复制块 (Ctrl+D)</value></data>
+  <data name="StructureEditor_UnsavedChangesToolTip" xml:space="preserve"><value>未保存的更改</value></data>
+  <data name="StructureEditor_BlocksFilterToolTip" xml:space="preserve"><value>按名称筛选块</value></data>
+  <data name="StructureEditor_BlocksAddMenuItem" xml:space="preserve"><value>添加块...</value></data>
+  <data name="StructureEditor_BlocksDuplicateMenuItem" xml:space="preserve"><value>复制</value></data>
+  <data name="StructureEditor_BlocksRemoveMenuItem" xml:space="preserve"><value>删除</value></data>
+  <data name="StructureEditor_BlocksMoveUpMenuItem" xml:space="preserve"><value>上移</value></data>
+  <data name="StructureEditor_BlocksMoveDownMenuItem" xml:space="preserve"><value>下移</value></data>
+  <data name="StructureEditor_BlocksCopyJsonMenuItem" xml:space="preserve"><value>复制为 JSON</value></data>
+  <data name="StructureEditor_BlocksPasteMenuItem" xml:space="preserve"><value>粘贴块</value></data>
+  <data name="StructureEditor_BlocksEmptyLine1" xml:space="preserve"><value>选择一个块以编辑其属性，</value></data>
+  <data name="StructureEditor_BlocksEmptyLine2" xml:space="preserve"><value>或按 Ctrl+N / 右键单击以添加新块。</value></data>
+  <data name="StructureEditor_DetectionHexSigLabel" xml:space="preserve"><value>十六进制签名</value></data>
+  <data name="StructureEditor_DetectionHexBytesToolTip" xml:space="preserve"><value>不带空格的十六进制字节，例如 PNG 为 89504E47</value></data>
+  <data name="StructureEditor_DetectionSigLabel" xml:space="preserve"><value>签名</value></data>
+  <data name="StructureEditor_DetectionV2SigsLabel" xml:space="preserve"><value>v2.0 签名</value></data>
+  <data name="StructureEditor_DetectionMatchModeLabel" xml:space="preserve"><value>匹配模式</value></data>
+  <data name="StructureEditor_DetectionHexValueToolTip" xml:space="preserve"><value>十六进制值</value></data>
+  <data name="StructureEditor_DetectionOffsetToolTip" xml:space="preserve"><value>偏移量</value></data>
+  <data name="StructureEditor_DetectionLabelToolTip" xml:space="preserve"><value>标签</value></data>
+  <data name="StructureEditor_DetectionAddSigButton" xml:space="preserve"><value>＋ 添加签名</value></data>
+  <data name="StructureEditor_DetectionEntropyLabel" xml:space="preserve"><value>熵提示</value></data>
+  <data name="StructureEditor_DetectionMinEntropyLabel" xml:space="preserve"><value>最小熵</value></data>
+  <data name="StructureEditor_DetectionMaxEntropyLabel" xml:space="preserve"><value>最大熵</value></data>
+  <data name="StructureEditor_DetectionMinScoreLabel" xml:space="preserve"><value>最低分数</value></data>
+  <data name="StructureEditor_DetectionScoreThresholdLabel" xml:space="preserve"><value>分数阈值</value></data>
+  <data name="StructureEditor_DetectionContentPatternsLabel" xml:space="preserve"><value>内容模式（文本格式）</value></data>
+  <data name="StructureEditor_DetectionRegexToolTip" xml:space="preserve"><value>Regex 模式</value></data>
+  <data name="StructureEditor_DetectionAddPatternButton" xml:space="preserve"><value>＋ 添加模式</value></data>
+  <data name="StructureEditor_MetaCoreSection" xml:space="preserve"><value>基本</value></data>
+  <data name="StructureEditor_MetaNameLabel" xml:space="preserve"><value>格式名称</value></data>
+  <data name="StructureEditor_MetaNameToolTip" xml:space="preserve"><value>可读的格式名称（例如"ZIP 压缩包"、"PNG 图片"）</value></data>
+  <data name="StructureEditor_MetaVersionLabel" xml:space="preserve"><value>版本</value></data>
+  <data name="StructureEditor_MetaVersionToolTip" xml:space="preserve"><value>此定义的版本（例如"1.0"、"2.0"）</value></data>
+  <data name="StructureEditor_MetaAuthorLabel" xml:space="preserve"><value>作者</value></data>
+  <data name="StructureEditor_MetaAuthorToolTip" xml:space="preserve"><value>此定义文件的作者</value></data>
+  <data name="StructureEditor_MetaCategoryLabel" xml:space="preserve"><value>类别</value></data>
+  <data name="StructureEditor_MetaCategoryToolTip" xml:space="preserve"><value>类别（从文件夹结构自动设置：压缩包、图片、音频、视频等）</value></data>
+  <data name="StructureEditor_MetaDiffModeLabel" xml:space="preserve"><value>差异模式</value></data>
+  <data name="StructureEditor_MetaDiffModeToolTip" xml:space="preserve"><value>DiffViewer 的首选差异算法</value></data>
+  <data name="StructureEditor_MetaPreferredEditorLabel" xml:space="preserve"><value>首选编辑器</value></data>
+  <data name="StructureEditor_MetaPreferredEditorToolTip" xml:space="preserve"><value>匹配此格式的文件的首选编辑器工厂 ID</value></data>
+  <data name="StructureEditor_MetaDescriptionLabel" xml:space="preserve"><value>描述</value></data>
+  <data name="StructureEditor_MetaIsTextFormat" xml:space="preserve"><value>文本格式（默认在代码编辑器中打开）</value></data>
+  <data name="StructureEditor_MetaExtensionsLabel" xml:space="preserve"><value>文件扩展名</value></data>
+  <data name="StructureEditor_MetaAddExtensionButton" xml:space="preserve"><value>＋ 添加扩展名</value></data>
+  <data name="StructureEditor_MetaMimeTypesLabel" xml:space="preserve"><value>MIME 类型</value></data>
+  <data name="StructureEditor_MetaAddMimeButton" xml:space="preserve"><value>＋ 添加 MIME 类型</value></data>
+  <data name="StructureEditor_MetaSoftwareLabel" xml:space="preserve"><value>软件</value></data>
+  <data name="StructureEditor_MetaAddSoftwareButton" xml:space="preserve"><value>＋ 添加软件</value></data>
+  <data name="StructureEditor_QualityComputedSection" xml:space="preserve"><value>计算指标</value></data>
+  <data name="StructureEditor_QualityBlockCoverage" xml:space="preserve"><value>块覆盖率</value></data>
+  <data name="StructureEditor_QualityCompletenessScore" xml:space="preserve"><value>完整性评分</value></data>
+  <data name="StructureEditor_QualityTypeDistribution" xml:space="preserve"><value>类型分布</value></data>
+  <data name="StructureEditor_QualityBlocksLabel" xml:space="preserve"><value>块</value></data>
+  <data name="StructureEditor_QualityDepthLabel" xml:space="preserve"><value>深度</value></data>
+  <data name="StructureEditor_QualityVariablesLabel" xml:space="preserve"><value>变量</value></data>
+  <data name="StructureEditor_QualityRulesLabel" xml:space="preserve"><value>规则</value></data>
+  <data name="StructureEditor_QualityMetadataLabel" xml:space="preserve"><value>元数据</value></data>
+  <data name="StructureEditor_QualityDocLevel" xml:space="preserve"><value>文档级别</value></data>
+  <data name="StructureEditor_QualityLastUpdated" xml:space="preserve"><value>最后更新</value></data>
+  <data name="StructureEditor_QualityLastUpdatedToolTip" xml:space="preserve"><value>格式：YYYY-MM-DD（保存时自动填写）</value></data>
+  <data name="StructureEditor_QualityPriorityFormat" xml:space="preserve"><value>优先格式（前 100）</value></data>
+  <data name="StructureEditor_QualityAutoRefined" xml:space="preserve"><value>自动精化（由脚本丰富——只读）</value></data>
+  <data name="StructureEditor_TestSection" xml:space="preserve"><value>对文件测试格式</value></data>
+  <data name="StructureEditor_TestFilePathToolTip" xml:space="preserve"><value>要测试的二进制文件路径</value></data>
+  <data name="StructureEditor_TestBrowseButton" xml:space="preserve"><value>浏览…</value></data>
+  <data name="StructureEditor_TestRunButton" xml:space="preserve"><value>▶ 运行测试</value></data>
+  <data name="StructureEditor_TestCopyToolTip" xml:space="preserve"><value>将结果复制到剪贴板 (TSV)</value></data>
+  <data name="StructureEditor_TestEmptyMessage" xml:space="preserve"><value>选择一个文件并单击 ▶ 运行测试以测试当前格式定义。</value></data>
+  <data name="StructureEditor_TestColStatus" xml:space="preserve"><value>状态</value></data>
+  <data name="StructureEditor_TestColBlockName" xml:space="preserve"><value>块名称</value></data>
+  <data name="StructureEditor_TestColType" xml:space="preserve"><value>类型</value></data>
+  <data name="StructureEditor_TestColOffset" xml:space="preserve"><value>偏移量</value></data>
+  <data name="StructureEditor_TestColLen" xml:space="preserve"><value>长度</value></data>
+  <data name="StructureEditor_TestColRaw" xml:space="preserve"><value>原始 (hex)</value></data>
+  <data name="StructureEditor_TestColParsed" xml:space="preserve"><value>解析值</value></data>
+  <data name="StructureEditor_TestColNote" xml:space="preserve"><value>注释</value></data>
+  <data name="StructureEditor_TestFilterOk" xml:space="preserve"><value>✓ OK</value></data>
+  <data name="StructureEditor_TestFilterWarning" xml:space="preserve"><value>⚠ 警告</value></data>
+  <data name="StructureEditor_TestFilterError" xml:space="preserve"><value>✕ 错误</value></data>
+  <data name="StructureEditor_TestFilterSkipped" xml:space="preserve"><value>⊘ 已跳过</value></data>
+  <data name="StructureEditor_VarsDescription" xml:space="preserve"><value>可用于块解释器的初始变量（例如循环计数器、计算偏移量）。</value></data>
+  <data name="StructureEditor_VarsFilterToolTip" xml:space="preserve"><value>按名称筛选变量</value></data>
+  <data name="StructureEditor_VarsColName" xml:space="preserve"><value>变量名称</value></data>
+  <data name="StructureEditor_VarsColType" xml:space="preserve"><value>类型</value></data>
+  <data name="StructureEditor_VarsColInitialValue" xml:space="preserve"><value>初始值</value></data>
+  <data name="StructureEditor_VarsColDescription" xml:space="preserve"><value>描述</value></data>
+  <data name="StructureEditor_VarsAddButton" xml:space="preserve"><value>＋ 添加变量</value></data>
+  <data name="StructureEditor_V2AssertionsHeader" xml:space="preserve"><value>断言</value></data>
+  <data name="StructureEditor_V2AssertionPlaceholder" xml:space="preserve"><value>var:name equals 0 or calc:expr</value></data>
+  <data name="StructureEditor_V2AssertionToolTip" xml:space="preserve"><value>布尔表达式 — Ctrl+Space 获取函数和变量</value></data>
+  <data name="StructureEditor_V2ChecksumsHeader" xml:space="preserve"><value>校验和</value></data>
+  <data name="StructureEditor_V2VersioningHeader" xml:space="preserve"><value>版本控制 (VersionDetection / VersionedBlocks)</value></data>
+  <data name="StructureEditor_V2ImportsHeader" xml:space="preserve"><value>导入（$ref 组合）</value></data>
+  <data name="StructureEditor_V2ImportsDescription" xml:space="preserve"><value>ref = 格式名称（或 structs/名称），as = structRef 块中使用的别名。</value></data>
+  <data name="StructureEditor_V2ImportRefToolTip" xml:space="preserve"><value>格式引用，例如 structs/PE_OptionalHeader</value></data>
+  <data name="StructureEditor_V2ImportAliasToolTip" xml:space="preserve"><value>structRef 中的别名，例如 PEOpt</value></data>
+  <data name="StructureEditor_V2AddImportButton" xml:space="preserve"><value>+ 添加导入</value></data>
+  <data name="StructureEditor_V2ForensicHeader" xml:space="preserve"><value>取证</value></data>
+  <data name="StructureEditor_V2NavBookmarksHeader" xml:space="preserve"><value>导航书签</value></data>
+  <data name="StructureEditor_V2BookmarkPlaceholder" xml:space="preserve"><value>变量名称</value></data>
+  <data name="StructureEditor_V2BookmarkToolTip" xml:space="preserve"><value>保存字节偏移量的变量 — Ctrl+Space 获取建议</value></data>
+  <data name="StructureEditor_V2AddBookmarkButton" xml:space="preserve"><value>＋ 添加书签</value></data>
+  <data name="StructureEditor_V2InspectorLayoutHeader" xml:space="preserve"><value>检查器布局</value></data>
+  <data name="StructureEditor_V2ExportTemplatesHeader" xml:space="preserve"><value>导出模板</value></data>
+  <data name="StructureEditor_V2AddTemplateButton" xml:space="preserve"><value>＋ 添加模板</value></data>
+  <data name="StructureEditor_V2AIHintsHeader" xml:space="preserve"><value>AI 提示</value></data>
+  <data name="StructureEditor_TypeHintField" xml:space="preserve"><value>具有固定或可变偏移量和长度的二进制字段。</value></data>
+  <data name="StructureEditor_TypeHintSignature" xml:space="preserve"><value>在特定偏移量处标识格式的魔术字节。</value></data>
+  <data name="StructureEditor_TypeHintMetadata" xml:space="preserve"><value>将可变长度或符号值读入命名变量。</value></data>
+  <data name="StructureEditor_TypeHintConditional" xml:space="preserve"><value>根据字段值或变量有条件地解析块。</value></data>
+  <data name="StructureEditor_TypeHintLoop" xml:space="preserve"><value>当条件为真时重复块体。</value></data>
+  <data name="StructureEditor_TypeHintAction" xml:space="preserve"><value>修改变量（递增、递减、设置变量）。</value></data>
+  <data name="StructureEditor_TypeHintCompute" xml:space="preserve"><value>计算数学表达式并存储结果。</value></data>
+  <data name="StructureEditor_TypeHintRepeating" xml:space="preserve"><value>解析固定数量的结构化条目数组。</value></data>
+  <data name="StructureEditor_TypeHintUnion" xml:space="preserve"><value>根据判别变量选择变体块集。</value></data>
+  <data name="StructureEditor_TypeHintNested" xml:space="preserve"><value>通过引用嵌入外部结构定义。</value></data>
+  <data name="StructureEditor_TypeHintPointer" xml:space="preserve"><value>创建指向目标偏移量的导航注释。</value></data>
+  <data name="StructureEditor_ValidationErrorCount" xml:space="preserve"><value>{0} 个错误</value></data>
+  <data name="StructureEditor_ValidationWarningCount" xml:space="preserve"><value>{0} 个警告</value></data>
+  <data name="StructureEditor_RawJsonTitle" xml:space="preserve"><value>原始 JSON — {0}</value></data>
+  <data name="StructureEditor_RawJsonApply" xml:space="preserve"><value>应用</value></data>
+  <data name="StructureEditor_RawJsonCancel" xml:space="preserve"><value>取消</value></data>
+  <data name="StructureEditor_FactoryDisplayName" xml:space="preserve"><value>结构编辑器</value></data>
+  <data name="StructureEditor_FactoryDescription" xml:space="preserve"><value>.whfmt 结构定义文件的可视化编辑器。在 DataGrid 中编辑块、类型、偏移量、长度和颜色。</value></data>
+</root>

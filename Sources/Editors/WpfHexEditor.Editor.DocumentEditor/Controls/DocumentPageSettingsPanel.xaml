@@ -86,38 +86,38 @@
                         FontSize="12">
 
                 <!-- ── Tab: Page ──────────────────────────────────────────── -->
-                <TabItem Header="Page">
+                <TabItem Header="{DynamicResource DocPageSettings_TabPage}">
                     <StackPanel Margin="4,8,4,4">
 
                         <!-- Paper format -->
-                        <TextBlock Style="{StaticResource PnlGroupLabel}" Text="Paper format"/>
+                        <TextBlock Style="{StaticResource PnlGroupLabel}" Text="{DynamicResource DocPageSettings_PaperFormat}"/>
                         <WrapPanel>
-                            <TextBlock Style="{StaticResource PnlLabel}" Text="Format:"/>
+                            <TextBlock Style="{StaticResource PnlLabel}" Text="{DynamicResource DocPageSettings_FormatLabel}"/>
                             <ComboBox x:Name="PART_PageSizeCombo"
                                       Style="{StaticResource PnlCombo}"
                                       Width="160"
                                       SelectionChanged="OnPageSizeChanged">
-                                <ComboBoxItem Content="A4  (21 × 29.7 cm)"    Tag="A4"/>
-                                <ComboBoxItem Content="A3  (29.7 × 42 cm)"    Tag="A3"/>
-                                <ComboBoxItem Content="A5  (14.8 × 21 cm)"    Tag="A5"/>
-                                <ComboBoxItem Content="Letter (8.5 × 11 in)"  Tag="Letter"/>
-                                <ComboBoxItem Content="Legal  (8.5 × 14 in)"  Tag="Legal"/>
-                                <ComboBoxItem Content="Custom"                Tag="Custom"/>
+                                <ComboBoxItem Content="{DynamicResource DocPageSettings_SizeA4}"     Tag="A4"/>
+                                <ComboBoxItem Content="{DynamicResource DocPageSettings_SizeA3}"     Tag="A3"/>
+                                <ComboBoxItem Content="{DynamicResource DocPageSettings_SizeA5}"     Tag="A5"/>
+                                <ComboBoxItem Content="{DynamicResource DocPageSettings_SizeLetter}" Tag="Letter"/>
+                                <ComboBoxItem Content="{DynamicResource DocPageSettings_SizeLegal}"  Tag="Legal"/>
+                                <ComboBoxItem Content="{DynamicResource DocPageSettings_SizeCustom}" Tag="Custom"/>
                             </ComboBox>
                         </WrapPanel>
 
                         <!-- Orientation -->
                         <WrapPanel Margin="0,6,0,0">
-                            <TextBlock Style="{StaticResource PnlLabel}" Text="Orientation:"/>
+                            <TextBlock Style="{StaticResource PnlLabel}" Text="{DynamicResource DocPageSettings_Orientation}"/>
                             <RadioButton x:Name="PART_PortraitRadio"
-                                         Content="Portrait"
+                                         Content="{DynamicResource DocPageSettings_Portrait}"
                                          IsChecked="True"
                                          Foreground="{DynamicResource DockMenuForegroundBrush}"
                                          FontSize="12"
                                          Margin="0,0,12,0"
                                          VerticalAlignment="Center"/>
                             <RadioButton x:Name="PART_LandscapeRadio"
-                                         Content="Landscape"
+                                         Content="{DynamicResource DocPageSettings_Landscape}"
                                          Foreground="{DynamicResource DockMenuForegroundBrush}"
                                          FontSize="12"
                                          VerticalAlignment="Center"/>
@@ -125,42 +125,42 @@
 
                         <!-- Custom size (visible only when Custom selected) -->
                         <WrapPanel x:Name="PART_CustomSizeRow" Visibility="Collapsed" Margin="0,6,0,0">
-                            <TextBlock Style="{StaticResource PnlLabel}" Text="Width (px):"/>
+                            <TextBlock Style="{StaticResource PnlLabel}" Text="{DynamicResource DocPageSettings_WidthPx}"/>
                             <TextBox x:Name="PART_CustomWidthBox"  Style="{StaticResource PnlInput}" Text="794"/>
-                            <TextBlock Style="{StaticResource PnlLabel}" Text="Height (px):"/>
+                            <TextBlock Style="{StaticResource PnlLabel}" Text="{DynamicResource DocPageSettings_HeightPx}"/>
                             <TextBox x:Name="PART_CustomHeightBox" Style="{StaticResource PnlInput}" Text="1122"/>
                         </WrapPanel>
 
                         <Separator Style="{StaticResource PnlSepLine}"/>
 
                         <!-- Margins -->
-                        <TextBlock Style="{StaticResource PnlGroupLabel}" Text="Margins (px)"/>
+                        <TextBlock Style="{StaticResource PnlGroupLabel}" Text="{DynamicResource DocPageSettings_MarginsPx}"/>
                         <WrapPanel>
-                            <TextBlock Style="{StaticResource PnlLabel}" Text="Top:"/>
+                            <TextBlock Style="{StaticResource PnlLabel}" Text="{DynamicResource DocPageSettings_Top}"/>
                             <TextBox x:Name="PART_MarginTopBox"    Style="{StaticResource PnlInput}" Text="40"/>
-                            <TextBlock Style="{StaticResource PnlLabel}" Text="Bottom:"/>
+                            <TextBlock Style="{StaticResource PnlLabel}" Text="{DynamicResource DocPageSettings_Bottom}"/>
                             <TextBox x:Name="PART_MarginBottomBox" Style="{StaticResource PnlInput}" Text="56"/>
                         </WrapPanel>
                         <WrapPanel Margin="0,4,0,0">
-                            <TextBlock x:Name="PART_MarginLeftLabel"  Style="{StaticResource PnlLabel}" Text="Left:"/>
+                            <TextBlock x:Name="PART_MarginLeftLabel"  Style="{StaticResource PnlLabel}" Text="{DynamicResource DocPageSettings_Left}"/>
                             <TextBox x:Name="PART_MarginLeftBox"      Style="{StaticResource PnlInput}" Text="56"/>
-                            <TextBlock x:Name="PART_MarginRightLabel" Style="{StaticResource PnlLabel}" Text="Right:"/>
+                            <TextBlock x:Name="PART_MarginRightLabel" Style="{StaticResource PnlLabel}" Text="{DynamicResource DocPageSettings_Right}"/>
                             <TextBox x:Name="PART_MarginRightBox"     Style="{StaticResource PnlInput}" Text="56"/>
-                            <TextBlock Style="{StaticResource PnlLabel}" Text="Gutter:"/>
+                            <TextBlock Style="{StaticResource PnlLabel}" Text="{DynamicResource DocPageSettings_Gutter}"/>
                             <TextBox x:Name="PART_MarginGutterBox"    Style="{StaticResource PnlInput}" Text="0"/>
                         </WrapPanel>
                         <CheckBox x:Name="PART_MirrorMarginsCheck"
                                   Style="{StaticResource PnlCheck}"
-                                  Content="Mirror margins (inside/outside)"
+                                  Content="{DynamicResource DocPageSettings_MirrorMargins}"
                                   Checked="OnMirrorMarginsChanged"
                                   Unchecked="OnMirrorMarginsChanged"/>
                     </StackPanel>
                 </TabItem>
 
                 <!-- ── Tab: Columns ────────────────────────────────────────── -->
-                <TabItem Header="Columns">
+                <TabItem Header="{DynamicResource DocPageSettings_TabColumns}">
                     <StackPanel Margin="4,8,4,4">
-                        <TextBlock Style="{StaticResource PnlGroupLabel}" Text="Number of columns"/>
+                        <TextBlock Style="{StaticResource PnlGroupLabel}" Text="{DynamicResource DocPageSettings_NumColumns}"/>
                         <WrapPanel>
                             <ToggleButton x:Name="PART_Col1Btn" Style="{StaticResource ColToggleBtn}"
                                           Content="1" IsChecked="True" Click="OnColumnCountClicked" Tag="1"/>
@@ -178,55 +178,55 @@
 
                         <CheckBox x:Name="PART_EqualColWidthsCheck"
                                   Style="{StaticResource PnlCheck}"
-                                  Content="Equal column widths"
+                                  Content="{DynamicResource DocPageSettings_EqualColWidths}"
                                   IsChecked="True"/>
 
                         <WrapPanel Margin="0,8,0,0">
-                            <TextBlock Style="{StaticResource PnlLabel}" Text="Column spacing (px):"/>
+                            <TextBlock Style="{StaticResource PnlLabel}" Text="{DynamicResource DocPageSettings_ColSpacing}"/>
                             <TextBox x:Name="PART_ColGapBox" Style="{StaticResource PnlInput}" Text="20"/>
                         </WrapPanel>
 
                         <CheckBox x:Name="PART_ColSeparatorCheck"
                                   Style="{StaticResource PnlCheck}"
-                                  Content="Show separator line between columns"/>
+                                  Content="{DynamicResource DocPageSettings_ShowSeparator}"/>
                     </StackPanel>
                 </TabItem>
 
                 <!-- ── Tab: Header / Footer ────────────────────────────────── -->
-                <TabItem Header="Header/Footer">
+                <TabItem Header="{DynamicResource DocPageSettings_TabHeaderFooter}">
                     <StackPanel Margin="4,8,4,4">
 
                         <!-- Header group -->
-                        <GroupBox Header="Header"
+                        <GroupBox Header="{DynamicResource DocPageSettings_GroupHeader}"
                                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                                   BorderBrush="{DynamicResource DockBorderBrush}"
                                   Padding="8,4">
                             <StackPanel>
                                 <CheckBox x:Name="PART_HeaderEnabledCheck"
                                           Style="{StaticResource PnlCheck}"
-                                          Content="Enable header"
+                                          Content="{DynamicResource DocPageSettings_EnableHeader}"
                                           Checked="OnHeaderEnabledChanged"
                                           Unchecked="OnHeaderEnabledChanged"/>
                                 <WrapPanel x:Name="PART_HeaderOptionsRow" IsEnabled="False" Margin="0,6,0,0">
-                                    <TextBlock Style="{StaticResource PnlLabel}" Text="Height (px):"/>
+                                    <TextBlock Style="{StaticResource PnlLabel}" Text="{DynamicResource DocPageSettings_HeightPx}"/>
                                     <TextBox x:Name="PART_HeaderHeightBox"  Style="{StaticResource PnlInput}" Text="38"/>
-                                    <TextBlock Style="{StaticResource PnlLabel}" Text="Margin (px):"/>
+                                    <TextBlock Style="{StaticResource PnlLabel}" Text="{DynamicResource DocPageSettings_MarginPx}"/>
                                     <TextBox x:Name="PART_HeaderMarginBox"  Style="{StaticResource PnlInput}" Text="10"/>
                                 </WrapPanel>
                                 <CheckBox x:Name="PART_HeaderDiffFirstCheck"
                                           Style="{StaticResource PnlCheck}"
-                                          Content="Different content on first page"
+                                          Content="{DynamicResource DocPageSettings_DiffFirstPage}"
                                           IsEnabled="False"/>
                                 <CheckBox x:Name="PART_HeaderSameLRCheck"
                                           Style="{StaticResource PnlCheck}"
-                                          Content="Same header on left/right pages"
+                                          Content="{DynamicResource DocPageSettings_SameHeaderLR}"
                                           IsChecked="True"
                                           IsEnabled="False"/>
                             </StackPanel>
                         </GroupBox>
 
                         <!-- Footer group -->
-                        <GroupBox Header="Footer"
+                        <GroupBox Header="{DynamicResource DocPageSettings_GroupFooter}"
                                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                                   BorderBrush="{DynamicResource DockBorderBrush}"
                                   Padding="8,4"
@@ -234,22 +234,22 @@
                             <StackPanel>
                                 <CheckBox x:Name="PART_FooterEnabledCheck"
                                           Style="{StaticResource PnlCheck}"
-                                          Content="Enable footer"
+                                          Content="{DynamicResource DocPageSettings_EnableFooter}"
                                           Checked="OnFooterEnabledChanged"
                                           Unchecked="OnFooterEnabledChanged"/>
                                 <WrapPanel x:Name="PART_FooterOptionsRow" IsEnabled="False" Margin="0,6,0,0">
-                                    <TextBlock Style="{StaticResource PnlLabel}" Text="Height (px):"/>
+                                    <TextBlock Style="{StaticResource PnlLabel}" Text="{DynamicResource DocPageSettings_HeightPx}"/>
                                     <TextBox x:Name="PART_FooterHeightBox"  Style="{StaticResource PnlInput}" Text="38"/>
-                                    <TextBlock Style="{StaticResource PnlLabel}" Text="Margin (px):"/>
+                                    <TextBlock Style="{StaticResource PnlLabel}" Text="{DynamicResource DocPageSettings_MarginPx}"/>
                                     <TextBox x:Name="PART_FooterMarginBox"  Style="{StaticResource PnlInput}" Text="10"/>
                                 </WrapPanel>
                                 <CheckBox x:Name="PART_FooterDiffFirstCheck"
                                           Style="{StaticResource PnlCheck}"
-                                          Content="Different content on first page"
+                                          Content="{DynamicResource DocPageSettings_DiffFirstPage}"
                                           IsEnabled="False"/>
                                 <CheckBox x:Name="PART_FooterSameLRCheck"
                                           Style="{StaticResource PnlCheck}"
-                                          Content="Same footer on left/right pages"
+                                          Content="{DynamicResource DocPageSettings_SameFooterLR}"
                                           IsChecked="True"
                                           IsEnabled="False"/>
                             </StackPanel>
@@ -259,21 +259,21 @@
                 </TabItem>
 
                 <!-- ── Tab: Border ─────────────────────────────────────────── -->
-                <TabItem Header="Border">
+                <TabItem Header="{DynamicResource DocPageSettings_TabBorder}">
                     <StackPanel Margin="4,8,4,4">
-                        <TextBlock Style="{StaticResource PnlGroupLabel}" Text="Page border style"/>
+                        <TextBlock Style="{StaticResource PnlGroupLabel}" Text="{DynamicResource DocPageSettings_BorderStyle}"/>
                         <StackPanel>
                             <RadioButton x:Name="PART_BorderNoneRadio"
-                                         Content="None"
+                                         Content="{DynamicResource DocPageSettings_BorderNone}"
                                          IsChecked="True"
                                          Foreground="{DynamicResource DockMenuForegroundBrush}"
                                          FontSize="12" Margin="0,2"/>
                             <RadioButton x:Name="PART_BorderBoxRadio"
-                                         Content="Box"
+                                         Content="{DynamicResource DocPageSettings_BorderBox}"
                                          Foreground="{DynamicResource DockMenuForegroundBrush}"
                                          FontSize="12" Margin="0,2"/>
                             <RadioButton x:Name="PART_BorderShadowRadio"
-                                         Content="Shadow"
+                                         Content="{DynamicResource DocPageSettings_BorderShadow}"
                                          Foreground="{DynamicResource DockMenuForegroundBrush}"
                                          FontSize="12" Margin="0,2"/>
                         </StackPanel>
@@ -281,18 +281,18 @@
                         <Separator Style="{StaticResource PnlSepLine}"/>
 
                         <WrapPanel Margin="0,4,0,0">
-                            <TextBlock Style="{StaticResource PnlLabel}" Text="Color (hex):"/>
+                            <TextBlock Style="{StaticResource PnlLabel}" Text="{DynamicResource DocPageSettings_ColorHex}"/>
                             <TextBox x:Name="PART_BorderColorBox"
                                      Style="{StaticResource PnlInput}"
                                      Width="80"
                                      Text="#000000"/>
-                            <TextBlock Style="{StaticResource PnlLabel}" Text="Width (px):"/>
+                            <TextBlock Style="{StaticResource PnlLabel}" Text="{DynamicResource DocPageSettings_WidthPx}"/>
                             <TextBox x:Name="PART_BorderWidthBox"
                                      Style="{StaticResource PnlInput}"
                                      Text="1"/>
                         </WrapPanel>
                         <WrapPanel Margin="0,4,0,0">
-                            <TextBlock Style="{StaticResource PnlLabel}" Text="Distance from text (px):"/>
+                            <TextBlock Style="{StaticResource PnlLabel}" Text="{DynamicResource DocPageSettings_DistanceFromText}"/>
                             <TextBox x:Name="PART_BorderPaddingBox"
                                      Style="{StaticResource PnlInput}"
                                      Text="8"/>
@@ -306,12 +306,12 @@
             <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
                 <Button x:Name="PART_CancelBtn"
                         Style="{StaticResource ActionBtn}"
-                        Content="Cancel"
+                        Content="{DynamicResource DocPageSettings_Cancel}"
                         Click="OnCancelClicked"
                         Margin="0,0,8,0"/>
                 <Button x:Name="PART_ApplyBtn"
                         Style="{StaticResource ActionBtn}"
-                        Content="Apply"
+                        Content="{DynamicResource DocPageSettings_Apply}"
                         Click="OnApplyClicked"
                         IsDefault="True"/>
             </StackPanel>
