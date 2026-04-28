@@ -18,6 +18,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using WpfHexEditor.Core.ProjectSystem.Languages;
+using WpfHexEditor.Editor.CodeEditor.Folding;
 using WpfHexEditor.Editor.CodeEditor.Helpers;
 
 namespace WpfHexEditor.Editor.CodeEditor.Controls;
@@ -172,12 +173,29 @@ public sealed class MinimapControl : FrameworkElement
 
     // ── Editor attachment ────────────────────────────────────────────────────
 
+    private FoldingEngine? _attachedFoldingEngine;
+
     /// <summary>Attaches to a CodeEditor for document and viewport tracking.</summary>
     public void SetEditor(CodeEditor editor)
     {
+        // Detach from previous folding engine to prevent leaks
+        if (_attachedFoldingEngine is not null)
+            _attachedFoldingEngine.RegionsChanged -= OnFoldingRegionsChanged;
+
         _editor = editor;
+
+        // Subscribe directly so the minimap redraws as soon as fold state changes,
+        // independent of the host's coalescing timer.
+        _attachedFoldingEngine = editor.FoldingEngine;
+        if (_attachedFoldingEngine is not null)
+            _attachedFoldingEngine.RegionsChanged += OnFoldingRegionsChanged;
+
         InvalidateVisual();
     }
+
+    private void OnFoldingRegionsChanged(object? sender, EventArgs e)
+        => Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Render,
+               new Action(InvalidateVisual));
 
     /// <summary>Called by the host when the document or viewport changes.</summary>
     public void Refresh() => InvalidateVisual();

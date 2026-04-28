@@ -1678,12 +1678,14 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             _pendingFoldLines = null;
             if (targets is null || targets.Count == 0) return;
 
+            // Use ToggleRegion so that RebuildHiddenSet + RegionsChanged fire for each
+            // region.  Without this, _hiddenLines stays empty and the scope-guide/scroll
+            // state is inconsistent with the IsCollapsed flag on the region object.
             foreach (var region in _foldingEngine.Regions)
             {
-                if (targets.Contains(region.StartLine))
-                    region.IsCollapsed = true;
+                if (targets.Contains(region.StartLine) && !region.IsCollapsed)
+                    _foldingEngine.ToggleRegion(region.StartLine);
             }
-            InvalidateVisual();
         }
 
         // CodeEditor has no binary modifications — return null / no-op
@@ -1753,14 +1755,17 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             foreach (var (line, errors) in _validationByLine)
             {
                 bool hasError = errors.Any(e => e.Severity == Models.ValidationSeverity.Error);
+                // BUG3-FIX: convert physical line index to visible (fold-compressed) index so
+                // scroll-marker ticks align with the scrollbar which operates in visible-line space.
+                int visLine = PhysicalToVisibleLineIndex(line);
                 if (hasError)
-                    errorLines.Add(line);
+                    errorLines.Add(visLine);
                 else
-                    warningLines.Add(line);
+                    warningLines.Add(visLine);
             }
 
             _codeScrollMarkerPanel.UpdateDiagnosticMarkers(errorLines, warningLines,
-                _document?.Lines.Count ?? 1);
+                VisibleLineCount);
         }
 
         // ═══════════════════════════════════════════════════════════════════════
@@ -1890,12 +1895,14 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             _endBlockHintPopup.NavigationRequested -= OnEndBlockHintNavigate;
             _endBlockHintPopup.NavigationRequested += OnEndBlockHintNavigate;
 
-            int maxCtx = Language?.FoldingRules?.EndOfBlockHint?.MaxContextLines ?? 3;
+            var hintSettings = Language?.FoldingRules?.EndOfBlockHint;
             _endBlockHintPopup.Show(
                 this, r, _document.Lines, _typeface, _fontSize,
                 new Rect(TextAreaLeftOffset, closeY, Math.Max(1, ActualWidth - TextAreaLeftOffset), _lineHeight),
                 ExternalHighlighter,
-                maxCtx);
+                maxContextLines: hintSettings?.MaxContextLines ?? 3,
+                showLineNumber:  hintSettings?.ShowLineNumber  ?? true,
+                showLineCount:   hintSettings?.ShowLineCount   ?? true);
         }
 
         private void OnEndBlockHintNavigate(int startLine0)

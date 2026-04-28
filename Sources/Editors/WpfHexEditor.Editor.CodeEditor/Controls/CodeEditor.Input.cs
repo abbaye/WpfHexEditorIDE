@@ -639,7 +639,24 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // Move line
             if (deltaLine != 0)
             {
-                _cursorLine = Math.Max(0, Math.Min(_document.Lines.Count - 1, _cursorLine + deltaLine));
+                // BUG3-FIX: step one visible line at a time so collapsed blocks are treated as
+                // a single unit.  A raw deltaLine ± 1 would land inside a hidden run and the
+                // cursor would appear to jump or stay frozen from the user's perspective.
+                int step = deltaLine > 0 ? 1 : -1;
+                int remaining = Math.Abs(deltaLine);
+                int line = _cursorLine;
+                int lastDoc = _document.Lines.Count - 1;
+
+                while (remaining > 0 && line >= 0 && line <= lastDoc)
+                {
+                    line = Math.Clamp(line + step, 0, lastDoc);
+                    // Skip all lines that are hidden inside a collapsed region.
+                    while (_foldingEngine != null && _foldingEngine.IsLineHidden(line)
+                           && line > 0 && line < lastDoc)
+                        line = Math.Clamp(line + step, 0, lastDoc);
+                    remaining--;
+                }
+                _cursorLine = line;
                 // Clamp column to line length
                 _cursorColumn = Math.Min(_cursorColumn, _document.Lines[_cursorLine].Length);
             }
@@ -940,7 +957,22 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             bool hasHBar = _hScrollBar?.Visibility == Visibility.Visible;
             double viewportH = ActualHeight - TopMargin - (hasHBar ? ScrollBarThickness : 0);
             int pageLines = Math.Max(1, (int)(viewportH / _lineHeight) - 1);
-            int newLine = Math.Clamp(_cursorLine + direction * pageLines, 0, _document.Lines.Count - 1);
+
+            // BUG3-FIX: walk pageLines *visible* lines instead of raw document lines so that
+            // collapsed blocks count as one line, matching what the user sees on screen.
+            int step   = direction > 0 ? 1 : -1;
+            int left   = pageLines;
+            int line   = _cursorLine;
+            int lastDoc = _document.Lines.Count - 1;
+            while (left > 0 && line >= 0 && line <= lastDoc)
+            {
+                line = Math.Clamp(line + step, 0, lastDoc);
+                while (_foldingEngine != null && _foldingEngine.IsLineHidden(line)
+                       && line > 0 && line < lastDoc)
+                    line = Math.Clamp(line + step, 0, lastDoc);
+                left--;
+            }
+            int newLine = line;
             _cursorLine = newLine;
             _cursorColumn = Math.Min(_cursorColumn, _document.Lines[_cursorLine].Length);
 
