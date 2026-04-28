@@ -142,6 +142,14 @@ public sealed class ParsedFieldsPlugin : IWpfHexEditorPlugin
         _panel.SetOpenDocumentsProvider(() =>
             context.DocumentHost.Documents.OpenDocuments
                 .Where(d => !string.IsNullOrEmpty(d.FilePath))
+                .Where(d =>
+                {
+                    var ext = System.IO.Path.GetExtension(d.FilePath);
+                    if (string.IsNullOrEmpty(ext)) return false;
+                    var catalog = context.FormatCatalog;
+                    if (catalog == null) return true; // catalog unavailable — show all
+                    return catalog.FindFormatsByExtension(ext).Count > 0;
+                })
                 .Select(d => (d.FilePath!, System.IO.Path.GetFileName(d.FilePath!)))
                 .ToList());
         _panel.SourceDocumentSelected += OnSourceDocumentSelected;
