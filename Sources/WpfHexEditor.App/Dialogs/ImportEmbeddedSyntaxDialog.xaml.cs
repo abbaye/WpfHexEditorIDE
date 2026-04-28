@@ -73,14 +73,14 @@ public partial class ImportEmbeddedSyntaxDialog : ThemedDialog
 
     private void BuildCategories()
     {
-        _categories = _catalog.GetAll()
-            .Where(e => e.HasSyntaxDefinition)
-            .GroupBy(e => e.Category, StringComparer.OrdinalIgnoreCase)
-            .OrderBy(g => g.Key, StringComparer.OrdinalIgnoreCase)
-            .Select(g =>
+        _categories = _catalog.Query()
+            .HasSyntaxDefinition()
+            .OrderByName()
+            .GroupByCategory()
+            .Select(kvp =>
             {
-                var node = new CategoryNode(g.Key);
-                foreach (var entry in g.OrderBy(e => e.Name, StringComparer.OrdinalIgnoreCase))
+                var node = new CategoryNode(kvp.Key);
+                foreach (var entry in kvp.Value)
                     node.Items.Add(new SyntaxRow(entry));
                 return node;
             })

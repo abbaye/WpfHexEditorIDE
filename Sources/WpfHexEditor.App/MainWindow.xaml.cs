@@ -524,9 +524,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         // Load .whfmt files that embed a syntaxDefinition block.
         var formatCatalog = EmbeddedFormatCatalog.Instance;
-        foreach (var entry in formatCatalog.GetAll())
+        foreach (var entry in formatCatalog.Query().HasSyntaxDefinition().Execute())
         {
-            if (!entry.HasSyntaxDefinition) continue;
             try
             {
                 var syntaxJson = formatCatalog.GetSyntaxDefinitionJson(entry.ResourceKey);
@@ -1827,8 +1826,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         string? json = null;
 
-        if (WpfHexEditor.Core.Definitions.EmbeddedFormatCatalog.Instance.GetAll()
-                .Any(e => e.ResourceKey == keyOrPath))
+        if (WpfHexEditor.Core.Definitions.EmbeddedFormatCatalog.Instance.Query()
+                .Where(e => e.ResourceKey == keyOrPath).Any())
             json = WpfHexEditor.Core.Definitions.EmbeddedFormatCatalog.Instance.GetJson(keyOrPath);
         else if (System.IO.File.Exists(keyOrPath))
             json = System.IO.File.ReadAllText(keyOrPath);
@@ -2913,9 +2912,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         var ext = Path.GetExtension(filePath)?.ToLowerInvariant();
         if (string.IsNullOrEmpty(ext)) return null;
 
-        var entry = EmbeddedFormatCatalog.Instance.GetAll()
-            .FirstOrDefault(e => e.Extensions.Any(
-                x => string.Equals(x, ext, StringComparison.OrdinalIgnoreCase)));
+        var entry = EmbeddedFormatCatalog.Instance.Query()
+            .WithExtension(ext)
+            .First();
 
         return entry?.PreferredEditor;
     }
@@ -3569,18 +3568,10 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         {
             if (_romExtensionMap is not null) return _romExtensionMap;
 
-            var map = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-
-            foreach (var entry in WpfHexEditor.Core.Definitions.EmbeddedFormatCatalog.Instance.GetAll())
-            {
-                if (string.IsNullOrWhiteSpace(entry.Platform)) continue;
-
-                foreach (var ext in entry.Extensions)
-                {
-                    var key = ext.StartsWith('.') ? ext : "." + ext;
-                    map.TryAdd(key.ToLowerInvariant(), entry.Platform);
-                }
-            }
+            var map = WpfHexEditor.Core.Definitions.EmbeddedFormatCatalog.Instance
+                .Query()
+                .HasPlatform()
+                .ToExtensionDictionary(e => e.Platform);
 
             return _romExtensionMap = map;
         }
