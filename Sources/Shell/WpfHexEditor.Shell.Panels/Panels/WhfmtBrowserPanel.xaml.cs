@@ -197,10 +197,11 @@ public partial class WhfmtBrowserPanel : UserControl,
         _searchBar.OnCloseRequested += (_, _) =>
         {
             _searchBar.Visibility = Visibility.Collapsed;
+            SearchBarCanvas.IsHitTestVisible = false;
             _vm.ClearSearchCommand.Execute(null);
         };
         SearchBarCanvas.Children.Add(_searchBar);
-        SearchBarCanvas.IsHitTestVisible = true;
+        SearchBarCanvas.IsHitTestVisible = false;
     }
 
     // ------------------------------------------------------------------
@@ -248,6 +249,7 @@ public partial class WhfmtBrowserPanel : UserControl,
     {
         if (_searchBar is null) return;
         _searchBar.Visibility = Visibility.Visible;
+        SearchBarCanvas.IsHitTestVisible = true;
         _searchBar.EnsureDefaultPosition(SearchBarCanvas);
         _searchBar.FocusSearchInput();
     }

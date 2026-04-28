@@ -157,10 +157,11 @@ public partial class WhfmtCatalogDocument : UserControl,
         _searchBar.OnCloseRequested += (_, _) =>
         {
             _searchBar.Visibility = Visibility.Collapsed;
+            SearchBarCanvas.IsHitTestVisible = false;
             ClearSearch();
         };
         SearchBarCanvas.Children.Add(_searchBar);
-        SearchBarCanvas.IsHitTestVisible = true;
+        SearchBarCanvas.IsHitTestVisible = false;
     }
 
     // ------------------------------------------------------------------
@@ -186,6 +187,7 @@ public partial class WhfmtCatalogDocument : UserControl,
     {
         if (_searchBar is null) return;
         _searchBar.Visibility = Visibility.Visible;
+        SearchBarCanvas.IsHitTestVisible = true;
         _searchBar.EnsureDefaultPosition(SearchBarCanvas);
         _searchBar.FocusSearchInput();
     }
