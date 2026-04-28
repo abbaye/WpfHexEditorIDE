@@ -384,14 +384,17 @@ foreach (var fmt in highQualityDiskFormats)
 | `.WithMinQuality(int)` | Keep entries with QualityScore ≥ threshold |
 | `.PriorityOnly()` | Shortcut: QualityScore ≥ 85 |
 | `.HasMagicBytes()` | Only entries with at least one signature |
-| `.WithExtension(string)` | Only entries that handle a given extension |
+| `.WithExtension(string)` | Only entries that handle a given extension (leading dot optional) |
 | `.TextFormatsOnly()` | Only text-based formats |
 | `.BinaryFormatsOnly()` | Only binary formats |
 | `.HasSyntaxDefinition()` | Only entries with a grammar block |
-| `.WithPreferredEditor(string)` | e.g. `"code-editor"` or `"structure-editor"` |
+| `.WithPreferredEditor(string)` | Exact editor ID match, e.g. `"code-editor"` |
+| `.HasPreferredEditor()` | Any non-null, non-empty preferred editor *(v1.1.1)* |
 | `.HasMimeType()` | Only entries that declare a MIME type |
-| `.ForPlatform(string)` | e.g. `"Nintendo"` or `"SNES"` |
+| `.HasPlatform()` | Only entries with a non-empty platform field |
+| `.ForPlatform(string)` | Platform substring match, e.g. `"Nintendo"` |
 | `.WithDiffMode(string)` | `"text"`, `"binary"`, or `"semantic"` |
+| `.WithName(string)` | Exact name match (case-insensitive) *(v1.1.1)* |
 | `.Containing(string)` | Full-text search in name + description |
 | `.Where(predicate)` | Custom predicate |
 
@@ -410,6 +413,12 @@ foreach (var fmt in highQualityDiskFormats)
 | `.Execute()` | `IReadOnlyList<EmbeddedFormatEntry>` | All matching entries |
 | `.First()` | `EmbeddedFormatEntry?` | First match or null |
 | `.Count()` | `int` | Count without materialising the list |
+| `.Any()` | `bool` | True when at least one entry matches *(v1.1.1)* |
+| `.Select<T>(selector)` | `IReadOnlyList<T>` | Project each entry *(v1.1.1)* |
+| `.ToDictionary<K,V>(keySelector, valueSelector)` | `Dictionary<K,V>` | Build a dictionary; auto `OrdinalIgnoreCase` for string keys *(v1.1.1)* |
+| `.ToExtensionDictionary()` | `Dictionary<string, EmbeddedFormatEntry>` | Flat extension→entry map *(v1.1.1)* |
+| `.ToExtensionDictionary<V>(valueSelector)` | `Dictionary<string, V>` | Extension→value routing map *(v1.1.1)* |
+| `.GroupByCategory()` | `IReadOnlyDictionary<string, IReadOnlyList<EmbeddedFormatEntry>>` | Alphabetically sorted category groups *(v1.1.1)* |
 
 #### Real-world examples
 
@@ -437,10 +446,37 @@ var nintendoRoms = catalog
     .Execute();
 ```
 
+**Extension→editor routing map** (one line):
+
+```csharp
+// Build a lookup: file extension → preferred editor ID
+var editorMap = catalog.Query()
+    .HasPreferredEditor()
+    .ToExtensionDictionary(e => e.PreferredEditor!);
+
+var editor = editorMap.GetValueOrDefault(".cs"); // "code-editor"
+```
+
+**Group by category for a tree view:**
+
+```csharp
+foreach (var (category, entries) in catalog.Query().OrderByName().GroupByCategory())
+{
+    Console.WriteLine($"[{category}]");
+    foreach (var e in entries)
+        Console.WriteLine($"  {e.Name}");
+}
+```
+
+**Check if a name exists in the catalog:**
+
+```csharp
+bool exists = catalog.Query().WithName("ZIP Archive").Any();
+```
+
 **High-risk crypto formats:**
 
 ```csharp
-// Extension method on the entry — requires catalog for JSON parsing
 var cryptoFormats = catalog.Query()
     .InCategory(FormatCategory.Crypto)
     .WithMinQuality(50)
@@ -473,6 +509,28 @@ export templates, and technical details.
 
 > All methods take the catalog as a second parameter to load the JSON on demand.
 > The JSON is cached by the catalog after the first call.
+
+#### Bulk parse — `GetAllMetadata()` *(v1.1.1)*
+
+When you need **two or more metadata blocks** for the same entry, use `GetAllMetadata()` —
+it parses the `.whfmt` JSON exactly once and returns a `FormatMetadata` record with all blocks.
+
+```csharp
+var meta = entry.GetAllMetadata(catalog);
+// meta.Forensic          → ForensicSummary?
+// meta.AiHints           → AiHints?
+// meta.Bookmarks         → IReadOnlyList<NavigationBookmark>
+// meta.Assertions        → IReadOnlyList<AssertionRule>
+// meta.InspectorGroups   → IReadOnlyList<InspectorGroup>
+// meta.ExportTemplates   → IReadOnlyList<ExportTemplate>
+// meta.TechnicalDetails  → TechnicalDetails?
+// meta.IsHighRisk        → bool (shortcut)
+// meta.SupportsEncryption→ bool (shortcut)
+
+// Much more efficient than chaining individual calls:
+// ❌ entry.GetForensicSummary(catalog) + entry.GetAiHints(catalog)  → 2 JSON parses
+// ✅ entry.GetAllMetadata(catalog)                                    → 1 JSON parse
+```
 
 #### Forensic data
 
