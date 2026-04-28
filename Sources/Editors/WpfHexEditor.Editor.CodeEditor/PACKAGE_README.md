@@ -7,6 +7,8 @@ Drop it into any WPF window — no IDE, no plugin host, no external dependencies
 dotnet add package WpfCodeEditor
 ```
 
+> **Full documentation**: [WpfCodeEditor-guide.md](https://github.com/abbaye/WpfHexEditorIDE/blob/master/Sources/Editors/WpfHexEditor.Editor.CodeEditor/WpfCodeEditor-guide.md) — Architecture, API reference, integration guides (Level 1–4), .whfmt format, and settings reference.
+
 ---
 
 ## Quick Start
@@ -201,4 +203,5 @@ GNU Affero General Public License v3.0 (AGPL-3.0)
 ## Links
 
 - [GitHub Repository](https://github.com/abbaye/WpfHexEditorIDE)
+- [Documentation Guide](https://github.com/abbaye/WpfHexEditorIDE/blob/master/Sources/Editors/WpfHexEditor.Editor.CodeEditor/WpfCodeEditor-guide.md)
 - [Report Issues](https://github.com/abbaye/WpfHexEditorIDE/issues)
