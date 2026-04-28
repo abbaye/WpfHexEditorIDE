@@ -153,6 +153,12 @@ public partial class WhfmtCatalogDocument : UserControl,
     {
         _searchBar = new QuickSearchBar();
         _searchBar.BindToTarget(this);
+        _searchBar.Visibility = Visibility.Collapsed;
+        _searchBar.OnCloseRequested += (_, _) =>
+        {
+            _searchBar.Visibility = Visibility.Collapsed;
+            ClearSearch();
+        };
         SearchBarCanvas.Children.Add(_searchBar);
         SearchBarCanvas.IsHitTestVisible = true;
     }
