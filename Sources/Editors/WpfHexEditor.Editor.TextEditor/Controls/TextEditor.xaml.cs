@@ -982,6 +982,10 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IBufferAw
                     RefreshTextStatusBarItems();
                     EnsureCaretHorizontallyVisible();
                     Viewport.ScrollIntoView(_vm.CaretLine);
+                    // Sync the ScrollViewer offset so the scrollbar thumb tracks keyboard navigation.
+                    // ScrollIntoView updates Viewport.FirstVisibleLine directly without going through
+                    // the ScrollViewer, so the scrollbar stays frozen without this call.
+                    ScrollView.ScrollToVerticalOffset(Viewport.FirstVisibleLine * Viewport.LineHeight);
                     break;
                 case nameof(TextEditorViewModel.Title):
                     TitleChanged?.Invoke(this, _vm.Title);
