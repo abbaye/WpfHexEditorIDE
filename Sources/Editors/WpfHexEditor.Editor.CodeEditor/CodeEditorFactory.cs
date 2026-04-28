@@ -9,6 +9,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using WpfHexEditor.Core.Definitions;
+using WpfHexEditor.Core.Definitions.Query;
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Editor.CodeEditor.Controls;
 using WpfHexEditor.Editor.CodeEditor.Helpers;
@@ -47,9 +48,7 @@ public sealed class CodeEditorFactory : IEditorFactory
         if (language?.EditorHint is not null) return false;
 
         // Catalog-driven: accept any extension explicitly mapped to this editor via .whfmt preferredEditor field.
-        var entry = EmbeddedFormatCatalog.Instance.GetAll()
-            .FirstOrDefault(e => e.Extensions.Any(
-                x => string.Equals(x, ext, StringComparison.OrdinalIgnoreCase)));
+        var entry = EmbeddedFormatCatalog.Instance.Query().WithExtension(ext).First();
         if (entry?.PreferredEditor == "code-editor") return true;
 
         // Fallback: any registered language definition implies the code editor handles this file.

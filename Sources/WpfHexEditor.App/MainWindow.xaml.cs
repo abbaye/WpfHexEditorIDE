@@ -54,6 +54,7 @@ using WpfHexEditor.Shell.Panels;
 using WpfHexEditor.Shell.Panels.Panels;
 using WpfHexEditor.Shell.Panels.Services;
 using WpfHexEditor.Core.Definitions;
+using WpfHexEditor.Core.Definitions.Query;
 using WpfHexEditor.Core.ProjectSystem;
 using WpfHexEditor.Core.ProjectSystem.Dialogs;
 using WpfHexEditor.Core.ProjectSystem.Serialization;
