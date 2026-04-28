@@ -75,7 +75,7 @@ Every editor is a standalone `IDocumentEditor` plugin — reusable outside the I
 | **[Document Editor](Sources/WpfHexEditor.Editor.DocumentEditor/README.md)** | ~35% | WYSIWYG RTF/DOCX/ODT editing, formatting toolbar, tables, find/replace |
 | **[Entropy Viewer](Sources/WpfHexEditor.Editor.EntropyViewer/README.md)** | ~30% | Graphical entropy and byte-frequency charts, click-to-navigate |
 | **[Structure Editor](Sources/WpfHexEditor.Editor.StructureEditor/README.md)** | ~40% | Visual `.whfmt` editor — block DataGrid, drag-drop, validation, TestTab, live binary preview |
-| **[Class Diagram](Sources/WpfHexEditor.Editor.ClassDiagram/README.md)** | ~30% | UML diagram — syntax-highlighted DSL, 3 layout strategies, interactive canvas, minimap, session persistence |
+| **[Class Diagram](Sources/WpfHexEditor.Editor.ClassDiagram/README.md)** | ~50% | UML diagram — syntax-highlighted DSL, 3 layout strategies, interactive canvas, minimap, session persistence |
 | **[JSON Editor](Sources/WpfHexEditor.Editor.JsonEditor/README.md)** | ~20% | JSON syntax highlighting, auto-detection |
 | **[Resx Editor](Sources/WpfHexEditor.Editor.ResxEditor/README.md)** | ~20% | `.resx` resource editor — key/value grid |
 | **[Disassembly Viewer](Sources/WpfHexEditor.Editor.DisassemblyViewer/README.md)** | ~12% | x86/x64/ARM disassembly via Iced, GlyphRun canvas renderer |
