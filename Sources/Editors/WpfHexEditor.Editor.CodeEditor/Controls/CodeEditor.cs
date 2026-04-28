@@ -3299,6 +3299,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
             SyncVScrollBar();
             InvalidateVisual();
+            RenderCaretVisual();
         }
 
         /// <summary>
@@ -4269,6 +4270,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 _virtualizationEngine.CalculateVisibleRange();
                 SyncVScrollBar();
                 InvalidateVisual();
+                RenderCaretVisual();
             }
         }
 
