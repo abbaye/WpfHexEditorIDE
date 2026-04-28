@@ -64,6 +64,11 @@ public sealed class LspClientImpl : ILspClient,
     private bool _fullyLoaded;
     private System.Windows.Threading.DispatcherTimer? _fullyLoadedTimer;
 
+    // Diagnostics received before FullyLoaded — buffered and flushed on transition.
+    // Keyed by document URI (last batch per URI wins, matching LSP replace-on-update semantics).
+    private readonly Dictionary<string, LspDiagnosticsReceivedEventArgs> _pendingDiagnostics
+        = new(StringComparer.OrdinalIgnoreCase);
+
     // ── ILspClient: lifecycle ──────────────────────────────────────────────────
 
     public bool IsInitialized { get; private set; }
@@ -161,11 +166,12 @@ public sealed class LspClientImpl : ILspClient,
 
         IsInitialized = true;
 
-        // Start a fallback timer that transitions to FullyLoaded after 5 seconds.
+        // Start a fallback timer that transitions to FullyLoaded after 2 seconds.
         // The first diagnostic batch (push or pull) will also trigger the transition,
         // whichever comes first — mirroring VS behaviour of suppressing init noise.
+        // 2s is sufficient for Roslyn in-process; external servers (clangd) also satisfy this.
         _fullyLoadedTimer = new System.Windows.Threading.DispatcherTimer(
-            System.TimeSpan.FromSeconds(5),
+            System.TimeSpan.FromSeconds(2),
             System.Windows.Threading.DispatcherPriority.Background,
             (_, _) => TransitionToFullyLoaded(),
             _dispatcher);
@@ -183,6 +189,12 @@ public sealed class LspClientImpl : ILspClient,
         _fullyLoadedTimer?.Stop();
         _fullyLoadedTimer = null;
         Logger?.Invoke("Server fully loaded — semantic analysis ready.");
+
+        // Discard all diagnostics buffered before the server was fully ready.
+        // Pre-ready batches are garbage (unresolved namespaces before workspace loads).
+        // The server will re-push correct diagnostics once semantic analysis is ready.
+        _pendingDiagnostics.Clear();
+
         FullyLoaded?.Invoke();
     }
 
@@ -578,8 +590,17 @@ public sealed class LspClientImpl : ILspClient,
         // Always raise on the UI thread.
         _dispatcher.InvokeAsync(() =>
         {
-            TransitionToFullyLoaded();
-            DiagnosticsReceived?.Invoke(this, args);
+            if (_fullyLoaded)
+            {
+                // Server is stable — publish immediately.
+                DiagnosticsReceived?.Invoke(this, args);
+            }
+            else
+            {
+                // Server not yet fully initialized — buffer by URI (last batch wins).
+                // Pre-ready diagnostics are garbage (unresolved refs before workspace loads).
+                _pendingDiagnostics[args.DocumentUri] = args;
+            }
         });
     }
 

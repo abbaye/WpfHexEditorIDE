@@ -140,21 +140,21 @@ public sealed class ParsedFieldsPlugin : IWpfHexEditorPlugin
 
         // ── Source selector ───────────────────────────────────────────────
         _panel.SetOpenDocumentsProvider(() =>
-            context.DocumentHost.Documents.OpenDocuments
-                .Where(d => !string.IsNullOrEmpty(d.FilePath))
-                .Where(d =>
+        {
+            var catalog = context.FormatCatalog;
+            // GetAllLayoutFilePaths includes lazy (never-activated) tabs — unlike Documents.OpenDocuments.
+            return context.DocumentHost.GetAllLayoutFilePaths()
+                .Where(fp =>
                 {
-                    var ext = System.IO.Path.GetExtension(d.FilePath);
+                    var ext = System.IO.Path.GetExtension(fp);
                     if (string.IsNullOrEmpty(ext)) return false;
-                    var catalog = context.FormatCatalog;
-                    if (catalog == null) return true; // catalog unavailable — show all
-                    // Only include files that have at least one non-text (binary) format definition.
-                    // Text formats (isTextFormat=true) produce no parsed fields — exclude them.
+                    if (catalog == null) return true;
                     return catalog.FindFormatsByExtension(ext)
                                   .Any(f => f.Detection?.IsTextFormat != true);
                 })
-                .Select(d => (d.FilePath!, System.IO.Path.GetFileName(d.FilePath!)))
-                .ToList());
+                .Select(fp => (fp, System.IO.Path.GetFileName(fp)))
+                .ToList();
+        });
         _panel.SourceDocumentSelected += OnSourceDocumentSelected;
         context.DocumentHost.Documents.DocumentUnregistered += OnDocumentUnregistered;
 
@@ -285,8 +285,14 @@ public sealed class ParsedFieldsPlugin : IWpfHexEditorPlugin
         // Disconnect HexEditor's panel connection — preview takes over
         _context?.HexEditor.DisconnectParsedFieldsPanel();
 
-        // Create preview service on first use (uses shared catalog via FormatDetectionService.EffectiveFormats)
-        _previewService ??= new FormatParsingService();
+        // Create preview service on first use and load the shared format catalog.
+        // Without LoadFormats the internal FormatDetectionService is empty and detection returns null.
+        if (_previewService == null)
+        {
+            _previewService = new FormatParsingService();
+            if (_context?.FormatCatalog != null)
+                _previewService.LoadFormats(_context.FormatCatalog.GetAllFormats());
+        }
 
         // Connect panel to preview service (steals it from HexEditor)
         if (!_isPreviewActive)
@@ -479,12 +485,32 @@ public sealed class ParsedFieldsPlugin : IWpfHexEditorPlugin
             _pinnedFilePath = null;
             var activeFilePath = _context?.FocusContext.ActiveDocument?.FilePath;
             if (!string.IsNullOrEmpty(activeFilePath))
-                ActivatePreview(activeFilePath);
+                ConnectOrPreview(activeFilePath);
         }
         else
         {
             _isPinnedMode   = true;
             _pinnedFilePath = filePath;
+            ConnectOrPreview(filePath);
+        }
+    }
+
+    /// <summary>
+    /// Routes to HexEditor direct-connect when <paramref name="filePath"/> is the active
+    /// HexEditor file, otherwise falls back to the preview service path.
+    /// </summary>
+    private void ConnectOrPreview(string filePath)
+    {
+        var activeHexFile = _context?.HexEditor.CurrentFilePath;
+        if (string.Equals(filePath, activeHexFile, StringComparison.OrdinalIgnoreCase))
+        {
+            // Selected file is live in the active HexEditor — let it own the panel directly.
+            DeactivatePreview();
+            _context?.HexEditor.DisconnectParsedFieldsPanel();
+            _context?.HexEditor.ConnectParsedFieldsPanel(_panel);
+        }
+        else
+        {
             ActivatePreview(filePath);
         }
     }

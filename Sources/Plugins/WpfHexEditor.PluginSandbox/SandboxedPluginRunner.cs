@@ -821,6 +821,7 @@ file sealed class NullDocumentHostService : WpfHexEditor.SDK.Contracts.Services.
     public void OpenDocument(string filePath, string? preferredEditorId = null) { }
     public void ActivateAndNavigateTo(string filePath, int line, int column)    { }
     public void SaveAll()                                                        { }
+    public IReadOnlyList<string> GetAllLayoutFilePaths()                         => [];
 
     private sealed class NullDocumentManagerInstance : WpfHexEditor.Editor.Core.Documents.IDocumentManager
     {

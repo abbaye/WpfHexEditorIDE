@@ -62,4 +62,12 @@ public interface IDocumentHostService
     /// Called by BuildSystem before starting a compilation.
     /// </summary>
     void SaveAll();
+
+    /// <summary>
+    /// Returns the file paths of ALL document tabs currently in the layout,
+    /// including tabs that have never been activated (lazy-loaded).
+    /// Unlike <see cref="Documents"/>.OpenDocuments, this reads the raw layout
+    /// metadata and is not limited to tabs that have been materialized.
+    /// </summary>
+    IReadOnlyList<string> GetAllLayoutFilePaths();
 }

@@ -103,6 +103,21 @@ public class DockLayoutRoot
     }
 
     /// <summary>
+    /// Returns every DockItem across all groups, document hosts, floating, auto-hide, and hidden lists.
+    /// Includes items that have never been activated (lazy tabs).
+    /// </summary>
+    public IEnumerable<DockItem> GetAllItems()
+    {
+        foreach (var group in GetNodesOfType<DockGroupNode>(RootNode))
+            foreach (var item in group.Items)
+                yield return item;
+
+        foreach (var item in FloatingItems)  yield return item;
+        foreach (var item in AutoHideItems)  yield return item;
+        foreach (var item in HiddenItems)    yield return item;
+    }
+
+    /// <summary>
     /// Returns all DocumentHostNodes in the tree.
     /// </summary>
     public IEnumerable<DocumentHostNode> GetAllDocumentHosts()
