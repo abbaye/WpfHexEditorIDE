@@ -9,6 +9,7 @@
 //////////////////////////////////////////////
 
 using System.Collections.ObjectModel;
+using System.Linq;
 using WpfHexEditor.Core.FormatDetection;
 using WpfHexEditor.Core.ViewModels;
 
@@ -69,7 +70,7 @@ internal sealed class MetadataViewModel : ViewModelBase
 
         LoadList(Extensions, def.Extensions);
         LoadList(MimeTypes,  def.MimeTypes);
-        LoadList(Software,   def.Software);
+        LoadList(Software,   def.Software?.Select(s => s.Name ?? string.Empty));
         LoadList(UseCases,   def.UseCases);
     }
 
@@ -84,7 +85,7 @@ internal sealed class MetadataViewModel : ViewModelBase
         def.PreferredEditor = string.IsNullOrEmpty(PreferredEditor) ? null : PreferredEditor;
         def.Extensions      = [..Extensions.Select(x => x.Value)];
         def.MimeTypes       = [..MimeTypes.Select(x => x.Value)];
-        def.Software        = [..Software.Select(x => x.Value)];
+        def.Software        = [..Software.Select(x => new SoftwareEntry { Name = x.Value })];
         def.UseCases        = [..UseCases.Select(x => x.Value)];
 
         if (def.Detection is not null)

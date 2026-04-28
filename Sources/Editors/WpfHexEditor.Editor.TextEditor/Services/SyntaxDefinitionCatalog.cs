@@ -6,6 +6,7 @@
 
 using System.IO;
 using WpfHexEditor.Core.Definitions;
+using WpfHexEditor.Core.Definitions.Query;
 using WpfHexEditor.Editor.TextEditor.Highlighting;
 
 namespace WpfHexEditor.Editor.TextEditor.Services;
@@ -109,9 +110,8 @@ public sealed class SyntaxDefinitionCatalog
 
         // 1. Embedded .whfmt resources that contain a syntaxDefinition block.
         var formatCatalog = EmbeddedFormatCatalog.Instance;
-        foreach (var entry in formatCatalog.GetAll())
+        foreach (var entry in formatCatalog.Query().HasSyntaxDefinition().Execute())
         {
-            if (!entry.HasSyntaxDefinition) continue;
             try
             {
                 var syntaxJson = formatCatalog.GetSyntaxDefinitionJson(entry.ResourceKey);

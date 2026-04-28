@@ -17,6 +17,8 @@
     <ProjectReference Include="..\..\Core\WpfHexEditor.Core.Contracts\WpfHexEditor.Core.Contracts.csproj">
       <PrivateAssets>none</PrivateAssets>
     </ProjectReference>
+    <!-- Core.Definitions: CatalogQuery fluent API (WHFMTDetectionAdapter) -->
+    <ProjectReference Include="..\..\Core\WpfHexEditor.Core.Definitions\WpfHexEditor.Core.Definitions.csproj" />
   </ItemGroup>
 
 </Project>

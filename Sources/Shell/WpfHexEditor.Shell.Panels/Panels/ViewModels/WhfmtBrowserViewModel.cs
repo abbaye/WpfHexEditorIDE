@@ -21,6 +21,7 @@ using WpfHexEditor.Core.Interfaces;
 using WpfHexEditor.Core.Options;
 using WpfHexEditor.Core.ViewModels;
 using WpfHexEditor.Core.Contracts;
+using WpfHexEditor.Core.Definitions.Query;
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Shell.Panels.Services;
 
@@ -293,10 +294,12 @@ public sealed class WhfmtBrowserViewModel : ViewModelBase, IDisposable
             // -- Built-in formats --
             if (_showBuiltIns)
             {
-                foreach (var entry in _embCatalog.GetAll())
+                var minQuality = _settings?.QualityScoreThreshold ?? 0;
+                foreach (var entry in _embCatalog.Query()
+                    .WithMinQuality(minQuality)
+                    .Where(e => !IsExcluded(e.Name))
+                    .Execute())
                 {
-                    if (IsExcluded(entry.Name)) continue;
-                    if (_settings is not null && entry.QualityScore < _settings.QualityScoreThreshold) continue;
                     allItems.Add(BuildBuiltInItemVm(entry));
                 }
             }

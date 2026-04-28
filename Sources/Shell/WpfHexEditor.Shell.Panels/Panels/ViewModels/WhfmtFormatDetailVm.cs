@@ -15,6 +15,7 @@ using System.Linq;
 using System.Windows.Input;
 using WpfHexEditor.Core.Interfaces;
 using WpfHexEditor.Core.Contracts;
+using WpfHexEditor.Core.Definitions.Query;
 using WpfHexEditor.Core.ViewModels;
 using WpfHexEditor.Editor.Core;
 
@@ -230,7 +231,7 @@ public sealed class WhfmtFormatDetailVm : ViewModelBase
 
         // For user formats there's no resource key — try file path via FindFormat
         // For built-in formats, IEmbeddedFormatCatalog.GetJson(resourceKey) is the source
-        var entry = emb.GetAll().FirstOrDefault(e => e.Name == Name);
+        var entry = emb.Query().WithName(Name).First();
         if (entry?.ResourceKey is not null)
         {
             RawJson = emb.GetJson(entry.ResourceKey);

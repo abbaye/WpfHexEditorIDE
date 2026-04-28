@@ -12,6 +12,12 @@ namespace WpfHexEditor.Core.Definitions.Metadata;
 /// <summary>
 /// Generates human-readable summaries of <see cref="EmbeddedFormatEntry"/> objects
 /// without any dependency on WPF or MVVM infrastructure.
+/// <para>
+/// Methods that accept a catalog parameter parse the <c>.whfmt</c> JSON
+/// exactly once via <see cref="FormatMetadataExtensions.GetAllMetadata"/> and pass
+/// the resulting <see cref="FormatMetadata"/> to the rendering helpers —
+/// no redundant I/O or repeated JSON parsing.
+/// </para>
 /// </summary>
 public static class FormatSummaryBuilder
 {
@@ -33,38 +39,16 @@ public static class FormatSummaryBuilder
 
     /// <summary>
     /// Returns a multi-line plain-text summary.
+    /// When <paramref name="catalog"/> is provided the JSON is parsed once and all
+    /// available rich metadata blocks are appended.
     /// </summary>
     public static string BuildPlainText(EmbeddedFormatEntry entry, IEmbeddedFormatCatalog? catalog = null)
     {
         var sb = new StringBuilder();
-        sb.AppendLine($"Name        : {entry.Name}");
-        sb.AppendLine($"Category    : {entry.Category}");
-        sb.AppendLine($"Description : {entry.Description}");
-        sb.AppendLine($"Extensions  : {string.Join("  ", entry.Extensions)}");
-
-        if (entry.MimeTypes is { Count: > 0 })
-            sb.AppendLine($"MIME        : {string.Join("  ", entry.MimeTypes)}");
-
-        sb.AppendLine($"Quality     : {entry.QualityScore}/100");
-
-        if (!string.IsNullOrEmpty(entry.PreferredEditor))
-            sb.AppendLine($"Editor      : {entry.PreferredEditor}");
-
-        if (!string.IsNullOrEmpty(entry.DiffMode))
-            sb.AppendLine($"Diff mode   : {entry.DiffMode}");
-
-        if (!string.IsNullOrEmpty(entry.Platform))
-            sb.AppendLine($"Platform    : {entry.Platform}");
-
-        if (entry.Signatures is { Count: > 0 })
-        {
-            sb.AppendLine($"Signatures  :");
-            foreach (var sig in entry.Signatures)
-                sb.AppendLine($"  @{sig.Offset,4}  {FormatHex(sig.Value)}  weight={sig.Weight:F2}");
-        }
+        AppendHeader(sb, entry);
 
         if (catalog is not null)
-            AppendRichPlainText(sb, entry, catalog);
+            AppendRichPlainText(sb, entry.GetAllMetadata(catalog));
 
         return sb.ToString();
     }
@@ -75,47 +59,16 @@ public static class FormatSummaryBuilder
 
     /// <summary>
     /// Returns a Markdown-formatted summary card for the format.
-    /// Suitable for README files, tooltips, or preview panes.
+    /// When <paramref name="catalog"/> is provided the JSON is parsed once and all
+    /// available rich metadata blocks are appended.
     /// </summary>
     public static string BuildMarkdown(EmbeddedFormatEntry entry, IEmbeddedFormatCatalog? catalog = null)
     {
         var sb = new StringBuilder();
-        sb.AppendLine($"## {entry.Name}");
-        sb.AppendLine();
-        sb.AppendLine($"> {entry.Description}");
-        sb.AppendLine();
-        sb.AppendLine($"| Field | Value |");
-        sb.AppendLine($"|---|---|");
-        sb.AppendLine($"| Category | `{entry.Category}` |");
-        sb.AppendLine($"| Extensions | {string.Join(" ", entry.Extensions.Select(e => $"`{e}`"))} |");
-
-        if (entry.MimeTypes is { Count: > 0 })
-            sb.AppendLine($"| MIME | {string.Join(", ", entry.MimeTypes.Select(m => $"`{m}`"))} |");
-
-        sb.AppendLine($"| Quality | {entry.QualityScore}/100 |");
-        sb.AppendLine($"| Text format | {(entry.IsTextFormat ? "yes" : "no")} |");
-
-        if (!string.IsNullOrEmpty(entry.PreferredEditor))
-            sb.AppendLine($"| Preferred editor | `{entry.PreferredEditor}` |");
-
-        if (!string.IsNullOrEmpty(entry.DiffMode))
-            sb.AppendLine($"| Diff mode | `{entry.DiffMode}` |");
-
-        if (!string.IsNullOrEmpty(entry.Platform))
-            sb.AppendLine($"| Platform | {entry.Platform} |");
-
-        if (entry.Signatures is { Count: > 0 })
-        {
-            sb.AppendLine();
-            sb.AppendLine("### Magic Bytes");
-            sb.AppendLine("| Offset | Signature | Weight |");
-            sb.AppendLine("|---|---|---|");
-            foreach (var sig in entry.Signatures)
-                sb.AppendLine($"| `0x{sig.Offset:X4}` | `{FormatHex(sig.Value)}` | {sig.Weight:F2} |");
-        }
+        AppendMarkdownHeader(sb, entry);
 
         if (catalog is not null)
-            AppendRichMarkdown(sb, entry, catalog);
+            AppendRichMarkdown(sb, entry.GetAllMetadata(catalog));
 
         return sb.ToString();
     }
@@ -126,7 +79,8 @@ public static class FormatSummaryBuilder
 
     /// <summary>
     /// Returns a verbose diagnostic dump for debugging.
-    /// Includes the resource key, all metadata fields, and rich blocks if <paramref name="catalog"/> is provided.
+    /// When <paramref name="catalog"/> is provided the JSON is parsed exactly once
+    /// and all metadata blocks are included.
     /// </summary>
     public static string BuildDiagnosticDump(EmbeddedFormatEntry entry, IEmbeddedFormatCatalog? catalog = null)
     {
@@ -160,39 +114,35 @@ public static class FormatSummaryBuilder
 
         if (catalog is not null)
         {
-            var forensic = entry.GetForensicSummary(catalog);
-            if (forensic is not null)
+            // Single JSON parse for all blocks
+            var meta = entry.GetAllMetadata(catalog);
+
+            if (meta.Forensic is { } f)
             {
-                sb.AppendLine($"Forensic.Category   : {forensic.Category}");
-                sb.AppendLine($"Forensic.RiskLevel  : {forensic.RiskLevel}  (high={forensic.IsHighRisk})");
-                if (forensic.SuspiciousPatterns.Count > 0)
-                    foreach (var p in forensic.SuspiciousPatterns)
-                        sb.AppendLine($"  SUSPICIOUS: {p.Name} — {p.Description}");
+                sb.AppendLine($"Forensic.Category   : {f.Category}");
+                sb.AppendLine($"Forensic.RiskLevel  : {f.RiskLevel}  (high={f.IsHighRisk})");
+                foreach (var p in f.SuspiciousPatterns)
+                    sb.AppendLine($"  SUSPICIOUS: {p.Name} — {p.Description}");
             }
 
-            var assertions = entry.GetAssertions(catalog);
-            if (assertions.Count > 0)
+            if (meta.Assertions.Count > 0)
             {
-                sb.AppendLine($"Assertions ({assertions.Count}):");
-                foreach (var a in assertions)
+                sb.AppendLine($"Assertions ({meta.Assertions.Count}):");
+                foreach (var a in meta.Assertions)
                     sb.AppendLine($"  [{a.Severity.ToUpperInvariant()}] {a.Name}: {a.Expression}");
             }
 
-            var bookmarks = entry.GetNavigationBookmarks(catalog);
-            if (bookmarks.Count > 0)
+            if (meta.Bookmarks.Count > 0)
             {
-                sb.AppendLine($"Bookmarks ({bookmarks.Count}):");
-                foreach (var b in bookmarks)
+                sb.AppendLine($"Bookmarks ({meta.Bookmarks.Count}):");
+                foreach (var b in meta.Bookmarks)
                     sb.AppendLine($"  {b.Name}  offset={b.Offset?.ToString() ?? b.OffsetVar ?? "?"}  icon={b.Icon}");
             }
 
-            var exports = entry.GetExportTemplates(catalog);
-            if (exports.Count > 0)
-                foreach (var e in exports)
-                    sb.AppendLine($"ExportTemplate: {e.Name} [{e.Format}]  fields=[{string.Join(", ", e.Fields)}]");
+            foreach (var e in meta.ExportTemplates)
+                sb.AppendLine($"ExportTemplate: {e.Name} [{e.Format}]  fields=[{string.Join(", ", e.Fields)}]");
 
-            var td = entry.GetTechnicalDetails(catalog);
-            if (td is not null)
+            if (meta.TechnicalDetails is { } td)
             {
                 sb.AppendLine("TechnicalDetails:");
                 if (td.Endianness        is not null) sb.AppendLine($"  Endianness        : {td.Endianness}");
@@ -208,7 +158,7 @@ public static class FormatSummaryBuilder
     }
 
     // ------------------------------------------------------------------
-    // Signature helpers
+    // Signature helper
     // ------------------------------------------------------------------
 
     /// <summary>
@@ -228,27 +178,90 @@ public static class FormatSummaryBuilder
     }
 
     // ------------------------------------------------------------------
-    // Private rich-block helpers
+    // Private rendering helpers
     // ------------------------------------------------------------------
 
-    private static void AppendRichPlainText(StringBuilder sb, EmbeddedFormatEntry entry, IEmbeddedFormatCatalog catalog)
+    private static void AppendHeader(StringBuilder sb, EmbeddedFormatEntry entry)
     {
-        var forensic = entry.GetForensicSummary(catalog);
-        if (forensic is not null)
+        sb.AppendLine($"Name        : {entry.Name}");
+        sb.AppendLine($"Category    : {entry.Category}");
+        sb.AppendLine($"Description : {entry.Description}");
+        sb.AppendLine($"Extensions  : {string.Join("  ", entry.Extensions)}");
+
+        if (entry.MimeTypes is { Count: > 0 })
+            sb.AppendLine($"MIME        : {string.Join("  ", entry.MimeTypes)}");
+
+        sb.AppendLine($"Quality     : {entry.QualityScore}/100");
+
+        if (!string.IsNullOrEmpty(entry.PreferredEditor))
+            sb.AppendLine($"Editor      : {entry.PreferredEditor}");
+
+        if (!string.IsNullOrEmpty(entry.DiffMode))
+            sb.AppendLine($"Diff mode   : {entry.DiffMode}");
+
+        if (!string.IsNullOrEmpty(entry.Platform))
+            sb.AppendLine($"Platform    : {entry.Platform}");
+
+        if (entry.Signatures is { Count: > 0 })
         {
-            sb.AppendLine($"Forensic    : {forensic.Category} / risk={forensic.RiskLevel}");
-            foreach (var p in forensic.SuspiciousPatterns)
+            sb.AppendLine("Signatures  :");
+            foreach (var sig in entry.Signatures)
+                sb.AppendLine($"  @{sig.Offset,4}  {FormatHex(sig.Value)}  weight={sig.Weight:F2}");
+        }
+    }
+
+    private static void AppendMarkdownHeader(StringBuilder sb, EmbeddedFormatEntry entry)
+    {
+        sb.AppendLine($"## {entry.Name}");
+        sb.AppendLine();
+        sb.AppendLine($"> {entry.Description}");
+        sb.AppendLine();
+        sb.AppendLine("| Field | Value |");
+        sb.AppendLine("|---|---|");
+        sb.AppendLine($"| Category | `{entry.Category}` |");
+        sb.AppendLine($"| Extensions | {string.Join(" ", entry.Extensions.Select(e => $"`{e}`"))} |");
+
+        if (entry.MimeTypes is { Count: > 0 })
+            sb.AppendLine($"| MIME | {string.Join(", ", entry.MimeTypes.Select(m => $"`{m}`"))} |");
+
+        sb.AppendLine($"| Quality | {entry.QualityScore}/100 |");
+        sb.AppendLine($"| Text format | {(entry.IsTextFormat ? "yes" : "no")} |");
+
+        if (!string.IsNullOrEmpty(entry.PreferredEditor))
+            sb.AppendLine($"| Preferred editor | `{entry.PreferredEditor}` |");
+
+        if (!string.IsNullOrEmpty(entry.DiffMode))
+            sb.AppendLine($"| Diff mode | `{entry.DiffMode}` |");
+
+        if (!string.IsNullOrEmpty(entry.Platform))
+            sb.AppendLine($"| Platform | {entry.Platform} |");
+
+        if (entry.Signatures is { Count: > 0 })
+        {
+            sb.AppendLine();
+            sb.AppendLine("### Magic Bytes");
+            sb.AppendLine("| Offset | Signature | Weight |");
+            sb.AppendLine("|---|---|---|");
+            foreach (var sig in entry.Signatures)
+                sb.AppendLine($"| `0x{sig.Offset:X4}` | `{FormatHex(sig.Value)}` | {sig.Weight:F2} |");
+        }
+    }
+
+    private static void AppendRichPlainText(StringBuilder sb, FormatMetadata meta)
+    {
+        if (meta.Forensic is { } f)
+        {
+            sb.AppendLine($"Forensic    : {f.Category} / risk={f.RiskLevel}");
+            foreach (var p in f.SuspiciousPatterns)
                 sb.AppendLine($"  ⚠ {p.Name}");
         }
 
-        var ai = entry.GetAiHints(catalog);
-        if (ai?.AnalysisContext is not null)
-            sb.AppendLine($"AI context  : {ai.AnalysisContext[..Math.Min(120, ai.AnalysisContext.Length)]}…");
+        if (meta.AiHints?.AnalysisContext is { } ctx)
+            sb.AppendLine($"AI context  : {ctx[..Math.Min(120, ctx.Length)]}…");
 
-        var td = entry.GetTechnicalDetails(catalog);
-        if (td is not null)
+        if (meta.TechnicalDetails is { } td)
         {
-            var parts = new List<string>();
+            var parts = new List<string>(3);
             if (td.Endianness is not null)        parts.Add($"endian={td.Endianness}");
             if (td.CompressionMethod is not null) parts.Add($"compress={td.CompressionMethod}");
             if (td.SupportsEncryption == true)    parts.Add("encrypted");
@@ -256,33 +269,29 @@ public static class FormatSummaryBuilder
         }
     }
 
-    private static void AppendRichMarkdown(StringBuilder sb, EmbeddedFormatEntry entry, IEmbeddedFormatCatalog catalog)
+    private static void AppendRichMarkdown(StringBuilder sb, FormatMetadata meta)
     {
-        var forensic = entry.GetForensicSummary(catalog);
-        if (forensic is not null)
+        if (meta.Forensic is { } f)
         {
             sb.AppendLine();
-            sb.AppendLine($"### Forensic ({forensic.RiskLevel} risk)");
-            if (forensic.SuspiciousPatterns.Count > 0)
-                foreach (var p in forensic.SuspiciousPatterns)
-                    sb.AppendLine($"- ⚠ **{p.Name}** — {p.Description}");
+            sb.AppendLine($"### Forensic ({f.RiskLevel} risk)");
+            foreach (var p in f.SuspiciousPatterns)
+                sb.AppendLine($"- ⚠ **{p.Name}** — {p.Description}");
         }
 
-        var bookmarks = entry.GetNavigationBookmarks(catalog);
-        if (bookmarks.Count > 0)
+        if (meta.Bookmarks.Count > 0)
         {
             sb.AppendLine();
             sb.AppendLine("### Navigation Bookmarks");
-            foreach (var b in bookmarks)
+            foreach (var b in meta.Bookmarks)
                 sb.AppendLine($"- **{b.Name}** at `{b.Offset?.ToString("X4") ?? b.OffsetVar ?? "?"}`");
         }
 
-        var assertions = entry.GetAssertions(catalog);
-        if (assertions.Count > 0)
+        if (meta.Assertions.Count > 0)
         {
             sb.AppendLine();
             sb.AppendLine("### Validation Assertions");
-            foreach (var a in assertions)
+            foreach (var a in meta.Assertions)
                 sb.AppendLine($"- `[{a.Severity}]` **{a.Name}**: `{a.Expression}`");
         }
     }

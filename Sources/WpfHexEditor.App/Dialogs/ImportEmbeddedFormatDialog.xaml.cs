@@ -24,6 +24,7 @@ using System.Windows.Media;
 using System.Windows.Threading;
 using WpfHexEditor.Core.Contracts;
 using WpfHexEditor.Core.Definitions;
+using WpfHexEditor.Core.Definitions.Query;
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Editor.Core.Views;
 
@@ -93,13 +94,13 @@ public partial class ImportEmbeddedFormatDialog : ThemedDialog
 
     private void BuildCategories()
     {
-        _categories = _catalog.GetAll()
-            .GroupBy(e => e.Category, StringComparer.OrdinalIgnoreCase)
-            .OrderBy(g => g.Key, StringComparer.OrdinalIgnoreCase)
-            .Select(g =>
+        _categories = _catalog.Query()
+            .OrderByName()
+            .GroupByCategory()
+            .Select(kvp =>
             {
-                var node = new CategoryNode(g.Key);
-                foreach (var entry in g.OrderBy(e => e.Name, StringComparer.OrdinalIgnoreCase))
+                var node = new CategoryNode(kvp.Key);
+                foreach (var entry in kvp.Value)
                     node.Items.Add(new FormatRow(entry));
                 return node;
             })

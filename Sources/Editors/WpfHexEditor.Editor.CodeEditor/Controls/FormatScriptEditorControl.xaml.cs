@@ -16,6 +16,7 @@ using Microsoft.Win32;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using WpfHexEditor.Core.Definitions;
+using WpfHexEditor.Core.Definitions.Query;
 using WpfHexEditor.Editor.CodeEditor.Models;
 
 namespace WpfHexEditor.Editor.CodeEditor.Controls
@@ -114,30 +115,26 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                     Children = new ObservableCollection<FormatTreeNode>()
                 };
 
-                var categories = new Dictionary<string, FormatTreeNode>();
-
-                foreach (var entry in EmbeddedFormatCatalog.Instance.GetAll())
+                foreach (var (category, entries) in EmbeddedFormatCatalog.Instance
+                    .Query().OrderByName().GroupByCategory())
                 {
-                    if (!categories.TryGetValue(entry.Category, out var categoryNode))
+                    var categoryNode = new FormatTreeNode
                     {
-                        categoryNode = new FormatTreeNode
-                        {
-                            Name = entry.Category,
-                            Icon = "📁",
-                            IsCategory = true,
-                            Children = new ObservableCollection<FormatTreeNode>()
-                        };
-                        categories[entry.Category] = categoryNode;
-                        _rootNode.Children.Add(categoryNode);
-                    }
+                        Name = category,
+                        Icon = "📁",
+                        IsCategory = true,
+                        Children = new ObservableCollection<FormatTreeNode>()
+                    };
+                    _rootNode.Children.Add(categoryNode);
 
-                    categoryNode.Children.Add(new FormatTreeNode
-                    {
-                        Name = entry.Name,
-                        Icon = "📄",
-                        IsCategory = false,
-                        ResourceName = entry.ResourceKey
-                    });
+                    foreach (var entry in entries)
+                        categoryNode.Children.Add(new FormatTreeNode
+                        {
+                            Name = entry.Name,
+                            Icon = "📄",
+                            IsCategory = false,
+                            ResourceName = entry.ResourceKey
+                        });
                 }
 
                 // Set tree view root

@@ -11,6 +11,14 @@ dotnet add package whfmt.FileFormatCatalog
 
 ---
 
+## What's New in 1.1.1
+
+- **`CatalogQuery`** — 6 new terminal operations: `Any()`, `Select<T>()`, `ToDictionary<K,V>()`, `ToExtensionDictionary()`, `ToExtensionDictionary<V>()`, `GroupByCategory()`; new `HasPreferredEditor()` filter; internal `NormalizeExt` helper ensures consistent `.ext` normalization across all extension-keyed dictionaries
+- **`FormatMetadataExtensions`** — `GetAllMetadata()` bulk method: single JSON parse returns all 7 metadata blocks at once; individual methods now share internal parsers — no redundant `JsonDocument.Parse()` calls
+- **`FormatSummaryBuilder`** — all `BuildXxx()` methods now call `GetAllMetadata()` once internally; private `AppendHeader` / `AppendMarkdownHeader` helpers eliminate code duplication
+
+---
+
 ## What's New in 1.1.0
 
 ### Catalog — 790+ definitions, schema v2.4, 57 language grammars
@@ -242,21 +250,49 @@ var results = catalog
     .OrderByQuality()                          // best first
     .Execute();                                // materialise
 
-// Other filters
-.PriorityOnly()              // QualityScore ≥ 85
-.WithExtension(".cs")        // extension match
-.TextFormatsOnly()           // IsTextFormat == true
-.HasSyntaxDefinition()       // grammar block present
-.WithPreferredEditor("code-editor")
-.ForPlatform("Nintendo")     // platform substring
+// Filters
+.PriorityOnly()                        // QualityScore ≥ 85
+.WithExtension(".cs")                  // extension match (leading dot optional)
+.TextFormatsOnly()                     // IsTextFormat == true
+.HasSyntaxDefinition()                 // grammar block present
+.WithPreferredEditor("code-editor")    // exact editor ID match
+.HasPreferredEditor()                  // any preferred editor declared
+.HasPlatform()                         // platform field non-empty
+.ForPlatform("Nintendo")               // platform substring
 .WithDiffMode("binary")
-.Containing("APFS")          // full-text search in name + description
+.HasMimeType()                         // at least one MIME type declared
+.HasMagicBytes()                       // at least one signature
+.WithName("ZIP")                       // exact name match
+.Containing("APFS")                    // full-text in name + description
 .Where(e => e.Author == "WPFHexaEditor Team")  // custom predicate
 
 // Terminal operations
-.Execute()   → IReadOnlyList<EmbeddedFormatEntry>
-.First()     → EmbeddedFormatEntry?
-.Count()     → int
+.Execute()                          → IReadOnlyList<EmbeddedFormatEntry>
+.First()                            → EmbeddedFormatEntry?
+.Count()                            → int
+.Any()                              → bool
+.Select(e => e.Name)                → IReadOnlyList<TResult>
+.ToDictionary(e => e.Name, e => e)  → Dictionary<TKey, TValue>
+.ToExtensionDictionary()            → Dictionary<string, EmbeddedFormatEntry>
+.ToExtensionDictionary(e => e.PreferredEditor!)  → Dictionary<string, TValue>
+.GroupByCategory()                  → IReadOnlyDictionary<string, IReadOnlyList<EmbeddedFormatEntry>>
+```
+
+**Extension→editor routing map** (one line):
+```csharp
+var editorMap = catalog.Query()
+    .HasPreferredEditor()
+    .ToExtensionDictionary(e => e.PreferredEditor!);
+// { ".cs" → "code-editor", ".zip" → "hex-editor", … }
+```
+
+**Group by category** (for tree views / menus):
+```csharp
+foreach (var (category, entries) in catalog.Query().OrderByName().GroupByCategory())
+{
+    Console.WriteLine($"{category} ({entries.Count})");
+    foreach (var e in entries) Console.WriteLine($"  {e.Name}");
+}
 ```
 
 ---
@@ -404,7 +440,7 @@ public class FormatService(IEmbeddedFormatCatalog catalog) { ... }
 ### Utility Layer *(v1.1)*
 - `FormatFileAnalyzer` — one-line file analysis from path / `FileInfo` / `Stream` / bytes, sync and async
 - `FormatMatcher` — scored multi-strategy detection with confidence, ranked top-N candidates
-- `CatalogQuery` — fluent builder: 14 filter methods, 3 ordering modes, 3 terminal operations
+- `CatalogQuery` — fluent builder: 15 filter methods, 3 ordering modes, 9 terminal operations (`Execute`, `First`, `Count`, `Any`, `Select<T>`, `ToDictionary`, `ToExtensionDictionary`, `ToExtensionDictionary<V>`, `GroupByCategory`)
 - `FormatMetadataExtensions` — forensic data, AI hints, assertions, bookmarks, inspector groups, export templates, technical details
 - `FormatSummaryBuilder` — one-liner, plain text, Markdown card, diagnostic dump
 
@@ -432,6 +468,24 @@ public class FormatService(IEmbeddedFormatCatalog catalog) { ... }
 
 ## Changelog
 
+### 1.1.1
+
+#### CatalogQuery
+- **6 new terminal operations** — `Any()`, `Select<T>()`, `ToDictionary<K,V>()` (auto `OrdinalIgnoreCase` for string keys), `ToExtensionDictionary()`, `ToExtensionDictionary<V>(valueSelector)`, `GroupByCategory()`
+- **`HasPreferredEditor()`** — new filter: keeps only entries with a non-null, non-empty `PreferredEditor` field; complements the existing `WithPreferredEditor(editorId)` exact-match filter
+- **Internal `NormalizeExt` helper** — consistent `.ext` lowercasing across all `ToExtensionDictionary` overloads
+- **`BuildQuery()` pipeline** — single private method eliminates predicate-iteration duplication across all terminals
+
+#### FormatMetadataExtensions
+- **`GetAllMetadata()`** — new bulk method on `EmbeddedFormatEntry`: parses the `.whfmt` JSON exactly once and returns a `FormatMetadata` record containing all 7 metadata blocks (`Forensic`, `AiHints`, `Bookmarks`, `Assertions`, `InspectorGroups`, `ExportTemplates`, `TechnicalDetails`)
+- **`FormatMetadata`** record — with `IsHighRisk` and `SupportsEncryption` boolean shortcuts
+- **Shared internal parsers** — `ParseForensic`, `ParseAiHints`, `ParseBookmarks`, `ParseAssertions`, `ParseInspectorGroups`, `ParseExportTemplates`, `ParseTechnicalDetails` — called by both `GetAllMetadata()` and individual public methods; eliminates redundant `JsonDocument.Parse()` calls
+- **Pre-sized list allocations** — `GetArrayLength()` used on all JSON array parsers
+
+#### FormatSummaryBuilder
+- **Single-parse rendering** — `BuildPlainText()`, `BuildMarkdown()`, `BuildDiagnosticDump()` now call `GetAllMetadata()` once and pass the result to private rendering helpers
+- **`AppendHeader` / `AppendMarkdownHeader`** private helpers — eliminate duplicated header-building logic
+
 ### 1.1.0
 
 #### Catalog
@@ -447,7 +501,7 @@ public class FormatService(IEmbeddedFormatCatalog catalog) { ... }
 #### Utility Layer (new)
 - **`FormatMatcher`** — stateless scored detection façade: `Match()` (extension + magic bytes + MIME combined), `GetTopMatches()` (ranked top-N), `GetMatchesByExtension()`, `MatchMime()`
 - **`FormatFileAnalyzer`** — zero-boilerplate I/O: accepts `string path`, `FileInfo`, `Stream`, `ReadOnlyMemory<byte>`; full `async` variants; `AnalyzeDirectory()` lazy batch scan
-- **`CatalogQuery`** — fluent builder via `.Query()` on `IEmbeddedFormatCatalog`: 14 filter methods, 3 ordering modes, `.Execute()` / `.First()` / `.Count()`
+- **`CatalogQuery`** — fluent builder via `.Query()` on `IEmbeddedFormatCatalog`: filter, order, and terminal operations (expanded in v1.1.1)
 - **`FormatMetadataExtensions`** — extension methods on `EmbeddedFormatEntry`: `GetForensicSummary()`, `GetAiHints()`, `GetNavigationBookmarks()`, `GetAssertions()`, `GetInspectorGroups()`, `GetExportTemplates()`, `GetTechnicalDetails()`, `IsHighRisk()`, `SupportsEncryption()`
 - **`FormatSummaryBuilder`** — human-readable output without WPF: `BuildOneLiner()`, `BuildPlainText()`, `BuildMarkdown()`, `BuildDiagnosticDump()`, `FormatHex()`
 - **`FormatMatchResult`** record — `Entry`, `Confidence` (0.0–1.0), `Source`, `RawScore`, `IsConfirmed`

@@ -23,6 +23,7 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using WpfHexEditor.Core.Contracts;
 using WpfHexEditor.Core.Definitions;
+using WpfHexEditor.Core.Definitions.Query;
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Core.LSP.Models;
 
@@ -127,9 +128,8 @@ public sealed class LanguageDefinitionManager
     private void LoadBuiltIn()
     {
         // Load built-in language definitions from .whfmt files that carry a syntaxDefinition block.
-        foreach (var entry in _catalog.GetAll())
+        foreach (var entry in _catalog.Query().HasSyntaxDefinition().Execute())
         {
-            if (!entry.HasSyntaxDefinition) continue;
             try
             {
                 var syntaxJson = _catalog.GetSyntaxDefinitionJson(entry.ResourceKey);

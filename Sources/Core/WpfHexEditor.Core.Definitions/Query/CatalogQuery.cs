@@ -66,7 +66,7 @@ public sealed class CatalogQuery
     public CatalogQuery HasMagicBytes()
         => Where(e => e.Signatures is { Count: > 0 });
 
-    /// <summary>Keeps only entries that match a given file extension.</summary>
+    /// <summary>Keeps only entries that match a given file extension (leading dot optional).</summary>
     public CatalogQuery WithExtension(string extension)
     {
         var ext = extension.StartsWith('.') ? extension : '.' + extension;
@@ -96,19 +96,34 @@ public sealed class CatalogQuery
     public CatalogQuery WithPreferredEditor(string editorId)
         => Where(e => e.PreferredEditor?.Equals(editorId, StringComparison.OrdinalIgnoreCase) == true);
 
+    /// <summary>Keeps only entries that declare a preferred editor (non-null, non-empty).</summary>
+    public CatalogQuery HasPreferredEditor()
+        => Where(e => !string.IsNullOrWhiteSpace(e.PreferredEditor));
+
     /// <summary>Keeps only entries that declare one or more MIME types.</summary>
     public CatalogQuery HasMimeType()
         => Where(e => e.MimeTypes is { Count: > 0 });
 
-    /// <summary>Keeps only entries that target a specific platform (e.g. <c>"Nintendo Entertainment System"</c>).</summary>
+    /// <summary>Keeps only entries that target a specific platform (e.g. <c>"Nintendo"</c>).</summary>
     public CatalogQuery ForPlatform(string platform)
         => Where(e => e.Platform.Contains(platform, StringComparison.OrdinalIgnoreCase));
 
+    /// <summary>Keeps only entries that declare a non-empty platform.</summary>
+    public CatalogQuery HasPlatform()
+        => Where(e => !string.IsNullOrWhiteSpace(e.Platform));
+
     /// <summary>
-    /// Keeps only entries whose preferred diff mode matches (e.g. <c>"text"</c>, <c>"binary"</c>, <c>"semantic"</c>).
+    /// Keeps only entries whose preferred diff mode matches
+    /// (e.g. <c>"text"</c>, <c>"binary"</c>, <c>"semantic"</c>).
     /// </summary>
     public CatalogQuery WithDiffMode(string diffMode)
         => Where(e => e.DiffMode?.Equals(diffMode, StringComparison.OrdinalIgnoreCase) == true);
+
+    /// <summary>
+    /// Keeps only entries whose name matches <paramref name="name"/> (case-insensitive).
+    /// </summary>
+    public CatalogQuery WithName(string name)
+        => Where(e => e.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
 
     // ------------------------------------------------------------------
     // Full-text search
@@ -165,45 +180,117 @@ public sealed class CatalogQuery
     // Terminal operations
     // ------------------------------------------------------------------
 
-    /// <summary>
-    /// Executes the query and returns the matching entries.
-    /// </summary>
+    /// <summary>Executes the query and returns all matching entries.</summary>
     public IReadOnlyList<EmbeddedFormatEntry> Execute()
+        => BuildQuery().ToList();
+
+    /// <summary>Executes the query and returns only the first match, or <see langword="null"/>.</summary>
+    public EmbeddedFormatEntry? First()
+        => BuildQuery().FirstOrDefault();
+
+    /// <summary>Returns the count of entries that match the query.</summary>
+    public int Count()
+        => BuildQuery().Count();
+
+    /// <summary>Returns <see langword="true"/> when at least one entry matches the query.</summary>
+    public bool Any()
+        => BuildQuery().Any();
+
+    /// <summary>Projects each matching entry using <paramref name="selector"/> and returns the results.</summary>
+    public IReadOnlyList<TResult> Select<TResult>(Func<EmbeddedFormatEntry, TResult> selector)
+        => BuildQuery().Select(selector).ToList();
+
+    /// <summary>
+    /// Builds a <see cref="Dictionary{TKey,TValue}"/> from the matching entries.
+    /// Defaults to <see cref="StringComparer.OrdinalIgnoreCase"/> when <typeparamref name="TKey"/> is <see langword="string"/>.
+    /// </summary>
+    public Dictionary<TKey, TValue> ToDictionary<TKey, TValue>(
+        Func<EmbeddedFormatEntry, TKey> keySelector,
+        Func<EmbeddedFormatEntry, TValue> elementSelector,
+        IEqualityComparer<TKey>? comparer = null)
+        where TKey : notnull
+    {
+        var effectiveComparer = comparer
+            ?? (typeof(TKey) == typeof(string)
+                ? (IEqualityComparer<TKey>)(object)StringComparer.OrdinalIgnoreCase
+                : EqualityComparer<TKey>.Default);
+
+        var dict = new Dictionary<TKey, TValue>(effectiveComparer);
+        foreach (var entry in BuildQuery())
+            dict.TryAdd(keySelector(entry), elementSelector(entry));
+        return dict;
+    }
+
+    /// <summary>
+    /// Builds a flat extension→entry dictionary.
+    /// When multiple entries share the same extension, the first encountered wins.
+    /// </summary>
+    public Dictionary<string, EmbeddedFormatEntry> ToExtensionDictionary()
+    {
+        var dict = new Dictionary<string, EmbeddedFormatEntry>(StringComparer.OrdinalIgnoreCase);
+        foreach (var entry in BuildQuery())
+            foreach (var ext in entry.Extensions)
+                dict.TryAdd(NormalizeExt(ext), entry);
+        return dict;
+    }
+
+    /// <summary>
+    /// Builds an extension→<typeparamref name="TValue"/> dictionary using a value selector.
+    /// When multiple entries share the same extension, the first encountered wins.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// var editorMap = catalog.Query()
+    ///     .HasPreferredEditor()
+    ///     .ToExtensionDictionary(e => e.PreferredEditor!);
+    /// </code>
+    /// </example>
+    public Dictionary<string, TValue> ToExtensionDictionary<TValue>(
+        Func<EmbeddedFormatEntry, TValue> valueSelector)
+    {
+        var dict = new Dictionary<string, TValue>(StringComparer.OrdinalIgnoreCase);
+        foreach (var entry in BuildQuery())
+            foreach (var ext in entry.Extensions)
+                dict.TryAdd(NormalizeExt(ext), valueSelector(entry));
+        return dict;
+    }
+
+    /// <summary>
+    /// Groups the matching entries by category (alphabetically sorted keys).
+    /// Entries within each group follow the active ordering (or source order when none set).
+    /// </summary>
+    public IReadOnlyDictionary<string, IReadOnlyList<EmbeddedFormatEntry>> GroupByCategory()
+    {
+        var result = new Dictionary<string, IReadOnlyList<EmbeddedFormatEntry>>(StringComparer.OrdinalIgnoreCase);
+        foreach (var group in BuildQuery()
+            .GroupBy(e => e.Category, StringComparer.OrdinalIgnoreCase)
+            .OrderBy(g => g.Key, StringComparer.OrdinalIgnoreCase))
+        {
+            result[group.Key] = group.ToList();
+        }
+        return result;
+    }
+
+    // ------------------------------------------------------------------
+    // Private helpers
+    // ------------------------------------------------------------------
+
+    private IEnumerable<EmbeddedFormatEntry> BuildQuery()
     {
         IEnumerable<EmbeddedFormatEntry> query = _catalog.GetAll();
-
         foreach (var predicate in _predicates)
             query = query.Where(predicate);
-
         if (_order is not null)
             query = _order(query);
-
-        return query.ToList();
+        return query;
     }
 
-    /// <summary>
-    /// Executes the query and returns only the first match, or <see langword="null"/>.
-    /// </summary>
-    public EmbeddedFormatEntry? First()
-    {
-        IEnumerable<EmbeddedFormatEntry> query = _catalog.GetAll();
-        foreach (var predicate in _predicates)
-            query = query.Where(predicate);
-        return query.FirstOrDefault();
-    }
-
-    /// <summary>Returns the count of entries that would be returned by <see cref="Execute"/>.</summary>
-    public int Count()
-    {
-        IEnumerable<EmbeddedFormatEntry> query = _catalog.GetAll();
-        foreach (var predicate in _predicates)
-            query = query.Where(predicate);
-        return query.Count();
-    }
+    private static string NormalizeExt(string ext)
+        => ext.StartsWith('.') ? ext.ToLowerInvariant() : "." + ext.ToLowerInvariant();
 }
 
 /// <summary>
-/// Extension methods that attach <see cref="CatalogQuery"/> to <see cref="IEmbeddedFormatCatalog"/>.
+/// Extension method that attaches <see cref="CatalogQuery"/> to any <see cref="IEmbeddedFormatCatalog"/>.
 /// </summary>
 public static class CatalogQueryExtensions
 {

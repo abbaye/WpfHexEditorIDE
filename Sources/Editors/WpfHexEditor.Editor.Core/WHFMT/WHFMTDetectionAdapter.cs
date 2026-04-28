@@ -21,6 +21,7 @@
 // ==========================================================
 
 using WpfHexEditor.Core.Contracts;
+using WpfHexEditor.Core.Definitions.Query;
 
 namespace WpfHexEditor.Editor.Core.WHFMT;
 
@@ -103,24 +104,8 @@ public sealed class WHFMTDetectionAdapter
 
     private Dictionary<string, string> BuildCatalogMap()
     {
-        var map = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-
-        foreach (var entry in _catalog.GetAll())
-        {
-            if (string.IsNullOrWhiteSpace(entry.PreferredEditor)) continue;
-
-            foreach (var ext in entry.Extensions)
-            {
-                if (string.IsNullOrWhiteSpace(ext)) continue;
-
-                var key = ext.StartsWith('.') ? ext.ToLowerInvariant()
-                                              : "." + ext.ToLowerInvariant();
-
-                // First definition wins when multiple formats share an extension.
-                map.TryAdd(key, entry.PreferredEditor);
-            }
-        }
-
-        return map;
+        return _catalog.Query()
+            .HasPreferredEditor()
+            .ToExtensionDictionary(e => e.PreferredEditor!);
     }
 }
