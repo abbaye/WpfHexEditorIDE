@@ -788,18 +788,10 @@ public sealed partial class MarkdownEditorHost : UserControl,
 
     private void OnPreviewScrolled(object? sender, double pct)
     {
-        if (_suppressPreviewScrollSync) return;
-        if (_viewMode == MdViewMode.PreviewOnly) return;
-        // Reverse sync: tell the editor to scroll to matching position
-        // We can't directly scroll the TextEditor ScrollViewer — instead we navigate to a line.
-        // Approximate line: pct * total line count
-        var text = _editor.GetText();
-        if (text is null) return;
-        var lineCount = text.Split('\n').Length;
-        var targetLine = Math.Max(1, (int)(pct * lineCount));
-        _suppressEditorScrollSync = true;
-        _editorNav.NavigateTo(targetLine, 1);
-        _suppressEditorScrollSync = false;
+        // Preview→editor reverse sync is intentionally a no-op.
+        // The TextEditor has no public scroll-to-offset API — NavigateTo() moves the caret,
+        // which fires ViewportScrollChanged and interrupts any active scrollbar drag in the editor.
+        // One-way sync (editor→preview) is the correct model here.
     }
 
     // --- Export ---------------------------------------------------------------
