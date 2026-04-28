@@ -1,8 +1,8 @@
 ﻿{
   "diffMode": "binary",
-  "formatName": "systemd Journal",
+  "formatName": "systemd Journal (Legacy)",
   "formatId": "JOURNAL",
-  "version": "1.13",
+  "version": "1.14",
   "extensions": [
     ".journal"
   ],
@@ -195,7 +195,7 @@
     "DocumentationLevel": "detailed",
     "BlocksDefined": 12,
     "ValidationRules": 0,
-    "LastUpdated": "2026-02-24",
+    "LastUpdated": "2026-04-27",
     "PriorityFormat": false,
     "AutoRefined": true
   },

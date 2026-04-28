@@ -19,7 +19,10 @@
 //
 // ==========================================================
 
+using System;
 using System.Collections.Generic;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace WpfHexEditor.Core.FormatDetection
 {
@@ -183,7 +186,9 @@ namespace WpfHexEditor.Core.FormatDetection
         /// <summary>
         /// Sub-field definitions for repeating and union blocks.
         /// Each entry describes one field within a single repeated entry.
+        /// Tolerates a legacy array of strings (variable name references) by wrapping each in a metadata block.
         /// </summary>
+        [JsonConverter(typeof(BlockDefinitionListFromMixedConverter))]
         public List<BlockDefinition> Fields { get; set; }
 
         /// <summary>
@@ -545,5 +550,49 @@ namespace WpfHexEditor.Core.FormatDetection
             long mask = (1L << width) - 1;
             return (rawValue >> low) & mask;
         }
+    }
+
+    /// <summary>
+    /// Tolerant converter for BlockDefinition.Fields.
+    /// Accepts either an array of BlockDefinition objects (canonical) or a legacy array of strings
+    /// (variable-name references used in Inspector group/summary blocks). String items are wrapped
+    /// in a synthetic metadata BlockDefinition so the list type stays consistent.
+    /// </summary>
+    internal sealed class BlockDefinitionListFromMixedConverter : JsonConverter<List<BlockDefinition>>
+    {
+        private static readonly JsonSerializerOptions s_ci = new() { PropertyNameCaseInsensitive = true };
+
+        public override List<BlockDefinition> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            var result = new List<BlockDefinition>();
+            if (reader.TokenType != JsonTokenType.StartArray) { reader.Skip(); return result; }
+
+            while (reader.Read() && reader.TokenType != JsonTokenType.EndArray)
+            {
+                if (reader.TokenType == JsonTokenType.String)
+                {
+                    // Legacy: string reference → wrap in a minimal metadata block
+                    result.Add(new BlockDefinition
+                    {
+                        Type = "metadata",
+                        Name = reader.GetString() ?? string.Empty
+                    });
+                }
+                else if (reader.TokenType == JsonTokenType.StartObject)
+                {
+                    using var doc = JsonDocument.ParseValue(ref reader);
+                    var block = JsonSerializer.Deserialize<BlockDefinition>(doc.RootElement.GetRawText(), s_ci);
+                    if (block is not null) result.Add(block);
+                }
+                else
+                {
+                    reader.Skip();
+                }
+            }
+            return result;
+        }
+
+        public override void Write(Utf8JsonWriter writer, List<BlockDefinition> value, JsonSerializerOptions options)
+            => JsonSerializer.Serialize(writer, value, options);
     }
 }

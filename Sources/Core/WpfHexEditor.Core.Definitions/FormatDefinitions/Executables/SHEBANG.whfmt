@@ -1,9 +1,9 @@
 {
   "formatName": "Shebang Script",
   "formatId": "SHEBANG",
-  "version": "1.0",
+  "version": "1.1",
   "diffMode": "text",
-  "extensions": [],
+  "extensions": [""],
   "description": "Unix shebang (#!) script header used by the kernel to determine which interpreter should execute the script file. The first two bytes are always 0x23 0x21 (ASCII '#!') followed by the interpreter path.",
   "category": "Executables",
   "author": "WPFHexaEditor Team",
@@ -221,7 +221,7 @@
   },
   "QualityMetrics": {
     "CompletenessScore": 84,
-    "LastUpdated": "2026-04-16",
+    "LastUpdated": "2026-04-27",
     "ReviewedBy": "WPFHexaEditor Team"
   }
 }
