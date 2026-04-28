@@ -17,6 +17,7 @@ using WpfHexEditor.Core.Interfaces;
 using WpfHexEditor.Core.Options;
 using WpfHexEditor.Core.ViewModels;
 using WpfHexEditor.Core.Contracts;
+using WpfHexEditor.Core.Definitions.Query;
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Shell.Panels.Services;
 
@@ -155,7 +156,7 @@ public sealed class WhfmtCatalogViewModel : ViewModelBase, IDisposable
 
         if (_embCatalog is null) return;
 
-        foreach (var entry in _embCatalog.GetAll().OrderBy(e => e.Category).ThenBy(e => e.Name))
+        foreach (var entry in _embCatalog.Query().OrderByCategoryThenName().Execute())
         {
             var vm = new WhfmtFormatItemVm
             {
@@ -179,7 +180,7 @@ public sealed class WhfmtCatalogViewModel : ViewModelBase, IDisposable
         if (_catalogSvc is not null)
         {
             foreach (var def in _catalogSvc.GetAllFormats()
-                .Where(d => !_embCatalog.GetAll().Any(e => e.Name == d.FormatName)))
+                .Where(d => !_embCatalog.Query().WithName(d.FormatName ?? "").Any()))
             {
                 var vm = new WhfmtFormatItemVm
                 {
