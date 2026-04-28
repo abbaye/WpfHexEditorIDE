@@ -148,7 +148,10 @@ public sealed class ParsedFieldsPlugin : IWpfHexEditorPlugin
                     if (string.IsNullOrEmpty(ext)) return false;
                     var catalog = context.FormatCatalog;
                     if (catalog == null) return true; // catalog unavailable — show all
-                    return catalog.FindFormatsByExtension(ext).Count > 0;
+                    // Only include files that have at least one non-text (binary) format definition.
+                    // Text formats (isTextFormat=true) produce no parsed fields — exclude them.
+                    return catalog.FindFormatsByExtension(ext)
+                                  .Any(f => f.Detection?.IsTextFormat != true);
                 })
                 .Select(d => (d.FilePath!, System.IO.Path.GetFileName(d.FilePath!)))
                 .ToList());
