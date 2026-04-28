@@ -55,8 +55,10 @@ public static class OptionsPageRegistry
             ["indent", "tab", "space", "brace", "format", "align", "whitespace", "trailing"]),
 
         // Text Editor
-        new("Text Editor", "General", () => new TextEditorOptionsPage(), "📝",
+        new("Text Editor", "General",   () => new TextEditorOptionsPage(),    "📝",
             ["word wrap", "line", "ruler", "encoding", "eol", "link", "email", "plain text"]),
+        new("Text Editor", "Markdown",  () => new MarkdownEditorOptionsPage(), "📝",
+            ["markdown", "preview", "sync", "auto-pair", "yaml", "toc", "frontmatter", "list continuation"]),
 
         // Plugin System
         new("Plugin System", "General",     () => new PluginSystemOptionsPage(),    "⚙️",

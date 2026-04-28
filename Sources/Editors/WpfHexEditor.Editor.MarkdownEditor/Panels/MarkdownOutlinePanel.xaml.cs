@@ -182,15 +182,27 @@ public sealed partial class MarkdownOutlinePanel : UserControl
             : "No headings found.";
     }
 
+    private static readonly Regex _yamlFrontmatterRegex =
+        new(@"^---\r?\n(.*?)\r?\n---\r?\n", RegexOptions.Singleline | RegexOptions.Compiled);
+
     private static List<MdHeadingNode> ParseHeadings(string text)
     {
         var result = new List<MdHeadingNode>();
         var lines  = text.Split('\n');
 
+        // Determine how many lines are occupied by YAML front-matter (skip them)
+        int yamlEndLine = 0;
+        var yamlMatch = _yamlFrontmatterRegex.Match(text);
+        if (yamlMatch.Success)
+            yamlEndLine = yamlMatch.Value.Split('\n').Length - 1;
+
         bool inFenceBlock = false;
 
         for (int i = 0; i < lines.Length; i++)
         {
+            // Skip YAML front-matter lines
+            if (i < yamlEndLine) continue;
+
             var raw = lines[i].TrimEnd('\r');
 
             // Skip content inside fenced code blocks (```).

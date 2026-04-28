@@ -26,6 +26,7 @@
 using System.IO;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace WpfHexEditor.Editor.MarkdownEditor.Services;
 
@@ -35,6 +36,26 @@ namespace WpfHexEditor.Editor.MarkdownEditor.Services;
 /// </summary>
 public static class MarkdownRenderService
 {
+    // --- YAML front-matter ---------------------------------------------------
+
+    private static readonly Regex _yamlFrontmatterRegex =
+        new(@"^---\r?\n(.*?)\r?\n---\r?\n", RegexOptions.Singleline | RegexOptions.Compiled);
+
+    /// <summary>
+    /// Extracts a YAML front-matter block from the top of a Markdown document.
+    /// Returns (<c>yamlContent</c>, <c>remainingMarkdown</c>); <c>yamlContent</c>
+    /// is <see langword="null"/> when no front-matter is present.
+    /// </summary>
+    public static (string? Yaml, string Markdown) ExtractYamlFrontmatter(string markdownText)
+    {
+        var m = _yamlFrontmatterRegex.Match(markdownText);
+        if (!m.Success) return (null, markdownText);
+
+        var yaml      = m.Groups[1].Value;
+        var remaining = markdownText[m.Length..];
+        return (yaml, remaining);
+    }
+
     // --- Embedded resource cache (loaded once, lazy + thread-safe) --------
 
     private static readonly Lazy<string> _markedJs        = Load("marked.min.js");
@@ -69,8 +90,14 @@ public static class MarkdownRenderService
         var bodyColor    = isDarkTheme ? "#c9d1d9" : "#24292f";
         var mermaidTheme = isDarkTheme ? "dark" : "default";
 
+        // Strip YAML front-matter and build a styled block for it
+        var (yaml, mdBody) = ExtractYamlFrontmatter(markdownText);
+        var yamlHtml = yaml is not null
+            ? $"<div class=\"yaml-frontmatter\"><pre>{System.Net.WebUtility.HtmlEncode(yaml)}</pre></div>\n"
+            : string.Empty;
+
         // Escape markdown for JSON embedding
-        var mdEscaped  = EscapeForJsString(markdownText);
+        var mdEscaped  = EscapeForJsString(mdBody);
 
         var sb = new StringBuilder(markdownText.Length * 4);
         sb.AppendLine("<!DOCTYPE html>");
@@ -109,6 +136,9 @@ public static class MarkdownRenderService
         sb.AppendLine("    .emoji { font-style: normal; }");
         // Mermaid diagram container
         sb.AppendLine("    .mermaid { margin: 1em 0; }");
+        // YAML front-matter block
+        sb.AppendLine("    .yaml-frontmatter { background: rgba(128,128,128,0.1); border-left: 3px solid #888; padding: 8px 12px; margin-bottom: 1em; border-radius: 3px; }");
+        sb.AppendLine("    .yaml-frontmatter pre { margin: 0; font-family: 'Consolas', 'Courier New', monospace; font-size: 0.85em; white-space: pre-wrap; }");
         sb.AppendLine("  </style>");
         sb.AppendLine("</head>");
         sb.AppendLine("<body>");
@@ -192,7 +222,15 @@ public static class MarkdownRenderService
         // Render markdown
         sb.AppendLine($"    const md = \"{mdEscaped}\";");
         sb.AppendLine("    const html = marked.parse(md, { renderer: renderer });");
-        sb.AppendLine("    document.getElementById('content').innerHTML = html;");
+        if (!string.IsNullOrEmpty(yamlHtml))
+        {
+            var yamlEscaped = EscapeForJsString(yamlHtml);
+            sb.AppendLine($"    document.getElementById('content').innerHTML = \"{yamlEscaped}\" + html;");
+        }
+        else
+        {
+            sb.AppendLine("    document.getElementById('content').innerHTML = html;");
+        }
         sb.AppendLine();
 
         // Run mermaid on all .mermaid divs (only when bundle was injected)
@@ -205,6 +243,19 @@ public static class MarkdownRenderService
         sb.AppendLine("      const h = document.documentElement.scrollHeight - document.documentElement.clientHeight;");
         sb.AppendLine("      if (h > 0) window.scrollTo(0, h * pct);");
         sb.AppendLine("    };");
+        sb.AppendLine();
+
+        // Forward preview scroll to C# via postMessage (debounced 200ms)
+        sb.AppendLine("    var _scrollTimer = null;");
+        sb.AppendLine("    window.addEventListener('scroll', function() {");
+        sb.AppendLine("      clearTimeout(_scrollTimer);");
+        sb.AppendLine("      _scrollTimer = setTimeout(function() {");
+        sb.AppendLine("        var h = document.documentElement.scrollHeight - document.documentElement.clientHeight;");
+        sb.AppendLine("        var pct = h > 0 ? window.scrollY / h : 0;");
+        sb.AppendLine("        if (window.chrome && window.chrome.webview)");
+        sb.AppendLine("          window.chrome.webview.postMessage(JSON.stringify({ type: 'scroll', pct: pct }));");
+        sb.AppendLine("      }, 200);");
+        sb.AppendLine("    });");
         sb.AppendLine();
 
         // Forward link clicks to C# via postMessage

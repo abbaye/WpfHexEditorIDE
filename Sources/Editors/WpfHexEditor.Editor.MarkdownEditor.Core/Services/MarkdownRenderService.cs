@@ -31,6 +31,7 @@ using System.Collections.Concurrent;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace WpfHexEditor.Editor.MarkdownEditor.Core.Services;
 
@@ -52,6 +53,26 @@ public static class MarkdownRenderService
     private static readonly Lazy<string> _emojiJs            = Load("emoji.js");
     private static readonly Lazy<string> _classDiagramJs     = Load("classdiagram.js");
     private static readonly Lazy<string> _classDiagramCss    = Load("classdiagram.css");
+
+    // --- YAML front-matter ---------------------------------------------------
+
+    private static readonly Regex _yamlFrontmatterRegex =
+        new(@"^---\r?\n(.*?)\r?\n---\r?\n", RegexOptions.Singleline | RegexOptions.Compiled);
+
+    /// <summary>
+    /// Extracts a YAML front-matter block from the top of a Markdown document.
+    /// Returns (<c>yamlContent</c>, <c>remainingMarkdown</c>); <c>yamlContent</c>
+    /// is <see langword="null"/> when no front-matter is present.
+    /// </summary>
+    public static (string? Yaml, string Markdown) ExtractYamlFrontmatter(string markdownText)
+    {
+        var m = _yamlFrontmatterRegex.Match(markdownText);
+        if (!m.Success) return (null, markdownText);
+
+        var yaml      = m.Groups[1].Value;
+        var remaining = markdownText[m.Length..];
+        return (yaml, remaining);
+    }
 
     // mermaid.js (2.9 MB) is written once to a temp file and referenced via <script src="file://...">.
     // This prevents re-parsing the bundle on every render and lets WebView2 cache the script.
@@ -96,8 +117,14 @@ public static class MarkdownRenderService
         var mermaidTheme = isDarkTheme ? "dark" : "default";
         var cdTheme      = isDarkTheme ? "dark" : "light";
 
+        // Strip YAML front-matter and build a styled block for it
+        var (yaml, mdBody) = ExtractYamlFrontmatter(markdownText);
+        var yamlHtml = yaml is not null
+            ? $"<div class=\"yaml-frontmatter\"><pre>{System.Net.WebUtility.HtmlEncode(yaml)}</pre></div>\n"
+            : string.Empty;
+
         // Escape markdown for JSON embedding
-        var mdEscaped = EscapeForJsString(markdownText);
+        var mdEscaped = EscapeForJsString(mdBody);
 
         var sb = new StringBuilder(markdownText.Length * 4);
         sb.AppendLine("<!DOCTYPE html>");
@@ -136,6 +163,9 @@ public static class MarkdownRenderService
         sb.AppendLine("    .emoji { font-style: normal; }");
         // Mermaid diagram container
         sb.AppendLine("    .mermaid { margin: 1em 0; }");
+        // YAML front-matter block
+        sb.AppendLine("    .yaml-frontmatter { background: rgba(128,128,128,0.1); border-left: 3px solid #888; padding: 8px 12px; margin-bottom: 1em; border-radius: 3px; }");
+        sb.AppendLine("    .yaml-frontmatter pre { margin: 0; font-family: 'Consolas', 'Courier New', monospace; font-size: 0.85em; white-space: pre-wrap; }");
         sb.AppendLine("  </style>");
 
         // Class diagram CSS
@@ -237,7 +267,15 @@ public static class MarkdownRenderService
         // Render markdown
         sb.AppendLine($"    const md = \"{mdEscaped}\";");
         sb.AppendLine("    const html = marked.parse(md, { renderer: renderer });");
-        sb.AppendLine("    document.getElementById('content').innerHTML = html;");
+        if (!string.IsNullOrEmpty(yamlHtml))
+        {
+            var yamlEscaped = EscapeForJsString(yamlHtml);
+            sb.AppendLine($"    document.getElementById('content').innerHTML = \"{yamlEscaped}\" + html;");
+        }
+        else
+        {
+            sb.AppendLine("    document.getElementById('content').innerHTML = html;");
+        }
         sb.AppendLine();
 
         // Run mermaid on all .mermaid divs — awaited so errors are caught and
@@ -261,6 +299,19 @@ public static class MarkdownRenderService
         sb.AppendLine("      const h = document.documentElement.scrollHeight - document.documentElement.clientHeight;");
         sb.AppendLine("      if (h > 0) window.scrollTo(0, h * pct);");
         sb.AppendLine("    };");
+        sb.AppendLine();
+
+        // Forward preview scroll to C# via postMessage (debounced 200ms)
+        sb.AppendLine("    var _scrollTimer = null;");
+        sb.AppendLine("    window.addEventListener('scroll', function() {");
+        sb.AppendLine("      clearTimeout(_scrollTimer);");
+        sb.AppendLine("      _scrollTimer = setTimeout(function() {");
+        sb.AppendLine("        var h = document.documentElement.scrollHeight - document.documentElement.clientHeight;");
+        sb.AppendLine("        var pct = h > 0 ? window.scrollY / h : 0;");
+        sb.AppendLine("        if (window.chrome && window.chrome.webview)");
+        sb.AppendLine("          window.chrome.webview.postMessage(JSON.stringify({ type: 'scroll', pct: pct }));");
+        sb.AppendLine("      }, 200);");
+        sb.AppendLine("    });");
         sb.AppendLine();
 
         // Forward link clicks to C# via postMessage
@@ -422,9 +473,17 @@ public static class MarkdownRenderService
         sb.AppendLine();
 
         // Incremental update function — called via ExecuteScriptAsync on every debounce tick
-        sb.AppendLine("    window.updateMarkdown = async function(md) {");
+        sb.AppendLine("    function extractYaml(src) {");
+        sb.AppendLine("      const m = src.match(/^---\\n([\\s\\S]*?)\\n---\\n/);");
+        sb.AppendLine("      if (!m) return { yaml: null, md: src };");
+        sb.AppendLine("      return { yaml: m[1], md: src.slice(m[0].length) };");
+        sb.AppendLine("    }");
+        sb.AppendLine();
+        sb.AppendLine("    window.updateMarkdown = async function(rawMd) {");
+        sb.AppendLine("      const { yaml, md } = extractYaml(rawMd);");
         sb.AppendLine("      const html = marked.parse(md, { renderer: renderer });");
-        sb.AppendLine("      document.getElementById('content').innerHTML = html;");
+        sb.AppendLine("      const yamlHtml = yaml ? '<div class=\"yaml-frontmatter\"><pre>' + yaml.replace(/&/g,'&amp;').replace(/</g,'&lt;') + '</pre></div>\\n' : '';");
+        sb.AppendLine("      document.getElementById('content').innerHTML = yamlHtml + html;");
         if (hasMermaid)
         {
             sb.AppendLine("      try {");
@@ -439,6 +498,19 @@ public static class MarkdownRenderService
         sb.AppendLine("      const h = document.documentElement.scrollHeight - document.documentElement.clientHeight;");
         sb.AppendLine("      if (h > 0) window.scrollTo(0, h * pct);");
         sb.AppendLine("    };");
+        sb.AppendLine();
+
+        // Forward preview scroll to C# via postMessage (debounced 200ms)
+        sb.AppendLine("    var _scrollTimer = null;");
+        sb.AppendLine("    window.addEventListener('scroll', function() {");
+        sb.AppendLine("      clearTimeout(_scrollTimer);");
+        sb.AppendLine("      _scrollTimer = setTimeout(function() {");
+        sb.AppendLine("        var h = document.documentElement.scrollHeight - document.documentElement.clientHeight;");
+        sb.AppendLine("        var pct = h > 0 ? window.scrollY / h : 0;");
+        sb.AppendLine("        if (window.chrome && window.chrome.webview)");
+        sb.AppendLine("          window.chrome.webview.postMessage(JSON.stringify({ type: 'scroll', pct: pct }));");
+        sb.AppendLine("      }, 200);");
+        sb.AppendLine("    });");
         sb.AppendLine();
 
         sb.AppendLine("    document.addEventListener('click', function(e) {");
