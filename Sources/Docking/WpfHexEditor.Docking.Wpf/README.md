@@ -7,6 +7,8 @@ Drop it into any WPF window — no IDE, no plugin host, zero external dependenci
 dotnet add package WpfDocking
 ```
 
+> **Full documentation**: [WpfDocking-guide.md](https://github.com/abbaye/WpfHexEditorIDE/blob/master/Sources/Docking/WpfHexEditor.Docking.Wpf/WpfDocking-guide.md) — Architecture, API reference, integration guides (Level 1–4), layout persistence, and settings reference.
+
 ---
 
 ## Quick Start
@@ -106,6 +108,11 @@ Both bundled inside the package — zero external NuGet dependencies:
 | WpfHexEditor.Docking.Core | Platform-agnostic layout engine (no WPF dependency) |
 
 ---
+
+## What's New in 0.9.6.0
+
+- **Fix**: `TrackActivation` now fires on tab-group focus — all dependent panels (ParsedFields, breadcrumb, outline) sync correctly when switching between tab groups.
+- **Fix**: Panel activation state no longer lost when switching tab groups with keyboard navigation.
 
 ## What's New in 0.9.5.2
 
