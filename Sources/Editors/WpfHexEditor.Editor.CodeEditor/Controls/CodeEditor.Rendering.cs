@@ -109,18 +109,16 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 // Resolve Y positions: use _lineYLookup for in-viewport lines (O(1), accounts
                 // for InlineHints height). For out-of-viewport lines, clamp to the actual first/last
                 // rendered line Y boundaries.
+                // Skip if bodyStart is hidden inside a collapsed sibling.
+                if (_foldingEngine!.IsLineHidden(bodyStart)) continue;
+
                 double yTop;
-                if (_foldingEngine!.IsLineHidden(bodyStart))
-                {
-                    // bodyStart is inside a collapsed sibling — skip this guide entirely.
-                    continue;
-                }
-                else if (bodyStart < _firstVisibleLine)
+                if (bodyStart < _firstVisibleLine)
                     yTop = viewportYMin;
                 else if (_lineYLookup.TryGetValue(bodyStart, out double topY))
                     yTop = topY;
                 else
-                    yTop = viewportYMin; // fallback: top of rendered area
+                    continue; // bodyStart is in viewport but missing from _lineYLookup — stale frame, skip
 
                 double yBottom;
                 if (region.EndLine > _lastVisibleLine)
@@ -128,7 +126,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 else if (_lineYLookup.TryGetValue(region.EndLine, out double botY))
                     yBottom = botY;
                 else
-                    yBottom = viewportYMax; // fallback: bottom of rendered area
+                    continue; // EndLine is in viewport but missing from _lineYLookup — stale frame, skip
 
                 if (yTop >= yBottom) continue;
 
