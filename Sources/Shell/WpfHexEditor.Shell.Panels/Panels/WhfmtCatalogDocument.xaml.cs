@@ -2,8 +2,8 @@
 // Project: WpfHexEditor.Shell.Panels
 // File: Panels/WhfmtCatalogDocument.xaml.cs
 // Description: Code-behind for the Format Catalog virtual document tab.
-//              Implements IEditorToolbarContributor and IStatusBarContributor
-//              so the catalog integrates with the IDE toolbar and status bar.
+//              Implements IEditorToolbarContributor, IStatusBarContributor,
+//              and ISearchTarget (Ctrl+F QuickSearchBar overlay on the grid).
 // Architecture: MVVM + interface adapters; no business logic here.
 // ==========================================================
 
@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Microsoft.Win32;
@@ -18,6 +19,7 @@ using WpfHexEditor.Core.Interfaces;
 using WpfHexEditor.Core.Contracts;
 using WpfHexEditor.Core.Options;
 using WpfHexEditor.Editor.Core;
+using WpfHexEditor.Editor.Core.Views;
 using WpfHexEditor.Shell.Panels.Services;
 using WpfHexEditor.Shell.Panels.ViewModels;
 
@@ -25,12 +27,18 @@ namespace WpfHexEditor.Shell.Panels.Panels;
 
 public partial class WhfmtCatalogDocument : UserControl,
     IEditorToolbarContributor,
-    IStatusBarContributor
+    IStatusBarContributor,
+    ISearchTarget
 {
     private readonly WhfmtCatalogViewModel _vm;
+    private QuickSearchBar? _searchBar;
 
     private readonly StatusBarItem _sbTotal;
     private readonly StatusBarItem _sbSelected;
+
+    // ISearchTarget state
+    private int _matchCount;
+    private int _currentMatchIndex;
 
     public WhfmtCatalogDocument()
     {
@@ -58,6 +66,8 @@ public partial class WhfmtCatalogDocument : UserControl,
         _sbSelected = new StatusBarItem { Label = string.Empty, IsVisible = false };
 
         StatusBarItems = [ _sbTotal, _sbSelected ];
+
+        Loaded += OnLoaded;
     }
 
     // ------------------------------------------------------------------
@@ -77,6 +87,101 @@ public partial class WhfmtCatalogDocument : UserControl,
         _sbTotal.Label     = $"{_vm.TotalCount} formats";
         _sbSelected.Label  = _vm.SelectedCount > 0 ? $"{_vm.SelectedCount} selected" : string.Empty;
         _sbSelected.IsVisible = _vm.SelectedCount > 0;
+    }
+
+    // ------------------------------------------------------------------
+    // ISearchTarget — filters the DataGrid via ViewModel.SearchText
+    // ------------------------------------------------------------------
+
+    public SearchBarCapabilities Capabilities => SearchBarCapabilities.CaseSensitive;
+
+    public int MatchCount        => _matchCount;
+    public int CurrentMatchIndex => _currentMatchIndex;
+
+    public event EventHandler? SearchResultsChanged;
+
+    public void Find(string query, SearchTargetOptions options = default)
+    {
+        _vm.SearchText    = query;
+        _matchCount       = CatalogGrid.Items.Count;
+        _currentMatchIndex = _matchCount > 0 ? 1 : 0;
+        SearchResultsChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    public void FindNext()
+    {
+        if (_matchCount == 0) return;
+        _currentMatchIndex = (_currentMatchIndex % _matchCount) + 1;
+        ScrollToMatchIndex(_currentMatchIndex - 1);
+        SearchResultsChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    public void FindPrevious()
+    {
+        if (_matchCount == 0) return;
+        _currentMatchIndex = _currentMatchIndex <= 1 ? _matchCount : _currentMatchIndex - 1;
+        ScrollToMatchIndex(_currentMatchIndex - 1);
+        SearchResultsChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    public void ClearSearch()
+    {
+        _vm.SearchText    = string.Empty;
+        _matchCount       = 0;
+        _currentMatchIndex = 0;
+        SearchResultsChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    public void Replace(string replacement)     { /* not supported */ }
+    public void ReplaceAll(string replacement)  { /* not supported */ }
+    public UIElement? GetCustomFiltersContent() => null;
+
+    private void ScrollToMatchIndex(int index)
+    {
+        if (index >= 0 && index < CatalogGrid.Items.Count)
+        {
+            CatalogGrid.ScrollIntoView(CatalogGrid.Items[index]);
+            CatalogGrid.SelectedIndex = index;
+        }
+    }
+
+    // ------------------------------------------------------------------
+    // Loaded — install QuickSearchBar overlay
+    // ------------------------------------------------------------------
+
+    private void OnLoaded(object sender, RoutedEventArgs e)
+    {
+        _searchBar = new QuickSearchBar();
+        _searchBar.BindToTarget(this);
+        SearchBarCanvas.Children.Add(_searchBar);
+        SearchBarCanvas.IsHitTestVisible = true;
+    }
+
+    // ------------------------------------------------------------------
+    // Keyboard
+    // ------------------------------------------------------------------
+
+    protected override void OnKeyDown(KeyEventArgs e)
+    {
+        base.OnKeyDown(e);
+        if (e.Key == Key.F && Keyboard.Modifiers == ModifierKeys.Control)
+        {
+            ShowQuickSearchBar();
+            e.Handled = true;
+        }
+        else if (e.Key == Key.F5)
+        {
+            _vm.RefreshCommand.Execute(null);
+            e.Handled = true;
+        }
+    }
+
+    private void ShowQuickSearchBar()
+    {
+        if (_searchBar is null) return;
+        _searchBar.Visibility = Visibility.Visible;
+        _searchBar.EnsureDefaultPosition(SearchBarCanvas);
+        _searchBar.FocusSearchInput();
     }
 
     // ------------------------------------------------------------------

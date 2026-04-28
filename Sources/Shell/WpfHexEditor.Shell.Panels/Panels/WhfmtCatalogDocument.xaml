@@ -67,7 +67,15 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
+    <!-- Root: content + QuickSearchBar overlay -->
     <Grid>
+
+        <!-- ── QuickSearch overlay (Ctrl+F) ── -->
+        <Canvas x:Name="SearchBarCanvas"
+                Panel.ZIndex="5"
+                IsHitTestVisible="False"
+                Background="Transparent"/>
+
         <!-- ================================================================ -->
         <!-- Main: DataGrid + Detail                                           -->
         <!-- ================================================================ -->
