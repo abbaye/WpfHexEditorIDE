@@ -9,6 +9,7 @@ using System.IO;
 using System.Windows;
 using WpfHexEditor.Core.Localization.Services;
 using WpfHexEditor.Core.Options;
+using LocalizationService = WpfHexEditor.Core.Localization.Services.LocalizationService;
 
 namespace WpfHexEditor.App;
 
@@ -29,6 +30,7 @@ public partial class App : Application
     protected override void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
+        LocalizationService.Instance = new LocalizationService();
         ParseCommandLine(e.Args);
         RestorePreferredLanguage();
     }
