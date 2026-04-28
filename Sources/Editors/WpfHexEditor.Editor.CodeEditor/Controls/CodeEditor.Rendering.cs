@@ -109,11 +109,13 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 // Resolve Y positions: use _lineYLookup for in-viewport lines (O(1), accounts
                 // for InlineHints height). For out-of-viewport lines, clamp to the actual first/last
                 // rendered line Y boundaries.
-                // Resolve Y positions: use _lineYLookup for in-viewport lines (O(1), accounts
-                // for InlineHints height). For out-of-viewport lines, clamp to the actual first/last
-                // rendered line Y boundaries.
                 double yTop;
-                if (bodyStart < _firstVisibleLine)
+                if (_foldingEngine!.IsLineHidden(bodyStart))
+                {
+                    // bodyStart is inside a collapsed sibling — skip this guide entirely.
+                    continue;
+                }
+                else if (bodyStart < _firstVisibleLine)
                     yTop = viewportYMin;
                 else if (_lineYLookup.TryGetValue(bodyStart, out double topY))
                     yTop = topY;
@@ -433,7 +435,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
             // Fallback: uniform layout (no InlineHints offset).
             double scrollFraction = (EnableVirtualScrolling && _virtualizationEngine != null)
-                ? _virtualizationEngine.GetLineYPosition(_firstVisibleLine)
+                ? _virtualizationEngine.GetLineYPosition(_firstVisibleRank)
                 : 0.0;
             return TopMargin + scrollFraction + visIdx * _lineHeight;
         }
@@ -546,8 +548,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             }
 
             // ---- Normal path ----
+            // Use the visible rank (not physical index) for pixel math so the sub-pixel
+            // scroll offset is correct when hidden lines compress the scroll space.
             double scrollFraction = (EnableVirtualScrolling && _virtualizationEngine != null)
-                ? _virtualizationEngine.GetLineYPosition(_firstVisibleLine)
+                ? _virtualizationEngine.GetLineYPosition(_firstVisibleRank)
                 : 0.0;
             {
                 double y = TopMargin + scrollFraction;
@@ -1484,6 +1488,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 _firstVisibleLine = WrapVisualRowToLogical(firstVisRow).logLine;
                 _lastVisibleLine  = WrapVisualRowToLogical(lastVisRow).logLine;
                 _firstVisibleLine = Math.Max(0, Math.Min(_firstVisibleLine, _document.Lines.Count - 1));
+                _firstVisibleRank = _firstVisibleLine;
                 _lastVisibleLine  = Math.Max(0, Math.Min(_lastVisibleLine,  _document.Lines.Count - 1));
                 _gutterControl?.Update(_lineHeight, _firstVisibleLine, _lastVisibleLine,
                                        TopMargin, 0.0, _lineYLookup);
@@ -1507,15 +1512,25 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 // a renderable physical line.
                 var (first, last) = _virtualizationEngine.CalculateVisibleRange();
 
-                // Step back to find the first non-hidden physical line at or before 'first'.
+                // 'first' is a visible rank (ScrollOffset / lineHeight), not a physical index.
+                // Store the rank for pixel math, then convert to physical for line iteration.
+                _firstVisibleRank = first;
+
                 if (_foldingEngine != null && _foldingEngine.TotalHiddenLineCount > 0)
                 {
                     int docCount = _document!.Lines.Count;
-                    // Walk backward from first until we hit a visible line.
-                    int f = Math.Min(first, docCount - 1);
-                    while (f > 0 && _foldingEngine.IsLineHidden(f))
-                        f--;
-                    _firstVisibleLine = f;
+                    int counted  = 0;
+                    int physical = 0;
+                    while (physical < docCount)
+                    {
+                        if (!_foldingEngine.IsLineHidden(physical))
+                        {
+                            if (counted == first) break;
+                            counted++;
+                        }
+                        physical++;
+                    }
+                    _firstVisibleLine = Math.Min(physical, docCount - 1);
                 }
                 else
                 {
@@ -1526,6 +1541,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             else
             {
                 // Phase 1 fallback: Show all lines that fit in viewport (no virtualization)
+                _firstVisibleRank = 0;
                 _firstVisibleLine = 0;
                 _lastVisibleLine = Math.Min(_document.Lines.Count - 1,
                     (int)(viewportH / _lineHeight));
@@ -1579,10 +1595,11 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 foreach (var r in _foldingEngine.Regions)
                 {
                     if (r.IsCollapsed || r.Kind == FoldingRegionKind.Directive) continue;
-                    // BUG2-FIX: exclude child regions whose StartLine is inside a collapsed parent.
-                    // Without this guard, _lineYLookup misses the hidden line and the guide falls
-                    // back to viewportYMin, drawing a spurious line across the entire viewport.
+                    // BUG2-FIX: exclude regions whose StartLine or EndLine is hidden inside a
+                    // collapsed parent — _lineYLookup misses those lines and the fallback
+                    // (viewportYMin / viewportYMax) draws spurious full-viewport guide lines.
                     if (_foldingEngine.IsLineHidden(r.StartLine)) continue;
+                    if (_foldingEngine.IsLineHidden(r.EndLine)) continue;
                     if (r.EndLine < _firstVisibleLine || r.StartLine + 1 > _lastVisibleLine) continue;
                     _visibleRegions.Add(r);
                 }
@@ -1591,7 +1608,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // Sync gutter layout with the newly computed visible range.
             // Pass scroll fraction so gutter markers follow smooth-scroll sub-pixel offset.
             double gutterScrollFraction = (EnableVirtualScrolling && _virtualizationEngine != null)
-                ? _virtualizationEngine.GetLineYPosition(_firstVisibleLine)
+                ? _virtualizationEngine.GetLineYPosition(_firstVisibleRank)
                 : 0.0;
             _gutterControl?.Update(_lineHeight, _firstVisibleLine, _lastVisibleLine,
                                    TopMargin, gutterScrollFraction, _lineYLookup);
@@ -2964,6 +2981,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             for (int i = _firstVisibleLine; i <= _lastVisibleLine; i++)
             {
                 if (i >= lineCount) break;
+                // Skip lines hidden inside a collapsed fold — they have no Y in _lineYLookup
+                // and must not be rendered at a stale or fallback position.
+                if (_foldingEngine?.IsLineHidden(i) == true) continue;
                 if (!_validationByLine.TryGetValue(i, out var lineErrors)) continue;
                 foreach (var error in lineErrors)
                 {

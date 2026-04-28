@@ -1678,12 +1678,14 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             _pendingFoldLines = null;
             if (targets is null || targets.Count == 0) return;
 
+            // Use ToggleRegion so that RebuildHiddenSet + RegionsChanged fire for each
+            // region.  Without this, _hiddenLines stays empty and the scope-guide/scroll
+            // state is inconsistent with the IsCollapsed flag on the region object.
             foreach (var region in _foldingEngine.Regions)
             {
-                if (targets.Contains(region.StartLine))
-                    region.IsCollapsed = true;
+                if (targets.Contains(region.StartLine) && !region.IsCollapsed)
+                    _foldingEngine.ToggleRegion(region.StartLine);
             }
-            InvalidateVisual();
         }
 
         // CodeEditor has no binary modifications — return null / no-op

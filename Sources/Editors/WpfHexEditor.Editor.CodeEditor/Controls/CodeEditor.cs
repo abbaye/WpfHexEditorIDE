@@ -669,8 +669,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         private int _lastHighlightFirst = -1;
         private int _lastHighlightLast  = -1;
 
-        private int _firstVisibleLine = 0;  // Scrolling support (Phase 1: always 0)
-        private int _lastVisibleLine = 0;   // Will be calculated in Phase 1
+        private int _firstVisibleLine = 0;  // Physical line index of first rendered line
+        private int _lastVisibleLine = 0;   // Physical line index of last rendered line
+        private int _firstVisibleRank = 0;  // Visible rank of _firstVisibleLine (for VE pixel math)
 
         // OPT-D: lineYLookup dirty flag — avoids rebuilding per-line Y positions on every
         // render frame (e.g. caret blink at 530 ms).  Rebuilt only when the visible range,
@@ -2699,7 +2700,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             _gutterControl.SetEngine(_foldingEngine);
             // Fold state change: re-arrange (→ UpdateScrollBars corrects the range) and re-render content.
             // Gutter re-renders internally via its own RegionsChanged handler.
-            _foldingEngine.RegionsChanged += (_, _) => { _linePositionsDirty = true; InvalidateMeasure(); InvalidateVisual(); MinimapRefreshRequested?.Invoke(this, EventArgs.Empty); };
+            _foldingEngine.RegionsChanged += (_, _) => { _linePositionsDirty = true; InvalidateMeasure(); InvalidateVisual(); MinimapRefreshRequested?.Invoke(this, EventArgs.Empty); UpdateDiagnosticScrollMarkers(); SyncScrollMarkerCaretAndSelection(); };
             _scrollBarChildren.Add(_gutterControl);
 
             // Breakpoint gutter (ADR-DBG-01): positioned to the left of fold markers.
