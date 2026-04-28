@@ -11,9 +11,9 @@
 
     <!-- NuGet package metadata -->
     <PackageId>WpfCodeEditor</PackageId>
-    <Version>0.9.6.7</Version>
-    <AssemblyVersion>0.9.6.7</AssemblyVersion>
-    <FileVersion>0.9.6.7</FileVersion>
+    <Version>0.9.7.0</Version>
+    <AssemblyVersion>0.9.7.0</AssemblyVersion>
+    <FileVersion>0.9.7.0</FileVersion>
     <Authors>Derek Tremblay</Authors>
     <Company>Derek Tremblay (derektremblay666@gmail.com)</Company>
     <Product>WpfCodeEditor</Product>
@@ -48,6 +48,7 @@
 
   <ItemGroup>
     <None Include="PACKAGE_README.md" Pack="true" PackagePath="\" />
+    <None Include="WpfCodeEditor-guide.md" Pack="true" PackagePath="\" />
     <None Include="icon.png" Pack="true" PackagePath="\" />
   </ItemGroup>
 

@@ -150,6 +150,18 @@ All bundled inside the package — zero external NuGet dependencies:
 
 ---
 
+## What's New in 0.9.7.0
+
+- **Fix**: Code folding — scope guide lines now reach their correct end position in all cases (net brace-count algorithm replaces boolean push/pop; handles C# pattern matching `is { } x`, object initializers, and Allman-style blocks).
+- **Fix**: Code folding — collapsing a block no longer draws spurious full-viewport vertical guide lines. Child regions inside a collapsed parent are excluded from the visible-region cache.
+- **Fix**: Code folding — scroll position and line navigation (arrow keys, PageUp/Down) are now correct when blocks are collapsed. The virtualization engine's visible-rank index is converted to the correct physical line index via forward-scan.
+- **Fix**: Code folding — `_firstVisibleRank` separates the VE pixel-math rank from `_firstVisibleLine` (physical index), eliminating the truncated-content and blank-editor regressions.
+- **Fix**: Code folding — fold state restored on session re-open now calls `ToggleRegion` (fires `RebuildHiddenSet` + `RegionsChanged`) instead of mutating `IsCollapsed` directly, eliminating spurious guides and scroll inconsistency after restart.
+- **Fix**: Code folding — diagnostic squiggle underlines and scroll-bar error ticks are repositioned when blocks are collapsed/expanded.
+- **Fix**: Minimap — subscribes directly to `FoldingEngine.RegionsChanged` so the overview redraws immediately on fold toggle without depending on the host's coalescing timer.
+- **Fix**: Block comment spans (e.g. `/* … */`) are now tracked across lines in `PatternFoldingStrategy`, preventing phantom fold regions inside multi-line comments.
+- **New**: `endOfBlockHint.showLineNumber` and `endOfBlockHint.showLineCount` whfmt fields — control which pills appear in the end-of-block hover popup per language.
+
 ## What's New in 0.9.6.7
 
 - **New**: `Ctrl+F` inline search panel — find next/previous without a separate dialog.
