@@ -360,7 +360,10 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IBufferAw
             ViewportGrid.MinWidth = ScrollView.ViewportWidth;
             if (!Viewport.IsWordWrapEnabled)
                 Viewport.Width = Math.Max(Viewport.EstimatedMaxWidth, ScrollView.ViewportWidth);
-            Viewport.Height = Math.Max(Viewport.TotalHeight + Viewport.LineHeight, ScrollView.ViewportHeight);
+            // Invalidate measure so WPF re-queries TotalHeight from MeasureOverride.
+            // Do NOT set Viewport.Height explicitly — that overrides the layout system and
+            // causes the ScrollViewer to freeze (Height assignment → layout pass → ScrollChanged → loop).
+            Viewport.InvalidateMeasure();
             Viewport.InvalidateVisual();
         });
     }
@@ -909,7 +912,11 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IBufferAw
         // No-wrap: explicit Width provides the horizontal scroll extent.
         if (!Viewport.IsWordWrapEnabled)
             Viewport.Width = Math.Max(Viewport.EstimatedMaxWidth, ScrollView.ViewportWidth);
-        Viewport.Height = Math.Max(Viewport.TotalHeight + Viewport.LineHeight, ScrollView.ViewportHeight);
+        // NOTE: Viewport.Height is NOT set here. The ScrollViewer passes Infinity vertically
+        // during measure, so TextViewport.MeasureOverride returns TotalHeight — which is exactly
+        // what WPF needs to compute the correct scrollbar thumb size and extent. Setting an
+        // explicit Height here caused a layout loop (ScrollChanged → Height change → new layout
+        // → ScrollChanged → …) that froze the scrollbar.
 
         ViewportScrollChanged?.Invoke(this, e);
     }
