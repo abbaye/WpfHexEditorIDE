@@ -1498,9 +1498,29 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 _virtualizationEngine.LineHeight = _lineHeight;
                 _virtualizationEngine.ScrollOffset = _verticalScrollOffset;
 
-                // Calculate visible range with render buffer
+                // Calculate visible range with render buffer.
+                // BUG3-FIX: The VE maps ScrollOffset→firstLine via (offset/lineHeight).
+                // The scroll space is fold-compressed (hidden lines removed from pixel budget)
+                // but physical line indices are not. If firstLine lands inside a collapsed
+                // region, ComputeVisibleLinePositions skips it and renders nothing.
+                // Walk back to the nearest non-hidden line so _firstVisibleLine is always
+                // a renderable physical line.
                 var (first, last) = _virtualizationEngine.CalculateVisibleRange();
-                _firstVisibleLine = first;
+
+                // Step back to find the first non-hidden physical line at or before 'first'.
+                if (_foldingEngine != null && _foldingEngine.TotalHiddenLineCount > 0)
+                {
+                    int docCount = _document!.Lines.Count;
+                    // Walk backward from first until we hit a visible line.
+                    int f = Math.Min(first, docCount - 1);
+                    while (f > 0 && _foldingEngine.IsLineHidden(f))
+                        f--;
+                    _firstVisibleLine = f;
+                }
+                else
+                {
+                    _firstVisibleLine = first;
+                }
                 _lastVisibleLine = last;
             }
             else
