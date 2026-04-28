@@ -1,6 +1,7 @@
 <UserControl x:Class="WpfHexEditor.Shell.Panels.Panels.WhfmtFormatDetailPanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:ce="clr-namespace:WpfHexEditor.Editor.CodeEditor.Controls;assembly=WpfHexEditor.Editor.CodeEditor"
              Background="{DynamicResource SE_BackgroundBrush}"
              Foreground="{DynamicResource SE_ForegroundBrush}"
              MinWidth="180">
@@ -422,24 +423,26 @@
                 </TabItem>
 
                 <!-- ════════ Tab 5: JSON ════════ -->
-                <TabItem Style="{StaticResource WE_DetailTabItem}" Header="JSON"
-                         GotFocus="OnJsonTabGotFocus">
-                    <ScrollViewer VerticalScrollBarVisibility="Auto"
-                                  HorizontalScrollBarVisibility="Auto">
-                        <TextBox x:Name="JsonTextBox"
-                                 Text="{Binding RawJson, Mode=OneWay}"
-                                 IsReadOnly="True"
-                                 Background="Transparent"
-                                 BorderThickness="0"
-                                 FontFamily="Consolas"
-                                 FontSize="11"
-                                 Foreground="{DynamicResource SE_ForegroundBrush}"
-                                 TextWrapping="NoWrap"
-                                 Padding="8,6"
-                                 AcceptsReturn="True"
-                                 VerticalScrollBarVisibility="Disabled"
-                                 HorizontalScrollBarVisibility="Disabled"/>
-                    </ScrollViewer>
+                <TabItem Style="{StaticResource WE_DetailTabItem}" Header="JSON">
+                    <ce:CodeEditor x:Name="JsonCodeEditor"
+                                   IsReadOnly="True"
+                                   ShowLineNumbers="True"
+                                   EditorBackground="{DynamicResource SE_BackgroundBrush}"
+                                   EditorForeground="{DynamicResource SE_ForegroundBrush}"
+                                   LineNumberBackground="{DynamicResource SE_GroupHeaderBrush}"
+                                   LineNumberForeground="{DynamicResource SE_ForegroundBrush}"
+                                   CurrentLineBackground="Transparent"
+                                   SelectionBackground="{DynamicResource SE_SelectedBrush}"
+                                   SyntaxKeyColor="{DynamicResource TE_Keyword}"
+                                   SyntaxKeywordColor="{DynamicResource TE_Keyword}"
+                                   SyntaxBooleanColor="{DynamicResource TE_Keyword}"
+                                   SyntaxStringValueColor="{DynamicResource TE_String}"
+                                   SyntaxNumberColor="{DynamicResource TE_Number}"
+                                   SyntaxCommentColor="{DynamicResource TE_Comment}"
+                                   SyntaxUrlColor="{DynamicResource TE_Register}"
+                                   SyntaxBraceColor="{DynamicResource SE_ForegroundBrush}"
+                                   SyntaxBracketColor="{DynamicResource SE_ForegroundBrush}"
+                                   SyntaxCommaColor="{DynamicResource SE_ForegroundBrush}"/>
                 </TabItem>
 
             </TabControl>
