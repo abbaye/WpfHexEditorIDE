@@ -65,7 +65,7 @@ Every editor is a standalone `IDocumentEditor` plugin — reusable outside the I
 |--------|----------|-------------|
 | **[Code Editor](Sources/WpfHexEditor.Editor.CodeEditor/README.md)** | ~90% | 55+ languages, Roslyn C#/VB.NET, LSP 3.17 (13 providers), sticky scroll, multi-caret, folding, minimap, split view, inline hints |
 | **[TBL Editor](Sources/WpfHexEditor.Editor.TblEditor/README.md)** | ~75% | Custom `.tbl` encoding tables for ROM hacking, bidirectional hex↔text preview |
-| **[Hex Editor](Sources/WpfHexEditor.HexEditor/README.md)** | ~65% | Binary editor — insert/overwrite, 790+ format auto-detection, multi-mode search, bookmarks, block undo/redo |
+| **[Hex Editor](Sources/WpfHexEditor.HexEditor/README.md)** | ~70% | Binary editor — insert/overwrite, 790+ format auto-detection, multi-mode search, bookmarks, block undo/redo |
 | **[Diff / Changeset Viewer](Sources/WpfHexEditor.Editor.DiffViewer/README.md)** | ~65% | Binary, text, and structure diff — GlyphRun renderers, word-level highlight, Myers/Binary/Semantic algorithms |
 | **[Markdown Editor](Sources/WpfHexEditor.Editor.MarkdownEditor/README.md)** | ~50% | Live preview, mermaid.js diagrams, clipboard image paste, document outline |
 | **[XAML Designer](Sources/WpfHexEditor.Editor.XamlDesigner/README.md)** | ~40% | Live canvas, bidirectional XAML↔design sync, property inspector, snap grid, undo/redo |
