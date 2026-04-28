@@ -12,14 +12,14 @@
 
     <!-- NuGet package metadata -->
     <PackageId>whfmt.FileFormatCatalog</PackageId>
-    <Version>1.0.0</Version>
-    <AssemblyVersion>1.0.0</AssemblyVersion>
-    <FileVersion>1.0.0</FileVersion>
+    <Version>1.1.0</Version>
+    <AssemblyVersion>1.1.0</AssemblyVersion>
+    <FileVersion>1.1.0</FileVersion>
     <Authors>Derek Tremblay</Authors>
     <Company>Derek Tremblay (derektremblay666@gmail.com)</Company>
     <Product>whfmt.FileFormatCatalog</Product>
     <Title>whfmt.FileFormatCatalog — 675+ File Format &amp; Language Definitions</Title>
-    <Description>675+ embedded .whfmt definitions for automatic file format detection AND syntax highlighting. Covers 27 binary categories (Archives, Audio, Images, Game, ROMs, Executables...) plus 35 language grammars (C#, Python, JS/TS, CSS, HTML, XAML, SQL, Rust, Go, Java, Kotlin, Swift, YAML, TOML, Markdown, and more). Cross-platform net8.0. Includes EmbeddedFormatCatalog singleton: extension lookup, category browsing, magic-byte detection, MIME type lookup, editor-ID routing, syntax JSON extraction, and PreWarm() for fast startup.</Description>
+    <Description>790+ embedded .whfmt definitions (782 formats + 10 grammars) for automatic file format detection AND syntax highlighting. Covers 27 binary categories (Archives, Audio, Images, Game, ROMs, Executables, Disk, Crypto...) plus 57 language grammars (C#, Python, JS/TS, Go, Rust, Java, Kotlin, Swift, YAML, TOML, Markdown, Dockerfile, HCL, Nginx, WAT, and more). whfmt schema v2.4: formatId, SyntaxDefinition, group/header/data blocks, sentinel scanning, cross-format imports. Cross-platform net8.0. Utility layer: FormatFileAnalyzer, FormatMatcher (scored confidence), CatalogQuery (fluent), FormatMetadataExtensions (forensic/AI/assertions), FormatSummaryBuilder.</Description>
     <Copyright>GNU AGPL v3.0 - 2016-2026</Copyright>
     <PackageTags>binary;format;detection;syntax-highlighting;language-grammar;whfmt;file-format;code-editor;catalog;net8</PackageTags>
     <PackageProjectUrl>https://github.com/abbaye/WpfHexEditorIDE</PackageProjectUrl>

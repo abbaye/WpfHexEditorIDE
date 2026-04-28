@@ -1,23 +1,51 @@
 # whfmt.FileFormatCatalog
 
-675+ embedded file format and language definitions for automatic format detection and syntax highlighting.  
-Cross-platform `net8.0` — works in any .NET 8 application.
+790+ embedded file format and language definitions for automatic format detection and syntax highlighting.  
+Cross-platform `net8.0` — works in any .NET 8 application. Zero external NuGet dependencies.
 
 ```
 dotnet add package whfmt.FileFormatCatalog
 ```
 
-> **Full documentation**: [whfmt-FileFormatCatalog-guide.md](whfmt-FileFormatCatalog-guide.md) — API reference, architecture, integration guides (Level 1–3), and .whfmt format specification.
+> **Full documentation**: [whfmt-FileFormatCatalog-guide.md](https://github.com/abbaye/WpfHexEditorIDE/blob/master/Sources/Core/WpfHexEditor.Core.Definitions/whfmt-FileFormatCatalog-guide.md) — API reference, architecture, integration guides (Level 1–4), and .whfmt format specification.
+
+---
+
+## What's New in 1.1.0
+
+### Catalog — 790+ definitions, schema v2.4, 57 language grammars
+
+- **790+ definitions** (782 `.whfmt` + 10 `.grammar`) — up from 675 in v1.0
+- **57 language grammars** with `syntaxDefinition` blocks — up from 35 (+22 new: Dockerfile, `.env`, Nginx, HCL/Terraform, WAT, MSBuild, SourceMap, WebManifest, CSON, NDJSON, iCal, vCard, DocBook, AbiWord, WML, FODT, FB2, MHT, OpenDoc Flat, Config/INI, RESW, RESX)
+- **`formatId` field** — every `.whfmt` now carries a stable machine-readable identifier (e.g. `"APFS"`, `"ZIP"`) for unambiguous cross-reference
+- **whfmt schema v2.4** — new block types (`group`, `header`, `data`), `until` / `maxLength` / `untilInclusive` sentinel scanning, `imports` array for cross-format struct references, `SyntaxDefinition` promoted to first-class property
+- **Duplicate cleanup** — removed redundant entries: `Firmware/CPIO`, `Firmware/NRG`, `Firmware/SQUASHFS`, `Game/PATCH_IPS`, `Game/PATCH_UPS`, `Programming/Markdown`, `Programming/TOML`
+- **Tolerant JSON deserialisation** — new converters (`FormatRelationshipsConverter`, `TechnicalDetailsConverter`, `BoolFromAnyConverter`, `BlockDefinitionListFromMixedConverter`) handle real-world schema variation without throwing
+- **Disambiguated entries** — `System/JOURNAL` renamed to `"systemd Journal (Legacy)"` to avoid collision with `SYSTEMD_JOURNAL`; extensionless formats (`FAT_BINARY`, `SHEBANG`, `ELF`) now declare `extensions: [""]` for consistent catalog lookup
+
+### Utility Layer — Format detection is now one line
+
+Before this release, consuming the catalog required 15–20 lines of boilerplate for basic identification. Version 1.1 ships a complete utility layer on top of the catalog:
+
+| Utility | Namespace | Purpose |
+|---|---|---|
+| `FormatMatcher` | `Matching` | Scored detection façade — Extension + MagicBytes + MIME in one call |
+| `FormatFileAnalyzer` | `Matching` | I/O helper — accepts `string path`, `FileInfo`, `Stream`, `ReadOnlyMemory<byte>`, all with async variants |
+| `CatalogQuery` | `Query` | Fluent query builder — chain filters, ordering, and terminal operations |
+| `FormatMetadataExtensions` | `Metadata` | Extension methods — surfaces forensic data, AI hints, assertions, bookmarks, inspector groups, export templates, and technical details directly from the entry |
+| `FormatSummaryBuilder` | `Metadata` | Generates one-liners, plain-text cards, Markdown cards, and diagnostic dumps |
+| `FormatMatchResult` | `Contracts` | Immutable scored result — confidence, source strategy, raw score |
+| `MatchSource` | `Contracts` | Flags enum — `Extension`, `MagicBytes`, `MimeType`, `Combined` |
 
 ---
 
 ## About
 
-This catalog grew out of the format detection engine inside **WpfHexEditorIDE** — a full-featured binary/text IDE built on WPF. Every time a file is opened, the IDE needs to know what it is, which editor to route it to, and how to syntax-highlight it. Rather than hardcoding rules, we built a declarative `.whfmt` format — a JSON definition file that captures magic bytes, extensions, MIME types, entropy hints, quality scores, and syntax grammars in one place.
+This catalog grew out of the format detection engine inside **WpfHexEditorIDE** — a full-featured binary/text IDE built on WPF. Every time a file is opened, the IDE needs to know what it is, which editor to route it to, and how to syntax-highlight it. Rather than hardcoding rules, we built a declarative `.whfmt` format — a JSON definition file that captures magic bytes, extensions, MIME types, entropy hints, quality scores, syntax grammars, forensic intelligence, AI hints, and export templates in one place.
 
-Over time the catalog grew to 675+ definitions covering everything from Nintendo ROMs and audio codecs to machine learning models and certificate formats. The syntax grammar side expanded to 35 languages to drive the built-in code editor.
+Over time the catalog grew to 790+ definitions covering everything from Nintendo ROMs and audio codecs to machine learning models and certificate formats. The syntax grammar side expanded to 57 languages to drive the built-in code editor.
 
-This package extracts that catalog as a standalone, cross-platform library — useful for any application that needs to identify files, route them to the right handler, or provide syntax highlighting without taking a dependency on a full IDE framework.
+This package extracts that catalog as a standalone, cross-platform library — useful for any application that needs to identify files, route them to the right handler, provide syntax highlighting, or perform forensic triage.
 
 ---
 
@@ -28,72 +56,98 @@ This package extracts that catalog as a standalone, cross-platform library — u
 ```csharp
 using WpfHexEditor.Core.Definitions;
 using WpfHexEditor.Core.Contracts;
-
-var catalog = EmbeddedFormatCatalog.Instance;
 ```
 
-### 2 — Detect a format by extension
+### 2 — Analyze a file in one line (v1.1)
+
+```csharp
+using WpfHexEditor.Core.Definitions.Matching;
+
+var catalog = EmbeddedFormatCatalog.Instance;
+
+// Extension + magic-byte detection with confidence score
+var result = FormatFileAnalyzer.Analyze(catalog, @"C:\files\archive.zip");
+
+Console.WriteLine(result?.Entry.Name);    // "ZIP Archive"
+Console.WriteLine(result?.Confidence);   // 1.0
+Console.WriteLine(result?.IsConfirmed);  // true  (extension + magic bytes agree)
+Console.WriteLine(result?.Source);       // Combined
+```
+
+### 3 — Or use the raw catalog directly
 
 ```csharp
 EmbeddedFormatEntry? entry = catalog.GetByExtension(".zip");
 Console.WriteLine(entry?.Name);            // "ZIP Archive"
 Console.WriteLine(entry?.PreferredEditor); // "structure-editor"
-```
 
-### 3 — Detect by magic bytes
-
-```csharp
-// Pass at least the first 16 bytes — 512 bytes recommended
 byte[] header = File.ReadAllBytes("unknown.bin")[..512];
 EmbeddedFormatEntry? detected = catalog.DetectFromBytes(header);
 Console.WriteLine(detected?.Name);         // e.g. "PNG Image"
 ```
 
-### 4 — Detect by MIME type
+### 4 — Async analysis
 
 ```csharp
-EmbeddedFormatEntry? entry = catalog.GetByMimeType("image/png");
+var result = await FormatFileAnalyzer.AnalyzeAsync(catalog, uploadedFilePath, cancellationToken: ct);
 ```
 
-### 5 — Browse a category
+### 5 — Fluent query (v1.1)
 
 ```csharp
-// Enum overload — IntelliSense, no typos
-IReadOnlyList<EmbeddedFormatEntry> games = catalog.GetByCategory(FormatCategory.Game);
+using WpfHexEditor.Core.Definitions.Query;
 
-// String overload — for dynamic/runtime scenarios
-IReadOnlyList<EmbeddedFormatEntry> same = catalog.GetByCategory("Game");
+var highQualityDiskFormats = catalog
+    .Query()
+    .InCategory(FormatCategory.Disk)
+    .WithMinQuality(80)
+    .HasMagicBytes()
+    .OrderByQuality()
+    .Execute();
 ```
 
-### 6 — Extract a syntax grammar for a code editor
+### 6 — Rich metadata (v1.1)
 
 ```csharp
-EmbeddedFormatEntry? cs = catalog.GetByExtension(".cs");
-if (cs?.HasSyntaxDefinition == true)
-{
-    string? grammar = catalog.GetSyntaxDefinitionJson(cs.ResourceKey);
-    // Feed grammar into your tokenizer / syntax highlighter
-}
+using WpfHexEditor.Core.Definitions.Metadata;
+
+var entry = catalog.GetByExtension(".jks")!;  // Java KeyStore
+
+// Forensic intelligence
+var forensic = entry.GetForensicSummary(catalog);
+Console.WriteLine(forensic?.RiskLevel);     // "medium"
+Console.WriteLine(forensic?.IsHighRisk);    // false
+
+// AI-assisted hints
+var ai = entry.GetAiHints(catalog);
+foreach (var hint in ai?.SuggestedInspections ?? [])
+    Console.WriteLine($"  → {hint}");
+
+// Validation assertions
+foreach (var a in entry.GetAssertions(catalog))
+    Console.WriteLine($"  [{a.Severity}] {a.Name}: {a.Expression}");
 ```
 
-### 7 — Access the full JSON or schema
+### 7 — Top-N ranked candidates for ambiguous files
 
 ```csharp
-// Full .whfmt JSON for any entry (cached)
-string json = catalog.GetJson(entry.ResourceKey);
+byte[] header = File.ReadAllBytes("mystery.bin")[..512];
+var candidates = FormatMatcher.GetTopMatches(catalog, header, maxResults: 5);
 
-// Embedded JSON schema — enum overload (recommended)
-string? schema = catalog.GetSchemaJson(SchemaName.Whfmt);
-
-// String overload
-string? same = catalog.GetSchemaJson("whfmt");
+foreach (var match in candidates)
+    Console.WriteLine(match); // "ZIP Archive [MagicBytes] 99% (raw=1.00)"
 ```
 
-### 8 — Route to the right editor
+### 8 — Generate a summary card
 
 ```csharp
-IReadOnlyList<string> editors = catalog.GetCompatibleEditorIds("report.pdf");
-// ["hex-editor", "structure-editor"]
+var entry = catalog.GetByExtension(".zip")!;
+
+string oneLiner = FormatSummaryBuilder.BuildOneLiner(entry);
+// "ZIP Archive (Archives) — .zip .jar .apk — Quality: 92%"
+
+string markdown = FormatSummaryBuilder.BuildMarkdown(entry, catalog);
+// Full Markdown card with magic bytes, forensic section, assertions, bookmarks
 ```
 
 ### Fast Startup — PreWarm
@@ -105,154 +159,310 @@ await Task.Run(() => EmbeddedFormatCatalog.Instance.PreWarm());
 
 ---
 
-## Advanced Examples
+## Core API — `EmbeddedFormatCatalog`
 
-### Batch folder scanner — group files by detected category
+| Member | Returns | Description |
+|---|---|---|
+| `Instance` | `EmbeddedFormatCatalog` | Thread-safe lazy singleton |
+| `GetAll()` | `IReadOnlySet<EmbeddedFormatEntry>` | All 790+ entries |
+| `GetByExtension(string)` | `EmbeddedFormatEntry?` | Extension lookup (case-insensitive, dot optional) |
+| `GetByMimeType(string)` | `EmbeddedFormatEntry?` | MIME type lookup |
+| `GetByCategory(FormatCategory)` | `IReadOnlyList<EmbeddedFormatEntry>` | Category browsing (enum overload) |
+| `DetectFromBytes(ReadOnlySpan<byte>)` | `EmbeddedFormatEntry?` | Magic-byte scoring |
+| `GetCompatibleEditorIds(string)` | `IReadOnlyList<string>` | Editor routing for a file path |
+| `GetJson(string)` | `string` | Full .whfmt JSON (cached) |
+| `GetSyntaxDefinitionJson(string)` | `string?` | Raw grammar JSON block |
+| `GetSchemaJson(SchemaName)` | `string?` | Embedded JSON schema |
+| `PreWarm()` | `void` | Pre-load all JSON into cache |
+| `.Query()` | `CatalogQuery` | Begin a fluent query *(v1.1)* |
+
+---
+
+## Utility Layer — `FormatFileAnalyzer`
 
 ```csharp
-var catalog = EmbeddedFormatCatalog.Instance;
+using WpfHexEditor.Core.Definitions.Matching;
 
-var byCategory = Directory
-    .EnumerateFiles(@"C:\Downloads", "*.*", SearchOption.AllDirectories)
-    .Select(path =>
-    {
-        // Try extension first (fast), fall back to magic bytes (accurate)
-        var entry = catalog.GetByExtension(Path.GetExtension(path));
-        if (entry is null)
-        {
-            using var fs = File.OpenRead(path);
-            var header = new byte[512];
-            int read = fs.Read(header, 0, header.Length);
-            entry = catalog.DetectFromBytes(header.AsSpan(0, read));
-        }
-        return (Path: path, Category: entry?.Category ?? "Unknown", Entry: entry);
-    })
-    .GroupBy(f => f.Category)
-    .OrderByDescending(g => g.Count());
+// From file path
+FormatMatchResult? result = FormatFileAnalyzer.Analyze(catalog, filePath);
 
-foreach (var group in byCategory)
-    Console.WriteLine($"{group.Key}: {group.Count()} file(s)");
+// From FileInfo
+FormatMatchResult? result = FormatFileAnalyzer.Analyze(catalog, new FileInfo(path));
 
-// Pull only the game ROMs using the enum
-var roms = catalog.GetByCategory(FormatCategory.Game);
-Console.WriteLine($"Known game formats: {roms.Count}");
+// From Stream (preserves stream position)
+FormatMatchResult? result = FormatFileAnalyzer.Analyze(catalog, stream, extension: ".zip");
+
+// From raw bytes
+FormatMatchResult? result = FormatFileAnalyzer.Analyze(catalog, data.AsMemory(), ".bin");
+
+// Async variants (all of the above)
+FormatMatchResult? result = await FormatFileAnalyzer.AnalyzeAsync(catalog, filePath, ct);
+
+// Batch directory scan (lazy enumeration)
+foreach (var (path, match) in FormatFileAnalyzer.AnalyzeDirectory(catalog, @"C:\Data", recursive: true))
+    Console.WriteLine($"{Path.GetFileName(path),-30}  {match?.Entry.Name}");
 ```
 
 ---
+
+## Utility Layer — `FormatMatcher`
+
+```csharp
+using WpfHexEditor.Core.Definitions.Matching;
+
+// Single best match with confidence
+FormatMatchResult? result = FormatMatcher.Match(catalog, ".zip", header);
+// result.Confidence   → 1.0 (Combined) | 0.5–0.99 (MagicBytes) | 0.5 (Extension) | 0.4 (MimeType)
+// result.IsConfirmed  → true when Source == Combined
+
+// Top-N ranked candidates
+IReadOnlyList<FormatMatchResult> top = FormatMatcher.GetTopMatches(catalog, header, maxResults: 5);
+
+// All entries for an ambiguous extension
+IReadOnlyList<FormatMatchResult> all = FormatMatcher.GetMatchesByExtension(catalog, ".bin");
+
+// MIME-type match
+FormatMatchResult? mime = FormatMatcher.MatchMime(catalog, "application/pdf");
+```
+
+---
+
+## Utility Layer — `CatalogQuery`
+
+```csharp
+using WpfHexEditor.Core.Definitions.Query;
+
+// Composable filter + order + terminal
+var results = catalog
+    .Query()
+    .InCategory(FormatCategory.Executables)   // category filter (enum)
+    .WithMinQuality(75)                        // quality threshold
+    .HasMagicBytes()                           // must have signatures
+    .BinaryFormatsOnly()                       // exclude text formats
+    .OrderByQuality()                          // best first
+    .Execute();                                // materialise
+
+// Other filters
+.PriorityOnly()              // QualityScore ≥ 85
+.WithExtension(".cs")        // extension match
+.TextFormatsOnly()           // IsTextFormat == true
+.HasSyntaxDefinition()       // grammar block present
+.WithPreferredEditor("code-editor")
+.ForPlatform("Nintendo")     // platform substring
+.WithDiffMode("binary")
+.Containing("APFS")          // full-text search in name + description
+.Where(e => e.Author == "WPFHexaEditor Team")  // custom predicate
+
+// Terminal operations
+.Execute()   → IReadOnlyList<EmbeddedFormatEntry>
+.First()     → EmbeddedFormatEntry?
+.Count()     → int
+```
+
+---
+
+## Utility Layer — Rich Metadata Extensions
+
+```csharp
+using WpfHexEditor.Core.Definitions.Metadata;
+
+// All methods take the catalog as a second parameter (JSON loaded on demand, cached)
+
+ForensicSummary?               forensic    = entry.GetForensicSummary(catalog);
+AiHints?                       ai          = entry.GetAiHints(catalog);
+IReadOnlyList<NavigationBookmark> bookmarks = entry.GetNavigationBookmarks(catalog);
+IReadOnlyList<AssertionRule>   assertions  = entry.GetAssertions(catalog);
+IReadOnlyList<InspectorGroup>  groups      = entry.GetInspectorGroups(catalog);
+IReadOnlyList<ExportTemplate>  exports     = entry.GetExportTemplates(catalog);
+TechnicalDetails?              tech        = entry.GetTechnicalDetails(catalog);
+
+// Quick boolean helpers
+bool highRisk  = entry.IsHighRisk(catalog);
+bool encrypted = entry.SupportsEncryption(catalog);
+```
+
+---
+
+## Utility Layer — `FormatSummaryBuilder`
+
+```csharp
+using WpfHexEditor.Core.Definitions.Metadata;
+
+string oneLiner = FormatSummaryBuilder.BuildOneLiner(entry);
+// "ZIP Archive (Archives) — .zip .jar .apk — Quality: 92%"
+
+string plain    = FormatSummaryBuilder.BuildPlainText(entry, catalog);
+// Multi-line: name, category, extensions, MIME, quality, signatures, forensic, technical details
+
+string markdown = FormatSummaryBuilder.BuildMarkdown(entry, catalog);
+// Markdown card: table, magic bytes, forensic section, bookmarks, assertions
+
+string dump     = FormatSummaryBuilder.BuildDiagnosticDump(entry, catalog);
+// Full debug dump: resource key, all fields, forensic, assertions, bookmarks, exports, technical details
+
+string hex      = FormatSummaryBuilder.FormatHex("504B0304");
+// "50 4B 03 04"
+```
+
+---
+
+## Advanced Examples
+
+### Security scanner — flag high-risk files
+
+```csharp
+using WpfHexEditor.Core.Definitions.Matching;
+using WpfHexEditor.Core.Definitions.Metadata;
+
+var catalog = EmbeddedFormatCatalog.Instance;
+
+var result = FormatFileAnalyzer.Analyze(catalog, filePath);
+if (result is null) return;
+
+var forensic = result.Entry.GetForensicSummary(catalog);
+if (forensic?.IsHighRisk == true)
+{
+    Console.WriteLine($"⛔ HIGH RISK: {result.Entry.Name} ({forensic.RiskLevel})");
+    foreach (var p in forensic.SuspiciousPatterns)
+        Console.WriteLine($"   ⚠ {p.Name}: {p.Description}");
+}
+```
+
+### Batch folder scanner — group files by category
+
+```csharp
+using WpfHexEditor.Core.Definitions.Matching;
+
+var catalog = EmbeddedFormatCatalog.Instance;
+
+var summary = FormatFileAnalyzer
+    .AnalyzeDirectory(catalog, @"C:\Downloads", recursive: true)
+    .GroupBy(r => r.Match?.Entry.Category ?? "Unknown")
+    .OrderByDescending(g => g.Count());
+
+foreach (var g in summary)
+    Console.WriteLine($"{g.Key,-20}  {g.Count(),5} files  " +
+                      $"spoofed: {g.Count(r => r.Match?.Source == MatchSource.MagicBytes && !r.Match.IsConfirmed)}");
+```
 
 ### Magic-byte validator — detect extension spoofing
 
 ```csharp
-var catalog = EmbeddedFormatCatalog.Instance;
+using WpfHexEditor.Core.Definitions.Matching;
 
-bool IsExtensionSpoofed(string filePath)
-{
-    var byExtension = catalog.GetByExtension(Path.GetExtension(filePath));
-    if (byExtension is null) return false; // unknown format — skip
+byte[] header = File.ReadAllBytes(filePath)[..512];
+var result = FormatMatcher.Match(catalog, filePath, header);
 
-    using var fs = File.OpenRead(filePath);
-    var header = new byte[512];
-    int read = fs.Read(header, 0, header.Length);
-    var byBytes = catalog.DetectFromBytes(header.AsSpan(0, read));
+// Spoofed = magic bytes found a format but it doesn't match the extension
+bool spoofed = result?.Source == MatchSource.MagicBytes && !result.IsConfirmed;
 
-    // Spoofed if bytes point to a different known format
-    return byBytes is not null && byBytes.ResourceKey != byExtension.ResourceKey;
-}
-
-// Usage
-if (IsExtensionSpoofed(@"C:\uploads\invoice.pdf"))
-    Console.WriteLine("Warning: file content does not match its extension.");
+if (spoofed)
+    throw new SecurityException($"Extension mismatch — file is actually: {result!.Entry.Name}");
 ```
 
----
-
-### Grammar loader — wire syntax highlighting into a custom editor
+### Grammar loader — wire syntax highlighting
 
 ```csharp
-var catalog = EmbeddedFormatCatalog.Instance;
+using WpfHexEditor.Core.Definitions.Query;
 
-// Load grammars only for the Programming category (enum — no typo risk)
-var languages = catalog.GetByCategory(FormatCategory.Programming)
-    .Where(e => e.HasSyntaxDefinition)
-    .OrderBy(e => e.Name);
+var grammars = catalog
+    .Query()
+    .InCategory(FormatCategory.Programming)
+    .HasSyntaxDefinition()
+    .OrderByName()
+    .Execute();
 
-foreach (var lang in languages)
+foreach (var lang in grammars)
 {
-    string? grammarJson = catalog.GetSyntaxDefinitionJson(lang.ResourceKey);
-    if (grammarJson is null) continue;
-
-    // Deserialize into your tokenizer model and register
-    // MyTokenizerRegistry.Register(lang.Name, grammarJson);
-    Console.WriteLine($"Loaded grammar: {lang.Name} ({lang.Extensions.FirstOrDefault()})");
+    string? grammar = catalog.GetSyntaxDefinitionJson(lang.ResourceKey);
+    if (grammar is null) continue;
+    // MyTokenizerRegistry.Register(lang.Name, grammar);
+    Console.WriteLine($"Loaded: {lang.Name} ({lang.Extensions.FirstOrDefault()})");
 }
-// Output: Loaded grammar: C# (.cs), Loaded grammar: Python (.py), ...
-
-// Validate your own .whfmt file against the embedded schema
-string? whfmtSchema = catalog.GetSchemaJson(SchemaName.Whfmt);
-// Pass whfmtSchema to your JSON schema validator (e.g. JsonSchema.Net)
 ```
 
----
-
-### MIME negotiation — extension ↔ MIME bidirectional mapping
+### Dependency injection setup
 
 ```csharp
-var catalog = EmbeddedFormatCatalog.Instance;
+// Register the injectable interface
+services.AddSingleton<IEmbeddedFormatCatalog>(EmbeddedFormatCatalog.Instance);
 
-// Extension → MIME (e.g. for HTTP Content-Type)
-string? GetMimeType(string extension)
-    => catalog.GetByExtension(extension)?.MimeTypes?.FirstOrDefault();
-
-// MIME → canonical extension (e.g. for file download naming)
-string? GetExtension(string mimeType)
-    => catalog.GetByMimeType(mimeType)?.Extensions.FirstOrDefault();
-
-// Examples
-Console.WriteLine(GetMimeType(".png"));          // "image/png"
-Console.WriteLine(GetMimeType(".zip"));          // "application/zip"
-Console.WriteLine(GetExtension("image/png"));    // ".png"
-Console.WriteLine(GetExtension("audio/mpeg"));   // ".mp3"
+// Inject into services
+public class FormatService(IEmbeddedFormatCatalog catalog) { ... }
 ```
 
 ---
 
 ## Features
 
-### Format Detection
-- 675+ embedded `.whfmt` definitions — extension, MIME type, and magic-byte lookup
-- `DetectFromBytes(ReadOnlySpan<byte>)` — zero-alloc magic-byte scoring across all signatures
-- `GetByExtension`, `GetByMimeType`, `GetByCategory` — multiple lookup strategies
-- `GetCompatibleEditorIds` — returns all compatible editor IDs for a given file path
-- 27 categories: Archives, Audio, Images, Game, Documents, Video, System, 3D, and more
+### Core Detection
+- **790+ embedded definitions** (782 `.whfmt` + 10 `.grammar`) — extension, MIME type, and magic-byte lookup
+- `DetectFromBytes(ReadOnlySpan<byte>)` — zero-alloc magic-byte scoring
+- `formatId` field on every entry — stable machine-readable identifier for cross-reference
+- 27 categories: Archives, Audio, Images, Game, Documents, Video, System, 3D, Disk, Crypto, and more
+
+### Utility Layer *(v1.1)*
+- `FormatFileAnalyzer` — one-line file analysis from path / `FileInfo` / `Stream` / bytes, sync and async
+- `FormatMatcher` — scored multi-strategy detection with confidence, ranked top-N candidates
+- `CatalogQuery` — fluent builder: 14 filter methods, 3 ordering modes, 3 terminal operations
+- `FormatMetadataExtensions` — forensic data, AI hints, assertions, bookmarks, inspector groups, export templates, technical details
+- `FormatSummaryBuilder` — one-liner, plain text, Markdown card, diagnostic dump
 
 ### Syntax Highlighting
-- 35 language grammars with `syntaxDefinition` blocks (C#, Python, JS/TS, Go, Rust, Java, Kotlin, Swift, Dart, PHP, Ruby, Lua, SQL, YAML, TOML, Markdown, and more)
+- **57 language grammars** with `syntaxDefinition` blocks — C#, Python, JS/TS, Go, Rust, Java, Kotlin, Swift, YAML, TOML, Markdown, Dockerfile, HCL/Terraform, Nginx, WAT, MSBuild, iCal, vCard, DocBook, and more
 - `GetSyntaxDefinitionJson(resourceKey)` — raw grammar JSON ready for a tokenizer
-- `HasSyntaxDefinition` flag for fast filtering
+- `HasSyntaxDefinition` flag + `.Query().HasSyntaxDefinition()` for fast filtering
 
-### Enum API
-- `FormatCategory` enum — all 27 categories with IntelliSense, no string typos
-- `SchemaName` enum — `Whfmt`, `Whcd`, `Whdbg`, `Whidews`, `Whscd`
-- All enum overloads delegate to string overloads — both variants always available
+### whfmt Schema v2.4
+- `formatId` — stable machine-readable identifier on every definition
+- `SyntaxDefinition` — promoted to first-class property; drives code-editor grammar registration
+- New block types: `group`, `header`, `data` — structural grouping for binary parsers
+- `until` / `maxLength` / `untilInclusive` — sentinel-based field scanning (Boyer-Moore-Horspool)
+- `imports` — cross-format struct references (`$ref` + alias)
+- `forensic`, `aiHints`, `assertions`, `navigation.bookmarks`, `inspector.groups`, `exportTemplates`, `TechnicalDetails` — full rich metadata surface
 
-### Performance
-- Singleton with lazy thread-safe initialization (`LazyInitializer`)
-- Entries backed by `FrozenSet<T>` — O(1) set operations
-- JSON cache — each resource key read once, then served from memory
-- `PreWarm()` — pre-load all JSON on a background thread before first use
+### Quality & Performance
+- `FormatCategory` and `SchemaName` enums — IntelliSense, no string typos
+- Singleton backed by `LazyInitializer` — thread-safe, zero lock contention after init
+- `FrozenSet<T>` — O(1) set operations on the entry index
+- JSON cache — each resource key loaded once, then served from memory
+- `PreWarm()` — absorb startup cost on a background thread
 
 ---
 
-## What's New in 1.0.0
+## Changelog
 
-- **New**: Initial NuGet release — cross-platform `net8.0`.
-- **New**: `FormatCategory` enum — type-safe overload for `GetByCategory()`.
-- **New**: `SchemaName` enum — type-safe overload for `GetSchemaJson()`.
-- **New**: `DetectFromBytes(ReadOnlySpan<byte>)` — magic-byte detection across all 675+ signatures.
-- **New**: `GetByMimeType(string)` — MIME type lookup.
-- **New**: `GetByCategory(string/FormatCategory)` — category browsing.
-- **New**: `GetSchemaJson(string/SchemaName)` — access to 5 embedded JSON schemas.
-- **New**: `MimeTypes` and `Signatures` fields on `EmbeddedFormatEntry`.
+### 1.1.0
+
+#### Catalog
+- **790+ definitions** — 782 `.whfmt` + 10 `.grammar` (up from 675 in v1.0)
+- **57 language grammars** — `syntaxDefinition` blocks added to 22 new formats: Dockerfile, `.env`, Nginx, HCL/Terraform, WAT, MSBuild, SourceMap, WebManifest, CSON, NDJSON, iCal, vCard, DocBook, AbiWord, WML, FODT, FB2, MHT, OpenDoc Flat, Config/INI, RESW, RESX
+- **`formatId`** — stable machine-readable identifier injected into all 788 `.whfmt` files
+- **Schema v2.4** — new block types (`group`, `header`, `data`), `until`/`maxLength`/`untilInclusive` sentinel fields, `imports` array, `SyntaxDefinition` as first-class property; `whfmt.schema.json` updated accordingly
+- **Duplicate cleanup** — removed 7 redundant entries: `Firmware/CPIO`, `Firmware/NRG`, `Firmware/SQUASHFS`, `Game/PATCH_IPS`, `Game/PATCH_UPS`, `Programming/Markdown`, `Programming/TOML`
+- **Tolerant JSON deserialisation** — `FormatRelationshipsConverter` (array→object), `TechnicalDetailsConverter` (string→RawDescription), `BoolFromAnyConverter`, `BlockDefinitionListFromMixedConverter` — all 6 EmbeddedWhfmt_Tests green
+- **`System/JOURNAL`** renamed to `"systemd Journal (Legacy)"` to disambiguate from `SYSTEMD_JOURNAL`
+- **Extensionless formats** — `FAT_BINARY`, `SHEBANG`, `ELF` now declare `extensions: [""]` for consistent catalog lookup
+
+#### Utility Layer (new)
+- **`FormatMatcher`** — stateless scored detection façade: `Match()` (extension + magic bytes + MIME combined), `GetTopMatches()` (ranked top-N), `GetMatchesByExtension()`, `MatchMime()`
+- **`FormatFileAnalyzer`** — zero-boilerplate I/O: accepts `string path`, `FileInfo`, `Stream`, `ReadOnlyMemory<byte>`; full `async` variants; `AnalyzeDirectory()` lazy batch scan
+- **`CatalogQuery`** — fluent builder via `.Query()` on `IEmbeddedFormatCatalog`: 14 filter methods, 3 ordering modes, `.Execute()` / `.First()` / `.Count()`
+- **`FormatMetadataExtensions`** — extension methods on `EmbeddedFormatEntry`: `GetForensicSummary()`, `GetAiHints()`, `GetNavigationBookmarks()`, `GetAssertions()`, `GetInspectorGroups()`, `GetExportTemplates()`, `GetTechnicalDetails()`, `IsHighRisk()`, `SupportsEncryption()`
+- **`FormatSummaryBuilder`** — human-readable output without WPF: `BuildOneLiner()`, `BuildPlainText()`, `BuildMarkdown()`, `BuildDiagnosticDump()`, `FormatHex()`
+- **`FormatMatchResult`** record — `Entry`, `Confidence` (0.0–1.0), `Source`, `RawScore`, `IsConfirmed`
+- **`MatchSource`** flags enum — `Extension`, `MagicBytes`, `MimeType`, `Combined`
+
+#### Documentation
+- Guide expanded with Level 4 (Rich Metadata) section, full utility layer examples, updated `.whfmt` format reference for v2.4 fields
+
+### 1.0.0
+
+- Initial NuGet release — cross-platform `net8.0`
+- `EmbeddedFormatCatalog` singleton: `GetAll`, `GetByExtension`, `GetByMimeType`, `GetByCategory`, `DetectFromBytes`, `GetCompatibleEditorIds`, `GetJson`, `GetSyntaxDefinitionJson`, `GetSchemaJson`, `PreWarm`
+- `FormatCategory` enum — 27 categories with type-safe overload
+- `SchemaName` enum — 5 embedded JSON schemas
+- 675 `.whfmt` definitions + 35 language grammars
 
 ---
 
@@ -262,8 +472,8 @@ Both bundled inside the package — zero external NuGet dependencies:
 
 | Assembly | Purpose |
 |---|---|
-| WpfHexEditor.Core.Definitions | `EmbeddedFormatCatalog` singleton + 675+ embedded `.whfmt` definitions |
-| WpfHexEditor.Core.Contracts | `IEmbeddedFormatCatalog`, `EmbeddedFormatEntry`, `FormatCategory`, `SchemaName` |
+| WpfHexEditor.Core.Definitions | `EmbeddedFormatCatalog` + utility layer + 790+ embedded definitions (782 `.whfmt` + 10 `.grammar`) |
+| WpfHexEditor.Core.Contracts | `IEmbeddedFormatCatalog`, `EmbeddedFormatEntry`, `FormatMatchResult`, `MatchSource`, `FormatCategory`, `SchemaName` |
 
 ---
 
