@@ -1437,6 +1437,17 @@ public partial class MainWindow
             {
                 var di = _layout?.FindItemByContentId(contentId);
                 if (di?.Owner is { } owner) { owner.ActiveItem = di; DockHost.RebuildVisualTree(); }
+            },
+            layoutFilePathsProvider: () =>
+            {
+                // Return file paths from ALL layout items including lazy (never-activated) tabs.
+                // DocumentManager.OpenDocuments only contains materialized (activated) tabs.
+                if (_layout == null) return Array.Empty<string>();
+                return _layout.GetAllItems()
+                    .Where(i => i.Metadata.TryGetValue("FilePath", out var fp) && !string.IsNullOrEmpty(fp))
+                    .Select(i => i.Metadata["FilePath"])
+                    .Distinct(StringComparer.OrdinalIgnoreCase)
+                    .ToList();
             });
 
         args = new MainWindowServiceArgs(

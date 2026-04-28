@@ -276,6 +276,20 @@ namespace WpfHexEditor.Core.Services.FormatParsing
             }
         }
 
+        /// <summary>
+        /// Load pre-compiled format definitions directly into the internal FormatDetectionService.
+        /// Use this overload when the catalog is already loaded (e.g. from IFormatCatalogService)
+        /// to avoid re-parsing JSON.
+        /// </summary>
+        public void LoadFormats(IEnumerable<FormatDefinition> formats)
+        {
+            foreach (var fmt in formats)
+            {
+                if (fmt != null)
+                    _detectionService.AddFormatDefinition(fmt);
+            }
+        }
+
         /// <summary>Number of format definitions currently loaded.</summary>
         public int LoadedFormatCount => _detectionService.GetFormatCount();
 

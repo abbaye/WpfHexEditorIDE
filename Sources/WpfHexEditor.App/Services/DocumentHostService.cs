@@ -36,6 +36,7 @@ public sealed class DocumentHostService : IDocumentHostService
     private readonly IDocumentManager _documentManager;
     private readonly Func<string, string?, Task> _openFileHandler;
     private readonly Action<string>? _activateTabHandler;
+    private readonly Func<IReadOnlyList<string>>? _layoutFilePathsProvider;
 
     // Pending navigations: FilePath → (line, column)
     // Set when ActivateAndNavigateTo is called for a file that is not yet open
@@ -53,11 +54,13 @@ public sealed class DocumentHostService : IDocumentHostService
     public DocumentHostService(
         IDocumentManager documentManager,
         Func<string, string?, Task> openFileHandler,
-        Action<string>? activateTabHandler = null)
+        Action<string>? activateTabHandler = null,
+        Func<IReadOnlyList<string>>? layoutFilePathsProvider = null)
     {
-        _documentManager    = documentManager ?? throw new ArgumentNullException(nameof(documentManager));
-        _openFileHandler    = openFileHandler  ?? throw new ArgumentNullException(nameof(openFileHandler));
-        _activateTabHandler = activateTabHandler;
+        _documentManager         = documentManager ?? throw new ArgumentNullException(nameof(documentManager));
+        _openFileHandler         = openFileHandler  ?? throw new ArgumentNullException(nameof(openFileHandler));
+        _activateTabHandler      = activateTabHandler;
+        _layoutFilePathsProvider = layoutFilePathsProvider;
 
         // When a document becomes active, apply any pending navigation for that file.
         _documentManager.ActiveDocumentChanged += OnActiveDocumentChanged;
@@ -66,6 +69,10 @@ public sealed class DocumentHostService : IDocumentHostService
     // -- IDocumentHostService : State -------------------------------------
 
     public IDocumentManager Documents => _documentManager;
+
+    /// <inheritdoc/>
+    public IReadOnlyList<string> GetAllLayoutFilePaths()
+        => _layoutFilePathsProvider?.Invoke() ?? Array.Empty<string>();
 
     // -- IDocumentHostService : Operations --------------------------------
 
