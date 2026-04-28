@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="EnvGeneral_AppearanceSection" xml:space="preserve"><value>APPARENCE</value></data>
+  <data name="EnvGeneral_ColorThemeLabel" xml:space="preserve"><value>Thème de couleur :</value></data>
+  <data name="EnvGeneral_ThemePreviewNote" xml:space="preserve"><value>L'aperçu est appliqué immédiatement.</value></data>
+  <data name="EnvGeneral_LanguageSection" xml:space="preserve"><value>LANGUE</value></data>
+  <data name="EnvGeneral_IdeLanguageLabel" xml:space="preserve"><value>Langue de l'IDE :</value></data>
+  <data name="EnvGeneral_LanguageRestartNote" xml:space="preserve"><value>Un redémarrage est requis pour appliquer complètement la nouvelle langue.</value></data>
+</root>

@@ -20,6 +20,7 @@
     <!-- Core.ProjectSystem expose LanguageRegistry, LanguageDefinition,
          ISyntaxColoringService et FormattingPreviewSample — suffisant pour le preview. -->
     <ProjectReference Include="..\..\Core\WpfHexEditor.Core.ProjectSystem\WpfHexEditor.Core.ProjectSystem.csproj" />
+    <ProjectReference Include="..\..\Core\WpfHexEditor.Core.Localization\WpfHexEditor.Core.Localization.csproj" PrivateAssets="all" />
   </ItemGroup>
 
 </Project>

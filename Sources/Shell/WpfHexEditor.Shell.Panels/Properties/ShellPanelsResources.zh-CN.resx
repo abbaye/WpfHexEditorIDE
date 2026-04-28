@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="BookmarksPanel_RefreshToolTip" xml:space="preserve"><value>刷新书签</value></data>
+  <data name="BookmarksPanel_ClearAllToolTip" xml:space="preserve"><value>清除所有书签</value></data>
+  <data name="BookmarksPanel_EmptyCount" xml:space="preserve"><value>0 个书签</value></data>
+  <data name="BookmarksPanel_OffsetHeader" xml:space="preserve"><value>偏移量</value></data>
+  <data name="BookmarksPanel_DescriptionHeader" xml:space="preserve"><value>说明</value></data>
+  <data name="BookmarksPanel_CategoryHeader" xml:space="preserve"><value>类别</value></data>
+  <data name="BookmarksPanel_EmptyMessage" xml:space="preserve"><value>无书签。按 Ctrl+F2 在活动编辑器中切换书签。</value></data>
+  <data name="ErrorPanel_ScopeEntireSolution" xml:space="preserve"><value>整个解决方案</value></data>
+  <data name="ErrorPanel_ScopeCurrentProject" xml:space="preserve"><value>当前项目</value></data>
+  <data name="ErrorPanel_ScopeCurrentDocument" xml:space="preserve"><value>当前文档</value></data>
+  <data name="ErrorPanel_ScopeOpenDocuments" xml:space="preserve"><value>打开的文档</value></data>
+  <data name="ErrorPanel_ScopeChangedDocuments" xml:space="preserve"><value>已更改的文档</value></data>
+  <data name="ErrorPanel_OverflowButtonToolTip" xml:space="preserve"><value>更多选项</value></data>
+  <data name="ErrorPanel_ShowErrorsMenu" xml:space="preserve"><value>显示错误</value></data>
+  <data name="ErrorPanel_ShowWarningsMenu" xml:space="preserve"><value>显示警告</value></data>
+  <data name="ErrorPanel_ShowMessagesMenu" xml:space="preserve"><value>显示消息</value></data>
+  <data name="ErrorPanel_SearchPlaceholder" xml:space="preserve"><value>搜索...</value></data>
+  <data name="ErrorPanel_ErrorToggleToolTip" xml:space="preserve"><value>显示/隐藏错误</value></data>
+  <data name="ErrorPanel_ErrorCountText" xml:space="preserve"><value>0 个错误</value></data>
+  <data name="ErrorPanel_WarningToggleToolTip" xml:space="preserve"><value>显示/隐藏警告</value></data>
+  <data name="ErrorPanel_WarningCountText" xml:space="preserve"><value>0 个警告</value></data>
+  <data name="ErrorPanel_MessageToggleToolTip" xml:space="preserve"><value>显示/隐藏消息</value></data>
+  <data name="ErrorPanel_MessageCountText" xml:space="preserve"><value>0 条消息</value></data>
+  <data name="ErrorPanel_CodeHeader" xml:space="preserve"><value>代码</value></data>
+  <data name="ErrorPanel_DescriptionHeader" xml:space="preserve"><value>说明</value></data>
+  <data name="ErrorPanel_ProjectHeader" xml:space="preserve"><value>项目</value></data>
+  <data name="ErrorPanel_FileHeader" xml:space="preserve"><value>文件</value></data>
+  <data name="ErrorPanel_OffsetHeader" xml:space="preserve"><value>偏移量</value></data>
+  <data name="ErrorPanel_LineColHeader" xml:space="preserve"><value>行:列</value></data>
+  <data name="PropertiesPanel_ContextLabel" xml:space="preserve"><value>属性</value></data>
+  <data name="PropertiesPanel_RefreshToolTip" xml:space="preserve"><value>刷新属性</value></data>
+  <data name="PropertiesPanel_OverflowToolTip" xml:space="preserve"><value>更多选项</value></data>
+  <data name="PropertiesPanel_SortAlphabetically" xml:space="preserve"><value>按字母顺序排序</value></data>
+  <data name="PropertiesPanel_CopyValue" xml:space="preserve"><value>复制值</value></data>
+  <data name="PropertiesPanel_SortToggleToolTip" xml:space="preserve"><value>按字母顺序对属性排序</value></data>
+  <data name="PropertiesPanel_CopyButtonToolTip" xml:space="preserve"><value>复制所选属性的值</value></data>
+  <data name="PropertiesPanel_SearchPlaceholder" xml:space="preserve"><value>筛选属性…</value></data>
+  <data name="PropertiesPanel_OpenFolderToolTip" xml:space="preserve"><value>在资源管理器中打开所在文件夹</value></data>
+  <data name="PropertiesPanel_ThicknessLeft" xml:space="preserve"><value>左</value></data>
+  <data name="PropertiesPanel_ThicknessTop" xml:space="preserve"><value>上</value></data>
+  <data name="PropertiesPanel_ThicknessRight" xml:space="preserve"><value>右</value></data>
+  <data name="PropertiesPanel_ThicknessBottom" xml:space="preserve"><value>下</value></data>
+  <data name="PropertiesPanel_ThicknessLLabel" xml:space="preserve"><value>左</value></data>
+  <data name="PropertiesPanel_ThicknessTLabel" xml:space="preserve"><value>上</value></data>
+  <data name="PropertiesPanel_ThicknessRLabel" xml:space="preserve"><value>右</value></data>
+  <data name="PropertiesPanel_ThicknessBLabel" xml:space="preserve"><value>下</value></data>
+  <data name="PropertiesPanel_ContextMenu_CopyValue" xml:space="preserve"><value>复制值</value></data>
+  <data name="PropertiesPanel_ContextMenu_CopyName" xml:space="preserve"><value>复制名称</value></data>
+  <data name="PropertiesPanel_ResetToDefaultToolTip" xml:space="preserve"><value>重置为默认值</value></data>
+  <data name="SolutionExplorer_ShowAllFilesToolTip" xml:space="preserve"><value>显示所有文件</value></data>
+  <data name="SolutionExplorer_CollapseAllToolTip" xml:space="preserve"><value>全部折叠</value></data>
+  <data name="SolutionExplorer_SyncWithActiveDocToolTip" xml:space="preserve"><value>与活动文档同步</value></data>
+  <data name="SolutionExplorer_RefreshToolTip" xml:space="preserve"><value>刷新</value></data>
+  <data name="SolutionExplorer_SortToolTip" xml:space="preserve"><value>排序</value></data>
+  <data name="SolutionExplorer_SortNone" xml:space="preserve"><value>无</value></data>
+  <data name="SolutionExplorer_SortName" xml:space="preserve"><value>名称</value></data>
+  <data name="SolutionExplorer_SortType" xml:space="preserve"><value>类型</value></data>
+  <data name="SolutionExplorer_SortDateModified" xml:space="preserve"><value>修改日期</value></data>
+  <data name="SolutionExplorer_SortSize" xml:space="preserve"><value>大小</value></data>
+  <data name="SolutionExplorer_FilterToolTip" xml:space="preserve"><value>筛选</value></data>
+  <data name="SolutionExplorer_FilterAll" xml:space="preserve"><value>全部</value></data>
+  <data name="SolutionExplorer_FilterBinary" xml:space="preserve"><value>二进制</value></data>
+  <data name="SolutionExplorer_FilterText" xml:space="preserve"><value>文本</value></data>
+  <data name="SolutionExplorer_FilterImages" xml:space="preserve"><value>图像</value></data>
+  <data name="SolutionExplorer_FilterLanguage" xml:space="preserve"><value>语言</value></data>
+  <data name="SolutionExplorer_SearchPlaceholder" xml:space="preserve"><value>搜索解决方案资源管理器 (Ctrl+;)</value></data>
+  <data name="SolutionExplorer_SearchModeFileName" xml:space="preserve"><value>文件名</value></data>
+  <data name="SolutionExplorer_SearchModeNameContent" xml:space="preserve"><value>名称 + 内容</value></data>
+  <data name="SolutionExplorer_SearchModeContentOnly" xml:space="preserve"><value>仅内容</value></data>
+  <data name="SolutionExplorer_SearchModeRegex" xml:space="preserve"><value>正则表达式（文件名）</value></data>
+  <data name="SolutionExplorer_SolutionFolderTooltip" xml:space="preserve"><value>解决方案文件夹（逻辑）</value></data>
+  <data name="SolutionExplorer_PhysicalFolderTooltip" xml:space="preserve"><value>物理文件夹</value></data>
+  <data name="SolutionExplorer_PropertiesFolderTooltip" xml:space="preserve"><value>属性文件夹</value></data>
+  <data name="SolutionExplorer_BuildDirtyIndicator" xml:space="preserve"><value>项目自上次生成后有更改（Ctrl+Alt+F7 生成）</value></data>
+  <data name="SolutionExplorer_UnsavedModifications" xml:space="preserve"><value>未保存的修改</value></data>
+  <data name="SolutionExplorer_ExternalFileIndicator" xml:space="preserve"><value>文件位于项目目录外</value></data>
+  <data name="SolutionExplorer_ExternalModIndicator" xml:space="preserve"><value>已在外部修改 — 建议重新加载</value></data>
+  <data name="SolutionExplorer_LoadingIndicator" xml:space="preserve"><value>正在加载…</value></data>
+  <data name="SolutionExplorer_GoToDefinition" xml:space="preserve"><value>转到定义</value></data>
+  <data name="SolutionExplorer_Open" xml:space="preserve"><value>打开</value></data>
+  <data name="SolutionExplorer_OpenWith" xml:space="preserve"><value>打开方式</value></data>
+  <data name="SolutionExplorer_OpenWithHexEditor" xml:space="preserve"><value>十六进制编辑器</value></data>
+  <data name="SolutionExplorer_Add" xml:space="preserve"><value>添加</value></data>
+  <data name="SolutionExplorer_AddNewItem" xml:space="preserve"><value>添加新项...</value></data>
+  <data name="SolutionExplorer_AddExistingItem" xml:space="preserve"><value>添加现有项...</value></data>
+  <data name="SolutionExplorer_ImportFormat" xml:space="preserve"><value>导入内置格式...</value></data>
+  <data name="SolutionExplorer_ImportSyntax" xml:space="preserve"><value>导入内置语法...</value></data>
+  <data name="SolutionExplorer_NewFolder" xml:space="preserve"><value>新建文件夹</value></data>
+  <data name="SolutionExplorer_NewSolutionFolder" xml:space="preserve"><value>新建解决方案文件夹</value></data>
+  <data name="SolutionExplorer_AddExistingFolder" xml:space="preserve"><value>添加现有文件夹...</value></data>
+  <data name="SolutionExplorer_IncludeInProject" xml:space="preserve"><value>包含在项目中</value></data>
+  <data name="SolutionExplorer_SetDefaultTbl" xml:space="preserve"><value>设为默认 TBL</value></data>
+  <data name="SolutionExplorer_ClearDefaultTbl" xml:space="preserve"><value>清除默认 TBL</value></data>
+  <data name="SolutionExplorer_ConvertToTblx" xml:space="preserve"><value>转换为 TBLX...</value></data>
+  <data name="SolutionExplorer_ApplyTblToActive" xml:space="preserve"><value>应用到活动文档</value></data>
+  <data name="SolutionExplorer_ApplyTblToAll" xml:space="preserve"><value>应用到所有文档</value></data>
+  <data name="SolutionExplorer_OpenInExplorer" xml:space="preserve"><value>在文件资源管理器中打开</value></data>
+  <data name="SolutionExplorer_CopyPath" xml:space="preserve"><value>复制路径</value></data>
+  <data name="SolutionExplorer_Copy" xml:space="preserve"><value>复制</value></data>
+  <data name="SolutionExplorer_Cut" xml:space="preserve"><value>剪切</value></data>
+  <data name="SolutionExplorer_Paste" xml:space="preserve"><value>粘贴</value></data>
+  <data name="SolutionExplorer_Rename" xml:space="preserve"><value>重命名</value></data>
+  <data name="SolutionExplorer_RemoveFromProject" xml:space="preserve"><value>从项目中移除</value></data>
+  <data name="SolutionExplorer_Delete" xml:space="preserve"><value>删除</value></data>
+  <data name="SolutionExplorer_ExcludeFromProject" xml:space="preserve"><value>从项目中排除</value></data>
+  <data name="SolutionExplorer_ImportIntoProject" xml:space="preserve"><value>导入到项目...</value></data>
+  <data name="SolutionExplorer_ApplyToDisk" xml:space="preserve"><value>应用到磁盘</value></data>
+  <data name="SolutionExplorer_DiscardChanges" xml:space="preserve"><value>放弃更改</value></data>
+  <data name="SolutionExplorer_Build" xml:space="preserve"><value>生成</value></data>
+  <data name="SolutionExplorer_Rebuild" xml:space="preserve"><value>重新生成</value></data>
+  <data name="SolutionExplorer_Clean" xml:space="preserve"><value>清理</value></data>
+  <data name="SolutionExplorer_SetAsStartup" xml:space="preserve"><value>设为启动项目</value></data>
+  <data name="SolutionExplorer_AddReference" xml:space="preserve"><value>添加引用…</value></data>
+  <data name="SolutionExplorer_RemoveUnusedReferences" xml:space="preserve"><value>删除未使用的引用…</value></data>
+  <data name="SolutionExplorer_ManageNugetPackages" xml:space="preserve"><value>管理 NuGet 包…</value></data>
+  <data name="SolutionExplorer_ManageNugetPackagesSolution" xml:space="preserve"><value>管理解决方案的 NuGet 包…</value></data>
+  <data name="SolutionExplorer_Properties" xml:space="preserve"><value>属性</value></data>
+  <data name="SolutionExplorer_SaveAll" xml:space="preserve"><value>全部保存</value></data>
+  <data name="SolutionExplorer_CloseSolution" xml:space="preserve"><value>关闭解决方案</value></data>
+  <data name="WhfmtBrowser_LoadFailureIndicator" xml:space="preserve"><value>一个或多个格式加载失败</value></data>
+  <data name="WhfmtBrowser_OpenInEditorToolTip" xml:space="preserve"><value>在结构编辑器中打开</value></data>
+  <data name="WhfmtBrowser_ExportToFileToolTip" xml:space="preserve"><value>导出到文件…</value></data>
+  <data name="WhfmtBrowser_ViewJsonToolTip" xml:space="preserve"><value>查看 JSON</value></data>
+  <data name="WhfmtBrowser_Open" xml:space="preserve"><value>打开</value></data>
+  <data name="WhfmtBrowser_OpenReadOnly" xml:space="preserve"><value>以只读方式打开</value></data>
+  <data name="WhfmtBrowser_ExportToFile" xml:space="preserve"><value>导出到文件…</value></data>
+  <data name="WhfmtBrowser_ViewJson" xml:space="preserve"><value>查看 JSON</value></data>
+  <data name="WhfmtBrowser_CopyPath" xml:space="preserve"><value>复制路径</value></data>
+  <data name="WhfmtBrowser_Delete" xml:space="preserve"><value>删除</value></data>
+  <data name="WhfmtBrowser_RevealInExplorer" xml:space="preserve"><value>在资源管理器中显示</value></data>
+  <data name="WhfmtBrowser_DuplicateFormat" xml:space="preserve"><value>复制格式…</value></data>
+  <data name="WhfmtBrowser_EditInCodeEditor" xml:space="preserve"><value>在代码编辑器中编辑</value></data>
+  <data name="WhfmtCatalog_NameHeader" xml:space="preserve"><value>名称</value></data>
+  <data name="WhfmtCatalog_CategoryHeader" xml:space="preserve"><value>类别</value></data>
+  <data name="WhfmtCatalog_ExtensionsHeader" xml:space="preserve"><value>扩展名</value></data>
+  <data name="WhfmtCatalog_VersionHeader" xml:space="preserve"><value>版本</value></data>
+  <data name="WhfmtCatalog_QualityHeader" xml:space="preserve"><value>质量</value></data>
+  <data name="WhfmtCatalog_AuthorHeader" xml:space="preserve"><value>作者</value></data>
+  <data name="WhfmtCatalog_SourceHeader" xml:space="preserve"><value>来源</value></data>
+  <data name="WhfmtCatalog_Open" xml:space="preserve"><value>打开</value></data>
+  <data name="WhfmtCatalog_OpenReadOnly" xml:space="preserve"><value>以只读方式打开</value></data>
+  <data name="WhfmtCatalog_ExportToFile" xml:space="preserve"><value>导出到文件…</value></data>
+  <data name="WhfmtCatalog_ViewJson" xml:space="preserve"><value>查看 JSON</value></data>
+  <data name="WhfmtCatalog_RevealInExplorer" xml:space="preserve"><value>在资源管理器中显示</value></data>
+  <data name="WhfmtCatalog_ErrorText" xml:space="preserve"><value> 错误</value></data>
+  <data name="WhfmtDetail_EmptyPlaceholder" xml:space="preserve"><value>选择一种格式以查看详细信息。</value></data>
+  <data name="WhfmtDetail_OpenInEditorToolTip" xml:space="preserve"><value>在结构编辑器中打开</value></data>
+  <data name="WhfmtDetail_ExportToFileToolTip" xml:space="preserve"><value>导出到文件…</value></data>
+  <data name="WhfmtDetail_ViewRawJsonToolTip" xml:space="preserve"><value>查看原始 JSON</value></data>
+  <data name="WhfmtDetail_RetryLoadToolTip" xml:space="preserve"><value>重试加载此格式</value></data>
+  <data name="WhfmtDetail_ExcludeFromCatalogToolTip" xml:space="preserve"><value>从目录中排除此格式</value></data>
+  <data name="WhfmtDetail_FormatLoadedSuccessfully" xml:space="preserve"><value>格式加载成功</value></data>
+  <data name="WhfmtDetail_FormatLoadFailed" xml:space="preserve"><value>格式加载失败</value></data>
+  <data name="WhfmtDetail_OverviewTab" xml:space="preserve"><value>概述</value></data>
+  <data name="WhfmtDetail_VersionLabel" xml:space="preserve"><value>版本</value></data>
+  <data name="WhfmtDetail_AuthorLabel" xml:space="preserve"><value>作者</value></data>
+  <data name="WhfmtDetail_CategoryLabel" xml:space="preserve"><value>类别</value></data>
+  <data name="WhfmtDetail_PlatformLabel" xml:space="preserve"><value>平台</value></data>
+  <data name="WhfmtDetail_EditorLabel" xml:space="preserve"><value>编辑器</value></data>
+  <data name="WhfmtDetail_DiffLabel" xml:space="preserve"><value>差异</value></data>
+  <data name="WhfmtDetail_StatusLabel" xml:space="preserve"><value>状态</value></data>
+  <data name="WhfmtDetail_ExtensionsLabel" xml:space="preserve"><value>扩展名</value></data>
+  <data name="WhfmtDetail_QualityScoreLabel" xml:space="preserve"><value>质量分数</value></data>
+  <data name="WhfmtDetail_DetectionLabel" xml:space="preserve"><value>检测</value></data>
+  <data name="WhfmtDetail_BlocksLabel" xml:space="preserve"><value>块</value></data>
+  <data name="WhfmtDetail_LoadErrorTitle" xml:space="preserve"><value>加载错误</value></data>
+  <data name="WhfmtDetail_ReferencesTab" xml:space="preserve"><value>引用</value></data>
+  <data name="WhfmtDetail_SpecificationsLabel" xml:space="preserve"><value>规范</value></data>
+  <data name="WhfmtDetail_WebLinksLabel" xml:space="preserve"><value>Web 链接</value></data>
+  <data name="WhfmtDetail_AssertionsTab" xml:space="preserve"><value>断言</value></data>
+  <data name="WhfmtDetail_AIHintsTab" xml:space="preserve"><value>AI 提示</value></data>
+  <data name="WhfmtDetail_AnalysisContextLabel" xml:space="preserve"><value>分析上下文</value></data>
+  <data name="WhfmtDetail_KnownVulnerabilitiesLabel" xml:space="preserve"><value>已知漏洞</value></data>
+  <data name="WhfmtDetail_JsonTab" xml:space="preserve"><value>JSON</value></data>
+</root>

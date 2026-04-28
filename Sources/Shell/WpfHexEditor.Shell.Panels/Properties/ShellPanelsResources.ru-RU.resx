@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="BookmarksPanel_RefreshToolTip" xml:space="preserve"><value>Обновить закладки</value></data>
+  <data name="BookmarksPanel_ClearAllToolTip" xml:space="preserve"><value>Очистить все закладки</value></data>
+  <data name="BookmarksPanel_EmptyCount" xml:space="preserve"><value>0 закладок</value></data>
+  <data name="BookmarksPanel_OffsetHeader" xml:space="preserve"><value>Смещение</value></data>
+  <data name="BookmarksPanel_DescriptionHeader" xml:space="preserve"><value>Описание</value></data>
+  <data name="BookmarksPanel_CategoryHeader" xml:space="preserve"><value>Категория</value></data>
+  <data name="BookmarksPanel_EmptyMessage" xml:space="preserve"><value>Нет закладок. Нажмите Ctrl+F2, чтобы переключить закладку в активном редакторе.</value></data>
+  <data name="ErrorPanel_ScopeEntireSolution" xml:space="preserve"><value>Всё решение</value></data>
+  <data name="ErrorPanel_ScopeCurrentProject" xml:space="preserve"><value>Текущий проект</value></data>
+  <data name="ErrorPanel_ScopeCurrentDocument" xml:space="preserve"><value>Текущий документ</value></data>
+  <data name="ErrorPanel_ScopeOpenDocuments" xml:space="preserve"><value>Открытые документы</value></data>
+  <data name="ErrorPanel_ScopeChangedDocuments" xml:space="preserve"><value>Изменённые документы</value></data>
+  <data name="ErrorPanel_OverflowButtonToolTip" xml:space="preserve"><value>Другие параметры</value></data>
+  <data name="ErrorPanel_ShowErrorsMenu" xml:space="preserve"><value>Показать ошибки</value></data>
+  <data name="ErrorPanel_ShowWarningsMenu" xml:space="preserve"><value>Показать предупреждения</value></data>
+  <data name="ErrorPanel_ShowMessagesMenu" xml:space="preserve"><value>Показать сообщения</value></data>
+  <data name="ErrorPanel_SearchPlaceholder" xml:space="preserve"><value>Поиск...</value></data>
+  <data name="ErrorPanel_ErrorToggleToolTip" xml:space="preserve"><value>Показать/скрыть ошибки</value></data>
+  <data name="ErrorPanel_ErrorCountText" xml:space="preserve"><value>0 ошибок</value></data>
+  <data name="ErrorPanel_WarningToggleToolTip" xml:space="preserve"><value>Показать/скрыть предупреждения</value></data>
+  <data name="ErrorPanel_WarningCountText" xml:space="preserve"><value>0 предупреждений</value></data>
+  <data name="ErrorPanel_MessageToggleToolTip" xml:space="preserve"><value>Показать/скрыть сообщения</value></data>
+  <data name="ErrorPanel_MessageCountText" xml:space="preserve"><value>0 сообщений</value></data>
+  <data name="ErrorPanel_CodeHeader" xml:space="preserve"><value>Код</value></data>
+  <data name="ErrorPanel_DescriptionHeader" xml:space="preserve"><value>Описание</value></data>
+  <data name="ErrorPanel_ProjectHeader" xml:space="preserve"><value>Проект</value></data>
+  <data name="ErrorPanel_FileHeader" xml:space="preserve"><value>Файл</value></data>
+  <data name="ErrorPanel_OffsetHeader" xml:space="preserve"><value>Смещение</value></data>
+  <data name="ErrorPanel_LineColHeader" xml:space="preserve"><value>Строка:Столб</value></data>
+  <data name="PropertiesPanel_ContextLabel" xml:space="preserve"><value>Свойства</value></data>
+  <data name="PropertiesPanel_RefreshToolTip" xml:space="preserve"><value>Обновить свойства</value></data>
+  <data name="PropertiesPanel_OverflowToolTip" xml:space="preserve"><value>Другие параметры</value></data>
+  <data name="PropertiesPanel_SortAlphabetically" xml:space="preserve"><value>Сортировать по алфавиту</value></data>
+  <data name="PropertiesPanel_CopyValue" xml:space="preserve"><value>Копировать значение</value></data>
+  <data name="PropertiesPanel_SortToggleToolTip" xml:space="preserve"><value>Сортировать свойства по алфавиту</value></data>
+  <data name="PropertiesPanel_CopyButtonToolTip" xml:space="preserve"><value>Копировать значение выбранного свойства</value></data>
+  <data name="PropertiesPanel_SearchPlaceholder" xml:space="preserve"><value>Фильтровать свойства…</value></data>
+  <data name="PropertiesPanel_OpenFolderToolTip" xml:space="preserve"><value>Открыть содержащую папку в Проводнике</value></data>
+  <data name="PropertiesPanel_ThicknessLeft" xml:space="preserve"><value>Левый</value></data>
+  <data name="PropertiesPanel_ThicknessTop" xml:space="preserve"><value>Верхний</value></data>
+  <data name="PropertiesPanel_ThicknessRight" xml:space="preserve"><value>Правый</value></data>
+  <data name="PropertiesPanel_ThicknessBottom" xml:space="preserve"><value>Нижний</value></data>
+  <data name="PropertiesPanel_ThicknessLLabel" xml:space="preserve"><value>Л</value></data>
+  <data name="PropertiesPanel_ThicknessTLabel" xml:space="preserve"><value>В</value></data>
+  <data name="PropertiesPanel_ThicknessRLabel" xml:space="preserve"><value>П</value></data>
+  <data name="PropertiesPanel_ThicknessBLabel" xml:space="preserve"><value>Н</value></data>
+  <data name="PropertiesPanel_ContextMenu_CopyValue" xml:space="preserve"><value>Копировать значение</value></data>
+  <data name="PropertiesPanel_ContextMenu_CopyName" xml:space="preserve"><value>Копировать имя</value></data>
+  <data name="PropertiesPanel_ResetToDefaultToolTip" xml:space="preserve"><value>Сбросить до значения по умолчанию</value></data>
+  <data name="SolutionExplorer_ShowAllFilesToolTip" xml:space="preserve"><value>Показать все файлы</value></data>
+  <data name="SolutionExplorer_CollapseAllToolTip" xml:space="preserve"><value>Свернуть всё</value></data>
+  <data name="SolutionExplorer_SyncWithActiveDocToolTip" xml:space="preserve"><value>Синхронизировать с активным документом</value></data>
+  <data name="SolutionExplorer_RefreshToolTip" xml:space="preserve"><value>Обновить</value></data>
+  <data name="SolutionExplorer_SortToolTip" xml:space="preserve"><value>Сортировать</value></data>
+  <data name="SolutionExplorer_SortNone" xml:space="preserve"><value>Нет</value></data>
+  <data name="SolutionExplorer_SortName" xml:space="preserve"><value>Имя</value></data>
+  <data name="SolutionExplorer_SortType" xml:space="preserve"><value>Тип</value></data>
+  <data name="SolutionExplorer_SortDateModified" xml:space="preserve"><value>Дата изменения</value></data>
+  <data name="SolutionExplorer_SortSize" xml:space="preserve"><value>Размер</value></data>
+  <data name="SolutionExplorer_FilterToolTip" xml:space="preserve"><value>Фильтровать</value></data>
+  <data name="SolutionExplorer_FilterAll" xml:space="preserve"><value>Все</value></data>
+  <data name="SolutionExplorer_FilterBinary" xml:space="preserve"><value>Двоичные</value></data>
+  <data name="SolutionExplorer_FilterText" xml:space="preserve"><value>Текст</value></data>
+  <data name="SolutionExplorer_FilterImages" xml:space="preserve"><value>Изображения</value></data>
+  <data name="SolutionExplorer_FilterLanguage" xml:space="preserve"><value>Язык</value></data>
+  <data name="SolutionExplorer_SearchPlaceholder" xml:space="preserve"><value>Поиск в обозревателе решений (Ctrl+;)</value></data>
+  <data name="SolutionExplorer_SearchModeFileName" xml:space="preserve"><value>Имя файла</value></data>
+  <data name="SolutionExplorer_SearchModeNameContent" xml:space="preserve"><value>Имя + Содержимое</value></data>
+  <data name="SolutionExplorer_SearchModeContentOnly" xml:space="preserve"><value>Только содержимое</value></data>
+  <data name="SolutionExplorer_SearchModeRegex" xml:space="preserve"><value>Regex (имя файла)</value></data>
+  <data name="SolutionExplorer_SolutionFolderTooltip" xml:space="preserve"><value>Папка решения (логическая)</value></data>
+  <data name="SolutionExplorer_PhysicalFolderTooltip" xml:space="preserve"><value>Физическая папка</value></data>
+  <data name="SolutionExplorer_PropertiesFolderTooltip" xml:space="preserve"><value>Папка свойств</value></data>
+  <data name="SolutionExplorer_BuildDirtyIndicator" xml:space="preserve"><value>Проект имеет изменения с момента последней сборки (Ctrl+Alt+F7 для сборки)</value></data>
+  <data name="SolutionExplorer_UnsavedModifications" xml:space="preserve"><value>Несохранённые изменения</value></data>
+  <data name="SolutionExplorer_ExternalFileIndicator" xml:space="preserve"><value>Файл находится за пределами каталога проекта</value></data>
+  <data name="SolutionExplorer_ExternalModIndicator" xml:space="preserve"><value>Изменён извне — рекомендуется перезагрузить</value></data>
+  <data name="SolutionExplorer_LoadingIndicator" xml:space="preserve"><value>Загрузка…</value></data>
+  <data name="SolutionExplorer_GoToDefinition" xml:space="preserve"><value>Перейти к определению</value></data>
+  <data name="SolutionExplorer_Open" xml:space="preserve"><value>Открыть</value></data>
+  <data name="SolutionExplorer_OpenWith" xml:space="preserve"><value>Открыть с помощью</value></data>
+  <data name="SolutionExplorer_OpenWithHexEditor" xml:space="preserve"><value>Шестнадцатеричный редактор</value></data>
+  <data name="SolutionExplorer_Add" xml:space="preserve"><value>Добавить</value></data>
+  <data name="SolutionExplorer_AddNewItem" xml:space="preserve"><value>Добавить новый элемент...</value></data>
+  <data name="SolutionExplorer_AddExistingItem" xml:space="preserve"><value>Добавить существующий элемент...</value></data>
+  <data name="SolutionExplorer_ImportFormat" xml:space="preserve"><value>Импортировать встроенный формат...</value></data>
+  <data name="SolutionExplorer_ImportSyntax" xml:space="preserve"><value>Импортировать встроенный синтаксис...</value></data>
+  <data name="SolutionExplorer_NewFolder" xml:space="preserve"><value>Новая папка</value></data>
+  <data name="SolutionExplorer_NewSolutionFolder" xml:space="preserve"><value>Новая папка решения</value></data>
+  <data name="SolutionExplorer_AddExistingFolder" xml:space="preserve"><value>Добавить существующую папку...</value></data>
+  <data name="SolutionExplorer_IncludeInProject" xml:space="preserve"><value>Включить в проект</value></data>
+  <data name="SolutionExplorer_SetDefaultTbl" xml:space="preserve"><value>Установить как TBL по умолчанию</value></data>
+  <data name="SolutionExplorer_ClearDefaultTbl" xml:space="preserve"><value>Очистить TBL по умолчанию</value></data>
+  <data name="SolutionExplorer_ConvertToTblx" xml:space="preserve"><value>Преобразовать в TBLX...</value></data>
+  <data name="SolutionExplorer_ApplyTblToActive" xml:space="preserve"><value>Применить к активному документу</value></data>
+  <data name="SolutionExplorer_ApplyTblToAll" xml:space="preserve"><value>Применить ко всем документам</value></data>
+  <data name="SolutionExplorer_OpenInExplorer" xml:space="preserve"><value>Открыть в Проводнике</value></data>
+  <data name="SolutionExplorer_CopyPath" xml:space="preserve"><value>Копировать путь</value></data>
+  <data name="SolutionExplorer_Copy" xml:space="preserve"><value>Копировать</value></data>
+  <data name="SolutionExplorer_Cut" xml:space="preserve"><value>Вырезать</value></data>
+  <data name="SolutionExplorer_Paste" xml:space="preserve"><value>Вставить</value></data>
+  <data name="SolutionExplorer_Rename" xml:space="preserve"><value>Переименовать</value></data>
+  <data name="SolutionExplorer_RemoveFromProject" xml:space="preserve"><value>Удалить из проекта</value></data>
+  <data name="SolutionExplorer_Delete" xml:space="preserve"><value>Удалить</value></data>
+  <data name="SolutionExplorer_ExcludeFromProject" xml:space="preserve"><value>Исключить из проекта</value></data>
+  <data name="SolutionExplorer_ImportIntoProject" xml:space="preserve"><value>Импортировать в проект...</value></data>
+  <data name="SolutionExplorer_ApplyToDisk" xml:space="preserve"><value>Применить на диске</value></data>
+  <data name="SolutionExplorer_DiscardChanges" xml:space="preserve"><value>Отменить изменения</value></data>
+  <data name="SolutionExplorer_Build" xml:space="preserve"><value>Собрать</value></data>
+  <data name="SolutionExplorer_Rebuild" xml:space="preserve"><value>Пересобрать</value></data>
+  <data name="SolutionExplorer_Clean" xml:space="preserve"><value>Очистить</value></data>
+  <data name="SolutionExplorer_SetAsStartup" xml:space="preserve"><value>Установить как запускаемый проект</value></data>
+  <data name="SolutionExplorer_AddReference" xml:space="preserve"><value>Добавить ссылку…</value></data>
+  <data name="SolutionExplorer_RemoveUnusedReferences" xml:space="preserve"><value>Удалить неиспользуемые ссылки…</value></data>
+  <data name="SolutionExplorer_ManageNugetPackages" xml:space="preserve"><value>Управление пакетами NuGet…</value></data>
+  <data name="SolutionExplorer_ManageNugetPackagesSolution" xml:space="preserve"><value>Управление пакетами NuGet для решения…</value></data>
+  <data name="SolutionExplorer_Properties" xml:space="preserve"><value>Свойства</value></data>
+  <data name="SolutionExplorer_SaveAll" xml:space="preserve"><value>Сохранить всё</value></data>
+  <data name="SolutionExplorer_CloseSolution" xml:space="preserve"><value>Закрыть решение</value></data>
+  <data name="WhfmtBrowser_LoadFailureIndicator" xml:space="preserve"><value>Один или несколько форматов не удалось загрузить</value></data>
+  <data name="WhfmtBrowser_OpenInEditorToolTip" xml:space="preserve"><value>Открыть в редакторе структуры</value></data>
+  <data name="WhfmtBrowser_ExportToFileToolTip" xml:space="preserve"><value>Экспортировать в файл…</value></data>
+  <data name="WhfmtBrowser_ViewJsonToolTip" xml:space="preserve"><value>Просмотреть JSON</value></data>
+  <data name="WhfmtBrowser_Open" xml:space="preserve"><value>Открыть</value></data>
+  <data name="WhfmtBrowser_OpenReadOnly" xml:space="preserve"><value>Открыть только для чтения</value></data>
+  <data name="WhfmtBrowser_ExportToFile" xml:space="preserve"><value>Экспортировать в файл…</value></data>
+  <data name="WhfmtBrowser_ViewJson" xml:space="preserve"><value>Просмотреть JSON</value></data>
+  <data name="WhfmtBrowser_CopyPath" xml:space="preserve"><value>Копировать путь</value></data>
+  <data name="WhfmtBrowser_Delete" xml:space="preserve"><value>Удалить</value></data>
+  <data name="WhfmtBrowser_RevealInExplorer" xml:space="preserve"><value>Показать в Проводнике</value></data>
+  <data name="WhfmtBrowser_DuplicateFormat" xml:space="preserve"><value>Дублировать формат…</value></data>
+  <data name="WhfmtBrowser_EditInCodeEditor" xml:space="preserve"><value>Редактировать в редакторе кода</value></data>
+  <data name="WhfmtCatalog_NameHeader" xml:space="preserve"><value>Имя</value></data>
+  <data name="WhfmtCatalog_CategoryHeader" xml:space="preserve"><value>Категория</value></data>
+  <data name="WhfmtCatalog_ExtensionsHeader" xml:space="preserve"><value>Расширения</value></data>
+  <data name="WhfmtCatalog_VersionHeader" xml:space="preserve"><value>Версия</value></data>
+  <data name="WhfmtCatalog_QualityHeader" xml:space="preserve"><value>Качество</value></data>
+  <data name="WhfmtCatalog_AuthorHeader" xml:space="preserve"><value>Автор</value></data>
+  <data name="WhfmtCatalog_SourceHeader" xml:space="preserve"><value>Источник</value></data>
+  <data name="WhfmtCatalog_Open" xml:space="preserve"><value>Открыть</value></data>
+  <data name="WhfmtCatalog_OpenReadOnly" xml:space="preserve"><value>Открыть только для чтения</value></data>
+  <data name="WhfmtCatalog_ExportToFile" xml:space="preserve"><value>Экспортировать в файл…</value></data>
+  <data name="WhfmtCatalog_ViewJson" xml:space="preserve"><value>Просмотреть JSON</value></data>
+  <data name="WhfmtCatalog_RevealInExplorer" xml:space="preserve"><value>Показать в Проводнике</value></data>
+  <data name="WhfmtCatalog_ErrorText" xml:space="preserve"><value> Ошибка</value></data>
+  <data name="WhfmtDetail_EmptyPlaceholder" xml:space="preserve"><value>Выберите формат для просмотра подробностей.</value></data>
+  <data name="WhfmtDetail_OpenInEditorToolTip" xml:space="preserve"><value>Открыть в редакторе структуры</value></data>
+  <data name="WhfmtDetail_ExportToFileToolTip" xml:space="preserve"><value>Экспортировать в файл…</value></data>
+  <data name="WhfmtDetail_ViewRawJsonToolTip" xml:space="preserve"><value>Просмотреть необработанный JSON</value></data>
+  <data name="WhfmtDetail_RetryLoadToolTip" xml:space="preserve"><value>Повторить загрузку этого формата</value></data>
+  <data name="WhfmtDetail_ExcludeFromCatalogToolTip" xml:space="preserve"><value>Исключить этот формат из каталога</value></data>
+  <data name="WhfmtDetail_FormatLoadedSuccessfully" xml:space="preserve"><value>Формат успешно загружен</value></data>
+  <data name="WhfmtDetail_FormatLoadFailed" xml:space="preserve"><value>Не удалось загрузить формат</value></data>
+  <data name="WhfmtDetail_OverviewTab" xml:space="preserve"><value>Обзор</value></data>
+  <data name="WhfmtDetail_VersionLabel" xml:space="preserve"><value>Версия</value></data>
+  <data name="WhfmtDetail_AuthorLabel" xml:space="preserve"><value>Автор</value></data>
+  <data name="WhfmtDetail_CategoryLabel" xml:space="preserve"><value>Категория</value></data>
+  <data name="WhfmtDetail_PlatformLabel" xml:space="preserve"><value>Платформа</value></data>
+  <data name="WhfmtDetail_EditorLabel" xml:space="preserve"><value>Редактор</value></data>
+  <data name="WhfmtDetail_DiffLabel" xml:space="preserve"><value>Различия</value></data>
+  <data name="WhfmtDetail_StatusLabel" xml:space="preserve"><value>Состояние</value></data>
+  <data name="WhfmtDetail_ExtensionsLabel" xml:space="preserve"><value>Расширения</value></data>
+  <data name="WhfmtDetail_QualityScoreLabel" xml:space="preserve"><value>Оценка качества</value></data>
+  <data name="WhfmtDetail_DetectionLabel" xml:space="preserve"><value>Обнаружение</value></data>
+  <data name="WhfmtDetail_BlocksLabel" xml:space="preserve"><value>Блоки</value></data>
+  <data name="WhfmtDetail_LoadErrorTitle" xml:space="preserve"><value>Ошибка загрузки</value></data>
+  <data name="WhfmtDetail_ReferencesTab" xml:space="preserve"><value>Ссылки</value></data>
+  <data name="WhfmtDetail_SpecificationsLabel" xml:space="preserve"><value>Спецификации</value></data>
+  <data name="WhfmtDetail_WebLinksLabel" xml:space="preserve"><value>Веб-ссылки</value></data>
+  <data name="WhfmtDetail_AssertionsTab" xml:space="preserve"><value>Утверждения</value></data>
+  <data name="WhfmtDetail_AIHintsTab" xml:space="preserve"><value>Подсказки ИИ</value></data>
+  <data name="WhfmtDetail_AnalysisContextLabel" xml:space="preserve"><value>Контекст анализа</value></data>
+  <data name="WhfmtDetail_KnownVulnerabilitiesLabel" xml:space="preserve"><value>Известные уязвимости</value></data>
+  <data name="WhfmtDetail_JsonTab" xml:space="preserve"><value>JSON</value></data>
+</root>
