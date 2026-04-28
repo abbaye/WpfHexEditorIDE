@@ -3182,6 +3182,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         private void RenderCaretVisual()
         {
             if (_caretVisual is null || !IsLoaded) return;
+            if (ActualWidth <= 0 || ActualHeight <= 0) return;
 
             using var dc = _caretVisual.RenderOpen();
 
@@ -3190,8 +3191,8 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
             bool hasVBar = _vScrollBar?.Visibility == Visibility.Visible;
             bool hasHBar = _hScrollBar?.Visibility == Visibility.Visible;
-            double contentW = ActualWidth  - (hasVBar ? ScrollBarThickness : 0);
-            double contentH = ActualHeight - (hasHBar ? ScrollBarThickness : 0);
+            double contentW = Math.Max(0, ActualWidth  - (hasVBar ? ScrollBarThickness : 0));
+            double contentH = Math.Max(0, ActualHeight - (hasHBar ? ScrollBarThickness : 0));
             double textLeft = ShowLineNumbers ? TextAreaLeftOffset : LeftMargin;
 
             // Mirror the exact clip + transform stack active when RenderCursor is called in OnRender.
