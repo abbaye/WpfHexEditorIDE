@@ -87,6 +87,7 @@
             </Grid.RowDefinitions>
 
             <DataGrid x:Name="CatalogGrid" Grid.Row="0"
+                      Margin="4,4,4,0"
                       ItemsSource="{Binding FilteredView}"
                       AutoGenerateColumns="False"
                       IsReadOnly="True"
