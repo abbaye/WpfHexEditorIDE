@@ -1,0 +1,232 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfHexEditor.Core.Localization
+    File        : CommonResources.hi-IN.resx
+    Description : hi-IN translations for common UI strings.
+-->
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <data name="OkString" xml:space="preserve">
+    <value>ठीक है</value>
+  </data>
+  <data name="CancelString" xml:space="preserve">
+    <value>रद्द करें</value>
+  </data>
+  <data name="CloseString" xml:space="preserve">
+    <value>बंद करें</value>
+  </data>
+  <data name="DeleteString" xml:space="preserve">
+    <value>हटाएँ</value>
+  </data>
+  <data name="ClearString" xml:space="preserve">
+    <value>साफ़ करें</value>
+  </data>
+  <data name="CopyString" xml:space="preserve">
+    <value>कॉपी करें</value>
+  </data>
+  <data name="PasteString" xml:space="preserve">
+    <value>पेस्ट करें</value>
+  </data>
+  <data name="UndoString" xml:space="preserve">
+    <value>पूर्ववत करें</value>
+  </data>
+  <data name="SelectAllString" xml:space="preserve">
+    <value>सभी चुनें</value>
+  </data>
+  <data name="ProgressButtonCancel" xml:space="preserve">
+    <value>रद्द करें</value>
+  </data>
+  <data name="FindString" xml:space="preserve">
+    <value>खोजें</value>
+  </data>
+  <data name="ReplaceString" xml:space="preserve">
+    <value>बदलें</value>
+  </data>
+  <data name="FindNextString" xml:space="preserve">
+    <value>अगला खोजें</value>
+  </data>
+  <data name="FindPreviousButton" xml:space="preserve">
+    <value>पिछला</value>
+  </data>
+  <data name="FindAllString" xml:space="preserve">
+    <value>सभी खोजें</value>
+  </data>
+  <data name="ReplaceAllString" xml:space="preserve">
+    <value>सभी बदलें</value>
+  </data>
+  <data name="ReplaceNextString" xml:space="preserve">
+    <value>अगला बदलें</value>
+  </data>
+  <data name="CopyAsHexadecimalString" xml:space="preserve">
+    <value>हेक्साडेसिमल के रूप में कॉपी करें</value>
+  </data>
+  <data name="CopyAsDecimalString" xml:space="preserve">
+    <value>दशमलव के रूप में कॉपी करें</value>
+  </data>
+  <data name="CopyAsASCIIString" xml:space="preserve">
+    <value>ASCII के रूप में कॉपी करें</value>
+  </data>
+  <data name="CutSelectionString" xml:space="preserve">
+    <value>चयन कट करें</value>
+  </data>
+  <data name="CopySelectionString" xml:space="preserve">
+    <value>चयन कॉपी करें</value>
+  </data>
+  <data name="DeleteByteString" xml:space="preserve">
+    <value>बाइट हटाएँ</value>
+  </data>
+  <data name="InsertByteString" xml:space="preserve">
+    <value>बाइट सम्मिलित करें...</value>
+  </data>
+  <data name="InvertSelectionString" xml:space="preserve">
+    <value>चयन उलटें</value>
+  </data>
+  <data name="GoToOffsetString" xml:space="preserve">
+    <value>Offset पर जाएँ...</value>
+  </data>
+  <data name="EditModeString" xml:space="preserve">
+    <value>संपादन मोड</value>
+  </data>
+  <data name="ModeOverwriteString" xml:space="preserve">
+    <value>मोड: ओवरराइट</value>
+  </data>
+  <data name="ValueString" xml:space="preserve">
+    <value>मान</value>
+  </data>
+  <data name="DescriptionString" xml:space="preserve">
+    <value>विवरण</value>
+  </data>
+  <data name="LengthString" xml:space="preserve">
+    <value>लंबाई</value>
+  </data>
+  <data name="PositionString" xml:space="preserve">
+    <value>स्थिति</value>
+  </data>
+  <data name="OffsetString" xml:space="preserve">
+    <value>Offset</value>
+  </data>
+  <data name="CountOfString" xml:space="preserve">
+    <value>की संख्या</value>
+  </data>
+  <data name="HexString" xml:space="preserve">
+    <value>Hex</value>
+  </data>
+  <data name="FileSizeString" xml:space="preserve">
+    <value>फ़ाइल का आकार</value>
+  </data>
+  <data name="ReadyString" xml:space="preserve">
+    <value>तैयार</value>
+  </data>
+  <data name="PreviewString" xml:space="preserve">
+    <value>पूर्वावलोकन:</value>
+  </data>
+  <data name="PropertiesString" xml:space="preserve">
+    <value>गुण</value>
+  </data>
+  <data name="ZoomString" xml:space="preserve">
+    <value>ज़ूम</value>
+  </data>
+  <data name="ZoomResetString" xml:space="preserve">
+    <value>ज़ूम को 100% पर रीसेट करें</value>
+  </data>
+  <data name="StatusMessageString" xml:space="preserve">
+    <value>स्थिति संदेश</value>
+  </data>
+  <data name="CommandPaletteString" xml:space="preserve">
+    <value>कमांड पैलेट</value>
+  </data>
+  <data name="ShowConfirmationString" xml:space="preserve">
+    <value>पुष्टि संवाद दिखाएं</value>
+  </data>
+  <data name="ByteString" xml:space="preserve">
+    <value>बाइट</value>
+  </data>
+  <data name="BytesTagString" xml:space="preserve">
+    <value>बाइट्स</value>
+  </data>
+  <data name="KBTagString" xml:space="preserve">
+    <value>Kb</value>
+  </data>
+  <data name="MBTagString" xml:space="preserve">
+    <value>Mb</value>
+  </data>
+  <data name="LongString" xml:space="preserve">
+    <value>लांग</value>
+  </data>
+  <data name="EndTagString" xml:space="preserve">
+    <value>&lt;अंत&gt;</value>
+  </data>
+  <data name="LineTagString" xml:space="preserve">
+    <value>&lt;पं&gt;</value>
+  </data>
+  <data name="LineStatusBarTagString" xml:space="preserve">
+    <value>पं</value>
+  </data>
+  <data name="FirstByteString" xml:space="preserve">
+    <value>पहला बाइट</value>
+  </data>
+  <data name="ValidationInvalidHexString" xml:space="preserve">
+    <value>अमान्य हेक्साडेसिमल मान</value>
+  </data>
+  <data name="ValidationRequiredString" xml:space="preserve">
+    <value>मान आवश्यक है</value>
+  </data>
+  <data name="StatusError" xml:space="preserve">
+    <value>त्रुटि: {0}</value>
+  </data>
+  <data name="WritingErrorExeptionString" xml:space="preserve">
+    <value>लिखते समय एक त्रुटि हुई।</value>
+  </data>
+  <data name="ConvertStringToLongErrorString" xml:space="preserve">
+    <value>इस स्ट्रिंग को लांग में परिवर्तित नहीं किया जा सकता</value>
+  </data>
+  <data name="FileDroppingConfirmationString" xml:space="preserve">
+    <value>क्या आप वर्तमान फ़ाइल बंद करके खोलना चाहते हैं: </value>
+  </data>
+  <data name="OpenAsReadOnlyString" xml:space="preserve">
+    <value>फ़ाइल लॉक है। क्या आप इसे केवल-पढ़ने योग्य मोड में खोलना चाहते हैं?</value>
+  </data>
+
+</root>

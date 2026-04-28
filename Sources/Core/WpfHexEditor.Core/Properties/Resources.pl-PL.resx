@@ -834,42 +834,6 @@
     <comment>TBL Editor - Modified</comment>
   </data>
 
-<data name="ColorPicker_Tab_Custom" xml:space="preserve">
-    <value>Niestandardowe</value>
-    <comment>ColorPicker - Tab Custom</comment>
-  </data>
-<data name="ColorPicker_Tab_Palette" xml:space="preserve">
-    <value>Paleta</value>
-    <comment>ColorPicker - Tab Palette</comment>
-  </data>
-<data name="ColorPicker_Preview_Original" xml:space="preserve">
-    <value>Oryginał</value>
-    <comment>ColorPicker - Preview Original</comment>
-  </data>
-<data name="ColorPicker_Preview_New" xml:space="preserve">
-    <value>Nowy</value>
-    <comment>ColorPicker - Preview New</comment>
-  </data>
-<data name="ColorPicker_Section_ColorSelector" xml:space="preserve">
-    <value>Wybór koloru</value>
-    <comment>ColorPicker - Section ColorSelector</comment>
-  </data>
-<data name="ColorPicker_Section_RGBValues" xml:space="preserve">
-    <value>Wartości RGB</value>
-    <comment>ColorPicker - Section RGBValues</comment>
-  </data>
-<data name="ColorPicker_Section_HexColor" xml:space="preserve">
-    <value>Kolor hex</value>
-    <comment>ColorPicker - Section HexColor</comment>
-  </data>
-<data name="ColorPicker_Section_StandardColors" xml:space="preserve">
-    <value>Kolory standardowe</value>
-    <comment>ColorPicker - Section StandardColors</comment>
-  </data>
-<data name="ColorPicker_Section_RecentColors" xml:space="preserve">
-    <value>Ostatnie kolory</value>
-    <comment>ColorPicker - Section RecentColors</comment>
-  </data>
 <data name="HexSettings_Display_LineNumbers" xml:space="preserve">
     <value>Pokazuj numery linii (placeholder)</value>
     <comment>Hex editor settings - Show line numbers (disabled)</comment>

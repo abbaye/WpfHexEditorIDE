@@ -1,0 +1,232 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfHexEditor.Core.Localization
+    File        : CommonResources.tr-TR.resx
+    Description : tr-TR translations for common UI strings.
+-->
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <data name="OkString" xml:space="preserve">
+    <value>Tamam</value>
+  </data>
+  <data name="CancelString" xml:space="preserve">
+    <value>İptal</value>
+  </data>
+  <data name="CloseString" xml:space="preserve">
+    <value>Kapat</value>
+  </data>
+  <data name="DeleteString" xml:space="preserve">
+    <value>Sil</value>
+  </data>
+  <data name="ClearString" xml:space="preserve">
+    <value>Temizle</value>
+  </data>
+  <data name="CopyString" xml:space="preserve">
+    <value>Kopyala</value>
+  </data>
+  <data name="PasteString" xml:space="preserve">
+    <value>Yapıştır</value>
+  </data>
+  <data name="UndoString" xml:space="preserve">
+    <value>Geri al</value>
+  </data>
+  <data name="SelectAllString" xml:space="preserve">
+    <value>Tümünü seç</value>
+  </data>
+  <data name="ProgressButtonCancel" xml:space="preserve">
+    <value>İptal</value>
+  </data>
+  <data name="FindString" xml:space="preserve">
+    <value>Bul</value>
+  </data>
+  <data name="ReplaceString" xml:space="preserve">
+    <value>Değiştir</value>
+  </data>
+  <data name="FindNextString" xml:space="preserve">
+    <value>Sonrakini Bul</value>
+  </data>
+  <data name="FindPreviousButton" xml:space="preserve">
+    <value>Önceki</value>
+  </data>
+  <data name="FindAllString" xml:space="preserve">
+    <value>Tümünü Bul</value>
+  </data>
+  <data name="ReplaceAllString" xml:space="preserve">
+    <value>Tümünü Değiştir</value>
+  </data>
+  <data name="ReplaceNextString" xml:space="preserve">
+    <value>Sonrakini Değiştir</value>
+  </data>
+  <data name="CopyAsHexadecimalString" xml:space="preserve">
+    <value>Onaltılık olarak kopyala</value>
+  </data>
+  <data name="CopyAsDecimalString" xml:space="preserve">
+    <value>Ondalık olarak kopyala</value>
+  </data>
+  <data name="CopyAsASCIIString" xml:space="preserve">
+    <value>ASCII olarak kopyala</value>
+  </data>
+  <data name="CutSelectionString" xml:space="preserve">
+    <value>Seçimi Kes</value>
+  </data>
+  <data name="CopySelectionString" xml:space="preserve">
+    <value>Seçimi Kopyala</value>
+  </data>
+  <data name="DeleteByteString" xml:space="preserve">
+    <value>Bayt Sil</value>
+  </data>
+  <data name="InsertByteString" xml:space="preserve">
+    <value>Bayt Ekle...</value>
+  </data>
+  <data name="InvertSelectionString" xml:space="preserve">
+    <value>Seçimi tersine çevir</value>
+  </data>
+  <data name="GoToOffsetString" xml:space="preserve">
+    <value>Offsete Git...</value>
+  </data>
+  <data name="EditModeString" xml:space="preserve">
+    <value>Düzenleme Modu</value>
+  </data>
+  <data name="ModeOverwriteString" xml:space="preserve">
+    <value>Mod: Üzerine Yaz</value>
+  </data>
+  <data name="ValueString" xml:space="preserve">
+    <value>Değer</value>
+  </data>
+  <data name="DescriptionString" xml:space="preserve">
+    <value>Açıklama</value>
+  </data>
+  <data name="LengthString" xml:space="preserve">
+    <value>Uzunluk</value>
+  </data>
+  <data name="PositionString" xml:space="preserve">
+    <value>Konum</value>
+  </data>
+  <data name="OffsetString" xml:space="preserve">
+    <value>Offset</value>
+  </data>
+  <data name="CountOfString" xml:space="preserve">
+    <value>Sayısı</value>
+  </data>
+  <data name="HexString" xml:space="preserve">
+    <value>Hex</value>
+  </data>
+  <data name="FileSizeString" xml:space="preserve">
+    <value>Dosya Boyutu</value>
+  </data>
+  <data name="ReadyString" xml:space="preserve">
+    <value>Hazır</value>
+  </data>
+  <data name="PreviewString" xml:space="preserve">
+    <value>Önizleme:</value>
+  </data>
+  <data name="PropertiesString" xml:space="preserve">
+    <value>Özellikler</value>
+  </data>
+  <data name="ZoomString" xml:space="preserve">
+    <value>Yakınlaştır</value>
+  </data>
+  <data name="ZoomResetString" xml:space="preserve">
+    <value>Yakınlaştırmayı %100'e sıfırla</value>
+  </data>
+  <data name="StatusMessageString" xml:space="preserve">
+    <value>Durum Mesajı</value>
+  </data>
+  <data name="CommandPaletteString" xml:space="preserve">
+    <value>Komut Paleti</value>
+  </data>
+  <data name="ShowConfirmationString" xml:space="preserve">
+    <value>Onay iletişim kutusunu göster</value>
+  </data>
+  <data name="ByteString" xml:space="preserve">
+    <value>Bayt</value>
+  </data>
+  <data name="BytesTagString" xml:space="preserve">
+    <value>Bayt</value>
+  </data>
+  <data name="KBTagString" xml:space="preserve">
+    <value>Kb</value>
+  </data>
+  <data name="MBTagString" xml:space="preserve">
+    <value>Mb</value>
+  </data>
+  <data name="LongString" xml:space="preserve">
+    <value>Uzun</value>
+  </data>
+  <data name="EndTagString" xml:space="preserve">
+    <value>&lt;son&gt;</value>
+  </data>
+  <data name="LineTagString" xml:space="preserve">
+    <value>&lt;sat&gt;</value>
+  </data>
+  <data name="LineStatusBarTagString" xml:space="preserve">
+    <value>Sat</value>
+  </data>
+  <data name="FirstByteString" xml:space="preserve">
+    <value>İlk bayt</value>
+  </data>
+  <data name="ValidationInvalidHexString" xml:space="preserve">
+    <value>Geçersiz onaltılık değer</value>
+  </data>
+  <data name="ValidationRequiredString" xml:space="preserve">
+    <value>Değer gerekli</value>
+  </data>
+  <data name="StatusError" xml:space="preserve">
+    <value>Hata: {0}</value>
+  </data>
+  <data name="WritingErrorExeptionString" xml:space="preserve">
+    <value>Yazma sırasında bir hata oluştu.</value>
+  </data>
+  <data name="ConvertStringToLongErrorString" xml:space="preserve">
+    <value>Bu dizi uzun tam sayıya dönüştürülemiyor</value>
+  </data>
+  <data name="FileDroppingConfirmationString" xml:space="preserve">
+    <value>Mevcut dosyayı kapatıp şunu açmak istiyor musunuz: </value>
+  </data>
+  <data name="OpenAsReadOnlyString" xml:space="preserve">
+    <value>Dosya kilitli. Salt okunur modda açmak istiyor musunuz?</value>
+  </data>
+
+</root>

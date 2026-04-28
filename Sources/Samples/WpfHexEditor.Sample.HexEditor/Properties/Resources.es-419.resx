@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+﻿<?xml version='1.0' encoding='utf-8'?>
 <root xmlns:ns1="urn:schemas-microsoft-com:xml-msdata" xmlns:xs="http://www.w3.org/2001/XMLSchema">
   <xs:schema id="root">
     <xs:import namespace="http://www.w3.org/XML/1998/namespace" />
@@ -767,10 +767,6 @@
   </data>
   <data name="Menu_Search_FindPrevious" xml:space="preserve">
     <value>Buscar anterior</value>
-  </data>
-  <data name="RelativeSearchMenuString" xml:space="preserve">
-    <value>Búsqueda relativa</value>
-    <comment>Search menu - Relative Search command</comment>
   </data>
   <data name="Menu_Tools" xml:space="preserve">
     <value>Herramientas</value>

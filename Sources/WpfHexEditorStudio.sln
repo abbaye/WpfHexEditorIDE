@@ -1,4 +1,4 @@
-
+﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
 VisualStudioVersion = 18.4.11506.43
@@ -226,6 +226,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.Plugins.DocumentStructure", "Plugins\WpfHexEditor.Plugins.DocumentStructure\WpfHexEditor.Plugins.DocumentStructure.csproj", "{BE045BD0-4B2F-4A07-A1A1-287919F25E28}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.SDK.Terminal.Abstractions", "Core\WpfHexEditor.SDK.Terminal.Abstractions\WpfHexEditor.SDK.Terminal.Abstractions.csproj", "{AA1F47A9-E8F2-4D92-A63F-CBC2A4C555E1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHexEditor.Core.Localization", "Core\WpfHexEditor.Core.Localization\WpfHexEditor.Core.Localization.csproj", "{1A77C8B7-A7E6-43B9-80A2-02A6E13E54AD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -1449,6 +1451,18 @@ Global
 		{AA1F47A9-E8F2-4D92-A63F-CBC2A4C555E1}.Release|x64.Build.0 = Release|Any CPU
 		{AA1F47A9-E8F2-4D92-A63F-CBC2A4C555E1}.Release|x86.ActiveCfg = Release|Any CPU
 		{AA1F47A9-E8F2-4D92-A63F-CBC2A4C555E1}.Release|x86.Build.0 = Release|Any CPU
+		{1A77C8B7-A7E6-43B9-80A2-02A6E13E54AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A77C8B7-A7E6-43B9-80A2-02A6E13E54AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A77C8B7-A7E6-43B9-80A2-02A6E13E54AD}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{1A77C8B7-A7E6-43B9-80A2-02A6E13E54AD}.Debug|x64.Build.0 = Debug|Any CPU
+		{1A77C8B7-A7E6-43B9-80A2-02A6E13E54AD}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1A77C8B7-A7E6-43B9-80A2-02A6E13E54AD}.Debug|x86.Build.0 = Debug|Any CPU
+		{1A77C8B7-A7E6-43B9-80A2-02A6E13E54AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A77C8B7-A7E6-43B9-80A2-02A6E13E54AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1A77C8B7-A7E6-43B9-80A2-02A6E13E54AD}.Release|x64.ActiveCfg = Release|Any CPU
+		{1A77C8B7-A7E6-43B9-80A2-02A6E13E54AD}.Release|x64.Build.0 = Release|Any CPU
+		{1A77C8B7-A7E6-43B9-80A2-02A6E13E54AD}.Release|x86.ActiveCfg = Release|Any CPU
+		{1A77C8B7-A7E6-43B9-80A2-02A6E13E54AD}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1557,6 +1571,7 @@ Global
 		{27DEF808-5E25-4E20-9491-DFE8CFFF3EC6} = {250FC96D-F272-4DA2-9454-5817440CB125}
 		{BE045BD0-4B2F-4A07-A1A1-287919F25E28} = {97E00D62-D6F1-44E5-881F-3727FE8CDD1E}
 		{AA1F47A9-E8F2-4D92-A63F-CBC2A4C555E1} = {AD6546B8-31D6-4732-8E50-4490C2C5E889}
+		{1A77C8B7-A7E6-43B9-80A2-02A6E13E54AD} = {250FC96D-F272-4DA2-9454-5817440CB125}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5B382CAE-4846-466E-A3D3-0842043B4012}

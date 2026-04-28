@@ -3,6 +3,9 @@
 // Author : Derek Tremblay (derektremblay666@gmail.com)
 // Contributors: Claude Sonnet 4.6
 //////////////////////////////////////////////
+// STAGING: To be migrated into WpfHexEditor.Core.Localization micro-package.
+// This class will become ILocalizationService implementation once the micro-package is created.
+//////////////////////////////////////////////
 
 using System;
 using System.Globalization;
@@ -60,8 +63,8 @@ namespace WpfHexEditor.Sample.HexEditor.Services
                 Properties.Settings.Default.Save();
             }
 
-            // Synchronize with HexEditor control's LocalizedResourceDictionary
-            WpfHexEditor.Core.Services.LocalizedResourceDictionary.ChangeCulture(newCulture);
+            // TODO: Call ILocalizationService.ChangeCulture(newCulture) once WpfHexEditor.Core.Localization micro-package is created.
+            // WpfHexEditor.Core.Services.LocalizedResourceDictionary.ChangeCulture(newCulture); — removed during localization cleanup
 
             // Notify all subscribers that culture has changed
             CultureChanged?.Invoke(null, new CultureChangedEventArgs(oldCulture, newCulture));

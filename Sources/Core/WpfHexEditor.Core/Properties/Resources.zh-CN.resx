@@ -834,42 +834,6 @@
     <comment>TBL Editor - Modified</comment>
   </data>
 
-<data name="ColorPicker_Tab_Custom" xml:space="preserve">
-    <value>自定义</value>
-    <comment>ColorPicker - Tab Custom</comment>
-  </data>
-<data name="ColorPicker_Tab_Palette" xml:space="preserve">
-    <value>调色板</value>
-    <comment>ColorPicker - Tab Palette</comment>
-  </data>
-<data name="ColorPicker_Preview_Original" xml:space="preserve">
-    <value>原始</value>
-    <comment>ColorPicker - Preview Original</comment>
-  </data>
-<data name="ColorPicker_Preview_New" xml:space="preserve">
-    <value>新建</value>
-    <comment>ColorPicker - Preview New</comment>
-  </data>
-<data name="ColorPicker_Section_ColorSelector" xml:space="preserve">
-    <value>颜色选择器</value>
-    <comment>ColorPicker - Section ColorSelector</comment>
-  </data>
-<data name="ColorPicker_Section_RGBValues" xml:space="preserve">
-    <value>RGB值</value>
-    <comment>ColorPicker - Section RGBValues</comment>
-  </data>
-<data name="ColorPicker_Section_HexColor" xml:space="preserve">
-    <value>十六进制颜色</value>
-    <comment>ColorPicker - Section HexColor</comment>
-  </data>
-<data name="ColorPicker_Section_StandardColors" xml:space="preserve">
-    <value>标准颜色</value>
-    <comment>ColorPicker - Section StandardColors</comment>
-  </data>
-<data name="ColorPicker_Section_RecentColors" xml:space="preserve">
-    <value>最近使用的颜色</value>
-    <comment>ColorPicker - Section RecentColors</comment>
-  </data>
 <data name="HexSettings_Display_LineNumbers" xml:space="preserve">
     <value>显示行号（占位符）</value>
     <comment>Hex editor settings - Show line numbers (disabled)</comment>

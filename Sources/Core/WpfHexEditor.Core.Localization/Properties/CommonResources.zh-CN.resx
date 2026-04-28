@@ -1,0 +1,232 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfHexEditor.Core.Localization
+    File        : CommonResources.zh-CN.resx
+    Description : zh-CN translations for common UI strings.
+-->
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <data name="OkString" xml:space="preserve">
+    <value>确定</value>
+  </data>
+  <data name="CancelString" xml:space="preserve">
+    <value>取消</value>
+  </data>
+  <data name="CloseString" xml:space="preserve">
+    <value>关闭</value>
+  </data>
+  <data name="DeleteString" xml:space="preserve">
+    <value>删除</value>
+  </data>
+  <data name="ClearString" xml:space="preserve">
+    <value>清除</value>
+  </data>
+  <data name="CopyString" xml:space="preserve">
+    <value>复制</value>
+  </data>
+  <data name="PasteString" xml:space="preserve">
+    <value>粘贴</value>
+  </data>
+  <data name="UndoString" xml:space="preserve">
+    <value>撤消</value>
+  </data>
+  <data name="SelectAllString" xml:space="preserve">
+    <value>全选</value>
+  </data>
+  <data name="ProgressButtonCancel" xml:space="preserve">
+    <value>取消</value>
+  </data>
+  <data name="FindString" xml:space="preserve">
+    <value>查找</value>
+  </data>
+  <data name="ReplaceString" xml:space="preserve">
+    <value>替换</value>
+  </data>
+  <data name="FindNextString" xml:space="preserve">
+    <value>查找下一个</value>
+  </data>
+  <data name="FindPreviousButton" xml:space="preserve">
+    <value>上一个</value>
+  </data>
+  <data name="FindAllString" xml:space="preserve">
+    <value>查找全部</value>
+  </data>
+  <data name="ReplaceAllString" xml:space="preserve">
+    <value>全部替换</value>
+  </data>
+  <data name="ReplaceNextString" xml:space="preserve">
+    <value>替换下一个</value>
+  </data>
+  <data name="CopyAsHexadecimalString" xml:space="preserve">
+    <value>复制为十六进制</value>
+  </data>
+  <data name="CopyAsDecimalString" xml:space="preserve">
+    <value>复制为十进制</value>
+  </data>
+  <data name="CopyAsASCIIString" xml:space="preserve">
+    <value>复制为 ASCII</value>
+  </data>
+  <data name="CutSelectionString" xml:space="preserve">
+    <value>剪切选择</value>
+  </data>
+  <data name="CopySelectionString" xml:space="preserve">
+    <value>复制选择</value>
+  </data>
+  <data name="DeleteByteString" xml:space="preserve">
+    <value>删除字节</value>
+  </data>
+  <data name="InsertByteString" xml:space="preserve">
+    <value>插入字节...</value>
+  </data>
+  <data name="InvertSelectionString" xml:space="preserve">
+    <value>反转选择</value>
+  </data>
+  <data name="GoToOffsetString" xml:space="preserve">
+    <value>转到Offset...</value>
+  </data>
+  <data name="EditModeString" xml:space="preserve">
+    <value>编辑模式</value>
+  </data>
+  <data name="ModeOverwriteString" xml:space="preserve">
+    <value>模式：覆盖</value>
+  </data>
+  <data name="ValueString" xml:space="preserve">
+    <value>值</value>
+  </data>
+  <data name="DescriptionString" xml:space="preserve">
+    <value>描述</value>
+  </data>
+  <data name="LengthString" xml:space="preserve">
+    <value>长度</value>
+  </data>
+  <data name="PositionString" xml:space="preserve">
+    <value>位置</value>
+  </data>
+  <data name="OffsetString" xml:space="preserve">
+    <value>Offset</value>
+  </data>
+  <data name="CountOfString" xml:space="preserve">
+    <value>计数</value>
+  </data>
+  <data name="HexString" xml:space="preserve">
+    <value>Hex</value>
+  </data>
+  <data name="FileSizeString" xml:space="preserve">
+    <value>文件大小</value>
+  </data>
+  <data name="ReadyString" xml:space="preserve">
+    <value>就绪</value>
+  </data>
+  <data name="PreviewString" xml:space="preserve">
+    <value>预览：</value>
+  </data>
+  <data name="PropertiesString" xml:space="preserve">
+    <value>属性</value>
+  </data>
+  <data name="ZoomString" xml:space="preserve">
+    <value>缩放</value>
+  </data>
+  <data name="ZoomResetString" xml:space="preserve">
+    <value>将缩放重置为 100%</value>
+  </data>
+  <data name="StatusMessageString" xml:space="preserve">
+    <value>状态消息</value>
+  </data>
+  <data name="CommandPaletteString" xml:space="preserve">
+    <value>命令面板</value>
+  </data>
+  <data name="ShowConfirmationString" xml:space="preserve">
+    <value>显示确认对话框</value>
+  </data>
+  <data name="ByteString" xml:space="preserve">
+    <value>字节</value>
+  </data>
+  <data name="BytesTagString" xml:space="preserve">
+    <value>字节</value>
+  </data>
+  <data name="KBTagString" xml:space="preserve">
+    <value>KB</value>
+  </data>
+  <data name="MBTagString" xml:space="preserve">
+    <value>MB</value>
+  </data>
+  <data name="LongString" xml:space="preserve">
+    <value>Long</value>
+  </data>
+  <data name="EndTagString" xml:space="preserve">
+    <value>&lt;结束&gt;</value>
+  </data>
+  <data name="LineTagString" xml:space="preserve">
+    <value>&lt;ln&gt;</value>
+  </data>
+  <data name="LineStatusBarTagString" xml:space="preserve">
+    <value>行</value>
+  </data>
+  <data name="FirstByteString" xml:space="preserve">
+    <value>第一个字节</value>
+  </data>
+  <data name="ValidationInvalidHexString" xml:space="preserve">
+    <value>无效的十六进制值</value>
+  </data>
+  <data name="ValidationRequiredString" xml:space="preserve">
+    <value>值是必需的</value>
+  </data>
+  <data name="StatusError" xml:space="preserve">
+    <value>错误：{0}</value>
+  </data>
+  <data name="WritingErrorExeptionString" xml:space="preserve">
+    <value>写入时发生错误。</value>
+  </data>
+  <data name="ConvertStringToLongErrorString" xml:space="preserve">
+    <value>无法将此字符串转换为 long</value>
+  </data>
+  <data name="FileDroppingConfirmationString" xml:space="preserve">
+    <value>是否要关闭当前文件并打开：</value>
+  </data>
+  <data name="OpenAsReadOnlyString" xml:space="preserve">
+    <value>文件已锁定。是否要以只读模式打开它？</value>
+  </data>
+
+</root>

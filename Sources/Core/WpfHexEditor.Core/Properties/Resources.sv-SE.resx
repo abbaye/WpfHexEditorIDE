@@ -837,42 +837,6 @@
     <comment>TBL Editor - Modified</comment>
   </data>
 
-<data name="ColorPicker_Tab_Custom" xml:space="preserve">
-    <value>Anpassad</value>
-    <comment>ColorPicker - Tab Custom</comment>
-  </data>
-<data name="ColorPicker_Tab_Palette" xml:space="preserve">
-    <value>Palett</value>
-    <comment>ColorPicker - Tab Palette</comment>
-  </data>
-<data name="ColorPicker_Preview_Original" xml:space="preserve">
-    <value>Original</value>
-    <comment>ColorPicker - Preview Original</comment>
-  </data>
-<data name="ColorPicker_Preview_New" xml:space="preserve">
-    <value>Ny</value>
-    <comment>ColorPicker - Preview New</comment>
-  </data>
-<data name="ColorPicker_Section_ColorSelector" xml:space="preserve">
-    <value>Färgväljare</value>
-    <comment>ColorPicker - Section ColorSelector</comment>
-  </data>
-<data name="ColorPicker_Section_RGBValues" xml:space="preserve">
-    <value>RGB-värden</value>
-    <comment>ColorPicker - Section RGBValues</comment>
-  </data>
-<data name="ColorPicker_Section_HexColor" xml:space="preserve">
-    <value>Hex-färg</value>
-    <comment>ColorPicker - Section HexColor</comment>
-  </data>
-<data name="ColorPicker_Section_StandardColors" xml:space="preserve">
-    <value>Standardfärger</value>
-    <comment>ColorPicker - Section StandardColors</comment>
-  </data>
-<data name="ColorPicker_Section_RecentColors" xml:space="preserve">
-    <value>Senaste färger</value>
-    <comment>ColorPicker - Section RecentColors</comment>
-  </data>
 <data name="HexSettings_Title" xml:space="preserve">
     <value>HEX EDITOR-INSTÄLLNINGAR</value>
   </data>
