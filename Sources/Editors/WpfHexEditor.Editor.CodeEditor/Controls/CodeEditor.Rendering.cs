@@ -109,6 +109,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 // Resolve Y positions: use _lineYLookup for in-viewport lines (O(1), accounts
                 // for InlineHints height). For out-of-viewport lines, clamp to the actual first/last
                 // rendered line Y boundaries.
+                // Resolve Y positions: use _lineYLookup for in-viewport lines (O(1), accounts
+                // for InlineHints height). For out-of-viewport lines, clamp to the actual first/last
+                // rendered line Y boundaries.
                 double yTop;
                 if (bodyStart < _firstVisibleLine)
                     yTop = viewportYMin;
@@ -1556,6 +1559,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 foreach (var r in _foldingEngine.Regions)
                 {
                     if (r.IsCollapsed || r.Kind == FoldingRegionKind.Directive) continue;
+                    // BUG2-FIX: exclude child regions whose StartLine is inside a collapsed parent.
+                    // Without this guard, _lineYLookup misses the hidden line and the guide falls
+                    // back to viewportYMin, drawing a spurious line across the entire viewport.
+                    if (_foldingEngine.IsLineHidden(r.StartLine)) continue;
                     if (r.EndLine < _firstVisibleLine || r.StartLine + 1 > _lastVisibleLine) continue;
                     _visibleRegions.Add(r);
                 }
@@ -2333,8 +2340,14 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 if (_wordHighlights.Count == 0)
                     _codeScrollMarkerPanel.ClearWordMarkers();
                 else
-                    _codeScrollMarkerPanel.UpdateWordMarkers(_wordHighlightLines,
-                        Math.Max(1, _document?.TotalLines ?? 1));
+                {
+                    // BUG3-FIX: use visible-line indices for word markers so they align
+                    // with the scrollbar in fold-compressed space.
+                    var visWordLines = _wordHighlightLines
+                        .Select(l => PhysicalToVisibleLineIndex(l))
+                        .ToList();
+                    _codeScrollMarkerPanel.UpdateWordMarkers(visWordLines, VisibleLineCount);
+                }
             }
         }
 

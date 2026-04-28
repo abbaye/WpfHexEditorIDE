@@ -234,7 +234,7 @@ public static class LanguageDefinitionSerializer
             IsDefault                 = dto.IsDefault,
             Includes                  = dto.Includes ?? [],
             EditorHint                = preferredEditor,
-            FoldingRules              = MapFoldingRules(dto.FoldingRules),
+            FoldingRules              = MapFoldingRules(dto.FoldingRules, dto.BlockCommentStart, dto.BlockCommentEnd),
             BreakpointRules           = MapBreakpointRules(dto.BreakpointRules),
             ColumnRulers              = dto.ColumnRulers,
             BracketPairs              = MapBracketPairs(dto.BracketPairs),
@@ -273,8 +273,13 @@ public static class LanguageDefinitionSerializer
     /// <summary>
     /// Maps a <see cref="FoldingRulesDto"/> to the <see cref="FoldingRules"/> domain model.
     /// Returns null when <paramref name="dto"/> is null (no explicit folding rules declared).
+    /// <paramref name="blockCommentStart"/> and <paramref name="blockCommentEnd"/> come from
+    /// the parent syntax block (root-level whfmt fields) so that PatternFoldingStrategy can
+    /// skip brace tokens that appear inside multi-line block comments.
     /// </summary>
-    private static FoldingRules? MapFoldingRules(FoldingRulesDto? dto)
+    private static FoldingRules? MapFoldingRules(FoldingRulesDto? dto,
+                                                  string? blockCommentStart,
+                                                  string? blockCommentEnd)
     {
         if (dto is null) return null;
 
@@ -282,6 +287,8 @@ public static class LanguageDefinitionSerializer
         {
             StartPatterns           = dto.StartPatterns            ?? [],
             EndPatterns             = dto.EndPatterns              ?? [],
+            BlockCommentStart       = blockCommentStart,
+            BlockCommentEnd         = blockCommentEnd,
             NamedRegionStartPattern = dto.NamedRegionStart,
             NamedRegionEndPattern   = dto.NamedRegionEnd,
             IndentBased             = dto.IndentBased,

@@ -150,14 +150,16 @@ internal sealed class EndBlockHintPopup : Popup
         double                  fontSize,
         Rect                    closingTokenRect,   // element-local coords of the end-token line
         ISyntaxHighlighter?     highlighter,
-        int                     maxContextLines = 3)
+        int                     maxContextLines = 3,
+        bool                    showLineNumber  = true,
+        bool                    showLineCount   = true)
     {
         _currentStartLine = region.StartLine;
         _graceTimer.Stop();
         _mouseInsidePopup = false;
 
         PopulateHeader(region, allLines, typeface, fontSize, highlighter, maxContextLines);
-        PopulateMeta(region);
+        PopulateMeta(region, showLineNumber, showLineCount);
 
         PlacementTarget  = host;
 
@@ -302,17 +304,19 @@ internal sealed class EndBlockHintPopup : Popup
         }
     }
 
-    private void PopulateMeta(FoldingRegion region)
+    private void PopulateMeta(FoldingRegion region, bool showLineNumber = true, bool showLineCount = true)
     {
         _metaRow.Children.Clear();
 
         int lineCount = region.HiddenLineCount + 2; // start + hidden + end
 
-        // "Line N" pill
-        _metaRow.Children.Add(MakePill($"Line {region.StartLine + 1}", "ET_LineNumberPillBg"));
+        // "Line N" pill — controlled by whfmt endOfBlockHint.showLineNumber
+        if (showLineNumber)
+            _metaRow.Children.Add(MakePill($"Line {region.StartLine + 1}", "ET_LineNumberPillBg"));
 
-        // "N lines" pill
-        _metaRow.Children.Add(MakePill($"{lineCount} lines", "ET_LineCountPillBg"));
+        // "N lines" pill — controlled by whfmt endOfBlockHint.showLineCount
+        if (showLineCount)
+            _metaRow.Children.Add(MakePill($"{lineCount} lines", "ET_LineCountPillBg"));
 
         // Region name (if named, e.g. #region Value Converters)
         if (!string.IsNullOrWhiteSpace(region.Name))

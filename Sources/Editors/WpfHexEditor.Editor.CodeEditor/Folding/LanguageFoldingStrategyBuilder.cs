@@ -47,7 +47,10 @@ internal static class LanguageFoldingStrategyBuilder
             strategies.Add(new HeadingFoldingStrategy(rules.MinHeadingLevel));
 
         if (rules.StartPatterns.Count > 0)
-            strategies.Add(new PatternFoldingStrategy(rules.StartPatterns, rules.EndPatterns, lineCommentPrefix));
+            strategies.Add(new PatternFoldingStrategy(
+                rules.StartPatterns, rules.EndPatterns,
+                lineCommentPrefix,
+                rules.BlockCommentStart, rules.BlockCommentEnd));
 
         if (rules.NamedRegionStartPattern is not null)
             strategies.Add(new NamedRegionFoldingStrategy(

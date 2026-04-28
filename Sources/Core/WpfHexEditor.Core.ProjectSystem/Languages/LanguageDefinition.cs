@@ -350,6 +350,12 @@ public sealed record FoldingRules
     public IReadOnlyList<string> StartPatterns { get; init; } = [];
     public IReadOnlyList<string> EndPatterns   { get; init; } = [];
 
+    // ── Block comment delimiters (used to skip { } inside /* ... */) ───────
+    /// <summary>Opening token for block comments (e.g. "/*"). Null = no block comments.</summary>
+    public string? BlockCommentStart { get; init; }
+    /// <summary>Closing token for block comments (e.g. "*/"). Null = no block comments.</summary>
+    public string? BlockCommentEnd   { get; init; }
+
     // ── Named-region directives (C#: #region / #endregion) ────────────────
     public string? NamedRegionStartPattern { get; init; }
     public string? NamedRegionEndPattern   { get; init; }

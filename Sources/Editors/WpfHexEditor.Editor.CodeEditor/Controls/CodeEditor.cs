@@ -3244,13 +3244,15 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         private void SyncScrollMarkerCaretAndSelection()
         {
             if (_codeScrollMarkerPanel == null || _document == null) return;
-            int visibleLines = Math.Max(1, _document.Lines.Count - (_foldingEngine?.TotalHiddenLineCount ?? 0));
+            // BUG3-FIX: use visible (fold-compressed) indices so the caret and selection
+            // markers on the scroll panel align with the scrollbar, which operates in
+            // visible-line space (hidden lines are excluded from the pixel budget).
             bool hasSelection = !_selection.IsEmpty && _selection.NormalizedStart.Line != _selection.NormalizedEnd.Line;
             _codeScrollMarkerPanel.UpdateCaretAndSelection(
-                _cursorLine,
-                hasSelection ? _selection.NormalizedStart.Line : -1,
-                hasSelection ? _selection.NormalizedEnd.Line   : -1,
-                visibleLines);
+                PhysicalToVisibleLineIndex(_cursorLine),
+                hasSelection ? PhysicalToVisibleLineIndex(_selection.NormalizedStart.Line) : -1,
+                hasSelection ? PhysicalToVisibleLineIndex(_selection.NormalizedEnd.Line)   : -1,
+                VisibleLineCount);
         }
 
         /// <summary>
@@ -4366,11 +4368,32 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 return;
             }
 
-            // Clamp against scrollbar maximum (includes VS-style padding) so
-            // the caret can reach the last line even when VE.TotalHeight is smaller.
-            double veOffset = _virtualizationEngine.EnsureLineVisible(_cursorLine);
+            // BUG3-FIX: The VirtualizationEngine maps scroll offsets to lines via
+            // (offset / lineHeight), treating every line as equidistant.  When folding
+            // is active the scroll space is compressed: hidden lines are removed from the
+            // pixel budget, so the visible-pixel position of physical line N is
+            // (N - hiddenLinesBefore(N)) * lineHeight, NOT (N * lineHeight).
+            // Passing the raw _cursorLine index to VE.EnsureLineVisible() therefore
+            // produces an offset that is too large by (hiddenBefore * lineHeight), which
+            // either freezes the viewport or scrolls past the actual cursor position.
+            //
+            // Fix: count visible lines before _cursorLine to compute the correct pixel Y,
+            // then use that pixel directly for the viewport boundary check.
+            double caretPixelY = ComputeVisiblePixelY(_cursorLine);
+            bool hasHBarEcv = _hScrollBar?.Visibility == Visibility.Visible;
+            double viewportHEcv = ActualHeight - TopMargin - (hasHBarEcv ? ScrollBarThickness : 0);
+
+            double newOffset;
+            if (caretPixelY < _verticalScrollOffset)
+                newOffset = Math.Max(0, caretPixelY);
+            else if (caretPixelY + _lineHeight > _verticalScrollOffset + viewportHEcv)
+                newOffset = caretPixelY + _lineHeight - viewportHEcv;
+            else
+                newOffset = _verticalScrollOffset; // already visible — no scroll needed
+
             double maxV = _vScrollBar?.Maximum ?? double.MaxValue;
-            double newOffset = Math.Min(veOffset, maxV);
+            newOffset = Math.Min(newOffset, maxV);
+
             if (Math.Abs(newOffset - _verticalScrollOffset) > 0.1)
             {
                 _verticalScrollOffset = newOffset;
@@ -4382,6 +4405,56 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
             NotifyCaretMovedIfChanged();
         }
+
+        /// <summary>
+        /// Returns the pixel Y position (from document top, in scroll-offset space) of
+        /// <paramref name="physicalLine"/>, accounting for hidden (folded) lines.
+        /// Each visible line contributes exactly <c>_lineHeight</c> pixels; hidden lines
+        /// contribute nothing, matching the compressed scroll space used by the scrollbar.
+        /// O(physicalLine) — only called from <see cref="EnsureCursorVisible"/>.
+        /// </summary>
+        private double ComputeVisiblePixelY(int physicalLine)
+        {
+            if (_foldingEngine == null || _foldingEngine.TotalHiddenLineCount == 0)
+                return physicalLine * _lineHeight;
+
+            int visibleBefore = 0;
+            for (int i = 0; i < physicalLine && i < (_document?.Lines.Count ?? 0); i++)
+            {
+                if (!_foldingEngine.IsLineHidden(i))
+                    visibleBefore++;
+            }
+            return visibleBefore * _lineHeight;
+        }
+
+        /// <summary>
+        /// Converts a physical (document) line index to its visible (fold-compressed) line index.
+        /// Hidden lines are skipped; the result is the 0-based rank of <paramref name="physicalLine"/>
+        /// among non-hidden lines.  Returns the same value as the input when no folding is active.
+        /// Used to align scroll-marker panel positions with the compressed scrollbar space.
+        /// O(physicalLine).
+        /// </summary>
+        internal int PhysicalToVisibleLineIndex(int physicalLine)
+        {
+            if (_foldingEngine == null || _foldingEngine.TotalHiddenLineCount == 0)
+                return physicalLine;
+
+            int vis = 0;
+            int count = Math.Min(physicalLine, _document?.Lines.Count - 1 ?? 0);
+            for (int i = 0; i < count; i++)
+            {
+                if (!_foldingEngine.IsLineHidden(i))
+                    vis++;
+            }
+            return vis;
+        }
+
+        /// <summary>
+        /// Total number of visible (non-hidden) lines in the current document.
+        /// Matches the scroll space denominator used by the scrollbar.
+        /// </summary>
+        internal int VisibleLineCount
+            => Math.Max(1, (_document?.Lines.Count ?? 1) - (_foldingEngine?.TotalHiddenLineCount ?? 0));
 
         /// <summary>
         /// Returns the true Y pixel position of a line from the document top,
