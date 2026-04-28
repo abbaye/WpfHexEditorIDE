@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "Nintendo 64 ROM",
+  "formatId": "ROM_N64",
   "version": "1.15",
   "extensions": [
     ".n64",

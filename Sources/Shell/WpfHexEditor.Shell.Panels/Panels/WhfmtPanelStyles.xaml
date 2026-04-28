@@ -1,0 +1,244 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         WhfmtPanelStyles.xaml
+         Shared styles for WhfmtBrowserPanel, WhfmtCatalogDocument,
+         and WhfmtFormatDetailPanel.  Merge via MergedDictionaries.
+         ══════════════════════════════════════════════════════════════════ -->
+
+    <!-- ── Toolbar icon button (24×24) ── -->
+    <Style x:Key="WE_IconButton" TargetType="Button">
+        <Setter Property="Background"        Value="Transparent"/>
+        <Setter Property="BorderThickness"   Value="0"/>
+        <Setter Property="Width"             Value="24"/>
+        <Setter Property="Height"            Value="24"/>
+        <Setter Property="Padding"           Value="4"/>
+        <Setter Property="Cursor"            Value="Hand"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="Foreground"        Value="{DynamicResource SE_ForegroundBrush}"/>
+        <Setter Property="ToolTipService.InitialShowDelay" Value="400"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="Bd" Background="{TemplateBinding Background}"
+                            CornerRadius="2" SnapsToDevicePixels="True"
+                            Padding="{TemplateBinding Padding}">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Bd" Property="Background"
+                                    Value="{DynamicResource Panel_ToolbarButtonHoverBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="Bd" Property="Background"
+                                    Value="{DynamicResource Panel_ToolbarButtonActiveBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value="0.35"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ── Toolbar toggle button (24×24) ── -->
+    <Style x:Key="WE_ToggleButton" TargetType="ToggleButton">
+        <Setter Property="Background"        Value="Transparent"/>
+        <Setter Property="BorderThickness"   Value="0"/>
+        <Setter Property="Width"             Value="24"/>
+        <Setter Property="Height"            Value="24"/>
+        <Setter Property="Padding"           Value="4"/>
+        <Setter Property="Cursor"            Value="Hand"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="Foreground"        Value="{DynamicResource SE_ForegroundBrush}"/>
+        <Setter Property="ToolTipService.InitialShowDelay" Value="400"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToggleButton">
+                    <Border x:Name="Bd" Background="{TemplateBinding Background}"
+                            CornerRadius="2" SnapsToDevicePixels="True"
+                            Padding="{TemplateBinding Padding}">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Bd" Property="Background"
+                                    Value="{DynamicResource Panel_ToolbarButtonHoverBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="Bd" Property="Background"
+                                    Value="{DynamicResource SE_AccentBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value="0.35"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ── Pop-toolbar button (22×20, shown on row hover) ── -->
+    <Style x:Key="PopRowButton" TargetType="Button">
+        <Setter Property="Background"        Value="Transparent"/>
+        <Setter Property="BorderThickness"   Value="0"/>
+        <Setter Property="Width"             Value="22"/>
+        <Setter Property="Height"            Value="20"/>
+        <Setter Property="Padding"           Value="3"/>
+        <Setter Property="Cursor"            Value="Hand"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="Foreground"        Value="{DynamicResource SE_ForegroundBrush}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="Bd" Background="{TemplateBinding Background}"
+                            CornerRadius="2" SnapsToDevicePixels="True"
+                            Padding="{TemplateBinding Padding}">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Bd" Property="Background"
+                                    Value="{DynamicResource SE_ToolbarButtonHoverBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="Bd" Property="Background"
+                                    Value="{DynamicResource SE_ToolbarButtonActiveBrush}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ── Detail card label (left column) ── -->
+    <Style x:Key="MetaLabel" TargetType="TextBlock">
+        <Setter Property="FontSize"          Value="10"/>
+        <Setter Property="Foreground"        Value="{DynamicResource SE_ForegroundBrush}"/>
+        <Setter Property="Opacity"           Value="0.5"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="MinWidth"          Value="60"/>
+        <Setter Property="Margin"            Value="0,0,8,0"/>
+    </Style>
+
+    <!-- ── Detail card value (right column) ── -->
+    <Style x:Key="MetaValue" TargetType="TextBlock">
+        <Setter Property="FontSize"          Value="11"/>
+        <Setter Property="Foreground"        Value="{DynamicResource SE_ForegroundBrush}"/>
+        <Setter Property="TextWrapping"      Value="Wrap"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+
+    <!-- ── Detail panel icon button (22×22, mini-toolbar) ── -->
+    <Style x:Key="DetailIconButton" TargetType="Button">
+        <Setter Property="Background"      Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Width"           Value="22"/>
+        <Setter Property="Height"          Value="22"/>
+        <Setter Property="Padding"         Value="3"/>
+        <Setter Property="Cursor"          Value="Hand"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="Foreground"      Value="{DynamicResource SE_ForegroundBrush}"/>
+        <Setter Property="ToolTipService.InitialShowDelay" Value="400"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="Bd" Background="{TemplateBinding Background}"
+                            CornerRadius="2" SnapsToDevicePixels="True"
+                            Padding="{TemplateBinding Padding}">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Bd" Property="Background"
+                                    Value="{DynamicResource Panel_ToolbarButtonHoverBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="Bd" Property="Background"
+                                    Value="{DynamicResource Panel_ToolbarButtonActiveBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value="0.35"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ── Detail TabControl — flat VS2022 style ── -->
+    <Style x:Key="WE_DetailTabControl" TargetType="TabControl">
+        <Setter Property="Background"    Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Padding"       Value="0"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TabControl">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <Border Grid.Row="0"
+                                BorderBrush="{DynamicResource SE_SeparatorBrush}"
+                                BorderThickness="0,0,0,1"
+                                Background="{DynamicResource SE_GroupHeaderBrush}">
+                            <TabPanel IsItemsHost="True" Background="Transparent" Margin="2,0,0,0"/>
+                        </Border>
+                        <ContentPresenter Grid.Row="1"
+                                          ContentSource="SelectedContent"
+                                          SnapsToDevicePixels="True"/>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ── Detail TabItem — flat header with accent underline on selected ── -->
+    <Style x:Key="WE_DetailTabItem" TargetType="TabItem">
+        <Setter Property="Background"    Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Padding"       Value="8,4"/>
+        <Setter Property="FontSize"      Value="11"/>
+        <Setter Property="Foreground"    Value="{DynamicResource SE_ForegroundBrush}"/>
+        <Setter Property="Cursor"        Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TabItem">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="2"/>
+                        </Grid.RowDefinitions>
+                        <Border x:Name="Bd" Grid.Row="0"
+                                Background="Transparent"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter ContentSource="Header"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                        <Border x:Name="Accent" Grid.Row="1"
+                                Background="Transparent"/>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Bd" Property="Background"
+                                    Value="{DynamicResource Panel_ToolbarButtonHoverBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter TargetName="Accent" Property="Background"
+                                    Value="{DynamicResource SE_AccentBrush}"/>
+                            <Setter Property="Foreground"
+                                    Value="{DynamicResource SE_ForegroundBrush}"/>
+                            <Setter Property="FontWeight" Value="SemiBold"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>

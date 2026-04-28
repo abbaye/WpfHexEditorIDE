@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "JPEG 2000 Image",
+  "formatId": "JPEG2000",
   "version": "1.15",
   "extensions": [
     ".jp2",

@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "Portable Pixmap (PPM/PGM/PBM)",
+  "formatId": "PPM",
   "version": "1.0",
   "extensions": [".ppm", ".pgm", ".pbm", ".pnm"],
   "description": "Netpbm portable bitmap, graymap, and pixmap formats originally designed for simplicity in Unix image processing pipelines. Six magic variants: P1=PBM ASCII (1-bit black/white), P2=PGM ASCII (grayscale), P3=PPM ASCII (RGB), P4=PBM binary (1-bit packed), P5=PGM binary (grayscale bytes), P6=PPM binary (RGB bytes). P7 is the PAM (Portable Arbitrary Map) extension with TUPLTYPE header. Common header structure: 2-byte magic (P1-P6) followed by optional comment lines starting with '#', then whitespace-separated width, height, and max_val (1-65535; absent for P1/P4 which are always 1-bit). A single whitespace character separates the header from binary data in binary variants. Lossless and uncompressed. Binary formats (P4-P6) are preferred for efficiency. Used by ImageMagick, GIMP, ffmpeg, and Unix image processing chains.",

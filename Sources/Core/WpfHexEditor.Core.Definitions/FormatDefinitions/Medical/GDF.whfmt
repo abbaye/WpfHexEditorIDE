@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "General Data Format (GDF)",
+  "formatId": "GDF",
   "version": "1.0",
   "extensions": [
     ".gdf"

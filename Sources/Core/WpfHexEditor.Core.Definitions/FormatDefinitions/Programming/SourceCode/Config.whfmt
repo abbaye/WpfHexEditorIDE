@@ -1,7 +1,8 @@
-﻿{
+{
   "diffMode": "binary",
   "formatName": "Configuration File",
-  "version": "2.12",
+  "formatId": "Config",
+  "version": "2.13",
   "extensions": [
     ".ini",
     ".cfg",
@@ -52,5 +53,73 @@
       "Check data integrity and field boundaries",
       "Inspect metadata and version information"
     ]
+  },
+  "syntaxDefinition": {
+    "id": "config",
+    "name": "Config / INI",
+    "extensions": [
+      ".ini",
+      ".cfg",
+      ".conf",
+      ".config",
+      ".properties",
+      ".env",
+      ".inf"
+    ],
+    "lineCommentPrefix": "#",
+    "rules": [
+      {
+        "type": "Comment",
+        "pattern": "[#;].*$"
+      },
+      {
+        "type": "Section",
+        "pattern": "^\\s*\\[[^\\]]+\\]\\s*$"
+      },
+      {
+        "type": "Key",
+        "pattern": "^\\s*[A-Za-z0-9_.\\-]+(?=\\s*[=:])"
+      },
+      {
+        "type": "String",
+        "pattern": "(\"(?:[^\"\\]|\\.)*\"|'[^']*')"
+      },
+      {
+        "type": "Number",
+        "pattern": "\b(0x[0-9A-Fa-f]+|[0-9]+(?:\\.[0-9]+)?)\b"
+      },
+      {
+        "type": "Keyword",
+        "pattern": "\b(?i)(true|false|yes|no|on|off|null|none)\b"
+      }
+    ],
+    "formattingRules": {
+      "indentSize": 4,
+      "useTabs": false,
+      "trimTrailingWhitespace": true,
+      "insertFinalNewline": true
+    },
+    "foldingRules": {
+      "startPatterns": [
+        "^\\s*\\["
+      ],
+      "endPatterns": [
+        "^\\s*\\["
+      ]
+    },
+    "ideMetadata": {
+      "isSourceFile": false,
+      "isStructuredDataFile": true,
+      "supportsClassDiagram": false,
+      "supportsSourceOutline": false,
+      "isProjectLanguage": false,
+      "aliases": [
+        "ini",
+        "properties",
+        "dotenv"
+      ],
+      "iconGlyph": "",
+      "diffMode": "text"
+    }
   }
 }

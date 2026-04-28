@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "INI Configuration File",
+  "formatId": "INI",
   "version": "1.0",
   "extensions": [ ".ini", ".cfg", ".conf", ".inf" ],
   "description": "INI configuration file format. Sections delimited by [SectionName] headers, key-value pairs written as key=value or key:value, with comments introduced by semicolons (;) or hash symbols (#). No binary magic — pure text. Encoding: typically ASCII or UTF-8, sometimes UTF-16 LE (Windows with BOM FF FE). Used extensively in Windows application configuration, game settings, Windows Setup .inf files, and system configuration files. No formal specification — implementations vary in case sensitivity, multiline support, and duplicate handling.",

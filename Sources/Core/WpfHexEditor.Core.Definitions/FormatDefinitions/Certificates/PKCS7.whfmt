@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "PKCS#7 Certificate Bundle",
+  "formatId": "PKCS7",
   "version": "1.0",
   "extensions": [ ".p7b", ".p7c", ".p7s", ".cer" ],
   "description": "PKCS#7 / CMS (Cryptographic Message Syntax, RFC 5652) container for certificates, CRLs, and signed/encrypted data. DER outer container starts with 30 82 (SEQUENCE). OID at offset ~6 distinguishes content type: 1.2.840.113549.1.7.1=Data, 1.2.840.113549.1.7.2=SignedData (p7b/p7s), 1.2.840.113549.1.7.3=EnvelopedData (encrypted), 1.2.840.113549.1.7.6=EncryptedData. p7b (certificate bundle): SignedData with empty content and certificates[] only — used for certificate chain distribution. p7s (signature): SignedData with detached or inline signed content and signerInfos[]. OID bytes for SignedData: 06 09 2A 86 48 86 F7 0D 01 07 02. PEM encoding: '-----BEGIN PKCS7-----' + base64 + '-----END PKCS7-----'. Used in Windows certificate import wizard, code signing (Authenticode), S/MIME email signing, and Java JAR signing.",

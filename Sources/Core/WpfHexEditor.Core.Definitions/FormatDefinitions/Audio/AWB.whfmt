@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "AMR-WB Audio",
+  "formatId": "AWB",
   "version": "1.15",
   "extensions": [
     ".awb"

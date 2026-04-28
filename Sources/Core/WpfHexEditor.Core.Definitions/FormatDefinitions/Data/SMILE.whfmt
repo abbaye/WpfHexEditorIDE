@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Smile Binary JSON",
+  "formatId": "SMILE",
   "version": "1.0",
   "extensions": [".smile"],
   "description": "Smile is a binary data format created by the Jackson JSON library project. It provides a compact binary encoding of JSON data with a 3-byte magic header ':)\\n' (0x3A290A) at offset 0, followed by a version byte (0x00) and a features bitflag byte. Smile supports back-references for repeated strings, raw binary data, and optional header/end markers. It is widely used in Elasticsearch and other JVM-based applications.",

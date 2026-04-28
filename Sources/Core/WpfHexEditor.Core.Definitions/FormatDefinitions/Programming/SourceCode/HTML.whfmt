@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "semantic",
   "formatName": "HTML Source File",
+  "formatId": "HTML",
   "version": "2.13",
   "extensions": [
     ".html",

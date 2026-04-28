@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "Nintendo GameCube Disc",
+  "formatId": "ROM_GCN",
   "version": "2.52",
   "extensions": [
     ".gcm",

@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "FlexBuffers",
+  "formatId": "FLEXBUFFERS",
   "version": "1.0",
   "extensions": [".flex", ".flexbuf"],
   "description": "FlexBuffers is a schemaless binary format from Google's FlatBuffers project. Unlike FlatBuffers, FlexBuffers requires no schema and stores type information inline. The root value type and byte width are encoded in the last two bytes of the buffer — there is no header magic. Data is stored bottom-up: leaf values first, then containers referencing them, with the root at the end. Supports maps, vectors, typed vectors, strings, ints, floats, and blobs.",

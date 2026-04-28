@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Android Dalvik Executable (DEX)",
+  "formatId": "DEX",
   "version": "1.0",
   "extensions": [".dex", ".odex", ".cdex"],
   "description": "Android Dalvik Executable format — the bytecode container used by the Android Dalvik VM and ART (Android RunTime). DEX files package classes, methods, fields, strings, and bytecode from compiled Android applications. The magic is 'dex\\n' (64 65 78 0A) at offset 0 followed by a 3-byte ASCII version string ('035', '036', '037', '038', '039', '040') and a null terminator. Header size is always 0x70 (112) bytes.",

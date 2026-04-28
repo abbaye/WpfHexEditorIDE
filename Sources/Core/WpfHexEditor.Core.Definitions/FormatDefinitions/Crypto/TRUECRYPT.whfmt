@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "TrueCrypt / VeraCrypt Legacy Container",
+  "formatId": "TRUECRYPT",
   "version": "1.0",
   "extensions": [ ".tc", ".truecrypt" ],
   "description": "TrueCrypt encrypted volume container format. The entire 512-byte header is encrypted — there is no plaintext magic. The first 64 bytes are a PBKDF2 salt used for key derivation with SHA-512, Whirlpool, or RIPEMD-160. The remaining 448 bytes of the header are encrypted with the derived key using AES, Serpent, or Twofish (or cascades: AES-Twofish, Serpent-AES, Twofish-Serpent, AES-Twofish-Serpent, Serpent-Twofish-AES). After decryption the header contains: magic 'TRUE' (bytes 64-67 decrypted), format version uint16 BE, minimum version to open, CRC-32 of decrypted header bytes 256-511, two 256-bit keys for data encryption, master key checksum, data area size, flags, sector size, and a 192-byte reserved area. Hidden volumes embed a second encrypted header in the last 512 bytes of the volume. VeraCrypt uses the same layout with increased PBKDF2 iterations (500000 for SHA-512 vs 1000 in TrueCrypt) and a different decrypted magic 'VERA'.",

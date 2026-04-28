@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Lua Compiled Bytecode",
+  "formatId": "LUAC",
   "version": "1.0",
   "extensions": [ ".luac", ".lua" ],
   "description": "Lua compiled bytecode files are produced by the Lua compiler (luac) from Lua source scripts. Every compiled chunk begins with the 4-byte magic 0x1B 0x4C 0x75 0x61 ('\\x1BLua'), followed by a 1-byte version (0x54 = Lua 5.4, 0x53 = Lua 5.3, 0x52 = Lua 5.2, 0x51 = Lua 5.1), a format byte (0 = official), and a 6-byte LUAC_DATA integrity sequence (0x19 0x93 0x0D 0x0A 0x1A 0x0A). Lua 5.4 added instruction size and integer/float size fields. Lua bytecode encodes functions, constants, upvalues, and debug info as serialized Lua function prototypes.",

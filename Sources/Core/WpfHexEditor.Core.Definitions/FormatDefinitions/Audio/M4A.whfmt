@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "M4A Audio",
+  "formatId": "M4A",
   "version": "1.14",
   "extensions": [
     ".m4a",

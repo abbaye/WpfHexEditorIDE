@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Apple ProRes",
+  "formatId": "PRORES",
   "version": "1.0",
   "extensions": [
     ".mov"

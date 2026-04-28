@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "text",
   "formatName": "TypeScript Source File",
+  "formatId": "TypeScript",
   "version": "2.13",
   "extensions": [
     ".ts",

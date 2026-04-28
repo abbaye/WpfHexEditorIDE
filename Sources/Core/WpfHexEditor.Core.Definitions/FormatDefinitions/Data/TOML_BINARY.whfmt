@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "TOML Binary (Experimental)",
+  "formatId": "TOML_BINARY",
   "version": "1.0",
   "extensions": [".tomlb"],
   "description": "TOML Binary is an experimental binary encoding of TOML (Tom's Obvious Minimal Language) configuration data. Unlike standard TOML which is a text format, TOML Binary aims to provide a compact pre-parsed representation for faster loading. The format has no established standard or well-known magic signature, making detection purely extension-based with weak confidence. This definition serves as a placeholder for emerging binary TOML implementations.",

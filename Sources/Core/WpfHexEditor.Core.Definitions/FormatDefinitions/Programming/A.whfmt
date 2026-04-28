@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Static Library Archive",
+  "formatId": "A",
   "version": "1.15",
   "extensions": [
     ".a"

@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "CPIO Archive",
+  "formatId": "CPIO",
   "version": "1.0",
   "extensions": [".cpio"],
   "description": "CPIO (Copy In/Out) is a Unix archive format used in Linux initramfs, RPM packages, and system administration. Three main variants exist: 'New ASCII' (SVR4/GNU cpio) with magic '070701' is the most common and used in initramfs; 'New CRC' with magic '070702' adds CRC verification; and the legacy binary format with magic 0x71C7 (little-endian) or 0xC771 (big-endian). Each archive entry consists of a header followed by a null-terminated filename padded to a 4-byte boundary, then file data also padded to a 4-byte boundary. The archive terminates with a special trailer entry named 'TRAILER!!!' (10 bytes). The newc header is 110 bytes with all numeric fields encoded as 8-digit zero-padded uppercase hexadecimal ASCII strings.",

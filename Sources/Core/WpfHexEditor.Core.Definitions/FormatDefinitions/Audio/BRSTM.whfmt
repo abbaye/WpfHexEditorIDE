@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Nintendo BRSTM Audio",
+  "formatId": "BRSTM",
   "version": "1.0",
   "extensions": [
     ".brstm"

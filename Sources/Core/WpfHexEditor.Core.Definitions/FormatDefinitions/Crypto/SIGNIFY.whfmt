@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "OpenBSD Signify Signature",
+  "formatId": "SIGNIFY",
   "version": "1.0",
   "extensions": [".sig"],
   "description": "OpenBSD signify digital signature file — a compact text-based signature format used by OpenBSD for release verification. Contains an untrusted comment line followed by a base64-encoded Ed25519 signature with embedded key number. Signify was created by Ted Unangst for the OpenBSD project as a minimal alternative to PGP.",

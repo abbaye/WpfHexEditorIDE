@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "PlayStation Portable ISO",
+  "formatId": "ROM_PSP",
   "version": "2.53",
   "extensions": [
     ".iso",

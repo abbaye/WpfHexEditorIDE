@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "sFlow",
+  "formatId": "SFLOW",
   "version": "1.14",
   "extensions": [
     ".sflow"

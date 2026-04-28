@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "TrueType Font",
+  "formatId": "TTF",
   "version": "2.02",
   "extensions": [
     ".ttf"

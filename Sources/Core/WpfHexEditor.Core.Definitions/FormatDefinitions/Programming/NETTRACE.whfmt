@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": ".NET EventPipe Trace (NetTrace)",
+  "formatId": "NETTRACE",
   "version": "1.0",
   "extensions": [ ".nettrace" ],
   "description": "EventPipe diagnostic trace file produced by the .NET runtime; starts with the magic string '!FastSerialization.1' followed by a null byte and a stream of tagged serialization objects including MetadataBlocks, EventBlocks, StackBlocks, and SequencePointBlocks.",

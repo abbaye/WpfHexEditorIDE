@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Blood RFF",
+  "formatId": "RES_BLOOD",
   "version": "1.15",
   "extensions": [
     ".rff"

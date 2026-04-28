@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Quake WAD2 Texture Archive",
+  "formatId": "WAD2",
   "version": "1.15",
   "extensions": [
     ".wad"

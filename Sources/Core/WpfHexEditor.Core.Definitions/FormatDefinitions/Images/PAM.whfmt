@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Portable Arbitrary Map",
+  "formatId": "PAM",
   "version": "1.16",
   "extensions": [
     ".pam"

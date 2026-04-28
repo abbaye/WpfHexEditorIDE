@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "X.509 Certificate",
+  "formatId": "CRT",
   "version": "1.0",
   "extensions": [
     ".crt",

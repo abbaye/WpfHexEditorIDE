@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "AVI Video",
+  "formatId": "AVI",
   "version": "2.02",
   "extensions": [
     ".avi"

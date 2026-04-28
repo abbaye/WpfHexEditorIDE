@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Krita KRA/ORA Document",
+  "formatId": "KRITA_KRA",
   "version": "1.0",
   "extensions": [
     ".kra",

@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Docker Image (docker save TAR)",
+  "formatId": "DOCKER_IMAGE",
   "version": "1.0",
   "extensions": [".tar"],
   "description": "Docker container image exported via 'docker save' — a TAR archive containing manifest.json, a JSON config file, and multiple layer tarballs. Each layer is a directory with a layer.tar file representing filesystem changes. The manifest.json at the TAR root lists all image tags, config digest, and ordered layer references.",

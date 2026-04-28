@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "DICOM Medical Image",
+  "formatId": "DICOM",
   "version": "1.0",
   "extensions": [".dcm", ".dicom"],
   "description": "DICOM (Digital Imaging and Communications in Medicine) — ISO 12052 / NEMA PS 3. Preamble: 128 zero bytes + 'DICM' magic (44 49 43 4D) at offset 128. Data elements: (group,element) tag pair + VR (Value Representation, 2B ASCII if explicit transfer syntax) + length(2B or 4B) + value. Tags: (0008,0060)=Modality (CT/MR/CR/DX), (0010,0010)=Patient Name, (0010,0020)=Patient ID, (0028,0010)=Rows, (0028,0011)=Columns, (0028,0100)=Bits Allocated (8 or 16), (0028,0030)=Pixel Spacing, (7FE0,0010)=Pixel Data. Transfer Syntax UID (0002,0010): 1.2.840.10008.1.2=Implicit LE, 1.2.840.10008.1.2.1=Explicit LE (most common), 1.2.840.10008.1.2.4.50=JPEG Baseline lossy. HIPAA: PHI in patient name, ID, DOB, StudyDate — HIGH privacy risk.",

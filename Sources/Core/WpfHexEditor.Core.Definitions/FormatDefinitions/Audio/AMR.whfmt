@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "AMR Audio",
+  "formatId": "AMR",
   "version": "1.0",
   "extensions": [".amr", ".3ga"],
   "description": "Adaptive Multi-Rate (AMR) is a speech-optimized lossy audio codec standardized by 3GPP for mobile telephony and VoIP applications. Narrowband AMR (AMR-NB) files begin with the 6-byte ASCII magic '#!AMR' followed by a newline byte 0x0A. Wideband AMR (AMR-WB) files begin with '#!AMR-WB' followed by 0x0A. AMR operates on 20ms speech frames with 8 codec modes (4.75-12.2 kbps for NB; 6.6-23.85 kbps for WB). Each frame byte starts with a 4-bit frame type (FT) and a quality indicator bit (Q). AMR is ubiquitous in mobile voice recording and 3GPP multimedia files.",

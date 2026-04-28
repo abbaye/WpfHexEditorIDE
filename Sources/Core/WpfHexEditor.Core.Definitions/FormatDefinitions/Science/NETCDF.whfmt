@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "NetCDF Scientific Data",
+  "formatId": "NETCDF",
   "version": "1.0",
   "extensions": [".nc", ".netcdf", ".cdf"],
   "description": "NetCDF (Network Common Data Form) — self-describing array-oriented scientific data format (Unidata/UCAR). Classic format magic: 'CDF\\x01' (43 44 46 01). 64-bit offset v2: 'CDF\\x02' (43 44 46 02). NetCDF-4 (HDF5-based): HDF5 magic (89 48 44 46). Classic header: magic(4B) + numrecs(4B BE: number of records, -1 if unlimited) + dim_list (tag NC_DIMENSION 0x0000000A + nelems + name/length pairs) + att_list (global attributes) + var_list (variable definitions: name, dimids, atts, type, vsize, begin offset). Data: fixed vars packed, record vars interleaved. Used in: climate models (CMIP6, ERA5 reanalysis), oceanography, atmospheric science. Key libraries: libnetcdf, xarray, SciPy.",

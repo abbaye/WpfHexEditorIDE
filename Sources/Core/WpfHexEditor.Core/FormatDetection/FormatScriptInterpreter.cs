@@ -273,6 +273,18 @@ namespace WpfHexEditor.Core.FormatDetection
                     ExecutePointerBlock(block);
                     break;
 
+                case "group":
+                    ExecuteGroupBlock(block);
+                    break;
+
+                case "header":
+                    ExecuteHeaderBlock(block);
+                    break;
+
+                case "data":
+                    ExecuteDataBlock(block);
+                    break;
+
                 default:
                     // Unknown block type — silently skip (forward compatibility)
                     break;
@@ -306,15 +318,26 @@ namespace WpfHexEditor.Core.FormatDetection
             if (offset == null || offset < 0 || offset >= _data.Length)
                 return; // Invalid offset
 
-            // Resolve length
-            var length = EvaluateLength(block.Length);
-            if (length == null || length <= 0)
-                return; // Invalid length
+            // Resolve length — sentinel/until takes priority over explicit length
+            long? length;
+            if (!string.IsNullOrEmpty(block.Until))
+            {
+                int cap = block.MaxLength > 0 ? block.MaxLength : 65536;
+                length = ScanForwardUntil(offset.Value, block.Until, cap, block.UntilInclusive);
+                if (length == null || length <= 0)
+                    return;
+            }
+            else
+            {
+                length = EvaluateLength(block.Length);
+                if (length == null || length <= 0)
+                    return; // Invalid length
+            }
 
             // Extract and store value if StoreAs is defined
             if (!string.IsNullOrWhiteSpace(block.StoreAs) && !string.IsNullOrWhiteSpace(block.ValueType))
             {
-                var extractedValue = ReadFieldValue(offset.Value, length.Value, block.ValueType, block.Endianness);
+                var extractedValue = ReadFieldValue(offset.Value, (int)length.Value, block.ValueType, block.Endianness);
                 if (extractedValue != null)
                 {
                     _variables[block.StoreAs] = extractedValue;
@@ -907,9 +930,141 @@ namespace WpfHexEditor.Core.FormatDetection
                 targetOffset, 1, brush, desc, block.Opacity > 0 ? block.Opacity : 0.4));
         }
 
+        /// <summary>
+        /// Execute a group block — visually groups sub-fields under a labeled color overlay.
+        /// Does not consume any offset itself; delegates field execution to ExecuteBlocks(Fields).
+        /// </summary>
+        private void ExecuteGroupBlock(BlockDefinition block)
+        {
+            // Execute sub-fields first so their individual offsets are resolved
+            if (block.Fields?.Count > 0)
+                ExecuteBlocks(block.Fields);
+            else if (block.Body?.Count > 0)
+                ExecuteBlocks(block.Body);
+        }
+
+        /// <summary>
+        /// Execute a header block — creates a labeled section overlay at the resolved offset,
+        /// then executes any sub-fields.
+        /// </summary>
+        private void ExecuteHeaderBlock(BlockDefinition block)
+        {
+            var offset = EvaluateOffset(block.Offset);
+            if (offset.HasValue)
+                offset = offset.Value + _contextBaseOffset;
+
+            var length = EvaluateLength(block.Length);
+
+            if (offset.HasValue && offset >= 0 && offset < _data.Length && length > 0)
+            {
+                var brush = ParseColor(block.Color ?? "#B0BEC5") ?? System.Windows.Media.Brushes.LightGray;
+                string desc = block.Name ?? "Header";
+                _generatedBlocks.Add(new CustomBackgroundBlock(
+                    offset.Value, length.Value, brush, desc, block.Opacity > 0 ? block.Opacity : 0.2));
+            }
+
+            if (block.Fields?.Count > 0)
+                ExecuteBlocks(block.Fields);
+        }
+
+        /// <summary>
+        /// Execute a data block — creates a raw byte region overlay without value extraction.
+        /// </summary>
+        private void ExecuteDataBlock(BlockDefinition block)
+        {
+            long? offset;
+            if (!string.IsNullOrWhiteSpace(block.OffsetFrom))
+            {
+                if (!_variables.TryGetValue(block.OffsetFrom, out var baseVar))
+                    return;
+                long addOff = block.OffsetAdd != null ? (EvaluateOffset(block.OffsetAdd) ?? 0L) : 0L;
+                offset = Convert.ToInt64(baseVar) + addOff;
+            }
+            else
+            {
+                offset = EvaluateOffset(block.Offset);
+                if (offset.HasValue)
+                    offset = offset.Value + _contextBaseOffset;
+            }
+
+            if (offset == null || offset < 0 || offset >= _data.Length)
+                return;
+
+            var length = EvaluateLength(block.Length);
+            if (length == null || length <= 0)
+                return;
+
+            var brush = ParseColor(block.Color ?? "#78909C") ?? System.Windows.Media.Brushes.SlateGray;
+            string desc = block.Description ?? block.Name ?? "Data";
+
+            _generatedBlocks.Add(new CustomBackgroundBlock(
+                offset.Value, length.Value, brush, desc, block.Opacity > 0 ? block.Opacity : 0.15));
+        }
+
         #endregion
 
         #region Evaluation Methods
+
+        /// <summary>
+        /// Boyer-Moore-Horspool forward scan from startOffset until the hex pattern is found.
+        /// Returns the number of bytes from startOffset to (and optionally including) the pattern.
+        /// Returns maxLength if the pattern is not found within the cap.
+        /// </summary>
+        private long? ScanForwardUntil(long startOffset, string untilExpr, int maxLength, bool inclusive)
+        {
+            if (startOffset < 0 || startOffset >= _data.Length)
+                return null;
+
+            // Resolve pattern: var: reference or literal hex string
+            string hexPattern = untilExpr;
+            if (untilExpr.StartsWith("var:"))
+            {
+                var varName = untilExpr.Substring(4);
+                if (!_variables.TryGetValue(varName, out var varVal))
+                    return maxLength; // Variable not yet set — return cap with warning
+                hexPattern = varVal?.ToString() ?? string.Empty;
+            }
+
+            // Parse hex string into byte array (spaces optional)
+            hexPattern = hexPattern.Replace(" ", "");
+            if (hexPattern.Length == 0 || hexPattern.Length % 2 != 0)
+                return maxLength;
+
+            var pattern = new byte[hexPattern.Length / 2];
+            try
+            {
+                for (int i = 0; i < pattern.Length; i++)
+                    pattern[i] = Convert.ToByte(hexPattern.Substring(i * 2, 2), 16);
+            }
+            catch { return maxLength; }
+
+            int patLen = pattern.Length;
+            long scanEnd = Math.Min(startOffset + maxLength, _data.Length - patLen + 1);
+
+            // Build bad-character skip table (Boyer-Moore-Horspool)
+            var skip = new int[256];
+            for (int i = 0; i < 256; i++) skip[i] = patLen;
+            for (int i = 0; i < patLen - 1; i++) skip[pattern[i]] = patLen - 1 - i;
+
+            long pos = startOffset;
+            while (pos < scanEnd)
+            {
+                int j = patLen - 1;
+                long k = pos + j;
+                while (j >= 0 && _data[k] == pattern[j]) { j--; k--; }
+                if (j < 0)
+                {
+                    // Pattern found at pos
+                    long len = pos - startOffset;
+                    return inclusive ? len + patLen : len;
+                }
+                pos += skip[_data[pos + patLen - 1]];
+            }
+
+            // Pattern not found — return cap (store sentinel warning in variables)
+            _variables["_until_not_found"] = untilExpr;
+            return maxLength;
+        }
 
         /// <summary>
         /// Evaluate offset expression (supports int, var:name, calc:expression)

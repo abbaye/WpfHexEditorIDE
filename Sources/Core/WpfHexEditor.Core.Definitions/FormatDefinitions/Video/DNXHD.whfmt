@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Avid DNxHD/DNxHR",
+  "formatId": "DNXHD",
   "version": "1.0",
   "extensions": [
     ".dnxhd",

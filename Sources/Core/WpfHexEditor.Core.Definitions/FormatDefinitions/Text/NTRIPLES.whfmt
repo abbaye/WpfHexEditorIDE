@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "RDF N-Triples",
+  "formatId": "NTRIPLES",
   "version": "1.0",
   "extensions": [ ".nt", ".ntriples" ],
   "description": "N-Triples is an RDF (Resource Description Framework) serialization format standardized by W3C. Each line is a triple: a subject (IRI in <> or blank node _:name), a predicate (IRI in <>), and an object (IRI, blank node, or literal), terminated by a period. Blank lines and comment lines starting with '#' are allowed. N-Triples is a subset of Turtle with no prefixes or base IRIs, making it trivially line-oriented and suitable for streaming and diff operations. Used for knowledge graphs, linked data, semantic web datasets, and large RDF dataset exchange.",

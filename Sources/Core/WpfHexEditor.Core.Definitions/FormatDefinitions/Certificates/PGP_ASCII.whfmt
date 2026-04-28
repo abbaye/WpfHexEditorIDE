@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "PGP/GPG ASCII Armor",
+  "formatId": "PGP_ASCII",
   "version": "1.0",
   "extensions": [ ".asc", ".gpg", ".pgp" ],
   "description": "PGP ASCII Armor format (OpenPGP RFC 4880). Base64-encoded OpenPGP binary data wrapped in human-readable headers. Starts with '-----BEGIN PGP ' followed by content type: 'PUBLIC KEY BLOCK-----', 'PRIVATE KEY BLOCK-----', 'MESSAGE-----', 'SIGNATURE-----', 'SIGNED MESSAGE-----'. Optional headers: Version:, Hash:, Comment:, NotDashEscaped:. Base64-encoded binary follows, then '-----END PGP [TYPE]-----'. A CRC24 checksum appears on the line before the footer (=xxxx, 4 base64 chars). Cleartext signed messages: '-----BEGIN PGP SIGNED MESSAGE-----' + Hash: header + plaintext + '-----BEGIN PGP SIGNATURE-----' + signature + '-----END PGP SIGNATURE-----'. Used by GnuPG, ProtonMail, Keybase, email signing (S/MIME alternative), software package signing (Debian, RPM), and git commit signing.",

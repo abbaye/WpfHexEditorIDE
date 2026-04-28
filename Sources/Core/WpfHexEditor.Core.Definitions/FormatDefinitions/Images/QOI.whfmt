@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "QOI Image",
+  "formatId": "QOI",
   "version": "1.15",
   "extensions": [
     ".qoi"

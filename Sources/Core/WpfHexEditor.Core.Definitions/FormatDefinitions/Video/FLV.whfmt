@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Flash Video (FLV/F4V)",
+  "formatId": "FLV",
   "version": "1.0",
   "extensions": [".flv", ".f4v", ".f4a"],
   "description": "Flash Video (FLV) is a container format used to deliver video content via Adobe Flash Player. FLV files begin with the 4-byte magic sequence 'FLV' (ASCII 46 4C 56) followed by a version byte (0x01 for version 1). The flags byte at offset 4 uses bit 0 to indicate audio presence and bit 2 to indicate video presence. The data offset field at offset 5 (uint32BE) declares the byte offset to the first tag, typically 9. FLV tags consist of header, payload, and a previous tag size footer. F4V is an evolution using the ISO BMFF container with 'f4v ' brand. FLV was the dominant web video format prior to HTML5.",

@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "PyTorch TorchScript Model",
+  "formatId": "TORCHSCRIPT",
   "version": "1.0",
   "extensions": [
     ".pt",

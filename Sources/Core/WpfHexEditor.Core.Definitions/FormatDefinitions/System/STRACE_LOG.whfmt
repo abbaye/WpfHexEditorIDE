@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "strace System Call Log",
+  "formatId": "STRACE_LOG",
   "version": "1.0",
   "extensions": [
     ".strace",

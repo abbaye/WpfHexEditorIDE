@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "semantic",
   "formatName": "XAML Source File",
+  "formatId": "XAML",
   "version": "2.15",
   "extensions": [
     ".xaml"

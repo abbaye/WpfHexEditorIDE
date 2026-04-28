@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "X.509 Certificate Revocation List",
+  "formatId": "X509_CRL",
   "version": "1.0",
   "extensions": [ ".crl" ],
   "description": "X.509 Certificate Revocation List (CRL) in DER or PEM encoding (RFC 5280). DER-encoded ASN.1 SEQUENCE starting with 30 82 (2-byte length > 127 bytes). Structure: SEQUENCE { tbsCertList SEQUENCE { version INTEGER OPTIONAL (v2=1), signature AlgorithmIdentifier, issuer Name (Distinguished Name), thisUpdate Time, nextUpdate Time OPTIONAL, revokedCertificates OPTIONAL SEQUENCE OF { userCertificate INTEGER (serial number) + revocationDate Time + crlEntryExtensions OPTIONAL }, crlExtensions [0] EXPLICIT OPTIONAL (v2 only: CRL Number, Delta CRL Indicator, Issuing Distribution Point) }, signatureAlgorithm AlgorithmIdentifier, signatureValue BIT STRING }. PEM encoding: '-----BEGIN X509 CRL-----' + base64 + '-----END X509 CRL-----'. Delta CRLs reference the full CRL via DeltaCRLIndicator extension. Used in TLS/HTTPS certificate chain validation, code signing, and PKI infrastructure. CRL Distribution Points (CDP) extension in X.509 certificates points to CRL download URLs.",

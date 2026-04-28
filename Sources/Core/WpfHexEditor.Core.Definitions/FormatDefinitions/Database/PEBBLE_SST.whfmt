@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Pebble SSTable",
+  "formatId": "PEBBLE_SST",
   "version": "1.0",
   "extensions": [".sst"],
   "description": "Pebble is CockroachDB's storage engine, a Go fork of RocksDB. Pebble SSTable files use a custom footer magic consisting of two rock emoji sequences (0xF09FAAB3F09FAAB3) which may appear near the end of the file. SSTables store sorted key-value pairs in data blocks with index blocks for fast lookup. Detection is medium confidence since the magic is in the footer, not the header.",

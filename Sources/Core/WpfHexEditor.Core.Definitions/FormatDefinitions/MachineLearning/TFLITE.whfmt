@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "TensorFlow Lite Model",
+  "formatId": "TFLITE",
   "version": "1.0",
   "extensions": [ ".tflite" ],
   "description": "TensorFlow Lite model file using FlatBuffer serialization with 'TFL3' file identifier for optimized on-device machine learning inference on mobile, embedded, and edge TPU platforms.",

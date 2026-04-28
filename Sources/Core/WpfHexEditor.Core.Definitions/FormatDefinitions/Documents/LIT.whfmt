@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Microsoft Reader LIT e-Book",
+  "formatId": "LIT",
   "version": "1.0",
   "extensions": [".lit"],
   "description": "Microsoft LIT is the proprietary e-book format for the discontinued Microsoft Reader application. It uses the ITSF (InfoTech Storage Format) container — the same format as CHM help files — with LIT-specific virtual section names and an optional DRM (Digital Rights Management) layer. The magic 'ITSF' at offset 0 is shared with CHM; LIT is distinguished by internal section names such as '/DRMStorage/' and '/content/'.",

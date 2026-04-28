@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "DTS Audio",
+  "formatId": "DTS",
   "version": "1.0",
   "extensions": [".dts", ".cpt"],
   "description": "DTS (Digital Theater Systems) is a multichannel audio compression format used in cinema, DVD, Blu-ray, and broadcast applications. DTS bitstreams begin with one of three sync word variants depending on bit depth and byte order: 0x7FFE8001 (14-bit big-endian), 0xFE7F0180 (14-bit little-endian byte-swapped), or 0x1FFFE800 (16-bit big-endian). DTS supports up to 5.1 channels natively and extends to DTS-HD Master Audio for lossless high-resolution delivery. Each frame carries audio blocks (NBLKS) and a declared frame size (FSIZE).",

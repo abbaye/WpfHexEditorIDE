@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Wavefront OBJ",
+  "formatId": "OBJ",
   "version": "1.15",
   "extensions": [
     ".obj"

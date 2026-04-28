@@ -1,5 +1,6 @@
 {
   "formatName": "RomFS Filesystem",
+  "formatId": "ROMFS",
   "version": "1.0",
   "diffMode": "binary",
   "extensions": [

@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "WebAssembly Source Map",
+  "formatId": "WASM_MAP",
   "version": "1.0",
   "extensions": [ ".wasm.map", ".map" ],
   "description": "WebAssembly source maps are JSON files conforming to the Source Map Specification v3 that associate WASM binary bytecode positions with original source code locations. They are produced by compilers like Emscripten, wasm-pack, and AssemblyScript. The file begins with '{\"version\":3' and includes 'sources' (original file paths), 'mappings' (base64 VLQ-encoded position data), and optionally 'sourcesContent' (embedded source text). Source maps enable browser developer tools and debuggers to show original C/C++/Rust/AssemblyScript source rather than WAT assembly when debugging WASM.",

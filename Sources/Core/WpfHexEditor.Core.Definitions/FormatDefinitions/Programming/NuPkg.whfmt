@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "NuGet Package",
+  "formatId": "NuPkg",
   "version": "2.02",
   "extensions": [
     ".nupkg"

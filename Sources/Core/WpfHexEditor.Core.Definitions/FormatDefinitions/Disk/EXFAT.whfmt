@@ -1,5 +1,6 @@
 {
   "formatName": "exFAT File System",
+  "formatId": "EXFAT",
   "version": "1.0",
   "diffMode": "binary",
   "extensions": [

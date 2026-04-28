@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Java KeyStore (JKS)",
+  "formatId": "JKS",
   "version": "1.0",
   "extensions": [
     ".jks",

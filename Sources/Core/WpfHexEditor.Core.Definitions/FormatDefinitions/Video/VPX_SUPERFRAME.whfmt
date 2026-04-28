@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "VP9/VP8 Superframe Index",
+  "formatId": "VPX_SUPERFRAME",
   "version": "1.0",
   "extensions": [
     ".vpx",

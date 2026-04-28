@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "text",
   "formatName": "JavaScript Source File",
+  "formatId": "JavaScript",
   "version": "2.13",
   "extensions": [
     ".js",

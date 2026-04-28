@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Certificate Signing Request (CSR / PKCS#10)",
+  "formatId": "CSR",
   "version": "1.0",
   "extensions": [ ".csr", ".req", ".p10" ],
   "description": "Certificate Signing Request as defined in PKCS#10 (RFC 2986). A CSR is submitted to a Certificate Authority (CA) to request a signed X.509 certificate. It contains the applicant's public key, distinguished name (DN), optional extensions, and a signature using the corresponding private key. Two encoding formats: PEM (base64-encoded DER wrapped in '-----BEGIN CERTIFICATE REQUEST-----' / '-----END CERTIFICATE REQUEST-----' headers) or DER (raw binary ASN.1 BER/DER encoding). The ASN.1 structure: CertificationRequest ::= SEQUENCE { certificationRequestInfo SEQUENCE { version INTEGER (0 = v1), subject Name, subjectPKInfo SubjectPublicKeyInfo, attributes [0] IMPLICIT SET }, signatureAlgorithm AlgorithmIdentifier, signature BIT STRING }. Common signature algorithms: sha256WithRSAEncryption (OID 1.2.840.113549.1.1.11), ecdsa-with-SHA256 (OID 1.2.840.10045.4.3.2), sha384WithRSAEncryption. Extensions in attributes include Subject Alternative Names (SAN), key usage, extended key usage.",

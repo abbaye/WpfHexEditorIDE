@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "RealMedia Variable Bitrate",
+  "formatId": "RMVB",
   "version": "1.15",
   "extensions": [
     ".rmvb"

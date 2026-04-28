@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "DivX Video",
+  "formatId": "DIVX",
   "version": "2.42",
   "extensions": [
     ".divx",

@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "XFS Filesystem",
+  "formatId": "XFS",
   "version": "1.14",
   "extensions": [
     ".xfs"

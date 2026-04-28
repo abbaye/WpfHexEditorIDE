@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Open Volume Kernel Library (OpenVKL)",
+  "formatId": "OPENVKL",
   "version": "1.0",
   "extensions": [
     ".vkl",

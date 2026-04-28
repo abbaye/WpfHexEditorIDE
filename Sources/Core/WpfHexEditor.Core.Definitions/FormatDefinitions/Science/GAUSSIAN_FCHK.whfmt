@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "Gaussian Formatted Checkpoint (FCHK)",
+  "formatId": "GAUSSIAN_FCHK",
   "version": "1.0",
   "extensions": [
     ".fchk",

@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "LXC/LXD Container Metadata",
+  "formatId": "LXC_META",
   "version": "1.0",
   "extensions": [".tar", ".tar.gz"],
   "description": "LXC/LXD container image metadata archive — a TAR (optionally gzip-compressed) containing metadata.yaml describing the container image properties, templates directory for cloud-init or file generation, and a rootfs directory or separate rootfs tarball. Used by LXD and Incus to distribute Linux container base images.",

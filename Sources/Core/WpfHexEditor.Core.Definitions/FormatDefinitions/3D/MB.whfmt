@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Maya Binary",
+  "formatId": "MB",
   "version": "1.14",
   "extensions": [
     ".mb"

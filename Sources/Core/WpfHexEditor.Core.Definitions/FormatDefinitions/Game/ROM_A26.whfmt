@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Atari 2600 ROM Cartridge Image",
+  "formatId": "ROM_A26",
   "version": "1.0",
   "extensions": [".a26", ".bin", ".rom"],
   "description": "Atari 2600 ROM cartridge image is a raw binary dump of an Atari 2600 (VCS) game cartridge. The format has no header — it is a flat binary image of the cartridge ROM. The Atari 2600 uses a MOS 6507 CPU (a pin-limited 6502 variant) running at 1.19 MHz. The 6507 has a 13-bit address bus giving 8KB of addressable space. Cartridges typically use bank switching to exceed this limit. Standard sizes: 2KB (2048 bytes), 4KB (4096 bytes), 8KB (F8 banking), 16KB (F6 banking), 32KB (F4 banking). The 6507 reset vector is stored little-endian at the last two bytes of the 4KB ROM page (offset 0xFFFC in 65xx address space). Common bank-switching schemes: F8 (Atari 8KB), F6 (Atari 16KB), F4 (Atari 32KB), E0 (Parker Bros 8KB), FE (Activision 8KB), E7 (M-Network 12KB). The Atari 2600 is significant as the first mass-market programmable home video game console, launched in 1977.",

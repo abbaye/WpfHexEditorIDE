@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Protocol Buffers",
+  "formatId": "PROTOBUF",
   "version": "1.14",
   "extensions": [
     ".pb",

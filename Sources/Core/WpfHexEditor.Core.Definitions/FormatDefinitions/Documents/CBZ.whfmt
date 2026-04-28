@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "Comic Book ZIP",
+  "formatId": "CBZ",
   "version": "2.02",
   "extensions": [
     ".cbz"

@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "AVIF Image",
+  "formatId": "AVIF",
   "version": "1.13",
   "extensions": [
     ".avif",

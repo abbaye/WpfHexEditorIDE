@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "Advanced SubStation Alpha",
+  "formatId": "ASS",
   "version": "1.0",
   "extensions": [ ".ass", ".ssa" ],
   "description": "Advanced SubStation Alpha (ASS/SSA) is a feature-rich INI-style subtitle format dominant in anime fansubbing; it supports per-character styling, animation, karaoke effects, clipping, motion, and typesetting via override tags in [Events] dialogue lines, with styles defined in [V4+ Styles] and metadata in [Script Info] sections.",

@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "Radiance HDR (RGBE)",
+  "formatId": "HDR",
   "version": "1.0",
   "extensions": [".hdr", ".rgbe", ".pic"],
   "description": "Radiance RGBE HDR image format designed by Greg Ward in 1989 for the Radiance lighting simulation system. The file begins with a text header. The primary magic string is '#?RADIANCE' followed by a newline (0x0A); the variant '#?RGBE' is also accepted. The header contains FORMAT=32-bit_rle_rgbe, optional EXPOSURE, COLORCORR, SOFTWARE, PIXASPECT fields, and ends with a blank line. A resolution string follows (e.g., '-Y 512 +X 1024'). Binary pixel data: each pixel is 4 bytes in RGBE format — three mantissa bytes (R, G, B) plus a shared binary exponent byte (E). Run-length encoding is applied per scanline using sentinel bytes 0x02 0x02 followed by the scanline width in 2 bytes. Used for image-based lighting (IBL), PBR rendering environment maps, and HDR photography workflows.",

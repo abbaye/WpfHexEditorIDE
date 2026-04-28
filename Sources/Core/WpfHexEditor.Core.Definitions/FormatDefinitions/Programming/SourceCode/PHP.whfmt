@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "text",
   "formatName": "PHP Source File",
+  "formatId": "PHP",
   "version": "2.13",
   "extensions": [
     ".php",

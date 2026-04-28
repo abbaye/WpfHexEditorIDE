@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "ClarisWorks / AppleWorks Document",
+  "formatId": "CWK",
   "version": "1.0",
   "extensions": [".cwk"],
   "description": "ClarisWorks (later AppleWorks) is a classic Macintosh integrated office suite that produced .cwk files for word processing, spreadsheets, databases, drawing, painting, and presentations. Files contain a 4-byte reserved region at offset 0, followed by the 4-byte ASCII magic 'BOBO' at offset 4, and a 2-byte big-endian version number at offset 8. The format uses big-endian byte order consistent with classic Mac OS conventions.",

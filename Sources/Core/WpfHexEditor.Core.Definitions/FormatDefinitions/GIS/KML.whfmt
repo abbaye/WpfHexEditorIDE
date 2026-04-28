@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "Keyhole Markup Language (KML)",
+  "formatId": "KML",
   "version": "1.0",
   "extensions": [".kml", ".kmz"],
   "description": "KML (Keyhole Markup Language) — OGC standard XML format for geospatial visualization (originally Keyhole Inc., acquired by Google 2004, OGC standard 2008). Root element: <kml xmlns='http://www.opengis.net/kml/2.2'> or 'http://earth.google.com/kml/2.1'. Key elements: <Placemark> (named geographic feature with <name>, <description>, <Point>, <LineString>, <Polygon>, <coordinates>), <Folder>, <Document>, <NetworkLink> (loads remote KML), <GroundOverlay> (image overlay), <ScreenOverlay>, <StyleMap>, <Style> (color/icon/line styles), <LookAt> (camera view). Coordinates: longitude,latitude,altitude triples (note: longitude first, then latitude). KMZ: ZIP archive containing doc.kml + resource files. Used by Google Earth, Google Maps import, QGIS, ArcGIS, NASA WorldWind.",

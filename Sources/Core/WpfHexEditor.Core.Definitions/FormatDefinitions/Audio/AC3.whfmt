@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Dolby AC-3 Audio",
+  "formatId": "AC3",
   "version": "1.0",
   "extensions": [".ac3", ".a52"],
   "description": "Dolby AC-3 (Audio Coding 3) is a lossy audio compression format developed by Dolby Laboratories. It is widely used in DVD-Video, Blu-ray, digital broadcast television, and streaming services. Each AC-3 bitstream is organized into synchronization frames starting with the 16-bit big-endian syncword 0x0B77. The bitstream ID (bsid) field identifies the variant: value 8 indicates standard AC-3, value 11 indicates E-AC-3 (Dolby Digital Plus). Sample rates are encoded in the upper 2 bits of the combined fscod/frmsizecod byte.",

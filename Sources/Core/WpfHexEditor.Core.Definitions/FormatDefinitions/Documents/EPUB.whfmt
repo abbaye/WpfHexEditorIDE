@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "EPUB eBook",
+  "formatId": "EPUB",
   "version": "2.02",
   "extensions": [
     ".epub"

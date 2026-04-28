@@ -1,5 +1,6 @@
 {
   "formatName": "Bink Video (RAD Game Tools)",
+  "formatId": "BIK",
   "version": "1.1",
   "extensions": [ ".bik", ".bk2", ".bik2" ],
   "diffMode": "binary",

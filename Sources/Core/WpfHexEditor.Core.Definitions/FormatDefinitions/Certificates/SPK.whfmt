@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "SubjectPublicKeyInfo (SPKI / Raw Public Key)",
+  "formatId": "SPK",
   "version": "1.0",
   "extensions": [ ".pub", ".spki", ".der" ],
   "description": "SubjectPublicKeyInfo (SPKI) is the ASN.1 DER structure defined in RFC 5480 and X.509 that carries a public key with its algorithm identifier. Structure: SubjectPublicKeyInfo ::= SEQUENCE { algorithm AlgorithmIdentifier { algorithm OBJECT IDENTIFIER, parameters ANY DEFINED BY algorithm OPTIONAL }, subjectPublicKey BIT STRING }. AlgorithmIdentifier OIDs: RSA = 1.2.840.113549.1.1.1 (rsaEncryption), ECDSA/ECDH = 1.2.840.10045.2.1 (id-ecPublicKey), Ed25519 = 1.3.101.112, Ed448 = 1.3.101.113, DSA = 1.2.840.10040.4.1. For RSA: subjectPublicKey BIT STRING contains SEQUENCE { modulus INTEGER, publicExponent INTEGER }. For EC: parameters is the curve OID (P-256 = 1.2.840.10045.3.1.7, P-384 = 1.3.132.0.34, P-521 = 1.3.132.0.35, X25519 = 1.3.101.110). The DER starts with 0x30 (SEQUENCE) followed by 0x81 or 0x82 length encoding. SPKI files may also be PEM-encoded with '-----BEGIN PUBLIC KEY-----' header (note: not '-----BEGIN RSA PUBLIC KEY-----' which is PKCS#1 format).",

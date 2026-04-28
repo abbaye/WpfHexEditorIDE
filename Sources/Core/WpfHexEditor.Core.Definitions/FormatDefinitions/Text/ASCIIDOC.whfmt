@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "AsciiDoc Document",
+  "formatId": "ASCIIDOC",
   "version": "1.0",
   "extensions": [ ".adoc", ".asciidoc", ".asc" ],
   "description": "AsciiDoc is a lightweight markup language for technical documentation, designed to be feature-rich while remaining readable as plain text. It was created by Stuart Rackham and is now maintained as an open specification. AsciiDoc documents start with a level-0 title ('= Title'), document attributes (':attribute: value'), or section headings ('== Section'). AsciiDoc natively supports admonitions (NOTE:, WARNING:), tables, includes, source code listings, cross-references, and bibliography. AsciiDoctor is the primary modern processor generating HTML5, PDF (via Asciidoctor-PDF), DocBook, and ePub output.",

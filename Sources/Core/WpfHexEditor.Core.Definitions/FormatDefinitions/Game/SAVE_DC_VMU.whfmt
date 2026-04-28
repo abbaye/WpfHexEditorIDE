@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Dreamcast VMU Save",
+  "formatId": "SAVE_DC_VMU",
   "version": "1.0",
   "extensions": [".vmu", ".vms", ".dci"],
   "description": "Sega Dreamcast VMU (Visual Memory Unit) save file in VMS format. The 128-byte VMS header contains: description (16 bytes wide characters, Shift-JIS encoded, as displayed on the VMU LCD), short_description (32 bytes wide characters, as displayed in the Dreamcast file manager), application_name (16 bytes ASCII, name of the game that created this file), icon_count (uint16 LE, number of animation frames for the VMU icon: 1=static, 2+=animated), animation_speed (uint16 LE, frames between icon animation steps), eyecatch_type (uint16 LE: 0=none, 1=16-color palette 512 bytes, 2=256-color palette 2048 bytes, 3=true-color 8064 bytes), CRC (uint16 LE, CRC-16 of the entire file), data_size (uint32 LE, size of the save data in bytes following the header and icon data), header_size (uint16 LE: typically 128), 20 unused bytes. The DCI format adds an additional 32-byte DCI header before the VMS data for use with DC Tools.",

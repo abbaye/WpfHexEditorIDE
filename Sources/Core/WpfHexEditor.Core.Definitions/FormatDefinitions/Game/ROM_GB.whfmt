@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "Game Boy ROM",
+  "formatId": "ROM_GB",
   "version": "1.15",
   "extensions": [
     ".gb",

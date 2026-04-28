@@ -489,34 +489,29 @@ namespace WpfHexEditor.HexEditor
                 var byteProvider = GetByteProvider();
                 var result = _formatDetectionService.DetectFormat(data, fileName, byteProvider);
 
-                if (result.Success && result.Blocks != null && result.Blocks.Count > 0)
+                if (result.Success && result.Format != null)
                 {
-                    // Clear existing blocks
-                    ClearCustomBackgroundBlock();
-
-                    // Apply detected blocks
-                    foreach (var block in result.Blocks)
+                    // Apply visual background blocks (may be empty for text-only formats)
+                    if (result.Blocks != null && result.Blocks.Count > 0)
                     {
-                        AddCustomBackgroundBlock(block);
+                        ClearCustomBackgroundBlock();
+                        foreach (var block in result.Blocks)
+                            AddCustomBackgroundBlock(block);
+
+                        // Mark whole-file "catch-all" blocks as tooltip-ineligible so that
+                        // OnCustomBackgroundBlocks mode does not fire on every byte.
+                        var fileLen = Length;
+                        if (fileLen > 0)
+                            foreach (var b in _customBackgroundService.GetAllBlocks())
+                                if (b.Length >= fileLen * 0.8)
+                                    b.ShowInTooltip = false;
                     }
 
-                    // Mark whole-file "catch-all" blocks as tooltip-ineligible so that
-                    // OnCustomBackgroundBlocks mode does not fire on every byte.
-                    var fileLen = Length;
-                    if (fileLen > 0)
-                    {
-                        foreach (var b in _customBackgroundService.GetAllBlocks())
-                        {
-                            if (b.Length >= fileLen * 0.8)
-                                b.ShowInTooltip = false;
-                        }
-                    }
-
-                    // Store the detected format, variables, candidates, and assertion results
-                    _detectedFormat = result.Format;
-                    _detectionVariables = result.Variables; // Variables from function execution
-                    _detectionCandidates = result.Candidates; // All candidates for format selector
-                    _detectionAssertions = result.AssertionResults; // D3 — assertion results for forensic panel
+                    // Store detection result regardless of whether blocks were produced.
+                    _detectedFormat      = result.Format;
+                    _detectionVariables  = result.Variables;
+                    _detectionCandidates = result.Candidates;
+                    _detectionAssertions = result.AssertionResults;
 
                     // Parse fields for the parsed fields panel (Issue #111)
                     RefreshParsedFields();

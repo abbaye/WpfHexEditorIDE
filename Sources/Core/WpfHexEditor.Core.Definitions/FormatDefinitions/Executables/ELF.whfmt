@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "ELF Executable",
+  "formatId": "ELF",
   "version": "2.02",
   "extensions": [
     "",

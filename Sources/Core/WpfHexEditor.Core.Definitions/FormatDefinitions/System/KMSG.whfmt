@@ -1,5 +1,6 @@
 {
   "formatName": "Kernel Message Log (kmsg)",
+  "formatId": "KMSG",
   "version": "1.0",
   "diffMode": "text",
   "extensions": [

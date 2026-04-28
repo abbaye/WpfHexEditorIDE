@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "OpenType Font",
+  "formatId": "OTF",
   "version": "2.02",
   "extensions": [
     ".otf"

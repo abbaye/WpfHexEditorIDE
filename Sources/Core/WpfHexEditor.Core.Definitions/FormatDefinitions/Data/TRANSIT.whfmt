@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Transit Data Format",
+  "formatId": "TRANSIT",
   "version": "1.0",
   "extensions": [".transit"],
   "description": "Transit is a data interchange format created by Cognitect (the company behind Clojure and Datomic). It extends JSON and MessagePack with rich type semantics using tagged values. Transit JSON encodes tagged values as two-element arrays like [\"~#'\", \"value\"], starting with 0x5B227E23272022. Transit supports keywords, symbols, UUIDs, dates, URIs, sets, and other types not native to JSON. Used extensively in ClojureScript and Datomic applications.",

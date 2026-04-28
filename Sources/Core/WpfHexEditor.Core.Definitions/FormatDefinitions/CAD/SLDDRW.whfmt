@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "SolidWorks Drawing",
+  "formatId": "SLDDRW",
   "version": "1.15",
   "extensions": [
     ".slddrw",

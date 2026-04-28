@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "VeraCrypt Encrypted Volume",
+  "formatId": "VERACRYPT",
   "version": "1.0",
   "extensions": [ ".vc", ".hc", ".tc" ],
   "description": "VeraCrypt (and TrueCrypt) encrypted volume. Designed for plausible deniability — the first 64KB of the outer volume is random-looking encrypted data with no binary magic, no identifiable header, and no file system signatures. The volume header is encrypted with AES-256-XTS using a key derived from the user passphrase via PBKDF2. Hidden volumes occupy the last 64KB of the outer volume protected by a second passphrase. Both file containers and full-partition volumes are indistinguishable from random data without the correct passphrase. Detection relies solely on file extension and near-maximum Shannon entropy (approximately 7.9-8.0 bits per byte). Used in high-security contexts by journalists, activists, and forensic-aware users.",

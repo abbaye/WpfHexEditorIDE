@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "DVB Subtitle Segments",
+  "formatId": "DVB_SUB",
   "version": "1.0",
   "extensions": [
     ".dvbsub"

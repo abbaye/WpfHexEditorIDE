@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "DuckDB Database",
+  "formatId": "DUCKDB",
   "version": "1.0",
   "extensions": [".duckdb", ".db"],
   "description": "DuckDB is an in-process analytical SQL database management system optimized for OLAP workloads. Database files begin with the 4-byte ASCII magic 'DUCK' (0x44554350) at offset 0, followed by an 8-byte little-endian uint64 version at offset 4 and a 4-byte LE uint32 block size at offset 12. DuckDB uses a columnar storage format with compression and vectorized query execution.",

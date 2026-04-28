@@ -1,8 +1,12 @@
 {
   "diffMode": "text",
   "formatName": "Nginx Configuration",
-  "version": "1.0",
-  "extensions": [ ".conf", ".nginx" ],
+  "formatId": "NGINX_CONF",
+  "version": "1.1",
+  "extensions": [
+    ".conf",
+    ".nginx"
+  ],
   "description": "Nginx web server configuration file (Igor Sysoev, 2004). Block-based with curly braces. Directives: directive_name param1 param2; (semicolon-terminated). Blocks: context_name [args] { directives }. Main contexts: main (top-level globals: worker_processes, error_log, pid), events { worker_connections; use epoll; multi_accept; }, http { access_log; include mime.types; gzip; upstream; server {} }, server { listen; server_name; location / {} }, upstream backend { server 127.0.0.1:8080; }, mail {}, stream {} (TCP/UDP proxy). Location matching: = (exact), ^~ (prefix priority), ~ (regex case-sensitive), ~* (regex case-insensitive), / (default prefix). Variables: $uri, $host, $remote_addr, $request_method, $scheme, $ssl_client_cert. Comments: # to EOL. Include directive: include /etc/nginx/conf.d/*.conf. Security directives: ssl_certificate, ssl_certificate_key, ssl_protocols, ssl_ciphers, add_header X-Frame-Options, limit_req_zone, allow/deny, auth_basic_user_file. Sensitive: ssl_certificate_key path, auth_basic passwords. Main config: /etc/nginx/nginx.conf. Site configs: /etc/nginx/sites-enabled/, /etc/nginx/conf.d/.",
   "category": "Programming",
   "author": "WPFHexaEditor Team",
@@ -20,10 +24,30 @@
   },
   "detection": {
     "signatures": [
-      { "value": "6576656E7473", "offset": 0, "label": "events — Nginx events block at file start", "weight": 0.4 },
-      { "value": "68747470", "offset": 0, "label": "http — Nginx http block at file start", "weight": 0.4 },
-      { "value": "776F726B65725F", "offset": 0, "label": "worker_ — Nginx worker_processes or worker_connections directive", "weight": 0.3 },
-      { "value": "23", "offset": 0, "label": "# — Nginx comment line at file start", "weight": 0.2 }
+      {
+        "value": "6576656E7473",
+        "offset": 0,
+        "label": "events — Nginx events block at file start",
+        "weight": 0.4
+      },
+      {
+        "value": "68747470",
+        "offset": 0,
+        "label": "http — Nginx http block at file start",
+        "weight": 0.4
+      },
+      {
+        "value": "776F726B65725F",
+        "offset": 0,
+        "label": "worker_ — Nginx worker_processes or worker_connections directive",
+        "weight": 0.3
+      },
+      {
+        "value": "23",
+        "offset": 0,
+        "label": "# — Nginx comment line at file start",
+        "weight": 0.2
+      }
     ],
     "matchMode": "any",
     "MinimumScore": 0.2,
@@ -85,7 +109,11 @@
   ],
   "navigation": {
     "bookmarks": [
-      { "name": "File Start", "offset": 0, "color": "#FF6B6B" }
+      {
+        "name": "File Start",
+        "offset": 0,
+        "color": "#FF6B6B"
+      }
     ]
   },
   "inspector": {
@@ -96,7 +124,10 @@
       {
         "title": "Configuration Header",
         "icon": "",
-        "fields": [ "firstByte", "firstWord" ]
+        "fields": [
+          "firstByte",
+          "firstWord"
+        ]
       }
     ]
   },
@@ -104,12 +135,18 @@
     {
       "name": "Nginx Config Summary (Text)",
       "format": "text",
-      "fields": [ "firstWord", "firstByte" ]
+      "fields": [
+        "firstWord",
+        "firstByte"
+      ]
     },
     {
       "name": "Nginx Config Metadata (JSON)",
       "format": "json",
-      "fields": [ "firstByte", "firstWord" ]
+      "fields": [
+        "firstByte",
+        "firstWord"
+      ]
     }
   ],
   "forensic": {
@@ -144,8 +181,15 @@
   ],
   "formatRelationships": {
     "category": "Programming",
-    "extensions": [ ".conf", ".nginx" ],
-    "relatedFormats": [ "YAML", "ENV_FILE", "DOCKERFILE" ],
+    "extensions": [
+      ".conf",
+      ".nginx"
+    ],
+    "relatedFormats": [
+      "YAML",
+      "ENV_FILE",
+      "DOCKERFILE"
+    ],
     "note": "Nginx uses its own block-based configuration syntax (not YAML, TOML, or JSON). Apache uses a different directive syntax with .htaccess and httpd.conf. Traefik (used in Kubernetes) uses YAML/TOML. Caddy uses Caddyfile syntax. HAProxy has its own configuration format."
   },
   "MimeTypes": [
@@ -176,5 +220,72 @@
     "LocationMatching": "= (exact), ^~ (prefix priority), ~ (regex), ~* (case-insensitive regex), default (prefix)",
     "MainConfig": "/etc/nginx/nginx.conf",
     "SiteConfigs": "/etc/nginx/sites-enabled/ or /etc/nginx/conf.d/*.conf"
+  },
+  "syntaxDefinition": {
+    "id": "nginx",
+    "name": "Nginx Config",
+    "extensions": [
+      ".conf",
+      ".nginx"
+    ],
+    "lineCommentPrefix": "#",
+    "rules": [
+      {
+        "type": "Comment",
+        "pattern": "#.*$"
+      },
+      {
+        "type": "Keyword",
+        "pattern": "\\b(server|location|upstream|http|events|stream|geo|map|limit_req_zone|limit_conn_zone|types|charset_map|split_clients|if|set|rewrite|return|proxy_pass|listen|root|index|try_files|include|log_format|access_log|error_log|worker_processes|worker_connections|keepalive_timeout|server_name|ssl_certificate|ssl_certificate_key|add_header|expires|gzip|gzip_types|fastcgi_pass|uwsgi_pass|error_page)\\b"
+      },
+      {
+        "type": "String",
+        "pattern": "(\"(?:[^\"\\\\]|\\\\.)*\"|'[^']*')"
+      },
+      {
+        "type": "Variable",
+        "pattern": "\\$[A-Za-z_][A-Za-z0-9_]*"
+      },
+      {
+        "type": "Number",
+        "pattern": "\\b[0-9]+[kKmMgG]?\\b"
+      },
+      {
+        "type": "Directive",
+        "pattern": "^\\s*[a-z_][a-z0-9_]*(?=\\s)"
+      }
+    ],
+    "formattingRules": {
+      "indentSize": 4,
+      "useTabs": false,
+      "trimTrailingWhitespace": true,
+      "insertFinalNewline": true
+    },
+    "foldingRules": {
+      "startPatterns": [
+        "\\{"
+      ],
+      "endPatterns": [
+        "\\}"
+      ]
+    },
+    "bracketPairs": [
+      {
+        "open": "{",
+        "close": "}"
+      }
+    ],
+    "ideMetadata": {
+      "isSourceFile": false,
+      "isStructuredDataFile": false,
+      "supportsClassDiagram": false,
+      "supportsSourceOutline": false,
+      "isProjectLanguage": false,
+      "aliases": [
+        "nginx.conf"
+      ],
+      "iconGlyph": "",
+      "diffMode": "text"
+    }
   }
 }

@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Nintendo Virtual Boy ROM",
+  "formatId": "ROM_VB",
   "version": "1.0",
   "extensions": [ ".vb", ".vboy" ],
   "description": "Nintendo Virtual Boy cartridge ROM image. The ROM header is located in the last 544 bytes of the ROM. For a standard 1MB (1048576 byte) ROM, the header starts at offset 0xFFFE0 (1048544). Header fields: game_title (21B ASCII padded with spaces), reserved (4B), game_code (4B ASCII), maker_code (2B ASCII), game_version (1B), country (1B). The Virtual Boy had a very small commercial library of approximately 22 games, all released in 1995. Detection is extension-based due to no magic at offset 0.",

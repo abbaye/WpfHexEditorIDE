@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Material Exchange Format",
+  "formatId": "MXF",
   "version": "1.0",
   "extensions": [".mxf"],
   "description": "Material Exchange Format (MXF) is a professional container format for digital broadcast, film production, and archiving. MXF files begin with a 16-byte KLV (Key-Length-Value) key identifying the Header Partition Pack: 06 0E 2B 34 02 05 01 01 0D 01 02 01 01 02 00 00. The first 8 bytes (060E2B3402050101) represent the SMPTE Universal Label prefix. KLV encoding uses BER (Basic Encoding Rules) for the Length field. MXF supports multiple essence wrapping modes (frame-wrapped, clip-wrapped) and carries professional metadata including editorial metadata, package metadata, and descriptor metadata.",

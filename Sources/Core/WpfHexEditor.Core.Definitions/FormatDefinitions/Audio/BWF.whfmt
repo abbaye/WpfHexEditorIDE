@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Broadcast Wave Format",
+  "formatId": "BWF",
   "version": "1.0",
   "extensions": [
     ".bwf",

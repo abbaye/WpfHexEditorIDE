@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "DFXP/TTML Subtitles",
+  "formatId": "DFXP",
   "version": "1.0",
   "extensions": [
     ".dfxp",

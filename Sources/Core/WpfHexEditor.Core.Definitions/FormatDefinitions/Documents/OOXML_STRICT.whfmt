@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Office Open XML Strict",
+  "formatId": "OOXML_STRICT",
   "version": "1.0",
   "extensions": [".docx", ".xlsx", ".pptx"],
   "description": "OOXML Strict is the ISO/IEC 29500 Strict conformance variant of Office Open XML, distinguished from the more common Transitional variant by using strict XML namespaces (e.g., http://purl.oclc.org/ooxml/...) in [Content_Types].xml and part relationships. Files are ZIP containers (PK magic 0x504B0304) containing XML parts. OOXML Strict is required for some government and archival compliance scenarios. Detection is weak since the ZIP magic is shared with Transitional OOXML.",

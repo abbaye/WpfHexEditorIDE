@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "STEP CAD File (ISO 10303)",
+  "formatId": "STEP",
   "version": "1.0",
   "extensions": [".step", ".stp", ".p21"],
   "description": "STEP (Standard for the Exchange of Product model data) is the ISO 10303-21 physical file format for product data exchange. Every STEP file starts with 'ISO-10303-21;' on the first line. The file structure has three mandatory sections: HEADER section (enclosed between 'HEADER;' and 'ENDSEC;') containing FILE_DESCRIPTION, FILE_NAME, and FILE_SCHEMA entities; DATA section (between 'DATA;' and 'ENDSEC;') containing numbered entity instances; and the 'END-ISO-10303-21;' terminator. Entity format: #N = ENTITY_TYPE(param1, param2, ...); where N is a positive integer entity ID. Parameters: real numbers, strings in single quotes, entity references (#N), enumeration values (.ENUM_VALUE.), boolean (.T./.F.), lists ((list)), optional values ($). Common schemas: AP203 (configuration management, most common), AP214 (automotive), AP242 (general 3D model data, current). Shell entities: ADVANCED_FACE, FACE_BOUND, EDGE_LOOP, ORIENTED_EDGE, EDGE_CURVE, VERTEX_POINT, CARTESIAN_POINT, DIRECTION, AXIS2_PLACEMENT_3D, PLANE, CYLINDRICAL_SURFACE, B_SPLINE_SURFACE. Used in aerospace, automotive, defense, and mechanical engineering for certified neutral 3D model exchange.",

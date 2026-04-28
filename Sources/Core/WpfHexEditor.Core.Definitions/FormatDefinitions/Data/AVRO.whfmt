@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Apache Avro",
+  "formatId": "AVRO",
   "version": "1.0",
   "extensions": [".avro"],
   "description": "Apache Avro is a row-oriented binary serialization format with a self-describing schema. Files begin with the 4-byte magic 'Obj\\u0001' (0x4F626A01) at offset 0, followed by a JSON-encoded schema embedded as an Avro header map, and a 16-byte sync marker separating data blocks. Each data block contains a count of objects, compressed bytes count, and compressed data. Avro supports DEFLATE, SNAPPY, and NULL compression. Widely used in Apache Kafka, Hadoop, and data pipeline systems requiring schema evolution.",

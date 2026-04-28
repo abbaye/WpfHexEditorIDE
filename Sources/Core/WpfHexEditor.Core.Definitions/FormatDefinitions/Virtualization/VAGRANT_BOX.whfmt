@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Vagrant Box",
+  "formatId": "VAGRANT_BOX",
   "version": "1.0",
   "extensions": [".box"],
   "description": "Vagrant box package format — a gzip-compressed TAR archive containing a Vagrantfile, box.ovf virtual machine descriptor, and one or more VMDK disk images. Vagrant boxes are the base images used by HashiCorp Vagrant to provision reproducible development environments across VirtualBox, VMware, Hyper-V, and other providers.",

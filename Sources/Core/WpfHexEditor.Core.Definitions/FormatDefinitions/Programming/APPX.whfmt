@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Windows App Package (APPX/MSIX)",
+  "formatId": "APPX",
   "version": "1.0",
   "extensions": [
     ".appx",

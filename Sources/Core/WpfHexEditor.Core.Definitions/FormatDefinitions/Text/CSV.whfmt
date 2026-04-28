@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "Comma-Separated Values",
+  "formatId": "CSV",
   "version": "1.0",
   "extensions": [ ".csv", ".tsv" ],
   "description": "CSV (Comma-Separated Values) — RFC 4180 plain text tabular format. Each line is a record with fields separated by commas (CSV) or tabs (TSV). Fields containing delimiters or newlines may be enclosed in double-quotes; embedded double-quotes are escaped as two consecutive double-quotes. An optional header row names each column. Encoding: UTF-8 (with or without BOM), UTF-16, or legacy codepages. Used universally for data exchange in spreadsheets, databases, and analytics pipelines. BOM signatures: UTF-8 = EF BB BF, UTF-16 LE = FF FE, UTF-16 BE = FE FF.",

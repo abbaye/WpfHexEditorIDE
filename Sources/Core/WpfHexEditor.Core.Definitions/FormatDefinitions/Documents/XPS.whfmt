@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "XML Paper Specification",
+  "formatId": "XPS",
   "version": "2.02",
   "extensions": [
     ".xps",

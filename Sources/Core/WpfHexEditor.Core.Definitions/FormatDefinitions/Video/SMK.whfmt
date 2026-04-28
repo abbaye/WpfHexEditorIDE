@@ -1,5 +1,6 @@
 {
   "formatName": "Smacker Video (RAD Game Tools)",
+  "formatId": "SMK",
   "version": "1.1",
   "extensions": [ ".smk", ".smk2" ],
   "diffMode": "binary",

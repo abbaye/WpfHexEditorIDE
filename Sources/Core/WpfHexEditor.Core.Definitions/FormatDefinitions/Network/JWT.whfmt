@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "JSON Web Token (JWT)",
+  "formatId": "JWT",
   "version": "1.0",
   "extensions": [ ".jwt" ],
   "description": "JWT (JSON Web Token, RFC 7519) — compact URL-safe token for representing claims between parties. Structure: base64url(header).base64url(payload).base64url(signature). Always starts with 'eyJ' (base64url encoding of '{\"'). Header JSON: {\"alg\":\"HS256\",\"typ\":\"JWT\"} or RS256, RS512, ES256, PS256, 'none'. JWA algorithms (RFC 7518): HS256/384/512 (HMAC-SHA-2 symmetric), RS256/384/512 (RSA PKCS#1 v1.5 asymmetric), ES256/384/512 (ECDSA asymmetric), PS256/384/512 (RSA-PSS), 'none' (DANGEROUS — no signature). Payload standard claims: iss (issuer), sub (subject), aud (audience), exp (expiration Unix epoch), nbf (not before), iat (issued at), jti (JWT unique ID). JWE (encrypted JWT, RFC 7516) has 5 parts separated by dots. Security risks: algorithm confusion attack (RS256 to HS256), 'none' algorithm bypass, weak HS256 secrets enable offline cracking, missing exp claim allows permanent tokens.",

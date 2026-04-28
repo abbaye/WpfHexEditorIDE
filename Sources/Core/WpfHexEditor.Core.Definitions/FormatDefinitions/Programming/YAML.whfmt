@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "YAML Configuration",
+  "formatId": "YAML",
   "version": "1.0",
   "extensions": [ ".yaml", ".yml" ],
   "description": "YAML (YAML Ain't Markup Language, spec v1.2) human-friendly data serialization. UTF-8, UTF-16, or UTF-32. Optional BOM. Starts with optional '---' document marker. Block style: key: value pairs, indentation-significant (spaces only, no tabs). Flow style: {key: value} inline. Sequences: '- item' per line (block) or [a, b, c] (flow). Multi-document streams: --- to start, ... to end. Comments: # to EOL (no block comments). Anchors: &anchor_name, Aliases: *anchor_name. Merge key: <<. Tags: !!str, !!int, !!float, !!bool, !!null, !!seq, !!map, !!timestamp, !!python/object. YAML 1.1 (PyYAML, Ruby): yes/no/on/off parsed as booleans — DANGEROUS in configuration files. YAML 1.2 (ruamel.yaml, strictyaml): only true/false are booleans. Multiline strings: | (literal, preserve newlines), > (folded, collapse newlines). Used by: Kubernetes manifests, Docker Compose, GitHub Actions, GitLab CI, Ansible playbooks, Helm charts, Spring Boot, Ruby on Rails.",

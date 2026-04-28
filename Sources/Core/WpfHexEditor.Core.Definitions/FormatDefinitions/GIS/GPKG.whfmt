@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "GeoPackage (GPKG)",
+  "formatId": "GPKG",
   "version": "1.0",
   "extensions": [".gpkg"],
   "description": "GeoPackage (GPKG) — OGC standard (OGC 12-128r15) open format for geospatial data based on SQLite3. SQLite3 magic: 'SQLite format 3' (53 51 4C 69 74 65 20 66 6F 72 6D 61 74 20 33 00, 16 bytes). GeoPackage application_id at SQLite offset 68 (PRAGMA application_id): 0x47504B47 (ASCII 'GPKG'). Contains: gpkg_contents table (layer descriptions, last_change, bounding box, srs_id), gpkg_geometry_columns (geometry types per layer), gpkg_spatial_ref_sys (EPSG CRS definitions), gpkg_tile_matrix_set (raster tiles). Geometry: Well-Known Binary (WKB) with GPKG envelope header. Supports: vector features, raster tile pyramids, extensions (metadata, elevation, 3D). Single-file GIS database replacement for Shapefile.",

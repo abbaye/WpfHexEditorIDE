@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "PFRO Registry Data",
+  "formatId": "PFRO",
   "version": "1.15",
   "extensions": [
     ""

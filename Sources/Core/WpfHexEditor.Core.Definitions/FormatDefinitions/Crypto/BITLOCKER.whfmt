@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "BitLocker Encrypted Volume",
+  "formatId": "BITLOCKER",
   "version": "1.0",
   "extensions": [ ".vhd", ".img" ],
   "description": "BitLocker Drive Encryption volume format used by Microsoft Windows. The volume begins with a modified FAT/NTFS boot sector whose OEM ID at offset 3 is '-FVE-FS-' (8 bytes: 0x2D 0x46 0x56 0x45 0x2D 0x46 0x53 0x2D) instead of the usual 'NTFS    ' or 'MSDOS5.0'. BitLocker replaces the standard BPB (BIOS Parameter Block) with a FVE (Full Volume Encryption) header that records the encryption method, volume header offset, metadata block locations, and GUID. The encryption method is stored in the FVE metadata and maps to: 0x2003=AES-CBC 128-bit, 0x2004=AES-CBC 256-bit, 0x2005=AES-XTS 128-bit, 0x2006=AES-XTS 256-bit. The entire volume payload is encrypted; only the first sector header fields are plaintext. Three copies of FVE metadata exist at different offsets for redundancy. BitLocker uses a VMK (Volume Master Key) protected by a KP (Key Protector) which may be a password, TPM, recovery key, or smart card.",

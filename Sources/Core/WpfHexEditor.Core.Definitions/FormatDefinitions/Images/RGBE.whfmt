@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "Radiance RGBE/XYZE HDR Image",
+  "formatId": "RGBE",
   "version": "1.0",
   "extensions": [
     ".hdr",

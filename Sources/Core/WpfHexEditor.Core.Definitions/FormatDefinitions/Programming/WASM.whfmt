@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "WebAssembly Binary Module",
+  "formatId": "WASM",
   "version": "1.0",
   "extensions": [".wasm"],
   "description": "WebAssembly binary module format — a portable, sandboxed instruction set designed for safe execution in web browsers and server-side runtimes. Files start with the 4-byte magic '\\u0000asm' (0x00 0x61 0x73 0x6D) followed by a 4-byte LE version number (currently 1). The body consists of typed sections identified by a 1-byte section ID and LEB128-encoded size.",

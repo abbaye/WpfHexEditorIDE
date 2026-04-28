@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "HL7 v2 Message",
+  "formatId": "HL7",
   "version": "1.0",
   "extensions": [".hl7", ".txt"],
   "description": "HL7 v2 (Health Level Seven version 2) messaging standard — most widely deployed healthcare data format worldwide. Every message starts with MSH segment: 'MSH|^~\\&|' — MSH followed by field separator '|', encoding characters '^~\\&', then sender application, sending facility, receiving application, receiving facility, date/time, security, message type, message control ID, processing ID, version ID. Segments: MSH (header), PID (patient ID: name, DOB, SSN, address, phone), PV1 (visit info), OBR (observation request), OBX (observation result: lab values, vitals), ADT (admit/discharge/transfer), ORU (observation result unsolicited), ORM (order message). Segment separator: CR (0x0D). Field separator: | (0x7C). Critical PHI: patient name, SSN, address in PID segment.",

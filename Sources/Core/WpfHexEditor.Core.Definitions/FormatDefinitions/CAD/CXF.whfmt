@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "AutoCAD Character Exchange Format",
+  "formatId": "CXF",
   "version": "2.43",
   "extensions": [
     ".cxf"

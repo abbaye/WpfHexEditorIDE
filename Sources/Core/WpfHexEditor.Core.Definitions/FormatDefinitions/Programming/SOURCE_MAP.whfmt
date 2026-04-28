@@ -1,8 +1,11 @@
 {
   "diffMode": "text",
   "formatName": "JavaScript Source Map",
-  "version": "1.0",
-  "extensions": [".map"],
+  "formatId": "SOURCE_MAP",
+  "version": "1.1",
+  "extensions": [
+    ".map"
+  ],
   "description": "JavaScript Source Map (Source Map Specification v3) — JSON file mapping minified or transpiled JavaScript/CSS back to original source files. Root JSON object with required fields: 'version' (integer, must be 3), 'sources' (array of source file paths), 'mappings' (base64 VLQ-encoded mapping string). Optional fields: 'file' (generated filename), 'sourceRoot' (prefix for source paths), 'sourcesContent' (array of embedded source file contents), 'names' (symbol names for rename mapping). Mappings string: semicolons separate generated output lines, commas separate segments within a line. Each segment encodes: generated column (VLQ), source file index (VLQ delta), original line (VLQ delta), original column (VLQ delta), names index (VLQ delta, optional). Used by: webpack, Rollup, Vite, TypeScript tsc, Babel, Sass, PostCSS. Browser DevTools read source maps automatically for debugging minified code.",
   "category": "Programming",
   "author": "WPFHexaEditor Team",
@@ -38,7 +41,10 @@
     "MinimumScore": 0.5,
     "required": false,
     "Strength": "Medium",
-    "EntropyHint": { "min": 3.5, "max": 6.5 },
+    "EntropyHint": {
+      "min": 3.5,
+      "max": 6.5
+    },
     "validation": {
       "minFileSize": 2,
       "maxSignatureOffset": 0,
@@ -101,7 +107,12 @@
   ],
   "navigation": {
     "bookmarks": [
-      { "name": "Source Map Root", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" }
+      {
+        "name": "Source Map Root",
+        "offset": 0,
+        "icon": "",
+        "color": "#FF6B6B"
+      }
     ]
   },
   "inspector": {
@@ -111,8 +122,11 @@
     "groups": [
       {
         "title": "Source Map Header",
-        "icon": "\uE71B",
-        "fields": ["firstByte", "versionField"]
+        "icon": "",
+        "fields": [
+          "firstByte",
+          "versionField"
+        ]
       }
     ]
   },
@@ -120,12 +134,17 @@
     {
       "name": "Source Map Info (JSON)",
       "format": "json",
-      "fields": ["firstByte", "versionField"]
+      "fields": [
+        "firstByte",
+        "versionField"
+      ]
     },
     {
       "name": "Source Map Header (Text)",
       "format": "text",
-      "fields": ["versionField"]
+      "fields": [
+        "versionField"
+      ]
     }
   ],
   "forensic": {
@@ -157,8 +176,12 @@
   ],
   "formatRelationships": {
     "category": "Programming",
-    "extensions": [".map"],
-    "relatedFormats": ["WEBMANIFEST"],
+    "extensions": [
+      ".map"
+    ],
+    "relatedFormats": [
+      "WEBMANIFEST"
+    ],
     "note": "Source maps are JSON files but have a distinct purpose from general JSON. The .map extension is shared with linker MAP files (binary, completely different format). Source map v4 (TC39 proposal) adds 'scopes' field for better representation of inlined functions and closures. WASM source maps follow the same v3 format."
   },
   "MimeTypes": [
@@ -187,5 +210,60 @@
     "Standard": "Source Map Specification v3 — Google/Mozilla (2011)",
     "Endianness": "N/A (JSON text)",
     "Mappings": "Base64 VLQ-encoded, semicolons for lines, commas for segments, 1/4/5 fields per segment"
+  },
+  "syntaxDefinition": {
+    "id": "sourcemap",
+    "name": "Source Map (JSON)",
+    "extensions": [
+      ".map"
+    ],
+    "lineCommentPrefix": "//",
+    "rules": [
+      {
+        "type": "Key",
+        "pattern": "\"(?:[^\"\\\\]|\\\\.)*\"(?=\\s*:)"
+      },
+      {
+        "type": "Keyword",
+        "pattern": "\\b(true|false|null)\\b"
+      },
+      {
+        "type": "Number",
+        "pattern": "-?(?:0|[1-9][0-9]*)(?:\\.[0-9]+)?(?:[eE][+-]?[0-9]+)?"
+      },
+      {
+        "type": "String",
+        "pattern": "\"(?:[^\"\\\\]|\\\\.)*\""
+      }
+    ],
+    "formattingRules": {
+      "indentSize": 2,
+      "useTabs": false,
+      "trimTrailingWhitespace": true,
+      "insertFinalNewline": true
+    },
+    "foldingRules": {
+      "startPatterns": [
+        "\\{",
+        "\\["
+      ],
+      "endPatterns": [
+        "\\}",
+        "\\]"
+      ]
+    },
+    "ideMetadata": {
+      "isSourceFile": false,
+      "isStructuredDataFile": true,
+      "supportsClassDiagram": false,
+      "supportsSourceOutline": false,
+      "isProjectLanguage": false,
+      "aliases": [
+        "js.map",
+        "ts.map"
+      ],
+      "iconGlyph": "",
+      "diffMode": "semantic"
+    }
   }
 }

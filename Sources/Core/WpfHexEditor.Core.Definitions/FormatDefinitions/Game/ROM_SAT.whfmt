@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "Sega Saturn Disc Image",
+  "formatId": "ROM_SAT",
   "version": "1.14",
   "extensions": [
     ".iso",

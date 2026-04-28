@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "text",
   "formatName": "C Source File",
+  "formatId": "C",
   "version": "2.13",
   "extensions": [
     ".c",

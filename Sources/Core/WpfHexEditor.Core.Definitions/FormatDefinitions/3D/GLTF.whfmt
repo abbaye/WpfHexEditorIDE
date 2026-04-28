@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "GL Transmission Format",
+  "formatId": "GLTF",
   "version": "2.32",
   "extensions": [
     ".gltf"

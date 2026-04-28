@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "Polygon File Format (PLY)",
+  "formatId": "PLY",
   "version": "1.0",
   "extensions": [".ply"],
   "description": "PLY (Polygon File Format, also known as Stanford Triangle Format) is a flexible 3D mesh storage format developed at Stanford University. Every PLY file starts with 'ply' followed by a newline (0x0A). The text header continues with: 'format ascii 1.0', 'format binary_little_endian 1.0', or 'format binary_big_endian 1.0'. Element declarations: 'element vertex N' followed by property lines (e.g., 'property float x', 'property float y', 'property float z', 'property uchar red', 'property uchar green', 'property uchar blue', 'property uchar alpha', 'property float nx', 'property float ny', 'property float nz'). Face declarations: 'element face N' with 'property list uchar int vertex_index' (or 'vertex_indices'). The header terminates with 'end_header' followed by a newline. Comment lines start with 'comment'. Object info lines start with 'obj_info'. Used by: MeshLab, Blender, Open3D, CloudCompare, PCL (Point Cloud Library), LiDAR scanners. Classic 3D scan datasets: Stanford Bunny, Dragon, Armadillo, Happy Buddha.",

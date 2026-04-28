@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "dBASE III Database",
+  "formatId": "DBASE3",
   "version": "1.13",
   "extensions": [
     ".dbf"

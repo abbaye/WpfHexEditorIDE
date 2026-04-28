@@ -1,8 +1,12 @@
 {
   "diffMode": "text",
   "formatName": "Web App Manifest",
-  "version": "1.0",
-  "extensions": [".webmanifest", ".manifest"],
+  "formatId": "WEBMANIFEST",
+  "version": "1.1",
+  "extensions": [
+    ".webmanifest",
+    ".manifest"
+  ],
   "description": "Web App Manifest (W3C standard) — JSON file enabling Progressive Web Apps (PWA). Root JSON object with fields: 'name' (full app name), 'short_name' (launcher/home screen name), 'start_url' (URL to open on app launch), 'display' ('standalone', 'fullscreen', 'minimal-ui', 'browser'), 'background_color' (splash screen color), 'theme_color' (browser chrome color), 'icons' (array of {src, sizes, type} icon objects for various resolutions), 'description', 'lang', 'scope' (navigation scope boundary), 'shortcuts' (quick action list), 'categories', 'screenshots', 'protocol_handlers', 'share_target'. Linked via HTML: <link rel='manifest' href='manifest.webmanifest'>. Enables: add to home screen, splash screen, custom icons, offline mode (with Service Worker), push notifications, and app store publishing (TWA). JSON format — first byte always '{' (0x7B).",
   "category": "Programming",
   "author": "WPFHexaEditor Team",
@@ -32,7 +36,10 @@
     "MinimumScore": 0.1,
     "required": false,
     "Strength": "Weak",
-    "EntropyHint": { "min": 3.0, "max": 6.0 },
+    "EntropyHint": {
+      "min": 3.0,
+      "max": 6.0
+    },
     "validation": {
       "minFileSize": 2,
       "maxSignatureOffset": 0,
@@ -89,7 +96,12 @@
   ],
   "navigation": {
     "bookmarks": [
-      { "name": "Manifest Root", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" }
+      {
+        "name": "Manifest Root",
+        "offset": 0,
+        "icon": "",
+        "color": "#FF6B6B"
+      }
     ]
   },
   "inspector": {
@@ -99,8 +111,11 @@
     "groups": [
       {
         "title": "Manifest Header",
-        "icon": "\uE71B",
-        "fields": ["firstByte", "jsonStart"]
+        "icon": "",
+        "fields": [
+          "firstByte",
+          "jsonStart"
+        ]
       }
     ]
   },
@@ -108,12 +123,17 @@
     {
       "name": "Manifest Info (JSON)",
       "format": "json",
-      "fields": ["firstByte", "jsonStart"]
+      "fields": [
+        "firstByte",
+        "jsonStart"
+      ]
     },
     {
       "name": "Manifest Start (Text)",
       "format": "text",
-      "fields": ["jsonStart"]
+      "fields": [
+        "jsonStart"
+      ]
     }
   ],
   "forensic": {
@@ -144,8 +164,13 @@
   ],
   "formatRelationships": {
     "category": "Programming",
-    "extensions": [".webmanifest", ".manifest"],
-    "relatedFormats": ["SOURCE_MAP"],
+    "extensions": [
+      ".webmanifest",
+      ".manifest"
+    ],
+    "relatedFormats": [
+      "SOURCE_MAP"
+    ],
     "note": "Web App Manifest is often named manifest.json (older convention) or app.webmanifest. The MIME type application/manifest+json is required by W3C. Service Workers (sw.js) work alongside manifests to provide offline functionality. Chrome Extensions also use manifest.json (v3) — a completely different format not to be confused with Web App Manifest."
   },
   "MimeTypes": [
@@ -174,5 +199,59 @@
     "Standard": "W3C Web Application Manifest — Candidate Recommendation",
     "Endianness": "N/A (JSON text)",
     "MimeType": "application/manifest+json (required by W3C for proper parsing)"
+  },
+  "syntaxDefinition": {
+    "id": "webmanifest",
+    "name": "Web App Manifest (JSON)",
+    "extensions": [
+      ".webmanifest",
+      ".manifest"
+    ],
+    "rules": [
+      {
+        "type": "Key",
+        "pattern": "\"(?:[^\"\\\\]|\\\\.)*\"(?=\\s*:)"
+      },
+      {
+        "type": "Keyword",
+        "pattern": "\\b(true|false|null)\\b"
+      },
+      {
+        "type": "Number",
+        "pattern": "-?(?:0|[1-9][0-9]*)(?:\\.[0-9]+)?(?:[eE][+-]?[0-9]+)?"
+      },
+      {
+        "type": "String",
+        "pattern": "\"(?:[^\"\\\\]|\\\\.)*\""
+      }
+    ],
+    "formattingRules": {
+      "indentSize": 2,
+      "useTabs": false,
+      "trimTrailingWhitespace": true,
+      "insertFinalNewline": true
+    },
+    "foldingRules": {
+      "startPatterns": [
+        "\\{",
+        "\\["
+      ],
+      "endPatterns": [
+        "\\}",
+        "\\]"
+      ]
+    },
+    "ideMetadata": {
+      "isSourceFile": false,
+      "isStructuredDataFile": true,
+      "supportsClassDiagram": false,
+      "supportsSourceOutline": false,
+      "isProjectLanguage": false,
+      "aliases": [
+        "pwa-manifest"
+      ],
+      "iconGlyph": "",
+      "diffMode": "semantic"
+    }
   }
 }

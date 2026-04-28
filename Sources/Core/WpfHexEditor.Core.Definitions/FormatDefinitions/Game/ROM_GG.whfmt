@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Sega Game Gear ROM",
+  "formatId": "ROM_GG",
   "version": "1.0",
   "extensions": [ ".gg" ],
   "description": "Sega Game Gear cartridge ROM image. Contains the standard 'TMR SEGA' header at offset 0x7FF0 (32752) within the ROM's last 16KB bank. The header layout is: 'TMR SEGA' (8B ASCII), product_code (3B BCD-encoded), version nibble, region/size byte (region bits 7-4, size bits 3-0), and checksum (2B LE). Identical header structure to the Sega Master System (SMS) format but the ROM executes only on Game Gear hardware.",

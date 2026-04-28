@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "JT Open CAD Format",
+  "formatId": "JT",
   "version": "1.0",
   "extensions": [".jt"],
   "description": "JT (Jupiter Tessellation) is an ISO standard (ISO 14306) lightweight 3D CAD data format developed by Siemens Digital Industries Software (formerly UGS/EDS). JT files begin with an ASCII version string 'Version X.Y' (e.g., 'Version 8.1', 'Version 9.5', 'Version 10.0') followed by a newline and a Siemens copyright line. After the ASCII header, JT files contain a binary section with a File Header (file path, byte order, file size, offsets to the TOC and shape header), a Segment directory table, and an LSG (Logical Scene Graph) organizing model parts hierarchically. JT supports multiple LOD levels: wireframe, tessellated mesh, and exact B-rep (BREP). Segment types include LSG (scene graph), TriStrip Shape, Polyline Shape, Precise B-rep, and CAD metadata. JT is the primary PLM visualization format for Siemens Teamcenter and is mandated in automotive and aerospace supply chains for lightweight design review.",

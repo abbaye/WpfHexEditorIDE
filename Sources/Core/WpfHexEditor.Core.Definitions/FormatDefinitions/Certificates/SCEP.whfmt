@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "SCEP (Simple Certificate Enrollment Protocol)",
+  "formatId": "SCEP",
   "version": "1.0",
   "extensions": [".scep", ".der"],
   "description": "Simple Certificate Enrollment Protocol message — a DER-encoded PKCS#7/CMS envelope used for automated certificate enrollment between devices and certificate authorities. SCEP messages wrap CSRs (PKCSReq) or certificate responses (CertRep) inside SignedData or EnvelopedData CMS structures. Widely used in MDM and network device provisioning.",

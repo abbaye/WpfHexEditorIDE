@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "text",
   "formatName": "Swift Source File",
+  "formatId": "Swift",
   "version": "2.13",
   "extensions": [
     ".swift"

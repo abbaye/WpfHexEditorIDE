@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "Cabinet Archive",
+  "formatId": "CAB",
   "version": "1.12",
   "extensions": [
     ".cab"

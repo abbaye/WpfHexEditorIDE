@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "FlatBuffers Binary",
+  "formatId": "FLATBUF",
   "version": "1.0",
   "extensions": [
     ".bin",

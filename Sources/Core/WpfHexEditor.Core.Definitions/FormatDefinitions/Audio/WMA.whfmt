@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Windows Media Audio (ASF)",
+  "formatId": "WMA",
   "version": "1.0",
   "extensions": [".wma", ".asf"],
   "description": "Windows Media Audio (WMA) is a family of lossy and lossless audio codecs developed by Microsoft, encapsulated in the Advanced Systems Format (ASF) container. All ASF files begin with a 16-byte GUID header object identifier: 30 26 B2 75 8E 66 CF 11 A6 D9 00 AA 00 62 CE 6C. The ASF header object declares the total header size (uint64LE at offset 16) and the number of contained sub-objects (uint32LE at offset 24). WMA variants include WMA Standard, WMA Pro (multichannel), WMA Lossless, and WMA Voice (low-bitrate speech).",

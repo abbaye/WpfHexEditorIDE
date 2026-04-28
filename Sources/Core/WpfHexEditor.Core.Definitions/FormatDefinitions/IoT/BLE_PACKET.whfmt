@@ -1,5 +1,6 @@
 {
   "formatName": "BLE Packet",
+  "formatId": "BLE_PACKET",
   "version": "1.0",
   "diffMode": "binary",
   "extensions": [

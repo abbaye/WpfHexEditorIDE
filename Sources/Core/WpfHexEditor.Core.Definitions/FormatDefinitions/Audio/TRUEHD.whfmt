@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Dolby TrueHD",
+  "formatId": "TRUEHD",
   "version": "1.15",
   "extensions": [
     ".thd",

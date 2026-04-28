@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Unity Asset",
+  "formatId": "ASSET",
   "version": "1.15",
   "extensions": [
     ".asset"

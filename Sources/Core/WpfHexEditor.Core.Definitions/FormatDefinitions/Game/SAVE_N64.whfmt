@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Nintendo 64 Save",
+  "formatId": "SAVE_N64",
   "version": "1.0",
   "extensions": [".sra", ".fla", ".eep", ".n64"],
   "description": "Nintendo 64 battery-backed save data. Four storage types are identified by file size: EEPROM 4 Kbit (512 bytes, serial 8-byte pages, Pokemon Snap, Ocarina of Time title screen), EEPROM 16 Kbit (2048 bytes, Zelda: Ocarina of Time, Majora's Mask), SRAM 256 Kbit (32768 bytes, 256-byte addressed pages, Zelda: OoT backup), Flash RAM 1 Mbit (131072 bytes, NEC D43256GU or compatible, 4 KB sectors with page-write, Pokemon Stadium 2). No magic header — raw save data from the cartridge. Some emulators (Project64, Mupen64Plus) may prefix saves with a 4-byte endianness marker: 0x80371240=Z64 big-endian, 0x37804012=V64 byte-swapped, 0x40123780=little-endian. N64 is a big-endian MIPS R4300i platform. Extension conventions: .eep=EEPROM, .sra=SRAM, .fla=Flash RAM.",

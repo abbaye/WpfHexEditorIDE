@@ -32,6 +32,17 @@ namespace WpfHexEditor.HexEditor
 {
     public partial class HexEditor
     {
+        #region Events
+
+        /// <summary>
+        /// Raised when the user selects a parsed field and requests navigation to its
+        /// source block in the associated whfmt CodeEditor.
+        /// Subscribe from the app layer to forward to a ICodeEditorNavigator.
+        /// </summary>
+        public event EventHandler<ParsedFieldNavigationArgs> ParsedFieldNavigationRequested;
+
+        #endregion
+
         #region Dependency Properties
 
         /// <summary>
@@ -56,9 +67,12 @@ namespace WpfHexEditor.HexEditor
         {
             if (d is not HexEditor editor) return;
 
-            // Disconnect old panel from the service
-            if (e.OldValue is IParsedFieldsPanel)
+            // Disconnect old panel from the service and unsubscribe navigation event
+            if (e.OldValue is IParsedFieldsPanel oldPanel)
+            {
                 editor._formatParsingService?.DisconnectPanel();
+                oldPanel.FieldSelected -= editor.OnPanelFieldSelectedForNavigation;
+            }
 
             // Connect new panel to the service
             if (e.NewValue is IParsedFieldsPanel newPanel)
@@ -71,10 +85,17 @@ namespace WpfHexEditor.HexEditor
                     editor.AttachDataSourceToParsingService();
 
                 editor._formatParsingService?.ConnectPanel(newPanel);
-                // ConnectPanel already schedules ParseFieldsOnDispatcher if _activeFormat is set.
-                // Only set enriched metadata (no parse trigger).
+                newPanel.FieldSelected += editor.OnPanelFieldSelectedForNavigation;
+
+                // If a format was previously detected on this tab, sync it into the service
+                // so ParseFieldsOnDispatcher runs immediately (ConnectPanel only parses when
+                // _activeFormat is already set on the service — which it isn't on a tab switch
+                // because SyncDetectionResultsToService is only called after auto-detect completes).
                 if (editor._detectedFormat != null)
+                {
+                    editor.SyncDetectionResultsToService();
                     newPanel.SetEnrichedFormat(editor._detectedFormat);
+                }
             }
         }
 
@@ -127,6 +148,16 @@ namespace WpfHexEditor.HexEditor
                 if (HexViewport != null)
                     HexViewport.ByteClicked += HexViewport_ByteClickedForFieldSelect;
             };
+        }
+
+        /// <summary>
+        /// Raised by IParsedFieldsPanel.FieldSelected — fires ParsedFieldNavigationRequested
+        /// so the app layer can forward the field name to a whfmt CodeEditor navigator.
+        /// </summary>
+        private void OnPanelFieldSelectedForNavigation(object sender, ParsedFieldViewModel field)
+        {
+            if (field == null) return;
+            ParsedFieldNavigationRequested?.Invoke(this, new ParsedFieldNavigationArgs(field.Name, field.GroupName));
         }
 
         /// <summary>

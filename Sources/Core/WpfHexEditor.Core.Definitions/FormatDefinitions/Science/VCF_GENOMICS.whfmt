@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "Variant Call Format (VCF)",
+  "formatId": "VCF_GENOMICS",
   "version": "1.0",
   "extensions": [
     ".vcf",

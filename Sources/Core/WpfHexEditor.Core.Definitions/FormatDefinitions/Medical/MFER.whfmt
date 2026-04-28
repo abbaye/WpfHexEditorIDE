@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "MFER Medical Waveform Format",
+  "formatId": "MFER",
   "version": "1.0",
   "extensions": [
     ".mwf",

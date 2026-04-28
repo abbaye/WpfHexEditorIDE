@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Object File Format",
+  "formatId": "OFF",
   "version": "1.15",
   "extensions": [
     ".off"

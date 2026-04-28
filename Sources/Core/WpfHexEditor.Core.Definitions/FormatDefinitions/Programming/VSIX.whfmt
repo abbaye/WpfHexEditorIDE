@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Visual Studio Extension",
+  "formatId": "VSIX",
   "version": "1.0",
   "extensions": [
     ".vsix"

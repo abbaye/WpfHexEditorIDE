@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "text",
   "formatName": "Assembly Source File",
+  "formatId": "Assembly",
   "version": "2.13",
   "extensions": [
     ".asm",

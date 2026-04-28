@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "KeePass Password Database (KDBX)",
+  "formatId": "KEEPASS_KDBX",
   "version": "1.0",
   "extensions": [ ".kdbx", ".kdb" ],
   "description": "KeePass password manager database format. The file begins with an 8-byte magic signature: 0x03 0xD9 0xA2 0x9A 0x67 0xFB 0x4B 0xB5. Following the magic are two 16-bit version fields (minor then major, both little-endian). Major version 1 = KDB (KeePass 1.x legacy binary format with RC4/AES encryption), version 2 = KDBX2 (XML payload, AES-256/Twofish, Salsa20 stream), version 3 = KDBX3 (improved header with per-field TLV entries, AES-KDF, ChaCha20 inner stream), version 4 = KDBX4 (Argon2 KDF support, HMAC-SHA256 authentication, chunked encrypted payload). KDBX3/4 headers consist of TLV (Type-Length-Value) records: type 1=Comment, 2=CipherID (UUID), 3=CompressionFlags, 4=MasterSeed, 5=TransformSeed, 6=TransformRounds, 7=EncryptionIV, 8=InnerRandomStreamKey, 9=StreamStartBytes (v3), 10=InnerRandomStreamID, 11=KdfParameters (v4), 12=PublicCustomData (v4). The encrypted XML payload contains the group/entry tree with all credentials. All passwords, URLs, notes, and attachments are in the encrypted region.",

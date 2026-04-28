@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "Scalable Vector Graphics (SVG)",
+  "formatId": "SVG",
   "version": "1.0",
   "extensions": [".svg", ".svgz"],
   "description": "SVG (Scalable Vector Graphics) — W3C XML-based 2D vector image format (1999, SVG 2.0 current). Starts with XML declaration '<?xml' or directly with '<svg'. Root element: <svg xmlns='http://www.w3.org/2000/svg' width='...' height='...' viewBox='...'>. Elements: <path d='M10,10 L90,90'> (Bezier curves, arcs), <circle>, <rect>, <ellipse>, <line>, <polyline>, <polygon>, <text> (with <tspan>), <image> (embedded raster), <g> (group), <defs> (reusable definitions), <use> (instance/clone), <symbol>, <marker>, <pattern>, <linearGradient>, <radialGradient>, <clipPath>, <mask>, <filter> (blur/shadow/compositing), <animate>, <animateTransform>, <animateMotion>, <set>. Embedded JavaScript: <script>. Embedded CSS: <style>. SVGZ: gzip-compressed SVG (magic 1F 8B). Security risk: SVG can contain JavaScript and external resource references — XSS risk when served as image/svg+xml and rendered by browsers. Inline SVG in HTML does not have the same sandboxing as <img src='.svg'>.",

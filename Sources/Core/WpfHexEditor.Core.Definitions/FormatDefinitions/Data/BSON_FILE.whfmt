@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "BSON Document File",
+  "formatId": "BSON_FILE",
   "version": "1.0",
   "extensions": [".bson"],
   "description": "BSON (Binary JSON) is a binary serialization format used by MongoDB for document storage and network transfer. Each BSON document starts with a 4-byte little-endian uint32 indicating the total document size (including the size field itself), followed by typed element entries, and terminated by a null byte (0x00). Element types include Double (0x01), String (0x02), Document (0x03), Array (0x04), Binary (0x05), and others.",

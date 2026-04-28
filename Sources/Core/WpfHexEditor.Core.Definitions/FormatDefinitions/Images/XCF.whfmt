@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "GIMP Image",
+  "formatId": "XCF",
   "version": "1.13",
   "extensions": [
     ".xcf"

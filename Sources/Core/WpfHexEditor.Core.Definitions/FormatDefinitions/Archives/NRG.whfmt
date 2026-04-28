@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Nero Burning ROM Image",
+  "formatId": "NRG",
   "version": "1.0",
   "extensions": [".nrg"],
   "description": "Nero Burning ROM proprietary CD/DVD disc image format. V1='NERO', V2='NER5'. Footer-based structure: main image data first, chunk-based metadata at end of file. Common source of ripped CDs from the 2000s.",

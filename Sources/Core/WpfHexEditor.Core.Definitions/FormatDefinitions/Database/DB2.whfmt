@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "IBM DB2 Database",
+  "formatId": "DB2",
   "version": "2.33",
   "extensions": [
     ".db2"

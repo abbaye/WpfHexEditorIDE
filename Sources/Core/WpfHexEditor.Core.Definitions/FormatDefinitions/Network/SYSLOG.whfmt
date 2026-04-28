@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "Syslog File",
+  "formatId": "SYSLOG",
   "version": "1.0",
   "extensions": [ ".log", ".syslog" ],
   "description": "Syslog text log file supporting both RFC 3164 (BSD syslog) and RFC 5424 (structured syslog) formats. RFC 3164: 'MMM DD HH:MM:SS hostname process[pid]: message'. RFC 5424: '<PRI>VERSION TIMESTAMP HOSTNAME APP-ID PROCID MSGID STRUCTURED-DATA MSG'. PRI field = facility*8 + severity (range 0-191 enclosed in < >). Facilities: 0=kern, 1=user, 2=mail, 3=daemon, 4=auth, 5=syslog, 6=lpr, 7=news, 8=uucp, 9=cron, 10=authpriv, 11=ftp, 16-23=local0-local7. Severities: 0=emerg, 1=alert, 2=crit, 3=err, 4=warning, 5=notice, 6=info, 7=debug. BSD timestamps: 'Jan  1 00:00:00'. ISO 8601: '2006-01-02T15:04:05.000Z'. Structured data: [exampleSDID@32473 iut=3 eventSource=Application]. Used by: rsyslog, syslog-ng, systemd journal export, Cisco/Juniper network devices.",

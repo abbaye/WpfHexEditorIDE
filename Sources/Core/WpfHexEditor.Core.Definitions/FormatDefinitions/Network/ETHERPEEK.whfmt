@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "EtherPeek/OmniPeek Capture",
+  "formatId": "ETHERPEEK",
   "version": "1.14",
   "extensions": [
     ".pkt",

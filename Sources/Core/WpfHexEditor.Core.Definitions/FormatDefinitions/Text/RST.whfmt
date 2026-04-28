@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "reStructuredText",
+  "formatId": "RST",
   "version": "1.0",
   "extensions": [ ".rst", ".rest" ],
   "description": "reStructuredText (RST) is a plaintext markup syntax and parser system developed by David Goodger as part of the Docutils project. It is the standard documentation format for Python projects and the Sphinx documentation generator. RST uses directive-based markup (.. directive::), section titles underlined/overlined with =, -, ~, #, etc., inline roles (:role:`text`), footnotes, cross-references, and code blocks. Unlike Markdown, RST has a formal specification and consistent parser. RST files are text-only with no binary magic.",

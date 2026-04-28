@@ -123,6 +123,44 @@
                 </StackPanel>
             </Expander>
 
+            <!-- ── Versioning ───────────────────────────────────────── -->
+            <Expander Header="Versioning (VersionDetection / VersionedBlocks)" Style="{StaticResource Sec}">
+                <StackPanel Margin="8,4" x:Name="VersioningPanel">
+                    <!-- Field binding done in code-behind via x:Name=VersioningPanel -->
+                </StackPanel>
+            </Expander>
+
+            <!-- ── Imports ($ref) ───────────────────────────────────── -->
+            <Expander Header="Imports ($ref Composition)" Style="{StaticResource Sec}">
+                <StackPanel Margin="8,4">
+                    <TextBlock Text="ref = format name (or structs/Name), as = alias used in structRef blocks."
+                               FontSize="10" Opacity="0.6" TextWrapping="Wrap" Margin="0,0,0,4"/>
+                    <ItemsControl x:Name="ImportsList">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="0,2">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="100"/>
+                                        <ColumnDefinition Width="24"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox Grid.Column="0" Style="{StaticResource Fld}" Margin="0,0,4,0"
+                                             Text="{Binding Ref, UpdateSourceTrigger=PropertyChanged}"
+                                             ToolTip="Format ref e.g. structs/PE_OptionalHeader"/>
+                                    <TextBox Grid.Column="1" Style="{StaticResource Fld}" Margin="0,0,4,0"
+                                             Text="{Binding As, UpdateSourceTrigger=PropertyChanged}"
+                                             ToolTip="Alias used in structRef e.g. PEOpt"/>
+                                    <Button Grid.Column="2" Style="{StaticResource RemBtn}"
+                                            Command="{Binding RemoveCommand}"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <Button Style="{StaticResource AddBtn}" Content="+ Add Import"
+                            x:Name="AddImportBtn" Click="OnAddImport"/>
+                </StackPanel>
+            </Expander>
+
             <!-- ── Forensic ─────────────────────────────────────────── -->
             <Expander Header="Forensic" Style="{StaticResource Sec}" x:Name="ForensicExpander">
                 <StackPanel Margin="8,4" x:Name="ForensicPanel"/>

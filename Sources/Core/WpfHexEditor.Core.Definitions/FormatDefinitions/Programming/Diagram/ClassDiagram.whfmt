@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "text",
   "formatName": "Class Diagram DSL",
+  "formatId": "ClassDiagram",
   "version": "2.0",
   "extensions": [
     ".classdiagram"

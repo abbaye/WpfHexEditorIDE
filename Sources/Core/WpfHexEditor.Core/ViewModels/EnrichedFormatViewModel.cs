@@ -274,7 +274,7 @@ namespace WpfHexEditor.Core.ViewModels
             FormatDescription = _currentFormat.Description ?? "No description available";
             FormatCategory = _currentFormat.Category ?? "Other";
             Extensions = _currentFormat.Extensions ?? new List<string>();
-            Software = _currentFormat.Software ?? new List<string>();
+            Software = _currentFormat.Software?.Select(s => s.ToString()).ToList() ?? new List<string>();
             UseCases = _currentFormat.UseCases ?? new List<string>();
             MimeTypes = _currentFormat.MimeTypes ?? new List<string>();
             Version = _currentFormat.Version ?? string.Empty;

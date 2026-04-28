@@ -1,7 +1,8 @@
 {
   "diffMode": "text",
   "formatName": "vCard Contact",
-  "version": "1.0",
+  "formatId": "VCARD",
+  "version": "1.1",
   "extensions": [
     ".vcf",
     ".vcard"
@@ -29,7 +30,10 @@
     "required": true,
     "Strength": "Strong",
     "MinimumScore": 0.9,
-    "EntropyHint": { "min": 3.0, "max": 5.5 },
+    "EntropyHint": {
+      "min": 3.0,
+      "max": 5.5
+    },
     "validation": {
       "minFileSize": 30,
       "maxSignatureOffset": 0
@@ -50,7 +54,9 @@
       "description": "vCard opening marker: ASCII 'BEGIN:VCARD' (11 bytes: 42 45 47 49 4E 3A 56 43 41 52 44). Every valid vCard file must start with exactly this string followed by a line break. Inherited from the MIME directory profile syntax defined in RFC 2045. Case-insensitive per RFC 6350 but uppercase is canonical.",
       "storeAs": "vcardMagic",
       "valueType": "ascii",
-      "validation": { "expectedValue": "BEGIN:VCARD" }
+      "validation": {
+        "expectedValue": "BEGIN:VCARD"
+      }
     },
     {
       "type": "field",
@@ -58,7 +64,7 @@
       "offset": 11,
       "length": 1,
       "color": "#4ECDC4",
-      "opacity": 0.30,
+      "opacity": 0.3,
       "description": "First byte of the line ending after BEGIN:VCARD. RFC 6350 v4.0 mandates CRLF (0x0D 0x0A) line endings. v2.1 and v3.0 files may use CRLF or LF. The VERSION property line immediately follows. Byte 0x0D indicates CRLF (standards-compliant); 0x0A indicates LF-only (common in Unix-generated vCards).",
       "storeAs": "nextByte",
       "valueType": "uint8",
@@ -96,7 +102,12 @@
   ],
   "navigation": {
     "bookmarks": [
-      { "name": "BEGIN:VCARD", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" }
+      {
+        "name": "BEGIN:VCARD",
+        "offset": 0,
+        "icon": "",
+        "color": "#FF6B6B"
+      }
     ]
   },
   "inspector": {
@@ -106,8 +117,11 @@
     "groups": [
       {
         "title": "vCard Identity",
-        "icon": "\uE71B",
-        "fields": ["vcardMagic", "nextByte"]
+        "icon": "",
+        "fields": [
+          "vcardMagic",
+          "nextByte"
+        ]
       }
     ]
   },
@@ -115,12 +129,17 @@
     {
       "name": "vCard header (JSON)",
       "format": "json",
-      "fields": ["vcardMagic", "nextByte"]
+      "fields": [
+        "vcardMagic",
+        "nextByte"
+      ]
     },
     {
       "name": "vCard info (text)",
       "format": "text",
-      "fields": ["vcardMagic"]
+      "fields": [
+        "vcardMagic"
+      ]
     }
   ],
   "forensic": {
@@ -156,8 +175,13 @@
   ],
   "formatRelationships": {
     "category": "Documents",
-    "extensions": [".vcf", ".vcard"],
-    "relatedFormats": ["ICAL"],
+    "extensions": [
+      ".vcf",
+      ".vcard"
+    ],
+    "relatedFormats": [
+      "ICAL"
+    ],
     "containerVariant": "CardDAV protocol uses vCard as its data format over HTTP/WebDAV"
   },
   "MimeTypes": [
@@ -186,5 +210,57 @@
     "LineEndings": "CRLF (RFC 6350 mandate); LF-only widely tolerated",
     "MultiVCard": "Multiple vCards concatenated directly in one file",
     "PhotoEncoding": "Inline base64 (ENCODING=b) or URI reference"
+  },
+  "syntaxDefinition": {
+    "id": "vcard",
+    "name": "vCard",
+    "extensions": [
+      ".vcf",
+      ".vcard"
+    ],
+    "rules": [
+      {
+        "type": "Keyword",
+        "pattern": "^(BEGIN|END|VERSION|FN|N|NICKNAME|PHOTO|BDAY|ADR|TEL|EMAIL|IMPP|LANG|TZ|GEO|TITLE|ROLE|LOGO|ORG|MEMBER|RELATED|CATEGORIES|NOTE|PRODID|REV|SOUND|UID|CLIENTPIDMAP|URL|KEY|FBURL|CALADRURI|CALURI|XML|SOURCE)(?=[:;])"
+      },
+      {
+        "type": "Property",
+        "pattern": "^[A-Z][A-Z0-9-]*(?=[:;])"
+      },
+      {
+        "type": "Parameter",
+        "pattern": ";[A-Z][A-Z0-9-]*(?==)"
+      },
+      {
+        "type": "Directive",
+        "pattern": "^X-[A-Z0-9-]+(?=[:;])"
+      }
+    ],
+    "formattingRules": {
+      "indentSize": 0,
+      "useTabs": false,
+      "trimTrailingWhitespace": false,
+      "insertFinalNewline": true
+    },
+    "foldingRules": {
+      "startPatterns": [
+        "^BEGIN:VCARD"
+      ],
+      "endPatterns": [
+        "^END:VCARD"
+      ]
+    },
+    "ideMetadata": {
+      "isSourceFile": false,
+      "isStructuredDataFile": true,
+      "supportsClassDiagram": false,
+      "supportsSourceOutline": false,
+      "isProjectLanguage": false,
+      "aliases": [
+        "vcf"
+      ],
+      "iconGlyph": "",
+      "diffMode": "text"
+    }
   }
 }

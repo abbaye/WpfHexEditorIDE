@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Binary Alignment Map (BAM)",
+  "formatId": "BAM",
   "version": "1.0",
   "extensions": [
     ".bam"

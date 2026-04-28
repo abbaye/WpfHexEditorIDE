@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Unix Compress",
+  "formatId": "Z",
   "version": "1.15",
   "extensions": [ ".z", ".Z" ],
   "description": "Unix compress (.Z) is one of the oldest data compression formats on Unix systems, using the LZW (Lempel-Ziv-Welch) algorithm. The 2-byte magic is 0x1F 0x9D at offset 0. The third byte (flags) encodes two critical parameters: bit7 indicates block mode (reset the LZW table when full, recommended), and bits 4-0 encode max_bits (the maximum LZW code size, valid range 9-16). Most compress implementations use max_bits=16. The format is superseded by gzip (.gz) and bzip2 (.bz2) but remains in use on legacy Unix systems and for reading historical archives.",

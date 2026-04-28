@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Firebird Database",
+  "formatId": "FDB",
   "version": "1.14",
   "extensions": [
     ".fdb"

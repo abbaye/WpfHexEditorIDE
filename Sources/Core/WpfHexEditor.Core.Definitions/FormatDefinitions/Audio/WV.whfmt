@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "WavPack Audio",
+  "formatId": "WV",
   "version": "1.14",
   "extensions": [
     ".wv",

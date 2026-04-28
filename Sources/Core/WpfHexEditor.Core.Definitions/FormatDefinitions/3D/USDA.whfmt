@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "USD ASCII",
+  "formatId": "USDA",
   "version": "1.14",
   "extensions": [
     ".usda"

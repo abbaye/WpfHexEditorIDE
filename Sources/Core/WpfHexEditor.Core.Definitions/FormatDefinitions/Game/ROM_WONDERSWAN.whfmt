@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Bandai WonderSwan ROM",
+  "formatId": "ROM_WONDERSWAN",
   "version": "1.0",
   "extensions": [ ".ws", ".wsc" ],
   "description": "Bandai WonderSwan and WonderSwan Color ROM image. The cartridge metadata footer occupies the last 16 bytes of the ROM file (at fileSize - 16). Footer layout: publisher_id (1B), color_flag (1B: 0=WonderSwan monochrome, 1=WonderSwan Color), game_id (1B), game_version (1B), rom_size code (1B), save_type code (1B), boot_orientation (1B), checksum (2B LE). The .ws extension indicates monochrome, .wsc indicates color hardware. Detection is extension-based and structurally weak.",

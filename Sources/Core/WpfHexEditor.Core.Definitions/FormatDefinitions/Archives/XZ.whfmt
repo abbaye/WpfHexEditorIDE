@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "XZ Compressed File",
+  "formatId": "XZ",
   "version": "1.12",
   "extensions": [
     ".xz",

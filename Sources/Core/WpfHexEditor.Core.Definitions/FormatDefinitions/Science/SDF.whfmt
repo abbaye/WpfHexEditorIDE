@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Structure Data File",
+  "formatId": "SDF",
   "version": "1.15",
   "extensions": [
     ".sdf",

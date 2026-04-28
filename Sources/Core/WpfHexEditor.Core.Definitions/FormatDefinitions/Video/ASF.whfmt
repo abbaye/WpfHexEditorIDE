@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Advanced Systems Format",
+  "formatId": "ASF",
   "version": "1.14",
   "extensions": [
     ".asf",

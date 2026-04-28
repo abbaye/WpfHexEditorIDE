@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "Emacs Lisp Compiled (ELC)",
+  "formatId": "EMACS_ELC",
   "version": "1.0",
   "extensions": [".elc"],
   "description": "Emacs Lisp compiled bytecode file — a byte-compiled form of Emacs Lisp (.el) source files produced by the Emacs byte compiler. ELC files start with ';ELC' header comment followed by bytecode version information and compiled Lisp forms. The bytecode is interpreted by Emacs's bytecode interpreter for faster execution than source evaluation.",

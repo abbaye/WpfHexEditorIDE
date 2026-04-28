@@ -1,5 +1,6 @@
 {
   "formatName": "QEMU QCOW2 Disk Image",
+  "formatId": "QCOW2",
   "version": "1.0",
   "diffMode": "binary",
   "extensions": [

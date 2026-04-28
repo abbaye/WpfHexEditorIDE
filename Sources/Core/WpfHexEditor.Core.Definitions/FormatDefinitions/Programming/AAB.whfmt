@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "Android App Bundle",
+  "formatId": "AAB",
   "version": "2.02",
   "extensions": [
     ".aab"

@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "Apple Keynote",
+  "formatId": "KEYNOTE",
   "version": "2.02",
   "extensions": [
     ".key",

@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Valve Package",
+  "formatId": "VPK",
   "version": "1.14",
   "extensions": [
     ".vpk"

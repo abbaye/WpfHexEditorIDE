@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "PPF Patch (PlayStation)",
+  "formatId": "PPF",
   "version": "1.0",
   "extensions": [".ppf"],
   "description": "PPF (PlayStation Patch Format) — a binary patch format specifically designed for PlayStation 1 disc image files. Three versions exist: PPF 1.0 magic 'PPF10' (0x50 0x50 0x46 0x31 0x30), PPF 2.0 magic 'PPF20' (0x50 0x50 0x46 0x32 0x30), PPF 3.0 magic 'PPF30' (0x50 0x50 0x46 0x33 0x30). After the 5-byte magic: patch_description (50 bytes ASCII). For PPF 2.0+: encoding_method (1B: 0=raw BIN, 1=GZip compressed), image_type (1B: 0=BIN/CUE 2048-byte sectors, 1=GI/CDI/IMG), block_check_flag (1B: 0/1), undo_data_flag (1B: 0/1). PPF 3.0 adds: sector_size_id (1B: 1=2352-byte raw sectors, 2=2048-byte cooked), file_id_count (4B LE, number of file ID strings). Records: file_offset (4B or 8B LE) + data_length (1B) + data (data_length bytes) + optional_undo_data. Widely used for PSX fan translations and game patches distributed on ROMhacking.net. Created by Paradox PPF-O-MATIC.",

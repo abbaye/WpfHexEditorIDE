@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "BPS ROM Patch",
+  "formatId": "PATCH_BPS",
   "version": "1.14",
   "extensions": [
     ".bps"

@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "GeoJSON",
+  "formatId": "GEOJSON",
   "version": "1.0",
   "extensions": [".geojson", ".json"],
   "description": "GeoJSON — RFC 7946 JSON format for encoding geospatial data structures. Root object has required 'type' field. GeoJSON types: 'Point', 'MultiPoint', 'LineString', 'MultiLineString', 'Polygon', 'MultiPolygon', 'GeometryCollection', 'Feature' (geometry + properties), 'FeatureCollection' (array of Feature objects). Coordinates: [longitude, latitude] or [longitude, latitude, elevation] — note longitude-first order per RFC 7946. CRS: always WGS84 (EPSG:4326) per RFC 7946 (deprecated crs member removed). Properties: arbitrary JSON key-value pairs per feature. File starts with '{\"type\":' or '{ \"type\":'. Alternative: TopoJSON (arc-based topology for shared boundaries). Used by Mapbox GL, Leaflet, D3.js, PostGIS ST_AsGeoJSON, QGIS, GitHub map rendering, ArcGIS Online.",

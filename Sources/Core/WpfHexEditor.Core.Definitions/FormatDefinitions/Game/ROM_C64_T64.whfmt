@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Commodore 64 Tape Image (T64)",
+  "formatId": "ROM_C64_T64",
   "version": "1.0",
   "extensions": [".t64"],
   "description": "T64 Commodore 64 tape archive format (created by Markus Brenner for VICE emulator). The file contains a 64-byte header followed by directory entries and file data. Header magic varies: the most common variant begins with 'C64S tape file' (0x43 0x36 0x34 0x53 0x20 0x74 0x61 0x70 0x65 0x20 0x66 0x69 0x6C 0x65) or 'C64 tape image file' (0x43 0x36 0x34 0x20 0x74 0x61 0x70 0x65 0x20 0x69 0x6D 0x61 0x67 0x65 0x20 0x66 0x69 0x6C 0x65). Header fields at offset 32: tape_version (uint16 LE: 0x0100 or 0x0200), max_directory_entries (uint16 LE), used_entries (uint16 LE), padding (2B), tape_name (24 bytes ASCII). Directory entries (32 bytes each, starting at offset 64): entry_type (1B: 1=normal tape file, 3=tape snapshot), file_type (1B: 0x82=PRG etc.), start_address (uint16 LE), end_address (uint16 LE), reserved (2B), offset (uint32 LE, byte offset to file data from file start), reserved (4B), file_name (16 bytes ASCII PETSCII). The T64 format is widely used by C64 emulators (VICE, CCS64) for software distribution.",

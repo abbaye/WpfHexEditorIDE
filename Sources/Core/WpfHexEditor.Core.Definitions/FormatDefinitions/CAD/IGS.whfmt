@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "IGES CAD File",
+  "formatId": "IGS",
   "version": "1.0",
   "extensions": [".igs", ".iges"],
   "description": "IGES (Initial Graphics Exchange Specification) is the ANSI Y14.26M neutral CAD interchange format. Files use a strict fixed-width ASCII format with exactly 80 characters per line. Line structure: columns 1-72 contain section data, column 73 contains the section code character (S=Start, G=Global, D=Directory Entry, P=Parameter Data, T=Terminate), and columns 74-80 contain a 7-character right-justified sequence number. Start (S) section: free-form file description. Global (G) section: comma-separated parameters including parameter delimiter character (default ','), record delimiter (default ';'), filename, sending system, preprocessor version, number of bits for integer, max power of 10 for float representation, significant decimal digits for float, max power for double, significant decimal digits for double, receiving system identifier, model space scale, unit flag (1-11: inch=1, mm=2, ft=4, m=6, cm=11), unit name, max line weight gradations, max line weight value, creation date/time (YYYYMMDD.HHMMSS format), minimum resolution, max coordinate value, author name, organization name, IGES version number (3=v3.0, 4=v4.0, 5=v5.0, 11=v5.3), drafting standard. Directory Entry (D) section: entity catalog with 2 fixed lines per entity. Parameter Data (P) section: entity parameters.",

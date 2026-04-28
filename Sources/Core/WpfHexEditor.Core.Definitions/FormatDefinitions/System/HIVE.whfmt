@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "Windows Registry Hive",
+  "formatId": "HIVE",
   "version": "1.13",
   "extensions": [
     "",

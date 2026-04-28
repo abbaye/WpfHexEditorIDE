@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "AV1 Video (IVF)",
+  "formatId": "AV1",
   "version": "1.15",
   "extensions": [
     ".av1",

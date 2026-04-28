@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Windows Crash Dump",
+  "formatId": "CRASHDUMP_WIN",
   "version": "1.0",
   "extensions": [
     ".dmp",

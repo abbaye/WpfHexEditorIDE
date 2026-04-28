@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "SGI RGB Image",
+  "formatId": "SGI_RGB",
   "version": "1.0",
   "extensions": [".rgb", ".rgba", ".sgi", ".bw", ".int", ".inta"],
   "description": "SGI RGB image format created by Silicon Graphics (SGI) for their IRIX workstation graphics systems. The 2-byte big-endian magic number 0x01DA (bytes: 01 DA) appears at offset 0. The fixed 512-byte header contains: magic (2B BE) + storage format (1B: 0=verbatim uncompressed, 1=RLE compressed per scanline) + bytes per channel (1B: 1=8-bit, 2=16-bit) + dimensions (2B BE: 1=1D scanline, 2=2D image, 3=3D volume) + x_size (2B BE) + y_size (2B BE) + z_size (2B BE: 1=grayscale .bw, 3=RGB .rgb, 4=RGBA .rgba) + pix_min (4B BE) + pix_max (4B BE) + dummy (4B) + image_name (80B ASCII null-padded) + colormap (4B BE: 0=NORMAL, 1=DITHERED, 2=SCREEN, 3=COLORMAP) + 404 zero bytes padding. For RLE files a scan-line offset table follows the header. RLE encoding: each channel encoded separately, scanline runs use a 127-byte count for literal runs and a negative count for replicated runs. Widely used in SGI workstations for early 3D graphics, scientific visualization, and DCC tools.",

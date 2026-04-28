@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "SP3 Orbit Data",
+  "formatId": "SP3",
   "version": "1.14",
   "extensions": [
     ".sp3",

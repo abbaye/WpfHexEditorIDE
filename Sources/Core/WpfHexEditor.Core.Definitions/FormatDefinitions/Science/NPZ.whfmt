@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "NumPy Compressed Archive",
+  "formatId": "NPZ",
   "version": "2.02",
   "extensions": [
     ".npz"

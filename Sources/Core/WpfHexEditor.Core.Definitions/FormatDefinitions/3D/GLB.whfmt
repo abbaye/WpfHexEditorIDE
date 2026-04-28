@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "glTF Binary (GLB)",
+  "formatId": "GLB",
   "version": "1.0",
   "extensions": [".glb"],
   "description": "GLB (GL Transmission Format Binary) is the binary self-contained container for glTF 2.0 3D assets, developed by the Khronos Group. The 4-byte ASCII magic 'glTF' (67 6C 54 46) appears at offset 0. The 12-byte header contains: magic (4B) + version (4B LE, value 2 for glTF 2.0) + total file length (4B LE). The body consists of one or two typed chunks. Chunk 0 (mandatory JSON): chunk_length (4B LE) + chunk_type 0x4E4F534A ('JSON' as LE uint32) + UTF-8 JSON payload padded to 4-byte alignment with 0x20 (space) bytes. Chunk 1 (optional BIN): chunk_length (4B LE) + chunk_type 0x004E4942 ('BIN' + null as LE uint32) + binary buffer data padded with 0x00 bytes. The JSON chunk contains the complete glTF scene descriptor including nodes, meshes, materials, accessors, animations, and skins. The BIN chunk contains vertex positions, indices, normals, UV coordinates, and embedded texture images. GLB is self-contained — no external files needed — making it the preferred delivery format for web, AR/VR, and real-time rendering.",

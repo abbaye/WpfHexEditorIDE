@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "SNK Neo Geo Pocket ROM",
+  "formatId": "ROM_NGP",
   "version": "1.0",
   "extensions": [ ".ngp", ".ngc" ],
   "description": "SNK Neo Geo Pocket and Neo Geo Pocket Color ROM image. No fixed binary magic — identified primarily by extension and header field values. Game title appears as a 12-byte ASCII string at offset 0. Fixed marker bytes at offsets 18-19 (0xAD, 0x01) serve as weak structural identifiers. NGP is the monochrome model (1998); NGC (Neo Geo Pocket Color) supports full color palette (1999). Both share the same ROM header format. Publisher code at offset 16.",

@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "Predictive Model Markup Language (PMML)",
+  "formatId": "PMML",
   "version": "1.0",
   "extensions": [".pmml"],
   "description": "Predictive Model Markup Language (PMML) is an XML-based standard for representing predictive analytics and machine learning models. Developed by the Data Mining Group (DMG), PMML enables model portability between tools such as SAS, SPSS, R, and Python scikit-learn. The root element is <PMML> with a version attribute (e.g. '4.4', '4.3', '3.2'). Files start with an optional XML declaration followed by the PMML root element.",

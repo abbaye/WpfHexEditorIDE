@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "MRT BGP Route Dump",
+  "formatId": "MRT_DUMP",
   "version": "1.0",
   "extensions": [ ".mrt", ".dump" ],
   "description": "MRT (Multi-threaded Routing Toolkit) dump format (RFC 6396) for BGP routing data archival. Each MRT record: timestamp(4B BE: Unix seconds) + type(2B BE) + subtype(2B BE) + length(4B BE: body bytes) + message_body(length bytes). Types: 5=TABLE_DUMP (IPv4 routing table, deprecated), 6=TABLE_DUMP_V2 (current standard, subtypes: 1=PEER_INDEX_TABLE, 2=RIB_IPV4_UNICAST, 3=RIB_IPV4_MULTICAST, 4=RIB_IPV6_UNICAST, 5=RIB_IPV6_MULTICAST), 11=BGP4MP (live BGP session dumps, subtypes: 0=STATE_CHANGE, 1=MESSAGE, 4=MESSAGE_AS4, 5=STATE_CHANGE_AS4), 12=BGP4MP_ET (extended timestamp). PEER_INDEX_TABLE: collector_BGP_ID(4B)+view_name+peer_count+peer_entries. RIB entries: sequence_number(4B)+prefix_length(1B)+prefix(variable)+peer_index(2B)+originated_time(4B)+attr_length(2B)+BGP_attributes. Used by RouteViews and RIPE RIS for global routing table snapshots.",

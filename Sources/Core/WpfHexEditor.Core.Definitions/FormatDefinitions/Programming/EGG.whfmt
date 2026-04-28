@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "Python Egg Package",
+  "formatId": "EGG",
   "version": "2.02",
   "extensions": [
     ".egg"

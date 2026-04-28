@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Wireshark PCAP Capture",
+  "formatId": "PCAP",
   "version": "1.0",
   "extensions": [ ".pcap", ".cap" ],
   "description": "PCAP (Packet Capture) network traffic capture format created by libpcap, used by Wireshark, tcpdump, and NetworkMiner. Magic: A1 B2 C3 D4 (little-endian microsecond timestamps) or D4 C3 B2 A1 (big-endian). Nanosecond variants: A1 B2 3C 4D (LE) or 4D 3C B2 A1 (BE). Global header is 24 bytes: magic(4B) + version_major(2B LE: 2) + version_minor(2B LE: 4) + thiszone(4B GMT offset, usually 0) + sigfigs(4B accuracy, usually 0) + snaplen(4B LE, typically 65535) + network(4B LE link type: 1=Ethernet, 105=802.11 WiFi, 113=Linux cooked, 228=IPv4 raw). Each packet record: ts_sec(4B) + ts_usec_or_nsec(4B) + incl_len(4B captured bytes) + orig_len(4B original wire bytes) + data(incl_len bytes).",

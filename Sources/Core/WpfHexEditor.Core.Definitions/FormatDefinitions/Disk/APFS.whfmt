@@ -1,8 +1,9 @@
 {
   "diffMode": "binary",
   "formatName": "Apple File System (APFS)",
-  "version": "1.0",
-  "extensions": [],
+  "formatId": "APFS",
+  "version": "1.1",
+  "extensions": [""],
   "description": "Apple File System container superblock with copy-on-write B-tree structure and per-volume encryption",
   "category": "Disk",
   "author": "WPFHexaEditor Team",
@@ -258,7 +259,7 @@
     "DocumentationLevel": "detailed",
     "BlocksDefined": 14,
     "ValidationRules": 4,
-    "LastUpdated": "2026-04-14",
+    "LastUpdated": "2026-04-27",
     "PriorityFormat": true,
     "AutoRefined": false
   },

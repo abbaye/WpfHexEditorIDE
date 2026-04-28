@@ -1,5 +1,6 @@
 {
   "formatName": "systemd-coredump (zstd-wrapped)",
+  "formatId": "COREDUMPCTL",
   "version": "1.0",
   "diffMode": "binary",
   "extensions": [

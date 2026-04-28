@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Canon RAW v2",
+  "formatId": "CR2",
   "version": "1.14",
   "extensions": [
     ".cr2"

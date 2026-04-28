@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Monkey's Audio",
+  "formatId": "APE",
   "version": "1.0",
   "extensions": [".ape", ".mac"],
   "description": "Monkey's Audio (APE) is a lossless audio compression format developed by Matthew T. Welch. Files begin with the four-byte ASCII magic 'MAC ' (0x4D414320) followed by a 16-bit little-endian version number. Compression levels range from 1000 (Fast) to 5000 (Insane). The descriptor block records size information allowing decoders to seek directly to the header, seektable, and audio data sections. APE is widely used among audiophiles for archival quality audio storage without any quality loss.",

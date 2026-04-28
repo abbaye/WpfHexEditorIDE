@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Multiple-image Network Graphics",
+  "formatId": "MNG",
   "version": "1.15",
   "extensions": [
     ".mng"

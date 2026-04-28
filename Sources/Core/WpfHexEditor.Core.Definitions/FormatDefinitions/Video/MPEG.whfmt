@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "MPEG Program Stream",
+  "formatId": "MPEG",
   "version": "1.0",
   "extensions": [".mpg", ".mpeg", ".m2v"],
   "description": "MPEG Program Stream (PS) is a multiplexed container format defined in ISO/IEC 13818-1 for storing compressed video and audio on media with reliable storage (as opposed to Transport Stream which is designed for unreliable transmission). PS files start with either the pack start code 0x000001BA (MPEG-2 PS) or the video sequence header 0x000001B3 (raw MPEG-1/2 video). Pack headers contain System Clock Reference (SCR) timestamps. After each pack header, PES (Packetized Elementary Stream) packets carry individual video or audio streams. MPEG-1 PS files may begin with 0x000001B3 directly without pack wrapping.",

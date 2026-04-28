@@ -303,6 +303,24 @@ namespace WpfHexEditor.Core.Interfaces
     }
 
     /// <summary>
+    /// Event args raised when the user requests navigation from a parsed field
+    /// to the corresponding whfmt block in the CodeEditor.
+    /// </summary>
+    public class ParsedFieldNavigationArgs : EventArgs
+    {
+        /// <summary>The display name of the parsed field (matches the whfmt block "name").</summary>
+        public string FieldName  { get; }
+        /// <summary>Group/block-type context of the field, if available.</summary>
+        public string GroupName  { get; }
+
+        public ParsedFieldNavigationArgs(string fieldName, string groupName)
+        {
+            FieldName = fieldName;
+            GroupName = groupName;
+        }
+    }
+
+    /// <summary>
     /// Event args when the user edits a field value in the panel.
     /// </summary>
     public class FieldEditedEventArgs : EventArgs

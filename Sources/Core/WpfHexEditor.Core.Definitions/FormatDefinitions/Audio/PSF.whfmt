@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Portable Sound Format",
+  "formatId": "PSF",
   "version": "1.0",
   "extensions": [
     ".psf",

@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "PlayStation 1 Memory Card",
+  "formatId": "SAVE_PS1",
   "version": "1.0",
   "extensions": [ ".mcr", ".mcd", ".mc", ".vmp" ],
   "description": "PlayStation 1 memory card image. Total size: 128KB (131072 bytes). The first frame (128 bytes) is the header: 'MC' magic (2B) followed by 125 reserved bytes and a final XOR checksum byte. The next 15 frames (128 bytes each) are directory frames describing each save slot: frame_type (1B), file_size (4B LE), next_frame pointer (2B LE), filename (21B ASCII, format 'BASCUS-XXXXX'), padding (96B), XOR checksum (1B). Each save occupies 8KB of data in subsequent blocks. Used by all PS1 consoles and compatible third-party accessories.",

@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Web Open Font Format 2 (WOFF2)",
+  "formatId": "WOFF2",
   "version": "1.0",
   "extensions": [".woff2"],
   "description": "WOFF2 (Web Open Font Format 2.0) — W3C Recommendation (2018). Magic: 'wOF2' (77 4F 46 32) at offset 0. Uses Brotli compression instead of zlib — typically 30% smaller than WOFF 1.0. Header (48 bytes): magic(4B) + flavor(4B BE: TrueType=0x00010000, CFF='OTTO'=0x4F54544F) + length(4B LE total file) + numTables(2B LE) + reserved(2B must be 0) + totalSfntSize(4B LE) + totalCompressedSize(4B LE size of Brotli-compressed font data) + majorVersion(2B LE) + minorVersion(2B LE) + metaOffset(4B LE) + metaLength(4B LE) + metaOrigLength(4B LE) + privOffset(4B LE) + privLength(4B LE). Table Directory (variable-length): tag(4B) + flags(1B) + transformLength(base128 varint) + origLength(base128 varint). Supported by all modern browsers. Font Loading API: CSS font-display: swap enables non-blocking web font loading.",

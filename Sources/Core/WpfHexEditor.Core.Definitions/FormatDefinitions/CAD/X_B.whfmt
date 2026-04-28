@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Parasolid Binary",
+  "formatId": "X_B",
   "version": "1.15",
   "extensions": [
     ".x_b",

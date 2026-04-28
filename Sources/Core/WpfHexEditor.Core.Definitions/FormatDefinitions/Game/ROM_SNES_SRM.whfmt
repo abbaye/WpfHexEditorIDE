@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "SNES Save RAM",
+  "formatId": "ROM_SNES_SRM",
   "version": "1.0",
   "extensions": [
     ".srm",

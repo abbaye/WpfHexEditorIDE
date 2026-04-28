@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "CATIA Product",
+  "formatId": "CATPRODUCT",
   "version": "1.15",
   "extensions": [
     ".catproduct",

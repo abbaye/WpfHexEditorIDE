@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Python Bytecode (.pyc)",
+  "formatId": "PYBITCODE",
   "version": "1.0",
   "extensions": [ ".pyc", ".pyo" ],
   "description": "Python bytecode files (.pyc) are cached compilation outputs produced by the CPython interpreter. Each .pyc begins with a 2-byte version-specific magic number (little-endian uint16), followed by 0x0D 0x0A (CRLF), a 4-byte bitfield (offset 4), and an 8-byte timestamp or source hash depending on the bitfield flags. Python 3.8+ stores files under __pycache__/ with version-tagged names (e.g., module.cpython-311.pyc). The magic number uniquely identifies the CPython version. Python 3.11 magic is 0x6F0D (base), 3.12 is 0x0C0D, etc. The marshal-encoded code object follows at offset 16.",

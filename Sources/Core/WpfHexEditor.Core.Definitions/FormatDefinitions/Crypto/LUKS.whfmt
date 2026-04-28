@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "LUKS Encrypted Volume",
+  "formatId": "LUKS",
   "version": "1.0",
   "extensions": [ ".img", ".luks" ],
   "description": "LUKS (Linux Unified Key Setup) encrypted disk volume format. Magic: 6 bytes 'LUKS' + 0xBA 0xBE (0x4C554B53BABE). LUKS1 header (592 bytes total): magic (6B), version uint16 BE = 1, cipher_name (32B ASCII e.g. 'aes'), cipher_mode (32B ASCII e.g. 'xts-plain64'), hash_spec (32B ASCII e.g. 'sha256'), payload_offset (4B BE — first data sector), key_bytes (4B BE: 16/24/32 for 128/192/256-bit AES), mk_digest (20B), mk_digest_salt (32B), mk_digest_iterations (4B BE), uuid (40B ASCII). Followed by 8 key slot structures of 48 bytes each. LUKS2 uses the same magic with version=2 and adds a JSON metadata area after the header.",

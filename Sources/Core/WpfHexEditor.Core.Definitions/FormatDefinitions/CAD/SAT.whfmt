@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "ACIS SAT",
+  "formatId": "SAT",
   "version": "1.15",
   "extensions": [
     ".sat",

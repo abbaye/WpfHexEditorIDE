@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "PlayStation Portable PARAM.SFO",
+  "formatId": "SAVE_PSP",
   "version": "1.0",
   "extensions": [".sfo", ".pbp"],
   "description": "PARAM.SFO (System File Object) is the metadata format used by PlayStation Portable (PSP), PlayStation 3, PlayStation 4, PlayStation Vita, and PlayStation 5 to store game and application metadata. The file begins with the 4-byte magic '\\x00PSF' (00 50 53 46), followed by a version field (0x00000101 = v1.1, the standard version), key table offset, data table offset, and number of index entries. Each index entry in the index table references a key (null-terminated string from the key table) and a value (from the data table, typed as UTF-8 string, uint32, or raw byte array). Core parameters stored in PARAM.SFO for PSP titles: TITLE (game display name), TITLE_ID (9-char ID like ULUS-10xxx), DISC_ID (9-char), DISC_VERSION (e.g. '1.00'), PSP_SYSTEM_VER (minimum firmware required), PARENTAL_LEVEL (uint32 0-11), CATEGORY (UG=UMD Game, MG=memory stick game, ME=PSP mini), BOOTABLE (uint32, 1=bootable). Used in PSP's EBOOT.PBP, save data folders (SceGameData), and memory stick directory structure.",

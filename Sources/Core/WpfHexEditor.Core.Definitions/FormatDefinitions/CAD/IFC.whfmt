@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "Industry Foundation Classes (BIM)",
+  "formatId": "IFC",
   "version": "1.0",
   "extensions": [".ifc", ".ifczip"],
   "description": "Industry Foundation Classes (IFC) is an open international standard (ISO 16739) for Building Information Modeling (BIM) data interchange. Published by buildingSMART International, IFC defines a neutral, vendor-independent schema for representing building and infrastructure elements throughout the construction lifecycle. IFC files use the STEP Physical File (SPF) format defined by ISO 10303-21, beginning with the mandatory 'ISO-10303-21;' header line. The file body contains HEADER (file description, name, schema) and DATA sections. Data records use instance notation: #ID = IFCTYPE(attributes...); Core IFC entities: IFCPROJECT, IFCSITE, IFCBUILDING, IFCBUILDINGSTOREY, IFCWALL, IFCWINDOW, IFCDOOR, IFCCOLUMN, IFCBEAM, IFCSLAB, IFCROOF, IFCSTAIR, IFCSPACE, IFCRELCONTAINEDINSPATIALSTRUCTURE, IFCPRODUCTDEFINITIONSHAPE, IFCSHAPEREPRESENTATION. IFC4 (2013) and IFC4x3 (2022) are the current production standards; IFC 2x3 TC1 is widely supported by most BIM software.",

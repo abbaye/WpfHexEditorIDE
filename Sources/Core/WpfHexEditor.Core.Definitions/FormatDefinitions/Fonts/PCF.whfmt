@@ -1,5 +1,6 @@
 {
   "formatName": "Portable Compiled Format Font (PCF)",
+  "formatId": "PCF",
   "version": "1.1",
   "extensions": [ ".pcf", ".pcf.gz" ],
   "diffMode": "binary",

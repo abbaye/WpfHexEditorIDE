@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Unreal Engine Map/Level",
+  "formatId": "UMAP",
   "version": "1.15",
   "extensions": [
     ".umap"

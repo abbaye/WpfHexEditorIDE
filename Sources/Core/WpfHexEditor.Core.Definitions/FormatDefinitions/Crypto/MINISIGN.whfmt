@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "Minisign Signature",
+  "formatId": "MINISIGN",
   "version": "1.0",
   "extensions": [".minisig"],
   "description": "Minisign digital signature file — a text-based signature format created by Frank Denis (jedisct1). Contains an untrusted comment line, a trusted comment line, and a base64-encoded Ed25519 signature. Minisign is designed for simple, secure file signing without the complexity of GPG or S/MIME.",

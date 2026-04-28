@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Universal Binary JSON (UBJSON)",
+  "formatId": "UBJSON",
   "version": "1.0",
   "extensions": [".ubj", ".ubjson"],
   "description": "Universal Binary JSON (UBJSON) is a binary data format designed to be a universal binary encoding for JSON. Each value is preceded by a single-byte type marker: '[' (0x5B) for arrays, '{' (0x7B) for objects, 'T'/'F' for booleans, 'Z' for null, and numeric types like 'U' (uint8), 'i' (int8), 'I' (int16), 'l' (int32), 'L' (int64), 'd' (float32), 'D' (float64). Strings use 'S' followed by a length. UBJSON supports optimized containers with type and count hints.",

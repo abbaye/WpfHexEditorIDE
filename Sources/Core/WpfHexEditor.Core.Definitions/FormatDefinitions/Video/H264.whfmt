@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Raw H.264/AVC",
+  "formatId": "H264",
   "version": "1.15",
   "extensions": [
     ".h264",

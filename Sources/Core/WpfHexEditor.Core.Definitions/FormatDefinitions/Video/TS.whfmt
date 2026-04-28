@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "MPEG Transport Stream",
+  "formatId": "TS",
   "version": "1.12",
   "extensions": [
     ".ts",

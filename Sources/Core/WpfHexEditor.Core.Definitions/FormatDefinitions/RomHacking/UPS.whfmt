@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "UPS ROM Patch",
+  "formatId": "UPS",
   "version": "1.0",
   "extensions": [".ups"],
   "description": "UPS (Universal Patching System) — a modern ROM patch format designed by Near (byuu) to overcome IPS limitations. Magic: 'UPS1' = 0x55 0x50 0x53 0x31 (4 bytes) at offset 0. Structure after magic: source_size (variable-length integer), target_size (variable-length integer), patch_data (series of XOR hunk records), source_CRC32 (4 bytes LE), target_CRC32 (4 bytes LE), patch_CRC32 (4 bytes LE). Variable-length integer encoding: each byte has bits 0-6 as data and bit 7 as continuation flag (0=last byte). XOR hunks: each hunk is preceded by a count of unmodified bytes to skip (varint), then one or more non-zero XOR bytes terminated by a 0x00 byte (the 0x00 indicates end of diff data, not a literal zero). source_CRC32 and target_CRC32 allow patchers to validate the correct source ROM and verify the output. patch_CRC32 covers all bytes of the file except the last 4 bytes (the patch_CRC32 itself). Supports ROMs of any size with no 16 MB address limitation.",

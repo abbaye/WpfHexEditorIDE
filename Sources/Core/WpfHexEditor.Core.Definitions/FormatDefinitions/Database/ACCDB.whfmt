@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Microsoft Access 2007+ Database",
+  "formatId": "ACCDB",
   "version": "1.15",
   "extensions": [
     ".accdb"

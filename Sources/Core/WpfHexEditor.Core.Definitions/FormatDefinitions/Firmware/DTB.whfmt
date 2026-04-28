@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Device Tree Blob",
+  "formatId": "DTB",
   "version": "1.0",
   "extensions": [".dtb", ".dtbo"],
   "description": "Linux Device Tree Blob (FDT — Flattened Device Tree). Magic 0xD00DFEED at offset 0 (big-endian). Hardware description compiled from DTS text by dtc. Used on ARM, RISC-V, and PowerPC Linux systems. Passed by bootloader (U-Boot) or embedded in kernel Image.",

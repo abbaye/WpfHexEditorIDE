@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "BUFR Weather Data",
+  "formatId": "BUFR",
   "version": "1.14",
   "extensions": [
     ".bufr",

@@ -1,5 +1,6 @@
 {
   "formatName": "EFI Firmware Capsule",
+  "formatId": "EFI_CAPSULE",
   "version": "1.0",
   "diffMode": "binary",
   "extensions": [

@@ -40,6 +40,13 @@ namespace WpfHexEditor.Core.FormatDetection
         public string Version { get; set; }
 
         /// <summary>
+        /// Unique stable format identifier (optional; defaults to file stem).
+        /// Used for cross-format references and deduplication.
+        /// </summary>
+        [JsonPropertyName("formatId")]
+        public string FormatId { get; set; }
+
+        /// <summary>
         /// File extensions associated with this format (e.g., [".zip", ".jar"])
         /// </summary>
         public List<string> Extensions { get; set; } = new List<string>();
@@ -69,6 +76,7 @@ namespace WpfHexEditor.Core.FormatDetection
         /// Initial variables and their values
         /// Used by the script interpreter for calculations
         /// </summary>
+        [JsonConverter(typeof(VariablesDictionaryConverter))]
         public Dictionary<string, object> Variables { get; set; } = new Dictionary<string, object>();
 
         /// <summary>
@@ -99,7 +107,8 @@ namespace WpfHexEditor.Core.FormatDetection
         /// <summary>
         /// Software that can open/create this format
         /// </summary>
-        public List<string> Software { get; set; } = new List<string>();
+        [JsonConverter(typeof(SoftwareListConverter))]
+        public List<SoftwareEntry> Software { get; set; } = new List<SoftwareEntry>();
 
         /// <summary>
         /// Common use cases for this format
@@ -113,6 +122,13 @@ namespace WpfHexEditor.Core.FormatDetection
         /// Used by DiffViewer to select the appropriate comparison engine.
         /// </summary>
         public string DiffMode { get; set; }
+
+        /// <summary>
+        /// Source-code language definition (code-editor .whfmt only).
+        /// Contains syntax coloring rules, folding, formatting defaults, and preview snippets.
+        /// </summary>
+        [JsonPropertyName("syntaxDefinition")]
+        public SyntaxDefinition SyntaxDefinition { get; set; }
 
         /// <summary>
         /// Describes how to detect the format version from file content,
@@ -138,6 +154,14 @@ namespace WpfHexEditor.Core.FormatDetection
         public List<AssertionDefinition> Assertions { get; set; }
 
         /// <summary>
+        /// Cross-format struct imports. Each entry makes a named block list available
+        /// for use in nested blocks via StructRef.
+        /// Example: { "ref": "structs/PE_OptionalHeader", "as": "PEOpt" }
+        /// → blocks can then use { "type": "nested", "structRef": "PEOpt" }
+        /// </summary>
+        public List<FormatImportDefinition> Imports { get; set; }
+
+        /// <summary>
         /// Forensic / security metadata: suspicious patterns, risk level, known attack vectors.
         /// </summary>
         public ForensicDefinition Forensic { get; set; }
@@ -160,6 +184,7 @@ namespace WpfHexEditor.Core.FormatDetection
         /// <summary>
         /// Contextual hints for AI-assisted analysis.
         /// </summary>
+        [JsonConverter(typeof(AiHintsConverter))]
         public AiHints AiHints { get; set; }
 
         // ── end v2.0 fields ──────────────────────────────────────────────────────
@@ -238,6 +263,7 @@ namespace WpfHexEditor.Core.FormatDetection
         /// v2.0: Entropy hint — expected Shannon entropy range for valid files.
         /// Used as a secondary signal when signature matching is ambiguous.
         /// </summary>
+        [JsonConverter(typeof(EntropyHintConverter))]
         public EntropyHint EntropyHint { get; set; }
 
         /// <summary>
@@ -254,6 +280,7 @@ namespace WpfHexEditor.Core.FormatDetection
         /// <summary>
         /// Whether this signature is required for detection
         /// </summary>
+        [JsonConverter(typeof(RequiredBoolConverter))]
         public bool Required { get; set; } = true;
 
         /// <summary>
@@ -591,8 +618,10 @@ namespace WpfHexEditor.Core.FormatDetection
     }
 
     /// <summary>
-    /// Format relationships - how this format relates to other formats and categories
+    /// Format relationships - how this format relates to other formats and categories.
+    /// Tolerates both an object and a legacy array of relationship objects.
     /// </summary>
+    [JsonConverter(typeof(FormatRelationshipsConverter))]
     public class FormatRelationships
     {
         /// <summary>
@@ -636,6 +665,18 @@ namespace WpfHexEditor.Core.FormatDetection
     }
 
     /// <summary>Version detection config — reads a field value and maps it to a version string.</summary>
+    /// <summary>
+    /// A cross-format struct import declaration.
+    /// Makes a named block list from another .whfmt format available via StructRef.
+    /// </summary>
+    public class FormatImportDefinition
+    {
+        /// <summary>Format name or path to import (e.g. "structs/PE_OptionalHeader", "ELF").</summary>
+        public string Ref { get; set; }
+        /// <summary>Alias used in structRef blocks (e.g. "PEOpt").</summary>
+        public string As  { get; set; }
+    }
+
     public class FormatVersionDetection
     {
         /// <summary>Variable name set by a prior field block whose value drives version selection.</summary>
@@ -828,11 +869,16 @@ namespace WpfHexEditor.Core.FormatDetection
     // ── end v2.0 supporting classes ───────────────────────────────────────────
 
     /// <summary>
-    /// Technical details specific to the format type
+    /// Technical details specific to the format type.
+    /// Tolerates a plain string value (stored as description) as well as the canonical object form.
     /// Properties vary by category (archives, images, executables, etc.)
     /// </summary>
+    [JsonConverter(typeof(TechnicalDetailsConverter))]
     public class TechnicalDetails
     {
+        /// <summary>Free-form description when TechnicalDetails is provided as a plain string.</summary>
+        [JsonIgnore]
+        public string RawDescription { get; set; }
         /// <summary>
         /// Primary file extension (most common)
         /// </summary>
@@ -866,6 +912,7 @@ namespace WpfHexEditor.Core.FormatDetection
         /// <summary>
         /// Whether this is an audio format
         /// </summary>
+        [JsonConverter(typeof(BoolFromAnyConverter))]
         public bool AudioFormat { get; set; }
 
         /// <summary>
@@ -1183,5 +1230,428 @@ namespace WpfHexEditor.Core.FormatDetection
             if (value.Description is not null) writer.WriteString("description",      value.Description);
             writer.WriteEndObject();
         }
+    }
+
+    // ── whfmt v2.4 tolerance converters ──────────────────────────────────────
+
+    /// <summary>
+    /// Tolerant converter for EntropyHint.
+    /// Accepts either a JSON object {"min":X,"max":Y} or a plain string description.
+    /// When a string is provided, returns a default hint (Min=0, Max=8.0).
+    /// </summary>
+    internal sealed class EntropyHintConverter : JsonConverter<EntropyHint>
+    {
+        private static readonly JsonSerializerOptions s_ci = new() { PropertyNameCaseInsensitive = true };
+
+        public override EntropyHint Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            if (reader.TokenType == JsonTokenType.String)
+            {
+                reader.GetString(); // consume and discard — store as default range
+                return new EntropyHint { Min = 0, Max = 8.0 };
+            }
+            if (reader.TokenType == JsonTokenType.StartObject)
+            {
+                using var doc = JsonDocument.ParseValue(ref reader);
+                return JsonSerializer.Deserialize<EntropyHint>(doc.RootElement.GetRawText(), s_ci)
+                       ?? new EntropyHint { Min = 0, Max = 8.0 };
+            }
+            reader.Skip();
+            return new EntropyHint { Min = 0, Max = 8.0 };
+        }
+
+        public override void Write(Utf8JsonWriter writer, EntropyHint value, JsonSerializerOptions options)
+            => JsonSerializer.Serialize(writer, value, s_ci);
+    }
+
+    /// <summary>
+    /// Tolerant converter for detection.required.
+    /// Accepts boolean true/false as well as legacy array forms:
+    ///   [] → false,  ["..."] → true.
+    /// </summary>
+    internal sealed class RequiredBoolConverter : JsonConverter<bool>
+    {
+        public override bool Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            if (reader.TokenType == JsonTokenType.True)  return true;
+            if (reader.TokenType == JsonTokenType.False) return false;
+            if (reader.TokenType == JsonTokenType.StartArray)
+            {
+                bool hasItems = false;
+                while (reader.Read() && reader.TokenType != JsonTokenType.EndArray)
+                {
+                    hasItems = true;
+                    reader.Skip();
+                }
+                return hasItems; // non-empty array → required; empty array → not required
+            }
+            reader.Skip();
+            return true; // safe default
+        }
+
+        public override void Write(Utf8JsonWriter writer, bool value, JsonSerializerOptions options)
+            => writer.WriteBooleanValue(value);
+    }
+
+    /// <summary>
+    /// Tolerant converter for FormatDefinition.Variables.
+    /// Accepts either a JSON object {"key": value, ...} (canonical) or a legacy array
+    /// [{"name":"key","type":"uint8",...}] where each item's "name" becomes the key
+    /// and the initial value defaults to 0.
+    /// </summary>
+    internal sealed class VariablesDictionaryConverter : JsonConverter<Dictionary<string, object>>
+    {
+        public override Dictionary<string, object> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            var result = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
+
+            if (reader.TokenType == JsonTokenType.StartObject)
+            {
+                using var doc = JsonDocument.ParseValue(ref reader);
+                foreach (var prop in doc.RootElement.EnumerateObject())
+                {
+                    result[prop.Name] = prop.Value.ValueKind switch
+                    {
+                        JsonValueKind.Number  => prop.Value.TryGetInt64(out var l) ? (object)l : prop.Value.GetDouble(),
+                        JsonValueKind.String  => prop.Value.GetString(),
+                        JsonValueKind.True    => true,
+                        JsonValueKind.False   => false,
+                        _                     => 0
+                    };
+                }
+                return result;
+            }
+
+            if (reader.TokenType == JsonTokenType.StartArray)
+            {
+                using var doc = JsonDocument.ParseValue(ref reader);
+                foreach (var item in doc.RootElement.EnumerateArray())
+                {
+                    if (item.ValueKind != JsonValueKind.Object) continue;
+                    if (!item.TryGetProperty("name", out var nameProp)) continue;
+                    var key = nameProp.GetString();
+                    if (string.IsNullOrWhiteSpace(key)) continue;
+                    result[key] = 0; // default value — actual value resolved at runtime
+                }
+                return result;
+            }
+
+            reader.Skip();
+            return result;
+        }
+
+        public override void Write(Utf8JsonWriter writer, Dictionary<string, object> value, JsonSerializerOptions options)
+            => JsonSerializer.Serialize(writer, value, options);
+    }
+
+    /// <summary>
+    /// Tolerant converter for AiHints.
+    /// Accepts either a JSON object {analysisContext, suggestedInspections, ...} (canonical)
+    /// or a legacy array of strings, in which case all strings are joined into AnalysisContext.
+    /// </summary>
+    internal sealed class AiHintsConverter : JsonConverter<AiHints>
+    {
+        private static readonly JsonSerializerOptions s_ci = new() { PropertyNameCaseInsensitive = true };
+
+        public override AiHints Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            if (reader.TokenType == JsonTokenType.StartObject)
+            {
+                using var doc = JsonDocument.ParseValue(ref reader);
+                return JsonSerializer.Deserialize<AiHints>(doc.RootElement.GetRawText(), s_ci) ?? new AiHints();
+            }
+            if (reader.TokenType == JsonTokenType.StartArray)
+            {
+                var lines = new System.Text.StringBuilder();
+                using var doc = JsonDocument.ParseValue(ref reader);
+                foreach (var item in doc.RootElement.EnumerateArray())
+                {
+                    if (item.ValueKind == JsonValueKind.String)
+                    {
+                        if (lines.Length > 0) lines.Append(' ');
+                        lines.Append(item.GetString());
+                    }
+                }
+                return new AiHints
+                {
+                    AnalysisContext    = lines.Length > 0 ? lines.ToString() : null,
+                    SuggestedInspections = new List<string>()
+                };
+            }
+            reader.Skip();
+            return new AiHints();
+        }
+
+        public override void Write(Utf8JsonWriter writer, AiHints value, JsonSerializerOptions options)
+            => JsonSerializer.Serialize(writer, value, s_ci);
+    }
+
+    /// <summary>
+    /// Represents a software entry that can open or create a format.
+    /// Accepts either a plain string ("VLC") or a rich object {"name":"VLC","vendor":"...","url":"..."}.
+    /// </summary>
+    public class SoftwareEntry
+    {
+        /// <summary>Application name.</summary>
+        [JsonPropertyName("name")]
+        public string Name { get; set; }
+
+        /// <summary>Vendor or author (optional).</summary>
+        [JsonPropertyName("vendor")]
+        public string Vendor { get; set; }
+
+        /// <summary>URL to the application or documentation (optional).</summary>
+        [JsonPropertyName("url")]
+        public string Url { get; set; }
+
+        /// <summary>Role of the software: "reader", "writer", "editor" (optional).</summary>
+        [JsonPropertyName("role")]
+        public string Role { get; set; }
+
+        public override string ToString() => Name ?? string.Empty;
+        public static implicit operator string(SoftwareEntry e) => e?.Name ?? string.Empty;
+    }
+
+    /// <summary>
+    /// Tolerant converter for FormatDefinition.Software.
+    /// Accepts either an array of strings or an array of rich objects {name, vendor, url, role}.
+    /// Each element is deserialized into a <see cref="SoftwareEntry"/>.
+    /// </summary>
+    internal sealed class SoftwareListConverter : JsonConverter<List<SoftwareEntry>>
+    {
+        public override List<SoftwareEntry> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            var result = new List<SoftwareEntry>();
+            if (reader.TokenType != JsonTokenType.StartArray) { reader.Skip(); return result; }
+
+            while (reader.Read() && reader.TokenType != JsonTokenType.EndArray)
+            {
+                if (reader.TokenType == JsonTokenType.String)
+                {
+                    result.Add(new SoftwareEntry { Name = reader.GetString() });
+                }
+                else if (reader.TokenType == JsonTokenType.StartObject)
+                {
+                    var entry = new SoftwareEntry();
+                    while (reader.Read() && reader.TokenType != JsonTokenType.EndObject)
+                    {
+                        if (reader.TokenType != JsonTokenType.PropertyName) continue;
+                        var prop = reader.GetString()?.ToLowerInvariant();
+                        reader.Read();
+                        switch (prop)
+                        {
+                            case "name":   entry.Name   = reader.GetString(); break;
+                            case "vendor": entry.Vendor = reader.GetString(); break;
+                            case "url":    entry.Url    = reader.GetString(); break;
+                            case "role":   entry.Role   = reader.GetString(); break;
+                            default:       reader.Skip(); break;
+                        }
+                    }
+                    if (entry.Name is not null) result.Add(entry);
+                }
+                else
+                {
+                    reader.Skip();
+                }
+            }
+            return result;
+        }
+
+        public override void Write(Utf8JsonWriter writer, List<SoftwareEntry> value, JsonSerializerOptions options)
+            => JsonSerializer.Serialize(writer, value, options);
+    }
+
+    /// <summary>
+    /// Tolerant converter for FormatRelationships.
+    /// Accepts either a JSON object {category, extensions, relatedFormats} (canonical)
+    /// or a legacy array of relationship objects [{format:"DMP",relationship:"..."},...].
+    /// When an array is provided, extracts "format" strings into RelatedFormats.
+    /// </summary>
+    internal sealed class FormatRelationshipsConverter : JsonConverter<FormatRelationships>
+    {
+        public override FormatRelationships Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            var result = new FormatRelationships();
+
+            if (reader.TokenType == JsonTokenType.Null) { reader.Skip(); return result; }
+
+            if (reader.TokenType == JsonTokenType.StartObject)
+            {
+                while (reader.Read() && reader.TokenType != JsonTokenType.EndObject)
+                {
+                    if (reader.TokenType != JsonTokenType.PropertyName) continue;
+                    var key = reader.GetString() ?? "";
+                    reader.Read();
+                    if (key.Equals("category", StringComparison.OrdinalIgnoreCase))
+                        result.Category = reader.TokenType == JsonTokenType.String ? reader.GetString() : null;
+                    else if (key.Equals("extensions", StringComparison.OrdinalIgnoreCase))
+                        result.Extensions = ReadStringList(ref reader);
+                    else if (key.Equals("relatedFormats", StringComparison.OrdinalIgnoreCase))
+                        result.RelatedFormats = ReadStringList(ref reader);
+                    else
+                        reader.Skip();
+                }
+                return result;
+            }
+
+            if (reader.TokenType == JsonTokenType.StartArray)
+            {
+                // Legacy array of relationship objects: [{format:"DMP",relationship:"..."}, ...]
+                while (reader.Read() && reader.TokenType != JsonTokenType.EndArray)
+                {
+                    if (reader.TokenType == JsonTokenType.String)
+                    {
+                        result.RelatedFormats.Add(reader.GetString() ?? "");
+                    }
+                    else if (reader.TokenType == JsonTokenType.StartObject)
+                    {
+                        string? formatName = null;
+                        while (reader.Read() && reader.TokenType != JsonTokenType.EndObject)
+                        {
+                            if (reader.TokenType != JsonTokenType.PropertyName) continue;
+                            var key = reader.GetString() ?? "";
+                            reader.Read();
+                            if (key.Equals("format", StringComparison.OrdinalIgnoreCase) &&
+                                reader.TokenType == JsonTokenType.String)
+                                formatName = reader.GetString();
+                            else
+                                reader.Skip();
+                        }
+                        if (formatName is not null) result.RelatedFormats.Add(formatName);
+                    }
+                    else reader.Skip();
+                }
+                return result;
+            }
+
+            reader.Skip();
+            return result;
+        }
+
+        private static List<string> ReadStringList(ref Utf8JsonReader reader)
+        {
+            var list = new List<string>();
+            if (reader.TokenType != JsonTokenType.StartArray) { reader.Skip(); return list; }
+            while (reader.Read() && reader.TokenType != JsonTokenType.EndArray)
+                if (reader.TokenType == JsonTokenType.String) list.Add(reader.GetString() ?? "");
+                else reader.Skip();
+            return list;
+        }
+
+        public override void Write(Utf8JsonWriter writer, FormatRelationships value, JsonSerializerOptions options)
+        {
+            writer.WriteStartObject();
+            if (value.Category is not null) writer.WriteString("category", value.Category);
+            writer.WritePropertyName("extensions");
+            JsonSerializer.Serialize(writer, value.Extensions, options);
+            writer.WritePropertyName("relatedFormats");
+            JsonSerializer.Serialize(writer, value.RelatedFormats, options);
+            writer.WriteEndObject();
+        }
+    }
+
+    /// <summary>
+    /// Tolerant converter for TechnicalDetails.
+    /// Accepts either a JSON object (canonical) or a plain string (legacy whfmt files
+    /// that stored a prose description instead of a structured object).
+    /// When a string is provided, stores it in RawDescription and returns an otherwise empty instance.
+    /// </summary>
+    internal sealed class TechnicalDetailsConverter : JsonConverter<TechnicalDetails>
+    {
+        private static readonly JsonSerializerOptions s_inner = new() { PropertyNameCaseInsensitive = true };
+
+        public override TechnicalDetails Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            if (reader.TokenType == JsonTokenType.Null) { reader.Skip(); return new TechnicalDetails(); }
+
+            if (reader.TokenType == JsonTokenType.String)
+            {
+                var desc = reader.GetString();
+                return new TechnicalDetails { RawDescription = desc };
+            }
+
+            if (reader.TokenType == JsonTokenType.StartObject)
+            {
+                // Deserialize manually to avoid recursive converter call.
+                var td = new TechnicalDetails();
+                using var doc = JsonDocument.ParseValue(ref reader);
+                foreach (var prop in doc.RootElement.EnumerateObject())
+                {
+                    switch (prop.Name.ToLowerInvariant())
+                    {
+                        case "primaryextension":  td.PrimaryExtension   = prop.Value.GetString(); break;
+                        case "compressionmethod": td.CompressionMethod  = prop.Value.GetString(); break;
+                        case "colorspace":        td.ColorSpace         = prop.Value.GetString(); break;
+                        case "container":         td.Container          = prop.Value.GetString(); break;
+                        case "platform":          td.Platform           = prop.Value.GetString(); break;
+                        case "definedfields":     td.DefinedFields      = prop.Value.ValueKind == JsonValueKind.Number ? prop.Value.GetInt32() : 0; break;
+                        case "archivesformat":    td.ArchivesFormat     = ReadBoolAny(prop.Value); break;
+                        case "imagesformat":      td.ImagesFormat       = ReadBoolAny(prop.Value); break;
+                        case "executablesformat": td.ExecutablesFormat  = ReadBoolAny(prop.Value); break;
+                        case "audioformat":       td.AudioFormat        = ReadBoolAny(prop.Value); break;
+                        case "videoformat":       td.VideoFormat        = ReadBoolAny(prop.Value); break;
+                        case "documentformat":    td.DocumentFormat     = ReadBoolAny(prop.Value); break;
+                        case "supportsencryption":td.SupportsEncryption = ReadBoolAny(prop.Value); break;
+                        case "bitdepth":
+                            if (prop.Value.ValueKind == JsonValueKind.Number && prop.Value.TryGetInt32(out var bd)) td.BitDepth = bd;
+                            break;
+                        case "samplerate":
+                            td.SampleRate = prop.Value.ValueKind == JsonValueKind.String
+                                ? prop.Value.GetString()
+                                : prop.Value.ValueKind == JsonValueKind.Number
+                                    ? prop.Value.GetRawText()
+                                    : null;
+                            break;
+                        // Ignore unknown properties (e.g., free-form prose keys)
+                    }
+                }
+                return td;
+            }
+
+            reader.Skip();
+            return new TechnicalDetails();
+        }
+
+        private static bool ReadBoolAny(JsonElement el) => el.ValueKind switch
+        {
+            JsonValueKind.True  => true,
+            JsonValueKind.False => false,
+            JsonValueKind.String => bool.TryParse(el.GetString(), out var b) && b,
+            JsonValueKind.Number => el.TryGetInt32(out var n) && n != 0,
+            _ => false
+        };
+
+        public override void Write(Utf8JsonWriter writer, TechnicalDetails value, JsonSerializerOptions options)
+        {
+            if (value?.RawDescription is not null)
+                writer.WriteStringValue(value.RawDescription);
+            else
+                JsonSerializer.Serialize(writer, value, s_inner);
+        }
+    }
+
+    /// <summary>
+    /// Tolerant bool converter: accepts true/false, string "true"/"false", integers (0=false, other=true).
+    /// Falls back to false for unrecognised values.
+    /// </summary>
+    internal sealed class BoolFromAnyConverter : JsonConverter<bool>
+    {
+        public override bool Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            if (reader.TokenType == JsonTokenType.True)  return true;
+            if (reader.TokenType == JsonTokenType.False) return false;
+            if (reader.TokenType == JsonTokenType.String)
+            {
+                var s = reader.GetString() ?? "";
+                return bool.TryParse(s, out var b) && b;
+            }
+            if (reader.TokenType == JsonTokenType.Number)
+                return reader.TryGetInt32(out var n) && n != 0;
+            reader.Skip();
+            return false;
+        }
+
+        public override void Write(Utf8JsonWriter writer, bool value, JsonSerializerOptions options)
+            => writer.WriteBooleanValue(value);
     }
 }

@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "Word Document",
+  "formatId": "DOCX",
   "version": "2.02",
   "extensions": [
     ".docx"

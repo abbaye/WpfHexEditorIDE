@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "CMS (Cryptographic Message Syntax)",
+  "formatId": "CMS",
   "version": "1.0",
   "extensions": [".cms", ".p7"],
   "description": "Cryptographic Message Syntax container — a DER-encoded ASN.1 ContentInfo structure that can carry SignedData, EnvelopedData, AuthenticatedData, or other content types. CMS (RFC 5652) is the successor to PKCS#7 and is the foundation for S/MIME email encryption, code signing, and secure document exchange.",

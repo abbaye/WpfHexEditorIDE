@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "VOTable (Virtual Observatory Table)",
+  "formatId": "VOTABLE",
   "version": "1.0",
   "extensions": [
     ".vot",

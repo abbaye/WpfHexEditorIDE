@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Musepack Audio",
+  "formatId": "MPC",
   "version": "1.0",
   "extensions": [".mpc", ".mp+"],
   "description": "Musepack (MPC) is a lossy audio compression format derived from MPEG-1 Layer II with significant modifications for improved quality-per-bit. Stream Version 8 (SV8) files begin with the four-byte magic 'MPCK' (0x4D50434B) followed by variable-length key-length-value packets. Stream Version 7 (SV7) older files use the two-byte 'MP+' prefix. SV8 introduced key-value packet containers for the stream header (SH), replay gain (RG), and end-of-stream (ES) packets. Musepack excels at transparent quality at medium bitrates.",

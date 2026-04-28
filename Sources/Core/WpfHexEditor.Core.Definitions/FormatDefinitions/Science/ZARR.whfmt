@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "Zarr Array Store",
+  "formatId": "ZARR",
   "version": "1.0",
   "extensions": [
     ".zarr",

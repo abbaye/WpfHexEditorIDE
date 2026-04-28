@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "MSX ROM Cartridge",
+  "formatId": "ROM_MSX",
   "version": "1.0",
   "extensions": [".rom", ".mx1", ".mx2"],
   "description": "MSX cartridge ROM image for the MSX home computer standard (ASCII Corporation / Microsoft, 1983). ROM images begin with a 2-byte page identifier: 'AB' (0x41 0x42) is the standard MSX ROM cartridge identifier used by nearly all game and application cartridges; 'CD' (0x43 0x44) identifies MSX-DOS ROM images. For 'AB' ROMs the standard 16-byte header follows: init_address (2B LE, called on slot init), statement_address (2B LE, BASIC CALL hook), device_address (2B LE, device handler), text_address (2B LE, BASIC program in ROM, 0 if none), then 6 reserved bytes. Mapper types include: ROM linear (no mapper), ASCII8 (8 KB pages), ASCII16 (16 KB pages), Konami4 (SCC-compatible), Konami5 (SCC+ sound), and GameMaster2. MSX2 and MSX2+ extend the mapper page count.",

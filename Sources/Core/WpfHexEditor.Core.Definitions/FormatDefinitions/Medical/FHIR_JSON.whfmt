@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "HL7 FHIR JSON Resource",
+  "formatId": "FHIR_JSON",
   "version": "1.0",
   "extensions": [
     ".json",

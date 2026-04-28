@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "SafeTensors",
+  "formatId": "SAFETENSORS",
   "version": "1.0",
   "extensions": [ ".safetensors" ],
   "description": "Hugging Face SafeTensors format for secure ML model weight storage; uses an 8-byte LE header size followed by a JSON metadata header and raw tensor data, eliminating arbitrary code execution risks inherent in pickle-based formats.",

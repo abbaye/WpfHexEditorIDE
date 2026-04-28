@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "semantic",
   "formatName": "C# Source File",
+  "formatId": "CSharp",
   "version": "2.13",
   "extensions": [
     ".cs"

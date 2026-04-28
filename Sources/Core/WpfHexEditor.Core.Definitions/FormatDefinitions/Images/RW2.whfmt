@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Panasonic RW2 RAW",
+  "formatId": "RW2",
   "version": "1.15",
   "extensions": [
     ".rw2"

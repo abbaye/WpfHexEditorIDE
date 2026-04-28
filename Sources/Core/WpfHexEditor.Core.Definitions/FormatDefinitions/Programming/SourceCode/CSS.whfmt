@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "text",
   "formatName": "CSS Stylesheet",
+  "formatId": "CSS",
   "version": "2.13",
   "extensions": [
     ".css",

@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Unity Prefab",
+  "formatId": "PREFAB",
   "version": "1.15",
   "extensions": [
     ".prefab"

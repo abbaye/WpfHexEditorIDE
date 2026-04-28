@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "YUV4MPEG2",
+  "formatId": "Y4M",
   "version": "2.32",
   "extensions": [
     ".y4m"

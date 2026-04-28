@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "WebP Image",
+  "formatId": "WEBP",
   "version": "2.02",
   "extensions": [
     ".webp"

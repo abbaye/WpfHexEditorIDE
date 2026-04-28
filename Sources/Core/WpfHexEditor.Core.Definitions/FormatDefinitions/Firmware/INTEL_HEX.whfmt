@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "Intel HEX",
+  "formatId": "INTEL_HEX",
   "version": "1.0",
   "extensions": [".hex", ".ihx", ".h86"],
   "description": "Intel HEX ASCII text format for binary firmware data. Each line is one record starting with ':'. Used for microcontroller firmware flashing (Arduino/AVR, PIC, ARM Cortex-M). RECTYP: 00=Data, 01=EOF, 02=Extended Segment, 04=Extended Linear Address.",

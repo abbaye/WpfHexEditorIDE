@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "Plain Text",
+  "formatId": "PlainText",
   "version": "1.53",
   "extensions": [".txt", ".text", ".log", ".md", ".csv", ".tsv", ".ini", ".cfg", ".conf"],
   "description": "Plain text files contain human-readable character data with no binary structure. Detection relies on BOM (Byte Order Mark) presence and file extension. UTF-8 BOM: EF BB BF (3 bytes). UTF-16 LE BOM: FF FE. UTF-16 BE BOM: FE FF. UTF-32 LE BOM: FF FE 00 00. UTF-32 BE BOM: 00 00 FE FF. Without a BOM, encoding is inferred from byte patterns: pure ASCII (bytes 0x20-0x7E plus line endings), valid UTF-8 sequences, or extended encodings. Line endings: LF (0x0A, Unix), CRLF (0x0D 0x0A, Windows), CR (0x0D, legacy Mac). Plain text has no defined binary format — it is a catch-all for human-readable files.",

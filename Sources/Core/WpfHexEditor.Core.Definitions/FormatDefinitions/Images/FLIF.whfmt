@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Free Lossless Image Format",
+  "formatId": "FLIF",
   "version": "1.0",
   "extensions": [".flif"],
   "description": "FLIF (Free Lossless Image Format) is an experimental lossless image format created by Jon Sneyers in 2015. The 4-byte ASCII magic 'FLIF' (46 4C 49 46) appears at offset 0. Byte 4 encodes two fields: the upper nibble (bits 7-4) specifies interlacing and animation (1=non-interlaced still, 2=interlaced still, 3=non-interlaced animation, 4=interlaced animation) and the lower nibble (bits 3-0) specifies channels (1=grayscale, 2=grayscale+alpha, 3=RGB, 4=RGBA). Byte 5 encodes bit depth as an ASCII character: '1' (0x31) = 8-bit per channel, '2' (0x32) = 16-bit per channel. Starting at byte 6, variable-length integers (varints) encode: width-1, height-1, and for animated files the frame count minus 1. FLIF uses MANIAC (Meta-Adaptive Near-zero Integer Arithmetic Coding) entropy coding which achieves significantly better compression than PNG for photographic content. Development stalled around 2017 and the format was superseded by JPEG XL which inherited several FLIF concepts.",

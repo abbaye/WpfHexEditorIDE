@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "STL 3D Model",
+  "formatId": "STL",
   "version": "1.0",
   "extensions": [".stl"],
   "description": "STL (STereoLithography, also Standard Triangle Language) is the most widely used 3D printing file format. Two variants exist. Binary STL: 80-byte arbitrary ASCII header (important: the first 5 characters must NOT be 'solid' to distinguish from ASCII STL) + uint32 LE triangle count + N triangle records of exactly 50 bytes each (3x float32 LE normal vector + 3x vertex1 float32 LE + 3x vertex2 float32 LE + 3x vertex3 float32 LE + uint16 LE attribute byte count). Total binary file size = 84 + N*50 bytes. ASCII STL: starts with 'solid name' text, followed by facet/outer loop/vertex/endloop/endfacet blocks, ending with 'endsolid'. ASCII is much larger for the same geometry. Binary is universally preferred for production use. Attribute byte count is normally 0 but some tools embed color data (Materialise Magics uses specific encoding). Used for: FDM/SLA/SLS 3D printing, CNC machining, rapid prototyping, reverse engineering.",

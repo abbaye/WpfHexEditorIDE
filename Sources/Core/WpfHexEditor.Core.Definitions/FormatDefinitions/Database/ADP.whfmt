@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Microsoft Access Project",
+  "formatId": "ADP",
   "version": "1.14",
   "extensions": [
     ".adp"

@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Input;
 using WpfHexEditor.Core.FormatDetection;
@@ -44,12 +45,20 @@ public sealed class WhfmtBrowserViewModel : ViewModelBase, IDisposable
     // State
     // ------------------------------------------------------------------
 
-    private string  _searchText    = string.Empty;
-    private bool    _isTreeView     = true;
-    private bool    _showBuiltIns   = true;
-    private bool    _showUserFmts   = true;
-    private bool    _isWatching;
-    private string  _statusText     = "Loading…";
+    private string      _searchText        = string.Empty;
+    private bool        _isTreeView        = true;
+    private bool        _showBuiltIns      = true;
+    private bool        _showUserFmts      = true;
+    private bool        _isWatching;
+    private string      _statusText        = "Loading…";
+    private WhfmtSortMode    _currentWhfmtSortMode   = WhfmtSortMode.ByName;
+    private WhfmtSearchField _currentWhfmtSearchField= WhfmtSearchField.All;
+    private bool        _isRegexSearch;
+    private bool        _isBusy;
+    private int         _searchMatchCount;
+    private int         _builtInCount;
+    private int         _userFormatCount;
+    private int         _failureCount;
 
     private Timer?  _filterTimer;
     private const int FilterDebounceMs = 200;
@@ -106,15 +115,80 @@ public sealed class WhfmtBrowserViewModel : ViewModelBase, IDisposable
         private set => SetField(ref _statusText, value);
     }
 
+    public WhfmtSortMode CurrentWhfmtSortMode
+    {
+        get => _currentWhfmtSortMode;
+        set { if (SetField(ref _currentWhfmtSortMode, value)) { OnPropertyChanged(nameof(WhfmtSortModeLabel)); RebuildTree(); } }
+    }
+
+    public WhfmtSearchField CurrentWhfmtSearchField
+    {
+        get => _currentWhfmtSearchField;
+        set { if (SetField(ref _currentWhfmtSearchField, value)) ScheduleFilter(); }
+    }
+
+    public bool IsRegexSearch
+    {
+        get => _isRegexSearch;
+        set { if (SetField(ref _isRegexSearch, value)) ScheduleFilter(); }
+    }
+
+    public bool IsBusy
+    {
+        get => _isBusy;
+        private set => SetField(ref _isBusy, value);
+    }
+
+    public int SearchMatchCount
+    {
+        get => _searchMatchCount;
+        private set => SetField(ref _searchMatchCount, value);
+    }
+
+    public int BuiltInCount
+    {
+        get => _builtInCount;
+        private set => SetField(ref _builtInCount, value);
+    }
+
+    public int UserFormatCount
+    {
+        get => _userFormatCount;
+        private set => SetField(ref _userFormatCount, value);
+    }
+
+    public int FailureCount
+    {
+        get => _failureCount;
+        private set => SetField(ref _failureCount, value);
+    }
+
+    public bool HasLoadFailures => _failureCount > 0;
+
+    public int TotalFormatCount => _builtInCount + _userFormatCount;
+
+    public string WhfmtSortModeLabel => _currentWhfmtSortMode switch
+    {
+        WhfmtSortMode.ByCategory => "Category",
+        WhfmtSortMode.ByQuality  => "Quality",
+        WhfmtSortMode.BySource   => "Source",
+        _                   => "Name"
+    };
+
     // ------------------------------------------------------------------
     // Commands
     // ------------------------------------------------------------------
 
-    public ICommand RefreshCommand     { get; }
-    public ICommand AddFormatCommand   { get; }
-    public ICommand OpenFolderCommand  { get; }
-    public ICommand ToggleWatchCommand { get; }
-    public ICommand ToggleViewCommand  { get; }
+    public ICommand RefreshCommand      { get; }
+    public ICommand AddFormatCommand    { get; }
+    public ICommand OpenFolderCommand   { get; }
+    public ICommand ToggleWatchCommand  { get; }
+    public ICommand ToggleViewCommand   { get; }
+    public ICommand SetSortCommand      { get; }
+    public ICommand NewFormatCommand    { get; }
+    public ICommand FindNextCommand     { get; }
+    public ICommand FindPreviousCommand { get; }
+    public ICommand ToggleShowFailuresCommand { get; }
 
     // ------------------------------------------------------------------
     // Events raised toward the View / MainWindow
@@ -138,12 +212,21 @@ public sealed class WhfmtBrowserViewModel : ViewModelBase, IDisposable
 
     public WhfmtBrowserViewModel()
     {
-        RefreshCommand     = new RelayCommand(OnRefresh);
-        AddFormatCommand   = new RelayCommand(OnAddFormat,   () => _adHocSvc is not null);
-        OpenFolderCommand  = new RelayCommand(OnOpenFolder,  () => _adHocSvc is not null);
-        ToggleWatchCommand = new RelayCommand(OnToggleWatch, () => _adHocSvc is not null);
-        ToggleViewCommand  = new RelayCommand(() => IsTreeView = !IsTreeView);
-        ClearSearchCommand = new RelayCommand(() => SearchText = string.Empty);
+        RefreshCommand      = new RelayCommand(OnRefresh);
+        AddFormatCommand    = new RelayCommand(OnAddFormat,   () => _adHocSvc is not null);
+        OpenFolderCommand   = new RelayCommand(OnOpenFolder,  () => _adHocSvc is not null);
+        ToggleWatchCommand  = new RelayCommand(OnToggleWatch, () => _adHocSvc is not null);
+        ToggleViewCommand   = new RelayCommand(() => IsTreeView = !IsTreeView);
+        ClearSearchCommand  = new RelayCommand(() => SearchText = string.Empty);
+        SetSortCommand      = new RelayCommand<string>(s =>
+        {
+            if (Enum.TryParse<WhfmtSortMode>(s, ignoreCase: true, out var mode))
+                CurrentWhfmtSortMode = mode;
+        });
+        NewFormatCommand    = new RelayCommand(OnNewFormat, () => _adHocSvc is not null);
+        FindNextCommand     = new RelayCommand(() => { /* navigation handled by ISearchTarget in view */ });
+        FindPreviousCommand = new RelayCommand(() => { /* navigation handled by ISearchTarget in view */ });
+        ToggleShowFailuresCommand = new RelayCommand(OnToggleShowFailures);
     }
 
     public ICommand ClearSearchCommand { get; }
@@ -202,46 +285,64 @@ public sealed class WhfmtBrowserViewModel : ViewModelBase, IDisposable
     {
         if (_embCatalog is null || _catalogSvc is null || _adHocSvc is null) return;
 
-        var allItems = new List<WhfmtFormatItemVm>();
-
-        // -- Built-in formats --
-        if (_showBuiltIns)
+        IsBusy = true;
+        try
         {
-            foreach (var entry in _embCatalog.GetAll().OrderBy(e => e.Category).ThenBy(e => e.Name))
+            var allItems = new List<WhfmtFormatItemVm>();
+
+            // -- Built-in formats --
+            if (_showBuiltIns)
             {
-                if (IsExcluded(entry.Name)) continue;
-                if (_settings is not null && entry.QualityScore < _settings.QualityScoreThreshold) continue;
-
-                allItems.Add(BuildBuiltInItemVm(entry));
+                foreach (var entry in _embCatalog.GetAll())
+                {
+                    if (IsExcluded(entry.Name)) continue;
+                    if (_settings is not null && entry.QualityScore < _settings.QualityScoreThreshold) continue;
+                    allItems.Add(BuildBuiltInItemVm(entry));
+                }
             }
-        }
 
-        // -- User formats --
-        if (_showUserFmts)
+            // -- User formats --
+            if (_showUserFmts)
+            {
+                foreach (var path in _adHocSvc.GetUserFormatPaths())
+                    allItems.Add(BuildUserItemVm(path));
+            }
+
+            // -- Load failures --
+            if (_settings?.ShowLoadFailures == true)
+            {
+                foreach (var failure in _catalogSvc.LoadFailures)
+                    allItems.Add(BuildFailureItemVm(failure));
+            }
+
+            // Update raw counts before filter
+            BuiltInCount    = allItems.Count(i => i.Source == FormatSource.BuiltIn);
+            UserFormatCount = allItems.Count(i => i.Source == FormatSource.User);
+            FailureCount    = allItems.Count(i => i.Source == FormatSource.LoadFailure);
+            OnPropertyChanged(nameof(HasLoadFailures));
+            OnPropertyChanged(nameof(TotalFormatCount));
+
+            // Apply text filter
+            var filtered = ApplySearchFilter(allItems, _searchText);
+            SearchMatchCount = string.IsNullOrWhiteSpace(_searchText) ? 0 : filtered.Count;
+
+            // Apply sort
+            var sorted = ApplySort(filtered).ToList();
+
+            // Rebuild tree nodes
+            RebuildCategoryNodes(sorted);
+
+            // Rebuild flat list
+            FlatItems.Clear();
+            foreach (var item in sorted)
+                FlatItems.Add(item);
+
+            UpdateStatusText(allItems);
+        }
+        finally
         {
-            foreach (var path in _adHocSvc.GetUserFormatPaths())
-                allItems.Add(BuildUserItemVm(path));
+            IsBusy = false;
         }
-
-        // -- Load failures --
-        if (_settings?.ShowLoadFailures == true)
-        {
-            foreach (var failure in _catalogSvc.LoadFailures)
-                allItems.Add(BuildFailureItemVm(failure));
-        }
-
-        // Apply text filter
-        var filtered = ApplySearchFilter(allItems, _searchText);
-
-        // Rebuild tree nodes
-        RebuildCategoryNodes(filtered);
-
-        // Rebuild flat list
-        FlatItems.Clear();
-        foreach (var item in filtered.OrderBy(i => i.Category).ThenBy(i => i.Name))
-            FlatItems.Add(item);
-
-        UpdateStatusText(allItems);
     }
 
     // ------------------------------------------------------------------
@@ -262,20 +363,66 @@ public sealed class WhfmtBrowserViewModel : ViewModelBase, IDisposable
         RebuildTree();
     }
 
-    private static List<WhfmtFormatItemVm> ApplySearchFilter(
-        List<WhfmtFormatItemVm> items, string search)
+    private static readonly StringComparison OrdinalIC = StringComparison.OrdinalIgnoreCase;
+
+    private List<WhfmtFormatItemVm> ApplySearchFilter(List<WhfmtFormatItemVm> items, string search)
     {
         if (string.IsNullOrWhiteSpace(search)) return items;
 
         var q = search.Trim();
-        return items
-            .Where(i => i.Name.Contains(q, StringComparison.OrdinalIgnoreCase)
-                     || i.Category.Contains(q, StringComparison.OrdinalIgnoreCase)
-                     || i.Description.Contains(q, StringComparison.OrdinalIgnoreCase)
-                     || i.ExtensionsDisplay.Contains(q, StringComparison.OrdinalIgnoreCase)
-                     || i.Author.Contains(q, StringComparison.OrdinalIgnoreCase))
-            .ToList();
+
+        if (_isRegexSearch)
+        {
+            try
+            {
+                var rx = new Regex(q, RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+                return items.Where(i => MatchesItemRegex(i, rx)).ToList();
+            }
+            catch (RegexParseException)
+            {
+                return items; // invalid pattern → show all
+            }
+        }
+
+        return items.Where(i => MatchesItem(i, q)).ToList();
     }
+
+    private bool MatchesItem(WhfmtFormatItemVm i, string q)
+        => _currentWhfmtSearchField switch
+        {
+            WhfmtSearchField.Name      => i.Name.Contains(q, OrdinalIC),
+            WhfmtSearchField.Extension => i.ExtensionsDisplay.Contains(q, OrdinalIC),
+            WhfmtSearchField.Author    => i.Author.Contains(q, OrdinalIC),
+            WhfmtSearchField.Category  => i.Category.Contains(q, OrdinalIC),
+            _                     => i.Name.Contains(q, OrdinalIC)
+                                  || i.Category.Contains(q, OrdinalIC)
+                                  || i.ExtensionsDisplay.Contains(q, OrdinalIC)
+                                  || i.Author.Contains(q, OrdinalIC)
+                                  || i.Description.Contains(q, OrdinalIC),
+        };
+
+    private bool MatchesItemRegex(WhfmtFormatItemVm i, Regex rx)
+        => _currentWhfmtSearchField switch
+        {
+            WhfmtSearchField.Name      => rx.IsMatch(i.Name),
+            WhfmtSearchField.Extension => rx.IsMatch(i.ExtensionsDisplay),
+            WhfmtSearchField.Author    => rx.IsMatch(i.Author),
+            WhfmtSearchField.Category  => rx.IsMatch(i.Category),
+            _                     => rx.IsMatch(i.Name)
+                                  || rx.IsMatch(i.Category)
+                                  || rx.IsMatch(i.ExtensionsDisplay)
+                                  || rx.IsMatch(i.Author)
+                                  || rx.IsMatch(i.Description),
+        };
+
+    private IEnumerable<WhfmtFormatItemVm> ApplySort(IEnumerable<WhfmtFormatItemVm> src)
+        => _currentWhfmtSortMode switch
+        {
+            WhfmtSortMode.ByCategory => src.OrderBy(i => i.SortKeyCategory).ThenBy(i => i.SortKeyName),
+            WhfmtSortMode.ByQuality  => src.OrderBy(i => i.SortKeyQuality).ThenBy(i => i.SortKeyName),
+            WhfmtSortMode.BySource   => src.OrderBy(i => i.SourceLabel).ThenBy(i => i.SortKeyName),
+            _                   => src.OrderBy(i => i.SortKeyName),
+        };
 
     private void RebuildCategoryNodes(List<WhfmtFormatItemVm> items)
     {
@@ -422,6 +569,8 @@ public sealed class WhfmtBrowserViewModel : ViewModelBase, IDisposable
         vm.CopyPathCommand        = new RelayCommand(() => OnCopyPath(vm));
         vm.RevealInExplorerCommand= new RelayCommand(() => OnRevealInExplorer(vm),
                                                      () => vm.Source == FormatSource.User && vm.FilePath is not null);
+        vm.DuplicateCommand       = new RelayCommand(() => OnDuplicateFormat(vm),
+                                                     () => vm.Source == FormatSource.User && vm.FilePath is not null);
     }
 
     // ------------------------------------------------------------------
@@ -429,6 +578,56 @@ public sealed class WhfmtBrowserViewModel : ViewModelBase, IDisposable
     // ------------------------------------------------------------------
 
     private void OnRefresh() => RebuildTree();
+
+    private void OnNewFormat()
+    {
+        if (_adHocSvc is null) return;
+        var dir  = _adHocSvc.UserFormatDirectory;
+        var path = FindUniqueFileName(dir, "NewFormat", ".whfmt");
+        var skeleton = $$"""
+            {
+              "$schema": "https://wpfhexeditor.dev/schema/whfmt-1.0.json",
+              "name": "NewFormat",
+              "description": "",
+              "version": "1.0",
+              "author": "",
+              "category": "Other",
+              "extensions": [],
+              "blocks": []
+            }
+            """;
+        File.WriteAllText(path, skeleton, System.Text.Encoding.UTF8);
+        RebuildTree();
+        ViewJsonRequested?.Invoke(this, path);
+    }
+
+    private void OnDuplicateFormat(WhfmtFormatItemVm vm)
+    {
+        if (_adHocSvc is null || vm.FilePath is null || !File.Exists(vm.FilePath)) return;
+        var dir  = _adHocSvc.UserFormatDirectory;
+        var dest = FindUniqueFileName(dir, vm.Name + "_copy", ".whfmt");
+        File.Copy(vm.FilePath, dest, overwrite: false);
+        RebuildTree();
+    }
+
+    private void OnToggleShowFailures()
+    {
+        if (_settings is null) return;
+        _settings.ShowLoadFailures = !_settings.ShowLoadFailures;
+        RebuildTree();
+    }
+
+    private static string FindUniqueFileName(string dir, string baseName, string ext)
+    {
+        var candidate = Path.Combine(dir, baseName + ext);
+        if (!File.Exists(candidate)) return candidate;
+        for (var i = 2; i < 100; i++)
+        {
+            candidate = Path.Combine(dir, $"{baseName}_{i}{ext}");
+            if (!File.Exists(candidate)) return candidate;
+        }
+        return Path.Combine(dir, $"{baseName}_{Guid.NewGuid():N}{ext}");
+    }
 
     private void OnAddFormat()
     {
@@ -560,6 +759,12 @@ public sealed class WhfmtBrowserViewModel : ViewModelBase, IDisposable
 // ------------------------------------------------------------------
 // Supporting types
 // ------------------------------------------------------------------
+
+/// <summary>Sort order for the format list in the Format Browser.</summary>
+public enum WhfmtSortMode  { ByName, ByCategory, ByQuality, BySource }
+
+/// <summary>Field scope for the quick search filter in the Format Browser.</summary>
+public enum WhfmtSearchField { All, Name, Extension, Author, Category }
 
 /// <summary>Modes for opening a format from the browser.</summary>
 public enum FormatOpenMode

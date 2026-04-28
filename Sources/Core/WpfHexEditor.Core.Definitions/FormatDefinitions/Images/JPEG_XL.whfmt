@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "JPEG XL Image",
+  "formatId": "JPEG_XL",
   "version": "1.0",
   "extensions": [".jxl"],
   "description": "JPEG XL (JXL) is a next-generation image codec standardized as ISO/IEC 18181 (2022). Two container formats are supported. (1) Naked codestream: the file starts with bytes FF 0A which form the SizeHeader signature byte of the JXL bitstream. (2) ISOBMFF container: starts with the 12-byte signature 00 00 00 0C 4A 58 4C 20 0D 0A 87 0A (box size=12, box type='JXL ', CRLF + 0x87 + 0x0A). Key features: lossless mode with bit-exact JPEG recompression (reducing existing JPEG files by ~20%), lossy compression outperforming HEIC/WebP at equal quality, animation, alpha channel, HDR, wide color gamut (Display P3, Rec.2020), and progressive decoding. Decoding is significantly faster than HEIC. Progressive browser adoption: Chrome 110+, Safari 17+, Firefox (experimental flag). Supported by GIMP 2.10+, Photoshop (plugin), darktable, and ImageMagick.",

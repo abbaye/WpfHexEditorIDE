@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "dBASE IV Database",
+  "formatId": "DBASE4",
   "version": "1.13",
   "extensions": [
     ".dbf"

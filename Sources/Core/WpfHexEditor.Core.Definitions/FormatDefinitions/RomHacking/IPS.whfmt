@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "IPS ROM Patch",
+  "formatId": "IPS",
   "version": "1.0",
   "extensions": [".ips"],
   "description": "IPS (International Patching System) — the oldest and most widely distributed ROM patch format, originating in the SNES and NES ROM hacking era. Magic: 'PATCH' = 0x50 0x41 0x54 0x43 0x48 (5 ASCII bytes) at offset 0. The patch body consists of a sequence of records, each comprising: offset (3 bytes big-endian, 24-bit unsigned, position in target ROM), size (2 bytes big-endian: 0 = RLE record, >0 = raw data length). For raw records (size > 0): 'size' bytes of replacement data follow. For RLE records (size == 0): rle_size (2B BE, repeat count) + rle_byte (1B, value to repeat). The patch ends when the 3-byte offset field reads as the magic 'EOF' = 0x45 0x4F 0x46. Maximum addressable offset: 0xFFFFFF (16,777,215 bytes = 16 MB). IPS has no source or target integrity checking (no CRC/MD5). A minimum valid IPS file is 8 bytes ('PATCH' + 'EOF'). Superseded by BPS and UPS for large ROMs requiring checksums. Distributed heavily on ROMhacking.net for SNES, NES, GBA, and PSX translation patches.",

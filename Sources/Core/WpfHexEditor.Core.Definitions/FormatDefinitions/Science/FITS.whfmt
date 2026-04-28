@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "FITS Astronomical Image",
+  "formatId": "FITS",
   "version": "1.0",
   "extensions": [".fits", ".fit", ".fts"],
   "description": "FITS (Flexible Image Transport System) — standard astronomical data format (NASA, 1981, NOST 100-2.0). Magic: 'SIMPLE  =' (53 49 4D 50 4C 45 20 20 3D) at offset 0. Each header block is 2880 bytes = 36 x 80-character cards. Card format: keyword(8B) + '= ' + value + ' /' + comment. Required keywords: SIMPLE=T, BITPIX (bits per pixel: 8,16,32,64,-32,-64), NAXIS, NAXIS1..N, END. Data block follows, also padded to 2880-byte boundaries. BITPIX: 8=uint8, 16=int16 BE, 32=int32 BE, 64=int64 BE, -32=float32 BE, -64=float64 BE. Extensions: IMAGE, TABLE, BINTABLE. Used by Hubble, Chandra, JWST, VLT.",

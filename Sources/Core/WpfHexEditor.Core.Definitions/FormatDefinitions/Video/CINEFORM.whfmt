@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "GoPro CineForm",
+  "formatId": "CINEFORM",
   "version": "1.0",
   "extensions": [
     ".cfhd",

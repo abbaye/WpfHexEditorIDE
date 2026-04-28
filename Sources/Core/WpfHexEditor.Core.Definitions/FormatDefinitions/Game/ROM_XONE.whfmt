@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Xbox One Package",
+  "formatId": "ROM_XONE",
   "version": "2.43",
   "extensions": [
     ".xvd",

@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "U-Boot Legacy Image",
+  "formatId": "UBOOT_IMG",
   "version": "1.0",
   "extensions": [".img", ".bin", ".uimg"],
   "description": "U-Boot legacy image format with 64-byte header. Magic 0x27051956 (big-endian) at offset 0. Contains load address, entry point, CRC-32, OS type, architecture, image type, and compression fields. Used on embedded routers, SBCs, and OpenWrt devices.",

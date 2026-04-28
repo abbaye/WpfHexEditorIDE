@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Blender Native Scene File",
+  "formatId": "BLEND",
   "version": "1.0",
   "extensions": [".blend"],
   "description": "Native binary scene format for the Blender 3D authoring suite. The file starts with a 12-byte file header containing the 'BLENDER' signature (7 bytes), a pointer-size indicator ('_' = 0x5F for 64-bit, '-' = 0x2D for 32-bit historically), an endianness indicator ('v' = 0x76 for little-endian, 'V' = 0x56 for big-endian), and a 3-byte Blender version string (e.g. '400' for Blender 4.0). Following the header are file blocks, each with a 4-byte block code, size, old memory address, SDNA index, and data count, forming a complete serialized scene graph including meshes, materials, lights, cameras, and animation data. The DNA1 block contains the type definitions (SDNA) for backward-compatible parsing. Modern Blender (4.x) optionally compresses .blend files with gzip.",

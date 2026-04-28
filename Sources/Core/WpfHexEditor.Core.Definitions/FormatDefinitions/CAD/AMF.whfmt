@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "Additive Manufacturing File (AMF)",
+  "formatId": "AMF",
   "version": "1.0",
   "extensions": [".amf"],
   "description": "AMF (Additive Manufacturing File Format) is the ISO/ASTM 52915:2016 XML standard for 3D printing, developed as an advanced successor to STL. Files start with '<?xml' XML declaration or directly with '<amf'. The root element is '<amf unit=\"millimeter\" version=\"1.1\">'. Key elements: <object id> (3D geometry), <material id> (material properties with name, color, composite percentages), <texture id> (image texture data), <constellation> (multi-object placement arrangement), <metadata type> (arbitrary key/value pairs). Geometry structure: <object> contains <mesh> containing <vertices> (list of <vertex><coordinates><x><y><z>) and <volume> (list of <triangle><v1><v2><v3> with optional material ID). Advanced features: curved triangles using cubic Bezier patches (n1, n2, n3 normal vectors), graded materials with spatial composition functions, per-vertex/triangle/volume color assignments (r, g, b, a), lattice structures. Supports ZIP compression (compressed AMF with .amf extension is a ZIP). Implementations: Materialise Magics, netfabb (Autodesk), Cura, PrusaSlicer. Being gradually superseded by 3MF but AMF remains the ISO standard.",

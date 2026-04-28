@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "E57 Point Cloud",
+  "formatId": "E57",
   "version": "1.0",
   "extensions": [".e57"],
   "description": "E57 is the ASTM E2807 standard file format for storing 3D point cloud and image data, designed for interoperability between 3D imaging systems. The 8-byte ASCII magic 'ASTM-E57' (41 53 54 4D 2D 45 35 37) appears at offset 0. The 48-byte file header contains: magic (8B) + majorVersion (4B LE, value 1) + minorVersion (4B LE, value 0) + filePhysicalLength (8B LE uint64, total file size) + xmlPhysicalOffset (8B LE uint64, byte offset to XML section) + xmlPhysicalLength (8B LE uint64, byte length of XML) + pageSize (8B LE uint64, always 1024). The XML section describes the file structure using E57 Foundation classes. Binary sections store compressed point data using bit-packing (CompressedVectorNode). Point attributes include: cartesianX/Y/Z (float64), sphericalRange/Azimuth/Elevation, intensityX, colorRed/Green/Blue, rowIndex, columnIndex, timeStamp, isValid. Supported by: Autodesk ReCap, CloudCompare, FARO Scene, Leica Cyclone, libE57, trimesh2. Used for AEC (Architecture/Engineering/Construction) BIM integration, forensic scanning, and industrial surveying.",

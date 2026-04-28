@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "DOS COM Executable",
+  "formatId": "COM",
   "version": "2.32",
   "extensions": [
     ".com"

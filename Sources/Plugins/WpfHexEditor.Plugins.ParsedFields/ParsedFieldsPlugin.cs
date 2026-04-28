@@ -80,6 +80,10 @@ public sealed class ParsedFieldsPlugin : IWpfHexEditorPlugin
     private ParsedFieldsUpdateRequestedEvent? _pendingUpdate;
     private bool _hexEditorHandledLastSwitch; // set by OnActiveEditorChanged, cleared by OnFocusChanged
 
+    // ── Source selector state ────────────────────────────────────────────────
+    private bool   _isPinnedMode;      // true when user has pinned a specific document
+    private string? _pinnedFilePath;   // path of the pinned document (null = Auto)
+
     // ── Lifecycle ─────────────────────────────────────────────────────────────
 
     public Task InitializeAsync(IIDEHostContext context, CancellationToken ct = default)
@@ -130,6 +134,18 @@ public sealed class ParsedFieldsPlugin : IWpfHexEditorPlugin
 
         // ── Bookmark navigation ──────────────────────────────────────────
         _panel.NavigateToOffsetRequested += OnNavigateToOffsetRequested;
+
+        // ── Refresh button — force full reconnect regardless of service state ──
+        _panel.RefreshRequested += OnPanelRefreshRequested;
+
+        // ── Source selector ───────────────────────────────────────────────
+        _panel.SetOpenDocumentsProvider(() =>
+            context.DocumentHost.Documents.OpenDocuments
+                .Where(d => !string.IsNullOrEmpty(d.FilePath))
+                .Select(d => (d.FilePath!, System.IO.Path.GetFileName(d.FilePath!)))
+                .ToList());
+        _panel.SourceDocumentSelected += OnSourceDocumentSelected;
+        context.DocumentHost.Documents.DocumentUnregistered += OnDocumentUnregistered;
 
         // ── Template / Grammar EventBus routes ───────────────────────────
         _templateSub = context.EventBus.Subscribe<TemplateApplyRequestedEvent>(OnTemplateApplyRequested);
@@ -185,8 +201,15 @@ public sealed class ParsedFieldsPlugin : IWpfHexEditorPlugin
             _context.HexEditor.DisconnectParsedFieldsPanel();
         }
 
+        if (_context != null)
+            _context.DocumentHost.Documents.DocumentUnregistered -= OnDocumentUnregistered;
+
         if (_panel != null)
+        {
             _panel.NavigateToOffsetRequested -= OnNavigateToOffsetRequested;
+            _panel.RefreshRequested          -= OnPanelRefreshRequested;
+            _panel.SourceDocumentSelected    -= OnSourceDocumentSelected;
+        }
 
         if (_context != null)
         {
@@ -351,12 +374,14 @@ public sealed class ParsedFieldsPlugin : IWpfHexEditorPlugin
     private void OnFocusChanged(object? sender, FocusChangedEventArgs e)
     {
         if (e.ActiveDocument == null) return;
-        if (e.ActiveDocument.ContentId == e.PreviousDocument?.ContentId) return;
 
         // Clear the flag BEFORE any early-out so that transitioning through a
         // FilePath-less tab (Options, empty editor, etc.) doesn't leave the flag
         // stuck at true and silently suppress the next non-hex document update.
         _hexEditorHandledLastSwitch = false;
+
+        // Pinned mode: panel is locked on a specific document — ignore focus changes.
+        if (_isPinnedMode) return;
 
         var filePath = e.ActiveDocument.FilePath;
         if (string.IsNullOrEmpty(filePath)) return;
@@ -367,6 +392,19 @@ public sealed class ParsedFieldsPlugin : IWpfHexEditorPlugin
         {
             // If HexEditor claimed this tab switch, skip — it already reconnected the panel
             if (_hexEditorHandledLastSwitch) return;
+
+            // Cross-group focus: ActiveEditorChanged was suppressed by HexEditorServiceImpl
+            // (ReferenceEquals dedup) when the same HexEditor instance is re-focused from
+            // a different tab group. Detect this case and force a panel reconnect.
+            if (_context?.HexEditor.IsActive == true &&
+                string.Equals(_context.HexEditor.CurrentFilePath, filePath,
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                DeactivatePreview();
+                _context.HexEditor.DisconnectParsedFieldsPanel();
+                _context.HexEditor.ConnectParsedFieldsPanel(_panel);
+                return;
+            }
 
             // Non-hex document — activate preview
             QueueOrExecuteUpdate(new ParsedFieldsUpdateRequestedEvent
@@ -415,6 +453,79 @@ public sealed class ParsedFieldsPlugin : IWpfHexEditorPlugin
     }
 
     // ══════════════════════════════════════════════════════════════════════════
+    // Source selector handlers
+    // ══════════════════════════════════════════════════════════════════════════
+
+    /// <summary>
+    /// User picked a document from the source dropdown (null = Auto mode).
+    /// </summary>
+    private void OnSourceDocumentSelected(object? sender, string? filePath)
+    {
+        if (filePath == null)
+        {
+            // Revert to Auto — re-sync with current active document
+            _isPinnedMode   = false;
+            _pinnedFilePath = null;
+            var activeFilePath = _context?.FocusContext.ActiveDocument?.FilePath;
+            if (!string.IsNullOrEmpty(activeFilePath))
+                ActivatePreview(activeFilePath);
+        }
+        else
+        {
+            _isPinnedMode   = true;
+            _pinnedFilePath = filePath;
+            ActivatePreview(filePath);
+        }
+    }
+
+    /// <summary>
+    /// A document tab was closed — if it was the pinned source, revert to Auto.
+    /// </summary>
+    private void OnDocumentUnregistered(object? sender, WpfHexEditor.Editor.Core.Documents.DocumentModel doc)
+    {
+        if (!_isPinnedMode || string.IsNullOrEmpty(doc.FilePath)) return;
+        if (!string.Equals(doc.FilePath, _pinnedFilePath, StringComparison.OrdinalIgnoreCase)) return;
+
+        _isPinnedMode   = false;
+        _pinnedFilePath = null;
+        _panel?.NotifyPinnedDocumentClosed(doc.FilePath);
+    }
+
+    // ══════════════════════════════════════════════════════════════════════════
+    // Refresh button — force full reconnect regardless of service state
+    // ══════════════════════════════════════════════════════════════════════════
+
+    /// <summary>
+    /// Handles the panel's Refresh (F5) button.
+    /// Forces a full reconnect cycle so the panel syncs with the current active
+    /// document even when _source or _activeFormat are stale or null (e.g. after
+    /// a multi-tab-group focus switch that did not trigger a panel reconnect).
+    /// </summary>
+    private void OnPanelRefreshRequested(object? sender, EventArgs e)
+    {
+        if (_panel == null || _context == null) return;
+
+        if (_context.HexEditor.IsActive)
+        {
+            // HexEditor path: force disconnect + reconnect to re-attach source and re-parse.
+            _context.HexEditor.DisconnectParsedFieldsPanel();
+            _context.HexEditor.ConnectParsedFieldsPanel(_panel);
+        }
+        else if (_isPreviewActive && _previewService != null)
+        {
+            // Preview path: the FormatParsingService already has a source — just refresh.
+            _previewService.Refresh();
+        }
+        else
+        {
+            // No active source yet — try to activate a preview from the current focus context.
+            var filePath = _context.FocusContext.ActiveDocument?.FilePath;
+            if (!string.IsNullOrEmpty(filePath))
+                ActivatePreview(filePath);
+        }
+    }
+
+    // ══════════════════════════════════════════════════════════════════════════
     // Legacy HexEditor Event Handlers (ALWAYS active — handles HexEditor tabs)
     // ══════════════════════════════════════════════════════════════════════════
 
@@ -435,6 +546,9 @@ public sealed class ParsedFieldsPlugin : IWpfHexEditorPlugin
 
         // Signal that HexEditor handled this tab switch — OnFocusChanged should skip
         _hexEditorHandledLastSwitch = true;
+
+        // Pinned mode: panel is locked — don't reconnect to the new active HexEditor.
+        if (_isPinnedMode) return;
 
         // Deactivate preview — HexEditor takes panel ownership
         DeactivatePreview();

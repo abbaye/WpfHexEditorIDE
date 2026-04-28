@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "Open XML Paper Specification",
+  "formatId": "OXPS",
   "version": "2.02",
   "extensions": [
     ".oxps"

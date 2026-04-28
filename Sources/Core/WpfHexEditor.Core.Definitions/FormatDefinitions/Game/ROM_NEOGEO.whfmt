@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Neo Geo AES/MVS ROM",
+  "formatId": "ROM_NEOGEO",
   "version": "1.0",
   "extensions": [".neo", ".ng"],
   "description": "SNK Neo Geo AES (home console) and MVS (arcade) ROM image in the NeoBuilder .neo container format. The 64-byte header begins with 'NEO' (3 bytes ASCII) followed by format version byte 0x01. Subsequent fields: prg_size (4B LE, PRG data size in bytes), spr_size (4B LE, sprite graphics size), smp_size (4B LE, ADPCM sound samples size), mac (1B, reserved), padding to 64 bytes. Payload sections: PRG data (Motorola 68000 CPU code), SPR data (sprite graphics in z80-shuffled layout), SMP data (YM2610 ADPCM samples), and a 1-byte sound program indicator. The Neo Geo uses a Motorola 68000 main CPU at 12 MHz with a Z80 sound CPU and YM2610 FM+ADPCM synthesis chip. Notable titles: Metal Slug series, King of Fighters, Samurai Shodown. MAME uses separate P/M/S/V/C ROM files rather than the unified .neo container.",

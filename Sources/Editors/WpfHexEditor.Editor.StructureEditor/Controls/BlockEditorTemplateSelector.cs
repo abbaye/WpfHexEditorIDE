@@ -38,6 +38,9 @@ internal sealed class BlockEditorTemplateSelector : DataTemplateSelector
             "union"                => "BlockTemplate_Union",
             "nested"               => "BlockTemplate_Nested",
             "pointer"              => "BlockTemplate_Pointer",
+            "group"                => "BlockTemplate_Group",
+            "header"               => "BlockTemplate_Header",
+            "data"                 => "BlockTemplate_Data",
             _                      => "BlockTemplate_Field",
         };
 

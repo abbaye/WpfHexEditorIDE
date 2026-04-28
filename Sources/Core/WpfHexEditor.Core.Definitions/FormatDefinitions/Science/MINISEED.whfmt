@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "miniSEED Seismic Data",
+  "formatId": "MINISEED",
   "version": "1.15",
   "extensions": [
     ".mseed",

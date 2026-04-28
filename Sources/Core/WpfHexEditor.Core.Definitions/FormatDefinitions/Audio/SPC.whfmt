@@ -1,5 +1,6 @@
 {
   "formatName": "SNES SPC700 Sound File (SPC)",
+  "formatId": "SPC",
   "version": "1.1",
   "extensions": [ ".spc" ],
   "diffMode": "binary",

@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "APNG Animated Image",
+  "formatId": "APNG",
   "version": "2.33",
   "extensions": [
     ".apng",

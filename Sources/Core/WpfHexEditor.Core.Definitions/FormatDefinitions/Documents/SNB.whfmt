@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Shanda Bambook eBook",
+  "formatId": "SNB",
   "version": "1.15",
   "extensions": [".snb"],
   "description": "SNB is the native eBook format for Shanda Bambook (Shanda Interactive Entertainment) Chinese e-readers. SNB files are ZIP-based containers starting with the standard ZIP local file header 'PK\\x03\\x04' (50 4B 03 04). The format wraps XHTML/HTML content, CSS, images, and metadata in a ZIP archive with a specific directory structure. The main content file is typically at 'snbf/book.snbf' within the ZIP, and a TOC file at 'snbf/toc.snbf'. Bambook devices were popular in China (2010-2013) before being discontinued. SNB support exists in Calibre (ebook conversion) for reading and converting to other formats.",

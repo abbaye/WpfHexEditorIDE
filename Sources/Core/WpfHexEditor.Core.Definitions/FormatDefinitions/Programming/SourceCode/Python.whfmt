@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "text",
   "formatName": "Python Source File",
+  "formatId": "Python",
   "version": "2.13",
   "extensions": [
     ".py",

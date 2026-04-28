@@ -1,5 +1,6 @@
 {
   "formatName": "StuffIt Archive",
+  "formatId": "SIT",
   "version": "1.0",
   "diffMode": "binary",
   "extensions": [ ".sit", ".sitx" ],

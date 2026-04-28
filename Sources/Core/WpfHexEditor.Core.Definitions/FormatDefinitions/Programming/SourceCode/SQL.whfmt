@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "text",
   "formatName": "SQL Source File",
+  "formatId": "SQL",
   "version": "2.13",
   "extensions": [
     ".sql",

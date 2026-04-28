@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Matroska Video",
+  "formatId": "MKV",
   "version": "1.0",
   "extensions": [".mkv", ".mka", ".mks"],
   "description": "Matroska is an open, flexible container format for audio, video, and subtitles based on EBML (Extensible Binary Meta Language). MKV (video), MKA (audio-only), and MKS (subtitles-only) all share the same EBML header element ID 1A 45 DF A3. The DocType string within the EBML header is 'matroska' (as distinct from 'webm' for WebM files). Matroska supports virtually all known audio and video codecs, multiple audio tracks, chapter navigation, embedded attachments, and complex subtitle formats (SSA/ASS). It is the preferred container for high-quality video encoding and media preservation.",

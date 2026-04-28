@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "CockroachDB RocksDB SSTable",
+  "formatId": "COCKROACH_SST",
   "version": "1.0",
   "extensions": [".sst"],
   "description": "CockroachDB historically uses RocksDB-format SSTables with the standard RocksDB footer magic 0xF7CFF485B741E288. These sorted string tables store key-value pairs in compressed data blocks with index and filter blocks. Newer CockroachDB versions use Pebble with its own magic, but legacy and imported SSTables retain the RocksDB signature. Detection is weak due to shared .sst extension.",

@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "QuickTime Movie",
+  "formatId": "MOV",
   "version": "2.02",
   "extensions": [
     ".mov",

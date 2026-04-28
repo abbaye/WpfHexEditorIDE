@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "GAMESS Quantum Chemistry Log",
+  "formatId": "GAMESS_LOG",
   "version": "1.0",
   "extensions": [
     ".log",

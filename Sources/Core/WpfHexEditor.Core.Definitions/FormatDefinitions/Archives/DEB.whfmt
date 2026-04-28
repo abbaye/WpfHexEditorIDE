@@ -1,5 +1,6 @@
 {
   "formatName": "Debian Package",
+  "formatId": "DEB",
   "version": "1.0",
   "diffMode": "binary",
   "extensions": [ ".deb", ".udeb" ],

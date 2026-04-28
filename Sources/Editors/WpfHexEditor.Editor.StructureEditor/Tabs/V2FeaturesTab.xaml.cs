@@ -34,6 +34,8 @@ public sealed partial class V2FeaturesTab : UserControl
         ChecksumsList.ItemsSource  = vm.Checksums;
         ExportsList.ItemsSource    = vm.ExportTemplates;
         BookmarksList.ItemsSource  = vm.Navigation.Bookmarks;
+        ImportsList.ItemsSource    = vm.Imports;
+        BuildVersioningPanel(vm.Versioning);
         BuildForensicPanel(vm.Forensic);
         BuildInspectorPanel(vm.Inspector);
         BuildAiPanel(vm.AiHints);
@@ -44,6 +46,7 @@ public sealed partial class V2FeaturesTab : UserControl
     private void OnAddAssertion(object sender, RoutedEventArgs e) => VM?.AddAssertion();
     private void OnAddChecksum(object sender, RoutedEventArgs e)  => VM?.AddChecksum();
     private void OnAddExport(object sender, RoutedEventArgs e)    => VM?.AddExportTemplate();
+    private void OnAddImport(object sender, RoutedEventArgs e)    => VM?.AddImport();
 
     private void OnAddBookmark(object sender, RoutedEventArgs e)
     {
@@ -51,7 +54,131 @@ public sealed partial class V2FeaturesTab : UserControl
         VM.Navigation.AddBookmarkCommand.Execute(null);
     }
 
-    // ── Dynamic panels (Forensic, Inspector, AiHints) ────────────────────────
+    // ── Dynamic panels (Versioning, Forensic, Inspector, AiHints) ──────────────
+
+    private void BuildVersioningPanel(VersioningViewModel vm)
+    {
+        VersioningPanel.Children.Clear();
+
+        var fieldRow = MakeRow("Version Field", MakeTextBox(vm, nameof(vm.Field)));
+        ((TextBox)((StackPanel)fieldRow).Children[1]).ToolTip =
+            "Variable name set by a prior field block whose value drives version selection.";
+        VersioningPanel.Children.Add(fieldRow);
+
+        var mapLbl = new TextBlock
+        {
+            Text = "Version Map  (raw value  →  version key)",
+            FontSize = 11, Margin = new Thickness(0, 8, 0, 2),
+        };
+        mapLbl.SetResourceReference(TextBlock.ForegroundProperty, "TE_LineNumberForeground");
+        VersioningPanel.Children.Add(mapLbl);
+
+        var ic = new ItemsControl { ItemsSource = vm.VersionMap };
+        ic.ItemTemplate = MakeVersionMapTemplate();
+        VersioningPanel.Children.Add(ic);
+
+        var addBtn = new Button
+        {
+            Content = "+ Add Entry", FontSize = 11, Padding = new Thickness(6, 2, 6, 2),
+            Margin = new Thickness(0, 4, 0, 4), HorizontalAlignment = HorizontalAlignment.Left,
+            Background = System.Windows.Media.Brushes.Transparent, BorderThickness = new Thickness(0),
+            Command = vm.AddEntryCommand,
+        };
+        addBtn.SetResourceReference(Button.ForegroundProperty, "ET_AccentBrush");
+        VersioningPanel.Children.Add(addBtn);
+
+        var setsLbl = new TextBlock
+        {
+            Text = "Versioned Block Sets  (existing — edit raw JSON to modify blocks)",
+            FontSize = 10, Opacity = 0.6, TextWrapping = System.Windows.TextWrapping.Wrap,
+            Margin = new Thickness(0, 4, 0, 2),
+        };
+        setsLbl.SetResourceReference(TextBlock.ForegroundProperty, "TE_LineNumberForeground");
+        VersioningPanel.Children.Add(setsLbl);
+
+        var setsIc = new ItemsControl { ItemsSource = vm.VersionedSets };
+        setsIc.ItemTemplate = MakeVersionedSetTemplate();
+        VersioningPanel.Children.Add(setsIc);
+    }
+
+    private static DataTemplate MakeVersionMapTemplate()
+    {
+        var template = new DataTemplate();
+        // Use a StackPanel with horizontal orientation
+        var sp = new FrameworkElementFactory(typeof(StackPanel));
+        sp.SetValue(StackPanel.OrientationProperty, Orientation.Horizontal);
+        sp.SetValue(FrameworkElement.MarginProperty, new Thickness(0, 2, 0, 2));
+
+        var rawBox = new FrameworkElementFactory(typeof(TextBox));
+        rawBox.SetValue(TextBox.MinWidthProperty, 120.0);
+        rawBox.SetValue(FrameworkElement.MarginProperty, new Thickness(0, 0, 4, 0));
+        rawBox.SetValue(TextBox.FontSizeProperty, 11.0);
+        rawBox.SetValue(Control.PaddingProperty, new Thickness(4, 2, 4, 2));
+        rawBox.SetValue(TextBox.ToolTipProperty, "Raw field value (e.g. 523 or 0x20b)");
+        rawBox.SetBinding(TextBox.TextProperty,
+            new System.Windows.Data.Binding(nameof(VersionMapEntryViewModel.RawValue))
+            { UpdateSourceTrigger = System.Windows.Data.UpdateSourceTrigger.PropertyChanged });
+        sp.AppendChild(rawBox);
+
+        var arrow = new FrameworkElementFactory(typeof(TextBlock));
+        arrow.SetValue(TextBlock.TextProperty, " → ");
+        arrow.SetValue(TextBlock.FontSizeProperty, 11.0);
+        arrow.SetValue(FrameworkElement.MarginProperty, new Thickness(0, 0, 4, 0));
+        arrow.SetValue(FrameworkElement.VerticalAlignmentProperty, VerticalAlignment.Center);
+        sp.AppendChild(arrow);
+
+        var keyBox = new FrameworkElementFactory(typeof(TextBox));
+        keyBox.SetValue(TextBox.MinWidthProperty, 120.0);
+        keyBox.SetValue(FrameworkElement.MarginProperty, new Thickness(0, 0, 4, 0));
+        keyBox.SetValue(TextBox.FontSizeProperty, 11.0);
+        keyBox.SetValue(Control.PaddingProperty, new Thickness(4, 2, 4, 2));
+        keyBox.SetValue(TextBox.ToolTipProperty, "Version key (e.g. PE32+ or v2)");
+        keyBox.SetBinding(TextBox.TextProperty,
+            new System.Windows.Data.Binding(nameof(VersionMapEntryViewModel.VersionKey))
+            { UpdateSourceTrigger = System.Windows.Data.UpdateSourceTrigger.PropertyChanged });
+        sp.AppendChild(keyBox);
+
+        var remBtn = new FrameworkElementFactory(typeof(Button));
+        remBtn.SetValue(Button.ContentProperty, "✕");
+        remBtn.SetValue(Button.FontSizeProperty, 10.0);
+        remBtn.SetValue(Button.PaddingProperty, new Thickness(4, 1, 4, 1));
+        remBtn.SetValue(Button.BackgroundProperty, System.Windows.Media.Brushes.Transparent);
+        remBtn.SetValue(Button.BorderThicknessProperty, new Thickness(0));
+        remBtn.SetBinding(Button.CommandProperty,
+            new System.Windows.Data.Binding(nameof(VersionMapEntryViewModel.RemoveCommand)));
+        sp.AppendChild(remBtn);
+
+        template.VisualTree = sp;
+        return template;
+    }
+
+    private static DataTemplate MakeVersionedSetTemplate()
+    {
+        var template = new DataTemplate();
+        var sp = new FrameworkElementFactory(typeof(StackPanel));
+        sp.SetValue(StackPanel.OrientationProperty, Orientation.Horizontal);
+        sp.SetValue(FrameworkElement.MarginProperty, new Thickness(0, 1, 0, 1));
+
+        var keyTb = new FrameworkElementFactory(typeof(TextBlock));
+        keyTb.SetBinding(TextBlock.TextProperty,
+            new System.Windows.Data.Binding(nameof(VersionedBlockSetInfo.VersionKey)));
+        keyTb.SetValue(TextBlock.FontSizeProperty, 11.0);
+        keyTb.SetValue(TextBlock.FontWeightProperty, FontWeights.SemiBold);
+        keyTb.SetValue(FrameworkElement.MarginProperty, new Thickness(0, 0, 8, 0));
+        sp.AppendChild(keyTb);
+
+        var cntTb = new FrameworkElementFactory(typeof(TextBlock));
+        cntTb.SetBinding(TextBlock.TextProperty,
+            new System.Windows.Data.Binding(nameof(VersionedBlockSetInfo.BlockCount))
+            { StringFormat = "({0} blocks)" });
+        cntTb.SetValue(TextBlock.FontSizeProperty, 10.0);
+        cntTb.SetValue(TextBlock.OpacityProperty, 0.6);
+        cntTb.SetValue(FrameworkElement.VerticalAlignmentProperty, VerticalAlignment.Center);
+        sp.AppendChild(cntTb);
+
+        template.VisualTree = sp;
+        return template;
+    }
 
     private void BuildForensicPanel(ForensicViewModel vm)
     {

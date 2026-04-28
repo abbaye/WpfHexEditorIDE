@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Microsoft Works Document",
+  "formatId": "WPS",
   "version": "1.0",
   "extensions": [".wps", ".xlr", ".wdb"],
   "description": "Microsoft Works was a consumer-grade office suite that used OLE2 Compound File format (magic 0xD0CF11E0A1B11AE1) as its container. Works documents (.wps for word processing, .xlr for spreadsheets, .wdb for databases) contain Works-specific stream names within the OLE2 structure. The OLE2 header includes minor version at offset 24 and major version at offset 26, both as uint16 LE. Works was discontinued in 2009 but files remain common in legacy archives.",

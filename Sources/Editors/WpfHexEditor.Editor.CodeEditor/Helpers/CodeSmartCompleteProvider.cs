@@ -625,6 +625,37 @@ namespace WpfHexEditor.Editor.CodeEditor.Helpers
                 Documentation = "Validation constraints: min, max, pattern (regex), allowedValues",
                 Type = SuggestionType.Property,
                 SortPriority = 81
+            },
+            new SmartCompleteSuggestion
+            {
+                DisplayText = "until",
+                InsertText = "\"until\": \"00\"",
+                CursorOffset = -1,
+                Icon = "[end]",
+                TypeHint = "string",
+                Documentation = "Sentinel pattern: read until this hex sequence (e.g. \"00\" for null terminator). When set, length is optional.",
+                Type = SuggestionType.Property,
+                SortPriority = 82
+            },
+            new SmartCompleteSuggestion
+            {
+                DisplayText = "maxLength",
+                InsertText = "\"maxLength\": 4096",
+                Icon = "[cap]",
+                TypeHint = "number",
+                Documentation = "Safety cap in bytes when using 'until' and the pattern is not found. Recommended when until is present.",
+                Type = SuggestionType.Property,
+                SortPriority = 83
+            },
+            new SmartCompleteSuggestion
+            {
+                DisplayText = "untilInclusive",
+                InsertText = "\"untilInclusive\": true",
+                Icon = "[inc]",
+                TypeHint = "bool",
+                Documentation = "When true, the sentinel pattern bytes are included in the field length (default: false).",
+                Type = SuggestionType.Property,
+                SortPriority = 84
             }
         };
 

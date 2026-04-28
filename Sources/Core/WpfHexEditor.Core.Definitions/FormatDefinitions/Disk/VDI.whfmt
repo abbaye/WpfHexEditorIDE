@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "VirtualBox Disk Image",
+  "formatId": "VDI",
   "version": "1.14",
   "extensions": [
     ".vdi"

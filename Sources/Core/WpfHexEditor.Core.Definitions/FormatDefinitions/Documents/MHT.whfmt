@@ -1,7 +1,8 @@
 {
   "diffMode": "text",
   "formatName": "MHTML Web Archive",
-  "version": "1.0",
+  "formatId": "MHT",
+  "version": "1.1",
   "extensions": [
     ".mht",
     ".mhtml"
@@ -25,13 +26,26 @@
   },
   "detection": {
     "signatures": [
-      { "value": "4D494D452D56657273696F6E3A", "offset": 0, "label": "MIME-Version: — standard MHTML header start", "weight": 1.0 },
-      { "value": "46726F6D3A20", "offset": 0, "label": "From:  — Outlook-style MHTML saved page header", "weight": 0.7 }
+      {
+        "value": "4D494D452D56657273696F6E3A",
+        "offset": 0,
+        "label": "MIME-Version: — standard MHTML header start",
+        "weight": 1.0
+      },
+      {
+        "value": "46726F6D3A20",
+        "offset": 0,
+        "label": "From:  — Outlook-style MHTML saved page header",
+        "weight": 0.7
+      }
     ],
     "required": true,
     "Strength": "Strong",
     "MinimumScore": 0.7,
-    "EntropyHint": { "min": 4.0, "max": 6.5 },
+    "EntropyHint": {
+      "min": 4.0,
+      "max": 6.5
+    },
     "validation": {
       "minFileSize": 64
     }
@@ -97,7 +111,12 @@
   ],
   "navigation": {
     "bookmarks": [
-      { "name": "MIME Header Start", "offset": 0, "icon": "\uE71B", "color": "#FF6B6B" }
+      {
+        "name": "MIME Header Start",
+        "offset": 0,
+        "icon": "",
+        "color": "#FF6B6B"
+      }
     ]
   },
   "inspector": {
@@ -107,8 +126,11 @@
     "groups": [
       {
         "title": "MIME Identity",
-        "icon": "\uE71B",
-        "fields": ["mimeHeader", "firstByte"]
+        "icon": "",
+        "fields": [
+          "mimeHeader",
+          "firstByte"
+        ]
       }
     ]
   },
@@ -116,12 +138,17 @@
     {
       "name": "MHTML header summary (JSON)",
       "format": "json",
-      "fields": ["mimeHeader", "firstByte"]
+      "fields": [
+        "mimeHeader",
+        "firstByte"
+      ]
     },
     {
       "name": "MHTML info (text)",
       "format": "text",
-      "fields": ["mimeHeader"]
+      "fields": [
+        "mimeHeader"
+      ]
     }
   ],
   "forensic": {
@@ -162,8 +189,14 @@
   ],
   "formatRelationships": {
     "category": "Documents",
-    "extensions": [".mht", ".mhtml"],
-    "relatedFormats": ["HTML", "EML"],
+    "extensions": [
+      ".mht",
+      ".mhtml"
+    ],
+    "relatedFormats": [
+      "HTML",
+      "EML"
+    ],
     "containerVariant": "MIME multipart/related encapsulating HTML + embedded resources"
   },
   "MimeTypes": [
@@ -192,5 +225,57 @@
     "LineEndings": "CRLF (MIME standard)",
     "ResourceEncoding": "base64 or quoted-printable",
     "MultiPartBoundary": "Unique string defined in Content-Type header"
+  },
+  "syntaxDefinition": {
+    "id": "mht",
+    "name": "MHTML Web Archive",
+    "extensions": [
+      ".mht",
+      ".mhtml"
+    ],
+    "rules": [
+      {
+        "type": "Keyword",
+        "pattern": "^(MIME-Version|Content-Type|Content-Transfer-Encoding|Content-Location|From|Subject|Date|Message-ID|boundary)(?=:)"
+      },
+      {
+        "type": "Directive",
+        "pattern": "^--[A-Za-z0-9_+=/.]+"
+      },
+      {
+        "type": "String",
+        "pattern": "\"[^\"]*\""
+      },
+      {
+        "type": "Number",
+        "pattern": "\\b[0-9]+\\b"
+      }
+    ],
+    "formattingRules": {
+      "indentSize": 0,
+      "useTabs": false,
+      "trimTrailingWhitespace": false,
+      "insertFinalNewline": true
+    },
+    "foldingRules": {
+      "startPatterns": [
+        "^--[A-Za-z0-9_+=/.]+$"
+      ],
+      "endPatterns": [
+        "^--[A-Za-z0-9_+=/.]+--$"
+      ]
+    },
+    "ideMetadata": {
+      "isSourceFile": false,
+      "isStructuredDataFile": false,
+      "supportsClassDiagram": false,
+      "supportsSourceOutline": false,
+      "isProjectLanguage": false,
+      "aliases": [
+        "mhtml"
+      ],
+      "iconGlyph": "",
+      "diffMode": "text"
+    }
   }
 }

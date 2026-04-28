@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "xdelta3 Binary Patch",
+  "formatId": "XDelta3",
   "version": "1.0",
   "extensions": [".xdelta", ".xd3", ".patch"],
   "description": "xdelta3 delta compression patch file (Joshua MacDonald). Uses the VCDIFF format (RFC 3284) internally. Magic: VCDIFF header bytes 0xD6 0xC3 0xC4 0x00 at offset 0 — bytes 0-2 are the VCDIFF identifier (0xD6 0xC3 0xC4) and byte 3 is the format version (0x00). This magic is shared with all VCDIFF-compliant files; xdelta3-specific features are indicated by the hdr_indicator field. Window structure: each window begins with win_indicator (1B flags: bit0=VCD_SOURCE uses source file, bit1=VCD_TARGET uses target data, bit2=VCD_ADLER32 appended checksum). If source data is referenced: source_segment_size (varint) + source_segment_position (varint). Delta section: delta_length (varint) + target_window_length (varint) + delta_indicator (1B) + ADD_RUN_COPY instruction data. xdelta3 adds an application header (hdr_indicator bit 0x01 set) for tool-specific metadata. Used for binary delta patching of large files. Command line: xdelta3 -d -s source patch output.",

@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Vectrex ROM",
+  "formatId": "ROM_VECTREX",
   "version": "1.0",
   "extensions": [".vec", ".bin"],
   "description": "GCE Vectrex cartridge ROM image (General Consumer Electronics / Milton Bradley, 1982). The Vectrex is a unique vector-display home game console using a built-in oscilloscope-style CRT. Cartridge ROMs typically begin with the copyright string 'g GCE ' (0x67 0x20 0x47 0x43 0x45 0x20) followed by the game year and title in ASCII, or alternatively directly with game title text and a jump table. The Motorola 6809 CPU runs at 1.5 MHz. The built-in BIOS (8 KB) handles vector drawing routines; cartridges start at address 0x0000 in the cartridge ROM space. ROM sizes: 4 KB to 32 KB. The official library contains only 28 commercial titles released 1982-1984, with an active homebrew scene adding 100+ titles. Detection is primarily by extension and size due to the absence of a standardised header magic.",

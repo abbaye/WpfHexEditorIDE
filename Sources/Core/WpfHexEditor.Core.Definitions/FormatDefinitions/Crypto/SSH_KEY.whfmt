@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "OpenSSH Private Key",
+  "formatId": "SSH_KEY",
   "version": "1.13",
   "extensions": [
     "",

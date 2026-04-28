@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Portable PDB",
+  "formatId": "PORTABLE_PDB",
   "version": "1.0",
   "extensions": [ ".pdb" ],
   "description": "Portable Program Database file — ECMA-335 CLI Metadata Root containing debug symbols, sequence points, local variable names, and source document links for .NET assemblies.",

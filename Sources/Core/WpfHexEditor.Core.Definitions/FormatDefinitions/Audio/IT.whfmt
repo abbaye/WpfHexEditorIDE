@@ -1,5 +1,6 @@
 {
   "formatName": "Impulse Tracker Module (IT)",
+  "formatId": "IT",
   "version": "1.1",
   "extensions": [ ".it" ],
   "diffMode": "binary",

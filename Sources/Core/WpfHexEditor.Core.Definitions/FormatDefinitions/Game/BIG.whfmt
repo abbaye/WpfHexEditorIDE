@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "EA BIG Archive",
+  "formatId": "BIG",
   "version": "1.16",
   "extensions": [
     ".big",

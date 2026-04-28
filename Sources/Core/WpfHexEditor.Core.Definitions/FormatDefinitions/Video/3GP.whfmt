@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "3GPP Mobile Video",
+  "formatId": "3GP",
   "version": "1.0",
   "extensions": [".3gp", ".3g2", ".3gpp"],
   "description": "3GPP (Third Generation Partnership Project) mobile video format is based on the ISO Base Media File Format (ISO BMFF), sharing structural elements with MPEG-4/MP4. Files begin with a variable-size ftyp (file type) box: a uint32BE size at offset 0, the ASCII 'ftyp' box type at offset 4, and a 4-byte major brand at offset 8. 3GP brands include '3gp4', '3gp5', '3gp6' (H.263 or H.264 video), while 3G2 brands include '3g2a', '3g2b', '3g2c' (used by CDMA carriers). The minor version field at offset 12 further identifies the specification version. 3GPP is the primary video format for mobile phones and smartphones.",

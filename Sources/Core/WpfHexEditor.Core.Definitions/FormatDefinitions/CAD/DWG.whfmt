@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "AutoCAD DWG",
+  "formatId": "DWG",
   "version": "1.0",
   "extensions": [".dwg"],
   "description": "AutoCAD DWG is the proprietary binary drawing format used natively by AutoCAD. The 6-byte header starts with 'AC' followed by a 4-character version code identifying the AutoCAD release: AC1015=AutoCAD 2000, AC1018=AutoCAD 2004, AC1021=AutoCAD 2007, AC1024=AutoCAD 2010, AC1027=AutoCAD 2013, AC1032=AutoCAD 2018, AC1035=AutoCAD 2021+. The full header: 6-byte version string + code page (2B LE for v2004-), maintenance release version byte, count of sections (4B LE), then a section page map (variable: section_number + page_count + address pairs). DWG R2004+ uses AES encryption and page-based storage. DWG R2007+ uses Unicode throughout. The format is reverse-engineered by the Open Design Alliance (ODA) for their OpenDWG/Teigha library powering BricsCAD, LibreCAD, and others. Free LibreDWG (GNU) provides another open-source implementation. Stores all drawing data including geometry, layers, blocks, attributes, 3D solids (ACIS B-rep), text, dimensions, and paper space layouts.",

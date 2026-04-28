@@ -151,6 +151,36 @@
             <Button Content="＋ Add Bitfield" Style="{StaticResource AddLinkBtn}"
                     Command="{Binding AddBitfieldCommand}"/>
 
+            <!-- Sentinel (Until) -->
+            <Expander Header="Sentinel (Until)" Margin="0,8,0,0"
+                      Background="{DynamicResource TE_LineNumberBackground}"
+                      Foreground="{DynamicResource TE_LineNumberForeground}">
+                <Grid Style="{StaticResource PropGrid}" Margin="8,4">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Until"          Style="{StaticResource PropLabel}"/>
+                    <ctrl:ExpressionTextBox Grid.Row="0" Grid.Column="1" Margin="0,2"
+                               Text="{Binding UntilText, UpdateSourceTrigger=PropertyChanged}"
+                               Placeholder="00  or  var:endMarker  or  504B0102"
+                               ToolTip="Hex pattern or var:name to stop reading at. Replaces Length when set."/>
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Max Length"     Style="{StaticResource PropLabel}"/>
+                    <TextBox   Grid.Row="1" Grid.Column="1" Style="{StaticResource PropField}"
+                               ctrl:InputFilter.NumericOnly="True"
+                               Text="{Binding MaxLength, UpdateSourceTrigger=PropertyChanged}"
+                               ToolTip="Safety cap (bytes) if the Until pattern is never found. 0 = use interpreter default (4096)."/>
+                    <CheckBox  Grid.Row="2" Grid.Column="1" Margin="0,4"
+                               Content="Until Inclusive (include pattern bytes in field length)"
+                               IsChecked="{Binding UntilInclusive, UpdateSourceTrigger=PropertyChanged}"/>
+                </Grid>
+            </Expander>
+
             <!-- Validation Rules -->
             <Expander Header="Validation Rules" Margin="0,8,0,0"
                       Background="{DynamicResource TE_LineNumberBackground}"
@@ -202,6 +232,84 @@
                 <TextBox   Grid.Column="1" Style="{StaticResource PropField}"
                            Text="{Binding Variable, UpdateSourceTrigger=PropertyChanged}"
                            ToolTip="Name of the variable this metadata block reads"/>
+            </Grid>
+        </StackPanel>
+    </DataTemplate>
+
+    <!-- ── group ─────────────────────────────────────────────────────────── -->
+    <DataTemplate x:Key="BlockTemplate_Group" DataType="{x:Type vm:BlockViewModel}">
+        <StackPanel Style="{StaticResource BlockPanel}">
+            <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource BlockCommonHeader}"/>
+            <TextBlock Text="Group" Style="{StaticResource SectionHeader}"/>
+            <TextBlock Text="A group visually labels a set of child fields with a color overlay. It does not consume bytes itself."
+                       TextWrapping="Wrap" Opacity="0.6" FontSize="10" Margin="0,0,0,6"/>
+            <TextBlock Text="Children are shown in the block tree — use the tree to add/reorder child blocks."
+                       TextWrapping="Wrap" Opacity="0.5" FontSize="10" FontStyle="Italic"/>
+        </StackPanel>
+    </DataTemplate>
+
+    <!-- ── header ────────────────────────────────────────────────────────── -->
+    <DataTemplate x:Key="BlockTemplate_Header" DataType="{x:Type vm:BlockViewModel}">
+        <StackPanel Style="{StaticResource BlockPanel}">
+            <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource BlockCommonHeader}"/>
+            <TextBlock Text="Position" Style="{StaticResource SectionHeader}"/>
+            <Grid Style="{StaticResource PropGrid}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Offset"      Style="{StaticResource PropLabel}"/>
+                <ctrl:ExpressionTextBox Grid.Row="0" Grid.Column="1" Margin="0,2"
+                           Text="{Binding OffsetText, UpdateSourceTrigger=PropertyChanged}"
+                           Placeholder="integer, var:name or calc:expr"/>
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="Offset From" Style="{StaticResource PropLabel}"/>
+                <ctrl:ExpressionTextBox Grid.Row="1" Grid.Column="1" Margin="0,2"
+                           Text="{Binding OffsetFrom, UpdateSourceTrigger=PropertyChanged}"
+                           Placeholder="variableName"/>
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="Length"      Style="{StaticResource PropLabel}"/>
+                <ctrl:ExpressionTextBox Grid.Row="2" Grid.Column="1" Margin="0,2"
+                           Text="{Binding LengthText, UpdateSourceTrigger=PropertyChanged}"
+                           Placeholder="integer or var:name"/>
+            </Grid>
+            <TextBlock Text="Child fields are shown in the block tree."
+                       TextWrapping="Wrap" Opacity="0.5" FontSize="10" FontStyle="Italic" Margin="0,4,0,0"/>
+        </StackPanel>
+    </DataTemplate>
+
+    <!-- ── data ──────────────────────────────────────────────────────────── -->
+    <DataTemplate x:Key="BlockTemplate_Data" DataType="{x:Type vm:BlockViewModel}">
+        <StackPanel Style="{StaticResource BlockPanel}">
+            <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource BlockCommonHeader}"/>
+            <TextBlock Text="Raw Data Region" Style="{StaticResource SectionHeader}"/>
+            <TextBlock Text="Marks a raw byte region with a color overlay. No value is extracted."
+                       TextWrapping="Wrap" Opacity="0.6" FontSize="10" Margin="0,0,0,6"/>
+            <Grid Style="{StaticResource PropGrid}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Offset"      Style="{StaticResource PropLabel}"/>
+                <ctrl:ExpressionTextBox Grid.Row="0" Grid.Column="1" Margin="0,2"
+                           Text="{Binding OffsetText, UpdateSourceTrigger=PropertyChanged}"
+                           Placeholder="integer, var:name or calc:expr"/>
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="Offset From" Style="{StaticResource PropLabel}"/>
+                <ctrl:ExpressionTextBox Grid.Row="1" Grid.Column="1" Margin="0,2"
+                           Text="{Binding OffsetFrom, UpdateSourceTrigger=PropertyChanged}"
+                           Placeholder="variableName"/>
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="Length"      Style="{StaticResource PropLabel}"/>
+                <ctrl:ExpressionTextBox Grid.Row="2" Grid.Column="1" Margin="0,2"
+                           Text="{Binding LengthText, UpdateSourceTrigger=PropertyChanged}"
+                           Placeholder="integer or var:name"/>
             </Grid>
         </StackPanel>
     </DataTemplate>

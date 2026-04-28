@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "Java Properties File",
+  "formatId": "PROPERTIES",
   "version": "1.0",
   "extensions": [ ".properties" ],
   "description": "Java .properties file format (java.util.Properties). ISO 8859-1 or UTF-8 encoded plain text. Each line is a key=value or key:value pair. Comments are lines beginning with '#' (hash) or '!' (exclamation). Unicode escape sequences ('\\uXXXX') are used for non-Latin characters in ISO 8859-1 files. Continuation lines are indicated by a trailing backslash. Whitespace around delimiters is trimmed. Used extensively in Java applications, Spring Framework (application.properties), Maven, Apache configurations, and Android resources. Keys and values may use '=' or ':' as delimiters.",

@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "InterBase Database",
+  "formatId": "INTERBASE",
   "version": "1.14",
   "extensions": [
     ".ib",

@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "FASTQ DNA Sequencing Reads",
+  "formatId": "FASTQ",
   "version": "1.0",
   "extensions": [".fastq", ".fq", ".fastq.gz"],
   "description": "FASTQ is a text-based format for storing nucleotide sequences together with their per-base quality scores. Each record spans exactly four lines: (1) a sequence identifier line beginning with '@', (2) the raw nucleotide sequence using characters A, C, G, T, and N for ambiguous bases, (3) a separator line beginning with '+' (optionally followed by the same identifier), and (4) the quality score string encoded as ASCII characters where each character minus 33 gives the Phred quality score (range Q0-Q93). FASTQ is the standard output format for Illumina, PacBio, and Oxford Nanopore sequencing instruments. It is paired with FASTA files for reference genome alignment using tools such as BWA, Bowtie2, HISAT2, and STAR.",

@@ -1,5 +1,6 @@
 {
   "formatName": "JFFS2 Flash Filesystem",
+  "formatId": "JFFS2",
   "version": "1.0",
   "diffMode": "binary",
   "extensions": [

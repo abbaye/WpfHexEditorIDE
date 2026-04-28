@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "PC Engine / TurboGrafx-16 ROM",
+  "formatId": "ROM_PCE",
   "version": "1.0",
   "extensions": [".pce"],
   "description": "PC Engine (Japan) / TurboGrafx-16 (US) cartridge ROM (NEC/Hudson Soft, 1987). No fixed magic — raw binary HuC6280 CPU code. Some dumps include a 512-byte copier header with magic 0x40 0x00 0x00 0x00 at offset 0. Header-less ROMs begin directly with CPU code. ROM sizes range from 512 KB (Hu-card) to 2.5 MB (Super CD-ROM). Sector 0 of CD-ROM images: first 2048 bytes. Detection is primarily extension-based. Common first opcode: SEI (0x78), CLD, or JMP absolute (0x4C) for the reset vector.",

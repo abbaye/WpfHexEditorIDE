@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "OpenVDB Sparse Volume",
+  "formatId": "VDB",
   "version": "1.0",
   "extensions": [".vdb"],
   "description": "OpenVDB is an Academy Award-winning open-source C++ library and file format for the storage, editing, and rendering of sparse volumetric data. Originally developed at DreamWorks Animation, OpenVDB is now maintained by the Academy Software Foundation (ASWF). A .vdb file stores one or more named grids, each representing a three-dimensional function sampled on a sparse tree structure (VDB B+tree). The file begins with the ASCII magic '/VDB ' (5 bytes: 2F 56 44 42 20) followed by a 3-digit ASCII file format version, then a library version block, and metadata. Each grid has a name, value type (float, double, int32, Vec3f, bool, etc.), grid class (UNKNOWN, LEVEL_SET, FOG_VOLUME, STAGGERED), transform (linear or nonlinear), and sparse tree data. Compression per grid: NONE (0), ZIP (1), ACTIVE_MASK+ZIP (2), or BLOSC (4).",

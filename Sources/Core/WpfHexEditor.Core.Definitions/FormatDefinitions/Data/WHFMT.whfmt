@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "WPFHexaEditor Format Definition",
+  "formatId": "WHFMT",
   "version": "1.1",
   "extensions": [
     ".whfmt"
@@ -35,6 +36,7 @@
   },
   "variables": {
     "formatName": "",
+    "formatId": "WHFMT",
     "version": "",
     "category": "",
     "extensionCount": 0,

@@ -1,5 +1,6 @@
 {
   "formatName": "Lzip Compressed File",
+  "formatId": "LZIP",
   "version": "1.0",
   "diffMode": "binary",
   "extensions": [ ".lz" ],

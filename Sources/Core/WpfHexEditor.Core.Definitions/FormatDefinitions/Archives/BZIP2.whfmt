@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "BZIP2 Compressed File",
+  "formatId": "BZIP2",
   "version": "1.12",
   "extensions": [
     ".bz2",

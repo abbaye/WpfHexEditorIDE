@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Apache Parquet",
+  "formatId": "PARQUET",
   "version": "1.0",
   "extensions": [".parquet", ".pq"],
   "description": "Apache Parquet is an open-source columnar storage format optimized for analytical workloads. Files begin with the 4-byte magic 'PAR1' (0x50415231) at offset 0 and also end with the same 4-byte magic at EOF-4, sandwiching a Thrift-encoded footer containing schema and row group metadata. The columnar layout enables high compression ratios and efficient predicate pushdown. Supports nested data via Dremel encoding.",

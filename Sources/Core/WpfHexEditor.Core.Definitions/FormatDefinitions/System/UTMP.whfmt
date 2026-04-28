@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "Unix UTMP",
+  "formatId": "UTMP",
   "version": "1.14",
   "extensions": [
     ""

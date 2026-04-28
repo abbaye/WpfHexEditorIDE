@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "TIFF Image",
+  "formatId": "TIFF",
   "version": "2.03",
   "extensions": [
     ".tif",

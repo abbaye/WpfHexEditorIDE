@@ -63,6 +63,9 @@ public sealed class WhfmtCatalogViewModel : ViewModelBase, IDisposable
         private set => SetField(ref _statusText, value);
     }
 
+    public int SelectedCount => _selectedItems.Count;
+    public int TotalCount    => _allItems.Count;
+
     // ------------------------------------------------------------------
     // Commands
     // ------------------------------------------------------------------
@@ -127,6 +130,7 @@ public sealed class WhfmtCatalogViewModel : ViewModelBase, IDisposable
     {
         _selectedItems.Clear();
         _selectedItems.AddRange(items);
+        OnPropertyChanged(nameof(SelectedCount));
 
         if (_selectedItems.Count == 1)
         {

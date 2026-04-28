@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "NumPy Array",
+  "formatId": "NPY",
   "version": "1.14",
   "extensions": [
     ".npy"

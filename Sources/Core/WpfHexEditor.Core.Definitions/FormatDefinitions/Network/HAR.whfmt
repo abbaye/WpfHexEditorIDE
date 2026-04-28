@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "HTTP Archive (HAR)",
+  "formatId": "HAR",
   "version": "1.0",
   "extensions": [
     ".har"

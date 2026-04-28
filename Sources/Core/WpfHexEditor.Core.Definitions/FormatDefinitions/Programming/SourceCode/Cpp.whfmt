@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "text",
   "formatName": "C++ Source File",
+  "formatId": "Cpp",
   "version": "2.13",
   "extensions": [
     ".cpp",

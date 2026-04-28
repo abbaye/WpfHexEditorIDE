@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "Excel Workbook (Legacy)",
+  "formatId": "XLS",
   "version": "1.13",
   "extensions": [
     ".xls",

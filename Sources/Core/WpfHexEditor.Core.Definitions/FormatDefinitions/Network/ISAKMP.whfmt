@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "IKE/ISAKMP Key Exchange",
+  "formatId": "ISAKMP",
   "version": "1.0",
   "extensions": [".ike", ".isakmp"],
   "description": "Internet Key Exchange (IKE) and Internet Security Association and Key Management Protocol (ISAKMP) packet format. IKEv1 is defined in RFC 2408 (ISAKMP) and RFC 2409 (IKE). IKEv2 is defined in RFC 7296. The ISAKMP header is 28 bytes: 8-byte initiator SPI, 8-byte responder SPI (all-zeros in IKE_SA_INIT), 1-byte next payload type, 1-byte version (major<<4|minor), 1-byte exchange type, 1-byte flags, 4-byte message ID, 4-byte total length. IKEv2 exchange types: 34=IKE_SA_INIT, 35=IKE_AUTH, 36=CREATE_CHILD_SA, 37=INFORMATIONAL. Used for IPsec VPN key negotiation.",

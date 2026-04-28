@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "GeoTIFF Raster",
+  "formatId": "GEOTIFF",
   "version": "1.0",
   "extensions": [".tif", ".tiff", ".geotiff"],
   "description": "GeoTIFF — TIFF with embedded georeferencing metadata (OGC standard 07-057r7, ISO 19101). TIFF magic: 49 49 2A 00 (little-endian) or 4D 4D 00 2A (big-endian). GeoTIFF-specific TIFF tags: 34735 (0x87AF) = GeoKeyDirectoryTag (key directory uint16 array), 34736 (0x87B0) = GeoDoubleParamsTag (float64 parameters), 34737 (0x87B1) = GeoAsciiParamsTag (ASCII CRS parameters), 33922 (0x8482) = ModelTiepointTag (image-to-world tiepoint pairs), 33550 (0x830E) = ModelPixelScaleTag (pixel size in world units), 34264 = ModelTransformationTag (full 4x4 affine matrix). GeoKeys: GTModelTypeGeoKey (1=projected, 2=geographic, 3=geocentric), GeographicTypeGeoKey (EPSG code), ProjectedCSTypeGeoKey (EPSG projected CRS). Used for remote sensing, satellite imagery, DEMs.",

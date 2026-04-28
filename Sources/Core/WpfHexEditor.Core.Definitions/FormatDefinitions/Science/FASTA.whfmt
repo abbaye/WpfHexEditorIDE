@@ -1,6 +1,7 @@
 {
   "diffMode": "text",
   "formatName": "FASTA Sequence",
+  "formatId": "FASTA",
   "version": "1.0",
   "extensions": [".fasta", ".fa", ".fna", ".faa", ".ffn", ".frn"],
   "description": "FASTA biological sequence format (Lipman and Pearson, 1985). Each sequence begins with '>' (0x3E) + identifier + optional description on the same line, followed by sequence lines of 60-80 characters each. Multiple sequences allowed per file. Nucleotide codes: A, C, G, T, U (RNA), N (any), IUPAC ambiguity codes (R=AG, Y=CT, S=GC, W=AT, K=GT, M=AC, B=CGT, D=AGT, H=ACT, V=ACG). Protein codes: 20 amino acid letters + X (any) + * (stop codon) + - (gap). Comments: lines beginning with semicolon ';'. Wrapped typically at 60-80 characters per line. Used by BLAST, BWA, Bowtie, NCBI databases, genome assemblies (GRCh38, CHM13, T2T). FASTQ adds per-base quality scores.",

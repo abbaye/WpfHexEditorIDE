@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "Excel Workbook",
+  "formatId": "XLSX",
   "version": "2.02",
   "extensions": [
     ".xlsx"

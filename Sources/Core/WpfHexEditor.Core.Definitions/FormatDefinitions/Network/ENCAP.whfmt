@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "Encapsulated Packet",
+  "formatId": "ENCAP",
   "version": "1.14",
   "extensions": [
     ".encap"

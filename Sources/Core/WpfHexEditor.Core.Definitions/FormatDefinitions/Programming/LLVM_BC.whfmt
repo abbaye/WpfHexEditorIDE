@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "LLVM Bitcode",
+  "formatId": "LLVM_BC",
   "version": "1.15",
   "extensions": [
     ".bc"

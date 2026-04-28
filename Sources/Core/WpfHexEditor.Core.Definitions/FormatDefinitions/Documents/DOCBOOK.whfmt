@@ -1,8 +1,13 @@
 {
   "diffMode": "text",
   "formatName": "DocBook XML Documentation",
-  "version": "1.0",
-  "extensions": [ ".xml", ".docbook", ".dbk" ],
+  "formatId": "DOCBOOK",
+  "version": "1.1",
+  "extensions": [
+    ".xml",
+    ".docbook",
+    ".dbk"
+  ],
   "description": "DocBook is an XML (and formerly SGML) schema for authoring technical documentation, books, articles, and reference manuals. Originally created by HaL Computer Systems and O'Reilly & Associates, it is now maintained by OASIS. DocBook files use a rich set of semantic elements including <book>, <article>, <chapter>, <section>, <para>, <programlisting>, and cross-references. They are processed by XSL stylesheets (docbook-xsl) to produce PDF, HTML, ePub, and man pages. DocBook 5.x uses XML namespaces (http://docbook.org/ns/docbook).",
   "category": "Documents",
   "author": "WPFHexaEditor Team",
@@ -22,16 +27,39 @@
   },
   "detection": {
     "signatures": [
-      { "hex": "3C626F6F6B", "offset": 0, "label": "'<book' — DocBook book root element", "weight": 0.6 },
-      { "hex": "3C61727469636C65", "offset": 0, "label": "'<article' — DocBook article root element", "weight": 0.6 },
-      { "hex": "3C7365743E", "offset": 0, "label": "'<set>' — DocBook set root element", "weight": 0.5 },
-      { "hex": "3C3F786D6C", "offset": 0, "label": "'<?xml' — XML declaration before DocBook root", "weight": 0.3 }
+      {
+        "hex": "3C626F6F6B",
+        "offset": 0,
+        "label": "'<book' — DocBook book root element",
+        "weight": 0.6
+      },
+      {
+        "hex": "3C61727469636C65",
+        "offset": 0,
+        "label": "'<article' — DocBook article root element",
+        "weight": 0.6
+      },
+      {
+        "hex": "3C7365743E",
+        "offset": 0,
+        "label": "'<set>' — DocBook set root element",
+        "weight": 0.5
+      },
+      {
+        "hex": "3C3F786D6C",
+        "offset": 0,
+        "label": "'<?xml' — XML declaration before DocBook root",
+        "weight": 0.3
+      }
     ],
     "matchMode": "any",
     "MinimumScore": 0.3,
     "required": false,
     "Strength": "Weak",
-    "EntropyHint": { "min": 3.5, "max": 5.0 },
+    "EntropyHint": {
+      "min": 3.5,
+      "max": 5.0
+    },
     "validation": {
       "minFileSize": 20,
       "maxSignatureOffset": 0,
@@ -85,14 +113,44 @@
     }
   ],
   "assertions": [
-    { "field": "docbookRoot", "operator": "startsWithAny", "value": ["<book", "<arti", "<set>", "<?xml", "<chap", "<sect"], "description": "File must start with a known DocBook root element or XML declaration" },
-    { "field": "docbookRoot", "operator": "notEmpty", "value": true, "description": "Root element must be readable" },
-    { "field": "docbookRoot", "operator": "startsWith", "value": "<", "description": "DocBook files are XML text starting with '<'" }
+    {
+      "field": "docbookRoot",
+      "operator": "startsWithAny",
+      "value": [
+        "<book",
+        "<arti",
+        "<set>",
+        "<?xml",
+        "<chap",
+        "<sect"
+      ],
+      "description": "File must start with a known DocBook root element or XML declaration"
+    },
+    {
+      "field": "docbookRoot",
+      "operator": "notEmpty",
+      "value": true,
+      "description": "Root element must be readable"
+    },
+    {
+      "field": "docbookRoot",
+      "operator": "startsWith",
+      "value": "<",
+      "description": "DocBook files are XML text starting with '<'"
+    }
   ],
   "navigation": {
     "bookmarks": [
-      { "name": "Document Root", "offset": 0, "description": "DocBook root element (book/article/set) or XML declaration" },
-      { "name": "Namespace Area", "offset": 5, "description": "Expected DocBook 5.x namespace or 4.x DOCTYPE declaration" }
+      {
+        "name": "Document Root",
+        "offset": 0,
+        "description": "DocBook root element (book/article/set) or XML declaration"
+      },
+      {
+        "name": "Namespace Area",
+        "offset": 5,
+        "description": "Expected DocBook 5.x namespace or 4.x DOCTYPE declaration"
+      }
     ]
   },
   "inspector": {
@@ -100,27 +158,46 @@
     "primaryField": "docbookRoot",
     "showQualityScore": true,
     "groups": [
-      { "name": "Document Structure", "fields": ["docbookRoot"] }
+      {
+        "name": "Document Structure",
+        "fields": [
+          "docbookRoot"
+        ]
+      }
     ]
   },
   "exportTemplates": [
     {
       "name": "DocBook File Info (JSON)",
       "format": "json",
-      "fields": ["docbookRoot"]
+      "fields": [
+        "docbookRoot"
+      ]
     },
     {
       "name": "DocBook Header (Text)",
       "format": "text",
-      "fields": ["docbookRoot"]
+      "fields": [
+        "docbookRoot"
+      ]
     }
   ],
   "forensic": {
     "category": "document",
     "riskLevel": "low",
     "suspiciousPatterns": [
-      { "name": "External entity injection (XXE)", "condition": "contains DOCTYPE with SYSTEM entity", "description": "DocBook XML files with DOCTYPE declarations may be vulnerable to XXE injection if parsed with unsafe XML parsers.", "severity": "warning" },
-      { "name": "Embedded executable content", "condition": "contains programlisting with suspicious code", "description": "DocBook programlisting elements may contain embedded scripts for copy-paste injection.", "severity": "info" }
+      {
+        "name": "External entity injection (XXE)",
+        "condition": "contains DOCTYPE with SYSTEM entity",
+        "description": "DocBook XML files with DOCTYPE declarations may be vulnerable to XXE injection if parsed with unsafe XML parsers.",
+        "severity": "warning"
+      },
+      {
+        "name": "Embedded executable content",
+        "condition": "contains programlisting with suspicious code",
+        "description": "DocBook programlisting elements may contain embedded scripts for copy-paste injection.",
+        "severity": "info"
+      }
     ]
   },
   "aiHints": {
@@ -144,11 +221,24 @@
   ],
   "formatRelationships": {
     "category": "Documents",
-    "extensions": [".xml", ".docbook", ".dbk"],
-    "relatedFormats": ["XML", "ASCIIDOC", "RST", "DOCX", "HTML"],
+    "extensions": [
+      ".xml",
+      ".docbook",
+      ".dbk"
+    ],
+    "relatedFormats": [
+      "XML",
+      "ASCIIDOC",
+      "RST",
+      "DOCX",
+      "HTML"
+    ],
     "note": "DocBook is commonly converted to HTML, PDF, ePub, and man pages via XSL stylesheets. AsciiDoc and RST can both produce DocBook XML as an intermediate output."
   },
-  "MimeTypes": [ "application/docbook+xml", "text/xml" ],
+  "MimeTypes": [
+    "application/docbook+xml",
+    "text/xml"
+  ],
   "UseCases": [
     "Technical book and article authoring",
     "Software documentation (man pages, guides)",
@@ -165,9 +255,78 @@
   },
   "TechnicalDetails": {
     "DocumentFormat": true,
-    "SchemaVersions": ["DocBook SGML 3.x", "DocBook XML 4.x", "DocBook 5.x (RelaxNG/Schematron)"],
+    "SchemaVersions": [
+      "DocBook SGML 3.x",
+      "DocBook XML 4.x",
+      "DocBook 5.x (RelaxNG/Schematron)"
+    ],
     "Encoding": "UTF-8",
     "ProcessingTools": "XSL-FO, docbook-xsl, dblatex, Publican",
     "Note": "No binary magic. Detected by root element name and/or namespace. .dbk/.docbook are unambiguous; .xml files require deeper inspection."
+  },
+  "syntaxDefinition": {
+    "blockCommentStart": "<!--",
+    "blockCommentEnd": "-->",
+    "rules": [
+      {
+        "type": "Comment",
+        "pattern": "<!--[\\s\\S]*?-->"
+      },
+      {
+        "type": "Tag",
+        "pattern": "</?[A-Za-z][A-Za-z0-9:_.-]*(?:\\s[^>]*)?>"
+      },
+      {
+        "type": "Attribute",
+        "pattern": "\\b[A-Za-z][A-Za-z0-9:_.-]*(?=\\s*=)"
+      },
+      {
+        "type": "String",
+        "pattern": "(\"[^\"]*\"|'[^']*')"
+      },
+      {
+        "type": "CDataSection",
+        "pattern": "<!\\[CDATA\\[[\\s\\S]*?\\]\\]>"
+      },
+      {
+        "type": "Directive",
+        "pattern": "<\\?[^?]*\\?>"
+      }
+    ],
+    "formattingRules": {
+      "indentSize": 2,
+      "useTabs": false,
+      "trimTrailingWhitespace": true,
+      "insertFinalNewline": true
+    },
+    "foldingRules": {
+      "startPatterns": [
+        "<(?!/)(?!\\?)[A-Za-z]"
+      ],
+      "endPatterns": [
+        "</[A-Za-z]",
+        "/>"
+      ]
+    },
+    "ideMetadata": {
+      "isSourceFile": false,
+      "isStructuredDataFile": true,
+      "supportsClassDiagram": false,
+      "supportsSourceOutline": false,
+      "isProjectLanguage": false,
+      "iconGlyph": "",
+      "diffMode": "semantic",
+      "aliases": [
+        "docbook5",
+        "docbook-xml"
+      ]
+    },
+    "id": "docbook",
+    "name": "DocBook XML",
+    "extensions": [
+      ".xml",
+      ".docbook",
+      ".dbk"
+    ]
   }
 }

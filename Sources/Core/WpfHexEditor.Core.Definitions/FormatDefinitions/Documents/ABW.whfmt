@@ -1,8 +1,12 @@
 {
   "diffMode": "text",
   "formatName": "AbiWord Document",
-  "version": "1.0",
-  "extensions": [".abw", ".zabw"],
+  "formatId": "ABW",
+  "version": "1.1",
+  "extensions": [
+    ".abw",
+    ".zabw"
+  ],
   "description": "AbiWord Document (ABW) is an XML-based word processing format used by the AbiWord open-source word processor. Files begin with an XML declaration '<?xml' or directly with the '<abiword' root element. The format stores document content, formatting, metadata, styles, and revision history in a single XML file. ZABW is the gzip-compressed variant. AbiWord supports import/export of DOC, DOCX, ODT, RTF, and HTML formats.",
   "category": "Documents",
   "author": "WPFHexaEditor Team",
@@ -59,7 +63,12 @@
       "size": -1,
       "description": "Optional XML declaration '<?xml version=\"1.0\" encoding=\"UTF-8\"?>'",
       "fields": [
-        { "name": "RootBytes", "offset": 0, "size": 8, "type": "ascii" }
+        {
+          "name": "RootBytes",
+          "offset": 0,
+          "size": 8,
+          "type": "ascii"
+        }
       ]
     },
     {
@@ -112,10 +121,16 @@
   ],
   "navigation": {
     "entryPoints": [
-      { "name": "File Start", "offset": 0 }
+      {
+        "name": "File Start",
+        "offset": 0
+      }
     ],
     "jumpTable": [
-      { "label": "XML/Root Element", "offset": 0 }
+      {
+        "label": "XML/Root Element",
+        "offset": 0
+      }
     ]
   },
   "inspector": {
@@ -124,7 +139,10 @@
     "groups": [
       {
         "name": "Identification",
-        "fields": ["abwRoot", "abwFirstByte"]
+        "fields": [
+          "abwRoot",
+          "abwFirstByte"
+        ]
       }
     ]
   },
@@ -159,14 +177,38 @@
     ]
   },
   "software": [
-    { "name": "AbiWord", "vendor": "AbiSource", "platform": "Cross-platform" },
-    { "name": "LibreOffice", "vendor": "The Document Foundation", "platform": "Cross-platform" },
-    { "name": "Calligra Words", "vendor": "KDE", "platform": "Cross-platform" }
+    {
+      "name": "AbiWord",
+      "vendor": "AbiSource",
+      "platform": "Cross-platform"
+    },
+    {
+      "name": "LibreOffice",
+      "vendor": "The Document Foundation",
+      "platform": "Cross-platform"
+    },
+    {
+      "name": "Calligra Words",
+      "vendor": "KDE",
+      "platform": "Cross-platform"
+    }
   ],
   "formatRelationships": [
-    { "format": "ODT", "relation": "sibling", "note": "Both open-source word processing formats; ODT is ZIP-based, ABW is single XML" },
-    { "format": "OPENDOC_FLAT", "relation": "sibling", "note": "Both single-file XML document formats" },
-    { "format": "RTF", "relation": "sibling", "note": "AbiWord can import/export RTF as an interchange format" }
+    {
+      "format": "ODT",
+      "relation": "sibling",
+      "note": "Both open-source word processing formats; ODT is ZIP-based, ABW is single XML"
+    },
+    {
+      "format": "OPENDOC_FLAT",
+      "relation": "sibling",
+      "note": "Both single-file XML document formats"
+    },
+    {
+      "format": "RTF",
+      "relation": "sibling",
+      "note": "AbiWord can import/export RTF as an interchange format"
+    }
   ],
   "MimeTypes": [
     "application/x-abiword",
@@ -189,5 +231,68 @@
     "signatureLength": 8,
     "encoding": "XML (UTF-8)",
     "notes": "ABW is plain XML; ZABW is gzip-compressed ABW. Detect ZABW by gzip magic 0x1F8B at offset 0."
+  },
+  "syntaxDefinition": {
+    "blockCommentStart": "<!--",
+    "blockCommentEnd": "-->",
+    "rules": [
+      {
+        "type": "Comment",
+        "pattern": "<!--[\\s\\S]*?-->"
+      },
+      {
+        "type": "Tag",
+        "pattern": "</?[A-Za-z][A-Za-z0-9:_.-]*(?:\\s[^>]*)?>"
+      },
+      {
+        "type": "Attribute",
+        "pattern": "\\b[A-Za-z][A-Za-z0-9:_.-]*(?=\\s*=)"
+      },
+      {
+        "type": "String",
+        "pattern": "(\"[^\"]*\"|'[^']*')"
+      },
+      {
+        "type": "CDataSection",
+        "pattern": "<!\\[CDATA\\[[\\s\\S]*?\\]\\]>"
+      },
+      {
+        "type": "Directive",
+        "pattern": "<\\?[^?]*\\?>"
+      }
+    ],
+    "formattingRules": {
+      "indentSize": 2,
+      "useTabs": false,
+      "trimTrailingWhitespace": true,
+      "insertFinalNewline": true
+    },
+    "foldingRules": {
+      "startPatterns": [
+        "<(?!/)(?!\\?)[A-Za-z]"
+      ],
+      "endPatterns": [
+        "</[A-Za-z]",
+        "/>"
+      ]
+    },
+    "ideMetadata": {
+      "isSourceFile": false,
+      "isStructuredDataFile": true,
+      "supportsClassDiagram": false,
+      "supportsSourceOutline": false,
+      "isProjectLanguage": false,
+      "iconGlyph": "",
+      "diffMode": "semantic",
+      "aliases": [
+        "abiword"
+      ]
+    },
+    "id": "abw",
+    "name": "AbiWord Document (XML)",
+    "extensions": [
+      ".abw",
+      ".zabw"
+    ]
   }
 }

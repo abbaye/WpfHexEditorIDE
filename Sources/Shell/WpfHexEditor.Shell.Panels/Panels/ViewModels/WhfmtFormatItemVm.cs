@@ -85,6 +85,23 @@ public sealed class WhfmtFormatItemVm : ViewModelBase
     public string? FilePath { get; init; }
 
     // ------------------------------------------------------------------
+    // Sort keys (computed, no allocation on cold path)
+    // ------------------------------------------------------------------
+
+    public string SortKeyName     => Name.ToUpperInvariant();
+    public string SortKeyCategory => Category.ToUpperInvariant();
+    /// <summary>Negated so descending quality = ascending natural sort.</summary>
+    public int    SortKeyQuality  => -QualityScore;
+
+    // ------------------------------------------------------------------
+    // Extra display properties
+    // ------------------------------------------------------------------
+
+    public string MimeTypesDisplay { get; init; } = string.Empty;
+    public int    AssertionCount   { get; init; }
+    public int    AiHintCount      { get; init; }
+
+    // ------------------------------------------------------------------
     // Derived display helpers
     // ------------------------------------------------------------------
 
@@ -117,6 +134,7 @@ public sealed class WhfmtFormatItemVm : ViewModelBase
     public ICommand DeleteCommand         { get; set; } = DisabledCommand.Instance;
     public ICommand CopyPathCommand       { get; set; } = DisabledCommand.Instance;
     public ICommand RevealInExplorerCommand { get; set; } = DisabledCommand.Instance;
+    public ICommand DuplicateCommand        { get; set; } = DisabledCommand.Instance;
 }
 
 /// <summary>

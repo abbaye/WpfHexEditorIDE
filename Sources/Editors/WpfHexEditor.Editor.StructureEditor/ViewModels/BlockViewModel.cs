@@ -59,6 +59,11 @@ internal sealed class BlockViewModel : ViewModelBase
     // computeFromVariables
     private string _expression = "";
 
+    // sentinel
+    private string _untilText       = "";
+    private int    _maxLength       = 0;
+    private bool   _untilInclusive  = false;
+
     // repeating
     private string _entrySizeText = "";
     private string _indexVar      = "";
@@ -136,6 +141,9 @@ internal sealed class BlockViewModel : ViewModelBase
     public string OffsetFrom       { get => _offsetFrom;       set { if (SetField(ref _offsetFrom, value))       RaiseChanged(); } }
     public string OffsetAddText    { get => _offsetAddText;    set { if (SetField(ref _offsetAddText, value))    RaiseChanged(); } }
     public string LengthText       { get => _lengthText;       set { if (SetField(ref _lengthText, value))       RaiseChanged(); } }
+    public string UntilText        { get => _untilText;        set { if (SetField(ref _untilText, value))        RaiseChanged(); } }
+    public int    MaxLength        { get => _maxLength;        set { if (SetField(ref _maxLength, value))        RaiseChanged(); } }
+    public bool   UntilInclusive   { get => _untilInclusive;  set { if (SetField(ref _untilInclusive, value))   RaiseChanged(); } }
     public string ValueType        { get => _valueType;        set { if (SetField(ref _valueType, value))        RaiseChanged(); } }
     public string StoreAs          { get => _storeAs;          set { if (SetField(ref _storeAs, value))          RaiseChanged(); } }
     public string MappedValueStoreAs { get => _mappedValueStoreAs; set { if (SetField(ref _mappedValueStoreAs, value)) RaiseChanged(); } }
@@ -164,6 +172,7 @@ internal sealed class BlockViewModel : ViewModelBase
     [
         "field", "signature", "metadata", "conditional", "loop",
         "action", "computeFromVariables", "repeating", "union", "nested", "pointer",
+        "group", "header", "data",
     ];
 
     public static IReadOnlyList<string> ValueTypes { get; } =
@@ -211,6 +220,9 @@ internal sealed class BlockViewModel : ViewModelBase
         OffsetFrom        = b.OffsetFrom       ?? "";
         OffsetAddText     = DisplayObj(b.OffsetAdd);
         LengthText        = DisplayObj(b.Length);
+        UntilText         = b.Until            ?? "";
+        MaxLength         = b.MaxLength;
+        UntilInclusive    = b.UntilInclusive;
         ValueType         = b.ValueType        ?? "";
         StoreAs           = b.StoreAs          ?? "";
         MappedValueStoreAs = b.MappedValueStoreAs ?? "";
@@ -277,6 +289,9 @@ internal sealed class BlockViewModel : ViewModelBase
         b.OffsetFrom = string.IsNullOrEmpty(OffsetFrom) ? null : OffsetFrom;
         b.OffsetAdd  = ParseObj(OffsetAddText);
         b.Length     = ParseObj(LengthText);
+        if (!string.IsNullOrEmpty(UntilText)) b.Until = UntilText;
+        if (MaxLength > 0)                    b.MaxLength = MaxLength;
+        if (UntilInclusive)                   b.UntilInclusive = true;
         b.ValueType  = string.IsNullOrEmpty(ValueType) ? null : ValueType;
         b.StoreAs    = string.IsNullOrEmpty(StoreAs)   ? null : StoreAs;
         b.MappedValueStoreAs = string.IsNullOrEmpty(MappedValueStoreAs) ? null : MappedValueStoreAs;
@@ -310,9 +325,11 @@ internal sealed class BlockViewModel : ViewModelBase
             var childBlocks = Children.Select(c => c.Build()).ToList();
             switch (BlockType)
             {
-                case "conditional": b.Then = childBlocks; break;
-                case "loop":        b.Body = childBlocks; break;
+                case "conditional": b.Then   = childBlocks; break;
+                case "loop":        b.Body   = childBlocks; break;
                 case "repeating":   b.Fields = childBlocks; break;
+                case "group":       b.Fields = childBlocks; break;
+                case "header":      b.Fields = childBlocks; break;
             }
         }
 

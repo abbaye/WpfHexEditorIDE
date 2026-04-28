@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Windows Media Video (WMV/ASF)",
+  "formatId": "WMV",
   "version": "1.0",
   "extensions": [".wmv", ".asf"],
   "description": "Windows Media Video (WMV) is a family of video codecs developed by Microsoft, stored in the Advanced Systems Format (ASF) container. Like WMA audio, all WMV files begin with the 16-byte ASF Header Object GUID 3026B2758E66CF11A6D900AA0062CE6C. The header object size (uint64LE at offset 16) declares the total header region byte count. WMV variants include WMV7, WMV8, WMV9 (VC-1 profile), and WMV HD. The ASF container supports multiple stream types, enabling WMV files to carry video, audio, subtitles, and metadata simultaneously.",

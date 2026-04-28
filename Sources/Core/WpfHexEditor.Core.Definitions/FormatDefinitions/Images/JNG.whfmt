@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "JPEG Network Graphics",
+  "formatId": "JNG",
   "version": "1.15",
   "extensions": [
     ".jng"

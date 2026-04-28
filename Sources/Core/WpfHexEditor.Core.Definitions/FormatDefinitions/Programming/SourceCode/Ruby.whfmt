@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "text",
   "formatName": "Ruby Source File",
+  "formatId": "Ruby",
   "version": "2.13",
   "extensions": [
     ".rb",

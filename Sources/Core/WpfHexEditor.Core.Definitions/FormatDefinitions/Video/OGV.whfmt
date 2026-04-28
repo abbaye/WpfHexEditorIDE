@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Ogg Video",
+  "formatId": "OGV",
   "version": "1.15",
   "extensions": [
     ".ogv",

@@ -1,6 +1,7 @@
 ﻿{
   "diffMode": "binary",
   "formatName": "OGG Container",
+  "formatId": "OGG",
   "version": "2.02",
   "extensions": [
     ".ogg",

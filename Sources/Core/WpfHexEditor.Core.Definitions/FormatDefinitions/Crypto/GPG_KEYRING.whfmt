@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "OpenPGP / GPG Keyring",
+  "formatId": "GPG_KEYRING",
   "version": "1.0",
   "extensions": [ ".gpg", ".pgp", ".skr", ".pkr" ],
   "description": "OpenPGP keyring and message file format as defined in RFC 4880 (and draft RFC 4880bis). Files consist of a sequence of packets each prefixed by a 1-byte packet tag. Bit 7 of the tag is always 1. Bits 6 determines the format: 0=old format (bits 5-2=type, 1-0=length type), 1=new format (bits 5-0=type). Old-format public key packet: tag byte 0x99 (10 011 001b) = type 6 public key, 2-byte length. Old-format secret key packet: tag byte 0x95 = type 5 secret key. New-format packets use 0xC0 | type. Common packet types: 1=Public-Key Encrypted Session Key, 2=Signature, 3=Symmetric-Key Encrypted Session Key, 4=One-Pass Signature, 5=Secret Key, 6=Public Key, 7=Secret Subkey, 8=Compressed Data, 9=Symmetrically Encrypted Data, 11=Literal Data, 12=Trust, 13=User ID, 14=Public Subkey, 17=User Attribute, 18=Sym. Encrypted and Integrity Protected Data, 19=Modification Detection Code. Key versions: 3 (PGP 2.x legacy, MD5+RSA), 4 (OpenPGP RFC 4880, SHA-1 fingerprint), 5 (OpenPGP v5 draft, SHA-256 fingerprint).",

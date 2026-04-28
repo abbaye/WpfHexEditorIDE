@@ -1,6 +1,7 @@
 {
   "diffMode": "binary",
   "formatName": "Neko VM Bytecode",
+  "formatId": "NEKO_BC",
   "version": "1.0",
   "extensions": [".n"],
   "description": "Neko Virtual Machine bytecode file — compiled bytecode for the Neko VM, a lightweight virtual machine designed by Nicolas Cannasse. The magic is 'NEKO' (4E 45 4B 4F) at offset 0, followed by global count, field count, and code size. Neko serves as the runtime target for the Haxe programming language and is used in game development and web applications.",
