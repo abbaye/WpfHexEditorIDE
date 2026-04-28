@@ -163,51 +163,76 @@ internal sealed class LspDocumentBridgeService : IDisposable
                 client = _registry.CreateClient(entry, workspacePath);
                 if (client is WpfHexEditor.Core.LSP.Client.LspClientImpl impl)
                     impl.Logger = msg => OutputLogger.LspDebug(msg);
-                await client.InitializeAsync().ConfigureAwait(true);
-                _clients[entry.LanguageId] = client;
 
-                // Deferred solution loading: if a .sln is already open, load it into new Roslyn clients.
+                // ConfigureAwait(false): process start + JSON-RPC handshake run off the UI thread.
+                // This is the slow part (spawning process + waiting for initialize response).
+                await client.InitializeAsync().ConfigureAwait(false);
+
+                // Deferred solution loading: MSBuildWorkspace I/O also off the UI thread.
                 if (client is WpfHexEditor.Core.Roslyn.RoslynLanguageClient roslynClient
                     && _roslynSolutionPath is not null)
                 {
-                    try { await roslynClient.LoadSolutionAsync(_roslynSolutionPath).ConfigureAwait(true); }
+                    try { await roslynClient.LoadSolutionAsync(_roslynSolutionPath).ConfigureAwait(false); }
                     catch (Exception slnEx) { OutputLogger.LspDebug($"[Roslyn] Deferred load: {slnEx.Message}"); }
                 }
 
-                OutputLogger.LspInfo($"Server ready: {entry.LanguageId}");
-                RaiseState(entry, LspServerState.Ready);
-
-                // Subscribe to fully-loaded notification for Output Panel feedback.
-                client.FullyLoaded += () =>
+                // Re-marshal to UI thread: all shared-state mutations, events, and bridge creation
+                // must run there. Capturing client and buffer in the lambda is safe — they are immutable refs.
+                var capturedClient  = client;
+                var capturedEntry   = entry;
+                var capturedBuffer  = buffer;
+                System.Windows.Application.Current.Dispatcher.Invoke(() =>
                 {
-                    var msg = $"Server fully loaded: {entry.LanguageId} — diagnostics and semantic analysis ready.";
-                    OutputLogger.LspInfo(msg);
-                    OutputLogger.Info(msg);
-                };
+                    _clients[capturedEntry.LanguageId] = capturedClient;
+
+                    // Subscribe to fully-loaded notification for Output Panel feedback.
+                    capturedClient.FullyLoaded += () =>
+                    {
+                        var msg = $"Server fully loaded: {capturedEntry.LanguageId} — diagnostics and semantic analysis ready.";
+                        OutputLogger.LspInfo(msg);
+                        OutputLogger.Info(msg);
+                    };
+
+                    OutputLogger.LspInfo($"Server ready: {capturedEntry.LanguageId}");
+                    RaiseState(capturedEntry, LspServerState.Ready);
+
+                    CreateBridgeOnUiThread(capturedClient, capturedEntry, capturedBuffer);
+                });
+                return; // bridge created inside Invoke above
             }
 
-            if (_disposed || _bridges.ContainsKey(buffer.FilePath)) return;
-
-            var bridge = new LspBufferBridge(client, buffer);
-            _bridges[buffer.FilePath] = bridge;
-            OutputLogger.LspInfo($"Bridge: {System.IO.Path.GetFileName(buffer.FilePath)} → {entry.LanguageId}");
-
-            // Inject the LSP client into any ILspAwareEditor so it can invoke
-            // Code Actions and Rename directly (e.g. CodeEditor via Ctrl+. / F2).
-            var doc = _documentManager.FindDocumentByBuffer(buffer);
-            if (doc?.AssociatedEditor is ILspAwareEditor lspEditor)
-            {
-                if (lspEditor is WpfHexEditor.Editor.CodeEditor.Controls.CodeEditorSplitHost splitHost)
-                    splitHost.BreadcrumbLogger = msg => OutputLogger.LspDebug(msg);
-
-                lspEditor.SetLspClient(client);
-                lspEditor.SetDocumentManager(_documentManager);
-            }
+            // Client already existed — still on UI thread (called from Dispatcher.InvokeAsync).
+            CreateBridgeOnUiThread(client, entry, buffer);
         }
         catch (Exception ex)
         {
             OutputLogger.LspError($"Bridge init failed for '{System.IO.Path.GetFileName(buffer.FilePath)}': {ex.Message}");
             RaiseState(entry, LspServerState.Error, ex.Message);
+        }
+    }
+
+    /// <summary>
+    /// Creates the <see cref="LspBufferBridge"/> and injects the LSP client into the editor.
+    /// Must be called on the UI thread.
+    /// </summary>
+    private void CreateBridgeOnUiThread(ILspClient client, LspServerEntry entry, IDocumentBuffer buffer)
+    {
+        if (_disposed || _bridges.ContainsKey(buffer.FilePath)) return;
+
+        var bridge = new LspBufferBridge(client, buffer);
+        _bridges[buffer.FilePath] = bridge;
+        OutputLogger.LspInfo($"Bridge: {System.IO.Path.GetFileName(buffer.FilePath)} → {entry.LanguageId}");
+
+        // Inject the LSP client into any ILspAwareEditor so it can invoke
+        // Code Actions and Rename directly (e.g. CodeEditor via Ctrl+. / F2).
+        var doc = _documentManager.FindDocumentByBuffer(buffer);
+        if (doc?.AssociatedEditor is ILspAwareEditor lspEditor)
+        {
+            if (lspEditor is WpfHexEditor.Editor.CodeEditor.Controls.CodeEditorSplitHost splitHost)
+                splitHost.BreadcrumbLogger = msg => OutputLogger.LspDebug(msg);
+
+            lspEditor.SetLspClient(client);
+            lspEditor.SetDocumentManager(_documentManager);
         }
     }
 

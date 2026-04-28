@@ -30,6 +30,7 @@ namespace WpfHexEditor.Core.Roslyn;
 /// </summary>
 public sealed class RoslynLanguageClient : ILspClient, IReferenceCountProvider, IInlineHintsOptionsClient
 {
+    private readonly Dispatcher _dispatcher;
     private readonly RoslynWorkspaceManager _workspace;
     private readonly BackgroundAnalysisService _analysisService;
     private readonly MetadataAsSourceCache _metadataCache = new();
@@ -37,6 +38,12 @@ public sealed class RoslynLanguageClient : ILspClient, IReferenceCountProvider, 
     private string? _lastCompletionFilePath;
     private bool _initialized;
     private bool _fullyLoaded;
+
+    // Suppresses diagnostics until the solution/project is loaded.
+    // Pre-solution batches contain unresolved-namespace garbage — discard them.
+    // Set to true by LoadSolutionAsync/LoadProjectsAsync, or after standalone analysis starts.
+    private bool _solutionReady;
+    private DispatcherTimer? _standaloneFallbackTimer;
 
     // InlineHints sub-options (configurable from outside)
     private bool _showVarTypeHints = true;
@@ -51,10 +58,15 @@ public sealed class RoslynLanguageClient : ILspClient, IReferenceCountProvider, 
 
     public RoslynLanguageClient(Dispatcher dispatcher)
     {
+        _dispatcher = dispatcher;
         _workspace = new RoslynWorkspaceManager();
         _analysisService = new BackgroundAnalysisService(_workspace, dispatcher);
         _analysisService.DiagnosticsReady += (s, e) =>
         {
+            // Suppress diagnostics until the solution/project context is loaded.
+            // Pre-solution batches are garbage (CS0246 unresolved namespaces, etc.).
+            if (!_solutionReady) return;
+
             if (!_fullyLoaded)
             {
                 _fullyLoaded = true;
@@ -81,6 +93,22 @@ public sealed class RoslynLanguageClient : ILspClient, IReferenceCountProvider, 
     public Task InitializeAsync(CancellationToken ct = default)
     {
         _initialized = true;
+
+        // Standalone fallback: allow diagnostics after 8s if no solution/project is loaded.
+        // Covers loose .cs files opened without a .sln context.
+        // Cancelled immediately by LoadSolutionAsync/LoadProjectsAsync when a solution context arrives.
+        _standaloneFallbackTimer = new DispatcherTimer(DispatcherPriority.Background, _dispatcher)
+        {
+            Interval = TimeSpan.FromSeconds(8)
+        };
+        _standaloneFallbackTimer.Tick += (_, _) =>
+        {
+            _standaloneFallbackTimer.Stop();
+            _standaloneFallbackTimer = null;
+            _solutionReady = true;
+        };
+        _standaloneFallbackTimer.Start();
+
         return Task.CompletedTask;
     }
 
@@ -90,7 +118,10 @@ public sealed class RoslynLanguageClient : ILspClient, IReferenceCountProvider, 
     /// </summary>
     public async Task LoadSolutionAsync(string solutionPath, CancellationToken ct = default)
     {
+        // Cancel standalone fallback — a solution context is coming, don't allow pre-solution diagnostics.
+        _dispatcher.Invoke(() => { _standaloneFallbackTimer?.Stop(); _standaloneFallbackTimer = null; });
         await _workspace.LoadSolutionAsync(solutionPath, ct).ConfigureAwait(false);
+        _solutionReady = true;
         // Re-analyze all open documents with the new project context.
         foreach (var filePath in _workspace.OpenDocumentPaths)
             _analysisService.NotifyChanged(filePath);
@@ -104,7 +135,9 @@ public sealed class RoslynLanguageClient : ILspClient, IReferenceCountProvider, 
     /// </summary>
     public async Task LoadProjectsAsync(IEnumerable<string> projectPaths, CancellationToken ct = default)
     {
+        _dispatcher.Invoke(() => { _standaloneFallbackTimer?.Stop(); _standaloneFallbackTimer = null; });
         await _workspace.LoadProjectsAsync(projectPaths, ct).ConfigureAwait(false);
+        _solutionReady = true;
         foreach (var filePath in _workspace.OpenDocumentPaths)
             _analysisService.NotifyChanged(filePath);
     }
