@@ -63,7 +63,7 @@ Every editor is a standalone `IDocumentEditor` plugin — reusable outside the I
 
 | Editor | Progress | Description |
 |--------|----------|-------------|
-| **[Code Editor](Sources/WpfHexEditor.Editor.CodeEditor/README.md)** | ~87% | 55+ languages, Roslyn C#/VB.NET, LSP 3.17 (13 providers), sticky scroll, multi-caret, folding, minimap, split view, inline hints |
+| **[Code Editor](Sources/WpfHexEditor.Editor.CodeEditor/README.md)** | ~90% | 55+ languages, Roslyn C#/VB.NET, LSP 3.17 (13 providers), sticky scroll, multi-caret, folding, minimap, split view, inline hints |
 | **[TBL Editor](Sources/WpfHexEditor.Editor.TblEditor/README.md)** | ~75% | Custom `.tbl` encoding tables for ROM hacking, bidirectional hex↔text preview |
 | **[Hex Editor](Sources/WpfHexEditor.HexEditor/README.md)** | ~65% | Binary editor — insert/overwrite, 790+ format auto-detection, multi-mode search, bookmarks, block undo/redo |
 | **[Diff / Changeset Viewer](Sources/WpfHexEditor.Editor.DiffViewer/README.md)** | ~65% | Binary, text, and structure diff — GlyphRun renderers, word-level highlight, Myers/Binary/Semantic algorithms |
@@ -74,7 +74,7 @@ Every editor is a standalone `IDocumentEditor` plugin — reusable outside the I
 | **[Script Editor](Sources/WpfHexEditor.Editor.ScriptEditor/README.md)** | ~40% | C#Script with Roslyn SmartComplete, IDE globals injection, automation |
 | **[Document Editor](Sources/WpfHexEditor.Editor.DocumentEditor/README.md)** | ~35% | WYSIWYG RTF/DOCX/ODT editing, formatting toolbar, tables, find/replace |
 | **[Entropy Viewer](Sources/WpfHexEditor.Editor.EntropyViewer/README.md)** | ~30% | Graphical entropy and byte-frequency charts, click-to-navigate |
-| **[Structure Editor](Sources/WpfHexEditor.Editor.StructureEditor/README.md)** | ~30% | Visual `.whfmt` editor — block DataGrid, drag-drop, validation, TestTab, live binary preview |
+| **[Structure Editor](Sources/WpfHexEditor.Editor.StructureEditor/README.md)** | ~40% | Visual `.whfmt` editor — block DataGrid, drag-drop, validation, TestTab, live binary preview |
 | **[Class Diagram](Sources/WpfHexEditor.Editor.ClassDiagram/README.md)** | ~30% | UML diagram — syntax-highlighted DSL, 3 layout strategies, interactive canvas, minimap, session persistence |
 | **[JSON Editor](Sources/WpfHexEditor.Editor.JsonEditor/README.md)** | ~20% | JSON syntax highlighting, auto-detection |
 | **[Resx Editor](Sources/WpfHexEditor.Editor.ResxEditor/README.md)** | ~20% | `.resx` resource editor — key/value grid |
