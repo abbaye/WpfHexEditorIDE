@@ -211,11 +211,12 @@
                         </DataGridTemplateColumn.Header>
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate DataType="{x:Type vm:WhfmtFormatItemVm}">
-                                <Border x:Name="PopBar" Visibility="Hidden"
+                                <Border x:Name="PopBar"
                                         Background="{DynamicResource SE_PopToolbarBackground}"
                                         BorderBrush="{DynamicResource SE_PopToolbarBorderBrush}"
                                         BorderThickness="1" CornerRadius="3"
                                         Margin="2,1" Padding="1,0"
+                                        Visibility="Hidden"
                                         HorizontalAlignment="Right">
                                     <Border.Effect>
                                         <DropShadowEffect BlurRadius="5" ShadowDepth="1"
@@ -241,24 +242,6 @@
                                                        Foreground="{DynamicResource SE_ForegroundBrush}"/>
                                         </Button>
                                     </StackPanel>
-                                    <Border.Style>
-                                        <Style TargetType="Border">
-                                            <Setter Property="Visibility" Value="Hidden"/>
-                                        </Style>
-                                    </Border.Style>
-                                    <Border.Triggers>
-                                        <EventTrigger RoutedEvent="Border.MouseEnter">
-                                            <BeginStoryboard>
-                                                <Storyboard>
-                                                    <ObjectAnimationUsingKeyFrames
-                                                        Storyboard.TargetProperty="Visibility">
-                                                        <DiscreteObjectKeyFrame KeyTime="0"
-                                                            Value="{x:Static Visibility.Visible}"/>
-                                                    </ObjectAnimationUsingKeyFrames>
-                                                </Storyboard>
-                                            </BeginStoryboard>
-                                        </EventTrigger>
-                                    </Border.Triggers>
                                 </Border>
                                 <DataTemplate.Triggers>
                                     <DataTrigger Binding="{Binding IsMouseOver,
