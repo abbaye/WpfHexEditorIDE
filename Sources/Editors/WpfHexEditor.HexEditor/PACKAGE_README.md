@@ -7,6 +7,8 @@ Drop it into any WPF window — no IDE, no plugin host, no external dependencies
 dotnet add package WPFHexaEditor
 ```
 
+> **Full documentation**: [WPFHexaEditor-guide.md](https://github.com/abbaye/WpfHexEditorIDE/blob/master/Sources/Editors/WpfHexEditor.HexEditor/WPFHexaEditor-guide.md) — Architecture, API reference, integration guides (Level 1–4), format detection pipeline, and settings reference.
+
 ---
 
 ## Quick Start
@@ -122,12 +124,14 @@ Context menus use opaque backgrounds by default. No extra theming is needed.
 
 ---
 
-## What's New in 3.1.3
+## What's New in 3.1.4
 
-- **Feat**: 155+ new `.whfmt` format definitions added (Groups C–J) — total now exceeds 600 definitions.
-- **Feat**: `FormatSchemaValidator` wired — `.whfmt` files are now validated against schema v2.3 at load time; violations are reported via `FormatLoadFailure`.
-- **Feat**: `.whfmt` schema bumped to v2.3 — `references` and `detection` fields unified across all categories.
-- **Fix**: Stream operations — contributor enhancements to stream-backed byte provider edge cases.
+- **Feat**: 155+ new `.whfmt` format definitions — total exceeds 790 definitions (schema v2.4).
+- **Feat**: `.whfmt` schema v2.4 — `formatId`, `SyntaxDefinition` promoted to first-class property, new block types (`group`, `header`, `data`), `until`/`maxLength` sentinel scanning, `imports` array for cross-format struct references.
+- **Feat**: 57 language grammars with `syntaxDefinition` blocks (up from 35).
+- **Feat**: `LSP IsFullyLoaded` lifecycle gate — suppresses init-time diagnostic noise before the language server workspace is ready.
+- **Fix**: Format detection — `HexEditor.FileOperations` now correctly triggers format detection even when no background blocks are produced by the active `.whfmt`.
+- **Fix**: ParsedFields sync — `HexEditor.ParsedFieldsIntegration` reliably re-syncs the parsed-fields panel when the active document changes.
 - **Fix**: `ForensicPattern` tolerant converter — invalid pattern values no longer throw; fallback to `null` with log entry.
 - **New**: `InputFilter` control — reusable filter-bar `UserControl` for hex/byte input.
 - **New**: `HexStringToColorConverter` — XAML binding converter for hex color strings.
