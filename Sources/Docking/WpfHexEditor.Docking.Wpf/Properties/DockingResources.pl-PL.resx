@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+
+  <data name="Docking_TabSettings_Title" xml:space="preserve">
+    <value>Opcje kart dokumentu</value>
+  </data>
+  <data name="Docking_TabSettings_TabStripPlacement" xml:space="preserve">
+    <value>Położenie paska kart</value>
+  </data>
+  <data name="Docking_TabSettings_Top" xml:space="preserve">
+    <value>Góra (domyślnie)</value>
+  </data>
+  <data name="Docking_TabSettings_Left" xml:space="preserve">
+    <value>Lewo</value>
+  </data>
+  <data name="Docking_TabSettings_Right" xml:space="preserve">
+    <value>Prawo</value>
+  </data>
+  <data name="Docking_TabSettings_ColorBy" xml:space="preserve">
+    <value>Kolorowanie kart dokumentu według</value>
+  </data>
+  <data name="Docking_TabSettings_NoColorization" xml:space="preserve">
+    <value>Bez kolorowania</value>
+  </data>
+  <data name="Docking_TabSettings_FileExtension" xml:space="preserve">
+    <value>Rozszerzenie pliku</value>
+  </data>
+  <data name="Docking_TabSettings_Project" xml:space="preserve">
+    <value>Projekt</value>
+  </data>
+  <data name="Docking_TabSettings_RegexRules" xml:space="preserve">
+    <value>Reguły regex</value>
+  </data>
+  <data name="Docking_TabSettings_RegexFirstMatch" xml:space="preserve">
+    <value>Reguły regex — pierwsze dopasowanie wygrywa:</value>
+  </data>
+  <data name="Docking_TabSettings_PatternColumn" xml:space="preserve">
+    <value>Wzorzec (regex)</value>
+  </data>
+  <data name="Docking_TabSettings_ColorColumn" xml:space="preserve">
+    <value>Kolor</value>
+  </data>
+  <data name="Docking_TabSettings_HexColorTooltip" xml:space="preserve">
+    <value>Wprowadź kolor hex: #RRGGBB lub #AARRGGBB</value>
+  </data>
+  <data name="Docking_TabSettings_PressDelete" xml:space="preserve">
+    <value>Naciśnij Delete, aby usunąć wybrany wiersz.</value>
+  </data>
+  <data name="Docking_TabSettings_TabRows" xml:space="preserve">
+    <value>Rzędy kart</value>
+  </data>
+  <data name="Docking_TabSettings_ShowMultipleRows" xml:space="preserve">
+    <value>Pokaż karty w wielu rzędach</value>
+  </data>
+  <data name="Docking_TabSettings_ToggleWithWheel" xml:space="preserve">
+    <value>Przełącz rzędy kółkiem myszy</value>
+  </data>
+</root>

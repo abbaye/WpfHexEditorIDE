@@ -28,7 +28,7 @@ using System.Windows.Shell;
 using System.Windows.Threading;
 using WpfHexEditor.Docking.Core;
 using WpfHexEditor.Docking.Core.Nodes;
-using Core = WpfHexEditor.Docking.Core;
+using DCore = WpfHexEditor.Docking.Core;
 
 namespace WpfHexEditor.Shell;
 
@@ -494,10 +494,10 @@ public class FloatingWindowManager
             if (_dockControl.Engine is null) return;
             var dir = i.LastDockSide switch
             {
-                Core.DockSide.Left   => DockDirection.Left,
-                Core.DockSide.Right  => DockDirection.Right,
-                Core.DockSide.Top    => DockDirection.Top,
-                Core.DockSide.Bottom => DockDirection.Bottom,
+                DCore.DockSide.Left   => DockDirection.Left,
+                DCore.DockSide.Right  => DockDirection.Right,
+                DCore.DockSide.Top    => DockDirection.Top,
+                DCore.DockSide.Bottom => DockDirection.Bottom,
                 _                    => DockDirection.Center
             };
             _dockControl.Engine.Dock(i, _dockControl.Layout!.MainDocumentHost, dir);

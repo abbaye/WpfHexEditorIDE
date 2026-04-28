@@ -34,6 +34,30 @@
                    Opacity="0.65"
                    Margin="0,4,0,0"/>
 
+        <!-- ── Language ──────────────────────────────────────────────────── -->
+        <TextBlock Text="LANGUAGE"
+                   FontSize="12" FontWeight="SemiBold"
+                   Foreground="{DynamicResource Opt_SectionForegroundBrush}"
+                   Margin="0,16,0,6"/>
+
+        <Grid Margin="0,0,0,8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200"/>
+                <ColumnDefinition Width="200"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="IDE language:"
+                       VerticalAlignment="Center"
+                       Foreground="{DynamicResource DockMenuForegroundBrush}"/>
+            <ComboBox x:Name="LanguageCombo" Grid.Column="1"
+                      SelectionChanged="OnLanguageSelectionChanged"/>
+        </Grid>
+
+        <TextBlock Text="Restart required to fully apply the new language."
+                   FontStyle="Italic" FontSize="11"
+                   Foreground="{DynamicResource DockMenuForegroundBrush}"
+                   Opacity="0.65"
+                   Margin="0,4,0,0"/>
+
         </StackPanel>
     </ScrollViewer>
 </UserControl>

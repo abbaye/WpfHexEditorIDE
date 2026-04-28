@@ -17,7 +17,7 @@
 
 using System.Windows.Automation.Peers;
 using System.Windows.Controls;
-using Core = WpfHexEditor.Docking.Core;
+using DCore = WpfHexEditor.Docking.Core;
 
 namespace WpfHexEditor.Shell.Automation;
 
@@ -59,7 +59,7 @@ internal sealed class DockTabItemAutomationPeer : TabItemAutomationPeer
 
     protected override string GetNameCore()
     {
-        if (_tabItem.Tag is Core.Nodes.DockItem item)
+        if (_tabItem.Tag is DCore.Nodes.DockItem item)
             return item.Title;
         return base.GetNameCore();
     }

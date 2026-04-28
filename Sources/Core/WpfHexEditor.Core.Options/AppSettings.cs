@@ -32,6 +32,13 @@ public sealed class AppSettings
     /// </summary>
     public string ActiveThemeName { get; set; } = "DarkTheme";
 
+    /// <summary>
+    /// BCP-47 culture name for the UI language (e.g. "fr-CA", "en-US").
+    /// Empty string means "use system default".
+    /// Applied via LocalizedResourceDictionary.ChangeCulture() at startup.
+    /// </summary>
+    public string PreferredLanguage { get; set; } = string.Empty;
+
     // -- Environment > Save ----------------------------------------------
 
     /// <summary>

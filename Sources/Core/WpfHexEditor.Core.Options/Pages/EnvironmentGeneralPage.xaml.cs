@@ -3,10 +3,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using WpfHexEditor.Core.Localization.Services;
 using HexEditorControl = WpfHexEditor.HexEditor.HexEditor;
 
 namespace WpfHexEditor.Core.Options.Pages;
@@ -42,6 +44,31 @@ public sealed partial class EnvironmentGeneralPage : UserControl, IOptionsPage
             { "High Contrast",     "HighContrastTheme"     },
         };
 
+    // -- Language map : display name → BCP-47 culture name ----------------
+    private static readonly IReadOnlyList<(string Display, string Culture)> LanguageList =
+    [
+        ("System default",   ""      ),
+        ("Arabic (Saudi Arabia)",   "ar-SA"),
+        ("German (Germany)",        "de-DE"),
+        ("English (United States)", "en-US"),
+        ("Spanish (Latin America)", "es-419"),
+        ("Spanish (Spain)",         "es-ES"),
+        ("French (Canada)",         "fr-CA"),
+        ("French (France)",         "fr-FR"),
+        ("Hindi (India)",           "hi-IN"),
+        ("Italian (Italy)",         "it-IT"),
+        ("Japanese (Japan)",        "ja-JP"),
+        ("Korean (Korea)",          "ko-KR"),
+        ("Dutch (Netherlands)",     "nl-NL"),
+        ("Polish (Poland)",         "pl-PL"),
+        ("Portuguese (Brazil)",     "pt-BR"),
+        ("Portuguese (Portugal)",   "pt-PT"),
+        ("Russian (Russia)",        "ru-RU"),
+        ("Swedish (Sweden)",        "sv-SE"),
+        ("Turkish (Turkey)",        "tr-TR"),
+        ("Chinese Simplified",      "zh-CN"),
+    ];
+
     public event EventHandler? Changed;
     private bool _loading;
 
@@ -61,6 +88,13 @@ public sealed partial class EnvironmentGeneralPage : UserControl, IOptionsPage
                 .Key ?? ThemeMap.Keys.First();
 
             ThemeCombo.SelectedItem = displayName;
+
+            // Language
+            LanguageCombo.ItemsSource = LanguageList.Select(l => l.Display).ToList();
+            var langDisplay = LanguageList
+                .FirstOrDefault(l => l.Culture == s.PreferredLanguage)
+                .Display ?? LanguageList[0].Display;
+            LanguageCombo.SelectedItem = langDisplay;
         }
         finally { _loading = false; }
     }
@@ -69,6 +103,12 @@ public sealed partial class EnvironmentGeneralPage : UserControl, IOptionsPage
     {
         if (ThemeCombo.SelectedItem is string key && ThemeMap.TryGetValue(key, out var stem))
             s.ActiveThemeName = stem;
+
+        if (LanguageCombo.SelectedItem is string langDisplay)
+        {
+            var entry = LanguageList.FirstOrDefault(l => l.Display == langDisplay);
+            s.PreferredLanguage = entry.Culture ?? string.Empty;
+        }
     }
 
     // -- Control handlers -------------------------------------------------
@@ -80,6 +120,22 @@ public sealed partial class EnvironmentGeneralPage : UserControl, IOptionsPage
         // Apply live preview immediately
         if (ThemeCombo.SelectedItem is string key && ThemeMap.TryGetValue(key, out var stem))
             ApplyThemeFile(stem);
+
+        Changed?.Invoke(this, EventArgs.Empty);
+    }
+
+    private void OnLanguageSelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (_loading) return;
+
+        if (LanguageCombo.SelectedItem is string langDisplay)
+        {
+            var entry = LanguageList.FirstOrDefault(l => l.Display == langDisplay);
+            var culture = string.IsNullOrEmpty(entry.Culture)
+                ? CultureInfo.InstalledUICulture
+                : new CultureInfo(entry.Culture);
+            LocalizedResourceDictionary.ChangeCulture(culture);
+        }
 
         Changed?.Invoke(this, EventArgs.Empty);
     }

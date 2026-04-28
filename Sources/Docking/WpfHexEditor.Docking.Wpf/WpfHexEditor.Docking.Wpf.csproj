@@ -59,6 +59,20 @@
   <ItemGroup>
     <!-- Bundle Docking.Core into this package — single NuGet for consumers -->
     <ProjectReference Include="..\WpfHexEditor.Docking.Core\WpfHexEditor.Docking.Core.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\..\Core\WpfHexEditor.Core.Localization\WpfHexEditor.Core.Localization.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\DockingResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>DockingResources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <EmbeddedResource Update="Properties\DockingResources.resx">
+      <SubType>Designer</SubType>
+      <LastGenOutput>DockingResources.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
   </ItemGroup>
 
   <!-- Bundle Docking.Core DLL + XML into the NuGet package -->

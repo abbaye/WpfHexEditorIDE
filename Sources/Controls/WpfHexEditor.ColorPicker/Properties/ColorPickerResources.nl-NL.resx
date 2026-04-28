@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+
+  <data name="ColorPicker_Tab_Custom" xml:space="preserve">
+    <value>Aangepast</value>
+  </data>
+  <data name="ColorPicker_Tab_Palette" xml:space="preserve">
+    <value>Palet</value>
+  </data>
+  <data name="ColorPicker_Preview_Original" xml:space="preserve">
+    <value>Origineel</value>
+  </data>
+  <data name="ColorPicker_Preview_New" xml:space="preserve">
+    <value>Nieuw</value>
+  </data>
+  <data name="ColorPicker_Section_ColorSelector" xml:space="preserve">
+    <value>Kleurenkiezer</value>
+  </data>
+  <data name="ColorPicker_Section_RGBValues" xml:space="preserve">
+    <value>RGB-waarden</value>
+  </data>
+  <data name="ColorPicker_Section_HexColor" xml:space="preserve">
+    <value>Hexadecimale kleur</value>
+  </data>
+  <data name="ColorPicker_Section_StandardColors" xml:space="preserve">
+    <value>Standaardkleuren</value>
+  </data>
+  <data name="ColorPicker_Section_RecentColors" xml:space="preserve">
+    <value>Recente kleuren</value>
+  </data>
+</root>
