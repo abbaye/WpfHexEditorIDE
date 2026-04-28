@@ -487,6 +487,9 @@ public sealed class WhfmtBrowserViewModel : ViewModelBase, IDisposable
         Detail.CopyJsonCommand = new RelayCommand(() => OnCopyJson(item));
         Detail.RetryLoadCommand= new RelayCommand(() => { RebuildTree(); }, () => item.IsLoadFailure);
         Detail.ExcludeCommand  = new RelayCommand(() => OnExclude(item),  () => item.IsLoadFailure);
+
+        // Eagerly load raw JSON for the JSON tab
+        Detail.RawJson = LoadRawJson(item);
     }
 
     // ------------------------------------------------------------------
@@ -678,14 +681,18 @@ public sealed class WhfmtBrowserViewModel : ViewModelBase, IDisposable
             System.Diagnostics.Process.Start("explorer.exe", $"/select,\"{vm.FilePath}\"");
     }
 
+    private string? LoadRawJson(WhfmtFormatItemVm vm)
+    {
+        if (vm.Source == FormatSource.BuiltIn && vm.ResourceKey is not null)
+            return _embCatalog?.GetJson(vm.ResourceKey);
+        if (vm.FilePath is not null && File.Exists(vm.FilePath))
+            return File.ReadAllText(vm.FilePath);
+        return null;
+    }
+
     private void OnCopyJson(WhfmtFormatItemVm vm)
     {
-        string? json = null;
-        if (vm.Source == FormatSource.BuiltIn && vm.ResourceKey is not null)
-            json = _embCatalog?.GetJson(vm.ResourceKey);
-        else if (vm.FilePath is not null && File.Exists(vm.FilePath))
-            json = File.ReadAllText(vm.FilePath);
-
+        var json = LoadRawJson(vm);
         if (json is not null)
             System.Windows.Clipboard.SetText(json);
     }

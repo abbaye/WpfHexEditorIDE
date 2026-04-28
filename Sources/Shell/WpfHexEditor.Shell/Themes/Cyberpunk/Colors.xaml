@@ -206,10 +206,10 @@
     <SolidColorBrush x:Key="PFP_SubTextBrush" Color="#A0AED9"/>
     <SolidColorBrush x:Key="PFP_PlaceholderBrush" Color="#5A6B99"/>
     <SolidColorBrush x:Key="PFP_ValueBrush" Color="#00F0FF"/>
-    <SolidColorBrush x:Key="PFP_AccentBrush" Color="#FF006E"/>
+    <SolidColorBrush x:Key="PFP_AccentBrush" Color="#CC0060"/>
     <SolidColorBrush x:Key="PFP_ItemHoverBrush" Color="#1F2744"/>
     <SolidColorBrush x:Key="PFP_ItemSelectedForegroundBrush" Color="#FF80B9"/>
-    <SolidColorBrush x:Key="PFP_ItemSelectedBorderBrush" Color="#FF006E"/>
+    <SolidColorBrush x:Key="PFP_ItemSelectedBorderBrush" Color="#CC0060"/>
     <SolidColorBrush x:Key="PFP_ComputedSectionBackgroundBrush" Color="#0D0020"/>
     <SolidColorBrush x:Key="PFP_ComputedSectionBorderBrush" Color="#3A0050"/>
     <SolidColorBrush x:Key="PFP_ComputedTitleBrush" Color="#00F0FF"/>
@@ -221,7 +221,7 @@
     <SolidColorBrush x:Key="PFP_InputBorderBrush" Color="#4A5A8A"/>
     <SolidColorBrush x:Key="PFP_GroupBadgeBackgroundBrush" Color="#2A3759"/>
     <SolidColorBrush x:Key="PFP_CoverageTrackBrush" Color="#2A3759"/>
-    <SolidColorBrush x:Key="PFP_CoverageProgressBrush" Color="#FF006E"/>
+    <SolidColorBrush x:Key="PFP_CoverageProgressBrush" Color="#CC0060"/>
     <SolidColorBrush x:Key="PFP_ValidationErrorBackgroundBrush" Color="#2E0A20"/>
     <SolidColorBrush x:Key="PFP_ValidationErrorBorderBrush"     Color="#FF3366"/>
     <SolidColorBrush x:Key="PFP_CategoryBadgeBackgroundBrush"   Color="#1E1A00"/>
@@ -234,14 +234,14 @@
     <SolidColorBrush x:Key="SE_ForegroundBrush"            Color="#E0E7FF"/>
     <SolidColorBrush x:Key="SE_SelectedBrush"              Color="#2A1A4A"/>
     <SolidColorBrush x:Key="SE_HoverBrush"                 Color="#1A2050"/>
-    <SolidColorBrush x:Key="SE_SelectionBorderBrush"       Color="#FF006E"/>
+    <SolidColorBrush x:Key="SE_SelectionBorderBrush"       Color="#CC0060"/>
     <SolidColorBrush x:Key="SE_ModifiedIndicatorBrush"     Color="#00FF9F"/>
     <SolidColorBrush x:Key="SE_SearchBoxBrush"             Color="#141B3D"/>
     <SolidColorBrush x:Key="SE_SearchBoxForegroundBrush"   Color="#E0E7FF"/>
     <SolidColorBrush x:Key="SE_TitleBarBrush"              Color="#141B3D"/>
     <SolidColorBrush x:Key="SE_ToolbarBrush"               Color="#141B3D"/>
     <SolidColorBrush x:Key="SE_GroupHeaderBrush"           Color="#141B3D"/>
-    <SolidColorBrush x:Key="SE_SeparatorBrush"             Color="#8B00FF"/>
+    <SolidColorBrush x:Key="SE_SeparatorBrush"             Color="#3D1A6E"/>
 
     <!-- Properties Panel (PP) Theme Resources -->
     <SolidColorBrush x:Key="PP_BackgroundBrush"              Color="#0A0E27"/>
@@ -272,7 +272,7 @@
 
     <!-- Common Panel Resources (PanelCommon.xaml keys — shared across all IDE panels) -->
     <SolidColorBrush x:Key="Panel_ToolbarBrush"             Color="#141B3D"/>
-    <SolidColorBrush x:Key="Panel_ToolbarBorderBrush"       Color="#8B00FF"/>
+    <SolidColorBrush x:Key="Panel_ToolbarBorderBrush"       Color="#3D1A6E"/>
     <!-- Group header in Plugin Monitor DataGrid (InProcess / Sandbox category rows) -->
     <SolidColorBrush x:Key="DockGroupHeaderBrush"           Color="#0C1028"/>
     <SolidColorBrush x:Key="Panel_ToolbarButtonHoverBrush"  Color="#2A3759"/>
@@ -362,11 +362,11 @@
 
     <!-- CE_QuickInfo_* — Quick Info hover popup (Cyberpunk) -->
     <SolidColorBrush x:Key="CE_QuickInfo_Background"        Color="#0D0D1A"/>
-    <SolidColorBrush x:Key="CE_QuickInfo_Border"            Color="#FF006E"/>
+    <SolidColorBrush x:Key="CE_QuickInfo_Border"            Color="#CC0060"/>
     <SolidColorBrush x:Key="CE_QuickInfo_Text"              Color="#E0E0FF"/>
     <SolidColorBrush x:Key="CE_QuickInfo_TypeText"          Color="#9090BB"/>
     <SolidColorBrush x:Key="CE_QuickInfo_SignatureText"      Color="#00FFFF"/>
-    <SolidColorBrush x:Key="CE_QuickInfo_LinkText"          Color="#FF006E"/>
+    <SolidColorBrush x:Key="CE_QuickInfo_LinkText"          Color="#CC0060"/>
     <SolidColorBrush x:Key="CE_QuickInfo_Separator"         Color="#2A0030"/>
     <SolidColorBrush x:Key="CE_QuickInfo_DiagnosticError"   Color="#400010"/>
     <SolidColorBrush x:Key="CE_QuickInfo_DiagnosticWarning" Color="#281500"/>
@@ -391,7 +391,7 @@
     <!-- DocumentInfoBar (InfoBar_*) -->
     <SolidColorBrush x:Key="InfoBar_BackgroundBrush"             Color="#141B3D"/>
     <SolidColorBrush x:Key="InfoBar_ForegroundBrush"             Color="#E0E7FF"/>
-    <SolidColorBrush x:Key="InfoBar_BorderBrush"                 Color="#8B00FF"/>
+    <SolidColorBrush x:Key="InfoBar_BorderBrush"                 Color="#3D1A6E"/>
     <SolidColorBrush x:Key="InfoBar_ButtonBackgroundBrush"       Color="#2A3759"/>
     <SolidColorBrush x:Key="InfoBar_ButtonHoverBackgroundBrush"  Color="#3A4A70"/>
     <SolidColorBrush x:Key="InfoBar_ButtonForegroundBrush"       Color="#E0E7FF"/>
@@ -866,7 +866,7 @@
     <SolidColorBrush x:Key="DE_BreadcrumbHoverBrush"     Color="#2E2E2E"/>
     <!-- SE_* — Structure Editor -->
     <SolidColorBrush x:Key="SE_PopToolbarBackground"     Color="#141B3D"/>
-    <SolidColorBrush x:Key="SE_PopToolbarBorderBrush"    Color="#8B00FF"/>
+    <SolidColorBrush x:Key="SE_PopToolbarBorderBrush"    Color="#6B00CC"/>
     <SolidColorBrush x:Key="SE_ToolbarButtonHoverBrush"  Color="#2A3759"/>
     <SolidColorBrush x:Key="SE_ToolbarButtonActiveBrush" Color="#3A4A70"/>
     <SolidColorBrush x:Key="SE_ValidationErrorBrush"     Color="#FF1744"/>

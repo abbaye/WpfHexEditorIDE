@@ -2,12 +2,10 @@
 // Project: WpfHexEditor.Shell.Panels
 // File: Panels/WhfmtFormatDetailPanel.xaml.cs
 // Description: Code-behind for the format detail card panel.
-//              Handles lazy JSON loading when the JSON tab becomes active.
+//              JSON is populated eagerly by the parent ViewModel on selection.
 // ==========================================================
 
-using System.Windows;
 using System.Windows.Controls;
-using WpfHexEditor.Shell.Panels.ViewModels;
 
 namespace WpfHexEditor.Shell.Panels.Panels;
 
@@ -18,18 +16,6 @@ public partial class WhfmtFormatDetailPanel : UserControl
         InitializeComponent();
     }
 
-    // Called when the JSON TabItem receives focus (routed from GotFocus on the TabItem)
-    private void OnJsonTabGotFocus(object sender, RoutedEventArgs e)
-    {
-        // The VM is the DataContext; lazy-load is a no-op if already loaded
-        if (DataContext is WhfmtFormatDetailVm vm && vm.RawJson is null)
-        {
-            // We don't have direct access to the catalog services here —
-            // set a placeholder so the user sees something immediately
-            vm.RawJson = "(loading…)";
-            // The parent (WhfmtBrowserPanel / WhfmtCatalogDocument) should wire
-            // LoadRawJsonIfNeeded via CopyJsonCommand or a dedicated trigger.
-            // This stub ensures the tab doesn't stay blank.
-        }
-    }
+    // GotFocus handler declared in XAML — no-op since RawJson is set by the VM on selection
+    private void OnJsonTabGotFocus(object sender, System.Windows.RoutedEventArgs e) { }
 }

@@ -135,10 +135,12 @@ public sealed class WhfmtCatalogViewModel : ViewModelBase, IDisposable
 
         if (_selectedItems.Count == 1)
         {
-            Detail.LoadFrom(_selectedItems[0], _embCatalog!, _catalogSvc!);
-            Detail.OpenCommand   = new RelayCommand(() => OnOpenSelected());
-            Detail.ExportCommand = new RelayCommand(() => OnExportSelected(), () => _selectedItems[0].Source == FormatSource.BuiltIn);
-            Detail.CopyJsonCommand = new RelayCommand(() => OnCopyJson(_selectedItems[0]));
+            var item = _selectedItems[0];
+            Detail.LoadFrom(item, _embCatalog!, _catalogSvc!);
+            Detail.OpenCommand     = new RelayCommand(() => OnOpenSelected());
+            Detail.ExportCommand   = new RelayCommand(() => OnExportSelected(), () => item.Source == FormatSource.BuiltIn);
+            Detail.CopyJsonCommand = new RelayCommand(() => OnCopyJson(item));
+            Detail.RawJson         = LoadRawJson(item);
         }
         else
         {
@@ -248,11 +250,20 @@ public sealed class WhfmtCatalogViewModel : ViewModelBase, IDisposable
         if (keys.Count > 0) ExportFormatsRequested?.Invoke(this, keys);
     }
 
-    private static void OnCopyJson(WhfmtFormatItemVm vm)
+    private string? LoadRawJson(WhfmtFormatItemVm vm)
     {
-        // Basic clipboard copy of display info
-        var text = $"Name: {vm.Name}\nCategory: {vm.Category}\nVersion: {vm.Version}\nAuthor: {vm.Author}";
-        System.Windows.Clipboard.SetText(text);
+        if (vm.Source == FormatSource.BuiltIn && vm.ResourceKey is not null)
+            return _embCatalog?.GetJson(vm.ResourceKey);
+        if (vm.FilePath is not null && System.IO.File.Exists(vm.FilePath))
+            return System.IO.File.ReadAllText(vm.FilePath);
+        return null;
+    }
+
+    private void OnCopyJson(WhfmtFormatItemVm vm)
+    {
+        var json = LoadRawJson(vm);
+        if (json is not null)
+            System.Windows.Clipboard.SetText(json);
     }
 
     private static string GetKey(WhfmtFormatItemVm vm) => vm.ResourceKey ?? vm.FilePath ?? vm.Name;
