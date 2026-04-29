@@ -15,19 +15,19 @@
         <StackPanel Margin="0,0,0,16">
 
         <!-- ── General ───────────────────────────────────────────────────────── -->
-        <TextBlock Text="GENERAL"
+        <TextBlock Text="{DynamicResource Plugin_GeneralSection}"
                    FontSize="12" FontWeight="SemiBold"
                    Foreground="{DynamicResource Opt_SectionForegroundBrush}"
                    Margin="0,16,0,6"/>
 
         <CheckBox x:Name="CheckAutoLoad"
-                  Content="Automatically load all discovered plugins at startup"
+                  Content="{DynamicResource Plugin_AutoLoad}"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                   Margin="0,0,0,10"
                   Checked="OnCheckChanged"
                   Unchecked="OnCheckChanged"/>
 
-        <TextBlock Text="Additional plugins directory (leave empty to use %AppData%\WpfHexEditor\Plugins):"
+        <TextBlock Text="{DynamicResource Plugin_PluginsDirNote}"
                    Foreground="{DynamicResource DockMenuForegroundBrush}"
                    Opacity="0.8"
                    TextWrapping="Wrap"
@@ -47,7 +47,7 @@
                      VerticalContentAlignment="Center"
                      TextChanged="OnTextChanged"/>
             <Button Grid.Column="1"
-                    Content="Browse…"
+                    Content="{DynamicResource Plugin_Browse}"
                     Padding="8,3"
                     Click="OnBrowsePluginsDir"
                     Background="{DynamicResource Panel_ToolbarBrush}"
@@ -58,13 +58,13 @@
         <Separator Margin="0,8,0,12" Background="{DynamicResource DockBorderBrush}"/>
 
         <!-- ── Watchdog ───────────────────────────────────────────────────────── -->
-        <TextBlock Text="WATCHDOG"
+        <TextBlock Text="{DynamicResource Plugin_WatchdogSection}"
                    FontSize="12" FontWeight="SemiBold"
                    Foreground="{DynamicResource Opt_SectionForegroundBrush}"
                    Margin="0,16,0,6"/>
 
         <CheckBox x:Name="CheckEnableWatchdog"
-                  Content="Enable plugin watchdog (monitors call timeouts)"
+                  Content="{DynamicResource Plugin_EnableWatchdog}"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                   Margin="0,0,0,10"
                   Checked="OnCheckChanged"
@@ -75,7 +75,7 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="70"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="Watchdog timeout (seconds):"
+            <TextBlock Text="{DynamicResource Plugin_WatchdogTimeoutLabel}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             <TextBox x:Name="TextWatchdogTimeout" Grid.Column="1"
@@ -89,7 +89,7 @@
         <Separator Margin="0,8,0,12" Background="{DynamicResource DockBorderBrush}"/>
 
         <!-- ── Diagnostics sampling ───────────────────────────────────────────── -->
-        <TextBlock Text="DIAGNOSTICS &AMP; SAMPLING"
+        <TextBlock Text="{DynamicResource Plugin_DiagnosticsSection}"
                    FontSize="12" FontWeight="SemiBold"
                    Foreground="{DynamicResource Opt_SectionForegroundBrush}"
                    Margin="0,16,0,6"/>
@@ -99,7 +99,7 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="70"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="Diagnostic sampling interval (seconds):"
+            <TextBlock Text="{DynamicResource Plugin_DiagSamplingLabel}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             <TextBox x:Name="TextDiagnosticSampling" Grid.Column="1"
@@ -110,7 +110,7 @@
                      TextChanged="OnTextChanged"/>
         </Grid>
 
-        <TextBlock Text="Drives the Plugin Monitor CPU/Memory chart refresh rate."
+        <TextBlock Text="{DynamicResource Plugin_DiagNote}"
                    FontSize="11" Opacity="0.65"
                    Foreground="{DynamicResource DockMenuForegroundBrush}"
                    Margin="0,0,0,4"/>
@@ -118,7 +118,7 @@
         <Separator Margin="0,8,0,12" Background="{DynamicResource DockBorderBrush}"/>
 
         <!-- ── Slow-Plugin Detection ──────────────────────────────────────────── -->
-        <TextBlock Text="SLOW-PLUGIN DETECTION"
+        <TextBlock Text="{DynamicResource Plugin_SlowDetectionSection}"
                    FontSize="12" FontWeight="SemiBold"
                    Foreground="{DynamicResource Opt_SectionForegroundBrush}"
                    Margin="0,16,0,6"/>
@@ -128,7 +128,7 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="70"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="Monitoring interval (seconds):"
+            <TextBlock Text="{DynamicResource Plugin_MonitorIntervalLabel}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             <TextBox x:Name="TextMonitoringInterval" Grid.Column="1"
@@ -144,7 +144,7 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="70"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="Response time threshold (ms):"
+            <TextBlock Text="{DynamicResource Plugin_ResponseTimeLabel}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             <TextBox x:Name="TextResponseTime" Grid.Column="1"
@@ -160,7 +160,7 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="70"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="CPU threshold (%):"
+            <TextBlock Text="{DynamicResource Plugin_CpuThresholdLabel}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             <TextBox x:Name="TextCpuThreshold" Grid.Column="1"
@@ -174,20 +174,20 @@
         <Separator Margin="0,8,0,12" Background="{DynamicResource DockBorderBrush}"/>
 
         <!-- ── Memory Alert Thresholds ─────────────────────────────────────── -->
-        <TextBlock Text="MEMORY ALERT THRESHOLDS"
+        <TextBlock Text="{DynamicResource Plugin_MemoryAlertSection}"
                    FontSize="12" FontWeight="SemiBold"
                    Foreground="{DynamicResource Opt_SectionForegroundBrush}"
                    Margin="0,16,0,6"/>
 
         <CheckBox x:Name="CheckEnableMemoryAlerts"
-                  Content="Enable memory usage alerts and badges"
+                  Content="{DynamicResource Plugin_EnableMemoryAlerts}"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                   Margin="0,0,0,10"
                   Checked="OnCheckChanged"
                   Unchecked="OnCheckChanged"/>
 
         <CheckBox x:Name="CheckShowMemoryColorGradation"
-                  Content="Show color gradation in monitors (green/yellow/orange/red)"
+                  Content="{DynamicResource Plugin_ShowColorGradation}"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                   Margin="0,0,0,10"
                   Checked="OnCheckChanged"
@@ -199,7 +199,7 @@
                 <ColumnDefinition Width="70"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="⚠️ Warning threshold (yellow):"
+            <TextBlock Text="{DynamicResource Plugin_MemWarningLabel}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             <TextBox x:Name="TextMemoryWarningThreshold" Grid.Column="1"
@@ -208,7 +208,7 @@
                      BorderBrush="{DynamicResource DockBorderBrush}"
                      Padding="4,3"
                      TextChanged="OnTextChanged"/>
-            <TextBlock Grid.Column="2" Text=" MB"
+            <TextBlock Grid.Column="2" Text="{DynamicResource Plugin_MB}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"
                        Margin="4,0,0,0"/>
@@ -220,7 +220,7 @@
                 <ColumnDefinition Width="70"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="🟠 High threshold (orange):"
+            <TextBlock Text="{DynamicResource Plugin_MemHighLabel}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             <TextBox x:Name="TextMemoryHighThreshold" Grid.Column="1"
@@ -229,7 +229,7 @@
                      BorderBrush="{DynamicResource DockBorderBrush}"
                      Padding="4,3"
                      TextChanged="OnTextChanged"/>
-            <TextBlock Grid.Column="2" Text=" MB"
+            <TextBlock Grid.Column="2" Text="{DynamicResource Plugin_MB}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"
                        Margin="4,0,0,0"/>
@@ -241,7 +241,7 @@
                 <ColumnDefinition Width="70"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="🔴 Critical threshold (red):"
+            <TextBlock Text="{DynamicResource Plugin_MemCriticalLabel}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             <TextBox x:Name="TextMemoryCriticalThreshold" Grid.Column="1"
@@ -250,13 +250,13 @@
                      BorderBrush="{DynamicResource DockBorderBrush}"
                      Padding="4,3"
                      TextChanged="OnTextChanged"/>
-            <TextBlock Grid.Column="2" Text=" MB"
+            <TextBlock Grid.Column="2" Text="{DynamicResource Plugin_MB}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"
                        Margin="4,0,0,0"/>
         </Grid>
 
-        <TextBlock Text="Note: Thresholds should be in ascending order (Warning &lt; High &lt; Critical)."
+        <TextBlock Text="{DynamicResource Plugin_MemThresholdNote}"
                    FontSize="11" Opacity="0.65"
                    Foreground="{DynamicResource DockMenuForegroundBrush}"
                    Margin="0,8,0,0"
@@ -265,12 +265,12 @@
         <Separator Margin="0,8,0,12" Background="{DynamicResource DockBorderBrush}"/>
 
         <!-- ── Memory Alert Colors ─────────────────────────────────────────── -->
-        <TextBlock Text="MEMORY ALERT COLORS"
+        <TextBlock Text="{DynamicResource Plugin_MemColorSection}"
                    FontSize="12" FontWeight="SemiBold"
                    Foreground="{DynamicResource Opt_SectionForegroundBrush}"
                    Margin="0,16,0,6"/>
 
-        <TextBlock Text="Customize badge colors for each memory threshold level."
+        <TextBlock Text="{DynamicResource Plugin_MemColorNote}"
                    FontSize="11" Opacity="0.65"
                    Foreground="{DynamicResource DockMenuForegroundBrush}"
                    Margin="0,0,0,12"/>
@@ -281,7 +281,7 @@
                 <ColumnDefinition Width="180"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="🟢 Normal threshold:"
+            <TextBlock Text="{DynamicResource Plugin_MemNormalColor}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             <cp:ColorPicker Grid.Column="1"
@@ -298,7 +298,7 @@
                 <ColumnDefinition Width="180"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="🟡 Warning threshold:"
+            <TextBlock Text="{DynamicResource Plugin_MemWarningColor}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             <cp:ColorPicker Grid.Column="1"
@@ -315,7 +315,7 @@
                 <ColumnDefinition Width="180"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="🟠 High threshold:"
+            <TextBlock Text="{DynamicResource Plugin_MemHighColor}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             <cp:ColorPicker Grid.Column="1"
@@ -332,7 +332,7 @@
                 <ColumnDefinition Width="180"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="🔴 Critical threshold:"
+            <TextBlock Text="{DynamicResource Plugin_MemCriticalColor}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             <cp:ColorPicker Grid.Column="1"
@@ -344,7 +344,7 @@
         </Grid>
 
         <!-- Reset button -->
-        <Button Content="Reset to Default Colors"
+        <Button Content="{DynamicResource Plugin_ResetColors}"
                 Margin="0,8,0,0"
                 Padding="8,3"
                 Click="OnResetMemoryColors"

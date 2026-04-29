@@ -62,4 +62,334 @@ internal static class OptionsResources
     internal static string EnvGeneral_LanguageSection     => GetString(nameof(EnvGeneral_LanguageSection));
     internal static string EnvGeneral_IdeLanguageLabel    => GetString(nameof(EnvGeneral_IdeLanguageLabel));
     internal static string EnvGeneral_LanguageRestartNote => GetString(nameof(EnvGeneral_LanguageRestartNote));
+
+    // ═══════════════════════════════════════════════════════════════
+    // BUILD > COMPILER OPTIONS PAGE
+    // ═══════════════════════════════════════════════════════════════
+
+    internal static string BuildCompiler_CSharpSection   => GetString(nameof(BuildCompiler_CSharpSection));
+    internal static string BuildCompiler_NullableCheck   => GetString(nameof(BuildCompiler_NullableCheck));
+    internal static string BuildCompiler_ImplicitUsings  => GetString(nameof(BuildCompiler_ImplicitUsings));
+    internal static string BuildCompiler_GenerateDocs    => GetString(nameof(BuildCompiler_GenerateDocs));
+    internal static string BuildCompiler_WarningsSection => GetString(nameof(BuildCompiler_WarningsSection));
+    internal static string BuildCompiler_WarnLevelLabel  => GetString(nameof(BuildCompiler_WarnLevelLabel));
+
+    // ═══════════════════════════════════════════════════════════════
+    // BUILD > RUN GENERAL OPTIONS PAGE
+    // ═══════════════════════════════════════════════════════════════
+
+    internal static string BuildRun_GeneralSection       => GetString(nameof(BuildRun_GeneralSection));
+    internal static string BuildRun_SaveBeforeBuild      => GetString(nameof(BuildRun_SaveBeforeBuild));
+    internal static string BuildRun_VerbosityLabel       => GetString(nameof(BuildRun_VerbosityLabel));
+    internal static string BuildRun_VerbQuiet            => GetString(nameof(BuildRun_VerbQuiet));
+    internal static string BuildRun_VerbMinimal          => GetString(nameof(BuildRun_VerbMinimal));
+    internal static string BuildRun_VerbNormal           => GetString(nameof(BuildRun_VerbNormal));
+    internal static string BuildRun_VerbDetailed         => GetString(nameof(BuildRun_VerbDetailed));
+    internal static string BuildRun_VerbDiagnostic       => GetString(nameof(BuildRun_VerbDiagnostic));
+    internal static string BuildRun_RunInProcess         => GetString(nameof(BuildRun_RunInProcess));
+    internal static string BuildRun_MaxParallelLabel     => GetString(nameof(BuildRun_MaxParallelLabel));
+    internal static string BuildRun_OutputSection        => GetString(nameof(BuildRun_OutputSection));
+    internal static string BuildRun_ShowOnStart          => GetString(nameof(BuildRun_ShowOnStart));
+    internal static string BuildRun_ShowOnError          => GetString(nameof(BuildRun_ShowOnError));
+    internal static string BuildRun_RunSection           => GetString(nameof(BuildRun_RunSection));
+    internal static string BuildRun_OnRunBuildErrorLabel => GetString(nameof(BuildRun_OnRunBuildErrorLabel));
+    internal static string BuildRun_DoNotLaunch          => GetString(nameof(BuildRun_DoNotLaunch));
+    internal static string BuildRun_Launch               => GetString(nameof(BuildRun_Launch));
+    internal static string BuildRun_ShowOutputOnRun      => GetString(nameof(BuildRun_ShowOutputOnRun));
+
+    // ═══════════════════════════════════════════════════════════════
+    // CODE EDITOR > INLINE HINTS PAGE
+    // ═══════════════════════════════════════════════════════════════
+
+    internal static string CodeInlineHints_Section          => GetString(nameof(CodeInlineHints_Section));
+    internal static string CodeInlineHints_EnableHints       => GetString(nameof(CodeInlineHints_EnableHints));
+    internal static string CodeInlineHints_SourceLabel       => GetString(nameof(CodeInlineHints_SourceLabel));
+    internal static string CodeInlineHints_SourceAuto        => GetString(nameof(CodeInlineHints_SourceAuto));
+    internal static string CodeInlineHints_SourceRoslyn      => GetString(nameof(CodeInlineHints_SourceRoslyn));
+    internal static string CodeInlineHints_SourceRegex       => GetString(nameof(CodeInlineHints_SourceRegex));
+    internal static string CodeInlineHints_RoslynSection     => GetString(nameof(CodeInlineHints_RoslynSection));
+    internal static string CodeInlineHints_RoslynNote        => GetString(nameof(CodeInlineHints_RoslynNote));
+    internal static string CodeInlineHints_ShowVarType       => GetString(nameof(CodeInlineHints_ShowVarType));
+    internal static string CodeInlineHints_ShowLambdaReturn  => GetString(nameof(CodeInlineHints_ShowLambdaReturn));
+    internal static string CodeInlineHints_KindsSection      => GetString(nameof(CodeInlineHints_KindsSection));
+    internal static string CodeInlineHints_KindsNote         => GetString(nameof(CodeInlineHints_KindsNote));
+    internal static string CodeInlineHints_TypesGroup        => GetString(nameof(CodeInlineHints_TypesGroup));
+    internal static string CodeInlineHints_Class             => GetString(nameof(CodeInlineHints_Class));
+    internal static string CodeInlineHints_Interface         => GetString(nameof(CodeInlineHints_Interface));
+    internal static string CodeInlineHints_Struct            => GetString(nameof(CodeInlineHints_Struct));
+    internal static string CodeInlineHints_Enum              => GetString(nameof(CodeInlineHints_Enum));
+    internal static string CodeInlineHints_Record            => GetString(nameof(CodeInlineHints_Record));
+    internal static string CodeInlineHints_Delegate          => GetString(nameof(CodeInlineHints_Delegate));
+    internal static string CodeInlineHints_MembersGroup      => GetString(nameof(CodeInlineHints_MembersGroup));
+    internal static string CodeInlineHints_Method            => GetString(nameof(CodeInlineHints_Method));
+    internal static string CodeInlineHints_Constructor       => GetString(nameof(CodeInlineHints_Constructor));
+    internal static string CodeInlineHints_Property          => GetString(nameof(CodeInlineHints_Property));
+    internal static string CodeInlineHints_Field             => GetString(nameof(CodeInlineHints_Field));
+    internal static string CodeInlineHints_Event             => GetString(nameof(CodeInlineHints_Event));
+    internal static string CodeInlineHints_OtherGroup        => GetString(nameof(CodeInlineHints_OtherGroup));
+    internal static string CodeInlineHints_LocalVar          => GetString(nameof(CodeInlineHints_LocalVar));
+    internal static string CodeInlineHints_Parameter         => GetString(nameof(CodeInlineHints_Parameter));
+    internal static string CodeInlineHints_TypeParam         => GetString(nameof(CodeInlineHints_TypeParam));
+    internal static string CodeInlineHints_Namespace         => GetString(nameof(CodeInlineHints_Namespace));
+    internal static string CodeInlineHints_SelectAll         => GetString(nameof(CodeInlineHints_SelectAll));
+    internal static string CodeInlineHints_ClearAll          => GetString(nameof(CodeInlineHints_ClearAll));
+
+    // ═══════════════════════════════════════════════════════════════
+    // CODE EDITOR > OPTIONS PAGE
+    // ═══════════════════════════════════════════════════════════════
+
+    internal static string CodeOpt_FontSection          => GetString(nameof(CodeOpt_FontSection));
+    internal static string CodeOpt_FontFamilyLabel      => GetString(nameof(CodeOpt_FontFamilyLabel));
+    internal static string CodeOpt_FontSizeLabel        => GetString(nameof(CodeOpt_FontSizeLabel));
+    internal static string CodeOpt_IndentSection        => GetString(nameof(CodeOpt_IndentSection));
+    internal static string CodeOpt_IndentSizeLabel      => GetString(nameof(CodeOpt_IndentSizeLabel));
+    internal static string CodeOpt_UseSpaces            => GetString(nameof(CodeOpt_UseSpaces));
+    internal static string CodeOpt_FeaturesSection      => GetString(nameof(CodeOpt_FeaturesSection));
+    internal static string CodeOpt_ShowLineNumbers      => GetString(nameof(CodeOpt_ShowLineNumbers));
+    internal static string CodeOpt_HighlightCurrentLine => GetString(nameof(CodeOpt_HighlightCurrentLine));
+    internal static string CodeOpt_CtrlClickLinks       => GetString(nameof(CodeOpt_CtrlClickLinks));
+    internal static string CodeOpt_DefaultZoomLabel     => GetString(nameof(CodeOpt_DefaultZoomLabel));
+    internal static string CodeOpt_MouseWheelLabel      => GetString(nameof(CodeOpt_MouseWheelLabel));
+    internal static string CodeOpt_ChangesetSection     => GetString(nameof(CodeOpt_ChangesetSection));
+    internal static string CodeOpt_TrackEdits           => GetString(nameof(CodeOpt_TrackEdits));
+    internal static string CodeOpt_SyntaxSection        => GetString(nameof(CodeOpt_SyntaxSection));
+    internal static string CodeOpt_SyntaxNote           => GetString(nameof(CodeOpt_SyntaxNote));
+    internal static string CodeOpt_Background           => GetString(nameof(CodeOpt_Background));
+    internal static string CodeOpt_Foreground           => GetString(nameof(CodeOpt_Foreground));
+    internal static string CodeOpt_Keyword              => GetString(nameof(CodeOpt_Keyword));
+    internal static string CodeOpt_String               => GetString(nameof(CodeOpt_String));
+    internal static string CodeOpt_Comment              => GetString(nameof(CodeOpt_Comment));
+    internal static string CodeOpt_Number               => GetString(nameof(CodeOpt_Number));
+    internal static string CodeOpt_Type                 => GetString(nameof(CodeOpt_Type));
+    internal static string CodeOpt_Preprocessor         => GetString(nameof(CodeOpt_Preprocessor));
+    internal static string CodeOpt_Operator             => GetString(nameof(CodeOpt_Operator));
+    internal static string CodeOpt_Identifier           => GetString(nameof(CodeOpt_Identifier));
+    internal static string CodeOpt_ResetColors          => GetString(nameof(CodeOpt_ResetColors));
+
+    // ═══════════════════════════════════════════════════════════════
+    // ENVIRONMENT > SAVE PAGE
+    // ═══════════════════════════════════════════════════════════════
+
+    internal static string EnvSave_SaveModeSection   => GetString(nameof(EnvSave_SaveModeSection));
+    internal static string EnvSave_DirectMode        => GetString(nameof(EnvSave_DirectMode));
+    internal static string EnvSave_TrackedMode       => GetString(nameof(EnvSave_TrackedMode));
+    internal static string EnvSave_AutoSaveSection   => GetString(nameof(EnvSave_AutoSaveSection));
+    internal static string EnvSave_AutoSerialize     => GetString(nameof(EnvSave_AutoSerialize));
+    internal static string EnvSave_IntervalLabel     => GetString(nameof(EnvSave_IntervalLabel));
+    internal static string EnvSave_StandaloneSection => GetString(nameof(EnvSave_StandaloneSection));
+    internal static string EnvSave_StandaloneNote    => GetString(nameof(EnvSave_StandaloneNote));
+    internal static string EnvSave_HexEditorDirect   => GetString(nameof(EnvSave_HexEditorDirect));
+    internal static string EnvSave_CodeEditorDirect  => GetString(nameof(EnvSave_CodeEditorDirect));
+    internal static string EnvSave_TextEditorDirect  => GetString(nameof(EnvSave_TextEditorDirect));
+    internal static string EnvSave_TblEditorDirect   => GetString(nameof(EnvSave_TblEditorDirect));
+    internal static string EnvSave_ImageViewerDirect => GetString(nameof(EnvSave_ImageViewerDirect));
+    internal static string EnvSave_SaveAsNote        => GetString(nameof(EnvSave_SaveAsNote));
+
+    // ═══════════════════════════════════════════════════════════════
+    // HEX EDITOR > BEHAVIOR PAGE
+    // ═══════════════════════════════════════════════════════════════
+
+    internal static string HexBehavior_Section                   => GetString(nameof(HexBehavior_Section));
+    internal static string HexBehavior_AllowAutoHighLight         => GetString(nameof(HexBehavior_AllowAutoHighLight));
+    internal static string HexBehavior_AllowAutoSelectDoubleClick => GetString(nameof(HexBehavior_AllowAutoSelectDoubleClick));
+    internal static string HexBehavior_AllowContextMenu          => GetString(nameof(HexBehavior_AllowContextMenu));
+    internal static string HexBehavior_AllowDeleteByte           => GetString(nameof(HexBehavior_AllowDeleteByte));
+    internal static string HexBehavior_AllowExtend               => GetString(nameof(HexBehavior_AllowExtend));
+    internal static string HexBehavior_FileDroppingConfirmation  => GetString(nameof(HexBehavior_FileDroppingConfirmation));
+    internal static string HexBehavior_PreloadModeLabel          => GetString(nameof(HexBehavior_PreloadModeLabel));
+
+    // ═══════════════════════════════════════════════════════════════
+    // HEX EDITOR > DISPLAY PAGE
+    // ═══════════════════════════════════════════════════════════════
+
+    internal static string HexDisplay_DisplaySection          => GetString(nameof(HexDisplay_DisplaySection));
+    internal static string HexDisplay_BytesPerLineLabel        => GetString(nameof(HexDisplay_BytesPerLineLabel));
+    internal static string HexDisplay_ShowOffset              => GetString(nameof(HexDisplay_ShowOffset));
+    internal static string HexDisplay_ShowAscii               => GetString(nameof(HexDisplay_ShowAscii));
+    internal static string HexDisplay_MouseWheelLabel          => GetString(nameof(HexDisplay_MouseWheelLabel));
+    internal static string HexDisplay_ByteTooltipLabel         => GetString(nameof(HexDisplay_ByteTooltipLabel));
+    internal static string HexDisplay_FormatSection            => GetString(nameof(HexDisplay_FormatSection));
+    internal static string HexDisplay_ValueFormatLabel         => GetString(nameof(HexDisplay_ValueFormatLabel));
+    internal static string HexDisplay_OffsetFormatLabel        => GetString(nameof(HexDisplay_OffsetFormatLabel));
+    internal static string HexDisplay_ByteGroupingLabel        => GetString(nameof(HexDisplay_ByteGroupingLabel));
+    internal static string HexDisplay_SpacerPositionLabel      => GetString(nameof(HexDisplay_SpacerPositionLabel));
+    internal static string HexDisplay_ScrollMarkersSection     => GetString(nameof(HexDisplay_ScrollMarkersSection));
+    internal static string HexDisplay_ShowBookmarkMarkers      => GetString(nameof(HexDisplay_ShowBookmarkMarkers));
+    internal static string HexDisplay_ShowModifiedMarkers      => GetString(nameof(HexDisplay_ShowModifiedMarkers));
+    internal static string HexDisplay_ShowInsertedMarkers      => GetString(nameof(HexDisplay_ShowInsertedMarkers));
+    internal static string HexDisplay_ShowDeletedMarkers       => GetString(nameof(HexDisplay_ShowDeletedMarkers));
+    internal static string HexDisplay_ShowSearchResultMarkers  => GetString(nameof(HexDisplay_ShowSearchResultMarkers));
+    internal static string HexDisplay_ColumnRowSection         => GetString(nameof(HexDisplay_ColumnRowSection));
+    internal static string HexDisplay_ShowColumnHighlight      => GetString(nameof(HexDisplay_ShowColumnHighlight));
+    internal static string HexDisplay_ShowAsciiColumnHighlight => GetString(nameof(HexDisplay_ShowAsciiColumnHighlight));
+    internal static string HexDisplay_ShowRowHighlight         => GetString(nameof(HexDisplay_ShowRowHighlight));
+
+    // ═══════════════════════════════════════════════════════════════
+    // HEX EDITOR > EDITING PAGE
+    // ═══════════════════════════════════════════════════════════════
+
+    internal static string HexEdit_EditingSection         => GetString(nameof(HexEdit_EditingSection));
+    internal static string HexEdit_DefaultEditModeLabel   => GetString(nameof(HexEdit_DefaultEditModeLabel));
+    internal static string HexEdit_MouseWheelLabel        => GetString(nameof(HexEdit_MouseWheelLabel));
+    internal static string HexEdit_AllowZoom              => GetString(nameof(HexEdit_AllowZoom));
+    internal static string HexEdit_AllowFileDrop          => GetString(nameof(HexEdit_AllowFileDrop));
+    internal static string HexEdit_DataSection            => GetString(nameof(HexEdit_DataSection));
+    internal static string HexEdit_ByteSizeLabel          => GetString(nameof(HexEdit_ByteSizeLabel));
+    internal static string HexEdit_ByteOrderLabel         => GetString(nameof(HexEdit_ByteOrderLabel));
+    internal static string HexEdit_DefaultCopyFormatLabel => GetString(nameof(HexEdit_DefaultCopyFormatLabel));
+    internal static string HexEdit_SpacerVisualLabel      => GetString(nameof(HexEdit_SpacerVisualLabel));
+
+    // ═══════════════════════════════════════════════════════════════
+    // HEX EDITOR > STATUS BAR PAGE
+    // ═══════════════════════════════════════════════════════════════
+
+    internal static string HexStatus_Section          => GetString(nameof(HexStatus_Section));
+    internal static string HexStatus_ShowStatusMessage => GetString(nameof(HexStatus_ShowStatusMessage));
+    internal static string HexStatus_ShowFileSize      => GetString(nameof(HexStatus_ShowFileSize));
+    internal static string HexStatus_ShowSelection     => GetString(nameof(HexStatus_ShowSelection));
+    internal static string HexStatus_ShowPosition      => GetString(nameof(HexStatus_ShowPosition));
+    internal static string HexStatus_ShowEditMode      => GetString(nameof(HexStatus_ShowEditMode));
+    internal static string HexStatus_ShowBytesPerLine  => GetString(nameof(HexStatus_ShowBytesPerLine));
+    internal static string HexStatus_ShowRefreshRate   => GetString(nameof(HexStatus_ShowRefreshRate));
+
+    // ═══════════════════════════════════════════════════════════════
+    // MARKETPLACE OPTIONS PAGE
+    // ═══════════════════════════════════════════════════════════════
+
+    internal static string Mkt_GitHubSection       => GetString(nameof(Mkt_GitHubSection));
+    internal static string Mkt_PatDescription      => GetString(nameof(Mkt_PatDescription));
+    internal static string Mkt_PatWarning          => GetString(nameof(Mkt_PatWarning));
+    internal static string Mkt_AutoUpdateSection   => GetString(nameof(Mkt_AutoUpdateSection));
+    internal static string Mkt_AutoUpdate          => GetString(nameof(Mkt_AutoUpdate));
+    internal static string Mkt_UpdateIntervalLabel => GetString(nameof(Mkt_UpdateIntervalLabel));
+    internal static string Mkt_UpdateIntervalNote  => GetString(nameof(Mkt_UpdateIntervalNote));
+
+    // ═══════════════════════════════════════════════════════════════
+    // OUTPUT OPTIONS PAGE
+    // ═══════════════════════════════════════════════════════════════
+
+    internal static string Output_Section      => GetString(nameof(Output_Section));
+    internal static string Output_Note         => GetString(nameof(Output_Note));
+    internal static string Output_WarnLabel    => GetString(nameof(Output_WarnLabel));
+    internal static string Output_ErrorLabel   => GetString(nameof(Output_ErrorLabel));
+    internal static string Output_DebugLabel   => GetString(nameof(Output_DebugLabel));
+    internal static string Output_SuccessLabel => GetString(nameof(Output_SuccessLabel));
+    internal static string Output_ResetColors  => GetString(nameof(Output_ResetColors));
+
+    // ═══════════════════════════════════════════════════════════════
+    // PLUGIN DEV LOADER OPTIONS PAGE
+    // ═══════════════════════════════════════════════════════════════
+
+    internal static string PluginDev_Section         => GetString(nameof(PluginDev_Section));
+    internal static string PluginDev_Enable          => GetString(nameof(PluginDev_Enable));
+    internal static string PluginDev_DebounceSection => GetString(nameof(PluginDev_DebounceSection));
+    internal static string PluginDev_DebounceNote    => GetString(nameof(PluginDev_DebounceNote));
+    internal static string PluginDev_DebounceDefault => GetString(nameof(PluginDev_DebounceDefault));
+    internal static string PluginDev_WatchedSection  => GetString(nameof(PluginDev_WatchedSection));
+    internal static string PluginDev_WatchedNote     => GetString(nameof(PluginDev_WatchedNote));
+    internal static string PluginDev_Browse          => GetString(nameof(PluginDev_Browse));
+    internal static string PluginDev_Example         => GetString(nameof(PluginDev_Example));
+
+    // ═══════════════════════════════════════════════════════════════
+    // PLUGIN SYSTEM OPTIONS PAGE
+    // ═══════════════════════════════════════════════════════════════
+
+    internal static string Plugin_GeneralSection       => GetString(nameof(Plugin_GeneralSection));
+    internal static string Plugin_AutoLoad             => GetString(nameof(Plugin_AutoLoad));
+    internal static string Plugin_PluginsDirNote       => GetString(nameof(Plugin_PluginsDirNote));
+    internal static string Plugin_Browse               => GetString(nameof(Plugin_Browse));
+    internal static string Plugin_WatchdogSection      => GetString(nameof(Plugin_WatchdogSection));
+    internal static string Plugin_EnableWatchdog       => GetString(nameof(Plugin_EnableWatchdog));
+    internal static string Plugin_WatchdogTimeoutLabel => GetString(nameof(Plugin_WatchdogTimeoutLabel));
+    internal static string Plugin_DiagnosticsSection   => GetString(nameof(Plugin_DiagnosticsSection));
+    internal static string Plugin_DiagSamplingLabel    => GetString(nameof(Plugin_DiagSamplingLabel));
+    internal static string Plugin_DiagNote             => GetString(nameof(Plugin_DiagNote));
+    internal static string Plugin_SlowDetectionSection => GetString(nameof(Plugin_SlowDetectionSection));
+    internal static string Plugin_MonitorIntervalLabel => GetString(nameof(Plugin_MonitorIntervalLabel));
+    internal static string Plugin_ResponseTimeLabel    => GetString(nameof(Plugin_ResponseTimeLabel));
+    internal static string Plugin_CpuThresholdLabel    => GetString(nameof(Plugin_CpuThresholdLabel));
+    internal static string Plugin_MemoryAlertSection   => GetString(nameof(Plugin_MemoryAlertSection));
+    internal static string Plugin_EnableMemoryAlerts   => GetString(nameof(Plugin_EnableMemoryAlerts));
+    internal static string Plugin_ShowColorGradation   => GetString(nameof(Plugin_ShowColorGradation));
+    internal static string Plugin_MemWarningLabel      => GetString(nameof(Plugin_MemWarningLabel));
+    internal static string Plugin_MemHighLabel         => GetString(nameof(Plugin_MemHighLabel));
+    internal static string Plugin_MemCriticalLabel     => GetString(nameof(Plugin_MemCriticalLabel));
+    internal static string Plugin_MB                   => GetString(nameof(Plugin_MB));
+    internal static string Plugin_MemThresholdNote     => GetString(nameof(Plugin_MemThresholdNote));
+    internal static string Plugin_MemColorSection      => GetString(nameof(Plugin_MemColorSection));
+    internal static string Plugin_MemColorNote         => GetString(nameof(Plugin_MemColorNote));
+    internal static string Plugin_MemNormalColor       => GetString(nameof(Plugin_MemNormalColor));
+    internal static string Plugin_MemWarningColor      => GetString(nameof(Plugin_MemWarningColor));
+    internal static string Plugin_MemHighColor         => GetString(nameof(Plugin_MemHighColor));
+    internal static string Plugin_MemCriticalColor     => GetString(nameof(Plugin_MemCriticalColor));
+    internal static string Plugin_ResetColors          => GetString(nameof(Plugin_ResetColors));
+
+    // ═══════════════════════════════════════════════════════════════
+    // SOLUTION EXPLORER OPTIONS PAGE
+    // ═══════════════════════════════════════════════════════════════
+
+    internal static string SolExp_NavigationSection    => GetString(nameof(SolExp_NavigationSection));
+    internal static string SolExp_TrackActive          => GetString(nameof(SolExp_TrackActive));
+    internal static string SolExp_PersistCollapse      => GetString(nameof(SolExp_PersistCollapse));
+    internal static string SolExp_NotificationsSection => GetString(nameof(SolExp_NotificationsSection));
+    internal static string SolExp_ShowNotifications    => GetString(nameof(SolExp_ShowNotifications));
+    internal static string SolExp_DefaultsSection      => GetString(nameof(SolExp_DefaultsSection));
+    internal static string SolExp_DefaultSortLabel     => GetString(nameof(SolExp_DefaultSortLabel));
+    internal static string SolExp_SortNone             => GetString(nameof(SolExp_SortNone));
+    internal static string SolExp_SortName             => GetString(nameof(SolExp_SortName));
+    internal static string SolExp_SortType             => GetString(nameof(SolExp_SortType));
+    internal static string SolExp_SortDateModified     => GetString(nameof(SolExp_SortDateModified));
+    internal static string SolExp_SortSize             => GetString(nameof(SolExp_SortSize));
+    internal static string SolExp_DefaultFilterLabel   => GetString(nameof(SolExp_DefaultFilterLabel));
+    internal static string SolExp_FilterAll            => GetString(nameof(SolExp_FilterAll));
+    internal static string SolExp_FilterBinary         => GetString(nameof(SolExp_FilterBinary));
+    internal static string SolExp_FilterText           => GetString(nameof(SolExp_FilterText));
+    internal static string SolExp_FilterImage          => GetString(nameof(SolExp_FilterImage));
+    internal static string SolExp_FilterLanguage       => GetString(nameof(SolExp_FilterLanguage));
+
+    // ═══════════════════════════════════════════════════════════════
+    // TAB GROUPS OPTIONS PAGE
+    // ═══════════════════════════════════════════════════════════════
+
+    internal static string TabGroups_SplitSection     => GetString(nameof(TabGroups_SplitSection));
+    internal static string TabGroups_EnforceEqualSize => GetString(nameof(TabGroups_EnforceEqualSize));
+    internal static string TabGroups_MinWidthLabel    => GetString(nameof(TabGroups_MinWidthLabel));
+    internal static string TabGroups_MinHeightLabel   => GetString(nameof(TabGroups_MinHeightLabel));
+    internal static string TabGroups_VisualSection    => GetString(nameof(TabGroups_VisualSection));
+    internal static string TabGroups_ShowGroupBadge   => GetString(nameof(TabGroups_ShowGroupBadge));
+    internal static string TabGroups_PersistSection   => GetString(nameof(TabGroups_PersistSection));
+    internal static string TabGroups_PersistLayout    => GetString(nameof(TabGroups_PersistLayout));
+
+    // ═══════════════════════════════════════════════════════════════
+    // TEXT EDITOR > OPTIONS PAGE
+    // ═══════════════════════════════════════════════════════════════
+
+    internal static string TextOpt_FontSection      => GetString(nameof(TextOpt_FontSection));
+    internal static string TextOpt_FontFamilyLabel  => GetString(nameof(TextOpt_FontFamilyLabel));
+    internal static string TextOpt_FontSizeLabel    => GetString(nameof(TextOpt_FontSizeLabel));
+    internal static string TextOpt_IndentSection    => GetString(nameof(TextOpt_IndentSection));
+    internal static string TextOpt_IndentSizeLabel  => GetString(nameof(TextOpt_IndentSizeLabel));
+    internal static string TextOpt_UseSpaces        => GetString(nameof(TextOpt_UseSpaces));
+    internal static string TextOpt_FeaturesSection  => GetString(nameof(TextOpt_FeaturesSection));
+    internal static string TextOpt_ShowLineNumbers  => GetString(nameof(TextOpt_ShowLineNumbers));
+    internal static string TextOpt_ShowRefreshRate  => GetString(nameof(TextOpt_ShowRefreshRate));
+    internal static string TextOpt_WordWrap         => GetString(nameof(TextOpt_WordWrap));
+    internal static string TextOpt_ClickableLinks   => GetString(nameof(TextOpt_ClickableLinks));
+    internal static string TextOpt_ClickableEmails  => GetString(nameof(TextOpt_ClickableEmails));
+    internal static string TextOpt_DefaultZoomLabel => GetString(nameof(TextOpt_DefaultZoomLabel));
+    internal static string TextOpt_MouseWheelLabel  => GetString(nameof(TextOpt_MouseWheelLabel));
+    internal static string TextOpt_ChangesetSection => GetString(nameof(TextOpt_ChangesetSection));
+    internal static string TextOpt_TrackEdits       => GetString(nameof(TextOpt_TrackEdits));
+    internal static string TextOpt_SyntaxSection    => GetString(nameof(TextOpt_SyntaxSection));
+    internal static string TextOpt_SyntaxNote       => GetString(nameof(TextOpt_SyntaxNote));
+    internal static string TextOpt_Background       => GetString(nameof(TextOpt_Background));
+    internal static string TextOpt_Foreground       => GetString(nameof(TextOpt_Foreground));
+    internal static string TextOpt_Keyword          => GetString(nameof(TextOpt_Keyword));
+    internal static string TextOpt_String           => GetString(nameof(TextOpt_String));
+    internal static string TextOpt_Comment          => GetString(nameof(TextOpt_Comment));
+    internal static string TextOpt_Number           => GetString(nameof(TextOpt_Number));
+    internal static string TextOpt_Type             => GetString(nameof(TextOpt_Type));
+    internal static string TextOpt_Preprocessor     => GetString(nameof(TextOpt_Preprocessor));
+    internal static string TextOpt_Operator         => GetString(nameof(TextOpt_Operator));
+    internal static string TextOpt_Identifier       => GetString(nameof(TextOpt_Identifier));
 }

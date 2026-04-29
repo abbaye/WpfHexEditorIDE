@@ -688,5 +688,110 @@ namespace WpfHexEditor.App.Properties
 
         internal static string App_InfoBar_KeepEdits
             => ResourceManager.GetString(nameof(App_InfoBar_KeepEdits), _resourceCulture)!;
+
+        internal static string App_Toolbar_New
+            => ResourceManager.GetString(nameof(App_Toolbar_New), _resourceCulture)!;
+
+        internal static string App_Toolbar_Open
+            => ResourceManager.GetString(nameof(App_Toolbar_Open), _resourceCulture)!;
+
+        internal static string App_Toolbar_Save
+            => ResourceManager.GetString(nameof(App_Toolbar_Save), _resourceCulture)!;
+
+        internal static string App_Toolbar_SaveAll
+            => ResourceManager.GetString(nameof(App_Toolbar_SaveAll), _resourceCulture)!;
+
+        internal static string App_Toolbar_Cut
+            => ResourceManager.GetString(nameof(App_Toolbar_Cut), _resourceCulture)!;
+
+        internal static string App_Toolbar_Copy
+            => ResourceManager.GetString(nameof(App_Toolbar_Copy), _resourceCulture)!;
+
+        internal static string App_Toolbar_Paste
+            => ResourceManager.GetString(nameof(App_Toolbar_Paste), _resourceCulture)!;
+
+        internal static string App_Toolbar_Find
+            => ResourceManager.GetString(nameof(App_Toolbar_Find), _resourceCulture)!;
+
+        internal static string App_Toolbar_FindNext
+            => ResourceManager.GetString(nameof(App_Toolbar_FindNext), _resourceCulture)!;
+
+        internal static string App_Toolbar_FindPrevious
+            => ResourceManager.GetString(nameof(App_Toolbar_FindPrevious), _resourceCulture)!;
+
+        internal static string App_Toolbar_SolutionExplorer
+            => ResourceManager.GetString(nameof(App_Toolbar_SolutionExplorer), _resourceCulture)!;
+
+        internal static string App_Toolbar_ParsedFields
+            => ResourceManager.GetString(nameof(App_Toolbar_ParsedFields), _resourceCulture)!;
+
+        internal static string App_Toolbar_Properties
+            => ResourceManager.GetString(nameof(App_Toolbar_Properties), _resourceCulture)!;
+
+        internal static string App_Toolbar_Output
+            => ResourceManager.GetString(nameof(App_Toolbar_Output), _resourceCulture)!;
+
+        internal static string App_Toolbar_CharacterTable
+            => ResourceManager.GetString(nameof(App_Toolbar_CharacterTable), _resourceCulture)!;
+
+        internal static string App_Toolbar_ActiveCharTable
+            => ResourceManager.GetString(nameof(App_Toolbar_ActiveCharTable), _resourceCulture)!;
+
+        internal static string App_Toolbar_BuildConfig
+            => ResourceManager.GetString(nameof(App_Toolbar_BuildConfig), _resourceCulture)!;
+
+        internal static string App_Toolbar_TargetPlatform
+            => ResourceManager.GetString(nameof(App_Toolbar_TargetPlatform), _resourceCulture)!;
+
+        internal static string App_Toolbar_StartupProject
+            => ResourceManager.GetString(nameof(App_Toolbar_StartupProject), _resourceCulture)!;
+
+        internal static string App_Toolbar_StartNoDebug
+            => ResourceManager.GetString(nameof(App_Toolbar_StartNoDebug), _resourceCulture)!;
+
+        internal static string App_Toolbar_BuildSolution
+            => ResourceManager.GetString(nameof(App_Toolbar_BuildSolution), _resourceCulture)!;
+
+        internal static string App_Toolbar_RebuildSolution
+            => ResourceManager.GetString(nameof(App_Toolbar_RebuildSolution), _resourceCulture)!;
+
+        internal static string App_Toolbar_CleanSolution
+            => ResourceManager.GetString(nameof(App_Toolbar_CleanSolution), _resourceCulture)!;
+
+        internal static string App_Toolbar_CancelBuild
+            => ResourceManager.GetString(nameof(App_Toolbar_CancelBuild), _resourceCulture)!;
+
+        internal static string App_Toolbar_Continue
+            => ResourceManager.GetString(nameof(App_Toolbar_Continue), _resourceCulture)!;
+
+        internal static string App_Toolbar_Pause
+            => ResourceManager.GetString(nameof(App_Toolbar_Pause), _resourceCulture)!;
+
+        internal static string App_Toolbar_StopDebugging
+            => ResourceManager.GetString(nameof(App_Toolbar_StopDebugging), _resourceCulture)!;
+
+        internal static string App_Toolbar_StepOver
+            => ResourceManager.GetString(nameof(App_Toolbar_StepOver), _resourceCulture)!;
+
+        internal static string App_Toolbar_StepInto
+            => ResourceManager.GetString(nameof(App_Toolbar_StepInto), _resourceCulture)!;
+
+        internal static string App_Toolbar_StepOut
+            => ResourceManager.GetString(nameof(App_Toolbar_StepOut), _resourceCulture)!;
+
+        internal static string App_Toolbar_Dismiss
+            => ResourceManager.GetString(nameof(App_Toolbar_Dismiss), _resourceCulture)!;
+
+        internal static string App_Toolbar_CancelOperation
+            => ResourceManager.GetString(nameof(App_Toolbar_CancelOperation), _resourceCulture)!;
+
+        internal static string App_Toolbar_SwitchBranch
+            => ResourceManager.GetString(nameof(App_Toolbar_SwitchBranch), _resourceCulture)!;
+
+        internal static string App_Toolbar_UncommittedChanges
+            => ResourceManager.GetString(nameof(App_Toolbar_UncommittedChanges), _resourceCulture)!;
+
+        internal static string App_Toolbar_PluginUpdates
+            => ResourceManager.GetString(nameof(App_Toolbar_PluginUpdates), _resourceCulture)!;
     }
 }

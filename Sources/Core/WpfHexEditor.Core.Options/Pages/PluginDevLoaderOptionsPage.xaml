@@ -14,24 +14,24 @@
         <StackPanel Margin="0,0,0,16">
 
             <!-- ── General ───────────────────────────────────────────────────────── -->
-            <TextBlock Text="PLUGIN DEV LOADER"
+            <TextBlock Text="{DynamicResource PluginDev_Section}"
                        FontSize="12" FontWeight="SemiBold"
                        Foreground="{DynamicResource Opt_SectionForegroundBrush}"
                        Margin="0,16,0,6"/>
 
             <CheckBox x:Name="ChkEnableDevLoader"
-                      Content="Enable Plugin Dev Loader (Watch Mode available in Plugin Manager)"
+                      Content="{DynamicResource PluginDev_Enable}"
                       Foreground="{DynamicResource DockMenuForegroundBrush}"
                       Margin="0,0,0,10"
                       Checked="OnChanged" Unchecked="OnChanged"/>
 
             <!-- ── Debounce ───────────────────────────────────────────────────────── -->
-            <TextBlock Text="DEBOUNCE"
+            <TextBlock Text="{DynamicResource PluginDev_DebounceSection}"
                        FontSize="12" FontWeight="SemiBold"
                        Foreground="{DynamicResource Opt_SectionForegroundBrush}"
                        Margin="0,12,0,6"/>
 
-            <TextBlock Text="Delay before triggering hot-reload after a file change (ms):"
+            <TextBlock Text="{DynamicResource PluginDev_DebounceNote}"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"
                        Opacity="0.8" Margin="0,0,0,4"/>
 
@@ -47,18 +47,18 @@
                          BorderBrush="{DynamicResource DockBorderBrush}"
                          Padding="4,3"
                          TextChanged="OnChanged"/>
-                <TextBlock Grid.Column="1" Text="ms  (default: 500)"
+                <TextBlock Grid.Column="1" Text="{DynamicResource PluginDev_DebounceDefault}"
                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                            Opacity="0.6" VerticalAlignment="Center" Margin="8,0"/>
             </Grid>
 
             <!-- ── Watched Folders ───────────────────────────────────────────────── -->
-            <TextBlock Text="WATCHED FOLDERS"
+            <TextBlock Text="{DynamicResource PluginDev_WatchedSection}"
                        FontSize="12" FontWeight="SemiBold"
                        Foreground="{DynamicResource Opt_SectionForegroundBrush}"
                        Margin="0,12,0,6"/>
 
-            <TextBlock Text="Additional output directories to watch (semicolon-separated). Plugins in these folders are hot-reloaded when their DLL changes."
+            <TextBlock Text="{DynamicResource PluginDev_WatchedNote}"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"
                        Opacity="0.8" TextWrapping="Wrap"
                        Margin="0,0,0,4"/>
@@ -77,7 +77,7 @@
                          TextChanged="OnChanged"/>
                 <Button x:Name="BtnBrowse"
                         Grid.Column="1"
-                        Content="Browse…"
+                        Content="{DynamicResource PluginDev_Browse}"
                         Margin="6,0,0,0"
                         Padding="8,3"
                         Background="{DynamicResource Opt_InputBackgroundBrush}"
@@ -86,7 +86,7 @@
                         Click="OnBrowse"/>
             </Grid>
 
-            <TextBlock Text="Example: C:\MyPlugin\bin\Debug\net8.0-windows;D:\AnotherPlugin\bin\Debug\net8.0-windows"
+            <TextBlock Text="{DynamicResource PluginDev_Example}"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"
                        Opacity="0.5" FontSize="11" TextWrapping="Wrap"/>
 

@@ -10,55 +10,55 @@
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
         <StackPanel Margin="0,0,0,16">
 
-        <TextBlock Text="STATUS BAR VISIBILITY"
+        <TextBlock Text="{DynamicResource HexStatus_Section}"
                    FontSize="12" FontWeight="SemiBold"
                    Foreground="{DynamicResource Opt_SectionForegroundBrush}"
                    Margin="0,16,0,6"/>
 
         <CheckBox x:Name="CheckShowStatusMessage"
-                  Content="Show status message"
+                  Content="{DynamicResource HexStatus_ShowStatusMessage}"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                   Margin="0,0,0,8"
                   Checked="OnCheckChanged"
                   Unchecked="OnCheckChanged"/>
 
         <CheckBox x:Name="CheckShowFileSize"
-                  Content="Show file size"
+                  Content="{DynamicResource HexStatus_ShowFileSize}"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                   Margin="0,0,0,8"
                   Checked="OnCheckChanged"
                   Unchecked="OnCheckChanged"/>
 
         <CheckBox x:Name="CheckShowSelection"
-                  Content="Show selection info"
+                  Content="{DynamicResource HexStatus_ShowSelection}"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                   Margin="0,0,0,8"
                   Checked="OnCheckChanged"
                   Unchecked="OnCheckChanged"/>
 
         <CheckBox x:Name="CheckShowPosition"
-                  Content="Show current position"
+                  Content="{DynamicResource HexStatus_ShowPosition}"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                   Margin="0,0,0,8"
                   Checked="OnCheckChanged"
                   Unchecked="OnCheckChanged"/>
 
         <CheckBox x:Name="CheckShowEditMode"
-                  Content="Show edit mode"
+                  Content="{DynamicResource HexStatus_ShowEditMode}"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                   Margin="0,0,0,8"
                   Checked="OnCheckChanged"
                   Unchecked="OnCheckChanged"/>
 
         <CheckBox x:Name="CheckShowBytesPerLine"
-                  Content="Show bytes per line"
+                  Content="{DynamicResource HexStatus_ShowBytesPerLine}"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                   Margin="0,0,0,8"
                   Checked="OnCheckChanged"
                   Unchecked="OnCheckChanged"/>
 
         <CheckBox x:Name="CheckShowRefreshRate"
-                  Content="Show refresh rate (render frame time)"
+                  Content="{DynamicResource HexStatus_ShowRefreshRate}"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                   Margin="0,0,0,0"
                   Checked="OnCheckChanged"

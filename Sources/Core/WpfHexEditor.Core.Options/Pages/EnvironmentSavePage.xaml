@@ -11,20 +11,20 @@
         <StackPanel Margin="0,0,0,16">
 
         <!-- ── Save Mode ──────────────────────────────────────────────────── -->
-        <TextBlock Text="SAVE MODE"
+        <TextBlock Text="{DynamicResource EnvSave_SaveModeSection}"
                    FontSize="12" FontWeight="SemiBold"
                    Foreground="{DynamicResource Opt_SectionForegroundBrush}"
                    Margin="0,16,0,6"/>
 
         <RadioButton x:Name="RadioDirect"
-                     Content="Direct — Ctrl+S writes immediately to the physical file"
+                     Content="{DynamicResource EnvSave_DirectMode}"
                      GroupName="SaveMode"
                      Foreground="{DynamicResource DockMenuForegroundBrush}"
                      Margin="0,0,0,6"
                      Checked="OnSaveModeChanged"/>
 
         <RadioButton x:Name="RadioTracked"
-                     Content="Tracked — Ctrl+S serializes changes to a .whchg file"
+                     Content="{DynamicResource EnvSave_TrackedMode}"
                      GroupName="SaveMode"
                      Foreground="{DynamicResource DockMenuForegroundBrush}"
                      Margin="0,0,0,0"
@@ -34,13 +34,13 @@
                    Background="{DynamicResource DockBorderBrush}"/>
 
         <!-- ── Auto-serialize ─────────────────────────────────────────────── -->
-        <TextBlock Text="AUTO-SAVE (TRACKED MODE ONLY)"
+        <TextBlock Text="{DynamicResource EnvSave_AutoSaveSection}"
                    FontSize="12" FontWeight="SemiBold"
                    Foreground="{DynamicResource Opt_SectionForegroundBrush}"
                    Margin="0,16,0,6"/>
 
         <CheckBox x:Name="CheckAutoSerialize"
-                  Content="Periodically save pending changes to .whchg files"
+                  Content="{DynamicResource EnvSave_AutoSerialize}"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                   Margin="0,0,0,10"
                   Checked="OnAutoSerializeChanged"
@@ -48,7 +48,7 @@
 
         <DockPanel Margin="20,0,0,0"
                    IsEnabled="{Binding IsChecked, ElementName=CheckAutoSerialize}">
-            <TextBlock Text="Interval (seconds):"
+            <TextBlock Text="{DynamicResource EnvSave_IntervalLabel}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"
                        Margin="0,0,8,0"/>
@@ -63,52 +63,52 @@
                    Background="{DynamicResource DockBorderBrush}"/>
 
         <!-- ── Standalone Files ───────────────────────────────────────────── -->
-        <TextBlock Text="STANDALONE FILES (NO PROJECT)"
+        <TextBlock Text="{DynamicResource EnvSave_StandaloneSection}"
                    FontSize="12" FontWeight="SemiBold"
                    Foreground="{DynamicResource Opt_SectionForegroundBrush}"
                    Margin="0,16,0,6"/>
 
-        <TextBlock Text="When Ctrl+S is pressed on a file not belonging to any project:"
+        <TextBlock Text="{DynamicResource EnvSave_StandaloneNote}"
                    Foreground="{DynamicResource DockMenuForegroundBrush}"
                    Opacity="0.7"
                    Margin="0,0,0,10"/>
 
         <CheckBox x:Name="HexEditorDirectSaveCheck"
-                  Content="Hex Editor — overwrite original file directly"
+                  Content="{DynamicResource EnvSave_HexEditorDirect}"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                   Margin="0,0,0,4"
                   Checked="OnStandaloneSaveChanged"
                   Unchecked="OnStandaloneSaveChanged"/>
 
         <CheckBox x:Name="CodeEditorDirectSaveCheck"
-                  Content="Code Editor — overwrite original file directly"
+                  Content="{DynamicResource EnvSave_CodeEditorDirect}"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                   Margin="0,0,0,4"
                   Checked="OnStandaloneSaveChanged"
                   Unchecked="OnStandaloneSaveChanged"/>
 
         <CheckBox x:Name="TextEditorDirectSaveCheck"
-                  Content="Text Editor — overwrite original file directly"
+                  Content="{DynamicResource EnvSave_TextEditorDirect}"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                   Margin="0,0,0,4"
                   Checked="OnStandaloneSaveChanged"
                   Unchecked="OnStandaloneSaveChanged"/>
 
         <CheckBox x:Name="TblEditorDirectSaveCheck"
-                  Content="TBL Editor — overwrite original file directly"
+                  Content="{DynamicResource EnvSave_TblEditorDirect}"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                   Margin="0,0,0,4"
                   Checked="OnStandaloneSaveChanged"
                   Unchecked="OnStandaloneSaveChanged"/>
 
         <CheckBox x:Name="ImageViewerDirectSaveCheck"
-                  Content="Image Viewer — overwrite original image directly (transforms applied)"
+                  Content="{DynamicResource EnvSave_ImageViewerDirect}"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                   Margin="0,0,0,4"
                   Checked="OnStandaloneSaveChanged"
                   Unchecked="OnStandaloneSaveChanged"/>
 
-        <TextBlock Text="When unchecked, a Save As dialog lets the user choose a destination and format."
+        <TextBlock Text="{DynamicResource EnvSave_SaveAsNote}"
                    Foreground="{DynamicResource DockMenuForegroundBrush}"
                    Opacity="0.6"
                    FontStyle="Italic"

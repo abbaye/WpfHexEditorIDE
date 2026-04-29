@@ -10,4 +10,117 @@
   <data name="EnvGeneral_LanguageSection" xml:space="preserve"><value>언어</value></data>
   <data name="EnvGeneral_IdeLanguageLabel" xml:space="preserve"><value>IDE 언어:</value></data>
   <data name="EnvGeneral_LanguageRestartNote" xml:space="preserve"><value>새 언어를 완전히 적용하려면 다시 시작해야 합니다.</value></data>
+  <!-- MARKETPLACE OPTIONS PAGE -->
+  <data name="Mkt_GitHubSection" xml:space="preserve"><value>GITHUB API</value></data>
+  <data name="Mkt_PatDescription" xml:space="preserve"><value>Personal Access Token (PAT) — raises the GitHub rate limit from 60 to 5 000 requests/hour. Leave empty for anonymous access.</value></data>
+  <data name="Mkt_PatWarning" xml:space="preserve"><value>Token is stored in plaintext in the settings file. Do not use a token with write permissions.</value></data>
+  <data name="Mkt_AutoUpdateSection" xml:space="preserve"><value>AUTOMATIC UPDATES</value></data>
+  <data name="Mkt_AutoUpdate" xml:space="preserve"><value>Check for plugin updates automatically at startup</value></data>
+  <data name="Mkt_UpdateIntervalLabel" xml:space="preserve"><value>Update check interval (hours):</value></data>
+  <data name="Mkt_UpdateIntervalNote" xml:space="preserve"><value>Minimum interval: 1 hour.</value></data>
+  <!-- OUTPUT OPTIONS PAGE -->
+  <data name="Output_Section" xml:space="preserve"><value>LOG-LEVEL COLOURS</value></data>
+  <data name="Output_Note" xml:space="preserve"><value>Customise the colour used for each log level in the Output panel. INFO inherits the active theme foreground and cannot be changed.</value></data>
+  <data name="Output_WarnLabel" xml:space="preserve"><value>Warning (WARN):</value></data>
+  <data name="Output_ErrorLabel" xml:space="preserve"><value>Error (ERROR):</value></data>
+  <data name="Output_DebugLabel" xml:space="preserve"><value>Debug (DEBUG):</value></data>
+  <data name="Output_SuccessLabel" xml:space="preserve"><value>Success (OK):</value></data>
+  <data name="Output_ResetColors" xml:space="preserve"><value>Reset to Default Colours</value></data>
+  <!-- PLUGIN DEV LOADER OPTIONS PAGE -->
+  <data name="PluginDev_Section" xml:space="preserve"><value>PLUGIN DEV LOADER</value></data>
+  <data name="PluginDev_Enable" xml:space="preserve"><value>Enable Plugin Dev Loader (Watch Mode available in Plugin Manager)</value></data>
+  <data name="PluginDev_DebounceSection" xml:space="preserve"><value>DEBOUNCE</value></data>
+  <data name="PluginDev_DebounceNote" xml:space="preserve"><value>Delay before triggering hot-reload after a file change (ms):</value></data>
+  <data name="PluginDev_DebounceDefault" xml:space="preserve"><value>ms  (default: 500)</value></data>
+  <data name="PluginDev_WatchedSection" xml:space="preserve"><value>WATCHED FOLDERS</value></data>
+  <data name="PluginDev_WatchedNote" xml:space="preserve"><value>Additional output directories to watch (semicolon-separated). Plugins in these folders are hot-reloaded when their DLL changes.</value></data>
+  <data name="PluginDev_Browse" xml:space="preserve"><value>Browse…</value></data>
+  <data name="PluginDev_Example" xml:space="preserve"><value>Example: C:\MyPlugin\bin\Debug\net8.0-windows;D:\AnotherPlugin\bin\Debug\net8.0-windows</value></data>
+  <!-- PLUGIN SYSTEM OPTIONS PAGE -->
+  <data name="Plugin_GeneralSection" xml:space="preserve"><value>GENERAL</value></data>
+  <data name="Plugin_AutoLoad" xml:space="preserve"><value>Automatically load all discovered plugins at startup</value></data>
+  <data name="Plugin_PluginsDirNote" xml:space="preserve"><value>Additional plugins directory (leave empty to use %AppData%\WpfHexEditor\Plugins):</value></data>
+  <data name="Plugin_Browse" xml:space="preserve"><value>Browse…</value></data>
+  <data name="Plugin_WatchdogSection" xml:space="preserve"><value>WATCHDOG</value></data>
+  <data name="Plugin_EnableWatchdog" xml:space="preserve"><value>Enable plugin watchdog (monitors call timeouts)</value></data>
+  <data name="Plugin_WatchdogTimeoutLabel" xml:space="preserve"><value>Watchdog timeout (seconds):</value></data>
+  <data name="Plugin_DiagnosticsSection" xml:space="preserve"><value>DIAGNOSTICS &amp; SAMPLING</value></data>
+  <data name="Plugin_DiagSamplingLabel" xml:space="preserve"><value>Diagnostic sampling interval (seconds):</value></data>
+  <data name="Plugin_DiagNote" xml:space="preserve"><value>Drives the Plugin Monitor CPU/Memory chart refresh rate.</value></data>
+  <data name="Plugin_SlowDetectionSection" xml:space="preserve"><value>SLOW-PLUGIN DETECTION</value></data>
+  <data name="Plugin_MonitorIntervalLabel" xml:space="preserve"><value>Monitoring interval (seconds):</value></data>
+  <data name="Plugin_ResponseTimeLabel" xml:space="preserve"><value>Response time threshold (ms):</value></data>
+  <data name="Plugin_CpuThresholdLabel" xml:space="preserve"><value>CPU threshold (%):</value></data>
+  <data name="Plugin_MemoryAlertSection" xml:space="preserve"><value>MEMORY ALERT THRESHOLDS</value></data>
+  <data name="Plugin_EnableMemoryAlerts" xml:space="preserve"><value>Enable memory usage alerts and badges</value></data>
+  <data name="Plugin_ShowColorGradation" xml:space="preserve"><value>Show color gradation in monitors (green/yellow/orange/red)</value></data>
+  <data name="Plugin_MemWarningLabel" xml:space="preserve"><value>⚠️ Warning threshold (yellow):</value></data>
+  <data name="Plugin_MemHighLabel" xml:space="preserve"><value>🟠 High threshold (orange):</value></data>
+  <data name="Plugin_MemCriticalLabel" xml:space="preserve"><value>🔴 Critical threshold (red):</value></data>
+  <data name="Plugin_MB" xml:space="preserve"><value> MB</value></data>
+  <data name="Plugin_MemThresholdNote" xml:space="preserve"><value>Note: Thresholds should be in ascending order (Warning &lt; High &lt; Critical).</value></data>
+  <data name="Plugin_MemColorSection" xml:space="preserve"><value>MEMORY ALERT COLORS</value></data>
+  <data name="Plugin_MemColorNote" xml:space="preserve"><value>Customize badge colors for each memory threshold level.</value></data>
+  <data name="Plugin_MemNormalColor" xml:space="preserve"><value>🟢 Normal threshold:</value></data>
+  <data name="Plugin_MemWarningColor" xml:space="preserve"><value>🟡 Warning threshold:</value></data>
+  <data name="Plugin_MemHighColor" xml:space="preserve"><value>🟠 High threshold:</value></data>
+  <data name="Plugin_MemCriticalColor" xml:space="preserve"><value>🔴 Critical threshold:</value></data>
+  <data name="Plugin_ResetColors" xml:space="preserve"><value>Reset to Default Colors</value></data>
+  <!-- SOLUTION EXPLORER OPTIONS PAGE -->
+  <data name="SolExp_NavigationSection" xml:space="preserve"><value>NAVIGATION</value></data>
+  <data name="SolExp_TrackActive" xml:space="preserve"><value>Automatically highlight active document in tree</value></data>
+  <data name="SolExp_PersistCollapse" xml:space="preserve"><value>Remember expanded / collapsed state between sessions</value></data>
+  <data name="SolExp_NotificationsSection" xml:space="preserve"><value>NOTIFICATIONS</value></data>
+  <data name="SolExp_ShowNotifications" xml:space="preserve"><value>Show contextual notifications (external changes, paste conflicts…)</value></data>
+  <data name="SolExp_DefaultsSection" xml:space="preserve"><value>DEFAULTS WHEN OPENING A SOLUTION</value></data>
+  <data name="SolExp_DefaultSortLabel" xml:space="preserve"><value>Default sort:</value></data>
+  <data name="SolExp_SortNone" xml:space="preserve"><value>None</value></data>
+  <data name="SolExp_SortName" xml:space="preserve"><value>Name</value></data>
+  <data name="SolExp_SortType" xml:space="preserve"><value>Type</value></data>
+  <data name="SolExp_SortDateModified" xml:space="preserve"><value>Date Modified</value></data>
+  <data name="SolExp_SortSize" xml:space="preserve"><value>Size</value></data>
+  <data name="SolExp_DefaultFilterLabel" xml:space="preserve"><value>Default filter:</value></data>
+  <data name="SolExp_FilterAll" xml:space="preserve"><value>All</value></data>
+  <data name="SolExp_FilterBinary" xml:space="preserve"><value>Binary</value></data>
+  <data name="SolExp_FilterText" xml:space="preserve"><value>Text</value></data>
+  <data name="SolExp_FilterImage" xml:space="preserve"><value>Image</value></data>
+  <data name="SolExp_FilterLanguage" xml:space="preserve"><value>Language</value></data>
+  <!-- TAB GROUPS OPTIONS PAGE -->
+  <data name="TabGroups_SplitSection" xml:space="preserve"><value>SPLIT BEHAVIOR</value></data>
+  <data name="TabGroups_EnforceEqualSize" xml:space="preserve"><value>Enforce equal pane size on split (50 / 50)</value></data>
+  <data name="TabGroups_MinWidthLabel" xml:space="preserve"><value>Minimum pane width (px):</value></data>
+  <data name="TabGroups_MinHeightLabel" xml:space="preserve"><value>Minimum pane height (px):</value></data>
+  <data name="TabGroups_VisualSection" xml:space="preserve"><value>VISUAL</value></data>
+  <data name="TabGroups_ShowGroupBadge" xml:space="preserve"><value>Show 'Group N' badge on tab bar when multiple groups are open</value></data>
+  <data name="TabGroups_PersistSection" xml:space="preserve"><value>PERSISTENCE</value></data>
+  <data name="TabGroups_PersistLayout" xml:space="preserve"><value>Include tab group layout in workspace saves</value></data>
+  <!-- TEXT EDITOR OPTIONS PAGE -->
+  <data name="TextOpt_FontSection" xml:space="preserve"><value>FONT</value></data>
+  <data name="TextOpt_FontFamilyLabel" xml:space="preserve"><value>Font family:</value></data>
+  <data name="TextOpt_FontSizeLabel" xml:space="preserve"><value>Font size (pt):</value></data>
+  <data name="TextOpt_IndentSection" xml:space="preserve"><value>INDENTATION</value></data>
+  <data name="TextOpt_IndentSizeLabel" xml:space="preserve"><value>Indent size:</value></data>
+  <data name="TextOpt_UseSpaces" xml:space="preserve"><value>Insert spaces instead of tab characters</value></data>
+  <data name="TextOpt_FeaturesSection" xml:space="preserve"><value>FEATURES</value></data>
+  <data name="TextOpt_ShowLineNumbers" xml:space="preserve"><value>Show line numbers</value></data>
+  <data name="TextOpt_ShowRefreshRate" xml:space="preserve"><value>Show refresh rate in status bar (render frame time)</value></data>
+  <data name="TextOpt_WordWrap" xml:space="preserve"><value>Word Wrap (Alt+Z)</value></data>
+  <data name="TextOpt_ClickableLinks" xml:space="preserve"><value>Enable Ctrl+Click to open web links (http/https)</value></data>
+  <data name="TextOpt_ClickableEmails" xml:space="preserve"><value>Enable Ctrl+Click to compose email</value></data>
+  <data name="TextOpt_DefaultZoomLabel" xml:space="preserve"><value>Default zoom (%):</value></data>
+  <data name="TextOpt_MouseWheelLabel" xml:space="preserve"><value>Mouse wheel speed:</value></data>
+  <data name="TextOpt_ChangesetSection" xml:space="preserve"><value>CHANGESET (.WHCHG)</value></data>
+  <data name="TextOpt_TrackEdits" xml:space="preserve"><value>Track edits in .whchg companion file (requires Tracked save mode)</value></data>
+  <data name="TextOpt_SyntaxSection" xml:space="preserve"><value>SYNTAX COLOUR OVERRIDES</value></data>
+  <data name="TextOpt_SyntaxNote" xml:space="preserve"><value>Enable a colour to override the active theme’s default.</value></data>
+  <data name="TextOpt_Background" xml:space="preserve"><value>Background:</value></data>
+  <data name="TextOpt_Foreground" xml:space="preserve"><value>Foreground:</value></data>
+  <data name="TextOpt_Keyword" xml:space="preserve"><value>Keyword:</value></data>
+  <data name="TextOpt_String" xml:space="preserve"><value>String:</value></data>
+  <data name="TextOpt_Comment" xml:space="preserve"><value>Comment:</value></data>
+  <data name="TextOpt_Number" xml:space="preserve"><value>Number:</value></data>
+  <data name="TextOpt_Type" xml:space="preserve"><value>Type:</value></data>
+  <data name="TextOpt_Preprocessor" xml:space="preserve"><value>Preprocessor:</value></data>
+  <data name="TextOpt_Operator" xml:space="preserve"><value>Operator:</value></data>
+  <data name="TextOpt_Identifier" xml:space="preserve"><value>Identifier:</value></data>
 </root>

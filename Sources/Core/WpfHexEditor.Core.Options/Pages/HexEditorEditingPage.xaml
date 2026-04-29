@@ -10,7 +10,7 @@
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
         <StackPanel Margin="0,0,0,16">
 
-        <TextBlock Text="EDITING BEHAVIOR"
+        <TextBlock Text="{DynamicResource HexEdit_EditingSection}"
                    FontSize="12" FontWeight="SemiBold"
                    Foreground="{DynamicResource Opt_SectionForegroundBrush}"
                    Margin="0,16,0,6"/>
@@ -21,7 +21,7 @@
                 <ColumnDefinition Width="200"/>
                 <ColumnDefinition Width="160"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="Default edit mode:"
+            <TextBlock Text="{DynamicResource HexEdit_DefaultEditModeLabel}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             <ComboBox x:Name="EditModeCombo"
@@ -35,7 +35,7 @@
                 <ColumnDefinition Width="200"/>
                 <ColumnDefinition Width="160"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="Mouse wheel speed:"
+            <TextBlock Text="{DynamicResource HexEdit_MouseWheelLabel}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             <ComboBox x:Name="MouseWheelCombo"
@@ -48,7 +48,7 @@
 
         <!-- Zoom -->
         <CheckBox x:Name="CheckAllowZoom"
-                  Content="Allow zoom (Ctrl + wheel)"
+                  Content="{DynamicResource HexEdit_AllowZoom}"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                   Margin="0,0,0,8"
                   Checked="OnCheckChanged"
@@ -56,7 +56,7 @@
 
         <!-- File drop -->
         <CheckBox x:Name="CheckAllowFileDrop"
-                  Content="Allow file drop"
+                  Content="{DynamicResource HexEdit_AllowFileDrop}"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                   Margin="0,0,0,0"
                   Checked="OnCheckChanged"
@@ -65,7 +65,7 @@
         <Separator Margin="0,16,0,16"
                    Background="{DynamicResource DockBorderBrush}"/>
 
-        <TextBlock Text="DATA"
+        <TextBlock Text="{DynamicResource HexEdit_DataSection}"
                    FontSize="12" FontWeight="SemiBold"
                    Foreground="{DynamicResource Opt_SectionForegroundBrush}"
                    Margin="0,16,0,6"/>
@@ -76,7 +76,7 @@
                 <ColumnDefinition Width="200"/>
                 <ColumnDefinition Width="160"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="Byte size:"
+            <TextBlock Text="{DynamicResource HexEdit_ByteSizeLabel}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             <ComboBox x:Name="ByteSizeCombo" Grid.Column="1"
@@ -89,7 +89,7 @@
                 <ColumnDefinition Width="200"/>
                 <ColumnDefinition Width="160"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="Byte order:"
+            <TextBlock Text="{DynamicResource HexEdit_ByteOrderLabel}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             <ComboBox x:Name="ByteOrderCombo" Grid.Column="1"
@@ -102,7 +102,7 @@
                 <ColumnDefinition Width="200"/>
                 <ColumnDefinition Width="160"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="Default copy format:"
+            <TextBlock Text="{DynamicResource HexEdit_DefaultCopyFormatLabel}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             <ComboBox x:Name="CopyModeCombo" Grid.Column="1"
@@ -115,7 +115,7 @@
                 <ColumnDefinition Width="200"/>
                 <ColumnDefinition Width="160"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="Spacer visual style:"
+            <TextBlock Text="{DynamicResource HexEdit_SpacerVisualLabel}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             <ComboBox x:Name="SpacerVisualCombo" Grid.Column="1"

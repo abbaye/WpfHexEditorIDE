@@ -1161,7 +1161,7 @@
                 <StackPanel Orientation="Horizontal">
 
                     <!-- New ▾ : New File / New Project / New Solution -->
-                    <Button Click="OnToolBarDropDownClick" ToolTip="New…"
+                    <Button Click="OnToolBarDropDownClick" ToolTip="{DynamicResource App_Toolbar_New}"
                             Style="{DynamicResource DockToolBarPodDropDownButtonStyle}">
                         <Button.ContextMenu>
                             <ContextMenu>
@@ -1194,7 +1194,7 @@
                     <Separator Style="{DynamicResource DockToolBarPodDividerStyle}"/>
 
                     <!-- Open ▾ : Open File / Open Solution or Project -->
-                    <Button Click="OnToolBarDropDownClick" ToolTip="Open…"
+                    <Button Click="OnToolBarDropDownClick" ToolTip="{DynamicResource App_Toolbar_Open}"
                             Style="{DynamicResource DockToolBarPodDropDownButtonStyle}">
                         <Button.ContextMenu>
                             <ContextMenu>
@@ -1229,14 +1229,14 @@
 
                     <!-- Save — Command binding (auto-enable/disable) -->
                     <Button Command="{x:Static ApplicationCommands.Save}"
-                            ToolTip="Save (Ctrl+S)"
+                            ToolTip="{DynamicResource App_Toolbar_Save}"
                             Style="{DynamicResource DockDarkToolBarButtonStyle}">
                         <TextBlock Text="&#xE74E;" FontFamily="Segoe MDL2 Assets" FontSize="14"
                                    VerticalAlignment="Center"/>
                     </Button>
 
                     <!-- Save All -->
-                    <Button Click="OnSaveAll" ToolTip="Save All (Ctrl+Shift+S)"
+                    <Button Click="OnSaveAll" ToolTip="{DynamicResource App_Toolbar_SaveAll}"
                             Style="{DynamicResource DockDarkToolBarButtonStyle}">
                         <TextBlock Text="&#xE792;" FontFamily="Segoe MDL2 Assets" FontSize="14"
                                    VerticalAlignment="Center"/>
@@ -1269,19 +1269,19 @@
 
                     <!-- Cut / Copy / Paste — Command bindings -->
                     <Button Command="{Binding ActiveDocumentEditor.CutCommand, ElementName=ThisWindow}"
-                            ToolTip="Cut (Ctrl+X)"
+                            ToolTip="{DynamicResource App_Toolbar_Cut}"
                             Style="{DynamicResource DockDarkToolBarButtonStyle}">
                         <TextBlock Text="&#xE8C6;" FontFamily="Segoe MDL2 Assets" FontSize="14"
                                    VerticalAlignment="Center"/>
                     </Button>
                     <Button Command="{Binding ActiveDocumentEditor.CopyCommand, ElementName=ThisWindow}"
-                            ToolTip="Copy (Ctrl+C)"
+                            ToolTip="{DynamicResource App_Toolbar_Copy}"
                             Style="{DynamicResource DockDarkToolBarButtonStyle}">
                         <TextBlock Text="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="14"
                                    VerticalAlignment="Center"/>
                     </Button>
                     <Button Command="{Binding ActiveDocumentEditor.PasteCommand, ElementName=ThisWindow}"
-                            ToolTip="Paste (Ctrl+V)"
+                            ToolTip="{DynamicResource App_Toolbar_Paste}"
                             Style="{DynamicResource DockDarkToolBarButtonStyle}">
                         <TextBlock Text="&#xE77F;" FontFamily="Segoe MDL2 Assets" FontSize="14"
                                    VerticalAlignment="Center"/>
@@ -1297,7 +1297,7 @@
                 <StackPanel Orientation="Horizontal">
 
                     <!-- Find — icon + label -->
-                    <Button Click="OnShowAdvancedSearch" ToolTip="Find… (Ctrl+F)"
+                    <Button Click="OnShowAdvancedSearch" ToolTip="{DynamicResource App_Toolbar_Find}"
                             Style="{DynamicResource DockDarkToolBarButtonStyle}">
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                             <TextBlock Text="&#xE721;" FontFamily="Segoe MDL2 Assets" FontSize="14"
@@ -1309,13 +1309,13 @@
                     <Separator Style="{DynamicResource DockToolBarPodDividerStyle}"/>
 
                     <!-- Find Next (F3) -->
-                    <Button Click="OnFindNext" ToolTip="Find Next (F3)"
+                    <Button Click="OnFindNext" ToolTip="{DynamicResource App_Toolbar_FindNext}"
                             Style="{DynamicResource DockDarkToolBarButtonStyle}">
                         <TextBlock Text="&#xE74B;" FontFamily="Segoe MDL2 Assets" FontSize="12"
                                    VerticalAlignment="Center"/>
                     </Button>
                     <!-- Find Previous (Shift+F3) -->
-                    <Button Click="OnFindPrevious" ToolTip="Find Previous (Shift+F3)"
+                    <Button Click="OnFindPrevious" ToolTip="{DynamicResource App_Toolbar_FindPrevious}"
                             Style="{DynamicResource DockDarkToolBarButtonStyle}">
                         <TextBlock Text="&#xE74A;" FontFamily="Segoe MDL2 Assets" FontSize="12"
                                    VerticalAlignment="Center"/>
@@ -1329,7 +1329,7 @@
                 <StackPanel Orientation="Horizontal">
 
                     <!-- Solution Explorer : icon + label -->
-                    <Button Click="OnShowSolutionExplorer" ToolTip="Solution Explorer (Ctrl+Alt+L)"
+                    <Button Click="OnShowSolutionExplorer" ToolTip="{DynamicResource App_Toolbar_SolutionExplorer}"
                             Style="{DynamicResource DockDarkToolBarButtonStyle}">
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                             <TextBlock Text="&#xE8B7;" FontFamily="Segoe MDL2 Assets" FontSize="14"
@@ -1341,7 +1341,7 @@
                     <Separator Style="{DynamicResource DockToolBarPodDividerStyle}"/>
 
                     <!-- Parsed Fields -->
-                    <Button Click="OnShowParsedFields" ToolTip="Parsed Fields"
+                    <Button Click="OnShowParsedFields" ToolTip="{DynamicResource App_Toolbar_ParsedFields}"
                             Style="{DynamicResource DockDarkToolBarButtonStyle}">
                         <TextBlock Text="&#xEBD2;" FontFamily="Segoe MDL2 Assets" FontSize="14"
                                    VerticalAlignment="Center"/>
@@ -1350,7 +1350,7 @@
                     <Separator Style="{DynamicResource DockToolBarPodDividerStyle}"/>
 
                     <!-- Properties -->
-                    <Button Click="OnShowProperties" ToolTip="Properties (F4)"
+                    <Button Click="OnShowProperties" ToolTip="{DynamicResource App_Toolbar_Properties}"
                             Style="{DynamicResource DockDarkToolBarButtonStyle}">
                         <TextBlock Text="&#xE713;" FontFamily="Segoe MDL2 Assets" FontSize="14"
                                    VerticalAlignment="Center"/>
@@ -1359,7 +1359,7 @@
                     <Separator Style="{DynamicResource DockToolBarPodDividerStyle}"/>
 
                     <!-- Output -->
-                    <Button Click="OnShowOutput" ToolTip="Output"
+                    <Button Click="OnShowOutput" ToolTip="{DynamicResource App_Toolbar_Output}"
                             Style="{DynamicResource DockDarkToolBarButtonStyle}">
                         <TextBlock Text="&#xE9A8;" FontFamily="Segoe MDL2 Assets" FontSize="14"
                                    VerticalAlignment="Center"/>
@@ -1552,12 +1552,12 @@
                     <TextBlock Text="&#xE8C1;" FontFamily="Segoe MDL2 Assets" FontSize="14"
                                VerticalAlignment="Center" Margin="4,0,4,0"
                                Foreground="{DynamicResource DockMenuForegroundBrush}"
-                               ToolTip="Character Table"/>
+                               ToolTip="{DynamicResource App_Toolbar_CharacterTable}"/>
                     <!-- TBL ComboBox -->
                     <ComboBox Width="180" VerticalAlignment="Center"
                               ItemsSource="{Binding TblItems, ElementName=ThisWindow}"
                               SelectedItem="{Binding SelectedTblItem, ElementName=ThisWindow, Mode=TwoWay}"
-                              ToolTip="Active character table"
+                              ToolTip="{DynamicResource App_Toolbar_ActiveCharTable}"
                               Background="Transparent"
                               Foreground="{DynamicResource DockMenuForegroundBrush}"
                               IsTextSearchEnabled="False">
@@ -1627,7 +1627,7 @@
                     <!-- Configuration ComboBox -->
                     <ComboBox x:Name="CbBuildConfig"
                               Width="100" Margin="2,0" VerticalAlignment="Center"
-                              ToolTip="Build Configuration"
+                              ToolTip="{DynamicResource App_Toolbar_BuildConfig}"
                               ItemsSource="{Binding BuildConfigurations, ElementName=ThisWindow}"
                               SelectedItem="{Binding ActiveBuildConfiguration, ElementName=ThisWindow, Mode=TwoWay}"
                               Background="Transparent"
@@ -1635,7 +1635,7 @@
                     <!-- Platform ComboBox -->
                     <ComboBox x:Name="CbBuildPlatform"
                               Width="80" Margin="2,0" VerticalAlignment="Center"
-                              ToolTip="Target Platform"
+                              ToolTip="{DynamicResource App_Toolbar_TargetPlatform}"
                               ItemsSource="{Binding BuildPlatforms, ElementName=ThisWindow}"
                               SelectedItem="{Binding ActiveBuildPlatform, ElementName=ThisWindow, Mode=TwoWay}"
                               Background="Transparent"
@@ -1643,7 +1643,7 @@
                     <!-- Startup project selector -->
                     <ComboBox x:Name="CbStartupProject"
                               Width="160" Margin="2,0" VerticalAlignment="Center"
-                              ToolTip="Startup Project — launched by ▶ Start (Ctrl+F5)"
+                              ToolTip="{DynamicResource App_Toolbar_StartupProject}"
                               ItemsSource="{Binding StartupProjectNames, ElementName=ThisWindow}"
                               SelectedItem="{Binding ActiveStartupProjectName, ElementName=ThisWindow, Mode=TwoWay}"
                               IsEnabled="{Binding HasSolution, ElementName=ThisWindow}"
@@ -1696,7 +1696,7 @@
                     <!-- Start (Run startup project without debugger — Ctrl+F5) -->
                     <Button x:Name="BtnRunStartup"
                             Click="OnRunStartupProject"
-                            ToolTip="Start Without Debugging (Ctrl+F5)"
+                            ToolTip="{DynamicResource App_Toolbar_StartNoDebug}"
                             Style="{DynamicResource DockDarkToolBarButtonStyle}"
                             IsEnabled="{Binding CanRunStartupProject, ElementName=ThisWindow}">
                         <StackPanel Orientation="Horizontal">
@@ -1710,7 +1710,7 @@
                     <!-- Build -->
                     <Button x:Name="BtnBuild"
                             Click="OnBuildSolution"
-                            ToolTip="Build Solution (Ctrl+Shift+B)"
+                            ToolTip="{DynamicResource App_Toolbar_BuildSolution}"
                             Style="{DynamicResource DockDarkToolBarButtonStyle}"
                             IsEnabled="{Binding IsBuildMenuEnabled, ElementName=ThisWindow}">
                         <StackPanel Orientation="Horizontal">
@@ -1722,7 +1722,7 @@
                     <!-- Rebuild -->
                     <Button x:Name="BtnRebuild"
                             Click="OnRebuildSolution"
-                            ToolTip="Rebuild Solution"
+                            ToolTip="{DynamicResource App_Toolbar_RebuildSolution}"
                             Style="{DynamicResource DockDarkToolBarButtonStyle}"
                             IsEnabled="{Binding IsBuildMenuEnabled, ElementName=ThisWindow}">
                         <StackPanel Orientation="Horizontal">
@@ -1734,7 +1734,7 @@
                     <!-- Clean -->
                     <Button x:Name="BtnClean"
                             Click="OnCleanSolution"
-                            ToolTip="Clean Solution"
+                            ToolTip="{DynamicResource App_Toolbar_CleanSolution}"
                             Style="{DynamicResource DockDarkToolBarButtonStyle}"
                             IsEnabled="{Binding IsBuildMenuEnabled, ElementName=ThisWindow}">
                         <StackPanel Orientation="Horizontal">
@@ -1746,7 +1746,7 @@
                     <!-- Cancel -->
                     <Button x:Name="BtnStopBuild"
                             Click="OnCancelBuild"
-                            ToolTip="Cancel Build"
+                            ToolTip="{DynamicResource App_Toolbar_CancelBuild}"
                             Style="{DynamicResource DockDarkToolBarButtonStyle}"
                             IsEnabled="{Binding HasActiveBuild, ElementName=ThisWindow}">
                         <StackPanel Orientation="Horizontal">
@@ -1766,14 +1766,14 @@
                     <!-- Continue / Pause -->
                     <Button x:Name="BtnDbgContinue"
                             Click="OnDebugContinue"
-                            ToolTip="Continue (F5)"
+                            ToolTip="{DynamicResource App_Toolbar_Continue}"
                             Style="{DynamicResource DockDarkToolBarButtonStyle}">
                         <TextBlock Text="&#xE768;" FontFamily="Segoe MDL2 Assets" FontSize="15"
                                    Foreground="#3CB371" VerticalAlignment="Center"/>
                     </Button>
                     <Button x:Name="BtnDbgPause"
                             Click="OnDebugPause"
-                            ToolTip="Pause"
+                            ToolTip="{DynamicResource App_Toolbar_Pause}"
                             Style="{DynamicResource DockDarkToolBarButtonStyle}">
                         <TextBlock Text="&#xE769;" FontFamily="Segoe MDL2 Assets" FontSize="15"
                                    VerticalAlignment="Center"/>
@@ -1781,7 +1781,7 @@
                     <!-- Stop -->
                     <Button x:Name="BtnDbgStop"
                             Click="OnDebugStop"
-                            ToolTip="Stop Debugging (Shift+F5)"
+                            ToolTip="{DynamicResource App_Toolbar_StopDebugging}"
                             Style="{DynamicResource DockDarkToolBarButtonStyle}">
                         <TextBlock Text="&#xE71A;" FontFamily="Segoe MDL2 Assets" FontSize="14"
                                    Foreground="#E06060" VerticalAlignment="Center"/>
@@ -1790,21 +1790,21 @@
                     <!-- Step Over / Into / Out -->
                     <Button x:Name="BtnDbgStepOver"
                             Click="OnDebugStepOver"
-                            ToolTip="Step Over (F10)"
+                            ToolTip="{DynamicResource App_Toolbar_StepOver}"
                             Style="{DynamicResource DockDarkToolBarButtonStyle}">
                         <TextBlock Text="&#xE7EE;" FontFamily="Segoe MDL2 Assets" FontSize="14"
                                    VerticalAlignment="Center"/>
                     </Button>
                     <Button x:Name="BtnDbgStepInto"
                             Click="OnDebugStepInto"
-                            ToolTip="Step Into (F11)"
+                            ToolTip="{DynamicResource App_Toolbar_StepInto}"
                             Style="{DynamicResource DockDarkToolBarButtonStyle}">
                         <TextBlock Text="&#xE70D;" FontFamily="Segoe MDL2 Assets" FontSize="14"
                                    VerticalAlignment="Center"/>
                     </Button>
                     <Button x:Name="BtnDbgStepOut"
                             Click="OnDebugStepOut"
-                            ToolTip="Step Out (Shift+F11)"
+                            ToolTip="{DynamicResource App_Toolbar_StepOut}"
                             Style="{DynamicResource DockDarkToolBarButtonStyle}">
                         <TextBlock Text="&#xE70E;" FontFamily="Segoe MDL2 Assets" FontSize="14"
                                    VerticalAlignment="Center"/>
@@ -1862,7 +1862,7 @@
                             Click="OnPluginInfoBarClose"
                             Style="{StaticResource InfoBarButtonStyle}"
                             BorderBrush="Transparent"
-                            ToolTip="Dismiss"/>
+                            ToolTip="{DynamicResource App_Toolbar_Dismiss}"/>
                 </Grid>
             </Border>
 
@@ -1901,7 +1901,7 @@
                             Click="OnFileChangeInfoBarClose"
                             Style="{StaticResource InfoBarButtonStyle}"
                             BorderBrush="Transparent"
-                            ToolTip="Dismiss"/>
+                            ToolTip="{DynamicResource App_Toolbar_Dismiss}"/>
                 </Grid>
             </Border>
 
@@ -1979,7 +1979,7 @@
                                VerticalAlignment="Center"/>
                     <Button x:Name="ProgressCancelButton"
                             Content="✕"
-                            ToolTip="Cancel operation"
+                            ToolTip="{DynamicResource App_Toolbar_CancelOperation}"
                             Click="OnProgressCancel"
                             Visibility="Collapsed"
                             Padding="6,1"
@@ -2012,7 +2012,7 @@
                 <Button x:Name="GitBranchButton"
                         Background="Transparent" BorderThickness="0" Padding="0"
                         Cursor="Hand" Click="OnGitBranchButtonClick"
-                        ToolTip="Click to switch branch">
+                        ToolTip="{DynamicResource App_Toolbar_SwitchBranch}">
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                         <TextBlock Text="&#xE7C1;" FontFamily="Segoe MDL2 Assets" FontSize="11"
                                    Foreground="{DynamicResource DockTabActiveTextBrush}"
@@ -2023,7 +2023,7 @@
                         <TextBlock x:Name="GitDirtyDot" Text="●" FontSize="9"
                                    Foreground="#E8A838" VerticalAlignment="Center"
                                    Margin="0,0,6,0" Visibility="Collapsed"
-                                   ToolTip="Uncommitted changes"/>
+                                   ToolTip="{DynamicResource App_Toolbar_UncommittedChanges}"/>
                     </StackPanel>
                 </Button>
             </StatusBarItem>
@@ -2110,7 +2110,7 @@
                         CornerRadius="3"
                         Padding="6,1"
                         Cursor="Hand"
-                        ToolTip="Plugin updates available — click to open Marketplace"
+                        ToolTip="{DynamicResource App_Toolbar_PluginUpdates}"
                         MouseLeftButtonDown="OnMarketplaceBadgeClick">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="&#xE74A;" FontFamily="Segoe MDL2 Assets" FontSize="10"
