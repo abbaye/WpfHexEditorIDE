@@ -75,8 +75,19 @@ public sealed class UIRegistry : IUIRegistry
         lock (_lock)
         {
             ThrowIfDuplicate(uiId);
-            _menuAdapter.AddMenuItem(uiId, descriptor);
             _registrations[uiId] = new UIRegistration(pluginId, UIElementKind.MenuItem);
+        }
+
+        // AddMenuItem touches WPF ItemCollection — must run on the UI thread.
+        // Invoke synchronously if already on UI thread; otherwise marshal via Dispatcher.
+        var dispatcher = Application.Current?.Dispatcher;
+        if (dispatcher is null || dispatcher.CheckAccess())
+        {
+            _menuAdapter.AddMenuItem(uiId, descriptor);
+        }
+        else
+        {
+            dispatcher.Invoke(() => _menuAdapter.AddMenuItem(uiId, descriptor));
         }
     }
 
