@@ -241,6 +241,9 @@ internal sealed class TextViewport : FrameworkElement
         }
     }
 
+    /// <summary>Raised when FirstVisibleLine changes so the parent can sync the standalone VScrollBar.</summary>
+    public event EventHandler? FirstVisibleLineChanged;
+
     public int FirstVisibleLine
     {
         get => _firstVisibleLine;
@@ -250,6 +253,7 @@ internal sealed class TextViewport : FrameworkElement
             {
                 _firstVisibleLine = Math.Max(0, value);
                 QueueFullRender();
+                FirstVisibleLineChanged?.Invoke(this, EventArgs.Empty);
             }
         }
     }

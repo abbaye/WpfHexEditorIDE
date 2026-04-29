@@ -107,7 +107,8 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IBufferAw
         // Wire ViewModel
         Viewport.Attach(_vm);
         _vm.PropertyChanged += OnVmPropertyChanged;
-        Viewport.RefreshTimeUpdated += (_, ms) => _sbRefreshTime.Value = $"{ms} ms";
+        Viewport.RefreshTimeUpdated     += (_, ms) => _sbRefreshTime.Value = $"{ms} ms";
+        Viewport.FirstVisibleLineChanged += (_, _) => SyncVScrollBar();
 
         // Commands
         UndoCommand      = new RelayCommand(() => Undo(),      () => CanUndo);
@@ -361,7 +362,7 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IBufferAw
             ViewportGrid.MinWidth = ScrollView.ViewportWidth;
             if (!Viewport.IsWordWrapEnabled)
                 Viewport.Width = Math.Max(Viewport.EstimatedMaxWidth, ScrollView.ViewportWidth);
-            Viewport.Height = Math.Max(Viewport.TotalHeight + Viewport.LineHeight, ScrollView.ViewportHeight);
+            SyncVScrollBar();
             Viewport.InvalidateVisual();
         });
     }
@@ -840,7 +841,7 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IBufferAw
             Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Loaded, () =>
             {
                 if (Viewport.LineHeight > 0)
-                    ScrollView.ScrollToVerticalOffset(config.FirstVisibleLine * Viewport.LineHeight);
+                    VScrollBar.Value = config.FirstVisibleLine;
             });
         }
 
@@ -897,23 +898,52 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IBufferAw
     {
         if (_vm is null || Viewport.LineHeight <= 0) return;
 
-        int firstLine = (int)(e.VerticalOffset / Viewport.LineHeight);
-        Viewport.FirstVisibleLine    = firstLine;
-        Viewport.HorizontalOffset    = e.HorizontalOffset;
-        Viewport.ScrollViewportHeight = e.ViewportHeight;
-
-        // Keep the inner grid at least as wide as the visible viewport so the
-        // background fills the full pane after a resize (avoids empty strip on the right).
-        ViewportGrid.MinWidth = ScrollView.ViewportWidth;
-
-        // Word wrap: column is Width="*" so WPF passes the correct finite viewport width
-        // through MeasureOverride automatically — no explicit Width needed.
-        // No-wrap: explicit Width provides the horizontal scroll extent.
+        // Horizontal scroll only — the ScrollViewer no longer drives vertical position.
+        Viewport.HorizontalOffset = e.HorizontalOffset;
+        ViewportGrid.MinWidth     = ScrollView.ViewportWidth;
         if (!Viewport.IsWordWrapEnabled)
             Viewport.Width = Math.Max(Viewport.EstimatedMaxWidth, ScrollView.ViewportWidth);
-        Viewport.Height = Math.Max(Viewport.TotalHeight + Viewport.LineHeight, ScrollView.ViewportHeight);
 
+        SyncVScrollBar();
         ViewportScrollChanged?.Invoke(this, e);
+    }
+
+    // -----------------------------------------------------------------------
+    // Vertical scroll bar (standalone — decoupled from ScrollViewer)
+    // -----------------------------------------------------------------------
+
+    private bool _syncingVScroll; // prevents re-entrancy between VScrollBar and FirstVisibleLine
+
+    private void VScrollBar_Scroll(object sender, System.Windows.Controls.Primitives.ScrollEventArgs e)
+    {
+        if (_syncingVScroll) return;
+        int line = (int)Math.Round(VScrollBar.Value);
+        Viewport.FirstVisibleLine     = line;
+        Viewport.ScrollViewportHeight = ScrollView.ViewportHeight;
+        Viewport.InvalidateVisual();
+    }
+
+    /// <summary>
+    /// Updates VScrollBar.Maximum and Value to match the current document size and FirstVisibleLine.
+    /// Call after any change to line count, viewport size, or FirstVisibleLine.
+    /// </summary>
+    private void SyncVScrollBar()
+    {
+        if (_syncingVScroll) return;
+        _syncingVScroll = true;
+        try
+        {
+            int totalLines   = _vm?.LineCount ?? 0;
+            int visibleLines = Viewport.LineHeight > 0
+                ? (int)(ScrollView.ViewportHeight / Viewport.LineHeight)
+                : 0;
+            VScrollBar.Maximum      = Math.Max(0, totalLines - visibleLines);
+            VScrollBar.LargeChange  = Math.Max(1, visibleLines);
+            VScrollBar.ViewportSize = visibleLines;
+            VScrollBar.Value        = Viewport.FirstVisibleLine;
+            Viewport.ScrollViewportHeight = ScrollView.ViewportHeight;
+        }
+        finally { _syncingVScroll = false; }
     }
 
     // -----------------------------------------------------------------------
@@ -941,8 +971,8 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IBufferAw
 
         int direction = mousePos.Y < 0 ? -1 : 1;
 
-        // Scroll the ScrollViewer — ScrollChanged fires next layout pass and updates FirstVisibleLine.
-        ScrollView.ScrollToVerticalOffset(ScrollView.VerticalOffset + direction * Viewport.LineHeight);
+        // Scroll via VScrollBar — fires VScrollBar_Scroll which updates FirstVisibleLine.
+        VScrollBar.Value = Math.Max(0, Math.Min(VScrollBar.Maximum, VScrollBar.Value + direction));
 
         // Extend selection after the scroll completes (Background priority runs after layout).
         double vh = ScrollView.ViewportHeight;
@@ -984,10 +1014,7 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IBufferAw
                     RefreshTextStatusBarItems();
                     EnsureCaretHorizontallyVisible();
                     Viewport.ScrollIntoView(_vm.CaretLine);
-                    // Drive the ScrollViewer to the same position so the scrollbar thumb tracks
-                    // keyboard/caret navigation. ScrollIntoView only updates FirstVisibleLine
-                    // (the render offset) without moving the ScrollViewer's VerticalOffset.
-                    ScrollView.ScrollToVerticalOffset(Viewport.FirstVisibleLine * Viewport.LineHeight);
+                    SyncVScrollBar();
                     break;
                 case nameof(TextEditorViewModel.Title):
                     TitleChanged?.Invoke(this, _vm.Title);
@@ -995,6 +1022,9 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IBufferAw
                 case nameof(TextEditorViewModel.HasSelection):
                     SelectionChanged?.Invoke(this, EventArgs.Empty);
                     RefreshCommands();
+                    break;
+                case nameof(TextEditorViewModel.LineCount):
+                    SyncVScrollBar();
                     break;
                 case nameof(TextEditorViewModel.MaxLineLength):
                     if (!Viewport.IsWordWrapEnabled)
@@ -1236,7 +1266,7 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IBufferAw
         _vm.CaretColumn = col + _searchMatchLength;
 
         if (Viewport.LineHeight > 0)
-            ScrollView.ScrollToVerticalOffset(Math.Max(0, (line - 3) * Viewport.LineHeight));
+            VScrollBar.Value = Math.Max(0, line - 3);
     }
 
     // -----------------------------------------------------------------------
