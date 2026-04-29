@@ -16,6 +16,7 @@
 //     never touched — only the plugin section (after the separator) is rebuilt.
 // ==========================================================
 
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using WpfHexEditor.SDK.Descriptors;
