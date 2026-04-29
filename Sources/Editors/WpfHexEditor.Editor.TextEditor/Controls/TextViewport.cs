@@ -57,7 +57,7 @@ internal sealed class TextViewport : FrameworkElement
     private double _lineNumberWidth;
     private int    _firstVisibleLine;
     private int    _visibleLineCount;
-    private double _viewportVisibleHeight; // set by TextEditor from ScrollViewer.ViewportHeight
+    private double _scrollViewportHeight; // set from ScrollViewer.ViewportHeight — NOT from Viewport.Height (which equals TotalHeight)
     private double _horizontalOffset;
     private Typeface? _typeface;
     private double _emSize;
@@ -221,14 +221,24 @@ internal sealed class TextViewport : FrameworkElement
     }
 
     /// <summary>
-    /// The visible height of the ScrollViewer viewport (pixels). Set by TextEditor from
-    /// ScrollViewer.ViewportHeight so ArrangeOverride can compute the correct _visibleLineCount
-    /// without walking the visual tree. Defaults to 0 (ArrangeOverride falls back to finalSize).
+    /// The physical viewport height of the parent ScrollViewer (pixels).
+    /// Must be kept in sync via ScrollViewer.ScrollChanged so that ScrollIntoView()
+    /// and _visibleLineCount use the true visible area — not Viewport.Height which
+    /// equals TotalHeight (set for scrollbar extent purposes).
     /// </summary>
-    public double ViewportVisibleHeight
+    public double ScrollViewportHeight
     {
-        get => _viewportVisibleHeight;
-        set => _viewportVisibleHeight = value;
+        get => _scrollViewportHeight;
+        set
+        {
+            if (Math.Abs(_scrollViewportHeight - value) > 0.5)
+            {
+                _scrollViewportHeight = value;
+                // Recompute _visibleLineCount immediately so ScrollIntoView() is accurate.
+                if (_lineHeight > 0)
+                    _visibleLineCount = (int)Math.Ceiling(_scrollViewportHeight / _lineHeight) + 1;
+            }
+        }
     }
 
     public int FirstVisibleLine
@@ -367,7 +377,11 @@ internal sealed class TextViewport : FrameworkElement
             _lastArrangedWidth = finalSize.Width;
             RebuildWrapMap();
         }
-        _visibleLineCount = _lineHeight > 0 ? (int)Math.Ceiling(finalSize.Height / _lineHeight) + 1 : 0;
+        // Use _scrollViewportHeight (the ScrollViewer's actual visible area) when available.
+        // finalSize.Height == TotalHeight (set by TextEditor for scrollbar extent) — using it
+        // would make _visibleLineCount equal the whole document, breaking ScrollIntoView().
+        double visH = _scrollViewportHeight > 0 ? _scrollViewportHeight : finalSize.Height;
+        _visibleLineCount = _lineHeight > 0 ? (int)Math.Ceiling(visH / _lineHeight) + 1 : 0;
         return finalSize;
     }
 
