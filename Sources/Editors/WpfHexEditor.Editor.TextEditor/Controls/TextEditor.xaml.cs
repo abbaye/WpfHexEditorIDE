@@ -900,8 +900,9 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IBufferAw
         if (_vm is null || Viewport.LineHeight <= 0) return;
 
         int firstLine = (int)(e.VerticalOffset / Viewport.LineHeight);
-        Viewport.FirstVisibleLine   = firstLine;
-        Viewport.HorizontalOffset   = e.HorizontalOffset;
+        Viewport.FirstVisibleLine      = firstLine;
+        Viewport.HorizontalOffset      = e.HorizontalOffset;
+        Viewport.ViewportVisibleHeight = e.ViewportHeight;
 
         // Keep the inner grid at least as wide as the visible viewport so the
         // background fills the full pane after a resize (avoids empty strip on the right).

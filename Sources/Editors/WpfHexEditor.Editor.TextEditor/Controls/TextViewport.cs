@@ -55,8 +55,9 @@ internal sealed class TextViewport : FrameworkElement
     private double _lineHeight;
     private double _charWidth;
     private double _lineNumberWidth;
-    private int _firstVisibleLine;
-    private int _visibleLineCount;
+    private int    _firstVisibleLine;
+    private int    _visibleLineCount;
+    private double _viewportVisibleHeight; // set by TextEditor from ScrollViewer.ViewportHeight
     private double _horizontalOffset;
     private Typeface? _typeface;
     private double _emSize;
@@ -219,6 +220,17 @@ internal sealed class TextViewport : FrameworkElement
         InvalidateVisual();
     }
 
+    /// <summary>
+    /// The visible height of the ScrollViewer viewport (pixels). Set by TextEditor from
+    /// ScrollViewer.ViewportHeight so ArrangeOverride can compute the correct _visibleLineCount
+    /// without walking the visual tree. Defaults to 0 (ArrangeOverride falls back to finalSize).
+    /// </summary>
+    public double ViewportVisibleHeight
+    {
+        get => _viewportVisibleHeight;
+        set => _viewportVisibleHeight = value;
+    }
+
     public int FirstVisibleLine
     {
         get => _firstVisibleLine;
@@ -340,9 +352,14 @@ internal sealed class TextViewport : FrameworkElement
         else
             desiredWidth = double.IsInfinity(availableSize.Width) ? EstimatedMaxWidth : availableSize.Width;
 
-        double desiredHeight = double.IsInfinity(availableSize.Height)
-            ? TotalHeight
-            : availableSize.Height;
+        // Always report TotalHeight regardless of the available size passed by the ScrollViewer.
+        // TextViewport is a virtual renderer — it only paints visible lines, but it must report
+        // the full document height so the ScrollViewer can compute the correct thumb size and
+        // scroll extent. If we return availableSize.Height here, extent == viewport and the
+        // ScrollViewer concludes there is nothing to scroll.
+        double desiredHeight = Math.Max(TotalHeight, availableSize.Height > 0 && !double.IsInfinity(availableSize.Height)
+            ? availableSize.Height
+            : 0);
 
         return new Size(Math.Max(0, desiredWidth), Math.Max(0, desiredHeight));
     }
@@ -355,7 +372,11 @@ internal sealed class TextViewport : FrameworkElement
             _lastArrangedWidth = finalSize.Width;
             RebuildWrapMap();
         }
-        _visibleLineCount = _lineHeight > 0 ? (int)Math.Ceiling(finalSize.Height / _lineHeight) + 1 : 0;
+        // finalSize.Height equals TotalHeight (the desired size we reported to give the ScrollViewer
+        // the correct scroll extent). Use ViewportVisibleHeight (set by TextEditor from the
+        // ScrollViewer's ViewportHeight) so _visibleLineCount reflects physically visible lines only.
+        double visibleHeight = _viewportVisibleHeight > 0 ? _viewportVisibleHeight : finalSize.Height;
+        _visibleLineCount = _lineHeight > 0 ? (int)Math.Ceiling(visibleHeight / _lineHeight) + 1 : 0;
         return finalSize;
     }
 
