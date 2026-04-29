@@ -14,6 +14,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using WpfHexEditor.Core.Properties;
 
 namespace WpfHexEditor.HexEditor.Controls;
 
@@ -32,7 +33,7 @@ public static class ByteValueTooltip
 
         int idx = (int)Math.Min(offset, data.Length - 1);
         if (idx < 0 || idx >= data.Length)
-            return new ToolTip { Content = "No data" };
+            return new ToolTip { Content = Resources.ByteTooltip_NoData };
 
         byte b = data[idx];
 
@@ -48,10 +49,10 @@ public static class ByteValueTooltip
         // Single byte interpretations
         AddRow(panel, mono, "Hex",     $"0x{b:X2}");
         AddRow(panel, mono, "Dec",     $"{b}");
-        AddRow(panel, mono, "Signed",  $"{(sbyte)b}");
-        AddRow(panel, mono, "Binary",  Convert.ToString(b, 2).PadLeft(8, '0'));
-        AddRow(panel, mono, "ASCII",   b >= 0x20 && b < 0x7F ? $"'{(char)b}'" : "(non-printable)");
-        AddRow(panel, mono, "Octal",   Convert.ToString(b, 8).PadLeft(3, '0'));
+        AddRow(panel, mono, Resources.ByteTooltip_Signed,  $"{(sbyte)b}");
+        AddRow(panel, mono, Resources.ByteTooltip_Binary,  Convert.ToString(b, 2).PadLeft(8, '0'));
+        AddRow(panel, mono, Resources.ByteTooltip_ASCII,   b >= 0x20 && b < 0x7F ? $"'{(char)b}'" : Resources.ByteTooltip_NonPrintable);
+        AddRow(panel, mono, Resources.ByteTooltip_Octal,   Convert.ToString(b, 8).PadLeft(3, '0'));
 
         // Multi-byte interpretations (if enough bytes available)
         int remaining = data.Length - idx;

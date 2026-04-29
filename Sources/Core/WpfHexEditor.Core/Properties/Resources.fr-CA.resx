@@ -1122,7 +1122,19 @@
     <comment>Bar Chart - Display horizontal reference grid lines</comment>
   </data>
   <data name="HexSettings_BarChart_ShowStatistics" xml:space="preserve">
-    <value>Show Statistics</value>
+    <value>Afficher les statistiques</value>
     <comment>Bar Chart - Display statistics overlay (Total, Max, Entropy)</comment>
   </data>
+
+  <!-- ByteValueTooltip labels -->
+  <data name="ByteTooltip_NoData" xml:space="preserve"><value>Aucune donnée</value></data>
+  <data name="ByteTooltip_Signed" xml:space="preserve"><value>Signé</value></data>
+  <data name="ByteTooltip_Binary" xml:space="preserve"><value>Binaire</value></data>
+  <data name="ByteTooltip_ASCII" xml:space="preserve"><value>ASCII</value></data>
+  <data name="ByteTooltip_NonPrintable" xml:space="preserve"><value>(non imprimable)</value></data>
+  <data name="ByteTooltip_Octal" xml:space="preserve"><value>Octal</value></data>
+
+  <!-- HexEditor status messages -->
+  <data name="StatusText_OperationCancelled" xml:space="preserve"><value>Opération annulée</value></data>
+  <data name="StatusText_FileAlreadyExists" xml:space="preserve"><value>Le fichier existe déjà</value></data>
 </root>

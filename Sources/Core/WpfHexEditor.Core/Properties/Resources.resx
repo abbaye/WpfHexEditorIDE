@@ -1785,4 +1785,16 @@
     <value>Description</value>
     <comment>Custom Template - Description column header</comment>
   </data>
+
+  <!-- ── ByteValueTooltip labels ─────────────────────────────────────── -->
+  <data name="ByteTooltip_NoData" xml:space="preserve"><value>No data</value></data>
+  <data name="ByteTooltip_Signed" xml:space="preserve"><value>Signed</value></data>
+  <data name="ByteTooltip_Binary" xml:space="preserve"><value>Binary</value></data>
+  <data name="ByteTooltip_ASCII" xml:space="preserve"><value>ASCII</value></data>
+  <data name="ByteTooltip_NonPrintable" xml:space="preserve"><value>(non-printable)</value></data>
+  <data name="ByteTooltip_Octal" xml:space="preserve"><value>Octal</value></data>
+
+  <!-- ── HexEditor status messages ──────────────────────────────────── -->
+  <data name="StatusText_OperationCancelled" xml:space="preserve"><value>Operation cancelled</value></data>
+  <data name="StatusText_FileAlreadyExists" xml:space="preserve"><value>File already exists</value></data>
 </root>

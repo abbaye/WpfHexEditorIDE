@@ -21,6 +21,7 @@ using System.Windows.Input;
 using WpfHexEditor.Core;
 using WpfHexEditor.Core.CharacterTable;
 using WpfHexEditor.Core.Models;
+using WpfHexEditor.Core.Properties;
 
 namespace WpfHexEditor.HexEditor
 {
@@ -79,7 +80,7 @@ namespace WpfHexEditor.HexEditor
                 }
                 else
                 {
-                    StatusText.Text = "File already exists";
+                    StatusText.Text = Resources.StatusText_FileAlreadyExists;
                 }
             }
             catch (Exception ex)

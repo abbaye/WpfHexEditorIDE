@@ -4790,5 +4790,30 @@ namespace WpfHexEditor.Core.Properties {
                 return ResourceManager.GetString("ZoomString", resourceCulture);
             }
         }
+
+        public static string ByteTooltip_NoData {
+            get { return ResourceManager.GetString("ByteTooltip_NoData", resourceCulture); }
+        }
+        public static string ByteTooltip_Signed {
+            get { return ResourceManager.GetString("ByteTooltip_Signed", resourceCulture); }
+        }
+        public static string ByteTooltip_Binary {
+            get { return ResourceManager.GetString("ByteTooltip_Binary", resourceCulture); }
+        }
+        public static string ByteTooltip_ASCII {
+            get { return ResourceManager.GetString("ByteTooltip_ASCII", resourceCulture); }
+        }
+        public static string ByteTooltip_NonPrintable {
+            get { return ResourceManager.GetString("ByteTooltip_NonPrintable", resourceCulture); }
+        }
+        public static string ByteTooltip_Octal {
+            get { return ResourceManager.GetString("ByteTooltip_Octal", resourceCulture); }
+        }
+        public static string StatusText_OperationCancelled {
+            get { return ResourceManager.GetString("StatusText_OperationCancelled", resourceCulture); }
+        }
+        public static string StatusText_FileAlreadyExists {
+            get { return ResourceManager.GetString("StatusText_FileAlreadyExists", resourceCulture); }
+        }
     }
 }
