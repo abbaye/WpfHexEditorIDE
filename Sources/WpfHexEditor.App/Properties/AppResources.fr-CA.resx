@@ -198,4 +198,49 @@
   <data name="App_FailedCreateSolution" xml:space="preserve"><value>Échec de la création de la solution :\n{0}</value></data>
   <data name="App_FailedOpenSolution" xml:space="preserve"><value>Échec de l'ouverture de la solution :\n{0}</value></data>
   <data name="App_RenameTitle" xml:space="preserve"><value>Renommer</value></data>
+
+  <!-- DockItem titles -->
+  <data name="App_DockTitle_ExtensionManager" xml:space="preserve"><value>Gestionnaire d'extensions</value></data>
+  <data name="App_DockTitle_ExtensionsMonitor" xml:space="preserve"><value>Moniteur d'extensions</value></data>
+  <data name="App_DockTitle_ExtensionMarketplace" xml:space="preserve"><value>Marketplace d'extensions</value></data>
+  <data name="App_DockTitle_Terminal" xml:space="preserve"><value>Terminal</value></data>
+  <data name="App_DockTitle_SettingsJson" xml:space="preserve"><value>settings.json</value></data>
+  <data name="App_DockTitle_Properties" xml:space="preserve"><value>{0} — Propriétés</value></data>
+  <data name="App_DockTitle_NuGet" xml:space="preserve"><value>NuGet — {0}</value></data>
+  <data name="App_DockTitle_NuGetSolution" xml:space="preserve"><value>NuGet — {0} (Solution)</value></data>
+  <data name="App_DockTitle_References" xml:space="preserve"><value>Références — {0}</value></data>
+  <data name="App_DockTitle_ReadOnly" xml:space="preserve"><value>WpfHexEditor — {0} [format lecture seule v{1}]</value></data>
+
+  <!-- Context menus -->
+  <data name="App_ContextMenu_None" xml:space="preserve"><value>(aucun)</value></data>
+  <data name="App_ContextMenu_CompareWithActive" xml:space="preserve"><value>Comparer avec l'éditeur actif</value></data>
+  <data name="App_ContextMenu_CompareWithAnother" xml:space="preserve"><value>Comparer avec un autre fichier…</value></data>
+  <data name="App_JumpList_RecentProjects" xml:space="preserve"><value>Projets récents</value></data>
+  <data name="App_JumpList_RecentFiles" xml:space="preserve"><value>Fichiers récents</value></data>
+
+  <!-- Workspace dialogs -->
+  <data name="App_Workspace_NewTitle" xml:space="preserve"><value>Nouvel espace de travail</value></data>
+  <data name="App_Workspace_NewFailed" xml:space="preserve"><value>Échec de la création de l'espace de travail :{0}{1}</value></data>
+  <data name="App_Workspace_OpenTitle" xml:space="preserve"><value>Ouvrir un espace de travail</value></data>
+  <data name="App_Workspace_OpenFailed" xml:space="preserve"><value>Échec de l'ouverture de l'espace de travail :{0}{1}</value></data>
+  <data name="App_Workspace_SaveFailed" xml:space="preserve"><value>Échec de l'enregistrement de l'espace de travail :{0}{1}</value></data>
+  <data name="App_Workspace_SaveAsTitle" xml:space="preserve"><value>Enregistrer l'espace de travail sous</value></data>
+  <data name="App_Workspace_CloseTitle" xml:space="preserve"><value>Fermer l'espace de travail</value></data>
+  <data name="App_Workspace_CloseSavePrompt" xml:space="preserve"><value>Enregistrer l'espace de travail '{0}' avant de fermer ?</value></data>
+
+  <!-- Debugger dialogs -->
+  <data name="App_Debug_AttachTitle" xml:space="preserve"><value>Attacher au processus</value></data>
+  <data name="App_Debug_AttachNotAvailable" xml:space="preserve"><value>Le service de débogage n'est pas disponible.</value></data>
+  <data name="App_Debug_AttachPidPrompt" xml:space="preserve"><value>Entrez l'identifiant du processus (PID) auquel vous attachez :</value></data>
+  <data name="App_Debug_StartTitle" xml:space="preserve"><value>Démarrer le débogage</value></data>
+  <data name="App_Debug_NoStartupProject" xml:space="preserve"><value>Aucun projet de démarrage défini. Veuillez définir un projet de démarrage avant de déboguer.</value></data>
+  <data name="App_Debug_BuildFailed" xml:space="preserve"><value>Échec de la compilation. Corrigez les erreurs avant de déboguer.</value></data>
+  <data name="App_Debug_ExeNotFound" xml:space="preserve"><value>Impossible de trouver le programme à déboguer :{0}{1}{0}{0}Le projet a été compilé mais l'exécutable de sortie est introuvable.</value></data>
+
+  <!-- TBL import -->
+  <data name="App_TblImport_Failed" xml:space="preserve"><value>Échec du chargement du fichier TBL :{0}{1}</value></data>
+
+  <!-- Extensions -->
+  <data name="App_Extensions_SelectOutputDir" xml:space="preserve"><value>Sélectionner le répertoire de sortie de l'extension</value></data>
+
 </root>

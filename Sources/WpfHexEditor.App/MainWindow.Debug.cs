@@ -17,6 +17,7 @@ using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using WpfHexEditor.App.Properties;
 using WpfHexEditor.Docking.Core;
 using WpfHexEditor.Editor.CodeEditor.Controls;
 using WpfHexEditor.Editor.CodeEditor;
@@ -240,7 +241,7 @@ public partial class MainWindow
     {
         if (_debuggerService is null)
         {
-            MessageBox.Show("Debugger service not available.", "Attach to Process",
+            MessageBox.Show(AppResources.App_Debug_AttachNotAvailable, AppResources.App_Debug_AttachTitle,
                 MessageBoxButton.OK, MessageBoxImage.Information);
             return;
         }
@@ -248,8 +249,8 @@ public partial class MainWindow
         // Full AttachToProcessDialog is contributed by the Debugger plugin.
         // Fallback: prompt for PID via simple input.
         var input = Microsoft.VisualBasic.Interaction.InputBox(
-            "Enter the process ID (PID) to attach to:",
-            "Attach to Process", "");
+            AppResources.App_Debug_AttachPidPrompt,
+            AppResources.App_Debug_AttachTitle, "");
 
         if (int.TryParse(input, out var pid) && pid > 0)
             _ = _debuggerService.AttachAsync(pid);
@@ -262,8 +263,8 @@ public partial class MainWindow
         var startupProject = _solutionManager.CurrentSolution?.StartupProject;
         if (startupProject is null)
         {
-            MessageBox.Show("No startup project is set. Please set a startup project before debugging.",
-                "Start Debugging", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show(AppResources.App_Debug_NoStartupProject, AppResources.App_Debug_StartTitle,
+                MessageBoxButton.OK, MessageBoxImage.Information);
             return;
         }
 
@@ -276,9 +277,8 @@ public partial class MainWindow
             _buildErrorListAdapter?.SetDiagnostics(buildResult.Errors.Concat(buildResult.Warnings));
             if (!buildResult.IsSuccess)
             {
-                MessageBox.Show(
-                    "Build failed. Fix the errors before debugging.",
-                    "Start Debugging", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show(AppResources.App_Debug_BuildFailed, AppResources.App_Debug_StartTitle,
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
         }
@@ -307,9 +307,8 @@ public partial class MainWindow
         if (!File.Exists(programPath))
         {
             MessageBox.Show(
-                $"Cannot find the program to debug:\n{programPath}\n\n" +
-                "The project was built but the output executable was not found.",
-                "Start Debugging", MessageBoxButton.OK, MessageBoxImage.Warning);
+                string.Format(AppResources.App_Debug_ExeNotFound, "\n", programPath),
+                AppResources.App_Debug_StartTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
 

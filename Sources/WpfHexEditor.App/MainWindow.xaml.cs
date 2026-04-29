@@ -65,6 +65,7 @@ using WpfHexEditor.Core.ProjectSystem.Languages;
 using System.Windows.Shell;
 using System.Windows.Threading;
 using WpfHexEditor.Core.Options;
+using static WpfHexEditor.Core.Options.OptionsPageStrings;
 using WpfHexEditor.Editor.Core.Views;
 using WpfHexEditor.Editor.CodeEditor.Controls;
 using WpfHexEditor.Core.AssemblyAnalysis.Services;
@@ -671,7 +672,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         // Register Keyboard Shortcuts options page (needs runtime instances)
         WpfHexEditor.Core.Options.OptionsPageRegistry.RegisterDynamic(
-            "Environment", "Keyboard Shortcuts",
+            CategoryEnvironment, PageKeyboardShortcuts,
             () => new WpfHexEditor.App.Options.KeyboardShortcutsPage(_commandRegistry, _keyBindingService),
             "⌨");
 
@@ -680,7 +681,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         // Register Comparison options page
         WpfHexEditor.Core.Options.OptionsPageRegistry.RegisterDynamic(
-            "Tools", "Compare Files",
+            CategoryTools, PageCompareFiles,
             () => new WpfHexEditor.App.Options.ComparisonOptionsPage(
                 AppSettingsService.Instance.Current.Comparison,
                 AppSettingsService.Instance),
@@ -688,31 +689,31 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         // Register Documents options page (external file change detection & auto-reload)
         WpfHexEditor.Core.Options.OptionsPageRegistry.RegisterDynamic(
-            "Environment", "Documents",
+            CategoryEnvironment, PageDocuments,
             () => new WpfHexEditor.App.Options.DocumentsOptionsPage(),
             "\uE8A5");
 
         // Register Workspace options page
         WpfHexEditor.Core.Options.OptionsPageRegistry.RegisterDynamic(
-            "Environment", "Workspace",
+            CategoryEnvironment, PageWorkspace,
             () => new WpfHexEditor.App.Options.WorkspaceOptionsPage(),
             "\uF16A");
 
         // Register Tabs options page (Tab Bar + Tab Preview merged)
         WpfHexEditor.Core.Options.OptionsPageRegistry.RegisterDynamic(
-            "Environment", "Tabs",
+            CategoryEnvironment, PageTabs,
             () => new WpfHexEditor.App.Options.TabsOptionsPage(DockHost.TabBarSettings),
             "\uE7C4");
 
         // Register Layout options page (Customize Layout defaults)
         WpfHexEditor.Core.Options.OptionsPageRegistry.RegisterDynamic(
-            "Environment", "Layout",
+            CategoryEnvironment, PageLayout,
             () => new WpfHexEditor.App.Options.LayoutOptionsPage(),
             "\uE713");
 
         // Register Docking options page (Auto-Hide timing + Panel Highlight + Corner Radius + Layout Profiles)
         WpfHexEditor.Core.Options.OptionsPageRegistry.RegisterDynamic(
-            "Environment", "Docking",
+            CategoryEnvironment, PageDocking,
             () => new WpfHexEditor.App.Options.DockingOptionsPage(
                       DockHost.ApplyHighlightMode,
                       r => { DockHost.UpdatePanelCornerRadius(r); ApplyDockPanelResources(r); },
@@ -721,14 +722,14 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         // Register Code Editor options page (General, Auto-close, Hints, Minimap, Coloring)
         WpfHexEditor.Core.Options.OptionsPageRegistry.RegisterDynamic(
-            "Code Editor", "Features",
+            CategoryCodeEditor, PageFeatures,
             () => new WpfHexEditor.App.Options.CodeEditorOptionsPage(),
             "\uE943");
 
         // Override the static Code Editor › Formatting registration with a colorizer-aware version.
         // The static entry (no colorizer) is kept as fallback if this line is not reached.
         WpfHexEditor.Core.Options.OptionsPageRegistry.RegisterDynamic(
-            "Code Editor", "Formatting",
+            CategoryCodeEditor, PageFormatting,
             () =>
             {
                 var page = new WpfHexEditor.Core.Options.Pages.CodeEditorFormattingPage(
@@ -746,13 +747,13 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         // Register Debugger options page
         WpfHexEditor.Core.Options.OptionsPageRegistry.RegisterDynamic(
-            "Debugger", "General",
+            CategoryDebugger, PageGeneral,
             () => new WpfHexEditor.App.Options.DebuggerOptionsPage(),
             "\uEBE8");
 
         // Register View Menu options page
         WpfHexEditor.Core.Options.OptionsPageRegistry.RegisterDynamic(
-            "Environment", "View Menu",
+            CategoryEnvironment, PageViewMenu,
             () => new WpfHexEditor.App.Options.ViewMenuOptionsPage(),
             "\uE700");
 
@@ -1039,7 +1040,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 _solutionManager.SetReadOnlyFormat(e.Solution, readOnly: true);
                 OutputLogger.Info($"Solution '{e.Solution.Name}' opened in read-only mode (format v{e.FromVersion}).");
                 // Reflect read-only in the title bar
-                Title = $"WpfHexEditor — {e.Solution.Name} [read-only format v{e.FromVersion}]";
+                Title = string.Format(AppResources.App_DockTitle_ReadOnly, e.Solution.Name, e.FromVersion);
             }
         });
     }
@@ -3642,7 +3643,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         if (!importResult.Success)
         {
             MessageBox.Show(
-                $"Failed to load TBL file:\n{string.Join('\n', importResult.Errors)}",
+                string.Format(AppResources.App_TblImport_Failed, "\n", string.Join('\n', importResult.Errors)),
                 AppResources.App_ConvertTbl, MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
@@ -6061,7 +6062,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             editor.OutputMessage += OnEditorOutputMessage;
             _ = editor.OpenAsync(filePath);
             StoreContent(contentId, editor);
-            var dockItem = new DockItem { Title = "settings.json", ContentId = contentId };
+            var dockItem = new DockItem { Title = AppResources.App_DockTitle_SettingsJson, ContentId = contentId };
             _engine.Dock(dockItem, _layout.MainDocumentHost, DockDirection.Center);
             DockHost.RebuildVisualTree();
         }
@@ -6254,7 +6255,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         var item = new DockItem
         {
-            Title     = $"{project.Name} — Propriétés",
+            Title     = string.Format(AppResources.App_DockTitle_Properties, project.Name),
             ContentId = contentId,
             Metadata  = { ["ProjectName"] = project.Name }
         };
@@ -6293,7 +6294,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             project, _solutionManager);
 
         // Update the tab title with a '*' prefix whenever unsaved changes exist.
-        var baseTitle = $"{project.Name} — Propriétés";
+        var baseTitle = string.Format(AppResources.App_DockTitle_Properties, project.Name);
         vm.PropertyChanged += (_, args) =>
         {
             if (args.PropertyName != nameof(vm.IsDirty)) return;
@@ -6347,7 +6348,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         var item = new DockItem
         {
-            Title     = $"NuGet — {project.Name}",
+            Title     = string.Format(AppResources.App_DockTitle_NuGet, project.Name),
             ContentId = contentId,
             Metadata  = { ["ProjectName"] = project.Name }
         };
@@ -6422,7 +6423,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         var item = new DockItem
         {
-            Title     = $"NuGet — {solution.Name} (Solution)",
+            Title     = string.Format(AppResources.App_DockTitle_NuGetSolution, solution.Name),
             ContentId = contentId,
             Metadata  = { ["SolutionName"] = solution.Name }
         };
@@ -6503,7 +6504,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         var item = new DockItem
         {
-            Title     = $"References — {project.Name}",
+            Title     = string.Format(AppResources.App_DockTitle_References, project.Name),
             ContentId = contentId,
             Metadata  = { ["ProjectName"] = project.Name }
         };
@@ -6577,7 +6578,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         {
             parent.Items.Add(new MenuItem
             {
-                Header    = "(none)",
+                Header    = AppResources.App_ContextMenu_None,
                 IsEnabled = false,
                 Style     = Application.Current.FindResource("DockDarkMenuItemStyle") as Style
             });
@@ -6613,7 +6614,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 {
                     Title           = Path.GetFileNameWithoutExtension(path),
                     Description     = path,
-                    CustomCategory  = "Recent Projects",
+                    CustomCategory  = AppResources.App_JumpList_RecentProjects,
                     ApplicationPath = appPath,
                     Arguments       = $"--open \"{path}\""
                 });
@@ -6623,7 +6624,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 {
                     Title           = Path.GetFileName(path),
                     Description     = path,
-                    CustomCategory  = "Recent Files",
+                    CustomCategory  = AppResources.App_JumpList_RecentFiles,
                     ApplicationPath = appPath,
                     Arguments       = $"--open \"{path}\""
                 });
@@ -6655,7 +6656,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         var compareWithActive = new System.Windows.Controls.MenuItem
         {
-            Header = "Compare with Active Editor",
+            Header = AppResources.App_ContextMenu_CompareWithActive,
             Icon   = new System.Windows.Controls.TextBlock
             {
                 Text       = "\uE8A5",
@@ -6667,7 +6668,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         var compareWithAnother = new System.Windows.Controls.MenuItem
         {
-            Header = "Compare with Another File…",
+            Header = AppResources.App_ContextMenu_CompareWithAnother,
             Icon   = new System.Windows.Controls.TextBlock
             {
                 Text       = "\uE8B7",

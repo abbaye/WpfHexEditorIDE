@@ -20,6 +20,7 @@ using WpfHexEditor.App.Options;
 using WpfHexEditor.App.Services;
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Core.Options;
+using static WpfHexEditor.Core.Options.OptionsPageStrings;
 
 namespace WpfHexEditor.App;
 
@@ -30,8 +31,8 @@ public partial class MainWindow
     private void InitCommandPaletteOptions()
     {
         OptionsPageRegistry.RegisterDynamic(
-            category:     "Tools",
-            pageName:     "Command Palette",
+            category:     CategoryTools,
+            pageName:     PageCommandPalette,
             factory:      () => new CommandPaletteOptionsPage(),
             categoryIcon: "🛠");
     }

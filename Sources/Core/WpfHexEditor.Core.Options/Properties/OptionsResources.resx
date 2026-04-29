@@ -384,4 +384,50 @@
   <data name="TextOpt_Operator"          xml:space="preserve"><value>Operator:</value></data>
   <data name="TextOpt_Identifier"        xml:space="preserve"><value>Identifier:</value></data>
 
+  <!-- ── Options page registry — category names ───────────────────────── -->
+  <data name="Opt_Category_Environment"    xml:space="preserve"><value>Environment</value></data>
+  <data name="Opt_Category_HexEditor"      xml:space="preserve"><value>Hex Editor</value></data>
+  <data name="Opt_Category_SolutionExplorer" xml:space="preserve"><value>Solution Explorer</value></data>
+  <data name="Opt_Category_CodeEditor"     xml:space="preserve"><value>Code Editor</value></data>
+  <data name="Opt_Category_TextEditor"     xml:space="preserve"><value>Text Editor</value></data>
+  <data name="Opt_Category_PluginSystem"   xml:space="preserve"><value>Plugin System</value></data>
+  <data name="Opt_Category_BuildRun"       xml:space="preserve"><value>Build &amp; Run</value></data>
+  <data name="Opt_Category_Debugger"       xml:space="preserve"><value>Debugger</value></data>
+  <data name="Opt_Category_Extensions"     xml:space="preserve"><value>Extensions</value></data>
+  <data name="Opt_Category_FormatEditor"   xml:space="preserve"><value>Format Editor (.whfmt)</value></data>
+  <data name="Opt_Category_Tools"          xml:space="preserve"><value>Tools</value></data>
+
+  <!-- ── Options page registry — page names ───────────────────────────── -->
+  <data name="Opt_Page_General"            xml:space="preserve"><value>General</value></data>
+  <data name="Opt_Page_Save"               xml:space="preserve"><value>Save</value></data>
+  <data name="Opt_Page_Output"             xml:space="preserve"><value>Output</value></data>
+  <data name="Opt_Page_TabGroups"          xml:space="preserve"><value>Tab Groups</value></data>
+  <data name="Opt_Page_KeyboardShortcuts"  xml:space="preserve"><value>Keyboard Shortcuts</value></data>
+  <data name="Opt_Page_Documents"          xml:space="preserve"><value>Documents</value></data>
+  <data name="Opt_Page_Workspace"          xml:space="preserve"><value>Workspace</value></data>
+  <data name="Opt_Page_Tabs"               xml:space="preserve"><value>Tabs</value></data>
+  <data name="Opt_Page_Layout"             xml:space="preserve"><value>Layout</value></data>
+  <data name="Opt_Page_Docking"            xml:space="preserve"><value>Docking</value></data>
+  <data name="Opt_Page_ViewMenu"           xml:space="preserve"><value>View Menu</value></data>
+  <data name="Opt_Page_Display"            xml:space="preserve"><value>Display</value></data>
+  <data name="Opt_Page_Editing"            xml:space="preserve"><value>Editing</value></data>
+  <data name="Opt_Page_StatusBar"          xml:space="preserve"><value>Status Bar</value></data>
+  <data name="Opt_Page_Behavior"           xml:space="preserve"><value>Behavior</value></data>
+  <data name="Opt_Page_AppearanceColors"   xml:space="preserve"><value>Appearance &amp; Colors</value></data>
+  <data name="Opt_Page_InlineHints"        xml:space="preserve"><value>Inline Hints</value></data>
+  <data name="Opt_Page_Navigation"         xml:space="preserve"><value>Navigation</value></data>
+  <data name="Opt_Page_Formatting"         xml:space="preserve"><value>Formatting</value></data>
+  <data name="Opt_Page_Features"           xml:space="preserve"><value>Features</value></data>
+  <data name="Opt_Page_LanguageServers"    xml:space="preserve"><value>Language Servers</value></data>
+  <data name="Opt_Page_Markdown"           xml:space="preserve"><value>Markdown</value></data>
+  <data name="Opt_Page_Development"        xml:space="preserve"><value>Development</value></data>
+  <data name="Opt_Page_Migration"          xml:space="preserve"><value>Migration</value></data>
+  <data name="Opt_Page_EventBus"           xml:space="preserve"><value>Event Bus</value></data>
+  <data name="Opt_Page_Compiler"           xml:space="preserve"><value>Compiler</value></data>
+  <data name="Opt_Page_Breakpoints"        xml:space="preserve"><value>Breakpoints</value></data>
+  <data name="Opt_Page_Marketplace"        xml:space="preserve"><value>Marketplace</value></data>
+  <data name="Opt_Page_FormatExplorer"     xml:space="preserve"><value>Format Explorer</value></data>
+  <data name="Opt_Page_CompareFiles"       xml:space="preserve"><value>Compare Files</value></data>
+  <data name="Opt_Page_CommandPalette"     xml:space="preserve"><value>Command Palette</value></data>
+
 </root>

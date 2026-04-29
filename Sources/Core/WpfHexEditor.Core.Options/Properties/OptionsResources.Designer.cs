@@ -2363,5 +2363,89 @@ namespace WpfHexEditor.Core.Options.Properties {
                 return ResourceManager.GetString("TextOpt_WordWrap", resourceCulture);
             }
         }
+
+        internal static string Opt_Category_Environment => ResourceManager.GetString("Opt_Category_Environment", resourceCulture);
+
+        internal static string Opt_Category_HexEditor => ResourceManager.GetString("Opt_Category_HexEditor", resourceCulture);
+
+        internal static string Opt_Category_SolutionExplorer => ResourceManager.GetString("Opt_Category_SolutionExplorer", resourceCulture);
+
+        internal static string Opt_Category_CodeEditor => ResourceManager.GetString("Opt_Category_CodeEditor", resourceCulture);
+
+        internal static string Opt_Category_TextEditor => ResourceManager.GetString("Opt_Category_TextEditor", resourceCulture);
+
+        internal static string Opt_Category_PluginSystem => ResourceManager.GetString("Opt_Category_PluginSystem", resourceCulture);
+
+        internal static string Opt_Category_BuildRun => ResourceManager.GetString("Opt_Category_BuildRun", resourceCulture);
+
+        internal static string Opt_Category_Debugger => ResourceManager.GetString("Opt_Category_Debugger", resourceCulture);
+
+        internal static string Opt_Category_Extensions => ResourceManager.GetString("Opt_Category_Extensions", resourceCulture);
+
+        internal static string Opt_Category_FormatEditor => ResourceManager.GetString("Opt_Category_FormatEditor", resourceCulture);
+
+        internal static string Opt_Category_Tools => ResourceManager.GetString("Opt_Category_Tools", resourceCulture);
+
+        internal static string Opt_Page_General => ResourceManager.GetString("Opt_Page_General", resourceCulture);
+
+        internal static string Opt_Page_Save => ResourceManager.GetString("Opt_Page_Save", resourceCulture);
+
+        internal static string Opt_Page_Output => ResourceManager.GetString("Opt_Page_Output", resourceCulture);
+
+        internal static string Opt_Page_TabGroups => ResourceManager.GetString("Opt_Page_TabGroups", resourceCulture);
+
+        internal static string Opt_Page_KeyboardShortcuts => ResourceManager.GetString("Opt_Page_KeyboardShortcuts", resourceCulture);
+
+        internal static string Opt_Page_Documents => ResourceManager.GetString("Opt_Page_Documents", resourceCulture);
+
+        internal static string Opt_Page_Workspace => ResourceManager.GetString("Opt_Page_Workspace", resourceCulture);
+
+        internal static string Opt_Page_Tabs => ResourceManager.GetString("Opt_Page_Tabs", resourceCulture);
+
+        internal static string Opt_Page_Layout => ResourceManager.GetString("Opt_Page_Layout", resourceCulture);
+
+        internal static string Opt_Page_Docking => ResourceManager.GetString("Opt_Page_Docking", resourceCulture);
+
+        internal static string Opt_Page_ViewMenu => ResourceManager.GetString("Opt_Page_ViewMenu", resourceCulture);
+
+        internal static string Opt_Page_Display => ResourceManager.GetString("Opt_Page_Display", resourceCulture);
+
+        internal static string Opt_Page_Editing => ResourceManager.GetString("Opt_Page_Editing", resourceCulture);
+
+        internal static string Opt_Page_StatusBar => ResourceManager.GetString("Opt_Page_StatusBar", resourceCulture);
+
+        internal static string Opt_Page_Behavior => ResourceManager.GetString("Opt_Page_Behavior", resourceCulture);
+
+        internal static string Opt_Page_AppearanceColors => ResourceManager.GetString("Opt_Page_AppearanceColors", resourceCulture);
+
+        internal static string Opt_Page_InlineHints => ResourceManager.GetString("Opt_Page_InlineHints", resourceCulture);
+
+        internal static string Opt_Page_Navigation => ResourceManager.GetString("Opt_Page_Navigation", resourceCulture);
+
+        internal static string Opt_Page_Formatting => ResourceManager.GetString("Opt_Page_Formatting", resourceCulture);
+
+        internal static string Opt_Page_Features => ResourceManager.GetString("Opt_Page_Features", resourceCulture);
+
+        internal static string Opt_Page_LanguageServers => ResourceManager.GetString("Opt_Page_LanguageServers", resourceCulture);
+
+        internal static string Opt_Page_Markdown => ResourceManager.GetString("Opt_Page_Markdown", resourceCulture);
+
+        internal static string Opt_Page_Development => ResourceManager.GetString("Opt_Page_Development", resourceCulture);
+
+        internal static string Opt_Page_Migration => ResourceManager.GetString("Opt_Page_Migration", resourceCulture);
+
+        internal static string Opt_Page_EventBus => ResourceManager.GetString("Opt_Page_EventBus", resourceCulture);
+
+        internal static string Opt_Page_Compiler => ResourceManager.GetString("Opt_Page_Compiler", resourceCulture);
+
+        internal static string Opt_Page_Breakpoints => ResourceManager.GetString("Opt_Page_Breakpoints", resourceCulture);
+
+        internal static string Opt_Page_Marketplace => ResourceManager.GetString("Opt_Page_Marketplace", resourceCulture);
+
+        internal static string Opt_Page_FormatExplorer => ResourceManager.GetString("Opt_Page_FormatExplorer", resourceCulture);
+
+        internal static string Opt_Page_CompareFiles => ResourceManager.GetString("Opt_Page_CompareFiles", resourceCulture);
+
+        internal static string Opt_Page_CommandPalette => ResourceManager.GetString("Opt_Page_CommandPalette", resourceCulture);
     }
 }
