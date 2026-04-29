@@ -5,7 +5,7 @@
     <UseWPF>true</UseWPF>
     <RootNamespace>WpfHexEditor.Editor.TextEditor</RootNamespace>
     <AssemblyName>WpfHexEditor.Editor.TextEditor</AssemblyName>
-    <NeutralLanguage>en</NeutralLanguage>
+    <NeutralLanguage>en-US</NeutralLanguage>
     <LangVersion>preview</LangVersion>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -36,4 +36,18 @@
     <None Include="README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
+
+  <ItemGroup>
+    <Compile Update="Properties\TextEditorResources.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>TextEditorResources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <EmbeddedResource Update="Properties\TextEditorResources.resx">
+      <SubType>Designer</SubType>
+      <LastGenOutput>TextEditorResources.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
 </Project>

@@ -6,7 +6,7 @@
     <UseWPF>true</UseWPF>
     <RootNamespace>WpfHexEditor.App</RootNamespace>
     <AssemblyName>WpfHexEditor.App</AssemblyName>
-    <NeutralLanguage>en</NeutralLanguage>
+    <NeutralLanguage>en-US</NeutralLanguage>
     <LangVersion>preview</LangVersion>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -158,4 +158,18 @@
           LinkBase="tools\lsp" />
   </ItemGroup>
 
+
+  <ItemGroup>
+    <Compile Update="Properties\AppResources.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>AppResources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <EmbeddedResource Update="Properties\AppResources.resx">
+      <SubType>Designer</SubType>
+      <LastGenOutput>AppResources.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
 </Project>
