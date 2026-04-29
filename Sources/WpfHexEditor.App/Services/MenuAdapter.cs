@@ -40,6 +40,10 @@ public sealed class MenuAdapter : IMenuAdapter
     // uiIds in each group block — used to clean up separators when a group is emptied
     private readonly Dictionary<string, List<string>> _groupMembers = new(StringComparer.OrdinalIgnoreCase);
 
+    // canonical name → created-or-found top-level MenuItem (prevents race: two plugins
+    // calling AddMenuItem before either item is in _mainMenu.Items)
+    private readonly Dictionary<string, MenuItem> _parentCache = new(StringComparer.OrdinalIgnoreCase);
+
     public MenuAdapter(Menu mainMenu)
     {
         _mainMenu = mainMenu ?? throw new ArgumentNullException(nameof(mainMenu));
@@ -208,25 +212,34 @@ public sealed class MenuAdapter : IMenuAdapter
 
         var canonical = parentPath.TrimStart('_');
 
+        // Fast path: already resolved by a prior call (handles concurrent plugin registration
+        // where the second plugin calls AddMenuItem before the first item appears in Items).
+        if (_parentCache.TryGetValue(canonical, out var cached))
+            return cached;
+
         // Resolve localized label for this canonical name (if known).
-        var localizedLabel = _canonicalToLocalized.TryGetValue(canonical, out var factory)
-            ? factory()
+        var localizedLabel = _canonicalToLocalized.TryGetValue(canonical, out var labelFactory)
+            ? labelFactory()
             : canonical;
 
+        // Search existing top-level items — strip WPF access-key underscore prefix.
         foreach (var topItem in _mainMenu.Items.OfType<MenuItem>())
         {
-            // Strip leading underscore (WPF access key prefix, e.g. "_View" → "View").
             var headerText = topItem.Header?.ToString()?.TrimStart('_') ?? string.Empty;
 
-            // Match against localized label first (e.g. "Outils"), then canonical (e.g. "Tools").
+            // Match against localized label (e.g. "Outils") OR canonical (e.g. "Tools").
             if (string.Equals(headerText, localizedLabel, StringComparison.OrdinalIgnoreCase) ||
                 string.Equals(headerText, canonical,       StringComparison.OrdinalIgnoreCase))
+            {
+                _parentCache[canonical] = topItem;
                 return topItem;
+            }
         }
 
-        // Parent not found — create a new top-level menu group using the localized label.
+        // Not found — create a new top-level group with the localized label and cache it.
         var newParent = new MenuItem { Header = localizedLabel };
         _mainMenu.Items.Add(newParent);
+        _parentCache[canonical] = newParent;
         return newParent;
     }
 }

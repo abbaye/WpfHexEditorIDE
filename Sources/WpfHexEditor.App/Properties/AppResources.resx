@@ -780,4 +780,37 @@
   <!-- ── Extensions dialog folder picker ──────────────────────────────── -->
   <data name="App_Extensions_SelectOutputDir" xml:space="preserve"><value>Select Extension Build Output Directory</value></data>
 
+  <!-- ── Solution Convert dialogs ─────────────────────────────────────── -->
+  <data name="App_Convert_Title" xml:space="preserve"><value>Convert Solution Format</value></data>
+  <data name="App_Convert_NoSolution" xml:space="preserve"><value>No solution is currently open.</value></data>
+  <data name="App_Convert_NotSln" xml:space="preserve"><value>The current solution is not a .sln file.</value></data>
+  <data name="App_Convert_NotSlnx" xml:space="preserve"><value>The current solution is not a .slnx file.</value></data>
+  <data name="App_Convert_AlreadyWhsln" xml:space="preserve"><value>The current solution is already a .whsln file.</value></data>
+  <data name="App_Convert_Confirm" xml:space="preserve"><value>Convert "{0}" → "{1}"?{2}{2}The original file will be preserved.</value></data>
+  <data name="App_Convert_NoLoader" xml:space="preserve"><value>No loader registered for {0} format. Make sure the VS Solution Loader plugin is active.</value></data>
+  <data name="App_Convert_NoLoaderSimple" xml:space="preserve"><value>No loader registered for {0} format.</value></data>
+  <data name="App_Convert_Success" xml:space="preserve"><value>Converted to "{0}".{1}{1}Open the converted solution now?</value></data>
+  <data name="App_Convert_Failed" xml:space="preserve"><value>Conversion failed:{0}{1}</value></data>
+
+  <!-- ── Document/Editor labels ────────────────────────────────────────── -->
+  <data name="App_Editor_HexEditor" xml:space="preserve"><value>Hex Editor</value></data>
+  <data name="App_Editor_Encodings" xml:space="preserve"><value>Encodings</value></data>
+  <data name="App_Editor_ProjectTables" xml:space="preserve"><value>Project Tables</value></data>
+  <data name="App_Editor_FileNotFound" xml:space="preserve"><value>File not found:{0}{1}</value></data>
+  <data name="App_Editor_NewDocumentText" xml:space="preserve"><value>This is document: {0}{1}{1}Edit this text...</value></data>
+  <data name="App_Editor_RefreshPrefix" xml:space="preserve"><value>Refresh: </value></data>
+
+  <!-- ── LSP / navigation messages ─────────────────────────────────────── -->
+  <data name="App_LSP_TryOpenFile" xml:space="preserve"><value>Try opening the declaring file directly, or ensure the LSP server is running.</value></data>
+  <data name="App_LSP_LoadAssembly" xml:space="preserve"><value>Load the assembly in Assembly Explorer to navigate to its decompiled source.</value></data>
+
+  <!-- ── Breadcrumb "not found" labels ─────────────────────────────────── -->
+  <data name="App_Breadcrumb_ProjectNotFound" xml:space="preserve"><value>Project not found.</value></data>
+  <data name="App_Breadcrumb_SolutionNotLoaded" xml:space="preserve"><value>Solution not loaded.</value></data>
+
+  <!-- ── Debugger service messages ─────────────────────────────────────── -->
+  <data name="App_Debugger_AdapterNotFound" xml:space="preserve"><value>Debug adapter (netcoredbg) not found.{0}Install it or set the path in Options → Debugger.</value></data>
+  <data name="App_Debugger_AdapterMissing" xml:space="preserve"><value>Install the appropriate adapter plugin or configure a custom adapter.</value></data>
+  <data name="App_Debugger_Title" xml:space="preserve"><value>Debugger</value></data>
+
 </root>
