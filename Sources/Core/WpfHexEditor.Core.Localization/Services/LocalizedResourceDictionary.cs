@@ -75,15 +75,17 @@ public class LocalizedResourceDictionary : ResourceDictionary
     {
         RegisterResourceManager(CommonResources.ResourceManager);
         CultureChanged += OnCultureChanged;
+        // Subclasses: call RegisterResourceManager() then LoadResources() in their own ctor.
+        // Direct instantiation (<loc:LocalizedResourceDictionary/>) loads CommonResources only.
         LoadResources();
     }
 
     /// <summary>
     /// Registers an additional <see cref="ResourceManager"/> whose keys
-    /// are merged into this dictionary. Call immediately after construction,
-    /// before the dictionary is added to <c>MergedDictionaries</c>.
+    /// are merged into this dictionary, then reloads all resources.
+    /// Subclasses must call this for each of their managers and then call
+    /// <see cref="LoadResources"/> once all managers are registered.
     /// </summary>
-    /// <param name="manager">The ResourceManager to add (must not be null).</param>
     public void RegisterResourceManager(ResourceManager manager)
     {
         ArgumentNullException.ThrowIfNull(manager);
@@ -98,11 +100,11 @@ public class LocalizedResourceDictionary : ResourceDictionary
         => LoadResources();
 
     /// <summary>
-    /// Reloads all resources from all registered managers for the current culture.
-    /// Keys from later-registered managers override keys from earlier ones,
-    /// allowing module-specific overrides of common strings when needed.
+    /// Loads (or reloads) all resources from all registered managers for the current culture.
+    /// Subclasses must call this once after all RegisterResourceManager calls.
+    /// Keys from later-registered managers override keys from earlier ones.
     /// </summary>
-    private void LoadResources()
+    public void LoadResources()
     {
         foreach (var manager in _managers)
             LoadFromManager(manager);

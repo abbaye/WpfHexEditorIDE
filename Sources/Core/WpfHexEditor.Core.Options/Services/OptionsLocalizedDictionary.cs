@@ -36,5 +36,6 @@ public sealed class OptionsLocalizedDictionary : LocalizedResourceDictionary
     {
         RegisterResourceManager(CommonResources.ResourceManager);
         RegisterResourceManager(OptionsResources.ResourceManager);
+        LoadResources();
     }
 }

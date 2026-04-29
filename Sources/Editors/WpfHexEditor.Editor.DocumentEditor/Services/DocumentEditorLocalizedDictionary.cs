@@ -19,5 +19,6 @@ public sealed class DocumentEditorLocalizedDictionary : LocalizedResourceDiction
     {
         RegisterResourceManager(CommonResources.ResourceManager);
         RegisterResourceManager(DocumentEditorResources.ResourceManager);
+        LoadResources();
     }
 }

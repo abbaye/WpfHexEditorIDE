@@ -37,5 +37,6 @@ public sealed class TextEditorLocalizedDictionary : LocalizedResourceDictionary
     {
         RegisterResourceManager(CommonResources.ResourceManager);
         RegisterResourceManager(TextEditorResources.ResourceManager);
+        LoadResources();
     }
 }

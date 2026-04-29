@@ -20,5 +20,6 @@ public sealed class AppLocalizedDictionary : LocalizedResourceDictionary
     public AppLocalizedDictionary()
     {
         RegisterResourceManager(AppResources.ResourceManager);
+        LoadResources();
     }
 }

@@ -38,5 +38,6 @@ public sealed class ShellPanelsLocalizedDictionary : LocalizedResourceDictionary
     {
         RegisterResourceManager(CommonResources.ResourceManager);
         RegisterResourceManager(ShellPanelsResources.ResourceManager);
+        LoadResources();
     }
 }

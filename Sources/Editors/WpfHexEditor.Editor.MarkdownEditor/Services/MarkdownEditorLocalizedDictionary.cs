@@ -19,5 +19,6 @@ public sealed class MarkdownEditorLocalizedDictionary : LocalizedResourceDiction
     public MarkdownEditorLocalizedDictionary()
     {
         RegisterResourceManager(MarkdownEditorResources.ResourceManager);
+        LoadResources();
     }
 }

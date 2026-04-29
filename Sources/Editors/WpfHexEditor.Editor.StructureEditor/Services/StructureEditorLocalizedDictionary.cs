@@ -18,5 +18,6 @@ public sealed class StructureEditorLocalizedDictionary : LocalizedResourceDictio
     {
         RegisterResourceManager(CommonResources.ResourceManager);
         RegisterResourceManager(StructureEditorResources.ResourceManager);
+        LoadResources();
     }
 }

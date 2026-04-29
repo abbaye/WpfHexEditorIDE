@@ -18,5 +18,6 @@ public sealed class DisassemblyViewerLocalizedDictionary : LocalizedResourceDict
     {
         RegisterResourceManager(CommonResources.ResourceManager);
         RegisterResourceManager(DisassemblyViewerResources.ResourceManager);
+        LoadResources();
     }
 }

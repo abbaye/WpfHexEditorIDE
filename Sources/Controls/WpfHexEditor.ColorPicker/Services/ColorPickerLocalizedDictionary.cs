@@ -33,5 +33,6 @@ public sealed class ColorPickerLocalizedDictionary : LocalizedResourceDictionary
     public ColorPickerLocalizedDictionary()
     {
         RegisterResourceManager(ColorPickerResources.ResourceManager);
+        LoadResources();
     }
 }

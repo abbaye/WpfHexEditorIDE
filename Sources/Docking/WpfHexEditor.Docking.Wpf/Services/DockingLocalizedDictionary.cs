@@ -33,5 +33,6 @@ public sealed class DockingLocalizedDictionary : LocalizedResourceDictionary
     public DockingLocalizedDictionary()
     {
         RegisterResourceManager(DockingResources.ResourceManager);
+        LoadResources();
     }
 }

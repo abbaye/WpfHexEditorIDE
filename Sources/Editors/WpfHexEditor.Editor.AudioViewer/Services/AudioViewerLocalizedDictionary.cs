@@ -17,5 +17,6 @@ public sealed class AudioViewerLocalizedDictionary : LocalizedResourceDictionary
     public AudioViewerLocalizedDictionary()
     {
         RegisterResourceManager(AudioViewerResources.ResourceManager);
+        LoadResources();
     }
 }

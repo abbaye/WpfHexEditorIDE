@@ -22,5 +22,6 @@ public sealed class CodeEditorLocalizedDictionary : LocalizedResourceDictionary
     {
         RegisterResourceManager(CommonResources.ResourceManager);
         RegisterResourceManager(CodeEditorResources.ResourceManager);
+        LoadResources();
     }
 }

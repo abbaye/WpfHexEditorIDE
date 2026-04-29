@@ -38,5 +38,6 @@ public sealed class HexEditorLocalizedDictionary : LocalizedResourceDictionary
     {
         RegisterResourceManager(CommonResources.ResourceManager);
         RegisterResourceManager(Resources.ResourceManager);
+        LoadResources();
     }
 }
