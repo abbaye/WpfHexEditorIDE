@@ -112,20 +112,22 @@ public class LocalizedResourceDictionary : ResourceDictionary
 
     private void LoadFromManager(ResourceManager manager)
     {
-        // Use the invariant culture resource set as the authoritative key list.
-        var invariantSet = manager.GetResourceSet(CultureInfo.InvariantCulture, createIfNotExists: true, tryParents: true);
-        if (invariantSet is null)
+        // Get the base (neutral) resource set as the authoritative key list.
+        // tryParents:true walks up to the neutral/invariant set so we always
+        // find the embedded .resx regardless of whether [NeutralResourcesLanguage]
+        // is declared on the assembly.
+        var baseSet = manager.GetResourceSet(CultureInfo.InvariantCulture, createIfNotExists: true, tryParents: true)
+                   ?? manager.GetResourceSet(CultureInfo.CurrentUICulture,  createIfNotExists: true, tryParents: true);
+        if (baseSet is null)
             return;
 
-        foreach (System.Collections.DictionaryEntry entry in invariantSet)
+        foreach (System.Collections.DictionaryEntry entry in baseSet)
         {
             if (entry.Key is not string key)
                 continue;
 
-            // Let the .NET ResourceManager handle the full fallback chain itself:
+            // GetString() delegates the full fallback chain to the .NET ResourceManager:
             // culture → neutral culture → invariant (.resx base).
-            // This is identical to the original pre-Phase-1 behaviour and avoids
-            // the GetResourceSet(tryParents:false) bug that silently missed satellites.
             string? value;
             try { value = manager.GetString(key, _currentCulture); }
             catch (MissingManifestResourceException) { value = null; }

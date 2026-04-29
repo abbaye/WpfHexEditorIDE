@@ -1,4 +1,4 @@
-﻿<!--
+<!--
     WpfHexEditor.Editor.DocumentEditor
     ====================================
     WPF editor host for RTF / DOCX / ODT documents.
@@ -19,6 +19,7 @@
     <UseWPF>true</UseWPF>
     <RootNamespace>WpfHexEditor.Editor.DocumentEditor</RootNamespace>
     <AssemblyName>WpfHexEditor.Editor.DocumentEditor</AssemblyName>
+    <NeutralLanguage>en</NeutralLanguage>
     <LangVersion>preview</LangVersion>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>

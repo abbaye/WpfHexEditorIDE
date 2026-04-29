@@ -5,6 +5,7 @@
     <UseWPF>true</UseWPF>
     <RootNamespace>WpfHexEditor.ColorPicker</RootNamespace>
     <AssemblyName>WpfHexEditor.ColorPicker</AssemblyName>
+    <NeutralLanguage>en</NeutralLanguage>
     <LangVersion>preview</LangVersion>
     <Nullable>enable</Nullable>
 
