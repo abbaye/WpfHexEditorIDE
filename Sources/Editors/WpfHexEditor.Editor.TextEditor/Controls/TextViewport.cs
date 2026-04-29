@@ -327,14 +327,14 @@ internal sealed class TextViewport : FrameworkElement
             int visLast  = visFirst + _wrapHeights[lineIndex] - 1;
             if (visFirst < _firstVisibleLine)
                 FirstVisibleLine = visFirst;
-            else if (visLast >= _firstVisibleLine + _visibleLineCount)
-                FirstVisibleLine = Math.Max(0, visLast - _visibleLineCount + 1);
+            else if (visLast >= _firstVisibleLine + _visibleLineCount - 1)
+                FirstVisibleLine = Math.Max(0, visLast - _visibleLineCount + 2);
             return;
         }
         if (lineIndex < _firstVisibleLine)
             FirstVisibleLine = lineIndex;
-        else if (lineIndex >= _firstVisibleLine + _visibleLineCount)
-            FirstVisibleLine = lineIndex - _visibleLineCount + 1;
+        else if (lineIndex >= _firstVisibleLine + _visibleLineCount - 1)
+            FirstVisibleLine = lineIndex - _visibleLineCount + 2;
     }
 
     public void StartCursorBlink()
