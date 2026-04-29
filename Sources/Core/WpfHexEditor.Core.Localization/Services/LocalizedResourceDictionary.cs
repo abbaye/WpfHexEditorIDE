@@ -120,39 +120,15 @@ public class LocalizedResourceDictionary : ResourceDictionary
             if (entry.Key is not string key)
                 continue;
 
-            var value = ResolveWithFallback(manager, key, _currentCulture)
-                        ?? entry.Value?.ToString()
-                        ?? string.Empty;
+            // Let the .NET ResourceManager handle the full fallback chain itself:
+            // culture → neutral culture → invariant (.resx base).
+            // This is identical to the original pre-Phase-1 behaviour and avoids
+            // the GetResourceSet(tryParents:false) bug that silently missed satellites.
+            string? value;
+            try { value = manager.GetString(key, _currentCulture); }
+            catch (MissingManifestResourceException) { value = null; }
 
-            this[key] = value;
+            this[key] = value ?? entry.Value?.ToString() ?? string.Empty;
         }
-    }
-
-    /// <summary>
-    /// Resolves a single key with the standard fallback chain:
-    /// <paramref name="culture"/> → neutral culture → invariant.
-    /// Returns <see langword="null"/> only when invariant also has no value.
-    /// </summary>
-    private static string? ResolveWithFallback(ResourceManager manager, string key, CultureInfo culture)
-    {
-        // Walk: specific → neutral → invariant
-        CultureInfo? current = culture;
-        while (current is not null && current != CultureInfo.InvariantCulture)
-        {
-            try
-            {
-                var set = manager.GetResourceSet(current, createIfNotExists: false, tryParents: false);
-                var value = set?.GetString(key);
-                if (!string.IsNullOrEmpty(value))
-                    return value;
-            }
-            catch (MissingManifestResourceException) { /* satellite not available */ }
-
-            current = current.Parent == current ? null : current.Parent;
-        }
-
-        // Final fallback: invariant (base .resx)
-        try { return manager.GetString(key, CultureInfo.InvariantCulture); }
-        catch (MissingManifestResourceException) { return null; }
     }
 }
