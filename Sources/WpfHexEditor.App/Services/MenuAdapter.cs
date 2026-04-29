@@ -6,6 +6,7 @@
 //////////////////////////////////////////////
 
 using System.Windows.Controls;
+using WpfHexEditor.App.Properties;
 using WpfHexEditor.PluginHost.Adapters;
 using WpfHexEditor.SDK.Descriptors;
 
@@ -185,20 +186,46 @@ public sealed class MenuAdapter : IMenuAdapter
     private static bool IsDebugParent(string parentPath)
         => string.Equals(parentPath?.TrimStart('_'), "Debug", StringComparison.OrdinalIgnoreCase);
 
+    /// <summary>
+    /// Maps canonical (English) top-level menu names to their localized equivalents.
+    /// Used to merge plugin-contributed items (which always use canonical English names)
+    /// into the correctly localized main menu group rather than creating a duplicate entry.
+    /// </summary>
+    private static readonly Dictionary<string, Func<string>> _canonicalToLocalized =
+        new(StringComparer.OrdinalIgnoreCase)
+        {
+            ["File"]       = () => AppResources.App_Menu_File,
+            ["Edit"]       = () => AppResources.App_Menu_Edit,
+            ["View"]       = () => AppResources.App_Menu_View,
+            ["Build"]      = () => AppResources.App_Menu_Build,
+            ["Debug"]      = () => AppResources.App_Menu_Debug,
+            ["Tools"]      = () => AppResources.App_Menu_Tools,
+        };
+
     private ItemsControl FindOrCreateParent(string parentPath)
     {
         if (string.IsNullOrWhiteSpace(parentPath)) return _mainMenu;
+
+        var canonical = parentPath.TrimStart('_');
+
+        // Resolve localized label for this canonical name (if known).
+        var localizedLabel = _canonicalToLocalized.TryGetValue(canonical, out var factory)
+            ? factory()
+            : canonical;
 
         foreach (var topItem in _mainMenu.Items.OfType<MenuItem>())
         {
             // Strip leading underscore (WPF access key prefix, e.g. "_View" → "View").
             var headerText = topItem.Header?.ToString()?.TrimStart('_') ?? string.Empty;
-            if (string.Equals(headerText, parentPath.TrimStart('_'), StringComparison.OrdinalIgnoreCase))
+
+            // Match against localized label first (e.g. "Outils"), then canonical (e.g. "Tools").
+            if (string.Equals(headerText, localizedLabel, StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(headerText, canonical,       StringComparison.OrdinalIgnoreCase))
                 return topItem;
         }
 
-        // Parent not found — create a new top-level menu group.
-        var newParent = new MenuItem { Header = parentPath };
+        // Parent not found — create a new top-level menu group using the localized label.
+        var newParent = new MenuItem { Header = localizedLabel };
         _mainMenu.Items.Add(newParent);
         return newParent;
     }
