@@ -112,12 +112,15 @@ public class LocalizedResourceDictionary : ResourceDictionary
 
     private void LoadFromManager(ResourceManager manager)
     {
-        // Get the base (neutral) resource set as the authoritative key list.
-        // tryParents:true walks up to the neutral/invariant set so we always
-        // find the embedded .resx regardless of whether [NeutralResourcesLanguage]
-        // is declared on the assembly.
-        var baseSet = manager.GetResourceSet(CultureInfo.InvariantCulture, createIfNotExists: true, tryParents: true)
+        System.Resources.ResourceSet? baseSet = null;
+        try
+        {
+            baseSet = manager.GetResourceSet(CultureInfo.InvariantCulture, createIfNotExists: true, tryParents: true)
                    ?? manager.GetResourceSet(CultureInfo.CurrentUICulture,  createIfNotExists: true, tryParents: true);
+        }
+        catch (MissingManifestResourceException) { return; }
+        catch (Exception) { return; }
+
         if (baseSet is null)
             return;
 
@@ -126,8 +129,6 @@ public class LocalizedResourceDictionary : ResourceDictionary
             if (entry.Key is not string key)
                 continue;
 
-            // GetString() delegates the full fallback chain to the .NET ResourceManager:
-            // culture → neutral culture → invariant (.resx base).
             string? value;
             try { value = manager.GetString(key, _currentCulture); }
             catch (MissingManifestResourceException) { value = null; }

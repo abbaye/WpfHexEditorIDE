@@ -27,12 +27,21 @@ public partial class App : Application
     /// </summary>
     public static (string Left, string Right)? StartupDiffPaths { get; private set; }
 
+    public App()
+    {
+        // Restore the saved UI language BEFORE InitializeComponent() processes
+        // App.xaml and instantiates all LocalizedResourceDictionary entries.
+        // StaticResource bindings resolve at BAML parse time, so the culture
+        // must be set here — OnStartup fires too late.
+        RestorePreferredLanguage();
+        InitializeComponent();
+    }
+
     protected override void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
         LocalizationService.Instance = new LocalizationService();
         ParseCommandLine(e.Args);
-        RestorePreferredLanguage();
     }
 
     /// <summary>
@@ -41,6 +50,11 @@ public partial class App : Application
     /// </summary>
     private static void RestorePreferredLanguage()
     {
+        // Load settings early so PreferredLanguage is available before
+        // InitializeComponent() instantiates the localized dictionaries.
+        // MainWindow.OnLoaded will call Load() again — that is harmless.
+        AppSettingsService.Instance.Load();
+
         var cultureName = AppSettingsService.Instance.Current.PreferredLanguage;
         if (string.IsNullOrWhiteSpace(cultureName)) return;
 

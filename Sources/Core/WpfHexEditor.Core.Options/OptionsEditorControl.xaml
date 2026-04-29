@@ -5,6 +5,7 @@
 <UserControl x:Class="WpfHexEditor.Core.Options.OptionsEditorControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:optSvc="clr-namespace:WpfHexEditor.Core.Options.Services"
              Background="{DynamicResource DockWindowBackgroundBrush}"
              KeyDown="OnControlKeyDown"
              Focusable="True">
@@ -13,6 +14,8 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/WpfHexEditor.Docking.Wpf;component/Themes/PanelCommon.xaml"/>
+                <!-- Options + common strings: enables DynamicResource in all child pages -->
+                <optSvc:OptionsLocalizedDictionary/>
             </ResourceDictionary.MergedDictionaries>
 
             <!-- Chevron d'expansion style Visual Studio -->

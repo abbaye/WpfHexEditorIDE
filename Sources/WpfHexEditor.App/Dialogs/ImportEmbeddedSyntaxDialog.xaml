@@ -9,7 +9,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ec="clr-namespace:WpfHexEditor.Editor.Core.Views;assembly=WpfHexEditor.Editor.Core"
         xmlns:ce="clr-namespace:WpfHexEditor.Editor.CodeEditor.Controls;assembly=WpfHexEditor.Editor.CodeEditor"
-        Title="{DynamicResource App_ImportSyntax_Title}"
+        Title="{StaticResource App_ImportSyntax_Title}"
         Width="880" Height="820"
         MinWidth="640" MinHeight="620"
         ResizeMode="CanResizeWithGrip"
@@ -121,7 +121,7 @@
 
             <ToggleButton x:Name="PreviewToggle"
                           Grid.Column="3"
-                          Content="{DynamicResource App_ImportSyntax_ShowPreview}"
+                          Content="{StaticResource App_ImportSyntax_ShowPreview}"
                           Checked="OnPreviewToggle"
                           Unchecked="OnPreviewToggle"/>
         </Grid>
@@ -160,7 +160,7 @@
                                    FontSize="11" Margin="0,0,0,8"/>
                         <Rectangle Height="1" Margin="0,0,0,8"
                                    Fill="{DynamicResource DockBorderBrush}"/>
-                        <TextBlock Text="{DynamicResource App_ImportSyntax_ExtensionsLabel}" Opacity="0.65"
+                        <TextBlock Text="{StaticResource App_ImportSyntax_ExtensionsLabel}" Opacity="0.65"
                                    FontSize="11" Margin="0,0,0,4"/>
                         <WrapPanel x:Name="DetailExtWrap" Margin="0,0,0,10"/>
                         <TextBlock x:Name="DetailDescription"
@@ -197,7 +197,7 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Label Content="{DynamicResource App_ImportSyntax_DestinationFolder}"/>
+            <Label Content="{StaticResource App_ImportSyntax_DestinationFolder}"/>
             <ComboBox x:Name="FolderCombo" Grid.Column="1"
                       Style="{StaticResource DockComboBoxStyle}"/>
         </Grid>
@@ -211,9 +211,9 @@
             <TextBlock x:Name="SelectionCountText"
                        VerticalAlignment="Center" Opacity="0.7"/>
             <StackPanel Grid.Column="1" Orientation="Horizontal">
-                <Button x:Name="ImportButton" Content="{DynamicResource App_ImportSyntax_Import}" IsDefault="True"
+                <Button x:Name="ImportButton" Content="{StaticResource App_ImportSyntax_Import}" IsDefault="True"
                         IsEnabled="False" Click="OnImport" Margin="0,0,8,0"/>
-                <Button Content="{DynamicResource App_ImportSyntax_Cancel}" IsCancel="True"/>
+                <Button Content="{StaticResource App_ImportSyntax_Cancel}" IsCancel="True"/>
             </StackPanel>
         </Grid>
     </Grid>
