@@ -361,10 +361,7 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IBufferAw
             ViewportGrid.MinWidth = ScrollView.ViewportWidth;
             if (!Viewport.IsWordWrapEnabled)
                 Viewport.Width = Math.Max(Viewport.EstimatedMaxWidth, ScrollView.ViewportWidth);
-            // Invalidate measure so WPF re-queries TotalHeight from MeasureOverride.
-            // Do NOT set Viewport.Height explicitly — that overrides the layout system and
-            // causes the ScrollViewer to freeze (Height assignment → layout pass → ScrollChanged → loop).
-            Viewport.InvalidateMeasure();
+            Viewport.Height = Math.Max(Viewport.TotalHeight + Viewport.LineHeight, ScrollView.ViewportHeight);
             Viewport.InvalidateVisual();
         });
     }
@@ -914,11 +911,7 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IBufferAw
         // No-wrap: explicit Width provides the horizontal scroll extent.
         if (!Viewport.IsWordWrapEnabled)
             Viewport.Width = Math.Max(Viewport.EstimatedMaxWidth, ScrollView.ViewportWidth);
-        // NOTE: Viewport.Height is NOT set here. The ScrollViewer passes Infinity vertically
-        // during measure, so TextViewport.MeasureOverride returns TotalHeight — which is exactly
-        // what WPF needs to compute the correct scrollbar thumb size and extent. Setting an
-        // explicit Height here caused a layout loop (ScrollChanged → Height change → new layout
-        // → ScrollChanged → …) that froze the scrollbar.
+        Viewport.Height = Math.Max(Viewport.TotalHeight + Viewport.LineHeight, ScrollView.ViewportHeight);
 
         ViewportScrollChanged?.Invoke(this, e);
     }
@@ -991,9 +984,9 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IBufferAw
                     RefreshTextStatusBarItems();
                     EnsureCaretHorizontallyVisible();
                     Viewport.ScrollIntoView(_vm.CaretLine);
-                    // Sync the ScrollViewer offset so the scrollbar thumb tracks keyboard navigation.
-                    // ScrollIntoView updates Viewport.FirstVisibleLine directly without going through
-                    // the ScrollViewer, so the scrollbar stays frozen without this call.
+                    // Drive the ScrollViewer to the same position so the scrollbar thumb tracks
+                    // keyboard/caret navigation. ScrollIntoView only updates FirstVisibleLine
+                    // (the render offset) without moving the ScrollViewer's VerticalOffset.
                     ScrollView.ScrollToVerticalOffset(Viewport.FirstVisibleLine * Viewport.LineHeight);
                     break;
                 case nameof(TextEditorViewModel.Title):
