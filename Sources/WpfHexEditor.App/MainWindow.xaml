@@ -750,7 +750,7 @@
                     </MenuItem>
 
                     <!-- ═══════════ Tools ═══════════ -->
-                    <MenuItem Header="{StaticResource App_Menu_Tools}">
+                    <MenuItem Header="{StaticResource App_Menu_Tools}" x:Name="ToolsMenu">
                         <MenuItem Header="{StaticResource App_Menu_Terminal}" Click="OnOpenTerminal">
                             <MenuItem.Icon>
                                 <TextBlock Text="&#xE756;" FontFamily="Segoe MDL2 Assets" FontSize="13"

@@ -139,10 +139,11 @@ public partial class MainWindow
             var menuAdapter      = _menuAdapter;
             var statusBarAdapter = (StatusBarAdapter) _serviceProvider.GetRequiredService<WpfHexEditor.PluginHost.Adapters.IStatusBarAdapter>();
 
-            // Initialize the dynamic View & Debug menu systems BEFORE plugins load,
-            // so plugin-contributed items trigger ViewItemsChanged/DebugItemsChanged → RebuildMenu().
+            // Initialize the dynamic View, Debug & Tools menu systems BEFORE plugins load,
+            // so plugin-contributed items trigger the respective *Changed → Rebuild*() handlers.
             InitViewMenuOrganizer();
             InitDebugMenuOrganizer();
+            InitToolsMenuOrganizer();
 
             // 2. Build PluginHost singletons
             var permissionService = new PermissionService();

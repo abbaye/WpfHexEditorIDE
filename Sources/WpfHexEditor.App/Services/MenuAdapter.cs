@@ -6,7 +6,6 @@
 //////////////////////////////////////////////
 
 using System.Windows.Controls;
-using WpfHexEditor.App.Properties;
 using WpfHexEditor.PluginHost.Adapters;
 using WpfHexEditor.SDK.Descriptors;
 
@@ -34,15 +33,15 @@ public sealed class MenuAdapter : IMenuAdapter
     // uiId → original descriptor (Debug-parented items only, for DebugMenuOrganizer)
     private readonly Dictionary<string, MenuItemDescriptor> _debugDescriptors = new(StringComparer.OrdinalIgnoreCase);
 
+    // uiId → original descriptor (Tools-parented items only, for ToolsMenuOrganizer)
+    private readonly Dictionary<string, MenuItemDescriptor> _toolsDescriptors = new(StringComparer.OrdinalIgnoreCase);
+
     // (normalised parentPath + group) → Separator element that heads that group block
     private readonly Dictionary<string, Separator> _groupSeparators = new(StringComparer.OrdinalIgnoreCase);
 
     // uiIds in each group block — used to clean up separators when a group is emptied
     private readonly Dictionary<string, List<string>> _groupMembers = new(StringComparer.OrdinalIgnoreCase);
 
-    // canonical name → created-or-found top-level MenuItem (prevents race: two plugins
-    // calling AddMenuItem before either item is in _mainMenu.Items)
-    private readonly Dictionary<string, MenuItem> _parentCache = new(StringComparer.OrdinalIgnoreCase);
 
     public MenuAdapter(Menu mainMenu)
     {
@@ -54,6 +53,9 @@ public sealed class MenuAdapter : IMenuAdapter
 
     /// <inheritdoc />
     public event Action? DebugItemsChanged;
+
+    /// <inheritdoc />
+    public event Action? ToolsItemsChanged;
 
     /// <inheritdoc />
     public void AddMenuItem(string uiId, MenuItemDescriptor descriptor)
@@ -77,6 +79,15 @@ public sealed class MenuAdapter : IMenuAdapter
         {
             _debugDescriptors[uiId] = descriptor;
             DebugItemsChanged?.Invoke();
+            return;
+        }
+
+        // Tools-parented items are intercepted — store but do not create WPF MenuItems.
+        // MainWindow wires ToolsItemsChanged → RebuildToolsPluginItems.
+        if (IsToolsParent(descriptor.ParentPath))
+        {
+            _toolsDescriptors[uiId] = descriptor;
+            ToolsItemsChanged?.Invoke();
             return;
         }
 
@@ -151,6 +162,13 @@ public sealed class MenuAdapter : IMenuAdapter
             return;
         }
 
+        // Tools-parented item?
+        if (_toolsDescriptors.Remove(uiId))
+        {
+            ToolsItemsChanged?.Invoke();
+            return;
+        }
+
         // Non-View item: remove WPF MenuItem
         if (!_addedItems.TryGetValue(uiId, out var item)) return;
 
@@ -184,27 +202,17 @@ public sealed class MenuAdapter : IMenuAdapter
     /// <inheritdoc />
     public IReadOnlyDictionary<string, MenuItemDescriptor> GetAllDebugMenuItems() => _debugDescriptors;
 
+    /// <inheritdoc />
+    public IReadOnlyDictionary<string, MenuItemDescriptor> GetAllToolsMenuItems() => _toolsDescriptors;
+
     private static bool IsViewParent(string parentPath)
         => string.Equals(parentPath?.TrimStart('_'), "View", StringComparison.OrdinalIgnoreCase);
 
     private static bool IsDebugParent(string parentPath)
         => string.Equals(parentPath?.TrimStart('_'), "Debug", StringComparison.OrdinalIgnoreCase);
 
-    /// <summary>
-    /// Maps canonical (English) top-level menu names to their localized equivalents.
-    /// Used to merge plugin-contributed items (which always use canonical English names)
-    /// into the correctly localized main menu group rather than creating a duplicate entry.
-    /// </summary>
-    private static readonly Dictionary<string, Func<string>> _canonicalToLocalized =
-        new(StringComparer.OrdinalIgnoreCase)
-        {
-            ["File"]       = () => AppResources.App_Menu_File,
-            ["Edit"]       = () => AppResources.App_Menu_Edit,
-            ["View"]       = () => AppResources.App_Menu_View,
-            ["Build"]      = () => AppResources.App_Menu_Build,
-            ["Debug"]      = () => AppResources.App_Menu_Debug,
-            ["Tools"]      = () => AppResources.App_Menu_Tools,
-        };
+    private static bool IsToolsParent(string parentPath)
+        => string.Equals(parentPath?.TrimStart('_'), "Tools", StringComparison.OrdinalIgnoreCase);
 
     private ItemsControl FindOrCreateParent(string parentPath)
     {
@@ -212,34 +220,16 @@ public sealed class MenuAdapter : IMenuAdapter
 
         var canonical = parentPath.TrimStart('_');
 
-        // Fast path: already resolved by a prior call (handles concurrent plugin registration
-        // where the second plugin calls AddMenuItem before the first item appears in Items).
-        if (_parentCache.TryGetValue(canonical, out var cached))
-            return cached;
-
-        // Resolve localized label for this canonical name (if known).
-        var localizedLabel = _canonicalToLocalized.TryGetValue(canonical, out var labelFactory)
-            ? labelFactory()
-            : canonical;
-
-        // Search existing top-level items — strip WPF access-key underscore prefix.
         foreach (var topItem in _mainMenu.Items.OfType<MenuItem>())
         {
             var headerText = topItem.Header?.ToString()?.TrimStart('_') ?? string.Empty;
-
-            // Match against localized label (e.g. "Outils") OR canonical (e.g. "Tools").
-            if (string.Equals(headerText, localizedLabel, StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(headerText, canonical,       StringComparison.OrdinalIgnoreCase))
-            {
-                _parentCache[canonical] = topItem;
+            if (string.Equals(headerText, canonical, StringComparison.OrdinalIgnoreCase))
                 return topItem;
-            }
         }
 
-        // Not found — create a new top-level group with the localized label and cache it.
-        var newParent = new MenuItem { Header = localizedLabel };
+        // Not found — create a new top-level group.
+        var newParent = new MenuItem { Header = canonical };
         _mainMenu.Items.Add(newParent);
-        _parentCache[canonical] = newParent;
         return newParent;
     }
 }
