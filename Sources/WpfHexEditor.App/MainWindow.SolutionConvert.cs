@@ -16,6 +16,7 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Windows;
 using System.Xml.Linq;
+using WpfHexEditor.App.Properties;
 using WpfHexEditor.Editor.Core;
 
 namespace WpfHexEditor.App;
@@ -33,8 +34,8 @@ public partial class MainWindow
         if (currentPath is null)
         {
             MessageBox.Show(this,
-                "No solution is currently open.",
-                "Convert Solution Format",
+                AppResources.App_Convert_NoSolution,
+                AppResources.App_Convert_Title,
                 MessageBoxButton.OK, MessageBoxImage.Information);
             return;
         }
@@ -44,8 +45,8 @@ public partial class MainWindow
         if (toSlnx && ext != ".sln")
         {
             MessageBox.Show(this,
-                "The current solution is not a .sln file.",
-                "Convert Solution Format",
+                AppResources.App_Convert_NotSln,
+                AppResources.App_Convert_Title,
                 MessageBoxButton.OK, MessageBoxImage.Information);
             return;
         }
@@ -53,8 +54,8 @@ public partial class MainWindow
         if (!toSlnx && ext != ".slnx")
         {
             MessageBox.Show(this,
-                "The current solution is not a .slnx file.",
-                "Convert Solution Format",
+                AppResources.App_Convert_NotSlnx,
+                AppResources.App_Convert_Title,
                 MessageBoxButton.OK, MessageBoxImage.Information);
             return;
         }
@@ -64,8 +65,8 @@ public partial class MainWindow
         var targetName = Path.GetFileNameWithoutExtension(currentPath) + targetExt;
 
         var confirm = MessageBox.Show(this,
-            $"Convert \"{sourceName}\" → \"{targetName}\"?\n\nThe original file will be preserved.",
-            "Convert Solution Format",
+            string.Format(AppResources.App_Convert_Confirm, sourceName, targetName, Environment.NewLine),
+            AppResources.App_Convert_Title,
             MessageBoxButton.OKCancel, MessageBoxImage.Question);
 
         if (confirm != MessageBoxResult.OK) return;
@@ -79,8 +80,8 @@ public partial class MainWindow
         if (loader is null)
         {
             MessageBox.Show(this,
-                $"No loader registered for {targetExt} format. Make sure the VS Solution Loader plugin is active.",
-                "Convert Solution Format",
+                string.Format(AppResources.App_Convert_NoLoader, targetExt),
+                AppResources.App_Convert_Title,
                 MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
@@ -103,12 +104,11 @@ public partial class MainWindow
             else
                 WriteSln(solution, solutionDir, newPath);
 
-
             OutputLogger.Info($"[Convert] Solution converted: {newPath}");
 
             var openResult = MessageBox.Show(this,
-                $"Converted to \"{targetName}\".\n\nOpen the converted solution now?",
-                "Convert Solution Format",
+                string.Format(AppResources.App_Convert_Success, targetName, Environment.NewLine),
+                AppResources.App_Convert_Title,
                 MessageBoxButton.YesNo, MessageBoxImage.Information);
 
             if (openResult == MessageBoxResult.Yes)
@@ -118,8 +118,8 @@ public partial class MainWindow
         {
             OutputLogger.Error($"[Convert] Conversion failed: {ex.Message}");
             MessageBox.Show(this,
-                $"Conversion failed:\n{ex.Message}",
-                "Convert Solution Format",
+                string.Format(AppResources.App_Convert_Failed, Environment.NewLine, ex.Message),
+                AppResources.App_Convert_Title,
                 MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
@@ -139,8 +139,8 @@ public partial class MainWindow
         if (currentPath is null)
         {
             MessageBox.Show(this,
-                "No solution is currently open.",
-                "Convert Solution Format",
+                AppResources.App_Convert_NoSolution,
+                AppResources.App_Convert_Title,
                 MessageBoxButton.OK, MessageBoxImage.Information);
             return;
         }
@@ -149,8 +149,8 @@ public partial class MainWindow
         if (ext == ".whsln")
         {
             MessageBox.Show(this,
-                "The current solution is already a .whsln file.",
-                "Convert Solution Format",
+                AppResources.App_Convert_AlreadyWhsln,
+                AppResources.App_Convert_Title,
                 MessageBoxButton.OK, MessageBoxImage.Information);
             return;
         }
@@ -161,8 +161,8 @@ public partial class MainWindow
         var newPath = Path.Combine(solutionDir, targetName);
 
         var confirm = MessageBox.Show(this,
-            $"Convert \"{sourceName}\" → \"{targetName}\"?\n\nThe original file will be preserved.",
-            "Convert Solution Format",
+            string.Format(AppResources.App_Convert_Confirm, sourceName, targetName, Environment.NewLine),
+            AppResources.App_Convert_Title,
             MessageBoxButton.OKCancel, MessageBoxImage.Question);
         if (confirm != MessageBoxResult.OK) return;
 
@@ -174,8 +174,8 @@ public partial class MainWindow
         if (sourceLoader is null)
         {
             MessageBox.Show(this,
-                $"No loader registered for {ext} format.",
-                "Convert Solution Format",
+                string.Format(AppResources.App_Convert_NoLoaderSimple, ext),
+                AppResources.App_Convert_Title,
                 MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
@@ -188,8 +188,8 @@ public partial class MainWindow
             OutputLogger.Info($"[Convert] Solution converted: {newPath}");
 
             var openResult = MessageBox.Show(this,
-                $"Converted to \"{targetName}\".\n\nOpen the converted solution now?",
-                "Convert Solution Format",
+                string.Format(AppResources.App_Convert_Success, targetName, Environment.NewLine),
+                AppResources.App_Convert_Title,
                 MessageBoxButton.YesNo, MessageBoxImage.Information);
             if (openResult == MessageBoxResult.Yes)
                 await OpenSolutionAsync(newPath);
@@ -198,8 +198,8 @@ public partial class MainWindow
         {
             OutputLogger.Error($"[Convert] Conversion failed: {ex.Message}");
             MessageBox.Show(this,
-                $"Conversion failed:\n{ex.Message}",
-                "Convert Solution Format",
+                string.Format(AppResources.App_Convert_Failed, Environment.NewLine, ex.Message),
+                AppResources.App_Convert_Title,
                 MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }

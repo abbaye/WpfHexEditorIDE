@@ -2513,5 +2513,79 @@ namespace WpfHexEditor.App.Properties {
             }
         }
 
+        internal static string App_Convert_Title {
+            get { return ResourceManager.GetString("App_Convert_Title", resourceCulture); }
+        }
+        internal static string App_Convert_NoSolution {
+            get { return ResourceManager.GetString("App_Convert_NoSolution", resourceCulture); }
+        }
+        internal static string App_Convert_NotSln {
+            get { return ResourceManager.GetString("App_Convert_NotSln", resourceCulture); }
+        }
+        internal static string App_Convert_NotSlnx {
+            get { return ResourceManager.GetString("App_Convert_NotSlnx", resourceCulture); }
+        }
+        internal static string App_Convert_AlreadyWhsln {
+            get { return ResourceManager.GetString("App_Convert_AlreadyWhsln", resourceCulture); }
+        }
+        internal static string App_Convert_Confirm {
+            get { return ResourceManager.GetString("App_Convert_Confirm", resourceCulture); }
+        }
+        internal static string App_Convert_NoLoader {
+            get { return ResourceManager.GetString("App_Convert_NoLoader", resourceCulture); }
+        }
+        internal static string App_Convert_NoLoaderSimple {
+            get { return ResourceManager.GetString("App_Convert_NoLoaderSimple", resourceCulture); }
+        }
+        internal static string App_Convert_Success {
+            get { return ResourceManager.GetString("App_Convert_Success", resourceCulture); }
+        }
+        internal static string App_Convert_Failed {
+            get { return ResourceManager.GetString("App_Convert_Failed", resourceCulture); }
+        }
+
+        internal static string App_Editor_HexEditor {
+            get { return ResourceManager.GetString("App_Editor_HexEditor", resourceCulture); }
+        }
+        internal static string App_Editor_Encodings {
+            get { return ResourceManager.GetString("App_Editor_Encodings", resourceCulture); }
+        }
+        internal static string App_Editor_ProjectTables {
+            get { return ResourceManager.GetString("App_Editor_ProjectTables", resourceCulture); }
+        }
+        internal static string App_Editor_FileNotFound {
+            get { return ResourceManager.GetString("App_Editor_FileNotFound", resourceCulture); }
+        }
+        internal static string App_Editor_NewDocumentText {
+            get { return ResourceManager.GetString("App_Editor_NewDocumentText", resourceCulture); }
+        }
+        internal static string App_Editor_RefreshPrefix {
+            get { return ResourceManager.GetString("App_Editor_RefreshPrefix", resourceCulture); }
+        }
+
+        internal static string App_LSP_TryOpenFile {
+            get { return ResourceManager.GetString("App_LSP_TryOpenFile", resourceCulture); }
+        }
+        internal static string App_LSP_LoadAssembly {
+            get { return ResourceManager.GetString("App_LSP_LoadAssembly", resourceCulture); }
+        }
+
+        internal static string App_Breadcrumb_ProjectNotFound {
+            get { return ResourceManager.GetString("App_Breadcrumb_ProjectNotFound", resourceCulture); }
+        }
+        internal static string App_Breadcrumb_SolutionNotLoaded {
+            get { return ResourceManager.GetString("App_Breadcrumb_SolutionNotLoaded", resourceCulture); }
+        }
+
+        internal static string App_Debugger_AdapterNotFound {
+            get { return ResourceManager.GetString("App_Debugger_AdapterNotFound", resourceCulture); }
+        }
+        internal static string App_Debugger_AdapterMissing {
+            get { return ResourceManager.GetString("App_Debugger_AdapterMissing", resourceCulture); }
+        }
+        internal static string App_Debugger_Title {
+            get { return ResourceManager.GetString("App_Debugger_Title", resourceCulture); }
+        }
+
     }
 }

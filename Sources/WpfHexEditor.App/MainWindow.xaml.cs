@@ -427,7 +427,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         if (RefreshTimeText != null)
         {
-            RefreshTimeText.Text = string.IsNullOrEmpty(value) ? "" : $"Refresh: {value}";
+            RefreshTimeText.Text = string.IsNullOrEmpty(value) ? "" : AppResources.App_Editor_RefreshPrefix + value;
         }
     }
 
@@ -1419,11 +1419,11 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             if (item.Metadata.TryGetValue("ForceEditorId", out var feid) && feid is not null)
                 item.Metadata["EditorDisplayName"] = ResolveEditorDisplayName(feid);
             else if (item.Metadata.TryGetValue("ForceHexEditor", out var fh) && fh == "true")
-                item.Metadata["EditorDisplayName"] = "Hex Editor";
+                item.Metadata["EditorDisplayName"] = AppResources.App_Editor_HexEditor;
             else
             {
                 var factory = _editorRegistry.FindFactory(fp, GetPreferredEditorId(fp));
-                item.Metadata["EditorDisplayName"] = factory?.Descriptor.DisplayName ?? "Hex Editor";
+                item.Metadata["EditorDisplayName"] = factory?.Descriptor.DisplayName ?? AppResources.App_Editor_HexEditor;
             }
         }
     }
@@ -2131,8 +2131,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             // or LSP isn't active. "Load in Assembly Explorer" only applies when we have
             // an actual external assembly reference.
             var hint = e.MetadataUri is null
-                ? "Try opening the declaring file directly, or ensure the LSP server is running."
-                : "Load the assembly in Assembly Explorer to navigate to its decompiled source.";
+                ? AppResources.App_LSP_TryOpenFile
+                : AppResources.App_LSP_LoadAssembly;
             OutputLogger.Info($"[Go to Definition] Definition of '{e.SymbolName}' not found. {hint}");
             return;
         }
@@ -2151,7 +2151,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         {
             OutputLogger.Warn(
                 $"[Go to Definition] Cannot locate '{assemblyName}.dll'. " +
-                "Load the assembly in Assembly Explorer to navigate to its decompiled source.");
+                AppResources.App_LSP_LoadAssembly);
             return;
         }
 
@@ -2493,7 +2493,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                                    System.Windows.Threading.DispatcherPriority.Background);
         return new TextBlock
         {
-            Text = $"File not found:\n{filePath}",
+            Text = string.Format(AppResources.App_Editor_FileNotFound, Environment.NewLine, filePath),
             Foreground = System.Windows.Media.Brushes.Gray,
             VerticalAlignment   = VerticalAlignment.Center,
             HorizontalAlignment = HorizontalAlignment.Center,
@@ -2541,7 +2541,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         // Record which editor was resolved so "View in" deduplication can match back to this tab.
         item.Metadata["ActiveEditorId"]    = factory?.Descriptor.Id ?? "hex-editor";
-        item.Metadata["EditorDisplayName"] = factory?.Descriptor.DisplayName ?? "Hex Editor";
+        item.Metadata["EditorDisplayName"] = factory?.Descriptor.DisplayName ?? AppResources.App_Editor_HexEditor;
 
         if (factory != null)
         {
@@ -2946,7 +2946,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         string           filePath,
         string           sourceContentId)
     {
-        var currentName = usedFactory?.Descriptor.DisplayName ?? "Hex Editor";
+        var currentName = usedFactory?.Descriptor.DisplayName ?? AppResources.App_Editor_HexEditor;
         var currentId   = usedFactory?.Descriptor.Id          ?? "hex-editor";
 
         // Build the list of alternative editors for the InfoBar buttons.
@@ -3015,7 +3015,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             AcceptsReturn          = true,
             AcceptsTab             = true,
             VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
-            Text = $"This is document: {item.Title}\n\nEdit this text...",
+            Text = string.Format(AppResources.App_Editor_NewDocumentText, item.Title, Environment.NewLine),
             Background            = System.Windows.Media.Brushes.Transparent,
             Foreground            = System.Windows.Media.Brushes.LightGray,
             FontFamily            = new System.Windows.Media.FontFamily("Cascadia Mono, Consolas, monospace"),
@@ -3181,7 +3181,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         // Section 2: Encodings
         _tblItems.Add(TblSelectionItem.MakeSeparator());
-        _tblItems.Add(TblSelectionItem.MakeHeader("Encodings"));
+        _tblItems.Add(TblSelectionItem.MakeHeader(AppResources.App_Editor_Encodings));
         _tblItems.Add(TblSelectionItem.MakeEncoding("UTF-8",     CharacterTableType.UTF8));
         _tblItems.Add(TblSelectionItem.MakeEncoding("UTF-16 LE", CharacterTableType.UTF16LE));
         _tblItems.Add(TblSelectionItem.MakeEncoding("UTF-16 BE", CharacterTableType.UTF16BE));
@@ -3196,7 +3196,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         if (projectTbls is { Count: > 0 })
         {
             _tblItems.Add(TblSelectionItem.MakeSeparator());
-            _tblItems.Add(TblSelectionItem.MakeHeader("Project Tables"));
+            _tblItems.Add(TblSelectionItem.MakeHeader(AppResources.App_Editor_ProjectTables));
             foreach (var item in projectTbls)
                 _tblItems.Add(TblSelectionItem.MakeProjectFile(item));
         }
@@ -3740,7 +3740,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             Metadata  =
             {
                 ["FilePath"]          = filePath,
-                ["EditorDisplayName"] = earlyFactory?.Descriptor.DisplayName ?? "Hex Editor"
+                ["EditorDisplayName"] = earlyFactory?.Descriptor.DisplayName ?? AppResources.App_Editor_HexEditor
             }
         };
         _engine.Dock(item, _layout.MainDocumentHost, DockDirection.Center);
@@ -3762,7 +3762,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         if (!File.Exists(filePath))
         {
-            errorMessage = $"File not found: {filePath}";
+            errorMessage = string.Format(AppResources.App_Editor_FileNotFound, " ", filePath);
             return false;
         }
 
@@ -4330,7 +4330,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     /// </summary>
     private string ResolveEditorDisplayName(string? factoryId)
     {
-        if (factoryId is null) return "Hex Editor";
+        if (factoryId is null) return AppResources.App_Editor_HexEditor;
         return _editorRegistry.GetAll()
                    .FirstOrDefault(f => f.Descriptor.Id == factoryId)
                    ?.Descriptor.DisplayName ?? factoryId;
@@ -6283,7 +6283,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 // Solution not yet loaded at layout-restore time. Track this tab so
                 // OnSolutionChanged() can evict the placeholder and rebuild the content.
                 _pendingProjectPropertiesContentIds.Add(item.ContentId);
-                return new System.Windows.Controls.TextBlock { Text = "Projet introuvable." };
+                return new System.Windows.Controls.TextBlock { Text = AppResources.App_Breadcrumb_ProjectNotFound };
             }
 
             // Re-register so dirty-state title updates work for the rest of this session.
@@ -6370,7 +6370,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                           .FirstOrDefault(p => p.Name == name);
 
             if (project is null)
-                return new System.Windows.Controls.TextBlock { Text = "Project not found." };
+                return new System.Windows.Controls.TextBlock { Text = AppResources.App_Breadcrumb_ProjectNotFound };
 
             _nugetManagerMap[item.ContentId] = project;
         }
@@ -6442,7 +6442,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         {
             solution = _solutionManager.CurrentSolution;
             if (solution is null)
-                return new System.Windows.Controls.TextBlock { Text = "Solution not loaded." };
+                return new System.Windows.Controls.TextBlock { Text = AppResources.App_Breadcrumb_SolutionNotLoaded };
 
             _nugetSolutionManagerMap[item.ContentId] = solution;
         }
@@ -6527,7 +6527,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                           .FirstOrDefault(p => p.Name == name);
 
             if (project is null)
-                return new System.Windows.Controls.TextBlock { Text = "Project not found." };
+                return new System.Windows.Controls.TextBlock { Text = AppResources.App_Breadcrumb_ProjectNotFound };
 
             _refManagerMap[item.ContentId] = project;
         }

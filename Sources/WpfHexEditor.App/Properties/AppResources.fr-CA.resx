@@ -243,4 +243,37 @@
   <!-- Extensions -->
   <data name="App_Extensions_SelectOutputDir" xml:space="preserve"><value>Sélectionner le répertoire de sortie de l'extension</value></data>
 
+  <!-- Solution Convert dialogs -->
+  <data name="App_Convert_Title" xml:space="preserve"><value>Convertir le format de solution</value></data>
+  <data name="App_Convert_NoSolution" xml:space="preserve"><value>Aucune solution n'est actuellement ouverte.</value></data>
+  <data name="App_Convert_NotSln" xml:space="preserve"><value>La solution actuelle n'est pas un fichier .sln.</value></data>
+  <data name="App_Convert_NotSlnx" xml:space="preserve"><value>La solution actuelle n'est pas un fichier .slnx.</value></data>
+  <data name="App_Convert_AlreadyWhsln" xml:space="preserve"><value>La solution actuelle est déjà un fichier .whsln.</value></data>
+  <data name="App_Convert_Confirm" xml:space="preserve"><value>Convertir « {0} » → « {1} » ?{2}{2}Le fichier original sera conservé.</value></data>
+  <data name="App_Convert_NoLoader" xml:space="preserve"><value>Aucun chargeur enregistré pour le format {0}. Assurez-vous que le plugin VS Solution Loader est actif.</value></data>
+  <data name="App_Convert_NoLoaderSimple" xml:space="preserve"><value>Aucun chargeur enregistré pour le format {0}.</value></data>
+  <data name="App_Convert_Success" xml:space="preserve"><value>Converti en « {0} ».{1}{1}Ouvrir la solution convertie maintenant ?</value></data>
+  <data name="App_Convert_Failed" xml:space="preserve"><value>Échec de la conversion :{0}{1}</value></data>
+
+  <!-- Document/Editor labels -->
+  <data name="App_Editor_HexEditor" xml:space="preserve"><value>Éditeur hexadécimal</value></data>
+  <data name="App_Editor_Encodings" xml:space="preserve"><value>Encodages</value></data>
+  <data name="App_Editor_ProjectTables" xml:space="preserve"><value>Tables du projet</value></data>
+  <data name="App_Editor_FileNotFound" xml:space="preserve"><value>Fichier introuvable :{0}{1}</value></data>
+  <data name="App_Editor_NewDocumentText" xml:space="preserve"><value>Ceci est le document : {0}{1}{1}Modifiez ce texte...</value></data>
+  <data name="App_Editor_RefreshPrefix" xml:space="preserve"><value>Actualisation : </value></data>
+
+  <!-- LSP / navigation messages -->
+  <data name="App_LSP_TryOpenFile" xml:space="preserve"><value>Essayez d'ouvrir le fichier déclarant directement, ou assurez-vous que le serveur LSP est en cours d'exécution.</value></data>
+  <data name="App_LSP_LoadAssembly" xml:space="preserve"><value>Chargez l'assembly dans l'explorateur d'assemblys pour accéder à sa source décompilée.</value></data>
+
+  <!-- Breadcrumb "not found" labels -->
+  <data name="App_Breadcrumb_ProjectNotFound" xml:space="preserve"><value>Projet introuvable.</value></data>
+  <data name="App_Breadcrumb_SolutionNotLoaded" xml:space="preserve"><value>Solution non chargée.</value></data>
+
+  <!-- Debugger service messages -->
+  <data name="App_Debugger_AdapterNotFound" xml:space="preserve"><value>Adaptateur de débogage (netcoredbg) introuvable.{0}Installez-le ou définissez son chemin dans Options → Débogueur.</value></data>
+  <data name="App_Debugger_AdapterMissing" xml:space="preserve"><value>Installez le plugin d'adaptateur approprié ou configurez un adaptateur personnalisé.</value></data>
+  <data name="App_Debugger_Title" xml:space="preserve"><value>Débogueur</value></data>
+
 </root>
