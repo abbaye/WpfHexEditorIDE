@@ -800,4 +800,24 @@ internal static class CodeEditorResources
     /// <summary>Enable</summary>
     internal static string CodeEditor_BreakpointEnable
         => GetString(nameof(CodeEditor_BreakpointEnable));
+
+    // ── CodeEditor.Rendering.cs — Status bar ────────────────────────────────
+
+    /// <summary>Refresh</summary>
+    internal static string CodeSb_RefreshLabel
+        => GetString(nameof(CodeSb_RefreshLabel));
+
+    /// <summary>Render frame time in milliseconds</summary>
+    internal static string CodeSb_RefreshTooltip
+        => GetString(nameof(CodeSb_RefreshTooltip));
+
+    // ── CodeEditor.cs — RoutedUICommand display names ───────────────────────
+
+    /// <summary>Find All References</summary>
+    internal static string CodeCtx_FindAllReferences
+        => GetString(nameof(CodeCtx_FindAllReferences));
+
+    /// <summary>Refresh Highlights</summary>
+    internal static string CodeCtx_RefreshHighlights
+        => GetString(nameof(CodeCtx_RefreshHighlights));
 }

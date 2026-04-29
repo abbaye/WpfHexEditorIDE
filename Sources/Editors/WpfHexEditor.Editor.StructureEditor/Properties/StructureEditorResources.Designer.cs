@@ -636,6 +636,64 @@ namespace WpfHexEditor.Editor.StructureEditor.Properties
         internal static string StructureEditor_RawJsonCancel =>
             GetString(nameof(StructureEditor_RawJsonCancel));
 
+        // ── Contributors — Toolbar tooltips ──────────────────────────────────
+
+        /// <summary>Validate (Ctrl+Shift+V)</summary>
+        internal static string StrTb_Validate =>
+            GetString(nameof(StrTb_Validate));
+
+        /// <summary>Add Block (Ctrl+N)</summary>
+        internal static string StrTb_AddBlock =>
+            GetString(nameof(StrTb_AddBlock));
+
+        /// <summary>Toggle Live Code View</summary>
+        internal static string StrTb_ToggleLiveCode =>
+            GetString(nameof(StrTb_ToggleLiveCode));
+
+        /// <summary>Layout</summary>
+        internal static string StrTb_LayoutLabel =>
+            GetString(nameof(StrTb_LayoutLabel));
+
+        /// <summary>Code view layout</summary>
+        internal static string StrTb_LayoutTooltip =>
+            GetString(nameof(StrTb_LayoutTooltip));
+
+        // ── Contributors — Toolbar layout dropdown ────────────────────────────
+
+        /// <summary>Code Right</summary>
+        internal static string StrLayout_CodeRight =>
+            GetString(nameof(StrLayout_CodeRight));
+
+        /// <summary>Code Left</summary>
+        internal static string StrLayout_CodeLeft =>
+            GetString(nameof(StrLayout_CodeLeft));
+
+        /// <summary>Code Bottom</summary>
+        internal static string StrLayout_CodeBottom =>
+            GetString(nameof(StrLayout_CodeBottom));
+
+        /// <summary>Code Top</summary>
+        internal static string StrLayout_CodeTop =>
+            GetString(nameof(StrLayout_CodeTop));
+
+        // ── Contributors — Status bar labels ──────────────────────────────────
+
+        /// <summary>Format</summary>
+        internal static string StrSb_FormatLabel =>
+            GetString(nameof(StrSb_FormatLabel));
+
+        /// <summary>Tab</summary>
+        internal static string StrSb_TabLabel =>
+            GetString(nameof(StrSb_TabLabel));
+
+        /// <summary>Blocks</summary>
+        internal static string StrSb_BlocksLabel =>
+            GetString(nameof(StrSb_BlocksLabel));
+
+        /// <summary>Validation</summary>
+        internal static string StrSb_ValidationLabel =>
+            GetString(nameof(StrSb_ValidationLabel));
+
         // ── Factory Registration ──────────────────────────────────────────────
 
         /// <summary>Structure Editor</summary>

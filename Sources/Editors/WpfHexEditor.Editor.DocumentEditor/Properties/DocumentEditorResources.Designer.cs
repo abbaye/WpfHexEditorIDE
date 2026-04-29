@@ -646,6 +646,58 @@ internal static class DocumentEditorResources
     internal static string DocHexPane_OffsetPattern
         => ResourceManager.GetString(nameof(DocHexPane_OffsetPattern), _resourceCulture)!;
 
+    // ─── DocumentEditorHost.Contributors.cs — status bar labels ──────────────
+
+    /// <summary>Gets "Format"</summary>
+    internal static string DocSb_FormatLabel
+        => ResourceManager.GetString(nameof(DocSb_FormatLabel), _resourceCulture)!;
+
+    /// <summary>Gets "Version"</summary>
+    internal static string DocSb_VersionLabel
+        => ResourceManager.GetString(nameof(DocSb_VersionLabel), _resourceCulture)!;
+
+    /// <summary>Gets "Blocks"</summary>
+    internal static string DocSb_BlocksLabel
+        => ResourceManager.GetString(nameof(DocSb_BlocksLabel), _resourceCulture)!;
+
+    /// <summary>Gets "Selection"</summary>
+    internal static string DocSb_SelectionLabel
+        => ResourceManager.GetString(nameof(DocSb_SelectionLabel), _resourceCulture)!;
+
+    /// <summary>Gets "Alerts"</summary>
+    internal static string DocSb_AlertsLabel
+        => ResourceManager.GetString(nameof(DocSb_AlertsLabel), _resourceCulture)!;
+
+    /// <summary>Gets "View"</summary>
+    internal static string DocSb_ViewLabel
+        => ResourceManager.GetString(nameof(DocSb_ViewLabel), _resourceCulture)!;
+
+    // ─── DocumentEditorHost.Contributors.cs — toolbar tooltips ───────────────
+
+    /// <summary>Gets "Text view"</summary>
+    internal static string DocTb_TextView
+        => ResourceManager.GetString(nameof(DocTb_TextView), _resourceCulture)!;
+
+    /// <summary>Gets "Split view"</summary>
+    internal static string DocTb_SplitView
+        => ResourceManager.GetString(nameof(DocTb_SplitView), _resourceCulture)!;
+
+    /// <summary>Gets "Hex view"</summary>
+    internal static string DocTb_HexView
+        => ResourceManager.GetString(nameof(DocTb_HexView), _resourceCulture)!;
+
+    /// <summary>Gets "Structure view"</summary>
+    internal static string DocTb_StructureView
+        => ResourceManager.GetString(nameof(DocTb_StructureView), _resourceCulture)!;
+
+    /// <summary>Gets "Forensic mode"</summary>
+    internal static string DocTb_ForensicMode
+        => ResourceManager.GetString(nameof(DocTb_ForensicMode), _resourceCulture)!;
+
+    /// <summary>Gets "Save"</summary>
+    internal static string DocTb_Save
+        => ResourceManager.GetString(nameof(DocTb_Save), _resourceCulture)!;
+
     // ─── DocumentStylesPanel.xaml.cs ──────────────────────────────────────────
 
     /// <summary>Gets "Normal"</summary>

@@ -15,6 +15,7 @@ using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Editor.DocumentEditor.Core.Forensic;
 using WpfHexEditor.Editor.DocumentEditor.Core.Model;
 using WpfHexEditor.Editor.DocumentEditor.Core.Options;
+using WpfHexEditor.Editor.DocumentEditor.Properties;
 
 namespace WpfHexEditor.Editor.DocumentEditor.Controls;
 
@@ -35,12 +36,12 @@ public partial class DocumentEditorHost : IStatusBarContributor, IEditorToolbarC
 
     private ObservableCollection<StatusBarItem> BuildStatusBarItems()
     {
-        _sbFormat     = new StatusBarItem { Label = "Format",      Value = "—",       IsVisible = true };
-        _sbVersion    = new StatusBarItem { Label = "Version",     Value = string.Empty, IsVisible = false };
-        _sbBlockCount = new StatusBarItem { Label = "Blocks",      Value = "0 blocks", IsVisible = true };
-        _sbSelection  = new StatusBarItem { Label = "Selection",   Value = string.Empty, IsVisible = false };
-        _sbAlerts     = new StatusBarItem { Label = "Alerts",      Value = string.Empty, IsVisible = false };
-        _sbViewMode   = new StatusBarItem { Label = "View",        Value = "Split",    IsVisible = true };
+        _sbFormat     = new StatusBarItem { Label = DocumentEditorResources.DocSb_FormatLabel,    Value = "—",          IsVisible = true };
+        _sbVersion    = new StatusBarItem { Label = DocumentEditorResources.DocSb_VersionLabel,   Value = string.Empty, IsVisible = false };
+        _sbBlockCount = new StatusBarItem { Label = DocumentEditorResources.DocSb_BlocksLabel,    Value = "0 blocks",   IsVisible = true };
+        _sbSelection  = new StatusBarItem { Label = DocumentEditorResources.DocSb_SelectionLabel, Value = string.Empty, IsVisible = false };
+        _sbAlerts     = new StatusBarItem { Label = DocumentEditorResources.DocSb_AlertsLabel,    Value = string.Empty, IsVisible = false };
+        _sbViewMode   = new StatusBarItem { Label = DocumentEditorResources.DocSb_ViewLabel,      Value = "Split",      IsVisible = true };
 
         return [_sbFormat, _sbVersion, _sbBlockCount, _sbSelection, _sbAlerts, _sbViewMode];
     }
@@ -106,14 +107,14 @@ public partial class DocumentEditorHost : IStatusBarContributor, IEditorToolbarC
             new EditorToolbarItem
             {
                 Icon     = "\uE8A5",
-                Tooltip  = "Text view",
+                Tooltip  = DocumentEditorResources.DocTb_TextView,
                 IsToggle = true,
                 Command  = new RelayAction(() => ViewMode = DocumentViewMode.TextOnly)
             },
             new EditorToolbarItem
             {
                 Icon     = "\uE7C4",
-                Tooltip  = "Split view",
+                Tooltip  = DocumentEditorResources.DocTb_SplitView,
                 IsToggle = true,
                 IsChecked = true,
                 Command  = new RelayAction(() => ViewMode = DocumentViewMode.Split)
@@ -121,14 +122,14 @@ public partial class DocumentEditorHost : IStatusBarContributor, IEditorToolbarC
             new EditorToolbarItem
             {
                 Icon     = "\uE8F4",
-                Tooltip  = "Hex view",
+                Tooltip  = DocumentEditorResources.DocTb_HexView,
                 IsToggle = true,
                 Command  = new RelayAction(() => ViewMode = DocumentViewMode.HexOnly)
             },
             new EditorToolbarItem
             {
                 Icon     = "\uE7C9",
-                Tooltip  = "Structure view",
+                Tooltip  = DocumentEditorResources.DocTb_StructureView,
                 IsToggle = true,
                 Command  = new RelayAction(() => ViewMode = DocumentViewMode.Structure)
             },
@@ -136,7 +137,7 @@ public partial class DocumentEditorHost : IStatusBarContributor, IEditorToolbarC
             new EditorToolbarItem
             {
                 Icon     = "\uE7C3",
-                Tooltip  = "Forensic mode",
+                Tooltip  = DocumentEditorResources.DocTb_ForensicMode,
                 IsToggle = true,
                 Command  = new RelayAction(() => IsForensicMode = !IsForensicMode)
             },
@@ -144,7 +145,7 @@ public partial class DocumentEditorHost : IStatusBarContributor, IEditorToolbarC
             new EditorToolbarItem
             {
                 Icon    = "\uE74E",
-                Tooltip = "Save",
+                Tooltip = DocumentEditorResources.DocTb_Save,
                 Command = new RelayAction(Save)
             }
         ];

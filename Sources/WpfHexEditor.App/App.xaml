@@ -16,6 +16,8 @@
              xmlns:codeSvc="clr-namespace:WpfHexEditor.Editor.CodeEditor.Services;assembly=WpfHexEditor.Editor.CodeEditor"
              xmlns:docSvc="clr-namespace:WpfHexEditor.Editor.DocumentEditor.Services;assembly=WpfHexEditor.Editor.DocumentEditor"
              xmlns:structSvc="clr-namespace:WpfHexEditor.Editor.StructureEditor.Services;assembly=WpfHexEditor.Editor.StructureEditor"
+             xmlns:mdSvc="clr-namespace:WpfHexEditor.Editor.MarkdownEditor.Services;assembly=WpfHexEditor.Editor.MarkdownEditor"
+             xmlns:appSvc="clr-namespace:WpfHexEditor.App.Services"
              StartupUri="MainWindow.xaml"
              ShutdownMode="OnMainWindowClose">
     <Application.Resources>
@@ -34,6 +36,9 @@
                 <codeSvc:CodeEditorLocalizedDictionary/>
                 <docSvc:DocumentEditorLocalizedDictionary/>
                 <structSvc:StructureEditorLocalizedDictionary/>
+                <mdSvc:MarkdownEditorLocalizedDictionary/>
+                <!-- App-level strings (main menu headers, toolbar tooltips) -->
+                <appSvc:AppLocalizedDictionary/>
                 <ResourceDictionary Source="pack://application:,,,/WpfHexEditor.Shell;component/Themes/DarkTheme.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>

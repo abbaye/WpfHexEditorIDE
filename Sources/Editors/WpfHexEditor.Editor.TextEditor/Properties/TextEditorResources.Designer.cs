@@ -53,6 +53,38 @@ internal static class TextEditorResources
     private static string GetString(string name) =>
         ResourceManager.GetString(name, _resourceCulture) ?? name;
 
+    // ── TextEditor.xaml.cs — Status bar items ───────────────────────────────
+
+    /// <summary>Gets "Refresh"</summary>
+    internal static string TeSb_RefreshLabel => GetString(nameof(TeSb_RefreshLabel));
+
+    /// <summary>Gets "Render frame time in milliseconds"</summary>
+    internal static string TeSb_RefreshTooltip => GetString(nameof(TeSb_RefreshTooltip));
+
+    /// <summary>Gets "Language"</summary>
+    internal static string TeSb_LanguageLabel => GetString(nameof(TeSb_LanguageLabel));
+
+    /// <summary>Gets "Active syntax language"</summary>
+    internal static string TeSb_LanguageTooltip => GetString(nameof(TeSb_LanguageTooltip));
+
+    /// <summary>Gets "Position"</summary>
+    internal static string TeSb_PositionLabel => GetString(nameof(TeSb_PositionLabel));
+
+    /// <summary>Gets "Caret line and column"</summary>
+    internal static string TeSb_PositionTooltip => GetString(nameof(TeSb_PositionTooltip));
+
+    /// <summary>Gets "Zoom"</summary>
+    internal static string TeSb_ZoomLabel => GetString(nameof(TeSb_ZoomLabel));
+
+    /// <summary>Gets "Editor zoom level"</summary>
+    internal static string TeSb_ZoomTooltip => GetString(nameof(TeSb_ZoomTooltip));
+
+    /// <summary>Gets "Encoding"</summary>
+    internal static string TeSb_EncodingLabel => GetString(nameof(TeSb_EncodingLabel));
+
+    /// <summary>Gets "File encoding"</summary>
+    internal static string TeSb_EncodingTooltip => GetString(nameof(TeSb_EncodingTooltip));
+
     /// <summary>Gets "Plain Text"</summary>
     internal static string TextEditor_LanguageLabelPlainText => GetString(nameof(TextEditor_LanguageLabelPlainText));
 

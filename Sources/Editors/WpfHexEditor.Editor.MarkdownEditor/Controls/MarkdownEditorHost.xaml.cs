@@ -41,6 +41,7 @@ using System.Windows.Threading;
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Editor.Core.Documents;
 using WpfHexEditor.Editor.MarkdownEditor.Core.Services;
+using WpfHexEditor.Editor.MarkdownEditor.Properties;
 using TextEditorControl = WpfHexEditor.Editor.TextEditor.Controls.TextEditor;
 
 namespace WpfHexEditor.Editor.MarkdownEditor.Controls;
@@ -129,11 +130,11 @@ public sealed partial class MarkdownEditorHost : UserControl,
 
     // --- Status bar -------------------------------------------------------
     private readonly ObservableCollection<StatusBarItem> _statusItems = new();
-    private readonly StatusBarItem _sbView        = new() { Label = "View",  Tooltip = "Current view mode" };
-    private readonly StatusBarItem _sbWordCount   = new() { Label = "Words", Tooltip = "Approximate word count" };
-    private readonly StatusBarItem _sbLineCount   = new() { Label = "Lines", Tooltip = "Total line count" };
-    private readonly StatusBarItem _sbReadingTime = new() { Label = "Read",  Tooltip = "Estimated reading time (200 wpm)" };
-    private readonly StatusBarItem _sbZoom        = new() { Label = "Zoom",  Tooltip = "Preview zoom (Ctrl+scroll in preview)" };
+    private readonly StatusBarItem _sbView        = new() { Label = MarkdownEditorResources.MdSb_ViewLabel,  Tooltip = MarkdownEditorResources.MdSb_ViewTooltip };
+    private readonly StatusBarItem _sbWordCount   = new() { Label = MarkdownEditorResources.MdSb_WordsLabel, Tooltip = MarkdownEditorResources.MdSb_WordsTooltip };
+    private readonly StatusBarItem _sbLineCount   = new() { Label = MarkdownEditorResources.MdSb_LinesLabel, Tooltip = MarkdownEditorResources.MdSb_LinesTooltip };
+    private readonly StatusBarItem _sbReadingTime = new() { Label = MarkdownEditorResources.MdSb_ReadLabel,  Tooltip = MarkdownEditorResources.MdSb_ReadTooltip };
+    private readonly StatusBarItem _sbZoom        = new() { Label = MarkdownEditorResources.MdSb_ZoomLabel,  Tooltip = MarkdownEditorResources.MdSb_ZoomTooltip };
     private readonly StatusBarItem _sbYamlTitle   = new() { Label = "YAML", Tooltip = "YAML front-matter title" };
 
     // --- Construction -----------------------------------------------------
@@ -708,10 +709,10 @@ public sealed partial class MarkdownEditorHost : UserControl,
         fmtHeader.SetResourceReference(StyleProperty, "MD_GroupHeaderStyle");
         menu.Items.Add(fmtHeader);
 
-        menu.Items.Add(MakeEditorMenuItem("Bold",          "Ctrl+B", () => WrapSelection("**", "**",  "bold text")));
-        menu.Items.Add(MakeEditorMenuItem("Italic",        "Ctrl+I", () => WrapSelection("_",  "_",   "italic text")));
-        menu.Items.Add(MakeEditorMenuItem("Strikethrough", "",       () => WrapSelection("~~", "~~",  "strikethrough")));
-        menu.Items.Add(MakeEditorMenuItem("Inline Code",   "",       () => WrapSelection("`",  "`",   "code")));
+        menu.Items.Add(MakeEditorMenuItem(MarkdownEditorResources.MdCtx_Bold,          "Ctrl+B", () => WrapSelection("**", "**",  "bold text")));
+        menu.Items.Add(MakeEditorMenuItem(MarkdownEditorResources.MdCtx_Italic,        "Ctrl+I", () => WrapSelection("_",  "_",   "italic text")));
+        menu.Items.Add(MakeEditorMenuItem(MarkdownEditorResources.MdCtx_Strikethrough, "",       () => WrapSelection("~~", "~~",  "strikethrough")));
+        menu.Items.Add(MakeEditorMenuItem(MarkdownEditorResources.MdCtx_InlineCode,    "",       () => WrapSelection("`",  "`",   "code")));
 
         var sep1 = new Separator();
         sep1.SetResourceReference(StyleProperty, "MD_GroupSeparatorStyle");
@@ -722,12 +723,12 @@ public sealed partial class MarkdownEditorHost : UserControl,
         insHeader.SetResourceReference(StyleProperty, "MD_GroupHeaderStyle");
         menu.Items.Add(insHeader);
 
-        menu.Items.Add(MakeEditorMenuItem("Table",          "", () => InsertSnippet(
+        menu.Items.Add(MakeEditorMenuItem(MarkdownEditorResources.MdCtx_Table,          "", () => InsertSnippet(
             "\n| Header 1 | Header 2 | Header 3 |\n| --- | --- | --- |\n| Cell 1 | Cell 2 | Cell 3 |\n")));
-        menu.Items.Add(MakeEditorMenuItem("Code Block",     "", () => InsertSnippet("\n```\n\n```\n")));
-        menu.Items.Add(MakeEditorMenuItem("Link",           "", () => WrapSelection("[", "](url)", "link text")));
-        menu.Items.Add(MakeEditorMenuItem("Image",          "", () => InsertSnippet("![alt text](image.png)")));
-        menu.Items.Add(MakeEditorMenuItem("Horizontal Rule","", () => InsertSnippet("\n---\n")));
+        menu.Items.Add(MakeEditorMenuItem(MarkdownEditorResources.MdCtx_CodeBlock,     "", () => InsertSnippet("\n```\n\n```\n")));
+        menu.Items.Add(MakeEditorMenuItem(MarkdownEditorResources.MdCtx_Link,          "", () => WrapSelection("[", "](url)", "link text")));
+        menu.Items.Add(MakeEditorMenuItem(MarkdownEditorResources.MdCtx_Image,         "", () => InsertSnippet("![alt text](image.png)")));
+        menu.Items.Add(MakeEditorMenuItem(MarkdownEditorResources.MdCtx_HorizontalRule,"", () => InsertSnippet("\n---\n")));
 
         var sep2 = new Separator();
         sep2.SetResourceReference(StyleProperty, "MD_GroupSeparatorStyle");
@@ -742,8 +743,8 @@ public sealed partial class MarkdownEditorHost : UserControl,
         exportHeader.SetResourceReference(StyleProperty, "MD_GroupHeaderStyle");
         menu.Items.Add(exportHeader);
 
-        menu.Items.Add(MakeEditorMenuItem("Export as HTML...", "", async () => await ExportHtmlAsync()));
-        menu.Items.Add(MakeEditorMenuItem("Export as PDF...",  "", async () => await ExportPdfAsync()));
+        menu.Items.Add(MakeEditorMenuItem(MarkdownEditorResources.MdCtx_ExportHtml, "", async () => await ExportHtmlAsync()));
+        menu.Items.Add(MakeEditorMenuItem(MarkdownEditorResources.MdCtx_ExportPdf,  "", async () => await ExportPdfAsync()));
 
         var sep4 = new Separator();
         sep4.SetResourceReference(StyleProperty, "MD_GroupSeparatorStyle");
@@ -754,7 +755,7 @@ public sealed partial class MarkdownEditorHost : UserControl,
         viewHeader.SetResourceReference(StyleProperty, "MD_GroupHeaderStyle");
         menu.Items.Add(viewHeader);
 
-        menu.Items.Add(MakeEditorMenuItem("Word Wrap\tAlt+Z", "", () => SetWordWrap(!_wordWrap)));
+        menu.Items.Add(MakeEditorMenuItem(MarkdownEditorResources.MdCtx_WordWrap, "", () => SetWordWrap(!_wordWrap)));
 
         return menu;
     }
@@ -800,7 +801,7 @@ public sealed partial class MarkdownEditorHost : UserControl,
     {
         var dlg = new Microsoft.Win32.SaveFileDialog
         {
-            Title      = "Export as HTML",
+            Title      = MarkdownEditorResources.MdDlg_ExportHtmlTitle,
             Filter     = "HTML file (*.html)|*.html",
             DefaultExt = ".html",
             FileName   = Path.GetFileNameWithoutExtension(_filePath ?? "document"),
@@ -818,7 +819,7 @@ public sealed partial class MarkdownEditorHost : UserControl,
     {
         var dlg = new Microsoft.Win32.SaveFileDialog
         {
-            Title      = "Export as PDF",
+            Title      = MarkdownEditorResources.MdDlg_ExportPdfTitle,
             Filter     = "PDF file (*.pdf)|*.pdf",
             DefaultExt = ".pdf",
             FileName   = Path.GetFileNameWithoutExtension(_filePath ?? "document"),
@@ -1124,27 +1125,27 @@ public sealed partial class MarkdownEditorHost : UserControl,
         // View mode dropdown
         var viewItems = new ObservableCollection<EditorToolbarItem>
         {
-            new() { Label = "Source Only",  Icon = "\uE8A5", Command = new RelayCmd(() => SetViewMode(MdViewMode.SourceOnly)) },
-            new() { Label = "Split",        Icon = "\uE8A0", Command = new RelayCmd(() => SetViewMode(MdViewMode.Split)) },
-            new() { Label = "Preview Only", Icon = "\uE8A1", Command = new RelayCmd(() => SetViewMode(MdViewMode.PreviewOnly)) },
+            new() { Label = MarkdownEditorResources.MdView_SourceOnly,  Icon = "\uE8A5", Command = new RelayCmd(() => SetViewMode(MdViewMode.SourceOnly)) },
+            new() { Label = MarkdownEditorResources.MdView_Split,        Icon = "\uE8A0", Command = new RelayCmd(() => SetViewMode(MdViewMode.Split)) },
+            new() { Label = MarkdownEditorResources.MdView_PreviewOnly, Icon = "\uE8A1", Command = new RelayCmd(() => SetViewMode(MdViewMode.PreviewOnly)) },
         };
         _podView = new EditorToolbarItem
         {
-            Icon = "\uE8A1", Label = "View", Tooltip = "View mode (Ctrl+1/2/3)",
+            Icon = "\uE8A1", Label = MarkdownEditorResources.MdTb_ViewLabel, Tooltip = MarkdownEditorResources.MdTb_ViewTooltip,
             DropdownItems = viewItems,
         };
 
         // Layout dropdown
         var layoutItems = new ObservableCollection<EditorToolbarItem>
         {
-            new() { Label = "Preview Right",  Icon = "\uE8A0", Command = new RelayCmd(() => SetSplitLayout(MdSplitLayout.PreviewRight)) },
-            new() { Label = "Preview Left",   Icon = "\uE8A0", Command = new RelayCmd(() => SetSplitLayout(MdSplitLayout.PreviewLeft)) },
-            new() { Label = "Preview Bottom", Icon = "\uE8A0", Command = new RelayCmd(() => SetSplitLayout(MdSplitLayout.PreviewBottom)) },
-            new() { Label = "Preview Top",    Icon = "\uE8A0", Command = new RelayCmd(() => SetSplitLayout(MdSplitLayout.PreviewTop)) },
+            new() { Label = MarkdownEditorResources.MdLayout_PreviewRight,  Icon = "\uE8A0", Command = new RelayCmd(() => SetSplitLayout(MdSplitLayout.PreviewRight)) },
+            new() { Label = MarkdownEditorResources.MdLayout_PreviewLeft,   Icon = "\uE8A0", Command = new RelayCmd(() => SetSplitLayout(MdSplitLayout.PreviewLeft)) },
+            new() { Label = MarkdownEditorResources.MdLayout_PreviewBottom, Icon = "\uE8A0", Command = new RelayCmd(() => SetSplitLayout(MdSplitLayout.PreviewBottom)) },
+            new() { Label = MarkdownEditorResources.MdLayout_PreviewTop,    Icon = "\uE8A0", Command = new RelayCmd(() => SetSplitLayout(MdSplitLayout.PreviewTop)) },
         };
         _podLayout = new EditorToolbarItem
         {
-            Icon = "\uF57E", Label = "Layout", Tooltip = "Split layout (Ctrl+Shift+L)",
+            Icon = "\uF57E", Label = MarkdownEditorResources.MdTb_LayoutLabel, Tooltip = MarkdownEditorResources.MdTb_LayoutTooltip,
             DropdownItems = layoutItems,
         };
 
@@ -1154,7 +1155,7 @@ public sealed partial class MarkdownEditorHost : UserControl,
         // Word-wrap toggle
         _podWrap = new EditorToolbarItem
         {
-            Icon = "\uE8A3", Label = "Wrap", Tooltip = "Word wrap (Alt+Z)",
+            Icon = "\uE8A3", Label = MarkdownEditorResources.MdTb_WrapLabel, Tooltip = MarkdownEditorResources.MdTb_WrapTooltip,
             IsToggle = true, IsChecked = _wordWrap,
             Command = new RelayCmd(() => SetWordWrap(!_wordWrap)),
         };
@@ -1162,45 +1163,45 @@ public sealed partial class MarkdownEditorHost : UserControl,
         // Force-refresh button
         var podRefresh = new EditorToolbarItem
         {
-            Icon = "\uE72C", Label = "Refresh", Tooltip = "Refresh preview (F9)",
+            Icon = "\uE72C", Label = MarkdownEditorResources.MdTb_RefreshLabel, Tooltip = MarkdownEditorResources.MdTb_RefreshTooltip,
             Command = new RelayCmd(async () => await ForceRefreshAsync()),
         };
 
         // Insert pod
         var insertItems = new ObservableCollection<EditorToolbarItem>
         {
-            new() { Label = "Table",          Icon = "\uE8EC", Command = new RelayCmd(() => InsertSnippet("\n| Column 1 | Column 2 | Column 3 |\n|---|---|---|\n| Cell | Cell | Cell |\n")) },
-            new() { Label = "Code Block",     Icon = "\uE943", Command = new RelayCmd(() => InsertSnippet("\n```\n\n```\n")) },
-            new() { Label = "Link",           Icon = "\uE8C1", Command = new RelayCmd(() => InsertSnippet("[link text](https://example.com)")) },
-            new() { Label = "Image",          Icon = "\uEB9F", Command = new RelayCmd(() => InsertSnippet("![alt text](image.png)")) },
-            new() { Label = "Horizontal Rule",Icon = "\uE8EF", Command = new RelayCmd(() => InsertSnippet("\n---\n")) },
-            new() { Label = "Table of Contents", Icon = "\uE8FD", Command = new RelayCmd(InsertTableOfContents) },
+            new() { Label = MarkdownEditorResources.MdInsert_Table,          Icon = "\uE8EC", Command = new RelayCmd(() => InsertSnippet("\n| Column 1 | Column 2 | Column 3 |\n|---|---|---|\n| Cell | Cell | Cell |\n")) },
+            new() { Label = MarkdownEditorResources.MdInsert_CodeBlock,      Icon = "\uE943", Command = new RelayCmd(() => InsertSnippet("\n```\n\n```\n")) },
+            new() { Label = MarkdownEditorResources.MdCtx_Link,              Icon = "\uE8C1", Command = new RelayCmd(() => InsertSnippet("[link text](https://example.com)")) },
+            new() { Label = MarkdownEditorResources.MdInsert_Image,          Icon = "\uEB9F", Command = new RelayCmd(() => InsertSnippet("![alt text](image.png)")) },
+            new() { Label = MarkdownEditorResources.MdInsert_HorizontalRule, Icon = "\uE8EF", Command = new RelayCmd(() => InsertSnippet("\n---\n")) },
+            new() { Label = MarkdownEditorResources.MdInsert_TableOfContents, Icon = "\uE8FD", Command = new RelayCmd(InsertTableOfContents) },
         };
         var podInsert = new EditorToolbarItem
         {
-            Icon = "\uE710", Label = "Insert", Tooltip = "Insert Markdown element",
+            Icon = "\uE710", Label = MarkdownEditorResources.MdTb_InsertLabel, Tooltip = MarkdownEditorResources.MdTb_InsertTooltip,
             DropdownItems = insertItems,
         };
 
         // Format pod
         var formatItems = new ObservableCollection<EditorToolbarItem>
         {
-            new() { Label = "Bold",            Icon = "\uE8DD", Command = new RelayCmd(() => WrapSelection("**", "**", "bold text")) },
-            new() { Label = "Italic",          Icon = "\uE8DB", Command = new RelayCmd(() => WrapSelection("*", "*", "italic text")) },
-            new() { Label = "Strikethrough",   Icon = "\uEDE0", Command = new RelayCmd(() => WrapSelection("~~", "~~", "strikethrough")) },
-            new() { Label = "Inline Code",     Icon = "\uE943", Command = new RelayCmd(() => WrapSelection("`", "`", "code")) },
+            new() { Label = MarkdownEditorResources.MdFmt_Bold,          Icon = "\uE8DD", Command = new RelayCmd(() => WrapSelection("**", "**", "bold text")) },
+            new() { Label = MarkdownEditorResources.MdFmt_Italic,        Icon = "\uE8DB", Command = new RelayCmd(() => WrapSelection("*", "*", "italic text")) },
+            new() { Label = MarkdownEditorResources.MdFmt_Strikethrough, Icon = "\uEDE0", Command = new RelayCmd(() => WrapSelection("~~", "~~", "strikethrough")) },
+            new() { Label = MarkdownEditorResources.MdFmt_InlineCode,    Icon = "\uE943", Command = new RelayCmd(() => WrapSelection("`", "`", "code")) },
         };
         var podFormat = new EditorToolbarItem
         {
-            Icon = "\uE8D2", Label = "Format", Tooltip = "Format selected text",
+            Icon = "\uE8D2", Label = MarkdownEditorResources.MdTb_FormatLabel, Tooltip = MarkdownEditorResources.MdTb_FormatTooltip,
             DropdownItems = formatItems,
         };
 
         // Fullscreen toggle button
         _podFullscreen = new EditorToolbarItem
         {
-            Icon      = "\uE740", Label   = "Fullscreen",
-            Tooltip   = "Toggle fullscreen preview",
+            Icon      = "\uE740", Label   = MarkdownEditorResources.MdTb_FullscreenLabel,
+            Tooltip   = MarkdownEditorResources.MdTb_FullscreenTooltip,
             IsToggle  = true,     IsChecked = false,
             Command   = new RelayCmd(ToggleFullscreen),
         };

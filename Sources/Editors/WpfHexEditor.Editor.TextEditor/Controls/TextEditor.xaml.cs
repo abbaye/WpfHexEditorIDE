@@ -21,6 +21,7 @@ using WpfHexEditor.Editor.Core.Documents;
 using WpfHexEditor.Editor.TextEditor.Highlighting;
 using WpfHexEditor.Editor.TextEditor.Models;
 using WpfHexEditor.Editor.TextEditor.Services;
+using WpfHexEditor.Editor.TextEditor.Properties;
 using WpfHexEditor.Editor.TextEditor.ViewModels;
 
 namespace WpfHexEditor.Editor.TextEditor.Controls;
@@ -81,7 +82,7 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IBufferAw
     private bool             _suppressBufferSync;
 
     // -- IRefreshTimeReporter ------------------------------------------------
-    private readonly StatusBarItem _sbRefreshTime = new() { Label = "Refresh", Tooltip = "Render frame time in milliseconds", Value = "—" };
+    private readonly StatusBarItem _sbRefreshTime = new() { Label = TextEditorResources.TeSb_RefreshLabel, Tooltip = TextEditorResources.TeSb_RefreshTooltip, Value = "—" };
 
     // -- ISearchTarget -------------------------------------------------------
     private readonly List<(int Line, int Col)> _searchMatches = new();
@@ -1078,10 +1079,10 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IBufferAw
 
     private ObservableCollection<StatusBarItem> BuildTextStatusBarItems()
     {
-        _sbTeLanguage = new StatusBarItem { Label = "Language", Tooltip = "Active syntax language" };
-        _sbTePosition = new StatusBarItem { Label = "Position", Tooltip = "Caret line and column" };
-        _sbTeZoom     = new StatusBarItem { Label = "Zoom",     Tooltip = "Editor zoom level" };
-        _sbTeEncoding = new StatusBarItem { Label = "Encoding", Tooltip = "File encoding" };
+        _sbTeLanguage = new StatusBarItem { Label = TextEditorResources.TeSb_LanguageLabel, Tooltip = TextEditorResources.TeSb_LanguageTooltip };
+        _sbTePosition = new StatusBarItem { Label = TextEditorResources.TeSb_PositionLabel, Tooltip = TextEditorResources.TeSb_PositionTooltip };
+        _sbTeZoom     = new StatusBarItem { Label = TextEditorResources.TeSb_ZoomLabel,     Tooltip = TextEditorResources.TeSb_ZoomTooltip };
+        _sbTeEncoding = new StatusBarItem { Label = TextEditorResources.TeSb_EncodingLabel, Tooltip = TextEditorResources.TeSb_EncodingTooltip };
 
         // Zoom preset choices.
         foreach (var (pct, factor) in new (string, double)[] { ("50%", 0.5), ("75%", 0.75), ("100%", 1.0), ("125%", 1.25), ("150%", 1.5), ("200%", 2.0) })

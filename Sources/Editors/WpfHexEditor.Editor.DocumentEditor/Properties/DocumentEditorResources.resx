@@ -543,6 +543,52 @@
   </data>
 
   <!-- ═══════════════════════════════════════════════════════════════
+       DocumentEditorHost.Contributors.cs — status bar labels
+       ═══════════════════════════════════════════════════════════════ -->
+
+  <data name="DocSb_FormatLabel" xml:space="preserve">
+    <value>Format</value>
+  </data>
+  <data name="DocSb_VersionLabel" xml:space="preserve">
+    <value>Version</value>
+  </data>
+  <data name="DocSb_BlocksLabel" xml:space="preserve">
+    <value>Blocks</value>
+  </data>
+  <data name="DocSb_SelectionLabel" xml:space="preserve">
+    <value>Selection</value>
+  </data>
+  <data name="DocSb_AlertsLabel" xml:space="preserve">
+    <value>Alerts</value>
+  </data>
+  <data name="DocSb_ViewLabel" xml:space="preserve">
+    <value>View</value>
+  </data>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       DocumentEditorHost.Contributors.cs — toolbar tooltips
+       ═══════════════════════════════════════════════════════════════ -->
+
+  <data name="DocTb_TextView" xml:space="preserve">
+    <value>Text view</value>
+  </data>
+  <data name="DocTb_SplitView" xml:space="preserve">
+    <value>Split view</value>
+  </data>
+  <data name="DocTb_HexView" xml:space="preserve">
+    <value>Hex view</value>
+  </data>
+  <data name="DocTb_StructureView" xml:space="preserve">
+    <value>Structure view</value>
+  </data>
+  <data name="DocTb_ForensicMode" xml:space="preserve">
+    <value>Forensic mode</value>
+  </data>
+  <data name="DocTb_Save" xml:space="preserve">
+    <value>Save</value>
+  </data>
+
+  <!-- ═══════════════════════════════════════════════════════════════
        DocumentStylesPanel.xaml.cs
        ═══════════════════════════════════════════════════════════════ -->
 

@@ -289,7 +289,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         /// matching the Visual Studio keyboard binding.
         /// </summary>
         public static readonly RoutedUICommand FindAllReferencesCommand = new(
-            "Find All References",
+            CodeEditorResources.CodeCtx_FindAllReferences,
             "FindAllReferences",
             typeof(CodeEditor),
             new InputGestureCollection { new KeyGesture(Key.F12, ModifierKeys.Shift) });
@@ -309,7 +309,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         /// Forces an immediate clear and re-request of all highlight layers.
         /// </summary>
         public static readonly RoutedUICommand RefreshHighlightsCommand = new(
-            "Refresh Highlights",
+            CodeEditorResources.CodeCtx_RefreshHighlights,
             "RefreshHighlights",
             typeof(CodeEditor),
             new InputGestureCollection { new KeyGesture(Key.R, ModifierKeys.Control | ModifierKeys.Shift) });

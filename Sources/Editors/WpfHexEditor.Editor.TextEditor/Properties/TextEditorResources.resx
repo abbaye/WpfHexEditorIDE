@@ -67,6 +67,41 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
 
+  <!-- ═══════════════════════════════════════════════════════════════
+       TextEditor.xaml.cs — Status bar items
+       ═══════════════════════════════════════════════════════════════ -->
+
+  <data name="TeSb_RefreshLabel" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
+  <data name="TeSb_RefreshTooltip" xml:space="preserve">
+    <value>Render frame time in milliseconds</value>
+  </data>
+  <data name="TeSb_LanguageLabel" xml:space="preserve">
+    <value>Language</value>
+  </data>
+  <data name="TeSb_LanguageTooltip" xml:space="preserve">
+    <value>Active syntax language</value>
+  </data>
+  <data name="TeSb_PositionLabel" xml:space="preserve">
+    <value>Position</value>
+  </data>
+  <data name="TeSb_PositionTooltip" xml:space="preserve">
+    <value>Caret line and column</value>
+  </data>
+  <data name="TeSb_ZoomLabel" xml:space="preserve">
+    <value>Zoom</value>
+  </data>
+  <data name="TeSb_ZoomTooltip" xml:space="preserve">
+    <value>Editor zoom level</value>
+  </data>
+  <data name="TeSb_EncodingLabel" xml:space="preserve">
+    <value>Encoding</value>
+  </data>
+  <data name="TeSb_EncodingTooltip" xml:space="preserve">
+    <value>File encoding</value>
+  </data>
+
   <data name="TextEditor_LanguageLabelPlainText" xml:space="preserve">
     <value>Plain Text</value>
   </data>

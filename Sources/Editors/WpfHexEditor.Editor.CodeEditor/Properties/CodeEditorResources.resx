@@ -488,6 +488,28 @@
   </data>
 
   <!-- ═══════════════════════════════════════════════════════════════
+       CodeEditor.Rendering.cs — Status bar items
+       ═══════════════════════════════════════════════════════════════ -->
+
+  <data name="CodeSb_RefreshLabel" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
+  <data name="CodeSb_RefreshTooltip" xml:space="preserve">
+    <value>Render frame time in milliseconds</value>
+  </data>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       CodeEditor.cs — RoutedUICommand display names
+       ═══════════════════════════════════════════════════════════════ -->
+
+  <data name="CodeCtx_FindAllReferences" xml:space="preserve">
+    <value>Find All References</value>
+  </data>
+  <data name="CodeCtx_RefreshHighlights" xml:space="preserve">
+    <value>Refresh Highlights</value>
+  </data>
+
+  <!-- ═══════════════════════════════════════════════════════════════
        CodeEditor.cs — Context menu strings
        ═══════════════════════════════════════════════════════════════ -->
 

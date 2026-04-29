@@ -27,6 +27,7 @@ using System.Windows.Controls;
 using Microsoft.Web.WebView2.Core;
 using WinFormsWebView2 = Microsoft.Web.WebView2.WinForms.WebView2;
 using WpfHexEditor.Editor.MarkdownEditor.Core.Services;
+using WpfHexEditor.Editor.MarkdownEditor.Properties;
 
 namespace WpfHexEditor.Editor.MarkdownEditor.Controls;
 
@@ -120,7 +121,7 @@ public sealed partial class MarkdownPreviewPane : UserControl
     public void SyncFullscreenMenuItem(bool isFullscreen)
     {
         if (_ctxFullscreen is not null)
-            _ctxFullscreen.Header = isFullscreen ? "Exit Fullscreen" : "Fullscreen";
+            _ctxFullscreen.Header = isFullscreen ? MarkdownEditorResources.MdPrev_ExitFullscreen : MarkdownEditorResources.MdPrev_Fullscreen;
     }
 
     /// <summary>
@@ -182,29 +183,29 @@ public sealed partial class MarkdownPreviewPane : UserControl
 
         // VIEW group
         AddGroupHeader(menu, "VIEW");
-        AddMenuItem(menu, "Source Only",   "Ctrl+1",         OnCtxSourceOnly,      "\uE8A5");
-        AddMenuItem(menu, "Split View",    "Ctrl+2",         OnCtxSplitView,       "\uE8A9");
-        AddMenuItem(menu, "Preview Only",  "Ctrl+3",         OnCtxPreviewOnly,     "\uE890");
+        AddMenuItem(menu, MarkdownEditorResources.MdPrev_SourceOnly,  "Ctrl+1",         OnCtxSourceOnly,      "\uE8A5");
+        AddMenuItem(menu, MarkdownEditorResources.MdPrev_SplitView,  "Ctrl+2",         OnCtxSplitView,       "\uE8A9");
+        AddMenuItem(menu, MarkdownEditorResources.MdPrev_PreviewOnly,"Ctrl+3",         OnCtxPreviewOnly,     "\uE890");
         AddSeparator(menu);
-        _ctxFullscreen = AddMenuItem(menu, "Fullscreen",     "",                   OnCtxToggleFullscreen, "\uE740");
+        _ctxFullscreen = AddMenuItem(menu, MarkdownEditorResources.MdPrev_Fullscreen,  "",                   OnCtxToggleFullscreen, "\uE740");
 
         // ACTIONS group
         AddSeparator(menu);
         AddGroupHeader(menu, "ACTIONS");
-        AddMenuItem(menu, "Refresh Preview",  "F9",           OnCtxRefresh,        "\uE72C");
-        AddMenuItem(menu, "Cycle Layout",     "Ctrl+Shift+L", OnCtxCycleLayout,    "\uE7C4");
+        AddMenuItem(menu, MarkdownEditorResources.MdPrev_RefreshPreview, "F9",           OnCtxRefresh,     "\uE72C");
+        AddMenuItem(menu, MarkdownEditorResources.MdPrev_CycleLayout,   "Ctrl+Shift+L", OnCtxCycleLayout, "\uE7C4");
 
         // ZOOM group
         AddSeparator(menu);
         AddGroupHeader(menu, "ZOOM");
-        AddMenuItem(menu, "Zoom In",   "Ctrl++", OnCtxZoomIn,   "\uE8A3");
-        AddMenuItem(menu, "Zoom Out",  "Ctrl+-", OnCtxZoomOut,  "\uE71F");
-        AddMenuItem(menu, "Reset Zoom","Ctrl+0", OnCtxZoomReset,"\uE9A6");
+        AddMenuItem(menu, MarkdownEditorResources.MdPrev_ZoomIn,    "Ctrl++", OnCtxZoomIn,    "\uE8A3");
+        AddMenuItem(menu, MarkdownEditorResources.MdPrev_ZoomOut,   "Ctrl+-", OnCtxZoomOut,   "\uE71F");
+        AddMenuItem(menu, MarkdownEditorResources.MdPrev_ResetZoom, "Ctrl+0", OnCtxZoomReset, "\uE9A6");
 
         // EDIT group
         AddSeparator(menu);
         AddGroupHeader(menu, "EDIT");
-        AddMenuItem(menu, "Copy",      "Ctrl+C", OnCtxCopyText, "\uE8C8");
+        AddMenuItem(menu, MarkdownEditorResources.MdPrev_Copy, "Ctrl+C", OnCtxCopyText, "\uE8C8");
 
         return menu;
     }

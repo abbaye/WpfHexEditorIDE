@@ -36,6 +36,7 @@ using WpfHexEditor.Core.ProjectSystem.Languages;
 using WpfHexEditor.Editor.CodeEditor.Selection;
 using WpfHexEditor.Editor.CodeEditor.Input;
 using WpfHexEditor.Editor.CodeEditor.MultiCaret;
+using WpfHexEditor.Editor.CodeEditor.Properties;
 
 namespace WpfHexEditor.Editor.CodeEditor.Controls
 {
@@ -1147,7 +1148,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
         private int _frameCount = 0; // Frame counter for periodic cache cleanup
         private readonly Stopwatch   _refreshStopwatch = new();
-        private readonly StatusBarItem _sbRefreshTime  = new() { Label = "Refresh", Tooltip = "Render frame time in milliseconds", Value = "—" };
+        private readonly StatusBarItem _sbRefreshTime  = new() { Label = CodeEditorResources.CodeSb_RefreshLabel, Tooltip = CodeEditorResources.CodeSb_RefreshTooltip, Value = "—" };
 
         /// <summary>
         /// Measure: update cached max content width; scrollbars manage their own layout.
