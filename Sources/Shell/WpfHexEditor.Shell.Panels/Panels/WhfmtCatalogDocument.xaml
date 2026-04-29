@@ -79,14 +79,19 @@
         <!-- ================================================================ -->
         <!-- Main: DataGrid + Detail                                           -->
         <!-- ================================================================ -->
-        <Grid>
+        <Grid x:Name="ContentGrid">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" MinWidth="200"/>
-                <ColumnDefinition Width="4"/>
-                <ColumnDefinition Width="320" MinWidth="180"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="0"/>
+                <ColumnDefinition Width="0"/>
             </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="0"/>
+                <RowDefinition Height="0"/>
+            </Grid.RowDefinitions>
 
-            <DataGrid x:Name="CatalogGrid" Grid.Column="0"
+            <DataGrid x:Name="CatalogGrid" Grid.Column="0" Grid.Row="0"
                       Margin="4,4,0,4"
                       ItemsSource="{Binding FilteredView}"
                       AutoGenerateColumns="False"
@@ -257,13 +262,14 @@
                 </DataGrid.Columns>
             </DataGrid>
 
-            <GridSplitter Grid.Column="1" Width="4"
+            <GridSplitter x:Name="DetailSplitter" Grid.Column="1" Grid.Row="1"
                           HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                           Background="{DynamicResource SE_SeparatorBrush}"
                           ResizeBehavior="PreviousAndNext"/>
 
             <!-- Detail panel -->
-            <local:WhfmtFormatDetailPanel Grid.Column="2" DataContext="{Binding Detail}"/>
+            <local:WhfmtFormatDetailPanel x:Name="DetailPanel" Grid.Column="2" Grid.Row="0"
+                                          DataContext="{Binding Detail}"/>
         </Grid>
     </Grid>
 </UserControl>

@@ -1487,6 +1487,8 @@ public sealed class StructureEditorSettings
     public long TestPanelMaxBytes { get; set; } = 10 * 1024 * 1024;
 }
 
+public enum WhfmtDetailPanelPosition { Right, Left, Bottom, Top }
+
 public sealed class WhfmtExplorerSettings
 {
     /// <summary>Show built-in (embedded) format definitions in the browser. Default: true.</summary>
@@ -1515,4 +1517,7 @@ public sealed class WhfmtExplorerSettings
 
     /// <summary>File names (without path) to exclude from the catalog even if found on disk.</summary>
     public List<string> ExcludedFileNames { get; set; } = [];
+
+    /// <summary>Position of the detail panel in the Format Catalog tab. Default: Right.</summary>
+    public WhfmtDetailPanelPosition CatalogDetailPosition { get; set; } = WhfmtDetailPanelPosition.Right;
 }

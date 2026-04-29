@@ -229,6 +229,11 @@
   <data name="WhfmtCatalog_ViewJson" xml:space="preserve"><value>View JSON</value></data>
   <data name="WhfmtCatalog_RevealInExplorer" xml:space="preserve"><value>Reveal in Explorer</value></data>
   <data name="WhfmtCatalog_ErrorText" xml:space="preserve"><value> Error</value></data>
+  <data name="WhfmtCatalog_LayoutLeft"   xml:space="preserve"><value>Detail Left</value></data>
+  <data name="WhfmtCatalog_LayoutRight"  xml:space="preserve"><value>Detail Right</value></data>
+  <data name="WhfmtCatalog_LayoutTop"    xml:space="preserve"><value>Detail Top</value></data>
+  <data name="WhfmtCatalog_LayoutBottom" xml:space="preserve"><value>Detail Bottom</value></data>
+  <data name="WhfmtCatalog_LayoutTooltip" xml:space="preserve"><value>Detail panel position</value></data>
 
   <!-- ═══════════════════════════════════════════════════════════════
        WHFMT FORMAT DETAIL PANEL
