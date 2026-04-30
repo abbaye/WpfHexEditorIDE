@@ -183,4 +183,500 @@
     <value>Etkinleştir</value>
   </data>
 
+  <data name="CodeCtx_FindAllReferences" xml:space="preserve">
+    <value>Tüm başvuruları bul</value>
+  </data>
+  <data name="CodeCtx_RefreshHighlights" xml:space="preserve">
+    <value>Vurguları yenile</value>
+  </data>
+  <data name="CodeEd_FindRef_CollapseAll" xml:space="preserve">
+    <value>Tümünü daralt</value>
+  </data>
+  <data name="CodeEd_Minimap_MenuTitle" xml:space="preserve">
+    <value>_Miniharita</value>
+  </data>
+  <data name="CodeEd_Minimap_RenderChars" xml:space="preserve">
+    <value>_Karakterleri oluştur</value>
+  </data>
+  <data name="CodeEd_Minimap_Side" xml:space="preserve">
+    <value>_Taraf</value>
+  </data>
+  <data name="CodeEd_Minimap_SideLeft" xml:space="preserve">
+    <value>Sol</value>
+  </data>
+  <data name="CodeEd_Minimap_SideRight" xml:space="preserve">
+    <value>Sağ</value>
+  </data>
+  <data name="CodeEd_Minimap_SizeFill" xml:space="preserve">
+    <value>Doldur</value>
+  </data>
+  <data name="CodeEd_Minimap_SizeFit" xml:space="preserve">
+    <value>Sığdır</value>
+  </data>
+  <data name="CodeEd_Minimap_SizeProportional" xml:space="preserve">
+    <value>Orantılı</value>
+  </data>
+  <data name="CodeEd_Minimap_Slider" xml:space="preserve">
+    <value>Ka_ydırıcı</value>
+  </data>
+  <data name="CodeEd_Minimap_SliderAlways" xml:space="preserve">
+    <value>Her zaman</value>
+  </data>
+  <data name="CodeEd_Minimap_SliderMouseOver" xml:space="preserve">
+    <value>Fare üzerindeyken</value>
+  </data>
+  <data name="CodeEd_Minimap_VerticalSize" xml:space="preserve">
+    <value>_Dikey boyut</value>
+  </data>
+  <data name="CodeEd_Refs_CollapseAll" xml:space="preserve">
+    <value>Tümünü daralt</value>
+  </data>
+  <data name="CodeEd_Refs_ExpandAll" xml:space="preserve">
+    <value>Tümünü genişlet</value>
+  </data>
+  <data name="CodeEd_Refs_Refresh" xml:space="preserve">
+    <value>Yenile</value>
+  </data>
+  <data name="CodeSb_RefreshLabel" xml:space="preserve">
+    <value>Yenile</value>
+  </data>
+  <data name="CodeSb_RefreshTooltip" xml:space="preserve">
+    <value>Milisaniye cinsinden render süresi</value>
+  </data>
+  <data name="CodeEditorOptions_AutoIndentLabel" xml:space="preserve">
+    <value>Otomatik girinti:</value>
+  </data>
+  <data name="CodeEditorOptions_BracketColorizeContent" xml:space="preserve">
+    <value>Parantez çifti renklendirme</value>
+  </data>
+  <data name="CodeEditorOptions_BracketColorizeToolTip" xml:space="preserve">
+    <value>Yuvalama derinliğine göre CE_Bracket_1/2/3/4 ile parantezleri renklendirir</value>
+  </data>
+  <data name="CodeEditorOptions_CodeFormattingInfo" xml:space="preserve">
+    <value>Bu ayarlar .whfmt varsayılanlarını geçersiz kılar. Belirsiz onay kutuları dil kurallarını devralır.</value>
+  </data>
+  <data name="CodeEditorOptions_CodeFormattingSection" xml:space="preserve">
+    <value>Kod biçimlendirme</value>
+  </data>
+  <data name="CodeEditorOptions_CodeLensContent" xml:space="preserve">
+    <value>Code Lens göster (satır içi referans sayımları)</value>
+  </data>
+  <data name="CodeEditorOptions_CodeLensToolTip" xml:space="preserve">
+    <value>Her bildiriminin üstünde referans sayısını gösterir. Referanslar açılır penceresini açmak için ipucuna tıklayın.</value>
+  </data>
+  <data name="CodeEditorOptions_ColorSwatchContent" xml:space="preserve">
+    <value>Renk örneği önizlemesi</value>
+  </data>
+  <data name="CodeEditorOptions_ColorSwatchToolTip" xml:space="preserve">
+    <value>CSS, XAML ve C# dosyalarındaki renk değişmezlerinin yanında 12×12 renk örneği gösterir</value>
+  </data>
+  <data name="CodeEditorOptions_FindAllRefsContent" xml:space="preserve">
+    <value>Tüm başvuruları bul özelliğini etkinleştir (Shift+F12)</value>
+  </data>
+  <data name="CodeEditorOptions_FindAllRefsToolTip" xml:space="preserve">
+    <value>Mevcut dosya türü için etkin bir Dil Sunucusu (LSP) gerektirir</value>
+  </data>
+  <data name="CodeEditorOptions_FoldToggleContent" xml:space="preserve">
+    <value>Çift tıklama ile katlama bölgelerini değiştir</value>
+  </data>
+  <data name="CodeEditorOptions_FormatOnSaveContent" xml:space="preserve">
+    <value>Kaydederken biçimlendir (Ctrl+S)</value>
+  </data>
+  <data name="CodeEditorOptions_FormatOnSaveToolTip" xml:space="preserve">
+    <value>Kaydederken belgeyi otomatik olarak biçimlendirir. Varsa LSP biçimlendirmesini, yoksa whfmt girinti kurallarını kullanır.</value>
+  </data>
+  <data name="CodeEditorOptions_IndentCaseLabelsContent" xml:space="preserve">
+    <value>case/when etiketlerini girintile</value>
+  </data>
+  <data name="CodeEditorOptions_IndentCaseLabelsToolTip" xml:space="preserve">
+    <value>Switch içindeki case/when etiketlerine bir girinti düzeyi ekler. Belirsiz = .whfmt varsayılanı.</value>
+  </data>
+  <data name="CodeEditorOptions_InsertFinalNewlineContent" xml:space="preserve">
+    <value>Son satır sonu ekle</value>
+  </data>
+  <data name="CodeEditorOptions_InsertFinalNewlineToolTip" xml:space="preserve">
+    <value>Dosyanın tam olarak bir satır sonu ile bitmesini sağlar. Belirsiz = .whfmt dil varsayılanı.</value>
+  </data>
+  <data name="CodeEditorOptions_MultiCaretContent" xml:space="preserve">
+    <value>Çoklu imleç düzenlemeyi etkinleştir (Alt+Tıklama)</value>
+  </data>
+  <data name="CodeEditorOptions_OrganizeImportsContent" xml:space="preserve">
+    <value>Biçimlendirmede içe aktarmaları düzenle</value>
+  </data>
+  <data name="CodeEditorOptions_OrganizeImportsToolTip" xml:space="preserve">
+    <value>Biçimlendirme sırasında using/import yönergelerini alfabetik olarak sıralar. Belirsiz = .whfmt varsayılanı.</value>
+  </data>
+  <data name="CodeEditorOptions_ScopeGuidesContent" xml:space="preserve">
+    <value>Kapsam kılavuzlarını göster</value>
+  </data>
+  <data name="CodeEditorOptions_ShowWhitespaceLabel" xml:space="preserve">
+    <value>Boşlukları göster:</value>
+  </data>
+  <data name="CodeEditorOptions_SnippetsContent" xml:space="preserve">
+    <value>Kod parçacıklarını etkinleştir</value>
+  </data>
+  <data name="CodeEditorOptions_SpaceAfterCommaContent" xml:space="preserve">
+    <value>Virgüllerden sonra boşluk</value>
+  </data>
+  <data name="CodeEditorOptions_SpaceAfterCommaToolTip" xml:space="preserve">
+    <value>Bağımsız değişken/parametre listelerinde virgüllerden sonra boşluk ekler. Belirsiz = .whfmt varsayılanı.</value>
+  </data>
+  <data name="CodeEditorOptions_SpaceAfterKeywordsContent" xml:space="preserve">
+    <value>Anahtar kelimelerden sonra boşluk (if, for, while)</value>
+  </data>
+  <data name="CodeEditorOptions_SpaceAfterKeywordsToolTip" xml:space="preserve">
+    <value>Kontrol anahtar kelimeleri ile açılış parantezi arasına boşluk ekler. Belirsiz = .whfmt varsayılanı.</value>
+  </data>
+  <data name="CodeEditorOptions_SpaceAroundOpsContent" xml:space="preserve">
+    <value>İkili operatörlerin etrafında boşluk</value>
+  </data>
+  <data name="CodeEditorOptions_SpaceAroundOpsToolTip" xml:space="preserve">
+    <value>+, -, *, /, == vb. etrafına boşluk ekler. Belirsiz = .whfmt varsayılanı.</value>
+  </data>
+  <data name="CodeEditorOptions_TrimTrailingContent" xml:space="preserve">
+    <value>Sondaki boşlukları kırp</value>
+  </data>
+  <data name="CodeEditorOptions_TrimTrailingToolTip" xml:space="preserve">
+    <value>Her satırdaki sondaki boşlukları/tabları kaldırır. Belirsiz = .whfmt dil varsayılanı.</value>
+  </data>
+  <data name="CodeEditorOptions_WordHighlightContent" xml:space="preserve">
+    <value>İmleç altındaki kelimeyi vurgula</value>
+  </data>
+  <data name="CodeEditorOptions_WordHighlightToolTip" xml:space="preserve">
+    <value>İmleç altındaki kelimenin tüm geçtiği yerleri vurgular ve kaydırma çubuğunda onay işaretleri gösterir.</value>
+  </data>
+  <data name="CodeEditorSettings_ExportButtonToolTip" xml:space="preserve">
+    <value>Ayarları JSON dosyasına dışa aktar</value>
+  </data>
+  <data name="CodeEditorSettings_ExportDialogTitle" xml:space="preserve">
+    <value>Ayarları dışa aktar</value>
+  </data>
+  <data name="CodeEditorSettings_ExportFailedMessage" xml:space="preserve">
+    <value>Ayarlar dışa aktarılamadı:
+{0}</value>
+  </data>
+  <data name="CodeEditorSettings_ExportFailedTitle" xml:space="preserve">
+    <value>Dışa aktarma başarısız</value>
+  </data>
+  <data name="CodeEditorSettings_ExportSuccessMessage" xml:space="preserve">
+    <value>Ayarlar başarıyla dışa aktarıldı:
+{0}</value>
+  </data>
+  <data name="CodeEditorSettings_ExportSuccessTitle" xml:space="preserve">
+    <value>Dışa aktarma başarılı</value>
+  </data>
+  <data name="CodeEditorSettings_ImportButtonToolTip" xml:space="preserve">
+    <value>JSON dosyasından ayarları içe aktar</value>
+  </data>
+  <data name="CodeEditorSettings_ImportDialogTitle" xml:space="preserve">
+    <value>Ayarları içe aktar</value>
+  </data>
+  <data name="CodeEditorSettings_ImportFailedMessage" xml:space="preserve">
+    <value>Ayarlar içe aktarılamadı:
+{0}</value>
+  </data>
+  <data name="CodeEditorSettings_ImportFailedTitle" xml:space="preserve">
+    <value>İçe aktarma başarısız</value>
+  </data>
+  <data name="CodeEditorSettings_ImportSuccessMessage" xml:space="preserve">
+    <value>Ayarlar başarıyla içe aktarıldı:
+{0}</value>
+  </data>
+  <data name="CodeEditorSettings_ImportSuccessTitle" xml:space="preserve">
+    <value>İçe aktarma başarılı</value>
+  </data>
+  <data name="CodeEditorSettings_PreviewPlaceholder" xml:space="preserve">
+    <value>Bir CodeEditor bağlandığında önizleme burada görünecektir</value>
+  </data>
+  <data name="CodeEditorSettings_ResetButtonToolTip" xml:space="preserve">
+    <value>Tüm ayarları varsayılan değerlere sıfırla</value>
+  </data>
+  <data name="CodeEditorSettings_ResetCompleteMessage" xml:space="preserve">
+    <value>Tüm ayarlar varsayılan değerlerine sıfırlandı.</value>
+  </data>
+  <data name="CodeEditorSettings_ResetCompleteTitle" xml:space="preserve">
+    <value>Sıfırlama tamamlandı</value>
+  </data>
+  <data name="CodeEditor_BreakpointConditionLabel" xml:space="preserve">
+    <value>Koşul:</value>
+  </data>
+  <data name="CodeEditor_BreakpointDelete" xml:space="preserve">
+    <value>Sil</value>
+  </data>
+  <data name="CodeEditor_BreakpointDeleteBreakpoint" xml:space="preserve">
+    <value>Kesme noktasını sil</value>
+  </data>
+  <data name="CodeEditor_BreakpointEditCondition" xml:space="preserve">
+    <value>Koşulu düzenle</value>
+  </data>
+  <data name="CodeEditor_BreakpointInvalidToolTip" xml:space="preserve">
+    <value>Bu satıra kesme noktası yerleştirilemiyor</value>
+  </data>
+  <data name="CodeEditor_BreakpointSave" xml:space="preserve">
+    <value>Kaydet</value>
+  </data>
+  <data name="CodeEditor_BreakpointSettings" xml:space="preserve">
+    <value>Ayarlar…</value>
+  </data>
+  <data name="CodeEditor_BreakpointToggleToolTip" xml:space="preserve">
+    <value>Kesme noktasını değiştirmek için tıklayın</value>
+  </data>
+  <data name="CodeEditor_BreakpointTypeBreakpoint" xml:space="preserve">
+    <value>Kesme noktası</value>
+  </data>
+  <data name="CodeEditor_BreakpointTypeConditional" xml:space="preserve">
+    <value>Koşullu</value>
+  </data>
+  <data name="CodeEditor_BreakpointTypeDisabled" xml:space="preserve">
+    <value>Devre dışı</value>
+  </data>
+  <data name="CodeEditor_ContextMenuCollapseToDefs" xml:space="preserve">
+    <value>Tanımlara daralt</value>
+  </data>
+  <data name="CodeEditor_ContextMenuColumnRulers" xml:space="preserve">
+    <value>Sütun cetvelleri</value>
+  </data>
+  <data name="CodeEditor_ContextMenuFormatJson" xml:space="preserve">
+    <value>JSON biçimlendir</value>
+  </data>
+  <data name="CodeEditor_ContextMenuFormatSelection" xml:space="preserve">
+    <value>Seçimi biçimlendir</value>
+  </data>
+  <data name="CodeEditor_ContextMenuFormatting" xml:space="preserve">
+    <value>Biçimlendirme</value>
+  </data>
+  <data name="CodeEditor_ContextMenuFormattingOptions" xml:space="preserve">
+    <value>Seçenekler...</value>
+  </data>
+  <data name="CodeEditor_ContextMenuGoToImplementation" xml:space="preserve">
+    <value>Uygulamaya git</value>
+  </data>
+  <data name="CodeEditor_ContextMenuOutlining" xml:space="preserve">
+    <value>Anahat</value>
+  </data>
+  <data name="CodeEditor_ContextMenuPeekDefinition" xml:space="preserve">
+    <value>Tanımı göz at</value>
+  </data>
+  <data name="CodeEditor_ContextMenuQuickFix" xml:space="preserve">
+    <value>Hızlı düzeltme…</value>
+  </data>
+  <data name="CodeEditor_ContextMenuReanalyzeFolding" xml:space="preserve">
+    <value>Katlama yeniden analiz et</value>
+  </data>
+  <data name="CodeEditor_ContextMenuRefreshHighlights" xml:space="preserve">
+    <value>Vurguları yenile</value>
+  </data>
+  <data name="CodeEditor_ContextMenuShowCallHierarchy" xml:space="preserve">
+    <value>Çağrı hiyerarşisini göster</value>
+  </data>
+  <data name="CodeEditor_ContextMenuShowTypeHierarchy" xml:space="preserve">
+    <value>Tür hiyerarşisini göster</value>
+  </data>
+  <data name="CodeEditor_ContextMenuShowWhitespace" xml:space="preserve">
+    <value>Boşlukları göster</value>
+  </data>
+  <data name="CodeEditor_ContextMenuStopHidingCurrent" xml:space="preserve">
+    <value>Mevcut gizlemeyi durdur</value>
+  </data>
+  <data name="CodeEditor_ContextMenuStopOutlining" xml:space="preserve">
+    <value>Anahattı durdur</value>
+  </data>
+  <data name="CodeEditor_ContextMenuToggleAllOutlining" xml:space="preserve">
+    <value>Tüm anahatlara geç</value>
+  </data>
+  <data name="CodeEditor_ContextMenuToggleOutlining" xml:space="preserve">
+    <value>Anahat geçişi</value>
+  </data>
+  <data name="CodeEditor_ContextMenuValidateJson" xml:space="preserve">
+    <value>JSON doğrula</value>
+  </data>
+  <data name="CodeEditor_ContextMenuWhitespaceSelection" xml:space="preserve">
+    <value>Yalnızca seçim</value>
+  </data>
+  <data name="CodeEditor_ContextMenuWordHighlight" xml:space="preserve">
+    <value>Kelime vurgulama</value>
+  </data>
+  <data name="CodeEditor_DisplayName" xml:space="preserve">
+    <value>Kod düzenleyici</value>
+  </data>
+  <data name="CodeEditor_FormatDocumentTransaction" xml:space="preserve">
+    <value>Belgeyi biçimlendir</value>
+  </data>
+  <data name="CodeEditor_FormatJsonError" xml:space="preserve">
+    <value>Biçimlendirilemedi — geçersiz JSON:
+{0}</value>
+  </data>
+  <data name="CodeEditor_FormatJsonErrorTitle" xml:space="preserve">
+    <value>Biçimlendirme hatası</value>
+  </data>
+  <data name="CodeEditor_FormatSelectionTransaction" xml:space="preserve">
+    <value>Seçimi biçimlendir</value>
+  </data>
+  <data name="CodeEditor_GoToLine" xml:space="preserve">
+    <value>Satıra git</value>
+  </data>
+  <data name="CodeEditor_GoToLineLabel" xml:space="preserve">
+    <value>Satır numarası (1 - {0}):</value>
+  </data>
+  <data name="CodeEditor_ReferencesCounter" xml:space="preserve">
+    <value>{0} başvuru</value>
+  </data>
+  <data name="CodeEditor_ReferencesPinTooltip" xml:space="preserve">
+    <value>Başvuruları bul paneline sabitle</value>
+  </data>
+  <data name="CodeEditor_UrlTooltipEmail" xml:space="preserve">
+    <value>E-posta göndermek için Ctrl+Tıklama</value>
+  </data>
+  <data name="CodeEditor_UrlTooltipLink" xml:space="preserve">
+    <value>Açmak için Ctrl+Tıklama</value>
+  </data>
+  <data name="CodeEditor_ValidateJsonError" xml:space="preserve">
+    <value>Geçersiz JSON: {0}</value>
+  </data>
+  <data name="CodeEditor_ValidateJsonErrorTitle" xml:space="preserve">
+    <value>Doğrulama hatası</value>
+  </data>
+  <data name="CodeEditor_ValidateJsonSuccess" xml:space="preserve">
+    <value>JSON geçerli.</value>
+  </data>
+  <data name="CodeEditor_ValidateJsonTitle" xml:space="preserve">
+    <value>Doğrulama</value>
+  </data>
+  <data name="FormatScriptEditor_DefaultFileName" xml:space="preserve">
+    <value>Adsız.json</value>
+  </data>
+  <data name="FormatScriptEditor_EditorTabHeader" xml:space="preserve">
+    <value>Düzenleyici</value>
+  </data>
+  <data name="FormatScriptEditor_ErrorCountStatus" xml:space="preserve">
+    <value>0 Hata</value>
+  </data>
+  <data name="FormatScriptEditor_FileTypeStatus" xml:space="preserve">
+    <value>JSON</value>
+  </data>
+  <data name="FormatScriptEditor_FormatJsonError" xml:space="preserve">
+    <value>JSON biçimlendirme başarısız: {0}</value>
+  </data>
+  <data name="FormatScriptEditor_FormatJsonErrorTitle" xml:space="preserve">
+    <value>Biçimlendirme hatası</value>
+  </data>
+  <data name="FormatScriptEditor_FormatText" xml:space="preserve">
+    <value>Biçimlendir</value>
+  </data>
+  <data name="FormatScriptEditor_FormatToolTip" xml:space="preserve">
+    <value>JSON biçimlendir (Ctrl+Shift+F)</value>
+  </data>
+  <data name="FormatScriptEditor_LineColStatus" xml:space="preserve">
+    <value>Sat 1, Süt 1</value>
+  </data>
+  <data name="FormatScriptEditor_LoadEmbeddedError" xml:space="preserve">
+    <value>Gömülü format yüklenemedi: {0}</value>
+  </data>
+  <data name="FormatScriptEditor_LoadEmbeddedErrorTitle" xml:space="preserve">
+    <value>Hata</value>
+  </data>
+  <data name="FormatScriptEditor_LoadFileError" xml:space="preserve">
+    <value>Dosya yüklenemedi: {0}</value>
+  </data>
+  <data name="FormatScriptEditor_LoadFileErrorTitle" xml:space="preserve">
+    <value>Hata</value>
+  </data>
+  <data name="FormatScriptEditor_LoadFormatsError" xml:space="preserve">
+    <value>Gömülü formatlar yüklenemedi: {0}</value>
+  </data>
+  <data name="FormatScriptEditor_LoadFormatsErrorTitle" xml:space="preserve">
+    <value>Hata</value>
+  </data>
+  <data name="FormatScriptEditor_NewText" xml:space="preserve">
+    <value>Yeni</value>
+  </data>
+  <data name="FormatScriptEditor_NewToolTip" xml:space="preserve">
+    <value>Yeni format tanımı</value>
+  </data>
+  <data name="FormatScriptEditor_OpenDialogTitle" xml:space="preserve">
+    <value>Format tanımını aç</value>
+  </data>
+  <data name="FormatScriptEditor_OpenText" xml:space="preserve">
+    <value>Aç</value>
+  </data>
+  <data name="FormatScriptEditor_OpenToolTip" xml:space="preserve">
+    <value>Format tanımını aç</value>
+  </data>
+  <data name="FormatScriptEditor_PreviewPlaceholder" xml:space="preserve">
+    <value>Önizlemeyi görmek için bir format tanımı yükleyin...</value>
+  </data>
+  <data name="FormatScriptEditor_PreviewTabHeader" xml:space="preserve">
+    <value>Önizleme</value>
+  </data>
+  <data name="FormatScriptEditor_RedoText" xml:space="preserve">
+    <value>Yinele</value>
+  </data>
+  <data name="FormatScriptEditor_RedoToolTip" xml:space="preserve">
+    <value>Yinele (Ctrl+Y)</value>
+  </data>
+  <data name="FormatScriptEditor_RunTestButton" xml:space="preserve">
+    <value>Testi çalıştır</value>
+  </data>
+  <data name="FormatScriptEditor_SaveChangesMessage" xml:space="preserve">
+    <value>Geçerli dosyadaki değişiklikleri kaydetmek istiyor musunuz?</value>
+  </data>
+  <data name="FormatScriptEditor_SaveChangesTitle" xml:space="preserve">
+    <value>Değişiklikleri kaydet</value>
+  </data>
+  <data name="FormatScriptEditor_SaveDialogTitle" xml:space="preserve">
+    <value>Format tanımını kaydet</value>
+  </data>
+  <data name="FormatScriptEditor_SaveFailedMessage" xml:space="preserve">
+    <value>Dosya kaydedilemedi: {0}</value>
+  </data>
+  <data name="FormatScriptEditor_SaveFailedTitle" xml:space="preserve">
+    <value>Hata</value>
+  </data>
+  <data name="FormatScriptEditor_SaveSuccessMessage" xml:space="preserve">
+    <value>Dosya başarıyla kaydedildi!</value>
+  </data>
+  <data name="FormatScriptEditor_SaveSuccessTitle" xml:space="preserve">
+    <value>Başarılı</value>
+  </data>
+  <data name="FormatScriptEditor_SaveText" xml:space="preserve">
+    <value>Kaydet</value>
+  </data>
+  <data name="FormatScriptEditor_SaveToolTip" xml:space="preserve">
+    <value>Geçerli dosyayı kaydet</value>
+  </data>
+  <data name="FormatScriptEditor_SelectTestFileButton" xml:space="preserve">
+    <value>Test dosyası seç...</value>
+  </data>
+  <data name="FormatScriptEditor_StatusLineCol" xml:space="preserve">
+    <value>Sat {0}, Süt {1}</value>
+  </data>
+  <data name="FormatScriptEditor_TestInstructions" xml:space="preserve">
+    <value>Format tanımınızı burada örnek dosyalara göre test edin.
+
+Bir dosya seçin ve ayrıştırma sonuçlarını görmek için "Testi çalıştır"ı tıklayın.</value>
+  </data>
+  <data name="FormatScriptEditor_TestTabHeader" xml:space="preserve">
+    <value>Test</value>
+  </data>
+  <data name="FormatScriptEditor_UndoText" xml:space="preserve">
+    <value>Geri Al</value>
+  </data>
+  <data name="FormatScriptEditor_UndoToolTip" xml:space="preserve">
+    <value>Geri Al (Ctrl+Z)</value>
+  </data>
+  <data name="FormatScriptEditor_ValidateText" xml:space="preserve">
+    <value>Doğrula</value>
+  </data>
+  <data name="FormatScriptEditor_ValidateToolTip" xml:space="preserve">
+    <value>Format tanımını doğrula</value>
+  </data>
+  <data name="FormatScriptEditor_ValidationResultsHeader" xml:space="preserve">
+    <value>Doğrulama sonuçları</value>
+  </data>
+  <data name="FormatScriptEditor_ValidationTabHeader" xml:space="preserve">
+    <value>Doğrulama</value>
+  </data>
+  <data name="FormatScriptEditor_WarningCountStatus" xml:space="preserve">
+    <value>0 Uyarı</value>
+  </data>
 </root>

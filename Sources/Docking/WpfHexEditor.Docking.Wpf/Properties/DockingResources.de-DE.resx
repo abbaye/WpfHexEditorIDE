@@ -59,4 +59,76 @@
   <data name="Docking_TabSettings_ToggleWithWheel" xml:space="preserve">
     <value>Zeilen mit Mausrad umschalten</value>
   </data>
+  <data name="Dock_AutoHide_Close" xml:space="preserve">
+    <value>Schließen</value>
+  </data>
+  <data name="Dock_AutoHide_Dock" xml:space="preserve">
+    <value>Andocken</value>
+  </data>
+  <data name="Dock_AutoHide_Float" xml:space="preserve">
+    <value>Freistellen</value>
+  </data>
+  <data name="Dock_AutoHide_Show" xml:space="preserve">
+    <value>Anzeigen</value>
+  </data>
+  <data name="Dock_FloatWin_Maximize" xml:space="preserve">
+    <value>Maximieren</value>
+  </data>
+  <data name="Dock_FloatWin_Restore" xml:space="preserve">
+    <value>Wiederherstellen</value>
+  </data>
+  <data name="Dock_LSP_Connecting" xml:space="preserve">
+    <value>Sprachserver: wird verbunden…</value>
+  </data>
+  <data name="Dock_LSP_Error" xml:space="preserve">
+    <value>Sprachserver: Fehler</value>
+  </data>
+  <data name="Dock_LSP_Ready" xml:space="preserve">
+    <value>Sprachserver: bereit</value>
+  </data>
+  <data name="Dock_Menu_CloseAll" xml:space="preserve">
+    <value>Alle schließen</value>
+  </data>
+  <data name="Dock_Menu_CloseAllButPinned" xml:space="preserve">
+    <value>Alle außer angehefteten schließen</value>
+  </data>
+  <data name="Dock_Menu_CloseAllButThis" xml:space="preserve">
+    <value>Alle außer diesem schließen</value>
+  </data>
+  <data name="Dock_Menu_CloseTabGroup" xml:space="preserve">
+    <value>Registerkartengruppe schließen</value>
+  </data>
+  <data name="Dock_Menu_DockAsTabbed" xml:space="preserve">
+    <value>Als Registerkartendokument andocken</value>
+  </data>
+  <data name="Dock_Menu_DockAsToolWindow" xml:space="preserve">
+    <value>Als Toolfenster andocken</value>
+  </data>
+  <data name="Dock_Menu_Float" xml:space="preserve">
+    <value>Freistellen</value>
+  </data>
+  <data name="Dock_Menu_Hide" xml:space="preserve">
+    <value>Ausblenden</value>
+  </data>
+  <data name="Dock_Menu_NewHorizontalTabGroup" xml:space="preserve">
+    <value>Neue horizontale Registerkartengruppe</value>
+  </data>
+  <data name="Dock_Menu_NewVerticalTabGroup" xml:space="preserve">
+    <value>Neue vertikale Registerkartengruppe</value>
+  </data>
+  <data name="Dock_Placeholder_OpenDocument" xml:space="preserve">
+    <value>Öffnen Sie ein Dokument zum Starten</value>
+  </data>
+  <data name="Dock_TabConfig_ColorBy" xml:space="preserve">
+    <value>Dokumentregisterkarten einfärben nach</value>
+  </data>
+  <data name="Dock_TabConfig_MultipleRows" xml:space="preserve">
+    <value>Registerkarten in mehreren Reihen anzeigen</value>
+  </data>
+  <data name="Dock_TabConfig_Options" xml:space="preserve">
+    <value>Optionen…</value>
+  </data>
+  <data name="Dock_Tab_Start" xml:space="preserve">
+    <value>Start</value>
+  </data>
 </root>

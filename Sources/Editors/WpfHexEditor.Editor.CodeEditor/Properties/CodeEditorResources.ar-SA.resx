@@ -150,4 +150,533 @@
     <value>تفعيل</value>
   </data>
 
+  <data name="CodeCtx_FindAllReferences" xml:space="preserve">
+    <value>البحث عن كل المراجع</value>
+  </data>
+  <data name="CodeCtx_RefreshHighlights" xml:space="preserve">
+    <value>تحديث التمييزات</value>
+  </data>
+  <data name="CodeEd_FindRef_CollapseAll" xml:space="preserve">
+    <value>طي الكل</value>
+  </data>
+  <data name="CodeEd_Minimap_MenuTitle" xml:space="preserve">
+    <value>_خريطة مصغرة</value>
+  </data>
+  <data name="CodeEd_Minimap_RenderChars" xml:space="preserve">
+    <value>عرض _الأحرف</value>
+  </data>
+  <data name="CodeEd_Minimap_Side" xml:space="preserve">
+    <value>_الجانب</value>
+  </data>
+  <data name="CodeEd_Minimap_SideLeft" xml:space="preserve">
+    <value>يسار</value>
+  </data>
+  <data name="CodeEd_Minimap_SideRight" xml:space="preserve">
+    <value>يمين</value>
+  </data>
+  <data name="CodeEd_Minimap_SizeFill" xml:space="preserve">
+    <value>ملء</value>
+  </data>
+  <data name="CodeEd_Minimap_SizeFit" xml:space="preserve">
+    <value>ملاءمة</value>
+  </data>
+  <data name="CodeEd_Minimap_SizeProportional" xml:space="preserve">
+    <value>متناسب</value>
+  </data>
+  <data name="CodeEd_Minimap_Slider" xml:space="preserve">
+    <value>_شريط التمرير</value>
+  </data>
+  <data name="CodeEd_Minimap_SliderAlways" xml:space="preserve">
+    <value>دائماً</value>
+  </data>
+  <data name="CodeEd_Minimap_SliderMouseOver" xml:space="preserve">
+    <value>عند تمرير الماوس</value>
+  </data>
+  <data name="CodeEd_Minimap_VerticalSize" xml:space="preserve">
+    <value>_الحجم الرأسي</value>
+  </data>
+  <data name="CodeEd_Refs_CollapseAll" xml:space="preserve">
+    <value>طي الكل</value>
+  </data>
+  <data name="CodeEd_Refs_ExpandAll" xml:space="preserve">
+    <value>توسيع الكل</value>
+  </data>
+  <data name="CodeEd_Refs_Refresh" xml:space="preserve">
+    <value>تحديث</value>
+  </data>
+  <data name="CodeSb_RefreshLabel" xml:space="preserve">
+    <value>تحديث</value>
+  </data>
+  <data name="CodeSb_RefreshTooltip" xml:space="preserve">
+    <value>وقت عرض الإطار بالميلي ثانية</value>
+  </data>
+  <data name="CodeEditorOptions_AutoIndentLabel" xml:space="preserve">
+    <value>المسافة البادئة التلقائية:</value>
+  </data>
+  <data name="CodeEditorOptions_BracketColorizeContent" xml:space="preserve">
+    <value>تلوين أزواج الأقواس</value>
+  </data>
+  <data name="CodeEditorOptions_BracketColorizeToolTip" xml:space="preserve">
+    <value>يلوّن الأقواس باستخدام CE_Bracket_1/2/3/4 بناءً على عمق التداخل</value>
+  </data>
+  <data name="CodeEditorOptions_CodeFormattingInfo" xml:space="preserve">
+    <value>تُلغي هذه الإعدادات الإعدادات الافتراضية لـ .whfmt. اترك خانات الاختيار غير محددة للإرث من قواعد اللغة.</value>
+  </data>
+  <data name="CodeEditorOptions_CodeFormattingSection" xml:space="preserve">
+    <value>تنسيق الكود</value>
+  </data>
+  <data name="CodeEditorOptions_CodeLensContent" xml:space="preserve">
+    <value>إظهار Code Lens (عدد المراجع المضمّنة)</value>
+  </data>
+  <data name="CodeEditorOptions_CodeLensToolTip" xml:space="preserve">
+    <value>يعرض عدد المراجع فوق كل تعريف. انقر على التلميح لفتح نافذة المراجع.</value>
+  </data>
+  <data name="CodeEditorOptions_ColorSwatchContent" xml:space="preserve">
+    <value>معاينة نموذج الألوان</value>
+  </data>
+  <data name="CodeEditorOptions_ColorSwatchToolTip" xml:space="preserve">
+    <value>يعرض نموذج ألوان 12×12 بجانب قيم الألوان الحرفية في CSS وXAML وملفات C#</value>
+  </data>
+  <data name="CodeEditorOptions_FindAllRefsContent" xml:space="preserve">
+    <value>تمكين البحث عن كل المراجع (Shift+F12)</value>
+  </data>
+  <data name="CodeEditorOptions_FindAllRefsToolTip" xml:space="preserve">
+    <value>يتطلب خادم لغة نشط (LSP) لنوع الملف الحالي</value>
+  </data>
+  <data name="CodeEditorOptions_FoldToggleContent" xml:space="preserve">
+    <value>تبديل مناطق الطي بالنقر المزدوج</value>
+  </data>
+  <data name="CodeEditorOptions_FormatOnSaveContent" xml:space="preserve">
+    <value>التنسيق عند الحفظ (Ctrl+S)</value>
+  </data>
+  <data name="CodeEditorOptions_FormatOnSaveToolTip" xml:space="preserve">
+    <value>يُنسّق المستند تلقائياً عند الحفظ. يستخدم تنسيق LSP إذا كان متاحاً، وإلا يطبّق قواعد المسافة البادئة لـ whfmt.</value>
+  </data>
+  <data name="CodeEditorOptions_IndentCaseLabelsContent" xml:space="preserve">
+    <value>مسافة بادئة لتسميات case/when</value>
+  </data>
+  <data name="CodeEditorOptions_IndentCaseLabelsToolTip" xml:space="preserve">
+    <value>إضافة مستوى مسافة بادئة لتسميات case/when داخل switch. غير محدد = الافتراضي .whfmt.</value>
+  </data>
+  <data name="CodeEditorOptions_InsertFinalNewlineContent" xml:space="preserve">
+    <value>إدراج سطر جديد في النهاية</value>
+  </data>
+  <data name="CodeEditorOptions_InsertFinalNewlineToolTip" xml:space="preserve">
+    <value>يضمن انتهاء الملف بسطر جديد واحد بالضبط. غير محدد = الافتراضي لـ .whfmt.</value>
+  </data>
+  <data name="CodeEditorOptions_MultiCaretContent" xml:space="preserve">
+    <value>تمكين التحرير متعدد المؤشرات (Alt+نقر)</value>
+  </data>
+  <data name="CodeEditorOptions_OrganizeImportsContent" xml:space="preserve">
+    <value>تنظيم الاستيرادات عند التنسيق</value>
+  </data>
+  <data name="CodeEditorOptions_OrganizeImportsToolTip" xml:space="preserve">
+    <value>ترتيب توجيهات using/import أبجدياً عند التنسيق. غير محدد = الافتراضي .whfmt.</value>
+  </data>
+  <data name="CodeEditorOptions_ScopeGuidesContent" xml:space="preserve">
+    <value>إظهار دلالات النطاق</value>
+  </data>
+  <data name="CodeEditorOptions_ShowWhitespaceLabel" xml:space="preserve">
+    <value>إظهار المسافات:</value>
+  </data>
+  <data name="CodeEditorOptions_SnippetsContent" xml:space="preserve">
+    <value>تمكين المقتطفات</value>
+  </data>
+  <data name="CodeEditorOptions_SpaceAfterCommaContent" xml:space="preserve">
+    <value>مسافة بعد الفواصل</value>
+  </data>
+  <data name="CodeEditorOptions_SpaceAfterCommaToolTip" xml:space="preserve">
+    <value>إدراج مسافة بعد الفواصل في قوائم الوسيطات. غير محدد = الافتراضي .whfmt.</value>
+  </data>
+  <data name="CodeEditorOptions_SpaceAfterKeywordsContent" xml:space="preserve">
+    <value>مسافة بعد الكلمات المحجوزة (if، for، while)</value>
+  </data>
+  <data name="CodeEditorOptions_SpaceAfterKeywordsToolTip" xml:space="preserve">
+    <value>إدراج مسافة بين الكلمات المحجوزة للتحكم والقوسين: if (...) مقابل if(...). غير محدد = الافتراضي .whfmt.</value>
+  </data>
+  <data name="CodeEditorOptions_SpaceAroundOpsContent" xml:space="preserve">
+    <value>مسافة حول العوامل الثنائية</value>
+  </data>
+  <data name="CodeEditorOptions_SpaceAroundOpsToolTip" xml:space="preserve">
+    <value>إدراج مسافات حول +، -، *، /، == وغيرها. غير محدد = الافتراضي .whfmt.</value>
+  </data>
+  <data name="CodeEditorOptions_TrimTrailingContent" xml:space="preserve">
+    <value>إزالة المسافات البادئة الزائدة</value>
+  </data>
+  <data name="CodeEditorOptions_TrimTrailingToolTip" xml:space="preserve">
+    <value>إزالة المسافات/علامات التبويب الزائدة في كل سطر. غير محدد = الافتراضي لـ .whfmt.</value>
+  </data>
+  <data name="CodeEditorOptions_WordHighlightContent" xml:space="preserve">
+    <value>تمييز الكلمة أسفل المؤشر</value>
+  </data>
+  <data name="CodeEditorOptions_WordHighlightToolTip" xml:space="preserve">
+    <value>يُبرز جميع تكرارات الكلمة تحت المؤشر ويُظهر علامات على شريط التمرير.</value>
+  </data>
+  <data name="CodeEditorSettings_ExportButtonToolTip" xml:space="preserve">
+    <value>تصدير الإعدادات إلى ملف JSON</value>
+  </data>
+  <data name="CodeEditorSettings_ExportDialogTitle" xml:space="preserve">
+    <value>تصدير الإعدادات</value>
+  </data>
+  <data name="CodeEditorSettings_ExportFailedMessage" xml:space="preserve">
+    <value>فشل تصدير الإعدادات:
+{0}</value>
+  </data>
+  <data name="CodeEditorSettings_ExportFailedTitle" xml:space="preserve">
+    <value>فشل التصدير</value>
+  </data>
+  <data name="CodeEditorSettings_ExportSuccessMessage" xml:space="preserve">
+    <value>تم تصدير الإعدادات بنجاح إلى:
+{0}</value>
+  </data>
+  <data name="CodeEditorSettings_ExportSuccessTitle" xml:space="preserve">
+    <value>تم التصدير بنجاح</value>
+  </data>
+  <data name="CodeEditorSettings_ImportButtonToolTip" xml:space="preserve">
+    <value>استيراد الإعدادات من ملف JSON</value>
+  </data>
+  <data name="CodeEditorSettings_ImportDialogTitle" xml:space="preserve">
+    <value>استيراد الإعدادات</value>
+  </data>
+  <data name="CodeEditorSettings_ImportFailedMessage" xml:space="preserve">
+    <value>فشل استيراد الإعدادات:
+{0}</value>
+  </data>
+  <data name="CodeEditorSettings_ImportFailedTitle" xml:space="preserve">
+    <value>فشل الاستيراد</value>
+  </data>
+  <data name="CodeEditorSettings_ImportSuccessMessage" xml:space="preserve">
+    <value>تم استيراد الإعدادات بنجاح من:
+{0}</value>
+  </data>
+  <data name="CodeEditorSettings_ImportSuccessTitle" xml:space="preserve">
+    <value>تم الاستيراد بنجاح</value>
+  </data>
+  <data name="CodeEditorSettings_PreviewPlaceholder" xml:space="preserve">
+    <value>ستظهر المعاينة هنا عند توصيل محرر كود</value>
+  </data>
+  <data name="CodeEditorSettings_ResetButtonToolTip" xml:space="preserve">
+    <value>إعادة تعيين كل الإعدادات إلى القيم الافتراضية</value>
+  </data>
+  <data name="CodeEditorSettings_ResetCompleteMessage" xml:space="preserve">
+    <value>تمت إعادة تعيين جميع الإعدادات إلى القيم الافتراضية.</value>
+  </data>
+  <data name="CodeEditorSettings_ResetCompleteTitle" xml:space="preserve">
+    <value>اكتملت إعادة التعيين</value>
+  </data>
+  <data name="CodeEditorSettings_ResetConfirmMessage" xml:space="preserve">
+    <value>هل أنت متأكد من رغبتك في إعادة تعيين جميع الإعدادات إلى قيمها الافتراضية؟</value>
+  </data>
+  <data name="CodeEditorSettings_ResetConfirmTitle" xml:space="preserve">
+    <value>تأكيد إعادة التعيين</value>
+  </data>
+  <data name="CodeEditor_BreakpointConditionLabel" xml:space="preserve">
+    <value>الشرط:</value>
+  </data>
+  <data name="CodeEditor_BreakpointDelete" xml:space="preserve">
+    <value>حذف</value>
+  </data>
+  <data name="CodeEditor_BreakpointDeleteBreakpoint" xml:space="preserve">
+    <value>حذف نقطة التوقف</value>
+  </data>
+  <data name="CodeEditor_BreakpointEditCondition" xml:space="preserve">
+    <value>تحرير الشرط</value>
+  </data>
+  <data name="CodeEditor_BreakpointInvalidToolTip" xml:space="preserve">
+    <value>لا يمكن وضع نقطة توقف على هذا السطر</value>
+  </data>
+  <data name="CodeEditor_BreakpointSave" xml:space="preserve">
+    <value>حفظ</value>
+  </data>
+  <data name="CodeEditor_BreakpointSettings" xml:space="preserve">
+    <value>الإعدادات…</value>
+  </data>
+  <data name="CodeEditor_BreakpointToggleToolTip" xml:space="preserve">
+    <value>انقر لتبديل نقطة التوقف</value>
+  </data>
+  <data name="CodeEditor_BreakpointTypeBreakpoint" xml:space="preserve">
+    <value>نقطة توقف</value>
+  </data>
+  <data name="CodeEditor_BreakpointTypeConditional" xml:space="preserve">
+    <value>شرطي</value>
+  </data>
+  <data name="CodeEditor_BreakpointTypeDisabled" xml:space="preserve">
+    <value>معطّل</value>
+  </data>
+  <data name="CodeEditor_ContextMenuCollapseToDefs" xml:space="preserve">
+    <value>طي إلى التعريفات</value>
+  </data>
+  <data name="CodeEditor_ContextMenuColumnRulers" xml:space="preserve">
+    <value>مسطرات الأعمدة</value>
+  </data>
+  <data name="CodeEditor_ContextMenuFindAllRefs" xml:space="preserve">
+    <value>البحث عن كل المراجع</value>
+  </data>
+  <data name="CodeEditor_ContextMenuFormatDocument" xml:space="preserve">
+    <value>تنسيق المستند</value>
+  </data>
+  <data name="CodeEditor_ContextMenuFormatJson" xml:space="preserve">
+    <value>تنسيق JSON</value>
+  </data>
+  <data name="CodeEditor_ContextMenuFormatSelection" xml:space="preserve">
+    <value>تنسيق التحديد</value>
+  </data>
+  <data name="CodeEditor_ContextMenuFormatting" xml:space="preserve">
+    <value>التنسيق</value>
+  </data>
+  <data name="CodeEditor_ContextMenuFormattingOptions" xml:space="preserve">
+    <value>خيارات...</value>
+  </data>
+  <data name="CodeEditor_ContextMenuGoToImplementation" xml:space="preserve">
+    <value>الانتقال إلى التنفيذ</value>
+  </data>
+  <data name="CodeEditor_ContextMenuOutlining" xml:space="preserve">
+    <value>الخطوط العريضة</value>
+  </data>
+  <data name="CodeEditor_ContextMenuPeekDefinition" xml:space="preserve">
+    <value>إلقاء نظرة على التعريف</value>
+  </data>
+  <data name="CodeEditor_ContextMenuQuickFix" xml:space="preserve">
+    <value>إصلاح سريع…</value>
+  </data>
+  <data name="CodeEditor_ContextMenuReanalyzeFolding" xml:space="preserve">
+    <value>إعادة تحليل الطي</value>
+  </data>
+  <data name="CodeEditor_ContextMenuRefreshHighlights" xml:space="preserve">
+    <value>تحديث التمييزات</value>
+  </data>
+  <data name="CodeEditor_ContextMenuRenameSymbol" xml:space="preserve">
+    <value>إعادة تسمية الرمز</value>
+  </data>
+  <data name="CodeEditor_ContextMenuShowCallHierarchy" xml:space="preserve">
+    <value>إظهار تسلسل الاستدعاء</value>
+  </data>
+  <data name="CodeEditor_ContextMenuShowTypeHierarchy" xml:space="preserve">
+    <value>إظهار تسلسل الأنواع</value>
+  </data>
+  <data name="CodeEditor_ContextMenuShowWhitespace" xml:space="preserve">
+    <value>إظهار المسافات</value>
+  </data>
+  <data name="CodeEditor_ContextMenuStopHidingCurrent" xml:space="preserve">
+    <value>إيقاف إخفاء الحالي</value>
+  </data>
+  <data name="CodeEditor_ContextMenuStopOutlining" xml:space="preserve">
+    <value>إيقاف تحديد الخطوط العريضة</value>
+  </data>
+  <data name="CodeEditor_ContextMenuToggleAllOutlining" xml:space="preserve">
+    <value>تبديل جميع الخطوط العريضة</value>
+  </data>
+  <data name="CodeEditor_ContextMenuToggleOutlining" xml:space="preserve">
+    <value>تبديل الخطوط العريضة</value>
+  </data>
+  <data name="CodeEditor_ContextMenuValidateJson" xml:space="preserve">
+    <value>التحقق من JSON</value>
+  </data>
+  <data name="CodeEditor_ContextMenuWhitespaceAlways" xml:space="preserve">
+    <value>دائماً</value>
+  </data>
+  <data name="CodeEditor_ContextMenuWhitespaceNone" xml:space="preserve">
+    <value>بلا</value>
+  </data>
+  <data name="CodeEditor_ContextMenuWhitespaceSelection" xml:space="preserve">
+    <value>التحديد فقط</value>
+  </data>
+  <data name="CodeEditor_ContextMenuWordHighlight" xml:space="preserve">
+    <value>تمييز الكلمات</value>
+  </data>
+  <data name="CodeEditor_DisplayName" xml:space="preserve">
+    <value>محرر الكود</value>
+  </data>
+  <data name="CodeEditor_FormatDocumentTransaction" xml:space="preserve">
+    <value>تنسيق المستند</value>
+  </data>
+  <data name="CodeEditor_FormatJsonError" xml:space="preserve">
+    <value>تعذّر التنسيق — JSON غير صالح:
+{0}</value>
+  </data>
+  <data name="CodeEditor_FormatJsonErrorTitle" xml:space="preserve">
+    <value>خطأ في التنسيق</value>
+  </data>
+  <data name="CodeEditor_FormatSelectionTransaction" xml:space="preserve">
+    <value>تنسيق التحديد</value>
+  </data>
+  <data name="CodeEditor_GoToLine" xml:space="preserve">
+    <value>الانتقال إلى سطر</value>
+  </data>
+  <data name="CodeEditor_GoToLineLabel" xml:space="preserve">
+    <value>رقم السطر (1 - {0}):</value>
+  </data>
+  <data name="CodeEditor_GoToLineTitle" xml:space="preserve">
+    <value>الانتقال إلى سطر</value>
+  </data>
+  <data name="CodeEditor_ReferencesCounter" xml:space="preserve">
+    <value>{0} مرجع (مراجع)</value>
+  </data>
+  <data name="CodeEditor_ReferencesPinTooltip" xml:space="preserve">
+    <value>تثبيت في لوحة البحث عن المراجع</value>
+  </data>
+  <data name="CodeEditor_ReferencesTitle" xml:space="preserve">
+    <value>المراجع — {0}</value>
+  </data>
+  <data name="CodeEditor_UrlTooltipEmail" xml:space="preserve">
+    <value>Ctrl+نقر لإرسال بريد إلكتروني</value>
+  </data>
+  <data name="CodeEditor_UrlTooltipLink" xml:space="preserve">
+    <value>Ctrl+نقر للفتح</value>
+  </data>
+  <data name="CodeEditor_ValidateJsonError" xml:space="preserve">
+    <value>JSON غير صالح: {0}</value>
+  </data>
+  <data name="CodeEditor_ValidateJsonErrorTitle" xml:space="preserve">
+    <value>خطأ في التحقق</value>
+  </data>
+  <data name="CodeEditor_ValidateJsonSuccess" xml:space="preserve">
+    <value>JSON صالح.</value>
+  </data>
+  <data name="CodeEditor_ValidateJsonTitle" xml:space="preserve">
+    <value>التحقق</value>
+  </data>
+  <data name="FormatScriptEditor_DefaultFileName" xml:space="preserve">
+    <value>بدون عنوان.json</value>
+  </data>
+  <data name="FormatScriptEditor_EditorTabHeader" xml:space="preserve">
+    <value>المحرر</value>
+  </data>
+  <data name="FormatScriptEditor_ErrorCountStatus" xml:space="preserve">
+    <value>0 أخطاء</value>
+  </data>
+  <data name="FormatScriptEditor_FileTypeStatus" xml:space="preserve">
+    <value>JSON</value>
+  </data>
+  <data name="FormatScriptEditor_FormatJsonError" xml:space="preserve">
+    <value>فشل تنسيق JSON: {0}</value>
+  </data>
+  <data name="FormatScriptEditor_FormatJsonErrorTitle" xml:space="preserve">
+    <value>خطأ في التنسيق</value>
+  </data>
+  <data name="FormatScriptEditor_FormatText" xml:space="preserve">
+    <value>تنسيق</value>
+  </data>
+  <data name="FormatScriptEditor_FormatToolTip" xml:space="preserve">
+    <value>تنسيق JSON (Ctrl+Shift+F)</value>
+  </data>
+  <data name="FormatScriptEditor_LineColStatus" xml:space="preserve">
+    <value>س 1، ع 1</value>
+  </data>
+  <data name="FormatScriptEditor_LoadEmbeddedError" xml:space="preserve">
+    <value>فشل تحميل التنسيق المضمّن: {0}</value>
+  </data>
+  <data name="FormatScriptEditor_LoadEmbeddedErrorTitle" xml:space="preserve">
+    <value>خطأ</value>
+  </data>
+  <data name="FormatScriptEditor_LoadFileError" xml:space="preserve">
+    <value>فشل تحميل الملف: {0}</value>
+  </data>
+  <data name="FormatScriptEditor_LoadFileErrorTitle" xml:space="preserve">
+    <value>خطأ</value>
+  </data>
+  <data name="FormatScriptEditor_LoadFormatsError" xml:space="preserve">
+    <value>فشل تحميل التنسيقات المضمّنة: {0}</value>
+  </data>
+  <data name="FormatScriptEditor_LoadFormatsErrorTitle" xml:space="preserve">
+    <value>خطأ</value>
+  </data>
+  <data name="FormatScriptEditor_NewText" xml:space="preserve">
+    <value>جديد</value>
+  </data>
+  <data name="FormatScriptEditor_NewToolTip" xml:space="preserve">
+    <value>تعريف تنسيق جديد</value>
+  </data>
+  <data name="FormatScriptEditor_OpenDialogTitle" xml:space="preserve">
+    <value>فتح تعريف تنسيق</value>
+  </data>
+  <data name="FormatScriptEditor_OpenText" xml:space="preserve">
+    <value>فتح</value>
+  </data>
+  <data name="FormatScriptEditor_OpenToolTip" xml:space="preserve">
+    <value>فتح تعريف تنسيق</value>
+  </data>
+  <data name="FormatScriptEditor_PreviewPlaceholder" xml:space="preserve">
+    <value>قم بتحميل تعريف تنسيق لرؤية المعاينة...</value>
+  </data>
+  <data name="FormatScriptEditor_PreviewTabHeader" xml:space="preserve">
+    <value>معاينة</value>
+  </data>
+  <data name="FormatScriptEditor_RedoText" xml:space="preserve">
+    <value>إعادة</value>
+  </data>
+  <data name="FormatScriptEditor_RedoToolTip" xml:space="preserve">
+    <value>إعادة (Ctrl+Y)</value>
+  </data>
+  <data name="FormatScriptEditor_RunTestButton" xml:space="preserve">
+    <value>تشغيل الاختبار</value>
+  </data>
+  <data name="FormatScriptEditor_SaveChangesMessage" xml:space="preserve">
+    <value>هل تريد حفظ التغييرات على الملف الحالي؟</value>
+  </data>
+  <data name="FormatScriptEditor_SaveChangesTitle" xml:space="preserve">
+    <value>حفظ التغييرات</value>
+  </data>
+  <data name="FormatScriptEditor_SaveDialogTitle" xml:space="preserve">
+    <value>حفظ تعريف التنسيق</value>
+  </data>
+  <data name="FormatScriptEditor_SaveFailedMessage" xml:space="preserve">
+    <value>فشل حفظ الملف: {0}</value>
+  </data>
+  <data name="FormatScriptEditor_SaveFailedTitle" xml:space="preserve">
+    <value>خطأ</value>
+  </data>
+  <data name="FormatScriptEditor_SaveSuccessMessage" xml:space="preserve">
+    <value>تم حفظ الملف بنجاح!</value>
+  </data>
+  <data name="FormatScriptEditor_SaveSuccessTitle" xml:space="preserve">
+    <value>نجاح</value>
+  </data>
+  <data name="FormatScriptEditor_SaveText" xml:space="preserve">
+    <value>حفظ</value>
+  </data>
+  <data name="FormatScriptEditor_SaveToolTip" xml:space="preserve">
+    <value>حفظ الملف الحالي</value>
+  </data>
+  <data name="FormatScriptEditor_SelectTestFileButton" xml:space="preserve">
+    <value>اختر ملف الاختبار...</value>
+  </data>
+  <data name="FormatScriptEditor_StatusErrors" xml:space="preserve">
+    <value>{0} أخطاء</value>
+  </data>
+  <data name="FormatScriptEditor_StatusLineCol" xml:space="preserve">
+    <value>س {0}، ع {1}</value>
+  </data>
+  <data name="FormatScriptEditor_StatusWarnings" xml:space="preserve">
+    <value>{0} تحذيرات</value>
+  </data>
+  <data name="FormatScriptEditor_TestInstructions" xml:space="preserve">
+    <value>اختبر تعريف التنسيق الخاص بك على ملفات عينة هنا.
+
+اختر ملفاً وانقر على "تشغيل الاختبار" لرؤية نتائج التحليل.</value>
+  </data>
+  <data name="FormatScriptEditor_TestTabHeader" xml:space="preserve">
+    <value>اختبار</value>
+  </data>
+  <data name="FormatScriptEditor_UndoText" xml:space="preserve">
+    <value>تراجع</value>
+  </data>
+  <data name="FormatScriptEditor_UndoToolTip" xml:space="preserve">
+    <value>تراجع (Ctrl+Z)</value>
+  </data>
+  <data name="FormatScriptEditor_ValidateText" xml:space="preserve">
+    <value>التحقق</value>
+  </data>
+  <data name="FormatScriptEditor_ValidateToolTip" xml:space="preserve">
+    <value>التحقق من تعريف التنسيق</value>
+  </data>
+  <data name="FormatScriptEditor_ValidationResultsHeader" xml:space="preserve">
+    <value>نتائج التحقق</value>
+  </data>
+  <data name="FormatScriptEditor_ValidationTabHeader" xml:space="preserve">
+    <value>التحقق</value>
+  </data>
+  <data name="FormatScriptEditor_WarningCountStatus" xml:space="preserve">
+    <value>0 تحذيرات</value>
+  </data>
 </root>

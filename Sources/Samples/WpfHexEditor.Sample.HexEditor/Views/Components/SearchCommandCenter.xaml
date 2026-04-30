@@ -87,9 +87,9 @@
                              FontSize="11"
                              VerticalAlignment="Center"
                              Margin="4,0">
-                        <ComboBoxItem Content="{DynamicResource Search_Mode_Text}" IsSelected="{Binding IsTextMode}"/>
-                        <ComboBoxItem Content="{DynamicResource Search_Mode_Hex}" IsSelected="{Binding IsHexMode}"/>
-                        <ComboBoxItem Content="{DynamicResource Search_Mode_Regex}" IsSelected="{Binding IsRegexMode}"/>
+                        <ComboBoxItem Content="{StaticResource Search_Mode_Text}" IsSelected="{Binding IsTextMode}"/>
+                        <ComboBoxItem Content="{StaticResource Search_Mode_Hex}" IsSelected="{Binding IsHexMode}"/>
+                        <ComboBoxItem Content="{StaticResource Search_Mode_Regex}" IsSelected="{Binding IsRegexMode}"/>
                     </ComboBox>
 
                     <!-- Clear Button -->
@@ -101,7 +101,7 @@
                            Margin="2,0,4,0"
                            Style="{StaticResource ModernButtonStyle}"
                            Command="{Binding ClearSearchCommand}"
-                           ToolTip="{DynamicResource Search_Clear_ToolTip}"
+                           ToolTip="{StaticResource Search_Clear_ToolTip}"
                            Visibility="{Binding HasSearchPattern, Converter={StaticResource BoolToVisibilityConverter}}"/>
                 </Grid>
             </Border>
@@ -114,7 +114,7 @@
                        Style="{StaticResource ModernButtonStyle}"
                        Command="{Binding FindPreviousCommand}"
                        IsEnabled="{Binding HasResults}"
-                       ToolTip="{DynamicResource Search_Previous_ToolTip}"
+                       ToolTip="{StaticResource Search_Previous_ToolTip}"
                        Margin="0,0,4,0"/>
 
                 <Button Content="▶"
@@ -123,16 +123,16 @@
                        Style="{StaticResource ModernButtonStyle}"
                        Command="{Binding FindNextCommand}"
                        IsEnabled="{Binding HasResults}"
-                       ToolTip="{DynamicResource Search_Next_ToolTip}"
+                       ToolTip="{StaticResource Search_Next_ToolTip}"
                        Margin="0,0,4,0"/>
 
-                <Button Content="{DynamicResource Search_FindAll}"
+                <Button Content="{StaticResource Search_FindAll}"
                        Height="32"
                        Padding="12,0"
                        Style="{StaticResource AccentButtonStyle}"
                        Command="{Binding FindAllCommand}"
                        IsEnabled="{Binding CanSearch}"
-                       ToolTip="{DynamicResource Search_FindAll_ToolTip}"/>
+                       ToolTip="{StaticResource Search_FindAll_ToolTip}"/>
             </StackPanel>
         </Grid>
 

@@ -223,11 +223,11 @@
                               Foreground="{DynamicResource ERR_ForegroundBrush}"
                               BorderBrush="{DynamicResource ERR_GridLinesBrush}"
                               SelectionChanged="OnScopeChanged">
-                        <ComboBoxItem Content="{DynamicResource ErrorPanel_ScopeEntireSolution}"    Tag="Solution"/>
-                        <ComboBoxItem Content="{DynamicResource ErrorPanel_ScopeCurrentProject}"   Tag="CurrentProject"/>
-                        <ComboBoxItem Content="{DynamicResource ErrorPanel_ScopeCurrentDocument}"  Tag="CurrentDocument"/>
-                        <ComboBoxItem Content="{DynamicResource ErrorPanel_ScopeOpenDocuments}"    Tag="OpenDocuments"/>
-                        <ComboBoxItem Content="{DynamicResource ErrorPanel_ScopeChangedDocuments}" Tag="ChangedDocuments"/>
+                        <ComboBoxItem Content="{StaticResource ErrorPanel_ScopeEntireSolution}"    Tag="Solution"/>
+                        <ComboBoxItem Content="{StaticResource ErrorPanel_ScopeCurrentProject}"   Tag="CurrentProject"/>
+                        <ComboBoxItem Content="{StaticResource ErrorPanel_ScopeCurrentDocument}"  Tag="CurrentDocument"/>
+                        <ComboBoxItem Content="{StaticResource ErrorPanel_ScopeOpenDocuments}"    Tag="OpenDocuments"/>
+                        <ComboBoxItem Content="{StaticResource ErrorPanel_ScopeChangedDocuments}" Tag="ChangedDocuments"/>
                     </ComboBox>
                     <Rectangle Width="1" Height="16"
                                Fill="{DynamicResource ERR_GridLinesBrush}"
@@ -239,14 +239,14 @@
                         DockPanel.Dock="Right"
                         Style="{DynamicResource PanelIconButtonStyle}"
                         Visibility="Collapsed"
-                        ToolTip="{DynamicResource ErrorPanel_OverflowButtonToolTip}"
+                        ToolTip="{StaticResource ErrorPanel_OverflowButtonToolTip}"
                         Click="OnOverflowButtonClick">
                     <TextBlock Text="&#xE712;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
                     <Button.ContextMenu>
                         <ContextMenu x:Name="OverflowMenu" Opened="OnOverflowMenuOpened">
-                            <MenuItem Header="{DynamicResource ErrorPanel_ShowErrorsMenu}"   Tag="TbgFilters" Click="OnOvfErrorToggle" />
-                            <MenuItem Header="{DynamicResource ErrorPanel_ShowWarningsMenu}" Tag="TbgFilters" Click="OnOvfWarningToggle" />
-                            <MenuItem Header="{DynamicResource ErrorPanel_ShowMessagesMenu}" Tag="TbgFilters" Click="OnOvfMessageToggle" />
+                            <MenuItem Header="{StaticResource ErrorPanel_ShowErrorsMenu}"   Tag="TbgFilters" Click="OnOvfErrorToggle" />
+                            <MenuItem Header="{StaticResource ErrorPanel_ShowWarningsMenu}" Tag="TbgFilters" Click="OnOvfWarningToggle" />
+                            <MenuItem Header="{StaticResource ErrorPanel_ShowMessagesMenu}" Tag="TbgFilters" Click="OnOvfMessageToggle" />
                         </ContextMenu>
                     </Button.ContextMenu>
                 </Button>
@@ -259,7 +259,7 @@
                     <TextBox x:Name="SearchBox"
                              Width="160"
                              Style="{DynamicResource PanelSearchBoxStyle}"
-                             Tag="{DynamicResource ErrorPanel_SearchPlaceholder}"
+                             Tag="{StaticResource ErrorPanel_SearchPlaceholder}"
                              TextChanged="OnSearchChanged" />
                 </StackPanel>
 
@@ -271,14 +271,14 @@
                                   Margin="0,0,2,0"
                                   Checked="OnFilterChanged"
                                   Unchecked="OnFilterChanged"
-                                  ToolTip="{DynamicResource ErrorPanel_ErrorToggleToolTip}">
+                                  ToolTip="{StaticResource ErrorPanel_ErrorToggleToolTip}">
                         <StackPanel Orientation="Horizontal">
                             <Image Source="{StaticResource ErrorIcon}"
                                    Width="14" Height="14"
                                    Margin="0,0,4,0"
                                    VerticalAlignment="Center"/>
                             <TextBlock x:Name="ErrorCountText"
-                                       Text="{DynamicResource ErrorPanel_ErrorCountText}"
+                                       Text="{StaticResource ErrorPanel_ErrorCountText}"
                                        VerticalAlignment="Center"
                                        FontSize="11"/>
                         </StackPanel>
@@ -290,14 +290,14 @@
                                   Margin="0,0,2,0"
                                   Checked="OnFilterChanged"
                                   Unchecked="OnFilterChanged"
-                                  ToolTip="{DynamicResource ErrorPanel_WarningToggleToolTip}">
+                                  ToolTip="{StaticResource ErrorPanel_WarningToggleToolTip}">
                         <StackPanel Orientation="Horizontal">
                             <Image Source="{StaticResource WarningIcon}"
                                    Width="14" Height="14"
                                    Margin="0,0,4,0"
                                    VerticalAlignment="Center"/>
                             <TextBlock x:Name="WarningCountText"
-                                       Text="{DynamicResource ErrorPanel_WarningCountText}"
+                                       Text="{StaticResource ErrorPanel_WarningCountText}"
                                        VerticalAlignment="Center"
                                        FontSize="11"/>
                         </StackPanel>
@@ -309,14 +309,14 @@
                                   Margin="0,0,2,0"
                                   Checked="OnFilterChanged"
                                   Unchecked="OnFilterChanged"
-                                  ToolTip="{DynamicResource ErrorPanel_MessageToggleToolTip}">
+                                  ToolTip="{StaticResource ErrorPanel_MessageToggleToolTip}">
                         <StackPanel Orientation="Horizontal">
                             <Image Source="{StaticResource MessageIcon}"
                                    Width="14" Height="14"
                                    Margin="0,0,4,0"
                                    VerticalAlignment="Center"/>
                             <TextBlock x:Name="MessageCountText"
-                                       Text="{DynamicResource ErrorPanel_MessageCountText}"
+                                       Text="{StaticResource ErrorPanel_MessageCountText}"
                                        VerticalAlignment="Center"
                                        FontSize="11"/>
                         </StackPanel>
@@ -371,7 +371,7 @@
                     <!-- Code -->
                     <GridViewColumn Width="80">
                         <GridViewColumn.Header>
-                            <GridViewColumnHeader Tag="Code" Content="{DynamicResource ErrorPanel_CodeHeader}"/>
+                            <GridViewColumnHeader Tag="Code" Content="{StaticResource ErrorPanel_CodeHeader}"/>
                         </GridViewColumn.Header>
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
@@ -388,7 +388,7 @@
                     <!-- Description -->
                     <GridViewColumn Width="400">
                         <GridViewColumn.Header>
-                            <GridViewColumnHeader Tag="Description" Content="{DynamicResource ErrorPanel_DescriptionHeader}"/>
+                            <GridViewColumnHeader Tag="Description" Content="{StaticResource ErrorPanel_DescriptionHeader}"/>
                         </GridViewColumn.Header>
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
@@ -405,7 +405,7 @@
                     <!-- Project -->
                     <GridViewColumn Width="120">
                         <GridViewColumn.Header>
-                            <GridViewColumnHeader Tag="ProjectName" Content="{DynamicResource ErrorPanel_ProjectHeader}"/>
+                            <GridViewColumnHeader Tag="ProjectName" Content="{StaticResource ErrorPanel_ProjectHeader}"/>
                         </GridViewColumn.Header>
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
@@ -422,7 +422,7 @@
                     <!-- File -->
                     <GridViewColumn Width="130">
                         <GridViewColumn.Header>
-                            <GridViewColumnHeader Tag="FileName" Content="{DynamicResource ErrorPanel_FileHeader}"/>
+                            <GridViewColumnHeader Tag="FileName" Content="{StaticResource ErrorPanel_FileHeader}"/>
                         </GridViewColumn.Header>
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
@@ -439,7 +439,7 @@
                     <!-- Offset -->
                     <GridViewColumn Width="90">
                         <GridViewColumn.Header>
-                            <GridViewColumnHeader Tag="Offset" Content="{DynamicResource ErrorPanel_OffsetHeader}"/>
+                            <GridViewColumnHeader Tag="Offset" Content="{StaticResource ErrorPanel_OffsetHeader}"/>
                         </GridViewColumn.Header>
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
@@ -455,7 +455,7 @@
                     <!-- Line:Col -->
                     <GridViewColumn Width="80">
                         <GridViewColumn.Header>
-                            <GridViewColumnHeader Tag="Line" Content="{DynamicResource ErrorPanel_LineColHeader}"/>
+                            <GridViewColumnHeader Tag="Line" Content="{StaticResource ErrorPanel_LineColHeader}"/>
                         </GridViewColumn.Header>
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>

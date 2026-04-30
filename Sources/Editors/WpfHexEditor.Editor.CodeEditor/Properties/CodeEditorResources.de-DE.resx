@@ -510,4 +510,166 @@
     <value>Aktivieren</value>
   </data>
 
+  <data name="CodeCtx_FindAllReferences" xml:space="preserve">
+    <value>Alle Verweise suchen</value>
+  </data>
+  <data name="CodeCtx_RefreshHighlights" xml:space="preserve">
+    <value>Hervorhebungen aktualisieren</value>
+  </data>
+  <data name="CodeEd_FindRef_CollapseAll" xml:space="preserve">
+    <value>Alle zuklappen</value>
+  </data>
+  <data name="CodeEd_Minimap_MenuTitle" xml:space="preserve">
+    <value>_Minimap</value>
+  </data>
+  <data name="CodeEd_Minimap_RenderChars" xml:space="preserve">
+    <value>_Zeichen rendern</value>
+  </data>
+  <data name="CodeEd_Minimap_Side" xml:space="preserve">
+    <value>_Seite</value>
+  </data>
+  <data name="CodeEd_Minimap_SideLeft" xml:space="preserve">
+    <value>Links</value>
+  </data>
+  <data name="CodeEd_Minimap_SideRight" xml:space="preserve">
+    <value>Rechts</value>
+  </data>
+  <data name="CodeEd_Minimap_SizeFill" xml:space="preserve">
+    <value>Füllen</value>
+  </data>
+  <data name="CodeEd_Minimap_SizeFit" xml:space="preserve">
+    <value>Anpassen</value>
+  </data>
+  <data name="CodeEd_Minimap_SizeProportional" xml:space="preserve">
+    <value>Proportional</value>
+  </data>
+  <data name="CodeEd_Minimap_Slider" xml:space="preserve">
+    <value>_Schieberegler</value>
+  </data>
+  <data name="CodeEd_Minimap_SliderAlways" xml:space="preserve">
+    <value>Immer</value>
+  </data>
+  <data name="CodeEd_Minimap_SliderMouseOver" xml:space="preserve">
+    <value>Bei Mauszeiger</value>
+  </data>
+  <data name="CodeEd_Minimap_VerticalSize" xml:space="preserve">
+    <value>_Vertikale Größe</value>
+  </data>
+  <data name="CodeEd_Refs_CollapseAll" xml:space="preserve">
+    <value>Alle zuklappen</value>
+  </data>
+  <data name="CodeEd_Refs_ExpandAll" xml:space="preserve">
+    <value>Alle ausklappen</value>
+  </data>
+  <data name="CodeEd_Refs_Refresh" xml:space="preserve">
+    <value>Aktualisieren</value>
+  </data>
+  <data name="CodeSb_RefreshLabel" xml:space="preserve">
+    <value>Aktualisieren</value>
+  </data>
+  <data name="CodeSb_RefreshTooltip" xml:space="preserve">
+    <value>Renderzeit in Millisekunden</value>
+  </data>
+  <data name="CodeEditor_BreakpointConditionLabel" xml:space="preserve">
+    <value>Bedingung:</value>
+  </data>
+  <data name="CodeEditor_BreakpointDelete" xml:space="preserve">
+    <value>Löschen</value>
+  </data>
+  <data name="CodeEditor_BreakpointDeleteBreakpoint" xml:space="preserve">
+    <value>Haltepunkt löschen</value>
+  </data>
+  <data name="CodeEditor_BreakpointEditCondition" xml:space="preserve">
+    <value>Bedingung bearbeiten</value>
+  </data>
+  <data name="CodeEditor_BreakpointSave" xml:space="preserve">
+    <value>Speichern</value>
+  </data>
+  <data name="CodeEditor_BreakpointSettings" xml:space="preserve">
+    <value>Einstellungen…</value>
+  </data>
+  <data name="CodeEditor_BreakpointTypeBreakpoint" xml:space="preserve">
+    <value>Haltepunkt</value>
+  </data>
+  <data name="CodeEditor_BreakpointTypeConditional" xml:space="preserve">
+    <value>Bedingt</value>
+  </data>
+  <data name="CodeEditor_BreakpointTypeDisabled" xml:space="preserve">
+    <value>Deaktiviert</value>
+  </data>
+  <data name="CodeEditor_ContextMenuFormatJson" xml:space="preserve">
+    <value>JSON formatieren</value>
+  </data>
+  <data name="CodeEditor_ContextMenuFormattingOptions" xml:space="preserve">
+    <value>Optionen...</value>
+  </data>
+  <data name="CodeEditor_ContextMenuValidateJson" xml:space="preserve">
+    <value>JSON validieren</value>
+  </data>
+  <data name="CodeEditor_DisplayName" xml:space="preserve">
+    <value>Code-Editor</value>
+  </data>
+  <data name="CodeEditor_GoToLine" xml:space="preserve">
+    <value>Gehe zu Zeile</value>
+  </data>
+  <data name="FormatScriptEditor_DefaultFileName" xml:space="preserve">
+    <value>Unbenannt.json</value>
+  </data>
+  <data name="FormatScriptEditor_EditorTabHeader" xml:space="preserve">
+    <value>Editor</value>
+  </data>
+  <data name="FormatScriptEditor_ErrorCountStatus" xml:space="preserve">
+    <value>0 Fehler</value>
+  </data>
+  <data name="FormatScriptEditor_FileTypeStatus" xml:space="preserve">
+    <value>JSON</value>
+  </data>
+  <data name="FormatScriptEditor_FormatText" xml:space="preserve">
+    <value>Formatieren</value>
+  </data>
+  <data name="FormatScriptEditor_LineColStatus" xml:space="preserve">
+    <value>Z 1, Sp 1</value>
+  </data>
+  <data name="FormatScriptEditor_LoadEmbeddedErrorTitle" xml:space="preserve">
+    <value>Fehler</value>
+  </data>
+  <data name="FormatScriptEditor_LoadFileErrorTitle" xml:space="preserve">
+    <value>Fehler</value>
+  </data>
+  <data name="FormatScriptEditor_LoadFormatsErrorTitle" xml:space="preserve">
+    <value>Fehler</value>
+  </data>
+  <data name="FormatScriptEditor_NewText" xml:space="preserve">
+    <value>Neu</value>
+  </data>
+  <data name="FormatScriptEditor_OpenText" xml:space="preserve">
+    <value>Öffnen</value>
+  </data>
+  <data name="FormatScriptEditor_PreviewTabHeader" xml:space="preserve">
+    <value>Vorschau</value>
+  </data>
+  <data name="FormatScriptEditor_RedoText" xml:space="preserve">
+    <value>Wiederholen</value>
+  </data>
+  <data name="FormatScriptEditor_SaveFailedTitle" xml:space="preserve">
+    <value>Fehler</value>
+  </data>
+  <data name="FormatScriptEditor_SaveText" xml:space="preserve">
+    <value>Speichern</value>
+  </data>
+  <data name="FormatScriptEditor_StatusLineCol" xml:space="preserve">
+    <value>Z {0}, Sp {1}</value>
+  </data>
+  <data name="FormatScriptEditor_TestTabHeader" xml:space="preserve">
+    <value>Test</value>
+  </data>
+  <data name="FormatScriptEditor_UndoText" xml:space="preserve">
+    <value>Rückgängig</value>
+  </data>
+  <data name="FormatScriptEditor_ValidateText" xml:space="preserve">
+    <value>Validieren</value>
+  </data>
+  <data name="FormatScriptEditor_WarningCountStatus" xml:space="preserve">
+    <value>0 Warnungen</value>
+  </data>
 </root>

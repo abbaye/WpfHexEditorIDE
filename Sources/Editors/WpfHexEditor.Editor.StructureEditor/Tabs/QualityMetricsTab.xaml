@@ -42,7 +42,7 @@
         <StackPanel Margin="12,8">
 
             <!-- ── Computed metrics ─────────────────────────────────── -->
-            <TextBlock Text="{DynamicResource StructureEditor_QualityComputedSection}" Style="{StaticResource SH}"/>
+            <TextBlock Text="{StaticResource StructureEditor_QualityComputedSection}" Style="{StaticResource SH}"/>
 
             <!-- Block Coverage -->
             <Grid Margin="0,3">
@@ -51,7 +51,7 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="50"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="{DynamicResource StructureEditor_QualityBlockCoverage}"  Style="{StaticResource Lbl}"/>
+                <TextBlock Grid.Column="0" Text="{StaticResource StructureEditor_QualityBlockCoverage}"  Style="{StaticResource Lbl}"/>
                 <ProgressBar Grid.Column="1" Minimum="0" Maximum="100"
                              Value="{Binding BlockCoverage, Mode=OneWay}"
                              Height="12" VerticalAlignment="Center"/>
@@ -67,7 +67,7 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="50"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="{DynamicResource StructureEditor_QualityCompletenessScore}" Style="{StaticResource Lbl}"/>
+                <TextBlock Grid.Column="0" Text="{StaticResource StructureEditor_QualityCompletenessScore}" Style="{StaticResource Lbl}"/>
                 <ProgressBar Grid.Column="1" Minimum="0" Maximum="100"
                              Value="{Binding CompletenessScore, Mode=OneWay}"
                              Height="12" VerticalAlignment="Center"/>
@@ -82,7 +82,7 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="{DynamicResource StructureEditor_QualityTypeDistribution}" Style="{StaticResource Lbl}"/>
+                <TextBlock Grid.Column="0" Text="{StaticResource StructureEditor_QualityTypeDistribution}" Style="{StaticResource Lbl}"/>
                 <ItemsControl Grid.Column="1" ItemsSource="{Binding TypeDistribution}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -107,7 +107,7 @@
                 <Border CornerRadius="3" Padding="8,3" Margin="0,0,8,0"
                         Background="{DynamicResource TE_LineNumberBackground}">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{DynamicResource StructureEditor_QualityBlocksLabel}" Style="{StaticResource Lbl}" Margin="0" MinWidth="0"/>
+                        <TextBlock Text="{StaticResource StructureEditor_QualityBlocksLabel}" Style="{StaticResource Lbl}" Margin="0" MinWidth="0"/>
                         <TextBlock Style="{StaticResource Val}" FontWeight="SemiBold"
                                    Text="{Binding BlocksDefined}"/>
                     </StackPanel>
@@ -115,7 +115,7 @@
                 <Border CornerRadius="3" Padding="8,3" Margin="0,0,8,0"
                         Background="{DynamicResource TE_LineNumberBackground}">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{DynamicResource StructureEditor_QualityDepthLabel}" Style="{StaticResource Lbl}" Margin="0" MinWidth="0"/>
+                        <TextBlock Text="{StaticResource StructureEditor_QualityDepthLabel}" Style="{StaticResource Lbl}" Margin="0" MinWidth="0"/>
                         <TextBlock Style="{StaticResource Val}" FontWeight="SemiBold"
                                    Text="{Binding MaxNestingDepth}"/>
                     </StackPanel>
@@ -123,7 +123,7 @@
                 <Border CornerRadius="3" Padding="8,3" Margin="0,0,8,0"
                         Background="{DynamicResource TE_LineNumberBackground}">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{DynamicResource StructureEditor_QualityVariablesLabel}" Style="{StaticResource Lbl}" Margin="0" MinWidth="0"/>
+                        <TextBlock Text="{StaticResource StructureEditor_QualityVariablesLabel}" Style="{StaticResource Lbl}" Margin="0" MinWidth="0"/>
                         <TextBlock Style="{StaticResource Val}" FontWeight="SemiBold"
                                    Text="{Binding VariableCount}"/>
                     </StackPanel>
@@ -131,7 +131,7 @@
                 <Border CornerRadius="3" Padding="8,3"
                         Background="{DynamicResource TE_LineNumberBackground}">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{DynamicResource StructureEditor_QualityRulesLabel}" Style="{StaticResource Lbl}" Margin="0" MinWidth="0"/>
+                        <TextBlock Text="{StaticResource StructureEditor_QualityRulesLabel}" Style="{StaticResource Lbl}" Margin="0" MinWidth="0"/>
                         <TextBlock Style="{StaticResource Val}" FontWeight="SemiBold"
                                    Text="{Binding ValidationRulesCount}"/>
                     </StackPanel>
@@ -139,7 +139,7 @@
             </StackPanel>
 
             <!-- ── Metadata ──────────────────────────────────────────── -->
-            <TextBlock Text="{DynamicResource StructureEditor_QualityMetadataLabel}" Style="{StaticResource SH}"/>
+            <TextBlock Text="{StaticResource StructureEditor_QualityMetadataLabel}" Style="{StaticResource SH}"/>
 
             <!-- Documentation Level -->
             <Grid Margin="0,3">
@@ -147,7 +147,7 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="{DynamicResource StructureEditor_QualityDocLevel}" Style="{StaticResource Lbl}"/>
+                <TextBlock Grid.Column="0" Text="{StaticResource StructureEditor_QualityDocLevel}" Style="{StaticResource Lbl}"/>
                 <ComboBox  Grid.Column="1" Style="{StaticResource Combo}"
                            ItemsSource="{Binding DocumentationLevelOptions}"
                            SelectedItem="{Binding DocumentationLevel}"/>
@@ -159,22 +159,22 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="{DynamicResource StructureEditor_QualityLastUpdated}" Style="{StaticResource Lbl}"/>
+                <TextBlock Grid.Column="0" Text="{StaticResource StructureEditor_QualityLastUpdated}" Style="{StaticResource Lbl}"/>
                 <TextBox   Grid.Column="1" FontSize="11" Padding="4,2" BorderThickness="1"
                            Text="{Binding LastUpdated, UpdateSourceTrigger=PropertyChanged}"
                            Background="{DynamicResource TE_Background}"
                            Foreground="{DynamicResource TE_Foreground}"
-                           ToolTip="{DynamicResource StructureEditor_QualityLastUpdatedToolTip}"/>
+                           ToolTip="{StaticResource StructureEditor_QualityLastUpdatedToolTip}"/>
             </Grid>
 
             <!-- Priority Format -->
-            <CheckBox Content="{DynamicResource StructureEditor_QualityPriorityFormat}"
+            <CheckBox Content="{StaticResource StructureEditor_QualityPriorityFormat}"
                       IsChecked="{Binding PriorityFormat}"
                       Foreground="{DynamicResource TE_Foreground}"
                       FontSize="11" Margin="0,6,0,4"/>
 
             <!-- Auto Refined (read-only) -->
-            <CheckBox Content="{DynamicResource StructureEditor_QualityAutoRefined}"
+            <CheckBox Content="{StaticResource StructureEditor_QualityAutoRefined}"
                       IsChecked="{Binding AutoRefined, Mode=OneWay}"
                       IsEnabled="False"
                       Foreground="{DynamicResource TE_LineNumberForeground}"

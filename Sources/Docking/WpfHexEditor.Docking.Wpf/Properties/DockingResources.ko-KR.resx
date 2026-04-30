@@ -59,4 +59,76 @@
   <data name="Docking_TabSettings_ToggleWithWheel" xml:space="preserve">
     <value>마우스 휠로 행 전환</value>
   </data>
+  <data name="Dock_AutoHide_Close" xml:space="preserve">
+    <value>닫기</value>
+  </data>
+  <data name="Dock_AutoHide_Dock" xml:space="preserve">
+    <value>도킹</value>
+  </data>
+  <data name="Dock_AutoHide_Float" xml:space="preserve">
+    <value>부동</value>
+  </data>
+  <data name="Dock_AutoHide_Show" xml:space="preserve">
+    <value>표시</value>
+  </data>
+  <data name="Dock_FloatWin_Maximize" xml:space="preserve">
+    <value>최대화</value>
+  </data>
+  <data name="Dock_FloatWin_Restore" xml:space="preserve">
+    <value>복원</value>
+  </data>
+  <data name="Dock_LSP_Connecting" xml:space="preserve">
+    <value>언어 서버: 연결 중…</value>
+  </data>
+  <data name="Dock_LSP_Error" xml:space="preserve">
+    <value>언어 서버: 오류</value>
+  </data>
+  <data name="Dock_LSP_Ready" xml:space="preserve">
+    <value>언어 서버: 준비됨</value>
+  </data>
+  <data name="Dock_Menu_CloseAll" xml:space="preserve">
+    <value>모두 닫기</value>
+  </data>
+  <data name="Dock_Menu_CloseAllButPinned" xml:space="preserve">
+    <value>고정된 항목 제외 모두 닫기</value>
+  </data>
+  <data name="Dock_Menu_CloseAllButThis" xml:space="preserve">
+    <value>이것 제외 모두 닫기</value>
+  </data>
+  <data name="Dock_Menu_CloseTabGroup" xml:space="preserve">
+    <value>탭 그룹 닫기</value>
+  </data>
+  <data name="Dock_Menu_DockAsTabbed" xml:space="preserve">
+    <value>탭 문서로 도킹</value>
+  </data>
+  <data name="Dock_Menu_DockAsToolWindow" xml:space="preserve">
+    <value>도구 창으로 도킹</value>
+  </data>
+  <data name="Dock_Menu_Float" xml:space="preserve">
+    <value>부동</value>
+  </data>
+  <data name="Dock_Menu_Hide" xml:space="preserve">
+    <value>숨기기</value>
+  </data>
+  <data name="Dock_Menu_NewHorizontalTabGroup" xml:space="preserve">
+    <value>새 가로 탭 그룹</value>
+  </data>
+  <data name="Dock_Menu_NewVerticalTabGroup" xml:space="preserve">
+    <value>새 세로 탭 그룹</value>
+  </data>
+  <data name="Dock_Placeholder_OpenDocument" xml:space="preserve">
+    <value>시작하려면 문서를 여세요</value>
+  </data>
+  <data name="Dock_TabConfig_ColorBy" xml:space="preserve">
+    <value>문서 탭 색상 기준</value>
+  </data>
+  <data name="Dock_TabConfig_MultipleRows" xml:space="preserve">
+    <value>탭을 여러 행으로 표시</value>
+  </data>
+  <data name="Dock_TabConfig_Options" xml:space="preserve">
+    <value>옵션…</value>
+  </data>
+  <data name="Dock_Tab_Start" xml:space="preserve">
+    <value>시작</value>
+  </data>
 </root>

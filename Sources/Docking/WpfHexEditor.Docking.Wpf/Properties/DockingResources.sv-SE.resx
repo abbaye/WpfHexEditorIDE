@@ -59,4 +59,76 @@
   <data name="Docking_TabSettings_ToggleWithWheel" xml:space="preserve">
     <value>Växla rader med mushjulet</value>
   </data>
+  <data name="Dock_AutoHide_Close" xml:space="preserve">
+    <value>Stäng</value>
+  </data>
+  <data name="Dock_AutoHide_Dock" xml:space="preserve">
+    <value>Docka</value>
+  </data>
+  <data name="Dock_AutoHide_Float" xml:space="preserve">
+    <value>Frigör</value>
+  </data>
+  <data name="Dock_AutoHide_Show" xml:space="preserve">
+    <value>Visa</value>
+  </data>
+  <data name="Dock_FloatWin_Maximize" xml:space="preserve">
+    <value>Maximera</value>
+  </data>
+  <data name="Dock_FloatWin_Restore" xml:space="preserve">
+    <value>Återställ</value>
+  </data>
+  <data name="Dock_LSP_Connecting" xml:space="preserve">
+    <value>Språkserver: ansluter…</value>
+  </data>
+  <data name="Dock_LSP_Error" xml:space="preserve">
+    <value>Språkserver: fel</value>
+  </data>
+  <data name="Dock_LSP_Ready" xml:space="preserve">
+    <value>Språkserver: redo</value>
+  </data>
+  <data name="Dock_Menu_CloseAll" xml:space="preserve">
+    <value>Stäng alla</value>
+  </data>
+  <data name="Dock_Menu_CloseAllButPinned" xml:space="preserve">
+    <value>Stäng alla utom fästa</value>
+  </data>
+  <data name="Dock_Menu_CloseAllButThis" xml:space="preserve">
+    <value>Stäng alla utom denna</value>
+  </data>
+  <data name="Dock_Menu_CloseTabGroup" xml:space="preserve">
+    <value>Stäng flikgrupp</value>
+  </data>
+  <data name="Dock_Menu_DockAsTabbed" xml:space="preserve">
+    <value>Docka som flikdokument</value>
+  </data>
+  <data name="Dock_Menu_DockAsToolWindow" xml:space="preserve">
+    <value>Docka som verktygsfönster</value>
+  </data>
+  <data name="Dock_Menu_Float" xml:space="preserve">
+    <value>Frigör</value>
+  </data>
+  <data name="Dock_Menu_Hide" xml:space="preserve">
+    <value>Dölj</value>
+  </data>
+  <data name="Dock_Menu_NewHorizontalTabGroup" xml:space="preserve">
+    <value>Ny horisontell flikgrupp</value>
+  </data>
+  <data name="Dock_Menu_NewVerticalTabGroup" xml:space="preserve">
+    <value>Ny vertikal flikgrupp</value>
+  </data>
+  <data name="Dock_Placeholder_OpenDocument" xml:space="preserve">
+    <value>Öppna ett dokument för att börja</value>
+  </data>
+  <data name="Dock_TabConfig_ColorBy" xml:space="preserve">
+    <value>Färgkoda dokumentflikar efter</value>
+  </data>
+  <data name="Dock_TabConfig_MultipleRows" xml:space="preserve">
+    <value>Visa flikar på flera rader</value>
+  </data>
+  <data name="Dock_TabConfig_Options" xml:space="preserve">
+    <value>Alternativ…</value>
+  </data>
+  <data name="Dock_Tab_Start" xml:space="preserve">
+    <value>Start</value>
+  </data>
 </root>

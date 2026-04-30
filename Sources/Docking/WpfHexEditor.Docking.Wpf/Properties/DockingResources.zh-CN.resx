@@ -59,4 +59,76 @@
   <data name="Docking_TabSettings_ToggleWithWheel" xml:space="preserve">
     <value>用鼠标滚轮切换行</value>
   </data>
+  <data name="Dock_AutoHide_Close" xml:space="preserve">
+    <value>关闭</value>
+  </data>
+  <data name="Dock_AutoHide_Dock" xml:space="preserve">
+    <value>停靠</value>
+  </data>
+  <data name="Dock_AutoHide_Float" xml:space="preserve">
+    <value>浮动</value>
+  </data>
+  <data name="Dock_AutoHide_Show" xml:space="preserve">
+    <value>显示</value>
+  </data>
+  <data name="Dock_FloatWin_Maximize" xml:space="preserve">
+    <value>最大化</value>
+  </data>
+  <data name="Dock_FloatWin_Restore" xml:space="preserve">
+    <value>还原</value>
+  </data>
+  <data name="Dock_LSP_Connecting" xml:space="preserve">
+    <value>语言服务器：正在连接…</value>
+  </data>
+  <data name="Dock_LSP_Error" xml:space="preserve">
+    <value>语言服务器：错误</value>
+  </data>
+  <data name="Dock_LSP_Ready" xml:space="preserve">
+    <value>语言服务器：就绪</value>
+  </data>
+  <data name="Dock_Menu_CloseAll" xml:space="preserve">
+    <value>关闭所有</value>
+  </data>
+  <data name="Dock_Menu_CloseAllButPinned" xml:space="preserve">
+    <value>关闭所有（固定除外）</value>
+  </data>
+  <data name="Dock_Menu_CloseAllButThis" xml:space="preserve">
+    <value>关闭所有（此除外）</value>
+  </data>
+  <data name="Dock_Menu_CloseTabGroup" xml:space="preserve">
+    <value>关闭选项卡组</value>
+  </data>
+  <data name="Dock_Menu_DockAsTabbed" xml:space="preserve">
+    <value>作为选项卡文档停靠</value>
+  </data>
+  <data name="Dock_Menu_DockAsToolWindow" xml:space="preserve">
+    <value>作为工具窗口停靠</value>
+  </data>
+  <data name="Dock_Menu_Float" xml:space="preserve">
+    <value>浮动</value>
+  </data>
+  <data name="Dock_Menu_Hide" xml:space="preserve">
+    <value>隐藏</value>
+  </data>
+  <data name="Dock_Menu_NewHorizontalTabGroup" xml:space="preserve">
+    <value>新建水平选项卡组</value>
+  </data>
+  <data name="Dock_Menu_NewVerticalTabGroup" xml:space="preserve">
+    <value>新建垂直选项卡组</value>
+  </data>
+  <data name="Dock_Placeholder_OpenDocument" xml:space="preserve">
+    <value>打开文档以开始</value>
+  </data>
+  <data name="Dock_TabConfig_ColorBy" xml:space="preserve">
+    <value>按以下方式为文档选项卡着色</value>
+  </data>
+  <data name="Dock_TabConfig_MultipleRows" xml:space="preserve">
+    <value>在多行中显示选项卡</value>
+  </data>
+  <data name="Dock_TabConfig_Options" xml:space="preserve">
+    <value>选项…</value>
+  </data>
+  <data name="Dock_Tab_Start" xml:space="preserve">
+    <value>开始</value>
+  </data>
 </root>

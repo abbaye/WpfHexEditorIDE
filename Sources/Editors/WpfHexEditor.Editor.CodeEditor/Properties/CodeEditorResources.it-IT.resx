@@ -354,4 +354,329 @@
     <value>Abilita</value>
   </data>
 
+  <data name="CodeCtx_FindAllReferences" xml:space="preserve">
+    <value>Trova tutti i riferimenti</value>
+  </data>
+  <data name="CodeCtx_RefreshHighlights" xml:space="preserve">
+    <value>Aggiorna evidenziazioni</value>
+  </data>
+  <data name="CodeEd_FindRef_CollapseAll" xml:space="preserve">
+    <value>Comprimi tutto</value>
+  </data>
+  <data name="CodeEd_Minimap_MenuTitle" xml:space="preserve">
+    <value>_Minimappa</value>
+  </data>
+  <data name="CodeEd_Minimap_RenderChars" xml:space="preserve">
+    <value>Mostra _caratteri</value>
+  </data>
+  <data name="CodeEd_Minimap_Side" xml:space="preserve">
+    <value>_Lato</value>
+  </data>
+  <data name="CodeEd_Minimap_SideLeft" xml:space="preserve">
+    <value>Sinistra</value>
+  </data>
+  <data name="CodeEd_Minimap_SideRight" xml:space="preserve">
+    <value>Destra</value>
+  </data>
+  <data name="CodeEd_Minimap_SizeFill" xml:space="preserve">
+    <value>Riempi</value>
+  </data>
+  <data name="CodeEd_Minimap_SizeFit" xml:space="preserve">
+    <value>Adatta</value>
+  </data>
+  <data name="CodeEd_Minimap_SizeProportional" xml:space="preserve">
+    <value>Proporzionale</value>
+  </data>
+  <data name="CodeEd_Minimap_Slider" xml:space="preserve">
+    <value>_Cursore</value>
+  </data>
+  <data name="CodeEd_Minimap_SliderAlways" xml:space="preserve">
+    <value>Sempre</value>
+  </data>
+  <data name="CodeEd_Minimap_SliderMouseOver" xml:space="preserve">
+    <value>Al passaggio del mouse</value>
+  </data>
+  <data name="CodeEd_Minimap_VerticalSize" xml:space="preserve">
+    <value>_Dimensione verticale</value>
+  </data>
+  <data name="CodeEd_Refs_CollapseAll" xml:space="preserve">
+    <value>Comprimi tutto</value>
+  </data>
+  <data name="CodeEd_Refs_ExpandAll" xml:space="preserve">
+    <value>Espandi tutto</value>
+  </data>
+  <data name="CodeEd_Refs_Refresh" xml:space="preserve">
+    <value>Aggiorna</value>
+  </data>
+  <data name="CodeSb_RefreshLabel" xml:space="preserve">
+    <value>Aggiorna</value>
+  </data>
+  <data name="CodeSb_RefreshTooltip" xml:space="preserve">
+    <value>Tempo di rendering in millisecondi</value>
+  </data>
+  <data name="CodeEditorOptions_BracketColorizeToolTip" xml:space="preserve">
+    <value>Colora le parentesi con CE_Bracket_1/2/3/4 in base alla profondità di annidamento</value>
+  </data>
+  <data name="CodeEditorOptions_CodeFormattingInfo" xml:space="preserve">
+    <value>Queste impostazioni sovrascrivono i valori predefiniti .whfmt. Le caselle indeterminate ereditano le regole della lingua.</value>
+  </data>
+  <data name="CodeEditorOptions_ColorSwatchToolTip" xml:space="preserve">
+    <value>Mostra un campione colore 12×12 accanto ai letterali colore in file CSS, XAML e C#</value>
+  </data>
+  <data name="CodeEditorOptions_FormatOnSaveToolTip" xml:space="preserve">
+    <value>Formatta automaticamente il documento al salvataggio. Usa la formattazione LSP se disponibile, altrimenti applica le regole di rientro whfmt.</value>
+  </data>
+  <data name="CodeEditorOptions_IndentCaseLabelsToolTip" xml:space="preserve">
+    <value>Aggiunge un livello di rientro alle etichette case/when in switch. Indeterminato = default .whfmt.</value>
+  </data>
+  <data name="CodeEditorOptions_InsertFinalNewlineToolTip" xml:space="preserve">
+    <value>Assicura che il file termini con esattamente una nuova riga. Indeterminato = default del linguaggio .whfmt.</value>
+  </data>
+  <data name="CodeEditorOptions_OrganizeImportsToolTip" xml:space="preserve">
+    <value>Ordina le direttive using/import alfabeticamente alla formattazione. Indeterminato = default .whfmt.</value>
+  </data>
+  <data name="CodeEditorOptions_SpaceAfterCommaToolTip" xml:space="preserve">
+    <value>Inserisce uno spazio dopo le virgole nelle liste di argomenti. Indeterminato = default .whfmt.</value>
+  </data>
+  <data name="CodeEditorOptions_SpaceAfterKeywordsToolTip" xml:space="preserve">
+    <value>Inserisce spazio tra parole chiave di controllo e parentesi di apertura. Indeterminato = default .whfmt.</value>
+  </data>
+  <data name="CodeEditorOptions_SpaceAroundOpsToolTip" xml:space="preserve">
+    <value>Inserisce spazi attorno a +, -, *, /, ==, ecc. Indeterminato = default .whfmt.</value>
+  </data>
+  <data name="CodeEditorOptions_TrimTrailingToolTip" xml:space="preserve">
+    <value>Rimuove spazi/tabulazioni finali su ogni riga. Indeterminato = default del linguaggio .whfmt.</value>
+  </data>
+  <data name="CodeEditorSettings_ExportDialogTitle" xml:space="preserve">
+    <value>Esporta impostazioni</value>
+  </data>
+  <data name="CodeEditorSettings_ExportFailedMessage" xml:space="preserve">
+    <value>Impossibile esportare le impostazioni:
+{0}</value>
+  </data>
+  <data name="CodeEditorSettings_ExportSuccessMessage" xml:space="preserve">
+    <value>Impostazioni esportate con successo in:
+{0}</value>
+  </data>
+  <data name="CodeEditorSettings_ImportDialogTitle" xml:space="preserve">
+    <value>Importa impostazioni</value>
+  </data>
+  <data name="CodeEditorSettings_ImportFailedMessage" xml:space="preserve">
+    <value>Impossibile importare le impostazioni:
+{0}</value>
+  </data>
+  <data name="CodeEditorSettings_ImportSuccessMessage" xml:space="preserve">
+    <value>Impostazioni importate con successo da:
+{0}</value>
+  </data>
+  <data name="CodeEditor_BreakpointConditionLabel" xml:space="preserve">
+    <value>Condizione:</value>
+  </data>
+  <data name="CodeEditor_BreakpointDelete" xml:space="preserve">
+    <value>Elimina</value>
+  </data>
+  <data name="CodeEditor_BreakpointDeleteBreakpoint" xml:space="preserve">
+    <value>Elimina breakpoint</value>
+  </data>
+  <data name="CodeEditor_BreakpointEditCondition" xml:space="preserve">
+    <value>Modifica condizione</value>
+  </data>
+  <data name="CodeEditor_BreakpointInvalidToolTip" xml:space="preserve">
+    <value>Impossibile posizionare un breakpoint su questa riga</value>
+  </data>
+  <data name="CodeEditor_BreakpointSave" xml:space="preserve">
+    <value>Salva</value>
+  </data>
+  <data name="CodeEditor_BreakpointSettings" xml:space="preserve">
+    <value>Impostazioni…</value>
+  </data>
+  <data name="CodeEditor_BreakpointToggleToolTip" xml:space="preserve">
+    <value>Clic per attivare/disattivare il breakpoint</value>
+  </data>
+  <data name="CodeEditor_BreakpointTypeBreakpoint" xml:space="preserve">
+    <value>Breakpoint</value>
+  </data>
+  <data name="CodeEditor_BreakpointTypeConditional" xml:space="preserve">
+    <value>Condizionale</value>
+  </data>
+  <data name="CodeEditor_BreakpointTypeDisabled" xml:space="preserve">
+    <value>Disabilitato</value>
+  </data>
+  <data name="CodeEditor_ContextMenuCollapseToDefs" xml:space="preserve">
+    <value>Comprimi alle definizioni</value>
+  </data>
+  <data name="CodeEditor_ContextMenuColumnRulers" xml:space="preserve">
+    <value>Righelli colonne</value>
+  </data>
+  <data name="CodeEditor_ContextMenuFormatJson" xml:space="preserve">
+    <value>Formatta JSON</value>
+  </data>
+  <data name="CodeEditor_ContextMenuFormattingOptions" xml:space="preserve">
+    <value>Opzioni...</value>
+  </data>
+  <data name="CodeEditor_ContextMenuOutlining" xml:space="preserve">
+    <value>Struttura</value>
+  </data>
+  <data name="CodeEditor_ContextMenuReanalyzeFolding" xml:space="preserve">
+    <value>Rianalizza piegatura</value>
+  </data>
+  <data name="CodeEditor_ContextMenuRefreshHighlights" xml:space="preserve">
+    <value>Aggiorna evidenziazioni</value>
+  </data>
+  <data name="CodeEditor_ContextMenuShowCallHierarchy" xml:space="preserve">
+    <value>Mostra gerarchia chiamate</value>
+  </data>
+  <data name="CodeEditor_ContextMenuShowTypeHierarchy" xml:space="preserve">
+    <value>Mostra gerarchia tipi</value>
+  </data>
+  <data name="CodeEditor_ContextMenuShowWhitespace" xml:space="preserve">
+    <value>Mostra spazi</value>
+  </data>
+  <data name="CodeEditor_ContextMenuStopHidingCurrent" xml:space="preserve">
+    <value>Smetti di nascondere il corrente</value>
+  </data>
+  <data name="CodeEditor_ContextMenuStopOutlining" xml:space="preserve">
+    <value>Interrompi struttura</value>
+  </data>
+  <data name="CodeEditor_ContextMenuToggleAllOutlining" xml:space="preserve">
+    <value>Attiva/disattiva tutte le strutture</value>
+  </data>
+  <data name="CodeEditor_ContextMenuToggleOutlining" xml:space="preserve">
+    <value>Attiva/disattiva struttura</value>
+  </data>
+  <data name="CodeEditor_ContextMenuValidateJson" xml:space="preserve">
+    <value>Valida JSON</value>
+  </data>
+  <data name="CodeEditor_ContextMenuWordHighlight" xml:space="preserve">
+    <value>Evidenziazione parole</value>
+  </data>
+  <data name="CodeEditor_DisplayName" xml:space="preserve">
+    <value>Editor di codice</value>
+  </data>
+  <data name="CodeEditor_FormatDocumentTransaction" xml:space="preserve">
+    <value>Formatta documento</value>
+  </data>
+  <data name="CodeEditor_FormatJsonError" xml:space="preserve">
+    <value>Impossibile formattare — JSON non valido:
+{0}</value>
+  </data>
+  <data name="CodeEditor_FormatJsonErrorTitle" xml:space="preserve">
+    <value>Errore di formattazione</value>
+  </data>
+  <data name="CodeEditor_FormatSelectionTransaction" xml:space="preserve">
+    <value>Formatta selezione</value>
+  </data>
+  <data name="CodeEditor_GoToLine" xml:space="preserve">
+    <value>Vai alla riga</value>
+  </data>
+  <data name="CodeEditor_ReferencesPinTooltip" xml:space="preserve">
+    <value>Aggiungi al pannello Trova riferimenti</value>
+  </data>
+  <data name="CodeEditor_UrlTooltipEmail" xml:space="preserve">
+    <value>Ctrl+Clic per inviare email</value>
+  </data>
+  <data name="CodeEditor_UrlTooltipLink" xml:space="preserve">
+    <value>Ctrl+Clic per aprire</value>
+  </data>
+  <data name="CodeEditor_ValidateJsonError" xml:space="preserve">
+    <value>JSON non valido: {0}</value>
+  </data>
+  <data name="CodeEditor_ValidateJsonErrorTitle" xml:space="preserve">
+    <value>Errore di validazione</value>
+  </data>
+  <data name="CodeEditor_ValidateJsonSuccess" xml:space="preserve">
+    <value>Il JSON è valido.</value>
+  </data>
+  <data name="CodeEditor_ValidateJsonTitle" xml:space="preserve">
+    <value>Validazione</value>
+  </data>
+  <data name="FormatScriptEditor_DefaultFileName" xml:space="preserve">
+    <value>SenzaTitolo.json</value>
+  </data>
+  <data name="FormatScriptEditor_EditorTabHeader" xml:space="preserve">
+    <value>Editor</value>
+  </data>
+  <data name="FormatScriptEditor_ErrorCountStatus" xml:space="preserve">
+    <value>0 Errori</value>
+  </data>
+  <data name="FormatScriptEditor_FileTypeStatus" xml:space="preserve">
+    <value>JSON</value>
+  </data>
+  <data name="FormatScriptEditor_FormatJsonError" xml:space="preserve">
+    <value>Impossibile formattare JSON: {0}</value>
+  </data>
+  <data name="FormatScriptEditor_FormatJsonErrorTitle" xml:space="preserve">
+    <value>Errore di formattazione</value>
+  </data>
+  <data name="FormatScriptEditor_FormatText" xml:space="preserve">
+    <value>Formatta</value>
+  </data>
+  <data name="FormatScriptEditor_LineColStatus" xml:space="preserve">
+    <value>Riga 1, Col 1</value>
+  </data>
+  <data name="FormatScriptEditor_LoadEmbeddedError" xml:space="preserve">
+    <value>Impossibile caricare il formato incorporato: {0}</value>
+  </data>
+  <data name="FormatScriptEditor_LoadEmbeddedErrorTitle" xml:space="preserve">
+    <value>Errore</value>
+  </data>
+  <data name="FormatScriptEditor_LoadFileError" xml:space="preserve">
+    <value>Impossibile caricare il file: {0}</value>
+  </data>
+  <data name="FormatScriptEditor_LoadFileErrorTitle" xml:space="preserve">
+    <value>Errore</value>
+  </data>
+  <data name="FormatScriptEditor_LoadFormatsError" xml:space="preserve">
+    <value>Impossibile caricare i formati incorporati: {0}</value>
+  </data>
+  <data name="FormatScriptEditor_LoadFormatsErrorTitle" xml:space="preserve">
+    <value>Errore</value>
+  </data>
+  <data name="FormatScriptEditor_NewText" xml:space="preserve">
+    <value>Nuovo</value>
+  </data>
+  <data name="FormatScriptEditor_OpenDialogTitle" xml:space="preserve">
+    <value>Apri definizione formato</value>
+  </data>
+  <data name="FormatScriptEditor_OpenText" xml:space="preserve">
+    <value>Apri</value>
+  </data>
+  <data name="FormatScriptEditor_PreviewTabHeader" xml:space="preserve">
+    <value>Anteprima</value>
+  </data>
+  <data name="FormatScriptEditor_RedoText" xml:space="preserve">
+    <value>Ripristina</value>
+  </data>
+  <data name="FormatScriptEditor_SaveDialogTitle" xml:space="preserve">
+    <value>Salva definizione formato</value>
+  </data>
+  <data name="FormatScriptEditor_SaveFailedMessage" xml:space="preserve">
+    <value>Impossibile salvare il file: {0}</value>
+  </data>
+  <data name="FormatScriptEditor_SaveFailedTitle" xml:space="preserve">
+    <value>Errore</value>
+  </data>
+  <data name="FormatScriptEditor_SaveText" xml:space="preserve">
+    <value>Salva</value>
+  </data>
+  <data name="FormatScriptEditor_StatusLineCol" xml:space="preserve">
+    <value>Riga {0}, Col {1}</value>
+  </data>
+  <data name="FormatScriptEditor_TestInstructions" xml:space="preserve">
+    <value>Testa la tua definizione formato su file di esempio qui.
+
+Seleziona un file e clicca su "Esegui test" per vedere i risultati dell'analisi.</value>
+  </data>
+  <data name="FormatScriptEditor_TestTabHeader" xml:space="preserve">
+    <value>Test</value>
+  </data>
+  <data name="FormatScriptEditor_UndoText" xml:space="preserve">
+    <value>Annulla</value>
+  </data>
+  <data name="FormatScriptEditor_ValidateText" xml:space="preserve">
+    <value>Valida</value>
+  </data>
+  <data name="FormatScriptEditor_WarningCountStatus" xml:space="preserve">
+    <value>0 Avvisi</value>
+  </data>
 </root>

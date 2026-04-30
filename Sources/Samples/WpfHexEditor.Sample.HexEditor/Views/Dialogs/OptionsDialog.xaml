@@ -7,7 +7,7 @@
 <Window x:Class="WpfHexEditor.Sample.HexEditor.Views.Dialogs.OptionsDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="{DynamicResource Options_Title}" Height="700" Width="580"
+        Title="{StaticResource Options_Title}" Height="700" Width="580"
         WindowStartupLocation="CenterOwner"
         ResizeMode="CanResize"
         MinHeight="600" MinWidth="550"
@@ -79,11 +79,11 @@
 
         <!-- Header -->
         <StackPanel Grid.Row="0" Margin="0,0,0,20">
-            <TextBlock Text="{DynamicResource Options_Header_Title}"
+            <TextBlock Text="{StaticResource Options_Header_Title}"
                        FontSize="24"
                        FontWeight="SemiBold"
                        Foreground="#333333"/>
-            <TextBlock Text="{DynamicResource Options_Header_Subtitle}"
+            <TextBlock Text="{StaticResource Options_Header_Subtitle}"
                        FontSize="13"
                        Foreground="#666666"
                        Margin="0,5,0,0"/>
@@ -96,7 +96,7 @@
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="??" FontSize="16" Margin="0,0,5,0"/>
-                        <TextBlock Text="{DynamicResource Options_LanguageTab}" FontSize="13"/>
+                        <TextBlock Text="{StaticResource Options_LanguageTab}" FontSize="13"/>
                     </StackPanel>
                 </TabItem.Header>
 
@@ -110,7 +110,7 @@
 
                     <!-- Instructions -->
                     <TextBlock Grid.Row="0"
-                               Text="{DynamicResource Options_Language_Instructions}"
+                               Text="{StaticResource Options_Language_Instructions}"
                                FontSize="14"
                                Foreground="#333333"
                                Margin="0,0,0,15"/>
@@ -179,7 +179,7 @@
                                     </GridViewColumn>
                                     <GridViewColumn Width="180">
                                         <GridViewColumn.Header>
-                                            <TextBlock Text="{DynamicResource Options_Language_ColumnLanguage}"/>
+                                            <TextBlock Text="{StaticResource Options_Language_ColumnLanguage}"/>
                                         </GridViewColumn.Header>
                                         <GridViewColumn.CellTemplate>
                                             <DataTemplate>
@@ -189,7 +189,7 @@
                                     </GridViewColumn>
                                     <GridViewColumn Width="180">
                                         <GridViewColumn.Header>
-                                            <TextBlock Text="{DynamicResource Options_Language_ColumnNativeName}"/>
+                                            <TextBlock Text="{StaticResource Options_Language_ColumnNativeName}"/>
                                         </GridViewColumn.Header>
                                         <GridViewColumn.CellTemplate>
                                             <DataTemplate>
@@ -199,7 +199,7 @@
                                     </GridViewColumn>
                                     <GridViewColumn Width="70">
                                         <GridViewColumn.Header>
-                                            <TextBlock Text="{DynamicResource Options_Language_ColumnCode}"/>
+                                            <TextBlock Text="{StaticResource Options_Language_ColumnCode}"/>
                                         </GridViewColumn.Header>
                                         <GridViewColumn.CellTemplate>
                                             <DataTemplate>
@@ -222,7 +222,7 @@
                             Margin="0,15,0,0">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="?" FontSize="16" Margin="0,0,10,0" VerticalAlignment="Center"/>
-                            <TextBlock Text="{DynamicResource Options_Language_RestartWarning}"
+                            <TextBlock Text="{StaticResource Options_Language_RestartWarning}"
                                        FontSize="12"
                                        Foreground="#1976D2"
                                        TextWrapping="Wrap"
@@ -237,7 +237,7 @@
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="??" FontSize="16" Margin="0,0,5,0"/>
-                        <TextBlock Text="{DynamicResource Options_AppearanceTab}" FontSize="13"/>
+                        <TextBlock Text="{StaticResource Options_AppearanceTab}" FontSize="13"/>
                     </StackPanel>
                 </TabItem.Header>
 
@@ -251,7 +251,7 @@
 
                     <!-- Instructions -->
                     <TextBlock Grid.Row="0"
-                               Text="{DynamicResource Options_Theme_Instructions}"
+                               Text="{StaticResource Options_Theme_Instructions}"
                                FontSize="14"
                                Foreground="#333333"
                                Margin="0,0,0,15"/>
@@ -313,7 +313,7 @@
                                 <GridView>
                                     <GridViewColumn Width="80">
                                         <GridViewColumn.Header>
-                                            <TextBlock Text="{DynamicResource Options_Theme_ColumnIcon}"/>
+                                            <TextBlock Text="{StaticResource Options_Theme_ColumnIcon}"/>
                                         </GridViewColumn.Header>
                                         <GridViewColumn.CellTemplate>
                                             <DataTemplate>
@@ -323,7 +323,7 @@
                                     </GridViewColumn>
                                     <GridViewColumn Width="150">
                                         <GridViewColumn.Header>
-                                            <TextBlock Text="{DynamicResource Options_Theme_ColumnName}"/>
+                                            <TextBlock Text="{StaticResource Options_Theme_ColumnName}"/>
                                         </GridViewColumn.Header>
                                         <GridViewColumn.CellTemplate>
                                             <DataTemplate>
@@ -333,7 +333,7 @@
                                     </GridViewColumn>
                                     <GridViewColumn Width="250">
                                         <GridViewColumn.Header>
-                                            <TextBlock Text="{DynamicResource Options_Theme_ColumnDescription}"/>
+                                            <TextBlock Text="{StaticResource Options_Theme_ColumnDescription}"/>
                                         </GridViewColumn.Header>
                                         <GridViewColumn.CellTemplate>
                                             <DataTemplate>
@@ -356,7 +356,7 @@
                             Margin="0,15,0,0">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="?" FontSize="16" Margin="0,0,10,0" VerticalAlignment="Center"/>
-                            <TextBlock Text="{DynamicResource Options_Theme_InstantInfo}"
+                            <TextBlock Text="{StaticResource Options_Theme_InstantInfo}"
                                        FontSize="12"
                                        Foreground="#1976D2"
                                        TextWrapping="Wrap"
@@ -385,7 +385,7 @@
 
                     <!-- Instructions -->
                     <TextBlock Grid.Row="0"
-                               Text="{DynamicResource Options_CopyMode_Instructions}"
+                               Text="{StaticResource Options_CopyMode_Instructions}"
                                FontSize="14"
                                Foreground="#333333"
                                Margin="0,0,0,15"/>
@@ -447,7 +447,7 @@
                                 <GridView>
                                     <GridViewColumn Width="80">
                                         <GridViewColumn.Header>
-                                            <TextBlock Text="{DynamicResource Options_CopyMode_ColumnIcon}"/>
+                                            <TextBlock Text="{StaticResource Options_CopyMode_ColumnIcon}"/>
                                         </GridViewColumn.Header>
                                         <GridViewColumn.CellTemplate>
                                             <DataTemplate>
@@ -457,7 +457,7 @@
                                     </GridViewColumn>
                                     <GridViewColumn Width="150">
                                         <GridViewColumn.Header>
-                                            <TextBlock Text="{DynamicResource Options_CopyMode_ColumnName}"/>
+                                            <TextBlock Text="{StaticResource Options_CopyMode_ColumnName}"/>
                                         </GridViewColumn.Header>
                                         <GridViewColumn.CellTemplate>
                                             <DataTemplate>
@@ -467,7 +467,7 @@
                                     </GridViewColumn>
                                     <GridViewColumn Width="250">
                                         <GridViewColumn.Header>
-                                            <TextBlock Text="{DynamicResource Options_CopyMode_ColumnDescription}"/>
+                                            <TextBlock Text="{StaticResource Options_CopyMode_ColumnDescription}"/>
                                         </GridViewColumn.Header>
                                         <GridViewColumn.CellTemplate>
                                             <DataTemplate>
@@ -490,7 +490,7 @@
                             Margin="0,15,0,0">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="?" FontSize="16" Margin="0,0,10,0" VerticalAlignment="Center"/>
-                            <TextBlock Text="{DynamicResource Options_CopyMode_InstantInfo}"
+                            <TextBlock Text="{StaticResource Options_CopyMode_InstantInfo}"
                                        FontSize="12"
                                        Foreground="#1976D2"
                                        TextWrapping="Wrap"
@@ -505,11 +505,11 @@
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="?" FontSize="16" Margin="0,0,5,0"/>
-                        <TextBlock Text="{DynamicResource Options_PerformanceTab}" FontSize="13"/>
+                        <TextBlock Text="{StaticResource Options_PerformanceTab}" FontSize="13"/>
                     </StackPanel>
                 </TabItem.Header>
                 <Grid>
-                    <TextBlock Text="{DynamicResource Options_ComingSoon}"
+                    <TextBlock Text="{StaticResource Options_ComingSoon}"
                                HorizontalAlignment="Center"
                                VerticalAlignment="Center"
                                FontSize="16"
@@ -523,14 +523,14 @@
                     Orientation="Horizontal"
                     HorizontalAlignment="Right"
                     Margin="0,20,0,0">
-            <Button Content="{DynamicResource Options_Button_OK}"
+            <Button Content="{StaticResource Options_Button_OK}"
                     Width="90"
                     Height="34"
                     Margin="0,0,10,0"
                     Click="OkButton_Click"
                     IsDefault="True"
                     Style="{StaticResource ModernButton}"/>
-            <Button Content="{DynamicResource Options_Button_Cancel}"
+            <Button Content="{StaticResource Options_Button_Cancel}"
                     Width="90"
                     Height="34"
                     Click="CancelButton_Click"

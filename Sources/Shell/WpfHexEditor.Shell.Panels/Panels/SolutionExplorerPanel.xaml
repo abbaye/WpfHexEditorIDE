@@ -275,7 +275,7 @@
                                Margin="3,0,0,0"
                                VerticalAlignment="Center"
                                Visibility="Collapsed"
-                               ToolTip="{DynamicResource SolutionExplorer_BuildDirtyIndicator}" />
+                               ToolTip="{StaticResource SolutionExplorer_BuildDirtyIndicator}" />
                 </StackPanel>
                 <!-- Inline rename TextBox (IsEditing = true) -->
                 <TextBox x:Name="ProjectInlineEditBox"
@@ -323,7 +323,7 @@
             <Grid>
                 <!-- Normal display (IsEditing = false) -->
                 <StackPanel x:Name="FolderDisplayPanel" Orientation="Horizontal"
-                            ToolTip="{DynamicResource SolutionExplorer_SolutionFolderTooltip}">
+                            ToolTip="{StaticResource SolutionExplorer_SolutionFolderTooltip}">
                     <TextBlock x:Name="FolderIcon" Style="{StaticResource NodeIcon}"
                                Text="&#xE8D5;" Foreground="#C4A34A"/>
                     <TextBlock Style="{StaticResource NodeLabel}" Text="{Binding DisplayName}"/>
@@ -350,13 +350,13 @@
                 <!-- Physical folder: yellow icon + distinct tooltip -->
                 <DataTrigger Binding="{Binding IsPhysicallyBacked}" Value="True">
                     <Setter TargetName="FolderIcon"          Property="Foreground" Value="#F5C518"/>
-                    <Setter TargetName="FolderDisplayPanel"  Property="ToolTip"    Value="{DynamicResource SolutionExplorer_PhysicalFolderTooltip}"/>
+                    <Setter TargetName="FolderDisplayPanel"  Property="ToolTip"    Value="{StaticResource SolutionExplorer_PhysicalFolderTooltip}"/>
                 </DataTrigger>
                 <!-- Properties folder: VS-like gear icon (declared after IsPhysicallyBacked so it takes precedence) -->
                 <DataTrigger Binding="{Binding IsPropertiesFolder}" Value="True">
                     <Setter TargetName="FolderIcon"         Property="Text"       Value="&#xE713;"/>
                     <Setter TargetName="FolderIcon"         Property="Foreground" Value="#9B9B9B"/>
-                    <Setter TargetName="FolderDisplayPanel" Property="ToolTip"    Value="{DynamicResource SolutionExplorer_PropertiesFolderTooltip}"/>
+                    <Setter TargetName="FolderDisplayPanel" Property="ToolTip"    Value="{StaticResource SolutionExplorer_PropertiesFolderTooltip}"/>
                 </DataTrigger>
             </DataTemplate.Triggers>
         </DataTemplate>
@@ -366,7 +366,7 @@
             <Grid>
                 <!-- Normal display -->
                 <StackPanel x:Name="SolFolderDisplayPanel" Orientation="Horizontal"
-                            ToolTip="{DynamicResource SolutionExplorer_SolutionFolderTooltip}">
+                            ToolTip="{StaticResource SolutionExplorer_SolutionFolderTooltip}">
                     <TextBlock Style="{StaticResource NodeIcon}" Text="&#xE8B7;" Foreground="#DCA95A"/>
                     <TextBlock Style="{StaticResource NodeLabel}" Text="{Binding DisplayName}"/>
                 </StackPanel>
@@ -423,21 +423,21 @@
                     <TextBlock Text=" &#x25CF;" FontSize="9"
                                Foreground="{DynamicResource SE_ModifiedIndicatorBrush}"
                                VerticalAlignment="Center"
-                               ToolTip="{DynamicResource SolutionExplorer_UnsavedModifications}"
+                               ToolTip="{StaticResource SolutionExplorer_UnsavedModifications}"
                                Visibility="{Binding IsModified, Converter={StaticResource BoolToVis}}"/>
                     <!-- External-file badge -->
                     <TextBlock x:Name="ExternalBadge"
                                Text="&#xE71B;" FontFamily="Segoe MDL2 Assets" FontSize="9"
                                Foreground="#E8A419"
                                VerticalAlignment="Center" Margin="3,0,0,0"
-                               ToolTip="{DynamicResource SolutionExplorer_ExternalFileIndicator}"
+                               ToolTip="{StaticResource SolutionExplorer_ExternalFileIndicator}"
                                Visibility="Collapsed"/>
                     <!-- Externally-modified warning badge -->
                     <TextBlock x:Name="ExternalModBadge"
                                Text="&#xE7BA;" FontFamily="Segoe MDL2 Assets" FontSize="9"
                                Foreground="{DynamicResource SE_ModifiedIndicatorBrush}"
                                VerticalAlignment="Center" Margin="2,0,0,0"
-                               ToolTip="{DynamicResource SolutionExplorer_ExternalModIndicator}"
+                               ToolTip="{StaticResource SolutionExplorer_ExternalModIndicator}"
                                Visibility="Collapsed"/>
                 </StackPanel>
 
@@ -615,7 +615,7 @@
                            Foreground="{DynamicResource SE_ForegroundBrush}"
                            FontSize="11"/>
                 <TextBlock Style="{StaticResource NodeLabel}"
-                           Text="{DynamicResource SolutionExplorer_LoadingIndicator}"
+                           Text="{StaticResource SolutionExplorer_LoadingIndicator}"
                            FontStyle="Italic"/>
             </StackPanel>
         </DataTemplate>
@@ -727,20 +727,20 @@
                 <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
                     <ToggleButton x:Name="ShowAllFilesButton"
                                   Style="{StaticResource SE_IconToggleButton}"
-                                  ToolTip="{DynamicResource SolutionExplorer_ShowAllFilesToolTip}"
+                                  ToolTip="{StaticResource SolutionExplorer_ShowAllFilesToolTip}"
                                   Click="OnShowAllFiles">
                         <TextBlock Text="&#xE8B7;" FontFamily="Segoe MDL2 Assets" FontSize="11"
                                    Foreground="{DynamicResource SE_ForegroundBrush}"/>
                     </ToggleButton>
-                    <Button Style="{StaticResource SE_IconButton}" ToolTip="{DynamicResource SolutionExplorer_CollapseAllToolTip}"          Click="OnCollapseAll">
+                    <Button Style="{StaticResource SE_IconButton}" ToolTip="{StaticResource SolutionExplorer_CollapseAllToolTip}"          Click="OnCollapseAll">
                         <TextBlock Text="&#xF165;" FontFamily="Segoe MDL2 Assets" FontSize="11"
                                    Foreground="{DynamicResource SE_ForegroundBrush}"/>
                     </Button>
-                    <Button Style="{StaticResource SE_IconButton}" ToolTip="{DynamicResource SolutionExplorer_SyncWithActiveDocToolTip}" Click="OnSyncWithActiveDocument">
+                    <Button Style="{StaticResource SE_IconButton}" ToolTip="{StaticResource SolutionExplorer_SyncWithActiveDocToolTip}" Click="OnSyncWithActiveDocument">
                         <TextBlock Text="&#xE895;" FontFamily="Segoe MDL2 Assets" FontSize="11"
                                    Foreground="{DynamicResource SE_ForegroundBrush}"/>
                     </Button>
-                    <Button Style="{StaticResource SE_IconButton}" ToolTip="{DynamicResource SolutionExplorer_RefreshToolTip}" Click="OnRefresh">
+                    <Button Style="{StaticResource SE_IconButton}" ToolTip="{StaticResource SolutionExplorer_RefreshToolTip}" Click="OnRefresh">
                         <TextBlock Text="&#xE72C;" FontFamily="Segoe MDL2 Assets" FontSize="11"
                                    Foreground="{DynamicResource SE_ForegroundBrush}"/>
                     </Button>
@@ -749,15 +749,15 @@
                 <!-- Sort and Filter dropdowns (DockPanel.Dock="Left" so they appear first) -->
                 <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
                     <!-- Sort -->
-                    <Button Style="{StaticResource SE_IconButton}" ToolTip="{DynamicResource SolutionExplorer_SortToolTip}"
+                    <Button Style="{StaticResource SE_IconButton}" ToolTip="{StaticResource SolutionExplorer_SortToolTip}"
                             Click="OnSortButtonClick" x:Name="SortButton">
                         <Button.ContextMenu>
                             <ContextMenu x:Name="SortContextMenu">
-                                <MenuItem Header="{DynamicResource SolutionExplorer_SortNone}"         Tag="None"         Click="OnSortMenuItemClick"/>
-                                <MenuItem Header="{DynamicResource SolutionExplorer_SortName}"         Tag="Name"         Click="OnSortMenuItemClick"/>
-                                <MenuItem Header="{DynamicResource SolutionExplorer_SortType}"         Tag="Type"         Click="OnSortMenuItemClick"/>
-                                <MenuItem Header="{DynamicResource SolutionExplorer_SortDateModified}" Tag="DateModified" Click="OnSortMenuItemClick"/>
-                                <MenuItem Header="{DynamicResource SolutionExplorer_SortSize}"         Tag="Size"         Click="OnSortMenuItemClick"/>
+                                <MenuItem Header="{StaticResource SolutionExplorer_SortNone}"         Tag="None"         Click="OnSortMenuItemClick"/>
+                                <MenuItem Header="{StaticResource SolutionExplorer_SortName}"         Tag="Name"         Click="OnSortMenuItemClick"/>
+                                <MenuItem Header="{StaticResource SolutionExplorer_SortType}"         Tag="Type"         Click="OnSortMenuItemClick"/>
+                                <MenuItem Header="{StaticResource SolutionExplorer_SortDateModified}" Tag="DateModified" Click="OnSortMenuItemClick"/>
+                                <MenuItem Header="{StaticResource SolutionExplorer_SortSize}"         Tag="Size"         Click="OnSortMenuItemClick"/>
                             </ContextMenu>
                         </Button.ContextMenu>
                         <StackPanel Orientation="Horizontal">
@@ -766,15 +766,15 @@
                         </StackPanel>
                     </Button>
                     <!-- Filter -->
-                    <Button Style="{StaticResource SE_IconButton}" ToolTip="{DynamicResource SolutionExplorer_FilterToolTip}"
+                    <Button Style="{StaticResource SE_IconButton}" ToolTip="{StaticResource SolutionExplorer_FilterToolTip}"
                             Click="OnFilterButtonClick" x:Name="FilterButton">
                         <Button.ContextMenu>
                             <ContextMenu x:Name="FilterContextMenu">
-                                <MenuItem Header="{DynamicResource SolutionExplorer_FilterAll}"      Tag="All"      Click="OnFilterMenuItemClick"/>
-                                <MenuItem Header="{DynamicResource SolutionExplorer_FilterBinary}"   Tag="Binary"   Click="OnFilterMenuItemClick"/>
-                                <MenuItem Header="{DynamicResource SolutionExplorer_FilterText}"     Tag="Text"     Click="OnFilterMenuItemClick"/>
-                                <MenuItem Header="{DynamicResource SolutionExplorer_FilterImages}"   Tag="Image"    Click="OnFilterMenuItemClick"/>
-                                <MenuItem Header="{DynamicResource SolutionExplorer_FilterLanguage}" Tag="Language" Click="OnFilterMenuItemClick"/>
+                                <MenuItem Header="{StaticResource SolutionExplorer_FilterAll}"      Tag="All"      Click="OnFilterMenuItemClick"/>
+                                <MenuItem Header="{StaticResource SolutionExplorer_FilterBinary}"   Tag="Binary"   Click="OnFilterMenuItemClick"/>
+                                <MenuItem Header="{StaticResource SolutionExplorer_FilterText}"     Tag="Text"     Click="OnFilterMenuItemClick"/>
+                                <MenuItem Header="{StaticResource SolutionExplorer_FilterImages}"   Tag="Image"    Click="OnFilterMenuItemClick"/>
+                                <MenuItem Header="{StaticResource SolutionExplorer_FilterLanguage}" Tag="Language" Click="OnFilterMenuItemClick"/>
                             </ContextMenu>
                         </Button.ContextMenu>
                         <StackPanel Orientation="Horizontal">
@@ -805,7 +805,7 @@
                          GotFocus="SearchBox_GotFocus"
                          LostFocus="SearchBox_LostFocus"/>
                 <TextBlock x:Name="SearchPlaceholder" Grid.Column="0"
-                           Text="{DynamicResource SolutionExplorer_SearchPlaceholder}"
+                           Text="{StaticResource SolutionExplorer_SearchPlaceholder}"
                            Foreground="{DynamicResource SE_SearchBoxForegroundBrush}"
                            Opacity="0.45" IsHitTestVisible="False"
                            VerticalAlignment="Center"/>
@@ -825,11 +825,11 @@
                     </StackPanel>
                     <Button.ContextMenu>
                         <ContextMenu x:Name="SearchModeContextMenu">
-                            <MenuItem Header="{DynamicResource SolutionExplorer_SearchModeFileName}"    Tag="FileName"       Click="OnSearchModeMenuItemClick"/>
-                            <MenuItem Header="{DynamicResource SolutionExplorer_SearchModeNameContent}" Tag="NameAndContent" Click="OnSearchModeMenuItemClick"/>
-                            <MenuItem Header="{DynamicResource SolutionExplorer_SearchModeContentOnly}" Tag="ContentOnly"    Click="OnSearchModeMenuItemClick"/>
+                            <MenuItem Header="{StaticResource SolutionExplorer_SearchModeFileName}"    Tag="FileName"       Click="OnSearchModeMenuItemClick"/>
+                            <MenuItem Header="{StaticResource SolutionExplorer_SearchModeNameContent}" Tag="NameAndContent" Click="OnSearchModeMenuItemClick"/>
+                            <MenuItem Header="{StaticResource SolutionExplorer_SearchModeContentOnly}" Tag="ContentOnly"    Click="OnSearchModeMenuItemClick"/>
                             <Separator/>
-                            <MenuItem Header="{DynamicResource SolutionExplorer_SearchModeRegex}"       Tag="Regex"          Click="OnSearchModeMenuItemClick"/>
+                            <MenuItem Header="{StaticResource SolutionExplorer_SearchModeRegex}"       Tag="Regex"          Click="OnSearchModeMenuItemClick"/>
                         </ContextMenu>
                     </Button.ContextMenu>
                 </Button>
@@ -869,7 +869,7 @@
                     </ContextMenu.Resources>
 
                     <!-- Go to Definition (SourceTypeNodeVm / SourceMemberNodeVm only) -->
-                    <MenuItem x:Name="GoToDefinitionMenuItem" Header="{DynamicResource SolutionExplorer_GoToDefinition}" Click="OnGoToDefinition">
+                    <MenuItem x:Name="GoToDefinitionMenuItem" Header="{StaticResource SolutionExplorer_GoToDefinition}" Click="OnGoToDefinition">
                         <MenuItem.Icon>
                             <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE8C7;"/>
                         </MenuItem.Icon>
@@ -877,18 +877,18 @@
                     <Separator x:Name="GoToDefinitionSeparator"/>
 
                     <!-- Open / Open With (file, physFile-inProject) -->
-                    <MenuItem x:Name="OpenMenuItem" Header="{DynamicResource SolutionExplorer_Open}" Click="OnOpen">
+                    <MenuItem x:Name="OpenMenuItem" Header="{StaticResource SolutionExplorer_Open}" Click="OnOpen">
                         <MenuItem.Icon>
                             <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE8A7;"/>
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem x:Name="OpenWithMenuItem" Header="{DynamicResource SolutionExplorer_OpenWith}">
+                    <MenuItem x:Name="OpenWithMenuItem" Header="{StaticResource SolutionExplorer_OpenWith}">
                         <MenuItem.Icon>
                             <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE8C8;"/>
                         </MenuItem.Icon>
                         <!-- Submenu items are populated dynamically in UpdateContextMenu() -->
                         <MenuItem x:Name="OpenWithHexMenuItem"
-                                  Header="{DynamicResource SolutionExplorer_OpenWithHexEditor}"
+                                  Header="{StaticResource SolutionExplorer_OpenWithHexEditor}"
                                   Tag="__hex__"
                                   Click="OnOpenWithSubItem">
                             <MenuItem.Icon>
@@ -899,18 +899,18 @@
                     <Separator x:Name="OpenSeparator"/>
 
                     <!-- Add > submenu (solution / project / folder) -->
-                    <MenuItem x:Name="AddSubmenuMenuItem" Header="{DynamicResource SolutionExplorer_Add}">
+                    <MenuItem x:Name="AddSubmenuMenuItem" Header="{StaticResource SolutionExplorer_Add}">
                         <MenuItem.Icon>
                             <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE710;"/>
                         </MenuItem.Icon>
 
                         <!-- Items: project &amp; folder only -->
-                        <MenuItem x:Name="AddNewItemMenuItem" Header="{DynamicResource SolutionExplorer_AddNewItem}" Click="OnAddNewItem">
+                        <MenuItem x:Name="AddNewItemMenuItem" Header="{StaticResource SolutionExplorer_AddNewItem}" Click="OnAddNewItem">
                             <MenuItem.Icon>
                                 <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE8A5;"/>
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem x:Name="AddExistingItemMenuItem" Header="{DynamicResource SolutionExplorer_AddExistingItem}" Click="OnAddExistingItem">
+                        <MenuItem x:Name="AddExistingItemMenuItem" Header="{StaticResource SolutionExplorer_AddExistingItem}" Click="OnAddExistingItem">
                             <MenuItem.Icon>
                                 <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE8E5;"/>
                             </MenuItem.Icon>
@@ -918,12 +918,12 @@
                         <Separator x:Name="AddItemsSeparator"/>
 
                         <!-- Import: project &amp; solution -->
-                        <MenuItem x:Name="ImportFormatMenuItem" Header="{DynamicResource SolutionExplorer_ImportFormat}" Click="OnImportFormatDefinition">
+                        <MenuItem x:Name="ImportFormatMenuItem" Header="{StaticResource SolutionExplorer_ImportFormat}" Click="OnImportFormatDefinition">
                             <MenuItem.Icon>
                                 <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE896;"/>
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem x:Name="ImportSyntaxMenuItem" Header="{DynamicResource SolutionExplorer_ImportSyntax}" Click="OnImportSyntaxDefinition">
+                        <MenuItem x:Name="ImportSyntaxMenuItem" Header="{StaticResource SolutionExplorer_ImportSyntax}" Click="OnImportSyntaxDefinition">
                             <MenuItem.Icon>
                                 <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE943;"/>
                             </MenuItem.Icon>
@@ -931,17 +931,17 @@
                         <Separator x:Name="AddFolderSeparator"/>
 
                         <!-- Folders: project &amp; folder; NewPhysicalFolder also on solution -->
-                        <MenuItem x:Name="NewFolderMenuItem" Header="{DynamicResource SolutionExplorer_NewFolder}" Click="OnNewFolder">
+                        <MenuItem x:Name="NewFolderMenuItem" Header="{StaticResource SolutionExplorer_NewFolder}" Click="OnNewFolder">
                             <MenuItem.Icon>
                                 <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE8F4;"/>
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem x:Name="NewPhysicalFolderMenuItem" Header="{DynamicResource SolutionExplorer_NewSolutionFolder}" Click="OnNewPhysicalFolder">
+                        <MenuItem x:Name="NewPhysicalFolderMenuItem" Header="{StaticResource SolutionExplorer_NewSolutionFolder}" Click="OnNewPhysicalFolder">
                             <MenuItem.Icon>
                                 <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE8D5;"/>
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem x:Name="AddFolderFromDiskMenuItem" Header="{DynamicResource SolutionExplorer_AddExistingFolder}" Click="OnAddFolderFromDisk">
+                        <MenuItem x:Name="AddFolderFromDiskMenuItem" Header="{StaticResource SolutionExplorer_AddExistingFolder}" Click="OnAddFolderFromDisk">
                             <MenuItem.Icon>
                                 <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE8DA;"/>
                             </MenuItem.Icon>
@@ -950,7 +950,7 @@
                     <Separator x:Name="AddSeparator"/>
 
                     <!-- Include in Project (Show All Files — physical file not yet tracked) -->
-                    <MenuItem x:Name="IncludeInProjectMenuItem" Header="{DynamicResource SolutionExplorer_IncludeInProject}" Click="OnIncludeInProject">
+                    <MenuItem x:Name="IncludeInProjectMenuItem" Header="{StaticResource SolutionExplorer_IncludeInProject}" Click="OnIncludeInProject">
                         <MenuItem.Icon>
                             <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE710;"/>
                         </MenuItem.Icon>
@@ -958,27 +958,27 @@
                     <Separator x:Name="IncludeSeparator"/>
 
                     <!-- TBL operations -->
-                    <MenuItem x:Name="SetDefaultTblMenuItem" Header="{DynamicResource SolutionExplorer_SetDefaultTbl}" Click="OnSetDefaultTbl">
+                    <MenuItem x:Name="SetDefaultTblMenuItem" Header="{StaticResource SolutionExplorer_SetDefaultTbl}" Click="OnSetDefaultTbl">
                         <MenuItem.Icon>
                             <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE735;"/>
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem x:Name="ClearDefaultTblMenuItem" Header="{DynamicResource SolutionExplorer_ClearDefaultTbl}" Click="OnClearDefaultTbl">
+                    <MenuItem x:Name="ClearDefaultTblMenuItem" Header="{StaticResource SolutionExplorer_ClearDefaultTbl}" Click="OnClearDefaultTbl">
                         <MenuItem.Icon>
                             <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE734;"/>
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem x:Name="ConvertToTblxMenuItem" Header="{DynamicResource SolutionExplorer_ConvertToTblx}" Click="OnConvertToTblx">
+                    <MenuItem x:Name="ConvertToTblxMenuItem" Header="{StaticResource SolutionExplorer_ConvertToTblx}" Click="OnConvertToTblx">
                         <MenuItem.Icon>
                             <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE8AB;"/>
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem x:Name="ApplyTblToActiveMenuItem" Header="{DynamicResource SolutionExplorer_ApplyTblToActive}" Click="OnApplyTblToActive">
+                    <MenuItem x:Name="ApplyTblToActiveMenuItem" Header="{StaticResource SolutionExplorer_ApplyTblToActive}" Click="OnApplyTblToActive">
                         <MenuItem.Icon>
                             <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE8C4;"/>
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem x:Name="ApplyTblToAllMenuItem" Header="{DynamicResource SolutionExplorer_ApplyTblToAll}" Click="OnApplyTblToAll">
+                    <MenuItem x:Name="ApplyTblToAllMenuItem" Header="{StaticResource SolutionExplorer_ApplyTblToAll}" Click="OnApplyTblToAll">
                         <MenuItem.Icon>
                             <TextBlock Style="{StaticResource MenuIcon}" Text="&#xEBE8;"/>
                         </MenuItem.Icon>
@@ -986,12 +986,12 @@
                     <Separator x:Name="TblSeparator"/>
 
                     <!-- Navigation (all node types) -->
-                    <MenuItem x:Name="OpenInExplorerMenuItem" Header="{DynamicResource SolutionExplorer_OpenInExplorer}" Click="OnOpenInExplorer">
+                    <MenuItem x:Name="OpenInExplorerMenuItem" Header="{StaticResource SolutionExplorer_OpenInExplorer}" Click="OnOpenInExplorer">
                         <MenuItem.Icon>
                             <TextBlock Style="{StaticResource MenuIcon}" Text="&#xEC50;"/>
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem x:Name="CopyPathMenuItem" Header="{DynamicResource SolutionExplorer_CopyPath}" Click="OnCopyPath">
+                    <MenuItem x:Name="CopyPathMenuItem" Header="{StaticResource SolutionExplorer_CopyPath}" Click="OnCopyPath">
                         <MenuItem.Icon>
                             <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE8C8;"/>
                         </MenuItem.Icon>
@@ -999,46 +999,46 @@
                     <Separator x:Name="NavigationSeparator"/>
 
                     <!-- Clipboard: Copy / Cut / Paste (file and folder context) -->
-                    <MenuItem x:Name="CopyMenuItem" Header="{DynamicResource SolutionExplorer_Copy}" Click="OnMenuCopy" InputGestureText="Ctrl+C">
+                    <MenuItem x:Name="CopyMenuItem" Header="{StaticResource SolutionExplorer_Copy}" Click="OnMenuCopy" InputGestureText="Ctrl+C">
                         <MenuItem.Icon>
                             <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE8C8;"/>
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem x:Name="CutMenuItem" Header="{DynamicResource SolutionExplorer_Cut}" Click="OnMenuCut" InputGestureText="Ctrl+X">
+                    <MenuItem x:Name="CutMenuItem" Header="{StaticResource SolutionExplorer_Cut}" Click="OnMenuCut" InputGestureText="Ctrl+X">
                         <MenuItem.Icon>
                             <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE8C6;"/>
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem x:Name="PasteMenuItem" Header="{DynamicResource SolutionExplorer_Paste}" Click="OnMenuPaste" InputGestureText="Ctrl+V">
+                    <MenuItem x:Name="PasteMenuItem" Header="{StaticResource SolutionExplorer_Paste}" Click="OnMenuPaste" InputGestureText="Ctrl+V">
                         <MenuItem.Icon>
                             <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE77F;"/>
                         </MenuItem.Icon>
                     </MenuItem>
 
                     <!-- Rename / Remove / Exclude -->
-                    <MenuItem x:Name="RenameMenuItem" Header="{DynamicResource SolutionExplorer_Rename}" Click="OnRename">
+                    <MenuItem x:Name="RenameMenuItem" Header="{StaticResource SolutionExplorer_Rename}" Click="OnRename">
                         <MenuItem.Icon>
                             <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE8AC;"/>
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem x:Name="RemoveMenuItem" Header="{DynamicResource SolutionExplorer_RemoveFromProject}" Click="OnRemove">
+                    <MenuItem x:Name="RemoveMenuItem" Header="{StaticResource SolutionExplorer_RemoveFromProject}" Click="OnRemove">
                         <MenuItem.Icon>
                             <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE74D;"/>
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem x:Name="DeleteMenuItem" Header="{DynamicResource SolutionExplorer_Delete}" Click="OnDeleteFromDisk">
+                    <MenuItem x:Name="DeleteMenuItem" Header="{StaticResource SolutionExplorer_Delete}" Click="OnDeleteFromDisk">
                         <MenuItem.Icon>
                             <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE74D;"/>
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem x:Name="ExcludeFromProjectMenuItem" Header="{DynamicResource SolutionExplorer_ExcludeFromProject}" Click="OnExcludeFromProject">
+                    <MenuItem x:Name="ExcludeFromProjectMenuItem" Header="{StaticResource SolutionExplorer_ExcludeFromProject}" Click="OnExcludeFromProject">
                         <MenuItem.Icon>
                             <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE8F8;"/>
                         </MenuItem.Icon>
                     </MenuItem>
                     <!-- Import external file into project directory -->
                     <Separator x:Name="ImportExternalSeparator"/>
-                    <MenuItem x:Name="ImportExternalFileMenuItem" Header="{DynamicResource SolutionExplorer_ImportIntoProject}" Click="OnImportExternalFile">
+                    <MenuItem x:Name="ImportExternalFileMenuItem" Header="{StaticResource SolutionExplorer_ImportIntoProject}" Click="OnImportExternalFile">
                         <MenuItem.Icon>
                             <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE8B5;"/>
                         </MenuItem.Icon>
@@ -1046,12 +1046,12 @@
 
                     <!-- Changeset (.whchg) actions -->
                     <Separator x:Name="ChangesetSeparator"/>
-                    <MenuItem x:Name="WriteChangesetToDiskMenuItem" Header="{DynamicResource SolutionExplorer_ApplyToDisk}" Click="OnWriteChangesetToDisk">
+                    <MenuItem x:Name="WriteChangesetToDiskMenuItem" Header="{StaticResource SolutionExplorer_ApplyToDisk}" Click="OnWriteChangesetToDisk">
                         <MenuItem.Icon>
                             <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE9F5;"/>
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem x:Name="DiscardChangesetMenuItem" Header="{DynamicResource SolutionExplorer_DiscardChanges}" Click="OnDiscardChangeset">
+                    <MenuItem x:Name="DiscardChangesetMenuItem" Header="{StaticResource SolutionExplorer_DiscardChanges}" Click="OnDiscardChangeset">
                         <MenuItem.Icon>
                             <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE711;"/>
                         </MenuItem.Icon>
@@ -1059,23 +1059,23 @@
 
                     <!-- Build (VS projects only) -->
                     <Separator x:Name="BuildSeparator"/>
-                    <MenuItem x:Name="BuildProjectMenuItem" Header="{DynamicResource SolutionExplorer_Build}" Click="OnBuildProject">
+                    <MenuItem x:Name="BuildProjectMenuItem" Header="{StaticResource SolutionExplorer_Build}" Click="OnBuildProject">
                         <MenuItem.Icon>
                             <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE8B1;"/>
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem x:Name="RebuildProjectMenuItem" Header="{DynamicResource SolutionExplorer_Rebuild}" Click="OnRebuildProject">
+                    <MenuItem x:Name="RebuildProjectMenuItem" Header="{StaticResource SolutionExplorer_Rebuild}" Click="OnRebuildProject">
                         <MenuItem.Icon>
                             <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE72C;"/>
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem x:Name="CleanProjectMenuItem" Header="{DynamicResource SolutionExplorer_Clean}" Click="OnCleanProject">
+                    <MenuItem x:Name="CleanProjectMenuItem" Header="{StaticResource SolutionExplorer_Clean}" Click="OnCleanProject">
                         <MenuItem.Icon>
                             <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE74D;"/>
                         </MenuItem.Icon>
                     </MenuItem>
                     <Separator x:Name="SetStartupSeparator"/>
-                    <MenuItem x:Name="SetStartupProjectMenuItem" Header="{DynamicResource SolutionExplorer_SetAsStartup}" Click="OnSetStartupProject">
+                    <MenuItem x:Name="SetStartupProjectMenuItem" Header="{StaticResource SolutionExplorer_SetAsStartup}" Click="OnSetStartupProject">
                         <MenuItem.Icon>
                             <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE768;"/>
                         </MenuItem.Icon>
@@ -1083,7 +1083,7 @@
 
                     <!-- References container: Add / Remove Unused appear first (no leading separator) -->
                     <MenuItem x:Name="AddReferenceMenuItem"
-                              Header="{DynamicResource SolutionExplorer_AddReference}"
+                              Header="{StaticResource SolutionExplorer_AddReference}"
                               Visibility="Collapsed"
                               Click="OnAddReference">
                         <MenuItem.Icon>
@@ -1091,7 +1091,7 @@
                         </MenuItem.Icon>
                     </MenuItem>
                     <MenuItem x:Name="RemoveUnusedRefsMenuItem"
-                              Header="{DynamicResource SolutionExplorer_RemoveUnusedReferences}"
+                              Header="{StaticResource SolutionExplorer_RemoveUnusedReferences}"
                               Visibility="Collapsed"
                               Click="OnRemoveUnusedReferences">
                         <MenuItem.Icon>
@@ -1102,7 +1102,7 @@
                     <!-- Separator + Manage NuGet (VS projects; also shown below refs items when refs container) -->
                     <Separator x:Name="NuGetSeparator" Visibility="Collapsed"/>
                     <MenuItem x:Name="ManageNuGetMenuItem"
-                              Header="{DynamicResource SolutionExplorer_ManageNugetPackages}"
+                              Header="{StaticResource SolutionExplorer_ManageNugetPackages}"
                               Visibility="Collapsed"
                               Click="OnManageNuGetPackages">
                         <MenuItem.Icon>
@@ -1115,7 +1115,7 @@
 
                     <!-- Properties -->
                     <Separator x:Name="PropertiesSeparator"/>
-                    <MenuItem x:Name="PropertiesMenuItem" Header="{DynamicResource SolutionExplorer_Properties}" Click="OnProperties">
+                    <MenuItem x:Name="PropertiesMenuItem" Header="{StaticResource SolutionExplorer_Properties}" Click="OnProperties">
                         <MenuItem.Icon>
                             <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE946;"/>
                         </MenuItem.Icon>
@@ -1124,7 +1124,7 @@
                     <!-- Manage NuGet Packages for Solution (solution node only) -->
                     <Separator x:Name="SolutionNuGetSeparator" Visibility="Collapsed"/>
                     <MenuItem x:Name="ManageSolutionNuGetMenuItem"
-                              Header="{DynamicResource SolutionExplorer_ManageNugetPackagesSolution}"
+                              Header="{StaticResource SolutionExplorer_ManageNugetPackagesSolution}"
                               Visibility="Collapsed"
                               Click="OnManageSolutionNuGetPackages">
                         <MenuItem.Icon>
@@ -1134,13 +1134,13 @@
 
                     <!-- Solution bottom: Save All + Close Solution -->
                     <Separator x:Name="SolutionBottomSeparator"/>
-                    <MenuItem x:Name="SaveAllMenuItem" Header="{DynamicResource SolutionExplorer_SaveAll}" Click="OnSaveAll">
+                    <MenuItem x:Name="SaveAllMenuItem" Header="{StaticResource SolutionExplorer_SaveAll}" Click="OnSaveAll">
                         <MenuItem.Icon>
                             <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE792;"/>
                         </MenuItem.Icon>
                     </MenuItem>
                     <Separator x:Name="CloseSolutionSeparator"/>
-                    <MenuItem x:Name="CloseSolutionMenuItem" Header="{DynamicResource SolutionExplorer_CloseSolution}" Click="OnCloseSolution">
+                    <MenuItem x:Name="CloseSolutionMenuItem" Header="{StaticResource SolutionExplorer_CloseSolution}" Click="OnCloseSolution">
                         <MenuItem.Icon>
                             <TextBlock Style="{StaticResource MenuIcon}" Text="&#xE8BB;"/>
                         </MenuItem.Icon>

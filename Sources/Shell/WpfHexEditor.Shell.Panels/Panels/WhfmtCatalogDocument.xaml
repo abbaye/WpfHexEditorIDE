@@ -112,13 +112,13 @@
                             <Setter.Value>
                                 <ContextMenu Background="{DynamicResource SE_BackgroundBrush}"
                                              Foreground="{DynamicResource SE_ForegroundBrush}">
-                                    <MenuItem Header="{DynamicResource WhfmtCatalog_Open}"              Command="{Binding OpenCommand}"/>
-                                    <MenuItem Header="{DynamicResource WhfmtCatalog_OpenReadOnly}" Command="{Binding OpenReadOnlyCommand}"/>
+                                    <MenuItem Header="{StaticResource WhfmtCatalog_Open}"              Command="{Binding OpenCommand}"/>
+                                    <MenuItem Header="{StaticResource WhfmtCatalog_OpenReadOnly}" Command="{Binding OpenReadOnlyCommand}"/>
                                     <Separator/>
-                                    <MenuItem Header="{DynamicResource WhfmtCatalog_ExportToFile}"   Command="{Binding ExportToFileCommand}"/>
-                                    <MenuItem Header="{DynamicResource WhfmtCatalog_ViewJson}"         Command="{Binding ViewJsonCommand}"/>
+                                    <MenuItem Header="{StaticResource WhfmtCatalog_ExportToFile}"   Command="{Binding ExportToFileCommand}"/>
+                                    <MenuItem Header="{StaticResource WhfmtCatalog_ViewJson}"         Command="{Binding ViewJsonCommand}"/>
                                     <Separator/>
-                                    <MenuItem Header="{DynamicResource WhfmtCatalog_RevealInExplorer}" Command="{Binding RevealInExplorerCommand}"/>
+                                    <MenuItem Header="{StaticResource WhfmtCatalog_RevealInExplorer}" Command="{Binding RevealInExplorerCommand}"/>
                                 </ContextMenu>
                             </Setter.Value>
                         </Setter>
@@ -126,24 +126,24 @@
                 </DataGrid.RowStyle>
 
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="{DynamicResource WhfmtCatalog_NameHeader}"
+                    <DataGridTextColumn Header="{StaticResource WhfmtCatalog_NameHeader}"
                                         Binding="{Binding Name}"
                                         Width="200" SortMemberPath="Name"/>
 
-                    <DataGridTextColumn Header="{DynamicResource WhfmtCatalog_CategoryHeader}"
+                    <DataGridTextColumn Header="{StaticResource WhfmtCatalog_CategoryHeader}"
                                         Binding="{Binding Category}"
                                         Width="110" SortMemberPath="Category"/>
 
-                    <DataGridTextColumn Header="{DynamicResource WhfmtCatalog_ExtensionsHeader}"
+                    <DataGridTextColumn Header="{StaticResource WhfmtCatalog_ExtensionsHeader}"
                                         Binding="{Binding ExtensionsDisplay}"
                                         Width="110" SortMemberPath="ExtensionsDisplay"/>
 
-                    <DataGridTextColumn Header="{DynamicResource WhfmtCatalog_VersionHeader}"
+                    <DataGridTextColumn Header="{StaticResource WhfmtCatalog_VersionHeader}"
                                         Binding="{Binding Version}"
                                         Width="65" SortMemberPath="Version"/>
 
                     <!-- Quality column with color indicator -->
-                    <DataGridTemplateColumn Header="{DynamicResource WhfmtCatalog_QualityHeader}" Width="80" SortMemberPath="QualityScore">
+                    <DataGridTemplateColumn Header="{StaticResource WhfmtCatalog_QualityHeader}" Width="80" SortMemberPath="QualityScore">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate DataType="{x:Type vm:WhfmtFormatItemVm}">
                                 <Grid VerticalAlignment="Center" Margin="2,0">
@@ -193,7 +193,7 @@
                                         <TextBlock Text="&#xE783;" FontFamily="Segoe MDL2 Assets" FontSize="11"
                                                    Foreground="{DynamicResource Panel_WarningTextBrush}"
                                                    VerticalAlignment="Center"/>
-                                        <TextBlock Text="{DynamicResource WhfmtCatalog_ErrorText}" FontSize="10"
+                                        <TextBlock Text="{StaticResource WhfmtCatalog_ErrorText}" FontSize="10"
                                                    Foreground="{DynamicResource Panel_WarningTextBrush}"
                                                    VerticalAlignment="Center"/>
                                     </StackPanel>
@@ -202,11 +202,11 @@
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
 
-                    <DataGridTextColumn Header="{DynamicResource WhfmtCatalog_AuthorHeader}"
+                    <DataGridTextColumn Header="{StaticResource WhfmtCatalog_AuthorHeader}"
                                         Binding="{Binding Author}"
                                         Width="110" SortMemberPath="Author"/>
 
-                    <DataGridTextColumn Header="{DynamicResource WhfmtCatalog_SourceHeader}"
+                    <DataGridTextColumn Header="{StaticResource WhfmtCatalog_SourceHeader}"
                                         Binding="{Binding SourceLabel}"
                                         Width="65" SortMemberPath="SourceLabel"/>
 
@@ -231,19 +231,19 @@
                                     <StackPanel Orientation="Horizontal">
                                         <Button Style="{StaticResource PopRowButton}"
                                                 Command="{Binding OpenCommand}"
-                                                ToolTip="{DynamicResource WhfmtBrowser_OpenInEditorToolTip}">
+                                                ToolTip="{StaticResource WhfmtBrowser_OpenInEditorToolTip}">
                                             <TextBlock Text="&#xE7AC;" FontFamily="Segoe MDL2 Assets" FontSize="11"
                                                        Foreground="{DynamicResource SE_ForegroundBrush}"/>
                                         </Button>
                                         <Button Style="{StaticResource PopRowButton}"
                                                 Command="{Binding ExportToFileCommand}"
-                                                ToolTip="{DynamicResource WhfmtBrowser_ExportToFileToolTip}">
+                                                ToolTip="{StaticResource WhfmtBrowser_ExportToFileToolTip}">
                                             <TextBlock Text="&#xE74E;" FontFamily="Segoe MDL2 Assets" FontSize="11"
                                                        Foreground="{DynamicResource SE_ForegroundBrush}"/>
                                         </Button>
                                         <Button Style="{StaticResource PopRowButton}"
                                                 Command="{Binding ViewJsonCommand}"
-                                                ToolTip="{DynamicResource WhfmtBrowser_ViewJsonToolTip}">
+                                                ToolTip="{StaticResource WhfmtBrowser_ViewJsonToolTip}">
                                             <TextBlock Text="&#xE943;" FontFamily="Segoe MDL2 Assets" FontSize="11"
                                                        Foreground="{DynamicResource SE_ForegroundBrush}"/>
                                         </Button>

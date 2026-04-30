@@ -16,7 +16,7 @@
                 BorderThickness="0,0,0,1"
                 Padding="6,2">
             <TextBlock x:Name="PART_OffsetLabel"
-                       Text="{DynamicResource DocHexPane_HexLabel}"
+                       Text="{StaticResource DocHexPane_HexLabel}"
                        FontWeight="SemiBold"
                        Foreground="{DynamicResource DE_StructureNodeFg}"
                        FontSize="11"/>

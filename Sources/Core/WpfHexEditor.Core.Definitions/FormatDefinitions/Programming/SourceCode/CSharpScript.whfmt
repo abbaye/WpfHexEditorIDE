@@ -1,13 +1,30 @@
 {
   "formatId": "CSharpScript",
   "name": "C# Script",
+  "version": "2.13",
   "extensions": [
     ".csx"
   ],
+  "description": "C# Script file — top-level statements executed via dotnet-script or Roslyn scripting API.",
+  "category": "Programming",
+  "author": "WPFHexaEditor Team",
   "mimeTypes": [
     "text/x-csharp"
   ],
   "preferredEditor": "code-editor",
+  "detection": {
+    "isTextFormat": true,
+    "required": false
+  },
+  "QualityMetrics": {
+    "CompletenessScore": 80,
+    "DocumentationLevel": "standard",
+    "BlocksDefined": 0,
+    "ValidationRules": 0,
+    "LastUpdated": "2026-04-30",
+    "PriorityFormat": false,
+    "AutoRefined": false
+  },
   "syntaxDefinition": {
     "id": "csharp-script",
     "name": "C# Script",

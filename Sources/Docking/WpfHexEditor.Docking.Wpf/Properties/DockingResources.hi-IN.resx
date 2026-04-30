@@ -59,4 +59,76 @@
   <data name="Docking_TabSettings_ToggleWithWheel" xml:space="preserve">
     <value>माउस व्हील से पंक्तियां बदलें</value>
   </data>
+  <data name="Dock_AutoHide_Close" xml:space="preserve">
+    <value>बंद करें</value>
+  </data>
+  <data name="Dock_AutoHide_Dock" xml:space="preserve">
+    <value>डॉक करें</value>
+  </data>
+  <data name="Dock_AutoHide_Float" xml:space="preserve">
+    <value>फ्लोट करें</value>
+  </data>
+  <data name="Dock_AutoHide_Show" xml:space="preserve">
+    <value>दिखाएं</value>
+  </data>
+  <data name="Dock_FloatWin_Maximize" xml:space="preserve">
+    <value>अधिकतम करें</value>
+  </data>
+  <data name="Dock_FloatWin_Restore" xml:space="preserve">
+    <value>पुनर्स्थापित करें</value>
+  </data>
+  <data name="Dock_LSP_Connecting" xml:space="preserve">
+    <value>भाषा सर्वर: कनेक्ट हो रहा है…</value>
+  </data>
+  <data name="Dock_LSP_Error" xml:space="preserve">
+    <value>भाषा सर्वर: त्रुटि</value>
+  </data>
+  <data name="Dock_LSP_Ready" xml:space="preserve">
+    <value>भाषा सर्वर: तैयार</value>
+  </data>
+  <data name="Dock_Menu_CloseAll" xml:space="preserve">
+    <value>सब बंद करें</value>
+  </data>
+  <data name="Dock_Menu_CloseAllButPinned" xml:space="preserve">
+    <value>पिन किए गए को छोड़कर सब बंद करें</value>
+  </data>
+  <data name="Dock_Menu_CloseAllButThis" xml:space="preserve">
+    <value>इसे छोड़कर सब बंद करें</value>
+  </data>
+  <data name="Dock_Menu_CloseTabGroup" xml:space="preserve">
+    <value>टैब समूह बंद करें</value>
+  </data>
+  <data name="Dock_Menu_DockAsTabbed" xml:space="preserve">
+    <value>टैब्ड दस्तावेज़ के रूप में डॉक करें</value>
+  </data>
+  <data name="Dock_Menu_DockAsToolWindow" xml:space="preserve">
+    <value>टूल विंडो के रूप में डॉक करें</value>
+  </data>
+  <data name="Dock_Menu_Float" xml:space="preserve">
+    <value>फ्लोट करें</value>
+  </data>
+  <data name="Dock_Menu_Hide" xml:space="preserve">
+    <value>छिपाएं</value>
+  </data>
+  <data name="Dock_Menu_NewHorizontalTabGroup" xml:space="preserve">
+    <value>नया क्षैतिज टैब समूह</value>
+  </data>
+  <data name="Dock_Menu_NewVerticalTabGroup" xml:space="preserve">
+    <value>नया लंबवत टैब समूह</value>
+  </data>
+  <data name="Dock_Placeholder_OpenDocument" xml:space="preserve">
+    <value>प्रारंभ करने के लिए कोई दस्तावेज़ खोलें</value>
+  </data>
+  <data name="Dock_TabConfig_ColorBy" xml:space="preserve">
+    <value>दस्तावेज़ टैब रंग के आधार पर</value>
+  </data>
+  <data name="Dock_TabConfig_MultipleRows" xml:space="preserve">
+    <value>टैब को कई पंक्तियों में दिखाएं</value>
+  </data>
+  <data name="Dock_TabConfig_Options" xml:space="preserve">
+    <value>विकल्प…</value>
+  </data>
+  <data name="Dock_Tab_Start" xml:space="preserve">
+    <value>शुरू करें</value>
+  </data>
 </root>

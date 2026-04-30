@@ -21,20 +21,20 @@
         <StackPanel Margin="0,0,0,16">
 
         <!-- ── Navigation ────────────────────────────────────────────────── -->
-        <TextBlock Text="{DynamicResource SolExp_NavigationSection}"
+        <TextBlock Text="{StaticResource SolExp_NavigationSection}"
                    FontSize="12" FontWeight="SemiBold"
                    Foreground="{DynamicResource Opt_SectionForegroundBrush}"
                    Margin="0,16,0,6"/>
 
         <CheckBox x:Name="CheckTrackActive"
-                  Content="{DynamicResource SolExp_TrackActive}"
+                  Content="{StaticResource SolExp_TrackActive}"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                   Margin="0,0,0,8"
                   Checked="OnCheckChanged"
                   Unchecked="OnCheckChanged"/>
 
         <CheckBox x:Name="CheckPersistCollapse"
-                  Content="{DynamicResource SolExp_PersistCollapse}"
+                  Content="{StaticResource SolExp_PersistCollapse}"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                   Margin="0,0,0,8"
                   Checked="OnCheckChanged"
@@ -44,13 +44,13 @@
                    Background="{DynamicResource DockBorderBrush}"/>
 
         <!-- ── Notifications ─────────────────────────────────────────────── -->
-        <TextBlock Text="{DynamicResource SolExp_NotificationsSection}"
+        <TextBlock Text="{StaticResource SolExp_NotificationsSection}"
                    FontSize="12" FontWeight="SemiBold"
                    Foreground="{DynamicResource Opt_SectionForegroundBrush}"
                    Margin="0,16,0,6"/>
 
         <CheckBox x:Name="CheckNotifications"
-                  Content="{DynamicResource SolExp_ShowNotifications}"
+                  Content="{StaticResource SolExp_ShowNotifications}"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                   Margin="0,0,0,8"
                   Checked="OnCheckChanged"
@@ -60,7 +60,7 @@
                    Background="{DynamicResource DockBorderBrush}"/>
 
         <!-- ── Default Sort ───────────────────────────────────────────────── -->
-        <TextBlock Text="{DynamicResource SolExp_DefaultsSection}"
+        <TextBlock Text="{StaticResource SolExp_DefaultsSection}"
                    FontSize="12" FontWeight="SemiBold"
                    Foreground="{DynamicResource Opt_SectionForegroundBrush}"
                    Margin="0,16,0,6"/>
@@ -70,16 +70,16 @@
                 <ColumnDefinition Width="200"/>
                 <ColumnDefinition Width="160"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="{DynamicResource SolExp_DefaultSortLabel}"
+            <TextBlock Text="{StaticResource SolExp_DefaultSortLabel}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             <ComboBox x:Name="SortCombo" Grid.Column="1"
                       SelectionChanged="OnComboChanged">
-                <ComboBoxItem Content="{DynamicResource SolExp_SortNone}"         Tag="None"/>
-                <ComboBoxItem Content="{DynamicResource SolExp_SortName}"         Tag="Name"/>
-                <ComboBoxItem Content="{DynamicResource SolExp_SortType}"         Tag="Type"/>
-                <ComboBoxItem Content="{DynamicResource SolExp_SortDateModified}" Tag="DateModified"/>
-                <ComboBoxItem Content="{DynamicResource SolExp_SortSize}"         Tag="Size"/>
+                <ComboBoxItem Content="{StaticResource SolExp_SortNone}"         Tag="None"/>
+                <ComboBoxItem Content="{StaticResource SolExp_SortName}"         Tag="Name"/>
+                <ComboBoxItem Content="{StaticResource SolExp_SortType}"         Tag="Type"/>
+                <ComboBoxItem Content="{StaticResource SolExp_SortDateModified}" Tag="DateModified"/>
+                <ComboBoxItem Content="{StaticResource SolExp_SortSize}"         Tag="Size"/>
             </ComboBox>
         </Grid>
 
@@ -88,16 +88,16 @@
                 <ColumnDefinition Width="200"/>
                 <ColumnDefinition Width="160"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="{DynamicResource SolExp_DefaultFilterLabel}"
+            <TextBlock Text="{StaticResource SolExp_DefaultFilterLabel}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             <ComboBox x:Name="FilterCombo" Grid.Column="1"
                       SelectionChanged="OnComboChanged">
-                <ComboBoxItem Content="{DynamicResource SolExp_FilterAll}"      Tag="All"/>
-                <ComboBoxItem Content="{DynamicResource SolExp_FilterBinary}"   Tag="Binary"/>
-                <ComboBoxItem Content="{DynamicResource SolExp_FilterText}"     Tag="Text"/>
-                <ComboBoxItem Content="{DynamicResource SolExp_FilterImage}"    Tag="Image"/>
-                <ComboBoxItem Content="{DynamicResource SolExp_FilterLanguage}" Tag="Language"/>
+                <ComboBoxItem Content="{StaticResource SolExp_FilterAll}"      Tag="All"/>
+                <ComboBoxItem Content="{StaticResource SolExp_FilterBinary}"   Tag="Binary"/>
+                <ComboBoxItem Content="{StaticResource SolExp_FilterText}"     Tag="Text"/>
+                <ComboBoxItem Content="{StaticResource SolExp_FilterImage}"    Tag="Image"/>
+                <ComboBoxItem Content="{StaticResource SolExp_FilterLanguage}" Tag="Language"/>
             </ComboBox>
         </Grid>
 

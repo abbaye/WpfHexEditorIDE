@@ -19,7 +19,7 @@
         </Grid.RowDefinitions>
 
         <TextBlock Grid.Row="0"
-                   Text="{DynamicResource StructureEditor_VarsDescription}"
+                   Text="{StaticResource StructureEditor_VarsDescription}"
                    FontSize="11" TextWrapping="Wrap" Margin="0,0,0,6"
                    Foreground="{DynamicResource TE_LineNumberForeground}"/>
 
@@ -36,7 +36,7 @@
                        Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged}"
                        Background="{DynamicResource TE_Background}"
                        Foreground="{DynamicResource TE_Foreground}"
-                       ToolTip="{DynamicResource StructureEditor_VarsFilterToolTip}"/>
+                       ToolTip="{StaticResource StructureEditor_VarsFilterToolTip}"/>
         </Grid>
 
         <!-- DataGrid -->
@@ -122,12 +122,12 @@
             <DataGrid.Columns>
 
                 <!-- Variable Name -->
-                <DataGridTextColumn Header="{DynamicResource StructureEditor_VarsColName}" Width="160" MinWidth="120"
+                <DataGridTextColumn Header="{StaticResource StructureEditor_VarsColName}" Width="160" MinWidth="120"
                                     Binding="{Binding Key, UpdateSourceTrigger=LostFocus}"
                                     FontFamily="Consolas"/>
 
                 <!-- Type -->
-                <DataGridTemplateColumn Header="{DynamicResource StructureEditor_VarsColType}" Width="80">
+                <DataGridTemplateColumn Header="{StaticResource StructureEditor_VarsColType}" Width="80">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding Type}" FontSize="11" Padding="4,2"
@@ -144,11 +144,11 @@
                 </DataGridTemplateColumn>
 
                 <!-- Initial Value — control varies by Type -->
-                <DataGridTemplateColumn Header="{DynamicResource StructureEditor_VarsColInitialValue}" Width="120"
+                <DataGridTemplateColumn Header="{StaticResource StructureEditor_VarsColInitialValue}" Width="120"
                                         CellTemplateSelector="{StaticResource ValueSelector}"/>
 
                 <!-- Description -->
-                <DataGridTextColumn Header="{DynamicResource StructureEditor_VarsColDescription}" Width="*"
+                <DataGridTextColumn Header="{StaticResource StructureEditor_VarsColDescription}" Width="*"
                                     Binding="{Binding Description, UpdateSourceTrigger=LostFocus}"/>
 
                 <!-- Delete -->
@@ -164,7 +164,7 @@
             </DataGrid.Columns>
         </DataGrid>
 
-        <Button Grid.Row="3" Content="{DynamicResource StructureEditor_VarsAddButton}" x:Name="AddVarBtn" Click="OnAddVariable"
+        <Button Grid.Row="3" Content="{StaticResource StructureEditor_VarsAddButton}" x:Name="AddVarBtn" Click="OnAddVariable"
                 Style="{DynamicResource PM_LinkButtonStyle}" Padding="6,3" Margin="0,6,0,0"/>
     </Grid>
 </UserControl>

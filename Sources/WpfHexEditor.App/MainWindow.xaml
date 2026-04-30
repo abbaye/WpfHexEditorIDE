@@ -2061,7 +2061,7 @@
             <StatusBarItem x:Name="LspStatusItem" Visibility="Collapsed">
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                     <TextBlock x:Name="LspStatusDot" Text="●" FontSize="18"
-                               Foreground="{DynamicResource LSP_ReadyDot}"
+                               Foreground="{StaticResource LSP_ReadyDot}"
                                VerticalAlignment="Center" Margin="4,-1,4,0"
                                LineHeight="14" LineStackingStrategy="BlockLineHeight"/>
                     <TextBlock x:Name="LspStatusText"

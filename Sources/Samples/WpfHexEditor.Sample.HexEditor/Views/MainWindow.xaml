@@ -55,12 +55,12 @@
 
         <!-- Menu Bar (Original Structure) -->
         <Menu Grid.Row="0">
-            <MenuItem Header="{DynamicResource Menu_File}">
+            <MenuItem Header="{StaticResource Menu_File}">
                 <MenuItem Command="{Binding OpenFileCommand}" InputGestureText="Ctrl+O">
                     <MenuItem.Header>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="?? " FontFamily="Segoe UI Emoji" Margin="0,0,4,0"/>
-                            <TextBlock Text="{DynamicResource Menu_File_Open}"/>
+                            <TextBlock Text="{StaticResource Menu_File_Open}"/>
                         </StackPanel>
                     </MenuItem.Header>
                 </MenuItem>
@@ -68,7 +68,7 @@
                     <MenuItem.Header>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="?? " FontFamily="Segoe UI Emoji" Margin="0,0,4,0"/>
-                            <TextBlock Text="{DynamicResource Menu_File_Save}"/>
+                            <TextBlock Text="{StaticResource Menu_File_Save}"/>
                         </StackPanel>
                     </MenuItem.Header>
                 </MenuItem>
@@ -76,7 +76,7 @@
                     <MenuItem.Header>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="?? " FontFamily="Segoe UI Emoji" Margin="0,0,4,0"/>
-                            <TextBlock Text="{DynamicResource Menu_File_SaveAs}"/>
+                            <TextBlock Text="{StaticResource Menu_File_SaveAs}"/>
                         </StackPanel>
                     </MenuItem.Header>
                 </MenuItem>
@@ -85,7 +85,7 @@
                     <MenuItem.Header>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="? " FontFamily="Segoe UI Emoji" Margin="0,0,4,0"/>
-                            <TextBlock Text="{DynamicResource Menu_File_Close}"/>
+                            <TextBlock Text="{StaticResource Menu_File_Close}"/>
                         </StackPanel>
                     </MenuItem.Header>
                 </MenuItem>
@@ -94,18 +94,18 @@
                     <MenuItem.Header>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="?? " FontFamily="Segoe UI Emoji" Margin="0,0,4,0"/>
-                            <TextBlock Text="{DynamicResource Menu_File_Exit}"/>
+                            <TextBlock Text="{StaticResource Menu_File_Exit}"/>
                         </StackPanel>
                     </MenuItem.Header>
                 </MenuItem>
             </MenuItem>
 
-            <MenuItem Header="{DynamicResource Menu_Edit}">
+            <MenuItem Header="{StaticResource Menu_Edit}">
                 <MenuItem Command="{Binding UndoCommand}" InputGestureText="Ctrl+Z">
                     <MenuItem.Header>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="? " FontFamily="Segoe UI Emoji" Margin="0,0,4,0"/>
-                            <TextBlock Text="{DynamicResource Menu_Edit_Undo}"/>
+                            <TextBlock Text="{StaticResource Menu_Edit_Undo}"/>
                         </StackPanel>
                     </MenuItem.Header>
                 </MenuItem>
@@ -113,7 +113,7 @@
                     <MenuItem.Header>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="? " FontFamily="Segoe UI Emoji" Margin="0,0,4,0"/>
-                            <TextBlock Text="{DynamicResource Menu_Edit_Redo}"/>
+                            <TextBlock Text="{StaticResource Menu_Edit_Redo}"/>
                         </StackPanel>
                     </MenuItem.Header>
                 </MenuItem>
@@ -122,7 +122,7 @@
                     <MenuItem.Header>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="?? " FontFamily="Segoe UI Emoji" Margin="0,0,4,0"/>
-                            <TextBlock Text="{DynamicResource Menu_Edit_Copy}"/>
+                            <TextBlock Text="{StaticResource Menu_Edit_Copy}"/>
                         </StackPanel>
                     </MenuItem.Header>
                 </MenuItem>
@@ -130,7 +130,7 @@
                     <MenuItem.Header>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="?? " FontFamily="Segoe UI Emoji" Margin="0,0,4,0"/>
-                            <TextBlock Text="{DynamicResource Menu_Edit_Paste}"/>
+                            <TextBlock Text="{StaticResource Menu_Edit_Paste}"/>
                         </StackPanel>
                     </MenuItem.Header>
                 </MenuItem>
@@ -138,7 +138,7 @@
                     <MenuItem.Header>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="??? " FontFamily="Segoe UI Emoji" Margin="0,0,4,0"/>
-                            <TextBlock Text="{DynamicResource Menu_Edit_DeleteSelection}"/>
+                            <TextBlock Text="{StaticResource Menu_Edit_DeleteSelection}"/>
                         </StackPanel>
                     </MenuItem.Header>
                 </MenuItem>
@@ -147,7 +147,7 @@
                     <MenuItem.Header>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="?? " FontFamily="Segoe UI Emoji" Margin="0,0,4,0"/>
-                            <TextBlock Text="{DynamicResource Menu_Edit_SelectAll}"/>
+                            <TextBlock Text="{StaticResource Menu_Edit_SelectAll}"/>
                         </StackPanel>
                     </MenuItem.Header>
                 </MenuItem>
@@ -155,7 +155,7 @@
                     <MenuItem.Header>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="? " FontFamily="Segoe UI Emoji" Margin="0,0,4,0"/>
-                            <TextBlock Text="{DynamicResource Menu_Edit_ClearSelection}"/>
+                            <TextBlock Text="{StaticResource Menu_Edit_ClearSelection}"/>
                         </StackPanel>
                     </MenuItem.Header>
                 </MenuItem>
@@ -183,12 +183,12 @@
                     </MenuItem.Header>
                 </MenuItem>
                 <Separator/>
-                <MenuItem Header="{DynamicResource Menu_Edit_Bookmarks}">
+                <MenuItem Header="{StaticResource Menu_Edit_Bookmarks}">
                     <MenuItem Command="{Binding ToggleBookmarkCommand}" InputGestureText="Ctrl+B">
                         <MenuItem.Header>
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="?? " FontFamily="Segoe UI Emoji" Margin="0,0,4,0"/>
-                                <TextBlock Text="{DynamicResource Menu_Edit_ToggleBookmark}"/>
+                                <TextBlock Text="{StaticResource Menu_Edit_ToggleBookmark}"/>
                             </StackPanel>
                         </MenuItem.Header>
                     </MenuItem>
@@ -196,14 +196,14 @@
                         <MenuItem.Header>
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="??? " FontFamily="Segoe UI Emoji" Margin="0,0,4,0"/>
-                                <TextBlock Text="{DynamicResource Menu_Edit_ClearAllBookmarks}"/>
+                                <TextBlock Text="{StaticResource Menu_Edit_ClearAllBookmarks}"/>
                             </StackPanel>
                         </MenuItem.Header>
                     </MenuItem>
                 </MenuItem>
             </MenuItem>
 
-            <MenuItem Header="{DynamicResource Menu_Search}">
+            <MenuItem Header="{StaticResource Menu_Search}">
                 <MenuItem Click="AdvancedSearchMenuItem_Click" InputGestureText="Ctrl+F">
                     <MenuItem.Header>
                         <StackPanel Orientation="Horizontal">
@@ -217,7 +217,7 @@
                     <MenuItem.Header>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="?? " FontFamily="Segoe UI Emoji" Margin="0,0,4,0"/>
-                            <TextBlock Text="{DynamicResource Menu_Search_FindNext}"/>
+                            <TextBlock Text="{StaticResource Menu_Search_FindNext}"/>
                         </StackPanel>
                     </MenuItem.Header>
                 </MenuItem>
@@ -225,7 +225,7 @@
                     <MenuItem.Header>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="?? " FontFamily="Segoe UI Emoji" Margin="0,0,4,0"/>
-                            <TextBlock Text="{DynamicResource Menu_Search_FindPrevious}"/>
+                            <TextBlock Text="{StaticResource Menu_Search_FindPrevious}"/>
                         </StackPanel>
                     </MenuItem.Header>
                 </MenuItem>
@@ -234,19 +234,19 @@
                     <MenuItem.Header>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="?? " FontFamily="Segoe UI Emoji" Margin="0,0,4,0"/>
-                            <TextBlock Text="{DynamicResource RelativeSearchMenuString}"/>
+                            <TextBlock Text="{StaticResource RelativeSearchMenuString}"/>
                         </StackPanel>
                     </MenuItem.Header>
                 </MenuItem>
             </MenuItem>
 
-            <MenuItem Header="{DynamicResource Menu_Tools}">
-                <MenuItem Header="{DynamicResource Menu_Tools_Bookmarks}">
+            <MenuItem Header="{StaticResource Menu_Tools}">
+                <MenuItem Header="{StaticResource Menu_Tools_Bookmarks}">
                     <MenuItem Command="{Binding ToggleBookmarkCommand}" InputGestureText="Ctrl+B">
                         <MenuItem.Header>
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="?? " FontFamily="Segoe UI Emoji" Margin="0,0,4,0"/>
-                                <TextBlock Text="{DynamicResource Menu_Edit_ToggleBookmark}"/>
+                                <TextBlock Text="{StaticResource Menu_Edit_ToggleBookmark}"/>
                             </StackPanel>
                         </MenuItem.Header>
                     </MenuItem>
@@ -254,7 +254,7 @@
                         <MenuItem.Header>
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="??? " FontFamily="Segoe UI Emoji" Margin="0,0,4,0"/>
-                                <TextBlock Text="{DynamicResource Menu_Edit_ClearAllBookmarks}"/>
+                                <TextBlock Text="{StaticResource Menu_Edit_ClearAllBookmarks}"/>
                             </StackPanel>
                         </MenuItem.Header>
                     </MenuItem>
@@ -263,7 +263,7 @@
                         <MenuItem.Header>
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="?? " FontFamily="Segoe UI Emoji" Margin="0,0,4,0"/>
-                                <TextBlock Text="{DynamicResource Menu_Tools_NextBookmark}"/>
+                                <TextBlock Text="{StaticResource Menu_Tools_NextBookmark}"/>
                             </StackPanel>
                         </MenuItem.Header>
                     </MenuItem>
@@ -271,7 +271,7 @@
                         <MenuItem.Header>
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="?? " FontFamily="Segoe UI Emoji" Margin="0,0,4,0"/>
-                                <TextBlock Text="{DynamicResource Menu_Tools_PreviousBookmark}"/>
+                                <TextBlock Text="{StaticResource Menu_Tools_PreviousBookmark}"/>
                             </StackPanel>
                         </MenuItem.Header>
                     </MenuItem>
@@ -280,7 +280,7 @@
                         <MenuItem.Header>
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="?? " FontFamily="Segoe UI Emoji" Margin="0,0,4,0"/>
-                                <TextBlock Text="{DynamicResource Menu_Tools_ShowAllBookmarks}"/>
+                                <TextBlock Text="{StaticResource Menu_Tools_ShowAllBookmarks}"/>
                             </StackPanel>
                         </MenuItem.Header>
                     </MenuItem>
@@ -299,7 +299,7 @@
                         </MenuItem.Header>
                     </MenuItem>
                     <MenuItem Command="{Binding ReplaceByteCommand}"
-                              ToolTip="{DynamicResource ReplaceByteTooltipString}"
+                              ToolTip="{StaticResource ReplaceByteTooltipString}"
                               ToolTipService.ShowOnDisabled="True"
                               ToolTipService.IsEnabled="True">
                         <MenuItem.Header>
@@ -343,46 +343,46 @@
                 </MenuItem>
             </MenuItem>
 
-            <MenuItem Header="{DynamicResource Menu_Position}">
+            <MenuItem Header="{StaticResource Menu_Position}">
                 <MenuItem Command="{Binding GoToPositionCommand}" InputGestureText="Ctrl+G">
                     <MenuItem.Header>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="?? " FontFamily="Segoe UI Emoji" Margin="0,0,4,0"/>
-                            <TextBlock Text="{DynamicResource Menu_Position_GoTo}"/>
+                            <TextBlock Text="{StaticResource Menu_Position_GoTo}"/>
                         </StackPanel>
                     </MenuItem.Header>
                 </MenuItem>
             </MenuItem>
 
-            <MenuItem Header="{DynamicResource Menu_View}">
-                <MenuItem Header="{DynamicResource Menu_View_DisplayOptions}">
-                    <MenuItem Header="{DynamicResource Menu_View_ShowStatusBar}"
+            <MenuItem Header="{StaticResource Menu_View}">
+                <MenuItem Header="{StaticResource Menu_View_DisplayOptions}">
+                    <MenuItem Header="{StaticResource Menu_View_ShowStatusBar}"
                              IsCheckable="True"
                              IsChecked="{Binding ElementName=HexEditorControl, Path=StatusBarVisibility, Converter={StaticResource VisibilityToBooleanConverter}, Mode=TwoWay}"/>
-                    <MenuItem Header="{DynamicResource Menu_View_ShowHeader}"
+                    <MenuItem Header="{StaticResource Menu_View_ShowHeader}"
                              IsCheckable="True"
                              IsChecked="{Binding ElementName=HexEditorControl, Path=HeaderVisibility, Converter={StaticResource VisibilityToBooleanConverter}, Mode=TwoWay}"/>
-                    <MenuItem Header="{DynamicResource Menu_View_ShowOffset}"
+                    <MenuItem Header="{StaticResource Menu_View_ShowOffset}"
                              IsCheckable="True"
                              IsChecked="{Binding ElementName=HexEditorControl, Path=ShowOffset, Mode=TwoWay}"/>
-                    <MenuItem Header="{DynamicResource Menu_View_ShowASCII}"
+                    <MenuItem Header="{StaticResource Menu_View_ShowASCII}"
                              IsCheckable="True"
                              IsChecked="{Binding ElementName=HexEditorControl, Path=ShowAscii, Mode=TwoWay}"/>
                 </MenuItem>
                 <Separator/>
-                <MenuItem Header="{DynamicResource Menu_View_BytesPerLine}">
+                <MenuItem Header="{StaticResource Menu_View_BytesPerLine}">
                     <MenuItem Header="8" Tag="8"/>
                     <MenuItem Header="16" Tag="16" IsChecked="True"/>
                     <MenuItem Header="32" Tag="32"/>
                 </MenuItem>
             </MenuItem>
 
-            <MenuItem Header="{DynamicResource Menu_Options}">
+            <MenuItem Header="{StaticResource Menu_Options}">
                 <MenuItem Command="{Binding ToggleSettingsPanelCommand}" InputGestureText="Ctrl+,">
                     <MenuItem.Header>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="?? " FontFamily="Segoe UI Emoji" Margin="0,0,4,0"/>
-                            <TextBlock Text="{DynamicResource Menu_Options_SettingsPanel}"/>
+                            <TextBlock Text="{StaticResource Menu_Options_SettingsPanel}"/>
                         </StackPanel>
                     </MenuItem.Header>
                 </MenuItem>
@@ -391,22 +391,22 @@
                     <MenuItem.Header>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="?? " FontFamily="Segoe UI Emoji" Margin="0,0,4,0"/>
-                            <TextBlock Text="{DynamicResource Menu_Options_Advanced}"/>
+                            <TextBlock Text="{StaticResource Menu_Options_Advanced}"/>
                         </StackPanel>
                     </MenuItem.Header>
                 </MenuItem>
                 <Separator/>
-                <MenuItem Header="{DynamicResource Menu_Options_ContextMenu}"
+                <MenuItem Header="{StaticResource Menu_Options_ContextMenu}"
                          IsCheckable="True"
                          IsChecked="{Binding ElementName=HexEditorControl, Path=AllowContextMenu, Mode=TwoWay}"/>
-                <MenuItem Header="{DynamicResource Menu_Options_ShowByteToolTip}"
+                <MenuItem Header="{StaticResource Menu_Options_ShowByteToolTip}"
                          IsCheckable="True"
                          IsChecked="{Binding ElementName=HexEditorControl, Path=ShowByteToolTip, Mode=TwoWay}"/>
                 <Separator/>
-                <MenuItem Header="{DynamicResource Menu_Options_AutoHighlight}"
+                <MenuItem Header="{StaticResource Menu_Options_AutoHighlight}"
                          IsCheckable="True"
                          IsChecked="{Binding ElementName=HexEditorControl, Path=AllowAutoHighLightSelectionByte, Mode=TwoWay}"/>
-                <MenuItem Header="{DynamicResource Menu_Options_CountSelected}"
+                <MenuItem Header="{StaticResource Menu_Options_CountSelected}"
                          IsCheckable="True"
                          IsChecked="{Binding ElementName=HexEditorControl, Path=AllowByteCount, Mode=TwoWay}"/>
             </MenuItem>
@@ -423,12 +423,12 @@
                 </MenuItem>
             </MenuItem>
 
-            <MenuItem Header="{DynamicResource Menu_Help}">
+            <MenuItem Header="{StaticResource Menu_Help}">
                 <MenuItem Command="{Binding ShowAboutCommand}">
                     <MenuItem.Header>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="?? " FontFamily="Segoe UI Emoji" Margin="0,0,4,0"/>
-                            <TextBlock Text="{DynamicResource Menu_Help_About}"/>
+                            <TextBlock Text="{StaticResource Menu_Help_About}"/>
                         </StackPanel>
                     </MenuItem.Header>
                 </MenuItem>
@@ -436,7 +436,7 @@
                     <MenuItem.Header>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="?? " FontFamily="Segoe UI Emoji" Margin="0,0,4,0"/>
-                            <TextBlock Text="{DynamicResource Menu_Help_KeyboardShortcuts}"/>
+                            <TextBlock Text="{StaticResource Menu_Help_KeyboardShortcuts}"/>
                         </StackPanel>
                     </MenuItem.Header>
                 </MenuItem>
@@ -445,7 +445,7 @@
                     <MenuItem.Header>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="?? " FontFamily="Segoe UI Emoji" Margin="0,0,4,0"/>
-                            <TextBlock Text="{DynamicResource Menu_Help_GitHub}"/>
+                            <TextBlock Text="{StaticResource Menu_Help_GitHub}"/>
                         </StackPanel>
                     </MenuItem.Header>
                 </MenuItem>
@@ -454,25 +454,25 @@
 
         <!-- Toolbar (Original Structure) -->
         <ToolBar Grid.Row="1">
-            <Button Command="{Binding OpenFileCommand}" ToolTip="{DynamicResource Toolbar_Open_ToolTip}">
-                <TextBlock Text="{DynamicResource Toolbar_Open}" FontSize="12"/>
+            <Button Command="{Binding OpenFileCommand}" ToolTip="{StaticResource Toolbar_Open_ToolTip}">
+                <TextBlock Text="{StaticResource Toolbar_Open}" FontSize="12"/>
             </Button>
-            <Button Command="{Binding SaveFileCommand}" ToolTip="{DynamicResource Toolbar_Save_ToolTip}">
-                <TextBlock Text="{DynamicResource Toolbar_Save}" FontSize="12"/>
-            </Button>
-            <Separator/>
-            <Button Command="{Binding UndoCommand}" ToolTip="{DynamicResource Toolbar_Undo_ToolTip}">
-                <TextBlock Text="{DynamicResource Toolbar_Undo}" FontSize="12"/>
-            </Button>
-            <Button Command="{Binding RedoCommand}" ToolTip="{DynamicResource Toolbar_Redo_ToolTip}">
-                <TextBlock Text="{DynamicResource Toolbar_Redo}" FontSize="12"/>
+            <Button Command="{Binding SaveFileCommand}" ToolTip="{StaticResource Toolbar_Save_ToolTip}">
+                <TextBlock Text="{StaticResource Toolbar_Save}" FontSize="12"/>
             </Button>
             <Separator/>
-            <ToggleButton ToolTip="{DynamicResource Toolbar_Insert_ToolTip}">
-                <TextBlock Text="{DynamicResource Toolbar_Insert}" FontSize="12" FontWeight="Bold"/>
+            <Button Command="{Binding UndoCommand}" ToolTip="{StaticResource Toolbar_Undo_ToolTip}">
+                <TextBlock Text="{StaticResource Toolbar_Undo}" FontSize="12"/>
+            </Button>
+            <Button Command="{Binding RedoCommand}" ToolTip="{StaticResource Toolbar_Redo_ToolTip}">
+                <TextBlock Text="{StaticResource Toolbar_Redo}" FontSize="12"/>
+            </Button>
+            <Separator/>
+            <ToggleButton ToolTip="{StaticResource Toolbar_Insert_ToolTip}">
+                <TextBlock Text="{StaticResource Toolbar_Insert}" FontSize="12" FontWeight="Bold"/>
             </ToggleButton>
-            <ToggleButton ToolTip="{DynamicResource Toolbar_ReadOnly_ToolTip}">
-                <TextBlock Text="{DynamicResource Toolbar_ReadOnly}" FontSize="12"/>
+            <ToggleButton ToolTip="{StaticResource Toolbar_ReadOnly_ToolTip}">
+                <TextBlock Text="{StaticResource Toolbar_ReadOnly}" FontSize="12"/>
             </ToggleButton>
         </ToolBar>
 

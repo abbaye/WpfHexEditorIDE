@@ -14,7 +14,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:p="clr-namespace:WpfHexEditor.Core.Properties;assembly=WpfHexEditor.Core"
     xmlns:ec="clr-namespace:WpfHexEditor.Editor.Core.Views;assembly=WpfHexEditor.Editor.Core"
-    Title="{DynamicResource EnterHexValueMsgString}"
+    Title="{StaticResource EnterHexValueMsgString}"
     Width="500"
     Height="420"
     x:ClassModifier="public"
@@ -36,7 +36,7 @@
         </Grid.RowDefinitions>
 
         <!-- Find GroupBox -->
-        <GroupBox Header="{DynamicResource FindByteString}" Grid.Row="0" Margin="0,0,0,10">
+        <GroupBox Header="{StaticResource FindByteString}" Grid.Row="0" Margin="0,0,0,10">
             <Grid Margin="10">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -71,7 +71,7 @@
         </GroupBox>
 
         <!-- Replace GroupBox -->
-        <GroupBox Header="{DynamicResource ReplaceByByteString}" Grid.Row="1" Margin="0,0,0,10">
+        <GroupBox Header="{StaticResource ReplaceByByteString}" Grid.Row="1" Margin="0,0,0,10">
             <Grid Margin="10">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -108,12 +108,12 @@
         <!-- Options Section -->
         <StackPanel Grid.Row="2" Margin="5,0,5,10">
             <CheckBox
-                Content="{DynamicResource ReplaceInSelectionOnlyString}"
+                Content="{StaticResource ReplaceInSelectionOnlyString}"
                 IsChecked="{Binding ReplaceInSelectionOnly, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                 Margin="0,4"
                 TabIndex="2"/>
             <CheckBox
-                Content="{DynamicResource ShowConfirmationString}"
+                Content="{StaticResource ShowConfirmationString}"
                 IsChecked="{Binding ShowConfirmation}"
                 Margin="0,4"
                 TabIndex="3"/>
@@ -137,7 +137,7 @@
                 <!-- Preview -->
                 <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,6">
                     <TextBlock
-                        Text="{DynamicResource PreviewString}"
+                        Text="{StaticResource PreviewString}"
                         FontWeight="SemiBold"
                         Margin="0,0,8,0"
                         VerticalAlignment="Center"/>
@@ -166,7 +166,7 @@
             Margin="0,0,0,0">
             <Button
                 x:Name="OkButton"
-                Content="{DynamicResource OkString}"
+                Content="{StaticResource OkString}"
                 Width="90"
                 Height="30"
                 Margin="0,0,8,0"
@@ -209,7 +209,7 @@
                 </Button.Style>
             </Button>
             <Button
-                Content="{DynamicResource CancelString}"
+                Content="{StaticResource CancelString}"
                 Width="90"
                 Height="30"
                 IsCancel="True"

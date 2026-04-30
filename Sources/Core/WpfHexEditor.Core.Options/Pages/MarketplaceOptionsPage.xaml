@@ -16,14 +16,14 @@
         <StackPanel Margin="0,0,0,16">
 
             <!-- ── GitHub API ─────────────────────────────────────────────── -->
-            <TextBlock Text="{DynamicResource Mkt_GitHubSection}"
+            <TextBlock Text="{StaticResource Mkt_GitHubSection}"
                    FontSize="12" FontWeight="SemiBold"
                    Foreground="{DynamicResource Opt_SectionForegroundBrush}"
                    Margin="0,16,0,6"/>
 
             <TextBlock TextWrapping="Wrap" Margin="0,0,0,6"
                        Foreground="{DynamicResource DockMenuForegroundBrush}" Opacity="0.8"
-                       Text="{DynamicResource Mkt_PatDescription}"/>
+                       Text="{StaticResource Mkt_PatDescription}"/>
 
             <PasswordBox x:Name="BoxGitHubToken"
                          Height="26"
@@ -33,19 +33,19 @@
                          Margin="0,0,0,4"
                          PasswordChanged="OnChanged"/>
 
-            <TextBlock Text="{DynamicResource Mkt_PatWarning}"
+            <TextBlock Text="{StaticResource Mkt_PatWarning}"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"
                        Opacity="0.55" FontSize="11" TextWrapping="Wrap"
                        Margin="0,0,0,16"/>
 
             <!-- ── Auto-Update ────────────────────────────────────────────── -->
-            <TextBlock Text="{DynamicResource Mkt_AutoUpdateSection}"
+            <TextBlock Text="{StaticResource Mkt_AutoUpdateSection}"
                    FontSize="12" FontWeight="SemiBold"
                    Foreground="{DynamicResource Opt_SectionForegroundBrush}"
                    Margin="0,16,0,6"/>
 
             <CheckBox x:Name="CheckAutoUpdate"
-                      Content="{DynamicResource Mkt_AutoUpdate}"
+                      Content="{StaticResource Mkt_AutoUpdate}"
                       Foreground="{DynamicResource DockMenuForegroundBrush}"
                       Margin="0,0,0,10"
                       Checked="OnChanged"
@@ -58,7 +58,7 @@
                 </Grid.ColumnDefinitions>
 
                 <TextBlock Grid.Column="0"
-                           Text="{DynamicResource Mkt_UpdateIntervalLabel}"
+                           Text="{StaticResource Mkt_UpdateIntervalLabel}"
                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                            Opacity="0.8" VerticalAlignment="Center"/>
 
@@ -72,7 +72,7 @@
                          TextChanged="OnChanged"/>
             </Grid>
 
-            <TextBlock Text="{DynamicResource Mkt_UpdateIntervalNote}"
+            <TextBlock Text="{StaticResource Mkt_UpdateIntervalNote}"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"
                        Opacity="0.55" FontSize="11"
                        Margin="0,2,0,0"/>

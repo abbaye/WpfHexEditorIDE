@@ -17,12 +17,12 @@
         <StackPanel Margin="0,0,0,16">
 
         <!-- ── Log-Level Colours ──────────────────────────────────────────── -->
-        <TextBlock Text="{DynamicResource Output_Section}"
+        <TextBlock Text="{StaticResource Output_Section}"
                    FontSize="12" FontWeight="SemiBold"
                    Foreground="{DynamicResource Opt_SectionForegroundBrush}"
                    Margin="0,16,0,6"/>
 
-        <TextBlock Text="{DynamicResource Output_Note}"
+        <TextBlock Text="{StaticResource Output_Note}"
                    FontSize="11" Opacity="0.65"
                    Foreground="{DynamicResource DockMenuForegroundBrush}"
                    TextWrapping="Wrap"
@@ -34,7 +34,7 @@
                 <ColumnDefinition Width="160"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="{DynamicResource Output_WarnLabel}"
+            <TextBlock Text="{StaticResource Output_WarnLabel}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             <cp:ColorPicker x:Name="PickerWarn"
@@ -51,7 +51,7 @@
                 <ColumnDefinition Width="160"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="{DynamicResource Output_ErrorLabel}"
+            <TextBlock Text="{StaticResource Output_ErrorLabel}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             <cp:ColorPicker x:Name="PickerError"
@@ -68,7 +68,7 @@
                 <ColumnDefinition Width="160"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="{DynamicResource Output_DebugLabel}"
+            <TextBlock Text="{StaticResource Output_DebugLabel}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             <cp:ColorPicker x:Name="PickerDebug"
@@ -85,7 +85,7 @@
                 <ColumnDefinition Width="160"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="{DynamicResource Output_SuccessLabel}"
+            <TextBlock Text="{StaticResource Output_SuccessLabel}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             <cp:ColorPicker x:Name="PickerSuccess"
@@ -97,7 +97,7 @@
         </Grid>
 
         <!-- Reset button -->
-        <Button Content="{DynamicResource Output_ResetColors}"
+        <Button Content="{StaticResource Output_ResetColors}"
                 Margin="0,8,0,0"
                 Padding="8,3"
                 Click="OnResetColours"

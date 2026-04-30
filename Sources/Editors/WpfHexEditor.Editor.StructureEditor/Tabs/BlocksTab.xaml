@@ -46,7 +46,7 @@
                      Foreground="{DynamicResource TE_Foreground}"
                      BorderBrush="{DynamicResource DockBorderBrush}"
                      BorderThickness="0,0,0,1"
-                     ToolTip="{DynamicResource StructureEditor_BlocksFilterToolTip}"/>
+                     ToolTip="{StaticResource StructureEditor_BlocksFilterToolTip}"/>
 
             <!-- Block Tree -->
             <TreeView Grid.Row="1"
@@ -68,16 +68,16 @@
                     <ContextMenu Background="{DynamicResource TE_LineNumberBackground}"
                                  Foreground="{DynamicResource TE_Foreground}"
                                  BorderBrush="{DynamicResource DockBorderBrush}">
-                        <MenuItem Header="{DynamicResource StructureEditor_BlocksAddMenuItem}" Click="OnAddBlock" InputGestureText="Ctrl+N"/>
+                        <MenuItem Header="{StaticResource StructureEditor_BlocksAddMenuItem}" Click="OnAddBlock" InputGestureText="Ctrl+N"/>
                         <Separator/>
-                        <MenuItem Header="{DynamicResource StructureEditor_BlocksDuplicateMenuItem}" Command="{Binding DuplicateCommand}" InputGestureText="Ctrl+D"/>
-                        <MenuItem Header="{DynamicResource StructureEditor_BlocksRemoveMenuItem}" Command="{Binding RemoveCommand}" InputGestureText="Del"/>
+                        <MenuItem Header="{StaticResource StructureEditor_BlocksDuplicateMenuItem}" Command="{Binding DuplicateCommand}" InputGestureText="Ctrl+D"/>
+                        <MenuItem Header="{StaticResource StructureEditor_BlocksRemoveMenuItem}" Command="{Binding RemoveCommand}" InputGestureText="Del"/>
                         <Separator/>
-                        <MenuItem Header="{DynamicResource StructureEditor_BlocksMoveUpMenuItem}" Command="{Binding MoveUpCommand}" InputGestureText="Ctrl+Up"/>
-                        <MenuItem Header="{DynamicResource StructureEditor_BlocksMoveDownMenuItem}" Command="{Binding MoveDownCommand}" InputGestureText="Ctrl+Down"/>
+                        <MenuItem Header="{StaticResource StructureEditor_BlocksMoveUpMenuItem}" Command="{Binding MoveUpCommand}" InputGestureText="Ctrl+Up"/>
+                        <MenuItem Header="{StaticResource StructureEditor_BlocksMoveDownMenuItem}" Command="{Binding MoveDownCommand}" InputGestureText="Ctrl+Down"/>
                         <Separator/>
-                        <MenuItem Header="{DynamicResource StructureEditor_BlocksCopyJsonMenuItem}" Command="{Binding CopyBlockCommand}" InputGestureText="Ctrl+C"/>
-                        <MenuItem Header="{DynamicResource StructureEditor_BlocksPasteMenuItem}" Command="{Binding PasteBlockCommand}" InputGestureText="Ctrl+V"/>
+                        <MenuItem Header="{StaticResource StructureEditor_BlocksCopyJsonMenuItem}" Command="{Binding CopyBlockCommand}" InputGestureText="Ctrl+C"/>
+                        <MenuItem Header="{StaticResource StructureEditor_BlocksPasteMenuItem}" Command="{Binding PasteBlockCommand}" InputGestureText="Ctrl+V"/>
                     </ContextMenu>
                 </TreeView.ContextMenu>
                 <TreeView.ItemContainerStyle>
@@ -129,10 +129,10 @@
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     Visibility="Visible">
-            <TextBlock Text="{DynamicResource StructureEditor_BlocksEmptyLine1}"
+            <TextBlock Text="{StaticResource StructureEditor_BlocksEmptyLine1}"
                        FontSize="12" TextAlignment="Center"
                        Foreground="{DynamicResource TE_LineNumberForeground}"/>
-            <TextBlock Text="{DynamicResource StructureEditor_BlocksEmptyLine2}"
+            <TextBlock Text="{StaticResource StructureEditor_BlocksEmptyLine2}"
                        FontSize="11" TextAlignment="Center" Margin="0,4,0,0"
                        Foreground="{DynamicResource TE_LineNumberForeground}"/>
         </StackPanel>

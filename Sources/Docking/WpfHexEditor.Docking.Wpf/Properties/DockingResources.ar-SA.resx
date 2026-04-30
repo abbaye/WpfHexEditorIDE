@@ -59,4 +59,76 @@
   <data name="Docking_TabSettings_ToggleWithWheel" xml:space="preserve">
     <value>تبديل الصفوف بعجلة الماوس</value>
   </data>
+  <data name="Dock_AutoHide_Close" xml:space="preserve">
+    <value>إغلاق</value>
+  </data>
+  <data name="Dock_AutoHide_Dock" xml:space="preserve">
+    <value>إرساء</value>
+  </data>
+  <data name="Dock_AutoHide_Float" xml:space="preserve">
+    <value>عائم</value>
+  </data>
+  <data name="Dock_AutoHide_Show" xml:space="preserve">
+    <value>إظهار</value>
+  </data>
+  <data name="Dock_FloatWin_Maximize" xml:space="preserve">
+    <value>تكبير</value>
+  </data>
+  <data name="Dock_FloatWin_Restore" xml:space="preserve">
+    <value>استعادة</value>
+  </data>
+  <data name="Dock_LSP_Connecting" xml:space="preserve">
+    <value>خادم اللغة: جارٍ الاتصال…</value>
+  </data>
+  <data name="Dock_LSP_Error" xml:space="preserve">
+    <value>خادم اللغة: خطأ</value>
+  </data>
+  <data name="Dock_LSP_Ready" xml:space="preserve">
+    <value>خادم اللغة: جاهز</value>
+  </data>
+  <data name="Dock_Menu_CloseAll" xml:space="preserve">
+    <value>إغلاق الكل</value>
+  </data>
+  <data name="Dock_Menu_CloseAllButPinned" xml:space="preserve">
+    <value>إغلاق الكل ما عدا المثبّت</value>
+  </data>
+  <data name="Dock_Menu_CloseAllButThis" xml:space="preserve">
+    <value>إغلاق الكل ما عدا هذا</value>
+  </data>
+  <data name="Dock_Menu_CloseTabGroup" xml:space="preserve">
+    <value>إغلاق مجموعة علامات التبويب</value>
+  </data>
+  <data name="Dock_Menu_DockAsTabbed" xml:space="preserve">
+    <value>إرساء كمستند بعلامات تبويب</value>
+  </data>
+  <data name="Dock_Menu_DockAsToolWindow" xml:space="preserve">
+    <value>إرساء كنافذة أداة</value>
+  </data>
+  <data name="Dock_Menu_Float" xml:space="preserve">
+    <value>عائم</value>
+  </data>
+  <data name="Dock_Menu_Hide" xml:space="preserve">
+    <value>إخفاء</value>
+  </data>
+  <data name="Dock_Menu_NewHorizontalTabGroup" xml:space="preserve">
+    <value>مجموعة علامات تبويب أفقية جديدة</value>
+  </data>
+  <data name="Dock_Menu_NewVerticalTabGroup" xml:space="preserve">
+    <value>مجموعة علامات تبويب عمودية جديدة</value>
+  </data>
+  <data name="Dock_Placeholder_OpenDocument" xml:space="preserve">
+    <value>افتح مستنداً للبدء</value>
+  </data>
+  <data name="Dock_TabConfig_ColorBy" xml:space="preserve">
+    <value>تلوين علامات تبويب المستندات حسب</value>
+  </data>
+  <data name="Dock_TabConfig_MultipleRows" xml:space="preserve">
+    <value>عرض علامات التبويب في صفوف متعددة</value>
+  </data>
+  <data name="Dock_TabConfig_Options" xml:space="preserve">
+    <value>خيارات…</value>
+  </data>
+  <data name="Dock_Tab_Start" xml:space="preserve">
+    <value>ابدأ</value>
+  </data>
 </root>
