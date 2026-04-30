@@ -1,8 +1,16 @@
 <UserControl x:Class="WpfHexEditor.Editor.DocumentEditor.Controls.DocumentMiniMap"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:docSvc="clr-namespace:WpfHexEditor.Editor.DocumentEditor.Services"
              Height="60"
              Background="{DynamicResource DE_MiniMapBg}">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <docSvc:DocumentEditorLocalizedDictionary/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <!-- Two side-by-side DrawingVisual canvases rendered in code-behind -->
     <Grid>
         <Grid.ColumnDefinitions>

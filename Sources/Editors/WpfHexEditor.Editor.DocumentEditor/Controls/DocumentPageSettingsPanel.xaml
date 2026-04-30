@@ -1,8 +1,14 @@
 <UserControl x:Class="WpfHexEditor.Editor.DocumentEditor.Controls.DocumentPageSettingsPanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:docSvc="clr-namespace:WpfHexEditor.Editor.DocumentEditor.Services"
              Width="380">
     <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <docSvc:DocumentEditorLocalizedDictionary/>
+            </ResourceDictionary.MergedDictionaries>
+
         <!-- Panel background uses docking theme tokens -->
         <Style x:Key="PnlLabel" TargetType="TextBlock">
             <Setter Property="Foreground"  Value="{DynamicResource DockMenuForegroundBrush}"/>
@@ -64,6 +70,7 @@
             <Setter Property="Padding"   Value="12,2"/>
             <Setter Property="Cursor"    Value="Hand"/>
         </Style>
+            </ResourceDictionary>
     </UserControl.Resources>
 
     <Border Background="{DynamicResource DockBackgroundBrush}"

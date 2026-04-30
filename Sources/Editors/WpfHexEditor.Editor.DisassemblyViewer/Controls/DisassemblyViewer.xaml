@@ -7,9 +7,17 @@
 <UserControl x:Class="WpfHexEditor.Editor.DisassemblyViewer.Controls.DisassemblyViewer"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:disSvc="clr-namespace:WpfHexEditor.Editor.DisassemblyViewer.Services"
              xmlns:dv="clr-namespace:WpfHexEditor.Editor.DisassemblyViewer.Controls"
              xmlns:pb="clr-namespace:WpfHexEditor.ProgressBar.Controls;assembly=WpfHexEditor.ProgressBar"
              Background="{DynamicResource TE_Background}">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <disSvc:DisassemblyViewerLocalizedDictionary/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
