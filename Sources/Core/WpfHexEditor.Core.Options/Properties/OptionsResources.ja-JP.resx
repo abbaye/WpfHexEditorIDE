@@ -123,4 +123,46 @@
   <data name="TextOpt_Preprocessor" xml:space="preserve"><value>Preprocessor:</value></data>
   <data name="TextOpt_Operator" xml:space="preserve"><value>Operator:</value></data>
   <data name="TextOpt_Identifier" xml:space="preserve"><value>Identifier:</value></data>
+  <data name="Opt_Category_Environment" xml:space="preserve"><value>環境</value></data>
+  <data name="Opt_Category_HexEditor" xml:space="preserve"><value>16進数エディター</value></data>
+  <data name="Opt_Category_SolutionExplorer" xml:space="preserve"><value>ソリューション エクスプローラー</value></data>
+  <data name="Opt_Category_CodeEditor" xml:space="preserve"><value>コード エディター</value></data>
+  <data name="Opt_Category_TextEditor" xml:space="preserve"><value>テキスト エディター</value></data>
+  <data name="Opt_Category_PluginSystem" xml:space="preserve"><value>プラグイン システム</value></data>
+  <data name="Opt_Category_BuildRun" xml:space="preserve"><value>ビルドと実行</value></data>
+  <data name="Opt_Category_Debugger" xml:space="preserve"><value>デバッガー</value></data>
+  <data name="Opt_Category_Extensions" xml:space="preserve"><value>拡張機能</value></data>
+  <data name="Opt_Category_FormatEditor" xml:space="preserve"><value>形式エディター (.whfmt)</value></data>
+  <data name="Opt_Category_Tools" xml:space="preserve"><value>ツール</value></data>
+  <data name="Opt_Page_General" xml:space="preserve"><value>全般</value></data>
+  <data name="Opt_Page_Save" xml:space="preserve"><value>保存</value></data>
+  <data name="Opt_Page_Output" xml:space="preserve"><value>出力</value></data>
+  <data name="Opt_Page_TabGroups" xml:space="preserve"><value>タブ グループ</value></data>
+  <data name="Opt_Page_KeyboardShortcuts" xml:space="preserve"><value>キーボード ショートカット</value></data>
+  <data name="Opt_Page_Documents" xml:space="preserve"><value>ドキュメント</value></data>
+  <data name="Opt_Page_Workspace" xml:space="preserve"><value>ワークスペース</value></data>
+  <data name="Opt_Page_Tabs" xml:space="preserve"><value>タブ</value></data>
+  <data name="Opt_Page_Layout" xml:space="preserve"><value>レイアウト</value></data>
+  <data name="Opt_Page_Docking" xml:space="preserve"><value>ドッキング</value></data>
+  <data name="Opt_Page_ViewMenu" xml:space="preserve"><value>[表示] メニュー</value></data>
+  <data name="Opt_Page_Display" xml:space="preserve"><value>表示</value></data>
+  <data name="Opt_Page_Editing" xml:space="preserve"><value>編集</value></data>
+  <data name="Opt_Page_StatusBar" xml:space="preserve"><value>ステータス バー</value></data>
+  <data name="Opt_Page_Behavior" xml:space="preserve"><value>動作</value></data>
+  <data name="Opt_Page_AppearanceColors" xml:space="preserve"><value>外観と色</value></data>
+  <data name="Opt_Page_InlineHints" xml:space="preserve"><value>インライン ヒント</value></data>
+  <data name="Opt_Page_Navigation" xml:space="preserve"><value>ナビゲーション</value></data>
+  <data name="Opt_Page_Formatting" xml:space="preserve"><value>書式設定</value></data>
+  <data name="Opt_Page_Features" xml:space="preserve"><value>機能</value></data>
+  <data name="Opt_Page_LanguageServers" xml:space="preserve"><value>言語サーバー</value></data>
+  <data name="Opt_Page_Markdown" xml:space="preserve"><value>Markdown</value></data>
+  <data name="Opt_Page_Development" xml:space="preserve"><value>開発</value></data>
+  <data name="Opt_Page_Migration" xml:space="preserve"><value>移行</value></data>
+  <data name="Opt_Page_EventBus" xml:space="preserve"><value>イベント バス</value></data>
+  <data name="Opt_Page_Compiler" xml:space="preserve"><value>コンパイラ</value></data>
+  <data name="Opt_Page_Breakpoints" xml:space="preserve"><value>ブレークポイント</value></data>
+  <data name="Opt_Page_Marketplace" xml:space="preserve"><value>Marketplace</value></data>
+  <data name="Opt_Page_FormatExplorer" xml:space="preserve"><value>形式エクスプローラー</value></data>
+  <data name="Opt_Page_CompareFiles" xml:space="preserve"><value>ファイルの比較</value></data>
+  <data name="Opt_Page_CommandPalette" xml:space="preserve"><value>コマンド パレット</value></data>
 </root>

@@ -123,4 +123,46 @@
   <data name="TextOpt_Preprocessor" xml:space="preserve"><value>Preprocessor:</value></data>
   <data name="TextOpt_Operator" xml:space="preserve"><value>Operator:</value></data>
   <data name="TextOpt_Identifier" xml:space="preserve"><value>Identifier:</value></data>
+  <data name="Opt_Category_Environment" xml:space="preserve"><value>Ortam</value></data>
+  <data name="Opt_Category_HexEditor" xml:space="preserve"><value>Hex düzenleyici</value></data>
+  <data name="Opt_Category_SolutionExplorer" xml:space="preserve"><value>Çözüm Gezgini</value></data>
+  <data name="Opt_Category_CodeEditor" xml:space="preserve"><value>Kod düzenleyici</value></data>
+  <data name="Opt_Category_TextEditor" xml:space="preserve"><value>Metin düzenleyici</value></data>
+  <data name="Opt_Category_PluginSystem" xml:space="preserve"><value>Eklenti sistemi</value></data>
+  <data name="Opt_Category_BuildRun" xml:space="preserve"><value>Derleme ve Çalıştırma</value></data>
+  <data name="Opt_Category_Debugger" xml:space="preserve"><value>Hata ayıklayıcı</value></data>
+  <data name="Opt_Category_Extensions" xml:space="preserve"><value>Uzantılar</value></data>
+  <data name="Opt_Category_FormatEditor" xml:space="preserve"><value>Biçim düzenleyici (.whfmt)</value></data>
+  <data name="Opt_Category_Tools" xml:space="preserve"><value>Araçlar</value></data>
+  <data name="Opt_Page_General" xml:space="preserve"><value>Genel</value></data>
+  <data name="Opt_Page_Save" xml:space="preserve"><value>Kaydet</value></data>
+  <data name="Opt_Page_Output" xml:space="preserve"><value>Çıkış</value></data>
+  <data name="Opt_Page_TabGroups" xml:space="preserve"><value>Sekme grupları</value></data>
+  <data name="Opt_Page_KeyboardShortcuts" xml:space="preserve"><value>Klavye kısayolları</value></data>
+  <data name="Opt_Page_Documents" xml:space="preserve"><value>Belgeler</value></data>
+  <data name="Opt_Page_Workspace" xml:space="preserve"><value>Çalışma alanı</value></data>
+  <data name="Opt_Page_Tabs" xml:space="preserve"><value>Sekmeler</value></data>
+  <data name="Opt_Page_Layout" xml:space="preserve"><value>Düzen</value></data>
+  <data name="Opt_Page_Docking" xml:space="preserve"><value>Yerleştirme</value></data>
+  <data name="Opt_Page_ViewMenu" xml:space="preserve"><value>Görünüm menüsü</value></data>
+  <data name="Opt_Page_Display" xml:space="preserve"><value>Görüntüleme</value></data>
+  <data name="Opt_Page_Editing" xml:space="preserve"><value>Düzenleme</value></data>
+  <data name="Opt_Page_StatusBar" xml:space="preserve"><value>Durum çubuğu</value></data>
+  <data name="Opt_Page_Behavior" xml:space="preserve"><value>Davranış</value></data>
+  <data name="Opt_Page_AppearanceColors" xml:space="preserve"><value>Görünüm ve renkler</value></data>
+  <data name="Opt_Page_InlineHints" xml:space="preserve"><value>Satır içi ipuçları</value></data>
+  <data name="Opt_Page_Navigation" xml:space="preserve"><value>Gezinti</value></data>
+  <data name="Opt_Page_Formatting" xml:space="preserve"><value>Biçimlendirme</value></data>
+  <data name="Opt_Page_Features" xml:space="preserve"><value>Özellikler</value></data>
+  <data name="Opt_Page_LanguageServers" xml:space="preserve"><value>Dil sunucuları</value></data>
+  <data name="Opt_Page_Markdown" xml:space="preserve"><value>Markdown</value></data>
+  <data name="Opt_Page_Development" xml:space="preserve"><value>Geliştirme</value></data>
+  <data name="Opt_Page_Migration" xml:space="preserve"><value>Geçiş</value></data>
+  <data name="Opt_Page_EventBus" xml:space="preserve"><value>Olay veriyolu</value></data>
+  <data name="Opt_Page_Compiler" xml:space="preserve"><value>Derleyici</value></data>
+  <data name="Opt_Page_Breakpoints" xml:space="preserve"><value>Kesme noktaları</value></data>
+  <data name="Opt_Page_Marketplace" xml:space="preserve"><value>Marketplace</value></data>
+  <data name="Opt_Page_FormatExplorer" xml:space="preserve"><value>Biçim Gezgini</value></data>
+  <data name="Opt_Page_CompareFiles" xml:space="preserve"><value>Dosyaları karşılaştır</value></data>
+  <data name="Opt_Page_CommandPalette" xml:space="preserve"><value>Komut paleti</value></data>
 </root>

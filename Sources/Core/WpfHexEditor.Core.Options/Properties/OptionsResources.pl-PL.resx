@@ -123,4 +123,46 @@
   <data name="TextOpt_Preprocessor" xml:space="preserve"><value>Preprocessor:</value></data>
   <data name="TextOpt_Operator" xml:space="preserve"><value>Operator:</value></data>
   <data name="TextOpt_Identifier" xml:space="preserve"><value>Identifier:</value></data>
+  <data name="Opt_Category_Environment" xml:space="preserve"><value>Środowisko</value></data>
+  <data name="Opt_Category_HexEditor" xml:space="preserve"><value>Edytor szesnastkowy</value></data>
+  <data name="Opt_Category_SolutionExplorer" xml:space="preserve"><value>Eksplorator rozwiązań</value></data>
+  <data name="Opt_Category_CodeEditor" xml:space="preserve"><value>Edytor kodu</value></data>
+  <data name="Opt_Category_TextEditor" xml:space="preserve"><value>Edytor tekstu</value></data>
+  <data name="Opt_Category_PluginSystem" xml:space="preserve"><value>System wtyczek</value></data>
+  <data name="Opt_Category_BuildRun" xml:space="preserve"><value>Kompilacja i uruchamianie</value></data>
+  <data name="Opt_Category_Debugger" xml:space="preserve"><value>Debuger</value></data>
+  <data name="Opt_Category_Extensions" xml:space="preserve"><value>Rozszerzenia</value></data>
+  <data name="Opt_Category_FormatEditor" xml:space="preserve"><value>Edytor formatów (.whfmt)</value></data>
+  <data name="Opt_Category_Tools" xml:space="preserve"><value>Narzędzia</value></data>
+  <data name="Opt_Page_General" xml:space="preserve"><value>Ogólne</value></data>
+  <data name="Opt_Page_Save" xml:space="preserve"><value>Zapisz</value></data>
+  <data name="Opt_Page_Output" xml:space="preserve"><value>Dane wyjściowe</value></data>
+  <data name="Opt_Page_TabGroups" xml:space="preserve"><value>Grupy kart</value></data>
+  <data name="Opt_Page_KeyboardShortcuts" xml:space="preserve"><value>Skróty klawiaturowe</value></data>
+  <data name="Opt_Page_Documents" xml:space="preserve"><value>Dokumenty</value></data>
+  <data name="Opt_Page_Workspace" xml:space="preserve"><value>Obszar roboczy</value></data>
+  <data name="Opt_Page_Tabs" xml:space="preserve"><value>Karty</value></data>
+  <data name="Opt_Page_Layout" xml:space="preserve"><value>Układ</value></data>
+  <data name="Opt_Page_Docking" xml:space="preserve"><value>Dokowanie</value></data>
+  <data name="Opt_Page_ViewMenu" xml:space="preserve"><value>Menu Widok</value></data>
+  <data name="Opt_Page_Display" xml:space="preserve"><value>Wyświetlanie</value></data>
+  <data name="Opt_Page_Editing" xml:space="preserve"><value>Edycja</value></data>
+  <data name="Opt_Page_StatusBar" xml:space="preserve"><value>Pasek stanu</value></data>
+  <data name="Opt_Page_Behavior" xml:space="preserve"><value>Zachowanie</value></data>
+  <data name="Opt_Page_AppearanceColors" xml:space="preserve"><value>Wygląd i kolory</value></data>
+  <data name="Opt_Page_InlineHints" xml:space="preserve"><value>Wbudowane wskazówki</value></data>
+  <data name="Opt_Page_Navigation" xml:space="preserve"><value>Nawigacja</value></data>
+  <data name="Opt_Page_Formatting" xml:space="preserve"><value>Formatowanie</value></data>
+  <data name="Opt_Page_Features" xml:space="preserve"><value>Funkcje</value></data>
+  <data name="Opt_Page_LanguageServers" xml:space="preserve"><value>Serwery językowe</value></data>
+  <data name="Opt_Page_Markdown" xml:space="preserve"><value>Markdown</value></data>
+  <data name="Opt_Page_Development" xml:space="preserve"><value>Programowanie</value></data>
+  <data name="Opt_Page_Migration" xml:space="preserve"><value>Migracja</value></data>
+  <data name="Opt_Page_EventBus" xml:space="preserve"><value>Magistrala zdarzeń</value></data>
+  <data name="Opt_Page_Compiler" xml:space="preserve"><value>Kompilator</value></data>
+  <data name="Opt_Page_Breakpoints" xml:space="preserve"><value>Punkty przerwania</value></data>
+  <data name="Opt_Page_Marketplace" xml:space="preserve"><value>Marketplace</value></data>
+  <data name="Opt_Page_FormatExplorer" xml:space="preserve"><value>Eksplorator formatów</value></data>
+  <data name="Opt_Page_CompareFiles" xml:space="preserve"><value>Porównaj pliki</value></data>
+  <data name="Opt_Page_CommandPalette" xml:space="preserve"><value>Paleta poleceń</value></data>
 </root>

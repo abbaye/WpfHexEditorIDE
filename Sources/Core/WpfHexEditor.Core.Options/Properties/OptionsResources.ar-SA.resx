@@ -123,4 +123,46 @@
   <data name="TextOpt_Preprocessor" xml:space="preserve"><value>Preprocessor:</value></data>
   <data name="TextOpt_Operator" xml:space="preserve"><value>Operator:</value></data>
   <data name="TextOpt_Identifier" xml:space="preserve"><value>Identifier:</value></data>
+  <data name="Opt_Category_Environment" xml:space="preserve"><value>البيئة</value></data>
+  <data name="Opt_Category_HexEditor" xml:space="preserve"><value>محرر النظام الست عشري</value></data>
+  <data name="Opt_Category_SolutionExplorer" xml:space="preserve"><value>مستكشف الحلول</value></data>
+  <data name="Opt_Category_CodeEditor" xml:space="preserve"><value>محرر التعليمات البرمجية</value></data>
+  <data name="Opt_Category_TextEditor" xml:space="preserve"><value>محرر النصوص</value></data>
+  <data name="Opt_Category_PluginSystem" xml:space="preserve"><value>نظام المكونات الإضافية</value></data>
+  <data name="Opt_Category_BuildRun" xml:space="preserve"><value>إنشاء وتشغيل</value></data>
+  <data name="Opt_Category_Debugger" xml:space="preserve"><value>مصحح الأخطاء</value></data>
+  <data name="Opt_Category_Extensions" xml:space="preserve"><value>الامتدادات</value></data>
+  <data name="Opt_Category_FormatEditor" xml:space="preserve"><value>محرر التنسيق (.whfmt)</value></data>
+  <data name="Opt_Category_Tools" xml:space="preserve"><value>الأدوات</value></data>
+  <data name="Opt_Page_General" xml:space="preserve"><value>عام</value></data>
+  <data name="Opt_Page_Save" xml:space="preserve"><value>حفظ</value></data>
+  <data name="Opt_Page_Output" xml:space="preserve"><value>الإخراج</value></data>
+  <data name="Opt_Page_TabGroups" xml:space="preserve"><value>مجموعات علامات التبويب</value></data>
+  <data name="Opt_Page_KeyboardShortcuts" xml:space="preserve"><value>اختصارات لوحة المفاتيح</value></data>
+  <data name="Opt_Page_Documents" xml:space="preserve"><value>المستندات</value></data>
+  <data name="Opt_Page_Workspace" xml:space="preserve"><value>مساحة العمل</value></data>
+  <data name="Opt_Page_Tabs" xml:space="preserve"><value>علامات التبويب</value></data>
+  <data name="Opt_Page_Layout" xml:space="preserve"><value>التخطيط</value></data>
+  <data name="Opt_Page_Docking" xml:space="preserve"><value>الإرساء</value></data>
+  <data name="Opt_Page_ViewMenu" xml:space="preserve"><value>قائمة عرض</value></data>
+  <data name="Opt_Page_Display" xml:space="preserve"><value>العرض</value></data>
+  <data name="Opt_Page_Editing" xml:space="preserve"><value>التحرير</value></data>
+  <data name="Opt_Page_StatusBar" xml:space="preserve"><value>شريط الحالة</value></data>
+  <data name="Opt_Page_Behavior" xml:space="preserve"><value>السلوك</value></data>
+  <data name="Opt_Page_AppearanceColors" xml:space="preserve"><value>المظهر والألوان</value></data>
+  <data name="Opt_Page_InlineHints" xml:space="preserve"><value>التلميحات المضمّنة</value></data>
+  <data name="Opt_Page_Navigation" xml:space="preserve"><value>التنقل</value></data>
+  <data name="Opt_Page_Formatting" xml:space="preserve"><value>التنسيق</value></data>
+  <data name="Opt_Page_Features" xml:space="preserve"><value>الميزات</value></data>
+  <data name="Opt_Page_LanguageServers" xml:space="preserve"><value>خوادم اللغة</value></data>
+  <data name="Opt_Page_Markdown" xml:space="preserve"><value>Markdown</value></data>
+  <data name="Opt_Page_Development" xml:space="preserve"><value>التطوير</value></data>
+  <data name="Opt_Page_Migration" xml:space="preserve"><value>الترحيل</value></data>
+  <data name="Opt_Page_EventBus" xml:space="preserve"><value>ناقل الأحداث</value></data>
+  <data name="Opt_Page_Compiler" xml:space="preserve"><value>المحول البرمجي</value></data>
+  <data name="Opt_Page_Breakpoints" xml:space="preserve"><value>نقاط الإيقاف</value></data>
+  <data name="Opt_Page_Marketplace" xml:space="preserve"><value>السوق</value></data>
+  <data name="Opt_Page_FormatExplorer" xml:space="preserve"><value>مستكشف التنسيقات</value></data>
+  <data name="Opt_Page_CompareFiles" xml:space="preserve"><value>مقارنة الملفات</value></data>
+  <data name="Opt_Page_CommandPalette" xml:space="preserve"><value>لوحة الأوامر</value></data>
 </root>

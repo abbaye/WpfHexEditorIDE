@@ -123,4 +123,46 @@
   <data name="TextOpt_Preprocessor" xml:space="preserve"><value>Preprocessor:</value></data>
   <data name="TextOpt_Operator" xml:space="preserve"><value>Operator:</value></data>
   <data name="TextOpt_Identifier" xml:space="preserve"><value>Identifier:</value></data>
+  <data name="Opt_Category_Environment" xml:space="preserve"><value>환경</value></data>
+  <data name="Opt_Category_HexEditor" xml:space="preserve"><value>16진수 편집기</value></data>
+  <data name="Opt_Category_SolutionExplorer" xml:space="preserve"><value>솔루션 탐색기</value></data>
+  <data name="Opt_Category_CodeEditor" xml:space="preserve"><value>코드 편집기</value></data>
+  <data name="Opt_Category_TextEditor" xml:space="preserve"><value>텍스트 편집기</value></data>
+  <data name="Opt_Category_PluginSystem" xml:space="preserve"><value>플러그인 시스템</value></data>
+  <data name="Opt_Category_BuildRun" xml:space="preserve"><value>빌드 및 실행</value></data>
+  <data name="Opt_Category_Debugger" xml:space="preserve"><value>디버거</value></data>
+  <data name="Opt_Category_Extensions" xml:space="preserve"><value>확장</value></data>
+  <data name="Opt_Category_FormatEditor" xml:space="preserve"><value>형식 편집기(.whfmt)</value></data>
+  <data name="Opt_Category_Tools" xml:space="preserve"><value>도구</value></data>
+  <data name="Opt_Page_General" xml:space="preserve"><value>일반</value></data>
+  <data name="Opt_Page_Save" xml:space="preserve"><value>저장</value></data>
+  <data name="Opt_Page_Output" xml:space="preserve"><value>출력</value></data>
+  <data name="Opt_Page_TabGroups" xml:space="preserve"><value>탭 그룹</value></data>
+  <data name="Opt_Page_KeyboardShortcuts" xml:space="preserve"><value>키보드 단축키</value></data>
+  <data name="Opt_Page_Documents" xml:space="preserve"><value>문서</value></data>
+  <data name="Opt_Page_Workspace" xml:space="preserve"><value>작업 영역</value></data>
+  <data name="Opt_Page_Tabs" xml:space="preserve"><value>탭</value></data>
+  <data name="Opt_Page_Layout" xml:space="preserve"><value>레이아웃</value></data>
+  <data name="Opt_Page_Docking" xml:space="preserve"><value>도킹</value></data>
+  <data name="Opt_Page_ViewMenu" xml:space="preserve"><value>보기 메뉴</value></data>
+  <data name="Opt_Page_Display" xml:space="preserve"><value>표시</value></data>
+  <data name="Opt_Page_Editing" xml:space="preserve"><value>편집</value></data>
+  <data name="Opt_Page_StatusBar" xml:space="preserve"><value>상태 표시줄</value></data>
+  <data name="Opt_Page_Behavior" xml:space="preserve"><value>동작</value></data>
+  <data name="Opt_Page_AppearanceColors" xml:space="preserve"><value>모양 및 색</value></data>
+  <data name="Opt_Page_InlineHints" xml:space="preserve"><value>인라인 힌트</value></data>
+  <data name="Opt_Page_Navigation" xml:space="preserve"><value>탐색</value></data>
+  <data name="Opt_Page_Formatting" xml:space="preserve"><value>서식 지정</value></data>
+  <data name="Opt_Page_Features" xml:space="preserve"><value>기능</value></data>
+  <data name="Opt_Page_LanguageServers" xml:space="preserve"><value>언어 서버</value></data>
+  <data name="Opt_Page_Markdown" xml:space="preserve"><value>Markdown</value></data>
+  <data name="Opt_Page_Development" xml:space="preserve"><value>개발</value></data>
+  <data name="Opt_Page_Migration" xml:space="preserve"><value>마이그레이션</value></data>
+  <data name="Opt_Page_EventBus" xml:space="preserve"><value>이벤트 버스</value></data>
+  <data name="Opt_Page_Compiler" xml:space="preserve"><value>컴파일러</value></data>
+  <data name="Opt_Page_Breakpoints" xml:space="preserve"><value>중단점</value></data>
+  <data name="Opt_Page_Marketplace" xml:space="preserve"><value>Marketplace</value></data>
+  <data name="Opt_Page_FormatExplorer" xml:space="preserve"><value>형식 탐색기</value></data>
+  <data name="Opt_Page_CompareFiles" xml:space="preserve"><value>파일 비교</value></data>
+  <data name="Opt_Page_CommandPalette" xml:space="preserve"><value>명령 팔레트</value></data>
 </root>

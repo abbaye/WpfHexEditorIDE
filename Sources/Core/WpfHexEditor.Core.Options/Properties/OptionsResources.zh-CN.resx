@@ -123,4 +123,46 @@
   <data name="TextOpt_Preprocessor" xml:space="preserve"><value>Preprocessor:</value></data>
   <data name="TextOpt_Operator" xml:space="preserve"><value>Operator:</value></data>
   <data name="TextOpt_Identifier" xml:space="preserve"><value>Identifier:</value></data>
+  <data name="Opt_Category_Environment" xml:space="preserve"><value>环境</value></data>
+  <data name="Opt_Category_HexEditor" xml:space="preserve"><value>十六进制编辑器</value></data>
+  <data name="Opt_Category_SolutionExplorer" xml:space="preserve"><value>解决方案资源管理器</value></data>
+  <data name="Opt_Category_CodeEditor" xml:space="preserve"><value>代码编辑器</value></data>
+  <data name="Opt_Category_TextEditor" xml:space="preserve"><value>文本编辑器</value></data>
+  <data name="Opt_Category_PluginSystem" xml:space="preserve"><value>插件系统</value></data>
+  <data name="Opt_Category_BuildRun" xml:space="preserve"><value>生成和运行</value></data>
+  <data name="Opt_Category_Debugger" xml:space="preserve"><value>调试器</value></data>
+  <data name="Opt_Category_Extensions" xml:space="preserve"><value>扩展</value></data>
+  <data name="Opt_Category_FormatEditor" xml:space="preserve"><value>格式编辑器 (.whfmt)</value></data>
+  <data name="Opt_Category_Tools" xml:space="preserve"><value>工具</value></data>
+  <data name="Opt_Page_General" xml:space="preserve"><value>常规</value></data>
+  <data name="Opt_Page_Save" xml:space="preserve"><value>保存</value></data>
+  <data name="Opt_Page_Output" xml:space="preserve"><value>输出</value></data>
+  <data name="Opt_Page_TabGroups" xml:space="preserve"><value>选项卡组</value></data>
+  <data name="Opt_Page_KeyboardShortcuts" xml:space="preserve"><value>键盘快捷方式</value></data>
+  <data name="Opt_Page_Documents" xml:space="preserve"><value>文档</value></data>
+  <data name="Opt_Page_Workspace" xml:space="preserve"><value>工作区</value></data>
+  <data name="Opt_Page_Tabs" xml:space="preserve"><value>选项卡</value></data>
+  <data name="Opt_Page_Layout" xml:space="preserve"><value>布局</value></data>
+  <data name="Opt_Page_Docking" xml:space="preserve"><value>停靠</value></data>
+  <data name="Opt_Page_ViewMenu" xml:space="preserve"><value>视图菜单</value></data>
+  <data name="Opt_Page_Display" xml:space="preserve"><value>显示</value></data>
+  <data name="Opt_Page_Editing" xml:space="preserve"><value>编辑</value></data>
+  <data name="Opt_Page_StatusBar" xml:space="preserve"><value>状态栏</value></data>
+  <data name="Opt_Page_Behavior" xml:space="preserve"><value>行为</value></data>
+  <data name="Opt_Page_AppearanceColors" xml:space="preserve"><value>外观和颜色</value></data>
+  <data name="Opt_Page_InlineHints" xml:space="preserve"><value>内联提示</value></data>
+  <data name="Opt_Page_Navigation" xml:space="preserve"><value>导航</value></data>
+  <data name="Opt_Page_Formatting" xml:space="preserve"><value>格式化</value></data>
+  <data name="Opt_Page_Features" xml:space="preserve"><value>功能</value></data>
+  <data name="Opt_Page_LanguageServers" xml:space="preserve"><value>语言服务器</value></data>
+  <data name="Opt_Page_Markdown" xml:space="preserve"><value>Markdown</value></data>
+  <data name="Opt_Page_Development" xml:space="preserve"><value>开发</value></data>
+  <data name="Opt_Page_Migration" xml:space="preserve"><value>迁移</value></data>
+  <data name="Opt_Page_EventBus" xml:space="preserve"><value>事件总线</value></data>
+  <data name="Opt_Page_Compiler" xml:space="preserve"><value>编译器</value></data>
+  <data name="Opt_Page_Breakpoints" xml:space="preserve"><value>断点</value></data>
+  <data name="Opt_Page_Marketplace" xml:space="preserve"><value>市场</value></data>
+  <data name="Opt_Page_FormatExplorer" xml:space="preserve"><value>格式资源管理器</value></data>
+  <data name="Opt_Page_CompareFiles" xml:space="preserve"><value>比较文件</value></data>
+  <data name="Opt_Page_CommandPalette" xml:space="preserve"><value>命令面板</value></data>
 </root>

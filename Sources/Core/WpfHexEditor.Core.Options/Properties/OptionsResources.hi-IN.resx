@@ -123,4 +123,46 @@
   <data name="TextOpt_Preprocessor" xml:space="preserve"><value>Preprocessor:</value></data>
   <data name="TextOpt_Operator" xml:space="preserve"><value>Operator:</value></data>
   <data name="TextOpt_Identifier" xml:space="preserve"><value>Identifier:</value></data>
+  <data name="Opt_Category_Environment" xml:space="preserve"><value>परिवेश</value></data>
+  <data name="Opt_Category_HexEditor" xml:space="preserve"><value>हेक्स संपादक</value></data>
+  <data name="Opt_Category_SolutionExplorer" xml:space="preserve"><value>समाधान एक्सप्लोरर</value></data>
+  <data name="Opt_Category_CodeEditor" xml:space="preserve"><value>कोड संपादक</value></data>
+  <data name="Opt_Category_TextEditor" xml:space="preserve"><value>पाठ संपादक</value></data>
+  <data name="Opt_Category_PluginSystem" xml:space="preserve"><value>प्लगइन प्रणाली</value></data>
+  <data name="Opt_Category_BuildRun" xml:space="preserve"><value>बनाएं और चलाएं</value></data>
+  <data name="Opt_Category_Debugger" xml:space="preserve"><value>डीबगर</value></data>
+  <data name="Opt_Category_Extensions" xml:space="preserve"><value>एक्सटेंशन</value></data>
+  <data name="Opt_Category_FormatEditor" xml:space="preserve"><value>प्रारूप संपादक (.whfmt)</value></data>
+  <data name="Opt_Category_Tools" xml:space="preserve"><value>टूल</value></data>
+  <data name="Opt_Page_General" xml:space="preserve"><value>सामान्य</value></data>
+  <data name="Opt_Page_Save" xml:space="preserve"><value>सहेजें</value></data>
+  <data name="Opt_Page_Output" xml:space="preserve"><value>आउटपुट</value></data>
+  <data name="Opt_Page_TabGroups" xml:space="preserve"><value>टैब समूह</value></data>
+  <data name="Opt_Page_KeyboardShortcuts" xml:space="preserve"><value>कीबोर्ड शॉर्टकट</value></data>
+  <data name="Opt_Page_Documents" xml:space="preserve"><value>दस्तावेज़</value></data>
+  <data name="Opt_Page_Workspace" xml:space="preserve"><value>कार्यक्षेत्र</value></data>
+  <data name="Opt_Page_Tabs" xml:space="preserve"><value>टैब</value></data>
+  <data name="Opt_Page_Layout" xml:space="preserve"><value>लेआउट</value></data>
+  <data name="Opt_Page_Docking" xml:space="preserve"><value>डॉकिंग</value></data>
+  <data name="Opt_Page_ViewMenu" xml:space="preserve"><value>दृश्य मेनू</value></data>
+  <data name="Opt_Page_Display" xml:space="preserve"><value>प्रदर्शन</value></data>
+  <data name="Opt_Page_Editing" xml:space="preserve"><value>संपादन</value></data>
+  <data name="Opt_Page_StatusBar" xml:space="preserve"><value>स्थिति पट्टी</value></data>
+  <data name="Opt_Page_Behavior" xml:space="preserve"><value>व्यवहार</value></data>
+  <data name="Opt_Page_AppearanceColors" xml:space="preserve"><value>रूप-रंग और रंग</value></data>
+  <data name="Opt_Page_InlineHints" xml:space="preserve"><value>इनलाइन संकेत</value></data>
+  <data name="Opt_Page_Navigation" xml:space="preserve"><value>नेविगेशन</value></data>
+  <data name="Opt_Page_Formatting" xml:space="preserve"><value>स्वरूपण</value></data>
+  <data name="Opt_Page_Features" xml:space="preserve"><value>सुविधाएँ</value></data>
+  <data name="Opt_Page_LanguageServers" xml:space="preserve"><value>भाषा सर्वर</value></data>
+  <data name="Opt_Page_Markdown" xml:space="preserve"><value>Markdown</value></data>
+  <data name="Opt_Page_Development" xml:space="preserve"><value>विकास</value></data>
+  <data name="Opt_Page_Migration" xml:space="preserve"><value>माइग्रेशन</value></data>
+  <data name="Opt_Page_EventBus" xml:space="preserve"><value>इवेंट बस</value></data>
+  <data name="Opt_Page_Compiler" xml:space="preserve"><value>कंपाइलर</value></data>
+  <data name="Opt_Page_Breakpoints" xml:space="preserve"><value>ब्रेकपॉइंट</value></data>
+  <data name="Opt_Page_Marketplace" xml:space="preserve"><value>Marketplace</value></data>
+  <data name="Opt_Page_FormatExplorer" xml:space="preserve"><value>प्रारूप एक्सप्लोरर</value></data>
+  <data name="Opt_Page_CompareFiles" xml:space="preserve"><value>फ़ाइलें तुलना करें</value></data>
+  <data name="Opt_Page_CommandPalette" xml:space="preserve"><value>कमांड पैलेट</value></data>
 </root>
