@@ -22,13 +22,13 @@
         <StackPanel Margin="0,0,0,16">
 
         <!-- ── General ───────────────────────────────────────────────────── -->
-        <TextBlock Text="{StaticResource BuildRun_GeneralSection}"
+        <TextBlock Text="{DynamicResource BuildRun_GeneralSection}"
                    FontSize="12" FontWeight="SemiBold"
                    Foreground="{DynamicResource Opt_SectionForegroundBrush}"
                    Margin="0,16,0,6"/>
 
         <CheckBox x:Name="CheckSaveBeforeBuild"
-                  Content="{StaticResource BuildRun_SaveBeforeBuild}"
+                  Content="{DynamicResource BuildRun_SaveBeforeBuild}"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                   Margin="0,0,0,8"
                   Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
@@ -38,21 +38,21 @@
                 <ColumnDefinition Width="220"/>
                 <ColumnDefinition Width="160"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="{StaticResource BuildRun_VerbosityLabel}"
+            <TextBlock Text="{DynamicResource BuildRun_VerbosityLabel}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             <ComboBox x:Name="CbVerbosity" Grid.Column="1"
                       SelectionChanged="OnComboChanged">
-                <ComboBoxItem Content="{StaticResource BuildRun_VerbQuiet}"      Tag="Quiet"/>
-                <ComboBoxItem Content="{StaticResource BuildRun_VerbMinimal}"    Tag="Minimal"/>
-                <ComboBoxItem Content="{StaticResource BuildRun_VerbNormal}"     Tag="Normal"/>
-                <ComboBoxItem Content="{StaticResource BuildRun_VerbDetailed}"   Tag="Detailed"/>
-                <ComboBoxItem Content="{StaticResource BuildRun_VerbDiagnostic}" Tag="Diagnostic"/>
+                <ComboBoxItem Content="{DynamicResource BuildRun_VerbQuiet}"      Tag="Quiet"/>
+                <ComboBoxItem Content="{DynamicResource BuildRun_VerbMinimal}"    Tag="Minimal"/>
+                <ComboBoxItem Content="{DynamicResource BuildRun_VerbNormal}"     Tag="Normal"/>
+                <ComboBoxItem Content="{DynamicResource BuildRun_VerbDetailed}"   Tag="Detailed"/>
+                <ComboBoxItem Content="{DynamicResource BuildRun_VerbDiagnostic}" Tag="Diagnostic"/>
             </ComboBox>
         </Grid>
 
         <CheckBox x:Name="CheckRunInProcess"
-                  Content="{StaticResource BuildRun_RunInProcess}"
+                  Content="{DynamicResource BuildRun_RunInProcess}"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                   Margin="0,0,0,8"
                   Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
@@ -62,7 +62,7 @@
                 <ColumnDefinition Width="220"/>
                 <ColumnDefinition Width="80"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="{StaticResource BuildRun_MaxParallelLabel}"
+            <TextBlock Text="{DynamicResource BuildRun_MaxParallelLabel}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             <TextBox x:Name="TxtMaxParallel" Grid.Column="1"
@@ -73,19 +73,19 @@
         <Separator Margin="0,12,0,12" Background="{DynamicResource DockBorderBrush}"/>
 
         <!-- ── Output Window ─────────────────────────────────────────────── -->
-        <TextBlock Text="{StaticResource BuildRun_OutputSection}"
+        <TextBlock Text="{DynamicResource BuildRun_OutputSection}"
                    FontSize="12" FontWeight="SemiBold"
                    Foreground="{DynamicResource Opt_SectionForegroundBrush}"
                    Margin="0,16,0,6"/>
 
         <CheckBox x:Name="CheckShowOnStart"
-                  Content="{StaticResource BuildRun_ShowOnStart}"
+                  Content="{DynamicResource BuildRun_ShowOnStart}"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                   Margin="0,0,0,8"
                   Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
 
         <CheckBox x:Name="CheckShowOnError"
-                  Content="{StaticResource BuildRun_ShowOnError}"
+                  Content="{DynamicResource BuildRun_ShowOnError}"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                   Margin="0,0,0,8"
                   Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>
@@ -93,7 +93,7 @@
         <Separator Margin="0,12,0,12" Background="{DynamicResource DockBorderBrush}"/>
 
         <!-- ── Run ───────────────────────────────────────────────────────── -->
-        <TextBlock Text="{StaticResource BuildRun_RunSection}"
+        <TextBlock Text="{DynamicResource BuildRun_RunSection}"
                    FontSize="12" FontWeight="SemiBold"
                    Foreground="{DynamicResource Opt_SectionForegroundBrush}"
                    Margin="0,16,0,6"/>
@@ -103,18 +103,18 @@
                 <ColumnDefinition Width="220"/>
                 <ColumnDefinition Width="160"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="{StaticResource BuildRun_OnRunBuildErrorLabel}"
+            <TextBlock Text="{DynamicResource BuildRun_OnRunBuildErrorLabel}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             <ComboBox x:Name="CbOnRunBuildError" Grid.Column="1"
                       SelectionChanged="OnComboChanged">
-                <ComboBoxItem Content="{StaticResource BuildRun_DoNotLaunch}" Tag="DoNotLaunch"/>
-                <ComboBoxItem Content="{StaticResource BuildRun_Launch}"        Tag="Launch"/>
+                <ComboBoxItem Content="{DynamicResource BuildRun_DoNotLaunch}" Tag="DoNotLaunch"/>
+                <ComboBoxItem Content="{DynamicResource BuildRun_Launch}"        Tag="Launch"/>
             </ComboBox>
         </Grid>
 
         <CheckBox x:Name="CheckShowOutputOnRun"
-                  Content="{StaticResource BuildRun_ShowOutputOnRun}"
+                  Content="{DynamicResource BuildRun_ShowOutputOnRun}"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                   Margin="0,0,0,8"
                   Checked="OnCheckChanged" Unchecked="OnCheckChanged"/>

@@ -20,7 +20,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:shell="clr-namespace:WpfHexEditor.Shell"
         xmlns:dockSvc="clr-namespace:WpfHexEditor.Shell.Services"
-        Title="{StaticResource Docking_TabSettings_Title}"
+        Title="{DynamicResource Docking_TabSettings_Title}"
         Width="420" SizeToContent="Height"
         Background="{DynamicResource DockBackgroundBrush}"
         Foreground="{DynamicResource DockForegroundBrush}">
@@ -54,34 +54,34 @@
     <StackPanel Margin="12" DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}}">
 
         <!-- ── Tab Placement ───────────────────────────────────────────────── -->
-        <GroupBox Header="{StaticResource Docking_TabSettings_TabStripPlacement}">
+        <GroupBox Header="{DynamicResource Docking_TabSettings_TabStripPlacement}">
             <StackPanel>
-                <RadioButton Content="{StaticResource Docking_TabSettings_Top}"
+                <RadioButton Content="{DynamicResource Docking_TabSettings_Top}"
                              IsChecked="{Binding PlacementTop}" />
-                <RadioButton Content="{StaticResource Docking_TabSettings_Left}"
+                <RadioButton Content="{DynamicResource Docking_TabSettings_Left}"
                              IsChecked="{Binding PlacementLeft}" />
-                <RadioButton Content="{StaticResource Docking_TabSettings_Right}"
+                <RadioButton Content="{DynamicResource Docking_TabSettings_Right}"
                              IsChecked="{Binding PlacementRight}" />
             </StackPanel>
         </GroupBox>
 
         <!-- ── Color mode ─────────────────────────────────────────────────── -->
-        <GroupBox Header="{StaticResource Docking_TabSettings_ColorBy}">
+        <GroupBox Header="{DynamicResource Docking_TabSettings_ColorBy}">
             <StackPanel>
-                <RadioButton Content="{StaticResource Docking_TabSettings_NoColorization}"
+                <RadioButton Content="{DynamicResource Docking_TabSettings_NoColorization}"
                              IsChecked="{Binding ColorNone}" />
-                <RadioButton Content="{StaticResource Docking_TabSettings_FileExtension}"
+                <RadioButton Content="{DynamicResource Docking_TabSettings_FileExtension}"
                              IsChecked="{Binding ColorByExtension}" />
-                <RadioButton Content="{StaticResource Docking_TabSettings_Project}"
+                <RadioButton Content="{DynamicResource Docking_TabSettings_Project}"
                              IsChecked="{Binding ColorByProject}" />
-                <RadioButton Content="{StaticResource Docking_TabSettings_RegexRules}"
+                <RadioButton Content="{DynamicResource Docking_TabSettings_RegexRules}"
                              IsChecked="{Binding ColorByRegex}" />
 
                 <!-- Regex rules editor — visible only when Regex mode is active -->
                 <Border Margin="0,8,0,0"
                         Visibility="{Binding ColorByRegex, Converter={StaticResource BoolToVis}}">
                     <StackPanel>
-                        <TextBlock Text="{StaticResource Docking_TabSettings_RegexFirstMatch}"
+                        <TextBlock Text="{DynamicResource Docking_TabSettings_RegexFirstMatch}"
                                    Foreground="{DynamicResource DockForegroundBrush}"
                                    Margin="0,0,0,4" />
                         <DataGrid x:Name="RegexGrid"
@@ -100,10 +100,10 @@
                                   AlternatingRowBackground="{DynamicResource DockBackgroundBrush}"
                                   SelectionMode="Single">
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="{StaticResource Docking_TabSettings_PatternColumn}"
+                                <DataGridTextColumn Header="{DynamicResource Docking_TabSettings_PatternColumn}"
                                                     Binding="{Binding Pattern, UpdateSourceTrigger=PropertyChanged}"
                                                     Width="*" />
-                                <DataGridTemplateColumn Header="{StaticResource Docking_TabSettings_ColorColumn}" Width="90">
+                                <DataGridTemplateColumn Header="{DynamicResource Docking_TabSettings_ColorColumn}" Width="90">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
                                             <StackPanel Orientation="Horizontal" Margin="4,2">
@@ -121,13 +121,13 @@
                                     <DataGridTemplateColumn.CellEditingTemplate>
                                         <DataTemplate>
                                             <TextBox Text="{Binding ColorHex, UpdateSourceTrigger=LostFocus}"
-                                                     ToolTip="{StaticResource Docking_TabSettings_HexColorTooltip}" />
+                                                     ToolTip="{DynamicResource Docking_TabSettings_HexColorTooltip}" />
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellEditingTemplate>
                                 </DataGridTemplateColumn>
                             </DataGrid.Columns>
                         </DataGrid>
-                        <TextBlock Text="{StaticResource Docking_TabSettings_PressDelete}"
+                        <TextBlock Text="{DynamicResource Docking_TabSettings_PressDelete}"
                                    FontSize="10"
                                    Foreground="{DynamicResource DockForegroundBrush}"
                                    Opacity="0.6"
@@ -138,18 +138,18 @@
         </GroupBox>
 
         <!-- ── Multi-row tabs ─────────────────────────────────────────────── -->
-        <GroupBox Header="{StaticResource Docking_TabSettings_TabRows}">
+        <GroupBox Header="{DynamicResource Docking_TabSettings_TabRows}">
             <StackPanel>
-                <CheckBox Content="{StaticResource Docking_TabSettings_ShowMultipleRows}"
+                <CheckBox Content="{DynamicResource Docking_TabSettings_ShowMultipleRows}"
                           IsChecked="{Binding MultiRowTabs}" />
-                <CheckBox Content="{StaticResource Docking_TabSettings_ToggleWithWheel}"
+                <CheckBox Content="{DynamicResource Docking_TabSettings_ToggleWithWheel}"
                           IsChecked="{Binding MultiRowWithMouseWheel}"
                           IsEnabled="{Binding MultiRowTabs}" />
             </StackPanel>
         </GroupBox>
 
         <!-- ── Close button ───────────────────────────────────────────────── -->
-        <Button Content="{StaticResource CloseString}"
+        <Button Content="{DynamicResource CloseString}"
                 HorizontalAlignment="Right"
                 Width="90"
                 Margin="0,4,0,0"

@@ -17,7 +17,7 @@
         <StackPanel Margin="12,10,12,16" >
 
             <!-- ── Font ─────────────────────────────────────────────── -->
-            <TextBlock Text="{StaticResource CodeEditorOptions_FontSection}"
+            <TextBlock Text="{DynamicResource CodeEditorOptions_FontSection}"
                        FontWeight="SemiBold"
                        Margin="0,0,0,6"
                        Foreground="{DynamicResource DockMenuForegroundBrush}" />
@@ -34,7 +34,7 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
-                <TextBlock Grid.Column="0" Text="{StaticResource CodeEditorOptions_FontFamilyLabel}"
+                <TextBlock Grid.Column="0" Text="{DynamicResource CodeEditorOptions_FontFamilyLabel}"
                            VerticalAlignment="Center"
                            Foreground="{DynamicResource DockMenuForegroundBrush}" />
                 <TextBox   Grid.Column="1"
@@ -43,7 +43,7 @@
                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                            BorderBrush="{DynamicResource DockBorderBrush}" />
 
-                <TextBlock Grid.Column="3" Text="{StaticResource CodeEditorOptions_FontSizeLabel}"
+                <TextBlock Grid.Column="3" Text="{DynamicResource CodeEditorOptions_FontSizeLabel}"
                            VerticalAlignment="Center"
                            Foreground="{DynamicResource DockMenuForegroundBrush}" />
                 <TextBox   Grid.Column="4"
@@ -56,7 +56,7 @@
             <Separator Margin="0,4,0,10" Background="{DynamicResource DockBorderBrush}" />
 
             <!-- ── Indentation ──────────────────────────────────────── -->
-            <TextBlock Text="{StaticResource CodeEditorOptions_IndentationSection}"
+            <TextBlock Text="{DynamicResource CodeEditorOptions_IndentationSection}"
                        FontWeight="SemiBold"
                        Margin="0,0,0,6"
                        Foreground="{DynamicResource DockMenuForegroundBrush}" />
@@ -67,7 +67,7 @@
                     <ColumnDefinition Width="60" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="{StaticResource CodeEditorOptions_TabSizeLabel}"
+                <TextBlock Grid.Column="0" Text="{DynamicResource CodeEditorOptions_TabSizeLabel}"
                            VerticalAlignment="Center"
                            Foreground="{DynamicResource DockMenuForegroundBrush}" />
                 <TextBox   Grid.Column="1"
@@ -77,7 +77,7 @@
                            BorderBrush="{DynamicResource DockBorderBrush}" />
             </Grid>
 
-            <CheckBox Content="{StaticResource CodeEditorOptions_ConvertTabsContent}"
+            <CheckBox Content="{DynamicResource CodeEditorOptions_ConvertTabsContent}"
                       IsChecked="{Binding ConvertTabsToSpaces}"
                       Margin="0,2,0,2"
                       Foreground="{DynamicResource DockMenuForegroundBrush}" />
@@ -87,7 +87,7 @@
                     <ColumnDefinition Width="140" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="{StaticResource CodeEditorOptions_AutoIndentLabel}"
+                <TextBlock Grid.Column="0" Text="{DynamicResource CodeEditorOptions_AutoIndentLabel}"
                            VerticalAlignment="Center"
                            Foreground="{DynamicResource DockMenuForegroundBrush}" />
                 <ComboBox  Grid.Column="1"
@@ -104,12 +104,12 @@
             <Separator Margin="0,8,0,10" Background="{DynamicResource DockBorderBrush}" />
 
             <!-- ── Display ──────────────────────────────────────────── -->
-            <TextBlock Text="{StaticResource CodeEditorOptions_DisplaySection}"
+            <TextBlock Text="{DynamicResource CodeEditorOptions_DisplaySection}"
                        FontWeight="SemiBold"
                        Margin="0,0,0,6"
                        Foreground="{DynamicResource DockMenuForegroundBrush}" />
 
-            <CheckBox Content="{StaticResource CodeEditorOptions_ShowLineNumbersContent}"
+            <CheckBox Content="{DynamicResource CodeEditorOptions_ShowLineNumbersContent}"
                       IsChecked="{Binding ShowLineNumbers}"
                       Margin="0,2,0,2"
                       Foreground="{DynamicResource DockMenuForegroundBrush}" />
@@ -120,7 +120,7 @@
                     <ColumnDefinition Width="8" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="{StaticResource CodeEditorOptions_ShowWhitespaceLabel}"
+                <TextBlock Grid.Column="0" Text="{DynamicResource CodeEditorOptions_ShowWhitespaceLabel}"
                            VerticalAlignment="Center"
                            Foreground="{DynamicResource DockMenuForegroundBrush}" />
                 <ComboBox  Grid.Column="2"
@@ -135,17 +135,17 @@
                 </ComboBox>
             </Grid>
 
-            <CheckBox Content="{StaticResource CodeEditorOptions_CodeFoldingContent}"
+            <CheckBox Content="{DynamicResource CodeEditorOptions_CodeFoldingContent}"
                       IsChecked="{Binding EnableFolding}"
                       Margin="0,2,0,2"
                       Foreground="{DynamicResource DockMenuForegroundBrush}" />
 
-            <CheckBox Content="{StaticResource CodeEditorOptions_FoldToggleContent}"
+            <CheckBox Content="{DynamicResource CodeEditorOptions_FoldToggleContent}"
                       IsChecked="{Binding FoldToggleOnDoubleClick}"
                       Margin="16,2,0,2"
                       Foreground="{DynamicResource DockMenuForegroundBrush}" />
 
-            <CheckBox Content="{StaticResource CodeEditorOptions_ScopeGuidesContent}"
+            <CheckBox Content="{DynamicResource CodeEditorOptions_ScopeGuidesContent}"
                       IsChecked="{Binding ShowScopeGuides}"
                       Margin="0,2,0,2"
                       Foreground="{DynamicResource DockMenuForegroundBrush}" />
@@ -153,125 +153,125 @@
             <Separator Margin="0,8,0,10" Background="{DynamicResource DockBorderBrush}" />
 
             <!-- ── Features ─────────────────────────────────────────── -->
-            <TextBlock Text="{StaticResource CodeEditorOptions_FeaturesSection}"
+            <TextBlock Text="{DynamicResource CodeEditorOptions_FeaturesSection}"
                        FontWeight="SemiBold"
                        Margin="0,0,0,6"
                        Foreground="{DynamicResource DockMenuForegroundBrush}" />
 
-            <CheckBox Content="{StaticResource CodeEditorOptions_SmartCompleteContent}"
+            <CheckBox Content="{DynamicResource CodeEditorOptions_SmartCompleteContent}"
                       IsChecked="{Binding EnableSmartComplete}"
                       Margin="0,2,0,2"
                       Foreground="{DynamicResource DockMenuForegroundBrush}" />
 
-            <CheckBox Content="{StaticResource CodeEditorOptions_SnippetsContent}"
+            <CheckBox Content="{DynamicResource CodeEditorOptions_SnippetsContent}"
                       IsChecked="{Binding EnableSnippets}"
                       Margin="0,2,0,2"
                       Foreground="{DynamicResource DockMenuForegroundBrush}" />
 
-            <CheckBox Content="{StaticResource CodeEditorOptions_MultiCaretContent}"
+            <CheckBox Content="{DynamicResource CodeEditorOptions_MultiCaretContent}"
                       IsChecked="{Binding EnableMultiCaret}"
                       Margin="0,2,0,2"
                       Foreground="{DynamicResource DockMenuForegroundBrush}" />
 
-            <CheckBox Content="{StaticResource CodeEditorOptions_FindAllRefsContent}"
+            <CheckBox Content="{DynamicResource CodeEditorOptions_FindAllRefsContent}"
                       IsChecked="{Binding EnableFindAllReferences}"
                       Margin="0,2,0,2"
                       Foreground="{DynamicResource DockMenuForegroundBrush}"
-                      ToolTip="{StaticResource CodeEditorOptions_FindAllRefsToolTip}" />
+                      ToolTip="{DynamicResource CodeEditorOptions_FindAllRefsToolTip}" />
 
-            <CheckBox Content="{StaticResource CodeEditorOptions_CodeLensContent}"
+            <CheckBox Content="{DynamicResource CodeEditorOptions_CodeLensContent}"
                       IsChecked="{Binding ShowInlineHints}"
                       Margin="0,2,0,2"
                       Foreground="{DynamicResource DockMenuForegroundBrush}"
-                      ToolTip="{StaticResource CodeEditorOptions_CodeLensToolTip}" />
+                      ToolTip="{DynamicResource CodeEditorOptions_CodeLensToolTip}" />
 
-            <CheckBox Content="{StaticResource CodeEditorOptions_WordHighlightContent}"
+            <CheckBox Content="{DynamicResource CodeEditorOptions_WordHighlightContent}"
                       IsChecked="{Binding EnableWordHighlight}"
                       Margin="0,2,0,2"
                       Foreground="{DynamicResource DockMenuForegroundBrush}"
-                      ToolTip="{StaticResource CodeEditorOptions_WordHighlightToolTip}" />
+                      ToolTip="{DynamicResource CodeEditorOptions_WordHighlightToolTip}" />
 
-            <CheckBox Content="{StaticResource CodeEditorOptions_BracketColorizeContent}"
+            <CheckBox Content="{DynamicResource CodeEditorOptions_BracketColorizeContent}"
                       IsChecked="{Binding BracketPairColorization}"
                       Margin="0,2,0,2"
                       Foreground="{DynamicResource DockMenuForegroundBrush}"
-                      ToolTip="{StaticResource CodeEditorOptions_BracketColorizeToolTip}" />
+                      ToolTip="{DynamicResource CodeEditorOptions_BracketColorizeToolTip}" />
 
-            <CheckBox Content="{StaticResource CodeEditorOptions_ColorSwatchContent}"
+            <CheckBox Content="{DynamicResource CodeEditorOptions_ColorSwatchContent}"
                       IsChecked="{Binding ColorSwatchPreview}"
                       Margin="0,2,0,2"
                       Foreground="{DynamicResource DockMenuForegroundBrush}"
-                      ToolTip="{StaticResource CodeEditorOptions_ColorSwatchToolTip}" />
+                      ToolTip="{DynamicResource CodeEditorOptions_ColorSwatchToolTip}" />
 
-            <CheckBox Content="{StaticResource CodeEditorOptions_FormatOnSaveContent}"
+            <CheckBox Content="{DynamicResource CodeEditorOptions_FormatOnSaveContent}"
                       IsChecked="{Binding FormatOnSave}"
                       Margin="0,2,0,2"
                       Foreground="{DynamicResource DockMenuForegroundBrush}"
-                      ToolTip="{StaticResource CodeEditorOptions_FormatOnSaveToolTip}" />
+                      ToolTip="{DynamicResource CodeEditorOptions_FormatOnSaveToolTip}" />
 
             <Separator Margin="0,8,0,10" Background="{DynamicResource DockBorderBrush}" />
 
             <!-- ── Code Formatting (overrides .whfmt) ───────────────── -->
-            <TextBlock Text="{StaticResource CodeEditorOptions_CodeFormattingSection}"
+            <TextBlock Text="{DynamicResource CodeEditorOptions_CodeFormattingSection}"
                        FontWeight="SemiBold"
                        Margin="0,0,0,6"
                        Foreground="{DynamicResource DockMenuForegroundBrush}" />
 
-            <TextBlock Text="{StaticResource CodeEditorOptions_CodeFormattingInfo}"
+            <TextBlock Text="{DynamicResource CodeEditorOptions_CodeFormattingInfo}"
                        TextWrapping="Wrap"
                        FontSize="11"
                        Margin="0,0,0,8"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"
                        Opacity="0.65" />
 
-            <CheckBox Content="{StaticResource CodeEditorOptions_TrimTrailingContent}"
+            <CheckBox Content="{DynamicResource CodeEditorOptions_TrimTrailingContent}"
                       IsThreeState="True"
                       IsChecked="{Binding TrimTrailingWhitespace}"
                       Margin="0,2,0,2"
                       Foreground="{DynamicResource DockMenuForegroundBrush}"
-                      ToolTip="{StaticResource CodeEditorOptions_TrimTrailingToolTip}" />
+                      ToolTip="{DynamicResource CodeEditorOptions_TrimTrailingToolTip}" />
 
-            <CheckBox Content="{StaticResource CodeEditorOptions_InsertFinalNewlineContent}"
+            <CheckBox Content="{DynamicResource CodeEditorOptions_InsertFinalNewlineContent}"
                       IsThreeState="True"
                       IsChecked="{Binding InsertFinalNewline}"
                       Margin="0,2,0,2"
                       Foreground="{DynamicResource DockMenuForegroundBrush}"
-                      ToolTip="{StaticResource CodeEditorOptions_InsertFinalNewlineToolTip}" />
+                      ToolTip="{DynamicResource CodeEditorOptions_InsertFinalNewlineToolTip}" />
 
-            <CheckBox Content="{StaticResource CodeEditorOptions_SpaceAfterKeywordsContent}"
+            <CheckBox Content="{DynamicResource CodeEditorOptions_SpaceAfterKeywordsContent}"
                       IsThreeState="True"
                       IsChecked="{Binding SpaceAfterKeywords}"
                       Margin="0,2,0,2"
                       Foreground="{DynamicResource DockMenuForegroundBrush}"
-                      ToolTip="{StaticResource CodeEditorOptions_SpaceAfterKeywordsToolTip}" />
+                      ToolTip="{DynamicResource CodeEditorOptions_SpaceAfterKeywordsToolTip}" />
 
-            <CheckBox Content="{StaticResource CodeEditorOptions_SpaceAroundOpsContent}"
+            <CheckBox Content="{DynamicResource CodeEditorOptions_SpaceAroundOpsContent}"
                       IsThreeState="True"
                       IsChecked="{Binding SpaceAroundBinaryOperators}"
                       Margin="0,2,0,2"
                       Foreground="{DynamicResource DockMenuForegroundBrush}"
-                      ToolTip="{StaticResource CodeEditorOptions_SpaceAroundOpsToolTip}" />
+                      ToolTip="{DynamicResource CodeEditorOptions_SpaceAroundOpsToolTip}" />
 
-            <CheckBox Content="{StaticResource CodeEditorOptions_SpaceAfterCommaContent}"
+            <CheckBox Content="{DynamicResource CodeEditorOptions_SpaceAfterCommaContent}"
                       IsThreeState="True"
                       IsChecked="{Binding SpaceAfterComma}"
                       Margin="0,2,0,2"
                       Foreground="{DynamicResource DockMenuForegroundBrush}"
-                      ToolTip="{StaticResource CodeEditorOptions_SpaceAfterCommaToolTip}" />
+                      ToolTip="{DynamicResource CodeEditorOptions_SpaceAfterCommaToolTip}" />
 
-            <CheckBox Content="{StaticResource CodeEditorOptions_IndentCaseLabelsContent}"
+            <CheckBox Content="{DynamicResource CodeEditorOptions_IndentCaseLabelsContent}"
                       IsThreeState="True"
                       IsChecked="{Binding IndentCaseLabels}"
                       Margin="0,2,0,2"
                       Foreground="{DynamicResource DockMenuForegroundBrush}"
-                      ToolTip="{StaticResource CodeEditorOptions_IndentCaseLabelsToolTip}" />
+                      ToolTip="{DynamicResource CodeEditorOptions_IndentCaseLabelsToolTip}" />
 
-            <CheckBox Content="{StaticResource CodeEditorOptions_OrganizeImportsContent}"
+            <CheckBox Content="{DynamicResource CodeEditorOptions_OrganizeImportsContent}"
                       IsThreeState="True"
                       IsChecked="{Binding OrganizeImports}"
                       Margin="0,2,0,2"
                       Foreground="{DynamicResource DockMenuForegroundBrush}"
-                      ToolTip="{StaticResource CodeEditorOptions_OrganizeImportsToolTip}" />
+                      ToolTip="{DynamicResource CodeEditorOptions_OrganizeImportsToolTip}" />
 
             <Separator Margin="0,8,0,10" Background="{DynamicResource DockBorderBrush}" />
 
@@ -282,13 +282,13 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <TextBlock Grid.Column="0"
-                           Text="{StaticResource CodeEditorOptions_SyntaxColorsSection}"
+                           Text="{DynamicResource CodeEditorOptions_SyntaxColorsSection}"
                            FontWeight="SemiBold"
                            VerticalAlignment="Center"
                            Foreground="{DynamicResource DockMenuForegroundBrush}" />
                 <Button   Grid.Column="1"
                           x:Name="BtnResetColors"
-                          Content="{StaticResource CodeEditorOptions_ResetColorsButton}"
+                          Content="{DynamicResource CodeEditorOptions_ResetColorsButton}"
                           Padding="8,2"
                           Background="{DynamicResource DockMenuBackgroundBrush}"
                           Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -336,7 +336,7 @@
 
                             <!-- Pick button — opens the ColorPicker popup -->
                             <Button Grid.Column="3"
-                                    Content="{StaticResource CodeEditorOptions_ColorPickButton}"
+                                    Content="{DynamicResource CodeEditorOptions_ColorPickButton}"
                                     Padding="4,2"
                                     VerticalAlignment="Center"
                                     Background="{DynamicResource DockMenuBackgroundBrush}"

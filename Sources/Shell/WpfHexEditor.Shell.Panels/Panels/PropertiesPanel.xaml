@@ -85,7 +85,7 @@
                         Style="{DynamicResource PanelIconButtonStyle}"
                         Width="22" Height="20"
                         Margin="2,0,0,0"
-                        ToolTip="{StaticResource PropertiesPanel_OpenFolderToolTip}"
+                        ToolTip="{DynamicResource PropertiesPanel_OpenFolderToolTip}"
                         Click="OnOpenFilePathClick">
                     <TextBlock Text="&#xE8A7;"
                                FontFamily="Segoe MDL2 Assets"
@@ -140,7 +140,7 @@
                              BorderBrush="{DynamicResource PP_BorderBrush}"
                              BorderThickness="0,0,1,1"
                              Padding="2,1"
-                             ToolTip="{StaticResource PropertiesPanel_ThicknessLeft}"
+                             ToolTip="{DynamicResource PropertiesPanel_ThicknessLeft}"
                              LostFocus="OnThicknessPartCommit"
                              KeyDown="OnThicknessKeyDown"/>
                     <TextBox Grid.Column="1"
@@ -151,7 +151,7 @@
                              BorderBrush="{DynamicResource PP_BorderBrush}"
                              BorderThickness="0,0,1,1"
                              Padding="2,1"
-                             ToolTip="{StaticResource PropertiesPanel_ThicknessTop}"
+                             ToolTip="{DynamicResource PropertiesPanel_ThicknessTop}"
                              LostFocus="OnThicknessPartCommit"
                              KeyDown="OnThicknessKeyDown"/>
                     <TextBox Grid.Column="2"
@@ -162,7 +162,7 @@
                              BorderBrush="{DynamicResource PP_BorderBrush}"
                              BorderThickness="0,0,1,1"
                              Padding="2,1"
-                             ToolTip="{StaticResource PropertiesPanel_ThicknessRight}"
+                             ToolTip="{DynamicResource PropertiesPanel_ThicknessRight}"
                              LostFocus="OnThicknessPartCommit"
                              KeyDown="OnThicknessKeyDown"/>
                     <TextBox Grid.Column="3"
@@ -173,19 +173,19 @@
                              BorderBrush="{DynamicResource PP_BorderBrush}"
                              BorderThickness="0,0,0,1"
                              Padding="2,1"
-                             ToolTip="{StaticResource PropertiesPanel_ThicknessBottom}"
+                             ToolTip="{DynamicResource PropertiesPanel_ThicknessBottom}"
                              LostFocus="OnThicknessPartCommit"
                              KeyDown="OnThicknessKeyDown"/>
                 </Grid>
                 <!-- L T R B labels -->
                 <UniformGrid Columns="4" Margin="0,1,0,0">
-                    <TextBlock Text="{StaticResource PropertiesPanel_ThicknessLLabel}" FontSize="9" HorizontalAlignment="Center"
+                    <TextBlock Text="{DynamicResource PropertiesPanel_ThicknessLLabel}" FontSize="9" HorizontalAlignment="Center"
                                Foreground="{DynamicResource PP_DescriptionForegroundBrush}"/>
-                    <TextBlock Text="{StaticResource PropertiesPanel_ThicknessTLabel}" FontSize="9" HorizontalAlignment="Center"
+                    <TextBlock Text="{DynamicResource PropertiesPanel_ThicknessTLabel}" FontSize="9" HorizontalAlignment="Center"
                                Foreground="{DynamicResource PP_DescriptionForegroundBrush}"/>
-                    <TextBlock Text="{StaticResource PropertiesPanel_ThicknessRLabel}" FontSize="9" HorizontalAlignment="Center"
+                    <TextBlock Text="{DynamicResource PropertiesPanel_ThicknessRLabel}" FontSize="9" HorizontalAlignment="Center"
                                Foreground="{DynamicResource PP_DescriptionForegroundBrush}"/>
-                    <TextBlock Text="{StaticResource PropertiesPanel_ThicknessBLabel}" FontSize="9" HorizontalAlignment="Center"
+                    <TextBlock Text="{DynamicResource PropertiesPanel_ThicknessBLabel}" FontSize="9" HorizontalAlignment="Center"
                                Foreground="{DynamicResource PP_DescriptionForegroundBrush}"/>
                 </UniformGrid>
             </StackPanel>
@@ -236,7 +236,7 @@
                 <!-- Context label (left) — always visible -->
                 <TextBlock x:Name="ContextLabelText"
                            DockPanel.Dock="Left"
-                           Text="{StaticResource PropertiesPanel_ContextLabel}"
+                           Text="{DynamicResource PropertiesPanel_ContextLabel}"
                            Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
                            VerticalAlignment="Center"
                            FontSize="11"
@@ -249,7 +249,7 @@
                             DockPanel.Dock="Right"
                             VerticalAlignment="Center">
                     <Button Style="{DynamicResource PanelIconButtonStyle}"
-                            ToolTip="{StaticResource PropertiesPanel_RefreshToolTip}"
+                            ToolTip="{DynamicResource PropertiesPanel_RefreshToolTip}"
                             Click="OnRefreshButtonClick">
                         <TextBlock Text="&#xE72C;"
                                    FontFamily="Segoe MDL2 Assets"
@@ -264,7 +264,7 @@
                         DockPanel.Dock="Right"
                         Visibility="Collapsed"
                         Style="{DynamicResource PanelIconButtonStyle}"
-                        ToolTip="{StaticResource PropertiesPanel_OverflowToolTip}"
+                        ToolTip="{DynamicResource PropertiesPanel_OverflowToolTip}"
                         Click="OnOverflowButtonClick">
                     <TextBlock Text="&#xE712;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
@@ -272,11 +272,11 @@
                         <ContextMenu x:Name="OverflowContextMenu" Opened="OnOverflowMenuOpened">
                             <!-- TbgPropActions items -->
                             <MenuItem x:Name="OvfSort"
-                                      Header="{StaticResource PropertiesPanel_SortAlphabetically}"
+                                      Header="{DynamicResource PropertiesPanel_SortAlphabetically}"
                                       IsCheckable="True"
                                       Tag="TbgPropActions"
                                       Click="OvfSort_Click"/>
-                            <MenuItem Header="{StaticResource PropertiesPanel_CopyValue}"
+                            <MenuItem Header="{DynamicResource PropertiesPanel_CopyValue}"
                                       Tag="TbgPropActions"
                                       Click="OnCopyButtonClick"/>
                         </ContextMenu>
@@ -291,7 +291,7 @@
                     <!-- Sort alphabetically toggle -->
                     <ToggleButton x:Name="SortToggle"
                                   Style="{DynamicResource PanelIconToggleStyle}"
-                                  ToolTip="{StaticResource PropertiesPanel_SortToggleToolTip}"
+                                  ToolTip="{DynamicResource PropertiesPanel_SortToggleToolTip}"
                                   Checked="OnSortChanged"
                                   Unchecked="OnSortChanged">
                         <TextBlock Text="&#xE8CB;"
@@ -303,7 +303,7 @@
                     <!-- Copy selected value -->
                     <Button x:Name="CopyButton"
                             Style="{DynamicResource PanelIconButtonStyle}"
-                            ToolTip="{StaticResource PropertiesPanel_CopyButtonToolTip}"
+                            ToolTip="{DynamicResource PropertiesPanel_CopyButtonToolTip}"
                             Click="OnCopyButtonClick">
                         <TextBlock Text="&#xE8C8;"
                                    FontFamily="Segoe MDL2 Assets"
@@ -356,7 +356,7 @@
                              TextChanged="OnSearchTextChanged"
                              KeyDown="OnSearchKeyDown"/>
                     <TextBlock x:Name="SearchPlaceholder"
-                               Text="{StaticResource PropertiesPanel_SearchPlaceholder}"
+                               Text="{DynamicResource PropertiesPanel_SearchPlaceholder}"
                                Foreground="{DynamicResource PP_DescriptionForegroundBrush}"
                                Opacity="0.45"
                                FontSize="11"
@@ -453,8 +453,8 @@
                                             <!-- Right-click context menu -->
                                             <Border.ContextMenu>
                                                 <ContextMenu>
-                                                    <MenuItem Header="{StaticResource PropertiesPanel_ContextMenu_CopyValue}" FontSize="11" Click="OnCopyEntryValue"/>
-                                                    <MenuItem Header="{StaticResource PropertiesPanel_ContextMenu_CopyName}"  FontSize="11" Click="OnCopyEntryName"/>
+                                                    <MenuItem Header="{DynamicResource PropertiesPanel_ContextMenu_CopyValue}" FontSize="11" Click="OnCopyEntryValue"/>
+                                                    <MenuItem Header="{DynamicResource PropertiesPanel_ContextMenu_CopyName}"  FontSize="11" Click="OnCopyEntryName"/>
                                                 </ContextMenu>
                                             </Border.ContextMenu>
                                             <Grid>
@@ -470,7 +470,7 @@
                                                             Style="{DynamicResource PanelIconButtonStyle}"
                                                             Width="14" Height="14"
                                                             Margin="0,0,2,0"
-                                                            ToolTip="{StaticResource PropertiesPanel_ResetToDefaultToolTip}"
+                                                            ToolTip="{DynamicResource PropertiesPanel_ResetToDefaultToolTip}"
                                                             Click="OnResetPropertyClick"
                                                             Visibility="{Binding OnResetToDefault,
                                                                 Converter={StaticResource NullToCollapsed}}">

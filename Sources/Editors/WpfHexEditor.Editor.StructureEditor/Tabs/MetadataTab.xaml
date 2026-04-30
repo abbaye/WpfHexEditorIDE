@@ -47,7 +47,7 @@
             </StackPanel.Resources>
 
             <!-- ── Core fields ──────────────────────────────────────── -->
-            <TextBlock Text="{StaticResource StructureEditor_MetaCoreSection}" Style="{StaticResource SectionHeader}"/>
+            <TextBlock Text="{DynamicResource StructureEditor_MetaCoreSection}" Style="{StaticResource SectionHeader}"/>
 
             <Grid Margin="0,0,0,2">
                 <Grid.ColumnDefinitions>
@@ -63,56 +63,56 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <TextBlock Grid.Row="0" Grid.Column="0" Text="{StaticResource StructureEditor_MetaNameLabel}"    Style="{StaticResource Label}"/>
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="{DynamicResource StructureEditor_MetaNameLabel}"    Style="{StaticResource Label}"/>
                 <TextBox   Grid.Row="0" Grid.Column="1" Style="{StaticResource Field}"
-                           ToolTip="{StaticResource StructureEditor_MetaNameToolTip}"
+                           ToolTip="{DynamicResource StructureEditor_MetaNameToolTip}"
                            Text="{Binding FormatName, UpdateSourceTrigger=PropertyChanged}"/>
 
-                <TextBlock Grid.Row="1" Grid.Column="0" Text="{StaticResource StructureEditor_MetaVersionLabel}"        Style="{StaticResource Label}"/>
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="{DynamicResource StructureEditor_MetaVersionLabel}"        Style="{StaticResource Label}"/>
                 <TextBox   Grid.Row="1" Grid.Column="1" Style="{StaticResource Field}"
-                           ToolTip="{StaticResource StructureEditor_MetaVersionToolTip}"
+                           ToolTip="{DynamicResource StructureEditor_MetaVersionToolTip}"
                            Text="{Binding Version, UpdateSourceTrigger=PropertyChanged}"/>
 
-                <TextBlock Grid.Row="2" Grid.Column="0" Text="{StaticResource StructureEditor_MetaAuthorLabel}"         Style="{StaticResource Label}"/>
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="{DynamicResource StructureEditor_MetaAuthorLabel}"         Style="{StaticResource Label}"/>
                 <TextBox   Grid.Row="2" Grid.Column="1" Style="{StaticResource Field}"
-                           ToolTip="{StaticResource StructureEditor_MetaAuthorToolTip}"
+                           ToolTip="{DynamicResource StructureEditor_MetaAuthorToolTip}"
                            Text="{Binding Author, UpdateSourceTrigger=PropertyChanged}"/>
 
-                <TextBlock Grid.Row="3" Grid.Column="0" Text="{StaticResource StructureEditor_MetaCategoryLabel}"       Style="{StaticResource Label}"/>
+                <TextBlock Grid.Row="3" Grid.Column="0" Text="{DynamicResource StructureEditor_MetaCategoryLabel}"       Style="{StaticResource Label}"/>
                 <ComboBox  Grid.Row="3" Grid.Column="1" Style="{StaticResource Combo}"
                            IsEditable="True"
-                           ToolTip="{StaticResource StructureEditor_MetaCategoryToolTip}"
+                           ToolTip="{DynamicResource StructureEditor_MetaCategoryToolTip}"
                            Text="{Binding Category, UpdateSourceTrigger=PropertyChanged}"
                            ItemsSource="{Binding CategoryOptions}"/>
 
-                <TextBlock Grid.Row="4" Grid.Column="0" Text="{StaticResource StructureEditor_MetaDiffModeLabel}"      Style="{StaticResource Label}"/>
+                <TextBlock Grid.Row="4" Grid.Column="0" Text="{DynamicResource StructureEditor_MetaDiffModeLabel}"      Style="{StaticResource Label}"/>
                 <ComboBox  Grid.Row="4" Grid.Column="1" Style="{StaticResource Combo}"
-                           ToolTip="{StaticResource StructureEditor_MetaDiffModeToolTip}"
+                           ToolTip="{DynamicResource StructureEditor_MetaDiffModeToolTip}"
                            ItemsSource="{Binding DiffModeOptions}"
                            SelectedItem="{Binding DiffMode}"/>
 
-                <TextBlock Grid.Row="5" Grid.Column="0" Text="{StaticResource StructureEditor_MetaPreferredEditorLabel}" Style="{StaticResource Label}"/>
+                <TextBlock Grid.Row="5" Grid.Column="0" Text="{DynamicResource StructureEditor_MetaPreferredEditorLabel}" Style="{StaticResource Label}"/>
                 <ComboBox  Grid.Row="5" Grid.Column="1" Style="{StaticResource Combo}"
-                           ToolTip="{StaticResource StructureEditor_MetaPreferredEditorToolTip}"
+                           ToolTip="{DynamicResource StructureEditor_MetaPreferredEditorToolTip}"
                            ItemsSource="{Binding PreferredEditorOptions}"
                            SelectedItem="{Binding PreferredEditor}"/>
             </Grid>
 
             <!-- Description -->
-            <TextBlock Text="{StaticResource StructureEditor_MetaDescriptionLabel}" Style="{StaticResource Label}" Margin="0,4,0,2"/>
+            <TextBlock Text="{DynamicResource StructureEditor_MetaDescriptionLabel}" Style="{StaticResource Label}" Margin="0,4,0,2"/>
             <TextBox Style="{StaticResource Field}"
                      Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}"
                      AcceptsReturn="True" TextWrapping="Wrap" Height="60"
                      VerticalScrollBarVisibility="Auto"/>
 
             <!-- IsTextFormat -->
-            <CheckBox Content="{StaticResource StructureEditor_MetaIsTextFormat}"
+            <CheckBox Content="{DynamicResource StructureEditor_MetaIsTextFormat}"
                       IsChecked="{Binding IsTextFormat}"
                       Foreground="{DynamicResource TE_Foreground}"
                       FontSize="11" Margin="0,6,0,0"/>
 
             <!-- ── Extensions ──────────────────────────────────────── -->
-            <TextBlock Text="{StaticResource StructureEditor_MetaExtensionsLabel}" Style="{StaticResource SectionHeader}"/>
+            <TextBlock Text="{DynamicResource StructureEditor_MetaExtensionsLabel}" Style="{StaticResource SectionHeader}"/>
             <ItemsControl ItemsSource="{Binding Extensions}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
@@ -125,13 +125,13 @@
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
-            <Button Content="{StaticResource StructureEditor_MetaAddExtensionButton}" FontSize="11" Padding="6,2" Margin="0,4,0,0"
+            <Button Content="{DynamicResource StructureEditor_MetaAddExtensionButton}" FontSize="11" Padding="6,2" Margin="0,4,0,0"
                     HorizontalAlignment="Left"
                     x:Name="AddExtBtn" Click="OnAddExtension"
                     Style="{DynamicResource PM_LinkButtonStyle}"/>
 
             <!-- ── MIME Types ───────────────────────────────────────── -->
-            <TextBlock Text="{StaticResource StructureEditor_MetaMimeTypesLabel}" Style="{StaticResource SectionHeader}"/>
+            <TextBlock Text="{DynamicResource StructureEditor_MetaMimeTypesLabel}" Style="{StaticResource SectionHeader}"/>
             <ItemsControl ItemsSource="{Binding MimeTypes}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
@@ -144,13 +144,13 @@
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
-            <Button Content="{StaticResource StructureEditor_MetaAddMimeButton}" FontSize="11" Padding="6,2" Margin="0,4,0,0"
+            <Button Content="{DynamicResource StructureEditor_MetaAddMimeButton}" FontSize="11" Padding="6,2" Margin="0,4,0,0"
                     HorizontalAlignment="Left"
                     x:Name="AddMimeBtn" Click="OnAddMimeType"
                     Style="{DynamicResource PM_LinkButtonStyle}"/>
 
             <!-- ── Software ─────────────────────────────────────────── -->
-            <TextBlock Text="{StaticResource StructureEditor_MetaSoftwareLabel}" Style="{StaticResource SectionHeader}"/>
+            <TextBlock Text="{DynamicResource StructureEditor_MetaSoftwareLabel}" Style="{StaticResource SectionHeader}"/>
             <ItemsControl ItemsSource="{Binding Software}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
@@ -163,7 +163,7 @@
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
-            <Button Content="{StaticResource StructureEditor_MetaAddSoftwareButton}" FontSize="11" Padding="6,2" Margin="0,4,0,12"
+            <Button Content="{DynamicResource StructureEditor_MetaAddSoftwareButton}" FontSize="11" Padding="6,2" Margin="0,4,0,12"
                     HorizontalAlignment="Left"
                     x:Name="AddSoftwareBtn" Click="OnAddSoftware"
                     Style="{DynamicResource PM_LinkButtonStyle}"/>

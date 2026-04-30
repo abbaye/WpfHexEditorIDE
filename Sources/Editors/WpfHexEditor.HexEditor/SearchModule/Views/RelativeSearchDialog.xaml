@@ -14,7 +14,7 @@
         xmlns:p="clr-namespace:WpfHexEditor.Core.Properties;assembly=WpfHexEditor.Core"
         xmlns:ec="clr-namespace:WpfHexEditor.Editor.Core.Views;assembly=WpfHexEditor.Editor.Core"
         mc:Ignorable="d"
-        Title="{StaticResource RelativeSearchString}"
+        Title="{DynamicResource RelativeSearchString}"
         Height="700" Width="900"
         MinHeight="500" MinWidth="700"
         ResizeMode="CanResize"
@@ -76,7 +76,7 @@
         </Grid.RowDefinitions>
 
         <!-- Search Input Section -->
-        <GroupBox Grid.Row="0" Header="{StaticResource RelativeSearchKnownTextString}" Padding="10" Margin="0,0,0,10">
+        <GroupBox Grid.Row="0" Header="{DynamicResource RelativeSearchKnownTextString}" Padding="10" Margin="0,0,0,10">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -89,7 +89,7 @@
                          Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
                          Height="26"
                          VerticalContentAlignment="Center"
-                         ToolTip="{StaticResource RelativeSearchKnownTextTooltipString}">
+                         ToolTip="{DynamicResource RelativeSearchKnownTextTooltipString}">
                     <TextBox.InputBindings>
                         <KeyBinding Key="Enter" Command="{Binding SearchCommand}"/>
                     </TextBox.InputBindings>
@@ -97,23 +97,23 @@
 
                 <!-- Options Row -->
                 <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,10,0,0">
-                    <Button Content="{StaticResource RelativeSearchSearchButtonString}"
+                    <Button Content="{DynamicResource RelativeSearchSearchButtonString}"
                             Command="{Binding SearchCommand}"
                             Style="{StaticResource PrimaryButtonStyle}"
                             MinWidth="100"/>
-                    <Button Content="{StaticResource CancelString}"
+                    <Button Content="{DynamicResource CancelString}"
                             Command="{Binding CancelSearchCommand}"
                             Style="{StaticResource DialogButtonStyle}"
                             MinWidth="100"/>
 
                     <Separator Width="20" Background="Transparent"/>
 
-                    <CheckBox Content="{StaticResource RelativeSearchUseParallelString}"
+                    <CheckBox Content="{DynamicResource RelativeSearchUseParallelString}"
                               IsChecked="{Binding UseParallelSearch}"
                               VerticalAlignment="Center"
                               Margin="10,0,20,0"/>
 
-                    <TextBlock Text="{StaticResource RelativeSearchMinMatchesString}"
+                    <TextBlock Text="{DynamicResource RelativeSearchMinMatchesString}"
                                VerticalAlignment="Center"
                                Margin="0,0,5,0"/>
                     <TextBox Text="{Binding MinMatches}"
@@ -121,7 +121,7 @@
                              Height="26"
                              VerticalContentAlignment="Center"/>
 
-                    <TextBlock Text="{StaticResource RelativeSearchMaxProposalsString}"
+                    <TextBlock Text="{DynamicResource RelativeSearchMaxProposalsString}"
                                VerticalAlignment="Center"
                                Margin="15,0,5,0"/>
                     <TextBox Text="{Binding MaxProposals}"
@@ -141,7 +141,7 @@
         </GroupBox>
 
         <!-- Proposals DataGrid -->
-        <GroupBox Grid.Row="1" Header="{StaticResource RelativeSearchProposalsHeaderString}" Padding="10" Margin="0,0,0,10">
+        <GroupBox Grid.Row="1" Header="{DynamicResource RelativeSearchProposalsHeaderString}" Padding="10" Margin="0,0,0,10">
             <DataGrid ItemsSource="{Binding Proposals}"
                       SelectedItem="{Binding SelectedProposal}"
                       AutoGenerateColumns="False"
@@ -153,17 +153,17 @@
                       CanUserReorderColumns="False"
                       AlternatingRowBackground="#F5F5F5">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="{StaticResource RelativeSearchOffsetColumnString}"
+                    <DataGridTextColumn Header="{DynamicResource RelativeSearchOffsetColumnString}"
                                         Binding="{Binding Offset, StringFormat='+{0:D3}'}"
                                         Width="80"/>
-                    <DataGridTextColumn Header="{StaticResource RelativeSearchScoreColumnString}"
+                    <DataGridTextColumn Header="{DynamicResource RelativeSearchScoreColumnString}"
                                         Binding="{Binding Score, StringFormat=F1}"
                                         Width="70"
                                         SortDirection="Descending"/>
-                    <DataGridTextColumn Header="{StaticResource RelativeSearchMatchesColumnString}"
+                    <DataGridTextColumn Header="{DynamicResource RelativeSearchMatchesColumnString}"
                                         Binding="{Binding MatchCount}"
                                         Width="80"/>
-                    <DataGridTextColumn Header="{StaticResource RelativeSearchSampleColumnString}"
+                    <DataGridTextColumn Header="{DynamicResource RelativeSearchSampleColumnString}"
                                         Binding="{Binding SampleText}"
                                         Width="*"/>
                 </DataGrid.Columns>
@@ -171,7 +171,7 @@
         </GroupBox>
 
         <!-- Preview Section -->
-        <GroupBox Grid.Row="2" Header="{StaticResource RelativeSearchPreviewHeaderString}" Padding="10" Margin="0,0,0,10">
+        <GroupBox Grid.Row="2" Header="{DynamicResource RelativeSearchPreviewHeaderString}" Padding="10" Margin="0,0,0,10">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
@@ -222,16 +222,16 @@
 
             <!-- Action Buttons -->
             <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
-                <Button Content="{StaticResource RelativeSearchExportTblString}"
+                <Button Content="{DynamicResource RelativeSearchExportTblString}"
                         Command="{Binding ExportToTblCommand}"
                         Style="{StaticResource PrimaryButtonStyle}"
                         MinWidth="110"
-                        ToolTip="{StaticResource RelativeSearchExportTooltipString}"/>
-                <Button Content="{StaticResource RelativeSearchNavigateString}"
+                        ToolTip="{DynamicResource RelativeSearchExportTooltipString}"/>
+                <Button Content="{DynamicResource RelativeSearchNavigateString}"
                         Command="{Binding NavigateToMatchCommand}"
                         Style="{StaticResource DialogButtonStyle}"
                         MinWidth="110"/>
-                <Button Content="{StaticResource CloseString}"
+                <Button Content="{DynamicResource CloseString}"
                         IsCancel="True"
                         Style="{StaticResource DialogButtonStyle}"
                         Click="CloseButton_Click"/>

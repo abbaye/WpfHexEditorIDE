@@ -68,7 +68,7 @@
                            Margin="0,0,0,14"/>
 
                 <!-- Cancel Button -->
-                <Button Content="{StaticResource ProgressButtonCancel}"
+                <Button Content="{DynamicResource ProgressButtonCancel}"
                         Command="{Binding CancelCommand}"
                         Visibility="{Binding CanCancel, Converter={StaticResource BoolToVisibilityConverter}}"
                         Padding="20,6"

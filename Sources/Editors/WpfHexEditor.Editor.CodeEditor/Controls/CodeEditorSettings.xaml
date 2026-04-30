@@ -28,14 +28,14 @@
                 Padding="8"
                 TextElement.Foreground="{DynamicResource Panel_ToolbarForegroundBrush}">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                <Button x:Name="ResetButton" Content="{StaticResource CodeEditorSettings_ResetButtonContent}" Padding="8,4" Margin="0,0,5,0"
-                        ToolTip="{StaticResource CodeEditorSettings_ResetButtonToolTip}"
+                <Button x:Name="ResetButton" Content="{DynamicResource CodeEditorSettings_ResetButtonContent}" Padding="8,4" Margin="0,0,5,0"
+                        ToolTip="{DynamicResource CodeEditorSettings_ResetButtonToolTip}"
                         Click="ResetButton_Click"/>
-                <Button x:Name="ExportButton" Content="{StaticResource CodeEditorSettings_ExportButtonContent}" Padding="8,4" Margin="0,0,5,0"
-                        ToolTip="{StaticResource CodeEditorSettings_ExportButtonToolTip}"
+                <Button x:Name="ExportButton" Content="{DynamicResource CodeEditorSettings_ExportButtonContent}" Padding="8,4" Margin="0,0,5,0"
+                        ToolTip="{DynamicResource CodeEditorSettings_ExportButtonToolTip}"
                         Click="ExportButton_Click"/>
-                <Button x:Name="ImportButton" Content="{StaticResource CodeEditorSettings_ImportButtonContent}" Padding="8,4"
-                        ToolTip="{StaticResource CodeEditorSettings_ImportButtonToolTip}"
+                <Button x:Name="ImportButton" Content="{DynamicResource CodeEditorSettings_ImportButtonContent}" Padding="8,4"
+                        ToolTip="{DynamicResource CodeEditorSettings_ImportButtonToolTip}"
                         Click="ImportButton_Click"/>
             </StackPanel>
         </Border>
@@ -72,7 +72,7 @@
                             BorderBrush="{DynamicResource Panel_ToolbarBorderBrush}"
                             BorderThickness="0,0,0,1"
                             Padding="8">
-                        <TextBlock Text="{StaticResource CodeEditorSettings_PreviewHeader}"
+                        <TextBlock Text="{DynamicResource CodeEditorSettings_PreviewHeader}"
                                    FontWeight="Bold"
                                    FontSize="13"
                                    Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
@@ -86,7 +86,7 @@
                                 BorderThickness="1">
                             <!-- CodeEditor preview will be added here programmatically -->
                             <TextBlock x:Name="PreviewPlaceholder"
-                                       Text="{StaticResource CodeEditorSettings_PreviewPlaceholder}"
+                                       Text="{DynamicResource CodeEditorSettings_PreviewPlaceholder}"
                                        VerticalAlignment="Center" HorizontalAlignment="Center"
                                        Foreground="{DynamicResource PFP_SubTextBrush}"
                                        FontStyle="Italic"/>

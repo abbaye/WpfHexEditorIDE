@@ -22,7 +22,7 @@
         <StackPanel Margin="0,0,0,16">
 
         <!-- ── Font ──────────────────────────────────────────────────────── -->
-        <TextBlock Text="{StaticResource TextOpt_FontSection}"
+        <TextBlock Text="{DynamicResource TextOpt_FontSection}"
                    FontSize="12" FontWeight="SemiBold"
                    Foreground="{DynamicResource Opt_SectionForegroundBrush}"
                    Margin="0,16,0,6"/>
@@ -32,7 +32,7 @@
                 <ColumnDefinition Width="200"/>
                 <ColumnDefinition Width="200"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="{StaticResource TextOpt_FontFamilyLabel}"
+            <TextBlock Text="{DynamicResource TextOpt_FontFamilyLabel}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             <ComboBox x:Name="FontFamilyCombo" Grid.Column="1"
@@ -51,7 +51,7 @@
                 <ColumnDefinition Width="200"/>
                 <ColumnDefinition Width="80"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="{StaticResource TextOpt_FontSizeLabel}"
+            <TextBlock Text="{DynamicResource TextOpt_FontSizeLabel}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             <TextBox x:Name="TxtFontSize" Grid.Column="1"
@@ -63,7 +63,7 @@
                    Background="{DynamicResource DockBorderBrush}"/>
 
         <!-- ── Indentation ───────────────────────────────────────────────── -->
-        <TextBlock Text="{StaticResource TextOpt_IndentSection}"
+        <TextBlock Text="{DynamicResource TextOpt_IndentSection}"
                    FontSize="12" FontWeight="SemiBold"
                    Foreground="{DynamicResource Opt_SectionForegroundBrush}"
                    Margin="0,16,0,6"/>
@@ -73,7 +73,7 @@
                 <ColumnDefinition Width="200"/>
                 <ColumnDefinition Width="80"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="{StaticResource TextOpt_IndentSizeLabel}"
+            <TextBlock Text="{DynamicResource TextOpt_IndentSizeLabel}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             <TextBox x:Name="TxtIndentSize" Grid.Column="1"
@@ -82,7 +82,7 @@
         </Grid>
 
         <CheckBox x:Name="CheckUseSpaces"
-                  Content="{StaticResource TextOpt_UseSpaces}"
+                  Content="{DynamicResource TextOpt_UseSpaces}"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                   Margin="0,0,0,8"
                   Checked="OnCheckChanged"
@@ -92,41 +92,41 @@
                    Background="{DynamicResource DockBorderBrush}"/>
 
         <!-- ── Features ──────────────────────────────────────────────────── -->
-        <TextBlock Text="{StaticResource TextOpt_FeaturesSection}"
+        <TextBlock Text="{DynamicResource TextOpt_FeaturesSection}"
                    FontSize="12" FontWeight="SemiBold"
                    Foreground="{DynamicResource Opt_SectionForegroundBrush}"
                    Margin="0,16,0,6"/>
 
         <CheckBox x:Name="CheckLineNumbers"
-                  Content="{StaticResource TextOpt_ShowLineNumbers}"
+                  Content="{DynamicResource TextOpt_ShowLineNumbers}"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                   Margin="0,0,0,8"
                   Checked="OnCheckChanged"
                   Unchecked="OnCheckChanged"/>
 
         <CheckBox x:Name="CheckShowRefreshRate"
-                  Content="{StaticResource TextOpt_ShowRefreshRate}"
+                  Content="{DynamicResource TextOpt_ShowRefreshRate}"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                   Margin="0,0,0,8"
                   Checked="OnCheckChanged"
                   Unchecked="OnCheckChanged"/>
 
         <CheckBox x:Name="CheckWordWrap"
-                  Content="{StaticResource TextOpt_WordWrap}"
+                  Content="{DynamicResource TextOpt_WordWrap}"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                   Margin="0,0,0,8"
                   Checked="OnCheckChanged"
                   Unchecked="OnCheckChanged"/>
 
         <CheckBox x:Name="CheckClickableLinks"
-                  Content="{StaticResource TextOpt_ClickableLinks}"
+                  Content="{DynamicResource TextOpt_ClickableLinks}"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                   Margin="0,0,0,8"
                   Checked="OnCheckChanged"
                   Unchecked="OnCheckChanged"/>
 
         <CheckBox x:Name="CheckClickableEmails"
-                  Content="{StaticResource TextOpt_ClickableEmails}"
+                  Content="{DynamicResource TextOpt_ClickableEmails}"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                   Margin="0,0,0,8"
                   Checked="OnCheckChanged"
@@ -137,7 +137,7 @@
                 <ColumnDefinition Width="200"/>
                 <ColumnDefinition Width="80"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="{StaticResource TextOpt_DefaultZoomLabel}"
+            <TextBlock Text="{DynamicResource TextOpt_DefaultZoomLabel}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             <TextBox x:Name="TxtZoom" Grid.Column="1"
@@ -151,7 +151,7 @@
                 <ColumnDefinition Width="200"/>
                 <ColumnDefinition Width="160"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="{StaticResource TextOpt_MouseWheelLabel}"
+            <TextBlock Text="{DynamicResource TextOpt_MouseWheelLabel}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             <ComboBox x:Name="MouseWheelCombo"
@@ -163,13 +163,13 @@
                    Background="{DynamicResource DockBorderBrush}"/>
 
         <!-- ── Changeset (.whchg) ─────────────────────────────────────────── -->
-        <TextBlock Text="{StaticResource TextOpt_ChangesetSection}"
+        <TextBlock Text="{DynamicResource TextOpt_ChangesetSection}"
                    FontSize="12" FontWeight="SemiBold"
                    Foreground="{DynamicResource Opt_SectionForegroundBrush}"
                    Margin="0,16,0,6"/>
 
         <CheckBox x:Name="CheckChangeset"
-                  Content="{StaticResource TextOpt_TrackEdits}"
+                  Content="{DynamicResource TextOpt_TrackEdits}"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                   Margin="0,0,0,8"
                   IsEnabled="False"
@@ -181,12 +181,12 @@
                    Background="{DynamicResource DockBorderBrush}"/>
 
         <!-- ── Syntax colours ────────────────────────────────────────────── -->
-        <TextBlock Text="{StaticResource TextOpt_SyntaxSection}"
+        <TextBlock Text="{DynamicResource TextOpt_SyntaxSection}"
                    FontSize="12" FontWeight="SemiBold"
                    Foreground="{DynamicResource Opt_SectionForegroundBrush}"
                    Margin="0,16,0,6"/>
 
-        <TextBlock Text="{StaticResource TextOpt_SyntaxNote}"
+        <TextBlock Text="{DynamicResource TextOpt_SyntaxNote}"
                    FontSize="11"
                    Foreground="{DynamicResource DockMenuForegroundBrush}"
                    Opacity="0.65"
@@ -239,7 +239,7 @@
                 <ColumnDefinition Width="24"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="{StaticResource TextOpt_Keyword}"
+            <TextBlock Text="{DynamicResource TextOpt_Keyword}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             <CheckBox x:Name="ChkKw" Grid.Column="1"
@@ -259,7 +259,7 @@
                 <ColumnDefinition Width="24"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="{StaticResource TextOpt_String}"
+            <TextBlock Text="{DynamicResource TextOpt_String}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             <CheckBox x:Name="ChkStr" Grid.Column="1"
@@ -279,7 +279,7 @@
                 <ColumnDefinition Width="24"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="{StaticResource TextOpt_Comment}"
+            <TextBlock Text="{DynamicResource TextOpt_Comment}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             <CheckBox x:Name="ChkCmt" Grid.Column="1"

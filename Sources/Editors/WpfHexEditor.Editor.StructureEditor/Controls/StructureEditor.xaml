@@ -89,39 +89,39 @@
                         BorderThickness="0"
                         ItemContainerStyle="{DynamicResource DockTabItemStyle}">
 
-                <TabItem Header="{StaticResource StructureEditor_TabMetadata}">
+                <TabItem Header="{DynamicResource StructureEditor_TabMetadata}">
                     <ScrollViewer VerticalScrollBarVisibility="Auto">
                         <tabs:MetadataTab x:Name="MetadataTabCtrl"/>
                     </ScrollViewer>
                 </TabItem>
 
-                <TabItem Header="{StaticResource StructureEditor_TabDetection}">
+                <TabItem Header="{DynamicResource StructureEditor_TabDetection}">
                     <ScrollViewer VerticalScrollBarVisibility="Auto">
                         <tabs:DetectionTab x:Name="DetectionTabCtrl"/>
                     </ScrollViewer>
                 </TabItem>
 
-                <TabItem Header="{StaticResource StructureEditor_TabBlocks}">
+                <TabItem Header="{DynamicResource StructureEditor_TabBlocks}">
                     <tabs:BlocksTab x:Name="BlocksTabCtrl"/>
                 </TabItem>
 
-                <TabItem Header="{StaticResource StructureEditor_TabVariables}">
+                <TabItem Header="{DynamicResource StructureEditor_TabVariables}">
                     <tabs:VariablesTab x:Name="VariablesTabCtrl"/>
                 </TabItem>
 
-                <TabItem Header="{StaticResource StructureEditor_TabAdvanced}">
+                <TabItem Header="{DynamicResource StructureEditor_TabAdvanced}">
                     <ScrollViewer VerticalScrollBarVisibility="Auto">
                         <tabs:V2FeaturesTab x:Name="V2TabCtrl"/>
                     </ScrollViewer>
                 </TabItem>
 
-                <TabItem Header="{StaticResource StructureEditor_TabQuality}">
+                <TabItem Header="{DynamicResource StructureEditor_TabQuality}">
                     <ScrollViewer VerticalScrollBarVisibility="Auto">
                         <tabs:QualityMetricsTab x:Name="QualityTabCtrl"/>
                     </ScrollViewer>
                 </TabItem>
 
-                <TabItem Header="{StaticResource StructureEditor_TabTest}">
+                <TabItem Header="{DynamicResource StructureEditor_TabTest}">
                     <tabs:TestTab x:Name="TestTabCtrl"/>
                 </TabItem>
 
@@ -175,7 +175,7 @@
                        Foreground="{DynamicResource ET_AccentBrush}"
                        Visibility="Collapsed"
                        IsHitTestVisible="False"
-                       ToolTip="{StaticResource StructureEditor_UnsavedChangesToolTip}"/>
+                       ToolTip="{DynamicResource StructureEditor_UnsavedChangesToolTip}"/>
 
         </Grid>
 

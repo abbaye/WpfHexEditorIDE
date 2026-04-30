@@ -1,7 +1,7 @@
 <Window x:Class="WpfHexEditor.Editor.DocumentEditor.Controls.DocumentFindReplaceDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="{StaticResource DocFindReplace_Title}"
+        Title="{DynamicResource DocFindReplace_Title}"
         Width="420" SizeToContent="Height"
         ResizeMode="NoResize"
         ShowInTaskbar="False"
@@ -10,33 +10,33 @@
     <StackPanel Margin="12">
         <!-- Find row -->
         <DockPanel Margin="0,0,0,6">
-            <TextBlock Text="{StaticResource DocFindReplace_FindLabel}" Width="60" VerticalAlignment="Center"/>
+            <TextBlock Text="{DynamicResource DocFindReplace_FindLabel}" Width="60" VerticalAlignment="Center"/>
             <TextBox x:Name="PART_SearchBox" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
                      Height="24" FontSize="12"/>
         </DockPanel>
         <!-- Replace row -->
         <DockPanel x:Name="PART_ReplaceRow" Margin="0,0,0,6">
-            <TextBlock Text="{StaticResource DocFindReplace_ReplaceLabel}" Width="60" VerticalAlignment="Center"/>
+            <TextBlock Text="{DynamicResource DocFindReplace_ReplaceLabel}" Width="60" VerticalAlignment="Center"/>
             <TextBox x:Name="PART_ReplaceBox" Text="{Binding ReplaceText, UpdateSourceTrigger=PropertyChanged}"
                      Height="24" FontSize="12"/>
         </DockPanel>
         <!-- Options -->
         <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-            <CheckBox Content="{StaticResource DocFindReplace_MatchCase}"  IsChecked="{Binding MatchCase}" Margin="0,0,12,0"/>
-            <CheckBox Content="{StaticResource DocFindReplace_WholeWord}"  IsChecked="{Binding WholeWord}" Margin="0,0,12,0"/>
-            <CheckBox Content="{StaticResource DocFindReplace_Regex}"       IsChecked="{Binding UseRegex}"/>
+            <CheckBox Content="{DynamicResource DocFindReplace_MatchCase}"  IsChecked="{Binding MatchCase}" Margin="0,0,12,0"/>
+            <CheckBox Content="{DynamicResource DocFindReplace_WholeWord}"  IsChecked="{Binding WholeWord}" Margin="0,0,12,0"/>
+            <CheckBox Content="{DynamicResource DocFindReplace_Regex}"       IsChecked="{Binding UseRegex}"/>
         </StackPanel>
         <!-- Status -->
         <TextBlock Text="{Binding StatusText}" FontSize="11" Margin="0,0,0,8"
                    Foreground="{DynamicResource DockMenuForegroundBrush}"/>
         <!-- Buttons -->
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button Content="{StaticResource DocFindReplace_FindAll}"     Command="{Binding FindAllCommand}"      Width="72" Margin="0,0,4,0"/>
-            <Button Content="{StaticResource DocFindReplace_FindNext}"    Command="{Binding FindNextCommand}"     Width="72" Margin="0,0,4,0"/>
-            <Button Content="{StaticResource DocFindReplace_FindPrev}"    Command="{Binding FindPreviousCommand}" Width="72" Margin="0,0,4,0"/>
-            <Button Content="{StaticResource DocFindReplace_Replace}"      Command="{Binding ReplaceNextCommand}"  Width="72" Margin="0,0,4,0"/>
-            <Button Content="{StaticResource DocFindReplace_ReplaceAll}"  Command="{Binding ReplaceAllCommand}"   Width="80" Margin="0,0,4,0"/>
-            <Button Content="{StaticResource DocFindReplace_Close}"        Click="OnCloseClicked"                  Width="60"/>
+            <Button Content="{DynamicResource DocFindReplace_FindAll}"     Command="{Binding FindAllCommand}"      Width="72" Margin="0,0,4,0"/>
+            <Button Content="{DynamicResource DocFindReplace_FindNext}"    Command="{Binding FindNextCommand}"     Width="72" Margin="0,0,4,0"/>
+            <Button Content="{DynamicResource DocFindReplace_FindPrev}"    Command="{Binding FindPreviousCommand}" Width="72" Margin="0,0,4,0"/>
+            <Button Content="{DynamicResource DocFindReplace_Replace}"      Command="{Binding ReplaceNextCommand}"  Width="72" Margin="0,0,4,0"/>
+            <Button Content="{DynamicResource DocFindReplace_ReplaceAll}"  Command="{Binding ReplaceAllCommand}"   Width="80" Margin="0,0,4,0"/>
+            <Button Content="{DynamicResource DocFindReplace_Close}"        Click="OnCloseClicked"                  Width="60"/>
         </StackPanel>
     </StackPanel>
 </Window>

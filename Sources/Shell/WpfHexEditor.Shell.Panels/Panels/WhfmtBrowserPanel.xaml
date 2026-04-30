@@ -79,17 +79,17 @@
                                             </Border.Effect>
                                             <StackPanel Orientation="Horizontal">
                                                 <Button x:Name="PopOpenBtn" Style="{StaticResource PopRowButton}"
-                                                        ToolTip="{StaticResource WhfmtBrowser_OpenInEditorToolTip}">
+                                                        ToolTip="{DynamicResource WhfmtBrowser_OpenInEditorToolTip}">
                                                     <TextBlock Text="&#xE7AC;" FontFamily="Segoe MDL2 Assets" FontSize="11"
                                                                Foreground="{DynamicResource SE_ForegroundBrush}"/>
                                                 </Button>
                                                 <Button x:Name="PopExportBtn" Style="{StaticResource PopRowButton}"
-                                                        ToolTip="{StaticResource WhfmtBrowser_ExportToFileToolTip}">
+                                                        ToolTip="{DynamicResource WhfmtBrowser_ExportToFileToolTip}">
                                                     <TextBlock Text="&#xE74E;" FontFamily="Segoe MDL2 Assets" FontSize="11"
                                                                Foreground="{DynamicResource SE_ForegroundBrush}"/>
                                                 </Button>
                                                 <Button x:Name="PopJsonBtn" Style="{StaticResource PopRowButton}"
-                                                        ToolTip="{StaticResource WhfmtBrowser_ViewJsonToolTip}">
+                                                        ToolTip="{DynamicResource WhfmtBrowser_ViewJsonToolTip}">
                                                     <TextBlock Text="&#xE943;" FontFamily="Segoe MDL2 Assets" FontSize="11"
                                                                Foreground="{DynamicResource SE_ForegroundBrush}"/>
                                                 </Button>
@@ -152,7 +152,7 @@
                 <TextBlock Text="&#xE783;" FontFamily="Segoe MDL2 Assets" FontSize="10"
                            Margin="5,0,0,0" VerticalAlignment="Center"
                            Foreground="{DynamicResource Panel_WarningTextBrush}"
-                           ToolTip="{StaticResource WhfmtBrowser_LoadFailureIndicator}"
+                           ToolTip="{DynamicResource WhfmtBrowser_LoadFailureIndicator}"
                            Visibility="{Binding HasFailures, Converter={StaticResource BoolToVisibility}}"/>
             </StackPanel>
         </DataTemplate>
@@ -227,18 +227,18 @@
         <ContextMenu x:Key="FormatItemContextMenu"
                      Background="{DynamicResource SE_BackgroundBrush}"
                      Foreground="{DynamicResource SE_ForegroundBrush}">
-            <MenuItem Header="{StaticResource WhfmtBrowser_Open}"               Command="{Binding OpenCommand}"/>
-            <MenuItem Header="{StaticResource WhfmtBrowser_OpenReadOnly}"  Command="{Binding OpenReadOnlyCommand}"/>
+            <MenuItem Header="{DynamicResource WhfmtBrowser_Open}"               Command="{Binding OpenCommand}"/>
+            <MenuItem Header="{DynamicResource WhfmtBrowser_OpenReadOnly}"  Command="{Binding OpenReadOnlyCommand}"/>
             <Separator/>
-            <MenuItem Header="{StaticResource WhfmtBrowser_ExportToFile}"    Command="{Binding ExportToFileCommand}"/>
-            <MenuItem Header="{StaticResource WhfmtBrowser_ViewJson}"          Command="{Binding ViewJsonCommand}"/>
-            <MenuItem Header="{StaticResource WhfmtBrowser_CopyPath}"          Command="{Binding CopyPathCommand}"/>
+            <MenuItem Header="{DynamicResource WhfmtBrowser_ExportToFile}"    Command="{Binding ExportToFileCommand}"/>
+            <MenuItem Header="{DynamicResource WhfmtBrowser_ViewJson}"          Command="{Binding ViewJsonCommand}"/>
+            <MenuItem Header="{DynamicResource WhfmtBrowser_CopyPath}"          Command="{Binding CopyPathCommand}"/>
             <Separator/>
-            <MenuItem Header="{StaticResource WhfmtBrowser_Delete}"             Command="{Binding DeleteCommand}"/>
-            <MenuItem Header="{StaticResource WhfmtBrowser_RevealInExplorer}" Command="{Binding RevealInExplorerCommand}"/>
+            <MenuItem Header="{DynamicResource WhfmtBrowser_Delete}"             Command="{Binding DeleteCommand}"/>
+            <MenuItem Header="{DynamicResource WhfmtBrowser_RevealInExplorer}" Command="{Binding RevealInExplorerCommand}"/>
             <Separator/>
-            <MenuItem Header="{StaticResource WhfmtBrowser_DuplicateFormat}"        Command="{Binding DuplicateCommand}"/>
-            <MenuItem Header="{StaticResource WhfmtBrowser_EditInCodeEditor}"      Command="{Binding ViewJsonCommand}"/>
+            <MenuItem Header="{DynamicResource WhfmtBrowser_DuplicateFormat}"        Command="{Binding DuplicateCommand}"/>
+            <MenuItem Header="{DynamicResource WhfmtBrowser_EditInCodeEditor}"      Command="{Binding ViewJsonCommand}"/>
         </ContextMenu>
         </ResourceDictionary>
     </UserControl.Resources>

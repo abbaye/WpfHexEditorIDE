@@ -11,7 +11,7 @@
         <StackPanel Margin="0,0,0,16">
 
         <!-- ── Apparence ──────────────────────────────────────────────────── -->
-        <TextBlock Text="{StaticResource EnvGeneral_AppearanceSection}"
+        <TextBlock Text="{DynamicResource EnvGeneral_AppearanceSection}"
                    FontSize="12" FontWeight="SemiBold"
                    Foreground="{DynamicResource Opt_SectionForegroundBrush}"
                    Margin="0,16,0,6"/>
@@ -21,21 +21,21 @@
                 <ColumnDefinition Width="200"/>
                 <ColumnDefinition Width="200"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="{StaticResource EnvGeneral_ColorThemeLabel}"
+            <TextBlock Text="{DynamicResource EnvGeneral_ColorThemeLabel}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             <ComboBox x:Name="ThemeCombo" Grid.Column="1"
                       SelectionChanged="OnThemeSelectionChanged"/>
         </Grid>
 
-        <TextBlock Text="{StaticResource EnvGeneral_ThemePreviewNote}"
+        <TextBlock Text="{DynamicResource EnvGeneral_ThemePreviewNote}"
                    FontStyle="Italic" FontSize="11"
                    Foreground="{DynamicResource DockMenuForegroundBrush}"
                    Opacity="0.65"
                    Margin="0,4,0,0"/>
 
         <!-- ── Language ──────────────────────────────────────────────────── -->
-        <TextBlock Text="{StaticResource EnvGeneral_LanguageSection}"
+        <TextBlock Text="{DynamicResource EnvGeneral_LanguageSection}"
                    FontSize="12" FontWeight="SemiBold"
                    Foreground="{DynamicResource Opt_SectionForegroundBrush}"
                    Margin="0,16,0,6"/>
@@ -45,14 +45,14 @@
                 <ColumnDefinition Width="200"/>
                 <ColumnDefinition Width="200"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="{StaticResource EnvGeneral_IdeLanguageLabel}"
+            <TextBlock Text="{DynamicResource EnvGeneral_IdeLanguageLabel}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             <ComboBox x:Name="LanguageCombo" Grid.Column="1"
                       SelectionChanged="OnLanguageSelectionChanged"/>
         </Grid>
 
-        <TextBlock Text="{StaticResource EnvGeneral_LanguageRestartNote}"
+        <TextBlock Text="{DynamicResource EnvGeneral_LanguageRestartNote}"
                    FontStyle="Italic" FontSize="11"
                    Foreground="{DynamicResource DockMenuForegroundBrush}"
                    Opacity="0.65"

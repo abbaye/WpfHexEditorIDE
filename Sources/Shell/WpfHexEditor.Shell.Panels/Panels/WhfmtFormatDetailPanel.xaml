@@ -31,7 +31,7 @@
 
     <Grid>
         <!-- Empty placeholder -->
-        <TextBlock Text="{StaticResource WhfmtDetail_EmptyPlaceholder}"
+        <TextBlock Text="{DynamicResource WhfmtDetail_EmptyPlaceholder}"
                    HorizontalAlignment="Center" VerticalAlignment="Center"
                    FontStyle="Italic" FontSize="12"
                    Foreground="{DynamicResource SE_ForegroundBrush}" Opacity="0.4">
@@ -68,19 +68,19 @@
                     <StackPanel Grid.Column="0" Orientation="Horizontal">
                         <Button Style="{StaticResource DetailIconButton}"
                                 Command="{Binding OpenCommand}"
-                                ToolTip="{StaticResource WhfmtDetail_OpenInEditorToolTip}">
+                                ToolTip="{DynamicResource WhfmtDetail_OpenInEditorToolTip}">
                             <TextBlock Text="&#xE7AC;" FontFamily="Segoe MDL2 Assets" FontSize="12"
                                        Foreground="{DynamicResource SE_ForegroundBrush}"/>
                         </Button>
                         <Button Style="{StaticResource DetailIconButton}"
                                 Command="{Binding ExportCommand}"
-                                ToolTip="{StaticResource WhfmtDetail_ExportToFileToolTip}">
+                                ToolTip="{DynamicResource WhfmtDetail_ExportToFileToolTip}">
                             <TextBlock Text="&#xE74E;" FontFamily="Segoe MDL2 Assets" FontSize="12"
                                        Foreground="{DynamicResource SE_ForegroundBrush}"/>
                         </Button>
                         <Button Style="{StaticResource DetailIconButton}"
                                 Command="{Binding CopyJsonCommand}"
-                                ToolTip="{StaticResource WhfmtDetail_ViewRawJsonToolTip}">
+                                ToolTip="{DynamicResource WhfmtDetail_ViewRawJsonToolTip}">
                             <TextBlock Text="&#xE943;" FontFamily="Segoe MDL2 Assets" FontSize="12"
                                        Foreground="{DynamicResource SE_ForegroundBrush}"/>
                         </Button>
@@ -89,14 +89,14 @@
                         <Button Style="{StaticResource DetailIconButton}"
                                 Command="{Binding RetryLoadCommand}"
                                 Visibility="{Binding IsLoadFailure, Converter={StaticResource BoolToVis}}"
-                                ToolTip="{StaticResource WhfmtDetail_RetryLoadToolTip}">
+                                ToolTip="{DynamicResource WhfmtDetail_RetryLoadToolTip}">
                             <TextBlock Text="&#xE72C;" FontFamily="Segoe MDL2 Assets" FontSize="12"
                                        Foreground="{DynamicResource Panel_WarningTextBrush}"/>
                         </Button>
                         <Button Style="{StaticResource DetailIconButton}"
                                 Command="{Binding ExcludeCommand}"
                                 Visibility="{Binding IsLoadFailure, Converter={StaticResource BoolToVis}}"
-                                ToolTip="{StaticResource WhfmtDetail_ExcludeFromCatalogToolTip}">
+                                ToolTip="{DynamicResource WhfmtDetail_ExcludeFromCatalogToolTip}">
                             <TextBlock Text="&#xEBD3;" FontFamily="Segoe MDL2 Assets" FontSize="12"
                                        Foreground="{DynamicResource Panel_WarningTextBrush}"/>
                         </Button>
@@ -107,7 +107,7 @@
                         <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="11" Text="&#xE73E;"
                                    VerticalAlignment="Center"
                                    Foreground="{DynamicResource SE_AccentBrush}"
-                                   ToolTip="{StaticResource WhfmtDetail_FormatLoadedSuccessfully}">
+                                   ToolTip="{DynamicResource WhfmtDetail_FormatLoadedSuccessfully}">
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="Visibility" Value="Visible"/>
@@ -122,7 +122,7 @@
                         <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="11" Text="&#xEB90;"
                                    VerticalAlignment="Center"
                                    Foreground="{DynamicResource Panel_WarningTextBrush}"
-                                   ToolTip="{StaticResource WhfmtDetail_FormatLoadFailed}"
+                                   ToolTip="{DynamicResource WhfmtDetail_FormatLoadFailed}"
                                    Visibility="{Binding IsLoadFailure, Converter={StaticResource BoolToVis}}"/>
                     </StackPanel>
                 </Grid>
@@ -147,7 +147,7 @@
                             Style="{StaticResource WE_DetailTabControl}">
 
                     <!-- ════ Tab 1: Overview — compact VS-style card ════ -->
-                    <TabItem Style="{StaticResource WE_DetailTabItem}" Header="{StaticResource WhfmtDetail_OverviewTab}">
+                    <TabItem Style="{StaticResource WE_DetailTabItem}" Header="{DynamicResource WhfmtDetail_OverviewTab}">
                         <ScrollViewer VerticalScrollBarVisibility="Auto"
                                       HorizontalScrollBarVisibility="Disabled">
                             <StackPanel>
@@ -218,25 +218,25 @@
                                             <RowDefinition Height="Auto"/>
                                         </Grid.RowDefinitions>
                                         <!-- Version -->
-                                        <TextBlock Grid.Row="0" Grid.Column="0" Text="{StaticResource WhfmtDetail_VersionLabel}"
+                                        <TextBlock Grid.Row="0" Grid.Column="0" Text="{DynamicResource WhfmtDetail_VersionLabel}"
                                                    Style="{StaticResource MetaLabel}" Margin="0,0,8,2"/>
                                         <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Version}"
                                                    Style="{StaticResource MetaValue}" FontFamily="Consolas" FontSize="10" Margin="0,0,0,2"/>
 
                                         <!-- Author -->
-                                        <TextBlock Grid.Row="1" Grid.Column="0" Text="{StaticResource WhfmtDetail_AuthorLabel}"
+                                        <TextBlock Grid.Row="1" Grid.Column="0" Text="{DynamicResource WhfmtDetail_AuthorLabel}"
                                                    Style="{StaticResource MetaLabel}" Margin="0,0,8,2"/>
                                         <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Author}"
                                                    Style="{StaticResource MetaValue}" Margin="0,0,0,2"/>
 
                                         <!-- Category -->
-                                        <TextBlock Grid.Row="2" Grid.Column="0" Text="{StaticResource WhfmtDetail_CategoryLabel}"
+                                        <TextBlock Grid.Row="2" Grid.Column="0" Text="{DynamicResource WhfmtDetail_CategoryLabel}"
                                                    Style="{StaticResource MetaLabel}" Margin="0,0,8,2"/>
                                         <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding Category}"
                                                    Style="{StaticResource MetaValue}" Margin="0,0,0,2"/>
 
                                         <!-- Extensions -->
-                                        <TextBlock Grid.Row="3" Grid.Column="0" Text="{StaticResource WhfmtDetail_ExtensionsLabel}"
+                                        <TextBlock Grid.Row="3" Grid.Column="0" Text="{DynamicResource WhfmtDetail_ExtensionsLabel}"
                                                    Style="{StaticResource MetaLabel}" Margin="0,0,8,2"/>
                                         <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding ExtensionsDisplay}"
                                                    Style="{StaticResource MetaValue}" FontFamily="Consolas" FontSize="10"
@@ -244,19 +244,19 @@
                                                    TextWrapping="Wrap" Margin="0,0,0,2"/>
 
                                         <!-- Detection -->
-                                        <TextBlock Grid.Row="4" Grid.Column="0" Text="{StaticResource WhfmtDetail_DetectionLabel}"
+                                        <TextBlock Grid.Row="4" Grid.Column="0" Text="{DynamicResource WhfmtDetail_DetectionLabel}"
                                                    Style="{StaticResource MetaLabel}" Margin="0,0,8,2"/>
                                         <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding DetectionRulesSummary}"
                                                    Style="{StaticResource MetaValue}" Margin="0,0,0,2"/>
 
                                         <!-- Blocks -->
-                                        <TextBlock Grid.Row="5" Grid.Column="0" Text="{StaticResource WhfmtDetail_BlocksLabel}"
+                                        <TextBlock Grid.Row="5" Grid.Column="0" Text="{DynamicResource WhfmtDetail_BlocksLabel}"
                                                    Style="{StaticResource MetaLabel}" Margin="0,0,8,2"/>
                                         <TextBlock Grid.Row="5" Grid.Column="1" Text="{Binding BlockCount}"
                                                    Style="{StaticResource MetaValue}" Margin="0,0,0,2"/>
 
                                         <!-- Platform — hidden when "—" -->
-                                        <TextBlock Grid.Row="6" Grid.Column="0" Text="{StaticResource WhfmtDetail_PlatformLabel}">
+                                        <TextBlock Grid.Row="6" Grid.Column="0" Text="{DynamicResource WhfmtDetail_PlatformLabel}">
                                             <TextBlock.Style>
                                                 <Style TargetType="TextBlock" BasedOn="{StaticResource MetaLabel}">
                                                     <Setter Property="Margin" Value="0,0,8,2"/>
@@ -282,7 +282,7 @@
                                         </TextBlock>
 
                                         <!-- Editor — hidden when "—" -->
-                                        <TextBlock Grid.Row="7" Grid.Column="0" Text="{StaticResource WhfmtDetail_EditorLabel}">
+                                        <TextBlock Grid.Row="7" Grid.Column="0" Text="{DynamicResource WhfmtDetail_EditorLabel}">
                                             <TextBlock.Style>
                                                 <Style TargetType="TextBlock" BasedOn="{StaticResource MetaLabel}">
                                                     <Setter Property="Margin" Value="0,0,8,2"/>
@@ -308,7 +308,7 @@
                                         </TextBlock>
 
                                         <!-- DiffMode — hidden when "—" -->
-                                        <TextBlock Grid.Row="8" Grid.Column="0" Text="{StaticResource WhfmtDetail_DiffLabel}">
+                                        <TextBlock Grid.Row="8" Grid.Column="0" Text="{DynamicResource WhfmtDetail_DiffLabel}">
                                             <TextBlock.Style>
                                                 <Style TargetType="TextBlock" BasedOn="{StaticResource MetaLabel}">
                                                     <Setter Property="Margin" Value="0,0,8,2"/>
@@ -347,7 +347,7 @@
                                             <TextBlock Text="&#xE7BA;" FontFamily="Segoe MDL2 Assets" FontSize="11"
                                                        Foreground="{DynamicResource Panel_WarningTextBrush}"
                                                        VerticalAlignment="Center" Margin="0,0,6,0"/>
-                                            <TextBlock Text="{StaticResource WhfmtDetail_LoadErrorTitle}" FontWeight="SemiBold" FontSize="11"
+                                            <TextBlock Text="{DynamicResource WhfmtDetail_LoadErrorTitle}" FontWeight="SemiBold" FontSize="11"
                                                        Foreground="{DynamicResource Panel_WarningTextBrush}"
                                                        VerticalAlignment="Center"/>
                                         </StackPanel>
@@ -361,7 +361,7 @@
                     </TabItem>
 
                     <!-- ════ Tab 2: References ════ -->
-                    <TabItem Header="{StaticResource WhfmtDetail_ReferencesTab}">
+                    <TabItem Header="{DynamicResource WhfmtDetail_ReferencesTab}">
                         <TabItem.Style>
                             <Style TargetType="TabItem" BasedOn="{StaticResource WE_DetailTabItem}">
                                 <Style.Triggers>
@@ -374,7 +374,7 @@
                         </TabItem.Style>
                         <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                             <StackPanel Margin="8,6">
-                                <TextBlock Text="{StaticResource WhfmtDetail_SpecificationsLabel}" Style="{StaticResource MetaLabel}" Margin="0,0,0,4"/>
+                                <TextBlock Text="{DynamicResource WhfmtDetail_SpecificationsLabel}" Style="{StaticResource MetaLabel}" Margin="0,0,0,4"/>
                                 <ItemsControl ItemsSource="{Binding SpecificationsDisplay}">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
@@ -383,7 +383,7 @@
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
-                                <TextBlock Text="{StaticResource WhfmtDetail_WebLinksLabel}" Style="{StaticResource MetaLabel}" Margin="0,8,0,4"/>
+                                <TextBlock Text="{DynamicResource WhfmtDetail_WebLinksLabel}" Style="{StaticResource MetaLabel}" Margin="0,8,0,4"/>
                                 <ItemsControl ItemsSource="{Binding WebLinksDisplay}">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
@@ -400,7 +400,7 @@
                     <TabItem>
                         <TabItem.Header>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{StaticResource WhfmtDetail_AssertionsTab}"/>
+                                <TextBlock Text="{DynamicResource WhfmtDetail_AssertionsTab}"/>
                                 <Border CornerRadius="8" Background="{DynamicResource SE_AccentBrush}"
                                         Padding="4,0" Margin="4,0,0,0" VerticalAlignment="Center"
                                         Visibility="{Binding HasAssertions, Converter={StaticResource BoolToVis}}">
@@ -453,7 +453,7 @@
                     <TabItem>
                         <TabItem.Header>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{StaticResource WhfmtDetail_AIHintsTab}"/>
+                                <TextBlock Text="{DynamicResource WhfmtDetail_AIHintsTab}"/>
                                 <Border CornerRadius="8" Background="{DynamicResource SE_AccentBrush}"
                                         Padding="4,0" Margin="4,0,0,0" VerticalAlignment="Center"
                                         Visibility="{Binding HasAiHints, Converter={StaticResource BoolToVis}}">
@@ -474,10 +474,10 @@
                         </TabItem.Style>
                         <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                             <StackPanel Margin="8,6">
-                                <TextBlock Text="{StaticResource WhfmtDetail_AnalysisContextLabel}" Style="{StaticResource MetaLabel}" Margin="0,0,0,3"/>
+                                <TextBlock Text="{DynamicResource WhfmtDetail_AnalysisContextLabel}" Style="{StaticResource MetaLabel}" Margin="0,0,0,3"/>
                                 <TextBlock Text="{Binding AiAnalysisContext}" FontSize="10" TextWrapping="Wrap"
                                            Foreground="{DynamicResource SE_ForegroundBrush}" Margin="0,0,0,8" LineHeight="15"/>
-                                <TextBlock Text="{StaticResource WhfmtDetail_KnownVulnerabilitiesLabel}" Style="{StaticResource MetaLabel}" Margin="0,0,0,4"/>
+                                <TextBlock Text="{DynamicResource WhfmtDetail_KnownVulnerabilitiesLabel}" Style="{StaticResource MetaLabel}" Margin="0,0,0,4"/>
                                 <ItemsControl ItemsSource="{Binding AiVulnerabilities}">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>

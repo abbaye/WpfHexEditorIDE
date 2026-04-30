@@ -11,19 +11,19 @@
         <StackPanel Margin="0,0,0,16">
 
             <!-- ── Split Behavior ──────────────────────────────────────────── -->
-            <TextBlock Text="{StaticResource TabGroups_SplitSection}"
+            <TextBlock Text="{DynamicResource TabGroups_SplitSection}"
                    FontSize="12" FontWeight="SemiBold"
                    Foreground="{DynamicResource Opt_SectionForegroundBrush}"
                    Margin="0,16,0,6"/>
 
             <CheckBox x:Name="ChkEnforceEqualSize"
-                      Content="{StaticResource TabGroups_EnforceEqualSize}"
+                      Content="{DynamicResource TabGroups_EnforceEqualSize}"
                       Foreground="{DynamicResource DockMenuForegroundBrush}"
                       Margin="0,0,0,8"
                       Checked="OnChanged" Unchecked="OnChanged"/>
 
             <DockPanel Margin="0,0,0,6">
-                <TextBlock Text="{StaticResource TabGroups_MinWidthLabel}"
+                <TextBlock Text="{DynamicResource TabGroups_MinWidthLabel}"
                            Width="200"
                            VerticalAlignment="Center"
                            Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -36,7 +36,7 @@
             </DockPanel>
 
             <DockPanel Margin="0,0,0,0">
-                <TextBlock Text="{StaticResource TabGroups_MinHeightLabel}"
+                <TextBlock Text="{DynamicResource TabGroups_MinHeightLabel}"
                            Width="200"
                            VerticalAlignment="Center"
                            Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -51,13 +51,13 @@
             <Separator Margin="0,16,0,16" Background="{DynamicResource DockBorderBrush}"/>
 
             <!-- ── Visual ──────────────────────────────────────────────────── -->
-            <TextBlock Text="{StaticResource TabGroups_VisualSection}"
+            <TextBlock Text="{DynamicResource TabGroups_VisualSection}"
                    FontSize="12" FontWeight="SemiBold"
                    Foreground="{DynamicResource Opt_SectionForegroundBrush}"
                    Margin="0,16,0,6"/>
 
             <CheckBox x:Name="ChkShowGroupBadge"
-                      Content="{StaticResource TabGroups_ShowGroupBadge}"
+                      Content="{DynamicResource TabGroups_ShowGroupBadge}"
                       Foreground="{DynamicResource DockMenuForegroundBrush}"
                       Margin="0,0,0,8"
                       Checked="OnChanged" Unchecked="OnChanged"/>
@@ -65,13 +65,13 @@
             <Separator Margin="0,16,0,16" Background="{DynamicResource DockBorderBrush}"/>
 
             <!-- ── Persistence ─────────────────────────────────────────────── -->
-            <TextBlock Text="{StaticResource TabGroups_PersistSection}"
+            <TextBlock Text="{DynamicResource TabGroups_PersistSection}"
                    FontSize="12" FontWeight="SemiBold"
                    Foreground="{DynamicResource Opt_SectionForegroundBrush}"
                    Margin="0,16,0,6"/>
 
             <CheckBox x:Name="ChkPersistLayout"
-                      Content="{StaticResource TabGroups_PersistLayout}"
+                      Content="{DynamicResource TabGroups_PersistLayout}"
                       Foreground="{DynamicResource DockMenuForegroundBrush}"
                       Margin="0,0,0,8"
                       Checked="OnChanged" Unchecked="OnChanged"/>

@@ -14,7 +14,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:p="clr-namespace:WpfHexEditor.Core.Properties;assembly=WpfHexEditor.Core"
     xmlns:ec="clr-namespace:WpfHexEditor.Editor.Core.Views;assembly=WpfHexEditor.Editor.Core"
-    Title="{StaticResource EnterHexValueMsgString}"
+    Title="{DynamicResource EnterHexValueMsgString}"
     Width="420"
     Height="260"
     x:ClassModifier="public"
@@ -36,7 +36,7 @@
         </Grid.RowDefinitions>
 
         <!-- Byte Value GroupBox -->
-        <GroupBox Header="{StaticResource FindByteString}" Grid.Row="0" Margin="0,0,0,10">
+        <GroupBox Header="{DynamicResource FindByteString}" Grid.Row="0" Margin="0,0,0,10">
             <Grid Margin="10">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -79,7 +79,7 @@
                 BorderThickness="1"
                 CornerRadius="3">
             <StackPanel Orientation="Horizontal">
-                <TextBlock Text="{StaticResource PreviewString}"
+                <TextBlock Text="{DynamicResource PreviewString}"
                           FontWeight="SemiBold"
                           Margin="0,0,10,0"/>
                 <TextBlock Text="{Binding DisplayValue}"
@@ -91,7 +91,7 @@
         <!-- Options Section -->
         <StackPanel Grid.Row="2" Margin="0,0,0,10">
             <CheckBox
-                Content="{StaticResource ShowConfirmationString}"
+                Content="{DynamicResource ShowConfirmationString}"
                 IsChecked="{Binding ShowConfirmation, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                 Margin="0,4"
                 TabIndex="1"/>
@@ -103,7 +103,7 @@
                     HorizontalAlignment="Right">
             <Button
                 x:Name="OkButton"
-                Content="{StaticResource OkString}"
+                Content="{DynamicResource OkString}"
                 Width="90"
                 Height="28"
                 Margin="0,0,8,0"
@@ -133,7 +133,7 @@
             </Button>
 
             <Button
-                Content="{StaticResource CancelString}"
+                Content="{DynamicResource CancelString}"
                 Width="90"
                 Height="28"
                 IsCancel="True"

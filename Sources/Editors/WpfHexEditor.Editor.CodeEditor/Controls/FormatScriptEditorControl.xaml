@@ -58,56 +58,56 @@
                 Padding="4"
                 TextElement.Foreground="{DynamicResource Panel_ToolbarForegroundBrush}">
             <StackPanel Orientation="Horizontal">
-                <Button x:Name="NewFileButton" Style="{StaticResource ToolbarButtonStyle}" ToolTip="{StaticResource FormatScriptEditor_NewToolTip}">
+                <Button x:Name="NewFileButton" Style="{StaticResource ToolbarButtonStyle}" ToolTip="{DynamicResource FormatScriptEditor_NewToolTip}">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="&#xEB9F;" FontFamily="Segoe MDL2 Assets" FontSize="14" Margin="0,0,4,0" VerticalAlignment="Center"/>
-                        <TextBlock Text="{StaticResource FormatScriptEditor_NewText}" VerticalAlignment="Center"/>
+                        <TextBlock Text="{DynamicResource FormatScriptEditor_NewText}" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Button>
 
-                <Button x:Name="OpenFileButton" Style="{StaticResource ToolbarButtonStyle}" ToolTip="{StaticResource FormatScriptEditor_OpenToolTip}">
+                <Button x:Name="OpenFileButton" Style="{StaticResource ToolbarButtonStyle}" ToolTip="{DynamicResource FormatScriptEditor_OpenToolTip}">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="&#xE8E5;" FontFamily="Segoe MDL2 Assets" FontSize="14" Margin="0,0,4,0" VerticalAlignment="Center"/>
-                        <TextBlock Text="{StaticResource FormatScriptEditor_OpenText}" VerticalAlignment="Center"/>
+                        <TextBlock Text="{DynamicResource FormatScriptEditor_OpenText}" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Button>
 
-                <Button x:Name="SaveFileButton" Style="{StaticResource ToolbarButtonStyle}" ToolTip="{StaticResource FormatScriptEditor_SaveToolTip}">
+                <Button x:Name="SaveFileButton" Style="{StaticResource ToolbarButtonStyle}" ToolTip="{DynamicResource FormatScriptEditor_SaveToolTip}">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="&#xE74E;" FontFamily="Segoe MDL2 Assets" FontSize="14" Margin="0,0,4,0" VerticalAlignment="Center"/>
-                        <TextBlock Text="{StaticResource FormatScriptEditor_SaveText}" VerticalAlignment="Center"/>
+                        <TextBlock Text="{DynamicResource FormatScriptEditor_SaveText}" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Button>
 
                 <Separator Width="1" Margin="8,4" Background="{DynamicResource Panel_ToolbarBorderBrush}"/>
 
-                <Button x:Name="UndoButton" Style="{StaticResource ToolbarButtonStyle}" ToolTip="{StaticResource FormatScriptEditor_UndoToolTip}">
+                <Button x:Name="UndoButton" Style="{StaticResource ToolbarButtonStyle}" ToolTip="{DynamicResource FormatScriptEditor_UndoToolTip}">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="&#xE7A7;" FontFamily="Segoe MDL2 Assets" FontSize="14" Margin="0,0,4,0" VerticalAlignment="Center"/>
-                        <TextBlock Text="{StaticResource FormatScriptEditor_UndoText}" VerticalAlignment="Center"/>
+                        <TextBlock Text="{DynamicResource FormatScriptEditor_UndoText}" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Button>
 
-                <Button x:Name="RedoButton" Style="{StaticResource ToolbarButtonStyle}" ToolTip="{StaticResource FormatScriptEditor_RedoToolTip}">
+                <Button x:Name="RedoButton" Style="{StaticResource ToolbarButtonStyle}" ToolTip="{DynamicResource FormatScriptEditor_RedoToolTip}">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="&#xE7A6;" FontFamily="Segoe MDL2 Assets" FontSize="14" Margin="0,0,4,0" VerticalAlignment="Center"/>
-                        <TextBlock Text="{StaticResource FormatScriptEditor_RedoText}" VerticalAlignment="Center"/>
+                        <TextBlock Text="{DynamicResource FormatScriptEditor_RedoText}" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Button>
 
                 <Separator Width="1" Margin="8,4" Background="{DynamicResource Panel_ToolbarBorderBrush}"/>
 
-                <Button x:Name="FormatButton" Style="{StaticResource ToolbarButtonStyle}" ToolTip="{StaticResource FormatScriptEditor_FormatToolTip}">
+                <Button x:Name="FormatButton" Style="{StaticResource ToolbarButtonStyle}" ToolTip="{DynamicResource FormatScriptEditor_FormatToolTip}">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="&#xE70F;" FontFamily="Segoe MDL2 Assets" FontSize="14" Margin="0,0,4,0" VerticalAlignment="Center"/>
-                        <TextBlock Text="{StaticResource FormatScriptEditor_FormatText}" VerticalAlignment="Center"/>
+                        <TextBlock Text="{DynamicResource FormatScriptEditor_FormatText}" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Button>
 
-                <Button x:Name="ValidateButton" Style="{StaticResource ToolbarButtonStyle}" ToolTip="{StaticResource FormatScriptEditor_ValidateToolTip}">
+                <Button x:Name="ValidateButton" Style="{StaticResource ToolbarButtonStyle}" ToolTip="{DynamicResource FormatScriptEditor_ValidateToolTip}">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="&#xE8FB;" FontFamily="Segoe MDL2 Assets" FontSize="14" Margin="0,0,4,0" VerticalAlignment="Center"/>
-                        <TextBlock Text="{StaticResource FormatScriptEditor_ValidateText}" VerticalAlignment="Center"/>
+                        <TextBlock Text="{DynamicResource FormatScriptEditor_ValidateText}" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Button>
             </StackPanel>
@@ -130,22 +130,22 @@
                 </Grid.ColumnDefinitions>
 
                 <!-- Line/Column indicator -->
-                <TextBlock x:Name="LineColumnText" Grid.Column="0" Text="{StaticResource FormatScriptEditor_LineColStatus}" Margin="0,0,16,0"/>
+                <TextBlock x:Name="LineColumnText" Grid.Column="0" Text="{DynamicResource FormatScriptEditor_LineColStatus}" Margin="0,0,16,0"/>
 
                 <!-- Errors/Warnings -->
                 <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="0,0,16,0">
                     <TextBlock Text="&#xEA39;" FontFamily="Segoe MDL2 Assets" FontSize="12" Margin="0,0,4,0" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="ErrorCountText" Text="{StaticResource FormatScriptEditor_ErrorCountStatus}"/>
+                    <TextBlock x:Name="ErrorCountText" Text="{DynamicResource FormatScriptEditor_ErrorCountStatus}"/>
                     <TextBlock Text=" " Margin="4,0"/>
                     <TextBlock Text="&#xE7BA;" FontFamily="Segoe MDL2 Assets" FontSize="12" Margin="0,0,4,0" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="WarningCountText" Text="{StaticResource FormatScriptEditor_WarningCountStatus}"/>
+                    <TextBlock x:Name="WarningCountText" Text="{DynamicResource FormatScriptEditor_WarningCountStatus}"/>
                 </StackPanel>
 
                 <!-- Current file name -->
-                <TextBlock x:Name="FileNameText" Grid.Column="3" Text="{StaticResource FormatScriptEditor_NoFileLoaded}" HorizontalAlignment="Left"/>
+                <TextBlock x:Name="FileNameText" Grid.Column="3" Text="{DynamicResource FormatScriptEditor_NoFileLoaded}" HorizontalAlignment="Left"/>
 
                 <!-- Encoding / File Type -->
-                <TextBlock x:Name="FileTypeText" Grid.Column="4" Text="{StaticResource FormatScriptEditor_FileTypeStatus}" HorizontalAlignment="Right"/>
+                <TextBlock x:Name="FileTypeText" Grid.Column="4" Text="{DynamicResource FormatScriptEditor_FileTypeStatus}" HorizontalAlignment="Right"/>
             </Grid>
         </Border>
 
@@ -167,7 +167,7 @@
                             Background="{DynamicResource SE_GroupHeaderBrush}"
                             BorderBrush="{DynamicResource Panel_ToolbarBorderBrush}"
                             BorderThickness="0,0,0,1">
-                        <TextBlock Text="{StaticResource FormatScriptEditor_EmbeddedFormatsHeader}"
+                        <TextBlock Text="{DynamicResource FormatScriptEditor_EmbeddedFormatsHeader}"
                                    FontWeight="Bold"
                                    Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
                                    Padding="8"/>
@@ -198,7 +198,7 @@
                        SelectionChanged="MainTabControl_SelectionChanged">
 
                 <!-- Editor Tab -->
-                <TabItem x:Name="EditorTab" Header="{StaticResource FormatScriptEditor_EditorTabHeader}">
+                <TabItem x:Name="EditorTab" Header="{DynamicResource FormatScriptEditor_EditorTabHeader}">
                     <Grid>
                         <codeEditor:CodeEditor x:Name="CodeEditorControl"
                                               ShowLineNumbers="True"
@@ -231,7 +231,7 @@
                 </TabItem>
 
                 <!-- Preview Tab -->
-                <TabItem Header="{StaticResource FormatScriptEditor_PreviewTabHeader}">
+                <TabItem Header="{DynamicResource FormatScriptEditor_PreviewTabHeader}">
                     <ScrollViewer Background="{DynamicResource TE_Background}">
                         <TextBlock x:Name="PreviewTextBlock"
                                   Padding="10"
@@ -239,17 +239,17 @@
                                   FontSize="12"
                                   TextWrapping="Wrap"
                                   Foreground="{DynamicResource TE_Foreground}"
-                                  Text="{StaticResource FormatScriptEditor_PreviewPlaceholder}"/>
+                                  Text="{DynamicResource FormatScriptEditor_PreviewPlaceholder}"/>
                     </ScrollViewer>
                 </TabItem>
 
                 <!-- Validation Tab -->
-                <TabItem Header="{StaticResource FormatScriptEditor_ValidationTabHeader}">
+                <TabItem Header="{DynamicResource FormatScriptEditor_ValidationTabHeader}">
                     <DockPanel>
                         <TextBlock DockPanel.Dock="Top" Padding="8"
                                   Background="{DynamicResource SE_GroupHeaderBrush}"
                                   Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
-                                  Text="{StaticResource FormatScriptEditor_ValidationResultsHeader}" FontWeight="Bold"/>
+                                  Text="{DynamicResource FormatScriptEditor_ValidationResultsHeader}" FontWeight="Bold"/>
 
                         <ListBox x:Name="ValidationListBox"
                                  BorderThickness="0"
@@ -273,19 +273,19 @@
                 </TabItem>
 
                 <!-- Test Tab -->
-                <TabItem Header="{StaticResource FormatScriptEditor_TestTabHeader}">
+                <TabItem Header="{DynamicResource FormatScriptEditor_TestTabHeader}">
                     <DockPanel>
                         <Border DockPanel.Dock="Top" Padding="8"
                                 Background="{DynamicResource SE_GroupHeaderBrush}">
                             <StackPanel Orientation="Horizontal">
-                                <Button Content="{StaticResource FormatScriptEditor_SelectTestFileButton}" Padding="8,4" Margin="0,0,8,0"/>
-                                <Button Content="{StaticResource FormatScriptEditor_RunTestButton}" Padding="8,4"/>
+                                <Button Content="{DynamicResource FormatScriptEditor_SelectTestFileButton}" Padding="8,4" Margin="0,0,8,0"/>
+                                <Button Content="{DynamicResource FormatScriptEditor_RunTestButton}" Padding="8,4"/>
                             </StackPanel>
                         </Border>
 
                         <TextBlock Padding="10" TextWrapping="Wrap"
                                   Foreground="{DynamicResource TE_Foreground}"
-                                  Text="{StaticResource FormatScriptEditor_TestInstructions}"/>
+                                  Text="{DynamicResource FormatScriptEditor_TestInstructions}"/>
                     </DockPanel>
                 </TabItem>
 

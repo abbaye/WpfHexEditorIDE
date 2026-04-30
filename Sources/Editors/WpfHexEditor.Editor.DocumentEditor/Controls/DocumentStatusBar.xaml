@@ -51,7 +51,7 @@
                        Style="{StaticResource StatusTextStyle}"
                        DockPanel.Dock="Left"
                        Text="{Binding PageText, RelativeSource={RelativeSource AncestorType=local:DocumentStatusBar}}"
-                       ToolTip="{StaticResource DocStatusBar_TooltipPageCount}"/>
+                       ToolTip="{DynamicResource DocStatusBar_TooltipPageCount}"/>
 
             <Separator Style="{StaticResource StatusSepStyle}" DockPanel.Dock="Left"/>
 
@@ -60,7 +60,7 @@
                        Style="{StaticResource StatusTextStyle}"
                        DockPanel.Dock="Left"
                        Text="{Binding WordCountText, RelativeSource={RelativeSource AncestorType=local:DocumentStatusBar}}"
-                       ToolTip="{StaticResource DocStatusBar_TooltipWordCount}"/>
+                       ToolTip="{DynamicResource DocStatusBar_TooltipWordCount}"/>
 
             <!-- ── Right group ─────────────────────────────────────── -->
 
@@ -91,7 +91,7 @@
                     SmallChange="10"
                     LargeChange="25"
                     Margin="4,0"
-                    ToolTip="{StaticResource DocStatusBar_TooltipZoomLevel}"
+                    ToolTip="{DynamicResource DocStatusBar_TooltipZoomLevel}"
                     ValueChanged="OnSliderValueChanged">
                 <Slider.Resources>
                     <Style TargetType="Thumb">
@@ -111,7 +111,7 @@
                     Padding="5,2"
                     Margin="0,3,0,3"
                     Cursor="Hand"
-                    ToolTip="{StaticResource DocStatusBar_TooltipForensicPanel}"
+                    ToolTip="{DynamicResource DocStatusBar_TooltipForensicPanel}"
                     Background="{Binding ForensicBadgeBrush, RelativeSource={RelativeSource AncestorType=local:DocumentStatusBar}}"
                     Visibility="{Binding HasForensicAlerts, RelativeSource={RelativeSource AncestorType=local:DocumentStatusBar},
                                  Converter={StaticResource BoolToVis}}"

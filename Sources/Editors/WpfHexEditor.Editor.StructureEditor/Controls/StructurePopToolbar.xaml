@@ -64,14 +64,14 @@
             <!-- Group 1: File -->
             <Button x:Name="PART_SaveBtn"
                     Style="{StaticResource PopBtnStyle}"
-                    ToolTip="{StaticResource StructureEditor_SaveToolTip}"
+                    ToolTip="{DynamicResource StructureEditor_SaveToolTip}"
                     Click="OnSaveClicked">
                 <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE74E;" FontSize="13"/>
             </Button>
 
             <Button x:Name="PART_ValidateBtn"
                     Style="{StaticResource PopBtnStyle}"
-                    ToolTip="{StaticResource StructureEditor_ValidateToolTip}"
+                    ToolTip="{DynamicResource StructureEditor_ValidateToolTip}"
                     Click="OnValidateClicked">
                 <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE73E;" FontSize="13"/>
             </Button>
@@ -81,14 +81,14 @@
             <!-- Group 2: Edit -->
             <Button x:Name="PART_UndoBtn"
                     Style="{StaticResource PopBtnStyle}"
-                    ToolTip="{StaticResource StructureEditor_UndoToolTip}"
+                    ToolTip="{DynamicResource StructureEditor_UndoToolTip}"
                     Click="OnUndoClicked">
                 <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE7A7;" FontSize="13"/>
             </Button>
 
             <Button x:Name="PART_RedoBtn"
                     Style="{StaticResource PopBtnStyle}"
-                    ToolTip="{StaticResource StructureEditor_RedoToolTip}"
+                    ToolTip="{DynamicResource StructureEditor_RedoToolTip}"
                     Click="OnRedoClicked">
                 <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE7A6;" FontSize="13"/>
             </Button>
@@ -98,7 +98,7 @@
             <!-- Toggle Live Code View -->
             <Button x:Name="PART_ToggleCodeViewBtn"
                     Style="{StaticResource PopBtnStyle}"
-                    ToolTip="{StaticResource StructureEditor_LiveCodeViewToolTip}"
+                    ToolTip="{DynamicResource StructureEditor_LiveCodeViewToolTip}"
                     Click="OnToggleCodeViewClicked">
                 <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE943;" FontSize="13"/>
             </Button>
@@ -108,7 +108,7 @@
 
             <Button x:Name="PART_AddBlockBtn"
                     Style="{StaticResource PopBtnStyle}"
-                    ToolTip="{StaticResource StructureEditor_AddBlockToolTip}"
+                    ToolTip="{DynamicResource StructureEditor_AddBlockToolTip}"
                     Click="OnAddBlockClicked"
                     Visibility="Collapsed">
                 <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE710;" FontSize="13"/>
@@ -116,7 +116,7 @@
 
             <Button x:Name="PART_DuplicateBtn"
                     Style="{StaticResource PopBtnStyle}"
-                    ToolTip="{StaticResource StructureEditor_DuplicateBlockToolTip}"
+                    ToolTip="{DynamicResource StructureEditor_DuplicateBlockToolTip}"
                     Click="OnDuplicateClicked"
                     Visibility="Collapsed">
                 <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8C8;" FontSize="13"/>
