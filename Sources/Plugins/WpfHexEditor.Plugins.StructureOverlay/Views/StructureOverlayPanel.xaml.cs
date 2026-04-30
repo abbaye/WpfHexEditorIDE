@@ -21,6 +21,7 @@ using WpfHexEditor.Core.Models.StructureOverlay;
 using WpfHexEditor.Core.Services;
 using WpfHexEditor.Core.ViewModels;
 using WpfHexEditor.SDK.UI;
+using WpfHexEditor.Plugins.StructureOverlay.Properties;
 
 namespace WpfHexEditor.Plugins.StructureOverlay.Views;
 
@@ -171,7 +172,7 @@ public partial class StructureOverlayPanel : UserControl, IStructureOverlayPanel
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Failed to load format definition:\n{ex.Message}",
+            MessageBox.Show($"{StructureOverlayResources.StructureOverlay_Error_LoadFailed}:\n{ex.Message}",
                 "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
@@ -181,7 +182,7 @@ public partial class StructureOverlayPanel : UserControl, IStructureOverlayPanel
         if (_viewModel.Structures.Count == 0) return;
 
         var result = MessageBox.Show(
-            "Remove all structure overlays?",
+            StructureOverlayResources.StructureOverlay_Confirm_RemoveAll,
             "Confirm",
             MessageBoxButton.YesNo,
             MessageBoxImage.Question);

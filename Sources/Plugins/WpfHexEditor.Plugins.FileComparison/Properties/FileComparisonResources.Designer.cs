@@ -1,0 +1,51 @@
+// ==========================================================
+// Project: WpfHexEditor.Plugins.FileComparison
+// File: Properties/FileComparisonResources.Designer.cs
+// Description: Strongly-typed resource class for FileComparison plugin.
+// Architecture: Standard ResourceManager pattern; satellite assemblies
+//               provide fr-CA translations at runtime.
+// ==========================================================
+
+using System.Globalization;
+using System.Resources;
+
+namespace WpfHexEditor.Plugins.FileComparison.Properties;
+
+internal static class FileComparisonResources
+{
+    private static ResourceManager? _resourceManager;
+    private static CultureInfo?     _resourceCulture;
+
+    internal static ResourceManager ResourceManager
+    {
+        get
+        {
+            _resourceManager ??= new ResourceManager(
+                "WpfHexEditor.Plugins.FileComparison.Properties.FileComparisonResources",
+                typeof(FileComparisonResources).Assembly);
+            return _resourceManager;
+        }
+    }
+
+    internal static CultureInfo? Culture
+    {
+        get => _resourceCulture;
+        set => _resourceCulture = value;
+    }
+
+    /// <summary>Gets the localized panel title for the Diff Hub document tab.</summary>
+    internal static string FileComparison_PanelTitle
+        => ResourceManager.GetString("FileComparison_PanelTitle", _resourceCulture)!;
+
+    /// <summary>Gets the localized dialog title for selecting File 1.</summary>
+    internal static string FileComparison_SelectFile1
+        => ResourceManager.GetString("FileComparison_SelectFile1", _resourceCulture)!;
+
+    /// <summary>Gets the localized dialog title for selecting File 2.</summary>
+    internal static string FileComparison_SelectFile2
+        => ResourceManager.GetString("FileComparison_SelectFile2", _resourceCulture)!;
+
+    /// <summary>Gets the localized hint shown when no files have been selected yet.</summary>
+    internal static string FileComparison_SelectFilesHint
+        => ResourceManager.GetString("FileComparison_SelectFilesHint", _resourceCulture)!;
+}

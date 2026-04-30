@@ -33,8 +33,8 @@ namespace WpfHexEditor.HexEditor
             if (!IsFileOrStreamLoaded)
             {
                 MessageBox.Show(
-                    "Please open a ROM file first before applying a patch.",
-                    "No File Open",
+                    WpfHexEditor.Core.Properties.Resources.IPS_Error_NoFileOpen,
+                    WpfHexEditor.Core.Properties.Resources.IPS_Error_NoFileOpen_Title,
                     MessageBoxButton.OK,
                     MessageBoxImage.Warning);
                 return;
@@ -43,8 +43,8 @@ namespace WpfHexEditor.HexEditor
             // Select IPS patch file
             var openDialog = new OpenFileDialog
             {
-                Title = "Select IPS Patch File",
-                Filter = "IPS Patch Files (*.ips)|*.ips|All Files (*.*)|*.*",
+                Title = WpfHexEditor.Core.Properties.Resources.IPS_ApplyPatch_Title,
+                Filter = WpfHexEditor.Core.Properties.Resources.IPS_FileDialog_Filter,
                 CheckFileExists = true
             };
 
@@ -57,8 +57,8 @@ namespace WpfHexEditor.HexEditor
             if (!IPSPatcher.IsValidIPSFile(ipsFilePath))
             {
                 MessageBox.Show(
-                    $"The selected file is not a valid IPS patch.\n\nFile: {Path.GetFileName(ipsFilePath)}",
-                    "Invalid IPS File",
+                    $"{WpfHexEditor.Core.Properties.Resources.IPS_Error_InvalidFile}\n\nFile: {Path.GetFileName(ipsFilePath)}",
+                    WpfHexEditor.Core.Properties.Resources.IPS_Error_InvalidFile_Title,
                     MessageBoxButton.OK,
                     MessageBoxImage.Error);
                 return;
@@ -70,7 +70,7 @@ namespace WpfHexEditor.HexEditor
                 $"ROM: {Path.GetFileName(FileName)}\n" +
                 $"Patch: {Path.GetFileName(ipsFilePath)}\n\n" +
                 $"This operation cannot be undone. Make sure you have a backup!",
-                "Apply IPS Patch",
+                WpfHexEditor.Core.Properties.Resources.IPS_ApplyPatch_Confirm_Title,
                 MessageBoxButton.YesNo,
                 MessageBoxImage.Question);
 
@@ -97,8 +97,8 @@ namespace WpfHexEditor.HexEditor
                         $"Original Size: {patchResult.OriginalFileSize:N0} bytes\n" +
                         $"Patched Size: {patchResult.PatchedFileSize:N0} bytes\n" +
                         $"Duration: {patchResult.Duration.TotalMilliseconds:F2} ms\n\n" +
-                        $"Don't forget to save the file!",
-                        "Patch Applied",
+                        WpfHexEditor.Core.Properties.Resources.IPS_ApplyPatch_SaveReminder,
+                        WpfHexEditor.Core.Properties.Resources.IPS_ApplyPatch_Success_Title,
                         MessageBoxButton.OK,
                         MessageBoxImage.Information);
 
@@ -109,7 +109,7 @@ namespace WpfHexEditor.HexEditor
                 {
                     MessageBox.Show(
                         $"Failed to apply IPS patch:\n\n{patchResult.ErrorMessage}",
-                        "Patch Failed",
+                        WpfHexEditor.Core.Properties.Resources.IPS_ApplyPatch_Error_Title,
                         MessageBoxButton.OK,
                         MessageBoxImage.Error);
                 }
@@ -118,7 +118,7 @@ namespace WpfHexEditor.HexEditor
             {
                 MessageBox.Show(
                     $"Error applying IPS patch:\n\n{ex.Message}",
-                    "Error",
+                    WpfHexEditor.Core.Properties.Resources.IPS_ApplyPatch_Error_Title,
                     MessageBoxButton.OK,
                     MessageBoxImage.Error);
             }
@@ -165,8 +165,8 @@ namespace WpfHexEditor.HexEditor
             if (!IsFileOrStreamLoaded)
             {
                 MessageBox.Show(
-                    "Please open a modified ROM file first.",
-                    "No File Open",
+                    WpfHexEditor.Core.Properties.Resources.IPS_CreatePatch_NoFileOpen,
+                    WpfHexEditor.Core.Properties.Resources.IPS_Error_NoFileOpen_Title,
                     MessageBoxButton.OK,
                     MessageBoxImage.Warning);
                 return;
@@ -175,8 +175,8 @@ namespace WpfHexEditor.HexEditor
             // Select original (unmodified) ROM file
             var openDialog = new OpenFileDialog
             {
-                Title = "Select Original (Unmodified) ROM File",
-                Filter = "ROM Files|*.nes;*.smc;*.sfc;*.gb;*.gbc;*.gba;*.n64;*.z64;*.md;*.bin;*.gen|All Files (*.*)|*.*",
+                Title = WpfHexEditor.Core.Properties.Resources.IPS_CreatePatch_SelectOriginal_Title,
+                Filter = WpfHexEditor.Core.Properties.Resources.IPS_ROMFileDialog_Filter,
                 CheckFileExists = true
             };
 
@@ -188,8 +188,8 @@ namespace WpfHexEditor.HexEditor
             // Select output IPS file location
             var saveDialog = new SaveFileDialog
             {
-                Title = "Save IPS Patch As",
-                Filter = "IPS Patch Files (*.ips)|*.ips|All Files (*.*)|*.*",
+                Title = WpfHexEditor.Core.Properties.Resources.IPS_CreatePatch_SaveDialog_Title,
+                Filter = WpfHexEditor.Core.Properties.Resources.IPS_FileDialog_Filter,
                 DefaultExt = ".ips",
                 FileName = Path.GetFileNameWithoutExtension(FileName) + ".ips"
             };
@@ -213,7 +213,7 @@ namespace WpfHexEditor.HexEditor
                     $"Original size: {originalData.Length:N0} bytes\n" +
                     $"Modified size: {modifiedData.Length:N0} bytes\n" +
                     $"Patch size:    {patchBytes.Length:N0} bytes",
-                    "Patch Created",
+                    WpfHexEditor.Core.Properties.Resources.IPS_CreatePatch_Success_Title,
                     MessageBoxButton.OK,
                     MessageBoxImage.Information);
             }
@@ -221,7 +221,7 @@ namespace WpfHexEditor.HexEditor
             {
                 MessageBox.Show(
                     $"Error creating IPS patch:\n\n{ex.Message}",
-                    "Error",
+                    WpfHexEditor.Core.Properties.Resources.IPS_ApplyPatch_Error_Title,
                     MessageBoxButton.OK,
                     MessageBoxImage.Error);
             }

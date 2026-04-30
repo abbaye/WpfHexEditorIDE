@@ -17,6 +17,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
+using WpfHexEditor.App.Properties;
 using WpfHexEditor.Core.Commands;
 using WpfHexEditor.Core.Options;
 
@@ -123,7 +124,7 @@ public sealed class KeyboardShortcutsPage : UserControl, IOptionsPage
         // Category column
         var catCol = new DataGridTextColumn
         {
-            Header  = "Category",
+            Header  = AppResources.App_Options_KbCategory,
             Binding = new Binding(nameof(ShortcutRow.Category)),
             Width   = new DataGridLength(110),
             IsReadOnly = true,
@@ -134,7 +135,7 @@ public sealed class KeyboardShortcutsPage : UserControl, IOptionsPage
         // Command name column
         var nameCol = new DataGridTextColumn
         {
-            Header  = "Command",
+            Header  = AppResources.App_Options_KbCommand,
             Binding = new Binding(nameof(ShortcutRow.Name)),
             Width   = new DataGridLength(1, DataGridLengthUnitType.Star),
             IsReadOnly = true,
@@ -145,7 +146,7 @@ public sealed class KeyboardShortcutsPage : UserControl, IOptionsPage
         // Default gesture column
         var defCol = new DataGridTextColumn
         {
-            Header  = "Default",
+            Header  = AppResources.App_Options_KbDefault,
             Binding = new Binding(nameof(ShortcutRow.DefaultGesture)),
             Width   = new DataGridLength(130),
             IsReadOnly = true,
@@ -156,7 +157,7 @@ public sealed class KeyboardShortcutsPage : UserControl, IOptionsPage
         // Current gesture column (key-capture template)
         var currentGestureCol = new DataGridTemplateColumn
         {
-            Header = "Shortcut",
+            Header = AppResources.App_Options_KbShortcut,
             Width  = new DataGridLength(150),
         };
         currentGestureCol.CellTemplate        = BuildGestureDisplayTemplate();

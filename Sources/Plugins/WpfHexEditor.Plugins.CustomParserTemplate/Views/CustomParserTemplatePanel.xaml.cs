@@ -21,6 +21,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Windows;
 using System.Windows.Controls;
+using WpfHexEditor.Plugins.CustomParserTemplate.Properties;
 
 namespace WpfHexEditor.Plugins.CustomParserTemplate.Views;
 
@@ -93,14 +94,14 @@ public partial class CustomParserTemplatePanel : UserControl
                 catch (Exception ex)
                 {
                     MessageBox.Show($"Error loading template {Path.GetFileName(file)}: {ex.Message}",
-                        "Load Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        CustomParserTemplateResources.CustomParser_Dialog_LoadError, MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
             }
         }
         catch (Exception ex)
         {
             MessageBox.Show($"Error loading templates: {ex.Message}",
-                "Load Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                CustomParserTemplateResources.CustomParser_Dialog_LoadError, MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 
@@ -124,7 +125,7 @@ public partial class CustomParserTemplatePanel : UserControl
         if (TemplateListBox.SelectedItem is not CustomTemplate template) return;
 
         if (MessageBox.Show($"Delete template '{template.Name}'?",
-                "Confirm Delete", MessageBoxButton.YesNo, MessageBoxImage.Question)
+                CustomParserTemplateResources.CustomParser_Dialog_ConfirmDelete, MessageBoxButton.YesNo, MessageBoxImage.Question)
             != MessageBoxResult.Yes)
             return;
 
@@ -133,7 +134,7 @@ public partial class CustomParserTemplatePanel : UserControl
             try   { File.Delete(template.FilePath); }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error deleting file: {ex.Message}", "Delete Error",
+                MessageBox.Show($"Error deleting file: {ex.Message}", CustomParserTemplateResources.CustomParser_Dialog_DeleteError,
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -170,7 +171,7 @@ public partial class CustomParserTemplatePanel : UserControl
     {
         if (_currentTemplate is null)
         {
-            MessageBox.Show("No template selected to save.", "Save Template",
+            MessageBox.Show("No template selected to save.", CustomParserTemplateResources.CustomParser_Dialog_SaveTemplate,
                 MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
@@ -193,13 +194,13 @@ public partial class CustomParserTemplatePanel : UserControl
             File.WriteAllText(_currentTemplate.FilePath, JsonSerializer.Serialize(_currentTemplate, options));
 
             MessageBox.Show($"Template '{_currentTemplate.Name}' saved successfully!",
-                "Save Template", MessageBoxButton.OK, MessageBoxImage.Information);
+                CustomParserTemplateResources.CustomParser_Dialog_SaveTemplate, MessageBoxButton.OK, MessageBoxImage.Information);
 
             TemplateListBox.Items.Refresh();
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Error saving template: {ex.Message}", "Save Error",
+            MessageBox.Show($"Error saving template: {ex.Message}", CustomParserTemplateResources.CustomParser_Dialog_SaveError,
                 MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
@@ -208,7 +209,7 @@ public partial class CustomParserTemplatePanel : UserControl
     {
         if (_currentTemplate is null)
         {
-            MessageBox.Show("Select or create a template first.", "Add Block",
+            MessageBox.Show("Select or create a template first.", CustomParserTemplateResources.CustomParser_Dialog_AddBlock,
                 MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
@@ -233,7 +234,7 @@ public partial class CustomParserTemplatePanel : UserControl
     {
         if (_currentTemplate is null)
         {
-            MessageBox.Show("No template selected to apply.", "Apply Template",
+            MessageBox.Show("No template selected to apply.", CustomParserTemplateResources.CustomParser_Dialog_ApplyTemplate,
                 MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
@@ -244,35 +245,35 @@ public partial class CustomParserTemplatePanel : UserControl
             MessageBox.Show(
                 $"Template '{_currentTemplate.Name}' is ready ({_currentTemplate.Blocks.Count} blocks).\n" +
                 "Connect this panel to the active HexEditor via the plugin host.",
-                "Apply Template", MessageBoxButton.OK, MessageBoxImage.Information);
+                CustomParserTemplateResources.CustomParser_Dialog_ApplyTemplate, MessageBoxButton.OK, MessageBoxImage.Information);
     }
 
     private void ExportTemplate_Click(object sender, RoutedEventArgs e)
     {
         if (_currentTemplate is null)
         {
-            MessageBox.Show("No template selected.", "Export", MessageBoxButton.OK, MessageBoxImage.Warning);
+            MessageBox.Show("No template selected.", CustomParserTemplateResources.CustomParser_Dialog_Export, MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
 
-        var dlg = new SaveFileDialog { Title = "Export Template", Filter = "JSON Files (*.json)|*.json", FileName = $"{_currentTemplate.Name}.json" };
+        var dlg = new SaveFileDialog { Title = CustomParserTemplateResources.CustomParser_Dialog_Export, Filter = "JSON Files (*.json)|*.json", FileName = $"{_currentTemplate.Name}.json" };
         if (dlg.ShowDialog() != true) return;
 
         try
         {
             var options = new JsonSerializerOptions { WriteIndented = true, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull };
             File.WriteAllText(dlg.FileName, JsonSerializer.Serialize(_currentTemplate, options));
-            MessageBox.Show($"Exported to:\n{dlg.FileName}", "Export Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show($"Exported to:\n{dlg.FileName}", CustomParserTemplateResources.CustomParser_Dialog_ExportSuccess, MessageBoxButton.OK, MessageBoxImage.Information);
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Error exporting: {ex.Message}", "Export Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show($"Error exporting: {ex.Message}", CustomParserTemplateResources.CustomParser_Dialog_ExportError, MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 
     private void ImportTemplate_Click(object sender, RoutedEventArgs e)
     {
-        var dlg = new OpenFileDialog { Title = "Import Template", Filter = "JSON Files (*.json)|*.json" };
+        var dlg = new OpenFileDialog { Title = CustomParserTemplateResources.CustomParser_Dialog_ImportTemplate, Filter = "JSON Files (*.json)|*.json" };
         if (dlg.ShowDialog() != true) return;
 
         try
@@ -286,11 +287,11 @@ public partial class CustomParserTemplatePanel : UserControl
 
             _templates.Add(template);
             TemplateListBox.SelectedItem = template;
-            MessageBox.Show($"Template '{template.Name}' imported.", "Import Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show($"Template '{template.Name}' imported.", CustomParserTemplateResources.CustomParser_Dialog_ImportSuccess, MessageBoxButton.OK, MessageBoxImage.Information);
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Error importing: {ex.Message}", "Import Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show($"Error importing: {ex.Message}", CustomParserTemplateResources.CustomParser_Dialog_ImportError, MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 }

@@ -1797,4 +1797,137 @@
   <!-- ── HexEditor status messages ──────────────────────────────────── -->
   <data name="StatusText_OperationCancelled" xml:space="preserve"><value>Operation cancelled</value></data>
   <data name="StatusText_FileAlreadyExists" xml:space="preserve"><value>File already exists</value></data>
+  <data name="StatusText_Ready" xml:space="preserve"><value>Ready</value></data>
+  <data name="StatusText_FileSaved" xml:space="preserve"><value>File saved</value></data>
+  <data name="StatusText_SearchMarkersCleared" xml:space="preserve"><value>Search markers cleared.</value></data>
+  <data name="StatusText_AllChangesCleared" xml:space="preserve"><value>All changes cleared</value></data>
+  <data name="StatusText_TblClosedAscii" xml:space="preserve"><value>TBL closed, using ASCII</value></data>
+  <data name="StatusText_NoSelectionToReverse" xml:space="preserve"><value>No selection to reverse</value></data>
+  <data name="StatusText_SelectionIsEmpty" xml:space="preserve"><value>Selection is empty</value></data>
+  <data name="StatusText_NoSelectionToInvert" xml:space="preserve"><value>No selection to invert</value></data>
+  <data name="StatusText_NoSelectionToFind" xml:space="preserve"><value>No selection to find</value></data>
+  <data name="StatusText_NoMatchesFound" xml:space="preserve"><value>No matches found.</value></data>
+  <data name="StatusBar_SizeEmpty" xml:space="preserve"><value>Size: -</value></data>
+  <data name="StatusBar_NoSelection" xml:space="preserve"><value>No selection</value></data>
+  <data name="StatusBar_PositionZero" xml:space="preserve"><value>Position: 0</value></data>
+  <data name="StatusBar_ModeOverwrite" xml:space="preserve"><value>Mode: Overwrite</value></data>
+  <data name="StatusBar_BytesPerLine" xml:space="preserve"><value>Bytes/Line: 16</value></data>
+
+  <!-- Search Module -->
+  <data name="Search_NoMatches" xml:space="preserve">
+    <value>No matches</value>
+  </data>
+  <data name="Search_Error_Title" xml:space="preserve">
+    <value>Search error</value>
+  </data>
+  <data name="Search_Error_Label" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="Search_Error_NoTBLLoaded" xml:space="preserve">
+    <value>No TBL loaded. Cannot search TBL text.</value>
+  </data>
+  <data name="Search_Error_TBLRequired" xml:space="preserve">
+    <value>TBL Required</value>
+  </data>
+  <data name="Search_Error_NoTBLForReplacement" xml:space="preserve">
+    <value>No TBL loaded. Cannot encode replacement bytes in TBL TEXT mode.</value>
+  </data>
+  <data name="Search_Replace_Title" xml:space="preserve">
+    <value>Replace Error</value>
+  </data>
+  <data name="Search_ReplaceAll_Title" xml:space="preserve">
+    <value>Replace All</value>
+  </data>
+  <data name="Search_ExportDialog_Filter" xml:space="preserve">
+    <value>CSV Files (*.csv)|*.csv|Text Files (*.txt)|*.txt|JSON Files (*.json)|*.json</value>
+  </data>
+  <data name="Search_ExportTBL_Title" xml:space="preserve">
+    <value>Export TBL File</value>
+  </data>
+  <data name="Search_TBLFileDialog_Filter" xml:space="preserve">
+    <value>TBL Files (*.tbl)|*.tbl|All Files (*.*)|*.*</value>
+  </data>
+  <data name="Search_ExportTBL_Success" xml:space="preserve">
+    <value>Export Successful</value>
+  </data>
+  <data name="Search_ExportTBL_Error" xml:space="preserve">
+    <value>Export Error</value>
+  </data>
+  <data name="Search_EncodingApplied_Title" xml:space="preserve">
+    <value>Encoding Applied</value>
+  </data>
+  <data name="Search_EncodingApplied_Message" xml:space="preserve">
+    <value>Encoding applied! You can now use TBL TEXT mode.</value>
+  </data>
+  <data name="Search_LoadTBL_Title" xml:space="preserve">
+    <value>Select a TBL (Character Table) file</value>
+  </data>
+  <data name="Search_TBLLoaded_Title" xml:space="preserve">
+    <value>TBL Loaded</value>
+  </data>
+  <data name="Search_ErrorLoadingTBL_Title" xml:space="preserve">
+    <value>Error Loading TBL</value>
+  </data>
+  <data name="Search_CloseTBL_Title" xml:space="preserve">
+    <value>Close TBL</value>
+  </data>
+  <!-- IPS Patcher -->
+  <data name="IPS_Error_NoFileOpen" xml:space="preserve">
+    <value>Please open a ROM file first before applying a patch.</value>
+  </data>
+  <data name="IPS_Error_NoFileOpen_Title" xml:space="preserve">
+    <value>No File Open</value>
+  </data>
+  <data name="IPS_ApplyPatch_Title" xml:space="preserve">
+    <value>Select IPS Patch File</value>
+  </data>
+  <data name="IPS_FileDialog_Filter" xml:space="preserve">
+    <value>IPS Patch Files (*.ips)|*.ips|All Files (*.*)|*.*</value>
+  </data>
+  <data name="IPS_Error_InvalidFile" xml:space="preserve">
+    <value>The selected file is not a valid IPS patch.</value>
+  </data>
+  <data name="IPS_Error_InvalidFile_Title" xml:space="preserve">
+    <value>Invalid IPS File</value>
+  </data>
+  <data name="IPS_ApplyPatch_Confirm_Title" xml:space="preserve">
+    <value>Apply IPS Patch</value>
+  </data>
+  <data name="IPS_ApplyPatch_SaveReminder" xml:space="preserve">
+    <value>Don't forget to save the file!</value>
+  </data>
+  <data name="IPS_ApplyPatch_Success_Title" xml:space="preserve">
+    <value>Patch Applied</value>
+  </data>
+  <data name="IPS_ApplyPatch_Error_Title" xml:space="preserve">
+    <value>Patch Failed</value>
+  </data>
+  <data name="IPS_CreatePatch_NoFileOpen" xml:space="preserve">
+    <value>Please open a modified ROM file first.</value>
+  </data>
+  <data name="IPS_CreatePatch_SelectOriginal_Title" xml:space="preserve">
+    <value>Select Original (Unmodified) ROM File</value>
+  </data>
+  <data name="IPS_ROMFileDialog_Filter" xml:space="preserve">
+    <value>ROM Files|*.nes;*.smc;*.sfc;*.gb;*.gbc;*.gba;*.n64;*.z64;*.md;*.bin;*.gen|All Files (*.*)|*.*</value>
+  </data>
+  <data name="IPS_CreatePatch_SaveDialog_Title" xml:space="preserve">
+    <value>Save IPS Patch As</value>
+  </data>
+  <data name="IPS_CreatePatch_Success_Title" xml:space="preserve">
+    <value>Patch Created</value>
+  </data>
+  <!-- Undo/Redo history popup -->
+  <data name="UndoHistory_Undo" xml:space="preserve">
+    <value>Undo</value>
+  </data>
+  <data name="UndoHistory_Redo" xml:space="preserve">
+    <value>Redo</value>
+  </data>
+  <data name="UndoHistory_Action" xml:space="preserve">
+    <value>action</value>
+  </data>
+  <data name="UndoHistory_Actions" xml:space="preserve">
+    <value>actions</value>
+  </data>
 </root>

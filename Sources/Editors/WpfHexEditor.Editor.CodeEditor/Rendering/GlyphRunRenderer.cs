@@ -216,6 +216,12 @@ public sealed class GlyphRunRenderer
     private double SnapToPixel(double value)
         => Math.Round(value * _pixelsPerDip) / _pixelsPerDip;
 
+    /// <summary>
+    /// Public entry point for callers outside this class (e.g. CodeEditor.Rendering)
+    /// that need to snap a pre-computed X position to the nearest physical pixel.
+    /// </summary>
+    internal double SnapToPixelPublic(double value) => SnapToPixel(value);
+
     /// <summary>Builds and draws a GlyphRun for the given text string.</summary>
     private void RenderWithGlyphRun(DrawingContext dc, string text,
                                     double x, double baselineY,

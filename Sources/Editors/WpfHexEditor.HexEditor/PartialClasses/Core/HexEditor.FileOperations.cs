@@ -28,6 +28,7 @@ using System.Windows.Media;
 using WpfHexEditor.Core.Events;
 using WpfHexEditor.HexEditor.Controls;
 using WpfHexEditor.Core.Models;
+using WpfHexEditor.Core.Properties;
 using WpfHexEditor.HexEditor.ViewModels;
 
 namespace WpfHexEditor.HexEditor
@@ -399,7 +400,7 @@ namespace WpfHexEditor.HexEditor
                 throw new InvalidOperationException("No file loaded");
 
             _viewModel.Save();
-            StatusText.Text = "File saved";
+            StatusText.Text = WpfHexEditor.Core.Properties.Resources.StatusText_FileSaved;
             OnChangesSubmited(EventArgs.Empty);
         }
 
@@ -452,12 +453,12 @@ namespace WpfHexEditor.HexEditor
         {
             try
             {
-                if (StatusText != null) StatusText.Text = "Ready";
-                if (FileSizeText != null) FileSizeText.Text = "Size: -";
-                if (SelectionInfo != null) SelectionInfo.Text = "No selection";
-                if (PositionInfo != null) PositionInfo.Text = "Position: 0";
-                if (EditModeText != null) EditModeText.Text = "Mode: Overwrite";
-                if (BytesPerLineText != null) BytesPerLineText.Text = "Bytes/Line: 16";
+                if (StatusText != null) StatusText.Text = WpfHexEditor.Core.Properties.Resources.StatusText_Ready;
+                if (FileSizeText != null) FileSizeText.Text = WpfHexEditor.Core.Properties.Resources.StatusBar_SizeEmpty;
+                if (SelectionInfo != null) SelectionInfo.Text = WpfHexEditor.Core.Properties.Resources.StatusBar_NoSelection;
+                if (PositionInfo != null) PositionInfo.Text = WpfHexEditor.Core.Properties.Resources.StatusBar_PositionZero;
+                if (EditModeText != null) EditModeText.Text = WpfHexEditor.Core.Properties.Resources.StatusBar_ModeOverwrite;
+                if (BytesPerLineText != null) BytesPerLineText.Text = WpfHexEditor.Core.Properties.Resources.StatusBar_BytesPerLine;
             }
             catch (Exception ex)
             {
@@ -767,7 +768,7 @@ namespace WpfHexEditor.HexEditor
                 // Update status bar to remove "Press ESC to clear" message
                 if (StatusText != null && StatusText.Text.Contains("Press ESC to clear"))
                 {
-                    StatusText.Text = "Ready";
+                    StatusText.Text = WpfHexEditor.Core.Properties.Resources.StatusText_Ready;
                 }
             }
             catch (Exception ex)

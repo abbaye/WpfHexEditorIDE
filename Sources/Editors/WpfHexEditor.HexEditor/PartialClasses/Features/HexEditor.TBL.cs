@@ -18,6 +18,7 @@
 using System;
 using WpfHexEditor.Core;
 using WpfHexEditor.Core.CharacterTable;
+using WpfHexEditor.Core.Properties;
 
 namespace WpfHexEditor.HexEditor
 {
@@ -114,7 +115,7 @@ namespace WpfHexEditor.HexEditor
             }
 
             // Update status bar
-            StatusText.Text = "TBL closed, using ASCII";
+            StatusText.Text = WpfHexEditor.Core.Properties.Resources.StatusText_TblClosedAscii;
 
             // Hide TBL status icon
             TblStatusIcon.Visibility = System.Windows.Visibility.Collapsed;

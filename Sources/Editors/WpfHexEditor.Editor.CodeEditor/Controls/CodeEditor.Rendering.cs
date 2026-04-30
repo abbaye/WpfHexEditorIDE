@@ -2517,7 +2517,8 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
                     var    span   = lineText.Substring(ss, se - ss);
                     var    brush  = token.Foreground ?? defaultFg;
-                    double tokenX = x + (ss - startCol) * _charWidth;
+                    double tokenX = _glyphRenderer?.SnapToPixelPublic(x + (ss - startCol) * _charWidth)
+                                   ?? x + (ss - startCol) * _charWidth;
 
                     // Use GlyphRunRenderer when available — same sharp ClearType rendering
                     // as the non-wrap path; correctly applies IsBold / IsItalic flags.
@@ -2773,8 +2774,11 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                     foreach (var token in renderTokens)
                     {
                         // Use tab-aware X so tokens on tab-indented lines are not shifted left.
-                        double tokenX = x + (_glyphRenderer?.ComputeVisualX(line.Text, token.StartColumn)
-                                             ?? token.StartColumn * _charWidth);
+                        // Snap to physical pixel: fractional charWidth × column accumulates sub-pixel
+                        // error that causes glyph overlap at non-100% zoom levels.
+                        double tokenX = _glyphRenderer?.SnapToPixelPublic(
+                                            x + _glyphRenderer.ComputeVisualX(line.Text, token.StartColumn))
+                                        ?? x + token.StartColumn * _charWidth;
 
                         if (_glyphRenderer != null)
                         {

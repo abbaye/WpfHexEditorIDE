@@ -29,6 +29,7 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Navigation;
+using WpfHexEditor.App.Properties;
 
 namespace WpfHexEditor.App.Controls;
 
@@ -137,7 +138,7 @@ public partial class WelcomePanel : UserControl
         var version = Assembly.GetEntryAssembly()?.GetName().Version;
         VersionText.Text = version is not null
             ? $"Version {version.Major}.{version.Minor}.{version.Build}"
-            : "Development build";
+            : AppResources.App_Welcome_VersionDev;
     }
 
     // -- Recent files ---------------------------------------------------
@@ -236,7 +237,7 @@ public partial class WelcomePanel : UserControl
         catch
         {
             ChangelogLoadingText.Visibility = Visibility.Collapsed;
-            NoChangelogText.Text            = "Changelog unavailable — check your connection.";
+            NoChangelogText.Text            = AppResources.App_Welcome_ChangelogUnavailable;
             NoChangelogText.Visibility      = Visibility.Visible;
         }
     }

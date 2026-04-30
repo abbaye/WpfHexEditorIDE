@@ -72,5 +72,23 @@
   <data name="ClassDiagram_OutlinePanelTitle" xml:space="preserve">
     <value>Class Outline</value>
   </data>
+  <data name="ClassDiagram_PropertiesPanelTitle" xml:space="preserve">
+    <value>Class Properties</value>
+  </data>
+  <data name="ClassDiagram_ToolboxPanelTitle" xml:space="preserve">
+    <value>Diagram Toolbox</value>
+  </data>
+  <data name="ClassDiagram_RelationshipsPanelTitle" xml:space="preserve">
+    <value>Relationships</value>
+  </data>
+  <data name="ClassDiagram_HistoryPanelTitle" xml:space="preserve">
+    <value>Diagram History</value>
+  </data>
+  <data name="ClassDiagram_SearchPanelTitle" xml:space="preserve">
+    <value>Diagram Search</value>
+  </data>
+  <data name="ClassDiagram_MetricsPanelTitle" xml:space="preserve">
+    <value>Metrics Dashboard</value>
+  </data>
 
 </root>

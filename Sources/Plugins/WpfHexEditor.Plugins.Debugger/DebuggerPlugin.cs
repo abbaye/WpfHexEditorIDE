@@ -25,6 +25,7 @@ using WpfHexEditor.SDK.Contracts;
 using WpfHexEditor.SDK.Contracts.Services;
 using WpfHexEditor.SDK.Descriptors;
 using WpfHexEditor.SDK.Models;
+using WpfHexEditor.Plugins.Debugger.Properties;
 
 namespace WpfHexEditor.Plugins.Debugger;
 
@@ -85,21 +86,21 @@ public sealed class DebuggerPlugin : IWpfHexEditorPluginV2
         var bpPanel = new BreakpointExplorerPanel { DataContext = _bpVm };
         bpPanel.UIFactory = context.UIFactory;
         ui.RegisterPanel("panel-dbg-breakpoints", bpPanel, Id,
-            new PanelDescriptor { Title = "Breakpoints", DefaultDockSide = "Bottom", DefaultAutoHide = false });
+            new PanelDescriptor { Title = DebuggerResources.Debugger_BreakpointsPanelTitle, DefaultDockSide = "Bottom", DefaultAutoHide = false });
 
         ui.RegisterPanel("panel-dbg-callstack", new CallStackPanel { DataContext = _csVm }, Id,
-            new PanelDescriptor { Title = "Call Stack", DefaultDockSide = "Bottom", DefaultAutoHide = false });
+            new PanelDescriptor { Title = DebuggerResources.Debugger_CallStackPanelTitle, DefaultDockSide = "Bottom", DefaultAutoHide = false });
 
         ui.RegisterPanel("panel-dbg-locals", new LocalsPanel { DataContext = _locVm }, Id,
-            new PanelDescriptor { Title = "Locals", DefaultDockSide = "Bottom", DefaultAutoHide = false });
+            new PanelDescriptor { Title = DebuggerResources.Debugger_LocalsPanelTitle, DefaultDockSide = "Bottom", DefaultAutoHide = false });
 
         ui.RegisterPanel("panel-dbg-watch", new WatchesPanel { DataContext = _watchVm }, Id,
-            new PanelDescriptor { Title = "Watch", DefaultDockSide = "Bottom", DefaultAutoHide = false });
+            new PanelDescriptor { Title = DebuggerResources.Debugger_WatchPanelTitle, DefaultDockSide = "Bottom", DefaultAutoHide = false });
 
         var consolePanel = new DebugConsolePanel { DataContext = _consoleVm };
         consolePanel.SetSessionManager(_sessionMgrVm);
         ui.RegisterPanel("panel-dbg-console", consolePanel, Id,
-            new PanelDescriptor { Title = "Debug Console", DefaultDockSide = "Bottom", DefaultAutoHide = false });
+            new PanelDescriptor { Title = DebuggerResources.Debugger_ConsolePanelTitle, DefaultDockSide = "Bottom", DefaultAutoHide = false });
 
         // Launch configuration editor panel
         ui.RegisterPanel("panel-dbg-launch-config",

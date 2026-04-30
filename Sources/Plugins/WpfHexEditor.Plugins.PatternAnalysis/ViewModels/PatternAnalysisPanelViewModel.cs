@@ -13,12 +13,13 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using WpfHexEditor.Core.ViewModels;
+using WpfHexEditor.Plugins.PatternAnalysis.Properties;
 
 namespace WpfHexEditor.Plugins.PatternAnalysis.ViewModels;
 
 public sealed class PatternAnalysisPanelViewModel : ViewModelBase
 {
-    private string  _statusText  = "No data loaded";
+    private string  _statusText  = PatternAnalysisResources.PatternAnalysis_NoDataLoaded;
     private string  _entropy     = string.Empty;
     private string  _fileSize    = string.Empty;
     private bool    _isAnalyzing;
@@ -45,7 +46,7 @@ public sealed class PatternAnalysisPanelViewModel : ViewModelBase
     public void Clear()
     {
         Entropy = FileSize = string.Empty;
-        StatusText = "No data loaded";
+        StatusText = PatternAnalysisResources.PatternAnalysis_NoDataLoaded;
         Patterns.Clear();
         Anomalies.Clear();
     }

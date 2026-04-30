@@ -1,0 +1,55 @@
+// ==========================================================
+// Project: WpfHexEditor.Plugins.Debugger
+// File: Properties/DebuggerResources.Designer.cs
+// Description: Strongly-typed resource class for Debugger plugin.
+// Architecture: Standard ResourceManager pattern; satellite assemblies
+//               provide fr-CA translations at runtime.
+// ==========================================================
+
+using System.Globalization;
+using System.Resources;
+
+namespace WpfHexEditor.Plugins.Debugger.Properties;
+
+internal static class DebuggerResources
+{
+    private static ResourceManager? _resourceManager;
+    private static CultureInfo?     _resourceCulture;
+
+    internal static ResourceManager ResourceManager
+    {
+        get
+        {
+            _resourceManager ??= new ResourceManager(
+                "WpfHexEditor.Plugins.Debugger.Properties.DebuggerResources",
+                typeof(DebuggerResources).Assembly);
+            return _resourceManager;
+        }
+    }
+
+    internal static CultureInfo? Culture
+    {
+        get => _resourceCulture;
+        set => _resourceCulture = value;
+    }
+
+    /// <summary>Gets the localized panel title for the Breakpoints panel.</summary>
+    internal static string Debugger_BreakpointsPanelTitle
+        => ResourceManager.GetString("Debugger_BreakpointsPanelTitle", _resourceCulture)!;
+
+    /// <summary>Gets the localized panel title for the Call Stack panel.</summary>
+    internal static string Debugger_CallStackPanelTitle
+        => ResourceManager.GetString("Debugger_CallStackPanelTitle", _resourceCulture)!;
+
+    /// <summary>Gets the localized panel title for the Locals panel.</summary>
+    internal static string Debugger_LocalsPanelTitle
+        => ResourceManager.GetString("Debugger_LocalsPanelTitle", _resourceCulture)!;
+
+    /// <summary>Gets the localized panel title for the Watch panel.</summary>
+    internal static string Debugger_WatchPanelTitle
+        => ResourceManager.GetString("Debugger_WatchPanelTitle", _resourceCulture)!;
+
+    /// <summary>Gets the localized panel title for the Debug Console panel.</summary>
+    internal static string Debugger_ConsolePanelTitle
+        => ResourceManager.GetString("Debugger_ConsolePanelTitle", _resourceCulture)!;
+}

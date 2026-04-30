@@ -178,4 +178,9 @@
   <data name="WhfmtDetail_AnalysisContextLabel" xml:space="preserve"><value>Contexte d'analyse</value></data>
   <data name="WhfmtDetail_KnownVulnerabilitiesLabel" xml:space="preserve"><value>Vulnérabilités connues</value></data>
   <data name="WhfmtDetail_JsonTab" xml:space="preserve"><value>JSON</value></data>
+  <!-- Whfmt add/delete format dialogs -->
+  <data name="Whfmt_AddFormatTitle" xml:space="preserve"><value>Ajouter une définition de format</value></data>
+  <data name="Whfmt_AddFormatFilter" xml:space="preserve"><value>Définitions Whfmt (*.whfmt)|*.whfmt</value></data>
+  <data name="Whfmt_AddFormatError" xml:space="preserve"><value>Ajouter un format</value></data>
+  <data name="Whfmt_DeleteFormatTitle" xml:space="preserve"><value>Supprimer le format</value></data>
 </root>

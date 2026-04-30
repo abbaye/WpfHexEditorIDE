@@ -23,6 +23,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Effects;
 using System.Windows.Threading;
+using WpfHexEditor.App.Properties;
 using WpfHexEditor.Editor.Core.LSP;
 
 namespace WpfHexEditor.App.Dialogs;
@@ -212,7 +213,7 @@ public sealed class WorkspaceSymbolsPopup : Window
         {
             Padding = new Thickness(10, 4, 10, 6),
             FontSize = 11,
-            Text    = _lspClient?.IsInitialized == true ? "Type to search workspace symbols" : "LSP not active",
+            Text    = _lspClient?.IsInitialized == true ? AppResources.App_Options_LspTypeToSearch : AppResources.App_Options_LspNotActive,
         };
         _statusText.SetResourceReference(TextBlock.ForegroundProperty, "CP_SubTextBrush");
         Grid.SetRow(_statusText, 2);
@@ -274,18 +275,18 @@ public sealed class WorkspaceSymbolsPopup : Window
 
         if (_lspClient?.IsInitialized != true)
         {
-            _statusText.Text = "LSP not active";
+            _statusText.Text = AppResources.App_Options_LspNotActive;
             return;
         }
 
         if (query.Length < 1)
         {
             _resultsList.ItemsSource = null;
-            _statusText.Text = "Type to search workspace symbols";
+            _statusText.Text = AppResources.App_Options_LspTypeToSearch;
             return;
         }
 
-        _statusText.Text = "Searching…";
+        _statusText.Text = AppResources.App_Options_LspSearching;
         _cts?.Cancel();
         _cts = new CancellationTokenSource(TimeSpan.FromSeconds(3));
 

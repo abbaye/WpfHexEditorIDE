@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Effects;
 using WpfHexEditor.Editor.Core.Documents;
 using WpfHexEditor.Core.Options;
+using WpfHexEditor.App.Properties;
 
 namespace WpfHexEditor.App.Dialogs;
 
@@ -368,7 +369,7 @@ public sealed class CompareFilePickerWindow : Window
 
     private void BrowseForFile()
     {
-        var dlg = new Microsoft.Win32.OpenFileDialog { Title = "Select file to compare" };
+        var dlg = new Microsoft.Win32.OpenFileDialog { Title = AppResources.App_Compare_SelectFile };
         if (dlg.ShowDialog(this) == true)
             Commit(dlg.FileName);
     }

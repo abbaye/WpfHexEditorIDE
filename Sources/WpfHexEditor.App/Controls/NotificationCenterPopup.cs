@@ -20,6 +20,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
+using WpfHexEditor.App.Properties;
 using WpfHexEditor.Editor.Core.Notifications;
 
 namespace WpfHexEditor.App.Controls;
@@ -46,7 +47,7 @@ internal sealed class NotificationCenterPopup : Popup
         // ── Header ─────────────────────────────────────────────────────────
         var clearAllBtn = new Button
         {
-            Content    = "Clear all",
+            Content    = AppResources.App_Options_ClearAll,
             Padding    = new Thickness(8, 2, 8, 2),
             FontSize   = 11,
             Cursor     = System.Windows.Input.Cursors.Hand,
@@ -61,7 +62,7 @@ internal sealed class NotificationCenterPopup : Popup
         header.Children.Add(clearAllBtn);
         header.Children.Add(new TextBlock
         {
-            Text       = "Notifications",
+            Text       = AppResources.App_Notifications_Title,
             FontWeight = FontWeights.SemiBold,
             FontSize   = 12,
             VerticalAlignment = VerticalAlignment.Center,
@@ -114,7 +115,7 @@ internal sealed class NotificationCenterPopup : Popup
         {
             var empty = new TextBlock
             {
-                Text     = "No notifications",
+                Text     = AppResources.App_Notifications_Empty,
                 FontSize = 11,
                 Margin   = new Thickness(12, 8, 12, 8),
                 Opacity  = 0.6,

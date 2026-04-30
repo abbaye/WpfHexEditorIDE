@@ -18,6 +18,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
+using WpfHexEditorCoreRes = WpfHexEditor.Core.Properties.Resources;
 
 namespace WpfHexEditor.HexEditor.Controls;
 
@@ -209,10 +210,11 @@ internal sealed class UndoHistoryPopup
 
     private void UpdateStatus(int count)
     {
-        string verb = _isUndo ? "Undo" : "Redo";
+        string verb = _isUndo ? WpfHexEditorCoreRes.UndoHistory_Undo : WpfHexEditorCoreRes.UndoHistory_Redo;
+        string noun = count == 1 ? WpfHexEditorCoreRes.UndoHistory_Action : WpfHexEditorCoreRes.UndoHistory_Actions;
         _statusText.Text = count <= 0
             ? string.Empty
-            : $"{verb} {count} action{(count == 1 ? "" : "s")}";
+            : $"{verb} {count} {noun}";
     }
 
     // ── Helpers ──────────────────────────────────────────────────────────────

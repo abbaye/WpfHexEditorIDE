@@ -11,6 +11,7 @@
 
 using System.Windows;
 using System.Windows.Controls;
+using WpfHexEditor.Plugins.ParsedFields.Properties;
 
 namespace WpfHexEditor.Plugins.ParsedFields.Dialogs;
 
@@ -64,7 +65,7 @@ internal sealed class JumpToOffsetDialog : Window
             if (TryParseOffset(_offsetBox.Text.Trim(), out _))
                 DialogResult = true;
             else
-                MessageBox.Show("Invalid offset. Use hex (0x1A2B) or decimal (6699).",
+                MessageBox.Show(ParsedFieldsResources.ParsedFields_Error_InvalidOffset,
                     "Invalid Input", MessageBoxButton.OK, MessageBoxImage.Warning);
         };
 

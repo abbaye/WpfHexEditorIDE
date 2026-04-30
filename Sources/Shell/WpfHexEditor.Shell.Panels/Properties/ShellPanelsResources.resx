@@ -267,5 +267,10 @@
   <data name="WhfmtDetail_AnalysisContextLabel" xml:space="preserve"><value>Analysis Context</value></data>
   <data name="WhfmtDetail_KnownVulnerabilitiesLabel" xml:space="preserve"><value>Known Vulnerabilities</value></data>
   <data name="WhfmtDetail_JsonTab" xml:space="preserve"><value>JSON</value></data>
+  <!-- Whfmt add/delete format dialogs -->
+  <data name="Whfmt_AddFormatTitle" xml:space="preserve"><value>Add Format Definition</value></data>
+  <data name="Whfmt_AddFormatFilter" xml:space="preserve"><value>Whfmt definitions (*.whfmt)|*.whfmt</value></data>
+  <data name="Whfmt_AddFormatError" xml:space="preserve"><value>Add Format</value></data>
+  <data name="Whfmt_DeleteFormatTitle" xml:space="preserve"><value>Delete Format</value></data>
 
 </root>

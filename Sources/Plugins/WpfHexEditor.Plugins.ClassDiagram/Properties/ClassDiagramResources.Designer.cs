@@ -49,4 +49,40 @@ internal static class ClassDiagramResources
     /// </summary>
     internal static string ClassDiagram_OutlinePanelTitle
         => ResourceManager.GetString("ClassDiagram_OutlinePanelTitle", _resourceCulture)!;
+
+    /// <summary>
+    ///   Recherche une chaîne localisée semblable à Class Properties.
+    /// </summary>
+    internal static string ClassDiagram_PropertiesPanelTitle
+        => ResourceManager.GetString("ClassDiagram_PropertiesPanelTitle", _resourceCulture)!;
+
+    /// <summary>
+    ///   Recherche une chaîne localisée semblable à Diagram Toolbox.
+    /// </summary>
+    internal static string ClassDiagram_ToolboxPanelTitle
+        => ResourceManager.GetString("ClassDiagram_ToolboxPanelTitle", _resourceCulture)!;
+
+    /// <summary>
+    ///   Recherche une chaîne localisée semblable à Relationships.
+    /// </summary>
+    internal static string ClassDiagram_RelationshipsPanelTitle
+        => ResourceManager.GetString("ClassDiagram_RelationshipsPanelTitle", _resourceCulture)!;
+
+    /// <summary>
+    ///   Recherche une chaîne localisée semblable à Diagram History.
+    /// </summary>
+    internal static string ClassDiagram_HistoryPanelTitle
+        => ResourceManager.GetString("ClassDiagram_HistoryPanelTitle", _resourceCulture)!;
+
+    /// <summary>
+    ///   Recherche une chaîne localisée semblable à Diagram Search.
+    /// </summary>
+    internal static string ClassDiagram_SearchPanelTitle
+        => ResourceManager.GetString("ClassDiagram_SearchPanelTitle", _resourceCulture)!;
+
+    /// <summary>
+    ///   Recherche une chaîne localisée semblable à Metrics Dashboard.
+    /// </summary>
+    internal static string ClassDiagram_MetricsPanelTitle
+        => ResourceManager.GetString("ClassDiagram_MetricsPanelTitle", _resourceCulture)!;
 }

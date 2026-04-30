@@ -23,6 +23,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using Microsoft.Win32;
 using WpfHexEditor.Editor.Core;
+using WpfHexEditor.Core.ProjectSystem.Properties;
 
 namespace WpfHexEditor.Core.ProjectSystem.Dialogs;
 
@@ -177,7 +178,7 @@ public partial class AddExistingItemDialog : WpfHexEditor.Editor.Core.Views.Them
     {
         var dlg = new OpenFileDialog
         {
-            Title       = "Select File(s) to Add",
+            Title       = ProjectSystemResources.Dialog_SelectFilesToAdd,
             Multiselect = true,
             Filter      = "All Files (*.*)|*.*"
                         + "|Binary / ROM Files (*.bin;*.rom;*.smc;*.nes;*.gba;*.iso)|*.bin;*.rom;*.smc;*.nes;*.gba;*.iso"

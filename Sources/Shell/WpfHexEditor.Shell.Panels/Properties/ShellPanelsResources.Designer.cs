@@ -1670,5 +1670,18 @@ namespace WpfHexEditor.Shell.Panels.Properties {
                 return ResourceManager.GetString("WhfmtDetail_WebLinksLabel", resourceCulture);
             }
         }
+
+        internal static string Whfmt_AddFormatTitle {
+            get { return ResourceManager.GetString("Whfmt_AddFormatTitle", resourceCulture); }
+        }
+        internal static string Whfmt_AddFormatFilter {
+            get { return ResourceManager.GetString("Whfmt_AddFormatFilter", resourceCulture); }
+        }
+        internal static string Whfmt_AddFormatError {
+            get { return ResourceManager.GetString("Whfmt_AddFormatError", resourceCulture); }
+        }
+        internal static string Whfmt_DeleteFormatTitle {
+            get { return ResourceManager.GetString("Whfmt_DeleteFormatTitle", resourceCulture); }
+        }
     }
 }

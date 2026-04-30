@@ -6,6 +6,7 @@
 
 using System.Windows;
 using System.Windows.Controls;
+using WpfHexEditor.App.Properties;
 using WpfHexEditor.Core.Options;
 
 namespace WpfHexEditor.App.Options;
@@ -55,7 +56,7 @@ public sealed class WorkspaceOptionsPage : UserControl, IOptionsPage
 
         _restoreSolutionCheck = new CheckBox
         {
-            Content = "Restore solution",
+            Content = AppResources.App_Options_RestoreSolution,
             Margin  = new Thickness(0, 4, 0, 4)
         };
         _restoreSolutionCheck.Checked   += OnChanged;
@@ -64,7 +65,7 @@ public sealed class WorkspaceOptionsPage : UserControl, IOptionsPage
 
         _restoreFilesCheck = new CheckBox
         {
-            Content = "Restore open editor tabs",
+            Content = AppResources.App_Options_RestoreTabs,
             Margin  = new Thickness(0, 0, 0, 4)
         };
         _restoreFilesCheck.Checked   += OnChanged;
@@ -73,7 +74,7 @@ public sealed class WorkspaceOptionsPage : UserControl, IOptionsPage
 
         _restoreThemeCheck = new CheckBox
         {
-            Content = "Restore theme",
+            Content = AppResources.App_Options_RestoreTheme,
             Margin  = new Thickness(0, 0, 0, 8)
         };
         _restoreThemeCheck.Checked   += OnChanged;
@@ -85,7 +86,7 @@ public sealed class WorkspaceOptionsPage : UserControl, IOptionsPage
 
         _promptSaveCheck = new CheckBox
         {
-            Content = "Prompt to save workspace before closing",
+            Content = AppResources.App_Options_PromptSaveWorkspace,
             Margin  = new Thickness(0, 4, 0, 4)
         };
         _promptSaveCheck.Checked   += OnChanged;

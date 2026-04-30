@@ -21,6 +21,7 @@ using WpfHexEditor.Core.Options;
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Editor.Core.Views;
 using WpfHexEditor.Shell.Panels.Services;
+using WpfHexEditor.Shell.Panels.Properties;
 using WpfHexEditor.Shell.Panels.ViewModels;
 
 namespace WpfHexEditor.Shell.Panels.Panels;
@@ -260,7 +261,7 @@ public partial class WhfmtBrowserPanel : UserControl,
         if (item is null || item.Source != FormatSource.User) return;
 
         var result = MessageBox.Show(Window.GetWindow(this),
-            $"Delete format '{item.Name}'?", "Delete Format",
+            $"Delete format '{item.Name}'?", ShellPanelsResources.Whfmt_DeleteFormatTitle,
             MessageBoxButton.YesNo, MessageBoxImage.Warning);
         if (result == MessageBoxResult.Yes)
             item.DeleteCommand.Execute(null);
@@ -333,8 +334,8 @@ public partial class WhfmtBrowserPanel : UserControl,
         {
             var dlg = new OpenFileDialog
             {
-                Title           = "Add Format Definition",
-                Filter          = "Whfmt definitions (*.whfmt)|*.whfmt",
+                Title           = ShellPanelsResources.Whfmt_AddFormatTitle,
+                Filter          = ShellPanelsResources.Whfmt_AddFormatFilter,
                 Multiselect     = false,
                 CheckFileExists = true
             };
@@ -342,7 +343,7 @@ public partial class WhfmtBrowserPanel : UserControl,
             {
                 var err = _vm.AddFormatFromPath(dlg.FileName);
                 if (err is not null)
-                    MessageBox.Show(Window.GetWindow(this), err, "Add Format",
+                    MessageBox.Show(Window.GetWindow(this), err, ShellPanelsResources.Whfmt_AddFormatError,
                                     MessageBoxButton.OK, MessageBoxImage.Warning);
             }
             return;

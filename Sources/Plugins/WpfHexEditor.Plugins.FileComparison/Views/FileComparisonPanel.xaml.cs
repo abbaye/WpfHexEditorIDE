@@ -21,6 +21,7 @@ using System.Windows.Controls;
 using WpfHexEditor.Core.FormatDetection;
 using WpfHexEditor.Core.Services;
 using WpfHexEditor.Plugins.FileComparison.Dialogs;
+using WpfHexEditor.Plugins.FileComparison.Properties;
 
 namespace WpfHexEditor.Plugins.FileComparison.Views;
 
@@ -58,7 +59,7 @@ public partial class FileComparisonPanel : UserControl
 
     private void LoadFile1_Click(object sender, RoutedEventArgs e)
     {
-        var dlg = new OpenFileDialog { Title = "Select File 1 to Compare", Filter = "All Files (*.*)|*.*" };
+        var dlg = new OpenFileDialog { Title = FileComparisonResources.FileComparison_SelectFile1, Filter = "All Files (*.*)|*.*" };
         if (dlg.ShowDialog() != true) return;
 
         _file1Path = dlg.FileName;
@@ -69,7 +70,7 @@ public partial class FileComparisonPanel : UserControl
 
     private void LoadFile2_Click(object sender, RoutedEventArgs e)
     {
-        var dlg = new OpenFileDialog { Title = "Select File 2 to Compare", Filter = "All Files (*.*)|*.*" };
+        var dlg = new OpenFileDialog { Title = FileComparisonResources.FileComparison_SelectFile2, Filter = "All Files (*.*)|*.*" };
         if (dlg.ShowDialog() != true) return;
 
         _file2Path = dlg.FileName;
@@ -181,7 +182,7 @@ public partial class FileComparisonPanel : UserControl
     {
         if (_file1Fields == null && _file2Fields == null)
         {
-            ComparisonInfoText.Text  = "Select files to compare";
+            ComparisonInfoText.Text  = FileComparisonResources.FileComparison_SelectFilesHint;
             File1Fields.ItemsSource  = null;
             File2Fields.ItemsSource  = null;
             UpdateStatistics(0, 0, 0, 0);

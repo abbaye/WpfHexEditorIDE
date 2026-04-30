@@ -792,6 +792,9 @@
   <data name="App_Convert_Success" xml:space="preserve"><value>Converted to "{0}".{1}{1}Open the converted solution now?</value></data>
   <data name="App_Convert_Failed" xml:space="preserve"><value>Conversion failed:{0}{1}</value></data>
 
+  <!-- ── Compare dialog ──────────────────────────────────────────────── -->
+  <data name="App_Compare_SelectFile" xml:space="preserve"><value>Select file to compare</value></data>
+
   <!-- ── Document/Editor labels ────────────────────────────────────────── -->
   <data name="App_Editor_HexEditor" xml:space="preserve"><value>Hex Editor</value></data>
   <data name="App_Editor_Encodings" xml:space="preserve"><value>Encodings</value></data>
@@ -803,6 +806,9 @@
   <!-- ── LSP / navigation messages ─────────────────────────────────────── -->
   <data name="App_LSP_TryOpenFile" xml:space="preserve"><value>Try opening the declaring file directly, or ensure the LSP server is running.</value></data>
   <data name="App_LSP_LoadAssembly" xml:space="preserve"><value>Load the assembly in Assembly Explorer to navigate to its decompiled source.</value></data>
+  <data name="App_Lsp_CppNotInstalled" xml:space="preserve"><value>C/C++ LSP server not installed</value></data>
+  <data name="App_Lsp_ClangdReady" xml:space="preserve"><value>clangd ready</value></data>
+  <data name="App_Lsp_ClangdFailed" xml:space="preserve"><value>clangd download failed</value></data>
 
   <!-- ── Breadcrumb "not found" labels ─────────────────────────────────── -->
   <data name="App_Breadcrumb_ProjectNotFound" xml:space="preserve"><value>Project not found.</value></data>
@@ -812,5 +818,69 @@
   <data name="App_Debugger_AdapterNotFound" xml:space="preserve"><value>Debug adapter (netcoredbg) not found.{0}Install it or set the path in Options → Debugger.</value></data>
   <data name="App_Debugger_AdapterMissing" xml:space="preserve"><value>Install the appropriate adapter plugin or configure a custom adapter.</value></data>
   <data name="App_Debugger_Title" xml:space="preserve"><value>Debugger</value></data>
+
+  <!-- ── Options panel strings ─────────────────────────────────────────── -->
+  <data name="App_Options_ClearAll" xml:space="preserve"><value>Clear all</value></data>
+  <data name="App_Options_ResetToDefaults" xml:space="preserve"><value>Reset to defaults</value></data>
+  <data name="App_Options_ClearHistory" xml:space="preserve"><value>Clear History</value></data>
+  <data name="App_Options_Save" xml:space="preserve"><value>Save</value></data>
+  <data name="App_Options_Browse" xml:space="preserve"><value>Browse…</value></data>
+  <data name="App_Options_SavedComparisons" xml:space="preserve"><value>saved comparisons</value></data>
+  <data name="App_Options_ShowMinimap" xml:space="preserve"><value>Show minimap</value></data>
+  <data name="App_Options_HighlightCharDiff" xml:space="preserve"><value>Highlight character-level differences within modified lines (≤ 500 chars)</value></data>
+  <data name="App_Options_CollapseIdentical" xml:space="preserve"><value>Collapse identical regions</value></data>
+  <data name="App_Options_StopAtEntry" xml:space="preserve"><value>Stop at program entry point (Main)</value></data>
+  <data name="App_Options_ShowReturnValues" xml:space="preserve"><value>Show return values in Locals after each step</value></data>
+  <data name="App_Options_HighlightBreakpoints" xml:space="preserve"><value>Highlight breakpoint lines in editor (red/orange/gray tint)</value></data>
+  <data name="App_Options_AutoImportBreakpoints" xml:space="preserve"><value>Auto-import VS breakpoints on first solution open</value></data>
+  <data name="App_Options_AutoExportBreakpoints" xml:space="preserve"><value>Auto-export breakpoints to VS XML on save</value></data>
+  <data name="App_Options_DetectExternalChanges" xml:space="preserve"><value>Detect when files are changed outside the IDE</value></data>
+  <data name="App_Options_AutoReload" xml:space="preserve"><value>Auto-reload changed files without prompting</value></data>
+  <data name="App_Options_EnableDockAnimations" xml:space="preserve"><value>Enable docking animations</value></data>
+  <data name="App_Options_WrapTabs" xml:space="preserve"><value>Wrap tabs to additional rows (multi-row)</value></data>
+  <data name="App_Options_ScrollTabRows" xml:space="preserve"><value>Scroll tab rows with mouse wheel</value></data>
+  <data name="App_Options_EnableTabPreview" xml:space="preserve"><value>Enable tab hover preview</value></data>
+  <data name="App_Options_ShowFilenameFooter" xml:space="preserve"><value>Show filename in footer</value></data>
+  <data name="App_Options_RestoreSolution" xml:space="preserve"><value>Restore solution</value></data>
+  <data name="App_Options_RestoreTabs" xml:space="preserve"><value>Restore open editor tabs</value></data>
+  <data name="App_Options_RestoreTheme" xml:space="preserve"><value>Restore theme</value></data>
+  <data name="App_Options_PromptSaveWorkspace" xml:space="preserve"><value>Prompt to save workspace before closing</value></data>
+  <data name="App_Options_EnableTabPreviewHover" xml:space="preserve"><value>Enable tab preview on hover</value></data>
+  <data name="App_Options_ShowFileNameBelowPreview" xml:space="preserve"><value>Show file name below preview</value></data>
+  <data name="App_Options_KbCategory" xml:space="preserve"><value>Category</value></data>
+  <data name="App_Options_KbCommand" xml:space="preserve"><value>Command</value></data>
+  <data name="App_Options_KbDefault" xml:space="preserve"><value>Default</value></data>
+  <data name="App_Options_KbShortcut" xml:space="preserve"><value>Shortcut</value></data>
+  <data name="App_Options_LspEnabled" xml:space="preserve"><value>Enabled</value></data>
+  <data name="App_Options_LspLanguageId" xml:space="preserve"><value>Language ID</value></data>
+  <data name="App_Options_LspExtensions" xml:space="preserve"><value>Extensions</value></data>
+  <data name="App_Options_LspExecutable" xml:space="preserve"><value>Executable</value></data>
+  <data name="App_Options_LspArguments" xml:space="preserve"><value>Arguments</value></data>
+  <data name="App_Options_LspSource" xml:space="preserve"><value>Source</value></data>
+  <data name="App_Options_AllSettings" xml:space="preserve"><value>All settings</value></data>
+  <data name="App_Options_ResetOverrides" xml:space="preserve"><value>Reset overrides</value></data>
+  <data name="App_Options_ResetAllOverrides" xml:space="preserve"><value>Reset all overrides</value></data>
+  <data name="App_Options_DockedPanel" xml:space="preserve"><value>Docked Panel (default)</value></data>
+  <data name="App_Options_InlinePopup" xml:space="preserve"><value>Inline Popup</value></data>
+  <data name="App_Options_CommandsDefault" xml:space="preserve"><value>Commands (default)</value></data>
+  <data name="App_Options_LspNotActive" xml:space="preserve"><value>LSP not active</value></data>
+  <data name="App_Options_LspTypeToSearch" xml:space="preserve"><value>Type to search workspace symbols</value></data>
+  <data name="App_Options_LspSearching" xml:space="preserve"><value>Searching…</value></data>
+  <!-- Welcome Panel -->
+  <data name="App_Welcome_ChangelogUnavailable" xml:space="preserve"><value>Changelog unavailable — check your connection.</value></data>
+  <data name="App_Welcome_VersionDev" xml:space="preserve"><value>Development build</value></data>
+  <!-- View Menu Organizer -->
+  <data name="App_ViewMenu_OrganizeBy" xml:space="preserve"><value>Or_ganize By…</value></data>
+  <data name="App_ViewMenu_Flat" xml:space="preserve"><value>_Flat (Classic)</value></data>
+  <data name="App_ViewMenu_Categorized" xml:space="preserve"><value>_Categorized</value></data>
+  <data name="App_ViewMenu_ByDockSide" xml:space="preserve"><value>By _Dock Side</value></data>
+  <data name="App_ViewMenu_PinToViewMenu" xml:space="preserve"><value>_Pin to View Menu</value></data>
+  <data name="App_ViewMenu_UnpinFromViewMenu" xml:space="preserve"><value>_Unpin from View Menu</value></data>
+  <!-- Document InfoBar -->
+  <data name="App_InfoBar_HexEditor" xml:space="preserve"><value>Hex Editor</value></data>
+  <!-- Notification Center -->
+  <data name="App_Notifications_Title" xml:space="preserve"><value>Notifications</value></data>
+  <data name="App_Notifications_Empty" xml:space="preserve"><value>No notifications</value></data>
+  <data name="App_Notifications_ClearAll" xml:space="preserve"><value>Clear all</value></data>
 
 </root>

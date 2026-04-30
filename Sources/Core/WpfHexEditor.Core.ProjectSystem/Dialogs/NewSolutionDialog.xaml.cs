@@ -6,6 +6,7 @@
 
 using System.IO;
 using System.Windows;
+using WpfHexEditor.Core.ProjectSystem.Properties;
 
 namespace WpfHexEditor.Core.ProjectSystem.Dialogs;
 
@@ -45,7 +46,7 @@ public partial class NewSolutionDialog : WpfHexEditor.Editor.Core.Views.ThemedDi
     {
         var dlg = new Microsoft.Win32.OpenFolderDialog
         {
-            Title            = "Select parent folder for the new solution",
+            Title            = ProjectSystemResources.Dialog_SelectSolutionFolder,
             InitialDirectory = LocationBox.Text,
         };
         if (dlg.ShowDialog() == true)

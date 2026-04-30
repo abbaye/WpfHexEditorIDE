@@ -10,6 +10,7 @@ using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Input;
 using WpfHexEditor.Editor.Core;
+using WpfHexEditor.Core.ProjectSystem.Properties;
 
 namespace WpfHexEditor.Core.ProjectSystem.Dialogs;
 
@@ -148,7 +149,7 @@ public partial class ConvertTblDialog : WpfHexEditor.Editor.Core.Views.ThemedDia
     {
         var dlg = new Microsoft.Win32.OpenFolderDialog
         {
-            Title             = "Select output folder for the converted TBLX file",
+            Title             = ProjectSystemResources.Dialog_SelectConvertOutputFolder,
             InitialDirectory  = _targetFolder,
         };
         if (dlg.ShowDialog() == true)
@@ -212,8 +213,8 @@ public partial class ConvertTblDialog : WpfHexEditor.Editor.Core.Views.ThemedDia
             catch
             {
                 System.Windows.MessageBox.Show(
-                    $"Cannot create output folder:\n{_targetFolder}",
-                    "Convert TBL", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    $"{ProjectSystemResources.Error_CannotCreateOutputFolder}\n{_targetFolder}",
+                    ProjectSystemResources.Dialog_ConvertTblTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
         }
@@ -223,8 +224,8 @@ public partial class ConvertTblDialog : WpfHexEditor.Editor.Core.Views.ThemedDia
         if (string.Equals(target, _sourcePath, StringComparison.OrdinalIgnoreCase))
         {
             System.Windows.MessageBox.Show(
-                "The output path is identical to the source. Choose a different folder.",
-                "Convert TBL", MessageBoxButton.OK, MessageBoxImage.Warning);
+                ProjectSystemResources.Error_OutputPathIdenticalToSource,
+                ProjectSystemResources.Dialog_ConvertTblTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
 

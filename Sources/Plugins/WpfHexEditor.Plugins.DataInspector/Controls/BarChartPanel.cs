@@ -22,6 +22,7 @@ using System;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
+using WpfHexEditor.Plugins.DataInspector.Properties;
 
 namespace WpfHexEditor.Plugins.DataInspector.Controls
 {
@@ -36,14 +37,14 @@ namespace WpfHexEditor.Plugins.DataInspector.Controls
     /// </summary>
     public class BarChartPanel : FrameworkElement
     {
-        #region Inlined resource strings
+        #region Localized resource strings
 
-        private const string Str_NoData      = "No data to display";
-        private const string Str_Total       = "Total";
-        private const string Str_Max         = "Max";
-        private const string Str_Entropy     = "Entropy";
-        private const string Str_BitsPerByte = "bits/byte";
-        private const string Str_Bytes       = "bytes";
+        private static string Str_NoData      => DataInspectorResources.BarChart_NoData;
+        private static string Str_Total       => DataInspectorResources.BarChart_Total;
+        private static string Str_Max         => DataInspectorResources.BarChart_Max;
+        private static string Str_Entropy     => DataInspectorResources.BarChart_Entropy;
+        private static string Str_BitsPerByte => DataInspectorResources.BarChart_BitsPerByte;
+        private static string Str_Bytes       => DataInspectorResources.BarChart_Bytes;
 
         #endregion
 

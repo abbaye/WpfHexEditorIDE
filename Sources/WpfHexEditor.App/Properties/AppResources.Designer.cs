@@ -2544,6 +2544,10 @@ namespace WpfHexEditor.App.Properties {
             get { return ResourceManager.GetString("App_Convert_Failed", resourceCulture); }
         }
 
+        internal static string App_Compare_SelectFile {
+            get { return ResourceManager.GetString("App_Compare_SelectFile", resourceCulture); }
+        }
+
         internal static string App_Editor_HexEditor {
             get { return ResourceManager.GetString("App_Editor_HexEditor", resourceCulture); }
         }
@@ -2585,6 +2589,205 @@ namespace WpfHexEditor.App.Properties {
         }
         internal static string App_Debugger_Title {
             get { return ResourceManager.GetString("App_Debugger_Title", resourceCulture); }
+        }
+
+        internal static string App_Options_ClearAll {
+            get { return ResourceManager.GetString("App_Options_ClearAll", resourceCulture); }
+        }
+        internal static string App_Options_ResetToDefaults {
+            get { return ResourceManager.GetString("App_Options_ResetToDefaults", resourceCulture); }
+        }
+        internal static string App_Options_ClearHistory {
+            get { return ResourceManager.GetString("App_Options_ClearHistory", resourceCulture); }
+        }
+        internal static string App_Options_Save {
+            get { return ResourceManager.GetString("App_Options_Save", resourceCulture); }
+        }
+        internal static string App_Options_Browse {
+            get { return ResourceManager.GetString("App_Options_Browse", resourceCulture); }
+        }
+        internal static string App_Options_SavedComparisons {
+            get { return ResourceManager.GetString("App_Options_SavedComparisons", resourceCulture); }
+        }
+        internal static string App_Options_ShowMinimap {
+            get { return ResourceManager.GetString("App_Options_ShowMinimap", resourceCulture); }
+        }
+        internal static string App_Options_HighlightCharDiff {
+            get { return ResourceManager.GetString("App_Options_HighlightCharDiff", resourceCulture); }
+        }
+        internal static string App_Options_CollapseIdentical {
+            get { return ResourceManager.GetString("App_Options_CollapseIdentical", resourceCulture); }
+        }
+        internal static string App_Options_StopAtEntry {
+            get { return ResourceManager.GetString("App_Options_StopAtEntry", resourceCulture); }
+        }
+        internal static string App_Options_ShowReturnValues {
+            get { return ResourceManager.GetString("App_Options_ShowReturnValues", resourceCulture); }
+        }
+        internal static string App_Options_HighlightBreakpoints {
+            get { return ResourceManager.GetString("App_Options_HighlightBreakpoints", resourceCulture); }
+        }
+        internal static string App_Options_AutoImportBreakpoints {
+            get { return ResourceManager.GetString("App_Options_AutoImportBreakpoints", resourceCulture); }
+        }
+        internal static string App_Options_AutoExportBreakpoints {
+            get { return ResourceManager.GetString("App_Options_AutoExportBreakpoints", resourceCulture); }
+        }
+        internal static string App_Options_DetectExternalChanges {
+            get { return ResourceManager.GetString("App_Options_DetectExternalChanges", resourceCulture); }
+        }
+        internal static string App_Options_AutoReload {
+            get { return ResourceManager.GetString("App_Options_AutoReload", resourceCulture); }
+        }
+        internal static string App_Options_EnableDockAnimations {
+            get { return ResourceManager.GetString("App_Options_EnableDockAnimations", resourceCulture); }
+        }
+        internal static string App_Options_WrapTabs {
+            get { return ResourceManager.GetString("App_Options_WrapTabs", resourceCulture); }
+        }
+        internal static string App_Options_ScrollTabRows {
+            get { return ResourceManager.GetString("App_Options_ScrollTabRows", resourceCulture); }
+        }
+        internal static string App_Options_EnableTabPreview {
+            get { return ResourceManager.GetString("App_Options_EnableTabPreview", resourceCulture); }
+        }
+        internal static string App_Options_ShowFilenameFooter {
+            get { return ResourceManager.GetString("App_Options_ShowFilenameFooter", resourceCulture); }
+        }
+        internal static string App_Options_RestoreSolution {
+            get { return ResourceManager.GetString("App_Options_RestoreSolution", resourceCulture); }
+        }
+        internal static string App_Options_RestoreTabs {
+            get { return ResourceManager.GetString("App_Options_RestoreTabs", resourceCulture); }
+        }
+        internal static string App_Options_RestoreTheme {
+            get { return ResourceManager.GetString("App_Options_RestoreTheme", resourceCulture); }
+        }
+        internal static string App_Options_PromptSaveWorkspace {
+            get { return ResourceManager.GetString("App_Options_PromptSaveWorkspace", resourceCulture); }
+        }
+        internal static string App_Options_EnableTabPreviewHover {
+            get { return ResourceManager.GetString("App_Options_EnableTabPreviewHover", resourceCulture); }
+        }
+        internal static string App_Options_ShowFileNameBelowPreview {
+            get { return ResourceManager.GetString("App_Options_ShowFileNameBelowPreview", resourceCulture); }
+        }
+        internal static string App_Options_KbCategory {
+            get { return ResourceManager.GetString("App_Options_KbCategory", resourceCulture); }
+        }
+        internal static string App_Options_KbCommand {
+            get { return ResourceManager.GetString("App_Options_KbCommand", resourceCulture); }
+        }
+        internal static string App_Options_KbDefault {
+            get { return ResourceManager.GetString("App_Options_KbDefault", resourceCulture); }
+        }
+        internal static string App_Options_KbShortcut {
+            get { return ResourceManager.GetString("App_Options_KbShortcut", resourceCulture); }
+        }
+        internal static string App_Options_LspEnabled {
+            get { return ResourceManager.GetString("App_Options_LspEnabled", resourceCulture); }
+        }
+        internal static string App_Options_LspLanguageId {
+            get { return ResourceManager.GetString("App_Options_LspLanguageId", resourceCulture); }
+        }
+        internal static string App_Options_LspExtensions {
+            get { return ResourceManager.GetString("App_Options_LspExtensions", resourceCulture); }
+        }
+        internal static string App_Options_LspExecutable {
+            get { return ResourceManager.GetString("App_Options_LspExecutable", resourceCulture); }
+        }
+        internal static string App_Options_LspArguments {
+            get { return ResourceManager.GetString("App_Options_LspArguments", resourceCulture); }
+        }
+        internal static string App_Options_LspSource {
+            get { return ResourceManager.GetString("App_Options_LspSource", resourceCulture); }
+        }
+        internal static string App_Options_AllSettings {
+            get { return ResourceManager.GetString("App_Options_AllSettings", resourceCulture); }
+        }
+        internal static string App_Options_ResetOverrides {
+            get { return ResourceManager.GetString("App_Options_ResetOverrides", resourceCulture); }
+        }
+        internal static string App_Options_ResetAllOverrides {
+            get { return ResourceManager.GetString("App_Options_ResetAllOverrides", resourceCulture); }
+        }
+        internal static string App_Options_DockedPanel {
+            get { return ResourceManager.GetString("App_Options_DockedPanel", resourceCulture); }
+        }
+        internal static string App_Options_InlinePopup {
+            get { return ResourceManager.GetString("App_Options_InlinePopup", resourceCulture); }
+        }
+        internal static string App_Options_CommandsDefault {
+            get { return ResourceManager.GetString("App_Options_CommandsDefault", resourceCulture); }
+        }
+        internal static string App_Options_LspNotActive {
+            get { return ResourceManager.GetString("App_Options_LspNotActive", resourceCulture); }
+        }
+        internal static string App_Options_LspTypeToSearch {
+            get { return ResourceManager.GetString("App_Options_LspTypeToSearch", resourceCulture); }
+        }
+        internal static string App_Options_LspSearching {
+            get { return ResourceManager.GetString("App_Options_LspSearching", resourceCulture); }
+        }
+
+        // ── LSP first-run notifications ───────────────────────────────────────
+
+        internal static string App_Lsp_CppNotInstalled {
+            get { return ResourceManager.GetString("App_Lsp_CppNotInstalled", resourceCulture); }
+        }
+        internal static string App_Lsp_ClangdReady {
+            get { return ResourceManager.GetString("App_Lsp_ClangdReady", resourceCulture); }
+        }
+        internal static string App_Lsp_ClangdFailed {
+            get { return ResourceManager.GetString("App_Lsp_ClangdFailed", resourceCulture); }
+        }
+
+        // ── Welcome Panel ─────────────────────────────────────────────────────
+
+        internal static string App_Welcome_ChangelogUnavailable {
+            get { return ResourceManager.GetString("App_Welcome_ChangelogUnavailable", resourceCulture); }
+        }
+        internal static string App_Welcome_VersionDev {
+            get { return ResourceManager.GetString("App_Welcome_VersionDev", resourceCulture); }
+        }
+
+        // ── View Menu Organizer ───────────────────────────────────────────────
+
+        internal static string App_ViewMenu_OrganizeBy {
+            get { return ResourceManager.GetString("App_ViewMenu_OrganizeBy", resourceCulture); }
+        }
+        internal static string App_ViewMenu_Flat {
+            get { return ResourceManager.GetString("App_ViewMenu_Flat", resourceCulture); }
+        }
+        internal static string App_ViewMenu_Categorized {
+            get { return ResourceManager.GetString("App_ViewMenu_Categorized", resourceCulture); }
+        }
+        internal static string App_ViewMenu_ByDockSide {
+            get { return ResourceManager.GetString("App_ViewMenu_ByDockSide", resourceCulture); }
+        }
+        internal static string App_ViewMenu_PinToViewMenu {
+            get { return ResourceManager.GetString("App_ViewMenu_PinToViewMenu", resourceCulture); }
+        }
+        internal static string App_ViewMenu_UnpinFromViewMenu {
+            get { return ResourceManager.GetString("App_ViewMenu_UnpinFromViewMenu", resourceCulture); }
+        }
+
+        // ── Document InfoBar ──────────────────────────────────────────────────
+
+        internal static string App_InfoBar_HexEditor {
+            get { return ResourceManager.GetString("App_InfoBar_HexEditor", resourceCulture); }
+        }
+
+        // ── Notification Center ───────────────────────────────────────────────
+
+        internal static string App_Notifications_Title {
+            get { return ResourceManager.GetString("App_Notifications_Title", resourceCulture); }
+        }
+        internal static string App_Notifications_Empty {
+            get { return ResourceManager.GetString("App_Notifications_Empty", resourceCulture); }
+        }
+        internal static string App_Notifications_ClearAll {
+            get { return ResourceManager.GetString("App_Notifications_ClearAll", resourceCulture); }
         }
 
     }

@@ -10,6 +10,7 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
+using WpfHexEditor.App.Properties;
 using WpfHexEditor.Core.Options;
 using WpfHexEditor.Docking.Core;
 
@@ -91,7 +92,7 @@ public sealed class DockingOptionsPage : UserControl, IOptionsPage
 
         _animationsEnabledCheck = new CheckBox
         {
-            Content = "Enable docking animations",
+            Content = AppResources.App_Options_EnableDockAnimations,
             Margin  = new Thickness(0, 4, 0, 4),
         };
         _animationsEnabledCheck.Checked   += OnChanged;

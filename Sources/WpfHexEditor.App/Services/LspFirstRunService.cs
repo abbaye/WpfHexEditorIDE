@@ -15,6 +15,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Net.Http;
 using WpfHexEditor.Editor.Core.Notifications;
+using WpfHexEditor.App.Properties;
 
 namespace WpfHexEditor.App.Services;
 
@@ -49,7 +50,7 @@ internal sealed class LspFirstRunService : IDisposable
         _notifications.Post(new NotificationItem
         {
             Id       = NotifId,
-            Title    = "C/C++ LSP server not installed",
+            Title    = AppResources.App_Lsp_CppNotInstalled,
             Message  = "clangd adds IntelliSense, live diagnostics, and rename for C/C++. ~50 MB. (C#/VB.NET use built-in Roslyn.)",
             Severity = NotificationSeverity.Info,
             Actions  =
@@ -82,7 +83,7 @@ internal sealed class LspFirstRunService : IDisposable
             _notifications.Post(new NotificationItem
             {
                 Id       = NotifId,
-                Title    = "clangd ready",
+                Title    = AppResources.App_Lsp_ClangdReady,
                 Message  = "Open a .cpp or .h file to activate C/C++ IntelliSense.",
                 Severity = NotificationSeverity.Success,
             });
@@ -92,7 +93,7 @@ internal sealed class LspFirstRunService : IDisposable
             _notifications.Post(new NotificationItem
             {
                 Id       = NotifId,
-                Title    = "clangd download failed",
+                Title    = AppResources.App_Lsp_ClangdFailed,
                 Message  = ex.Message,
                 Severity = NotificationSeverity.Error,
                 Actions  =

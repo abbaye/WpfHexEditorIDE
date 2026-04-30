@@ -162,7 +162,7 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
             Id,
             new PanelDescriptor
             {
-                Title           = "Class Properties",
+                Title           = ClassDiagramResources.ClassDiagram_PropertiesPanelTitle,
                 DefaultDockSide = "Right",
                 DefaultAutoHide = false,
                 CanClose        = true,
@@ -175,7 +175,7 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
             Id,
             new PanelDescriptor
             {
-                Title           = "Diagram Toolbox",
+                Title           = ClassDiagramResources.ClassDiagram_ToolboxPanelTitle,
                 DefaultDockSide = "Left",
                 DefaultAutoHide = true,
                 CanClose        = true,
@@ -188,7 +188,7 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
             Id,
             new PanelDescriptor
             {
-                Title           = "Relationships",
+                Title           = ClassDiagramResources.ClassDiagram_RelationshipsPanelTitle,
                 DefaultDockSide = "Right",
                 DefaultAutoHide = true,
                 CanClose        = true,
@@ -201,7 +201,7 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
             Id,
             new PanelDescriptor
             {
-                Title           = "Diagram History",
+                Title           = ClassDiagramResources.ClassDiagram_HistoryPanelTitle,
                 DefaultDockSide = "Right",
                 DefaultAutoHide = true,
                 CanClose        = true,
@@ -214,7 +214,7 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
             Id,
             new PanelDescriptor
             {
-                Title           = "Diagram Search",
+                Title           = ClassDiagramResources.ClassDiagram_SearchPanelTitle,
                 DefaultDockSide = "Bottom",
                 DefaultAutoHide = false,
                 CanClose        = true,
@@ -227,7 +227,7 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
             Id,
             new PanelDescriptor
             {
-                Title           = "Metrics Dashboard",
+                Title           = ClassDiagramResources.ClassDiagram_MetricsPanelTitle,
                 DefaultDockSide = "Right",
                 DefaultAutoHide = true,
                 CanClose        = true,

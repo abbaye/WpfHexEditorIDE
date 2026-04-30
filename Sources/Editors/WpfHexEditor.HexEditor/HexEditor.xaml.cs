@@ -291,7 +291,7 @@ namespace WpfHexEditor.HexEditor
             {
                 // Use centralized method to clear all search state
                 ClearSearchState();
-                StatusText.Text = "Search markers cleared.";
+                StatusText.Text = WpfHexEditor.Core.Properties.Resources.StatusText_SearchMarkersCleared;
                 e.Handled = true;
             }
         }

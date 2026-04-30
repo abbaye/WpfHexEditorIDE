@@ -21,6 +21,7 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
+using WpfHexEditor.App.Properties;
 using WpfHexEditor.Core.Options;
 using WpfHexEditor.Docking.Core;
 
@@ -93,7 +94,7 @@ public sealed class TabsOptionsPage : UserControl, IOptionsPage
         // ── Tab Bar — multi-row ───────────────────────────────────────────────
         _multiRowCheck = new CheckBox
         {
-            Content = "Wrap tabs to additional rows (multi-row)",
+            Content = AppResources.App_Options_WrapTabs,
             Margin  = new Thickness(0, 4, 0, 4),
         };
         _multiRowCheck.Checked   += OnChanged;
@@ -101,7 +102,7 @@ public sealed class TabsOptionsPage : UserControl, IOptionsPage
 
         _multiRowWheelCheck = new CheckBox
         {
-            Content = "Scroll tab rows with mouse wheel",
+            Content = AppResources.App_Options_ScrollTabRows,
             Margin  = new Thickness(16, 4, 0, 4),
         };
         _multiRowWheelCheck.Checked   += OnChanged;
@@ -110,11 +111,11 @@ public sealed class TabsOptionsPage : UserControl, IOptionsPage
         (_maxTabWidthSlider, _maxTabWidthLabel) = MakeSlider(80, 500, 10);
 
         // ── Tab Preview ───────────────────────────────────────────────────────
-        _enableCheck = new CheckBox { Content = "Enable tab hover preview", Margin = new Thickness(0, 4, 0, 4) };
+        _enableCheck = new CheckBox { Content = AppResources.App_Options_EnableTabPreview, Margin = new Thickness(0, 4, 0, 4) };
         _enableCheck.Checked   += OnChanged;
         _enableCheck.Unchecked += OnChanged;
 
-        _showFileNameCheck = new CheckBox { Content = "Show filename in footer", Margin = new Thickness(0, 4, 0, 4) };
+        _showFileNameCheck = new CheckBox { Content = AppResources.App_Options_ShowFilenameFooter, Margin = new Thickness(0, 4, 0, 4) };
         _showFileNameCheck.Checked   += OnChanged;
         _showFileNameCheck.Unchecked += OnChanged;
 

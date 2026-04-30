@@ -53,7 +53,12 @@ internal sealed class StatusBarSyncService
         _activeToolbarContributor  = newToolbar;
 
         if (changed)
+        {
+            // Refresh immediately so zoom/position/language values are current on tab switch,
+            // not stale from the previous interaction in this editor session.
+            newContributor?.RefreshStatusBarItems();
             ContributorChanged?.Invoke();
+        }
     }
 
     /// <summary>Clears the active state (no editor focused).</summary>

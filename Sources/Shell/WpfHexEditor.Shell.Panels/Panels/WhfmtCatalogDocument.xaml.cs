@@ -21,6 +21,7 @@ using WpfHexEditor.Core.Options;
 using WpfHexEditor.Editor.Core;
 using WpfHexEditor.Editor.Core.Views;
 using WpfHexEditor.Shell.Panels.Services;
+using WpfHexEditor.Shell.Panels.Properties;
 using WpfHexEditor.Shell.Panels.ViewModels;
 
 namespace WpfHexEditor.Shell.Panels.Panels;
@@ -249,8 +250,8 @@ public partial class WhfmtCatalogDocument : UserControl,
     {
         var dlg = new OpenFileDialog
         {
-            Title           = "Add Format Definition",
-            Filter          = "Whfmt definitions (*.whfmt)|*.whfmt",
+            Title           = ShellPanelsResources.Whfmt_AddFormatTitle,
+            Filter          = ShellPanelsResources.Whfmt_AddFormatFilter,
             Multiselect     = false,
             CheckFileExists = true
         };
