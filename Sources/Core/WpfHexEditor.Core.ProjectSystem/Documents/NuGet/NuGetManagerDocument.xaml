@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:pb="clr-namespace:WpfHexEditor.ProgressBar.Controls;assembly=WpfHexEditor.ProgressBar"
              xmlns:local="clr-namespace:WpfHexEditor.Core.ProjectSystem.Documents.NuGet"
+             xmlns:psSvc="clr-namespace:WpfHexEditor.Core.ProjectSystem.Services"
              Background="{DynamicResource DockMenuBackgroundBrush}"
              Foreground="{DynamicResource DockMenuForegroundBrush}"
              FontFamily="Segoe UI"
@@ -16,6 +17,10 @@
     -->
 
     <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <psSvc:ProjectSystemLocalizedDictionary/>
+            </ResourceDictionary.MergedDictionaries>
 
         <!-- ── ComboBox ──────────────────────────────────────────────────── -->
 
@@ -258,6 +263,7 @@
 
         <BooleanToVisibilityConverter x:Key="BoolToVis"/>
 
+        </ResourceDictionary>
     </UserControl.Resources>
 
     <Grid>
@@ -277,7 +283,7 @@
                 BorderThickness="0,0,0,1">
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="8,0">
 
-                <TextBlock Text="Package source:" VerticalAlignment="Center"
+                <TextBlock Text="{DynamicResource PS_PackageSourceLabel}" VerticalAlignment="Center"
                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                            Margin="0,0,6,0" FontSize="12"/>
 
@@ -294,7 +300,7 @@
 
                 <CheckBox Style="{StaticResource NM_CheckBoxStyle}"
                           IsChecked="{Binding IncludePrerelease}"
-                          Content="Include prerelease"
+                          Content="{DynamicResource PS_IncludePrerelease}"
                           VerticalAlignment="Center"/>
             </StackPanel>
         </Border>
@@ -327,12 +333,12 @@
                             SelectedIndex="{Binding ActiveTabIndex}"
                             Background="{DynamicResource DockWindowBackgroundBrush}"
                             Foreground="{DynamicResource DockMenuForegroundBrush}">
-                    <TabItem Header="Browse"/>
-                    <TabItem Header="Installed"/>
+                    <TabItem Header="{DynamicResource PS_NuGetBrowseTab}"/>
+                    <TabItem Header="{DynamicResource PS_NuGetInstalledTab}"/>
                     <TabItem>
                         <TabItem.Header>
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <TextBlock Text="Updates" VerticalAlignment="Center"/>
+                                <TextBlock Text="{DynamicResource PS_NuGetUpdatesTab}" VerticalAlignment="Center"/>
                                 <Border CornerRadius="9" MinWidth="18" Height="18"
                                         Margin="5,0,0,0" Padding="4,0"
                                         Background="{DynamicResource DockTabActiveBrush}"
@@ -449,7 +455,7 @@
 
                 <!-- Load more button -->
                 <Button Grid.Row="3"
-                        Content="Load more…"
+                        Content="{DynamicResource PS_NuGetLoadMore}"
                         Style="{StaticResource NM_SecondaryButtonStyle}"
                         Command="{Binding LoadMoreCommand}"
                         Visibility="{Binding HasMoreResults, Converter={StaticResource BoolToVis}}"
@@ -478,7 +484,7 @@
 
                 <!-- Placeholder when nothing is selected -->
                 <TextBlock Grid.RowSpan="4"
-                           Text="Select a package to view details."
+                           Text="{DynamicResource PS_SelectPackageHint}"
                            HorizontalAlignment="Center"
                            VerticalAlignment="Center"
                            Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -554,7 +560,7 @@
                         <StackPanel Margin="14,10">
 
                             <!-- Description -->
-                            <TextBlock Text="Description"
+                            <TextBlock Text="{DynamicResource PS_PackageDescription}"
                                        FontWeight="SemiBold"
                                        Foreground="{DynamicResource DockMenuForegroundBrush}"
                                        Margin="0,0,0,4"/>
@@ -565,7 +571,7 @@
 
                             <!-- Downloads -->
                             <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
-                                <TextBlock Text="Downloads: "
+                                <TextBlock Text="{DynamicResource PS_PackageDownloads}"
                                            FontWeight="SemiBold"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"/>
                                 <TextBlock Text="{Binding SelectedPackage.TotalDownloads, StringFormat=N0}"
@@ -581,7 +587,7 @@
                                                Foreground="#4EC9B0" VerticalAlignment="Center"/>
                                     <TextBlock FontSize="11"
                                                Foreground="#4EC9B0">
-                                        <Run Text="Installed: v"/>
+                                        <Run Text="{DynamicResource PS_InstalledVersion}"/>
                                         <Run Text="{Binding SelectedPackage.InstalledVersion}"/>
                                     </TextBlock>
                                 </StackPanel>
@@ -594,7 +600,7 @@
                             BorderThickness="0,1,0,1"
                             Padding="14,8">
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="Version:"
+                            <TextBlock Text="{DynamicResource PS_VersionLabel}"
                                        VerticalAlignment="Center"
                                        Foreground="{DynamicResource DockMenuForegroundBrush}"
                                        Margin="0,0,8,0"/>
@@ -613,7 +619,7 @@
                                 Margin="14,10">
 
                         <!-- Install (shown when NOT installed) -->
-                        <Button Content="Install"
+                        <Button Content="{DynamicResource PS_Install}"
                                 Command="{Binding InstallCommand}"
                                 Margin="0,0,6,0">
                             <Button.Style>
@@ -628,7 +634,7 @@
                         </Button>
 
                         <!-- Update (shown when HasUpdate) -->
-                        <Button Content="Update"
+                        <Button Content="{DynamicResource PS_Update}"
                                 Command="{Binding UpdateCommand}"
                                 Margin="0,0,6,0">
                             <Button.Style>
@@ -644,7 +650,7 @@
                         </Button>
 
                         <!-- Uninstall (shown when installed) -->
-                        <Button Content="Uninstall"
+                        <Button Content="{DynamicResource PS_Uninstall}"
                                 Command="{Binding UninstallCommand}">
                             <Button.Style>
                                 <Style TargetType="Button" BasedOn="{StaticResource NM_PrimaryButtonStyle}">
@@ -700,7 +706,7 @@
                            VerticalAlignment="Center"
                            Foreground="{DynamicResource DockTabTextBrush}">
                     <Run Text="{Binding PackageList.Count, Mode=OneWay}"/>
-                    <Run Text=" package(s)"/>
+                    <Run Text="{DynamicResource PS_PackagesLabel}"/>
                 </TextBlock>
             </Grid>
         </Border>

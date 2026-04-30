@@ -94,4 +94,253 @@
   <data name="ProjectSystem_Ref_NoReferenceSupport" xml:space="preserve">
     <value>Dieser Projekttyp unterstützt keine Referenzverwaltung.</value>
   </data>
+  <data name="PS_OK" xml:space="preserve"><value>OK</value></data>
+  <data name="PS_Cancel" xml:space="preserve"><value>Abbrechen</value></data>
+  <data name="PS_Add" xml:space="preserve"><value>Hinzufügen</value></data>
+  <data name="PS_Browse" xml:space="preserve"><value>Durchsuchen…</value></data>
+  <data name="PS_Remove" xml:space="preserve"><value>Entfernen</value></data>
+  <data name="PS_Save" xml:space="preserve"><value>Speichern</value></data>
+  <data name="PS_AddNewItemTitle" xml:space="preserve"><value>Neues Element hinzufügen</value></data>
+  <data name="PS_TemplateLabel" xml:space="preserve"><value>Vorlage:</value></data>
+  <data name="PS_NameLabel" xml:space="preserve"><value>Name:</value></data>
+  <data name="PS_FolderLabel" xml:space="preserve"><value>Ordner:</value></data>
+  <data name="PS_AddExistingItemTitle" xml:space="preserve"><value>Vorhandenes Element hinzufügen</value></data>
+  <data name="PS_FilesLabel" xml:space="preserve"><value>Datei(en):</value></data>
+  <data name="PS_RemoveFileTooltip" xml:space="preserve"><value>Diese Datei aus der Auswahl entfernen</value></data>
+  <data name="PS_DetectedTypeLabel" xml:space="preserve"><value>Erkannter Typ:</value></data>
+  <data name="PS_ConvertTblTitle" xml:space="preserve"><value>TBL in TBLX konvertieren</value></data>
+  <data name="PS_ConversionSection" xml:space="preserve"><value>Konvertierung</value></data>
+  <data name="PS_SourceLabel" xml:space="preserve"><value>Quelle:</value></data>
+  <data name="PS_TargetLabel" xml:space="preserve"><value>Ziel:</value></data>
+  <data name="PS_GameMetadataSection" xml:space="preserve"><value>Spielmetadaten (optional)</value></data>
+  <data name="PS_RomDetectedLabel" xml:space="preserve"><value>ROM erkannt:</value></data>
+  <data name="PS_AutoFill" xml:space="preserve"><value>Automatisch ausfüllen</value></data>
+  <data name="PS_GameTitleLabel" xml:space="preserve"><value>Spieltitel:</value></data>
+  <data name="PS_PlatformLabel" xml:space="preserve"><value>Plattform:</value></data>
+  <data name="PS_RegionLabel" xml:space="preserve"><value>Region:</value></data>
+  <data name="PS_AuthorLabel" xml:space="preserve"><value>Autor:</value></data>
+  <data name="PS_YearLabel" xml:space="preserve"><value>Jahr:</value></data>
+  <data name="PS_NewFileTitle" xml:space="preserve"><value>Neue Datei</value></data>
+  <data name="PS_SortLabel" xml:space="preserve"><value>Sortieren:</value></data>
+  <data name="PS_SortName" xml:space="preserve"><value>Name</value></data>
+  <data name="PS_SortCategory" xml:space="preserve"><value>Kategorie</value></data>
+  <data name="PS_SortExtension" xml:space="preserve"><value>Erweiterung</value></data>
+  <data name="PS_GridView" xml:space="preserve"><value>Rasteransicht</value></data>
+  <data name="PS_ListView" xml:space="preserve"><value>Listenansicht</value></data>
+  <data name="PS_SearchTemplates" xml:space="preserve"><value>Vorlagen suchen…</value></data>
+  <data name="PS_BrowseForFolder" xml:space="preserve"><value>Ordner durchsuchen</value></data>
+  <data name="PS_CreateInMemory" xml:space="preserve"><value>Dokument im Speicher erstellen; Speicherort beim ersten Ctrl+S wählen</value></data>
+  <data name="PS_NewProjectTitle" xml:space="preserve"><value>Neues Projekt</value></data>
+  <data name="PS_NewSolutionTitle" xml:space="preserve"><value>Neue Lösung</value></data>
+  <data name="PS_LocationLabel" xml:space="preserve"><value>Speicherort:</value></data>
+  <data name="PS_WillCreateLabel" xml:space="preserve"><value>Wird erstellen:</value></data>
+  <data name="PS_ProjectPropertiesTitle" xml:space="preserve"><value>Projekteigenschaften</value></data>
+  <data name="PS_ApplicationTab" xml:space="preserve"><value>Anwendung</value></data>
+  <data name="PS_BuildTab" xml:space="preserve"><value>Build</value></data>
+  <data name="PS_ItemsTab" xml:space="preserve"><value>Elemente</value></data>
+  <data name="PS_ReferencesTab" xml:space="preserve"><value>Referenzen</value></data>
+  <data name="PS_ProjectFileLabel" xml:space="preserve"><value>Projektdatei:</value></data>
+  <data name="PS_DirectoryLabel" xml:space="preserve"><value>Verzeichnis:</value></data>
+  <data name="PS_FilterSections" xml:space="preserve"><value>Abschnitte filtern</value></data>
+  <data name="PP_NavApplication" xml:space="preserve"><value>Anwendung</value></data>
+  <data name="PP_NavGeneral" xml:space="preserve"><value>Allgemein</value></data>
+  <data name="PP_ProjectName" xml:space="preserve"><value>Projektname</value></data>
+  <data name="PP_ProjectNameDesc" xml:space="preserve"><value>Logischer Name, der im Solution Explorer verwendet wird.</value></data>
+  <data name="PP_AssemblyName" xml:space="preserve"><value>Assemblyname</value></data>
+  <data name="PP_AssemblyNameDesc" xml:space="preserve"><value>Name der kompilierten Ausgabedatei (ohne Erweiterung).</value></data>
+  <data name="PP_DefaultNamespace" xml:space="preserve"><value>Standardnamespace</value></data>
+  <data name="PP_DefaultNamespaceDesc" xml:space="preserve"><value>Root-Namespace, der für neue Dateien verwendet wird.</value></data>
+  <data name="PP_TargetFramework" xml:space="preserve"><value>Zielframework</value></data>
+  <data name="PP_TargetFrameworkDesc" xml:space="preserve"><value>Ziel-.NET-Laufzeitversion für dieses Projekt.</value></data>
+  <data name="PP_OutputType" xml:space="preserve"><value>Ausgabetyp</value></data>
+  <data name="PP_OutputTypeDesc" xml:space="preserve"><value>Legt fest, ob das Projekt eine .exe, .dll oder WinExe erzeugt.</value></data>
+  <data name="PP_OutputTypeLibrary" xml:space="preserve"><value>Klassenbibliothek</value></data>
+  <data name="PP_OutputTypeConsole" xml:space="preserve"><value>Konsolenanwendung</value></data>
+  <data name="PP_OutputTypeWinApp" xml:space="preserve"><value>Windows-Anwendung</value></data>
+  <data name="PP_ProjectFile" xml:space="preserve"><value>Projektdatei</value></data>
+  <data name="PP_Directory" xml:space="preserve"><value>Verzeichnis</value></data>
+  <data name="PP_ProjectType" xml:space="preserve"><value>Projekttyp</value></data>
+  <data name="PP_NavBuild" xml:space="preserve"><value>Build</value></data>
+  <data name="PP_Configuration" xml:space="preserve"><value>Konfiguration</value></data>
+  <data name="PP_ConfigurationDesc" xml:space="preserve"><value>Aktives Build-Profil (Debug = Symbole, Release = optimiert).</value></data>
+  <data name="PP_Platform" xml:space="preserve"><value>Plattform</value></data>
+  <data name="PP_PlatformDesc" xml:space="preserve"><value>Zielarchitektur des kompilierten Binärs.</value></data>
+  <data name="PP_OutputPath" xml:space="preserve"><value>Ausgabepfad</value></data>
+  <data name="PP_OutputPathDesc" xml:space="preserve"><value>Ausgabeverzeichnis relativ zum Projektstamm.</value></data>
+  <data name="PP_OptimizeCode" xml:space="preserve"><value>Code optimieren</value></data>
+  <data name="PP_OptimizeCodeDesc" xml:space="preserve"><value>Aktiviert Compileroptimierungen (in Debug standardmäßig deaktiviert).</value></data>
+  <data name="PP_WarningsAsErrors" xml:space="preserve"><value>Warnungen als Fehler behandeln</value></data>
+  <data name="PP_NavDependencies" xml:space="preserve"><value>Abhängigkeiten</value></data>
+  <data name="PP_DependenciesDesc" xml:space="preserve"><value>Projektreferenzen und NuGet-Pakete, die in diesem Projekt deklariert sind.</value></data>
+  <data name="PP_ColName" xml:space="preserve"><value>Name</value></data>
+  <data name="PP_ColType" xml:space="preserve"><value>Typ</value></data>
+  <data name="PP_NavGlobalUsings" xml:space="preserve"><value>Globale Verwendungen</value></data>
+  <data name="PP_GlobalUsingsDesc" xml:space="preserve"><value>Implizite using-Direktiven, die im Projekt deklariert sind (ImplicitUsings).</value></data>
+  <data name="PP_ColNamespace" xml:space="preserve"><value>Namespace</value></data>
+  <data name="PP_NavItems" xml:space="preserve"><value>Elemente</value></data>
+  <data name="PP_ColPath" xml:space="preserve"><value>Pfad</value></data>
+  <data name="PP_NavReferences" xml:space="preserve"><value>Referenzen</value></data>
+  <data name="PP_AddNuGet" xml:space="preserve"><value>+ NuGet…</value></data>
+  <data name="PP_AddProject" xml:space="preserve"><value>+ Projekt…</value></data>
+  <data name="PP_NavWin32Resources" xml:space="preserve"><value>Win32-Ressourcen</value></data>
+  <data name="PP_AppIcon" xml:space="preserve"><value>Anwendungssymbol</value></data>
+  <data name="PP_AppIconDesc" xml:space="preserve"><value>.ico-Datei, die als Win32-Ressource in die Assembly eingebettet ist.</value></data>
+  <data name="PP_AppManifest" xml:space="preserve"><value>Anwendungsmanifest</value></data>
+  <data name="PP_ManifestDefault" xml:space="preserve"><value>Standardeinstellungen</value></data>
+  <data name="PP_ManifestCreate" xml:space="preserve"><value>Neues Manifest erstellen</value></data>
+  <data name="PP_ManifestNone" xml:space="preserve"><value>Kein Manifest</value></data>
+  <data name="PP_ManifestDesc" xml:space="preserve"><value>app.manifest-Datei, die die UAC-Ausführungsebene und DPI steuert.</value></data>
+  <data name="PP_NavPackage" xml:space="preserve"><value>Paket</value></data>
+  <data name="PP_PackageDesc" xml:space="preserve"><value>NuGet-Metadaten, die beim Veröffentlichen des Pakets generiert werden.</value></data>
+  <data name="PP_PackageId" xml:space="preserve"><value>Paket-ID</value></data>
+  <data name="PP_PackageIdDesc" xml:space="preserve"><value>Eindeutige Paketkennung auf NuGet.org.</value></data>
+  <data name="PP_VersionLabel" xml:space="preserve"><value>Version</value></data>
+  <data name="PP_AuthorsLabel" xml:space="preserve"><value>Autoren</value></data>
+  <data name="PP_DescriptionLabel" xml:space="preserve"><value>Beschreibung</value></data>
+  <data name="PP_NavDebug" xml:space="preserve"><value>Debuggen</value></data>
+  <data name="PP_DebugDesc" xml:space="preserve"><value>Konfiguration des Startprofils.</value></data>
+  <data name="PP_LaunchProfile" xml:space="preserve"><value>Startprofil</value></data>
+  <data name="PP_LaunchProfileDesc" xml:space="preserve"><value>Profil, das in launchSettings.json definiert ist.</value></data>
+  <data name="PP_CommandLineArgs" xml:space="preserve"><value>Befehlszeilenargumente</value></data>
+  <data name="PP_WorkingDirectory" xml:space="preserve"><value>Arbeitsverzeichnis</value></data>
+  <data name="PS_PackageSourceLabel" xml:space="preserve"><value>Paketquelle:</value></data>
+  <data name="PS_IncludePrerelease" xml:space="preserve"><value>Vorabversionen einschließen</value></data>
+  <data name="PS_NuGetBrowseTab" xml:space="preserve"><value>Durchsuchen</value></data>
+  <data name="PS_NuGetInstalledTab" xml:space="preserve"><value>Installiert</value></data>
+  <data name="PS_NuGetUpdatesTab" xml:space="preserve"><value>Updates</value></data>
+  <data name="PS_NuGetLoadMore" xml:space="preserve"><value>Mehr laden…</value></data>
+  <data name="PS_SelectPackageHint" xml:space="preserve"><value>Wählen Sie ein Paket aus, um Details anzuzeigen.</value></data>
+  <data name="PS_NuGetConsolidateTab" xml:space="preserve"><value>Konsolidieren</value></data>
+  <data name="PS_ProjectsLabel" xml:space="preserve"><value>Projekte</value></data>
+  <data name="PS_VersionLabel" xml:space="preserve"><value>Version:</value></data>
+  <data name="PS_AddProjectRef" xml:space="preserve"><value>Projektreferenz hinzufügen…</value></data>
+  <data name="PS_AddAssemblyRef" xml:space="preserve"><value>Assemblyreferenz hinzufügen…</value></data>
+  <data name="PS_RemoveUnused" xml:space="preserve"><value>Nicht verwendete entfernen…</value></data>
+  <data name="PS_SearchReferences" xml:space="preserve"><value>Referenzen suchen…</value></data>
+  <data name="PS_Close" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="PS_Convert" xml:space="preserve">
+    <value>Convert</value>
+  </data>
+  <data name="PS_Install" xml:space="preserve">
+    <value>Install</value>
+  </data>
+  <data name="PS_Update" xml:space="preserve">
+    <value>Update</value>
+  </data>
+  <data name="PS_Uninstall" xml:space="preserve">
+    <value>Uninstall</value>
+  </data>
+  <data name="PS_CopyOptionsSection" xml:space="preserve">
+    <value>Copy options</value>
+  </data>
+  <data name="PS_KeepOriginalLocation" xml:space="preserve">
+    <value>Keep original location  (reference only)</value>
+  </data>
+  <data name="PS_CopyIntoProject" xml:space="preserve">
+    <value>Copy into project</value>
+  </data>
+  <data name="PS_DestinationFolder" xml:space="preserve">
+    <value>Destination folder</value>
+  </data>
+  <data name="PS_PhysicalSubfolder" xml:space="preserve">
+    <value>Physical subfolder</value>
+  </data>
+  <data name="PS_KeepInPlace" xml:space="preserve">
+    <value>Keep in place</value>
+  </data>
+  <data name="PS_NewFolderTooltip" xml:space="preserve">
+    <value>New physical folder in the selected directory</value>
+  </data>
+  <data name="PS_ConfirmNewFolder" xml:space="preserve">
+    <value>Confirm new folder</value>
+  </data>
+  <data name="PS_PreviewSection" xml:space="preserve">
+    <value>Preview</value>
+  </data>
+  <data name="PS_DestinationLabel" xml:space="preserve">
+    <value>Destination:</value>
+  </data>
+  <data name="PS_AutoFillTooltip" xml:space="preserve">
+    <value>Pre-fill Platform, Region and Title from the selected ROM</value>
+  </data>
+  <data name="PS_OutputSection" xml:space="preserve">
+    <value>Output</value>
+  </data>
+  <data name="PS_SameFolderAsSource" xml:space="preserve">
+    <value>Same folder as source</value>
+  </data>
+  <data name="PS_CustomFolder" xml:space="preserve">
+    <value>Custom folder</value>
+  </data>
+  <data name="PS_AddConvertedToProject" xml:space="preserve">
+    <value>Add converted file to project</value>
+  </data>
+  <data name="PS_OpenAfterConversion" xml:space="preserve">
+    <value>Open in TBL Editor after conversion</value>
+  </data>
+  <data name="PS_AddToProject" xml:space="preserve">
+    <value>Add to project:</value>
+  </data>
+  <data name="PS_CreateInMemoryTooltip" xml:space="preserve">
+    <value>Create document in memory; choose location on first Ctrl+S</value>
+  </data>
+  <data name="PS_PackageDescription" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="PS_PackageDownloads" xml:space="preserve">
+    <value>Downloads:</value>
+  </data>
+  <data name="PS_PackagesLabel" xml:space="preserve">
+    <value> package(s)</value>
+  </data>
+  <data name="PS_InstalledVersion" xml:space="preserve">
+    <value>Installed: v</value>
+  </data>
+  <data name="PP_ReferencesLabel" xml:space="preserve">
+    <value>Project and package references:</value>
+  </data>
+  <data name="PP_Save" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="PP_FilterSections" xml:space="preserve">
+    <value>Filter sections</value>
+  </data>
+  <data name="PP_TypeColumn" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="PP_PathColumn" xml:space="preserve">
+    <value>Path</value>
+  </data>
+  <data name="PP_ValueColumn" xml:space="preserve">
+    <value>Value</value>
+  </data>
+  <data name="PP_NamespaceColumn" xml:space="preserve">
+    <value>Namespace</value>
+  </data>
+  <data name="PP_EnvVars" xml:space="preserve">
+    <value>Environment variables</value>
+  </data>
+  <data name="PP_NavCodeAnalysis" xml:space="preserve">
+    <value>Code Analysis</value>
+  </data>
+  <data name="PP_EnableCodeAnalysis" xml:space="preserve">
+    <value>Enable code analysis on build</value>
+  </data>
+  <data name="PP_EnableCodeAnalysisDesc" xml:space="preserve">
+    <value>Enables Roslyn analyzers on every build.</value>
+  </data>
+  <data name="PP_ReleaseOnlyAnalysis" xml:space="preserve">
+    <value>Enable only on Release configuration</value>
+  </data>
+  <data name="PP_CodeAnalysisDesc" xml:space="preserve">
+    <value>Static code analysis settings.</value>
+  </data>
+  <data name="PP_ChangesSaved" xml:space="preserve">
+    <value>✓ Changes saved</value>
+  </data>
+  <data name="PP_AppManifestDesc" xml:space="preserve">
+    <value>The app.manifest file that controls UAC execution level and DPI.</value>
+  </data>
 </root>
