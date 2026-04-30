@@ -31,4 +31,7 @@
   <data name="FileComparison_SelectFilesHint" xml:space="preserve">
     <value>Select files to compare</value>
   </data>
+  <data name="FileComparison_SelectBothFiles" xml:space="preserve">
+    <value>Select both files to compare</value>
+  </data>
 </root>

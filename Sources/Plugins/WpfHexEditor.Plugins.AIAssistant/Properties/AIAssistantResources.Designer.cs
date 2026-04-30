@@ -63,4 +63,8 @@ internal static class AIAssistantResources
     /// <summary>Localized: "Error: {0}"</summary>
     internal static string AIAssistant_Error_Generic
         => ResourceManager.GetString("AIAssistant_Error_Generic", _resourceCulture)!;
+
+    /// <summary>Localized: "Enable Thinking (Anthropic only)"</summary>
+    internal static string AIAssistant_EnableThinking
+        => ResourceManager.GetString("AIAssistant_EnableThinking", _resourceCulture)!;
 }

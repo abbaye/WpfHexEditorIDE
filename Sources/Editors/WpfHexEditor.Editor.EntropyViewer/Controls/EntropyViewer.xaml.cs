@@ -17,6 +17,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using WpfHexEditor.Core.BinaryAnalysis.Services;
 using WpfHexEditor.Editor.Core;
+using WpfHexEditor.Editor.EntropyViewer.Properties;
 
 namespace WpfHexEditor.Editor.EntropyViewer.Controls;
 
@@ -125,7 +126,7 @@ public sealed partial class EntropyViewer : UserControl, IDocumentEditor, IOpena
     {
         IsBusy = true;
         OperationStarted?.Invoke(this, new DocumentOperationEventArgs
-            { Title = "Analysing…", IsIndeterminate = true });
+            { Title = EntropyViewerResources.EntropyViewer_Analysing, IsIndeterminate = true });
 
         try
         {

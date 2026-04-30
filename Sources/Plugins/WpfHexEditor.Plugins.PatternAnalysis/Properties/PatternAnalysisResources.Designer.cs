@@ -47,4 +47,32 @@ internal static class PatternAnalysisResources
     /// <summary>Looks up a localized string similar to "No data loaded".</summary>
     internal static string PatternAnalysis_NoDataLoaded
         => ResourceManager.GetString("PatternAnalysis_NoDataLoaded", _resourceCulture)!;
+
+    /// <summary>Looks up a localized string similar to "Very high entropy detected".</summary>
+    internal static string PatternAnalysis_Entropy_VeryHigh
+        => ResourceManager.GetString("PatternAnalysis_Entropy_VeryHigh", _resourceCulture)!;
+
+    /// <summary>Looks up a localized string similar to "Data may be encrypted or compressed (entropy &gt; 7.5 bits/byte)".</summary>
+    internal static string PatternAnalysis_Entropy_VeryHigh_Desc
+        => ResourceManager.GetString("PatternAnalysis_Entropy_VeryHigh_Desc", _resourceCulture)!;
+
+    /// <summary>Looks up a localized string similar to "Very low entropy detected".</summary>
+    internal static string PatternAnalysis_Entropy_VeryLow
+        => ResourceManager.GetString("PatternAnalysis_Entropy_VeryLow", _resourceCulture)!;
+
+    /// <summary>Looks up a localized string similar to "Data contains mostly repetitive or zero bytes (entropy &lt; 2.0 bits/byte)".</summary>
+    internal static string PatternAnalysis_Entropy_VeryLow_Desc
+        => ResourceManager.GetString("PatternAnalysis_Entropy_VeryLow_Desc", _resourceCulture)!;
+
+    /// <summary>Looks up a localized string similar to "Low randomness — data is repetitive or structured".</summary>
+    internal static string PatternAnalysis_Entropy_Low
+        => ResourceManager.GetString("PatternAnalysis_Entropy_Low", _resourceCulture)!;
+
+    /// <summary>Looks up a localized string similar to "Medium randomness — typical for mixed or compressed data".</summary>
+    internal static string PatternAnalysis_Entropy_Medium
+        => ResourceManager.GetString("PatternAnalysis_Entropy_Medium", _resourceCulture)!;
+
+    /// <summary>Looks up a localized string similar to "High randomness — data may be encrypted or highly compressed".</summary>
+    internal static string PatternAnalysis_Entropy_High
+        => ResourceManager.GetString("PatternAnalysis_Entropy_High", _resourceCulture)!;
 }

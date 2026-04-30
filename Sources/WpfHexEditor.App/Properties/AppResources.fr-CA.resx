@@ -409,5 +409,20 @@
   <data name="App_Notifications_Title" xml:space="preserve"><value>Notifications</value></data>
   <data name="App_Notifications_Empty" xml:space="preserve"><value>Aucune notification</value></data>
   <data name="App_Notifications_ClearAll" xml:space="preserve"><value>Tout effacer</value></data>
+  <!-- Source Files Page -->
+  <data name="App_SourceFiles_SelectFolder" xml:space="preserve"><value>Sélectionner un dossier source</value></data>
+  <!-- Configuration Properties Page -->
+  <data name="App_ConfigPage_BuildAll" xml:space="preserve"><value>Tout générer</value></data>
+  <data name="App_ConfigPage_DeployAll" xml:space="preserve"><value>Tout déployer</value></data>
+  <!-- Startup Projects Page -->
+  <data name="App_StartupProjects_CurrentSelection" xml:space="preserve"><value>Sélection actuelle</value></data>
+  <data name="App_StartupProjects_SingleProject" xml:space="preserve"><value>Projet de démarrage unique :</value></data>
+  <data name="App_StartupProjects_MultipleProjects" xml:space="preserve"><value>Plusieurs projets de démarrage :</value></data>
+  <data name="App_StartupProjects_LaunchProfiles" xml:space="preserve"><value>Profils de lancement</value></data>
+  <!-- Options Pages -->
+  <data name="App_Options_SelectDebugAdapter" xml:space="preserve"><value>Sélectionner l'exécutable de l'adaptateur de débogage</value></data>
+  <data name="App_Options_SelectLspExecutable" xml:space="preserve"><value>Sélectionner l'exécutable du serveur LSP</value></data>
+  <!-- LSP Status -->
+  <data name="App_Lsp_ErrorTitle" xml:space="preserve"><value>Erreur LSP</value></data>
 
 </root>

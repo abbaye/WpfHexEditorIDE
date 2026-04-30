@@ -644,5 +644,14 @@ namespace WpfHexEditor.Editor.MarkdownEditor.Properties {
                 return ResourceManager.GetString("MdView_Split", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à No headings found.
+        /// </summary>
+        internal static string Md_NoHeadingsFound {
+            get {
+                return ResourceManager.GetString("Md_NoHeadingsFound", resourceCulture);
+            }
+        }
     }
 }

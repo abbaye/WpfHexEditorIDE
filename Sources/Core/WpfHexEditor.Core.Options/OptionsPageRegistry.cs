@@ -22,70 +22,70 @@ public static class OptionsPageRegistry
     private static readonly List<OptionsPageDescriptor> _pages =
     [
         // Environment
-        new(CategoryEnvironment, PageGeneral,    () => new EnvironmentGeneralPage(),  "🌍",
+        new(() => CategoryEnvironment, () => PageGeneral,    () => new EnvironmentGeneralPage(),  "🌍",
             ["theme", "color", "language", "font", "startup", "culture", "appearance", "locale"]),
-        new(CategoryEnvironment, PageSave,       () => new EnvironmentSavePage(),     "🌍",
+        new(() => CategoryEnvironment, () => PageSave,       () => new EnvironmentSavePage(),     "🌍",
             ["autosave", "auto save", "backup", "encoding", "bom", "newline", "eol", "line ending"]),
-        new(CategoryEnvironment, PageOutput,     () => new OutputOptionsPage(),       "🌍",
+        new(() => CategoryEnvironment, () => PageOutput,     () => new OutputOptionsPage(),       "🌍",
             ["log", "verbose", "output", "console", "warning", "error", "trace"]),
-        new(CategoryEnvironment, PageTabGroups,  () => new TabGroupsOptionsPage(),    "🌍",
+        new(() => CategoryEnvironment, () => PageTabGroups,  () => new TabGroupsOptionsPage(),    "🌍",
             ["tab", "group", "split", "layout", "panel", "dock", "column"]),
 
         // Hex Editor
-        new(CategoryHexEditor, PageDisplay,    () => new HexEditorDisplayPage(),    "🔧",
+        new(() => CategoryHexEditor, () => PageDisplay,    () => new HexEditorDisplayPage(),    "🔧",
             ["offset", "column", "bytes", "width", "ascii", "header", "ruler", "zoom", "grouping"]),
-        new(CategoryHexEditor, PageEditing,    () => new HexEditorEditingPage(),    "🔧",
+        new(() => CategoryHexEditor, () => PageEditing,    () => new HexEditorEditingPage(),    "🔧",
             ["insert", "overwrite", "clipboard", "paste", "readonly", "undo", "delete"]),
-        new(CategoryHexEditor, PageStatusBar,  () => new HexEditorStatusBarPage(),  "🔧",
+        new(() => CategoryHexEditor, () => PageStatusBar,  () => new HexEditorStatusBarPage(),  "🔧",
             ["statusbar", "status", "position", "selection", "size", "encoding", "info"]),
-        new(CategoryHexEditor, PageBehavior,   () => new HexEditorBehaviorPage(),   "🔧",
+        new(() => CategoryHexEditor, () => PageBehavior,   () => new HexEditorBehaviorPage(),   "🔧",
             ["scroll", "click", "mouse", "keyboard", "highlight", "follow", "caret"]),
 
         // Solution Explorer
-        new(CategorySolutionExplorer, PageGeneral, () => new SolutionExplorerOptionsPage(), "📁",
+        new(() => CategorySolutionExplorer, () => PageGeneral, () => new SolutionExplorerOptionsPage(), "📁",
             ["file", "filter", "sort", "icon", "project", "solution", "tree", "explorer"]),
 
         // Code Editor
-        new(CategoryCodeEditor, PageAppearanceColors, () => new CodeEditorOptionsPage(),   "💻",
+        new(() => CategoryCodeEditor, () => PageAppearanceColors, () => new CodeEditorOptionsPage(),   "💻",
             ["font", "color", "syntax", "highlight", "theme", "bracket", "indent", "guide", "gutter"]),
-        new(CategoryCodeEditor, PageInlineHints,      () => new CodeEditorInlineHintsPage(), "💻",
+        new(() => CategoryCodeEditor, () => PageInlineHints,      () => new CodeEditorInlineHintsPage(), "💻",
             ["inlay", "hint", "roslyn", "type", "parameter", "lambda", "variable", "annotation"]),
-        new(CategoryCodeEditor, PageNavigation,       () => new CodeEditorNavigationPage(),  "💻",
+        new(() => CategoryCodeEditor, () => PageNavigation,       () => new CodeEditorNavigationPage(),  "💻",
             ["goto", "navigate", "breadcrumb", "scroll", "margin", "minimap", "overview"]),
-        new(CategoryCodeEditor, PageFormatting,       () => new CodeEditorFormattingPage(),  "💻",
+        new(() => CategoryCodeEditor, () => PageFormatting,       () => new CodeEditorFormattingPage(),  "💻",
             ["indent", "tab", "space", "brace", "format", "align", "whitespace", "trailing"]),
 
         // Text Editor
-        new(CategoryTextEditor, PageGeneral,   () => new TextEditorOptionsPage(),    "📝",
+        new(() => CategoryTextEditor, () => PageGeneral,   () => new TextEditorOptionsPage(),    "📝",
             ["word wrap", "line", "ruler", "encoding", "eol", "link", "email", "plain text"]),
-        new(CategoryTextEditor, PageMarkdown,  () => new MarkdownEditorOptionsPage(), "📝",
+        new(() => CategoryTextEditor, () => PageMarkdown,  () => new MarkdownEditorOptionsPage(), "📝",
             ["markdown", "preview", "sync", "auto-pair", "yaml", "toc", "frontmatter", "list continuation"]),
 
         // Plugin System
-        new(CategoryPluginSystem, PageGeneral,     () => new PluginSystemOptionsPage(),    "⚙️",
+        new(() => CategoryPluginSystem, () => PageGeneral,     () => new PluginSystemOptionsPage(),    "⚙️",
             ["plugin", "extension", "load", "sandbox", "enable", "disable", "alc"]),
-        new(CategoryPluginSystem, PageDevelopment, () => new PluginDevLoaderOptionsPage(), "⚙️",
+        new(() => CategoryPluginSystem, () => PageDevelopment, () => new PluginDevLoaderOptionsPage(), "⚙️",
             ["dev", "debug", "hot reload", "path", "loader", "dll", "development"]),
 
         // Build & Run
-        new(CategoryBuildRun, PageGeneral,   () => new BuildRunGeneralOptionsPage(), "🔨",
+        new(() => CategoryBuildRun, () => PageGeneral,   () => new BuildRunGeneralOptionsPage(), "🔨",
             ["build", "run", "output", "clean", "restore", "nuget", "msbuild"]),
-        new(CategoryBuildRun, PageCompiler,  () => new BuildCompilerOptionsPage(),   "🔨",
+        new(() => CategoryBuildRun, () => PageCompiler,  () => new BuildCompilerOptionsPage(),   "🔨",
             ["compiler", "roslyn", "warning", "error", "nullable", "optimize", "csharp"]),
 
         // Debugger
-        new(CategoryDebugger, PageBreakpoints, () => new DebuggerBreakpointOptionsPage(), "🐛",
+        new(() => CategoryDebugger, () => PageBreakpoints, () => new DebuggerBreakpointOptionsPage(), "🐛",
             ["breakpoint", "condition", "exception", "step", "attach", "dap", "debug"]),
 
         // Extensions
-        new(CategoryExtensions, PageMarketplace, () => new MarketplaceOptionsPage(), "🔌",
+        new(() => CategoryExtensions, () => PageMarketplace, () => new MarketplaceOptionsPage(), "🔌",
             ["marketplace", "install", "update", "package", "gallery", "extension", "download"]),
 
         // Format Editor (.whfmt)
-        new(CategoryFormatEditor, PageGeneral, () => new StructureEditorOptionsPage(), "📋",
+        new(() => CategoryFormatEditor, () => PageGeneral, () => new StructureEditorOptionsPage(), "📋",
             ["whfmt", "block", "validation", "code preview", "structure", "format definition",
              "endianness", "version", "test panel", "debounce", "auto validate"]),
-        new(CategoryFormatEditor, PageFormatExplorer, () => new WhfmtExplorerOptionsPage(), "📋",
+        new(() => CategoryFormatEditor, () => PageFormatExplorer, () => new WhfmtExplorerOptionsPage(), "📋",
             ["format browser", "catalog", "whfmt explorer", "hot reload", "user formats",
              "quality score", "adhoc", "additional search paths", "built-in", "load failures",
              "format manager", "view mode"]),

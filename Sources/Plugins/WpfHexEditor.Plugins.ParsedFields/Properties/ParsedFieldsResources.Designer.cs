@@ -79,4 +79,8 @@ internal static class ParsedFieldsResources
     /// <summary>Looks up a localized string similar to "Delete all fields?".</summary>
     internal static string ParsedFields_Confirm_DeleteAll
         => ResourceManager.GetString("ParsedFields_Confirm_DeleteAll", _resourceCulture)!;
+
+    /// <summary>Looks up a localized string similar to "Data Inspector feature not yet connected to this panel.".</summary>
+    internal static string ParsedFields_DataInspectorNotConnected
+        => ResourceManager.GetString("ParsedFields_DataInspectorNotConnected", _resourceCulture)!;
 }

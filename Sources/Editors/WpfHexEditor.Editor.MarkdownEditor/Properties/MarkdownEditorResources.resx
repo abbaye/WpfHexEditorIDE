@@ -108,4 +108,7 @@
   <data name="MdDlg_ExportHtmlTitle" xml:space="preserve"><value>Export as HTML</value></data>
   <data name="MdDlg_ExportPdfTitle"  xml:space="preserve"><value>Export as PDF</value></data>
 
+  <!-- Outline panel -->
+  <data name="Md_NoHeadingsFound" xml:space="preserve"><value>No headings found.</value></data>
+
 </root>

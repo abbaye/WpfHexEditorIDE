@@ -242,7 +242,7 @@ public sealed class DebuggerOptionsPage : UserControl, IOptionsPage
     {
         var dlg = new OpenFileDialog
         {
-            Title  = "Select debug adapter executable",
+            Title  = AppResources.App_Options_SelectDebugAdapter,
             Filter = "Executable files (*.exe)|*.exe|All files (*.*)|*.*",
         };
 

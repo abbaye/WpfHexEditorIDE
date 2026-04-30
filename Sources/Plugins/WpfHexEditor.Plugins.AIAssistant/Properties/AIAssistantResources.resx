@@ -104,4 +104,9 @@
     <value>Error: {0}</value>
   </data>
 
+  <!-- Thinking toggle label in model switcher -->
+  <data name="AIAssistant_EnableThinking" xml:space="preserve">
+    <value>Enable Thinking (Anthropic only)</value>
+  </data>
+
 </root>

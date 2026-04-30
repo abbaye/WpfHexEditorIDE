@@ -36,6 +36,7 @@ using WpfHexEditor.Core.ProjectSystem.Languages;
 using WpfHexEditor.Editor.CodeEditor.Selection;
 using WpfHexEditor.Editor.CodeEditor.Input;
 using WpfHexEditor.Editor.CodeEditor.MultiCaret;
+using WpfHexEditor.Editor.CodeEditor.Properties;
 
 namespace WpfHexEditor.Editor.CodeEditor.Controls
 {
@@ -1093,7 +1094,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             if (_document == null) return;
             var dialog = new System.Windows.Window
             {
-                Title = "Go to Line",
+                Title = CodeEditorResources.CodeEditor_GoToLine,
                 Width = 300, Height = 120,
                 WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner,
                 Owner = System.Windows.Window.GetWindow(this),

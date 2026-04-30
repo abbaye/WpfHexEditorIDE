@@ -2790,5 +2790,50 @@ namespace WpfHexEditor.App.Properties {
             get { return ResourceManager.GetString("App_Notifications_ClearAll", resourceCulture); }
         }
 
+        // ── Source Files Page ─────────────────────────────────────────────────
+
+        internal static string App_SourceFiles_SelectFolder {
+            get { return ResourceManager.GetString("App_SourceFiles_SelectFolder", resourceCulture); }
+        }
+
+        // ── Configuration Properties Page ────────────────────────────────────
+
+        internal static string App_ConfigPage_BuildAll {
+            get { return ResourceManager.GetString("App_ConfigPage_BuildAll", resourceCulture); }
+        }
+        internal static string App_ConfigPage_DeployAll {
+            get { return ResourceManager.GetString("App_ConfigPage_DeployAll", resourceCulture); }
+        }
+
+        // ── Startup Projects Page ─────────────────────────────────────────────
+
+        internal static string App_StartupProjects_CurrentSelection {
+            get { return ResourceManager.GetString("App_StartupProjects_CurrentSelection", resourceCulture); }
+        }
+        internal static string App_StartupProjects_SingleProject {
+            get { return ResourceManager.GetString("App_StartupProjects_SingleProject", resourceCulture); }
+        }
+        internal static string App_StartupProjects_MultipleProjects {
+            get { return ResourceManager.GetString("App_StartupProjects_MultipleProjects", resourceCulture); }
+        }
+        internal static string App_StartupProjects_LaunchProfiles {
+            get { return ResourceManager.GetString("App_StartupProjects_LaunchProfiles", resourceCulture); }
+        }
+
+        // ── Options Pages ─────────────────────────────────────────────────────
+
+        internal static string App_Options_SelectDebugAdapter {
+            get { return ResourceManager.GetString("App_Options_SelectDebugAdapter", resourceCulture); }
+        }
+        internal static string App_Options_SelectLspExecutable {
+            get { return ResourceManager.GetString("App_Options_SelectLspExecutable", resourceCulture); }
+        }
+
+        // ── LSP Status ────────────────────────────────────────────────────────
+
+        internal static string App_Lsp_ErrorTitle {
+            get { return ResourceManager.GetString("App_Lsp_ErrorTitle", resourceCulture); }
+        }
+
     }
 }

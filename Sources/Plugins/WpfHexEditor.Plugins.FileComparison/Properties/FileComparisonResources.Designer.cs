@@ -48,4 +48,8 @@ internal static class FileComparisonResources
     /// <summary>Gets the localized hint shown when no files have been selected yet.</summary>
     internal static string FileComparison_SelectFilesHint
         => ResourceManager.GetString("FileComparison_SelectFilesHint", _resourceCulture)!;
+
+    /// <summary>Gets the localized message shown when only one file has been loaded.</summary>
+    internal static string FileComparison_SelectBothFiles
+        => ResourceManager.GetString("FileComparison_SelectBothFiles", _resourceCulture)!;
 }

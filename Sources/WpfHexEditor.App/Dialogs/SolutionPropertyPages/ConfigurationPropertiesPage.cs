@@ -17,6 +17,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using WpfHexEditor.App.Properties;
 using WpfHexEditor.Core.BuildSystem;
 using WpfHexEditor.Editor.Core;
 
@@ -146,7 +147,7 @@ internal sealed class ConfigurationPropertiesPage : UserControl
 
         _cbAllBuild = new CheckBox
         {
-            Content           = "Tout générer",
+            Content           = AppResources.App_ConfigPage_BuildAll,
             IsChecked         = true,
             VerticalAlignment = VerticalAlignment.Center,
             Margin            = new Thickness(0, 0, 8, 0)
@@ -157,7 +158,7 @@ internal sealed class ConfigurationPropertiesPage : UserControl
 
         _cbAllDeploy = new CheckBox
         {
-            Content           = "Tout déployer",
+            Content           = AppResources.App_ConfigPage_DeployAll,
             VerticalAlignment = VerticalAlignment.Center
         };
         _cbAllDeploy.SetResourceReference(CheckBox.ForegroundProperty, "DockMenuForegroundBrush");

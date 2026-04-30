@@ -9,4 +9,5 @@
   <data name="FileComparison_SelectFile1" xml:space="preserve"><value>Sélectionner le fichier 1 à comparer</value></data>
   <data name="FileComparison_SelectFile2" xml:space="preserve"><value>Sélectionner le fichier 2 à comparer</value></data>
   <data name="FileComparison_SelectFilesHint" xml:space="preserve"><value>Sélectionner des fichiers à comparer</value></data>
+  <data name="FileComparison_SelectBothFiles" xml:space="preserve"><value>S&#233;lectionnez les deux fichiers &#224; comparer</value></data>
 </root>

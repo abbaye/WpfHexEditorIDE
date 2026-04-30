@@ -1062,7 +1062,7 @@ public partial class MainWindow
             case LspServerState.Error:
                 LspStatusDot.Text        = "✕";
                 LspStatusDot.SetResourceReference(System.Windows.Controls.TextBlock.ForegroundProperty, "LSP_ErrorDot");
-                LspStatusText.Text       = "LSP Error";
+                LspStatusText.Text       = AppResources.App_Lsp_ErrorTitle;
                 LspStatusItem.ToolTip    = e.ErrorMessage ?? "Language server failed to start.";
                 LspStatusItem.Visibility = Visibility.Visible;
                 break;

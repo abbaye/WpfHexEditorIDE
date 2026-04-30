@@ -75,4 +75,25 @@
   <data name="PatternAnalysis_NoDataLoaded" xml:space="preserve">
     <value>Aucune donn&#233;e charg&#233;e</value>
   </data>
+  <data name="PatternAnalysis_Entropy_VeryHigh" xml:space="preserve">
+    <value>Entropie tr&#232;s &#233;lev&#233;e d&#233;tect&#233;e</value>
+  </data>
+  <data name="PatternAnalysis_Entropy_VeryHigh_Desc" xml:space="preserve">
+    <value>Les donn&#233;es sont peut-&#234;tre chiffr&#233;es ou compress&#233;es (entropie &gt; 7,5 bits/octet)</value>
+  </data>
+  <data name="PatternAnalysis_Entropy_VeryLow" xml:space="preserve">
+    <value>Entropie tr&#232;s faible d&#233;tect&#233;e</value>
+  </data>
+  <data name="PatternAnalysis_Entropy_VeryLow_Desc" xml:space="preserve">
+    <value>Les donn&#233;es contiennent principalement des octets r&#233;p&#233;titifs ou nuls (entropie &lt; 2,0 bits/octet)</value>
+  </data>
+  <data name="PatternAnalysis_Entropy_Low" xml:space="preserve">
+    <value>Faible al&#233;atoire &#x2014; donn&#233;es r&#233;p&#233;titives ou structur&#233;es</value>
+  </data>
+  <data name="PatternAnalysis_Entropy_Medium" xml:space="preserve">
+    <value>Al&#233;atoire moyen &#x2014; typique de donn&#233;es mixtes ou compress&#233;es</value>
+  </data>
+  <data name="PatternAnalysis_Entropy_High" xml:space="preserve">
+    <value>Al&#233;atoire &#233;lev&#233; &#x2014; donn&#233;es peut-&#234;tre chiffr&#233;es ou tr&#232;s compress&#233;es</value>
+  </data>
 </root>

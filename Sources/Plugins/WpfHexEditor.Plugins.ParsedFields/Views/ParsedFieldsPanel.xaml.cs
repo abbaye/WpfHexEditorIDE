@@ -561,7 +561,7 @@ namespace WpfHexEditor.Plugins.ParsedFields.Views
         {
             _pinnedFilePath = null;
             SourceMenuIcon.Text  = "\uE72C"; // sync icon
-            SourceMenuLabel.Text = "Auto \u25BE";
+            SourceMenuLabel.Text = ParsedFieldsResources.ParsedFields_Label_AutoMode + " \u25BE";
         }
 
         private void SetSourcePinned(string filePath, string title)
@@ -1274,7 +1274,7 @@ namespace WpfHexEditor.Plugins.ParsedFields.Views
                 catch (Exception ex)
                 {
                     System.Diagnostics.Debug.WriteLine($"Error showing in data inspector: {ex.Message}");
-                    System.Windows.MessageBox.Show("Data Inspector feature not yet connected to this panel.",
+                    System.Windows.MessageBox.Show(ParsedFieldsResources.ParsedFields_DataInspectorNotConnected,
                         ParsedFieldsResources.ParsedFields_Dialog_FeatureUnavailable,
                         System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
                 }

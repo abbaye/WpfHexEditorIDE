@@ -11,6 +11,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
+using WpfHexEditor.Core.Localization.Services;
 using WpfHexEditor.Core.Options.ViewModels;
 
 namespace WpfHexEditor.Core.Options;
@@ -68,6 +69,9 @@ public sealed partial class OptionsEditorControl : UserControl
         OptionsPageRegistry.PageRegistered += OnPageRegistered;
         OptionsPageRegistry.PageUnregistered += OnPageUnregistered;
 
+        // Rebuild tree labels when the user switches UI language
+        LocalizedResourceDictionary.CultureChanged += OnCultureChanged;
+
         Loaded += OnLoaded;
         Unloaded += OnUnloaded;
     }
@@ -86,6 +90,7 @@ public sealed partial class OptionsEditorControl : UserControl
         // Unsubscribe from events to prevent memory leaks
         OptionsPageRegistry.PageRegistered -= OnPageRegistered;
         OptionsPageRegistry.PageUnregistered -= OnPageUnregistered;
+        LocalizedResourceDictionary.CultureChanged -= OnCultureChanged;
     }
 
     // -- Event handlers for dynamic page registration ---------------------
@@ -117,6 +122,18 @@ public sealed partial class OptionsEditorControl : UserControl
 
             SaveCurrentSelection();
             RebuildTree();
+            RestoreSelection();
+        });
+    }
+
+    private void OnCultureChanged(object? sender, CultureChangedEventArgs e)
+    {
+        // Rebuild the tree on the UI thread so category/page labels reflect the new language
+        Dispatcher.InvokeAsync(() =>
+        {
+            SaveCurrentSelection();
+            RebuildTree();
+            PopulateFilterCombo();
             RestoreSelection();
         });
     }

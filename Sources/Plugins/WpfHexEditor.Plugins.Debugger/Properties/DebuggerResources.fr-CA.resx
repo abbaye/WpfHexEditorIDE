@@ -10,4 +10,5 @@
   <data name="Debugger_LocalsPanelTitle" xml:space="preserve"><value>Variables locales</value></data>
   <data name="Debugger_WatchPanelTitle" xml:space="preserve"><value>Espion</value></data>
   <data name="Debugger_ConsolePanelTitle" xml:space="preserve"><value>Console de débogage</value></data>
+  <data name="Debugger_NoValidBreakpoints" xml:space="preserve"><value>Aucun point d&#8217;arr&#234;t valide trouv&#233; dans le fichier.</value></data>
 </root>

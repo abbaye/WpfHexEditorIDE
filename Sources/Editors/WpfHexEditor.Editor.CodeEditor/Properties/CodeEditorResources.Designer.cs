@@ -1778,5 +1778,14 @@ namespace WpfHexEditor.Editor.CodeEditor.Properties {
                 return ResourceManager.GetString("CodeEditor_DisplayName", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Go to Line.
+        /// </summary>
+        internal static string CodeEditor_GoToLine {
+            get {
+                return ResourceManager.GetString("CodeEditor_GoToLine", resourceCulture);
+            }
+        }
     }
 }

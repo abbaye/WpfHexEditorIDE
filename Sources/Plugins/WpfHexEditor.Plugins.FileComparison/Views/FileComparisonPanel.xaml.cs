@@ -191,7 +191,7 @@ public partial class FileComparisonPanel : UserControl
 
         if (_file1Fields == null || _file2Fields == null)
         {
-            ComparisonInfoText.Text = "Select both files to compare";
+            ComparisonInfoText.Text = FileComparisonResources.FileComparison_SelectBothFiles;
             File1Fields.ItemsSource = _file1Fields?.Select(f => new DiffField { Name = f.Name, Value = f.Value, DiffStatus = DiffStatus.Unchanged }).ToList();
             File2Fields.ItemsSource = _file2Fields?.Select(f => new DiffField { Name = f.Name, Value = f.Value, DiffStatus = DiffStatus.Unchanged }).ToList();
             UpdateStatistics(0, 0, 0, 0);

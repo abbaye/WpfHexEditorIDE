@@ -19,6 +19,7 @@ using System.Windows.Input;
 using Microsoft.Win32;
 using WpfHexEditor.Core.Debugger.Models;
 using WpfHexEditor.Plugins.Debugger.Dialogs;
+using WpfHexEditor.Plugins.Debugger.Properties;
 using WpfHexEditor.Plugins.Debugger.Services;
 using WpfHexEditor.SDK.Commands;
 using WpfHexEditor.SDK.Contracts;
@@ -297,7 +298,7 @@ public sealed class BreakpointExplorerViewModel : ViewModelBase
         var imported = VsBreakpointXmlService.ImportFromXml(dlg.FileName);
         if (imported.Count == 0)
         {
-            MessageBox.Show("No valid breakpoints found in the file.", "Import", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show(DebuggerResources.Debugger_NoValidBreakpoints, "Import", MessageBoxButton.OK, MessageBoxImage.Information);
             return;
         }
 

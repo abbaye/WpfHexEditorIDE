@@ -664,10 +664,6 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         private Typeface? _cachedLineNumberTypeface;
         private double _cachedLineNumberFontSize = -1;
 
-        // Zoom transform — same LayoutTransform strategy as HexEditor / TextViewport.
-        // Applied only when hosted in CodeEditorHost (HideScrollBars = true).
-        private readonly ScaleTransform _zoomScaler = new ScaleTransform(1.0, 1.0);
-
 
 
         // Background highlight pipeline (P1-CE-06)
@@ -1519,12 +1515,31 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         private static void OnZoomLevelChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (d is not CodeEditor editor) return;
-            var zoom = (double)e.NewValue;
-            editor._fontSize = editor._baseFontSize * zoom;
+            var newZoom = (double)e.NewValue;
+            var oldZoom = (double)e.OldValue;
+
+            editor._fontSize = editor._baseFontSize * newZoom;
             editor._lineNumberCache.Clear();
+
+            // Capture old line height BEFORE CalculateCharacterDimensions overwrites it.
+            double oldLineHeight = editor._lineHeight;
+
             editor.CalculateCharacterDimensions();
+
+            // Keep the first visible line anchored when zooming: rebase the pixel offset
+            // so the same line stays at the top after the line height changes.
+            if (oldLineHeight > 0 && editor._verticalScrollOffset > 0)
+            {
+                double firstVisibleFrac = editor._verticalScrollOffset / oldLineHeight;
+                editor._verticalScrollOffset = firstVisibleFrac * editor._lineHeight;
+                editor._currentScrollOffset  = editor._verticalScrollOffset;
+                editor._targetScrollOffset   = editor._verticalScrollOffset;
+                if (editor._virtualizationEngine != null)
+                    editor._virtualizationEngine.ScrollOffset = editor._verticalScrollOffset;
+            }
+
             editor.InvalidateMeasure();
-            editor.ZoomLevelChanged?.Invoke(editor, zoom);
+            editor.ZoomLevelChanged?.Invoke(editor, newZoom);
         }
 
         /// <summary>
@@ -4460,7 +4475,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 newOffset = _verticalScrollOffset; // already visible — no scroll needed
 
             double maxV = _vScrollBar?.Maximum ?? double.MaxValue;
-            newOffset = Math.Min(newOffset, maxV);
+            newOffset = Math.Clamp(newOffset, 0, maxV);
 
             if (Math.Abs(newOffset - _verticalScrollOffset) > 0.1)
             {

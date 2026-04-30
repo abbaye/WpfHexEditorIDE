@@ -100,4 +100,7 @@
   <data name="ParsedFields_Confirm_DeleteAll" xml:space="preserve">
     <value>Delete all fields?</value>
   </data>
+  <data name="ParsedFields_DataInspectorNotConnected" xml:space="preserve">
+    <value>Data Inspector feature not yet connected to this panel.</value>
+  </data>
 </root>

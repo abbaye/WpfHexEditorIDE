@@ -23,6 +23,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 using WpfHexEditor.Editor.MarkdownEditor.Controls;
+using WpfHexEditor.Editor.MarkdownEditor.Properties;
 
 namespace WpfHexEditor.Editor.MarkdownEditor.Panels;
 
@@ -162,7 +163,7 @@ public sealed partial class MarkdownOutlinePanel : UserControl
             _headings.Clear();
             EmptyLabel.Visibility  = Visibility.Collapsed;
             HeadingList.Visibility = Visibility.Visible;
-            StatusLabel.Text       = "No headings found.";
+            StatusLabel.Text       = MarkdownEditorResources.Md_NoHeadingsFound;
             return;
         }
 

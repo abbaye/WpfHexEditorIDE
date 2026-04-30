@@ -75,4 +75,25 @@
   <data name="PatternAnalysis_NoDataLoaded" xml:space="preserve">
     <value>No data loaded</value>
   </data>
+  <data name="PatternAnalysis_Entropy_VeryHigh" xml:space="preserve">
+    <value>Very high entropy detected</value>
+  </data>
+  <data name="PatternAnalysis_Entropy_VeryHigh_Desc" xml:space="preserve">
+    <value>Data may be encrypted or compressed (entropy &gt; 7.5 bits/byte)</value>
+  </data>
+  <data name="PatternAnalysis_Entropy_VeryLow" xml:space="preserve">
+    <value>Very low entropy detected</value>
+  </data>
+  <data name="PatternAnalysis_Entropy_VeryLow_Desc" xml:space="preserve">
+    <value>Data contains mostly repetitive or zero bytes (entropy &lt; 2.0 bits/byte)</value>
+  </data>
+  <data name="PatternAnalysis_Entropy_Low" xml:space="preserve">
+    <value>Low randomness &#x2014; data is repetitive or structured</value>
+  </data>
+  <data name="PatternAnalysis_Entropy_Medium" xml:space="preserve">
+    <value>Medium randomness &#x2014; typical for mixed or compressed data</value>
+  </data>
+  <data name="PatternAnalysis_Entropy_High" xml:space="preserve">
+    <value>High randomness &#x2014; data may be encrypted or highly compressed</value>
+  </data>
 </root>

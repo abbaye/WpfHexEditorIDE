@@ -882,5 +882,20 @@
   <data name="App_Notifications_Title" xml:space="preserve"><value>Notifications</value></data>
   <data name="App_Notifications_Empty" xml:space="preserve"><value>No notifications</value></data>
   <data name="App_Notifications_ClearAll" xml:space="preserve"><value>Clear all</value></data>
+  <!-- Source Files Page -->
+  <data name="App_SourceFiles_SelectFolder" xml:space="preserve"><value>Select a source folder</value></data>
+  <!-- Configuration Properties Page -->
+  <data name="App_ConfigPage_BuildAll" xml:space="preserve"><value>Build All</value></data>
+  <data name="App_ConfigPage_DeployAll" xml:space="preserve"><value>Deploy All</value></data>
+  <!-- Startup Projects Page -->
+  <data name="App_StartupProjects_CurrentSelection" xml:space="preserve"><value>Current selection</value></data>
+  <data name="App_StartupProjects_SingleProject" xml:space="preserve"><value>Single startup project:</value></data>
+  <data name="App_StartupProjects_MultipleProjects" xml:space="preserve"><value>Multiple startup projects:</value></data>
+  <data name="App_StartupProjects_LaunchProfiles" xml:space="preserve"><value>Launch profiles</value></data>
+  <!-- Options Pages -->
+  <data name="App_Options_SelectDebugAdapter" xml:space="preserve"><value>Select debug adapter executable</value></data>
+  <data name="App_Options_SelectLspExecutable" xml:space="preserve"><value>Select LSP server executable</value></data>
+  <!-- LSP Status -->
+  <data name="App_Lsp_ErrorTitle" xml:space="preserve"><value>LSP Error</value></data>
 
 </root>

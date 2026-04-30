@@ -175,7 +175,7 @@ public sealed class LspServersOptionsPage : UserControl, IOptionsPage
 
         var dlg = new OpenFileDialog
         {
-            Title  = "Select LSP server executable",
+            Title  = AppResources.App_Options_SelectLspExecutable,
             Filter = "Executable|*.exe;*.cmd;*.bat|All files|*.*",
         };
         if (dlg.ShowDialog() != true) return;

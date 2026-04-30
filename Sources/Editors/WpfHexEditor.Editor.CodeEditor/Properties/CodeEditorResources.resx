@@ -716,5 +716,8 @@
   <data name="CodeEditor_DisplayName" xml:space="preserve">
     <value>Code Editor</value>
   </data>
+  <data name="CodeEditor_GoToLine" xml:space="preserve">
+    <value>Go to Line</value>
+  </data>
 
 </root>

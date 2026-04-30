@@ -542,5 +542,8 @@
   <data name="CodeEditor_DisplayName" xml:space="preserve">
     <value>Éditeur de code</value>
   </data>
+  <data name="CodeEditor_GoToLine" xml:space="preserve">
+    <value>Aller à la ligne</value>
+  </data>
 
 </root>

@@ -52,4 +52,8 @@ internal static class DebuggerResources
     /// <summary>Gets the localized panel title for the Debug Console panel.</summary>
     internal static string Debugger_ConsolePanelTitle
         => ResourceManager.GetString("Debugger_ConsolePanelTitle", _resourceCulture)!;
+
+    /// <summary>Gets the localized message shown when no valid breakpoints are found during import.</summary>
+    internal static string Debugger_NoValidBreakpoints
+        => ResourceManager.GetString("Debugger_NoValidBreakpoints", _resourceCulture)!;
 }

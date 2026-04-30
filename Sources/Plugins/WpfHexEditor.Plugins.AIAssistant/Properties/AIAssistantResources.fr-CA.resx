@@ -96,4 +96,8 @@
     <value>Erreur&#160;: {0}</value>
   </data>
 
+  <data name="AIAssistant_EnableThinking" xml:space="preserve">
+    <value>Activer la r&#233;flexion (Anthropic uniquement)</value>
+  </data>
+
 </root>
