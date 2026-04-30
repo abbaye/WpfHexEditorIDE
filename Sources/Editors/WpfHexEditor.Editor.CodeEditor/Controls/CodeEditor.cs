@@ -678,8 +678,9 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
 
         // OPT-D: lineYLookup dirty flag — avoids rebuilding per-line Y positions on every
         // render frame (e.g. caret blink at 530 ms).  Rebuilt only when the visible range,
-        // InlineHints data, or folding regions actually change.
-        private bool _linePositionsDirty = true;
+        // InlineHints data, folding regions, or scroll offset actually change.
+        private bool   _linePositionsDirty       = true;
+        private double _lastRenderedScrollOffset = -1.0;
 
         #endregion
 

@@ -810,13 +810,21 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             int prevFirstVisible = _firstVisibleLine, prevLastVisible = _lastVisibleLine;
             CalculateVisibleLines();
 
-            // OPT-D: rebuild per-line Y positions only when the visible range, InlineHints, or
-            // folding state changed — not on every caret-blink render frame.
-            if (_firstVisibleLine != prevFirstVisible || _lastVisibleLine != prevLastVisible)
+            // OPT-D: rebuild per-line Y positions only when the visible range, scroll offset,
+            // InlineHints data, or folding state changed — not on every caret-blink render frame.
+            // IMPORTANT: scroll offset must be tracked separately because RenderBuffer keeps the
+            // same _firstVisibleLine/_lastVisibleLine range across many scroll positions (the
+            // buffer renders extra lines beyond the viewport), so a range-only check leaves stale
+            // Y positions when scrolling within the buffered zone (= first ~RenderBuffer lines).
+            double currentScrollOffset = _currentScrollOffset;
+            if (_firstVisibleLine != prevFirstVisible
+                || _lastVisibleLine != prevLastVisible
+                || Math.Abs(currentScrollOffset - _lastRenderedScrollOffset) > 0.01)
                 _linePositionsDirty = true;
 
             if (_linePositionsDirty)
             {
+                _lastRenderedScrollOffset = currentScrollOffset;
                 ComputeVisibleLinePositions();
                 _linePositionsDirty = false;
             }
