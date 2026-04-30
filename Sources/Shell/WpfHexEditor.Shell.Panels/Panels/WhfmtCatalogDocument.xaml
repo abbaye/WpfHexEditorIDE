@@ -15,6 +15,29 @@
             </ResourceDictionary.MergedDictionaries>
             <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
 
+            <!-- Column header templates (DynamicResource works inside DataTemplate visual tree) -->
+            <DataTemplate x:Key="ColHdr_Name">
+                <TextBlock Text="{DynamicResource WhfmtCatalog_NameHeader}" FontSize="11" FontWeight="SemiBold"/>
+            </DataTemplate>
+            <DataTemplate x:Key="ColHdr_Category">
+                <TextBlock Text="{DynamicResource WhfmtCatalog_CategoryHeader}" FontSize="11" FontWeight="SemiBold"/>
+            </DataTemplate>
+            <DataTemplate x:Key="ColHdr_Extensions">
+                <TextBlock Text="{DynamicResource WhfmtCatalog_ExtensionsHeader}" FontSize="11" FontWeight="SemiBold"/>
+            </DataTemplate>
+            <DataTemplate x:Key="ColHdr_Version">
+                <TextBlock Text="{DynamicResource WhfmtCatalog_VersionHeader}" FontSize="11" FontWeight="SemiBold"/>
+            </DataTemplate>
+            <DataTemplate x:Key="ColHdr_Quality">
+                <TextBlock Text="{DynamicResource WhfmtCatalog_QualityHeader}" FontSize="11" FontWeight="SemiBold"/>
+            </DataTemplate>
+            <DataTemplate x:Key="ColHdr_Author">
+                <TextBlock Text="{DynamicResource WhfmtCatalog_AuthorHeader}" FontSize="11" FontWeight="SemiBold"/>
+            </DataTemplate>
+            <DataTemplate x:Key="ColHdr_Source">
+                <TextBlock Text="{DynamicResource WhfmtCatalog_SourceHeader}" FontSize="11" FontWeight="SemiBold"/>
+            </DataTemplate>
+
         <!-- DataGrid theme overrides -->
         <Style TargetType="DataGrid">
             <Setter Property="Background"               Value="{DynamicResource SE_BackgroundBrush}"/>
@@ -128,24 +151,24 @@
                 </DataGrid.RowStyle>
 
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="{DynamicResource WhfmtCatalog_NameHeader}"
+                    <DataGridTextColumn HeaderTemplate="{StaticResource ColHdr_Name}"
                                         Binding="{Binding Name}"
                                         Width="200" SortMemberPath="Name"/>
 
-                    <DataGridTextColumn Header="{DynamicResource WhfmtCatalog_CategoryHeader}"
+                    <DataGridTextColumn HeaderTemplate="{StaticResource ColHdr_Category}"
                                         Binding="{Binding Category}"
                                         Width="110" SortMemberPath="Category"/>
 
-                    <DataGridTextColumn Header="{DynamicResource WhfmtCatalog_ExtensionsHeader}"
+                    <DataGridTextColumn HeaderTemplate="{StaticResource ColHdr_Extensions}"
                                         Binding="{Binding ExtensionsDisplay}"
                                         Width="110" SortMemberPath="ExtensionsDisplay"/>
 
-                    <DataGridTextColumn Header="{DynamicResource WhfmtCatalog_VersionHeader}"
+                    <DataGridTextColumn HeaderTemplate="{StaticResource ColHdr_Version}"
                                         Binding="{Binding Version}"
                                         Width="65" SortMemberPath="Version"/>
 
                     <!-- Quality column with color indicator -->
-                    <DataGridTemplateColumn Header="{DynamicResource WhfmtCatalog_QualityHeader}" Width="80" SortMemberPath="QualityScore">
+                    <DataGridTemplateColumn HeaderTemplate="{StaticResource ColHdr_Quality}" Width="80" SortMemberPath="QualityScore">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate DataType="{x:Type vm:WhfmtFormatItemVm}">
                                 <Grid VerticalAlignment="Center" Margin="2,0">
@@ -204,11 +227,11 @@
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
 
-                    <DataGridTextColumn Header="{DynamicResource WhfmtCatalog_AuthorHeader}"
+                    <DataGridTextColumn HeaderTemplate="{StaticResource ColHdr_Author}"
                                         Binding="{Binding Author}"
                                         Width="110" SortMemberPath="Author"/>
 
-                    <DataGridTextColumn Header="{DynamicResource WhfmtCatalog_SourceHeader}"
+                    <DataGridTextColumn HeaderTemplate="{StaticResource ColHdr_Source}"
                                         Binding="{Binding SourceLabel}"
                                         Width="65" SortMemberPath="SourceLabel"/>
 
