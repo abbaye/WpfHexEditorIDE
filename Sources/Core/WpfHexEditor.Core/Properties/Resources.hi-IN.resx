@@ -1810,4 +1810,15 @@
   <data name="UndoRedo_NothingToRedo" xml:space="preserve">
     <value>फिर से करने के लिए कोई ऑपरेशन नहीं</value>
   </data>
+  <data name="WrapAroundString" xml:space="preserve"><value>रैप अराउंड</value></data>
+  <data name="EncodingLabel" xml:space="preserve"><value>एन्कोडिंग:</value></data>
+  <data name="HexadecimalString" xml:space="preserve"><value>हेक्साडेसिमल</value></data>
+  <data name="DecimalString" xml:space="preserve"><value>दशमलव</value></data>
+  <data name="GoToPositionTitle" xml:space="preserve"><value>स्थिति पर जाएं</value></data>
+  <data name="GoToPositionHeader" xml:space="preserve"><value>स्थिति</value></data>
+  <data name="GoToPositionPlaceholder" xml:space="preserve"><value>0x00000000 या दशमलव</value></data>
+  <data name="WildcardCheckbox" xml:space="preserve"><value>वाइल्डकार्ड (??)</value></data>
+  <data name="TruncateReplacementString" xml:space="preserve"><value>खोज लंबाई से मेल खाने के लिए प्रतिस्थापन काटें</value></data>
+  <data name="FindNextButtonLabel" xml:space="preserve"><value>अगला खोजें</value></data>
+  <data name="FindPreviousButtonLabel" xml:space="preserve"><value>पिछला खोजें</value></data>
 </root>

@@ -1810,4 +1810,15 @@
   <data name="UndoRedo_NothingToRedo" xml:space="preserve">
     <value>やり直す操作がありません</value>
   </data>
+  <data name="WrapAroundString" xml:space="preserve"><value>折り返し</value></data>
+  <data name="EncodingLabel" xml:space="preserve"><value>エンコード:</value></data>
+  <data name="HexadecimalString" xml:space="preserve"><value>16進数</value></data>
+  <data name="DecimalString" xml:space="preserve"><value>10進数</value></data>
+  <data name="GoToPositionTitle" xml:space="preserve"><value>位置へ移動</value></data>
+  <data name="GoToPositionHeader" xml:space="preserve"><value>位置</value></data>
+  <data name="GoToPositionPlaceholder" xml:space="preserve"><value>0x00000000 または10進数</value></data>
+  <data name="WildcardCheckbox" xml:space="preserve"><value>ワイルドカード (??)</value></data>
+  <data name="TruncateReplacementString" xml:space="preserve"><value>検索長に合わせて置換を切り詰め</value></data>
+  <data name="FindNextButtonLabel" xml:space="preserve"><value>次を検索</value></data>
+  <data name="FindPreviousButtonLabel" xml:space="preserve"><value>前を検索</value></data>
 </root>

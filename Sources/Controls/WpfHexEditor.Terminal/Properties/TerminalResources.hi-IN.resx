@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms</value></resheader>
+  <data name="Terminal_Title" xml:space="preserve"><value>टर्मिनल</value></data>
+  <data name="Terminal_SwitchShell" xml:space="preserve"><value>शेल बदलें</value></data>
+  <data name="Terminal_PsEncoding" xml:space="preserve"><value>PowerShell आउटपुट एन्कोडिंग</value></data>
+  <data name="Terminal_SaveOutput" xml:space="preserve"><value>आउटपुट सहेजें…</value></data>
+  <data name="Terminal_ClearOutput" xml:space="preserve"><value>आउटपुट साफ़ करें</value></data>
+  <data name="Terminal_CancelCommand" xml:space="preserve"><value>चल रहे आदेश को रद्द करें</value></data>
+  <data name="Terminal_MoreOptions" xml:space="preserve"><value>अधिक विकल्प</value></data>
+  <data name="Terminal_ScrollToTop" xml:space="preserve"><value>ऊपर स्क्रॉल करें</value></data>
+  <data name="Terminal_ScrollToBottom" xml:space="preserve"><value>नीचे स्क्रॉल करें</value></data>
+  <data name="Terminal_AutoScroll" xml:space="preserve"><value>स्वचालित स्क्रॉल</value></data>
+  <data name="Terminal_PauseOutput" xml:space="preserve"><value>आउटपुट रोकें</value></data>
+  <data name="Terminal_ShowTimestamps" xml:space="preserve"><value>टाइमस्टैम्प दिखाएं</value></data>
+  <data name="Terminal_WordWrap" xml:space="preserve"><value>वर्ड रैप</value></data>
+  <data name="Terminal_CopyOnSelect" xml:space="preserve"><value>चुनने पर कॉपी करें</value></data>
+  <data name="Terminal_IncreaseFontSize" xml:space="preserve"><value>फ़ॉन्ट आकार बढ़ाएं</value></data>
+  <data name="Terminal_DecreaseFontSize" xml:space="preserve"><value>फ़ॉन्ट आकार घटाएं</value></data>
+  <data name="Terminal_StartRecording" xml:space="preserve"><value>रिकॉर्डिंग शुरू करें</value></data>
+  <data name="Terminal_StopRecording" xml:space="preserve"><value>रिकॉर्डिंग बंद करें</value></data>
+  <data name="Terminal_ReplayMacro" xml:space="preserve"><value>मैक्रो चलाएं</value></data>
+  <data name="Terminal_SaveMacro" xml:space="preserve"><value>.hxscript के रूप में सहेजें</value></data>
+  <data name="Terminal_Copy" xml:space="preserve"><value>कॉपी करें</value></data>
+  <data name="Terminal_CopyAll" xml:space="preserve"><value>सब कॉपी करें</value></data>
+  <data name="Terminal_SelectAll" xml:space="preserve"><value>सब चुनें</value></data>
+  <data name="Terminal_Find" xml:space="preserve"><value>खोजें…</value></data>
+  <data name="Terminal_FindLabel" xml:space="preserve"><value>खोजें:</value></data>
+  <data name="Terminal_Run" xml:space="preserve"><value>चलाएं</value></data>
+  <data name="Terminal_StartMacroRecording" xml:space="preserve"><value>मैक्रो रिकॉर्डिंग शुरू करें</value></data>
+  <data name="Terminal_ReplayLastMacro" xml:space="preserve"><value>अंतिम मैक्रो चलाएं</value></data>
+  <data name="Terminal_SaveMacroAs" xml:space="preserve"><value>मैक्रो को .hxscript के रूप में सहेजें</value></data>
+  <data name="Terminal_IncreaseFontSizeTip" xml:space="preserve"><value>फ़ॉन्ट आकार बढ़ाएं (Ctrl++)</value></data>
+  <data name="Terminal_DecreaseFontSizeTip" xml:space="preserve"><value>फ़ॉन्ट आकार घटाएं (Ctrl+-)</value></data>
+  <data name="Terminal_NewSession" xml:space="preserve"><value>नई टर्मिनल सत्र</value></data>
+  <data name="Terminal_CloseSession" xml:space="preserve"><value>सत्र बंद करें</value></data>
+  <data name="Terminal_CloseFindBar" xml:space="preserve"><value>खोज बार बंद करें</value></data>
+  <data name="Terminal_PreviousMatch" xml:space="preserve"><value>पिछला मिलान (Shift+F3)</value></data>
+  <data name="Terminal_NextMatch" xml:space="preserve"><value>अगला मिलान (F3 / Enter)</value></data>
+  <data name="Terminal_AutoScrollTip" xml:space="preserve"><value>नीचे तक स्वचालित स्क्रॉल</value></data>
+</root>

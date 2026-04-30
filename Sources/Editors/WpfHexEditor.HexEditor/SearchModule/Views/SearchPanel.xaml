@@ -7,6 +7,7 @@
 <UserControl x:Class="WpfHexEditor.HexEditor.Search.Views.SearchPanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:hexSvc="clr-namespace:WpfHexEditor.HexEditor.Services"
              xmlns:pb="clr-namespace:WpfHexEditor.ProgressBar.Controls;assembly=WpfHexEditor.ProgressBar"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -16,6 +17,10 @@
              Background="{DynamicResource BackgroundBrush}">
 
     <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <hexSvc:HexEditorLocalizedDictionary/>
+            </ResourceDictionary.MergedDictionaries>
         <!-- Value Converters -->
         <local:SearchModeToVisibilityConverter x:Key="SearchModeToVisibilityConverter"/>
         <local:EnumToBoolConverter x:Key="EnumToBoolConverter"/>
@@ -76,6 +81,7 @@
             <Setter Property="BorderBrush" Value="#ACACAC"/>
             <Setter Property="BorderThickness" Value="1"/>
         </Style>
+            </ResourceDictionary>
     </UserControl.Resources>
 
     <Grid>
@@ -95,7 +101,7 @@
             </Grid.ColumnDefinitions>
 
             <!-- Search label -->
-            <TextBlock Grid.Column="0" Text="Find:" VerticalAlignment="Center" Margin="0,0,5,0" FontWeight="SemiBold"/>
+            <TextBlock Grid.Column="0" Text="{DynamicResource SearchFindLabel}" VerticalAlignment="Center" Margin="0,0,5,0" FontWeight="SemiBold"/>
 
             <!-- Search input -->
             <TextBox Grid.Column="1"
@@ -120,10 +126,10 @@
 
             <!-- Search mode toggle -->
             <StackPanel Grid.Column="2" Orientation="Horizontal" Margin="5,0">
-                <RadioButton Content="Text"
+                <RadioButton Content="{DynamicResource TextModeLabel}"
                              IsChecked="{Binding SelectedSearchMode, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Text}"
                              VerticalAlignment="Center" Margin="0,0,10,0"/>
-                <RadioButton Content="Hex"
+                <RadioButton Content="{DynamicResource HexModeLabel}"
                              IsChecked="{Binding SelectedSearchMode, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Hex}"
                              VerticalAlignment="Center"/>
             </StackPanel>
@@ -133,19 +139,19 @@
                 <Button Content="▲"
                         Command="{Binding FindPreviousCommand}"
                         Style="{StaticResource IconButtonStyle}"
-                        ToolTip="Find Previous (Shift+F3)"/>
+                        ToolTip="{DynamicResource SearchPreviousString}"/>
                 <Button Content="▼"
                         Command="{Binding FindNextCommand}"
                         Style="{StaticResource IconButtonStyle}"
-                        ToolTip="Find Next (F3)"/>
+                        ToolTip="{DynamicResource SearchNextString}"/>
                 <Button Content="⊞"
                         Command="{Binding FindAllCommand}"
                         Style="{StaticResource IconButtonStyle}"
-                        ToolTip="Find All"/>
+                        ToolTip="{DynamicResource SearchFindAllString}"/>
                 <Button Content="✖"
                         Command="{Binding ClearResultsCommand}"
                         Style="{StaticResource IconButtonStyle}"
-                        ToolTip="Clear Results"/>
+                        ToolTip="{DynamicResource ClearSearchString}"/>
             </StackPanel>
         </Grid>
 
@@ -157,19 +163,19 @@
             </Grid.ColumnDefinitions>
 
             <!-- Options label -->
-            <TextBlock Grid.Column="0" Text="Options:" VerticalAlignment="Center" Margin="0,0,5,0" FontWeight="SemiBold"/>
+            <TextBlock Grid.Column="0" Text="{DynamicResource SearchOptionsLabel}" VerticalAlignment="Center" Margin="0,0,5,0" FontWeight="SemiBold"/>
 
             <!-- Options checkboxes -->
             <StackPanel Grid.Column="1" Orientation="Horizontal">
-                <CheckBox Content="Case sensitive"
+                <CheckBox Content="{DynamicResource CaseSensitiveCheckbox}"
                           IsChecked="{Binding CaseSensitive}"
                           Margin="0,0,15,0"
                           Visibility="{Binding SelectedSearchMode, Converter={StaticResource SearchModeToVisibilityConverter}, ConverterParameter=Text}"/>
-                <CheckBox Content="Wildcard (??)"
+                <CheckBox Content="{DynamicResource WildcardCheckbox}"
                           IsChecked="{Binding UseWildcard}"
                           Margin="0,0,15,0"
                           Visibility="{Binding SelectedSearchMode, Converter={StaticResource SearchModeToVisibilityConverter}, ConverterParameter=Hex}"/>
-                <CheckBox Content="Wrap around"
+                <CheckBox Content="{DynamicResource WrapAroundString}"
                           IsChecked="{Binding WrapAround}"
                           Margin="0,0,15,0"/>
                 <ComboBox ItemsSource="{Binding AvailableEncodings}"

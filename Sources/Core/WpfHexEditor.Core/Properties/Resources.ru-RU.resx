@@ -1865,4 +1865,15 @@
   <data name="CopyAsAutoString" xml:space="preserve">
     <value>Копировать (авто)</value>
   </data>
+  <data name="WrapAroundString" xml:space="preserve"><value>По кругу</value></data>
+  <data name="EncodingLabel" xml:space="preserve"><value>Кодировка:</value></data>
+  <data name="HexadecimalString" xml:space="preserve"><value>Шестнадцатеричный</value></data>
+  <data name="DecimalString" xml:space="preserve"><value>Десятичный</value></data>
+  <data name="GoToPositionTitle" xml:space="preserve"><value>Перейти к позиции</value></data>
+  <data name="GoToPositionHeader" xml:space="preserve"><value>Позиция</value></data>
+  <data name="GoToPositionPlaceholder" xml:space="preserve"><value>0x00000000 или десятичное</value></data>
+  <data name="WildcardCheckbox" xml:space="preserve"><value>Символ подстановки (??)</value></data>
+  <data name="TruncateReplacementString" xml:space="preserve"><value>Обрезать замену до длины поиска</value></data>
+  <data name="FindNextButtonLabel" xml:space="preserve"><value>Найти далее</value></data>
+  <data name="FindPreviousButtonLabel" xml:space="preserve"><value>Найти ранее</value></data>
 </root>

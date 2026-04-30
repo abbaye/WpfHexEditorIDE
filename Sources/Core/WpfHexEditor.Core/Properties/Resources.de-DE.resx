@@ -1810,4 +1810,15 @@ Hinweis: Vollständige Integration mit HexEditor erfordert Verbindung zum Haupta
   <data name="UndoRedo_NothingToRedo" xml:space="preserve">
     <value>Keine Vorgänge zum Wiederholen</value>
   </data>
+  <data name="WrapAroundString" xml:space="preserve"><value>Umschließen</value></data>
+  <data name="EncodingLabel" xml:space="preserve"><value>Kodierung:</value></data>
+  <data name="HexadecimalString" xml:space="preserve"><value>Hexadezimal</value></data>
+  <data name="DecimalString" xml:space="preserve"><value>Dezimal</value></data>
+  <data name="GoToPositionTitle" xml:space="preserve"><value>Gehe zu Position</value></data>
+  <data name="GoToPositionHeader" xml:space="preserve"><value>Position</value></data>
+  <data name="GoToPositionPlaceholder" xml:space="preserve"><value>0x00000000 oder Dezimal</value></data>
+  <data name="WildcardCheckbox" xml:space="preserve"><value>Platzhalter (??)</value></data>
+  <data name="TruncateReplacementString" xml:space="preserve"><value>Ersetzung auf Suchlänge kürzen</value></data>
+  <data name="FindNextButtonLabel" xml:space="preserve"><value>Weitersuchen</value></data>
+  <data name="FindPreviousButtonLabel" xml:space="preserve"><value>Vorherige suchen</value></data>
 </root>

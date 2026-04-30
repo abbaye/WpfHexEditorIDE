@@ -1810,4 +1810,15 @@
   <data name="UndoRedo_NothingToRedo" xml:space="preserve">
     <value>다시 실행할 작업이 없습니다</value>
   </data>
+  <data name="WrapAroundString" xml:space="preserve"><value>줄 바꿈</value></data>
+  <data name="EncodingLabel" xml:space="preserve"><value>인코딩:</value></data>
+  <data name="HexadecimalString" xml:space="preserve"><value>16진수</value></data>
+  <data name="DecimalString" xml:space="preserve"><value>10진수</value></data>
+  <data name="GoToPositionTitle" xml:space="preserve"><value>위치로 이동</value></data>
+  <data name="GoToPositionHeader" xml:space="preserve"><value>위치</value></data>
+  <data name="GoToPositionPlaceholder" xml:space="preserve"><value>0x00000000 또는 10진수</value></data>
+  <data name="WildcardCheckbox" xml:space="preserve"><value>와일드카드 (??)</value></data>
+  <data name="TruncateReplacementString" xml:space="preserve"><value>검색 길이에 맞게 대체 자르기</value></data>
+  <data name="FindNextButtonLabel" xml:space="preserve"><value>다음 찾기</value></data>
+  <data name="FindPreviousButtonLabel" xml:space="preserve"><value>이전 찾기</value></data>
 </root>

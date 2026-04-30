@@ -1958,4 +1958,15 @@
   <data name="CopyAsAutoString" xml:space="preserve">
     <value>Copier (auto)</value>
   </data>
+  <data name="WrapAroundString" xml:space="preserve"><value>Boucler</value></data>
+  <data name="EncodingLabel" xml:space="preserve"><value>Encodage :</value></data>
+  <data name="HexadecimalString" xml:space="preserve"><value>Hexadécimal</value></data>
+  <data name="DecimalString" xml:space="preserve"><value>Décimal</value></data>
+  <data name="GoToPositionTitle" xml:space="preserve"><value>Aller à la position</value></data>
+  <data name="GoToPositionHeader" xml:space="preserve"><value>Position</value></data>
+  <data name="GoToPositionPlaceholder" xml:space="preserve"><value>0x00000000 ou décimal</value></data>
+  <data name="WildcardCheckbox" xml:space="preserve"><value>Joker (??)</value></data>
+  <data name="TruncateReplacementString" xml:space="preserve"><value>Tronquer le remplacement à la longueur de la recherche</value></data>
+  <data name="FindNextButtonLabel" xml:space="preserve"><value>Suivant</value></data>
+  <data name="FindPreviousButtonLabel" xml:space="preserve"><value>Précédent</value></data>
 </root>

@@ -1810,4 +1810,15 @@ Not: HexEditor ile tam entegrasyon, ana görünüm modeline bağlanmayı gerekti
   <data name="UndoRedo_NothingToRedo" xml:space="preserve">
     <value>Yinelenecek işlem yok</value>
   </data>
+  <data name="WrapAroundString" xml:space="preserve"><value>Döngüsel ara</value></data>
+  <data name="EncodingLabel" xml:space="preserve"><value>Kodlama:</value></data>
+  <data name="HexadecimalString" xml:space="preserve"><value>Onaltılık</value></data>
+  <data name="DecimalString" xml:space="preserve"><value>Ondalık</value></data>
+  <data name="GoToPositionTitle" xml:space="preserve"><value>Konuma git</value></data>
+  <data name="GoToPositionHeader" xml:space="preserve"><value>Konum</value></data>
+  <data name="GoToPositionPlaceholder" xml:space="preserve"><value>0x00000000 veya ondalık</value></data>
+  <data name="WildcardCheckbox" xml:space="preserve"><value>Joker karakter (??)</value></data>
+  <data name="TruncateReplacementString" xml:space="preserve"><value>Değiştirmeyi bulma uzunluğuna kırp</value></data>
+  <data name="FindNextButtonLabel" xml:space="preserve"><value>Sonrakini bul</value></data>
+  <data name="FindPreviousButtonLabel" xml:space="preserve"><value>Öncekini bul</value></data>
 </root>

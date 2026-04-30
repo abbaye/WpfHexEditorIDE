@@ -1810,4 +1810,15 @@ Obs: Fullständig integration med HexEditor kräver anslutning till huvudvymodel
   <data name="UndoRedo_NothingToRedo" xml:space="preserve">
     <value>Inget att göra om</value>
   </data>
+  <data name="WrapAroundString" xml:space="preserve"><value>Radbryt</value></data>
+  <data name="EncodingLabel" xml:space="preserve"><value>Kodning:</value></data>
+  <data name="HexadecimalString" xml:space="preserve"><value>Hexadecimalt</value></data>
+  <data name="DecimalString" xml:space="preserve"><value>Decimalt</value></data>
+  <data name="GoToPositionTitle" xml:space="preserve"><value>Gå till position</value></data>
+  <data name="GoToPositionHeader" xml:space="preserve"><value>Position</value></data>
+  <data name="GoToPositionPlaceholder" xml:space="preserve"><value>0x00000000 eller decimal</value></data>
+  <data name="WildcardCheckbox" xml:space="preserve"><value>Jokertecken (??)</value></data>
+  <data name="TruncateReplacementString" xml:space="preserve"><value>Trunkera ersättning till söklängd</value></data>
+  <data name="FindNextButtonLabel" xml:space="preserve"><value>Sök nästa</value></data>
+  <data name="FindPreviousButtonLabel" xml:space="preserve"><value>Sök föregående</value></data>
 </root>

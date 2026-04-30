@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms</value></resheader>
+  <data name="Terminal_Title" xml:space="preserve"><value>터미널</value></data>
+  <data name="Terminal_SwitchShell" xml:space="preserve"><value>셸 전환</value></data>
+  <data name="Terminal_PsEncoding" xml:space="preserve"><value>PowerShell 출력 인코딩</value></data>
+  <data name="Terminal_SaveOutput" xml:space="preserve"><value>출력 저장…</value></data>
+  <data name="Terminal_ClearOutput" xml:space="preserve"><value>출력 지우기</value></data>
+  <data name="Terminal_CancelCommand" xml:space="preserve"><value>실행 중인 명령 취소</value></data>
+  <data name="Terminal_MoreOptions" xml:space="preserve"><value>더 많은 옵션</value></data>
+  <data name="Terminal_ScrollToTop" xml:space="preserve"><value>맨 위로 스크롤</value></data>
+  <data name="Terminal_ScrollToBottom" xml:space="preserve"><value>맨 아래로 스크롤</value></data>
+  <data name="Terminal_AutoScroll" xml:space="preserve"><value>자동 스크롤</value></data>
+  <data name="Terminal_PauseOutput" xml:space="preserve"><value>출력 일시 정지</value></data>
+  <data name="Terminal_ShowTimestamps" xml:space="preserve"><value>타임스탬프 표시</value></data>
+  <data name="Terminal_WordWrap" xml:space="preserve"><value>자동 줄 바꿈</value></data>
+  <data name="Terminal_CopyOnSelect" xml:space="preserve"><value>선택 시 복사</value></data>
+  <data name="Terminal_IncreaseFontSize" xml:space="preserve"><value>글꼴 크기 늘리기</value></data>
+  <data name="Terminal_DecreaseFontSize" xml:space="preserve"><value>글꼴 크기 줄이기</value></data>
+  <data name="Terminal_StartRecording" xml:space="preserve"><value>녹음 시작</value></data>
+  <data name="Terminal_StopRecording" xml:space="preserve"><value>녹음 중지</value></data>
+  <data name="Terminal_ReplayMacro" xml:space="preserve"><value>매크로 재생</value></data>
+  <data name="Terminal_SaveMacro" xml:space="preserve"><value>.hxscript로 저장</value></data>
+  <data name="Terminal_Copy" xml:space="preserve"><value>복사</value></data>
+  <data name="Terminal_CopyAll" xml:space="preserve"><value>모두 복사</value></data>
+  <data name="Terminal_SelectAll" xml:space="preserve"><value>모두 선택</value></data>
+  <data name="Terminal_Find" xml:space="preserve"><value>찾기…</value></data>
+  <data name="Terminal_FindLabel" xml:space="preserve"><value>찾기:</value></data>
+  <data name="Terminal_Run" xml:space="preserve"><value>실행</value></data>
+  <data name="Terminal_StartMacroRecording" xml:space="preserve"><value>매크로 녹음 시작</value></data>
+  <data name="Terminal_ReplayLastMacro" xml:space="preserve"><value>마지막 매크로 재생</value></data>
+  <data name="Terminal_SaveMacroAs" xml:space="preserve"><value>매크로를 .hxscript로 저장</value></data>
+  <data name="Terminal_IncreaseFontSizeTip" xml:space="preserve"><value>글꼴 크기 늘리기 (Ctrl++)</value></data>
+  <data name="Terminal_DecreaseFontSizeTip" xml:space="preserve"><value>글꼴 크기 줄이기 (Ctrl+-)</value></data>
+  <data name="Terminal_NewSession" xml:space="preserve"><value>새 터미널 세션</value></data>
+  <data name="Terminal_CloseSession" xml:space="preserve"><value>세션 닫기</value></data>
+  <data name="Terminal_CloseFindBar" xml:space="preserve"><value>찾기 표시줄 닫기</value></data>
+  <data name="Terminal_PreviousMatch" xml:space="preserve"><value>이전 일치 (Shift+F3)</value></data>
+  <data name="Terminal_NextMatch" xml:space="preserve"><value>다음 일치 (F3 / Enter)</value></data>
+  <data name="Terminal_AutoScrollTip" xml:space="preserve"><value>자동으로 맨 아래로 스크롤</value></data>
+</root>

@@ -1865,4 +1865,15 @@
   <data name="CopyAsAutoString" xml:space="preserve">
     <value>复制（自动）</value>
   </data>
+  <data name="WrapAroundString" xml:space="preserve"><value>环绕</value></data>
+  <data name="EncodingLabel" xml:space="preserve"><value>编码:</value></data>
+  <data name="HexadecimalString" xml:space="preserve"><value>十六进制</value></data>
+  <data name="DecimalString" xml:space="preserve"><value>十进制</value></data>
+  <data name="GoToPositionTitle" xml:space="preserve"><value>转到位置</value></data>
+  <data name="GoToPositionHeader" xml:space="preserve"><value>位置</value></data>
+  <data name="GoToPositionPlaceholder" xml:space="preserve"><value>0x00000000 或十进制</value></data>
+  <data name="WildcardCheckbox" xml:space="preserve"><value>通配符 (??)</value></data>
+  <data name="TruncateReplacementString" xml:space="preserve"><value>将替换截断为查找长度</value></data>
+  <data name="FindNextButtonLabel" xml:space="preserve"><value>查找下一个</value></data>
+  <data name="FindPreviousButtonLabel" xml:space="preserve"><value>查找上一个</value></data>
 </root>

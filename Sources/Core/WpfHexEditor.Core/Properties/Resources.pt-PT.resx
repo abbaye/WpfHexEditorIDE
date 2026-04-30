@@ -1810,4 +1810,15 @@ Nota: A integração completa com o HexEditor requer ligação ao modelo de vist
   <data name="UndoRedo_NothingToRedo" xml:space="preserve">
     <value>Nenhuma operação para refazer</value>
   </data>
+  <data name="WrapAroundString" xml:space="preserve"><value>Contornar</value></data>
+  <data name="EncodingLabel" xml:space="preserve"><value>Codificação:</value></data>
+  <data name="HexadecimalString" xml:space="preserve"><value>Hexadecimal</value></data>
+  <data name="DecimalString" xml:space="preserve"><value>Decimal</value></data>
+  <data name="GoToPositionTitle" xml:space="preserve"><value>Ir para posição</value></data>
+  <data name="GoToPositionHeader" xml:space="preserve"><value>Posição</value></data>
+  <data name="GoToPositionPlaceholder" xml:space="preserve"><value>0x00000000 ou decimal</value></data>
+  <data name="WildcardCheckbox" xml:space="preserve"><value>Curinga (??)</value></data>
+  <data name="TruncateReplacementString" xml:space="preserve"><value>Truncar substituição para corresponder ao comprimento da pesquisa</value></data>
+  <data name="FindNextButtonLabel" xml:space="preserve"><value>Localizar próximo</value></data>
+  <data name="FindPreviousButtonLabel" xml:space="preserve"><value>Localizar anterior</value></data>
 </root>
