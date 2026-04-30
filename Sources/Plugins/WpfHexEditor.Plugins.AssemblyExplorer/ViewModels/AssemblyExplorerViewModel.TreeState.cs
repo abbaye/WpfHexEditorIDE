@@ -8,6 +8,7 @@
 using System.Collections.ObjectModel;
 using WpfHexEditor.Core.AssemblyAnalysis.Services;
 using WpfHexEditor.Plugins.AssemblyExplorer.Services;
+using WpfHexEditor.Plugins.AssemblyExplorer.Properties;
 
 namespace WpfHexEditor.Plugins.AssemblyExplorer.ViewModels;
 
@@ -45,7 +46,7 @@ public sealed partial class AssemblyExplorerViewModel
         private set => SetField(ref _isLoading, value);
     }
 
-    private string _statusText = "No assembly loaded";
+    private string _statusText = AssemblyExplorerResources.AsmExplorer_NoAssemblyLoaded;
     public string StatusText
     {
         get => _statusText;
@@ -155,7 +156,7 @@ public sealed partial class AssemblyExplorerViewModel
     {
         if (_workspace.Count == 0)
         {
-            StatusText = "No assembly loaded";
+            StatusText = AssemblyExplorerResources.AsmExplorer_NoAssemblyLoaded;
             return;
         }
 

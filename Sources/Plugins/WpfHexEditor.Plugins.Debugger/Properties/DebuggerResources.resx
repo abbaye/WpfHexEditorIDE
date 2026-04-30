@@ -37,4 +37,12 @@
   <data name="Debugger_NoValidBreakpoints" xml:space="preserve">
     <value>No valid breakpoints found in the file.</value>
   </data>
+  <data name="Debugger_LaunchConfigTitle" xml:space="preserve"><value>Launch Config (.whdbg)</value></data>
+  <data name="Debugger_NoFileLoaded" xml:space="preserve"><value>No file loaded. Click Open first.</value></data>
+  <data name="Debugger_ServiceNotAvailable" xml:space="preserve"><value>IDebuggerService not available.</value></data>
+  <data name="Debugger_NoConfigLoaded" xml:space="preserve"><value>No configuration loaded.</value></data>
+  <data name="Debugger_NoConfigsArray" xml:space="preserve"><value>No 'configurations' array found in .whdbg file.</value></data>
+  <data name="Debugger_NoMatchingConfig" xml:space="preserve"><value>No matching configuration found.</value></data>
+  <data name="Debugger_ImportBreakpoints" xml:space="preserve"><value>Import Breakpoints from VS XML</value></data>
+  <data name="Debugger_ExportBreakpoints" xml:space="preserve"><value>Export Breakpoints to VS XML</value></data>
 </root>

@@ -85,4 +85,28 @@ internal static class ClassDiagramResources
     /// </summary>
     internal static string ClassDiagram_MetricsPanelTitle
         => ResourceManager.GetString("ClassDiagram_MetricsPanelTitle", _resourceCulture)!;
+
+    /// <summary>
+    ///   Recherche une chaîne localisée semblable à Reset.
+    /// </summary>
+    internal static string ClassDiagram_Reset
+        => ResourceManager.GetString("ClassDiagram_Reset", _resourceCulture)!;
+
+    /// <summary>
+    ///   Recherche une chaîne localisée semblable à Class _Outline.
+    /// </summary>
+    internal static string ClassDiagram_Menu_OutlineHeader
+        => ResourceManager.GetString("ClassDiagram_Menu_OutlineHeader", _resourceCulture)!;
+
+    /// <summary>
+    ///   Recherche une chaîne localisée semblable à Generate Class Diagram for Solution.
+    /// </summary>
+    internal static string ClassDiagram_GenerateSolutionDiagram
+        => ResourceManager.GetString("ClassDiagram_GenerateSolutionDiagram", _resourceCulture)!;
+
+    /// <summary>
+    ///   Recherche une chaîne localisée semblable à Export Metrics CSV.
+    /// </summary>
+    internal static string ClassDiagram_ExportMetricsCSV
+        => ResourceManager.GetString("ClassDiagram_ExportMetricsCSV", _resourceCulture)!;
 }

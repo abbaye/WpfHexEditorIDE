@@ -87,6 +87,7 @@
   <data name="StructureEditor_TestSection" xml:space="preserve"><value>Tester le format sur un fichier</value></data>
   <data name="StructureEditor_TestFilePathToolTip" xml:space="preserve"><value>Chemin vers le fichier binaire à tester</value></data>
   <data name="StructureEditor_TestBrowseButton" xml:space="preserve"><value>Parcourir…</value></data>
+  <data name="StructureEditor_TestBrowseDialogTitle" xml:space="preserve"><value>S&#xe9;lectionnez un fichier binaire &#xe0; tester</value></data>
   <data name="StructureEditor_TestRunButton" xml:space="preserve"><value>▶ Lancer le test</value></data>
   <data name="StructureEditor_TestCopyToolTip" xml:space="preserve"><value>Copier les résultats dans le presse-papiers (TSV)</value></data>
   <data name="StructureEditor_TestEmptyMessage" xml:space="preserve"><value>Sélectionnez un fichier et cliquez sur ▶ Lancer le test pour tester la définition du format actuel.</value></data>

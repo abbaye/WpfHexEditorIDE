@@ -31,5 +31,6 @@ internal static class ImageViewerResources
     private static string GetString(string name) =>
         ResourceManager.GetString(name, _resourceCulture) ?? name;
 
-    internal static string ImageViewer_SaveImageAs => GetString(nameof(ImageViewer_SaveImageAs));
+    internal static string ImageViewer_SaveImageAs  => GetString(nameof(ImageViewer_SaveImageAs));
+    internal static string ImageViewer_LoadingImage => GetString(nameof(ImageViewer_LoadingImage));
 }

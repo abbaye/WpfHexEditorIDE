@@ -392,6 +392,9 @@
   <data name="StructureEditor_TestBrowseButton" xml:space="preserve">
     <value>Browse…</value>
   </data>
+  <data name="StructureEditor_TestBrowseDialogTitle" xml:space="preserve">
+    <value>Select a binary file to test against</value>
+  </data>
   <data name="StructureEditor_TestRunButton" xml:space="preserve">
     <value>▶ Run Test</value>
   </data>

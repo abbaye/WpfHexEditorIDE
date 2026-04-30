@@ -78,6 +78,10 @@
   <data name="MdFmt_InlineCode"    xml:space="preserve"><value>Inline Code</value></data>
 
   <!-- Context menu – source editor (MarkdownEditorHost) -->
+  <data name="MdCtx_GroupFormat"    xml:space="preserve"><value>FORMAT</value></data>
+  <data name="MdCtx_GroupInsert"    xml:space="preserve"><value>INSERT</value></data>
+  <data name="MdCtx_GroupExport"    xml:space="preserve"><value>EXPORT</value></data>
+  <data name="MdCtx_GroupView"      xml:space="preserve"><value>VIEW</value></data>
   <data name="MdCtx_Bold"           xml:space="preserve"><value>Bold</value></data>
   <data name="MdCtx_Italic"         xml:space="preserve"><value>Italic</value></data>
   <data name="MdCtx_Strikethrough"  xml:space="preserve"><value>Strikethrough</value></data>

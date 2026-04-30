@@ -68,7 +68,43 @@ namespace WpfHexEditor.Editor.MarkdownEditor.Properties {
                 return ResourceManager.GetString("MdCtx_Bold", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à FORMAT.
+        /// </summary>
+        internal static string MdCtx_GroupFormat {
+            get {
+                return ResourceManager.GetString("MdCtx_GroupFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à INSERT.
+        /// </summary>
+        internal static string MdCtx_GroupInsert {
+            get {
+                return ResourceManager.GetString("MdCtx_GroupInsert", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à EXPORT.
+        /// </summary>
+        internal static string MdCtx_GroupExport {
+            get {
+                return ResourceManager.GetString("MdCtx_GroupExport", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à VIEW.
+        /// </summary>
+        internal static string MdCtx_GroupView {
+            get {
+                return ResourceManager.GetString("MdCtx_GroupView", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Recherche une chaîne localisée semblable à Code Block.
         /// </summary>

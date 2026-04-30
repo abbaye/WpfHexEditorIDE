@@ -15,6 +15,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using WpfHexEditor.Core;
 using WpfHexEditor.Core.Models.Bookmarks;
+using WpfHexEditor.Shell.Panels.Properties;
 
 namespace WpfHexEditor.Shell.Panels.Panels;
 
@@ -59,7 +60,7 @@ public partial class BookmarksPanel : UserControl
     public void Clear()
     {
         BookmarkList.ItemsSource = null;
-        CountText.Text = "0 bookmarks";
+        CountText.Text = ShellPanelsResources.BookmarksPanel_EmptyCount;
         EmptyText.Visibility = Visibility.Visible;
         BookmarkList.Visibility = Visibility.Collapsed;
     }

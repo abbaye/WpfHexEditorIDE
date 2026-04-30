@@ -24,7 +24,7 @@ internal sealed class JumpToOffsetDialog : Window
 
     public JumpToOffsetDialog()
     {
-        Title           = "Jump to Offset";
+        Title           = ParsedFieldsResources.ParsedFields_JumpToOffset;
         Width           = 320;
         Height          = 140;
         ResizeMode      = ResizeMode.NoResize;

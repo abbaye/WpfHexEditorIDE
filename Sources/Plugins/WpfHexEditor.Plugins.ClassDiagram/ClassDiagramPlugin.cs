@@ -672,7 +672,7 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
         // "Reset" button to clear custom color
         var resetBtn = new System.Windows.Controls.Button
         {
-            Content    = "Reset",
+            Content    = ClassDiagramResources.ClassDiagram_Reset,
             Width      = 158,
             Height     = 22,
             Margin     = new Thickness(0, 0, 0, 4),
@@ -753,7 +753,7 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
             Id,
             new MenuItemDescriptor
             {
-                Header     = "Class _Outline",
+                Header     = ClassDiagramResources.ClassDiagram_Menu_OutlineHeader,
                 ParentPath = "View",
                 IconGlyph  = "\uE8A5",
                 ToolTip    = "Show / hide the Class Outline panel",
@@ -1074,7 +1074,7 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
                 $"The solution contains {totalFiles} source files ({filtered.Count} projects).\n\n" +
                 $"Generating the diagram may take a moment for large solutions.\n\n" +
                 "[Yes]  Continue\n[No]   Cancel",
-                "Generate Class Diagram for Solution",
+                ClassDiagramResources.ClassDiagram_GenerateSolutionDiagram,
                 MessageBoxButton.YesNo,
                 MessageBoxImage.Question);
             if (answer != MessageBoxResult.Yes) return;

@@ -103,4 +103,6 @@
   <data name="ParsedFields_DataInspectorNotConnected" xml:space="preserve">
     <value>La fonctionnalit&#233; Inspecteur de donn&#233;es n&#8217;est pas encore connect&#233;e &#224; ce panneau.</value>
   </data>
+  <data name="ParsedFields_PluginName" xml:space="preserve"><value>Champs analysés</value></data>
+  <data name="ParsedFields_JumpToOffset" xml:space="preserve"><value>Aller au décalage</value></data>
 </root>

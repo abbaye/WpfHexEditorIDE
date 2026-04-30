@@ -21,6 +21,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using WpfHexEditor.Core.AssemblyAnalysis.Models;
 using WpfHexEditor.Plugins.AssemblyExplorer.Services;
+using WpfHexEditor.Plugins.AssemblyExplorer.Properties;
 
 namespace WpfHexEditor.Plugins.AssemblyExplorer.Views;
 
@@ -202,7 +203,7 @@ public sealed class ExportProjectDialog : Window
         catch (OperationCanceledException)
         {
             _statusLabel.Foreground = Brushes.OrangeRed;
-            _statusLabel.Text       = "Export cancelled.";
+            _statusLabel.Text       = AssemblyExplorerResources.AsmExplorer_ExportCancelled;
         }
         catch (Exception ex)
         {

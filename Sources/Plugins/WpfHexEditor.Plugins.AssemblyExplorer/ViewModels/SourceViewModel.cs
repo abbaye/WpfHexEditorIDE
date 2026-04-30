@@ -28,6 +28,7 @@ using System.Windows.Input;
 using WpfHexEditor.Core.AssemblyAnalysis.Models;
 using WpfHexEditor.Core.AssemblyAnalysis.Services;
 using WpfHexEditor.SDK.Commands;
+using WpfHexEditor.Plugins.AssemblyExplorer.Properties;
 
 namespace WpfHexEditor.Plugins.AssemblyExplorer.ViewModels;
 
@@ -73,7 +74,7 @@ public sealed class SourceViewModel : AssemblyNodeViewModel
     private int     _sourceStartLine;
     private string? _sourcePreview;
     private string? _sourceLinkUrl;
-    private string  _statusMessage = "Select a method node to view source information.";
+    private string  _statusMessage = AssemblyExplorerResources.AsmExplorer_SelectMethod;
 
     public bool IsPdbAvailable
     {
@@ -197,7 +198,7 @@ public sealed class SourceViewModel : AssemblyNodeViewModel
 
             if (!IsPdbAvailable)
             {
-                StatusMessage = "No portable PDB found next to the assembly.";
+                StatusMessage = AssemblyExplorerResources.AsmExplorer_NoPdb;
                 return;
             }
 
@@ -246,7 +247,7 @@ public sealed class SourceViewModel : AssemblyNodeViewModel
     {
         _cts?.Cancel();
         Reset();
-        StatusMessage = "Select a method node to view source information.";
+        StatusMessage = AssemblyExplorerResources.AsmExplorer_SelectMethod;
         IsLoading     = false;
     }
 

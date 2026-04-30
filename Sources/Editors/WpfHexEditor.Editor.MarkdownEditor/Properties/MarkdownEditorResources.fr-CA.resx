@@ -44,6 +44,10 @@
   <data name="MdFmt_Italic"        xml:space="preserve"><value>Italique</value></data>
   <data name="MdFmt_Strikethrough" xml:space="preserve"><value>Barré</value></data>
   <data name="MdFmt_InlineCode"    xml:space="preserve"><value>Code en ligne</value></data>
+  <data name="MdCtx_GroupFormat"    xml:space="preserve"><value>FORMAT</value></data>
+  <data name="MdCtx_GroupInsert"    xml:space="preserve"><value>INS&#xc9;RER</value></data>
+  <data name="MdCtx_GroupExport"    xml:space="preserve"><value>EXPORTER</value></data>
+  <data name="MdCtx_GroupView"      xml:space="preserve"><value>AFFICHER</value></data>
   <data name="MdCtx_Bold"           xml:space="preserve"><value>Gras</value></data>
   <data name="MdCtx_Italic"         xml:space="preserve"><value>Italique</value></data>
   <data name="MdCtx_Strikethrough"  xml:space="preserve"><value>Barré</value></data>

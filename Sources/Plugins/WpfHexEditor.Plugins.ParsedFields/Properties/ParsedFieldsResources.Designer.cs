@@ -83,4 +83,12 @@ internal static class ParsedFieldsResources
     /// <summary>Looks up a localized string similar to "Data Inspector feature not yet connected to this panel.".</summary>
     internal static string ParsedFields_DataInspectorNotConnected
         => ResourceManager.GetString("ParsedFields_DataInspectorNotConnected", _resourceCulture)!;
+
+    /// <summary>Looks up a localized string similar to "Parsed Fields".</summary>
+    internal static string ParsedFields_PluginName
+        => ResourceManager.GetString("ParsedFields_PluginName", _resourceCulture)!;
+
+    /// <summary>Looks up a localized string similar to "Jump to Offset".</summary>
+    internal static string ParsedFields_JumpToOffset
+        => ResourceManager.GetString("ParsedFields_JumpToOffset", _resourceCulture)!;
 }

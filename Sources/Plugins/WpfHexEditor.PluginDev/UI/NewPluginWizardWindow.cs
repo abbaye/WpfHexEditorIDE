@@ -25,6 +25,7 @@ using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using WpfHexEditor.PluginDev.Properties;
 using WpfHexEditor.PluginDev.Templates;
 
 namespace WpfHexEditor.PluginDev.UI;
@@ -93,7 +94,7 @@ public sealed class NewPluginWizardWindow : Window
 
     public NewPluginWizardWindow()
     {
-        Title          = "New Extension Project";
+        Title          = PluginDevResources.PluginDev_NewExtensionProject;
         Width          = 620;
         Height         = 500;
         ResizeMode     = ResizeMode.NoResize;
@@ -124,7 +125,7 @@ public sealed class NewPluginWizardWindow : Window
         };
         var headerText = new TextBlock
         {
-            Text       = "New Extension Project",
+            Text       = PluginDevResources.PluginDev_NewExtensionProject,
             FontSize   = 13,
             FontWeight = FontWeights.SemiBold,
             Foreground = Brushes.WhiteSmoke,
@@ -169,7 +170,7 @@ public sealed class NewPluginWizardWindow : Window
         var spacer = new Border { Width = 8 };
         navPanel.Children.Add(spacer);
 
-        _btnNext = MakeButton("Next >");
+        _btnNext = MakeButton(PluginDevResources.PluginDev_Next);
         _btnNext.Width = 100;
         _btnNext.Click += OnNext;
         navPanel.Children.Add(_btnNext);
@@ -210,7 +211,7 @@ public sealed class NewPluginWizardWindow : Window
     {
         var dlg = new Microsoft.Win32.OpenFolderDialog
         {
-            Title       = "Select output directory for the plugin project",
+            Title       = PluginDevResources.PluginDev_SelectOutputDir,
             Multiselect = false,
         };
         if (!string.IsNullOrWhiteSpace(_tbOutputDir.Text))
@@ -328,7 +329,7 @@ public sealed class NewPluginWizardWindow : Window
         // Permissions
         var permGroup = new GroupBox
         {
-            Header  = "Permissions",
+            Header  = PluginDevResources.PluginDev_Permissions,
             Margin  = new Thickness(0, 8, 0, 8),
             Padding = new Thickness(8),
             Foreground = Brushes.WhiteSmoke,
@@ -346,7 +347,7 @@ public sealed class NewPluginWizardWindow : Window
         // Isolation
         var isoGroup = new GroupBox
         {
-            Header  = "Isolation Mode",
+            Header  = PluginDevResources.PluginDev_IsolationMode,
             Margin  = new Thickness(0, 0, 0, 8),
             Padding = new Thickness(8),
             Foreground = Brushes.WhiteSmoke,
@@ -361,7 +362,7 @@ public sealed class NewPluginWizardWindow : Window
 
         // Load priority
         var prioPanel = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(0, 0, 0, 8) };
-        prioPanel.Children.Add(new TextBlock { Text = "Load Priority (10–90):", Width = 160, VerticalAlignment = VerticalAlignment.Center, Foreground = Brushes.WhiteSmoke });
+        prioPanel.Children.Add(new TextBlock { Text = PluginDevResources.PluginDev_LoadPriority, Width = 160, VerticalAlignment = VerticalAlignment.Center, Foreground = Brushes.WhiteSmoke });
         _sldPriority = new Slider { Minimum = 10, Maximum = 90, Value = 50, Width = 200, VerticalAlignment = VerticalAlignment.Center };
         prioPanel.Children.Add(_sldPriority);
         var prioVal = new TextBlock { Width = 30, VerticalAlignment = VerticalAlignment.Center, Foreground = Brushes.WhiteSmoke, Margin = new Thickness(6, 0, 0, 0) };
@@ -446,17 +447,17 @@ public sealed class NewPluginWizardWindow : Window
         switch (index)
         {
             case 0:
-                _btnNext.Content   = "Next >";
+                _btnNext.Content   = PluginDevResources.PluginDev_Next;
                 _btnNext.IsEnabled = true;
                 ValidatePage1();
                 break;
             case 1:
             case 2:
-                _btnNext.Content   = "Next >";
+                _btnNext.Content   = PluginDevResources.PluginDev_Next;
                 _btnNext.IsEnabled = true;
                 break;
             case 3:
-                _btnNext.Content   = "Create & Open";
+                _btnNext.Content   = PluginDevResources.PluginDev_CreateAndOpen;
                 _btnNext.IsEnabled = true;
                 RefreshSummary();
                 break;
@@ -497,7 +498,7 @@ public sealed class NewPluginWizardWindow : Window
 
             MessageBox.Show(
                 $"Plugin project created at:\n{projectDir}\n\nOpen the folder to start editing.",
-                "Plugin Created",
+                PluginDevResources.PluginDev_PluginCreated,
                 MessageBoxButton.OK,
                 MessageBoxImage.Information);
 
@@ -509,7 +510,7 @@ public sealed class NewPluginWizardWindow : Window
         {
             MessageBox.Show(
                 $"Failed to create plugin project:\n{ex.Message}",
-                "Error",
+                PluginDevResources.PluginDev_Error,
                 MessageBoxButton.OK,
                 MessageBoxImage.Error);
 
@@ -566,7 +567,7 @@ public sealed class NewPluginWizardWindow : Window
         Grid.SetColumn(textBox, 0);
         row2.Children.Add(textBox);
 
-        var browse = MakeButton("Browse…");
+        var browse = MakeButton(PluginDevResources.PluginDev_Browse);
         browse.Width  = 80;
         browse.Height = 26;
         browse.Margin = new Thickness(4, 0, 0, 0);

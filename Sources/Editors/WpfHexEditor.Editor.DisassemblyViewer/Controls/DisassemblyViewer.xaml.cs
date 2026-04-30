@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using WpfHexEditor.Core.Decompiler;
 using WpfHexEditor.Editor.Core;
+using WpfHexEditor.Editor.DisassemblyViewer.Properties;
 using WpfHexEditor.SDK.Commands;
 using WpfHexEditor.SDK.UI;
 using IReadOnlyLineList = System.Collections.Generic.IReadOnlyList<WpfHexEditor.Core.Decompiler.DisassemblyLine>;
@@ -158,7 +159,7 @@ public sealed partial class DisassemblyViewer : UserControl, IDocumentEditor, IO
         if (_decompiler is null || string.IsNullOrEmpty(_filePath)) return;
 
         ShowState(ViewerState.Busy);
-        OperationStarted?.Invoke(this, new DocumentOperationEventArgs { Title = "Decompiling…", IsIndeterminate = true });
+        OperationStarted?.Invoke(this, new DocumentOperationEventArgs { Title = DisassemblyViewerResources.DisassemblyViewer_OverlayDecompiling, IsIndeterminate = true });
         StatusMessage?.Invoke(this, $"Decompiling with {_decompiler.DisplayName}…");
 
         try

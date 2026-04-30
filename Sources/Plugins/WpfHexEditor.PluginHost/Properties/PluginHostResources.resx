@@ -3,9 +3,10 @@
     GNU Affero General Public License v3.0  2026
     Author : Derek Tremblay (derektremblay666@gmail.com)
     Contributors: Claude Sonnet 4.6
-    Project     : WpfHexEditor.Plugins.AssemblyExplorer
-    File        : AssemblyExplorerResources.resx
-    Description : Localized UI strings for the Assembly Explorer plugin.
+    Project     : WpfHexEditor.PluginHost
+    File        : PluginHostResources.resx
+    Description : PluginHost-specific UI strings.
+                  Common strings (OK, Cancel…) come from WpfHexEditor.Core.Localization.
 -->
 <root>
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
@@ -13,20 +14,6 @@
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
-          <xsd:element name="metadata">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:any minOccurs="0" />
-              </xsd:sequence>
-              <xsd:attribute name="name" use="required" />
-              <xsd:attribute name="type" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="value">
-            <xsd:complexType>
-              <xsd:any minOccurs="0" maxOccurs="unbounded" />
-            </xsd:complexType>
-          </xsd:element>
           <xsd:element name="data">
             <xsd:complexType>
               <xsd:sequence>
@@ -34,8 +21,6 @@
                 <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
               </xsd:sequence>
               <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
               <xsd:attribute ref="xml:space" />
             </xsd:complexType>
           </xsd:element>
@@ -63,24 +48,34 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AsmExplorer_PluginName" xml:space="preserve">
-    <value>Assembly Explorer</value>
+
+  <data name="PluginHost_Ready" xml:space="preserve">
+    <value>Ready.</value>
+    <comment>Status text shown when the marketplace panel is idle and ready</comment>
   </data>
-  <data name="AsmExplorer_PanelTitle" xml:space="preserve">
-    <value>Assembly Explorer</value>
+  <data name="PluginHost_LoadingMarketplace" xml:space="preserve">
+    <value>Loading marketplace&#x2026;</value>
+    <comment>Status text shown while the marketplace listings are being fetched</comment>
   </data>
-  <data name="AsmExplorer_SearchPanelTitle" xml:space="preserve">
-    <value>Assembly Search</value>
+  <data name="PluginHost_InstallExtension" xml:space="preserve">
+    <value>Install Extension</value>
+    <comment>Title of the OpenFileDialog used to install a plugin from a local file</comment>
   </data>
-  <data name="AsmExplorer_DiffPanelTitle" xml:space="preserve">
-    <value>Assembly Diff</value>
+  <data name="PluginHost_ExportDiagnostics" xml:space="preserve">
+    <value>Export Extension Diagnostics</value>
+    <comment>Title of the SaveFileDialog used to export plugin diagnostics (CSV/JSON)</comment>
   </data>
-  <data name="AsmExplorer_ExportCancelled" xml:space="preserve"><value>Export cancelled.</value></data>
-  <data name="AsmExplorer_NoAssemblyLoaded" xml:space="preserve"><value>No assembly loaded</value></data>
-  <data name="AsmExplorer_AnalysisCancelled" xml:space="preserve"><value>Analysis cancelled.</value></data>
-  <data name="AsmExplorer_Searching" xml:space="preserve"><value>Searching…</value></data>
-  <data name="AsmExplorer_Comparing" xml:space="preserve"><value>Comparing…</value></data>
-  <data name="AsmExplorer_NoPdb" xml:space="preserve"><value>No portable PDB found next to the assembly.</value></data>
-  <data name="AsmExplorer_SelectMethod" xml:space="preserve"><value>Select a method node to view source information.</value></data>
+  <data name="PluginHost_InstallPackage" xml:space="preserve">
+    <value>Install Extension Package</value>
+    <comment>Title of the OpenFileDialog used to install a .whxplugin package</comment>
+  </data>
+  <data name="PluginHost_ExportEventLog" xml:space="preserve">
+    <value>Export Event Log</value>
+    <comment>Title of the SaveFileDialog used to export the plugin event log</comment>
+  </data>
+  <data name="PluginHost_UninstallPlugin" xml:space="preserve">
+    <value>Uninstall Plugin</value>
+    <comment>Title of the confirmation MessageBox shown before uninstalling a plugin</comment>
+  </data>
 
 </root>

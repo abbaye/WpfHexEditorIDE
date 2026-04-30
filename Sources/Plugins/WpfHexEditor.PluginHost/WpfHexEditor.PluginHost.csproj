@@ -28,6 +28,18 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Update="Properties\PluginHostResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>PluginHostResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <Compile Update="Properties\PluginHostResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>PluginHostResources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\Controls\WpfHexEditor.ProgressBar\WpfHexEditor.ProgressBar.csproj" />
     <ProjectReference Include="..\..\Core\WpfHexEditor.Core.Commands\WpfHexEditor.Core.Commands.csproj" />
     <ProjectReference Include="..\..\Core\WpfHexEditor.Core.Events\WpfHexEditor.Core.Events.csproj" />

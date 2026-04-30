@@ -56,4 +56,28 @@ internal static class DebuggerResources
     /// <summary>Gets the localized message shown when no valid breakpoints are found during import.</summary>
     internal static string Debugger_NoValidBreakpoints
         => ResourceManager.GetString("Debugger_NoValidBreakpoints", _resourceCulture)!;
+
+    internal static string Debugger_LaunchConfigTitle
+        => ResourceManager.GetString("Debugger_LaunchConfigTitle", _resourceCulture)!;
+
+    internal static string Debugger_NoFileLoaded
+        => ResourceManager.GetString("Debugger_NoFileLoaded", _resourceCulture)!;
+
+    internal static string Debugger_ServiceNotAvailable
+        => ResourceManager.GetString("Debugger_ServiceNotAvailable", _resourceCulture)!;
+
+    internal static string Debugger_NoConfigLoaded
+        => ResourceManager.GetString("Debugger_NoConfigLoaded", _resourceCulture)!;
+
+    internal static string Debugger_NoConfigsArray
+        => ResourceManager.GetString("Debugger_NoConfigsArray", _resourceCulture)!;
+
+    internal static string Debugger_NoMatchingConfig
+        => ResourceManager.GetString("Debugger_NoMatchingConfig", _resourceCulture)!;
+
+    internal static string Debugger_ImportBreakpoints
+        => ResourceManager.GetString("Debugger_ImportBreakpoints", _resourceCulture)!;
+
+    internal static string Debugger_ExportBreakpoints
+        => ResourceManager.GetString("Debugger_ExportBreakpoints", _resourceCulture)!;
 }

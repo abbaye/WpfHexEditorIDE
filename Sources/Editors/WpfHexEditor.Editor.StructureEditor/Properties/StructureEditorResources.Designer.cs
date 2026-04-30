@@ -923,7 +923,16 @@ namespace WpfHexEditor.Editor.StructureEditor.Properties {
                 return ResourceManager.GetString("StructureEditor_TestBrowseButton", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Select a binary file to test against.
+        /// </summary>
+        internal static string StructureEditor_TestBrowseDialogTitle {
+            get {
+                return ResourceManager.GetString("StructureEditor_TestBrowseDialogTitle", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Recherche une chaîne localisée semblable à Block Name.
         /// </summary>

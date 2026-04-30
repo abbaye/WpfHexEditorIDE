@@ -407,7 +407,7 @@ public sealed partial class ImageViewer : UserControl,
     public async Task OpenAsync(string filePath, CancellationToken ct = default)
     {
         IsBusy = true;
-        OperationStarted?.Invoke(this, new DocumentOperationEventArgs { Title = "Loading image…", IsIndeterminate = true });
+        OperationStarted?.Invoke(this, new DocumentOperationEventArgs { Title = ImageViewerResources.ImageViewer_LoadingImage, IsIndeterminate = true });
 
         try
         {

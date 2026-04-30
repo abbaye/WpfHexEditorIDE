@@ -20,6 +20,7 @@
     <LangVersion>preview</LangVersion>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <NeutralLanguage>en-US</NeutralLanguage>
     <Description>In-IDE plugin development engine — hot-reload, build, sandbox, packaging.</Description>
     <Version>1.0.0</Version>
   </PropertyGroup>
@@ -32,6 +33,23 @@
     <ProjectReference Include="..\..\Core\WpfHexEditor.Core.BuildSystem\WpfHexEditor.Core.BuildSystem.csproj" />
     <ProjectReference Include="..\..\Core\WpfHexEditor.Core.WorkspaceTemplates\WpfHexEditor.Core.WorkspaceTemplates.csproj" />
     <ProjectReference Include="..\..\Docking\WpfHexEditor.Docking.Core\WpfHexEditor.Docking.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\PluginDevResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>PluginDevResources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <EmbeddedResource Update="Properties\PluginDevResources.resx">
+      <SubType>Designer</SubType>
+      <LastGenOutput>PluginDevResources.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Properties\PluginDevResources.fr-CA.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>PluginDevResources.resx</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>

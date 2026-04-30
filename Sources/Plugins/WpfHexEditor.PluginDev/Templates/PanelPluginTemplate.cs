@@ -16,6 +16,7 @@
 // ==========================================================
 
 using System.IO;
+using WpfHexEditor.PluginDev.Properties;
 
 namespace WpfHexEditor.PluginDev.Templates;
 
@@ -144,7 +145,7 @@ namespace {{ns}};
 /// </summary>
 public sealed class {{name}}PanelViewModel : INotifyPropertyChanged
 {
-    private string _statusText = "Ready";
+    private string _statusText = PluginDevResources.PluginDev_Ready;
 
     public string StatusText
     {

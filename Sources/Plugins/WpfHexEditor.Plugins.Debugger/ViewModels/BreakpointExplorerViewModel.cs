@@ -290,7 +290,7 @@ public sealed class BreakpointExplorerViewModel : ViewModelBase
     {
         var dlg = new OpenFileDialog
         {
-            Title  = "Import Breakpoints from VS XML",
+            Title  = DebuggerResources.Debugger_ImportBreakpoints,
             Filter = "VS Breakpoint XML (*.xml)|*.xml|All Files (*.*)|*.*",
         };
         if (dlg.ShowDialog() != true) return;
@@ -329,7 +329,7 @@ public sealed class BreakpointExplorerViewModel : ViewModelBase
     {
         var dlg = new SaveFileDialog
         {
-            Title    = "Export Breakpoints to VS XML",
+            Title    = DebuggerResources.Debugger_ExportBreakpoints,
             Filter   = "VS Breakpoint XML (*.xml)|*.xml",
             FileName = "breakpoints.xml",
         };

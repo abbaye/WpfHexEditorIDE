@@ -36,6 +36,7 @@ using WpfHexEditor.Plugins.XamlDesigner.Panels;
 using WpfHexEditor.Plugins.XamlDesigner.Services;
 using WpfHexEditor.Plugins.XamlDesigner.ViewModels;
 using WpfHexEditor.Plugins.XamlDesigner.Options;
+using WpfHexEditor.Plugins.XamlDesigner.Properties;
 using WpfHexEditor.SDK.Commands;
 using WpfHexEditor.SDK.Contracts;
 using WpfHexEditor.SDK.Contracts.Focus;
@@ -132,7 +133,7 @@ public sealed class XamlDesignerPlugin : IWpfHexEditorPlugin, IPluginWithOptions
             Id,
             new PanelDescriptor
             {
-                Title           = "XAML Outline",
+                Title           = XamlDesignerResources.XamlDesigner_Panel_Outline,
                 DefaultDockSide = "Left",
                 DefaultAutoHide = true,
                 CanClose        = true,
@@ -146,7 +147,7 @@ public sealed class XamlDesignerPlugin : IWpfHexEditorPlugin, IPluginWithOptions
             Id,
             new PanelDescriptor
             {
-                Title           = "XAML Properties",
+                Title           = XamlDesignerResources.XamlDesigner_Panel_Properties,
                 DefaultDockSide = "Right",
                 DefaultAutoHide = false,
                 CanClose        = true,
@@ -160,7 +161,7 @@ public sealed class XamlDesignerPlugin : IWpfHexEditorPlugin, IPluginWithOptions
             Id,
             new PanelDescriptor
             {
-                Title           = "XAML Toolbox",
+                Title           = XamlDesignerResources.XamlDesigner_Panel_Toolbox,
                 DefaultDockSide = "Left",
                 DefaultAutoHide = true,
                 CanClose        = true,
@@ -174,7 +175,7 @@ public sealed class XamlDesignerPlugin : IWpfHexEditorPlugin, IPluginWithOptions
             Id,
             new PanelDescriptor
             {
-                Title           = "Resource Browser",
+                Title           = XamlDesignerResources.XamlDesigner_Panel_ResourceBrowser,
                 DefaultDockSide = "Right",
                 DefaultAutoHide = true,
                 CanClose        = true,
@@ -188,7 +189,7 @@ public sealed class XamlDesignerPlugin : IWpfHexEditorPlugin, IPluginWithOptions
             Id,
             new PanelDescriptor
             {
-                Title            = "Design Data",
+                Title            = XamlDesignerResources.XamlDesigner_Panel_DesignData,
                 DefaultDockSide  = "Bottom",
                 DefaultAutoHide  = false,
                 CanClose         = true,
@@ -202,7 +203,7 @@ public sealed class XamlDesignerPlugin : IWpfHexEditorPlugin, IPluginWithOptions
             Id,
             new PanelDescriptor
             {
-                Title            = "Animation Timeline",
+                Title            = XamlDesignerResources.XamlDesigner_Panel_AnimationTimeline,
                 DefaultDockSide  = "Bottom",
                 DefaultAutoHide  = false,
                 CanClose         = true,
@@ -216,7 +217,7 @@ public sealed class XamlDesignerPlugin : IWpfHexEditorPlugin, IPluginWithOptions
             Id,
             new PanelDescriptor
             {
-                Title           = "Design History",
+                Title           = XamlDesignerResources.XamlDesigner_Panel_DesignHistory,
                 DefaultDockSide = "Right",
                 DefaultAutoHide = true,
                 CanClose        = true,
@@ -230,7 +231,7 @@ public sealed class XamlDesignerPlugin : IWpfHexEditorPlugin, IPluginWithOptions
             Id,
             new PanelDescriptor
             {
-                Title           = "Binding Inspector",
+                Title           = XamlDesignerResources.XamlDesigner_Panel_BindingInspector,
                 DefaultDockSide = "Right",
                 DefaultAutoHide = true,
                 CanClose        = true,
@@ -244,7 +245,7 @@ public sealed class XamlDesignerPlugin : IWpfHexEditorPlugin, IPluginWithOptions
             Id,
             new PanelDescriptor
             {
-                Title           = "Live Visual Tree",
+                Title           = XamlDesignerResources.XamlDesigner_Panel_LiveVisualTree,
                 DefaultDockSide = "Left",
                 DefaultAutoHide = true,
                 CanClose        = true,
@@ -883,7 +884,7 @@ public sealed class XamlDesignerPlugin : IWpfHexEditorPlugin, IPluginWithOptions
             Id,
             new MenuItemDescriptor
             {
-                Header     = "XAML _Outline",
+                Header     = $"XAML _{XamlDesignerResources.XamlDesigner_Panel_Outline}",
                 ParentPath = "View",
                 Group      = "Panels",
                 IconGlyph  = "\uE8A5",
@@ -897,7 +898,7 @@ public sealed class XamlDesignerPlugin : IWpfHexEditorPlugin, IPluginWithOptions
             Id,
             new MenuItemDescriptor
             {
-                Header     = "XAML _Properties",
+                Header     = $"XAML _{XamlDesignerResources.XamlDesigner_Panel_Properties}",
                 ParentPath = "View",
                 Group      = "Panels",
                 IconGlyph  = "\uE946",
@@ -911,7 +912,7 @@ public sealed class XamlDesignerPlugin : IWpfHexEditorPlugin, IPluginWithOptions
             Id,
             new MenuItemDescriptor
             {
-                Header     = "XAML _Toolbox",
+                Header     = $"XAML _{XamlDesignerResources.XamlDesigner_Panel_Toolbox}",
                 ParentPath = "View",
                 Group      = "Panels",
                 IconGlyph  = "\uE7A6",
@@ -925,7 +926,7 @@ public sealed class XamlDesignerPlugin : IWpfHexEditorPlugin, IPluginWithOptions
             Id,
             new MenuItemDescriptor
             {
-                Header     = "_Resource Browser",
+                Header     = $"_{XamlDesignerResources.XamlDesigner_Panel_ResourceBrowser}",
                 ParentPath = "View",
                 Group      = "Panels",
                 IconGlyph  = "\uE8B9",
@@ -939,7 +940,7 @@ public sealed class XamlDesignerPlugin : IWpfHexEditorPlugin, IPluginWithOptions
             Id,
             new MenuItemDescriptor
             {
-                Header     = "_Design Data",
+                Header     = $"_{XamlDesignerResources.XamlDesigner_Panel_DesignData}",
                 ParentPath = "View",
                 Group      = "Panels",
                 IconGlyph  = "\uE9D9",
@@ -953,7 +954,7 @@ public sealed class XamlDesignerPlugin : IWpfHexEditorPlugin, IPluginWithOptions
             Id,
             new MenuItemDescriptor
             {
-                Header     = "_Animation Timeline",
+                Header     = $"_{XamlDesignerResources.XamlDesigner_Panel_AnimationTimeline}",
                 ParentPath = "View",
                 Group      = "Panels",
                 IconGlyph  = "\uE916",
@@ -967,7 +968,7 @@ public sealed class XamlDesignerPlugin : IWpfHexEditorPlugin, IPluginWithOptions
             Id,
             new MenuItemDescriptor
             {
-                Header     = "Design _History",
+                Header     = $"Design _{XamlDesignerResources.XamlDesigner_Panel_DesignHistory}",
                 ParentPath = "View",
                 Group      = "Panels",
                 IconGlyph  = "\uE81C",
@@ -981,7 +982,7 @@ public sealed class XamlDesignerPlugin : IWpfHexEditorPlugin, IPluginWithOptions
             Id,
             new MenuItemDescriptor
             {
-                Header     = "_Binding Inspector",
+                Header     = $"_{XamlDesignerResources.XamlDesigner_Panel_BindingInspector}",
                 ParentPath = "View",
                 Group      = "Panels",
                 IconGlyph  = "\uE8EC",
@@ -995,7 +996,7 @@ public sealed class XamlDesignerPlugin : IWpfHexEditorPlugin, IPluginWithOptions
             Id,
             new MenuItemDescriptor
             {
-                Header     = "_Live Visual Tree",
+                Header     = $"_{XamlDesignerResources.XamlDesigner_Panel_LiveVisualTree}",
                 ParentPath = "View",
                 Group      = "Panels",
                 IconGlyph  = "\uE8B0",

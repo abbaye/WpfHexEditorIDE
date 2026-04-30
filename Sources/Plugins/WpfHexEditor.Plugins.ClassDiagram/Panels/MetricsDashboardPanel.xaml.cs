@@ -29,6 +29,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using Microsoft.Win32;
 using WpfHexEditor.Editor.ClassDiagram.Core.Model;
+using WpfHexEditor.Plugins.ClassDiagram.Properties;
 
 namespace WpfHexEditor.Plugins.ClassDiagram.Panels;
 
@@ -255,7 +256,7 @@ file static class MetricsDashboardExport
     {
         var dlg = new SaveFileDialog
         {
-            Title            = "Export Metrics CSV",
+            Title            = ClassDiagramResources.ClassDiagram_ExportMetricsCSV,
             Filter           = "CSV files (*.csv)|*.csv|All files (*.*)|*.*",
             DefaultExt       = "csv",
             FileName         = "ClassDiagramMetrics.csv",

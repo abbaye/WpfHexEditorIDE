@@ -705,7 +705,7 @@ public sealed partial class MarkdownEditorHost : UserControl,
         menu.SetResourceReference(StyleProperty, "MD_ContextMenuStyle");
 
         // FORMAT group
-        var fmtHeader = new MenuItem { Header = "FORMAT" };
+        var fmtHeader = new MenuItem { Header = MarkdownEditorResources.MdCtx_GroupFormat };
         fmtHeader.SetResourceReference(StyleProperty, "MD_GroupHeaderStyle");
         menu.Items.Add(fmtHeader);
 
@@ -719,7 +719,7 @@ public sealed partial class MarkdownEditorHost : UserControl,
         menu.Items.Add(sep1);
 
         // INSERT group
-        var insHeader = new MenuItem { Header = "INSERT" };
+        var insHeader = new MenuItem { Header = MarkdownEditorResources.MdCtx_GroupInsert };
         insHeader.SetResourceReference(StyleProperty, "MD_GroupHeaderStyle");
         menu.Items.Add(insHeader);
 
@@ -739,7 +739,7 @@ public sealed partial class MarkdownEditorHost : UserControl,
         sep3.SetResourceReference(StyleProperty, "MD_GroupSeparatorStyle");
         menu.Items.Add(sep3);
 
-        var exportHeader = new MenuItem { Header = "EXPORT" };
+        var exportHeader = new MenuItem { Header = MarkdownEditorResources.MdCtx_GroupExport };
         exportHeader.SetResourceReference(StyleProperty, "MD_GroupHeaderStyle");
         menu.Items.Add(exportHeader);
 
@@ -751,7 +751,7 @@ public sealed partial class MarkdownEditorHost : UserControl,
         menu.Items.Add(sep4);
 
         // VIEW group
-        var viewHeader = new MenuItem { Header = "VIEW" };
+        var viewHeader = new MenuItem { Header = MarkdownEditorResources.MdCtx_GroupView };
         viewHeader.SetResourceReference(StyleProperty, "MD_GroupHeaderStyle");
         menu.Items.Add(viewHeader);
 

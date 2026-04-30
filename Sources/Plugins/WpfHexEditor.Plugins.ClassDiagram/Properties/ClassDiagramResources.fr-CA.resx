@@ -90,5 +90,17 @@
   <data name="ClassDiagram_MetricsPanelTitle" xml:space="preserve">
     <value>Tableau de bord des métriques</value>
   </data>
+  <data name="ClassDiagram_Reset" xml:space="preserve">
+    <value>Réinitialiser</value>
+  </data>
+  <data name="ClassDiagram_Menu_OutlineHeader" xml:space="preserve">
+    <value>_Plan de classes</value>
+  </data>
+  <data name="ClassDiagram_GenerateSolutionDiagram" xml:space="preserve">
+    <value>Générer le diagramme de classes pour la solution</value>
+  </data>
+  <data name="ClassDiagram_ExportMetricsCSV" xml:space="preserve">
+    <value>Exporter les métriques CSV</value>
+  </data>
 
 </root>

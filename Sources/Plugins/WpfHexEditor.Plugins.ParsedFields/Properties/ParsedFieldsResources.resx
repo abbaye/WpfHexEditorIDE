@@ -103,4 +103,6 @@
   <data name="ParsedFields_DataInspectorNotConnected" xml:space="preserve">
     <value>Data Inspector feature not yet connected to this panel.</value>
   </data>
+  <data name="ParsedFields_PluginName" xml:space="preserve"><value>Parsed Fields</value></data>
+  <data name="ParsedFields_JumpToOffset" xml:space="preserve"><value>Jump to Offset</value></data>
 </root>

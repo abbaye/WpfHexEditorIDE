@@ -16,6 +16,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
 using Microsoft.Win32;
+using WpfHexEditor.PluginDev.Properties;
 
 namespace WpfHexEditor.PluginDev.Panels;
 
@@ -67,7 +68,7 @@ public sealed partial class PluginDevLogPanel : UserControl
     {
         var dlg = new SaveFileDialog
         {
-            Title            = "Export Extension Dev Log",
+            Title            = PluginDevResources.PluginDev_ExportDevLog,
             Filter           = "Log files (*.log)|*.log|Text files (*.txt)|*.txt|All files (*.*)|*.*",
             DefaultExt       = ".log",
             FileName         = $"plugin-dev-{DateTime.Now:yyyyMMdd-HHmmss}.log",

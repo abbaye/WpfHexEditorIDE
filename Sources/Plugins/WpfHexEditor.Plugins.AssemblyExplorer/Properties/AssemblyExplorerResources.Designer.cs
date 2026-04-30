@@ -55,4 +55,25 @@ internal static class AssemblyExplorerResources
     /// </summary>
     internal static string AsmExplorer_DiffPanelTitle
         => ResourceManager.GetString("AsmExplorer_DiffPanelTitle", _resourceCulture)!;
+
+    internal static string AsmExplorer_ExportCancelled
+        => ResourceManager.GetString("AsmExplorer_ExportCancelled", _resourceCulture)!;
+
+    internal static string AsmExplorer_NoAssemblyLoaded
+        => ResourceManager.GetString("AsmExplorer_NoAssemblyLoaded", _resourceCulture)!;
+
+    internal static string AsmExplorer_AnalysisCancelled
+        => ResourceManager.GetString("AsmExplorer_AnalysisCancelled", _resourceCulture)!;
+
+    internal static string AsmExplorer_Searching
+        => ResourceManager.GetString("AsmExplorer_Searching", _resourceCulture)!;
+
+    internal static string AsmExplorer_Comparing
+        => ResourceManager.GetString("AsmExplorer_Comparing", _resourceCulture)!;
+
+    internal static string AsmExplorer_NoPdb
+        => ResourceManager.GetString("AsmExplorer_NoPdb", _resourceCulture)!;
+
+    internal static string AsmExplorer_SelectMethod
+        => ResourceManager.GetString("AsmExplorer_SelectMethod", _resourceCulture)!;
 }

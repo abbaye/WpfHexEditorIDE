@@ -105,7 +105,7 @@ public sealed class DebuggerPlugin : IWpfHexEditorPluginV2
         // Launch configuration editor panel
         ui.RegisterPanel("panel-dbg-launch-config",
             new Panels.LaunchConfigEditorPanel(context.DocumentHost, _debugger), Id,
-            new PanelDescriptor { Title = "Launch Config (.whdbg)", DefaultDockSide = "Bottom", DefaultAutoHide = true });
+            new PanelDescriptor { Title = DebuggerResources.Debugger_LaunchConfigTitle, DefaultDockSide = "Bottom", DefaultAutoHide = true });
 
         // Contribute Debug menu — one RegisterMenuItem call per item (no Children support in SDK)
         // Icons included for Command Palette; DebugMenuOrganizer deduplicates against built-in entries.
