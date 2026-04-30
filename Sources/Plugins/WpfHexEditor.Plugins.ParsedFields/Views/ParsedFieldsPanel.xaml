@@ -14,9 +14,14 @@
              xmlns:local="clr-namespace:WpfHexEditor.Plugins.ParsedFields.Views"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="300"
-             Background="{DynamicResource PFP_PanelBackgroundBrush}">
+             Background="{DynamicResource PFP_PanelBackgroundBrush}"
+             xmlns:pfSvc="clr-namespace:WpfHexEditor.Plugins.ParsedFields.Services;assembly=WpfHexEditor.Plugins.ParsedFields">
 
     <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <pfSvc:ParsedFieldsLocalizedDictionary/>
+            </ResourceDictionary.MergedDictionaries>
         <!-- Converters -->
         <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <local:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter"/>
@@ -168,7 +173,7 @@
                                Margin="0,0,4,0"
                                VerticalAlignment="Center"
                                Foreground="#4CAF50"
-                               ToolTip="Search match"
+                               ToolTip="{DynamicResource PF_SearchMatchTooltip}"
                                Visibility="{Binding IsSearchMatch, Converter={StaticResource BoolToVisibilityConverter}}"/>
 
                     <!-- Bookmark indicator -->
@@ -177,7 +182,7 @@
                                FontSize="12"
                                Margin="14,0,6,0"
                                VerticalAlignment="Center"
-                               ToolTip="Bookmarked"
+                               ToolTip="{DynamicResource PF_BookmarkedTooltip}"
                                Visibility="{Binding IsBookmarked, Converter={StaticResource BoolToVisibilityConverter}}"/>
 
                     <!-- Field name -->
@@ -198,7 +203,7 @@
                         </Grid.ColumnDefinitions>
 
                         <TextBlock Grid.Column="0"
-                                   Text="Value: "
+                                   Text="{DynamicResource PF_ValueLabel}"
                                    FontSize="11">
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock">
@@ -237,19 +242,19 @@
                                     Width="18" Height="16" FontSize="9" FontFamily="Consolas"
                                     FontWeight="SemiBold" Padding="0" Margin="1,0"
                                     Foreground="{DynamicResource PFP_SubTextBrush}"
-                                    ToolTip="Hexadecimal"
+                                    ToolTip="{DynamicResource PF_HexTooltip}"
                                     Style="{DynamicResource {x:Static ToolBar.ButtonStyleKey}}"/>
                             <Button Content="D" Tag="dec" Click="DisplayModeButton_Click"
                                     Width="18" Height="16" FontSize="9" FontFamily="Consolas"
                                     FontWeight="SemiBold" Padding="0" Margin="1,0"
                                     Foreground="{DynamicResource PFP_SubTextBrush}"
-                                    ToolTip="Decimal"
+                                    ToolTip="{DynamicResource PF_DecimalTooltip}"
                                     Style="{DynamicResource {x:Static ToolBar.ButtonStyleKey}}"/>
                             <Button Content="B" Tag="bin" Click="DisplayModeButton_Click"
                                     Width="18" Height="16" FontSize="9" FontFamily="Consolas"
                                     FontWeight="SemiBold" Padding="0" Margin="1,0"
                                     Foreground="{DynamicResource PFP_SubTextBrush}"
-                                    ToolTip="Binary"
+                                    ToolTip="{DynamicResource PF_BinaryTooltip}"
                                     Style="{DynamicResource {x:Static ToolBar.ButtonStyleKey}}"/>
                         </StackPanel>
                     </Grid>
@@ -295,6 +300,7 @@
                 </Grid>
             </Border>
         </DataTemplate>
+            </ResourceDictionary>
     </UserControl.Resources>
 
     <Grid>
@@ -319,7 +325,7 @@
                 <Button x:Name="RefreshButton"
                         DockPanel.Dock="Left"
                         Content="&#xE72C;"
-                        ToolTip="Refresh field values (F5)"
+                        ToolTip="{DynamicResource PF_RefreshLabel}"
                         Style="{DynamicResource PanelIconButtonStyle}"
                         Click="RefreshButton_Click"/>
 
@@ -336,7 +342,7 @@
                             Background="#4CAF50"
                             VerticalAlignment="Center"
                             Visibility="Collapsed"
-                            ToolTip="Valid fields">
+                            ToolTip="{DynamicResource PF_ValidFieldsBadge}">
                         <TextBlock FontSize="10" Foreground="White" FontWeight="SemiBold">
                             <Run Text="&#x2713; "/>
                             <Run x:Name="ValidCountRun" Text="0"/>
@@ -350,7 +356,7 @@
                             Background="#F44336"
                             VerticalAlignment="Center"
                             Visibility="Collapsed"
-                            ToolTip="Fields with validation errors — click to navigate"
+                            ToolTip="{DynamicResource PF_InvalidFieldsBadge}"
                             Cursor="Hand"
                             MouseLeftButtonDown="InvalidBadge_Click">
                         <TextBlock FontSize="10" Foreground="White" FontWeight="SemiBold">
@@ -361,7 +367,7 @@
                     <Rectangle Style="{DynamicResource PanelToolbarSeparatorStyle}"/>
                     <ToggleButton x:Name="ShowBookmarksButton"
                                   Content="&#xE734;"
-                                  ToolTip="Show bookmarked fields only"
+                                  ToolTip="{DynamicResource PF_ShowBookmarkedToggle}"
                                   Style="{DynamicResource PanelIconToggleStyle}"
                                   Checked="ShowBookmarksButton_Checked"
                                   Unchecked="ShowBookmarksButton_Unchecked"/>
@@ -372,7 +378,7 @@
                         DockPanel.Dock="Right"
                         Visibility="Collapsed"
                         Style="{DynamicResource PanelIconButtonStyle}"
-                        ToolTip="More options"
+                        ToolTip="{DynamicResource PF_MoreOptionsButton}"
                         Click="OnOverflowButtonClick">
                     <TextBlock Text="&#xE712;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
@@ -380,17 +386,17 @@
                         <ContextMenu x:Name="OverflowContextMenu" Opened="OnOverflowMenuOpened">
                             <!-- TbgSource items -->
                             <MenuItem x:Name="OverflowSourceItem"
-                                      Header="_Source document..."
+                                      Header="{DynamicResource PF_SourceDocumentMenu}"
                                       Tag="TbgSource"
                                       Click="SourceMenuButton_Click"/>
                             <Separator Tag="TbgSource"/>
                             <!-- TbgActions items -->
-                            <MenuItem Header="Field _Actions..."
+                            <MenuItem Header="{DynamicResource PF_ActionsMenu}"
                                       Tag="TbgActions"
                                       Click="ActionsMenuButton_Click"/>
                             <Separator Tag="TbgActions"/>
                             <!-- TbgExport items -->
-                            <MenuItem Header="_Export..."
+                            <MenuItem Header="{DynamicResource PF_ExportMenu}"
                                       Tag="TbgExport"
                                       Click="ExportMenuButton_Click"/>
                         </ContextMenu>
@@ -404,7 +410,7 @@
                             VerticalAlignment="Center">
                     <Rectangle Style="{DynamicResource PanelToolbarSeparatorStyle}"/>
                     <Button x:Name="SourceMenuButton"
-                            ToolTip="Select source document for analysis"
+                            ToolTip="{DynamicResource PF_SourceDocumentMenu}"
                             Style="{DynamicResource PanelDropdownButtonStyle}"
                             Click="SourceMenuButton_Click">
                         <Button.Content>
@@ -415,7 +421,7 @@
                                            VerticalAlignment="Center" Margin="0,0,4,0"
                                            Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                                 <TextBlock x:Name="SourceMenuLabel"
-                                           Text="Auto &#x25BE;"
+                                           Text="{DynamicResource PF_AutoButton}"
                                            VerticalAlignment="Center"
                                            MaxWidth="120"
                                            TextTrimming="CharacterEllipsis"/>
@@ -434,7 +440,7 @@
                             VerticalAlignment="Center">
                     <Rectangle Style="{DynamicResource PanelToolbarSeparatorStyle}"/>
                     <Button x:Name="ExportMenuButton"
-                            ToolTip="Export parsed fields to file or clipboard"
+                            ToolTip="{DynamicResource PF_ExportMenu}"
                             Style="{DynamicResource PanelDropdownButtonStyle}"
                             Click="ExportMenuButton_Click">
                         <Button.Content>
@@ -442,17 +448,17 @@
                                 <TextBlock Text="&#xEDE1;" FontFamily="Segoe MDL2 Assets" FontSize="11"
                                            VerticalAlignment="Center" Margin="0,0,5,0"
                                            Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
-                                <TextBlock Text="Export &#x25BE;" VerticalAlignment="Center"/>
+                                <TextBlock Text="{DynamicResource PF_ExportButton}" VerticalAlignment="Center"/>
                             </StackPanel>
                         </Button.Content>
                         <Button.ContextMenu>
                             <ContextMenu x:Name="ExportContextMenu">
-                                <MenuItem Header="As _Text"     Click="ExportAsText_Click"/>
-                                <MenuItem Header="As _JSON"     Click="ExportAsJson_Click"/>
-                                <MenuItem Header="As _CSV"      Click="ExportAsCsv_Click"/>
-                                <MenuItem Header="As _XML"      Click="ExportAsXml_Click"/>
-                                <MenuItem Header="As _HTML"     Click="ExportAsHtml_Click"/>
-                                <MenuItem Header="As _Markdown" Click="ExportAsMarkdown_Click"/>
+                                <MenuItem Header="{DynamicResource PF_ExportAsText}"     Click="ExportAsText_Click"/>
+                                <MenuItem Header="{DynamicResource PF_ExportAsJson}"     Click="ExportAsJson_Click"/>
+                                <MenuItem Header="{DynamicResource PF_ExportAsCsv}"      Click="ExportAsCsv_Click"/>
+                                <MenuItem Header="{DynamicResource PF_ExportAsXml}"      Click="ExportAsXml_Click"/>
+                                <MenuItem Header="{DynamicResource PF_ExportAsHtml}"     Click="ExportAsHtml_Click"/>
+                                <MenuItem Header="{DynamicResource PF_ExportAsMarkdown}" Click="ExportAsMarkdown_Click"/>
                             </ContextMenu>
                         </Button.ContextMenu>
                     </Button>
@@ -465,7 +471,7 @@
                             VerticalAlignment="Center">
                     <Rectangle Style="{DynamicResource PanelToolbarSeparatorStyle}"/>
                     <Button x:Name="ActionsMenuButton"
-                            ToolTip="Field actions (edit, copy, navigate, bookmark...)"
+                            ToolTip="{DynamicResource PF_ActionsMenu}"
                             Style="{DynamicResource PanelDropdownButtonStyle}"
                             Click="ActionsMenuButton_Click">
                         <Button.Content>
@@ -473,20 +479,20 @@
                                 <TextBlock Text="&#xE70F;" FontFamily="Segoe MDL2 Assets" FontSize="11"
                                            VerticalAlignment="Center" Margin="0,0,5,0"
                                            Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
-                                <TextBlock Text="Actions &#x25BE;" VerticalAlignment="Center"/>
+                                <TextBlock Text="{DynamicResource PF_ActionsButton}" VerticalAlignment="Center"/>
                             </StackPanel>
                         </Button.Content>
                         <Button.ContextMenu>
                             <ContextMenu x:Name="ActionsContextMenu">
-                                <MenuItem Header="_Edit"            InputGestureText="Enter" Click="EditValue_Click"       IsEnabled="{Binding HasSelection}"/>
-                                <MenuItem Header="_Copy value"      InputGestureText="Ctrl+C" Click="CopyValue_Click"      IsEnabled="{Binding HasSelection}"/>
-                                <MenuItem Header="Copy _Details"    Click="CopyDetails_Click"                              IsEnabled="{Binding HasSelection}"/>
-                                <MenuItem Header="Copy _Offset"     Click="CopyOffset_Click"                               IsEnabled="{Binding HasSelection}"/>
+                                <MenuItem Header="{DynamicResource PF_EditMenuItem}"            InputGestureText="Enter" Click="EditValue_Click"       IsEnabled="{Binding HasSelection}"/>
+                                <MenuItem Header="{DynamicResource PF_CopyValueMenuItem}"      InputGestureText="Ctrl+C" Click="CopyValue_Click"      IsEnabled="{Binding HasSelection}"/>
+                                <MenuItem Header="{DynamicResource PF_CopyDetailsMenuItem}"    Click="CopyDetails_Click"                              IsEnabled="{Binding HasSelection}"/>
+                                <MenuItem Header="{DynamicResource PF_CopyOffsetMenuItem}"     Click="CopyOffset_Click"                               IsEnabled="{Binding HasSelection}"/>
                                 <Separator/>
-                                <MenuItem Header="_Navigate to field" Click="QuickNavigate_Click"                          IsEnabled="{Binding HasSelection}"/>
-                                <MenuItem Header="_Jump to Offset..." Click="JumpToOffset_Click"/>
+                                <MenuItem Header="{DynamicResource PF_NavigateMenuItem}" Click="QuickNavigate_Click"                          IsEnabled="{Binding HasSelection}"/>
+                                <MenuItem Header="{DynamicResource PF_JumpToOffsetMenuItem}" Click="JumpToOffset_Click"/>
                                 <Separator/>
-                                <MenuItem Header="_Bookmark" InputGestureText="Space" Click="ToggleBookmark_Click"         IsEnabled="{Binding HasSelection}"/>
+                                <MenuItem Header="{DynamicResource PF_BookmarkMenuItem}" InputGestureText="Space" Click="ToggleBookmark_Click"         IsEnabled="{Binding HasSelection}"/>
                             </ContextMenu>
                         </Button.ContextMenu>
                     </Button>
@@ -523,7 +529,7 @@
                         Width="24" Height="24"
                         Margin="4,0,0,0"
                         FontSize="12"
-                        ToolTip="Clear search"
+                        ToolTip="{DynamicResource PF_ClearSearchButton}"
                         Click="ClearSearchButton_Click"
                         Style="{DynamicResource {x:Static ToolBar.ButtonStyleKey}}">
                     <Button.Visibility>
@@ -540,20 +546,20 @@
                            Orientation="Horizontal"
                            Margin="0,6,0,0">
                     <CheckBox x:Name="RegexSearchCheckBox"
-                              Content="Regex"
+                              Content="{DynamicResource PF_RegexOption}"
                               FontSize="10"
                               Margin="0,0,12,0"
                               VerticalAlignment="Center"
                               Checked="SearchOption_Changed"
                               Unchecked="SearchOption_Changed"/>
                     <CheckBox x:Name="CaseSensitiveCheckBox"
-                              Content="Case-sensitive"
+                              Content="{DynamicResource PF_CaseSensitiveOption}"
                               FontSize="10"
                               Margin="0,0,12,0"
                               VerticalAlignment="Center"
                               Checked="SearchOption_Changed"
                               Unchecked="SearchOption_Changed"/>
-                    <TextBlock Text="In:"
+                    <TextBlock Text="{DynamicResource PF_InLabel}"
                                FontSize="10"
                                Margin="0,0,4,0"
                                VerticalAlignment="Center"
@@ -564,12 +570,12 @@
                               Margin="0,0,12,0"
                               SelectedIndex="0"
                               SelectionChanged="SearchOption_Changed">
-                        <ComboBoxItem Content="All fields"/>
-                        <ComboBoxItem Content="Name only"/>
-                        <ComboBoxItem Content="Value only"/>
-                        <ComboBoxItem Content="Description"/>
+                        <ComboBoxItem Content="{DynamicResource PF_AllFieldsFilter}"/>
+                        <ComboBoxItem Content="{DynamicResource PF_NameOnlyFilter}"/>
+                        <ComboBoxItem Content="{DynamicResource PF_ValueOnlyFilter}"/>
+                        <ComboBoxItem Content="{DynamicResource PF_DescriptionFilter}"/>
                     </ComboBox>
-                    <TextBlock Text="Type:"
+                    <TextBlock Text="{DynamicResource PF_TypeLabel}"
                                FontSize="10"
                                Margin="0,0,4,0"
                                VerticalAlignment="Center"
@@ -579,10 +585,10 @@
                               Width="100"
                               SelectedIndex="0"
                               SelectionChanged="SearchOption_Changed">
-                        <ComboBoxItem Content="All types"/>
-                        <ComboBoxItem Content="Integers"/>
-                        <ComboBoxItem Content="Strings"/>
-                        <ComboBoxItem Content="Bytes"/>
+                        <ComboBoxItem Content="{DynamicResource PF_AllTypesFilter}"/>
+                        <ComboBoxItem Content="{DynamicResource PF_IntegersFilter}"/>
+                        <ComboBoxItem Content="{DynamicResource PF_StringsFilter}"/>
+                        <ComboBoxItem Content="{DynamicResource PF_BytesFilter}"/>
                     </ComboBox>
                 </WrapPanel>
             </Grid>
@@ -610,7 +616,7 @@
                             Grid.Column="0"
                             Visibility="{Binding FormatInfo.HasReferences, Converter={StaticResource BoolToVisibilityConverter}}"
                             Click="ReferencesInfoButton_Click"
-                            ToolTip="Format References &amp; Specifications"
+                            ToolTip="{DynamicResource PF_ReferencesButton}"
                             Style="{StaticResource PFP_NavBookmarkButtonStyle}"
                             Margin="0,0,4,0" Padding="4,2"
                             FontFamily="Segoe MDL2 Assets" Content="&#xE946;"
@@ -620,7 +626,7 @@
                         <TextBlock FontWeight="SemiBold" FontSize="12"
                                    VerticalAlignment="Center" Margin="0,0,4,0"
                                    Foreground="{DynamicResource PFP_TextBrush}"
-                                   Text="Format:"/>
+                                   Text="{DynamicResource PF_FormatLabel}"/>
                         <!-- Dropdown when multiple candidates detected -->
                         <ComboBox x:Name="FormatCandidateCombo"
                                   ItemsSource="{Binding FormatInfo.Candidates}"
@@ -656,7 +662,7 @@
                     <Button x:Name="FormatInfoCollapseButton"
                             Grid.Column="4"
                             Content="&#xE974;"
-                            ToolTip="Collapse format info"
+                            ToolTip="{DynamicResource PF_CollapseFormatTooltip}"
                             Style="{DynamicResource PanelIconButtonStyle}"
                             FontFamily="Segoe MDL2 Assets"
                             FontSize="10"
@@ -696,7 +702,7 @@
                         <StackPanel>
                             <!-- Specifications -->
                             <StackPanel Visibility="{Binding FormatInfo.HasSpecifications, Converter={StaticResource BoolToVisibilityConverter}}">
-                                <TextBlock Text="Specifications"
+                                <TextBlock Text="{DynamicResource PF_SpecificationsHeader}"
                                            FontWeight="SemiBold" FontSize="11"
                                            Margin="0,0,0,4"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"/>
@@ -717,7 +723,7 @@
                                        Visibility="{Binding FormatInfo.HasBothReferences, Converter={StaticResource BoolToVisibilityConverter}}"/>
                             <!-- Web Links -->
                             <StackPanel Visibility="{Binding FormatInfo.HasWebLinks, Converter={StaticResource BoolToVisibilityConverter}}">
-                                <TextBlock Text="Web Links"
+                                <TextBlock Text="{DynamicResource PF_WebLinksHeader}"
                                            FontWeight="SemiBold" FontSize="11"
                                            Margin="0,0,0,4"
                                            Foreground="{DynamicResource DockMenuForegroundBrush}"/>
@@ -905,7 +911,7 @@
                                            FontSize="12" Margin="0,0,5,0"
                                            Foreground="{DynamicResource WF_AiHintAccentBrush}"
                                            VerticalAlignment="Center"/>
-                                <TextBlock Text="AI Analysis"
+                                <TextBlock Text="{DynamicResource PF_AiAnalysisHeader}"
                                            FontSize="10" FontWeight="SemiBold"
                                            Foreground="{DynamicResource WF_AiHintAccentBrush}"
                                            VerticalAlignment="Center"/>
@@ -927,7 +933,7 @@
                             <Button Grid.Column="1"
                                     x:Name="CopyAiPromptButton"
                                     Click="CopyAiPromptButton_Click"
-                                    ToolTip="Copy ready-to-paste AI analysis prompt to clipboard"
+                                    ToolTip="{DynamicResource PF_CopyAiPromptButton}"
                                     Style="{StaticResource PFP_NavBookmarkButtonStyle}"
                                     Padding="5,1" Margin="0,0,4,0"
                                     VerticalAlignment="Center"
@@ -937,7 +943,7 @@
                                     <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="10"
                                                Text="&#xE8C8;" Margin="0,0,3,0"/>
                                     <TextBlock x:Name="CopyAiPromptLabel"
-                                               Text="Copy AI Prompt" FontSize="9"/>
+                                               Text="{DynamicResource PF_CopyAiPromptButton}" FontSize="9"/>
                                 </StackPanel>
                             </Button>
 
@@ -968,7 +974,7 @@
                                 Visibility="{Binding FormatInfo.AiHintsData.HasAnalysisContext,
                                              Converter={StaticResource BoolToVisibilityConverter}}">
                             <StackPanel>
-                                <TextBlock Text="Analysis Context"
+                                <TextBlock Text="{DynamicResource PF_AnalysisContextSection}"
                                            FontSize="9" FontWeight="SemiBold" Margin="0,0,0,3"
                                            Foreground="{DynamicResource WF_AiHintAccentBrush}"
                                            Opacity="0.85"/>
@@ -985,7 +991,7 @@
                                 Visibility="{Binding FormatInfo.AiHintsData.HasVulnerabilities,
                                              Converter={StaticResource BoolToVisibilityConverter}}">
                             <StackPanel>
-                                <TextBlock Text="Known Vulnerabilities"
+                                <TextBlock Text="{DynamicResource PF_VulnerabilitiesSection}"
                                            FontSize="9" FontWeight="SemiBold" Margin="0,0,0,3"
                                            Foreground="{DynamicResource WF_AiHintAccentBrush}"
                                            Opacity="0.85"/>
@@ -1027,20 +1033,20 @@
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
                                     <TextBlock Grid.Column="0"
-                                               Text="Suggested Inspections"
+                                               Text="{DynamicResource PF_InspectionsSection}"
                                                FontSize="9" FontWeight="SemiBold"
                                                Foreground="{DynamicResource WF_AiHintAccentBrush}"
                                                Opacity="0.85" VerticalAlignment="Center"/>
                                     <Button Grid.Column="1"
                                             x:Name="CopyChecklistButton"
                                             Click="CopyChecklistButton_Click"
-                                            ToolTip="Copy unchecked inspections to clipboard"
+                                            ToolTip="{DynamicResource PF_CopyChecklistButton}"
                                             Style="{StaticResource PFP_NavBookmarkButtonStyle}"
                                             Padding="4,1" FontSize="9">
                                         <StackPanel Orientation="Horizontal">
                                             <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8C8;"
                                                        FontSize="9" Margin="0,0,3,0"/>
-                                            <TextBlock x:Name="CopyChecklistLabel" Text="Copy Checklist"/>
+                                            <TextBlock x:Name="CopyChecklistLabel" Text="{DynamicResource PF_CopyChecklistButton}"/>
                                         </StackPanel>
                                     </Button>
                                 </Grid>
@@ -1070,7 +1076,7 @@
                                 Visibility="{Binding FormatInfo.AiHintsData.HasForensicContext,
                                              Converter={StaticResource BoolToVisibilityConverter}}">
                             <StackPanel>
-                                <TextBlock Text="Forensic Context"
+                                <TextBlock Text="{DynamicResource PF_ForensicContextSection}"
                                            FontSize="9" FontWeight="SemiBold" Margin="0,0,0,3"
                                            Foreground="{DynamicResource WF_AiHintAccentBrush}"
                                            Opacity="0.85"/>
@@ -1098,7 +1104,7 @@
                 BorderBrush="{DynamicResource PFP_InsightSectionBorderBrush}"
                 Visibility="Collapsed">
             <StackPanel>
-                <TextBlock Text="Key Insights"
+                <TextBlock Text="{DynamicResource PF_KeyInsightsTitle}"
                            FontSize="10"
                            FontWeight="SemiBold"
                            Foreground="{DynamicResource PFP_InsightTitleBrush}"
@@ -1155,7 +1161,7 @@
                            Foreground="{DynamicResource PFP_SubTextBrush}"
                            Margin="8,0,0,0"
                            VerticalAlignment="Center"
-                           Text="0% parsed"/>
+                           Text="{DynamicResource PF_CoverageText}"/>
             </Grid>
         </Border>
 
@@ -1218,99 +1224,99 @@
             </ListBox.GroupStyle>
             <ListBox.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="Edit Value..." Click="EditValue_Click">
+                    <MenuItem Header="{DynamicResource PF_EditMenuItem}" Click="EditValue_Click">
                         <MenuItem.Icon>
                             <TextBlock Text="✏️" FontSize="14"/>
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem Header="Toggle Bookmark" Click="ToggleBookmark_Click">
+                    <MenuItem Header="{DynamicResource PF_BookmarkMenuItem}" Click="ToggleBookmark_Click">
                         <MenuItem.Icon>
                             <TextBlock Text="⭐" FontSize="14"/>
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem Header="Copy Offset" Click="CopyOffset_Click">
+                    <MenuItem Header="{DynamicResource PF_CopyOffsetMenuItem}" Click="CopyOffset_Click">
                         <MenuItem.Icon>
                             <TextBlock Text="📌" FontSize="14"/>
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem Header="Jump to Offset..." Click="JumpToOffset_Click">
+                    <MenuItem Header="{DynamicResource PF_JumpToOffsetMenuItem}" Click="JumpToOffset_Click">
                         <MenuItem.Icon>
                             <TextBlock Text="🔍" FontSize="14"/>
                         </MenuItem.Icon>
                     </MenuItem>
                     <Separator/>
-                    <MenuItem Header="Copy Value">
+                    <MenuItem Header="{DynamicResource PF_CopyValueMenuItem}">
                         <MenuItem.Icon>
                             <TextBlock Text="📋" FontSize="14"/>
                         </MenuItem.Icon>
-                        <MenuItem Header="As Displayed" Click="CopyValue_Click">
+                        <MenuItem Header="{DynamicResource PF_CopyAsDisplayed}" Click="CopyValue_Click">
                             <MenuItem.Icon>
                                 <TextBlock Text="📄" FontSize="12"/>
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="As Hex" Click="CopyValueHex_Click">
+                        <MenuItem Header="{DynamicResource PF_CopyAsHex}" Click="CopyValueHex_Click">
                             <MenuItem.Icon>
                                 <TextBlock Text="🔢" FontSize="12"/>
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="As Decimal" Click="CopyValueDecimal_Click">
+                        <MenuItem Header="{DynamicResource PF_CopyAsDecimal}" Click="CopyValueDecimal_Click">
                             <MenuItem.Icon>
                                 <TextBlock Text="🔟" FontSize="12"/>
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="As Binary" Click="CopyValueBinary_Click">
+                        <MenuItem Header="{DynamicResource PF_CopyAsBinary}" Click="CopyValueBinary_Click">
                             <MenuItem.Icon>
                                 <TextBlock Text="01" FontSize="12" FontFamily="Consolas"/>
                             </MenuItem.Icon>
                         </MenuItem>
                     </MenuItem>
-                    <MenuItem Header="Copy Details" Click="CopyDetails_Click">
+                    <MenuItem Header="{DynamicResource PF_CopyDetailsMenuItem}" Click="CopyDetails_Click">
                         <MenuItem.Icon>
                             <TextBlock Text="📄" FontSize="14"/>
                         </MenuItem.Icon>
                     </MenuItem>
                     <Separator/>
-                    <MenuItem Header="Find Similar Values..." Click="FindSimilar_Click">
+                    <MenuItem Header="{DynamicResource PF_FindSimilarMenuItem}" Click="FindSimilar_Click">
                         <MenuItem.Icon>
                             <TextBlock Text="🔍" FontSize="14"/>
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem Header="Show in Data Inspector" Click="ShowInDataInspector_Click">
+                    <MenuItem Header="{DynamicResource PF_ShowInInspectorMenuItem}" Click="ShowInDataInspector_Click">
                         <MenuItem.Icon>
                             <TextBlock Text="🔬" FontSize="14"/>
                         </MenuItem.Icon>
                     </MenuItem>
                     <Separator/>
-                    <MenuItem Header="Export All Fields...">
+                    <MenuItem Header="{DynamicResource PF_ExportAllMenu}">
                         <MenuItem.Icon>
                             <TextBlock Text="💾" FontSize="14"/>
                         </MenuItem.Icon>
-                        <MenuItem Header="As Text" Click="ExportAsText_Click">
+                        <MenuItem Header="{DynamicResource PF_ExportAsText}" Click="ExportAsText_Click">
                             <MenuItem.Icon>
                                 <TextBlock Text="📄" FontSize="12"/>
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="As JSON" Click="ExportAsJson_Click">
+                        <MenuItem Header="{DynamicResource PF_ExportAsJson}" Click="ExportAsJson_Click">
                             <MenuItem.Icon>
                                 <TextBlock Text="{}{}" FontSize="12"/>
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="As CSV" Click="ExportAsCsv_Click">
+                        <MenuItem Header="{DynamicResource PF_ExportAsCsv}" Click="ExportAsCsv_Click">
                             <MenuItem.Icon>
                                 <TextBlock Text="📊" FontSize="12"/>
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="As XML" Click="ExportAsXml_Click">
+                        <MenuItem Header="{DynamicResource PF_ExportAsXml}" Click="ExportAsXml_Click">
                             <MenuItem.Icon>
                                 <TextBlock Text="📋" FontSize="12"/>
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="As HTML" Click="ExportAsHtml_Click">
+                        <MenuItem Header="{DynamicResource PF_ExportAsHtml}" Click="ExportAsHtml_Click">
                             <MenuItem.Icon>
                                 <TextBlock Text="🌐" FontSize="12"/>
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="As Markdown" Click="ExportAsMarkdown_Click">
+                        <MenuItem Header="{DynamicResource PF_ExportAsMarkdown}" Click="ExportAsMarkdown_Click">
                             <MenuItem.Icon>
                                 <TextBlock Text="📝" FontSize="12"/>
                             </MenuItem.Icon>
@@ -1326,7 +1332,7 @@
                                 <Setter.Value>
                                     <ControlTemplate TargetType="ListBox">
                                         <Border Background="{DynamicResource PFP_PanelBackgroundBrush}">
-                                            <TextBlock Text="No fields parsed yet.&#x0a;Open a file to see its structure."
+                                            <TextBlock Text="{DynamicResource PF_NoFieldsPlaceholder}"
                                                      HorizontalAlignment="Center"
                                                      VerticalAlignment="Center"
                                                      TextAlignment="Center"
@@ -1438,7 +1444,7 @@
                                                FontWeight="SemiBold"
                                                Foreground="{DynamicResource PFP_TextBrush}">
                                         <Run Text="{Binding ChildItems.Count, Mode=OneWay, FallbackValue=0}"/>
-                                        <Run Text="entries"/>
+                                        <Run Text="{DynamicResource PF_EntriesLabel}"/>
                                     </TextBlock>
                                 </Border>
                                 <!-- Validation badge for group (shows if any child has errors) -->
@@ -1447,7 +1453,7 @@
                                            Margin="6,0,0,0"
                                            Foreground="{DynamicResource WF_AssertionWarningBrush}"
                                            VerticalAlignment="Center"
-                                           ToolTip="This group contains fields with validation errors"
+                                           ToolTip="{DynamicResource PF_GroupValidationWarning}"
                                            Visibility="{Binding IsValid, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
                             </StackPanel>
                         </Border>
@@ -1464,50 +1470,50 @@
             <!-- ── Context menu (mirrors ListBox context menu for tree items) ── -->
             <TreeView.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="Edit Value..." Click="EditValue_Click">
+                    <MenuItem Header="{DynamicResource PF_EditMenuItem}" Click="EditValue_Click">
                         <MenuItem.Icon><TextBlock Text="&#x270F;" FontSize="14"/></MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem Header="Toggle Bookmark" Click="ToggleBookmark_Click">
+                    <MenuItem Header="{DynamicResource PF_BookmarkMenuItem}" Click="ToggleBookmark_Click">
                         <MenuItem.Icon><TextBlock Text="&#x2B50;" FontSize="14"/></MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem Header="Copy Offset" Click="CopyOffset_Click">
+                    <MenuItem Header="{DynamicResource PF_CopyOffsetMenuItem}" Click="CopyOffset_Click">
                         <MenuItem.Icon><TextBlock Text="&#x1F4CC;" FontSize="14"/></MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem Header="Jump to Offset..." Click="JumpToOffset_Click">
+                    <MenuItem Header="{DynamicResource PF_JumpToOffsetMenuItem}" Click="JumpToOffset_Click">
                         <MenuItem.Icon><TextBlock Text="&#x1F50D;" FontSize="14"/></MenuItem.Icon>
                     </MenuItem>
                     <Separator/>
-                    <MenuItem Header="Copy Value">
+                    <MenuItem Header="{DynamicResource PF_CopyValueMenuItem}">
                         <MenuItem.Icon><TextBlock Text="&#x1F4CB;" FontSize="14"/></MenuItem.Icon>
-                        <MenuItem Header="As Displayed"  Click="CopyValue_Click"/>
-                        <MenuItem Header="As Hex"        Click="CopyValueHex_Click"/>
-                        <MenuItem Header="As Decimal"    Click="CopyValueDecimal_Click"/>
-                        <MenuItem Header="As Binary"     Click="CopyValueBinary_Click"/>
-                        <MenuItem Header="As C# bytes"   Click="CopyValueCSharpBytes_Click"/>
-                        <MenuItem Header="As Python bytes" Click="CopyValuePythonBytes_Click"/>
+                        <MenuItem Header="{DynamicResource PF_CopyAsDisplayed}"  Click="CopyValue_Click"/>
+                        <MenuItem Header="{DynamicResource PF_CopyAsHex}"        Click="CopyValueHex_Click"/>
+                        <MenuItem Header="{DynamicResource PF_CopyAsDecimal}"    Click="CopyValueDecimal_Click"/>
+                        <MenuItem Header="{DynamicResource PF_CopyAsBinary}"     Click="CopyValueBinary_Click"/>
+                        <MenuItem Header="{DynamicResource PF_CopyAsCSharpBytes}"   Click="CopyValueCSharpBytes_Click"/>
+                        <MenuItem Header="{DynamicResource PF_CopyAsPythonBytes}" Click="CopyValuePythonBytes_Click"/>
                     </MenuItem>
-                    <MenuItem Header="Copy Details" Click="CopyDetails_Click">
+                    <MenuItem Header="{DynamicResource PF_CopyDetailsMenuItem}" Click="CopyDetails_Click">
                         <MenuItem.Icon><TextBlock Text="&#x1F4C4;" FontSize="14"/></MenuItem.Icon>
                     </MenuItem>
                     <Separator/>
-                    <MenuItem Header="Find Similar Values..." Click="FindSimilar_Click">
+                    <MenuItem Header="{DynamicResource PF_FindSimilarMenuItem}" Click="FindSimilar_Click">
                         <MenuItem.Icon><TextBlock Text="&#x1F50D;" FontSize="14"/></MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem Header="Show in Data Inspector" Click="ShowInDataInspector_Click">
+                    <MenuItem Header="{DynamicResource PF_ShowInInspectorMenuItem}" Click="ShowInDataInspector_Click">
                         <MenuItem.Icon><TextBlock Text="&#x1F52C;" FontSize="14"/></MenuItem.Icon>
                     </MenuItem>
                     <Separator/>
-                    <MenuItem Header="Expand All Groups"   Click="ExpandAllGroups_Click"/>
-                    <MenuItem Header="Collapse All Groups" Click="CollapseAllGroups_Click"/>
+                    <MenuItem Header="{DynamicResource PF_ExpandAllMenuItem}"   Click="ExpandAllGroups_Click"/>
+                    <MenuItem Header="{DynamicResource PF_CollapseAllMenuItem}" Click="CollapseAllGroups_Click"/>
                     <Separator/>
-                    <MenuItem Header="Export All Fields...">
+                    <MenuItem Header="{DynamicResource PF_ExportAllMenu}">
                         <MenuItem.Icon><TextBlock Text="&#x1F4BE;" FontSize="14"/></MenuItem.Icon>
-                        <MenuItem Header="As Text"     Click="ExportAsText_Click"/>
-                        <MenuItem Header="As JSON"     Click="ExportAsJson_Click"/>
-                        <MenuItem Header="As CSV"      Click="ExportAsCsv_Click"/>
-                        <MenuItem Header="As XML"      Click="ExportAsXml_Click"/>
-                        <MenuItem Header="As HTML"     Click="ExportAsHtml_Click"/>
-                        <MenuItem Header="As Markdown" Click="ExportAsMarkdown_Click"/>
+                        <MenuItem Header="{DynamicResource PF_ExportAsText}"     Click="ExportAsText_Click"/>
+                        <MenuItem Header="{DynamicResource PF_ExportAsJson}"     Click="ExportAsJson_Click"/>
+                        <MenuItem Header="{DynamicResource PF_ExportAsCsv}"      Click="ExportAsCsv_Click"/>
+                        <MenuItem Header="{DynamicResource PF_ExportAsXml}"      Click="ExportAsXml_Click"/>
+                        <MenuItem Header="{DynamicResource PF_ExportAsHtml}"     Click="ExportAsHtml_Click"/>
+                        <MenuItem Header="{DynamicResource PF_ExportAsMarkdown}" Click="ExportAsMarkdown_Click"/>
                     </MenuItem>
                 </ContextMenu>
             </TreeView.ContextMenu>
@@ -1521,7 +1527,7 @@
                                 <Setter.Value>
                                     <ControlTemplate TargetType="TreeView">
                                         <Border Background="{DynamicResource PFP_PanelBackgroundBrush}">
-                                            <TextBlock Text="No fields parsed yet.&#x0a;Open a file to see its structure."
+                                            <TextBlock Text="{DynamicResource PF_NoFieldsPlaceholder}"
                                                        HorizontalAlignment="Center"
                                                        VerticalAlignment="Center"
                                                        TextAlignment="Center"
@@ -1557,7 +1563,7 @@
                     <Run Text="{Binding FilteredFields.Count, Mode=OneWay}"/>
                     <Run Text="/"/>
                     <Run Text="{Binding ParsedFields.Count, Mode=OneWay}"/>
-                    <Run Text="field(s)"/>
+                    <Run Text="{DynamicResource PF_FieldCountLabel}"/>
                     <Run Text="{Binding SearchResultText, Mode=OneWay}" Foreground="#4CAF50" FontWeight="SemiBold"/>
                 </TextBlock>
 
@@ -1568,12 +1574,12 @@
                           Margin="0,0,8,0"
                           SelectedIndex="0"
                           SelectionChanged="SortComboBox_SelectionChanged"
-                          ToolTip="Sort fields">
-                    <ComboBoxItem Content="Sort: Offset"/>
-                    <ComboBoxItem Content="Sort: Name A-Z"/>
-                    <ComboBoxItem Content="Sort: Name Z-A"/>
-                    <ComboBoxItem Content="Sort: Type"/>
-                    <ComboBoxItem Content="Sort: Size"/>
+                          ToolTip="{DynamicResource PF_SortFieldsTooltip}">
+                    <ComboBoxItem Content="{DynamicResource PF_SortByOffset}"/>
+                    <ComboBoxItem Content="{DynamicResource PF_SortByNameAsc}"/>
+                    <ComboBoxItem Content="{DynamicResource PF_SortByNameDesc}"/>
+                    <ComboBoxItem Content="{DynamicResource PF_SortByType}"/>
+                    <ComboBoxItem Content="{DynamicResource PF_SortBySize}"/>
                 </ComboBox>
 
                 <ComboBox x:Name="FormatterComboBox"
@@ -1581,11 +1587,11 @@
                           Width="120"
                           FontSize="11"
                           SelectionChanged="FormatterComboBox_SelectionChanged"
-                          ToolTip="Choose value display format">
-                    <ComboBoxItem Content="Mixed (Smart)" Tag="mixed" IsSelected="True"/>
-                    <ComboBoxItem Content="Hexadecimal" Tag="hex"/>
-                    <ComboBoxItem Content="Decimal" Tag="decimal"/>
-                    <ComboBoxItem Content="String" Tag="string"/>
+                          ToolTip="{DynamicResource PF_FormatTooltip}">
+                    <ComboBoxItem Content="{DynamicResource PF_FormatterMixed}" Tag="mixed" IsSelected="True"/>
+                    <ComboBoxItem Content="{DynamicResource PF_FormatterHex}" Tag="hex"/>
+                    <ComboBoxItem Content="{DynamicResource PF_FormatterDec}" Tag="decimal"/>
+                    <ComboBoxItem Content="{DynamicResource PF_FormatterString}" Tag="string"/>
                 </ComboBox>
             </Grid>
         </Border>

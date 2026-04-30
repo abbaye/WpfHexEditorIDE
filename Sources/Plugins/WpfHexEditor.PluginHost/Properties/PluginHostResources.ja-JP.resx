@@ -25,4 +25,491 @@
   <data name="PluginHost_UninstallPlugin" xml:space="preserve">
     <value>プラグインのアンインストール</value>
   </data>
+  <data name="PH_MonitorTitle" xml:space="preserve">
+    <value>EXTENSIONS MONITOR</value>
+  </data>
+  <data name="PH_AlertBadgeTooltip" xml:space="preserve">
+    <value>Resource alerts triggered</value>
+  </data>
+  <data name="PH_FilterPluginsPlaceholder" xml:space="preserve">
+    <value>Filter plugins…</value>
+  </data>
+  <data name="PH_ResetButton" xml:space="preserve">
+    <value>Reset chart history and alerts</value>
+  </data>
+  <data name="PH_ForceGcButton" xml:space="preserve">
+    <value>Force GC collect (adds marker on chart)</value>
+  </data>
+  <data name="PH_IntervalLabel" xml:space="preserve">
+    <value>Interval:</value>
+  </data>
+  <data name="PH_Interval1s" xml:space="preserve">
+    <value>1 s</value>
+  </data>
+  <data name="PH_Interval5s" xml:space="preserve">
+    <value>5 s</value>
+  </data>
+  <data name="PH_Interval10s" xml:space="preserve">
+    <value>10 s</value>
+  </data>
+  <data name="PH_Interval30s" xml:space="preserve">
+    <value>30 s</value>
+  </data>
+  <data name="PH_LayoutLabel" xml:space="preserve">
+    <value>Layout:</value>
+  </data>
+  <data name="PH_LayoutTop" xml:space="preserve">
+    <value>Top</value>
+  </data>
+  <data name="PH_LayoutBottom" xml:space="preserve">
+    <value>Bottom</value>
+  </data>
+  <data name="PH_LayoutLeft" xml:space="preserve">
+    <value>Left</value>
+  </data>
+  <data name="PH_LayoutRight" xml:space="preserve">
+    <value>Right</value>
+  </data>
+  <data name="PH_FilterLoaded" xml:space="preserve">
+    <value>Show only loaded plugins</value>
+  </data>
+  <data name="PH_FilterDisabled" xml:space="preserve">
+    <value>Disabled</value>
+  </data>
+  <data name="PH_FilterFaulted" xml:space="preserve">
+    <value>Faulted</value>
+  </data>
+  <data name="PH_FilterStandby" xml:space="preserve">
+    <value>Standby</value>
+  </data>
+  <data name="PH_FilterWarnings" xml:space="preserve">
+    <value>Warnings</value>
+  </data>
+  <data name="PH_LoadedStatus" xml:space="preserve">
+    <value>Loaded</value>
+  </data>
+  <data name="PH_DisabledStatus" xml:space="preserve">
+    <value>Disabled</value>
+  </data>
+  <data name="PH_FaultedStatus" xml:space="preserve">
+    <value>Faulted</value>
+  </data>
+  <data name="PH_StandbyStatus" xml:space="preserve">
+    <value>Standby</value>
+  </data>
+  <data name="PH_CpuMetric" xml:space="preserve">
+    <value>CPU</value>
+  </data>
+  <data name="PH_MemoryMetric" xml:space="preserve">
+    <value>Memory</value>
+  </data>
+  <data name="PH_RunningMetric" xml:space="preserve">
+    <value>Running</value>
+  </data>
+  <data name="PH_FaultsMetric" xml:space="preserve">
+    <value>Faults</value>
+  </data>
+  <data name="PH_CpuChartTitle" xml:space="preserve">
+    <value>CPU %</value>
+  </data>
+  <data name="PH_MemoryChartTitle" xml:space="preserve">
+    <value>Memory MB</value>
+  </data>
+  <data name="PH_ReloadButton" xml:space="preserve">
+    <value>Reload</value>
+  </data>
+  <data name="PH_InstallButton" xml:space="preserve">
+    <value>Install</value>
+  </data>
+  <data name="PH_UninstallButton" xml:space="preserve">
+    <value>Uninstall</value>
+  </data>
+  <data name="PH_ExportCrashButton" xml:space="preserve">
+    <value>Export crash report</value>
+  </data>
+  <data name="PH_ClearLogButton" xml:space="preserve">
+    <value>Clear log</value>
+  </data>
+  <data name="PH_EventsTabLabel" xml:space="preserve">
+    <value>EVENTS</value>
+  </data>
+  <data name="PH_EventsTab" xml:space="preserve">
+    <value>📋 Events</value>
+  </data>
+  <data name="PH_OverviewTab" xml:space="preserve">
+    <value>📊 Overview</value>
+  </data>
+  <data name="PH_ChartsTab" xml:space="preserve">
+    <value>📈 Charts</value>
+  </data>
+  <data name="PH_PermissionsTab" xml:space="preserve">
+    <value>🔒 Permissions</value>
+  </data>
+  <data name="PH_SettingsTab" xml:space="preserve">
+    <value>⚙️ Settings</value>
+  </data>
+  <data name="PH_OverviewSection" xml:space="preserve">
+    <value>Overview</value>
+  </data>
+  <data name="PH_CpuRamSection" xml:space="preserve">
+    <value>CPU / RAM</value>
+  </data>
+  <data name="PH_CpuEstLabel" xml:space="preserve">
+    <value>CPU (est.)</value>
+  </data>
+  <data name="PH_PeakLabel" xml:space="preserve">
+    <value>peak: </value>
+  </data>
+  <data name="PH_MemoryLabel" xml:space="preserve">
+    <value>Memory</value>
+  </data>
+  <data name="PH_UptimeLabel" xml:space="preserve">
+    <value>Uptime</value>
+  </data>
+  <data name="PH_InitLabel" xml:space="preserve">
+    <value>Init</value>
+  </data>
+  <data name="PH_AvgExecLabel" xml:space="preserve">
+    <value>Avg exec</value>
+  </data>
+  <data name="PH_PeakCpuLabel" xml:space="preserve">
+    <value>Peak CPU</value>
+  </data>
+  <data name="PH_AvgCpuLabel" xml:space="preserve">
+    <value>Avg CPU</value>
+  </data>
+  <data name="PH_PermissionsSection" xml:space="preserve">
+    <value>Permissions</value>
+  </data>
+  <data name="PH_PermissionsNote" xml:space="preserve">
+    <value>Permission changes take effect after plugin reload.</value>
+  </data>
+  <data name="PH_PermissionColumn" xml:space="preserve">
+    <value>Permission</value>
+  </data>
+  <data name="PH_DeclaredColumn" xml:space="preserve">
+    <value>Declared</value>
+  </data>
+  <data name="PH_RiskColumn" xml:space="preserve">
+    <value>Risk</value>
+  </data>
+  <data name="PH_DescriptionColumn" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="PH_ExportMetricsCsv" xml:space="preserve">
+    <value>Export metrics as CSV</value>
+  </data>
+  <data name="PH_ExportMetricsJson" xml:space="preserve">
+    <value>Export metrics as JSON</value>
+  </data>
+  <data name="PH_ExportEventLog" xml:space="preserve">
+    <value>Export event log</value>
+  </data>
+  <data name="PH_CopyTable" xml:space="preserve">
+    <value>Copy table</value>
+  </data>
+  <data name="PH_ContextReloadMenu" xml:space="preserve">
+    <value>Reload</value>
+  </data>
+  <data name="PH_ContextToggleMenu" xml:space="preserve">
+    <value>Enable / Disable</value>
+  </data>
+  <data name="PH_ContextInstallMenu" xml:space="preserve">
+    <value>Install…</value>
+  </data>
+  <data name="PH_ContextUninstallMenu" xml:space="preserve">
+    <value>Uninstall</value>
+  </data>
+  <data name="PH_ContextExportMenu" xml:space="preserve">
+    <value>Export diagnostics</value>
+  </data>
+  <data name="PH_PluginsTitle" xml:space="preserve">
+    <value>PLUGINS</value>
+  </data>
+  <data name="PH_RefreshButton" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
+  <data name="PH_ExportDiagnosticsButton" xml:space="preserve">
+    <value>Export diagnostics</value>
+  </data>
+  <data name="PH_FilterPlaceholder" xml:space="preserve">
+    <value>Filter by name, ID or author…</value>
+  </data>
+  <data name="PH_ClearFilterButton" xml:space="preserve">
+    <value>Clear Filter</value>
+  </data>
+  <data name="PH_SortTooltip" xml:space="preserve">
+    <value>Sort by</value>
+  </data>
+  <data name="PH_NoPluginsTitle" xml:space="preserve">
+    <value>No plugins loaded</value>
+  </data>
+  <data name="PH_NoPluginsMessage" xml:space="preserve">
+    <value>Drop a .whxplugin file here or use the Install button.</value>
+  </data>
+  <data name="PH_ActionsSectionHeader" xml:space="preserve">
+    <value>PLUGIN ACTIONS</value>
+  </data>
+  <data name="PH_EnableContextMenu" xml:space="preserve">
+    <value>Enable</value>
+  </data>
+  <data name="PH_DisableContextMenu" xml:space="preserve">
+    <value>Disable</value>
+  </data>
+  <data name="PH_WatchModeContextMenu" xml:space="preserve">
+    <value>Watch Mode</value>
+  </data>
+  <data name="PH_DiagnosticSectionHeader" xml:space="preserve">
+    <value>DIAGNOSTIC</value>
+  </data>
+  <data name="PH_OpenMonitorContextMenu" xml:space="preserve">
+    <value>Open Monitor</value>
+  </data>
+  <data name="PH_ExportDiagnosticsContextMenu" xml:space="preserve">
+    <value>Export diagnostics</value>
+  </data>
+  <data name="PH_ExportCrashContextMenu" xml:space="preserve">
+    <value>Export crash report</value>
+  </data>
+  <data name="PH_CopyIdContextMenu" xml:space="preserve">
+    <value>Copy plugin ID</value>
+  </data>
+  <data name="PH_CopyFaultContextMenu" xml:space="preserve">
+    <value>Copy fault details</value>
+  </data>
+  <data name="PH_UninstallContextMenu" xml:space="preserve">
+    <value>Uninstall…</value>
+  </data>
+  <data name="PH_NoSelectionPlaceholder" xml:space="preserve">
+    <value>Select a plugin to view details</value>
+  </data>
+  <data name="PH_OfficialBadge" xml:space="preserve">
+    <value>OFFICIAL</value>
+  </data>
+  <data name="PH_InfoSection" xml:space="preserve">
+    <value>Info</value>
+  </data>
+  <data name="PH_MetricsSection" xml:space="preserve">
+    <value>METRICS</value>
+  </data>
+  <data name="PH_ProcessCpu" xml:space="preserve">
+    <value>Proc. CPU</value>
+  </data>
+  <data name="PH_ProcessHeap" xml:space="preserve">
+    <value>Proc. Heap</value>
+  </data>
+  <data name="PH_AvgCallLabel" xml:space="preserve">
+    <value>Avg Call</value>
+  </data>
+  <data name="PH_LoadedSinceLabel" xml:space="preserve">
+    <value>Loaded since: </value>
+  </data>
+  <data name="PH_CpuHistoryTitle" xml:space="preserve">
+    <value>CPU % — History</value>
+  </data>
+  <data name="PH_MemoryHistoryTitle" xml:space="preserve">
+    <value>Memory MB — History</value>
+  </data>
+  <data name="PH_PermissionsTitle" xml:space="preserve">
+    <value>Permissions</value>
+  </data>
+  <data name="PH_LazyLoadingSection" xml:space="preserve">
+    <value>Lazy Loading</value>
+  </data>
+  <data name="PH_DormantNote" xml:space="preserve">
+    <value>This plugin is dormant — it will load on first use.</value>
+  </data>
+  <data name="PH_LoadNowButton" xml:space="preserve">
+    <value>Load Now</value>
+  </data>
+  <data name="PH_AlcDiagnosticsSection" xml:space="preserve">
+    <value>ALC Diagnostics</value>
+  </data>
+  <data name="PH_AlcAssembliesLabel" xml:space="preserve">
+    <value>Assemblies</value>
+  </data>
+  <data name="PH_AlcConflictsLabel" xml:space="preserve">
+    <value>Conflicts</value>
+  </data>
+  <data name="PH_CapabilitiesSection" xml:space="preserve">
+    <value>Capabilities</value>
+  </data>
+  <data name="PH_ExtensionPointsSection" xml:space="preserve">
+    <value>Extension Points</value>
+  </data>
+  <data name="PH_DependencyErrorsSection" xml:space="preserve">
+    <value>Dependency Errors</value>
+  </data>
+  <data name="PH_WatchModeSection" xml:space="preserve">
+    <value>Watch Mode</value>
+  </data>
+  <data name="PH_WatchModeNote" xml:space="preserve">
+    <value>Changes to files in the watch directory will trigger an automatic reload.</value>
+  </data>
+  <data name="PH_WatchingBadge" xml:space="preserve">
+    <value>● WATCHING</value>
+  </data>
+  <data name="PH_DirectoryLabel" xml:space="preserve">
+    <value>Directory: </value>
+  </data>
+  <data name="PH_SettingsSection" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="PH_StandbyNote" xml:space="preserve">
+    <value>This plugin is in standby mode.</value>
+  </data>
+  <data name="PH_MigrateToSandboxButton" xml:space="preserve">
+    <value>Move to Sandbox</value>
+  </data>
+  <data name="PH_ReloadingLabel" xml:space="preserve">
+    <value>Reloading…</value>
+  </data>
+  <data name="PH_ResolvedModeTooltip" xml:space="preserve">
+    <value>Running in resolved mode</value>
+  </data>
+  <data name="PH_SandboxButton" xml:space="preserve">
+    <value>Sandbox</value>
+  </data>
+  <data name="PH_DropHintText" xml:space="preserve">
+    <value>Drop .whxplugin to install</value>
+  </data>
+  <data name="PH_InstallingMessage" xml:space="preserve">
+    <value>Installing…</value>
+  </data>
+  <data name="PH_ShowSparklines" xml:space="preserve">
+    <value>Show Sparklines</value>
+  </data>
+  <data name="PH_LayoutMenu" xml:space="preserve">
+    <value>Layout</value>
+  </data>
+  <data name="PH_IntervalMenu" xml:space="preserve">
+    <value>Interval</value>
+  </data>
+  <data name="PH_PauseMonitoring" xml:space="preserve">
+    <value>Pause Monitoring</value>
+  </data>
+  <data name="PH_ResetChartHistory" xml:space="preserve">
+    <value>Reset Chart History</value>
+  </data>
+  <data name="PH_ForceGcMenu" xml:space="preserve">
+    <value>Force GC Collect</value>
+  </data>
+  <data name="PH_ChartsPosition" xml:space="preserve">
+    <value>Charts position relative to the plugin table</value>
+  </data>
+  <data name="PH_ExportMenuTooltip" xml:space="preserve">
+    <value>Export…</value>
+  </data>
+  <data name="PH_PluginColumn" xml:space="preserve">
+    <value>Plugin</value>
+  </data>
+  <data name="PH_StateColumn" xml:space="preserve">
+    <value>State</value>
+  </data>
+  <data name="PH_CpuPctColumn" xml:space="preserve">
+    <value>CPU%</value>
+  </data>
+  <data name="PH_PeakPctColumn" xml:space="preserve">
+    <value>Peak%</value>
+  </data>
+  <data name="PH_MemMbColumn" xml:space="preserve">
+    <value>Mem MB</value>
+  </data>
+  <data name="PH_MemShortLabel" xml:space="preserve">
+    <value>Mem</value>
+  </data>
+  <data name="PH_UptimeColumn" xml:space="preserve">
+    <value>Uptime</value>
+  </data>
+  <data name="PH_AvgMsColumn" xml:space="preserve">
+    <value>Avg ms</value>
+  </data>
+  <data name="PH_InitMsColumn" xml:space="preserve">
+    <value>Init ms</value>
+  </data>
+  <data name="PH_ReloadColumn" xml:space="preserve">
+    <value>Reload</value>
+  </data>
+  <data name="PH_HotReloadTooltip" xml:space="preserve">
+    <value>Fast = IWpfHexEditorPluginV2.SupportsHotReload; Full = full unload+GC+reload cycle</value>
+  </data>
+  <data name="PH_WatchColumn" xml:space="preserve">
+    <value>Watch</value>
+  </data>
+  <data name="PH_WatchColumnTooltip" xml:space="preserve">
+    <value>👁 = Plugin Dev Loader is watching this plugin's output directory for changes</value>
+  </data>
+  <data name="PH_ClearButton" xml:space="preserve">
+    <value>Clear</value>
+  </data>
+  <data name="PH_ClearEventLogTooltip" xml:space="preserve">
+    <value>Clear event log</value>
+  </data>
+  <data name="PH_CpuEstimatedLabel" xml:space="preserve">
+    <value>CPU (est.)  </value>
+  </data>
+  <data name="PH_PeakShortLabel" xml:space="preserve">
+    <value>  peak: </value>
+  </data>
+  <data name="PH_MemoryShortLabel" xml:space="preserve">
+    <value>Memory  </value>
+  </data>
+  <data name="PH_PermissionsTabLabel" xml:space="preserve">
+    <value>🔒 Permissions</value>
+  </data>
+  <data name="PH_PermissionsLabel" xml:space="preserve">
+    <value>Permissions</value>
+  </data>
+  <data name="PH_MoreOptionsTooltip" xml:space="preserve">
+    <value>More options</value>
+  </data>
+  <data name="PH_NoPluginsBody" xml:space="preserve">
+    <value>Build the solution to copy plugins
+or use Install to add a .whxplugin</value>
+  </data>
+  <data name="PH_SeparatorLabel" xml:space="preserve">
+    <value> · </value>
+  </data>
+  <data name="PH_StandbyBadge" xml:space="preserve">
+    <value>STANDBY</value>
+  </data>
+  <data name="PH_SlowBadge" xml:space="preserve">
+    <value>SLOW</value>
+  </data>
+  <data name="PH_TrustedPublisherTooltip" xml:space="preserve">
+    <value>Trusted Publisher</value>
+  </data>
+  <data name="PH_ReloadingTooltip" xml:space="preserve">
+    <value>Reloading plugin with new isolation mode…</value>
+  </data>
+  <data name="PH_AutoModeTooltip" xml:space="preserve">
+    <value>Effective mode chosen by Auto decision engine</value>
+  </data>
+  <data name="PH_ActivateNowTooltip" xml:space="preserve">
+    <value>Activate this plugin immediately (overrides lazy-load trigger)</value>
+  </data>
+  <data name="PH_DeactivateTooltip" xml:space="preserve">
+    <value>Unload plugin and return to Standby — re-activates on next trigger</value>
+  </data>
+  <data name="PH_SandboxTooltip" xml:space="preserve">
+    <value>Reload this plugin in an isolated out-of-process Sandbox</value>
+  </data>
+  <data name="PH_DismissTooltip" xml:space="preserve">
+    <value>Dismiss suggestion</value>
+  </data>
+  <data name="PH_ProcessCpuTooltip" xml:space="preserve">
+    <value>Process-level CPU — per-plugin isolation is not available in InProcess mode</value>
+  </data>
+  <data name="PH_ProcessHeapTooltip" xml:space="preserve">
+    <value>Total managed heap (process-wide, not per-plugin)</value>
+  </data>
+  <data name="PH_PermissionsDesc" xml:space="preserve">
+    <value>Toggle individual permissions for this plugin. Changes take effect immediately.</value>
+  </data>
+  <data name="PH_DormantDesc" xml:space="preserve">
+    <value>This plugin is dormant — it activates when a trigger is matched.</value>
+  </data>
+  <data name="PH_WatchModeDesc" xml:space="preserve">
+    <value>Hot-reload this plugin automatically when its DLL is rebuilt. Select the plugin's build output directory.</value>
+  </data>
 </root>

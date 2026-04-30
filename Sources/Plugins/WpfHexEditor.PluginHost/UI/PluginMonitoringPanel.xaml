@@ -26,9 +26,14 @@
              Background="{DynamicResource DockBackgroundBrush}"
              AllowDrop="True"
              Drop="OnPanelDrop"
-             DragOver="OnPanelDragOver">
+             DragOver="OnPanelDragOver"
+             xmlns:phSvc="clr-namespace:WpfHexEditor.PluginHost.Services;assembly=WpfHexEditor.PluginHost">
 
     <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <phSvc:PluginHostLocalizedDictionary/>
+            </ResourceDictionary.MergedDictionaries>
         <local:ChartPointsConverter x:Key="ChartPointsConverter"/>
         <BooleanToVisibilityConverter x:Key="BoolToVis"/>
         <!-- Used in DataGrid GroupStyle to resolve CollectionViewGroup.Name → PluginGroupSummaryViewModel -->
@@ -36,11 +41,11 @@
 
         <!-- Export dropdown menu (opened programmatically on Export button click) -->
         <ContextMenu x:Key="ExportMenu" DataContext="{Binding}">
-            <MenuItem Header="Export Metrics CSV"  Command="{Binding ExportCsvCommand}"/>
-            <MenuItem Header="Export Metrics JSON" Command="{Binding ExportJsonCommand}"/>
+            <MenuItem Header="{DynamicResource PH_ExportMetricsCsv}"  Command="{Binding ExportCsvCommand}"/>
+            <MenuItem Header="{DynamicResource PH_ExportMetricsJson}" Command="{Binding ExportJsonCommand}"/>
             <Separator/>
-            <MenuItem Header="Export Event Log…"   Command="{Binding ExportEventLogCommand}"/>
-            <MenuItem Header="Copy Table"          Command="{Binding CopyTableCommand}"/>
+            <MenuItem Header="{DynamicResource PH_ExportEventLog}"   Command="{Binding ExportEventLogCommand}"/>
+            <MenuItem Header="{DynamicResource PH_CopyTable}"          Command="{Binding CopyTableCommand}"/>
         </ContextMenu>
 
         <!-- DataGrid column header -->
@@ -89,6 +94,7 @@
             <Setter Property="CornerRadius" Value="3"/>
             <Setter Property="Padding"      Value="4,1"/>
         </Style>
+            </ResourceDictionary>
     </UserControl.Resources>
 
     <Grid x:Name="RootGrid">
@@ -110,7 +116,7 @@
                 <!-- ── Fixed LEFT: title + health badge + alert badge (always visible) ── -->
                 <StackPanel x:Name="ToolbarLeftPanel" DockPanel.Dock="Left"
                             Orientation="Horizontal" VerticalAlignment="Center">
-                    <TextBlock Text="EXTENSIONS MONITOR"
+                    <TextBlock Text="{DynamicResource PH_MonitorTitle}"
                                FontSize="10" FontWeight="SemiBold" VerticalAlignment="Center"
                                Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                     <Border CornerRadius="3" Padding="5,1" Margin="8,0,4,0"
@@ -121,7 +127,7 @@
                     <Border CornerRadius="3" Padding="5,1" Margin="2,0,4,0"
                             VerticalAlignment="Center" Background="#F97316"
                             Visibility="{Binding HasAlerts, Converter={StaticResource BoolToVis}}"
-                            ToolTip="Resource alerts triggered">
+                            ToolTip="{DynamicResource PH_AlertBadgeTooltip}">
                         <TextBlock Text="{Binding AlertBadgeLabel}" FontSize="10"
                                    Foreground="White" VerticalAlignment="Center"/>
                     </Border>
@@ -142,63 +148,63 @@
                 <!-- ── Overflow button (right, just inside search) ── -->
                 <Button x:Name="ToolbarOverflowButton" DockPanel.Dock="Right"
                         Style="{DynamicResource PanelIconButtonStyle}"
-                        ToolTip="More options" Visibility="Collapsed"
+                        ToolTip="{DynamicResource PH_MoreOptionsTooltip}" Visibility="Collapsed"
                         Click="OnOverflowButtonClick">
                     <TextBlock Text="&#xE712;" FontFamily="Segoe MDL2 Assets" FontSize="12"
                                VerticalAlignment="Center" HorizontalAlignment="Center"/>
                     <Button.ContextMenu>
                         <ContextMenu x:Name="OverflowContextMenu" Opened="OnOverflowMenuOpened">
                             <!-- TbgPlugin items -->
-                            <MenuItem Header="Reload Selected Plugin"
+                            <MenuItem Header="{DynamicResource PH_ContextReloadMenu}"
                                       Click="OnOvfReloadPlugin" Tag="TbgPlugin"
                                       IsEnabled="{Binding HasSelectedPlugin}"/>
-                            <MenuItem x:Name="OvfTogglePlugin" Header="Enable Plugin"
+                            <MenuItem x:Name="OvfTogglePlugin" Header="{DynamicResource PH_EnableContextMenu}"
                                       Click="OnOvfTogglePlugin" Tag="TbgPlugin"
                                       IsEnabled="{Binding HasSelectedPlugin}"/>
-                            <MenuItem Header="Install Plugin…"
+                            <MenuItem Header="{DynamicResource PH_InstallButton}"
                                       Click="OnOvfInstallPlugin" Tag="TbgPlugin"/>
-                            <MenuItem Header="Uninstall Plugin"
+                            <MenuItem Header="{DynamicResource PH_UninstallButton}"
                                       Click="OnOvfUninstallPlugin" Tag="TbgPlugin"
                                       IsEnabled="{Binding HasSelectedPlugin}"/>
-                            <MenuItem Header="Export Crash Report"
+                            <MenuItem Header="{DynamicResource PH_ExportCrashButton}"
                                       Click="OnOvfCrashReport" Tag="TbgPlugin"
                                       IsEnabled="{Binding HasFaultedPlugin}"/>
                             <Separator Tag="TbgPlugin"/>
                             <!-- TbgLog items -->
-                            <MenuItem x:Name="OvfShowEventLog" Header="Show Event Log"
+                            <MenuItem x:Name="OvfShowEventLog" Header="{DynamicResource PH_EventsTabLabel}"
                                       IsCheckable="True" Click="OnOvfToggleEventLog" Tag="TbgLog"/>
-                            <MenuItem Header="Clear Event Log"
+                            <MenuItem Header="{DynamicResource PH_ClearLogButton}"
                                       Click="OnOvfClearLog" Tag="TbgLog"/>
                             <Separator Tag="TbgLog"/>
                             <!-- TbgCharts items -->
-                            <MenuItem x:Name="OvfShowSparklines" Header="Show Sparklines"
+                            <MenuItem x:Name="OvfShowSparklines" Header="{DynamicResource PH_ShowSparklines}"
                                       IsCheckable="True" Click="OnOvfToggleSparklines" Tag="TbgCharts"/>
-                            <MenuItem Header="Export Metrics CSV"  Command="{Binding ExportCsvCommand}"  Tag="TbgCharts"/>
-                            <MenuItem Header="Export Metrics JSON" Command="{Binding ExportJsonCommand}" Tag="TbgCharts"/>
-                            <MenuItem Header="Export Event Log…"   Command="{Binding ExportEventLogCommand}" Tag="TbgCharts"/>
+                            <MenuItem Header="{DynamicResource PH_ExportMetricsCsv}"  Command="{Binding ExportCsvCommand}"  Tag="TbgCharts"/>
+                            <MenuItem Header="{DynamicResource PH_ExportMetricsJson}" Command="{Binding ExportJsonCommand}" Tag="TbgCharts"/>
+                            <MenuItem Header="{DynamicResource PH_ExportEventLog}"   Command="{Binding ExportEventLogCommand}" Tag="TbgCharts"/>
                             <Separator Tag="TbgCharts"/>
                             <!-- TbgLayout items -->
-                            <MenuItem Header="Layout" Tag="TbgLayout">
-                                <MenuItem x:Name="OvfLayoutTop"    Header="Top"    IsCheckable="True" Tag="Top"    Click="OnOverflowLayoutClick"/>
-                                <MenuItem x:Name="OvfLayoutBottom" Header="Bottom" IsCheckable="True" Tag="Bottom" Click="OnOverflowLayoutClick"/>
-                                <MenuItem x:Name="OvfLayoutLeft"   Header="Left"   IsCheckable="True" Tag="Left"   Click="OnOverflowLayoutClick"/>
-                                <MenuItem x:Name="OvfLayoutRight"  Header="Right"  IsCheckable="True" Tag="Right"  Click="OnOverflowLayoutClick"/>
+                            <MenuItem Header="{DynamicResource PH_LayoutMenu}" Tag="TbgLayout">
+                                <MenuItem x:Name="OvfLayoutTop"    Header="{DynamicResource PH_LayoutTop}"    IsCheckable="True" Tag="Top"    Click="OnOverflowLayoutClick"/>
+                                <MenuItem x:Name="OvfLayoutBottom" Header="{DynamicResource PH_LayoutBottom}" IsCheckable="True" Tag="Bottom" Click="OnOverflowLayoutClick"/>
+                                <MenuItem x:Name="OvfLayoutLeft"   Header="{DynamicResource PH_LayoutLeft}"   IsCheckable="True" Tag="Left"   Click="OnOverflowLayoutClick"/>
+                                <MenuItem x:Name="OvfLayoutRight"  Header="{DynamicResource PH_LayoutRight}"  IsCheckable="True" Tag="Right"  Click="OnOverflowLayoutClick"/>
                             </MenuItem>
                             <Separator Tag="TbgLayout"/>
                             <!-- TbgInterval items -->
-                            <MenuItem Header="Interval" Tag="TbgInterval">
-                                <MenuItem Header="1 s"  Click="OnOvfInterval" Tag="1"/>
-                                <MenuItem Header="5 s"  Click="OnOvfInterval" Tag="5"/>
-                                <MenuItem Header="10 s" Click="OnOvfInterval" Tag="10"/>
-                                <MenuItem Header="30 s" Click="OnOvfInterval" Tag="30"/>
+                            <MenuItem Header="{DynamicResource PH_IntervalMenu}" Tag="TbgInterval">
+                                <MenuItem Header="{DynamicResource PH_Interval1s}"  Click="OnOvfInterval" Tag="1"/>
+                                <MenuItem Header="{DynamicResource PH_Interval5s}"  Click="OnOvfInterval" Tag="5"/>
+                                <MenuItem Header="{DynamicResource PH_Interval10s}" Click="OnOvfInterval" Tag="10"/>
+                                <MenuItem Header="{DynamicResource PH_Interval30s}" Click="OnOvfInterval" Tag="30"/>
                             </MenuItem>
                             <Separator Tag="TbgInterval"/>
                             <!-- TbgMonitor items -->
-                            <MenuItem x:Name="OvfStartStop" Header="Pause Monitoring"
+                            <MenuItem x:Name="OvfStartStop" Header="{DynamicResource PH_PauseMonitoring}"
                                       Click="OnOvfStartStop" Tag="TbgMonitor"/>
-                            <MenuItem Header="Reset Chart History"
+                            <MenuItem Header="{DynamicResource PH_ResetChartHistory}"
                                       Click="OnOvfReset" Tag="TbgMonitor"/>
-                            <MenuItem Header="Force GC Collect"
+                            <MenuItem Header="{DynamicResource PH_ForceGcMenu}"
                                       Command="{Binding ForceGcCommand}" Tag="TbgMonitor"/>
                         </ContextMenu>
                     </Button.ContextMenu>
@@ -212,12 +218,12 @@
                                    VerticalAlignment="Center" HorizontalAlignment="Center"/>
                     </Button>
                     <Button Style="{DynamicResource PanelIconButtonStyle}"
-                            Command="{Binding ResetCommand}" ToolTip="Reset chart history and alerts">
+                            Command="{Binding ResetCommand}" ToolTip="{DynamicResource PH_ResetButton}">
                         <TextBlock Text="&#xE777;" FontFamily="Segoe MDL2 Assets" FontSize="12"
                                    VerticalAlignment="Center" HorizontalAlignment="Center"/>
                     </Button>
                     <Button Style="{DynamicResource PanelIconButtonStyle}"
-                            Command="{Binding ForceGcCommand}" ToolTip="Force GC collect (adds marker on chart)">
+                            Command="{Binding ForceGcCommand}" ToolTip="{DynamicResource PH_ForceGcButton}">
                         <TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="12"
                                    VerticalAlignment="Center" HorizontalAlignment="Center"/>
                     </Button>
@@ -226,7 +232,7 @@
 
                 <!-- ── Group: TbgInterval — sampling interval combo ── -->
                 <StackPanel x:Name="TbgInterval" DockPanel.Dock="Left" Orientation="Horizontal" VerticalAlignment="Center">
-                    <TextBlock Text="Interval:" FontSize="10" VerticalAlignment="Center"
+                    <TextBlock Text="{DynamicResource PH_IntervalLabel}" FontSize="10" VerticalAlignment="Center"
                                Foreground="{DynamicResource Panel_ToolbarForegroundBrush}" Margin="0,0,4,0"/>
                     <ComboBox x:Name="IntervalComboBox" FontSize="11" Width="50" Height="20"
                               VerticalContentAlignment="Center"
@@ -234,29 +240,29 @@
                               Foreground="{DynamicResource DockMenuForegroundBrush}"
                               BorderBrush="{DynamicResource DockBorderBrush}"
                               SelectionChanged="OnIntervalSelectionChanged">
-                        <ComboBoxItem Content="1 s"  Tag="1"/>
-                        <ComboBoxItem Content="5 s"  Tag="5" IsSelected="True"/>
-                        <ComboBoxItem Content="10 s" Tag="10"/>
-                        <ComboBoxItem Content="30 s" Tag="30"/>
+                        <ComboBoxItem Content="{DynamicResource PH_Interval1s}"  Tag="1"/>
+                        <ComboBoxItem Content="{DynamicResource PH_Interval5s}"  Tag="5" IsSelected="True"/>
+                        <ComboBoxItem Content="{DynamicResource PH_Interval10s}" Tag="10"/>
+                        <ComboBoxItem Content="{DynamicResource PH_Interval30s}" Tag="30"/>
                     </ComboBox>
                     <Rectangle Width="1" Height="14" Margin="4,0" Fill="{DynamicResource Panel_ToolbarBorderBrush}"/>
                 </StackPanel>
 
                 <!-- ── Group: TbgLayout — charts layout position combo ── -->
                 <StackPanel x:Name="TbgLayout" DockPanel.Dock="Left" Orientation="Horizontal" VerticalAlignment="Center">
-                    <TextBlock Text="Layout:" FontSize="10" VerticalAlignment="Center"
+                    <TextBlock Text="{DynamicResource PH_LayoutLabel}" FontSize="10" VerticalAlignment="Center"
                                Foreground="{DynamicResource Panel_ToolbarForegroundBrush}" Margin="0,0,4,0"/>
                     <ComboBox x:Name="LayoutPositionCombo" FontSize="11" Width="65" Height="20"
                               VerticalContentAlignment="Center"
                               Background="{DynamicResource Panel_ToolbarBrush}"
                               Foreground="{DynamicResource DockMenuForegroundBrush}"
                               BorderBrush="{DynamicResource DockBorderBrush}"
-                              ToolTip="Charts position relative to the plugin table"
+                              ToolTip="{DynamicResource PH_ChartsPosition}"
                               SelectionChanged="OnLayoutPositionChanged">
-                        <ComboBoxItem Content="Top"    Tag="Top"/>
-                        <ComboBoxItem Content="Bottom" Tag="Bottom"/>
-                        <ComboBoxItem Content="Left"   Tag="Left"/>
-                        <ComboBoxItem Content="Right"  Tag="Right"/>
+                        <ComboBoxItem Content="{DynamicResource PH_LayoutTop}"    Tag="Top"/>
+                        <ComboBoxItem Content="{DynamicResource PH_LayoutBottom}" Tag="Bottom"/>
+                        <ComboBoxItem Content="{DynamicResource PH_LayoutLeft}"   Tag="Left"/>
+                        <ComboBoxItem Content="{DynamicResource PH_LayoutRight}"  Tag="Right"/>
                     </ComboBox>
                     <Rectangle Width="1" Height="14" Margin="4,0" Fill="{DynamicResource Panel_ToolbarBorderBrush}"/>
                 </StackPanel>
@@ -274,7 +280,7 @@
                                    VerticalAlignment="Center" HorizontalAlignment="Center"/>
                     </Button>
                     <Button x:Name="ExportButton" Style="{DynamicResource PanelIconButtonStyle}"
-                            ToolTip="Export…" Click="OnExportButtonClick">
+                            ToolTip="{DynamicResource PH_ExportMenuTooltip}" Click="OnExportButtonClick">
                         <TextBlock Text="&#xE74E;" FontFamily="Segoe MDL2 Assets" FontSize="12"
                                    VerticalAlignment="Center" HorizontalAlignment="Center"/>
                     </Button>
@@ -285,7 +291,7 @@
                 <StackPanel x:Name="TbgPlugin" DockPanel.Dock="Left" Orientation="Horizontal" VerticalAlignment="Center">
                     <Button Style="{DynamicResource PanelIconButtonStyle}"
                             Command="{Binding ReloadPluginCommand}"
-                            ToolTip="Reload selected plugin" IsEnabled="{Binding HasSelectedPlugin}">
+                            ToolTip="{DynamicResource PH_ReloadButton}" IsEnabled="{Binding HasSelectedPlugin}">
                         <TextBlock Text="&#xE72C;" FontFamily="Segoe MDL2 Assets" FontSize="12"
                                    VerticalAlignment="Center" HorizontalAlignment="Center"/>
                     </Button>
@@ -297,19 +303,19 @@
                     </Button>
                     <Button Style="{DynamicResource PanelIconButtonStyle}"
                             Command="{Binding InstallPluginCommand}"
-                            ToolTip="Install plugin from .whxplugin package">
+                            ToolTip="{DynamicResource PH_InstallButton}">
                         <TextBlock Text="&#xE710;" FontFamily="Segoe MDL2 Assets" FontSize="12"
                                    VerticalAlignment="Center" HorizontalAlignment="Center"/>
                     </Button>
                     <Button Style="{DynamicResource PanelIconButtonStyle}"
                             Command="{Binding UninstallPluginCommand}"
-                            ToolTip="Uninstall selected plugin" IsEnabled="{Binding HasSelectedPlugin}">
+                            ToolTip="{DynamicResource PH_UninstallButton}" IsEnabled="{Binding HasSelectedPlugin}">
                         <TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="12" Foreground="#EF4444"
                                    VerticalAlignment="Center" HorizontalAlignment="Center"/>
                     </Button>
                     <Button Style="{DynamicResource PanelIconButtonStyle}"
                             Command="{Binding ExportCrashReportCommand}"
-                            ToolTip="Export crash report for selected plugin"
+                            ToolTip="{DynamicResource PH_ExportCrashButton}"
                             Visibility="{Binding HasFaultedPlugin, Converter={StaticResource BoolToVis}}">
                         <TextBlock Text="&#xEA39;" FontFamily="Segoe MDL2 Assets" FontSize="12" Foreground="#EF4444"
                                    VerticalAlignment="Center" HorizontalAlignment="Center"/>
@@ -320,7 +326,7 @@
                 <!-- ── Group: TbgLog — event log controls ── -->
                 <StackPanel x:Name="TbgLog" DockPanel.Dock="Left" Orientation="Horizontal" VerticalAlignment="Center">
                     <Button Style="{DynamicResource PanelIconButtonStyle}"
-                            Command="{Binding ClearLogCommand}" ToolTip="Clear event log and alerts">
+                            Command="{Binding ClearLogCommand}" ToolTip="{DynamicResource PH_ClearLogButton}">
                         <TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="12"
                                    VerticalAlignment="Center" HorizontalAlignment="Center"/>
                     </Button>
@@ -343,40 +349,40 @@
                     <ToggleButton Style="{DynamicResource PanelIconToggleStyle}"
                                   IsChecked="{Binding FilterStateLoaded}"
                                   Padding="6,2" Margin="0,0,3,0"
-                                  ToolTip="Show only loaded plugins">
+                                  ToolTip="{DynamicResource PH_FilterLoaded}">
                         <StackPanel Orientation="Horizontal">
                             <Ellipse Width="7" Height="7" Fill="#22C55E" VerticalAlignment="Center"/>
-                            <TextBlock Text="Loaded" FontSize="9" Margin="4,0,0,0"
+                            <TextBlock Text="{DynamicResource PH_LoadedStatus}" FontSize="9" Margin="4,0,0,0"
                                        Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                         </StackPanel>
                     </ToggleButton>
                     <ToggleButton Style="{DynamicResource PanelIconToggleStyle}"
                                   IsChecked="{Binding FilterStateDisabled}"
                                   Padding="6,2" Margin="0,0,3,0"
-                                  ToolTip="Show only disabled plugins">
+                                  ToolTip="{DynamicResource PH_FilterDisabled}">
                         <StackPanel Orientation="Horizontal">
                             <Ellipse Width="7" Height="7" Fill="#6B7280" VerticalAlignment="Center"/>
-                            <TextBlock Text="Disabled" FontSize="9" Margin="4,0,0,0"
+                            <TextBlock Text="{DynamicResource PH_DisabledStatus}" FontSize="9" Margin="4,0,0,0"
                                        Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                         </StackPanel>
                     </ToggleButton>
                     <ToggleButton Style="{DynamicResource PanelIconToggleStyle}"
                                   IsChecked="{Binding FilterStateFaulted}"
                                   Padding="6,2" Margin="0,0,3,0"
-                                  ToolTip="Show only faulted plugins">
+                                  ToolTip="{DynamicResource PH_FilterFaulted}">
                         <StackPanel Orientation="Horizontal">
                             <Ellipse Width="7" Height="7" Fill="#EF4444" VerticalAlignment="Center"/>
-                            <TextBlock Text="Faulted" FontSize="9" Margin="4,0,0,0"
+                            <TextBlock Text="{DynamicResource PH_FaultedStatus}" FontSize="9" Margin="4,0,0,0"
                                        Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                         </StackPanel>
                     </ToggleButton>
                     <ToggleButton Style="{DynamicResource PanelIconToggleStyle}"
                                   IsChecked="{Binding FilterStateDormant}"
                                   Padding="6,2" Margin="0,0,3,0"
-                                  ToolTip="Show only standby (lazy-loaded) plugins">
+                                  ToolTip="{DynamicResource PH_FilterStandby}">
                         <StackPanel Orientation="Horizontal">
                             <Ellipse Width="7" Height="7" Fill="#A855F7" VerticalAlignment="Center"/>
-                            <TextBlock Text="Standby" FontSize="9" Margin="4,0,0,0"
+                            <TextBlock Text="{DynamicResource PH_StandbyStatus}" FontSize="9" Margin="4,0,0,0"
                                        Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                         </StackPanel>
                     </ToggleButton>
@@ -385,11 +391,11 @@
                     <ToggleButton Style="{DynamicResource PanelIconToggleStyle}"
                                   IsChecked="{Binding FilterWarningsOnly}"
                                   Padding="6,2"
-                                  ToolTip="Show only plugins with warnings or faults">
+                                  ToolTip="{DynamicResource PH_FilterWarnings}">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="&#xE7BA;" FontFamily="Segoe MDL2 Assets" FontSize="10"
                                        Foreground="#F59E0B" VerticalAlignment="Center"/>
-                            <TextBlock Text="Warnings" FontSize="9" Margin="4,0,0,0"
+                            <TextBlock Text="{DynamicResource PH_FilterWarnings}" FontSize="9" Margin="4,0,0,0"
                                        Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                         </StackPanel>
                     </ToggleButton>
@@ -412,7 +418,7 @@
                     <TextBlock Text="{Binding CurrentCpu, StringFormat={}{0:F1}%}"
                                FontSize="18" FontWeight="Bold" HorizontalAlignment="Center"
                                Foreground="{DynamicResource DockMenuForegroundBrush}"/>
-                    <TextBlock Text="CPU" FontSize="10" HorizontalAlignment="Center"
+                    <TextBlock Text="{DynamicResource PH_CpuMetric}" FontSize="10" HorizontalAlignment="Center"
                                Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                 </StackPanel>
             </Border>
@@ -423,7 +429,7 @@
                     <TextBlock Text="{Binding CurrentMemoryMb, StringFormat={}{0} MB}"
                                FontSize="18" FontWeight="Bold" HorizontalAlignment="Center"
                                Foreground="{DynamicResource DockMenuForegroundBrush}"/>
-                    <TextBlock Text="Memory" FontSize="10" HorizontalAlignment="Center"
+                    <TextBlock Text="{DynamicResource PH_MemoryMetric}" FontSize="10" HorizontalAlignment="Center"
                                Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                 </StackPanel>
             </Border>
@@ -439,7 +445,7 @@
                         <TextBlock Text="{Binding TotalCount}" FontSize="18" FontWeight="Bold"
                                    Foreground="{DynamicResource DockMenuForegroundBrush}"/>
                     </StackPanel>
-                    <TextBlock Text="Running" FontSize="10" HorizontalAlignment="Center"
+                    <TextBlock Text="{DynamicResource PH_RunningMetric}" FontSize="10" HorizontalAlignment="Center"
                                Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                 </StackPanel>
             </Border>
@@ -450,7 +456,7 @@
                     <TextBlock Text="{Binding FaultCount}" FontSize="18" FontWeight="Bold"
                                HorizontalAlignment="Center"
                                Foreground="{DynamicResource DockMenuForegroundBrush}"/>
-                    <TextBlock Text="Faults" FontSize="10" HorizontalAlignment="Center"
+                    <TextBlock Text="{DynamicResource PH_FaultsMetric}" FontSize="10" HorizontalAlignment="Center"
                                Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                 </StackPanel>
             </Border>
@@ -488,7 +494,7 @@
                     <!-- Global CPU chart -->
                     <Grid x:Name="CpuChartGrid" Grid.Column="0">
                         <Border Background="{DynamicResource Panel_ToolbarBrush}" CornerRadius="4"/>
-                        <TextBlock Text="CPU %" FontSize="9" FontWeight="SemiBold" Margin="6,4,0,0"
+                        <TextBlock Text="{DynamicResource PH_CpuChartTitle}" FontSize="9" FontWeight="SemiBold" Margin="6,4,0,0"
                                    VerticalAlignment="Top" HorizontalAlignment="Left"
                                    Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                         <Canvas x:Name="CpuChartCanvas" Margin="4,18,4,4" ClipToBounds="True">
@@ -503,7 +509,7 @@
                     <!-- Global Memory chart -->
                     <Grid x:Name="MemChartGrid" Grid.Column="2">
                         <Border Background="{DynamicResource Panel_ToolbarBrush}" CornerRadius="4"/>
-                        <TextBlock Text="Memory MB" FontSize="9" FontWeight="SemiBold" Margin="6,4,0,0"
+                        <TextBlock Text="{DynamicResource PH_MemoryChartTitle}" FontSize="9" FontWeight="SemiBold" Margin="6,4,0,0"
                                    VerticalAlignment="Top" HorizontalAlignment="Left"
                                    Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                         <Canvas x:Name="MemChartCanvas" Margin="4,18,4,4" ClipToBounds="True">
@@ -563,10 +569,10 @@
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
 
-                    <DataGridTextColumn Header="Plugin" Binding="{Binding Name}" Width="*" MinWidth="120"/>
+                    <DataGridTextColumn Header="{DynamicResource PH_PluginColumn}" Binding="{Binding Name}" Width="*" MinWidth="120"/>
 
                     <!-- State with fault tooltip and per-state color -->
-                    <DataGridTemplateColumn Header="State" Width="80" MinWidth="60" SortMemberPath="State">
+                    <DataGridTemplateColumn Header="{DynamicResource PH_StateColumn}" Width="80" MinWidth="60" SortMemberPath="State">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding State}" ToolTip="{Binding FaultMessage}"
@@ -590,7 +596,7 @@
                     </DataGridTemplateColumn>
 
                     <!-- CPU%: amber + "~" prefix for InProcess estimates, green for real Sandbox metrics -->
-                    <DataGridTemplateColumn Header="CPU%" Width="65" MinWidth="55" SortMemberPath="WeightedCpu">
+                    <DataGridTemplateColumn Header="{DynamicResource PH_CpuPctColumn}" Width="65" MinWidth="55" SortMemberPath="WeightedCpu">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock VerticalAlignment="Center" Margin="4,2"
@@ -623,7 +629,7 @@
                     -->
                     <DataGridTemplateColumn x:Name="SparklineCpuColumn" Width="60" CanUserResize="False" CanUserSort="False">
                         <DataGridTemplateColumn.Header>
-                            <TextBlock Text="CPU" Foreground="#22C55E" FontSize="10" FontWeight="SemiBold"/>
+                            <TextBlock Text="{DynamicResource PH_CpuMetric}" Foreground="#22C55E" FontSize="10" FontWeight="SemiBold"/>
                         </DataGridTemplateColumn.Header>
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
@@ -638,9 +644,9 @@
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
 
-                    <DataGridTextColumn Header="Peak%"  Binding="{Binding PeakCpu, StringFormat={}{0:F1}%}"    Width="55" MinWidth="45"/>
+                    <DataGridTextColumn Header="{DynamicResource PH_PeakPctColumn}"  Binding="{Binding PeakCpu, StringFormat={}{0:F1}%}"    Width="55" MinWidth="45"/>
                     <!-- Mem MB: amber for InProcess GC estimates, blue for real Sandbox private memory -->
-                    <DataGridTemplateColumn Header="Mem MB" Width="65" MinWidth="55" SortMemberPath="MemoryDisplayMb">
+                    <DataGridTemplateColumn Header="{DynamicResource PH_MemMbColumn}" Width="65" MinWidth="55" SortMemberPath="MemoryDisplayMb">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock VerticalAlignment="Center" Margin="4,2"
@@ -668,7 +674,7 @@
                     -->
                     <DataGridTemplateColumn x:Name="SparklineMemColumn" Width="60" CanUserResize="False" CanUserSort="False">
                         <DataGridTemplateColumn.Header>
-                            <TextBlock Text="Mem" Foreground="#60A5FA" FontSize="10" FontWeight="SemiBold"/>
+                            <TextBlock Text="{DynamicResource PH_MemShortLabel}" Foreground="#60A5FA" FontSize="10" FontWeight="SemiBold"/>
                         </DataGridTemplateColumn.Header>
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
@@ -683,14 +689,14 @@
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
 
-                    <DataGridTextColumn Header="Uptime"  Binding="{Binding UptimeLabel}"                              Width="65" MinWidth="50"/>
-                    <DataGridTextColumn Header="Avg ms"  Binding="{Binding AvgExecMs, StringFormat={}{0:F1}}"        Width="60" MinWidth="50"/>
-                    <DataGridTextColumn Header="Init ms" Binding="{Binding InitTimeMs, StringFormat={}{0:F0}}"       Width="60" MinWidth="50"/>
-                    <DataGridTextColumn Header="Reload"  Binding="{Binding ReloadMode}"                              Width="50" MinWidth="45"
-                                        ToolTipService.ToolTip="Fast = IWpfHexEditorPluginV2.SupportsHotReload; Full = full unload+GC+reload cycle"/>
+                    <DataGridTextColumn Header="{DynamicResource PH_UptimeColumn}"  Binding="{Binding UptimeLabel}"                              Width="65" MinWidth="50"/>
+                    <DataGridTextColumn Header="{DynamicResource PH_AvgMsColumn}"  Binding="{Binding AvgExecMs, StringFormat={}{0:F1}}"        Width="60" MinWidth="50"/>
+                    <DataGridTextColumn Header="{DynamicResource PH_InitMsColumn}" Binding="{Binding InitTimeMs, StringFormat={}{0:F0}}"       Width="60" MinWidth="50"/>
+                    <DataGridTextColumn Header="{DynamicResource PH_ReloadColumn}"  Binding="{Binding ReloadMode}"                              Width="50" MinWidth="45"
+                                        ToolTipService.ToolTip="{DynamicResource PH_HotReloadTooltip}"/>
 
-                    <DataGridTextColumn Header="Watch"   Binding="{Binding WatchBadge}"                             Width="42" MinWidth="38"
-                                        ToolTipService.ToolTip="👁 = Plugin Dev Loader is watching this plugin's output directory for changes"/>
+                    <DataGridTextColumn Header="{DynamicResource PH_WatchColumn}"   Binding="{Binding WatchBadge}"                             Width="42" MinWidth="38"
+                                        ToolTipService.ToolTip="{DynamicResource PH_WatchColumnTooltip}"/>
                 </DataGrid.Columns>
 
                 <!--
@@ -816,7 +822,7 @@
                                                             <!-- Aggregate CPU -->
                                                             <StackPanel Grid.Column="4" Orientation="Horizontal"
                                                                         Margin="0,0,12,0" VerticalAlignment="Center">
-                                                                <TextBlock Text="CPU "
+                                                                <TextBlock Text="{DynamicResource PH_CpuMetric}"
                                                                            FontSize="10"
                                                                            Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
                                                                            Opacity="0.6"/>
@@ -829,7 +835,7 @@
                                                             <!-- Aggregate Memory -->
                                                             <StackPanel Grid.Column="5" Orientation="Horizontal"
                                                                         Margin="0,0,12,0" VerticalAlignment="Center">
-                                                                <TextBlock Text="Mem "
+                                                                <TextBlock Text="{DynamicResource PH_MemShortLabel}"
                                                                            FontSize="10"
                                                                            Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
                                                                            Opacity="0.6"/>
@@ -878,7 +884,7 @@
                             <Setter.Value>
                                 <!-- PlacementTarget = the DataGridRow; Tag = PluginMonitoringViewModel -->
                                 <ContextMenu DataContext="{Binding PlacementTarget.Tag, RelativeSource={RelativeSource Self}}">
-                                    <MenuItem Header="Reload"
+                                    <MenuItem Header="{DynamicResource PH_ReloadColumn}"
                                               Command="{Binding ReloadPluginCommand}"
                                               IsEnabled="{Binding HasSelectedPlugin}">
                                         <MenuItem.Icon>
@@ -893,7 +899,7 @@
                                         </MenuItem.Icon>
                                     </MenuItem>
                                     <Separator/>
-                                    <MenuItem Header="Open in Plugin Manager"
+                                    <MenuItem Header="{DynamicResource PH_OpenMonitorContextMenu}"
                                               Command="{Binding OpenInPluginManagerCommand}"
                                               IsEnabled="{Binding HasSelectedPlugin}">
                                         <MenuItem.Icon>
@@ -901,7 +907,7 @@
                                         </MenuItem.Icon>
                                     </MenuItem>
                                     <Separator/>
-                                    <MenuItem Header="Uninstall…"
+                                    <MenuItem Header="{DynamicResource PH_ContextUninstallMenu}"
                                               Command="{Binding UninstallPluginCommand}"
                                               IsEnabled="{Binding HasSelectedPlugin}">
                                         <MenuItem.Icon>
@@ -928,7 +934,7 @@
                 <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
                     <TextBlock Text="&#xE710;" FontFamily="Segoe MDL2 Assets" FontSize="32"
                                Foreground="#60A5FA" HorizontalAlignment="Center" Margin="0,0,0,8"/>
-                    <TextBlock Text="Installing plugin…" FontSize="13" FontWeight="SemiBold"
+                    <TextBlock Text="{DynamicResource PH_InstallingMessage}" FontSize="13" FontWeight="SemiBold"
                                Foreground="White" HorizontalAlignment="Center" Margin="0,0,0,8"/>
                     <pb:LinearProgressBar IsIndeterminate="True" Width="180" Height="4" BarHeight="4"/>
                 </StackPanel>
@@ -949,7 +955,7 @@
                 <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
                     <TextBlock Text="&#xE8B5;" FontFamily="Segoe MDL2 Assets" FontSize="28"
                                Foreground="#60A5FA" HorizontalAlignment="Center" Margin="0,0,0,6"/>
-                    <TextBlock Text="Drop .whxplugin to install" FontSize="12"
+                    <TextBlock Text="{DynamicResource PH_DropHintText}" FontSize="12"
                                Foreground="White" HorizontalAlignment="Center"/>
                 </StackPanel>
             </Border>
@@ -1000,7 +1006,7 @@
                 </TabControl.Resources>
 
                 <!-- Tab 0: Events (nouveau premier onglet) -->
-                <TabItem Header="📋 Events">
+                <TabItem Header="{DynamicResource PH_EventsTab}">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -1015,15 +1021,15 @@
                                 <Button DockPanel.Dock="Right"
                                         Style="{DynamicResource PanelIconButtonStyle}"
                                         Command="{Binding ClearLogCommand}"
-                                        ToolTip="Clear event log"
+                                        ToolTip="{DynamicResource PH_ClearEventLogTooltip}"
                                         Padding="6,2" Margin="4,0,0,0">
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="11"
                                                    VerticalAlignment="Center" Margin="0,0,4,0"/>
-                                        <TextBlock Text="Clear" FontSize="10" VerticalAlignment="Center"/>
+                                        <TextBlock Text="{DynamicResource PH_ClearButton}" FontSize="10" VerticalAlignment="Center"/>
                                     </StackPanel>
                                 </Button>
-                                <TextBlock Text="EVENTS" FontSize="10" FontWeight="SemiBold"
+                                <TextBlock Text="{DynamicResource PH_EventsTabLabel}" FontSize="10" FontWeight="SemiBold"
                                            VerticalAlignment="Center"
                                            Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                             </DockPanel>
@@ -1064,11 +1070,11 @@
                 </TabItem>
 
                 <!-- Tab 1: Overview -->
-                <TabItem Header="📊 Overview" DataContext="{Binding SelectedPluginDetail}">
+                <TabItem Header="{DynamicResource PH_OverviewTab}" DataContext="{Binding SelectedPluginDetail}">
                     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                         <StackPanel Margin="8,8,8,16">
 <!-- ── Section: Overview ──────────────────────────────────── -->
-                    <TextBlock Text="Overview"
+                    <TextBlock Text="{DynamicResource PH_OverviewSection}"
                                FontWeight="SemiBold" FontSize="13"
                                Foreground="{DynamicResource DockMenuForegroundBrush}"
                                Margin="0,0,0,10"/>
@@ -1112,19 +1118,19 @@
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
 
-                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Loaded"    FontSize="9" VerticalAlignment="Center" Foreground="{DynamicResource Panel_ToolbarForegroundBrush}" Margin="0,0,4,2"/>
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="{DynamicResource PH_LoadedStatus}"    FontSize="9" VerticalAlignment="Center" Foreground="{DynamicResource Panel_ToolbarForegroundBrush}" Margin="0,0,4,2"/>
                             <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding LoadedAtLabel}"   FontSize="9" FontWeight="SemiBold" Foreground="{DynamicResource DockMenuForegroundBrush}" Margin="0,0,0,2"/>
-                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Uptime"    FontSize="9" VerticalAlignment="Center" Foreground="{DynamicResource Panel_ToolbarForegroundBrush}" Margin="0,0,4,0"/>
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="{DynamicResource PH_UptimeLabel}"    FontSize="9" VerticalAlignment="Center" Foreground="{DynamicResource Panel_ToolbarForegroundBrush}" Margin="0,0,4,0"/>
                             <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding UptimeLabel}"     FontSize="9" FontWeight="SemiBold" Foreground="{DynamicResource DockMenuForegroundBrush}"/>
 
-                            <TextBlock Grid.Row="0" Grid.Column="3" Text="Init"      FontSize="9" VerticalAlignment="Center" Foreground="{DynamicResource Panel_ToolbarForegroundBrush}" Margin="0,0,4,2"/>
+                            <TextBlock Grid.Row="0" Grid.Column="3" Text="{DynamicResource PH_InitLabel}"      FontSize="9" VerticalAlignment="Center" Foreground="{DynamicResource Panel_ToolbarForegroundBrush}" Margin="0,0,4,2"/>
                             <TextBlock Grid.Row="0" Grid.Column="4" Text="{Binding InitTimeMsLabel}" FontSize="9" FontWeight="SemiBold" Foreground="{DynamicResource DockMenuForegroundBrush}" Margin="0,0,0,2"/>
-                            <TextBlock Grid.Row="1" Grid.Column="3" Text="Avg exec"  FontSize="9" VerticalAlignment="Center" Foreground="{DynamicResource Panel_ToolbarForegroundBrush}" Margin="0,0,4,0"/>
+                            <TextBlock Grid.Row="1" Grid.Column="3" Text="{DynamicResource PH_AvgExecLabel}"  FontSize="9" VerticalAlignment="Center" Foreground="{DynamicResource Panel_ToolbarForegroundBrush}" Margin="0,0,4,0"/>
                             <TextBlock Grid.Row="1" Grid.Column="4" Text="{Binding AvgExecMsLabel}"  FontSize="9" FontWeight="SemiBold" Foreground="{DynamicResource DockMenuForegroundBrush}"/>
 
-                            <TextBlock Grid.Row="0" Grid.Column="6" Text="Peak CPU"  FontSize="9" VerticalAlignment="Center" Foreground="{DynamicResource Panel_ToolbarForegroundBrush}" Margin="0,0,4,2"/>
+                            <TextBlock Grid.Row="0" Grid.Column="6" Text="{DynamicResource PH_PeakCpuLabel}"  FontSize="9" VerticalAlignment="Center" Foreground="{DynamicResource Panel_ToolbarForegroundBrush}" Margin="0,0,4,2"/>
                             <TextBlock Grid.Row="0" Grid.Column="7" Text="{Binding PeakCpuLabel}"    FontSize="9" FontWeight="SemiBold" Foreground="{DynamicResource DockMenuForegroundBrush}" Margin="0,0,0,2"/>
-                            <TextBlock Grid.Row="1" Grid.Column="6" Text="Avg CPU"   FontSize="9" VerticalAlignment="Center" Foreground="{DynamicResource Panel_ToolbarForegroundBrush}" Margin="0,0,4,0"/>
+                            <TextBlock Grid.Row="1" Grid.Column="6" Text="{DynamicResource PH_AvgCpuLabel}"   FontSize="9" VerticalAlignment="Center" Foreground="{DynamicResource Panel_ToolbarForegroundBrush}" Margin="0,0,4,0"/>
                             <TextBlock Grid.Row="1" Grid.Column="7" Text="{Binding AvgCpuLabel}"     FontSize="9" FontWeight="SemiBold" Foreground="{DynamicResource DockMenuForegroundBrush}"/>
                         </Grid>
 
@@ -1141,11 +1147,11 @@
                 </TabItem>
 
                 <!-- Tab 2: Charts -->
-                <TabItem Header="📈 Charts" DataContext="{Binding SelectedMiniChart}">
+                <TabItem Header="{DynamicResource PH_ChartsTab}" DataContext="{Binding SelectedMiniChart}">
                     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                         <StackPanel Margin="8,8,8,16">
 <!-- ── Section: CPU / RAM ──────────────────────────────────── -->
-                    <TextBlock Text="CPU / RAM"
+                    <TextBlock Text="{DynamicResource PH_CpuRamSection}"
                                FontWeight="SemiBold" FontSize="13"
                                Foreground="{DynamicResource DockMenuForegroundBrush}"
                                Margin="0,0,0,10"/>
@@ -1157,11 +1163,11 @@
                             <Border Background="{DynamicResource DockBackgroundBrush}" CornerRadius="3"/>
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Left"
                                         Margin="4,2">
-                                <TextBlock Text="CPU (est.)  " FontSize="9" FontWeight="SemiBold"
+                                <TextBlock Text="{DynamicResource PH_CpuEstimatedLabel}" FontSize="9" FontWeight="SemiBold"
                                            Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                                 <TextBlock Text="{Binding CurrentCpu, StringFormat={}{0:F1}%}"
                                            FontSize="9" FontWeight="SemiBold" Foreground="#22C55E"/>
-                                <TextBlock Text="  peak: " FontSize="9"
+                                <TextBlock Text="{DynamicResource PH_PeakShortLabel}" FontSize="9"
                                            Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                                 <TextBlock Text="{Binding PeakCpu, StringFormat={}{0:F1}%}"
                                            FontSize="9" FontWeight="SemiBold" Foreground="#22C55E"/>
@@ -1179,11 +1185,11 @@
                             <Border Background="{DynamicResource DockBackgroundBrush}" CornerRadius="3"/>
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Left"
                                         Margin="4,2">
-                                <TextBlock Text="Memory  " FontSize="9" FontWeight="SemiBold"
+                                <TextBlock Text="{DynamicResource PH_MemoryShortLabel}" FontSize="9" FontWeight="SemiBold"
                                            Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                                 <TextBlock Text="{Binding CurrentMemoryMb, StringFormat={}{0} MB}"
                                            FontSize="9" FontWeight="SemiBold" Foreground="#60A5FA"/>
-                                <TextBlock Text="  peak: " FontSize="9"
+                                <TextBlock Text="{DynamicResource PH_PeakShortLabel}" FontSize="9"
                                            Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                                 <TextBlock Text="{Binding PeakMemoryMb, StringFormat={}{0} MB}"
                                            FontSize="9" FontWeight="SemiBold" Foreground="#60A5FA"/>
@@ -1203,15 +1209,15 @@
                 </TabItem>
 
                 <!-- Tab 3: Permissions -->
-                <TabItem Header="🔒 Permissions" DataContext="{Binding SelectedPluginDetail}">
+                <TabItem Header="{DynamicResource PH_PermissionsTabLabel}" DataContext="{Binding SelectedPluginDetail}">
                     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                         <StackPanel Margin="8,8,8,16">
 <!-- ── Section: Permissions ──────────────────────────────────── -->
-                    <TextBlock Text="Permissions"
+                    <TextBlock Text="{DynamicResource PH_PermissionsLabel}"
                                FontWeight="SemiBold" FontSize="13"
                                Foreground="{DynamicResource DockMenuForegroundBrush}"
                                Margin="0,0,0,6"/>
-                    <TextBlock Text="Permission changes take effect after plugin reload."
+                    <TextBlock Text="{DynamicResource PH_PermissionsNote}"
                                FontSize="11" FontStyle="Italic" Opacity="0.65"
                                Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
                                Margin="0,0,0,8"/>
@@ -1237,10 +1243,10 @@
                                 Binding="{Binding IsGranted, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                             <!-- Permission name -->
-                            <DataGridTextColumn Header="Permission" Binding="{Binding Name}" Width="90" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="{DynamicResource PH_PermissionColumn}" Binding="{Binding Name}" Width="90" IsReadOnly="True"/>
 
                             <!-- Declared in manifest (checkmark / empty) -->
-                            <DataGridTemplateColumn Header="Declared" Width="62" IsReadOnly="True">
+                            <DataGridTemplateColumn Header="{DynamicResource PH_DeclaredColumn}" Width="62" IsReadOnly="True">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="11"
@@ -1252,7 +1258,7 @@
                             </DataGridTemplateColumn>
 
                             <!-- Risk level badge -->
-                            <DataGridTemplateColumn Header="Risk" Width="52" IsReadOnly="True">
+                            <DataGridTemplateColumn Header="{DynamicResource PH_RiskColumn}" Width="52" IsReadOnly="True">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <Border Style="{StaticResource RiskBadgeStyle}"
@@ -1265,7 +1271,7 @@
                             </DataGridTemplateColumn>
 
                             <!-- Description -->
-                            <DataGridTextColumn Header="Description"
+                            <DataGridTextColumn Header="{DynamicResource PH_DescriptionColumn}"
                                                 Binding="{Binding Description}" Width="*" IsReadOnly="True"/>
                         </DataGrid.Columns>
                     </DataGrid>
@@ -1276,7 +1282,7 @@
                 </TabItem>
 
                 <!-- Tab 4: Settings -->
-                <TabItem Header="⚙️ Settings" Visibility="{Binding SelectedPluginDetail.HasOptions, Converter={StaticResource BoolToVis}, FallbackValue=Collapsed}">
+                <TabItem Header="{DynamicResource PH_SettingsTab}" Visibility="{Binding SelectedPluginDetail.HasOptions, Converter={StaticResource BoolToVis}, FallbackValue=Collapsed}">
                     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                         <StackPanel Margin="8,8,8,16">
 
