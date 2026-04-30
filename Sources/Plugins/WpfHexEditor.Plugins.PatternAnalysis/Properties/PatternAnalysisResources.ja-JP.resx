@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="PatternAnalysis_PluginName" xml:space="preserve">
+    <value>パターン分析</value>
+  </data>
+  <data name="PatternAnalysis_PanelTitle" xml:space="preserve">
+    <value>パターン分析</value>
+  </data>
+  <data name="PatternAnalysis_MenuItem" xml:space="preserve">
+    <value>パターン _分析</value>
+  </data>
+  <data name="PatternAnalysis_NoDataLoaded" xml:space="preserve">
+    <value>データがロードされていません</value>
+  </data>
+  <data name="PatternAnalysis_Entropy_VeryHigh" xml:space="preserve">
+    <value>非常に高いエントロピーが検出されました</value>
+  </data>
+  <data name="PatternAnalysis_Entropy_VeryHigh_Desc" xml:space="preserve">
+    <value>データが暗号化または圧縮されている可能性があります (エントロピー &gt; 7.5 ビット/バイト)</value>
+  </data>
+  <data name="PatternAnalysis_Entropy_VeryLow" xml:space="preserve">
+    <value>非常に低いエントロピーが検出されました</value>
+  </data>
+  <data name="PatternAnalysis_Entropy_VeryLow_Desc" xml:space="preserve">
+    <value>データには主に繰り返しまたはゼロバイトが含まれています (エントロピー &lt; 2.0 ビット/バイト)</value>
+  </data>
+  <data name="PatternAnalysis_Entropy_Low" xml:space="preserve">
+    <value>低いランダム性 — データは繰り返しまたは構造化されています</value>
+  </data>
+  <data name="PatternAnalysis_Entropy_Medium" xml:space="preserve">
+    <value>中程度のランダム性 — 混合または圧縮データに典型的です</value>
+  </data>
+  <data name="PatternAnalysis_Entropy_High" xml:space="preserve">
+    <value>高いランダム性 — データが暗号化または高度に圧縮されている可能性があります</value>
+  </data>
+  <data name="PatternAnalysis_ExtremelySkewed" xml:space="preserve">
+    <value>極端に偏った分布</value>
+  </data>
+  <data name="PatternAnalysis_NoData" xml:space="preserve">
+    <value>分析するデータがありません。hex エディターで範囲を選択してください。</value>
+  </data>
+</root>

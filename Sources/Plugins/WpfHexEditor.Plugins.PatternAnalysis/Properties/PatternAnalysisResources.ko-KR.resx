@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="PatternAnalysis_PluginName" xml:space="preserve">
+    <value>패턴 분석</value>
+  </data>
+  <data name="PatternAnalysis_PanelTitle" xml:space="preserve">
+    <value>패턴 분석</value>
+  </data>
+  <data name="PatternAnalysis_MenuItem" xml:space="preserve">
+    <value>패턴 _분석</value>
+  </data>
+  <data name="PatternAnalysis_NoDataLoaded" xml:space="preserve">
+    <value>로드된 데이터 없음</value>
+  </data>
+  <data name="PatternAnalysis_Entropy_VeryHigh" xml:space="preserve">
+    <value>매우 높은 엔트로피가 감지됨</value>
+  </data>
+  <data name="PatternAnalysis_Entropy_VeryHigh_Desc" xml:space="preserve">
+    <value>데이터가 암호화되었거나 압축되었을 수 있습니다 (엔트로피 &gt; 7.5비트/바이트)</value>
+  </data>
+  <data name="PatternAnalysis_Entropy_VeryLow" xml:space="preserve">
+    <value>매우 낮은 엔트로피가 감지됨</value>
+  </data>
+  <data name="PatternAnalysis_Entropy_VeryLow_Desc" xml:space="preserve">
+    <value>데이터에는 주로 반복적이거나 0바이트가 포함되어 있습니다 (엔트로피 &lt; 2.0비트/바이트)</value>
+  </data>
+  <data name="PatternAnalysis_Entropy_Low" xml:space="preserve">
+    <value>낮은 무작위성 — 데이터가 반복적이거나 구조적입니다</value>
+  </data>
+  <data name="PatternAnalysis_Entropy_Medium" xml:space="preserve">
+    <value>중간 무작위성 — 혼합 또는 압축 데이터에 일반적</value>
+  </data>
+  <data name="PatternAnalysis_Entropy_High" xml:space="preserve">
+    <value>높은 무작위성 — 데이터가 암호화되었거나 고도로 압축되었을 수 있습니다</value>
+  </data>
+  <data name="PatternAnalysis_ExtremelySkewed" xml:space="preserve">
+    <value>극단적으로 치우친 분포</value>
+  </data>
+  <data name="PatternAnalysis_NoData" xml:space="preserve">
+    <value>분석할 데이터 없음. hex 편집기에서 범위를 선택하세요.</value>
+  </data>
+</root>

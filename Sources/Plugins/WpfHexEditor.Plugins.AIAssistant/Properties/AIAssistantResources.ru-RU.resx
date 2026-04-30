@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="AIAssistant_ConnectionTest_Title" xml:space="preserve">
+    <value>Тест соединения</value>
+  </data>
+  <data name="AIAssistant_ConnectionTest_Testing" xml:space="preserve">
+    <value>Тестирование...</value>
+  </data>
+  <data name="AIAssistant_Error_ProviderNotRegistered" xml:space="preserve">
+    <value>Поставщик '{0}' не зарегистрирован.</value>
+  </data>
+  <data name="AIAssistant_ConnectionTest_Success" xml:space="preserve">
+    <value>Подключение к {0} выполнено успешно!</value>
+  </data>
+  <data name="AIAssistant_ConnectionTest_Failure" xml:space="preserve">
+    <value>Не удалось подключиться к {0}. Проверьте ключ API и настройки.</value>
+  </data>
+  <data name="AIAssistant_Error_Timeout" xml:space="preserve">
+    <value>Тест подключения истёк по таймауту через 10 секунд.</value>
+  </data>
+  <data name="AIAssistant_Error_NetworkError" xml:space="preserve">
+    <value>Ошибка сети: {0}</value>
+  </data>
+  <data name="AIAssistant_Error_Generic" xml:space="preserve">
+    <value>Ошибка: {0}</value>
+  </data>
+  <data name="AIAssistant_EnableThinking" xml:space="preserve">
+    <value>Включить мышление (только Anthropic)</value>
+  </data>
+  <data name="AIAssistant_Copied" xml:space="preserve">
+    <value>Скопировано!</value>
+  </data>
+  <data name="AIAssistant_CopyCode" xml:space="preserve">
+    <value>Копировать код</value>
+  </data>
+  <data name="AIAssistant_Testing" xml:space="preserve">
+    <value>Тестирование...</value>
+  </data>
+  <data name="AIAssistant_Connected" xml:space="preserve">
+    <value>Подключено</value>
+  </data>
+  <data name="AIAssistant_ConnectionFailed" xml:space="preserve">
+    <value>Соединение не удалось</value>
+  </data>
+  <data name="AIAssistant_PluginName" xml:space="preserve">
+    <value>Помощник ИИ</value>
+  </data>
+  <data name="AIAssistant_RenameConversation" xml:space="preserve">
+    <value>Переименовать беседу</value>
+  </data>
+</root>

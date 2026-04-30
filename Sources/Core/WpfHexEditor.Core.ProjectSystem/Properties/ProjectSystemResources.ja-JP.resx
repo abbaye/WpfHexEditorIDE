@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Validation_ProjectNameEmpty" xml:space="preserve">
+    <value>プロジェクト名を空にすることはできません。</value>
+  </data>
+  <data name="Dialog_ValidationTitle" xml:space="preserve">
+    <value>検証</value>
+  </data>
+  <data name="Error_RenameProjectFailed" xml:space="preserve">
+    <value>プロジェクトの名前を変更できませんでした:</value>
+  </data>
+  <data name="Dialog_ErrorTitle" xml:space="preserve">
+    <value>エラー</value>
+  </data>
+  <data name="Error_CannotCreateOutputFolder" xml:space="preserve">
+    <value>出力フォルダーを作成できません:</value>
+  </data>
+  <data name="Dialog_ConvertTblTitle" xml:space="preserve">
+    <value>TBL を変換</value>
+  </data>
+  <data name="Error_OutputPathIdenticalToSource" xml:space="preserve">
+    <value>出力パスがソースと同じです。別のフォルダーを選択してください。</value>
+  </data>
+  <data name="Dialog_RemoveReferenceTitle" xml:space="preserve">
+    <value>参照の削除</value>
+  </data>
+  <data name="Message_NoUnusedReferences" xml:space="preserve">
+    <value>未使用のアセンブリ参照は見つかりませんでした。</value>
+  </data>
+  <data name="Dialog_RemoveUnusedReferencesTitle" xml:space="preserve">
+    <value>未使用の参照を削除</value>
+  </data>
+  <data name="Confirm_RemoveUnusedReferences" xml:space="preserve">
+    <value>次の未使用のアセンブリ参照を削除しますか?</value>
+  </data>
+  <data name="Dialog_SelectFilesToAdd" xml:space="preserve">
+    <value>追加するファイルの選択</value>
+  </data>
+  <data name="Filter_AllFiles" xml:space="preserve">
+    <value>すべてのファイル (*.*)|*.*</value>
+  </data>
+  <data name="Dialog_SelectProjectFolder" xml:space="preserve">
+    <value>新しいプロジェクトの親フォルダーを選択</value>
+  </data>
+  <data name="Dialog_SelectFileFolder" xml:space="preserve">
+    <value>新しいファイルのフォルダーを選択</value>
+  </data>
+  <data name="Dialog_SelectSolutionFolder" xml:space="preserve">
+    <value>新しいソリューションの親フォルダーを選択</value>
+  </data>
+  <data name="Dialog_SelectConvertOutputFolder" xml:space="preserve">
+    <value>変換された TBLX ファイルの出力フォルダーを選択</value>
+  </data>
+  <data name="Dialog_AddProjectReference" xml:space="preserve">
+    <value>プロジェクト参照の追加</value>
+  </data>
+  <data name="Filter_ProjectFiles" xml:space="preserve">
+    <value>プロジェクトファイル (*.csproj;*.vbproj;*.fsproj)|*.csproj;*.vbproj;*.fsproj|すべてのファイル (*.*)|*.*</value>
+  </data>
+  <data name="Dialog_AddAssemblyReference" xml:space="preserve">
+    <value>アセンブリ参照の追加</value>
+  </data>
+  <data name="Filter_AssemblyFiles" xml:space="preserve">
+    <value>アセンブリファイル (*.dll;*.exe)|*.dll;*.exe|すべてのファイル (*.*)|*.*</value>
+  </data>
+  <data name="Dialog_SelectOutputDirectory" xml:space="preserve">
+    <value>出力ディレクトリの選択</value>
+  </data>
+  <data name="Dialog_SelectIcon" xml:space="preserve">
+    <value>アイコンの選択</value>
+  </data>
+  <data name="Filter_IconFiles" xml:space="preserve">
+    <value>アイコン (*.ico)|*.ico|すべてのファイル (*.*)|*.*</value>
+  </data>
+  <data name="Dialog_SelectProjectToReference" xml:space="preserve">
+    <value>参照するプロジェクトを選択</value>
+  </data>
+  <data name="Filter_CsharpProjects" xml:space="preserve">
+    <value>C# プロジェクト (*.csproj)|*.csproj|すべてのプロジェクト (*.csproj;*.vbproj;*.fsproj)|*.csproj;*.vbproj;*.fsproj</value>
+  </data>
+  <data name="ProjectSystem_Ref_ProjectReferences" xml:space="preserve">
+    <value>プロジェクト参照</value>
+  </data>
+  <data name="ProjectSystem_Ref_Assemblies" xml:space="preserve">
+    <value>アセンブリ</value>
+  </data>
+  <data name="ProjectSystem_Ref_Analyzers" xml:space="preserve">
+    <value>アナライザー</value>
+  </data>
+  <data name="ProjectSystem_Ref_NoReferenceSupport" xml:space="preserve">
+    <value>このプロジェクトの種類は参照管理をサポートしていません。</value>
+  </data>
+</root>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="ParsedFields_Error_InvalidOffset" xml:space="preserve">
+    <value>Desplazamiento no válido. Use hex (0x1A2B) o decimal (6699).</value>
+  </data>
+  <data name="ParsedFields_Label_AutoMode" xml:space="preserve">
+    <value>Automático</value>
+  </data>
+  <data name="ParsedFields_Error_FieldNotEditable" xml:space="preserve">
+    <value>Este campo no se puede editar.</value>
+  </data>
+  <data name="ParsedFields_Error_InvalidValue" xml:space="preserve">
+    <value>Valor no válido para este tipo de campo.</value>
+  </data>
+  <data name="ParsedFields_Dialog_ExportError" xml:space="preserve">
+    <value>Error de exportación</value>
+  </data>
+  <data name="ParsedFields_Dialog_ExportComplete" xml:space="preserve">
+    <value>Exportación completada</value>
+  </data>
+  <data name="ParsedFields_Dialog_Copied" xml:space="preserve">
+    <value>Copiado</value>
+  </data>
+  <data name="ParsedFields_Dialog_FieldNotFound" xml:space="preserve">
+    <value>Campo no encontrado</value>
+  </data>
+  <data name="ParsedFields_Dialog_FindSimilar" xml:space="preserve">
+    <value>Buscar similares</value>
+  </data>
+  <data name="ParsedFields_Dialog_FeatureUnavailable" xml:space="preserve">
+    <value>Función no disponible</value>
+  </data>
+  <data name="ParsedFields_Confirm_DeleteField" xml:space="preserve">
+    <value>¿Eliminar este campo?</value>
+  </data>
+  <data name="ParsedFields_Confirm_DeleteAll" xml:space="preserve">
+    <value>¿Eliminar todos los campos?</value>
+  </data>
+  <data name="ParsedFields_DataInspectorNotConnected" xml:space="preserve">
+    <value>La función de inspector de datos aún no está conectada a este panel.</value>
+  </data>
+  <data name="ParsedFields_PluginName" xml:space="preserve">
+    <value>Campos analizados</value>
+  </data>
+  <data name="ParsedFields_JumpToOffset" xml:space="preserve">
+    <value>Ir al desplazamiento</value>
+  </data>
+  <data name="ParsedFields_JumpToOffset_Label" xml:space="preserve">
+    <value>Desplazamiento (hex 0x… o decimal):</value>
+  </data>
+  <data name="ParsedFields_JumpToOffset_Placeholder" xml:space="preserve">
+    <value>0x</value>
+  </data>
+  <data name="ParsedFields_Dialog_OK" xml:space="preserve">
+    <value>Aceptar</value>
+  </data>
+  <data name="ParsedFields_Error_InvalidInput" xml:space="preserve">
+    <value>Entrada no válida</value>
+  </data>
+</root>

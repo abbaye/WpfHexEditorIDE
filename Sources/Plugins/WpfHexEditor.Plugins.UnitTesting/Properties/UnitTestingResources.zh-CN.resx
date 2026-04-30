@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="UnitTest_NoTestProjects" xml:space="preserve">
+    <value>在当前解决方案中未找到测试项目</value>
+  </data>
+  <data name="UnitTest_RunCancelled" xml:space="preserve">
+    <value>运行已取消</value>
+  </data>
+  <data name="UnitTest_RunFailed" xml:space="preserve">
+    <value>运行失败 — 请查看输出面板</value>
+  </data>
+  <data name="UnitTest_Ready" xml:space="preserve">
+    <value>就绪</value>
+  </data>
+  <data name="UnitTest_OpenInCodeEditor" xml:space="preserve">
+    <value>在代码编辑器中打开</value>
+  </data>
+  <data name="UnitTest_OpenInHexEditor" xml:space="preserve">
+    <value>在十六进制编辑器中打开</value>
+  </data>
+</root>

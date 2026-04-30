@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="AIAssistant_ConnectionTest_Title" xml:space="preserve">
+    <value>接続テスト</value>
+  </data>
+  <data name="AIAssistant_ConnectionTest_Testing" xml:space="preserve">
+    <value>テスト中...</value>
+  </data>
+  <data name="AIAssistant_Error_ProviderNotRegistered" xml:space="preserve">
+    <value>プロバイダー '{0}' は登録されていません。</value>
+  </data>
+  <data name="AIAssistant_ConnectionTest_Success" xml:space="preserve">
+    <value>{0} への接続に成功しました!</value>
+  </data>
+  <data name="AIAssistant_ConnectionTest_Failure" xml:space="preserve">
+    <value>{0} への接続に失敗しました。API キーと設定を確認してください。</value>
+  </data>
+  <data name="AIAssistant_Error_Timeout" xml:space="preserve">
+    <value>接続テストが 10 秒後にタイムアウトしました。</value>
+  </data>
+  <data name="AIAssistant_Error_NetworkError" xml:space="preserve">
+    <value>ネットワークエラー: {0}</value>
+  </data>
+  <data name="AIAssistant_Error_Generic" xml:space="preserve">
+    <value>エラー: {0}</value>
+  </data>
+  <data name="AIAssistant_EnableThinking" xml:space="preserve">
+    <value>思考を有効にする (Anthropic のみ)</value>
+  </data>
+  <data name="AIAssistant_Copied" xml:space="preserve">
+    <value>コピーしました!</value>
+  </data>
+  <data name="AIAssistant_CopyCode" xml:space="preserve">
+    <value>コードをコピー</value>
+  </data>
+  <data name="AIAssistant_Testing" xml:space="preserve">
+    <value>テスト中...</value>
+  </data>
+  <data name="AIAssistant_Connected" xml:space="preserve">
+    <value>接続済み</value>
+  </data>
+  <data name="AIAssistant_ConnectionFailed" xml:space="preserve">
+    <value>接続に失敗しました</value>
+  </data>
+  <data name="AIAssistant_PluginName" xml:space="preserve">
+    <value>AI アシスタント</value>
+  </data>
+  <data name="AIAssistant_RenameConversation" xml:space="preserve">
+    <value>会話の名前を変更</value>
+  </data>
+</root>

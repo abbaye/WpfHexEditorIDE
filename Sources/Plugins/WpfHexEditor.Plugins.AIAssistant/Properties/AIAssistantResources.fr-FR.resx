@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="AIAssistant_ConnectionTest_Title" xml:space="preserve">
+    <value>Test de connexion</value>
+  </data>
+  <data name="AIAssistant_ConnectionTest_Testing" xml:space="preserve">
+    <value>Test en cours...</value>
+  </data>
+  <data name="AIAssistant_Error_ProviderNotRegistered" xml:space="preserve">
+    <value>Le fournisseur '{0}' n'est pas enregistré.</value>
+  </data>
+  <data name="AIAssistant_ConnectionTest_Success" xml:space="preserve">
+    <value>Connexion à {0} réussie !</value>
+  </data>
+  <data name="AIAssistant_ConnectionTest_Failure" xml:space="preserve">
+    <value>Échec de la connexion à {0}. Vérifiez votre clé API et vos paramètres.</value>
+  </data>
+  <data name="AIAssistant_Error_Timeout" xml:space="preserve">
+    <value>Le test de connexion a expiré après 10 secondes.</value>
+  </data>
+  <data name="AIAssistant_Error_NetworkError" xml:space="preserve">
+    <value>Erreur réseau : {0}</value>
+  </data>
+  <data name="AIAssistant_Error_Generic" xml:space="preserve">
+    <value>Erreur : {0}</value>
+  </data>
+  <data name="AIAssistant_EnableThinking" xml:space="preserve">
+    <value>Activer la réflexion (Anthropic uniquement)</value>
+  </data>
+  <data name="AIAssistant_Copied" xml:space="preserve">
+    <value>Copié !</value>
+  </data>
+  <data name="AIAssistant_CopyCode" xml:space="preserve">
+    <value>Copier le code</value>
+  </data>
+  <data name="AIAssistant_Testing" xml:space="preserve">
+    <value>Test en cours...</value>
+  </data>
+  <data name="AIAssistant_Connected" xml:space="preserve">
+    <value>Connecté</value>
+  </data>
+  <data name="AIAssistant_ConnectionFailed" xml:space="preserve">
+    <value>Échec de la connexion</value>
+  </data>
+  <data name="AIAssistant_PluginName" xml:space="preserve">
+    <value>Assistant IA</value>
+  </data>
+  <data name="AIAssistant_RenameConversation" xml:space="preserve">
+    <value>Renommer la conversation</value>
+  </data>
+</root>

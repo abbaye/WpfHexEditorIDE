@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="ClassDiagram_PluginName" xml:space="preserve">
+    <value>مخطط الفئات</value>
+  </data>
+  <data name="ClassDiagram_OptionsCategory" xml:space="preserve">
+    <value>مخطط الفئات</value>
+  </data>
+  <data name="ClassDiagram_OutlinePanelTitle" xml:space="preserve">
+    <value>مخطط الفئة</value>
+  </data>
+  <data name="ClassDiagram_PropertiesPanelTitle" xml:space="preserve">
+    <value>خصائص الفئة</value>
+  </data>
+  <data name="ClassDiagram_ToolboxPanelTitle" xml:space="preserve">
+    <value>صندوق أدوات الرسم البياني</value>
+  </data>
+  <data name="ClassDiagram_RelationshipsPanelTitle" xml:space="preserve">
+    <value>العلاقات</value>
+  </data>
+  <data name="ClassDiagram_HistoryPanelTitle" xml:space="preserve">
+    <value>سجل الرسم البياني</value>
+  </data>
+  <data name="ClassDiagram_SearchPanelTitle" xml:space="preserve">
+    <value>بحث الرسم البياني</value>
+  </data>
+  <data name="ClassDiagram_MetricsPanelTitle" xml:space="preserve">
+    <value>لوحة معلومات المقاييس</value>
+  </data>
+  <data name="ClassDiagram_Reset" xml:space="preserve">
+    <value>إعادة تعيين</value>
+  </data>
+  <data name="ClassDiagram_Menu_OutlineHeader" xml:space="preserve">
+    <value>_مخطط الفئة</value>
+  </data>
+  <data name="ClassDiagram_GenerateSolutionDiagram" xml:space="preserve">
+    <value>إنشاء مخطط فئات للحل</value>
+  </data>
+  <data name="ClassDiagram_ExportMetricsCSV" xml:space="preserve">
+    <value>تصدير مقاييس CSV</value>
+  </data>
+</root>

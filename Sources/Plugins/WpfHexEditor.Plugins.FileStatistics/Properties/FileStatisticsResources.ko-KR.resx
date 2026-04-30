@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="FileStats_PluginName" xml:space="preserve">
+    <value>파일 통계</value>
+  </data>
+  <data name="FileStats_HighNullRatio" xml:space="preserve">
+    <value>높은 null 바이트 비율</value>
+  </data>
+  <data name="FileStats_VeryHighEntropy" xml:space="preserve">
+    <value>매우 높은 엔트로피</value>
+  </data>
+  <data name="FileStats_MayBeEncrypted" xml:space="preserve">
+    <value>데이터가 암호화되었거나 압축되었을 수 있습니다</value>
+  </data>
+  <data name="FileStats_NoFileLoaded" xml:space="preserve">
+    <value>로드된 파일 없음</value>
+  </data>
+</root>

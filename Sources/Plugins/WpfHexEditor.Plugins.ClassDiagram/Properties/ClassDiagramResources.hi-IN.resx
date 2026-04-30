@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="ClassDiagram_PluginName" xml:space="preserve">
+    <value>क्लास डायग्राम</value>
+  </data>
+  <data name="ClassDiagram_OptionsCategory" xml:space="preserve">
+    <value>क्लास डायग्राम</value>
+  </data>
+  <data name="ClassDiagram_OutlinePanelTitle" xml:space="preserve">
+    <value>क्लास आउटलाइन</value>
+  </data>
+  <data name="ClassDiagram_PropertiesPanelTitle" xml:space="preserve">
+    <value>क्लास गुण</value>
+  </data>
+  <data name="ClassDiagram_ToolboxPanelTitle" xml:space="preserve">
+    <value>डायग्राम टूलबॉक्स</value>
+  </data>
+  <data name="ClassDiagram_RelationshipsPanelTitle" xml:space="preserve">
+    <value>संबंध</value>
+  </data>
+  <data name="ClassDiagram_HistoryPanelTitle" xml:space="preserve">
+    <value>डायग्राम इतिहास</value>
+  </data>
+  <data name="ClassDiagram_SearchPanelTitle" xml:space="preserve">
+    <value>डायग्राम खोज</value>
+  </data>
+  <data name="ClassDiagram_MetricsPanelTitle" xml:space="preserve">
+    <value>मेट्रिक्स डैशबोर्ड</value>
+  </data>
+  <data name="ClassDiagram_Reset" xml:space="preserve">
+    <value>रीसेट करें</value>
+  </data>
+  <data name="ClassDiagram_Menu_OutlineHeader" xml:space="preserve">
+    <value>क्लास _आउटलाइन</value>
+  </data>
+  <data name="ClassDiagram_GenerateSolutionDiagram" xml:space="preserve">
+    <value>समाधान के लिए क्लास डायग्राम बनाएं</value>
+  </data>
+  <data name="ClassDiagram_ExportMetricsCSV" xml:space="preserve">
+    <value>मेट्रिक्स CSV निर्यात करें</value>
+  </data>
+</root>

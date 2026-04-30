@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="PluginDev_NewExtensionProject" xml:space="preserve">
+    <value>Новый проект расширения</value>
+  </data>
+  <data name="PluginDev_SelectOutputDir" xml:space="preserve">
+    <value>Выберите выходной каталог для проекта плагина</value>
+  </data>
+  <data name="PluginDev_Permissions" xml:space="preserve">
+    <value>Разрешения</value>
+  </data>
+  <data name="PluginDev_IsolationMode" xml:space="preserve">
+    <value>Режим изоляции</value>
+  </data>
+  <data name="PluginDev_LoadPriority" xml:space="preserve">
+    <value>Приоритет загрузки (10–90):</value>
+  </data>
+  <data name="PluginDev_Next" xml:space="preserve">
+    <value>Далее &gt;</value>
+  </data>
+  <data name="PluginDev_CreateAndOpen" xml:space="preserve">
+    <value>Создать и открыть</value>
+  </data>
+  <data name="PluginDev_PluginCreated" xml:space="preserve">
+    <value>Плагин создан</value>
+  </data>
+  <data name="PluginDev_Error" xml:space="preserve">
+    <value>Ошибка</value>
+  </data>
+  <data name="PluginDev_PublishExtensionPackage" xml:space="preserve">
+    <value>Опубликовать пакет расширения</value>
+  </data>
+  <data name="PluginDev_SignBeforePublish" xml:space="preserve">
+    <value>Подписать пакет перед публикацией</value>
+  </data>
+  <data name="PluginDev_Browse" xml:space="preserve">
+    <value>Обзор…</value>
+  </data>
+  <data name="PluginDev_OpenOutputFolder" xml:space="preserve">
+    <value>Открыть папку вывода в Проводнике</value>
+  </data>
+  <data name="PluginDev_Package" xml:space="preserve">
+    <value>Пакет</value>
+  </data>
+  <data name="PluginDev_Close" xml:space="preserve">
+    <value>Закрыть</value>
+  </data>
+  <data name="PluginDev_SelectOutputDirPackage" xml:space="preserve">
+    <value>Выберите выходной каталог</value>
+  </data>
+  <data name="PluginDev_ExportDevLog" xml:space="preserve">
+    <value>Экспортировать журнал разработки расширения</value>
+  </data>
+  <data name="PluginDev_Search" xml:space="preserve">
+    <value>Поиск</value>
+  </data>
+  <data name="PluginDev_Browse_Tab" xml:space="preserve">
+    <value>Обзор</value>
+  </data>
+  <data name="PluginDev_Installed" xml:space="preserve">
+    <value>Установленные</value>
+  </data>
+  <data name="PluginDev_UpdateAll" xml:space="preserve">
+    <value>Обновить все</value>
+  </data>
+  <data name="PluginDev_Updates" xml:space="preserve">
+    <value>Обновления</value>
+  </data>
+  <data name="PluginDev_ExtensionMarketplace" xml:space="preserve">
+    <value>Рынок расширений</value>
+  </data>
+  <data name="PluginDev_ExtensionLabel" xml:space="preserve">
+    <value>Расширение:</value>
+  </data>
+  <data name="PluginDev_ConfigLabel" xml:space="preserve">
+    <value>Конфигурация:</value>
+  </data>
+  <data name="PluginDev_Ready" xml:space="preserve">
+    <value>Готов</value>
+  </data>
+  <data name="PluginDev_Refresh" xml:space="preserve">
+    <value>Обновить</value>
+  </data>
+  <data name="PluginDev_Col_Name" xml:space="preserve">
+    <value>Имя</value>
+  </data>
+  <data name="PluginDev_Col_Author" xml:space="preserve">
+    <value>Автор</value>
+  </data>
+  <data name="PluginDev_Col_Version" xml:space="preserve">
+    <value>Версия</value>
+  </data>
+  <data name="PluginDev_Col_Rating" xml:space="preserve">
+    <value>Рейтинг</value>
+  </data>
+  <data name="PluginDev_Col_Downloads" xml:space="preserve">
+    <value>Загрузки</value>
+  </data>
+</root>

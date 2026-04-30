@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="ParsedFields_Error_InvalidOffset" xml:space="preserve">
+    <value>إزاحة غير صالحة. استخدم hex (0x1A2B) أو عشري (6699).</value>
+  </data>
+  <data name="ParsedFields_Label_AutoMode" xml:space="preserve">
+    <value>تلقائي</value>
+  </data>
+  <data name="ParsedFields_Error_FieldNotEditable" xml:space="preserve">
+    <value>لا يمكن تحرير هذا الحقل.</value>
+  </data>
+  <data name="ParsedFields_Error_InvalidValue" xml:space="preserve">
+    <value>قيمة غير صالحة لهذا النوع من الحقول.</value>
+  </data>
+  <data name="ParsedFields_Dialog_ExportError" xml:space="preserve">
+    <value>خطأ في التصدير</value>
+  </data>
+  <data name="ParsedFields_Dialog_ExportComplete" xml:space="preserve">
+    <value>اكتمل التصدير</value>
+  </data>
+  <data name="ParsedFields_Dialog_Copied" xml:space="preserve">
+    <value>تم النسخ</value>
+  </data>
+  <data name="ParsedFields_Dialog_FieldNotFound" xml:space="preserve">
+    <value>الحقل غير موجود</value>
+  </data>
+  <data name="ParsedFields_Dialog_FindSimilar" xml:space="preserve">
+    <value>بحث عن مماثل</value>
+  </data>
+  <data name="ParsedFields_Dialog_FeatureUnavailable" xml:space="preserve">
+    <value>الميزة غير متاحة</value>
+  </data>
+  <data name="ParsedFields_Confirm_DeleteField" xml:space="preserve">
+    <value>هل تريد حذف هذا الحقل؟</value>
+  </data>
+  <data name="ParsedFields_Confirm_DeleteAll" xml:space="preserve">
+    <value>هل تريد حذف جميع الحقول؟</value>
+  </data>
+  <data name="ParsedFields_DataInspectorNotConnected" xml:space="preserve">
+    <value>ميزة مفتش البيانات غير متصلة بهذه اللوحة بعد.</value>
+  </data>
+  <data name="ParsedFields_PluginName" xml:space="preserve">
+    <value>الحقول المحللة</value>
+  </data>
+  <data name="ParsedFields_JumpToOffset" xml:space="preserve">
+    <value>الانتقال إلى الإزاحة</value>
+  </data>
+  <data name="ParsedFields_JumpToOffset_Label" xml:space="preserve">
+    <value>الإزاحة (hex 0x… أو عشري):</value>
+  </data>
+  <data name="ParsedFields_JumpToOffset_Placeholder" xml:space="preserve">
+    <value>0x</value>
+  </data>
+  <data name="ParsedFields_Dialog_OK" xml:space="preserve">
+    <value>موافق</value>
+  </data>
+  <data name="ParsedFields_Error_InvalidInput" xml:space="preserve">
+    <value>إدخال غير صالح</value>
+  </data>
+</root>

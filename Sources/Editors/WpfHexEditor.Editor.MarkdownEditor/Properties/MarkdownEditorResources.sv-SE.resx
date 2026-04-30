@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="MdSb_ViewLabel" xml:space="preserve">
+    <value>Vy</value>
+  </data>
+  <data name="MdSb_ViewTooltip" xml:space="preserve">
+    <value>Aktuellt visningsläge</value>
+  </data>
+  <data name="MdSb_WordsLabel" xml:space="preserve">
+    <value>Ord</value>
+  </data>
+  <data name="MdSb_WordsTooltip" xml:space="preserve">
+    <value>Ungefärligt antal ord</value>
+  </data>
+  <data name="MdSb_LinesLabel" xml:space="preserve">
+    <value>Rader</value>
+  </data>
+  <data name="MdSb_LinesTooltip" xml:space="preserve">
+    <value>Totalt antal rader</value>
+  </data>
+  <data name="MdSb_ReadLabel" xml:space="preserve">
+    <value>Läs</value>
+  </data>
+  <data name="MdSb_ReadTooltip" xml:space="preserve">
+    <value>Beräknad lästid (200 ord/min)</value>
+  </data>
+  <data name="MdSb_ZoomLabel" xml:space="preserve">
+    <value>Zoom</value>
+  </data>
+  <data name="MdSb_ZoomTooltip" xml:space="preserve">
+    <value>Förhandsgranskningszoom (Ctrl+rulla i förhandsvisning)</value>
+  </data>
+  <data name="MdTb_ViewLabel" xml:space="preserve">
+    <value>Vy</value>
+  </data>
+  <data name="MdTb_ViewTooltip" xml:space="preserve">
+    <value>Visningsläge (Ctrl+1/2/3)</value>
+  </data>
+  <data name="MdTb_LayoutLabel" xml:space="preserve">
+    <value>Layout</value>
+  </data>
+  <data name="MdTb_LayoutTooltip" xml:space="preserve">
+    <value>Delat layout (Ctrl+Skift+L)</value>
+  </data>
+  <data name="MdTb_WrapLabel" xml:space="preserve">
+    <value>Radbryt</value>
+  </data>
+  <data name="MdTb_WrapTooltip" xml:space="preserve">
+    <value>Ordradbrytning (Alt+Z)</value>
+  </data>
+  <data name="MdTb_RefreshLabel" xml:space="preserve">
+    <value>Uppdatera</value>
+  </data>
+  <data name="MdTb_RefreshTooltip" xml:space="preserve">
+    <value>Uppdatera förhandsgranskning (F9)</value>
+  </data>
+  <data name="MdTb_InsertLabel" xml:space="preserve">
+    <value>Infoga</value>
+  </data>
+  <data name="MdTb_InsertTooltip" xml:space="preserve">
+    <value>Infoga Markdown-element</value>
+  </data>
+  <data name="MdTb_FormatLabel" xml:space="preserve">
+    <value>Formatera</value>
+  </data>
+  <data name="MdTb_FormatTooltip" xml:space="preserve">
+    <value>Formatera markerad text</value>
+  </data>
+  <data name="MdTb_FullscreenLabel" xml:space="preserve">
+    <value>Helskärm</value>
+  </data>
+  <data name="MdTb_FullscreenTooltip" xml:space="preserve">
+    <value>Växla förhandsgranskning i helskärm</value>
+  </data>
+  <data name="MdView_SourceOnly" xml:space="preserve">
+    <value>Endast källa</value>
+  </data>
+  <data name="MdView_Split" xml:space="preserve">
+    <value>Delad</value>
+  </data>
+  <data name="MdView_PreviewOnly" xml:space="preserve">
+    <value>Endast förhandsgranskning</value>
+  </data>
+  <data name="MdLayout_PreviewRight" xml:space="preserve">
+    <value>Förhandsgranskning till höger</value>
+  </data>
+  <data name="MdLayout_PreviewLeft" xml:space="preserve">
+    <value>Förhandsgranskning till vänster</value>
+  </data>
+  <data name="MdLayout_PreviewBottom" xml:space="preserve">
+    <value>Förhandsgranskning längst ned</value>
+  </data>
+  <data name="MdLayout_PreviewTop" xml:space="preserve">
+    <value>Förhandsgranskning längst upp</value>
+  </data>
+  <data name="MdInsert_Table" xml:space="preserve">
+    <value>Tabell</value>
+  </data>
+  <data name="MdInsert_CodeBlock" xml:space="preserve">
+    <value>Kodblock</value>
+  </data>
+  <data name="MdInsert_Image" xml:space="preserve">
+    <value>Bild</value>
+  </data>
+  <data name="MdInsert_HorizontalRule" xml:space="preserve">
+    <value>Horisontell linje</value>
+  </data>
+  <data name="MdInsert_TableOfContents" xml:space="preserve">
+    <value>Innehållsförteckning</value>
+  </data>
+  <data name="MdFmt_Bold" xml:space="preserve">
+    <value>Fet</value>
+  </data>
+  <data name="MdFmt_Italic" xml:space="preserve">
+    <value>Kursiv</value>
+  </data>
+  <data name="MdFmt_Strikethrough" xml:space="preserve">
+    <value>Genomstruken</value>
+  </data>
+  <data name="MdFmt_InlineCode" xml:space="preserve">
+    <value>Inlinekod</value>
+  </data>
+  <data name="MdCtx_GroupFormat" xml:space="preserve">
+    <value>FORMAT</value>
+  </data>
+  <data name="MdCtx_GroupInsert" xml:space="preserve">
+    <value>INFOGA</value>
+  </data>
+  <data name="MdCtx_GroupExport" xml:space="preserve">
+    <value>EXPORTERA</value>
+  </data>
+  <data name="MdCtx_GroupView" xml:space="preserve">
+    <value>VY</value>
+  </data>
+  <data name="MdCtx_Bold" xml:space="preserve">
+    <value>Fet</value>
+  </data>
+  <data name="MdCtx_Italic" xml:space="preserve">
+    <value>Kursiv</value>
+  </data>
+  <data name="MdCtx_Strikethrough" xml:space="preserve">
+    <value>Genomstruken</value>
+  </data>
+  <data name="MdCtx_InlineCode" xml:space="preserve">
+    <value>Inlinekod</value>
+  </data>
+  <data name="MdCtx_Table" xml:space="preserve">
+    <value>Tabell</value>
+  </data>
+  <data name="MdCtx_CodeBlock" xml:space="preserve">
+    <value>Kodblock</value>
+  </data>
+  <data name="MdCtx_Link" xml:space="preserve">
+    <value>Länk</value>
+  </data>
+  <data name="MdCtx_Image" xml:space="preserve">
+    <value>Bild</value>
+  </data>
+  <data name="MdCtx_HorizontalRule" xml:space="preserve">
+    <value>Horisontell linje</value>
+  </data>
+  <data name="MdCtx_WordWrap" xml:space="preserve">
+    <value>Ordradbrytning	Alt+Z</value>
+  </data>
+  <data name="MdCtx_ExportHtml" xml:space="preserve">
+    <value>Exportera som HTML...</value>
+  </data>
+  <data name="MdCtx_ExportPdf" xml:space="preserve">
+    <value>Exportera som PDF...</value>
+  </data>
+  <data name="MdPrev_SourceOnly" xml:space="preserve">
+    <value>Endast källa</value>
+  </data>
+  <data name="MdPrev_SplitView" xml:space="preserve">
+    <value>Delad vy</value>
+  </data>
+  <data name="MdPrev_PreviewOnly" xml:space="preserve">
+    <value>Endast förhandsgranskning</value>
+  </data>
+  <data name="MdPrev_Fullscreen" xml:space="preserve">
+    <value>Helskärm</value>
+  </data>
+  <data name="MdPrev_ExitFullscreen" xml:space="preserve">
+    <value>Avsluta helskärm</value>
+  </data>
+  <data name="MdPrev_RefreshPreview" xml:space="preserve">
+    <value>Uppdatera förhandsgranskning</value>
+  </data>
+  <data name="MdPrev_CycleLayout" xml:space="preserve">
+    <value>Växla layout</value>
+  </data>
+  <data name="MdPrev_ZoomIn" xml:space="preserve">
+    <value>Zooma in</value>
+  </data>
+  <data name="MdPrev_ZoomOut" xml:space="preserve">
+    <value>Zooma ut</value>
+  </data>
+  <data name="MdPrev_ResetZoom" xml:space="preserve">
+    <value>Återställ zoom</value>
+  </data>
+  <data name="MdPrev_Copy" xml:space="preserve">
+    <value>Kopiera</value>
+  </data>
+  <data name="MdDlg_ExportHtmlTitle" xml:space="preserve">
+    <value>Exportera som HTML</value>
+  </data>
+  <data name="MdDlg_ExportPdfTitle" xml:space="preserve">
+    <value>Exportera som PDF</value>
+  </data>
+  <data name="Md_NoHeadingsFound" xml:space="preserve">
+    <value>Inga rubriker hittades.</value>
+  </data>
+</root>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="UnitTest_NoTestProjects" xml:space="preserve">
+    <value>Aucun projet de test trouvé dans la solution actuelle</value>
+  </data>
+  <data name="UnitTest_RunCancelled" xml:space="preserve">
+    <value>Exécution annulée</value>
+  </data>
+  <data name="UnitTest_RunFailed" xml:space="preserve">
+    <value>Échec de l'exécution — voir le panneau de sortie</value>
+  </data>
+  <data name="UnitTest_Ready" xml:space="preserve">
+    <value>Prêt</value>
+  </data>
+  <data name="UnitTest_OpenInCodeEditor" xml:space="preserve">
+    <value>Ouvrir dans l'éditeur de code</value>
+  </data>
+  <data name="UnitTest_OpenInHexEditor" xml:space="preserve">
+    <value>Ouvrir dans l'éditeur hex</value>
+  </data>
+</root>

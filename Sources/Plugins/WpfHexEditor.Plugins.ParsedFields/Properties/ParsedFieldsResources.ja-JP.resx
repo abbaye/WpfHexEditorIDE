@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="ParsedFields_Error_InvalidOffset" xml:space="preserve">
+    <value>無効なオフセット。16 進数 (0x1A2B) または 10 進数 (6699) を使用してください。</value>
+  </data>
+  <data name="ParsedFields_Label_AutoMode" xml:space="preserve">
+    <value>自動</value>
+  </data>
+  <data name="ParsedFields_Error_FieldNotEditable" xml:space="preserve">
+    <value>このフィールドは編集できません。</value>
+  </data>
+  <data name="ParsedFields_Error_InvalidValue" xml:space="preserve">
+    <value>このフィールド タイプには無効な値です。</value>
+  </data>
+  <data name="ParsedFields_Dialog_ExportError" xml:space="preserve">
+    <value>エクスポートエラー</value>
+  </data>
+  <data name="ParsedFields_Dialog_ExportComplete" xml:space="preserve">
+    <value>エクスポートが完了しました</value>
+  </data>
+  <data name="ParsedFields_Dialog_Copied" xml:space="preserve">
+    <value>コピーしました</value>
+  </data>
+  <data name="ParsedFields_Dialog_FieldNotFound" xml:space="preserve">
+    <value>フィールドが見つかりません</value>
+  </data>
+  <data name="ParsedFields_Dialog_FindSimilar" xml:space="preserve">
+    <value>類似を検索</value>
+  </data>
+  <data name="ParsedFields_Dialog_FeatureUnavailable" xml:space="preserve">
+    <value>機能を使用できません</value>
+  </data>
+  <data name="ParsedFields_Confirm_DeleteField" xml:space="preserve">
+    <value>このフィールドを削除しますか?</value>
+  </data>
+  <data name="ParsedFields_Confirm_DeleteAll" xml:space="preserve">
+    <value>すべてのフィールドを削除しますか?</value>
+  </data>
+  <data name="ParsedFields_DataInspectorNotConnected" xml:space="preserve">
+    <value>データ インスペクター機能はまだこのパネルに接続されていません。</value>
+  </data>
+  <data name="ParsedFields_PluginName" xml:space="preserve">
+    <value>解析済みフィールド</value>
+  </data>
+  <data name="ParsedFields_JumpToOffset" xml:space="preserve">
+    <value>オフセットへジャンプ</value>
+  </data>
+  <data name="ParsedFields_JumpToOffset_Label" xml:space="preserve">
+    <value>オフセット (16 進 0x… または 10 進):</value>
+  </data>
+  <data name="ParsedFields_JumpToOffset_Placeholder" xml:space="preserve">
+    <value>0x</value>
+  </data>
+  <data name="ParsedFields_Dialog_OK" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="ParsedFields_Error_InvalidInput" xml:space="preserve">
+    <value>無効な入力</value>
+  </data>
+</root>

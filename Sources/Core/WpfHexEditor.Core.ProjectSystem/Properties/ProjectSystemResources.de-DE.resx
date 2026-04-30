@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Validation_ProjectNameEmpty" xml:space="preserve">
+    <value>Der Projektname darf nicht leer sein.</value>
+  </data>
+  <data name="Dialog_ValidationTitle" xml:space="preserve">
+    <value>Validierung</value>
+  </data>
+  <data name="Error_RenameProjectFailed" xml:space="preserve">
+    <value>Projekt konnte nicht umbenannt werden:</value>
+  </data>
+  <data name="Dialog_ErrorTitle" xml:space="preserve">
+    <value>Fehler</value>
+  </data>
+  <data name="Error_CannotCreateOutputFolder" xml:space="preserve">
+    <value>Ausgabeordner kann nicht erstellt werden:</value>
+  </data>
+  <data name="Dialog_ConvertTblTitle" xml:space="preserve">
+    <value>TBL konvertieren</value>
+  </data>
+  <data name="Error_OutputPathIdenticalToSource" xml:space="preserve">
+    <value>Der Ausgabepfad ist identisch mit der Quelle. Wählen Sie einen anderen Ordner.</value>
+  </data>
+  <data name="Dialog_RemoveReferenceTitle" xml:space="preserve">
+    <value>Verweis entfernen</value>
+  </data>
+  <data name="Message_NoUnusedReferences" xml:space="preserve">
+    <value>Keine unbenutzten Assemblyverweise gefunden.</value>
+  </data>
+  <data name="Dialog_RemoveUnusedReferencesTitle" xml:space="preserve">
+    <value>Unbenutzte Verweise entfernen</value>
+  </data>
+  <data name="Confirm_RemoveUnusedReferences" xml:space="preserve">
+    <value>Die folgenden unbenutzten Assemblyverweise entfernen?</value>
+  </data>
+  <data name="Dialog_SelectFilesToAdd" xml:space="preserve">
+    <value>Hinzuzufügende Dateien auswählen</value>
+  </data>
+  <data name="Filter_AllFiles" xml:space="preserve">
+    <value>Alle Dateien (*.*)|*.*</value>
+  </data>
+  <data name="Dialog_SelectProjectFolder" xml:space="preserve">
+    <value>Übergeordneten Ordner für das neue Projekt auswählen</value>
+  </data>
+  <data name="Dialog_SelectFileFolder" xml:space="preserve">
+    <value>Ordner für die neue Datei auswählen</value>
+  </data>
+  <data name="Dialog_SelectSolutionFolder" xml:space="preserve">
+    <value>Übergeordneten Ordner für die neue Projektmappe auswählen</value>
+  </data>
+  <data name="Dialog_SelectConvertOutputFolder" xml:space="preserve">
+    <value>Ausgabeordner für die konvertierte TBLX-Datei auswählen</value>
+  </data>
+  <data name="Dialog_AddProjectReference" xml:space="preserve">
+    <value>Projektverweis hinzufügen</value>
+  </data>
+  <data name="Filter_ProjectFiles" xml:space="preserve">
+    <value>Projektdateien (*.csproj;*.vbproj;*.fsproj)|*.csproj;*.vbproj;*.fsproj|Alle Dateien (*.*)|*.*</value>
+  </data>
+  <data name="Dialog_AddAssemblyReference" xml:space="preserve">
+    <value>Assemblyverweis hinzufügen</value>
+  </data>
+  <data name="Filter_AssemblyFiles" xml:space="preserve">
+    <value>Assemblydateien (*.dll;*.exe)|*.dll;*.exe|Alle Dateien (*.*)|*.*</value>
+  </data>
+  <data name="Dialog_SelectOutputDirectory" xml:space="preserve">
+    <value>Ausgabeverzeichnis auswählen</value>
+  </data>
+  <data name="Dialog_SelectIcon" xml:space="preserve">
+    <value>Symbol auswählen</value>
+  </data>
+  <data name="Filter_IconFiles" xml:space="preserve">
+    <value>Symbole (*.ico)|*.ico|Alle Dateien (*.*)|*.*</value>
+  </data>
+  <data name="Dialog_SelectProjectToReference" xml:space="preserve">
+    <value>Zu referenzierendes Projekt auswählen</value>
+  </data>
+  <data name="Filter_CsharpProjects" xml:space="preserve">
+    <value>C#-Projekte (*.csproj)|*.csproj|Alle Projekte (*.csproj;*.vbproj;*.fsproj)|*.csproj;*.vbproj;*.fsproj</value>
+  </data>
+  <data name="ProjectSystem_Ref_ProjectReferences" xml:space="preserve">
+    <value>Projektverweise</value>
+  </data>
+  <data name="ProjectSystem_Ref_Assemblies" xml:space="preserve">
+    <value>Assemblys</value>
+  </data>
+  <data name="ProjectSystem_Ref_Analyzers" xml:space="preserve">
+    <value>Analysetools</value>
+  </data>
+  <data name="ProjectSystem_Ref_NoReferenceSupport" xml:space="preserve">
+    <value>Dieser Projekttyp unterstützt keine Referenzverwaltung.</value>
+  </data>
+</root>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="ParsedFields_Error_InvalidOffset" xml:space="preserve">
+    <value>अमान्य ऑफसेट। हेक्स (0x1A2B) या दशमलव (6699) का उपयोग करें।</value>
+  </data>
+  <data name="ParsedFields_Label_AutoMode" xml:space="preserve">
+    <value>स्वचालित</value>
+  </data>
+  <data name="ParsedFields_Error_FieldNotEditable" xml:space="preserve">
+    <value>इस फ़ील्ड को संपादित नहीं किया जा सकता।</value>
+  </data>
+  <data name="ParsedFields_Error_InvalidValue" xml:space="preserve">
+    <value>इस फ़ील्ड प्रकार के लिए अमान्य मान।</value>
+  </data>
+  <data name="ParsedFields_Dialog_ExportError" xml:space="preserve">
+    <value>निर्यात त्रुटि</value>
+  </data>
+  <data name="ParsedFields_Dialog_ExportComplete" xml:space="preserve">
+    <value>निर्यात पूर्ण</value>
+  </data>
+  <data name="ParsedFields_Dialog_Copied" xml:space="preserve">
+    <value>कॉपी किया गया</value>
+  </data>
+  <data name="ParsedFields_Dialog_FieldNotFound" xml:space="preserve">
+    <value>फ़ील्ड नहीं मिला</value>
+  </data>
+  <data name="ParsedFields_Dialog_FindSimilar" xml:space="preserve">
+    <value>समान खोजें</value>
+  </data>
+  <data name="ParsedFields_Dialog_FeatureUnavailable" xml:space="preserve">
+    <value>सुविधा अनुपलब्ध</value>
+  </data>
+  <data name="ParsedFields_Confirm_DeleteField" xml:space="preserve">
+    <value>इस फ़ील्ड को हटाएं?</value>
+  </data>
+  <data name="ParsedFields_Confirm_DeleteAll" xml:space="preserve">
+    <value>सभी फ़ील्ड हटाएं?</value>
+  </data>
+  <data name="ParsedFields_DataInspectorNotConnected" xml:space="preserve">
+    <value>डेटा इंस्पेक्टर सुविधा अभी इस पैनल से कनेक्ट नहीं है।</value>
+  </data>
+  <data name="ParsedFields_PluginName" xml:space="preserve">
+    <value>पार्स किए गए फ़ील्ड</value>
+  </data>
+  <data name="ParsedFields_JumpToOffset" xml:space="preserve">
+    <value>ऑफसेट पर जाएं</value>
+  </data>
+  <data name="ParsedFields_JumpToOffset_Label" xml:space="preserve">
+    <value>ऑफसेट (हेक्स 0x… या दशमलव):</value>
+  </data>
+  <data name="ParsedFields_JumpToOffset_Placeholder" xml:space="preserve">
+    <value>0x</value>
+  </data>
+  <data name="ParsedFields_Dialog_OK" xml:space="preserve">
+    <value>ठीक है</value>
+  </data>
+  <data name="ParsedFields_Error_InvalidInput" xml:space="preserve">
+    <value>अमान्य इनपुट</value>
+  </data>
+</root>

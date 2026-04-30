@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="MdSb_ViewLabel" xml:space="preserve">
+    <value>Visualizza</value>
+  </data>
+  <data name="MdSb_ViewTooltip" xml:space="preserve">
+    <value>Modalità di visualizzazione corrente</value>
+  </data>
+  <data name="MdSb_WordsLabel" xml:space="preserve">
+    <value>Parole</value>
+  </data>
+  <data name="MdSb_WordsTooltip" xml:space="preserve">
+    <value>Conteggio approssimativo delle parole</value>
+  </data>
+  <data name="MdSb_LinesLabel" xml:space="preserve">
+    <value>Righe</value>
+  </data>
+  <data name="MdSb_LinesTooltip" xml:space="preserve">
+    <value>Conteggio totale righe</value>
+  </data>
+  <data name="MdSb_ReadLabel" xml:space="preserve">
+    <value>Lettura</value>
+  </data>
+  <data name="MdSb_ReadTooltip" xml:space="preserve">
+    <value>Tempo di lettura stimato (200 ppm)</value>
+  </data>
+  <data name="MdSb_ZoomLabel" xml:space="preserve">
+    <value>Zoom</value>
+  </data>
+  <data name="MdSb_ZoomTooltip" xml:space="preserve">
+    <value>Zoom anteprima (Ctrl+scorrimento nell'anteprima)</value>
+  </data>
+  <data name="MdTb_ViewLabel" xml:space="preserve">
+    <value>Visualizza</value>
+  </data>
+  <data name="MdTb_ViewTooltip" xml:space="preserve">
+    <value>Modalità di visualizzazione (Ctrl+1/2/3)</value>
+  </data>
+  <data name="MdTb_LayoutLabel" xml:space="preserve">
+    <value>Layout</value>
+  </data>
+  <data name="MdTb_LayoutTooltip" xml:space="preserve">
+    <value>Layout diviso (Ctrl+Maiusc+L)</value>
+  </data>
+  <data name="MdTb_WrapLabel" xml:space="preserve">
+    <value>A capo</value>
+  </data>
+  <data name="MdTb_WrapTooltip" xml:space="preserve">
+    <value>A capo automatico (Alt+Z)</value>
+  </data>
+  <data name="MdTb_RefreshLabel" xml:space="preserve">
+    <value>Aggiorna</value>
+  </data>
+  <data name="MdTb_RefreshTooltip" xml:space="preserve">
+    <value>Aggiorna anteprima (F9)</value>
+  </data>
+  <data name="MdTb_InsertLabel" xml:space="preserve">
+    <value>Inserisci</value>
+  </data>
+  <data name="MdTb_InsertTooltip" xml:space="preserve">
+    <value>Inserisci elemento Markdown</value>
+  </data>
+  <data name="MdTb_FormatLabel" xml:space="preserve">
+    <value>Formatta</value>
+  </data>
+  <data name="MdTb_FormatTooltip" xml:space="preserve">
+    <value>Formatta il testo selezionato</value>
+  </data>
+  <data name="MdTb_FullscreenLabel" xml:space="preserve">
+    <value>Schermo intero</value>
+  </data>
+  <data name="MdTb_FullscreenTooltip" xml:space="preserve">
+    <value>Attiva/disattiva anteprima a schermo intero</value>
+  </data>
+  <data name="MdView_SourceOnly" xml:space="preserve">
+    <value>Solo sorgente</value>
+  </data>
+  <data name="MdView_Split" xml:space="preserve">
+    <value>Diviso</value>
+  </data>
+  <data name="MdView_PreviewOnly" xml:space="preserve">
+    <value>Solo anteprima</value>
+  </data>
+  <data name="MdLayout_PreviewRight" xml:space="preserve">
+    <value>Anteprima a destra</value>
+  </data>
+  <data name="MdLayout_PreviewLeft" xml:space="preserve">
+    <value>Anteprima a sinistra</value>
+  </data>
+  <data name="MdLayout_PreviewBottom" xml:space="preserve">
+    <value>Anteprima in basso</value>
+  </data>
+  <data name="MdLayout_PreviewTop" xml:space="preserve">
+    <value>Anteprima in alto</value>
+  </data>
+  <data name="MdInsert_Table" xml:space="preserve">
+    <value>Tabella</value>
+  </data>
+  <data name="MdInsert_CodeBlock" xml:space="preserve">
+    <value>Blocco di codice</value>
+  </data>
+  <data name="MdInsert_Image" xml:space="preserve">
+    <value>Immagine</value>
+  </data>
+  <data name="MdInsert_HorizontalRule" xml:space="preserve">
+    <value>Riga orizzontale</value>
+  </data>
+  <data name="MdInsert_TableOfContents" xml:space="preserve">
+    <value>Indice</value>
+  </data>
+  <data name="MdFmt_Bold" xml:space="preserve">
+    <value>Grassetto</value>
+  </data>
+  <data name="MdFmt_Italic" xml:space="preserve">
+    <value>Corsivo</value>
+  </data>
+  <data name="MdFmt_Strikethrough" xml:space="preserve">
+    <value>Barrato</value>
+  </data>
+  <data name="MdFmt_InlineCode" xml:space="preserve">
+    <value>Codice in linea</value>
+  </data>
+  <data name="MdCtx_GroupFormat" xml:space="preserve">
+    <value>FORMATO</value>
+  </data>
+  <data name="MdCtx_GroupInsert" xml:space="preserve">
+    <value>INSERISCI</value>
+  </data>
+  <data name="MdCtx_GroupExport" xml:space="preserve">
+    <value>ESPORTA</value>
+  </data>
+  <data name="MdCtx_GroupView" xml:space="preserve">
+    <value>VISUALIZZA</value>
+  </data>
+  <data name="MdCtx_Bold" xml:space="preserve">
+    <value>Grassetto</value>
+  </data>
+  <data name="MdCtx_Italic" xml:space="preserve">
+    <value>Corsivo</value>
+  </data>
+  <data name="MdCtx_Strikethrough" xml:space="preserve">
+    <value>Barrato</value>
+  </data>
+  <data name="MdCtx_InlineCode" xml:space="preserve">
+    <value>Codice in linea</value>
+  </data>
+  <data name="MdCtx_Table" xml:space="preserve">
+    <value>Tabella</value>
+  </data>
+  <data name="MdCtx_CodeBlock" xml:space="preserve">
+    <value>Blocco di codice</value>
+  </data>
+  <data name="MdCtx_Link" xml:space="preserve">
+    <value>Collegamento</value>
+  </data>
+  <data name="MdCtx_Image" xml:space="preserve">
+    <value>Immagine</value>
+  </data>
+  <data name="MdCtx_HorizontalRule" xml:space="preserve">
+    <value>Riga orizzontale</value>
+  </data>
+  <data name="MdCtx_WordWrap" xml:space="preserve">
+    <value>A capo automatico	Alt+Z</value>
+  </data>
+  <data name="MdCtx_ExportHtml" xml:space="preserve">
+    <value>Esporta come HTML...</value>
+  </data>
+  <data name="MdCtx_ExportPdf" xml:space="preserve">
+    <value>Esporta come PDF...</value>
+  </data>
+  <data name="MdPrev_SourceOnly" xml:space="preserve">
+    <value>Solo sorgente</value>
+  </data>
+  <data name="MdPrev_SplitView" xml:space="preserve">
+    <value>Vista divisa</value>
+  </data>
+  <data name="MdPrev_PreviewOnly" xml:space="preserve">
+    <value>Solo anteprima</value>
+  </data>
+  <data name="MdPrev_Fullscreen" xml:space="preserve">
+    <value>Schermo intero</value>
+  </data>
+  <data name="MdPrev_ExitFullscreen" xml:space="preserve">
+    <value>Esci da schermo intero</value>
+  </data>
+  <data name="MdPrev_RefreshPreview" xml:space="preserve">
+    <value>Aggiorna anteprima</value>
+  </data>
+  <data name="MdPrev_CycleLayout" xml:space="preserve">
+    <value>Ruota layout</value>
+  </data>
+  <data name="MdPrev_ZoomIn" xml:space="preserve">
+    <value>Zoom avanti</value>
+  </data>
+  <data name="MdPrev_ZoomOut" xml:space="preserve">
+    <value>Zoom indietro</value>
+  </data>
+  <data name="MdPrev_ResetZoom" xml:space="preserve">
+    <value>Reimposta zoom</value>
+  </data>
+  <data name="MdPrev_Copy" xml:space="preserve">
+    <value>Copia</value>
+  </data>
+  <data name="MdDlg_ExportHtmlTitle" xml:space="preserve">
+    <value>Esporta come HTML</value>
+  </data>
+  <data name="MdDlg_ExportPdfTitle" xml:space="preserve">
+    <value>Esporta come PDF</value>
+  </data>
+  <data name="Md_NoHeadingsFound" xml:space="preserve">
+    <value>Nessuna intestazione trovata.</value>
+  </data>
+</root>

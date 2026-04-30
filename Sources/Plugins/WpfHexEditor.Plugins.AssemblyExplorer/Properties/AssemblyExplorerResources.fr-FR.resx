@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="AsmExplorer_PluginName" xml:space="preserve">
+    <value>Explorateur d'assembly</value>
+  </data>
+  <data name="AsmExplorer_PanelTitle" xml:space="preserve">
+    <value>Explorateur d'assembly</value>
+  </data>
+  <data name="AsmExplorer_SearchPanelTitle" xml:space="preserve">
+    <value>Recherche d'assembly</value>
+  </data>
+  <data name="AsmExplorer_DiffPanelTitle" xml:space="preserve">
+    <value>Diff d'assembly</value>
+  </data>
+  <data name="AsmExplorer_ExportCancelled" xml:space="preserve">
+    <value>Exportation annulée.</value>
+  </data>
+  <data name="AsmExplorer_NoAssemblyLoaded" xml:space="preserve">
+    <value>Aucun assembly chargé</value>
+  </data>
+  <data name="AsmExplorer_AnalysisCancelled" xml:space="preserve">
+    <value>Analyse annulée.</value>
+  </data>
+  <data name="AsmExplorer_Searching" xml:space="preserve">
+    <value>Recherche en cours…</value>
+  </data>
+  <data name="AsmExplorer_Comparing" xml:space="preserve">
+    <value>Comparaison…</value>
+  </data>
+  <data name="AsmExplorer_NoPdb" xml:space="preserve">
+    <value>Aucun PDB portable trouvé à côté de l'assembly.</value>
+  </data>
+  <data name="AsmExplorer_SelectMethod" xml:space="preserve">
+    <value>Sélectionnez un nœud de méthode pour afficher les informations sources.</value>
+  </data>
+  <data name="AsmExplorer_Export_OutputFolderLabel" xml:space="preserve">
+    <value>Dossier de sortie :</value>
+  </data>
+  <data name="AsmExplorer_Export_ExportButton" xml:space="preserve">
+    <value>Exporter</value>
+  </data>
+  <data name="AsmExplorer_Export_CloseButton" xml:space="preserve">
+    <value>Fermer</value>
+  </data>
+  <data name="AsmExplorer_Export_BrowseTitle" xml:space="preserve">
+    <value>Choisir le dossier de sortie</value>
+  </data>
+  <data name="AsmExplorer_Export_NoFolderSelected" xml:space="preserve">
+    <value>Veuillez choisir un dossier de sortie.</value>
+  </data>
+</root>

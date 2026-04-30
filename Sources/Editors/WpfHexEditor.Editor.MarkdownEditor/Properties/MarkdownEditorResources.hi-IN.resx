@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="MdSb_ViewLabel" xml:space="preserve">
+    <value>दृश्य</value>
+  </data>
+  <data name="MdSb_ViewTooltip" xml:space="preserve">
+    <value>वर्तमान दृश्य मोड</value>
+  </data>
+  <data name="MdSb_WordsLabel" xml:space="preserve">
+    <value>शब्द</value>
+  </data>
+  <data name="MdSb_WordsTooltip" xml:space="preserve">
+    <value>अनुमानित शब्द गणना</value>
+  </data>
+  <data name="MdSb_LinesLabel" xml:space="preserve">
+    <value>पंक्तियाँ</value>
+  </data>
+  <data name="MdSb_LinesTooltip" xml:space="preserve">
+    <value>कुल पंक्ति संख्या</value>
+  </data>
+  <data name="MdSb_ReadLabel" xml:space="preserve">
+    <value>पढ़ें</value>
+  </data>
+  <data name="MdSb_ReadTooltip" xml:space="preserve">
+    <value>अनुमानित पठन समय (200 शब्द/मिनट)</value>
+  </data>
+  <data name="MdSb_ZoomLabel" xml:space="preserve">
+    <value>ज़ूम</value>
+  </data>
+  <data name="MdSb_ZoomTooltip" xml:space="preserve">
+    <value>पूर्वावलोकन ज़ूम (पूर्वावलोकन में Ctrl+स्क्रॉल)</value>
+  </data>
+  <data name="MdTb_ViewLabel" xml:space="preserve">
+    <value>दृश्य</value>
+  </data>
+  <data name="MdTb_ViewTooltip" xml:space="preserve">
+    <value>दृश्य मोड (Ctrl+1/2/3)</value>
+  </data>
+  <data name="MdTb_LayoutLabel" xml:space="preserve">
+    <value>लेआउट</value>
+  </data>
+  <data name="MdTb_LayoutTooltip" xml:space="preserve">
+    <value>विभाजित लेआउट (Ctrl+Shift+L)</value>
+  </data>
+  <data name="MdTb_WrapLabel" xml:space="preserve">
+    <value>लपेटें</value>
+  </data>
+  <data name="MdTb_WrapTooltip" xml:space="preserve">
+    <value>शब्द लपेट (Alt+Z)</value>
+  </data>
+  <data name="MdTb_RefreshLabel" xml:space="preserve">
+    <value>ताज़ा करें</value>
+  </data>
+  <data name="MdTb_RefreshTooltip" xml:space="preserve">
+    <value>पूर्वावलोकन ताज़ा करें (F9)</value>
+  </data>
+  <data name="MdTb_InsertLabel" xml:space="preserve">
+    <value>सम्मिलित करें</value>
+  </data>
+  <data name="MdTb_InsertTooltip" xml:space="preserve">
+    <value>Markdown तत्व सम्मिलित करें</value>
+  </data>
+  <data name="MdTb_FormatLabel" xml:space="preserve">
+    <value>स्वरूपित करें</value>
+  </data>
+  <data name="MdTb_FormatTooltip" xml:space="preserve">
+    <value>चयनित टेक्स्ट को स्वरूपित करें</value>
+  </data>
+  <data name="MdTb_FullscreenLabel" xml:space="preserve">
+    <value>पूर्ण स्क्रीन</value>
+  </data>
+  <data name="MdTb_FullscreenTooltip" xml:space="preserve">
+    <value>पूर्ण स्क्रीन पूर्वावलोकन टॉगल करें</value>
+  </data>
+  <data name="MdView_SourceOnly" xml:space="preserve">
+    <value>केवल स्रोत</value>
+  </data>
+  <data name="MdView_Split" xml:space="preserve">
+    <value>विभाजित</value>
+  </data>
+  <data name="MdView_PreviewOnly" xml:space="preserve">
+    <value>केवल पूर्वावलोकन</value>
+  </data>
+  <data name="MdLayout_PreviewRight" xml:space="preserve">
+    <value>दाईं ओर पूर्वावलोकन</value>
+  </data>
+  <data name="MdLayout_PreviewLeft" xml:space="preserve">
+    <value>बाईं ओर पूर्वावलोकन</value>
+  </data>
+  <data name="MdLayout_PreviewBottom" xml:space="preserve">
+    <value>नीचे पूर्वावलोकन</value>
+  </data>
+  <data name="MdLayout_PreviewTop" xml:space="preserve">
+    <value>ऊपर पूर्वावलोकन</value>
+  </data>
+  <data name="MdInsert_Table" xml:space="preserve">
+    <value>तालिका</value>
+  </data>
+  <data name="MdInsert_CodeBlock" xml:space="preserve">
+    <value>कोड ब्लॉक</value>
+  </data>
+  <data name="MdInsert_Image" xml:space="preserve">
+    <value>छवि</value>
+  </data>
+  <data name="MdInsert_HorizontalRule" xml:space="preserve">
+    <value>क्षैतिज रेखा</value>
+  </data>
+  <data name="MdInsert_TableOfContents" xml:space="preserve">
+    <value>सामग्री तालिका</value>
+  </data>
+  <data name="MdFmt_Bold" xml:space="preserve">
+    <value>बोल्ड</value>
+  </data>
+  <data name="MdFmt_Italic" xml:space="preserve">
+    <value>इटैलिक</value>
+  </data>
+  <data name="MdFmt_Strikethrough" xml:space="preserve">
+    <value>स्ट्राइकथ्रू</value>
+  </data>
+  <data name="MdFmt_InlineCode" xml:space="preserve">
+    <value>इनलाइन कोड</value>
+  </data>
+  <data name="MdCtx_GroupFormat" xml:space="preserve">
+    <value>स्वरूप</value>
+  </data>
+  <data name="MdCtx_GroupInsert" xml:space="preserve">
+    <value>सम्मिलित</value>
+  </data>
+  <data name="MdCtx_GroupExport" xml:space="preserve">
+    <value>निर्यात</value>
+  </data>
+  <data name="MdCtx_GroupView" xml:space="preserve">
+    <value>दृश्य</value>
+  </data>
+  <data name="MdCtx_Bold" xml:space="preserve">
+    <value>बोल्ड</value>
+  </data>
+  <data name="MdCtx_Italic" xml:space="preserve">
+    <value>इटैलिक</value>
+  </data>
+  <data name="MdCtx_Strikethrough" xml:space="preserve">
+    <value>स्ट्राइकथ्रू</value>
+  </data>
+  <data name="MdCtx_InlineCode" xml:space="preserve">
+    <value>इनलाइन कोड</value>
+  </data>
+  <data name="MdCtx_Table" xml:space="preserve">
+    <value>तालिका</value>
+  </data>
+  <data name="MdCtx_CodeBlock" xml:space="preserve">
+    <value>कोड ब्लॉक</value>
+  </data>
+  <data name="MdCtx_Link" xml:space="preserve">
+    <value>लिंक</value>
+  </data>
+  <data name="MdCtx_Image" xml:space="preserve">
+    <value>छवि</value>
+  </data>
+  <data name="MdCtx_HorizontalRule" xml:space="preserve">
+    <value>क्षैतिज रेखा</value>
+  </data>
+  <data name="MdCtx_WordWrap" xml:space="preserve">
+    <value>शब्द लपेट	Alt+Z</value>
+  </data>
+  <data name="MdCtx_ExportHtml" xml:space="preserve">
+    <value>HTML के रूप में निर्यात करें...</value>
+  </data>
+  <data name="MdCtx_ExportPdf" xml:space="preserve">
+    <value>PDF के रूप में निर्यात करें...</value>
+  </data>
+  <data name="MdPrev_SourceOnly" xml:space="preserve">
+    <value>केवल स्रोत</value>
+  </data>
+  <data name="MdPrev_SplitView" xml:space="preserve">
+    <value>विभाजित दृश्य</value>
+  </data>
+  <data name="MdPrev_PreviewOnly" xml:space="preserve">
+    <value>केवल पूर्वावलोकन</value>
+  </data>
+  <data name="MdPrev_Fullscreen" xml:space="preserve">
+    <value>पूर्ण स्क्रीन</value>
+  </data>
+  <data name="MdPrev_ExitFullscreen" xml:space="preserve">
+    <value>पूर्ण स्क्रीन से बाहर</value>
+  </data>
+  <data name="MdPrev_RefreshPreview" xml:space="preserve">
+    <value>पूर्वावलोकन ताज़ा करें</value>
+  </data>
+  <data name="MdPrev_CycleLayout" xml:space="preserve">
+    <value>लेआउट चक्र करें</value>
+  </data>
+  <data name="MdPrev_ZoomIn" xml:space="preserve">
+    <value>ज़ूम इन</value>
+  </data>
+  <data name="MdPrev_ZoomOut" xml:space="preserve">
+    <value>ज़ूम आउट</value>
+  </data>
+  <data name="MdPrev_ResetZoom" xml:space="preserve">
+    <value>ज़ूम रीसेट करें</value>
+  </data>
+  <data name="MdPrev_Copy" xml:space="preserve">
+    <value>कॉपी करें</value>
+  </data>
+  <data name="MdDlg_ExportHtmlTitle" xml:space="preserve">
+    <value>HTML के रूप में निर्यात करें</value>
+  </data>
+  <data name="MdDlg_ExportPdfTitle" xml:space="preserve">
+    <value>PDF के रूप में निर्यात करें</value>
+  </data>
+  <data name="Md_NoHeadingsFound" xml:space="preserve">
+    <value>कोई शीर्षक नहीं मिला।</value>
+  </data>
+</root>

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Validation_ProjectNameEmpty" xml:space="preserve">
+    <value>项目名称不能为空。</value>
+  </data>
+  <data name="Dialog_ValidationTitle" xml:space="preserve">
+    <value>验证</value>
+  </data>
+  <data name="Error_RenameProjectFailed" xml:space="preserve">
+    <value>无法重命名项目：</value>
+  </data>
+  <data name="Dialog_ErrorTitle" xml:space="preserve">
+    <value>错误</value>
+  </data>
+  <data name="Error_CannotCreateOutputFolder" xml:space="preserve">
+    <value>无法创建输出文件夹：</value>
+  </data>
+  <data name="Dialog_ConvertTblTitle" xml:space="preserve">
+    <value>转换 TBL</value>
+  </data>
+  <data name="Error_OutputPathIdenticalToSource" xml:space="preserve">
+    <value>输出路径与源路径相同。请选择不同的文件夹。</value>
+  </data>
+  <data name="Dialog_RemoveReferenceTitle" xml:space="preserve">
+    <value>删除引用</value>
+  </data>
+  <data name="Message_NoUnusedReferences" xml:space="preserve">
+    <value>未找到未使用的程序集引用。</value>
+  </data>
+  <data name="Dialog_RemoveUnusedReferencesTitle" xml:space="preserve">
+    <value>删除未使用的引用</value>
+  </data>
+  <data name="Confirm_RemoveUnusedReferences" xml:space="preserve">
+    <value>删除以下未使用的程序集引用？</value>
+  </data>
+  <data name="Dialog_SelectFilesToAdd" xml:space="preserve">
+    <value>选择要添加的文件</value>
+  </data>
+  <data name="Filter_AllFiles" xml:space="preserve">
+    <value>所有文件 (*.*)|*.*</value>
+  </data>
+  <data name="Dialog_SelectProjectFolder" xml:space="preserve">
+    <value>选择新项目的父文件夹</value>
+  </data>
+  <data name="Dialog_SelectFileFolder" xml:space="preserve">
+    <value>选择新文件的文件夹</value>
+  </data>
+  <data name="Dialog_SelectSolutionFolder" xml:space="preserve">
+    <value>选择新解决方案的父文件夹</value>
+  </data>
+  <data name="Dialog_SelectConvertOutputFolder" xml:space="preserve">
+    <value>选择转换后 TBLX 文件的输出文件夹</value>
+  </data>
+  <data name="Dialog_AddProjectReference" xml:space="preserve">
+    <value>添加项目引用</value>
+  </data>
+  <data name="Filter_ProjectFiles" xml:space="preserve">
+    <value>项目文件 (*.csproj;*.vbproj;*.fsproj)|*.csproj;*.vbproj;*.fsproj|所有文件 (*.*)|*.*</value>
+  </data>
+  <data name="Dialog_AddAssemblyReference" xml:space="preserve">
+    <value>添加程序集引用</value>
+  </data>
+  <data name="Filter_AssemblyFiles" xml:space="preserve">
+    <value>程序集文件 (*.dll;*.exe)|*.dll;*.exe|所有文件 (*.*)|*.*</value>
+  </data>
+  <data name="Dialog_SelectOutputDirectory" xml:space="preserve">
+    <value>选择输出目录</value>
+  </data>
+  <data name="Dialog_SelectIcon" xml:space="preserve">
+    <value>选择图标</value>
+  </data>
+  <data name="Filter_IconFiles" xml:space="preserve">
+    <value>图标 (*.ico)|*.ico|所有文件 (*.*)|*.*</value>
+  </data>
+  <data name="Dialog_SelectProjectToReference" xml:space="preserve">
+    <value>选择要引用的项目</value>
+  </data>
+  <data name="Filter_CsharpProjects" xml:space="preserve">
+    <value>C# 项目 (*.csproj)|*.csproj|所有项目 (*.csproj;*.vbproj;*.fsproj)|*.csproj;*.vbproj;*.fsproj</value>
+  </data>
+  <data name="ProjectSystem_Ref_ProjectReferences" xml:space="preserve">
+    <value>项目引用</value>
+  </data>
+  <data name="ProjectSystem_Ref_Assemblies" xml:space="preserve">
+    <value>程序集</value>
+  </data>
+  <data name="ProjectSystem_Ref_Analyzers" xml:space="preserve">
+    <value>分析器</value>
+  </data>
+  <data name="ProjectSystem_Ref_NoReferenceSupport" xml:space="preserve">
+    <value>此项目类型不支持引用管理。</value>
+  </data>
+</root>

@@ -4,178 +4,553 @@
   <resheader name="version"><value>2.0</value></resheader>
   <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  <data name="BookmarksPanel_RefreshToolTip" xml:space="preserve"><value>Uppdatera bokmärken</value></data>
-  <data name="BookmarksPanel_ClearAllToolTip" xml:space="preserve"><value>Rensa alla bokmärken</value></data>
-  <data name="BookmarksPanel_EmptyCount" xml:space="preserve"><value>0 bokmärken</value></data>
-  <data name="BookmarksPanel_OffsetHeader" xml:space="preserve"><value>Förskjutning</value></data>
-  <data name="BookmarksPanel_DescriptionHeader" xml:space="preserve"><value>Beskrivning</value></data>
-  <data name="BookmarksPanel_CategoryHeader" xml:space="preserve"><value>Kategori</value></data>
-  <data name="BookmarksPanel_EmptyMessage" xml:space="preserve"><value>Inga bokmärken. Tryck Ctrl+F2 för att växla ett bokmärke i den aktiva redigeraren.</value></data>
-  <data name="ErrorPanel_ScopeEntireSolution" xml:space="preserve"><value>Hela lösningen</value></data>
-  <data name="ErrorPanel_ScopeCurrentProject" xml:space="preserve"><value>Aktuellt projekt</value></data>
-  <data name="ErrorPanel_ScopeCurrentDocument" xml:space="preserve"><value>Aktuellt dokument</value></data>
-  <data name="ErrorPanel_ScopeOpenDocuments" xml:space="preserve"><value>Öppna dokument</value></data>
-  <data name="ErrorPanel_ScopeChangedDocuments" xml:space="preserve"><value>Ändrade dokument</value></data>
-  <data name="ErrorPanel_OverflowButtonToolTip" xml:space="preserve"><value>Fler alternativ</value></data>
-  <data name="ErrorPanel_ShowErrorsMenu" xml:space="preserve"><value>Visa fel</value></data>
-  <data name="ErrorPanel_ShowWarningsMenu" xml:space="preserve"><value>Visa varningar</value></data>
-  <data name="ErrorPanel_ShowMessagesMenu" xml:space="preserve"><value>Visa meddelanden</value></data>
-  <data name="ErrorPanel_SearchPlaceholder" xml:space="preserve"><value>Sök...</value></data>
-  <data name="ErrorPanel_ErrorToggleToolTip" xml:space="preserve"><value>Visa/dölj fel</value></data>
-  <data name="ErrorPanel_ErrorCountText" xml:space="preserve"><value>0 fel</value></data>
-  <data name="ErrorPanel_WarningToggleToolTip" xml:space="preserve"><value>Visa/dölj varningar</value></data>
-  <data name="ErrorPanel_WarningCountText" xml:space="preserve"><value>0 varningar</value></data>
-  <data name="ErrorPanel_MessageToggleToolTip" xml:space="preserve"><value>Visa/dölj meddelanden</value></data>
-  <data name="ErrorPanel_MessageCountText" xml:space="preserve"><value>0 meddelanden</value></data>
-  <data name="ErrorPanel_CodeHeader" xml:space="preserve"><value>Kod</value></data>
-  <data name="ErrorPanel_DescriptionHeader" xml:space="preserve"><value>Beskrivning</value></data>
-  <data name="ErrorPanel_ProjectHeader" xml:space="preserve"><value>Projekt</value></data>
-  <data name="ErrorPanel_FileHeader" xml:space="preserve"><value>Fil</value></data>
-  <data name="ErrorPanel_OffsetHeader" xml:space="preserve"><value>Förskjutning</value></data>
-  <data name="ErrorPanel_LineColHeader" xml:space="preserve"><value>Rad:Kol</value></data>
-  <data name="PropertiesPanel_ContextLabel" xml:space="preserve"><value>Egenskaper</value></data>
-  <data name="PropertiesPanel_RefreshToolTip" xml:space="preserve"><value>Uppdatera egenskaper</value></data>
-  <data name="PropertiesPanel_OverflowToolTip" xml:space="preserve"><value>Fler alternativ</value></data>
-  <data name="PropertiesPanel_SortAlphabetically" xml:space="preserve"><value>Sortera alfabetiskt</value></data>
-  <data name="PropertiesPanel_CopyValue" xml:space="preserve"><value>Kopiera värde</value></data>
-  <data name="PropertiesPanel_SortToggleToolTip" xml:space="preserve"><value>Sortera egenskaper alfabetiskt</value></data>
-  <data name="PropertiesPanel_CopyButtonToolTip" xml:space="preserve"><value>Kopiera värdet för den valda egenskapen</value></data>
-  <data name="PropertiesPanel_SearchPlaceholder" xml:space="preserve"><value>Filtrera egenskaper…</value></data>
-  <data name="PropertiesPanel_OpenFolderToolTip" xml:space="preserve"><value>Öppna innehållande mapp i Utforskaren</value></data>
-  <data name="PropertiesPanel_ThicknessLeft" xml:space="preserve"><value>Vänster</value></data>
-  <data name="PropertiesPanel_ThicknessTop" xml:space="preserve"><value>Överkant</value></data>
-  <data name="PropertiesPanel_ThicknessRight" xml:space="preserve"><value>Höger</value></data>
-  <data name="PropertiesPanel_ThicknessBottom" xml:space="preserve"><value>Underkant</value></data>
-  <data name="PropertiesPanel_ThicknessLLabel" xml:space="preserve"><value>V</value></data>
-  <data name="PropertiesPanel_ThicknessTLabel" xml:space="preserve"><value>Ö</value></data>
-  <data name="PropertiesPanel_ThicknessRLabel" xml:space="preserve"><value>H</value></data>
-  <data name="PropertiesPanel_ThicknessBLabel" xml:space="preserve"><value>U</value></data>
-  <data name="PropertiesPanel_ContextMenu_CopyValue" xml:space="preserve"><value>Kopiera värde</value></data>
-  <data name="PropertiesPanel_ContextMenu_CopyName" xml:space="preserve"><value>Kopiera namn</value></data>
-  <data name="PropertiesPanel_ResetToDefaultToolTip" xml:space="preserve"><value>Återställ till standard</value></data>
-  <data name="SolutionExplorer_ShowAllFilesToolTip" xml:space="preserve"><value>Visa alla filer</value></data>
-  <data name="SolutionExplorer_CollapseAllToolTip" xml:space="preserve"><value>Komprimera alla</value></data>
-  <data name="SolutionExplorer_SyncWithActiveDocToolTip" xml:space="preserve"><value>Synkronisera med aktivt dokument</value></data>
-  <data name="SolutionExplorer_RefreshToolTip" xml:space="preserve"><value>Uppdatera</value></data>
-  <data name="SolutionExplorer_SortToolTip" xml:space="preserve"><value>Sortera</value></data>
-  <data name="SolutionExplorer_SortNone" xml:space="preserve"><value>Inget</value></data>
-  <data name="SolutionExplorer_SortName" xml:space="preserve"><value>Namn</value></data>
-  <data name="SolutionExplorer_SortType" xml:space="preserve"><value>Typ</value></data>
-  <data name="SolutionExplorer_SortDateModified" xml:space="preserve"><value>Ändringsdatum</value></data>
-  <data name="SolutionExplorer_SortSize" xml:space="preserve"><value>Storlek</value></data>
-  <data name="SolutionExplorer_FilterToolTip" xml:space="preserve"><value>Filtrera</value></data>
-  <data name="SolutionExplorer_FilterAll" xml:space="preserve"><value>Alla</value></data>
-  <data name="SolutionExplorer_FilterBinary" xml:space="preserve"><value>Binär</value></data>
-  <data name="SolutionExplorer_FilterText" xml:space="preserve"><value>Text</value></data>
-  <data name="SolutionExplorer_FilterImages" xml:space="preserve"><value>Bilder</value></data>
-  <data name="SolutionExplorer_FilterLanguage" xml:space="preserve"><value>Språk</value></data>
-  <data name="SolutionExplorer_SearchPlaceholder" xml:space="preserve"><value>Sök i Lösningsutforskaren (Ctrl+;)</value></data>
-  <data name="SolutionExplorer_SearchModeFileName" xml:space="preserve"><value>Filnamn</value></data>
-  <data name="SolutionExplorer_SearchModeNameContent" xml:space="preserve"><value>Namn + Innehåll</value></data>
-  <data name="SolutionExplorer_SearchModeContentOnly" xml:space="preserve"><value>Endast innehåll</value></data>
-  <data name="SolutionExplorer_SearchModeRegex" xml:space="preserve"><value>Regex (filnamn)</value></data>
-  <data name="SolutionExplorer_SolutionFolderTooltip" xml:space="preserve"><value>Lösningsmapp (logisk)</value></data>
-  <data name="SolutionExplorer_PhysicalFolderTooltip" xml:space="preserve"><value>Fysisk mapp</value></data>
-  <data name="SolutionExplorer_PropertiesFolderTooltip" xml:space="preserve"><value>Egenskapsmapp</value></data>
-  <data name="SolutionExplorer_BuildDirtyIndicator" xml:space="preserve"><value>Projektet har ändringar sedan senaste bygget (Ctrl+Alt+F7 för att bygga)</value></data>
-  <data name="SolutionExplorer_UnsavedModifications" xml:space="preserve"><value>Osparade ändringar</value></data>
-  <data name="SolutionExplorer_ExternalFileIndicator" xml:space="preserve"><value>Filen finns utanför projektkatalogen</value></data>
-  <data name="SolutionExplorer_ExternalModIndicator" xml:space="preserve"><value>Externt ändrad — överväg att ladda om</value></data>
-  <data name="SolutionExplorer_LoadingIndicator" xml:space="preserve"><value>Läser in…</value></data>
-  <data name="SolutionExplorer_GoToDefinition" xml:space="preserve"><value>Gå till definition</value></data>
-  <data name="SolutionExplorer_Open" xml:space="preserve"><value>Öppna</value></data>
-  <data name="SolutionExplorer_OpenWith" xml:space="preserve"><value>Öppna med</value></data>
-  <data name="SolutionExplorer_OpenWithHexEditor" xml:space="preserve"><value>Hex-redigerare</value></data>
-  <data name="SolutionExplorer_Add" xml:space="preserve"><value>Lägg till</value></data>
-  <data name="SolutionExplorer_AddNewItem" xml:space="preserve"><value>Lägg till nytt objekt...</value></data>
-  <data name="SolutionExplorer_AddExistingItem" xml:space="preserve"><value>Lägg till befintligt objekt...</value></data>
-  <data name="SolutionExplorer_ImportFormat" xml:space="preserve"><value>Importera inbyggt format...</value></data>
-  <data name="SolutionExplorer_ImportSyntax" xml:space="preserve"><value>Importera inbyggd syntax...</value></data>
-  <data name="SolutionExplorer_NewFolder" xml:space="preserve"><value>Ny mapp</value></data>
-  <data name="SolutionExplorer_NewSolutionFolder" xml:space="preserve"><value>Ny lösningsmapp</value></data>
-  <data name="SolutionExplorer_AddExistingFolder" xml:space="preserve"><value>Lägg till befintlig mapp...</value></data>
-  <data name="SolutionExplorer_IncludeInProject" xml:space="preserve"><value>Inkludera i projektet</value></data>
-  <data name="SolutionExplorer_SetDefaultTbl" xml:space="preserve"><value>Ange som standard-TBL</value></data>
-  <data name="SolutionExplorer_ClearDefaultTbl" xml:space="preserve"><value>Rensa standard-TBL</value></data>
-  <data name="SolutionExplorer_ConvertToTblx" xml:space="preserve"><value>Konvertera till TBLX...</value></data>
-  <data name="SolutionExplorer_ApplyTblToActive" xml:space="preserve"><value>Tillämpa på aktivt dokument</value></data>
-  <data name="SolutionExplorer_ApplyTblToAll" xml:space="preserve"><value>Tillämpa på alla dokument</value></data>
-  <data name="SolutionExplorer_OpenInExplorer" xml:space="preserve"><value>Öppna i Utforskaren</value></data>
-  <data name="SolutionExplorer_CopyPath" xml:space="preserve"><value>Kopiera sökväg</value></data>
-  <data name="SolutionExplorer_Copy" xml:space="preserve"><value>Kopiera</value></data>
-  <data name="SolutionExplorer_Cut" xml:space="preserve"><value>Klipp ut</value></data>
-  <data name="SolutionExplorer_Paste" xml:space="preserve"><value>Klistra in</value></data>
-  <data name="SolutionExplorer_Rename" xml:space="preserve"><value>Byt namn</value></data>
-  <data name="SolutionExplorer_RemoveFromProject" xml:space="preserve"><value>Ta bort från projektet</value></data>
-  <data name="SolutionExplorer_Delete" xml:space="preserve"><value>Ta bort</value></data>
-  <data name="SolutionExplorer_ExcludeFromProject" xml:space="preserve"><value>Exkludera från projektet</value></data>
-  <data name="SolutionExplorer_ImportIntoProject" xml:space="preserve"><value>Importera till projekt...</value></data>
-  <data name="SolutionExplorer_ApplyToDisk" xml:space="preserve"><value>Tillämpa på disk</value></data>
-  <data name="SolutionExplorer_DiscardChanges" xml:space="preserve"><value>Ignorera ändringar</value></data>
-  <data name="SolutionExplorer_Build" xml:space="preserve"><value>Bygg</value></data>
-  <data name="SolutionExplorer_Rebuild" xml:space="preserve"><value>Återbygg</value></data>
-  <data name="SolutionExplorer_Clean" xml:space="preserve"><value>Rensa</value></data>
-  <data name="SolutionExplorer_SetAsStartup" xml:space="preserve"><value>Ange som startprojekt</value></data>
-  <data name="SolutionExplorer_AddReference" xml:space="preserve"><value>Lägg till referens…</value></data>
-  <data name="SolutionExplorer_RemoveUnusedReferences" xml:space="preserve"><value>Ta bort oanvända referenser…</value></data>
-  <data name="SolutionExplorer_ManageNugetPackages" xml:space="preserve"><value>Hantera NuGet-paket…</value></data>
-  <data name="SolutionExplorer_ManageNugetPackagesSolution" xml:space="preserve"><value>Hantera NuGet-paket för lösningen…</value></data>
-  <data name="SolutionExplorer_Properties" xml:space="preserve"><value>Egenskaper</value></data>
-  <data name="SolutionExplorer_SaveAll" xml:space="preserve"><value>Spara alla</value></data>
-  <data name="SolutionExplorer_CloseSolution" xml:space="preserve"><value>Stäng lösning</value></data>
-  <data name="WhfmtBrowser_LoadFailureIndicator" xml:space="preserve"><value>Ett eller flera format kunde inte läsas in</value></data>
-  <data name="WhfmtBrowser_OpenInEditorToolTip" xml:space="preserve"><value>Öppna i strukturredigeraren</value></data>
-  <data name="WhfmtBrowser_ExportToFileToolTip" xml:space="preserve"><value>Exportera till fil…</value></data>
-  <data name="WhfmtBrowser_ViewJsonToolTip" xml:space="preserve"><value>Visa JSON</value></data>
-  <data name="WhfmtBrowser_Open" xml:space="preserve"><value>Öppna</value></data>
-  <data name="WhfmtBrowser_OpenReadOnly" xml:space="preserve"><value>Öppna skrivskyddat</value></data>
-  <data name="WhfmtBrowser_ExportToFile" xml:space="preserve"><value>Exportera till fil…</value></data>
-  <data name="WhfmtBrowser_ViewJson" xml:space="preserve"><value>Visa JSON</value></data>
-  <data name="WhfmtBrowser_CopyPath" xml:space="preserve"><value>Kopiera sökväg</value></data>
-  <data name="WhfmtBrowser_Delete" xml:space="preserve"><value>Ta bort</value></data>
-  <data name="WhfmtBrowser_RevealInExplorer" xml:space="preserve"><value>Visa i Utforskaren</value></data>
-  <data name="WhfmtBrowser_DuplicateFormat" xml:space="preserve"><value>Duplicera format…</value></data>
-  <data name="WhfmtBrowser_EditInCodeEditor" xml:space="preserve"><value>Redigera i kodredigeraren</value></data>
-  <data name="WhfmtCatalog_NameHeader" xml:space="preserve"><value>Namn</value></data>
-  <data name="WhfmtCatalog_CategoryHeader" xml:space="preserve"><value>Kategori</value></data>
-  <data name="WhfmtCatalog_ExtensionsHeader" xml:space="preserve"><value>Tillägg</value></data>
-  <data name="WhfmtCatalog_VersionHeader" xml:space="preserve"><value>Version</value></data>
-  <data name="WhfmtCatalog_QualityHeader" xml:space="preserve"><value>Kvalitet</value></data>
-  <data name="WhfmtCatalog_AuthorHeader" xml:space="preserve"><value>Författare</value></data>
-  <data name="WhfmtCatalog_SourceHeader" xml:space="preserve"><value>Källa</value></data>
-  <data name="WhfmtCatalog_Open" xml:space="preserve"><value>Öppna</value></data>
-  <data name="WhfmtCatalog_OpenReadOnly" xml:space="preserve"><value>Öppna skrivskyddat</value></data>
-  <data name="WhfmtCatalog_ExportToFile" xml:space="preserve"><value>Exportera till fil…</value></data>
-  <data name="WhfmtCatalog_ViewJson" xml:space="preserve"><value>Visa JSON</value></data>
-  <data name="WhfmtCatalog_RevealInExplorer" xml:space="preserve"><value>Visa i Utforskaren</value></data>
-  <data name="WhfmtCatalog_ErrorText" xml:space="preserve"><value> Fel</value></data>
-  <data name="WhfmtDetail_EmptyPlaceholder" xml:space="preserve"><value>Välj ett format för att se detaljer.</value></data>
-  <data name="WhfmtDetail_OpenInEditorToolTip" xml:space="preserve"><value>Öppna i strukturredigeraren</value></data>
-  <data name="WhfmtDetail_ExportToFileToolTip" xml:space="preserve"><value>Exportera till fil…</value></data>
-  <data name="WhfmtDetail_ViewRawJsonToolTip" xml:space="preserve"><value>Visa rå JSON</value></data>
-  <data name="WhfmtDetail_RetryLoadToolTip" xml:space="preserve"><value>Försök läsa in det här formatet igen</value></data>
-  <data name="WhfmtDetail_ExcludeFromCatalogToolTip" xml:space="preserve"><value>Exkludera det här formatet från katalogen</value></data>
-  <data name="WhfmtDetail_FormatLoadedSuccessfully" xml:space="preserve"><value>Format inläst</value></data>
-  <data name="WhfmtDetail_FormatLoadFailed" xml:space="preserve"><value>Det gick inte att läsa in formatet</value></data>
-  <data name="WhfmtDetail_OverviewTab" xml:space="preserve"><value>Översikt</value></data>
-  <data name="WhfmtDetail_VersionLabel" xml:space="preserve"><value>Version</value></data>
-  <data name="WhfmtDetail_AuthorLabel" xml:space="preserve"><value>Författare</value></data>
-  <data name="WhfmtDetail_CategoryLabel" xml:space="preserve"><value>Kategori</value></data>
-  <data name="WhfmtDetail_PlatformLabel" xml:space="preserve"><value>Plattform</value></data>
-  <data name="WhfmtDetail_EditorLabel" xml:space="preserve"><value>Redigerare</value></data>
-  <data name="WhfmtDetail_DiffLabel" xml:space="preserve"><value>Diff</value></data>
-  <data name="WhfmtDetail_StatusLabel" xml:space="preserve"><value>Status</value></data>
-  <data name="WhfmtDetail_ExtensionsLabel" xml:space="preserve"><value>Tillägg</value></data>
-  <data name="WhfmtDetail_QualityScoreLabel" xml:space="preserve"><value>Kvalitetspoäng</value></data>
-  <data name="WhfmtDetail_DetectionLabel" xml:space="preserve"><value>Identifiering</value></data>
-  <data name="WhfmtDetail_BlocksLabel" xml:space="preserve"><value>Block</value></data>
-  <data name="WhfmtDetail_LoadErrorTitle" xml:space="preserve"><value>Inläsningsfel</value></data>
-  <data name="WhfmtDetail_ReferencesTab" xml:space="preserve"><value>Referenser</value></data>
-  <data name="WhfmtDetail_SpecificationsLabel" xml:space="preserve"><value>Specifikationer</value></data>
-  <data name="WhfmtDetail_WebLinksLabel" xml:space="preserve"><value>Webblänkar</value></data>
-  <data name="WhfmtDetail_AssertionsTab" xml:space="preserve"><value>Kontroller</value></data>
-  <data name="WhfmtDetail_AIHintsTab" xml:space="preserve"><value>AI-tips</value></data>
-  <data name="WhfmtDetail_AnalysisContextLabel" xml:space="preserve"><value>Analyskontext</value></data>
-  <data name="WhfmtDetail_KnownVulnerabilitiesLabel" xml:space="preserve"><value>Kända sårbarheter</value></data>
-  <data name="WhfmtDetail_JsonTab" xml:space="preserve"><value>JSON</value></data>
+  <data name="BookmarksPanel_RefreshToolTip" xml:space="preserve">
+    <value>Uppdatera bokmärken</value>
+  </data>
+  <data name="BookmarksPanel_ClearAllToolTip" xml:space="preserve">
+    <value>Rensa alla bokmärken</value>
+  </data>
+  <data name="BookmarksPanel_EmptyCount" xml:space="preserve">
+    <value>0 bokmärken</value>
+  </data>
+  <data name="BookmarksPanel_OffsetHeader" xml:space="preserve">
+    <value>Offset</value>
+  </data>
+  <data name="BookmarksPanel_DescriptionHeader" xml:space="preserve">
+    <value>Beskrivning</value>
+  </data>
+  <data name="BookmarksPanel_CategoryHeader" xml:space="preserve">
+    <value>Kategori</value>
+  </data>
+  <data name="BookmarksPanel_EmptyMessage" xml:space="preserve">
+    <value>Inga bokmärken. Tryck Ctrl+F2 för att växla ett bokmärke i den aktiva redigeraren.</value>
+  </data>
+  <data name="ErrorPanel_ScopeEntireSolution" xml:space="preserve">
+    <value>Hela lösningen</value>
+  </data>
+  <data name="ErrorPanel_ScopeCurrentProject" xml:space="preserve">
+    <value>Aktuellt projekt</value>
+  </data>
+  <data name="ErrorPanel_ScopeCurrentDocument" xml:space="preserve">
+    <value>Aktuellt dokument</value>
+  </data>
+  <data name="ErrorPanel_ScopeOpenDocuments" xml:space="preserve">
+    <value>Öppna dokument</value>
+  </data>
+  <data name="ErrorPanel_ScopeChangedDocuments" xml:space="preserve">
+    <value>Ändrade dokument</value>
+  </data>
+  <data name="ErrorPanel_OverflowButtonToolTip" xml:space="preserve">
+    <value>Fler alternativ</value>
+  </data>
+  <data name="ErrorPanel_ShowErrorsMenu" xml:space="preserve">
+    <value>Visa fel</value>
+  </data>
+  <data name="ErrorPanel_ShowWarningsMenu" xml:space="preserve">
+    <value>Visa varningar</value>
+  </data>
+  <data name="ErrorPanel_ShowMessagesMenu" xml:space="preserve">
+    <value>Visa meddelanden</value>
+  </data>
+  <data name="ErrorPanel_SearchPlaceholder" xml:space="preserve">
+    <value>Sök...</value>
+  </data>
+  <data name="ErrorPanel_ErrorToggleToolTip" xml:space="preserve">
+    <value>Visa/dölj fel</value>
+  </data>
+  <data name="ErrorPanel_ErrorCountText" xml:space="preserve">
+    <value>0 fel</value>
+  </data>
+  <data name="ErrorPanel_WarningToggleToolTip" xml:space="preserve">
+    <value>Visa/dölj varningar</value>
+  </data>
+  <data name="ErrorPanel_WarningCountText" xml:space="preserve">
+    <value>0 varningar</value>
+  </data>
+  <data name="ErrorPanel_MessageToggleToolTip" xml:space="preserve">
+    <value>Visa/dölj meddelanden</value>
+  </data>
+  <data name="ErrorPanel_MessageCountText" xml:space="preserve">
+    <value>0 meddelanden</value>
+  </data>
+  <data name="ErrorPanel_CodeHeader" xml:space="preserve">
+    <value>Kod</value>
+  </data>
+  <data name="ErrorPanel_DescriptionHeader" xml:space="preserve">
+    <value>Beskrivning</value>
+  </data>
+  <data name="ErrorPanel_ProjectHeader" xml:space="preserve">
+    <value>Projekt</value>
+  </data>
+  <data name="ErrorPanel_FileHeader" xml:space="preserve">
+    <value>Fil</value>
+  </data>
+  <data name="ErrorPanel_OffsetHeader" xml:space="preserve">
+    <value>Offset</value>
+  </data>
+  <data name="ErrorPanel_LineColHeader" xml:space="preserve">
+    <value>Rad:Kol</value>
+  </data>
+  <data name="PropertiesPanel_ContextLabel" xml:space="preserve">
+    <value>Egenskaper</value>
+  </data>
+  <data name="PropertiesPanel_RefreshToolTip" xml:space="preserve">
+    <value>Uppdatera egenskaper</value>
+  </data>
+  <data name="PropertiesPanel_OverflowToolTip" xml:space="preserve">
+    <value>Fler alternativ</value>
+  </data>
+  <data name="PropertiesPanel_SortAlphabetically" xml:space="preserve">
+    <value>Sortera alfabetiskt</value>
+  </data>
+  <data name="PropertiesPanel_CopyValue" xml:space="preserve">
+    <value>Kopiera värde</value>
+  </data>
+  <data name="PropertiesPanel_SortToggleToolTip" xml:space="preserve">
+    <value>Sortera egenskaper alfabetiskt</value>
+  </data>
+  <data name="PropertiesPanel_CopyButtonToolTip" xml:space="preserve">
+    <value>Kopiera valt egenskapsvärde</value>
+  </data>
+  <data name="PropertiesPanel_SearchPlaceholder" xml:space="preserve">
+    <value>Filtrera egenskaper…</value>
+  </data>
+  <data name="PropertiesPanel_OpenFolderToolTip" xml:space="preserve">
+    <value>Öppna innehållande mapp i Utforskaren</value>
+  </data>
+  <data name="PropertiesPanel_ThicknessLeft" xml:space="preserve">
+    <value>Vänster</value>
+  </data>
+  <data name="PropertiesPanel_ThicknessTop" xml:space="preserve">
+    <value>Överkant</value>
+  </data>
+  <data name="PropertiesPanel_ThicknessRight" xml:space="preserve">
+    <value>Höger</value>
+  </data>
+  <data name="PropertiesPanel_ThicknessBottom" xml:space="preserve">
+    <value>Nederkant</value>
+  </data>
+  <data name="PropertiesPanel_ThicknessLLabel" xml:space="preserve">
+    <value>V</value>
+  </data>
+  <data name="PropertiesPanel_ThicknessTLabel" xml:space="preserve">
+    <value>Ö</value>
+  </data>
+  <data name="PropertiesPanel_ThicknessRLabel" xml:space="preserve">
+    <value>H</value>
+  </data>
+  <data name="PropertiesPanel_ThicknessBLabel" xml:space="preserve">
+    <value>N</value>
+  </data>
+  <data name="PropertiesPanel_ContextMenu_CopyValue" xml:space="preserve">
+    <value>Kopiera värde</value>
+  </data>
+  <data name="PropertiesPanel_ContextMenu_CopyName" xml:space="preserve">
+    <value>Kopiera namn</value>
+  </data>
+  <data name="PropertiesPanel_ResetToDefaultToolTip" xml:space="preserve">
+    <value>Återställ till standard</value>
+  </data>
+  <data name="SolutionExplorer_ShowAllFilesToolTip" xml:space="preserve">
+    <value>Visa alla filer</value>
+  </data>
+  <data name="SolutionExplorer_CollapseAllToolTip" xml:space="preserve">
+    <value>Komprimera alla</value>
+  </data>
+  <data name="SolutionExplorer_SyncWithActiveDocToolTip" xml:space="preserve">
+    <value>Synkronisera med aktivt dokument</value>
+  </data>
+  <data name="SolutionExplorer_RefreshToolTip" xml:space="preserve">
+    <value>Uppdatera</value>
+  </data>
+  <data name="SolutionExplorer_SortToolTip" xml:space="preserve">
+    <value>Sortera</value>
+  </data>
+  <data name="SolutionExplorer_SortNone" xml:space="preserve">
+    <value>Inga</value>
+  </data>
+  <data name="SolutionExplorer_SortName" xml:space="preserve">
+    <value>Namn</value>
+  </data>
+  <data name="SolutionExplorer_SortType" xml:space="preserve">
+    <value>Typ</value>
+  </data>
+  <data name="SolutionExplorer_SortDateModified" xml:space="preserve">
+    <value>Datum ändrat</value>
+  </data>
+  <data name="SolutionExplorer_SortSize" xml:space="preserve">
+    <value>Storlek</value>
+  </data>
+  <data name="SolutionExplorer_FilterToolTip" xml:space="preserve">
+    <value>Filtrera</value>
+  </data>
+  <data name="SolutionExplorer_FilterAll" xml:space="preserve">
+    <value>Alla</value>
+  </data>
+  <data name="SolutionExplorer_FilterBinary" xml:space="preserve">
+    <value>Binär</value>
+  </data>
+  <data name="SolutionExplorer_FilterText" xml:space="preserve">
+    <value>Text</value>
+  </data>
+  <data name="SolutionExplorer_FilterImages" xml:space="preserve">
+    <value>Bilder</value>
+  </data>
+  <data name="SolutionExplorer_FilterLanguage" xml:space="preserve">
+    <value>Språk</value>
+  </data>
+  <data name="SolutionExplorer_SearchPlaceholder" xml:space="preserve">
+    <value>Sök i Solution Explorer (Ctrl+;)</value>
+  </data>
+  <data name="SolutionExplorer_SearchModeFileName" xml:space="preserve">
+    <value>Filnamn</value>
+  </data>
+  <data name="SolutionExplorer_SearchModeNameContent" xml:space="preserve">
+    <value>Namn + innehåll</value>
+  </data>
+  <data name="SolutionExplorer_SearchModeContentOnly" xml:space="preserve">
+    <value>Endast innehåll</value>
+  </data>
+  <data name="SolutionExplorer_SearchModeRegex" xml:space="preserve">
+    <value>Regex (filnamn)</value>
+  </data>
+  <data name="SolutionExplorer_SolutionFolderTooltip" xml:space="preserve">
+    <value>Lösningskatalog (logisk)</value>
+  </data>
+  <data name="SolutionExplorer_PhysicalFolderTooltip" xml:space="preserve">
+    <value>Fysisk katalog</value>
+  </data>
+  <data name="SolutionExplorer_PropertiesFolderTooltip" xml:space="preserve">
+    <value>Egenskapskatalog</value>
+  </data>
+  <data name="SolutionExplorer_BuildDirtyIndicator" xml:space="preserve">
+    <value>Projektet har ändringar sedan senaste bygge (Ctrl+Alt+F7 för att bygga)</value>
+  </data>
+  <data name="SolutionExplorer_UnsavedModifications" xml:space="preserve">
+    <value>Osparade ändringar</value>
+  </data>
+  <data name="SolutionExplorer_ExternalFileIndicator" xml:space="preserve">
+    <value>Filen finns utanför projektkatalogen</value>
+  </data>
+  <data name="SolutionExplorer_ExternalModIndicator" xml:space="preserve">
+    <value>Ändrad externt — överväg att ladda om</value>
+  </data>
+  <data name="SolutionExplorer_LoadingIndicator" xml:space="preserve">
+    <value>Laddar…</value>
+  </data>
+  <data name="SolutionExplorer_GoToDefinition" xml:space="preserve">
+    <value>Gå till definition</value>
+  </data>
+  <data name="SolutionExplorer_Open" xml:space="preserve">
+    <value>Öppna</value>
+  </data>
+  <data name="SolutionExplorer_OpenWith" xml:space="preserve">
+    <value>Öppna med</value>
+  </data>
+  <data name="SolutionExplorer_OpenWithHexEditor" xml:space="preserve">
+    <value>Hex-redigerare</value>
+  </data>
+  <data name="SolutionExplorer_Add" xml:space="preserve">
+    <value>Lägg till</value>
+  </data>
+  <data name="SolutionExplorer_AddNewItem" xml:space="preserve">
+    <value>Lägg till nytt objekt...</value>
+  </data>
+  <data name="SolutionExplorer_AddExistingItem" xml:space="preserve">
+    <value>Lägg till befintligt objekt...</value>
+  </data>
+  <data name="SolutionExplorer_ImportFormat" xml:space="preserve">
+    <value>Importera inbyggt format...</value>
+  </data>
+  <data name="SolutionExplorer_ImportSyntax" xml:space="preserve">
+    <value>Importera inbyggd syntax...</value>
+  </data>
+  <data name="SolutionExplorer_NewFolder" xml:space="preserve">
+    <value>Ny mapp</value>
+  </data>
+  <data name="SolutionExplorer_NewSolutionFolder" xml:space="preserve">
+    <value>Ny lösningskatalog</value>
+  </data>
+  <data name="SolutionExplorer_AddExistingFolder" xml:space="preserve">
+    <value>Lägg till befintlig mapp...</value>
+  </data>
+  <data name="SolutionExplorer_IncludeInProject" xml:space="preserve">
+    <value>Inkludera i projekt</value>
+  </data>
+  <data name="SolutionExplorer_SetDefaultTbl" xml:space="preserve">
+    <value>Ange som standard-TBL</value>
+  </data>
+  <data name="SolutionExplorer_ClearDefaultTbl" xml:space="preserve">
+    <value>Rensa standard-TBL</value>
+  </data>
+  <data name="SolutionExplorer_ConvertToTblx" xml:space="preserve">
+    <value>Konvertera till TBLX...</value>
+  </data>
+  <data name="SolutionExplorer_ApplyTblToActive" xml:space="preserve">
+    <value>Tillämpa på aktivt dokument</value>
+  </data>
+  <data name="SolutionExplorer_ApplyTblToAll" xml:space="preserve">
+    <value>Tillämpa på alla dokument</value>
+  </data>
+  <data name="SolutionExplorer_OpenInExplorer" xml:space="preserve">
+    <value>Öppna i Utforskaren</value>
+  </data>
+  <data name="SolutionExplorer_CopyPath" xml:space="preserve">
+    <value>Kopiera sökväg</value>
+  </data>
+  <data name="SolutionExplorer_Copy" xml:space="preserve">
+    <value>Kopiera</value>
+  </data>
+  <data name="SolutionExplorer_Cut" xml:space="preserve">
+    <value>Klipp</value>
+  </data>
+  <data name="SolutionExplorer_Paste" xml:space="preserve">
+    <value>Klistra in</value>
+  </data>
+  <data name="SolutionExplorer_Rename" xml:space="preserve">
+    <value>Byt namn</value>
+  </data>
+  <data name="SolutionExplorer_RemoveFromProject" xml:space="preserve">
+    <value>Ta bort från projekt</value>
+  </data>
+  <data name="SolutionExplorer_Delete" xml:space="preserve">
+    <value>Ta bort</value>
+  </data>
+  <data name="SolutionExplorer_ExcludeFromProject" xml:space="preserve">
+    <value>Uteslut från projekt</value>
+  </data>
+  <data name="SolutionExplorer_ImportIntoProject" xml:space="preserve">
+    <value>Importera till projekt...</value>
+  </data>
+  <data name="SolutionExplorer_ApplyToDisk" xml:space="preserve">
+    <value>Tillämpa på disk</value>
+  </data>
+  <data name="SolutionExplorer_DiscardChanges" xml:space="preserve">
+    <value>Ignorera ändringar</value>
+  </data>
+  <data name="SolutionExplorer_Build" xml:space="preserve">
+    <value>Bygg</value>
+  </data>
+  <data name="SolutionExplorer_Rebuild" xml:space="preserve">
+    <value>Bygg om</value>
+  </data>
+  <data name="SolutionExplorer_Clean" xml:space="preserve">
+    <value>Rensa</value>
+  </data>
+  <data name="SolutionExplorer_SetAsStartup" xml:space="preserve">
+    <value>Ange som startprojekt</value>
+  </data>
+  <data name="SolutionExplorer_AddReference" xml:space="preserve">
+    <value>Lägg till referens…</value>
+  </data>
+  <data name="SolutionExplorer_RemoveUnusedReferences" xml:space="preserve">
+    <value>Ta bort oanvända referenser…</value>
+  </data>
+  <data name="SolutionExplorer_ManageNugetPackages" xml:space="preserve">
+    <value>Hantera NuGet-paket…</value>
+  </data>
+  <data name="SolutionExplorer_ManageNugetPackagesSolution" xml:space="preserve">
+    <value>Hantera NuGet-paket för lösning…</value>
+  </data>
+  <data name="SolutionExplorer_Properties" xml:space="preserve">
+    <value>Egenskaper</value>
+  </data>
+  <data name="SolutionExplorer_SaveAll" xml:space="preserve">
+    <value>Spara alla</value>
+  </data>
+  <data name="SolutionExplorer_CloseSolution" xml:space="preserve">
+    <value>Stäng lösning</value>
+  </data>
+  <data name="WhfmtBrowser_LoadFailureIndicator" xml:space="preserve">
+    <value>Det gick inte att läsa in ett eller flera format</value>
+  </data>
+  <data name="WhfmtBrowser_OpenInEditorToolTip" xml:space="preserve">
+    <value>Öppna i strukturredigerare</value>
+  </data>
+  <data name="WhfmtBrowser_ExportToFileToolTip" xml:space="preserve">
+    <value>Exportera till fil…</value>
+  </data>
+  <data name="WhfmtBrowser_ViewJsonToolTip" xml:space="preserve">
+    <value>Visa JSON</value>
+  </data>
+  <data name="WhfmtBrowser_Open" xml:space="preserve">
+    <value>Öppna</value>
+  </data>
+  <data name="WhfmtBrowser_OpenReadOnly" xml:space="preserve">
+    <value>Öppna skrivskyddad</value>
+  </data>
+  <data name="WhfmtBrowser_ExportToFile" xml:space="preserve">
+    <value>Exportera till fil…</value>
+  </data>
+  <data name="WhfmtBrowser_ViewJson" xml:space="preserve">
+    <value>Visa JSON</value>
+  </data>
+  <data name="WhfmtBrowser_CopyPath" xml:space="preserve">
+    <value>Kopiera sökväg</value>
+  </data>
+  <data name="WhfmtBrowser_Delete" xml:space="preserve">
+    <value>Ta bort</value>
+  </data>
+  <data name="WhfmtBrowser_RevealInExplorer" xml:space="preserve">
+    <value>Visa i Utforskaren</value>
+  </data>
+  <data name="WhfmtBrowser_DuplicateFormat" xml:space="preserve">
+    <value>Duplicera format…</value>
+  </data>
+  <data name="WhfmtBrowser_EditInCodeEditor" xml:space="preserve">
+    <value>Redigera i kodredigerare</value>
+  </data>
+  <data name="WhfmtCatalog_NameHeader" xml:space="preserve">
+    <value>Namn</value>
+  </data>
+  <data name="WhfmtCatalog_CategoryHeader" xml:space="preserve">
+    <value>Kategori</value>
+  </data>
+  <data name="WhfmtCatalog_ExtensionsHeader" xml:space="preserve">
+    <value>Tillägg</value>
+  </data>
+  <data name="WhfmtCatalog_VersionHeader" xml:space="preserve">
+    <value>Version</value>
+  </data>
+  <data name="WhfmtCatalog_QualityHeader" xml:space="preserve">
+    <value>Kvalitet</value>
+  </data>
+  <data name="WhfmtCatalog_AuthorHeader" xml:space="preserve">
+    <value>Författare</value>
+  </data>
+  <data name="WhfmtCatalog_SourceHeader" xml:space="preserve">
+    <value>Källa</value>
+  </data>
+  <data name="WhfmtCatalog_Open" xml:space="preserve">
+    <value>Öppna</value>
+  </data>
+  <data name="WhfmtCatalog_OpenReadOnly" xml:space="preserve">
+    <value>Öppna skrivskyddad</value>
+  </data>
+  <data name="WhfmtCatalog_ExportToFile" xml:space="preserve">
+    <value>Exportera till fil…</value>
+  </data>
+  <data name="WhfmtCatalog_ViewJson" xml:space="preserve">
+    <value>Visa JSON</value>
+  </data>
+  <data name="WhfmtCatalog_RevealInExplorer" xml:space="preserve">
+    <value>Visa i Utforskaren</value>
+  </data>
+  <data name="WhfmtCatalog_ErrorText" xml:space="preserve">
+    <value>Fel</value>
+  </data>
+  <data name="WhfmtCatalog_LayoutLeft" xml:space="preserve">
+    <value>Detaljer till vänster</value>
+  </data>
+  <data name="WhfmtCatalog_LayoutRight" xml:space="preserve">
+    <value>Detaljer till höger</value>
+  </data>
+  <data name="WhfmtCatalog_LayoutTop" xml:space="preserve">
+    <value>Detaljer längst upp</value>
+  </data>
+  <data name="WhfmtCatalog_LayoutBottom" xml:space="preserve">
+    <value>Detaljer längst ned</value>
+  </data>
+  <data name="WhfmtCatalog_LayoutTooltip" xml:space="preserve">
+    <value>Detaljpanelens position</value>
+  </data>
+  <data name="WhfmtDetail_EmptyPlaceholder" xml:space="preserve">
+    <value>Välj ett format för att se detaljer.</value>
+  </data>
+  <data name="WhfmtDetail_OpenInEditorToolTip" xml:space="preserve">
+    <value>Öppna i strukturredigerare</value>
+  </data>
+  <data name="WhfmtDetail_ExportToFileToolTip" xml:space="preserve">
+    <value>Exportera till fil…</value>
+  </data>
+  <data name="WhfmtDetail_ViewRawJsonToolTip" xml:space="preserve">
+    <value>Visa rå JSON</value>
+  </data>
+  <data name="WhfmtDetail_RetryLoadToolTip" xml:space="preserve">
+    <value>Försök läsa in det här formatet igen</value>
+  </data>
+  <data name="WhfmtDetail_ExcludeFromCatalogToolTip" xml:space="preserve">
+    <value>Uteslut det här formatet från katalogen</value>
+  </data>
+  <data name="WhfmtDetail_FormatLoadedSuccessfully" xml:space="preserve">
+    <value>Format har laddats in</value>
+  </data>
+  <data name="WhfmtDetail_FormatLoadFailed" xml:space="preserve">
+    <value>Det gick inte att läsa in formatet</value>
+  </data>
+  <data name="WhfmtDetail_OverviewTab" xml:space="preserve">
+    <value>Översikt</value>
+  </data>
+  <data name="WhfmtDetail_VersionLabel" xml:space="preserve">
+    <value>Version</value>
+  </data>
+  <data name="WhfmtDetail_AuthorLabel" xml:space="preserve">
+    <value>Författare</value>
+  </data>
+  <data name="WhfmtDetail_CategoryLabel" xml:space="preserve">
+    <value>Kategori</value>
+  </data>
+  <data name="WhfmtDetail_PlatformLabel" xml:space="preserve">
+    <value>Plattform</value>
+  </data>
+  <data name="WhfmtDetail_EditorLabel" xml:space="preserve">
+    <value>Redigerare</value>
+  </data>
+  <data name="WhfmtDetail_DiffLabel" xml:space="preserve">
+    <value>Diff</value>
+  </data>
+  <data name="WhfmtDetail_StatusLabel" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="WhfmtDetail_ExtensionsLabel" xml:space="preserve">
+    <value>Tillägg</value>
+  </data>
+  <data name="WhfmtDetail_QualityScoreLabel" xml:space="preserve">
+    <value>Kvalitetspoäng</value>
+  </data>
+  <data name="WhfmtDetail_DetectionLabel" xml:space="preserve">
+    <value>Identifiering</value>
+  </data>
+  <data name="WhfmtDetail_BlocksLabel" xml:space="preserve">
+    <value>Block</value>
+  </data>
+  <data name="WhfmtDetail_LoadErrorTitle" xml:space="preserve">
+    <value>Laddningsfel</value>
+  </data>
+  <data name="WhfmtDetail_ReferencesTab" xml:space="preserve">
+    <value>Referenser</value>
+  </data>
+  <data name="WhfmtDetail_SpecificationsLabel" xml:space="preserve">
+    <value>Specifikationer</value>
+  </data>
+  <data name="WhfmtDetail_WebLinksLabel" xml:space="preserve">
+    <value>Webblänkar</value>
+  </data>
+  <data name="WhfmtDetail_AssertionsTab" xml:space="preserve">
+    <value>Påståenden</value>
+  </data>
+  <data name="WhfmtDetail_AIHintsTab" xml:space="preserve">
+    <value>AI-tips</value>
+  </data>
+  <data name="WhfmtDetail_AnalysisContextLabel" xml:space="preserve">
+    <value>Analyskontext</value>
+  </data>
+  <data name="WhfmtDetail_KnownVulnerabilitiesLabel" xml:space="preserve">
+    <value>Kända säkerhetsrisker</value>
+  </data>
+  <data name="WhfmtDetail_JsonTab" xml:space="preserve">
+    <value>JSON</value>
+  </data>
+  <data name="Whfmt_AddFormatTitle" xml:space="preserve">
+    <value>Lägg till formatdefinition</value>
+  </data>
+  <data name="Whfmt_AddFormatFilter" xml:space="preserve">
+    <value>Whfmt-definitioner (*.whfmt)|*.whfmt</value>
+  </data>
+  <data name="Whfmt_AddFormatError" xml:space="preserve">
+    <value>Lägg till format</value>
+  </data>
+  <data name="Whfmt_DeleteFormatTitle" xml:space="preserve">
+    <value>Ta bort format</value>
+  </data>
 </root>

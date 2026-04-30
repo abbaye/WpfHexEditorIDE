@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Validation_ProjectNameEmpty" xml:space="preserve">
+    <value>Projektnamnet får inte vara tomt.</value>
+  </data>
+  <data name="Dialog_ValidationTitle" xml:space="preserve">
+    <value>Validering</value>
+  </data>
+  <data name="Error_RenameProjectFailed" xml:space="preserve">
+    <value>Det gick inte att byta namn på projektet:</value>
+  </data>
+  <data name="Dialog_ErrorTitle" xml:space="preserve">
+    <value>Fel</value>
+  </data>
+  <data name="Error_CannotCreateOutputFolder" xml:space="preserve">
+    <value>Det går inte att skapa utdatamapp:</value>
+  </data>
+  <data name="Dialog_ConvertTblTitle" xml:space="preserve">
+    <value>Konvertera TBL</value>
+  </data>
+  <data name="Error_OutputPathIdenticalToSource" xml:space="preserve">
+    <value>Utdatasökvägen är identisk med källan. Välj en annan mapp.</value>
+  </data>
+  <data name="Dialog_RemoveReferenceTitle" xml:space="preserve">
+    <value>Ta bort referens</value>
+  </data>
+  <data name="Message_NoUnusedReferences" xml:space="preserve">
+    <value>Inga oanvända assembyreferenser hittades.</value>
+  </data>
+  <data name="Dialog_RemoveUnusedReferencesTitle" xml:space="preserve">
+    <value>Ta bort oanvända referenser</value>
+  </data>
+  <data name="Confirm_RemoveUnusedReferences" xml:space="preserve">
+    <value>Ta bort följande oanvända assemblyreferenser?</value>
+  </data>
+  <data name="Dialog_SelectFilesToAdd" xml:space="preserve">
+    <value>Välj fil(er) att lägga till</value>
+  </data>
+  <data name="Filter_AllFiles" xml:space="preserve">
+    <value>Alla filer (*.*)|*.*</value>
+  </data>
+  <data name="Dialog_SelectProjectFolder" xml:space="preserve">
+    <value>Välj överordnad mapp för det nya projektet</value>
+  </data>
+  <data name="Dialog_SelectFileFolder" xml:space="preserve">
+    <value>Välj mapp för den nya filen</value>
+  </data>
+  <data name="Dialog_SelectSolutionFolder" xml:space="preserve">
+    <value>Välj överordnad mapp för den nya lösningen</value>
+  </data>
+  <data name="Dialog_SelectConvertOutputFolder" xml:space="preserve">
+    <value>Välj utdatamapp för den konverterade TBLX-filen</value>
+  </data>
+  <data name="Dialog_AddProjectReference" xml:space="preserve">
+    <value>Lägg till projektreferens</value>
+  </data>
+  <data name="Filter_ProjectFiles" xml:space="preserve">
+    <value>Projektfiler (*.csproj;*.vbproj;*.fsproj)|*.csproj;*.vbproj;*.fsproj|Alla filer (*.*)|*.*</value>
+  </data>
+  <data name="Dialog_AddAssemblyReference" xml:space="preserve">
+    <value>Lägg till assemblyreferens</value>
+  </data>
+  <data name="Filter_AssemblyFiles" xml:space="preserve">
+    <value>Assemblyfiler (*.dll;*.exe)|*.dll;*.exe|Alla filer (*.*)|*.*</value>
+  </data>
+  <data name="Dialog_SelectOutputDirectory" xml:space="preserve">
+    <value>Välj utdatakatalog</value>
+  </data>
+  <data name="Dialog_SelectIcon" xml:space="preserve">
+    <value>Välj en ikon</value>
+  </data>
+  <data name="Filter_IconFiles" xml:space="preserve">
+    <value>Ikoner (*.ico)|*.ico|Alla filer (*.*)|*.*</value>
+  </data>
+  <data name="Dialog_SelectProjectToReference" xml:space="preserve">
+    <value>Välj ett projekt att referera</value>
+  </data>
+  <data name="Filter_CsharpProjects" xml:space="preserve">
+    <value>C#-projekt (*.csproj)|*.csproj|Alla projekt (*.csproj;*.vbproj;*.fsproj)|*.csproj;*.vbproj;*.fsproj</value>
+  </data>
+  <data name="ProjectSystem_Ref_ProjectReferences" xml:space="preserve">
+    <value>Projektreferenser</value>
+  </data>
+  <data name="ProjectSystem_Ref_Assemblies" xml:space="preserve">
+    <value>Sammansättningar</value>
+  </data>
+  <data name="ProjectSystem_Ref_Analyzers" xml:space="preserve">
+    <value>Analysverktyg</value>
+  </data>
+  <data name="ProjectSystem_Ref_NoReferenceSupport" xml:space="preserve">
+    <value>Den här projekttypen stöder inte referenshantering.</value>
+  </data>
+</root>

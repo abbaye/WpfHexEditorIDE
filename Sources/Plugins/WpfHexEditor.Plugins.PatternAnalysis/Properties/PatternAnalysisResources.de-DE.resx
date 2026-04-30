@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="PatternAnalysis_PluginName" xml:space="preserve">
+    <value>Musteranalyse</value>
+  </data>
+  <data name="PatternAnalysis_PanelTitle" xml:space="preserve">
+    <value>Musteranalyse</value>
+  </data>
+  <data name="PatternAnalysis_MenuItem" xml:space="preserve">
+    <value>_Musteranalyse</value>
+  </data>
+  <data name="PatternAnalysis_NoDataLoaded" xml:space="preserve">
+    <value>Keine Daten geladen</value>
+  </data>
+  <data name="PatternAnalysis_Entropy_VeryHigh" xml:space="preserve">
+    <value>Sehr hohe Entropie erkannt</value>
+  </data>
+  <data name="PatternAnalysis_Entropy_VeryHigh_Desc" xml:space="preserve">
+    <value>Daten sind möglicherweise verschlüsselt oder komprimiert (Entropie &gt; 7,5 Bit/Byte)</value>
+  </data>
+  <data name="PatternAnalysis_Entropy_VeryLow" xml:space="preserve">
+    <value>Sehr niedrige Entropie erkannt</value>
+  </data>
+  <data name="PatternAnalysis_Entropy_VeryLow_Desc" xml:space="preserve">
+    <value>Daten enthalten meist repetitive oder Null-Bytes (Entropie &lt; 2,0 Bit/Byte)</value>
+  </data>
+  <data name="PatternAnalysis_Entropy_Low" xml:space="preserve">
+    <value>Niedrige Zufälligkeit — Daten sind repetitiv oder strukturiert</value>
+  </data>
+  <data name="PatternAnalysis_Entropy_Medium" xml:space="preserve">
+    <value>Mittlere Zufälligkeit — typisch für gemischte oder komprimierte Daten</value>
+  </data>
+  <data name="PatternAnalysis_Entropy_High" xml:space="preserve">
+    <value>Hohe Zufälligkeit — Daten sind möglicherweise verschlüsselt oder stark komprimiert</value>
+  </data>
+  <data name="PatternAnalysis_ExtremelySkewed" xml:space="preserve">
+    <value>Extrem schiefe Verteilung</value>
+  </data>
+  <data name="PatternAnalysis_NoData" xml:space="preserve">
+    <value>Keine zu analysierenden Daten. Wählen Sie einen Bereich im Hex-Editor aus.</value>
+  </data>
+</root>

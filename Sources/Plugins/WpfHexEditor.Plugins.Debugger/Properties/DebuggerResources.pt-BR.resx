@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Debugger_BreakpointsPanelTitle" xml:space="preserve">
+    <value>Pontos de interrupção</value>
+  </data>
+  <data name="Debugger_CallStackPanelTitle" xml:space="preserve">
+    <value>Pilha de chamadas</value>
+  </data>
+  <data name="Debugger_LocalsPanelTitle" xml:space="preserve">
+    <value>Variáveis locais</value>
+  </data>
+  <data name="Debugger_WatchPanelTitle" xml:space="preserve">
+    <value>Inspeção</value>
+  </data>
+  <data name="Debugger_ConsolePanelTitle" xml:space="preserve">
+    <value>Console de depuração</value>
+  </data>
+  <data name="Debugger_NoValidBreakpoints" xml:space="preserve">
+    <value>Nenhum ponto de interrupção válido encontrado no arquivo.</value>
+  </data>
+  <data name="Debugger_LaunchConfigTitle" xml:space="preserve">
+    <value>Configuração de inicialização (.whdbg)</value>
+  </data>
+  <data name="Debugger_NoFileLoaded" xml:space="preserve">
+    <value>Nenhum arquivo carregado. Clique em Abrir primeiro.</value>
+  </data>
+  <data name="Debugger_ServiceNotAvailable" xml:space="preserve">
+    <value>IDebuggerService não disponível.</value>
+  </data>
+  <data name="Debugger_NoConfigLoaded" xml:space="preserve">
+    <value>Nenhuma configuração carregada.</value>
+  </data>
+  <data name="Debugger_NoConfigsArray" xml:space="preserve">
+    <value>Nenhuma matriz 'configurations' encontrada no arquivo .whdbg.</value>
+  </data>
+  <data name="Debugger_NoMatchingConfig" xml:space="preserve">
+    <value>Nenhuma configuração correspondente encontrada.</value>
+  </data>
+  <data name="Debugger_ImportBreakpoints" xml:space="preserve">
+    <value>Importar pontos de interrupção do VS XML</value>
+  </data>
+  <data name="Debugger_ExportBreakpoints" xml:space="preserve">
+    <value>Exportar pontos de interrupção para VS XML</value>
+  </data>
+  <data name="Debugger_Menu_Continue" xml:space="preserve">
+    <value>_Continuar</value>
+  </data>
+  <data name="Debugger_Menu_StepOver" xml:space="preserve">
+    <value>_Depuração parcial</value>
+  </data>
+  <data name="Debugger_Menu_StepInto" xml:space="preserve">
+    <value>_Depuração detalhada</value>
+  </data>
+</root>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="AsmExplorer_PluginName" xml:space="preserve">
+    <value>어셈블리 탐색기</value>
+  </data>
+  <data name="AsmExplorer_PanelTitle" xml:space="preserve">
+    <value>어셈블리 탐색기</value>
+  </data>
+  <data name="AsmExplorer_SearchPanelTitle" xml:space="preserve">
+    <value>어셈블리 검색</value>
+  </data>
+  <data name="AsmExplorer_DiffPanelTitle" xml:space="preserve">
+    <value>어셈블리 비교</value>
+  </data>
+  <data name="AsmExplorer_ExportCancelled" xml:space="preserve">
+    <value>내보내기 취소됨.</value>
+  </data>
+  <data name="AsmExplorer_NoAssemblyLoaded" xml:space="preserve">
+    <value>로드된 어셈블리 없음</value>
+  </data>
+  <data name="AsmExplorer_AnalysisCancelled" xml:space="preserve">
+    <value>분석 취소됨.</value>
+  </data>
+  <data name="AsmExplorer_Searching" xml:space="preserve">
+    <value>검색 중…</value>
+  </data>
+  <data name="AsmExplorer_Comparing" xml:space="preserve">
+    <value>비교 중…</value>
+  </data>
+  <data name="AsmExplorer_NoPdb" xml:space="preserve">
+    <value>어셈블리 옆에 이식 가능한 PDB가 없습니다.</value>
+  </data>
+  <data name="AsmExplorer_SelectMethod" xml:space="preserve">
+    <value>소스 정보를 보려면 메서드 노드를 선택하세요.</value>
+  </data>
+  <data name="AsmExplorer_Export_OutputFolderLabel" xml:space="preserve">
+    <value>출력 폴더:</value>
+  </data>
+  <data name="AsmExplorer_Export_ExportButton" xml:space="preserve">
+    <value>내보내기</value>
+  </data>
+  <data name="AsmExplorer_Export_CloseButton" xml:space="preserve">
+    <value>닫기</value>
+  </data>
+  <data name="AsmExplorer_Export_BrowseTitle" xml:space="preserve">
+    <value>출력 폴더 선택</value>
+  </data>
+  <data name="AsmExplorer_Export_NoFolderSelected" xml:space="preserve">
+    <value>출력 폴더를 선택하세요.</value>
+  </data>
+</root>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="ParsedFields_Error_InvalidOffset" xml:space="preserve">
+    <value>Ongeldige offset. Gebruik hex (0x1A2B) of decimaal (6699).</value>
+  </data>
+  <data name="ParsedFields_Label_AutoMode" xml:space="preserve">
+    <value>Automatisch</value>
+  </data>
+  <data name="ParsedFields_Error_FieldNotEditable" xml:space="preserve">
+    <value>Dit veld kan niet worden bewerkt.</value>
+  </data>
+  <data name="ParsedFields_Error_InvalidValue" xml:space="preserve">
+    <value>Ongeldige waarde voor dit veldtype.</value>
+  </data>
+  <data name="ParsedFields_Dialog_ExportError" xml:space="preserve">
+    <value>Exportfout</value>
+  </data>
+  <data name="ParsedFields_Dialog_ExportComplete" xml:space="preserve">
+    <value>Export voltooid</value>
+  </data>
+  <data name="ParsedFields_Dialog_Copied" xml:space="preserve">
+    <value>Gekopieerd</value>
+  </data>
+  <data name="ParsedFields_Dialog_FieldNotFound" xml:space="preserve">
+    <value>Veld niet gevonden</value>
+  </data>
+  <data name="ParsedFields_Dialog_FindSimilar" xml:space="preserve">
+    <value>Vergelijkbare zoeken</value>
+  </data>
+  <data name="ParsedFields_Dialog_FeatureUnavailable" xml:space="preserve">
+    <value>Functie niet beschikbaar</value>
+  </data>
+  <data name="ParsedFields_Confirm_DeleteField" xml:space="preserve">
+    <value>Dit veld verwijderen?</value>
+  </data>
+  <data name="ParsedFields_Confirm_DeleteAll" xml:space="preserve">
+    <value>Alle velden verwijderen?</value>
+  </data>
+  <data name="ParsedFields_DataInspectorNotConnected" xml:space="preserve">
+    <value>Data Inspector-functie is nog niet verbonden met dit venster.</value>
+  </data>
+  <data name="ParsedFields_PluginName" xml:space="preserve">
+    <value>Geparseerde velden</value>
+  </data>
+  <data name="ParsedFields_JumpToOffset" xml:space="preserve">
+    <value>Naar offset springen</value>
+  </data>
+  <data name="ParsedFields_JumpToOffset_Label" xml:space="preserve">
+    <value>Offset (hex 0x… of decimaal):</value>
+  </data>
+  <data name="ParsedFields_JumpToOffset_Placeholder" xml:space="preserve">
+    <value>0x</value>
+  </data>
+  <data name="ParsedFields_Dialog_OK" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="ParsedFields_Error_InvalidInput" xml:space="preserve">
+    <value>Ongeldige invoer</value>
+  </data>
+</root>

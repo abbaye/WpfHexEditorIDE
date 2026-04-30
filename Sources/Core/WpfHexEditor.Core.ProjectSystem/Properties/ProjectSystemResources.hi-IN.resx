@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Validation_ProjectNameEmpty" xml:space="preserve">
+    <value>प्रोजेक्ट का नाम खाली नहीं हो सकता।</value>
+  </data>
+  <data name="Dialog_ValidationTitle" xml:space="preserve">
+    <value>सत्यापन</value>
+  </data>
+  <data name="Error_RenameProjectFailed" xml:space="preserve">
+    <value>प्रोजेक्ट का नाम बदलने में विफल:</value>
+  </data>
+  <data name="Dialog_ErrorTitle" xml:space="preserve">
+    <value>त्रुटि</value>
+  </data>
+  <data name="Error_CannotCreateOutputFolder" xml:space="preserve">
+    <value>आउटपुट फ़ोल्डर बनाने में असमर्थ:</value>
+  </data>
+  <data name="Dialog_ConvertTblTitle" xml:space="preserve">
+    <value>TBL रूपांतरित करें</value>
+  </data>
+  <data name="Error_OutputPathIdenticalToSource" xml:space="preserve">
+    <value>आउटपुट पथ स्रोत के समान है। कोई अलग फ़ोल्डर चुनें।</value>
+  </data>
+  <data name="Dialog_RemoveReferenceTitle" xml:space="preserve">
+    <value>संदर्भ हटाएं</value>
+  </data>
+  <data name="Message_NoUnusedReferences" xml:space="preserve">
+    <value>कोई अप्रयुक्त असेंबली संदर्भ नहीं मिले।</value>
+  </data>
+  <data name="Dialog_RemoveUnusedReferencesTitle" xml:space="preserve">
+    <value>अप्रयुक्त संदर्भ हटाएं</value>
+  </data>
+  <data name="Confirm_RemoveUnusedReferences" xml:space="preserve">
+    <value>क्या निम्न अप्रयुक्त असेंबली संदर्भों को हटाएं?</value>
+  </data>
+  <data name="Dialog_SelectFilesToAdd" xml:space="preserve">
+    <value>जोड़ने के लिए फ़ाइलें चुनें</value>
+  </data>
+  <data name="Filter_AllFiles" xml:space="preserve">
+    <value>सभी फ़ाइलें (*.*)|*.*</value>
+  </data>
+  <data name="Dialog_SelectProjectFolder" xml:space="preserve">
+    <value>नए प्रोजेक्ट के लिए मूल फ़ोल्डर चुनें</value>
+  </data>
+  <data name="Dialog_SelectFileFolder" xml:space="preserve">
+    <value>नई फ़ाइल के लिए फ़ोल्डर चुनें</value>
+  </data>
+  <data name="Dialog_SelectSolutionFolder" xml:space="preserve">
+    <value>नए समाधान के लिए मूल फ़ोल्डर चुनें</value>
+  </data>
+  <data name="Dialog_SelectConvertOutputFolder" xml:space="preserve">
+    <value>परिवर्तित TBLX फ़ाइल के लिए आउटपुट फ़ोल्डर चुनें</value>
+  </data>
+  <data name="Dialog_AddProjectReference" xml:space="preserve">
+    <value>प्रोजेक्ट संदर्भ जोड़ें</value>
+  </data>
+  <data name="Filter_ProjectFiles" xml:space="preserve">
+    <value>प्रोजेक्ट फ़ाइलें (*.csproj;*.vbproj;*.fsproj)|*.csproj;*.vbproj;*.fsproj|सभी फ़ाइलें (*.*)|*.*</value>
+  </data>
+  <data name="Dialog_AddAssemblyReference" xml:space="preserve">
+    <value>असेंबली संदर्भ जोड़ें</value>
+  </data>
+  <data name="Filter_AssemblyFiles" xml:space="preserve">
+    <value>असेंबली फ़ाइलें (*.dll;*.exe)|*.dll;*.exe|सभी फ़ाइलें (*.*)|*.*</value>
+  </data>
+  <data name="Dialog_SelectOutputDirectory" xml:space="preserve">
+    <value>आउटपुट निर्देशिका चुनें</value>
+  </data>
+  <data name="Dialog_SelectIcon" xml:space="preserve">
+    <value>आइकन चुनें</value>
+  </data>
+  <data name="Filter_IconFiles" xml:space="preserve">
+    <value>आइकन (*.ico)|*.ico|सभी फ़ाइलें (*.*)|*.*</value>
+  </data>
+  <data name="Dialog_SelectProjectToReference" xml:space="preserve">
+    <value>संदर्भ के लिए एक प्रोजेक्ट चुनें</value>
+  </data>
+  <data name="Filter_CsharpProjects" xml:space="preserve">
+    <value>C# प्रोजेक्ट (*.csproj)|*.csproj|सभी प्रोजेक्ट (*.csproj;*.vbproj;*.fsproj)|*.csproj;*.vbproj;*.fsproj</value>
+  </data>
+  <data name="ProjectSystem_Ref_ProjectReferences" xml:space="preserve">
+    <value>प्रोजेक्ट संदर्भ</value>
+  </data>
+  <data name="ProjectSystem_Ref_Assemblies" xml:space="preserve">
+    <value>असेंबलियां</value>
+  </data>
+  <data name="ProjectSystem_Ref_Analyzers" xml:space="preserve">
+    <value>विश्लेषक</value>
+  </data>
+  <data name="ProjectSystem_Ref_NoReferenceSupport" xml:space="preserve">
+    <value>यह प्रोजेक्ट प्रकार संदर्भ प्रबंधन का समर्थन नहीं करता।</value>
+  </data>
+</root>

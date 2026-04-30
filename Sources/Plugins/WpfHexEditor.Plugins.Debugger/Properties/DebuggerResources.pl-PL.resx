@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Debugger_BreakpointsPanelTitle" xml:space="preserve">
+    <value>Punkty przerwania</value>
+  </data>
+  <data name="Debugger_CallStackPanelTitle" xml:space="preserve">
+    <value>Stos wywołań</value>
+  </data>
+  <data name="Debugger_LocalsPanelTitle" xml:space="preserve">
+    <value>Zmienne lokalne</value>
+  </data>
+  <data name="Debugger_WatchPanelTitle" xml:space="preserve">
+    <value>Wyrażenie kontrolne</value>
+  </data>
+  <data name="Debugger_ConsolePanelTitle" xml:space="preserve">
+    <value>Konsola debugowania</value>
+  </data>
+  <data name="Debugger_NoValidBreakpoints" xml:space="preserve">
+    <value>Nie znaleziono prawidłowych punktów przerwania w pliku.</value>
+  </data>
+  <data name="Debugger_LaunchConfigTitle" xml:space="preserve">
+    <value>Konfiguracja uruchamiania (.whdbg)</value>
+  </data>
+  <data name="Debugger_NoFileLoaded" xml:space="preserve">
+    <value>Nie załadowano pliku. Najpierw kliknij Otwórz.</value>
+  </data>
+  <data name="Debugger_ServiceNotAvailable" xml:space="preserve">
+    <value>IDebuggerService niedostępny.</value>
+  </data>
+  <data name="Debugger_NoConfigLoaded" xml:space="preserve">
+    <value>Nie załadowano konfiguracji.</value>
+  </data>
+  <data name="Debugger_NoConfigsArray" xml:space="preserve">
+    <value>Nie znaleziono tablicy 'configurations' w pliku .whdbg.</value>
+  </data>
+  <data name="Debugger_NoMatchingConfig" xml:space="preserve">
+    <value>Nie znaleziono pasującej konfiguracji.</value>
+  </data>
+  <data name="Debugger_ImportBreakpoints" xml:space="preserve">
+    <value>Importuj punkty przerwania z VS XML</value>
+  </data>
+  <data name="Debugger_ExportBreakpoints" xml:space="preserve">
+    <value>Eksportuj punkty przerwania do VS XML</value>
+  </data>
+  <data name="Debugger_Menu_Continue" xml:space="preserve">
+    <value>_Kontynuuj</value>
+  </data>
+  <data name="Debugger_Menu_StepOver" xml:space="preserve">
+    <value>_Krok po kroku</value>
+  </data>
+  <data name="Debugger_Menu_StepInto" xml:space="preserve">
+    <value>_Wejdź</value>
+  </data>
+</root>

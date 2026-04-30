@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="AIAssistant_ConnectionTest_Title" xml:space="preserve">
+    <value>कनेक्शन परीक्षण</value>
+  </data>
+  <data name="AIAssistant_ConnectionTest_Testing" xml:space="preserve">
+    <value>परीक्षण हो रहा है...</value>
+  </data>
+  <data name="AIAssistant_Error_ProviderNotRegistered" xml:space="preserve">
+    <value>प्रदाता '{0}' पंजीकृत नहीं है।</value>
+  </data>
+  <data name="AIAssistant_ConnectionTest_Success" xml:space="preserve">
+    <value>{ 0} से कनेक्शन सफल!</value>
+  </data>
+  <data name="AIAssistant_ConnectionTest_Failure" xml:space="preserve">
+    <value>{ 0} से कनेक्शन विफल। अपनी API कुंजी और सेटिंग जांचें।</value>
+  </data>
+  <data name="AIAssistant_Error_Timeout" xml:space="preserve">
+    <value>कनेक्शन परीक्षण 10 सेकंड बाद समय समाप्त हो गया।</value>
+  </data>
+  <data name="AIAssistant_Error_NetworkError" xml:space="preserve">
+    <value>नेटवर्क त्रुटि: {0}</value>
+  </data>
+  <data name="AIAssistant_Error_Generic" xml:space="preserve">
+    <value>त्रुटि: {0}</value>
+  </data>
+  <data name="AIAssistant_EnableThinking" xml:space="preserve">
+    <value>थिंकिंग सक्षम करें (केवल Anthropic)</value>
+  </data>
+  <data name="AIAssistant_Copied" xml:space="preserve">
+    <value>कॉपी हो गया!</value>
+  </data>
+  <data name="AIAssistant_CopyCode" xml:space="preserve">
+    <value>कोड कॉपी करें</value>
+  </data>
+  <data name="AIAssistant_Testing" xml:space="preserve">
+    <value>परीक्षण...</value>
+  </data>
+  <data name="AIAssistant_Connected" xml:space="preserve">
+    <value>कनेक्ट</value>
+  </data>
+  <data name="AIAssistant_ConnectionFailed" xml:space="preserve">
+    <value>कनेक्शन विफल</value>
+  </data>
+  <data name="AIAssistant_PluginName" xml:space="preserve">
+    <value>AI सहायक</value>
+  </data>
+  <data name="AIAssistant_RenameConversation" xml:space="preserve">
+    <value>बातचीत का नाम बदलें</value>
+  </data>
+</root>

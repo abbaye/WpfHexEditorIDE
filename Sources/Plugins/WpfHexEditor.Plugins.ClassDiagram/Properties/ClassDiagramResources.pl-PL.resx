@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="ClassDiagram_PluginName" xml:space="preserve">
+    <value>Diagram klas</value>
+  </data>
+  <data name="ClassDiagram_OptionsCategory" xml:space="preserve">
+    <value>Diagram klas</value>
+  </data>
+  <data name="ClassDiagram_OutlinePanelTitle" xml:space="preserve">
+    <value>Konspekt klasy</value>
+  </data>
+  <data name="ClassDiagram_PropertiesPanelTitle" xml:space="preserve">
+    <value>Właściwości klasy</value>
+  </data>
+  <data name="ClassDiagram_ToolboxPanelTitle" xml:space="preserve">
+    <value>Przybornik diagramu</value>
+  </data>
+  <data name="ClassDiagram_RelationshipsPanelTitle" xml:space="preserve">
+    <value>Relacje</value>
+  </data>
+  <data name="ClassDiagram_HistoryPanelTitle" xml:space="preserve">
+    <value>Historia diagramu</value>
+  </data>
+  <data name="ClassDiagram_SearchPanelTitle" xml:space="preserve">
+    <value>Wyszukiwanie diagramu</value>
+  </data>
+  <data name="ClassDiagram_MetricsPanelTitle" xml:space="preserve">
+    <value>Panel wskaźników</value>
+  </data>
+  <data name="ClassDiagram_Reset" xml:space="preserve">
+    <value>Resetuj</value>
+  </data>
+  <data name="ClassDiagram_Menu_OutlineHeader" xml:space="preserve">
+    <value>_Konspekt klasy</value>
+  </data>
+  <data name="ClassDiagram_GenerateSolutionDiagram" xml:space="preserve">
+    <value>Generuj diagram klas dla rozwiązania</value>
+  </data>
+  <data name="ClassDiagram_ExportMetricsCSV" xml:space="preserve">
+    <value>Eksportuj metryki CSV</value>
+  </data>
+</root>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="AIAssistant_ConnectionTest_Title" xml:space="preserve">
+    <value>Test połączenia</value>
+  </data>
+  <data name="AIAssistant_ConnectionTest_Testing" xml:space="preserve">
+    <value>Testowanie...</value>
+  </data>
+  <data name="AIAssistant_Error_ProviderNotRegistered" xml:space="preserve">
+    <value>Dostawca '{0}' nie jest zarejestrowany.</value>
+  </data>
+  <data name="AIAssistant_ConnectionTest_Success" xml:space="preserve">
+    <value>Połączenie z {0} powiodło się!</value>
+  </data>
+  <data name="AIAssistant_ConnectionTest_Failure" xml:space="preserve">
+    <value>Połączenie z {0} nie powiodło się. Sprawdź klucz API i ustawienia.</value>
+  </data>
+  <data name="AIAssistant_Error_Timeout" xml:space="preserve">
+    <value>Test połączenia przekroczył limit czasu po 10 sekundach.</value>
+  </data>
+  <data name="AIAssistant_Error_NetworkError" xml:space="preserve">
+    <value>Błąd sieci: {0}</value>
+  </data>
+  <data name="AIAssistant_Error_Generic" xml:space="preserve">
+    <value>Błąd: {0}</value>
+  </data>
+  <data name="AIAssistant_EnableThinking" xml:space="preserve">
+    <value>Włącz myślenie (tylko Anthropic)</value>
+  </data>
+  <data name="AIAssistant_Copied" xml:space="preserve">
+    <value>Skopiowano!</value>
+  </data>
+  <data name="AIAssistant_CopyCode" xml:space="preserve">
+    <value>Kopiuj kod</value>
+  </data>
+  <data name="AIAssistant_Testing" xml:space="preserve">
+    <value>Testowanie...</value>
+  </data>
+  <data name="AIAssistant_Connected" xml:space="preserve">
+    <value>Połączono</value>
+  </data>
+  <data name="AIAssistant_ConnectionFailed" xml:space="preserve">
+    <value>Połączenie nie powiodło się</value>
+  </data>
+  <data name="AIAssistant_PluginName" xml:space="preserve">
+    <value>Asystent AI</value>
+  </data>
+  <data name="AIAssistant_RenameConversation" xml:space="preserve">
+    <value>Zmień nazwę rozmowy</value>
+  </data>
+</root>

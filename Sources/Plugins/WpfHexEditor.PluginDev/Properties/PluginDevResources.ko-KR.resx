@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="PluginDev_NewExtensionProject" xml:space="preserve">
+    <value>새 확장 프로젝트</value>
+  </data>
+  <data name="PluginDev_SelectOutputDir" xml:space="preserve">
+    <value>플러그인 프로젝트의 출력 디렉터리 선택</value>
+  </data>
+  <data name="PluginDev_Permissions" xml:space="preserve">
+    <value>권한</value>
+  </data>
+  <data name="PluginDev_IsolationMode" xml:space="preserve">
+    <value>격리 모드</value>
+  </data>
+  <data name="PluginDev_LoadPriority" xml:space="preserve">
+    <value>로드 우선순위 (10–90):</value>
+  </data>
+  <data name="PluginDev_Next" xml:space="preserve">
+    <value>다음 &gt;</value>
+  </data>
+  <data name="PluginDev_CreateAndOpen" xml:space="preserve">
+    <value>만들고 열기</value>
+  </data>
+  <data name="PluginDev_PluginCreated" xml:space="preserve">
+    <value>플러그인이 생성됨</value>
+  </data>
+  <data name="PluginDev_Error" xml:space="preserve">
+    <value>오류</value>
+  </data>
+  <data name="PluginDev_PublishExtensionPackage" xml:space="preserve">
+    <value>확장 패키지 게시</value>
+  </data>
+  <data name="PluginDev_SignBeforePublish" xml:space="preserve">
+    <value>게시 전 패키지 서명</value>
+  </data>
+  <data name="PluginDev_Browse" xml:space="preserve">
+    <value>찾아보기…</value>
+  </data>
+  <data name="PluginDev_OpenOutputFolder" xml:space="preserve">
+    <value>Explorer에서 출력 폴더 열기</value>
+  </data>
+  <data name="PluginDev_Package" xml:space="preserve">
+    <value>패키지</value>
+  </data>
+  <data name="PluginDev_Close" xml:space="preserve">
+    <value>닫기</value>
+  </data>
+  <data name="PluginDev_SelectOutputDirPackage" xml:space="preserve">
+    <value>출력 디렉터리 선택</value>
+  </data>
+  <data name="PluginDev_ExportDevLog" xml:space="preserve">
+    <value>확장 개발 로그 내보내기</value>
+  </data>
+  <data name="PluginDev_Search" xml:space="preserve">
+    <value>검색</value>
+  </data>
+  <data name="PluginDev_Browse_Tab" xml:space="preserve">
+    <value>찾아보기</value>
+  </data>
+  <data name="PluginDev_Installed" xml:space="preserve">
+    <value>설치됨</value>
+  </data>
+  <data name="PluginDev_UpdateAll" xml:space="preserve">
+    <value>모두 업데이트</value>
+  </data>
+  <data name="PluginDev_Updates" xml:space="preserve">
+    <value>업데이트</value>
+  </data>
+  <data name="PluginDev_ExtensionMarketplace" xml:space="preserve">
+    <value>확장 Marketplace</value>
+  </data>
+  <data name="PluginDev_ExtensionLabel" xml:space="preserve">
+    <value>확장:</value>
+  </data>
+  <data name="PluginDev_ConfigLabel" xml:space="preserve">
+    <value>구성:</value>
+  </data>
+  <data name="PluginDev_Ready" xml:space="preserve">
+    <value>준비</value>
+  </data>
+  <data name="PluginDev_Refresh" xml:space="preserve">
+    <value>새로 고침</value>
+  </data>
+  <data name="PluginDev_Col_Name" xml:space="preserve">
+    <value>이름</value>
+  </data>
+  <data name="PluginDev_Col_Author" xml:space="preserve">
+    <value>작성자</value>
+  </data>
+  <data name="PluginDev_Col_Version" xml:space="preserve">
+    <value>버전</value>
+  </data>
+  <data name="PluginDev_Col_Rating" xml:space="preserve">
+    <value>평점</value>
+  </data>
+  <data name="PluginDev_Col_Downloads" xml:space="preserve">
+    <value>다운로드</value>
+  </data>
+</root>

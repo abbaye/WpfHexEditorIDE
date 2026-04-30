@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="DataInspector_PluginName" xml:space="preserve">
+    <value>データ インスペクター</value>
+  </data>
+  <data name="DataInspector_OptionsCategory" xml:space="preserve">
+    <value>データ分析</value>
+  </data>
+  <data name="DataInspector_PanelTitle" xml:space="preserve">
+    <value>データ インスペクター</value>
+  </data>
+  <data name="DataInspector_MenuItem" xml:space="preserve">
+    <value>データ _インスペクター</value>
+  </data>
+  <data name="BarChart_NoData" xml:space="preserve">
+    <value>表示するデータがありません</value>
+  </data>
+  <data name="BarChart_Total" xml:space="preserve">
+    <value>合計</value>
+  </data>
+  <data name="BarChart_Max" xml:space="preserve">
+    <value>最大</value>
+  </data>
+  <data name="BarChart_Entropy" xml:space="preserve">
+    <value>エントロピー</value>
+  </data>
+  <data name="BarChart_BitsPerByte" xml:space="preserve">
+    <value>ビット/バイト</value>
+  </data>
+  <data name="BarChart_Bytes" xml:space="preserve">
+    <value>バイト</value>
+  </data>
+  <data name="DataInspector_EmptyState" xml:space="preserve">
+    <value>バイトが選択されていません — hex エディターでバイトを選択してください。</value>
+  </data>
+  <data name="DataInspector_Scope_ActiveView" xml:space="preserve">
+    <value>アクティブ ビュー</value>
+  </data>
+  <data name="DataInspector_Scope_WholeFile" xml:space="preserve">
+    <value>ファイル全体</value>
+  </data>
+  <data name="DataInspector_Scope_Selection" xml:space="preserve">
+    <value>選択</value>
+  </data>
+  <data name="DataInspector_Mode_Frequency" xml:space="preserve">
+    <value>頻度</value>
+  </data>
+  <data name="DataInspector_Mode_Entropy" xml:space="preserve">
+    <value>エントロピー</value>
+  </data>
+  <data name="DataInspector_Footer_NoData" xml:space="preserve">
+    <value>データなし</value>
+  </data>
+</root>

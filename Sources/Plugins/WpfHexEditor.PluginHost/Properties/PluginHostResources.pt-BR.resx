@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="PluginHost_Ready" xml:space="preserve">
+    <value>Pronto.</value>
+  </data>
+  <data name="PluginHost_LoadingMarketplace" xml:space="preserve">
+    <value>Carregando marketplace…</value>
+  </data>
+  <data name="PluginHost_InstallExtension" xml:space="preserve">
+    <value>Instalar extensão</value>
+  </data>
+  <data name="PluginHost_ExportDiagnostics" xml:space="preserve">
+    <value>Exportar diagnósticos de extensão</value>
+  </data>
+  <data name="PluginHost_InstallPackage" xml:space="preserve">
+    <value>Instalar pacote de extensão</value>
+  </data>
+  <data name="PluginHost_ExportEventLog" xml:space="preserve">
+    <value>Exportar log de eventos</value>
+  </data>
+  <data name="PluginHost_UninstallPlugin" xml:space="preserve">
+    <value>Desinstalar plug-in</value>
+  </data>
+</root>

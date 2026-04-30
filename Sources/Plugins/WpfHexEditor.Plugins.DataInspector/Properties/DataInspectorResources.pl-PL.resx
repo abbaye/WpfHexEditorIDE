@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="DataInspector_PluginName" xml:space="preserve">
+    <value>Inspektor danych</value>
+  </data>
+  <data name="DataInspector_OptionsCategory" xml:space="preserve">
+    <value>Analiza danych</value>
+  </data>
+  <data name="DataInspector_PanelTitle" xml:space="preserve">
+    <value>Inspektor danych</value>
+  </data>
+  <data name="DataInspector_MenuItem" xml:space="preserve">
+    <value>_Inspektor danych</value>
+  </data>
+  <data name="BarChart_NoData" xml:space="preserve">
+    <value>Brak danych do wyświetlenia</value>
+  </data>
+  <data name="BarChart_Total" xml:space="preserve">
+    <value>Łącznie</value>
+  </data>
+  <data name="BarChart_Max" xml:space="preserve">
+    <value>Maks</value>
+  </data>
+  <data name="BarChart_Entropy" xml:space="preserve">
+    <value>Entropia</value>
+  </data>
+  <data name="BarChart_BitsPerByte" xml:space="preserve">
+    <value>Bity/bajt</value>
+  </data>
+  <data name="BarChart_Bytes" xml:space="preserve">
+    <value>Bajty</value>
+  </data>
+  <data name="DataInspector_EmptyState" xml:space="preserve">
+    <value>Nie wybrano bajtów — zaznacz bajty w edytorze hex.</value>
+  </data>
+  <data name="DataInspector_Scope_ActiveView" xml:space="preserve">
+    <value>Aktywny widok</value>
+  </data>
+  <data name="DataInspector_Scope_WholeFile" xml:space="preserve">
+    <value>Cały plik</value>
+  </data>
+  <data name="DataInspector_Scope_Selection" xml:space="preserve">
+    <value>Zaznaczenie</value>
+  </data>
+  <data name="DataInspector_Mode_Frequency" xml:space="preserve">
+    <value>Częstotliwość</value>
+  </data>
+  <data name="DataInspector_Mode_Entropy" xml:space="preserve">
+    <value>Entropia</value>
+  </data>
+  <data name="DataInspector_Footer_NoData" xml:space="preserve">
+    <value>Brak danych</value>
+  </data>
+</root>

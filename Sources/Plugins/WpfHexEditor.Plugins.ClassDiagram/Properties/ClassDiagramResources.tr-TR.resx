@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="ClassDiagram_PluginName" xml:space="preserve">
+    <value>Sınıf Diyagramı</value>
+  </data>
+  <data name="ClassDiagram_OptionsCategory" xml:space="preserve">
+    <value>Sınıf Diyagramı</value>
+  </data>
+  <data name="ClassDiagram_OutlinePanelTitle" xml:space="preserve">
+    <value>Sınıf Taslağı</value>
+  </data>
+  <data name="ClassDiagram_PropertiesPanelTitle" xml:space="preserve">
+    <value>Sınıf Özellikleri</value>
+  </data>
+  <data name="ClassDiagram_ToolboxPanelTitle" xml:space="preserve">
+    <value>Diyagram Araç Kutusu</value>
+  </data>
+  <data name="ClassDiagram_RelationshipsPanelTitle" xml:space="preserve">
+    <value>İlişkiler</value>
+  </data>
+  <data name="ClassDiagram_HistoryPanelTitle" xml:space="preserve">
+    <value>Diyagram Geçmişi</value>
+  </data>
+  <data name="ClassDiagram_SearchPanelTitle" xml:space="preserve">
+    <value>Diyagram Ara</value>
+  </data>
+  <data name="ClassDiagram_MetricsPanelTitle" xml:space="preserve">
+    <value>Metrik Panosu</value>
+  </data>
+  <data name="ClassDiagram_Reset" xml:space="preserve">
+    <value>Sıfırla</value>
+  </data>
+  <data name="ClassDiagram_Menu_OutlineHeader" xml:space="preserve">
+    <value>Sınıf _Taslağı</value>
+  </data>
+  <data name="ClassDiagram_GenerateSolutionDiagram" xml:space="preserve">
+    <value>Çözüm için Sınıf Diyagramı Oluştur</value>
+  </data>
+  <data name="ClassDiagram_ExportMetricsCSV" xml:space="preserve">
+    <value>Metrik CSV Dışa Aktar</value>
+  </data>
+</root>

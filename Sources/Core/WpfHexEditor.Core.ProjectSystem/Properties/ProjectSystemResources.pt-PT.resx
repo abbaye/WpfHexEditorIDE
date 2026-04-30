@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Validation_ProjectNameEmpty" xml:space="preserve">
+    <value>O nome do projeto não pode estar vazio.</value>
+  </data>
+  <data name="Dialog_ValidationTitle" xml:space="preserve">
+    <value>Validação</value>
+  </data>
+  <data name="Error_RenameProjectFailed" xml:space="preserve">
+    <value>Não foi possível mudar o nome do projeto:</value>
+  </data>
+  <data name="Dialog_ErrorTitle" xml:space="preserve">
+    <value>Erro</value>
+  </data>
+  <data name="Error_CannotCreateOutputFolder" xml:space="preserve">
+    <value>Não é possível criar a pasta de saída:</value>
+  </data>
+  <data name="Dialog_ConvertTblTitle" xml:space="preserve">
+    <value>Converter TBL</value>
+  </data>
+  <data name="Error_OutputPathIdenticalToSource" xml:space="preserve">
+    <value>O caminho de saída é idêntico ao de origem. Escolha uma pasta diferente.</value>
+  </data>
+  <data name="Dialog_RemoveReferenceTitle" xml:space="preserve">
+    <value>Remover referência</value>
+  </data>
+  <data name="Message_NoUnusedReferences" xml:space="preserve">
+    <value>Nenhuma referência de assembly não utilizada encontrada.</value>
+  </data>
+  <data name="Dialog_RemoveUnusedReferencesTitle" xml:space="preserve">
+    <value>Remover referências não utilizadas</value>
+  </data>
+  <data name="Confirm_RemoveUnusedReferences" xml:space="preserve">
+    <value>Remover as seguintes referências de assembly não utilizadas?</value>
+  </data>
+  <data name="Dialog_SelectFilesToAdd" xml:space="preserve">
+    <value>Selecionar ficheiro(s) para adicionar</value>
+  </data>
+  <data name="Filter_AllFiles" xml:space="preserve">
+    <value>Todos os ficheiros (*.*)|*.*</value>
+  </data>
+  <data name="Dialog_SelectProjectFolder" xml:space="preserve">
+    <value>Selecionar pasta pai para o novo projeto</value>
+  </data>
+  <data name="Dialog_SelectFileFolder" xml:space="preserve">
+    <value>Selecionar pasta para o novo ficheiro</value>
+  </data>
+  <data name="Dialog_SelectSolutionFolder" xml:space="preserve">
+    <value>Selecionar pasta pai para a nova solução</value>
+  </data>
+  <data name="Dialog_SelectConvertOutputFolder" xml:space="preserve">
+    <value>Selecionar pasta de saída para o ficheiro TBLX convertido</value>
+  </data>
+  <data name="Dialog_AddProjectReference" xml:space="preserve">
+    <value>Adicionar referência de projeto</value>
+  </data>
+  <data name="Filter_ProjectFiles" xml:space="preserve">
+    <value>Ficheiros de projeto (*.csproj;*.vbproj;*.fsproj)|*.csproj;*.vbproj;*.fsproj|Todos os ficheiros (*.*)|*.*</value>
+  </data>
+  <data name="Dialog_AddAssemblyReference" xml:space="preserve">
+    <value>Adicionar referência de assembly</value>
+  </data>
+  <data name="Filter_AssemblyFiles" xml:space="preserve">
+    <value>Ficheiros de assembly (*.dll;*.exe)|*.dll;*.exe|Todos os ficheiros (*.*)|*.*</value>
+  </data>
+  <data name="Dialog_SelectOutputDirectory" xml:space="preserve">
+    <value>Selecionar diretório de saída</value>
+  </data>
+  <data name="Dialog_SelectIcon" xml:space="preserve">
+    <value>Selecionar um ícone</value>
+  </data>
+  <data name="Filter_IconFiles" xml:space="preserve">
+    <value>Ícones (*.ico)|*.ico|Todos os ficheiros (*.*)|*.*</value>
+  </data>
+  <data name="Dialog_SelectProjectToReference" xml:space="preserve">
+    <value>Selecionar um projeto para referenciar</value>
+  </data>
+  <data name="Filter_CsharpProjects" xml:space="preserve">
+    <value>Projetos C# (*.csproj)|*.csproj|Todos os projetos (*.csproj;*.vbproj;*.fsproj)|*.csproj;*.vbproj;*.fsproj</value>
+  </data>
+  <data name="ProjectSystem_Ref_ProjectReferences" xml:space="preserve">
+    <value>Referências do projeto</value>
+  </data>
+  <data name="ProjectSystem_Ref_Assemblies" xml:space="preserve">
+    <value>Assemblies</value>
+  </data>
+  <data name="ProjectSystem_Ref_Analyzers" xml:space="preserve">
+    <value>Analisadores</value>
+  </data>
+  <data name="ProjectSystem_Ref_NoReferenceSupport" xml:space="preserve">
+    <value>Este tipo de projeto não suporta gestão de referências.</value>
+  </data>
+</root>

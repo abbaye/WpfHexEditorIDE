@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Validation_ProjectNameEmpty" xml:space="preserve">
+    <value>Projectnaam mag niet leeg zijn.</value>
+  </data>
+  <data name="Dialog_ValidationTitle" xml:space="preserve">
+    <value>Validatie</value>
+  </data>
+  <data name="Error_RenameProjectFailed" xml:space="preserve">
+    <value>Project kon niet worden hernoemd:</value>
+  </data>
+  <data name="Dialog_ErrorTitle" xml:space="preserve">
+    <value>Fout</value>
+  </data>
+  <data name="Error_CannotCreateOutputFolder" xml:space="preserve">
+    <value>Kan uitvoermap niet aanmaken:</value>
+  </data>
+  <data name="Dialog_ConvertTblTitle" xml:space="preserve">
+    <value>TBL converteren</value>
+  </data>
+  <data name="Error_OutputPathIdenticalToSource" xml:space="preserve">
+    <value>Het uitvoerpad is identiek aan de bron. Kies een andere map.</value>
+  </data>
+  <data name="Dialog_RemoveReferenceTitle" xml:space="preserve">
+    <value>Verwijzing verwijderen</value>
+  </data>
+  <data name="Message_NoUnusedReferences" xml:space="preserve">
+    <value>Geen ongebruikte assemblyverwijzingen gevonden.</value>
+  </data>
+  <data name="Dialog_RemoveUnusedReferencesTitle" xml:space="preserve">
+    <value>Ongebruikte verwijzingen verwijderen</value>
+  </data>
+  <data name="Confirm_RemoveUnusedReferences" xml:space="preserve">
+    <value>De volgende ongebruikte assemblyverwijzingen verwijderen?</value>
+  </data>
+  <data name="Dialog_SelectFilesToAdd" xml:space="preserve">
+    <value>Bestanden selecteren om toe te voegen</value>
+  </data>
+  <data name="Filter_AllFiles" xml:space="preserve">
+    <value>Alle bestanden (*.*)|*.*</value>
+  </data>
+  <data name="Dialog_SelectProjectFolder" xml:space="preserve">
+    <value>Bovenliggende map voor nieuw project selecteren</value>
+  </data>
+  <data name="Dialog_SelectFileFolder" xml:space="preserve">
+    <value>Map voor nieuw bestand selecteren</value>
+  </data>
+  <data name="Dialog_SelectSolutionFolder" xml:space="preserve">
+    <value>Bovenliggende map voor nieuwe oplossing selecteren</value>
+  </data>
+  <data name="Dialog_SelectConvertOutputFolder" xml:space="preserve">
+    <value>Uitvoermap selecteren voor geconverteerd TBLX-bestand</value>
+  </data>
+  <data name="Dialog_AddProjectReference" xml:space="preserve">
+    <value>Projectverwijzing toevoegen</value>
+  </data>
+  <data name="Filter_ProjectFiles" xml:space="preserve">
+    <value>Projectbestanden (*.csproj;*.vbproj;*.fsproj)|*.csproj;*.vbproj;*.fsproj|Alle bestanden (*.*)|*.*</value>
+  </data>
+  <data name="Dialog_AddAssemblyReference" xml:space="preserve">
+    <value>Assemblyverwijzing toevoegen</value>
+  </data>
+  <data name="Filter_AssemblyFiles" xml:space="preserve">
+    <value>Assemblybestanden (*.dll;*.exe)|*.dll;*.exe|Alle bestanden (*.*)|*.*</value>
+  </data>
+  <data name="Dialog_SelectOutputDirectory" xml:space="preserve">
+    <value>Uitvoermap selecteren</value>
+  </data>
+  <data name="Dialog_SelectIcon" xml:space="preserve">
+    <value>Een pictogram selecteren</value>
+  </data>
+  <data name="Filter_IconFiles" xml:space="preserve">
+    <value>Pictogrammen (*.ico)|*.ico|Alle bestanden (*.*)|*.*</value>
+  </data>
+  <data name="Dialog_SelectProjectToReference" xml:space="preserve">
+    <value>Selecteer een project om naar te verwijzen</value>
+  </data>
+  <data name="Filter_CsharpProjects" xml:space="preserve">
+    <value>C#-projecten (*.csproj)|*.csproj|Alle projecten (*.csproj;*.vbproj;*.fsproj)|*.csproj;*.vbproj;*.fsproj</value>
+  </data>
+  <data name="ProjectSystem_Ref_ProjectReferences" xml:space="preserve">
+    <value>Projectverwijzingen</value>
+  </data>
+  <data name="ProjectSystem_Ref_Assemblies" xml:space="preserve">
+    <value>Assembly's</value>
+  </data>
+  <data name="ProjectSystem_Ref_Analyzers" xml:space="preserve">
+    <value>Analysers</value>
+  </data>
+  <data name="ProjectSystem_Ref_NoReferenceSupport" xml:space="preserve">
+    <value>Dit projecttype ondersteunt geen verwijzingsbeheer.</value>
+  </data>
+</root>

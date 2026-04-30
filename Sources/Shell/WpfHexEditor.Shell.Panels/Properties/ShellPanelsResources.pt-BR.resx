@@ -4,178 +4,553 @@
   <resheader name="version"><value>2.0</value></resheader>
   <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  <data name="BookmarksPanel_RefreshToolTip" xml:space="preserve"><value>Atualizar indicadores</value></data>
-  <data name="BookmarksPanel_ClearAllToolTip" xml:space="preserve"><value>Limpar todos os indicadores</value></data>
-  <data name="BookmarksPanel_EmptyCount" xml:space="preserve"><value>0 indicadores</value></data>
-  <data name="BookmarksPanel_OffsetHeader" xml:space="preserve"><value>Deslocamento</value></data>
-  <data name="BookmarksPanel_DescriptionHeader" xml:space="preserve"><value>Descrição</value></data>
-  <data name="BookmarksPanel_CategoryHeader" xml:space="preserve"><value>Categoria</value></data>
-  <data name="BookmarksPanel_EmptyMessage" xml:space="preserve"><value>Nenhum indicador. Pressione Ctrl+F2 para alternar um indicador no editor ativo.</value></data>
-  <data name="ErrorPanel_ScopeEntireSolution" xml:space="preserve"><value>Solução inteira</value></data>
-  <data name="ErrorPanel_ScopeCurrentProject" xml:space="preserve"><value>Projeto atual</value></data>
-  <data name="ErrorPanel_ScopeCurrentDocument" xml:space="preserve"><value>Documento atual</value></data>
-  <data name="ErrorPanel_ScopeOpenDocuments" xml:space="preserve"><value>Documentos abertos</value></data>
-  <data name="ErrorPanel_ScopeChangedDocuments" xml:space="preserve"><value>Documentos alterados</value></data>
-  <data name="ErrorPanel_OverflowButtonToolTip" xml:space="preserve"><value>Mais opções</value></data>
-  <data name="ErrorPanel_ShowErrorsMenu" xml:space="preserve"><value>Mostrar erros</value></data>
-  <data name="ErrorPanel_ShowWarningsMenu" xml:space="preserve"><value>Mostrar avisos</value></data>
-  <data name="ErrorPanel_ShowMessagesMenu" xml:space="preserve"><value>Mostrar mensagens</value></data>
-  <data name="ErrorPanel_SearchPlaceholder" xml:space="preserve"><value>Pesquisar...</value></data>
-  <data name="ErrorPanel_ErrorToggleToolTip" xml:space="preserve"><value>Mostrar/ocultar erros</value></data>
-  <data name="ErrorPanel_ErrorCountText" xml:space="preserve"><value>0 erros</value></data>
-  <data name="ErrorPanel_WarningToggleToolTip" xml:space="preserve"><value>Mostrar/ocultar avisos</value></data>
-  <data name="ErrorPanel_WarningCountText" xml:space="preserve"><value>0 avisos</value></data>
-  <data name="ErrorPanel_MessageToggleToolTip" xml:space="preserve"><value>Mostrar/ocultar mensagens</value></data>
-  <data name="ErrorPanel_MessageCountText" xml:space="preserve"><value>0 mensagens</value></data>
-  <data name="ErrorPanel_CodeHeader" xml:space="preserve"><value>Código</value></data>
-  <data name="ErrorPanel_DescriptionHeader" xml:space="preserve"><value>Descrição</value></data>
-  <data name="ErrorPanel_ProjectHeader" xml:space="preserve"><value>Projeto</value></data>
-  <data name="ErrorPanel_FileHeader" xml:space="preserve"><value>Arquivo</value></data>
-  <data name="ErrorPanel_OffsetHeader" xml:space="preserve"><value>Deslocamento</value></data>
-  <data name="ErrorPanel_LineColHeader" xml:space="preserve"><value>Linha:Col</value></data>
-  <data name="PropertiesPanel_ContextLabel" xml:space="preserve"><value>Propriedades</value></data>
-  <data name="PropertiesPanel_RefreshToolTip" xml:space="preserve"><value>Atualizar propriedades</value></data>
-  <data name="PropertiesPanel_OverflowToolTip" xml:space="preserve"><value>Mais opções</value></data>
-  <data name="PropertiesPanel_SortAlphabetically" xml:space="preserve"><value>Classificar alfabeticamente</value></data>
-  <data name="PropertiesPanel_CopyValue" xml:space="preserve"><value>Copiar valor</value></data>
-  <data name="PropertiesPanel_SortToggleToolTip" xml:space="preserve"><value>Classificar propriedades em ordem alfabética</value></data>
-  <data name="PropertiesPanel_CopyButtonToolTip" xml:space="preserve"><value>Copiar o valor da propriedade selecionada</value></data>
-  <data name="PropertiesPanel_SearchPlaceholder" xml:space="preserve"><value>Filtrar propriedades…</value></data>
-  <data name="PropertiesPanel_OpenFolderToolTip" xml:space="preserve"><value>Abrir pasta contendo no Explorer</value></data>
-  <data name="PropertiesPanel_ThicknessLeft" xml:space="preserve"><value>Esquerda</value></data>
-  <data name="PropertiesPanel_ThicknessTop" xml:space="preserve"><value>Cima</value></data>
-  <data name="PropertiesPanel_ThicknessRight" xml:space="preserve"><value>Direita</value></data>
-  <data name="PropertiesPanel_ThicknessBottom" xml:space="preserve"><value>Baixo</value></data>
-  <data name="PropertiesPanel_ThicknessLLabel" xml:space="preserve"><value>E</value></data>
-  <data name="PropertiesPanel_ThicknessTLabel" xml:space="preserve"><value>C</value></data>
-  <data name="PropertiesPanel_ThicknessRLabel" xml:space="preserve"><value>D</value></data>
-  <data name="PropertiesPanel_ThicknessBLabel" xml:space="preserve"><value>B</value></data>
-  <data name="PropertiesPanel_ContextMenu_CopyValue" xml:space="preserve"><value>Copiar valor</value></data>
-  <data name="PropertiesPanel_ContextMenu_CopyName" xml:space="preserve"><value>Copiar nome</value></data>
-  <data name="PropertiesPanel_ResetToDefaultToolTip" xml:space="preserve"><value>Redefinir para o padrão</value></data>
-  <data name="SolutionExplorer_ShowAllFilesToolTip" xml:space="preserve"><value>Mostrar todos os arquivos</value></data>
-  <data name="SolutionExplorer_CollapseAllToolTip" xml:space="preserve"><value>Recolher tudo</value></data>
-  <data name="SolutionExplorer_SyncWithActiveDocToolTip" xml:space="preserve"><value>Sincronizar com documento ativo</value></data>
-  <data name="SolutionExplorer_RefreshToolTip" xml:space="preserve"><value>Atualizar</value></data>
-  <data name="SolutionExplorer_SortToolTip" xml:space="preserve"><value>Classificar</value></data>
-  <data name="SolutionExplorer_SortNone" xml:space="preserve"><value>Nenhum</value></data>
-  <data name="SolutionExplorer_SortName" xml:space="preserve"><value>Nome</value></data>
-  <data name="SolutionExplorer_SortType" xml:space="preserve"><value>Tipo</value></data>
-  <data name="SolutionExplorer_SortDateModified" xml:space="preserve"><value>Data de modificação</value></data>
-  <data name="SolutionExplorer_SortSize" xml:space="preserve"><value>Tamanho</value></data>
-  <data name="SolutionExplorer_FilterToolTip" xml:space="preserve"><value>Filtrar</value></data>
-  <data name="SolutionExplorer_FilterAll" xml:space="preserve"><value>Todos</value></data>
-  <data name="SolutionExplorer_FilterBinary" xml:space="preserve"><value>Binário</value></data>
-  <data name="SolutionExplorer_FilterText" xml:space="preserve"><value>Texto</value></data>
-  <data name="SolutionExplorer_FilterImages" xml:space="preserve"><value>Imagens</value></data>
-  <data name="SolutionExplorer_FilterLanguage" xml:space="preserve"><value>Linguagem</value></data>
-  <data name="SolutionExplorer_SearchPlaceholder" xml:space="preserve"><value>Pesquisar no Gerenciador de Soluções (Ctrl+;)</value></data>
-  <data name="SolutionExplorer_SearchModeFileName" xml:space="preserve"><value>Nome do arquivo</value></data>
-  <data name="SolutionExplorer_SearchModeNameContent" xml:space="preserve"><value>Nome + Conteúdo</value></data>
-  <data name="SolutionExplorer_SearchModeContentOnly" xml:space="preserve"><value>Somente conteúdo</value></data>
-  <data name="SolutionExplorer_SearchModeRegex" xml:space="preserve"><value>Regex (nome do arquivo)</value></data>
-  <data name="SolutionExplorer_SolutionFolderTooltip" xml:space="preserve"><value>Pasta de solução (lógica)</value></data>
-  <data name="SolutionExplorer_PhysicalFolderTooltip" xml:space="preserve"><value>Pasta física</value></data>
-  <data name="SolutionExplorer_PropertiesFolderTooltip" xml:space="preserve"><value>Pasta de propriedades</value></data>
-  <data name="SolutionExplorer_BuildDirtyIndicator" xml:space="preserve"><value>O projeto tem alterações desde o último build (Ctrl+Alt+F7 para compilar)</value></data>
-  <data name="SolutionExplorer_UnsavedModifications" xml:space="preserve"><value>Modificações não salvas</value></data>
-  <data name="SolutionExplorer_ExternalFileIndicator" xml:space="preserve"><value>O arquivo está fora do diretório do projeto</value></data>
-  <data name="SolutionExplorer_ExternalModIndicator" xml:space="preserve"><value>Modificado externamente — considere recarregar</value></data>
-  <data name="SolutionExplorer_LoadingIndicator" xml:space="preserve"><value>Carregando…</value></data>
-  <data name="SolutionExplorer_GoToDefinition" xml:space="preserve"><value>Ir para definição</value></data>
-  <data name="SolutionExplorer_Open" xml:space="preserve"><value>Abrir</value></data>
-  <data name="SolutionExplorer_OpenWith" xml:space="preserve"><value>Abrir com</value></data>
-  <data name="SolutionExplorer_OpenWithHexEditor" xml:space="preserve"><value>Editor hexadecimal</value></data>
-  <data name="SolutionExplorer_Add" xml:space="preserve"><value>Adicionar</value></data>
-  <data name="SolutionExplorer_AddNewItem" xml:space="preserve"><value>Adicionar novo item...</value></data>
-  <data name="SolutionExplorer_AddExistingItem" xml:space="preserve"><value>Adicionar item existente...</value></data>
-  <data name="SolutionExplorer_ImportFormat" xml:space="preserve"><value>Importar formato interno...</value></data>
-  <data name="SolutionExplorer_ImportSyntax" xml:space="preserve"><value>Importar sintaxe interna...</value></data>
-  <data name="SolutionExplorer_NewFolder" xml:space="preserve"><value>Nova pasta</value></data>
-  <data name="SolutionExplorer_NewSolutionFolder" xml:space="preserve"><value>Nova pasta de solução</value></data>
-  <data name="SolutionExplorer_AddExistingFolder" xml:space="preserve"><value>Adicionar pasta existente...</value></data>
-  <data name="SolutionExplorer_IncludeInProject" xml:space="preserve"><value>Incluir no projeto</value></data>
-  <data name="SolutionExplorer_SetDefaultTbl" xml:space="preserve"><value>Definir como TBL padrão</value></data>
-  <data name="SolutionExplorer_ClearDefaultTbl" xml:space="preserve"><value>Limpar TBL padrão</value></data>
-  <data name="SolutionExplorer_ConvertToTblx" xml:space="preserve"><value>Converter para TBLX...</value></data>
-  <data name="SolutionExplorer_ApplyTblToActive" xml:space="preserve"><value>Aplicar ao documento ativo</value></data>
-  <data name="SolutionExplorer_ApplyTblToAll" xml:space="preserve"><value>Aplicar a todos os documentos</value></data>
-  <data name="SolutionExplorer_OpenInExplorer" xml:space="preserve"><value>Abrir no Explorador de Arquivos</value></data>
-  <data name="SolutionExplorer_CopyPath" xml:space="preserve"><value>Copiar caminho</value></data>
-  <data name="SolutionExplorer_Copy" xml:space="preserve"><value>Copiar</value></data>
-  <data name="SolutionExplorer_Cut" xml:space="preserve"><value>Recortar</value></data>
-  <data name="SolutionExplorer_Paste" xml:space="preserve"><value>Colar</value></data>
-  <data name="SolutionExplorer_Rename" xml:space="preserve"><value>Renomear</value></data>
-  <data name="SolutionExplorer_RemoveFromProject" xml:space="preserve"><value>Remover do projeto</value></data>
-  <data name="SolutionExplorer_Delete" xml:space="preserve"><value>Excluir</value></data>
-  <data name="SolutionExplorer_ExcludeFromProject" xml:space="preserve"><value>Excluir do projeto</value></data>
-  <data name="SolutionExplorer_ImportIntoProject" xml:space="preserve"><value>Importar para o projeto...</value></data>
-  <data name="SolutionExplorer_ApplyToDisk" xml:space="preserve"><value>Aplicar no disco</value></data>
-  <data name="SolutionExplorer_DiscardChanges" xml:space="preserve"><value>Descartar alterações</value></data>
-  <data name="SolutionExplorer_Build" xml:space="preserve"><value>Compilar</value></data>
-  <data name="SolutionExplorer_Rebuild" xml:space="preserve"><value>Recompilar</value></data>
-  <data name="SolutionExplorer_Clean" xml:space="preserve"><value>Limpar</value></data>
-  <data name="SolutionExplorer_SetAsStartup" xml:space="preserve"><value>Definir como projeto de inicialização</value></data>
-  <data name="SolutionExplorer_AddReference" xml:space="preserve"><value>Adicionar referência…</value></data>
-  <data name="SolutionExplorer_RemoveUnusedReferences" xml:space="preserve"><value>Remover referências não utilizadas…</value></data>
-  <data name="SolutionExplorer_ManageNugetPackages" xml:space="preserve"><value>Gerenciar pacotes NuGet…</value></data>
-  <data name="SolutionExplorer_ManageNugetPackagesSolution" xml:space="preserve"><value>Gerenciar pacotes NuGet para a solução…</value></data>
-  <data name="SolutionExplorer_Properties" xml:space="preserve"><value>Propriedades</value></data>
-  <data name="SolutionExplorer_SaveAll" xml:space="preserve"><value>Salvar tudo</value></data>
-  <data name="SolutionExplorer_CloseSolution" xml:space="preserve"><value>Fechar solução</value></data>
-  <data name="WhfmtBrowser_LoadFailureIndicator" xml:space="preserve"><value>Um ou mais formatos não puderam ser carregados</value></data>
-  <data name="WhfmtBrowser_OpenInEditorToolTip" xml:space="preserve"><value>Abrir no editor de estrutura</value></data>
-  <data name="WhfmtBrowser_ExportToFileToolTip" xml:space="preserve"><value>Exportar para arquivo…</value></data>
-  <data name="WhfmtBrowser_ViewJsonToolTip" xml:space="preserve"><value>Exibir JSON</value></data>
-  <data name="WhfmtBrowser_Open" xml:space="preserve"><value>Abrir</value></data>
-  <data name="WhfmtBrowser_OpenReadOnly" xml:space="preserve"><value>Abrir como somente leitura</value></data>
-  <data name="WhfmtBrowser_ExportToFile" xml:space="preserve"><value>Exportar para arquivo…</value></data>
-  <data name="WhfmtBrowser_ViewJson" xml:space="preserve"><value>Exibir JSON</value></data>
-  <data name="WhfmtBrowser_CopyPath" xml:space="preserve"><value>Copiar caminho</value></data>
-  <data name="WhfmtBrowser_Delete" xml:space="preserve"><value>Excluir</value></data>
-  <data name="WhfmtBrowser_RevealInExplorer" xml:space="preserve"><value>Revelar no Explorer</value></data>
-  <data name="WhfmtBrowser_DuplicateFormat" xml:space="preserve"><value>Duplicar formato…</value></data>
-  <data name="WhfmtBrowser_EditInCodeEditor" xml:space="preserve"><value>Editar no editor de código</value></data>
-  <data name="WhfmtCatalog_NameHeader" xml:space="preserve"><value>Nome</value></data>
-  <data name="WhfmtCatalog_CategoryHeader" xml:space="preserve"><value>Categoria</value></data>
-  <data name="WhfmtCatalog_ExtensionsHeader" xml:space="preserve"><value>Extensões</value></data>
-  <data name="WhfmtCatalog_VersionHeader" xml:space="preserve"><value>Versão</value></data>
-  <data name="WhfmtCatalog_QualityHeader" xml:space="preserve"><value>Qualidade</value></data>
-  <data name="WhfmtCatalog_AuthorHeader" xml:space="preserve"><value>Autor</value></data>
-  <data name="WhfmtCatalog_SourceHeader" xml:space="preserve"><value>Fonte</value></data>
-  <data name="WhfmtCatalog_Open" xml:space="preserve"><value>Abrir</value></data>
-  <data name="WhfmtCatalog_OpenReadOnly" xml:space="preserve"><value>Abrir como somente leitura</value></data>
-  <data name="WhfmtCatalog_ExportToFile" xml:space="preserve"><value>Exportar para arquivo…</value></data>
-  <data name="WhfmtCatalog_ViewJson" xml:space="preserve"><value>Exibir JSON</value></data>
-  <data name="WhfmtCatalog_RevealInExplorer" xml:space="preserve"><value>Revelar no Explorer</value></data>
-  <data name="WhfmtCatalog_ErrorText" xml:space="preserve"><value> Erro</value></data>
-  <data name="WhfmtDetail_EmptyPlaceholder" xml:space="preserve"><value>Selecione um formato para ver os detalhes.</value></data>
-  <data name="WhfmtDetail_OpenInEditorToolTip" xml:space="preserve"><value>Abrir no editor de estrutura</value></data>
-  <data name="WhfmtDetail_ExportToFileToolTip" xml:space="preserve"><value>Exportar para arquivo…</value></data>
-  <data name="WhfmtDetail_ViewRawJsonToolTip" xml:space="preserve"><value>Exibir JSON bruto</value></data>
-  <data name="WhfmtDetail_RetryLoadToolTip" xml:space="preserve"><value>Tentar carregar este formato novamente</value></data>
-  <data name="WhfmtDetail_ExcludeFromCatalogToolTip" xml:space="preserve"><value>Excluir este formato do catálogo</value></data>
-  <data name="WhfmtDetail_FormatLoadedSuccessfully" xml:space="preserve"><value>Formato carregado com êxito</value></data>
-  <data name="WhfmtDetail_FormatLoadFailed" xml:space="preserve"><value>Falha ao carregar o formato</value></data>
-  <data name="WhfmtDetail_OverviewTab" xml:space="preserve"><value>Visão geral</value></data>
-  <data name="WhfmtDetail_VersionLabel" xml:space="preserve"><value>Versão</value></data>
-  <data name="WhfmtDetail_AuthorLabel" xml:space="preserve"><value>Autor</value></data>
-  <data name="WhfmtDetail_CategoryLabel" xml:space="preserve"><value>Categoria</value></data>
-  <data name="WhfmtDetail_PlatformLabel" xml:space="preserve"><value>Plataforma</value></data>
-  <data name="WhfmtDetail_EditorLabel" xml:space="preserve"><value>Editor</value></data>
-  <data name="WhfmtDetail_DiffLabel" xml:space="preserve"><value>Diff</value></data>
-  <data name="WhfmtDetail_StatusLabel" xml:space="preserve"><value>Status</value></data>
-  <data name="WhfmtDetail_ExtensionsLabel" xml:space="preserve"><value>Extensões</value></data>
-  <data name="WhfmtDetail_QualityScoreLabel" xml:space="preserve"><value>Pontuação de qualidade</value></data>
-  <data name="WhfmtDetail_DetectionLabel" xml:space="preserve"><value>Detecção</value></data>
-  <data name="WhfmtDetail_BlocksLabel" xml:space="preserve"><value>Blocos</value></data>
-  <data name="WhfmtDetail_LoadErrorTitle" xml:space="preserve"><value>Erro de carregamento</value></data>
-  <data name="WhfmtDetail_ReferencesTab" xml:space="preserve"><value>Referências</value></data>
-  <data name="WhfmtDetail_SpecificationsLabel" xml:space="preserve"><value>Especificações</value></data>
-  <data name="WhfmtDetail_WebLinksLabel" xml:space="preserve"><value>Links da Web</value></data>
-  <data name="WhfmtDetail_AssertionsTab" xml:space="preserve"><value>Asserções</value></data>
-  <data name="WhfmtDetail_AIHintsTab" xml:space="preserve"><value>Dicas de IA</value></data>
-  <data name="WhfmtDetail_AnalysisContextLabel" xml:space="preserve"><value>Contexto de análise</value></data>
-  <data name="WhfmtDetail_KnownVulnerabilitiesLabel" xml:space="preserve"><value>Vulnerabilidades conhecidas</value></data>
-  <data name="WhfmtDetail_JsonTab" xml:space="preserve"><value>JSON</value></data>
+  <data name="BookmarksPanel_RefreshToolTip" xml:space="preserve">
+    <value>Atualizar marcadores</value>
+  </data>
+  <data name="BookmarksPanel_ClearAllToolTip" xml:space="preserve">
+    <value>Limpar todos os marcadores</value>
+  </data>
+  <data name="BookmarksPanel_EmptyCount" xml:space="preserve">
+    <value>0 marcadores</value>
+  </data>
+  <data name="BookmarksPanel_OffsetHeader" xml:space="preserve">
+    <value>Deslocamento</value>
+  </data>
+  <data name="BookmarksPanel_DescriptionHeader" xml:space="preserve">
+    <value>Descrição</value>
+  </data>
+  <data name="BookmarksPanel_CategoryHeader" xml:space="preserve">
+    <value>Categoria</value>
+  </data>
+  <data name="BookmarksPanel_EmptyMessage" xml:space="preserve">
+    <value>Sem marcadores. Pressione Ctrl+F2 para alternar um marcador no editor ativo.</value>
+  </data>
+  <data name="ErrorPanel_ScopeEntireSolution" xml:space="preserve">
+    <value>Solução completa</value>
+  </data>
+  <data name="ErrorPanel_ScopeCurrentProject" xml:space="preserve">
+    <value>Projeto atual</value>
+  </data>
+  <data name="ErrorPanel_ScopeCurrentDocument" xml:space="preserve">
+    <value>Documento atual</value>
+  </data>
+  <data name="ErrorPanel_ScopeOpenDocuments" xml:space="preserve">
+    <value>Documentos abertos</value>
+  </data>
+  <data name="ErrorPanel_ScopeChangedDocuments" xml:space="preserve">
+    <value>Documentos alterados</value>
+  </data>
+  <data name="ErrorPanel_OverflowButtonToolTip" xml:space="preserve">
+    <value>Mais opções</value>
+  </data>
+  <data name="ErrorPanel_ShowErrorsMenu" xml:space="preserve">
+    <value>Mostrar erros</value>
+  </data>
+  <data name="ErrorPanel_ShowWarningsMenu" xml:space="preserve">
+    <value>Mostrar avisos</value>
+  </data>
+  <data name="ErrorPanel_ShowMessagesMenu" xml:space="preserve">
+    <value>Mostrar mensagens</value>
+  </data>
+  <data name="ErrorPanel_SearchPlaceholder" xml:space="preserve">
+    <value>Pesquisar...</value>
+  </data>
+  <data name="ErrorPanel_ErrorToggleToolTip" xml:space="preserve">
+    <value>Mostrar/ocultar erros</value>
+  </data>
+  <data name="ErrorPanel_ErrorCountText" xml:space="preserve">
+    <value>0 erros</value>
+  </data>
+  <data name="ErrorPanel_WarningToggleToolTip" xml:space="preserve">
+    <value>Mostrar/ocultar avisos</value>
+  </data>
+  <data name="ErrorPanel_WarningCountText" xml:space="preserve">
+    <value>0 avisos</value>
+  </data>
+  <data name="ErrorPanel_MessageToggleToolTip" xml:space="preserve">
+    <value>Mostrar/ocultar mensagens</value>
+  </data>
+  <data name="ErrorPanel_MessageCountText" xml:space="preserve">
+    <value>0 mensagens</value>
+  </data>
+  <data name="ErrorPanel_CodeHeader" xml:space="preserve">
+    <value>Código</value>
+  </data>
+  <data name="ErrorPanel_DescriptionHeader" xml:space="preserve">
+    <value>Descrição</value>
+  </data>
+  <data name="ErrorPanel_ProjectHeader" xml:space="preserve">
+    <value>Projeto</value>
+  </data>
+  <data name="ErrorPanel_FileHeader" xml:space="preserve">
+    <value>Arquivo</value>
+  </data>
+  <data name="ErrorPanel_OffsetHeader" xml:space="preserve">
+    <value>Deslocamento</value>
+  </data>
+  <data name="ErrorPanel_LineColHeader" xml:space="preserve">
+    <value>Linha:Col</value>
+  </data>
+  <data name="PropertiesPanel_ContextLabel" xml:space="preserve">
+    <value>Propriedades</value>
+  </data>
+  <data name="PropertiesPanel_RefreshToolTip" xml:space="preserve">
+    <value>Atualizar propriedades</value>
+  </data>
+  <data name="PropertiesPanel_OverflowToolTip" xml:space="preserve">
+    <value>Mais opções</value>
+  </data>
+  <data name="PropertiesPanel_SortAlphabetically" xml:space="preserve">
+    <value>Classificar alfabeticamente</value>
+  </data>
+  <data name="PropertiesPanel_CopyValue" xml:space="preserve">
+    <value>Copiar valor</value>
+  </data>
+  <data name="PropertiesPanel_SortToggleToolTip" xml:space="preserve">
+    <value>Classificar propriedades alfabeticamente</value>
+  </data>
+  <data name="PropertiesPanel_CopyButtonToolTip" xml:space="preserve">
+    <value>Copiar valor de propriedade selecionado</value>
+  </data>
+  <data name="PropertiesPanel_SearchPlaceholder" xml:space="preserve">
+    <value>Filtrar propriedades…</value>
+  </data>
+  <data name="PropertiesPanel_OpenFolderToolTip" xml:space="preserve">
+    <value>Abrir pasta contendo no Explorer</value>
+  </data>
+  <data name="PropertiesPanel_ThicknessLeft" xml:space="preserve">
+    <value>Esquerda</value>
+  </data>
+  <data name="PropertiesPanel_ThicknessTop" xml:space="preserve">
+    <value>Cima</value>
+  </data>
+  <data name="PropertiesPanel_ThicknessRight" xml:space="preserve">
+    <value>Direita</value>
+  </data>
+  <data name="PropertiesPanel_ThicknessBottom" xml:space="preserve">
+    <value>Baixo</value>
+  </data>
+  <data name="PropertiesPanel_ThicknessLLabel" xml:space="preserve">
+    <value>E</value>
+  </data>
+  <data name="PropertiesPanel_ThicknessTLabel" xml:space="preserve">
+    <value>C</value>
+  </data>
+  <data name="PropertiesPanel_ThicknessRLabel" xml:space="preserve">
+    <value>D</value>
+  </data>
+  <data name="PropertiesPanel_ThicknessBLabel" xml:space="preserve">
+    <value>B</value>
+  </data>
+  <data name="PropertiesPanel_ContextMenu_CopyValue" xml:space="preserve">
+    <value>Copiar valor</value>
+  </data>
+  <data name="PropertiesPanel_ContextMenu_CopyName" xml:space="preserve">
+    <value>Copiar nome</value>
+  </data>
+  <data name="PropertiesPanel_ResetToDefaultToolTip" xml:space="preserve">
+    <value>Redefinir para o padrão</value>
+  </data>
+  <data name="SolutionExplorer_ShowAllFilesToolTip" xml:space="preserve">
+    <value>Mostrar todos os arquivos</value>
+  </data>
+  <data name="SolutionExplorer_CollapseAllToolTip" xml:space="preserve">
+    <value>Recolher tudo</value>
+  </data>
+  <data name="SolutionExplorer_SyncWithActiveDocToolTip" xml:space="preserve">
+    <value>Sincronizar com o documento ativo</value>
+  </data>
+  <data name="SolutionExplorer_RefreshToolTip" xml:space="preserve">
+    <value>Atualizar</value>
+  </data>
+  <data name="SolutionExplorer_SortToolTip" xml:space="preserve">
+    <value>Classificar</value>
+  </data>
+  <data name="SolutionExplorer_SortNone" xml:space="preserve">
+    <value>Nenhum</value>
+  </data>
+  <data name="SolutionExplorer_SortName" xml:space="preserve">
+    <value>Nome</value>
+  </data>
+  <data name="SolutionExplorer_SortType" xml:space="preserve">
+    <value>Tipo</value>
+  </data>
+  <data name="SolutionExplorer_SortDateModified" xml:space="preserve">
+    <value>Data de modificação</value>
+  </data>
+  <data name="SolutionExplorer_SortSize" xml:space="preserve">
+    <value>Tamanho</value>
+  </data>
+  <data name="SolutionExplorer_FilterToolTip" xml:space="preserve">
+    <value>Filtrar</value>
+  </data>
+  <data name="SolutionExplorer_FilterAll" xml:space="preserve">
+    <value>Todos</value>
+  </data>
+  <data name="SolutionExplorer_FilterBinary" xml:space="preserve">
+    <value>Binário</value>
+  </data>
+  <data name="SolutionExplorer_FilterText" xml:space="preserve">
+    <value>Texto</value>
+  </data>
+  <data name="SolutionExplorer_FilterImages" xml:space="preserve">
+    <value>Imagens</value>
+  </data>
+  <data name="SolutionExplorer_FilterLanguage" xml:space="preserve">
+    <value>Idioma</value>
+  </data>
+  <data name="SolutionExplorer_SearchPlaceholder" xml:space="preserve">
+    <value>Pesquisar no Gerenciador de Soluções (Ctrl+;)</value>
+  </data>
+  <data name="SolutionExplorer_SearchModeFileName" xml:space="preserve">
+    <value>Nome do arquivo</value>
+  </data>
+  <data name="SolutionExplorer_SearchModeNameContent" xml:space="preserve">
+    <value>Nome + conteúdo</value>
+  </data>
+  <data name="SolutionExplorer_SearchModeContentOnly" xml:space="preserve">
+    <value>Somente conteúdo</value>
+  </data>
+  <data name="SolutionExplorer_SearchModeRegex" xml:space="preserve">
+    <value>Regex (nome do arquivo)</value>
+  </data>
+  <data name="SolutionExplorer_SolutionFolderTooltip" xml:space="preserve">
+    <value>Pasta de solução (lógica)</value>
+  </data>
+  <data name="SolutionExplorer_PhysicalFolderTooltip" xml:space="preserve">
+    <value>Pasta física</value>
+  </data>
+  <data name="SolutionExplorer_PropertiesFolderTooltip" xml:space="preserve">
+    <value>Pasta de propriedades</value>
+  </data>
+  <data name="SolutionExplorer_BuildDirtyIndicator" xml:space="preserve">
+    <value>O projeto tem alterações desde o último build (Ctrl+Alt+F7 para compilar)</value>
+  </data>
+  <data name="SolutionExplorer_UnsavedModifications" xml:space="preserve">
+    <value>Modificações não salvas</value>
+  </data>
+  <data name="SolutionExplorer_ExternalFileIndicator" xml:space="preserve">
+    <value>O arquivo está localizado fora do diretório do projeto</value>
+  </data>
+  <data name="SolutionExplorer_ExternalModIndicator" xml:space="preserve">
+    <value>Modificado externamente — considere recarregar</value>
+  </data>
+  <data name="SolutionExplorer_LoadingIndicator" xml:space="preserve">
+    <value>Carregando…</value>
+  </data>
+  <data name="SolutionExplorer_GoToDefinition" xml:space="preserve">
+    <value>Ir para a definição</value>
+  </data>
+  <data name="SolutionExplorer_Open" xml:space="preserve">
+    <value>Abrir</value>
+  </data>
+  <data name="SolutionExplorer_OpenWith" xml:space="preserve">
+    <value>Abrir com</value>
+  </data>
+  <data name="SolutionExplorer_OpenWithHexEditor" xml:space="preserve">
+    <value>Editor hex</value>
+  </data>
+  <data name="SolutionExplorer_Add" xml:space="preserve">
+    <value>Adicionar</value>
+  </data>
+  <data name="SolutionExplorer_AddNewItem" xml:space="preserve">
+    <value>Adicionar novo item...</value>
+  </data>
+  <data name="SolutionExplorer_AddExistingItem" xml:space="preserve">
+    <value>Adicionar item existente...</value>
+  </data>
+  <data name="SolutionExplorer_ImportFormat" xml:space="preserve">
+    <value>Importar formato embutido...</value>
+  </data>
+  <data name="SolutionExplorer_ImportSyntax" xml:space="preserve">
+    <value>Importar sintaxe embutida...</value>
+  </data>
+  <data name="SolutionExplorer_NewFolder" xml:space="preserve">
+    <value>Nova pasta</value>
+  </data>
+  <data name="SolutionExplorer_NewSolutionFolder" xml:space="preserve">
+    <value>Nova pasta de solução</value>
+  </data>
+  <data name="SolutionExplorer_AddExistingFolder" xml:space="preserve">
+    <value>Adicionar pasta existente...</value>
+  </data>
+  <data name="SolutionExplorer_IncludeInProject" xml:space="preserve">
+    <value>Incluir no projeto</value>
+  </data>
+  <data name="SolutionExplorer_SetDefaultTbl" xml:space="preserve">
+    <value>Definir como TBL padrão</value>
+  </data>
+  <data name="SolutionExplorer_ClearDefaultTbl" xml:space="preserve">
+    <value>Limpar TBL padrão</value>
+  </data>
+  <data name="SolutionExplorer_ConvertToTblx" xml:space="preserve">
+    <value>Converter para TBLX...</value>
+  </data>
+  <data name="SolutionExplorer_ApplyTblToActive" xml:space="preserve">
+    <value>Aplicar ao documento ativo</value>
+  </data>
+  <data name="SolutionExplorer_ApplyTblToAll" xml:space="preserve">
+    <value>Aplicar a todos os documentos</value>
+  </data>
+  <data name="SolutionExplorer_OpenInExplorer" xml:space="preserve">
+    <value>Abrir no Explorador de Arquivos</value>
+  </data>
+  <data name="SolutionExplorer_CopyPath" xml:space="preserve">
+    <value>Copiar caminho</value>
+  </data>
+  <data name="SolutionExplorer_Copy" xml:space="preserve">
+    <value>Copiar</value>
+  </data>
+  <data name="SolutionExplorer_Cut" xml:space="preserve">
+    <value>Recortar</value>
+  </data>
+  <data name="SolutionExplorer_Paste" xml:space="preserve">
+    <value>Colar</value>
+  </data>
+  <data name="SolutionExplorer_Rename" xml:space="preserve">
+    <value>Renomear</value>
+  </data>
+  <data name="SolutionExplorer_RemoveFromProject" xml:space="preserve">
+    <value>Remover do projeto</value>
+  </data>
+  <data name="SolutionExplorer_Delete" xml:space="preserve">
+    <value>Excluir</value>
+  </data>
+  <data name="SolutionExplorer_ExcludeFromProject" xml:space="preserve">
+    <value>Excluir do projeto</value>
+  </data>
+  <data name="SolutionExplorer_ImportIntoProject" xml:space="preserve">
+    <value>Importar para o projeto...</value>
+  </data>
+  <data name="SolutionExplorer_ApplyToDisk" xml:space="preserve">
+    <value>Aplicar no disco</value>
+  </data>
+  <data name="SolutionExplorer_DiscardChanges" xml:space="preserve">
+    <value>Descartar alterações</value>
+  </data>
+  <data name="SolutionExplorer_Build" xml:space="preserve">
+    <value>Compilar</value>
+  </data>
+  <data name="SolutionExplorer_Rebuild" xml:space="preserve">
+    <value>Recompilar</value>
+  </data>
+  <data name="SolutionExplorer_Clean" xml:space="preserve">
+    <value>Limpar</value>
+  </data>
+  <data name="SolutionExplorer_SetAsStartup" xml:space="preserve">
+    <value>Definir como projeto de inicialização</value>
+  </data>
+  <data name="SolutionExplorer_AddReference" xml:space="preserve">
+    <value>Adicionar referência…</value>
+  </data>
+  <data name="SolutionExplorer_RemoveUnusedReferences" xml:space="preserve">
+    <value>Remover referências não utilizadas…</value>
+  </data>
+  <data name="SolutionExplorer_ManageNugetPackages" xml:space="preserve">
+    <value>Gerenciar pacotes NuGet…</value>
+  </data>
+  <data name="SolutionExplorer_ManageNugetPackagesSolution" xml:space="preserve">
+    <value>Gerenciar pacotes NuGet para a solução…</value>
+  </data>
+  <data name="SolutionExplorer_Properties" xml:space="preserve">
+    <value>Propriedades</value>
+  </data>
+  <data name="SolutionExplorer_SaveAll" xml:space="preserve">
+    <value>Salvar tudo</value>
+  </data>
+  <data name="SolutionExplorer_CloseSolution" xml:space="preserve">
+    <value>Fechar solução</value>
+  </data>
+  <data name="WhfmtBrowser_LoadFailureIndicator" xml:space="preserve">
+    <value>Falha ao carregar um ou mais formatos</value>
+  </data>
+  <data name="WhfmtBrowser_OpenInEditorToolTip" xml:space="preserve">
+    <value>Abrir no editor de estrutura</value>
+  </data>
+  <data name="WhfmtBrowser_ExportToFileToolTip" xml:space="preserve">
+    <value>Exportar para arquivo…</value>
+  </data>
+  <data name="WhfmtBrowser_ViewJsonToolTip" xml:space="preserve">
+    <value>Ver JSON</value>
+  </data>
+  <data name="WhfmtBrowser_Open" xml:space="preserve">
+    <value>Abrir</value>
+  </data>
+  <data name="WhfmtBrowser_OpenReadOnly" xml:space="preserve">
+    <value>Abrir como somente leitura</value>
+  </data>
+  <data name="WhfmtBrowser_ExportToFile" xml:space="preserve">
+    <value>Exportar para arquivo…</value>
+  </data>
+  <data name="WhfmtBrowser_ViewJson" xml:space="preserve">
+    <value>Ver JSON</value>
+  </data>
+  <data name="WhfmtBrowser_CopyPath" xml:space="preserve">
+    <value>Copiar caminho</value>
+  </data>
+  <data name="WhfmtBrowser_Delete" xml:space="preserve">
+    <value>Excluir</value>
+  </data>
+  <data name="WhfmtBrowser_RevealInExplorer" xml:space="preserve">
+    <value>Revelar no Explorer</value>
+  </data>
+  <data name="WhfmtBrowser_DuplicateFormat" xml:space="preserve">
+    <value>Duplicar formato…</value>
+  </data>
+  <data name="WhfmtBrowser_EditInCodeEditor" xml:space="preserve">
+    <value>Editar no editor de código</value>
+  </data>
+  <data name="WhfmtCatalog_NameHeader" xml:space="preserve">
+    <value>Nome</value>
+  </data>
+  <data name="WhfmtCatalog_CategoryHeader" xml:space="preserve">
+    <value>Categoria</value>
+  </data>
+  <data name="WhfmtCatalog_ExtensionsHeader" xml:space="preserve">
+    <value>Extensões</value>
+  </data>
+  <data name="WhfmtCatalog_VersionHeader" xml:space="preserve">
+    <value>Versão</value>
+  </data>
+  <data name="WhfmtCatalog_QualityHeader" xml:space="preserve">
+    <value>Qualidade</value>
+  </data>
+  <data name="WhfmtCatalog_AuthorHeader" xml:space="preserve">
+    <value>Autor</value>
+  </data>
+  <data name="WhfmtCatalog_SourceHeader" xml:space="preserve">
+    <value>Fonte</value>
+  </data>
+  <data name="WhfmtCatalog_Open" xml:space="preserve">
+    <value>Abrir</value>
+  </data>
+  <data name="WhfmtCatalog_OpenReadOnly" xml:space="preserve">
+    <value>Abrir como somente leitura</value>
+  </data>
+  <data name="WhfmtCatalog_ExportToFile" xml:space="preserve">
+    <value>Exportar para arquivo…</value>
+  </data>
+  <data name="WhfmtCatalog_ViewJson" xml:space="preserve">
+    <value>Ver JSON</value>
+  </data>
+  <data name="WhfmtCatalog_RevealInExplorer" xml:space="preserve">
+    <value>Revelar no Explorer</value>
+  </data>
+  <data name="WhfmtCatalog_ErrorText" xml:space="preserve">
+    <value>Erro</value>
+  </data>
+  <data name="WhfmtCatalog_LayoutLeft" xml:space="preserve">
+    <value>Detalhes à esquerda</value>
+  </data>
+  <data name="WhfmtCatalog_LayoutRight" xml:space="preserve">
+    <value>Detalhes à direita</value>
+  </data>
+  <data name="WhfmtCatalog_LayoutTop" xml:space="preserve">
+    <value>Detalhes acima</value>
+  </data>
+  <data name="WhfmtCatalog_LayoutBottom" xml:space="preserve">
+    <value>Detalhes abaixo</value>
+  </data>
+  <data name="WhfmtCatalog_LayoutTooltip" xml:space="preserve">
+    <value>Posição do painel de detalhes</value>
+  </data>
+  <data name="WhfmtDetail_EmptyPlaceholder" xml:space="preserve">
+    <value>Selecione um formato para ver os detalhes.</value>
+  </data>
+  <data name="WhfmtDetail_OpenInEditorToolTip" xml:space="preserve">
+    <value>Abrir no editor de estrutura</value>
+  </data>
+  <data name="WhfmtDetail_ExportToFileToolTip" xml:space="preserve">
+    <value>Exportar para arquivo…</value>
+  </data>
+  <data name="WhfmtDetail_ViewRawJsonToolTip" xml:space="preserve">
+    <value>Ver JSON bruto</value>
+  </data>
+  <data name="WhfmtDetail_RetryLoadToolTip" xml:space="preserve">
+    <value>Tentar carregar novamente este formato</value>
+  </data>
+  <data name="WhfmtDetail_ExcludeFromCatalogToolTip" xml:space="preserve">
+    <value>Excluir este formato do catálogo</value>
+  </data>
+  <data name="WhfmtDetail_FormatLoadedSuccessfully" xml:space="preserve">
+    <value>Formato carregado com sucesso</value>
+  </data>
+  <data name="WhfmtDetail_FormatLoadFailed" xml:space="preserve">
+    <value>Falha ao carregar o formato</value>
+  </data>
+  <data name="WhfmtDetail_OverviewTab" xml:space="preserve">
+    <value>Visão geral</value>
+  </data>
+  <data name="WhfmtDetail_VersionLabel" xml:space="preserve">
+    <value>Versão</value>
+  </data>
+  <data name="WhfmtDetail_AuthorLabel" xml:space="preserve">
+    <value>Autor</value>
+  </data>
+  <data name="WhfmtDetail_CategoryLabel" xml:space="preserve">
+    <value>Categoria</value>
+  </data>
+  <data name="WhfmtDetail_PlatformLabel" xml:space="preserve">
+    <value>Plataforma</value>
+  </data>
+  <data name="WhfmtDetail_EditorLabel" xml:space="preserve">
+    <value>Editor</value>
+  </data>
+  <data name="WhfmtDetail_DiffLabel" xml:space="preserve">
+    <value>Diff</value>
+  </data>
+  <data name="WhfmtDetail_StatusLabel" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="WhfmtDetail_ExtensionsLabel" xml:space="preserve">
+    <value>Extensões</value>
+  </data>
+  <data name="WhfmtDetail_QualityScoreLabel" xml:space="preserve">
+    <value>Pontuação de qualidade</value>
+  </data>
+  <data name="WhfmtDetail_DetectionLabel" xml:space="preserve">
+    <value>Detecção</value>
+  </data>
+  <data name="WhfmtDetail_BlocksLabel" xml:space="preserve">
+    <value>Blocos</value>
+  </data>
+  <data name="WhfmtDetail_LoadErrorTitle" xml:space="preserve">
+    <value>Erro de carregamento</value>
+  </data>
+  <data name="WhfmtDetail_ReferencesTab" xml:space="preserve">
+    <value>Referências</value>
+  </data>
+  <data name="WhfmtDetail_SpecificationsLabel" xml:space="preserve">
+    <value>Especificações</value>
+  </data>
+  <data name="WhfmtDetail_WebLinksLabel" xml:space="preserve">
+    <value>Links da Web</value>
+  </data>
+  <data name="WhfmtDetail_AssertionsTab" xml:space="preserve">
+    <value>Afirmações</value>
+  </data>
+  <data name="WhfmtDetail_AIHintsTab" xml:space="preserve">
+    <value>Dicas de IA</value>
+  </data>
+  <data name="WhfmtDetail_AnalysisContextLabel" xml:space="preserve">
+    <value>Contexto de análise</value>
+  </data>
+  <data name="WhfmtDetail_KnownVulnerabilitiesLabel" xml:space="preserve">
+    <value>Vulnerabilidades conhecidas</value>
+  </data>
+  <data name="WhfmtDetail_JsonTab" xml:space="preserve">
+    <value>JSON</value>
+  </data>
+  <data name="Whfmt_AddFormatTitle" xml:space="preserve">
+    <value>Adicionar definição de formato</value>
+  </data>
+  <data name="Whfmt_AddFormatFilter" xml:space="preserve">
+    <value>Definições whfmt (*.whfmt)|*.whfmt</value>
+  </data>
+  <data name="Whfmt_AddFormatError" xml:space="preserve">
+    <value>Adicionar formato</value>
+  </data>
+  <data name="Whfmt_DeleteFormatTitle" xml:space="preserve">
+    <value>Excluir formato</value>
+  </data>
 </root>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="FileStats_PluginName" xml:space="preserve">
+    <value>ファイル統計</value>
+  </data>
+  <data name="FileStats_HighNullRatio" xml:space="preserve">
+    <value>Null バイトの比率が高い</value>
+  </data>
+  <data name="FileStats_VeryHighEntropy" xml:space="preserve">
+    <value>エントロピーが非常に高い</value>
+  </data>
+  <data name="FileStats_MayBeEncrypted" xml:space="preserve">
+    <value>データが暗号化または圧縮されている可能性があります</value>
+  </data>
+  <data name="FileStats_NoFileLoaded" xml:space="preserve">
+    <value>ファイルがロードされていません</value>
+  </data>
+</root>
