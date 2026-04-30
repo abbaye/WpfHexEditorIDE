@@ -777,7 +777,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         private void ShowUrlTooltip(bool isEmail = false)
         {
             _urlTooltip ??= new ToolTip();
-            _urlTooltip.Content         = isEmail ? "Ctrl+Click to send email" : "Ctrl+Click to open";
+            _urlTooltip.Content         = isEmail ? CodeEditorResources.CodeEditor_UrlTooltipEmail : CodeEditorResources.CodeEditor_UrlTooltipLink;
             _urlTooltip.PlacementTarget = this;
             _urlTooltip.Placement       = System.Windows.Controls.Primitives.PlacementMode.Mouse;
             _urlTooltip.IsOpen          = true;
