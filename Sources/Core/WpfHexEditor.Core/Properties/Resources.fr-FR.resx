@@ -1709,4 +1709,253 @@
     <value>Description</value>
     <comment>Custom Template - Description column header</comment>
   </data>
+  <data name="TblConflict_Title" xml:space="preserve">
+    <value>Rapport d'analyse des conflits TBL</value>
+  </data>
+  <data name="TblConflict_TotalConflicts" xml:space="preserve">
+    <value>Total des conflits :</value>
+  </data>
+  <data name="TblConflict_Errors" xml:space="preserve">
+    <value>Erreurs :</value>
+  </data>
+  <data name="TblConflict_Warnings" xml:space="preserve">
+    <value>Avertissements :</value>
+  </data>
+  <data name="TblConflict_Info" xml:space="preserve">
+    <value>Info :</value>
+  </data>
+  <data name="TblConflict_Description" xml:space="preserve">
+    <value>Description :</value>
+  </data>
+  <data name="TblConflict_Suggestion" xml:space="preserve">
+    <value>Résolution suggérée :</value>
+  </data>
+  <data name="TblConflict_ConflictingEntries" xml:space="preserve">
+    <value>Entrées en conflit :</value>
+  </data>
+  <data name="TblTemplate_Title" xml:space="preserve">
+    <value>Modèles TBL</value>
+  </data>
+  <data name="TblTemplate_Categories" xml:space="preserve">
+    <value>Catégories</value>
+  </data>
+  <data name="TblTemplate_AvailableTemplates" xml:space="preserve">
+    <value>Modèles disponibles</value>
+  </data>
+  <data name="TblTemplate_Preview" xml:space="preserve">
+    <value>Aperçu</value>
+  </data>
+  <data name="TblTemplate_LoadTemplate" xml:space="preserve">
+    <value>Charger le modèle</value>
+  </data>
+  <data name="TblTemplate_MergeWithCurrent" xml:space="preserve">
+    <value>Fusionner avec l'actuel</value>
+  </data>
+  <data name="TblTemplate_BuiltIn" xml:space="preserve">
+    <value>Intégré</value>
+  </data>
+  <data name="ByteTooltip_NoData" xml:space="preserve">
+    <value>Aucune donnée</value>
+  </data>
+  <data name="ByteTooltip_Signed" xml:space="preserve">
+    <value>Signé</value>
+  </data>
+  <data name="ByteTooltip_Binary" xml:space="preserve">
+    <value>Binaire</value>
+  </data>
+  <data name="ByteTooltip_ASCII" xml:space="preserve">
+    <value>ASCII</value>
+  </data>
+  <data name="ByteTooltip_NonPrintable" xml:space="preserve">
+    <value>(non imprimable)</value>
+  </data>
+  <data name="ByteTooltip_Octal" xml:space="preserve">
+    <value>Octal</value>
+  </data>
+  <data name="StatusText_OperationCancelled" xml:space="preserve">
+    <value>Opération annulée</value>
+  </data>
+  <data name="StatusText_FileAlreadyExists" xml:space="preserve">
+    <value>Le fichier existe déjà</value>
+  </data>
+  <data name="StatusText_Ready" xml:space="preserve">
+    <value>Prêt</value>
+  </data>
+  <data name="StatusText_FileSaved" xml:space="preserve">
+    <value>Fichier enregistré</value>
+  </data>
+  <data name="StatusText_SearchMarkersCleared" xml:space="preserve">
+    <value>Marqueurs de recherche effacés.</value>
+  </data>
+  <data name="StatusText_AllChangesCleared" xml:space="preserve">
+    <value>Toutes les modifications effacées</value>
+  </data>
+  <data name="StatusText_TblClosedAscii" xml:space="preserve">
+    <value>TBL fermé, ASCII utilisé</value>
+  </data>
+  <data name="StatusText_NoSelectionToReverse" xml:space="preserve">
+    <value>Aucune sélection à inverser</value>
+  </data>
+  <data name="StatusText_SelectionIsEmpty" xml:space="preserve">
+    <value>La sélection est vide</value>
+  </data>
+  <data name="StatusText_NoSelectionToInvert" xml:space="preserve">
+    <value>Aucune sélection à inverser</value>
+  </data>
+  <data name="StatusText_NoSelectionToFind" xml:space="preserve">
+    <value>Aucune sélection à rechercher</value>
+  </data>
+  <data name="StatusText_NoMatchesFound" xml:space="preserve">
+    <value>Aucune correspondance trouvée.</value>
+  </data>
+  <data name="StatusBar_SizeEmpty" xml:space="preserve">
+    <value>Taille : -</value>
+  </data>
+  <data name="StatusBar_NoSelection" xml:space="preserve">
+    <value>Aucune sélection</value>
+  </data>
+  <data name="StatusBar_PositionZero" xml:space="preserve">
+    <value>Position : 0</value>
+  </data>
+  <data name="StatusBar_ModeOverwrite" xml:space="preserve">
+    <value>Mode : Écraser</value>
+  </data>
+  <data name="StatusBar_BytesPerLine" xml:space="preserve">
+    <value>Octets/Ligne : 16</value>
+  </data>
+  <data name="Search_NoMatches" xml:space="preserve">
+    <value>Aucune correspondance</value>
+  </data>
+  <data name="Search_Error_Title" xml:space="preserve">
+    <value>Erreur de recherche</value>
+  </data>
+  <data name="Search_Error_Label" xml:space="preserve">
+    <value>Erreur</value>
+  </data>
+  <data name="Search_Error_NoTBLLoaded" xml:space="preserve">
+    <value>Aucun TBL chargé. Impossible de rechercher du texte TBL.</value>
+  </data>
+  <data name="Search_Error_TBLRequired" xml:space="preserve">
+    <value>TBL requis</value>
+  </data>
+  <data name="Search_Error_NoTBLForReplacement" xml:space="preserve">
+    <value>Aucun TBL chargé. Impossible d'encoder les octets de remplacement en mode TEXTE TBL.</value>
+  </data>
+  <data name="Search_Replace_Title" xml:space="preserve">
+    <value>Erreur de remplacement</value>
+  </data>
+  <data name="Search_ReplaceAll_Title" xml:space="preserve">
+    <value>Remplacer tout</value>
+  </data>
+  <data name="Search_ExportDialog_Filter" xml:space="preserve">
+    <value>Fichiers CSV (*.csv)|*.csv|Fichiers texte (*.txt)|*.txt|Fichiers JSON (*.json)|*.json</value>
+  </data>
+  <data name="Search_ExportTBL_Title" xml:space="preserve">
+    <value>Exporter le fichier TBL</value>
+  </data>
+  <data name="Search_TBLFileDialog_Filter" xml:space="preserve">
+    <value>Fichiers TBL (*.tbl)|*.tbl|Tous les fichiers (*.*)|*.*</value>
+  </data>
+  <data name="Search_ExportTBL_Success" xml:space="preserve">
+    <value>Exportation réussie</value>
+  </data>
+  <data name="Search_ExportTBL_Error" xml:space="preserve">
+    <value>Erreur d'exportation</value>
+  </data>
+  <data name="Search_EncodingApplied_Title" xml:space="preserve">
+    <value>Encodage appliqué</value>
+  </data>
+  <data name="Search_EncodingApplied_Message" xml:space="preserve">
+    <value>Encodage appliqué ! Vous pouvez maintenant utiliser le mode TEXTE TBL.</value>
+  </data>
+  <data name="Search_LoadTBL_Title" xml:space="preserve">
+    <value>Sélectionner un fichier TBL (table de caractères)</value>
+  </data>
+  <data name="Search_TBLLoaded_Title" xml:space="preserve">
+    <value>TBL chargé</value>
+  </data>
+  <data name="Search_ErrorLoadingTBL_Title" xml:space="preserve">
+    <value>Erreur lors du chargement du TBL</value>
+  </data>
+  <data name="Search_CloseTBL_Title" xml:space="preserve">
+    <value>Fermer TBL</value>
+  </data>
+  <data name="IPS_Error_NoFileOpen" xml:space="preserve">
+    <value>Veuillez d'abord ouvrir un fichier ROM avant d'appliquer un patch.</value>
+  </data>
+  <data name="IPS_Error_NoFileOpen_Title" xml:space="preserve">
+    <value>Aucun fichier ouvert</value>
+  </data>
+  <data name="IPS_ApplyPatch_Title" xml:space="preserve">
+    <value>Sélectionner le fichier de patch IPS</value>
+  </data>
+  <data name="IPS_FileDialog_Filter" xml:space="preserve">
+    <value>Fichiers IPS (*.ips)|*.ips|Tous les fichiers (*.*)|*.*</value>
+  </data>
+  <data name="IPS_Error_InvalidFile" xml:space="preserve">
+    <value>Le fichier sélectionné n'est pas un patch IPS valide.</value>
+  </data>
+  <data name="IPS_Error_InvalidFile_Title" xml:space="preserve">
+    <value>Fichier IPS non valide</value>
+  </data>
+  <data name="IPS_ApplyPatch_Confirm_Title" xml:space="preserve">
+    <value>Appliquer le patch IPS</value>
+  </data>
+  <data name="IPS_ApplyPatch_SaveReminder" xml:space="preserve">
+    <value>N'oubliez pas d'enregistrer le fichier !</value>
+  </data>
+  <data name="IPS_ApplyPatch_Success_Title" xml:space="preserve">
+    <value>Patch appliqué</value>
+  </data>
+  <data name="IPS_ApplyPatch_Error_Title" xml:space="preserve">
+    <value>Échec du patch</value>
+  </data>
+  <data name="IPS_CreatePatch_NoFileOpen" xml:space="preserve">
+    <value>Veuillez d'abord ouvrir un fichier ROM modifié.</value>
+  </data>
+  <data name="IPS_CreatePatch_SelectOriginal_Title" xml:space="preserve">
+    <value>Sélectionner le fichier ROM original (non modifié)</value>
+  </data>
+  <data name="IPS_ROMFileDialog_Filter" xml:space="preserve">
+    <value>Fichiers ROM|*.nes;*.smc;*.sfc;*.gb;*.gbc;*.gba;*.n64;*.z64;*.md;*.bin;*.gen|Tous les fichiers (*.*)|*.*</value>
+  </data>
+  <data name="IPS_CreatePatch_SaveDialog_Title" xml:space="preserve">
+    <value>Enregistrer le patch IPS sous</value>
+  </data>
+  <data name="IPS_CreatePatch_Success_Title" xml:space="preserve">
+    <value>Patch créé</value>
+  </data>
+  <data name="UndoHistory_Undo" xml:space="preserve">
+    <value>Annuler</value>
+  </data>
+  <data name="UndoHistory_Redo" xml:space="preserve">
+    <value>Rétablir</value>
+  </data>
+  <data name="UndoHistory_Action" xml:space="preserve">
+    <value>action</value>
+  </data>
+  <data name="UndoHistory_Actions" xml:space="preserve">
+    <value>actions</value>
+  </data>
+  <data name="DynSettings_Title" xml:space="preserve">
+    <value>Paramètres de l'éditeur hexadécimal</value>
+  </data>
+  <data name="DynSettings_SaveState" xml:space="preserve">
+    <value>Enregistrer l'état</value>
+  </data>
+  <data name="DynSettings_LoadState" xml:space="preserve">
+    <value>Charger l'état</value>
+  </data>
+  <data name="DynSettings_ResetDefaults" xml:space="preserve">
+    <value>Rétablir les valeurs par défaut</value>
+  </data>
+  <data name="UndoRedo_NothingToUndo" xml:space="preserve">
+    <value>Aucune opération à annuler</value>
+  </data>
+  <data name="UndoRedo_NothingToRedo" xml:space="preserve">
+    <value>Aucune opération à rétablir</value>
+  </data>
+  <data name="CopyAsAutoString" xml:space="preserve">
+    <value>Copier (auto)</value>
+  </data>
 </root>

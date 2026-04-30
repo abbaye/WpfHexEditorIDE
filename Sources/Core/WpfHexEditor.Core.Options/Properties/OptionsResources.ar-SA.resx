@@ -165,4 +165,490 @@
   <data name="Opt_Page_FormatExplorer" xml:space="preserve"><value>مستكشف التنسيقات</value></data>
   <data name="Opt_Page_CompareFiles" xml:space="preserve"><value>مقارنة الملفات</value></data>
   <data name="Opt_Page_CommandPalette" xml:space="preserve"><value>لوحة الأوامر</value></data>
+  <data name="BuildCompiler_CSharpSection" xml:space="preserve">
+    <value>الإعدادات الافتراضية لـ C# / .NET</value>
+  </data>
+  <data name="BuildCompiler_NullableCheck" xml:space="preserve">
+    <value>التعامل مع تحذيرات nullable كأخطاء (C# 8+)</value>
+  </data>
+  <data name="BuildCompiler_ImplicitUsings" xml:space="preserve">
+    <value>تفعيل الاستخدامات الضمنية (C# 10+)</value>
+  </data>
+  <data name="BuildCompiler_GenerateDocs" xml:space="preserve">
+    <value>توليد ملف توثيق XML</value>
+  </data>
+  <data name="BuildCompiler_WarningsSection" xml:space="preserve">
+    <value>التحذيرات</value>
+  </data>
+  <data name="BuildCompiler_WarnLevelLabel" xml:space="preserve">
+    <value>مستوى التحذير الافتراضي (0–9):</value>
+  </data>
+  <data name="BuildRun_GeneralSection" xml:space="preserve">
+    <value>عام</value>
+  </data>
+  <data name="BuildRun_SaveBeforeBuild" xml:space="preserve">
+    <value>حفظ جميع التغييرات قبل البناء</value>
+  </data>
+  <data name="BuildRun_VerbosityLabel" xml:space="preserve">
+    <value>تفصيل مخرجات البناء:</value>
+  </data>
+  <data name="BuildRun_VerbQuiet" xml:space="preserve">
+    <value>صامت</value>
+  </data>
+  <data name="BuildRun_VerbMinimal" xml:space="preserve">
+    <value>حد أدنى</value>
+  </data>
+  <data name="BuildRun_VerbNormal" xml:space="preserve">
+    <value>عادي</value>
+  </data>
+  <data name="BuildRun_VerbDetailed" xml:space="preserve">
+    <value>مفصّل</value>
+  </data>
+  <data name="BuildRun_VerbDiagnostic" xml:space="preserve">
+    <value>تشخيصي</value>
+  </data>
+  <data name="BuildRun_RunInProcess" xml:space="preserve">
+    <value>تشغيل MSBuild داخل العملية (أسرع، موصى به)</value>
+  </data>
+  <data name="BuildRun_MaxParallelLabel" xml:space="preserve">
+    <value>الحد الأقصى لبناء المشاريع المتوازية:</value>
+  </data>
+  <data name="BuildRun_OutputSection" xml:space="preserve">
+    <value>نافذة المخرجات</value>
+  </data>
+  <data name="BuildRun_ShowOnStart" xml:space="preserve">
+    <value>إظهار نافذة المخرجات عند بدء البناء</value>
+  </data>
+  <data name="BuildRun_ShowOnError" xml:space="preserve">
+    <value>إظهار نافذة المخرجات عند حدوث خطأ في البناء</value>
+  </data>
+  <data name="BuildRun_RunSection" xml:space="preserve">
+    <value>تشغيل</value>
+  </data>
+  <data name="BuildRun_OnRunBuildErrorLabel" xml:space="preserve">
+    <value>عند التشغيل، في حالة وجود أخطاء بناء:</value>
+  </data>
+  <data name="BuildRun_DoNotLaunch" xml:space="preserve">
+    <value>لا تشغيل</value>
+  </data>
+  <data name="BuildRun_Launch" xml:space="preserve">
+    <value>تشغيل</value>
+  </data>
+  <data name="BuildRun_ShowOutputOnRun" xml:space="preserve">
+    <value>إظهار نافذة المخرجات عند بدء التشغيل</value>
+  </data>
+  <data name="CodeInlineHints_Section" xml:space="preserve">
+    <value>التلميحات المضمّنة</value>
+  </data>
+  <data name="CodeInlineHints_EnableHints" xml:space="preserve">
+    <value>تفعيل التلميحات المضمّنة (عرض أعداد المراجع المضمّنة أعلى التصريحات)</value>
+  </data>
+  <data name="CodeInlineHints_SourceLabel" xml:space="preserve">
+    <value>مصدر المراجع:</value>
+  </data>
+  <data name="CodeInlineHints_SourceAuto" xml:space="preserve">
+    <value>تلقائي (Roslyn عند توفّره، مع regex كبديل)</value>
+  </data>
+  <data name="CodeInlineHints_SourceRoslyn" xml:space="preserve">
+    <value>Roslyn فقط (C# / VB.NET)</value>
+  </data>
+  <data name="CodeInlineHints_SourceRegex" xml:space="preserve">
+    <value>Regex دائمًا</value>
+  </data>
+  <data name="CodeInlineHints_RoslynSection" xml:space="preserve">
+    <value>التلميحات الدلالية عبر Roslyn (C# / VB.NET)</value>
+  </data>
+  <data name="CodeInlineHints_RoslynNote" xml:space="preserve">
+    <value>عرض الأنواع المستنتجة وأنواع الإرجاع مضمّنةً عندما يكون Roslyn هو عميل اللغة النشط.</value>
+  </data>
+  <data name="CodeInlineHints_ShowVarType" xml:space="preserve">
+    <value>عرض النوع المستنتج لتصريحات var (مثلاً: var x = ... → : List&amp;lt;int&amp;gt;)</value>
+  </data>
+  <data name="CodeInlineHints_ShowLambdaReturn" xml:space="preserve">
+    <value>عرض نوع الإرجاع لتعبيرات lambda (مثلاً: x =&amp;gt; x * 2 → int)</value>
+  </data>
+  <data name="CodeInlineHints_KindsSection" xml:space="preserve">
+    <value>عرض التلميحات لأنواع الرموز:</value>
+  </data>
+  <data name="CodeInlineHints_KindsNote" xml:space="preserve">
+    <value>قم بإلغاء تحديد نوع لإخفاء تلميحات عدد مراجعه مع إبقاء التلميحات المضمّنة نشطة للآخرين.</value>
+  </data>
+  <data name="CodeInlineHints_TypesGroup" xml:space="preserve">
+    <value>الأنواع</value>
+  </data>
+  <data name="CodeInlineHints_Class" xml:space="preserve">
+    <value>فئة</value>
+  </data>
+  <data name="CodeInlineHints_Interface" xml:space="preserve">
+    <value>واجهة</value>
+  </data>
+  <data name="CodeInlineHints_Struct" xml:space="preserve">
+    <value>بنية</value>
+  </data>
+  <data name="CodeInlineHints_Enum" xml:space="preserve">
+    <value>تعداد</value>
+  </data>
+  <data name="CodeInlineHints_Record" xml:space="preserve">
+    <value>سجل</value>
+  </data>
+  <data name="CodeInlineHints_Delegate" xml:space="preserve">
+    <value>مفوّض</value>
+  </data>
+  <data name="CodeInlineHints_MembersGroup" xml:space="preserve">
+    <value>الأعضاء</value>
+  </data>
+  <data name="CodeInlineHints_Method" xml:space="preserve">
+    <value>طريقة</value>
+  </data>
+  <data name="CodeInlineHints_Constructor" xml:space="preserve">
+    <value>مُنشئ</value>
+  </data>
+  <data name="CodeInlineHints_Property" xml:space="preserve">
+    <value>خاصية</value>
+  </data>
+  <data name="CodeInlineHints_Field" xml:space="preserve">
+    <value>حقل</value>
+  </data>
+  <data name="CodeInlineHints_Event" xml:space="preserve">
+    <value>حدث</value>
+  </data>
+  <data name="CodeInlineHints_OtherGroup" xml:space="preserve">
+    <value>أخرى</value>
+  </data>
+  <data name="CodeInlineHints_LocalVar" xml:space="preserve">
+    <value>متغير محلي</value>
+  </data>
+  <data name="CodeInlineHints_Parameter" xml:space="preserve">
+    <value>معامل</value>
+  </data>
+  <data name="CodeInlineHints_TypeParam" xml:space="preserve">
+    <value>معامل النوع</value>
+  </data>
+  <data name="CodeInlineHints_Namespace" xml:space="preserve">
+    <value>مساحة الأسماء</value>
+  </data>
+  <data name="CodeInlineHints_SelectAll" xml:space="preserve">
+    <value>تحديد الكل</value>
+  </data>
+  <data name="CodeInlineHints_ClearAll" xml:space="preserve">
+    <value>مسح الكل</value>
+  </data>
+  <data name="CodeOpt_FontSection" xml:space="preserve">
+    <value>الخط</value>
+  </data>
+  <data name="CodeOpt_FontFamilyLabel" xml:space="preserve">
+    <value>عائلة الخط:</value>
+  </data>
+  <data name="CodeOpt_FontSizeLabel" xml:space="preserve">
+    <value>حجم الخط (نقطة):</value>
+  </data>
+  <data name="CodeOpt_IndentSection" xml:space="preserve">
+    <value>المسافة البادئة</value>
+  </data>
+  <data name="CodeOpt_IndentSizeLabel" xml:space="preserve">
+    <value>حجم المسافة البادئة:</value>
+  </data>
+  <data name="CodeOpt_UseSpaces" xml:space="preserve">
+    <value>إدراج مسافات بدلاً من الجدولة</value>
+  </data>
+  <data name="CodeOpt_FeaturesSection" xml:space="preserve">
+    <value>الميزات</value>
+  </data>
+  <data name="CodeOpt_ShowLineNumbers" xml:space="preserve">
+    <value>إظهار أرقام الأسطر</value>
+  </data>
+  <data name="CodeOpt_HighlightCurrentLine" xml:space="preserve">
+    <value>تمييز السطر الحالي</value>
+  </data>
+  <data name="CodeOpt_CtrlClickLinks" xml:space="preserve">
+    <value>تفعيل Ctrl+نقر للتنقل إلى التعريف / فتح الروابط</value>
+  </data>
+  <data name="CodeOpt_DefaultZoomLabel" xml:space="preserve">
+    <value>مستوى التكبير الافتراضي (%):</value>
+  </data>
+  <data name="CodeOpt_MouseWheelLabel" xml:space="preserve">
+    <value>سرعة عجلة الماوس:</value>
+  </data>
+  <data name="CodeOpt_ChangesetSection" xml:space="preserve">
+    <value>مجموعة التغييرات (.WHCHG)</value>
+  </data>
+  <data name="CodeOpt_TrackEdits" xml:space="preserve">
+    <value>تتبع التعديلات في ملف مرافق .whchg (يتطلب وضع الحفظ المتتبع)</value>
+  </data>
+  <data name="CodeOpt_SyntaxSection" xml:space="preserve">
+    <value>تجاوزات ألوان بناء الجملة</value>
+  </data>
+  <data name="CodeOpt_SyntaxNote" xml:space="preserve">
+    <value>قم بتفعيل لون للتجاوز على القيمة الافتراضية للثيم النشط.</value>
+  </data>
+  <data name="CodeOpt_Background" xml:space="preserve">
+    <value>الخلفية:</value>
+  </data>
+  <data name="CodeOpt_Foreground" xml:space="preserve">
+    <value>المقدمة:</value>
+  </data>
+  <data name="CodeOpt_Keyword" xml:space="preserve">
+    <value>الكلمة المفتاحية:</value>
+  </data>
+  <data name="CodeOpt_String" xml:space="preserve">
+    <value>سلسلة نصية:</value>
+  </data>
+  <data name="CodeOpt_Comment" xml:space="preserve">
+    <value>تعليق:</value>
+  </data>
+  <data name="CodeOpt_Number" xml:space="preserve">
+    <value>رقم:</value>
+  </data>
+  <data name="CodeOpt_Type" xml:space="preserve">
+    <value>نوع:</value>
+  </data>
+  <data name="CodeOpt_Preprocessor" xml:space="preserve">
+    <value>معالج مسبق:</value>
+  </data>
+  <data name="CodeOpt_Operator" xml:space="preserve">
+    <value>مشغّل:</value>
+  </data>
+  <data name="CodeOpt_Identifier" xml:space="preserve">
+    <value>معرّف:</value>
+  </data>
+  <data name="CodeOpt_ResetColors" xml:space="preserve">
+    <value>إعادة تعيين إلى ألوان الثيم الافتراضية</value>
+  </data>
+  <data name="EnvSave_SaveModeSection" xml:space="preserve">
+    <value>وضع الحفظ</value>
+  </data>
+  <data name="EnvSave_DirectMode" xml:space="preserve">
+    <value>وضع مباشر</value>
+  </data>
+  <data name="EnvSave_TrackedMode" xml:space="preserve">
+    <value>وضع التتبع</value>
+  </data>
+  <data name="EnvSave_AutoSaveSection" xml:space="preserve">
+    <value>الحفظ التلقائي</value>
+  </data>
+  <data name="EnvSave_AutoSerialize" xml:space="preserve">
+    <value>تفعيل الحفظ التلقائي</value>
+  </data>
+  <data name="EnvSave_IntervalLabel" xml:space="preserve">
+    <value>الفاصل الزمني (ثانية)</value>
+  </data>
+  <data name="EnvSave_StandaloneSection" xml:space="preserve">
+    <value>الوضع المستقل</value>
+  </data>
+  <data name="EnvSave_StandaloneNote" xml:space="preserve">
+    <value>في الوضع المستقل، يتحكم كل محرر في طريقة الحفظ.</value>
+  </data>
+  <data name="EnvSave_HexEditorDirect" xml:space="preserve">
+    <value>محرر Hex: وضع مباشر</value>
+  </data>
+  <data name="EnvSave_CodeEditorDirect" xml:space="preserve">
+    <value>محرر الكود: وضع مباشر</value>
+  </data>
+  <data name="EnvSave_TextEditorDirect" xml:space="preserve">
+    <value>محرر النص: وضع مباشر</value>
+  </data>
+  <data name="EnvSave_TblEditorDirect" xml:space="preserve">
+    <value>محرر TBL: وضع مباشر</value>
+  </data>
+  <data name="EnvSave_ImageViewerDirect" xml:space="preserve">
+    <value>عارض الصور: وضع مباشر</value>
+  </data>
+  <data name="EnvSave_SaveAsNote" xml:space="preserve">
+    <value>يتطلب "حفظ باسم" اختيار مسار جديد.</value>
+  </data>
+  <data name="HexBehavior_Section" xml:space="preserve">
+    <value>سلوك محرر Hex</value>
+  </data>
+  <data name="HexBehavior_AllowAutoHighLight" xml:space="preserve">
+    <value>تمكين التمييز التلقائي</value>
+  </data>
+  <data name="HexBehavior_AllowAutoSelectDoubleClick" xml:space="preserve">
+    <value>تحديد تلقائي بالنقر المزدوج</value>
+  </data>
+  <data name="HexBehavior_AllowContextMenu" xml:space="preserve">
+    <value>تفعيل قائمة السياق</value>
+  </data>
+  <data name="HexBehavior_AllowDeleteByte" xml:space="preserve">
+    <value>السماح بحذف البايت</value>
+  </data>
+  <data name="HexBehavior_AllowExtend" xml:space="preserve">
+    <value>السماح بالتوسيع</value>
+  </data>
+  <data name="HexBehavior_FileDroppingConfirmation" xml:space="preserve">
+    <value>تأكيد إسقاط الملف</value>
+  </data>
+  <data name="HexBehavior_PreloadModeLabel" xml:space="preserve">
+    <value>وضع التحميل المسبق</value>
+  </data>
+  <data name="HexDisplay_DisplaySection" xml:space="preserve">
+    <value>إعدادات العرض</value>
+  </data>
+  <data name="HexDisplay_BytesPerLineLabel" xml:space="preserve">
+    <value>بايتات في السطر</value>
+  </data>
+  <data name="HexDisplay_ShowOffset" xml:space="preserve">
+    <value>إظهار الإزاحة</value>
+  </data>
+  <data name="HexDisplay_ShowAscii" xml:space="preserve">
+    <value>إظهار عمود ASCII</value>
+  </data>
+  <data name="HexDisplay_MouseWheelLabel" xml:space="preserve">
+    <value>عجلة الماوس</value>
+  </data>
+  <data name="HexDisplay_ByteTooltipLabel" xml:space="preserve">
+    <value>تلميح البايت</value>
+  </data>
+  <data name="HexDisplay_FormatSection" xml:space="preserve">
+    <value>تنسيق</value>
+  </data>
+  <data name="HexDisplay_ValueFormatLabel" xml:space="preserve">
+    <value>تنسيق القيمة</value>
+  </data>
+  <data name="HexDisplay_OffsetFormatLabel" xml:space="preserve">
+    <value>تنسيق الإزاحة</value>
+  </data>
+  <data name="HexDisplay_ByteGroupingLabel" xml:space="preserve">
+    <value>تجميع البايتات</value>
+  </data>
+  <data name="HexDisplay_SpacerPositionLabel" xml:space="preserve">
+    <value>موضع الفاصل</value>
+  </data>
+  <data name="HexDisplay_ScrollMarkersSection" xml:space="preserve">
+    <value>علامات شريط التمرير</value>
+  </data>
+  <data name="HexDisplay_ShowBookmarkMarkers" xml:space="preserve">
+    <value>إظهار علامات الإشارة المرجعية</value>
+  </data>
+  <data name="HexDisplay_ShowModifiedMarkers" xml:space="preserve">
+    <value>إظهار علامات التعديل</value>
+  </data>
+  <data name="HexDisplay_ShowInsertedMarkers" xml:space="preserve">
+    <value>إظهار علامات الإدراج</value>
+  </data>
+  <data name="HexDisplay_ShowDeletedMarkers" xml:space="preserve">
+    <value>إظهار علامات الحذف</value>
+  </data>
+  <data name="HexDisplay_ShowSearchResultMarkers" xml:space="preserve">
+    <value>إظهار علامات نتائج البحث</value>
+  </data>
+  <data name="HexDisplay_ColumnRowSection" xml:space="preserve">
+    <value>تمييز الأعمدة والصفوف</value>
+  </data>
+  <data name="HexDisplay_ShowColumnHighlight" xml:space="preserve">
+    <value>إظهار تمييز العمود</value>
+  </data>
+  <data name="HexDisplay_ShowAsciiColumnHighlight" xml:space="preserve">
+    <value>إظهار تمييز عمود ASCII</value>
+  </data>
+  <data name="HexDisplay_ShowRowHighlight" xml:space="preserve">
+    <value>إظهار تمييز الصف</value>
+  </data>
+  <data name="HexEdit_EditingSection" xml:space="preserve">
+    <value>إعدادات التحرير</value>
+  </data>
+  <data name="HexEdit_DefaultEditModeLabel" xml:space="preserve">
+    <value>وضع التحرير الافتراضي</value>
+  </data>
+  <data name="HexEdit_MouseWheelLabel" xml:space="preserve">
+    <value>عجلة الماوس</value>
+  </data>
+  <data name="HexEdit_AllowZoom" xml:space="preserve">
+    <value>السماح بالتكبير</value>
+  </data>
+  <data name="HexEdit_AllowFileDrop" xml:space="preserve">
+    <value>السماح بإسقاط الملف</value>
+  </data>
+  <data name="HexEdit_DataSection" xml:space="preserve">
+    <value>إعدادات البيانات</value>
+  </data>
+  <data name="HexEdit_ByteSizeLabel" xml:space="preserve">
+    <value>حجم البايت</value>
+  </data>
+  <data name="HexEdit_ByteOrderLabel" xml:space="preserve">
+    <value>ترتيب البايتات</value>
+  </data>
+  <data name="HexEdit_DefaultCopyFormatLabel" xml:space="preserve">
+    <value>تنسيق النسخ الافتراضي</value>
+  </data>
+  <data name="HexEdit_SpacerVisualLabel" xml:space="preserve">
+    <value>مظهر الفاصل</value>
+  </data>
+  <data name="HexStatus_Section" xml:space="preserve">
+    <value>شريط الحالة</value>
+  </data>
+  <data name="HexStatus_ShowStatusMessage" xml:space="preserve">
+    <value>إظهار رسالة الحالة</value>
+  </data>
+  <data name="HexStatus_ShowFileSize" xml:space="preserve">
+    <value>إظهار حجم الملف</value>
+  </data>
+  <data name="HexStatus_ShowSelection" xml:space="preserve">
+    <value>إظهار التحديد</value>
+  </data>
+  <data name="HexStatus_ShowPosition" xml:space="preserve">
+    <value>إظهار الموضع</value>
+  </data>
+  <data name="HexStatus_ShowEditMode" xml:space="preserve">
+    <value>إظهار وضع التحرير</value>
+  </data>
+  <data name="HexStatus_ShowBytesPerLine" xml:space="preserve">
+    <value>إظهار البايتات في السطر</value>
+  </data>
+  <data name="HexStatus_ShowRefreshRate" xml:space="preserve">
+    <value>إظهار معدل التحديث</value>
+  </data>
+  <data name="Opt_Plugin_SelectExtDir" xml:space="preserve">
+    <value>تحديد دليل الامتداد</value>
+  </data>
+  <data name="Opt_PluginDev_SelectOutputDir" xml:space="preserve">
+    <value>تحديد دليل الإخراج</value>
+  </data>
+  <data name="Opt_ViewMode_Tree" xml:space="preserve">
+    <value>عرض شجري</value>
+  </data>
+  <data name="Opt_ViewMode_Flat" xml:space="preserve">
+    <value>عرض مسطح</value>
+  </data>
+  <data name="Opt_Position_Right" xml:space="preserve">
+    <value>يمين</value>
+  </data>
+  <data name="Opt_Position_Left" xml:space="preserve">
+    <value>يسار</value>
+  </data>
+  <data name="Opt_Position_Bottom" xml:space="preserve">
+    <value>أسفل</value>
+  </data>
+  <data name="Opt_Position_Top" xml:space="preserve">
+    <value>أعلى</value>
+  </data>
+  <data name="Opt_Endian_Little" xml:space="preserve">
+    <value>Little-Endian</value>
+  </data>
+  <data name="Opt_Endian_Big" xml:space="preserve">
+    <value>Big-Endian</value>
+  </data>
+  <data name="Opt_IndentLevel_1" xml:space="preserve">
+    <value>مستوى 1</value>
+  </data>
+  <data name="Opt_IndentLevel_2" xml:space="preserve">
+    <value>مستوى 2</value>
+  </data>
+  <data name="Opt_IndentLevel_3" xml:space="preserve">
+    <value>مستوى 3</value>
+  </data>
+  <data name="Opt_MdLayout_PreviewRight" xml:space="preserve">
+    <value>معاينة على اليمين</value>
+  </data>
+  <data name="Opt_MdLayout_PreviewBottom" xml:space="preserve">
+    <value>معاينة في الأسفل</value>
+  </data>
+  <data name="Opt_MdLayout_EditorOnly" xml:space="preserve">
+    <value>المحرر فقط</value>
+  </data>
+  <data name="Opt_MdLayout_PreviewOnly" xml:space="preserve">
+    <value>المعاينة فقط</value>
+  </data>
+  <data name="Opt_Preview_Label" xml:space="preserve">
+    <value>معاينة</value>
+  </data>
 </root>

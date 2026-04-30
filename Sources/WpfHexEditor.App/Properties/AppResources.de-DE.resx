@@ -233,4 +233,550 @@
   <data name="App_Toolbar_SwitchBranch" xml:space="preserve"><value>Klicken zum Wechseln des Zweigs</value></data>
   <data name="App_Toolbar_UncommittedChanges" xml:space="preserve"><value>Nicht committete Änderungen</value></data>
   <data name="App_Toolbar_PluginUpdates" xml:space="preserve"><value>Plugin-Updates verfügbar — klicken zum Öffnen des Marketplace</value></data>
+  <data name="App_AddExistingItem" xml:space="preserve">
+    <value>Vorhandenes Element hinzufügen</value>
+  </data>
+  <data name="App_Breadcrumb_ProjectNotFound" xml:space="preserve">
+    <value>Projekt nicht gefunden.</value>
+  </data>
+  <data name="App_Breadcrumb_SolutionNotLoaded" xml:space="preserve">
+    <value>Lösung nicht geladen.</value>
+  </data>
+  <data name="App_CodeEditor_MinimapFill" xml:space="preserve">
+    <value>Füllen</value>
+  </data>
+  <data name="App_CodeEditor_MinimapFit" xml:space="preserve">
+    <value>Anpassen</value>
+  </data>
+  <data name="App_CodeEditor_MinimapLeft" xml:space="preserve">
+    <value>Links</value>
+  </data>
+  <data name="App_CodeEditor_MinimapProportional" xml:space="preserve">
+    <value>Proportional</value>
+  </data>
+  <data name="App_CodeEditor_MinimapRight" xml:space="preserve">
+    <value>Rechts</value>
+  </data>
+  <data name="App_CompareWithHead" xml:space="preserve">
+    <value>Mit HEAD vergleichen</value>
+  </data>
+  <data name="App_CompareWithHeadNoRepo" xml:space="preserve">
+    <value>Kein Git-Repository für diese Datei gefunden.</value>
+  </data>
+  <data name="App_CompareWithHeadNoVersion" xml:space="preserve">
+    <value>HEAD-Version konnte nicht aus git extrahiert werden.</value>
+  </data>
+  <data name="App_Compare_SelectFile" xml:space="preserve">
+    <value>Datei zum Vergleichen auswählen</value>
+  </data>
+  <data name="App_Comparison_ModeHexText" xml:space="preserve">
+    <value>HexText</value>
+  </data>
+  <data name="App_Comparison_ModeInline" xml:space="preserve">
+    <value>Inline</value>
+  </data>
+  <data name="App_Comparison_ModeSideBySide" xml:space="preserve">
+    <value>Nebeneinander</value>
+  </data>
+  <data name="App_ConfigPage_BuildAll" xml:space="preserve">
+    <value>Alle erstellen</value>
+  </data>
+  <data name="App_ConfigPage_DeployAll" xml:space="preserve">
+    <value>Alle bereitstellen</value>
+  </data>
+  <data name="App_ContextMenu_CompareWithActive" xml:space="preserve">
+    <value>Mit aktivem Editor vergleichen</value>
+  </data>
+  <data name="App_ContextMenu_CompareWithAnother" xml:space="preserve">
+    <value>Mit anderer Datei vergleichen…</value>
+  </data>
+  <data name="App_ContextMenu_None" xml:space="preserve">
+    <value>(keine)</value>
+  </data>
+  <data name="App_Convert_AlreadyWhsln" xml:space="preserve">
+    <value>Die aktuelle Lösung ist bereits eine .whsln-Datei.</value>
+  </data>
+  <data name="App_Convert_Confirm" xml:space="preserve">
+    <value>"{0}" nach "{1}" konvertieren?{2}{2}Die Originaldatei wird beibehalten.</value>
+  </data>
+  <data name="App_Convert_Failed" xml:space="preserve">
+    <value>Konvertierung fehlgeschlagen:{0}{1}</value>
+  </data>
+  <data name="App_Convert_NoLoader" xml:space="preserve">
+    <value>Kein Loader für das Format {0} registriert. Stellen Sie sicher, dass das VS Solution Loader-Plugin aktiv ist.</value>
+  </data>
+  <data name="App_Convert_NoLoaderSimple" xml:space="preserve">
+    <value>Kein Loader für das Format {0} registriert.</value>
+  </data>
+  <data name="App_Convert_NoSolution" xml:space="preserve">
+    <value>Keine Lösung ist derzeit geöffnet.</value>
+  </data>
+  <data name="App_Convert_NotSln" xml:space="preserve">
+    <value>Die aktuelle Lösung ist keine .sln-Datei.</value>
+  </data>
+  <data name="App_Convert_NotSlnx" xml:space="preserve">
+    <value>Die aktuelle Lösung ist keine .slnx-Datei.</value>
+  </data>
+  <data name="App_Convert_Success" xml:space="preserve">
+    <value>Konvertiert nach "{0}".{1}{1}Jetzt die konvertierte Lösung öffnen?</value>
+  </data>
+  <data name="App_Convert_Title" xml:space="preserve">
+    <value>Lösungsformat konvertieren</value>
+  </data>
+  <data name="App_Debug_AttachNotAvailable" xml:space="preserve">
+    <value>Debugger-Dienst nicht verfügbar.</value>
+  </data>
+  <data name="App_Debug_AttachPidPrompt" xml:space="preserve">
+    <value>Geben Sie die Prozess-ID (PID) zum Anhängen ein:</value>
+  </data>
+  <data name="App_Debug_AttachTitle" xml:space="preserve">
+    <value>An Prozess anhängen</value>
+  </data>
+  <data name="App_Debug_BuildFailed" xml:space="preserve">
+    <value>Build fehlgeschlagen. Beheben Sie die Fehler vor dem Debuggen.</value>
+  </data>
+  <data name="App_Debug_ExeNotFound" xml:space="preserve">
+    <value>Das zu debuggende Programm wurde nicht gefunden:{0}{1}{0}{0}Das Projekt wurde erstellt, aber die ausführbare Datei wurde nicht gefunden.</value>
+  </data>
+  <data name="App_Debug_NoStartupProject" xml:space="preserve">
+    <value>Kein Startprojekt festgelegt. Legen Sie vor dem Debuggen ein Startprojekt fest.</value>
+  </data>
+  <data name="App_Debug_StartTitle" xml:space="preserve">
+    <value>Debuggen starten</value>
+  </data>
+  <data name="App_Debugger_AdapterMissing" xml:space="preserve">
+    <value>Installieren Sie das entsprechende Adapter-Plugin oder konfigurieren Sie einen benutzerdefinierten Adapter.</value>
+  </data>
+  <data name="App_Debugger_AdapterNotFound" xml:space="preserve">
+    <value>Debug-Adapter (netcoredbg) nicht gefunden.{0}Installieren Sie ihn oder setzen Sie den Pfad in Optionen → Debugger.</value>
+  </data>
+  <data name="App_Debugger_Title" xml:space="preserve">
+    <value>Debugger</value>
+  </data>
+  <data name="App_DockTitle_ExtensionManager" xml:space="preserve">
+    <value>Erweiterungs-Manager</value>
+  </data>
+  <data name="App_DockTitle_ExtensionMarketplace" xml:space="preserve">
+    <value>Erweiterungs-Marktplatz</value>
+  </data>
+  <data name="App_DockTitle_ExtensionsMonitor" xml:space="preserve">
+    <value>Erweiterungs-Monitor</value>
+  </data>
+  <data name="App_DockTitle_NuGet" xml:space="preserve">
+    <value>NuGet — {0}</value>
+  </data>
+  <data name="App_DockTitle_NuGetSolution" xml:space="preserve">
+    <value>NuGet — {0} (Lösung)</value>
+  </data>
+  <data name="App_DockTitle_Properties" xml:space="preserve">
+    <value>{0} — Eigenschaften</value>
+  </data>
+  <data name="App_DockTitle_ReadOnly" xml:space="preserve">
+    <value>WpfHexEditor — {0} [schreibgeschütztes Format v{1}]</value>
+  </data>
+  <data name="App_DockTitle_References" xml:space="preserve">
+    <value>Verweise — {0}</value>
+  </data>
+  <data name="App_DockTitle_SettingsJson" xml:space="preserve">
+    <value>settings.json</value>
+  </data>
+  <data name="App_DockTitle_Terminal" xml:space="preserve">
+    <value>Terminal</value>
+  </data>
+  <data name="App_Docking_CornerNormal" xml:space="preserve">
+    <value>Normal (scharfe Ecken)</value>
+  </data>
+  <data name="App_Docking_CornerRoundedContent" xml:space="preserve">
+    <value>Abgerundet — Nur Inhaltsbereich</value>
+  </data>
+  <data name="App_Docking_CornerRoundedFull" xml:space="preserve">
+    <value>Abgerundet — Vollständiger Rahmen</value>
+  </data>
+  <data name="App_Docking_ShadowFullBorder" xml:space="preserve">
+    <value>Vollständiger Rahmen</value>
+  </data>
+  <data name="App_Docking_ShadowGlow" xml:space="preserve">
+    <value>Glühen</value>
+  </data>
+  <data name="App_Docking_ShadowNone" xml:space="preserve">
+    <value>Kein</value>
+  </data>
+  <data name="App_Docking_ShadowTopBar" xml:space="preserve">
+    <value>Obere Leiste</value>
+  </data>
+  <data name="App_Editor_Encodings" xml:space="preserve">
+    <value>Kodierungen</value>
+  </data>
+  <data name="App_Editor_FileNotFound" xml:space="preserve">
+    <value>Datei nicht gefunden:{0}{1}</value>
+  </data>
+  <data name="App_Editor_HexEditor" xml:space="preserve">
+    <value>Hex-Editor</value>
+  </data>
+  <data name="App_Editor_NewDocumentText" xml:space="preserve">
+    <value>Dies ist Dokument: {0}{1}{1}Diesen Text bearbeiten...</value>
+  </data>
+  <data name="App_Editor_ProjectTables" xml:space="preserve">
+    <value>Projekttabellen</value>
+  </data>
+  <data name="App_Editor_RefreshPrefix" xml:space="preserve">
+    <value>Aktualisieren:</value>
+  </data>
+  <data name="App_Error" xml:space="preserve">
+    <value>Fehler</value>
+  </data>
+  <data name="App_Extensions_SelectOutputDir" xml:space="preserve">
+    <value>Erweiterungs-Build-Ausgabeverzeichnis auswählen</value>
+  </data>
+  <data name="App_FailedCreateFile" xml:space="preserve">
+    <value>Datei konnte nicht erstellt werden:{0}{1}</value>
+  </data>
+  <data name="App_FailedCreateProject" xml:space="preserve">
+    <value>Projekt konnte nicht erstellt werden:{0}{1}</value>
+  </data>
+  <data name="App_FailedLoadLayout" xml:space="preserve">
+    <value>Layout konnte nicht geladen werden:{0}{1}</value>
+  </data>
+  <data name="App_FailedWriteTblx" xml:space="preserve">
+    <value>TBLX-Datei konnte nicht geschrieben werden:{0}{1}</value>
+  </data>
+  <data name="App_GoTo_EnterOffset" xml:space="preserve">
+    <value>Bitte geben Sie einen Offset ein.</value>
+  </data>
+  <data name="App_GoTo_InvalidDecimal" xml:space="preserve">
+    <value>Ungültiger Dezimalwert.</value>
+  </data>
+  <data name="App_GoTo_InvalidHex" xml:space="preserve">
+    <value>Ungültiger Hexadezimalwert.</value>
+  </data>
+  <data name="App_GoTo_OffsetNonNegative" xml:space="preserve">
+    <value>Der Offset muss nicht-negativ sein.</value>
+  </data>
+  <data name="App_ImportIntoProject" xml:space="preserve">
+    <value>In Projekt importieren</value>
+  </data>
+  <data name="App_ImportIntoProjectMessage" xml:space="preserve">
+    <value>"{0}" in das Projektverzeichnis kopieren?{1}{2}{1}Die Originaldatei wird nicht gelöscht.</value>
+  </data>
+  <data name="App_InfoBar_Disable" xml:space="preserve">
+    <value>Deaktivieren</value>
+  </data>
+  <data name="App_InfoBar_HexEditor" xml:space="preserve">
+    <value>Hex-Editor</value>
+  </data>
+  <data name="App_InfoBar_Ignore" xml:space="preserve">
+    <value>Ignorieren</value>
+  </data>
+  <data name="App_InfoBar_KeepEdits" xml:space="preserve">
+    <value>Meine Änderungen behalten</value>
+  </data>
+  <data name="App_InfoBar_Reload" xml:space="preserve">
+    <value>Neu laden</value>
+  </data>
+  <data name="App_InfoBar_Restart" xml:space="preserve">
+    <value>Neustart</value>
+  </data>
+  <data name="App_JumpList_RecentFiles" xml:space="preserve">
+    <value>Letzte Dateien</value>
+  </data>
+  <data name="App_JumpList_RecentProjects" xml:space="preserve">
+    <value>Letzte Projekte</value>
+  </data>
+  <data name="App_LSP_LoadAssembly" xml:space="preserve">
+    <value>Laden Sie die Assembly in Assembly Explorer, um zur dekompilierten Quelle zu navigieren.</value>
+  </data>
+  <data name="App_LSP_TryOpenFile" xml:space="preserve">
+    <value>Versuchen Sie, die Deklarationsdatei direkt zu öffnen, oder stellen Sie sicher, dass der LSP-Server läuft.</value>
+  </data>
+  <data name="App_Lsp_ClangdFailed" xml:space="preserve">
+    <value>clangd-Download fehlgeschlagen</value>
+  </data>
+  <data name="App_Lsp_ClangdReady" xml:space="preserve">
+    <value>clangd bereit</value>
+  </data>
+  <data name="App_Lsp_CppNotInstalled" xml:space="preserve">
+    <value>C/C++ LSP-Server nicht installiert</value>
+  </data>
+  <data name="App_Lsp_ErrorTitle" xml:space="preserve">
+    <value>LSP-Fehler</value>
+  </data>
+  <data name="App_Notifications_ClearAll" xml:space="preserve">
+    <value>Alle löschen</value>
+  </data>
+  <data name="App_Notifications_Empty" xml:space="preserve">
+    <value>Keine Benachrichtigungen</value>
+  </data>
+  <data name="App_Notifications_Title" xml:space="preserve">
+    <value>Benachrichtigungen</value>
+  </data>
+  <data name="App_Options_AllSettings" xml:space="preserve">
+    <value>Alle Einstellungen</value>
+  </data>
+  <data name="App_Options_AutoExportBreakpoints" xml:space="preserve">
+    <value>Haltepunkte beim Speichern automatisch als VS XML exportieren</value>
+  </data>
+  <data name="App_Options_AutoImportBreakpoints" xml:space="preserve">
+    <value>VS-Haltepunkte beim ersten Öffnen der Lösung automatisch importieren</value>
+  </data>
+  <data name="App_Options_AutoReload" xml:space="preserve">
+    <value>Geänderte Dateien automatisch ohne Aufforderung neu laden</value>
+  </data>
+  <data name="App_Options_Browse" xml:space="preserve">
+    <value>Durchsuchen…</value>
+  </data>
+  <data name="App_Options_ClearAll" xml:space="preserve">
+    <value>Alle löschen</value>
+  </data>
+  <data name="App_Options_ClearHistory" xml:space="preserve">
+    <value>Verlauf löschen</value>
+  </data>
+  <data name="App_Options_CollapseIdentical" xml:space="preserve">
+    <value>Identische Bereiche zusammenklappen</value>
+  </data>
+  <data name="App_Options_CommandsDefault" xml:space="preserve">
+    <value>Befehle (Standard)</value>
+  </data>
+  <data name="App_Options_DetectExternalChanges" xml:space="preserve">
+    <value>Erkennen, wenn Dateien außerhalb der IDE geändert werden</value>
+  </data>
+  <data name="App_Options_DockedPanel" xml:space="preserve">
+    <value>Angedocktes Panel (Standard)</value>
+  </data>
+  <data name="App_Options_EnableDockAnimations" xml:space="preserve">
+    <value>Docking-Animationen aktivieren</value>
+  </data>
+  <data name="App_Options_EnableTabPreview" xml:space="preserve">
+    <value>Tab-Vorschau beim Hover aktivieren</value>
+  </data>
+  <data name="App_Options_EnableTabPreviewHover" xml:space="preserve">
+    <value>Tab-Vorschau bei Hover anzeigen</value>
+  </data>
+  <data name="App_Options_HighlightBreakpoints" xml:space="preserve">
+    <value>Haltepunkt-Zeilen im Editor hervorheben (roter/orangefarbener/grauer Farbton)</value>
+  </data>
+  <data name="App_Options_HighlightCharDiff" xml:space="preserve">
+    <value>Unterschiede auf Zeichenebene in modifizierten Zeilen hervorheben (≤ 500 Zeichen)</value>
+  </data>
+  <data name="App_Options_InlinePopup" xml:space="preserve">
+    <value>Inline-Popup</value>
+  </data>
+  <data name="App_Options_KbCategory" xml:space="preserve">
+    <value>Kategorie</value>
+  </data>
+  <data name="App_Options_KbCommand" xml:space="preserve">
+    <value>Befehl</value>
+  </data>
+  <data name="App_Options_KbDefault" xml:space="preserve">
+    <value>Standard</value>
+  </data>
+  <data name="App_Options_KbShortcut" xml:space="preserve">
+    <value>Tastenkürzel</value>
+  </data>
+  <data name="App_Options_LspArguments" xml:space="preserve">
+    <value>Argumente</value>
+  </data>
+  <data name="App_Options_LspEnabled" xml:space="preserve">
+    <value>Aktiviert</value>
+  </data>
+  <data name="App_Options_LspExecutable" xml:space="preserve">
+    <value>Ausführbare Datei</value>
+  </data>
+  <data name="App_Options_LspExtensions" xml:space="preserve">
+    <value>Erweiterungen</value>
+  </data>
+  <data name="App_Options_LspLanguageId" xml:space="preserve">
+    <value>Sprach-ID</value>
+  </data>
+  <data name="App_Options_LspNotActive" xml:space="preserve">
+    <value>LSP nicht aktiv</value>
+  </data>
+  <data name="App_Options_LspSearching" xml:space="preserve">
+    <value>Suchen…</value>
+  </data>
+  <data name="App_Options_LspSource" xml:space="preserve">
+    <value>Quelle</value>
+  </data>
+  <data name="App_Options_LspTypeToSearch" xml:space="preserve">
+    <value>Tippen zum Suchen in Arbeitsbereichssymbolen</value>
+  </data>
+  <data name="App_Options_PromptSaveWorkspace" xml:space="preserve">
+    <value>Vor dem Schließen zum Speichern des Arbeitsbereichs auffordern</value>
+  </data>
+  <data name="App_Options_ResetAllOverrides" xml:space="preserve">
+    <value>Alle Überschreibungen zurücksetzen</value>
+  </data>
+  <data name="App_Options_ResetOverrides" xml:space="preserve">
+    <value>Überschreibungen zurücksetzen</value>
+  </data>
+  <data name="App_Options_ResetToDefaults" xml:space="preserve">
+    <value>Auf Standardeinstellungen zurücksetzen</value>
+  </data>
+  <data name="App_Options_RestoreSolution" xml:space="preserve">
+    <value>Lösung wiederherstellen</value>
+  </data>
+  <data name="App_Options_RestoreTabs" xml:space="preserve">
+    <value>Offene Editor-Tabs wiederherstellen</value>
+  </data>
+  <data name="App_Options_RestoreTheme" xml:space="preserve">
+    <value>Design wiederherstellen</value>
+  </data>
+  <data name="App_Options_Save" xml:space="preserve">
+    <value>Speichern</value>
+  </data>
+  <data name="App_Options_SavedComparisons" xml:space="preserve">
+    <value>Gespeicherte Vergleiche</value>
+  </data>
+  <data name="App_Options_ScrollTabRows" xml:space="preserve">
+    <value>Tab-Zeilen mit dem Mausrad scrollen</value>
+  </data>
+  <data name="App_Options_SelectDebugAdapter" xml:space="preserve">
+    <value>Debug-Adapter-Executable auswählen</value>
+  </data>
+  <data name="App_Options_SelectLspExecutable" xml:space="preserve">
+    <value>LSP-Server-Executable auswählen</value>
+  </data>
+  <data name="App_Options_ShowFileNameBelowPreview" xml:space="preserve">
+    <value>Dateinamen unter Vorschau anzeigen</value>
+  </data>
+  <data name="App_Options_ShowFilenameFooter" xml:space="preserve">
+    <value>Dateinamen in der Fußzeile anzeigen</value>
+  </data>
+  <data name="App_Options_ShowMinimap" xml:space="preserve">
+    <value>Minimap anzeigen</value>
+  </data>
+  <data name="App_Options_ShowReturnValues" xml:space="preserve">
+    <value>Rückgabewerte in Locals nach jedem Schritt anzeigen</value>
+  </data>
+  <data name="App_Options_StopAtEntry" xml:space="preserve">
+    <value>Am Programmeinstiegspunkt anhalten (Main)</value>
+  </data>
+  <data name="App_Options_WrapTabs" xml:space="preserve">
+    <value>Tabs auf weitere Zeilen umbrechen (mehrzeilig)</value>
+  </data>
+  <data name="App_PanelFormatCatalog" xml:space="preserve">
+    <value>Format-Katalog</value>
+  </data>
+  <data name="App_PanelOptions" xml:space="preserve">
+    <value>Optionen</value>
+  </data>
+  <data name="App_PasteConflict_EnterFileName" xml:space="preserve">
+    <value>Bitte geben Sie einen Dateinamen ein.</value>
+  </data>
+  <data name="App_PasteConflict_InvalidChars" xml:space="preserve">
+    <value>Der Name enthält ungültige Zeichen.</value>
+  </data>
+  <data name="App_RemoveFolderMessage" xml:space="preserve">
+    <value>Ordner '{0}' aus dem Projekt entfernen?{1}Elemente darin verbleiben im Projektstamm. Das physische Verzeichnis wird nicht gelöscht.</value>
+  </data>
+  <data name="App_RemoveSolutionFolderMessage" xml:space="preserve">
+    <value>Projektmappenordner '{0}' entfernen?{1}Projekte darin verbleiben im Stamm der Projektmappe.</value>
+  </data>
+  <data name="App_SaveAs" xml:space="preserve">
+    <value>Speichern unter</value>
+  </data>
+  <data name="App_SelectEntropyFile" xml:space="preserve">
+    <value>Datei für Entropieanalyse auswählen</value>
+  </data>
+  <data name="App_SourceFiles_SelectFolder" xml:space="preserve">
+    <value>Quellordner auswählen</value>
+  </data>
+  <data name="App_StartupProjects_CurrentSelection" xml:space="preserve">
+    <value>Aktuelle Auswahl</value>
+  </data>
+  <data name="App_StartupProjects_LaunchProfiles" xml:space="preserve">
+    <value>Startprofile</value>
+  </data>
+  <data name="App_StartupProjects_MultipleProjects" xml:space="preserve">
+    <value>Mehrere Startprojekte:</value>
+  </data>
+  <data name="App_StartupProjects_SingleProject" xml:space="preserve">
+    <value>Einzelnes Startprojekt:</value>
+  </data>
+  <data name="App_Tabs_GroupByExtension" xml:space="preserve">
+    <value>Nach Dateiendung</value>
+  </data>
+  <data name="App_Tabs_GroupByProject" xml:space="preserve">
+    <value>Nach Projekt</value>
+  </data>
+  <data name="App_Tabs_GroupByRegex" xml:space="preserve">
+    <value>Nach Regex-Regel</value>
+  </data>
+  <data name="App_Tabs_PositionLeft" xml:space="preserve">
+    <value>Links</value>
+  </data>
+  <data name="App_Tabs_PositionNone" xml:space="preserve">
+    <value>Keine</value>
+  </data>
+  <data name="App_Tabs_PositionRight" xml:space="preserve">
+    <value>Rechts</value>
+  </data>
+  <data name="App_Tabs_PositionTop" xml:space="preserve">
+    <value>Oben</value>
+  </data>
+  <data name="App_TblImport_Failed" xml:space="preserve">
+    <value>TBL-Datei konnte nicht geladen werden:{0}{1}</value>
+  </data>
+  <data name="App_UpgradeFailedMessage" xml:space="preserve">
+    <value>Upgrade fehlgeschlagen: {0}</value>
+  </data>
+  <data name="App_UpgradeMessagePattern" xml:space="preserve">
+    <value>Die folgenden Dateien verwenden ein älteres Format (v{0}), das auf v{1} aktualisiert wird:{2}{2}  • {3}{2}{2}Für jede Datei wird eine Sicherung (.v{0}.bak) erstellt.{2}{2}Jetzt aktualisieren?</value>
+  </data>
+  <data name="App_ViewMenu_ByDockSide" xml:space="preserve">
+    <value>Nach Dock-Seite</value>
+  </data>
+  <data name="App_ViewMenu_Categorized" xml:space="preserve">
+    <value>Kategorisiert</value>
+  </data>
+  <data name="App_ViewMenu_Flat" xml:space="preserve">
+    <value>Flach (klassisch)</value>
+  </data>
+  <data name="App_ViewMenu_OrganizeBy" xml:space="preserve">
+    <value>Organisieren nach...</value>
+  </data>
+  <data name="App_ViewMenu_PinToViewMenu" xml:space="preserve">
+    <value>An Ansichtsmenü anheften</value>
+  </data>
+  <data name="App_ViewMenu_SortAlphabetical" xml:space="preserve">
+    <value>Alphabetisch</value>
+  </data>
+  <data name="App_ViewMenu_SortByFrequency" xml:space="preserve">
+    <value>Nach Häufigkeit</value>
+  </data>
+  <data name="App_ViewMenu_SortCustom" xml:space="preserve">
+    <value>Benutzerdefiniert</value>
+  </data>
+  <data name="App_ViewMenu_UnpinFromViewMenu" xml:space="preserve">
+    <value>Aus Ansichtsmenü lösen</value>
+  </data>
+  <data name="App_Welcome_ChangelogUnavailable" xml:space="preserve">
+    <value>Änderungsprotokoll nicht verfügbar — Verbindung prüfen.</value>
+  </data>
+  <data name="App_Welcome_VersionDev" xml:space="preserve">
+    <value>Entwicklungs-Build</value>
+  </data>
+  <data name="App_Workspace_CloseSavePrompt" xml:space="preserve">
+    <value>Arbeitsbereich '{0}' vor dem Schließen speichern?</value>
+  </data>
+  <data name="App_Workspace_CloseTitle" xml:space="preserve">
+    <value>Arbeitsbereich schließen</value>
+  </data>
+  <data name="App_Workspace_NewFailed" xml:space="preserve">
+    <value>Arbeitsbereich konnte nicht erstellt werden:{0}{1}</value>
+  </data>
+  <data name="App_Workspace_NewTitle" xml:space="preserve">
+    <value>Neuer Arbeitsbereich</value>
+  </data>
+  <data name="App_Workspace_OpenFailed" xml:space="preserve">
+    <value>Arbeitsbereich konnte nicht geöffnet werden:{0}{1}</value>
+  </data>
+  <data name="App_Workspace_OpenTitle" xml:space="preserve">
+    <value>Arbeitsbereich öffnen</value>
+  </data>
+  <data name="App_Workspace_SaveAsTitle" xml:space="preserve">
+    <value>Arbeitsbereich speichern unter</value>
+  </data>
+  <data name="App_Workspace_SaveFailed" xml:space="preserve">
+    <value>Arbeitsbereich konnte nicht gespeichert werden:{0}{1}</value>
+  </data>
 </root>

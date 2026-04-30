@@ -233,4 +233,550 @@
   <data name="App_Toolbar_SwitchBranch" xml:space="preserve"><value>Klicka för att byta gren</value></data>
   <data name="App_Toolbar_UncommittedChanges" xml:space="preserve"><value>Ej committade ändringar</value></data>
   <data name="App_Toolbar_PluginUpdates" xml:space="preserve"><value>Plugin-uppdateringar tillgängliga — klicka för att öppna Marketplace</value></data>
+  <data name="App_AddExistingItem" xml:space="preserve">
+    <value>Lägg till befintligt objekt</value>
+  </data>
+  <data name="App_Breadcrumb_ProjectNotFound" xml:space="preserve">
+    <value>Projektet hittades inte.</value>
+  </data>
+  <data name="App_Breadcrumb_SolutionNotLoaded" xml:space="preserve">
+    <value>Lösningen är inte laddad.</value>
+  </data>
+  <data name="App_CodeEditor_MinimapFill" xml:space="preserve">
+    <value>Fyll</value>
+  </data>
+  <data name="App_CodeEditor_MinimapFit" xml:space="preserve">
+    <value>Anpassa</value>
+  </data>
+  <data name="App_CodeEditor_MinimapLeft" xml:space="preserve">
+    <value>Vänster</value>
+  </data>
+  <data name="App_CodeEditor_MinimapProportional" xml:space="preserve">
+    <value>Proportionell</value>
+  </data>
+  <data name="App_CodeEditor_MinimapRight" xml:space="preserve">
+    <value>Höger</value>
+  </data>
+  <data name="App_CompareWithHead" xml:space="preserve">
+    <value>Jämför med HEAD</value>
+  </data>
+  <data name="App_CompareWithHeadNoRepo" xml:space="preserve">
+    <value>Inget git-förråd hittades för den här filen.</value>
+  </data>
+  <data name="App_CompareWithHeadNoVersion" xml:space="preserve">
+    <value>Kunde inte extrahera HEAD-versionen från git.</value>
+  </data>
+  <data name="App_Compare_SelectFile" xml:space="preserve">
+    <value>Välj fil att jämföra</value>
+  </data>
+  <data name="App_Comparison_ModeHexText" xml:space="preserve">
+    <value>HexText</value>
+  </data>
+  <data name="App_Comparison_ModeInline" xml:space="preserve">
+    <value>Inline</value>
+  </data>
+  <data name="App_Comparison_ModeSideBySide" xml:space="preserve">
+    <value>Sida vid sida</value>
+  </data>
+  <data name="App_ConfigPage_BuildAll" xml:space="preserve">
+    <value>Bygg alla</value>
+  </data>
+  <data name="App_ConfigPage_DeployAll" xml:space="preserve">
+    <value>Distribuera alla</value>
+  </data>
+  <data name="App_ContextMenu_CompareWithActive" xml:space="preserve">
+    <value>Jämför med aktiv editor</value>
+  </data>
+  <data name="App_ContextMenu_CompareWithAnother" xml:space="preserve">
+    <value>Jämför med en annan fil…</value>
+  </data>
+  <data name="App_ContextMenu_None" xml:space="preserve">
+    <value>(ingen)</value>
+  </data>
+  <data name="App_Convert_AlreadyWhsln" xml:space="preserve">
+    <value>Den aktuella lösningen är redan en .whsln-fil.</value>
+  </data>
+  <data name="App_Convert_Confirm" xml:space="preserve">
+    <value>Konvertera "{0}" till "{1}"?{2}{2}Originalfilen behålls.</value>
+  </data>
+  <data name="App_Convert_Failed" xml:space="preserve">
+    <value>Konvertering misslyckades:{0}{1}</value>
+  </data>
+  <data name="App_Convert_NoLoader" xml:space="preserve">
+    <value>Ingen laddare registrerad för formatet {0}. Se till att VS Solution Loader-plugin är aktivt.</value>
+  </data>
+  <data name="App_Convert_NoLoaderSimple" xml:space="preserve">
+    <value>Ingen laddare registrerad för formatet {0}.</value>
+  </data>
+  <data name="App_Convert_NoSolution" xml:space="preserve">
+    <value>Ingen lösning är för närvarande öppen.</value>
+  </data>
+  <data name="App_Convert_NotSln" xml:space="preserve">
+    <value>Den aktuella lösningen är inte en .sln-fil.</value>
+  </data>
+  <data name="App_Convert_NotSlnx" xml:space="preserve">
+    <value>Den aktuella lösningen är inte en .slnx-fil.</value>
+  </data>
+  <data name="App_Convert_Success" xml:space="preserve">
+    <value>Konverterad till "{0}".{1}{1}Öppna den konverterade lösningen nu?</value>
+  </data>
+  <data name="App_Convert_Title" xml:space="preserve">
+    <value>Konvertera lösningsformat</value>
+  </data>
+  <data name="App_Debug_AttachNotAvailable" xml:space="preserve">
+    <value>Debugger-tjänsten är inte tillgänglig.</value>
+  </data>
+  <data name="App_Debug_AttachPidPrompt" xml:space="preserve">
+    <value>Ange process-ID (PID) att ansluta till:</value>
+  </data>
+  <data name="App_Debug_AttachTitle" xml:space="preserve">
+    <value>Anslut till process</value>
+  </data>
+  <data name="App_Debug_BuildFailed" xml:space="preserve">
+    <value>Bygget misslyckades. Åtgärda felen innan du felsöker.</value>
+  </data>
+  <data name="App_Debug_ExeNotFound" xml:space="preserve">
+    <value>Kan inte hitta programmet att felsöka:{0}{1}{0}{0}Projektet byggdes men körbar fil hittades inte.</value>
+  </data>
+  <data name="App_Debug_NoStartupProject" xml:space="preserve">
+    <value>Inget startprojekt angivet. Ange ett startprojekt innan du felsöker.</value>
+  </data>
+  <data name="App_Debug_StartTitle" xml:space="preserve">
+    <value>Starta felsökning</value>
+  </data>
+  <data name="App_Debugger_AdapterMissing" xml:space="preserve">
+    <value>Installera lämpligt adapterplug-in eller konfigurera en anpassad adapter.</value>
+  </data>
+  <data name="App_Debugger_AdapterNotFound" xml:space="preserve">
+    <value>Felsökningsadapter (netcoredbg) hittades inte.{0}Installera den eller ange sökvägen i Alternativ → Debugger.</value>
+  </data>
+  <data name="App_Debugger_Title" xml:space="preserve">
+    <value>Felsökare</value>
+  </data>
+  <data name="App_DockTitle_ExtensionManager" xml:space="preserve">
+    <value>Tilläggshanterare</value>
+  </data>
+  <data name="App_DockTitle_ExtensionMarketplace" xml:space="preserve">
+    <value>Tilläggsmarknadsplats</value>
+  </data>
+  <data name="App_DockTitle_ExtensionsMonitor" xml:space="preserve">
+    <value>Tilläggsövervakning</value>
+  </data>
+  <data name="App_DockTitle_NuGet" xml:space="preserve">
+    <value>NuGet — {0}</value>
+  </data>
+  <data name="App_DockTitle_NuGetSolution" xml:space="preserve">
+    <value>NuGet — {0} (Lösning)</value>
+  </data>
+  <data name="App_DockTitle_Properties" xml:space="preserve">
+    <value>{0} — Egenskaper</value>
+  </data>
+  <data name="App_DockTitle_ReadOnly" xml:space="preserve">
+    <value>WpfHexEditor — {0} [skrivskyddat format v{1}]</value>
+  </data>
+  <data name="App_DockTitle_References" xml:space="preserve">
+    <value>Referenser — {0}</value>
+  </data>
+  <data name="App_DockTitle_SettingsJson" xml:space="preserve">
+    <value>settings.json</value>
+  </data>
+  <data name="App_DockTitle_Terminal" xml:space="preserve">
+    <value>Terminal</value>
+  </data>
+  <data name="App_Docking_CornerNormal" xml:space="preserve">
+    <value>Normal (skarpa hörn)</value>
+  </data>
+  <data name="App_Docking_CornerRoundedContent" xml:space="preserve">
+    <value>Avrundad — Endast innehållsarea</value>
+  </data>
+  <data name="App_Docking_CornerRoundedFull" xml:space="preserve">
+    <value>Avrundad — Hel panelram</value>
+  </data>
+  <data name="App_Docking_ShadowFullBorder" xml:space="preserve">
+    <value>Fullständig kant</value>
+  </data>
+  <data name="App_Docking_ShadowGlow" xml:space="preserve">
+    <value>Glöd</value>
+  </data>
+  <data name="App_Docking_ShadowNone" xml:space="preserve">
+    <value>Inget</value>
+  </data>
+  <data name="App_Docking_ShadowTopBar" xml:space="preserve">
+    <value>Övre fält</value>
+  </data>
+  <data name="App_Editor_Encodings" xml:space="preserve">
+    <value>Kodningar</value>
+  </data>
+  <data name="App_Editor_FileNotFound" xml:space="preserve">
+    <value>Filen hittades inte:{0}{1}</value>
+  </data>
+  <data name="App_Editor_HexEditor" xml:space="preserve">
+    <value>Hex-editor</value>
+  </data>
+  <data name="App_Editor_NewDocumentText" xml:space="preserve">
+    <value>Det här är dokument: {0}{1}{1}Redigera den här texten...</value>
+  </data>
+  <data name="App_Editor_ProjectTables" xml:space="preserve">
+    <value>Projekttabeller</value>
+  </data>
+  <data name="App_Editor_RefreshPrefix" xml:space="preserve">
+    <value>Uppdatera:</value>
+  </data>
+  <data name="App_Error" xml:space="preserve">
+    <value>Fel</value>
+  </data>
+  <data name="App_Extensions_SelectOutputDir" xml:space="preserve">
+    <value>Välj utdatakatalog för tilläggsbygge</value>
+  </data>
+  <data name="App_FailedCreateFile" xml:space="preserve">
+    <value>Misslyckades att skapa filen:{0}{1}</value>
+  </data>
+  <data name="App_FailedCreateProject" xml:space="preserve">
+    <value>Misslyckades att skapa projektet:{0}{1}</value>
+  </data>
+  <data name="App_FailedLoadLayout" xml:space="preserve">
+    <value>Misslyckades att läsa in layout:{0}{1}</value>
+  </data>
+  <data name="App_FailedWriteTblx" xml:space="preserve">
+    <value>Misslyckades att skriva TBLX-filen:{0}{1}</value>
+  </data>
+  <data name="App_GoTo_EnterOffset" xml:space="preserve">
+    <value>Ange en offset.</value>
+  </data>
+  <data name="App_GoTo_InvalidDecimal" xml:space="preserve">
+    <value>Ogiltigt decimalvärde.</value>
+  </data>
+  <data name="App_GoTo_InvalidHex" xml:space="preserve">
+    <value>Ogiltigt hexadecimalt värde.</value>
+  </data>
+  <data name="App_GoTo_OffsetNonNegative" xml:space="preserve">
+    <value>Offset måste vara icke-negativ.</value>
+  </data>
+  <data name="App_ImportIntoProject" xml:space="preserve">
+    <value>Importera till projekt</value>
+  </data>
+  <data name="App_ImportIntoProjectMessage" xml:space="preserve">
+    <value>Kopiera "{0}" till projektkatalogen?{1}{2}{1}Originalfilen kommer inte att tas bort.</value>
+  </data>
+  <data name="App_InfoBar_Disable" xml:space="preserve">
+    <value>Inaktivera</value>
+  </data>
+  <data name="App_InfoBar_HexEditor" xml:space="preserve">
+    <value>Hex-editor</value>
+  </data>
+  <data name="App_InfoBar_Ignore" xml:space="preserve">
+    <value>Ignorera</value>
+  </data>
+  <data name="App_InfoBar_KeepEdits" xml:space="preserve">
+    <value>Behåll mina redigeringar</value>
+  </data>
+  <data name="App_InfoBar_Reload" xml:space="preserve">
+    <value>Läs in igen</value>
+  </data>
+  <data name="App_InfoBar_Restart" xml:space="preserve">
+    <value>Starta om</value>
+  </data>
+  <data name="App_JumpList_RecentFiles" xml:space="preserve">
+    <value>Senaste filer</value>
+  </data>
+  <data name="App_JumpList_RecentProjects" xml:space="preserve">
+    <value>Senaste projekt</value>
+  </data>
+  <data name="App_LSP_LoadAssembly" xml:space="preserve">
+    <value>Läs in assemblyn i Assembly Explorer för att navigera till dess dekompilerade källkod.</value>
+  </data>
+  <data name="App_LSP_TryOpenFile" xml:space="preserve">
+    <value>Försök att öppna deklarationsfilen direkt eller se till att LSP-servern körs.</value>
+  </data>
+  <data name="App_Lsp_ClangdFailed" xml:space="preserve">
+    <value>clangd-nedladdning misslyckades</value>
+  </data>
+  <data name="App_Lsp_ClangdReady" xml:space="preserve">
+    <value>clangd redo</value>
+  </data>
+  <data name="App_Lsp_CppNotInstalled" xml:space="preserve">
+    <value>C/C++ LSP-server inte installerad</value>
+  </data>
+  <data name="App_Lsp_ErrorTitle" xml:space="preserve">
+    <value>LSP-fel</value>
+  </data>
+  <data name="App_Notifications_ClearAll" xml:space="preserve">
+    <value>Rensa alla</value>
+  </data>
+  <data name="App_Notifications_Empty" xml:space="preserve">
+    <value>Inga aviseringar</value>
+  </data>
+  <data name="App_Notifications_Title" xml:space="preserve">
+    <value>Aviseringar</value>
+  </data>
+  <data name="App_Options_AllSettings" xml:space="preserve">
+    <value>Alla inställningar</value>
+  </data>
+  <data name="App_Options_AutoExportBreakpoints" xml:space="preserve">
+    <value>Exportera automatiskt brytpunkter till VS XML vid spara</value>
+  </data>
+  <data name="App_Options_AutoImportBreakpoints" xml:space="preserve">
+    <value>Importera automatiskt VS-brytpunkter vid första öppning av lösning</value>
+  </data>
+  <data name="App_Options_AutoReload" xml:space="preserve">
+    <value>Läs automatiskt in ändrade filer utan att fråga</value>
+  </data>
+  <data name="App_Options_Browse" xml:space="preserve">
+    <value>Bläddra…</value>
+  </data>
+  <data name="App_Options_ClearAll" xml:space="preserve">
+    <value>Rensa alla</value>
+  </data>
+  <data name="App_Options_ClearHistory" xml:space="preserve">
+    <value>Rensa historik</value>
+  </data>
+  <data name="App_Options_CollapseIdentical" xml:space="preserve">
+    <value>Fäll ihop identiska regioner</value>
+  </data>
+  <data name="App_Options_CommandsDefault" xml:space="preserve">
+    <value>Kommandon (standard)</value>
+  </data>
+  <data name="App_Options_DetectExternalChanges" xml:space="preserve">
+    <value>Identifiera när filer ändras utanför IDE:n</value>
+  </data>
+  <data name="App_Options_DockedPanel" xml:space="preserve">
+    <value>Dockat panel (standard)</value>
+  </data>
+  <data name="App_Options_EnableDockAnimations" xml:space="preserve">
+    <value>Aktivera dockningsanimationer</value>
+  </data>
+  <data name="App_Options_EnableTabPreview" xml:space="preserve">
+    <value>Aktivera förhandsvisning vid hovring av flik</value>
+  </data>
+  <data name="App_Options_EnableTabPreviewHover" xml:space="preserve">
+    <value>Aktivera flikförhandsvisning vid hovring</value>
+  </data>
+  <data name="App_Options_HighlightBreakpoints" xml:space="preserve">
+    <value>Markera brytpunktlinjer i redigeraren (röd/orange/grå ton)</value>
+  </data>
+  <data name="App_Options_HighlightCharDiff" xml:space="preserve">
+    <value>Markera skillnader på teckennivå i modifierade rader (≤ 500 tecken)</value>
+  </data>
+  <data name="App_Options_InlinePopup" xml:space="preserve">
+    <value>Inline-popup</value>
+  </data>
+  <data name="App_Options_KbCategory" xml:space="preserve">
+    <value>Kategori</value>
+  </data>
+  <data name="App_Options_KbCommand" xml:space="preserve">
+    <value>Kommando</value>
+  </data>
+  <data name="App_Options_KbDefault" xml:space="preserve">
+    <value>Standard</value>
+  </data>
+  <data name="App_Options_KbShortcut" xml:space="preserve">
+    <value>Genväg</value>
+  </data>
+  <data name="App_Options_LspArguments" xml:space="preserve">
+    <value>Argument</value>
+  </data>
+  <data name="App_Options_LspEnabled" xml:space="preserve">
+    <value>Aktiverad</value>
+  </data>
+  <data name="App_Options_LspExecutable" xml:space="preserve">
+    <value>Körbar fil</value>
+  </data>
+  <data name="App_Options_LspExtensions" xml:space="preserve">
+    <value>Tillägg</value>
+  </data>
+  <data name="App_Options_LspLanguageId" xml:space="preserve">
+    <value>Språk-ID</value>
+  </data>
+  <data name="App_Options_LspNotActive" xml:space="preserve">
+    <value>LSP inte aktiv</value>
+  </data>
+  <data name="App_Options_LspSearching" xml:space="preserve">
+    <value>Söker…</value>
+  </data>
+  <data name="App_Options_LspSource" xml:space="preserve">
+    <value>Källa</value>
+  </data>
+  <data name="App_Options_LspTypeToSearch" xml:space="preserve">
+    <value>Skriv för att söka efter arbetsymsymboler</value>
+  </data>
+  <data name="App_Options_PromptSaveWorkspace" xml:space="preserve">
+    <value>Be om att spara arbetsyta innan stängning</value>
+  </data>
+  <data name="App_Options_ResetAllOverrides" xml:space="preserve">
+    <value>Återställ alla åsidosättanden</value>
+  </data>
+  <data name="App_Options_ResetOverrides" xml:space="preserve">
+    <value>Återställ åsidosättanden</value>
+  </data>
+  <data name="App_Options_ResetToDefaults" xml:space="preserve">
+    <value>Återställ till standardvärden</value>
+  </data>
+  <data name="App_Options_RestoreSolution" xml:space="preserve">
+    <value>Återställ lösning</value>
+  </data>
+  <data name="App_Options_RestoreTabs" xml:space="preserve">
+    <value>Återställ öppna redigerarflikar</value>
+  </data>
+  <data name="App_Options_RestoreTheme" xml:space="preserve">
+    <value>Återställ tema</value>
+  </data>
+  <data name="App_Options_Save" xml:space="preserve">
+    <value>Spara</value>
+  </data>
+  <data name="App_Options_SavedComparisons" xml:space="preserve">
+    <value>Sparade jämförelser</value>
+  </data>
+  <data name="App_Options_ScrollTabRows" xml:space="preserve">
+    <value>Rulla fliksrader med mushjulet</value>
+  </data>
+  <data name="App_Options_SelectDebugAdapter" xml:space="preserve">
+    <value>Välj körbar fil för felsökningsadapter</value>
+  </data>
+  <data name="App_Options_SelectLspExecutable" xml:space="preserve">
+    <value>Välj körbar fil för LSP-server</value>
+  </data>
+  <data name="App_Options_ShowFileNameBelowPreview" xml:space="preserve">
+    <value>Visa filnamn under förhandsgranskning</value>
+  </data>
+  <data name="App_Options_ShowFilenameFooter" xml:space="preserve">
+    <value>Visa filnamn i sidfot</value>
+  </data>
+  <data name="App_Options_ShowMinimap" xml:space="preserve">
+    <value>Visa minimikarta</value>
+  </data>
+  <data name="App_Options_ShowReturnValues" xml:space="preserve">
+    <value>Visa returvärden i Lokala variabler efter varje steg</value>
+  </data>
+  <data name="App_Options_StopAtEntry" xml:space="preserve">
+    <value>Stoppa vid programmets startpunkt (Main)</value>
+  </data>
+  <data name="App_Options_WrapTabs" xml:space="preserve">
+    <value>Bryt flikar till ytterligare rader (flerradig)</value>
+  </data>
+  <data name="App_PanelFormatCatalog" xml:space="preserve">
+    <value>Formatkatalog</value>
+  </data>
+  <data name="App_PanelOptions" xml:space="preserve">
+    <value>Alternativ</value>
+  </data>
+  <data name="App_PasteConflict_EnterFileName" xml:space="preserve">
+    <value>Ange ett filnamn.</value>
+  </data>
+  <data name="App_PasteConflict_InvalidChars" xml:space="preserve">
+    <value>Namnet innehåller ogiltiga tecken.</value>
+  </data>
+  <data name="App_RemoveFolderMessage" xml:space="preserve">
+    <value>Ta bort mappen '{0}' från projektet?{1}Objekt inuti behålls i projektroten. Den fysiska katalogen tas inte bort.</value>
+  </data>
+  <data name="App_RemoveSolutionFolderMessage" xml:space="preserve">
+    <value>Ta bort lösningsmappen '{0}'?{1}Projekt inuti behålls i lösningsroten.</value>
+  </data>
+  <data name="App_SaveAs" xml:space="preserve">
+    <value>Spara som</value>
+  </data>
+  <data name="App_SelectEntropyFile" xml:space="preserve">
+    <value>Välj fil för entropianalys</value>
+  </data>
+  <data name="App_SourceFiles_SelectFolder" xml:space="preserve">
+    <value>Välj en källmapp</value>
+  </data>
+  <data name="App_StartupProjects_CurrentSelection" xml:space="preserve">
+    <value>Aktuellt val</value>
+  </data>
+  <data name="App_StartupProjects_LaunchProfiles" xml:space="preserve">
+    <value>Startprofiler</value>
+  </data>
+  <data name="App_StartupProjects_MultipleProjects" xml:space="preserve">
+    <value>Flera startprojekt:</value>
+  </data>
+  <data name="App_StartupProjects_SingleProject" xml:space="preserve">
+    <value>Enskilt startprojekt:</value>
+  </data>
+  <data name="App_Tabs_GroupByExtension" xml:space="preserve">
+    <value>Filtyp</value>
+  </data>
+  <data name="App_Tabs_GroupByProject" xml:space="preserve">
+    <value>Projekt</value>
+  </data>
+  <data name="App_Tabs_GroupByRegex" xml:space="preserve">
+    <value>Regex-regel</value>
+  </data>
+  <data name="App_Tabs_PositionLeft" xml:space="preserve">
+    <value>Vänster</value>
+  </data>
+  <data name="App_Tabs_PositionNone" xml:space="preserve">
+    <value>Inga</value>
+  </data>
+  <data name="App_Tabs_PositionRight" xml:space="preserve">
+    <value>Höger</value>
+  </data>
+  <data name="App_Tabs_PositionTop" xml:space="preserve">
+    <value>Överkant</value>
+  </data>
+  <data name="App_TblImport_Failed" xml:space="preserve">
+    <value>Det gick inte att läsa in TBL-filen:{0}{1}</value>
+  </data>
+  <data name="App_UpgradeFailedMessage" xml:space="preserve">
+    <value>Uppgraderingen misslyckades: {0}</value>
+  </data>
+  <data name="App_UpgradeMessagePattern" xml:space="preserve">
+    <value>Följande filer använder ett äldre format (v{0}) som uppgraderas till v{1}:{2}{2}  • {3}{2}{2}En säkerhetskopia (.v{0}.bak) skapas för varje fil.{2}{2}Uppgradera nu?</value>
+  </data>
+  <data name="App_ViewMenu_ByDockSide" xml:space="preserve">
+    <value>Docksida</value>
+  </data>
+  <data name="App_ViewMenu_Categorized" xml:space="preserve">
+    <value>Kategoriserat</value>
+  </data>
+  <data name="App_ViewMenu_Flat" xml:space="preserve">
+    <value>Platt (klassisk)</value>
+  </data>
+  <data name="App_ViewMenu_OrganizeBy" xml:space="preserve">
+    <value>Ordna efter...</value>
+  </data>
+  <data name="App_ViewMenu_PinToViewMenu" xml:space="preserve">
+    <value>Fäst i Visa-menyn</value>
+  </data>
+  <data name="App_ViewMenu_SortAlphabetical" xml:space="preserve">
+    <value>Alfabetisk</value>
+  </data>
+  <data name="App_ViewMenu_SortByFrequency" xml:space="preserve">
+    <value>Frekvens</value>
+  </data>
+  <data name="App_ViewMenu_SortCustom" xml:space="preserve">
+    <value>Anpassad</value>
+  </data>
+  <data name="App_ViewMenu_UnpinFromViewMenu" xml:space="preserve">
+    <value>Ta bort från Visa-menyn</value>
+  </data>
+  <data name="App_Welcome_ChangelogUnavailable" xml:space="preserve">
+    <value>Ändringslogg otillgänglig — kontrollera din anslutning.</value>
+  </data>
+  <data name="App_Welcome_VersionDev" xml:space="preserve">
+    <value>Utvecklingsversion</value>
+  </data>
+  <data name="App_Workspace_CloseSavePrompt" xml:space="preserve">
+    <value>Spara arbetsytan '{0}' innan stängning?</value>
+  </data>
+  <data name="App_Workspace_CloseTitle" xml:space="preserve">
+    <value>Stäng arbetsyta</value>
+  </data>
+  <data name="App_Workspace_NewFailed" xml:space="preserve">
+    <value>Det gick inte att skapa arbetsyta:{0}{1}</value>
+  </data>
+  <data name="App_Workspace_NewTitle" xml:space="preserve">
+    <value>Ny arbetsyta</value>
+  </data>
+  <data name="App_Workspace_OpenFailed" xml:space="preserve">
+    <value>Det gick inte att öppna arbetsyta:{0}{1}</value>
+  </data>
+  <data name="App_Workspace_OpenTitle" xml:space="preserve">
+    <value>Öppna arbetsyta</value>
+  </data>
+  <data name="App_Workspace_SaveAsTitle" xml:space="preserve">
+    <value>Spara arbetsyta som</value>
+  </data>
+  <data name="App_Workspace_SaveFailed" xml:space="preserve">
+    <value>Det gick inte att spara arbetsyta:{0}{1}</value>
+  </data>
 </root>

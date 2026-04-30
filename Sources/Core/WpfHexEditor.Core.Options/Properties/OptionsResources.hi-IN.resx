@@ -165,4 +165,490 @@
   <data name="Opt_Page_FormatExplorer" xml:space="preserve"><value>प्रारूप एक्सप्लोरर</value></data>
   <data name="Opt_Page_CompareFiles" xml:space="preserve"><value>फ़ाइलें तुलना करें</value></data>
   <data name="Opt_Page_CommandPalette" xml:space="preserve"><value>कमांड पैलेट</value></data>
+  <data name="BuildCompiler_CSharpSection" xml:space="preserve">
+    <value>C# / .NET डिफ़ॉल्ट</value>
+  </data>
+  <data name="BuildCompiler_NullableCheck" xml:space="preserve">
+    <value>nullable चेतावनियों को त्रुटियों के रूप में मानें (C# 8+)</value>
+  </data>
+  <data name="BuildCompiler_ImplicitUsings" xml:space="preserve">
+    <value>अंतर्निहित using सक्षम करें (C# 10+)</value>
+  </data>
+  <data name="BuildCompiler_GenerateDocs" xml:space="preserve">
+    <value>XML दस्तावेज़ फ़ाइल बनाएं</value>
+  </data>
+  <data name="BuildCompiler_WarningsSection" xml:space="preserve">
+    <value>चेतावनियां</value>
+  </data>
+  <data name="BuildCompiler_WarnLevelLabel" xml:space="preserve">
+    <value>डिफ़ॉल्ट चेतावनी स्तर (0–9):</value>
+  </data>
+  <data name="BuildRun_GeneralSection" xml:space="preserve">
+    <value>सामान्य</value>
+  </data>
+  <data name="BuildRun_SaveBeforeBuild" xml:space="preserve">
+    <value>बिल्ड से पहले सभी परिवर्तन सहेजें</value>
+  </data>
+  <data name="BuildRun_VerbosityLabel" xml:space="preserve">
+    <value>बिल्ड आउटपुट विस्तार:</value>
+  </data>
+  <data name="BuildRun_VerbQuiet" xml:space="preserve">
+    <value>शांत</value>
+  </data>
+  <data name="BuildRun_VerbMinimal" xml:space="preserve">
+    <value>न्यूनतम</value>
+  </data>
+  <data name="BuildRun_VerbNormal" xml:space="preserve">
+    <value>सामान्य</value>
+  </data>
+  <data name="BuildRun_VerbDetailed" xml:space="preserve">
+    <value>विस्तृत</value>
+  </data>
+  <data name="BuildRun_VerbDiagnostic" xml:space="preserve">
+    <value>निदान</value>
+  </data>
+  <data name="BuildRun_RunInProcess" xml:space="preserve">
+    <value>MSBuild इन-प्रोसेस चलाएं (तेज़, अनुशंसित)</value>
+  </data>
+  <data name="BuildRun_MaxParallelLabel" xml:space="preserve">
+    <value>अधिकतम समानांतर प्रोजेक्ट बिल्ड:</value>
+  </data>
+  <data name="BuildRun_OutputSection" xml:space="preserve">
+    <value>आउटपुट विंडो</value>
+  </data>
+  <data name="BuildRun_ShowOnStart" xml:space="preserve">
+    <value>बिल्ड शुरू होने पर आउटपुट विंडो दिखाएं</value>
+  </data>
+  <data name="BuildRun_ShowOnError" xml:space="preserve">
+    <value>बिल्ड त्रुटि पर आउटपुट विंडो दिखाएं</value>
+  </data>
+  <data name="BuildRun_RunSection" xml:space="preserve">
+    <value>चलाएं</value>
+  </data>
+  <data name="BuildRun_OnRunBuildErrorLabel" xml:space="preserve">
+    <value>चलाने पर, जब बिल्ड त्रुटियां हों:</value>
+  </data>
+  <data name="BuildRun_DoNotLaunch" xml:space="preserve">
+    <value>लॉन्च न करें</value>
+  </data>
+  <data name="BuildRun_Launch" xml:space="preserve">
+    <value>लॉन्च करें</value>
+  </data>
+  <data name="BuildRun_ShowOutputOnRun" xml:space="preserve">
+    <value>रन शुरू होने पर आउटपुट विंडो दिखाएं</value>
+  </data>
+  <data name="CodeInlineHints_Section" xml:space="preserve">
+    <value>इनलाइन संकेत</value>
+  </data>
+  <data name="CodeInlineHints_EnableHints" xml:space="preserve">
+    <value>इनलाइन संकेत सक्षम करें (घोषणाओं के ऊपर इनलाइन संदर्भ गिनती दिखाएं)</value>
+  </data>
+  <data name="CodeInlineHints_SourceLabel" xml:space="preserve">
+    <value>संदर्भ स्रोत:</value>
+  </data>
+  <data name="CodeInlineHints_SourceAuto" xml:space="preserve">
+    <value>ऑटो (उपलब्ध होने पर Roslyn, regex फ़ॉलबैक)</value>
+  </data>
+  <data name="CodeInlineHints_SourceRoslyn" xml:space="preserve">
+    <value>केवल Roslyn (C# / VB.NET)</value>
+  </data>
+  <data name="CodeInlineHints_SourceRegex" xml:space="preserve">
+    <value>हमेशा Regex</value>
+  </data>
+  <data name="CodeInlineHints_RoslynSection" xml:space="preserve">
+    <value>ROSLYN सेमांटिक संकेत (C# / VB.NET)</value>
+  </data>
+  <data name="CodeInlineHints_RoslynNote" xml:space="preserve">
+    <value>Roslyn सक्रिय भाषा क्लाइंट होने पर अनुमानित प्रकार और वापसी प्रकार इनलाइन दिखाएं।</value>
+  </data>
+  <data name="CodeInlineHints_ShowVarType" xml:space="preserve">
+    <value>var घोषणाओं के लिए अनुमानित प्रकार दिखाएं (जैसे var x = … → : List&amp;lt;int&amp;gt;)</value>
+  </data>
+  <data name="CodeInlineHints_ShowLambdaReturn" xml:space="preserve">
+    <value>lambda अभिव्यक्तियों के लिए रिटर्न प्रकार दिखाएं (जैसे x =&amp;gt; x * 2 → int)</value>
+  </data>
+  <data name="CodeInlineHints_KindsSection" xml:space="preserve">
+    <value>प्रतीक प्रकारों के लिए संकेत दिखाएं:</value>
+  </data>
+  <data name="CodeInlineHints_KindsNote" xml:space="preserve">
+    <value>किसी प्रकार को अनचेक करें ताकि उसकी संदर्भ-गिनती संकेत छिप जाएं जबकि अन्य के लिए इनलाइन संकेत सक्रिय रहें।</value>
+  </data>
+  <data name="CodeInlineHints_TypesGroup" xml:space="preserve">
+    <value>प्रकार</value>
+  </data>
+  <data name="CodeInlineHints_Class" xml:space="preserve">
+    <value>क्लास</value>
+  </data>
+  <data name="CodeInlineHints_Interface" xml:space="preserve">
+    <value>इंटरफ़ेस</value>
+  </data>
+  <data name="CodeInlineHints_Struct" xml:space="preserve">
+    <value>स्ट्रक्चर</value>
+  </data>
+  <data name="CodeInlineHints_Enum" xml:space="preserve">
+    <value>Enum</value>
+  </data>
+  <data name="CodeInlineHints_Record" xml:space="preserve">
+    <value>रिकॉर्ड</value>
+  </data>
+  <data name="CodeInlineHints_Delegate" xml:space="preserve">
+    <value>डेलीगेट</value>
+  </data>
+  <data name="CodeInlineHints_MembersGroup" xml:space="preserve">
+    <value>सदस्य</value>
+  </data>
+  <data name="CodeInlineHints_Method" xml:space="preserve">
+    <value>मेथड</value>
+  </data>
+  <data name="CodeInlineHints_Constructor" xml:space="preserve">
+    <value>कंस्ट्रक्टर</value>
+  </data>
+  <data name="CodeInlineHints_Property" xml:space="preserve">
+    <value>प्रॉपर्टी</value>
+  </data>
+  <data name="CodeInlineHints_Field" xml:space="preserve">
+    <value>फ़ील्ड</value>
+  </data>
+  <data name="CodeInlineHints_Event" xml:space="preserve">
+    <value>इवेंट</value>
+  </data>
+  <data name="CodeInlineHints_OtherGroup" xml:space="preserve">
+    <value>अन्य</value>
+  </data>
+  <data name="CodeInlineHints_LocalVar" xml:space="preserve">
+    <value>स्थानीय चर</value>
+  </data>
+  <data name="CodeInlineHints_Parameter" xml:space="preserve">
+    <value>पैरामीटर</value>
+  </data>
+  <data name="CodeInlineHints_TypeParam" xml:space="preserve">
+    <value>प्रकार पैरामीटर</value>
+  </data>
+  <data name="CodeInlineHints_Namespace" xml:space="preserve">
+    <value>नेमस्पेस</value>
+  </data>
+  <data name="CodeInlineHints_SelectAll" xml:space="preserve">
+    <value>सभी चुनें</value>
+  </data>
+  <data name="CodeInlineHints_ClearAll" xml:space="preserve">
+    <value>सभी साफ़ करें</value>
+  </data>
+  <data name="CodeOpt_FontSection" xml:space="preserve">
+    <value>फ़ॉन्ट</value>
+  </data>
+  <data name="CodeOpt_FontFamilyLabel" xml:space="preserve">
+    <value>फ़ॉन्ट परिवार:</value>
+  </data>
+  <data name="CodeOpt_FontSizeLabel" xml:space="preserve">
+    <value>फ़ॉन्ट आकार (pt):</value>
+  </data>
+  <data name="CodeOpt_IndentSection" xml:space="preserve">
+    <value>इंडेंटेशन</value>
+  </data>
+  <data name="CodeOpt_IndentSizeLabel" xml:space="preserve">
+    <value>इंडेंट आकार:</value>
+  </data>
+  <data name="CodeOpt_UseSpaces" xml:space="preserve">
+    <value>टैब वर्णों के बजाय स्पेस डालें</value>
+  </data>
+  <data name="CodeOpt_FeaturesSection" xml:space="preserve">
+    <value>विशेषताएं</value>
+  </data>
+  <data name="CodeOpt_ShowLineNumbers" xml:space="preserve">
+    <value>पंक्ति संख्या दिखाएं</value>
+  </data>
+  <data name="CodeOpt_HighlightCurrentLine" xml:space="preserve">
+    <value>वर्तमान पंक्ति हाइलाइट करें</value>
+  </data>
+  <data name="CodeOpt_CtrlClickLinks" xml:space="preserve">
+    <value>परिभाषा पर नेविगेट करने / लिंक खोलने के लिए Ctrl+Click सक्षम करें</value>
+  </data>
+  <data name="CodeOpt_DefaultZoomLabel" xml:space="preserve">
+    <value>डिफ़ॉल्ट ज़ूम (%):</value>
+  </data>
+  <data name="CodeOpt_MouseWheelLabel" xml:space="preserve">
+    <value>माउस व्हील गति:</value>
+  </data>
+  <data name="CodeOpt_ChangesetSection" xml:space="preserve">
+    <value>चेंजसेट (.WHCHG)</value>
+  </data>
+  <data name="CodeOpt_TrackEdits" xml:space="preserve">
+    <value>.whchg सहयोगी फ़ाइल में संपादन ट्रैक करें (ट्रैक्ड सेव मोड आवश्यक)</value>
+  </data>
+  <data name="CodeOpt_SyntaxSection" xml:space="preserve">
+    <value>सिंटैक्स रंग ओवरराइड</value>
+  </data>
+  <data name="CodeOpt_SyntaxNote" xml:space="preserve">
+    <value>सक्रिय थीम के डिफ़ॉल्ट को ओवरराइड करने के लिए एक रंग सक्षम करें।</value>
+  </data>
+  <data name="CodeOpt_Background" xml:space="preserve">
+    <value>पृष्ठभूमि:</value>
+  </data>
+  <data name="CodeOpt_Foreground" xml:space="preserve">
+    <value>अग्रभूमि:</value>
+  </data>
+  <data name="CodeOpt_Keyword" xml:space="preserve">
+    <value>कीवर्ड:</value>
+  </data>
+  <data name="CodeOpt_String" xml:space="preserve">
+    <value>स्ट्रिंग:</value>
+  </data>
+  <data name="CodeOpt_Comment" xml:space="preserve">
+    <value>टिप्पणी:</value>
+  </data>
+  <data name="CodeOpt_Number" xml:space="preserve">
+    <value>संख्या:</value>
+  </data>
+  <data name="CodeOpt_Type" xml:space="preserve">
+    <value>प्रकार:</value>
+  </data>
+  <data name="CodeOpt_Preprocessor" xml:space="preserve">
+    <value>प्रीप्रोसेसर:</value>
+  </data>
+  <data name="CodeOpt_Operator" xml:space="preserve">
+    <value>ऑपरेटर:</value>
+  </data>
+  <data name="CodeOpt_Identifier" xml:space="preserve">
+    <value>पहचानकर्ता:</value>
+  </data>
+  <data name="CodeOpt_ResetColors" xml:space="preserve">
+    <value>थीम डिफ़ॉल्ट पर रीसेट करें</value>
+  </data>
+  <data name="EnvSave_SaveModeSection" xml:space="preserve">
+    <value>सेव मोड</value>
+  </data>
+  <data name="EnvSave_DirectMode" xml:space="preserve">
+    <value>डायरेक्ट मोड</value>
+  </data>
+  <data name="EnvSave_TrackedMode" xml:space="preserve">
+    <value>ट्रैक्ड मोड</value>
+  </data>
+  <data name="EnvSave_AutoSaveSection" xml:space="preserve">
+    <value>स्वतः सेव</value>
+  </data>
+  <data name="EnvSave_AutoSerialize" xml:space="preserve">
+    <value>स्वतः सेव सक्षम करें</value>
+  </data>
+  <data name="EnvSave_IntervalLabel" xml:space="preserve">
+    <value>अंतराल (सेकंड)</value>
+  </data>
+  <data name="EnvSave_StandaloneSection" xml:space="preserve">
+    <value>स्टैंडअलोन मोड</value>
+  </data>
+  <data name="EnvSave_StandaloneNote" xml:space="preserve">
+    <value>स्टैंडअलोन मोड में, प्रत्येक संपादक अपने सेव करने का तरीका नियंत्रित करता है।</value>
+  </data>
+  <data name="EnvSave_HexEditorDirect" xml:space="preserve">
+    <value>Hex एडिटर: डायरेक्ट मोड</value>
+  </data>
+  <data name="EnvSave_CodeEditorDirect" xml:space="preserve">
+    <value>कोड एडिटर: डायरेक्ट मोड</value>
+  </data>
+  <data name="EnvSave_TextEditorDirect" xml:space="preserve">
+    <value>टेक्स्ट एडिटर: डायरेक्ट मोड</value>
+  </data>
+  <data name="EnvSave_TblEditorDirect" xml:space="preserve">
+    <value>TBL एडिटर: डायरेक्ट मोड</value>
+  </data>
+  <data name="EnvSave_ImageViewerDirect" xml:space="preserve">
+    <value>इमेज व्यूअर: डायरेक्ट मोड</value>
+  </data>
+  <data name="EnvSave_SaveAsNote" xml:space="preserve">
+    <value>"इस रूप में सेव करें" के लिए नया पथ चुनना आवश्यक है।</value>
+  </data>
+  <data name="HexBehavior_Section" xml:space="preserve">
+    <value>Hex एडिटर व्यवहार</value>
+  </data>
+  <data name="HexBehavior_AllowAutoHighLight" xml:space="preserve">
+    <value>स्वतः हाइलाइट सक्षम करें</value>
+  </data>
+  <data name="HexBehavior_AllowAutoSelectDoubleClick" xml:space="preserve">
+    <value>डबल-क्लिक से स्वतः चयन</value>
+  </data>
+  <data name="HexBehavior_AllowContextMenu" xml:space="preserve">
+    <value>संदर्भ मेनू सक्षम करें</value>
+  </data>
+  <data name="HexBehavior_AllowDeleteByte" xml:space="preserve">
+    <value>बाइट हटाने की अनुमति दें</value>
+  </data>
+  <data name="HexBehavior_AllowExtend" xml:space="preserve">
+    <value>विस्तार की अनुमति दें</value>
+  </data>
+  <data name="HexBehavior_FileDroppingConfirmation" xml:space="preserve">
+    <value>फ़ाइल ड्रॉप पुष्टि</value>
+  </data>
+  <data name="HexBehavior_PreloadModeLabel" xml:space="preserve">
+    <value>प्रीलोड मोड</value>
+  </data>
+  <data name="HexDisplay_DisplaySection" xml:space="preserve">
+    <value>प्रदर्शन सेटिंग</value>
+  </data>
+  <data name="HexDisplay_BytesPerLineLabel" xml:space="preserve">
+    <value>प्रति पंक्ति बाइट</value>
+  </data>
+  <data name="HexDisplay_ShowOffset" xml:space="preserve">
+    <value>ऑफसेट दिखाएं</value>
+  </data>
+  <data name="HexDisplay_ShowAscii" xml:space="preserve">
+    <value>ASCII कॉलम दिखाएं</value>
+  </data>
+  <data name="HexDisplay_MouseWheelLabel" xml:space="preserve">
+    <value>माउस व्हील</value>
+  </data>
+  <data name="HexDisplay_ByteTooltipLabel" xml:space="preserve">
+    <value>बाइट टूलटिप</value>
+  </data>
+  <data name="HexDisplay_FormatSection" xml:space="preserve">
+    <value>प्रारूप</value>
+  </data>
+  <data name="HexDisplay_ValueFormatLabel" xml:space="preserve">
+    <value>मान प्रारूप</value>
+  </data>
+  <data name="HexDisplay_OffsetFormatLabel" xml:space="preserve">
+    <value>ऑफसेट प्रारूप</value>
+  </data>
+  <data name="HexDisplay_ByteGroupingLabel" xml:space="preserve">
+    <value>बाइट समूहन</value>
+  </data>
+  <data name="HexDisplay_SpacerPositionLabel" xml:space="preserve">
+    <value>स्पेसर स्थिति</value>
+  </data>
+  <data name="HexDisplay_ScrollMarkersSection" xml:space="preserve">
+    <value>स्क्रॉल मार्कर</value>
+  </data>
+  <data name="HexDisplay_ShowBookmarkMarkers" xml:space="preserve">
+    <value>बुकमार्क मार्कर दिखाएं</value>
+  </data>
+  <data name="HexDisplay_ShowModifiedMarkers" xml:space="preserve">
+    <value>संशोधन मार्कर दिखाएं</value>
+  </data>
+  <data name="HexDisplay_ShowInsertedMarkers" xml:space="preserve">
+    <value>सम्मिलन मार्कर दिखाएं</value>
+  </data>
+  <data name="HexDisplay_ShowDeletedMarkers" xml:space="preserve">
+    <value>हटाने के मार्कर दिखाएं</value>
+  </data>
+  <data name="HexDisplay_ShowSearchResultMarkers" xml:space="preserve">
+    <value>खोज परिणाम मार्कर दिखाएं</value>
+  </data>
+  <data name="HexDisplay_ColumnRowSection" xml:space="preserve">
+    <value>कॉलम और पंक्ति हाइलाइट</value>
+  </data>
+  <data name="HexDisplay_ShowColumnHighlight" xml:space="preserve">
+    <value>कॉलम हाइलाइट दिखाएं</value>
+  </data>
+  <data name="HexDisplay_ShowAsciiColumnHighlight" xml:space="preserve">
+    <value>ASCII कॉलम हाइलाइट दिखाएं</value>
+  </data>
+  <data name="HexDisplay_ShowRowHighlight" xml:space="preserve">
+    <value>पंक्ति हाइलाइट दिखाएं</value>
+  </data>
+  <data name="HexEdit_EditingSection" xml:space="preserve">
+    <value>संपादन सेटिंग</value>
+  </data>
+  <data name="HexEdit_DefaultEditModeLabel" xml:space="preserve">
+    <value>डिफ़ॉल्ट संपादन मोड</value>
+  </data>
+  <data name="HexEdit_MouseWheelLabel" xml:space="preserve">
+    <value>माउस व्हील</value>
+  </data>
+  <data name="HexEdit_AllowZoom" xml:space="preserve">
+    <value>ज़ूम की अनुमति दें</value>
+  </data>
+  <data name="HexEdit_AllowFileDrop" xml:space="preserve">
+    <value>फ़ाइल ड्रॉप की अनुमति दें</value>
+  </data>
+  <data name="HexEdit_DataSection" xml:space="preserve">
+    <value>डेटा सेटिंग</value>
+  </data>
+  <data name="HexEdit_ByteSizeLabel" xml:space="preserve">
+    <value>बाइट आकार</value>
+  </data>
+  <data name="HexEdit_ByteOrderLabel" xml:space="preserve">
+    <value>बाइट क्रम</value>
+  </data>
+  <data name="HexEdit_DefaultCopyFormatLabel" xml:space="preserve">
+    <value>डिफ़ॉल्ट कॉपी फ़ॉर्मेट</value>
+  </data>
+  <data name="HexEdit_SpacerVisualLabel" xml:space="preserve">
+    <value>स्पेसर दिखावट</value>
+  </data>
+  <data name="HexStatus_Section" xml:space="preserve">
+    <value>स्टेटस बार</value>
+  </data>
+  <data name="HexStatus_ShowStatusMessage" xml:space="preserve">
+    <value>स्टेटस संदेश दिखाएं</value>
+  </data>
+  <data name="HexStatus_ShowFileSize" xml:space="preserve">
+    <value>फ़ाइल आकार दिखाएं</value>
+  </data>
+  <data name="HexStatus_ShowSelection" xml:space="preserve">
+    <value>चयन दिखाएं</value>
+  </data>
+  <data name="HexStatus_ShowPosition" xml:space="preserve">
+    <value>स्थिति दिखाएं</value>
+  </data>
+  <data name="HexStatus_ShowEditMode" xml:space="preserve">
+    <value>संपादन मोड दिखाएं</value>
+  </data>
+  <data name="HexStatus_ShowBytesPerLine" xml:space="preserve">
+    <value>प्रति पंक्ति बाइट दिखाएं</value>
+  </data>
+  <data name="HexStatus_ShowRefreshRate" xml:space="preserve">
+    <value>रिफ्रेश दर दिखाएं</value>
+  </data>
+  <data name="Opt_Plugin_SelectExtDir" xml:space="preserve">
+    <value>एक्सटेंशन निर्देशिका चुनें</value>
+  </data>
+  <data name="Opt_PluginDev_SelectOutputDir" xml:space="preserve">
+    <value>आउटपुट निर्देशिका चुनें</value>
+  </data>
+  <data name="Opt_ViewMode_Tree" xml:space="preserve">
+    <value>ट्री व्यू</value>
+  </data>
+  <data name="Opt_ViewMode_Flat" xml:space="preserve">
+    <value>फ्लैट व्यू</value>
+  </data>
+  <data name="Opt_Position_Right" xml:space="preserve">
+    <value>दाएं</value>
+  </data>
+  <data name="Opt_Position_Left" xml:space="preserve">
+    <value>बाएं</value>
+  </data>
+  <data name="Opt_Position_Bottom" xml:space="preserve">
+    <value>नीचे</value>
+  </data>
+  <data name="Opt_Position_Top" xml:space="preserve">
+    <value>ऊपर</value>
+  </data>
+  <data name="Opt_Endian_Little" xml:space="preserve">
+    <value>Little-Endian</value>
+  </data>
+  <data name="Opt_Endian_Big" xml:space="preserve">
+    <value>Big-Endian</value>
+  </data>
+  <data name="Opt_IndentLevel_1" xml:space="preserve">
+    <value>स्तर 1</value>
+  </data>
+  <data name="Opt_IndentLevel_2" xml:space="preserve">
+    <value>स्तर 2</value>
+  </data>
+  <data name="Opt_IndentLevel_3" xml:space="preserve">
+    <value>स्तर 3</value>
+  </data>
+  <data name="Opt_MdLayout_PreviewRight" xml:space="preserve">
+    <value>दाईं ओर पूर्वावलोकन</value>
+  </data>
+  <data name="Opt_MdLayout_PreviewBottom" xml:space="preserve">
+    <value>नीचे पूर्वावलोकन</value>
+  </data>
+  <data name="Opt_MdLayout_EditorOnly" xml:space="preserve">
+    <value>केवल एडिटर</value>
+  </data>
+  <data name="Opt_MdLayout_PreviewOnly" xml:space="preserve">
+    <value>केवल पूर्वावलोकन</value>
+  </data>
+  <data name="Opt_Preview_Label" xml:space="preserve">
+    <value>पूर्वावलोकन</value>
+  </data>
 </root>

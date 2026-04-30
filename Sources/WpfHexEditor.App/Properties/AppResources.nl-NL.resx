@@ -233,4 +233,550 @@
   <data name="App_Toolbar_SwitchBranch" xml:space="preserve"><value>Klik om van branch te wisselen</value></data>
   <data name="App_Toolbar_UncommittedChanges" xml:space="preserve"><value>Niet-gecommitte wijzigingen</value></data>
   <data name="App_Toolbar_PluginUpdates" xml:space="preserve"><value>Plugin-updates beschikbaar — klik om Marketplace te openen</value></data>
+  <data name="App_AddExistingItem" xml:space="preserve">
+    <value>Bestaand item toevoegen</value>
+  </data>
+  <data name="App_Breadcrumb_ProjectNotFound" xml:space="preserve">
+    <value>Project niet gevonden.</value>
+  </data>
+  <data name="App_Breadcrumb_SolutionNotLoaded" xml:space="preserve">
+    <value>Oplossing niet geladen.</value>
+  </data>
+  <data name="App_CodeEditor_MinimapFill" xml:space="preserve">
+    <value>Vullen</value>
+  </data>
+  <data name="App_CodeEditor_MinimapFit" xml:space="preserve">
+    <value>Passen</value>
+  </data>
+  <data name="App_CodeEditor_MinimapLeft" xml:space="preserve">
+    <value>Links</value>
+  </data>
+  <data name="App_CodeEditor_MinimapProportional" xml:space="preserve">
+    <value>Proportioneel</value>
+  </data>
+  <data name="App_CodeEditor_MinimapRight" xml:space="preserve">
+    <value>Rechts</value>
+  </data>
+  <data name="App_CompareWithHead" xml:space="preserve">
+    <value>Vergelijken met HEAD</value>
+  </data>
+  <data name="App_CompareWithHeadNoRepo" xml:space="preserve">
+    <value>Geen git-repository gevonden voor dit bestand.</value>
+  </data>
+  <data name="App_CompareWithHeadNoVersion" xml:space="preserve">
+    <value>Kon HEAD-versie niet ophalen uit git.</value>
+  </data>
+  <data name="App_Compare_SelectFile" xml:space="preserve">
+    <value>Bestand selecteren om te vergelijken</value>
+  </data>
+  <data name="App_Comparison_ModeHexText" xml:space="preserve">
+    <value>HexText</value>
+  </data>
+  <data name="App_Comparison_ModeInline" xml:space="preserve">
+    <value>Inline</value>
+  </data>
+  <data name="App_Comparison_ModeSideBySide" xml:space="preserve">
+    <value>Naast elkaar</value>
+  </data>
+  <data name="App_ConfigPage_BuildAll" xml:space="preserve">
+    <value>Alles bouwen</value>
+  </data>
+  <data name="App_ConfigPage_DeployAll" xml:space="preserve">
+    <value>Alles implementeren</value>
+  </data>
+  <data name="App_ContextMenu_CompareWithActive" xml:space="preserve">
+    <value>Vergelijken met actieve editor</value>
+  </data>
+  <data name="App_ContextMenu_CompareWithAnother" xml:space="preserve">
+    <value>Vergelijken met ander bestand…</value>
+  </data>
+  <data name="App_ContextMenu_None" xml:space="preserve">
+    <value>(geen)</value>
+  </data>
+  <data name="App_Convert_AlreadyWhsln" xml:space="preserve">
+    <value>De huidige oplossing is al een .whsln-bestand.</value>
+  </data>
+  <data name="App_Convert_Confirm" xml:space="preserve">
+    <value>"{0}" converteren naar "{1}"?{2}{2}Het oorspronkelijke bestand wordt bewaard.</value>
+  </data>
+  <data name="App_Convert_Failed" xml:space="preserve">
+    <value>Conversie mislukt:{0}{1}</value>
+  </data>
+  <data name="App_Convert_NoLoader" xml:space="preserve">
+    <value>Geen loader geregistreerd voor het formaat {0}. Zorg ervoor dat de VS Solution Loader-plugin actief is.</value>
+  </data>
+  <data name="App_Convert_NoLoaderSimple" xml:space="preserve">
+    <value>Geen loader geregistreerd voor het formaat {0}.</value>
+  </data>
+  <data name="App_Convert_NoSolution" xml:space="preserve">
+    <value>Er is momenteel geen oplossing geopend.</value>
+  </data>
+  <data name="App_Convert_NotSln" xml:space="preserve">
+    <value>De huidige oplossing is geen .sln-bestand.</value>
+  </data>
+  <data name="App_Convert_NotSlnx" xml:space="preserve">
+    <value>De huidige oplossing is geen .slnx-bestand.</value>
+  </data>
+  <data name="App_Convert_Success" xml:space="preserve">
+    <value>Geconverteerd naar "{0}".{1}{1}De geconverteerde oplossing nu openen?</value>
+  </data>
+  <data name="App_Convert_Title" xml:space="preserve">
+    <value>Oplossingsformaat converteren</value>
+  </data>
+  <data name="App_Debug_AttachNotAvailable" xml:space="preserve">
+    <value>Debuggerservice niet beschikbaar.</value>
+  </data>
+  <data name="App_Debug_AttachPidPrompt" xml:space="preserve">
+    <value>Voer de proces-ID (PID) in om aan te koppelen:</value>
+  </data>
+  <data name="App_Debug_AttachTitle" xml:space="preserve">
+    <value>Koppelen aan proces</value>
+  </data>
+  <data name="App_Debug_BuildFailed" xml:space="preserve">
+    <value>Build mislukt. Los de fouten op voor het debuggen.</value>
+  </data>
+  <data name="App_Debug_ExeNotFound" xml:space="preserve">
+    <value>Kan het te debuggen programma niet vinden:{0}{1}{0}{0}Het project is gebouwd maar het uitvoerbare bestand is niet gevonden.</value>
+  </data>
+  <data name="App_Debug_NoStartupProject" xml:space="preserve">
+    <value>Geen opstartproject ingesteld. Stel een opstartproject in voor het debuggen.</value>
+  </data>
+  <data name="App_Debug_StartTitle" xml:space="preserve">
+    <value>Foutopsporing starten</value>
+  </data>
+  <data name="App_Debugger_AdapterMissing" xml:space="preserve">
+    <value>Installeer de juiste adapterplugin of configureer een aangepaste adapter.</value>
+  </data>
+  <data name="App_Debugger_AdapterNotFound" xml:space="preserve">
+    <value>Debug-adapter (netcoredbg) niet gevonden.{0}Installeer het of stel het pad in bij Opties → Debugger.</value>
+  </data>
+  <data name="App_Debugger_Title" xml:space="preserve">
+    <value>Debugger</value>
+  </data>
+  <data name="App_DockTitle_ExtensionManager" xml:space="preserve">
+    <value>Extensiebeheer</value>
+  </data>
+  <data name="App_DockTitle_ExtensionMarketplace" xml:space="preserve">
+    <value>Extensiemarktplaats</value>
+  </data>
+  <data name="App_DockTitle_ExtensionsMonitor" xml:space="preserve">
+    <value>Extensiemonitor</value>
+  </data>
+  <data name="App_DockTitle_NuGet" xml:space="preserve">
+    <value>NuGet — {0}</value>
+  </data>
+  <data name="App_DockTitle_NuGetSolution" xml:space="preserve">
+    <value>NuGet — {0} (Oplossing)</value>
+  </data>
+  <data name="App_DockTitle_Properties" xml:space="preserve">
+    <value>{0} — Eigenschappen</value>
+  </data>
+  <data name="App_DockTitle_ReadOnly" xml:space="preserve">
+    <value>WpfHexEditor — {0} [alleen-lezen formaat v{1}]</value>
+  </data>
+  <data name="App_DockTitle_References" xml:space="preserve">
+    <value>Verwijzingen — {0}</value>
+  </data>
+  <data name="App_DockTitle_SettingsJson" xml:space="preserve">
+    <value>settings.json</value>
+  </data>
+  <data name="App_DockTitle_Terminal" xml:space="preserve">
+    <value>Terminal</value>
+  </data>
+  <data name="App_Docking_CornerNormal" xml:space="preserve">
+    <value>Normaal (scherpe hoeken)</value>
+  </data>
+  <data name="App_Docking_CornerRoundedContent" xml:space="preserve">
+    <value>Afgerond — Alleen inhoudsgebied</value>
+  </data>
+  <data name="App_Docking_CornerRoundedFull" xml:space="preserve">
+    <value>Afgerond — Volledig paneelkader</value>
+  </data>
+  <data name="App_Docking_ShadowFullBorder" xml:space="preserve">
+    <value>Volledige rand</value>
+  </data>
+  <data name="App_Docking_ShadowGlow" xml:space="preserve">
+    <value>Gloed</value>
+  </data>
+  <data name="App_Docking_ShadowNone" xml:space="preserve">
+    <value>Geen</value>
+  </data>
+  <data name="App_Docking_ShadowTopBar" xml:space="preserve">
+    <value>Bovenste balk</value>
+  </data>
+  <data name="App_Editor_Encodings" xml:space="preserve">
+    <value>Coderingen</value>
+  </data>
+  <data name="App_Editor_FileNotFound" xml:space="preserve">
+    <value>Bestand niet gevonden:{0}{1}</value>
+  </data>
+  <data name="App_Editor_HexEditor" xml:space="preserve">
+    <value>Hex-editor</value>
+  </data>
+  <data name="App_Editor_NewDocumentText" xml:space="preserve">
+    <value>Dit is document: {0}{1}{1}Bewerk deze tekst...</value>
+  </data>
+  <data name="App_Editor_ProjectTables" xml:space="preserve">
+    <value>Projecttabellen</value>
+  </data>
+  <data name="App_Editor_RefreshPrefix" xml:space="preserve">
+    <value>Vernieuwen:</value>
+  </data>
+  <data name="App_Error" xml:space="preserve">
+    <value>Fout</value>
+  </data>
+  <data name="App_Extensions_SelectOutputDir" xml:space="preserve">
+    <value>Selecteer de uitvoermap van de extensiebuild</value>
+  </data>
+  <data name="App_FailedCreateFile" xml:space="preserve">
+    <value>Bestand maken mislukt:{0}{1}</value>
+  </data>
+  <data name="App_FailedCreateProject" xml:space="preserve">
+    <value>Project maken mislukt:{0}{1}</value>
+  </data>
+  <data name="App_FailedLoadLayout" xml:space="preserve">
+    <value>Lay-out laden mislukt:{0}{1}</value>
+  </data>
+  <data name="App_FailedWriteTblx" xml:space="preserve">
+    <value>TBLX-bestand schrijven mislukt:{0}{1}</value>
+  </data>
+  <data name="App_GoTo_EnterOffset" xml:space="preserve">
+    <value>Voer een offset in.</value>
+  </data>
+  <data name="App_GoTo_InvalidDecimal" xml:space="preserve">
+    <value>Ongeldige decimale waarde.</value>
+  </data>
+  <data name="App_GoTo_InvalidHex" xml:space="preserve">
+    <value>Ongeldige hexadecimale waarde.</value>
+  </data>
+  <data name="App_GoTo_OffsetNonNegative" xml:space="preserve">
+    <value>Offset moet niet-negatief zijn.</value>
+  </data>
+  <data name="App_ImportIntoProject" xml:space="preserve">
+    <value>Importeren in project</value>
+  </data>
+  <data name="App_ImportIntoProjectMessage" xml:space="preserve">
+    <value>"{0}" kopiëren naar de projectmap?{1}{2}{1}Het oorspronkelijke bestand wordt niet verwijderd.</value>
+  </data>
+  <data name="App_InfoBar_Disable" xml:space="preserve">
+    <value>Uitschakelen</value>
+  </data>
+  <data name="App_InfoBar_HexEditor" xml:space="preserve">
+    <value>Hex-editor</value>
+  </data>
+  <data name="App_InfoBar_Ignore" xml:space="preserve">
+    <value>Negeren</value>
+  </data>
+  <data name="App_InfoBar_KeepEdits" xml:space="preserve">
+    <value>Mijn bewerkingen behouden</value>
+  </data>
+  <data name="App_InfoBar_Reload" xml:space="preserve">
+    <value>Opnieuw laden</value>
+  </data>
+  <data name="App_InfoBar_Restart" xml:space="preserve">
+    <value>Opnieuw opstarten</value>
+  </data>
+  <data name="App_JumpList_RecentFiles" xml:space="preserve">
+    <value>Recente bestanden</value>
+  </data>
+  <data name="App_JumpList_RecentProjects" xml:space="preserve">
+    <value>Recente projecten</value>
+  </data>
+  <data name="App_LSP_LoadAssembly" xml:space="preserve">
+    <value>Laad de assembly in Assembly Explorer om naar de gedecompileerde broncode te navigeren.</value>
+  </data>
+  <data name="App_LSP_TryOpenFile" xml:space="preserve">
+    <value>Probeer het declaratiebestand direct te openen, of zorg ervoor dat de LSP-server actief is.</value>
+  </data>
+  <data name="App_Lsp_ClangdFailed" xml:space="preserve">
+    <value>clangd downloaden mislukt</value>
+  </data>
+  <data name="App_Lsp_ClangdReady" xml:space="preserve">
+    <value>clangd gereed</value>
+  </data>
+  <data name="App_Lsp_CppNotInstalled" xml:space="preserve">
+    <value>C/C++ LSP-server niet geïnstalleerd</value>
+  </data>
+  <data name="App_Lsp_ErrorTitle" xml:space="preserve">
+    <value>LSP-fout</value>
+  </data>
+  <data name="App_Notifications_ClearAll" xml:space="preserve">
+    <value>Alles wissen</value>
+  </data>
+  <data name="App_Notifications_Empty" xml:space="preserve">
+    <value>Geen meldingen</value>
+  </data>
+  <data name="App_Notifications_Title" xml:space="preserve">
+    <value>Meldingen</value>
+  </data>
+  <data name="App_Options_AllSettings" xml:space="preserve">
+    <value>Alle instellingen</value>
+  </data>
+  <data name="App_Options_AutoExportBreakpoints" xml:space="preserve">
+    <value>Breekpunten automatisch exporteren naar VS XML bij opslaan</value>
+  </data>
+  <data name="App_Options_AutoImportBreakpoints" xml:space="preserve">
+    <value>VS-breekpunten automatisch importeren bij eerste opening van oplossing</value>
+  </data>
+  <data name="App_Options_AutoReload" xml:space="preserve">
+    <value>Gewijzigde bestanden automatisch herladen zonder te vragen</value>
+  </data>
+  <data name="App_Options_Browse" xml:space="preserve">
+    <value>Bladeren…</value>
+  </data>
+  <data name="App_Options_ClearAll" xml:space="preserve">
+    <value>Alles wissen</value>
+  </data>
+  <data name="App_Options_ClearHistory" xml:space="preserve">
+    <value>Geschiedenis wissen</value>
+  </data>
+  <data name="App_Options_CollapseIdentical" xml:space="preserve">
+    <value>Identieke gebieden samenvouwen</value>
+  </data>
+  <data name="App_Options_CommandsDefault" xml:space="preserve">
+    <value>Opdrachten (standaard)</value>
+  </data>
+  <data name="App_Options_DetectExternalChanges" xml:space="preserve">
+    <value>Detecteren wanneer bestanden buiten de IDE worden gewijzigd</value>
+  </data>
+  <data name="App_Options_DockedPanel" xml:space="preserve">
+    <value>Verankerd paneel (standaard)</value>
+  </data>
+  <data name="App_Options_EnableDockAnimations" xml:space="preserve">
+    <value>Docking-animaties inschakelen</value>
+  </data>
+  <data name="App_Options_EnableTabPreview" xml:space="preserve">
+    <value>Tabblad-hovervoorbizicht inschakelen</value>
+  </data>
+  <data name="App_Options_EnableTabPreviewHover" xml:space="preserve">
+    <value>Tabblad-voorvertoning bij hover inschakelen</value>
+  </data>
+  <data name="App_Options_HighlightBreakpoints" xml:space="preserve">
+    <value>Breekpuntrijen markeren in de editor (rode/oranje/grijze tint)</value>
+  </data>
+  <data name="App_Options_HighlightCharDiff" xml:space="preserve">
+    <value>Verschillen op tekenniveau markeren in gewijzigde regels (≤ 500 tekens)</value>
+  </data>
+  <data name="App_Options_InlinePopup" xml:space="preserve">
+    <value>Inline popup</value>
+  </data>
+  <data name="App_Options_KbCategory" xml:space="preserve">
+    <value>Categorie</value>
+  </data>
+  <data name="App_Options_KbCommand" xml:space="preserve">
+    <value>Opdracht</value>
+  </data>
+  <data name="App_Options_KbDefault" xml:space="preserve">
+    <value>Standaard</value>
+  </data>
+  <data name="App_Options_KbShortcut" xml:space="preserve">
+    <value>Sneltoets</value>
+  </data>
+  <data name="App_Options_LspArguments" xml:space="preserve">
+    <value>Argumenten</value>
+  </data>
+  <data name="App_Options_LspEnabled" xml:space="preserve">
+    <value>Ingeschakeld</value>
+  </data>
+  <data name="App_Options_LspExecutable" xml:space="preserve">
+    <value>Uitvoerbaar bestand</value>
+  </data>
+  <data name="App_Options_LspExtensions" xml:space="preserve">
+    <value>Extensies</value>
+  </data>
+  <data name="App_Options_LspLanguageId" xml:space="preserve">
+    <value>Taal-ID</value>
+  </data>
+  <data name="App_Options_LspNotActive" xml:space="preserve">
+    <value>LSP niet actief</value>
+  </data>
+  <data name="App_Options_LspSearching" xml:space="preserve">
+    <value>Zoeken…</value>
+  </data>
+  <data name="App_Options_LspSource" xml:space="preserve">
+    <value>Bron</value>
+  </data>
+  <data name="App_Options_LspTypeToSearch" xml:space="preserve">
+    <value>Typ om werkruimtesymbolen te zoeken</value>
+  </data>
+  <data name="App_Options_PromptSaveWorkspace" xml:space="preserve">
+    <value>Vragen om werkruimte op te slaan voor sluiten</value>
+  </data>
+  <data name="App_Options_ResetAllOverrides" xml:space="preserve">
+    <value>Alle overschrijvingen resetten</value>
+  </data>
+  <data name="App_Options_ResetOverrides" xml:space="preserve">
+    <value>Overschrijvingen resetten</value>
+  </data>
+  <data name="App_Options_ResetToDefaults" xml:space="preserve">
+    <value>Terugzetten naar standaarden</value>
+  </data>
+  <data name="App_Options_RestoreSolution" xml:space="preserve">
+    <value>Oplossing herstellen</value>
+  </data>
+  <data name="App_Options_RestoreTabs" xml:space="preserve">
+    <value>Geopende editor-tabbladen herstellen</value>
+  </data>
+  <data name="App_Options_RestoreTheme" xml:space="preserve">
+    <value>Thema herstellen</value>
+  </data>
+  <data name="App_Options_Save" xml:space="preserve">
+    <value>Opslaan</value>
+  </data>
+  <data name="App_Options_SavedComparisons" xml:space="preserve">
+    <value>Opgeslagen vergelijkingen</value>
+  </data>
+  <data name="App_Options_ScrollTabRows" xml:space="preserve">
+    <value>Tabbladrijen scrollen met muiswiel</value>
+  </data>
+  <data name="App_Options_SelectDebugAdapter" xml:space="preserve">
+    <value>Selecteer debug-adapter uitvoerbaar bestand</value>
+  </data>
+  <data name="App_Options_SelectLspExecutable" xml:space="preserve">
+    <value>Selecteer LSP-server uitvoerbaar bestand</value>
+  </data>
+  <data name="App_Options_ShowFileNameBelowPreview" xml:space="preserve">
+    <value>Bestandsnaam onder voorbeeld weergeven</value>
+  </data>
+  <data name="App_Options_ShowFilenameFooter" xml:space="preserve">
+    <value>Bestandsnaam in voettekst weergeven</value>
+  </data>
+  <data name="App_Options_ShowMinimap" xml:space="preserve">
+    <value>Minimap weergeven</value>
+  </data>
+  <data name="App_Options_ShowReturnValues" xml:space="preserve">
+    <value>Retourwaarden in Locals weergeven na elke stap</value>
+  </data>
+  <data name="App_Options_StopAtEntry" xml:space="preserve">
+    <value>Stoppen bij programma-ingangspunt (Main)</value>
+  </data>
+  <data name="App_Options_WrapTabs" xml:space="preserve">
+    <value>Tabbladen naar extra rijen omslaan (meerdere rijen)</value>
+  </data>
+  <data name="App_PanelFormatCatalog" xml:space="preserve">
+    <value>Formaatcatalogus</value>
+  </data>
+  <data name="App_PanelOptions" xml:space="preserve">
+    <value>Opties</value>
+  </data>
+  <data name="App_PasteConflict_EnterFileName" xml:space="preserve">
+    <value>Voer een bestandsnaam in.</value>
+  </data>
+  <data name="App_PasteConflict_InvalidChars" xml:space="preserve">
+    <value>De naam bevat ongeldige tekens.</value>
+  </data>
+  <data name="App_RemoveFolderMessage" xml:space="preserve">
+    <value>Map '{0}' uit het project verwijderen?{1}Items erin blijven in de projectroot. De fysieke map wordt niet verwijderd.</value>
+  </data>
+  <data name="App_RemoveSolutionFolderMessage" xml:space="preserve">
+    <value>Oplossingsmap '{0}' verwijderen?{1}Projecten erin blijven in de oplossingsroot.</value>
+  </data>
+  <data name="App_SaveAs" xml:space="preserve">
+    <value>Opslaan als</value>
+  </data>
+  <data name="App_SelectEntropyFile" xml:space="preserve">
+    <value>Selecteer bestand voor entropie-analyse</value>
+  </data>
+  <data name="App_SourceFiles_SelectFolder" xml:space="preserve">
+    <value>Selecteer een bronmap</value>
+  </data>
+  <data name="App_StartupProjects_CurrentSelection" xml:space="preserve">
+    <value>Huidige selectie</value>
+  </data>
+  <data name="App_StartupProjects_LaunchProfiles" xml:space="preserve">
+    <value>Startprofielen</value>
+  </data>
+  <data name="App_StartupProjects_MultipleProjects" xml:space="preserve">
+    <value>Meerdere opstartprojecten:</value>
+  </data>
+  <data name="App_StartupProjects_SingleProject" xml:space="preserve">
+    <value>Enkel opstartproject:</value>
+  </data>
+  <data name="App_Tabs_GroupByExtension" xml:space="preserve">
+    <value>Op bestandsextensie</value>
+  </data>
+  <data name="App_Tabs_GroupByProject" xml:space="preserve">
+    <value>Op project</value>
+  </data>
+  <data name="App_Tabs_GroupByRegex" xml:space="preserve">
+    <value>Op Regex-regel</value>
+  </data>
+  <data name="App_Tabs_PositionLeft" xml:space="preserve">
+    <value>Links</value>
+  </data>
+  <data name="App_Tabs_PositionNone" xml:space="preserve">
+    <value>Geen</value>
+  </data>
+  <data name="App_Tabs_PositionRight" xml:space="preserve">
+    <value>Rechts</value>
+  </data>
+  <data name="App_Tabs_PositionTop" xml:space="preserve">
+    <value>Boven</value>
+  </data>
+  <data name="App_TblImport_Failed" xml:space="preserve">
+    <value>TBL-bestand laden mislukt:{0}{1}</value>
+  </data>
+  <data name="App_UpgradeFailedMessage" xml:space="preserve">
+    <value>Upgrade mislukt: {0}</value>
+  </data>
+  <data name="App_UpgradeMessagePattern" xml:space="preserve">
+    <value>De volgende bestanden gebruiken een ouder formaat (v{0}) dat wordt bijgewerkt naar v{1}:{2}{2}  • {3}{2}{2}Voor elk bestand wordt een back-up (.v{0}.bak) gemaakt.{2}{2}Nu bijwerken?</value>
+  </data>
+  <data name="App_ViewMenu_ByDockSide" xml:space="preserve">
+    <value>Op dock-zijde</value>
+  </data>
+  <data name="App_ViewMenu_Categorized" xml:space="preserve">
+    <value>Gecategoriseerd</value>
+  </data>
+  <data name="App_ViewMenu_Flat" xml:space="preserve">
+    <value>Plat (klassiek)</value>
+  </data>
+  <data name="App_ViewMenu_OrganizeBy" xml:space="preserve">
+    <value>Organiseren op...</value>
+  </data>
+  <data name="App_ViewMenu_PinToViewMenu" xml:space="preserve">
+    <value>Vastmaken aan weergavemenu</value>
+  </data>
+  <data name="App_ViewMenu_SortAlphabetical" xml:space="preserve">
+    <value>Alfabetisch</value>
+  </data>
+  <data name="App_ViewMenu_SortByFrequency" xml:space="preserve">
+    <value>Op frequentie</value>
+  </data>
+  <data name="App_ViewMenu_SortCustom" xml:space="preserve">
+    <value>Aangepast</value>
+  </data>
+  <data name="App_ViewMenu_UnpinFromViewMenu" xml:space="preserve">
+    <value>Losmaken van weergavemenu</value>
+  </data>
+  <data name="App_Welcome_ChangelogUnavailable" xml:space="preserve">
+    <value>Wijzigingenlogboek niet beschikbaar — controleer uw verbinding.</value>
+  </data>
+  <data name="App_Welcome_VersionDev" xml:space="preserve">
+    <value>Ontwikkelingsbuild</value>
+  </data>
+  <data name="App_Workspace_CloseSavePrompt" xml:space="preserve">
+    <value>Werkruimte '{0}' opslaan voor het sluiten?</value>
+  </data>
+  <data name="App_Workspace_CloseTitle" xml:space="preserve">
+    <value>Werkruimte sluiten</value>
+  </data>
+  <data name="App_Workspace_NewFailed" xml:space="preserve">
+    <value>Werkruimte maken mislukt:{0}{1}</value>
+  </data>
+  <data name="App_Workspace_NewTitle" xml:space="preserve">
+    <value>Nieuwe werkruimte</value>
+  </data>
+  <data name="App_Workspace_OpenFailed" xml:space="preserve">
+    <value>Werkruimte openen mislukt:{0}{1}</value>
+  </data>
+  <data name="App_Workspace_OpenTitle" xml:space="preserve">
+    <value>Werkruimte openen</value>
+  </data>
+  <data name="App_Workspace_SaveAsTitle" xml:space="preserve">
+    <value>Werkruimte opslaan als</value>
+  </data>
+  <data name="App_Workspace_SaveFailed" xml:space="preserve">
+    <value>Werkruimte opslaan mislukt:{0}{1}</value>
+  </data>
 </root>

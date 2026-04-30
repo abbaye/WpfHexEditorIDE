@@ -165,4 +165,490 @@
   <data name="Opt_Page_FormatExplorer" xml:space="preserve"><value>Explorador de formatos</value></data>
   <data name="Opt_Page_CompareFiles" xml:space="preserve"><value>Comparar archivos</value></data>
   <data name="Opt_Page_CommandPalette" xml:space="preserve"><value>Paleta de comandos</value></data>
+  <data name="BuildCompiler_CSharpSection" xml:space="preserve">
+    <value>VALORES PREDETERMINADOS DE C# / .NET</value>
+  </data>
+  <data name="BuildCompiler_NullableCheck" xml:space="preserve">
+    <value>Tratar advertencias nullable como errores (C# 8+)</value>
+  </data>
+  <data name="BuildCompiler_ImplicitUsings" xml:space="preserve">
+    <value>Habilitar using implícitos (C# 10+)</value>
+  </data>
+  <data name="BuildCompiler_GenerateDocs" xml:space="preserve">
+    <value>Generar archivo de documentación XML</value>
+  </data>
+  <data name="BuildCompiler_WarningsSection" xml:space="preserve">
+    <value>ADVERTENCIAS</value>
+  </data>
+  <data name="BuildCompiler_WarnLevelLabel" xml:space="preserve">
+    <value>Nivel de advertencia predeterminado (0–9):</value>
+  </data>
+  <data name="BuildRun_GeneralSection" xml:space="preserve">
+    <value>GENERAL</value>
+  </data>
+  <data name="BuildRun_SaveBeforeBuild" xml:space="preserve">
+    <value>Guardar todos los cambios antes de compilar</value>
+  </data>
+  <data name="BuildRun_VerbosityLabel" xml:space="preserve">
+    <value>Detalle de salida de compilación:</value>
+  </data>
+  <data name="BuildRun_VerbQuiet" xml:space="preserve">
+    <value>Silencioso</value>
+  </data>
+  <data name="BuildRun_VerbMinimal" xml:space="preserve">
+    <value>Mínimo</value>
+  </data>
+  <data name="BuildRun_VerbNormal" xml:space="preserve">
+    <value>Normal</value>
+  </data>
+  <data name="BuildRun_VerbDetailed" xml:space="preserve">
+    <value>Detallado</value>
+  </data>
+  <data name="BuildRun_VerbDiagnostic" xml:space="preserve">
+    <value>Diagnóstico</value>
+  </data>
+  <data name="BuildRun_RunInProcess" xml:space="preserve">
+    <value>Ejecutar MSBuild en proceso (más rápido, recomendado)</value>
+  </data>
+  <data name="BuildRun_MaxParallelLabel" xml:space="preserve">
+    <value>Máximas compilaciones de proyectos en paralelo:</value>
+  </data>
+  <data name="BuildRun_OutputSection" xml:space="preserve">
+    <value>VENTANA DE SALIDA</value>
+  </data>
+  <data name="BuildRun_ShowOnStart" xml:space="preserve">
+    <value>Mostrar ventana de salida cuando comience la compilación</value>
+  </data>
+  <data name="BuildRun_ShowOnError" xml:space="preserve">
+    <value>Mostrar ventana de salida ante errores de compilación</value>
+  </data>
+  <data name="BuildRun_RunSection" xml:space="preserve">
+    <value>EJECUTAR</value>
+  </data>
+  <data name="BuildRun_OnRunBuildErrorLabel" xml:space="preserve">
+    <value>Al ejecutar, cuando ocurran errores de compilación:</value>
+  </data>
+  <data name="BuildRun_DoNotLaunch" xml:space="preserve">
+    <value>No iniciar</value>
+  </data>
+  <data name="BuildRun_Launch" xml:space="preserve">
+    <value>Iniciar</value>
+  </data>
+  <data name="BuildRun_ShowOutputOnRun" xml:space="preserve">
+    <value>Mostrar ventana de salida cuando comience la ejecución</value>
+  </data>
+  <data name="CodeInlineHints_Section" xml:space="preserve">
+    <value>SUGERENCIAS INSERTADAS</value>
+  </data>
+  <data name="CodeInlineHints_EnableHints" xml:space="preserve">
+    <value>Habilitar sugerencias insertadas (mostrar recuentos de referencia insertados encima de las declaraciones)</value>
+  </data>
+  <data name="CodeInlineHints_SourceLabel" xml:space="preserve">
+    <value>Fuente de referencia:</value>
+  </data>
+  <data name="CodeInlineHints_SourceAuto" xml:space="preserve">
+    <value>Automático (Roslyn cuando esté disponible, regex como alternativa)</value>
+  </data>
+  <data name="CodeInlineHints_SourceRoslyn" xml:space="preserve">
+    <value>Solo Roslyn (C# / VB.NET)</value>
+  </data>
+  <data name="CodeInlineHints_SourceRegex" xml:space="preserve">
+    <value>Siempre regex</value>
+  </data>
+  <data name="CodeInlineHints_RoslynSection" xml:space="preserve">
+    <value>SUGERENCIAS SEMÁNTICAS ROSLYN (C# / VB.NET)</value>
+  </data>
+  <data name="CodeInlineHints_RoslynNote" xml:space="preserve">
+    <value>Mostrar tipos inferidos y tipos de retorno inline cuando Roslyn sea el cliente de lenguaje activo.</value>
+  </data>
+  <data name="CodeInlineHints_ShowVarType" xml:space="preserve">
+    <value>Mostrar el tipo inferido para declaraciones var (ej. var x = … → : List&amp;lt;int&amp;gt;)</value>
+  </data>
+  <data name="CodeInlineHints_ShowLambdaReturn" xml:space="preserve">
+    <value>Mostrar tipo de retorno para expresiones lambda (ej. x =&amp;gt; x * 2 → int)</value>
+  </data>
+  <data name="CodeInlineHints_KindsSection" xml:space="preserve">
+    <value>MOSTRAR SUGERENCIAS PARA TIPOS DE SÍMBOLO:</value>
+  </data>
+  <data name="CodeInlineHints_KindsNote" xml:space="preserve">
+    <value>Desmarque un tipo para ocultar sus sugerencias de recuento de referencia mientras mantiene las sugerencias insertadas activas para otros.</value>
+  </data>
+  <data name="CodeInlineHints_TypesGroup" xml:space="preserve">
+    <value>Tipos</value>
+  </data>
+  <data name="CodeInlineHints_Class" xml:space="preserve">
+    <value>Clase</value>
+  </data>
+  <data name="CodeInlineHints_Interface" xml:space="preserve">
+    <value>Interfaz</value>
+  </data>
+  <data name="CodeInlineHints_Struct" xml:space="preserve">
+    <value>Estructura</value>
+  </data>
+  <data name="CodeInlineHints_Enum" xml:space="preserve">
+    <value>Enumeración</value>
+  </data>
+  <data name="CodeInlineHints_Record" xml:space="preserve">
+    <value>Registro</value>
+  </data>
+  <data name="CodeInlineHints_Delegate" xml:space="preserve">
+    <value>Delegado</value>
+  </data>
+  <data name="CodeInlineHints_MembersGroup" xml:space="preserve">
+    <value>Miembros</value>
+  </data>
+  <data name="CodeInlineHints_Method" xml:space="preserve">
+    <value>Método</value>
+  </data>
+  <data name="CodeInlineHints_Constructor" xml:space="preserve">
+    <value>Constructor</value>
+  </data>
+  <data name="CodeInlineHints_Property" xml:space="preserve">
+    <value>Propiedad</value>
+  </data>
+  <data name="CodeInlineHints_Field" xml:space="preserve">
+    <value>Campo</value>
+  </data>
+  <data name="CodeInlineHints_Event" xml:space="preserve">
+    <value>Evento</value>
+  </data>
+  <data name="CodeInlineHints_OtherGroup" xml:space="preserve">
+    <value>Otros</value>
+  </data>
+  <data name="CodeInlineHints_LocalVar" xml:space="preserve">
+    <value>Variable local</value>
+  </data>
+  <data name="CodeInlineHints_Parameter" xml:space="preserve">
+    <value>Parámetro</value>
+  </data>
+  <data name="CodeInlineHints_TypeParam" xml:space="preserve">
+    <value>Parámetro de tipo</value>
+  </data>
+  <data name="CodeInlineHints_Namespace" xml:space="preserve">
+    <value>Espacio de nombres</value>
+  </data>
+  <data name="CodeInlineHints_SelectAll" xml:space="preserve">
+    <value>Seleccionar todo</value>
+  </data>
+  <data name="CodeInlineHints_ClearAll" xml:space="preserve">
+    <value>Borrar todo</value>
+  </data>
+  <data name="CodeOpt_FontSection" xml:space="preserve">
+    <value>FUENTE</value>
+  </data>
+  <data name="CodeOpt_FontFamilyLabel" xml:space="preserve">
+    <value>Familia de fuente:</value>
+  </data>
+  <data name="CodeOpt_FontSizeLabel" xml:space="preserve">
+    <value>Tamaño de fuente (pt):</value>
+  </data>
+  <data name="CodeOpt_IndentSection" xml:space="preserve">
+    <value>SANGRÍA</value>
+  </data>
+  <data name="CodeOpt_IndentSizeLabel" xml:space="preserve">
+    <value>Tamaño de sangría:</value>
+  </data>
+  <data name="CodeOpt_UseSpaces" xml:space="preserve">
+    <value>Insertar espacios en lugar de caracteres de tabulación</value>
+  </data>
+  <data name="CodeOpt_FeaturesSection" xml:space="preserve">
+    <value>CARACTERÍSTICAS</value>
+  </data>
+  <data name="CodeOpt_ShowLineNumbers" xml:space="preserve">
+    <value>Mostrar números de línea</value>
+  </data>
+  <data name="CodeOpt_HighlightCurrentLine" xml:space="preserve">
+    <value>Resaltar línea actual</value>
+  </data>
+  <data name="CodeOpt_CtrlClickLinks" xml:space="preserve">
+    <value>Habilitar Ctrl+Clic para navegar a la definición / abrir enlaces</value>
+  </data>
+  <data name="CodeOpt_DefaultZoomLabel" xml:space="preserve">
+    <value>Zoom predeterminado (%):</value>
+  </data>
+  <data name="CodeOpt_MouseWheelLabel" xml:space="preserve">
+    <value>Velocidad de la rueda del ratón:</value>
+  </data>
+  <data name="CodeOpt_ChangesetSection" xml:space="preserve">
+    <value>CONJUNTO DE CAMBIOS (.WHCHG)</value>
+  </data>
+  <data name="CodeOpt_TrackEdits" xml:space="preserve">
+    <value>Rastrear ediciones en archivo complementario .whchg (requiere modo de guardado rastreado)</value>
+  </data>
+  <data name="CodeOpt_SyntaxSection" xml:space="preserve">
+    <value>ANULACIONES DE COLOR DE SINTAXIS</value>
+  </data>
+  <data name="CodeOpt_SyntaxNote" xml:space="preserve">
+    <value>Habilite un color para anular el predeterminado del tema activo.</value>
+  </data>
+  <data name="CodeOpt_Background" xml:space="preserve">
+    <value>Fondo:</value>
+  </data>
+  <data name="CodeOpt_Foreground" xml:space="preserve">
+    <value>Primer plano:</value>
+  </data>
+  <data name="CodeOpt_Keyword" xml:space="preserve">
+    <value>Palabra clave:</value>
+  </data>
+  <data name="CodeOpt_String" xml:space="preserve">
+    <value>Cadena:</value>
+  </data>
+  <data name="CodeOpt_Comment" xml:space="preserve">
+    <value>Comentario:</value>
+  </data>
+  <data name="CodeOpt_Number" xml:space="preserve">
+    <value>Número:</value>
+  </data>
+  <data name="CodeOpt_Type" xml:space="preserve">
+    <value>Tipo:</value>
+  </data>
+  <data name="CodeOpt_Preprocessor" xml:space="preserve">
+    <value>Preprocesador:</value>
+  </data>
+  <data name="CodeOpt_Operator" xml:space="preserve">
+    <value>Operador:</value>
+  </data>
+  <data name="CodeOpt_Identifier" xml:space="preserve">
+    <value>Identificador:</value>
+  </data>
+  <data name="CodeOpt_ResetColors" xml:space="preserve">
+    <value>Restablecer colores predeterminados del tema</value>
+  </data>
+  <data name="EnvSave_SaveModeSection" xml:space="preserve">
+    <value>Modo de guardado</value>
+  </data>
+  <data name="EnvSave_DirectMode" xml:space="preserve">
+    <value>Modo directo</value>
+  </data>
+  <data name="EnvSave_TrackedMode" xml:space="preserve">
+    <value>Modo rastreado</value>
+  </data>
+  <data name="EnvSave_AutoSaveSection" xml:space="preserve">
+    <value>Guardado automático</value>
+  </data>
+  <data name="EnvSave_AutoSerialize" xml:space="preserve">
+    <value>Habilitar guardado automático</value>
+  </data>
+  <data name="EnvSave_IntervalLabel" xml:space="preserve">
+    <value>Intervalo (segundos)</value>
+  </data>
+  <data name="EnvSave_StandaloneSection" xml:space="preserve">
+    <value>Modo independiente</value>
+  </data>
+  <data name="EnvSave_StandaloneNote" xml:space="preserve">
+    <value>En modo independiente, cada editor controla cómo se guarda.</value>
+  </data>
+  <data name="EnvSave_HexEditorDirect" xml:space="preserve">
+    <value>Editor Hex: Modo directo</value>
+  </data>
+  <data name="EnvSave_CodeEditorDirect" xml:space="preserve">
+    <value>Editor de código: Modo directo</value>
+  </data>
+  <data name="EnvSave_TextEditorDirect" xml:space="preserve">
+    <value>Editor de texto: Modo directo</value>
+  </data>
+  <data name="EnvSave_TblEditorDirect" xml:space="preserve">
+    <value>Editor TBL: Modo directo</value>
+  </data>
+  <data name="EnvSave_ImageViewerDirect" xml:space="preserve">
+    <value>Visor de imágenes: Modo directo</value>
+  </data>
+  <data name="EnvSave_SaveAsNote" xml:space="preserve">
+    <value>"Guardar como" requiere seleccionar una nueva ruta.</value>
+  </data>
+  <data name="HexBehavior_Section" xml:space="preserve">
+    <value>Comportamiento del editor Hex</value>
+  </data>
+  <data name="HexBehavior_AllowAutoHighLight" xml:space="preserve">
+    <value>Habilitar resaltado automático</value>
+  </data>
+  <data name="HexBehavior_AllowAutoSelectDoubleClick" xml:space="preserve">
+    <value>Selección automática con doble clic</value>
+  </data>
+  <data name="HexBehavior_AllowContextMenu" xml:space="preserve">
+    <value>Habilitar menú contextual</value>
+  </data>
+  <data name="HexBehavior_AllowDeleteByte" xml:space="preserve">
+    <value>Permitir eliminar byte</value>
+  </data>
+  <data name="HexBehavior_AllowExtend" xml:space="preserve">
+    <value>Permitir extender</value>
+  </data>
+  <data name="HexBehavior_FileDroppingConfirmation" xml:space="preserve">
+    <value>Confirmación al soltar archivo</value>
+  </data>
+  <data name="HexBehavior_PreloadModeLabel" xml:space="preserve">
+    <value>Modo de precarga</value>
+  </data>
+  <data name="HexDisplay_DisplaySection" xml:space="preserve">
+    <value>Configuración de visualización</value>
+  </data>
+  <data name="HexDisplay_BytesPerLineLabel" xml:space="preserve">
+    <value>Bytes por línea</value>
+  </data>
+  <data name="HexDisplay_ShowOffset" xml:space="preserve">
+    <value>Mostrar desplazamiento</value>
+  </data>
+  <data name="HexDisplay_ShowAscii" xml:space="preserve">
+    <value>Mostrar columna ASCII</value>
+  </data>
+  <data name="HexDisplay_MouseWheelLabel" xml:space="preserve">
+    <value>Rueda del ratón</value>
+  </data>
+  <data name="HexDisplay_ByteTooltipLabel" xml:space="preserve">
+    <value>Información sobre bytes</value>
+  </data>
+  <data name="HexDisplay_FormatSection" xml:space="preserve">
+    <value>Formato</value>
+  </data>
+  <data name="HexDisplay_ValueFormatLabel" xml:space="preserve">
+    <value>Formato de valor</value>
+  </data>
+  <data name="HexDisplay_OffsetFormatLabel" xml:space="preserve">
+    <value>Formato de desplazamiento</value>
+  </data>
+  <data name="HexDisplay_ByteGroupingLabel" xml:space="preserve">
+    <value>Agrupación de bytes</value>
+  </data>
+  <data name="HexDisplay_SpacerPositionLabel" xml:space="preserve">
+    <value>Posición del separador</value>
+  </data>
+  <data name="HexDisplay_ScrollMarkersSection" xml:space="preserve">
+    <value>Marcadores de desplazamiento</value>
+  </data>
+  <data name="HexDisplay_ShowBookmarkMarkers" xml:space="preserve">
+    <value>Mostrar marcadores de favoritos</value>
+  </data>
+  <data name="HexDisplay_ShowModifiedMarkers" xml:space="preserve">
+    <value>Mostrar marcadores de modificación</value>
+  </data>
+  <data name="HexDisplay_ShowInsertedMarkers" xml:space="preserve">
+    <value>Mostrar marcadores de inserción</value>
+  </data>
+  <data name="HexDisplay_ShowDeletedMarkers" xml:space="preserve">
+    <value>Mostrar marcadores de eliminación</value>
+  </data>
+  <data name="HexDisplay_ShowSearchResultMarkers" xml:space="preserve">
+    <value>Mostrar marcadores de resultados de búsqueda</value>
+  </data>
+  <data name="HexDisplay_ColumnRowSection" xml:space="preserve">
+    <value>Resaltado de columna y fila</value>
+  </data>
+  <data name="HexDisplay_ShowColumnHighlight" xml:space="preserve">
+    <value>Mostrar resaltado de columna</value>
+  </data>
+  <data name="HexDisplay_ShowAsciiColumnHighlight" xml:space="preserve">
+    <value>Mostrar resaltado de columna ASCII</value>
+  </data>
+  <data name="HexDisplay_ShowRowHighlight" xml:space="preserve">
+    <value>Mostrar resaltado de fila</value>
+  </data>
+  <data name="HexEdit_EditingSection" xml:space="preserve">
+    <value>Configuración de edición</value>
+  </data>
+  <data name="HexEdit_DefaultEditModeLabel" xml:space="preserve">
+    <value>Modo de edición predeterminado</value>
+  </data>
+  <data name="HexEdit_MouseWheelLabel" xml:space="preserve">
+    <value>Rueda del ratón</value>
+  </data>
+  <data name="HexEdit_AllowZoom" xml:space="preserve">
+    <value>Permitir zoom</value>
+  </data>
+  <data name="HexEdit_AllowFileDrop" xml:space="preserve">
+    <value>Permitir soltar archivo</value>
+  </data>
+  <data name="HexEdit_DataSection" xml:space="preserve">
+    <value>Configuración de datos</value>
+  </data>
+  <data name="HexEdit_ByteSizeLabel" xml:space="preserve">
+    <value>Tamaño de byte</value>
+  </data>
+  <data name="HexEdit_ByteOrderLabel" xml:space="preserve">
+    <value>Orden de bytes</value>
+  </data>
+  <data name="HexEdit_DefaultCopyFormatLabel" xml:space="preserve">
+    <value>Formato de copia predeterminado</value>
+  </data>
+  <data name="HexEdit_SpacerVisualLabel" xml:space="preserve">
+    <value>Apariencia del separador</value>
+  </data>
+  <data name="HexStatus_Section" xml:space="preserve">
+    <value>Barra de estado</value>
+  </data>
+  <data name="HexStatus_ShowStatusMessage" xml:space="preserve">
+    <value>Mostrar mensaje de estado</value>
+  </data>
+  <data name="HexStatus_ShowFileSize" xml:space="preserve">
+    <value>Mostrar tamaño de archivo</value>
+  </data>
+  <data name="HexStatus_ShowSelection" xml:space="preserve">
+    <value>Mostrar selección</value>
+  </data>
+  <data name="HexStatus_ShowPosition" xml:space="preserve">
+    <value>Mostrar posición</value>
+  </data>
+  <data name="HexStatus_ShowEditMode" xml:space="preserve">
+    <value>Mostrar modo de edición</value>
+  </data>
+  <data name="HexStatus_ShowBytesPerLine" xml:space="preserve">
+    <value>Mostrar bytes por línea</value>
+  </data>
+  <data name="HexStatus_ShowRefreshRate" xml:space="preserve">
+    <value>Mostrar tasa de actualización</value>
+  </data>
+  <data name="Opt_Plugin_SelectExtDir" xml:space="preserve">
+    <value>Seleccionar directorio de extensión</value>
+  </data>
+  <data name="Opt_PluginDev_SelectOutputDir" xml:space="preserve">
+    <value>Seleccionar directorio de salida</value>
+  </data>
+  <data name="Opt_ViewMode_Tree" xml:space="preserve">
+    <value>Vista de árbol</value>
+  </data>
+  <data name="Opt_ViewMode_Flat" xml:space="preserve">
+    <value>Vista plana</value>
+  </data>
+  <data name="Opt_Position_Right" xml:space="preserve">
+    <value>Derecha</value>
+  </data>
+  <data name="Opt_Position_Left" xml:space="preserve">
+    <value>Izquierda</value>
+  </data>
+  <data name="Opt_Position_Bottom" xml:space="preserve">
+    <value>Abajo</value>
+  </data>
+  <data name="Opt_Position_Top" xml:space="preserve">
+    <value>Arriba</value>
+  </data>
+  <data name="Opt_Endian_Little" xml:space="preserve">
+    <value>Little-Endian</value>
+  </data>
+  <data name="Opt_Endian_Big" xml:space="preserve">
+    <value>Big-Endian</value>
+  </data>
+  <data name="Opt_IndentLevel_1" xml:space="preserve">
+    <value>Nivel 1</value>
+  </data>
+  <data name="Opt_IndentLevel_2" xml:space="preserve">
+    <value>Nivel 2</value>
+  </data>
+  <data name="Opt_IndentLevel_3" xml:space="preserve">
+    <value>Nivel 3</value>
+  </data>
+  <data name="Opt_MdLayout_PreviewRight" xml:space="preserve">
+    <value>Vista previa a la derecha</value>
+  </data>
+  <data name="Opt_MdLayout_PreviewBottom" xml:space="preserve">
+    <value>Vista previa abajo</value>
+  </data>
+  <data name="Opt_MdLayout_EditorOnly" xml:space="preserve">
+    <value>Solo editor</value>
+  </data>
+  <data name="Opt_MdLayout_PreviewOnly" xml:space="preserve">
+    <value>Solo vista previa</value>
+  </data>
+  <data name="Opt_Preview_Label" xml:space="preserve">
+    <value>Vista previa</value>
+  </data>
 </root>

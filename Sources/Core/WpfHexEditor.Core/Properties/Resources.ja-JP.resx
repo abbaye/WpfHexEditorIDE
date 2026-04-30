@@ -1109,4 +1109,705 @@
     <value>Show Statistics</value>
     <comment>Bar Chart - Display statistics overlay (Total, Max, Entropy)</comment>
   </data>
+  <data name="RelativeSearchMenuString" xml:space="preserve">
+    <value>相対検索...</value>
+  </data>
+  <data name="RelativeSearchString" xml:space="preserve">
+    <value>相対検索 - エンコード検出</value>
+  </data>
+  <data name="RelativeSearchKnownTextString" xml:space="preserve">
+    <value>既知テキスト:</value>
+  </data>
+  <data name="RelativeSearchSearchButtonString" xml:space="preserve">
+    <value>検索</value>
+  </data>
+  <data name="RelativeSearchUseParallelString" xml:space="preserve">
+    <value>並列検索を使用</value>
+  </data>
+  <data name="RelativeSearchMinMatchesString" xml:space="preserve">
+    <value>最小マッチ数:</value>
+  </data>
+  <data name="RelativeSearchMaxProposalsString" xml:space="preserve">
+    <value>最大提案数:</value>
+  </data>
+  <data name="RelativeSearchTblLoadedString" xml:space="preserve">
+    <value>TBL 読み込み済み: {0} 件 (検証に使用)</value>
+  </data>
+  <data name="RelativeSearchNoTblString" xml:space="preserve">
+    <value>TBL 未読み込み (提案は独立してスコア付け)</value>
+  </data>
+  <data name="RelativeSearchProposalsHeaderString" xml:space="preserve">
+    <value>エンコード提案</value>
+  </data>
+  <data name="RelativeSearchOffsetColumnString" xml:space="preserve">
+    <value>オフセット</value>
+  </data>
+  <data name="RelativeSearchScoreColumnString" xml:space="preserve">
+    <value>スコア</value>
+  </data>
+  <data name="RelativeSearchMatchesColumnString" xml:space="preserve">
+    <value>マッチ</value>
+  </data>
+  <data name="RelativeSearchSampleColumnString" xml:space="preserve">
+    <value>サンプル テキスト</value>
+  </data>
+  <data name="RelativeSearchPreviewHeaderString" xml:space="preserve">
+    <value>プレビュー (デコード テキスト)</value>
+  </data>
+  <data name="RelativeSearchMatchPositionsString" xml:space="preserve">
+    <value>マッチ位置:</value>
+  </data>
+  <data name="RelativeSearchExportTblString" xml:space="preserve">
+    <value>TBL にエクスポート</value>
+  </data>
+  <data name="RelativeSearchNavigateString" xml:space="preserve">
+    <value>マッチに移動</value>
+  </data>
+  <data name="RelativeSearchSearchingString" xml:space="preserve">
+    <value>256 エンコード オフセットを検索中...</value>
+  </data>
+  <data name="RelativeSearchFoundProposalsString" xml:space="preserve">
+    <value>{1} ms で {0} 件の提案を検出</value>
+  </data>
+  <data name="RelativeSearchFoundWithValidationString" xml:space="preserve">
+    <value>{1} ms で {0} 件の提案を検出 (上位マッチが読み込み済み TBL により検証されました!)</value>
+  </data>
+  <data name="RelativeSearchSearchingWithTblString" xml:space="preserve">
+    <value>256 オフセットを検索中 ({0} TBL エントリに対して検証)...</value>
+  </data>
+  <data name="RelativeSearchCancelledString" xml:space="preserve">
+    <value>検索キャンセル</value>
+  </data>
+  <data name="RelativeSearchNoProposalsString" xml:space="preserve">
+    <value>エンコード提案が見つかりません。別の検索テキストを試してください。</value>
+  </data>
+  <data name="RelativeSearchNoFileOpenString" xml:space="preserve">
+    <value>ファイルが開かれていません</value>
+  </data>
+  <data name="RelativeSearchKnownTextTooltipString" xml:space="preserve">
+    <value>ROM に含まれることが分かっているテキストを入力してください (例: "World"、"Start"、"Hero")</value>
+  </data>
+  <data name="RelativeSearchExportTooltipString" xml:space="preserve">
+    <value>選択したエンコード提案を TBL ファイルとして保存</value>
+  </data>
+  <data name="TblConflict_Title" xml:space="preserve">
+    <value>TBL 競合分析レポート</value>
+  </data>
+  <data name="TblConflict_TotalConflicts" xml:space="preserve">
+    <value>競合の合計:</value>
+  </data>
+  <data name="TblConflict_Errors" xml:space="preserve">
+    <value>エラー:</value>
+  </data>
+  <data name="TblConflict_Warnings" xml:space="preserve">
+    <value>警告:</value>
+  </data>
+  <data name="TblConflict_Info" xml:space="preserve">
+    <value>情報:</value>
+  </data>
+  <data name="TblConflict_Description" xml:space="preserve">
+    <value>説明:</value>
+  </data>
+  <data name="TblConflict_Suggestion" xml:space="preserve">
+    <value>提案された解決策:</value>
+  </data>
+  <data name="TblConflict_ConflictingEntries" xml:space="preserve">
+    <value>競合するエントリ:</value>
+  </data>
+  <data name="TblTemplate_Title" xml:space="preserve">
+    <value>TBL テンプレート</value>
+  </data>
+  <data name="TblTemplate_Categories" xml:space="preserve">
+    <value>カテゴリ</value>
+  </data>
+  <data name="TblTemplate_AvailableTemplates" xml:space="preserve">
+    <value>利用可能なテンプレート</value>
+  </data>
+  <data name="TblTemplate_Preview" xml:space="preserve">
+    <value>プレビュー</value>
+  </data>
+  <data name="TblTemplate_LoadTemplate" xml:space="preserve">
+    <value>テンプレートを読み込む</value>
+  </data>
+  <data name="TblTemplate_MergeWithCurrent" xml:space="preserve">
+    <value>現在のものとマージ</value>
+  </data>
+  <data name="TblTemplate_BuiltIn" xml:space="preserve">
+    <value>組み込み</value>
+  </data>
+  <data name="PatternAnalysis_Title" xml:space="preserve">
+    <value>パターン分析</value>
+  </data>
+  <data name="PatternAnalysis_Entropy" xml:space="preserve">
+    <value>エントロピー</value>
+  </data>
+  <data name="PatternAnalysis_ByteDistribution" xml:space="preserve">
+    <value>バイト分布</value>
+  </data>
+  <data name="PatternAnalysis_DetectedPatterns" xml:space="preserve">
+    <value>検出されたパターン</value>
+  </data>
+  <data name="PatternAnalysis_NoPatternsDetected" xml:space="preserve">
+    <value>パターンが検出されませんでした</value>
+  </data>
+  <data name="PatternAnalysis_Anomalies" xml:space="preserve">
+    <value>異常</value>
+  </data>
+  <data name="PatternAnalysis_NoAnomalies" xml:space="preserve">
+    <value>異常は検出されませんでした</value>
+  </data>
+  <data name="PatternAnalysis_BitsPerByte" xml:space="preserve">
+    <value>bits/byte</value>
+  </data>
+  <data name="PatternAnalysis_HighEntropy" xml:space="preserve">
+    <value>高エントロピーが検出されました</value>
+  </data>
+  <data name="PatternAnalysis_HighEntropyDesc" xml:space="preserve">
+    <value>データは圧縮または暗号化されているようです</value>
+  </data>
+  <data name="PatternAnalysis_LowEntropy" xml:space="preserve">
+    <value>非常に低いエントロピーが検出されました</value>
+  </data>
+  <data name="PatternAnalysis_LowEntropyDesc" xml:space="preserve">
+    <value>データには繰り返しまたは類似したバイトが多く含まれています</value>
+  </data>
+  <data name="PatternAnalysis_SkewedDistribution" xml:space="preserve">
+    <value>偏ったバイト分布</value>
+  </data>
+  <data name="PatternAnalysis_SkewedDesc" xml:space="preserve">
+    <value>1 つのバイト値が 20% 以上の割合で出現します</value>
+  </data>
+  <data name="PatternAnalysis_NullBytes" xml:space="preserve">
+    <value>NULL バイト (0x00)</value>
+  </data>
+  <data name="PatternAnalysis_RepeatedSequence" xml:space="preserve">
+    <value>繰り返しシーケンス</value>
+  </data>
+  <data name="PatternAnalysis_AsciiText" xml:space="preserve">
+    <value>ASCII テキストが検出されました</value>
+  </data>
+  <data name="FileStats_Title" xml:space="preserve">
+    <value>ファイル統計</value>
+  </data>
+  <data name="FileStats_OverallHealth" xml:space="preserve">
+    <value>全体的な状態</value>
+  </data>
+  <data name="FileStats_HealthyStructure" xml:space="preserve">
+    <value>ファイル構造は有効で正常です</value>
+  </data>
+  <data name="FileStats_Structure" xml:space="preserve">
+    <value>構造</value>
+  </data>
+  <data name="FileStats_Valid" xml:space="preserve">
+    <value>有効</value>
+  </data>
+  <data name="FileStats_Invalid" xml:space="preserve">
+    <value>無効</value>
+  </data>
+  <data name="FileStats_Checksums" xml:space="preserve">
+    <value>チェックサム</value>
+  </data>
+  <data name="FileStats_AllPass" xml:space="preserve">
+    <value>すべて合格</value>
+  </data>
+  <data name="FileStats_SomeFailed" xml:space="preserve">
+    <value>チェックサムの一部が失敗しました</value>
+  </data>
+  <data name="FileStats_Compression" xml:space="preserve">
+    <value>圧縮</value>
+  </data>
+  <data name="FileStats_Ratio" xml:space="preserve">
+    <value>比率:</value>
+  </data>
+  <data name="FileStats_SubOptimalCompression" xml:space="preserve">
+    <value>最適でない圧縮</value>
+  </data>
+  <data name="FileStats_EntropyAnalysis" xml:space="preserve">
+    <value>エントロピー分析</value>
+  </data>
+  <data name="FileStats_Level" xml:space="preserve">
+    <value>レベル:</value>
+  </data>
+  <data name="FileStats_CompressedOrEncrypted" xml:space="preserve">
+    <value>圧縮または暗号化されたデータの可能性があります</value>
+  </data>
+  <data name="FileStats_DetectedIssues" xml:space="preserve">
+    <value>検出された問題</value>
+  </data>
+  <data name="FileStats_NoIssues" xml:space="preserve">
+    <value>問題は検出されませんでした</value>
+  </data>
+  <data name="FileStats_FileInformation" xml:space="preserve">
+    <value>ファイル情報</value>
+  </data>
+  <data name="FileStats_Size" xml:space="preserve">
+    <value>サイズ:</value>
+  </data>
+  <data name="FileStats_Fields" xml:space="preserve">
+    <value>フィールド:</value>
+  </data>
+  <data name="FileStats_Format" xml:space="preserve">
+    <value>形式:</value>
+  </data>
+  <data name="FileStats_Unknown" xml:space="preserve">
+    <value>不明</value>
+  </data>
+  <data name="ArchiveStructure_Title" xml:space="preserve">
+    <value>アーカイブ構造</value>
+  </data>
+  <data name="ArchiveStructure_NoArchive" xml:space="preserve">
+    <value>アーカイブが読み込まれていません</value>
+  </data>
+  <data name="ArchiveStructure_Extract" xml:space="preserve">
+    <value>展開...</value>
+  </data>
+  <data name="ArchiveStructure_ViewDetails" xml:space="preserve">
+    <value>詳細を表示</value>
+  </data>
+  <data name="ArchiveStructure_ExpandAll" xml:space="preserve">
+    <value>すべて展開</value>
+  </data>
+  <data name="ArchiveStructure_CollapseAll" xml:space="preserve">
+    <value>すべて折りたたむ</value>
+  </data>
+  <data name="ArchiveStructure_Files" xml:space="preserve">
+    <value>ファイル</value>
+  </data>
+  <data name="ArchiveStructure_Folders" xml:space="preserve">
+    <value>フォルダー</value>
+  </data>
+  <data name="ArchiveStructure_TotalSize" xml:space="preserve">
+    <value>合計サイズ:</value>
+  </data>
+  <data name="ArchiveStructure_CompressionRatio" xml:space="preserve">
+    <value>比率:</value>
+  </data>
+  <data name="ArchiveStructure_ExtractFunctionality" xml:space="preserve">
+    <value>展開機能 - アーカイブ ライブラリで実装予定</value>
+  </data>
+  <data name="ArchiveStructure_ExtractTitle" xml:space="preserve">
+    <value>展開</value>
+  </data>
+  <data name="ArchiveStructure_DetailsTitle" xml:space="preserve">
+    <value>詳細</value>
+  </data>
+  <data name="ArchiveStructure_DetailName" xml:space="preserve">
+    <value>名前:</value>
+  </data>
+  <data name="ArchiveStructure_DetailType" xml:space="preserve">
+    <value>種類:</value>
+  </data>
+  <data name="ArchiveStructure_DetailFolder" xml:space="preserve">
+    <value>フォルダー</value>
+  </data>
+  <data name="ArchiveStructure_DetailFile" xml:space="preserve">
+    <value>ファイル</value>
+  </data>
+  <data name="ArchiveStructure_DetailCompressed" xml:space="preserve">
+    <value>圧縮済み:</value>
+  </data>
+  <data name="ArchiveStructure_DetailCRC" xml:space="preserve">
+    <value>CRC:</value>
+  </data>
+  <data name="ArchiveStructure_DetailMethod" xml:space="preserve">
+    <value>方法:</value>
+  </data>
+  <data name="FileComparison_Title" xml:space="preserve">
+    <value>ファイル比較</value>
+  </data>
+  <data name="FileComparison_SelectFiles" xml:space="preserve">
+    <value>比較するファイルを選択</value>
+  </data>
+  <data name="FileComparison_LoadFile1" xml:space="preserve">
+    <value>ファイル 1 を読み込む...</value>
+  </data>
+  <data name="FileComparison_LoadFile2" xml:space="preserve">
+    <value>ファイル 2 を読み込む...</value>
+  </data>
+  <data name="FileComparison_File1" xml:space="preserve">
+    <value>ファイル 1</value>
+  </data>
+  <data name="FileComparison_File2" xml:space="preserve">
+    <value>ファイル 2</value>
+  </data>
+  <data name="FileComparison_Matching" xml:space="preserve">
+    <value>一致:</value>
+  </data>
+  <data name="FileComparison_Added" xml:space="preserve">
+    <value>追加:</value>
+  </data>
+  <data name="FileComparison_Modified" xml:space="preserve">
+    <value>変更:</value>
+  </data>
+  <data name="FileComparison_Removed" xml:space="preserve">
+    <value>削除:</value>
+  </data>
+  <data name="FileComparison_SelectFile1" xml:space="preserve">
+    <value>比較するファイル 1 を選択</value>
+  </data>
+  <data name="FileComparison_SelectFile2" xml:space="preserve">
+    <value>比較するファイル 2 を選択</value>
+  </data>
+  <data name="FileComparison_AllFiles" xml:space="preserve">
+    <value>すべてのファイル (*.*)|*.*</value>
+  </data>
+  <data name="FileComparison_ErrorLoading" xml:space="preserve">
+    <value>ファイルの読み込みエラー: {0}</value>
+  </data>
+  <data name="FileComparison_Error" xml:space="preserve">
+    <value>エラー</value>
+  </data>
+  <data name="FileComparison_SelectBothFiles" xml:space="preserve">
+    <value>比較する両方のファイルを選択</value>
+  </data>
+  <data name="FileComparison_Comparing" xml:space="preserve">
+    <value>{0} と {1} を比較中</value>
+  </data>
+  <data name="CustomTemplate_Title" xml:space="preserve">
+    <value>テンプレート</value>
+  </data>
+  <data name="CustomTemplate_NewTemplate" xml:space="preserve">
+    <value>新しいテンプレート</value>
+  </data>
+  <data name="CustomTemplate_DeleteTemplate" xml:space="preserve">
+    <value>テンプレートを削除</value>
+  </data>
+  <data name="CustomTemplate_EditorTitle" xml:space="preserve">
+    <value>テンプレート エディター</value>
+  </data>
+  <data name="CustomTemplate_Name" xml:space="preserve">
+    <value>名前:</value>
+  </data>
+  <data name="CustomTemplate_Description" xml:space="preserve">
+    <value>説明:</value>
+  </data>
+  <data name="CustomTemplate_Extensions" xml:space="preserve">
+    <value>拡張子:</value>
+  </data>
+  <data name="CustomTemplate_ExtensionsTooltip" xml:space="preserve">
+    <value>カンマ区切り、例: .bin,.dat</value>
+  </data>
+  <data name="CustomTemplate_SaveTemplate" xml:space="preserve">
+    <value>テンプレートを保存</value>
+  </data>
+  <data name="CustomTemplate_FormatBlocks" xml:space="preserve">
+    <value>形式ブロック</value>
+  </data>
+  <data name="CustomTemplate_AddBlock" xml:space="preserve">
+    <value>ブロックを追加</value>
+  </data>
+  <data name="CustomTemplate_RemoveBlock" xml:space="preserve">
+    <value>ブロックを削除</value>
+  </data>
+  <data name="CustomTemplate_ApplyToFile" xml:space="preserve">
+    <value>現在のファイルに適用</value>
+  </data>
+  <data name="CustomTemplate_ApplyDescription" xml:space="preserve">
+    <value>このテンプレートを適用して、Hex エディターに現在読み込まれているファイルを解析します。</value>
+  </data>
+  <data name="CustomTemplate_ApplyButton" xml:space="preserve">
+    <value>テンプレートをファイルに適用</value>
+  </data>
+  <data name="CustomTemplate_ExportImport" xml:space="preserve">
+    <value>エクスポート/インポート</value>
+  </data>
+  <data name="CustomTemplate_ExportJSON" xml:space="preserve">
+    <value>JSON にエクスポート</value>
+  </data>
+  <data name="CustomTemplate_ImportJSON" xml:space="preserve">
+    <value>JSON からインポート</value>
+  </data>
+  <data name="CustomTemplate_NoTemplateSelected" xml:space="preserve">
+    <value>保存するテンプレートが選択されていません。</value>
+  </data>
+  <data name="CustomTemplate_SavedSuccessfully" xml:space="preserve">
+    <value>テンプレート '{0}' を保存しました!</value>
+  </data>
+  <data name="CustomTemplate_ErrorSaving" xml:space="preserve">
+    <value>テンプレートの保存エラー: {0}</value>
+  </data>
+  <data name="CustomTemplate_SelectOrCreate" xml:space="preserve">
+    <value>最初にテンプレートを選択または作成してください。</value>
+  </data>
+  <data name="CustomTemplate_AddBlockTitle" xml:space="preserve">
+    <value>ブロックを追加</value>
+  </data>
+  <data name="CustomTemplate_DeleteConfirm" xml:space="preserve">
+    <value>テンプレート '{0}' を削除しますか?</value>
+  </data>
+  <data name="CustomTemplate_ConfirmDelete" xml:space="preserve">
+    <value>削除を確認</value>
+  </data>
+  <data name="CustomTemplate_ErrorDeleting" xml:space="preserve">
+    <value>ファイルの削除エラー: {0}</value>
+  </data>
+  <data name="CustomTemplate_DeleteError" xml:space="preserve">
+    <value>削除エラー</value>
+  </data>
+  <data name="CustomTemplate_ApplyingTemplate" xml:space="preserve">
+    <value>テンプレート '{0}' を現在のファイルに適用します。
+
+テンプレート定義に従って {1} ブロックを解析します。
+
+注: HexEditor との完全な統合には、メイン ビュー モデルへの接続が必要です。</value>
+  </data>
+  <data name="CustomTemplate_ApplyTitle" xml:space="preserve">
+    <value>テンプレートを適用</value>
+  </data>
+  <data name="CustomTemplate_NoTemplateToApply" xml:space="preserve">
+    <value>適用するテンプレートが選択されていません。</value>
+  </data>
+  <data name="CustomTemplate_ExportTitle" xml:space="preserve">
+    <value>テンプレートを JSON としてエクスポート</value>
+  </data>
+  <data name="CustomTemplate_JSONFiles" xml:space="preserve">
+    <value>JSON ファイル (*.json)|*.json</value>
+  </data>
+  <data name="CustomTemplate_ExportedTo" xml:space="preserve">
+    <value>テンプレートをエクスポートしました:
+{0}</value>
+  </data>
+  <data name="CustomTemplate_ExportSuccess" xml:space="preserve">
+    <value>エクスポート成功</value>
+  </data>
+  <data name="CustomTemplate_ErrorExporting" xml:space="preserve">
+    <value>テンプレートのエクスポートエラー: {0}</value>
+  </data>
+  <data name="CustomTemplate_ExportError" xml:space="preserve">
+    <value>エクスポートエラー</value>
+  </data>
+  <data name="CustomTemplate_ImportTitle" xml:space="preserve">
+    <value>JSON からテンプレートをインポート</value>
+  </data>
+  <data name="CustomTemplate_ImportedSuccessfully" xml:space="preserve">
+    <value>テンプレート '{0}' をインポートしました!</value>
+  </data>
+  <data name="CustomTemplate_ImportSuccess" xml:space="preserve">
+    <value>インポート成功</value>
+  </data>
+  <data name="CustomTemplate_ErrorImporting" xml:space="preserve">
+    <value>テンプレートのインポートエラー: {0}</value>
+  </data>
+  <data name="CustomTemplate_ImportError" xml:space="preserve">
+    <value>インポートエラー</value>
+  </data>
+  <data name="CustomTemplate_ColumnName" xml:space="preserve">
+    <value>名前</value>
+  </data>
+  <data name="CustomTemplate_ColumnOffset" xml:space="preserve">
+    <value>オフセット</value>
+  </data>
+  <data name="CustomTemplate_ColumnLength" xml:space="preserve">
+    <value>長さ</value>
+  </data>
+  <data name="CustomTemplate_ColumnType" xml:space="preserve">
+    <value>種類</value>
+  </data>
+  <data name="CustomTemplate_ColumnColor" xml:space="preserve">
+    <value>色</value>
+  </data>
+  <data name="CustomTemplate_ColumnDescription" xml:space="preserve">
+    <value>説明</value>
+  </data>
+  <data name="ByteTooltip_NoData" xml:space="preserve">
+    <value>データなし</value>
+  </data>
+  <data name="ByteTooltip_Signed" xml:space="preserve">
+    <value>符号付き</value>
+  </data>
+  <data name="ByteTooltip_Binary" xml:space="preserve">
+    <value>バイナリ</value>
+  </data>
+  <data name="ByteTooltip_ASCII" xml:space="preserve">
+    <value>ASCII</value>
+  </data>
+  <data name="ByteTooltip_NonPrintable" xml:space="preserve">
+    <value>(印刷不可)</value>
+  </data>
+  <data name="ByteTooltip_Octal" xml:space="preserve">
+    <value>8進数</value>
+  </data>
+  <data name="StatusText_OperationCancelled" xml:space="preserve">
+    <value>操作がキャンセルされました</value>
+  </data>
+  <data name="StatusText_FileAlreadyExists" xml:space="preserve">
+    <value>ファイルはすでに存在します</value>
+  </data>
+  <data name="StatusText_Ready" xml:space="preserve">
+    <value>準備完了</value>
+  </data>
+  <data name="StatusText_FileSaved" xml:space="preserve">
+    <value>ファイルを保存しました</value>
+  </data>
+  <data name="StatusText_SearchMarkersCleared" xml:space="preserve">
+    <value>検索マーカーがクリアされました。</value>
+  </data>
+  <data name="StatusText_AllChangesCleared" xml:space="preserve">
+    <value>すべての変更がクリアされました</value>
+  </data>
+  <data name="StatusText_TblClosedAscii" xml:space="preserve">
+    <value>TBL を閉じました。ASCII を使用します</value>
+  </data>
+  <data name="StatusText_NoSelectionToReverse" xml:space="preserve">
+    <value>反転する選択範囲がありません</value>
+  </data>
+  <data name="StatusText_SelectionIsEmpty" xml:space="preserve">
+    <value>選択範囲が空です</value>
+  </data>
+  <data name="StatusText_NoSelectionToInvert" xml:space="preserve">
+    <value>反転する選択範囲がありません</value>
+  </data>
+  <data name="StatusText_NoSelectionToFind" xml:space="preserve">
+    <value>検索する選択範囲がありません</value>
+  </data>
+  <data name="StatusText_NoMatchesFound" xml:space="preserve">
+    <value>一致するものが見つかりませんでした。</value>
+  </data>
+  <data name="StatusBar_SizeEmpty" xml:space="preserve">
+    <value>サイズ: -</value>
+  </data>
+  <data name="StatusBar_NoSelection" xml:space="preserve">
+    <value>選択なし</value>
+  </data>
+  <data name="StatusBar_PositionZero" xml:space="preserve">
+    <value>位置: 0</value>
+  </data>
+  <data name="StatusBar_ModeOverwrite" xml:space="preserve">
+    <value>モード: 上書き</value>
+  </data>
+  <data name="StatusBar_BytesPerLine" xml:space="preserve">
+    <value>バイト/行: 16</value>
+  </data>
+  <data name="Search_NoMatches" xml:space="preserve">
+    <value>一致なし</value>
+  </data>
+  <data name="Search_Error_Title" xml:space="preserve">
+    <value>検索エラー</value>
+  </data>
+  <data name="Search_Error_Label" xml:space="preserve">
+    <value>エラー</value>
+  </data>
+  <data name="Search_Error_NoTBLLoaded" xml:space="preserve">
+    <value>TBL が読み込まれていません。TBL テキストを検索できません。</value>
+  </data>
+  <data name="Search_Error_TBLRequired" xml:space="preserve">
+    <value>TBL が必要です</value>
+  </data>
+  <data name="Search_Error_NoTBLForReplacement" xml:space="preserve">
+    <value>TBL が読み込まれていません。TBL TEXT モードで置換バイトをエンコードできません。</value>
+  </data>
+  <data name="Search_Replace_Title" xml:space="preserve">
+    <value>置換エラー</value>
+  </data>
+  <data name="Search_ReplaceAll_Title" xml:space="preserve">
+    <value>すべて置換</value>
+  </data>
+  <data name="Search_ExportDialog_Filter" xml:space="preserve">
+    <value>CSV ファイル (*.csv)|*.csv|テキスト ファイル (*.txt)|*.txt|JSON ファイル (*.json)|*.json</value>
+  </data>
+  <data name="Search_ExportTBL_Title" xml:space="preserve">
+    <value>TBL ファイルをエクスポート</value>
+  </data>
+  <data name="Search_TBLFileDialog_Filter" xml:space="preserve">
+    <value>TBL ファイル (*.tbl)|*.tbl|すべてのファイル (*.*)|*.*</value>
+  </data>
+  <data name="Search_ExportTBL_Success" xml:space="preserve">
+    <value>エクスポート成功</value>
+  </data>
+  <data name="Search_ExportTBL_Error" xml:space="preserve">
+    <value>エクスポートエラー</value>
+  </data>
+  <data name="Search_EncodingApplied_Title" xml:space="preserve">
+    <value>エンコードが適用されました</value>
+  </data>
+  <data name="Search_EncodingApplied_Message" xml:space="preserve">
+    <value>エンコードが適用されました。TBL TEXT モードを使用できます。</value>
+  </data>
+  <data name="Search_LoadTBL_Title" xml:space="preserve">
+    <value>TBL (文字テーブル) ファイルを選択</value>
+  </data>
+  <data name="Search_TBLLoaded_Title" xml:space="preserve">
+    <value>TBL を読み込みました</value>
+  </data>
+  <data name="Search_ErrorLoadingTBL_Title" xml:space="preserve">
+    <value>TBL の読み込みエラー</value>
+  </data>
+  <data name="Search_CloseTBL_Title" xml:space="preserve">
+    <value>TBL を閉じる</value>
+  </data>
+  <data name="IPS_Error_NoFileOpen" xml:space="preserve">
+    <value>パッチを適用する前に、ROM ファイルを開いてください。</value>
+  </data>
+  <data name="IPS_Error_NoFileOpen_Title" xml:space="preserve">
+    <value>ファイルが開かれていません</value>
+  </data>
+  <data name="IPS_ApplyPatch_Title" xml:space="preserve">
+    <value>IPS パッチ ファイルを選択</value>
+  </data>
+  <data name="IPS_FileDialog_Filter" xml:space="preserve">
+    <value>IPS パッチ ファイル (*.ips)|*.ips|すべてのファイル (*.*)|*.*</value>
+  </data>
+  <data name="IPS_Error_InvalidFile" xml:space="preserve">
+    <value>選択したファイルは有効な IPS パッチではありません。</value>
+  </data>
+  <data name="IPS_Error_InvalidFile_Title" xml:space="preserve">
+    <value>無効な IPS ファイル</value>
+  </data>
+  <data name="IPS_ApplyPatch_Confirm_Title" xml:space="preserve">
+    <value>IPS パッチを適用</value>
+  </data>
+  <data name="IPS_ApplyPatch_SaveReminder" xml:space="preserve">
+    <value>ファイルを保存することを忘れないでください!</value>
+  </data>
+  <data name="IPS_ApplyPatch_Success_Title" xml:space="preserve">
+    <value>パッチが適用されました</value>
+  </data>
+  <data name="IPS_ApplyPatch_Error_Title" xml:space="preserve">
+    <value>パッチが失敗しました</value>
+  </data>
+  <data name="IPS_CreatePatch_NoFileOpen" xml:space="preserve">
+    <value>最初に変更済みの ROM ファイルを開いてください。</value>
+  </data>
+  <data name="IPS_CreatePatch_SelectOriginal_Title" xml:space="preserve">
+    <value>元の (未変更の) ROM ファイルを選択</value>
+  </data>
+  <data name="IPS_ROMFileDialog_Filter" xml:space="preserve">
+    <value>ROM ファイル|*.nes;*.smc;*.sfc;*.gb;*.gbc;*.gba;*.n64;*.z64;*.md;*.bin;*.gen|すべてのファイル (*.*)|*.*</value>
+  </data>
+  <data name="IPS_CreatePatch_SaveDialog_Title" xml:space="preserve">
+    <value>IPS パッチに名前を付けて保存</value>
+  </data>
+  <data name="IPS_CreatePatch_Success_Title" xml:space="preserve">
+    <value>パッチが作成されました</value>
+  </data>
+  <data name="UndoHistory_Undo" xml:space="preserve">
+    <value>元に戻す</value>
+  </data>
+  <data name="UndoHistory_Redo" xml:space="preserve">
+    <value>やり直す</value>
+  </data>
+  <data name="UndoHistory_Action" xml:space="preserve">
+    <value>アクション</value>
+  </data>
+  <data name="UndoHistory_Actions" xml:space="preserve">
+    <value>アクション</value>
+  </data>
+  <data name="DynSettings_Title" xml:space="preserve">
+    <value>Hex エディターの設定</value>
+  </data>
+  <data name="DynSettings_SaveState" xml:space="preserve">
+    <value>状態を保存</value>
+  </data>
+  <data name="DynSettings_LoadState" xml:space="preserve">
+    <value>状態を読み込む</value>
+  </data>
+  <data name="DynSettings_ResetDefaults" xml:space="preserve">
+    <value>既定値にリセット</value>
+  </data>
+  <data name="UndoRedo_NothingToUndo" xml:space="preserve">
+    <value>元に戻す操作がありません</value>
+  </data>
+  <data name="UndoRedo_NothingToRedo" xml:space="preserve">
+    <value>やり直す操作がありません</value>
+  </data>
 </root>

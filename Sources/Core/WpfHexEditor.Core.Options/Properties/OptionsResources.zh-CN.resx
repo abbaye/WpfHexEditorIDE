@@ -165,4 +165,490 @@
   <data name="Opt_Page_FormatExplorer" xml:space="preserve"><value>格式资源管理器</value></data>
   <data name="Opt_Page_CompareFiles" xml:space="preserve"><value>比较文件</value></data>
   <data name="Opt_Page_CommandPalette" xml:space="preserve"><value>命令面板</value></data>
+  <data name="BuildCompiler_CSharpSection" xml:space="preserve">
+    <value>C# / .NET 默认值</value>
+  </data>
+  <data name="BuildCompiler_NullableCheck" xml:space="preserve">
+    <value>将 nullable 警告视为错误 (C# 8+)</value>
+  </data>
+  <data name="BuildCompiler_ImplicitUsings" xml:space="preserve">
+    <value>启用隐式 using (C# 10+)</value>
+  </data>
+  <data name="BuildCompiler_GenerateDocs" xml:space="preserve">
+    <value>生成 XML 文档文件</value>
+  </data>
+  <data name="BuildCompiler_WarningsSection" xml:space="preserve">
+    <value>警告</value>
+  </data>
+  <data name="BuildCompiler_WarnLevelLabel" xml:space="preserve">
+    <value>默认警告级别 (0–9):</value>
+  </data>
+  <data name="BuildRun_GeneralSection" xml:space="preserve">
+    <value>常规</value>
+  </data>
+  <data name="BuildRun_SaveBeforeBuild" xml:space="preserve">
+    <value>生成前保存所有更改</value>
+  </data>
+  <data name="BuildRun_VerbosityLabel" xml:space="preserve">
+    <value>生成输出详细程度:</value>
+  </data>
+  <data name="BuildRun_VerbQuiet" xml:space="preserve">
+    <value>安静</value>
+  </data>
+  <data name="BuildRun_VerbMinimal" xml:space="preserve">
+    <value>最少</value>
+  </data>
+  <data name="BuildRun_VerbNormal" xml:space="preserve">
+    <value>普通</value>
+  </data>
+  <data name="BuildRun_VerbDetailed" xml:space="preserve">
+    <value>详细</value>
+  </data>
+  <data name="BuildRun_VerbDiagnostic" xml:space="preserve">
+    <value>诊断</value>
+  </data>
+  <data name="BuildRun_RunInProcess" xml:space="preserve">
+    <value>在进程内运行 MSBuild（更快，推荐）</value>
+  </data>
+  <data name="BuildRun_MaxParallelLabel" xml:space="preserve">
+    <value>最大并行项目生成数:</value>
+  </data>
+  <data name="BuildRun_OutputSection" xml:space="preserve">
+    <value>输出窗口</value>
+  </data>
+  <data name="BuildRun_ShowOnStart" xml:space="preserve">
+    <value>生成开始时显示输出窗口</value>
+  </data>
+  <data name="BuildRun_ShowOnError" xml:space="preserve">
+    <value>生成错误时显示输出窗口</value>
+  </data>
+  <data name="BuildRun_RunSection" xml:space="preserve">
+    <value>运行</value>
+  </data>
+  <data name="BuildRun_OnRunBuildErrorLabel" xml:space="preserve">
+    <value>运行时，发生生成错误时:</value>
+  </data>
+  <data name="BuildRun_DoNotLaunch" xml:space="preserve">
+    <value>不启动</value>
+  </data>
+  <data name="BuildRun_Launch" xml:space="preserve">
+    <value>启动</value>
+  </data>
+  <data name="BuildRun_ShowOutputOnRun" xml:space="preserve">
+    <value>运行开始时显示输出窗口</value>
+  </data>
+  <data name="CodeInlineHints_Section" xml:space="preserve">
+    <value>内联提示</value>
+  </data>
+  <data name="CodeInlineHints_EnableHints" xml:space="preserve">
+    <value>启用内联提示（在声明上方显示内联引用计数）</value>
+  </data>
+  <data name="CodeInlineHints_SourceLabel" xml:space="preserve">
+    <value>引用来源:</value>
+  </data>
+  <data name="CodeInlineHints_SourceAuto" xml:space="preserve">
+    <value>自动（可用时使用 Roslyn，否则用 regex）</value>
+  </data>
+  <data name="CodeInlineHints_SourceRoslyn" xml:space="preserve">
+    <value>仅 Roslyn (C# / VB.NET)</value>
+  </data>
+  <data name="CodeInlineHints_SourceRegex" xml:space="preserve">
+    <value>始终使用 Regex</value>
+  </data>
+  <data name="CodeInlineHints_RoslynSection" xml:space="preserve">
+    <value>ROSLYN 语义提示 (C# / VB.NET)</value>
+  </data>
+  <data name="CodeInlineHints_RoslynNote" xml:space="preserve">
+    <value>当 Roslyn 是活动语言客户端时，内联显示推断类型和返回类型。</value>
+  </data>
+  <data name="CodeInlineHints_ShowVarType" xml:space="preserve">
+    <value>显示 var 声明的推断类型（例如 var x = … → : List&amp;lt;int&amp;gt;）</value>
+  </data>
+  <data name="CodeInlineHints_ShowLambdaReturn" xml:space="preserve">
+    <value>显示 lambda 表达式的返回类型（例如 x =&amp;gt; x * 2 → int）</value>
+  </data>
+  <data name="CodeInlineHints_KindsSection" xml:space="preserve">
+    <value>为符号种类显示提示:</value>
+  </data>
+  <data name="CodeInlineHints_KindsNote" xml:space="preserve">
+    <value>取消选中某种类型可隐藏其引用计数提示，同时其他种类的内联提示保持活动状态。</value>
+  </data>
+  <data name="CodeInlineHints_TypesGroup" xml:space="preserve">
+    <value>类型</value>
+  </data>
+  <data name="CodeInlineHints_Class" xml:space="preserve">
+    <value>类</value>
+  </data>
+  <data name="CodeInlineHints_Interface" xml:space="preserve">
+    <value>接口</value>
+  </data>
+  <data name="CodeInlineHints_Struct" xml:space="preserve">
+    <value>结构</value>
+  </data>
+  <data name="CodeInlineHints_Enum" xml:space="preserve">
+    <value>枚举</value>
+  </data>
+  <data name="CodeInlineHints_Record" xml:space="preserve">
+    <value>记录</value>
+  </data>
+  <data name="CodeInlineHints_Delegate" xml:space="preserve">
+    <value>委托</value>
+  </data>
+  <data name="CodeInlineHints_MembersGroup" xml:space="preserve">
+    <value>成员</value>
+  </data>
+  <data name="CodeInlineHints_Method" xml:space="preserve">
+    <value>方法</value>
+  </data>
+  <data name="CodeInlineHints_Constructor" xml:space="preserve">
+    <value>构造函数</value>
+  </data>
+  <data name="CodeInlineHints_Property" xml:space="preserve">
+    <value>属性</value>
+  </data>
+  <data name="CodeInlineHints_Field" xml:space="preserve">
+    <value>字段</value>
+  </data>
+  <data name="CodeInlineHints_Event" xml:space="preserve">
+    <value>事件</value>
+  </data>
+  <data name="CodeInlineHints_OtherGroup" xml:space="preserve">
+    <value>其他</value>
+  </data>
+  <data name="CodeInlineHints_LocalVar" xml:space="preserve">
+    <value>局部变量</value>
+  </data>
+  <data name="CodeInlineHints_Parameter" xml:space="preserve">
+    <value>参数</value>
+  </data>
+  <data name="CodeInlineHints_TypeParam" xml:space="preserve">
+    <value>类型参数</value>
+  </data>
+  <data name="CodeInlineHints_Namespace" xml:space="preserve">
+    <value>命名空间</value>
+  </data>
+  <data name="CodeInlineHints_SelectAll" xml:space="preserve">
+    <value>全选</value>
+  </data>
+  <data name="CodeInlineHints_ClearAll" xml:space="preserve">
+    <value>全部清除</value>
+  </data>
+  <data name="CodeOpt_FontSection" xml:space="preserve">
+    <value>字体</value>
+  </data>
+  <data name="CodeOpt_FontFamilyLabel" xml:space="preserve">
+    <value>字体系列:</value>
+  </data>
+  <data name="CodeOpt_FontSizeLabel" xml:space="preserve">
+    <value>字体大小 (pt):</value>
+  </data>
+  <data name="CodeOpt_IndentSection" xml:space="preserve">
+    <value>缩进</value>
+  </data>
+  <data name="CodeOpt_IndentSizeLabel" xml:space="preserve">
+    <value>缩进大小:</value>
+  </data>
+  <data name="CodeOpt_UseSpaces" xml:space="preserve">
+    <value>插入空格而非制表符</value>
+  </data>
+  <data name="CodeOpt_FeaturesSection" xml:space="preserve">
+    <value>功能</value>
+  </data>
+  <data name="CodeOpt_ShowLineNumbers" xml:space="preserve">
+    <value>显示行号</value>
+  </data>
+  <data name="CodeOpt_HighlightCurrentLine" xml:space="preserve">
+    <value>突出显示当前行</value>
+  </data>
+  <data name="CodeOpt_CtrlClickLinks" xml:space="preserve">
+    <value>启用 Ctrl+单击以导航到定义/打开链接</value>
+  </data>
+  <data name="CodeOpt_DefaultZoomLabel" xml:space="preserve">
+    <value>默认缩放 (%):</value>
+  </data>
+  <data name="CodeOpt_MouseWheelLabel" xml:space="preserve">
+    <value>鼠标滚轮速度:</value>
+  </data>
+  <data name="CodeOpt_ChangesetSection" xml:space="preserve">
+    <value>变更集 (.WHCHG)</value>
+  </data>
+  <data name="CodeOpt_TrackEdits" xml:space="preserve">
+    <value>在 .whchg 伴随文件中跟踪编辑（需要跟踪保存模式）</value>
+  </data>
+  <data name="CodeOpt_SyntaxSection" xml:space="preserve">
+    <value>语法颜色替代</value>
+  </data>
+  <data name="CodeOpt_SyntaxNote" xml:space="preserve">
+    <value>启用颜色以覆盖活动主题的默认值。</value>
+  </data>
+  <data name="CodeOpt_Background" xml:space="preserve">
+    <value>背景:</value>
+  </data>
+  <data name="CodeOpt_Foreground" xml:space="preserve">
+    <value>前景:</value>
+  </data>
+  <data name="CodeOpt_Keyword" xml:space="preserve">
+    <value>关键字:</value>
+  </data>
+  <data name="CodeOpt_String" xml:space="preserve">
+    <value>字符串:</value>
+  </data>
+  <data name="CodeOpt_Comment" xml:space="preserve">
+    <value>注释:</value>
+  </data>
+  <data name="CodeOpt_Number" xml:space="preserve">
+    <value>数字:</value>
+  </data>
+  <data name="CodeOpt_Type" xml:space="preserve">
+    <value>类型:</value>
+  </data>
+  <data name="CodeOpt_Preprocessor" xml:space="preserve">
+    <value>预处理器:</value>
+  </data>
+  <data name="CodeOpt_Operator" xml:space="preserve">
+    <value>运算符:</value>
+  </data>
+  <data name="CodeOpt_Identifier" xml:space="preserve">
+    <value>标识符:</value>
+  </data>
+  <data name="CodeOpt_ResetColors" xml:space="preserve">
+    <value>重置为主题默认值</value>
+  </data>
+  <data name="EnvSave_SaveModeSection" xml:space="preserve">
+    <value>保存模式</value>
+  </data>
+  <data name="EnvSave_DirectMode" xml:space="preserve">
+    <value>直接模式</value>
+  </data>
+  <data name="EnvSave_TrackedMode" xml:space="preserve">
+    <value>跟踪模式</value>
+  </data>
+  <data name="EnvSave_AutoSaveSection" xml:space="preserve">
+    <value>自动保存</value>
+  </data>
+  <data name="EnvSave_AutoSerialize" xml:space="preserve">
+    <value>启用自动保存</value>
+  </data>
+  <data name="EnvSave_IntervalLabel" xml:space="preserve">
+    <value>间隔（秒）</value>
+  </data>
+  <data name="EnvSave_StandaloneSection" xml:space="preserve">
+    <value>独立模式</value>
+  </data>
+  <data name="EnvSave_StandaloneNote" xml:space="preserve">
+    <value>在独立模式下，每个编辑器控制如何保存。</value>
+  </data>
+  <data name="EnvSave_HexEditorDirect" xml:space="preserve">
+    <value>Hex 编辑器：直接模式</value>
+  </data>
+  <data name="EnvSave_CodeEditorDirect" xml:space="preserve">
+    <value>代码编辑器：直接模式</value>
+  </data>
+  <data name="EnvSave_TextEditorDirect" xml:space="preserve">
+    <value>文本编辑器：直接模式</value>
+  </data>
+  <data name="EnvSave_TblEditorDirect" xml:space="preserve">
+    <value>TBL 编辑器：直接模式</value>
+  </data>
+  <data name="EnvSave_ImageViewerDirect" xml:space="preserve">
+    <value>图像查看器：直接模式</value>
+  </data>
+  <data name="EnvSave_SaveAsNote" xml:space="preserve">
+    <value>"另存为"需要选择新路径。</value>
+  </data>
+  <data name="HexBehavior_Section" xml:space="preserve">
+    <value>Hex 编辑器行为</value>
+  </data>
+  <data name="HexBehavior_AllowAutoHighLight" xml:space="preserve">
+    <value>启用自动高亮</value>
+  </data>
+  <data name="HexBehavior_AllowAutoSelectDoubleClick" xml:space="preserve">
+    <value>双击自动选择</value>
+  </data>
+  <data name="HexBehavior_AllowContextMenu" xml:space="preserve">
+    <value>启用右键菜单</value>
+  </data>
+  <data name="HexBehavior_AllowDeleteByte" xml:space="preserve">
+    <value>允许删除字节</value>
+  </data>
+  <data name="HexBehavior_AllowExtend" xml:space="preserve">
+    <value>允许扩展</value>
+  </data>
+  <data name="HexBehavior_FileDroppingConfirmation" xml:space="preserve">
+    <value>文件拖放确认</value>
+  </data>
+  <data name="HexBehavior_PreloadModeLabel" xml:space="preserve">
+    <value>预加载模式</value>
+  </data>
+  <data name="HexDisplay_DisplaySection" xml:space="preserve">
+    <value>显示设置</value>
+  </data>
+  <data name="HexDisplay_BytesPerLineLabel" xml:space="preserve">
+    <value>每行字节数</value>
+  </data>
+  <data name="HexDisplay_ShowOffset" xml:space="preserve">
+    <value>显示偏移</value>
+  </data>
+  <data name="HexDisplay_ShowAscii" xml:space="preserve">
+    <value>显示 ASCII 列</value>
+  </data>
+  <data name="HexDisplay_MouseWheelLabel" xml:space="preserve">
+    <value>鼠标滚轮</value>
+  </data>
+  <data name="HexDisplay_ByteTooltipLabel" xml:space="preserve">
+    <value>字节提示</value>
+  </data>
+  <data name="HexDisplay_FormatSection" xml:space="preserve">
+    <value>格式</value>
+  </data>
+  <data name="HexDisplay_ValueFormatLabel" xml:space="preserve">
+    <value>值格式</value>
+  </data>
+  <data name="HexDisplay_OffsetFormatLabel" xml:space="preserve">
+    <value>偏移格式</value>
+  </data>
+  <data name="HexDisplay_ByteGroupingLabel" xml:space="preserve">
+    <value>字节分组</value>
+  </data>
+  <data name="HexDisplay_SpacerPositionLabel" xml:space="preserve">
+    <value>分隔符位置</value>
+  </data>
+  <data name="HexDisplay_ScrollMarkersSection" xml:space="preserve">
+    <value>滚动标记</value>
+  </data>
+  <data name="HexDisplay_ShowBookmarkMarkers" xml:space="preserve">
+    <value>显示书签标记</value>
+  </data>
+  <data name="HexDisplay_ShowModifiedMarkers" xml:space="preserve">
+    <value>显示修改标记</value>
+  </data>
+  <data name="HexDisplay_ShowInsertedMarkers" xml:space="preserve">
+    <value>显示插入标记</value>
+  </data>
+  <data name="HexDisplay_ShowDeletedMarkers" xml:space="preserve">
+    <value>显示删除标记</value>
+  </data>
+  <data name="HexDisplay_ShowSearchResultMarkers" xml:space="preserve">
+    <value>显示搜索结果标记</value>
+  </data>
+  <data name="HexDisplay_ColumnRowSection" xml:space="preserve">
+    <value>列和行高亮</value>
+  </data>
+  <data name="HexDisplay_ShowColumnHighlight" xml:space="preserve">
+    <value>显示列高亮</value>
+  </data>
+  <data name="HexDisplay_ShowAsciiColumnHighlight" xml:space="preserve">
+    <value>显示 ASCII 列高亮</value>
+  </data>
+  <data name="HexDisplay_ShowRowHighlight" xml:space="preserve">
+    <value>显示行高亮</value>
+  </data>
+  <data name="HexEdit_EditingSection" xml:space="preserve">
+    <value>编辑设置</value>
+  </data>
+  <data name="HexEdit_DefaultEditModeLabel" xml:space="preserve">
+    <value>默认编辑模式</value>
+  </data>
+  <data name="HexEdit_MouseWheelLabel" xml:space="preserve">
+    <value>鼠标滚轮</value>
+  </data>
+  <data name="HexEdit_AllowZoom" xml:space="preserve">
+    <value>允许缩放</value>
+  </data>
+  <data name="HexEdit_AllowFileDrop" xml:space="preserve">
+    <value>允许文件拖放</value>
+  </data>
+  <data name="HexEdit_DataSection" xml:space="preserve">
+    <value>数据设置</value>
+  </data>
+  <data name="HexEdit_ByteSizeLabel" xml:space="preserve">
+    <value>字节大小</value>
+  </data>
+  <data name="HexEdit_ByteOrderLabel" xml:space="preserve">
+    <value>字节顺序</value>
+  </data>
+  <data name="HexEdit_DefaultCopyFormatLabel" xml:space="preserve">
+    <value>默认复制格式</value>
+  </data>
+  <data name="HexEdit_SpacerVisualLabel" xml:space="preserve">
+    <value>分隔符外观</value>
+  </data>
+  <data name="HexStatus_Section" xml:space="preserve">
+    <value>状态栏</value>
+  </data>
+  <data name="HexStatus_ShowStatusMessage" xml:space="preserve">
+    <value>显示状态消息</value>
+  </data>
+  <data name="HexStatus_ShowFileSize" xml:space="preserve">
+    <value>显示文件大小</value>
+  </data>
+  <data name="HexStatus_ShowSelection" xml:space="preserve">
+    <value>显示选择</value>
+  </data>
+  <data name="HexStatus_ShowPosition" xml:space="preserve">
+    <value>显示位置</value>
+  </data>
+  <data name="HexStatus_ShowEditMode" xml:space="preserve">
+    <value>显示编辑模式</value>
+  </data>
+  <data name="HexStatus_ShowBytesPerLine" xml:space="preserve">
+    <value>显示每行字节数</value>
+  </data>
+  <data name="HexStatus_ShowRefreshRate" xml:space="preserve">
+    <value>显示刷新率</value>
+  </data>
+  <data name="Opt_Plugin_SelectExtDir" xml:space="preserve">
+    <value>选择扩展目录</value>
+  </data>
+  <data name="Opt_PluginDev_SelectOutputDir" xml:space="preserve">
+    <value>选择输出目录</value>
+  </data>
+  <data name="Opt_ViewMode_Tree" xml:space="preserve">
+    <value>树形视图</value>
+  </data>
+  <data name="Opt_ViewMode_Flat" xml:space="preserve">
+    <value>平铺视图</value>
+  </data>
+  <data name="Opt_Position_Right" xml:space="preserve">
+    <value>右</value>
+  </data>
+  <data name="Opt_Position_Left" xml:space="preserve">
+    <value>左</value>
+  </data>
+  <data name="Opt_Position_Bottom" xml:space="preserve">
+    <value>下</value>
+  </data>
+  <data name="Opt_Position_Top" xml:space="preserve">
+    <value>上</value>
+  </data>
+  <data name="Opt_Endian_Little" xml:space="preserve">
+    <value>小端</value>
+  </data>
+  <data name="Opt_Endian_Big" xml:space="preserve">
+    <value>大端</value>
+  </data>
+  <data name="Opt_IndentLevel_1" xml:space="preserve">
+    <value>级别 1</value>
+  </data>
+  <data name="Opt_IndentLevel_2" xml:space="preserve">
+    <value>级别 2</value>
+  </data>
+  <data name="Opt_IndentLevel_3" xml:space="preserve">
+    <value>级别 3</value>
+  </data>
+  <data name="Opt_MdLayout_PreviewRight" xml:space="preserve">
+    <value>右侧预览</value>
+  </data>
+  <data name="Opt_MdLayout_PreviewBottom" xml:space="preserve">
+    <value>下方预览</value>
+  </data>
+  <data name="Opt_MdLayout_EditorOnly" xml:space="preserve">
+    <value>仅编辑器</value>
+  </data>
+  <data name="Opt_MdLayout_PreviewOnly" xml:space="preserve">
+    <value>仅预览</value>
+  </data>
+  <data name="Opt_Preview_Label" xml:space="preserve">
+    <value>预览</value>
+  </data>
 </root>

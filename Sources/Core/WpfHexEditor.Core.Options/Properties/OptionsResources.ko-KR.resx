@@ -165,4 +165,490 @@
   <data name="Opt_Page_FormatExplorer" xml:space="preserve"><value>형식 탐색기</value></data>
   <data name="Opt_Page_CompareFiles" xml:space="preserve"><value>파일 비교</value></data>
   <data name="Opt_Page_CommandPalette" xml:space="preserve"><value>명령 팔레트</value></data>
+  <data name="BuildCompiler_CSharpSection" xml:space="preserve">
+    <value>C# / .NET 기본값</value>
+  </data>
+  <data name="BuildCompiler_NullableCheck" xml:space="preserve">
+    <value>nullable 경고를 오류로 처리 (C# 8+)</value>
+  </data>
+  <data name="BuildCompiler_ImplicitUsings" xml:space="preserve">
+    <value>암시적 using 사용 (C# 10+)</value>
+  </data>
+  <data name="BuildCompiler_GenerateDocs" xml:space="preserve">
+    <value>XML 문서 파일 생성</value>
+  </data>
+  <data name="BuildCompiler_WarningsSection" xml:space="preserve">
+    <value>경고</value>
+  </data>
+  <data name="BuildCompiler_WarnLevelLabel" xml:space="preserve">
+    <value>기본 경고 수준 (0–9):</value>
+  </data>
+  <data name="BuildRun_GeneralSection" xml:space="preserve">
+    <value>일반</value>
+  </data>
+  <data name="BuildRun_SaveBeforeBuild" xml:space="preserve">
+    <value>빌드 전에 모든 변경 사항 저장</value>
+  </data>
+  <data name="BuildRun_VerbosityLabel" xml:space="preserve">
+    <value>빌드 출력 자세히:</value>
+  </data>
+  <data name="BuildRun_VerbQuiet" xml:space="preserve">
+    <value>조용히</value>
+  </data>
+  <data name="BuildRun_VerbMinimal" xml:space="preserve">
+    <value>최소</value>
+  </data>
+  <data name="BuildRun_VerbNormal" xml:space="preserve">
+    <value>보통</value>
+  </data>
+  <data name="BuildRun_VerbDetailed" xml:space="preserve">
+    <value>자세히</value>
+  </data>
+  <data name="BuildRun_VerbDiagnostic" xml:space="preserve">
+    <value>진단</value>
+  </data>
+  <data name="BuildRun_RunInProcess" xml:space="preserve">
+    <value>MSBuild를 인프로세스로 실행(더 빠름, 권장)</value>
+  </data>
+  <data name="BuildRun_MaxParallelLabel" xml:space="preserve">
+    <value>최대 병렬 프로젝트 빌드:</value>
+  </data>
+  <data name="BuildRun_OutputSection" xml:space="preserve">
+    <value>출력 창</value>
+  </data>
+  <data name="BuildRun_ShowOnStart" xml:space="preserve">
+    <value>빌드가 시작될 때 출력 창 표시</value>
+  </data>
+  <data name="BuildRun_ShowOnError" xml:space="preserve">
+    <value>빌드 오류 시 출력 창 표시</value>
+  </data>
+  <data name="BuildRun_RunSection" xml:space="preserve">
+    <value>실행</value>
+  </data>
+  <data name="BuildRun_OnRunBuildErrorLabel" xml:space="preserve">
+    <value>실행 시, 빌드 오류 발생 시:</value>
+  </data>
+  <data name="BuildRun_DoNotLaunch" xml:space="preserve">
+    <value>시작하지 않음</value>
+  </data>
+  <data name="BuildRun_Launch" xml:space="preserve">
+    <value>시작</value>
+  </data>
+  <data name="BuildRun_ShowOutputOnRun" xml:space="preserve">
+    <value>실행이 시작될 때 출력 창 표시</value>
+  </data>
+  <data name="CodeInlineHints_Section" xml:space="preserve">
+    <value>인라인 힌트</value>
+  </data>
+  <data name="CodeInlineHints_EnableHints" xml:space="preserve">
+    <value>인라인 힌트 사용(선언 위에 인라인 참조 횟수 표시)</value>
+  </data>
+  <data name="CodeInlineHints_SourceLabel" xml:space="preserve">
+    <value>참조 소스:</value>
+  </data>
+  <data name="CodeInlineHints_SourceAuto" xml:space="preserve">
+    <value>자동(사용 가능한 경우 Roslyn, 정규식 폴백)</value>
+  </data>
+  <data name="CodeInlineHints_SourceRoslyn" xml:space="preserve">
+    <value>Roslyn만 (C# / VB.NET)</value>
+  </data>
+  <data name="CodeInlineHints_SourceRegex" xml:space="preserve">
+    <value>항상 Regex</value>
+  </data>
+  <data name="CodeInlineHints_RoslynSection" xml:space="preserve">
+    <value>ROSLYN 의미 체계 힌트 (C# / VB.NET)</value>
+  </data>
+  <data name="CodeInlineHints_RoslynNote" xml:space="preserve">
+    <value>Roslyn이 활성 언어 클라이언트인 경우 인라인으로 유추된 형식 및 반환 형식을 표시합니다.</value>
+  </data>
+  <data name="CodeInlineHints_ShowVarType" xml:space="preserve">
+    <value>var 선언의 유추된 형식 표시(예: var x = … → : List&amp;lt;int&amp;gt;)</value>
+  </data>
+  <data name="CodeInlineHints_ShowLambdaReturn" xml:space="preserve">
+    <value>람다 식의 반환 형식 표시(예: x =&amp;gt; x * 2 → int)</value>
+  </data>
+  <data name="CodeInlineHints_KindsSection" xml:space="preserve">
+    <value>기호 종류에 대한 힌트 표시:</value>
+  </data>
+  <data name="CodeInlineHints_KindsNote" xml:space="preserve">
+    <value>종류를 선택 취소하면 다른 종류에 대한 인라인 힌트를 활성 상태로 유지하면서 해당 참조 횟수 힌트를 숨길 수 있습니다.</value>
+  </data>
+  <data name="CodeInlineHints_TypesGroup" xml:space="preserve">
+    <value>형식</value>
+  </data>
+  <data name="CodeInlineHints_Class" xml:space="preserve">
+    <value>클래스</value>
+  </data>
+  <data name="CodeInlineHints_Interface" xml:space="preserve">
+    <value>인터페이스</value>
+  </data>
+  <data name="CodeInlineHints_Struct" xml:space="preserve">
+    <value>구조체</value>
+  </data>
+  <data name="CodeInlineHints_Enum" xml:space="preserve">
+    <value>열거형</value>
+  </data>
+  <data name="CodeInlineHints_Record" xml:space="preserve">
+    <value>레코드</value>
+  </data>
+  <data name="CodeInlineHints_Delegate" xml:space="preserve">
+    <value>대리자</value>
+  </data>
+  <data name="CodeInlineHints_MembersGroup" xml:space="preserve">
+    <value>멤버</value>
+  </data>
+  <data name="CodeInlineHints_Method" xml:space="preserve">
+    <value>메서드</value>
+  </data>
+  <data name="CodeInlineHints_Constructor" xml:space="preserve">
+    <value>생성자</value>
+  </data>
+  <data name="CodeInlineHints_Property" xml:space="preserve">
+    <value>속성</value>
+  </data>
+  <data name="CodeInlineHints_Field" xml:space="preserve">
+    <value>필드</value>
+  </data>
+  <data name="CodeInlineHints_Event" xml:space="preserve">
+    <value>이벤트</value>
+  </data>
+  <data name="CodeInlineHints_OtherGroup" xml:space="preserve">
+    <value>기타</value>
+  </data>
+  <data name="CodeInlineHints_LocalVar" xml:space="preserve">
+    <value>지역 변수</value>
+  </data>
+  <data name="CodeInlineHints_Parameter" xml:space="preserve">
+    <value>매개 변수</value>
+  </data>
+  <data name="CodeInlineHints_TypeParam" xml:space="preserve">
+    <value>형식 매개 변수</value>
+  </data>
+  <data name="CodeInlineHints_Namespace" xml:space="preserve">
+    <value>네임스페이스</value>
+  </data>
+  <data name="CodeInlineHints_SelectAll" xml:space="preserve">
+    <value>모두 선택</value>
+  </data>
+  <data name="CodeInlineHints_ClearAll" xml:space="preserve">
+    <value>모두 지우기</value>
+  </data>
+  <data name="CodeOpt_FontSection" xml:space="preserve">
+    <value>글꼴</value>
+  </data>
+  <data name="CodeOpt_FontFamilyLabel" xml:space="preserve">
+    <value>글꼴 패밀리:</value>
+  </data>
+  <data name="CodeOpt_FontSizeLabel" xml:space="preserve">
+    <value>글꼴 크기(pt):</value>
+  </data>
+  <data name="CodeOpt_IndentSection" xml:space="preserve">
+    <value>들여쓰기</value>
+  </data>
+  <data name="CodeOpt_IndentSizeLabel" xml:space="preserve">
+    <value>들여쓰기 크기:</value>
+  </data>
+  <data name="CodeOpt_UseSpaces" xml:space="preserve">
+    <value>탭 문자 대신 공백 삽입</value>
+  </data>
+  <data name="CodeOpt_FeaturesSection" xml:space="preserve">
+    <value>기능</value>
+  </data>
+  <data name="CodeOpt_ShowLineNumbers" xml:space="preserve">
+    <value>줄 번호 표시</value>
+  </data>
+  <data name="CodeOpt_HighlightCurrentLine" xml:space="preserve">
+    <value>현재 줄 강조 표시</value>
+  </data>
+  <data name="CodeOpt_CtrlClickLinks" xml:space="preserve">
+    <value>Ctrl+클릭을 사용하여 정의로 이동 / 링크 열기 사용</value>
+  </data>
+  <data name="CodeOpt_DefaultZoomLabel" xml:space="preserve">
+    <value>기본 확대/축소(%):</value>
+  </data>
+  <data name="CodeOpt_MouseWheelLabel" xml:space="preserve">
+    <value>마우스 휠 속도:</value>
+  </data>
+  <data name="CodeOpt_ChangesetSection" xml:space="preserve">
+    <value>변경 집합 (.WHCHG)</value>
+  </data>
+  <data name="CodeOpt_TrackEdits" xml:space="preserve">
+    <value>.whchg 동반 파일에서 편집 추적(추적 저장 모드 필요)</value>
+  </data>
+  <data name="CodeOpt_SyntaxSection" xml:space="preserve">
+    <value>구문 색 재정의</value>
+  </data>
+  <data name="CodeOpt_SyntaxNote" xml:space="preserve">
+    <value>활성 테마의 기본값을 재정의하려면 색을 활성화하세요.</value>
+  </data>
+  <data name="CodeOpt_Background" xml:space="preserve">
+    <value>배경:</value>
+  </data>
+  <data name="CodeOpt_Foreground" xml:space="preserve">
+    <value>전경:</value>
+  </data>
+  <data name="CodeOpt_Keyword" xml:space="preserve">
+    <value>키워드:</value>
+  </data>
+  <data name="CodeOpt_String" xml:space="preserve">
+    <value>문자열:</value>
+  </data>
+  <data name="CodeOpt_Comment" xml:space="preserve">
+    <value>주석:</value>
+  </data>
+  <data name="CodeOpt_Number" xml:space="preserve">
+    <value>숫자:</value>
+  </data>
+  <data name="CodeOpt_Type" xml:space="preserve">
+    <value>유형:</value>
+  </data>
+  <data name="CodeOpt_Preprocessor" xml:space="preserve">
+    <value>전처리기:</value>
+  </data>
+  <data name="CodeOpt_Operator" xml:space="preserve">
+    <value>연산자:</value>
+  </data>
+  <data name="CodeOpt_Identifier" xml:space="preserve">
+    <value>식별자:</value>
+  </data>
+  <data name="CodeOpt_ResetColors" xml:space="preserve">
+    <value>테마 기본값으로 초기화</value>
+  </data>
+  <data name="EnvSave_SaveModeSection" xml:space="preserve">
+    <value>저장 모드</value>
+  </data>
+  <data name="EnvSave_DirectMode" xml:space="preserve">
+    <value>직접 모드</value>
+  </data>
+  <data name="EnvSave_TrackedMode" xml:space="preserve">
+    <value>추적 모드</value>
+  </data>
+  <data name="EnvSave_AutoSaveSection" xml:space="preserve">
+    <value>자동 저장</value>
+  </data>
+  <data name="EnvSave_AutoSerialize" xml:space="preserve">
+    <value>자동 저장 사용</value>
+  </data>
+  <data name="EnvSave_IntervalLabel" xml:space="preserve">
+    <value>간격(초)</value>
+  </data>
+  <data name="EnvSave_StandaloneSection" xml:space="preserve">
+    <value>독립 실행 모드</value>
+  </data>
+  <data name="EnvSave_StandaloneNote" xml:space="preserve">
+    <value>독립 실행 모드에서는 각 편집기가 저장 방법을 제어합니다.</value>
+  </data>
+  <data name="EnvSave_HexEditorDirect" xml:space="preserve">
+    <value>Hex 편집기: 직접 모드</value>
+  </data>
+  <data name="EnvSave_CodeEditorDirect" xml:space="preserve">
+    <value>코드 편집기: 직접 모드</value>
+  </data>
+  <data name="EnvSave_TextEditorDirect" xml:space="preserve">
+    <value>텍스트 편집기: 직접 모드</value>
+  </data>
+  <data name="EnvSave_TblEditorDirect" xml:space="preserve">
+    <value>TBL 편집기: 직접 모드</value>
+  </data>
+  <data name="EnvSave_ImageViewerDirect" xml:space="preserve">
+    <value>이미지 뷰어: 직접 모드</value>
+  </data>
+  <data name="EnvSave_SaveAsNote" xml:space="preserve">
+    <value>"다른 이름으로 저장"을 사용하려면 새 경로를 선택해야 합니다.</value>
+  </data>
+  <data name="HexBehavior_Section" xml:space="preserve">
+    <value>Hex 편집기 동작</value>
+  </data>
+  <data name="HexBehavior_AllowAutoHighLight" xml:space="preserve">
+    <value>자동 강조 표시 사용</value>
+  </data>
+  <data name="HexBehavior_AllowAutoSelectDoubleClick" xml:space="preserve">
+    <value>두 번 클릭으로 자동 선택</value>
+  </data>
+  <data name="HexBehavior_AllowContextMenu" xml:space="preserve">
+    <value>상황에 맞는 메뉴 사용</value>
+  </data>
+  <data name="HexBehavior_AllowDeleteByte" xml:space="preserve">
+    <value>바이트 삭제 허용</value>
+  </data>
+  <data name="HexBehavior_AllowExtend" xml:space="preserve">
+    <value>확장 허용</value>
+  </data>
+  <data name="HexBehavior_FileDroppingConfirmation" xml:space="preserve">
+    <value>파일 놓기 확인</value>
+  </data>
+  <data name="HexBehavior_PreloadModeLabel" xml:space="preserve">
+    <value>미리 로드 모드</value>
+  </data>
+  <data name="HexDisplay_DisplaySection" xml:space="preserve">
+    <value>표시 설정</value>
+  </data>
+  <data name="HexDisplay_BytesPerLineLabel" xml:space="preserve">
+    <value>줄당 바이트</value>
+  </data>
+  <data name="HexDisplay_ShowOffset" xml:space="preserve">
+    <value>오프셋 표시</value>
+  </data>
+  <data name="HexDisplay_ShowAscii" xml:space="preserve">
+    <value>ASCII 열 표시</value>
+  </data>
+  <data name="HexDisplay_MouseWheelLabel" xml:space="preserve">
+    <value>마우스 휠</value>
+  </data>
+  <data name="HexDisplay_ByteTooltipLabel" xml:space="preserve">
+    <value>바이트 도구 설명</value>
+  </data>
+  <data name="HexDisplay_FormatSection" xml:space="preserve">
+    <value>형식</value>
+  </data>
+  <data name="HexDisplay_ValueFormatLabel" xml:space="preserve">
+    <value>값 형식</value>
+  </data>
+  <data name="HexDisplay_OffsetFormatLabel" xml:space="preserve">
+    <value>오프셋 형식</value>
+  </data>
+  <data name="HexDisplay_ByteGroupingLabel" xml:space="preserve">
+    <value>바이트 그룹화</value>
+  </data>
+  <data name="HexDisplay_SpacerPositionLabel" xml:space="preserve">
+    <value>구분자 위치</value>
+  </data>
+  <data name="HexDisplay_ScrollMarkersSection" xml:space="preserve">
+    <value>스크롤 마커</value>
+  </data>
+  <data name="HexDisplay_ShowBookmarkMarkers" xml:space="preserve">
+    <value>책갈피 마커 표시</value>
+  </data>
+  <data name="HexDisplay_ShowModifiedMarkers" xml:space="preserve">
+    <value>수정 마커 표시</value>
+  </data>
+  <data name="HexDisplay_ShowInsertedMarkers" xml:space="preserve">
+    <value>삽입 마커 표시</value>
+  </data>
+  <data name="HexDisplay_ShowDeletedMarkers" xml:space="preserve">
+    <value>삭제 마커 표시</value>
+  </data>
+  <data name="HexDisplay_ShowSearchResultMarkers" xml:space="preserve">
+    <value>검색 결과 마커 표시</value>
+  </data>
+  <data name="HexDisplay_ColumnRowSection" xml:space="preserve">
+    <value>열 및 행 강조 표시</value>
+  </data>
+  <data name="HexDisplay_ShowColumnHighlight" xml:space="preserve">
+    <value>열 강조 표시</value>
+  </data>
+  <data name="HexDisplay_ShowAsciiColumnHighlight" xml:space="preserve">
+    <value>ASCII 열 강조 표시</value>
+  </data>
+  <data name="HexDisplay_ShowRowHighlight" xml:space="preserve">
+    <value>행 강조 표시</value>
+  </data>
+  <data name="HexEdit_EditingSection" xml:space="preserve">
+    <value>편집 설정</value>
+  </data>
+  <data name="HexEdit_DefaultEditModeLabel" xml:space="preserve">
+    <value>기본 편집 모드</value>
+  </data>
+  <data name="HexEdit_MouseWheelLabel" xml:space="preserve">
+    <value>마우스 휠</value>
+  </data>
+  <data name="HexEdit_AllowZoom" xml:space="preserve">
+    <value>확대/축소 허용</value>
+  </data>
+  <data name="HexEdit_AllowFileDrop" xml:space="preserve">
+    <value>파일 놓기 허용</value>
+  </data>
+  <data name="HexEdit_DataSection" xml:space="preserve">
+    <value>데이터 설정</value>
+  </data>
+  <data name="HexEdit_ByteSizeLabel" xml:space="preserve">
+    <value>바이트 크기</value>
+  </data>
+  <data name="HexEdit_ByteOrderLabel" xml:space="preserve">
+    <value>바이트 순서</value>
+  </data>
+  <data name="HexEdit_DefaultCopyFormatLabel" xml:space="preserve">
+    <value>기본 복사 형식</value>
+  </data>
+  <data name="HexEdit_SpacerVisualLabel" xml:space="preserve">
+    <value>구분자 모양</value>
+  </data>
+  <data name="HexStatus_Section" xml:space="preserve">
+    <value>상태 표시줄</value>
+  </data>
+  <data name="HexStatus_ShowStatusMessage" xml:space="preserve">
+    <value>상태 메시지 표시</value>
+  </data>
+  <data name="HexStatus_ShowFileSize" xml:space="preserve">
+    <value>파일 크기 표시</value>
+  </data>
+  <data name="HexStatus_ShowSelection" xml:space="preserve">
+    <value>선택 영역 표시</value>
+  </data>
+  <data name="HexStatus_ShowPosition" xml:space="preserve">
+    <value>위치 표시</value>
+  </data>
+  <data name="HexStatus_ShowEditMode" xml:space="preserve">
+    <value>편집 모드 표시</value>
+  </data>
+  <data name="HexStatus_ShowBytesPerLine" xml:space="preserve">
+    <value>줄당 바이트 표시</value>
+  </data>
+  <data name="HexStatus_ShowRefreshRate" xml:space="preserve">
+    <value>새로 고침 빈도 표시</value>
+  </data>
+  <data name="Opt_Plugin_SelectExtDir" xml:space="preserve">
+    <value>확장 디렉터리 선택</value>
+  </data>
+  <data name="Opt_PluginDev_SelectOutputDir" xml:space="preserve">
+    <value>출력 디렉터리 선택</value>
+  </data>
+  <data name="Opt_ViewMode_Tree" xml:space="preserve">
+    <value>트리 보기</value>
+  </data>
+  <data name="Opt_ViewMode_Flat" xml:space="preserve">
+    <value>평면 보기</value>
+  </data>
+  <data name="Opt_Position_Right" xml:space="preserve">
+    <value>오른쪽</value>
+  </data>
+  <data name="Opt_Position_Left" xml:space="preserve">
+    <value>왼쪽</value>
+  </data>
+  <data name="Opt_Position_Bottom" xml:space="preserve">
+    <value>아래</value>
+  </data>
+  <data name="Opt_Position_Top" xml:space="preserve">
+    <value>위</value>
+  </data>
+  <data name="Opt_Endian_Little" xml:space="preserve">
+    <value>리틀 엔디안</value>
+  </data>
+  <data name="Opt_Endian_Big" xml:space="preserve">
+    <value>빅 엔디안</value>
+  </data>
+  <data name="Opt_IndentLevel_1" xml:space="preserve">
+    <value>레벨 1</value>
+  </data>
+  <data name="Opt_IndentLevel_2" xml:space="preserve">
+    <value>레벨 2</value>
+  </data>
+  <data name="Opt_IndentLevel_3" xml:space="preserve">
+    <value>레벨 3</value>
+  </data>
+  <data name="Opt_MdLayout_PreviewRight" xml:space="preserve">
+    <value>오른쪽에 미리 보기</value>
+  </data>
+  <data name="Opt_MdLayout_PreviewBottom" xml:space="preserve">
+    <value>아래에 미리 보기</value>
+  </data>
+  <data name="Opt_MdLayout_EditorOnly" xml:space="preserve">
+    <value>편집기만</value>
+  </data>
+  <data name="Opt_MdLayout_PreviewOnly" xml:space="preserve">
+    <value>미리 보기만</value>
+  </data>
+  <data name="Opt_Preview_Label" xml:space="preserve">
+    <value>미리 보기</value>
+  </data>
 </root>

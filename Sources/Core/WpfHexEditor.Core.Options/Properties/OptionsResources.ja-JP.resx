@@ -165,4 +165,490 @@
   <data name="Opt_Page_FormatExplorer" xml:space="preserve"><value>形式エクスプローラー</value></data>
   <data name="Opt_Page_CompareFiles" xml:space="preserve"><value>ファイルの比較</value></data>
   <data name="Opt_Page_CommandPalette" xml:space="preserve"><value>コマンド パレット</value></data>
+  <data name="BuildCompiler_CSharpSection" xml:space="preserve">
+    <value>C# / .NET の既定値</value>
+  </data>
+  <data name="BuildCompiler_NullableCheck" xml:space="preserve">
+    <value>nullable 警告をエラーとして扱う (C# 8+)</value>
+  </data>
+  <data name="BuildCompiler_ImplicitUsings" xml:space="preserve">
+    <value>暗黙的な using を有効化 (C# 10+)</value>
+  </data>
+  <data name="BuildCompiler_GenerateDocs" xml:space="preserve">
+    <value>XML ドキュメント ファイルを生成する</value>
+  </data>
+  <data name="BuildCompiler_WarningsSection" xml:space="preserve">
+    <value>警告</value>
+  </data>
+  <data name="BuildCompiler_WarnLevelLabel" xml:space="preserve">
+    <value>既定の警告レベル (0–9):</value>
+  </data>
+  <data name="BuildRun_GeneralSection" xml:space="preserve">
+    <value>全般</value>
+  </data>
+  <data name="BuildRun_SaveBeforeBuild" xml:space="preserve">
+    <value>ビルド前にすべての変更を保存する</value>
+  </data>
+  <data name="BuildRun_VerbosityLabel" xml:space="preserve">
+    <value>ビルド出力の詳細度:</value>
+  </data>
+  <data name="BuildRun_VerbQuiet" xml:space="preserve">
+    <value>Quiet</value>
+  </data>
+  <data name="BuildRun_VerbMinimal" xml:space="preserve">
+    <value>Minimal</value>
+  </data>
+  <data name="BuildRun_VerbNormal" xml:space="preserve">
+    <value>Normal</value>
+  </data>
+  <data name="BuildRun_VerbDetailed" xml:space="preserve">
+    <value>Detailed</value>
+  </data>
+  <data name="BuildRun_VerbDiagnostic" xml:space="preserve">
+    <value>Diagnostic</value>
+  </data>
+  <data name="BuildRun_RunInProcess" xml:space="preserve">
+    <value>MSBuild をインプロセスで実行する (高速、推奨)</value>
+  </data>
+  <data name="BuildRun_MaxParallelLabel" xml:space="preserve">
+    <value>並列プロジェクト ビルドの最大数:</value>
+  </data>
+  <data name="BuildRun_OutputSection" xml:space="preserve">
+    <value>出力ウィンドウ</value>
+  </data>
+  <data name="BuildRun_ShowOnStart" xml:space="preserve">
+    <value>ビルド開始時に出力ウィンドウを表示する</value>
+  </data>
+  <data name="BuildRun_ShowOnError" xml:space="preserve">
+    <value>ビルド エラー時に出力ウィンドウを表示する</value>
+  </data>
+  <data name="BuildRun_RunSection" xml:space="preserve">
+    <value>実行</value>
+  </data>
+  <data name="BuildRun_OnRunBuildErrorLabel" xml:space="preserve">
+    <value>実行時、ビルド エラーが発生した場合:</value>
+  </data>
+  <data name="BuildRun_DoNotLaunch" xml:space="preserve">
+    <value>起動しない</value>
+  </data>
+  <data name="BuildRun_Launch" xml:space="preserve">
+    <value>起動</value>
+  </data>
+  <data name="BuildRun_ShowOutputOnRun" xml:space="preserve">
+    <value>実行開始時に出力ウィンドウを表示する</value>
+  </data>
+  <data name="CodeInlineHints_Section" xml:space="preserve">
+    <value>インライン ヒント</value>
+  </data>
+  <data name="CodeInlineHints_EnableHints" xml:space="preserve">
+    <value>インライン ヒントを有効にする (宣言の上にインライン参照カウントを表示)</value>
+  </data>
+  <data name="CodeInlineHints_SourceLabel" xml:space="preserve">
+    <value>参照ソース:</value>
+  </data>
+  <data name="CodeInlineHints_SourceAuto" xml:space="preserve">
+    <value>自動 (利用可能な場合は Roslyn、フォールバックとして regex)</value>
+  </data>
+  <data name="CodeInlineHints_SourceRoslyn" xml:space="preserve">
+    <value>Roslyn のみ (C# / VB.NET)</value>
+  </data>
+  <data name="CodeInlineHints_SourceRegex" xml:space="preserve">
+    <value>常に Regex</value>
+  </data>
+  <data name="CodeInlineHints_RoslynSection" xml:space="preserve">
+    <value>Roslyn のセマンティック ヒント (C# / VB.NET)</value>
+  </data>
+  <data name="CodeInlineHints_RoslynNote" xml:space="preserve">
+    <value>Roslyn がアクティブな言語クライアントのとき、推論された型と戻り値の型をインラインで表示します。</value>
+  </data>
+  <data name="CodeInlineHints_ShowVarType" xml:space="preserve">
+    <value>var 宣言の推論型を表示する (例: var x = … → : List&amp;lt;int&amp;gt;)</value>
+  </data>
+  <data name="CodeInlineHints_ShowLambdaReturn" xml:space="preserve">
+    <value>ラムダ式の戻り値の型を表示する (例: x =&amp;gt; x * 2 → int)</value>
+  </data>
+  <data name="CodeInlineHints_KindsSection" xml:space="preserve">
+    <value>シンボルの種類のヒントを表示:</value>
+  </data>
+  <data name="CodeInlineHints_KindsNote" xml:space="preserve">
+    <value>種類をオフにすると、他の種類のインライン ヒントを有効なままにしつつ、その参照カウント ヒントを非表示にできます。</value>
+  </data>
+  <data name="CodeInlineHints_TypesGroup" xml:space="preserve">
+    <value>型</value>
+  </data>
+  <data name="CodeInlineHints_Class" xml:space="preserve">
+    <value>クラス</value>
+  </data>
+  <data name="CodeInlineHints_Interface" xml:space="preserve">
+    <value>インターフェイス</value>
+  </data>
+  <data name="CodeInlineHints_Struct" xml:space="preserve">
+    <value>構造体</value>
+  </data>
+  <data name="CodeInlineHints_Enum" xml:space="preserve">
+    <value>列挙型</value>
+  </data>
+  <data name="CodeInlineHints_Record" xml:space="preserve">
+    <value>レコード</value>
+  </data>
+  <data name="CodeInlineHints_Delegate" xml:space="preserve">
+    <value>デリゲート</value>
+  </data>
+  <data name="CodeInlineHints_MembersGroup" xml:space="preserve">
+    <value>メンバー</value>
+  </data>
+  <data name="CodeInlineHints_Method" xml:space="preserve">
+    <value>メソッド</value>
+  </data>
+  <data name="CodeInlineHints_Constructor" xml:space="preserve">
+    <value>コンストラクター</value>
+  </data>
+  <data name="CodeInlineHints_Property" xml:space="preserve">
+    <value>プロパティ</value>
+  </data>
+  <data name="CodeInlineHints_Field" xml:space="preserve">
+    <value>フィールド</value>
+  </data>
+  <data name="CodeInlineHints_Event" xml:space="preserve">
+    <value>イベント</value>
+  </data>
+  <data name="CodeInlineHints_OtherGroup" xml:space="preserve">
+    <value>その他</value>
+  </data>
+  <data name="CodeInlineHints_LocalVar" xml:space="preserve">
+    <value>ローカル変数</value>
+  </data>
+  <data name="CodeInlineHints_Parameter" xml:space="preserve">
+    <value>パラメーター</value>
+  </data>
+  <data name="CodeInlineHints_TypeParam" xml:space="preserve">
+    <value>型パラメーター</value>
+  </data>
+  <data name="CodeInlineHints_Namespace" xml:space="preserve">
+    <value>名前空間</value>
+  </data>
+  <data name="CodeInlineHints_SelectAll" xml:space="preserve">
+    <value>すべて選択</value>
+  </data>
+  <data name="CodeInlineHints_ClearAll" xml:space="preserve">
+    <value>すべてクリア</value>
+  </data>
+  <data name="CodeOpt_FontSection" xml:space="preserve">
+    <value>フォント</value>
+  </data>
+  <data name="CodeOpt_FontFamilyLabel" xml:space="preserve">
+    <value>フォント ファミリー:</value>
+  </data>
+  <data name="CodeOpt_FontSizeLabel" xml:space="preserve">
+    <value>フォント サイズ (pt):</value>
+  </data>
+  <data name="CodeOpt_IndentSection" xml:space="preserve">
+    <value>インデント</value>
+  </data>
+  <data name="CodeOpt_IndentSizeLabel" xml:space="preserve">
+    <value>インデント サイズ:</value>
+  </data>
+  <data name="CodeOpt_UseSpaces" xml:space="preserve">
+    <value>タブ文字の代わりにスペースを挿入する</value>
+  </data>
+  <data name="CodeOpt_FeaturesSection" xml:space="preserve">
+    <value>機能</value>
+  </data>
+  <data name="CodeOpt_ShowLineNumbers" xml:space="preserve">
+    <value>行番号を表示する</value>
+  </data>
+  <data name="CodeOpt_HighlightCurrentLine" xml:space="preserve">
+    <value>現在の行をハイライトする</value>
+  </data>
+  <data name="CodeOpt_CtrlClickLinks" xml:space="preserve">
+    <value>Ctrl+クリックで定義に移動 / リンクを開く機能を有効にする</value>
+  </data>
+  <data name="CodeOpt_DefaultZoomLabel" xml:space="preserve">
+    <value>既定のズーム (%):</value>
+  </data>
+  <data name="CodeOpt_MouseWheelLabel" xml:space="preserve">
+    <value>マウス ホイールの速度:</value>
+  </data>
+  <data name="CodeOpt_ChangesetSection" xml:space="preserve">
+    <value>変更セット (.WHCHG)</value>
+  </data>
+  <data name="CodeOpt_TrackEdits" xml:space="preserve">
+    <value>.whchg コンパニオン ファイルに編集を追跡する (追跡保存モードが必要)</value>
+  </data>
+  <data name="CodeOpt_SyntaxSection" xml:space="preserve">
+    <value>構文カラー オーバーライド</value>
+  </data>
+  <data name="CodeOpt_SyntaxNote" xml:space="preserve">
+    <value>アクティブなテーマの既定値をオーバーライドするには色を有効にします。</value>
+  </data>
+  <data name="CodeOpt_Background" xml:space="preserve">
+    <value>背景:</value>
+  </data>
+  <data name="CodeOpt_Foreground" xml:space="preserve">
+    <value>前景:</value>
+  </data>
+  <data name="CodeOpt_Keyword" xml:space="preserve">
+    <value>キーワード:</value>
+  </data>
+  <data name="CodeOpt_String" xml:space="preserve">
+    <value>文字列:</value>
+  </data>
+  <data name="CodeOpt_Comment" xml:space="preserve">
+    <value>コメント:</value>
+  </data>
+  <data name="CodeOpt_Number" xml:space="preserve">
+    <value>数値:</value>
+  </data>
+  <data name="CodeOpt_Type" xml:space="preserve">
+    <value>型:</value>
+  </data>
+  <data name="CodeOpt_Preprocessor" xml:space="preserve">
+    <value>プリプロセッサー:</value>
+  </data>
+  <data name="CodeOpt_Operator" xml:space="preserve">
+    <value>演算子:</value>
+  </data>
+  <data name="CodeOpt_Identifier" xml:space="preserve">
+    <value>識別子:</value>
+  </data>
+  <data name="CodeOpt_ResetColors" xml:space="preserve">
+    <value>テーマの既定値にリセット</value>
+  </data>
+  <data name="EnvSave_SaveModeSection" xml:space="preserve">
+    <value>保存モード</value>
+  </data>
+  <data name="EnvSave_DirectMode" xml:space="preserve">
+    <value>ダイレクトモード</value>
+  </data>
+  <data name="EnvSave_TrackedMode" xml:space="preserve">
+    <value>追跡モード</value>
+  </data>
+  <data name="EnvSave_AutoSaveSection" xml:space="preserve">
+    <value>自動保存</value>
+  </data>
+  <data name="EnvSave_AutoSerialize" xml:space="preserve">
+    <value>自動保存を有効にする</value>
+  </data>
+  <data name="EnvSave_IntervalLabel" xml:space="preserve">
+    <value>間隔（秒）</value>
+  </data>
+  <data name="EnvSave_StandaloneSection" xml:space="preserve">
+    <value>スタンドアロンモード</value>
+  </data>
+  <data name="EnvSave_StandaloneNote" xml:space="preserve">
+    <value>スタンドアロンモードでは、各エディタが保存方法を制御します。</value>
+  </data>
+  <data name="EnvSave_HexEditorDirect" xml:space="preserve">
+    <value>Hexエディタ：ダイレクトモード</value>
+  </data>
+  <data name="EnvSave_CodeEditorDirect" xml:space="preserve">
+    <value>コードエディタ：ダイレクトモード</value>
+  </data>
+  <data name="EnvSave_TextEditorDirect" xml:space="preserve">
+    <value>テキストエディタ：ダイレクトモード</value>
+  </data>
+  <data name="EnvSave_TblEditorDirect" xml:space="preserve">
+    <value>TBLエディタ：ダイレクトモード</value>
+  </data>
+  <data name="EnvSave_ImageViewerDirect" xml:space="preserve">
+    <value>画像ビューア：ダイレクトモード</value>
+  </data>
+  <data name="EnvSave_SaveAsNote" xml:space="preserve">
+    <value>「名前を付けて保存」には新しいパスの選択が必要です。</value>
+  </data>
+  <data name="HexBehavior_Section" xml:space="preserve">
+    <value>Hexエディタの動作</value>
+  </data>
+  <data name="HexBehavior_AllowAutoHighLight" xml:space="preserve">
+    <value>自動ハイライトを有効にする</value>
+  </data>
+  <data name="HexBehavior_AllowAutoSelectDoubleClick" xml:space="preserve">
+    <value>ダブルクリックで自動選択</value>
+  </data>
+  <data name="HexBehavior_AllowContextMenu" xml:space="preserve">
+    <value>コンテキストメニューを有効にする</value>
+  </data>
+  <data name="HexBehavior_AllowDeleteByte" xml:space="preserve">
+    <value>バイトの削除を許可する</value>
+  </data>
+  <data name="HexBehavior_AllowExtend" xml:space="preserve">
+    <value>拡張を許可する</value>
+  </data>
+  <data name="HexBehavior_FileDroppingConfirmation" xml:space="preserve">
+    <value>ファイルドロップの確認</value>
+  </data>
+  <data name="HexBehavior_PreloadModeLabel" xml:space="preserve">
+    <value>プリロードモード</value>
+  </data>
+  <data name="HexDisplay_DisplaySection" xml:space="preserve">
+    <value>表示設定</value>
+  </data>
+  <data name="HexDisplay_BytesPerLineLabel" xml:space="preserve">
+    <value>1行あたりのバイト数</value>
+  </data>
+  <data name="HexDisplay_ShowOffset" xml:space="preserve">
+    <value>オフセットを表示</value>
+  </data>
+  <data name="HexDisplay_ShowAscii" xml:space="preserve">
+    <value>ASCII列を表示</value>
+  </data>
+  <data name="HexDisplay_MouseWheelLabel" xml:space="preserve">
+    <value>マウスホイール</value>
+  </data>
+  <data name="HexDisplay_ByteTooltipLabel" xml:space="preserve">
+    <value>バイトツールチップ</value>
+  </data>
+  <data name="HexDisplay_FormatSection" xml:space="preserve">
+    <value>フォーマット</value>
+  </data>
+  <data name="HexDisplay_ValueFormatLabel" xml:space="preserve">
+    <value>値の形式</value>
+  </data>
+  <data name="HexDisplay_OffsetFormatLabel" xml:space="preserve">
+    <value>オフセット形式</value>
+  </data>
+  <data name="HexDisplay_ByteGroupingLabel" xml:space="preserve">
+    <value>バイトグループ</value>
+  </data>
+  <data name="HexDisplay_SpacerPositionLabel" xml:space="preserve">
+    <value>スペーサーの位置</value>
+  </data>
+  <data name="HexDisplay_ScrollMarkersSection" xml:space="preserve">
+    <value>スクロールマーカー</value>
+  </data>
+  <data name="HexDisplay_ShowBookmarkMarkers" xml:space="preserve">
+    <value>ブックマークマーカーを表示</value>
+  </data>
+  <data name="HexDisplay_ShowModifiedMarkers" xml:space="preserve">
+    <value>変更マーカーを表示</value>
+  </data>
+  <data name="HexDisplay_ShowInsertedMarkers" xml:space="preserve">
+    <value>挿入マーカーを表示</value>
+  </data>
+  <data name="HexDisplay_ShowDeletedMarkers" xml:space="preserve">
+    <value>削除マーカーを表示</value>
+  </data>
+  <data name="HexDisplay_ShowSearchResultMarkers" xml:space="preserve">
+    <value>検索結果マーカーを表示</value>
+  </data>
+  <data name="HexDisplay_ColumnRowSection" xml:space="preserve">
+    <value>列と行のハイライト</value>
+  </data>
+  <data name="HexDisplay_ShowColumnHighlight" xml:space="preserve">
+    <value>列のハイライトを表示</value>
+  </data>
+  <data name="HexDisplay_ShowAsciiColumnHighlight" xml:space="preserve">
+    <value>ASCII列のハイライトを表示</value>
+  </data>
+  <data name="HexDisplay_ShowRowHighlight" xml:space="preserve">
+    <value>行のハイライトを表示</value>
+  </data>
+  <data name="HexEdit_EditingSection" xml:space="preserve">
+    <value>編集設定</value>
+  </data>
+  <data name="HexEdit_DefaultEditModeLabel" xml:space="preserve">
+    <value>デフォルト編集モード</value>
+  </data>
+  <data name="HexEdit_MouseWheelLabel" xml:space="preserve">
+    <value>マウスホイール</value>
+  </data>
+  <data name="HexEdit_AllowZoom" xml:space="preserve">
+    <value>ズームを許可する</value>
+  </data>
+  <data name="HexEdit_AllowFileDrop" xml:space="preserve">
+    <value>ファイルドロップを許可する</value>
+  </data>
+  <data name="HexEdit_DataSection" xml:space="preserve">
+    <value>データ設定</value>
+  </data>
+  <data name="HexEdit_ByteSizeLabel" xml:space="preserve">
+    <value>バイトサイズ</value>
+  </data>
+  <data name="HexEdit_ByteOrderLabel" xml:space="preserve">
+    <value>バイトオーダー</value>
+  </data>
+  <data name="HexEdit_DefaultCopyFormatLabel" xml:space="preserve">
+    <value>デフォルトのコピー形式</value>
+  </data>
+  <data name="HexEdit_SpacerVisualLabel" xml:space="preserve">
+    <value>スペーサーの外観</value>
+  </data>
+  <data name="HexStatus_Section" xml:space="preserve">
+    <value>ステータスバー</value>
+  </data>
+  <data name="HexStatus_ShowStatusMessage" xml:space="preserve">
+    <value>ステータスメッセージを表示</value>
+  </data>
+  <data name="HexStatus_ShowFileSize" xml:space="preserve">
+    <value>ファイルサイズを表示</value>
+  </data>
+  <data name="HexStatus_ShowSelection" xml:space="preserve">
+    <value>選択を表示</value>
+  </data>
+  <data name="HexStatus_ShowPosition" xml:space="preserve">
+    <value>ポジションを表示</value>
+  </data>
+  <data name="HexStatus_ShowEditMode" xml:space="preserve">
+    <value>編集モードを表示</value>
+  </data>
+  <data name="HexStatus_ShowBytesPerLine" xml:space="preserve">
+    <value>1行あたりのバイト数を表示</value>
+  </data>
+  <data name="HexStatus_ShowRefreshRate" xml:space="preserve">
+    <value>リフレッシュレートを表示</value>
+  </data>
+  <data name="Opt_Plugin_SelectExtDir" xml:space="preserve">
+    <value>拡張ディレクトリを選択</value>
+  </data>
+  <data name="Opt_PluginDev_SelectOutputDir" xml:space="preserve">
+    <value>出力ディレクトリを選択</value>
+  </data>
+  <data name="Opt_ViewMode_Tree" xml:space="preserve">
+    <value>ツリービュー</value>
+  </data>
+  <data name="Opt_ViewMode_Flat" xml:space="preserve">
+    <value>フラットビュー</value>
+  </data>
+  <data name="Opt_Position_Right" xml:space="preserve">
+    <value>右</value>
+  </data>
+  <data name="Opt_Position_Left" xml:space="preserve">
+    <value>左</value>
+  </data>
+  <data name="Opt_Position_Bottom" xml:space="preserve">
+    <value>下</value>
+  </data>
+  <data name="Opt_Position_Top" xml:space="preserve">
+    <value>上</value>
+  </data>
+  <data name="Opt_Endian_Little" xml:space="preserve">
+    <value>リトルエンディアン</value>
+  </data>
+  <data name="Opt_Endian_Big" xml:space="preserve">
+    <value>ビッグエンディアン</value>
+  </data>
+  <data name="Opt_IndentLevel_1" xml:space="preserve">
+    <value>レベル 1</value>
+  </data>
+  <data name="Opt_IndentLevel_2" xml:space="preserve">
+    <value>レベル 2</value>
+  </data>
+  <data name="Opt_IndentLevel_3" xml:space="preserve">
+    <value>レベル 3</value>
+  </data>
+  <data name="Opt_MdLayout_PreviewRight" xml:space="preserve">
+    <value>右にプレビュー</value>
+  </data>
+  <data name="Opt_MdLayout_PreviewBottom" xml:space="preserve">
+    <value>下にプレビュー</value>
+  </data>
+  <data name="Opt_MdLayout_EditorOnly" xml:space="preserve">
+    <value>エディタのみ</value>
+  </data>
+  <data name="Opt_MdLayout_PreviewOnly" xml:space="preserve">
+    <value>プレビューのみ</value>
+  </data>
+  <data name="Opt_Preview_Label" xml:space="preserve">
+    <value>プレビュー</value>
+  </data>
 </root>

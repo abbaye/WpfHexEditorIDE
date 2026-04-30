@@ -165,4 +165,490 @@
   <data name="Opt_Page_FormatExplorer" xml:space="preserve"><value>Biçim Gezgini</value></data>
   <data name="Opt_Page_CompareFiles" xml:space="preserve"><value>Dosyaları karşılaştır</value></data>
   <data name="Opt_Page_CommandPalette" xml:space="preserve"><value>Komut paleti</value></data>
+  <data name="BuildCompiler_CSharpSection" xml:space="preserve">
+    <value>C# / .NET VARSAYILANLARI</value>
+  </data>
+  <data name="BuildCompiler_NullableCheck" xml:space="preserve">
+    <value>Nullable uyarılarını hata olarak değerlendir (C# 8+)</value>
+  </data>
+  <data name="BuildCompiler_ImplicitUsings" xml:space="preserve">
+    <value>Örtük using'leri etkinleştir (C# 10+)</value>
+  </data>
+  <data name="BuildCompiler_GenerateDocs" xml:space="preserve">
+    <value>XML belgeleme dosyası oluştur</value>
+  </data>
+  <data name="BuildCompiler_WarningsSection" xml:space="preserve">
+    <value>UYARILAR</value>
+  </data>
+  <data name="BuildCompiler_WarnLevelLabel" xml:space="preserve">
+    <value>Varsayılan uyarı düzeyi (0–9):</value>
+  </data>
+  <data name="BuildRun_GeneralSection" xml:space="preserve">
+    <value>GENEL</value>
+  </data>
+  <data name="BuildRun_SaveBeforeBuild" xml:space="preserve">
+    <value>Derlemeden önce tüm değişiklikleri kaydet</value>
+  </data>
+  <data name="BuildRun_VerbosityLabel" xml:space="preserve">
+    <value>Derleme çıktısı ayrıntı düzeyi:</value>
+  </data>
+  <data name="BuildRun_VerbQuiet" xml:space="preserve">
+    <value>Sessiz</value>
+  </data>
+  <data name="BuildRun_VerbMinimal" xml:space="preserve">
+    <value>Minimal</value>
+  </data>
+  <data name="BuildRun_VerbNormal" xml:space="preserve">
+    <value>Normal</value>
+  </data>
+  <data name="BuildRun_VerbDetailed" xml:space="preserve">
+    <value>Ayrıntılı</value>
+  </data>
+  <data name="BuildRun_VerbDiagnostic" xml:space="preserve">
+    <value>Tanılama</value>
+  </data>
+  <data name="BuildRun_RunInProcess" xml:space="preserve">
+    <value>MSBuild'i işlem içinde çalıştır (daha hızlı, önerilen)</value>
+  </data>
+  <data name="BuildRun_MaxParallelLabel" xml:space="preserve">
+    <value>Maksimum paralel proje derlemesi:</value>
+  </data>
+  <data name="BuildRun_OutputSection" xml:space="preserve">
+    <value>ÇIKTI PENCERESİ</value>
+  </data>
+  <data name="BuildRun_ShowOnStart" xml:space="preserve">
+    <value>Derleme başladığında Çıktı penceresini göster</value>
+  </data>
+  <data name="BuildRun_ShowOnError" xml:space="preserve">
+    <value>Derleme hatasında Çıktı penceresini göster</value>
+  </data>
+  <data name="BuildRun_RunSection" xml:space="preserve">
+    <value>ÇALIŞTIR</value>
+  </data>
+  <data name="BuildRun_OnRunBuildErrorLabel" xml:space="preserve">
+    <value>Çalıştırmada, derleme hataları oluştuğunda:</value>
+  </data>
+  <data name="BuildRun_DoNotLaunch" xml:space="preserve">
+    <value>Başlatma</value>
+  </data>
+  <data name="BuildRun_Launch" xml:space="preserve">
+    <value>Başlat</value>
+  </data>
+  <data name="BuildRun_ShowOutputOnRun" xml:space="preserve">
+    <value>Çalıştırma başladığında Çıktı penceresini göster</value>
+  </data>
+  <data name="CodeInlineHints_Section" xml:space="preserve">
+    <value>SATIR İÇİ İPUÇLARI</value>
+  </data>
+  <data name="CodeInlineHints_EnableHints" xml:space="preserve">
+    <value>Satır içi ipuçlarını etkinleştir (bildirimler üzerinde satır içi referans sayılarını göster)</value>
+  </data>
+  <data name="CodeInlineHints_SourceLabel" xml:space="preserve">
+    <value>Referans kaynağı:</value>
+  </data>
+  <data name="CodeInlineHints_SourceAuto" xml:space="preserve">
+    <value>Otomatik (mevcut olduğunda Roslyn, regex yedek)</value>
+  </data>
+  <data name="CodeInlineHints_SourceRoslyn" xml:space="preserve">
+    <value>Yalnızca Roslyn (C# / VB.NET)</value>
+  </data>
+  <data name="CodeInlineHints_SourceRegex" xml:space="preserve">
+    <value>Her zaman regex</value>
+  </data>
+  <data name="CodeInlineHints_RoslynSection" xml:space="preserve">
+    <value>ROSLYN SEMANTİK İPUÇLARI (C# / VB.NET)</value>
+  </data>
+  <data name="CodeInlineHints_RoslynNote" xml:space="preserve">
+    <value>Roslyn etkin dil istemcisi olduğunda çıkarılan türleri ve dönüş türlerini satır içi göster.</value>
+  </data>
+  <data name="CodeInlineHints_ShowVarType" xml:space="preserve">
+    <value>var bildirimleri için çıkarılan türü göster (örn. var x = … → : List&amp;lt;int&amp;gt;)</value>
+  </data>
+  <data name="CodeInlineHints_ShowLambdaReturn" xml:space="preserve">
+    <value>Lambda ifadeleri için dönüş türünü göster (örn. x =&amp;gt; x * 2 → int)</value>
+  </data>
+  <data name="CodeInlineHints_KindsSection" xml:space="preserve">
+    <value>SEMBOL TÜRLERİ İÇİN İPUÇLARINI GÖSTER:</value>
+  </data>
+  <data name="CodeInlineHints_KindsNote" xml:space="preserve">
+    <value>Diğerleri için satır içi ipuçları etkin tutulurken o türün referans sayısı ipuçlarını gizlemek için bir türün işaretini kaldırın.</value>
+  </data>
+  <data name="CodeInlineHints_TypesGroup" xml:space="preserve">
+    <value>Türler</value>
+  </data>
+  <data name="CodeInlineHints_Class" xml:space="preserve">
+    <value>Sınıf</value>
+  </data>
+  <data name="CodeInlineHints_Interface" xml:space="preserve">
+    <value>Arabirim</value>
+  </data>
+  <data name="CodeInlineHints_Struct" xml:space="preserve">
+    <value>Yapı</value>
+  </data>
+  <data name="CodeInlineHints_Enum" xml:space="preserve">
+    <value>Numaralandırma</value>
+  </data>
+  <data name="CodeInlineHints_Record" xml:space="preserve">
+    <value>Kayıt</value>
+  </data>
+  <data name="CodeInlineHints_Delegate" xml:space="preserve">
+    <value>Temsilci</value>
+  </data>
+  <data name="CodeInlineHints_MembersGroup" xml:space="preserve">
+    <value>Üyeler</value>
+  </data>
+  <data name="CodeInlineHints_Method" xml:space="preserve">
+    <value>Yöntem</value>
+  </data>
+  <data name="CodeInlineHints_Constructor" xml:space="preserve">
+    <value>Oluşturucu</value>
+  </data>
+  <data name="CodeInlineHints_Property" xml:space="preserve">
+    <value>Özellik</value>
+  </data>
+  <data name="CodeInlineHints_Field" xml:space="preserve">
+    <value>Alan</value>
+  </data>
+  <data name="CodeInlineHints_Event" xml:space="preserve">
+    <value>Olay</value>
+  </data>
+  <data name="CodeInlineHints_OtherGroup" xml:space="preserve">
+    <value>Diğer</value>
+  </data>
+  <data name="CodeInlineHints_LocalVar" xml:space="preserve">
+    <value>Yerel değişken</value>
+  </data>
+  <data name="CodeInlineHints_Parameter" xml:space="preserve">
+    <value>Parametre</value>
+  </data>
+  <data name="CodeInlineHints_TypeParam" xml:space="preserve">
+    <value>Tür parametresi</value>
+  </data>
+  <data name="CodeInlineHints_Namespace" xml:space="preserve">
+    <value>Ad alanı</value>
+  </data>
+  <data name="CodeInlineHints_SelectAll" xml:space="preserve">
+    <value>Tümünü seç</value>
+  </data>
+  <data name="CodeInlineHints_ClearAll" xml:space="preserve">
+    <value>Tümünü temizle</value>
+  </data>
+  <data name="CodeOpt_FontSection" xml:space="preserve">
+    <value>YAZI TİPİ</value>
+  </data>
+  <data name="CodeOpt_FontFamilyLabel" xml:space="preserve">
+    <value>Yazı tipi ailesi:</value>
+  </data>
+  <data name="CodeOpt_FontSizeLabel" xml:space="preserve">
+    <value>Yazı tipi boyutu (pt):</value>
+  </data>
+  <data name="CodeOpt_IndentSection" xml:space="preserve">
+    <value>GİRİNTİ</value>
+  </data>
+  <data name="CodeOpt_IndentSizeLabel" xml:space="preserve">
+    <value>Girinti boyutu:</value>
+  </data>
+  <data name="CodeOpt_UseSpaces" xml:space="preserve">
+    <value>Sekme karakterleri yerine boşluk ekle</value>
+  </data>
+  <data name="CodeOpt_FeaturesSection" xml:space="preserve">
+    <value>ÖZELLİKLER</value>
+  </data>
+  <data name="CodeOpt_ShowLineNumbers" xml:space="preserve">
+    <value>Satır numaralarını göster</value>
+  </data>
+  <data name="CodeOpt_HighlightCurrentLine" xml:space="preserve">
+    <value>Geçerli satırı vurgula</value>
+  </data>
+  <data name="CodeOpt_CtrlClickLinks" xml:space="preserve">
+    <value>Tanıma git / bağlantıları aç için Ctrl+Tıkla'yı etkinleştir</value>
+  </data>
+  <data name="CodeOpt_DefaultZoomLabel" xml:space="preserve">
+    <value>Varsayılan yakınlaştırma (%):</value>
+  </data>
+  <data name="CodeOpt_MouseWheelLabel" xml:space="preserve">
+    <value>Fare tekerleği hızı:</value>
+  </data>
+  <data name="CodeOpt_ChangesetSection" xml:space="preserve">
+    <value>DEĞİŞİKLİK SETİ (.WHCHG)</value>
+  </data>
+  <data name="CodeOpt_TrackEdits" xml:space="preserve">
+    <value>.whchg eşlik dosyasında düzenlemeleri izle (İzlenen kaydetme modu gerektirir)</value>
+  </data>
+  <data name="CodeOpt_SyntaxSection" xml:space="preserve">
+    <value>SÖZDİZİMİ RENK GEÇERSİZ KILMALARI</value>
+  </data>
+  <data name="CodeOpt_SyntaxNote" xml:space="preserve">
+    <value>Etkin temanın varsayılanını geçersiz kılmak için bir rengi etkinleştirin.</value>
+  </data>
+  <data name="CodeOpt_Background" xml:space="preserve">
+    <value>Arka plan:</value>
+  </data>
+  <data name="CodeOpt_Foreground" xml:space="preserve">
+    <value>Ön plan:</value>
+  </data>
+  <data name="CodeOpt_Keyword" xml:space="preserve">
+    <value>Anahtar sözcük:</value>
+  </data>
+  <data name="CodeOpt_String" xml:space="preserve">
+    <value>Dize:</value>
+  </data>
+  <data name="CodeOpt_Comment" xml:space="preserve">
+    <value>Yorum:</value>
+  </data>
+  <data name="CodeOpt_Number" xml:space="preserve">
+    <value>Sayı:</value>
+  </data>
+  <data name="CodeOpt_Type" xml:space="preserve">
+    <value>Tür:</value>
+  </data>
+  <data name="CodeOpt_Preprocessor" xml:space="preserve">
+    <value>Önişlemci:</value>
+  </data>
+  <data name="CodeOpt_Operator" xml:space="preserve">
+    <value>İşleç:</value>
+  </data>
+  <data name="CodeOpt_Identifier" xml:space="preserve">
+    <value>Tanımlayıcı:</value>
+  </data>
+  <data name="CodeOpt_ResetColors" xml:space="preserve">
+    <value>Tema varsayılanlarına sıfırla</value>
+  </data>
+  <data name="EnvSave_SaveModeSection" xml:space="preserve">
+    <value>Kaydetme modu</value>
+  </data>
+  <data name="EnvSave_DirectMode" xml:space="preserve">
+    <value>Doğrudan mod</value>
+  </data>
+  <data name="EnvSave_TrackedMode" xml:space="preserve">
+    <value>İzlenen mod</value>
+  </data>
+  <data name="EnvSave_AutoSaveSection" xml:space="preserve">
+    <value>Otomatik kaydet</value>
+  </data>
+  <data name="EnvSave_AutoSerialize" xml:space="preserve">
+    <value>Otomatik kaydetmeyi etkinleştir</value>
+  </data>
+  <data name="EnvSave_IntervalLabel" xml:space="preserve">
+    <value>Aralık (saniye)</value>
+  </data>
+  <data name="EnvSave_StandaloneSection" xml:space="preserve">
+    <value>Bağımsız mod</value>
+  </data>
+  <data name="EnvSave_StandaloneNote" xml:space="preserve">
+    <value>Bağımsız modda, her düzenleyici nasıl kaydedileceğini kontrol eder.</value>
+  </data>
+  <data name="EnvSave_HexEditorDirect" xml:space="preserve">
+    <value>Hex düzenleyici: Doğrudan mod</value>
+  </data>
+  <data name="EnvSave_CodeEditorDirect" xml:space="preserve">
+    <value>Kod düzenleyici: Doğrudan mod</value>
+  </data>
+  <data name="EnvSave_TextEditorDirect" xml:space="preserve">
+    <value>Metin düzenleyici: Doğrudan mod</value>
+  </data>
+  <data name="EnvSave_TblEditorDirect" xml:space="preserve">
+    <value>TBL düzenleyici: Doğrudan mod</value>
+  </data>
+  <data name="EnvSave_ImageViewerDirect" xml:space="preserve">
+    <value>Resim görüntüleyici: Doğrudan mod</value>
+  </data>
+  <data name="EnvSave_SaveAsNote" xml:space="preserve">
+    <value>"Farklı kaydet" yeni bir yol seçilmesini gerektirir.</value>
+  </data>
+  <data name="HexBehavior_Section" xml:space="preserve">
+    <value>Hex düzenleyici davranışı</value>
+  </data>
+  <data name="HexBehavior_AllowAutoHighLight" xml:space="preserve">
+    <value>Otomatik vurgulamayı etkinleştir</value>
+  </data>
+  <data name="HexBehavior_AllowAutoSelectDoubleClick" xml:space="preserve">
+    <value>Çift tıklamayla otomatik seçim</value>
+  </data>
+  <data name="HexBehavior_AllowContextMenu" xml:space="preserve">
+    <value>Bağlam menüsünü etkinleştir</value>
+  </data>
+  <data name="HexBehavior_AllowDeleteByte" xml:space="preserve">
+    <value>Bayt silmeye izin ver</value>
+  </data>
+  <data name="HexBehavior_AllowExtend" xml:space="preserve">
+    <value>Genişletmeye izin ver</value>
+  </data>
+  <data name="HexBehavior_FileDroppingConfirmation" xml:space="preserve">
+    <value>Dosya bırakma onayı</value>
+  </data>
+  <data name="HexBehavior_PreloadModeLabel" xml:space="preserve">
+    <value>Ön yükleme modu</value>
+  </data>
+  <data name="HexDisplay_DisplaySection" xml:space="preserve">
+    <value>Görüntüleme ayarları</value>
+  </data>
+  <data name="HexDisplay_BytesPerLineLabel" xml:space="preserve">
+    <value>Satır başına bayt</value>
+  </data>
+  <data name="HexDisplay_ShowOffset" xml:space="preserve">
+    <value>Ofseti göster</value>
+  </data>
+  <data name="HexDisplay_ShowAscii" xml:space="preserve">
+    <value>ASCII sütununu göster</value>
+  </data>
+  <data name="HexDisplay_MouseWheelLabel" xml:space="preserve">
+    <value>Fare tekerleği</value>
+  </data>
+  <data name="HexDisplay_ByteTooltipLabel" xml:space="preserve">
+    <value>Bayt ipucu</value>
+  </data>
+  <data name="HexDisplay_FormatSection" xml:space="preserve">
+    <value>Biçim</value>
+  </data>
+  <data name="HexDisplay_ValueFormatLabel" xml:space="preserve">
+    <value>Değer biçimi</value>
+  </data>
+  <data name="HexDisplay_OffsetFormatLabel" xml:space="preserve">
+    <value>Ofset biçimi</value>
+  </data>
+  <data name="HexDisplay_ByteGroupingLabel" xml:space="preserve">
+    <value>Bayt gruplama</value>
+  </data>
+  <data name="HexDisplay_SpacerPositionLabel" xml:space="preserve">
+    <value>Ayırıcı konumu</value>
+  </data>
+  <data name="HexDisplay_ScrollMarkersSection" xml:space="preserve">
+    <value>Kaydırma işaretçileri</value>
+  </data>
+  <data name="HexDisplay_ShowBookmarkMarkers" xml:space="preserve">
+    <value>Yer imi işaretçilerini göster</value>
+  </data>
+  <data name="HexDisplay_ShowModifiedMarkers" xml:space="preserve">
+    <value>Değiştirme işaretçilerini göster</value>
+  </data>
+  <data name="HexDisplay_ShowInsertedMarkers" xml:space="preserve">
+    <value>Ekleme işaretçilerini göster</value>
+  </data>
+  <data name="HexDisplay_ShowDeletedMarkers" xml:space="preserve">
+    <value>Silme işaretçilerini göster</value>
+  </data>
+  <data name="HexDisplay_ShowSearchResultMarkers" xml:space="preserve">
+    <value>Arama sonucu işaretçilerini göster</value>
+  </data>
+  <data name="HexDisplay_ColumnRowSection" xml:space="preserve">
+    <value>Sütun ve satır vurgulama</value>
+  </data>
+  <data name="HexDisplay_ShowColumnHighlight" xml:space="preserve">
+    <value>Sütun vurgusunu göster</value>
+  </data>
+  <data name="HexDisplay_ShowAsciiColumnHighlight" xml:space="preserve">
+    <value>ASCII sütun vurgusunu göster</value>
+  </data>
+  <data name="HexDisplay_ShowRowHighlight" xml:space="preserve">
+    <value>Satır vurgusunu göster</value>
+  </data>
+  <data name="HexEdit_EditingSection" xml:space="preserve">
+    <value>Düzenleme ayarları</value>
+  </data>
+  <data name="HexEdit_DefaultEditModeLabel" xml:space="preserve">
+    <value>Varsayılan düzenleme modu</value>
+  </data>
+  <data name="HexEdit_MouseWheelLabel" xml:space="preserve">
+    <value>Fare tekerleği</value>
+  </data>
+  <data name="HexEdit_AllowZoom" xml:space="preserve">
+    <value>Yakınlaştırmaya izin ver</value>
+  </data>
+  <data name="HexEdit_AllowFileDrop" xml:space="preserve">
+    <value>Dosya bırakmaya izin ver</value>
+  </data>
+  <data name="HexEdit_DataSection" xml:space="preserve">
+    <value>Veri ayarları</value>
+  </data>
+  <data name="HexEdit_ByteSizeLabel" xml:space="preserve">
+    <value>Bayt boyutu</value>
+  </data>
+  <data name="HexEdit_ByteOrderLabel" xml:space="preserve">
+    <value>Bayt sırası</value>
+  </data>
+  <data name="HexEdit_DefaultCopyFormatLabel" xml:space="preserve">
+    <value>Varsayılan kopyalama biçimi</value>
+  </data>
+  <data name="HexEdit_SpacerVisualLabel" xml:space="preserve">
+    <value>Ayırıcı görünümü</value>
+  </data>
+  <data name="HexStatus_Section" xml:space="preserve">
+    <value>Durum çubuğu</value>
+  </data>
+  <data name="HexStatus_ShowStatusMessage" xml:space="preserve">
+    <value>Durum mesajını göster</value>
+  </data>
+  <data name="HexStatus_ShowFileSize" xml:space="preserve">
+    <value>Dosya boyutunu göster</value>
+  </data>
+  <data name="HexStatus_ShowSelection" xml:space="preserve">
+    <value>Seçimi göster</value>
+  </data>
+  <data name="HexStatus_ShowPosition" xml:space="preserve">
+    <value>Konumu göster</value>
+  </data>
+  <data name="HexStatus_ShowEditMode" xml:space="preserve">
+    <value>Düzenleme modunu göster</value>
+  </data>
+  <data name="HexStatus_ShowBytesPerLine" xml:space="preserve">
+    <value>Satır başına baytı göster</value>
+  </data>
+  <data name="HexStatus_ShowRefreshRate" xml:space="preserve">
+    <value>Yenileme hızını göster</value>
+  </data>
+  <data name="Opt_Plugin_SelectExtDir" xml:space="preserve">
+    <value>Uzantı dizini seç</value>
+  </data>
+  <data name="Opt_PluginDev_SelectOutputDir" xml:space="preserve">
+    <value>Çıktı dizini seç</value>
+  </data>
+  <data name="Opt_ViewMode_Tree" xml:space="preserve">
+    <value>Ağaç görünümü</value>
+  </data>
+  <data name="Opt_ViewMode_Flat" xml:space="preserve">
+    <value>Düz görünüm</value>
+  </data>
+  <data name="Opt_Position_Right" xml:space="preserve">
+    <value>Sağ</value>
+  </data>
+  <data name="Opt_Position_Left" xml:space="preserve">
+    <value>Sol</value>
+  </data>
+  <data name="Opt_Position_Bottom" xml:space="preserve">
+    <value>Alt</value>
+  </data>
+  <data name="Opt_Position_Top" xml:space="preserve">
+    <value>Üst</value>
+  </data>
+  <data name="Opt_Endian_Little" xml:space="preserve">
+    <value>Little-Endian</value>
+  </data>
+  <data name="Opt_Endian_Big" xml:space="preserve">
+    <value>Big-Endian</value>
+  </data>
+  <data name="Opt_IndentLevel_1" xml:space="preserve">
+    <value>Seviye 1</value>
+  </data>
+  <data name="Opt_IndentLevel_2" xml:space="preserve">
+    <value>Seviye 2</value>
+  </data>
+  <data name="Opt_IndentLevel_3" xml:space="preserve">
+    <value>Seviye 3</value>
+  </data>
+  <data name="Opt_MdLayout_PreviewRight" xml:space="preserve">
+    <value>Önizleme sağda</value>
+  </data>
+  <data name="Opt_MdLayout_PreviewBottom" xml:space="preserve">
+    <value>Önizleme altta</value>
+  </data>
+  <data name="Opt_MdLayout_EditorOnly" xml:space="preserve">
+    <value>Yalnızca düzenleyici</value>
+  </data>
+  <data name="Opt_MdLayout_PreviewOnly" xml:space="preserve">
+    <value>Yalnızca önizleme</value>
+  </data>
+  <data name="Opt_Preview_Label" xml:space="preserve">
+    <value>Önizleme</value>
+  </data>
 </root>

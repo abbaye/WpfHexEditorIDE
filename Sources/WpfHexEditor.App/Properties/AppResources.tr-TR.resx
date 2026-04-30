@@ -233,4 +233,550 @@
   <data name="App_Toolbar_SwitchBranch" xml:space="preserve"><value>Dal değiştirmek için tıklayın</value></data>
   <data name="App_Toolbar_UncommittedChanges" xml:space="preserve"><value>Kaydedilmemiş değişiklikler</value></data>
   <data name="App_Toolbar_PluginUpdates" xml:space="preserve"><value>Plugin güncellemeleri mevcut — Marketplace'i açmak için tıklayın</value></data>
+  <data name="App_AddExistingItem" xml:space="preserve">
+    <value>Mevcut öğe ekle</value>
+  </data>
+  <data name="App_Breadcrumb_ProjectNotFound" xml:space="preserve">
+    <value>Proje bulunamadı.</value>
+  </data>
+  <data name="App_Breadcrumb_SolutionNotLoaded" xml:space="preserve">
+    <value>Çözüm yüklenmedi.</value>
+  </data>
+  <data name="App_CodeEditor_MinimapFill" xml:space="preserve">
+    <value>Doldur</value>
+  </data>
+  <data name="App_CodeEditor_MinimapFit" xml:space="preserve">
+    <value>Sığdır</value>
+  </data>
+  <data name="App_CodeEditor_MinimapLeft" xml:space="preserve">
+    <value>Sol</value>
+  </data>
+  <data name="App_CodeEditor_MinimapProportional" xml:space="preserve">
+    <value>Orantılı</value>
+  </data>
+  <data name="App_CodeEditor_MinimapRight" xml:space="preserve">
+    <value>Sağ</value>
+  </data>
+  <data name="App_CompareWithHead" xml:space="preserve">
+    <value>HEAD ile karşılaştır</value>
+  </data>
+  <data name="App_CompareWithHeadNoRepo" xml:space="preserve">
+    <value>Bu dosya için git deposu bulunamadı.</value>
+  </data>
+  <data name="App_CompareWithHeadNoVersion" xml:space="preserve">
+    <value>Git'ten HEAD sürümü çıkarılamadı.</value>
+  </data>
+  <data name="App_Compare_SelectFile" xml:space="preserve">
+    <value>Karşılaştırmak için dosya seçin</value>
+  </data>
+  <data name="App_Comparison_ModeHexText" xml:space="preserve">
+    <value>HexText</value>
+  </data>
+  <data name="App_Comparison_ModeInline" xml:space="preserve">
+    <value>Satır içi</value>
+  </data>
+  <data name="App_Comparison_ModeSideBySide" xml:space="preserve">
+    <value>Yan yana</value>
+  </data>
+  <data name="App_ConfigPage_BuildAll" xml:space="preserve">
+    <value>Tümünü derle</value>
+  </data>
+  <data name="App_ConfigPage_DeployAll" xml:space="preserve">
+    <value>Tümünü dağıt</value>
+  </data>
+  <data name="App_ContextMenu_CompareWithActive" xml:space="preserve">
+    <value>Etkin düzenleyici ile karşılaştır</value>
+  </data>
+  <data name="App_ContextMenu_CompareWithAnother" xml:space="preserve">
+    <value>Başka bir dosyayla karşılaştır…</value>
+  </data>
+  <data name="App_ContextMenu_None" xml:space="preserve">
+    <value>(yok)</value>
+  </data>
+  <data name="App_Convert_AlreadyWhsln" xml:space="preserve">
+    <value>Mevcut çözüm zaten bir .whsln dosyasıdır.</value>
+  </data>
+  <data name="App_Convert_Confirm" xml:space="preserve">
+    <value>"{0}" dosyasını "{1}" olarak dönüştür?{2}{2}Orijinal dosya korunacak.</value>
+  </data>
+  <data name="App_Convert_Failed" xml:space="preserve">
+    <value>Dönüştürme başarısız:{0}{1}</value>
+  </data>
+  <data name="App_Convert_NoLoader" xml:space="preserve">
+    <value>{0} biçimi için kayıtlı yükleyici yok. VS Solution Loader eklentisinin etkin olduğundan emin olun.</value>
+  </data>
+  <data name="App_Convert_NoLoaderSimple" xml:space="preserve">
+    <value>{0} biçimi için kayıtlı yükleyici yok.</value>
+  </data>
+  <data name="App_Convert_NoSolution" xml:space="preserve">
+    <value>Şu anda açık bir çözüm yok.</value>
+  </data>
+  <data name="App_Convert_NotSln" xml:space="preserve">
+    <value>Mevcut çözüm bir .sln dosyası değil.</value>
+  </data>
+  <data name="App_Convert_NotSlnx" xml:space="preserve">
+    <value>Mevcut çözüm bir .slnx dosyası değil.</value>
+  </data>
+  <data name="App_Convert_Success" xml:space="preserve">
+    <value>"{0}" olarak dönüştürüldü.{1}{1}Dönüştürülen çözümü şimdi açmak ister misiniz?</value>
+  </data>
+  <data name="App_Convert_Title" xml:space="preserve">
+    <value>Çözüm biçimini dönüştür</value>
+  </data>
+  <data name="App_Debug_AttachNotAvailable" xml:space="preserve">
+    <value>Hata ayıklayıcı hizmeti kullanılamıyor.</value>
+  </data>
+  <data name="App_Debug_AttachPidPrompt" xml:space="preserve">
+    <value>Eklenecek işlem kimliğini (PID) girin:</value>
+  </data>
+  <data name="App_Debug_AttachTitle" xml:space="preserve">
+    <value>İşleme ekle</value>
+  </data>
+  <data name="App_Debug_BuildFailed" xml:space="preserve">
+    <value>Derleme başarısız. Hata ayıklamadan önce hataları düzeltin.</value>
+  </data>
+  <data name="App_Debug_ExeNotFound" xml:space="preserve">
+    <value>Hata ayıklanacak program bulunamıyor:{0}{1}{0}{0}Proje derlendi ancak çıktı yürütülebilir dosyası bulunamadı.</value>
+  </data>
+  <data name="App_Debug_NoStartupProject" xml:space="preserve">
+    <value>Başlangıç projesi ayarlanmadı. Hata ayıklamadan önce bir tane ayarlayın.</value>
+  </data>
+  <data name="App_Debug_StartTitle" xml:space="preserve">
+    <value>Hata ayıklamayı başlat</value>
+  </data>
+  <data name="App_Debugger_AdapterMissing" xml:space="preserve">
+    <value>Uygun adaptör eklentisini yükleyin veya özel bir adaptör yapılandırın.</value>
+  </data>
+  <data name="App_Debugger_AdapterNotFound" xml:space="preserve">
+    <value>Hata ayıklama adaptörü (netcoredbg) bulunamadı.{0}Yükleyin veya Seçenekler → Hata Ayıklayıcı'da yolu ayarlayın.</value>
+  </data>
+  <data name="App_Debugger_Title" xml:space="preserve">
+    <value>Hata ayıklayıcı</value>
+  </data>
+  <data name="App_DockTitle_ExtensionManager" xml:space="preserve">
+    <value>Uzantı Yöneticisi</value>
+  </data>
+  <data name="App_DockTitle_ExtensionMarketplace" xml:space="preserve">
+    <value>Uzantı Marketi</value>
+  </data>
+  <data name="App_DockTitle_ExtensionsMonitor" xml:space="preserve">
+    <value>Uzantı Monitörü</value>
+  </data>
+  <data name="App_DockTitle_NuGet" xml:space="preserve">
+    <value>NuGet — {0}</value>
+  </data>
+  <data name="App_DockTitle_NuGetSolution" xml:space="preserve">
+    <value>NuGet — {0} (Çözüm)</value>
+  </data>
+  <data name="App_DockTitle_Properties" xml:space="preserve">
+    <value>{0} — Özellikler</value>
+  </data>
+  <data name="App_DockTitle_ReadOnly" xml:space="preserve">
+    <value>WpfHexEditor — {0} [salt okunur biçim v{1}]</value>
+  </data>
+  <data name="App_DockTitle_References" xml:space="preserve">
+    <value>Başvurular — {0}</value>
+  </data>
+  <data name="App_DockTitle_SettingsJson" xml:space="preserve">
+    <value>settings.json</value>
+  </data>
+  <data name="App_DockTitle_Terminal" xml:space="preserve">
+    <value>Terminal</value>
+  </data>
+  <data name="App_Docking_CornerNormal" xml:space="preserve">
+    <value>Normal (keskin köşeler)</value>
+  </data>
+  <data name="App_Docking_CornerRoundedContent" xml:space="preserve">
+    <value>Yuvarlak — Yalnızca içerik alanı</value>
+  </data>
+  <data name="App_Docking_CornerRoundedFull" xml:space="preserve">
+    <value>Yuvarlak — Tam panel çerçevesi</value>
+  </data>
+  <data name="App_Docking_ShadowFullBorder" xml:space="preserve">
+    <value>Tam kenarlık</value>
+  </data>
+  <data name="App_Docking_ShadowGlow" xml:space="preserve">
+    <value>Parıltı</value>
+  </data>
+  <data name="App_Docking_ShadowNone" xml:space="preserve">
+    <value>Yok</value>
+  </data>
+  <data name="App_Docking_ShadowTopBar" xml:space="preserve">
+    <value>Üst çubuk</value>
+  </data>
+  <data name="App_Editor_Encodings" xml:space="preserve">
+    <value>Kodlamalar</value>
+  </data>
+  <data name="App_Editor_FileNotFound" xml:space="preserve">
+    <value>Dosya bulunamadı:{0}{1}</value>
+  </data>
+  <data name="App_Editor_HexEditor" xml:space="preserve">
+    <value>Hex düzenleyici</value>
+  </data>
+  <data name="App_Editor_NewDocumentText" xml:space="preserve">
+    <value>Bu belge: {0}{1}{1}Bu metni düzenleyin...</value>
+  </data>
+  <data name="App_Editor_ProjectTables" xml:space="preserve">
+    <value>Proje tabloları</value>
+  </data>
+  <data name="App_Editor_RefreshPrefix" xml:space="preserve">
+    <value>Yenile:</value>
+  </data>
+  <data name="App_Error" xml:space="preserve">
+    <value>Hata</value>
+  </data>
+  <data name="App_Extensions_SelectOutputDir" xml:space="preserve">
+    <value>Uzantı derleme çıktı dizinini seçin</value>
+  </data>
+  <data name="App_FailedCreateFile" xml:space="preserve">
+    <value>Dosya oluşturulamadı:{0}{1}</value>
+  </data>
+  <data name="App_FailedCreateProject" xml:space="preserve">
+    <value>Proje oluşturulamadı:{0}{1}</value>
+  </data>
+  <data name="App_FailedLoadLayout" xml:space="preserve">
+    <value>Düzen yüklenemedi:{0}{1}</value>
+  </data>
+  <data name="App_FailedWriteTblx" xml:space="preserve">
+    <value>TBLX dosyası yazılamadı:{0}{1}</value>
+  </data>
+  <data name="App_GoTo_EnterOffset" xml:space="preserve">
+    <value>Lütfen bir ofset girin.</value>
+  </data>
+  <data name="App_GoTo_InvalidDecimal" xml:space="preserve">
+    <value>Geçersiz ondalık değer.</value>
+  </data>
+  <data name="App_GoTo_InvalidHex" xml:space="preserve">
+    <value>Geçersiz onaltılık değer.</value>
+  </data>
+  <data name="App_GoTo_OffsetNonNegative" xml:space="preserve">
+    <value>Ofset negatif olmayan bir değer olmalıdır.</value>
+  </data>
+  <data name="App_ImportIntoProject" xml:space="preserve">
+    <value>Projeye aktar</value>
+  </data>
+  <data name="App_ImportIntoProjectMessage" xml:space="preserve">
+    <value>"{0}" proje dizinine kopyalansın mı?{1}{2}{1}Orijinal dosya silinmeyecek.</value>
+  </data>
+  <data name="App_InfoBar_Disable" xml:space="preserve">
+    <value>Devre dışı bırak</value>
+  </data>
+  <data name="App_InfoBar_HexEditor" xml:space="preserve">
+    <value>Hex düzenleyici</value>
+  </data>
+  <data name="App_InfoBar_Ignore" xml:space="preserve">
+    <value>Yoksay</value>
+  </data>
+  <data name="App_InfoBar_KeepEdits" xml:space="preserve">
+    <value>Düzenlemelerimi sakla</value>
+  </data>
+  <data name="App_InfoBar_Reload" xml:space="preserve">
+    <value>Yeniden yükle</value>
+  </data>
+  <data name="App_InfoBar_Restart" xml:space="preserve">
+    <value>Yeniden başlat</value>
+  </data>
+  <data name="App_JumpList_RecentFiles" xml:space="preserve">
+    <value>Son dosyalar</value>
+  </data>
+  <data name="App_JumpList_RecentProjects" xml:space="preserve">
+    <value>Son projeler</value>
+  </data>
+  <data name="App_LSP_LoadAssembly" xml:space="preserve">
+    <value>Ayrıştırılmış kaynağa gitmek için Assembly Explorer'da derlemeyi yükleyin.</value>
+  </data>
+  <data name="App_LSP_TryOpenFile" xml:space="preserve">
+    <value>Bildirim dosyasını doğrudan açmayı deneyin veya LSP sunucusunun çalıştığından emin olun.</value>
+  </data>
+  <data name="App_Lsp_ClangdFailed" xml:space="preserve">
+    <value>clangd indirme başarısız</value>
+  </data>
+  <data name="App_Lsp_ClangdReady" xml:space="preserve">
+    <value>clangd hazır</value>
+  </data>
+  <data name="App_Lsp_CppNotInstalled" xml:space="preserve">
+    <value>C/C++ LSP sunucusu yüklü değil</value>
+  </data>
+  <data name="App_Lsp_ErrorTitle" xml:space="preserve">
+    <value>LSP hatası</value>
+  </data>
+  <data name="App_Notifications_ClearAll" xml:space="preserve">
+    <value>Tümünü temizle</value>
+  </data>
+  <data name="App_Notifications_Empty" xml:space="preserve">
+    <value>Bildirim yok</value>
+  </data>
+  <data name="App_Notifications_Title" xml:space="preserve">
+    <value>Bildirimler</value>
+  </data>
+  <data name="App_Options_AllSettings" xml:space="preserve">
+    <value>Tüm ayarlar</value>
+  </data>
+  <data name="App_Options_AutoExportBreakpoints" xml:space="preserve">
+    <value>Kaydederken kesme noktalarını otomatik olarak VS XML'e dışa aktar</value>
+  </data>
+  <data name="App_Options_AutoImportBreakpoints" xml:space="preserve">
+    <value>İlk çözüm açılışında VS kesme noktalarını otomatik olarak içe aktar</value>
+  </data>
+  <data name="App_Options_AutoReload" xml:space="preserve">
+    <value>Değiştirilen dosyaları sormadan otomatik olarak yeniden yükle</value>
+  </data>
+  <data name="App_Options_Browse" xml:space="preserve">
+    <value>Gözat…</value>
+  </data>
+  <data name="App_Options_ClearAll" xml:space="preserve">
+    <value>Tümünü temizle</value>
+  </data>
+  <data name="App_Options_ClearHistory" xml:space="preserve">
+    <value>Geçmişi temizle</value>
+  </data>
+  <data name="App_Options_CollapseIdentical" xml:space="preserve">
+    <value>Özdeş bölgeleri daralt</value>
+  </data>
+  <data name="App_Options_CommandsDefault" xml:space="preserve">
+    <value>Komutlar (varsayılan)</value>
+  </data>
+  <data name="App_Options_DetectExternalChanges" xml:space="preserve">
+    <value>IDE dışında dosyalar değiştirildiğinde algıla</value>
+  </data>
+  <data name="App_Options_DockedPanel" xml:space="preserve">
+    <value>Sabitlenmiş panel (varsayılan)</value>
+  </data>
+  <data name="App_Options_EnableDockAnimations" xml:space="preserve">
+    <value>Yerleştirme animasyonlarını etkinleştir</value>
+  </data>
+  <data name="App_Options_EnableTabPreview" xml:space="preserve">
+    <value>Sekme üzerinde önizlemeyi etkinleştir</value>
+  </data>
+  <data name="App_Options_EnableTabPreviewHover" xml:space="preserve">
+    <value>Üzerine gelindiğinde sekme önizlemesini etkinleştir</value>
+  </data>
+  <data name="App_Options_HighlightBreakpoints" xml:space="preserve">
+    <value>Düzenleyicide kesme noktası satırlarını vurgula (kırmızı/turuncu/gri ton)</value>
+  </data>
+  <data name="App_Options_HighlightCharDiff" xml:space="preserve">
+    <value>Değiştirilen satırlardaki karakter düzeyi farklılıklarını vurgula (≤ 500 karakter)</value>
+  </data>
+  <data name="App_Options_InlinePopup" xml:space="preserve">
+    <value>Satır içi açılır pencere</value>
+  </data>
+  <data name="App_Options_KbCategory" xml:space="preserve">
+    <value>Kategori</value>
+  </data>
+  <data name="App_Options_KbCommand" xml:space="preserve">
+    <value>Komut</value>
+  </data>
+  <data name="App_Options_KbDefault" xml:space="preserve">
+    <value>Varsayılan</value>
+  </data>
+  <data name="App_Options_KbShortcut" xml:space="preserve">
+    <value>Kısayol</value>
+  </data>
+  <data name="App_Options_LspArguments" xml:space="preserve">
+    <value>Bağımsız değişkenler</value>
+  </data>
+  <data name="App_Options_LspEnabled" xml:space="preserve">
+    <value>Etkin</value>
+  </data>
+  <data name="App_Options_LspExecutable" xml:space="preserve">
+    <value>Yürütülebilir</value>
+  </data>
+  <data name="App_Options_LspExtensions" xml:space="preserve">
+    <value>Uzantılar</value>
+  </data>
+  <data name="App_Options_LspLanguageId" xml:space="preserve">
+    <value>Dil kimliği</value>
+  </data>
+  <data name="App_Options_LspNotActive" xml:space="preserve">
+    <value>LSP etkin değil</value>
+  </data>
+  <data name="App_Options_LspSearching" xml:space="preserve">
+    <value>Aranıyor…</value>
+  </data>
+  <data name="App_Options_LspSource" xml:space="preserve">
+    <value>Kaynak</value>
+  </data>
+  <data name="App_Options_LspTypeToSearch" xml:space="preserve">
+    <value>Çalışma alanı sembollerini aramak için yazın</value>
+  </data>
+  <data name="App_Options_PromptSaveWorkspace" xml:space="preserve">
+    <value>Kapatmadan önce çalışma alanını kaydetme isteği</value>
+  </data>
+  <data name="App_Options_ResetAllOverrides" xml:space="preserve">
+    <value>Tüm geçersiz kılmaları sıfırla</value>
+  </data>
+  <data name="App_Options_ResetOverrides" xml:space="preserve">
+    <value>Geçersiz kılmaları sıfırla</value>
+  </data>
+  <data name="App_Options_ResetToDefaults" xml:space="preserve">
+    <value>Varsayılanlara sıfırla</value>
+  </data>
+  <data name="App_Options_RestoreSolution" xml:space="preserve">
+    <value>Çözümü geri yükle</value>
+  </data>
+  <data name="App_Options_RestoreTabs" xml:space="preserve">
+    <value>Açık düzenleyici sekmelerini geri yükle</value>
+  </data>
+  <data name="App_Options_RestoreTheme" xml:space="preserve">
+    <value>Temayı geri yükle</value>
+  </data>
+  <data name="App_Options_Save" xml:space="preserve">
+    <value>Kaydet</value>
+  </data>
+  <data name="App_Options_SavedComparisons" xml:space="preserve">
+    <value>Kaydedilen karşılaştırmalar</value>
+  </data>
+  <data name="App_Options_ScrollTabRows" xml:space="preserve">
+    <value>Sekme satırlarını fare tekerleğiyle kaydır</value>
+  </data>
+  <data name="App_Options_SelectDebugAdapter" xml:space="preserve">
+    <value>Hata ayıklama bağdaştırıcısı yürütülebilir dosyasını seçin</value>
+  </data>
+  <data name="App_Options_SelectLspExecutable" xml:space="preserve">
+    <value>LSP sunucusu yürütülebilir dosyasını seçin</value>
+  </data>
+  <data name="App_Options_ShowFileNameBelowPreview" xml:space="preserve">
+    <value>Önizlemenin altında dosya adını göster</value>
+  </data>
+  <data name="App_Options_ShowFilenameFooter" xml:space="preserve">
+    <value>Alt bilgide dosya adını göster</value>
+  </data>
+  <data name="App_Options_ShowMinimap" xml:space="preserve">
+    <value>Mini haritayı göster</value>
+  </data>
+  <data name="App_Options_ShowReturnValues" xml:space="preserve">
+    <value>Her adımdan sonra Yerel değişkenlerde dönüş değerlerini göster</value>
+  </data>
+  <data name="App_Options_StopAtEntry" xml:space="preserve">
+    <value>Program giriş noktasında dur (Main)</value>
+  </data>
+  <data name="App_Options_WrapTabs" xml:space="preserve">
+    <value>Sekmeleri ek satırlara sar (çok satırlı)</value>
+  </data>
+  <data name="App_PanelFormatCatalog" xml:space="preserve">
+    <value>Biçim Kataloğu</value>
+  </data>
+  <data name="App_PanelOptions" xml:space="preserve">
+    <value>Seçenekler</value>
+  </data>
+  <data name="App_PasteConflict_EnterFileName" xml:space="preserve">
+    <value>Lütfen bir dosya adı girin.</value>
+  </data>
+  <data name="App_PasteConflict_InvalidChars" xml:space="preserve">
+    <value>Ad geçersiz karakterler içeriyor.</value>
+  </data>
+  <data name="App_RemoveFolderMessage" xml:space="preserve">
+    <value>'{0}' klasörü projeden kaldırılsın mı?{1}İçindeki öğeler proje kökünde tutulacak. Fiziksel dizin silinmeyecek.</value>
+  </data>
+  <data name="App_RemoveSolutionFolderMessage" xml:space="preserve">
+    <value>'{0}' çözüm klasörü kaldırılsın mı?{1}İçindeki projeler çözüm kökünde tutulacak.</value>
+  </data>
+  <data name="App_SaveAs" xml:space="preserve">
+    <value>Farklı kaydet</value>
+  </data>
+  <data name="App_SelectEntropyFile" xml:space="preserve">
+    <value>Entropi analizi için dosya seçin</value>
+  </data>
+  <data name="App_SourceFiles_SelectFolder" xml:space="preserve">
+    <value>Bir kaynak klasör seçin</value>
+  </data>
+  <data name="App_StartupProjects_CurrentSelection" xml:space="preserve">
+    <value>Geçerli seçim</value>
+  </data>
+  <data name="App_StartupProjects_LaunchProfiles" xml:space="preserve">
+    <value>Başlatma profilleri</value>
+  </data>
+  <data name="App_StartupProjects_MultipleProjects" xml:space="preserve">
+    <value>Birden fazla başlangıç projesi:</value>
+  </data>
+  <data name="App_StartupProjects_SingleProject" xml:space="preserve">
+    <value>Tek başlangıç projesi:</value>
+  </data>
+  <data name="App_Tabs_GroupByExtension" xml:space="preserve">
+    <value>Dosya uzantısına göre</value>
+  </data>
+  <data name="App_Tabs_GroupByProject" xml:space="preserve">
+    <value>Projeye göre</value>
+  </data>
+  <data name="App_Tabs_GroupByRegex" xml:space="preserve">
+    <value>Regex kuralına göre</value>
+  </data>
+  <data name="App_Tabs_PositionLeft" xml:space="preserve">
+    <value>Sol</value>
+  </data>
+  <data name="App_Tabs_PositionNone" xml:space="preserve">
+    <value>Hiçbiri</value>
+  </data>
+  <data name="App_Tabs_PositionRight" xml:space="preserve">
+    <value>Sağ</value>
+  </data>
+  <data name="App_Tabs_PositionTop" xml:space="preserve">
+    <value>Üst</value>
+  </data>
+  <data name="App_TblImport_Failed" xml:space="preserve">
+    <value>TBL dosyası yüklenemedi:{0}{1}</value>
+  </data>
+  <data name="App_UpgradeFailedMessage" xml:space="preserve">
+    <value>Yükseltme başarısız: {0}</value>
+  </data>
+  <data name="App_UpgradeMessagePattern" xml:space="preserve">
+    <value>Aşağıdaki dosyalar v{1}'e yükseltilecek eski bir biçim (v{0}) kullanıyor:{2}{2}  • {3}{2}{2}Her dosya için bir yedek (.v{0}.bak) oluşturulacak.{2}{2}Şimdi yükselt?</value>
+  </data>
+  <data name="App_ViewMenu_ByDockSide" xml:space="preserve">
+    <value>Yerleştirme tarafına göre</value>
+  </data>
+  <data name="App_ViewMenu_Categorized" xml:space="preserve">
+    <value>Kategorize edilmiş</value>
+  </data>
+  <data name="App_ViewMenu_Flat" xml:space="preserve">
+    <value>Düz (Klasik)</value>
+  </data>
+  <data name="App_ViewMenu_OrganizeBy" xml:space="preserve">
+    <value>Düzenle...</value>
+  </data>
+  <data name="App_ViewMenu_PinToViewMenu" xml:space="preserve">
+    <value>Görünüm menüsüne sabitle</value>
+  </data>
+  <data name="App_ViewMenu_SortAlphabetical" xml:space="preserve">
+    <value>Alfabetik</value>
+  </data>
+  <data name="App_ViewMenu_SortByFrequency" xml:space="preserve">
+    <value>Sıklığa göre</value>
+  </data>
+  <data name="App_ViewMenu_SortCustom" xml:space="preserve">
+    <value>Özel</value>
+  </data>
+  <data name="App_ViewMenu_UnpinFromViewMenu" xml:space="preserve">
+    <value>Görünüm menüsünden kaldır</value>
+  </data>
+  <data name="App_Welcome_ChangelogUnavailable" xml:space="preserve">
+    <value>Değişiklik günlüğü kullanılamıyor — bağlantınızı kontrol edin.</value>
+  </data>
+  <data name="App_Welcome_VersionDev" xml:space="preserve">
+    <value>Geliştirici derlemesi</value>
+  </data>
+  <data name="App_Workspace_CloseSavePrompt" xml:space="preserve">
+    <value>Kapatmadan önce '{0}' çalışma alanı kaydedilsin mi?</value>
+  </data>
+  <data name="App_Workspace_CloseTitle" xml:space="preserve">
+    <value>Çalışma alanını kapat</value>
+  </data>
+  <data name="App_Workspace_NewFailed" xml:space="preserve">
+    <value>Çalışma alanı oluşturulamadı:{0}{1}</value>
+  </data>
+  <data name="App_Workspace_NewTitle" xml:space="preserve">
+    <value>Yeni çalışma alanı</value>
+  </data>
+  <data name="App_Workspace_OpenFailed" xml:space="preserve">
+    <value>Çalışma alanı açılamadı:{0}{1}</value>
+  </data>
+  <data name="App_Workspace_OpenTitle" xml:space="preserve">
+    <value>Çalışma alanını aç</value>
+  </data>
+  <data name="App_Workspace_SaveAsTitle" xml:space="preserve">
+    <value>Çalışma alanını farklı kaydet</value>
+  </data>
+  <data name="App_Workspace_SaveFailed" xml:space="preserve">
+    <value>Çalışma alanı kaydedilemedi:{0}{1}</value>
+  </data>
 </root>

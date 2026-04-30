@@ -1109,4 +1109,705 @@
     <value>Show Statistics</value>
     <comment>Bar Chart - Display statistics overlay (Total, Max, Entropy)</comment>
   </data>
+  <data name="RelativeSearchMenuString" xml:space="preserve">
+    <value>Göreceli arama...</value>
+  </data>
+  <data name="RelativeSearchString" xml:space="preserve">
+    <value>Göreceli arama - Kodlama keşfi</value>
+  </data>
+  <data name="RelativeSearchKnownTextString" xml:space="preserve">
+    <value>Bilinen metin:</value>
+  </data>
+  <data name="RelativeSearchSearchButtonString" xml:space="preserve">
+    <value>Ara</value>
+  </data>
+  <data name="RelativeSearchUseParallelString" xml:space="preserve">
+    <value>Paralel arama kullan</value>
+  </data>
+  <data name="RelativeSearchMinMatchesString" xml:space="preserve">
+    <value>Min. eşleşme:</value>
+  </data>
+  <data name="RelativeSearchMaxProposalsString" xml:space="preserve">
+    <value>Maks. öneri:</value>
+  </data>
+  <data name="RelativeSearchTblLoadedString" xml:space="preserve">
+    <value>TBL yüklendi: {0} girdi (doğrulama için kullanılacak)</value>
+  </data>
+  <data name="RelativeSearchNoTblString" xml:space="preserve">
+    <value>TBL yüklü değil (öneriler bağımsız olarak puanlanır)</value>
+  </data>
+  <data name="RelativeSearchProposalsHeaderString" xml:space="preserve">
+    <value>Kodlama önerileri</value>
+  </data>
+  <data name="RelativeSearchOffsetColumnString" xml:space="preserve">
+    <value>Konum</value>
+  </data>
+  <data name="RelativeSearchScoreColumnString" xml:space="preserve">
+    <value>Puan</value>
+  </data>
+  <data name="RelativeSearchMatchesColumnString" xml:space="preserve">
+    <value>Eşleşmeler</value>
+  </data>
+  <data name="RelativeSearchSampleColumnString" xml:space="preserve">
+    <value>Örnek metin</value>
+  </data>
+  <data name="RelativeSearchPreviewHeaderString" xml:space="preserve">
+    <value>Önizleme (kodu çözülen metin)</value>
+  </data>
+  <data name="RelativeSearchMatchPositionsString" xml:space="preserve">
+    <value>Eşleşmeler:</value>
+  </data>
+  <data name="RelativeSearchExportTblString" xml:space="preserve">
+    <value>TBL'ye aktar</value>
+  </data>
+  <data name="RelativeSearchNavigateString" xml:space="preserve">
+    <value>Eşleşmeye git</value>
+  </data>
+  <data name="RelativeSearchSearchingString" xml:space="preserve">
+    <value>256 kodlama konumu aranıyor...</value>
+  </data>
+  <data name="RelativeSearchFoundProposalsString" xml:space="preserve">
+    <value>{1} ms'de {0} öneri bulundu</value>
+  </data>
+  <data name="RelativeSearchFoundWithValidationString" xml:space="preserve">
+    <value>{1} ms'de {0} öneri bulundu (üst eşleşme, yüklü TBL tarafından doğrulandı!)</value>
+  </data>
+  <data name="RelativeSearchSearchingWithTblString" xml:space="preserve">
+    <value>256 konum aranıyor ({0} TBL girdisine karşı doğrulanıyor)...</value>
+  </data>
+  <data name="RelativeSearchCancelledString" xml:space="preserve">
+    <value>Arama iptal edildi</value>
+  </data>
+  <data name="RelativeSearchNoProposalsString" xml:space="preserve">
+    <value>Kodlama önerisi bulunamadı. Farklı bir arama metni deneyin.</value>
+  </data>
+  <data name="RelativeSearchNoFileOpenString" xml:space="preserve">
+    <value>Açık dosya yok</value>
+  </data>
+  <data name="RelativeSearchKnownTextTooltipString" xml:space="preserve">
+    <value>ROM'da geçtiğini bildiğiniz metni girin (örn. "World", "Start", "Hero")</value>
+  </data>
+  <data name="RelativeSearchExportTooltipString" xml:space="preserve">
+    <value>Seçili kodlama önerisini TBL dosyası olarak kaydet</value>
+  </data>
+  <data name="TblConflict_Title" xml:space="preserve">
+    <value>TBL Çakışma Analizi Raporu</value>
+  </data>
+  <data name="TblConflict_TotalConflicts" xml:space="preserve">
+    <value>Toplam çakışma:</value>
+  </data>
+  <data name="TblConflict_Errors" xml:space="preserve">
+    <value>Hatalar:</value>
+  </data>
+  <data name="TblConflict_Warnings" xml:space="preserve">
+    <value>Uyarılar:</value>
+  </data>
+  <data name="TblConflict_Info" xml:space="preserve">
+    <value>Bilgi:</value>
+  </data>
+  <data name="TblConflict_Description" xml:space="preserve">
+    <value>Açıklama:</value>
+  </data>
+  <data name="TblConflict_Suggestion" xml:space="preserve">
+    <value>Önerilen çözüm:</value>
+  </data>
+  <data name="TblConflict_ConflictingEntries" xml:space="preserve">
+    <value>Çakışan girdiler:</value>
+  </data>
+  <data name="TblTemplate_Title" xml:space="preserve">
+    <value>TBL Şablonları</value>
+  </data>
+  <data name="TblTemplate_Categories" xml:space="preserve">
+    <value>Kategoriler</value>
+  </data>
+  <data name="TblTemplate_AvailableTemplates" xml:space="preserve">
+    <value>Mevcut şablonlar</value>
+  </data>
+  <data name="TblTemplate_Preview" xml:space="preserve">
+    <value>Önizleme</value>
+  </data>
+  <data name="TblTemplate_LoadTemplate" xml:space="preserve">
+    <value>Şablonu yükle</value>
+  </data>
+  <data name="TblTemplate_MergeWithCurrent" xml:space="preserve">
+    <value>Geçerliyle birleştir</value>
+  </data>
+  <data name="TblTemplate_BuiltIn" xml:space="preserve">
+    <value>Yerleşik</value>
+  </data>
+  <data name="PatternAnalysis_Title" xml:space="preserve">
+    <value>Desen Analizi</value>
+  </data>
+  <data name="PatternAnalysis_Entropy" xml:space="preserve">
+    <value>Entropi</value>
+  </data>
+  <data name="PatternAnalysis_ByteDistribution" xml:space="preserve">
+    <value>Bayt dağılımı</value>
+  </data>
+  <data name="PatternAnalysis_DetectedPatterns" xml:space="preserve">
+    <value>Algılanan desenler</value>
+  </data>
+  <data name="PatternAnalysis_NoPatternsDetected" xml:space="preserve">
+    <value>Desen algılanmadı</value>
+  </data>
+  <data name="PatternAnalysis_Anomalies" xml:space="preserve">
+    <value>Anomaliler</value>
+  </data>
+  <data name="PatternAnalysis_NoAnomalies" xml:space="preserve">
+    <value>Anomali algılanmadı</value>
+  </data>
+  <data name="PatternAnalysis_BitsPerByte" xml:space="preserve">
+    <value>bit/bayt</value>
+  </data>
+  <data name="PatternAnalysis_HighEntropy" xml:space="preserve">
+    <value>Yüksek entropi tespit edildi</value>
+  </data>
+  <data name="PatternAnalysis_HighEntropyDesc" xml:space="preserve">
+    <value>Veriler sıkıştırılmış veya şifrelenmiş görünüyor</value>
+  </data>
+  <data name="PatternAnalysis_LowEntropy" xml:space="preserve">
+    <value>Çok düşük entropi tespit edildi</value>
+  </data>
+  <data name="PatternAnalysis_LowEntropyDesc" xml:space="preserve">
+    <value>Veriler birçok tekrarlanan veya benzer bayt içeriyor</value>
+  </data>
+  <data name="PatternAnalysis_SkewedDistribution" xml:space="preserve">
+    <value>Çarpık bayt dağılımı</value>
+  </data>
+  <data name="PatternAnalysis_SkewedDesc" xml:space="preserve">
+    <value>Bir bayt değeri zamanın %20'sinden fazlasında görünüyor</value>
+  </data>
+  <data name="PatternAnalysis_NullBytes" xml:space="preserve">
+    <value>NULL baytlar (0x00)</value>
+  </data>
+  <data name="PatternAnalysis_RepeatedSequence" xml:space="preserve">
+    <value>Tekrarlanan dizi</value>
+  </data>
+  <data name="PatternAnalysis_AsciiText" xml:space="preserve">
+    <value>ASCII metin algılandı</value>
+  </data>
+  <data name="FileStats_Title" xml:space="preserve">
+    <value>Dosya İstatistikleri</value>
+  </data>
+  <data name="FileStats_OverallHealth" xml:space="preserve">
+    <value>Genel sağlık</value>
+  </data>
+  <data name="FileStats_HealthyStructure" xml:space="preserve">
+    <value>Dosya yapısı geçerli ve sağlıklı</value>
+  </data>
+  <data name="FileStats_Structure" xml:space="preserve">
+    <value>Yapı</value>
+  </data>
+  <data name="FileStats_Valid" xml:space="preserve">
+    <value>Geçerli</value>
+  </data>
+  <data name="FileStats_Invalid" xml:space="preserve">
+    <value>Geçersiz</value>
+  </data>
+  <data name="FileStats_Checksums" xml:space="preserve">
+    <value>Sağlama toplamları</value>
+  </data>
+  <data name="FileStats_AllPass" xml:space="preserve">
+    <value>Tümü geçti</value>
+  </data>
+  <data name="FileStats_SomeFailed" xml:space="preserve">
+    <value>Bazı sağlama toplamları başarısız</value>
+  </data>
+  <data name="FileStats_Compression" xml:space="preserve">
+    <value>Sıkıştırma</value>
+  </data>
+  <data name="FileStats_Ratio" xml:space="preserve">
+    <value>Oran:</value>
+  </data>
+  <data name="FileStats_SubOptimalCompression" xml:space="preserve">
+    <value>Yetersiz sıkıştırma</value>
+  </data>
+  <data name="FileStats_EntropyAnalysis" xml:space="preserve">
+    <value>Entropi analizi</value>
+  </data>
+  <data name="FileStats_Level" xml:space="preserve">
+    <value>Düzey:</value>
+  </data>
+  <data name="FileStats_CompressedOrEncrypted" xml:space="preserve">
+    <value>Büyük olasılıkla sıkıştırılmış veya şifrelenmiş veriler</value>
+  </data>
+  <data name="FileStats_DetectedIssues" xml:space="preserve">
+    <value>Algılanan sorunlar</value>
+  </data>
+  <data name="FileStats_NoIssues" xml:space="preserve">
+    <value>Sorun algılanmadı</value>
+  </data>
+  <data name="FileStats_FileInformation" xml:space="preserve">
+    <value>Dosya bilgileri</value>
+  </data>
+  <data name="FileStats_Size" xml:space="preserve">
+    <value>Boyut:</value>
+  </data>
+  <data name="FileStats_Fields" xml:space="preserve">
+    <value>Alanlar:</value>
+  </data>
+  <data name="FileStats_Format" xml:space="preserve">
+    <value>Biçim:</value>
+  </data>
+  <data name="FileStats_Unknown" xml:space="preserve">
+    <value>Bilinmiyor</value>
+  </data>
+  <data name="ArchiveStructure_Title" xml:space="preserve">
+    <value>Arşiv Yapısı</value>
+  </data>
+  <data name="ArchiveStructure_NoArchive" xml:space="preserve">
+    <value>Yüklü arşiv yok</value>
+  </data>
+  <data name="ArchiveStructure_Extract" xml:space="preserve">
+    <value>Çıkar...</value>
+  </data>
+  <data name="ArchiveStructure_ViewDetails" xml:space="preserve">
+    <value>Ayrıntıları görüntüle</value>
+  </data>
+  <data name="ArchiveStructure_ExpandAll" xml:space="preserve">
+    <value>Tümünü genişlet</value>
+  </data>
+  <data name="ArchiveStructure_CollapseAll" xml:space="preserve">
+    <value>Tümünü daralt</value>
+  </data>
+  <data name="ArchiveStructure_Files" xml:space="preserve">
+    <value>dosya</value>
+  </data>
+  <data name="ArchiveStructure_Folders" xml:space="preserve">
+    <value>klasör</value>
+  </data>
+  <data name="ArchiveStructure_TotalSize" xml:space="preserve">
+    <value>Toplam boyut:</value>
+  </data>
+  <data name="ArchiveStructure_CompressionRatio" xml:space="preserve">
+    <value>Oran:</value>
+  </data>
+  <data name="ArchiveStructure_ExtractFunctionality" xml:space="preserve">
+    <value>Çıkarma işlevi - arşiv kütüphanesiyle uygulanacak</value>
+  </data>
+  <data name="ArchiveStructure_ExtractTitle" xml:space="preserve">
+    <value>Çıkar</value>
+  </data>
+  <data name="ArchiveStructure_DetailsTitle" xml:space="preserve">
+    <value>Ayrıntılar</value>
+  </data>
+  <data name="ArchiveStructure_DetailName" xml:space="preserve">
+    <value>Ad:</value>
+  </data>
+  <data name="ArchiveStructure_DetailType" xml:space="preserve">
+    <value>Tür:</value>
+  </data>
+  <data name="ArchiveStructure_DetailFolder" xml:space="preserve">
+    <value>Klasör</value>
+  </data>
+  <data name="ArchiveStructure_DetailFile" xml:space="preserve">
+    <value>Dosya</value>
+  </data>
+  <data name="ArchiveStructure_DetailCompressed" xml:space="preserve">
+    <value>Sıkıştırılmış:</value>
+  </data>
+  <data name="ArchiveStructure_DetailCRC" xml:space="preserve">
+    <value>CRC:</value>
+  </data>
+  <data name="ArchiveStructure_DetailMethod" xml:space="preserve">
+    <value>Yöntem:</value>
+  </data>
+  <data name="FileComparison_Title" xml:space="preserve">
+    <value>Dosya Karşılaştırma</value>
+  </data>
+  <data name="FileComparison_SelectFiles" xml:space="preserve">
+    <value>Karşılaştırılacak dosyaları seçin</value>
+  </data>
+  <data name="FileComparison_LoadFile1" xml:space="preserve">
+    <value>Dosya 1'i yükle...</value>
+  </data>
+  <data name="FileComparison_LoadFile2" xml:space="preserve">
+    <value>Dosya 2'yi yükle...</value>
+  </data>
+  <data name="FileComparison_File1" xml:space="preserve">
+    <value>Dosya 1</value>
+  </data>
+  <data name="FileComparison_File2" xml:space="preserve">
+    <value>Dosya 2</value>
+  </data>
+  <data name="FileComparison_Matching" xml:space="preserve">
+    <value>Eşleşen:</value>
+  </data>
+  <data name="FileComparison_Added" xml:space="preserve">
+    <value>Eklendi:</value>
+  </data>
+  <data name="FileComparison_Modified" xml:space="preserve">
+    <value>Değiştirildi:</value>
+  </data>
+  <data name="FileComparison_Removed" xml:space="preserve">
+    <value>Kaldırıldı:</value>
+  </data>
+  <data name="FileComparison_SelectFile1" xml:space="preserve">
+    <value>Karşılaştırılacak dosya 1'i seçin</value>
+  </data>
+  <data name="FileComparison_SelectFile2" xml:space="preserve">
+    <value>Karşılaştırılacak dosya 2'yi seçin</value>
+  </data>
+  <data name="FileComparison_AllFiles" xml:space="preserve">
+    <value>Tüm dosyalar (*.*)|*.*</value>
+  </data>
+  <data name="FileComparison_ErrorLoading" xml:space="preserve">
+    <value>Dosya yüklenirken hata: {0}</value>
+  </data>
+  <data name="FileComparison_Error" xml:space="preserve">
+    <value>Hata</value>
+  </data>
+  <data name="FileComparison_SelectBothFiles" xml:space="preserve">
+    <value>Karşılaştırılacak her iki dosyayı da seçin</value>
+  </data>
+  <data name="FileComparison_Comparing" xml:space="preserve">
+    <value>{0} ↔ {1} karşılaştırılıyor</value>
+  </data>
+  <data name="CustomTemplate_Title" xml:space="preserve">
+    <value>Şablonlar</value>
+  </data>
+  <data name="CustomTemplate_NewTemplate" xml:space="preserve">
+    <value>Yeni şablon</value>
+  </data>
+  <data name="CustomTemplate_DeleteTemplate" xml:space="preserve">
+    <value>Şablonu sil</value>
+  </data>
+  <data name="CustomTemplate_EditorTitle" xml:space="preserve">
+    <value>Şablon düzenleyici</value>
+  </data>
+  <data name="CustomTemplate_Name" xml:space="preserve">
+    <value>Ad:</value>
+  </data>
+  <data name="CustomTemplate_Description" xml:space="preserve">
+    <value>Açıklama:</value>
+  </data>
+  <data name="CustomTemplate_Extensions" xml:space="preserve">
+    <value>Uzantılar:</value>
+  </data>
+  <data name="CustomTemplate_ExtensionsTooltip" xml:space="preserve">
+    <value>Virgülle ayrılmış, örn. .bin,.dat</value>
+  </data>
+  <data name="CustomTemplate_SaveTemplate" xml:space="preserve">
+    <value>Şablonu kaydet</value>
+  </data>
+  <data name="CustomTemplate_FormatBlocks" xml:space="preserve">
+    <value>Biçim blokları</value>
+  </data>
+  <data name="CustomTemplate_AddBlock" xml:space="preserve">
+    <value>Blok ekle</value>
+  </data>
+  <data name="CustomTemplate_RemoveBlock" xml:space="preserve">
+    <value>Bloğu kaldır</value>
+  </data>
+  <data name="CustomTemplate_ApplyToFile" xml:space="preserve">
+    <value>Geçerli dosyaya uygula</value>
+  </data>
+  <data name="CustomTemplate_ApplyDescription" xml:space="preserve">
+    <value>Hex düzenleyicide şu anda yüklü dosyayı ayrıştırmak için bu şablonu uygulayın.</value>
+  </data>
+  <data name="CustomTemplate_ApplyButton" xml:space="preserve">
+    <value>Şablonu dosyaya uygula</value>
+  </data>
+  <data name="CustomTemplate_ExportImport" xml:space="preserve">
+    <value>Dışa/İçe Aktar</value>
+  </data>
+  <data name="CustomTemplate_ExportJSON" xml:space="preserve">
+    <value>JSON'a aktar</value>
+  </data>
+  <data name="CustomTemplate_ImportJSON" xml:space="preserve">
+    <value>JSON'dan içe aktar</value>
+  </data>
+  <data name="CustomTemplate_NoTemplateSelected" xml:space="preserve">
+    <value>Kaydedilecek şablon seçilmedi.</value>
+  </data>
+  <data name="CustomTemplate_SavedSuccessfully" xml:space="preserve">
+    <value>'{0}' şablonu başarıyla kaydedildi!</value>
+  </data>
+  <data name="CustomTemplate_ErrorSaving" xml:space="preserve">
+    <value>Şablon kaydedilirken hata: {0}</value>
+  </data>
+  <data name="CustomTemplate_SelectOrCreate" xml:space="preserve">
+    <value>Önce bir şablon seçin veya oluşturun.</value>
+  </data>
+  <data name="CustomTemplate_AddBlockTitle" xml:space="preserve">
+    <value>Blok ekle</value>
+  </data>
+  <data name="CustomTemplate_DeleteConfirm" xml:space="preserve">
+    <value>'{0}' şablonu silinsin mi?</value>
+  </data>
+  <data name="CustomTemplate_ConfirmDelete" xml:space="preserve">
+    <value>Silme işlemini onayla</value>
+  </data>
+  <data name="CustomTemplate_ErrorDeleting" xml:space="preserve">
+    <value>Dosya silinirken hata: {0}</value>
+  </data>
+  <data name="CustomTemplate_DeleteError" xml:space="preserve">
+    <value>Silme hatası</value>
+  </data>
+  <data name="CustomTemplate_ApplyingTemplate" xml:space="preserve">
+    <value>'{0}' şablonu geçerli dosyaya uygulanıyor.
+
+Bu, şablon tanımınıza göre {1} bloğu ayrıştıracak.
+
+Not: HexEditor ile tam entegrasyon, ana görünüm modeline bağlanmayı gerektirir.</value>
+  </data>
+  <data name="CustomTemplate_ApplyTitle" xml:space="preserve">
+    <value>Şablonu uygula</value>
+  </data>
+  <data name="CustomTemplate_NoTemplateToApply" xml:space="preserve">
+    <value>Uygulanacak şablon seçilmedi.</value>
+  </data>
+  <data name="CustomTemplate_ExportTitle" xml:space="preserve">
+    <value>Şablonu JSON olarak dışa aktar</value>
+  </data>
+  <data name="CustomTemplate_JSONFiles" xml:space="preserve">
+    <value>JSON dosyaları (*.json)|*.json</value>
+  </data>
+  <data name="CustomTemplate_ExportedTo" xml:space="preserve">
+    <value>Şablon şuraya aktarıldı:
+{0}</value>
+  </data>
+  <data name="CustomTemplate_ExportSuccess" xml:space="preserve">
+    <value>Dışa aktarma başarılı</value>
+  </data>
+  <data name="CustomTemplate_ErrorExporting" xml:space="preserve">
+    <value>Şablon dışa aktarılırken hata: {0}</value>
+  </data>
+  <data name="CustomTemplate_ExportError" xml:space="preserve">
+    <value>Dışa aktarma hatası</value>
+  </data>
+  <data name="CustomTemplate_ImportTitle" xml:space="preserve">
+    <value>JSON'dan şablon içe aktar</value>
+  </data>
+  <data name="CustomTemplate_ImportedSuccessfully" xml:space="preserve">
+    <value>'{0}' şablonu başarıyla içe aktarıldı!</value>
+  </data>
+  <data name="CustomTemplate_ImportSuccess" xml:space="preserve">
+    <value>İçe aktarma başarılı</value>
+  </data>
+  <data name="CustomTemplate_ErrorImporting" xml:space="preserve">
+    <value>Şablon içe aktarılırken hata: {0}</value>
+  </data>
+  <data name="CustomTemplate_ImportError" xml:space="preserve">
+    <value>İçe aktarma hatası</value>
+  </data>
+  <data name="CustomTemplate_ColumnName" xml:space="preserve">
+    <value>Ad</value>
+  </data>
+  <data name="CustomTemplate_ColumnOffset" xml:space="preserve">
+    <value>Konum</value>
+  </data>
+  <data name="CustomTemplate_ColumnLength" xml:space="preserve">
+    <value>Uzunluk</value>
+  </data>
+  <data name="CustomTemplate_ColumnType" xml:space="preserve">
+    <value>Tür</value>
+  </data>
+  <data name="CustomTemplate_ColumnColor" xml:space="preserve">
+    <value>Renk</value>
+  </data>
+  <data name="CustomTemplate_ColumnDescription" xml:space="preserve">
+    <value>Açıklama</value>
+  </data>
+  <data name="ByteTooltip_NoData" xml:space="preserve">
+    <value>Veri yok</value>
+  </data>
+  <data name="ByteTooltip_Signed" xml:space="preserve">
+    <value>İşaretli</value>
+  </data>
+  <data name="ByteTooltip_Binary" xml:space="preserve">
+    <value>İkili</value>
+  </data>
+  <data name="ByteTooltip_ASCII" xml:space="preserve">
+    <value>ASCII</value>
+  </data>
+  <data name="ByteTooltip_NonPrintable" xml:space="preserve">
+    <value>(yazdırılamaz)</value>
+  </data>
+  <data name="ByteTooltip_Octal" xml:space="preserve">
+    <value>Sekizli</value>
+  </data>
+  <data name="StatusText_OperationCancelled" xml:space="preserve">
+    <value>İşlem iptal edildi</value>
+  </data>
+  <data name="StatusText_FileAlreadyExists" xml:space="preserve">
+    <value>Dosya zaten mevcut</value>
+  </data>
+  <data name="StatusText_Ready" xml:space="preserve">
+    <value>Hazır</value>
+  </data>
+  <data name="StatusText_FileSaved" xml:space="preserve">
+    <value>Dosya kaydedildi</value>
+  </data>
+  <data name="StatusText_SearchMarkersCleared" xml:space="preserve">
+    <value>Arama işaretleri temizlendi.</value>
+  </data>
+  <data name="StatusText_AllChangesCleared" xml:space="preserve">
+    <value>Tüm değişiklikler temizlendi</value>
+  </data>
+  <data name="StatusText_TblClosedAscii" xml:space="preserve">
+    <value>TBL kapatıldı, ASCII kullanılıyor</value>
+  </data>
+  <data name="StatusText_NoSelectionToReverse" xml:space="preserve">
+    <value>Tersine çevrilecek seçim yok</value>
+  </data>
+  <data name="StatusText_SelectionIsEmpty" xml:space="preserve">
+    <value>Seçim boş</value>
+  </data>
+  <data name="StatusText_NoSelectionToInvert" xml:space="preserve">
+    <value>Ters çevrilecek seçim yok</value>
+  </data>
+  <data name="StatusText_NoSelectionToFind" xml:space="preserve">
+    <value>Aranacak seçim yok</value>
+  </data>
+  <data name="StatusText_NoMatchesFound" xml:space="preserve">
+    <value>Eşleşme bulunamadı.</value>
+  </data>
+  <data name="StatusBar_SizeEmpty" xml:space="preserve">
+    <value>Boyut: -</value>
+  </data>
+  <data name="StatusBar_NoSelection" xml:space="preserve">
+    <value>Seçim yok</value>
+  </data>
+  <data name="StatusBar_PositionZero" xml:space="preserve">
+    <value>Konum: 0</value>
+  </data>
+  <data name="StatusBar_ModeOverwrite" xml:space="preserve">
+    <value>Mod: Üzerine yaz</value>
+  </data>
+  <data name="StatusBar_BytesPerLine" xml:space="preserve">
+    <value>Bayt/Satır: 16</value>
+  </data>
+  <data name="Search_NoMatches" xml:space="preserve">
+    <value>Eşleşme yok</value>
+  </data>
+  <data name="Search_Error_Title" xml:space="preserve">
+    <value>Arama hatası</value>
+  </data>
+  <data name="Search_Error_Label" xml:space="preserve">
+    <value>Hata</value>
+  </data>
+  <data name="Search_Error_NoTBLLoaded" xml:space="preserve">
+    <value>TBL yüklü değil. TBL metni aranamaz.</value>
+  </data>
+  <data name="Search_Error_TBLRequired" xml:space="preserve">
+    <value>TBL gerekli</value>
+  </data>
+  <data name="Search_Error_NoTBLForReplacement" xml:space="preserve">
+    <value>TBL yüklü değil. TBL TEXT modunda değiştirme baytları kodlanamaz.</value>
+  </data>
+  <data name="Search_Replace_Title" xml:space="preserve">
+    <value>Değiştirme hatası</value>
+  </data>
+  <data name="Search_ReplaceAll_Title" xml:space="preserve">
+    <value>Tümünü değiştir</value>
+  </data>
+  <data name="Search_ExportDialog_Filter" xml:space="preserve">
+    <value>CSV dosyaları (*.csv)|*.csv|Metin dosyaları (*.txt)|*.txt|JSON dosyaları (*.json)|*.json</value>
+  </data>
+  <data name="Search_ExportTBL_Title" xml:space="preserve">
+    <value>TBL dosyasını dışa aktar</value>
+  </data>
+  <data name="Search_TBLFileDialog_Filter" xml:space="preserve">
+    <value>TBL dosyaları (*.tbl)|*.tbl|Tüm dosyalar (*.*)|*.*</value>
+  </data>
+  <data name="Search_ExportTBL_Success" xml:space="preserve">
+    <value>Dışa aktarma başarılı</value>
+  </data>
+  <data name="Search_ExportTBL_Error" xml:space="preserve">
+    <value>Dışa aktarma hatası</value>
+  </data>
+  <data name="Search_EncodingApplied_Title" xml:space="preserve">
+    <value>Kodlama uygulandı</value>
+  </data>
+  <data name="Search_EncodingApplied_Message" xml:space="preserve">
+    <value>Kodlama uygulandı! Artık TBL TEXT modunu kullanabilirsiniz.</value>
+  </data>
+  <data name="Search_LoadTBL_Title" xml:space="preserve">
+    <value>Bir TBL (karakter tablosu) dosyası seçin</value>
+  </data>
+  <data name="Search_TBLLoaded_Title" xml:space="preserve">
+    <value>TBL yüklendi</value>
+  </data>
+  <data name="Search_ErrorLoadingTBL_Title" xml:space="preserve">
+    <value>TBL yüklenirken hata</value>
+  </data>
+  <data name="Search_CloseTBL_Title" xml:space="preserve">
+    <value>TBL'yi kapat</value>
+  </data>
+  <data name="IPS_Error_NoFileOpen" xml:space="preserve">
+    <value>Yama uygulamadan önce lütfen önce bir ROM dosyası açın.</value>
+  </data>
+  <data name="IPS_Error_NoFileOpen_Title" xml:space="preserve">
+    <value>Açık dosya yok</value>
+  </data>
+  <data name="IPS_ApplyPatch_Title" xml:space="preserve">
+    <value>IPS yama dosyasını seçin</value>
+  </data>
+  <data name="IPS_FileDialog_Filter" xml:space="preserve">
+    <value>IPS yama dosyaları (*.ips)|*.ips|Tüm dosyalar (*.*)|*.*</value>
+  </data>
+  <data name="IPS_Error_InvalidFile" xml:space="preserve">
+    <value>Seçilen dosya geçerli bir IPS yaması değil.</value>
+  </data>
+  <data name="IPS_Error_InvalidFile_Title" xml:space="preserve">
+    <value>Geçersiz IPS dosyası</value>
+  </data>
+  <data name="IPS_ApplyPatch_Confirm_Title" xml:space="preserve">
+    <value>IPS yamasını uygula</value>
+  </data>
+  <data name="IPS_ApplyPatch_SaveReminder" xml:space="preserve">
+    <value>Dosyayı kaydetmeyi unutmayın!</value>
+  </data>
+  <data name="IPS_ApplyPatch_Success_Title" xml:space="preserve">
+    <value>Yama uygulandı</value>
+  </data>
+  <data name="IPS_ApplyPatch_Error_Title" xml:space="preserve">
+    <value>Yama başarısız</value>
+  </data>
+  <data name="IPS_CreatePatch_NoFileOpen" xml:space="preserve">
+    <value>Lütfen önce değiştirilmiş bir ROM dosyası açın.</value>
+  </data>
+  <data name="IPS_CreatePatch_SelectOriginal_Title" xml:space="preserve">
+    <value>Orijinal (değiştirilmemiş) ROM dosyasını seçin</value>
+  </data>
+  <data name="IPS_ROMFileDialog_Filter" xml:space="preserve">
+    <value>ROM dosyaları|*.nes;*.smc;*.sfc;*.gb;*.gbc;*.gba;*.n64;*.z64;*.md;*.bin;*.gen|Tüm dosyalar (*.*)|*.*</value>
+  </data>
+  <data name="IPS_CreatePatch_SaveDialog_Title" xml:space="preserve">
+    <value>IPS yamasını farklı kaydet</value>
+  </data>
+  <data name="IPS_CreatePatch_Success_Title" xml:space="preserve">
+    <value>Yama oluşturuldu</value>
+  </data>
+  <data name="UndoHistory_Undo" xml:space="preserve">
+    <value>Geri al</value>
+  </data>
+  <data name="UndoHistory_Redo" xml:space="preserve">
+    <value>Yinele</value>
+  </data>
+  <data name="UndoHistory_Action" xml:space="preserve">
+    <value>eylem</value>
+  </data>
+  <data name="UndoHistory_Actions" xml:space="preserve">
+    <value>eylem</value>
+  </data>
+  <data name="DynSettings_Title" xml:space="preserve">
+    <value>Hex düzenleyici ayarları</value>
+  </data>
+  <data name="DynSettings_SaveState" xml:space="preserve">
+    <value>Durumu kaydet</value>
+  </data>
+  <data name="DynSettings_LoadState" xml:space="preserve">
+    <value>Durumu yükle</value>
+  </data>
+  <data name="DynSettings_ResetDefaults" xml:space="preserve">
+    <value>Varsayılanları sıfırla</value>
+  </data>
+  <data name="UndoRedo_NothingToUndo" xml:space="preserve">
+    <value>Geri alınacak işlem yok</value>
+  </data>
+  <data name="UndoRedo_NothingToRedo" xml:space="preserve">
+    <value>Yinelenecek işlem yok</value>
+  </data>
 </root>

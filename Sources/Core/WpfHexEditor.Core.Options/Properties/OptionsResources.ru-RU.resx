@@ -165,4 +165,490 @@
   <data name="Opt_Page_FormatExplorer" xml:space="preserve"><value>Обозреватель форматов</value></data>
   <data name="Opt_Page_CompareFiles" xml:space="preserve"><value>Сравнение файлов</value></data>
   <data name="Opt_Page_CommandPalette" xml:space="preserve"><value>Палитра команд</value></data>
+  <data name="BuildCompiler_CSharpSection" xml:space="preserve">
+    <value>НАСТРОЙКИ ПО УМОЛЧАНИЮ C# / .NET</value>
+  </data>
+  <data name="BuildCompiler_NullableCheck" xml:space="preserve">
+    <value>Трактовать предупреждения nullable как ошибки (C# 8+)</value>
+  </data>
+  <data name="BuildCompiler_ImplicitUsings" xml:space="preserve">
+    <value>Включить неявные using (C# 10+)</value>
+  </data>
+  <data name="BuildCompiler_GenerateDocs" xml:space="preserve">
+    <value>Генерировать файл XML-документации</value>
+  </data>
+  <data name="BuildCompiler_WarningsSection" xml:space="preserve">
+    <value>ПРЕДУПРЕЖДЕНИЯ</value>
+  </data>
+  <data name="BuildCompiler_WarnLevelLabel" xml:space="preserve">
+    <value>Уровень предупреждений по умолчанию (0–9):</value>
+  </data>
+  <data name="BuildRun_GeneralSection" xml:space="preserve">
+    <value>ОБЩИЕ</value>
+  </data>
+  <data name="BuildRun_SaveBeforeBuild" xml:space="preserve">
+    <value>Сохранить все изменения перед сборкой</value>
+  </data>
+  <data name="BuildRun_VerbosityLabel" xml:space="preserve">
+    <value>Детализация вывода сборки:</value>
+  </data>
+  <data name="BuildRun_VerbQuiet" xml:space="preserve">
+    <value>Тихий</value>
+  </data>
+  <data name="BuildRun_VerbMinimal" xml:space="preserve">
+    <value>Минимальный</value>
+  </data>
+  <data name="BuildRun_VerbNormal" xml:space="preserve">
+    <value>Обычный</value>
+  </data>
+  <data name="BuildRun_VerbDetailed" xml:space="preserve">
+    <value>Подробный</value>
+  </data>
+  <data name="BuildRun_VerbDiagnostic" xml:space="preserve">
+    <value>Диагностический</value>
+  </data>
+  <data name="BuildRun_RunInProcess" xml:space="preserve">
+    <value>Запускать MSBuild в процессе (быстрее, рекомендуется)</value>
+  </data>
+  <data name="BuildRun_MaxParallelLabel" xml:space="preserve">
+    <value>Макс. параллельных сборок проектов:</value>
+  </data>
+  <data name="BuildRun_OutputSection" xml:space="preserve">
+    <value>ОКНО ВЫВОДА</value>
+  </data>
+  <data name="BuildRun_ShowOnStart" xml:space="preserve">
+    <value>Показывать окно вывода при начале сборки</value>
+  </data>
+  <data name="BuildRun_ShowOnError" xml:space="preserve">
+    <value>Показывать окно вывода при ошибке сборки</value>
+  </data>
+  <data name="BuildRun_RunSection" xml:space="preserve">
+    <value>ЗАПУСК</value>
+  </data>
+  <data name="BuildRun_OnRunBuildErrorLabel" xml:space="preserve">
+    <value>При запуске, если возникают ошибки сборки:</value>
+  </data>
+  <data name="BuildRun_DoNotLaunch" xml:space="preserve">
+    <value>Не запускать</value>
+  </data>
+  <data name="BuildRun_Launch" xml:space="preserve">
+    <value>Запустить</value>
+  </data>
+  <data name="BuildRun_ShowOutputOnRun" xml:space="preserve">
+    <value>Показывать окно вывода при начале выполнения</value>
+  </data>
+  <data name="CodeInlineHints_Section" xml:space="preserve">
+    <value>ВСТРОЕННЫЕ ПОДСКАЗКИ</value>
+  </data>
+  <data name="CodeInlineHints_EnableHints" xml:space="preserve">
+    <value>Включить встроенные подсказки (показывать счётчики ссылок над объявлениями)</value>
+  </data>
+  <data name="CodeInlineHints_SourceLabel" xml:space="preserve">
+    <value>Источник ссылок:</value>
+  </data>
+  <data name="CodeInlineHints_SourceAuto" xml:space="preserve">
+    <value>Авто (Roslyn если доступен, иначе regex)</value>
+  </data>
+  <data name="CodeInlineHints_SourceRoslyn" xml:space="preserve">
+    <value>Только Roslyn (C# / VB.NET)</value>
+  </data>
+  <data name="CodeInlineHints_SourceRegex" xml:space="preserve">
+    <value>Всегда Regex</value>
+  </data>
+  <data name="CodeInlineHints_RoslynSection" xml:space="preserve">
+    <value>СЕМАНТИЧЕСКИЕ ПОДСКАЗКИ ROSLYN (C# / VB.NET)</value>
+  </data>
+  <data name="CodeInlineHints_RoslynNote" xml:space="preserve">
+    <value>Показывать выведенные типы и типы возврата встроенно, когда Roslyn является активным языковым клиентом.</value>
+  </data>
+  <data name="CodeInlineHints_ShowVarType" xml:space="preserve">
+    <value>Показывать выведенный тип для объявлений var (напр. var x = … → : List&amp;lt;int&amp;gt;)</value>
+  </data>
+  <data name="CodeInlineHints_ShowLambdaReturn" xml:space="preserve">
+    <value>Показывать тип возврата для лямбда-выражений (напр. x =&amp;gt; x * 2 → int)</value>
+  </data>
+  <data name="CodeInlineHints_KindsSection" xml:space="preserve">
+    <value>ПОКАЗЫВАТЬ ПОДСКАЗКИ ДЛЯ ВИДОВ СИМВОЛОВ:</value>
+  </data>
+  <data name="CodeInlineHints_KindsNote" xml:space="preserve">
+    <value>Снимите флажок вида, чтобы скрыть его подсказки счётчика ссылок, сохраняя встроенные подсказки активными для других.</value>
+  </data>
+  <data name="CodeInlineHints_TypesGroup" xml:space="preserve">
+    <value>Типы</value>
+  </data>
+  <data name="CodeInlineHints_Class" xml:space="preserve">
+    <value>Класс</value>
+  </data>
+  <data name="CodeInlineHints_Interface" xml:space="preserve">
+    <value>Интерфейс</value>
+  </data>
+  <data name="CodeInlineHints_Struct" xml:space="preserve">
+    <value>Структура</value>
+  </data>
+  <data name="CodeInlineHints_Enum" xml:space="preserve">
+    <value>Перечисление</value>
+  </data>
+  <data name="CodeInlineHints_Record" xml:space="preserve">
+    <value>Запись</value>
+  </data>
+  <data name="CodeInlineHints_Delegate" xml:space="preserve">
+    <value>Делегат</value>
+  </data>
+  <data name="CodeInlineHints_MembersGroup" xml:space="preserve">
+    <value>Члены</value>
+  </data>
+  <data name="CodeInlineHints_Method" xml:space="preserve">
+    <value>Метод</value>
+  </data>
+  <data name="CodeInlineHints_Constructor" xml:space="preserve">
+    <value>Конструктор</value>
+  </data>
+  <data name="CodeInlineHints_Property" xml:space="preserve">
+    <value>Свойство</value>
+  </data>
+  <data name="CodeInlineHints_Field" xml:space="preserve">
+    <value>Поле</value>
+  </data>
+  <data name="CodeInlineHints_Event" xml:space="preserve">
+    <value>Событие</value>
+  </data>
+  <data name="CodeInlineHints_OtherGroup" xml:space="preserve">
+    <value>Прочие</value>
+  </data>
+  <data name="CodeInlineHints_LocalVar" xml:space="preserve">
+    <value>Локальная переменная</value>
+  </data>
+  <data name="CodeInlineHints_Parameter" xml:space="preserve">
+    <value>Параметр</value>
+  </data>
+  <data name="CodeInlineHints_TypeParam" xml:space="preserve">
+    <value>Параметр типа</value>
+  </data>
+  <data name="CodeInlineHints_Namespace" xml:space="preserve">
+    <value>Пространство имён</value>
+  </data>
+  <data name="CodeInlineHints_SelectAll" xml:space="preserve">
+    <value>Выделить всё</value>
+  </data>
+  <data name="CodeInlineHints_ClearAll" xml:space="preserve">
+    <value>Очистить всё</value>
+  </data>
+  <data name="CodeOpt_FontSection" xml:space="preserve">
+    <value>ШРИФТ</value>
+  </data>
+  <data name="CodeOpt_FontFamilyLabel" xml:space="preserve">
+    <value>Семейство шрифта:</value>
+  </data>
+  <data name="CodeOpt_FontSizeLabel" xml:space="preserve">
+    <value>Размер шрифта (пт):</value>
+  </data>
+  <data name="CodeOpt_IndentSection" xml:space="preserve">
+    <value>ОТСТУП</value>
+  </data>
+  <data name="CodeOpt_IndentSizeLabel" xml:space="preserve">
+    <value>Размер отступа:</value>
+  </data>
+  <data name="CodeOpt_UseSpaces" xml:space="preserve">
+    <value>Вставлять пробелы вместо символов табуляции</value>
+  </data>
+  <data name="CodeOpt_FeaturesSection" xml:space="preserve">
+    <value>ФУНКЦИИ</value>
+  </data>
+  <data name="CodeOpt_ShowLineNumbers" xml:space="preserve">
+    <value>Показывать номера строк</value>
+  </data>
+  <data name="CodeOpt_HighlightCurrentLine" xml:space="preserve">
+    <value>Выделять текущую строку</value>
+  </data>
+  <data name="CodeOpt_CtrlClickLinks" xml:space="preserve">
+    <value>Включить Ctrl+Щелчок для перехода к определению / открытия ссылок</value>
+  </data>
+  <data name="CodeOpt_DefaultZoomLabel" xml:space="preserve">
+    <value>Масштаб по умолчанию (%):</value>
+  </data>
+  <data name="CodeOpt_MouseWheelLabel" xml:space="preserve">
+    <value>Скорость колёсика мыши:</value>
+  </data>
+  <data name="CodeOpt_ChangesetSection" xml:space="preserve">
+    <value>НАБОР ИЗМЕНЕНИЙ (.WHCHG)</value>
+  </data>
+  <data name="CodeOpt_TrackEdits" xml:space="preserve">
+    <value>Отслеживать правки в файле-компаньоне .whchg (требуется режим отслеживаемого сохранения)</value>
+  </data>
+  <data name="CodeOpt_SyntaxSection" xml:space="preserve">
+    <value>ПЕРЕОПРЕДЕЛЕНИЯ ЦВЕТОВ СИНТАКСИСА</value>
+  </data>
+  <data name="CodeOpt_SyntaxNote" xml:space="preserve">
+    <value>Включите цвет для переопределения значения по умолчанию активной темы.</value>
+  </data>
+  <data name="CodeOpt_Background" xml:space="preserve">
+    <value>Фон:</value>
+  </data>
+  <data name="CodeOpt_Foreground" xml:space="preserve">
+    <value>Передний план:</value>
+  </data>
+  <data name="CodeOpt_Keyword" xml:space="preserve">
+    <value>Ключевое слово:</value>
+  </data>
+  <data name="CodeOpt_String" xml:space="preserve">
+    <value>Строка:</value>
+  </data>
+  <data name="CodeOpt_Comment" xml:space="preserve">
+    <value>Комментарий:</value>
+  </data>
+  <data name="CodeOpt_Number" xml:space="preserve">
+    <value>Число:</value>
+  </data>
+  <data name="CodeOpt_Type" xml:space="preserve">
+    <value>Тип:</value>
+  </data>
+  <data name="CodeOpt_Preprocessor" xml:space="preserve">
+    <value>Препроцессор:</value>
+  </data>
+  <data name="CodeOpt_Operator" xml:space="preserve">
+    <value>Оператор:</value>
+  </data>
+  <data name="CodeOpt_Identifier" xml:space="preserve">
+    <value>Идентификатор:</value>
+  </data>
+  <data name="CodeOpt_ResetColors" xml:space="preserve">
+    <value>Сбросить до цветов темы по умолчанию</value>
+  </data>
+  <data name="EnvSave_SaveModeSection" xml:space="preserve">
+    <value>Режим сохранения</value>
+  </data>
+  <data name="EnvSave_DirectMode" xml:space="preserve">
+    <value>Прямой режим</value>
+  </data>
+  <data name="EnvSave_TrackedMode" xml:space="preserve">
+    <value>Режим отслеживания</value>
+  </data>
+  <data name="EnvSave_AutoSaveSection" xml:space="preserve">
+    <value>Автосохранение</value>
+  </data>
+  <data name="EnvSave_AutoSerialize" xml:space="preserve">
+    <value>Включить автосохранение</value>
+  </data>
+  <data name="EnvSave_IntervalLabel" xml:space="preserve">
+    <value>Интервал (секунды)</value>
+  </data>
+  <data name="EnvSave_StandaloneSection" xml:space="preserve">
+    <value>Автономный режим</value>
+  </data>
+  <data name="EnvSave_StandaloneNote" xml:space="preserve">
+    <value>В автономном режиме каждый редактор управляет способом сохранения.</value>
+  </data>
+  <data name="EnvSave_HexEditorDirect" xml:space="preserve">
+    <value>Hex-редактор: Прямой режим</value>
+  </data>
+  <data name="EnvSave_CodeEditorDirect" xml:space="preserve">
+    <value>Редактор кода: Прямой режим</value>
+  </data>
+  <data name="EnvSave_TextEditorDirect" xml:space="preserve">
+    <value>Текстовый редактор: Прямой режим</value>
+  </data>
+  <data name="EnvSave_TblEditorDirect" xml:space="preserve">
+    <value>Редактор TBL: Прямой режим</value>
+  </data>
+  <data name="EnvSave_ImageViewerDirect" xml:space="preserve">
+    <value>Просмотрщик изображений: Прямой режим</value>
+  </data>
+  <data name="EnvSave_SaveAsNote" xml:space="preserve">
+    <value>«Сохранить как» требует выбора нового пути.</value>
+  </data>
+  <data name="HexBehavior_Section" xml:space="preserve">
+    <value>Поведение Hex-редактора</value>
+  </data>
+  <data name="HexBehavior_AllowAutoHighLight" xml:space="preserve">
+    <value>Включить автоподсветку</value>
+  </data>
+  <data name="HexBehavior_AllowAutoSelectDoubleClick" xml:space="preserve">
+    <value>Автовыбор двойным щелчком</value>
+  </data>
+  <data name="HexBehavior_AllowContextMenu" xml:space="preserve">
+    <value>Включить контекстное меню</value>
+  </data>
+  <data name="HexBehavior_AllowDeleteByte" xml:space="preserve">
+    <value>Разрешить удаление байта</value>
+  </data>
+  <data name="HexBehavior_AllowExtend" xml:space="preserve">
+    <value>Разрешить расширение</value>
+  </data>
+  <data name="HexBehavior_FileDroppingConfirmation" xml:space="preserve">
+    <value>Подтверждение перетаскивания файла</value>
+  </data>
+  <data name="HexBehavior_PreloadModeLabel" xml:space="preserve">
+    <value>Режим предварительной загрузки</value>
+  </data>
+  <data name="HexDisplay_DisplaySection" xml:space="preserve">
+    <value>Настройки отображения</value>
+  </data>
+  <data name="HexDisplay_BytesPerLineLabel" xml:space="preserve">
+    <value>Байт в строке</value>
+  </data>
+  <data name="HexDisplay_ShowOffset" xml:space="preserve">
+    <value>Показать смещение</value>
+  </data>
+  <data name="HexDisplay_ShowAscii" xml:space="preserve">
+    <value>Показать столбец ASCII</value>
+  </data>
+  <data name="HexDisplay_MouseWheelLabel" xml:space="preserve">
+    <value>Колёсико мыши</value>
+  </data>
+  <data name="HexDisplay_ByteTooltipLabel" xml:space="preserve">
+    <value>Подсказка байта</value>
+  </data>
+  <data name="HexDisplay_FormatSection" xml:space="preserve">
+    <value>Формат</value>
+  </data>
+  <data name="HexDisplay_ValueFormatLabel" xml:space="preserve">
+    <value>Формат значения</value>
+  </data>
+  <data name="HexDisplay_OffsetFormatLabel" xml:space="preserve">
+    <value>Формат смещения</value>
+  </data>
+  <data name="HexDisplay_ByteGroupingLabel" xml:space="preserve">
+    <value>Группировка байтов</value>
+  </data>
+  <data name="HexDisplay_SpacerPositionLabel" xml:space="preserve">
+    <value>Позиция разделителя</value>
+  </data>
+  <data name="HexDisplay_ScrollMarkersSection" xml:space="preserve">
+    <value>Маркеры прокрутки</value>
+  </data>
+  <data name="HexDisplay_ShowBookmarkMarkers" xml:space="preserve">
+    <value>Показать маркеры закладок</value>
+  </data>
+  <data name="HexDisplay_ShowModifiedMarkers" xml:space="preserve">
+    <value>Показать маркеры изменений</value>
+  </data>
+  <data name="HexDisplay_ShowInsertedMarkers" xml:space="preserve">
+    <value>Показать маркеры вставки</value>
+  </data>
+  <data name="HexDisplay_ShowDeletedMarkers" xml:space="preserve">
+    <value>Показать маркеры удаления</value>
+  </data>
+  <data name="HexDisplay_ShowSearchResultMarkers" xml:space="preserve">
+    <value>Показать маркеры результатов поиска</value>
+  </data>
+  <data name="HexDisplay_ColumnRowSection" xml:space="preserve">
+    <value>Выделение столбца и строки</value>
+  </data>
+  <data name="HexDisplay_ShowColumnHighlight" xml:space="preserve">
+    <value>Показать выделение столбца</value>
+  </data>
+  <data name="HexDisplay_ShowAsciiColumnHighlight" xml:space="preserve">
+    <value>Показать выделение столбца ASCII</value>
+  </data>
+  <data name="HexDisplay_ShowRowHighlight" xml:space="preserve">
+    <value>Показать выделение строки</value>
+  </data>
+  <data name="HexEdit_EditingSection" xml:space="preserve">
+    <value>Настройки редактирования</value>
+  </data>
+  <data name="HexEdit_DefaultEditModeLabel" xml:space="preserve">
+    <value>Режим редактирования по умолчанию</value>
+  </data>
+  <data name="HexEdit_MouseWheelLabel" xml:space="preserve">
+    <value>Колёсико мыши</value>
+  </data>
+  <data name="HexEdit_AllowZoom" xml:space="preserve">
+    <value>Разрешить масштабирование</value>
+  </data>
+  <data name="HexEdit_AllowFileDrop" xml:space="preserve">
+    <value>Разрешить перетаскивание файла</value>
+  </data>
+  <data name="HexEdit_DataSection" xml:space="preserve">
+    <value>Настройки данных</value>
+  </data>
+  <data name="HexEdit_ByteSizeLabel" xml:space="preserve">
+    <value>Размер байта</value>
+  </data>
+  <data name="HexEdit_ByteOrderLabel" xml:space="preserve">
+    <value>Порядок байтов</value>
+  </data>
+  <data name="HexEdit_DefaultCopyFormatLabel" xml:space="preserve">
+    <value>Формат копирования по умолчанию</value>
+  </data>
+  <data name="HexEdit_SpacerVisualLabel" xml:space="preserve">
+    <value>Внешний вид разделителя</value>
+  </data>
+  <data name="HexStatus_Section" xml:space="preserve">
+    <value>Строка состояния</value>
+  </data>
+  <data name="HexStatus_ShowStatusMessage" xml:space="preserve">
+    <value>Показать сообщение состояния</value>
+  </data>
+  <data name="HexStatus_ShowFileSize" xml:space="preserve">
+    <value>Показать размер файла</value>
+  </data>
+  <data name="HexStatus_ShowSelection" xml:space="preserve">
+    <value>Показать выделение</value>
+  </data>
+  <data name="HexStatus_ShowPosition" xml:space="preserve">
+    <value>Показать позицию</value>
+  </data>
+  <data name="HexStatus_ShowEditMode" xml:space="preserve">
+    <value>Показать режим редактирования</value>
+  </data>
+  <data name="HexStatus_ShowBytesPerLine" xml:space="preserve">
+    <value>Показать байт в строке</value>
+  </data>
+  <data name="HexStatus_ShowRefreshRate" xml:space="preserve">
+    <value>Показать частоту обновления</value>
+  </data>
+  <data name="Opt_Plugin_SelectExtDir" xml:space="preserve">
+    <value>Выбрать каталог расширений</value>
+  </data>
+  <data name="Opt_PluginDev_SelectOutputDir" xml:space="preserve">
+    <value>Выбрать каталог вывода</value>
+  </data>
+  <data name="Opt_ViewMode_Tree" xml:space="preserve">
+    <value>Вид дерева</value>
+  </data>
+  <data name="Opt_ViewMode_Flat" xml:space="preserve">
+    <value>Плоский вид</value>
+  </data>
+  <data name="Opt_Position_Right" xml:space="preserve">
+    <value>Справа</value>
+  </data>
+  <data name="Opt_Position_Left" xml:space="preserve">
+    <value>Слева</value>
+  </data>
+  <data name="Opt_Position_Bottom" xml:space="preserve">
+    <value>Снизу</value>
+  </data>
+  <data name="Opt_Position_Top" xml:space="preserve">
+    <value>Сверху</value>
+  </data>
+  <data name="Opt_Endian_Little" xml:space="preserve">
+    <value>Little-Endian</value>
+  </data>
+  <data name="Opt_Endian_Big" xml:space="preserve">
+    <value>Big-Endian</value>
+  </data>
+  <data name="Opt_IndentLevel_1" xml:space="preserve">
+    <value>Уровень 1</value>
+  </data>
+  <data name="Opt_IndentLevel_2" xml:space="preserve">
+    <value>Уровень 2</value>
+  </data>
+  <data name="Opt_IndentLevel_3" xml:space="preserve">
+    <value>Уровень 3</value>
+  </data>
+  <data name="Opt_MdLayout_PreviewRight" xml:space="preserve">
+    <value>Предпросмотр справа</value>
+  </data>
+  <data name="Opt_MdLayout_PreviewBottom" xml:space="preserve">
+    <value>Предпросмотр снизу</value>
+  </data>
+  <data name="Opt_MdLayout_EditorOnly" xml:space="preserve">
+    <value>Только редактор</value>
+  </data>
+  <data name="Opt_MdLayout_PreviewOnly" xml:space="preserve">
+    <value>Только предпросмотр</value>
+  </data>
+  <data name="Opt_Preview_Label" xml:space="preserve">
+    <value>Предпросмотр</value>
+  </data>
 </root>
