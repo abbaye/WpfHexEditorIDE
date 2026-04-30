@@ -9,13 +9,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              Background="{DynamicResource TE_Background}"
              xmlns:structSvc="clr-namespace:WpfHexEditor.Editor.StructureEditor.Services">
-    <UserControl.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <structSvc:StructureEditorLocalizedDictionary/>
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </UserControl.Resources>
 
 
     <UserControl.Resources>

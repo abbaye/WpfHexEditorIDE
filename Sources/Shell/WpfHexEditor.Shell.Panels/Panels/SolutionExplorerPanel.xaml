@@ -11,13 +11,6 @@
              xmlns:sa="clr-namespace:WpfHexEditor.Core.SourceAnalysis.Models;assembly=WpfHexEditor.Core.SourceAnalysis"
              Background="{DynamicResource SE_BackgroundBrush}"
              xmlns:svc="clr-namespace:WpfHexEditor.Shell.Panels.Services">
-    <UserControl.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <svc:ShellPanelsLocalizedDictionary/>
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </UserControl.Resources>
 
 
     <UserControl.Resources>

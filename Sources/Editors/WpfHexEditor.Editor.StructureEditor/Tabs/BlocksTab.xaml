@@ -7,6 +7,7 @@
 <UserControl x:Class="WpfHexEditor.Editor.StructureEditor.Tabs.BlocksTab"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:structSvc="clr-namespace:WpfHexEditor.Editor.StructureEditor.Services"
              xmlns:local="clr-namespace:WpfHexEditor.Editor.StructureEditor.Tabs"
              xmlns:ctrl="clr-namespace:WpfHexEditor.Editor.StructureEditor.Controls"
              Background="{DynamicResource TE_Background}">

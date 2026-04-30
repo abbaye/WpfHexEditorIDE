@@ -1,6 +1,7 @@
 <UserControl x:Class="WpfHexEditor.Shell.Panels.Panels.WhfmtCatalogDocument"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:svc="clr-namespace:WpfHexEditor.Shell.Panels.Services"
              xmlns:vm="clr-namespace:WpfHexEditor.Shell.Panels.ViewModels"
              xmlns:local="clr-namespace:WpfHexEditor.Shell.Panels.Panels"
              Background="{DynamicResource SE_BackgroundBrush}"

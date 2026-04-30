@@ -8,6 +8,7 @@
 <UserControl x:Class="WpfHexEditor.Editor.StructureEditor.Controls.StructureEditor"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:structSvc="clr-namespace:WpfHexEditor.Editor.StructureEditor.Services"
              xmlns:ctrl="clr-namespace:WpfHexEditor.Editor.StructureEditor.Controls"
              xmlns:tabs="clr-namespace:WpfHexEditor.Editor.StructureEditor.Tabs"
              Background="{DynamicResource TE_Background}"

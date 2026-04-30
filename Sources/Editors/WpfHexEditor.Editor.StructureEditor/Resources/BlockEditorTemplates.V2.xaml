@@ -5,12 +5,13 @@
 
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:structSvc="clr-namespace:WpfHexEditor.Editor.StructureEditor.Services"
                     xmlns:vm="clr-namespace:WpfHexEditor.Editor.StructureEditor.ViewModels"
                     xmlns:ctrl="clr-namespace:WpfHexEditor.Editor.StructureEditor.Controls"
                     xmlns:cp="clr-namespace:WpfHexEditor.ColorPicker.Controls;assembly=WpfHexEditor.ColorPicker">
 
     <ResourceDictionary.MergedDictionaries>
-                <structSvc:StructureEditorLocalizedDictionary/>
+        <structSvc:StructureEditorLocalizedDictionary/>
         <ResourceDictionary Source="/WpfHexEditor.Editor.StructureEditor;component/Resources/BlockEditorShared.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 

@@ -17,13 +17,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              Background="Transparent"
              xmlns:optSvc="clr-namespace:WpfHexEditor.Core.Options.Services">
-    <UserControl.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <optSvc:OptionsLocalizedDictionary/>
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </UserControl.Resources>
 
 
     <UserControl.Resources>

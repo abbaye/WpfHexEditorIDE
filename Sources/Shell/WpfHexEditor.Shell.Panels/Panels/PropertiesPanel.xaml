@@ -12,13 +12,6 @@
              Background="{DynamicResource PP_BackgroundBrush}"
              Foreground="{DynamicResource PP_ForegroundBrush}"
              xmlns:svc="clr-namespace:WpfHexEditor.Shell.Panels.Services">
-    <UserControl.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <svc:ShellPanelsLocalizedDictionary/>
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </UserControl.Resources>
 
 
     <UserControl.Resources>
