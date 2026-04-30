@@ -25,6 +25,7 @@ using WpfHexEditor.SDK.Contracts;
 using WpfHexEditor.Plugins.AIAssistant.Panel.AccountUsage;
 using WpfHexEditor.Plugins.AIAssistant.Panel.ConnectionManager;
 using WpfHexEditor.Plugins.AIAssistant.Providers.ClaudeCode;
+using WpfHexEditor.Plugins.AIAssistant.Properties;
 using WpfHexEditor.SDK.Descriptors;
 using WpfHexEditor.SDK.Models;
 
@@ -33,7 +34,7 @@ namespace WpfHexEditor.Plugins.AIAssistant;
 public sealed class AIAssistantPlugin : IWpfHexEditorPlugin, IPluginWithOptions
 {
     public string Id => "WpfHexEditor.Plugins.AIAssistant";
-    public string Name => "AI Assistant";
+    public string Name => AIAssistantResources.AIAssistant_PluginName;
     public Version Version => new(1, 0, 0);
 
     public PluginCapabilities Capabilities => new()
@@ -92,7 +93,7 @@ public sealed class AIAssistantPlugin : IWpfHexEditorPlugin, IPluginWithOptions
         _panelUiId = context.UIRegistry.GenerateUIId(Id, "Panel", "AIAssistant");
         context.UIRegistry.RegisterPanel(_panelUiId, _panel, Id, new PanelDescriptor
         {
-            Title = "AI Assistant",
+            Title = AIAssistantResources.AIAssistant_PluginName,
             DefaultDockSide = "Right",
             CanClose = true,
             PreferredWidth = 420,

@@ -22,6 +22,7 @@ using WpfHexEditor.SDK.Commands;
 using WpfHexEditor.SDK.Contracts;
 using WpfHexEditor.SDK.Descriptors;
 using WpfHexEditor.SDK.Models;
+using WpfHexEditor.Plugins.Git.Properties;
 
 namespace WpfHexEditor.Plugins.Git;
 
@@ -90,7 +91,7 @@ public sealed class GitPlugin : IWpfHexEditorPlugin
             GitChangesPanelId, changesPanel, Id,
             new PanelDescriptor
             {
-                Title           = "Git Changes",
+                Title           = GitPluginResources.Git_Changes,
                 DefaultDockSide = "Bottom",
                 CanClose        = true,
                 Category        = "Source Control"
@@ -100,7 +101,7 @@ public sealed class GitPlugin : IWpfHexEditorPlugin
             GitHistoryPanelId, historyPanel, Id,
             new PanelDescriptor
             {
-                Title           = "Git History",
+                Title           = GitPluginResources.Git_History,
                 DefaultDockSide = "Bottom",
                 CanClose        = true,
                 Category        = "Source Control"

@@ -12,6 +12,7 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using WpfHexEditor.Core.ViewModels;
+using WpfHexEditor.Plugins.FileComparison.Properties;
 
 namespace WpfHexEditor.Plugins.FileComparison.ViewModels;
 
@@ -19,7 +20,7 @@ public sealed class FileComparisonPanelViewModel : ViewModelBase
 {
     private string _file1Name   = "No file selected";
     private string _file2Name   = "No file selected";
-    private string _statusText  = "Select files to compare";
+    private string _statusText  = FileComparisonResources.FileComparison_SelectFiles;
     private int    _matching;
     private int    _added;
     private int    _modified;
@@ -38,7 +39,7 @@ public sealed class FileComparisonPanelViewModel : ViewModelBase
     public void Clear()
     {
         File1Name  = File2Name = "No file selected";
-        StatusText = "Select files to compare";
+        StatusText = FileComparisonResources.FileComparison_SelectFiles;
         Matching   = Added = Modified = Removed = 0;
     }
 

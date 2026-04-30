@@ -22,6 +22,7 @@ using WpfHexEditor.SDK.Contracts;
 using WpfHexEditor.SDK.Descriptors;
 using WpfHexEditor.SDK.Events;
 using WpfHexEditor.SDK.Models;
+using WpfHexEditor.Plugins.CustomParserTemplate.Properties;
 using WpfHexEditor.Plugins.CustomParserTemplate.Views;
 
 namespace WpfHexEditor.Plugins.CustomParserTemplate;
@@ -62,7 +63,7 @@ public sealed class CustomParserTemplatePlugin : IWpfHexEditorPlugin
             Id,
             new PanelDescriptor
             {
-                Title           = "Custom Parser Template",
+                Title           = CustomParserTemplateResources.CustomParser_PluginName,
                 DefaultDockSide = "Right",
                 DefaultAutoHide = true,
                 CanClose        = true

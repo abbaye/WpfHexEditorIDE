@@ -63,6 +63,18 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="StructureOverlay_PluginName" xml:space="preserve">
+    <value>Superposition de structure</value>
+  </data>
+
+  <data name="StructureOverlay_NoStructures" xml:space="preserve">
+    <value>Aucune structure charg&#233;e</value>
+  </data>
+
+  <data name="StructureOverlay_LoadFormat" xml:space="preserve">
+    <value>Charger une d&#233;finition de format</value>
+  </data>
+
   <data name="StructureOverlay_Error_LoadFailed" xml:space="preserve">
     <value>&#201;chec du chargement de la d&#233;finition de format</value>
   </data>

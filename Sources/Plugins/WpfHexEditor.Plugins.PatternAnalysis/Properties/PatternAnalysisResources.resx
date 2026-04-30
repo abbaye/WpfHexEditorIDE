@@ -96,4 +96,10 @@
   <data name="PatternAnalysis_Entropy_High" xml:space="preserve">
     <value>High randomness &#x2014; data may be encrypted or highly compressed</value>
   </data>
+  <data name="PatternAnalysis_ExtremelySkewed" xml:space="preserve">
+    <value>Extremely skewed distribution</value>
+  </data>
+  <data name="PatternAnalysis_NoData" xml:space="preserve">
+    <value>No data to analyze. Select a range in the hex editor.</value>
+  </data>
 </root>

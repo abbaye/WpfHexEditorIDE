@@ -19,6 +19,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using WpfHexEditor.Plugins.LSPTools.Properties;
 using WpfHexEditor.SDK.Contracts;
 using WpfHexEditor.SDK.Descriptors;
 using WpfHexEditor.SDK.Events;
@@ -79,7 +80,7 @@ public sealed class LspToolsPlugin : IWpfHexEditorPlugin
             Id,
             new PanelDescriptor
             {
-                Title           = "Call Hierarchy",
+                Title           = LspToolsResources.LspTools_CallHierarchy,
                 DefaultDockSide = "Bottom",
                 DefaultAutoHide = false,
                 CanClose        = true,
@@ -92,7 +93,7 @@ public sealed class LspToolsPlugin : IWpfHexEditorPlugin
             Id,
             new PanelDescriptor
             {
-                Title           = "Type Hierarchy",
+                Title           = LspToolsResources.LspTools_TypeHierarchy,
                 DefaultDockSide = "Bottom",
                 DefaultAutoHide = false,
                 CanClose        = true,

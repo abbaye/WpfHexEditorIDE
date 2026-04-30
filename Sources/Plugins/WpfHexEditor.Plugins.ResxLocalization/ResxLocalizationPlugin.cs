@@ -28,6 +28,7 @@ using WpfHexEditor.SDK.Commands;
 using WpfHexEditor.SDK.Contracts;
 using WpfHexEditor.SDK.Descriptors;
 using WpfHexEditor.SDK.Models;
+using WpfHexEditor.Plugins.ResxLocalization.Properties;
 
 namespace WpfHexEditor.Plugins.ResxLocalization;
 
@@ -93,7 +94,7 @@ public sealed class ResxLocalizationPlugin : IWpfHexEditorPlugin
             Id,
             new PanelDescriptor
             {
-                Title           = "Locale Browser",
+                Title           = ResxLocalizationResources.ResxLoc_LocaleBrowser,
                 DefaultDockSide = "Left",
                 DefaultAutoHide = true,
                 PreferredWidth  = 240
@@ -105,7 +106,7 @@ public sealed class ResxLocalizationPlugin : IWpfHexEditorPlugin
             Id,
             new PanelDescriptor
             {
-                Title           = "Missing Translations",
+                Title           = ResxLocalizationResources.ResxLoc_MissingTranslations,
                 DefaultDockSide = "Bottom",
                 DefaultAutoHide = true,
                 PreferredHeight = 200

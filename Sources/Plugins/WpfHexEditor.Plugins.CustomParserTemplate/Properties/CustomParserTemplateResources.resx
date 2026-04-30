@@ -102,5 +102,11 @@
   <data name="CustomParser_Dialog_ImportTemplate" xml:space="preserve">
     <value>Import Template</value>
   </data>
+  <data name="CustomParser_PluginName" xml:space="preserve">
+    <value>Custom Parser Template</value>
+  </data>
+  <data name="CustomParser_NoTemplateSelected" xml:space="preserve">
+    <value>No template selected</value>
+  </data>
 
 </root>

@@ -21,6 +21,7 @@ using WpfHexEditor.SDK.Contracts.Services;
 using WpfHexEditor.SDK.Descriptors;
 using WpfHexEditor.SDK.Models;
 using WpfHexEditor.Core.FormatDetection;
+using WpfHexEditor.Plugins.FormatInfo.Properties;
 using WpfHexEditor.Plugins.FormatInfo.Views;
 
 namespace WpfHexEditor.Plugins.FormatInfo;
@@ -35,7 +36,7 @@ public sealed class FormatInfoPlugin : IWpfHexEditorPlugin
     private EnrichedFormatInfoPanel? _panel;
 
     public string  Id      => "WpfHexEditor.Plugins.FormatInfo";
-    public string  Name    => "Format Info";
+    public string  Name    => FormatInfoResources.FormatInfo_PluginName;
     public Version Version => new(0, 4, 0);
 
     public PluginCapabilities Capabilities => new()
@@ -57,7 +58,7 @@ public sealed class FormatInfoPlugin : IWpfHexEditorPlugin
             Id,
             new PanelDescriptor
             {
-                Title           = "Format Info",
+                Title           = FormatInfoResources.FormatInfo_PluginName,
                 DefaultDockSide = "Right",
                 DefaultAutoHide = true,
                 CanClose        = true

@@ -102,5 +102,11 @@
   <data name="CustomParser_Dialog_ImportTemplate" xml:space="preserve">
     <value>Importer un mod&#232;le</value>
   </data>
+  <data name="CustomParser_PluginName" xml:space="preserve">
+    <value>Mod&#232;le d'analyseur personnalis&#233;</value>
+  </data>
+  <data name="CustomParser_NoTemplateSelected" xml:space="preserve">
+    <value>Aucun mod&#232;le s&#233;lectionn&#233;</value>
+  </data>
 
 </root>

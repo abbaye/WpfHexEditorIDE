@@ -27,6 +27,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Markup;
 using WpfHexEditor.Core.Options.Preview;
+using WpfHexEditor.Core.Options.Properties;
 using WpfHexEditor.Core.ProjectSystem.Languages;
 
 namespace WpfHexEditor.Core.Options.Pages;
@@ -285,9 +286,9 @@ public sealed class CodeEditorFormattingPage : UserControl, IOptionsPage
             Width             = 220,
         });
         _xmlAttrIndentLevels = new ComboBox { Width = 230 };
-        _xmlAttrIndentLevels.Items.Add("1 level  (4 spaces at root)");
-        _xmlAttrIndentLevels.Items.Add("2 levels (8 spaces at root) — VS default");
-        _xmlAttrIndentLevels.Items.Add("3 levels (12 spaces at root)");
+        _xmlAttrIndentLevels.Items.Add(OptionsResources.Opt_IndentLevel_1);
+        _xmlAttrIndentLevels.Items.Add(OptionsResources.Opt_IndentLevel_2);
+        _xmlAttrIndentLevels.Items.Add(OptionsResources.Opt_IndentLevel_3);
         _xmlAttrIndentLevels.SelectedIndex = 1;
         _xmlAttrIndentLevels.SelectionChanged += (_, _) => { if (!_loading) { Changed?.Invoke(this, EventArgs.Empty); _preview?.Refresh(BuildOverrides()); } };
         if (_colorizer is not null)

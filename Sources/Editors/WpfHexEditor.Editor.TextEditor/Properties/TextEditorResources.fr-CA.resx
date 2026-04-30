@@ -58,4 +58,41 @@
     <value>UTF-8</value>
   </data>
 
+  <data name="TextEd_Menu_Cut" xml:space="preserve">
+    <value>_Couper</value>
+  </data>
+  <data name="TextEd_Menu_Copy" xml:space="preserve">
+    <value>_Copier</value>
+  </data>
+  <data name="TextEd_Menu_Paste" xml:space="preserve">
+    <value>_Coller</value>
+  </data>
+  <data name="TextEd_Menu_Undo" xml:space="preserve">
+    <value>_Annuler</value>
+  </data>
+  <data name="TextEd_Menu_Redo" xml:space="preserve">
+    <value>_Rétablir</value>
+  </data>
+  <data name="TextEd_Menu_SelectAll" xml:space="preserve">
+    <value>Tout _sélectionner</value>
+  </data>
+  <data name="TextEd_Menu_Delete" xml:space="preserve">
+    <value>_Supprimer</value>
+  </data>
+  <data name="TextEd_Menu_ShowWhitespace" xml:space="preserve">
+    <value>Afficher les _espaces</value>
+  </data>
+  <data name="TextEd_Menu_WrapNone" xml:space="preserve">
+    <value>Aucun</value>
+  </data>
+  <data name="TextEd_Menu_WrapSelectionOnly" xml:space="preserve">
+    <value>Sélection seulement</value>
+  </data>
+  <data name="TextEd_Menu_WrapAlways" xml:space="preserve">
+    <value>Toujours</value>
+  </data>
+  <data name="TextEd_Status_Opening" xml:space="preserve">
+    <value>Ouverture en cours</value>
+  </data>
+
 </root>

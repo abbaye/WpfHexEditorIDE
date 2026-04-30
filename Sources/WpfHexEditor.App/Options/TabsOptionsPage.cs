@@ -78,17 +78,17 @@ public sealed class TabsOptionsPage : UserControl, IOptionsPage
 
         // ── Tab Bar — placement ───────────────────────────────────────────────
         _placementCombo = new ComboBox { Margin = new Thickness(0, 4, 0, 4) };
-        _placementCombo.Items.Add("Top");
-        _placementCombo.Items.Add("Left");
-        _placementCombo.Items.Add("Right");
+        _placementCombo.Items.Add(AppResources.App_Tabs_PositionTop);
+        _placementCombo.Items.Add(AppResources.App_Tabs_PositionLeft);
+        _placementCombo.Items.Add(AppResources.App_Tabs_PositionRight);
         _placementCombo.SelectionChanged += OnChanged;
 
         // ── Tab Bar — color mode ──────────────────────────────────────────────
         _colorModeCombo = new ComboBox { Margin = new Thickness(0, 4, 0, 4) };
-        _colorModeCombo.Items.Add("None");
-        _colorModeCombo.Items.Add("By Project");
-        _colorModeCombo.Items.Add("By File Extension");
-        _colorModeCombo.Items.Add("By Regex Rule");
+        _colorModeCombo.Items.Add(AppResources.App_Tabs_PositionNone);
+        _colorModeCombo.Items.Add(AppResources.App_Tabs_GroupByProject);
+        _colorModeCombo.Items.Add(AppResources.App_Tabs_GroupByExtension);
+        _colorModeCombo.Items.Add(AppResources.App_Tabs_GroupByRegex);
         _colorModeCombo.SelectionChanged += OnChanged;
 
         // ── Tab Bar — multi-row ───────────────────────────────────────────────

@@ -32,6 +32,7 @@ using WpfHexEditor.SDK.Descriptors;
 using WpfHexEditor.SDK.Events;
 using WpfHexEditor.SDK.ExtensionPoints.XamlDesigner;
 using WpfHexEditor.SDK.Models;
+using WpfHexEditor.Plugins.DocumentStructure.Properties;
 
 namespace WpfHexEditor.Plugins.DocumentStructure;
 
@@ -40,7 +41,7 @@ public sealed class DocumentStructurePlugin : IWpfHexEditorPlugin
     private const string PanelUiId = "WpfHexEditor.Plugins.DocumentStructure.Panel";
 
     public string  Id      => "WpfHexEditor.Plugins.DocumentStructure";
-    public string  Name    => "Document Structure";
+    public string  Name    => DocumentStructureResources.DocStructure_PluginName;
     public Version Version => new(0, 1, 0);
 
     public PluginCapabilities Capabilities => new()
@@ -139,7 +140,7 @@ public sealed class DocumentStructurePlugin : IWpfHexEditorPlugin
         // ── Register panel ───────────────────────────────────────────────
         context.UIRegistry.RegisterPanel(PanelUiId, _panel, Id, new PanelDescriptor
         {
-            Title           = "Document Structure",
+            Title           = DocumentStructureResources.DocStructure_PluginName,
             DefaultDockSide = "Left",
             DefaultAutoHide = false,
             CanClose        = true,

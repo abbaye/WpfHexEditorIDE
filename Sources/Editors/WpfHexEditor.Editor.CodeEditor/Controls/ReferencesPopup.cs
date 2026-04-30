@@ -30,6 +30,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Effects;
+using WpfHexEditor.Editor.CodeEditor.Properties;
 
 namespace WpfHexEditor.Editor.CodeEditor.Controls
 {
@@ -371,7 +372,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         private void PopulateContent(IReadOnlyList<ReferenceGroup> groups)
         {
             _allCollapsed         = false;
-            _collapseLink.Text    = "Collapse all";
+            _collapseLink.Text    = CodeEditorResources.CodeEd_FindRef_CollapseAll;
 
             var panel = ReferencesTreeBuilder.BuildGroupsPanel(
                 groups,

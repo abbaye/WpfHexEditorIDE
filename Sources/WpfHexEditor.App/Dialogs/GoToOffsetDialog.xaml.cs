@@ -6,6 +6,7 @@ using System;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Input;
+using WpfHexEditor.App.Properties;
 
 namespace WpfHexEditor.App.Dialogs;
 
@@ -44,7 +45,7 @@ public partial class GoToOffsetDialog : WpfHexEditor.Editor.Core.Views.ThemedDia
         var text = OffsetInput.Text.Trim();
         if (string.IsNullOrEmpty(text))
         {
-            ShowError("Please enter an offset.");
+            ShowError(AppResources.App_GoTo_EnterOffset);
             return;
         }
 
@@ -57,7 +58,7 @@ public partial class GoToOffsetDialog : WpfHexEditor.Editor.Core.Views.ThemedDia
 
             if (!long.TryParse(text, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out offset))
             {
-                ShowError("Invalid hexadecimal value.");
+                ShowError(AppResources.App_GoTo_InvalidHex);
                 return;
             }
         }
@@ -65,14 +66,14 @@ public partial class GoToOffsetDialog : WpfHexEditor.Editor.Core.Views.ThemedDia
         {
             if (!long.TryParse(text, NumberStyles.Integer, CultureInfo.InvariantCulture, out offset))
             {
-                ShowError("Invalid decimal value.");
+                ShowError(AppResources.App_GoTo_InvalidDecimal);
                 return;
             }
         }
 
         if (offset < 0)
         {
-            ShowError("Offset must be non-negative.");
+            ShowError(AppResources.App_GoTo_OffsetNonNegative);
             return;
         }
 

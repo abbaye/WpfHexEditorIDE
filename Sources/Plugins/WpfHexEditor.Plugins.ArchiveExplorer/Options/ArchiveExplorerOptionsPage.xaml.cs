@@ -10,6 +10,7 @@
 
 using System.Windows;
 using System.Windows.Controls;
+using WpfHexEditor.Plugins.ArchiveExplorer.Properties;
 
 namespace WpfHexEditor.Plugins.ArchiveExplorer.Options;
 
@@ -74,7 +75,7 @@ public partial class ArchiveExplorerOptionsPage : UserControl
     {
         var dlg = new Microsoft.Win32.OpenFolderDialog
         {
-            Title = "Select default extract folder",
+            Title = ArchiveExplorerResources.ArchiveExplorer_SelectExtractFolder,
             InitialDirectory = TxtExtractFolder.Text is { Length: > 0 } p
                 ? p
                 : Environment.GetFolderPath(Environment.SpecialFolder.Desktop)

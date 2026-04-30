@@ -1648,6 +1648,15 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             if (config.FirstVisibleLine > 0 && _lineHeight > 0)
             {
                 _verticalScrollOffset = (config.FirstVisibleLine - 1) * _lineHeight;
+                _currentScrollOffset  = _verticalScrollOffset;
+                _targetScrollOffset   = _verticalScrollOffset;
+                if (_virtualizationEngine != null)
+                    _virtualizationEngine.ScrollOffset = _verticalScrollOffset;
+                // Sync scrollbar immediately so _vScrollBar.Value reflects the restored offset.
+                // Without this, Value stays at 0 while _verticalScrollOffset is non-zero;
+                // the user cannot scroll to top because dragging the thumb from 0 to 0
+                // fires no ValueChanged event.
+                SyncVScrollBar();
             }
             if (config.Extra?.TryGetValue("wordWrap", out var ww) == true)
                 IsWordWrapEnabled = ww == "1";
@@ -1666,6 +1675,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                     _foldingEngine.RegionsChanged += ApplyPendingFoldLines;
             }
 
+            InvalidateArrange();
             InvalidateVisual();
         }
 

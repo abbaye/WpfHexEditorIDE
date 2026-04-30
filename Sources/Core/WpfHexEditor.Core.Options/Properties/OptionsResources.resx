@@ -430,4 +430,49 @@
   <data name="Opt_Page_CompareFiles"       xml:space="preserve"><value>Compare Files</value></data>
   <data name="Opt_Page_CommandPalette"     xml:space="preserve"><value>Command Palette</value></data>
 
+  <!-- ═══════════════════════════════════════════════════════════════
+       PLUGIN SYSTEM OPTIONS PAGE — folder picker dialog
+       ═══════════════════════════════════════════════════════════════ -->
+  <data name="Opt_Plugin_SelectExtDir"        xml:space="preserve"><value>Select additional extensions directory</value></data>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       PLUGIN DEV LOADER OPTIONS PAGE — folder picker dialog
+       ═══════════════════════════════════════════════════════════════ -->
+  <data name="Opt_PluginDev_SelectOutputDir"  xml:space="preserve"><value>Select Extension Output Directory</value></data>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       WHFMT EXPLORER OPTIONS PAGE — view mode combo
+       ═══════════════════════════════════════════════════════════════ -->
+  <data name="Opt_ViewMode_Tree"              xml:space="preserve"><value>Tree</value></data>
+  <data name="Opt_ViewMode_Flat"              xml:space="preserve"><value>Flat</value></data>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       STRUCTURE EDITOR OPTIONS PAGE — panel position combo
+       ═══════════════════════════════════════════════════════════════ -->
+  <data name="Opt_Position_Right"             xml:space="preserve"><value>Right</value></data>
+  <data name="Opt_Position_Left"              xml:space="preserve"><value>Left</value></data>
+  <data name="Opt_Position_Bottom"            xml:space="preserve"><value>Bottom</value></data>
+  <data name="Opt_Position_Top"               xml:space="preserve"><value>Top</value></data>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       STRUCTURE EDITOR OPTIONS PAGE — endianness combo
+       ═══════════════════════════════════════════════════════════════ -->
+  <data name="Opt_Endian_Little"              xml:space="preserve"><value>little</value></data>
+  <data name="Opt_Endian_Big"                 xml:space="preserve"><value>big</value></data>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       CODE EDITOR FORMATTING PAGE — indentation levels combo
+       ═══════════════════════════════════════════════════════════════ -->
+  <data name="Opt_IndentLevel_1"              xml:space="preserve"><value>1 level  (4 spaces at root)</value></data>
+  <data name="Opt_IndentLevel_2"              xml:space="preserve"><value>2 levels (8 spaces at root) — VS default</value></data>
+  <data name="Opt_IndentLevel_3"              xml:space="preserve"><value>3 levels (12 spaces at root)</value></data>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       MARKDOWN EDITOR OPTIONS PAGE — layout combo
+       ═══════════════════════════════════════════════════════════════ -->
+  <data name="Opt_MdLayout_PreviewRight"      xml:space="preserve"><value>PreviewRight</value></data>
+  <data name="Opt_MdLayout_PreviewBottom"     xml:space="preserve"><value>PreviewBottom</value></data>
+  <data name="Opt_MdLayout_EditorOnly"        xml:space="preserve"><value>EditorOnly</value></data>
+  <data name="Opt_MdLayout_PreviewOnly"       xml:space="preserve"><value>PreviewOnly</value></data>
+
 </root>

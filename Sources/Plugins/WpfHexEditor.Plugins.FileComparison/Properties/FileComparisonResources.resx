@@ -34,4 +34,22 @@
   <data name="FileComparison_SelectBothFiles" xml:space="preserve">
     <value>Select both files to compare</value>
   </data>
+  <data name="FileComparison_SelectFiles" xml:space="preserve">
+    <value>Select files to compare</value>
+  </data>
+  <data name="FileComparison_Comparing" xml:space="preserve">
+    <value>Comparing&#x2026;</value>
+  </data>
+  <data name="FileComparison_Cancelled" xml:space="preserve">
+    <value>Cancelled</value>
+  </data>
+  <data name="FileComparison_SelectTwoFiles" xml:space="preserve">
+    <value>Select two files and click Compare</value>
+  </data>
+  <data name="FileComparison_MultipleFormats" xml:space="preserve">
+    <value>Multiple Formats Detected</value>
+  </data>
+  <data name="FileComparison_SelectFile" xml:space="preserve">
+    <value>Select file to compare</value>
+  </data>
 </root>

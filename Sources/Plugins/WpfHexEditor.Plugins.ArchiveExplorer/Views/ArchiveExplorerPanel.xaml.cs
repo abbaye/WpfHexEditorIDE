@@ -22,6 +22,7 @@ using WpfHexEditor.Plugins.ArchiveExplorer.Views.Dialogs;
 using WpfHexEditor.SDK.Contracts;
 using WpfHexEditor.SDK.Contracts.Services;
 using WpfHexEditor.SDK.UI;
+using WpfHexEditor.Plugins.ArchiveExplorer.Properties;
 
 namespace WpfHexEditor.Plugins.ArchiveExplorer.Views;
 
@@ -114,7 +115,7 @@ public partial class ArchiveExplorerPanel : UserControl
     {
         var dlg = new Microsoft.Win32.OpenFileDialog
         {
-            Title  = "Open Archive",
+            Title  = ArchiveExplorerResources.ArchiveExplorer_OpenArchive,
             Filter = "Archive files|*.zip;*.jar;*.war;*.nupkg;*.7z;*.rar;*.tar;*.tgz;*.tbz2;*.gz;*.bz2;*.xz|All files|*.*"
         };
         if (dlg.ShowDialog() != true) return;

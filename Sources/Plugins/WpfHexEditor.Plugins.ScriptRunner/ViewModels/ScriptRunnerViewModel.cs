@@ -18,6 +18,7 @@ using WpfHexEditor.Plugins.ScriptRunner.Options;
 using WpfHexEditor.SDK.Commands;
 using WpfHexEditor.SDK.Contracts.Services;
 using WpfHexEditor.Core.ViewModels;
+using WpfHexEditor.Plugins.ScriptRunner.Properties;
 
 namespace WpfHexEditor.Plugins.ScriptRunner.ViewModels;
 
@@ -30,7 +31,7 @@ public sealed class ScriptRunnerViewModel : ViewModelBase
 
     private string  _code       = DefaultCode;
     private string  _output     = string.Empty;
-    private string  _statusText = "Ready";
+    private string  _statusText = ScriptRunnerResources.ScriptRunner_Ready;
     private bool    _isRunning;
 
     private CancellationTokenSource? _runCts;
@@ -98,7 +99,7 @@ public sealed class ScriptRunnerViewModel : ViewModelBase
         if (string.IsNullOrEmpty(code)) return;
 
         IsRunning  = true;
-        StatusText = "Runningâ€¦";
+        StatusText = ScriptRunnerResources.ScriptRunner_Running;
         if (ScriptRunnerOptions.Instance.AutoClearOnNewSession)
             Output = string.Empty;
 
@@ -128,12 +129,12 @@ public sealed class ScriptRunnerViewModel : ViewModelBase
         }
         catch (OperationCanceledException)
         {
-            StatusText = "Cancelled.";
+            StatusText = ScriptRunnerResources.ScriptRunner_Cancelled;
         }
         catch (Exception ex)
         {
             Output     = $"âœ— Unexpected error: {ex.Message}";
-            StatusText = "Error â€” see output.";
+            StatusText = ScriptRunnerResources.ScriptRunner_Error;
         }
         finally
         {
@@ -146,13 +147,13 @@ public sealed class ScriptRunnerViewModel : ViewModelBase
     private void Cancel()
     {
         _runCts?.Cancel();
-        StatusText = "Cancellingâ€¦";
+        StatusText = ScriptRunnerResources.ScriptRunner_Cancelling;
     }
 
     private void ClearOutput()
     {
         Output     = string.Empty;
-        StatusText = "Ready";
+        StatusText = ScriptRunnerResources.ScriptRunner_Ready;
     }
 
     private void AddToHistory(string code)

@@ -1930,4 +1930,32 @@
   <data name="UndoHistory_Actions" xml:space="preserve">
     <value>actions</value>
   </data>
+
+  <!-- DynamicSettingsGenerator fallback strings -->
+  <data name="DynSettings_Title" xml:space="preserve">
+    <value>Hex Editor Settings</value>
+    <comment>Fallback title for the dynamic settings panel</comment>
+  </data>
+  <data name="DynSettings_SaveState" xml:space="preserve">
+    <value>Save State</value>
+    <comment>Fallback label for the save state button</comment>
+  </data>
+  <data name="DynSettings_LoadState" xml:space="preserve">
+    <value>Load State</value>
+    <comment>Fallback label for the load state button</comment>
+  </data>
+  <data name="DynSettings_ResetDefaults" xml:space="preserve">
+    <value>Reset to Defaults</value>
+    <comment>Fallback label for the reset to defaults button</comment>
+  </data>
+
+  <!-- UndoRedoManager exception messages -->
+  <data name="UndoRedo_NothingToUndo" xml:space="preserve">
+    <value>No operations to undo</value>
+    <comment>Exception message when the undo stack is empty</comment>
+  </data>
+  <data name="UndoRedo_NothingToRedo" xml:space="preserve">
+    <value>No operations to redo</value>
+    <comment>Exception message when the redo stack is empty</comment>
+  </data>
 </root>

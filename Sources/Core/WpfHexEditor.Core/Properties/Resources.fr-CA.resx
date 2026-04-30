@@ -1270,4 +1270,23 @@
   <data name="UndoHistory_Actions" xml:space="preserve">
     <value>actions</value>
   </data>
+
+  <data name="DynSettings_Title" xml:space="preserve">
+    <value>Paramètres de l'éditeur hexadécimal</value>
+  </data>
+  <data name="DynSettings_SaveState" xml:space="preserve">
+    <value>Enregistrer l'état</value>
+  </data>
+  <data name="DynSettings_LoadState" xml:space="preserve">
+    <value>Charger l'état</value>
+  </data>
+  <data name="DynSettings_ResetDefaults" xml:space="preserve">
+    <value>Réinitialiser les valeurs par défaut</value>
+  </data>
+  <data name="UndoRedo_NothingToUndo" xml:space="preserve">
+    <value>Aucune opération à annuler</value>
+  </data>
+  <data name="UndoRedo_NothingToRedo" xml:space="preserve">
+    <value>Aucune opération à rétablir</value>
+  </data>
 </root>

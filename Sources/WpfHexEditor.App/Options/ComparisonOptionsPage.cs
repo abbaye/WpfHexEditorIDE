@@ -72,9 +72,9 @@ public sealed class ComparisonOptionsPage : UserControl, IOptionsPage
         // Default view mode
         root.Children.Add(MakeLabel("Default View Mode"));
         _viewModeCombo = new ComboBox { Margin = new Thickness(0, 2, 0, 8) };
-        _viewModeCombo.Items.Add("SideBySide");
-        _viewModeCombo.Items.Add("Inline");
-        _viewModeCombo.Items.Add("HexText");
+        _viewModeCombo.Items.Add(AppResources.App_Comparison_ModeSideBySide);
+        _viewModeCombo.Items.Add(AppResources.App_Comparison_ModeInline);
+        _viewModeCombo.Items.Add(AppResources.App_Comparison_ModeHexText);
         _viewModeCombo.SelectedItem = _settings.DefaultViewMode;
         root.Children.Add(_viewModeCombo);
 

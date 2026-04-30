@@ -96,4 +96,10 @@
   <data name="PatternAnalysis_Entropy_High" xml:space="preserve">
     <value>Al&#233;atoire &#233;lev&#233; &#x2014; donn&#233;es peut-&#234;tre chiffr&#233;es ou tr&#232;s compress&#233;es</value>
   </data>
+  <data name="PatternAnalysis_ExtremelySkewed" xml:space="preserve">
+    <value>Distribution extr&#234;mement asym&#233;trique</value>
+  </data>
+  <data name="PatternAnalysis_NoData" xml:space="preserve">
+    <value>Aucune donn&#233;e &#224; analyser. S&#233;lectionnez une plage dans l&#39;&#233;diteur hexad&#233;cimal</value>
+  </data>
 </root>

@@ -75,4 +75,12 @@ internal static class PatternAnalysisResources
     /// <summary>Looks up a localized string similar to "High randomness — data may be encrypted or highly compressed".</summary>
     internal static string PatternAnalysis_Entropy_High
         => ResourceManager.GetString("PatternAnalysis_Entropy_High", _resourceCulture)!;
+
+    /// <summary>Localized: "Extremely skewed distribution"</summary>
+    internal static string PatternAnalysis_ExtremelySkewed
+        => ResourceManager.GetString("PatternAnalysis_ExtremelySkewed", _resourceCulture)!;
+
+    /// <summary>Localized: "No data to analyze. Select a range in the hex editor."</summary>
+    internal static string PatternAnalysis_NoData
+        => ResourceManager.GetString("PatternAnalysis_NoData", _resourceCulture)!;
 }

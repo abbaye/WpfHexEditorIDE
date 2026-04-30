@@ -19,6 +19,7 @@ using System.Windows.Media;
 using WpfHexEditor.Core.Settings.Controls;
 using WpfHexEditor.ColorPicker.Controls;
 using WpfHexEditor.Core.Settings.Converters;
+using WpfHexEditor.Core.Properties;
 
 namespace WpfHexEditor.Core.Settings
 {
@@ -90,7 +91,7 @@ namespace WpfHexEditor.Core.Settings
             }
             catch
             {
-                header.Text = "Hex Editor Settings";
+                header.Text = Resources.DynSettings_Title;
             }
 
             return header;
@@ -607,7 +608,7 @@ namespace WpfHexEditor.Core.Settings
                 Name = "SaveStateButton"
             };
             try { saveButton.SetResourceReference(Button.ContentProperty, "HexSettings_SaveButton"); }
-            catch { saveButton.Content = "Save State"; }
+            catch { saveButton.Content = Resources.DynSettings_SaveState; }
 
             // Load State button - Use DynamicResource for Content
             var loadButton = new Button
@@ -617,7 +618,7 @@ namespace WpfHexEditor.Core.Settings
                 Name = "LoadStateButton"
             };
             try { loadButton.SetResourceReference(Button.ContentProperty, "HexSettings_LoadButton"); }
-            catch { loadButton.Content = "Load State"; }
+            catch { loadButton.Content = Resources.DynSettings_LoadState; }
 
             // Reset button - Use DynamicResource for Content
             var resetButton = new Button
@@ -627,7 +628,7 @@ namespace WpfHexEditor.Core.Settings
                 Name = "ResetButton"
             };
             try { resetButton.SetResourceReference(Button.ContentProperty, "HexSettings_ResetButton"); }
-            catch { resetButton.Content = "Reset to Defaults"; }
+            catch { resetButton.Content = Resources.DynSettings_ResetDefaults; }
 
             // Apply ModernButtonStyle if available
             var buttonStyle = TryFindResource("ModernButtonStyle") as Style;

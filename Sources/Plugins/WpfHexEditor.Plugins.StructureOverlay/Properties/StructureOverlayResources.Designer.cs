@@ -32,6 +32,18 @@ internal static class StructureOverlayResources
         set => _resourceCulture = value;
     }
 
+    /// <summary>Localized: "Structure Overlay"</summary>
+    internal static string StructureOverlay_PluginName
+        => ResourceManager.GetString("StructureOverlay_PluginName", _resourceCulture)!;
+
+    /// <summary>Localized: "No structures loaded"</summary>
+    internal static string StructureOverlay_NoStructures
+        => ResourceManager.GetString("StructureOverlay_NoStructures", _resourceCulture)!;
+
+    /// <summary>Localized: "Load Format Definition"</summary>
+    internal static string StructureOverlay_LoadFormat
+        => ResourceManager.GetString("StructureOverlay_LoadFormat", _resourceCulture)!;
+
     /// <summary>
     ///   Recherche une chaîne localisée semblable à Failed to load format definition.
     /// </summary>

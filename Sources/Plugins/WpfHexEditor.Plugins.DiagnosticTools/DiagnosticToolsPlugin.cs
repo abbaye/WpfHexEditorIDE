@@ -33,6 +33,7 @@ using WpfHexEditor.SDK.Contracts;
 using WpfHexEditor.SDK.Contracts.Services;
 using WpfHexEditor.SDK.Descriptors;
 using WpfHexEditor.SDK.Models;
+using WpfHexEditor.Plugins.DiagnosticTools.Properties;
 
 namespace WpfHexEditor.Plugins.DiagnosticTools;
 
@@ -59,7 +60,7 @@ public sealed class DiagnosticToolsPlugin : IWpfHexEditorPlugin, IPluginWithOpti
     // -----------------------------------------------------------------------
 
     public string  Id      => "WpfHexEditor.Plugins.DiagnosticTools";
-    public string  Name    => "Diagnostic Tools";
+    public string  Name    => DiagnosticToolsResources.DiagTools_PluginName;
     public Version Version => new(0, 1, 0);
 
     public PluginCapabilities Capabilities => new()
@@ -89,7 +90,7 @@ public sealed class DiagnosticToolsPlugin : IWpfHexEditorPlugin, IPluginWithOpti
             Id,
             new PanelDescriptor
             {
-                Title           = "Diagnostic Tools",
+                Title           = DiagnosticToolsResources.DiagTools_PluginName,
                 DefaultDockSide = "Right",
                 DefaultAutoHide = true,
                 CanClose        = true,
@@ -195,7 +196,7 @@ public sealed class DiagnosticToolsPlugin : IWpfHexEditorPlugin, IPluginWithOpti
 
         var dlg = new Microsoft.Win32.SaveFileDialog
         {
-            Title      = "Export Diagnostic Metrics",
+            Title      = DiagnosticToolsResources.DiagTools_ExportMetrics,
             Filter     = "CSV files (*.csv)|*.csv|All files (*.*)|*.*",
             FileName   = $"DiagMetrics_{DateTime.Now:yyyyMMdd_HHmmss}.csv",
             DefaultExt = ".csv",

@@ -26,6 +26,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
+using WpfHexEditor.Editor.CodeEditor.Properties;
 
 namespace WpfHexEditor.Editor.CodeEditor.Controls;
 
@@ -103,7 +104,7 @@ public sealed class FindReferencesPanel : UserControl
         _lastSymbol   = symbolName;
         _navIndex     = -1;
         _allCollapsed = false;
-        _collapseLink.Text = "Tout réduire";
+        _collapseLink.Text = CodeEditorResources.CodeEd_FindRef_CollapseAll;
 
         ApplyFilter();
     }

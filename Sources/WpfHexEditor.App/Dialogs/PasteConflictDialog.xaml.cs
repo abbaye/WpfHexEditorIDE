@@ -19,6 +19,7 @@ using System.IO;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Input;
+using WpfHexEditor.App.Properties;
 
 namespace WpfHexEditor.App.Dialogs;
 
@@ -107,13 +108,13 @@ public partial class PasteConflictDialog : WpfHexEditor.Editor.Core.Views.Themed
 
         if (string.IsNullOrWhiteSpace(name))
         {
-            ShowError("Please enter a file name.");
+            ShowError(AppResources.App_PasteConflict_EnterFileName);
             return;
         }
 
         if (name.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0)
         {
-            ShowError("The name contains invalid characters.");
+            ShowError(AppResources.App_PasteConflict_InvalidChars);
             return;
         }
 

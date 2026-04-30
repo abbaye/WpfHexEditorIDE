@@ -167,17 +167,17 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IBufferAw
     {
         var cm = new ContextMenu();
 
-        cm.Items.Add(new MenuItem { Header = "Cu_t",        InputGestureText = "Ctrl+X", Command = ApplicationCommands.Cut,       CommandTarget = Viewport, Icon = MakeMenuIcon("\uE74E") });
-        cm.Items.Add(new MenuItem { Header = "_Copy",       InputGestureText = "Ctrl+C", Command = ApplicationCommands.Copy,      CommandTarget = Viewport, Icon = MakeMenuIcon("\uE8C8") });
-        cm.Items.Add(new MenuItem { Header = "_Paste",      InputGestureText = "Ctrl+V", Command = ApplicationCommands.Paste,     CommandTarget = Viewport, Icon = MakeMenuIcon("\uE9F5") });
+        cm.Items.Add(new MenuItem { Header = TextEditorResources.TextEd_Menu_Cut,    InputGestureText = "Ctrl+X", Command = ApplicationCommands.Cut,       CommandTarget = Viewport, Icon = MakeMenuIcon("\uE74E") });
+        cm.Items.Add(new MenuItem { Header = TextEditorResources.TextEd_Menu_Copy,   InputGestureText = "Ctrl+C", Command = ApplicationCommands.Copy,      CommandTarget = Viewport, Icon = MakeMenuIcon("\uE8C8") });
+        cm.Items.Add(new MenuItem { Header = TextEditorResources.TextEd_Menu_Paste,  InputGestureText = "Ctrl+V", Command = ApplicationCommands.Paste,     CommandTarget = Viewport, Icon = MakeMenuIcon("\uE9F5") });
         cm.Items.Add(new Separator());
-        _undoMenuItem = new MenuItem { Header = "_Undo", InputGestureText = "Ctrl+Z", Command = ApplicationCommands.Undo, CommandTarget = Viewport, Icon = MakeMenuIcon("\uE7A7") };
-        _redoMenuItem = new MenuItem { Header = "_Redo", InputGestureText = "Ctrl+Y/Ctrl+Shift+Z", Command = ApplicationCommands.Redo, CommandTarget = Viewport, Icon = MakeMenuIcon("\uE7A6") };
+        _undoMenuItem = new MenuItem { Header = TextEditorResources.TextEd_Menu_Undo, InputGestureText = "Ctrl+Z", Command = ApplicationCommands.Undo, CommandTarget = Viewport, Icon = MakeMenuIcon("\uE7A7") };
+        _redoMenuItem = new MenuItem { Header = TextEditorResources.TextEd_Menu_Redo, InputGestureText = "Ctrl+Y/Ctrl+Shift+Z", Command = ApplicationCommands.Redo, CommandTarget = Viewport, Icon = MakeMenuIcon("\uE7A6") };
         cm.Items.Add(_undoMenuItem);
         cm.Items.Add(_redoMenuItem);
         cm.Items.Add(new Separator());
-        cm.Items.Add(new MenuItem { Header = "Select _All", InputGestureText = "Ctrl+A", Command = ApplicationCommands.SelectAll, CommandTarget = Viewport, Icon = MakeMenuIcon("\uE8B3") });
-        cm.Items.Add(new MenuItem { Header = "_Delete",     InputGestureText = "Del",    Command = ApplicationCommands.Delete,    CommandTarget = Viewport, Icon = MakeMenuIcon("\uE74D") });
+        cm.Items.Add(new MenuItem { Header = TextEditorResources.TextEd_Menu_SelectAll, InputGestureText = "Ctrl+A", Command = ApplicationCommands.SelectAll, CommandTarget = Viewport, Icon = MakeMenuIcon("\uE8B3") });
+        cm.Items.Add(new MenuItem { Header = TextEditorResources.TextEd_Menu_Delete,    InputGestureText = "Del",    Command = ApplicationCommands.Delete,    CommandTarget = Viewport, Icon = MakeMenuIcon("\uE74D") });
         cm.Items.Add(new Separator());
 
         // Word Wrap toggle
@@ -192,10 +192,10 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IBufferAw
         cm.Items.Add(miWordWrap);
 
         // Show Whitespace submenu (radio-style: None / Selection / Always)
-        var wsMenu = new MenuItem { Header = "Show _Whitespace", Icon = MakeMenuIcon("\uE7C5") };
-        var wsNone = new MenuItem { Header = "None",           IsCheckable = true };
-        var wsSel  = new MenuItem { Header = "Selection Only", IsCheckable = true };
-        var wsAll  = new MenuItem { Header = "Always",         IsCheckable = true };
+        var wsMenu = new MenuItem { Header = TextEditorResources.TextEd_Menu_ShowWhitespace, Icon = MakeMenuIcon("\uE7C5") };
+        var wsNone = new MenuItem { Header = TextEditorResources.TextEd_Menu_WrapNone,          IsCheckable = true };
+        var wsSel  = new MenuItem { Header = TextEditorResources.TextEd_Menu_WrapSelectionOnly, IsCheckable = true };
+        var wsAll  = new MenuItem { Header = TextEditorResources.TextEd_Menu_WrapAlways,        IsCheckable = true };
 
         wsNone.Click += (_, _) => { Viewport.WhitespaceDisplayMode = TextViewport.WhitespaceMode.None;      Viewport.InvalidateVisual(); };
         wsSel.Click  += (_, _) => { Viewport.WhitespaceDisplayMode = TextViewport.WhitespaceMode.Selection;  Viewport.InvalidateVisual(); };
@@ -538,7 +538,7 @@ public sealed partial class TextEditor : UserControl, IDocumentEditor, IBufferAw
         IsBusy = true;
         OperationStarted?.Invoke(this, new DocumentOperationEventArgs
         {
-            Title = "Opening", Message = Path.GetFileName(filePath), IsIndeterminate = true
+            Title = TextEditorResources.TextEd_Status_Opening, Message = Path.GetFileName(filePath), IsIndeterminate = true
         });
 
         try

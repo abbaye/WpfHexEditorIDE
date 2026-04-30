@@ -159,7 +159,7 @@ public partial class StructureOverlayPanel : UserControl, IStructureOverlayPanel
         var dialog = new OpenFileDialog
         {
             Filter = "Format Definitions (*.json)|*.json|All Files (*.*)|*.*",
-            Title  = "Load Format Definition"
+            Title  = StructureOverlayResources.StructureOverlay_LoadFormat
         };
 
         if (dialog.ShowDialog() != true) return;

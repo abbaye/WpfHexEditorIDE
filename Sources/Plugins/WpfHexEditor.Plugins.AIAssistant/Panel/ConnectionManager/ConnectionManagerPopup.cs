@@ -21,6 +21,7 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using WpfHexEditor.Plugins.AIAssistant.Api;
 using WpfHexEditor.Plugins.AIAssistant.Options;
+using WpfHexEditor.Plugins.AIAssistant.Properties;
 using WpfHexEditor.Plugins.AIAssistant.Providers.ClaudeCode;
 using WpfTextBlock = System.Windows.Controls.TextBlock;
 
@@ -616,21 +617,21 @@ public sealed class ConnectionManagerPopup : Window
         if (testing)
         {
             dot.Fill = s_yellowBrush;
-            dot.ToolTip = "Testing...";
+            dot.ToolTip = AIAssistantResources.AIAssistant_Testing;
             return;
         }
 
         if (success == true)
         {
             dot.Fill = s_greenBrush;
-            dot.ToolTip = "Connected";
+            dot.ToolTip = AIAssistantResources.AIAssistant_Connected;
             return;
         }
 
         if (success == false)
         {
             dot.Fill = s_redBrush;
-            dot.ToolTip = "Connection failed";
+            dot.ToolTip = AIAssistantResources.AIAssistant_ConnectionFailed;
             return;
         }
 

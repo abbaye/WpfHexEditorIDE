@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using WpfHexEditor.Core.Properties;
 
 #nullable enable
 
@@ -335,7 +336,7 @@ namespace WpfHexEditor.Core.Bytes
         public object PopUndo()
         {
             if (_undoStack.Count == 0)
-                throw new InvalidOperationException("No operations to undo");
+                throw new InvalidOperationException(Resources.UndoRedo_NothingToUndo);
 
             var entry = _undoStack.Pop();
             _redoStack.Push(entry);
@@ -348,7 +349,7 @@ namespace WpfHexEditor.Core.Bytes
         public object PopRedo()
         {
             if (_redoStack.Count == 0)
-                throw new InvalidOperationException("No operations to redo");
+                throw new InvalidOperationException(Resources.UndoRedo_NothingToRedo);
 
             var entry = _redoStack.Pop();
             _undoStack.Push(entry);

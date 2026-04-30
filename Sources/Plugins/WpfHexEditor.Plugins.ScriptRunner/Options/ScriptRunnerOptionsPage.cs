@@ -17,6 +17,7 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
+using WpfHexEditor.Plugins.ScriptRunner.Properties;
 
 namespace WpfHexEditor.Plugins.ScriptRunner.Options;
 
@@ -45,9 +46,9 @@ public sealed class ScriptRunnerOptionsPage : UserControl
         };
 
         _languageCombo = new ComboBox { Margin = new Thickness(0, 4, 0, 4) };
-        _languageCombo.Items.Add("CSharp");
-        _languageCombo.Items.Add("FSharp");
-        _languageCombo.Items.Add("VBNet");
+        _languageCombo.Items.Add(ScriptRunnerResources.ScriptRunner_LangCSharp);
+        _languageCombo.Items.Add(ScriptRunnerResources.ScriptRunner_LangFSharp);
+        _languageCombo.Items.Add(ScriptRunnerResources.ScriptRunner_LangVBNet);
 
         var resetButton = new Button
         {

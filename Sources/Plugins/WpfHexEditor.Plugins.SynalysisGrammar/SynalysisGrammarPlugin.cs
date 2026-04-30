@@ -31,6 +31,7 @@ using WpfHexEditor.Plugins.SynalysisGrammar.Commands;
 using WpfHexEditor.Plugins.SynalysisGrammar.Options;
 using WpfHexEditor.Plugins.SynalysisGrammar.Services;
 using WpfHexEditor.Plugins.SynalysisGrammar.ViewModels;
+using WpfHexEditor.Plugins.SynalysisGrammar.Properties;
 using WpfHexEditor.Plugins.SynalysisGrammar.Views;
 using WpfHexEditor.SDK.Commands;
 using WpfHexEditor.SDK.Contracts;
@@ -277,7 +278,7 @@ public sealed class SynalysisGrammarPlugin : IWpfHexEditorPlugin, IPluginWithOpt
     {
         _context?.HexEditor.ClearCustomBackgroundBlockByTag("synalysis:");
         if (_viewModel is not null)
-            _viewModel.StatusText = "Overlay cleared.";
+            _viewModel.StatusText = SynalysisGrammarResources.Synalysis_OverlayCleared;
     }
 
     private void OnGrammarFileDropped(object? sender, string path)

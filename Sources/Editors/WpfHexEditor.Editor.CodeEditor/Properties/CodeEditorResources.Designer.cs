@@ -1787,5 +1787,122 @@ namespace WpfHexEditor.Editor.CodeEditor.Properties {
                 return ResourceManager.GetString("CodeEditor_GoToLine", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Collapse all.
+        /// </summary>
+        internal static string CodeEd_FindRef_CollapseAll {
+            get {
+                return ResourceManager.GetString("CodeEd_FindRef_CollapseAll", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à _Minimap.
+        /// </summary>
+        internal static string CodeEd_Minimap_MenuTitle {
+            get {
+                return ResourceManager.GetString("CodeEd_Minimap_MenuTitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Render _Characters.
+        /// </summary>
+        internal static string CodeEd_Minimap_RenderChars {
+            get {
+                return ResourceManager.GetString("CodeEd_Minimap_RenderChars", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à _Vertical size.
+        /// </summary>
+        internal static string CodeEd_Minimap_VerticalSize {
+            get {
+                return ResourceManager.GetString("CodeEd_Minimap_VerticalSize", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Proportional.
+        /// </summary>
+        internal static string CodeEd_Minimap_SizeProportional {
+            get {
+                return ResourceManager.GetString("CodeEd_Minimap_SizeProportional", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Fill.
+        /// </summary>
+        internal static string CodeEd_Minimap_SizeFill {
+            get {
+                return ResourceManager.GetString("CodeEd_Minimap_SizeFill", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Fit.
+        /// </summary>
+        internal static string CodeEd_Minimap_SizeFit {
+            get {
+                return ResourceManager.GetString("CodeEd_Minimap_SizeFit", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à S_lider.
+        /// </summary>
+        internal static string CodeEd_Minimap_Slider {
+            get {
+                return ResourceManager.GetString("CodeEd_Minimap_Slider", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Always.
+        /// </summary>
+        internal static string CodeEd_Minimap_SliderAlways {
+            get {
+                return ResourceManager.GetString("CodeEd_Minimap_SliderAlways", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Mouse Over.
+        /// </summary>
+        internal static string CodeEd_Minimap_SliderMouseOver {
+            get {
+                return ResourceManager.GetString("CodeEd_Minimap_SliderMouseOver", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Si_de.
+        /// </summary>
+        internal static string CodeEd_Minimap_Side {
+            get {
+                return ResourceManager.GetString("CodeEd_Minimap_Side", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Left.
+        /// </summary>
+        internal static string CodeEd_Minimap_SideLeft {
+            get {
+                return ResourceManager.GetString("CodeEd_Minimap_SideLeft", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Right.
+        /// </summary>
+        internal static string CodeEd_Minimap_SideRight {
+            get {
+                return ResourceManager.GetString("CodeEd_Minimap_SideRight", resourceCulture);
+            }
+        }
     }
 }

@@ -2835,5 +2835,128 @@ namespace WpfHexEditor.App.Properties {
             get { return ResourceManager.GetString("App_Lsp_ErrorTitle", resourceCulture); }
         }
 
+        // ── Options combo items — View Menu sort order ────────────────────────
+
+        internal static string App_ViewMenu_SortAlphabetical {
+            get { return ResourceManager.GetString("App_ViewMenu_SortAlphabetical", resourceCulture); }
+        }
+        internal static string App_ViewMenu_SortByFrequency {
+            get { return ResourceManager.GetString("App_ViewMenu_SortByFrequency", resourceCulture); }
+        }
+        internal static string App_ViewMenu_SortCustom {
+            get { return ResourceManager.GetString("App_ViewMenu_SortCustom", resourceCulture); }
+        }
+
+        // ── Options combo items — Tabs placement ──────────────────────────────
+
+        internal static string App_Tabs_PositionTop {
+            get { return ResourceManager.GetString("App_Tabs_PositionTop", resourceCulture); }
+        }
+        internal static string App_Tabs_PositionLeft {
+            get { return ResourceManager.GetString("App_Tabs_PositionLeft", resourceCulture); }
+        }
+        internal static string App_Tabs_PositionRight {
+            get { return ResourceManager.GetString("App_Tabs_PositionRight", resourceCulture); }
+        }
+        internal static string App_Tabs_PositionNone {
+            get { return ResourceManager.GetString("App_Tabs_PositionNone", resourceCulture); }
+        }
+
+        // ── Options combo items — Tabs color mode (group by) ──────────────────
+
+        internal static string App_Tabs_GroupByProject {
+            get { return ResourceManager.GetString("App_Tabs_GroupByProject", resourceCulture); }
+        }
+        internal static string App_Tabs_GroupByExtension {
+            get { return ResourceManager.GetString("App_Tabs_GroupByExtension", resourceCulture); }
+        }
+        internal static string App_Tabs_GroupByRegex {
+            get { return ResourceManager.GetString("App_Tabs_GroupByRegex", resourceCulture); }
+        }
+
+        // ── Options combo items — Docking shadow/highlight mode ───────────────
+
+        internal static string App_Docking_ShadowNone {
+            get { return ResourceManager.GetString("App_Docking_ShadowNone", resourceCulture); }
+        }
+        internal static string App_Docking_ShadowTopBar {
+            get { return ResourceManager.GetString("App_Docking_ShadowTopBar", resourceCulture); }
+        }
+        internal static string App_Docking_ShadowFullBorder {
+            get { return ResourceManager.GetString("App_Docking_ShadowFullBorder", resourceCulture); }
+        }
+        internal static string App_Docking_ShadowGlow {
+            get { return ResourceManager.GetString("App_Docking_ShadowGlow", resourceCulture); }
+        }
+
+        // ── Options combo items — Docking corner radius scope ─────────────────
+
+        internal static string App_Docking_CornerNormal {
+            get { return ResourceManager.GetString("App_Docking_CornerNormal", resourceCulture); }
+        }
+        internal static string App_Docking_CornerRoundedContent {
+            get { return ResourceManager.GetString("App_Docking_CornerRoundedContent", resourceCulture); }
+        }
+        internal static string App_Docking_CornerRoundedFull {
+            get { return ResourceManager.GetString("App_Docking_CornerRoundedFull", resourceCulture); }
+        }
+
+        // ── Options combo items — Comparison view mode ────────────────────────
+
+        internal static string App_Comparison_ModeSideBySide {
+            get { return ResourceManager.GetString("App_Comparison_ModeSideBySide", resourceCulture); }
+        }
+        internal static string App_Comparison_ModeInline {
+            get { return ResourceManager.GetString("App_Comparison_ModeInline", resourceCulture); }
+        }
+        internal static string App_Comparison_ModeHexText {
+            get { return ResourceManager.GetString("App_Comparison_ModeHexText", resourceCulture); }
+        }
+
+        // ── Options combo items — Code Editor minimap side ────────────────────
+
+        internal static string App_CodeEditor_MinimapRight {
+            get { return ResourceManager.GetString("App_CodeEditor_MinimapRight", resourceCulture); }
+        }
+        internal static string App_CodeEditor_MinimapLeft {
+            get { return ResourceManager.GetString("App_CodeEditor_MinimapLeft", resourceCulture); }
+        }
+
+        // ── Options combo items — Code Editor minimap vertical size ──────────
+
+        internal static string App_CodeEditor_MinimapProportional {
+            get { return ResourceManager.GetString("App_CodeEditor_MinimapProportional", resourceCulture); }
+        }
+        internal static string App_CodeEditor_MinimapFill {
+            get { return ResourceManager.GetString("App_CodeEditor_MinimapFill", resourceCulture); }
+        }
+        internal static string App_CodeEditor_MinimapFit {
+            get { return ResourceManager.GetString("App_CodeEditor_MinimapFit", resourceCulture); }
+        }
+
+        // ── GoToOffsetDialog ──────────────────────────────────────────────────
+
+        internal static string App_GoTo_EnterOffset {
+            get { return ResourceManager.GetString("App_GoTo_EnterOffset", resourceCulture); }
+        }
+        internal static string App_GoTo_InvalidHex {
+            get { return ResourceManager.GetString("App_GoTo_InvalidHex", resourceCulture); }
+        }
+        internal static string App_GoTo_InvalidDecimal {
+            get { return ResourceManager.GetString("App_GoTo_InvalidDecimal", resourceCulture); }
+        }
+        internal static string App_GoTo_OffsetNonNegative {
+            get { return ResourceManager.GetString("App_GoTo_OffsetNonNegative", resourceCulture); }
+        }
+
+        // ── PasteConflictDialog ───────────────────────────────────────────────
+
+        internal static string App_PasteConflict_EnterFileName {
+            get { return ResourceManager.GetString("App_PasteConflict_EnterFileName", resourceCulture); }
+        }
+        internal static string App_PasteConflict_InvalidChars {
+            get { return ResourceManager.GetString("App_PasteConflict_InvalidChars", resourceCulture); }
+        }
+
     }
 }

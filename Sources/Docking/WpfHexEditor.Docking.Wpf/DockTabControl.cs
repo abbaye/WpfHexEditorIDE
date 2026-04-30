@@ -17,6 +17,7 @@ using System.Windows.Threading;
 using WpfHexEditor.Docking.Core;
 using WpfHexEditor.Docking.Core.Nodes;
 using WpfHexEditor.Shell.Automation;
+using WpfHexEditor.Shell.Properties;
 
 namespace WpfHexEditor.Shell;
 
@@ -701,21 +702,21 @@ public class DockTabHeader : StackPanel
                 _lspDot.Text       = "◌";
                 _lspDot.Foreground = Application.Current?.TryFindResource("LSP_ConnectingDot") as System.Windows.Media.Brush
                                      ?? System.Windows.Media.Brushes.Gray;
-                _lspDot.ToolTip    = "Language Server: connecting…";
+                _lspDot.ToolTip    = DockingResources.Dock_LSP_Connecting;
                 _lspDot.Visibility = Visibility.Visible;
                 break;
             case DockTabLspState.Ready:
                 _lspDot.Text       = "●";
                 _lspDot.Foreground = Application.Current?.TryFindResource("LSP_ReadyDot") as System.Windows.Media.Brush
                                      ?? System.Windows.Media.Brushes.Green;
-                _lspDot.ToolTip    = "Language Server: ready";
+                _lspDot.ToolTip    = DockingResources.Dock_LSP_Ready;
                 _lspDot.Visibility = Visibility.Visible;
                 break;
             case DockTabLspState.Error:
                 _lspDot.Text       = "✕";
                 _lspDot.Foreground = Application.Current?.TryFindResource("LSP_ErrorDot") as System.Windows.Media.Brush
                                      ?? System.Windows.Media.Brushes.Red;
-                _lspDot.ToolTip    = "Language Server: error";
+                _lspDot.ToolTip    = DockingResources.Dock_LSP_Error;
                 _lspDot.Visibility = Visibility.Visible;
                 break;
         }

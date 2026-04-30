@@ -22,6 +22,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using WpfHexEditor.Core.FormatDetection;
+using WpfHexEditor.Plugins.FormatStructure.Properties;
 
 namespace WpfHexEditor.Plugins.FormatStructure.Views;
 
@@ -85,7 +86,7 @@ public partial class FormatStructurePanel : UserControl
 
         if (blocks == null || blocks.Count == 0)
         {
-            BlockCountText.Text = "0 fields";
+            BlockCountText.Text = FormatStructureResources.FormatStruct_ZeroFields;
             return;
         }
 
@@ -104,7 +105,7 @@ public partial class FormatStructurePanel : UserControl
     public void Clear()
     {
         _rootNodes.Clear();
-        FormatNameText.Text = "No format detected";
+        FormatNameText.Text = FormatStructureResources.FormatStruct_NoFormatDetected;
         BlockCountText.Text = "";
     }
 

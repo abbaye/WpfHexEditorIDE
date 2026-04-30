@@ -19,6 +19,7 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using WpfHexEditor.Plugins.UnitTesting.Models;
 using WpfHexEditor.Plugins.UnitTesting.Options;
+using WpfHexEditor.Plugins.UnitTesting.Properties;
 using System.Linq;
 using WpfHexEditor.Core.ViewModels;
 
@@ -38,7 +39,7 @@ public sealed class UnitTestingViewModel : ViewModelBase
 
     // ── Status ───────────────────────────────────────────────────────────────
 
-    private string _statusText = "Ready";
+    private string _statusText = UnitTestingResources.UnitTest_Ready;
     private bool   _isRunning;
     private int    _passCount;
     private int    _failCount;
@@ -184,7 +185,7 @@ public sealed class UnitTestingViewModel : ViewModelBase
         _runningProject = null;
         ProjectNodes.Clear();
         PassCount      = FailCount = SkipCount = 0;
-        StatusText     = "Ready";
+        StatusText     = UnitTestingResources.UnitTest_Ready;
         IsRunning      = false;
         SelectedNode   = null;
     }

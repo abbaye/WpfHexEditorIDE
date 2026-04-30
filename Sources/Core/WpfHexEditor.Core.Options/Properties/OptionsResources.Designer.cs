@@ -2447,5 +2447,53 @@ namespace WpfHexEditor.Core.Options.Properties {
         internal static string Opt_Page_CompareFiles => ResourceManager.GetString("Opt_Page_CompareFiles", resourceCulture);
 
         internal static string Opt_Page_CommandPalette => ResourceManager.GetString("Opt_Page_CommandPalette", resourceCulture);
+
+        // ── Plugin System Options Page ────────────────────────────────────────
+
+        internal static string Opt_Plugin_SelectExtDir => ResourceManager.GetString("Opt_Plugin_SelectExtDir", resourceCulture);
+
+        // ── Plugin Dev Loader Options Page ────────────────────────────────────
+
+        internal static string Opt_PluginDev_SelectOutputDir => ResourceManager.GetString("Opt_PluginDev_SelectOutputDir", resourceCulture);
+
+        // ── Whfmt Explorer Options Page — view mode combo ─────────────────────
+
+        internal static string Opt_ViewMode_Tree => ResourceManager.GetString("Opt_ViewMode_Tree", resourceCulture);
+
+        internal static string Opt_ViewMode_Flat => ResourceManager.GetString("Opt_ViewMode_Flat", resourceCulture);
+
+        // ── Structure Editor Options Page — panel position combo ──────────────
+
+        internal static string Opt_Position_Right => ResourceManager.GetString("Opt_Position_Right", resourceCulture);
+
+        internal static string Opt_Position_Left => ResourceManager.GetString("Opt_Position_Left", resourceCulture);
+
+        internal static string Opt_Position_Bottom => ResourceManager.GetString("Opt_Position_Bottom", resourceCulture);
+
+        internal static string Opt_Position_Top => ResourceManager.GetString("Opt_Position_Top", resourceCulture);
+
+        // ── Structure Editor Options Page — endianness combo ──────────────────
+
+        internal static string Opt_Endian_Little => ResourceManager.GetString("Opt_Endian_Little", resourceCulture);
+
+        internal static string Opt_Endian_Big => ResourceManager.GetString("Opt_Endian_Big", resourceCulture);
+
+        // ── Code Editor Formatting Page — indentation levels combo ────────────
+
+        internal static string Opt_IndentLevel_1 => ResourceManager.GetString("Opt_IndentLevel_1", resourceCulture);
+
+        internal static string Opt_IndentLevel_2 => ResourceManager.GetString("Opt_IndentLevel_2", resourceCulture);
+
+        internal static string Opt_IndentLevel_3 => ResourceManager.GetString("Opt_IndentLevel_3", resourceCulture);
+
+        // ── Markdown Editor Options Page — layout combo ───────────────────────
+
+        internal static string Opt_MdLayout_PreviewRight => ResourceManager.GetString("Opt_MdLayout_PreviewRight", resourceCulture);
+
+        internal static string Opt_MdLayout_PreviewBottom => ResourceManager.GetString("Opt_MdLayout_PreviewBottom", resourceCulture);
+
+        internal static string Opt_MdLayout_EditorOnly => ResourceManager.GetString("Opt_MdLayout_EditorOnly", resourceCulture);
+
+        internal static string Opt_MdLayout_PreviewOnly => ResourceManager.GetString("Opt_MdLayout_PreviewOnly", resourceCulture);
     }
 }

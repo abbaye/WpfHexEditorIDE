@@ -18,6 +18,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using WpfHexEditor.Plugins.UnitTesting.Options;
+using WpfHexEditor.Plugins.UnitTesting.Properties;
 using WpfHexEditor.Plugins.UnitTesting.ViewModels;
 
 namespace WpfHexEditor.Plugins.UnitTesting.Views;
@@ -134,12 +135,12 @@ public partial class UnitTestingPanel : UserControl
         menu.Items.Add(new Separator());
 
         // Open with specific editor
-        var miCode = new MenuItem { Header = "Open in Code Editor" };
+        var miCode = new MenuItem { Header = UnitTestingResources.UnitTest_OpenInCodeEditor };
         miCode.Click += (_, _) => OpenSourceWithEditorRequested?.Invoke(this,
             (row, WpfHexEditor.SDK.Contracts.WellKnownEditorIds.CodeEditor));
         menu.Items.Add(miCode);
 
-        var miHex = new MenuItem { Header = "Open in Hex Editor" };
+        var miHex = new MenuItem { Header = UnitTestingResources.UnitTest_OpenInHexEditor };
         miHex.Click += (_, _) => OpenSourceWithEditorRequested?.Invoke(this,
             (row, WpfHexEditor.SDK.Contracts.WellKnownEditorIds.HexEditor));
         menu.Items.Add(miHex);

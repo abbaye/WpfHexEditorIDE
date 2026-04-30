@@ -109,4 +109,39 @@
     <value>Enable Thinking (Anthropic only)</value>
   </data>
 
+  <!-- Copy button tooltip after click -->
+  <data name="AIAssistant_Copied" xml:space="preserve">
+    <value>Copied!</value>
+  </data>
+
+  <!-- Copy button default tooltip -->
+  <data name="AIAssistant_CopyCode" xml:space="preserve">
+    <value>Copy code</value>
+  </data>
+
+  <!-- Connection status dot tooltip while testing -->
+  <data name="AIAssistant_Testing" xml:space="preserve">
+    <value>Testing...</value>
+  </data>
+
+  <!-- Connection status dot tooltip on success -->
+  <data name="AIAssistant_Connected" xml:space="preserve">
+    <value>Connected</value>
+  </data>
+
+  <!-- Connection status dot tooltip on failure -->
+  <data name="AIAssistant_ConnectionFailed" xml:space="preserve">
+    <value>Connection failed</value>
+  </data>
+
+  <!-- Plugin / panel display name -->
+  <data name="AIAssistant_PluginName" xml:space="preserve">
+    <value>AI Assistant</value>
+  </data>
+
+  <!-- Rename conversation dialog title -->
+  <data name="AIAssistant_RenameConversation" xml:space="preserve">
+    <value>Rename Conversation</value>
+  </data>
+
 </root>

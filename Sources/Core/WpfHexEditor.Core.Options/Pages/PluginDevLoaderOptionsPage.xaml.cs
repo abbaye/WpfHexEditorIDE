@@ -10,6 +10,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using Microsoft.Win32;
+using WpfHexEditor.Core.Options.Properties;
 
 namespace WpfHexEditor.Core.Options.Pages;
 
@@ -48,7 +49,7 @@ public partial class PluginDevLoaderOptionsPage : UserControl, IOptionsPage
 
     private void OnBrowse(object sender, RoutedEventArgs e)
     {
-        var dlg = new OpenFolderDialog { Title = "Select Extension Output Directory" };
+        var dlg = new OpenFolderDialog { Title = OptionsResources.Opt_PluginDev_SelectOutputDir };
         if (dlg.ShowDialog() != true) return;
 
         var current = TxtWatchedFolders.Text.Trim();

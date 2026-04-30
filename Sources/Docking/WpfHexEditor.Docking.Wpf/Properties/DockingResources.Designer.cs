@@ -212,13 +212,112 @@ namespace WpfHexEditor.Shell.Properties {
                 return ResourceManager.GetString("Docking_TabSettings_ToggleWithWheel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Recherche une chaîne localisée semblable à Top (default).
         /// </summary>
         internal static string Docking_TabSettings_Top {
             get {
                 return ResourceManager.GetString("Docking_TabSettings_Top", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Maximize.
+        /// </summary>
+        internal static string Dock_FloatWin_Maximize {
+            get {
+                return ResourceManager.GetString("Dock_FloatWin_Maximize", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Restore.
+        /// </summary>
+        internal static string Dock_FloatWin_Restore {
+            get {
+                return ResourceManager.GetString("Dock_FloatWin_Restore", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Language Server: connecting….
+        /// </summary>
+        internal static string Dock_LSP_Connecting {
+            get {
+                return ResourceManager.GetString("Dock_LSP_Connecting", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Language Server: ready.
+        /// </summary>
+        internal static string Dock_LSP_Ready {
+            get {
+                return ResourceManager.GetString("Dock_LSP_Ready", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Language Server: error.
+        /// </summary>
+        internal static string Dock_LSP_Error {
+            get {
+                return ResourceManager.GetString("Dock_LSP_Error", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Show.
+        /// </summary>
+        internal static string Dock_AutoHide_Show {
+            get {
+                return ResourceManager.GetString("Dock_AutoHide_Show", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Float.
+        /// </summary>
+        internal static string Dock_AutoHide_Float {
+            get {
+                return ResourceManager.GetString("Dock_AutoHide_Float", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Close.
+        /// </summary>
+        internal static string Dock_AutoHide_Close {
+            get {
+                return ResourceManager.GetString("Dock_AutoHide_Close", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Dock.
+        /// </summary>
+        internal static string Dock_AutoHide_Dock {
+            get {
+                return ResourceManager.GetString("Dock_AutoHide_Dock", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Color document tabs by.
+        /// </summary>
+        internal static string Dock_TabConfig_ColorBy {
+            get {
+                return ResourceManager.GetString("Dock_TabConfig_ColorBy", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Options….
+        /// </summary>
+        internal static string Dock_TabConfig_Options {
+            get {
+                return ResourceManager.GetString("Dock_TabConfig_Options", resourceCulture);
             }
         }
     }

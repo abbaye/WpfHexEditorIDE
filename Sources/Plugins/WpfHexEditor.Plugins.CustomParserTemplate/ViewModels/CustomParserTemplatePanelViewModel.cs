@@ -12,6 +12,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using WpfHexEditor.Plugins.CustomParserTemplate.Properties;
 using WpfHexEditor.Plugins.CustomParserTemplate.Views;
 using WpfHexEditor.Core.ViewModels;
 
@@ -21,7 +22,7 @@ public sealed class CustomParserTemplatePanelViewModel : ViewModelBase
 {
     private ObservableCollection<CustomTemplate> _templates = new();
     private CustomTemplate? _selectedTemplate;
-    private string          _statusText = "No template selected";
+    private string          _statusText = CustomParserTemplateResources.CustomParser_NoTemplateSelected;
     private bool            _hasUnsavedChanges;
 
     public ObservableCollection<CustomTemplate> Templates
@@ -39,7 +40,7 @@ public sealed class CustomParserTemplatePanelViewModel : ViewModelBase
         Templates.Clear();
         SelectedTemplate  = null;
         HasUnsavedChanges = false;
-        StatusText        = "No template selected";
+        StatusText        = CustomParserTemplateResources.CustomParser_NoTemplateSelected;
     }
 
 

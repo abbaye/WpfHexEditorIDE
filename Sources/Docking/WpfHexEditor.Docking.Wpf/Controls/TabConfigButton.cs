@@ -21,6 +21,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using WpfHexEditor.Docking.Core;
+using WpfHexEditor.Shell.Properties;
 
 namespace WpfHexEditor.Shell.Controls;
 
@@ -94,7 +95,7 @@ public class TabConfigButton : Button
         menu.Items.Add(new Separator());
 
         // -- Color by submenu -------------------------------------------------
-        var colorParent = new MenuItem { Header = "Color document tabs by" };
+        var colorParent = new MenuItem { Header = DockingResources.Dock_TabConfig_ColorBy };
         colorParent.Items.Add(MakeColorModeItem("Project",        DocumentTabColorMode.Project,       s));
         colorParent.Items.Add(MakeColorModeItem("File extension", DocumentTabColorMode.FileExtension, s));
         colorParent.Items.Add(MakeColorModeItem("Regex",          DocumentTabColorMode.Regex,         s));
@@ -136,7 +137,7 @@ public class TabConfigButton : Button
         menu.Items.Add(new Separator());
 
         // -- Options… ---------------------------------------------------------
-        var options = new MenuItem { Header = "Options…" };
+        var options = new MenuItem { Header = DockingResources.Dock_TabConfig_Options };
         options.Click += (_, _) => OptionsRequested?.Invoke(this, EventArgs.Empty);
         menu.Items.Add(options);
 

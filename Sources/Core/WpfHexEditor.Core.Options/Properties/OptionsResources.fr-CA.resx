@@ -169,4 +169,35 @@
   <data name="Opt_Page_FormatExplorer"       xml:space="preserve"><value>Explorateur de formats</value></data>
   <data name="Opt_Page_CompareFiles"         xml:space="preserve"><value>Comparer des fichiers</value></data>
   <data name="Opt_Page_CommandPalette"       xml:space="preserve"><value>Palette de commandes</value></data>
+
+  <!-- Plugin System Options Page — folder picker dialog -->
+  <data name="Opt_Plugin_SelectExtDir"       xml:space="preserve"><value>Sélectionner le répertoire d'extensions supplémentaires</value></data>
+
+  <!-- Plugin Dev Loader Options Page — folder picker dialog -->
+  <data name="Opt_PluginDev_SelectOutputDir" xml:space="preserve"><value>Sélectionner le répertoire de sortie de l'extension</value></data>
+
+  <!-- Whfmt Explorer Options Page — view mode combo -->
+  <data name="Opt_ViewMode_Tree"             xml:space="preserve"><value>Arborescence</value></data>
+  <data name="Opt_ViewMode_Flat"             xml:space="preserve"><value>Plat</value></data>
+
+  <!-- Structure Editor Options Page — panel position combo -->
+  <data name="Opt_Position_Right"            xml:space="preserve"><value>Droite</value></data>
+  <data name="Opt_Position_Left"             xml:space="preserve"><value>Gauche</value></data>
+  <data name="Opt_Position_Bottom"           xml:space="preserve"><value>Bas</value></data>
+  <data name="Opt_Position_Top"              xml:space="preserve"><value>Haut</value></data>
+
+  <!-- Structure Editor Options Page — endianness combo -->
+  <data name="Opt_Endian_Little"             xml:space="preserve"><value>petit-boutiste</value></data>
+  <data name="Opt_Endian_Big"                xml:space="preserve"><value>grand-boutiste</value></data>
+
+  <!-- Code Editor Formatting Page — indentation levels combo -->
+  <data name="Opt_IndentLevel_1"             xml:space="preserve"><value>1 niveau (4 espaces à la racine)</value></data>
+  <data name="Opt_IndentLevel_2"             xml:space="preserve"><value>2 niveaux (8 espaces à la racine) — par défaut VS</value></data>
+  <data name="Opt_IndentLevel_3"             xml:space="preserve"><value>3 niveaux (12 espaces à la racine)</value></data>
+
+  <!-- Markdown Editor Options Page — layout combo -->
+  <data name="Opt_MdLayout_PreviewRight"     xml:space="preserve"><value>Aperçu à droite</value></data>
+  <data name="Opt_MdLayout_PreviewBottom"    xml:space="preserve"><value>Aperçu en bas</value></data>
+  <data name="Opt_MdLayout_EditorOnly"       xml:space="preserve"><value>Éditeur seulement</value></data>
+  <data name="Opt_MdLayout_PreviewOnly"      xml:space="preserve"><value>Aperçu seulement</value></data>
 </root>

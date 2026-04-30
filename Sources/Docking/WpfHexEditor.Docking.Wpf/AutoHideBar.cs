@@ -27,6 +27,7 @@ using System.Windows.Media.Animation;
 using WpfHexEditor.Docking.Core;
 using WpfHexEditor.Docking.Core.Nodes;
 using WpfHexEditor.Shell.Automation;
+using WpfHexEditor.Shell.Properties;
 
 namespace WpfHexEditor.Shell;
 
@@ -149,9 +150,9 @@ public class AutoHideBar : Border
                 TextAlignment = TextAlignment.Center
             };
 
-            var showItem  = new MenuItem { Header = "Show",  Icon = MakeIcon("\uE8BD") };
-            var floatItem = new MenuItem { Header = "Float", Icon = MakeIcon("\uE78B") };
-            var closeItem = new MenuItem { Header = "Close", Icon = MakeIcon("\uE8BB") };
+            var showItem  = new MenuItem { Header = DockingResources.Dock_AutoHide_Show,  Icon = MakeIcon("\uE8BD") };
+            var floatItem = new MenuItem { Header = DockingResources.Dock_AutoHide_Float, Icon = MakeIcon("\uE78B") };
+            var closeItem = new MenuItem { Header = DockingResources.Dock_AutoHide_Close, Icon = MakeIcon("\uE8BB") };
             showItem.Click  += (_, _) => GroupClicked?.Invoke(captured);
             floatItem.Click += (_, _) => GroupFloatRequested?.Invoke(captured);
             closeItem.Click += (_, _) => GroupCloseRequested?.Invoke(captured);
@@ -373,13 +374,13 @@ public class AutoHideFlyout : Grid
             return btn;
         }
 
-        var closeButton = MakeTitleButton("\uE8BB", "Close");
+        var closeButton = MakeTitleButton("\uE8BB", DockingResources.Dock_AutoHide_Close);
         closeButton.Click += (_, _) => { if (CurrentItem is not null) CloseRequested?.Invoke(CurrentItem); };
 
-        var pinButton = MakeTitleButton("\uE141", "Dock");
+        var pinButton = MakeTitleButton("\uE141", DockingResources.Dock_AutoHide_Dock);
         pinButton.Click += (_, _) => { if (CurrentItem is not null) RestoreRequested?.Invoke(CurrentItem); };
 
-        var chevronButton = MakeTitleButton("\uE70D", "Options");
+        var chevronButton = MakeTitleButton("\uE70D", DockingResources.Dock_TabConfig_Options);
         chevronButton.Click += (sender, _) =>
         {
             if (CurrentItem is null || sender is not Button btn) return;
@@ -396,7 +397,7 @@ public class AutoHideFlyout : Grid
                 Foreground  = menuFg
             };
 
-            var dockItem = new MenuItem { Header = "Dock", Foreground = menuFg };
+            var dockItem = new MenuItem { Header = DockingResources.Dock_AutoHide_Dock, Foreground = menuFg };
             dockItem.Click += (_, _) => RestoreRequested?.Invoke(item);
             menu.Items.Add(dockItem);
 
@@ -408,13 +409,13 @@ public class AutoHideFlyout : Grid
             };
             menu.Items.Add(autoHideItem);
 
-            var floatItem = new MenuItem { Header = "Float", Foreground = menuFg };
+            var floatItem = new MenuItem { Header = DockingResources.Dock_AutoHide_Float, Foreground = menuFg };
             floatItem.Click += (_, _) => FloatRequested?.Invoke(item);
             menu.Items.Add(floatItem);
 
             menu.Items.Add(new Separator());
 
-            var closeItem = new MenuItem { Header = "Close", Foreground = menuFg };
+            var closeItem = new MenuItem { Header = DockingResources.Dock_AutoHide_Close, Foreground = menuFg };
             closeItem.Click += (_, _) => CloseRequested?.Invoke(item);
             menu.Items.Add(closeItem);
 

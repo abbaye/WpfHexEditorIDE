@@ -17,6 +17,7 @@
 using System.Windows;
 using WpfHexEditor.Plugins.ScriptRunner.Options;
 using WpfHexEditor.Plugins.ScriptRunner.Panels;
+using WpfHexEditor.Plugins.ScriptRunner.Properties;
 using WpfHexEditor.Plugins.ScriptRunner.ViewModels;
 using WpfHexEditor.SDK.Commands;
 using WpfHexEditor.SDK.Contracts;
@@ -58,7 +59,7 @@ public sealed class ScriptRunnerPlugin : IWpfHexEditorPlugin, IPluginWithOptions
         _vm = new ScriptRunnerViewModel(context.Scripting);
 
         if (context.Scripting is null)
-            _vm.StatusText = "Scripting engine not available.";
+            _vm.StatusText = ScriptRunnerResources.ScriptRunner_EngineNotAvailable;
 
         // Panel must be created on the UI thread (InitializeAsync is called there).
         _panel = new ScriptRunnerPanel(_vm);

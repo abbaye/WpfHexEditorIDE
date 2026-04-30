@@ -28,6 +28,7 @@ using System.Windows.Shell;
 using System.Windows.Threading;
 using WpfHexEditor.Docking.Core;
 using WpfHexEditor.Docking.Core.Nodes;
+using WpfHexEditor.Shell.Properties;
 using DCore = WpfHexEditor.Docking.Core;
 
 namespace WpfHexEditor.Shell;
@@ -313,7 +314,7 @@ public class FloatingWindow : Window
             Height = _savedHeight;
             _isFloatingMaximized     = false;
             _maximizeButton.Content  = "\uE922"; // ChromeMaximize
-            _maximizeButton.ToolTip  = "Maximize";
+            _maximizeButton.ToolTip  = DockingResources.Dock_FloatWin_Maximize;
         }
         else
         {
@@ -328,7 +329,7 @@ public class FloatingWindow : Window
             Height = area.Height;
             _isFloatingMaximized     = true;
             _maximizeButton.Content  = "\uE923"; // ChromeRestore
-            _maximizeButton.ToolTip  = "Restore";
+            _maximizeButton.ToolTip  = DockingResources.Dock_FloatWin_Restore;
         }
     }
 

@@ -14,6 +14,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using WpfHexEditor.Core.Models.StructureOverlay;
 using WpfHexEditor.Core.ViewModels;
+using WpfHexEditor.Plugins.StructureOverlay.Properties;
 
 namespace WpfHexEditor.Plugins.StructureOverlay.ViewModels;
 
@@ -22,7 +23,7 @@ public sealed class StructureOverlayPanelViewModel : ViewModelBase
     private ObservableCollection<OverlayStructure> _structures = new();
     private OverlayField?   _selectedField;
     private OverlayStructure? _selectedStructure;
-    private string          _statusText  = "No structures loaded";
+    private string          _statusText  = StructureOverlayResources.StructureOverlay_NoStructures;
     private bool            _isLoading;
 
     public ObservableCollection<OverlayStructure> Structures
@@ -41,7 +42,7 @@ public sealed class StructureOverlayPanelViewModel : ViewModelBase
         Structures.Clear();
         SelectedField     = null;
         SelectedStructure = null;
-        StatusText        = "No structures loaded";
+        StatusText        = StructureOverlayResources.StructureOverlay_NoStructures;
     }
 
 

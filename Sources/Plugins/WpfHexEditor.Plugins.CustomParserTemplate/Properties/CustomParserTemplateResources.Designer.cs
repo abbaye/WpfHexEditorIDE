@@ -109,4 +109,12 @@ internal static class CustomParserTemplateResources
     /// </summary>
     internal static string CustomParser_Dialog_ImportTemplate
         => ResourceManager.GetString("CustomParser_Dialog_ImportTemplate", _resourceCulture)!;
+
+    /// <summary>Localized: "Custom Parser Template"</summary>
+    internal static string CustomParser_PluginName
+        => ResourceManager.GetString("CustomParser_PluginName", _resourceCulture)!;
+
+    /// <summary>Localized: "No template selected"</summary>
+    internal static string CustomParser_NoTemplateSelected
+        => ResourceManager.GetString("CustomParser_NoTemplateSelected", _resourceCulture)!;
 }

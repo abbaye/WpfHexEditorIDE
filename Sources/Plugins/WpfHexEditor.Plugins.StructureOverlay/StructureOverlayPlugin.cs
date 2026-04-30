@@ -24,6 +24,7 @@ using WpfHexEditor.SDK.Contracts.Services;
 using WpfHexEditor.SDK.Descriptors;
 using WpfHexEditor.SDK.Models;
 using WpfHexEditor.Core.Models.StructureOverlay;
+using WpfHexEditor.Plugins.StructureOverlay.Properties;
 using WpfHexEditor.Plugins.StructureOverlay.Views;
 
 namespace WpfHexEditor.Plugins.StructureOverlay;
@@ -42,7 +43,7 @@ public sealed class StructureOverlayPlugin : IWpfHexEditorPlugin
     private const string PanelUiId = "WpfHexEditor.Plugins.StructureOverlay.Panel.StructureOverlayPanel";
 
     public string  Id      => "WpfHexEditor.Plugins.StructureOverlay";
-    public string  Name    => "Structure Overlay";
+    public string  Name    => StructureOverlayResources.StructureOverlay_PluginName;
     public Version Version => new(0, 4, 0);
 
     public PluginCapabilities Capabilities => new()
@@ -67,7 +68,7 @@ public sealed class StructureOverlayPlugin : IWpfHexEditorPlugin
             Id,
             new PanelDescriptor
             {
-                Title           = "Structure Overlay",
+                Title           = StructureOverlayResources.StructureOverlay_PluginName,
                 DefaultDockSide = "Right",
                 DefaultAutoHide = false,
                 CanClose        = true

@@ -10,4 +10,10 @@
   <data name="FileComparison_SelectFile2" xml:space="preserve"><value>Sélectionner le fichier 2 à comparer</value></data>
   <data name="FileComparison_SelectFilesHint" xml:space="preserve"><value>Sélectionner des fichiers à comparer</value></data>
   <data name="FileComparison_SelectBothFiles" xml:space="preserve"><value>S&#233;lectionnez les deux fichiers &#224; comparer</value></data>
+  <data name="FileComparison_SelectFiles" xml:space="preserve"><value>S&#233;lectionner des fichiers &#224; comparer</value></data>
+  <data name="FileComparison_Comparing" xml:space="preserve"><value>Comparaison en cours&#x2026;</value></data>
+  <data name="FileComparison_Cancelled" xml:space="preserve"><value>Annul&#233;</value></data>
+  <data name="FileComparison_SelectTwoFiles" xml:space="preserve"><value>S&#233;lectionnez deux fichiers et cliquez sur Comparer</value></data>
+  <data name="FileComparison_MultipleFormats" xml:space="preserve"><value>Plusieurs formats d&#233;tect&#233;s</value></data>
+  <data name="FileComparison_SelectFile" xml:space="preserve"><value>S&#233;lectionner un fichier &#224; comparer</value></data>
 </root>

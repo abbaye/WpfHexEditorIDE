@@ -4978,5 +4978,23 @@ namespace WpfHexEditor.Core.Properties {
         public static string UndoHistory_Actions {
             get { return ResourceManager.GetString("UndoHistory_Actions", resourceCulture); }
         }
+        public static string DynSettings_Title {
+            get { return ResourceManager.GetString("DynSettings_Title", resourceCulture); }
+        }
+        public static string DynSettings_SaveState {
+            get { return ResourceManager.GetString("DynSettings_SaveState", resourceCulture); }
+        }
+        public static string DynSettings_LoadState {
+            get { return ResourceManager.GetString("DynSettings_LoadState", resourceCulture); }
+        }
+        public static string DynSettings_ResetDefaults {
+            get { return ResourceManager.GetString("DynSettings_ResetDefaults", resourceCulture); }
+        }
+        public static string UndoRedo_NothingToUndo {
+            get { return ResourceManager.GetString("UndoRedo_NothingToUndo", resourceCulture); }
+        }
+        public static string UndoRedo_NothingToRedo {
+            get { return ResourceManager.GetString("UndoRedo_NothingToRedo", resourceCulture); }
+        }
     }
 }

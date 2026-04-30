@@ -14,6 +14,7 @@ using System.Runtime.CompilerServices;
 using WpfHexEditor.Editor.ResxEditor.Models;
 using WpfHexEditor.Editor.ResxEditor.Services;
 using WpfHexEditor.Core.ViewModels;
+using WpfHexEditor.Plugins.ResxLocalization.Properties;
 
 namespace WpfHexEditor.Plugins.ResxLocalization.ViewModels;
 
@@ -52,7 +53,7 @@ public sealed class TranslationRowViewModel
 public sealed class MissingTranslationsViewModel : ViewModelBase
 {
     private int    _missingCount;
-    private string _statusText = "No locale data loaded";
+    private string _statusText = ResxLocalizationResources.ResxLoc_NoLocaleData;
 
     public ObservableCollection<TranslationRowViewModel> Rows         { get; } = [];
     public ObservableCollection<string>                   CultureCodes { get; } = [];
@@ -81,7 +82,7 @@ public sealed class MissingTranslationsViewModel : ViewModelBase
 
         if (locales.Count == 0)
         {
-            StatusText = "No locale data loaded";
+            StatusText = ResxLocalizationResources.ResxLoc_NoLocaleData;
             return;
         }
 

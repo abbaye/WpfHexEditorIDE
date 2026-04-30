@@ -207,7 +207,7 @@ public partial class PatternAnalysisPanel : UserControl
             var dominant = Array.IndexOf(distribution, maxFreq);
             anomalies.Add(new AnomalyInfo
             {
-                Title       = "Extremely skewed distribution",
+                Title       = PatternAnalysisResources.PatternAnalysis_ExtremelySkewed,
                 Description = $"Byte 0x{dominant:X2} appears {maxFreq * 100.0 / data.Length:F1}% of the time"
             });
         }
@@ -349,7 +349,7 @@ public partial class PatternAnalysisPanel : UserControl
 
     private void ShowNoDataMessage()
     {
-        StatusTextBlock.Text        = "No data to analyze. Select a range in the hex editor.";
+        StatusTextBlock.Text        = PatternAnalysisResources.PatternAnalysis_NoData;
         EntropyCard.Visibility      = Visibility.Collapsed;
         DistributionCard.Visibility = Visibility.Collapsed;
         PatternsCard.Visibility     = Visibility.Collapsed;

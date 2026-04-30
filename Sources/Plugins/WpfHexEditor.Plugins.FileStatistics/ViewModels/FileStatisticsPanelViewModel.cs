@@ -13,6 +13,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using WpfHexEditor.Core.ViewModels;
+using WpfHexEditor.Plugins.FileStatistics.Properties;
 
 namespace WpfHexEditor.Plugins.FileStatistics.ViewModels;
 
@@ -28,7 +29,7 @@ public sealed class FileStatisticsPanelViewModel : ViewModelBase
     private string  _printablePercent   = string.Empty;
     private string  _controlCharPercent = string.Empty;
     private string  _healthStatus       = "Unknown";
-    private string  _statusText         = "No file loaded";
+    private string  _statusText         = FileStatisticsResources.FileStats_NoFileLoaded;
     private bool    _isLoading;
     private ObservableCollection<string> _anomalies = new();
 
@@ -57,7 +58,7 @@ public sealed class FileStatisticsPanelViewModel : ViewModelBase
         NullBytePercent = PrintablePercent = ControlCharPercent = string.Empty;
         DetectedFormat = "Unknown";
         HealthStatus   = "Unknown";
-        StatusText     = "No file loaded";
+        StatusText     = FileStatisticsResources.FileStats_NoFileLoaded;
         Anomalies.Clear();
     }
 

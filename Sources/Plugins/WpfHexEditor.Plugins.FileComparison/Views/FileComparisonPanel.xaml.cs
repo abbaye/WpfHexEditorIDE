@@ -254,7 +254,7 @@ public partial class FileComparisonPanel : UserControl
             var dialog = new FormatSelectionDialog
             {
                 Owner      = Window.GetWindow(this),
-                Title      = "Multiple Formats Detected",
+                Title      = FileComparisonResources.FileComparison_MultipleFormats,
                 Message    = "Multiple formats match this file. Select the most appropriate one:",
                 Candidates = candidates.Take(5).ToList()
             };

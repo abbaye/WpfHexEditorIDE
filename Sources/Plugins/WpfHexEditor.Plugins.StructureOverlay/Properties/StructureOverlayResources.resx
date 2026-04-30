@@ -63,6 +63,21 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <!-- Plugin display name -->
+  <data name="StructureOverlay_PluginName" xml:space="preserve">
+    <value>Structure Overlay</value>
+  </data>
+
+  <!-- Status when no structures are loaded -->
+  <data name="StructureOverlay_NoStructures" xml:space="preserve">
+    <value>No structures loaded</value>
+  </data>
+
+  <!-- File open dialog title -->
+  <data name="StructureOverlay_LoadFormat" xml:space="preserve">
+    <value>Load Format Definition</value>
+  </data>
+
   <data name="StructureOverlay_Error_LoadFailed" xml:space="preserve">
     <value>Failed to load format definition</value>
   </data>

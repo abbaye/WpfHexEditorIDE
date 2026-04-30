@@ -1536,6 +1536,10 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 editor._targetScrollOffset   = editor._verticalScrollOffset;
                 if (editor._virtualizationEngine != null)
                     editor._virtualizationEngine.ScrollOffset = editor._verticalScrollOffset;
+                // Sync scrollbar Value immediately so it reflects the rebased offset
+                // before the ArrangeOverride (which updates Maximum) has had a chance to run.
+                // Without this, the user could interact with a stale scrollbar position.
+                editor.SyncVScrollBar();
             }
 
             editor.InvalidateMeasure();

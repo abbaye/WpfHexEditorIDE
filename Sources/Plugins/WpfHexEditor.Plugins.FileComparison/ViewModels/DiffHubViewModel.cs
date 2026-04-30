@@ -14,6 +14,7 @@ using WpfHexEditor.Core.Diff.Models;
 using WpfHexEditor.Core.Diff.Services;
 using WpfHexEditor.SDK.Commands;
 using WpfHexEditor.Core.ViewModels;
+using WpfHexEditor.Plugins.FileComparison.Properties;
 
 namespace WpfHexEditor.Plugins.FileComparison.ViewModels;
 
@@ -22,7 +23,7 @@ public sealed class DiffHubViewModel : ViewModelBase
     // ── Backing fields ────────────────────────────────────────────────────────
     private string  _file1Path   = string.Empty;
     private string  _file2Path   = string.Empty;
-    private string  _statusText  = "Select two files and click Compare";
+    private string  _statusText  = FileComparisonResources.FileComparison_SelectTwoFiles;
     private bool    _isComparing;
     private DiffEngineResult? _lastResult;
 
@@ -121,7 +122,7 @@ public sealed class DiffHubViewModel : ViewModelBase
         var ct = _cts.Token;
 
         IsComparing = true;
-        StatusText  = "Comparingâ€¦";
+        StatusText  = FileComparisonResources.FileComparison_Comparing;
         LastResult  = null;
 
         try
@@ -138,7 +139,7 @@ public sealed class DiffHubViewModel : ViewModelBase
         }
         catch (OperationCanceledException)
         {
-            StatusText = "Cancelled.";
+            StatusText = FileComparisonResources.FileComparison_Cancelled;
         }
         catch (Exception ex)
         {
@@ -194,7 +195,7 @@ public sealed class DiffHubViewModel : ViewModelBase
     private void Clear()
     {
         File1Path  = File2Path = string.Empty;
-        StatusText = "Select two files and click Compare";
+        StatusText = FileComparisonResources.FileComparison_SelectTwoFiles;
         LastResult = null;
     }
 

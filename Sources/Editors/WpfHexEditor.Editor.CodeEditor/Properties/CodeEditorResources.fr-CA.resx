@@ -545,5 +545,44 @@
   <data name="CodeEditor_GoToLine" xml:space="preserve">
     <value>Aller à la ligne</value>
   </data>
+  <data name="CodeEd_FindRef_CollapseAll" xml:space="preserve">
+    <value>Tout réduire</value>
+  </data>
+  <data name="CodeEd_Minimap_MenuTitle" xml:space="preserve">
+    <value>_Minicarte</value>
+  </data>
+  <data name="CodeEd_Minimap_RenderChars" xml:space="preserve">
+    <value>Afficher les _caractères</value>
+  </data>
+  <data name="CodeEd_Minimap_VerticalSize" xml:space="preserve">
+    <value>_Taille verticale</value>
+  </data>
+  <data name="CodeEd_Minimap_SizeProportional" xml:space="preserve">
+    <value>Proportionnel</value>
+  </data>
+  <data name="CodeEd_Minimap_SizeFill" xml:space="preserve">
+    <value>Remplir</value>
+  </data>
+  <data name="CodeEd_Minimap_SizeFit" xml:space="preserve">
+    <value>Ajuster</value>
+  </data>
+  <data name="CodeEd_Minimap_Slider" xml:space="preserve">
+    <value>G_lissière</value>
+  </data>
+  <data name="CodeEd_Minimap_SliderAlways" xml:space="preserve">
+    <value>Toujours</value>
+  </data>
+  <data name="CodeEd_Minimap_SliderMouseOver" xml:space="preserve">
+    <value>Au survol</value>
+  </data>
+  <data name="CodeEd_Minimap_Side" xml:space="preserve">
+    <value>_Côté</value>
+  </data>
+  <data name="CodeEd_Minimap_SideLeft" xml:space="preserve">
+    <value>Gauche</value>
+  </data>
+  <data name="CodeEd_Minimap_SideRight" xml:space="preserve">
+    <value>Droite</value>
+  </data>
 
 </root>

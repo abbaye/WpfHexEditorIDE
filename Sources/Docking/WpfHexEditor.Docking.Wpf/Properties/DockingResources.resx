@@ -123,4 +123,56 @@
     <comment>CheckBox for toggling rows with mouse wheel</comment>
   </data>
 
+  <!-- FloatingWindow maximize/restore button tooltips -->
+  <data name="Dock_FloatWin_Maximize" xml:space="preserve">
+    <value>Maximize</value>
+    <comment>Tooltip on the maximize button of a floating window</comment>
+  </data>
+  <data name="Dock_FloatWin_Restore" xml:space="preserve">
+    <value>Restore</value>
+    <comment>Tooltip on the restore button of a floating window</comment>
+  </data>
+
+  <!-- DockTabControl LSP indicator tooltips -->
+  <data name="Dock_LSP_Connecting" xml:space="preserve">
+    <value>Language Server: connecting…</value>
+    <comment>LSP dot tooltip when connecting</comment>
+  </data>
+  <data name="Dock_LSP_Ready" xml:space="preserve">
+    <value>Language Server: ready</value>
+    <comment>LSP dot tooltip when ready</comment>
+  </data>
+  <data name="Dock_LSP_Error" xml:space="preserve">
+    <value>Language Server: error</value>
+    <comment>LSP dot tooltip when in error state</comment>
+  </data>
+
+  <!-- AutoHideBar context menu items -->
+  <data name="Dock_AutoHide_Show" xml:space="preserve">
+    <value>Show</value>
+    <comment>Context menu item to show an auto-hidden panel</comment>
+  </data>
+  <data name="Dock_AutoHide_Float" xml:space="preserve">
+    <value>Float</value>
+    <comment>Context menu item to float an auto-hidden panel</comment>
+  </data>
+  <data name="Dock_AutoHide_Close" xml:space="preserve">
+    <value>Close</value>
+    <comment>Context menu item to close an auto-hidden panel</comment>
+  </data>
+  <data name="Dock_AutoHide_Dock" xml:space="preserve">
+    <value>Dock</value>
+    <comment>Context menu / button tooltip to dock (pin) a floating/auto-hidden panel</comment>
+  </data>
+
+  <!-- TabConfigButton menu items -->
+  <data name="Dock_TabConfig_ColorBy" xml:space="preserve">
+    <value>Color document tabs by</value>
+    <comment>Submenu header for document tab colorization options</comment>
+  </data>
+  <data name="Dock_TabConfig_Options" xml:space="preserve">
+    <value>Options…</value>
+    <comment>Menu item that opens the document tab options dialog</comment>
+  </data>
+
 </root>

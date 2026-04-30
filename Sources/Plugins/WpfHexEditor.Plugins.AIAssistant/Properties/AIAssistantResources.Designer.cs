@@ -67,4 +67,32 @@ internal static class AIAssistantResources
     /// <summary>Localized: "Enable Thinking (Anthropic only)"</summary>
     internal static string AIAssistant_EnableThinking
         => ResourceManager.GetString("AIAssistant_EnableThinking", _resourceCulture)!;
+
+    /// <summary>Localized: "Copied!"</summary>
+    internal static string AIAssistant_Copied
+        => ResourceManager.GetString("AIAssistant_Copied", _resourceCulture)!;
+
+    /// <summary>Localized: "Copy code"</summary>
+    internal static string AIAssistant_CopyCode
+        => ResourceManager.GetString("AIAssistant_CopyCode", _resourceCulture)!;
+
+    /// <summary>Localized: "Testing..."</summary>
+    internal static string AIAssistant_Testing
+        => ResourceManager.GetString("AIAssistant_Testing", _resourceCulture)!;
+
+    /// <summary>Localized: "Connected"</summary>
+    internal static string AIAssistant_Connected
+        => ResourceManager.GetString("AIAssistant_Connected", _resourceCulture)!;
+
+    /// <summary>Localized: "Connection failed"</summary>
+    internal static string AIAssistant_ConnectionFailed
+        => ResourceManager.GetString("AIAssistant_ConnectionFailed", _resourceCulture)!;
+
+    /// <summary>Localized: "AI Assistant"</summary>
+    internal static string AIAssistant_PluginName
+        => ResourceManager.GetString("AIAssistant_PluginName", _resourceCulture)!;
+
+    /// <summary>Localized: "Rename Conversation"</summary>
+    internal static string AIAssistant_RenameConversation
+        => ResourceManager.GetString("AIAssistant_RenameConversation", _resourceCulture)!;
 }

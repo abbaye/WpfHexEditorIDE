@@ -898,4 +898,55 @@
   <!-- LSP Status -->
   <data name="App_Lsp_ErrorTitle" xml:space="preserve"><value>LSP Error</value></data>
 
+  <!-- ── Options combo items — View Menu sort order ────────────────────── -->
+  <data name="App_ViewMenu_SortAlphabetical"  xml:space="preserve"><value>Alphabetical</value></data>
+  <data name="App_ViewMenu_SortByFrequency"   xml:space="preserve"><value>By Frequency</value></data>
+  <data name="App_ViewMenu_SortCustom"        xml:space="preserve"><value>Custom</value></data>
+
+  <!-- ── Options combo items — Tabs placement ──────────────────────────── -->
+  <data name="App_Tabs_PositionTop"           xml:space="preserve"><value>Top</value></data>
+  <data name="App_Tabs_PositionLeft"          xml:space="preserve"><value>Left</value></data>
+  <data name="App_Tabs_PositionRight"         xml:space="preserve"><value>Right</value></data>
+  <data name="App_Tabs_PositionNone"          xml:space="preserve"><value>None</value></data>
+
+  <!-- ── Options combo items — Tabs color mode (group by) ─────────────── -->
+  <data name="App_Tabs_GroupByProject"        xml:space="preserve"><value>By Project</value></data>
+  <data name="App_Tabs_GroupByExtension"      xml:space="preserve"><value>By File Extension</value></data>
+  <data name="App_Tabs_GroupByRegex"          xml:space="preserve"><value>By Regex Rule</value></data>
+
+  <!-- ── Options combo items — Docking shadow/highlight mode ──────────── -->
+  <data name="App_Docking_ShadowNone"         xml:space="preserve"><value>None</value></data>
+  <data name="App_Docking_ShadowTopBar"       xml:space="preserve"><value>Top Bar</value></data>
+  <data name="App_Docking_ShadowFullBorder"   xml:space="preserve"><value>Full Border</value></data>
+  <data name="App_Docking_ShadowGlow"         xml:space="preserve"><value>Glow</value></data>
+
+  <!-- ── Options combo items — Docking corner radius scope ────────────── -->
+  <data name="App_Docking_CornerNormal"           xml:space="preserve"><value>Normal (sharp corners)</value></data>
+  <data name="App_Docking_CornerRoundedContent"   xml:space="preserve"><value>Rounded — Content area only</value></data>
+  <data name="App_Docking_CornerRoundedFull"      xml:space="preserve"><value>Rounded — Full panel frame</value></data>
+
+  <!-- ── Options combo items — Comparison view mode ───────────────────── -->
+  <data name="App_Comparison_ModeSideBySide"  xml:space="preserve"><value>SideBySide</value></data>
+  <data name="App_Comparison_ModeInline"      xml:space="preserve"><value>Inline</value></data>
+  <data name="App_Comparison_ModeHexText"     xml:space="preserve"><value>HexText</value></data>
+
+  <!-- ── Options combo items — Code Editor minimap side ───────────────── -->
+  <data name="App_CodeEditor_MinimapRight"        xml:space="preserve"><value>Right</value></data>
+  <data name="App_CodeEditor_MinimapLeft"         xml:space="preserve"><value>Left</value></data>
+
+  <!-- ── Options combo items — Code Editor minimap vertical size ───────── -->
+  <data name="App_CodeEditor_MinimapProportional" xml:space="preserve"><value>Proportional</value></data>
+  <data name="App_CodeEditor_MinimapFill"         xml:space="preserve"><value>Fill</value></data>
+  <data name="App_CodeEditor_MinimapFit"          xml:space="preserve"><value>Fit</value></data>
+
+  <!-- GoToOffsetDialog validation messages -->
+  <data name="App_GoTo_EnterOffset" xml:space="preserve"><value>Please enter an offset.</value></data>
+  <data name="App_GoTo_InvalidHex" xml:space="preserve"><value>Invalid hexadecimal value.</value></data>
+  <data name="App_GoTo_InvalidDecimal" xml:space="preserve"><value>Invalid decimal value.</value></data>
+  <data name="App_GoTo_OffsetNonNegative" xml:space="preserve"><value>Offset must be non-negative.</value></data>
+
+  <!-- PasteConflictDialog validation messages -->
+  <data name="App_PasteConflict_EnterFileName" xml:space="preserve"><value>Please enter a file name.</value></data>
+  <data name="App_PasteConflict_InvalidChars" xml:space="preserve"><value>The name contains invalid characters.</value></data>
+
 </root>

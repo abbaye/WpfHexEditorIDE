@@ -52,4 +52,28 @@ internal static class FileComparisonResources
     /// <summary>Gets the localized message shown when only one file has been loaded.</summary>
     internal static string FileComparison_SelectBothFiles
         => ResourceManager.GetString("FileComparison_SelectBothFiles", _resourceCulture)!;
+
+    /// <summary>Localized: "Select files to compare"</summary>
+    internal static string FileComparison_SelectFiles
+        => ResourceManager.GetString("FileComparison_SelectFiles", _resourceCulture)!;
+
+    /// <summary>Localized: "Comparing…"</summary>
+    internal static string FileComparison_Comparing
+        => ResourceManager.GetString("FileComparison_Comparing", _resourceCulture)!;
+
+    /// <summary>Localized: "Cancelled"</summary>
+    internal static string FileComparison_Cancelled
+        => ResourceManager.GetString("FileComparison_Cancelled", _resourceCulture)!;
+
+    /// <summary>Localized: "Select two files and click Compare"</summary>
+    internal static string FileComparison_SelectTwoFiles
+        => ResourceManager.GetString("FileComparison_SelectTwoFiles", _resourceCulture)!;
+
+    /// <summary>Localized: "Multiple Formats Detected"</summary>
+    internal static string FileComparison_MultipleFormats
+        => ResourceManager.GetString("FileComparison_MultipleFormats", _resourceCulture)!;
+
+    /// <summary>Localized: "Select file to compare"</summary>
+    internal static string FileComparison_SelectFile
+        => ResourceManager.GetString("FileComparison_SelectFile", _resourceCulture)!;
 }

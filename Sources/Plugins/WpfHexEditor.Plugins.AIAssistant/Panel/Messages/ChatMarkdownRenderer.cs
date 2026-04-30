@@ -18,6 +18,7 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using WpfHexEditor.Plugins.AIAssistant.Properties;
 
 namespace WpfHexEditor.Plugins.AIAssistant.Panel.Messages;
 
@@ -379,7 +380,7 @@ internal static class ChatMarkdownRenderer
             Padding = new Thickness(0),
             BorderThickness = new Thickness(0),
             Cursor = Cursors.Hand,
-            ToolTip = "Copy code",
+            ToolTip = AIAssistantResources.AIAssistant_CopyCode,
             HorizontalAlignment = HorizontalAlignment.Right,
             Opacity = 0.6,
         };
@@ -391,10 +392,10 @@ internal static class ChatMarkdownRenderer
             if (sender is Button btn)
             {
                 btn.Content = "\uE73E"; // checkmark
-                btn.ToolTip = "Copied!";
+                btn.ToolTip = AIAssistantResources.AIAssistant_Copied;
                 await Task.Delay(2000);
                 btn.Content = "\uE8C8";
-                btn.ToolTip = "Copy code";
+                btn.ToolTip = AIAssistantResources.AIAssistant_CopyCode;
             }
         };
         DockPanel.SetDock(copyBtn, Dock.Right);

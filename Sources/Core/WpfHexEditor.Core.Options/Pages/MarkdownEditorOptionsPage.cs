@@ -12,6 +12,7 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
+using WpfHexEditor.Core.Options.Properties;
 
 namespace WpfHexEditor.Core.Options.Pages;
 
@@ -44,10 +45,10 @@ public sealed class MarkdownEditorOptionsPage : UserControl, IOptionsPage
         var layoutPanel = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(0, 6, 0, 0) };
         layoutPanel.Children.Add(new TextBlock { Text = "Default layout:", VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(0, 0, 8, 0) });
         _defaultLayoutCombo = new ComboBox { Width = 140 };
-        _defaultLayoutCombo.Items.Add("PreviewRight");
-        _defaultLayoutCombo.Items.Add("PreviewBottom");
-        _defaultLayoutCombo.Items.Add("EditorOnly");
-        _defaultLayoutCombo.Items.Add("PreviewOnly");
+        _defaultLayoutCombo.Items.Add(OptionsResources.Opt_MdLayout_PreviewRight);
+        _defaultLayoutCombo.Items.Add(OptionsResources.Opt_MdLayout_PreviewBottom);
+        _defaultLayoutCombo.Items.Add(OptionsResources.Opt_MdLayout_EditorOnly);
+        _defaultLayoutCombo.Items.Add(OptionsResources.Opt_MdLayout_PreviewOnly);
         _defaultLayoutCombo.SelectionChanged += (_, _) => OnChanged();
         layoutPanel.Children.Add(_defaultLayoutCombo);
         root.Children.Add(layoutPanel);
