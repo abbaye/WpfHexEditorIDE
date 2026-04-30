@@ -160,4 +160,40 @@
   <data name="DocStyles_Caption" xml:space="preserve"><value>Légende</value></data>
   <data name="DocStyles_ListParagraph" xml:space="preserve"><value>Paragraphe de liste</value></data>
   <data name="DocStyles_IntenseQuote" xml:space="preserve"><value>Citation intense</value></data>
+  <data name="DocSb_AlertsLabel" xml:space="preserve">
+    <value>Alertes</value>
+  </data>
+  <data name="DocSb_BlocksLabel" xml:space="preserve">
+    <value>Blocs</value>
+  </data>
+  <data name="DocSb_FormatLabel" xml:space="preserve">
+    <value>Format</value>
+  </data>
+  <data name="DocSb_SelectionLabel" xml:space="preserve">
+    <value>Sélection</value>
+  </data>
+  <data name="DocSb_VersionLabel" xml:space="preserve">
+    <value>Version</value>
+  </data>
+  <data name="DocSb_ViewLabel" xml:space="preserve">
+    <value>Affichage</value>
+  </data>
+  <data name="DocTb_ForensicMode" xml:space="preserve">
+    <value>Mode forensique</value>
+  </data>
+  <data name="DocTb_HexView" xml:space="preserve">
+    <value>Vue hexadécimale</value>
+  </data>
+  <data name="DocTb_Save" xml:space="preserve">
+    <value>Enregistrer</value>
+  </data>
+  <data name="DocTb_SplitView" xml:space="preserve">
+    <value>Vue fractionnée</value>
+  </data>
+  <data name="DocTb_StructureView" xml:space="preserve">
+    <value>Vue de structure</value>
+  </data>
+  <data name="DocTb_TextView" xml:space="preserve">
+    <value>Vue texte</value>
+  </data>
 </root>

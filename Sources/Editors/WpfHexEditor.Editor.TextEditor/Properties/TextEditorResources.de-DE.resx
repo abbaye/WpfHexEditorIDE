@@ -58,4 +58,70 @@
     <value>UTF-8</value>
   </data>
 
+  <data name="TeSb_EncodingLabel" xml:space="preserve">
+    <value>Kodierung</value>
+  </data>
+  <data name="TeSb_EncodingTooltip" xml:space="preserve">
+    <value>Dateikodierung</value>
+  </data>
+  <data name="TeSb_LanguageLabel" xml:space="preserve">
+    <value>Sprache</value>
+  </data>
+  <data name="TeSb_LanguageTooltip" xml:space="preserve">
+    <value>Aktive Syntaxsprache</value>
+  </data>
+  <data name="TeSb_PositionLabel" xml:space="preserve">
+    <value>Position</value>
+  </data>
+  <data name="TeSb_PositionTooltip" xml:space="preserve">
+    <value>Cursorzeile und -spalte</value>
+  </data>
+  <data name="TeSb_RefreshLabel" xml:space="preserve">
+    <value>Aktualisieren</value>
+  </data>
+  <data name="TeSb_RefreshTooltip" xml:space="preserve">
+    <value>Renderzeit in Millisekunden</value>
+  </data>
+  <data name="TeSb_ZoomLabel" xml:space="preserve">
+    <value>Zoom</value>
+  </data>
+  <data name="TeSb_ZoomTooltip" xml:space="preserve">
+    <value>Editor-Zoomstufe</value>
+  </data>
+  <data name="TextEd_Menu_Cut" xml:space="preserve">
+    <value>A_usschneiden</value>
+  </data>
+  <data name="TextEd_Menu_Copy" xml:space="preserve">
+    <value>_Kopieren</value>
+  </data>
+  <data name="TextEd_Menu_Paste" xml:space="preserve">
+    <value>_Einfügen</value>
+  </data>
+  <data name="TextEd_Menu_Undo" xml:space="preserve">
+    <value>_Rückgängig</value>
+  </data>
+  <data name="TextEd_Menu_Redo" xml:space="preserve">
+    <value>_Wiederholen</value>
+  </data>
+  <data name="TextEd_Menu_SelectAll" xml:space="preserve">
+    <value>_Alles auswählen</value>
+  </data>
+  <data name="TextEd_Menu_Delete" xml:space="preserve">
+    <value>_Löschen</value>
+  </data>
+  <data name="TextEd_Menu_ShowWhitespace" xml:space="preserve">
+    <value>_Leerzeichen anzeigen</value>
+  </data>
+  <data name="TextEd_Menu_WrapNone" xml:space="preserve">
+    <value>Kein</value>
+  </data>
+  <data name="TextEd_Menu_WrapSelectionOnly" xml:space="preserve">
+    <value>Nur Auswahl</value>
+  </data>
+  <data name="TextEd_Menu_WrapAlways" xml:space="preserve">
+    <value>Immer</value>
+  </data>
+  <data name="TextEd_Status_Opening" xml:space="preserve">
+    <value>Wird geöffnet…</value>
+  </data>
 </root>

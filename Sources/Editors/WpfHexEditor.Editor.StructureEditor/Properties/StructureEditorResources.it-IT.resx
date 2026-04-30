@@ -146,4 +146,19 @@
   <data name="StructureEditor_RawJsonCancel" xml:space="preserve"><value>Annulla</value></data>
   <data name="StructureEditor_FactoryDisplayName" xml:space="preserve"><value>Editor struttura</value></data>
   <data name="StructureEditor_FactoryDescription" xml:space="preserve"><value>Editor visivo per i file di definizione struttura .whfmt. Modifica blocchi, tipi, offset, lunghezze e colori in un DataGrid.</value></data>
+  <data name="StrTb_Validate" xml:space="preserve"><value>Valida (Ctrl+Maiusc+V)</value></data>
+  <data name="StrTb_AddBlock" xml:space="preserve"><value>Aggiungi blocco (Ctrl+N)</value></data>
+  <data name="StrTb_ToggleLiveCode" xml:space="preserve"><value>Attiva/disattiva vista codice live</value></data>
+  <data name="StrTb_LayoutLabel" xml:space="preserve"><value>Layout</value></data>
+  <data name="StrTb_LayoutTooltip" xml:space="preserve"><value>Layout vista codice</value></data>
+  <data name="StrLayout_CodeRight" xml:space="preserve"><value>Codice a destra</value></data>
+  <data name="StrLayout_CodeLeft" xml:space="preserve"><value>Codice a sinistra</value></data>
+  <data name="StrLayout_CodeBottom" xml:space="preserve"><value>Codice in basso</value></data>
+  <data name="StrLayout_CodeTop" xml:space="preserve"><value>Codice in alto</value></data>
+  <data name="StrSb_FormatLabel" xml:space="preserve"><value>Formato</value></data>
+  <data name="StrSb_TabLabel" xml:space="preserve"><value>Scheda</value></data>
+  <data name="StrSb_BlocksLabel" xml:space="preserve"><value>Blocchi</value></data>
+  <data name="StrSb_ValidationLabel" xml:space="preserve"><value>Validazione</value></data>
+  <data name="StructureEd_ConditionRow_LengthLabel" xml:space="preserve"><value>Lunghezza:</value></data>
+  <data name="StructureEditor_TestBrowseDialogTitle" xml:space="preserve"><value>Seleziona un file binario da testare</value></data>
 </root>

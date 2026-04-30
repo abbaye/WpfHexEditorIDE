@@ -160,4 +160,40 @@
   <data name="DocStyles_Caption" xml:space="preserve"><value>キャプション</value></data>
   <data name="DocStyles_ListParagraph" xml:space="preserve"><value>リスト段落</value></data>
   <data name="DocStyles_IntenseQuote" xml:space="preserve"><value>強調引用</value></data>
+  <data name="DocSb_AlertsLabel" xml:space="preserve">
+    <value>アラート</value>
+  </data>
+  <data name="DocSb_BlocksLabel" xml:space="preserve">
+    <value>ブロック</value>
+  </data>
+  <data name="DocSb_FormatLabel" xml:space="preserve">
+    <value>形式</value>
+  </data>
+  <data name="DocSb_SelectionLabel" xml:space="preserve">
+    <value>選択</value>
+  </data>
+  <data name="DocSb_VersionLabel" xml:space="preserve">
+    <value>バージョン</value>
+  </data>
+  <data name="DocSb_ViewLabel" xml:space="preserve">
+    <value>表示</value>
+  </data>
+  <data name="DocTb_ForensicMode" xml:space="preserve">
+    <value>フォレンジックモード</value>
+  </data>
+  <data name="DocTb_HexView" xml:space="preserve">
+    <value>16進数ビュー</value>
+  </data>
+  <data name="DocTb_Save" xml:space="preserve">
+    <value>保存</value>
+  </data>
+  <data name="DocTb_SplitView" xml:space="preserve">
+    <value>分割ビュー</value>
+  </data>
+  <data name="DocTb_StructureView" xml:space="preserve">
+    <value>構造ビュー</value>
+  </data>
+  <data name="DocTb_TextView" xml:space="preserve">
+    <value>テキストビュー</value>
+  </data>
 </root>

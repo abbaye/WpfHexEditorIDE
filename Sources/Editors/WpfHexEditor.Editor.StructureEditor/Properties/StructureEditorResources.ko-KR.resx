@@ -146,4 +146,19 @@
   <data name="StructureEditor_RawJsonCancel" xml:space="preserve"><value>취소</value></data>
   <data name="StructureEditor_FactoryDisplayName" xml:space="preserve"><value>구조 편집기</value></data>
   <data name="StructureEditor_FactoryDescription" xml:space="preserve"><value>.whfmt 구조 정의 파일용 시각적 편집기. DataGrid에서 블록, 유형, 오프셋, 길이, 색상을 편집합니다.</value></data>
+  <data name="StrTb_Validate" xml:space="preserve"><value>유효성 검사 (Ctrl+Shift+V)</value></data>
+  <data name="StrTb_AddBlock" xml:space="preserve"><value>블록 추가 (Ctrl+N)</value></data>
+  <data name="StrTb_ToggleLiveCode" xml:space="preserve"><value>라이브 코드 보기 전환</value></data>
+  <data name="StrTb_LayoutLabel" xml:space="preserve"><value>레이아웃</value></data>
+  <data name="StrTb_LayoutTooltip" xml:space="preserve"><value>코드 보기 레이아웃</value></data>
+  <data name="StrLayout_CodeRight" xml:space="preserve"><value>오른쪽 코드</value></data>
+  <data name="StrLayout_CodeLeft" xml:space="preserve"><value>왼쪽 코드</value></data>
+  <data name="StrLayout_CodeBottom" xml:space="preserve"><value>아래쪽 코드</value></data>
+  <data name="StrLayout_CodeTop" xml:space="preserve"><value>위쪽 코드</value></data>
+  <data name="StrSb_FormatLabel" xml:space="preserve"><value>형식</value></data>
+  <data name="StrSb_TabLabel" xml:space="preserve"><value>탭</value></data>
+  <data name="StrSb_BlocksLabel" xml:space="preserve"><value>블록</value></data>
+  <data name="StrSb_ValidationLabel" xml:space="preserve"><value>유효성 검사</value></data>
+  <data name="StructureEd_ConditionRow_LengthLabel" xml:space="preserve"><value>길이:</value></data>
+  <data name="StructureEditor_TestBrowseDialogTitle" xml:space="preserve"><value>테스트할 바이너리 파일 선택</value></data>
 </root>

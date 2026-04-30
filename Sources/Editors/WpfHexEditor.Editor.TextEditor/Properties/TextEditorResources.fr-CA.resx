@@ -95,4 +95,34 @@
     <value>Ouverture en cours</value>
   </data>
 
+  <data name="TeSb_EncodingLabel" xml:space="preserve">
+    <value>Encodage</value>
+  </data>
+  <data name="TeSb_EncodingTooltip" xml:space="preserve">
+    <value>Encodage du fichier</value>
+  </data>
+  <data name="TeSb_LanguageLabel" xml:space="preserve">
+    <value>Langage</value>
+  </data>
+  <data name="TeSb_LanguageTooltip" xml:space="preserve">
+    <value>Langage de syntaxe actif</value>
+  </data>
+  <data name="TeSb_PositionLabel" xml:space="preserve">
+    <value>Position</value>
+  </data>
+  <data name="TeSb_PositionTooltip" xml:space="preserve">
+    <value>Ligne et colonne du curseur</value>
+  </data>
+  <data name="TeSb_RefreshLabel" xml:space="preserve">
+    <value>Actualiser</value>
+  </data>
+  <data name="TeSb_RefreshTooltip" xml:space="preserve">
+    <value>Temps de rendu en millisecondes</value>
+  </data>
+  <data name="TeSb_ZoomLabel" xml:space="preserve">
+    <value>Zoom</value>
+  </data>
+  <data name="TeSb_ZoomTooltip" xml:space="preserve">
+    <value>Niveau de zoom de l'éditeur</value>
+  </data>
 </root>

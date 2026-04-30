@@ -58,4 +58,70 @@
     <value>UTF-8</value>
   </data>
 
+  <data name="TeSb_EncodingLabel" xml:space="preserve">
+    <value>Кодировка</value>
+  </data>
+  <data name="TeSb_EncodingTooltip" xml:space="preserve">
+    <value>Кодировка файла</value>
+  </data>
+  <data name="TeSb_LanguageLabel" xml:space="preserve">
+    <value>Язык</value>
+  </data>
+  <data name="TeSb_LanguageTooltip" xml:space="preserve">
+    <value>Активный язык синтаксиса</value>
+  </data>
+  <data name="TeSb_PositionLabel" xml:space="preserve">
+    <value>Позиция</value>
+  </data>
+  <data name="TeSb_PositionTooltip" xml:space="preserve">
+    <value>Строка и столбец курсора</value>
+  </data>
+  <data name="TeSb_RefreshLabel" xml:space="preserve">
+    <value>Обновить</value>
+  </data>
+  <data name="TeSb_RefreshTooltip" xml:space="preserve">
+    <value>Время рендеринга в миллисекундах</value>
+  </data>
+  <data name="TeSb_ZoomLabel" xml:space="preserve">
+    <value>Масштаб</value>
+  </data>
+  <data name="TeSb_ZoomTooltip" xml:space="preserve">
+    <value>Уровень масштаба редактора</value>
+  </data>
+  <data name="TextEd_Menu_Cut" xml:space="preserve">
+    <value>Вы_резать</value>
+  </data>
+  <data name="TextEd_Menu_Copy" xml:space="preserve">
+    <value>_Копировать</value>
+  </data>
+  <data name="TextEd_Menu_Paste" xml:space="preserve">
+    <value>_Вставить</value>
+  </data>
+  <data name="TextEd_Menu_Undo" xml:space="preserve">
+    <value>_Отменить</value>
+  </data>
+  <data name="TextEd_Menu_Redo" xml:space="preserve">
+    <value>_Повторить</value>
+  </data>
+  <data name="TextEd_Menu_SelectAll" xml:space="preserve">
+    <value>Выделить _всё</value>
+  </data>
+  <data name="TextEd_Menu_Delete" xml:space="preserve">
+    <value>_Удалить</value>
+  </data>
+  <data name="TextEd_Menu_ShowWhitespace" xml:space="preserve">
+    <value>Показать _пробелы</value>
+  </data>
+  <data name="TextEd_Menu_WrapNone" xml:space="preserve">
+    <value>Нет</value>
+  </data>
+  <data name="TextEd_Menu_WrapSelectionOnly" xml:space="preserve">
+    <value>Только выделение</value>
+  </data>
+  <data name="TextEd_Menu_WrapAlways" xml:space="preserve">
+    <value>Всегда</value>
+  </data>
+  <data name="TextEd_Status_Opening" xml:space="preserve">
+    <value>Открытие…</value>
+  </data>
 </root>

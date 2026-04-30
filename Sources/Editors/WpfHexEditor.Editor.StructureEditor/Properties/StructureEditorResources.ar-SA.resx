@@ -146,4 +146,19 @@
   <data name="StructureEditor_RawJsonCancel" xml:space="preserve"><value>إلغاء</value></data>
   <data name="StructureEditor_FactoryDisplayName" xml:space="preserve"><value>محرر البنية</value></data>
   <data name="StructureEditor_FactoryDescription" xml:space="preserve"><value>محرر مرئي لملفات تعريف البنية .whfmt. تحرير الكتل والأنواع والإزاحات والأطوال والألوان في DataGrid.</value></data>
+  <data name="StrTb_Validate" xml:space="preserve"><value>التحقق (Ctrl+Shift+V)</value></data>
+  <data name="StrTb_AddBlock" xml:space="preserve"><value>إضافة كتلة (Ctrl+N)</value></data>
+  <data name="StrTb_ToggleLiveCode" xml:space="preserve"><value>تبديل عرض الكود المباشر</value></data>
+  <data name="StrTb_LayoutLabel" xml:space="preserve"><value>التخطيط</value></data>
+  <data name="StrTb_LayoutTooltip" xml:space="preserve"><value>تخطيط عرض الكود</value></data>
+  <data name="StrLayout_CodeRight" xml:space="preserve"><value>الكود على اليمين</value></data>
+  <data name="StrLayout_CodeLeft" xml:space="preserve"><value>الكود على اليسار</value></data>
+  <data name="StrLayout_CodeBottom" xml:space="preserve"><value>الكود في الأسفل</value></data>
+  <data name="StrLayout_CodeTop" xml:space="preserve"><value>الكود في الأعلى</value></data>
+  <data name="StrSb_FormatLabel" xml:space="preserve"><value>تنسيق</value></data>
+  <data name="StrSb_TabLabel" xml:space="preserve"><value>علامة تبويب</value></data>
+  <data name="StrSb_BlocksLabel" xml:space="preserve"><value>كتل</value></data>
+  <data name="StrSb_ValidationLabel" xml:space="preserve"><value>التحقق</value></data>
+  <data name="StructureEd_ConditionRow_LengthLabel" xml:space="preserve"><value>الطول:</value></data>
+  <data name="StructureEditor_TestBrowseDialogTitle" xml:space="preserve"><value>حدد ملفاً ثنائياً للاختبار</value></data>
 </root>

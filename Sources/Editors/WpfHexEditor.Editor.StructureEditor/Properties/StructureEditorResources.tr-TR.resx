@@ -146,4 +146,19 @@
   <data name="StructureEditor_RawJsonCancel" xml:space="preserve"><value>İptal</value></data>
   <data name="StructureEditor_FactoryDisplayName" xml:space="preserve"><value>Yapı Düzenleyici</value></data>
   <data name="StructureEditor_FactoryDescription" xml:space="preserve"><value>.whfmt yapı tanım dosyaları için görsel düzenleyici. DataGrid'de blokları, türleri, ofsetleri, uzunlukları ve renkleri düzenleyin.</value></data>
+  <data name="StrTb_Validate" xml:space="preserve"><value>Doğrula (Ctrl+Shift+V)</value></data>
+  <data name="StrTb_AddBlock" xml:space="preserve"><value>Blok ekle (Ctrl+N)</value></data>
+  <data name="StrTb_ToggleLiveCode" xml:space="preserve"><value>Canlı kod görünümünü aç/kapat</value></data>
+  <data name="StrTb_LayoutLabel" xml:space="preserve"><value>Düzen</value></data>
+  <data name="StrTb_LayoutTooltip" xml:space="preserve"><value>Kod görünümü düzeni</value></data>
+  <data name="StrLayout_CodeRight" xml:space="preserve"><value>Kod sağda</value></data>
+  <data name="StrLayout_CodeLeft" xml:space="preserve"><value>Kod solda</value></data>
+  <data name="StrLayout_CodeBottom" xml:space="preserve"><value>Kod altta</value></data>
+  <data name="StrLayout_CodeTop" xml:space="preserve"><value>Kod üstte</value></data>
+  <data name="StrSb_FormatLabel" xml:space="preserve"><value>Biçim</value></data>
+  <data name="StrSb_TabLabel" xml:space="preserve"><value>Sekme</value></data>
+  <data name="StrSb_BlocksLabel" xml:space="preserve"><value>Bloklar</value></data>
+  <data name="StrSb_ValidationLabel" xml:space="preserve"><value>Doğrulama</value></data>
+  <data name="StructureEd_ConditionRow_LengthLabel" xml:space="preserve"><value>Uzunluk:</value></data>
+  <data name="StructureEditor_TestBrowseDialogTitle" xml:space="preserve"><value>Test icin ikili dosya secin</value></data>
 </root>

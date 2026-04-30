@@ -146,4 +146,19 @@
   <data name="StructureEditor_RawJsonCancel" xml:space="preserve"><value>रद्द करें</value></data>
   <data name="StructureEditor_FactoryDisplayName" xml:space="preserve"><value>संरचना संपादक</value></data>
   <data name="StructureEditor_FactoryDescription" xml:space="preserve"><value>.whfmt संरचना परिभाषा फ़ाइलों के लिए दृश्य संपादक। DataGrid में ब्लॉक, प्रकार, ऑफसेट, लंबाई और रंग संपादित करें।</value></data>
+  <data name="StrTb_Validate" xml:space="preserve"><value>मान्य करें (Ctrl+Shift+V)</value></data>
+  <data name="StrTb_AddBlock" xml:space="preserve"><value>ब्लॉक जोड़ें (Ctrl+N)</value></data>
+  <data name="StrTb_ToggleLiveCode" xml:space="preserve"><value>लाइव कोड दृश्य टॉगल करें</value></data>
+  <data name="StrTb_LayoutLabel" xml:space="preserve"><value>लेआउट</value></data>
+  <data name="StrTb_LayoutTooltip" xml:space="preserve"><value>कोड दृश्य लेआउट</value></data>
+  <data name="StrLayout_CodeRight" xml:space="preserve"><value>कोड दाईं ओर</value></data>
+  <data name="StrLayout_CodeLeft" xml:space="preserve"><value>कोड बाईं ओर</value></data>
+  <data name="StrLayout_CodeBottom" xml:space="preserve"><value>कोड नीचे</value></data>
+  <data name="StrLayout_CodeTop" xml:space="preserve"><value>कोड ऊपर</value></data>
+  <data name="StrSb_FormatLabel" xml:space="preserve"><value>प्रारूप</value></data>
+  <data name="StrSb_TabLabel" xml:space="preserve"><value>टैब</value></data>
+  <data name="StrSb_BlocksLabel" xml:space="preserve"><value>ब्लॉक</value></data>
+  <data name="StrSb_ValidationLabel" xml:space="preserve"><value>सत्यापन</value></data>
+  <data name="StructureEd_ConditionRow_LengthLabel" xml:space="preserve"><value>लंबाई:</value></data>
+  <data name="StructureEditor_TestBrowseDialogTitle" xml:space="preserve"><value>परीक्षण के लिए बाइनरी फ़ाइल चुनें</value></data>
 </root>

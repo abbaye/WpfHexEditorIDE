@@ -291,7 +291,7 @@ public partial class WhfmtCatalogDocument : UserControl,
         {
             case WhfmtDetailPanelPosition.Right:
                 ContentGrid.ColumnDefinitions[1].Width = new GridLength(4);
-                ContentGrid.ColumnDefinitions[2].Width = new GridLength(320, GridUnitType.Pixel);
+                ContentGrid.ColumnDefinitions[2].Width = new GridLength(460, GridUnitType.Pixel);
                 Grid.SetRow(CatalogGrid,    0); Grid.SetColumn(CatalogGrid,    0);
                 Grid.SetRow(DetailSplitter, 0); Grid.SetColumn(DetailSplitter, 1);
                 Grid.SetRow(DetailPanel,    0); Grid.SetColumn(DetailPanel,    2);
@@ -303,7 +303,7 @@ public partial class WhfmtCatalogDocument : UserControl,
 
             case WhfmtDetailPanelPosition.Left:
                 ContentGrid.ColumnDefinitions[1].Width = new GridLength(4);
-                ContentGrid.ColumnDefinitions[2].Width = new GridLength(320, GridUnitType.Pixel);
+                ContentGrid.ColumnDefinitions[2].Width = new GridLength(460, GridUnitType.Pixel);
                 Grid.SetRow(DetailPanel,    0); Grid.SetColumn(DetailPanel,    0);
                 Grid.SetRow(DetailSplitter, 0); Grid.SetColumn(DetailSplitter, 1);
                 Grid.SetRow(CatalogGrid,    0); Grid.SetColumn(CatalogGrid,    2);

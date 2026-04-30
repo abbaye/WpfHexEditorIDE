@@ -146,4 +146,19 @@
   <data name="StructureEditor_RawJsonCancel" xml:space="preserve"><value>Avbryt</value></data>
   <data name="StructureEditor_FactoryDisplayName" xml:space="preserve"><value>Strukturredigerare</value></data>
   <data name="StructureEditor_FactoryDescription" xml:space="preserve"><value>Visuell redigerare för .whfmt-strukturdefinitionsfiler. Redigera block, typer, offset, längder och färger i ett DataGrid.</value></data>
+  <data name="StrTb_Validate" xml:space="preserve"><value>Validera (Ctrl+Shift+V)</value></data>
+  <data name="StrTb_AddBlock" xml:space="preserve"><value>Lägg till block (Ctrl+N)</value></data>
+  <data name="StrTb_ToggleLiveCode" xml:space="preserve"><value>Växla livekodvy</value></data>
+  <data name="StrTb_LayoutLabel" xml:space="preserve"><value>Layout</value></data>
+  <data name="StrTb_LayoutTooltip" xml:space="preserve"><value>Kodvylayout</value></data>
+  <data name="StrLayout_CodeRight" xml:space="preserve"><value>Kod höger</value></data>
+  <data name="StrLayout_CodeLeft" xml:space="preserve"><value>Kod vänster</value></data>
+  <data name="StrLayout_CodeBottom" xml:space="preserve"><value>Kod nedan</value></data>
+  <data name="StrLayout_CodeTop" xml:space="preserve"><value>Kod ovan</value></data>
+  <data name="StrSb_FormatLabel" xml:space="preserve"><value>Format</value></data>
+  <data name="StrSb_TabLabel" xml:space="preserve"><value>Flik</value></data>
+  <data name="StrSb_BlocksLabel" xml:space="preserve"><value>Block</value></data>
+  <data name="StrSb_ValidationLabel" xml:space="preserve"><value>Validering</value></data>
+  <data name="StructureEd_ConditionRow_LengthLabel" xml:space="preserve"><value>Laengd:</value></data>
+  <data name="StructureEditor_TestBrowseDialogTitle" xml:space="preserve"><value>Valj en binaerfil att testa</value></data>
 </root>

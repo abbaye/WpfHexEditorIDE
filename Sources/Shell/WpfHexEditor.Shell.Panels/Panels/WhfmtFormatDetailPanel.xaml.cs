@@ -114,7 +114,7 @@ public partial class WhfmtFormatDetailPanel : UserControl
             // Tabs top | splitter | preview bottom
             TabRow.Height      = new GridLength(1, GridUnitType.Star);
             SplitterRow.Height = new GridLength(4);
-            PreviewRow.Height  = new GridLength(180, GridUnitType.Pixel);
+            PreviewRow.Height  = new GridLength(220, GridUnitType.Pixel);
 
             TabCol.Width      = new GridLength(1, GridUnitType.Star);
             SplitterCol.Width = new GridLength(0);

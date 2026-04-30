@@ -58,4 +58,70 @@
     <value>UTF-8</value>
   </data>
 
+  <data name="TeSb_EncodingLabel" xml:space="preserve">
+    <value>エンコード</value>
+  </data>
+  <data name="TeSb_EncodingTooltip" xml:space="preserve">
+    <value>ファイルエンコード</value>
+  </data>
+  <data name="TeSb_LanguageLabel" xml:space="preserve">
+    <value>言語</value>
+  </data>
+  <data name="TeSb_LanguageTooltip" xml:space="preserve">
+    <value>アクティブな構文言語</value>
+  </data>
+  <data name="TeSb_PositionLabel" xml:space="preserve">
+    <value>位置</value>
+  </data>
+  <data name="TeSb_PositionTooltip" xml:space="preserve">
+    <value>カーソルの行と列</value>
+  </data>
+  <data name="TeSb_RefreshLabel" xml:space="preserve">
+    <value>更新</value>
+  </data>
+  <data name="TeSb_RefreshTooltip" xml:space="preserve">
+    <value>レンダリング時間（ミリ秒）</value>
+  </data>
+  <data name="TeSb_ZoomLabel" xml:space="preserve">
+    <value>ズーム</value>
+  </data>
+  <data name="TeSb_ZoomTooltip" xml:space="preserve">
+    <value>エディターのズームレベル</value>
+  </data>
+  <data name="TextEd_Menu_Cut" xml:space="preserve">
+    <value>切り_取り</value>
+  </data>
+  <data name="TextEd_Menu_Copy" xml:space="preserve">
+    <value>_コピー</value>
+  </data>
+  <data name="TextEd_Menu_Paste" xml:space="preserve">
+    <value>_貼り付け</value>
+  </data>
+  <data name="TextEd_Menu_Undo" xml:space="preserve">
+    <value>_元に戻す</value>
+  </data>
+  <data name="TextEd_Menu_Redo" xml:space="preserve">
+    <value>_やり直し</value>
+  </data>
+  <data name="TextEd_Menu_SelectAll" xml:space="preserve">
+    <value>すべて選択(_A)</value>
+  </data>
+  <data name="TextEd_Menu_Delete" xml:space="preserve">
+    <value>_削除</value>
+  </data>
+  <data name="TextEd_Menu_ShowWhitespace" xml:space="preserve">
+    <value>空白を_表示</value>
+  </data>
+  <data name="TextEd_Menu_WrapNone" xml:space="preserve">
+    <value>なし</value>
+  </data>
+  <data name="TextEd_Menu_WrapSelectionOnly" xml:space="preserve">
+    <value>選択範囲のみ</value>
+  </data>
+  <data name="TextEd_Menu_WrapAlways" xml:space="preserve">
+    <value>常に</value>
+  </data>
+  <data name="TextEd_Status_Opening" xml:space="preserve">
+    <value>開いています…</value>
+  </data>
 </root>

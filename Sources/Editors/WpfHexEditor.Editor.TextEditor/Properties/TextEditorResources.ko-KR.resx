@@ -58,4 +58,70 @@
     <value>UTF-8</value>
   </data>
 
+  <data name="TeSb_EncodingLabel" xml:space="preserve">
+    <value>인코딩</value>
+  </data>
+  <data name="TeSb_EncodingTooltip" xml:space="preserve">
+    <value>파일 인코딩</value>
+  </data>
+  <data name="TeSb_LanguageLabel" xml:space="preserve">
+    <value>언어</value>
+  </data>
+  <data name="TeSb_LanguageTooltip" xml:space="preserve">
+    <value>활성 구문 언어</value>
+  </data>
+  <data name="TeSb_PositionLabel" xml:space="preserve">
+    <value>위치</value>
+  </data>
+  <data name="TeSb_PositionTooltip" xml:space="preserve">
+    <value>커서 행과 열</value>
+  </data>
+  <data name="TeSb_RefreshLabel" xml:space="preserve">
+    <value>새로 고침</value>
+  </data>
+  <data name="TeSb_RefreshTooltip" xml:space="preserve">
+    <value>밀리초 단위 렌더링 시간</value>
+  </data>
+  <data name="TeSb_ZoomLabel" xml:space="preserve">
+    <value>확대/축소</value>
+  </data>
+  <data name="TeSb_ZoomTooltip" xml:space="preserve">
+    <value>편집기 확대/축소 수준</value>
+  </data>
+  <data name="TextEd_Menu_Cut" xml:space="preserve">
+    <value>잘_라내기</value>
+  </data>
+  <data name="TextEd_Menu_Copy" xml:space="preserve">
+    <value>_복사</value>
+  </data>
+  <data name="TextEd_Menu_Paste" xml:space="preserve">
+    <value>_붙여넣기</value>
+  </data>
+  <data name="TextEd_Menu_Undo" xml:space="preserve">
+    <value>_실행 취소</value>
+  </data>
+  <data name="TextEd_Menu_Redo" xml:space="preserve">
+    <value>_다시 실행</value>
+  </data>
+  <data name="TextEd_Menu_SelectAll" xml:space="preserve">
+    <value>모두 선택(_A)</value>
+  </data>
+  <data name="TextEd_Menu_Delete" xml:space="preserve">
+    <value>_삭제</value>
+  </data>
+  <data name="TextEd_Menu_ShowWhitespace" xml:space="preserve">
+    <value>공백 _표시</value>
+  </data>
+  <data name="TextEd_Menu_WrapNone" xml:space="preserve">
+    <value>없음</value>
+  </data>
+  <data name="TextEd_Menu_WrapSelectionOnly" xml:space="preserve">
+    <value>선택 항목만</value>
+  </data>
+  <data name="TextEd_Menu_WrapAlways" xml:space="preserve">
+    <value>항상</value>
+  </data>
+  <data name="TextEd_Status_Opening" xml:space="preserve">
+    <value>열리는 중…</value>
+  </data>
 </root>
