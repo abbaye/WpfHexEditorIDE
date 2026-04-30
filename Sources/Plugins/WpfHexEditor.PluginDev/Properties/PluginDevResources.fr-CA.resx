@@ -138,4 +138,24 @@
     <value>Pr&#234;t</value>
   </data>
 
+  <!-- PluginMarketplacePanel toolbar and column headers -->
+  <data name="PluginDev_Refresh" xml:space="preserve">
+    <value>Actualiser</value>
+  </data>
+  <data name="PluginDev_Col_Name" xml:space="preserve">
+    <value>Nom</value>
+  </data>
+  <data name="PluginDev_Col_Author" xml:space="preserve">
+    <value>Auteur</value>
+  </data>
+  <data name="PluginDev_Col_Version" xml:space="preserve">
+    <value>Version</value>
+  </data>
+  <data name="PluginDev_Col_Rating" xml:space="preserve">
+    <value>&#201;valuation</value>
+  </data>
+  <data name="PluginDev_Col_Downloads" xml:space="preserve">
+    <value>T&#233;l&#233;chargements</value>
+  </data>
+
 </root>

@@ -320,5 +320,122 @@ namespace WpfHexEditor.Shell.Properties {
                 return ResourceManager.GetString("Dock_TabConfig_Options", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Show tabs in multiple rows.
+        /// </summary>
+        internal static string Dock_TabConfig_MultipleRows {
+            get {
+                return ResourceManager.GetString("Dock_TabConfig_MultipleRows", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à New Vertical Tab Group.
+        /// </summary>
+        internal static string Dock_Menu_NewVerticalTabGroup {
+            get {
+                return ResourceManager.GetString("Dock_Menu_NewVerticalTabGroup", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à New Horizontal Tab Group.
+        /// </summary>
+        internal static string Dock_Menu_NewHorizontalTabGroup {
+            get {
+                return ResourceManager.GetString("Dock_Menu_NewHorizontalTabGroup", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Close Tab Group.
+        /// </summary>
+        internal static string Dock_Menu_CloseTabGroup {
+            get {
+                return ResourceManager.GetString("Dock_Menu_CloseTabGroup", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Float.
+        /// </summary>
+        internal static string Dock_Menu_Float {
+            get {
+                return ResourceManager.GetString("Dock_Menu_Float", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Dock as Tabbed Document.
+        /// </summary>
+        internal static string Dock_Menu_DockAsTabbed {
+            get {
+                return ResourceManager.GetString("Dock_Menu_DockAsTabbed", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Dock as Tool Window.
+        /// </summary>
+        internal static string Dock_Menu_DockAsToolWindow {
+            get {
+                return ResourceManager.GetString("Dock_Menu_DockAsToolWindow", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Hide.
+        /// </summary>
+        internal static string Dock_Menu_Hide {
+            get {
+                return ResourceManager.GetString("Dock_Menu_Hide", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Close All.
+        /// </summary>
+        internal static string Dock_Menu_CloseAll {
+            get {
+                return ResourceManager.GetString("Dock_Menu_CloseAll", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Close All But This.
+        /// </summary>
+        internal static string Dock_Menu_CloseAllButThis {
+            get {
+                return ResourceManager.GetString("Dock_Menu_CloseAllButThis", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Close All But Pinned.
+        /// </summary>
+        internal static string Dock_Menu_CloseAllButPinned {
+            get {
+                return ResourceManager.GetString("Dock_Menu_CloseAllButPinned", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Open a document to begin.
+        /// </summary>
+        internal static string Dock_Placeholder_OpenDocument {
+            get {
+                return ResourceManager.GetString("Dock_Placeholder_OpenDocument", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Start.
+        /// </summary>
+        internal static string Dock_Tab_Start {
+            get {
+                return ResourceManager.GetString("Dock_Tab_Start", resourceCulture);
+            }
+        }
     }
 }

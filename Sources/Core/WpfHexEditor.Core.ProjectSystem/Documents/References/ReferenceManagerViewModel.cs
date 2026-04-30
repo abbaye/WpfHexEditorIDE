@@ -146,14 +146,14 @@ public sealed class ReferenceManagerViewModel : ViewModelBase
 
         if (_project is not IProjectWithReferences refs)
         {
-            StatusText = "This project type does not support reference management.";
+            StatusText = ProjectSystemResources.ProjectSystem_Ref_NoReferenceSupport;
             return;
         }
 
         // Project References
         if (refs.ProjectReferences.Count > 0)
         {
-            var g = new ReferenceGroupVm { Header = "Project References", Icon = "\uEA3C" };
+            var g = new ReferenceGroupVm { Header = ProjectSystemResources.ProjectSystem_Ref_ProjectReferences, Icon = "\uEA3C" };
             foreach (var path in refs.ProjectReferences)
                 g.Items.Add(new ReferenceEntryVm
                 {
@@ -171,7 +171,7 @@ public sealed class ReferenceManagerViewModel : ViewModelBase
         var asmRefs = refs.AssemblyReferences.Where(a => !a.IsFrameworkRef).ToList();
         if (asmRefs.Count > 0)
         {
-            var g = new ReferenceGroupVm { Header = "Assemblies", Icon = "\uE7EE" };
+            var g = new ReferenceGroupVm { Header = ProjectSystemResources.ProjectSystem_Ref_Assemblies, Icon = "\uE7EE" };
             foreach (var asm in asmRefs)
                 g.Items.Add(new ReferenceEntryVm
                 {
@@ -206,7 +206,7 @@ public sealed class ReferenceManagerViewModel : ViewModelBase
         // Analyzers (read-only)
         if (refs.AnalyzerReferences.Count > 0)
         {
-            var g = new ReferenceGroupVm { Header = "Analyzers", Icon = "\uE9D9", IsExpanded = false };
+            var g = new ReferenceGroupVm { Header = ProjectSystemResources.ProjectSystem_Ref_Analyzers, Icon = "\uE9D9", IsExpanded = false };
             foreach (var az in refs.AnalyzerReferences)
                 g.Items.Add(new ReferenceEntryVm
                 {

@@ -129,7 +129,7 @@ public sealed class PluginMarketplacePanel : UserControl
         grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
 
         var toolbar = new ToolBar { Margin = new Thickness(0, 4, 0, 4) };
-        var btnRefresh = new Button { Content = "⟳  Refresh" };
+        var btnRefresh = new Button { Content = $"⟳  {PluginDevResources.PluginDev_Refresh}" };
         btnRefresh.Click += async (_, _) => await RefreshInstalledAsync();
         toolbar.Items.Add(btnRefresh);
         Grid.SetRow(toolbar, 0);
@@ -282,11 +282,11 @@ public sealed class PluginMarketplacePanel : UserControl
         };
 
         var gv = new GridView();
-        gv.Columns.Add(new GridViewColumn { Header = "Name",     Width = 180, DisplayMemberBinding = new System.Windows.Data.Binding("Name") });
-        gv.Columns.Add(new GridViewColumn { Header = "Author",   Width = 120, DisplayMemberBinding = new System.Windows.Data.Binding("Author") });
-        gv.Columns.Add(new GridViewColumn { Header = "Version",  Width = 70,  DisplayMemberBinding = new System.Windows.Data.Binding("Version") });
-        gv.Columns.Add(new GridViewColumn { Header = "Rating",   Width = 60,  DisplayMemberBinding = new System.Windows.Data.Binding("Rating") });
-        gv.Columns.Add(new GridViewColumn { Header = "Downloads",Width = 80,  DisplayMemberBinding = new System.Windows.Data.Binding("Downloads") });
+        gv.Columns.Add(new GridViewColumn { Header = PluginDevResources.PluginDev_Col_Name,      Width = 180, DisplayMemberBinding = new System.Windows.Data.Binding("Name") });
+        gv.Columns.Add(new GridViewColumn { Header = PluginDevResources.PluginDev_Col_Author,    Width = 120, DisplayMemberBinding = new System.Windows.Data.Binding("Author") });
+        gv.Columns.Add(new GridViewColumn { Header = PluginDevResources.PluginDev_Col_Version,   Width = 70,  DisplayMemberBinding = new System.Windows.Data.Binding("Version") });
+        gv.Columns.Add(new GridViewColumn { Header = PluginDevResources.PluginDev_Col_Rating,    Width = 60,  DisplayMemberBinding = new System.Windows.Data.Binding("Rating") });
+        gv.Columns.Add(new GridViewColumn { Header = PluginDevResources.PluginDev_Col_Downloads, Width = 80,  DisplayMemberBinding = new System.Windows.Data.Binding("Downloads") });
         gv.Columns.Add(new GridViewColumn
         {
             Header = actionLabel,

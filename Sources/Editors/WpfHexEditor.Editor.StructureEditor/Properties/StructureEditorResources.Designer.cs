@@ -1463,5 +1463,14 @@ namespace WpfHexEditor.Editor.StructureEditor.Properties {
                 return ResourceManager.GetString("StructureEditor_VarsFilterToolTip", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Length:.
+        /// </summary>
+        internal static string StructureEd_ConditionRow_LengthLabel {
+            get {
+                return ResourceManager.GetString("StructureEd_ConditionRow_LengthLabel", resourceCulture);
+            }
+        }
     }
 }

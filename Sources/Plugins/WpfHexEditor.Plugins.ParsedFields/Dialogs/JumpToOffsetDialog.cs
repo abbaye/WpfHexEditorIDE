@@ -38,14 +38,14 @@ internal sealed class JumpToOffsetDialog : Window
 
         var label = new TextBlock
         {
-            Text   = "Offset (hex 0x… or decimal):",
+            Text   = ParsedFieldsResources.ParsedFields_JumpToOffset_Label,
             Margin = new Thickness(0, 0, 0, 4)
         };
         Grid.SetRow(label, 0);
 
         _offsetBox = new TextBox
         {
-            Text    = "0x",
+            Text    = ParsedFieldsResources.ParsedFields_JumpToOffset_Placeholder,
             Margin  = new Thickness(0, 0, 0, 12),
             Padding = new Thickness(4, 2, 4, 2),
             VerticalContentAlignment = VerticalAlignment.Center
@@ -59,14 +59,14 @@ internal sealed class JumpToOffsetDialog : Window
             HorizontalAlignment = HorizontalAlignment.Right
         };
 
-        var ok = new Button { Content = "OK", Width = 72, IsDefault = true, Margin = new Thickness(0, 0, 8, 0) };
+        var ok = new Button { Content = ParsedFieldsResources.ParsedFields_Dialog_OK, Width = 72, IsDefault = true, Margin = new Thickness(0, 0, 8, 0) };
         ok.Click += (_, _) =>
         {
             if (TryParseOffset(_offsetBox.Text.Trim(), out _))
                 DialogResult = true;
             else
                 MessageBox.Show(ParsedFieldsResources.ParsedFields_Error_InvalidOffset,
-                    "Invalid Input", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    ParsedFieldsResources.ParsedFields_Error_InvalidInput, MessageBoxButton.OK, MessageBoxImage.Warning);
         };
 
         var cancel = new Button { Content = "Cancel", Width = 72, IsCancel = true };

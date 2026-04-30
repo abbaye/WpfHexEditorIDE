@@ -293,5 +293,59 @@ namespace WpfHexEditor.PluginDev.Properties {
                 return ResourceManager.GetString("PluginDev_Updates", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Refresh.
+        /// </summary>
+        internal static string PluginDev_Refresh {
+            get {
+                return ResourceManager.GetString("PluginDev_Refresh", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Name.
+        /// </summary>
+        internal static string PluginDev_Col_Name {
+            get {
+                return ResourceManager.GetString("PluginDev_Col_Name", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Author.
+        /// </summary>
+        internal static string PluginDev_Col_Author {
+            get {
+                return ResourceManager.GetString("PluginDev_Col_Author", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Version.
+        /// </summary>
+        internal static string PluginDev_Col_Version {
+            get {
+                return ResourceManager.GetString("PluginDev_Col_Version", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Rating.
+        /// </summary>
+        internal static string PluginDev_Col_Rating {
+            get {
+                return ResourceManager.GetString("PluginDev_Col_Rating", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Downloads.
+        /// </summary>
+        internal static string PluginDev_Col_Downloads {
+            get {
+                return ResourceManager.GetString("PluginDev_Col_Downloads", resourceCulture);
+            }
+        }
     }
 }

@@ -29,6 +29,7 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Threading;
 using WpfHexEditor.Editor.ClassDiagram.Controls.Adorners;
+using WpfHexEditor.Editor.ClassDiagram.Properties;
 using WpfHexEditor.Editor.ClassDiagram.Core.Layout;
 using WpfHexEditor.Editor.ClassDiagram.Core.Model;
 using WpfHexEditor.Editor.ClassDiagram.Services;
@@ -1301,7 +1302,7 @@ public sealed class DiagramCanvas : Canvas
                 UpdateSelectAdornerPosition();
             }));
 
-        var addMenu = new MenuItem { Header = "Add Member" };
+        var addMenu = new MenuItem { Header = ClassDiagramResources.ClassDiagEd_Menu_AddMember };
         addMenu.Items.Add(MakeItem("\uE192", "Field",    () => AddMemberRequested?.Invoke(this, node)));
         addMenu.Items.Add(MakeItem("\uE10C", "Property", () => AddMemberRequested?.Invoke(this, node)));
         addMenu.Items.Add(MakeItem("\uE8F4", "Method",   () => AddMemberRequested?.Invoke(this, node)));
@@ -1332,7 +1333,7 @@ public sealed class DiagramCanvas : Canvas
             menu.Items.Add(new Separator());
         }
 
-        var addMenu = new MenuItem { Header = "Add Member" };
+        var addMenu = new MenuItem { Header = ClassDiagramResources.ClassDiagEd_Menu_AddMember };
         addMenu.Items.Add(MakeItem("\uE192", "Field",    () => AddMemberRequested?.Invoke(this, node)));
         addMenu.Items.Add(MakeItem("\uE10C", "Property", () => AddMemberRequested?.Invoke(this, node)));
         addMenu.Items.Add(MakeItem("\uE8F4", "Method",   () => AddMemberRequested?.Invoke(this, node)));
@@ -1350,7 +1351,7 @@ public sealed class DiagramCanvas : Canvas
         menu.Items.Add(MakeItem("\uE70F", "Edit Label",       () => EditRelationshipLabel(rel)));
         menu.Items.Add(new Separator());
 
-        var changeType = new MenuItem { Header = "Change Type" };
+        var changeType = new MenuItem { Header = ClassDiagramResources.ClassDiagEd_Menu_ChangeType };
         foreach (RelationshipKind rk in Enum.GetValues<RelationshipKind>())
         {
             var captured = rk;
@@ -1386,7 +1387,7 @@ public sealed class DiagramCanvas : Canvas
         menu.Items.Add(new Separator());
         menu.Items.Add(MakeItem("\uE8B3", "Select All",    () => SelectAll()));
         menu.Items.Add(new Separator());
-        var layoutSub = new MenuItem { Header = "Auto Layout" };
+        var layoutSub = new MenuItem { Header = ClassDiagramResources.ClassDiagEd_Menu_AutoLayout };
         layoutSub.Icon = new System.Windows.Controls.TextBlock
             { Text = "\uE947", FontFamily = new FontFamily("Segoe MDL2 Assets"), FontSize = 12 };
         layoutSub.Items.Add(MakeItem("\uE947", "Force-Directed",

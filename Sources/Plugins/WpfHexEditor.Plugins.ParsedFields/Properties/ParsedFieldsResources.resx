@@ -105,4 +105,16 @@
   </data>
   <data name="ParsedFields_PluginName" xml:space="preserve"><value>Parsed Fields</value></data>
   <data name="ParsedFields_JumpToOffset" xml:space="preserve"><value>Jump to Offset</value></data>
+  <data name="ParsedFields_JumpToOffset_Label" xml:space="preserve">
+    <value>Offset (hex 0x… or decimal):</value>
+  </data>
+  <data name="ParsedFields_JumpToOffset_Placeholder" xml:space="preserve">
+    <value>0x</value>
+  </data>
+  <data name="ParsedFields_Dialog_OK" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="ParsedFields_Error_InvalidInput" xml:space="preserve">
+    <value>Invalid Input</value>
+  </data>
 </root>

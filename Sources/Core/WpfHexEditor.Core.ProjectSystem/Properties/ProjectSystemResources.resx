@@ -133,4 +133,16 @@
   <data name="Filter_CsharpProjects" xml:space="preserve">
     <value>C# Projects (*.csproj)|*.csproj|All projects (*.csproj;*.vbproj;*.fsproj)|*.csproj;*.vbproj;*.fsproj</value>
   </data>
+  <data name="ProjectSystem_Ref_ProjectReferences" xml:space="preserve">
+    <value>Project References</value>
+  </data>
+  <data name="ProjectSystem_Ref_Assemblies" xml:space="preserve">
+    <value>Assemblies</value>
+  </data>
+  <data name="ProjectSystem_Ref_Analyzers" xml:space="preserve">
+    <value>Analyzers</value>
+  </data>
+  <data name="ProjectSystem_Ref_NoReferenceSupport" xml:space="preserve">
+    <value>This project type does not support reference management.</value>
+  </data>
 </root>

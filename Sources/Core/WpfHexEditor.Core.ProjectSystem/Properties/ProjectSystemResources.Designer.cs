@@ -109,4 +109,16 @@ internal static class ProjectSystemResources
 
     internal static string Filter_CsharpProjects
         => ResourceManager.GetString("Filter_CsharpProjects", _resourceCulture)!;
+
+    internal static string ProjectSystem_Ref_ProjectReferences
+        => ResourceManager.GetString("ProjectSystem_Ref_ProjectReferences", _resourceCulture)!;
+
+    internal static string ProjectSystem_Ref_Assemblies
+        => ResourceManager.GetString("ProjectSystem_Ref_Assemblies", _resourceCulture)!;
+
+    internal static string ProjectSystem_Ref_Analyzers
+        => ResourceManager.GetString("ProjectSystem_Ref_Analyzers", _resourceCulture)!;
+
+    internal static string ProjectSystem_Ref_NoReferenceSupport
+        => ResourceManager.GetString("ProjectSystem_Ref_NoReferenceSupport", _resourceCulture)!;
 }

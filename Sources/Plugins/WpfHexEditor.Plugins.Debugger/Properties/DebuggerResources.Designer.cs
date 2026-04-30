@@ -80,4 +80,16 @@ internal static class DebuggerResources
 
     internal static string Debugger_ExportBreakpoints
         => ResourceManager.GetString("Debugger_ExportBreakpoints", _resourceCulture)!;
+
+    /// <summary>Gets the localized header for the Debug &gt; Continue menu item.</summary>
+    internal static string Debugger_Menu_Continue
+        => ResourceManager.GetString("Debugger_Menu_Continue", _resourceCulture)!;
+
+    /// <summary>Gets the localized header for the Debug &gt; Step Over menu item.</summary>
+    internal static string Debugger_Menu_StepOver
+        => ResourceManager.GetString("Debugger_Menu_StepOver", _resourceCulture)!;
+
+    /// <summary>Gets the localized header for the Debug &gt; Step Into menu item.</summary>
+    internal static string Debugger_Menu_StepInto
+        => ResourceManager.GetString("Debugger_Menu_StepInto", _resourceCulture)!;
 }

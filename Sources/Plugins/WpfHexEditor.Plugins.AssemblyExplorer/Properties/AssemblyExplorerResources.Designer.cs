@@ -76,4 +76,24 @@ internal static class AssemblyExplorerResources
 
     internal static string AsmExplorer_SelectMethod
         => ResourceManager.GetString("AsmExplorer_SelectMethod", _resourceCulture)!;
+
+    /// <summary>Gets the localized label for the output folder field in the export dialog.</summary>
+    internal static string AsmExplorer_Export_OutputFolderLabel
+        => ResourceManager.GetString("AsmExplorer_Export_OutputFolderLabel", _resourceCulture)!;
+
+    /// <summary>Gets the localized content for the Export button in the export dialog.</summary>
+    internal static string AsmExplorer_Export_ExportButton
+        => ResourceManager.GetString("AsmExplorer_Export_ExportButton", _resourceCulture)!;
+
+    /// <summary>Gets the localized content for the Close button in the export dialog.</summary>
+    internal static string AsmExplorer_Export_CloseButton
+        => ResourceManager.GetString("AsmExplorer_Export_CloseButton", _resourceCulture)!;
+
+    /// <summary>Gets the localized title for the folder browser dialog.</summary>
+    internal static string AsmExplorer_Export_BrowseTitle
+        => ResourceManager.GetString("AsmExplorer_Export_BrowseTitle", _resourceCulture)!;
+
+    /// <summary>Gets the localized warning shown when no output folder has been selected.</summary>
+    internal static string AsmExplorer_Export_NoFolderSelected
+        => ResourceManager.GetString("AsmExplorer_Export_NoFolderSelected", _resourceCulture)!;
 }

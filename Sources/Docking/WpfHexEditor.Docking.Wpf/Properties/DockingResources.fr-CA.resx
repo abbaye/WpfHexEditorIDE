@@ -93,4 +93,43 @@
   <data name="Dock_TabConfig_Options" xml:space="preserve">
     <value>Options…</value>
   </data>
+  <data name="Dock_TabConfig_MultipleRows" xml:space="preserve">
+    <value>Afficher les onglets sur plusieurs lignes</value>
+  </data>
+  <data name="Dock_Menu_NewVerticalTabGroup" xml:space="preserve">
+    <value>Nouveau groupe d'onglets vertical</value>
+  </data>
+  <data name="Dock_Menu_NewHorizontalTabGroup" xml:space="preserve">
+    <value>Nouveau groupe d'onglets horizontal</value>
+  </data>
+  <data name="Dock_Menu_CloseTabGroup" xml:space="preserve">
+    <value>Fermer le groupe d'onglets</value>
+  </data>
+  <data name="Dock_Menu_Float" xml:space="preserve">
+    <value>Flottant</value>
+  </data>
+  <data name="Dock_Menu_DockAsTabbed" xml:space="preserve">
+    <value>Ancrer comme document à onglets</value>
+  </data>
+  <data name="Dock_Menu_DockAsToolWindow" xml:space="preserve">
+    <value>Ancrer comme fenêtre outil</value>
+  </data>
+  <data name="Dock_Menu_Hide" xml:space="preserve">
+    <value>Masquer</value>
+  </data>
+  <data name="Dock_Menu_CloseAll" xml:space="preserve">
+    <value>Fermer tout</value>
+  </data>
+  <data name="Dock_Menu_CloseAllButThis" xml:space="preserve">
+    <value>Fermer tout sauf celui-ci</value>
+  </data>
+  <data name="Dock_Menu_CloseAllButPinned" xml:space="preserve">
+    <value>Fermer tout sauf les épinglés</value>
+  </data>
+  <data name="Dock_Placeholder_OpenDocument" xml:space="preserve">
+    <value>Ouvrez un document pour commencer</value>
+  </data>
+  <data name="Dock_Tab_Start" xml:space="preserve">
+    <value>Démarrer</value>
+  </data>
 </root>

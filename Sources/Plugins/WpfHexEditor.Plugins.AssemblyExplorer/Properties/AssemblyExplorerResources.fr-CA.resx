@@ -82,5 +82,10 @@
   <data name="AsmExplorer_Comparing" xml:space="preserve"><value>Comparaison en cours…</value></data>
   <data name="AsmExplorer_NoPdb" xml:space="preserve"><value>Aucun PDB portable trouvé à côté de l'assembly.</value></data>
   <data name="AsmExplorer_SelectMethod" xml:space="preserve"><value>Sélectionnez un nœud de méthode pour afficher les informations source.</value></data>
+  <data name="AsmExplorer_Export_OutputFolderLabel" xml:space="preserve"><value>Dossier de sortie :</value></data>
+  <data name="AsmExplorer_Export_ExportButton" xml:space="preserve"><value>Exporter</value></data>
+  <data name="AsmExplorer_Export_CloseButton" xml:space="preserve"><value>Fermer</value></data>
+  <data name="AsmExplorer_Export_BrowseTitle" xml:space="preserve"><value>Choisir le dossier de sortie</value></data>
+  <data name="AsmExplorer_Export_NoFolderSelected" xml:space="preserve"><value>Veuillez choisir un dossier de sortie.</value></data>
 
 </root>

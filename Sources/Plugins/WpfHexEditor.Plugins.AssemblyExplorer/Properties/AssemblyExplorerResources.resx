@@ -83,4 +83,11 @@
   <data name="AsmExplorer_NoPdb" xml:space="preserve"><value>No portable PDB found next to the assembly.</value></data>
   <data name="AsmExplorer_SelectMethod" xml:space="preserve"><value>Select a method node to view source information.</value></data>
 
+  <!-- ExportProjectDialog strings -->
+  <data name="AsmExplorer_Export_OutputFolderLabel" xml:space="preserve"><value>Output folder:</value></data>
+  <data name="AsmExplorer_Export_ExportButton" xml:space="preserve"><value>Export</value></data>
+  <data name="AsmExplorer_Export_CloseButton" xml:space="preserve"><value>Close</value></data>
+  <data name="AsmExplorer_Export_BrowseTitle" xml:space="preserve"><value>Choose Output Folder</value></data>
+  <data name="AsmExplorer_Export_NoFolderSelected" xml:space="preserve"><value>Please choose an output folder.</value></data>
+
 </root>

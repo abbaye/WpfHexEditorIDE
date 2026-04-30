@@ -304,7 +304,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // "Collapse all" — TextBlock link
             _collapseLink = new TextBlock
             {
-                Text              = "Collapse all",
+                Text              = CodeEditorResources.CodeEd_Refs_CollapseAll,
                 FontSize          = 11,
                 Background        = Brushes.Transparent,
                 Cursor            = Cursors.Hand,
@@ -320,7 +320,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // "Refresh" — TextBlock link
             var refreshLink = new TextBlock
             {
-                Text              = "Refresh",
+                Text              = CodeEditorResources.CodeEd_Refs_Refresh,
                 FontSize          = 11,
                 Background        = Brushes.Transparent,
                 Cursor            = Cursors.Hand,
@@ -397,7 +397,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                 panel.Visibility = _allCollapsed ? Visibility.Collapsed : Visibility.Visible;
                 chevron.Text     = _allCollapsed ? "\uE76B" : "\uE70D";
             }
-            _collapseLink.Text = _allCollapsed ? "Expand all" : "Collapse all";
+            _collapseLink.Text = _allCollapsed ? CodeEditorResources.CodeEd_Refs_ExpandAll : CodeEditorResources.CodeEd_Refs_CollapseAll;
         }
 
         #endregion

@@ -1904,5 +1904,32 @@ namespace WpfHexEditor.Editor.CodeEditor.Properties {
                 return ResourceManager.GetString("CodeEd_Minimap_SideRight", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Collapse all.
+        /// </summary>
+        internal static string CodeEd_Refs_CollapseAll {
+            get {
+                return ResourceManager.GetString("CodeEd_Refs_CollapseAll", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Refresh.
+        /// </summary>
+        internal static string CodeEd_Refs_Refresh {
+            get {
+                return ResourceManager.GetString("CodeEd_Refs_Refresh", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Expand all.
+        /// </summary>
+        internal static string CodeEd_Refs_ExpandAll {
+            get {
+                return ResourceManager.GetString("CodeEd_Refs_ExpandAll", resourceCulture);
+            }
+        }
     }
 }

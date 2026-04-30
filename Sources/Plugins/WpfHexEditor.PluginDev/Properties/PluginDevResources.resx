@@ -165,4 +165,30 @@
     <comment>Initial StatusText value in generated PanelPluginTemplate ViewModel</comment>
   </data>
 
+  <!-- PluginMarketplacePanel toolbar and column headers -->
+  <data name="PluginDev_Refresh" xml:space="preserve">
+    <value>Refresh</value>
+    <comment>Toolbar refresh button label in the Installed tab of the marketplace panel</comment>
+  </data>
+  <data name="PluginDev_Col_Name" xml:space="preserve">
+    <value>Name</value>
+    <comment>GridViewColumn header for package name</comment>
+  </data>
+  <data name="PluginDev_Col_Author" xml:space="preserve">
+    <value>Author</value>
+    <comment>GridViewColumn header for package author</comment>
+  </data>
+  <data name="PluginDev_Col_Version" xml:space="preserve">
+    <value>Version</value>
+    <comment>GridViewColumn header for package version</comment>
+  </data>
+  <data name="PluginDev_Col_Rating" xml:space="preserve">
+    <value>Rating</value>
+    <comment>GridViewColumn header for package rating</comment>
+  </data>
+  <data name="PluginDev_Col_Downloads" xml:space="preserve">
+    <value>Downloads</value>
+    <comment>GridViewColumn header for package download count</comment>
+  </data>
+
 </root>

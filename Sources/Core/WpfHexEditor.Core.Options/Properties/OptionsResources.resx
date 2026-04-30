@@ -474,5 +474,6 @@
   <data name="Opt_MdLayout_PreviewBottom"     xml:space="preserve"><value>PreviewBottom</value></data>
   <data name="Opt_MdLayout_EditorOnly"        xml:space="preserve"><value>EditorOnly</value></data>
   <data name="Opt_MdLayout_PreviewOnly"       xml:space="preserve"><value>PreviewOnly</value></data>
+  <data name="Opt_Preview_Label"              xml:space="preserve"><value>Preview</value></data>
 
 </root>

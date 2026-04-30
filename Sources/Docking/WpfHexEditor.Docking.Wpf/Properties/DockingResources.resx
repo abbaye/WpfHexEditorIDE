@@ -174,5 +174,61 @@
     <value>Options…</value>
     <comment>Menu item that opens the document tab options dialog</comment>
   </data>
+  <data name="Dock_TabConfig_MultipleRows" xml:space="preserve">
+    <value>Show tabs in multiple rows</value>
+    <comment>MenuItem for toggling multi-row tabs in TabConfigButton</comment>
+  </data>
+
+  <!-- DockTabControl context menu items -->
+  <data name="Dock_Menu_NewVerticalTabGroup" xml:space="preserve">
+    <value>New Vertical Tab Group</value>
+    <comment>Context menu item to create a new vertical tab group</comment>
+  </data>
+  <data name="Dock_Menu_NewHorizontalTabGroup" xml:space="preserve">
+    <value>New Horizontal Tab Group</value>
+    <comment>Context menu item to create a new horizontal tab group</comment>
+  </data>
+  <data name="Dock_Menu_CloseTabGroup" xml:space="preserve">
+    <value>Close Tab Group</value>
+    <comment>Context menu item to close the current tab group</comment>
+  </data>
+  <data name="Dock_Menu_Float" xml:space="preserve">
+    <value>Float</value>
+    <comment>Context menu item to float the current tab</comment>
+  </data>
+  <data name="Dock_Menu_DockAsTabbed" xml:space="preserve">
+    <value>Dock as Tabbed Document</value>
+    <comment>Context menu item to dock as tabbed document</comment>
+  </data>
+  <data name="Dock_Menu_DockAsToolWindow" xml:space="preserve">
+    <value>Dock as Tool Window</value>
+    <comment>Context menu item to dock as tool window</comment>
+  </data>
+  <data name="Dock_Menu_Hide" xml:space="preserve">
+    <value>Hide</value>
+    <comment>Context menu item to hide the current panel</comment>
+  </data>
+  <data name="Dock_Menu_CloseAll" xml:space="preserve">
+    <value>Close All</value>
+    <comment>Context menu item to close all tabs</comment>
+  </data>
+  <data name="Dock_Menu_CloseAllButThis" xml:space="preserve">
+    <value>Close All But This</value>
+    <comment>Context menu item to close all tabs except the current one</comment>
+  </data>
+  <data name="Dock_Menu_CloseAllButPinned" xml:space="preserve">
+    <value>Close All But Pinned</value>
+    <comment>Context menu item to close all tabs except pinned ones</comment>
+  </data>
+
+  <!-- DocumentTabHost placeholder -->
+  <data name="Dock_Placeholder_OpenDocument" xml:space="preserve">
+    <value>Open a document to begin</value>
+    <comment>Placeholder text shown when no documents are open</comment>
+  </data>
+  <data name="Dock_Tab_Start" xml:space="preserve">
+    <value>Start</value>
+    <comment>Header of the placeholder start tab shown when no documents are open</comment>
+  </data>
 
 </root>

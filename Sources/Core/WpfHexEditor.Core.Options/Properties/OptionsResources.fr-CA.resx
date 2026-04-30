@@ -199,5 +199,6 @@
   <data name="Opt_MdLayout_PreviewRight"     xml:space="preserve"><value>Aperçu à droite</value></data>
   <data name="Opt_MdLayout_PreviewBottom"    xml:space="preserve"><value>Aperçu en bas</value></data>
   <data name="Opt_MdLayout_EditorOnly"       xml:space="preserve"><value>Éditeur seulement</value></data>
-  <data name="Opt_MdLayout_PreviewOnly"      xml:space="preserve"><value>Aperçu seulement</value></data>
+  <data name="Opt_MdLayout_PreviewOnly"      xml:space="preserve"><value>Aper&#231;u seulement</value></data>
+  <data name="Opt_Preview_Label"             xml:space="preserve"><value>Aper&#231;u</value></data>
 </root>

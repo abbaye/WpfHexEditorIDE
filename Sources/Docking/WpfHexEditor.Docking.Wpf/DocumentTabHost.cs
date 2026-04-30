@@ -27,6 +27,7 @@ using WpfHexEditor.Docking.Core;
 using WpfHexEditor.Docking.Core.Nodes;
 using WpfHexEditor.Shell.Attached;
 using WpfHexEditor.Shell.Controls;
+using WpfHexEditor.Shell.Properties;
 using WpfHexEditor.Shell.Services;
 
 namespace WpfHexEditor.Shell;
@@ -232,7 +233,7 @@ public class DocumentTabHost : DockTabControl
         Items.Clear();
         var placeholder = new TextBlock
         {
-            Text = "Open a document to begin",
+            Text = DockingResources.Dock_Placeholder_OpenDocument,
             HorizontalAlignment = HorizontalAlignment.Center,
             VerticalAlignment = VerticalAlignment.Center,
             Foreground = Brushes.Gray,
@@ -242,7 +243,7 @@ public class DocumentTabHost : DockTabControl
         // Wrap in a tab to maintain visual consistency
         Items.Add(new TabItem
         {
-            Header = "Start",
+            Header = DockingResources.Dock_Tab_Start,
             Content = placeholder,
             IsEnabled = false
         });
@@ -254,7 +255,8 @@ public class DocumentTabHost : DockTabControl
     /// </summary>
     public void ClearEmptyPlaceholder()
     {
-        if (Items.Count == 1 && Items[0] is TabItem { Header: "Start", IsEnabled: false })
+        if (Items.Count == 1 && Items[0] is TabItem { IsEnabled: false } tab
+            && tab.Header is string h && h == DockingResources.Dock_Tab_Start)
             Items.Clear();
     }
 }

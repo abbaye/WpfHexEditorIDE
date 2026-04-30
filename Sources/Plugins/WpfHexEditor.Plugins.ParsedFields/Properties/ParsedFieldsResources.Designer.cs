@@ -91,4 +91,20 @@ internal static class ParsedFieldsResources
     /// <summary>Looks up a localized string similar to "Jump to Offset".</summary>
     internal static string ParsedFields_JumpToOffset
         => ResourceManager.GetString("ParsedFields_JumpToOffset", _resourceCulture)!;
+
+    /// <summary>Looks up a localized string similar to "Offset (hex 0x… or decimal):".</summary>
+    internal static string ParsedFields_JumpToOffset_Label
+        => ResourceManager.GetString("ParsedFields_JumpToOffset_Label", _resourceCulture)!;
+
+    /// <summary>Looks up a localized string similar to "0x".</summary>
+    internal static string ParsedFields_JumpToOffset_Placeholder
+        => ResourceManager.GetString("ParsedFields_JumpToOffset_Placeholder", _resourceCulture)!;
+
+    /// <summary>Looks up a localized string similar to "OK".</summary>
+    internal static string ParsedFields_Dialog_OK
+        => ResourceManager.GetString("ParsedFields_Dialog_OK", _resourceCulture)!;
+
+    /// <summary>Looks up a localized string similar to "Invalid Input".</summary>
+    internal static string ParsedFields_Error_InvalidInput
+        => ResourceManager.GetString("ParsedFields_Error_InvalidInput", _resourceCulture)!;
 }

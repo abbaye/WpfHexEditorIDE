@@ -61,7 +61,7 @@ public sealed class ExportProjectDialog : Window
         // ── Output path row ────────────────────────────────────────────────
         root.Children.Add(new TextBlock
         {
-            Text   = "Output folder:",
+            Text   = AssemblyExplorerResources.AsmExplorer_Export_OutputFolderLabel,
             Margin = new Thickness(0, 0, 0, 4),
             FontSize = 12
         });
@@ -121,7 +121,7 @@ public sealed class ExportProjectDialog : Window
 
         _exportButton = new Button
         {
-            Content  = "Export",
+            Content  = AssemblyExplorerResources.AsmExplorer_Export_ExportButton,
             Width    = 90,
             Height   = 28,
             Margin   = new Thickness(0, 0, 8, 0),
@@ -131,7 +131,7 @@ public sealed class ExportProjectDialog : Window
 
         _cancelButton = new Button
         {
-            Content  = "Close",
+            Content  = AssemblyExplorerResources.AsmExplorer_Export_CloseButton,
             Width    = 90,
             Height   = 28,
             IsCancel = true
@@ -155,7 +155,7 @@ public sealed class ExportProjectDialog : Window
         // when System.Windows.Forms is not referenced).
         var dlg = new Microsoft.Win32.SaveFileDialog
         {
-            Title            = "Choose Output Folder",
+            Title            = AssemblyExplorerResources.AsmExplorer_Export_BrowseTitle,
             Filter           = "Folder|*.ThisIsNotAFile",
             FileName         = "Select Folder",
             CheckFileExists  = false,
@@ -177,7 +177,7 @@ public sealed class ExportProjectDialog : Window
         var outputDir = _pathBox.Text.Trim();
         if (string.IsNullOrWhiteSpace(outputDir))
         {
-            MessageBox.Show("Please choose an output folder.", Title,
+            MessageBox.Show(AssemblyExplorerResources.AsmExplorer_Export_NoFolderSelected, Title,
                 MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }

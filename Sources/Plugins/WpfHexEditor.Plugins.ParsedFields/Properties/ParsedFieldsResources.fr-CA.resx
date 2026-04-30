@@ -105,4 +105,16 @@
   </data>
   <data name="ParsedFields_PluginName" xml:space="preserve"><value>Champs analysés</value></data>
   <data name="ParsedFields_JumpToOffset" xml:space="preserve"><value>Aller au décalage</value></data>
+  <data name="ParsedFields_JumpToOffset_Label" xml:space="preserve">
+    <value>Décalage (hex 0x… ou décimal) :</value>
+  </data>
+  <data name="ParsedFields_JumpToOffset_Placeholder" xml:space="preserve">
+    <value>0x</value>
+  </data>
+  <data name="ParsedFields_Dialog_OK" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="ParsedFields_Error_InvalidInput" xml:space="preserve">
+    <value>Entrée invalide</value>
+  </data>
 </root>

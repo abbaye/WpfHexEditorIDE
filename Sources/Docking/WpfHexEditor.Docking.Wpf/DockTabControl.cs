@@ -1011,7 +1011,7 @@ public class DockTabHeader : StackPanel
         {
             var newVertGroup = new MenuItem
             {
-                Header = "New Vertical Tab Group",
+                Header = DockingResources.Dock_Menu_NewVerticalTabGroup,
                 Icon   = MakeMenuIcon("\uE746") // SplitVertical
             };
             newVertGroup.Click += (_, _) => NewVerticalGroupRequested?.Invoke();
@@ -1019,7 +1019,7 @@ public class DockTabHeader : StackPanel
 
             var newHorizGroup = new MenuItem
             {
-                Header = "New Horizontal Tab Group",
+                Header = DockingResources.Dock_Menu_NewHorizontalTabGroup,
                 Icon   = MakeMenuIcon("\uE748") // SplitHorizontal
             };
             newHorizGroup.Click += (_, _) => NewHorizontalGroupRequested?.Invoke();
@@ -1049,7 +1049,7 @@ public class DockTabHeader : StackPanel
             {
                 var closeGroupItem = new MenuItem
                 {
-                    Header = "Close Tab Group",
+                    Header = DockingResources.Dock_Menu_CloseTabGroup,
                     Icon   = MakeMenuIcon("\uE8BB") // ChromeClose
                 };
                 closeGroupItem.Click += (_, _) => CloseGroupRequested?.Invoke();
@@ -1063,7 +1063,7 @@ public class DockTabHeader : StackPanel
         {
             var floatItem = new MenuItem
             {
-                Header = "Float",
+                Header = DockingResources.Dock_Menu_Float,
                 Icon   = MakeMenuIcon("\uE8A7")  // OpenInNewWindow
             };
             floatItem.Click += (_, _) => FloatRequested?.Invoke();
@@ -1082,7 +1082,7 @@ public class DockTabHeader : StackPanel
         {
             var dockAsDocItem = new MenuItem
             {
-                Header = "Dock as Tabbed Document",
+                Header = DockingResources.Dock_Menu_DockAsTabbed,
                 Icon   = MakeMenuIcon("\uE737")  // TabletMode / dock-to-doc
             };
             dockAsDocItem.Click += (_, _) => DockAsDocumentRequested?.Invoke();
@@ -1092,7 +1092,7 @@ public class DockTabHeader : StackPanel
         {
             var restoreItem = new MenuItem
             {
-                Header = "Dock as Tool Window",
+                Header = DockingResources.Dock_Menu_DockAsToolWindow,
                 Icon   = MakeMenuIcon("\uE8A0")  // DockLeft
             };
             restoreItem.Click += (_, _) => RestoreToToolPanelRequested?.Invoke();
@@ -1101,7 +1101,7 @@ public class DockTabHeader : StackPanel
 
         var hideItem = new MenuItem
         {
-            Header = "Hide",
+            Header = DockingResources.Dock_Menu_Hide,
             Icon   = MakeMenuIcon("\uED1A")  // Hide
         };
         hideItem.Click += (_, _) => HideRequested?.Invoke();
@@ -1120,7 +1120,7 @@ public class DockTabHeader : StackPanel
 
         var closeAllItem = new MenuItem
         {
-            Header = "Close All",
+            Header = DockingResources.Dock_Menu_CloseAll,
             Icon   = MakeMenuIcon("\uE74D")  // Delete (close all)
         };
         closeAllItem.Click += (_, _) => CloseAllRequested?.Invoke();
@@ -1128,7 +1128,7 @@ public class DockTabHeader : StackPanel
 
         var closeAllButItem = new MenuItem
         {
-            Header = "Close All But This",
+            Header = DockingResources.Dock_Menu_CloseAllButThis,
             Icon   = MakeMenuIcon("\uE8C6")  // RemoveFrom
         };
         closeAllButItem.Click += (_, _) => CloseAllButThisRequested?.Invoke();
@@ -1138,7 +1138,7 @@ public class DockTabHeader : StackPanel
         {
             var closeAllButPinnedItem = new MenuItem
             {
-                Header = "Close All But Pinned",
+                Header = DockingResources.Dock_Menu_CloseAllButPinned,
                 Icon   = MakeMenuIcon("\uE8F4")  // FilterError / pin-protected close
             };
             closeAllButPinnedItem.Click += (_, _) => CloseAllButPinnedRequested?.Invoke();

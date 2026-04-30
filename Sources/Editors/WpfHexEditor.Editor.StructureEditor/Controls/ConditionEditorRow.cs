@@ -14,6 +14,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using WpfHexEditor.Editor.StructureEditor.Services;
+using WpfHexEditor.Editor.StructureEditor.Properties;
 using WpfHexEditor.Editor.StructureEditor.ViewModels;
 
 namespace WpfHexEditor.Editor.StructureEditor.Controls;
@@ -157,7 +158,7 @@ internal sealed class ConditionEditorRow : Border
         {
             _secondary.Children.Add(new TextBlock
             {
-                Text = "Length:",
+                Text = StructureEditorResources.StructureEd_ConditionRow_LengthLabel,
                 FontSize = 11,
                 VerticalAlignment = VerticalAlignment.Center,
                 Margin = new Thickness(0, 0, 4, 0),

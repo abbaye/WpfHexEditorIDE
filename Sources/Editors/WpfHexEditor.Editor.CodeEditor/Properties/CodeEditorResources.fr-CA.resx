@@ -584,5 +584,14 @@
   <data name="CodeEd_Minimap_SideRight" xml:space="preserve">
     <value>Droite</value>
   </data>
+  <data name="CodeEd_Refs_CollapseAll" xml:space="preserve">
+    <value>Tout r&#233;duire</value>
+  </data>
+  <data name="CodeEd_Refs_Refresh" xml:space="preserve">
+    <value>Actualiser</value>
+  </data>
+  <data name="CodeEd_Refs_ExpandAll" xml:space="preserve">
+    <value>Tout d&#233;velopper</value>
+  </data>
 
 </root>

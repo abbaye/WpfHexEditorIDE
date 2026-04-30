@@ -629,4 +629,7 @@
   <data name="StructureEditor_FactoryDescription" xml:space="preserve">
     <value>Visual editor for .whfmt structure definition files. Edit blocks, types, offsets, lengths and colors in a DataGrid.</value>
   </data>
+  <data name="StructureEd_ConditionRow_LengthLabel" xml:space="preserve">
+    <value>Length:</value>
+  </data>
 </root>

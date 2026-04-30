@@ -768,5 +768,14 @@
   <data name="CodeEd_Minimap_SideRight" xml:space="preserve">
     <value>Right</value>
   </data>
+  <data name="CodeEd_Refs_CollapseAll" xml:space="preserve">
+    <value>Collapse all</value>
+  </data>
+  <data name="CodeEd_Refs_Refresh" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
+  <data name="CodeEd_Refs_ExpandAll" xml:space="preserve">
+    <value>Expand all</value>
+  </data>
 
 </root>

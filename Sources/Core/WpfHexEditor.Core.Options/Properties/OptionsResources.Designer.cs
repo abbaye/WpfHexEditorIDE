@@ -2495,5 +2495,9 @@ namespace WpfHexEditor.Core.Options.Properties {
         internal static string Opt_MdLayout_EditorOnly => ResourceManager.GetString("Opt_MdLayout_EditorOnly", resourceCulture);
 
         internal static string Opt_MdLayout_PreviewOnly => ResourceManager.GetString("Opt_MdLayout_PreviewOnly", resourceCulture);
+
+        // ── Formatting Preview Panel ──────────────────────────────────────────
+
+        internal static string Opt_Preview_Label => ResourceManager.GetString("Opt_Preview_Label", resourceCulture);
     }
 }

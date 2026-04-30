@@ -108,7 +108,7 @@ public class TabConfigButton : Button
         // -- Multi-row tabs ---------------------------------------------------
         var multiRow = new MenuItem
         {
-            Header = "Show tabs in multiple rows",
+            Header = DockingResources.Dock_TabConfig_MultipleRows,
             IsCheckable = true,
             IsChecked = s?.MultiRowTabs ?? false
         };

@@ -45,4 +45,9 @@
   <data name="Debugger_NoMatchingConfig" xml:space="preserve"><value>No matching configuration found.</value></data>
   <data name="Debugger_ImportBreakpoints" xml:space="preserve"><value>Import Breakpoints from VS XML</value></data>
   <data name="Debugger_ExportBreakpoints" xml:space="preserve"><value>Export Breakpoints to VS XML</value></data>
+
+  <!-- Debugger menu items -->
+  <data name="Debugger_Menu_Continue" xml:space="preserve"><value>_Continue</value></data>
+  <data name="Debugger_Menu_StepOver" xml:space="preserve"><value>Step _Over</value></data>
+  <data name="Debugger_Menu_StepInto" xml:space="preserve"><value>Step _Into</value></data>
 </root>

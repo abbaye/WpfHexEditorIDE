@@ -19,4 +19,7 @@
   <data name="Debugger_NoMatchingConfig" xml:space="preserve"><value>Aucune configuration correspondante trouvée.</value></data>
   <data name="Debugger_ImportBreakpoints" xml:space="preserve"><value>Importer des points d'arrêt depuis VS XML</value></data>
   <data name="Debugger_ExportBreakpoints" xml:space="preserve"><value>Exporter les points d'arrêt vers VS XML</value></data>
+  <data name="Debugger_Menu_Continue" xml:space="preserve"><value>_Continuer</value></data>
+  <data name="Debugger_Menu_StepOver" xml:space="preserve"><value>_Pas à pas principal</value></data>
+  <data name="Debugger_Menu_StepInto" xml:space="preserve"><value>Pas à pas _détaillé</value></data>
 </root>

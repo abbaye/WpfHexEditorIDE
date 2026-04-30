@@ -18,5 +18,10 @@
     <ProjectReference Include="..\..\Core\WpfHexEditor.Core.ProjectSystem\WpfHexEditor.Core.ProjectSystem.csproj" />
     <ProjectReference Include="..\..\Controls\WpfHexEditor.ColorPicker\WpfHexEditor.ColorPicker.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\XamlDesignerResources.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
 
 </Project>
