@@ -112,14 +112,26 @@ public class LocalizedResourceDictionary : ResourceDictionary
 
     private void LoadFromManager(ResourceManager manager)
     {
+        // Enumerate keys from the neutral (en-US) resource set embedded in the main assembly.
+        // InvariantCulture alone does not work when NeutralLanguage=en-US because the runtime
+        // stores neutral resources under "en-US", not InvariantCulture. We try both explicitly.
         System.Resources.ResourceSet? baseSet = null;
-        try
+        var probeCultures = new[]
         {
-            baseSet = manager.GetResourceSet(CultureInfo.InvariantCulture, createIfNotExists: true, tryParents: true)
-                   ?? manager.GetResourceSet(CultureInfo.CurrentUICulture,  createIfNotExists: true, tryParents: true);
+            new CultureInfo("en-US"),
+            CultureInfo.InvariantCulture,
+            _currentCulture,
+        };
+        foreach (var probe in probeCultures)
+        {
+            try
+            {
+                baseSet = manager.GetResourceSet(probe, createIfNotExists: true, tryParents: false);
+            }
+            catch (MissingManifestResourceException) { }
+            catch (Exception) { }
+            if (baseSet is not null) break;
         }
-        catch (MissingManifestResourceException) { return; }
-        catch (Exception) { return; }
 
         if (baseSet is null)
             return;
@@ -132,6 +144,7 @@ public class LocalizedResourceDictionary : ResourceDictionary
             string? value;
             try { value = manager.GetString(key, _currentCulture); }
             catch (MissingManifestResourceException) { value = null; }
+            catch (Exception) { value = null; }
 
             this[key] = value ?? entry.Value?.ToString() ?? string.Empty;
         }
