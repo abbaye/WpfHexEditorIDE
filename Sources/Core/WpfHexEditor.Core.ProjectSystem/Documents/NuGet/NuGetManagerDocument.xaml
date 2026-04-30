@@ -434,7 +434,7 @@
                                     <Border Background="#2DD68910" CornerRadius="2"
                                             Margin="6,0,0,0" Padding="4,1"
                                             Visibility="{Binding HasUpdate, Converter={StaticResource BoolToVis}}">
-                                        <TextBlock Text="Update" FontSize="10"
+                                        <TextBlock Text="{DynamicResource PS_Update}" FontSize="10"
                                                    Foreground="#D68910"/>
                                     </Border>
                                 </StackPanel>
