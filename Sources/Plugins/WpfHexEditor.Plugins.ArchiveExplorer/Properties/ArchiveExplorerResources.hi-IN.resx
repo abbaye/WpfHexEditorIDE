@@ -13,4 +13,43 @@
   <data name="ArchiveExplorer_SelectExtractFolder" xml:space="preserve">
     <value>डिफ़ॉल्ट निष्कर्षण फ़ोल्डर चुनें</value>
   </data>
+  <data name="AE_ExtractAll" xml:space="preserve"><value>सब निकालें…</value></data>
+  <data name="AE_ExtractSelected" xml:space="preserve"><value>चुनिंदा निकालें…</value></data>
+  <data name="AE_Preview" xml:space="preserve"><value>पूर्वावलोकन</value></data>
+  <data name="AE_OpenRawInHex" xml:space="preserve"><value>Hex में रॉ खोलें</value></data>
+  <data name="AE_OpenArchive" xml:space="preserve"><value>संग्रह खोलें…</value></data>
+  <data name="AE_RefreshArchive" xml:space="preserve"><value>संग्रह रीफ्रेश</value></data>
+  <data name="AE_NavigateUp" xml:space="preserve"><value>ऊपर जाएं (नेस्टेड संग्रह से बाहर)</value></data>
+  <data name="AE_MoreOptions" xml:space="preserve"><value>अधिक विकल्प</value></data>
+  <data name="AE_ExtractAllTooltip" xml:space="preserve"><value>सब निकालें…</value></data>
+  <data name="AE_ExtractSelectedTooltip" xml:space="preserve"><value>चुनिंदा निकालें…</value></data>
+  <data name="AE_PreviewTooltip" xml:space="preserve"><value>प्रविष्टि पूर्वावलोकन</value></data>
+  <data name="AE_OpenRawInHexTooltip" xml:space="preserve"><value>Hex एडिटर में रॉ बाइट्स खोलें</value></data>
+  <data name="AE_FilterEntries" xml:space="preserve"><value>प्रविष्टियां फ़िल्टर करें…</value></data>
+  <data name="AE_ClearFilter" xml:space="preserve"><value>फ़िल्टर साफ़ करें</value></data>
+  <data name="AE_Loading" xml:space="preserve"><value>लोड हो रहा है…</value></data>
+  <data name="AE_DrillIntoArchive" xml:space="preserve"><value>संग्रह में जाएं</value></data>
+  <data name="AE_CopyPath" xml:space="preserve"><value>पथ कॉपी करें</value></data>
+  <data name="AE_Properties" xml:space="preserve"><value>गुण…</value></data>
+  <data name="AE_DropArchiveHere" xml:space="preserve"><value>यहाँ एक संग्रह छोड़ें</value></data>
+  <data name="AE_ClickOpenToolbar" xml:space="preserve"><value>या टूलबार में ओपन क्लिक करें</value></data>
+  <data name="AE_BehaviourSection" xml:space="preserve"><value>व्यवहार</value></data>
+  <data name="AE_AutoShowPanel" xml:space="preserve"><value>संग्रह फ़ाइल खुलने पर स्वतः पैनल दिखाएं</value></data>
+  <data name="AE_ShowCompressionBadge" xml:space="preserve"><value>ट्री में संपीड़न अनुपात बैज दिखाएं</value></data>
+  <data name="AE_ShowFormatBadge" xml:space="preserve"><value>फ़ॉर्मेट डिटेक्शन बैज दिखाएं (whfmt)</value></data>
+  <data name="AE_PreviewSection" xml:space="preserve"><value>पूर्वावलोकन</value></data>
+  <data name="AE_MaxPreviewSize" xml:space="preserve"><value>अधिकतम पूर्वावलोकन आकार (KB):</value></data>
+  <data name="AE_ExtractionSection" xml:space="preserve"><value>निष्कर्षण</value></data>
+  <data name="AE_MaxFormatDetectionSize" xml:space="preserve"><value>अधिकतम फ़ॉर्मेट डिटेक्शन आकार (KB):</value></data>
+  <data name="AE_DefaultExtractFolder" xml:space="preserve"><value>डिफ़ॉल्ट एक्सट्रैक्ट फ़ोल्डर:</value></data>
+  <data name="AE_Browse" xml:space="preserve"><value>ब्राउज़ करें…</value></data>
+  <data name="AE_EntryPropertiesTitle" xml:space="preserve"><value>प्रविष्टि गुण</value></data>
+  <data name="AE_FullPath" xml:space="preserve"><value>पूरा पथ:</value></data>
+  <data name="AE_Size" xml:space="preserve"><value>आकार:</value></data>
+  <data name="AE_Compressed" xml:space="preserve"><value>संपीड़ित:</value></data>
+  <data name="AE_Ratio" xml:space="preserve"><value>अनुपात:</value></data>
+  <data name="AE_Method" xml:space="preserve"><value>विधि:</value></data>
+  <data name="AE_LastModified" xml:space="preserve"><value>अंतिम संशोधित:</value></data>
+  <data name="AE_Crc32" xml:space="preserve"><value>CRC32:</value></data>
+  <data name="AE_Close" xml:space="preserve"><value>बंद करें</value></data>
 </root>

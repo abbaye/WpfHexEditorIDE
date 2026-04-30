@@ -9,34 +9,43 @@
 <UserControl x:Class="WpfHexEditor.Plugins.DataInspector.Options.DataInspectorOptionsPage"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:diSvc="clr-namespace:WpfHexEditor.Plugins.DataInspector.Services"
              Background="Transparent"
              Foreground="{DynamicResource PFP_TextBrush}">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <diSvc:DataInspectorLocalizedDictionary/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
 
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
         <StackPanel Margin="0,0,0,16">
 
         <!-- Auto-refresh -->
         <CheckBox x:Name="AutoRefreshCheckBox"
-                  Content="Auto-refresh on selection change"
+                  Content="{DynamicResource DI_AutoRefresh}"
                   Foreground="{DynamicResource PFP_TextBrush}"
                   Margin="0,0,0,12"/>
 
         <!-- Little-endian default -->
         <CheckBox x:Name="LittleEndianCheckBox"
-                  Content="Default byte order: Little-Endian"
+                  Content="{DynamicResource DI_DefaultByteOrder}"
                   Foreground="{DynamicResource PFP_TextBrush}"
                   Margin="0,0,0,12"/>
 
         <!-- Show ByteChart -->
         <CheckBox x:Name="ShowByteChartCheckBox"
-                  Content="Show Byte Chart panel"
+                  Content="{DynamicResource DI_ShowByteChart}"
                   Foreground="{DynamicResource PFP_TextBrush}"
                   Margin="0,0,0,12"/>
 
         <!-- Chart position -->
         <DockPanel Margin="0,0,0,16">
             <TextBlock DockPanel.Dock="Left"
-                       Text="Chart position:"
+                       Text="{DynamicResource DI_ChartPosition}"
                        VerticalAlignment="Center"
                        Width="180"
                        Foreground="{DynamicResource PFP_TextBrush}"/>
@@ -45,17 +54,17 @@
                       Background="{DynamicResource PFP_SectionBackgroundBrush}"
                       Foreground="{DynamicResource PFP_TextBrush}"
                       BorderBrush="{DynamicResource PFP_BorderBrush}">
-                <ComboBoxItem Content="Left"   Tag="Left"/>
-                <ComboBoxItem Content="Right"  Tag="Right"/>
-                <ComboBoxItem Content="Top"    Tag="Top"/>
-                <ComboBoxItem Content="Bottom" Tag="Bottom"/>
+                <ComboBoxItem Content="{DynamicResource DI_PositionLeft}"   Tag="Left"/>
+                <ComboBoxItem Content="{DynamicResource DI_PositionRight}"  Tag="Right"/>
+                <ComboBoxItem Content="{DynamicResource DI_PositionTop}"    Tag="Top"/>
+                <ComboBoxItem Content="{DynamicResource DI_PositionBottom}" Tag="Bottom"/>
             </ComboBox>
         </DockPanel>
 
         <!-- Max string bytes -->
         <DockPanel Margin="0,0,0,4" LastChildFill="False">
             <TextBlock DockPanel.Dock="Left"
-                       Text="Max string preview bytes:"
+                       Text="{DynamicResource DI_MaxStringPreview}"
                        VerticalAlignment="Center"
                        Width="180"
                        Foreground="{DynamicResource PFP_TextBrush}"/>

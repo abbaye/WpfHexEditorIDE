@@ -55,4 +55,46 @@
   <data name="DataInspector_Footer_NoData" xml:space="preserve">
     <value>无数据</value>
   </data>
+  <data name="DI_CategoryLabel" xml:space="preserve"><value>类别:</value></data>
+  <data name="DI_CatAll" xml:space="preserve"><value>全部</value></data>
+  <data name="DI_CatInteger" xml:space="preserve"><value>整数</value></data>
+  <data name="DI_CatFloat" xml:space="preserve"><value>浮点</value></data>
+  <data name="DI_CatDateTime" xml:space="preserve"><value>日期/时间</value></data>
+  <data name="DI_CatNetwork" xml:space="preserve"><value>网络</value></data>
+  <data name="DI_CatGuid" xml:space="preserve"><value>GUID</value></data>
+  <data name="DI_CatColor" xml:space="preserve"><value>颜色</value></data>
+  <data name="DI_CatBasic" xml:space="preserve"><value>基本</value></data>
+  <data name="DI_CatBits" xml:space="preserve"><value>位</value></data>
+  <data name="DI_AllFormats" xml:space="preserve"><value>所有格式</value></data>
+  <data name="DI_MoreOptions" xml:space="preserve"><value>更多选项</value></data>
+  <data name="DI_ShowAxisLabels" xml:space="preserve"><value>显示轴标签</value></data>
+  <data name="DI_ShowGridLines" xml:space="preserve"><value>显示网格线</value></data>
+  <data name="DI_ShowStatistics" xml:space="preserve"><value>显示统计</value></data>
+  <data name="DI_FrequencyDistribution" xml:space="preserve"><value>频率分布</value></data>
+  <data name="DI_EntropySliding" xml:space="preserve"><value>熵 (滑动窗口)</value></data>
+  <data name="DI_ZoomIn" xml:space="preserve"><value>放大</value></data>
+  <data name="DI_ZoomOut" xml:space="preserve"><value>缩小</value></data>
+  <data name="DI_ResetZoom" xml:space="preserve"><value>重置缩放</value></data>
+  <data name="DI_RefreshChart" xml:space="preserve"><value>刷新图表</value></data>
+  <data name="DI_CopyChartImage" xml:space="preserve"><value>复制图表图像</value></data>
+  <data name="DI_Layout" xml:space="preserve"><value>布局</value></data>
+  <data name="DI_PositionLeft" xml:space="preserve"><value>左</value></data>
+  <data name="DI_PositionRight" xml:space="preserve"><value>右</value></data>
+  <data name="DI_PositionTop" xml:space="preserve"><value>上</value></data>
+  <data name="DI_PositionBottom" xml:space="preserve"><value>下</value></data>
+  <data name="DI_ScopeLabel" xml:space="preserve"><value>范围:</value></data>
+  <data name="DI_ScopeActiveView" xml:space="preserve"><value>活动视图</value></data>
+  <data name="DI_ScopeSelection" xml:space="preserve"><value>选择</value></data>
+  <data name="DI_ScopeWholeFile" xml:space="preserve"><value>整个文件</value></data>
+  <data name="DI_FrequencyLabel" xml:space="preserve"><value>频率</value></data>
+  <data name="DI_LayoutLabel" xml:space="preserve"><value>布局:</value></data>
+  <data name="DI_ChartPositionTooltip" xml:space="preserve"><value>图表相对于解释列表的位置</value></data>
+  <data name="DI_AnalyzingFile" xml:space="preserve"><value>正在分析文件...</value></data>
+  <data name="DI_InterpretationsLabel" xml:space="preserve"><value>解释: </value></data>
+  <data name="DI_NoData" xml:space="preserve"><value>无数据</value></data>
+  <data name="DI_AutoRefresh" xml:space="preserve"><value>选择变更时自动刷新</value></data>
+  <data name="DI_DefaultByteOrder" xml:space="preserve"><value>默认字节顺序: Little-Endian</value></data>
+  <data name="DI_ShowByteChart" xml:space="preserve"><value>显示字节图表面板</value></data>
+  <data name="DI_ChartPosition" xml:space="preserve"><value>图表位置:</value></data>
+  <data name="DI_MaxStringPreview" xml:space="preserve"><value>最大字符串预览字节数:</value></data>
 </root>

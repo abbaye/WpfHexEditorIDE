@@ -16,6 +16,7 @@
 <UserControl x:Class="WpfHexEditor.Plugins.ArchiveExplorer.Views.ArchiveExplorerPanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:aeSvc="clr-namespace:WpfHexEditor.Plugins.ArchiveExplorer.Services"
              xmlns:conv="clr-namespace:WpfHexEditor.Plugins.ArchiveExplorer.Converters"
              xmlns:vm="clr-namespace:WpfHexEditor.Plugins.ArchiveExplorer.ViewModels"
              Background="{DynamicResource PFP_PanelBackgroundBrush}"
@@ -24,6 +25,10 @@
              Loaded="OnLoaded">
 
     <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <aeSvc:ArchiveExplorerLocalizedDictionary/>
+            </ResourceDictionary.MergedDictionaries>
         <conv:BoolToVisibilityConverter         x:Key="BoolToVis"/>
         <conv:FileSizeConverter                 x:Key="FileSizeConv"/>
         <conv:ArchiveFormatToIconGlyphConverter x:Key="FormatGlyphConv"/>
@@ -38,10 +43,10 @@
         <!-- Collapse TbgExtract and TbgActions into overflow menu items -->
         <ContextMenu x:Key="OverflowContextMenu" x:Name="OverflowMenu">
             <MenuItem x:Name="OvfExtractAll"
-                      Header="Extract All…"
+                      Header="{DynamicResource AE_ExtractAll}"
                       Command="{Binding ExtractAllCommand}"/>
             <MenuItem x:Name="OvfExtractSelected"
-                      Header="Extract Selected…"
+                      Header="{DynamicResource AE_ExtractSelected}"
                       Command="{Binding ExtractSelectedCommand}"/>
             <Separator x:Name="OvfSep1"/>
             <MenuItem x:Name="OvfPreview"
@@ -51,6 +56,7 @@
                       Header="Open Raw in Hex"
                       Command="{Binding OpenRawInHexCommand}"/>
         </ContextMenu>
+            </ResourceDictionary>
     </UserControl.Resources>
 
     <Grid AllowDrop="True"
@@ -78,20 +84,20 @@
                             FontFamily="Segoe MDL2 Assets"
                             Width="22" Height="22"
                             Click="OnOpenArchiveClick"
-                            ToolTip="Open archive…"/>
+                            ToolTip="{DynamicResource AE_OpenArchive}"/>
                     <Button Style="{StaticResource PanelIconButtonStyle}"
                             Content="&#xE72C;"
                             FontFamily="Segoe MDL2 Assets"
                             Width="22" Height="22"
                             Command="{Binding RefreshCommand}"
-                            ToolTip="Refresh archive"/>
+                            ToolTip="{DynamicResource AE_RefreshArchive}"/>
                     <Button Style="{StaticResource PanelIconButtonStyle}"
                             Content="&#xE73B;"
                             FontFamily="Segoe MDL2 Assets"
                             Width="22" Height="22"
                             Command="{Binding NavigateUpCommand}"
                             Visibility="{Binding CanNavigateUp, Converter={StaticResource BoolToVis}}"
-                            ToolTip="Navigate up (exit nested archive)"/>
+                            ToolTip="{DynamicResource AE_NavigateUp}"/>
                 </StackPanel>
 
                 <!-- Overflow button — shown when groups collapse -->
@@ -102,7 +108,7 @@
                         FontFamily="Segoe MDL2 Assets"
                         Width="22" Height="22"
                         Visibility="Collapsed"
-                        ToolTip="More options"
+                        ToolTip="{DynamicResource AE_MoreOptions}"
                         Click="OnOverflowButtonClick"/>
 
                 <!-- Open (always visible, leftmost — primary entry point) -->
@@ -112,7 +118,7 @@
                         Width="22" Height="22"
                         Margin="0,0,2,0"
                         Click="OnOpenArchiveClick"
-                        ToolTip="Open archive…"/>
+                        ToolTip="{DynamicResource AE_OpenArchive}"/>
 
                 <!-- Separator -->
                 <Separator Width="1" Margin="2,4"
@@ -127,14 +133,14 @@
                             FontFamily="Segoe MDL2 Assets"
                             Width="22" Height="22"
                             Command="{Binding ExtractAllCommand}"
-                            ToolTip="Extract all…"
+                            ToolTip="{DynamicResource AE_ExtractAllTooltip}"
                             Tag="OvfExtractAll"/>
                     <Button Style="{StaticResource PanelIconButtonStyle}"
                             Content="&#xE896;"
                             FontFamily="Segoe MDL2 Assets"
                             Width="22" Height="22"
                             Command="{Binding ExtractSelectedCommand}"
-                            ToolTip="Extract selected…"
+                            ToolTip="{DynamicResource AE_ExtractSelectedTooltip}"
                             Tag="OvfExtractSelected"/>
                 </StackPanel>
 
@@ -151,14 +157,14 @@
                             FontFamily="Segoe MDL2 Assets"
                             Width="22" Height="22"
                             Command="{Binding PreviewCommand}"
-                            ToolTip="Preview entry"
+                            ToolTip="{DynamicResource AE_PreviewTooltip}"
                             Tag="OvfPreview"/>
                     <Button Style="{StaticResource PanelIconButtonStyle}"
                             Content="&#xE8F4;"
                             FontFamily="Segoe MDL2 Assets"
                             Width="22" Height="22"
                             Command="{Binding OpenRawInHexCommand}"
-                            ToolTip="Open raw bytes in Hex Editor"
+                            ToolTip="{DynamicResource AE_OpenRawInHexTooltip}"
                             Tag="OvfOpenRaw"/>
                 </StackPanel>
 
@@ -174,14 +180,14 @@
                              Width="140"
                              Style="{DynamicResource PanelSearchBoxStyle}"
                              Tag="Filter…"
-                             ToolTip="Filter entries…"
+                             ToolTip="{DynamicResource AE_FilterEntries}"
                              Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged}"/>
                     <Button Style="{StaticResource PanelIconButtonStyle}"
                             Content="&#xE711;"
                             FontFamily="Segoe MDL2 Assets"
                             Width="18" Height="18"
                             Command="{Binding ClearFilterCommand}"
-                            ToolTip="Clear filter"/>
+                            ToolTip="{DynamicResource AE_ClearFilter}"/>
                 </StackPanel>
 
             </DockPanel>
@@ -193,7 +199,7 @@
             <!-- Loading spinner -->
             <TextBlock HorizontalAlignment="Center"
                        VerticalAlignment="Center"
-                       Text="Loading…"
+                       Text="{DynamicResource AE_Loading}"
                        Foreground="{DynamicResource PFP_SubTextBrush}"
                        FontSize="12"
                        Visibility="{Binding IsLoading, Converter={StaticResource BoolToVis}}"/>
@@ -296,21 +302,21 @@
                                 <TextBlock Style="{StaticResource CtxMenuIconStyle}" Text="&#xE8A4;"/>
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="Extract Selected…"
+                        <MenuItem Header="{DynamicResource AE_ExtractSelected}"
                                   Command="{Binding PlacementTarget.DataContext.ExtractSelectedCommand,
                                             RelativeSource={RelativeSource AncestorType=ContextMenu}}">
                             <MenuItem.Icon>
                                 <TextBlock Style="{StaticResource CtxMenuIconStyle}" Text="&#xE896;"/>
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="Open Raw in Hex Editor"
+                        <MenuItem Header="{DynamicResource AE_OpenRawInHexTooltip}"
                                   Command="{Binding PlacementTarget.DataContext.OpenRawInHexCommand,
                                             RelativeSource={RelativeSource AncestorType=ContextMenu}}">
                             <MenuItem.Icon>
                                 <TextBlock Style="{StaticResource CtxMenuIconStyle}" Text="&#xE81E;"/>
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="Drill Into Archive"
+                        <MenuItem Header="{DynamicResource AE_DrillIntoArchive}"
                                   Command="{Binding PlacementTarget.DataContext.DrillIntoCommand,
                                             RelativeSource={RelativeSource AncestorType=ContextMenu}}">
                             <MenuItem.Icon>
@@ -318,14 +324,14 @@
                             </MenuItem.Icon>
                         </MenuItem>
                         <Separator/>
-                        <MenuItem Header="Copy Path"
+                        <MenuItem Header="{DynamicResource AE_CopyPath}"
                                   Command="{Binding PlacementTarget.DataContext.CopyPathCommand,
                                             RelativeSource={RelativeSource AncestorType=ContextMenu}}">
                             <MenuItem.Icon>
                                 <TextBlock Style="{StaticResource CtxMenuIconStyle}" Text="&#xE8C8;"/>
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="Properties…"
+                        <MenuItem Header="{DynamicResource AE_Properties}"
                                   Command="{Binding PlacementTarget.DataContext.ShowPropertiesCommand,
                                             RelativeSource={RelativeSource AncestorType=ContextMenu}}">
                             <MenuItem.Icon>
@@ -363,12 +369,12 @@
                            HorizontalAlignment="Center"
                            Foreground="{DynamicResource PFP_SubTextBrush}"
                            Margin="0,0,0,8"/>
-                <TextBlock Text="Drop an archive here"
+                <TextBlock Text="{DynamicResource AE_DropArchiveHere}"
                            FontSize="13"
                            FontWeight="SemiBold"
                            HorizontalAlignment="Center"
                            Foreground="{DynamicResource PFP_TextBrush}"/>
-                <TextBlock Text="or click Open in the toolbar above"
+                <TextBlock Text="{DynamicResource AE_ClickOpenToolbar}"
                            FontSize="11"
                            HorizontalAlignment="Center"
                            Foreground="{DynamicResource PFP_SubTextBrush}"

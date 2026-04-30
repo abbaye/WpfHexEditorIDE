@@ -55,4 +55,46 @@
   <data name="DataInspector_Footer_NoData" xml:space="preserve">
     <value>Geen gegevens</value>
   </data>
+  <data name="DI_CategoryLabel" xml:space="preserve"><value>Categorie:</value></data>
+  <data name="DI_CatAll" xml:space="preserve"><value>Alles</value></data>
+  <data name="DI_CatInteger" xml:space="preserve"><value>Geheel getal</value></data>
+  <data name="DI_CatFloat" xml:space="preserve"><value>Drijvend</value></data>
+  <data name="DI_CatDateTime" xml:space="preserve"><value>Datum/Tijd</value></data>
+  <data name="DI_CatNetwork" xml:space="preserve"><value>Netwerk</value></data>
+  <data name="DI_CatGuid" xml:space="preserve"><value>GUID</value></data>
+  <data name="DI_CatColor" xml:space="preserve"><value>Kleur</value></data>
+  <data name="DI_CatBasic" xml:space="preserve"><value>Basis</value></data>
+  <data name="DI_CatBits" xml:space="preserve"><value>Bits</value></data>
+  <data name="DI_AllFormats" xml:space="preserve"><value>Alle formaten</value></data>
+  <data name="DI_MoreOptions" xml:space="preserve"><value>Meer opties</value></data>
+  <data name="DI_ShowAxisLabels" xml:space="preserve"><value>Aslabels weergeven</value></data>
+  <data name="DI_ShowGridLines" xml:space="preserve"><value>Rasterlijnen weergeven</value></data>
+  <data name="DI_ShowStatistics" xml:space="preserve"><value>Statistieken weergeven</value></data>
+  <data name="DI_FrequencyDistribution" xml:space="preserve"><value>Frequentieverdeling</value></data>
+  <data name="DI_EntropySliding" xml:space="preserve"><value>Entropie (schuifvenster)</value></data>
+  <data name="DI_ZoomIn" xml:space="preserve"><value>Inzoomen</value></data>
+  <data name="DI_ZoomOut" xml:space="preserve"><value>Uitzoomen</value></data>
+  <data name="DI_ResetZoom" xml:space="preserve"><value>Zoom resetten</value></data>
+  <data name="DI_RefreshChart" xml:space="preserve"><value>Grafiek vernieuwen</value></data>
+  <data name="DI_CopyChartImage" xml:space="preserve"><value>Grafiekafbeelding kopiëren</value></data>
+  <data name="DI_Layout" xml:space="preserve"><value>Indeling</value></data>
+  <data name="DI_PositionLeft" xml:space="preserve"><value>Links</value></data>
+  <data name="DI_PositionRight" xml:space="preserve"><value>Rechts</value></data>
+  <data name="DI_PositionTop" xml:space="preserve"><value>Boven</value></data>
+  <data name="DI_PositionBottom" xml:space="preserve"><value>Onder</value></data>
+  <data name="DI_ScopeLabel" xml:space="preserve"><value>Bereik:</value></data>
+  <data name="DI_ScopeActiveView" xml:space="preserve"><value>Actieve weergave</value></data>
+  <data name="DI_ScopeSelection" xml:space="preserve"><value>Selectie</value></data>
+  <data name="DI_ScopeWholeFile" xml:space="preserve"><value>Heel bestand</value></data>
+  <data name="DI_FrequencyLabel" xml:space="preserve"><value>Frequentie</value></data>
+  <data name="DI_LayoutLabel" xml:space="preserve"><value>Indeling:</value></data>
+  <data name="DI_ChartPositionTooltip" xml:space="preserve"><value>Grafiekpositie ten opzichte van de interpretatielijst</value></data>
+  <data name="DI_AnalyzingFile" xml:space="preserve"><value>Bestand analyseren...</value></data>
+  <data name="DI_InterpretationsLabel" xml:space="preserve"><value>Interpretaties: </value></data>
+  <data name="DI_NoData" xml:space="preserve"><value>Geen gegevens</value></data>
+  <data name="DI_AutoRefresh" xml:space="preserve"><value>Automatisch vernieuwen bij selectiewijziging</value></data>
+  <data name="DI_DefaultByteOrder" xml:space="preserve"><value>Standaard bytevolgorde: Little-Endian</value></data>
+  <data name="DI_ShowByteChart" xml:space="preserve"><value>Bytegrafieksdeelvenster weergeven</value></data>
+  <data name="DI_ChartPosition" xml:space="preserve"><value>Grafiekpositie:</value></data>
+  <data name="DI_MaxStringPreview" xml:space="preserve"><value>Max. bytes voor tekenreeksweergave:</value></data>
 </root>

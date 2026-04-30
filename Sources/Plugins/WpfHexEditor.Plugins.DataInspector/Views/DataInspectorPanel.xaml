@@ -19,10 +19,15 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:chart="clr-namespace:WpfHexEditor.Plugins.DataInspector.Controls"
+             xmlns:diSvc="clr-namespace:WpfHexEditor.Plugins.DataInspector.Services"
              mc:Ignorable="d"
              d:DesignHeight="180" d:DesignWidth="1000">
 
     <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <diSvc:DataInspectorLocalizedDictionary/>
+            </ResourceDictionary.MergedDictionaries>
         <!-- Category color indicators (semantic — theme-independent) -->
         <SolidColorBrush x:Key="CategoryIntegerBrush"  Color="#4A90E2"/>
         <SolidColorBrush x:Key="CategoryFloatBrush"    Color="#7ED321"/>
@@ -133,6 +138,7 @@
                 </Grid>
             </Border>
         </DataTemplate>
+        </ResourceDictionary>
     </UserControl.Resources>
 
     <Grid Background="{DynamicResource PFP_PanelBackgroundBrush}">
@@ -158,7 +164,7 @@
                 <StackPanel DockPanel.Dock="Right" x:Name="ToolbarRightPanel"
                             Orientation="Horizontal">
                     <Rectangle Style="{StaticResource PanelToolbarSeparatorStyle}"/>
-                    <TextBlock Text="Category:"
+                    <TextBlock Text="{DynamicResource DI_CategoryLabel}"
                                VerticalAlignment="Center"
                                FontSize="11"
                                Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
@@ -168,18 +174,18 @@
                               VerticalAlignment="Center"
                               SelectedValue="{Binding SelectedCategory, Mode=TwoWay}"
                               SelectedValuePath="Content">
-                        <ComboBoxItem Content="All"       IsSelected="True"/>
-                        <ComboBoxItem Content="Integer"/>
-                        <ComboBoxItem Content="Float"/>
-                        <ComboBoxItem Content="Date/Time"/>
-                        <ComboBoxItem Content="Network"/>
-                        <ComboBoxItem Content="GUID"/>
-                        <ComboBoxItem Content="Color"/>
-                        <ComboBoxItem Content="Basic"/>
-                        <ComboBoxItem Content="Bits"/>
+                        <ComboBoxItem Content="{DynamicResource DI_CatAll}"       IsSelected="True"/>
+                        <ComboBoxItem Content="{DynamicResource DI_CatInteger}"/>
+                        <ComboBoxItem Content="{DynamicResource DI_CatFloat}"/>
+                        <ComboBoxItem Content="{DynamicResource DI_CatDateTime}"/>
+                        <ComboBoxItem Content="{DynamicResource DI_CatNetwork}"/>
+                        <ComboBoxItem Content="{DynamicResource DI_CatGuid}"/>
+                        <ComboBoxItem Content="{DynamicResource DI_CatColor}"/>
+                        <ComboBoxItem Content="{DynamicResource DI_CatBasic}"/>
+                        <ComboBoxItem Content="{DynamicResource DI_CatBits}"/>
                     </ComboBox>
                     <Rectangle Style="{StaticResource PanelToolbarSeparatorStyle}"/>
-                    <CheckBox Content="All formats"
+                    <CheckBox Content="{DynamicResource DI_AllFormats}"
                               VerticalAlignment="Center"
                               IsChecked="{Binding ShowAllFormats, Mode=TwoWay}"
                               FontSize="11"
@@ -193,41 +199,41 @@
                         x:Name="ToolbarOverflowButton"
                         Style="{StaticResource PanelIconButtonStyle}"
                         Content="&#xE712;"
-                        ToolTip="More toolbar options"
+                        ToolTip="{DynamicResource DI_MoreOptions}"
                         Visibility="Collapsed"
                         Click="OnOverflowButtonClick">
                     <Button.ContextMenu>
                         <ContextMenu x:Name="OverflowContextMenu"
                                      Opened="OnOverflowMenuOpened">
                             <!-- TbgToggles -->
-                            <MenuItem x:Name="OvfToggleLabels" Header="Show Axis Labels"
+                            <MenuItem x:Name="OvfToggleLabels" Header="{DynamicResource DI_ShowAxisLabels}"
                                       IsCheckable="True" Click="OnToggleLabels" Tag="TbgToggles"/>
-                            <MenuItem x:Name="OvfToggleGrid"   Header="Show Grid Lines"
+                            <MenuItem x:Name="OvfToggleGrid"   Header="{DynamicResource DI_ShowGridLines}"
                                       IsCheckable="True" Click="OnToggleGrid"   Tag="TbgToggles"/>
-                            <MenuItem x:Name="OvfToggleStats"  Header="Show Statistics"
+                            <MenuItem x:Name="OvfToggleStats"  Header="{DynamicResource DI_ShowStatistics}"
                                       IsCheckable="True" Click="OnToggleStats"  Tag="TbgToggles"/>
                             <Separator Tag="TbgToggles"/>
                             <!-- TbgMode -->
-                            <MenuItem x:Name="OvfModeFrequency" Header="Frequency Distribution"
+                            <MenuItem x:Name="OvfModeFrequency" Header="{DynamicResource DI_FrequencyDistribution}"
                                       IsCheckable="True" Click="OnModeFrequency" Tag="TbgMode"/>
-                            <MenuItem x:Name="OvfModeEntropy"   Header="Entropy (Sliding Window)"
+                            <MenuItem x:Name="OvfModeEntropy"   Header="{DynamicResource DI_EntropySliding}"
                                       IsCheckable="True" Click="OnModeEntropy"   Tag="TbgMode"/>
                             <Separator Tag="TbgMode"/>
                             <!-- TbgZoom -->
-                            <MenuItem Header="Zoom In"    Click="OnZoomIn"    InputGestureText="Wheel ↑" Tag="TbgZoom"/>
-                            <MenuItem Header="Zoom Out"   Click="OnZoomOut"   InputGestureText="Wheel ↓" Tag="TbgZoom"/>
-                            <MenuItem Header="Reset Zoom" Click="OnZoomReset"                            Tag="TbgZoom"/>
+                            <MenuItem Header="{DynamicResource DI_ZoomIn}"    Click="OnZoomIn"    InputGestureText="Wheel ↑" Tag="TbgZoom"/>
+                            <MenuItem Header="{DynamicResource DI_ZoomOut}"   Click="OnZoomOut"   InputGestureText="Wheel ↓" Tag="TbgZoom"/>
+                            <MenuItem Header="{DynamicResource DI_ResetZoom}" Click="OnZoomReset"                            Tag="TbgZoom"/>
                             <Separator Tag="TbgZoom"/>
                             <!-- TbgAction -->
-                            <MenuItem Header="Refresh Chart"    Click="OnRefresh"   Tag="TbgAction"/>
-                            <MenuItem Header="Copy Chart Image" Click="OnCopyChart" Tag="TbgAction"/>
+                            <MenuItem Header="{DynamicResource DI_RefreshChart}"    Click="OnRefresh"   Tag="TbgAction"/>
+                            <MenuItem Header="{DynamicResource DI_CopyChartImage}" Click="OnCopyChart" Tag="TbgAction"/>
                             <Separator Tag="TbgAction"/>
                             <!-- TbgLayout -->
-                            <MenuItem Header="Layout" Tag="TbgLayout">
-                                <MenuItem x:Name="OvfLayoutLeft"   Header="Left"   IsCheckable="True" Tag="Left"   Click="OnOverflowLayoutClick"/>
-                                <MenuItem x:Name="OvfLayoutRight"  Header="Right"  IsCheckable="True" Tag="Right"  Click="OnOverflowLayoutClick"/>
-                                <MenuItem x:Name="OvfLayoutTop"    Header="Top"    IsCheckable="True" Tag="Top"    Click="OnOverflowLayoutClick"/>
-                                <MenuItem x:Name="OvfLayoutBottom" Header="Bottom" IsCheckable="True" Tag="Bottom" Click="OnOverflowLayoutClick"/>
+                            <MenuItem Header="{DynamicResource DI_Layout}" Tag="TbgLayout">
+                                <MenuItem x:Name="OvfLayoutLeft"   Header="{DynamicResource DI_PositionLeft}"   IsCheckable="True" Tag="Left"   Click="OnOverflowLayoutClick"/>
+                                <MenuItem x:Name="OvfLayoutRight"  Header="{DynamicResource DI_PositionRight}"  IsCheckable="True" Tag="Right"  Click="OnOverflowLayoutClick"/>
+                                <MenuItem x:Name="OvfLayoutTop"    Header="{DynamicResource DI_PositionTop}"    IsCheckable="True" Tag="Top"    Click="OnOverflowLayoutClick"/>
+                                <MenuItem x:Name="OvfLayoutBottom" Header="{DynamicResource DI_PositionBottom}" IsCheckable="True" Tag="Bottom" Click="OnOverflowLayoutClick"/>
                             </MenuItem>
                         </ContextMenu>
                     </Button.ContextMenu>
@@ -235,7 +241,7 @@
 
                 <!-- ── LEFT: TbgScope — always visible ───────────────────────── -->
                 <StackPanel DockPanel.Dock="Left" x:Name="TbgScope" Orientation="Horizontal">
-                    <TextBlock Text="Scope:"
+                    <TextBlock Text="{DynamicResource DI_ScopeLabel}"
                                VerticalAlignment="Center"
                                FontSize="11"
                                Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
@@ -244,9 +250,9 @@
                               Width="120" FontSize="11"
                               VerticalAlignment="Center"
                               SelectionChanged="OnScopeChanged">
-                        <ComboBoxItem x:Name="ScopeActiveView" Content="Active view"/>
-                        <ComboBoxItem x:Name="ScopeSelection"  Content="Selection" IsSelected="True"/>
-                        <ComboBoxItem x:Name="ScopeWholeFile"  Content="Whole file"/>
+                        <ComboBoxItem x:Name="ScopeActiveView" Content="{DynamicResource DI_ScopeActiveView}"/>
+                        <ComboBoxItem x:Name="ScopeSelection"  Content="{DynamicResource DI_ScopeSelection}" IsSelected="True"/>
+                        <ComboBoxItem x:Name="ScopeWholeFile"  Content="{DynamicResource DI_ScopeWholeFile}"/>
                     </ComboBox>
                     <Rectangle Style="{StaticResource PanelToolbarSeparatorStyle}"/>
                 </StackPanel>
@@ -257,19 +263,19 @@
                                   Style="{StaticResource PanelIconToggleStyle}"
                                   Content="&#xE8EC;"
                                   IsChecked="True"
-                                  ToolTip="Show axis labels"
+                                  ToolTip="{DynamicResource DI_ShowAxisLabels}"
                                   Checked="OnToggleLabels" Unchecked="OnToggleLabels"/>
                     <ToggleButton x:Name="ToggleGrid"
                                   Style="{StaticResource PanelIconToggleStyle}"
                                   Content="&#xE80A;"
                                   IsChecked="False"
-                                  ToolTip="Show grid lines"
+                                  ToolTip="{DynamicResource DI_ShowGridLines}"
                                   Checked="OnToggleGrid" Unchecked="OnToggleGrid"/>
                     <ToggleButton x:Name="ToggleStats"
                                   Style="{StaticResource PanelIconToggleStyle}"
                                   Content="&#xE9D9;"
                                   IsChecked="True"
-                                  ToolTip="Show statistics overlay"
+                                  ToolTip="{DynamicResource DI_ShowStatistics}"
                                   Checked="OnToggleStats" Unchecked="OnToggleStats"/>
                     <Rectangle Style="{StaticResource PanelToolbarSeparatorStyle}"/>
                 </StackPanel>
@@ -278,21 +284,21 @@
                 <StackPanel DockPanel.Dock="Left" x:Name="TbgMode" Orientation="Horizontal">
                     <Button x:Name="ModeButton"
                             Style="{StaticResource PanelDropdownButtonStyle}"
-                            ToolTip="Chart display mode"
+                            ToolTip="{DynamicResource DI_MoreOptions}"
                             Click="OnModeButtonClick">
                         <Button.Content>
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <TextBlock x:Name="ModeLabel" Text="Frequency" FontSize="11"/>
+                                <TextBlock x:Name="ModeLabel" Text="{DynamicResource DI_FrequencyLabel}" FontSize="11"/>
                                 <TextBlock Text=" &#xE70D;" FontFamily="Segoe MDL2 Assets" FontSize="9"
                                            VerticalAlignment="Center"/>
                             </StackPanel>
                         </Button.Content>
                         <Button.ContextMenu>
                             <ContextMenu x:Name="ModeContextMenu">
-                                <MenuItem Header="Frequency distribution"
+                                <MenuItem Header="{DynamicResource DI_FrequencyDistribution}"
                                           Click="OnModeFrequency"
                                           IsCheckable="True" x:Name="ModeFrequencyItem" IsChecked="True"/>
-                                <MenuItem Header="Entropy (sliding window)"
+                                <MenuItem Header="{DynamicResource DI_EntropySliding}"
                                           Click="OnModeEntropy"
                                           IsCheckable="True" x:Name="ModeEntropyItem"/>
                             </ContextMenu>
@@ -305,15 +311,15 @@
                 <StackPanel DockPanel.Dock="Left" x:Name="TbgZoom" Orientation="Horizontal">
                     <Button Style="{StaticResource PanelIconButtonStyle}"
                             Content="&#xE8A3;"
-                            ToolTip="Zoom in (mouse wheel also works)"
+                            ToolTip="{DynamicResource DI_ZoomIn}"
                             Click="OnZoomIn"/>
                     <Button Style="{StaticResource PanelIconButtonStyle}"
                             Content="&#xE71F;"
-                            ToolTip="Zoom out"
+                            ToolTip="{DynamicResource DI_ZoomOut}"
                             Click="OnZoomOut"/>
                     <Button Style="{StaticResource PanelIconButtonStyle}"
                             Content="&#xE740;"
-                            ToolTip="Reset zoom (show full 0x00–0xFF)"
+                            ToolTip="{DynamicResource DI_ResetZoom}"
                             Click="OnZoomReset"/>
                     <Rectangle Style="{StaticResource PanelToolbarSeparatorStyle}"/>
                 </StackPanel>
@@ -322,18 +328,18 @@
                 <StackPanel DockPanel.Dock="Left" x:Name="TbgAction" Orientation="Horizontal">
                     <Button Style="{StaticResource PanelIconButtonStyle}"
                             Content="&#xE72C;"
-                            ToolTip="Refresh chart"
+                            ToolTip="{DynamicResource DI_RefreshChart}"
                             Click="OnRefresh"/>
                     <Button Style="{StaticResource PanelIconButtonStyle}"
                             Content="&#xE8C8;"
-                            ToolTip="Copy chart as image"
+                            ToolTip="{DynamicResource DI_CopyChartImage}"
                             Click="OnCopyChart"/>
                     <Rectangle Style="{StaticResource PanelToolbarSeparatorStyle}"/>
                 </StackPanel>
 
                 <!-- ── LEFT: TbgLayout (collapse priority 0 — first to collapse) -->
                 <StackPanel DockPanel.Dock="Left" x:Name="TbgLayout" Orientation="Horizontal">
-                    <TextBlock Text="Layout:"
+                    <TextBlock Text="{DynamicResource DI_LayoutLabel}"
                                VerticalAlignment="Center"
                                FontSize="11"
                                Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
@@ -341,12 +347,12 @@
                     <ComboBox x:Name="ChartPositionCombo"
                               Width="75" FontSize="11"
                               VerticalAlignment="Center"
-                              ToolTip="Chart position relative to the interpretation list"
+                              ToolTip="{DynamicResource DI_ChartPositionTooltip}"
                               SelectionChanged="OnChartPositionChanged">
-                        <ComboBoxItem Content="Left"   Tag="Left"/>
-                        <ComboBoxItem Content="Right"  Tag="Right"/>
-                        <ComboBoxItem Content="Top"    Tag="Top"/>
-                        <ComboBoxItem Content="Bottom" Tag="Bottom"/>
+                        <ComboBoxItem Content="{DynamicResource DI_PositionLeft}"   Tag="Left"/>
+                        <ComboBoxItem Content="{DynamicResource DI_PositionRight}"  Tag="Right"/>
+                        <ComboBoxItem Content="{DynamicResource DI_PositionTop}"    Tag="Top"/>
+                        <ComboBoxItem Content="{DynamicResource DI_PositionBottom}" Tag="Bottom"/>
                     </ComboBox>
                 </StackPanel>
 
@@ -367,28 +373,28 @@
                     <ContextMenu Opened="OnChartContextMenuOpening">
 
                         <!-- Group 1 — Zoom -->
-                        <MenuItem Header="Zoom In"    Click="OnZoomIn"    InputGestureText="Wheel ↑"/>
-                        <MenuItem Header="Zoom Out"   Click="OnZoomOut"   InputGestureText="Wheel ↓"/>
-                        <MenuItem Header="Reset Zoom" Click="OnZoomReset"/>
+                        <MenuItem Header="{DynamicResource DI_ZoomIn}"    Click="OnZoomIn"    InputGestureText="Wheel ↑"/>
+                        <MenuItem Header="{DynamicResource DI_ZoomOut}"   Click="OnZoomOut"   InputGestureText="Wheel ↓"/>
+                        <MenuItem Header="{DynamicResource DI_ResetZoom}" Click="OnZoomReset"/>
 
                         <Separator/>
 
                         <!-- Group 2 — Display toggles -->
-                        <MenuItem x:Name="CtxToggleLabels" Header="Show Axis Labels" IsCheckable="True" Click="OnCtxToggleLabels"/>
-                        <MenuItem x:Name="CtxToggleGrid"   Header="Show Grid Lines"  IsCheckable="True" Click="OnCtxToggleGrid"/>
-                        <MenuItem x:Name="CtxToggleStats"  Header="Show Statistics"  IsCheckable="True" Click="OnCtxToggleStats"/>
+                        <MenuItem x:Name="CtxToggleLabels" Header="{DynamicResource DI_ShowAxisLabels}" IsCheckable="True" Click="OnCtxToggleLabels"/>
+                        <MenuItem x:Name="CtxToggleGrid"   Header="{DynamicResource DI_ShowGridLines}"  IsCheckable="True" Click="OnCtxToggleGrid"/>
+                        <MenuItem x:Name="CtxToggleStats"  Header="{DynamicResource DI_ShowStatistics}"  IsCheckable="True" Click="OnCtxToggleStats"/>
 
                         <Separator/>
 
                         <!-- Group 3 — Chart mode -->
-                        <MenuItem x:Name="CtxModeFrequency" Header="Frequency Distribution"   IsCheckable="True" Click="OnModeFrequency"/>
-                        <MenuItem x:Name="CtxModeEntropy"   Header="Entropy (Sliding Window)" IsCheckable="True" Click="OnModeEntropy"/>
+                        <MenuItem x:Name="CtxModeFrequency" Header="{DynamicResource DI_FrequencyDistribution}"   IsCheckable="True" Click="OnModeFrequency"/>
+                        <MenuItem x:Name="CtxModeEntropy"   Header="{DynamicResource DI_EntropySliding}" IsCheckable="True" Click="OnModeEntropy"/>
 
                         <Separator/>
 
                         <!-- Group 4 — Actions -->
-                        <MenuItem Header="Refresh"             Click="OnRefresh"/>
-                        <MenuItem Header="Copy Chart as Image" Click="OnCopyChart"/>
+                        <MenuItem Header="{DynamicResource DI_RefreshChart}"             Click="OnRefresh"/>
+                        <MenuItem Header="{DynamicResource DI_CopyChartImage}" Click="OnCopyChart"/>
 
                     </ContextMenu>
                 </Grid.ContextMenu>
@@ -429,7 +435,7 @@
                         HorizontalAlignment="Stretch">
                     <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
                         <TextBlock x:Name="ProgressLabel"
-                                   Text="Analyzing file..."
+                                   Text="{DynamicResource DI_AnalyzingFile}"
                                    FontSize="11"
                                    Foreground="White"
                                    HorizontalAlignment="Center"
@@ -485,7 +491,7 @@
                            FontSize="10"
                            Foreground="{DynamicResource PFP_SubTextBrush}"
                            VerticalAlignment="Center">
-                    <Run Text="Interpretations: "/>
+                    <Run Text="{DynamicResource DI_InterpretationsLabel}"/>
                     <Run Text="{Binding Values.Count, Mode=OneWay}" FontWeight="Bold"/>
                 </TextBlock>
 
@@ -528,7 +534,7 @@
                                VerticalAlignment="Center"/>
 
                     <TextBlock x:Name="TotalBytesText"
-                               Text="No data"
+                               Text="{DynamicResource DI_NoData}"
                                FontSize="10" FontFamily="Consolas"
                                Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"
                                VerticalAlignment="Center"/>

@@ -114,4 +114,46 @@
   <data name="DataInspector_Footer_NoData" xml:space="preserve">
     <value>No data</value>
   </data>
+  <data name="DI_CategoryLabel" xml:space="preserve"><value>Category:</value></data>
+  <data name="DI_CatAll" xml:space="preserve"><value>All</value></data>
+  <data name="DI_CatInteger" xml:space="preserve"><value>Integer</value></data>
+  <data name="DI_CatFloat" xml:space="preserve"><value>Float</value></data>
+  <data name="DI_CatDateTime" xml:space="preserve"><value>Date/Time</value></data>
+  <data name="DI_CatNetwork" xml:space="preserve"><value>Network</value></data>
+  <data name="DI_CatGuid" xml:space="preserve"><value>GUID</value></data>
+  <data name="DI_CatColor" xml:space="preserve"><value>Color</value></data>
+  <data name="DI_CatBasic" xml:space="preserve"><value>Basic</value></data>
+  <data name="DI_CatBits" xml:space="preserve"><value>Bits</value></data>
+  <data name="DI_AllFormats" xml:space="preserve"><value>All formats</value></data>
+  <data name="DI_MoreOptions" xml:space="preserve"><value>More toolbar options</value></data>
+  <data name="DI_ShowAxisLabels" xml:space="preserve"><value>Show Axis Labels</value></data>
+  <data name="DI_ShowGridLines" xml:space="preserve"><value>Show Grid Lines</value></data>
+  <data name="DI_ShowStatistics" xml:space="preserve"><value>Show Statistics</value></data>
+  <data name="DI_FrequencyDistribution" xml:space="preserve"><value>Frequency Distribution</value></data>
+  <data name="DI_EntropySliding" xml:space="preserve"><value>Entropy (Sliding Window)</value></data>
+  <data name="DI_ZoomIn" xml:space="preserve"><value>Zoom In</value></data>
+  <data name="DI_ZoomOut" xml:space="preserve"><value>Zoom Out</value></data>
+  <data name="DI_ResetZoom" xml:space="preserve"><value>Reset Zoom</value></data>
+  <data name="DI_RefreshChart" xml:space="preserve"><value>Refresh Chart</value></data>
+  <data name="DI_CopyChartImage" xml:space="preserve"><value>Copy Chart Image</value></data>
+  <data name="DI_Layout" xml:space="preserve"><value>Layout</value></data>
+  <data name="DI_PositionLeft" xml:space="preserve"><value>Left</value></data>
+  <data name="DI_PositionRight" xml:space="preserve"><value>Right</value></data>
+  <data name="DI_PositionTop" xml:space="preserve"><value>Top</value></data>
+  <data name="DI_PositionBottom" xml:space="preserve"><value>Bottom</value></data>
+  <data name="DI_ScopeLabel" xml:space="preserve"><value>Scope:</value></data>
+  <data name="DI_ScopeActiveView" xml:space="preserve"><value>Active view</value></data>
+  <data name="DI_ScopeSelection" xml:space="preserve"><value>Selection</value></data>
+  <data name="DI_ScopeWholeFile" xml:space="preserve"><value>Whole file</value></data>
+  <data name="DI_FrequencyLabel" xml:space="preserve"><value>Frequency</value></data>
+  <data name="DI_LayoutLabel" xml:space="preserve"><value>Layout:</value></data>
+  <data name="DI_ChartPositionTooltip" xml:space="preserve"><value>Chart position relative to the interpretation list</value></data>
+  <data name="DI_AnalyzingFile" xml:space="preserve"><value>Analyzing file...</value></data>
+  <data name="DI_InterpretationsLabel" xml:space="preserve"><value>Interpretations: </value></data>
+  <data name="DI_NoData" xml:space="preserve"><value>No data</value></data>
+  <data name="DI_AutoRefresh" xml:space="preserve"><value>Auto-refresh on selection change</value></data>
+  <data name="DI_DefaultByteOrder" xml:space="preserve"><value>Default byte order: Little-Endian</value></data>
+  <data name="DI_ShowByteChart" xml:space="preserve"><value>Show Byte Chart panel</value></data>
+  <data name="DI_ChartPosition" xml:space="preserve"><value>Chart position:</value></data>
+  <data name="DI_MaxStringPreview" xml:space="preserve"><value>Max string preview bytes:</value></data>
 </root>

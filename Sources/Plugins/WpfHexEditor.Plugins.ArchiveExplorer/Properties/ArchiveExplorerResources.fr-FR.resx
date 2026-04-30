@@ -13,4 +13,43 @@
   <data name="ArchiveExplorer_SelectExtractFolder" xml:space="preserve">
     <value>Sélectionner le dossier d'extraction par défaut</value>
   </data>
+  <data name="AE_ExtractAll" xml:space="preserve"><value>Extraire tout…</value></data>
+  <data name="AE_ExtractSelected" xml:space="preserve"><value>Extraire la sélection…</value></data>
+  <data name="AE_Preview" xml:space="preserve"><value>Aperçu</value></data>
+  <data name="AE_OpenRawInHex" xml:space="preserve"><value>Ouvrir brut dans Hex</value></data>
+  <data name="AE_OpenArchive" xml:space="preserve"><value>Ouvrir archive…</value></data>
+  <data name="AE_RefreshArchive" xml:space="preserve"><value>Actualiser l'archive</value></data>
+  <data name="AE_NavigateUp" xml:space="preserve"><value>Remonter (quitter archive imbriquée)</value></data>
+  <data name="AE_MoreOptions" xml:space="preserve"><value>Plus d'options</value></data>
+  <data name="AE_ExtractAllTooltip" xml:space="preserve"><value>Extraire tout…</value></data>
+  <data name="AE_ExtractSelectedTooltip" xml:space="preserve"><value>Extraire la sélection…</value></data>
+  <data name="AE_PreviewTooltip" xml:space="preserve"><value>Aperçu de l'entrée</value></data>
+  <data name="AE_OpenRawInHexTooltip" xml:space="preserve"><value>Ouvrir les octets bruts dans l'éditeur Hex</value></data>
+  <data name="AE_FilterEntries" xml:space="preserve"><value>Filtrer les entrées…</value></data>
+  <data name="AE_ClearFilter" xml:space="preserve"><value>Effacer le filtre</value></data>
+  <data name="AE_Loading" xml:space="preserve"><value>Chargement…</value></data>
+  <data name="AE_DrillIntoArchive" xml:space="preserve"><value>Explorer l'archive</value></data>
+  <data name="AE_CopyPath" xml:space="preserve"><value>Copier le chemin</value></data>
+  <data name="AE_Properties" xml:space="preserve"><value>Propriétés…</value></data>
+  <data name="AE_DropArchiveHere" xml:space="preserve"><value>Déposez une archive ici</value></data>
+  <data name="AE_ClickOpenToolbar" xml:space="preserve"><value>ou cliquez sur Ouvrir dans la barre d'outils</value></data>
+  <data name="AE_BehaviourSection" xml:space="preserve"><value>Comportement</value></data>
+  <data name="AE_AutoShowPanel" xml:space="preserve"><value>Afficher automatiquement le panneau à l'ouverture d'un fichier archive</value></data>
+  <data name="AE_ShowCompressionBadge" xml:space="preserve"><value>Afficher le badge de ratio de compression dans l'arborescence</value></data>
+  <data name="AE_ShowFormatBadge" xml:space="preserve"><value>Afficher le badge de détection de format (whfmt)</value></data>
+  <data name="AE_PreviewSection" xml:space="preserve"><value>Aperçu</value></data>
+  <data name="AE_MaxPreviewSize" xml:space="preserve"><value>Taille max d'aperçu (Ko) :</value></data>
+  <data name="AE_ExtractionSection" xml:space="preserve"><value>Extraction</value></data>
+  <data name="AE_MaxFormatDetectionSize" xml:space="preserve"><value>Taille max de détection de format (Ko) :</value></data>
+  <data name="AE_DefaultExtractFolder" xml:space="preserve"><value>Dossier d'extraction par défaut :</value></data>
+  <data name="AE_Browse" xml:space="preserve"><value>Parcourir…</value></data>
+  <data name="AE_EntryPropertiesTitle" xml:space="preserve"><value>Propriétés de l'entrée</value></data>
+  <data name="AE_FullPath" xml:space="preserve"><value>Chemin complet :</value></data>
+  <data name="AE_Size" xml:space="preserve"><value>Taille :</value></data>
+  <data name="AE_Compressed" xml:space="preserve"><value>Compressé :</value></data>
+  <data name="AE_Ratio" xml:space="preserve"><value>Ratio :</value></data>
+  <data name="AE_Method" xml:space="preserve"><value>Méthode :</value></data>
+  <data name="AE_LastModified" xml:space="preserve"><value>Dernière modification :</value></data>
+  <data name="AE_Crc32" xml:space="preserve"><value>CRC32 :</value></data>
+  <data name="AE_Close" xml:space="preserve"><value>Fermer</value></data>
 </root>

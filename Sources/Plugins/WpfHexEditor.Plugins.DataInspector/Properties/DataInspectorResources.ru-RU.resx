@@ -55,4 +55,46 @@
   <data name="DataInspector_Footer_NoData" xml:space="preserve">
     <value>Нет данных</value>
   </data>
+  <data name="DI_CategoryLabel" xml:space="preserve"><value>Категория:</value></data>
+  <data name="DI_CatAll" xml:space="preserve"><value>Все</value></data>
+  <data name="DI_CatInteger" xml:space="preserve"><value>Целое</value></data>
+  <data name="DI_CatFloat" xml:space="preserve"><value>С плавающей точкой</value></data>
+  <data name="DI_CatDateTime" xml:space="preserve"><value>Дата/Время</value></data>
+  <data name="DI_CatNetwork" xml:space="preserve"><value>Сеть</value></data>
+  <data name="DI_CatGuid" xml:space="preserve"><value>GUID</value></data>
+  <data name="DI_CatColor" xml:space="preserve"><value>Цвет</value></data>
+  <data name="DI_CatBasic" xml:space="preserve"><value>Базовый</value></data>
+  <data name="DI_CatBits" xml:space="preserve"><value>Биты</value></data>
+  <data name="DI_AllFormats" xml:space="preserve"><value>Все форматы</value></data>
+  <data name="DI_MoreOptions" xml:space="preserve"><value>Больше параметров</value></data>
+  <data name="DI_ShowAxisLabels" xml:space="preserve"><value>Показать метки осей</value></data>
+  <data name="DI_ShowGridLines" xml:space="preserve"><value>Показать линии сетки</value></data>
+  <data name="DI_ShowStatistics" xml:space="preserve"><value>Показать статистику</value></data>
+  <data name="DI_FrequencyDistribution" xml:space="preserve"><value>Распределение частот</value></data>
+  <data name="DI_EntropySliding" xml:space="preserve"><value>Энтропия (скользящее окно)</value></data>
+  <data name="DI_ZoomIn" xml:space="preserve"><value>Увеличить</value></data>
+  <data name="DI_ZoomOut" xml:space="preserve"><value>Уменьшить</value></data>
+  <data name="DI_ResetZoom" xml:space="preserve"><value>Сбросить масштаб</value></data>
+  <data name="DI_RefreshChart" xml:space="preserve"><value>Обновить диаграмму</value></data>
+  <data name="DI_CopyChartImage" xml:space="preserve"><value>Копировать изображение диаграммы</value></data>
+  <data name="DI_Layout" xml:space="preserve"><value>Компоновка</value></data>
+  <data name="DI_PositionLeft" xml:space="preserve"><value>Слева</value></data>
+  <data name="DI_PositionRight" xml:space="preserve"><value>Справа</value></data>
+  <data name="DI_PositionTop" xml:space="preserve"><value>Сверху</value></data>
+  <data name="DI_PositionBottom" xml:space="preserve"><value>Снизу</value></data>
+  <data name="DI_ScopeLabel" xml:space="preserve"><value>Область:</value></data>
+  <data name="DI_ScopeActiveView" xml:space="preserve"><value>Активное представление</value></data>
+  <data name="DI_ScopeSelection" xml:space="preserve"><value>Выделение</value></data>
+  <data name="DI_ScopeWholeFile" xml:space="preserve"><value>Весь файл</value></data>
+  <data name="DI_FrequencyLabel" xml:space="preserve"><value>Частота</value></data>
+  <data name="DI_LayoutLabel" xml:space="preserve"><value>Компоновка:</value></data>
+  <data name="DI_ChartPositionTooltip" xml:space="preserve"><value>Положение диаграммы относительно списка интерпретаций</value></data>
+  <data name="DI_AnalyzingFile" xml:space="preserve"><value>Анализ файла...</value></data>
+  <data name="DI_InterpretationsLabel" xml:space="preserve"><value>Интерпретации: </value></data>
+  <data name="DI_NoData" xml:space="preserve"><value>Нет данных</value></data>
+  <data name="DI_AutoRefresh" xml:space="preserve"><value>Авто-обновление при смене выделения</value></data>
+  <data name="DI_DefaultByteOrder" xml:space="preserve"><value>Порядок байтов по умолчанию: Little-Endian</value></data>
+  <data name="DI_ShowByteChart" xml:space="preserve"><value>Показать панель байтовой диаграммы</value></data>
+  <data name="DI_ChartPosition" xml:space="preserve"><value>Положение диаграммы:</value></data>
+  <data name="DI_MaxStringPreview" xml:space="preserve"><value>Макс. байт предпросмотра строки:</value></data>
 </root>

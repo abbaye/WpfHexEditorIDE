@@ -79,4 +79,43 @@
     <value>Select default extract folder</value>
   </data>
 
+  <data name="AE_ExtractAll" xml:space="preserve"><value>Extract All…</value></data>
+  <data name="AE_ExtractSelected" xml:space="preserve"><value>Extract Selected…</value></data>
+  <data name="AE_Preview" xml:space="preserve"><value>Preview</value></data>
+  <data name="AE_OpenRawInHex" xml:space="preserve"><value>Open Raw in Hex</value></data>
+  <data name="AE_OpenArchive" xml:space="preserve"><value>Open archive…</value></data>
+  <data name="AE_RefreshArchive" xml:space="preserve"><value>Refresh archive</value></data>
+  <data name="AE_NavigateUp" xml:space="preserve"><value>Navigate up (exit nested archive)</value></data>
+  <data name="AE_MoreOptions" xml:space="preserve"><value>More options</value></data>
+  <data name="AE_ExtractAllTooltip" xml:space="preserve"><value>Extract all…</value></data>
+  <data name="AE_ExtractSelectedTooltip" xml:space="preserve"><value>Extract selected…</value></data>
+  <data name="AE_PreviewTooltip" xml:space="preserve"><value>Preview entry</value></data>
+  <data name="AE_OpenRawInHexTooltip" xml:space="preserve"><value>Open raw bytes in Hex Editor</value></data>
+  <data name="AE_FilterEntries" xml:space="preserve"><value>Filter entries…</value></data>
+  <data name="AE_ClearFilter" xml:space="preserve"><value>Clear filter</value></data>
+  <data name="AE_Loading" xml:space="preserve"><value>Loading…</value></data>
+  <data name="AE_DrillIntoArchive" xml:space="preserve"><value>Drill Into Archive</value></data>
+  <data name="AE_CopyPath" xml:space="preserve"><value>Copy Path</value></data>
+  <data name="AE_Properties" xml:space="preserve"><value>Properties…</value></data>
+  <data name="AE_DropArchiveHere" xml:space="preserve"><value>Drop an archive here</value></data>
+  <data name="AE_ClickOpenToolbar" xml:space="preserve"><value>or click Open in the toolbar above</value></data>
+  <data name="AE_BehaviourSection" xml:space="preserve"><value>Behaviour</value></data>
+  <data name="AE_AutoShowPanel" xml:space="preserve"><value>Automatically show panel when an archive file is opened</value></data>
+  <data name="AE_ShowCompressionBadge" xml:space="preserve"><value>Show compression ratio badge in tree</value></data>
+  <data name="AE_ShowFormatBadge" xml:space="preserve"><value>Show format detection badge (whfmt)</value></data>
+  <data name="AE_PreviewSection" xml:space="preserve"><value>Preview</value></data>
+  <data name="AE_MaxPreviewSize" xml:space="preserve"><value>Max preview size (KB):</value></data>
+  <data name="AE_ExtractionSection" xml:space="preserve"><value>Extraction</value></data>
+  <data name="AE_MaxFormatDetectionSize" xml:space="preserve"><value>Max format detection size (KB):</value></data>
+  <data name="AE_DefaultExtractFolder" xml:space="preserve"><value>Default extract folder:</value></data>
+  <data name="AE_Browse" xml:space="preserve"><value>Browse…</value></data>
+  <data name="AE_EntryPropertiesTitle" xml:space="preserve"><value>Entry Properties</value></data>
+  <data name="AE_FullPath" xml:space="preserve"><value>Full Path:</value></data>
+  <data name="AE_Size" xml:space="preserve"><value>Size:</value></data>
+  <data name="AE_Compressed" xml:space="preserve"><value>Compressed:</value></data>
+  <data name="AE_Ratio" xml:space="preserve"><value>Ratio:</value></data>
+  <data name="AE_Method" xml:space="preserve"><value>Method:</value></data>
+  <data name="AE_LastModified" xml:space="preserve"><value>Last Modified:</value></data>
+  <data name="AE_Crc32" xml:space="preserve"><value>CRC32:</value></data>
+  <data name="AE_Close" xml:space="preserve"><value>Close</value></data>
 </root>

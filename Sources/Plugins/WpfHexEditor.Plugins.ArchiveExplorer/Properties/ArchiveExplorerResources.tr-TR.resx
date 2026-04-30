@@ -13,4 +13,43 @@
   <data name="ArchiveExplorer_SelectExtractFolder" xml:space="preserve">
     <value>Varsayılan ayıklama klasörünü seçin</value>
   </data>
+  <data name="AE_ExtractAll" xml:space="preserve"><value>Tümünü çıkart…</value></data>
+  <data name="AE_ExtractSelected" xml:space="preserve"><value>Seçileni çıkart…</value></data>
+  <data name="AE_Preview" xml:space="preserve"><value>Önizleme</value></data>
+  <data name="AE_OpenRawInHex" xml:space="preserve"><value>Hex'te raw aç</value></data>
+  <data name="AE_OpenArchive" xml:space="preserve"><value>Arşiv aç…</value></data>
+  <data name="AE_RefreshArchive" xml:space="preserve"><value>Arşivi yenile</value></data>
+  <data name="AE_NavigateUp" xml:space="preserve"><value>Yukarı git (iç içe arşivden çık)</value></data>
+  <data name="AE_MoreOptions" xml:space="preserve"><value>Daha fazla seçenek</value></data>
+  <data name="AE_ExtractAllTooltip" xml:space="preserve"><value>Tümünü çıkart…</value></data>
+  <data name="AE_ExtractSelectedTooltip" xml:space="preserve"><value>Seçileni çıkart…</value></data>
+  <data name="AE_PreviewTooltip" xml:space="preserve"><value>Girişi önizle</value></data>
+  <data name="AE_OpenRawInHexTooltip" xml:space="preserve"><value>Hex Düzenleyicide ham baytları aç</value></data>
+  <data name="AE_FilterEntries" xml:space="preserve"><value>Girdileri filtrele…</value></data>
+  <data name="AE_ClearFilter" xml:space="preserve"><value>Filtreyi temizle</value></data>
+  <data name="AE_Loading" xml:space="preserve"><value>Yükleniyor…</value></data>
+  <data name="AE_DrillIntoArchive" xml:space="preserve"><value>Arşive gir</value></data>
+  <data name="AE_CopyPath" xml:space="preserve"><value>Yolu kopyala</value></data>
+  <data name="AE_Properties" xml:space="preserve"><value>Özellikler…</value></data>
+  <data name="AE_DropArchiveHere" xml:space="preserve"><value>Bir arşivi buraya bırakın</value></data>
+  <data name="AE_ClickOpenToolbar" xml:space="preserve"><value>veya yukarıdaki araç çubuğunda Aç'a tıklayın</value></data>
+  <data name="AE_BehaviourSection" xml:space="preserve"><value>Davranış</value></data>
+  <data name="AE_AutoShowPanel" xml:space="preserve"><value>Bir arşiv dosyası açıldığında paneli otomatik olarak göster</value></data>
+  <data name="AE_ShowCompressionBadge" xml:space="preserve"><value>Ağaçta sıkıştırma oranı rozeti göster</value></data>
+  <data name="AE_ShowFormatBadge" xml:space="preserve"><value>Format algılama rozeti göster (whfmt)</value></data>
+  <data name="AE_PreviewSection" xml:space="preserve"><value>Önizleme</value></data>
+  <data name="AE_MaxPreviewSize" xml:space="preserve"><value>Maks. önizleme boyutu (KB):</value></data>
+  <data name="AE_ExtractionSection" xml:space="preserve"><value>Çıkartma</value></data>
+  <data name="AE_MaxFormatDetectionSize" xml:space="preserve"><value>Maks. format algılama boyutu (KB):</value></data>
+  <data name="AE_DefaultExtractFolder" xml:space="preserve"><value>Varsayılan çıkartma klasörü:</value></data>
+  <data name="AE_Browse" xml:space="preserve"><value>Gözat…</value></data>
+  <data name="AE_EntryPropertiesTitle" xml:space="preserve"><value>Giriş özellikleri</value></data>
+  <data name="AE_FullPath" xml:space="preserve"><value>Tam yol:</value></data>
+  <data name="AE_Size" xml:space="preserve"><value>Boyut:</value></data>
+  <data name="AE_Compressed" xml:space="preserve"><value>Sıkıştırılmış:</value></data>
+  <data name="AE_Ratio" xml:space="preserve"><value>Oran:</value></data>
+  <data name="AE_Method" xml:space="preserve"><value>Yöntem:</value></data>
+  <data name="AE_LastModified" xml:space="preserve"><value>Son değiştirilme:</value></data>
+  <data name="AE_Crc32" xml:space="preserve"><value>CRC32:</value></data>
+  <data name="AE_Close" xml:space="preserve"><value>Kapat</value></data>
 </root>

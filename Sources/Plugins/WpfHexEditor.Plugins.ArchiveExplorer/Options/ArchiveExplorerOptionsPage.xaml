@@ -11,6 +11,7 @@
 <UserControl x:Class="WpfHexEditor.Plugins.ArchiveExplorer.Options.ArchiveExplorerOptionsPage"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:aeSvc="clr-namespace:WpfHexEditor.Plugins.ArchiveExplorer.Services"
              Background="Transparent"
              Foreground="{DynamicResource PFP_TextBrush}"
              Padding="12">
@@ -18,28 +19,28 @@
     <StackPanel>
 
         <!-- Section: Behaviour -->
-        <TextBlock Text="Behaviour"
+        <TextBlock Text="{DynamicResource AE_BehaviourSection}"
                    FontSize="12" FontWeight="SemiBold"
                    Foreground="{DynamicResource PFP_AccentBrush}"
                    Margin="0,0,0,6"/>
 
         <CheckBox x:Name="ChkAutoShow"
-                  Content="Automatically show panel when an archive file is opened"
+                  Content="{DynamicResource AE_AutoShowPanel}"
                   Foreground="{DynamicResource PFP_TextBrush}"
                   Margin="0,2,0,2"/>
 
         <CheckBox x:Name="ChkShowRatio"
-                  Content="Show compression ratio badge in tree"
+                  Content="{DynamicResource AE_ShowCompressionBadge}"
                   Foreground="{DynamicResource PFP_TextBrush}"
                   Margin="0,2,0,2"/>
 
         <CheckBox x:Name="ChkShowBadge"
-                  Content="Show format detection badge (whfmt)"
+                  Content="{DynamicResource AE_ShowFormatBadge}"
                   Foreground="{DynamicResource PFP_TextBrush}"
                   Margin="0,2,0,12"/>
 
         <!-- Section: Preview -->
-        <TextBlock Text="Preview"
+        <TextBlock Text="{DynamicResource AE_PreviewSection}"
                    FontSize="12" FontWeight="SemiBold"
                    Foreground="{DynamicResource PFP_AccentBrush}"
                    Margin="0,0,0,6"/>
@@ -49,7 +50,7 @@
                 <ColumnDefinition Width="200"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="0" Text="Max preview size (KB):"
+            <TextBlock Grid.Column="0" Text="{DynamicResource AE_MaxPreviewSize}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource PFP_TextBrush}"/>
             <TextBox x:Name="TxtPreviewMaxKb"
@@ -63,7 +64,7 @@
         </Grid>
 
         <!-- Section: Extraction -->
-        <TextBlock Text="Extraction"
+        <TextBlock Text="{DynamicResource AE_ExtractionSection}"
                    FontSize="12" FontWeight="SemiBold"
                    Foreground="{DynamicResource PFP_AccentBrush}"
                    Margin="0,0,0,6"/>
@@ -73,7 +74,7 @@
                 <ColumnDefinition Width="200"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="0" Text="Max format detection size (KB):"
+            <TextBlock Grid.Column="0" Text="{DynamicResource AE_MaxFormatDetectionSize}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource PFP_TextBrush}"/>
             <TextBox x:Name="TxtMaxDetectKb"
@@ -92,7 +93,7 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="0" Text="Default extract folder:"
+            <TextBlock Grid.Column="0" Text="{DynamicResource AE_DefaultExtractFolder}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource PFP_TextBrush}"/>
             <TextBox x:Name="TxtExtractFolder"
@@ -104,7 +105,7 @@
                      Margin="0,0,4,0"/>
             <Button x:Name="BtnBrowse"
                     Grid.Column="2"
-                    Content="Browse…"
+                    Content="{DynamicResource AE_Browse}"
                     Width="70" Height="22"
                     Click="OnBrowseClick"/>
         </Grid>
