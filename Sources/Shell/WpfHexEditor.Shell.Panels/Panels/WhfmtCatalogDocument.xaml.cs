@@ -55,11 +55,11 @@ public partial class WhfmtCatalogDocument : UserControl,
         // ── Toolbar items ──────────────────────────────────────────────────
         ToolbarItems =
         [
-            new EditorToolbarItem { Icon = "\uE7AC", Tooltip = "Open selected", Command = new LambdaCmd(() => _vm.OpenSelectedCommand.Execute(null)) },
-            new EditorToolbarItem { Icon = "\uE74E", Tooltip = "Export selected to file…", Command = new LambdaCmd(() => _vm.ExportSelectedCommand.Execute(null)) },
+            new EditorToolbarItem { Icon = "\uE7AC", Tooltip = Application.Current.TryFindResource("WhfmtCatalog_Tooltip_OpenSelected") as string ?? "Open selected", Command = new LambdaCmd(() => _vm.OpenSelectedCommand.Execute(null)) },
+            new EditorToolbarItem { Icon = "\uE74E", Tooltip = Application.Current.TryFindResource("WhfmtCatalog_Tooltip_ExportSelected") as string ?? "Export selected to file…", Command = new LambdaCmd(() => _vm.ExportSelectedCommand.Execute(null)) },
             new EditorToolbarItem { IsSeparator = true },
-            new EditorToolbarItem { Icon = "\uE109", Tooltip = "Add format file…", Command = new LambdaCmd(() => _vm.AddFormatCommand.Execute(null)) },
-            new EditorToolbarItem { Icon = "\uE72C", Tooltip = "Refresh catalog (F5)", Command = new LambdaCmd(() => _vm.RefreshCommand.Execute(null)) },
+            new EditorToolbarItem { Icon = "\uE109", Tooltip = Application.Current.TryFindResource("WhfmtCatalog_Tooltip_AddFormat") as string ?? "Add format file…", Command = new LambdaCmd(() => _vm.AddFormatCommand.Execute(null)) },
+            new EditorToolbarItem { Icon = "\uE72C", Tooltip = Application.Current.TryFindResource("WhfmtCatalog_Tooltip_Refresh") as string ?? "Refresh catalog (F5)", Command = new LambdaCmd(() => _vm.RefreshCommand.Execute(null)) },
             new EditorToolbarItem { IsSeparator = true },
             new EditorToolbarItem
             {
@@ -278,6 +278,9 @@ public partial class WhfmtCatalogDocument : UserControl,
 
     private void ApplyDetailLayout(WhfmtDetailPanelPosition pos)
     {
+        DetailPanel.PreviewOrientation = pos is WhfmtDetailPanelPosition.Right or WhfmtDetailPanelPosition.Left
+            ? DetailPreviewOrientation.Vertical
+            : DetailPreviewOrientation.Horizontal;
         // Reset all rows/cols to zero first
         ContentGrid.RowDefinitions[1].Height    = new GridLength(0);
         ContentGrid.RowDefinitions[2].Height    = new GridLength(0);

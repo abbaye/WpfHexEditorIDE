@@ -234,6 +234,10 @@
   <data name="WhfmtCatalog_LayoutTop"    xml:space="preserve"><value>Detail Top</value></data>
   <data name="WhfmtCatalog_LayoutBottom" xml:space="preserve"><value>Detail Bottom</value></data>
   <data name="WhfmtCatalog_LayoutTooltip" xml:space="preserve"><value>Detail panel position</value></data>
+  <data name="WhfmtCatalog_Tooltip_OpenSelected" xml:space="preserve"><value>Open selected</value></data>
+  <data name="WhfmtCatalog_Tooltip_ExportSelected" xml:space="preserve"><value>Export selected to file…</value></data>
+  <data name="WhfmtCatalog_Tooltip_AddFormat" xml:space="preserve"><value>Add format file…</value></data>
+  <data name="WhfmtCatalog_Tooltip_Refresh" xml:space="preserve"><value>Refresh catalog (F5)</value></data>
 
   <!-- ═══════════════════════════════════════════════════════════════
        WHFMT FORMAT DETAIL PANEL

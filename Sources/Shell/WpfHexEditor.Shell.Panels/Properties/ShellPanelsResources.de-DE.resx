@@ -553,4 +553,8 @@
   <data name="Whfmt_DeleteFormatTitle" xml:space="preserve">
     <value>Format löschen</value>
   </data>
+  <data name="WhfmtCatalog_Tooltip_OpenSelected" xml:space="preserve"><value>Auswahl öffnen</value></data>
+  <data name="WhfmtCatalog_Tooltip_ExportSelected" xml:space="preserve"><value>Auswahl in Datei exportieren…</value></data>
+  <data name="WhfmtCatalog_Tooltip_AddFormat" xml:space="preserve"><value>Formatdatei hinzufügen…</value></data>
+  <data name="WhfmtCatalog_Tooltip_Refresh" xml:space="preserve"><value>Katalog aktualisieren (F5)</value></data>
 </root>

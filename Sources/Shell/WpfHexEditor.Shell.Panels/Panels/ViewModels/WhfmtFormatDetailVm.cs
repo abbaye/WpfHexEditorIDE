@@ -97,11 +97,17 @@ public sealed class WhfmtFormatDetailVm : ViewModelBase
     // Commands (set by the parent ViewModel after construction)
     // ------------------------------------------------------------------
 
-    public ICommand OpenCommand       { get; set; } = DisabledDetailCommand.Instance;
-    public ICommand ExportCommand     { get; set; } = DisabledDetailCommand.Instance;
-    public ICommand CopyJsonCommand   { get; set; } = DisabledDetailCommand.Instance;
-    public ICommand RetryLoadCommand  { get; set; } = DisabledDetailCommand.Instance;
-    public ICommand ExcludeCommand    { get; set; } = DisabledDetailCommand.Instance;
+    private ICommand _openCommand      = DisabledDetailCommand.Instance;
+    private ICommand _exportCommand    = DisabledDetailCommand.Instance;
+    private ICommand _copyJsonCommand  = DisabledDetailCommand.Instance;
+    private ICommand _retryLoadCommand = DisabledDetailCommand.Instance;
+    private ICommand _excludeCommand   = DisabledDetailCommand.Instance;
+
+    public ICommand OpenCommand      { get => _openCommand;      set => SetField(ref _openCommand, value); }
+    public ICommand ExportCommand    { get => _exportCommand;    set => SetField(ref _exportCommand, value); }
+    public ICommand CopyJsonCommand  { get => _copyJsonCommand;  set => SetField(ref _copyJsonCommand, value); }
+    public ICommand RetryLoadCommand { get => _retryLoadCommand; set => SetField(ref _retryLoadCommand, value); }
+    public ICommand ExcludeCommand   { get => _excludeCommand;   set => SetField(ref _excludeCommand, value); }
 
     // ------------------------------------------------------------------
     // Load
@@ -263,6 +269,11 @@ public sealed class WhfmtFormatDetailVm : ViewModelBase
         IsLoadFailure        = false;
         FailureReason        = null;
         RawJson              = null;
+        OpenCommand          = DisabledDetailCommand.Instance;
+        ExportCommand        = DisabledDetailCommand.Instance;
+        CopyJsonCommand      = DisabledDetailCommand.Instance;
+        RetryLoadCommand     = DisabledDetailCommand.Instance;
+        ExcludeCommand       = DisabledDetailCommand.Instance;
         SpecificationsDisplay = [];
         WebLinksDisplay      = [];
         AssertionCount       = 0;

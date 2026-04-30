@@ -553,4 +553,8 @@
   <data name="Whfmt_DeleteFormatTitle" xml:space="preserve">
     <value>Bicimi Sil</value>
   </data>
+  <data name="WhfmtCatalog_Tooltip_OpenSelected" xml:space="preserve"><value>Seçileni aç</value></data>
+  <data name="WhfmtCatalog_Tooltip_ExportSelected" xml:space="preserve"><value>Seçileni dosyaya aktar…</value></data>
+  <data name="WhfmtCatalog_Tooltip_AddFormat" xml:space="preserve"><value>Format dosyası ekle…</value></data>
+  <data name="WhfmtCatalog_Tooltip_Refresh" xml:space="preserve"><value>Kataloğu yenile (F5)</value></data>
 </root>

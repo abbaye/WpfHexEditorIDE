@@ -183,4 +183,8 @@
   <data name="Whfmt_AddFormatFilter" xml:space="preserve"><value>Définitions Whfmt (*.whfmt)|*.whfmt</value></data>
   <data name="Whfmt_AddFormatError" xml:space="preserve"><value>Ajouter un format</value></data>
   <data name="Whfmt_DeleteFormatTitle" xml:space="preserve"><value>Supprimer le format</value></data>
+  <data name="WhfmtCatalog_Tooltip_OpenSelected" xml:space="preserve"><value>Ouvrir la sélection</value></data>
+  <data name="WhfmtCatalog_Tooltip_ExportSelected" xml:space="preserve"><value>Exporter la sélection vers un fichier…</value></data>
+  <data name="WhfmtCatalog_Tooltip_AddFormat" xml:space="preserve"><value>Ajouter un fichier de format…</value></data>
+  <data name="WhfmtCatalog_Tooltip_Refresh" xml:space="preserve"><value>Actualiser le catalogue (F5)</value></data>
 </root>

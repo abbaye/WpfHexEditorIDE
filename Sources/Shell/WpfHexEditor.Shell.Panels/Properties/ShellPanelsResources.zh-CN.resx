@@ -553,4 +553,8 @@
   <data name="Whfmt_DeleteFormatTitle" xml:space="preserve">
     <value>删除格式</value>
   </data>
+  <data name="WhfmtCatalog_Tooltip_OpenSelected" xml:space="preserve"><value>打开选定项</value></data>
+  <data name="WhfmtCatalog_Tooltip_ExportSelected" xml:space="preserve"><value>将选定项导出到文件…</value></data>
+  <data name="WhfmtCatalog_Tooltip_AddFormat" xml:space="preserve"><value>添加格式文件…</value></data>
+  <data name="WhfmtCatalog_Tooltip_Refresh" xml:space="preserve"><value>刷新目录 (F5)</value></data>
 </root>

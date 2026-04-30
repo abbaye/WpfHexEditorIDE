@@ -553,4 +553,8 @@
   <data name="Whfmt_DeleteFormatTitle" xml:space="preserve">
     <value>Indeling verwijderen</value>
   </data>
+  <data name="WhfmtCatalog_Tooltip_OpenSelected" xml:space="preserve"><value>Selectie openen</value></data>
+  <data name="WhfmtCatalog_Tooltip_ExportSelected" xml:space="preserve"><value>Selectie exporteren naar bestand…</value></data>
+  <data name="WhfmtCatalog_Tooltip_AddFormat" xml:space="preserve"><value>Indelingsbestand toevoegen…</value></data>
+  <data name="WhfmtCatalog_Tooltip_Refresh" xml:space="preserve"><value>Catalogus vernieuwen (F5)</value></data>
 </root>

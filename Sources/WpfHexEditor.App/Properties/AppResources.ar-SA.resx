@@ -198,4 +198,39 @@
   <data name="App_FailedCreateSolution" xml:space="preserve"><value>فشل إنشاء الحل:\n{0}</value></data>
   <data name="App_FailedOpenSolution" xml:space="preserve"><value>فشل فتح الحل:\n{0}</value></data>
   <data name="App_RenameTitle" xml:space="preserve"><value>إعادة التسمية</value></data>
+  <data name="App_Toolbar_New" xml:space="preserve"><value>جديد…</value></data>
+  <data name="App_Toolbar_Open" xml:space="preserve"><value>فتح…</value></data>
+  <data name="App_Toolbar_Save" xml:space="preserve"><value>حفظ (Ctrl+S)</value></data>
+  <data name="App_Toolbar_SaveAll" xml:space="preserve"><value>حفظ الكل (Ctrl+Shift+S)</value></data>
+  <data name="App_Toolbar_Cut" xml:space="preserve"><value>قص (Ctrl+X)</value></data>
+  <data name="App_Toolbar_Copy" xml:space="preserve"><value>نسخ (Ctrl+C)</value></data>
+  <data name="App_Toolbar_Paste" xml:space="preserve"><value>لصق (Ctrl+V)</value></data>
+  <data name="App_Toolbar_Find" xml:space="preserve"><value>بحث… (Ctrl+F)</value></data>
+  <data name="App_Toolbar_FindNext" xml:space="preserve"><value>البحث التالي (F3)</value></data>
+  <data name="App_Toolbar_FindPrevious" xml:space="preserve"><value>البحث السابق (Shift+F3)</value></data>
+  <data name="App_Toolbar_SolutionExplorer" xml:space="preserve"><value>مستكشف الحل (Ctrl+Alt+L)</value></data>
+  <data name="App_Toolbar_ParsedFields" xml:space="preserve"><value>الحقول المحللة</value></data>
+  <data name="App_Toolbar_Properties" xml:space="preserve"><value>الخصائص (F4)</value></data>
+  <data name="App_Toolbar_Output" xml:space="preserve"><value>الإخراج</value></data>
+  <data name="App_Toolbar_CharacterTable" xml:space="preserve"><value>جدول الأحرف</value></data>
+  <data name="App_Toolbar_ActiveCharTable" xml:space="preserve"><value>جدول الأحرف النشط</value></data>
+  <data name="App_Toolbar_BuildConfig" xml:space="preserve"><value>تكوين البناء</value></data>
+  <data name="App_Toolbar_TargetPlatform" xml:space="preserve"><value>المنصة المستهدفة</value></data>
+  <data name="App_Toolbar_StartupProject" xml:space="preserve"><value>مشروع البدء — يشغل بواسطة Démarrer (Ctrl+F5)</value></data>
+  <data name="App_Toolbar_StartNoDebug" xml:space="preserve"><value>البدء بدون تصحيح أخطاء (Ctrl+F5)</value></data>
+  <data name="App_Toolbar_BuildSolution" xml:space="preserve"><value>بناء الحل (Ctrl+Shift+B)</value></data>
+  <data name="App_Toolbar_RebuildSolution" xml:space="preserve"><value>إعادة بناء الحل</value></data>
+  <data name="App_Toolbar_CleanSolution" xml:space="preserve"><value>تنظيف الحل</value></data>
+  <data name="App_Toolbar_CancelBuild" xml:space="preserve"><value>إلغاء البناء</value></data>
+  <data name="App_Toolbar_Continue" xml:space="preserve"><value>متابعة (F5)</value></data>
+  <data name="App_Toolbar_Pause" xml:space="preserve"><value>إيقاف مؤقت</value></data>
+  <data name="App_Toolbar_StopDebugging" xml:space="preserve"><value>إيقاف التصحيح (Shift+F5)</value></data>
+  <data name="App_Toolbar_StepOver" xml:space="preserve"><value>تخطي (F10)</value></data>
+  <data name="App_Toolbar_StepInto" xml:space="preserve"><value>الدخول إلى (F11)</value></data>
+  <data name="App_Toolbar_StepOut" xml:space="preserve"><value>الخروج من (Shift+F11)</value></data>
+  <data name="App_Toolbar_Dismiss" xml:space="preserve"><value>رفض</value></data>
+  <data name="App_Toolbar_CancelOperation" xml:space="preserve"><value>إلغاء العملية</value></data>
+  <data name="App_Toolbar_SwitchBranch" xml:space="preserve"><value>انقر لتغيير الفرع</value></data>
+  <data name="App_Toolbar_UncommittedChanges" xml:space="preserve"><value>تغييرات غير ملتزمة</value></data>
+  <data name="App_Toolbar_PluginUpdates" xml:space="preserve"><value>تحديثات الإضافات متاحة — انقر لفتح السوق</value></data>
 </root>

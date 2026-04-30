@@ -198,4 +198,39 @@
   <data name="App_FailedCreateSolution" xml:space="preserve"><value>Error al crear la solución:\n{0}</value></data>
   <data name="App_FailedOpenSolution" xml:space="preserve"><value>Error al abrir la solución:\n{0}</value></data>
   <data name="App_RenameTitle" xml:space="preserve"><value>Renombrar</value></data>
+  <data name="App_Toolbar_New" xml:space="preserve"><value>Nuevo…</value></data>
+  <data name="App_Toolbar_Open" xml:space="preserve"><value>Abrir…</value></data>
+  <data name="App_Toolbar_Save" xml:space="preserve"><value>Guardar (Ctrl+S)</value></data>
+  <data name="App_Toolbar_SaveAll" xml:space="preserve"><value>Guardar todo (Ctrl+Shift+S)</value></data>
+  <data name="App_Toolbar_Cut" xml:space="preserve"><value>Cortar (Ctrl+X)</value></data>
+  <data name="App_Toolbar_Copy" xml:space="preserve"><value>Copiar (Ctrl+C)</value></data>
+  <data name="App_Toolbar_Paste" xml:space="preserve"><value>Pegar (Ctrl+V)</value></data>
+  <data name="App_Toolbar_Find" xml:space="preserve"><value>Buscar… (Ctrl+F)</value></data>
+  <data name="App_Toolbar_FindNext" xml:space="preserve"><value>Buscar siguiente (F3)</value></data>
+  <data name="App_Toolbar_FindPrevious" xml:space="preserve"><value>Buscar anterior (Shift+F3)</value></data>
+  <data name="App_Toolbar_SolutionExplorer" xml:space="preserve"><value>Explorador de soluciones (Ctrl+Alt+L)</value></data>
+  <data name="App_Toolbar_ParsedFields" xml:space="preserve"><value>Campos analizados</value></data>
+  <data name="App_Toolbar_Properties" xml:space="preserve"><value>Propiedades (F4)</value></data>
+  <data name="App_Toolbar_Output" xml:space="preserve"><value>Salida</value></data>
+  <data name="App_Toolbar_CharacterTable" xml:space="preserve"><value>Tabla de caracteres</value></data>
+  <data name="App_Toolbar_ActiveCharTable" xml:space="preserve"><value>Tabla de caracteres activa</value></data>
+  <data name="App_Toolbar_BuildConfig" xml:space="preserve"><value>Configuración de compilación</value></data>
+  <data name="App_Toolbar_TargetPlatform" xml:space="preserve"><value>Plataforma de destino</value></data>
+  <data name="App_Toolbar_StartupProject" xml:space="preserve"><value>Proyecto de inicio — iniciado por Iniciar (Ctrl+F5)</value></data>
+  <data name="App_Toolbar_StartNoDebug" xml:space="preserve"><value>Iniciar sin depurar (Ctrl+F5)</value></data>
+  <data name="App_Toolbar_BuildSolution" xml:space="preserve"><value>Compilar solución (Ctrl+Shift+B)</value></data>
+  <data name="App_Toolbar_RebuildSolution" xml:space="preserve"><value>Recompilar solución</value></data>
+  <data name="App_Toolbar_CleanSolution" xml:space="preserve"><value>Limpiar solución</value></data>
+  <data name="App_Toolbar_CancelBuild" xml:space="preserve"><value>Cancelar compilación</value></data>
+  <data name="App_Toolbar_Continue" xml:space="preserve"><value>Continuar (F5)</value></data>
+  <data name="App_Toolbar_Pause" xml:space="preserve"><value>Pausar</value></data>
+  <data name="App_Toolbar_StopDebugging" xml:space="preserve"><value>Detener depuración (Shift+F5)</value></data>
+  <data name="App_Toolbar_StepOver" xml:space="preserve"><value>Paso a paso por procedimientos (F10)</value></data>
+  <data name="App_Toolbar_StepInto" xml:space="preserve"><value>Paso a paso por instrucciones (F11)</value></data>
+  <data name="App_Toolbar_StepOut" xml:space="preserve"><value>Salir de la instrucción (Shift+F11)</value></data>
+  <data name="App_Toolbar_Dismiss" xml:space="preserve"><value>Descartar</value></data>
+  <data name="App_Toolbar_CancelOperation" xml:space="preserve"><value>Cancelar operación</value></data>
+  <data name="App_Toolbar_SwitchBranch" xml:space="preserve"><value>Clic para cambiar de rama</value></data>
+  <data name="App_Toolbar_UncommittedChanges" xml:space="preserve"><value>Cambios sin confirmar</value></data>
+  <data name="App_Toolbar_PluginUpdates" xml:space="preserve"><value>Actualizaciones de plugins disponibles — clic para abrir el Marketplace</value></data>
 </root>

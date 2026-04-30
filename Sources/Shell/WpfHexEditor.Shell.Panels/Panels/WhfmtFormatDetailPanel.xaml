@@ -122,308 +122,336 @@
                 </Grid>
             </Border>
 
-            <!-- ── TabControl — 5 tabs ── -->
-            <TabControl Grid.Row="1" Style="{StaticResource WE_DetailTabControl}">
+            <!-- ── Content area: TabControl + splitter + CodeEditor preview ── -->
+            <!-- Layout (row vs col) is switched in code-behind via PreviewOrientation -->
+            <Grid Grid.Row="1" x:Name="ContentSplitGrid">
+                <Grid.RowDefinitions>
+                    <RowDefinition x:Name="TabRow"     Height="*"/>
+                    <RowDefinition x:Name="SplitterRow" Height="4"/>
+                    <RowDefinition x:Name="PreviewRow"  Height="180"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition x:Name="TabCol"      Width="*"/>
+                    <ColumnDefinition x:Name="SplitterCol" Width="0"/>
+                    <ColumnDefinition x:Name="PreviewCol"  Width="0"/>
+                </Grid.ColumnDefinitions>
 
-                <!-- ════════ Tab 1: Overview ════════ -->
-                <TabItem Style="{StaticResource WE_DetailTabItem}" Header="{DynamicResource WhfmtDetail_OverviewTab}">
-                    <ScrollViewer VerticalScrollBarVisibility="Auto"
-                                  HorizontalScrollBarVisibility="Disabled">
-                        <StackPanel>
+                <!-- TabControl — 4 tabs (Overview / References / Assertions / AI Hints) -->
+                <TabControl x:Name="DetailTabControl"
+                            Grid.Row="0" Grid.Column="0"
+                            Style="{StaticResource WE_DetailTabControl}">
 
-                            <!-- Name + Description header -->
-                            <Border Background="{DynamicResource SE_GroupHeaderBrush}"
-                                    BorderBrush="{DynamicResource SE_SeparatorBrush}"
-                                    BorderThickness="0,0,0,1"
-                                    Padding="10,8">
-                                <StackPanel>
-                                    <TextBlock Text="{Binding Name}"
-                                               FontSize="13" FontWeight="SemiBold" TextWrapping="Wrap"
-                                               Foreground="{DynamicResource SE_ForegroundBrush}"/>
-                                    <TextBlock Text="{Binding Description}" TextWrapping="Wrap"
-                                               FontSize="11" Opacity="0.65" Margin="0,3,0,0"
-                                               Foreground="{DynamicResource SE_ForegroundBrush}"/>
-                                </StackPanel>
-                            </Border>
+                    <!-- ════════ Tab 1: Overview ════════ -->
+                    <TabItem Style="{StaticResource WE_DetailTabItem}" Header="{DynamicResource WhfmtDetail_OverviewTab}">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto"
+                                      HorizontalScrollBarVisibility="Disabled">
+                            <StackPanel>
 
-                            <!-- Metadata grid -->
-                            <Border BorderBrush="{DynamicResource SE_SeparatorBrush}"
-                                    BorderThickness="0,0,0,1"
-                                    Padding="10,6">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="20"/>
-                                        <RowDefinition Height="20"/>
-                                        <RowDefinition Height="20"/>
-                                        <RowDefinition Height="20"/>
-                                        <RowDefinition Height="20"/>
-                                        <RowDefinition Height="20"/>
-                                        <RowDefinition Height="20"/>
-                                    </Grid.RowDefinitions>
+                                <!-- Name + Description header -->
+                                <Border Background="{DynamicResource SE_GroupHeaderBrush}"
+                                        BorderBrush="{DynamicResource SE_SeparatorBrush}"
+                                        BorderThickness="0,0,0,1"
+                                        Padding="10,8">
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding Name}"
+                                                   FontSize="13" FontWeight="SemiBold" TextWrapping="Wrap"
+                                                   Foreground="{DynamicResource SE_ForegroundBrush}"/>
+                                        <TextBlock Text="{Binding Description}" TextWrapping="Wrap"
+                                                   FontSize="11" Opacity="0.65" Margin="0,3,0,0"
+                                                   Foreground="{DynamicResource SE_ForegroundBrush}"/>
+                                    </StackPanel>
+                                </Border>
 
-                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="{DynamicResource WhfmtDetail_VersionLabel}"   Style="{StaticResource MetaLabel}"/>
-                                    <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Version}"          Style="{StaticResource MetaValue}"/>
-
-                                    <TextBlock Grid.Row="1" Grid.Column="0" Text="{DynamicResource WhfmtDetail_AuthorLabel}"    Style="{StaticResource MetaLabel}"/>
-                                    <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Author}"           Style="{StaticResource MetaValue}"/>
-
-                                    <TextBlock Grid.Row="2" Grid.Column="0" Text="{DynamicResource WhfmtDetail_CategoryLabel}"  Style="{StaticResource MetaLabel}"/>
-                                    <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding Category}"         Style="{StaticResource MetaValue}"/>
-
-                                    <TextBlock Grid.Row="3" Grid.Column="0" Text="{DynamicResource WhfmtDetail_PlatformLabel}"  Style="{StaticResource MetaLabel}"/>
-                                    <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding Platform}"         Style="{StaticResource MetaValue}"/>
-
-                                    <TextBlock Grid.Row="4" Grid.Column="0" Text="{DynamicResource WhfmtDetail_EditorLabel}"    Style="{StaticResource MetaLabel}"/>
-                                    <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding PreferredEditor}"  Style="{StaticResource MetaValue}"/>
-
-                                    <TextBlock Grid.Row="5" Grid.Column="0" Text="{DynamicResource WhfmtDetail_DiffLabel}"      Style="{StaticResource MetaLabel}"/>
-                                    <TextBlock Grid.Row="5" Grid.Column="1" Text="{Binding DiffMode}"         Style="{StaticResource MetaValue}"/>
-
-                                    <TextBlock Grid.Row="6" Grid.Column="0" Text="{DynamicResource WhfmtDetail_StatusLabel}"    Style="{StaticResource MetaLabel}"/>
-                                    <TextBlock Grid.Row="6" Grid.Column="1" Text="{Binding LoadStatusDisplay}" Style="{StaticResource MetaValue}"/>
-                                </Grid>
-                            </Border>
-
-                            <!-- Extensions -->
-                            <Border BorderBrush="{DynamicResource SE_SeparatorBrush}"
-                                    BorderThickness="0,0,0,1" Padding="10,6">
-                                <StackPanel>
-                                    <TextBlock Text="{DynamicResource WhfmtDetail_ExtensionsLabel}" Style="{StaticResource MetaLabel}" Margin="0,0,0,4"/>
-                                    <TextBlock Text="{Binding ExtensionsDisplay}"
-                                               FontSize="11" FontFamily="Consolas" TextWrapping="Wrap"
-                                               Foreground="{DynamicResource SE_AccentBrush}"/>
-                                </StackPanel>
-                            </Border>
-
-                            <!-- Quality score -->
-                            <Border BorderBrush="{DynamicResource SE_SeparatorBrush}"
-                                    BorderThickness="0,0,0,1" Padding="10,6">
-                                <StackPanel>
-                                    <TextBlock Text="{DynamicResource WhfmtDetail_QualityScoreLabel}" Style="{StaticResource MetaLabel}" Margin="0,0,0,4"/>
+                                <!-- Metadata grid -->
+                                <Border BorderBrush="{DynamicResource SE_SeparatorBrush}"
+                                        BorderThickness="0,0,0,1"
+                                        Padding="10,6">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
-                                        <ProgressBar Grid.Column="0" Value="{Binding QualityScore}"
-                                                     Minimum="0" Maximum="100" Height="4"
-                                                     Background="{DynamicResource SE_SearchBoxBrush}"
-                                                     VerticalAlignment="Center" BorderThickness="0">
-                                            <ProgressBar.Style>
-                                                <Style TargetType="ProgressBar">
-                                                    <Setter Property="Foreground" Value="{DynamicResource SE_AccentBrush}"/>
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding QualityScore}" Value="0">
-                                                            <Setter Property="Foreground" Value="{DynamicResource SE_ValidationErrorBrush}"/>
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </ProgressBar.Style>
-                                        </ProgressBar>
-                                        <TextBlock Grid.Column="1" Margin="8,0,0,0" FontSize="11"
-                                                   Text="{Binding QualityScore, StringFormat={}{0}/100}"
-                                                   Foreground="{DynamicResource SE_ForegroundBrush}"
-                                                   VerticalAlignment="Center"/>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="20"/>
+                                            <RowDefinition Height="20"/>
+                                            <RowDefinition Height="20"/>
+                                            <RowDefinition Height="20"/>
+                                            <RowDefinition Height="20"/>
+                                            <RowDefinition Height="20"/>
+                                            <RowDefinition Height="20"/>
+                                        </Grid.RowDefinitions>
+
+                                        <TextBlock Grid.Row="0" Grid.Column="0" Text="{DynamicResource WhfmtDetail_VersionLabel}"   Style="{StaticResource MetaLabel}"/>
+                                        <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Version}"          Style="{StaticResource MetaValue}"/>
+
+                                        <TextBlock Grid.Row="1" Grid.Column="0" Text="{DynamicResource WhfmtDetail_AuthorLabel}"    Style="{StaticResource MetaLabel}"/>
+                                        <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Author}"           Style="{StaticResource MetaValue}"/>
+
+                                        <TextBlock Grid.Row="2" Grid.Column="0" Text="{DynamicResource WhfmtDetail_CategoryLabel}"  Style="{StaticResource MetaLabel}"/>
+                                        <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding Category}"         Style="{StaticResource MetaValue}"/>
+
+                                        <TextBlock Grid.Row="3" Grid.Column="0" Text="{DynamicResource WhfmtDetail_PlatformLabel}"  Style="{StaticResource MetaLabel}"/>
+                                        <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding Platform}"         Style="{StaticResource MetaValue}"/>
+
+                                        <TextBlock Grid.Row="4" Grid.Column="0" Text="{DynamicResource WhfmtDetail_EditorLabel}"    Style="{StaticResource MetaLabel}"/>
+                                        <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding PreferredEditor}"  Style="{StaticResource MetaValue}"/>
+
+                                        <TextBlock Grid.Row="5" Grid.Column="0" Text="{DynamicResource WhfmtDetail_DiffLabel}"      Style="{StaticResource MetaLabel}"/>
+                                        <TextBlock Grid.Row="5" Grid.Column="1" Text="{Binding DiffMode}"         Style="{StaticResource MetaValue}"/>
+
+                                        <TextBlock Grid.Row="6" Grid.Column="0" Text="{DynamicResource WhfmtDetail_StatusLabel}"    Style="{StaticResource MetaLabel}"/>
+                                        <TextBlock Grid.Row="6" Grid.Column="1" Text="{Binding LoadStatusDisplay}" Style="{StaticResource MetaValue}"/>
                                     </Grid>
-                                </StackPanel>
-                            </Border>
+                                </Border>
 
-                            <!-- Detection + Blocks -->
-                            <Border BorderBrush="{DynamicResource SE_SeparatorBrush}"
-                                    BorderThickness="0,0,0,1" Padding="10,6">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="20"/>
-                                        <RowDefinition Height="20"/>
-                                    </Grid.RowDefinitions>
-
-                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="{DynamicResource WhfmtDetail_DetectionLabel}" Style="{StaticResource MetaLabel}"/>
-                                    <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding DetectionRulesSummary}" Style="{StaticResource MetaValue}"/>
-
-                                    <TextBlock Grid.Row="1" Grid.Column="0" Text="{DynamicResource WhfmtDetail_BlocksLabel}"    Style="{StaticResource MetaLabel}"/>
-                                    <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding BlockCount}"            Style="{StaticResource MetaValue}"/>
-                                </Grid>
-                            </Border>
-
-                            <!-- Load failure card -->
-                            <Border Margin="10,8,10,4" Padding="8,6" CornerRadius="3"
-                                    BorderThickness="1"
-                                    BorderBrush="{DynamicResource Panel_WarningBorderBrush}"
-                                    Background="{DynamicResource Panel_WarningBackgroundBrush}"
-                                    Visibility="{Binding IsLoadFailure, Converter={StaticResource BoolToVis}}">
-                                <StackPanel>
-                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
-                                        <TextBlock Text="&#xE7BA;" FontFamily="Segoe MDL2 Assets" FontSize="12"
-                                                   Foreground="{DynamicResource Panel_WarningTextBrush}"
-                                                   VerticalAlignment="Center" Margin="0,0,6,0"/>
-                                        <TextBlock Text="{DynamicResource WhfmtDetail_LoadErrorTitle}" FontWeight="SemiBold" FontSize="11"
-                                                   Foreground="{DynamicResource Panel_WarningTextBrush}"
-                                                   VerticalAlignment="Center"/>
+                                <!-- Extensions -->
+                                <Border BorderBrush="{DynamicResource SE_SeparatorBrush}"
+                                        BorderThickness="0,0,0,1" Padding="10,6">
+                                    <StackPanel>
+                                        <TextBlock Text="{DynamicResource WhfmtDetail_ExtensionsLabel}" Style="{StaticResource MetaLabel}" Margin="0,0,0,4"/>
+                                        <TextBlock Text="{Binding ExtensionsDisplay}"
+                                                   FontSize="11" FontFamily="Consolas" TextWrapping="Wrap"
+                                                   Foreground="{DynamicResource SE_AccentBrush}"/>
                                     </StackPanel>
-                                    <TextBlock Text="{Binding FailureReason}" TextWrapping="Wrap" FontSize="11"
-                                               Foreground="{DynamicResource SE_ForegroundBrush}"/>
-                                </StackPanel>
-                            </Border>
+                                </Border>
 
-                        </StackPanel>
-                    </ScrollViewer>
-                </TabItem>
-
-                <!-- ════════ Tab 2: References ════════ -->
-                <TabItem Header="{DynamicResource WhfmtDetail_ReferencesTab}">
-                    <TabItem.Style>
-                        <Style TargetType="TabItem" BasedOn="{StaticResource WE_DetailTabItem}">
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding HasReferences}" Value="False">
-                                    <Setter Property="IsEnabled" Value="False"/>
-                                    <Setter Property="Opacity"   Value="0.4"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </TabItem.Style>
-                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                        <StackPanel Margin="10,8">
-
-                            <!-- Specifications -->
-                            <TextBlock Text="{DynamicResource WhfmtDetail_SpecificationsLabel}" Style="{StaticResource MetaLabel}" Margin="0,0,0,6"/>
-                            <ItemsControl ItemsSource="{Binding SpecificationsDisplay}">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding}" FontSize="11" TextWrapping="Wrap" Margin="0,0,0,3"
-                                                   Foreground="{DynamicResource SE_AccentBrush}"/>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-
-                            <!-- Web Links -->
-                            <TextBlock Text="{DynamicResource WhfmtDetail_WebLinksLabel}" Style="{StaticResource MetaLabel}" Margin="0,10,0,6"/>
-                            <ItemsControl ItemsSource="{Binding WebLinksDisplay}">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding}" FontSize="11" TextWrapping="Wrap" Margin="0,0,0,3"
-                                                   Foreground="{DynamicResource SE_AccentBrush}"/>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-
-                        </StackPanel>
-                    </ScrollViewer>
-                </TabItem>
-
-                <!-- ════════ Tab 3: Assertions ════════ -->
-                <TabItem>
-                    <TabItem.Header>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{DynamicResource WhfmtDetail_AssertionsTab}"/>
-                            <Border CornerRadius="8" Background="{DynamicResource SE_AccentBrush}"
-                                    Padding="4,0" Margin="4,0,0,0" VerticalAlignment="Center"
-                                    Visibility="{Binding HasAssertions, Converter={StaticResource BoolToVis}}">
-                                <TextBlock Text="{Binding AssertionCount}" FontSize="9"
-                                           Foreground="{DynamicResource SE_ForegroundBrush}"/>
-                            </Border>
-                        </StackPanel>
-                    </TabItem.Header>
-                    <TabItem.Style>
-                        <Style TargetType="TabItem" BasedOn="{StaticResource WE_DetailTabItem}">
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding HasAssertions}" Value="False">
-                                    <Setter Property="IsEnabled" Value="False"/>
-                                    <Setter Property="Opacity"   Value="0.4"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </TabItem.Style>
-                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                        <ItemsControl ItemsSource="{Binding AssertionsSummary}" Margin="10,8">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Border BorderBrush="{DynamicResource SE_SeparatorBrush}"
-                                            BorderThickness="0,0,0,1" Padding="0,4">
-                                        <StackPanel>
-                                            <StackPanel Orientation="Horizontal">
-                                                <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="11"
-                                                           Foreground="{DynamicResource SE_ForegroundBrush}"/>
-                                                <Border CornerRadius="3" Padding="4,0" Margin="6,0,0,0"
-                                                        Background="{DynamicResource Panel_WarningBackgroundBrush}">
-                                                    <TextBlock Text="{Binding Severity}" FontSize="9"
-                                                               Foreground="{DynamicResource Panel_WarningTextBrush}"/>
-                                                </Border>
-                                            </StackPanel>
-                                            <TextBlock Text="{Binding Expression}" FontFamily="Consolas" FontSize="10"
-                                                       Foreground="{DynamicResource SE_AccentBrush}"
-                                                       TextWrapping="Wrap" Margin="0,2,0,0"/>
-                                            <TextBlock Text="{Binding Message}" FontSize="10" Opacity="0.7"
+                                <!-- Quality score -->
+                                <Border BorderBrush="{DynamicResource SE_SeparatorBrush}"
+                                        BorderThickness="0,0,0,1" Padding="10,6">
+                                    <StackPanel>
+                                        <TextBlock Text="{DynamicResource WhfmtDetail_QualityScoreLabel}" Style="{StaticResource MetaLabel}" Margin="0,0,0,4"/>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <ProgressBar Grid.Column="0" Value="{Binding QualityScore}"
+                                                         Minimum="0" Maximum="100" Height="4"
+                                                         Background="{DynamicResource SE_SearchBoxBrush}"
+                                                         VerticalAlignment="Center" BorderThickness="0">
+                                                <ProgressBar.Style>
+                                                    <Style TargetType="ProgressBar">
+                                                        <Setter Property="Foreground" Value="{DynamicResource SE_AccentBrush}"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding QualityScore}" Value="0">
+                                                                <Setter Property="Foreground" Value="{DynamicResource SE_ValidationErrorBrush}"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </ProgressBar.Style>
+                                            </ProgressBar>
+                                            <TextBlock Grid.Column="1" Margin="8,0,0,0" FontSize="11"
+                                                       Text="{Binding QualityScore, StringFormat={}{0}/100}"
                                                        Foreground="{DynamicResource SE_ForegroundBrush}"
-                                                       TextWrapping="Wrap" Margin="0,2,0,0"/>
+                                                       VerticalAlignment="Center"/>
+                                        </Grid>
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- Detection + Blocks -->
+                                <Border BorderBrush="{DynamicResource SE_SeparatorBrush}"
+                                        BorderThickness="0,0,0,1" Padding="10,6">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="20"/>
+                                            <RowDefinition Height="20"/>
+                                        </Grid.RowDefinitions>
+
+                                        <TextBlock Grid.Row="0" Grid.Column="0" Text="{DynamicResource WhfmtDetail_DetectionLabel}" Style="{StaticResource MetaLabel}"/>
+                                        <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding DetectionRulesSummary}" Style="{StaticResource MetaValue}"/>
+
+                                        <TextBlock Grid.Row="1" Grid.Column="0" Text="{DynamicResource WhfmtDetail_BlocksLabel}"    Style="{StaticResource MetaLabel}"/>
+                                        <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding BlockCount}"            Style="{StaticResource MetaValue}"/>
+                                    </Grid>
+                                </Border>
+
+                                <!-- Load failure card -->
+                                <Border Margin="10,8,10,4" Padding="8,6" CornerRadius="3"
+                                        BorderThickness="1"
+                                        BorderBrush="{DynamicResource Panel_WarningBorderBrush}"
+                                        Background="{DynamicResource Panel_WarningBackgroundBrush}"
+                                        Visibility="{Binding IsLoadFailure, Converter={StaticResource BoolToVis}}">
+                                    <StackPanel>
+                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
+                                            <TextBlock Text="&#xE7BA;" FontFamily="Segoe MDL2 Assets" FontSize="12"
+                                                       Foreground="{DynamicResource Panel_WarningTextBrush}"
+                                                       VerticalAlignment="Center" Margin="0,0,6,0"/>
+                                            <TextBlock Text="{DynamicResource WhfmtDetail_LoadErrorTitle}" FontWeight="SemiBold" FontSize="11"
+                                                       Foreground="{DynamicResource Panel_WarningTextBrush}"
+                                                       VerticalAlignment="Center"/>
                                         </StackPanel>
-                                    </Border>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </ScrollViewer>
-                </TabItem>
+                                        <TextBlock Text="{Binding FailureReason}" TextWrapping="Wrap" FontSize="11"
+                                                   Foreground="{DynamicResource SE_ForegroundBrush}"/>
+                                    </StackPanel>
+                                </Border>
 
-                <!-- ════════ Tab 4: AI Hints ════════ -->
-                <TabItem>
-                    <TabItem.Header>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{DynamicResource WhfmtDetail_AIHintsTab}"/>
-                            <Border CornerRadius="8" Background="{DynamicResource SE_AccentBrush}"
-                                    Padding="4,0" Margin="4,0,0,0" VerticalAlignment="Center"
-                                    Visibility="{Binding HasAiHints, Converter={StaticResource BoolToVis}}">
-                                <TextBlock Text="{Binding AiHintCount}" FontSize="9"
-                                           Foreground="{DynamicResource SE_ForegroundBrush}"/>
-                            </Border>
-                        </StackPanel>
-                    </TabItem.Header>
-                    <TabItem.Style>
-                        <Style TargetType="TabItem" BasedOn="{StaticResource WE_DetailTabItem}">
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding HasAiHints}" Value="False">
-                                    <Setter Property="IsEnabled" Value="False"/>
-                                    <Setter Property="Opacity"   Value="0.4"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </TabItem.Style>
-                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                        <StackPanel Margin="10,8">
+                            </StackPanel>
+                        </ScrollViewer>
+                    </TabItem>
 
-                            <!-- Analysis context -->
-                            <TextBlock Text="{DynamicResource WhfmtDetail_AnalysisContextLabel}" Style="{StaticResource MetaLabel}" Margin="0,0,0,4"/>
-                            <TextBlock Text="{Binding AiAnalysisContext}" FontSize="11" TextWrapping="Wrap"
-                                       Foreground="{DynamicResource SE_ForegroundBrush}" Margin="0,0,0,10"/>
+                    <!-- ════════ Tab 2: References ════════ -->
+                    <TabItem Header="{DynamicResource WhfmtDetail_ReferencesTab}">
+                        <TabItem.Style>
+                            <Style TargetType="TabItem" BasedOn="{StaticResource WE_DetailTabItem}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding HasReferences}" Value="False">
+                                        <Setter Property="IsEnabled" Value="False"/>
+                                        <Setter Property="Opacity"   Value="0.4"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TabItem.Style>
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                            <StackPanel Margin="10,8">
 
-                            <!-- Known vulnerabilities -->
-                            <TextBlock Text="{DynamicResource WhfmtDetail_KnownVulnerabilitiesLabel}" Style="{StaticResource MetaLabel}" Margin="0,0,0,6"/>
-                            <ItemsControl ItemsSource="{Binding AiVulnerabilities}">
+                                <!-- Specifications -->
+                                <TextBlock Text="{DynamicResource WhfmtDetail_SpecificationsLabel}" Style="{StaticResource MetaLabel}" Margin="0,0,0,6"/>
+                                <ItemsControl ItemsSource="{Binding SpecificationsDisplay}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding}" FontSize="11" TextWrapping="Wrap" Margin="0,0,0,3"
+                                                       Foreground="{DynamicResource SE_AccentBrush}"/>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+
+                                <!-- Web Links -->
+                                <TextBlock Text="{DynamicResource WhfmtDetail_WebLinksLabel}" Style="{StaticResource MetaLabel}" Margin="0,10,0,6"/>
+                                <ItemsControl ItemsSource="{Binding WebLinksDisplay}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding}" FontSize="11" TextWrapping="Wrap" Margin="0,0,0,3"
+                                                       Foreground="{DynamicResource SE_AccentBrush}"/>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+
+                            </StackPanel>
+                        </ScrollViewer>
+                    </TabItem>
+
+                    <!-- ════════ Tab 3: Assertions ════════ -->
+                    <TabItem>
+                        <TabItem.Header>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{DynamicResource WhfmtDetail_AssertionsTab}"/>
+                                <Border CornerRadius="8" Background="{DynamicResource SE_AccentBrush}"
+                                        Padding="4,0" Margin="4,0,0,0" VerticalAlignment="Center"
+                                        Visibility="{Binding HasAssertions, Converter={StaticResource BoolToVis}}">
+                                    <TextBlock Text="{Binding AssertionCount}" FontSize="9"
+                                               Foreground="{DynamicResource SE_ForegroundBrush}"/>
+                                </Border>
+                            </StackPanel>
+                        </TabItem.Header>
+                        <TabItem.Style>
+                            <Style TargetType="TabItem" BasedOn="{StaticResource WE_DetailTabItem}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding HasAssertions}" Value="False">
+                                        <Setter Property="IsEnabled" Value="False"/>
+                                        <Setter Property="Opacity"   Value="0.4"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TabItem.Style>
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                            <ItemsControl ItemsSource="{Binding AssertionsSummary}" Margin="10,8">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
-                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,3">
-                                            <TextBlock Text="&#xE783;" FontFamily="Segoe MDL2 Assets" FontSize="10"
-                                                       Foreground="{DynamicResource Panel_WarningTextBrush}"
-                                                       VerticalAlignment="Center" Margin="0,0,5,0"/>
-                                            <TextBlock Text="{Binding}" FontSize="11" TextWrapping="Wrap"
-                                                       Foreground="{DynamicResource SE_ForegroundBrush}"/>
-                                        </StackPanel>
+                                        <Border BorderBrush="{DynamicResource SE_SeparatorBrush}"
+                                                BorderThickness="0,0,0,1" Padding="0,4">
+                                            <StackPanel>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="11"
+                                                               Foreground="{DynamicResource SE_ForegroundBrush}"/>
+                                                    <Border CornerRadius="3" Padding="4,0" Margin="6,0,0,0"
+                                                            Background="{DynamicResource Panel_WarningBackgroundBrush}">
+                                                        <TextBlock Text="{Binding Severity}" FontSize="9"
+                                                                   Foreground="{DynamicResource Panel_WarningTextBrush}"/>
+                                                    </Border>
+                                                </StackPanel>
+                                                <TextBlock Text="{Binding Expression}" FontFamily="Consolas" FontSize="10"
+                                                           Foreground="{DynamicResource SE_AccentBrush}"
+                                                           TextWrapping="Wrap" Margin="0,2,0,0"/>
+                                                <TextBlock Text="{Binding Message}" FontSize="10" Opacity="0.7"
+                                                           Foreground="{DynamicResource SE_ForegroundBrush}"
+                                                           TextWrapping="Wrap" Margin="0,2,0,0"/>
+                                            </StackPanel>
+                                        </Border>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
+                        </ScrollViewer>
+                    </TabItem>
 
-                        </StackPanel>
-                    </ScrollViewer>
-                </TabItem>
+                    <!-- ════════ Tab 4: AI Hints ════════ -->
+                    <TabItem>
+                        <TabItem.Header>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{DynamicResource WhfmtDetail_AIHintsTab}"/>
+                                <Border CornerRadius="8" Background="{DynamicResource SE_AccentBrush}"
+                                        Padding="4,0" Margin="4,0,0,0" VerticalAlignment="Center"
+                                        Visibility="{Binding HasAiHints, Converter={StaticResource BoolToVis}}">
+                                    <TextBlock Text="{Binding AiHintCount}" FontSize="9"
+                                               Foreground="{DynamicResource SE_ForegroundBrush}"/>
+                                </Border>
+                            </StackPanel>
+                        </TabItem.Header>
+                        <TabItem.Style>
+                            <Style TargetType="TabItem" BasedOn="{StaticResource WE_DetailTabItem}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding HasAiHints}" Value="False">
+                                        <Setter Property="IsEnabled" Value="False"/>
+                                        <Setter Property="Opacity"   Value="0.4"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TabItem.Style>
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                            <StackPanel Margin="10,8">
 
-                <!-- ════════ Tab 5: JSON ════════ -->
-                <TabItem Style="{StaticResource WE_DetailTabItem}" Header="{DynamicResource WhfmtDetail_JsonTab}">
+                                <!-- Analysis context -->
+                                <TextBlock Text="{DynamicResource WhfmtDetail_AnalysisContextLabel}" Style="{StaticResource MetaLabel}" Margin="0,0,0,4"/>
+                                <TextBlock Text="{Binding AiAnalysisContext}" FontSize="11" TextWrapping="Wrap"
+                                           Foreground="{DynamicResource SE_ForegroundBrush}" Margin="0,0,0,10"/>
+
+                                <!-- Known vulnerabilities -->
+                                <TextBlock Text="{DynamicResource WhfmtDetail_KnownVulnerabilitiesLabel}" Style="{StaticResource MetaLabel}" Margin="0,0,0,6"/>
+                                <ItemsControl ItemsSource="{Binding AiVulnerabilities}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,0,3">
+                                                <TextBlock Text="&#xE783;" FontFamily="Segoe MDL2 Assets" FontSize="10"
+                                                           Foreground="{DynamicResource Panel_WarningTextBrush}"
+                                                           VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                                <TextBlock Text="{Binding}" FontSize="11" TextWrapping="Wrap"
+                                                           Foreground="{DynamicResource SE_ForegroundBrush}"/>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+
+                            </StackPanel>
+                        </ScrollViewer>
+                    </TabItem>
+
+                </TabControl>
+
+                <!-- GridSplitter — direction controlled by code-behind -->
+                <GridSplitter x:Name="PreviewSplitter"
+                              Grid.Row="1" Grid.Column="0"
+                              ShowsPreview="False"
+                              Background="{DynamicResource SE_SeparatorBrush}"
+                              HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+
+                <!-- Code preview — always visible, readonly JSON -->
+                <Border Grid.Row="2" Grid.Column="0"
+                        x:Name="PreviewBorder"
+                        BorderBrush="{DynamicResource SE_SeparatorBrush}"
+                        BorderThickness="0,1,0,0">
                     <ce:CodeEditor x:Name="JsonCodeEditor"
                                    IsReadOnly="True"
                                    ShowLineNumbers="True"
@@ -443,9 +471,9 @@
                                    SyntaxBraceColor="{DynamicResource SE_ForegroundBrush}"
                                    SyntaxBracketColor="{DynamicResource SE_ForegroundBrush}"
                                    SyntaxCommaColor="{DynamicResource SE_ForegroundBrush}"/>
-                </TabItem>
+                </Border>
 
-            </TabControl>
+            </Grid>
         </Grid>
     </Grid>
 </UserControl>

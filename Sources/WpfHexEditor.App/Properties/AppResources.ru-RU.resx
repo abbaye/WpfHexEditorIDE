@@ -198,4 +198,39 @@
   <data name="App_FailedCreateSolution" xml:space="preserve"><value>Не удалось создать решение:\n{0}</value></data>
   <data name="App_FailedOpenSolution" xml:space="preserve"><value>Не удалось открыть решение:\n{0}</value></data>
   <data name="App_RenameTitle" xml:space="preserve"><value>Переименовать</value></data>
+  <data name="App_Toolbar_New" xml:space="preserve"><value>Создать…</value></data>
+  <data name="App_Toolbar_Open" xml:space="preserve"><value>Открыть…</value></data>
+  <data name="App_Toolbar_Save" xml:space="preserve"><value>Сохранить (Ctrl+S)</value></data>
+  <data name="App_Toolbar_SaveAll" xml:space="preserve"><value>Сохранить все (Ctrl+Shift+S)</value></data>
+  <data name="App_Toolbar_Cut" xml:space="preserve"><value>Вырезать (Ctrl+X)</value></data>
+  <data name="App_Toolbar_Copy" xml:space="preserve"><value>Копировать (Ctrl+C)</value></data>
+  <data name="App_Toolbar_Paste" xml:space="preserve"><value>Вставить (Ctrl+V)</value></data>
+  <data name="App_Toolbar_Find" xml:space="preserve"><value>Найти… (Ctrl+F)</value></data>
+  <data name="App_Toolbar_FindNext" xml:space="preserve"><value>Найти далее (F3)</value></data>
+  <data name="App_Toolbar_FindPrevious" xml:space="preserve"><value>Найти ранее (Shift+F3)</value></data>
+  <data name="App_Toolbar_SolutionExplorer" xml:space="preserve"><value>Обозреватель решений (Ctrl+Alt+L)</value></data>
+  <data name="App_Toolbar_ParsedFields" xml:space="preserve"><value>Разобранные поля</value></data>
+  <data name="App_Toolbar_Properties" xml:space="preserve"><value>Свойства (F4)</value></data>
+  <data name="App_Toolbar_Output" xml:space="preserve"><value>Вывод</value></data>
+  <data name="App_Toolbar_CharacterTable" xml:space="preserve"><value>Таблица символов</value></data>
+  <data name="App_Toolbar_ActiveCharTable" xml:space="preserve"><value>Активная таблица символов</value></data>
+  <data name="App_Toolbar_BuildConfig" xml:space="preserve"><value>Конфигурация сборки</value></data>
+  <data name="App_Toolbar_TargetPlatform" xml:space="preserve"><value>Целевая платформа</value></data>
+  <data name="App_Toolbar_StartupProject" xml:space="preserve"><value>Запускаемый проект — запускается кнопкой Пуск (Ctrl+F5)</value></data>
+  <data name="App_Toolbar_StartNoDebug" xml:space="preserve"><value>Запуск без отладки (Ctrl+F5)</value></data>
+  <data name="App_Toolbar_BuildSolution" xml:space="preserve"><value>Собрать решение (Ctrl+Shift+B)</value></data>
+  <data name="App_Toolbar_RebuildSolution" xml:space="preserve"><value>Пересобрать решение</value></data>
+  <data name="App_Toolbar_CleanSolution" xml:space="preserve"><value>Очистить решение</value></data>
+  <data name="App_Toolbar_CancelBuild" xml:space="preserve"><value>Отменить сборку</value></data>
+  <data name="App_Toolbar_Continue" xml:space="preserve"><value>Продолжить (F5)</value></data>
+  <data name="App_Toolbar_Pause" xml:space="preserve"><value>Приостановить</value></data>
+  <data name="App_Toolbar_StopDebugging" xml:space="preserve"><value>Остановить отладку (Shift+F5)</value></data>
+  <data name="App_Toolbar_StepOver" xml:space="preserve"><value>Шаг с обходом (F10)</value></data>
+  <data name="App_Toolbar_StepInto" xml:space="preserve"><value>Шаг с заходом (F11)</value></data>
+  <data name="App_Toolbar_StepOut" xml:space="preserve"><value>Шаг с выходом (Shift+F11)</value></data>
+  <data name="App_Toolbar_Dismiss" xml:space="preserve"><value>Закрыть</value></data>
+  <data name="App_Toolbar_CancelOperation" xml:space="preserve"><value>Отменить операцию</value></data>
+  <data name="App_Toolbar_SwitchBranch" xml:space="preserve"><value>Нажмите для смены ветки</value></data>
+  <data name="App_Toolbar_UncommittedChanges" xml:space="preserve"><value>Незафиксированные изменения</value></data>
+  <data name="App_Toolbar_PluginUpdates" xml:space="preserve"><value>Доступны обновления плагинов — нажмите для открытия Marketplace</value></data>
 </root>

@@ -198,4 +198,39 @@
   <data name="App_FailedCreateSolution" xml:space="preserve"><value>Fehler beim Erstellen der Projektmappe:\n{0}</value></data>
   <data name="App_FailedOpenSolution" xml:space="preserve"><value>Fehler beim Öffnen der Projektmappe:\n{0}</value></data>
   <data name="App_RenameTitle" xml:space="preserve"><value>Umbenennen</value></data>
+  <data name="App_Toolbar_New" xml:space="preserve"><value>Neu…</value></data>
+  <data name="App_Toolbar_Open" xml:space="preserve"><value>Öffnen…</value></data>
+  <data name="App_Toolbar_Save" xml:space="preserve"><value>Speichern (Ctrl+S)</value></data>
+  <data name="App_Toolbar_SaveAll" xml:space="preserve"><value>Alle speichern (Ctrl+Shift+S)</value></data>
+  <data name="App_Toolbar_Cut" xml:space="preserve"><value>Ausschneiden (Ctrl+X)</value></data>
+  <data name="App_Toolbar_Copy" xml:space="preserve"><value>Kopieren (Ctrl+C)</value></data>
+  <data name="App_Toolbar_Paste" xml:space="preserve"><value>Einfügen (Ctrl+V)</value></data>
+  <data name="App_Toolbar_Find" xml:space="preserve"><value>Suchen… (Ctrl+F)</value></data>
+  <data name="App_Toolbar_FindNext" xml:space="preserve"><value>Weitersuchen (F3)</value></data>
+  <data name="App_Toolbar_FindPrevious" xml:space="preserve"><value>Vorherige suchen (Shift+F3)</value></data>
+  <data name="App_Toolbar_SolutionExplorer" xml:space="preserve"><value>Projektmappen-Explorer (Ctrl+Alt+L)</value></data>
+  <data name="App_Toolbar_ParsedFields" xml:space="preserve"><value>Geparste Felder</value></data>
+  <data name="App_Toolbar_Properties" xml:space="preserve"><value>Eigenschaften (F4)</value></data>
+  <data name="App_Toolbar_Output" xml:space="preserve"><value>Ausgabe</value></data>
+  <data name="App_Toolbar_CharacterTable" xml:space="preserve"><value>Zeichentabelle</value></data>
+  <data name="App_Toolbar_ActiveCharTable" xml:space="preserve"><value>Aktive Zeichentabelle</value></data>
+  <data name="App_Toolbar_BuildConfig" xml:space="preserve"><value>Buildkonfiguration</value></data>
+  <data name="App_Toolbar_TargetPlatform" xml:space="preserve"><value>Zielplattform</value></data>
+  <data name="App_Toolbar_StartupProject" xml:space="preserve"><value>Startprojekt — gestartet durch Start (Ctrl+F5)</value></data>
+  <data name="App_Toolbar_StartNoDebug" xml:space="preserve"><value>Ohne Debuggen starten (Ctrl+F5)</value></data>
+  <data name="App_Toolbar_BuildSolution" xml:space="preserve"><value>Projektmappe erstellen (Ctrl+Shift+B)</value></data>
+  <data name="App_Toolbar_RebuildSolution" xml:space="preserve"><value>Projektmappe neu erstellen</value></data>
+  <data name="App_Toolbar_CleanSolution" xml:space="preserve"><value>Projektmappe bereinigen</value></data>
+  <data name="App_Toolbar_CancelBuild" xml:space="preserve"><value>Build abbrechen</value></data>
+  <data name="App_Toolbar_Continue" xml:space="preserve"><value>Weiter (F5)</value></data>
+  <data name="App_Toolbar_Pause" xml:space="preserve"><value>Anhalten</value></data>
+  <data name="App_Toolbar_StopDebugging" xml:space="preserve"><value>Debuggen beenden (Shift+F5)</value></data>
+  <data name="App_Toolbar_StepOver" xml:space="preserve"><value>Überspringen (F10)</value></data>
+  <data name="App_Toolbar_StepInto" xml:space="preserve"><value>Einspringen (F11)</value></data>
+  <data name="App_Toolbar_StepOut" xml:space="preserve"><value>Herausspringen (Shift+F11)</value></data>
+  <data name="App_Toolbar_Dismiss" xml:space="preserve"><value>Schließen</value></data>
+  <data name="App_Toolbar_CancelOperation" xml:space="preserve"><value>Vorgang abbrechen</value></data>
+  <data name="App_Toolbar_SwitchBranch" xml:space="preserve"><value>Klicken zum Wechseln des Zweigs</value></data>
+  <data name="App_Toolbar_UncommittedChanges" xml:space="preserve"><value>Nicht committete Änderungen</value></data>
+  <data name="App_Toolbar_PluginUpdates" xml:space="preserve"><value>Plugin-Updates verfügbar — klicken zum Öffnen des Marketplace</value></data>
 </root>

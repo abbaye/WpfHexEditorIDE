@@ -198,4 +198,39 @@
   <data name="App_FailedCreateSolution" xml:space="preserve"><value>ソリューションの作成に失敗しました:\n{0}</value></data>
   <data name="App_FailedOpenSolution" xml:space="preserve"><value>ソリューションを開けませんでした:\n{0}</value></data>
   <data name="App_RenameTitle" xml:space="preserve"><value>名前の変更</value></data>
+  <data name="App_Toolbar_New" xml:space="preserve"><value>新規…</value></data>
+  <data name="App_Toolbar_Open" xml:space="preserve"><value>開く…</value></data>
+  <data name="App_Toolbar_Save" xml:space="preserve"><value>保存 (Ctrl+S)</value></data>
+  <data name="App_Toolbar_SaveAll" xml:space="preserve"><value>すべて保存 (Ctrl+Shift+S)</value></data>
+  <data name="App_Toolbar_Cut" xml:space="preserve"><value>切り取り (Ctrl+X)</value></data>
+  <data name="App_Toolbar_Copy" xml:space="preserve"><value>コピー (Ctrl+C)</value></data>
+  <data name="App_Toolbar_Paste" xml:space="preserve"><value>貼り付け (Ctrl+V)</value></data>
+  <data name="App_Toolbar_Find" xml:space="preserve"><value>検索… (Ctrl+F)</value></data>
+  <data name="App_Toolbar_FindNext" xml:space="preserve"><value>次を検索 (F3)</value></data>
+  <data name="App_Toolbar_FindPrevious" xml:space="preserve"><value>前を検索 (Shift+F3)</value></data>
+  <data name="App_Toolbar_SolutionExplorer" xml:space="preserve"><value>ソリューション エクスプローラー (Ctrl+Alt+L)</value></data>
+  <data name="App_Toolbar_ParsedFields" xml:space="preserve"><value>解析フィールド</value></data>
+  <data name="App_Toolbar_Properties" xml:space="preserve"><value>プロパティ (F4)</value></data>
+  <data name="App_Toolbar_Output" xml:space="preserve"><value>出力</value></data>
+  <data name="App_Toolbar_CharacterTable" xml:space="preserve"><value>文字テーブル</value></data>
+  <data name="App_Toolbar_ActiveCharTable" xml:space="preserve"><value>アクティブ文字テーブル</value></data>
+  <data name="App_Toolbar_BuildConfig" xml:space="preserve"><value>ビルド構成</value></data>
+  <data name="App_Toolbar_TargetPlatform" xml:space="preserve"><value>ターゲットプラットフォーム</value></data>
+  <data name="App_Toolbar_StartupProject" xml:space="preserve"><value>スタートアッププロジェクト — 開始 (Ctrl+F5) で起動</value></data>
+  <data name="App_Toolbar_StartNoDebug" xml:space="preserve"><value>デバッグなしで開始 (Ctrl+F5)</value></data>
+  <data name="App_Toolbar_BuildSolution" xml:space="preserve"><value>ソリューションのビルド (Ctrl+Shift+B)</value></data>
+  <data name="App_Toolbar_RebuildSolution" xml:space="preserve"><value>ソリューションのリビルド</value></data>
+  <data name="App_Toolbar_CleanSolution" xml:space="preserve"><value>ソリューションのクリーン</value></data>
+  <data name="App_Toolbar_CancelBuild" xml:space="preserve"><value>ビルドのキャンセル</value></data>
+  <data name="App_Toolbar_Continue" xml:space="preserve"><value>続行 (F5)</value></data>
+  <data name="App_Toolbar_Pause" xml:space="preserve"><value>一時停止</value></data>
+  <data name="App_Toolbar_StopDebugging" xml:space="preserve"><value>デバッグの停止 (Shift+F5)</value></data>
+  <data name="App_Toolbar_StepOver" xml:space="preserve"><value>ステップ オーバー (F10)</value></data>
+  <data name="App_Toolbar_StepInto" xml:space="preserve"><value>ステップ イン (F11)</value></data>
+  <data name="App_Toolbar_StepOut" xml:space="preserve"><value>ステップ アウト (Shift+F11)</value></data>
+  <data name="App_Toolbar_Dismiss" xml:space="preserve"><value>閉じる</value></data>
+  <data name="App_Toolbar_CancelOperation" xml:space="preserve"><value>操作をキャンセル</value></data>
+  <data name="App_Toolbar_SwitchBranch" xml:space="preserve"><value>クリックしてブランチを切り替え</value></data>
+  <data name="App_Toolbar_UncommittedChanges" xml:space="preserve"><value>コミットされていない変更</value></data>
+  <data name="App_Toolbar_PluginUpdates" xml:space="preserve"><value>プラグインの更新あり — Marketplace を開くにはクリック</value></data>
 </root>
