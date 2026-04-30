@@ -355,6 +355,34 @@ public sealed class CodeEditorSplitHost : Grid, IDocumentEditor, IBufferAwareEdi
 
     #endregion
 
+    #region Zoom
+
+    /// <summary>
+    /// Zoom multiplier forwarded to both editor panes (0.5–4.0, 1.0 = 100%).
+    /// CodeEditor uses font-size multiplication internally; snap-to-pixel in GlyphRunRenderer
+    /// minimizes sub-pixel blur. LayoutTransform is not used here — it breaks internal
+    /// scrollbar range calculations (ActualHeight shrinks with zoom → scroll deadzone).
+    /// </summary>
+    public double ZoomLevel
+    {
+        get => _primaryEditor.ZoomLevel;
+        set
+        {
+            value = Math.Clamp(value, 0.5, 4.0);
+            _primaryEditor.ZoomLevel   = value;
+            _secondaryEditor.ZoomLevel = value;
+        }
+    }
+
+    /// <summary>Raised when <see cref="ZoomLevel"/> changes (forwarded from primary editor).</summary>
+    public event EventHandler<double>? ZoomLevelChanged
+    {
+        add    => _primaryEditor.ZoomLevelChanged += value;
+        remove => _primaryEditor.ZoomLevelChanged -= value;
+    }
+
+    #endregion
+
     #region Focus routing
 
     /// <summary>

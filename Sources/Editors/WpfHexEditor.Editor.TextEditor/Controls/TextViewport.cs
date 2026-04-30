@@ -121,6 +121,9 @@ internal sealed class TextViewport : FrameworkElement
     private bool _fullRenderPending;
     private bool _backgroundRenderPending;
 
+    // Zoom transform — same LayoutTransform strategy as HexEditor
+    private readonly ScaleTransform _zoomScaler = new ScaleTransform(1.0, 1.0);
+
     // -----------------------------------------------------------------------
     // DrawingVisual layers
     // -----------------------------------------------------------------------
@@ -181,6 +184,8 @@ internal sealed class TextViewport : FrameworkElement
         Focusable = true;
         ClipToBounds = true;
         SnapsToDevicePixels = true;
+
+        LayoutTransform = _zoomScaler;
 
         // Watch TE_Background via DynamicResource so that any theme swap
         // (Application.Resources.MergedDictionaries replacement) triggers
@@ -1882,20 +1887,19 @@ internal sealed class TextViewport : FrameworkElement
         var font = TryFindResource("TE_FontFamily") as FontFamily
                    ?? new FontFamily("Cascadia Code, Consolas, Courier New");
         var baseSize = TryFindResource("TE_FontSize") is double fs ? fs : DefaultFontSize;
-        var zoom     = ZoomLevel; // P2-01
 
-        // Apply zoom to the effective em-size.
-        var size = baseSize * zoom;
+        // Zoom is applied via LayoutTransform (_zoomScaler) — font size stays at base value.
+        var size = baseSize;
 
         if (_typeface is not null && _emSize == size
-            && _cachedFontSize == baseSize && _cachedZoom == zoom
+            && _cachedFontSize == baseSize
             && Equals(_cachedTypeface, _typeface))
             return;
 
         _typeface       = new Typeface(font, FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
         _emSize         = size;
         _cachedFontSize = baseSize;
-        _cachedZoom     = zoom;     // P2-01
+        _cachedZoom     = 1.0; // zoom handled by LayoutTransform, not font size
         _cachedTypeface = _typeface;
         _brushCache.Clear();
         _lineRenderCache.Clear(); // font/zoom changed — all cached FormattedText is stale
@@ -2162,6 +2166,8 @@ internal sealed class TextViewport : FrameworkElement
                 (d, _) =>
                 {
                     var vp = (TextViewport)d;
+                    vp._zoomScaler.ScaleX = vp.ZoomLevel;
+                    vp._zoomScaler.ScaleY = vp.ZoomLevel;
                     vp._lineRenderCache.Clear(); // zoom changes emSize → cached FormattedText is stale
                     vp.QueueFullRender();
                     vp.ZoomLevelChanged?.Invoke(vp, vp.ZoomLevel);

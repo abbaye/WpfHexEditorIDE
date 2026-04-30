@@ -1361,7 +1361,7 @@ namespace WpfHexEditor.HexEditor
                     // Find the offset TextBlock (Grid.Column="0", Text="Offset")
                     foreach (UIElement child in headerGrid.Children)
                     {
-                        if (child is TextBlock tb && tb.Text == Resources.OffsetString)
+                        if (child is TextBlock tb && tb.Text == WpfHexEditor.Core.Properties.Resources.OffsetString)
                         {
                             tb.Visibility = showOffset ? Visibility.Visible : Visibility.Collapsed;
 
@@ -1920,7 +1920,7 @@ namespace WpfHexEditor.HexEditor
                     if (!e.Success && StatusText != null)
                     {
                         if (e.WasCancelled)
-                            StatusText.Text = Resources.StatusText_OperationCancelled;
+                            StatusText.Text = WpfHexEditor.Core.Properties.Resources.StatusText_OperationCancelled;
                         else
                             StatusText.Text = $"Operation failed: {e.ErrorMessage}";
                     }

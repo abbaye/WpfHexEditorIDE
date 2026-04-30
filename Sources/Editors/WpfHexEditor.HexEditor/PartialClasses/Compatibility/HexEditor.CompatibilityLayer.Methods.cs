@@ -80,7 +80,7 @@ namespace WpfHexEditor.HexEditor
                 }
                 else
                 {
-                    StatusText.Text = Resources.StatusText_FileAlreadyExists;
+                    StatusText.Text = WpfHexEditor.Core.Properties.Resources.StatusText_FileAlreadyExists;
                 }
             }
             catch (Exception ex)

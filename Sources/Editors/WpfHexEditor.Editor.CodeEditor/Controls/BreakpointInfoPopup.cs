@@ -21,6 +21,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Effects;
 using System.Windows.Threading;
+using WpfHexEditor.Editor.CodeEditor.Properties;
 
 namespace WpfHexEditor.Editor.CodeEditor.Controls;
 
@@ -84,7 +85,7 @@ internal sealed class BreakpointInfoPopup : Popup
 
         var titleText = new TextBlock
         {
-            Text              = "Breakpoint",
+            Text              = CodeEditorResources.CodeEditor_BreakpointTypeBreakpoint,
             FontWeight        = FontWeights.SemiBold,
             FontSize          = 12,
             VerticalAlignment = VerticalAlignment.Center,
@@ -135,7 +136,7 @@ internal sealed class BreakpointInfoPopup : Popup
         // ── Condition row ─────────────────────────────────────────────────────
         var condLabel = new TextBlock
         {
-            Text              = "Condition:",
+            Text              = CodeEditorResources.CodeEditor_BreakpointConditionLabel,
             FontSize          = 11,
             VerticalAlignment = VerticalAlignment.Center,
             Margin            = new Thickness(10, 0, 6, 0),
@@ -173,17 +174,17 @@ internal sealed class BreakpointInfoPopup : Popup
         sep2.SetResourceReference(Border.BackgroundProperty, "ET_PopupBorderBrush");
 
         // ── Action row ────────────────────────────────────────────────────────
-        _enableBtn = MakeActionButton("Disable");
+        _enableBtn = MakeActionButton(CodeEditorResources.CodeEditor_BreakpointDisable);
         _enableBtn.Click += OnEnableToggleClicked;
 
-        _deleteBtn = MakeActionButton("Delete");
+        _deleteBtn = MakeActionButton(CodeEditorResources.CodeEditor_BreakpointDelete);
         _deleteBtn.SetResourceReference(Button.ForegroundProperty, "ET_AccentBrush");
         _deleteBtn.Click += OnDeleteClicked;
 
-        _saveBtn = MakeActionButton("Save");
+        _saveBtn = MakeActionButton(CodeEditorResources.CodeEditor_BreakpointSave);
         _saveBtn.Click += OnSaveClicked;
 
-        _settingsBtn = MakeActionButton("Settings\u2026");  // "Settings…"
+        _settingsBtn = MakeActionButton(CodeEditorResources.CodeEditor_BreakpointSettings);
         _settingsBtn.Click += OnSettingsClicked;
 
         var actionRow = new StackPanel
@@ -270,7 +271,7 @@ internal sealed class BreakpointInfoPopup : Popup
         // Populate fields from current BP state.
         var info = source.GetBreakpoint(filePath, line1Based);
         _conditionBox.Text   = info?.Condition ?? string.Empty;
-        _enableBtn.Content   = info?.IsEnabled == true ? "Disable" : "Enable";
+        _enableBtn.Content   = info?.IsEnabled == true ? CodeEditorResources.CodeEditor_BreakpointDisable : CodeEditorResources.CodeEditor_BreakpointEnable;
 
         _locationText.Text   = $"  ·  {Path.GetFileName(filePath)} : {line1Based}";
 
@@ -317,7 +318,7 @@ internal sealed class BreakpointInfoPopup : Popup
 
         bool newEnabled = !info.IsEnabled;
         _source.SetEnabled(_filePath, _line, newEnabled);
-        _enableBtn.Content = newEnabled ? "Disable" : "Enable";
+        _enableBtn.Content = newEnabled ? CodeEditorResources.CodeEditor_BreakpointDisable : CodeEditorResources.CodeEditor_BreakpointEnable;
     }
 
     private void OnDeleteClicked(object sender, RoutedEventArgs e)

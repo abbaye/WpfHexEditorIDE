@@ -1688,5 +1688,95 @@ namespace WpfHexEditor.Editor.CodeEditor.Properties {
                 return ResourceManager.GetString("FormatScriptEditor_WarningCountStatus", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Disabled.
+        /// </summary>
+        internal static string CodeEditor_BreakpointTypeDisabled {
+            get {
+                return ResourceManager.GetString("CodeEditor_BreakpointTypeDisabled", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Conditional.
+        /// </summary>
+        internal static string CodeEditor_BreakpointTypeConditional {
+            get {
+                return ResourceManager.GetString("CodeEditor_BreakpointTypeConditional", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Breakpoint.
+        /// </summary>
+        internal static string CodeEditor_BreakpointTypeBreakpoint {
+            get {
+                return ResourceManager.GetString("CodeEditor_BreakpointTypeBreakpoint", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Edit Condition.
+        /// </summary>
+        internal static string CodeEditor_BreakpointEditCondition {
+            get {
+                return ResourceManager.GetString("CodeEditor_BreakpointEditCondition", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Delete Breakpoint.
+        /// </summary>
+        internal static string CodeEditor_BreakpointDeleteBreakpoint {
+            get {
+                return ResourceManager.GetString("CodeEditor_BreakpointDeleteBreakpoint", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Delete.
+        /// </summary>
+        internal static string CodeEditor_BreakpointDelete {
+            get {
+                return ResourceManager.GetString("CodeEditor_BreakpointDelete", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Save.
+        /// </summary>
+        internal static string CodeEditor_BreakpointSave {
+            get {
+                return ResourceManager.GetString("CodeEditor_BreakpointSave", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Condition:.
+        /// </summary>
+        internal static string CodeEditor_BreakpointConditionLabel {
+            get {
+                return ResourceManager.GetString("CodeEditor_BreakpointConditionLabel", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Settings….
+        /// </summary>
+        internal static string CodeEditor_BreakpointSettings {
+            get {
+                return ResourceManager.GetString("CodeEditor_BreakpointSettings", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Code Editor.
+        /// </summary>
+        internal static string CodeEditor_DisplayName {
+            get {
+                return ResourceManager.GetString("CodeEditor_DisplayName", resourceCulture);
+            }
+        }
     }
 }

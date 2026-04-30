@@ -1188,11 +1188,22 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
                              + Math.Max(0, finalSize.Height - _lineHeight);
             double totalTW     = textLeft + _maxContentWidth;
 
-            // Determine which scrollbars are needed (check for mutual dependency)
-            bool needsV = totalH  > finalSize.Height;
-            bool needsH = totalTW > finalSize.Width;
-            if (needsV) needsH = totalTW > (finalSize.Width  - ScrollBarThickness);
-            if (needsH) needsV = totalH  > (finalSize.Height - ScrollBarThickness);
+            // Publish content dimensions for the external host (CodeEditorHost).
+            bool contentSizeChanged = TotalContentHeight != totalH || TotalContentWidth != totalTW;
+            TotalContentHeight = totalH;
+            TotalContentWidth  = totalTW;
+            if (contentSizeChanged)
+                ContentSizeChanged?.Invoke(this, EventArgs.Empty);
+
+            // Determine which scrollbars are needed (check for mutual dependency).
+            // When HideScrollBars is true the host manages scrollbars — always suppress internal ones.
+            bool needsV = !HideScrollBars && totalH  > finalSize.Height;
+            bool needsH = !HideScrollBars && totalTW > finalSize.Width;
+            if (!HideScrollBars)
+            {
+                if (needsV) needsH = totalTW > (finalSize.Width  - ScrollBarThickness);
+                if (needsH) needsV = totalH  > (finalSize.Height - ScrollBarThickness);
+            }
 
             double contentW = needsV ? finalSize.Width  - ScrollBarThickness : finalSize.Width;
             double contentH = needsH ? finalSize.Height - ScrollBarThickness : finalSize.Height;

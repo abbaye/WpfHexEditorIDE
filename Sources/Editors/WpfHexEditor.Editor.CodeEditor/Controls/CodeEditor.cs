@@ -664,6 +664,12 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         private Typeface? _cachedLineNumberTypeface;
         private double _cachedLineNumberFontSize = -1;
 
+        // Zoom transform — same LayoutTransform strategy as HexEditor / TextViewport.
+        // Applied only when hosted in CodeEditorHost (HideScrollBars = true).
+        private readonly ScaleTransform _zoomScaler = new ScaleTransform(1.0, 1.0);
+
+
+
         // Background highlight pipeline (P1-CE-06)
         private readonly Services.HighlightPipelineService _highlightPipeline = new();
         // Last visible range that was submitted to the pipeline — avoids re-scheduling when unchanged.
@@ -1513,10 +1519,12 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
         private static void OnZoomLevelChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (d is not CodeEditor editor) return;
-            editor._fontSize = editor._baseFontSize * (double)e.NewValue;
+            var zoom = (double)e.NewValue;
+            editor._fontSize = editor._baseFontSize * zoom;
+            editor._lineNumberCache.Clear();
             editor.CalculateCharacterDimensions();
             editor.InvalidateMeasure();
-            editor.ZoomLevelChanged?.Invoke(editor, (double)e.NewValue);
+            editor.ZoomLevelChanged?.Invoke(editor, zoom);
         }
 
         /// <summary>
@@ -2135,6 +2143,62 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             set => SetValue(HorizontalScrollSensitivityProperty, Math.Max(0.5, Math.Min(3.0, value)));
         }
 
+        // -- External scroll control (used by CodeEditorHost) ------------------
+
+        /// <summary>
+        /// When true, internal scrollbars are always hidden.
+        /// The host (CodeEditorHost) manages scrollbars externally and drives scroll
+        /// via <see cref="VerticalScrollOffset"/> and <see cref="HorizontalScrollOffset"/>.
+        /// </summary>
+        public bool HideScrollBars { get; set; }
+
+        /// <summary>
+        /// Gets or sets the vertical scroll offset in pixels.
+        /// Setting this triggers a re-render without going through the internal ScrollBar control.
+        /// </summary>
+        public double VerticalScrollOffset
+        {
+            get => _verticalScrollOffset;
+            set
+            {
+                _verticalScrollOffset = value;
+                _currentScrollOffset  = value;
+                _targetScrollOffset   = value;
+                if (_virtualizationEngine != null)
+                {
+                    _virtualizationEngine.ScrollOffset = value;
+                    _virtualizationEngine.CalculateVisibleRange();
+                }
+                SyncVScrollBar();
+                InvalidateVisual();
+                MinimapRefreshRequested?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the horizontal scroll offset in pixels.
+        /// </summary>
+        public double HorizontalScrollOffset
+        {
+            get => _horizontalScrollOffset;
+            set { _horizontalScrollOffset = value; SyncHScrollBar(); InvalidateVisual(); }
+        }
+
+        /// <summary>Total scrollable content height in pixels (updated each arrange pass).</summary>
+        public double TotalContentHeight { get; private set; }
+
+        /// <summary>Total scrollable content width in pixels (updated each arrange pass).</summary>
+        public double TotalContentWidth  { get; private set; }
+
+        /// <summary>Current line height in pixels (for SmallChange on external scrollbar).</summary>
+        public double LineHeightValue => _lineHeight;
+
+        /// <summary>Current character width in pixels (for SmallChange on external H scrollbar).</summary>
+        public double CharWidthValue => _charWidth;
+
+        /// <summary>Raised when TotalContentHeight or TotalContentWidth changes (host updates scrollbars).</summary>
+        public event EventHandler? ContentSizeChanged;
+
         public static readonly DependencyProperty ScrollBarVisibilityModeProperty =
             DependencyProperty.Register(nameof(ScrollBarVisibilityMode), typeof(ScrollBarVisibility), typeof(CodeEditor),
                 new FrameworkPropertyMetadata(ScrollBarVisibility.Auto));
@@ -2552,6 +2616,7 @@ namespace WpfHexEditor.Editor.CodeEditor.Controls
             // outside the control bounds when scroll / InlineHints push Y values past
             // the viewport.  The docking host does not clip its content presenter.
             ClipToBounds = true;
+
 
             // Initialize document
             _document = new CodeDocument();

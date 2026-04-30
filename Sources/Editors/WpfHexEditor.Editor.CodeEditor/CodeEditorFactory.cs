@@ -15,6 +15,7 @@ using WpfHexEditor.Editor.CodeEditor.Controls;
 using WpfHexEditor.Editor.CodeEditor.Helpers;
 using WpfHexEditor.Editor.CodeEditor.Snippets;
 using WpfHexEditor.Core.ProjectSystem.Languages;
+using WpfHexEditor.Editor.CodeEditor.Properties;
 
 namespace WpfHexEditor.Editor.CodeEditor;
 
@@ -169,7 +170,7 @@ public sealed class CodeEditorFactory : IEditorFactory
 file sealed class CodeEditorDescriptor : IEditorDescriptor
 {
     public string Id          => "code-editor";
-    public string DisplayName => "Code Editor";
+    public string DisplayName => CodeEditorResources.CodeEditor_DisplayName;
     public string Description => "Multi-language code editor (JSON, .whlang, and any registered language)";
     public IReadOnlyList<string> SupportedExtensions => [".json", ".whjson", ".whlang"];
 }

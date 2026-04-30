@@ -45,6 +45,7 @@ using WpfHexEditor.Editor.ClassDiagram.ViewModels;
 using WpfHexEditor.Plugins.ClassDiagram.Analysis;
 using WpfHexEditor.Plugins.ClassDiagram.Options;
 using WpfHexEditor.Plugins.ClassDiagram.Panels;
+using WpfHexEditor.Plugins.ClassDiagram.Properties;
 using WpfHexEditor.SDK.Commands;
 using WpfHexEditor.SDK.Contracts;
 using WpfHexEditor.SDK.Contracts.Focus;
@@ -64,7 +65,7 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
     // ── Identity ──────────────────────────────────────────────────────────────
 
     public string  Id      => "WpfHexEditor.Plugins.ClassDiagram";
-    public string  Name    => "Class Diagram";
+    public string  Name    => ClassDiagramResources.ClassDiagram_PluginName;
     public Version Version => new(1, 0, 0);
 
     public PluginCapabilities Capabilities => new()
@@ -148,7 +149,7 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
             Id,
             new PanelDescriptor
             {
-                Title           = "Class Outline",
+                Title           = ClassDiagramResources.ClassDiagram_OutlinePanelTitle,
                 DefaultDockSide = "Left",
                 DefaultAutoHide = true,
                 CanClose        = true,
@@ -323,7 +324,7 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
 
     public void LoadOptions() => _optionsPage?.Load();
 
-    public string GetOptionsCategory()     => "Class Diagram";
+    public string GetOptionsCategory()     => ClassDiagramResources.ClassDiagram_OptionsCategory;
     public string GetOptionsCategoryIcon() => "📐";
 
     // ── Focus tracking ────────────────────────────────────────────────────────

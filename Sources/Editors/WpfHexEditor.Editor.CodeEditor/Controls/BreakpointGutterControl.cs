@@ -18,6 +18,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
+using WpfHexEditor.Editor.CodeEditor.Properties;
 
 namespace WpfHexEditor.Editor.CodeEditor.Controls;
 
@@ -144,7 +145,7 @@ internal sealed class BreakpointGutterControl : FrameworkElement
         // Mouse-tracking tooltip so it follows the cursor.
         var tt = new System.Windows.Controls.ToolTip
         {
-            Content   = "Click to toggle breakpoint",
+            Content   = CodeEditorResources.CodeEditor_BreakpointToggleToolTip,
             Placement = System.Windows.Controls.Primitives.PlacementMode.Mouse,
         };
         ToolTip = tt;
@@ -330,7 +331,7 @@ internal sealed class BreakpointGutterControl : FrameworkElement
 
         // Suppress the generic tooltip when the dot hover popup will show instead.
         if (ToolTip is System.Windows.Controls.ToolTip tt2)
-            tt2.Content = hasBreakpointHere ? null : "Click to toggle breakpoint";
+            tt2.Content = hasBreakpointHere ? null : CodeEditorResources.CodeEditor_BreakpointToggleToolTip;
 
         if (hasBreakpointHere)
         {
@@ -384,7 +385,7 @@ internal sealed class BreakpointGutterControl : FrameworkElement
         // visible for the full 1.5s regardless of mouse movement.
         var tip = new ToolTip
         {
-            Content    = "Cannot place breakpoint on this line",
+            Content    = CodeEditorResources.CodeEditor_BreakpointInvalidToolTip,
             Placement  = System.Windows.Controls.Primitives.PlacementMode.Mouse,
             StaysOpen  = true
         };
@@ -393,7 +394,7 @@ internal sealed class BreakpointGutterControl : FrameworkElement
 
         var restore = new ToolTip
         {
-            Content   = "Click to toggle breakpoint",
+            Content   = CodeEditorResources.CodeEditor_BreakpointToggleToolTip,
             Placement = System.Windows.Controls.Primitives.PlacementMode.Mouse,
         };
         var timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(1500) };
