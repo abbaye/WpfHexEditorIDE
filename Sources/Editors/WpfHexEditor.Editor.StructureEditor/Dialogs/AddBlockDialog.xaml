@@ -12,7 +12,16 @@
         WindowStartupLocation="CenterOwner"
         ResizeMode="NoResize"
         ShowInTaskbar="False"
-        Background="{DynamicResource TE_Background}">
+        Background="{DynamicResource TE_Background}"
+             xmlns:structSvc="clr-namespace:WpfHexEditor.Editor.StructureEditor.Services">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <structSvc:StructureEditorLocalizedDictionary/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
 
     <Grid Margin="16">
         <Grid.RowDefinitions>

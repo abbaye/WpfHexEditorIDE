@@ -9,6 +9,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
+                <svc:ShellPanelsLocalizedDictionary/>
                 <ResourceDictionary Source="WhfmtPanelStyles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>

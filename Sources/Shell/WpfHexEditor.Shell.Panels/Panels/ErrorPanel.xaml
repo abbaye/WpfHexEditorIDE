@@ -9,7 +9,16 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:core="clr-namespace:WpfHexEditor.Editor.Core;assembly=WpfHexEditor.Editor.Core"
              Background="{DynamicResource ERR_BackgroundBrush}"
-             Foreground="{DynamicResource ERR_ForegroundBrush}">
+             Foreground="{DynamicResource ERR_ForegroundBrush}"
+             xmlns:svc="clr-namespace:WpfHexEditor.Shell.Panels.Services">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <svc:ShellPanelsLocalizedDictionary/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
 
    <UserControl.Resources>
 

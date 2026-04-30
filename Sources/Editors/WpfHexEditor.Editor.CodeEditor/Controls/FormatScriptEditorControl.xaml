@@ -12,7 +12,16 @@
              xmlns:local="clr-namespace:WpfHexEditor.Editor.CodeEditor.Controls"
              xmlns:codeEditor="clr-namespace:WpfHexEditor.Editor.CodeEditor.Controls"
              mc:Ignorable="d"
-             d:DesignHeight="600" d:DesignWidth="1000">
+             d:DesignHeight="600" d:DesignWidth="1000"
+             xmlns:codeSvc="clr-namespace:WpfHexEditor.Editor.CodeEditor.Services">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <codeSvc:CodeEditorLocalizedDictionary/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
 
     <UserControl.Resources>
         <!-- Button Style -->

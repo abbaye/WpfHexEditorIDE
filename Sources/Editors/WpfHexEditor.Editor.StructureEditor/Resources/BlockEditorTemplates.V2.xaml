@@ -10,6 +10,7 @@
                     xmlns:cp="clr-namespace:WpfHexEditor.ColorPicker.Controls;assembly=WpfHexEditor.ColorPicker">
 
     <ResourceDictionary.MergedDictionaries>
+                <structSvc:StructureEditorLocalizedDictionary/>
         <ResourceDictionary Source="/WpfHexEditor.Editor.StructureEditor;component/Resources/BlockEditorShared.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 

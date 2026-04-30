@@ -12,7 +12,16 @@
              xmlns:vm="clr-namespace:WpfHexEditor.Editor.StructureEditor.ViewModels"
              xmlns:local="clr-namespace:WpfHexEditor.Editor.StructureEditor.Tabs"
              Background="{DynamicResource TE_Background}"
-             Foreground="{DynamicResource TE_Foreground}">
+             Foreground="{DynamicResource TE_Foreground}"
+             xmlns:structSvc="clr-namespace:WpfHexEditor.Editor.StructureEditor.Services">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <structSvc:StructureEditorLocalizedDictionary/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
 
     <UserControl.Resources>
 

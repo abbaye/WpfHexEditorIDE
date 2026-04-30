@@ -8,7 +8,16 @@
              mc:Ignorable="d"
              d:DesignHeight="600" d:DesignWidth="500"
              Background="{DynamicResource DockMenuBackgroundBrush}"
-             Foreground="{DynamicResource DockMenuForegroundBrush}">
+             Foreground="{DynamicResource DockMenuForegroundBrush}"
+             xmlns:codeSvc="clr-namespace:WpfHexEditor.Editor.CodeEditor.Services">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <codeSvc:CodeEditorLocalizedDictionary/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
 
     <!-- Code Editor Options Page — IDE global theme compliant -->
 

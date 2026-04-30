@@ -16,6 +16,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
+                <structSvc:StructureEditorLocalizedDictionary/>
                 <ResourceDictionary Source="/WpfHexEditor.Editor.StructureEditor;component/Resources/BlockEditorShared.xaml"/>
                 <ResourceDictionary Source="/WpfHexEditor.Editor.StructureEditor;component/Resources/BlockEditorTemplates.Simple.xaml"/>
                 <ResourceDictionary Source="/WpfHexEditor.Editor.StructureEditor;component/Resources/BlockEditorTemplates.Control.xaml"/>

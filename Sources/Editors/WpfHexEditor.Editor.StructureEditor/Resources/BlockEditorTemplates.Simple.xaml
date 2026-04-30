@@ -9,6 +9,7 @@
                     xmlns:ctrl="clr-namespace:WpfHexEditor.Editor.StructureEditor.Controls">
 
     <ResourceDictionary.MergedDictionaries>
+                <structSvc:StructureEditorLocalizedDictionary/>
         <ResourceDictionary Source="/WpfHexEditor.Editor.StructureEditor;component/Resources/BlockEditorShared.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 

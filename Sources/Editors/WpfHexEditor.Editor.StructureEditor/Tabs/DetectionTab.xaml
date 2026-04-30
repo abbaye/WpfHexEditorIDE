@@ -7,7 +7,16 @@
 <UserControl x:Class="WpfHexEditor.Editor.StructureEditor.Tabs.DetectionTab"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             Background="{DynamicResource TE_Background}">
+             Background="{DynamicResource TE_Background}"
+             xmlns:structSvc="clr-namespace:WpfHexEditor.Editor.StructureEditor.Services">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <structSvc:StructureEditorLocalizedDictionary/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
 
     <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="0,0,4,0">
         <StackPanel Margin="12,8">

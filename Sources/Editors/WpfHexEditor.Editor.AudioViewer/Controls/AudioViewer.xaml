@@ -9,7 +9,16 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:av="clr-namespace:WpfHexEditor.Editor.AudioViewer.Controls"
              xmlns:pb="clr-namespace:WpfHexEditor.ProgressBar.Controls;assembly=WpfHexEditor.ProgressBar"
-             Background="{DynamicResource TE_Background}">
+             Background="{DynamicResource TE_Background}"
+             xmlns:audioSvc="clr-namespace:WpfHexEditor.Editor.AudioViewer.Services">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <audioSvc:AudioViewerLocalizedDictionary/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
