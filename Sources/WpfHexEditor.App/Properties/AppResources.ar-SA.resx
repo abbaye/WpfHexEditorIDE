@@ -878,4 +878,19 @@
   <data name="APP_DBG_ShowCallStack" xml:space="preserve"><value>Show _Call Stack</value></data>
   <data name="APP_DBG_ShowLocals" xml:space="preserve"><value>Show _Locals</value></data>
   <data name="APP_DBG_ShowWatch" xml:space="preserve"><value>Show _Watch</value></data>
+  <data name="APP_VM_CommandPalette" xml:space="preserve"><value>_Command Palette</value></data>
+  <data name="APP_VM_SolutionExplorer" xml:space="preserve"><value>_Solution Explorer</value></data>
+  <data name="APP_VM_Properties" xml:space="preserve"><value>_Properties</value></data>
+  <data name="APP_VM_Output" xml:space="preserve"><value>_Output</value></data>
+  <data name="APP_VM_ErrorList" xml:space="preserve"><value>_Error List</value></data>
+  <data name="APP_VM_Terminal" xml:space="preserve"><value>_Terminal</value></data>
+  <data name="APP_VM_MarkdownOutline" xml:space="preserve"><value>_Markdown Outline</value></data>
+  <data name="APP_VM_CompareFiles" xml:space="preserve"><value>_Compare Files…</value></data>
+  <data name="APP_VM_FormatBrowser" xml:space="preserve"><value>_Format Browser</value></data>
+  <data name="APP_VM_FormatCatalog" xml:space="preserve"><value>_Format Catalog</value></data>
+  <data name="APP_VM_EntropyAnalysis" xml:space="preserve"><value>_Entropy Analysis…</value></data>
+  <data name="APP_VM_TipMarkdown" xml:space="preserve"><value>Show Markdown Outline panel (heading navigator)</value></data>
+  <data name="APP_VM_TipFormatBrowser" xml:space="preserve"><value>Browse and manage built-in and user .whfmt format definitions</value></data>
+  <data name="APP_VM_TipFormatCatalog" xml:space="preserve"><value>Open the Format Catalog document tab (all formats in a sortable grid)</value></data>
+  <data name="APP_VM_TipEntropy" xml:space="preserve"><value>Analyse entropy and byte distribution of the active file</value></data>
 </root>

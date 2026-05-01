@@ -332,12 +332,21 @@ public sealed class ViewMenuOrganizer
     private MenuItem BuildMenuItem(ViewMenuEntry entry)
     {
         var settings = Settings;
+
+        var resolvedHeader = entry.HeaderResourceKey is not null
+            ? Application.Current.TryFindResource(entry.HeaderResourceKey) as string ?? entry.Header
+            : entry.Header;
+
+        var resolvedToolTip = entry.ToolTipResourceKey is not null
+            ? Application.Current.TryFindResource(entry.ToolTipResourceKey) as string ?? entry.ToolTip
+            : entry.ToolTip;
+
         var mi = new MenuItem
         {
-            Header           = entry.Header,
+            Header           = resolvedHeader,
             Command          = entry.Command,
             CommandParameter = entry.CommandParameter,
-            ToolTip          = entry.ToolTip,
+            ToolTip          = resolvedToolTip,
             Tag              = entry.Id, // Store ID for pin/unpin lookup
         };
 

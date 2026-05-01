@@ -49,5 +49,18 @@ public sealed record ViewMenuEntry(
     string? ToolTip,
 
     /// <summary>True for hardcoded IDE items, false for plugin-contributed items.</summary>
-    bool IsBuiltIn
+    bool IsBuiltIn,
+
+    /// <summary>
+    /// Optional WPF resource key resolved via <c>Application.Current.TryFindResource</c>.
+    /// When set, overrides <see cref="Header"/> at menu-build time, falling back to
+    /// <see cref="Header"/> if the key is missing.
+    /// </summary>
+    string? HeaderResourceKey = null,
+
+    /// <summary>
+    /// Optional WPF resource key for the tooltip, resolved via <c>Application.Current.TryFindResource</c>.
+    /// When set, overrides <see cref="ToolTip"/> at menu-build time.
+    /// </summary>
+    string? ToolTipResourceKey = null
 );
