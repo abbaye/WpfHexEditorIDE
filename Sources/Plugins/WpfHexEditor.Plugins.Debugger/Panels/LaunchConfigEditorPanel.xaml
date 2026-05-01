@@ -69,7 +69,7 @@
 
                 <Separator Width="1" Margin="4,2" Background="{DynamicResource DockBorderBrush}"/>
 
-                <Button x:Name="BtnLaunch" Content="{DynamicResource DBG_LaunchTooltip}"
+                <Button x:Name="BtnLaunch" ToolTip="{DynamicResource DBG_LaunchTooltip}"
                         Padding="6,3" Margin="0,0,8,0"
                         Click="OnLaunch">
                     <StackPanel Orientation="Horizontal">

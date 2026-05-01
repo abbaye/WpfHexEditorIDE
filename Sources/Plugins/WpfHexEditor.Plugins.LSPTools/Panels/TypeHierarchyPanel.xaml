@@ -84,7 +84,7 @@
             <DockPanel Margin="4,0" LastChildFill="True" VerticalAlignment="Center">
 
                 <Button DockPanel.Dock="Left"
-                        Style="{DynamicResource PanelIconButtonStyle}" Content="{DynamicResource LspTools_RefreshTooltip}"
+                        Style="{DynamicResource PanelIconButtonStyle}" ToolTip="{DynamicResource LspTools_RefreshTooltip}"
                         Click="OnRefreshClicked"
                         Margin="0,0,4,0">
                     <TextBlock Text="&#xE72C;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>

@@ -97,7 +97,7 @@
                               SelectedItem="{Binding SelectedBaselineName}"
                               Background="{DynamicResource PFP_SectionBackgroundBrush}"
                               Foreground="{DynamicResource PFP_TextBrush}"
-                              BorderBrush="{DynamicResource DockBorderBrush}" Content="{DynamicResource AsmExplorer_SelectBaseline}"/>
+                              BorderBrush="{DynamicResource DockBorderBrush}" ToolTip="{DynamicResource AsmExplorer_SelectBaseline}"/>
 
                     <!-- Arrow -->
                     <TextBlock Text="&#xE8B0;" FontFamily="Segoe MDL2 Assets" FontSize="10"

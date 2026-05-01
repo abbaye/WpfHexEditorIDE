@@ -442,7 +442,7 @@
                                         Background="Transparent"
                                         BorderBrush="{DynamicResource PFP_BorderBrush}"
                                         Foreground="{DynamicResource PFP_TextBrush}"
-                                        Command="{Binding SourceViewModel.OpenSourceLinkCommand}" Content="{DynamicResource AsmExplorer_OpenSourceLink}">
+                                        Command="{Binding SourceViewModel.OpenSourceLinkCommand}" ToolTip="{DynamicResource AsmExplorer_OpenSourceLink}">
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock Text="&#xE8A7;" FontFamily="Segoe MDL2 Assets"
                                                    FontSize="10" Margin="0,0,3,0"
@@ -455,7 +455,7 @@
                                         Background="Transparent"
                                         BorderBrush="{DynamicResource PFP_BorderBrush}"
                                         Foreground="{DynamicResource PFP_TextBrush}"
-                                        Command="{Binding SourceViewModel.GoToSourceCommand}" Content="{DynamicResource AsmExplorer_OpenLocalSource}">
+                                        Command="{Binding SourceViewModel.GoToSourceCommand}" ToolTip="{DynamicResource AsmExplorer_OpenLocalSource}">
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock Text="&#xE943;" FontFamily="Segoe MDL2 Assets"
                                                    FontSize="10" Margin="0,0,3,0"

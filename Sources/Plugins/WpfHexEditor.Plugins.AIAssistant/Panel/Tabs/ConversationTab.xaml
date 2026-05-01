@@ -399,7 +399,7 @@
                             Margin="4,0,0,0" Cursor="Hand" VerticalAlignment="Bottom"
                             Background="{DynamicResource CA_ErrorBrush}"
                             Visibility="{Binding IsStreaming, Converter={StaticResource BoolToVis}}"
-                            MouseLeftButtonDown="OnCancelClick" Content="{DynamicResource AIAssistant_Stop}">
+                            MouseLeftButtonDown="OnCancelClick">
                         <TextBlock Text="&#xE71A;" FontFamily="Segoe MDL2 Assets" FontSize="12"
                                    Foreground="{DynamicResource DockMenuForegroundBrush}"
                                    HorizontalAlignment="Center" VerticalAlignment="Center"/>

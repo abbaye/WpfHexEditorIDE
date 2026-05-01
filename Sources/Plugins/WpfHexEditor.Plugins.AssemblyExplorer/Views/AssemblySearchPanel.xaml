@@ -87,7 +87,7 @@
                               SelectedItem="{Binding SelectedKind}"
                               Background="{DynamicResource PFP_SectionBackgroundBrush}"
                               Foreground="{DynamicResource PFP_TextBrush}"
-                              BorderBrush="{DynamicResource DockBorderBrush}" Content="{DynamicResource AsmExplorer_FilterByKind}"/>
+                              BorderBrush="{DynamicResource DockBorderBrush}" ToolTip="{DynamicResource AsmExplorer_FilterByKind}"/>
 
                     <!-- Public only toggle -->
                     <ToggleButton Margin="2,1"
