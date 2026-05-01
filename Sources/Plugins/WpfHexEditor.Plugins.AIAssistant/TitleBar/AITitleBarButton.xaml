@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              Width="40" Height="32" Cursor="Hand"
              ToolTip="{DynamicResource AIAssistant_TitleBarTooltip}"
-             xmlns:aiSvc="clr-namespace:WpfHexEditor.Plugins.AIAssistant.Services;assembly=WpfHexEditor.Plugins.AIAssistant">
+             xmlns:aiSvc="clr-namespace:WpfHexEditor.Plugins.AIAssistant.Services">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

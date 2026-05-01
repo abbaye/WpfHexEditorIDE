@@ -15,7 +15,7 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              Background="{DynamicResource DockMenuBackgroundBrush}"
-             xmlns:cdSvc="clr-namespace:WpfHexEditor.Plugins.ClassDiagram.Services;assembly=WpfHexEditor.Plugins.ClassDiagram">
+             xmlns:cdSvc="clr-namespace:WpfHexEditor.Plugins.ClassDiagram.Services">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

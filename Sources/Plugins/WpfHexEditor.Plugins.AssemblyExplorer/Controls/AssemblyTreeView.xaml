@@ -169,7 +169,7 @@
                            FontSize="8"
                            VerticalAlignment="Center"
                            Margin="0,0,3,0"
-                           Foreground="{DynamicResource PFP_AccentBrush}" Text="{DynamicResource AsmExplorer_Pinned}">
+                           Foreground="{DynamicResource PFP_AccentBrush}" ToolTip="{DynamicResource AsmExplorer_Pinned}">
                     <TextBlock.Style>
                         <Style TargetType="TextBlock">
                             <Setter Property="Visibility" Value="Collapsed"/>

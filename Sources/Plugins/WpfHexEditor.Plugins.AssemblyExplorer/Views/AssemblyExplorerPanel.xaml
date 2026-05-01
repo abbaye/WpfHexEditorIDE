@@ -56,7 +56,7 @@
                             Content="&#xE74D;"
                             FontFamily="Segoe MDL2 Assets"
                             Width="22" Height="22"
-                            Command="{Binding CloseAllCommand}" Content="{DynamicResource AsmExplorer_CloseAllTooltip2}"/>
+                            Command="{Binding CloseAllCommand}" ToolTip="{DynamicResource AsmExplorer_CloseAllTooltip2}"/>
                 </StackPanel>
 
                 <!-- Overflow button — shown when groups collapse -->

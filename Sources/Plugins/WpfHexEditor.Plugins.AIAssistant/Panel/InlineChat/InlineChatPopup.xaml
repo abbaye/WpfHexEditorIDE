@@ -7,7 +7,7 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              Width="440" MaxHeight="350"
-             xmlns:aiSvc="clr-namespace:WpfHexEditor.Plugins.AIAssistant.Services;assembly=WpfHexEditor.Plugins.AIAssistant">
+             xmlns:aiSvc="clr-namespace:WpfHexEditor.Plugins.AIAssistant.Services">
     <UserControl.Resources>
             <ResourceDictionary>
                 <ResourceDictionary.MergedDictionaries>

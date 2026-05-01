@@ -291,7 +291,7 @@
                                             BorderThickness="0"
                                             Foreground="{DynamicResource PFP_SubTextBrush}"
                                             VerticalAlignment="Center"
-                                            Cursor="Hand" Content="{DynamicResource AsmExplorer_RemoveFromRecent}"
+                                            Cursor="Hand" ToolTip="{DynamicResource AsmExplorer_RemoveFromRecent}"
                                             Tag="{Binding FullPath}"
                                             Click="OnRemoveRecentClick"/>
                                 </Grid>

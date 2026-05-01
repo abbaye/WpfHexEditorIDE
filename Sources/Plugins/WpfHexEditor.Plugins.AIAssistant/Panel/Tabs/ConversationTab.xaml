@@ -388,7 +388,7 @@
                     <Border Grid.Column="1" Width="28" Height="28" CornerRadius="14"
                             Margin="6,0,0,0" Cursor="Hand" VerticalAlignment="Bottom"
                             Background="{DynamicResource CA_AccentBrandingBrush}"
-                            MouseLeftButtonDown="OnSendClick" Content="{DynamicResource AIAssistant_Send}">
+                            MouseLeftButtonDown="OnSendClick">
                         <TextBlock Text="&#xE724;" FontFamily="Segoe MDL2 Assets" FontSize="12"
                                    Foreground="{DynamicResource DockMenuForegroundBrush}"
                                    HorizontalAlignment="Center" VerticalAlignment="Center"/>

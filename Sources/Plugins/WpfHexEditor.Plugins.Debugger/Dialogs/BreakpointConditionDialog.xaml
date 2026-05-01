@@ -110,7 +110,7 @@
                                     BorderThickness="0"
                                     Cursor="Hand"
                                     VerticalAlignment="Center"
-                                    Foreground="{DynamicResource DockMenuForegroundBrush}" Content="{DynamicResource DBG_LogHint}"
+                                    Foreground="{DynamicResource DockMenuForegroundBrush}" ToolTip="{DynamicResource DBG_LogHint}"
                                     Click="OnLogHintClicked" />
                         </DockPanel>
 

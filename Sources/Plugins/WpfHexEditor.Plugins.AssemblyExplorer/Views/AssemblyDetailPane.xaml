@@ -143,7 +143,7 @@
                         Padding="6,1"
                         Background="Transparent"
                         BorderBrush="{DynamicResource PFP_BorderBrush}"
-                        Foreground="{DynamicResource PFP_TextBrush}" Content="{DynamicResource AsmExplorer_ExtractCode}"
+                        Foreground="{DynamicResource PFP_TextBrush}" ToolTip="{DynamicResource AsmExplorer_ExtractCode}"
                         Visibility="{Binding IsExtractAvailable, Converter={StaticResource BoolToVisibilityConverter}}"
                         Click="OnExtractButtonClick">
                     <StackPanel Orientation="Horizontal">

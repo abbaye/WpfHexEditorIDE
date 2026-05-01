@@ -19,16 +19,12 @@
         Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
         Foreground="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}"
              xmlns:instSvc="clr-namespace:WpfHexEditor.PluginInstaller">
-    <UserControl.Resources>
+    <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <instSvc:InstallerLocalizedDictionary/>
             </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </UserControl.Resources>
-
-    <Window.Resources>
-        <!-- Badge styles -->
+            <!-- Badge styles -->
         <Style x:Key="TrustedBadgeStyle" TargetType="Border">
             <Setter Property="Background"  Value="#1F7F3F"/>
             <Setter Property="CornerRadius" Value="3"/>
@@ -56,6 +52,7 @@
             <Setter Property="Padding"         Value="10,8"/>
             <Setter Property="Margin"          Value="0,4,0,0"/>
         </Style>
+        </ResourceDictionary>
     </Window.Resources>
 
     <Grid Margin="16">

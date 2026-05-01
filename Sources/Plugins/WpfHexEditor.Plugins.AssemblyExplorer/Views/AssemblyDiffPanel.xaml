@@ -65,7 +65,7 @@
                 <!-- Overflow button -->
                 <Button x:Name="ToolbarOverflowButton"
                         DockPanel.Dock="Right"
-                        Width="16" Content="{DynamicResource AsmExplorer_MoreOptions}"
+                        Width="16" ToolTip="{DynamicResource AsmExplorer_MoreOptions}"
                         Click="OnOverflowButtonClick"
                         Background="Transparent"
                         BorderThickness="0"
