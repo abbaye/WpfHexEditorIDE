@@ -8,7 +8,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:WpfHexEditor.Editor.ChangesetEditor.ViewModels"
              Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
-             xmlns:ceSvc="clr-namespace:WpfHexEditor.Editor.ChangesetEditor.Services;assembly=WpfHexEditor.Editor.ChangesetEditor">
+             xmlns:ceSvc="clr-namespace:WpfHexEditor.Editor.ChangesetEditor.Services">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

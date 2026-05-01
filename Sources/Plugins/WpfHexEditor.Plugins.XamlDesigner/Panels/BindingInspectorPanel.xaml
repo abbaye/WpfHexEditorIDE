@@ -294,14 +294,14 @@
                     </ToggleButton>
                     <!-- Re-evaluate all binding statuses -->
                     <Button x:Name="BtnValidateAll"
-                            Style="{StaticResource XD_BindIconButton}" Content="{DynamicResource XamlDesigner_ReEvaluateAll}"
+                            Style="{StaticResource XD_BindIconButton}" ToolTip="{DynamicResource XamlDesigner_ReEvaluateAll}"
                             Click="OnValidateAll">
                         <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="12" Text="&#xE73E;"
                                    HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Button>
                     <!-- Clear filter -->
                     <Button x:Name="BtnClearFilter"
-                            Style="{StaticResource XD_BindIconButton}" Content="{DynamicResource XamlDesigner_ClearFilter}"
+                            Style="{StaticResource XD_BindIconButton}" ToolTip="{DynamicResource XamlDesigner_ClearFilter}"
                             Click="OnClearFilter">
                         <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="12" Text="&#xE711;"
                                    HorizontalAlignment="Center" VerticalAlignment="Center"/>

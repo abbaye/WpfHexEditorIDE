@@ -141,7 +141,7 @@
                 <Button x:Name="ToolbarOverflowButton"
                         DockPanel.Dock="Right"
                         Visibility="Collapsed"
-                        Style="{StaticResource PanelIconButtonStyle}" Content="{DynamicResource StructureOverlay_MoreOptions}"
+                        Style="{StaticResource PanelIconButtonStyle}" ToolTip="{DynamicResource StructureOverlay_MoreOptions}"
                         Click="OnOverflowButtonClick">
                     <TextBlock Text="&#xE712;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
@@ -161,7 +161,7 @@
                             VerticalAlignment="Center">
                     <Button x:Name="AddStructureButton"
                             Content="&#xE710;"
-                            Style="{StaticResource PanelIconButtonStyle}" Content="{DynamicResource StructureOverlay_AddOverlayTooltip}"
+                            Style="{StaticResource PanelIconButtonStyle}" ToolTip="{DynamicResource StructureOverlay_AddOverlayTooltip}"
                             Click="AddStructureButton_Click"/>
                 </StackPanel>
 

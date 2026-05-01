@@ -217,14 +217,14 @@
                 <Border Style="{StaticResource DockToolBarPodStyle}" DockPanel.Dock="Left">
                     <StackPanel Orientation="Horizontal">
                         <!-- Load from disk: OpenFile \uE8DA -->
-                        <Button Command="{Binding LoadFromDiskCommand}" Content="{DynamicResource Synalysis_LoadFromDisk}"
+                        <Button Command="{Binding LoadFromDiskCommand}" ToolTip="{DynamicResource Synalysis_LoadFromDisk}"
                                 Style="{StaticResource DockDarkToolBarButtonStyle}">
                             <TextBlock Text="&#xE8DA;" FontFamily="Segoe MDL2 Assets" FontSize="14"
                                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
                         </Button>
                         <Separator Style="{StaticResource DockToolBarPodDividerStyle}"/>
                         <!-- Refresh list: Refresh \uE72C -->
-                        <Button Command="{Binding RefreshCommand}" Content="{DynamicResource Synalysis_ReloadList}"
+                        <Button Command="{Binding RefreshCommand}" ToolTip="{DynamicResource Synalysis_ReloadList}"
                                 Style="{StaticResource DockDarkToolBarButtonStyle}">
                             <TextBlock Text="&#xE72C;" FontFamily="Segoe MDL2 Assets" FontSize="14"
                                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
@@ -238,14 +238,14 @@
                 <Border Style="{StaticResource DockToolBarPodStyle}" DockPanel.Dock="Left">
                     <StackPanel Orientation="Horizontal">
                         <!-- Apply: Play \uE768 (accent colour) -->
-                        <Button Command="{Binding ApplyGrammarCommand}" Content="{DynamicResource Synalysis_ApplySelected}"
+                        <Button Command="{Binding ApplyGrammarCommand}" ToolTip="{DynamicResource Synalysis_ApplySelected}"
                                 Style="{StaticResource DockDarkToolBarButtonStyle}">
                             <TextBlock Text="&#xE768;" FontFamily="Segoe MDL2 Assets" FontSize="14"
                                        Foreground="{DynamicResource DockAccentBrush}"/>
                         </Button>
                         <Separator Style="{StaticResource DockToolBarPodDividerStyle}"/>
                         <!-- Clear overlay: Delete \uE74D -->
-                        <Button Command="{Binding ClearGrammarCommand}" Content="{DynamicResource Synalysis_ClearOverlay}"
+                        <Button Command="{Binding ClearGrammarCommand}" ToolTip="{DynamicResource Synalysis_ClearOverlay}"
                                 Style="{StaticResource DockDarkToolBarButtonStyle}">
                             <TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="14"
                                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>

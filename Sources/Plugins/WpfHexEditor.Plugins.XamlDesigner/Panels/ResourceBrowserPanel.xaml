@@ -126,14 +126,14 @@
 
                     <!-- Add new resource entry -->
                     <Button x:Name="BtnAddResource"
-                            Style="{StaticResource RbToolButtonStyle}" Content="{DynamicResource XamlDesigner_AddNewResource}"
+                            Style="{StaticResource RbToolButtonStyle}" ToolTip="{DynamicResource XamlDesigner_AddNewResource}"
                             Command="{Binding AddResourceCommand}">
                         <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="12" Text="&#xE710;"/>
                     </Button>
 
                     <!-- Sort resources -->
                     <Button x:Name="BtnSortBy"
-                            Style="{StaticResource RbToolButtonStyle}" Content="{DynamicResource XamlDesigner_SortResources}"
+                            Style="{StaticResource RbToolButtonStyle}" ToolTip="{DynamicResource XamlDesigner_SortResources}"
                             Click="OnSortByClick">
                         <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="12" Text="&#xE174;"/>
                         <Button.ContextMenu>
@@ -147,7 +147,7 @@
 
                     <!-- Filter by scope -->
                     <Button x:Name="BtnScopeFilter"
-                            Style="{StaticResource RbToolButtonStyle}" Content="{DynamicResource XamlDesigner_FilterByScope}"
+                            Style="{StaticResource RbToolButtonStyle}" ToolTip="{DynamicResource XamlDesigner_FilterByScope}"
                             Click="OnScopeFilterClick">
                         <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="12" Text="&#xE7B3;"/>
                         <Button.ContextMenu>
@@ -345,7 +345,7 @@
                         <GridViewColumn.CellTemplate>
                             <DataTemplate DataType="{x:Type models:ResourceEntryViewModel}">
                                 <TextBlock Text="&#x26A0;" FontSize="11"
-                                           Foreground="Orange" Text="{DynamicResource XamlDesigner_DuplicateValue}">
+                                           Foreground="Orange" ToolTip="{DynamicResource XamlDesigner_DuplicateValue}">
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock">
                                             <Setter Property="Visibility" Value="Collapsed"/>

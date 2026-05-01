@@ -208,7 +208,7 @@
                             Command="{Binding StopCommand}"/>
 
                     <!-- Play / Pause toggle -->
-                    <Button Style="{StaticResource TlButtonStyle}" Content="{DynamicResource XamlDesigner_PlayPause}"
+                    <Button Style="{StaticResource TlButtonStyle}" ToolTip="{DynamicResource XamlDesigner_PlayPause}"
                             Command="{Binding PlayCommand}"
                             x:Name="BtnPlay">
                         <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="12">
@@ -276,14 +276,14 @@
 
                     <!-- Zoom in timeline -->
                     <Button x:Name="BtnZoomIn"
-                            Style="{StaticResource TlButtonStyle}" Content="{DynamicResource XamlDesigner_ZoomInTimeline}"
+                            Style="{StaticResource TlButtonStyle}" ToolTip="{DynamicResource XamlDesigner_ZoomInTimeline}"
                             Command="{Binding ZoomInCommand}">
                         <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="12" Text="&#xE8A3;"/>
                     </Button>
 
                     <!-- Zoom out timeline -->
                     <Button x:Name="BtnZoomOut"
-                            Style="{StaticResource TlButtonStyle}" Content="{DynamicResource XamlDesigner_ZoomOutTimeline}"
+                            Style="{StaticResource TlButtonStyle}" ToolTip="{DynamicResource XamlDesigner_ZoomOutTimeline}"
                             Command="{Binding ZoomOutCommand}">
                         <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="12" Text="&#xE71F;"/>
                     </Button>
@@ -296,7 +296,7 @@
                               Height="18" Width="54" FontSize="10"
                               Background="Transparent"
                               Foreground="{DynamicResource DockMenuForegroundBrush}"
-                              BorderBrush="{DynamicResource DockBorderBrush}" Content="{DynamicResource XamlDesigner_FrameRate}">
+                              BorderBrush="{DynamicResource DockBorderBrush}" ToolTip="{DynamicResource XamlDesigner_FrameRate}">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
                                 <TextBlock FontSize="10">
@@ -386,7 +386,7 @@
                                     Content="&#xE8BB;"
                                     Background="Transparent" BorderThickness="0"
                                     Foreground="{DynamicResource DockMenuForegroundBrush}"
-                                    Cursor="Hand" Visibility="Hidden" Content="{DynamicResource XamlDesigner_RemoveTrack}"
+                                    Cursor="Hand" Visibility="Hidden" ToolTip="{DynamicResource XamlDesigner_RemoveTrack}"
                                     Command="{Binding DataContext.RemoveTrackCommand,
                                               RelativeSource={RelativeSource AncestorType=ListBox}}"
                                     CommandParameter="{Binding}"/>

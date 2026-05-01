@@ -76,7 +76,7 @@
                 <Button x:Name="ToolbarOverflowButton"
                         DockPanel.Dock="Right"
                         Visibility="Collapsed"
-                        Style="{StaticResource PanelIconButtonStyle}" Content="{DynamicResource PatternAnalysis_MoreOptions}"
+                        Style="{StaticResource PanelIconButtonStyle}" ToolTip="{DynamicResource PatternAnalysis_MoreOptions}"
                         Click="OnOverflowButtonClick">
                     <TextBlock Text="&#xE712;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>

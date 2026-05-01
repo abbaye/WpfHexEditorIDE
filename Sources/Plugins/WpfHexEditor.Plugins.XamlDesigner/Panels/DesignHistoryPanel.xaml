@@ -151,7 +151,7 @@
                            VerticalAlignment="Center"
                            Margin="0,0,6,0"
                            Opacity="0.65"
-                           Foreground="{DynamicResource DockMenuForegroundBrush}" Text="{DynamicResource XamlDesigner_EntriesCapacity}"/>
+                           Foreground="{DynamicResource DockMenuForegroundBrush}" ToolTip="{DynamicResource XamlDesigner_EntriesCapacity}"/>
 
                 <!-- Left group: action buttons + filter -->
                 <StackPanel DockPanel.Dock="Left"
@@ -170,22 +170,22 @@
                                VerticalAlignment="Center"/>
 
                     <Button x:Name="BtnMarkCheckpoint"
-                            Style="{StaticResource XD_HistIconButton}" Content="{DynamicResource XamlDesigner_MarkCheckpoint}"
+                            Style="{StaticResource XD_HistIconButton}" ToolTip="{DynamicResource XamlDesigner_MarkCheckpoint}"
                             Command="{Binding MarkCurrentCheckpointCommand}">
                         <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="12" Text="&#xE734;"/>
                     </Button>
                     <Button x:Name="BtnJumpFirst"
-                            Style="{StaticResource XD_HistIconButton}" Content="{DynamicResource XamlDesigner_JumpOldest}"
+                            Style="{StaticResource XD_HistIconButton}" ToolTip="{DynamicResource XamlDesigner_JumpOldest}"
                             Command="{Binding JumpToFirstCommand}">
                         <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="12" Text="&#xE892;"/>
                     </Button>
                     <Button x:Name="BtnJumpLatest"
-                            Style="{StaticResource XD_HistIconButton}" Content="{DynamicResource XamlDesigner_JumpNewest}"
+                            Style="{StaticResource XD_HistIconButton}" ToolTip="{DynamicResource XamlDesigner_JumpNewest}"
                             Command="{Binding JumpToLatestCommand}">
                         <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="12" Text="&#xE893;"/>
                     </Button>
                     <Button x:Name="BtnExportHistory"
-                            Style="{StaticResource XD_HistIconButton}" Content="{DynamicResource XamlDesigner_CopyHistory}"
+                            Style="{StaticResource XD_HistIconButton}" ToolTip="{DynamicResource XamlDesigner_CopyHistory}"
                             Command="{Binding ExportHistoryCommand}">
                         <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="12" Text="&#xE8C8;"/>
                     </Button>
@@ -199,7 +199,7 @@
                     <ToggleButton x:Name="BtnCheckpointsOnly"
                                   Style="{StaticResource XD_HistToggleButton}"
                                   Content="&#xE734;"
-                                  IsChecked="{Binding CheckpointsOnly, Mode=TwoWay}" Content="{DynamicResource XamlDesigner_CheckpointsOnly}"/>
+                                  IsChecked="{Binding CheckpointsOnly, Mode=TwoWay}" ToolTip="{DynamicResource XamlDesigner_CheckpointsOnly}"/>
 
                     <!-- Separator -->
                     <Rectangle Width="1" Height="14" Margin="3,0"

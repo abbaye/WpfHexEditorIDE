@@ -8,13 +8,13 @@
         ShowInTaskbar="False"
         Background="{DynamicResource DE_ToolbarBackground}"
         Foreground="{DynamicResource DockMenuForegroundBrush}">
-    <UserControl.Resources>
+    <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <docSvc:DocumentEditorLocalizedDictionary/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
-    </UserControl.Resources>
+    </Window.Resources>
     <StackPanel Margin="12">
         <!-- Find row -->
         <DockPanel Margin="0,0,0,6">

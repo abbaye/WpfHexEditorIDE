@@ -16,7 +16,7 @@
              Background="Transparent"
              Foreground="{DynamicResource PFP_TextBrush}"
              Padding="12"
-             xmlns:synSvc="clr-namespace:WpfHexEditor.Plugins.SynalysisGrammar.Services;assembly=WpfHexEditor.Plugins.SynalysisGrammar">
+             xmlns:synSvc="clr-namespace:WpfHexEditor.Plugins.SynalysisGrammar.Services">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

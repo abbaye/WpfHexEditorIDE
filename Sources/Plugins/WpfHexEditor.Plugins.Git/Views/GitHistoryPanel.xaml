@@ -6,7 +6,7 @@
     xmlns:vm="clr-namespace:WpfHexEditor.Plugins.Git.ViewModels"
     Background="{DynamicResource DockBackgroundBrush}"
     Foreground="{DynamicResource DockMenuForegroundBrush}"
-             xmlns:gitSvc="clr-namespace:WpfHexEditor.Plugins.Git.Services;assembly=WpfHexEditor.Plugins.Git">
+             xmlns:gitSvc="clr-namespace:WpfHexEditor.Plugins.Git.Services">
 
     <UserControl.Resources>
             <ResourceDictionary>
@@ -36,7 +36,7 @@
 
                 <Button Style="{StaticResource PanelIconButtonStyle}"
                         Content="&#xE72C;"
-                        Command="{Binding RefreshCommand}" Content="{DynamicResource Git_HistoryRefresh}"/>
+                        Command="{Binding RefreshCommand}" ToolTip="{DynamicResource Git_HistoryRefresh}"/>
                 <Separator Width="1" Margin="2,4"
                            Background="{DynamicResource Panel_ToolbarBorderBrush}"/>
 

@@ -34,14 +34,14 @@
         <ToolBar Grid.Row="0" ToolBarTray.IsLocked="True" Band="0" BandIndex="0"
                  Background="{DynamicResource DockTabBackgroundBrush}">
 
-            <Button Command="{Binding SwapCommand}" Content="{DynamicResource FileComparison_SwapFiles}" Padding="6,2,6,2">
+            <Button Command="{Binding SwapCommand}" ToolTip="{DynamicResource FileComparison_SwapFiles}" Padding="6,2,6,2">
                 <TextBlock Text="&#xE8B1;" FontFamily="Segoe MDL2 Assets" FontSize="13"/>
             </Button>
 
             <Separator/>
 
             <Button Command="{Binding CompareCommand}"
-                    Padding="8,2,8,2" Content="{DynamicResource FileComparison_RunComparison}">
+                    Padding="8,2,8,2" ToolTip="{DynamicResource FileComparison_RunComparison}">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="&#xE8A5;" FontFamily="Segoe MDL2 Assets"
                                FontSize="12" Margin="0,0,4,0"/>
@@ -51,7 +51,7 @@
 
             <Separator/>
 
-            <Button Command="{Binding ClearCommand}" Content="{DynamicResource FileComparison_ClearInputs}" Padding="6,2,6,2">
+            <Button Command="{Binding ClearCommand}" ToolTip="{DynamicResource FileComparison_ClearInputs}" Padding="6,2,6,2">
                 <TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
             </Button>
 
@@ -87,7 +87,7 @@
                              VerticalContentAlignment="Center"/>
                     <Button Grid.Column="1" Style="{DynamicResource XD_ToolbarIconButtonStyle}"
                             Width="26" Height="24" Margin="2,0,0,0"
-                            Click="OnBrowseFile1_Click" Content="{DynamicResource FileComparison_Browse}">
+                            Click="OnBrowseFile1_Click" ToolTip="{DynamicResource FileComparison_Browse}">
                         <TextBlock Text="&#xE8B7;" FontFamily="Segoe MDL2 Assets" FontSize="11"/>
                     </Button>
                 </Grid>

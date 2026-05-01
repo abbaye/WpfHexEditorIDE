@@ -135,14 +135,14 @@
                     <Border Background="{DynamicResource DiffModified_BackgroundBrush}"
                             BorderBrush="{DynamicResource DiffModified_BorderBrush}"
                             BorderThickness="1"
-                            Width="26" Height="26" Margin="0,8,0,4" CornerRadius="4" Content="{DynamicResource FileComparison_Modified}"/>
+                            Width="26" Height="26" Margin="0,8,0,4" CornerRadius="4"/>
                     <TextBlock Text="&#x2260;" FontWeight="Bold" HorizontalAlignment="Center"
                                Foreground="{DynamicResource DiffModified_BorderBrush}"/>
 
                     <Border Background="{DynamicResource DiffRemoved_BackgroundBrush}"
                             BorderBrush="{DynamicResource DiffRemoved_BorderBrush}"
                             BorderThickness="1"
-                            Width="26" Height="26" Margin="0,8,0,4" CornerRadius="4" Content="{DynamicResource FileComparison_Removed}"/>
+                            Width="26" Height="26" Margin="0,8,0,4" CornerRadius="4"/>
                     <TextBlock Text="-" FontWeight="Bold" HorizontalAlignment="Center"
                                Foreground="{DynamicResource DiffRemoved_BorderBrush}"/>
                 </StackPanel>

@@ -167,7 +167,7 @@
                 <!-- Fixed LEFT: Pause/Resume -->
                 <StackPanel x:Name="ToolbarLeftPanel" DockPanel.Dock="Left" Orientation="Horizontal" VerticalAlignment="Center">
                     <Button Content="{Binding PauseResumeGlyph}"
-                            Style="{StaticResource ToolbarBtn}" Content="{DynamicResource DiagTools_PauseResume}"
+                            Style="{StaticResource ToolbarBtn}" ToolTip="{DynamicResource DiagTools_PauseResume}"
                             Click="OnPauseResumeClick" />
                     <Separator Width="1" Background="{DynamicResource DT_GraphBorder}" Margin="4,2" />
                 </StackPanel>
@@ -179,7 +179,7 @@
                 <Button x:Name="OverflowButton"
                         DockPanel.Dock="Right"
                         Style="{StaticResource ToolbarBtn}"
-                        Visibility="Collapsed" Content="{DynamicResource DiagTools_MoreOptions}"
+                        Visibility="Collapsed" ToolTip="{DynamicResource DiagTools_MoreOptions}"
                         Click="OnOverflowButtonClick">
                     <TextBlock Text="&#xE712;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
                     <Button.ContextMenu>
@@ -211,13 +211,13 @@
                 <StackPanel x:Name="TbgActions" DockPanel.Dock="Left" Orientation="Horizontal" VerticalAlignment="Center">
                     <Separator Width="1" Background="{DynamicResource DT_GraphBorder}" Margin="4,2" />
                     <Button Content="&#xE9F9;"
-                            Style="{StaticResource ToolbarBtn}" Content="{DynamicResource DiagTools_CaptureHeap}"
+                            Style="{StaticResource ToolbarBtn}" ToolTip="{DynamicResource DiagTools_CaptureHeap}"
                             Click="OnSnapshotClick" />
                     <Button Content="&#xE894;"
-                            Style="{StaticResource ToolbarBtn}" Content="{DynamicResource DiagTools_ClearEventLog}"
+                            Style="{StaticResource ToolbarBtn}" ToolTip="{DynamicResource DiagTools_ClearEventLog}"
                             Click="OnClearEventsClick" />
                     <Button Content="&#xE74E;"
-                            Style="{StaticResource ToolbarBtn}" Content="{DynamicResource DiagTools_ExportMetricsCsv}"
+                            Style="{StaticResource ToolbarBtn}" ToolTip="{DynamicResource DiagTools_ExportMetricsCsv}"
                             Click="OnExportClick" />
                 </StackPanel>
 

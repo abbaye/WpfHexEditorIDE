@@ -135,7 +135,7 @@
                                VerticalAlignment="Center"
                                Margin="4,0,6,0"
                                Foreground="{DynamicResource DockMenuForegroundBrush}"
-                               Opacity="0.65" Text="{DynamicResource XamlDesigner_TotalElements}"/>
+                               Opacity="0.65" ToolTip="{DynamicResource XamlDesigner_TotalElements}"/>
 
                     <!-- Overflow toggle -->
                     <ToggleButton x:Name="ToolbarOverflowButton"
@@ -164,15 +164,15 @@
                                Fill="{DynamicResource DockBorderBrush}"
                                VerticalAlignment="Center"/>
 
-                    <Button x:Name="BtnRefreshOutline" Style="{StaticResource XD_IconButton}" Content="{DynamicResource XamlDesigner_RebuildOutline}"
+                    <Button x:Name="BtnRefreshOutline" Style="{StaticResource XD_IconButton}" ToolTip="{DynamicResource XamlDesigner_RebuildOutline}"
                             Click="OnRefreshOutline">
                         <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="12" Text="&#xE72C;"/>
                     </Button>
-                    <Button x:Name="BtnNavigateToParent" Style="{StaticResource XD_IconButton}" Content="{DynamicResource XamlDesigner_SelectParent}"
+                    <Button x:Name="BtnNavigateToParent" Style="{StaticResource XD_IconButton}" ToolTip="{DynamicResource XamlDesigner_SelectParent}"
                             Click="OnNavigateToParent">
                         <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="12" Text="&#xE96F;"/>
                     </Button>
-                    <Button x:Name="BtnCopyPath" Style="{StaticResource XD_IconButton}" Content="{DynamicResource XamlDesigner_CopyXamlPath}"
+                    <Button x:Name="BtnCopyPath" Style="{StaticResource XD_IconButton}" ToolTip="{DynamicResource XamlDesigner_CopyXamlPath}"
                             Click="OnCopyPath">
                         <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="12" Text="&#xE8C8;"/>
                     </Button>

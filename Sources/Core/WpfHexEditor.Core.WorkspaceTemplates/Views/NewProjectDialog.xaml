@@ -22,16 +22,13 @@
         Background="{DynamicResource DockMenuBackgroundBrush}"
         Foreground="{DynamicResource DockMenuForegroundBrush}"
              xmlns:wtSvc="clr-namespace:WpfHexEditor.Core.WorkspaceTemplates.Services">
-    <UserControl.Resources>
+    <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <wtSvc:WorkspaceTemplatesLocalizedDictionary/>
             </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </UserControl.Resources>
 
-    <Window.Resources>
-        <!-- Step indicator style -->
+            <!-- Step indicator style -->
         <Style x:Key="StepLabelStyle" TargetType="TextBlock">
             <Setter Property="Foreground"  Value="{DynamicResource DockMenuForegroundBrush}"/>
             <Setter Property="FontSize"    Value="11"/>
@@ -80,6 +77,7 @@
             <Setter Property="Padding"     Value="4,2"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
         </Style>
+        </ResourceDictionary>
     </Window.Resources>
 
     <Grid>

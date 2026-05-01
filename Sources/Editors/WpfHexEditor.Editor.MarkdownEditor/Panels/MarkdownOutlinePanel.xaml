@@ -7,7 +7,7 @@
 <UserControl x:Class="WpfHexEditor.Editor.MarkdownEditor.Panels.MarkdownOutlinePanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mdSvc="clr-namespace:WpfHexEditor.Editor.MarkdownEditor.Services;assembly=WpfHexEditor.Editor.MarkdownEditor"
+             xmlns:mdSvc="clr-namespace:WpfHexEditor.Editor.MarkdownEditor.Services"
              Background="{DynamicResource SE_BackgroundBrush}"
              Foreground="{DynamicResource SE_ForegroundBrush}">
 

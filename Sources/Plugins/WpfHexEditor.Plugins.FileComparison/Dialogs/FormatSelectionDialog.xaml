@@ -16,7 +16,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:conv="clr-namespace:WpfHexEditor.Plugins.FileComparison.Converters"
         xmlns:ec="clr-namespace:WpfHexEditor.Editor.Core.Views;assembly=WpfHexEditor.Editor.Core"
-        xmlns:fcSvc="clr-namespace:WpfHexEditor.Plugins.FileComparison.Services;assembly=WpfHexEditor.Plugins.FileComparison"
+        xmlns:fcSvc="clr-namespace:WpfHexEditor.Plugins.FileComparison.Services"
         mc:Ignorable="d"
         Title="{DynamicResource FileComparison_FormatSelectionTitle}"
         Height="500" Width="650"

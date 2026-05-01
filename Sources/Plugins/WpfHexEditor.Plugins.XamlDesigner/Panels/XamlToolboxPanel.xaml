@@ -165,7 +165,7 @@
                 <!-- Clear Recent -->
                 <Button DockPanel.Dock="Right"
                         x:Name="BtnClearRecent"
-                        Style="{StaticResource TbxToolButtonStyle}" Content="{DynamicResource XamlDesigner_ClearRecentItems}"
+                        Style="{StaticResource TbxToolButtonStyle}" ToolTip="{DynamicResource XamlDesigner_ClearRecentItems}"
                         Click="OnClearRecent">
                     <TextBlock Text="&#xE894;" FontFamily="Segoe MDL2 Assets" FontSize="13"/>
                 </Button>
@@ -173,7 +173,7 @@
                 <!-- Collapse all categories -->
                 <Button DockPanel.Dock="Right"
                         x:Name="BtnCollapseAllCategories"
-                        Style="{StaticResource TbxToolButtonStyle}" Content="{DynamicResource XamlDesigner_CollapseAllCategories}"
+                        Style="{StaticResource TbxToolButtonStyle}" ToolTip="{DynamicResource XamlDesigner_CollapseAllCategories}"
                         Click="OnCollapseAllCategories">
                     <TextBlock Text="&#xE972;" FontFamily="Segoe MDL2 Assets" FontSize="13"/>
                 </Button>
@@ -181,7 +181,7 @@
                 <!-- Expand all categories -->
                 <Button DockPanel.Dock="Right"
                         x:Name="BtnExpandAllCategories"
-                        Style="{StaticResource TbxToolButtonStyle}" Content="{DynamicResource XamlDesigner_ExpandAllCategories}"
+                        Style="{StaticResource TbxToolButtonStyle}" ToolTip="{DynamicResource XamlDesigner_ExpandAllCategories}"
                         Click="OnExpandAllCategories">
                     <TextBlock Text="&#xE9A0;" FontFamily="Segoe MDL2 Assets" FontSize="13"/>
                 </Button>
@@ -189,7 +189,7 @@
                 <!-- Sort -->
                 <Button DockPanel.Dock="Right"
                         x:Name="BtnSortBy"
-                        Style="{StaticResource TbxToolButtonStyle}" Content="{DynamicResource XamlDesigner_SortToolbox}"
+                        Style="{StaticResource TbxToolButtonStyle}" ToolTip="{DynamicResource XamlDesigner_SortToolbox}"
                         Click="OnToolboxSortClick">
                     <TextBlock Text="&#xE174;" FontFamily="Segoe MDL2 Assets" FontSize="13"/>
                     <Button.ContextMenu>

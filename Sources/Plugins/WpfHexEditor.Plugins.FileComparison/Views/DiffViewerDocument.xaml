@@ -45,12 +45,12 @@
                 <StackPanel DockPanel.Dock="Left" Orientation="Horizontal" VerticalAlignment="Center">
                     <Button Style="{DynamicResource XD_ToolbarIconButtonStyle}"
                             Width="Auto" Padding="6,2" Margin="0,0,2,0"
-                            Command="{Binding PrevDiffCommand}" Content="{DynamicResource FileComparison_PrevDiff}">
+                            Command="{Binding PrevDiffCommand}" ToolTip="{DynamicResource FileComparison_PrevDiff}">
                         <TextBlock Text="&#xE76B;" FontFamily="Segoe MDL2 Assets" FontSize="11"/>
                     </Button>
                     <Button Style="{DynamicResource XD_ToolbarIconButtonStyle}"
                             Width="Auto" Padding="6,2" Margin="0,0,6,0"
-                            Command="{Binding NextDiffCommand}" Content="{DynamicResource FileComparison_NextDiff}">
+                            Command="{Binding NextDiffCommand}" ToolTip="{DynamicResource FileComparison_NextDiff}">
                         <TextBlock Text="&#xE76C;" FontFamily="Segoe MDL2 Assets" FontSize="11"/>
                     </Button>
                     <TextBlock Text="{Binding DiffBlockCount, StringFormat='{}0/{0}'}"
@@ -61,7 +61,7 @@
                     <ToggleButton Style="{DynamicResource XD_ToolbarToggleButtonStyle}"
                                   Width="Auto" Padding="6,2"
                                   IsChecked="{Binding IsSideBySide}"
-                                  Visibility="{Binding IsBinaryMode, Converter={StaticResource NotBoolToVis}}" Content="{DynamicResource FileComparison_SideBySideUnified}">
+                                  Visibility="{Binding IsBinaryMode, Converter={StaticResource NotBoolToVis}}" ToolTip="{DynamicResource FileComparison_SideBySideUnified}">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="&#xE8A0;" FontFamily="Segoe MDL2 Assets"
                                        FontSize="11" Margin="0,0,4,0"/>
@@ -72,7 +72,7 @@
                     <ToggleButton Style="{DynamicResource XD_ToolbarToggleButtonStyle}"
                                   Width="Auto" Padding="6,2" Margin="4,0,0,0"
                                   IsChecked="{Binding IgnoreWhitespace}"
-                                  Visibility="{Binding IsBinaryMode, Converter={StaticResource NotBoolToVis}}" Content="{DynamicResource FileComparison_IgnoreWS}">
+                                  Visibility="{Binding IsBinaryMode, Converter={StaticResource NotBoolToVis}}" ToolTip="{DynamicResource FileComparison_IgnoreWS}">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="&#xE8AB;" FontFamily="Segoe MDL2 Assets"
                                        FontSize="11" Margin="0,0,4,0"/>
@@ -96,7 +96,7 @@
                         <Button Style="{DynamicResource XD_ToolbarIconButtonStyle}"
                                 Width="Auto" Padding="6,2" Margin="4,0,0,0"
                                 x:Name="CopyHexButton"
-                                Click="OnCopyHexClicked" Content="{DynamicResource FileComparison_CopyHexDump}">
+                                Click="OnCopyHexClicked" ToolTip="{DynamicResource FileComparison_CopyHexDump}">
                             <TextBlock Text="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="11"/>
                         </Button>
                         <Separator Width="1" Height="16"
@@ -148,7 +148,7 @@
                 <!-- Stats panel toggle -->
                 <Button Style="{DynamicResource XD_ToolbarIconButtonStyle}"
                         Width="Auto" Padding="6,2"
-                        Command="{Binding ToggleStatsCommand}" Content="{DynamicResource FileComparison_ToggleStats}"
+                        Command="{Binding ToggleStatsCommand}" ToolTip="{DynamicResource FileComparison_ToggleStats}"
                         Visibility="{Binding IsBinaryMode, Converter={StaticResource BoolToVis}}">
                     <TextBlock Text="&#xE9D2;" FontFamily="Segoe MDL2 Assets" FontSize="11"/>
                 </Button>
