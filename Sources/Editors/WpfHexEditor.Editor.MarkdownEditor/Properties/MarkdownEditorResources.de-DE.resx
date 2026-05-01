@@ -214,4 +214,9 @@
   <data name="Md_NoHeadingsFound" xml:space="preserve">
     <value>Keine Überschriften gefunden.</value>
   </data>
+  <data name="MdPrev_InitializingPreview" xml:space="preserve"><value>Vorschau wird initialisiert…</value></data>
+  <data name="MdPrev_RuntimeNotFoundTitle" xml:space="preserve"><value>WebView2-Runtime nicht gefunden</value></data>
+  <data name="MdPrev_RuntimeNotFoundMsg" xml:space="preserve"><value>Die Markdown-Vorschau erfordert die Microsoft Edge WebView2-Runtime. Herunterladen von microsoft.com/edge/webview2.</value></data>
+  <data name="MdOut_RefreshTooltip" xml:space="preserve"><value>Gliederung aktualisieren (F5)</value></data>
+  <data name="MdOut_NoActiveFile" xml:space="preserve"><value>Keine aktive Markdown-Datei.</value></data>
 </root>

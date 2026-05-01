@@ -73,7 +73,7 @@
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="4,0">
 
                 <!-- Clear -->
-                <Button x:Name="BtnClear" Style="{StaticResource TbBtnStyle}" Content="{DynamicResource PluginDev_ClearLog}"
+                <Button x:Name="BtnClear" Style="{StaticResource TbBtnStyle}" ToolTip="{DynamicResource PluginDev_ClearLog}"
                         Click="OnClear">
                     <TextBlock Text="&#xE894;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
                 </Button>
@@ -107,7 +107,7 @@
                 <Separator Width="1" Background="{DynamicResource DockBorderBrush}" Margin="4,4"/>
 
                 <!-- Export -->
-                <Button x:Name="BtnExport" Style="{StaticResource TbBtnStyle}" Content="{DynamicResource PluginDev_ExportLog}"
+                <Button x:Name="BtnExport" Style="{StaticResource TbBtnStyle}" ToolTip="{DynamicResource PluginDev_ExportLog}"
                         Click="OnExport">
                     <TextBlock Text="&#xE898;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
                 </Button>

@@ -214,4 +214,9 @@
   <data name="Md_NoHeadingsFound" xml:space="preserve">
     <value>Заголовки не найдены.</value>
   </data>
+  <data name="MdPrev_InitializingPreview" xml:space="preserve"><value>Инициализация предварительного просмотра…</value></data>
+  <data name="MdPrev_RuntimeNotFoundTitle" xml:space="preserve"><value>Среда выполнения WebView2 не найдена</value></data>
+  <data name="MdPrev_RuntimeNotFoundMsg" xml:space="preserve"><value>Для предварительного просмотра Markdown требуется среда выполнения Microsoft Edge WebView2. Загрузите её с microsoft.com/edge/webview2.</value></data>
+  <data name="MdOut_RefreshTooltip" xml:space="preserve"><value>Обновить структуру (F5)</value></data>
+  <data name="MdOut_NoActiveFile" xml:space="preserve"><value>Нет активного файла Markdown.</value></data>
 </root>

@@ -214,4 +214,9 @@
   <data name="Md_NoHeadingsFound" xml:space="preserve">
     <value>見出しが見つかりませんでした。</value>
   </data>
+  <data name="MdPrev_InitializingPreview" xml:space="preserve"><value>プレビューを初期化中…</value></data>
+  <data name="MdPrev_RuntimeNotFoundTitle" xml:space="preserve"><value>WebView2 ランタイムが見つかりません</value></data>
+  <data name="MdPrev_RuntimeNotFoundMsg" xml:space="preserve"><value>Markdown プレビューには Microsoft Edge WebView2 Runtime が必要です。microsoft.com/edge/webview2 からダウンロードしてください。</value></data>
+  <data name="MdOut_RefreshTooltip" xml:space="preserve"><value>アウトラインを更新 (F5)</value></data>
+  <data name="MdOut_NoActiveFile" xml:space="preserve"><value>アクティブな Markdown ファイルがありません。</value></data>
 </root>

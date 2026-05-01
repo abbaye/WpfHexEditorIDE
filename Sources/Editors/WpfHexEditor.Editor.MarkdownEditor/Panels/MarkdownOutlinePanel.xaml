@@ -115,7 +115,7 @@
                            Foreground="{DynamicResource SE_ForegroundBrush}"/>
                 <Button x:Name="RefreshButton"
                         Style="{StaticResource MDO_IconButton}"
-                        ToolTip="Refresh outline (F5)"
+                        ToolTip="{DynamicResource MdOut_RefreshTooltip}"
                         Click="OnRefreshClick">
                     <TextBlock Text="&#xE72C;"
                                FontFamily="Segoe MDL2 Assets"
@@ -127,7 +127,7 @@
         <!-- ── Empty-state overlay ──────────────────────────────────────── -->
         <Grid Grid.Row="1">
             <TextBlock x:Name="EmptyLabel"
-                       Text="No Markdown file active."
+                       Text="{DynamicResource MdOut_NoActiveFile}"
                        HorizontalAlignment="Center"
                        VerticalAlignment="Center"
                        FontSize="11"

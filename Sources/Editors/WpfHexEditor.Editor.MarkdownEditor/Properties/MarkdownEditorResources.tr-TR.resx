@@ -214,4 +214,9 @@
   <data name="Md_NoHeadingsFound" xml:space="preserve">
     <value>Başlık bulunamadı.</value>
   </data>
+  <data name="MdPrev_InitializingPreview" xml:space="preserve"><value>Önizleme başlatılıyor…</value></data>
+  <data name="MdPrev_RuntimeNotFoundTitle" xml:space="preserve"><value>WebView2 Çalışma Zamanı Bulunamadı</value></data>
+  <data name="MdPrev_RuntimeNotFoundMsg" xml:space="preserve"><value>Markdown önizlemesi için Microsoft Edge WebView2 Çalışma Zamanı gereklidir. microsoft.com/edge/webview2 adresinden indirin.</value></data>
+  <data name="MdOut_RefreshTooltip" xml:space="preserve"><value>Ana hattı yenile (F5)</value></data>
+  <data name="MdOut_NoActiveFile" xml:space="preserve"><value>Etkin Markdown dosyası yok.</value></data>
 </root>

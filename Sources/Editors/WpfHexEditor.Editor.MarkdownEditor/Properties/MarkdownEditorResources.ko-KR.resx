@@ -214,4 +214,9 @@
   <data name="Md_NoHeadingsFound" xml:space="preserve">
     <value>제목이 없습니다.</value>
   </data>
+  <data name="MdPrev_InitializingPreview" xml:space="preserve"><value>미리보기 초기화 중…</value></data>
+  <data name="MdPrev_RuntimeNotFoundTitle" xml:space="preserve"><value>WebView2 런타임을 찾을 수 없음</value></data>
+  <data name="MdPrev_RuntimeNotFoundMsg" xml:space="preserve"><value>Markdown 미리보기에는 Microsoft Edge WebView2 Runtime이 필요합니다. microsoft.com/edge/webview2에서 다운로드하세요.</value></data>
+  <data name="MdOut_RefreshTooltip" xml:space="preserve"><value>개요 새로 고침 (F5)</value></data>
+  <data name="MdOut_NoActiveFile" xml:space="preserve"><value>활성 Markdown 파일이 없습니다.</value></data>
 </root>

@@ -22,15 +22,11 @@
         Background="{DynamicResource DockWindowBackgroundBrush}"
         Foreground="{DynamicResource DockMenuForegroundBrush}"
              xmlns:appSvc="clr-namespace:WpfHexEditor.App.Services">
-    <UserControl.Resources>
+    <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <appSvc:AppLocalizedDictionary/>
             </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </UserControl.Resources>
-
-    <Window.Resources>
         <Style TargetType="TextBlock">
             <Setter Property="Foreground" Value="{DynamicResource DockMenuForegroundBrush}" />
             <Setter Property="VerticalAlignment" Value="Center" />
@@ -65,6 +61,7 @@
             <Setter Property="BorderBrush" Value="{DynamicResource DockBorderBrush}" />
             <Setter Property="Padding"     Value="6,4" />
         </Style>
+        </ResourceDictionary>
     </Window.Resources>
 
     <Grid Margin="16">

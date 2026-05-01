@@ -116,4 +116,13 @@
   <data name="Md_NoHeadingsFound" xml:space="preserve"><value>No headings found.</value></data>
 
   <data name="Md_OutlineTitle" xml:space="preserve"><value>Markdown Outline</value></data>
+
+  <!-- Preview pane -->
+  <data name="MdPrev_InitializingPreview" xml:space="preserve"><value>Initializing preview…</value></data>
+  <data name="MdPrev_RuntimeNotFoundTitle" xml:space="preserve"><value>WebView2 Runtime Not Found</value></data>
+  <data name="MdPrev_RuntimeNotFoundMsg"   xml:space="preserve"><value>The Markdown preview requires Microsoft Edge WebView2 Runtime. Download it from microsoft.com/edge/webview2.</value></data>
+
+  <!-- Outline panel -->
+  <data name="MdOut_RefreshTooltip" xml:space="preserve"><value>Refresh outline (F5)</value></data>
+  <data name="MdOut_NoActiveFile"   xml:space="preserve"><value>No Markdown file active.</value></data>
 </root>

@@ -214,4 +214,9 @@
   <data name="Md_NoHeadingsFound" xml:space="preserve">
     <value>कोई शीर्षक नहीं मिला।</value>
   </data>
+  <data name="MdPrev_InitializingPreview" xml:space="preserve"><value>पूर्वावलोकन प्रारंभ हो रहा है…</value></data>
+  <data name="MdPrev_RuntimeNotFoundTitle" xml:space="preserve"><value>WebView2 रनटाइम नहीं मिला</value></data>
+  <data name="MdPrev_RuntimeNotFoundMsg" xml:space="preserve"><value>Markdown पूर्वावलोकन के लिए Microsoft Edge WebView2 Runtime आवश्यक है। microsoft.com/edge/webview2 से डाउनलोड करें।</value></data>
+  <data name="MdOut_RefreshTooltip" xml:space="preserve"><value>रूपरेखा ताज़ा करें (F5)</value></data>
+  <data name="MdOut_NoActiveFile" xml:space="preserve"><value>कोई सक्रिय Markdown फ़ाइल नहीं है।</value></data>
 </root>

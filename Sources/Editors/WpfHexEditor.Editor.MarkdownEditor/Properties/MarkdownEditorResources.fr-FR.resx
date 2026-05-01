@@ -214,4 +214,9 @@
   <data name="Md_NoHeadingsFound" xml:space="preserve">
     <value>Aucun titre trouvé.</value>
   </data>
+  <data name="MdPrev_InitializingPreview" xml:space="preserve"><value>Initialisation de l’aperçu…</value></data>
+  <data name="MdPrev_RuntimeNotFoundTitle" xml:space="preserve"><value>Runtime WebView2 introuvable</value></data>
+  <data name="MdPrev_RuntimeNotFoundMsg" xml:space="preserve"><value>L’aperçu Markdown nécessite Microsoft Edge WebView2 Runtime. Téléchargez-le depuis microsoft.com/edge/webview2.</value></data>
+  <data name="MdOut_RefreshTooltip" xml:space="preserve"><value>Actualiser le plan (F5)</value></data>
+  <data name="MdOut_NoActiveFile" xml:space="preserve"><value>Aucun fichier Markdown actif.</value></data>
 </root>

@@ -214,4 +214,9 @@
   <data name="Md_NoHeadingsFound" xml:space="preserve">
     <value>未找到标题。</value>
   </data>
+  <data name="MdPrev_InitializingPreview" xml:space="preserve"><value>正在初始化预览…</value></data>
+  <data name="MdPrev_RuntimeNotFoundTitle" xml:space="preserve"><value>未找到 WebView2 运行时</value></data>
+  <data name="MdPrev_RuntimeNotFoundMsg" xml:space="preserve"><value>Markdown 预览需要 Microsoft Edge WebView2 运行时。请从 microsoft.com/edge/webview2 下载。</value></data>
+  <data name="MdOut_RefreshTooltip" xml:space="preserve"><value>刷新大纲 (F5)</value></data>
+  <data name="MdOut_NoActiveFile" xml:space="preserve"><value>没有活动的 Markdown 文件。</value></data>
 </root>
