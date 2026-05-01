@@ -40,5 +40,12 @@ public sealed record DebugMenuEntry(
     string? ToolTip,
 
     /// <summary>True for hardcoded IDE items, false for plugin-contributed items.</summary>
-    bool IsBuiltIn
+    bool IsBuiltIn,
+
+    /// <summary>
+    /// Optional WPF resource key resolved via <c>Application.Current.TryFindResource</c>.
+    /// When set, the resolved string is used as <see cref="Header"/> at menu-build time,
+    /// falling back to <see cref="Header"/> if the key is missing.
+    /// </summary>
+    string? HeaderResourceKey = null
 );

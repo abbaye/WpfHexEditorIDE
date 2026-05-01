@@ -1139,4 +1139,22 @@
   <data name="APP_InstallEllipsis" xml:space="preserve">
     <value>Install...</value>
   </data>
+
+  <!-- Debug menu items (wave 24) -->
+  <data name="APP_DBG_StartDebugging"        xml:space="preserve"><value>Start _Debugging</value></data>
+  <data name="APP_DBG_StartWithoutDebugging" xml:space="preserve"><value>Start _Without Debugging</value></data>
+  <data name="APP_DBG_StopDebugging"         xml:space="preserve"><value>S_top Debugging</value></data>
+  <data name="APP_DBG_Restart"               xml:space="preserve"><value>_Restart</value></data>
+  <data name="APP_DBG_Continue"              xml:space="preserve"><value>_Continue</value></data>
+  <data name="APP_DBG_Pause"                 xml:space="preserve"><value>_Pause</value></data>
+  <data name="APP_DBG_AttachToProcess"       xml:space="preserve"><value>_Attach to Process…</value></data>
+  <data name="APP_DBG_StepOver"              xml:space="preserve"><value>Step _Over</value></data>
+  <data name="APP_DBG_StepInto"             xml:space="preserve"><value>Step _Into</value></data>
+  <data name="APP_DBG_StepOut"              xml:space="preserve"><value>Step O_ut</value></data>
+  <data name="APP_DBG_ToggleBreakpoint"     xml:space="preserve"><value>Toggle _Breakpoint</value></data>
+  <data name="APP_DBG_DeleteAllBreakpoints" xml:space="preserve"><value>_Delete All Breakpoints</value></data>
+  <data name="APP_DBG_ShowBreakpoints"      xml:space="preserve"><value>Show _Breakpoints</value></data>
+  <data name="APP_DBG_ShowCallStack"        xml:space="preserve"><value>Show _Call Stack</value></data>
+  <data name="APP_DBG_ShowLocals"           xml:space="preserve"><value>Show _Locals</value></data>
+  <data name="APP_DBG_ShowWatch"            xml:space="preserve"><value>Show _Watch</value></data>
 </root>

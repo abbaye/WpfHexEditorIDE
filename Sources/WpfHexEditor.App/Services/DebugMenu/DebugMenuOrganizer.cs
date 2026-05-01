@@ -126,9 +126,13 @@ public sealed class DebugMenuOrganizer
 
     private static MenuItem BuildMenuItem(DebugMenuEntry entry)
     {
+        var resolvedHeader = entry.HeaderResourceKey is not null
+            ? Application.Current.TryFindResource(entry.HeaderResourceKey) as string ?? entry.Header
+            : entry.Header;
+
         var mi = new MenuItem
         {
-            Header           = entry.Header,
+            Header           = resolvedHeader,
             Command          = entry.Command,
             CommandParameter = entry.CommandParameter,
             ToolTip          = entry.ToolTip,
