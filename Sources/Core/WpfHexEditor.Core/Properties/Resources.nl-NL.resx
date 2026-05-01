@@ -1958,4 +1958,9 @@ Opmerking: Volledige integratie met HexEditor vereist verbinding met het hoofdwe
   <data name="HE_SearchTypeWildcard" xml:space="preserve"><value>JOKERTEKEN</value></data>
   <data name="HE_SearchTypeTbl" xml:space="preserve"><value>TBL TEKST</value></data>
   <data name="HE_SearchTypeRelative" xml:space="preserve"><value>RELATIEF</value></data>
+  <data name="HE_Toolbar_DetectedFormat" xml:space="preserve"><value>Gedetecteerd bestandsformaat</value></data>
+  <data name="HE_Toolbar_ConfidenceScore" xml:space="preserve"><value>Detectiebetrouwbaarheid</value></data>
+  <data name="HE_Toolbar_ConfidenceFormat" xml:space="preserve"><value>Detectiebetrouwbaarheid: {0}</value></data>
+  <data name="HE_Toolbar_ChangeFormat" xml:space="preserve"><value>Formaat</value></data>
+  <data name="HE_Toolbar_ChangeFormatTooltip" xml:space="preserve"><value>Gedetecteerd formaat wijzigen</value></data>
 </root>

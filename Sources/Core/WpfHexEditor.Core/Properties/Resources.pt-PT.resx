@@ -1958,4 +1958,9 @@ Nota: A integração completa com o HexEditor requer ligação ao modelo de vist
   <data name="HE_SearchTypeWildcard" xml:space="preserve"><value>CARÁCTER UNIVERSAL</value></data>
   <data name="HE_SearchTypeTbl" xml:space="preserve"><value>TEXTO TBL</value></data>
   <data name="HE_SearchTypeRelative" xml:space="preserve"><value>RELATIVO</value></data>
+  <data name="HE_Toolbar_DetectedFormat" xml:space="preserve"><value>Formato de ficheiro detetado</value></data>
+  <data name="HE_Toolbar_ConfidenceScore" xml:space="preserve"><value>Pontuação de confiança da deteção</value></data>
+  <data name="HE_Toolbar_ConfidenceFormat" xml:space="preserve"><value>Confiança da deteção: {0}</value></data>
+  <data name="HE_Toolbar_ChangeFormat" xml:space="preserve"><value>Formato</value></data>
+  <data name="HE_Toolbar_ChangeFormatTooltip" xml:space="preserve"><value>Alterar formato detetado</value></data>
 </root>

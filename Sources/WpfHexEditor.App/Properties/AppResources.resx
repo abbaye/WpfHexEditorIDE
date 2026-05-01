@@ -799,6 +799,8 @@
   <data name="App_Editor_HexEditor" xml:space="preserve"><value>Hex Editor</value></data>
   <data name="App_Editor_Encodings" xml:space="preserve"><value>Encodings</value></data>
   <data name="App_Editor_ProjectTables" xml:space="preserve"><value>Project Tables</value></data>
+  <data name="App_Editor_BuiltInTables" xml:space="preserve"><value>Built-in Tables</value></data>
+  <data name="App_Editor_DefaultAscii" xml:space="preserve"><value>Default (ASCII)</value></data>
   <data name="App_Editor_FileNotFound" xml:space="preserve"><value>File not found:{0}{1}</value></data>
   <data name="App_Editor_NewDocumentText" xml:space="preserve"><value>This is document: {0}{1}{1}Edit this text...</value></data>
   <data name="App_Editor_RefreshPrefix" xml:space="preserve"><value>Refresh: </value></data>

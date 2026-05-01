@@ -236,4 +236,60 @@
   <data name="SE_PropHidden" xml:space="preserve"><value>隐藏</value></data>
   <data name="SE_PropEndianness" xml:space="preserve"><value>字节序</value></data>
   <data name="SE_BlockType" xml:space="preserve"><value>块类型</value></data>
+  <data name="SE_BE_Action" xml:space="preserve"><value>操作</value></data>
+  <data name="SE_BE_Variable" xml:space="preserve"><value>变量</value></data>
+  <data name="SE_BE_Value" xml:space="preserve"><value>值</value></data>
+  <data name="SE_BE_Computation" xml:space="preserve"><value>计算</value></data>
+  <data name="SE_BE_Expression" xml:space="preserve"><value>表达式</value></data>
+  <data name="SE_BE_StoreAs" xml:space="preserve"><value>存储为</value></data>
+  <data name="SE_BE_Position" xml:space="preserve"><value>位置</value></data>
+  <data name="SE_BE_Offset" xml:space="preserve"><value>偏移</value></data>
+  <data name="SE_BE_OffsetFrom" xml:space="preserve"><value>偏移起点</value></data>
+  <data name="SE_BE_OffsetAdd" xml:space="preserve"><value>偏移加</value></data>
+  <data name="SE_BE_Length" xml:space="preserve"><value>长度</value></data>
+  <data name="SE_BE_ValueType" xml:space="preserve"><value>值类型</value></data>
+  <data name="SE_BE_Array" xml:space="preserve"><value>数组</value></data>
+  <data name="SE_BE_Count" xml:space="preserve"><value>数量</value></data>
+  <data name="SE_BE_EntrySize" xml:space="preserve"><value>条目大小</value></data>
+  <data name="SE_BE_IndexVar" xml:space="preserve"><value>索引变量</value></data>
+  <data name="SE_BE_ColorCycle" xml:space="preserve"><value>颜色循环</value></data>
+  <data name="SE_BE_EntryFieldsHint" xml:space="preserve"><value>条目字段在树中作为子项显示。</value></data>
+  <data name="SE_BE_Union" xml:space="preserve"><value>联合</value></data>
+  <data name="SE_BE_Discriminant" xml:space="preserve"><value>判别符</value></data>
+  <data name="SE_BE_Variants" xml:space="preserve"><value>变体</value></data>
+  <data name="SE_BE_NestedStruct" xml:space="preserve"><value>嵌套结构</value></data>
+  <data name="SE_BE_StructRef" xml:space="preserve"><value>结构引用</value></data>
+  <data name="SE_BE_PointerLocation" xml:space="preserve"><value>指针位置</value></data>
+  <data name="SE_BE_TargetStorage" xml:space="preserve"><value>目标和存储</value></data>
+  <data name="SE_BE_TargetVar" xml:space="preserve"><value>目标变量</value></data>
+  <data name="SE_BE_Label" xml:space="preserve"><value>标签</value></data>
+  <data name="SE_BE_PositionSize" xml:space="preserve"><value>位置和大小</value></data>
+  <data name="SE_BE_Storage" xml:space="preserve"><value>存储</value></data>
+  <data name="SE_BE_MappedStoreAs" xml:space="preserve"><value>映射存储为</value></data>
+  <data name="SE_BE_ValueMap" xml:space="preserve"><value>值映射</value></data>
+  <data name="SE_BE_Bitfields" xml:space="preserve"><value>位字段</value></data>
+  <data name="SE_BE_Name" xml:space="preserve"><value>名称</value></data>
+  <data name="SE_BE_Bits" xml:space="preserve"><value>位</value></data>
+  <data name="SE_BE_Until" xml:space="preserve"><value>直到</value></data>
+  <data name="SE_BE_MaxLength" xml:space="preserve"><value>最大长度</value></data>
+  <data name="SE_BE_MinValue" xml:space="preserve"><value>最小值</value></data>
+  <data name="SE_BE_MaxValue" xml:space="preserve"><value>最大值</value></data>
+  <data name="SE_BE_PatternRegex" xml:space="preserve"><value>模式 (regex)</value></data>
+  <data name="SE_BE_ErrorMessage" xml:space="preserve"><value>错误消息</value></data>
+  <data name="SE_BE_VariableName" xml:space="preserve"><value>变量名</value></data>
+  <data name="SE_BE_Group" xml:space="preserve"><value>分组</value></data>
+  <data name="SE_BE_GroupHint" xml:space="preserve"><value>分组以颜色覆盖层为一组子字段提供视觉标记。它本身不消耗任何字节。</value></data>
+  <data name="SE_BE_ChildrenInTreeHint" xml:space="preserve"><value>子项显示在块树中 — 使用树添加/重新排序子块。</value></data>
+  <data name="SE_BE_ChildFieldsHint" xml:space="preserve"><value>子字段显示在块树中。</value></data>
+  <data name="SE_BE_RawDataRegion" xml:space="preserve"><value>原始数据区域</value></data>
+  <data name="SE_BE_RawDataDescription" xml:space="preserve"><value>用颜色覆盖层标记一段原始字节区域。不提取任何值。</value></data>
+  <data name="SE_BE_Condition" xml:space="preserve"><value>条件</value></data>
+  <data name="SE_BE_BranchLabels" xml:space="preserve"><value>分支标签</value></data>
+  <data name="SE_BE_TrueLabel" xml:space="preserve"><value>True 标签</value></data>
+  <data name="SE_BE_FalseLabel" xml:space="preserve"><value>False 标签</value></data>
+  <data name="SE_BE_BranchHint" xml:space="preserve"><value>Then / Else 块在树中作为子项显示。</value></data>
+  <data name="SE_BE_LoopCondition" xml:space="preserve"><value>循环条件</value></data>
+  <data name="SE_BE_Bounds" xml:space="preserve"><value>边界</value></data>
+  <data name="SE_BE_MaxIterations" xml:space="preserve"><value>最大迭代</value></data>
+  <data name="SE_BE_LoopBodyHint" xml:space="preserve"><value>主体块在树中作为子项显示。</value></data>
 </root>

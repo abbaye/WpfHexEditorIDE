@@ -1958,4 +1958,9 @@ Not: HexEditor ile tam entegrasyon, ana görünüm modeline bağlanmayı gerekti
   <data name="HE_SearchTypeWildcard" xml:space="preserve"><value>JOKER</value></data>
   <data name="HE_SearchTypeTbl" xml:space="preserve"><value>TBL METİN</value></data>
   <data name="HE_SearchTypeRelative" xml:space="preserve"><value>GÖRECELİ</value></data>
+  <data name="HE_Toolbar_DetectedFormat" xml:space="preserve"><value>Algılanan dosya biçimi</value></data>
+  <data name="HE_Toolbar_ConfidenceScore" xml:space="preserve"><value>Algılama güven puanı</value></data>
+  <data name="HE_Toolbar_ConfidenceFormat" xml:space="preserve"><value>Algılama güveni: {0}</value></data>
+  <data name="HE_Toolbar_ChangeFormat" xml:space="preserve"><value>Biçim</value></data>
+  <data name="HE_Toolbar_ChangeFormatTooltip" xml:space="preserve"><value>Algılanan biçimi değiştir</value></data>
 </root>

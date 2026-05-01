@@ -859,4 +859,6 @@
   <data name="APP_BuildRebuild" xml:space="preserve"><value>Opnieuw bouwen</value></data>
   <data name="APP_BuildClean" xml:space="preserve"><value>Opschonen</value></data>
   <data name="APP_BuildStop" xml:space="preserve"><value>Stop</value></data>
+  <data name="App_Editor_BuiltInTables" xml:space="preserve"><value>Ingebouwde tabellen</value></data>
+  <data name="App_Editor_DefaultAscii" xml:space="preserve"><value>Standaard (ASCII)</value></data>
 </root>

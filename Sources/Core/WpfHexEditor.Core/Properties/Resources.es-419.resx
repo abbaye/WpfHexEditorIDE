@@ -2021,4 +2021,9 @@ Nota: La integración completa con HexEditor requiere conectarse al modelo de vi
   <data name="HE_SearchTypeWildcard" xml:space="preserve"><value>COMODÍN</value></data>
   <data name="HE_SearchTypeTbl" xml:space="preserve"><value>TEXTO TBL</value></data>
   <data name="HE_SearchTypeRelative" xml:space="preserve"><value>RELATIVO</value></data>
+  <data name="HE_Toolbar_DetectedFormat" xml:space="preserve"><value>Formato de archivo detectado</value></data>
+  <data name="HE_Toolbar_ConfidenceScore" xml:space="preserve"><value>Puntuación de confianza de detección</value></data>
+  <data name="HE_Toolbar_ConfidenceFormat" xml:space="preserve"><value>Confianza de detección: {0}</value></data>
+  <data name="HE_Toolbar_ChangeFormat" xml:space="preserve"><value>Formato</value></data>
+  <data name="HE_Toolbar_ChangeFormatTooltip" xml:space="preserve"><value>Cambiar formato detectado</value></data>
 </root>

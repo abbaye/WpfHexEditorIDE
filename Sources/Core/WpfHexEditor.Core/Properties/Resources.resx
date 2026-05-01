@@ -2108,4 +2108,10 @@
   <data name="HE_SearchTypeWildcard" xml:space="preserve"><value>WILDCARD</value></data>
   <data name="HE_SearchTypeTbl"      xml:space="preserve"><value>TBL TEXT</value></data>
   <data name="HE_SearchTypeRelative" xml:space="preserve"><value>RELATIVE</value></data>
+  <!-- HexEditor toolbar contributor (format chip / confidence badge / change-format dropdown) -->
+  <data name="HE_Toolbar_DetectedFormat"      xml:space="preserve"><value>Detected file format</value></data>
+  <data name="HE_Toolbar_ConfidenceScore"     xml:space="preserve"><value>Detection confidence score</value></data>
+  <data name="HE_Toolbar_ConfidenceFormat"    xml:space="preserve"><value>Detection confidence: {0}</value></data>
+  <data name="HE_Toolbar_ChangeFormat"        xml:space="preserve"><value>Format</value></data>
+  <data name="HE_Toolbar_ChangeFormatTooltip" xml:space="preserve"><value>Change detected format</value></data>
 </root>

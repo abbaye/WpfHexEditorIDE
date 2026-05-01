@@ -2013,4 +2013,9 @@ Nota: A integração completa com o HexEditor requer conexão com o modelo de ex
   <data name="HE_SearchTypeWildcard" xml:space="preserve"><value>CURINGA</value></data>
   <data name="HE_SearchTypeTbl" xml:space="preserve"><value>TEXTO TBL</value></data>
   <data name="HE_SearchTypeRelative" xml:space="preserve"><value>RELATIVO</value></data>
+  <data name="HE_Toolbar_DetectedFormat" xml:space="preserve"><value>Formato de arquivo detectado</value></data>
+  <data name="HE_Toolbar_ConfidenceScore" xml:space="preserve"><value>Pontuação de confiança da detecção</value></data>
+  <data name="HE_Toolbar_ConfidenceFormat" xml:space="preserve"><value>Confiança da detecção: {0}</value></data>
+  <data name="HE_Toolbar_ChangeFormat" xml:space="preserve"><value>Formato</value></data>
+  <data name="HE_Toolbar_ChangeFormatTooltip" xml:space="preserve"><value>Alterar formato detectado</value></data>
 </root>

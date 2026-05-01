@@ -236,4 +236,60 @@
   <data name="SE_PropHidden" xml:space="preserve"><value>مخفي</value></data>
   <data name="SE_PropEndianness" xml:space="preserve"><value>ترتيب البايتات</value></data>
   <data name="SE_BlockType" xml:space="preserve"><value>نوع الكتلة</value></data>
+  <data name="SE_BE_Action" xml:space="preserve"><value>إجراء</value></data>
+  <data name="SE_BE_Variable" xml:space="preserve"><value>متغير</value></data>
+  <data name="SE_BE_Value" xml:space="preserve"><value>قيمة</value></data>
+  <data name="SE_BE_Computation" xml:space="preserve"><value>حساب</value></data>
+  <data name="SE_BE_Expression" xml:space="preserve"><value>تعبير</value></data>
+  <data name="SE_BE_StoreAs" xml:space="preserve"><value>تخزين كـ</value></data>
+  <data name="SE_BE_Position" xml:space="preserve"><value>الموضع</value></data>
+  <data name="SE_BE_Offset" xml:space="preserve"><value>الإزاحة</value></data>
+  <data name="SE_BE_OffsetFrom" xml:space="preserve"><value>الإزاحة من</value></data>
+  <data name="SE_BE_OffsetAdd" xml:space="preserve"><value>إضافة إزاحة</value></data>
+  <data name="SE_BE_Length" xml:space="preserve"><value>الطول</value></data>
+  <data name="SE_BE_ValueType" xml:space="preserve"><value>نوع القيمة</value></data>
+  <data name="SE_BE_Array" xml:space="preserve"><value>مصفوفة</value></data>
+  <data name="SE_BE_Count" xml:space="preserve"><value>العدد</value></data>
+  <data name="SE_BE_EntrySize" xml:space="preserve"><value>حجم الإدخال</value></data>
+  <data name="SE_BE_IndexVar" xml:space="preserve"><value>متغير الفهرس</value></data>
+  <data name="SE_BE_ColorCycle" xml:space="preserve"><value>دورة الألوان</value></data>
+  <data name="SE_BE_EntryFieldsHint" xml:space="preserve"><value>تظهر حقول الإدخال كأبناء في الشجرة.</value></data>
+  <data name="SE_BE_Union" xml:space="preserve"><value>اتحاد</value></data>
+  <data name="SE_BE_Discriminant" xml:space="preserve"><value>المميِّز</value></data>
+  <data name="SE_BE_Variants" xml:space="preserve"><value>المتغيرات</value></data>
+  <data name="SE_BE_NestedStruct" xml:space="preserve"><value>بنية متداخلة</value></data>
+  <data name="SE_BE_StructRef" xml:space="preserve"><value>مرجع البنية</value></data>
+  <data name="SE_BE_PointerLocation" xml:space="preserve"><value>موقع المؤشر</value></data>
+  <data name="SE_BE_TargetStorage" xml:space="preserve"><value>الهدف والتخزين</value></data>
+  <data name="SE_BE_TargetVar" xml:space="preserve"><value>متغير الهدف</value></data>
+  <data name="SE_BE_Label" xml:space="preserve"><value>تسمية</value></data>
+  <data name="SE_BE_PositionSize" xml:space="preserve"><value>الموضع والحجم</value></data>
+  <data name="SE_BE_Storage" xml:space="preserve"><value>التخزين</value></data>
+  <data name="SE_BE_MappedStoreAs" xml:space="preserve"><value>تخزين معيَّن كـ</value></data>
+  <data name="SE_BE_ValueMap" xml:space="preserve"><value>خريطة القيم</value></data>
+  <data name="SE_BE_Bitfields" xml:space="preserve"><value>حقول البت</value></data>
+  <data name="SE_BE_Name" xml:space="preserve"><value>الاسم</value></data>
+  <data name="SE_BE_Bits" xml:space="preserve"><value>البتات</value></data>
+  <data name="SE_BE_Until" xml:space="preserve"><value>حتى</value></data>
+  <data name="SE_BE_MaxLength" xml:space="preserve"><value>الطول الأقصى</value></data>
+  <data name="SE_BE_MinValue" xml:space="preserve"><value>القيمة الدنيا</value></data>
+  <data name="SE_BE_MaxValue" xml:space="preserve"><value>القيمة القصوى</value></data>
+  <data name="SE_BE_PatternRegex" xml:space="preserve"><value>النمط (regex)</value></data>
+  <data name="SE_BE_ErrorMessage" xml:space="preserve"><value>رسالة الخطأ</value></data>
+  <data name="SE_BE_VariableName" xml:space="preserve"><value>اسم المتغير</value></data>
+  <data name="SE_BE_Group" xml:space="preserve"><value>المجموعة</value></data>
+  <data name="SE_BE_GroupHint" xml:space="preserve"><value>تُسمّي المجموعة بصريًا مجموعة من الحقول الفرعية بطبقة لونية. لا تستهلك أي بايتات.</value></data>
+  <data name="SE_BE_ChildrenInTreeHint" xml:space="preserve"><value>يظهر الأبناء في شجرة الكتل — استخدم الشجرة لإضافة/إعادة ترتيب الكتل الفرعية.</value></data>
+  <data name="SE_BE_ChildFieldsHint" xml:space="preserve"><value>تظهر الحقول الفرعية في شجرة الكتل.</value></data>
+  <data name="SE_BE_RawDataRegion" xml:space="preserve"><value>منطقة بيانات خام</value></data>
+  <data name="SE_BE_RawDataDescription" xml:space="preserve"><value>تُعلِّم منطقة بايتات خام بطبقة لونية. لا تُستخرج أي قيمة.</value></data>
+  <data name="SE_BE_Condition" xml:space="preserve"><value>الشرط</value></data>
+  <data name="SE_BE_BranchLabels" xml:space="preserve"><value>تسميات الفروع</value></data>
+  <data name="SE_BE_TrueLabel" xml:space="preserve"><value>تسمية True</value></data>
+  <data name="SE_BE_FalseLabel" xml:space="preserve"><value>تسمية False</value></data>
+  <data name="SE_BE_BranchHint" xml:space="preserve"><value>تظهر كتل Then / Else كأبناء في الشجرة.</value></data>
+  <data name="SE_BE_LoopCondition" xml:space="preserve"><value>شرط الحلقة</value></data>
+  <data name="SE_BE_Bounds" xml:space="preserve"><value>الحدود</value></data>
+  <data name="SE_BE_MaxIterations" xml:space="preserve"><value>الحد الأقصى للتكرارات</value></data>
+  <data name="SE_BE_LoopBodyHint" xml:space="preserve"><value>تظهر كتل المتن كأبناء في الشجرة.</value></data>
 </root>

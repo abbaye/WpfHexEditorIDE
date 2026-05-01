@@ -4996,5 +4996,20 @@ namespace WpfHexEditor.Core.Properties {
         public static string UndoRedo_NothingToRedo {
             get { return ResourceManager.GetString("UndoRedo_NothingToRedo", resourceCulture); }
         }
+        public static string HE_Toolbar_DetectedFormat {
+            get { return ResourceManager.GetString("HE_Toolbar_DetectedFormat", resourceCulture); }
+        }
+        public static string HE_Toolbar_ConfidenceScore {
+            get { return ResourceManager.GetString("HE_Toolbar_ConfidenceScore", resourceCulture); }
+        }
+        public static string HE_Toolbar_ConfidenceFormat {
+            get { return ResourceManager.GetString("HE_Toolbar_ConfidenceFormat", resourceCulture); }
+        }
+        public static string HE_Toolbar_ChangeFormat {
+            get { return ResourceManager.GetString("HE_Toolbar_ChangeFormat", resourceCulture); }
+        }
+        public static string HE_Toolbar_ChangeFormatTooltip {
+            get { return ResourceManager.GetString("HE_Toolbar_ChangeFormatTooltip", resourceCulture); }
+        }
     }
 }

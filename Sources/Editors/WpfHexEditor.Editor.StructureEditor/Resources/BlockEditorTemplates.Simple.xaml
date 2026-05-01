@@ -22,7 +22,7 @@
             <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource BlockCommonHeader}"/>
 
             <!-- Offset / Length / ValueType -->
-            <TextBlock Text="Position &amp; Size" Style="{StaticResource SectionHeader}"/>
+            <TextBlock Text="{DynamicResource SE_BE_PositionSize}" Style="{StaticResource SectionHeader}"/>
             <Grid Style="{StaticResource PropGrid}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -36,31 +36,31 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <TextBlock Grid.Row="0" Grid.Column="0" Text="Offset"       Style="{StaticResource PropLabel}"/>
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="{DynamicResource SE_BE_Offset}"       Style="{StaticResource PropLabel}"/>
                 <ctrl:ExpressionTextBox Grid.Row="0" Grid.Column="1" Margin="0,2"
                            Text="{Binding OffsetText, UpdateSourceTrigger=PropertyChanged}"
                            Placeholder="integer, var:name or calc:expr"
                            ToolTip="Ctrl+Space for autocomplete — integer, var:name, calc:expr, offset:N"/>
 
-                <TextBlock Grid.Row="1" Grid.Column="0" Text="Offset From"  Style="{StaticResource PropLabel}"/>
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="{DynamicResource SE_BE_OffsetFrom}"  Style="{StaticResource PropLabel}"/>
                 <ctrl:ExpressionTextBox Grid.Row="1" Grid.Column="1" Margin="0,2"
                            Text="{Binding OffsetFrom, UpdateSourceTrigger=PropertyChanged}"
                            Placeholder="variableName"
                            ToolTip="Variable name whose value is the base offset — Ctrl+Space for suggestions"/>
 
-                <TextBlock Grid.Row="2" Grid.Column="0" Text="Offset Add"   Style="{StaticResource PropLabel}"/>
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="{DynamicResource SE_BE_OffsetAdd}"   Style="{StaticResource PropLabel}"/>
                 <ctrl:ExpressionTextBox Grid.Row="2" Grid.Column="1" Margin="0,2"
                            Text="{Binding OffsetAddText, UpdateSourceTrigger=PropertyChanged}"
                            Placeholder="integer or var:name"
                            ToolTip="Additional bytes added to OffsetFrom"/>
 
-                <TextBlock Grid.Row="3" Grid.Column="0" Text="Length"       Style="{StaticResource PropLabel}"/>
+                <TextBlock Grid.Row="3" Grid.Column="0" Text="{DynamicResource SE_BE_Length}"       Style="{StaticResource PropLabel}"/>
                 <ctrl:ExpressionTextBox Grid.Row="3" Grid.Column="1" Margin="0,2"
                            Text="{Binding LengthText, UpdateSourceTrigger=PropertyChanged}"
                            Placeholder="integer, var:name or calc:expr"
                            ToolTip="Ctrl+Space for autocomplete — integer, var:name, calc:expr"/>
 
-                <TextBlock Grid.Row="4" Grid.Column="0" Text="Value Type"   Style="{StaticResource PropLabel}"/>
+                <TextBlock Grid.Row="4" Grid.Column="0" Text="{DynamicResource SE_BE_ValueType}"   Style="{StaticResource PropLabel}"/>
                 <ComboBox  Grid.Row="4" Grid.Column="1" Style="{StaticResource PropCombo}"
                            IsEditable="True"
                            ItemsSource="{Binding ValueTypes}"
@@ -68,7 +68,7 @@
             </Grid>
 
             <!-- Storage -->
-            <TextBlock Text="Storage" Style="{StaticResource SectionHeader}"/>
+            <TextBlock Text="{DynamicResource SE_BE_Storage}" Style="{StaticResource SectionHeader}"/>
             <Grid Style="{StaticResource PropGrid}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -78,12 +78,12 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <TextBlock Grid.Row="0" Grid.Column="0" Text="Store As"            Style="{StaticResource PropLabel}"/>
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="{DynamicResource SE_BE_StoreAs}"            Style="{StaticResource PropLabel}"/>
                 <ctrl:ExpressionTextBox Grid.Row="0" Grid.Column="1" Margin="0,2"
                            Text="{Binding StoreAs, UpdateSourceTrigger=PropertyChanged}"
                            Placeholder="variableName"
                            ToolTip="Variable name to store parsed value — Ctrl+Space for suggestions"/>
-                <TextBlock Grid.Row="1" Grid.Column="0" Text="Mapped Store As"     Style="{StaticResource PropLabel}"/>
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="{DynamicResource SE_BE_MappedStoreAs}"     Style="{StaticResource PropLabel}"/>
                 <ctrl:ExpressionTextBox Grid.Row="1" Grid.Column="1" Margin="0,2"
                            Text="{Binding MappedValueStoreAs, UpdateSourceTrigger=PropertyChanged}"
                            Placeholder="variableName"
@@ -91,7 +91,7 @@
             </Grid>
 
             <!-- ValueMap -->
-            <TextBlock Text="Value Map" Style="{StaticResource SectionHeader}"/>
+            <TextBlock Text="{DynamicResource SE_BE_ValueMap}" Style="{StaticResource SectionHeader}"/>
             <ItemsControl ItemsSource="{Binding ValueMapItems}" Margin="0,0,0,4">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
@@ -112,7 +112,7 @@
                     Command="{Binding AddValueMapCommand}"/>
 
             <!-- Bitfields -->
-            <TextBlock Text="Bitfields" Style="{StaticResource SectionHeader}"/>
+            <TextBlock Text="{DynamicResource SE_BE_Bitfields}" Style="{StaticResource SectionHeader}"/>
             <ItemsControl ItemsSource="{Binding Bitfields}" Margin="0,0,0,4">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate DataType="{x:Type vm:BitfieldViewModel}">
@@ -129,7 +129,7 @@
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
-                                <TextBlock Grid.Row="0" Grid.Column="0" Text="Name"    Style="{StaticResource PropLabel}"/>
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="{DynamicResource SE_BE_Name}"    Style="{StaticResource PropLabel}"/>
                                 <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
                                     <TextBox Style="{StaticResource PropField}" MinWidth="120"
                                              Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"/>
@@ -138,11 +138,11 @@
                                             Background="Transparent" BorderThickness="0"
                                             Foreground="{DynamicResource TE_LineNumberForeground}"/>
                                 </StackPanel>
-                                <TextBlock Grid.Row="1" Grid.Column="0" Text="Bits"   Style="{StaticResource PropLabel}"/>
+                                <TextBlock Grid.Row="1" Grid.Column="0" Text="{DynamicResource SE_BE_Bits}"   Style="{StaticResource PropLabel}"/>
                                 <TextBox   Grid.Row="1" Grid.Column="1" Style="{StaticResource PropField}"
                                            Text="{Binding Bits, UpdateSourceTrigger=PropertyChanged}"
                                            ToolTip="Bit range e.g. 7-6 or single bit e.g. 3"/>
-                                <TextBlock Grid.Row="2" Grid.Column="0" Text="StoreAs" Style="{StaticResource PropLabel}"/>
+                                <TextBlock Grid.Row="2" Grid.Column="0" Text="{DynamicResource SE_BE_StoreAs}" Style="{StaticResource PropLabel}"/>
                                 <TextBox   Grid.Row="2" Grid.Column="1" Style="{StaticResource PropField}"
                                            Text="{Binding StoreAs, UpdateSourceTrigger=PropertyChanged}"/>
                             </Grid>
@@ -167,12 +167,12 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Until"          Style="{StaticResource PropLabel}"/>
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="{DynamicResource SE_BE_Until}"          Style="{StaticResource PropLabel}"/>
                     <ctrl:ExpressionTextBox Grid.Row="0" Grid.Column="1" Margin="0,2"
                                Text="{Binding UntilText, UpdateSourceTrigger=PropertyChanged}"
                                Placeholder="00  or  var:endMarker  or  504B0102"
                                ToolTip="Hex pattern or var:name to stop reading at. Replaces Length when set."/>
-                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Max Length"     Style="{StaticResource PropLabel}"/>
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="{DynamicResource SE_BE_MaxLength}"     Style="{StaticResource PropLabel}"/>
                     <TextBox   Grid.Row="1" Grid.Column="1" Style="{StaticResource PropField}"
                                ctrl:InputFilter.NumericOnly="True"
                                Text="{Binding MaxLength, UpdateSourceTrigger=PropertyChanged}"
@@ -199,19 +199,19 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
-                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Min Value"       Style="{StaticResource PropLabel}"/>
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="{DynamicResource SE_BE_MinValue}"       Style="{StaticResource PropLabel}"/>
                         <TextBox   Grid.Row="0" Grid.Column="1" Style="{StaticResource PropField}"
                                    ctrl:InputFilter.NumericOnly="True"
                                    Text="{Binding MinValue, UpdateSourceTrigger=PropertyChanged}"/>
-                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Max Value"       Style="{StaticResource PropLabel}"/>
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="{DynamicResource SE_BE_MaxValue}"       Style="{StaticResource PropLabel}"/>
                         <TextBox   Grid.Row="1" Grid.Column="1" Style="{StaticResource PropField}"
                                    ctrl:InputFilter.NumericOnly="True"
                                    Text="{Binding MaxValue, UpdateSourceTrigger=PropertyChanged}"/>
-                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Pattern (regex)"  Style="{StaticResource PropLabel}"/>
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="{DynamicResource SE_BE_PatternRegex}"  Style="{StaticResource PropLabel}"/>
                         <TextBox   Grid.Row="2" Grid.Column="1" Style="{StaticResource PropField}"
                                    FontFamily="Consolas"
                                    Text="{Binding Pattern, UpdateSourceTrigger=PropertyChanged}"/>
-                        <TextBlock Grid.Row="3" Grid.Column="0" Text="Error Message"   Style="{StaticResource PropLabel}"/>
+                        <TextBlock Grid.Row="3" Grid.Column="0" Text="{DynamicResource SE_BE_ErrorMessage}"   Style="{StaticResource PropLabel}"/>
                         <TextBox   Grid.Row="3" Grid.Column="1" Style="{StaticResource PropField}"
                                    Text="{Binding ErrorMessage, UpdateSourceTrigger=PropertyChanged}"/>
                     </Grid>
@@ -224,13 +224,13 @@
     <DataTemplate x:Key="BlockTemplate_Metadata" DataType="{x:Type vm:BlockViewModel}">
         <StackPanel Style="{StaticResource BlockPanel}">
             <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource BlockCommonHeader}"/>
-            <TextBlock Text="Variable" Style="{StaticResource SectionHeader}"/>
+            <TextBlock Text="{DynamicResource SE_BE_Variable}" Style="{StaticResource SectionHeader}"/>
             <Grid Style="{StaticResource PropGrid}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="Variable Name" Style="{StaticResource PropLabel}"/>
+                <TextBlock Grid.Column="0" Text="{DynamicResource SE_BE_VariableName}" Style="{StaticResource PropLabel}"/>
                 <TextBox   Grid.Column="1" Style="{StaticResource PropField}"
                            Text="{Binding Variable, UpdateSourceTrigger=PropertyChanged}"
                            ToolTip="Name of the variable this metadata block reads"/>
@@ -242,10 +242,10 @@
     <DataTemplate x:Key="BlockTemplate_Group" DataType="{x:Type vm:BlockViewModel}">
         <StackPanel Style="{StaticResource BlockPanel}">
             <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource BlockCommonHeader}"/>
-            <TextBlock Text="Group" Style="{StaticResource SectionHeader}"/>
-            <TextBlock Text="A group visually labels a set of child fields with a color overlay. It does not consume bytes itself."
+            <TextBlock Text="{DynamicResource SE_BE_Group}" Style="{StaticResource SectionHeader}"/>
+            <TextBlock Text="{DynamicResource SE_BE_GroupHint}"
                        TextWrapping="Wrap" Opacity="0.6" FontSize="10" Margin="0,0,0,6"/>
-            <TextBlock Text="Children are shown in the block tree — use the tree to add/reorder child blocks."
+            <TextBlock Text="{DynamicResource SE_BE_ChildrenInTreeHint}"
                        TextWrapping="Wrap" Opacity="0.5" FontSize="10" FontStyle="Italic"/>
         </StackPanel>
     </DataTemplate>
@@ -254,7 +254,7 @@
     <DataTemplate x:Key="BlockTemplate_Header" DataType="{x:Type vm:BlockViewModel}">
         <StackPanel Style="{StaticResource BlockPanel}">
             <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource BlockCommonHeader}"/>
-            <TextBlock Text="Position" Style="{StaticResource SectionHeader}"/>
+            <TextBlock Text="{DynamicResource SE_BE_Position}" Style="{StaticResource SectionHeader}"/>
             <Grid Style="{StaticResource PropGrid}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -265,20 +265,20 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <TextBlock Grid.Row="0" Grid.Column="0" Text="Offset"      Style="{StaticResource PropLabel}"/>
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="{DynamicResource SE_BE_Offset}"      Style="{StaticResource PropLabel}"/>
                 <ctrl:ExpressionTextBox Grid.Row="0" Grid.Column="1" Margin="0,2"
                            Text="{Binding OffsetText, UpdateSourceTrigger=PropertyChanged}"
                            Placeholder="integer, var:name or calc:expr"/>
-                <TextBlock Grid.Row="1" Grid.Column="0" Text="Offset From" Style="{StaticResource PropLabel}"/>
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="{DynamicResource SE_BE_OffsetFrom}" Style="{StaticResource PropLabel}"/>
                 <ctrl:ExpressionTextBox Grid.Row="1" Grid.Column="1" Margin="0,2"
                            Text="{Binding OffsetFrom, UpdateSourceTrigger=PropertyChanged}"
                            Placeholder="variableName"/>
-                <TextBlock Grid.Row="2" Grid.Column="0" Text="Length"      Style="{StaticResource PropLabel}"/>
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="{DynamicResource SE_BE_Length}"      Style="{StaticResource PropLabel}"/>
                 <ctrl:ExpressionTextBox Grid.Row="2" Grid.Column="1" Margin="0,2"
                            Text="{Binding LengthText, UpdateSourceTrigger=PropertyChanged}"
                            Placeholder="integer or var:name"/>
             </Grid>
-            <TextBlock Text="Child fields are shown in the block tree."
+            <TextBlock Text="{DynamicResource SE_BE_ChildFieldsHint}"
                        TextWrapping="Wrap" Opacity="0.5" FontSize="10" FontStyle="Italic" Margin="0,4,0,0"/>
         </StackPanel>
     </DataTemplate>
@@ -287,8 +287,8 @@
     <DataTemplate x:Key="BlockTemplate_Data" DataType="{x:Type vm:BlockViewModel}">
         <StackPanel Style="{StaticResource BlockPanel}">
             <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource BlockCommonHeader}"/>
-            <TextBlock Text="Raw Data Region" Style="{StaticResource SectionHeader}"/>
-            <TextBlock Text="Marks a raw byte region with a color overlay. No value is extracted."
+            <TextBlock Text="{DynamicResource SE_BE_RawDataRegion}" Style="{StaticResource SectionHeader}"/>
+            <TextBlock Text="{DynamicResource SE_BE_RawDataDescription}"
                        TextWrapping="Wrap" Opacity="0.6" FontSize="10" Margin="0,0,0,6"/>
             <Grid Style="{StaticResource PropGrid}">
                 <Grid.ColumnDefinitions>
@@ -300,15 +300,15 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <TextBlock Grid.Row="0" Grid.Column="0" Text="Offset"      Style="{StaticResource PropLabel}"/>
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="{DynamicResource SE_BE_Offset}"      Style="{StaticResource PropLabel}"/>
                 <ctrl:ExpressionTextBox Grid.Row="0" Grid.Column="1" Margin="0,2"
                            Text="{Binding OffsetText, UpdateSourceTrigger=PropertyChanged}"
                            Placeholder="integer, var:name or calc:expr"/>
-                <TextBlock Grid.Row="1" Grid.Column="0" Text="Offset From" Style="{StaticResource PropLabel}"/>
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="{DynamicResource SE_BE_OffsetFrom}" Style="{StaticResource PropLabel}"/>
                 <ctrl:ExpressionTextBox Grid.Row="1" Grid.Column="1" Margin="0,2"
                            Text="{Binding OffsetFrom, UpdateSourceTrigger=PropertyChanged}"
                            Placeholder="variableName"/>
-                <TextBlock Grid.Row="2" Grid.Column="0" Text="Length"      Style="{StaticResource PropLabel}"/>
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="{DynamicResource SE_BE_Length}"      Style="{StaticResource PropLabel}"/>
                 <ctrl:ExpressionTextBox Grid.Row="2" Grid.Column="1" Margin="0,2"
                            Text="{Binding LengthText, UpdateSourceTrigger=PropertyChanged}"
                            Placeholder="integer or var:name"/>

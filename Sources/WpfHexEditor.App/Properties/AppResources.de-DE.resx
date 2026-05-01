@@ -859,4 +859,6 @@
   <data name="APP_BuildRebuild" xml:space="preserve"><value>Neu erstellen</value></data>
   <data name="APP_BuildClean" xml:space="preserve"><value>Bereinigen</value></data>
   <data name="APP_BuildStop" xml:space="preserve"><value>Stopp</value></data>
+  <data name="App_Editor_BuiltInTables" xml:space="preserve"><value>Integrierte Tabellen</value></data>
+  <data name="App_Editor_DefaultAscii" xml:space="preserve"><value>Standard (ASCII)</value></data>
 </root>

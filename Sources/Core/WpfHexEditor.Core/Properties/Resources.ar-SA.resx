@@ -1958,4 +1958,9 @@
   <data name="HE_SearchTypeWildcard" xml:space="preserve"><value>حرف بدل</value></data>
   <data name="HE_SearchTypeTbl" xml:space="preserve"><value>نص TBL</value></data>
   <data name="HE_SearchTypeRelative" xml:space="preserve"><value>نسبي</value></data>
+  <data name="HE_Toolbar_DetectedFormat" xml:space="preserve"><value>تنسيق الملف المكتشف</value></data>
+  <data name="HE_Toolbar_ConfidenceScore" xml:space="preserve"><value>درجة موثوقية الكشف</value></data>
+  <data name="HE_Toolbar_ConfidenceFormat" xml:space="preserve"><value>موثوقية الكشف: {0}</value></data>
+  <data name="HE_Toolbar_ChangeFormat" xml:space="preserve"><value>التنسيق</value></data>
+  <data name="HE_Toolbar_ChangeFormatTooltip" xml:space="preserve"><value>تغيير التنسيق المكتشف</value></data>
 </root>

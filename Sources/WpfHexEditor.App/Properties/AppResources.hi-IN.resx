@@ -859,4 +859,6 @@
   <data name="APP_BuildRebuild" xml:space="preserve"><value>पुनः बनाएँ</value></data>
   <data name="APP_BuildClean" xml:space="preserve"><value>साफ़</value></data>
   <data name="APP_BuildStop" xml:space="preserve"><value>रोकें</value></data>
+  <data name="App_Editor_BuiltInTables" xml:space="preserve"><value>अंतर्निहित तालिकाएँ</value></data>
+  <data name="App_Editor_DefaultAscii" xml:space="preserve"><value>डिफ़ॉल्ट (ASCII)</value></data>
 </root>

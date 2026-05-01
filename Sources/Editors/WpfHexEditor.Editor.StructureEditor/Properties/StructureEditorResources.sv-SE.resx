@@ -236,4 +236,60 @@
   <data name="SE_PropHidden" xml:space="preserve"><value>Dold</value></data>
   <data name="SE_PropEndianness" xml:space="preserve"><value>Endianness</value></data>
   <data name="SE_BlockType" xml:space="preserve"><value>Blocktyp</value></data>
+  <data name="SE_BE_Action" xml:space="preserve"><value>Åtgärd</value></data>
+  <data name="SE_BE_Variable" xml:space="preserve"><value>Variabel</value></data>
+  <data name="SE_BE_Value" xml:space="preserve"><value>Värde</value></data>
+  <data name="SE_BE_Computation" xml:space="preserve"><value>Beräkning</value></data>
+  <data name="SE_BE_Expression" xml:space="preserve"><value>Uttryck</value></data>
+  <data name="SE_BE_StoreAs" xml:space="preserve"><value>Spara som</value></data>
+  <data name="SE_BE_Position" xml:space="preserve"><value>Position</value></data>
+  <data name="SE_BE_Offset" xml:space="preserve"><value>Förskjutning</value></data>
+  <data name="SE_BE_OffsetFrom" xml:space="preserve"><value>Förskjutning från</value></data>
+  <data name="SE_BE_OffsetAdd" xml:space="preserve"><value>Lägg till förskjutning</value></data>
+  <data name="SE_BE_Length" xml:space="preserve"><value>Längd</value></data>
+  <data name="SE_BE_ValueType" xml:space="preserve"><value>Värdetyp</value></data>
+  <data name="SE_BE_Array" xml:space="preserve"><value>Array</value></data>
+  <data name="SE_BE_Count" xml:space="preserve"><value>Antal</value></data>
+  <data name="SE_BE_EntrySize" xml:space="preserve"><value>Poststorlek</value></data>
+  <data name="SE_BE_IndexVar" xml:space="preserve"><value>Indexvariabel</value></data>
+  <data name="SE_BE_ColorCycle" xml:space="preserve"><value>Färgcykel</value></data>
+  <data name="SE_BE_EntryFieldsHint" xml:space="preserve"><value>Postfält visas som barn i trädet.</value></data>
+  <data name="SE_BE_Union" xml:space="preserve"><value>Union</value></data>
+  <data name="SE_BE_Discriminant" xml:space="preserve"><value>Diskriminator</value></data>
+  <data name="SE_BE_Variants" xml:space="preserve"><value>Varianter</value></data>
+  <data name="SE_BE_NestedStruct" xml:space="preserve"><value>Nästlad struktur</value></data>
+  <data name="SE_BE_StructRef" xml:space="preserve"><value>Strukturreferens</value></data>
+  <data name="SE_BE_PointerLocation" xml:space="preserve"><value>Pekarens plats</value></data>
+  <data name="SE_BE_TargetStorage" xml:space="preserve"><value>Mål och lagring</value></data>
+  <data name="SE_BE_TargetVar" xml:space="preserve"><value>Målvariabel</value></data>
+  <data name="SE_BE_Label" xml:space="preserve"><value>Etikett</value></data>
+  <data name="SE_BE_PositionSize" xml:space="preserve"><value>Position och storlek</value></data>
+  <data name="SE_BE_Storage" xml:space="preserve"><value>Lagring</value></data>
+  <data name="SE_BE_MappedStoreAs" xml:space="preserve"><value>Mappad spara som</value></data>
+  <data name="SE_BE_ValueMap" xml:space="preserve"><value>Värdekarta</value></data>
+  <data name="SE_BE_Bitfields" xml:space="preserve"><value>Bitfält</value></data>
+  <data name="SE_BE_Name" xml:space="preserve"><value>Namn</value></data>
+  <data name="SE_BE_Bits" xml:space="preserve"><value>Bitar</value></data>
+  <data name="SE_BE_Until" xml:space="preserve"><value>Tills</value></data>
+  <data name="SE_BE_MaxLength" xml:space="preserve"><value>Maxlängd</value></data>
+  <data name="SE_BE_MinValue" xml:space="preserve"><value>Min. värde</value></data>
+  <data name="SE_BE_MaxValue" xml:space="preserve"><value>Max. värde</value></data>
+  <data name="SE_BE_PatternRegex" xml:space="preserve"><value>Mönster (regex)</value></data>
+  <data name="SE_BE_ErrorMessage" xml:space="preserve"><value>Felmeddelande</value></data>
+  <data name="SE_BE_VariableName" xml:space="preserve"><value>Variabelnamn</value></data>
+  <data name="SE_BE_Group" xml:space="preserve"><value>Grupp</value></data>
+  <data name="SE_BE_GroupHint" xml:space="preserve"><value>En grupp etiketterar visuellt en uppsättning underordnade fält med ett färgöverlägg. Den förbrukar inga byte.</value></data>
+  <data name="SE_BE_ChildrenInTreeHint" xml:space="preserve"><value>Underordnade visas i blockträdet — använd trädet för att lägga till/omordna underordnade block.</value></data>
+  <data name="SE_BE_ChildFieldsHint" xml:space="preserve"><value>Underordnade fält visas i blockträdet.</value></data>
+  <data name="SE_BE_RawDataRegion" xml:space="preserve"><value>Råa-data-region</value></data>
+  <data name="SE_BE_RawDataDescription" xml:space="preserve"><value>Markerar en råbyte-region med ett färgöverlägg. Inget värde extraheras.</value></data>
+  <data name="SE_BE_Condition" xml:space="preserve"><value>Villkor</value></data>
+  <data name="SE_BE_BranchLabels" xml:space="preserve"><value>Förgreningsetiketter</value></data>
+  <data name="SE_BE_TrueLabel" xml:space="preserve"><value>True-etikett</value></data>
+  <data name="SE_BE_FalseLabel" xml:space="preserve"><value>False-etikett</value></data>
+  <data name="SE_BE_BranchHint" xml:space="preserve"><value>Then- / Else-block visas som barn i trädet.</value></data>
+  <data name="SE_BE_LoopCondition" xml:space="preserve"><value>Loopvillkor</value></data>
+  <data name="SE_BE_Bounds" xml:space="preserve"><value>Gränser</value></data>
+  <data name="SE_BE_MaxIterations" xml:space="preserve"><value>Max. iterationer</value></data>
+  <data name="SE_BE_LoopBodyHint" xml:space="preserve"><value>Kroppsblock visas som barn i trädet.</value></data>
 </root>

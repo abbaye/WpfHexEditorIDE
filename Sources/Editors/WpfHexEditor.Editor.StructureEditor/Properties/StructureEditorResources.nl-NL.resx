@@ -236,4 +236,60 @@
   <data name="SE_PropHidden" xml:space="preserve"><value>Verborgen</value></data>
   <data name="SE_PropEndianness" xml:space="preserve"><value>Endianness</value></data>
   <data name="SE_BlockType" xml:space="preserve"><value>Bloktype</value></data>
+  <data name="SE_BE_Action" xml:space="preserve"><value>Actie</value></data>
+  <data name="SE_BE_Variable" xml:space="preserve"><value>Variabele</value></data>
+  <data name="SE_BE_Value" xml:space="preserve"><value>Waarde</value></data>
+  <data name="SE_BE_Computation" xml:space="preserve"><value>Berekening</value></data>
+  <data name="SE_BE_Expression" xml:space="preserve"><value>Expressie</value></data>
+  <data name="SE_BE_StoreAs" xml:space="preserve"><value>Opslaan als</value></data>
+  <data name="SE_BE_Position" xml:space="preserve"><value>Positie</value></data>
+  <data name="SE_BE_Offset" xml:space="preserve"><value>Verschuiving</value></data>
+  <data name="SE_BE_OffsetFrom" xml:space="preserve"><value>Verschuiving vanaf</value></data>
+  <data name="SE_BE_OffsetAdd" xml:space="preserve"><value>Verschuiving toevoegen</value></data>
+  <data name="SE_BE_Length" xml:space="preserve"><value>Lengte</value></data>
+  <data name="SE_BE_ValueType" xml:space="preserve"><value>Waardetype</value></data>
+  <data name="SE_BE_Array" xml:space="preserve"><value>Array</value></data>
+  <data name="SE_BE_Count" xml:space="preserve"><value>Aantal</value></data>
+  <data name="SE_BE_EntrySize" xml:space="preserve"><value>Itemgrootte</value></data>
+  <data name="SE_BE_IndexVar" xml:space="preserve"><value>Indexvariabele</value></data>
+  <data name="SE_BE_ColorCycle" xml:space="preserve"><value>Kleurcyclus</value></data>
+  <data name="SE_BE_EntryFieldsHint" xml:space="preserve"><value>Itemvelden worden weergegeven als kinderen in de boom.</value></data>
+  <data name="SE_BE_Union" xml:space="preserve"><value>Union</value></data>
+  <data name="SE_BE_Discriminant" xml:space="preserve"><value>Discriminant</value></data>
+  <data name="SE_BE_Variants" xml:space="preserve"><value>Varianten</value></data>
+  <data name="SE_BE_NestedStruct" xml:space="preserve"><value>Geneste struct</value></data>
+  <data name="SE_BE_StructRef" xml:space="preserve"><value>Structverwijzing</value></data>
+  <data name="SE_BE_PointerLocation" xml:space="preserve"><value>Pointerlocatie</value></data>
+  <data name="SE_BE_TargetStorage" xml:space="preserve"><value>Doel en opslag</value></data>
+  <data name="SE_BE_TargetVar" xml:space="preserve"><value>Doelvariabele</value></data>
+  <data name="SE_BE_Label" xml:space="preserve"><value>Label</value></data>
+  <data name="SE_BE_PositionSize" xml:space="preserve"><value>Positie en grootte</value></data>
+  <data name="SE_BE_Storage" xml:space="preserve"><value>Opslag</value></data>
+  <data name="SE_BE_MappedStoreAs" xml:space="preserve"><value>Toegewezen opslaan als</value></data>
+  <data name="SE_BE_ValueMap" xml:space="preserve"><value>Waardemap</value></data>
+  <data name="SE_BE_Bitfields" xml:space="preserve"><value>Bitvelden</value></data>
+  <data name="SE_BE_Name" xml:space="preserve"><value>Naam</value></data>
+  <data name="SE_BE_Bits" xml:space="preserve"><value>Bits</value></data>
+  <data name="SE_BE_Until" xml:space="preserve"><value>Tot</value></data>
+  <data name="SE_BE_MaxLength" xml:space="preserve"><value>Max. lengte</value></data>
+  <data name="SE_BE_MinValue" xml:space="preserve"><value>Min. waarde</value></data>
+  <data name="SE_BE_MaxValue" xml:space="preserve"><value>Max. waarde</value></data>
+  <data name="SE_BE_PatternRegex" xml:space="preserve"><value>Patroon (regex)</value></data>
+  <data name="SE_BE_ErrorMessage" xml:space="preserve"><value>Foutmelding</value></data>
+  <data name="SE_BE_VariableName" xml:space="preserve"><value>Variabelenaam</value></data>
+  <data name="SE_BE_Group" xml:space="preserve"><value>Groep</value></data>
+  <data name="SE_BE_GroupHint" xml:space="preserve"><value>Een groep labelt visueel een set onderliggende velden met een kleurlaag. Het verbruikt zelf geen bytes.</value></data>
+  <data name="SE_BE_ChildrenInTreeHint" xml:space="preserve"><value>Kinderen worden weergegeven in de blokboom — gebruik de boom om kindblokken toe te voegen/herordenen.</value></data>
+  <data name="SE_BE_ChildFieldsHint" xml:space="preserve"><value>Kindvelden worden weergegeven in de blokboom.</value></data>
+  <data name="SE_BE_RawDataRegion" xml:space="preserve"><value>Ruwe-dataregio</value></data>
+  <data name="SE_BE_RawDataDescription" xml:space="preserve"><value>Markeert een ruwe byteregio met een kleurlaag. Er wordt geen waarde geëxtraheerd.</value></data>
+  <data name="SE_BE_Condition" xml:space="preserve"><value>Voorwaarde</value></data>
+  <data name="SE_BE_BranchLabels" xml:space="preserve"><value>Vertakkingslabels</value></data>
+  <data name="SE_BE_TrueLabel" xml:space="preserve"><value>True-label</value></data>
+  <data name="SE_BE_FalseLabel" xml:space="preserve"><value>False-label</value></data>
+  <data name="SE_BE_BranchHint" xml:space="preserve"><value>Then- / Else-blokken worden weergegeven als kinderen in de boom.</value></data>
+  <data name="SE_BE_LoopCondition" xml:space="preserve"><value>Lusvoorwaarde</value></data>
+  <data name="SE_BE_Bounds" xml:space="preserve"><value>Grenzen</value></data>
+  <data name="SE_BE_MaxIterations" xml:space="preserve"><value>Max. iteraties</value></data>
+  <data name="SE_BE_LoopBodyHint" xml:space="preserve"><value>Body-blokken worden weergegeven als kinderen in de boom.</value></data>
 </root>

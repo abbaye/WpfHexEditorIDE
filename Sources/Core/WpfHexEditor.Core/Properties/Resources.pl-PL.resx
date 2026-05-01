@@ -1994,4 +1994,9 @@ Uwaga: Pełna integracja z HexEditor wymaga połączenia z głównym modelem wid
   <data name="HE_SearchTypeWildcard" xml:space="preserve"><value>SYMBOL WIELOZNACZNY</value></data>
   <data name="HE_SearchTypeTbl" xml:space="preserve"><value>TEKST TBL</value></data>
   <data name="HE_SearchTypeRelative" xml:space="preserve"><value>WZGLĘDNY</value></data>
+  <data name="HE_Toolbar_DetectedFormat" xml:space="preserve"><value>Wykryty format pliku</value></data>
+  <data name="HE_Toolbar_ConfidenceScore" xml:space="preserve"><value>Wynik pewności wykrycia</value></data>
+  <data name="HE_Toolbar_ConfidenceFormat" xml:space="preserve"><value>Pewność wykrycia: {0}</value></data>
+  <data name="HE_Toolbar_ChangeFormat" xml:space="preserve"><value>Format</value></data>
+  <data name="HE_Toolbar_ChangeFormatTooltip" xml:space="preserve"><value>Zmień wykryty format</value></data>
 </root>

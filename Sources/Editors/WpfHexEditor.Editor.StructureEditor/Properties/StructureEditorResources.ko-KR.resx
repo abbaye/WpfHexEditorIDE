@@ -236,4 +236,60 @@
   <data name="SE_PropHidden" xml:space="preserve"><value>숨김</value></data>
   <data name="SE_PropEndianness" xml:space="preserve"><value>엔디안</value></data>
   <data name="SE_BlockType" xml:space="preserve"><value>블록 형식</value></data>
+  <data name="SE_BE_Action" xml:space="preserve"><value>작업</value></data>
+  <data name="SE_BE_Variable" xml:space="preserve"><value>변수</value></data>
+  <data name="SE_BE_Value" xml:space="preserve"><value>값</value></data>
+  <data name="SE_BE_Computation" xml:space="preserve"><value>계산</value></data>
+  <data name="SE_BE_Expression" xml:space="preserve"><value>식</value></data>
+  <data name="SE_BE_StoreAs" xml:space="preserve"><value>저장 이름</value></data>
+  <data name="SE_BE_Position" xml:space="preserve"><value>위치</value></data>
+  <data name="SE_BE_Offset" xml:space="preserve"><value>오프셋</value></data>
+  <data name="SE_BE_OffsetFrom" xml:space="preserve"><value>오프셋 기준</value></data>
+  <data name="SE_BE_OffsetAdd" xml:space="preserve"><value>오프셋 추가</value></data>
+  <data name="SE_BE_Length" xml:space="preserve"><value>길이</value></data>
+  <data name="SE_BE_ValueType" xml:space="preserve"><value>값 형식</value></data>
+  <data name="SE_BE_Array" xml:space="preserve"><value>배열</value></data>
+  <data name="SE_BE_Count" xml:space="preserve"><value>개수</value></data>
+  <data name="SE_BE_EntrySize" xml:space="preserve"><value>항목 크기</value></data>
+  <data name="SE_BE_IndexVar" xml:space="preserve"><value>인덱스 변수</value></data>
+  <data name="SE_BE_ColorCycle" xml:space="preserve"><value>색상 주기</value></data>
+  <data name="SE_BE_EntryFieldsHint" xml:space="preserve"><value>항목 필드는 트리의 자식으로 표시됩니다.</value></data>
+  <data name="SE_BE_Union" xml:space="preserve"><value>유니온</value></data>
+  <data name="SE_BE_Discriminant" xml:space="preserve"><value>판별자</value></data>
+  <data name="SE_BE_Variants" xml:space="preserve"><value>변형</value></data>
+  <data name="SE_BE_NestedStruct" xml:space="preserve"><value>중첩 구조체</value></data>
+  <data name="SE_BE_StructRef" xml:space="preserve"><value>구조체 참조</value></data>
+  <data name="SE_BE_PointerLocation" xml:space="preserve"><value>포인터 위치</value></data>
+  <data name="SE_BE_TargetStorage" xml:space="preserve"><value>대상 및 저장소</value></data>
+  <data name="SE_BE_TargetVar" xml:space="preserve"><value>대상 변수</value></data>
+  <data name="SE_BE_Label" xml:space="preserve"><value>레이블</value></data>
+  <data name="SE_BE_PositionSize" xml:space="preserve"><value>위치 및 크기</value></data>
+  <data name="SE_BE_Storage" xml:space="preserve"><value>저장소</value></data>
+  <data name="SE_BE_MappedStoreAs" xml:space="preserve"><value>매핑된 저장 이름</value></data>
+  <data name="SE_BE_ValueMap" xml:space="preserve"><value>값 매핑</value></data>
+  <data name="SE_BE_Bitfields" xml:space="preserve"><value>비트필드</value></data>
+  <data name="SE_BE_Name" xml:space="preserve"><value>이름</value></data>
+  <data name="SE_BE_Bits" xml:space="preserve"><value>비트</value></data>
+  <data name="SE_BE_Until" xml:space="preserve"><value>종료 조건</value></data>
+  <data name="SE_BE_MaxLength" xml:space="preserve"><value>최대 길이</value></data>
+  <data name="SE_BE_MinValue" xml:space="preserve"><value>최솟값</value></data>
+  <data name="SE_BE_MaxValue" xml:space="preserve"><value>최댓값</value></data>
+  <data name="SE_BE_PatternRegex" xml:space="preserve"><value>패턴 (regex)</value></data>
+  <data name="SE_BE_ErrorMessage" xml:space="preserve"><value>오류 메시지</value></data>
+  <data name="SE_BE_VariableName" xml:space="preserve"><value>변수 이름</value></data>
+  <data name="SE_BE_Group" xml:space="preserve"><value>그룹</value></data>
+  <data name="SE_BE_GroupHint" xml:space="preserve"><value>그룹은 자식 필드 집합을 색상 오버레이로 시각적으로 레이블 지정합니다. 바이트를 소비하지 않습니다.</value></data>
+  <data name="SE_BE_ChildrenInTreeHint" xml:space="preserve"><value>자식은 블록 트리에 표시됩니다 — 트리를 사용하여 자식 블록을 추가/재정렬하세요.</value></data>
+  <data name="SE_BE_ChildFieldsHint" xml:space="preserve"><value>자식 필드는 블록 트리에 표시됩니다.</value></data>
+  <data name="SE_BE_RawDataRegion" xml:space="preserve"><value>원시 데이터 영역</value></data>
+  <data name="SE_BE_RawDataDescription" xml:space="preserve"><value>원시 바이트 영역을 색상 오버레이로 표시합니다. 값은 추출되지 않습니다.</value></data>
+  <data name="SE_BE_Condition" xml:space="preserve"><value>조건</value></data>
+  <data name="SE_BE_BranchLabels" xml:space="preserve"><value>분기 레이블</value></data>
+  <data name="SE_BE_TrueLabel" xml:space="preserve"><value>True 레이블</value></data>
+  <data name="SE_BE_FalseLabel" xml:space="preserve"><value>False 레이블</value></data>
+  <data name="SE_BE_BranchHint" xml:space="preserve"><value>Then / Else 블록은 트리의 자식으로 표시됩니다.</value></data>
+  <data name="SE_BE_LoopCondition" xml:space="preserve"><value>루프 조건</value></data>
+  <data name="SE_BE_Bounds" xml:space="preserve"><value>경계</value></data>
+  <data name="SE_BE_MaxIterations" xml:space="preserve"><value>최대 반복 횟수</value></data>
+  <data name="SE_BE_LoopBodyHint" xml:space="preserve"><value>본문 블록은 트리의 자식으로 표시됩니다.</value></data>
 </root>

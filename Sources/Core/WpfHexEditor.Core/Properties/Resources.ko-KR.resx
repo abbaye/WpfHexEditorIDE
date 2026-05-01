@@ -1958,4 +1958,9 @@
   <data name="HE_SearchTypeWildcard" xml:space="preserve"><value>와일드카드</value></data>
   <data name="HE_SearchTypeTbl" xml:space="preserve"><value>TBL 텍스트</value></data>
   <data name="HE_SearchTypeRelative" xml:space="preserve"><value>상대</value></data>
+  <data name="HE_Toolbar_DetectedFormat" xml:space="preserve"><value>감지된 파일 형식</value></data>
+  <data name="HE_Toolbar_ConfidenceScore" xml:space="preserve"><value>감지 신뢰도 점수</value></data>
+  <data name="HE_Toolbar_ConfidenceFormat" xml:space="preserve"><value>감지 신뢰도: {0}</value></data>
+  <data name="HE_Toolbar_ChangeFormat" xml:space="preserve"><value>형식</value></data>
+  <data name="HE_Toolbar_ChangeFormatTooltip" xml:space="preserve"><value>감지된 형식 변경</value></data>
 </root>

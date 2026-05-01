@@ -236,4 +236,60 @@
   <data name="SE_PropHidden" xml:space="preserve"><value>छिपा हुआ</value></data>
   <data name="SE_PropEndianness" xml:space="preserve"><value>एंडियननेस</value></data>
   <data name="SE_BlockType" xml:space="preserve"><value>ब्लॉक प्रकार</value></data>
+  <data name="SE_BE_Action" xml:space="preserve"><value>क्रिया</value></data>
+  <data name="SE_BE_Variable" xml:space="preserve"><value>चर</value></data>
+  <data name="SE_BE_Value" xml:space="preserve"><value>मान</value></data>
+  <data name="SE_BE_Computation" xml:space="preserve"><value>गणना</value></data>
+  <data name="SE_BE_Expression" xml:space="preserve"><value>अभिव्यक्ति</value></data>
+  <data name="SE_BE_StoreAs" xml:space="preserve"><value>इस रूप में सहेजें</value></data>
+  <data name="SE_BE_Position" xml:space="preserve"><value>स्थिति</value></data>
+  <data name="SE_BE_Offset" xml:space="preserve"><value>ऑफ़सेट</value></data>
+  <data name="SE_BE_OffsetFrom" xml:space="preserve"><value>ऑफ़सेट कहाँ से</value></data>
+  <data name="SE_BE_OffsetAdd" xml:space="preserve"><value>ऑफ़सेट जोड़ें</value></data>
+  <data name="SE_BE_Length" xml:space="preserve"><value>लंबाई</value></data>
+  <data name="SE_BE_ValueType" xml:space="preserve"><value>मान प्रकार</value></data>
+  <data name="SE_BE_Array" xml:space="preserve"><value>सरणी</value></data>
+  <data name="SE_BE_Count" xml:space="preserve"><value>गणना</value></data>
+  <data name="SE_BE_EntrySize" xml:space="preserve"><value>एंट्री आकार</value></data>
+  <data name="SE_BE_IndexVar" xml:space="preserve"><value>इंडेक्स चर</value></data>
+  <data name="SE_BE_ColorCycle" xml:space="preserve"><value>रंग चक्र</value></data>
+  <data name="SE_BE_EntryFieldsHint" xml:space="preserve"><value>एंट्री फ़ील्ड वृक्ष में बच्चों के रूप में दिखाए जाते हैं।</value></data>
+  <data name="SE_BE_Union" xml:space="preserve"><value>यूनियन</value></data>
+  <data name="SE_BE_Discriminant" xml:space="preserve"><value>विभेदक</value></data>
+  <data name="SE_BE_Variants" xml:space="preserve"><value>विकल्प</value></data>
+  <data name="SE_BE_NestedStruct" xml:space="preserve"><value>नेस्टेड संरचना</value></data>
+  <data name="SE_BE_StructRef" xml:space="preserve"><value>संरचना संदर्भ</value></data>
+  <data name="SE_BE_PointerLocation" xml:space="preserve"><value>पॉइंटर स्थान</value></data>
+  <data name="SE_BE_TargetStorage" xml:space="preserve"><value>लक्ष्य और भंडारण</value></data>
+  <data name="SE_BE_TargetVar" xml:space="preserve"><value>लक्ष्य चर</value></data>
+  <data name="SE_BE_Label" xml:space="preserve"><value>लेबल</value></data>
+  <data name="SE_BE_PositionSize" xml:space="preserve"><value>स्थिति और आकार</value></data>
+  <data name="SE_BE_Storage" xml:space="preserve"><value>भंडारण</value></data>
+  <data name="SE_BE_MappedStoreAs" xml:space="preserve"><value>मैप किया गया सहेजें</value></data>
+  <data name="SE_BE_ValueMap" xml:space="preserve"><value>मान मानचित्र</value></data>
+  <data name="SE_BE_Bitfields" xml:space="preserve"><value>बिट फ़ील्ड</value></data>
+  <data name="SE_BE_Name" xml:space="preserve"><value>नाम</value></data>
+  <data name="SE_BE_Bits" xml:space="preserve"><value>बिट्स</value></data>
+  <data name="SE_BE_Until" xml:space="preserve"><value>तक</value></data>
+  <data name="SE_BE_MaxLength" xml:space="preserve"><value>अधिकतम लंबाई</value></data>
+  <data name="SE_BE_MinValue" xml:space="preserve"><value>न्यूनतम मान</value></data>
+  <data name="SE_BE_MaxValue" xml:space="preserve"><value>अधिकतम मान</value></data>
+  <data name="SE_BE_PatternRegex" xml:space="preserve"><value>पैटर्न (regex)</value></data>
+  <data name="SE_BE_ErrorMessage" xml:space="preserve"><value>त्रुटि संदेश</value></data>
+  <data name="SE_BE_VariableName" xml:space="preserve"><value>चर का नाम</value></data>
+  <data name="SE_BE_Group" xml:space="preserve"><value>समूह</value></data>
+  <data name="SE_BE_GroupHint" xml:space="preserve"><value>एक समूह बच्चों के क्षेत्रों के सेट को रंग ओवरले के साथ दृश्यमान रूप से लेबल करता है। यह स्वयं कोई बाइट नहीं लेता है।</value></data>
+  <data name="SE_BE_ChildrenInTreeHint" xml:space="preserve"><value>बच्चे ब्लॉक वृक्ष में दिखाए जाते हैं — चाइल्ड ब्लॉकों को जोड़ने/पुनःक्रमित करने के लिए वृक्ष का उपयोग करें।</value></data>
+  <data name="SE_BE_ChildFieldsHint" xml:space="preserve"><value>चाइल्ड फ़ील्ड ब्लॉक वृक्ष में दिखाए जाते हैं।</value></data>
+  <data name="SE_BE_RawDataRegion" xml:space="preserve"><value>कच्चा डेटा क्षेत्र</value></data>
+  <data name="SE_BE_RawDataDescription" xml:space="preserve"><value>कच्चे बाइट क्षेत्र को रंग ओवरले के साथ चिह्नित करता है। कोई मान नहीं निकाला जाता है।</value></data>
+  <data name="SE_BE_Condition" xml:space="preserve"><value>शर्त</value></data>
+  <data name="SE_BE_BranchLabels" xml:space="preserve"><value>शाखा लेबल</value></data>
+  <data name="SE_BE_TrueLabel" xml:space="preserve"><value>True लेबल</value></data>
+  <data name="SE_BE_FalseLabel" xml:space="preserve"><value>False लेबल</value></data>
+  <data name="SE_BE_BranchHint" xml:space="preserve"><value>Then / Else ब्लॉक वृक्ष में बच्चों के रूप में दिखाए जाते हैं।</value></data>
+  <data name="SE_BE_LoopCondition" xml:space="preserve"><value>लूप शर्त</value></data>
+  <data name="SE_BE_Bounds" xml:space="preserve"><value>सीमाएँ</value></data>
+  <data name="SE_BE_MaxIterations" xml:space="preserve"><value>अधिकतम पुनरावृत्तियाँ</value></data>
+  <data name="SE_BE_LoopBodyHint" xml:space="preserve"><value>मुख्य ब्लॉक वृक्ष में बच्चों के रूप में दिखाए जाते हैं।</value></data>
 </root>

@@ -2013,4 +2013,9 @@
   <data name="HE_SearchTypeWildcard" xml:space="preserve"><value>通配符</value></data>
   <data name="HE_SearchTypeTbl" xml:space="preserve"><value>TBL 文本</value></data>
   <data name="HE_SearchTypeRelative" xml:space="preserve"><value>相对</value></data>
+  <data name="HE_Toolbar_DetectedFormat" xml:space="preserve"><value>检测到的文件格式</value></data>
+  <data name="HE_Toolbar_ConfidenceScore" xml:space="preserve"><value>检测置信度分数</value></data>
+  <data name="HE_Toolbar_ConfidenceFormat" xml:space="preserve"><value>检测置信度：{0}</value></data>
+  <data name="HE_Toolbar_ChangeFormat" xml:space="preserve"><value>格式</value></data>
+  <data name="HE_Toolbar_ChangeFormatTooltip" xml:space="preserve"><value>更改检测到的格式</value></data>
 </root>

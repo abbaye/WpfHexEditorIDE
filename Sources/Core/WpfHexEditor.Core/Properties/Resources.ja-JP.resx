@@ -1958,4 +1958,9 @@
   <data name="HE_SearchTypeWildcard" xml:space="preserve"><value>ワイルドカード</value></data>
   <data name="HE_SearchTypeTbl" xml:space="preserve"><value>TBL テキスト</value></data>
   <data name="HE_SearchTypeRelative" xml:space="preserve"><value>相対</value></data>
+  <data name="HE_Toolbar_DetectedFormat" xml:space="preserve"><value>検出されたファイル形式</value></data>
+  <data name="HE_Toolbar_ConfidenceScore" xml:space="preserve"><value>検出信頼度スコア</value></data>
+  <data name="HE_Toolbar_ConfidenceFormat" xml:space="preserve"><value>検出信頼度: {0}</value></data>
+  <data name="HE_Toolbar_ChangeFormat" xml:space="preserve"><value>形式</value></data>
+  <data name="HE_Toolbar_ChangeFormatTooltip" xml:space="preserve"><value>検出された形式を変更</value></data>
 </root>

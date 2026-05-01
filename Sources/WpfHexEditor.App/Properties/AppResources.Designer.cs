@@ -2557,6 +2557,12 @@ namespace WpfHexEditor.App.Properties {
         internal static string App_Editor_ProjectTables {
             get { return ResourceManager.GetString("App_Editor_ProjectTables", resourceCulture); }
         }
+        internal static string App_Editor_BuiltInTables {
+            get { return ResourceManager.GetString("App_Editor_BuiltInTables", resourceCulture); }
+        }
+        internal static string App_Editor_DefaultAscii {
+            get { return ResourceManager.GetString("App_Editor_DefaultAscii", resourceCulture); }
+        }
         internal static string App_Editor_FileNotFound {
             get { return ResourceManager.GetString("App_Editor_FileNotFound", resourceCulture); }
         }

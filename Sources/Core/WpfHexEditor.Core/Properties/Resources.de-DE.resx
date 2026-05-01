@@ -1958,4 +1958,9 @@ Hinweis: Vollständige Integration mit HexEditor erfordert Verbindung zum Haupta
   <data name="HE_SearchTypeWildcard" xml:space="preserve"><value>PLATZHALTER</value></data>
   <data name="HE_SearchTypeTbl" xml:space="preserve"><value>TBL-TEXT</value></data>
   <data name="HE_SearchTypeRelative" xml:space="preserve"><value>RELATIV</value></data>
+  <data name="HE_Toolbar_DetectedFormat" xml:space="preserve"><value>Erkanntes Dateiformat</value></data>
+  <data name="HE_Toolbar_ConfidenceScore" xml:space="preserve"><value>Erkennungs-Konfidenzwert</value></data>
+  <data name="HE_Toolbar_ConfidenceFormat" xml:space="preserve"><value>Erkennungs-Konfidenz: {0}</value></data>
+  <data name="HE_Toolbar_ChangeFormat" xml:space="preserve"><value>Format</value></data>
+  <data name="HE_Toolbar_ChangeFormatTooltip" xml:space="preserve"><value>Erkanntes Format ändern</value></data>
 </root>

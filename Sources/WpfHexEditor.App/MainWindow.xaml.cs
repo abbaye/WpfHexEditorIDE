@@ -3173,8 +3173,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         _tblItems.Clear();
 
         // Section 1: Built-in tables
-        _tblItems.Add(TblSelectionItem.MakeHeader("Built-in Tables"));
-        _tblItems.Add(TblSelectionItem.MakeBuiltIn("Default (ASCII)", null));           // null → CloseTBL
+        _tblItems.Add(TblSelectionItem.MakeHeader(AppResources.App_Editor_BuiltInTables));
+        _tblItems.Add(TblSelectionItem.MakeBuiltIn(AppResources.App_Editor_DefaultAscii, null));  // null → CloseTBL
         _tblItems.Add(TblSelectionItem.MakeBuiltIn("ASCII",            DefaultCharacterTableType.Ascii));
         _tblItems.Add(TblSelectionItem.MakeBuiltIn("EBCDIC + Special", DefaultCharacterTableType.EbcdicWithSpecialChar));
         _tblItems.Add(TblSelectionItem.MakeBuiltIn("EBCDIC (no spec)", DefaultCharacterTableType.EbcdicNoSpecialChar));

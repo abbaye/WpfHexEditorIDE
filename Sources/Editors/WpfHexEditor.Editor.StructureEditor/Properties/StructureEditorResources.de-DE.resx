@@ -236,4 +236,60 @@
   <data name="SE_PropHidden" xml:space="preserve"><value>Ausgeblendet</value></data>
   <data name="SE_PropEndianness" xml:space="preserve"><value>Bytereihenfolge</value></data>
   <data name="SE_BlockType" xml:space="preserve"><value>Blocktyp</value></data>
+  <data name="SE_BE_Action" xml:space="preserve"><value>Aktion</value></data>
+  <data name="SE_BE_Variable" xml:space="preserve"><value>Variable</value></data>
+  <data name="SE_BE_Value" xml:space="preserve"><value>Wert</value></data>
+  <data name="SE_BE_Computation" xml:space="preserve"><value>Berechnung</value></data>
+  <data name="SE_BE_Expression" xml:space="preserve"><value>Ausdruck</value></data>
+  <data name="SE_BE_StoreAs" xml:space="preserve"><value>Speichern als</value></data>
+  <data name="SE_BE_Position" xml:space="preserve"><value>Position</value></data>
+  <data name="SE_BE_Offset" xml:space="preserve"><value>Offset</value></data>
+  <data name="SE_BE_OffsetFrom" xml:space="preserve"><value>Offset von</value></data>
+  <data name="SE_BE_OffsetAdd" xml:space="preserve"><value>Offset-Addition</value></data>
+  <data name="SE_BE_Length" xml:space="preserve"><value>Länge</value></data>
+  <data name="SE_BE_ValueType" xml:space="preserve"><value>Werttyp</value></data>
+  <data name="SE_BE_Array" xml:space="preserve"><value>Array</value></data>
+  <data name="SE_BE_Count" xml:space="preserve"><value>Anzahl</value></data>
+  <data name="SE_BE_EntrySize" xml:space="preserve"><value>Eintragsgröße</value></data>
+  <data name="SE_BE_IndexVar" xml:space="preserve"><value>Indexvariable</value></data>
+  <data name="SE_BE_ColorCycle" xml:space="preserve"><value>Farbzyklus</value></data>
+  <data name="SE_BE_EntryFieldsHint" xml:space="preserve"><value>Eintragsfelder werden als Kinder im Baum angezeigt.</value></data>
+  <data name="SE_BE_Union" xml:space="preserve"><value>Union</value></data>
+  <data name="SE_BE_Discriminant" xml:space="preserve"><value>Diskriminator</value></data>
+  <data name="SE_BE_Variants" xml:space="preserve"><value>Varianten</value></data>
+  <data name="SE_BE_NestedStruct" xml:space="preserve"><value>Verschachtelte Struktur</value></data>
+  <data name="SE_BE_StructRef" xml:space="preserve"><value>Strukturreferenz</value></data>
+  <data name="SE_BE_PointerLocation" xml:space="preserve"><value>Zeigerposition</value></data>
+  <data name="SE_BE_TargetStorage" xml:space="preserve"><value>Ziel und Speicherung</value></data>
+  <data name="SE_BE_TargetVar" xml:space="preserve"><value>Zielvariable</value></data>
+  <data name="SE_BE_Label" xml:space="preserve"><value>Beschriftung</value></data>
+  <data name="SE_BE_PositionSize" xml:space="preserve"><value>Position und Größe</value></data>
+  <data name="SE_BE_Storage" xml:space="preserve"><value>Speicherung</value></data>
+  <data name="SE_BE_MappedStoreAs" xml:space="preserve"><value>Zugeordnetes Speichern als</value></data>
+  <data name="SE_BE_ValueMap" xml:space="preserve"><value>Wertzuordnung</value></data>
+  <data name="SE_BE_Bitfields" xml:space="preserve"><value>Bitfelder</value></data>
+  <data name="SE_BE_Name" xml:space="preserve"><value>Name</value></data>
+  <data name="SE_BE_Bits" xml:space="preserve"><value>Bits</value></data>
+  <data name="SE_BE_Until" xml:space="preserve"><value>Bis</value></data>
+  <data name="SE_BE_MaxLength" xml:space="preserve"><value>Max. Länge</value></data>
+  <data name="SE_BE_MinValue" xml:space="preserve"><value>Min. Wert</value></data>
+  <data name="SE_BE_MaxValue" xml:space="preserve"><value>Max. Wert</value></data>
+  <data name="SE_BE_PatternRegex" xml:space="preserve"><value>Muster (regex)</value></data>
+  <data name="SE_BE_ErrorMessage" xml:space="preserve"><value>Fehlermeldung</value></data>
+  <data name="SE_BE_VariableName" xml:space="preserve"><value>Variablenname</value></data>
+  <data name="SE_BE_Group" xml:space="preserve"><value>Gruppe</value></data>
+  <data name="SE_BE_GroupHint" xml:space="preserve"><value>Eine Gruppe kennzeichnet visuell eine Reihe untergeordneter Felder mit einer Farbüberlagerung. Sie verbraucht selbst keine Bytes.</value></data>
+  <data name="SE_BE_ChildrenInTreeHint" xml:space="preserve"><value>Kinder werden im Blockbaum angezeigt — verwenden Sie den Baum, um Kindblöcke hinzuzufügen oder neu anzuordnen.</value></data>
+  <data name="SE_BE_ChildFieldsHint" xml:space="preserve"><value>Kindfelder werden im Blockbaum angezeigt.</value></data>
+  <data name="SE_BE_RawDataRegion" xml:space="preserve"><value>Rohdatenbereich</value></data>
+  <data name="SE_BE_RawDataDescription" xml:space="preserve"><value>Markiert einen rohen Bytebereich mit einer Farbüberlagerung. Es wird kein Wert extrahiert.</value></data>
+  <data name="SE_BE_Condition" xml:space="preserve"><value>Bedingung</value></data>
+  <data name="SE_BE_BranchLabels" xml:space="preserve"><value>Verzweigungsbeschriftungen</value></data>
+  <data name="SE_BE_TrueLabel" xml:space="preserve"><value>Wahr-Beschriftung</value></data>
+  <data name="SE_BE_FalseLabel" xml:space="preserve"><value>Falsch-Beschriftung</value></data>
+  <data name="SE_BE_BranchHint" xml:space="preserve"><value>Then- / Else-Blöcke werden als Kinder im Baum angezeigt.</value></data>
+  <data name="SE_BE_LoopCondition" xml:space="preserve"><value>Schleifenbedingung</value></data>
+  <data name="SE_BE_Bounds" xml:space="preserve"><value>Grenzen</value></data>
+  <data name="SE_BE_MaxIterations" xml:space="preserve"><value>Max. Iterationen</value></data>
+  <data name="SE_BE_LoopBodyHint" xml:space="preserve"><value>Rumpfblöcke werden als Kinder im Baum angezeigt.</value></data>
 </root>

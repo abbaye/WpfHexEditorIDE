@@ -236,4 +236,60 @@
   <data name="SE_PropHidden" xml:space="preserve"><value>Скрытый</value></data>
   <data name="SE_PropEndianness" xml:space="preserve"><value>Порядок байтов</value></data>
   <data name="SE_BlockType" xml:space="preserve"><value>Тип блока</value></data>
+  <data name="SE_BE_Action" xml:space="preserve"><value>Действие</value></data>
+  <data name="SE_BE_Variable" xml:space="preserve"><value>Переменная</value></data>
+  <data name="SE_BE_Value" xml:space="preserve"><value>Значение</value></data>
+  <data name="SE_BE_Computation" xml:space="preserve"><value>Вычисление</value></data>
+  <data name="SE_BE_Expression" xml:space="preserve"><value>Выражение</value></data>
+  <data name="SE_BE_StoreAs" xml:space="preserve"><value>Сохранить как</value></data>
+  <data name="SE_BE_Position" xml:space="preserve"><value>Позиция</value></data>
+  <data name="SE_BE_Offset" xml:space="preserve"><value>Смещение</value></data>
+  <data name="SE_BE_OffsetFrom" xml:space="preserve"><value>Смещение от</value></data>
+  <data name="SE_BE_OffsetAdd" xml:space="preserve"><value>Доб. смещение</value></data>
+  <data name="SE_BE_Length" xml:space="preserve"><value>Длина</value></data>
+  <data name="SE_BE_ValueType" xml:space="preserve"><value>Тип значения</value></data>
+  <data name="SE_BE_Array" xml:space="preserve"><value>Массив</value></data>
+  <data name="SE_BE_Count" xml:space="preserve"><value>Количество</value></data>
+  <data name="SE_BE_EntrySize" xml:space="preserve"><value>Размер элемента</value></data>
+  <data name="SE_BE_IndexVar" xml:space="preserve"><value>Переменная индекса</value></data>
+  <data name="SE_BE_ColorCycle" xml:space="preserve"><value>Цикл цветов</value></data>
+  <data name="SE_BE_EntryFieldsHint" xml:space="preserve"><value>Поля элементов отображаются как дочерние в дереве.</value></data>
+  <data name="SE_BE_Union" xml:space="preserve"><value>Объединение</value></data>
+  <data name="SE_BE_Discriminant" xml:space="preserve"><value>Дискриминант</value></data>
+  <data name="SE_BE_Variants" xml:space="preserve"><value>Варианты</value></data>
+  <data name="SE_BE_NestedStruct" xml:space="preserve"><value>Вложенная структура</value></data>
+  <data name="SE_BE_StructRef" xml:space="preserve"><value>Ссылка на структуру</value></data>
+  <data name="SE_BE_PointerLocation" xml:space="preserve"><value>Расположение указателя</value></data>
+  <data name="SE_BE_TargetStorage" xml:space="preserve"><value>Цель и хранение</value></data>
+  <data name="SE_BE_TargetVar" xml:space="preserve"><value>Целевая переменная</value></data>
+  <data name="SE_BE_Label" xml:space="preserve"><value>Метка</value></data>
+  <data name="SE_BE_PositionSize" xml:space="preserve"><value>Позиция и размер</value></data>
+  <data name="SE_BE_Storage" xml:space="preserve"><value>Хранение</value></data>
+  <data name="SE_BE_MappedStoreAs" xml:space="preserve"><value>Сохранить сопоставленное как</value></data>
+  <data name="SE_BE_ValueMap" xml:space="preserve"><value>Сопоставление значений</value></data>
+  <data name="SE_BE_Bitfields" xml:space="preserve"><value>Битовые поля</value></data>
+  <data name="SE_BE_Name" xml:space="preserve"><value>Имя</value></data>
+  <data name="SE_BE_Bits" xml:space="preserve"><value>Биты</value></data>
+  <data name="SE_BE_Until" xml:space="preserve"><value>До</value></data>
+  <data name="SE_BE_MaxLength" xml:space="preserve"><value>Макс. длина</value></data>
+  <data name="SE_BE_MinValue" xml:space="preserve"><value>Мин. значение</value></data>
+  <data name="SE_BE_MaxValue" xml:space="preserve"><value>Макс. значение</value></data>
+  <data name="SE_BE_PatternRegex" xml:space="preserve"><value>Шаблон (regex)</value></data>
+  <data name="SE_BE_ErrorMessage" xml:space="preserve"><value>Сообщение об ошибке</value></data>
+  <data name="SE_BE_VariableName" xml:space="preserve"><value>Имя переменной</value></data>
+  <data name="SE_BE_Group" xml:space="preserve"><value>Группа</value></data>
+  <data name="SE_BE_GroupHint" xml:space="preserve"><value>Группа визуально отмечает набор дочерних полей цветовой подложкой. Сама не занимает байт.</value></data>
+  <data name="SE_BE_ChildrenInTreeHint" xml:space="preserve"><value>Дочерние элементы отображаются в дереве блоков — используйте дерево для добавления/изменения порядка дочерних блоков.</value></data>
+  <data name="SE_BE_ChildFieldsHint" xml:space="preserve"><value>Дочерние поля отображаются в дереве блоков.</value></data>
+  <data name="SE_BE_RawDataRegion" xml:space="preserve"><value>Область сырых данных</value></data>
+  <data name="SE_BE_RawDataDescription" xml:space="preserve"><value>Помечает область сырых байтов цветовой подложкой. Значение не извлекается.</value></data>
+  <data name="SE_BE_Condition" xml:space="preserve"><value>Условие</value></data>
+  <data name="SE_BE_BranchLabels" xml:space="preserve"><value>Метки ветвей</value></data>
+  <data name="SE_BE_TrueLabel" xml:space="preserve"><value>Метка True</value></data>
+  <data name="SE_BE_FalseLabel" xml:space="preserve"><value>Метка False</value></data>
+  <data name="SE_BE_BranchHint" xml:space="preserve"><value>Блоки Then / Else отображаются как дочерние в дереве.</value></data>
+  <data name="SE_BE_LoopCondition" xml:space="preserve"><value>Условие цикла</value></data>
+  <data name="SE_BE_Bounds" xml:space="preserve"><value>Границы</value></data>
+  <data name="SE_BE_MaxIterations" xml:space="preserve"><value>Макс. итераций</value></data>
+  <data name="SE_BE_LoopBodyHint" xml:space="preserve"><value>Блоки тела отображаются как дочерние в дереве.</value></data>
 </root>

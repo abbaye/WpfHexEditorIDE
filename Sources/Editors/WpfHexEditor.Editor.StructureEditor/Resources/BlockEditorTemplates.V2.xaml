@@ -19,7 +19,7 @@
     <DataTemplate x:Key="BlockTemplate_Action" DataType="{x:Type vm:BlockViewModel}">
         <StackPanel Style="{StaticResource BlockPanel}">
             <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource BlockCommonHeader}"/>
-            <TextBlock Text="Action" Style="{StaticResource SectionHeader}"/>
+            <TextBlock Text="{DynamicResource SE_BE_Action}" Style="{StaticResource SectionHeader}"/>
             <Grid Style="{StaticResource PropGrid}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -30,16 +30,16 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <TextBlock Grid.Row="0" Grid.Column="0" Text="Action"   Style="{StaticResource PropLabel}"/>
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="{DynamicResource SE_BE_Action}"   Style="{StaticResource PropLabel}"/>
                 <ComboBox  Grid.Row="0" Grid.Column="1" Style="{StaticResource PropCombo}"
                            ItemsSource="{Binding ActionOptions}"
                            SelectedItem="{Binding Action, UpdateSourceTrigger=PropertyChanged}"/>
-                <TextBlock Grid.Row="1" Grid.Column="0" Text="Variable" Style="{StaticResource PropLabel}"/>
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="{DynamicResource SE_BE_Variable}" Style="{StaticResource PropLabel}"/>
                 <ctrl:ExpressionTextBox Grid.Row="1" Grid.Column="1" Margin="0,2"
                            Text="{Binding ActionVariable, UpdateSourceTrigger=PropertyChanged}"
                            Placeholder="variableName"
                            ToolTip="Name of the variable to act on — type to see suggestions (Ctrl+Space)"/>
-                <TextBlock Grid.Row="2" Grid.Column="0" Text="Value"    Style="{StaticResource PropLabel}"/>
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="{DynamicResource SE_BE_Value}"    Style="{StaticResource PropLabel}"/>
                 <ctrl:ExpressionTextBox Grid.Row="2" Grid.Column="1" Margin="0,2"
                            Text="{Binding ActionValue, UpdateSourceTrigger=PropertyChanged}"
                            Placeholder="integer or var:name"
@@ -52,7 +52,7 @@
     <DataTemplate x:Key="BlockTemplate_Compute" DataType="{x:Type vm:BlockViewModel}">
         <StackPanel Style="{StaticResource BlockPanel}">
             <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource BlockCommonHeader}"/>
-            <TextBlock Text="Computation" Style="{StaticResource SectionHeader}"/>
+            <TextBlock Text="{DynamicResource SE_BE_Computation}" Style="{StaticResource SectionHeader}"/>
             <Grid Style="{StaticResource PropGrid}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -62,12 +62,12 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <TextBlock Grid.Row="0" Grid.Column="0" Text="Expression" Style="{StaticResource PropLabel}"/>
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="{DynamicResource SE_BE_Expression}" Style="{StaticResource PropLabel}"/>
                 <ctrl:ExpressionTextBox Grid.Row="0" Grid.Column="1" Margin="0,2"
                            Text="{Binding Expression, UpdateSourceTrigger=PropertyChanged}"
                            Placeholder="calc:width * height / 2"
                            ToolTip="Math expression using variables and functions — Ctrl+Space for autocomplete"/>
-                <TextBlock Grid.Row="1" Grid.Column="0" Text="Store As" Style="{StaticResource PropLabel}"/>
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="{DynamicResource SE_BE_StoreAs}" Style="{StaticResource PropLabel}"/>
                 <ctrl:ExpressionTextBox Grid.Row="1" Grid.Column="1" Margin="0,2"
                            Text="{Binding StoreAs, UpdateSourceTrigger=PropertyChanged}"
                            Placeholder="variableName"
@@ -82,7 +82,7 @@
             <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource BlockCommonHeader}"/>
 
             <!-- Position -->
-            <TextBlock Text="Position" Style="{StaticResource SectionHeader}"/>
+            <TextBlock Text="{DynamicResource SE_BE_Position}" Style="{StaticResource SectionHeader}"/>
             <Grid Style="{StaticResource PropGrid}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -92,12 +92,12 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <TextBlock Grid.Row="0" Grid.Column="0" Text="Offset"      Style="{StaticResource PropLabel}"/>
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="{DynamicResource SE_BE_Offset}"      Style="{StaticResource PropLabel}"/>
                 <ctrl:ExpressionTextBox Grid.Row="0" Grid.Column="1" Margin="0,2"
                            Text="{Binding OffsetText, UpdateSourceTrigger=PropertyChanged}"
                            Placeholder="integer, var:name or calc:expr"
                            ToolTip="File offset where the array starts — Ctrl+Space for autocomplete"/>
-                <TextBlock Grid.Row="1" Grid.Column="0" Text="Offset From" Style="{StaticResource PropLabel}"/>
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="{DynamicResource SE_BE_OffsetFrom}" Style="{StaticResource PropLabel}"/>
                 <ctrl:ExpressionTextBox Grid.Row="1" Grid.Column="1" Margin="0,2"
                            Text="{Binding OffsetFrom, UpdateSourceTrigger=PropertyChanged}"
                            Placeholder="variableName"
@@ -105,7 +105,7 @@
             </Grid>
 
             <!-- Array -->
-            <TextBlock Text="Array" Style="{StaticResource SectionHeader}"/>
+            <TextBlock Text="{DynamicResource SE_BE_Array}" Style="{StaticResource SectionHeader}"/>
             <Grid Style="{StaticResource PropGrid}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -116,17 +116,17 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <TextBlock Grid.Row="0" Grid.Column="0" Text="Count"      Style="{StaticResource PropLabel}"/>
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="{DynamicResource SE_BE_Count}"      Style="{StaticResource PropLabel}"/>
                 <ctrl:ExpressionTextBox Grid.Row="0" Grid.Column="1" Margin="0,2"
                            Text="{Binding CountText, UpdateSourceTrigger=PropertyChanged}"
                            Placeholder="integer or var:name"
                            ToolTip="Number of entries — Ctrl+Space for variable suggestions"/>
-                <TextBlock Grid.Row="1" Grid.Column="0" Text="Entry Size" Style="{StaticResource PropLabel}"/>
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="{DynamicResource SE_BE_EntrySize}" Style="{StaticResource PropLabel}"/>
                 <ctrl:ExpressionTextBox Grid.Row="1" Grid.Column="1" Margin="0,2"
                            Text="{Binding EntrySizeText, UpdateSourceTrigger=PropertyChanged}"
                            Placeholder="integer or var:name"
                            ToolTip="Size of each entry in bytes — Ctrl+Space for variable suggestions"/>
-                <TextBlock Grid.Row="2" Grid.Column="0" Text="Index Var"  Style="{StaticResource PropLabel}"/>
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="{DynamicResource SE_BE_IndexVar}"  Style="{StaticResource PropLabel}"/>
                 <ctrl:ExpressionTextBox Grid.Row="2" Grid.Column="1" Margin="0,2"
                            Text="{Binding IndexVar, UpdateSourceTrigger=PropertyChanged}"
                            Placeholder="i"
@@ -134,7 +134,7 @@
             </Grid>
 
             <!-- Color cycle -->
-            <TextBlock Text="Color Cycle" Style="{StaticResource SectionHeader}"/>
+            <TextBlock Text="{DynamicResource SE_BE_ColorCycle}" Style="{StaticResource SectionHeader}"/>
             <ItemsControl ItemsSource="{Binding ColorCycle}" Margin="0,0,0,4">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
@@ -152,7 +152,7 @@
             <Button Content="＋ Add Color" Style="{StaticResource AddLinkBtn}"
                     Command="{Binding AddColorCycleCommand}"/>
 
-            <TextBlock Text="Entry fields are shown as children in the tree."
+            <TextBlock Text="{DynamicResource SE_BE_EntryFieldsHint}"
                        FontSize="10" Margin="0,8,0,0"
                        Foreground="{DynamicResource TE_LineNumberForeground}"
                        FontStyle="Italic"/>
@@ -163,20 +163,20 @@
     <DataTemplate x:Key="BlockTemplate_Union" DataType="{x:Type vm:BlockViewModel}">
         <StackPanel Style="{StaticResource BlockPanel}">
             <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource BlockCommonHeader}"/>
-            <TextBlock Text="Union" Style="{StaticResource SectionHeader}"/>
+            <TextBlock Text="{DynamicResource SE_BE_Union}" Style="{StaticResource SectionHeader}"/>
             <Grid Style="{StaticResource PropGrid}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="Discriminant" Style="{StaticResource PropLabel}"/>
+                <TextBlock Grid.Column="0" Text="{DynamicResource SE_BE_Discriminant}" Style="{StaticResource PropLabel}"/>
                 <ctrl:ExpressionTextBox Grid.Column="1" Margin="0,2"
                            Text="{Binding UnionCondition, UpdateSourceTrigger=PropertyChanged}"
                            Placeholder="variableName"
                            ToolTip="Variable that drives the variant selection — Ctrl+Space for suggestions"/>
             </Grid>
 
-            <TextBlock Text="Variants" Style="{StaticResource SectionHeader}"/>
+            <TextBlock Text="{DynamicResource SE_BE_Variants}" Style="{StaticResource SectionHeader}"/>
             <DataGrid ItemsSource="{Binding UnionVariants}" AutoGenerateColumns="False"
                       Margin="0,0,0,4" FontSize="11" CanUserAddRows="True"
                       Background="{DynamicResource TE_Background}"
@@ -198,14 +198,14 @@
     <DataTemplate x:Key="BlockTemplate_Nested" DataType="{x:Type vm:BlockViewModel}">
         <StackPanel Style="{StaticResource BlockPanel}">
             <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource BlockCommonHeader}"/>
-            <TextBlock Text="Nested Struct" Style="{StaticResource SectionHeader}"/>
+            <TextBlock Text="{DynamicResource SE_BE_NestedStruct}" Style="{StaticResource SectionHeader}"/>
             <Grid Style="{StaticResource PropGrid}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="Struct Ref" Style="{StaticResource PropLabel}"/>
+                <TextBlock Grid.Column="0" Text="{DynamicResource SE_BE_StructRef}" Style="{StaticResource PropLabel}"/>
                 <TextBox   Grid.Column="1" Style="{StaticResource PropField}"
                            Text="{Binding StructRef, UpdateSourceTrigger=PropertyChanged}"
                            ToolTip="Format name or relative path to the .whfmt file"/>
@@ -225,7 +225,7 @@
             <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource BlockCommonHeader}"/>
 
             <!-- Where the pointer value is stored in the file -->
-            <TextBlock Text="Pointer Location" Style="{StaticResource SectionHeader}"/>
+            <TextBlock Text="{DynamicResource SE_BE_PointerLocation}" Style="{StaticResource SectionHeader}"/>
             <Grid Style="{StaticResource PropGrid}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -236,17 +236,17 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <TextBlock Grid.Row="0" Grid.Column="0" Text="Offset"      Style="{StaticResource PropLabel}"/>
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="{DynamicResource SE_BE_Offset}"      Style="{StaticResource PropLabel}"/>
                 <ctrl:ExpressionTextBox Grid.Row="0" Grid.Column="1" Margin="0,2"
                            Text="{Binding OffsetText, UpdateSourceTrigger=PropertyChanged}"
                            Placeholder="integer or var:name"
                            ToolTip="File offset where the pointer value is read — Ctrl+Space for autocomplete"/>
-                <TextBlock Grid.Row="1" Grid.Column="0" Text="Offset From" Style="{StaticResource PropLabel}"/>
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="{DynamicResource SE_BE_OffsetFrom}" Style="{StaticResource PropLabel}"/>
                 <ctrl:ExpressionTextBox Grid.Row="1" Grid.Column="1" Margin="0,2"
                            Text="{Binding OffsetFrom, UpdateSourceTrigger=PropertyChanged}"
                            Placeholder="variableName"
                            ToolTip="Variable name used as the base offset"/>
-                <TextBlock Grid.Row="2" Grid.Column="0" Text="Length"      Style="{StaticResource PropLabel}"/>
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="{DynamicResource SE_BE_Length}"      Style="{StaticResource PropLabel}"/>
                 <ctrl:ExpressionTextBox Grid.Row="2" Grid.Column="1" Margin="0,2"
                            Text="{Binding LengthText, UpdateSourceTrigger=PropertyChanged}"
                            Placeholder="4"
@@ -254,7 +254,7 @@
             </Grid>
 
             <!-- Target + storage -->
-            <TextBlock Text="Target &amp; Storage" Style="{StaticResource SectionHeader}"/>
+            <TextBlock Text="{DynamicResource SE_BE_TargetStorage}" Style="{StaticResource SectionHeader}"/>
             <Grid Style="{StaticResource PropGrid}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -265,17 +265,17 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <TextBlock Grid.Row="0" Grid.Column="0" Text="Target Var" Style="{StaticResource PropLabel}"/>
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="{DynamicResource SE_BE_TargetVar}" Style="{StaticResource PropLabel}"/>
                 <ctrl:ExpressionTextBox Grid.Row="0" Grid.Column="1" Margin="0,2"
                            Text="{Binding TargetVar, UpdateSourceTrigger=PropertyChanged}"
                            Placeholder="variableName"
                            ToolTip="Variable that will receive the resolved pointer address"/>
-                <TextBlock Grid.Row="1" Grid.Column="0" Text="Store As"   Style="{StaticResource PropLabel}"/>
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="{DynamicResource SE_BE_StoreAs}"   Style="{StaticResource PropLabel}"/>
                 <ctrl:ExpressionTextBox Grid.Row="1" Grid.Column="1" Margin="0,2"
                            Text="{Binding StoreAs, UpdateSourceTrigger=PropertyChanged}"
                            Placeholder="variableName"
                            ToolTip="Variable to store the raw pointer value"/>
-                <TextBlock Grid.Row="2" Grid.Column="0" Text="Label"      Style="{StaticResource PropLabel}"/>
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="{DynamicResource SE_BE_Label}"      Style="{StaticResource PropLabel}"/>
                 <TextBox   Grid.Row="2" Grid.Column="1" Style="{StaticResource PropField}"
                            Text="{Binding Label, UpdateSourceTrigger=PropertyChanged}"
                            ToolTip="Annotation label shown in the hex view"/>

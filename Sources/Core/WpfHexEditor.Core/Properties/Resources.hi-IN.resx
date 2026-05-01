@@ -1958,4 +1958,9 @@
   <data name="HE_SearchTypeWildcard" xml:space="preserve"><value>वाइल्डकार्ड</value></data>
   <data name="HE_SearchTypeTbl" xml:space="preserve"><value>TBL टेक्स्ट</value></data>
   <data name="HE_SearchTypeRelative" xml:space="preserve"><value>सापेक्ष</value></data>
+  <data name="HE_Toolbar_DetectedFormat" xml:space="preserve"><value>पहचाना गया फ़ाइल प्रारूप</value></data>
+  <data name="HE_Toolbar_ConfidenceScore" xml:space="preserve"><value>पहचान विश्वास स्कोर</value></data>
+  <data name="HE_Toolbar_ConfidenceFormat" xml:space="preserve"><value>पहचान विश्वास: {0}</value></data>
+  <data name="HE_Toolbar_ChangeFormat" xml:space="preserve"><value>प्रारूप</value></data>
+  <data name="HE_Toolbar_ChangeFormatTooltip" xml:space="preserve"><value>पहचाना गया प्रारूप बदलें</value></data>
 </root>
