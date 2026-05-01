@@ -1965,4 +1965,7 @@ Nota: A integração completa com o HexEditor requer ligação ao modelo de vist
   <data name="HE_Toolbar_ChangeFormatTooltip" xml:space="preserve"><value>Alterar formato detetado</value></data>
   <data name="HE_TipSearchAllOccurrences" xml:space="preserve"><value>Procurar todas as ocorrências com sobreposição de progresso</value></data>
   <data name="HE_ColOffset"               xml:space="preserve"><value>Deslocamento</value></data>
+  <data name="HE_ResultsHeader" xml:space="preserve">
+    <value>Resultados</value>
+  </data>
 </root>

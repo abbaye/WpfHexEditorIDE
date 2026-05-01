@@ -2020,4 +2020,7 @@ Nota: A integração completa com o HexEditor requer conexão com o modelo de ex
   <data name="HE_Toolbar_ChangeFormatTooltip" xml:space="preserve"><value>Alterar formato detectado</value></data>
   <data name="HE_TipSearchAllOccurrences" xml:space="preserve"><value>Buscar todas as ocorrências com sobreposição de progresso</value></data>
   <data name="HE_ColOffset"               xml:space="preserve"><value>Deslocamento</value></data>
+  <data name="HE_ResultsHeader" xml:space="preserve">
+    <value>Resultados</value>
+  </data>
 </root>

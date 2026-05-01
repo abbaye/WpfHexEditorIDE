@@ -2020,4 +2020,7 @@
   <data name="HE_Toolbar_ChangeFormatTooltip" xml:space="preserve"><value>更改检测到的格式</value></data>
   <data name="HE_TipSearchAllOccurrences" xml:space="preserve"><value>使用进度叠加搜索所有匹配项</value></data>
   <data name="HE_ColOffset"               xml:space="preserve"><value>偏移</value></data>
+  <data name="HE_ResultsHeader" xml:space="preserve">
+    <value>结果</value>
+  </data>
 </root>

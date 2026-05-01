@@ -1965,4 +1965,7 @@
   <data name="HE_Toolbar_ChangeFormatTooltip" xml:space="preserve"><value>감지된 형식 변경</value></data>
   <data name="HE_TipSearchAllOccurrences" xml:space="preserve"><value>진행률 오버레이로 모든 발생 검색</value></data>
   <data name="HE_ColOffset"               xml:space="preserve"><value>오프셋</value></data>
+  <data name="HE_ResultsHeader" xml:space="preserve">
+    <value>결과</value>
+  </data>
 </root>

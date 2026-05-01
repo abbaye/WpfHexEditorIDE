@@ -187,7 +187,7 @@
         </StackPanel>
 
         <!-- Results Section -->
-        <GroupBox Grid.Row="3" Header="Results" Padding="5" Margin="0,0,0,10">
+        <GroupBox Grid.Row="3" Header="{DynamicResource HE_ResultsHeader}" Padding="5" Margin="0,0,0,10">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>

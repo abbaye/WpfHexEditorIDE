@@ -2030,4 +2030,7 @@ Nota: La integración completa con HexEditor requiere conectarse al modelo de vi
   <data name="HE_Toolbar_ChangeFormatTooltip" xml:space="preserve"><value>Cambiar formato detectado</value></data>
   <data name="HE_TipSearchAllOccurrences" xml:space="preserve"><value>Buscar todas las ocurrencias con superposición de progreso</value></data>
   <data name="HE_ColOffset"               xml:space="preserve"><value>Desplazamiento</value></data>
+  <data name="HE_ResultsHeader" xml:space="preserve">
+    <value>Resultados</value>
+  </data>
 </root>
