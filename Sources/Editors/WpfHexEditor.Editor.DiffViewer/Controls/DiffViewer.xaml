@@ -28,9 +28,9 @@
 
         <!-- Toolbar -->
         <ToolBar Grid.Row="0" Background="{DynamicResource TE_LineNumberBackground}">
-            <Button x:Name="BtnPrevDiff" Content="&#x25C4; Prev" ToolTip="{DynamicResource DiffViewer_PrevDiff}"
+            <Button x:Name="BtnPrevDiff" Content="{DynamicResource DiffViewer_PrevButton}" ToolTip="{DynamicResource DiffViewer_PrevDiff}"
                     Click="BtnPrevDiff_Click" Padding="8,3" IsEnabled="False"/>
-            <Button x:Name="BtnNextDiff" Content="Next &#x25BA;" ToolTip="{DynamicResource DiffViewer_NextDiff}"
+            <Button x:Name="BtnNextDiff" Content="{DynamicResource DiffViewer_NextButton}" ToolTip="{DynamicResource DiffViewer_NextDiff}"
                     Click="BtnNextDiff_Click" Padding="8,3" IsEnabled="False"/>
             <Separator/>
             <TextBlock x:Name="DiffCountText" Text="&#x2014;" VerticalAlignment="Center" Padding="4,0"
@@ -38,15 +38,15 @@
             <Separator/>
             <Border x:Name="ChipModified" CornerRadius="3" Background="{DynamicResource DiffViewer_ModifiedBrush}" Padding="6,2" Margin="2,0"
                     Visibility="Collapsed">
-                <TextBlock x:Name="ModifiedText" Text="Modified: 0" Foreground="{DynamicResource DiffViewer_BadgeForeground}" FontSize="11"/>
+                <TextBlock x:Name="ModifiedText" Text="{DynamicResource DiffViewer_ModifiedChip}" Foreground="{DynamicResource DiffViewer_BadgeForeground}" FontSize="11"/>
             </Border>
             <Border x:Name="ChipAdded" CornerRadius="3" Background="{DynamicResource DiffViewer_AddedBrush}" Padding="6,2" Margin="2,0"
                     Visibility="Collapsed">
-                <TextBlock x:Name="AddedText" Text="Added: 0" Foreground="{DynamicResource DiffViewer_BadgeForeground}" FontSize="11"/>
+                <TextBlock x:Name="AddedText" Text="{DynamicResource DiffViewer_AddedChip}" Foreground="{DynamicResource DiffViewer_BadgeForeground}" FontSize="11"/>
             </Border>
             <Border x:Name="ChipDeleted" CornerRadius="3" Background="{DynamicResource DiffViewer_DeletedBrush}" Padding="6,2" Margin="2,0"
                     Visibility="Collapsed">
-                <TextBlock x:Name="DeletedText" Text="Deleted: 0" Foreground="{DynamicResource DiffViewer_BadgeForeground}" FontSize="11"/>
+                <TextBlock x:Name="DeletedText" Text="{DynamicResource DiffViewer_DeletedChip}" Foreground="{DynamicResource DiffViewer_BadgeForeground}" FontSize="11"/>
             </Border>
             <Separator/>
             <ToggleButton x:Name="BtnDiffList" Content="{DynamicResource DiffViewer_DiffList}" Padding="8,3" ToolTip="{DynamicResource DiffViewer_ShowHideDiffList}"
@@ -68,7 +68,7 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <TextBlock x:Name="LeftHeader" Grid.Row="0"
-                           Text="&#x2014; (left)"
+                           Text="{DynamicResource DiffViewer_LeftLabel}"
                            Background="{DynamicResource TE_LineNumberBackground}"
                            Foreground="{DynamicResource TE_LineNumberForeground}"
                            Padding="6,3" FontSize="11" TextTrimming="CharacterEllipsis"/>
@@ -92,7 +92,7 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <TextBlock x:Name="RightHeader" Grid.Row="0"
-                           Text="&#x2014; (right)"
+                           Text="{DynamicResource DiffViewer_RightLabel}"
                            Background="{DynamicResource TE_LineNumberBackground}"
                            Foreground="{DynamicResource TE_LineNumberForeground}"
                            Padding="6,3" FontSize="11" TextTrimming="CharacterEllipsis"/>

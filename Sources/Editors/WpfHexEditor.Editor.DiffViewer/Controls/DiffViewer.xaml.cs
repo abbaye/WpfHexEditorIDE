@@ -250,9 +250,9 @@ public sealed partial class DiffViewer : UserControl, IDocumentEditor, IOpenable
             StatusText.Text    = $"Left: {left.Length:N0} B  |  Right: {right.Length:N0} B  |  Regions: {regions.Count:N0}";
 
             // Statistics chips
-            ShowChip(ChipModified, ModifiedText, "Modified",  stats.ModifiedCount);
-            ShowChip(ChipAdded,    AddedText,    "Added",     stats.AddedCount);
-            ShowChip(ChipDeleted,  DeletedText,  "Deleted",   stats.DeletedCount);
+            ShowChip(ChipModified, ModifiedText, DiffViewerResources.ResourceManager.GetString("DiffViewer_Modified") ?? "Modified", stats.ModifiedCount);
+            ShowChip(ChipAdded,    AddedText,    DiffViewerResources.ResourceManager.GetString("DiffViewer_Added")    ?? "Added",    stats.AddedCount);
+            ShowChip(ChipDeleted,  DeletedText,  DiffViewerResources.ResourceManager.GetString("DiffViewer_Deleted")  ?? "Deleted",  stats.DeletedCount);
 
             // Diff list DataGrid
             DiffListGrid.ItemsSource = regions.Select((r, i) => new DiffRowVm(r, i, left, right)).ToList();

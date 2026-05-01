@@ -476,4 +476,5 @@
   <data name="Opt_MdLayout_PreviewOnly"       xml:space="preserve"><value>PreviewOnly</value></data>
   <data name="Opt_Preview_Label"              xml:space="preserve"><value>Preview</value></data>
 
+  <data name="Opt_NotYetImplemented" xml:space="preserve"><value>Not yet implemented</value></data>
 </root>

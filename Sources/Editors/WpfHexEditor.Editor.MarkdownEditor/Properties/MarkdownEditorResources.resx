@@ -115,4 +115,5 @@
   <!-- Outline panel -->
   <data name="Md_NoHeadingsFound" xml:space="preserve"><value>No headings found.</value></data>
 
+  <data name="Md_OutlineTitle" xml:space="preserve"><value>Markdown Outline</value></data>
 </root>

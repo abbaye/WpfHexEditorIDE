@@ -182,7 +182,7 @@
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                   Margin="0,0,0,8"
                   IsEnabled="False"
-                  ToolTip="Not yet implemented"
+                  ToolTip="{DynamicResource Opt_NotYetImplemented}"
                   Checked="OnCheckChanged"
                   Unchecked="OnCheckChanged"/>
 

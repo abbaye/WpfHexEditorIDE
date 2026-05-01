@@ -170,16 +170,16 @@
                             Click="OnShellSelectorClick">
                         <Button.ContextMenu>
                             <ContextMenu>
-                                <MenuItem Header="HxTerminal"
+                                <MenuItem Header="{DynamicResource Terminal_TabHxTerminal}"
                                           Command="{Binding SwitchModeCommand}"
                                           CommandParameter="HxTerminal"/>
-                                <MenuItem Header="PowerShell"
+                                <MenuItem Header="{DynamicResource Terminal_TabPowerShell}"
                                           Command="{Binding SwitchModeCommand}"
                                           CommandParameter="PowerShell"/>
-                                <MenuItem Header="Bash"
+                                <MenuItem Header="{DynamicResource Terminal_TabBash}"
                                           Command="{Binding SwitchModeCommand}"
                                           CommandParameter="Bash"/>
-                                <MenuItem Header="CMD"
+                                <MenuItem Header="{DynamicResource Terminal_TabCmd}"
                                           Command="{Binding SwitchModeCommand}"
                                           CommandParameter="CMD"/>
                             </ContextMenu>
@@ -429,10 +429,10 @@
                         Width="28" Height="28">
                     <Button.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="HxTerminal" Command="{Binding AddHxTerminalCommand}"/>
-                            <MenuItem Header="PowerShell" Command="{Binding AddPowerShellCommand}"/>
-                            <MenuItem Header="Bash"       Command="{Binding AddBashCommand}"/>
-                            <MenuItem Header="CMD"        Command="{Binding AddCmdCommand}"/>
+                            <MenuItem Header="{DynamicResource Terminal_TabHxTerminal}" Command="{Binding AddHxTerminalCommand}"/>
+                            <MenuItem Header="{DynamicResource Terminal_TabPowerShell}" Command="{Binding AddPowerShellCommand}"/>
+                            <MenuItem Header="{DynamicResource Terminal_TabBash}"       Command="{Binding AddBashCommand}"/>
+                            <MenuItem Header="{DynamicResource Terminal_TabCmd}"        Command="{Binding AddCmdCommand}"/>
                         </ContextMenu>
                     </Button.ContextMenu>
                     <TextBlock Text="&#xE710;" FontFamily="Segoe MDL2 Assets" FontSize="11"

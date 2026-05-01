@@ -82,7 +82,7 @@
                                         <Setter.Value>
                                             <VisualBrush AlignmentX="Left" AlignmentY="Center" Stretch="None">
                                                 <VisualBrush.Visual>
-                                                    <TextBlock Text="Search templates…"
+                                                    <TextBlock Text="{DynamicResource PS_SearchTemplates}"
                                                                Foreground="{DynamicResource DockTabTextBrush}"
                                                                FontStyle="Italic"
                                                                Margin="6,0,0,0" />

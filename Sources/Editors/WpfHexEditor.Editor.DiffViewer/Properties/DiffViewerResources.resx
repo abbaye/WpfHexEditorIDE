@@ -87,4 +87,20 @@
   <data name="DiffViewer_OpenFilesHint" xml:space="preserve">
     <value>Open two files via View &gt; Compare Files…</value>
   </data>
+  <data name="DiffViewer_Modified" xml:space="preserve">
+    <value>Modified</value>
+  </data>
+  <data name="DiffViewer_Added" xml:space="preserve">
+    <value>Added</value>
+  </data>
+  <data name="DiffViewer_Deleted" xml:space="preserve">
+    <value>Deleted</value>
+  </data>
+  <data name="DiffViewer_PrevButton" xml:space="preserve"><value>◄ Prev</value></data>
+  <data name="DiffViewer_NextButton" xml:space="preserve"><value>Next ►</value></data>
+  <data name="DiffViewer_ModifiedChip" xml:space="preserve"><value>Modified: 0</value></data>
+  <data name="DiffViewer_AddedChip" xml:space="preserve"><value>Added: 0</value></data>
+  <data name="DiffViewer_DeletedChip" xml:space="preserve"><value>Deleted: 0</value></data>
+  <data name="DiffViewer_LeftLabel" xml:space="preserve"><value>— (left)</value></data>
+  <data name="DiffViewer_RightLabel" xml:space="preserve"><value>— (right)</value></data>
 </root>

@@ -80,7 +80,7 @@
                      Background="{DynamicResource DockBackgroundBrush}" />
             <Button Grid.Column="2" Content="{DynamicResource PS_Browse}" Margin="6,0,0,0"
                     Padding="10,5" MinWidth="70"
-                    ToolTip="Select one or more files (multi-select supported). You can also drag and drop files onto this window."
+                    ToolTip="{DynamicResource PS_AddExistingItemTooltip}"
                     Click="OnBrowse" />
         </Grid>
 

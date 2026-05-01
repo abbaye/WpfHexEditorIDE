@@ -101,7 +101,7 @@
                 BorderBrush="{DynamicResource SE_SeparatorBrush}"
                 Background="{DynamicResource SE_ToolbarBrush}">
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="4,0">
-                <TextBlock Text="Markdown Outline"
+                <TextBlock Text="{DynamicResource Md_OutlineTitle}"
                            FontWeight="SemiBold"
                            FontSize="11"
                            VerticalAlignment="Center"
