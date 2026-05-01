@@ -242,7 +242,7 @@
 
                             <!-- Placeholder (shown when empty) -->
                             <TextBlock Grid.Column="1"
-                                       Text="Rechercher..."
+                                       Text="{DynamicResource EC_SearchPlaceholder}"
                                        FontFamily="Segoe UI"
                                        FontSize="12"
                                        VerticalAlignment="Center"
@@ -380,7 +380,7 @@
 
                             <!-- Placeholder -->
                             <TextBlock Grid.Column="1"
-                                       Text="Remplacer..."
+                                       Text="{DynamicResource EC_ReplacePlaceholder}"
                                        FontFamily="Segoe UI"
                                        FontSize="12"
                                        VerticalAlignment="Center"

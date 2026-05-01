@@ -16,4 +16,11 @@
   <data name="FileComparison_SelectTwoFiles" xml:space="preserve"><value>S&#233;lectionnez deux fichiers et cliquez sur Comparer</value></data>
   <data name="FileComparison_MultipleFormats" xml:space="preserve"><value>Plusieurs formats d&#233;tect&#233;s</value></data>
   <data name="FileComparison_SelectFile" xml:space="preserve"><value>S&#233;lectionner un fichier &#224; comparer</value></data>
+  <data name="FileComparison_FilesSection" xml:space="preserve"><value>FICHIERS</value></data>
+  <data name="FileComparison_DiffSummary" xml:space="preserve"><value>RÉSUMÉ DES DIFFÉRENCES</value></data>
+  <data name="FileComparison_ModifiedLabel" xml:space="preserve"><value>Modifié</value></data>
+  <data name="FileComparison_InsertedLabel" xml:space="preserve"><value>Inséré</value></data>
+  <data name="FileComparison_DeletedLabel" xml:space="preserve"><value>Supprimé</value></data>
+  <data name="FileComparison_ByteFrequency" xml:space="preserve"><value>FRÉQUENCE DES OCTETS (NIBBLES)</value></data>
+  <data name="FileComparison_ShannonEntropy" xml:space="preserve"><value>ENTROPIE DE SHANNON (par bloc de 256 octets)</value></data>
 </root>

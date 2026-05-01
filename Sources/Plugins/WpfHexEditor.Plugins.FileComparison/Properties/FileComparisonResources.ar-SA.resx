@@ -37,4 +37,11 @@
   <data name="FileComparison_SelectFile" xml:space="preserve">
     <value>تحديد ملف للمقارنة</value>
   </data>
+  <data name="FileComparison_FilesSection" xml:space="preserve"><value>الملفات</value></data>
+  <data name="FileComparison_DiffSummary" xml:space="preserve"><value>ملخص الاختلافات</value></data>
+  <data name="FileComparison_ModifiedLabel" xml:space="preserve"><value>معدَّل</value></data>
+  <data name="FileComparison_InsertedLabel" xml:space="preserve"><value>مدرج</value></data>
+  <data name="FileComparison_DeletedLabel" xml:space="preserve"><value>محذوف</value></data>
+  <data name="FileComparison_ByteFrequency" xml:space="preserve"><value>تردد البايت (نيبل)</value></data>
+  <data name="FileComparison_ShannonEntropy" xml:space="preserve"><value>إنتروبيا شانون (لكل كتلة 256 بايت)</value></data>
 </root>

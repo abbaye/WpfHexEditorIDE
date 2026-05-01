@@ -1090,4 +1090,16 @@
   <data name="APP_ToggleAutoScroll" xml:space="preserve">
     <value>Toggle Auto-Scroll</value>
   </data>
+
+  <!-- Document info bar -->
+  <data name="APP_Dismiss"          xml:space="preserve"><value>Dismiss</value></data>
+  <data name="APP_ViewIn"           xml:space="preserve"><value>View in:</value></data>
+
+  <!-- Document tab header -->
+  <data name="APP_UnsavedChanges"   xml:space="preserve"><value>Unsaved changes</value></data>
+  <data name="APP_ReadOnly"         xml:space="preserve"><value>Read-only</value></data>
+
+  <!-- Plugin status popup -->
+  <data name="APP_ExtensionSystem"  xml:space="preserve"><value>EXTENSION SYSTEM</value></data>
+  <data name="APP_SlowBadge"        xml:space="preserve"><value>SLOW</value></data>
 </root>

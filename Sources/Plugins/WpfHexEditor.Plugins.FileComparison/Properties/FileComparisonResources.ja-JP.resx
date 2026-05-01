@@ -37,4 +37,11 @@
   <data name="FileComparison_SelectFile" xml:space="preserve">
     <value>比較するファイルを選択</value>
   </data>
+  <data name="FileComparison_FilesSection" xml:space="preserve"><value>ファイル</value></data>
+  <data name="FileComparison_DiffSummary" xml:space="preserve"><value>差分サマリー</value></data>
+  <data name="FileComparison_ModifiedLabel" xml:space="preserve"><value>変更</value></data>
+  <data name="FileComparison_InsertedLabel" xml:space="preserve"><value>挿入</value></data>
+  <data name="FileComparison_DeletedLabel" xml:space="preserve"><value>削除</value></data>
+  <data name="FileComparison_ByteFrequency" xml:space="preserve"><value>バイト頻度（ニブル）</value></data>
+  <data name="FileComparison_ShannonEntropy" xml:space="preserve"><value>シャノンエントロピー（256バイトブロックごと）</value></data>
 </root>

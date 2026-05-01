@@ -37,4 +37,11 @@
   <data name="FileComparison_SelectFile" xml:space="preserve">
     <value>Karşılaştırılacak Dosyayı Seç</value>
   </data>
+  <data name="FileComparison_FilesSection" xml:space="preserve"><value>DOSYALAR</value></data>
+  <data name="FileComparison_DiffSummary" xml:space="preserve"><value>FARK ÖZETİ</value></data>
+  <data name="FileComparison_ModifiedLabel" xml:space="preserve"><value>Değiştirildi</value></data>
+  <data name="FileComparison_InsertedLabel" xml:space="preserve"><value>Eklendi</value></data>
+  <data name="FileComparison_DeletedLabel" xml:space="preserve"><value>Silindi</value></data>
+  <data name="FileComparison_ByteFrequency" xml:space="preserve"><value>BYTE SIKLIĞI (NIBBLE'LAR)</value></data>
+  <data name="FileComparison_ShannonEntropy" xml:space="preserve"><value>SHANNON ENTROPİSİ (256 baytlık blok başına)</value></data>
 </root>

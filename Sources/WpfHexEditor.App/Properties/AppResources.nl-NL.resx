@@ -839,4 +839,10 @@
   <data name="APP_FullChangelogButton" xml:space="preserve">
     <value>Full Changelog</value>
   </data>
+  <data name="APP_Dismiss" xml:space="preserve"><value>Sluiten</value></data>
+  <data name="APP_ViewIn" xml:space="preserve"><value>Weergeven in:</value></data>
+  <data name="APP_UnsavedChanges" xml:space="preserve"><value>Niet-opgeslagen wijzigingen</value></data>
+  <data name="APP_ReadOnly" xml:space="preserve"><value>Alleen-lezen</value></data>
+  <data name="APP_ExtensionSystem" xml:space="preserve"><value>EXTENSIESYSTEEM</value></data>
+  <data name="APP_SlowBadge" xml:space="preserve"><value>TRAAG</value></data>
 </root>

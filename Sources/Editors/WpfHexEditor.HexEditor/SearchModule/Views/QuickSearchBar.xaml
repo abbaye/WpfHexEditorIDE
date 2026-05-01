@@ -256,7 +256,7 @@
 
                             <!-- Placeholder (shown when empty and not focused) -->
                             <TextBlock Grid.Column="1"
-                                       Text="Rechercher..."
+                                       Text="{DynamicResource HE_SearchPlaceholder}"
                                        FontFamily="Segoe UI"
                                        FontSize="12"
                                        VerticalAlignment="Center"
@@ -436,7 +436,7 @@
 
                             <!-- Placeholder -->
                             <TextBlock Grid.Column="1"
-                                       Text="Remplacer..."
+                                       Text="{DynamicResource HE_ReplacePlaceholder}"
                                        FontFamily="Segoe UI"
                                        FontSize="12"
                                        VerticalAlignment="Center"

@@ -37,4 +37,11 @@
   <data name="FileComparison_SelectFile" xml:space="preserve">
     <value>Выбрать файл для сравнения</value>
   </data>
+  <data name="FileComparison_FilesSection" xml:space="preserve"><value>ФАЙЛЫ</value></data>
+  <data name="FileComparison_DiffSummary" xml:space="preserve"><value>СВОДКА РАЗЛИЧИЙ</value></data>
+  <data name="FileComparison_ModifiedLabel" xml:space="preserve"><value>Изменено</value></data>
+  <data name="FileComparison_InsertedLabel" xml:space="preserve"><value>Вставлено</value></data>
+  <data name="FileComparison_DeletedLabel" xml:space="preserve"><value>Удалено</value></data>
+  <data name="FileComparison_ByteFrequency" xml:space="preserve"><value>ЧАСТОТА БАЙТОВ (НИБЛЫ)</value></data>
+  <data name="FileComparison_ShannonEntropy" xml:space="preserve"><value>ЭНТРОПИЯ ШЕННОНА (на блок 256 байт)</value></data>
 </root>

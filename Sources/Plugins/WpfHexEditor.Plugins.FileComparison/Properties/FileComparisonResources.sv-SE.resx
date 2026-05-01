@@ -37,4 +37,11 @@
   <data name="FileComparison_SelectFile" xml:space="preserve">
     <value>Välj fil att jämföra</value>
   </data>
+  <data name="FileComparison_FilesSection" xml:space="preserve"><value>FILER</value></data>
+  <data name="FileComparison_DiffSummary" xml:space="preserve"><value>DIFF-SAMMANFATTNING</value></data>
+  <data name="FileComparison_ModifiedLabel" xml:space="preserve"><value>Ändrat</value></data>
+  <data name="FileComparison_InsertedLabel" xml:space="preserve"><value>Infogat</value></data>
+  <data name="FileComparison_DeletedLabel" xml:space="preserve"><value>Borttaget</value></data>
+  <data name="FileComparison_ByteFrequency" xml:space="preserve"><value>BYTEFREKVENS (NIBBLES)</value></data>
+  <data name="FileComparison_ShannonEntropy" xml:space="preserve"><value>SHANNON-ENTROPI (per 256-byte-block)</value></data>
 </root>

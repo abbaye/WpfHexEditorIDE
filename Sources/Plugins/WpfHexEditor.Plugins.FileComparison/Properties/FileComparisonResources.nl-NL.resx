@@ -37,4 +37,11 @@
   <data name="FileComparison_SelectFile" xml:space="preserve">
     <value>Bestand selecteren om te vergelijken</value>
   </data>
+  <data name="FileComparison_FilesSection" xml:space="preserve"><value>BESTANDEN</value></data>
+  <data name="FileComparison_DiffSummary" xml:space="preserve"><value>DIFF-SAMENVATTING</value></data>
+  <data name="FileComparison_ModifiedLabel" xml:space="preserve"><value>Gewijzigd</value></data>
+  <data name="FileComparison_InsertedLabel" xml:space="preserve"><value>Ingevoegd</value></data>
+  <data name="FileComparison_DeletedLabel" xml:space="preserve"><value>Verwijderd</value></data>
+  <data name="FileComparison_ByteFrequency" xml:space="preserve"><value>BYTEFREQUENTIE (NIBBLES)</value></data>
+  <data name="FileComparison_ShannonEntropy" xml:space="preserve"><value>SHANNON-ENTROPIE (per 256-byte blok)</value></data>
 </root>

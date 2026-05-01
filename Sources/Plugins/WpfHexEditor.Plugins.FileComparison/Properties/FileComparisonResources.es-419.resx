@@ -37,4 +37,11 @@
   <data name="FileComparison_SelectFile" xml:space="preserve">
     <value>Seleccionar archivo para comparar</value>
   </data>
+  <data name="FileComparison_FilesSection" xml:space="preserve"><value>ARCHIVOS</value></data>
+  <data name="FileComparison_DiffSummary" xml:space="preserve"><value>RESUMEN DE DIFERENCIAS</value></data>
+  <data name="FileComparison_ModifiedLabel" xml:space="preserve"><value>Modificado</value></data>
+  <data name="FileComparison_InsertedLabel" xml:space="preserve"><value>Insertado</value></data>
+  <data name="FileComparison_DeletedLabel" xml:space="preserve"><value>Eliminado</value></data>
+  <data name="FileComparison_ByteFrequency" xml:space="preserve"><value>FRECUENCIA DE BYTES (NIBBLES)</value></data>
+  <data name="FileComparison_ShannonEntropy" xml:space="preserve"><value>ENTROPÍA DE SHANNON (por bloque de 256 bytes)</value></data>
 </root>

@@ -839,4 +839,10 @@
   <data name="APP_FullChangelogButton" xml:space="preserve">
     <value>Full Changelog</value>
   </data>
+  <data name="APP_Dismiss" xml:space="preserve"><value>닫기</value></data>
+  <data name="APP_ViewIn" xml:space="preserve"><value>다음에서 보기:</value></data>
+  <data name="APP_UnsavedChanges" xml:space="preserve"><value>저장되지 않은 변경 사항</value></data>
+  <data name="APP_ReadOnly" xml:space="preserve"><value>읽기 전용</value></data>
+  <data name="APP_ExtensionSystem" xml:space="preserve"><value>확장 시스템</value></data>
+  <data name="APP_SlowBadge" xml:space="preserve"><value>느림</value></data>
 </root>

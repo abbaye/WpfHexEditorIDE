@@ -16,9 +16,15 @@
 <UserControl x:Class="WpfHexEditor.App.Controls.PluginQuickStatusPopup"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:vm="clr-namespace:WpfHexEditor.App.ViewModels">
+             xmlns:vm="clr-namespace:WpfHexEditor.App.ViewModels"
+             xmlns:appSvc="clr-namespace:WpfHexEditor.App.Services">
     <UserControl.Resources>
-        <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <appSvc:AppLocalizedDictionary/>
+            </ResourceDictionary.MergedDictionaries>
+            <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        </ResourceDictionary>
     </UserControl.Resources>
 
     <Border Background="{DynamicResource DockBackgroundBrush}"
@@ -43,7 +49,7 @@
                     <TextBlock Text="&#xE74C;" FontFamily="Segoe MDL2 Assets" FontSize="12"
                                Foreground="{DynamicResource DockTabActiveTextBrush}"
                                VerticalAlignment="Center" Margin="0,0,7,0"/>
-                    <TextBlock Text="EXTENSION SYSTEM" FontSize="11" FontWeight="SemiBold"
+                    <TextBlock Text="{DynamicResource APP_ExtensionSystem}" FontSize="11" FontWeight="SemiBold"
                                Foreground="{DynamicResource DockTabActiveTextBrush}"
                                VerticalAlignment="Center"/>
                 </StackPanel>
@@ -94,7 +100,7 @@
                                 <Border Visibility="{Binding IsSlow, Converter={StaticResource BoolToVisibilityConverter}}"
                                         Background="{DynamicResource PM_BadgeSlowBrush}"
                                         CornerRadius="3" Padding="4,1" Margin="0,0,4,0">
-                                    <TextBlock Text="SLOW" FontSize="9" Foreground="White" FontWeight="Bold"/>
+                                    <TextBlock Text="{DynamicResource APP_SlowBadge}" FontSize="9" Foreground="White" FontWeight="Bold"/>
                                 </Border>
                                 <TextBlock Text="{Binding StateLabel}"
                                            FontSize="11"

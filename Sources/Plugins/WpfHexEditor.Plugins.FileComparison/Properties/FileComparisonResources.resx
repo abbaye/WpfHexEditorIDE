@@ -194,4 +194,13 @@ Compare two files to build history.</value>
   <data name="FileComparison_TierLabel" xml:space="preserve">
     <value>Tier:</value>
   </data>
+
+  <!-- BinaryStatsPanel section headers and labels -->
+  <data name="FileComparison_FilesSection"   xml:space="preserve"><value>FILES</value></data>
+  <data name="FileComparison_DiffSummary"    xml:space="preserve"><value>DIFF SUMMARY</value></data>
+  <data name="FileComparison_ModifiedLabel"  xml:space="preserve"><value>Modified</value></data>
+  <data name="FileComparison_InsertedLabel"  xml:space="preserve"><value>Inserted</value></data>
+  <data name="FileComparison_DeletedLabel"   xml:space="preserve"><value>Deleted</value></data>
+  <data name="FileComparison_ByteFrequency"  xml:space="preserve"><value>BYTE FREQUENCY (NIBBLES)</value></data>
+  <data name="FileComparison_ShannonEntropy" xml:space="preserve"><value>SHANNON ENTROPY (per 256-byte block)</value></data>
 </root>

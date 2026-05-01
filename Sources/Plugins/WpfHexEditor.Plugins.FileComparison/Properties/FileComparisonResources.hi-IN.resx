@@ -37,4 +37,11 @@
   <data name="FileComparison_SelectFile" xml:space="preserve">
     <value>तुलना के लिए फ़ाइल चुनें</value>
   </data>
+  <data name="FileComparison_FilesSection" xml:space="preserve"><value>फ़ाइलें</value></data>
+  <data name="FileComparison_DiffSummary" xml:space="preserve"><value>अंतर सारांश</value></data>
+  <data name="FileComparison_ModifiedLabel" xml:space="preserve"><value>संशोधित</value></data>
+  <data name="FileComparison_InsertedLabel" xml:space="preserve"><value>सम्मिलित</value></data>
+  <data name="FileComparison_DeletedLabel" xml:space="preserve"><value>हटाया गया</value></data>
+  <data name="FileComparison_ByteFrequency" xml:space="preserve"><value>बाइट आवृत्ति (निबल्स)</value></data>
+  <data name="FileComparison_ShannonEntropy" xml:space="preserve"><value>शैनन एंट्रॉपी (प्रति 256-बाइट ब्लॉक)</value></data>
 </root>

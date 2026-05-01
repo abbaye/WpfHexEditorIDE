@@ -839,4 +839,10 @@
   <data name="APP_FullChangelogButton" xml:space="preserve">
     <value>Full Changelog</value>
   </data>
+  <data name="APP_Dismiss" xml:space="preserve"><value>关闭</value></data>
+  <data name="APP_ViewIn" xml:space="preserve"><value>查看于:</value></data>
+  <data name="APP_UnsavedChanges" xml:space="preserve"><value>未保存的更改</value></data>
+  <data name="APP_ReadOnly" xml:space="preserve"><value>只读</value></data>
+  <data name="APP_ExtensionSystem" xml:space="preserve"><value>扩展系统</value></data>
+  <data name="APP_SlowBadge" xml:space="preserve"><value>慢</value></data>
 </root>

@@ -37,4 +37,11 @@
   <data name="FileComparison_SelectFile" xml:space="preserve">
     <value>비교할 파일 선택</value>
   </data>
+  <data name="FileComparison_FilesSection" xml:space="preserve"><value>파일</value></data>
+  <data name="FileComparison_DiffSummary" xml:space="preserve"><value>차이 요약</value></data>
+  <data name="FileComparison_ModifiedLabel" xml:space="preserve"><value>수정됨</value></data>
+  <data name="FileComparison_InsertedLabel" xml:space="preserve"><value>삽입됨</value></data>
+  <data name="FileComparison_DeletedLabel" xml:space="preserve"><value>삭제됨</value></data>
+  <data name="FileComparison_ByteFrequency" xml:space="preserve"><value>바이트 빈도(니블)</value></data>
+  <data name="FileComparison_ShannonEntropy" xml:space="preserve"><value>섀넌 엔트로피(256바이트 블록당)</value></data>
 </root>

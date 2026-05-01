@@ -14,10 +14,15 @@
 <UserControl x:Class="WpfHexEditor.App.Controls.DocumentInfoBar"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:appSvc="clr-namespace:WpfHexEditor.App.Services"
              Height="30"
              VerticalAlignment="Top">
 
     <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <appSvc:AppLocalizedDictionary/>
+            </ResourceDictionary.MergedDictionaries>
 
         <!-- InfoBar action button style -->
         <Style x:Key="InfoBarButtonStyle" TargetType="Button">
@@ -70,7 +75,7 @@
             <Setter Property="FontSize"         Value="13"/>
             <Setter Property="Cursor"           Value="Hand"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
-            <Setter Property="ToolTip"          Value="Dismiss"/>
+            <Setter Property="ToolTip"          Value="{DynamicResource APP_Dismiss}"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
@@ -93,6 +98,7 @@
             </Setter>
         </Style>
 
+        </ResourceDictionary>
     </UserControl.Resources>
 
     <Border Background="{DynamicResource InfoBar_BackgroundBrush}"
@@ -123,7 +129,7 @@
                         Orientation="Horizontal"
                         VerticalAlignment="Center">
                 <TextBlock x:Name="ViewInLabel"
-                           Text="View in:"
+                           Text="{DynamicResource APP_ViewIn}"
                            FontSize="12"
                            Foreground="{DynamicResource InfoBar_ForegroundBrush}"
                            VerticalAlignment="Center"
