@@ -2111,4 +2111,6 @@
   <data name="HE_Toolbar_ConfidenceFormat" xml:space="preserve"><value>Confiance de détection : {0}</value></data>
   <data name="HE_Toolbar_ChangeFormat" xml:space="preserve"><value>Format</value></data>
   <data name="HE_Toolbar_ChangeFormatTooltip" xml:space="preserve"><value>Changer le format détecté</value></data>
+  <data name="HE_TipSearchAllOccurrences" xml:space="preserve"><value>Recherche toutes les occurrences avec superposition de progression</value></data>
+  <data name="HE_ColOffset"               xml:space="preserve"><value>Décalage</value></data>
 </root>

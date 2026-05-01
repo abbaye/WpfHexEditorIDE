@@ -15,4 +15,5 @@
   </data>
   <data name="RX_MissingTranslations" xml:space="preserve"><value>الترجمات المفقودة</value></data>
   <data name="RX_LocaleBrowser" xml:space="preserve"><value>متصفح المنطقة المحلية</value></data>
+  <data name="RX_CopyBaseValue" xml:space="preserve"><value>نسخ القيمة الأساسية</value></data>
 </root>

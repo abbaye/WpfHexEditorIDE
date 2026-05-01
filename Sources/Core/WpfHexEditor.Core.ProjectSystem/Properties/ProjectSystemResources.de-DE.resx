@@ -343,4 +343,5 @@
   <data name="PP_AppManifestDesc" xml:space="preserve">
     <value>The app.manifest file that controls UAC execution level and DPI.</value>
   </data>
+  <data name="NG_TipSearch" xml:space="preserve"><value>Suchen</value></data>
 </root>

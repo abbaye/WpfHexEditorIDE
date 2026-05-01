@@ -1963,4 +1963,6 @@
   <data name="HE_Toolbar_ConfidenceFormat" xml:space="preserve"><value>पहचान विश्वास: {0}</value></data>
   <data name="HE_Toolbar_ChangeFormat" xml:space="preserve"><value>प्रारूप</value></data>
   <data name="HE_Toolbar_ChangeFormatTooltip" xml:space="preserve"><value>पहचाना गया प्रारूप बदलें</value></data>
+  <data name="HE_TipSearchAllOccurrences" xml:space="preserve"><value>प्रगति ओवरले के साथ सभी घटनाओं की खोज करें</value></data>
+  <data name="HE_ColOffset"               xml:space="preserve"><value>ऑफ़सेट</value></data>
 </root>

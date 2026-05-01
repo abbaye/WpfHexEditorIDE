@@ -19,4 +19,5 @@
   <data name="StructureOverlay_Confirm_RemoveAll" xml:space="preserve">
     <value>すべての構造オーバーレイを削除しますか?</value>
   </data>
+  <data name="SO_OffsetLabel" xml:space="preserve"><value>オフセット:</value></data>
 </root>

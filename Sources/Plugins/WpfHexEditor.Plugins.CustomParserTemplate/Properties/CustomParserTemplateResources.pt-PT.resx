@@ -49,4 +49,5 @@
   <data name="CustomParser_NoTemplateSelected" xml:space="preserve">
     <value>Nenhum modelo selecionado</value>
   </data>
+  <data name="Common_ColOffset" xml:space="preserve"><value>Deslocamento</value></data>
 </root>

@@ -580,4 +580,7 @@ or use Install to add a .whxplugin</value>
   </data>
   <data name="PH_RegisteredEventTypes" xml:space="preserve"><value>登録済みイベントの種類</value></data>
   <data name="PH_EventLog" xml:space="preserve"><value>イベントログ (最新 100)</value></data>
+  <data name="PH_InstallFile" xml:space="preserve"><value>ファイルからインストール…</value></data>
+  <data name="PH_UpdatesAvailable" xml:space="preserve"><value>件の更新あり</value></data>
+  <data name="PH_ColEventType" xml:space="preserve"><value>イベントタイプ</value></data>
 </root>

@@ -2114,4 +2114,7 @@
   <data name="HE_Toolbar_ConfidenceFormat"    xml:space="preserve"><value>Detection confidence: {0}</value></data>
   <data name="HE_Toolbar_ChangeFormat"        xml:space="preserve"><value>Format</value></data>
   <data name="HE_Toolbar_ChangeFormatTooltip" xml:space="preserve"><value>Change detected format</value></data>
+  <!-- Wave 20 — find-all overlay tooltip + shared offset column header -->
+  <data name="HE_TipSearchAllOccurrences" xml:space="preserve"><value>Search for all occurrences with progress overlay</value></data>
+  <data name="HE_ColOffset"               xml:space="preserve"><value>Offset</value></data>
 </root>

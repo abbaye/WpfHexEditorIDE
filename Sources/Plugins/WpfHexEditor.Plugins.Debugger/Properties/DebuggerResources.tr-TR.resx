@@ -190,4 +190,9 @@
   <data name="DBG_MoreOptionsTooltip" xml:space="preserve">
     <value>More options</value>
   </data>
+  <data name="DBG_AddWatch" xml:space="preserve"><value>İzleme Ekle</value></data>
+  <data name="DBG_ColValue" xml:space="preserve"><value>Değer</value></data>
+  <data name="DBG_ColType" xml:space="preserve"><value>Tür</value></data>
+  <data name="DBG_ColName" xml:space="preserve"><value>Ad</value></data>
+  <data name="DBG_ColFile" xml:space="preserve"><value>Dosya</value></data>
 </root>

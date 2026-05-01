@@ -292,4 +292,50 @@
   <data name="SE_BE_Bounds" xml:space="preserve"><value>範囲</value></data>
   <data name="SE_BE_MaxIterations" xml:space="preserve"><value>最大反復回数</value></data>
   <data name="SE_BE_LoopBodyHint" xml:space="preserve"><value>本体ブロックはツリーの子として表示されます。</value></data>
+  <data name="SE_BE_Tip_VarName" xml:space="preserve"><value>操作する変数名 — 入力すると候補が表示されます (Ctrl+Space)</value></data>
+  <data name="SE_BE_Tip_VarValue" xml:space="preserve"><value>設定する値 / 加算または減算する量 — var:名前 をサポート</value></data>
+  <data name="SE_BE_Tip_Expression" xml:space="preserve"><value>変数と関数を使う数式 — Ctrl+Space で自動補完</value></data>
+  <data name="SE_BE_Tip_StoreExpr" xml:space="preserve"><value>計算結果を格納する変数名 — Ctrl+Space で候補表示</value></data>
+  <data name="SE_BE_Tip_ArrayOffset" xml:space="preserve"><value>配列が始まるファイルオフセット — Ctrl+Space で自動補完</value></data>
+  <data name="SE_BE_Tip_ArrayBaseVar" xml:space="preserve"><value>この配列のベースオフセットとして使う変数</value></data>
+  <data name="SE_BE_Tip_EntryCount" xml:space="preserve"><value>エントリ数 — Ctrl+Space で変数候補</value></data>
+  <data name="SE_BE_Tip_EntrySize" xml:space="preserve"><value>各エントリのバイト数 — Ctrl+Space で変数候補</value></data>
+  <data name="SE_BE_Tip_LoopIndex" xml:space="preserve"><value>ループインデックス変数名 (例: i)</value></data>
+  <data name="SE_BE_AddColor" xml:space="preserve"><value>＋ 色を追加</value></data>
+  <data name="SE_BE_Tip_VariantVar" xml:space="preserve"><value>バリアント選択を駆動する変数 — Ctrl+Space で候補表示</value></data>
+  <data name="SE_BE_Tip_FormatPath" xml:space="preserve"><value>フォーマット名または .whfmt ファイルへの相対パス</value></data>
+  <data name="SE_BE_Browse" xml:space="preserve"><value>参照…</value></data>
+  <data name="SE_BE_Tip_PtrOffset" xml:space="preserve"><value>ポインタ値が読まれるファイルオフセット — Ctrl+Space で自動補完</value></data>
+  <data name="SE_BE_Tip_PtrBaseVar" xml:space="preserve"><value>ベースオフセットとして使う変数名</value></data>
+  <data name="SE_BE_Tip_PtrSize" xml:space="preserve"><value>ポインタ値のバイト数 (例: uint32 なら 4) — または var:名前</value></data>
+  <data name="SE_BE_Tip_PtrTargetVar" xml:space="preserve"><value>解決されたポインタアドレスを受け取る変数</value></data>
+  <data name="SE_BE_Tip_PtrStoreRaw" xml:space="preserve"><value>ポインタの生値を格納する変数</value></data>
+  <data name="SE_BE_Tip_PtrLabel" xml:space="preserve"><value>Hex ビューに表示される注釈ラベル</value></data>
+  <data name="SE_BE_Tip_OffsetAuto" xml:space="preserve"><value>Ctrl+Space で自動補完 — 整数、var:名前、calc:expr、offset:N</value></data>
+  <data name="SE_BE_Tip_OffsetFromVar" xml:space="preserve"><value>ベースオフセットとなる変数名 — Ctrl+Space で候補表示</value></data>
+  <data name="SE_BE_Tip_OffsetAddBytes" xml:space="preserve"><value>OffsetFrom に追加するバイト数</value></data>
+  <data name="SE_BE_Tip_LengthAuto" xml:space="preserve"><value>Ctrl+Space で自動補完 — 整数、var:名前、calc:expr</value></data>
+  <data name="SE_BE_Tip_StoreParsed" xml:space="preserve"><value>解析値を格納する変数名 — Ctrl+Space で候補表示</value></data>
+  <data name="SE_BE_Tip_StoreMapped" xml:space="preserve"><value>ValueMap で変換された値を格納する変数名 — Ctrl+Space で候補表示</value></data>
+  <data name="SE_BE_Tip_RawDisplayMap" xml:space="preserve"><value>raw=表示 (例: 0=グレースケール)</value></data>
+  <data name="SE_BE_AddValueMapEntry" xml:space="preserve"><value>＋ ValueMap エントリを追加</value></data>
+  <data name="SE_BE_Tip_BitRange" xml:space="preserve"><value>ビット範囲 例: 7-6 または単一ビット 例: 3</value></data>
+  <data name="SE_BE_AddBitfield" xml:space="preserve"><value>＋ ビットフィールドを追加</value></data>
+  <data name="SE_BE_SentinelUntil" xml:space="preserve"><value>センチネル (Until)</value></data>
+  <data name="SE_BE_Tip_UntilPattern" xml:space="preserve"><value>読み取りを停止する Hex パターンまたは var:名前。設定時は Length を置き換えます。</value></data>
+  <data name="SE_BE_Tip_UntilSafetyCap" xml:space="preserve"><value>Until パターンが見つからない場合の安全上限 (バイト)。0 = インタプリタ既定値 (4096)。</value></data>
+  <data name="SE_BE_UntilInclusive" xml:space="preserve"><value>Until 包含 (パターンバイトをフィールド長に含める)</value></data>
+  <data name="SE_BE_ValidationRules" xml:space="preserve"><value>検証ルール</value></data>
+  <data name="SE_BE_Tip_MetaVarName" xml:space="preserve"><value>このメタデータブロックが読み取る変数名</value></data>
+  <data name="SE_BE_Tip_LoopCount" xml:space="preserve"><value>固定整数または var:名前 — Ctrl+Space で候補表示</value></data>
+  <data name="SE_BE_Tip_LoopMaxCap" xml:space="preserve"><value>安全上限 — 整数</value></data>
+  <data name="SE_BE_Tip_LoopIdxStore" xml:space="preserve"><value>現在の反復インデックスを受け取る変数 (0 起点)</value></data>
+  <data name="SE_BE_Tip_LoopCountStore" xml:space="preserve"><value>ループ完了後に反復回数を格納する変数 — Ctrl+Space で候補表示</value></data>
+  <data name="SE_BE_Tip_EditAsJson" xml:space="preserve"><value>このブロックを生 JSON として編集</value></data>
+  <data name="SE_AddAssertion" xml:space="preserve"><value>＋ アサーションを追加</value></data>
+  <data name="SE_AddChecksum" xml:space="preserve"><value>＋ チェックサムを追加</value></data>
+  <data name="SE_TipTemplateName" xml:space="preserve"><value>テンプレート名</value></data>
+  <data name="SE_TipStructName" xml:space="preserve"><value>構造体名 (C 構造体)</value></data>
+  <data name="SE_TipHexDigitsOnly" xml:space="preserve"><value>Hex 桁のみ (例: FF, 4D5A)</value></data>
+  <data name="SE_ShowLabel" xml:space="preserve"><value>表示:</value></data>
 </root>

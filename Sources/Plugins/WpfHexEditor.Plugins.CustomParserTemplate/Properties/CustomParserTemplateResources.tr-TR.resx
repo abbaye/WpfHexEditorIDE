@@ -49,4 +49,5 @@
   <data name="CustomParser_NoTemplateSelected" xml:space="preserve">
     <value>Şablon seçilmedi</value>
   </data>
+  <data name="Common_ColOffset" xml:space="preserve"><value>Ofset</value></data>
 </root>

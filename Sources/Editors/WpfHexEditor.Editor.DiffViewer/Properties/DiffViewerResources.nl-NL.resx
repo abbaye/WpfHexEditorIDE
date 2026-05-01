@@ -7,4 +7,5 @@
   <data name="DiffViewer_Comparing" xml:space="preserve">
     <value>Vergelijken…</value>
   </data>
+  <data name="Common_ColOffset" xml:space="preserve"><value>Offset</value></data>
 </root>

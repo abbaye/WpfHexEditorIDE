@@ -252,7 +252,7 @@
             <Separator/>
 
             <!-- Find All (Async with Progress) -->
-            <MenuItem x:Name="FindAllMenuItem" Header="{DynamicResource FindAllString}" Click="FindAllMenuItemAsync_Click" ToolTip="Search for all occurrences with progress overlay">
+            <MenuItem x:Name="FindAllMenuItem" Header="{DynamicResource FindAllString}" Click="FindAllMenuItemAsync_Click" ToolTip="{DynamicResource HE_TipSearchAllOccurrences}">
                 <MenuItem.Icon>
                     <TextBlock Text="&#xE721;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                Foreground="{DynamicResource DockMenuForegroundBrush}"

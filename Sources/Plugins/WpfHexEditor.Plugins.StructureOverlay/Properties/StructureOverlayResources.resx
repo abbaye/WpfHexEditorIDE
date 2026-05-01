@@ -115,4 +115,7 @@
   <data name="StructureOverlay_StructuresLabel" xml:space="preserve">
     <value>Structures: </value>
   </data>
+  <data name="SO_OffsetLabel" xml:space="preserve">
+    <value>Offset:</value>
+  </data>
 </root>

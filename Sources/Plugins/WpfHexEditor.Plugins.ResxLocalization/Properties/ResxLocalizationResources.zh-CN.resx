@@ -15,4 +15,5 @@
   </data>
   <data name="RX_MissingTranslations" xml:space="preserve"><value>缺失的翻译</value></data>
   <data name="RX_LocaleBrowser" xml:space="preserve"><value>区域设置浏览器</value></data>
+  <data name="RX_CopyBaseValue" xml:space="preserve"><value>复制基础值</value></data>
 </root>

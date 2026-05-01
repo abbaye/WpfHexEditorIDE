@@ -190,4 +190,9 @@
   <data name="DBG_MoreOptionsTooltip" xml:space="preserve">
     <value>More options</value>
   </data>
+  <data name="DBG_AddWatch" xml:space="preserve"><value>वॉच जोड़ें</value></data>
+  <data name="DBG_ColValue" xml:space="preserve"><value>मान</value></data>
+  <data name="DBG_ColType" xml:space="preserve"><value>प्रकार</value></data>
+  <data name="DBG_ColName" xml:space="preserve"><value>नाम</value></data>
+  <data name="DBG_ColFile" xml:space="preserve"><value>फ़ाइल</value></data>
 </root>

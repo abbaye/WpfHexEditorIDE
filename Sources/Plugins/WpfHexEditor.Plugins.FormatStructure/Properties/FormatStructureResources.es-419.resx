@@ -10,4 +10,7 @@
   <data name="FormatStruct_NoFormatDetected" xml:space="preserve">
     <value>Sin formato detectado</value>
   </data>
+  <data name="FormatStruct_ColName" xml:space="preserve"><value>Nombre</value></data>
+  <data name="FormatStruct_ColOffset" xml:space="preserve"><value>Desplazamiento</value></data>
+  <data name="FormatStruct_ColSize" xml:space="preserve"><value>Tamaño</value></data>
 </root>

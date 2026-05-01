@@ -10,4 +10,7 @@
   <data name="FormatStruct_NoFormatDetected" xml:space="preserve">
     <value>Biçim Algılanmadı</value>
   </data>
+  <data name="FormatStruct_ColName" xml:space="preserve"><value>Ad</value></data>
+  <data name="FormatStruct_ColOffset" xml:space="preserve"><value>Ofset</value></data>
+  <data name="FormatStruct_ColSize" xml:space="preserve"><value>Boyut</value></data>
 </root>

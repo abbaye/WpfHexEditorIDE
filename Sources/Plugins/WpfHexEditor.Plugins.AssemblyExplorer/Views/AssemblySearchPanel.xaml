@@ -163,7 +163,7 @@
                 <DataGridTextColumn Header="{DynamicResource AsmExplorer_ColMember}"    Binding="{Binding MemberName}"  Width="160"/>
                 <DataGridTextColumn Header="{DynamicResource AsmExplorer_ColKind}"      Binding="{Binding Kind}"        Width="70"/>
                 <DataGridTextColumn Header="{DynamicResource AsmExplorer_ColToken}"     Binding="{Binding Token}"       Width="90"/>
-                <DataGridTextColumn Header="Offset"    Binding="{Binding Offset}"      Width="90"/>
+                <DataGridTextColumn Header="{DynamicResource Common_ColOffset}"    Binding="{Binding Offset}"      Width="90"/>
             </DataGrid.Columns>
 
             <!-- Empty state overlay -->

@@ -580,4 +580,7 @@ or use Install to add a .whxplugin</value>
   </data>
   <data name="PH_RegisteredEventTypes" xml:space="preserve"><value>Zarejestrowane typy zdarzeń</value></data>
   <data name="PH_EventLog" xml:space="preserve"><value>Dziennik zdarzeń (ostatnie 100)</value></data>
+  <data name="PH_InstallFile" xml:space="preserve"><value>Zainstaluj plik…</value></data>
+  <data name="PH_UpdatesAvailable" xml:space="preserve"><value>dostępna(e) aktualizacja(e)</value></data>
+  <data name="PH_ColEventType" xml:space="preserve"><value>Typ zdarzenia</value></data>
 </root>

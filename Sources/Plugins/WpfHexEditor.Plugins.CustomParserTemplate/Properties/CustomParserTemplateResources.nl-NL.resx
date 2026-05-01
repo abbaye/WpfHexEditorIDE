@@ -49,4 +49,5 @@
   <data name="CustomParser_NoTemplateSelected" xml:space="preserve">
     <value>Geen sjabloon geselecteerd</value>
   </data>
+  <data name="Common_ColOffset" xml:space="preserve"><value>Offset</value></data>
 </root>

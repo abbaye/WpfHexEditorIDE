@@ -51,7 +51,7 @@
                     Margin="2,0"
                     Padding="0"
                     Visibility="Collapsed"
-                    ToolTip="Clear filter"
+                    ToolTip="{DynamicResource AsmExplorer_ClearFilter}"
                     Click="OnClearClicked"
                     Background="Transparent"
                     BorderThickness="0"

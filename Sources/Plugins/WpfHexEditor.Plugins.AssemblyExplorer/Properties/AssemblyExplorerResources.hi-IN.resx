@@ -135,4 +135,6 @@
   </data>
   <data name="AsmExplorer_FilterTypes" xml:space="preserve"><value>प्रकार फ़िल्टर करें…</value></data>
   <data name="AsmExplorer_SelectProject" xml:space="preserve"><value>विघटित फ़ाइल जोड़ने के लिए परियोजना का चयन करें:</value></data>
+  <data name="Common_ColOffset" xml:space="preserve"><value>ऑफ़सेट</value></data>
+  <data name="AsmExplorer_ClearFilter" xml:space="preserve"><value>फ़िल्टर साफ़ करें</value></data>
 </root>

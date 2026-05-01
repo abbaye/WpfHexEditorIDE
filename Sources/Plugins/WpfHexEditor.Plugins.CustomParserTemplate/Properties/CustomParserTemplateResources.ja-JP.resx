@@ -49,4 +49,5 @@
   <data name="CustomParser_NoTemplateSelected" xml:space="preserve">
     <value>テンプレートが選択されていません</value>
   </data>
+  <data name="Common_ColOffset" xml:space="preserve"><value>オフセット</value></data>
 </root>

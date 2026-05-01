@@ -127,7 +127,7 @@
                       SelectionChanged="OnDiffListSelectionChanged">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="{DynamicResource DiffViewer_ColType}"        Binding="{Binding TypeLabel}"    Width="90"/>
-                    <DataGridTextColumn Header="Offset"      Binding="{Binding OffsetHex}"    Width="110"/>
+                    <DataGridTextColumn Header="{DynamicResource Common_ColOffset}"      Binding="{Binding OffsetHex}"    Width="110"/>
                     <DataGridTextColumn Header="{DynamicResource DiffViewer_ColLength}"      Binding="{Binding LengthStr}"    Width="80"/>
                     <DataGridTextColumn Header="{DynamicResource DiffViewer_ColLeftBytes}"  Binding="{Binding LeftPreview}"  Width="*"/>
                     <DataGridTextColumn Header="{DynamicResource DiffViewer_ColRightBytes}" Binding="{Binding RightPreview}" Width="*"/>

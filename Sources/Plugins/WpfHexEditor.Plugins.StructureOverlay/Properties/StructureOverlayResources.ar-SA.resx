@@ -19,4 +19,5 @@
   <data name="StructureOverlay_Confirm_RemoveAll" xml:space="preserve">
     <value>هل تريد إزالة جميع تراكبات الهيكل؟</value>
   </data>
+  <data name="SO_OffsetLabel" xml:space="preserve"><value>إزاحة:</value></data>
 </root>

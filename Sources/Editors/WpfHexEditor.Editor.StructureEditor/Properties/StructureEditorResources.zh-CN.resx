@@ -292,4 +292,50 @@
   <data name="SE_BE_Bounds" xml:space="preserve"><value>边界</value></data>
   <data name="SE_BE_MaxIterations" xml:space="preserve"><value>最大迭代</value></data>
   <data name="SE_BE_LoopBodyHint" xml:space="preserve"><value>主体块在树中作为子项显示。</value></data>
+  <data name="SE_BE_Tip_VarName" xml:space="preserve"><value>要操作的变量名 — 键入以查看建议 (Ctrl+空格)</value></data>
+  <data name="SE_BE_Tip_VarValue" xml:space="preserve"><value>要设置的值 / 要加或减的量 — 支持 var:名称</value></data>
+  <data name="SE_BE_Tip_Expression" xml:space="preserve"><value>使用变量和函数的数学表达式 — Ctrl+空格自动完成</value></data>
+  <data name="SE_BE_Tip_StoreExpr" xml:space="preserve"><value>存储计算结果的变量名 — Ctrl+空格显示建议</value></data>
+  <data name="SE_BE_Tip_ArrayOffset" xml:space="preserve"><value>数组开始的文件偏移量 — Ctrl+空格自动完成</value></data>
+  <data name="SE_BE_Tip_ArrayBaseVar" xml:space="preserve"><value>用作此数组基偏移的变量</value></data>
+  <data name="SE_BE_Tip_EntryCount" xml:space="preserve"><value>条目数 — Ctrl+空格显示变量建议</value></data>
+  <data name="SE_BE_Tip_EntrySize" xml:space="preserve"><value>每个条目的字节大小 — Ctrl+空格显示变量建议</value></data>
+  <data name="SE_BE_Tip_LoopIndex" xml:space="preserve"><value>循环索引变量名 (如 i)</value></data>
+  <data name="SE_BE_AddColor" xml:space="preserve"><value>＋ 添加颜色</value></data>
+  <data name="SE_BE_Tip_VariantVar" xml:space="preserve"><value>驱动变体选择的变量 — Ctrl+空格显示建议</value></data>
+  <data name="SE_BE_Tip_FormatPath" xml:space="preserve"><value>格式名称或 .whfmt 文件的相对路径</value></data>
+  <data name="SE_BE_Browse" xml:space="preserve"><value>浏览…</value></data>
+  <data name="SE_BE_Tip_PtrOffset" xml:space="preserve"><value>读取指针值的文件偏移量 — Ctrl+空格自动完成</value></data>
+  <data name="SE_BE_Tip_PtrBaseVar" xml:space="preserve"><value>用作基偏移的变量名</value></data>
+  <data name="SE_BE_Tip_PtrSize" xml:space="preserve"><value>指针值的字节大小 (如 uint32 为 4) — 或 var:名称</value></data>
+  <data name="SE_BE_Tip_PtrTargetVar" xml:space="preserve"><value>接收解析后指针地址的变量</value></data>
+  <data name="SE_BE_Tip_PtrStoreRaw" xml:space="preserve"><value>存储原始指针值的变量</value></data>
+  <data name="SE_BE_Tip_PtrLabel" xml:space="preserve"><value>在 Hex 视图中显示的注释标签</value></data>
+  <data name="SE_BE_Tip_OffsetAuto" xml:space="preserve"><value>Ctrl+空格自动完成 — 整数、var:名称、calc:expr、offset:N</value></data>
+  <data name="SE_BE_Tip_OffsetFromVar" xml:space="preserve"><value>其值为基偏移的变量名 — Ctrl+空格显示建议</value></data>
+  <data name="SE_BE_Tip_OffsetAddBytes" xml:space="preserve"><value>添加到 OffsetFrom 的额外字节</value></data>
+  <data name="SE_BE_Tip_LengthAuto" xml:space="preserve"><value>Ctrl+空格自动完成 — 整数、var:名称、calc:expr</value></data>
+  <data name="SE_BE_Tip_StoreParsed" xml:space="preserve"><value>存储解析值的变量名 — Ctrl+空格显示建议</value></data>
+  <data name="SE_BE_Tip_StoreMapped" xml:space="preserve"><value>ValueMap 翻译后值的变量名 — Ctrl+空格显示建议</value></data>
+  <data name="SE_BE_Tip_RawDisplayMap" xml:space="preserve"><value>原始=显示 (如 0=灰度)</value></data>
+  <data name="SE_BE_AddValueMapEntry" xml:space="preserve"><value>＋ 添加 ValueMap 条目</value></data>
+  <data name="SE_BE_Tip_BitRange" xml:space="preserve"><value>位范围如 7-6 或单个位如 3</value></data>
+  <data name="SE_BE_AddBitfield" xml:space="preserve"><value>＋ 添加位字段</value></data>
+  <data name="SE_BE_SentinelUntil" xml:space="preserve"><value>哨兵 (Until)</value></data>
+  <data name="SE_BE_Tip_UntilPattern" xml:space="preserve"><value>停止读取的 Hex 模式或 var:名称。设置时替换 Length。</value></data>
+  <data name="SE_BE_Tip_UntilSafetyCap" xml:space="preserve"><value>如果找不到 Until 模式，安全上限 (字节)。0 = 解释器默认 (4096)。</value></data>
+  <data name="SE_BE_UntilInclusive" xml:space="preserve"><value>Until 包含 (将模式字节计入字段长度)</value></data>
+  <data name="SE_BE_ValidationRules" xml:space="preserve"><value>验证规则</value></data>
+  <data name="SE_BE_Tip_MetaVarName" xml:space="preserve"><value>此元数据块读取的变量名</value></data>
+  <data name="SE_BE_Tip_LoopCount" xml:space="preserve"><value>固定整数或 var:名称 — Ctrl+空格显示建议</value></data>
+  <data name="SE_BE_Tip_LoopMaxCap" xml:space="preserve"><value>安全上限 — 整数</value></data>
+  <data name="SE_BE_Tip_LoopIdxStore" xml:space="preserve"><value>接收当前迭代索引的变量 (从 0 开始)</value></data>
+  <data name="SE_BE_Tip_LoopCountStore" xml:space="preserve"><value>循环完成后存储迭代次数的变量 — Ctrl+空格显示建议</value></data>
+  <data name="SE_BE_Tip_EditAsJson" xml:space="preserve"><value>将此块编辑为原始 JSON</value></data>
+  <data name="SE_AddAssertion" xml:space="preserve"><value>＋ 添加断言</value></data>
+  <data name="SE_AddChecksum" xml:space="preserve"><value>＋ 添加校验和</value></data>
+  <data name="SE_TipTemplateName" xml:space="preserve"><value>模板名称</value></data>
+  <data name="SE_TipStructName" xml:space="preserve"><value>结构名称 (C 结构)</value></data>
+  <data name="SE_TipHexDigitsOnly" xml:space="preserve"><value>仅 Hex 数字 (如 FF, 4D5A)</value></data>
+  <data name="SE_ShowLabel" xml:space="preserve"><value>显示:</value></data>
 </root>

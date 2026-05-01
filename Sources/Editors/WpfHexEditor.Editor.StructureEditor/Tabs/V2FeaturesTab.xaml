@@ -69,7 +69,7 @@
                                             <ColumnDefinition Width="24"/>
                                         </Grid.ColumnDefinitions>
                                         <TextBox Grid.Column="0" Style="{StaticResource Fld}" Margin="0,0,4,0"
-                                                 Text="{Binding AssertionName, UpdateSourceTrigger=PropertyChanged}" ToolTip="Name"/>
+                                                 Text="{Binding AssertionName, UpdateSourceTrigger=PropertyChanged}" ToolTip="{DynamicResource SE_PropName}"/>
                                         <ctrl:ExpressionTextBox Grid.Column="1" Margin="0,2,4,2"
                                                  Text="{Binding Expression, UpdateSourceTrigger=PropertyChanged}"
                                                  Placeholder="{DynamicResource StructureEditor_V2AssertionPlaceholder}"
@@ -84,7 +84,7 @@
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
-                    <Button Style="{StaticResource AddBtn}" Content="＋ Add Assertion"
+                    <Button Style="{StaticResource AddBtn}" Content="{DynamicResource SE_AddAssertion}"
                             x:Name="AddAssertionBtn" Click="OnAddAssertion"/>
                 </StackPanel>
             </Expander>
@@ -106,7 +106,7 @@
                                             <ColumnDefinition Width="24"/>
                                         </Grid.ColumnDefinitions>
                                         <TextBox Grid.Column="0" Style="{StaticResource Fld}" Margin="0,0,4,0"
-                                                 Text="{Binding ChecksumName, UpdateSourceTrigger=PropertyChanged}" ToolTip="Name"/>
+                                                 Text="{Binding ChecksumName, UpdateSourceTrigger=PropertyChanged}" ToolTip="{DynamicResource SE_PropName}"/>
                                         <ComboBox Grid.Column="1" Style="{StaticResource Combo}"
                                                   ItemsSource="{Binding AlgorithmOptions}"
                                                   SelectedItem="{Binding Algorithm}"/>
@@ -120,7 +120,7 @@
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
-                    <Button Style="{StaticResource AddBtn}" Content="＋ Add Checksum"
+                    <Button Style="{StaticResource AddBtn}" Content="{DynamicResource SE_AddChecksum}"
                             x:Name="AddChecksumBtn" Click="OnAddChecksum"/>
                 </StackPanel>
             </Expander>
@@ -176,7 +176,7 @@
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal" Margin="0,2">
                                     <TextBox Style="{StaticResource Fld}" Width="120" Margin="0,0,4,0"
-                                             Text="{Binding BookmarkName, UpdateSourceTrigger=PropertyChanged}" ToolTip="Name"/>
+                                             Text="{Binding BookmarkName, UpdateSourceTrigger=PropertyChanged}" ToolTip="{DynamicResource SE_PropName}"/>
                                     <ctrl:ExpressionTextBox Width="120" Margin="0,2,4,2"
                                              Text="{Binding OffsetVar, UpdateSourceTrigger=PropertyChanged}"
                                              Placeholder="{DynamicResource StructureEditor_V2BookmarkPlaceholder}"
@@ -210,12 +210,12 @@
                                     <StackPanel>
                                         <StackPanel Orientation="Horizontal">
                                             <TextBox Style="{StaticResource Fld}" Width="120" Margin="0,0,4,0"
-                                                     Text="{Binding TemplateName, UpdateSourceTrigger=PropertyChanged}" ToolTip="Template Name"/>
+                                                     Text="{Binding TemplateName, UpdateSourceTrigger=PropertyChanged}" ToolTip="{DynamicResource SE_TipTemplateName}"/>
                                             <ComboBox Style="{StaticResource Combo}" Width="100"
                                                       ItemsSource="{Binding FormatOptions}"
                                                       SelectedItem="{Binding Format}"/>
                                             <TextBox Style="{StaticResource Fld}" Width="100" Margin="0,0,4,0"
-                                                     Text="{Binding StructName, UpdateSourceTrigger=PropertyChanged}" ToolTip="Struct name (C struct)"/>
+                                                     Text="{Binding StructName, UpdateSourceTrigger=PropertyChanged}" ToolTip="{DynamicResource SE_TipStructName}"/>
                                             <Button Style="{StaticResource RemBtn}" Command="{Binding RemoveCommand}"/>
                                         </StackPanel>
                                     </StackPanel>

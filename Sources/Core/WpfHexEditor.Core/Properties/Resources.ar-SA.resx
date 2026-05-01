@@ -1963,4 +1963,6 @@
   <data name="HE_Toolbar_ConfidenceFormat" xml:space="preserve"><value>موثوقية الكشف: {0}</value></data>
   <data name="HE_Toolbar_ChangeFormat" xml:space="preserve"><value>التنسيق</value></data>
   <data name="HE_Toolbar_ChangeFormatTooltip" xml:space="preserve"><value>تغيير التنسيق المكتشف</value></data>
+  <data name="HE_TipSearchAllOccurrences" xml:space="preserve"><value>بحث عن جميع التكرارات مع تراكب التقدم</value></data>
+  <data name="HE_ColOffset"               xml:space="preserve"><value>إزاحة</value></data>
 </root>

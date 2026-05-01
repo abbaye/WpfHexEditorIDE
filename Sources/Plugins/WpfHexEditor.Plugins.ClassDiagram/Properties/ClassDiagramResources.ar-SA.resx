@@ -116,4 +116,8 @@
   <data name="CD_PropAbstract" xml:space="preserve"><value>مجرد</value></data>
   <data name="CD_DiagramHistory" xml:space="preserve"><value>سجل الرسم</value></data>
   <data name="CD_Relationships" xml:space="preserve"><value>العلاقات</value></data>
+  <data name="CD_TipSearchClasses" xml:space="preserve"><value>البحث في الفئات والأعضاء (Enter)</value></data>
+  <data name="CD_TipRunSearch" xml:space="preserve"><value>تشغيل البحث</value></data>
+  <data name="CD_Results" xml:space="preserve"><value>نتيجة (نتائج)</value></data>
+  <data name="CD_TipFilterToolbox" xml:space="preserve"><value>تصفية عناصر صندوق الأدوات</value></data>
 </root>

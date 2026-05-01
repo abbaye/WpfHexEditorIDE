@@ -348,4 +348,7 @@
   <data name="AI_CopyMessage" xml:space="preserve">
     <value>Copy message</value>
   </data>
+  <data name="AI_TipMcpCommand" xml:space="preserve">
+    <value>Command (e.g. npx)</value>
+  </data>
 </root>

@@ -135,4 +135,6 @@
   </data>
   <data name="AsmExplorer_FilterTypes" xml:space="preserve"><value>형식 필터…</value></data>
   <data name="AsmExplorer_SelectProject" xml:space="preserve"><value>디컴파일된 파일을 추가할 프로젝트를 선택하세요:</value></data>
+  <data name="Common_ColOffset" xml:space="preserve"><value>오프셋</value></data>
+  <data name="AsmExplorer_ClearFilter" xml:space="preserve"><value>필터 지우기</value></data>
 </root>

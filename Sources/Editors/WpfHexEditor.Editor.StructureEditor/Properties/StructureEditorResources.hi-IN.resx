@@ -292,4 +292,50 @@
   <data name="SE_BE_Bounds" xml:space="preserve"><value>सीमाएँ</value></data>
   <data name="SE_BE_MaxIterations" xml:space="preserve"><value>अधिकतम पुनरावृत्तियाँ</value></data>
   <data name="SE_BE_LoopBodyHint" xml:space="preserve"><value>मुख्य ब्लॉक वृक्ष में बच्चों के रूप में दिखाए जाते हैं।</value></data>
+  <data name="SE_BE_Tip_VarName" xml:space="preserve"><value>कार्य करने के लिए वेरिएबल का नाम — सुझाव देखने के लिए टाइप करें (Ctrl+Space)</value></data>
+  <data name="SE_BE_Tip_VarValue" xml:space="preserve"><value>सेट करने के लिए मान / जोड़ने या घटाने की मात्रा — var:नाम का समर्थन करता है</value></data>
+  <data name="SE_BE_Tip_Expression" xml:space="preserve"><value>वेरिएबल और फ़ंक्शन के साथ गणितीय अभिव्यक्ति — स्वतः पूर्णता के लिए Ctrl+Space</value></data>
+  <data name="SE_BE_Tip_StoreExpr" xml:space="preserve"><value>गणित परिणाम संग्रहीत करने के लिए वेरिएबल नाम — सुझावों के लिए Ctrl+Space</value></data>
+  <data name="SE_BE_Tip_ArrayOffset" xml:space="preserve"><value>जहाँ सरणी शुरू होती है वह फ़ाइल ऑफ़सेट — स्वतः पूर्णता के लिए Ctrl+Space</value></data>
+  <data name="SE_BE_Tip_ArrayBaseVar" xml:space="preserve"><value>इस सरणी के लिए आधार ऑफ़सेट के रूप में उपयोग किया जाने वाला वेरिएबल</value></data>
+  <data name="SE_BE_Tip_EntryCount" xml:space="preserve"><value>प्रविष्टियों की संख्या — वेरिएबल सुझावों के लिए Ctrl+Space</value></data>
+  <data name="SE_BE_Tip_EntrySize" xml:space="preserve"><value>प्रत्येक प्रविष्टि का बाइट आकार — वेरिएबल सुझावों के लिए Ctrl+Space</value></data>
+  <data name="SE_BE_Tip_LoopIndex" xml:space="preserve"><value>लूप अनुक्रमणिका वेरिएबल नाम (उदा. i)</value></data>
+  <data name="SE_BE_AddColor" xml:space="preserve"><value>＋ रंग जोड़ें</value></data>
+  <data name="SE_BE_Tip_VariantVar" xml:space="preserve"><value>वेरिएंट चयन को संचालित करने वाला वेरिएबल — सुझावों के लिए Ctrl+Space</value></data>
+  <data name="SE_BE_Tip_FormatPath" xml:space="preserve"><value>प्रारूप का नाम या .whfmt फ़ाइल का सापेक्ष पथ</value></data>
+  <data name="SE_BE_Browse" xml:space="preserve"><value>ब्राउज़ करें…</value></data>
+  <data name="SE_BE_Tip_PtrOffset" xml:space="preserve"><value>जहाँ पॉइंटर मान पढ़ा जाता है वह फ़ाइल ऑफ़सेट — स्वतः पूर्णता के लिए Ctrl+Space</value></data>
+  <data name="SE_BE_Tip_PtrBaseVar" xml:space="preserve"><value>आधार ऑफ़सेट के रूप में उपयोग किया जाने वाला वेरिएबल नाम</value></data>
+  <data name="SE_BE_Tip_PtrSize" xml:space="preserve"><value>पॉइंटर मान का बाइट आकार (उदा. uint32 के लिए 4) — या var:नाम</value></data>
+  <data name="SE_BE_Tip_PtrTargetVar" xml:space="preserve"><value>हल किए गए पॉइंटर पते को प्राप्त करने वाला वेरिएबल</value></data>
+  <data name="SE_BE_Tip_PtrStoreRaw" xml:space="preserve"><value>कच्चे पॉइंटर मान को संग्रहीत करने के लिए वेरिएबल</value></data>
+  <data name="SE_BE_Tip_PtrLabel" xml:space="preserve"><value>Hex दृश्य में दिखाया जाने वाला एनोटेशन लेबल</value></data>
+  <data name="SE_BE_Tip_OffsetAuto" xml:space="preserve"><value>स्वतः पूर्णता के लिए Ctrl+Space — पूर्णांक, var:नाम, calc:expr, offset:N</value></data>
+  <data name="SE_BE_Tip_OffsetFromVar" xml:space="preserve"><value>जिसका मान आधार ऑफ़सेट है वह वेरिएबल नाम — सुझावों के लिए Ctrl+Space</value></data>
+  <data name="SE_BE_Tip_OffsetAddBytes" xml:space="preserve"><value>OffsetFrom में जोड़े गए अतिरिक्त बाइट</value></data>
+  <data name="SE_BE_Tip_LengthAuto" xml:space="preserve"><value>स्वतः पूर्णता के लिए Ctrl+Space — पूर्णांक, var:नाम, calc:expr</value></data>
+  <data name="SE_BE_Tip_StoreParsed" xml:space="preserve"><value>पार्स किए गए मान को संग्रहीत करने के लिए वेरिएबल नाम — सुझावों के लिए Ctrl+Space</value></data>
+  <data name="SE_BE_Tip_StoreMapped" xml:space="preserve"><value>ValueMap-अनुवादित मान के लिए वेरिएबल नाम — सुझावों के लिए Ctrl+Space</value></data>
+  <data name="SE_BE_Tip_RawDisplayMap" xml:space="preserve"><value>कच्चा=प्रदर्शन (उदा. 0=ग्रेस्केल)</value></data>
+  <data name="SE_BE_AddValueMapEntry" xml:space="preserve"><value>＋ ValueMap प्रविष्टि जोड़ें</value></data>
+  <data name="SE_BE_Tip_BitRange" xml:space="preserve"><value>बिट श्रेणी उदा. 7-6 या एकल बिट उदा. 3</value></data>
+  <data name="SE_BE_AddBitfield" xml:space="preserve"><value>＋ बिटफ़ील्ड जोड़ें</value></data>
+  <data name="SE_BE_SentinelUntil" xml:space="preserve"><value>प्रहरी (Until)</value></data>
+  <data name="SE_BE_Tip_UntilPattern" xml:space="preserve"><value>पढ़ना रोकने के लिए Hex पैटर्न या var:नाम। सेट होने पर Length को बदलता है।</value></data>
+  <data name="SE_BE_Tip_UntilSafetyCap" xml:space="preserve"><value>यदि Until पैटर्न कभी नहीं मिलता तो सुरक्षा सीमा (बाइट)। 0 = इंटरप्रेटर डिफ़ॉल्ट (4096)।</value></data>
+  <data name="SE_BE_UntilInclusive" xml:space="preserve"><value>Until समावेशी (पैटर्न बाइट को फ़ील्ड लंबाई में शामिल करें)</value></data>
+  <data name="SE_BE_ValidationRules" xml:space="preserve"><value>सत्यापन नियम</value></data>
+  <data name="SE_BE_Tip_MetaVarName" xml:space="preserve"><value>इस मेटाडेटा ब्लॉक द्वारा पढ़े जाने वाले वेरिएबल का नाम</value></data>
+  <data name="SE_BE_Tip_LoopCount" xml:space="preserve"><value>स्थिर पूर्णांक या var:नाम — सुझावों के लिए Ctrl+Space</value></data>
+  <data name="SE_BE_Tip_LoopMaxCap" xml:space="preserve"><value>सुरक्षा सीमा — पूर्णांक</value></data>
+  <data name="SE_BE_Tip_LoopIdxStore" xml:space="preserve"><value>वर्तमान पुनरावृत्ति अनुक्रमणिका प्राप्त करने वाला वेरिएबल (0-आधारित)</value></data>
+  <data name="SE_BE_Tip_LoopCountStore" xml:space="preserve"><value>लूप पूरा होने के बाद पुनरावृत्ति गणना संग्रहीत करने के लिए वेरिएबल — सुझावों के लिए Ctrl+Space</value></data>
+  <data name="SE_BE_Tip_EditAsJson" xml:space="preserve"><value>इस ब्लॉक को कच्चे JSON के रूप में संपादित करें</value></data>
+  <data name="SE_AddAssertion" xml:space="preserve"><value>＋ अभिकथन जोड़ें</value></data>
+  <data name="SE_AddChecksum" xml:space="preserve"><value>＋ चेकसम जोड़ें</value></data>
+  <data name="SE_TipTemplateName" xml:space="preserve"><value>टेम्पलेट नाम</value></data>
+  <data name="SE_TipStructName" xml:space="preserve"><value>संरचना नाम (C struct)</value></data>
+  <data name="SE_TipHexDigitsOnly" xml:space="preserve"><value>केवल Hex अंक (उदा. FF, 4D5A)</value></data>
+  <data name="SE_ShowLabel" xml:space="preserve"><value>दिखाएँ:</value></data>
 </root>

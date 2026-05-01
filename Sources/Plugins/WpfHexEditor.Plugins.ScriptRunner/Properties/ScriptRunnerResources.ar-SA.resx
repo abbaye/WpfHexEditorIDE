@@ -31,4 +31,7 @@
   <data name="ScriptRunner_LangVBNet" xml:space="preserve">
     <value>VBNet</value>
   </data>
+  <data name="SR_TipRunScript" xml:space="preserve"><value>تشغيل البرنامج النصي (F5)</value></data>
+  <data name="SR_TipCancel" xml:space="preserve"><value>إلغاء</value></data>
+  <data name="SR_TipClearOutput" xml:space="preserve"><value>مسح الإخراج</value></data>
 </root>

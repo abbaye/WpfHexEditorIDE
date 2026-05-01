@@ -1963,4 +1963,6 @@
   <data name="HE_Toolbar_ConfidenceFormat" xml:space="preserve"><value>감지 신뢰도: {0}</value></data>
   <data name="HE_Toolbar_ChangeFormat" xml:space="preserve"><value>형식</value></data>
   <data name="HE_Toolbar_ChangeFormatTooltip" xml:space="preserve"><value>감지된 형식 변경</value></data>
+  <data name="HE_TipSearchAllOccurrences" xml:space="preserve"><value>진행률 오버레이로 모든 발생 검색</value></data>
+  <data name="HE_ColOffset"               xml:space="preserve"><value>오프셋</value></data>
 </root>

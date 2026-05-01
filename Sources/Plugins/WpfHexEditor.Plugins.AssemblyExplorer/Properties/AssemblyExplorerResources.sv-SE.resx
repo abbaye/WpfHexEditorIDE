@@ -135,4 +135,6 @@
   </data>
   <data name="AsmExplorer_FilterTypes" xml:space="preserve"><value>Filtrera typer…</value></data>
   <data name="AsmExplorer_SelectProject" xml:space="preserve"><value>Välj projektet att lägga till den dekompilerade filen i:</value></data>
+  <data name="Common_ColOffset" xml:space="preserve"><value>Offset</value></data>
+  <data name="AsmExplorer_ClearFilter" xml:space="preserve"><value>Rensa filter</value></data>
 </root>

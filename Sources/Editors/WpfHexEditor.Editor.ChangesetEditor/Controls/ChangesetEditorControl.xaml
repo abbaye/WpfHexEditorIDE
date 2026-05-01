@@ -39,7 +39,7 @@
                           CanUserAddRows="False"
                           CanUserDeleteRows="False">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Offset" Binding="{Binding Offset}" Width="120"/>
+                        <DataGridTextColumn Header="{DynamicResource Common_ColOffset}" Binding="{Binding Offset}" Width="120"/>
                         <DataGridTextColumn Header="{DynamicResource ChangesetEditor_ColValuesHex}"  Binding="{Binding Values}" Width="*"/>
                     </DataGrid.Columns>
                 </DataGrid>

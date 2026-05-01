@@ -103,4 +103,5 @@
   <data name="DiffViewer_DeletedChip" xml:space="preserve"><value>Deleted: 0</value></data>
   <data name="DiffViewer_LeftLabel" xml:space="preserve"><value>— (left)</value></data>
   <data name="DiffViewer_RightLabel" xml:space="preserve"><value>— (right)</value></data>
+  <data name="Common_ColOffset" xml:space="preserve"><value>Offset</value></data>
 </root>

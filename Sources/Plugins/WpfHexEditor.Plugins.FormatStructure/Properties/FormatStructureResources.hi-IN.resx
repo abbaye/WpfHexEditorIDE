@@ -10,4 +10,7 @@
   <data name="FormatStruct_NoFormatDetected" xml:space="preserve">
     <value>कोई प्रारूप नहीं पहचाना</value>
   </data>
+  <data name="FormatStruct_ColName" xml:space="preserve"><value>नाम</value></data>
+  <data name="FormatStruct_ColOffset" xml:space="preserve"><value>ऑफ़सेट</value></data>
+  <data name="FormatStruct_ColSize" xml:space="preserve"><value>आकार</value></data>
 </root>

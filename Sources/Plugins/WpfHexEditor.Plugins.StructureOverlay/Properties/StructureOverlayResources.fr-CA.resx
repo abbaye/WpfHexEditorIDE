@@ -82,4 +82,5 @@
     <value>Supprimer toutes les superpositions de structure&#160;?</value>
   </data>
 
+  <data name="SO_OffsetLabel" xml:space="preserve"><value>Décalage :</value></data>
 </root>

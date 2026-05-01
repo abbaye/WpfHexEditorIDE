@@ -1963,4 +1963,6 @@ Opmerking: Volledige integratie met HexEditor vereist verbinding met het hoofdwe
   <data name="HE_Toolbar_ConfidenceFormat" xml:space="preserve"><value>Detectiebetrouwbaarheid: {0}</value></data>
   <data name="HE_Toolbar_ChangeFormat" xml:space="preserve"><value>Formaat</value></data>
   <data name="HE_Toolbar_ChangeFormatTooltip" xml:space="preserve"><value>Gedetecteerd formaat wijzigen</value></data>
+  <data name="HE_TipSearchAllOccurrences" xml:space="preserve"><value>Zoek alle voorkomens met voortgangsoverlay</value></data>
+  <data name="HE_ColOffset"               xml:space="preserve"><value>Offset</value></data>
 </root>

@@ -49,4 +49,5 @@
   <data name="CustomParser_NoTemplateSelected" xml:space="preserve">
     <value>Шаблон не выбран</value>
   </data>
+  <data name="Common_ColOffset" xml:space="preserve"><value>Смещение</value></data>
 </root>

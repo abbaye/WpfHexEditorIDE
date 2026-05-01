@@ -10,4 +10,7 @@
   <data name="FormatStruct_NoFormatDetected" xml:space="preserve">
     <value>未检测到格式</value>
   </data>
+  <data name="FormatStruct_ColName" xml:space="preserve"><value>名称</value></data>
+  <data name="FormatStruct_ColOffset" xml:space="preserve"><value>偏移</value></data>
+  <data name="FormatStruct_ColSize" xml:space="preserve"><value>大小</value></data>
 </root>

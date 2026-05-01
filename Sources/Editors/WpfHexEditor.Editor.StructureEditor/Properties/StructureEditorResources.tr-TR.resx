@@ -292,4 +292,50 @@
   <data name="SE_BE_Bounds" xml:space="preserve"><value>Sınırlar</value></data>
   <data name="SE_BE_MaxIterations" xml:space="preserve"><value>Maks. yineleme</value></data>
   <data name="SE_BE_LoopBodyHint" xml:space="preserve"><value>Gövde blokları ağaçta alt öğeler olarak gösterilir.</value></data>
+  <data name="SE_BE_Tip_VarName" xml:space="preserve"><value>Üzerinde işlem yapılacak değişkenin adı — önerileri görmek için yazın (Ctrl+Boşluk)</value></data>
+  <data name="SE_BE_Tip_VarValue" xml:space="preserve"><value>Atanacak değer / eklenecek veya çıkarılacak miktar — var:ad destekler</value></data>
+  <data name="SE_BE_Tip_Expression" xml:space="preserve"><value>Değişkenler ve işlevlerle matematiksel ifade — otomatik tamamlama için Ctrl+Boşluk</value></data>
+  <data name="SE_BE_Tip_StoreExpr" xml:space="preserve"><value>Hesaplanan sonucu saklayacak değişken adı — öneriler için Ctrl+Boşluk</value></data>
+  <data name="SE_BE_Tip_ArrayOffset" xml:space="preserve"><value>Dizinin başladığı dosya ofseti — otomatik tamamlama için Ctrl+Boşluk</value></data>
+  <data name="SE_BE_Tip_ArrayBaseVar" xml:space="preserve"><value>Bu dizi için temel ofset olarak kullanılan değişken</value></data>
+  <data name="SE_BE_Tip_EntryCount" xml:space="preserve"><value>Giriş sayısı — değişken önerileri için Ctrl+Boşluk</value></data>
+  <data name="SE_BE_Tip_EntrySize" xml:space="preserve"><value>Her bir girişin bayt cinsinden boyutu — değişken önerileri için Ctrl+Boşluk</value></data>
+  <data name="SE_BE_Tip_LoopIndex" xml:space="preserve"><value>Döngü indeks değişkeninin adı (örn. i)</value></data>
+  <data name="SE_BE_AddColor" xml:space="preserve"><value>＋ Renk ekle</value></data>
+  <data name="SE_BE_Tip_VariantVar" xml:space="preserve"><value>Varyant seçimini yöneten değişken — öneriler için Ctrl+Boşluk</value></data>
+  <data name="SE_BE_Tip_FormatPath" xml:space="preserve"><value>Format adı veya .whfmt dosyasına göreli yol</value></data>
+  <data name="SE_BE_Browse" xml:space="preserve"><value>Gözat…</value></data>
+  <data name="SE_BE_Tip_PtrOffset" xml:space="preserve"><value>İşaretçi değerinin okunduğu dosya ofseti — otomatik tamamlama için Ctrl+Boşluk</value></data>
+  <data name="SE_BE_Tip_PtrBaseVar" xml:space="preserve"><value>Temel ofset olarak kullanılan değişken adı</value></data>
+  <data name="SE_BE_Tip_PtrSize" xml:space="preserve"><value>İşaretçi değerinin bayt boyutu (örn. uint32 için 4) — veya var:ad</value></data>
+  <data name="SE_BE_Tip_PtrTargetVar" xml:space="preserve"><value>Çözülen işaretçi adresini alacak değişken</value></data>
+  <data name="SE_BE_Tip_PtrStoreRaw" xml:space="preserve"><value>Ham işaretçi değerini saklayacak değişken</value></data>
+  <data name="SE_BE_Tip_PtrLabel" xml:space="preserve"><value>Hex görünümünde gösterilen ek açıklama etiketi</value></data>
+  <data name="SE_BE_Tip_OffsetAuto" xml:space="preserve"><value>Otomatik tamamlama için Ctrl+Boşluk — tamsayı, var:ad, calc:expr, offset:N</value></data>
+  <data name="SE_BE_Tip_OffsetFromVar" xml:space="preserve"><value>Değeri temel ofset olan değişken adı — öneriler için Ctrl+Boşluk</value></data>
+  <data name="SE_BE_Tip_OffsetAddBytes" xml:space="preserve"><value>OffsetFrom'a eklenen ek baytlar</value></data>
+  <data name="SE_BE_Tip_LengthAuto" xml:space="preserve"><value>Otomatik tamamlama için Ctrl+Boşluk — tamsayı, var:ad, calc:expr</value></data>
+  <data name="SE_BE_Tip_StoreParsed" xml:space="preserve"><value>Ayrıştırılan değeri saklayacak değişken adı — öneriler için Ctrl+Boşluk</value></data>
+  <data name="SE_BE_Tip_StoreMapped" xml:space="preserve"><value>ValueMap çevirisi yapılan değer için değişken adı — öneriler için Ctrl+Boşluk</value></data>
+  <data name="SE_BE_Tip_RawDisplayMap" xml:space="preserve"><value>ham=Görüntü (örn. 0=Gri tonlama)</value></data>
+  <data name="SE_BE_AddValueMapEntry" xml:space="preserve"><value>＋ ValueMap girdisi ekle</value></data>
+  <data name="SE_BE_Tip_BitRange" xml:space="preserve"><value>Bit aralığı örn. 7-6 veya tek bit örn. 3</value></data>
+  <data name="SE_BE_AddBitfield" xml:space="preserve"><value>＋ Bit alanı ekle</value></data>
+  <data name="SE_BE_SentinelUntil" xml:space="preserve"><value>Sentinel (Until)</value></data>
+  <data name="SE_BE_Tip_UntilPattern" xml:space="preserve"><value>Okumanın duracağı hex deseni veya var:ad. Ayarlandığında Length yerine geçer.</value></data>
+  <data name="SE_BE_Tip_UntilSafetyCap" xml:space="preserve"><value>Until deseni hiç bulunmazsa güvenlik sınırı (bayt). 0 = yorumlayıcı varsayılanı (4096).</value></data>
+  <data name="SE_BE_UntilInclusive" xml:space="preserve"><value>Until dahil (desen baytlarını alan uzunluğuna dahil et)</value></data>
+  <data name="SE_BE_ValidationRules" xml:space="preserve"><value>Doğrulama kuralları</value></data>
+  <data name="SE_BE_Tip_MetaVarName" xml:space="preserve"><value>Bu meta veri bloğunun okuduğu değişkenin adı</value></data>
+  <data name="SE_BE_Tip_LoopCount" xml:space="preserve"><value>Sabit tamsayı veya var:ad — öneriler için Ctrl+Boşluk</value></data>
+  <data name="SE_BE_Tip_LoopMaxCap" xml:space="preserve"><value>Güvenlik sınırı — tamsayı</value></data>
+  <data name="SE_BE_Tip_LoopIdxStore" xml:space="preserve"><value>Mevcut yineleme indeksini alan değişken (0-tabanlı)</value></data>
+  <data name="SE_BE_Tip_LoopCountStore" xml:space="preserve"><value>Döngü tamamlandıktan sonra yineleme sayısını saklayacak değişken — öneriler için Ctrl+Boşluk</value></data>
+  <data name="SE_BE_Tip_EditAsJson" xml:space="preserve"><value>Bu bloğu ham JSON olarak düzenle</value></data>
+  <data name="SE_AddAssertion" xml:space="preserve"><value>＋ Doğrulama ekle</value></data>
+  <data name="SE_AddChecksum" xml:space="preserve"><value>＋ Sağlama toplamı ekle</value></data>
+  <data name="SE_TipTemplateName" xml:space="preserve"><value>Şablon adı</value></data>
+  <data name="SE_TipStructName" xml:space="preserve"><value>Yapı adı (C struct)</value></data>
+  <data name="SE_TipHexDigitsOnly" xml:space="preserve"><value>Yalnızca hex rakamları (örn. FF, 4D5A)</value></data>
+  <data name="SE_ShowLabel" xml:space="preserve"><value>Göster:</value></data>
 </root>

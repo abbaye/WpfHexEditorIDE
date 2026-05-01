@@ -122,4 +122,5 @@
   <data name="AIAssistant_RenameConversation" xml:space="preserve">
     <value>会話の名前を変更</value>
   </data>
+  <data name="AI_TipMcpCommand" xml:space="preserve"><value>コマンド (例: npx)</value></data>
 </root>

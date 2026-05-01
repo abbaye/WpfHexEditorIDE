@@ -49,4 +49,5 @@
   <data name="CustomParser_NoTemplateSelected" xml:space="preserve">
     <value>لم يتم تحديد قالب</value>
   </data>
+  <data name="Common_ColOffset" xml:space="preserve"><value>إزاحة</value></data>
 </root>

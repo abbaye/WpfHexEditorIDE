@@ -92,4 +92,14 @@
     <value>VBNet</value>
   </data>
 
+  <!-- Wave 20 -->
+  <data name="SR_TipRunScript" xml:space="preserve">
+    <value>Run Script (F5)</value>
+  </data>
+  <data name="SR_TipCancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="SR_TipClearOutput" xml:space="preserve">
+    <value>Clear Output</value>
+  </data>
 </root>

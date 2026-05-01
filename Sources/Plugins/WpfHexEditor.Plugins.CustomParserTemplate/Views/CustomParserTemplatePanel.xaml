@@ -235,7 +235,7 @@
                                   Margin="0,0,0,8">
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="{DynamicResource CustomParser_ColName}"        Binding="{Binding Name}"        Width="150"/>
-                                <DataGridTextColumn Header="Offset"      Binding="{Binding Offset}"      Width="80"/>
+                                <DataGridTextColumn Header="{DynamicResource Common_ColOffset}"      Binding="{Binding Offset}"      Width="80"/>
                                 <DataGridTextColumn Header="{DynamicResource CustomParser_ColLength}"      Binding="{Binding Length}"      Width="80"/>
                                 <DataGridComboBoxColumn Header="{DynamicResource CustomParser_ColType}"    SelectedItemBinding="{Binding ValueType}" Width="100">
                                     <DataGridComboBoxColumn.ElementStyle>

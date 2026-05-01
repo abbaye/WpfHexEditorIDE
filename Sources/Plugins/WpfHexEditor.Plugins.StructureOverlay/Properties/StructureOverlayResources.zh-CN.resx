@@ -19,4 +19,5 @@
   <data name="StructureOverlay_Confirm_RemoveAll" xml:space="preserve">
     <value>删除所有结构覆盖？</value>
   </data>
+  <data name="SO_OffsetLabel" xml:space="preserve"><value>偏移:</value></data>
 </root>

@@ -10,4 +10,7 @@
   <data name="FormatStruct_NoFormatDetected" xml:space="preserve">
     <value>Формат не обнаружен</value>
   </data>
+  <data name="FormatStruct_ColName" xml:space="preserve"><value>Имя</value></data>
+  <data name="FormatStruct_ColOffset" xml:space="preserve"><value>Смещение</value></data>
+  <data name="FormatStruct_ColSize" xml:space="preserve"><value>Размер</value></data>
 </root>

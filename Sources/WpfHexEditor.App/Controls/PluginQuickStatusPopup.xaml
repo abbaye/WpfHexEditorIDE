@@ -121,7 +121,7 @@
             <StackPanel Orientation="Horizontal"
                         HorizontalAlignment="Right"
                         Margin="8,6,8,0">
-                <Button Content="Install..."
+                <Button Content="{DynamicResource APP_InstallEllipsis}"
                         Command="{Binding InstallCommand}"
                         Style="{DynamicResource PanelIconButtonStyle}"
                         FontFamily="Segoe UI"

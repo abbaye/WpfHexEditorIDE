@@ -92,4 +92,7 @@
     <value>VBNet</value>
   </data>
 
+  <data name="SR_TipRunScript" xml:space="preserve"><value>Exécuter le script (F5)</value></data>
+  <data name="SR_TipCancel" xml:space="preserve"><value>Annuler</value></data>
+  <data name="SR_TipClearOutput" xml:space="preserve"><value>Effacer la sortie</value></data>
 </root>

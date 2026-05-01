@@ -162,7 +162,7 @@
 
         <!-- ── Filter bar ──────────────────────────────────────────────────── -->
         <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0,0,0,6">
-            <TextBlock Text="Show:" FontSize="11" VerticalAlignment="Center"
+            <TextBlock Text="{DynamicResource SE_ShowLabel}" FontSize="11" VerticalAlignment="Center"
                        Foreground="{DynamicResource TE_LineNumberForeground}" Margin="0,0,10,0"/>
             <CheckBox Content="{DynamicResource StructureEditor_TestFilterOk}"      Style="{StaticResource FilterCheck}" IsChecked="{Binding ShowOk}"/>
             <CheckBox Content="{DynamicResource StructureEditor_TestFilterWarning}" Style="{StaticResource FilterCheck}" IsChecked="{Binding ShowWarning}"/>

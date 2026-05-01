@@ -31,4 +31,7 @@
   <data name="ScriptRunner_LangVBNet" xml:space="preserve">
     <value>VBNet</value>
   </data>
+  <data name="SR_TipRunScript" xml:space="preserve"><value>Kör skript (F5)</value></data>
+  <data name="SR_TipCancel" xml:space="preserve"><value>Avbryt</value></data>
+  <data name="SR_TipClearOutput" xml:space="preserve"><value>Rensa utdata</value></data>
 </root>

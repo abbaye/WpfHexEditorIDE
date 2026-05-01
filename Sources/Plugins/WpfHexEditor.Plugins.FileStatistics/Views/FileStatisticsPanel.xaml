@@ -85,7 +85,7 @@
                         DockPanel.Dock="Right"
                         Visibility="Collapsed"
                         Style="{StaticResource PanelIconButtonStyle}"
-                        ToolTip="More options"
+                        ToolTip="{DynamicResource FS_TipMoreOptions}"
                         Click="OnOverflowButtonClick">
                     <TextBlock Text="&#xE712;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>

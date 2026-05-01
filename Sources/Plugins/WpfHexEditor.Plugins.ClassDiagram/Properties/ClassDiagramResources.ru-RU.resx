@@ -116,4 +116,8 @@
   <data name="CD_PropAbstract" xml:space="preserve"><value>Абстрактный</value></data>
   <data name="CD_DiagramHistory" xml:space="preserve"><value>История диаграмм</value></data>
   <data name="CD_Relationships" xml:space="preserve"><value>Связи</value></data>
+  <data name="CD_TipSearchClasses" xml:space="preserve"><value>Поиск классов и членов (Enter)</value></data>
+  <data name="CD_TipRunSearch" xml:space="preserve"><value>Выполнить поиск</value></data>
+  <data name="CD_Results" xml:space="preserve"><value>результат(ов)</value></data>
+  <data name="CD_TipFilterToolbox" xml:space="preserve"><value>Фильтр элементов панели инструментов</value></data>
 </root>

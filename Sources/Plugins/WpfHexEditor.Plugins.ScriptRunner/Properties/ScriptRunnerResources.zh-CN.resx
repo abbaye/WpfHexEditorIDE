@@ -31,4 +31,7 @@
   <data name="ScriptRunner_LangVBNet" xml:space="preserve">
     <value>VBNet</value>
   </data>
+  <data name="SR_TipRunScript" xml:space="preserve"><value>运行脚本 (F5)</value></data>
+  <data name="SR_TipCancel" xml:space="preserve"><value>取消</value></data>
+  <data name="SR_TipClearOutput" xml:space="preserve"><value>清除输出</value></data>
 </root>

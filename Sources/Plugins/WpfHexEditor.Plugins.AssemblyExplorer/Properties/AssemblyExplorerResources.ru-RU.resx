@@ -135,4 +135,6 @@
   </data>
   <data name="AsmExplorer_FilterTypes" xml:space="preserve"><value>Фильтр типов…</value></data>
   <data name="AsmExplorer_SelectProject" xml:space="preserve"><value>Выберите проект, в который нужно добавить декомпилированный файл:</value></data>
+  <data name="Common_ColOffset" xml:space="preserve"><value>Смещение</value></data>
+  <data name="AsmExplorer_ClearFilter" xml:space="preserve"><value>Очистить фильтр</value></data>
 </root>

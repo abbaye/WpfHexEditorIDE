@@ -135,4 +135,6 @@
   </data>
   <data name="AsmExplorer_FilterTypes" xml:space="preserve"><value>تصفية الأنواع…</value></data>
   <data name="AsmExplorer_SelectProject" xml:space="preserve"><value>حدد المشروع الذي تريد إضافة الملف الذي تم فك ترجمته إليه:</value></data>
+  <data name="Common_ColOffset" xml:space="preserve"><value>إزاحة</value></data>
+  <data name="AsmExplorer_ClearFilter" xml:space="preserve"><value>مسح المرشح</value></data>
 </root>

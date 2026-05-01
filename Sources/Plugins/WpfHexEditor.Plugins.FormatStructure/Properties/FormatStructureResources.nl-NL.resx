@@ -10,4 +10,7 @@
   <data name="FormatStruct_NoFormatDetected" xml:space="preserve">
     <value>Geen indeling gedetecteerd</value>
   </data>
+  <data name="FormatStruct_ColName" xml:space="preserve"><value>Naam</value></data>
+  <data name="FormatStruct_ColOffset" xml:space="preserve"><value>Offset</value></data>
+  <data name="FormatStruct_ColSize" xml:space="preserve"><value>Grootte</value></data>
 </root>

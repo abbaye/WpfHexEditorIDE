@@ -40,25 +40,25 @@
                 <ctrl:ExpressionTextBox Grid.Row="0" Grid.Column="1" Margin="0,2"
                            Text="{Binding OffsetText, UpdateSourceTrigger=PropertyChanged}"
                            Placeholder="integer, var:name or calc:expr"
-                           ToolTip="Ctrl+Space for autocomplete — integer, var:name, calc:expr, offset:N"/>
+                           ToolTip="{DynamicResource SE_BE_Tip_OffsetAuto}"/>
 
                 <TextBlock Grid.Row="1" Grid.Column="0" Text="{DynamicResource SE_BE_OffsetFrom}"  Style="{StaticResource PropLabel}"/>
                 <ctrl:ExpressionTextBox Grid.Row="1" Grid.Column="1" Margin="0,2"
                            Text="{Binding OffsetFrom, UpdateSourceTrigger=PropertyChanged}"
                            Placeholder="variableName"
-                           ToolTip="Variable name whose value is the base offset — Ctrl+Space for suggestions"/>
+                           ToolTip="{DynamicResource SE_BE_Tip_OffsetFromVar}"/>
 
                 <TextBlock Grid.Row="2" Grid.Column="0" Text="{DynamicResource SE_BE_OffsetAdd}"   Style="{StaticResource PropLabel}"/>
                 <ctrl:ExpressionTextBox Grid.Row="2" Grid.Column="1" Margin="0,2"
                            Text="{Binding OffsetAddText, UpdateSourceTrigger=PropertyChanged}"
                            Placeholder="integer or var:name"
-                           ToolTip="Additional bytes added to OffsetFrom"/>
+                           ToolTip="{DynamicResource SE_BE_Tip_OffsetAddBytes}"/>
 
                 <TextBlock Grid.Row="3" Grid.Column="0" Text="{DynamicResource SE_BE_Length}"       Style="{StaticResource PropLabel}"/>
                 <ctrl:ExpressionTextBox Grid.Row="3" Grid.Column="1" Margin="0,2"
                            Text="{Binding LengthText, UpdateSourceTrigger=PropertyChanged}"
                            Placeholder="integer, var:name or calc:expr"
-                           ToolTip="Ctrl+Space for autocomplete — integer, var:name, calc:expr"/>
+                           ToolTip="{DynamicResource SE_BE_Tip_LengthAuto}"/>
 
                 <TextBlock Grid.Row="4" Grid.Column="0" Text="{DynamicResource SE_BE_ValueType}"   Style="{StaticResource PropLabel}"/>
                 <ComboBox  Grid.Row="4" Grid.Column="1" Style="{StaticResource PropCombo}"
@@ -82,12 +82,12 @@
                 <ctrl:ExpressionTextBox Grid.Row="0" Grid.Column="1" Margin="0,2"
                            Text="{Binding StoreAs, UpdateSourceTrigger=PropertyChanged}"
                            Placeholder="variableName"
-                           ToolTip="Variable name to store parsed value — Ctrl+Space for suggestions"/>
+                           ToolTip="{DynamicResource SE_BE_Tip_StoreParsed}"/>
                 <TextBlock Grid.Row="1" Grid.Column="0" Text="{DynamicResource SE_BE_MappedStoreAs}"     Style="{StaticResource PropLabel}"/>
                 <ctrl:ExpressionTextBox Grid.Row="1" Grid.Column="1" Margin="0,2"
                            Text="{Binding MappedValueStoreAs, UpdateSourceTrigger=PropertyChanged}"
                            Placeholder="variableName"
-                           ToolTip="Variable name for ValueMap-translated value — Ctrl+Space for suggestions"/>
+                           ToolTip="{DynamicResource SE_BE_Tip_StoreMapped}"/>
             </Grid>
 
             <!-- ValueMap -->
@@ -99,7 +99,7 @@
                             <TextBox Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}"
                                      Width="200" Style="{StaticResource PropField}" Margin="0,0,4,0"
                                      FontFamily="Consolas" FontSize="10"
-                                     ToolTip="raw=Display (e.g. 0=Grayscale)"/>
+                                     ToolTip="{DynamicResource SE_BE_Tip_RawDisplayMap}"/>
                             <Button Content="✕" FontSize="10" Padding="3,1"
                                     Command="{Binding RemoveCommand}"
                                     Background="Transparent" BorderThickness="0"
@@ -108,7 +108,7 @@
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
-            <Button Content="＋ Add Value Map Entry" Style="{StaticResource AddLinkBtn}"
+            <Button Content="{DynamicResource SE_BE_AddValueMapEntry}" Style="{StaticResource AddLinkBtn}"
                     Command="{Binding AddValueMapCommand}"/>
 
             <!-- Bitfields -->
@@ -141,7 +141,7 @@
                                 <TextBlock Grid.Row="1" Grid.Column="0" Text="{DynamicResource SE_BE_Bits}"   Style="{StaticResource PropLabel}"/>
                                 <TextBox   Grid.Row="1" Grid.Column="1" Style="{StaticResource PropField}"
                                            Text="{Binding Bits, UpdateSourceTrigger=PropertyChanged}"
-                                           ToolTip="Bit range e.g. 7-6 or single bit e.g. 3"/>
+                                           ToolTip="{DynamicResource SE_BE_Tip_BitRange}"/>
                                 <TextBlock Grid.Row="2" Grid.Column="0" Text="{DynamicResource SE_BE_StoreAs}" Style="{StaticResource PropLabel}"/>
                                 <TextBox   Grid.Row="2" Grid.Column="1" Style="{StaticResource PropField}"
                                            Text="{Binding StoreAs, UpdateSourceTrigger=PropertyChanged}"/>
@@ -150,11 +150,11 @@
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
-            <Button Content="＋ Add Bitfield" Style="{StaticResource AddLinkBtn}"
+            <Button Content="{DynamicResource SE_BE_AddBitfield}" Style="{StaticResource AddLinkBtn}"
                     Command="{Binding AddBitfieldCommand}"/>
 
             <!-- Sentinel (Until) -->
-            <Expander Header="Sentinel (Until)" Margin="0,8,0,0"
+            <Expander Header="{DynamicResource SE_BE_SentinelUntil}" Margin="0,8,0,0"
                       Background="{DynamicResource TE_LineNumberBackground}"
                       Foreground="{DynamicResource TE_LineNumberForeground}">
                 <Grid Style="{StaticResource PropGrid}" Margin="8,4">
@@ -171,20 +171,20 @@
                     <ctrl:ExpressionTextBox Grid.Row="0" Grid.Column="1" Margin="0,2"
                                Text="{Binding UntilText, UpdateSourceTrigger=PropertyChanged}"
                                Placeholder="00  or  var:endMarker  or  504B0102"
-                               ToolTip="Hex pattern or var:name to stop reading at. Replaces Length when set."/>
+                               ToolTip="{DynamicResource SE_BE_Tip_UntilPattern}"/>
                     <TextBlock Grid.Row="1" Grid.Column="0" Text="{DynamicResource SE_BE_MaxLength}"     Style="{StaticResource PropLabel}"/>
                     <TextBox   Grid.Row="1" Grid.Column="1" Style="{StaticResource PropField}"
                                ctrl:InputFilter.NumericOnly="True"
                                Text="{Binding MaxLength, UpdateSourceTrigger=PropertyChanged}"
-                               ToolTip="Safety cap (bytes) if the Until pattern is never found. 0 = use interpreter default (4096)."/>
+                               ToolTip="{DynamicResource SE_BE_Tip_UntilSafetyCap}"/>
                     <CheckBox  Grid.Row="2" Grid.Column="1" Margin="0,4"
-                               Content="Until Inclusive (include pattern bytes in field length)"
+                               Content="{DynamicResource SE_BE_UntilInclusive}"
                                IsChecked="{Binding UntilInclusive, UpdateSourceTrigger=PropertyChanged}"/>
                 </Grid>
             </Expander>
 
             <!-- Validation Rules -->
-            <Expander Header="Validation Rules" Margin="0,8,0,0"
+            <Expander Header="{DynamicResource SE_BE_ValidationRules}" Margin="0,8,0,0"
                       Background="{DynamicResource TE_LineNumberBackground}"
                       Foreground="{DynamicResource TE_LineNumberForeground}">
                 <StackPanel DataContext="{Binding ValidationRules}" Margin="8,4">
@@ -233,7 +233,7 @@
                 <TextBlock Grid.Column="0" Text="{DynamicResource SE_BE_VariableName}" Style="{StaticResource PropLabel}"/>
                 <TextBox   Grid.Column="1" Style="{StaticResource PropField}"
                            Text="{Binding Variable, UpdateSourceTrigger=PropertyChanged}"
-                           ToolTip="Name of the variable this metadata block reads"/>
+                           ToolTip="{DynamicResource SE_BE_Tip_MetaVarName}"/>
             </Grid>
         </StackPanel>
     </DataTemplate>

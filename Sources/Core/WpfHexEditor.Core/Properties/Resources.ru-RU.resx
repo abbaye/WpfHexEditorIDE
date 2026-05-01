@@ -2018,4 +2018,6 @@
   <data name="HE_Toolbar_ConfidenceFormat" xml:space="preserve"><value>Достоверность обнаружения: {0}</value></data>
   <data name="HE_Toolbar_ChangeFormat" xml:space="preserve"><value>Формат</value></data>
   <data name="HE_Toolbar_ChangeFormatTooltip" xml:space="preserve"><value>Изменить обнаруженный формат</value></data>
+  <data name="HE_TipSearchAllOccurrences" xml:space="preserve"><value>Поиск всех вхождений с наложением прогресса</value></data>
+  <data name="HE_ColOffset"               xml:space="preserve"><value>Смещение</value></data>
 </root>

@@ -247,4 +247,17 @@
   <data name="CD_Relationships" xml:space="preserve">
     <value>Relationships</value>
   </data>
+  <!-- Wave 20 -->
+  <data name="CD_TipSearchClasses" xml:space="preserve">
+    <value>Search classes and members (Enter)</value>
+  </data>
+  <data name="CD_TipRunSearch" xml:space="preserve">
+    <value>Run search</value>
+  </data>
+  <data name="CD_Results" xml:space="preserve">
+    <value>result(s)</value>
+  </data>
+  <data name="CD_TipFilterToolbox" xml:space="preserve">
+    <value>Filter toolbox items</value>
+  </data>
 </root>

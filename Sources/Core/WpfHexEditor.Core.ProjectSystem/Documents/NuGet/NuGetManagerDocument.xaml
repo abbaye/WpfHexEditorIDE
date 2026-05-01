@@ -392,7 +392,7 @@
                                 Background="Transparent"
                                 BorderThickness="0"
                                 Cursor="Hand"
-                                ToolTip="Search">
+                                ToolTip="{DynamicResource NG_TipSearch}">
                             <TextBlock Text="&#xE721;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                        Foreground="{DynamicResource DockMenuForegroundBrush}"
                                        VerticalAlignment="Center" HorizontalAlignment="Center"/>

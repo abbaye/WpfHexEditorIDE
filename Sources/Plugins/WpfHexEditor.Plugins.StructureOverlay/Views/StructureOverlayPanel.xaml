@@ -99,7 +99,7 @@
                                    Foreground="{DynamicResource PFP_ValueBrush}"/>
 
                         <TextBlock FontSize="9" Foreground="{DynamicResource PFP_SubTextBrush}">
-                            <Run Text="Offset:"/>
+                            <Run Text="{DynamicResource SO_OffsetLabel}"/>
                             <Run Text="{Binding Offset, Mode=OneWay, StringFormat='{}{0:X}'}"/>
                             <Run Text=" | Length:"/>
                             <Run Text="{Binding Length, Mode=OneWay}"/>

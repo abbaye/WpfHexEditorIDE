@@ -112,7 +112,7 @@
                     <TextBox Style="{StaticResource ValBox}"
                              ctrl:InputFilter.HexOnly="True"
                              Text="{Binding Value, UpdateSourceTrigger=LostFocus}"
-                             ToolTip="Hex digits only (e.g. FF, 4D5A)"/>
+                             ToolTip="{DynamicResource SE_TipHexDigitsOnly}"/>
                 </DataTemplate>
                 <DataTemplate x:Key="ValStringDisplay">
                     <TextBox Style="{StaticResource ValBox}"

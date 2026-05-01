@@ -85,7 +85,7 @@
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="&#xE8F4;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                Foreground="{DynamicResource DockMenuForegroundBrush}" VerticalAlignment="Center"/>
-                    <TextBlock Text=" Install File…" Margin="3,0,0,0"
+                    <TextBlock Text="{DynamicResource PH_InstallFile}" Margin="3,0,0,0"
                                Foreground="{DynamicResource DockMenuForegroundBrush}" VerticalAlignment="Center"/>
                 </StackPanel>
             </Button>
@@ -486,7 +486,7 @@
                             <TextBlock Margin="12,0,0,0" VerticalAlignment="Center" FontSize="11"
                                        Opacity="0.65" Foreground="{DynamicResource DockMenuForegroundBrush}">
                                 <Run Text="{Binding UpdateListings.Count, Mode=OneWay}"/>
-                                <Run Text=" update(s) available"/>
+                                <Run Text="{DynamicResource PH_UpdatesAvailable}"/>
                             </TextBlock>
                         </StackPanel>
                     </Border>

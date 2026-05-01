@@ -7,4 +7,5 @@
   <resheader name="version"><value>2.0</value></resheader>
   <resheader name="reader"><value>System.Resources.ResXResourceReader</value></resheader>
   <resheader name="writer"><value>System.Resources.ResXResourceWriter</value></resheader>
+  <data name="Common_ColOffset" xml:space="preserve"><value>Смещение</value></data>
 </root>

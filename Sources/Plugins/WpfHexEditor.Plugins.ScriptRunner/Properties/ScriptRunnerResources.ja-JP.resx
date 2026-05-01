@@ -31,4 +31,7 @@
   <data name="ScriptRunner_LangVBNet" xml:space="preserve">
     <value>VBNet</value>
   </data>
+  <data name="SR_TipRunScript" xml:space="preserve"><value>スクリプトを実行 (F5)</value></data>
+  <data name="SR_TipCancel" xml:space="preserve"><value>キャンセル</value></data>
+  <data name="SR_TipClearOutput" xml:space="preserve"><value>出力をクリア</value></data>
 </root>

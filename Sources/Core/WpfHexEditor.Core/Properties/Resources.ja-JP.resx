@@ -1963,4 +1963,6 @@
   <data name="HE_Toolbar_ConfidenceFormat" xml:space="preserve"><value>検出信頼度: {0}</value></data>
   <data name="HE_Toolbar_ChangeFormat" xml:space="preserve"><value>形式</value></data>
   <data name="HE_Toolbar_ChangeFormatTooltip" xml:space="preserve"><value>検出された形式を変更</value></data>
+  <data name="HE_TipSearchAllOccurrences" xml:space="preserve"><value>進行状況オーバーレイ付きですべての出現を検索</value></data>
+  <data name="HE_ColOffset"               xml:space="preserve"><value>オフセット</value></data>
 </root>

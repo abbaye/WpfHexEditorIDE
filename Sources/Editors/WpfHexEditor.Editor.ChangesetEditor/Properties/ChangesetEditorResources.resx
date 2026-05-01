@@ -22,4 +22,7 @@
   <data name="ChangesetEditor_ColCount" xml:space="preserve">
     <value>Count</value>
   </data>
+  <data name="Common_ColOffset" xml:space="preserve">
+    <value>Offset</value>
+  </data>
 </root>

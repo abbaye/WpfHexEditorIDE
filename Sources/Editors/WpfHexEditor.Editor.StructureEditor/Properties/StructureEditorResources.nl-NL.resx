@@ -292,4 +292,50 @@
   <data name="SE_BE_Bounds" xml:space="preserve"><value>Grenzen</value></data>
   <data name="SE_BE_MaxIterations" xml:space="preserve"><value>Max. iteraties</value></data>
   <data name="SE_BE_LoopBodyHint" xml:space="preserve"><value>Body-blokken worden weergegeven als kinderen in de boom.</value></data>
+  <data name="SE_BE_Tip_VarName" xml:space="preserve"><value>Naam van de variabele om op te werken — typ voor suggesties (Ctrl+Spatie)</value></data>
+  <data name="SE_BE_Tip_VarValue" xml:space="preserve"><value>Waarde om in te stellen / hoeveelheid om toe te voegen of af te trekken — ondersteunt var:naam</value></data>
+  <data name="SE_BE_Tip_Expression" xml:space="preserve"><value>Wiskundige expressie met variabelen en functies — Ctrl+Spatie voor automatisch aanvullen</value></data>
+  <data name="SE_BE_Tip_StoreExpr" xml:space="preserve"><value>Variabelenaam om het berekende resultaat op te slaan — Ctrl+Spatie voor suggesties</value></data>
+  <data name="SE_BE_Tip_ArrayOffset" xml:space="preserve"><value>Bestands-offset waar de array begint — Ctrl+Spatie voor automatisch aanvullen</value></data>
+  <data name="SE_BE_Tip_ArrayBaseVar" xml:space="preserve"><value>Variabele gebruikt als basis-offset voor deze array</value></data>
+  <data name="SE_BE_Tip_EntryCount" xml:space="preserve"><value>Aantal items — Ctrl+Spatie voor variabele-suggesties</value></data>
+  <data name="SE_BE_Tip_EntrySize" xml:space="preserve"><value>Grootte van elk item in bytes — Ctrl+Spatie voor variabele-suggesties</value></data>
+  <data name="SE_BE_Tip_LoopIndex" xml:space="preserve"><value>Naam van de lus-indexvariabele (bv. i)</value></data>
+  <data name="SE_BE_AddColor" xml:space="preserve"><value>＋ Kleur toevoegen</value></data>
+  <data name="SE_BE_Tip_VariantVar" xml:space="preserve"><value>Variabele die de variantselectie aanstuurt — Ctrl+Spatie voor suggesties</value></data>
+  <data name="SE_BE_Tip_FormatPath" xml:space="preserve"><value>Formaatnaam of relatief pad naar het .whfmt-bestand</value></data>
+  <data name="SE_BE_Browse" xml:space="preserve"><value>Bladeren…</value></data>
+  <data name="SE_BE_Tip_PtrOffset" xml:space="preserve"><value>Bestands-offset waar de pointerwaarde wordt gelezen — Ctrl+Spatie voor automatisch aanvullen</value></data>
+  <data name="SE_BE_Tip_PtrBaseVar" xml:space="preserve"><value>Variabelenaam gebruikt als basis-offset</value></data>
+  <data name="SE_BE_Tip_PtrSize" xml:space="preserve"><value>Grootte van de pointerwaarde in bytes (bv. 4 voor uint32) — of var:naam</value></data>
+  <data name="SE_BE_Tip_PtrTargetVar" xml:space="preserve"><value>Variabele die het opgeloste pointeradres ontvangt</value></data>
+  <data name="SE_BE_Tip_PtrStoreRaw" xml:space="preserve"><value>Variabele om de ruwe pointerwaarde op te slaan</value></data>
+  <data name="SE_BE_Tip_PtrLabel" xml:space="preserve"><value>Annotatielabel getoond in de hex-weergave</value></data>
+  <data name="SE_BE_Tip_OffsetAuto" xml:space="preserve"><value>Ctrl+Spatie voor automatisch aanvullen — geheel getal, var:naam, calc:expr, offset:N</value></data>
+  <data name="SE_BE_Tip_OffsetFromVar" xml:space="preserve"><value>Variabelenaam waarvan de waarde de basis-offset is — Ctrl+Spatie voor suggesties</value></data>
+  <data name="SE_BE_Tip_OffsetAddBytes" xml:space="preserve"><value>Extra bytes toegevoegd aan OffsetFrom</value></data>
+  <data name="SE_BE_Tip_LengthAuto" xml:space="preserve"><value>Ctrl+Spatie voor automatisch aanvullen — geheel getal, var:naam, calc:expr</value></data>
+  <data name="SE_BE_Tip_StoreParsed" xml:space="preserve"><value>Variabelenaam om de geparseerde waarde op te slaan — Ctrl+Spatie voor suggesties</value></data>
+  <data name="SE_BE_Tip_StoreMapped" xml:space="preserve"><value>Variabelenaam voor de door ValueMap vertaalde waarde — Ctrl+Spatie voor suggesties</value></data>
+  <data name="SE_BE_Tip_RawDisplayMap" xml:space="preserve"><value>ruw=Weergave (bv. 0=Grijswaarden)</value></data>
+  <data name="SE_BE_AddValueMapEntry" xml:space="preserve"><value>＋ ValueMap-vermelding toevoegen</value></data>
+  <data name="SE_BE_Tip_BitRange" xml:space="preserve"><value>Bitbereik bv. 7-6 of enkele bit bv. 3</value></data>
+  <data name="SE_BE_AddBitfield" xml:space="preserve"><value>＋ Bitveld toevoegen</value></data>
+  <data name="SE_BE_SentinelUntil" xml:space="preserve"><value>Schildwacht (Until)</value></data>
+  <data name="SE_BE_Tip_UntilPattern" xml:space="preserve"><value>Hex-patroon of var:naam waar het lezen moet stoppen. Vervangt Length indien ingesteld.</value></data>
+  <data name="SE_BE_Tip_UntilSafetyCap" xml:space="preserve"><value>Veiligheidslimiet (bytes) als het Until-patroon nooit wordt gevonden. 0 = standaard van interpreter (4096).</value></data>
+  <data name="SE_BE_UntilInclusive" xml:space="preserve"><value>Until inclusief (patroonbytes opnemen in veldlengte)</value></data>
+  <data name="SE_BE_ValidationRules" xml:space="preserve"><value>Validatieregels</value></data>
+  <data name="SE_BE_Tip_MetaVarName" xml:space="preserve"><value>Naam van de variabele die dit metadatablock leest</value></data>
+  <data name="SE_BE_Tip_LoopCount" xml:space="preserve"><value>Vast geheel getal of var:naam — Ctrl+Spatie voor suggesties</value></data>
+  <data name="SE_BE_Tip_LoopMaxCap" xml:space="preserve"><value>Veiligheidslimiet — geheel getal</value></data>
+  <data name="SE_BE_Tip_LoopIdxStore" xml:space="preserve"><value>Variabele die de huidige iteratie-index ontvangt (0-gebaseerd)</value></data>
+  <data name="SE_BE_Tip_LoopCountStore" xml:space="preserve"><value>Variabele om het iteratie-aantal op te slaan na de lus — Ctrl+Spatie voor suggesties</value></data>
+  <data name="SE_BE_Tip_EditAsJson" xml:space="preserve"><value>Bewerk dit blok als ruwe JSON</value></data>
+  <data name="SE_AddAssertion" xml:space="preserve"><value>＋ Assertie toevoegen</value></data>
+  <data name="SE_AddChecksum" xml:space="preserve"><value>＋ Controlesom toevoegen</value></data>
+  <data name="SE_TipTemplateName" xml:space="preserve"><value>Sjabloonnaam</value></data>
+  <data name="SE_TipStructName" xml:space="preserve"><value>Structuurnaam (C-struct)</value></data>
+  <data name="SE_TipHexDigitsOnly" xml:space="preserve"><value>Alleen hex-cijfers (bv. FF, 4D5A)</value></data>
+  <data name="SE_ShowLabel" xml:space="preserve"><value>Tonen:</value></data>
 </root>

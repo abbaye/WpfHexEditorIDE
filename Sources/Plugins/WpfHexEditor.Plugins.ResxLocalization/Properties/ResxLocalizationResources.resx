@@ -87,4 +87,7 @@
     <value>Locale Browser</value>
   </data>
 
+  <data name="RX_CopyBaseValue" xml:space="preserve">
+    <value>Copy base value</value>
+  </data>
 </root>

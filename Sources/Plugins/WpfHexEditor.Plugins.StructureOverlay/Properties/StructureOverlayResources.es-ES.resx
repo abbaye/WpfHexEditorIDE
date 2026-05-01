@@ -19,4 +19,5 @@
   <data name="StructureOverlay_Confirm_RemoveAll" xml:space="preserve">
     <value>¿Quitar todas las superposiciones de estructura?</value>
   </data>
+  <data name="SO_OffsetLabel" xml:space="preserve"><value>Desplazamiento:</value></data>
 </root>

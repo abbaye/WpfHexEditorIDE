@@ -122,4 +122,5 @@
   <data name="AIAssistant_RenameConversation" xml:space="preserve">
     <value>Переименовать беседу</value>
   </data>
+  <data name="AI_TipMcpCommand" xml:space="preserve"><value>Команда (напр. npx)</value></data>
 </root>

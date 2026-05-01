@@ -19,4 +19,5 @@
   <data name="StructureOverlay_Confirm_RemoveAll" xml:space="preserve">
     <value>Ta bort alla strukturöverlagringar?</value>
   </data>
+  <data name="SO_OffsetLabel" xml:space="preserve"><value>Offset:</value></data>
 </root>

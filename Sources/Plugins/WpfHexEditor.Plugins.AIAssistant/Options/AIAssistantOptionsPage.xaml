@@ -477,7 +477,7 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <TextBox x:Name="McpNameBox" Grid.Column="0" ToolTip="{DynamicResource AIAssistant_ColDisplayName}" Margin="0,0,4,0"/>
-                <TextBox x:Name="McpCommandBox" Grid.Column="1" ToolTip="Command (e.g. npx)" Margin="0,0,4,0"/>
+                <TextBox x:Name="McpCommandBox" Grid.Column="1" ToolTip="{DynamicResource AI_TipMcpCommand}" Margin="0,0,4,0"/>
                 <TextBox x:Name="McpArgsBox" Grid.Column="2" ToolTip="{DynamicResource AIAssistant_ColArgs}" Margin="0,0,4,0"/>
                 <Button x:Name="McpAddBtn" Grid.Column="3" Content="{DynamicResource AIAssistant_Add}" Width="50"
                         Click="OnMcpAddClick" Padding="4,2" Margin="0,0,4,0"/>

@@ -292,4 +292,50 @@
   <data name="SE_BE_Bounds" xml:space="preserve"><value>الحدود</value></data>
   <data name="SE_BE_MaxIterations" xml:space="preserve"><value>الحد الأقصى للتكرارات</value></data>
   <data name="SE_BE_LoopBodyHint" xml:space="preserve"><value>تظهر كتل المتن كأبناء في الشجرة.</value></data>
+  <data name="SE_BE_Tip_VarName" xml:space="preserve"><value>اسم المتغير الذي ستتم العملية عليه — اكتب لرؤية الاقتراحات (Ctrl+Space)</value></data>
+  <data name="SE_BE_Tip_VarValue" xml:space="preserve"><value>القيمة المراد تعيينها / المقدار المراد إضافته أو طرحه — يدعم var:الاسم</value></data>
+  <data name="SE_BE_Tip_Expression" xml:space="preserve"><value>تعبير رياضي بمتغيرات ودوال — Ctrl+Space للإكمال التلقائي</value></data>
+  <data name="SE_BE_Tip_StoreExpr" xml:space="preserve"><value>اسم المتغير لتخزين النتيجة المحسوبة — Ctrl+Space للاقتراحات</value></data>
+  <data name="SE_BE_Tip_ArrayOffset" xml:space="preserve"><value>إزاحة الملف حيث يبدأ المصفوفة — Ctrl+Space للإكمال التلقائي</value></data>
+  <data name="SE_BE_Tip_ArrayBaseVar" xml:space="preserve"><value>المتغير المستخدم كإزاحة أساسية لهذه المصفوفة</value></data>
+  <data name="SE_BE_Tip_EntryCount" xml:space="preserve"><value>عدد الإدخالات — Ctrl+Space لاقتراحات المتغيرات</value></data>
+  <data name="SE_BE_Tip_EntrySize" xml:space="preserve"><value>حجم كل إدخال بالبايت — Ctrl+Space لاقتراحات المتغيرات</value></data>
+  <data name="SE_BE_Tip_LoopIndex" xml:space="preserve"><value>اسم متغير فهرس الحلقة (مثلاً i)</value></data>
+  <data name="SE_BE_AddColor" xml:space="preserve"><value>＋ إضافة لون</value></data>
+  <data name="SE_BE_Tip_VariantVar" xml:space="preserve"><value>المتغير الذي يقود اختيار الصيغة — Ctrl+Space للاقتراحات</value></data>
+  <data name="SE_BE_Tip_FormatPath" xml:space="preserve"><value>اسم التنسيق أو المسار النسبي لملف .whfmt</value></data>
+  <data name="SE_BE_Browse" xml:space="preserve"><value>استعراض…</value></data>
+  <data name="SE_BE_Tip_PtrOffset" xml:space="preserve"><value>إزاحة الملف حيث تُقرأ قيمة المؤشر — Ctrl+Space للإكمال التلقائي</value></data>
+  <data name="SE_BE_Tip_PtrBaseVar" xml:space="preserve"><value>اسم المتغير المستخدم كإزاحة أساسية</value></data>
+  <data name="SE_BE_Tip_PtrSize" xml:space="preserve"><value>حجم قيمة المؤشر بالبايت (مثلاً 4 لـ uint32) — أو var:الاسم</value></data>
+  <data name="SE_BE_Tip_PtrTargetVar" xml:space="preserve"><value>المتغير الذي سيستقبل عنوان المؤشر المُحلّ</value></data>
+  <data name="SE_BE_Tip_PtrStoreRaw" xml:space="preserve"><value>المتغير لتخزين القيمة الخام للمؤشر</value></data>
+  <data name="SE_BE_Tip_PtrLabel" xml:space="preserve"><value>تسمية التعليق المعروضة في عرض Hex</value></data>
+  <data name="SE_BE_Tip_OffsetAuto" xml:space="preserve"><value>Ctrl+Space للإكمال التلقائي — عدد صحيح، var:الاسم، calc:expr، offset:N</value></data>
+  <data name="SE_BE_Tip_OffsetFromVar" xml:space="preserve"><value>اسم المتغير الذي تكون قيمته الإزاحة الأساسية — Ctrl+Space للاقتراحات</value></data>
+  <data name="SE_BE_Tip_OffsetAddBytes" xml:space="preserve"><value>بايتات إضافية تُضاف إلى OffsetFrom</value></data>
+  <data name="SE_BE_Tip_LengthAuto" xml:space="preserve"><value>Ctrl+Space للإكمال التلقائي — عدد صحيح، var:الاسم، calc:expr</value></data>
+  <data name="SE_BE_Tip_StoreParsed" xml:space="preserve"><value>اسم المتغير لتخزين القيمة المُحلّلة — Ctrl+Space للاقتراحات</value></data>
+  <data name="SE_BE_Tip_StoreMapped" xml:space="preserve"><value>اسم المتغير للقيمة المُترجَمة بواسطة ValueMap — Ctrl+Space للاقتراحات</value></data>
+  <data name="SE_BE_Tip_RawDisplayMap" xml:space="preserve"><value>خام=العرض (مثلاً 0=تدرج رمادي)</value></data>
+  <data name="SE_BE_AddValueMapEntry" xml:space="preserve"><value>＋ إضافة إدخال ValueMap</value></data>
+  <data name="SE_BE_Tip_BitRange" xml:space="preserve"><value>نطاق البتات مثلاً 7-6 أو بت واحد مثلاً 3</value></data>
+  <data name="SE_BE_AddBitfield" xml:space="preserve"><value>＋ إضافة حقل بت</value></data>
+  <data name="SE_BE_SentinelUntil" xml:space="preserve"><value>حارس (Until)</value></data>
+  <data name="SE_BE_Tip_UntilPattern" xml:space="preserve"><value>نمط Hex أو var:الاسم لإيقاف القراءة عنده. يحل محل Length عند تعيينه.</value></data>
+  <data name="SE_BE_Tip_UntilSafetyCap" xml:space="preserve"><value>حد أمان (بايت) إذا لم يُعثر على نمط Until أبداً. 0 = افتراضي المفسّر (4096).</value></data>
+  <data name="SE_BE_UntilInclusive" xml:space="preserve"><value>Until شامل (تضمين بايتات النمط في طول الحقل)</value></data>
+  <data name="SE_BE_ValidationRules" xml:space="preserve"><value>قواعد التحقق</value></data>
+  <data name="SE_BE_Tip_MetaVarName" xml:space="preserve"><value>اسم المتغير الذي تقرأه كتلة البيانات الوصفية هذه</value></data>
+  <data name="SE_BE_Tip_LoopCount" xml:space="preserve"><value>عدد صحيح ثابت أو var:الاسم — Ctrl+Space للاقتراحات</value></data>
+  <data name="SE_BE_Tip_LoopMaxCap" xml:space="preserve"><value>حد أمان — عدد صحيح</value></data>
+  <data name="SE_BE_Tip_LoopIdxStore" xml:space="preserve"><value>المتغير الذي يستقبل فهرس التكرار الحالي (من 0)</value></data>
+  <data name="SE_BE_Tip_LoopCountStore" xml:space="preserve"><value>متغير لتخزين عدد التكرارات بعد الحلقة — Ctrl+Space للاقتراحات</value></data>
+  <data name="SE_BE_Tip_EditAsJson" xml:space="preserve"><value>تحرير هذه الكتلة كـ JSON خام</value></data>
+  <data name="SE_AddAssertion" xml:space="preserve"><value>＋ إضافة تأكيد</value></data>
+  <data name="SE_AddChecksum" xml:space="preserve"><value>＋ إضافة مجموع تحقق</value></data>
+  <data name="SE_TipTemplateName" xml:space="preserve"><value>اسم القالب</value></data>
+  <data name="SE_TipStructName" xml:space="preserve"><value>اسم البنية (struct C)</value></data>
+  <data name="SE_TipHexDigitsOnly" xml:space="preserve"><value>أرقام Hex فقط (مثلاً FF, 4D5A)</value></data>
+  <data name="SE_ShowLabel" xml:space="preserve"><value>إظهار:</value></data>
 </root>

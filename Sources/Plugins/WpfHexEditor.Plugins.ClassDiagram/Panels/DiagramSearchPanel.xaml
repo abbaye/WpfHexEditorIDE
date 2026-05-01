@@ -12,7 +12,16 @@
 <UserControl x:Class="WpfHexEditor.Plugins.ClassDiagram.Panels.DiagramSearchPanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:cdSvc="clr-namespace:WpfHexEditor.Plugins.ClassDiagram.Services"
              Background="{DynamicResource DockMenuBackgroundBrush}">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <cdSvc:ClassDiagramLocalizedDictionary/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
 
     <DockPanel>
 
@@ -27,7 +36,7 @@
                          Width="160"
                          Style="{DynamicResource PanelSearchBoxStyle}"
                          Tag="Search classes and members..."
-                         ToolTip="Search classes and members (Enter)"
+                         ToolTip="{DynamicResource CD_TipSearchClasses}"
                          Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
                          KeyDown="OnSearchBoxKeyDown" />
                 <Button Content="&#xE721;" FontFamily="Segoe MDL2 Assets"
@@ -39,7 +48,7 @@
                         Foreground="{DynamicResource DockMenuForegroundBrush}"
                         BorderBrush="{DynamicResource DockToolBarBorderBrush}"
                         Click="OnSearchClick"
-                        ToolTip="Run search"/>
+                        ToolTip="{DynamicResource CD_TipRunSearch}"/>
             </StackPanel>
         </Border>
 
@@ -50,7 +59,7 @@
                    Foreground="{DynamicResource DockMenuForegroundBrush}"
                    Opacity="0.7">
             <Run Text="{Binding Results.Count, Mode=OneWay}"/>
-            <Run Text=" result(s)"/>
+            <Run Text="{DynamicResource CD_Results}"/>
         </TextBlock>
 
         <!-- Results list -->

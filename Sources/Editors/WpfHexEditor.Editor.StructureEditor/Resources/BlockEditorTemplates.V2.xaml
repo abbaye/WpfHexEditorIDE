@@ -38,12 +38,12 @@
                 <ctrl:ExpressionTextBox Grid.Row="1" Grid.Column="1" Margin="0,2"
                            Text="{Binding ActionVariable, UpdateSourceTrigger=PropertyChanged}"
                            Placeholder="variableName"
-                           ToolTip="Name of the variable to act on — type to see suggestions (Ctrl+Space)"/>
+                           ToolTip="{DynamicResource SE_BE_Tip_VarName}"/>
                 <TextBlock Grid.Row="2" Grid.Column="0" Text="{DynamicResource SE_BE_Value}"    Style="{StaticResource PropLabel}"/>
                 <ctrl:ExpressionTextBox Grid.Row="2" Grid.Column="1" Margin="0,2"
                            Text="{Binding ActionValue, UpdateSourceTrigger=PropertyChanged}"
                            Placeholder="integer or var:name"
-                           ToolTip="Value to set / amount to add or subtract — supports var:name"/>
+                           ToolTip="{DynamicResource SE_BE_Tip_VarValue}"/>
             </Grid>
         </StackPanel>
     </DataTemplate>
@@ -66,12 +66,12 @@
                 <ctrl:ExpressionTextBox Grid.Row="0" Grid.Column="1" Margin="0,2"
                            Text="{Binding Expression, UpdateSourceTrigger=PropertyChanged}"
                            Placeholder="calc:width * height / 2"
-                           ToolTip="Math expression using variables and functions — Ctrl+Space for autocomplete"/>
+                           ToolTip="{DynamicResource SE_BE_Tip_Expression}"/>
                 <TextBlock Grid.Row="1" Grid.Column="0" Text="{DynamicResource SE_BE_StoreAs}" Style="{StaticResource PropLabel}"/>
                 <ctrl:ExpressionTextBox Grid.Row="1" Grid.Column="1" Margin="0,2"
                            Text="{Binding StoreAs, UpdateSourceTrigger=PropertyChanged}"
                            Placeholder="variableName"
-                           ToolTip="Variable name to store the computed result — Ctrl+Space for suggestions"/>
+                           ToolTip="{DynamicResource SE_BE_Tip_StoreExpr}"/>
             </Grid>
         </StackPanel>
     </DataTemplate>
@@ -96,12 +96,12 @@
                 <ctrl:ExpressionTextBox Grid.Row="0" Grid.Column="1" Margin="0,2"
                            Text="{Binding OffsetText, UpdateSourceTrigger=PropertyChanged}"
                            Placeholder="integer, var:name or calc:expr"
-                           ToolTip="File offset where the array starts — Ctrl+Space for autocomplete"/>
+                           ToolTip="{DynamicResource SE_BE_Tip_ArrayOffset}"/>
                 <TextBlock Grid.Row="1" Grid.Column="0" Text="{DynamicResource SE_BE_OffsetFrom}" Style="{StaticResource PropLabel}"/>
                 <ctrl:ExpressionTextBox Grid.Row="1" Grid.Column="1" Margin="0,2"
                            Text="{Binding OffsetFrom, UpdateSourceTrigger=PropertyChanged}"
                            Placeholder="variableName"
-                           ToolTip="Variable used as the base offset for this array"/>
+                           ToolTip="{DynamicResource SE_BE_Tip_ArrayBaseVar}"/>
             </Grid>
 
             <!-- Array -->
@@ -120,17 +120,17 @@
                 <ctrl:ExpressionTextBox Grid.Row="0" Grid.Column="1" Margin="0,2"
                            Text="{Binding CountText, UpdateSourceTrigger=PropertyChanged}"
                            Placeholder="integer or var:name"
-                           ToolTip="Number of entries — Ctrl+Space for variable suggestions"/>
+                           ToolTip="{DynamicResource SE_BE_Tip_EntryCount}"/>
                 <TextBlock Grid.Row="1" Grid.Column="0" Text="{DynamicResource SE_BE_EntrySize}" Style="{StaticResource PropLabel}"/>
                 <ctrl:ExpressionTextBox Grid.Row="1" Grid.Column="1" Margin="0,2"
                            Text="{Binding EntrySizeText, UpdateSourceTrigger=PropertyChanged}"
                            Placeholder="integer or var:name"
-                           ToolTip="Size of each entry in bytes — Ctrl+Space for variable suggestions"/>
+                           ToolTip="{DynamicResource SE_BE_Tip_EntrySize}"/>
                 <TextBlock Grid.Row="2" Grid.Column="0" Text="{DynamicResource SE_BE_IndexVar}"  Style="{StaticResource PropLabel}"/>
                 <ctrl:ExpressionTextBox Grid.Row="2" Grid.Column="1" Margin="0,2"
                            Text="{Binding IndexVar, UpdateSourceTrigger=PropertyChanged}"
                            Placeholder="i"
-                           ToolTip="Loop index variable name (e.g. i)"/>
+                           ToolTip="{DynamicResource SE_BE_Tip_LoopIndex}"/>
             </Grid>
 
             <!-- Color cycle -->
@@ -149,7 +149,7 @@
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
-            <Button Content="＋ Add Color" Style="{StaticResource AddLinkBtn}"
+            <Button Content="{DynamicResource SE_BE_AddColor}" Style="{StaticResource AddLinkBtn}"
                     Command="{Binding AddColorCycleCommand}"/>
 
             <TextBlock Text="{DynamicResource SE_BE_EntryFieldsHint}"
@@ -173,7 +173,7 @@
                 <ctrl:ExpressionTextBox Grid.Column="1" Margin="0,2"
                            Text="{Binding UnionCondition, UpdateSourceTrigger=PropertyChanged}"
                            Placeholder="variableName"
-                           ToolTip="Variable that drives the variant selection — Ctrl+Space for suggestions"/>
+                           ToolTip="{DynamicResource SE_BE_Tip_VariantVar}"/>
             </Grid>
 
             <TextBlock Text="{DynamicResource SE_BE_Variants}" Style="{StaticResource SectionHeader}"/>
@@ -186,7 +186,7 @@
                       AlternatingRowBackground="{DynamicResource TE_LineNumberBackground}">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Key"       Binding="{Binding Key}"       Width="80"/>
-                    <DataGridTextColumn Header="Length"    Binding="{Binding Length}"     Width="60"/>
+                    <DataGridTextColumn Header="{DynamicResource SE_BE_Length}"    Binding="{Binding Length}"     Width="60"/>
                     <DataGridTextColumn Header="ValueType" Binding="{Binding ValueType}"  Width="*"/>
                     <DataGridTextColumn Header="Color"     Binding="{Binding Color}"      Width="80"/>
                 </DataGrid.Columns>
@@ -208,8 +208,8 @@
                 <TextBlock Grid.Column="0" Text="{DynamicResource SE_BE_StructRef}" Style="{StaticResource PropLabel}"/>
                 <TextBox   Grid.Column="1" Style="{StaticResource PropField}"
                            Text="{Binding StructRef, UpdateSourceTrigger=PropertyChanged}"
-                           ToolTip="Format name or relative path to the .whfmt file"/>
-                <Button    Grid.Column="2" Content="Browse…" FontSize="11" Margin="4,2,0,2"
+                           ToolTip="{DynamicResource SE_BE_Tip_FormatPath}"/>
+                <Button    Grid.Column="2" Content="{DynamicResource SE_BE_Browse}" FontSize="11" Margin="4,2,0,2"
                            Padding="6,2"
                            Background="{DynamicResource TE_LineNumberBackground}"
                            Foreground="{DynamicResource TE_LineNumberForeground}"
@@ -240,17 +240,17 @@
                 <ctrl:ExpressionTextBox Grid.Row="0" Grid.Column="1" Margin="0,2"
                            Text="{Binding OffsetText, UpdateSourceTrigger=PropertyChanged}"
                            Placeholder="integer or var:name"
-                           ToolTip="File offset where the pointer value is read — Ctrl+Space for autocomplete"/>
+                           ToolTip="{DynamicResource SE_BE_Tip_PtrOffset}"/>
                 <TextBlock Grid.Row="1" Grid.Column="0" Text="{DynamicResource SE_BE_OffsetFrom}" Style="{StaticResource PropLabel}"/>
                 <ctrl:ExpressionTextBox Grid.Row="1" Grid.Column="1" Margin="0,2"
                            Text="{Binding OffsetFrom, UpdateSourceTrigger=PropertyChanged}"
                            Placeholder="variableName"
-                           ToolTip="Variable name used as the base offset"/>
+                           ToolTip="{DynamicResource SE_BE_Tip_PtrBaseVar}"/>
                 <TextBlock Grid.Row="2" Grid.Column="0" Text="{DynamicResource SE_BE_Length}"      Style="{StaticResource PropLabel}"/>
                 <ctrl:ExpressionTextBox Grid.Row="2" Grid.Column="1" Margin="0,2"
                            Text="{Binding LengthText, UpdateSourceTrigger=PropertyChanged}"
                            Placeholder="4"
-                           ToolTip="Size of the pointer value in bytes (e.g. 4 for uint32) — or var:name"/>
+                           ToolTip="{DynamicResource SE_BE_Tip_PtrSize}"/>
             </Grid>
 
             <!-- Target + storage -->
@@ -269,16 +269,16 @@
                 <ctrl:ExpressionTextBox Grid.Row="0" Grid.Column="1" Margin="0,2"
                            Text="{Binding TargetVar, UpdateSourceTrigger=PropertyChanged}"
                            Placeholder="variableName"
-                           ToolTip="Variable that will receive the resolved pointer address"/>
+                           ToolTip="{DynamicResource SE_BE_Tip_PtrTargetVar}"/>
                 <TextBlock Grid.Row="1" Grid.Column="0" Text="{DynamicResource SE_BE_StoreAs}"   Style="{StaticResource PropLabel}"/>
                 <ctrl:ExpressionTextBox Grid.Row="1" Grid.Column="1" Margin="0,2"
                            Text="{Binding StoreAs, UpdateSourceTrigger=PropertyChanged}"
                            Placeholder="variableName"
-                           ToolTip="Variable to store the raw pointer value"/>
+                           ToolTip="{DynamicResource SE_BE_Tip_PtrStoreRaw}"/>
                 <TextBlock Grid.Row="2" Grid.Column="0" Text="{DynamicResource SE_BE_Label}"      Style="{StaticResource PropLabel}"/>
                 <TextBox   Grid.Row="2" Grid.Column="1" Style="{StaticResource PropField}"
                            Text="{Binding Label, UpdateSourceTrigger=PropertyChanged}"
-                           ToolTip="Annotation label shown in the hex view"/>
+                           ToolTip="{DynamicResource SE_BE_Tip_PtrLabel}"/>
             </Grid>
         </StackPanel>
     </DataTemplate>

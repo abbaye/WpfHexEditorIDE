@@ -190,4 +190,9 @@
   <data name="DBG_MoreOptionsTooltip" xml:space="preserve">
     <value>More options</value>
   </data>
+  <data name="DBG_AddWatch" xml:space="preserve"><value>조사식 추가</value></data>
+  <data name="DBG_ColValue" xml:space="preserve"><value>값</value></data>
+  <data name="DBG_ColType" xml:space="preserve"><value>형식</value></data>
+  <data name="DBG_ColName" xml:space="preserve"><value>이름</value></data>
+  <data name="DBG_ColFile" xml:space="preserve"><value>파일</value></data>
 </root>

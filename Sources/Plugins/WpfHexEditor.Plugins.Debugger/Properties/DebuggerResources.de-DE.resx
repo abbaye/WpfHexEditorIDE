@@ -190,4 +190,9 @@
   <data name="DBG_MoreOptionsTooltip" xml:space="preserve">
     <value>More options</value>
   </data>
+  <data name="DBG_AddWatch" xml:space="preserve"><value>Überwachung hinzufügen</value></data>
+  <data name="DBG_ColValue" xml:space="preserve"><value>Wert</value></data>
+  <data name="DBG_ColType" xml:space="preserve"><value>Typ</value></data>
+  <data name="DBG_ColName" xml:space="preserve"><value>Name</value></data>
+  <data name="DBG_ColFile" xml:space="preserve"><value>Datei</value></data>
 </root>

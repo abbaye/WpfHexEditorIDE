@@ -697,4 +697,14 @@ or use Install to add a .whxplugin</value>
   <data name="PH_EventLog" xml:space="preserve">
     <value>Event Log (last 100)</value>
   </data>
+  <!-- Wave 20 -->
+  <data name="PH_InstallFile" xml:space="preserve">
+    <value>Install File…</value>
+  </data>
+  <data name="PH_UpdatesAvailable" xml:space="preserve">
+    <value>update(s) available</value>
+  </data>
+  <data name="PH_ColEventType" xml:space="preserve">
+    <value>Event Type</value>
+  </data>
 </root>

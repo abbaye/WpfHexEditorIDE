@@ -10,4 +10,7 @@
   <data name="FormatStruct_NoFormatDetected" xml:space="preserve">
     <value>감지된 형식 없음</value>
   </data>
+  <data name="FormatStruct_ColName" xml:space="preserve"><value>이름</value></data>
+  <data name="FormatStruct_ColOffset" xml:space="preserve"><value>오프셋</value></data>
+  <data name="FormatStruct_ColSize" xml:space="preserve"><value>크기</value></data>
 </root>

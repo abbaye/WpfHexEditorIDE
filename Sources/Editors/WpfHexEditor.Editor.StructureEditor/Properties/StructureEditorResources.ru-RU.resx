@@ -292,4 +292,50 @@
   <data name="SE_BE_Bounds" xml:space="preserve"><value>Границы</value></data>
   <data name="SE_BE_MaxIterations" xml:space="preserve"><value>Макс. итераций</value></data>
   <data name="SE_BE_LoopBodyHint" xml:space="preserve"><value>Блоки тела отображаются как дочерние в дереве.</value></data>
+  <data name="SE_BE_Tip_VarName" xml:space="preserve"><value>Имя переменной для воздействия — введите, чтобы увидеть подсказки (Ctrl+Пробел)</value></data>
+  <data name="SE_BE_Tip_VarValue" xml:space="preserve"><value>Значение для установки / величина для добавления или вычитания — поддерживает var:имя</value></data>
+  <data name="SE_BE_Tip_Expression" xml:space="preserve"><value>Математическое выражение с переменными и функциями — Ctrl+Пробел для автодополнения</value></data>
+  <data name="SE_BE_Tip_StoreExpr" xml:space="preserve"><value>Имя переменной для сохранения вычисленного результата — Ctrl+Пробел для подсказок</value></data>
+  <data name="SE_BE_Tip_ArrayOffset" xml:space="preserve"><value>Смещение в файле, где начинается массив — Ctrl+Пробел для автодополнения</value></data>
+  <data name="SE_BE_Tip_ArrayBaseVar" xml:space="preserve"><value>Переменная, используемая как базовое смещение для этого массива</value></data>
+  <data name="SE_BE_Tip_EntryCount" xml:space="preserve"><value>Количество записей — Ctrl+Пробел для подсказок переменных</value></data>
+  <data name="SE_BE_Tip_EntrySize" xml:space="preserve"><value>Размер каждой записи в байтах — Ctrl+Пробел для подсказок переменных</value></data>
+  <data name="SE_BE_Tip_LoopIndex" xml:space="preserve"><value>Имя переменной индекса цикла (напр. i)</value></data>
+  <data name="SE_BE_AddColor" xml:space="preserve"><value>＋ Добавить цвет</value></data>
+  <data name="SE_BE_Tip_VariantVar" xml:space="preserve"><value>Переменная, управляющая выбором варианта — Ctrl+Пробел для подсказок</value></data>
+  <data name="SE_BE_Tip_FormatPath" xml:space="preserve"><value>Имя формата или относительный путь к файлу .whfmt</value></data>
+  <data name="SE_BE_Browse" xml:space="preserve"><value>Обзор…</value></data>
+  <data name="SE_BE_Tip_PtrOffset" xml:space="preserve"><value>Смещение в файле, откуда читается значение указателя — Ctrl+Пробел для автодополнения</value></data>
+  <data name="SE_BE_Tip_PtrBaseVar" xml:space="preserve"><value>Имя переменной, используемой как базовое смещение</value></data>
+  <data name="SE_BE_Tip_PtrSize" xml:space="preserve"><value>Размер значения указателя в байтах (напр. 4 для uint32) — или var:имя</value></data>
+  <data name="SE_BE_Tip_PtrTargetVar" xml:space="preserve"><value>Переменная, которая получит разрешённый адрес указателя</value></data>
+  <data name="SE_BE_Tip_PtrStoreRaw" xml:space="preserve"><value>Переменная для сохранения сырого значения указателя</value></data>
+  <data name="SE_BE_Tip_PtrLabel" xml:space="preserve"><value>Метка аннотации, отображаемая в hex-представлении</value></data>
+  <data name="SE_BE_Tip_OffsetAuto" xml:space="preserve"><value>Ctrl+Пробел для автодополнения — целое число, var:имя, calc:expr, offset:N</value></data>
+  <data name="SE_BE_Tip_OffsetFromVar" xml:space="preserve"><value>Имя переменной, чьё значение является базовым смещением — Ctrl+Пробел для подсказок</value></data>
+  <data name="SE_BE_Tip_OffsetAddBytes" xml:space="preserve"><value>Дополнительные байты, добавляемые к OffsetFrom</value></data>
+  <data name="SE_BE_Tip_LengthAuto" xml:space="preserve"><value>Ctrl+Пробел для автодополнения — целое число, var:имя, calc:expr</value></data>
+  <data name="SE_BE_Tip_StoreParsed" xml:space="preserve"><value>Имя переменной для сохранения разобранного значения — Ctrl+Пробел для подсказок</value></data>
+  <data name="SE_BE_Tip_StoreMapped" xml:space="preserve"><value>Имя переменной для значения, переведённого ValueMap — Ctrl+Пробел для подсказок</value></data>
+  <data name="SE_BE_Tip_RawDisplayMap" xml:space="preserve"><value>сырое=Отображение (напр. 0=Оттенки серого)</value></data>
+  <data name="SE_BE_AddValueMapEntry" xml:space="preserve"><value>＋ Добавить запись ValueMap</value></data>
+  <data name="SE_BE_Tip_BitRange" xml:space="preserve"><value>Диапазон битов напр. 7-6 или один бит напр. 3</value></data>
+  <data name="SE_BE_AddBitfield" xml:space="preserve"><value>＋ Добавить битовое поле</value></data>
+  <data name="SE_BE_SentinelUntil" xml:space="preserve"><value>Часовой (Until)</value></data>
+  <data name="SE_BE_Tip_UntilPattern" xml:space="preserve"><value>Hex-шаблон или var:имя, на котором остановить чтение. Заменяет Length, когда задан.</value></data>
+  <data name="SE_BE_Tip_UntilSafetyCap" xml:space="preserve"><value>Лимит безопасности (байты), если шаблон Until не найден. 0 = по умолчанию интерпретатора (4096).</value></data>
+  <data name="SE_BE_UntilInclusive" xml:space="preserve"><value>Until включительно (включить байты шаблона в длину поля)</value></data>
+  <data name="SE_BE_ValidationRules" xml:space="preserve"><value>Правила валидации</value></data>
+  <data name="SE_BE_Tip_MetaVarName" xml:space="preserve"><value>Имя переменной, которую читает этот блок метаданных</value></data>
+  <data name="SE_BE_Tip_LoopCount" xml:space="preserve"><value>Фиксированное целое или var:имя — Ctrl+Пробел для подсказок</value></data>
+  <data name="SE_BE_Tip_LoopMaxCap" xml:space="preserve"><value>Лимит безопасности — целое</value></data>
+  <data name="SE_BE_Tip_LoopIdxStore" xml:space="preserve"><value>Переменная, получающая текущий индекс итерации (с 0)</value></data>
+  <data name="SE_BE_Tip_LoopCountStore" xml:space="preserve"><value>Переменная для сохранения количества итераций после цикла — Ctrl+Пробел для подсказок</value></data>
+  <data name="SE_BE_Tip_EditAsJson" xml:space="preserve"><value>Редактировать этот блок как сырой JSON</value></data>
+  <data name="SE_AddAssertion" xml:space="preserve"><value>＋ Добавить утверждение</value></data>
+  <data name="SE_AddChecksum" xml:space="preserve"><value>＋ Добавить контрольную сумму</value></data>
+  <data name="SE_TipTemplateName" xml:space="preserve"><value>Имя шаблона</value></data>
+  <data name="SE_TipStructName" xml:space="preserve"><value>Имя структуры (struct C)</value></data>
+  <data name="SE_TipHexDigitsOnly" xml:space="preserve"><value>Только hex-цифры (напр. FF, 4D5A)</value></data>
+  <data name="SE_ShowLabel" xml:space="preserve"><value>Показать:</value></data>
 </root>

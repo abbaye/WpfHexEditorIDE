@@ -861,4 +861,5 @@
   <data name="APP_BuildStop" xml:space="preserve"><value>Durdur</value></data>
   <data name="App_Editor_BuiltInTables" xml:space="preserve"><value>Yerleşik tablolar</value></data>
   <data name="App_Editor_DefaultAscii" xml:space="preserve"><value>Varsayılan (ASCII)</value></data>
+  <data name="APP_InstallEllipsis" xml:space="preserve"><value>Yükle...</value></data>
 </root>

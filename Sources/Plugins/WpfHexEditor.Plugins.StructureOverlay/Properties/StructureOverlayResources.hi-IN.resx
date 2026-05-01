@@ -19,4 +19,5 @@
   <data name="StructureOverlay_Confirm_RemoveAll" xml:space="preserve">
     <value>सभी संरचना ओवरले हटाएं?</value>
   </data>
+  <data name="SO_OffsetLabel" xml:space="preserve"><value>ऑफ़सेट:</value></data>
 </root>

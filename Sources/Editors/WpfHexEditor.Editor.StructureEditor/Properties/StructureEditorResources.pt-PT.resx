@@ -292,4 +292,50 @@
   <data name="SE_BE_Bounds" xml:space="preserve"><value>Limites</value></data>
   <data name="SE_BE_MaxIterations" xml:space="preserve"><value>Iterações máx.</value></data>
   <data name="SE_BE_LoopBodyHint" xml:space="preserve"><value>Os blocos do corpo são apresentados como filhos na árvore.</value></data>
+  <data name="SE_BE_Tip_VarName" xml:space="preserve"><value>Nome da variável a manipular — escreva para ver sugestões (Ctrl+Espaço)</value></data>
+  <data name="SE_BE_Tip_VarValue" xml:space="preserve"><value>Valor a definir / quantidade a adicionar ou subtrair — suporta var:nome</value></data>
+  <data name="SE_BE_Tip_Expression" xml:space="preserve"><value>Expressão matemática com variáveis e funções — Ctrl+Espaço para auto-completar</value></data>
+  <data name="SE_BE_Tip_StoreExpr" xml:space="preserve"><value>Nome de variável para guardar o resultado calculado — Ctrl+Espaço para sugestões</value></data>
+  <data name="SE_BE_Tip_ArrayOffset" xml:space="preserve"><value>Deslocamento do ficheiro onde o array começa — Ctrl+Espaço para auto-completar</value></data>
+  <data name="SE_BE_Tip_ArrayBaseVar" xml:space="preserve"><value>Variável usada como deslocamento base para este array</value></data>
+  <data name="SE_BE_Tip_EntryCount" xml:space="preserve"><value>Número de entradas — Ctrl+Espaço para sugestões de variáveis</value></data>
+  <data name="SE_BE_Tip_EntrySize" xml:space="preserve"><value>Tamanho de cada entrada em bytes — Ctrl+Espaço para sugestões de variáveis</value></data>
+  <data name="SE_BE_Tip_LoopIndex" xml:space="preserve"><value>Nome da variável de índice do ciclo (ex. i)</value></data>
+  <data name="SE_BE_AddColor" xml:space="preserve"><value>＋ Adicionar cor</value></data>
+  <data name="SE_BE_Tip_VariantVar" xml:space="preserve"><value>Variável que controla a seleção de variante — Ctrl+Espaço para sugestões</value></data>
+  <data name="SE_BE_Tip_FormatPath" xml:space="preserve"><value>Nome do formato ou caminho relativo ao ficheiro .whfmt</value></data>
+  <data name="SE_BE_Browse" xml:space="preserve"><value>Procurar…</value></data>
+  <data name="SE_BE_Tip_PtrOffset" xml:space="preserve"><value>Deslocamento do ficheiro onde o valor do ponteiro é lido — Ctrl+Espaço para auto-completar</value></data>
+  <data name="SE_BE_Tip_PtrBaseVar" xml:space="preserve"><value>Nome de variável usada como deslocamento base</value></data>
+  <data name="SE_BE_Tip_PtrSize" xml:space="preserve"><value>Tamanho do valor do ponteiro em bytes (ex. 4 para uint32) — ou var:nome</value></data>
+  <data name="SE_BE_Tip_PtrTargetVar" xml:space="preserve"><value>Variável que receberá o endereço resolvido do ponteiro</value></data>
+  <data name="SE_BE_Tip_PtrStoreRaw" xml:space="preserve"><value>Variável para guardar o valor bruto do ponteiro</value></data>
+  <data name="SE_BE_Tip_PtrLabel" xml:space="preserve"><value>Etiqueta de anotação mostrada na vista hex</value></data>
+  <data name="SE_BE_Tip_OffsetAuto" xml:space="preserve"><value>Ctrl+Espaço para auto-completar — inteiro, var:nome, calc:expr, offset:N</value></data>
+  <data name="SE_BE_Tip_OffsetFromVar" xml:space="preserve"><value>Nome de variável cujo valor é o deslocamento base — Ctrl+Espaço para sugestões</value></data>
+  <data name="SE_BE_Tip_OffsetAddBytes" xml:space="preserve"><value>Bytes adicionais adicionados a OffsetFrom</value></data>
+  <data name="SE_BE_Tip_LengthAuto" xml:space="preserve"><value>Ctrl+Espaço para auto-completar — inteiro, var:nome, calc:expr</value></data>
+  <data name="SE_BE_Tip_StoreParsed" xml:space="preserve"><value>Nome de variável para guardar o valor analisado — Ctrl+Espaço para sugestões</value></data>
+  <data name="SE_BE_Tip_StoreMapped" xml:space="preserve"><value>Nome de variável para o valor traduzido por ValueMap — Ctrl+Espaço para sugestões</value></data>
+  <data name="SE_BE_Tip_RawDisplayMap" xml:space="preserve"><value>bruto=Mostrar (ex. 0=Tons de cinzento)</value></data>
+  <data name="SE_BE_AddValueMapEntry" xml:space="preserve"><value>＋ Adicionar entrada ValueMap</value></data>
+  <data name="SE_BE_Tip_BitRange" xml:space="preserve"><value>Intervalo de bits ex. 7-6 ou bit único ex. 3</value></data>
+  <data name="SE_BE_AddBitfield" xml:space="preserve"><value>＋ Adicionar campo de bits</value></data>
+  <data name="SE_BE_SentinelUntil" xml:space="preserve"><value>Sentinela (Until)</value></data>
+  <data name="SE_BE_Tip_UntilPattern" xml:space="preserve"><value>Padrão hex ou var:nome onde parar a leitura. Substitui Length quando definido.</value></data>
+  <data name="SE_BE_Tip_UntilSafetyCap" xml:space="preserve"><value>Limite de segurança (bytes) se o padrão Until não for encontrado. 0 = predefinido do interpretador (4096).</value></data>
+  <data name="SE_BE_UntilInclusive" xml:space="preserve"><value>Until inclusivo (incluir bytes do padrão no comprimento do campo)</value></data>
+  <data name="SE_BE_ValidationRules" xml:space="preserve"><value>Regras de validação</value></data>
+  <data name="SE_BE_Tip_MetaVarName" xml:space="preserve"><value>Nome da variável que este bloco de metadados lê</value></data>
+  <data name="SE_BE_Tip_LoopCount" xml:space="preserve"><value>Inteiro fixo ou var:nome — Ctrl+Espaço para sugestões</value></data>
+  <data name="SE_BE_Tip_LoopMaxCap" xml:space="preserve"><value>Limite de segurança — inteiro</value></data>
+  <data name="SE_BE_Tip_LoopIdxStore" xml:space="preserve"><value>Variável que recebe o índice de iteração atual (base 0)</value></data>
+  <data name="SE_BE_Tip_LoopCountStore" xml:space="preserve"><value>Variável para guardar a contagem de iterações após o ciclo — Ctrl+Espaço para sugestões</value></data>
+  <data name="SE_BE_Tip_EditAsJson" xml:space="preserve"><value>Editar este bloco como JSON bruto</value></data>
+  <data name="SE_AddAssertion" xml:space="preserve"><value>＋ Adicionar asserção</value></data>
+  <data name="SE_AddChecksum" xml:space="preserve"><value>＋ Adicionar soma de verificação</value></data>
+  <data name="SE_TipTemplateName" xml:space="preserve"><value>Nome do modelo</value></data>
+  <data name="SE_TipStructName" xml:space="preserve"><value>Nome da estrutura (struct C)</value></data>
+  <data name="SE_TipHexDigitsOnly" xml:space="preserve"><value>Apenas dígitos hex (ex. FF, 4D5A)</value></data>
+  <data name="SE_ShowLabel" xml:space="preserve"><value>Mostrar:</value></data>
 </root>

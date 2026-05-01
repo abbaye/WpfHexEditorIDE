@@ -254,4 +254,20 @@
   <data name="DBG_CloseButton" xml:space="preserve">
     <value>Close</value>
   </data>
+  <!-- Wave 20 -->
+  <data name="DBG_AddWatch" xml:space="preserve">
+    <value>Add Watch</value>
+  </data>
+  <data name="DBG_ColValue" xml:space="preserve">
+    <value>Value</value>
+  </data>
+  <data name="DBG_ColType" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="DBG_ColName" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="DBG_ColFile" xml:space="preserve">
+    <value>File</value>
+  </data>
 </root>

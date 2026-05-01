@@ -395,4 +395,5 @@
     <value>The app.manifest file that controls UAC execution level and DPI.</value>
   </data>
   <data name="PS_AddExistingItemTooltip" xml:space="preserve"><value>Select one or more files (multi-select supported). You can also drag and drop files onto this window.</value></data>
+  <data name="NG_TipSearch" xml:space="preserve"><value>Search</value></data>
 </root>

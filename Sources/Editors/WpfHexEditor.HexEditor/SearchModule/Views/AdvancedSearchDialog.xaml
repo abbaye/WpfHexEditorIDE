@@ -586,7 +586,7 @@
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
-                        <GridViewColumn Header="Offset"    Width="66"  DisplayMemberBinding="{Binding Offset, StringFormat='+{0}'}"/>
+                        <GridViewColumn Header="{DynamicResource HE_ColOffset}"    Width="66"  DisplayMemberBinding="{Binding Offset, StringFormat='+{0}'}"/>
                         <GridViewColumn Header="{DynamicResource HE_OccColumn}"     Width="58"  DisplayMemberBinding="{Binding Score, StringFormat=F1}"/>
                         <GridViewColumn Header="{DynamicResource HE_OccColumn}"      Width="54"  DisplayMemberBinding="{Binding MatchCount}"/>
                         <GridViewColumn Header="{DynamicResource HE_PreviewColumn}" Width="240" DisplayMemberBinding="{Binding SampleText}"/>

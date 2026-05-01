@@ -139,7 +139,7 @@
                     </ListView.Resources>
                     <ListView.View>
                         <GridView>
-                            <GridViewColumn Header="Event Type" Width="220"
+                            <GridViewColumn Header="{DynamicResource PH_ColEventType}" Width="220"
                                             DisplayMemberBinding="{Binding DisplayName}"/>
                             <GridViewColumn Header="Producer" Width="160"
                                             DisplayMemberBinding="{Binding ProducerLabel}"/>

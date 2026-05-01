@@ -837,4 +837,143 @@
   <data name="SE_BE_LoopBodyHint" xml:space="preserve">
     <value>Body blocks are shown as children in the tree.</value>
   </data>
+  <!-- ── Wave 20 — Block editor tooltips & buttons ───────────────────────── -->
+  <data name="SE_BE_Tip_VarName" xml:space="preserve">
+    <value>Name of the variable to act on — type to see suggestions (Ctrl+Space)</value>
+  </data>
+  <data name="SE_BE_Tip_VarValue" xml:space="preserve">
+    <value>Value to set / amount to add or subtract — supports var:name</value>
+  </data>
+  <data name="SE_BE_Tip_Expression" xml:space="preserve">
+    <value>Math expression using variables and functions — Ctrl+Space for autocomplete</value>
+  </data>
+  <data name="SE_BE_Tip_StoreExpr" xml:space="preserve">
+    <value>Variable name to store the computed result — Ctrl+Space for suggestions</value>
+  </data>
+  <data name="SE_BE_Tip_ArrayOffset" xml:space="preserve">
+    <value>File offset where the array starts — Ctrl+Space for autocomplete</value>
+  </data>
+  <data name="SE_BE_Tip_ArrayBaseVar" xml:space="preserve">
+    <value>Variable used as the base offset for this array</value>
+  </data>
+  <data name="SE_BE_Tip_EntryCount" xml:space="preserve">
+    <value>Number of entries — Ctrl+Space for variable suggestions</value>
+  </data>
+  <data name="SE_BE_Tip_EntrySize" xml:space="preserve">
+    <value>Size of each entry in bytes — Ctrl+Space for variable suggestions</value>
+  </data>
+  <data name="SE_BE_Tip_LoopIndex" xml:space="preserve">
+    <value>Loop index variable name (e.g. i)</value>
+  </data>
+  <data name="SE_BE_AddColor" xml:space="preserve">
+    <value>＋ Add Color</value>
+  </data>
+  <data name="SE_BE_Tip_VariantVar" xml:space="preserve">
+    <value>Variable that drives the variant selection — Ctrl+Space for suggestions</value>
+  </data>
+  <data name="SE_BE_Tip_FormatPath" xml:space="preserve">
+    <value>Format name or relative path to the .whfmt file</value>
+  </data>
+  <data name="SE_BE_Browse" xml:space="preserve">
+    <value>Browse…</value>
+  </data>
+  <data name="SE_BE_Tip_PtrOffset" xml:space="preserve">
+    <value>File offset where the pointer value is read — Ctrl+Space for autocomplete</value>
+  </data>
+  <data name="SE_BE_Tip_PtrBaseVar" xml:space="preserve">
+    <value>Variable name used as the base offset</value>
+  </data>
+  <data name="SE_BE_Tip_PtrSize" xml:space="preserve">
+    <value>Size of the pointer value in bytes (e.g. 4 for uint32) — or var:name</value>
+  </data>
+  <data name="SE_BE_Tip_PtrTargetVar" xml:space="preserve">
+    <value>Variable that will receive the resolved pointer address</value>
+  </data>
+  <data name="SE_BE_Tip_PtrStoreRaw" xml:space="preserve">
+    <value>Variable to store the raw pointer value</value>
+  </data>
+  <data name="SE_BE_Tip_PtrLabel" xml:space="preserve">
+    <value>Annotation label shown in the hex view</value>
+  </data>
+  <data name="SE_BE_Tip_OffsetAuto" xml:space="preserve">
+    <value>Ctrl+Space for autocomplete — integer, var:name, calc:expr, offset:N</value>
+  </data>
+  <data name="SE_BE_Tip_OffsetFromVar" xml:space="preserve">
+    <value>Variable name whose value is the base offset — Ctrl+Space for suggestions</value>
+  </data>
+  <data name="SE_BE_Tip_OffsetAddBytes" xml:space="preserve">
+    <value>Additional bytes added to OffsetFrom</value>
+  </data>
+  <data name="SE_BE_Tip_LengthAuto" xml:space="preserve">
+    <value>Ctrl+Space for autocomplete — integer, var:name, calc:expr</value>
+  </data>
+  <data name="SE_BE_Tip_StoreParsed" xml:space="preserve">
+    <value>Variable name to store parsed value — Ctrl+Space for suggestions</value>
+  </data>
+  <data name="SE_BE_Tip_StoreMapped" xml:space="preserve">
+    <value>Variable name for ValueMap-translated value — Ctrl+Space for suggestions</value>
+  </data>
+  <data name="SE_BE_Tip_RawDisplayMap" xml:space="preserve">
+    <value>raw=Display (e.g. 0=Grayscale)</value>
+  </data>
+  <data name="SE_BE_AddValueMapEntry" xml:space="preserve">
+    <value>＋ Add Value Map Entry</value>
+  </data>
+  <data name="SE_BE_Tip_BitRange" xml:space="preserve">
+    <value>Bit range e.g. 7-6 or single bit e.g. 3</value>
+  </data>
+  <data name="SE_BE_AddBitfield" xml:space="preserve">
+    <value>＋ Add Bitfield</value>
+  </data>
+  <data name="SE_BE_SentinelUntil" xml:space="preserve">
+    <value>Sentinel (Until)</value>
+  </data>
+  <data name="SE_BE_Tip_UntilPattern" xml:space="preserve">
+    <value>Hex pattern or var:name to stop reading at. Replaces Length when set.</value>
+  </data>
+  <data name="SE_BE_Tip_UntilSafetyCap" xml:space="preserve">
+    <value>Safety cap (bytes) if the Until pattern is never found. 0 = use interpreter default (4096).</value>
+  </data>
+  <data name="SE_BE_UntilInclusive" xml:space="preserve">
+    <value>Until Inclusive (include pattern bytes in field length)</value>
+  </data>
+  <data name="SE_BE_ValidationRules" xml:space="preserve">
+    <value>Validation Rules</value>
+  </data>
+  <data name="SE_BE_Tip_MetaVarName" xml:space="preserve">
+    <value>Name of the variable this metadata block reads</value>
+  </data>
+  <data name="SE_BE_Tip_LoopCount" xml:space="preserve">
+    <value>Fixed integer or var:name — Ctrl+Space for suggestions</value>
+  </data>
+  <data name="SE_BE_Tip_LoopMaxCap" xml:space="preserve">
+    <value>Safety cap — integer</value>
+  </data>
+  <data name="SE_BE_Tip_LoopIdxStore" xml:space="preserve">
+    <value>Variable that receives the current iteration index (0-based)</value>
+  </data>
+  <data name="SE_BE_Tip_LoopCountStore" xml:space="preserve">
+    <value>Variable to store the iteration count after loop completes — Ctrl+Space for suggestions</value>
+  </data>
+  <data name="SE_BE_Tip_EditAsJson" xml:space="preserve">
+    <value>Edit this block as raw JSON</value>
+  </data>
+  <data name="SE_AddAssertion" xml:space="preserve">
+    <value>＋ Add Assertion</value>
+  </data>
+  <data name="SE_AddChecksum" xml:space="preserve">
+    <value>＋ Add Checksum</value>
+  </data>
+  <data name="SE_TipTemplateName" xml:space="preserve">
+    <value>Template Name</value>
+  </data>
+  <data name="SE_TipStructName" xml:space="preserve">
+    <value>Struct name (C struct)</value>
+  </data>
+  <data name="SE_TipHexDigitsOnly" xml:space="preserve">
+    <value>Hex digits only (e.g. FF, 4D5A)</value>
+  </data>
+  <data name="SE_ShowLabel" xml:space="preserve">
+    <value>Show:</value>
+  </data>
 </root>

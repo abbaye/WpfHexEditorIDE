@@ -15,4 +15,5 @@
   </data>
   <data name="RX_MissingTranslations" xml:space="preserve"><value>누락된 번역</value></data>
   <data name="RX_LocaleBrowser" xml:space="preserve"><value>로케일 브라우저</value></data>
+  <data name="RX_CopyBaseValue" xml:space="preserve"><value>기본 값 복사</value></data>
 </root>

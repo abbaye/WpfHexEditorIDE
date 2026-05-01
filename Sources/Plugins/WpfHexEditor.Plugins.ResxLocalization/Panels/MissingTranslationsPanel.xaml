@@ -57,7 +57,7 @@
                            VerticalAlignment="Center"
                            Margin="2,0,8,0"/>
                 <Button x:Name="CopyBaseButton"
-                        Content="Copy base value"
+                        Content="{DynamicResource RX_CopyBaseValue}"
                         Padding="8,2"
                         FontSize="10"
                         Click="CopyBaseButton_Click"

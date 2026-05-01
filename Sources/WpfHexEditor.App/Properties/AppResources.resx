@@ -1136,4 +1136,7 @@
   <data name="APP_BuildStop" xml:space="preserve">
     <value>Stop</value>
   </data>
+  <data name="APP_InstallEllipsis" xml:space="preserve">
+    <value>Install...</value>
+  </data>
 </root>

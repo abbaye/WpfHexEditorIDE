@@ -78,4 +78,5 @@
 
   <data name="RX_MissingTranslations" xml:space="preserve"><value>Traductions manquantes</value></data>
   <data name="RX_LocaleBrowser" xml:space="preserve"><value>Explorateur de paramètres régionaux</value></data>
+  <data name="RX_CopyBaseValue" xml:space="preserve"><value>Copier la valeur de base</value></data>
 </root>

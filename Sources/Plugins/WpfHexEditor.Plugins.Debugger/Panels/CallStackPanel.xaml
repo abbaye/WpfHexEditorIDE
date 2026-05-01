@@ -1,10 +1,16 @@
 <UserControl x:Class="WpfHexEditor.Plugins.Debugger.Panels.CallStackPanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:conv="clr-namespace:WpfHexEditor.Plugins.Debugger.Converters">
+             xmlns:conv="clr-namespace:WpfHexEditor.Plugins.Debugger.Converters"
+             xmlns:dbgSvc="clr-namespace:WpfHexEditor.Plugins.Debugger.Services">
 
     <UserControl.Resources>
-        <conv:FileNameConverter x:Key="FileNameConverter" />
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <dbgSvc:DebuggerLocalizedDictionary/>
+            </ResourceDictionary.MergedDictionaries>
+            <conv:FileNameConverter x:Key="FileNameConverter" />
+        </ResourceDictionary>
     </UserControl.Resources>
 
     <ListView ItemsSource="{Binding Frames}"
@@ -21,8 +27,8 @@
                         </DataTemplate>
                     </GridViewColumn.CellTemplate>
                 </GridViewColumn>
-                <GridViewColumn Header="Name"   Width="240" DisplayMemberBinding="{Binding Name}" />
-                <GridViewColumn Header="File"   Width="180">
+                <GridViewColumn Header="{DynamicResource DBG_ColName}"   Width="240" DisplayMemberBinding="{Binding Name}" />
+                <GridViewColumn Header="{DynamicResource DBG_ColFile}"   Width="180">
                     <GridViewColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock>

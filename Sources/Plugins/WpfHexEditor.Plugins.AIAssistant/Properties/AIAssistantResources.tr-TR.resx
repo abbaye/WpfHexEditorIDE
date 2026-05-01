@@ -122,4 +122,5 @@
   <data name="AIAssistant_RenameConversation" xml:space="preserve">
     <value>Konuşmayı Yeniden Adlandır</value>
   </data>
+  <data name="AI_TipMcpCommand" xml:space="preserve"><value>Komut (örn. npx)</value></data>
 </root>

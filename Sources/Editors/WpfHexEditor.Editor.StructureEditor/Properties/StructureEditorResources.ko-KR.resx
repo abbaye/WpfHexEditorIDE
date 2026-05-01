@@ -292,4 +292,50 @@
   <data name="SE_BE_Bounds" xml:space="preserve"><value>경계</value></data>
   <data name="SE_BE_MaxIterations" xml:space="preserve"><value>최대 반복 횟수</value></data>
   <data name="SE_BE_LoopBodyHint" xml:space="preserve"><value>본문 블록은 트리의 자식으로 표시됩니다.</value></data>
+  <data name="SE_BE_Tip_VarName" xml:space="preserve"><value>작업할 변수 이름 — 입력하면 제안 표시 (Ctrl+Space)</value></data>
+  <data name="SE_BE_Tip_VarValue" xml:space="preserve"><value>설정할 값 / 더하거나 뺄 양 — var:이름 지원</value></data>
+  <data name="SE_BE_Tip_Expression" xml:space="preserve"><value>변수와 함수가 있는 수식 — Ctrl+Space로 자동 완성</value></data>
+  <data name="SE_BE_Tip_StoreExpr" xml:space="preserve"><value>계산 결과를 저장할 변수 이름 — Ctrl+Space로 제안 표시</value></data>
+  <data name="SE_BE_Tip_ArrayOffset" xml:space="preserve"><value>배열이 시작되는 파일 오프셋 — Ctrl+Space로 자동 완성</value></data>
+  <data name="SE_BE_Tip_ArrayBaseVar" xml:space="preserve"><value>이 배열의 기준 오프셋으로 사용되는 변수</value></data>
+  <data name="SE_BE_Tip_EntryCount" xml:space="preserve"><value>항목 수 — Ctrl+Space로 변수 제안</value></data>
+  <data name="SE_BE_Tip_EntrySize" xml:space="preserve"><value>각 항목의 바이트 크기 — Ctrl+Space로 변수 제안</value></data>
+  <data name="SE_BE_Tip_LoopIndex" xml:space="preserve"><value>루프 인덱스 변수 이름 (예: i)</value></data>
+  <data name="SE_BE_AddColor" xml:space="preserve"><value>＋ 색 추가</value></data>
+  <data name="SE_BE_Tip_VariantVar" xml:space="preserve"><value>변형 선택을 제어하는 변수 — Ctrl+Space로 제안 표시</value></data>
+  <data name="SE_BE_Tip_FormatPath" xml:space="preserve"><value>형식 이름 또는 .whfmt 파일의 상대 경로</value></data>
+  <data name="SE_BE_Browse" xml:space="preserve"><value>찾아보기…</value></data>
+  <data name="SE_BE_Tip_PtrOffset" xml:space="preserve"><value>포인터 값이 읽히는 파일 오프셋 — Ctrl+Space로 자동 완성</value></data>
+  <data name="SE_BE_Tip_PtrBaseVar" xml:space="preserve"><value>기준 오프셋으로 사용되는 변수 이름</value></data>
+  <data name="SE_BE_Tip_PtrSize" xml:space="preserve"><value>포인터 값의 바이트 크기 (예: uint32은 4) — 또는 var:이름</value></data>
+  <data name="SE_BE_Tip_PtrTargetVar" xml:space="preserve"><value>해결된 포인터 주소를 받을 변수</value></data>
+  <data name="SE_BE_Tip_PtrStoreRaw" xml:space="preserve"><value>원시 포인터 값을 저장할 변수</value></data>
+  <data name="SE_BE_Tip_PtrLabel" xml:space="preserve"><value>Hex 뷰에 표시되는 주석 레이블</value></data>
+  <data name="SE_BE_Tip_OffsetAuto" xml:space="preserve"><value>Ctrl+Space로 자동 완성 — 정수, var:이름, calc:expr, offset:N</value></data>
+  <data name="SE_BE_Tip_OffsetFromVar" xml:space="preserve"><value>값이 기준 오프셋인 변수 이름 — Ctrl+Space로 제안 표시</value></data>
+  <data name="SE_BE_Tip_OffsetAddBytes" xml:space="preserve"><value>OffsetFrom에 추가되는 추가 바이트</value></data>
+  <data name="SE_BE_Tip_LengthAuto" xml:space="preserve"><value>Ctrl+Space로 자동 완성 — 정수, var:이름, calc:expr</value></data>
+  <data name="SE_BE_Tip_StoreParsed" xml:space="preserve"><value>구문 분석된 값을 저장할 변수 이름 — Ctrl+Space로 제안 표시</value></data>
+  <data name="SE_BE_Tip_StoreMapped" xml:space="preserve"><value>ValueMap으로 번역된 값의 변수 이름 — Ctrl+Space로 제안 표시</value></data>
+  <data name="SE_BE_Tip_RawDisplayMap" xml:space="preserve"><value>원시=표시 (예: 0=그레이스케일)</value></data>
+  <data name="SE_BE_AddValueMapEntry" xml:space="preserve"><value>＋ ValueMap 항목 추가</value></data>
+  <data name="SE_BE_Tip_BitRange" xml:space="preserve"><value>비트 범위 예: 7-6 또는 단일 비트 예: 3</value></data>
+  <data name="SE_BE_AddBitfield" xml:space="preserve"><value>＋ 비트필드 추가</value></data>
+  <data name="SE_BE_SentinelUntil" xml:space="preserve"><value>센티넬 (Until)</value></data>
+  <data name="SE_BE_Tip_UntilPattern" xml:space="preserve"><value>읽기를 중지할 Hex 패턴 또는 var:이름. 설정 시 Length를 대체합니다.</value></data>
+  <data name="SE_BE_Tip_UntilSafetyCap" xml:space="preserve"><value>Until 패턴을 찾지 못할 경우 안전 한도 (바이트). 0 = 인터프리터 기본값 (4096).</value></data>
+  <data name="SE_BE_UntilInclusive" xml:space="preserve"><value>Until 포함 (패턴 바이트를 필드 길이에 포함)</value></data>
+  <data name="SE_BE_ValidationRules" xml:space="preserve"><value>검증 규칙</value></data>
+  <data name="SE_BE_Tip_MetaVarName" xml:space="preserve"><value>이 메타데이터 블록이 읽는 변수 이름</value></data>
+  <data name="SE_BE_Tip_LoopCount" xml:space="preserve"><value>고정 정수 또는 var:이름 — Ctrl+Space로 제안 표시</value></data>
+  <data name="SE_BE_Tip_LoopMaxCap" xml:space="preserve"><value>안전 한도 — 정수</value></data>
+  <data name="SE_BE_Tip_LoopIdxStore" xml:space="preserve"><value>현재 반복 인덱스를 받는 변수 (0부터 시작)</value></data>
+  <data name="SE_BE_Tip_LoopCountStore" xml:space="preserve"><value>루프 완료 후 반복 횟수를 저장할 변수 — Ctrl+Space로 제안 표시</value></data>
+  <data name="SE_BE_Tip_EditAsJson" xml:space="preserve"><value>이 블록을 원시 JSON으로 편집</value></data>
+  <data name="SE_AddAssertion" xml:space="preserve"><value>＋ 어설션 추가</value></data>
+  <data name="SE_AddChecksum" xml:space="preserve"><value>＋ 체크섬 추가</value></data>
+  <data name="SE_TipTemplateName" xml:space="preserve"><value>템플릿 이름</value></data>
+  <data name="SE_TipStructName" xml:space="preserve"><value>구조체 이름 (C 구조체)</value></data>
+  <data name="SE_TipHexDigitsOnly" xml:space="preserve"><value>Hex 숫자만 (예: FF, 4D5A)</value></data>
+  <data name="SE_ShowLabel" xml:space="preserve"><value>표시:</value></data>
 </root>

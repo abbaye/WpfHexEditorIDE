@@ -116,4 +116,8 @@
   <data name="CD_PropAbstract" xml:space="preserve"><value>抽象</value></data>
   <data name="CD_DiagramHistory" xml:space="preserve"><value>図の履歴</value></data>
   <data name="CD_Relationships" xml:space="preserve"><value>関連</value></data>
+  <data name="CD_TipSearchClasses" xml:space="preserve"><value>クラスとメンバーを検索 (Enter)</value></data>
+  <data name="CD_TipRunSearch" xml:space="preserve"><value>検索を実行</value></data>
+  <data name="CD_Results" xml:space="preserve"><value>件の結果</value></data>
+  <data name="CD_TipFilterToolbox" xml:space="preserve"><value>ツールボックス項目をフィルター</value></data>
 </root>

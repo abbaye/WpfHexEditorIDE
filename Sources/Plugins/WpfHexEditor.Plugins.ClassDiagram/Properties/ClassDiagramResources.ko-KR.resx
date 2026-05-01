@@ -116,4 +116,8 @@
   <data name="CD_PropAbstract" xml:space="preserve"><value>추상</value></data>
   <data name="CD_DiagramHistory" xml:space="preserve"><value>다이어그램 기록</value></data>
   <data name="CD_Relationships" xml:space="preserve"><value>관계</value></data>
+  <data name="CD_TipSearchClasses" xml:space="preserve"><value>클래스와 멤버 검색 (Enter)</value></data>
+  <data name="CD_TipRunSearch" xml:space="preserve"><value>검색 실행</value></data>
+  <data name="CD_Results" xml:space="preserve"><value>개 결과</value></data>
+  <data name="CD_TipFilterToolbox" xml:space="preserve"><value>도구 상자 항목 필터링</value></data>
 </root>

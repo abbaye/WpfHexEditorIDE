@@ -116,4 +116,8 @@
   <data name="CD_PropAbstract" xml:space="preserve"><value>Soyut</value></data>
   <data name="CD_DiagramHistory" xml:space="preserve"><value>Diyagram Geçmişi</value></data>
   <data name="CD_Relationships" xml:space="preserve"><value>İlişkiler</value></data>
+  <data name="CD_TipSearchClasses" xml:space="preserve"><value>Sınıfları ve üyeleri ara (Enter)</value></data>
+  <data name="CD_TipRunSearch" xml:space="preserve"><value>Aramayı çalıştır</value></data>
+  <data name="CD_Results" xml:space="preserve"><value>sonuç</value></data>
+  <data name="CD_TipFilterToolbox" xml:space="preserve"><value>Araç kutusu öğelerini filtrele</value></data>
 </root>

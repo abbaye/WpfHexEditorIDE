@@ -49,4 +49,5 @@
   <data name="CustomParser_NoTemplateSelected" xml:space="preserve">
     <value>कोई टेम्पलेट नहीं चुना</value>
   </data>
+  <data name="Common_ColOffset" xml:space="preserve"><value>ऑफ़सेट</value></data>
 </root>

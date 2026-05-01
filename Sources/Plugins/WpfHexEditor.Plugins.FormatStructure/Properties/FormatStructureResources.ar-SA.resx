@@ -10,4 +10,7 @@
   <data name="FormatStruct_NoFormatDetected" xml:space="preserve">
     <value>لم يتم الكشف عن تنسيق</value>
   </data>
+  <data name="FormatStruct_ColName" xml:space="preserve"><value>الاسم</value></data>
+  <data name="FormatStruct_ColOffset" xml:space="preserve"><value>إزاحة</value></data>
+  <data name="FormatStruct_ColSize" xml:space="preserve"><value>الحجم</value></data>
 </root>

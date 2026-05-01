@@ -116,4 +116,8 @@
   <data name="CD_PropAbstract" xml:space="preserve"><value>अमूर्त</value></data>
   <data name="CD_DiagramHistory" xml:space="preserve"><value>आरेख इतिहास</value></data>
   <data name="CD_Relationships" xml:space="preserve"><value>संबंध</value></data>
+  <data name="CD_TipSearchClasses" xml:space="preserve"><value>क्लास और सदस्य खोजें (Enter)</value></data>
+  <data name="CD_TipRunSearch" xml:space="preserve"><value>खोज चलाएँ</value></data>
+  <data name="CD_Results" xml:space="preserve"><value>परिणाम</value></data>
+  <data name="CD_TipFilterToolbox" xml:space="preserve"><value>टूलबॉक्स आइटम फ़िल्टर करें</value></data>
 </root>

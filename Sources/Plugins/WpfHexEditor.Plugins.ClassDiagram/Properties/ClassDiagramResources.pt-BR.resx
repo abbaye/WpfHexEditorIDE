@@ -116,4 +116,8 @@
   <data name="CD_PropAbstract" xml:space="preserve"><value>Abstrato</value></data>
   <data name="CD_DiagramHistory" xml:space="preserve"><value>Histórico do diagrama</value></data>
   <data name="CD_Relationships" xml:space="preserve"><value>Relacionamentos</value></data>
+  <data name="CD_TipSearchClasses" xml:space="preserve"><value>Buscar classes e membros (Enter)</value></data>
+  <data name="CD_TipRunSearch" xml:space="preserve"><value>Executar busca</value></data>
+  <data name="CD_Results" xml:space="preserve"><value>resultado(s)</value></data>
+  <data name="CD_TipFilterToolbox" xml:space="preserve"><value>Filtrar itens da caixa de ferramentas</value></data>
 </root>

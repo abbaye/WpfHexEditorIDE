@@ -861,4 +861,5 @@
   <data name="APP_BuildStop" xml:space="preserve"><value>Arresta</value></data>
   <data name="App_Editor_BuiltInTables" xml:space="preserve"><value>Tabelle integrate</value></data>
   <data name="App_Editor_DefaultAscii" xml:space="preserve"><value>Predefinito (ASCII)</value></data>
+  <data name="APP_InstallEllipsis" xml:space="preserve"><value>Installa...</value></data>
 </root>

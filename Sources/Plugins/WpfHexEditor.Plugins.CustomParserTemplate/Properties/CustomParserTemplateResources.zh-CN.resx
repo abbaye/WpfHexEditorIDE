@@ -49,4 +49,5 @@
   <data name="CustomParser_NoTemplateSelected" xml:space="preserve">
     <value>未选择模板</value>
   </data>
+  <data name="Common_ColOffset" xml:space="preserve"><value>偏移</value></data>
 </root>

@@ -89,7 +89,7 @@
                            Foreground="{DynamicResource TE_LineNumberForeground}"
                            BorderBrush="{DynamicResource DockBorderBrush}" BorderThickness="1"
                            Command="{Binding OpenRawCommand}"
-                           ToolTip="Edit this block as raw JSON"/>
+                           ToolTip="{DynamicResource SE_BE_Tip_EditAsJson}"/>
 
                 <TextBlock Grid.Row="1" Grid.Column="0" Text="{DynamicResource SE_PropType}" Style="{StaticResource PropLabel}"/>
                 <ComboBox  Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3"
