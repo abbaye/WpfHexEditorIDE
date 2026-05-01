@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
   <resheader name="version"><value>2.0</value></resheader>
@@ -100,4 +100,6 @@
   <data name="FS_AnalyzingLabel" xml:space="preserve">
     <value>Analyzing file...</value>
   </data>
+  <data name="FS_HealthStatusDefault" xml:space="preserve"><value>파일 구조가 유효하고 정상입니다</value></data>
+  <data name="FS_EntropyDescDefault" xml:space="preserve"><value>압축되거나 암호화된 데이터일 가능성이 높습니다</value></data>
 </root>

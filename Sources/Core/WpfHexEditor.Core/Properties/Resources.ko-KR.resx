@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
@@ -1950,4 +1950,12 @@
   <data name="HE_MoveBarTooltip" xml:space="preserve">
     <value>Move search bar</value>
   </data>
+  <data name="HE_CompareFileWith" xml:space="preserve"><value>파일 비교…</value></data>
+  <data name="HE_CompareSelectionLeft" xml:space="preserve"><value>선택 항목을 왼쪽으로 비교…</value></data>
+  <data name="HE_NoTblLoaded" xml:space="preserve"><value>TBL이 로드되지 않음</value></data>
+  <data name="HE_SearchTypeText" xml:space="preserve"><value>텍스트</value></data>
+  <data name="HE_SearchTypeHex" xml:space="preserve"><value>HEX</value></data>
+  <data name="HE_SearchTypeWildcard" xml:space="preserve"><value>와일드카드</value></data>
+  <data name="HE_SearchTypeTbl" xml:space="preserve"><value>TBL 텍스트</value></data>
+  <data name="HE_SearchTypeRelative" xml:space="preserve"><value>상대</value></data>
 </root>

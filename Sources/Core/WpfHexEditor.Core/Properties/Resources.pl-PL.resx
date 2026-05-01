@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
@@ -1986,4 +1986,12 @@ Uwaga: Pełna integracja z HexEditor wymaga połączenia z głównym modelem wid
   <data name="HE_MoveBarTooltip" xml:space="preserve">
     <value>Move search bar</value>
   </data>
+  <data name="HE_CompareFileWith" xml:space="preserve"><value>Porównaj plik z…</value></data>
+  <data name="HE_CompareSelectionLeft" xml:space="preserve"><value>Porównaj zaznaczenie jako lewe…</value></data>
+  <data name="HE_NoTblLoaded" xml:space="preserve"><value>Nie załadowano TBL</value></data>
+  <data name="HE_SearchTypeText" xml:space="preserve"><value>TEKST</value></data>
+  <data name="HE_SearchTypeHex" xml:space="preserve"><value>HEX</value></data>
+  <data name="HE_SearchTypeWildcard" xml:space="preserve"><value>SYMBOL WIELOZNACZNY</value></data>
+  <data name="HE_SearchTypeTbl" xml:space="preserve"><value>TEKST TBL</value></data>
+  <data name="HE_SearchTypeRelative" xml:space="preserve"><value>WZGLĘDNY</value></data>
 </root>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
@@ -1950,4 +1950,12 @@
   <data name="HE_MoveBarTooltip" xml:space="preserve">
     <value>Move search bar</value>
   </data>
+  <data name="HE_CompareFileWith" xml:space="preserve"><value>फ़ाइल की तुलना करें…</value></data>
+  <data name="HE_CompareSelectionLeft" xml:space="preserve"><value>चयन को बाईं ओर की तरह तुलना करें…</value></data>
+  <data name="HE_NoTblLoaded" xml:space="preserve"><value>कोई TBL लोड नहीं है</value></data>
+  <data name="HE_SearchTypeText" xml:space="preserve"><value>टेक्स्ट</value></data>
+  <data name="HE_SearchTypeHex" xml:space="preserve"><value>हेक्स</value></data>
+  <data name="HE_SearchTypeWildcard" xml:space="preserve"><value>वाइल्डकार्ड</value></data>
+  <data name="HE_SearchTypeTbl" xml:space="preserve"><value>TBL टेक्स्ट</value></data>
+  <data name="HE_SearchTypeRelative" xml:space="preserve"><value>सापेक्ष</value></data>
 </root>

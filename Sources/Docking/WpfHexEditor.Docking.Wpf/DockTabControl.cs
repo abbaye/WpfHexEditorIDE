@@ -454,13 +454,16 @@ public class DockTabControl : TabControl
         border.SetResourceReference(Border.BackgroundProperty,   "DockTabActiveBrush");
         border.SetResourceReference(Border.BorderBrushProperty,  "DockBorderBrush");
 
+        // screenPos is in physical pixels; PlacementMode.Absolute uses DIPs — convert to avoid
+        // ghost rendering at wrong position on HiDPI monitors.
+        var dip = DpiHelper.ScreenToDipForPoint(screenPos);
         _reorderGhost = new Popup
         {
             Child              = border,
             AllowsTransparency = true,
             Placement          = PlacementMode.Absolute,
-            HorizontalOffset   = screenPos.X + 8,
-            VerticalOffset     = screenPos.Y - 24,
+            HorizontalOffset   = dip.X + 8,
+            VerticalOffset     = dip.Y - 24,
             IsOpen             = true
         };
     }
@@ -468,8 +471,9 @@ public class DockTabControl : TabControl
     private void MoveReorderGhost(Point screenPos)
     {
         if (_reorderGhost is null) return;
-        _reorderGhost.HorizontalOffset = screenPos.X + 8;
-        _reorderGhost.VerticalOffset   = screenPos.Y - 24;
+        var dip = DpiHelper.ScreenToDipForPoint(screenPos);
+        _reorderGhost.HorizontalOffset = dip.X + 8;
+        _reorderGhost.VerticalOffset   = dip.Y - 24;
     }
 
     private void HideReorderGhost()
@@ -1171,6 +1175,8 @@ public class DockTabHeader : StackPanel
         _dragStartPoint = e.GetPosition(this);
         _isDragging = false;
         _isReordering = false;
+        // Safety net: ensure any orphaned ghost from a previous interrupted drag is cleaned up.
+        ReorderCancelled?.Invoke();
         CaptureMouse();
     }
 

@@ -282,7 +282,7 @@
                         </Grid>
 
                         <TextBlock x:Name="HealthStatusText"
-                                   Text="File structure is valid and healthy"
+                                   Text="{DynamicResource FS_HealthStatusDefault}"
                                    FontSize="9" FontStyle="Italic"
                                    Foreground="{StaticResource GoodBrush}"/>
                     </StackPanel>
@@ -309,7 +309,7 @@
                         </Grid>
 
                         <TextBlock x:Name="EntropyDescText"
-                                   Text="Likely compressed or encrypted data"
+                                   Text="{DynamicResource FS_EntropyDescDefault}"
                                    FontSize="9" FontStyle="Italic"
                                    Foreground="{DynamicResource PFP_SubTextBrush}"/>
                     </StackPanel>

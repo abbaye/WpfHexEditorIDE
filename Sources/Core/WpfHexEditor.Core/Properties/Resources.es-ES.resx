@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
@@ -2015,4 +2015,12 @@ Nota: La integración completa con HexEditor requiere conectarse al modelo de vi
   <data name="HE_MoveBarTooltip" xml:space="preserve">
     <value>Move search bar</value>
   </data>
+  <data name="HE_CompareFileWith" xml:space="preserve"><value>Comparar archivo con…</value></data>
+  <data name="HE_CompareSelectionLeft" xml:space="preserve"><value>Comparar selección como izquierda…</value></data>
+  <data name="HE_NoTblLoaded" xml:space="preserve"><value>No hay TBL cargado</value></data>
+  <data name="HE_SearchTypeText" xml:space="preserve"><value>TEXTO</value></data>
+  <data name="HE_SearchTypeHex" xml:space="preserve"><value>HEX</value></data>
+  <data name="HE_SearchTypeWildcard" xml:space="preserve"><value>COMODÍN</value></data>
+  <data name="HE_SearchTypeTbl" xml:space="preserve"><value>TEXTO TBL</value></data>
+  <data name="HE_SearchTypeRelative" xml:space="preserve"><value>RELATIVO</value></data>
 </root>

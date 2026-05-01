@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
@@ -1932,4 +1932,12 @@ Remarque : L'intégration complète avec HexEditor nécessite de se connecter au
   <data name="HE_MoveBarTooltip" xml:space="preserve">
     <value>Move search bar</value>
   </data>
+  <data name="HE_CompareFileWith" xml:space="preserve"><value>Comparer le fichier avec…</value></data>
+  <data name="HE_CompareSelectionLeft" xml:space="preserve"><value>Comparer la sélection à gauche…</value></data>
+  <data name="HE_NoTblLoaded" xml:space="preserve"><value>Aucun fichier TBL chargé</value></data>
+  <data name="HE_SearchTypeText" xml:space="preserve"><value>TEXTE</value></data>
+  <data name="HE_SearchTypeHex" xml:space="preserve"><value>HEX</value></data>
+  <data name="HE_SearchTypeWildcard" xml:space="preserve"><value>JOKER</value></data>
+  <data name="HE_SearchTypeTbl" xml:space="preserve"><value>TEXTE TBL</value></data>
+  <data name="HE_SearchTypeRelative" xml:space="preserve"><value>RELATIF</value></data>
 </root>

@@ -339,7 +339,7 @@
             <Separator/>
 
             <!-- Compare File with… (always enabled when a file is open) -->
-            <MenuItem x:Name="CompareFileMenuItem" Header="Compare File with…"
+            <MenuItem x:Name="CompareFileMenuItem" Header="{DynamicResource HE_CompareFileWith}"
                       Click="CompareFileMenuItem_Click">
                 <MenuItem.Icon>
                     <TextBlock Text="&#xE8A5;" FontFamily="Segoe MDL2 Assets" FontSize="13"
@@ -349,7 +349,7 @@
             </MenuItem>
 
             <!-- Compare Selection as Left… (enabled only when selection is active) -->
-            <MenuItem x:Name="CompareSelectionMenuItem" Header="Compare Selection as Left…"
+            <MenuItem x:Name="CompareSelectionMenuItem" Header="{DynamicResource HE_CompareSelectionLeft}"
                       Click="CompareSelectionMenuItem_Click">
                 <MenuItem.Icon>
                     <TextBlock Text="&#xE8B7;" FontFamily="Segoe MDL2 Assets" FontSize="13"
@@ -528,7 +528,7 @@
                            Cursor="Hand">
                     <TextBlock.ToolTip>
                         <ToolTip x:Name="TblStatusTooltip">
-                            <TextBlock x:Name="TblStatusTooltipText" Text="No TBL loaded"/>
+                            <TextBlock x:Name="TblStatusTooltipText" Text="{DynamicResource HE_NoTblLoaded}"/>
                         </ToolTip>
                     </TextBlock.ToolTip>
                 </TextBlock>

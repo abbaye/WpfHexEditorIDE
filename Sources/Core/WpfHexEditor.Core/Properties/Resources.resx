@@ -2098,4 +2098,14 @@
   <data name="HE_MoveBarTooltip" xml:space="preserve">
     <value>Move search bar</value>
   </data>
+  <!-- HexEditor context menu — Compare -->
+  <data name="HE_CompareFileWith"       xml:space="preserve"><value>Compare File with…</value></data>
+  <data name="HE_CompareSelectionLeft"  xml:space="preserve"><value>Compare Selection as Left…</value></data>
+  <data name="HE_NoTblLoaded"           xml:space="preserve"><value>No TBL loaded</value></data>
+  <!-- Advanced search dialog — search type combo -->
+  <data name="HE_SearchTypeText"     xml:space="preserve"><value>TEXT</value></data>
+  <data name="HE_SearchTypeHex"      xml:space="preserve"><value>HEX</value></data>
+  <data name="HE_SearchTypeWildcard" xml:space="preserve"><value>WILDCARD</value></data>
+  <data name="HE_SearchTypeTbl"      xml:space="preserve"><value>TBL TEXT</value></data>
+  <data name="HE_SearchTypeRelative" xml:space="preserve"><value>RELATIVE</value></data>
 </root>

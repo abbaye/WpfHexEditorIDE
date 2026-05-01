@@ -161,4 +161,6 @@
   <data name="FS_AnalyzingLabel" xml:space="preserve">
     <value>Analyzing file...</value>
   </data>
+  <data name="FS_HealthStatusDefault" xml:space="preserve"><value>File structure is valid and healthy</value></data>
+  <data name="FS_EntropyDescDefault"  xml:space="preserve"><value>Likely compressed or encrypted data</value></data>
 </root>

@@ -311,13 +311,13 @@
                               Style="{DynamicResource DockComboBoxStyle}"
                               SelectedIndex="{Binding SelectedModeIndex}"
                               ToolTip="{DynamicResource HE_SearchModeTooltip}">
-                        <ComboBoxItem Content="TEXT"/>
-                        <ComboBoxItem Content="HEX"/>
-                        <ComboBoxItem Content="WILDCARD"/>
-                        <ComboBoxItem Content="TBL TEXT"
+                        <ComboBoxItem Content="{DynamicResource HE_SearchTypeText}"/>
+                        <ComboBoxItem Content="{DynamicResource HE_SearchTypeHex}"/>
+                        <ComboBoxItem Content="{DynamicResource HE_SearchTypeWildcard}"/>
+                        <ComboBoxItem Content="{DynamicResource HE_SearchTypeTbl}"
                                       IsEnabled="{Binding IsTblLoaded}"
                                       ToolTip="{Binding TblInfo}"/>
-                        <ComboBoxItem Content="RELATIVE"/>
+                        <ComboBoxItem Content="{DynamicResource HE_SearchTypeRelative}"/>
                     </ComboBox>
 
                     <!-- Separator -->

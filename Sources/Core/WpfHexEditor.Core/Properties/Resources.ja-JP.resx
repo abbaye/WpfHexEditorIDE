@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
@@ -1950,4 +1950,12 @@
   <data name="HE_MoveBarTooltip" xml:space="preserve">
     <value>Move search bar</value>
   </data>
+  <data name="HE_CompareFileWith" xml:space="preserve"><value>ファイルと比較…</value></data>
+  <data name="HE_CompareSelectionLeft" xml:space="preserve"><value>選択範囲を左側として比較…</value></data>
+  <data name="HE_NoTblLoaded" xml:space="preserve"><value>TBL が読み込まれていません</value></data>
+  <data name="HE_SearchTypeText" xml:space="preserve"><value>テキスト</value></data>
+  <data name="HE_SearchTypeHex" xml:space="preserve"><value>HEX</value></data>
+  <data name="HE_SearchTypeWildcard" xml:space="preserve"><value>ワイルドカード</value></data>
+  <data name="HE_SearchTypeTbl" xml:space="preserve"><value>TBL テキスト</value></data>
+  <data name="HE_SearchTypeRelative" xml:space="preserve"><value>相対</value></data>
 </root>
