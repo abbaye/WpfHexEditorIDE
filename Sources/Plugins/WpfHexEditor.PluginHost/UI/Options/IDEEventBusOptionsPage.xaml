@@ -66,7 +66,7 @@
         <!-- ── Section: Subscriber Counts ────────────────────────────── -->
         <StackPanel Grid.Row="0" Margin="0,0,0,8">
 
-            <TextBlock Text="Registered Event Types"
+            <TextBlock Text="{DynamicResource PH_RegisteredEventTypes}"
                        FontWeight="SemiBold" FontSize="13"
                        Foreground="{DynamicResource PFP_TextBrush}"
                        Margin="0,0,0,8"/>
@@ -157,7 +157,7 @@
         <!-- ── Section: Event Log ─────────────────────────────────────── -->
         <StackPanel Grid.Row="1" Margin="0,0,0,6">
             <DockPanel>
-                <TextBlock Text="Event Log (last 100)"
+                <TextBlock Text="{DynamicResource PH_EventLog}"
                            FontWeight="SemiBold" FontSize="13"
                            Foreground="{DynamicResource PFP_TextBrush}"
                            VerticalAlignment="Center"/>

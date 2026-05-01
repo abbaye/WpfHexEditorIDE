@@ -228,4 +228,12 @@
   <data name="StrSb_ValidationLabel" xml:space="preserve"><value>Validierung</value></data>
   <data name="StructureEd_ConditionRow_LengthLabel" xml:space="preserve"><value>Länge:</value></data>
   <data name="StructureEditor_TestBrowseDialogTitle" xml:space="preserve"><value>Binärdatei zum Testen auswählen</value></data>
+  <data name="SE_PropName" xml:space="preserve"><value>Name</value></data>
+  <data name="SE_PropType" xml:space="preserve"><value>Typ</value></data>
+  <data name="SE_PropColor" xml:space="preserve"><value>Farbe</value></data>
+  <data name="SE_PropOpacity" xml:space="preserve"><value>Deckkraft</value></data>
+  <data name="SE_PropDescription" xml:space="preserve"><value>Beschreibung</value></data>
+  <data name="SE_PropHidden" xml:space="preserve"><value>Ausgeblendet</value></data>
+  <data name="SE_PropEndianness" xml:space="preserve"><value>Bytereihenfolge</value></data>
+  <data name="SE_BlockType" xml:space="preserve"><value>Blocktyp</value></data>
 </root>

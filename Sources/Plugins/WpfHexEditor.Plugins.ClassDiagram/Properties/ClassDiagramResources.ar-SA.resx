@@ -71,43 +71,49 @@
   <data name="CD_SolutionHint" xml:space="preserve">
     <value>يتحكم في سلوك "إنشاء مخطط فئات للحل". يجمع المخطط المُنشأ الأنواع حسب المشروع مع ممرات سباحة لكل مشروع ويحفظ حالته في ملف توأم .whscd بجانب الحل.</value>
   </data>
-  <data name="ClassDiagram_PluginName" xml:space="preserve">
-    <value>مخطط الفئات</value>
+  <data name="ClassDiagram_PluginName" xml:space="preserve">
+    <value>مخطط الفئات</value>
   </data>
-  <data name="ClassDiagram_OptionsCategory" xml:space="preserve">
-    <value>مخطط الفئات</value>
+  <data name="ClassDiagram_OptionsCategory" xml:space="preserve">
+    <value>مخطط الفئات</value>
   </data>
-  <data name="ClassDiagram_OutlinePanelTitle" xml:space="preserve">
-    <value>مخطط الفئة</value>
+  <data name="ClassDiagram_OutlinePanelTitle" xml:space="preserve">
+    <value>مخطط الفئة</value>
   </data>
-  <data name="ClassDiagram_PropertiesPanelTitle" xml:space="preserve">
-    <value>خصائص الفئة</value>
+  <data name="ClassDiagram_PropertiesPanelTitle" xml:space="preserve">
+    <value>خصائص الفئة</value>
   </data>
-  <data name="ClassDiagram_ToolboxPanelTitle" xml:space="preserve">
-    <value>صندوق أدوات الرسم البياني</value>
+  <data name="ClassDiagram_ToolboxPanelTitle" xml:space="preserve">
+    <value>صندوق أدوات الرسم البياني</value>
   </data>
-  <data name="ClassDiagram_RelationshipsPanelTitle" xml:space="preserve">
-    <value>العلاقات</value>
+  <data name="ClassDiagram_RelationshipsPanelTitle" xml:space="preserve">
+    <value>العلاقات</value>
   </data>
-  <data name="ClassDiagram_HistoryPanelTitle" xml:space="preserve">
-    <value>سجل الرسم البياني</value>
+  <data name="ClassDiagram_HistoryPanelTitle" xml:space="preserve">
+    <value>سجل الرسم البياني</value>
   </data>
-  <data name="ClassDiagram_SearchPanelTitle" xml:space="preserve">
-    <value>بحث الرسم البياني</value>
+  <data name="ClassDiagram_SearchPanelTitle" xml:space="preserve">
+    <value>بحث الرسم البياني</value>
   </data>
-  <data name="ClassDiagram_MetricsPanelTitle" xml:space="preserve">
-    <value>لوحة معلومات المقاييس</value>
+  <data name="ClassDiagram_MetricsPanelTitle" xml:space="preserve">
+    <value>لوحة معلومات المقاييس</value>
   </data>
-  <data name="ClassDiagram_Reset" xml:space="preserve">
-    <value>إعادة تعيين</value>
+  <data name="ClassDiagram_Reset" xml:space="preserve">
+    <value>إعادة تعيين</value>
   </data>
-  <data name="ClassDiagram_Menu_OutlineHeader" xml:space="preserve">
-    <value>_مخطط الفئة</value>
+  <data name="ClassDiagram_Menu_OutlineHeader" xml:space="preserve">
+    <value>_مخطط الفئة</value>
   </data>
-  <data name="ClassDiagram_GenerateSolutionDiagram" xml:space="preserve">
-    <value>إنشاء مخطط فئات للحل</value>
+  <data name="ClassDiagram_GenerateSolutionDiagram" xml:space="preserve">
+    <value>إنشاء مخطط فئات للحل</value>
   </data>
-  <data name="ClassDiagram_ExportMetricsCSV" xml:space="preserve">
-    <value>تصدير مقاييس CSV</value>
+  <data name="ClassDiagram_ExportMetricsCSV" xml:space="preserve">
+    <value>تصدير مقاييس CSV</value>
   </data>
+  <data name="CD_NoSelection" xml:space="preserve"><value>لا يوجد تحديد</value></data>
+  <data name="CD_PropName" xml:space="preserve"><value>الاسم</value></data>
+  <data name="CD_PropKind" xml:space="preserve"><value>النوع</value></data>
+  <data name="CD_PropAbstract" xml:space="preserve"><value>مجرد</value></data>
+  <data name="CD_DiagramHistory" xml:space="preserve"><value>سجل الرسم</value></data>
+  <data name="CD_Relationships" xml:space="preserve"><value>العلاقات</value></data>
 </root>

@@ -30,4 +30,7 @@
   <data name="Script_StatusError"        xml:space="preserve"><value>Error.</value></data>
   <data name="Script_StatusSaved"        xml:space="preserve"><value>Saved.</value></data>
 
+  <data name="SCR_F5Help" xml:space="preserve"><value>Press F5 to run · Ctrl+F5 to validate</value></data>
+  <data name="SCR_StatusReady" xml:space="preserve"><value>Ready</value></data>
+
 </root>

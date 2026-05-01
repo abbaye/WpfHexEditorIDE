@@ -579,4 +579,6 @@ or use Install to add a .whxplugin</value>
   <data name="MKT_IntegrityTooltip" xml:space="preserve">
     <value>Integrity verified</value>
   </data>
+  <data name="PH_RegisteredEventTypes" xml:space="preserve"><value>Types d'événements enregistrés</value></data>
+  <data name="PH_EventLog" xml:space="preserve"><value>Journal d'événements (100 derniers)</value></data>
 </root>

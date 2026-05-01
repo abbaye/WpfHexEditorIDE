@@ -13,4 +13,6 @@
   <data name="ResxLoc_NoLocaleData" xml:space="preserve">
     <value>لم يتم تحميل بيانات المنطقة المحلية</value>
   </data>
+  <data name="RX_MissingTranslations" xml:space="preserve"><value>الترجمات المفقودة</value></data>
+  <data name="RX_LocaleBrowser" xml:space="preserve"><value>متصفح المنطقة المحلية</value></data>
 </root>

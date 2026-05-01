@@ -16,4 +16,6 @@
   <data name="Script_StatusSaved" xml:space="preserve">
     <value>已保存。</value>
   </data>
+  <data name="SCR_F5Help" xml:space="preserve"><value>按 F5 运行 · Ctrl+F5 验证</value></data>
+  <data name="SCR_StatusReady" xml:space="preserve"><value>就绪</value></data>
 </root>

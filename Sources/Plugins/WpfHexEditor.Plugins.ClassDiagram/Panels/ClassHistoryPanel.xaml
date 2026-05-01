@@ -22,7 +22,7 @@
                 Background="{DynamicResource DockMenuBackgroundBrush}"
                 BorderBrush="{DynamicResource DockToolBarBorderBrush}"
                 Padding="6,3">
-            <TextBlock Text="Diagram History"
+            <TextBlock Text="{DynamicResource CD_DiagramHistory}"
                        FontSize="11" FontWeight="SemiBold"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>

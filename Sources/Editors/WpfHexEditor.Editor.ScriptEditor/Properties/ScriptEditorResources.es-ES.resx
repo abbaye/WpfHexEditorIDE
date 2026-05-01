@@ -16,4 +16,6 @@
   <data name="Script_StatusSaved" xml:space="preserve">
     <value>Guardado.</value>
   </data>
+  <data name="SCR_F5Help" xml:space="preserve"><value>Pulse F5 para ejecutar · Ctrl+F5 para validar</value></data>
+  <data name="SCR_StatusReady" xml:space="preserve"><value>Listo</value></data>
 </root>

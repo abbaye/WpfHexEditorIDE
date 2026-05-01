@@ -133,4 +133,6 @@
   <data name="AE_ClearRecentButton" xml:space="preserve">
     <value>Clear All Recent</value>
   </data>
+  <data name="AsmExplorer_FilterTypes" xml:space="preserve"><value>型をフィルター…</value></data>
+  <data name="AsmExplorer_SelectProject" xml:space="preserve"><value>逆コンパイルされたファイルを追加するプロジェクトを選択:</value></data>
 </root>

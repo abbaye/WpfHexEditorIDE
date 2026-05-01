@@ -691,4 +691,10 @@ or use Install to add a .whxplugin</value>
   <data name="PH_SettingsSaved" xml:space="preserve">
     <value>Settings saved.</value>
   </data>
+  <data name="PH_RegisteredEventTypes" xml:space="preserve">
+    <value>Registered Event Types</value>
+  </data>
+  <data name="PH_EventLog" xml:space="preserve">
+    <value>Event Log (last 100)</value>
+  </data>
 </root>

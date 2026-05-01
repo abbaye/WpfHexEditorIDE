@@ -1302,7 +1302,7 @@
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                             <TextBlock Text="&#xE721;" FontFamily="Segoe MDL2 Assets" FontSize="14"
                                        VerticalAlignment="Center" Margin="0,0,4,0"/>
-                            <TextBlock Text="Find" VerticalAlignment="Center"/>
+                            <TextBlock Text="{DynamicResource APP_ToolbarFind}" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Button>
 
@@ -1334,7 +1334,7 @@
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                             <TextBlock Text="&#xE8B7;" FontFamily="Segoe MDL2 Assets" FontSize="14"
                                        VerticalAlignment="Center" Margin="0,0,4,0"/>
-                            <TextBlock Text="Explorer" VerticalAlignment="Center"/>
+                            <TextBlock Text="{DynamicResource APP_ToolbarExplorer}" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Button>
 
@@ -1703,7 +1703,7 @@
                             <TextBlock Text="&#xE768;" FontFamily="Segoe MDL2 Assets" FontSize="14"
                                        Foreground="#3CB371"
                                        VerticalAlignment="Center" Margin="0,0,3,0"/>
-                            <TextBlock Text="Start" VerticalAlignment="Center" FontSize="11"/>
+                            <TextBlock Text="{DynamicResource APP_BuildStart}" VerticalAlignment="Center" FontSize="11"/>
                         </StackPanel>
                     </Button>
                     <Separator Style="{DynamicResource DockToolBarPodDividerStyle}"/>
@@ -1716,7 +1716,7 @@
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="&#xE8B1;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                        VerticalAlignment="Center" Margin="0,0,3,0"/>
-                            <TextBlock Text="Build" VerticalAlignment="Center" FontSize="11"/>
+                            <TextBlock Text="{DynamicResource APP_BuildBuild}" VerticalAlignment="Center" FontSize="11"/>
                         </StackPanel>
                     </Button>
                     <!-- Rebuild -->
@@ -1728,7 +1728,7 @@
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="&#xE72C;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                        VerticalAlignment="Center" Margin="0,0,3,0"/>
-                            <TextBlock Text="Rebuild" VerticalAlignment="Center" FontSize="11"/>
+                            <TextBlock Text="{DynamicResource APP_BuildRebuild}" VerticalAlignment="Center" FontSize="11"/>
                         </StackPanel>
                     </Button>
                     <!-- Clean -->
@@ -1740,7 +1740,7 @@
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                        VerticalAlignment="Center" Margin="0,0,3,0"/>
-                            <TextBlock Text="Clean" VerticalAlignment="Center" FontSize="11"/>
+                            <TextBlock Text="{DynamicResource APP_BuildClean}" VerticalAlignment="Center" FontSize="11"/>
                         </StackPanel>
                     </Button>
                     <!-- Cancel -->
@@ -1752,7 +1752,7 @@
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="&#xE711;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                        VerticalAlignment="Center" Margin="0,0,3,0"/>
-                            <TextBlock Text="Stop" VerticalAlignment="Center" FontSize="11"/>
+                            <TextBlock Text="{DynamicResource APP_BuildStop}" VerticalAlignment="Center" FontSize="11"/>
                         </StackPanel>
                     </Button>
                 </StackPanel>

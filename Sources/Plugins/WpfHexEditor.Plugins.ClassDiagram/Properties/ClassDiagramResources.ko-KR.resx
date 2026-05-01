@@ -71,43 +71,49 @@
   <data name="CD_SolutionHint" xml:space="preserve">
     <value>"솔루션의 클래스 다이어그램 생성" 동작을 제어합니다. 생성된 다이어그램은 프로젝트별 스윔레인으로 유형을 프로젝트별로 그룹화하고 솔루션 옆의 .whscd 쌍둥이 파일에 상태를 유지합니다.</value>
   </data>
-  <data name="ClassDiagram_PluginName" xml:space="preserve">
-    <value>클래스 다이어그램</value>
+  <data name="ClassDiagram_PluginName" xml:space="preserve">
+    <value>클래스 다이어그램</value>
   </data>
-  <data name="ClassDiagram_OptionsCategory" xml:space="preserve">
-    <value>클래스 다이어그램</value>
+  <data name="ClassDiagram_OptionsCategory" xml:space="preserve">
+    <value>클래스 다이어그램</value>
   </data>
-  <data name="ClassDiagram_OutlinePanelTitle" xml:space="preserve">
-    <value>클래스 개요</value>
+  <data name="ClassDiagram_OutlinePanelTitle" xml:space="preserve">
+    <value>클래스 개요</value>
   </data>
-  <data name="ClassDiagram_PropertiesPanelTitle" xml:space="preserve">
-    <value>클래스 속성</value>
+  <data name="ClassDiagram_PropertiesPanelTitle" xml:space="preserve">
+    <value>클래스 속성</value>
   </data>
-  <data name="ClassDiagram_ToolboxPanelTitle" xml:space="preserve">
-    <value>다이어그램 도구 상자</value>
+  <data name="ClassDiagram_ToolboxPanelTitle" xml:space="preserve">
+    <value>다이어그램 도구 상자</value>
   </data>
-  <data name="ClassDiagram_RelationshipsPanelTitle" xml:space="preserve">
-    <value>관계</value>
+  <data name="ClassDiagram_RelationshipsPanelTitle" xml:space="preserve">
+    <value>관계</value>
   </data>
-  <data name="ClassDiagram_HistoryPanelTitle" xml:space="preserve">
-    <value>다이어그램 기록</value>
+  <data name="ClassDiagram_HistoryPanelTitle" xml:space="preserve">
+    <value>다이어그램 기록</value>
   </data>
-  <data name="ClassDiagram_SearchPanelTitle" xml:space="preserve">
-    <value>다이어그램 검색</value>
+  <data name="ClassDiagram_SearchPanelTitle" xml:space="preserve">
+    <value>다이어그램 검색</value>
   </data>
-  <data name="ClassDiagram_MetricsPanelTitle" xml:space="preserve">
-    <value>메트릭 대시보드</value>
+  <data name="ClassDiagram_MetricsPanelTitle" xml:space="preserve">
+    <value>메트릭 대시보드</value>
   </data>
-  <data name="ClassDiagram_Reset" xml:space="preserve">
-    <value>재설정</value>
+  <data name="ClassDiagram_Reset" xml:space="preserve">
+    <value>재설정</value>
   </data>
-  <data name="ClassDiagram_Menu_OutlineHeader" xml:space="preserve">
-    <value>클래스 _개요</value>
+  <data name="ClassDiagram_Menu_OutlineHeader" xml:space="preserve">
+    <value>클래스 _개요</value>
   </data>
-  <data name="ClassDiagram_GenerateSolutionDiagram" xml:space="preserve">
-    <value>솔루션의 클래스 다이어그램 생성</value>
+  <data name="ClassDiagram_GenerateSolutionDiagram" xml:space="preserve">
+    <value>솔루션의 클래스 다이어그램 생성</value>
   </data>
-  <data name="ClassDiagram_ExportMetricsCSV" xml:space="preserve">
-    <value>메트릭 CSV 내보내기</value>
+  <data name="ClassDiagram_ExportMetricsCSV" xml:space="preserve">
+    <value>메트릭 CSV 내보내기</value>
   </data>
+  <data name="CD_NoSelection" xml:space="preserve"><value>선택 없음</value></data>
+  <data name="CD_PropName" xml:space="preserve"><value>이름</value></data>
+  <data name="CD_PropKind" xml:space="preserve"><value>종류</value></data>
+  <data name="CD_PropAbstract" xml:space="preserve"><value>추상</value></data>
+  <data name="CD_DiagramHistory" xml:space="preserve"><value>다이어그램 기록</value></data>
+  <data name="CD_Relationships" xml:space="preserve"><value>관계</value></data>
 </root>

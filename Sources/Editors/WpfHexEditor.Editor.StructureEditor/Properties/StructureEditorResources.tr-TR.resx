@@ -228,4 +228,12 @@
   <data name="StrSb_ValidationLabel" xml:space="preserve"><value>Doğrulama</value></data>
   <data name="StructureEd_ConditionRow_LengthLabel" xml:space="preserve"><value>Uzunluk:</value></data>
   <data name="StructureEditor_TestBrowseDialogTitle" xml:space="preserve"><value>Test icin ikili dosya secin</value></data>
+  <data name="SE_PropName" xml:space="preserve"><value>Ad</value></data>
+  <data name="SE_PropType" xml:space="preserve"><value>Tür</value></data>
+  <data name="SE_PropColor" xml:space="preserve"><value>Renk</value></data>
+  <data name="SE_PropOpacity" xml:space="preserve"><value>Opaklık</value></data>
+  <data name="SE_PropDescription" xml:space="preserve"><value>Açıklama</value></data>
+  <data name="SE_PropHidden" xml:space="preserve"><value>Gizli</value></data>
+  <data name="SE_PropEndianness" xml:space="preserve"><value>Bayt Sırası</value></data>
+  <data name="SE_BlockType" xml:space="preserve"><value>Blok Türü</value></data>
 </root>

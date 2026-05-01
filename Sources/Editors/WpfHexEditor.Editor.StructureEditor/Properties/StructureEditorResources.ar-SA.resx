@@ -228,4 +228,12 @@
   <data name="StrSb_ValidationLabel" xml:space="preserve"><value>التحقق</value></data>
   <data name="StructureEd_ConditionRow_LengthLabel" xml:space="preserve"><value>الطول:</value></data>
   <data name="StructureEditor_TestBrowseDialogTitle" xml:space="preserve"><value>حدد ملفاً ثنائياً للاختبار</value></data>
+  <data name="SE_PropName" xml:space="preserve"><value>الاسم</value></data>
+  <data name="SE_PropType" xml:space="preserve"><value>النوع</value></data>
+  <data name="SE_PropColor" xml:space="preserve"><value>اللون</value></data>
+  <data name="SE_PropOpacity" xml:space="preserve"><value>الشفافية</value></data>
+  <data name="SE_PropDescription" xml:space="preserve"><value>الوصف</value></data>
+  <data name="SE_PropHidden" xml:space="preserve"><value>مخفي</value></data>
+  <data name="SE_PropEndianness" xml:space="preserve"><value>ترتيب البايتات</value></data>
+  <data name="SE_BlockType" xml:space="preserve"><value>نوع الكتلة</value></data>
 </root>

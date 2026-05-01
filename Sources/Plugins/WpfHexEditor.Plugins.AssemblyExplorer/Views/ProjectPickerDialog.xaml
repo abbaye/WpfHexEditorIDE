@@ -28,7 +28,7 @@
 
         <!-- Instruction -->
         <TextBlock Grid.Row="0"
-                   Text="Select the project to add the decompiled file to:"
+                   Text="{DynamicResource AsmExplorer_SelectProject}"
                    Foreground="{DynamicResource DockMenuForegroundBrush}"
                    FontSize="11"
                    Margin="12,10,12,4"

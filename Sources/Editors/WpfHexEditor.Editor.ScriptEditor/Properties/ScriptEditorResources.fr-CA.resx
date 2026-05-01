@@ -8,4 +8,6 @@
   <data name="Script_StatusCancelled"    xml:space="preserve"><value>Annulé.</value></data>
   <data name="Script_StatusError"        xml:space="preserve"><value>Erreur.</value></data>
   <data name="Script_StatusSaved"        xml:space="preserve"><value>Enregistré.</value></data>
+  <data name="SCR_F5Help" xml:space="preserve"><value>F5 pour exécuter · Ctrl+F5 pour valider</value></data>
+  <data name="SCR_StatusReady" xml:space="preserve"><value>Prêt</value></data>
 </root>

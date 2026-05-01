@@ -228,4 +228,12 @@
   <data name="StrSb_ValidationLabel" xml:space="preserve"><value>유효성 검사</value></data>
   <data name="StructureEd_ConditionRow_LengthLabel" xml:space="preserve"><value>길이:</value></data>
   <data name="StructureEditor_TestBrowseDialogTitle" xml:space="preserve"><value>테스트할 바이너리 파일 선택</value></data>
+  <data name="SE_PropName" xml:space="preserve"><value>이름</value></data>
+  <data name="SE_PropType" xml:space="preserve"><value>형식</value></data>
+  <data name="SE_PropColor" xml:space="preserve"><value>색상</value></data>
+  <data name="SE_PropOpacity" xml:space="preserve"><value>불투명도</value></data>
+  <data name="SE_PropDescription" xml:space="preserve"><value>설명</value></data>
+  <data name="SE_PropHidden" xml:space="preserve"><value>숨김</value></data>
+  <data name="SE_PropEndianness" xml:space="preserve"><value>엔디안</value></data>
+  <data name="SE_BlockType" xml:space="preserve"><value>블록 형식</value></data>
 </root>

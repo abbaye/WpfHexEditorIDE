@@ -110,4 +110,10 @@
   <data name="ClassDiagram_ExportMetricsCSV" xml:space="preserve">
     <value>Exporter les métriques CSV</value>
   </data>
+  <data name="CD_NoSelection" xml:space="preserve"><value>Aucune sélection</value></data>
+  <data name="CD_PropName" xml:space="preserve"><value>Nom</value></data>
+  <data name="CD_PropKind" xml:space="preserve"><value>Genre</value></data>
+  <data name="CD_PropAbstract" xml:space="preserve"><value>Abstrait</value></data>
+  <data name="CD_DiagramHistory" xml:space="preserve"><value>Historique du diagramme</value></data>
+  <data name="CD_Relationships" xml:space="preserve"><value>Relations</value></data>
 </root>

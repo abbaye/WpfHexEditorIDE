@@ -228,4 +228,12 @@
   <data name="StrSb_ValidationLabel" xml:space="preserve"><value>验证</value></data>
   <data name="StructureEd_ConditionRow_LengthLabel" xml:space="preserve"><value>长度:</value></data>
   <data name="StructureEditor_TestBrowseDialogTitle" xml:space="preserve"><value>选择要测试的二进制文件</value></data>
+  <data name="SE_PropName" xml:space="preserve"><value>名称</value></data>
+  <data name="SE_PropType" xml:space="preserve"><value>类型</value></data>
+  <data name="SE_PropColor" xml:space="preserve"><value>颜色</value></data>
+  <data name="SE_PropOpacity" xml:space="preserve"><value>不透明度</value></data>
+  <data name="SE_PropDescription" xml:space="preserve"><value>描述</value></data>
+  <data name="SE_PropHidden" xml:space="preserve"><value>隐藏</value></data>
+  <data name="SE_PropEndianness" xml:space="preserve"><value>字节序</value></data>
+  <data name="SE_BlockType" xml:space="preserve"><value>块类型</value></data>
 </root>

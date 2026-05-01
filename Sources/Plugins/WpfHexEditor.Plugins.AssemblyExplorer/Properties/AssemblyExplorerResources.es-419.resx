@@ -133,4 +133,6 @@
   <data name="AE_ClearRecentButton" xml:space="preserve">
     <value>Clear All Recent</value>
   </data>
+  <data name="AsmExplorer_FilterTypes" xml:space="preserve"><value>Filtrar tipos…</value></data>
+  <data name="AsmExplorer_SelectProject" xml:space="preserve"><value>Seleccione el proyecto al que agregar el archivo descompilado:</value></data>
 </root>

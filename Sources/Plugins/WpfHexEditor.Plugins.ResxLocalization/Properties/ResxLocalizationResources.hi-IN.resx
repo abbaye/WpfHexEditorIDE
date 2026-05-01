@@ -13,4 +13,6 @@
   <data name="ResxLoc_NoLocaleData" xml:space="preserve">
     <value>कोई लोकेल डेटा लोड नहीं</value>
   </data>
+  <data name="RX_MissingTranslations" xml:space="preserve"><value>अनुपस्थित अनुवाद</value></data>
+  <data name="RX_LocaleBrowser" xml:space="preserve"><value>लोकेल ब्राउज़र</value></data>
 </root>

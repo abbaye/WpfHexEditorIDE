@@ -228,4 +228,12 @@
   <data name="StrSb_ValidationLabel" xml:space="preserve"><value>検証</value></data>
   <data name="StructureEd_ConditionRow_LengthLabel" xml:space="preserve"><value>長さ:</value></data>
   <data name="StructureEditor_TestBrowseDialogTitle" xml:space="preserve"><value>テストするバイナリファイルを選択</value></data>
+  <data name="SE_PropName" xml:space="preserve"><value>名前</value></data>
+  <data name="SE_PropType" xml:space="preserve"><value>型</value></data>
+  <data name="SE_PropColor" xml:space="preserve"><value>色</value></data>
+  <data name="SE_PropOpacity" xml:space="preserve"><value>不透明度</value></data>
+  <data name="SE_PropDescription" xml:space="preserve"><value>説明</value></data>
+  <data name="SE_PropHidden" xml:space="preserve"><value>非表示</value></data>
+  <data name="SE_PropEndianness" xml:space="preserve"><value>エンディアン</value></data>
+  <data name="SE_BlockType" xml:space="preserve"><value>ブロックタイプ</value></data>
 </root>

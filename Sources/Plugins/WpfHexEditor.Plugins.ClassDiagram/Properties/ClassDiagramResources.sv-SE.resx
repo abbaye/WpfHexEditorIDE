@@ -71,43 +71,49 @@
   <data name="CD_SolutionHint" xml:space="preserve">
     <value>Styr beteendet för "Generera klassdiagram för lösning". Det genererade diagrammet grupperar typer per projekt med projektspecifika simbanor och bevarar tillståndet i en .whscd-tvillingfil bredvid lösningen.</value>
   </data>
-  <data name="ClassDiagram_PluginName" xml:space="preserve">
-    <value>Klassdiagram</value>
+  <data name="ClassDiagram_PluginName" xml:space="preserve">
+    <value>Klassdiagram</value>
   </data>
-  <data name="ClassDiagram_OptionsCategory" xml:space="preserve">
-    <value>Klassdiagram</value>
+  <data name="ClassDiagram_OptionsCategory" xml:space="preserve">
+    <value>Klassdiagram</value>
   </data>
-  <data name="ClassDiagram_OutlinePanelTitle" xml:space="preserve">
-    <value>Klassöversikt</value>
+  <data name="ClassDiagram_OutlinePanelTitle" xml:space="preserve">
+    <value>Klassöversikt</value>
   </data>
-  <data name="ClassDiagram_PropertiesPanelTitle" xml:space="preserve">
-    <value>Klassegenskaper</value>
+  <data name="ClassDiagram_PropertiesPanelTitle" xml:space="preserve">
+    <value>Klassegenskaper</value>
   </data>
-  <data name="ClassDiagram_ToolboxPanelTitle" xml:space="preserve">
-    <value>Diagramverktygslåda</value>
+  <data name="ClassDiagram_ToolboxPanelTitle" xml:space="preserve">
+    <value>Diagramverktygslåda</value>
   </data>
-  <data name="ClassDiagram_RelationshipsPanelTitle" xml:space="preserve">
-    <value>Relationer</value>
+  <data name="ClassDiagram_RelationshipsPanelTitle" xml:space="preserve">
+    <value>Relationer</value>
   </data>
-  <data name="ClassDiagram_HistoryPanelTitle" xml:space="preserve">
-    <value>Diagramhistorik</value>
+  <data name="ClassDiagram_HistoryPanelTitle" xml:space="preserve">
+    <value>Diagramhistorik</value>
   </data>
-  <data name="ClassDiagram_SearchPanelTitle" xml:space="preserve">
-    <value>Diagramsökning</value>
+  <data name="ClassDiagram_SearchPanelTitle" xml:space="preserve">
+    <value>Diagramsökning</value>
   </data>
-  <data name="ClassDiagram_MetricsPanelTitle" xml:space="preserve">
-    <value>Metrisk instrumentpanel</value>
+  <data name="ClassDiagram_MetricsPanelTitle" xml:space="preserve">
+    <value>Metrisk instrumentpanel</value>
   </data>
-  <data name="ClassDiagram_Reset" xml:space="preserve">
-    <value>Återställ</value>
+  <data name="ClassDiagram_Reset" xml:space="preserve">
+    <value>Återställ</value>
   </data>
-  <data name="ClassDiagram_Menu_OutlineHeader" xml:space="preserve">
-    <value>_Klassöversikt</value>
+  <data name="ClassDiagram_Menu_OutlineHeader" xml:space="preserve">
+    <value>_Klassöversikt</value>
   </data>
-  <data name="ClassDiagram_GenerateSolutionDiagram" xml:space="preserve">
-    <value>Generera klassdiagram för lösning</value>
+  <data name="ClassDiagram_GenerateSolutionDiagram" xml:space="preserve">
+    <value>Generera klassdiagram för lösning</value>
   </data>
-  <data name="ClassDiagram_ExportMetricsCSV" xml:space="preserve">
-    <value>Exportera metrisk CSV</value>
+  <data name="ClassDiagram_ExportMetricsCSV" xml:space="preserve">
+    <value>Exportera metrisk CSV</value>
   </data>
+  <data name="CD_NoSelection" xml:space="preserve"><value>Inget val</value></data>
+  <data name="CD_PropName" xml:space="preserve"><value>Namn</value></data>
+  <data name="CD_PropKind" xml:space="preserve"><value>Typ</value></data>
+  <data name="CD_PropAbstract" xml:space="preserve"><value>Abstrakt</value></data>
+  <data name="CD_DiagramHistory" xml:space="preserve"><value>Diagramhistorik</value></data>
+  <data name="CD_Relationships" xml:space="preserve"><value>Relationer</value></data>
 </root>

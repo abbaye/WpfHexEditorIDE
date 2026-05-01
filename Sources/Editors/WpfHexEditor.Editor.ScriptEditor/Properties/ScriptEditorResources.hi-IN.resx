@@ -16,4 +16,6 @@
   <data name="Script_StatusSaved" xml:space="preserve">
     <value>सहेजा गया।</value>
   </data>
+  <data name="SCR_F5Help" xml:space="preserve"><value>चलाने के लिए F5 दबाएँ · Ctrl+F5 सत्यापन के लिए</value></data>
+  <data name="SCR_StatusReady" xml:space="preserve"><value>तैयार</value></data>
 </root>

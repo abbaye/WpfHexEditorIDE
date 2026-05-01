@@ -16,4 +16,6 @@
   <data name="Script_StatusSaved" xml:space="preserve">
     <value>Сохранено.</value>
   </data>
+  <data name="SCR_F5Help" xml:space="preserve"><value>F5 — запуск · Ctrl+F5 — проверка</value></data>
+  <data name="SCR_StatusReady" xml:space="preserve"><value>Готово</value></data>
 </root>

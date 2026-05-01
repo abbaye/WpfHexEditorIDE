@@ -228,4 +228,12 @@
   <data name="StrSb_ValidationLabel" xml:space="preserve"><value>Validering</value></data>
   <data name="StructureEd_ConditionRow_LengthLabel" xml:space="preserve"><value>Laengd:</value></data>
   <data name="StructureEditor_TestBrowseDialogTitle" xml:space="preserve"><value>Valj en binaerfil att testa</value></data>
+  <data name="SE_PropName" xml:space="preserve"><value>Namn</value></data>
+  <data name="SE_PropType" xml:space="preserve"><value>Typ</value></data>
+  <data name="SE_PropColor" xml:space="preserve"><value>Färg</value></data>
+  <data name="SE_PropOpacity" xml:space="preserve"><value>Opacitet</value></data>
+  <data name="SE_PropDescription" xml:space="preserve"><value>Beskrivning</value></data>
+  <data name="SE_PropHidden" xml:space="preserve"><value>Dold</value></data>
+  <data name="SE_PropEndianness" xml:space="preserve"><value>Endianness</value></data>
+  <data name="SE_BlockType" xml:space="preserve"><value>Blocktyp</value></data>
 </root>

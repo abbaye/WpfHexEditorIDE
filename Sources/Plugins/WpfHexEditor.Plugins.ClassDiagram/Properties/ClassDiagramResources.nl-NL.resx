@@ -71,43 +71,49 @@
   <data name="CD_SolutionHint" xml:space="preserve">
     <value>Bepaalt het gedrag van "Klassediagram genereren voor oplossing". Het gegenereerde diagram groepeert typen per project met projectspecifieke swimlanes en bewaart de staat in een .whscd-tweelingbestand naast de oplossing.</value>
   </data>
-  <data name="ClassDiagram_PluginName" xml:space="preserve">
-    <value>Klassediagram</value>
+  <data name="ClassDiagram_PluginName" xml:space="preserve">
+    <value>Klassediagram</value>
   </data>
-  <data name="ClassDiagram_OptionsCategory" xml:space="preserve">
-    <value>Klassediagram</value>
+  <data name="ClassDiagram_OptionsCategory" xml:space="preserve">
+    <value>Klassediagram</value>
   </data>
-  <data name="ClassDiagram_OutlinePanelTitle" xml:space="preserve">
-    <value>Klasseoverzicht</value>
+  <data name="ClassDiagram_OutlinePanelTitle" xml:space="preserve">
+    <value>Klasseoverzicht</value>
   </data>
-  <data name="ClassDiagram_PropertiesPanelTitle" xml:space="preserve">
-    <value>Klasse-eigenschappen</value>
+  <data name="ClassDiagram_PropertiesPanelTitle" xml:space="preserve">
+    <value>Klasse-eigenschappen</value>
   </data>
-  <data name="ClassDiagram_ToolboxPanelTitle" xml:space="preserve">
-    <value>Diagram-werkset</value>
+  <data name="ClassDiagram_ToolboxPanelTitle" xml:space="preserve">
+    <value>Diagram-werkset</value>
   </data>
-  <data name="ClassDiagram_RelationshipsPanelTitle" xml:space="preserve">
-    <value>Relaties</value>
+  <data name="ClassDiagram_RelationshipsPanelTitle" xml:space="preserve">
+    <value>Relaties</value>
   </data>
-  <data name="ClassDiagram_HistoryPanelTitle" xml:space="preserve">
-    <value>Diagramgeschiedenis</value>
+  <data name="ClassDiagram_HistoryPanelTitle" xml:space="preserve">
+    <value>Diagramgeschiedenis</value>
   </data>
-  <data name="ClassDiagram_SearchPanelTitle" xml:space="preserve">
-    <value>Diagram zoeken</value>
+  <data name="ClassDiagram_SearchPanelTitle" xml:space="preserve">
+    <value>Diagram zoeken</value>
   </data>
-  <data name="ClassDiagram_MetricsPanelTitle" xml:space="preserve">
-    <value>Metrisch dashboard</value>
+  <data name="ClassDiagram_MetricsPanelTitle" xml:space="preserve">
+    <value>Metrisch dashboard</value>
   </data>
-  <data name="ClassDiagram_Reset" xml:space="preserve">
-    <value>Opnieuw instellen</value>
+  <data name="ClassDiagram_Reset" xml:space="preserve">
+    <value>Opnieuw instellen</value>
   </data>
-  <data name="ClassDiagram_Menu_OutlineHeader" xml:space="preserve">
-    <value>Klasse_overzicht</value>
+  <data name="ClassDiagram_Menu_OutlineHeader" xml:space="preserve">
+    <value>Klasse_overzicht</value>
   </data>
-  <data name="ClassDiagram_GenerateSolutionDiagram" xml:space="preserve">
-    <value>Klassediagram genereren voor oplossing</value>
+  <data name="ClassDiagram_GenerateSolutionDiagram" xml:space="preserve">
+    <value>Klassediagram genereren voor oplossing</value>
   </data>
-  <data name="ClassDiagram_ExportMetricsCSV" xml:space="preserve">
-    <value>Metrische CSV exporteren</value>
+  <data name="ClassDiagram_ExportMetricsCSV" xml:space="preserve">
+    <value>Metrische CSV exporteren</value>
   </data>
+  <data name="CD_NoSelection" xml:space="preserve"><value>Geen selectie</value></data>
+  <data name="CD_PropName" xml:space="preserve"><value>Naam</value></data>
+  <data name="CD_PropKind" xml:space="preserve"><value>Soort</value></data>
+  <data name="CD_PropAbstract" xml:space="preserve"><value>Abstract</value></data>
+  <data name="CD_DiagramHistory" xml:space="preserve"><value>Diagramgeschiedenis</value></data>
+  <data name="CD_Relationships" xml:space="preserve"><value>Relaties</value></data>
 </root>

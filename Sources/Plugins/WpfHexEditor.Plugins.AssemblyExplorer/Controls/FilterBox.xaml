@@ -25,7 +25,7 @@
             <!-- Placeholder text — shown when TextBox is empty -->
             <TextBlock x:Name="PlaceholderText"
                        Grid.Column="0"
-                       Text="Filter types…"
+                       Text="{DynamicResource AsmExplorer_FilterTypes}"
                        Foreground="{DynamicResource PFP_SubTextBrush}"
                        VerticalAlignment="Center"
                        Margin="4,0,0,0"

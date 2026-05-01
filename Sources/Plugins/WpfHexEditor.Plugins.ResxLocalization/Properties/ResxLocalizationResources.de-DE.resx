@@ -13,4 +13,6 @@
   <data name="ResxLoc_NoLocaleData" xml:space="preserve">
     <value>Keine Gebietsschemadaten geladen</value>
   </data>
+  <data name="RX_MissingTranslations" xml:space="preserve"><value>Fehlende Übersetzungen</value></data>
+  <data name="RX_LocaleBrowser" xml:space="preserve"><value>Gebietsschema-Browser</value></data>
 </root>

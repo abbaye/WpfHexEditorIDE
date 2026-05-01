@@ -228,4 +228,12 @@
   <data name="StrSb_ValidationLabel" xml:space="preserve"><value>सत्यापन</value></data>
   <data name="StructureEd_ConditionRow_LengthLabel" xml:space="preserve"><value>लंबाई:</value></data>
   <data name="StructureEditor_TestBrowseDialogTitle" xml:space="preserve"><value>परीक्षण के लिए बाइनरी फ़ाइल चुनें</value></data>
+  <data name="SE_PropName" xml:space="preserve"><value>नाम</value></data>
+  <data name="SE_PropType" xml:space="preserve"><value>प्रकार</value></data>
+  <data name="SE_PropColor" xml:space="preserve"><value>रंग</value></data>
+  <data name="SE_PropOpacity" xml:space="preserve"><value>अपारदर्शिता</value></data>
+  <data name="SE_PropDescription" xml:space="preserve"><value>विवरण</value></data>
+  <data name="SE_PropHidden" xml:space="preserve"><value>छिपा हुआ</value></data>
+  <data name="SE_PropEndianness" xml:space="preserve"><value>एंडियननेस</value></data>
+  <data name="SE_BlockType" xml:space="preserve"><value>ब्लॉक प्रकार</value></data>
 </root>

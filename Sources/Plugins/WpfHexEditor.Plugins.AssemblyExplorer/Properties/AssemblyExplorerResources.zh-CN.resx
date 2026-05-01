@@ -133,4 +133,6 @@
   <data name="AE_ClearRecentButton" xml:space="preserve">
     <value>Clear All Recent</value>
   </data>
+  <data name="AsmExplorer_FilterTypes" xml:space="preserve"><value>筛选类型…</value></data>
+  <data name="AsmExplorer_SelectProject" xml:space="preserve"><value>选择要将反编译文件添加到的项目:</value></data>
 </root>

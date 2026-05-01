@@ -578,4 +578,6 @@ or use Install to add a .whxplugin</value>
   <data name="MKT_IntegrityTooltip" xml:space="preserve">
     <value>Integrity verified</value>
   </data>
+  <data name="PH_RegisteredEventTypes" xml:space="preserve"><value>등록된 이벤트 형식</value></data>
+  <data name="PH_EventLog" xml:space="preserve"><value>이벤트 로그 (최근 100)</value></data>
 </root>

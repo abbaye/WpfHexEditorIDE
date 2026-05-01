@@ -71,43 +71,49 @@
   <data name="CD_SolutionHint" xml:space="preserve">
     <value>「ソリューションのクラスダイアグラムを生成」の動作を制御します。生成されたダイアグラムはプロジェクト別にスイムレーンでタイプをグループ化し、ソリューションの隣の.whscdツインファイルに状態を保存します。</value>
   </data>
-  <data name="ClassDiagram_PluginName" xml:space="preserve">
-    <value>クラス図</value>
+  <data name="ClassDiagram_PluginName" xml:space="preserve">
+    <value>クラス図</value>
   </data>
-  <data name="ClassDiagram_OptionsCategory" xml:space="preserve">
-    <value>クラス図</value>
+  <data name="ClassDiagram_OptionsCategory" xml:space="preserve">
+    <value>クラス図</value>
   </data>
-  <data name="ClassDiagram_OutlinePanelTitle" xml:space="preserve">
-    <value>クラスのアウトライン</value>
+  <data name="ClassDiagram_OutlinePanelTitle" xml:space="preserve">
+    <value>クラスのアウトライン</value>
   </data>
-  <data name="ClassDiagram_PropertiesPanelTitle" xml:space="preserve">
-    <value>クラスのプロパティ</value>
+  <data name="ClassDiagram_PropertiesPanelTitle" xml:space="preserve">
+    <value>クラスのプロパティ</value>
   </data>
-  <data name="ClassDiagram_ToolboxPanelTitle" xml:space="preserve">
-    <value>ダイアグラム ツールボックス</value>
+  <data name="ClassDiagram_ToolboxPanelTitle" xml:space="preserve">
+    <value>ダイアグラム ツールボックス</value>
   </data>
-  <data name="ClassDiagram_RelationshipsPanelTitle" xml:space="preserve">
-    <value>関係</value>
+  <data name="ClassDiagram_RelationshipsPanelTitle" xml:space="preserve">
+    <value>関係</value>
   </data>
-  <data name="ClassDiagram_HistoryPanelTitle" xml:space="preserve">
-    <value>ダイアグラムの履歴</value>
+  <data name="ClassDiagram_HistoryPanelTitle" xml:space="preserve">
+    <value>ダイアグラムの履歴</value>
   </data>
-  <data name="ClassDiagram_SearchPanelTitle" xml:space="preserve">
-    <value>ダイアグラム検索</value>
+  <data name="ClassDiagram_SearchPanelTitle" xml:space="preserve">
+    <value>ダイアグラム検索</value>
   </data>
-  <data name="ClassDiagram_MetricsPanelTitle" xml:space="preserve">
-    <value>メトリクス ダッシュボード</value>
+  <data name="ClassDiagram_MetricsPanelTitle" xml:space="preserve">
+    <value>メトリクス ダッシュボード</value>
   </data>
-  <data name="ClassDiagram_Reset" xml:space="preserve">
-    <value>リセット</value>
+  <data name="ClassDiagram_Reset" xml:space="preserve">
+    <value>リセット</value>
   </data>
-  <data name="ClassDiagram_Menu_OutlineHeader" xml:space="preserve">
-    <value>クラスの_アウトライン</value>
+  <data name="ClassDiagram_Menu_OutlineHeader" xml:space="preserve">
+    <value>クラスの_アウトライン</value>
   </data>
-  <data name="ClassDiagram_GenerateSolutionDiagram" xml:space="preserve">
-    <value>ソリューションのクラス図を生成</value>
+  <data name="ClassDiagram_GenerateSolutionDiagram" xml:space="preserve">
+    <value>ソリューションのクラス図を生成</value>
   </data>
-  <data name="ClassDiagram_ExportMetricsCSV" xml:space="preserve">
-    <value>メトリクス CSV のエクスポート</value>
+  <data name="ClassDiagram_ExportMetricsCSV" xml:space="preserve">
+    <value>メトリクス CSV のエクスポート</value>
   </data>
+  <data name="CD_NoSelection" xml:space="preserve"><value>選択なし</value></data>
+  <data name="CD_PropName" xml:space="preserve"><value>名前</value></data>
+  <data name="CD_PropKind" xml:space="preserve"><value>種類</value></data>
+  <data name="CD_PropAbstract" xml:space="preserve"><value>抽象</value></data>
+  <data name="CD_DiagramHistory" xml:space="preserve"><value>図の履歴</value></data>
+  <data name="CD_Relationships" xml:space="preserve"><value>関連</value></data>
 </root>

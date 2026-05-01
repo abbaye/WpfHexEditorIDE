@@ -641,4 +641,30 @@
   <data name="SE_ColRequired" xml:space="preserve">
     <value>Required</value>
   </data>
+
+  <!-- Block editor common props (wave 18) -->
+  <data name="SE_PropName" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="SE_PropType" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="SE_PropColor" xml:space="preserve">
+    <value>Color</value>
+  </data>
+  <data name="SE_PropOpacity" xml:space="preserve">
+    <value>Opacity</value>
+  </data>
+  <data name="SE_PropDescription" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="SE_PropHidden" xml:space="preserve">
+    <value>Hidden</value>
+  </data>
+  <data name="SE_PropEndianness" xml:space="preserve">
+    <value>Endianness</value>
+  </data>
+  <data name="SE_BlockType" xml:space="preserve">
+    <value>Block Type</value>
+  </data>
 </root>

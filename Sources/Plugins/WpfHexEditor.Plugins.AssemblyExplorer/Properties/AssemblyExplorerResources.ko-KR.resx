@@ -133,4 +133,6 @@
   <data name="AE_ClearRecentButton" xml:space="preserve">
     <value>Clear All Recent</value>
   </data>
+  <data name="AsmExplorer_FilterTypes" xml:space="preserve"><value>형식 필터…</value></data>
+  <data name="AsmExplorer_SelectProject" xml:space="preserve"><value>디컴파일된 파일을 추가할 프로젝트를 선택하세요:</value></data>
 </root>

@@ -229,4 +229,22 @@
   <data name="CD_SolutionHint" xml:space="preserve">
     <value>Controls the behaviour of &quot;Generate Class Diagram for Solution&quot;. The generated diagram groups types by project with per-project swimlanes and persists its state to a .whscd twin file next to the solution.</value>
   </data>
+  <data name="CD_NoSelection" xml:space="preserve">
+    <value>No selection</value>
+  </data>
+  <data name="CD_PropName" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="CD_PropKind" xml:space="preserve">
+    <value>Kind</value>
+  </data>
+  <data name="CD_PropAbstract" xml:space="preserve">
+    <value>Abstract</value>
+  </data>
+  <data name="CD_DiagramHistory" xml:space="preserve">
+    <value>Diagram History</value>
+  </data>
+  <data name="CD_Relationships" xml:space="preserve">
+    <value>Relationships</value>
+  </data>
 </root>

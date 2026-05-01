@@ -16,4 +16,6 @@
   <data name="Script_StatusSaved" xml:space="preserve">
     <value>저장됨.</value>
   </data>
+  <data name="SCR_F5Help" xml:space="preserve"><value>F5: 실행 · Ctrl+F5: 유효성 검사</value></data>
+  <data name="SCR_StatusReady" xml:space="preserve"><value>준비됨</value></data>
 </root>

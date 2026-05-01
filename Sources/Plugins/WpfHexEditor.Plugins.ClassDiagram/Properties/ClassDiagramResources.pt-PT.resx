@@ -71,43 +71,49 @@
   <data name="CD_SolutionHint" xml:space="preserve">
     <value>Controla o comportamento de "Gerar diagrama de classes para a solução". O diagrama gerado agrupa tipos por projeto com raias por projeto e persiste o estado num ficheiro gémeo .whscd junto à solução.</value>
   </data>
-  <data name="ClassDiagram_PluginName" xml:space="preserve">
-    <value>Diagrama de classes</value>
+  <data name="ClassDiagram_PluginName" xml:space="preserve">
+    <value>Diagrama de classes</value>
   </data>
-  <data name="ClassDiagram_OptionsCategory" xml:space="preserve">
-    <value>Diagrama de classes</value>
+  <data name="ClassDiagram_OptionsCategory" xml:space="preserve">
+    <value>Diagrama de classes</value>
   </data>
-  <data name="ClassDiagram_OutlinePanelTitle" xml:space="preserve">
-    <value>Estrutura da classe</value>
+  <data name="ClassDiagram_OutlinePanelTitle" xml:space="preserve">
+    <value>Estrutura da classe</value>
   </data>
-  <data name="ClassDiagram_PropertiesPanelTitle" xml:space="preserve">
-    <value>Propriedades da classe</value>
+  <data name="ClassDiagram_PropertiesPanelTitle" xml:space="preserve">
+    <value>Propriedades da classe</value>
   </data>
-  <data name="ClassDiagram_ToolboxPanelTitle" xml:space="preserve">
-    <value>Caixa de ferramentas do diagrama</value>
+  <data name="ClassDiagram_ToolboxPanelTitle" xml:space="preserve">
+    <value>Caixa de ferramentas do diagrama</value>
   </data>
-  <data name="ClassDiagram_RelationshipsPanelTitle" xml:space="preserve">
-    <value>Relacionamentos</value>
+  <data name="ClassDiagram_RelationshipsPanelTitle" xml:space="preserve">
+    <value>Relacionamentos</value>
   </data>
-  <data name="ClassDiagram_HistoryPanelTitle" xml:space="preserve">
-    <value>Histórico do diagrama</value>
+  <data name="ClassDiagram_HistoryPanelTitle" xml:space="preserve">
+    <value>Histórico do diagrama</value>
   </data>
-  <data name="ClassDiagram_SearchPanelTitle" xml:space="preserve">
-    <value>Pesquisa de diagrama</value>
+  <data name="ClassDiagram_SearchPanelTitle" xml:space="preserve">
+    <value>Pesquisa de diagrama</value>
   </data>
-  <data name="ClassDiagram_MetricsPanelTitle" xml:space="preserve">
-    <value>Painel de métricas</value>
+  <data name="ClassDiagram_MetricsPanelTitle" xml:space="preserve">
+    <value>Painel de métricas</value>
   </data>
-  <data name="ClassDiagram_Reset" xml:space="preserve">
-    <value>Repor</value>
+  <data name="ClassDiagram_Reset" xml:space="preserve">
+    <value>Repor</value>
   </data>
-  <data name="ClassDiagram_Menu_OutlineHeader" xml:space="preserve">
-    <value>_Estrutura da classe</value>
+  <data name="ClassDiagram_Menu_OutlineHeader" xml:space="preserve">
+    <value>_Estrutura da classe</value>
   </data>
-  <data name="ClassDiagram_GenerateSolutionDiagram" xml:space="preserve">
-    <value>Gerar diagrama de classes para a solução</value>
+  <data name="ClassDiagram_GenerateSolutionDiagram" xml:space="preserve">
+    <value>Gerar diagrama de classes para a solução</value>
   </data>
-  <data name="ClassDiagram_ExportMetricsCSV" xml:space="preserve">
-    <value>Exportar métricas CSV</value>
+  <data name="ClassDiagram_ExportMetricsCSV" xml:space="preserve">
+    <value>Exportar métricas CSV</value>
   </data>
+  <data name="CD_NoSelection" xml:space="preserve"><value>Sem seleção</value></data>
+  <data name="CD_PropName" xml:space="preserve"><value>Nome</value></data>
+  <data name="CD_PropKind" xml:space="preserve"><value>Tipo</value></data>
+  <data name="CD_PropAbstract" xml:space="preserve"><value>Abstrato</value></data>
+  <data name="CD_DiagramHistory" xml:space="preserve"><value>Histórico do diagrama</value></data>
+  <data name="CD_Relationships" xml:space="preserve"><value>Relações</value></data>
 </root>

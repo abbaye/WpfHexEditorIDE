@@ -71,43 +71,49 @@
   <data name="CD_SolutionHint" xml:space="preserve">
     <value>"Çözüm için Sınıf Diyagramı Oluştur" davranışını denetler. Oluşturulan diyagram, türleri proje başına yüzme şeritleriyle proje bazında gruplar ve durumunu çözümün yanındaki .whscd ikiz dosyasında saklar.</value>
   </data>
-  <data name="ClassDiagram_PluginName" xml:space="preserve">
-    <value>Sınıf Diyagramı</value>
+  <data name="ClassDiagram_PluginName" xml:space="preserve">
+    <value>Sınıf Diyagramı</value>
   </data>
-  <data name="ClassDiagram_OptionsCategory" xml:space="preserve">
-    <value>Sınıf Diyagramı</value>
+  <data name="ClassDiagram_OptionsCategory" xml:space="preserve">
+    <value>Sınıf Diyagramı</value>
   </data>
-  <data name="ClassDiagram_OutlinePanelTitle" xml:space="preserve">
-    <value>Sınıf Taslağı</value>
+  <data name="ClassDiagram_OutlinePanelTitle" xml:space="preserve">
+    <value>Sınıf Taslağı</value>
   </data>
-  <data name="ClassDiagram_PropertiesPanelTitle" xml:space="preserve">
-    <value>Sınıf Özellikleri</value>
+  <data name="ClassDiagram_PropertiesPanelTitle" xml:space="preserve">
+    <value>Sınıf Özellikleri</value>
   </data>
-  <data name="ClassDiagram_ToolboxPanelTitle" xml:space="preserve">
-    <value>Diyagram Araç Kutusu</value>
+  <data name="ClassDiagram_ToolboxPanelTitle" xml:space="preserve">
+    <value>Diyagram Araç Kutusu</value>
   </data>
-  <data name="ClassDiagram_RelationshipsPanelTitle" xml:space="preserve">
-    <value>İlişkiler</value>
+  <data name="ClassDiagram_RelationshipsPanelTitle" xml:space="preserve">
+    <value>İlişkiler</value>
   </data>
-  <data name="ClassDiagram_HistoryPanelTitle" xml:space="preserve">
-    <value>Diyagram Geçmişi</value>
+  <data name="ClassDiagram_HistoryPanelTitle" xml:space="preserve">
+    <value>Diyagram Geçmişi</value>
   </data>
-  <data name="ClassDiagram_SearchPanelTitle" xml:space="preserve">
-    <value>Diyagram Ara</value>
+  <data name="ClassDiagram_SearchPanelTitle" xml:space="preserve">
+    <value>Diyagram Ara</value>
   </data>
-  <data name="ClassDiagram_MetricsPanelTitle" xml:space="preserve">
-    <value>Metrik Panosu</value>
+  <data name="ClassDiagram_MetricsPanelTitle" xml:space="preserve">
+    <value>Metrik Panosu</value>
   </data>
-  <data name="ClassDiagram_Reset" xml:space="preserve">
-    <value>Sıfırla</value>
+  <data name="ClassDiagram_Reset" xml:space="preserve">
+    <value>Sıfırla</value>
   </data>
-  <data name="ClassDiagram_Menu_OutlineHeader" xml:space="preserve">
-    <value>Sınıf _Taslağı</value>
+  <data name="ClassDiagram_Menu_OutlineHeader" xml:space="preserve">
+    <value>Sınıf _Taslağı</value>
   </data>
-  <data name="ClassDiagram_GenerateSolutionDiagram" xml:space="preserve">
-    <value>Çözüm için Sınıf Diyagramı Oluştur</value>
+  <data name="ClassDiagram_GenerateSolutionDiagram" xml:space="preserve">
+    <value>Çözüm için Sınıf Diyagramı Oluştur</value>
   </data>
-  <data name="ClassDiagram_ExportMetricsCSV" xml:space="preserve">
-    <value>Metrik CSV Dışa Aktar</value>
+  <data name="ClassDiagram_ExportMetricsCSV" xml:space="preserve">
+    <value>Metrik CSV Dışa Aktar</value>
   </data>
+  <data name="CD_NoSelection" xml:space="preserve"><value>Seçim yok</value></data>
+  <data name="CD_PropName" xml:space="preserve"><value>Ad</value></data>
+  <data name="CD_PropKind" xml:space="preserve"><value>Tür</value></data>
+  <data name="CD_PropAbstract" xml:space="preserve"><value>Soyut</value></data>
+  <data name="CD_DiagramHistory" xml:space="preserve"><value>Diyagram Geçmişi</value></data>
+  <data name="CD_Relationships" xml:space="preserve"><value>İlişkiler</value></data>
 </root>

@@ -492,4 +492,10 @@
   <data name="AsmExplorer_LoadingAssembly" xml:space="preserve">
     <value>Loading assembly...</value>
   </data>
+  <data name="AsmExplorer_FilterTypes" xml:space="preserve">
+    <value>Filter types…</value>
+  </data>
+  <data name="AsmExplorer_SelectProject" xml:space="preserve">
+    <value>Select the project to add the decompiled file to:</value>
+  </data>
 </root>

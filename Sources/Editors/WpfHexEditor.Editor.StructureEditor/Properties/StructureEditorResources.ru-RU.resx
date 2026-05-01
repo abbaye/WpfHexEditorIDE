@@ -228,4 +228,12 @@
   <data name="StrSb_ValidationLabel" xml:space="preserve"><value>Проверка</value></data>
   <data name="StructureEd_ConditionRow_LengthLabel" xml:space="preserve"><value>Dlina:</value></data>
   <data name="StructureEditor_TestBrowseDialogTitle" xml:space="preserve"><value>Vyberte dvoichnyj fajl dlya testirovaniya</value></data>
+  <data name="SE_PropName" xml:space="preserve"><value>Имя</value></data>
+  <data name="SE_PropType" xml:space="preserve"><value>Тип</value></data>
+  <data name="SE_PropColor" xml:space="preserve"><value>Цвет</value></data>
+  <data name="SE_PropOpacity" xml:space="preserve"><value>Непрозрачность</value></data>
+  <data name="SE_PropDescription" xml:space="preserve"><value>Описание</value></data>
+  <data name="SE_PropHidden" xml:space="preserve"><value>Скрытый</value></data>
+  <data name="SE_PropEndianness" xml:space="preserve"><value>Порядок байтов</value></data>
+  <data name="SE_BlockType" xml:space="preserve"><value>Тип блока</value></data>
 </root>

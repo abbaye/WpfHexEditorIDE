@@ -31,7 +31,7 @@
                 BorderBrush="{DynamicResource RES_SeparatorBrush}"
                 BorderThickness="0,0,0,1"
                 Padding="6,4">
-            <TextBlock Text="Locale Browser"
+            <TextBlock Text="{DynamicResource RX_LocaleBrowser}"
                        Foreground="{DynamicResource RES_HeaderForegroundBrush}"
                        FontSize="11" FontWeight="SemiBold"/>
         </Border>

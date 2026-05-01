@@ -51,7 +51,7 @@
                 Padding="4,3">
             <DockPanel>
                 <TextBlock DockPanel.Dock="Left"
-                           Text="Missing Translations"
+                           Text="{DynamicResource RX_MissingTranslations}"
                            Foreground="{DynamicResource RES_HeaderForegroundBrush}"
                            FontSize="11" FontWeight="SemiBold"
                            VerticalAlignment="Center"

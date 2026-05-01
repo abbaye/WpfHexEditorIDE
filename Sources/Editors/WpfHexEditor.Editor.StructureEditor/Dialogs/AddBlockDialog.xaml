@@ -36,7 +36,7 @@
         </Grid.ColumnDefinitions>
 
         <TextBlock Grid.Row="0" Grid.Column="0"
-                   Text="Block Type" FontSize="11" VerticalAlignment="Center"
+                   Text="{DynamicResource SE_BlockType}" FontSize="11" VerticalAlignment="Center"
                    Foreground="{DynamicResource TE_LineNumberForeground}"/>
         <ComboBox  Grid.Row="0" Grid.Column="1"
                    x:Name="TypeCombo"
@@ -44,7 +44,7 @@
                    SelectionChanged="OnTypeChanged"/>
 
         <TextBlock Grid.Row="1" Grid.Column="0"
-                   Text="Name" FontSize="11" VerticalAlignment="Center"
+                   Text="{DynamicResource SE_PropName}" FontSize="11" VerticalAlignment="Center"
                    Foreground="{DynamicResource TE_LineNumberForeground}"/>
         <TextBox   Grid.Row="1" Grid.Column="1"
                    x:Name="NameBox"

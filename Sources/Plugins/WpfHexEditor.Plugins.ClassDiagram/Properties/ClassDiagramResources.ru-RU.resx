@@ -71,43 +71,49 @@
   <data name="CD_SolutionHint" xml:space="preserve">
     <value>Управляет поведением «Создать диаграмму классов для решения». Созданная диаграмма группирует типы по проектам с дорожками и сохраняет состояние в файл-двойник .whscd рядом с решением.</value>
   </data>
-  <data name="ClassDiagram_PluginName" xml:space="preserve">
-    <value>Диаграмма классов</value>
+  <data name="ClassDiagram_PluginName" xml:space="preserve">
+    <value>Диаграмма классов</value>
   </data>
-  <data name="ClassDiagram_OptionsCategory" xml:space="preserve">
-    <value>Диаграмма классов</value>
+  <data name="ClassDiagram_OptionsCategory" xml:space="preserve">
+    <value>Диаграмма классов</value>
   </data>
-  <data name="ClassDiagram_OutlinePanelTitle" xml:space="preserve">
-    <value>Контур класса</value>
+  <data name="ClassDiagram_OutlinePanelTitle" xml:space="preserve">
+    <value>Контур класса</value>
   </data>
-  <data name="ClassDiagram_PropertiesPanelTitle" xml:space="preserve">
-    <value>Свойства класса</value>
+  <data name="ClassDiagram_PropertiesPanelTitle" xml:space="preserve">
+    <value>Свойства класса</value>
   </data>
-  <data name="ClassDiagram_ToolboxPanelTitle" xml:space="preserve">
-    <value>Панель инструментов диаграммы</value>
+  <data name="ClassDiagram_ToolboxPanelTitle" xml:space="preserve">
+    <value>Панель инструментов диаграммы</value>
   </data>
-  <data name="ClassDiagram_RelationshipsPanelTitle" xml:space="preserve">
-    <value>Связи</value>
+  <data name="ClassDiagram_RelationshipsPanelTitle" xml:space="preserve">
+    <value>Связи</value>
   </data>
-  <data name="ClassDiagram_HistoryPanelTitle" xml:space="preserve">
-    <value>История диаграмм</value>
+  <data name="ClassDiagram_HistoryPanelTitle" xml:space="preserve">
+    <value>История диаграмм</value>
   </data>
-  <data name="ClassDiagram_SearchPanelTitle" xml:space="preserve">
-    <value>Поиск по диаграмме</value>
+  <data name="ClassDiagram_SearchPanelTitle" xml:space="preserve">
+    <value>Поиск по диаграмме</value>
   </data>
-  <data name="ClassDiagram_MetricsPanelTitle" xml:space="preserve">
-    <value>Панель метрик</value>
+  <data name="ClassDiagram_MetricsPanelTitle" xml:space="preserve">
+    <value>Панель метрик</value>
   </data>
-  <data name="ClassDiagram_Reset" xml:space="preserve">
-    <value>Сбросить</value>
+  <data name="ClassDiagram_Reset" xml:space="preserve">
+    <value>Сбросить</value>
   </data>
-  <data name="ClassDiagram_Menu_OutlineHeader" xml:space="preserve">
-    <value>_Контур класса</value>
+  <data name="ClassDiagram_Menu_OutlineHeader" xml:space="preserve">
+    <value>_Контур класса</value>
   </data>
-  <data name="ClassDiagram_GenerateSolutionDiagram" xml:space="preserve">
-    <value>Создать диаграмму классов для решения</value>
+  <data name="ClassDiagram_GenerateSolutionDiagram" xml:space="preserve">
+    <value>Создать диаграмму классов для решения</value>
   </data>
-  <data name="ClassDiagram_ExportMetricsCSV" xml:space="preserve">
-    <value>Экспорт метрик в CSV</value>
+  <data name="ClassDiagram_ExportMetricsCSV" xml:space="preserve">
+    <value>Экспорт метрик в CSV</value>
   </data>
+  <data name="CD_NoSelection" xml:space="preserve"><value>Нет выбора</value></data>
+  <data name="CD_PropName" xml:space="preserve"><value>Имя</value></data>
+  <data name="CD_PropKind" xml:space="preserve"><value>Вид</value></data>
+  <data name="CD_PropAbstract" xml:space="preserve"><value>Абстрактный</value></data>
+  <data name="CD_DiagramHistory" xml:space="preserve"><value>История диаграмм</value></data>
+  <data name="CD_Relationships" xml:space="preserve"><value>Связи</value></data>
 </root>
