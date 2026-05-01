@@ -217,7 +217,7 @@
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="{DynamicResource PositionString}" FontWeight="SemiBold"/>
                                 <TextBlock Text="{Binding Position, StringFormat=0x{0:X8}}"/>
-                                <TextBlock Text=" | Text="{DynamicResource LengthString}"" Margin="10,0,0,0" FontWeight="SemiBold"/>
+                                <TextBlock Text="{DynamicResource LengthString}" Margin="10,0,0,0" FontWeight="SemiBold"/>
                                 <TextBlock Text="{Binding Length}"/>
                             </StackPanel>
                         </DataTemplate>

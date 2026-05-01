@@ -169,14 +169,14 @@
                             Orientation="Horizontal" Margin="0,0,2,0">
                     <!-- Collapse all nodes -->
                     <Button x:Name="BtnCollapseAll" Style="{StaticResource XD_LiveTreeIconButton}"
-                            Content="&#xE972;" Content="{DynamicResource XamlDesigner_CollapseAll}"/>
+                            Content="&#xE972;" ToolTip="{DynamicResource XamlDesigner_CollapseAll}"/>
                     <!-- Overflow toggle (managed by ToolbarOverflowManager — initially hidden) -->
                     <ToggleButton x:Name="ToolbarOverflowButton"
                                   Width="22" Height="22" Padding="3"
                                   Background="Transparent" BorderThickness="0"
                                   FontFamily="Segoe MDL2 Assets" FontSize="11"
                                   Foreground="{DynamicResource DockMenuForegroundBrush}"
-                                  Content="&#xE712;" Content="{DynamicResource XamlDesigner_MoreOptions}"
+                                  Content="&#xE712;" ToolTip="{DynamicResource XamlDesigner_MoreOptions}"
                                   Visibility="Collapsed"/>
                 </StackPanel>
 
@@ -185,7 +185,7 @@
                             Orientation="Horizontal" Margin="2,2,0,2">
                     <!-- Refresh visual tree -->
                     <Button x:Name="BtnRefresh" Style="{StaticResource XD_LiveTreeIconButton}"
-                            Content="&#xE72C;" Content="{DynamicResource XamlDesigner_RefreshVisualTree}"/>
+                            Content="&#xE72C;" ToolTip="{DynamicResource XamlDesigner_RefreshVisualTree}"/>
 
                     <!-- Auto-refresh on render toggle -->
                     <ToggleButton x:Name="BtnAutoRefresh" Style="{StaticResource XD_LiveTreeToggleButton}"
@@ -201,23 +201,23 @@
 
                     <!-- Expand to selected element -->
                     <Button x:Name="BtnExpandToSelected" Style="{StaticResource XD_LiveTreeIconButton}"
-                            Content="&#xE8A4;" Content="{DynamicResource XamlDesigner_ExpandScrollSelected}"/>
+                            Content="&#xE8A4;" ToolTip="{DynamicResource XamlDesigner_ExpandScrollSelected}"/>
 
                     <!-- A: Expand All -->
                     <Button x:Name="BtnExpandAll" Style="{StaticResource XD_LiveTreeIconButton}"
-                            Content="&#xE9A6;" Content="{DynamicResource XamlDesigner_ExpandAll}"/>
+                            Content="&#xE9A6;" ToolTip="{DynamicResource XamlDesigner_ExpandAll}"/>
 
                     <!-- B: Toggle Search bar (Ctrl+F) -->
                     <Button x:Name="BtnSearch" Style="{StaticResource XD_LiveTreeIconButton}"
-                            Content="&#xE721;" Content="{DynamicResource XamlDesigner_SearchElements}"/>
+                            Content="&#xE721;" ToolTip="{DynamicResource XamlDesigner_SearchElements}"/>
 
                     <!-- C: Set selected node as inspect root -->
                     <Button x:Name="BtnSetAsRoot" Style="{StaticResource XD_LiveTreeIconButton}"
-                            Content="&#xE89A;" Content="{DynamicResource XamlDesigner_SetAsRoot}"/>
+                            Content="&#xE89A;" ToolTip="{DynamicResource XamlDesigner_SetAsRoot}"/>
 
                     <!-- C: Reset to full tree (visible only in inspect mode) -->
                     <Button x:Name="BtnResetRoot"
-                            Content="&#xE8B3;" Content="{DynamicResource XamlDesigner_ResetFullTree}">
+                            Content="&#xE8B3;" ToolTip="{DynamicResource XamlDesigner_ResetFullTree}">
                         <Button.Style>
                             <Style TargetType="Button" BasedOn="{StaticResource XD_LiveTreeIconButton}">
                                 <Setter Property="Visibility" Value="Collapsed"/>
@@ -250,7 +250,7 @@
 
                     <!-- F: Filter Preset dropdown button — left-click opens ContextMenu -->
                     <Button x:Name="BtnFilterPreset" Style="{StaticResource XD_LiveTreeIconButton}"
-                            Content="&#xE71C;" Content="{DynamicResource XamlDesigner_FilterPresets}">
+                            Content="&#xE71C;" ToolTip="{DynamicResource XamlDesigner_FilterPresets}">
                         <Button.ContextMenu>
                             <ContextMenu>
                                 <MenuItem Header="{DynamicResource XamlDesigner_AllElements}"          Tag="All"          Click="OnFilterPresetItem"/>
@@ -274,7 +274,7 @@
                             FontFamily="Segoe MDL2 Assets"
                             FontSize="8"
                             Padding="1"
-                            Content="&#xE711;" Content="{DynamicResource XamlDesigner_ClearFilter}">
+                            Content="&#xE711;" ToolTip="{DynamicResource XamlDesigner_ClearFilter}">
                         <Button.Style>
                             <Style TargetType="Button" BasedOn="{StaticResource XD_LiveTreeIconButton}">
                                 <Setter Property="Width"      Value="14"/>
@@ -348,15 +348,15 @@
                     <Button x:Name="BtnSearchPrev"
                             Style="{StaticResource XD_LiveTreeIconButton}"
                             Width="18" Height="18" FontSize="10"
-                            Content="&#xE76B;" Content="{DynamicResource XamlDesigner_PreviousMatch}"/>
+                            Content="&#xE76B;" ToolTip="{DynamicResource XamlDesigner_PreviousMatch}"/>
                     <Button x:Name="BtnSearchNext"
                             Style="{StaticResource XD_LiveTreeIconButton}"
                             Width="18" Height="18" FontSize="10"
-                            Content="&#xE76C;" Content="{DynamicResource XamlDesigner_NextMatch}"/>
+                            Content="&#xE76C;" ToolTip="{DynamicResource XamlDesigner_NextMatch}"/>
                     <Button x:Name="BtnSearchClose"
                             Style="{StaticResource XD_LiveTreeIconButton}"
                             Width="18" Height="18" FontSize="10"
-                            Content="&#xE711;" Content="{DynamicResource XamlDesigner_CloseSearch}"/>
+                            Content="&#xE711;" ToolTip="{DynamicResource XamlDesigner_CloseSearch}"/>
                 </StackPanel>
                 <!-- Search TextBox -->
                 <TextBox x:Name="TbxSearch"
@@ -390,7 +390,7 @@
                 <Button DockPanel.Dock="Right"
                         Style="{StaticResource XD_LiveTreeIconButton}"
                         Width="16" Height="16" FontSize="9"
-                        Content="&#xE8B3;" Content="{DynamicResource XamlDesigner_ReturnFullTree}"
+                        Content="&#xE8B3;" ToolTip="{DynamicResource XamlDesigner_ReturnFullTree}"
                         Click="OnResetRoot"/>
                 <TextBlock Text="{Binding InspectRootLabel}"
                            FontSize="10"

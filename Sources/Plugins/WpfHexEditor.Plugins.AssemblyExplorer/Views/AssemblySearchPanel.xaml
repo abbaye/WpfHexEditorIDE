@@ -77,7 +77,6 @@
                              Margin="2,1"
                              Style="{DynamicResource PanelSearchBoxStyle}"
                              ToolTip="{DynamicResource AsmExplorer_SearchPlaceholder}"
-                             ToolTip="{DynamicResource AsmExplorer_SearchTooltip}"
                              Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
                              KeyDown="OnSearchBoxKeyDown" />
 

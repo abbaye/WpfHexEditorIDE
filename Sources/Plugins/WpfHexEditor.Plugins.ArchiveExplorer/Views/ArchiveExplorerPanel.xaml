@@ -178,7 +178,6 @@
                              Width="140"
                              Style="{DynamicResource PanelSearchBoxStyle}"
                              ToolTip="{DynamicResource AE_FilterTag}"
-                             ToolTip="{DynamicResource AE_FilterEntries}"
                              Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged}"/>
                     <Button Style="{StaticResource PanelIconButtonStyle}"
                             Content="&#xE711;"

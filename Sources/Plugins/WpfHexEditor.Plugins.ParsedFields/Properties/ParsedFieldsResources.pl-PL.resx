@@ -137,7 +137,7 @@
     <value>Web Links</value>
   </data>
   <data name="PF_ReferencesButton" xml:space="preserve">
-    <value>Format References & Specifications</value>
+    <value>Format References &amp; Specifications</value>
   </data>
   <data name="PF_AiAnalysisHeader" xml:space="preserve">
     <value>AI Analysis</value>

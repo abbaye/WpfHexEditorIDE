@@ -347,7 +347,7 @@
                     <!-- Group/flat view toggle: ≡ (list icon) -->
                     <ToggleButton x:Name="BtnToggleGroup"
                                   Style="{StaticResource XD_PropToggleButton}"
-                                  Content="&#xE8FD;" Content="{DynamicResource XamlDesigner_ToggleGrouped}"
+                                  Content="&#xE8FD;" ToolTip="{DynamicResource XamlDesigner_ToggleGrouped}"
                                   IsChecked="{Binding IsGroupedView}"
                                   Command="{Binding ToggleGroupCommand}"/>
                     <!-- Separator -->
@@ -381,7 +381,7 @@
                                   Background="Transparent" BorderThickness="0"
                                   FontFamily="Segoe MDL2 Assets" FontSize="11"
                                   Foreground="{DynamicResource DockMenuForegroundBrush}"
-                                  Content="&#xE712;" Content="{DynamicResource XamlDesigner_MoreOptions}"
+                                  Content="&#xE712;" ToolTip="{DynamicResource XamlDesigner_MoreOptions}"
                                   Visibility="Collapsed"/>
                 </StackPanel>
 

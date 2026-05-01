@@ -216,7 +216,6 @@
                 <TextBox x:Name="TbxFilter"
                          Style="{DynamicResource PanelSearchBoxStyle}"
                          ToolTip="{DynamicResource XamlDesigner_SearchControls}"
-                         ToolTip="{DynamicResource XamlDesigner_SearchControls}"
                          TextChanged="OnSearchTextChanged" />
             </DockPanel>
         </Border>

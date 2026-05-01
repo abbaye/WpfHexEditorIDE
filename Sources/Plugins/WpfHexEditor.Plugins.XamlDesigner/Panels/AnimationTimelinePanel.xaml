@@ -204,7 +204,7 @@
 
                     <!-- Stop -->
                     <Button Style="{StaticResource TlButtonStyle}"
-                            Content="&#xE71A;" Content="{DynamicResource XamlDesigner_Stop}"
+                            Content="&#xE71A;" ToolTip="{DynamicResource XamlDesigner_Stop}"
                             Command="{Binding StopCommand}"/>
 
                     <!-- Play / Pause toggle -->
@@ -229,13 +229,13 @@
 
                     <!-- Add Keyframe -->
                     <Button Style="{StaticResource TlButtonStyle}"
-                            Content="&#xE710;" Content="{DynamicResource XamlDesigner_AddKeyframe}"
+                            Content="&#xE710;" ToolTip="{DynamicResource XamlDesigner_AddKeyframe}"
                             Command="{Binding AddKeyframeCommand}"
                             Click="OnAddKeyframeClick"/>
 
                     <!-- Delete Keyframe -->
                     <Button Style="{StaticResource TlButtonStyle}"
-                            Content="&#xE74D;" Content="{DynamicResource XamlDesigner_DeleteKeyframe}"
+                            Content="&#xE74D;" ToolTip="{DynamicResource XamlDesigner_DeleteKeyframe}"
                             Command="{Binding DeleteKeyframeCommand}"
                             Click="OnDeleteKeyframeClick"/>
 
@@ -243,12 +243,12 @@
 
                     <!-- Loop toggle -->
                     <ToggleButton Style="{StaticResource TlToggleButtonStyle}"
-                                  Content="&#xE8EE;" Content="{DynamicResource XamlDesigner_LoopPlayback}"
+                                  Content="&#xE8EE;" ToolTip="{DynamicResource XamlDesigner_LoopPlayback}"
                                   IsChecked="{Binding IsLooping, Mode=TwoWay}"/>
 
                     <!-- AutoReverse toggle -->
                     <ToggleButton Style="{StaticResource TlToggleButtonStyle}"
-                                  Content="&#xE7C4;" Content="{DynamicResource XamlDesigner_AutoReverse}"
+                                  Content="&#xE7C4;" ToolTip="{DynamicResource XamlDesigner_AutoReverse}"
                                   IsChecked="{Binding AutoReverse, Mode=TwoWay}"/>
 
                     <Separator Style="{StaticResource TlSepStyle}"/>
@@ -311,12 +311,12 @@
 
                     <!-- Export to clipboard -->
                     <Button Style="{StaticResource TlButtonStyle}"
-                            Content="&#xE8C8;" Content="{DynamicResource XamlDesigner_ExportStoryboard}"
+                            Content="&#xE8C8;" ToolTip="{DynamicResource XamlDesigner_ExportStoryboard}"
                             Command="{Binding ExportStoryboardCommand}"/>
 
                     <!-- Add track -->
                     <Button Style="{StaticResource TlButtonStyle}"
-                            Content="&#xE948;" Content="{DynamicResource XamlDesigner_AddTrack}"
+                            Content="&#xE948;" ToolTip="{DynamicResource XamlDesigner_AddTrack}"
                             Command="{Binding AddTrackCommand}"/>
 
                 </StackPanel>

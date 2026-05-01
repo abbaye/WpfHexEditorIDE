@@ -277,10 +277,10 @@
                             Orientation="Horizontal" Margin="0,0,2,0">
                     <!-- Copy binding expression for selected row -->
                     <Button x:Name="BtnCopyExpr" Style="{StaticResource XD_BindIconButton}"
-                            Content="&#xE8C8;" Content="{DynamicResource XamlDesigner_CopyBindingExpr}"/>
+                            Content="&#xE8C8;" ToolTip="{DynamicResource XamlDesigner_CopyBindingExpr}"/>
                     <!-- Refresh bindings -->
                     <Button x:Name="BtnRefresh" Style="{StaticResource XD_BindIconButton}"
-                            Content="&#xE72C;" Content="{DynamicResource XamlDesigner_RefreshBindings}"/>
+                            Content="&#xE72C;" ToolTip="{DynamicResource XamlDesigner_RefreshBindings}"/>
                     <!-- Separator -->
                     <Separator Width="1" Height="16" Margin="2,0"
                                Background="{DynamicResource DockBorderBrush}"/>

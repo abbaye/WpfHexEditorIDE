@@ -95,7 +95,7 @@
                             DockPanel.Dock="Right"
                             VerticalAlignment="Center">
                     <Button Style="{StaticResource PanelIconButtonStyle}"
-                            Content="&#xE72C;" Content="{DynamicResource PatternAnalysis_AnalyzeTooltip}"
+                            Content="&#xE72C;" ToolTip="{DynamicResource PatternAnalysis_AnalyzeTooltip}"
                             Click="AnalyzeButton_Click"/>
                 </StackPanel>
 

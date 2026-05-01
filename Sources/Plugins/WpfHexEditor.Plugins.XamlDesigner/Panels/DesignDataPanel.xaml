@@ -92,20 +92,20 @@
                     <!-- Refresh -->
                     <Button Style="{StaticResource DdToolButtonStyle}"
                             Width="22"
-                            Content="&#xE72C;" Content="{DynamicResource XamlDesigner_RefreshDesignData}"
+                            Content="&#xE72C;" ToolTip="{DynamicResource XamlDesigner_RefreshDesignData}"
                             Click="OnRefreshClick"/>
 
                     <!-- Generate Mock Data -->
                     <Button Style="{StaticResource DdToolButtonStyle}"
                             Width="22"
-                            Content="&#xE8D5;" Content="{DynamicResource XamlDesigner_GenerateMockData}"
+                            Content="&#xE8D5;" ToolTip="{DynamicResource XamlDesigner_GenerateMockData}"
                             Click="OnGenerateMockDataClick"/>
 
                     <!-- Pick Type -->
                     <Button x:Name="BtnPickType"
                             Style="{StaticResource DdToolButtonStyle}"
                             Width="22"
-                            Content="&#xE8A0;" Content="{DynamicResource XamlDesigner_PickDesignDataType}"
+                            Content="&#xE8A0;" ToolTip="{DynamicResource XamlDesigner_PickDesignDataType}"
                             Click="OnPickTypeClick"/>
                     <Popup x:Name="TypePickerPopup"
                            StaysOpen="False"
@@ -142,21 +142,21 @@
                     <Button Style="{StaticResource DdToolButtonStyle}"
                             x:Name="BtnCopyJson"
                             Width="22"
-                            Content="&#xE8C8;" Content="{DynamicResource XamlDesigner_CopyInstanceJson}"
+                            Content="&#xE8C8;" ToolTip="{DynamicResource XamlDesigner_CopyInstanceJson}"
                             Click="OnCopyJsonClick"/>
 
                     <!-- Clear Data -->
                     <Button Style="{StaticResource DdToolButtonStyle}"
                             x:Name="BtnClearData"
                             Width="22"
-                            Content="&#xE74D;" Content="{DynamicResource XamlDesigner_ClearDesignInstance}"
+                            Content="&#xE74D;" ToolTip="{DynamicResource XamlDesigner_ClearDesignInstance}"
                             Click="OnClearDataClick"/>
 
                     <!-- Paste JSON -->
                     <Button Style="{StaticResource DdToolButtonStyle}"
                             x:Name="BtnPasteJson"
                             Width="22"
-                            Content="&#xE77F;" Content="{DynamicResource XamlDesigner_PasteJson}"
+                            Content="&#xE77F;" ToolTip="{DynamicResource XamlDesigner_PasteJson}"
                             Click="OnPasteJsonClick"/>
 
                 </StackPanel>

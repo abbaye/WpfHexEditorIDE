@@ -161,7 +161,7 @@
                     <!-- Clear History -->
                     <Button x:Name="BtnClearHistory"
                             Style="{StaticResource XD_HistIconButton}"
-                            Content="&#xE74D;" Content="{DynamicResource XamlDesigner_ClearHistory}"
+                            Content="&#xE74D;" ToolTip="{DynamicResource XamlDesigner_ClearHistory}"
                             Command="{Binding ClearHistoryCommand}"/>
 
                     <!-- Separator -->

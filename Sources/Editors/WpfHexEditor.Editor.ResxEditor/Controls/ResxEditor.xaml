@@ -16,7 +16,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:WpfHexEditor.Editor.ResxEditor.Controls"
              xmlns:vm="clr-namespace:WpfHexEditor.Editor.ResxEditor.ViewModels"
-             xmlns:reSvc="clr-namespace:WpfHexEditor.Editor.ResxEditor.Services;assembly=WpfHexEditor.Editor.ResxEditor"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800"
              Background="{DynamicResource RES_BackgroundBrush}"
@@ -25,9 +24,6 @@
 
     <UserControl.Resources>
         <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <reSvc:ResxEditorLocalizedDictionary/>
-            </ResourceDictionary.MergedDictionaries>
         <BooleanToVisibilityConverter x:Key="BoolToVis"/>
 
         <!-- DataGrid column header style -->

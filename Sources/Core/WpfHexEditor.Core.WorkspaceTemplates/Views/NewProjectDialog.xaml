@@ -145,7 +145,7 @@
                      Grid.Column="0" Grid.Row="0" Margin="0,0,4,4"
                      Style="{StaticResource DialogTextBoxStyle}"
                      Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged}"
-                     ToolTip="{DynamicResource NewProject_SearchPlaceholder}" ToolTip="{DynamicResource NewProject_FilterTooltip}"/>
+                     ToolTip="{DynamicResource NewProject_SearchPlaceholder}"/>
 
             <!-- Template list -->
             <ListBox x:Name="LbTemplates"

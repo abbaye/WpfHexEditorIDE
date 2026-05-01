@@ -78,23 +78,23 @@
 
                     <!-- Scan / Refresh -->
                     <Button Style="{StaticResource RbToolButtonStyle}"
-                            Content="&#xE72C;" Content="{DynamicResource XamlDesigner_ScanResources}"
+                            Content="&#xE72C;" ToolTip="{DynamicResource XamlDesigner_ScanResources}"
                             Command="{Binding ScanCommand}"/>
 
                     <!-- Find Usages -->
                     <Button Style="{StaticResource RbToolButtonStyle}"
-                            Content="&#xE773;" Content="{DynamicResource XamlDesigner_FindUsages}"
+                            Content="&#xE773;" ToolTip="{DynamicResource XamlDesigner_FindUsages}"
                             Command="{Binding FindUsagesCommand}"/>
 
                     <!-- Go to Definition -->
                     <Button Style="{StaticResource RbToolButtonStyle}"
-                            Content="&#xE8A0;" Content="{DynamicResource XamlDesigner_GoToDefinition}"
+                            Content="&#xE8A0;" ToolTip="{DynamicResource XamlDesigner_GoToDefinition}"
                             Command="{Binding GoToDefinitionCommand}"
                             CommandParameter="{Binding SelectedEntry}"/>
 
                     <!-- Copy Key -->
                     <Button Style="{StaticResource RbToolButtonStyle}"
-                            Content="&#xE8C8;" Content="{DynamicResource XamlDesigner_CopyResourceKey}"
+                            Content="&#xE8C8;" ToolTip="{DynamicResource XamlDesigner_CopyResourceKey}"
                             Command="{Binding CopyKeyCommand}"
                             CommandParameter="{Binding SelectedEntry}"/>
 
