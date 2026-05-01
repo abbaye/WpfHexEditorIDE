@@ -637,8 +637,23 @@ public class DockTabControl : TabControl
         protected override void OnRender(DrawingContext dc)
         {
             if (_x < 0) return;
-            double h = Math.Min(((FrameworkElement)AdornedElement).ActualHeight, 34);
-            dc.DrawLine(s_pen, new Point(_x, 0), new Point(_x, h));
+
+            // Locate the actual tab strip so the caret tracks tabs whether they are at
+            // the top (documents) or bottom (tool panels). Falls back to a top-anchored
+            // 34px caret if the template part is not yet available.
+            var tabControl = (DockTabControl)AdornedElement;
+            double y1 = 0;
+            double y2 = Math.Min(tabControl.ActualHeight, 34);
+
+            if (tabControl.Template?.FindName("PART_TabStrip", tabControl) is FrameworkElement strip
+                && strip.IsArrangeValid)
+            {
+                var topLeft = strip.TranslatePoint(new Point(0, 0), tabControl);
+                y1 = topLeft.Y;
+                y2 = topLeft.Y + strip.ActualHeight;
+            }
+
+            dc.DrawLine(s_pen, new Point(_x, y1), new Point(_x, y2));
         }
     }
 
