@@ -845,4 +845,18 @@
   <data name="APP_ReadOnly" xml:space="preserve"><value>Alleen-lezen</value></data>
   <data name="APP_ExtensionSystem" xml:space="preserve"><value>EXTENSIESYSTEEM</value></data>
   <data name="APP_SlowBadge" xml:space="preserve"><value>TRAAG</value></data>
+  <data name="APP_Copy" xml:space="preserve"><value>Kopiëren</value></data>
+  <data name="APP_SelectAll" xml:space="preserve"><value>Alles selecteren</value></data>
+  <data name="APP_SaveOutputAs" xml:space="preserve"><value>Uitvoer opslaan als...</value></data>
+  <data name="APP_CopyAll" xml:space="preserve"><value>Alles kopiëren</value></data>
+  <data name="APP_ClearAll" xml:space="preserve"><value>Alles wissen</value></data>
+  <data name="APP_ToggleWordWrap" xml:space="preserve"><value>Tekstomloop wisselen</value></data>
+  <data name="APP_ToggleAutoScroll" xml:space="preserve"><value>Automatisch scrollen wisselen</value></data>
+  <data name="APP_ToolbarFind" xml:space="preserve"><value>Zoeken</value></data>
+  <data name="APP_ToolbarExplorer" xml:space="preserve"><value>Verkenner</value></data>
+  <data name="APP_BuildStart" xml:space="preserve"><value>Start</value></data>
+  <data name="APP_BuildBuild" xml:space="preserve"><value>Bouwen</value></data>
+  <data name="APP_BuildRebuild" xml:space="preserve"><value>Opnieuw bouwen</value></data>
+  <data name="APP_BuildClean" xml:space="preserve"><value>Opschonen</value></data>
+  <data name="APP_BuildStop" xml:space="preserve"><value>Stop</value></data>
 </root>

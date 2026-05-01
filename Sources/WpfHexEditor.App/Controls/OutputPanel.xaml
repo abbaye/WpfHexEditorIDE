@@ -99,6 +99,36 @@
                      FontFamily="Cascadia Mono, Consolas, monospace"
                      FontSize="12"
                      Padding="4,2">
+            <RichTextBox.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="{DynamicResource APP_Copy}"
+                              Command="ApplicationCommands.Copy"
+                              InputGestureText="Ctrl+C">
+                        <MenuItem.Icon>
+                            <TextBlock Text="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="14"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="{DynamicResource APP_CopyAll}"
+                              Click="OnCopyAll"/>
+                    <MenuItem Header="{DynamicResource APP_SelectAll}"
+                              Command="ApplicationCommands.SelectAll"
+                              InputGestureText="Ctrl+A"/>
+                    <Separator/>
+                    <MenuItem Header="{DynamicResource APP_ClearAll}"
+                              Click="OnClear"/>
+                    <MenuItem Header="{DynamicResource APP_SaveOutputAs}"
+                              Click="OnSaveOutputAs"/>
+                    <Separator/>
+                    <MenuItem x:Name="WordWrapMenuItem"
+                              Header="{DynamicResource APP_ToggleWordWrap}"
+                              IsCheckable="True"
+                              Click="OnToggleWordWrap"/>
+                    <MenuItem x:Name="AutoScrollMenuItem"
+                              Header="{DynamicResource APP_ToggleAutoScroll}"
+                              IsCheckable="True"
+                              Click="OnToggleAutoScroll"/>
+                </ContextMenu>
+            </RichTextBox.ContextMenu>
             <RichTextBox.Document>
                 <FlowDocument PagePadding="0" />
             </RichTextBox.Document>

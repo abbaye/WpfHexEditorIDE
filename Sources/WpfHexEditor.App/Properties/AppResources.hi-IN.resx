@@ -845,4 +845,18 @@
   <data name="APP_ReadOnly" xml:space="preserve"><value>केवल पढ़ने योग्य</value></data>
   <data name="APP_ExtensionSystem" xml:space="preserve"><value>एक्सटेंशन सिस्टम</value></data>
   <data name="APP_SlowBadge" xml:space="preserve"><value>धीमा</value></data>
+  <data name="APP_Copy" xml:space="preserve"><value>कॉपी करें</value></data>
+  <data name="APP_SelectAll" xml:space="preserve"><value>सभी चुनें</value></data>
+  <data name="APP_SaveOutputAs" xml:space="preserve"><value>आउटपुट इस रूप में सहेजें...</value></data>
+  <data name="APP_CopyAll" xml:space="preserve"><value>सभी कॉपी करें</value></data>
+  <data name="APP_ClearAll" xml:space="preserve"><value>सभी साफ़ करें</value></data>
+  <data name="APP_ToggleWordWrap" xml:space="preserve"><value>वर्ड रैप टॉगल करें</value></data>
+  <data name="APP_ToggleAutoScroll" xml:space="preserve"><value>ऑटो-स्क्रॉल टॉगल करें</value></data>
+  <data name="APP_ToolbarFind" xml:space="preserve"><value>खोजें</value></data>
+  <data name="APP_ToolbarExplorer" xml:space="preserve"><value>एक्सप्लोरर</value></data>
+  <data name="APP_BuildStart" xml:space="preserve"><value>प्रारंभ</value></data>
+  <data name="APP_BuildBuild" xml:space="preserve"><value>बनाएँ</value></data>
+  <data name="APP_BuildRebuild" xml:space="preserve"><value>पुनः बनाएँ</value></data>
+  <data name="APP_BuildClean" xml:space="preserve"><value>साफ़</value></data>
+  <data name="APP_BuildStop" xml:space="preserve"><value>रोकें</value></data>
 </root>

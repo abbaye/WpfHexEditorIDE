@@ -845,4 +845,18 @@
   <data name="APP_ReadOnly" xml:space="preserve"><value>Salt okunur</value></data>
   <data name="APP_ExtensionSystem" xml:space="preserve"><value>UZANTI SİSTEMİ</value></data>
   <data name="APP_SlowBadge" xml:space="preserve"><value>YAVAŞ</value></data>
+  <data name="APP_Copy" xml:space="preserve"><value>Kopyala</value></data>
+  <data name="APP_SelectAll" xml:space="preserve"><value>Tümünü Seç</value></data>
+  <data name="APP_SaveOutputAs" xml:space="preserve"><value>Çıktıyı Farklı Kaydet...</value></data>
+  <data name="APP_CopyAll" xml:space="preserve"><value>Tümünü Kopyala</value></data>
+  <data name="APP_ClearAll" xml:space="preserve"><value>Tümünü Temizle</value></data>
+  <data name="APP_ToggleWordWrap" xml:space="preserve"><value>Kelime Kaydırmayı Değiştir</value></data>
+  <data name="APP_ToggleAutoScroll" xml:space="preserve"><value>Otomatik Kaydırmayı Değiştir</value></data>
+  <data name="APP_ToolbarFind" xml:space="preserve"><value>Bul</value></data>
+  <data name="APP_ToolbarExplorer" xml:space="preserve"><value>Gezgin</value></data>
+  <data name="APP_BuildStart" xml:space="preserve"><value>Başlat</value></data>
+  <data name="APP_BuildBuild" xml:space="preserve"><value>Derle</value></data>
+  <data name="APP_BuildRebuild" xml:space="preserve"><value>Yeniden Derle</value></data>
+  <data name="APP_BuildClean" xml:space="preserve"><value>Temizle</value></data>
+  <data name="APP_BuildStop" xml:space="preserve"><value>Durdur</value></data>
 </root>

@@ -845,4 +845,18 @@
   <data name="APP_ReadOnly" xml:space="preserve"><value>只读</value></data>
   <data name="APP_ExtensionSystem" xml:space="preserve"><value>扩展系统</value></data>
   <data name="APP_SlowBadge" xml:space="preserve"><value>慢</value></data>
+  <data name="APP_Copy" xml:space="preserve"><value>复制</value></data>
+  <data name="APP_SelectAll" xml:space="preserve"><value>全选</value></data>
+  <data name="APP_SaveOutputAs" xml:space="preserve"><value>输出另存为...</value></data>
+  <data name="APP_CopyAll" xml:space="preserve"><value>全部复制</value></data>
+  <data name="APP_ClearAll" xml:space="preserve"><value>全部清除</value></data>
+  <data name="APP_ToggleWordWrap" xml:space="preserve"><value>切换自动换行</value></data>
+  <data name="APP_ToggleAutoScroll" xml:space="preserve"><value>切换自动滚动</value></data>
+  <data name="APP_ToolbarFind" xml:space="preserve"><value>查找</value></data>
+  <data name="APP_ToolbarExplorer" xml:space="preserve"><value>资源管理器</value></data>
+  <data name="APP_BuildStart" xml:space="preserve"><value>开始</value></data>
+  <data name="APP_BuildBuild" xml:space="preserve"><value>生成</value></data>
+  <data name="APP_BuildRebuild" xml:space="preserve"><value>重新生成</value></data>
+  <data name="APP_BuildClean" xml:space="preserve"><value>清理</value></data>
+  <data name="APP_BuildStop" xml:space="preserve"><value>停止</value></data>
 </root>

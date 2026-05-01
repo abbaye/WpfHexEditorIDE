@@ -1090,6 +1090,15 @@
   <data name="APP_ToggleAutoScroll" xml:space="preserve">
     <value>Toggle Auto-Scroll</value>
   </data>
+  <data name="APP_Copy" xml:space="preserve">
+    <value>Copy</value>
+  </data>
+  <data name="APP_SelectAll" xml:space="preserve">
+    <value>Select All</value>
+  </data>
+  <data name="APP_SaveOutputAs" xml:space="preserve">
+    <value>Save Output As...</value>
+  </data>
 
   <!-- Document info bar -->
   <data name="APP_Dismiss"          xml:space="preserve"><value>Dismiss</value></data>
@@ -1102,4 +1111,27 @@
   <!-- Plugin status popup -->
   <data name="APP_ExtensionSystem"  xml:space="preserve"><value>EXTENSION SYSTEM</value></data>
   <data name="APP_SlowBadge"        xml:space="preserve"><value>SLOW</value></data>
+
+  <!-- Toolbar / build (wave 18) -->
+  <data name="APP_ToolbarFind" xml:space="preserve">
+    <value>Find</value>
+  </data>
+  <data name="APP_ToolbarExplorer" xml:space="preserve">
+    <value>Explorer</value>
+  </data>
+  <data name="APP_BuildStart" xml:space="preserve">
+    <value>Start</value>
+  </data>
+  <data name="APP_BuildBuild" xml:space="preserve">
+    <value>Build</value>
+  </data>
+  <data name="APP_BuildRebuild" xml:space="preserve">
+    <value>Rebuild</value>
+  </data>
+  <data name="APP_BuildClean" xml:space="preserve">
+    <value>Clean</value>
+  </data>
+  <data name="APP_BuildStop" xml:space="preserve">
+    <value>Stop</value>
+  </data>
 </root>

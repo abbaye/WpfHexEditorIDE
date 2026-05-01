@@ -845,4 +845,18 @@
   <data name="APP_ReadOnly" xml:space="preserve"><value>Tylko do odczytu</value></data>
   <data name="APP_ExtensionSystem" xml:space="preserve"><value>SYSTEM ROZSZERZEŃ</value></data>
   <data name="APP_SlowBadge" xml:space="preserve"><value>WOLNO</value></data>
+  <data name="APP_Copy" xml:space="preserve"><value>Kopiuj</value></data>
+  <data name="APP_SelectAll" xml:space="preserve"><value>Zaznacz wszystko</value></data>
+  <data name="APP_SaveOutputAs" xml:space="preserve"><value>Zapisz wynik jako...</value></data>
+  <data name="APP_CopyAll" xml:space="preserve"><value>Kopiuj wszystko</value></data>
+  <data name="APP_ClearAll" xml:space="preserve"><value>Wyczyść wszystko</value></data>
+  <data name="APP_ToggleWordWrap" xml:space="preserve"><value>Przełącz zawijanie wierszy</value></data>
+  <data name="APP_ToggleAutoScroll" xml:space="preserve"><value>Przełącz autoprzewijanie</value></data>
+  <data name="APP_ToolbarFind" xml:space="preserve"><value>Znajdź</value></data>
+  <data name="APP_ToolbarExplorer" xml:space="preserve"><value>Eksplorator</value></data>
+  <data name="APP_BuildStart" xml:space="preserve"><value>Start</value></data>
+  <data name="APP_BuildBuild" xml:space="preserve"><value>Kompiluj</value></data>
+  <data name="APP_BuildRebuild" xml:space="preserve"><value>Przebuduj</value></data>
+  <data name="APP_BuildClean" xml:space="preserve"><value>Wyczyść</value></data>
+  <data name="APP_BuildStop" xml:space="preserve"><value>Zatrzymaj</value></data>
 </root>

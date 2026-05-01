@@ -845,4 +845,18 @@
   <data name="APP_ReadOnly" xml:space="preserve"><value>Только для чтения</value></data>
   <data name="APP_ExtensionSystem" xml:space="preserve"><value>СИСТЕМА РАСШИРЕНИЙ</value></data>
   <data name="APP_SlowBadge" xml:space="preserve"><value>МЕДЛЕННО</value></data>
+  <data name="APP_Copy" xml:space="preserve"><value>Копировать</value></data>
+  <data name="APP_SelectAll" xml:space="preserve"><value>Выделить все</value></data>
+  <data name="APP_SaveOutputAs" xml:space="preserve"><value>Сохранить вывод как...</value></data>
+  <data name="APP_CopyAll" xml:space="preserve"><value>Копировать все</value></data>
+  <data name="APP_ClearAll" xml:space="preserve"><value>Очистить все</value></data>
+  <data name="APP_ToggleWordWrap" xml:space="preserve"><value>Переключить перенос строк</value></data>
+  <data name="APP_ToggleAutoScroll" xml:space="preserve"><value>Переключить автопрокрутку</value></data>
+  <data name="APP_ToolbarFind" xml:space="preserve"><value>Найти</value></data>
+  <data name="APP_ToolbarExplorer" xml:space="preserve"><value>Обозреватель</value></data>
+  <data name="APP_BuildStart" xml:space="preserve"><value>Старт</value></data>
+  <data name="APP_BuildBuild" xml:space="preserve"><value>Сборка</value></data>
+  <data name="APP_BuildRebuild" xml:space="preserve"><value>Пересборка</value></data>
+  <data name="APP_BuildClean" xml:space="preserve"><value>Очистить</value></data>
+  <data name="APP_BuildStop" xml:space="preserve"><value>Стоп</value></data>
 </root>

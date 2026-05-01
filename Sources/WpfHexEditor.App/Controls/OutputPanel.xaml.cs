@@ -5,10 +5,12 @@
 //////////////////////////////////////////////
 
 using System.ComponentModel;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
+using Microsoft.Win32;
 
 namespace WpfHexEditor.App.Controls;
 
@@ -68,7 +70,11 @@ public partial class OutputPanel : UserControl
         SourceComboBox.ItemsSource  = _channels.Values.ToList();
         SourceComboBox.SelectedIndex = 0;
         OutputTextBox.Document = _channels[_activeSource].Document;
-        Loaded += (_, _) => UpdateAutoScrollVisual();
+        Loaded += (_, _) =>
+        {
+            UpdateAutoScrollVisual();
+            SyncMenuChecks();
+        };
     }
 
     private static FlowDocument CreateDocument()
@@ -148,12 +154,19 @@ public partial class OutputPanel : UserControl
 
     private void OnToggleWordWrap(object sender, RoutedEventArgs e)
     {
-        _wordWrap = !_wordWrap;
+        // When invoked from a checkable MenuItem, the IsChecked has already
+        // toggled before the Click event — align our internal state with it
+        // instead of toggling again.
+        _wordWrap = sender is MenuItem mi
+            ? mi.IsChecked
+            : !_wordWrap;
+
         OutputTextBox.Document.PageWidth = _wordWrap ? double.NaN : 10000;
         OutputTextBox.HorizontalScrollBarVisibility = _wordWrap
             ? ScrollBarVisibility.Disabled
             : ScrollBarVisibility.Auto;
         WrapButton.Opacity = _wordWrap ? 1.0 : 0.5;
+        SyncMenuChecks();
     }
 
     private void OnCopyAll(object sender, RoutedEventArgs e)
@@ -165,8 +178,40 @@ public partial class OutputPanel : UserControl
 
     private void OnToggleAutoScroll(object sender, RoutedEventArgs e)
     {
-        _autoScroll = !_autoScroll;
+        _autoScroll = sender is MenuItem mi
+            ? mi.IsChecked
+            : !_autoScroll;
         UpdateAutoScrollVisual();
+        SyncMenuChecks();
+    }
+
+    private void OnSaveOutputAs(object sender, RoutedEventArgs e)
+    {
+        var dialog = new SaveFileDialog
+        {
+            Filter = "Rich Text Format (*.rtf)|*.rtf|Text files (*.txt)|*.txt|Log files (*.log)|*.log|All files (*.*)|*.*",
+            FilterIndex = 1,
+            DefaultExt = ".rtf",
+            FileName = $"{_activeSource}-output.rtf"
+        };
+
+        if (dialog.ShowDialog() != true) return;
+
+        var ext = Path.GetExtension(dialog.FileName);
+        var format = string.Equals(ext, ".rtf", StringComparison.OrdinalIgnoreCase)
+            ? DataFormats.Rtf
+            : DataFormats.Text;
+
+        var range = new TextRange(OutputTextBox.Document.ContentStart,
+                                  OutputTextBox.Document.ContentEnd);
+        using var fs = File.Create(dialog.FileName);
+        range.Save(fs, format);
+    }
+
+    private void SyncMenuChecks()
+    {
+        if (WordWrapMenuItem   != null) WordWrapMenuItem.IsChecked   = _wordWrap;
+        if (AutoScrollMenuItem != null) AutoScrollMenuItem.IsChecked = _autoScroll;
     }
 
     /// <summary>

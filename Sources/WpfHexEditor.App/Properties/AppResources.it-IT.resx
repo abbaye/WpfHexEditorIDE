@@ -845,4 +845,18 @@
   <data name="APP_ReadOnly" xml:space="preserve"><value>Sola lettura</value></data>
   <data name="APP_ExtensionSystem" xml:space="preserve"><value>SISTEMA ESTENSIONI</value></data>
   <data name="APP_SlowBadge" xml:space="preserve"><value>LENTO</value></data>
+  <data name="APP_Copy" xml:space="preserve"><value>Copia</value></data>
+  <data name="APP_SelectAll" xml:space="preserve"><value>Seleziona tutto</value></data>
+  <data name="APP_SaveOutputAs" xml:space="preserve"><value>Salva output con nome...</value></data>
+  <data name="APP_CopyAll" xml:space="preserve"><value>Copia tutto</value></data>
+  <data name="APP_ClearAll" xml:space="preserve"><value>Cancella tutto</value></data>
+  <data name="APP_ToggleWordWrap" xml:space="preserve"><value>Attiva/disattiva a capo automatico</value></data>
+  <data name="APP_ToggleAutoScroll" xml:space="preserve"><value>Attiva/disattiva scorrimento automatico</value></data>
+  <data name="APP_ToolbarFind" xml:space="preserve"><value>Trova</value></data>
+  <data name="APP_ToolbarExplorer" xml:space="preserve"><value>Esplora risorse</value></data>
+  <data name="APP_BuildStart" xml:space="preserve"><value>Avvia</value></data>
+  <data name="APP_BuildBuild" xml:space="preserve"><value>Compila</value></data>
+  <data name="APP_BuildRebuild" xml:space="preserve"><value>Ricompila</value></data>
+  <data name="APP_BuildClean" xml:space="preserve"><value>Pulisci</value></data>
+  <data name="APP_BuildStop" xml:space="preserve"><value>Arresta</value></data>
 </root>
