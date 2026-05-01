@@ -11,7 +11,7 @@
     <UserControl.Resources>
             <ResourceDictionary>
                 <ResourceDictionary.MergedDictionaries>
-                    <xmlns:aiSvc:AIAssistantLocalizedDictionary/>
+                    <aiSvc:AIAssistantLocalizedDictionary/>
                 </ResourceDictionary.MergedDictionaries>
 
         <BooleanToVisibilityConverter x:Key="BoolToVis"/>
@@ -50,18 +50,17 @@
             </ScrollViewer>
 
             <!-- Streaming indicator -->
-            <TextBlock Grid.Row="2" {DynamicResource AIAssistant_Thinking} FontSize="11" Opacity="0.6"
+            <TextBlock Grid.Row="2" Text="{DynamicResource AIAssistant_Thinking}" FontSize="11" Opacity="0.6"
                        Foreground="{DynamicResource CA_AccentBrandingBrush}"
                        Visibility="{Binding IsStreaming, Converter={StaticResource BoolToVis}}"
                        Margin="0,4,0,0"/>
 
             <!-- Buttons -->
             <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,8,0,0">
-                <Button {DynamicResource AIAssistant_Send} Width="60" Command="{Binding SendCommand}" Margin="0,0,4,0"/>
-                <Button {DynamicResource AIAssistant_Apply} Width="60" Margin="0,0,4,0" IsEnabled="False"
-                        {DynamicResource AIAssistant_ApplyTooltip}/>
-                <Button {DynamicResource AIAssistant_OpenInTab} Width="80" Command="{Binding OpenInTabCommand}" Margin="0,0,4,0"/>
-                <Button {DynamicResource AIAssistant_Dismiss} Width="60" Command="{Binding DismissCommand}"/>
+                <Button Content="{DynamicResource AIAssistant_Send}" Width="60" Command="{Binding SendCommand}" Margin="0,0,4,0"/>
+                <Button Content="{DynamicResource AIAssistant_Apply}" Width="60" Margin="0,0,4,0" IsEnabled="False" ToolTip="{DynamicResource AIAssistant_ApplyTooltip}"/>
+                <Button Content="{DynamicResource AIAssistant_OpenInTab}" Width="80" Command="{Binding OpenInTabCommand}" Margin="0,0,4,0"/>
+                <Button Content="{DynamicResource AIAssistant_Dismiss}" Width="60" Command="{Binding DismissCommand}"/>
             </StackPanel>
         </Grid>
     </Border>

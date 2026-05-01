@@ -272,7 +272,7 @@
     <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="16">
         <StackPanel Margin="0,0,0,16">
             <!-- ══════════════════ Anthropic ══════════════════ -->
-            <TextBlock {DynamicResource AIAssistant_AnthropicClaude} FontWeight="SemiBold" FontSize="14"
+            <TextBlock Text="{DynamicResource AIAssistant_AnthropicClaude}" FontWeight="SemiBold" FontSize="14"
                        Foreground="{DynamicResource DockMenuForegroundBrush}" Margin="0,0,0,8"/>
             <Grid Margin="0,0,0,4">
                 <Grid.ColumnDefinitions>
@@ -280,17 +280,17 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock {DynamicResource AIAssistant_ApiKeyLabel} VerticalAlignment="Center"
+                <TextBlock Text="{DynamicResource AIAssistant_ApiKeyLabel}" VerticalAlignment="Center"
                            Foreground="{DynamicResource DockMenuForegroundBrush}"/>
                 <PasswordBox x:Name="AnthropicKeyBox" Grid.Column="1" MaxLength="200" Margin="0,0,8,0"/>
-                <Button x:Name="TestAnthropicBtn" Grid.Column="2" {DynamicResource AIAssistant_TestButton} Width="70"
+                <Button x:Name="TestAnthropicBtn" Grid.Column="2" Content="{DynamicResource AIAssistant_TestButton}" Width="70"
                         Click="OnTestAnthropicClick" Padding="4,2"/>
             </Grid>
 
             <Separator Margin="0,12"/>
 
             <!-- ══════════════════ OpenAI ══════════════════ -->
-            <TextBlock {DynamicResource AIAssistant_OpenAI} FontWeight="SemiBold" FontSize="14"
+            <TextBlock Text="{DynamicResource AIAssistant_OpenAI}" FontWeight="SemiBold" FontSize="14"
                        Foreground="{DynamicResource DockMenuForegroundBrush}" Margin="0,8,0,8"/>
             <Grid Margin="0,0,0,4">
                 <Grid.ColumnDefinitions>
@@ -308,7 +308,7 @@
             <Separator Margin="0,12"/>
 
             <!-- ══════════════════ Azure OpenAI ══════════════════ -->
-            <TextBlock {DynamicResource AIAssistant_AzureOpenAI} FontWeight="SemiBold" FontSize="14"
+            <TextBlock Text="{DynamicResource AIAssistant_AzureOpenAI}" FontWeight="SemiBold" FontSize="14"
                        Foreground="{DynamicResource DockMenuForegroundBrush}" Margin="0,8,0,8"/>
             <Grid Margin="0,0,0,4">
                 <Grid.ColumnDefinitions>
@@ -327,7 +327,7 @@
                     <ColumnDefinition Width="120"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock {DynamicResource AIAssistant_EndpointLabel} VerticalAlignment="Center"
+                <TextBlock Text="{DynamicResource AIAssistant_EndpointLabel}" VerticalAlignment="Center"
                            Foreground="{DynamicResource DockMenuForegroundBrush}"/>
                 <TextBox x:Name="AzureEndpointBox" Grid.Column="1"/>
             </Grid>
@@ -336,7 +336,7 @@
                     <ColumnDefinition Width="120"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock {DynamicResource AIAssistant_DeploymentLabel} VerticalAlignment="Center"
+                <TextBlock Text="{DynamicResource AIAssistant_DeploymentLabel}" VerticalAlignment="Center"
                            Foreground="{DynamicResource DockMenuForegroundBrush}"/>
                 <TextBox x:Name="AzureDeploymentBox" Grid.Column="1"/>
             </Grid>
@@ -344,7 +344,7 @@
             <Separator Margin="0,12"/>
 
             <!-- ══════════════════ Google Gemini ══════════════════ -->
-            <TextBlock {DynamicResource AIAssistant_GoogleGemini} FontWeight="SemiBold" FontSize="14"
+            <TextBlock Text="{DynamicResource AIAssistant_GoogleGemini}" FontWeight="SemiBold" FontSize="14"
                        Foreground="{DynamicResource DockMenuForegroundBrush}" Margin="0,8,0,8"/>
             <Grid Margin="0,0,0,4">
                 <Grid.ColumnDefinitions>
@@ -362,7 +362,7 @@
             <Separator Margin="0,12"/>
 
             <!-- ══════════════════ Ollama ══════════════════ -->
-            <TextBlock {DynamicResource AIAssistant_OllamaLocal} FontWeight="SemiBold" FontSize="14"
+            <TextBlock Text="{DynamicResource AIAssistant_OllamaLocal}" FontWeight="SemiBold" FontSize="14"
                        Foreground="{DynamicResource DockMenuForegroundBrush}" Margin="0,8,0,8"/>
             <Grid Margin="0,0,0,4">
                 <Grid.ColumnDefinitions>
@@ -370,7 +370,7 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock {DynamicResource AIAssistant_BaseUrlLabel} VerticalAlignment="Center"
+                <TextBlock Text="{DynamicResource AIAssistant_BaseUrlLabel}" VerticalAlignment="Center"
                            Foreground="{DynamicResource DockMenuForegroundBrush}"/>
                 <TextBox x:Name="OllamaUrlBox" Grid.Column="1" Margin="0,0,8,0"/>
                 <Button x:Name="TestOllamaBtn" Grid.Column="2" Content="{DynamicResource AIAssistant_TestButton}" Width="70"
@@ -380,14 +380,14 @@
             <Separator Margin="0,12"/>
 
             <!-- ══════════════════ Defaults ══════════════════ -->
-            <TextBlock {DynamicResource AIAssistant_DefaultsSection} FontWeight="SemiBold" FontSize="14"
+            <TextBlock Text="{DynamicResource AIAssistant_DefaultsSection}" FontWeight="SemiBold" FontSize="14"
                        Foreground="{DynamicResource DockMenuForegroundBrush}" Margin="0,8,0,8"/>
             <Grid Margin="0,0,0,4">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="120"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock {DynamicResource AIAssistant_ProviderLabel} VerticalAlignment="Center"
+                <TextBlock Text="{DynamicResource AIAssistant_ProviderLabel}" VerticalAlignment="Center"
                            Foreground="{DynamicResource DockMenuForegroundBrush}"/>
                 <ComboBox x:Name="DefaultProviderCombo" Grid.Column="1"
                           SelectionChanged="OnDefaultProviderChanged"/>
@@ -397,11 +397,11 @@
                     <ColumnDefinition Width="120"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock {DynamicResource AIAssistant_ModelLabel} VerticalAlignment="Center"
+                <TextBlock Text="{DynamicResource AIAssistant_ModelLabel}" VerticalAlignment="Center"
                            Foreground="{DynamicResource DockMenuForegroundBrush}"/>
                 <ComboBox x:Name="DefaultModelCombo" Grid.Column="1"/>
             </Grid>
-            <CheckBox x:Name="ThinkingCheck" {DynamicResource AIAssistant_EnableThinkingOption}
+            <CheckBox x:Name="ThinkingCheck" Content="{DynamicResource AIAssistant_EnableThinkingOption}"
                       Margin="0,8,0,4"/>
 
             <!-- Thinking budget -->
@@ -411,7 +411,7 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="70"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock {DynamicResource AIAssistant_ThinkingBudget} VerticalAlignment="Center"
+                <TextBlock Text="{DynamicResource AIAssistant_ThinkingBudget}" VerticalAlignment="Center"
                            Foreground="{DynamicResource DockMenuForegroundBrush}"/>
                 <Slider x:Name="ThinkingBudgetSlider" Grid.Column="1"
                         Minimum="1024" Maximum="32768" TickFrequency="1024"
@@ -429,7 +429,7 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="70"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock {DynamicResource AIAssistant_MaxTokens} VerticalAlignment="Center"
+                <TextBlock Text="{DynamicResource AIAssistant_MaxTokens}" VerticalAlignment="Center"
                            Foreground="{DynamicResource DockMenuForegroundBrush}"/>
                 <Slider x:Name="MaxTokensSlider" Grid.Column="1"
                         Minimum="10000" Maximum="200000" TickFrequency="10000"
@@ -440,28 +440,28 @@
                            Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             </Grid>
 
-            <CheckBox x:Name="ShowToolCallsCheck" {DynamicResource AIAssistant_ShowToolCalls}
+            <CheckBox x:Name="ShowToolCallsCheck" Content="{DynamicResource AIAssistant_ShowToolCalls}"
                       Margin="0,8,0,0"/>
 
             <Separator Margin="0,12"/>
 
             <!-- ══════════════════ MCP Servers ══════════════════ -->
-            <TextBlock {DynamicResource AIAssistant_McpServers} FontWeight="SemiBold" FontSize="14"
+            <TextBlock Text="{DynamicResource AIAssistant_McpServers}" FontWeight="SemiBold" FontSize="14"
                        Foreground="{DynamicResource DockMenuForegroundBrush}" Margin="0,8,0,8"/>
 
             <ListView x:Name="McpListView" Height="120" Margin="0,0,0,4">
                 <ListView.View>
                     <GridView>
-                        <GridViewColumn {DynamicResource AIAssistant_ColEnabled} Width="55">
+                        <GridViewColumn Header="{DynamicResource AIAssistant_ColEnabled}" Width="55">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <CheckBox IsChecked="{Binding Enabled}" />
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
-                        <GridViewColumn {DynamicResource AIAssistant_ColName} Width="140"
+                        <GridViewColumn Header="{DynamicResource AIAssistant_ColName}" Width="140"
                                         DisplayMemberBinding="{Binding DisplayName}"/>
-                        <GridViewColumn {DynamicResource AIAssistant_ColCommand} Width="200"
+                        <GridViewColumn Header="{DynamicResource AIAssistant_ColCommand}" Width="200"
                                         DisplayMemberBinding="{Binding Command}"/>
                     </GridView>
                 </ListView.View>
@@ -476,12 +476,12 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <TextBox x:Name="McpNameBox" Grid.Column="0" {DynamicResource AIAssistant_ColDisplayName} Margin="0,0,4,0"/>
+                <TextBox x:Name="McpNameBox" Grid.Column="0" ToolTip="{DynamicResource AIAssistant_ColDisplayName}" Margin="0,0,4,0"/>
                 <TextBox x:Name="McpCommandBox" Grid.Column="1" ToolTip="Command (e.g. npx)" Margin="0,0,4,0"/>
-                <TextBox x:Name="McpArgsBox" Grid.Column="2" {DynamicResource AIAssistant_ColArgs} Margin="0,0,4,0"/>
-                <Button x:Name="McpAddBtn" Grid.Column="3" {DynamicResource AIAssistant_Add} Width="50"
+                <TextBox x:Name="McpArgsBox" Grid.Column="2" ToolTip="{DynamicResource AIAssistant_ColArgs}" Margin="0,0,4,0"/>
+                <Button x:Name="McpAddBtn" Grid.Column="3" Content="{DynamicResource AIAssistant_Add}" Width="50"
                         Click="OnMcpAddClick" Padding="4,2" Margin="0,0,4,0"/>
-                <Button x:Name="McpRemoveBtn" Grid.Column="4" {DynamicResource AIAssistant_Remove} Width="60"
+                <Button x:Name="McpRemoveBtn" Grid.Column="4" Content="{DynamicResource AIAssistant_Remove}" Width="60"
                         Click="OnMcpRemoveClick" Padding="4,2"/>
             </Grid>
         </StackPanel>

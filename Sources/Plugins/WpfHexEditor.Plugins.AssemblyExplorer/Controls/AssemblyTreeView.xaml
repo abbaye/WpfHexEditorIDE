@@ -169,8 +169,7 @@
                            FontSize="8"
                            VerticalAlignment="Center"
                            Margin="0,0,3,0"
-                           Foreground="{DynamicResource PFP_AccentBrush}"
-                           {DynamicResource AsmExplorer_Pinned}>
+                           Foreground="{DynamicResource PFP_AccentBrush}" Text="{DynamicResource AsmExplorer_Pinned}">
                     <TextBlock.Style>
                         <Style TargetType="TextBlock">
                             <Setter Property="Visibility" Value="Collapsed"/>
@@ -226,25 +225,25 @@
         <ContextMenu x:Key="AsmNodeContextMenu"
                      Opened="OnContextMenuOpened">
 
-            <MenuItem x:Name="MenuHighlightInHex" {DynamicResource AsmExplorer_HighlightInHex}
+            <MenuItem x:Name="MenuHighlightInHex" Header="{DynamicResource AsmExplorer_HighlightInHex}"
                       Foreground="{DynamicResource DockMenuForegroundBrush}"
-                      {DynamicResource AsmExplorer_OpenInHexTooltip}
+                      ToolTip="{DynamicResource AsmExplorer_OpenInHexTooltip}"
                       Click="OnHighlightInHexEditor">
                 <MenuItem.Icon>
                     <TextBlock Text="&#xE8B5;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
                 </MenuItem.Icon>
             </MenuItem>
 
-            <MenuItem x:Name="MenuOpenInHex" {DynamicResource AsmExplorer_OpenAssemblyInHex}
+            <MenuItem x:Name="MenuOpenInHex" Header="{DynamicResource AsmExplorer_OpenAssemblyInHex}"
                       Foreground="{DynamicResource DockMenuForegroundBrush}"
-                      {DynamicResource AsmExplorer_OpenRawBytes}
+                      ToolTip="{DynamicResource AsmExplorer_OpenRawBytes}"
                       Click="OnOpenInHexEditor">
                 <MenuItem.Icon>
                     <TextBlock Text="&#xE838;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
                 </MenuItem.Icon>
             </MenuItem>
 
-            <MenuItem x:Name="MenuCopyName" {DynamicResource AsmExplorer_CopyName}
+            <MenuItem x:Name="MenuCopyName" Header="{DynamicResource AsmExplorer_CopyName}"
                       Foreground="{DynamicResource DockMenuForegroundBrush}"
                       Click="OnCopyName">
                 <MenuItem.Icon>
@@ -252,7 +251,7 @@
                 </MenuItem.Icon>
             </MenuItem>
 
-            <MenuItem x:Name="MenuCopyFull" {DynamicResource AsmExplorer_CopyFullName}
+            <MenuItem x:Name="MenuCopyFull" Header="{DynamicResource AsmExplorer_CopyFullName}"
                       Foreground="{DynamicResource DockMenuForegroundBrush}"
                       Click="OnCopyFullName">
                 <MenuItem.Icon>
@@ -260,7 +259,7 @@
                 </MenuItem.Icon>
             </MenuItem>
 
-            <MenuItem x:Name="MenuCopyOffset" {DynamicResource AsmExplorer_CopyILOffset}
+            <MenuItem x:Name="MenuCopyOffset" Header="{DynamicResource AsmExplorer_CopyILOffset}"
                       Foreground="{DynamicResource DockMenuForegroundBrush}"
                       Click="OnCopyOffset">
                 <MenuItem.Icon>
@@ -270,8 +269,7 @@
 
             <Separator/>
 
-            <MenuItem x:Name="MenuGoToDefinition"
-                      {DynamicResource AsmExplorer_GoToDefinition}
+            <MenuItem x:Name="MenuGoToDefinition" Header="{DynamicResource AsmExplorer_GoToDefinition}"
                       Foreground="{DynamicResource DockMenuForegroundBrush}"
                       Click="OnGoToDefinition">
                 <MenuItem.Icon>
@@ -280,25 +278,23 @@
             </MenuItem>
 
             <!-- Submenu items are built dynamically in RebuildDecompileSubmenu (ADR-ASM-03) -->
-            <MenuItem x:Name="MenuDecompile"
-                      {DynamicResource AsmExplorer_DecompileTo}
+            <MenuItem x:Name="MenuDecompile" Header="{DynamicResource AsmExplorer_DecompileTo}"
                       Foreground="{DynamicResource DockMenuForegroundBrush}">
                 <MenuItem.Icon>
                     <TextBlock Text="&#xE943;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
                 </MenuItem.Icon>
             </MenuItem>
 
-            <MenuItem x:Name="MenuExtractToProject" {DynamicResource AsmExplorer_ExtractToProject}
+            <MenuItem x:Name="MenuExtractToProject" Header="{DynamicResource AsmExplorer_ExtractToProject}"
                       Foreground="{DynamicResource DockMenuForegroundBrush}"
-                      {DynamicResource AsmExplorer_DecompileTooltip}
+                      ToolTip="{DynamicResource AsmExplorer_DecompileTooltip}"
                       Click="OnExtractToProject">
                 <MenuItem.Icon>
                     <TextBlock Text="&#xEDE1;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
                 </MenuItem.Icon>
             </MenuItem>
 
-            <MenuItem x:Name="MenuShowInMetadata"
-                      {DynamicResource AsmExplorer_ShowInMetadata}
+            <MenuItem x:Name="MenuShowInMetadata" Header="{DynamicResource AsmExplorer_ShowInMetadata}"
                       Foreground="{DynamicResource DockMenuForegroundBrush}"
                       Click="OnShowInMetadataTables">
                 <MenuItem.Icon>
@@ -308,8 +304,7 @@
 
             <Separator/>
 
-            <MenuItem x:Name="MenuExportIL"
-                      {DynamicResource AsmExplorer_ExportIL}
+            <MenuItem x:Name="MenuExportIL" Header="{DynamicResource AsmExplorer_ExportIL}"
                       Foreground="{DynamicResource DockMenuForegroundBrush}"
                       Click="OnExportIL">
                 <MenuItem.Icon>
@@ -317,8 +312,7 @@
                 </MenuItem.Icon>
             </MenuItem>
 
-            <MenuItem x:Name="MenuExportCSharp"
-                      {DynamicResource AsmExplorer_ExportCS}
+            <MenuItem x:Name="MenuExportCSharp" Header="{DynamicResource AsmExplorer_ExportCS}"
                       Foreground="{DynamicResource DockMenuForegroundBrush}"
                       Click="OnExportCSharp">
                 <MenuItem.Icon>
@@ -328,18 +322,18 @@
 
             <Separator/>
 
-            <MenuItem x:Name="MenuPin" {DynamicResource AsmExplorer_PinAssembly}
+            <MenuItem x:Name="MenuPin" Header="{DynamicResource AsmExplorer_PinAssembly}"
                       Foreground="{DynamicResource DockMenuForegroundBrush}"
-                      {DynamicResource AsmExplorer_PinTooltip}
+                      ToolTip="{DynamicResource AsmExplorer_PinTooltip}"
                       Click="OnPinAssembly">
                 <MenuItem.Icon>
                     <TextBlock Text="&#xE840;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
                 </MenuItem.Icon>
             </MenuItem>
 
-            <MenuItem x:Name="MenuCompareWith" {DynamicResource AsmExplorer_CompareWith}
+            <MenuItem x:Name="MenuCompareWith" Header="{DynamicResource AsmExplorer_CompareWith}"
                       Foreground="{DynamicResource DockMenuForegroundBrush}"
-                      {DynamicResource AsmExplorer_CompareTooltip}
+                      ToolTip="{DynamicResource AsmExplorer_CompareTooltip}"
                       Click="OnCompareWith">
                 <MenuItem.Icon>
                     <TextBlock Text="&#xE8AD;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
@@ -348,18 +342,18 @@
 
             <Separator/>
 
-            <MenuItem x:Name="MenuCollapseAll" {DynamicResource AsmExplorer_CollapseAll}
+            <MenuItem x:Name="MenuCollapseAll" Header="{DynamicResource AsmExplorer_CollapseAll}"
                       Foreground="{DynamicResource DockMenuForegroundBrush}"
-                      {DynamicResource AsmExplorer_CollapseAllTooltip}
+                      ToolTip="{DynamicResource AsmExplorer_CollapseAllTooltip}"
                       Click="OnCollapseAll">
                 <MenuItem.Icon>
                     <TextBlock Text="&#xE8AA;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
                 </MenuItem.Icon>
             </MenuItem>
 
-            <MenuItem x:Name="MenuCloseAllAssemblies" {DynamicResource AsmExplorer_CloseAllAssemblies}
+            <MenuItem x:Name="MenuCloseAllAssemblies" Header="{DynamicResource AsmExplorer_CloseAllAssemblies}"
                       Foreground="#EF4444"
-                      {DynamicResource AsmExplorer_CloseAllTooltip}
+                      ToolTip="{DynamicResource AsmExplorer_CloseAllTooltip}"
                       Click="OnCloseAllAssemblies">
                 <MenuItem.Icon>
                     <TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="12"
@@ -369,7 +363,7 @@
 
             <Separator/>
 
-            <MenuItem x:Name="MenuCloseAssembly" {DynamicResource AsmExplorer_CloseAssembly}
+            <MenuItem x:Name="MenuCloseAssembly" Header="{DynamicResource AsmExplorer_CloseAssembly}"
                       Foreground="#EF4444"
                       Click="OnCloseAssembly">
                 <MenuItem.Icon>

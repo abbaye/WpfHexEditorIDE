@@ -71,31 +71,30 @@
                          Foreground="{DynamicResource XD_PropertyValueForeground}"
                          BorderBrush="{DynamicResource DockBorderBrush}" BorderThickness="1"
                          VerticalContentAlignment="Center" Padding="2,0"
-                         Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged}"
-                         {DynamicResource XamlDesigner_FilterResources}/>
+                         Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged}" ToolTip="{DynamicResource XamlDesigner_FilterResources}"/>
 
                 <!-- Left side: action buttons -->
                 <StackPanel Orientation="Horizontal">
 
                     <!-- Scan / Refresh -->
                     <Button Style="{StaticResource RbToolButtonStyle}"
-                            Content="&#xE72C;" {DynamicResource XamlDesigner_ScanResources}
+                            Content="&#xE72C;" Content="{DynamicResource XamlDesigner_ScanResources}"
                             Command="{Binding ScanCommand}"/>
 
                     <!-- Find Usages -->
                     <Button Style="{StaticResource RbToolButtonStyle}"
-                            Content="&#xE773;" {DynamicResource XamlDesigner_FindUsages}
+                            Content="&#xE773;" Content="{DynamicResource XamlDesigner_FindUsages}"
                             Command="{Binding FindUsagesCommand}"/>
 
                     <!-- Go to Definition -->
                     <Button Style="{StaticResource RbToolButtonStyle}"
-                            Content="&#xE8A0;" {DynamicResource XamlDesigner_GoToDefinition}
+                            Content="&#xE8A0;" Content="{DynamicResource XamlDesigner_GoToDefinition}"
                             Command="{Binding GoToDefinitionCommand}"
                             CommandParameter="{Binding SelectedEntry}"/>
 
                     <!-- Copy Key -->
                     <Button Style="{StaticResource RbToolButtonStyle}"
-                            Content="&#xE8C8;" {DynamicResource XamlDesigner_CopyResourceKey}
+                            Content="&#xE8C8;" Content="{DynamicResource XamlDesigner_CopyResourceKey}"
                             Command="{Binding CopyKeyCommand}"
                             CommandParameter="{Binding SelectedEntry}"/>
 
@@ -127,39 +126,36 @@
 
                     <!-- Add new resource entry -->
                     <Button x:Name="BtnAddResource"
-                            Style="{StaticResource RbToolButtonStyle}"
-                            {DynamicResource XamlDesigner_AddNewResource}
+                            Style="{StaticResource RbToolButtonStyle}" Content="{DynamicResource XamlDesigner_AddNewResource}"
                             Command="{Binding AddResourceCommand}">
                         <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="12" Text="&#xE710;"/>
                     </Button>
 
                     <!-- Sort resources -->
                     <Button x:Name="BtnSortBy"
-                            Style="{StaticResource RbToolButtonStyle}"
-                            {DynamicResource XamlDesigner_SortResources}
+                            Style="{StaticResource RbToolButtonStyle}" Content="{DynamicResource XamlDesigner_SortResources}"
                             Click="OnSortByClick">
                         <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="12" Text="&#xE174;"/>
                         <Button.ContextMenu>
                             <ContextMenu>
-                                <MenuItem {DynamicResource XamlDesigner_SortNameAZ}  Tag="Name"  Click="OnSortModeSelected"/>
-                                <MenuItem {DynamicResource XamlDesigner_SortByType}        Tag="Type"  Click="OnSortModeSelected"/>
-                                <MenuItem {DynamicResource XamlDesigner_SortByUsage} Tag="Usage" Click="OnSortModeSelected"/>
+                                <MenuItem Header="{DynamicResource XamlDesigner_SortNameAZ}"  Tag="Name"  Click="OnSortModeSelected"/>
+                                <MenuItem Header="{DynamicResource XamlDesigner_SortByType}"        Tag="Type"  Click="OnSortModeSelected"/>
+                                <MenuItem Header="{DynamicResource XamlDesigner_SortByUsage}" Tag="Usage" Click="OnSortModeSelected"/>
                             </ContextMenu>
                         </Button.ContextMenu>
                     </Button>
 
                     <!-- Filter by scope -->
                     <Button x:Name="BtnScopeFilter"
-                            Style="{StaticResource RbToolButtonStyle}"
-                            {DynamicResource XamlDesigner_FilterByScope}
+                            Style="{StaticResource RbToolButtonStyle}" Content="{DynamicResource XamlDesigner_FilterByScope}"
                             Click="OnScopeFilterClick">
                         <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="12" Text="&#xE7B3;"/>
                         <Button.ContextMenu>
                             <ContextMenu>
-                                <MenuItem {DynamicResource XamlDesigner_ScopeAll} Tag="All"    Click="OnScopeSelected"/>
-                                <MenuItem {DynamicResource XamlDesigner_ScopeLocal}      Tag="Local"  Click="OnScopeSelected"/>
-                                <MenuItem {DynamicResource XamlDesigner_ScopeMerged}     Tag="Merged" Click="OnScopeSelected"/>
-                                <MenuItem {DynamicResource XamlDesigner_ScopeApp}        Tag="App"    Click="OnScopeSelected"/>
+                                <MenuItem Header="{DynamicResource XamlDesigner_ScopeAll}" Tag="All"    Click="OnScopeSelected"/>
+                                <MenuItem Header="{DynamicResource XamlDesigner_ScopeLocal}"      Tag="Local"  Click="OnScopeSelected"/>
+                                <MenuItem Header="{DynamicResource XamlDesigner_ScopeMerged}"     Tag="Merged" Click="OnScopeSelected"/>
+                                <MenuItem Header="{DynamicResource XamlDesigner_ScopeApp}"        Tag="App"    Click="OnScopeSelected"/>
                             </ContextMenu>
                         </Button.ContextMenu>
                     </Button>
@@ -216,35 +212,35 @@
             <!-- Row context menu -->
             <ListView.ContextMenu>
                 <ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
-                    <MenuItem {DynamicResource XamlDesigner_GoToDefinitionMenu}
+                    <MenuItem Header="{DynamicResource XamlDesigner_GoToDefinitionMenu}"
                               Command="{Binding GoToDefinitionCommand}"
                               CommandParameter="{Binding SelectedEntry}">
                         <MenuItem.Icon>
                             <TextBlock Text="&#xE8A0;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem {DynamicResource XamlDesigner_FindUsagesMenu}
+                    <MenuItem Header="{DynamicResource XamlDesigner_FindUsagesMenu}"
                               Command="{Binding FindUsagesCommand}">
                         <MenuItem.Icon>
                             <TextBlock Text="&#xE773;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
                         </MenuItem.Icon>
                     </MenuItem>
                     <Separator/>
-                    <MenuItem {DynamicResource XamlDesigner_RenameF2}
+                    <MenuItem Header="{DynamicResource XamlDesigner_RenameF2}"
                               Command="{Binding RenameCommand}"
                               CommandParameter="{Binding SelectedEntry}">
                         <MenuItem.Icon>
                             <TextBlock Text="&#xE8AC;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem {DynamicResource XamlDesigner_CopyKey}
+                    <MenuItem Header="{DynamicResource XamlDesigner_CopyKey}"
                               Command="{Binding CopyKeyCommand}"
                               CommandParameter="{Binding SelectedEntry}">
                         <MenuItem.Icon>
                             <TextBlock Text="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem {DynamicResource XamlDesigner_CopyValue} Click="OnCopyValueClick">
+                    <MenuItem Header="{DynamicResource XamlDesigner_CopyValue}" Click="OnCopyValueClick">
                         <MenuItem.Icon>
                             <TextBlock Text="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
                         </MenuItem.Icon>
@@ -256,7 +252,7 @@
                 <GridView>
 
                     <!-- Preview swatch (32px) -->
-                    <GridViewColumn {DynamicResource XamlDesigner_ColPreview} Width="32">
+                    <GridViewColumn Header="{DynamicResource XamlDesigner_ColPreview}" Width="32">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate DataType="{x:Type models:ResourceEntryViewModel}">
                                 <Border Width="18" Height="14"
@@ -280,7 +276,7 @@
                     </GridViewColumn>
 
                     <!-- Key (130px, inline-editable) -->
-                    <GridViewColumn {DynamicResource XamlDesigner_ColKey} Width="130">
+                    <GridViewColumn Header="{DynamicResource XamlDesigner_ColKey}" Width="130">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate DataType="{x:Type models:ResourceEntryViewModel}">
                                 <Grid>
@@ -335,7 +331,7 @@
                     </GridViewColumn>
 
                     <!-- Usage (70px) -->
-                    <GridViewColumn {DynamicResource XamlDesigner_ColUsage} Width="70">
+                    <GridViewColumn Header="{DynamicResource XamlDesigner_ColUsage}" Width="70">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate DataType="{x:Type models:ResourceEntryViewModel}">
                                 <TextBlock Text="{Binding UsageLabel}"
@@ -349,8 +345,7 @@
                         <GridViewColumn.CellTemplate>
                             <DataTemplate DataType="{x:Type models:ResourceEntryViewModel}">
                                 <TextBlock Text="&#x26A0;" FontSize="11"
-                                           Foreground="Orange"
-                                           {DynamicResource XamlDesigner_DuplicateValue}>
+                                           Foreground="Orange" Text="{DynamicResource XamlDesigner_DuplicateValue}">
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock">
                                             <Setter Property="Visibility" Value="Collapsed"/>

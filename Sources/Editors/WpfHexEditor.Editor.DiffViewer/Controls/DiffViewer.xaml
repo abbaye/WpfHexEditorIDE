@@ -28,9 +28,9 @@
 
         <!-- Toolbar -->
         <ToolBar Grid.Row="0" Background="{DynamicResource TE_LineNumberBackground}">
-            <Button x:Name="BtnPrevDiff" Content="&#x25C4; Prev" {DynamicResource DiffViewer_PrevDiff}
+            <Button x:Name="BtnPrevDiff" Content="&#x25C4; Prev" ToolTip="{DynamicResource DiffViewer_PrevDiff}"
                     Click="BtnPrevDiff_Click" Padding="8,3" IsEnabled="False"/>
-            <Button x:Name="BtnNextDiff" Content="Next &#x25BA;" {DynamicResource DiffViewer_NextDiff}
+            <Button x:Name="BtnNextDiff" Content="Next &#x25BA;" ToolTip="{DynamicResource DiffViewer_NextDiff}"
                     Click="BtnNextDiff_Click" Padding="8,3" IsEnabled="False"/>
             <Separator/>
             <TextBlock x:Name="DiffCountText" Text="&#x2014;" VerticalAlignment="Center" Padding="4,0"
@@ -49,8 +49,7 @@
                 <TextBlock x:Name="DeletedText" Text="Deleted: 0" Foreground="{DynamicResource DiffViewer_BadgeForeground}" FontSize="11"/>
             </Border>
             <Separator/>
-            <ToggleButton x:Name="BtnDiffList" {DynamicResource DiffViewer_DiffList} Padding="8,3"
-                          {DynamicResource DiffViewer_ShowHideDiffList}
+            <ToggleButton x:Name="BtnDiffList" Content="{DynamicResource DiffViewer_DiffList}" Padding="8,3" ToolTip="{DynamicResource DiffViewer_ShowHideDiffList}"
                           Checked="OnDiffListToggled" Unchecked="OnDiffListToggled"/>
         </ToolBar>
 
@@ -127,11 +126,11 @@
                       BorderThickness="0"
                       SelectionChanged="OnDiffListSelectionChanged">
                 <DataGrid.Columns>
-                    <DataGridTextColumn {DynamicResource DiffViewer_ColType}        Binding="{Binding TypeLabel}"    Width="90"/>
+                    <DataGridTextColumn Header="{DynamicResource DiffViewer_ColType}"        Binding="{Binding TypeLabel}"    Width="90"/>
                     <DataGridTextColumn Header="Offset"      Binding="{Binding OffsetHex}"    Width="110"/>
-                    <DataGridTextColumn {DynamicResource DiffViewer_ColLength}      Binding="{Binding LengthStr}"    Width="80"/>
-                    <DataGridTextColumn {DynamicResource DiffViewer_ColLeftBytes}  Binding="{Binding LeftPreview}"  Width="*"/>
-                    <DataGridTextColumn {DynamicResource DiffViewer_ColRightBytes} Binding="{Binding RightPreview}" Width="*"/>
+                    <DataGridTextColumn Header="{DynamicResource DiffViewer_ColLength}"      Binding="{Binding LengthStr}"    Width="80"/>
+                    <DataGridTextColumn Header="{DynamicResource DiffViewer_ColLeftBytes}"  Binding="{Binding LeftPreview}"  Width="*"/>
+                    <DataGridTextColumn Header="{DynamicResource DiffViewer_ColRightBytes}" Binding="{Binding RightPreview}" Width="*"/>
                 </DataGrid.Columns>
             </DataGrid>
         </Grid>

@@ -83,8 +83,7 @@
                            VerticalAlignment="Center"
                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                            Opacity="0.6"
-                           Margin="8,0,4,0"
-                           {DynamicResource XamlDesigner_NoDesignData}
+                           Margin="8,0,4,0" Text="{DynamicResource XamlDesigner_NoDesignData}"
                            TextTrimming="CharacterEllipsis"
                            MaxWidth="140"/>
 
@@ -93,23 +92,20 @@
                     <!-- Refresh -->
                     <Button Style="{StaticResource DdToolButtonStyle}"
                             Width="22"
-                            Content="&#xE72C;"
-                            {DynamicResource XamlDesigner_RefreshDesignData}
+                            Content="&#xE72C;" Content="{DynamicResource XamlDesigner_RefreshDesignData}"
                             Click="OnRefreshClick"/>
 
                     <!-- Generate Mock Data -->
                     <Button Style="{StaticResource DdToolButtonStyle}"
                             Width="22"
-                            Content="&#xE8D5;"
-                            {DynamicResource XamlDesigner_GenerateMockData}
+                            Content="&#xE8D5;" Content="{DynamicResource XamlDesigner_GenerateMockData}"
                             Click="OnGenerateMockDataClick"/>
 
                     <!-- Pick Type -->
                     <Button x:Name="BtnPickType"
                             Style="{StaticResource DdToolButtonStyle}"
                             Width="22"
-                            Content="&#xE8A0;"
-                            {DynamicResource XamlDesigner_PickDesignDataType}
+                            Content="&#xE8A0;" Content="{DynamicResource XamlDesigner_PickDesignDataType}"
                             Click="OnPickTypeClick"/>
                     <Popup x:Name="TypePickerPopup"
                            StaysOpen="False"
@@ -124,8 +120,7 @@
                                 <TextBox x:Name="TypeSearchBox"
                                          DockPanel.Dock="Top"
                                          Margin="4"
-                                         TextChanged="OnTypeSearchChanged"
-                                         {DynamicResource XamlDesigner_SearchTypes}/>
+                                         TextChanged="OnTypeSearchChanged" ToolTip="{DynamicResource XamlDesigner_SearchTypes}"/>
                                 <ListBox x:Name="TypePickerList"
                                          MaxHeight="200"
                                          MouseDoubleClick="OnTypePickerDoubleClick"
@@ -147,24 +142,21 @@
                     <Button Style="{StaticResource DdToolButtonStyle}"
                             x:Name="BtnCopyJson"
                             Width="22"
-                            Content="&#xE8C8;"
-                            {DynamicResource XamlDesigner_CopyInstanceJson}
+                            Content="&#xE8C8;" Content="{DynamicResource XamlDesigner_CopyInstanceJson}"
                             Click="OnCopyJsonClick"/>
 
                     <!-- Clear Data -->
                     <Button Style="{StaticResource DdToolButtonStyle}"
                             x:Name="BtnClearData"
                             Width="22"
-                            Content="&#xE74D;"
-                            {DynamicResource XamlDesigner_ClearDesignInstance}
+                            Content="&#xE74D;" Content="{DynamicResource XamlDesigner_ClearDesignInstance}"
                             Click="OnClearDataClick"/>
 
                     <!-- Paste JSON -->
                     <Button Style="{StaticResource DdToolButtonStyle}"
                             x:Name="BtnPasteJson"
                             Width="22"
-                            Content="&#xE77F;"
-                            {DynamicResource XamlDesigner_PasteJson}
+                            Content="&#xE77F;" Content="{DynamicResource XamlDesigner_PasteJson}"
                             Click="OnPasteJsonClick"/>
 
                 </StackPanel>
@@ -190,11 +182,10 @@
             </TabControl.ItemContainerStyle>
 
             <!-- ── Tab: Properties ───────────────────────────────── -->
-            <TabItem {DynamicResource XamlDesigner_PropertiesTab}>
+            <TabItem Header="{DynamicResource XamlDesigner_PropertiesTab}">
                 <Grid>
                     <!-- Placeholder -->
-                    <TextBlock x:Name="PropertiesPlaceholder"
-                               {DynamicResource XamlDesigner_NoDesignInstance}
+                    <TextBlock x:Name="PropertiesPlaceholder" Text="{DynamicResource XamlDesigner_NoDesignInstance}"
                                FontSize="11" FontStyle="Italic"
                                Foreground="{DynamicResource DockMenuForegroundBrush}"
                                Opacity="0.5"
@@ -232,10 +223,9 @@
             </TabItem>
 
             <!-- ── Tab: JSON ─────────────────────────────────────── -->
-            <TabItem {DynamicResource XamlDesigner_JsonTab}>
+            <TabItem Header="{DynamicResource XamlDesigner_JsonTab}">
                 <Grid>
-                    <TextBlock x:Name="JsonPlaceholder"
-                               {DynamicResource XamlDesigner_NoDataAvailable}
+                    <TextBlock x:Name="JsonPlaceholder" Text="{DynamicResource XamlDesigner_NoDataAvailable}"
                                FontSize="11" FontStyle="Italic"
                                Foreground="{DynamicResource DockMenuForegroundBrush}"
                                Opacity="0.5"
@@ -249,10 +239,9 @@
             </TabItem>
 
             <!-- ── Tab: XAML ─────────────────────────────────────── -->
-            <TabItem {DynamicResource XamlDesigner_XamlTab}>
+            <TabItem Header="{DynamicResource XamlDesigner_XamlTab}">
                 <Grid>
-                    <TextBlock x:Name="XamlPlaceholder"
-                               {DynamicResource XamlDesigner_NoDesignInstanceShort}
+                    <TextBlock x:Name="XamlPlaceholder" Text="{DynamicResource XamlDesigner_NoDesignInstanceShort}"
                                FontSize="11" FontStyle="Italic"
                                Foreground="{DynamicResource DockMenuForegroundBrush}"
                                Opacity="0.5"

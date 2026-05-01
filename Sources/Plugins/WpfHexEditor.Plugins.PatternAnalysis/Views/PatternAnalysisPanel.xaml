@@ -76,14 +76,13 @@
                 <Button x:Name="ToolbarOverflowButton"
                         DockPanel.Dock="Right"
                         Visibility="Collapsed"
-                        Style="{StaticResource PanelIconButtonStyle}"
-                        {DynamicResource PatternAnalysis_MoreOptions}
+                        Style="{StaticResource PanelIconButtonStyle}" Content="{DynamicResource PatternAnalysis_MoreOptions}"
                         Click="OnOverflowButtonClick">
                     <TextBlock Text="&#xE712;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                     <Button.ContextMenu>
                         <ContextMenu x:Name="OverflowContextMenu" Opened="OnOverflowMenuOpened">
-                            <MenuItem {DynamicResource PatternAnalysis_AnalyzeMenu}
+                            <MenuItem Header="{DynamicResource PatternAnalysis_AnalyzeMenu}"
                                       Tag="TbgPatternRefresh"
                                       Click="AnalyzeButton_Click"/>
                         </ContextMenu>
@@ -96,12 +95,11 @@
                             DockPanel.Dock="Right"
                             VerticalAlignment="Center">
                     <Button Style="{StaticResource PanelIconButtonStyle}"
-                            Content="&#xE72C;"
-                            {DynamicResource PatternAnalysis_AnalyzeTooltip}
+                            Content="&#xE72C;" Content="{DynamicResource PatternAnalysis_AnalyzeTooltip}"
                             Click="AnalyzeButton_Click"/>
                 </StackPanel>
 
-                <TextBlock {DynamicResource PatternAnalysis_Title}
+                <TextBlock Text="{DynamicResource PatternAnalysis_Title}"
                            VerticalAlignment="Center"
                            Margin="8,0,0,0"
                            FontWeight="SemiBold"
@@ -115,12 +113,10 @@
                 <!-- Status Card -->
                 <Border Style="{StaticResource CardStyle}" x:Name="StatusCard">
                     <StackPanel>
-                        <TextBlock x:Name="StatusTextBlock"
-                                   {DynamicResource PatternAnalysis_ClickToStart}
+                        <TextBlock x:Name="StatusTextBlock" Text="{DynamicResource PatternAnalysis_ClickToStart}"
                                    FontSize="11" FontStyle="Italic"
                                    Foreground="{DynamicResource PFP_SubTextBrush}"/>
-                        <Button x:Name="AnalyzeButton"
-                                {DynamicResource PatternAnalysis_AnalyzeSelection}
+                        <Button x:Name="AnalyzeButton" Content="{DynamicResource PatternAnalysis_AnalyzeSelection}"
                                 Style="{StaticResource PanelDropdownButtonStyle}"
                                 Height="28" Margin="0,8,0,0"
                                 Padding="12,3"
@@ -131,17 +127,17 @@
                 <!-- Entropy Card -->
                 <Border Style="{StaticResource CardStyle}" x:Name="EntropyCard" Visibility="Collapsed">
                     <StackPanel>
-                        <TextBlock {DynamicResource PatternAnalysis_EntropySection} Style="{StaticResource SectionHeaderStyle}" Margin="0,0,0,8"/>
+                        <TextBlock Text="{DynamicResource PatternAnalysis_EntropySection}" Style="{StaticResource SectionHeaderStyle}" Margin="0,0,0,8"/>
 
                         <Grid Margin="0,0,0,8">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" {DynamicResource PatternAnalysis_EntropyLabel} Style="{StaticResource MetricLabelStyle}" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="0" Text="{DynamicResource PatternAnalysis_EntropyLabel}" Style="{StaticResource MetricLabelStyle}" VerticalAlignment="Center"/>
                             <StackPanel Grid.Column="1" Orientation="Horizontal">
                                 <TextBlock x:Name="EntropyValueText" Text="0.00" Style="{StaticResource MetricValueStyle}"/>
-                                <TextBlock {DynamicResource PatternAnalysis_MaxBits} FontSize="10"
+                                <TextBlock Text="{DynamicResource PatternAnalysis_MaxBits}" FontSize="10"
                                            Foreground="{DynamicResource PFP_SubTextBrush}"
                                            Margin="4,0,0,0" VerticalAlignment="Bottom" Padding="0,0,0,2"/>
                             </StackPanel>
@@ -165,7 +161,7 @@
                 <!-- Byte Distribution Card -->
                 <Border Style="{StaticResource CardStyle}" x:Name="DistributionCard" Visibility="Collapsed">
                     <StackPanel>
-                        <TextBlock {DynamicResource PatternAnalysis_ByteDistribution} Style="{StaticResource SectionHeaderStyle}" Margin="0,0,0,8"/>
+                        <TextBlock Text="{DynamicResource PatternAnalysis_ByteDistribution}" Style="{StaticResource SectionHeaderStyle}" Margin="0,0,0,8"/>
 
                         <Border Height="150"
                                 Background="{DynamicResource PFP_PanelBackgroundBrush}"
@@ -183,11 +179,11 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
-                            <TextBlock Grid.Row="0" Grid.Column="0" {DynamicResource PatternAnalysis_MostFrequent} Style="{StaticResource MetricLabelStyle}"/>
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="{DynamicResource PatternAnalysis_MostFrequent}" Style="{StaticResource MetricLabelStyle}"/>
                             <TextBlock Grid.Row="0" Grid.Column="1" x:Name="MostFrequentByteText"
                                        Text="0x00" FontFamily="Consolas"
                                        Foreground="{DynamicResource PFP_TextBrush}"/>
-                            <TextBlock Grid.Row="1" Grid.Column="0" {DynamicResource PatternAnalysis_UniqueBytes} Style="{StaticResource MetricLabelStyle}" Margin="0,4,8,0"/>
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="{DynamicResource PatternAnalysis_UniqueBytes}" Style="{StaticResource MetricLabelStyle}" Margin="0,4,8,0"/>
                             <TextBlock Grid.Row="1" Grid.Column="1" x:Name="UniqueBytesText"
                                        Text="0 / 256" Margin="0,4,0,0"
                                        Foreground="{DynamicResource PFP_TextBrush}"/>
@@ -198,7 +194,7 @@
                 <!-- Detected Patterns Card -->
                 <Border Style="{StaticResource CardStyle}" x:Name="PatternsCard" Visibility="Collapsed">
                     <StackPanel>
-                        <TextBlock {DynamicResource PatternAnalysis_DetectedPatterns} Style="{StaticResource SectionHeaderStyle}" Margin="0,0,0,8"/>
+                        <TextBlock Text="{DynamicResource PatternAnalysis_DetectedPatterns}" Style="{StaticResource SectionHeaderStyle}" Margin="0,0,0,8"/>
 
                         <ItemsControl x:Name="PatternsListBox">
                             <ItemsControl.ItemTemplate>
@@ -227,8 +223,7 @@
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
 
-                        <TextBlock x:Name="NoPatternsText"
-                                   {DynamicResource PatternAnalysis_NoPatterns}
+                        <TextBlock x:Name="NoPatternsText" Text="{DynamicResource PatternAnalysis_NoPatterns}"
                                    FontSize="10" FontStyle="Italic"
                                    Foreground="{DynamicResource PFP_SubTextBrush}"
                                    Visibility="Collapsed"/>

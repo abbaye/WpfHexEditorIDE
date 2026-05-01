@@ -165,8 +165,7 @@
                 <!-- Clear Recent -->
                 <Button DockPanel.Dock="Right"
                         x:Name="BtnClearRecent"
-                        Style="{StaticResource TbxToolButtonStyle}"
-                        {DynamicResource XamlDesigner_ClearRecentItems}
+                        Style="{StaticResource TbxToolButtonStyle}" Content="{DynamicResource XamlDesigner_ClearRecentItems}"
                         Click="OnClearRecent">
                     <TextBlock Text="&#xE894;" FontFamily="Segoe MDL2 Assets" FontSize="13"/>
                 </Button>
@@ -174,8 +173,7 @@
                 <!-- Collapse all categories -->
                 <Button DockPanel.Dock="Right"
                         x:Name="BtnCollapseAllCategories"
-                        Style="{StaticResource TbxToolButtonStyle}"
-                        {DynamicResource XamlDesigner_CollapseAllCategories}
+                        Style="{StaticResource TbxToolButtonStyle}" Content="{DynamicResource XamlDesigner_CollapseAllCategories}"
                         Click="OnCollapseAllCategories">
                     <TextBlock Text="&#xE972;" FontFamily="Segoe MDL2 Assets" FontSize="13"/>
                 </Button>
@@ -183,8 +181,7 @@
                 <!-- Expand all categories -->
                 <Button DockPanel.Dock="Right"
                         x:Name="BtnExpandAllCategories"
-                        Style="{StaticResource TbxToolButtonStyle}"
-                        {DynamicResource XamlDesigner_ExpandAllCategories}
+                        Style="{StaticResource TbxToolButtonStyle}" Content="{DynamicResource XamlDesigner_ExpandAllCategories}"
                         Click="OnExpandAllCategories">
                     <TextBlock Text="&#xE9A0;" FontFamily="Segoe MDL2 Assets" FontSize="13"/>
                 </Button>
@@ -192,15 +189,14 @@
                 <!-- Sort -->
                 <Button DockPanel.Dock="Right"
                         x:Name="BtnSortBy"
-                        Style="{StaticResource TbxToolButtonStyle}"
-                        {DynamicResource XamlDesigner_SortToolbox}
+                        Style="{StaticResource TbxToolButtonStyle}" Content="{DynamicResource XamlDesigner_SortToolbox}"
                         Click="OnToolboxSortClick">
                     <TextBlock Text="&#xE174;" FontFamily="Segoe MDL2 Assets" FontSize="13"/>
                     <Button.ContextMenu>
                         <ContextMenu>
-                            <MenuItem {DynamicResource XamlDesigner_SortNameAZ}    Tag="ByNameAZ"   Click="OnToolboxSortSelected"/>
-                            <MenuItem {DynamicResource XamlDesigner_SortByCategory}   Tag="ByCategory" Click="OnToolboxSortSelected"/>
-                            <MenuItem {DynamicResource XamlDesigner_SortRecentlyUsed} Tag="ByRecent"   Click="OnToolboxSortSelected"/>
+                            <MenuItem Header="{DynamicResource XamlDesigner_SortNameAZ}"    Tag="ByNameAZ"   Click="OnToolboxSortSelected"/>
+                            <MenuItem Header="{DynamicResource XamlDesigner_SortByCategory}"   Tag="ByCategory" Click="OnToolboxSortSelected"/>
+                            <MenuItem Header="{DynamicResource XamlDesigner_SortRecentlyUsed}" Tag="ByRecent"   Click="OnToolboxSortSelected"/>
                         </ContextMenu>
                     </Button.ContextMenu>
                 </Button>
@@ -219,8 +215,8 @@
                 <!-- Search TextBox -->
                 <TextBox x:Name="TbxFilter"
                          Style="{DynamicResource PanelSearchBoxStyle}"
-                         {DynamicResource XamlDesigner_SearchControls}
-                         {DynamicResource XamlDesigner_SearchControls}
+                         ToolTip="{DynamicResource XamlDesigner_SearchControls}"
+                         ToolTip="{DynamicResource XamlDesigner_SearchControls}"
                          TextChanged="OnSearchTextChanged" />
             </DockPanel>
         </Border>
@@ -235,7 +231,7 @@
 
                 <!-- ── Favorites section ── -->
                 <StackPanel x:Name="FavoritesSection" Visibility="Collapsed">
-                    <TextBlock {DynamicResource XamlDesigner_FavoritesLabel} Style="{StaticResource SectionHeaderStyle}"/>
+                    <TextBlock Text="{DynamicResource XamlDesigner_FavoritesLabel}" Style="{StaticResource SectionHeaderStyle}"/>
                     <WrapPanel x:Name="FavoritesWrap"
                                Orientation="Horizontal"
                                Margin="4,0,4,4"/>
@@ -243,7 +239,7 @@
 
                 <!-- ── Recent section ── -->
                 <StackPanel x:Name="RecentSection" Visibility="Collapsed">
-                    <TextBlock {DynamicResource XamlDesigner_RecentLabel} Style="{StaticResource SectionHeaderStyle}"/>
+                    <TextBlock Text="{DynamicResource XamlDesigner_RecentLabel}" Style="{StaticResource SectionHeaderStyle}"/>
                     <WrapPanel x:Name="RecentWrap"
                                Orientation="Horizontal"
                                Margin="4,0,4,4"/>
@@ -336,14 +332,14 @@
                                 <!-- Context menu -->
                                 <Grid.ContextMenu>
                                     <ContextMenu Tag="{Binding}">
-                                        <MenuItem {DynamicResource XamlDesigner_AddToFavorites}
+                                        <MenuItem Header="{DynamicResource XamlDesigner_AddToFavorites}"
                                                   Click="OnToggleFavoriteClick"
                                                   Tag="{Binding}">
                                             <MenuItem.Icon>
                                                 <TextBlock Text="&#xE734;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
                                             </MenuItem.Icon>
                                         </MenuItem>
-                                        <MenuItem {DynamicResource XamlDesigner_RemoveFromFavorites}
+                                        <MenuItem Header="{DynamicResource XamlDesigner_RemoveFromFavorites}"
                                                   Click="OnRemoveFavoriteClick"
                                                   Tag="{Binding}">
                                             <MenuItem.Icon>
@@ -351,14 +347,14 @@
                                             </MenuItem.Icon>
                                         </MenuItem>
                                         <Separator/>
-                                        <MenuItem {DynamicResource XamlDesigner_InsertAtSelection}
+                                        <MenuItem Header="{DynamicResource XamlDesigner_InsertAtSelection}"
                                                   Click="OnInsertAtSelectionClick"
                                                   Tag="{Binding}">
                                             <MenuItem.Icon>
                                                 <TextBlock Text="&#xE8A6;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
                                             </MenuItem.Icon>
                                         </MenuItem>
-                                        <MenuItem {DynamicResource XamlDesigner_CopyTag}
+                                        <MenuItem Header="{DynamicResource XamlDesigner_CopyTag}"
                                                   Click="OnCopyTagClick"
                                                   Tag="{Binding}">
                                             <MenuItem.Icon>

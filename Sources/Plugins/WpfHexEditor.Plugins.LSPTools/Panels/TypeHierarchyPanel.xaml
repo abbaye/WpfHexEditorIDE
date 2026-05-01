@@ -14,7 +14,7 @@
     <UserControl.Resources>
             <ResourceDictionary>
                 <ResourceDictionary.MergedDictionaries>
-                    <xmlns:lspSvc:LspToolsLocalizedDictionary/>
+                    <lspSvc:LspToolsLocalizedDictionary/>
                 </ResourceDictionary.MergedDictionaries>
 
 
@@ -84,8 +84,7 @@
             <DockPanel Margin="4,0" LastChildFill="True" VerticalAlignment="Center">
 
                 <Button DockPanel.Dock="Left"
-                        Style="{DynamicResource PanelIconButtonStyle}"
-                        {DynamicResource LspTools_RefreshTooltip}
+                        Style="{DynamicResource PanelIconButtonStyle}" Content="{DynamicResource LspTools_RefreshTooltip}"
                         Click="OnRefreshClicked"
                         Margin="0,0,4,0">
                     <TextBlock Text="&#xE72C;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
@@ -101,8 +100,7 @@
                                   Style="{StaticResource TH_ModeButton}"
                                   IsChecked="True"
                                   Checked="OnModeChanged"
-                                  Unchecked="OnModeChanged"
-                                  {DynamicResource LspTools_ShowBaseTypes}>
+                                  Unchecked="OnModeChanged" ToolTip="{DynamicResource LspTools_ShowBaseTypes}">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="&#xE74A;" FontFamily="Segoe MDL2 Assets" FontSize="11"
                                        Margin="0,0,4,0" VerticalAlignment="Center"/>
@@ -114,7 +112,7 @@
                                   IsChecked="False"
                                   Checked="OnModeChanged"
                                   Unchecked="OnModeChanged"
-                                  {DynamicResource LspTools_ShowDerivedTypes}
+                                  ToolTip="{DynamicResource LspTools_ShowDerivedTypes}"
                                   Margin="4,0,0,0">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="&#xE74B;" FontFamily="Segoe MDL2 Assets" FontSize="11"
@@ -170,8 +168,7 @@
         </TreeView>
 
         <TextBlock x:Name="EmptyPlaceholder"
-                   Grid.Row="1"
-                   {DynamicResource LspTools_NoTypeHierarchy}
+                   Grid.Row="1" Text="{DynamicResource LspTools_NoTypeHierarchy}"
                    Foreground="{DynamicResource CH_ForegroundBrush}"
                    Opacity="0.5"
                    FontSize="11"

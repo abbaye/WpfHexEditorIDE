@@ -37,7 +37,7 @@
             <StackPanel Orientation="Horizontal">
 
                 <Button x:Name="BtnOpen"
-                        {DynamicResource DBG_OpenWhdbgTooltip}
+                        ToolTip="{DynamicResource DBG_OpenWhdbgTooltip}"
                         Padding="6,3" Margin="0,0,4,0"
                         Click="OnOpen">
                     <StackPanel Orientation="Horizontal">
@@ -47,8 +47,7 @@
                     </StackPanel>
                 </Button>
 
-                <Button x:Name="BtnSave"
-                        {DynamicResource DBG_SaveTooltip}
+                <Button x:Name="BtnSave" Content="{DynamicResource DBG_SaveTooltip}"
                         Padding="6,3" Margin="0,0,4,0"
                         Click="OnSave">
                     <StackPanel Orientation="Horizontal">
@@ -58,8 +57,7 @@
                     </StackPanel>
                 </Button>
 
-                <Button x:Name="BtnEditInIde"
-                        {DynamicResource DBG_EditInIdeTooltip}
+                <Button x:Name="BtnEditInIde" Content="{DynamicResource DBG_EditInIdeTooltip}"
                         Padding="6,3" Margin="0,0,4,0"
                         Click="OnEditInIde">
                     <StackPanel Orientation="Horizontal">
@@ -71,8 +69,7 @@
 
                 <Separator Width="1" Margin="4,2" Background="{DynamicResource DockBorderBrush}"/>
 
-                <Button x:Name="BtnLaunch"
-                        {DynamicResource DBG_LaunchTooltip}
+                <Button x:Name="BtnLaunch" Content="{DynamicResource DBG_LaunchTooltip}"
                         Padding="6,3" Margin="0,0,8,0"
                         Click="OnLaunch">
                     <StackPanel Orientation="Horizontal">
@@ -84,7 +81,7 @@
 
                 <Separator Width="1" Margin="0,2,8,2" Background="{DynamicResource DockBorderBrush}"/>
 
-                <TextBlock {DynamicResource DBG_ConfigLabel}
+                <TextBlock Text="{DynamicResource DBG_ConfigLabel}"
                            VerticalAlignment="Center"
                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                            Margin="0,0,4,0"/>
@@ -107,7 +104,7 @@
                            Opacity="0.2"
                            HorizontalAlignment="Center"
                            Margin="0,0,0,12"/>
-                <TextBlock {DynamicResource DBG_LaunchConfigTitle}
+                <TextBlock Text="{DynamicResource DBG_LaunchConfigTitle}"
                            FontSize="18" FontWeight="SemiBold"
                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                            HorizontalAlignment="Center"
@@ -128,8 +125,7 @@
                 Padding="8,2">
             <TextBlock x:Name="StatusText"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"
-                       FontSize="11"
-                       {DynamicResource DBG_NoFileOpen}/>
+                       FontSize="11" Text="{DynamicResource DBG_NoFileOpen}"/>
         </Border>
     </Grid>
 </UserControl>

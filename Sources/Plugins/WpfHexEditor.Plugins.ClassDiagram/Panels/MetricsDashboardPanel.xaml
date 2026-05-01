@@ -19,7 +19,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <xmlns:cdSvc:ClassDiagramLocalizedDictionary/>
+                <cdSvc:ClassDiagramLocalizedDictionary/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -35,8 +35,7 @@
             <DockPanel>
 
                 <!-- Export CSV button — docked right -->
-                <Button DockPanel.Dock="Right"
-                        {DynamicResource ClassDiagram_ExportCsv}
+                <Button DockPanel.Dock="Right" Content="{DynamicResource ClassDiagram_ExportCsv}"
                         Padding="8,2"
                         Margin="4,0,0,0"
                         Click="OnExportCsvClicked"
@@ -47,7 +46,7 @@
 
                 <!-- Sort mode selector -->
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                    <TextBlock {DynamicResource ClassDiagram_SortByLabel}
+                    <TextBlock Text="{DynamicResource ClassDiagram_SortByLabel}"
                                VerticalAlignment="Center"
                                Margin="0,0,6,0"
                                Foreground="{DynamicResource CD_PropertyNameForeground}"
@@ -58,10 +57,10 @@
                               Foreground="{DynamicResource CD_PropertyValueForeground}"
                               Background="{DynamicResource DockMenuBackgroundBrush}"
                               BorderBrush="{DynamicResource DockToolBarBorderBrush}">
-                        <ComboBoxItem {DynamicResource ClassDiagram_SortInstability} />
-                        <ComboBoxItem {DynamicResource ClassDiagram_SortAfferentCa} />
-                        <ComboBoxItem {DynamicResource ClassDiagram_SortEfferentCe} />
-                        <ComboBoxItem {DynamicResource ClassDiagram_SortMemberCount} />
+                        <ComboBoxItem Content="{DynamicResource ClassDiagram_SortInstability}" />
+                        <ComboBoxItem Content="{DynamicResource ClassDiagram_SortAfferentCa}" />
+                        <ComboBoxItem Content="{DynamicResource ClassDiagram_SortEfferentCe}" />
+                        <ComboBoxItem Content="{DynamicResource ClassDiagram_SortMemberCount}" />
                     </ComboBox>
                 </StackPanel>
 
@@ -82,7 +81,7 @@
             <ListView.View>
                 <GridView>
 
-                    <GridViewColumn {DynamicResource ClassDiagram_ColClassName} Width="160">
+                    <GridViewColumn Header="{DynamicResource ClassDiagram_ColClassName}" Width="160">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Name}"
@@ -93,7 +92,7 @@
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
 
-                    <GridViewColumn {DynamicResource ClassDiagram_ColKind} Width="80">
+                    <GridViewColumn Header="{DynamicResource ClassDiagram_ColKind}" Width="80">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Kind}"
@@ -136,7 +135,7 @@
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
 
-                    <GridViewColumn {DynamicResource ClassDiagram_ColMembers} Width="70">
+                    <GridViewColumn Header="{DynamicResource ClassDiagram_ColMembers}" Width="70">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding MemberCount}"

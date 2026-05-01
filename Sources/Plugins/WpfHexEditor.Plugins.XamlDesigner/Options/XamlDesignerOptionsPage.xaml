@@ -28,13 +28,12 @@
         <StackPanel>
 
         <!-- Section: Preview -->
-        <TextBlock {DynamicResource XamlDesigner_LivePreview}
+        <TextBlock Text="{DynamicResource XamlDesigner_LivePreview}"
                    FontSize="12" FontWeight="SemiBold"
                    Foreground="{DynamicResource PFP_AccentBrush}"
                    Margin="0,0,0,6"/>
 
-        <CheckBox x:Name="ChkAutoPreview"
-                  {DynamicResource XamlDesigner_EnableLivePreview}
+        <CheckBox x:Name="ChkAutoPreview" Content="{DynamicResource XamlDesigner_EnableLivePreview}"
                   Foreground="{DynamicResource PFP_TextBrush}"
                   Margin="0,0,0,4"/>
 
@@ -43,7 +42,7 @@
                 <ColumnDefinition Width="160"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="0" {DynamicResource XamlDesigner_PreviewDelay}
+            <TextBlock Grid.Column="0" Text="{DynamicResource XamlDesigner_PreviewDelay}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource PFP_TextBrush}"/>
             <StackPanel Grid.Column="1" Orientation="Horizontal">
@@ -65,7 +64,7 @@
         <Separator Background="{DynamicResource PFP_BorderBrush}" Margin="0,0,0,8"/>
 
         <!-- Section: Designer -->
-        <TextBlock {DynamicResource XamlDesigner_DesignerSection}
+        <TextBlock Text="{DynamicResource XamlDesigner_DesignerSection}"
                    FontSize="12" FontWeight="SemiBold"
                    Foreground="{DynamicResource PFP_AccentBrush}"
                    Margin="0,0,0,6"/>
@@ -75,7 +74,7 @@
                 <ColumnDefinition Width="160"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="0" {DynamicResource XamlDesigner_DefaultViewMode}
+            <TextBlock Grid.Column="0" Text="{DynamicResource XamlDesigner_DefaultViewMode}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource PFP_TextBrush}"/>
             <ComboBox x:Name="ViewModeCombo"
@@ -85,14 +84,13 @@
                       Background="{DynamicResource PFP_SectionBackgroundBrush}"
                       Foreground="{DynamicResource PFP_TextBrush}"
                       BorderBrush="{DynamicResource PFP_BorderBrush}">
-                <ComboBoxItem {DynamicResource XamlDesigner_SplitView} Tag="Split" IsSelected="True"/>
-                <ComboBoxItem {DynamicResource XamlDesigner_CodeOnly}             Tag="CodeOnly"/>
-                <ComboBoxItem {DynamicResource XamlDesigner_DesignOnly}           Tag="DesignOnly"/>
+                <ComboBoxItem Content="{DynamicResource XamlDesigner_SplitView}" Tag="Split" IsSelected="True"/>
+                <ComboBoxItem Content="{DynamicResource XamlDesigner_CodeOnly}"             Tag="CodeOnly"/>
+                <ComboBoxItem Content="{DynamicResource XamlDesigner_DesignOnly}"           Tag="DesignOnly"/>
             </ComboBox>
         </Grid>
 
-        <CheckBox x:Name="ChkSnapToGrid"
-                  {DynamicResource XamlDesigner_SnapToGrid}
+        <CheckBox x:Name="ChkSnapToGrid" Content="{DynamicResource XamlDesigner_SnapToGrid}"
                   Foreground="{DynamicResource PFP_TextBrush}"
                   Margin="0,0,0,4"/>
 
@@ -101,7 +99,7 @@
                 <ColumnDefinition Width="160"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="0" {DynamicResource XamlDesigner_GridSnapSize}
+            <TextBlock Grid.Column="0" Text="{DynamicResource XamlDesigner_GridSnapSize}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource PFP_TextBrush}"/>
             <StackPanel Grid.Column="1" Orientation="Horizontal">
@@ -129,13 +127,12 @@
         <Separator Background="{DynamicResource PFP_BorderBrush}" Margin="0,0,0,8"/>
 
         <!-- Section: Property Inspector -->
-        <TextBlock {DynamicResource XamlDesigner_PropertyInspectorSection}
+        <TextBlock Text="{DynamicResource XamlDesigner_PropertyInspectorSection}"
                    FontSize="12" FontWeight="SemiBold"
                    Foreground="{DynamicResource PFP_AccentBrush}"
                    Margin="0,0,0,6"/>
 
-        <CheckBox x:Name="ChkShowDefaultProps"
-                  {DynamicResource XamlDesigner_ShowDefaultValues}
+        <CheckBox x:Name="ChkShowDefaultProps" Content="{DynamicResource XamlDesigner_ShowDefaultValues}"
                   Foreground="{DynamicResource PFP_TextBrush}"
                   Margin="0,0,0,4"/>
 

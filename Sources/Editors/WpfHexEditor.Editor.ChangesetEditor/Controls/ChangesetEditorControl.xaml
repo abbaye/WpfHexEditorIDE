@@ -12,7 +12,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <xmlns:ceSvc:ChangesetEditorLocalizedDictionary/>
+                <ceSvc:ChangesetEditorLocalizedDictionary/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -40,7 +40,7 @@
                           CanUserDeleteRows="False">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Offset" Binding="{Binding Offset}" Width="120"/>
-                        <DataGridTextColumn {DynamicResource ChangesetEditor_ColValuesHex}  Binding="{Binding Values}" Width="*"/>
+                        <DataGridTextColumn Header="{DynamicResource ChangesetEditor_ColValuesHex}"  Binding="{Binding Values}" Width="*"/>
                     </DataGrid.Columns>
                 </DataGrid>
             </TabItem>
@@ -58,8 +58,8 @@
                           CanUserAddRows="False"
                           CanUserDeleteRows="False">
                     <DataGrid.Columns>
-                        <DataGridTextColumn {DynamicResource ChangesetEditor_ColAfterOffset} Binding="{Binding Offset}" Width="120"/>
-                        <DataGridTextColumn {DynamicResource ChangesetEditor_ColBytesHex}  Binding="{Binding Bytes}"  Width="*"/>
+                        <DataGridTextColumn Header="{DynamicResource ChangesetEditor_ColAfterOffset}" Binding="{Binding Offset}" Width="120"/>
+                        <DataGridTextColumn Header="{DynamicResource ChangesetEditor_ColBytesHex}"  Binding="{Binding Bytes}"  Width="*"/>
                     </DataGrid.Columns>
                 </DataGrid>
             </TabItem>
@@ -77,8 +77,8 @@
                           CanUserAddRows="False"
                           CanUserDeleteRows="False">
                     <DataGrid.Columns>
-                        <DataGridTextColumn {DynamicResource ChangesetEditor_ColStart}  Binding="{Binding Start}" Width="120"/>
-                        <DataGridTextColumn {DynamicResource ChangesetEditor_ColCount}  Binding="{Binding Count}" Width="80"/>
+                        <DataGridTextColumn Header="{DynamicResource ChangesetEditor_ColStart}"  Binding="{Binding Start}" Width="120"/>
+                        <DataGridTextColumn Header="{DynamicResource ChangesetEditor_ColCount}"  Binding="{Binding Count}" Width="80"/>
                     </DataGrid.Columns>
                 </DataGrid>
             </TabItem>

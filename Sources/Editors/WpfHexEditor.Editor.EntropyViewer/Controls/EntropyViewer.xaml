@@ -28,15 +28,15 @@
 
         <!-- Toolbar -->
         <ToolBar Grid.Row="0" Background="{DynamicResource TE_LineNumberBackground}">
-            <TextBlock {DynamicResource EntropyViewer_WindowLabel} VerticalAlignment="Center" Padding="4,0"
+            <TextBlock Text="{DynamicResource EntropyViewer_WindowLabel}" VerticalAlignment="Center" Padding="4,0"
                        Foreground="{DynamicResource TE_LineNumberForeground}"/>
             <ComboBox x:Name="WindowSizeCombo" Width="80"
                       SelectionChanged="OnWindowSizeChanged">
-                <ComboBoxItem {DynamicResource EntropyViewer_256B}   Tag="256"  />
-                <ComboBoxItem {DynamicResource EntropyViewer_512B}   Tag="512"  />
-                <ComboBoxItem {DynamicResource EntropyViewer_1KB}    Tag="1024" IsSelected="True"/>
-                <ComboBoxItem {DynamicResource EntropyViewer_4KB}    Tag="4096" />
-                <ComboBoxItem {DynamicResource EntropyViewer_16KB}   Tag="16384"/>
+                <ComboBoxItem Content="{DynamicResource EntropyViewer_256B}"   Tag="256"  />
+                <ComboBoxItem Content="{DynamicResource EntropyViewer_512B}"   Tag="512"  />
+                <ComboBoxItem Content="{DynamicResource EntropyViewer_1KB}"    Tag="1024" IsSelected="True"/>
+                <ComboBoxItem Content="{DynamicResource EntropyViewer_4KB}"    Tag="4096" />
+                <ComboBoxItem Content="{DynamicResource EntropyViewer_16KB}"   Tag="16384"/>
             </ComboBox>
             <Separator/>
             <CheckBox x:Name="ShowRegionsCheck" Content="{DynamicResource EntropyViewer_Regions}"
@@ -61,7 +61,7 @@
                       Background="{DynamicResource TE_Background}">
             <StackPanel>
                 <!-- Entropy chart header -->
-                <TextBlock {DynamicResource EntropyViewer_RegionChart}
+                <TextBlock Text="{DynamicResource EntropyViewer_RegionChart}"
                            Margin="8,8,8,2"
                            Foreground="{DynamicResource TE_LineNumberForeground}"
                            FontSize="11"/>
@@ -74,7 +74,7 @@
                 </Border>
 
                 <!-- Byte distribution header -->
-                <TextBlock {DynamicResource EntropyViewer_ByteDist} Margin="8,10,8,2"
+                <TextBlock Text="{DynamicResource EntropyViewer_ByteDist}" Margin="8,10,8,2"
                            Foreground="{DynamicResource TE_LineNumberForeground}"
                            FontSize="11"/>
                 <Border Margin="8,0,8,0" BorderThickness="1"

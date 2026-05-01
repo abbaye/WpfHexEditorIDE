@@ -49,11 +49,9 @@
                       Header="{DynamicResource AE_ExtractSelected}"
                       Command="{Binding ExtractSelectedCommand}"/>
             <Separator x:Name="OvfSep1"/>
-            <MenuItem x:Name="OvfPreview"
-                      {DynamicResource AE_PreviewMenuItem}
+            <MenuItem x:Name="OvfPreview" Header="{DynamicResource AE_PreviewMenuItem}"
                       Command="{Binding PreviewCommand}"/>
-            <MenuItem x:Name="OvfOpenRaw"
-                      {DynamicResource AE_OpenRawInHex}
+            <MenuItem x:Name="OvfOpenRaw" Header="{DynamicResource AE_OpenRawInHex}"
                       Command="{Binding OpenRawInHexCommand}"/>
         </ContextMenu>
             </ResourceDictionary>
@@ -179,7 +177,7 @@
                     <TextBox x:Name="FilterBox"
                              Width="140"
                              Style="{DynamicResource PanelSearchBoxStyle}"
-                             {DynamicResource AE_FilterTag}
+                             ToolTip="{DynamicResource AE_FilterTag}"
                              ToolTip="{DynamicResource AE_FilterEntries}"
                              Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged}"/>
                     <Button Style="{StaticResource PanelIconButtonStyle}"

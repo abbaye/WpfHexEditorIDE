@@ -26,14 +26,12 @@
     <StackPanel Margin="12,8" MaxWidth="520">
 
         <!-- Auto-rebuild on save -->
-        <CheckBox x:Name="CheckAutoRebuild" Margin="0,4"
-                  {DynamicResource PluginDev_AutoRebuild}
+        <CheckBox x:Name="CheckAutoRebuild" Margin="0,4" Content="{DynamicResource PluginDev_AutoRebuild}"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                   Checked="OnChanged" Unchecked="OnChanged"/>
 
         <!-- Post-build copy -->
-        <CheckBox x:Name="CheckCopyOnBuild" Margin="0,4"
-                  {DynamicResource PluginDev_CopyOutput}
+        <CheckBox x:Name="CheckCopyOnBuild" Margin="0,4" Content="{DynamicResource PluginDev_CopyOutput}"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                   Checked="OnChanged" Unchecked="OnChanged"/>
 
@@ -41,37 +39,37 @@
 
         <!-- Log level -->
         <StackPanel Orientation="Horizontal" Margin="0,4">
-            <TextBlock {DynamicResource PluginDev_LogLevelLabel} VerticalAlignment="Center" Width="120"
+            <TextBlock Text="{DynamicResource PluginDev_LogLevelLabel}" VerticalAlignment="Center" Width="120"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             <ComboBox x:Name="CbLogLevel" Width="140"
                       Background="{DynamicResource DockMenuBackgroundBrush}"
                       Foreground="{DynamicResource DockMenuForegroundBrush}"
                       BorderBrush="{DynamicResource DockBorderBrush}"
                       SelectionChanged="OnChanged">
-                <ComboBoxItem {DynamicResource PluginDev_LogDebug}   Tag="Debug"/>
-                <ComboBoxItem {DynamicResource PluginDev_LogInfo}    Tag="Info"/>
-                <ComboBoxItem {DynamicResource PluginDev_LogWarning} Tag="Warning"/>
-                <ComboBoxItem {DynamicResource PluginDev_LogError}   Tag="Error"/>
+                <ComboBoxItem Content="{DynamicResource PluginDev_LogDebug}"   Tag="Debug"/>
+                <ComboBoxItem Content="{DynamicResource PluginDev_LogInfo}"    Tag="Info"/>
+                <ComboBoxItem Content="{DynamicResource PluginDev_LogWarning}" Tag="Warning"/>
+                <ComboBoxItem Content="{DynamicResource PluginDev_LogError}"   Tag="Error"/>
             </ComboBox>
         </StackPanel>
 
         <!-- Sandbox mode -->
         <StackPanel Orientation="Horizontal" Margin="0,4">
-            <TextBlock {DynamicResource PluginDev_SandboxModeLabel} VerticalAlignment="Center" Width="120"
+            <TextBlock Text="{DynamicResource PluginDev_SandboxModeLabel}" VerticalAlignment="Center" Width="120"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             <ComboBox x:Name="CbSandboxMode" Width="200"
                       Background="{DynamicResource DockMenuBackgroundBrush}"
                       Foreground="{DynamicResource DockMenuForegroundBrush}"
                       BorderBrush="{DynamicResource DockBorderBrush}"
                       SelectionChanged="OnChanged">
-                <ComboBoxItem {DynamicResource PluginDev_SandboxLight} Tag="Light"/>
-                <ComboBoxItem {DynamicResource PluginDev_SandboxFull}     Tag="Full"/>
+                <ComboBoxItem Content="{DynamicResource PluginDev_SandboxLight}" Tag="Light"/>
+                <ComboBoxItem Content="{DynamicResource PluginDev_SandboxFull}"     Tag="Full"/>
             </ComboBox>
         </StackPanel>
 
         <!-- Lifecycle timeout -->
         <StackPanel Orientation="Horizontal" Margin="0,4">
-            <TextBlock {DynamicResource PluginDev_InitTimeout} VerticalAlignment="Center" Width="120"
+            <TextBlock Text="{DynamicResource PluginDev_InitTimeout}" VerticalAlignment="Center" Width="120"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             <TextBox x:Name="TbTimeout" Width="80"
                      Background="{DynamicResource DockMenuBackgroundBrush}"
@@ -84,8 +82,7 @@
         <Separator Margin="0,8" Background="{DynamicResource DockBorderBrush}"/>
 
         <!-- Status bar indicator -->
-        <CheckBox x:Name="CheckStatusBarIndicator" Margin="0,4"
-                  {DynamicResource PluginDev_ShowDevMode}
+        <CheckBox x:Name="CheckStatusBarIndicator" Margin="0,4" Content="{DynamicResource PluginDev_ShowDevMode}"
                   Foreground="{DynamicResource DockMenuForegroundBrush}"
                   Checked="OnChanged" Unchecked="OnChanged"/>
 

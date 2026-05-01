@@ -129,7 +129,7 @@
         <DataTemplate x:Key="BindingExpanderTemplate" DataType="{x:Type local:BindingEntryViewModel}">
             <StackPanel Orientation="Vertical" Margin="4,2,4,4">
                 <StackPanel Orientation="Horizontal" Margin="0,1,0,0">
-                    <TextBlock {DynamicResource XamlDesigner_FallbackLabel}
+                    <TextBlock Text="{DynamicResource XamlDesigner_FallbackLabel}"
                                FontSize="10" FontStyle="Italic"
                                Foreground="{DynamicResource DockMenuForegroundBrush}"
                                Opacity="0.65"/>
@@ -139,7 +139,7 @@
                                Opacity="0.85"/>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="0,1,0,0">
-                    <TextBlock {DynamicResource XamlDesigner_TargetNullLabel}
+                    <TextBlock Text="{DynamicResource XamlDesigner_TargetNullLabel}"
                                FontSize="10" FontStyle="Italic"
                                Foreground="{DynamicResource DockMenuForegroundBrush}"
                                Opacity="0.65"/>
@@ -225,7 +225,7 @@
                                       BorderThickness="0,0,0,1"
                                       Background="{DynamicResource DockMenuBackgroundBrush}">
                                 <Expander.Header>
-                                    <TextBlock {DynamicResource XamlDesigner_Details}
+                                    <TextBlock Text="{DynamicResource XamlDesigner_Details}"
                                                FontSize="10"
                                                FontStyle="Italic"
                                                Foreground="{DynamicResource DockMenuForegroundBrush}"
@@ -277,33 +277,31 @@
                             Orientation="Horizontal" Margin="0,0,2,0">
                     <!-- Copy binding expression for selected row -->
                     <Button x:Name="BtnCopyExpr" Style="{StaticResource XD_BindIconButton}"
-                            Content="&#xE8C8;" {DynamicResource XamlDesigner_CopyBindingExpr}/>
+                            Content="&#xE8C8;" Content="{DynamicResource XamlDesigner_CopyBindingExpr}"/>
                     <!-- Refresh bindings -->
                     <Button x:Name="BtnRefresh" Style="{StaticResource XD_BindIconButton}"
-                            Content="&#xE72C;" {DynamicResource XamlDesigner_RefreshBindings}/>
+                            Content="&#xE72C;" Content="{DynamicResource XamlDesigner_RefreshBindings}"/>
                     <!-- Separator -->
                     <Separator Width="1" Height="16" Margin="2,0"
                                Background="{DynamicResource DockBorderBrush}"/>
                     <!-- Show only broken bindings toggle -->
                     <ToggleButton x:Name="BtnErrorsOnly"
                                   Style="{StaticResource XD_BindIconToggleButton}"
-                                  {DynamicResource XamlDesigner_ShowBrokenOnly}
+                                  ToolTip="{DynamicResource XamlDesigner_ShowBrokenOnly}"
                                   IsChecked="{Binding ShowErrorsOnly, Mode=TwoWay}">
                         <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="12" Text="&#xE814;"
                                    HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </ToggleButton>
                     <!-- Re-evaluate all binding statuses -->
                     <Button x:Name="BtnValidateAll"
-                            Style="{StaticResource XD_BindIconButton}"
-                            {DynamicResource XamlDesigner_ReEvaluateAll}
+                            Style="{StaticResource XD_BindIconButton}" Content="{DynamicResource XamlDesigner_ReEvaluateAll}"
                             Click="OnValidateAll">
                         <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="12" Text="&#xE73E;"
                                    HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Button>
                     <!-- Clear filter -->
                     <Button x:Name="BtnClearFilter"
-                            Style="{StaticResource XD_BindIconButton}"
-                            {DynamicResource XamlDesigner_ClearFilter}
+                            Style="{StaticResource XD_BindIconButton}" Content="{DynamicResource XamlDesigner_ClearFilter}"
                             Click="OnClearFilter">
                         <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="12" Text="&#xE711;"
                                    HorizontalAlignment="Center" VerticalAlignment="Center"/>
@@ -345,7 +343,7 @@
                                             <Setter.Value>
                                                 <VisualBrush Stretch="None" AlignmentX="Left">
                                                     <VisualBrush.Visual>
-                                                        <TextBlock {DynamicResource XamlDesigner_FilterBindings}
+                                                        <TextBlock Text="{DynamicResource XamlDesigner_FilterBindings}"
                                                                    Foreground="{DynamicResource DockMenuForegroundBrush}"
                                                                    Opacity="0.4"
                                                                    FontSize="11" Margin="4,1,0,0"/>
@@ -390,7 +388,7 @@
             <!-- Context menu on the list level — avoids Style.Setter connectionId collision -->
             <ListView.ContextMenu>
                 <ContextMenu>
-                    <MenuItem {DynamicResource XamlDesigner_CopyBindingMenu}
+                    <MenuItem Header="{DynamicResource XamlDesigner_CopyBindingMenu}"
                               Click="OnCtxCopyBindingExpression">
                         <MenuItem.Icon>
                             <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE8C8;"
@@ -398,7 +396,7 @@
                                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem {DynamicResource XamlDesigner_GoToSource}
+                    <MenuItem Header="{DynamicResource XamlDesigner_GoToSource}"
                               Click="OnCtxGoToSource">
                         <MenuItem.Icon>
                             <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE7C4;"
@@ -407,8 +405,7 @@
                         </MenuItem.Icon>
                     </MenuItem>
                     <Separator/>
-                    <MenuItem x:Name="CtxInspectConverter"
-                              {DynamicResource XamlDesigner_InspectConverter}
+                    <MenuItem x:Name="CtxInspectConverter" Header="{DynamicResource XamlDesigner_InspectConverter}"
                               Click="OnCtxInspectConverter">
                         <MenuItem.Icon>
                             <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE9CE;"
@@ -458,7 +455,7 @@
                     </GridViewColumn>
 
                     <!-- Column: Property (120px) -->
-                    <GridViewColumn {DynamicResource XamlDesigner_ColProperty} Width="120">
+                    <GridViewColumn Header="{DynamicResource XamlDesigner_ColProperty}" Width="120">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate DataType="{x:Type local:BindingEntryViewModel}">
                                 <TextBlock Text="{Binding PropertyName}"
@@ -469,7 +466,7 @@
                     </GridViewColumn>
 
                     <!-- Column: Path (130px) — shows "(MultiBinding)" for multi-binding rows -->
-                    <GridViewColumn {DynamicResource XamlDesigner_ColPath} Width="130">
+                    <GridViewColumn Header="{DynamicResource XamlDesigner_ColPath}" Width="130">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate DataType="{x:Type local:BindingEntryViewModel}">
                                 <TextBlock Text="{Binding Path}"
@@ -493,7 +490,7 @@
                     </GridViewColumn>
 
                     <!-- Column: Mode (70px) -->
-                    <GridViewColumn {DynamicResource XamlDesigner_ColMode} Width="70">
+                    <GridViewColumn Header="{DynamicResource XamlDesigner_ColMode}" Width="70">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate DataType="{x:Type local:BindingEntryViewModel}">
                                 <TextBlock Text="{Binding Mode}"
@@ -504,7 +501,7 @@
                     </GridViewColumn>
 
                     <!-- Column: Source (130px) -->
-                    <GridViewColumn {DynamicResource XamlDesigner_ColSource} Width="130">
+                    <GridViewColumn Header="{DynamicResource XamlDesigner_ColSource}" Width="130">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate DataType="{x:Type local:BindingEntryViewModel}">
                                 <TextBlock Text="{Binding Source}"
@@ -517,7 +514,7 @@
                     </GridViewColumn>
 
                     <!-- Column: Converter (90px) -->
-                    <GridViewColumn {DynamicResource XamlDesigner_ColConverter} Width="90">
+                    <GridViewColumn Header="{DynamicResource XamlDesigner_ColConverter}" Width="90">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate DataType="{x:Type local:BindingEntryViewModel}">
                                 <TextBlock Text="{Binding ConverterDisplay}"

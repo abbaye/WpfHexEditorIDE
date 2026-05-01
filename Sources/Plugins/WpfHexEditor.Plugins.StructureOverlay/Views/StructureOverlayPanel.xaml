@@ -34,14 +34,13 @@
                 </Grid.ColumnDefinitions>
 
                 <CheckBox Grid.Column="0" IsChecked="{Binding IsVisible, Mode=TwoWay}"
-                          Margin="0,0,5,0" VerticalAlignment="Center"
-                          {DynamicResource StructureOverlay_ToggleVisibility}/>
+                          Margin="0,0,5,0" VerticalAlignment="Center" Content="{DynamicResource StructureOverlay_ToggleVisibility}"/>
 
                 <StackPanel Grid.Column="1" Orientation="Vertical">
                     <TextBlock Text="{Binding Name}" FontWeight="Bold"
                                Foreground="{DynamicResource PFP_TextBrush}"/>
                     <TextBlock FontSize="10" Foreground="{DynamicResource PFP_SubTextBrush}">
-                        <Run {DynamicResource StructureOverlay_FormatLabel}/>
+                        <Run Text="{DynamicResource StructureOverlay_FormatLabel}"/>
                         <Run Text="{Binding FormatType, Mode=OneWay}"/>
                         <Run Text=" | Offset:"/>
                         <Run Text="{Binding StartOffset, Mode=OneWay, StringFormat='{}{0:X}'}"/>
@@ -142,14 +141,13 @@
                 <Button x:Name="ToolbarOverflowButton"
                         DockPanel.Dock="Right"
                         Visibility="Collapsed"
-                        Style="{StaticResource PanelIconButtonStyle}"
-                        {DynamicResource StructureOverlay_MoreOptions}
+                        Style="{StaticResource PanelIconButtonStyle}" Content="{DynamicResource StructureOverlay_MoreOptions}"
                         Click="OnOverflowButtonClick">
                     <TextBlock Text="&#xE712;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                     <Button.ContextMenu>
                         <ContextMenu x:Name="OverflowContextMenu" Opened="OnOverflowMenuOpened">
-                            <MenuItem {DynamicResource StructureOverlay_AddOverlayHeader}
+                            <MenuItem Header="{DynamicResource StructureOverlay_AddOverlayHeader}"
                                       Tag="TbgStructureAdd"
                                       Click="AddStructureButton_Click"/>
                         </ContextMenu>
@@ -163,12 +161,11 @@
                             VerticalAlignment="Center">
                     <Button x:Name="AddStructureButton"
                             Content="&#xE710;"
-                            Style="{StaticResource PanelIconButtonStyle}"
-                            {DynamicResource StructureOverlay_AddOverlayTooltip}
+                            Style="{StaticResource PanelIconButtonStyle}" Content="{DynamicResource StructureOverlay_AddOverlayTooltip}"
                             Click="AddStructureButton_Click"/>
                 </StackPanel>
 
-                <TextBlock {DynamicResource StructureOverlay_StructureOverlayLabel}
+                <TextBlock Text="{DynamicResource StructureOverlay_StructureOverlayLabel}"
                            VerticalAlignment="Center"
                            Margin="8,0,0,0"
                            FontWeight="SemiBold"
@@ -183,16 +180,14 @@
                 BorderThickness="0,0,0,1"
                 Padding="6,4">
             <StackPanel Orientation="Horizontal">
-                <Button x:Name="LoadFormatButton" {DynamicResource StructureOverlay_LoadFormat}
+                <Button x:Name="LoadFormatButton" Content="{DynamicResource StructureOverlay_LoadFormat}"
                         Style="{StaticResource PanelDropdownButtonStyle}"
                         Padding="8,3" Height="22" Margin="0,0,5,0"
-                        Click="LoadFormatButton_Click"
-                        {DynamicResource StructureOverlay_LoadFormatTooltip}/>
-                <Button x:Name="ClearAllButton" {DynamicResource StructureOverlay_ClearAll}
+                        Click="LoadFormatButton_Click" ToolTip="{DynamicResource StructureOverlay_LoadFormatTooltip}"/>
+                <Button x:Name="ClearAllButton" Content="{DynamicResource StructureOverlay_ClearAll}"
                         Style="{StaticResource PanelDropdownButtonStyle}"
                         Padding="8,3" Height="22"
-                        Click="ClearAllButton_Click"
-                        {DynamicResource StructureOverlay_ClearAllTooltip}/>
+                        Click="ClearAllButton_Click" ToolTip="{DynamicResource StructureOverlay_ClearAllTooltip}"/>
             </StackPanel>
         </Border>
 
@@ -224,7 +219,7 @@
                 BorderThickness="0,1,0,0"
                 Padding="8,4">
             <TextBlock FontSize="10" Foreground="{DynamicResource Panel_ToolbarForegroundBrush}">
-                <Run {DynamicResource StructureOverlay_StructuresLabel}/>
+                <Run Text="{DynamicResource StructureOverlay_StructuresLabel}"/>
                 <Run Text="{Binding Structures.Count, Mode=OneWay}" FontWeight="Bold"/>
             </TextBlock>
         </Border>

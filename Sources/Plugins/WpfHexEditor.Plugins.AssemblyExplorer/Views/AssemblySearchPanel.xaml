@@ -54,8 +54,7 @@
                 <!-- Overflow button -->
                 <Button x:Name="ToolbarOverflowButton"
                         DockPanel.Dock="Right"
-                        Width="16"
-                        {DynamicResource AsmExplorer_MoreOptions}
+                        Width="16" Content="{DynamicResource AsmExplorer_MoreOptions}"
                         Click="OnOverflowButtonClick"
                         Background="Transparent"
                         BorderThickness="0"
@@ -77,8 +76,8 @@
                              Width="200"
                              Margin="2,1"
                              Style="{DynamicResource PanelSearchBoxStyle}"
-                             {DynamicResource AsmExplorer_SearchPlaceholder}
-                             {DynamicResource AsmExplorer_SearchTooltip}
+                             ToolTip="{DynamicResource AsmExplorer_SearchPlaceholder}"
+                             ToolTip="{DynamicResource AsmExplorer_SearchTooltip}"
                              Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
                              KeyDown="OnSearchBoxKeyDown" />
 
@@ -89,8 +88,7 @@
                               SelectedItem="{Binding SelectedKind}"
                               Background="{DynamicResource PFP_SectionBackgroundBrush}"
                               Foreground="{DynamicResource PFP_TextBrush}"
-                              BorderBrush="{DynamicResource DockBorderBrush}"
-                              {DynamicResource AsmExplorer_FilterByKind}/>
+                              BorderBrush="{DynamicResource DockBorderBrush}" Content="{DynamicResource AsmExplorer_FilterByKind}"/>
 
                     <!-- Public only toggle -->
                     <ToggleButton Margin="2,1"
@@ -98,9 +96,8 @@
                                   IsChecked="{Binding PublicOnly}"
                                   Background="Transparent"
                                   Foreground="{DynamicResource PFP_TextBrush}"
-                                  BorderBrush="{DynamicResource DockBorderBrush}"
-                                  {DynamicResource AsmExplorer_PublicOnly}>
-                        <TextBlock {DynamicResource AsmExplorer_PublicLabel} FontSize="10"/>
+                                  BorderBrush="{DynamicResource DockBorderBrush}" Content="{DynamicResource AsmExplorer_PublicOnly}">
+                        <TextBlock Text="{DynamicResource AsmExplorer_PublicLabel}" FontSize="10"/>
                     </ToggleButton>
 
                     <!-- Include members toggle -->
@@ -109,9 +106,8 @@
                                   IsChecked="{Binding IncludeMembers}"
                                   Background="Transparent"
                                   Foreground="{DynamicResource PFP_TextBrush}"
-                                  BorderBrush="{DynamicResource DockBorderBrush}"
-                                  {DynamicResource AsmExplorer_IncludeMembers}>
-                        <TextBlock {DynamicResource AsmExplorer_MembersLabel} FontSize="10"/>
+                                  BorderBrush="{DynamicResource DockBorderBrush}" Content="{DynamicResource AsmExplorer_IncludeMembers}">
+                        <TextBlock Text="{DynamicResource AsmExplorer_MembersLabel}" FontSize="10"/>
                     </ToggleButton>
 
                     <!-- Search button -->
@@ -120,11 +116,10 @@
                             Command="{Binding SearchCommand}"
                             Background="{DynamicResource PFP_SectionBackgroundBrush}"
                             Foreground="{DynamicResource PFP_TextBrush}"
-                            BorderBrush="{DynamicResource DockBorderBrush}"
-                            {DynamicResource AsmExplorer_RunSearch}>
+                            BorderBrush="{DynamicResource DockBorderBrush}" Content="{DynamicResource AsmExplorer_RunSearch}">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="&#xE721;" FontFamily="Segoe MDL2 Assets" FontSize="10" Margin="0,0,3,0"/>
-                            <TextBlock {DynamicResource AsmExplorer_SearchButton} FontSize="10"/>
+                            <TextBlock Text="{DynamicResource AsmExplorer_SearchButton}" FontSize="10"/>
                         </StackPanel>
                     </Button>
 
@@ -134,8 +129,7 @@
                             Command="{Binding ClearCommand}"
                             Background="Transparent"
                             Foreground="{DynamicResource PFP_TextBrush}"
-                            BorderBrush="Transparent"
-                            {DynamicResource AsmExplorer_ClearResults}>
+                            BorderBrush="Transparent" Content="{DynamicResource AsmExplorer_ClearResults}">
                         <TextBlock Text="&#xE894;" FontFamily="Segoe MDL2 Assets" FontSize="10"/>
                     </Button>
                 </StackPanel>
@@ -164,12 +158,12 @@
                   MouseDoubleClick="OnResultDoubleClick">
 
             <DataGrid.Columns>
-                <DataGridTextColumn {DynamicResource AsmExplorer_ColAssembly} Binding="{Binding AssemblyName}" Width="120"/>
-                <DataGridTextColumn {DynamicResource AsmExplorer_ColNamespace} Binding="{Binding Namespace}"   Width="160"/>
-                <DataGridTextColumn {DynamicResource AsmExplorer_ColType}      Binding="{Binding TypeName}"    Width="140"/>
-                <DataGridTextColumn {DynamicResource AsmExplorer_ColMember}    Binding="{Binding MemberName}"  Width="160"/>
-                <DataGridTextColumn {DynamicResource AsmExplorer_ColKind}      Binding="{Binding Kind}"        Width="70"/>
-                <DataGridTextColumn {DynamicResource AsmExplorer_ColToken}     Binding="{Binding Token}"       Width="90"/>
+                <DataGridTextColumn Header="{DynamicResource AsmExplorer_ColAssembly}" Binding="{Binding AssemblyName}" Width="120"/>
+                <DataGridTextColumn Header="{DynamicResource AsmExplorer_ColNamespace}" Binding="{Binding Namespace}"   Width="160"/>
+                <DataGridTextColumn Header="{DynamicResource AsmExplorer_ColType}"      Binding="{Binding TypeName}"    Width="140"/>
+                <DataGridTextColumn Header="{DynamicResource AsmExplorer_ColMember}"    Binding="{Binding MemberName}"  Width="160"/>
+                <DataGridTextColumn Header="{DynamicResource AsmExplorer_ColKind}"      Binding="{Binding Kind}"        Width="70"/>
+                <DataGridTextColumn Header="{DynamicResource AsmExplorer_ColToken}"     Binding="{Binding Token}"       Width="90"/>
                 <DataGridTextColumn Header="Offset"    Binding="{Binding Offset}"      Width="90"/>
             </DataGrid.Columns>
 
@@ -182,7 +176,7 @@
                                 <Setter.Value>
                                     <VisualBrush Stretch="None">
                                         <VisualBrush.Visual>
-                                            <TextBlock {DynamicResource AsmExplorer_NoResults}
+                                            <TextBlock Text="{DynamicResource AsmExplorer_NoResults}"
                                                        Foreground="{DynamicResource PFP_SubTextBrush}"
                                                        FontSize="11"
                                                        HorizontalAlignment="Center"

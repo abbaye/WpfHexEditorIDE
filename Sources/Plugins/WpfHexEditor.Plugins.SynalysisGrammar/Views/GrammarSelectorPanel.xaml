@@ -163,7 +163,7 @@
         </Style>
 
         <ContextMenu x:Key="GrammarItemMenu" Opened="OnContextMenuOpened">
-            <MenuItem {DynamicResource Synalysis_ApplyGrammar}    InputGestureText="Enter"
+            <MenuItem Header="{DynamicResource Synalysis_ApplyGrammar}"    InputGestureText="Enter"
                       Command="{Binding DataContext.ApplyGrammarCommand,
                                         RelativeSource={RelativeSource AncestorType=UserControl}}">
                 <MenuItem.Icon>
@@ -171,18 +171,18 @@
                 </MenuItem.Icon>
             </MenuItem>
             <Separator/>
-            <MenuItem {DynamicResource Synalysis_CopyName}        x:Name="MenuCopyName"       Click="OnContextCopyName">
+            <MenuItem Header="{DynamicResource Synalysis_CopyName}"        x:Name="MenuCopyName"       Click="OnContextCopyName">
                 <MenuItem.Icon>
                     <TextBlock Text="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
                 </MenuItem.Icon>
             </MenuItem>
-            <MenuItem {DynamicResource Synalysis_CopyExtensions}  x:Name="MenuCopyExtensions" Click="OnContextCopyExtensions">
+            <MenuItem Header="{DynamicResource Synalysis_CopyExtensions}"  x:Name="MenuCopyExtensions" Click="OnContextCopyExtensions">
                 <MenuItem.Icon>
                     <TextBlock Text="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
                 </MenuItem.Icon>
             </MenuItem>
             <Separator/>
-            <MenuItem {DynamicResource Synalysis_RemoveGrammar}   x:Name="MenuRemoveGrammar"  Click="OnContextRemoveGrammar">
+            <MenuItem Header="{DynamicResource Synalysis_RemoveGrammar}"   x:Name="MenuRemoveGrammar"  Click="OnContextRemoveGrammar">
                 <MenuItem.Icon>
                     <TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
                 </MenuItem.Icon>
@@ -217,16 +217,14 @@
                 <Border Style="{StaticResource DockToolBarPodStyle}" DockPanel.Dock="Left">
                     <StackPanel Orientation="Horizontal">
                         <!-- Load from disk: OpenFile \uE8DA -->
-                        <Button Command="{Binding LoadFromDiskCommand}"
-                                {DynamicResource Synalysis_LoadFromDisk}
+                        <Button Command="{Binding LoadFromDiskCommand}" Content="{DynamicResource Synalysis_LoadFromDisk}"
                                 Style="{StaticResource DockDarkToolBarButtonStyle}">
                             <TextBlock Text="&#xE8DA;" FontFamily="Segoe MDL2 Assets" FontSize="14"
                                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
                         </Button>
                         <Separator Style="{StaticResource DockToolBarPodDividerStyle}"/>
                         <!-- Refresh list: Refresh \uE72C -->
-                        <Button Command="{Binding RefreshCommand}"
-                                {DynamicResource Synalysis_ReloadList}
+                        <Button Command="{Binding RefreshCommand}" Content="{DynamicResource Synalysis_ReloadList}"
                                 Style="{StaticResource DockDarkToolBarButtonStyle}">
                             <TextBlock Text="&#xE72C;" FontFamily="Segoe MDL2 Assets" FontSize="14"
                                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
@@ -240,24 +238,21 @@
                 <Border Style="{StaticResource DockToolBarPodStyle}" DockPanel.Dock="Left">
                     <StackPanel Orientation="Horizontal">
                         <!-- Apply: Play \uE768 (accent colour) -->
-                        <Button Command="{Binding ApplyGrammarCommand}"
-                                {DynamicResource Synalysis_ApplySelected}
+                        <Button Command="{Binding ApplyGrammarCommand}" Content="{DynamicResource Synalysis_ApplySelected}"
                                 Style="{StaticResource DockDarkToolBarButtonStyle}">
                             <TextBlock Text="&#xE768;" FontFamily="Segoe MDL2 Assets" FontSize="14"
                                        Foreground="{DynamicResource DockAccentBrush}"/>
                         </Button>
                         <Separator Style="{StaticResource DockToolBarPodDividerStyle}"/>
                         <!-- Clear overlay: Delete \uE74D -->
-                        <Button Command="{Binding ClearGrammarCommand}"
-                                {DynamicResource Synalysis_ClearOverlay}
+                        <Button Command="{Binding ClearGrammarCommand}" Content="{DynamicResource Synalysis_ClearOverlay}"
                                 Style="{StaticResource DockDarkToolBarButtonStyle}">
                             <TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="14"
                                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
                         </Button>
                         <Separator Style="{StaticResource DockToolBarPodDividerStyle}"/>
                         <!-- Auto-apply toggle: SyncFolder \uE9A4 -->
-                        <ToggleButton IsChecked="{Binding IsAutoApply}"
-                                      {DynamicResource Synalysis_AutoApply}
+                        <ToggleButton IsChecked="{Binding IsAutoApply}" ToolTip="{DynamicResource Synalysis_AutoApply}"
                                       Style="{StaticResource DockToolBarToggleButtonStyle}">
                             <TextBlock Text="&#xE9A4;" FontFamily="Segoe MDL2 Assets" FontSize="14"
                                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>

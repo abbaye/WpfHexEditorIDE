@@ -28,14 +28,13 @@
         <StackPanel Margin="0,0,0,16">
 
             <!-- ── Section: Migration Mode ─────────────────────────────── -->
-            <TextBlock {DynamicResource PH_MigrationMode}
+            <TextBlock Text="{DynamicResource PH_MigrationMode}"
                        FontWeight="SemiBold" FontSize="13"
                        Foreground="{DynamicResource PFP_TextBrush}"
                        Margin="0,0,0,8"/>
 
             <DockPanel Margin="0,0,0,16">
-                <TextBlock DockPanel.Dock="Left"
-                           {DynamicResource PH_ModeLabel}
+                <TextBlock DockPanel.Dock="Left" Text="{DynamicResource PH_ModeLabel}"
                            VerticalAlignment="Center"
                            Width="200"
                            Foreground="{DynamicResource PFP_TextBrush}"/>
@@ -45,9 +44,9 @@
                           Foreground="{DynamicResource PFP_TextBrush}"
                           BorderBrush="{DynamicResource PFP_BorderBrush}"
                           SelectionChanged="OnModeChanged">
-                    <ComboBoxItem {DynamicResource PH_ModeDisabled}     Tag="Disabled"/>
-                    <ComboBoxItem {DynamicResource PH_ModeSuggestOnly} Tag="SuggestOnly"/>
-                    <ComboBoxItem {DynamicResource PH_ModeAutoMigrate} Tag="AutoMigrate"/>
+                    <ComboBoxItem Content="{DynamicResource PH_ModeDisabled}"     Tag="Disabled"/>
+                    <ComboBoxItem Content="{DynamicResource PH_ModeSuggestOnly}" Tag="SuggestOnly"/>
+                    <ComboBoxItem Content="{DynamicResource PH_ModeAutoMigrate}" Tag="AutoMigrate"/>
                 </ComboBox>
             </DockPanel>
 
@@ -64,14 +63,13 @@
             <Separator Background="{DynamicResource PFP_BorderBrush}" Margin="0,0,0,16"/>
 
             <!-- ── Section: Memory Thresholds ──────────────────────────── -->
-            <TextBlock {DynamicResource PH_MemoryThresholds}
+            <TextBlock Text="{DynamicResource PH_MemoryThresholds}"
                        FontWeight="SemiBold" FontSize="13"
                        Foreground="{DynamicResource PFP_TextBrush}"
                        Margin="0,0,0,8"/>
 
             <DockPanel Margin="0,0,0,8">
-                <TextBlock DockPanel.Dock="Left"
-                           {DynamicResource PH_SuggestAtMb}
+                <TextBlock DockPanel.Dock="Left" Text="{DynamicResource PH_SuggestAtMb}"
                            VerticalAlignment="Center" Width="200"
                            Foreground="{DynamicResource PFP_TextBrush}"/>
                 <TextBox x:Name="MemorySuggestTextBox"
@@ -84,8 +82,7 @@
             </DockPanel>
 
             <DockPanel Margin="0,0,0,16">
-                <TextBlock DockPanel.Dock="Left"
-                           {DynamicResource PH_AutoMigrateAtMb}
+                <TextBlock DockPanel.Dock="Left" Text="{DynamicResource PH_AutoMigrateAtMb}"
                            VerticalAlignment="Center" Width="200"
                            Foreground="{DynamicResource PFP_TextBrush}"/>
                 <TextBox x:Name="MemoryAutoTextBox"
@@ -101,14 +98,13 @@
             <Separator Background="{DynamicResource PFP_BorderBrush}" Margin="0,0,0,16"/>
 
             <!-- ── Section: CPU Thresholds ──────────────────────────────── -->
-            <TextBlock {DynamicResource PH_CpuThresholds}
+            <TextBlock Text="{DynamicResource PH_CpuThresholds}"
                        FontWeight="SemiBold" FontSize="13"
                        Foreground="{DynamicResource PFP_TextBrush}"
                        Margin="0,0,0,8"/>
 
             <DockPanel Margin="0,0,0,8">
-                <TextBlock DockPanel.Dock="Left"
-                           {DynamicResource PH_SuggestAtPct}
+                <TextBlock DockPanel.Dock="Left" Text="{DynamicResource PH_SuggestAtPct}"
                            VerticalAlignment="Center" Width="200"
                            Foreground="{DynamicResource PFP_TextBrush}"/>
                 <TextBox x:Name="CpuSuggestTextBox"
@@ -121,8 +117,7 @@
             </DockPanel>
 
             <DockPanel Margin="0,0,0,8">
-                <TextBlock DockPanel.Dock="Left"
-                           {DynamicResource PH_AutoMigrateAtPct}
+                <TextBlock DockPanel.Dock="Left" Text="{DynamicResource PH_AutoMigrateAtPct}"
                            VerticalAlignment="Center" Width="200"
                            Foreground="{DynamicResource PFP_TextBrush}"/>
                 <TextBox x:Name="CpuAutoTextBox"
@@ -135,8 +130,7 @@
             </DockPanel>
 
             <DockPanel Margin="0,0,0,16">
-                <TextBlock DockPanel.Dock="Left"
-                           {DynamicResource PH_SustainedWindow}
+                <TextBlock DockPanel.Dock="Left" Text="{DynamicResource PH_SustainedWindow}"
                            VerticalAlignment="Center" Width="200"
                            Foreground="{DynamicResource PFP_TextBrush}"/>
                 <TextBox x:Name="CpuWindowTextBox"
@@ -152,14 +146,13 @@
             <Separator Background="{DynamicResource PFP_BorderBrush}" Margin="0,0,0,16"/>
 
             <!-- ── Section: Crash Threshold ──────────────────────────────── -->
-            <TextBlock {DynamicResource PH_CrashThreshold}
+            <TextBlock Text="{DynamicResource PH_CrashThreshold}"
                        FontWeight="SemiBold" FontSize="13"
                        Foreground="{DynamicResource PFP_TextBrush}"
                        Margin="0,0,0,8"/>
 
             <DockPanel Margin="0,0,0,20">
-                <TextBlock DockPanel.Dock="Left"
-                           {DynamicResource PH_MigrateAfterCrashes}
+                <TextBlock DockPanel.Dock="Left" Text="{DynamicResource PH_MigrateAfterCrashes}"
                            VerticalAlignment="Center" Width="200"
                            Foreground="{DynamicResource PFP_TextBrush}"/>
                 <TextBox x:Name="CrashCountTextBox"
@@ -176,16 +169,14 @@
 
             <!-- ── Action buttons ─────────────────────────────────────────── -->
             <StackPanel Orientation="Horizontal">
-                <Button x:Name="SaveButton"
-                        {DynamicResource PH_SaveButton}
+                <Button x:Name="SaveButton" Content="{DynamicResource PH_SaveButton}"
                         Click="OnSave"
                         Padding="16,5" Margin="0,0,8,0"
                         Background="{DynamicResource DockAccentBrush}"
                         Foreground="White"
                         BorderThickness="0"
                         FontSize="12"/>
-                <Button x:Name="ResetButton"
-                        {DynamicResource PH_ResetToDefaults}
+                <Button x:Name="ResetButton" Content="{DynamicResource PH_ResetToDefaults}"
                         Click="OnResetDefaults"
                         Padding="12,5"
                         Background="{DynamicResource PFP_SectionBackgroundBrush}"
