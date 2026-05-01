@@ -327,7 +327,7 @@ Open `WpfHexEditorControl.sln`, set **WpfHexEditor.App** as startup project, pre
 | **[CHANGELOG.md](docs/CHANGELOG.md)** | Version history |
 | **[MIGRATION.md](docs/migration/MIGRATION.md)** | Legacy V1 → V2 migration |
 | **[Architecture Overview](docs/architecture/Overview.md)** | Services, MVVM, data flow |
-| **[whfmt.FileFormatCatalog Guide](doc/whfmt-FileFormatCatalog-guide.md)** | Full API reference, architecture, L1–L3 integration guides, .whfmt format specification |
+| **[whfmt.FileFormatCatalog Guide](docs/features/whfmt-FileFormatCatalog-guide.md)** | Full API reference, architecture, L1–L3 integration guides, .whfmt format specification |
 | **[API Reference](docs/api-reference/)** | Full API docs with examples |
 | **[Wiki](https://github.com/abbaye/WpfHexEditorIDE/wiki/Getting-Started)** | Getting started |
 

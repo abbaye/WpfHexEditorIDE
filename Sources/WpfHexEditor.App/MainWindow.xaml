@@ -1302,7 +1302,7 @@
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                             <TextBlock Text="&#xE721;" FontFamily="Segoe MDL2 Assets" FontSize="14"
                                        VerticalAlignment="Center" Margin="0,0,4,0"/>
-                            <TextBlock Text="{DynamicResource APP_ToolbarFind}" VerticalAlignment="Center"/>
+                            <TextBlock Text="{StaticResource APP_ToolbarFind}" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Button>
 
@@ -1334,7 +1334,7 @@
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                             <TextBlock Text="&#xE8B7;" FontFamily="Segoe MDL2 Assets" FontSize="14"
                                        VerticalAlignment="Center" Margin="0,0,4,0"/>
-                            <TextBlock Text="{DynamicResource APP_ToolbarExplorer}" VerticalAlignment="Center"/>
+                            <TextBlock Text="{StaticResource APP_ToolbarExplorer}" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Button>
 
@@ -1703,7 +1703,7 @@
                             <TextBlock Text="&#xE768;" FontFamily="Segoe MDL2 Assets" FontSize="14"
                                        Foreground="#3CB371"
                                        VerticalAlignment="Center" Margin="0,0,3,0"/>
-                            <TextBlock Text="{DynamicResource APP_BuildStart}" VerticalAlignment="Center" FontSize="11"/>
+                            <TextBlock Text="{StaticResource APP_BuildStart}" VerticalAlignment="Center" FontSize="11"/>
                         </StackPanel>
                     </Button>
                     <Separator Style="{DynamicResource DockToolBarPodDividerStyle}"/>
@@ -1713,11 +1713,8 @@
                             ToolTip="{StaticResource App_Toolbar_BuildSolution}"
                             Style="{DynamicResource DockDarkToolBarButtonStyle}"
                             IsEnabled="{Binding IsBuildMenuEnabled, ElementName=ThisWindow}">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="&#xE8B1;" FontFamily="Segoe MDL2 Assets" FontSize="13"
-                                       VerticalAlignment="Center" Margin="0,0,3,0"/>
-                            <TextBlock Text="{DynamicResource APP_BuildBuild}" VerticalAlignment="Center" FontSize="11"/>
-                        </StackPanel>
+                        <TextBlock Text="&#xE8B1;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                   VerticalAlignment="Center"/>
                     </Button>
                     <!-- Rebuild -->
                     <Button x:Name="BtnRebuild"
@@ -1725,11 +1722,8 @@
                             ToolTip="{StaticResource App_Toolbar_RebuildSolution}"
                             Style="{DynamicResource DockDarkToolBarButtonStyle}"
                             IsEnabled="{Binding IsBuildMenuEnabled, ElementName=ThisWindow}">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="&#xE72C;" FontFamily="Segoe MDL2 Assets" FontSize="13"
-                                       VerticalAlignment="Center" Margin="0,0,3,0"/>
-                            <TextBlock Text="{DynamicResource APP_BuildRebuild}" VerticalAlignment="Center" FontSize="11"/>
-                        </StackPanel>
+                        <TextBlock Text="&#xE72C;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                   VerticalAlignment="Center"/>
                     </Button>
                     <!-- Clean -->
                     <Button x:Name="BtnClean"
@@ -1737,11 +1731,8 @@
                             ToolTip="{StaticResource App_Toolbar_CleanSolution}"
                             Style="{DynamicResource DockDarkToolBarButtonStyle}"
                             IsEnabled="{Binding IsBuildMenuEnabled, ElementName=ThisWindow}">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="13"
-                                       VerticalAlignment="Center" Margin="0,0,3,0"/>
-                            <TextBlock Text="{DynamicResource APP_BuildClean}" VerticalAlignment="Center" FontSize="11"/>
-                        </StackPanel>
+                        <TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                   VerticalAlignment="Center"/>
                     </Button>
                     <!-- Cancel -->
                     <Button x:Name="BtnStopBuild"
@@ -1749,11 +1740,8 @@
                             ToolTip="{StaticResource App_Toolbar_CancelBuild}"
                             Style="{DynamicResource DockDarkToolBarButtonStyle}"
                             IsEnabled="{Binding HasActiveBuild, ElementName=ThisWindow}">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="&#xE711;" FontFamily="Segoe MDL2 Assets" FontSize="13"
-                                       VerticalAlignment="Center" Margin="0,0,3,0"/>
-                            <TextBlock Text="{DynamicResource APP_BuildStop}" VerticalAlignment="Center" FontSize="11"/>
-                        </StackPanel>
+                        <TextBlock Text="&#xE711;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                   VerticalAlignment="Center"/>
                     </Button>
                 </StackPanel>
             </Border>

@@ -72,7 +72,7 @@ Complete documentation for the WpfHexEditor IDE.
 
 - **[Editor Core](../Sources/Editors/WpfHexEditor.Editor.Core/README.md)** — `IDocumentEditor`, shared editor contracts
 - **[Core.Contracts](../Sources/Core/WpfHexEditor.Core.Contracts/)** — `IEmbeddedFormatCatalog`, `EmbeddedFormatEntry`, `FormatCategory`, `SchemaName` — cross-platform `net8.0`
-- **[Core.Definitions](../Sources/Core/WpfHexEditor.Core.Definitions/README.md)** — 690+ embedded `.whfmt` definitions; published as [`whfmt.FileFormatCatalog`](../doc/whfmt-FileFormatCatalog-guide.md) NuGet
+- **[Core.Definitions](../Sources/Core/WpfHexEditor.Core.Definitions/README.md)** — 690+ embedded `.whfmt` definitions; published as [`whfmt.FileFormatCatalog`](features/whfmt-FileFormatCatalog-guide.md) NuGet
 - **[SDK](../Sources/Plugins/WpfHexEditor.SDK/README.md)** — Plugin SDK extension points
 - **[Events](../Sources/Core/WpfHexEditor.Core.Events/README.md)** — IDE-wide event bus + all domain events
 - **[LSP](../Sources/Core/WpfHexEditor.Core.LSP.Client/README.md)** — Language Server Protocol 3.17 client
@@ -129,7 +129,7 @@ Complete documentation for the WpfHexEditor IDE.
 
 - **[Format Detection (690+)](features/FormatDetection_400.md)** — Auto-detection for 690+ file formats via magic bytes, extensions, MIME types
 - **[Format Definition Schema](FormatDefinition_Schema.md)** — `.whfmt` binary template format (schema v2.3)
-- **[whfmt.FileFormatCatalog Guide](../doc/whfmt-FileFormatCatalog-guide.md)** — NuGet package API reference, architecture, L1–L3 integration guides
+- **[whfmt.FileFormatCatalog Guide](features/whfmt-FileFormatCatalog-guide.md)** — NuGet package API reference, architecture, L1–L3 integration guides
 
 ---
 
