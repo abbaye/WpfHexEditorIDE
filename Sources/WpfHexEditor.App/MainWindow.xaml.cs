@@ -4609,17 +4609,12 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         {
             if (item.Metadata.TryGetValue("FilePath", out var lazyFp) && !string.IsNullOrEmpty(lazyFp))
             {
-                _lastSyncFilePath = lazyFp;
-                _solutionExplorerPanel?.SyncWithFile(lazyFp);
-
-                if (_errorPanel is not null)
+                if (lazyFp != _lastSyncFilePath)
                 {
-                    _errorPanel.CurrentDocumentPath = lazyFp;
-                    _errorPanel.CurrentProjectName = _solutionManager.CurrentSolution?
-                        .Projects.FirstOrDefault(p => p.FindItemByPath(lazyFp) is not null)?.Name
-                        ?? string.Empty;
-                    _errorPanel.RefreshFilter();
+                    _lastSyncFilePath = lazyFp;
+                    _solutionExplorerPanel?.SyncWithFile(lazyFp);
                 }
+                SyncErrorPanelScope(lazyFp);
             }
 
             SyncActiveDocument(item.ContentId);
@@ -4664,7 +4659,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             // RefreshText.Text = ""; // Removed - now handled via StatusBarContributor
         }
         else
-            hex.RefreshDocumentStatus();
+            Dispatcher.InvokeAsync(hex.RefreshDocumentStatus, System.Windows.Threading.DispatcherPriority.Background);
 
         // Refresh status bar item values for all contributor types (generic, not hex-only).
         ActiveStatusBarContributor.RefreshStatusBarItems();
@@ -4673,21 +4668,14 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         var syncPath = hex?.FileName;
         if (string.IsNullOrEmpty(syncPath) && item.Metadata.TryGetValue("FilePath", out var fp))
             syncPath = fp;
-        if (!string.IsNullOrEmpty(syncPath))
+        if (!string.IsNullOrEmpty(syncPath) && syncPath != _lastSyncFilePath)
         {
             _lastSyncFilePath = syncPath;
             _solutionExplorerPanel?.SyncWithFile(syncPath);
         }
 
         // Sync Error Panel scope context — CurrentDocument uses syncPath; CurrentProject resolved from solution.
-        if (_errorPanel is not null)
-        {
-            _errorPanel.CurrentDocumentPath = syncPath ?? string.Empty;
-            _errorPanel.CurrentProjectName  = _solutionManager.CurrentSolution?
-                .Projects.FirstOrDefault(p => p.FindItemByPath(syncPath ?? string.Empty) is not null)?.Name
-                ?? string.Empty;
-            _errorPanel.RefreshFilter();
-        }
+        SyncErrorPanelScope(syncPath);
 
         // Sync Properties panel provider (M5: cached per editor instance)
         if (content is IPropertyProviderSource providerSource)
@@ -4714,6 +4702,18 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         // Sync LSP status bar indicator to the active document's language.
         var activeDoc = _documentManager.ActiveDocument;
         _lspStatusBarAdapter?.SyncToLanguage(activeDoc?.Buffer?.LanguageId);
+    }
+
+    private void SyncErrorPanelScope(string? path)
+    {
+        if (_errorPanel is null) return;
+        var normalizedPath = path ?? string.Empty;
+        if (_errorPanel.CurrentDocumentPath == normalizedPath) return;
+        _errorPanel.CurrentDocumentPath = normalizedPath;
+        _errorPanel.CurrentProjectName  = _solutionManager.CurrentSolution?
+            .Projects.FirstOrDefault(p => p.FindItemByPath(normalizedPath) is not null)?.Name
+            ?? string.Empty;
+        _errorPanel.RefreshFilter();
     }
 
     // --- Split-pane focus tracking ------------------------------------

@@ -56,6 +56,9 @@ public class DockControl : ContentControl, IDockHost, IDisposable
     private readonly Dictionary<DockGroupNode, DockTabControl> _tabControlCache = new();
     private bool _pendingIncrementalHandled;
 
+    // Tab-switch dedup: prevents triple-fire from SelectionChanged + GotKeyboardFocus + GotFocus.
+    private DockItem? _lastActivatedItem;
+
     // M2.4 — WeakEvent fields: stored so DetachEngine can unsubscribe.
     private Action? _weLayoutChanged;
     private Action<DockItem>? _weItemFloated;
@@ -1163,7 +1166,7 @@ public class DockControl : ContentControl, IDockHost, IDisposable
     {
         if (_suppressRebuild) { _rebuildPending = true; return; }
 
-
+        _lastActivatedItem = null;  // reset dedup after layout change
 
         // Dispose previous tab wirers to prevent event leaks
         DisposeWirers();
@@ -1955,6 +1958,9 @@ public class DockControl : ContentControl, IDockHost, IDisposable
     /// </summary>
     internal void TrackActivation(DockItem item)
     {
+        if (item == _lastActivatedItem) return;
+        _lastActivatedItem = item;
+
         ActivationHistory.Remove(item);
         ActivationHistory.Insert(0, item);
         // Sync model so layout serialization captures the last selected tab,
