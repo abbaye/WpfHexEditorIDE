@@ -94,7 +94,7 @@
                             Style="{StaticResource PanelIconButtonStyle}"
                             Content="&#xEC50;"
                             FontFamily="Segoe MDL2 Assets"
-                            Width="22" Height="22" Content="{DynamicResource AsmExplorer_OpenAssemblyTooltip}"
+                            Width="22" Height="22" ToolTip="{DynamicResource AsmExplorer_OpenAssemblyTooltip}"
                             Click="OnOpenAssemblyClick"/>
                     <!-- Decompile to Code Editor -->
                     <Button x:Name="BtnDecompile"

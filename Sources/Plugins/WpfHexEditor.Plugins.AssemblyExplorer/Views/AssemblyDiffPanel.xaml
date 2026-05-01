@@ -112,7 +112,7 @@
                               SelectedItem="{Binding SelectedTargetName}"
                               Background="{DynamicResource PFP_SectionBackgroundBrush}"
                               Foreground="{DynamicResource PFP_TextBrush}"
-                              BorderBrush="{DynamicResource DockBorderBrush}" Content="{DynamicResource AsmExplorer_SelectTarget}"/>
+                              BorderBrush="{DynamicResource DockBorderBrush}" ToolTip="{DynamicResource AsmExplorer_SelectTarget}"/>
 
                     <!-- Kind filter -->
                     <ComboBox Width="80" Margin="0,1,8,1"

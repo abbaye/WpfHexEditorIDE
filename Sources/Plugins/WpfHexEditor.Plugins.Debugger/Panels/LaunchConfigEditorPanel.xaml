@@ -57,7 +57,7 @@
                     </StackPanel>
                 </Button>
 
-                <Button x:Name="BtnEditInIde" Content="{DynamicResource DBG_EditInIdeTooltip}"
+                <Button x:Name="BtnEditInIde" ToolTip="{DynamicResource DBG_EditInIdeTooltip}"
                         Padding="6,3" Margin="0,0,4,0"
                         Click="OnEditInIde">
                     <StackPanel Orientation="Horizontal">

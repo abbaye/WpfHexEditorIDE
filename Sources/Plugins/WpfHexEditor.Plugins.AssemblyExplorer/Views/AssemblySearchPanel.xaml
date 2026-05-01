@@ -95,7 +95,7 @@
                                   IsChecked="{Binding PublicOnly}"
                                   Background="Transparent"
                                   Foreground="{DynamicResource PFP_TextBrush}"
-                                  BorderBrush="{DynamicResource DockBorderBrush}" Content="{DynamicResource AsmExplorer_PublicOnly}">
+                                  BorderBrush="{DynamicResource DockBorderBrush}" ToolTip="{DynamicResource AsmExplorer_PublicOnly}">
                         <TextBlock Text="{DynamicResource AsmExplorer_PublicLabel}" FontSize="10"/>
                     </ToggleButton>
 
