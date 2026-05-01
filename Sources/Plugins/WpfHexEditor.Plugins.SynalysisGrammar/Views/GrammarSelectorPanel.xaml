@@ -6,7 +6,7 @@
              xmlns:vm="clr-namespace:WpfHexEditor.Plugins.SynalysisGrammar.ViewModels"
              mc:Ignorable="d"
              d:DesignHeight="500" d:DesignWidth="340"
-             xmlns:synSvc="clr-namespace:WpfHexEditor.Plugins.SynalysisGrammar.Services;assembly=WpfHexEditor.Plugins.SynalysisGrammar">
+             xmlns:synSvc="clr-namespace:WpfHexEditor.Plugins.SynalysisGrammar.Services">
 
     <!--
         Theme : All colours via DynamicResource tokens from the global IDE theme.
@@ -18,7 +18,7 @@
     <UserControl.Resources>
             <ResourceDictionary>
                 <ResourceDictionary.MergedDictionaries>
-                    <xmlns:synSvc:SynalysisGrammarLocalizedDictionary/>
+                    <synSvc:SynalysisGrammarLocalizedDictionary/>
                 </ResourceDictionary.MergedDictionaries>
 
         <!-- Explicit styles: plugin AssemblyLoadContext cannot reach Application.Resources in popups -->

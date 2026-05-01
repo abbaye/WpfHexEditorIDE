@@ -547,4 +547,40 @@
   <data name="XamlDesigner_RenameF2_Tooltip" xml:space="preserve">
     <value>Rename selected resource (F2)</value>
   </data>
+  <data name="XamlDesigner_LivePreview" xml:space="preserve">
+    <value>Live Preview</value>
+  </data>
+  <data name="XamlDesigner_EnableLivePreview" xml:space="preserve">
+    <value>Enable live preview (re-renders design canvas on edit)</value>
+  </data>
+  <data name="XamlDesigner_PreviewDelay" xml:space="preserve">
+    <value>Preview delay (ms):</value>
+  </data>
+  <data name="XamlDesigner_DesignerSection" xml:space="preserve">
+    <value>Designer</value>
+  </data>
+  <data name="XamlDesigner_DefaultViewMode" xml:space="preserve">
+    <value>Default view mode:</value>
+  </data>
+  <data name="XamlDesigner_SplitView" xml:space="preserve">
+    <value>Split (code + design)</value>
+  </data>
+  <data name="XamlDesigner_CodeOnly" xml:space="preserve">
+    <value>Code only</value>
+  </data>
+  <data name="XamlDesigner_DesignOnly" xml:space="preserve">
+    <value>Design only</value>
+  </data>
+  <data name="XamlDesigner_SnapToGrid" xml:space="preserve">
+    <value>Snap elements to grid when dragging</value>
+  </data>
+  <data name="XamlDesigner_GridSnapSize" xml:space="preserve">
+    <value>Grid snap size (px):</value>
+  </data>
+  <data name="XamlDesigner_PxLabel" xml:space="preserve">
+    <value>px</value>
+  </data>
+  <data name="XamlDesigner_PropertyInspectorSection" xml:space="preserve">
+    <value>Property Inspector</value>
+  </data>
 </root>

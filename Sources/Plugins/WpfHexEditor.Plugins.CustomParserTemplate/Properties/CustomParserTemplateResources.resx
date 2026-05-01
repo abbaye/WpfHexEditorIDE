@@ -109,4 +109,73 @@
     <value>No template selected</value>
   </data>
 
+  <data name="CustomParser_TemplatesLabel" xml:space="preserve">
+    <value>Templates</value>
+  </data>
+  <data name="CustomParser_NewTemplate" xml:space="preserve">
+    <value>New Template</value>
+  </data>
+  <data name="CustomParser_DeleteTemplate" xml:space="preserve">
+    <value>Delete Template</value>
+  </data>
+  <data name="CustomParser_TemplateEditor" xml:space="preserve">
+    <value>Template Editor</value>
+  </data>
+  <data name="CustomParser_NameLabel" xml:space="preserve">
+    <value>Name:</value>
+  </data>
+  <data name="CustomParser_DescriptionLabel" xml:space="preserve">
+    <value>Description:</value>
+  </data>
+  <data name="CustomParser_ExtensionsLabel" xml:space="preserve">
+    <value>Extensions:</value>
+  </data>
+  <data name="CustomParser_ExtensionsHint" xml:space="preserve">
+    <value>Comma-separated, e.g., .bin,.dat</value>
+  </data>
+  <data name="CustomParser_SaveTemplate" xml:space="preserve">
+    <value>Save Template</value>
+  </data>
+  <data name="CustomParser_FormatBlocks" xml:space="preserve">
+    <value>Format Blocks</value>
+  </data>
+  <data name="CustomParser_ColName" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="CustomParser_ColLength" xml:space="preserve">
+    <value>Length</value>
+  </data>
+  <data name="CustomParser_ColType" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="CustomParser_ColColor" xml:space="preserve">
+    <value>Color</value>
+  </data>
+  <data name="CustomParser_ColDescription" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="CustomParser_AddBlock" xml:space="preserve">
+    <value>Add Block</value>
+  </data>
+  <data name="CustomParser_RemoveBlock" xml:space="preserve">
+    <value>Remove Block</value>
+  </data>
+  <data name="CustomParser_ApplyToFile" xml:space="preserve">
+    <value>Apply to Current File</value>
+  </data>
+  <data name="CustomParser_ApplyDesc" xml:space="preserve">
+    <value>Apply this template to parse the currently loaded file in the hex editor.</value>
+  </data>
+  <data name="CustomParser_ApplyButton" xml:space="preserve">
+    <value>Apply Template to File</value>
+  </data>
+  <data name="CustomParser_ExportImport" xml:space="preserve">
+    <value>Export / Import</value>
+  </data>
+  <data name="CustomParser_ExportJson" xml:space="preserve">
+    <value>Export to JSON</value>
+  </data>
+  <data name="CustomParser_ImportJson" xml:space="preserve">
+    <value>Import from JSON</value>
+  </data>
 </root>

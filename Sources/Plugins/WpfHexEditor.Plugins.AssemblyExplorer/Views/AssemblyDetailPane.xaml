@@ -22,12 +22,12 @@
              xmlns:pb="clr-namespace:WpfHexEditor.ProgressBar.Controls;assembly=WpfHexEditor.ProgressBar"
              xmlns:controls="clr-namespace:WpfHexEditor.Plugins.AssemblyExplorer.Controls"
              Background="{DynamicResource PFP_SectionBackgroundBrush}"
-             xmlns:aeSvc="clr-namespace:WpfHexEditor.Plugins.AssemblyExplorer.Services;assembly=WpfHexEditor.Plugins.AssemblyExplorer">
+             xmlns:aeSvc="clr-namespace:WpfHexEditor.Plugins.AssemblyExplorer.Services">
 
     <UserControl.Resources>
             <ResourceDictionary>
                 <ResourceDictionary.MergedDictionaries>
-                    <xmlns:aeSvc:AssemblyExplorerLocalizedDictionary/>
+                    <aeSvc:AssemblyExplorerLocalizedDictionary/>
                 </ResourceDictionary.MergedDictionaries>
 
         <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>

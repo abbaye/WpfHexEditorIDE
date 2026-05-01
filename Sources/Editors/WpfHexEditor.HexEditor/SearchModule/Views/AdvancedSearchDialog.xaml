@@ -21,7 +21,7 @@
         MinHeight="380" MinWidth="480"
         ResizeMode="CanResizeWithGrip"
         Background="{DynamicResource DockBackgroundBrush}"
-        xmlns:hexSvc="clr-namespace:WpfHexEditor.HexEditor.Services;assembly=WpfHexEditor.HexEditor">
+        xmlns:hexSvc="clr-namespace:WpfHexEditor.HexEditor.Services">
 
     <Window.Resources>
         <ResourceDictionary>

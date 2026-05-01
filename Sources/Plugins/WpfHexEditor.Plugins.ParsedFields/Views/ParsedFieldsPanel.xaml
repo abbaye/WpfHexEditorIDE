@@ -15,7 +15,7 @@
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="300"
              Background="{DynamicResource PFP_PanelBackgroundBrush}"
-             xmlns:pfSvc="clr-namespace:WpfHexEditor.Plugins.ParsedFields.Services;assembly=WpfHexEditor.Plugins.ParsedFields">
+             xmlns:pfSvc="clr-namespace:WpfHexEditor.Plugins.ParsedFields.Services">
 
     <UserControl.Resources>
         <ResourceDictionary>

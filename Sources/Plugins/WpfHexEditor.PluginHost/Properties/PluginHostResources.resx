@@ -631,4 +631,64 @@ or use Install to add a .whxplugin</value>
   <data name="MKT_IntegrityTooltip" xml:space="preserve">
     <value>Integrity verified</value>
   </data>
+  <data name="PH_MigrationMode" xml:space="preserve">
+    <value>Migration Mode</value>
+  </data>
+  <data name="PH_ModeLabel" xml:space="preserve">
+    <value>Mode:</value>
+  </data>
+  <data name="PH_ModeDisabled" xml:space="preserve">
+    <value>Disabled</value>
+  </data>
+  <data name="PH_ModeSuggestOnly" xml:space="preserve">
+    <value>Suggest Only</value>
+  </data>
+  <data name="PH_ModeAutoMigrate" xml:space="preserve">
+    <value>Auto Migrate</value>
+  </data>
+  <data name="PH_DisabledDesc" xml:space="preserve">
+    <value> — no monitoring.</value>
+  </data>
+  <data name="PH_SuggestOnlyDesc" xml:space="preserve">
+    <value> — shows a banner when thresholds are exceeded. You decide.</value>
+  </data>
+  <data name="PH_AutoMigrateDesc" xml:space="preserve">
+    <value> — automatically moves plugins to Sandbox when thresholds are exceeded.</value>
+  </data>
+  <data name="PH_MemoryThresholds" xml:space="preserve">
+    <value>Memory Thresholds</value>
+  </data>
+  <data name="PH_SuggestAtMb" xml:space="preserve">
+    <value>Suggest at (MB):</value>
+  </data>
+  <data name="PH_AutoMigrateAtMb" xml:space="preserve">
+    <value>Auto-Migrate at (MB):</value>
+  </data>
+  <data name="PH_CpuThresholds" xml:space="preserve">
+    <value>CPU Thresholds (sustained)</value>
+  </data>
+  <data name="PH_SuggestAtPct" xml:space="preserve">
+    <value>Suggest at (%):</value>
+  </data>
+  <data name="PH_AutoMigrateAtPct" xml:space="preserve">
+    <value>Auto-Migrate at (%):</value>
+  </data>
+  <data name="PH_SustainedWindow" xml:space="preserve">
+    <value>Sustained window (seconds):</value>
+  </data>
+  <data name="PH_CrashThreshold" xml:space="preserve">
+    <value>Crash Threshold</value>
+  </data>
+  <data name="PH_MigrateAfterCrashes" xml:space="preserve">
+    <value>Migrate after N crashes:</value>
+  </data>
+  <data name="PH_SaveButton" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="PH_ResetToDefaults" xml:space="preserve">
+    <value>Reset to Defaults</value>
+  </data>
+  <data name="PH_SettingsSaved" xml:space="preserve">
+    <value>Settings saved.</value>
+  </data>
 </root>

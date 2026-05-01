@@ -15,7 +15,7 @@
              Background="Transparent"
              Foreground="{DynamicResource PFP_TextBrush}"
              Padding="12"
-             xmlns:aeSvc="clr-namespace:WpfHexEditor.Plugins.AssemblyExplorer.Services;assembly=WpfHexEditor.Plugins.AssemblyExplorer">
+             xmlns:aeSvc="clr-namespace:WpfHexEditor.Plugins.AssemblyExplorer.Services">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

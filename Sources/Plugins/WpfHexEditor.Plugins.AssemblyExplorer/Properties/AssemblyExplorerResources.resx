@@ -369,4 +369,127 @@
   <data name="AsmExplorer_BuildingCfg" xml:space="preserve">
     <value>Building CFG…</value>
   </data>
+  <data name="AsmExplorer_Pinned" xml:space="preserve">
+    <value>Pinned — this assembly will not be evicted automatically</value>
+  </data>
+  <data name="AsmExplorer_HighlightInHex" xml:space="preserve">
+    <value>Highlight in Hex Editor</value>
+  </data>
+  <data name="AsmExplorer_OpenInHexTooltip" xml:space="preserve">
+    <value>Open assembly file in hex editor and navigate to this member's byte range</value>
+  </data>
+  <data name="AsmExplorer_OpenAssemblyInHex" xml:space="preserve">
+    <value>Open Assembly File in Hex Editor</value>
+  </data>
+  <data name="AsmExplorer_OpenRawBytes" xml:space="preserve">
+    <value>Open the raw assembly bytes in the hex editor (no navigation)</value>
+  </data>
+  <data name="AsmExplorer_CopyName" xml:space="preserve">
+    <value>Copy Name</value>
+  </data>
+  <data name="AsmExplorer_CopyFullName" xml:space="preserve">
+    <value>Copy Full Name</value>
+  </data>
+  <data name="AsmExplorer_CopyILOffset" xml:space="preserve">
+    <value>Copy IL Offset</value>
+  </data>
+  <data name="AsmExplorer_DecompileTo" xml:space="preserve">
+    <value>Decompile to…</value>
+  </data>
+  <data name="AsmExplorer_ExtractToProject" xml:space="preserve">
+    <value>Extract to Project…</value>
+  </data>
+  <data name="AsmExplorer_DecompileTooltip" xml:space="preserve">
+    <value>Decompile and add .cs file to the loaded project</value>
+  </data>
+  <data name="AsmExplorer_ShowInMetadata" xml:space="preserve">
+    <value>Show in Metadata Tables</value>
+  </data>
+  <data name="AsmExplorer_ExportIL" xml:space="preserve">
+    <value>Export IL</value>
+  </data>
+  <data name="AsmExplorer_ExportCS" xml:space="preserve">
+    <value>Export C#</value>
+  </data>
+  <data name="AsmExplorer_PinAssembly" xml:space="preserve">
+    <value>Pin Assembly</value>
+  </data>
+  <data name="AsmExplorer_PinTooltip" xml:space="preserve">
+    <value>Pin this assembly so it is not evicted when the active file changes</value>
+  </data>
+  <data name="AsmExplorer_CompareWith" xml:space="preserve">
+    <value>Compare with…</value>
+  </data>
+  <data name="AsmExplorer_CompareTooltip" xml:space="preserve">
+    <value>Open the Diff panel with this assembly pre-selected as baseline</value>
+  </data>
+  <data name="AsmExplorer_CollapseAll" xml:space="preserve">
+    <value>Collapse All</value>
+  </data>
+  <data name="AsmExplorer_CollapseAllTooltip" xml:space="preserve">
+    <value>Collapse all nodes in the tree</value>
+  </data>
+  <data name="AsmExplorer_CloseAllAssemblies" xml:space="preserve">
+    <value>Close All Assemblies</value>
+  </data>
+  <data name="AsmExplorer_CloseAllTooltip" xml:space="preserve">
+    <value>Unload all assemblies from the workspace</value>
+  </data>
+  <data name="AsmExplorer_CloseAssembly" xml:space="preserve">
+    <value>Close Assembly</value>
+  </data>
+  <data name="AsmExplorer_CloseAllTooltip2" xml:space="preserve">
+    <value>Close all assemblies</value>
+  </data>
+  <data name="AsmExplorer_MoreToolbarOptions" xml:space="preserve">
+    <value>More toolbar options</value>
+  </data>
+  <data name="AsmExplorer_DecompileMenu" xml:space="preserve">
+    <value>Decompile</value>
+  </data>
+  <data name="AsmExplorer_VisibilityMenu" xml:space="preserve">
+    <value>Visibility</value>
+  </data>
+  <data name="AsmExplorer_SortMenu" xml:space="preserve">
+    <value>Sort</value>
+  </data>
+  <data name="AsmExplorer_SyncMenu" xml:space="preserve">
+    <value>Sync</value>
+  </data>
+  <data name="AsmExplorer_ExpandCollapseMenu" xml:space="preserve">
+    <value>Expand/Collapse</value>
+  </data>
+  <data name="AsmExplorer_FilterMenu" xml:space="preserve">
+    <value>Filter</value>
+  </data>
+  <data name="AsmExplorer_OpenAssemblyTooltip" xml:space="preserve">
+    <value>Open Assembly… (Ctrl+O)</value>
+  </data>
+  <data name="AsmExplorer_OpenInCodeEditor" xml:space="preserve">
+    <value>Open in Code Editor</value>
+  </data>
+  <data name="AsmExplorer_ShowReferences" xml:space="preserve">
+    <value>Show/hide References</value>
+  </data>
+  <data name="AsmExplorer_ShowResources" xml:space="preserve">
+    <value>Show/hide Resources</value>
+  </data>
+  <data name="AsmExplorer_ShowMetadata" xml:space="preserve">
+    <value>Show/hide Metadata Tables</value>
+  </data>
+  <data name="AsmExplorer_SortAlpha" xml:space="preserve">
+    <value>Sort alphabetically (off = sort by PE offset)</value>
+  </data>
+  <data name="AsmExplorer_SyncHexEditor" xml:space="preserve">
+    <value>Sync selection with HexEditor</value>
+  </data>
+  <data name="AsmExplorer_ExpandAll" xml:space="preserve">
+    <value>Expand all</value>
+  </data>
+  <data name="AsmExplorer_CollapseAllPanel" xml:space="preserve">
+    <value>Collapse all</value>
+  </data>
+  <data name="AsmExplorer_LoadingAssembly" xml:space="preserve">
+    <value>Loading assembly...</value>
+  </data>
 </root>

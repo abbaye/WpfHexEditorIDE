@@ -25,7 +25,15 @@
              Foreground="{DynamicResource PFP_TextBrush}"
              Focusable="True"
              KeyDown="OnPanelKeyDown"
-             Loaded="OnLoaded">
+             Loaded="OnLoaded"
+             xmlns:aeSvc="clr-namespace:WpfHexEditor.Plugins.AssemblyExplorer.Services;assembly=WpfHexEditor.Plugins.AssemblyExplorer">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <xmlns:aeSvc:AssemblyExplorerLocalizedDictionary/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
@@ -49,7 +57,7 @@
                             FontFamily="Segoe MDL2 Assets"
                             Width="22" Height="22"
                             Command="{Binding CloseAllCommand}"
-                            ToolTip="Close all assemblies"/>
+                            {DynamicResource AsmExplorer_CloseAllTooltip2}/>
                 </StackPanel>
 
                 <!-- Overflow button — shown when groups collapse -->
@@ -60,7 +68,7 @@
                         FontFamily="Segoe MDL2 Assets"
                         Width="22" Height="22"
                         Visibility="Collapsed"
-                        ToolTip="More toolbar options"
+                        {DynamicResource AsmExplorer_MoreToolbarOptions}
                         Click="OnOverflowButtonClick">
                     <Button.ContextMenu>
                         <ContextMenu x:Name="OverflowContextMenu"
@@ -68,12 +76,12 @@
                                      BorderBrush="{DynamicResource DockBorderBrush}"
                                      Foreground="{DynamicResource DockMenuForegroundBrush}"
                                      Opened="OnOverflowMenuOpened">
-                            <MenuItem Header="Decompile"    Tag="TbgDecompile"      IsCheckable="True"/>
-                            <MenuItem Header="Visibility"   Tag="TbgVisibility"     IsCheckable="True"/>
-                            <MenuItem Header="Sort"         Tag="TbgSort"           IsCheckable="True"/>
-                            <MenuItem Header="Sync"         Tag="TbgSync"           IsCheckable="True"/>
-                            <MenuItem Header="Expand/Collapse" Tag="TbgExpandCollapse" IsCheckable="True"/>
-                            <MenuItem Header="Filter"       Tag="TbgFilter"         IsCheckable="True"/>
+                            <MenuItem {DynamicResource AsmExplorer_DecompileMenu}    Tag="TbgDecompile"      IsCheckable="True"/>
+                            <MenuItem {DynamicResource AsmExplorer_VisibilityMenu}   Tag="TbgVisibility"     IsCheckable="True"/>
+                            <MenuItem {DynamicResource AsmExplorer_SortMenu}         Tag="TbgSort"           IsCheckable="True"/>
+                            <MenuItem {DynamicResource AsmExplorer_SyncMenu}         Tag="TbgSync"           IsCheckable="True"/>
+                            <MenuItem {DynamicResource AsmExplorer_ExpandCollapseMenu} Tag="TbgExpandCollapse" IsCheckable="True"/>
+                            <MenuItem {DynamicResource AsmExplorer_FilterMenu}       Tag="TbgFilter"         IsCheckable="True"/>
                         </ContextMenu>
                     </Button.ContextMenu>
                 </Button>
@@ -89,7 +97,7 @@
                             Content="&#xEC50;"
                             FontFamily="Segoe MDL2 Assets"
                             Width="22" Height="22"
-                            ToolTip="Open Assembly… (Ctrl+O)"
+                            {DynamicResource AsmExplorer_OpenAssemblyTooltip}
                             Click="OnOpenAssemblyClick"/>
                     <!-- Decompile to Code Editor -->
                     <Button x:Name="BtnDecompile"
@@ -97,7 +105,7 @@
                             Content="&#xE8F4;"
                             FontFamily="Segoe MDL2 Assets"
                             Width="22" Height="22"
-                            ToolTip="Open in Code Editor"
+                            {DynamicResource AsmExplorer_OpenInCodeEditor}
                             Command="{Binding OpenInEditorCommand}"/>
                 </StackPanel>
 
@@ -112,21 +120,21 @@
                                   FontFamily="Segoe MDL2 Assets"
                                   Width="22" Height="22"
                                   IsChecked="{Binding ShowReferences}"
-                                  ToolTip="Show/hide References"/>
+                                  {DynamicResource AsmExplorer_ShowReferences}/>
                     <ToggleButton x:Name="BtnShowRes"
                                   Style="{StaticResource PanelIconToggleStyle}"
                                   Content="&#xEB9F;"
                                   FontFamily="Segoe MDL2 Assets"
                                   Width="22" Height="22"
                                   IsChecked="{Binding ShowResources}"
-                                  ToolTip="Show/hide Resources"/>
+                                  {DynamicResource AsmExplorer_ShowResources}/>
                     <ToggleButton x:Name="BtnShowMeta"
                                   Style="{StaticResource PanelIconToggleStyle}"
                                   Content="&#xE9D2;"
                                   FontFamily="Segoe MDL2 Assets"
                                   Width="22" Height="22"
                                   IsChecked="{Binding ShowMetadata}"
-                                  ToolTip="Show/hide Metadata Tables"/>
+                                  {DynamicResource AsmExplorer_ShowMetadata}/>
                 </StackPanel>
 
                 <!-- TbgSort [2] — sort order combo -->
@@ -140,7 +148,7 @@
                                   FontFamily="Segoe MDL2 Assets"
                                   Width="22" Height="22"
                                   IsChecked="{Binding SortAlphabetical}"
-                                  ToolTip="Sort alphabetically (off = sort by PE offset)"/>
+                                  {DynamicResource AsmExplorer_SortAlpha}/>
                 </StackPanel>
 
                 <!-- TbgSync [3] — sync with HexEditor toggle -->
@@ -154,7 +162,7 @@
                                   FontFamily="Segoe MDL2 Assets"
                                   Width="22" Height="22"
                                   IsChecked="{Binding SyncWithHexEditor}"
-                                  ToolTip="Sync selection with HexEditor"/>
+                                  {DynamicResource AsmExplorer_SyncHexEditor}/>
                 </StackPanel>
 
                 <!-- TbgExpandCollapse [4] — expand / collapse all -->
@@ -167,13 +175,13 @@
                             FontFamily="Segoe MDL2 Assets"
                             Width="22" Height="22"
                             Command="{Binding ExpandAllCommand}"
-                            ToolTip="Expand all"/>
+                            {DynamicResource AsmExplorer_ExpandAll}/>
                     <Button Style="{StaticResource PanelIconButtonStyle}"
                             Content="&#xE8AA;"
                             FontFamily="Segoe MDL2 Assets"
                             Width="22" Height="22"
                             Command="{Binding CollapseAllCommand}"
-                            ToolTip="Collapse all"/>
+                            {DynamicResource AsmExplorer_CollapseAllPanel}/>
                 </StackPanel>
 
                 <!-- TbgFilter [5] — last to collapse: filter TextBox -->
@@ -211,7 +219,7 @@
 
                 <!-- Loading overlay — reusable SDK control, visible while IsLoading=true -->
                 <ui:LoadingOverlay IsActive="{Binding IsLoading}"
-                                   Label="Loading assembly..."/>
+                                   {DynamicResource AsmExplorer_LoadingAssembly}/>
             </Grid>
 
             <!-- Splitter -->

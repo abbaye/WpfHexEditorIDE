@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:pb="clr-namespace:WpfHexEditor.ProgressBar.Controls;assembly=WpfHexEditor.ProgressBar"
              xmlns:vm="clr-namespace:WpfHexEditor.Plugins.UnitTesting.ViewModels"
-             xmlns:utSvc="clr-namespace:WpfHexEditor.Plugins.UnitTesting.Services;assembly=WpfHexEditor.Plugins.UnitTesting">
+             xmlns:utSvc="clr-namespace:WpfHexEditor.Plugins.UnitTesting.Services">
 
     <UserControl.Resources>
         <ResourceDictionary>

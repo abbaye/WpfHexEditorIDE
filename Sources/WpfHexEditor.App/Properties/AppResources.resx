@@ -1009,4 +1009,70 @@
   <data name="APP_FullChangelogButton" xml:space="preserve">
     <value>Full Changelog</value>
   </data>
+  <data name="APP_SolutionPropertiesTitle" xml:space="preserve">
+    <value>Solution Property Pages</value>
+  </data>
+  <data name="APP_SolutionConfigLabel" xml:space="preserve">
+    <value>Configuration:</value>
+  </data>
+  <data name="APP_SolutionPlatformLabel" xml:space="preserve">
+    <value>Platform:</value>
+  </data>
+  <data name="APP_ConfigurationManager" xml:space="preserve">
+    <value>Configuration Manager…</value>
+  </data>
+  <data name="APP_ConfigManagerTooltip" xml:space="preserve">
+    <value>Configuration Manager — Phase 2</value>
+  </data>
+  <data name="APP_CommonProperties" xml:space="preserve">
+    <value>Common Properties</value>
+  </data>
+  <data name="APP_StartupProjects" xml:space="preserve">
+    <value>Configure startup projects</value>
+  </data>
+  <data name="APP_ProjectBuildDeps" xml:space="preserve">
+    <value>Project build dependencies</value>
+  </data>
+  <data name="APP_DebugSourceFiles" xml:space="preserve">
+    <value>Debug source files</value>
+  </data>
+  <data name="APP_ConfigProperties" xml:space="preserve">
+    <value>Configuration Properties</value>
+  </data>
+  <data name="APP_ConfigCol" xml:space="preserve">
+    <value>Configuration</value>
+  </data>
+  <data name="APP_AcceptButton" xml:space="preserve">
+    <value>Accept</value>
+  </data>
+  <data name="APP_CancelButton" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="APP_ApplyButton" xml:space="preserve">
+    <value>Apply</value>
+  </data>
+  <data name="APP_ConfigMgrTitle" xml:space="preserve">
+    <value>Configuration Manager</value>
+  </data>
+  <data name="APP_ActiveSolutionConfig" xml:space="preserve">
+    <value>Active solution configuration:</value>
+  </data>
+  <data name="APP_ConfigLabel" xml:space="preserve">
+    <value>Configuration:</value>
+  </data>
+  <data name="APP_PlatformLabel" xml:space="preserve">
+    <value>Platform:</value>
+  </data>
+  <data name="APP_ProjectCol" xml:space="preserve">
+    <value>Project</value>
+  </data>
+  <data name="APP_BuildCol" xml:space="preserve">
+    <value>Build</value>
+  </data>
+  <data name="APP_CloseButton" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="APP_PlatformCol" xml:space="preserve">
+    <value>Platform</value>
+  </data>
 </root>

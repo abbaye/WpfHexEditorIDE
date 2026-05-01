@@ -1,0 +1,58 @@
+ï»¿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true" />
+  </xsd:schema>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter</value></resheader>
+  <data name="Installer_Title" xml:space="preserve">
+    <value>Plugin Installer — WpfHexEditor</value>
+  </data>
+  <data name="Installer_TrustedPublisher" xml:space="preserve">
+    <value>Trusted Publisher</value>
+  </data>
+  <data name="Installer_Version" xml:space="preserve">
+    <value>Version</value>
+  </data>
+  <data name="Installer_Author" xml:space="preserve">
+    <value>Author</value>
+  </data>
+  <data name="Installer_MinIde" xml:space="preserve">
+    <value>Min IDE</value>
+  </data>
+  <data name="Installer_Assembly" xml:space="preserve">
+    <value>Assembly</value>
+  </data>
+  <data name="Installer_Description" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="Installer_Permissions" xml:space="preserve">
+    <value>Permissions Requested</value>
+  </data>
+  <data name="Installer_Perm_HexContent" xml:space="preserve">
+    <value>Access Hex Editor content (read bytes, selection, offset)</value>
+  </data>
+  <data name="Installer_Perm_FileSystem" xml:space="preserve">
+    <value>Access File System (read/write local files)</value>
+  </data>
+  <data name="Installer_Perm_Menus" xml:space="preserve">
+    <value>Register menus and toolbar items</value>
+  </data>
+  <data name="Installer_Perm_Output" xml:space="preserve">
+    <value>Write to Output panel</value>
+  </data>
+  <data name="Installer_Integrity" xml:space="preserve">
+    <value>Integrity</value>
+  </data>
+  <data name="Installer_Sha256Pending" xml:space="preserve">
+    <value>SHA-256 verification pending…</value>
+  </data>
+  <data name="Installer_InstallButton" xml:space="preserve">
+    <value>Install</value>
+  </data>
+  <data name="Installer_CancelButton" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+</root>

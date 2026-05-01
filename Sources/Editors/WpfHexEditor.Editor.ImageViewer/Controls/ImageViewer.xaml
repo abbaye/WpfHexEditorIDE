@@ -25,12 +25,12 @@ Architecture Notes:
              Background="{DynamicResource TE_Background}"
              Focusable="True"
              KeyDown="ImageViewer_KeyDown"
-             xmlns:ivSvc="clr-namespace:WpfHexEditor.Editor.ImageViewer.Services;assembly=WpfHexEditor.Editor.ImageViewer">
+             xmlns:ivSvc="clr-namespace:WpfHexEditor.Editor.ImageViewer.Services">
 
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <xmlns:ivSvc:ImageViewerLocalizedDictionary/>
+                <ivSvc:ImageViewerLocalizedDictionary/>
                 <ResourceDictionary Source="/WpfHexEditor.Editor.ImageViewer;component/Themes/ImageContextMenu.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>

@@ -9,11 +9,11 @@
              xmlns:msgs="clr-namespace:WpfHexEditor.Plugins.AIAssistant.Panel.Messages"
              xmlns:conv="clr-namespace:WpfHexEditor.Plugins.AIAssistant.Panel.Converters"
              xmlns:input="clr-namespace:WpfHexEditor.Plugins.AIAssistant.Panel.Input"
-             xmlns:aiSvc="clr-namespace:WpfHexEditor.Plugins.AIAssistant.Services;assembly=WpfHexEditor.Plugins.AIAssistant">
+             xmlns:aiSvc="clr-namespace:WpfHexEditor.Plugins.AIAssistant.Services">
     <UserControl.Resources>
             <ResourceDictionary>
                 <ResourceDictionary.MergedDictionaries>
-                    <xmlns:aiSvc:AIAssistantLocalizedDictionary/>
+                    <aiSvc:AIAssistantLocalizedDictionary/>
                 </ResourceDictionary.MergedDictionaries>
 
         <BooleanToVisibilityConverter x:Key="BoolToVis"/>

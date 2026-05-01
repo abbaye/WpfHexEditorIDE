@@ -4,7 +4,7 @@
              xmlns:vm="clr-namespace:WpfHexEditor.Plugins.Debugger.ViewModels"
              xmlns:conv="clr-namespace:WpfHexEditor.Plugins.Debugger.Converters"
 
-             xmlns:dbgSvc="clr-namespace:WpfHexEditor.Plugins.Debugger.Services;assembly=WpfHexEditor.Plugins.Debugger">
+             xmlns:dbgSvc="clr-namespace:WpfHexEditor.Plugins.Debugger.Services">
 
     <UserControl.Resources>
         <ResourceDictionary>

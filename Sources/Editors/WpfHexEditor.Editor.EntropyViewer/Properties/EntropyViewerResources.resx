@@ -27,4 +27,34 @@
 
   <data name="EntropyViewer_Analysing" xml:space="preserve"><value>Analysing…</value></data>
 
+  <data name="EntropyViewer_WindowLabel" xml:space="preserve">
+    <value>Window:</value>
+  </data>
+  <data name="EntropyViewer_256B" xml:space="preserve">
+    <value>256 B</value>
+  </data>
+  <data name="EntropyViewer_512B" xml:space="preserve">
+    <value>512 B</value>
+  </data>
+  <data name="EntropyViewer_1KB" xml:space="preserve">
+    <value>1 KB</value>
+  </data>
+  <data name="EntropyViewer_4KB" xml:space="preserve">
+    <value>4 KB</value>
+  </data>
+  <data name="EntropyViewer_16KB" xml:space="preserve">
+    <value>16 KB</value>
+  </data>
+  <data name="EntropyViewer_Regions" xml:space="preserve">
+    <value>Regions</value>
+  </data>
+  <data name="EntropyViewer_Threshold" xml:space="preserve">
+    <value>Threshold</value>
+  </data>
+  <data name="EntropyViewer_RegionChart" xml:space="preserve">
+    <value>Entropy by region  (green = structured · red = compressed/encrypted)</value>
+  </data>
+  <data name="EntropyViewer_ByteDist" xml:space="preserve">
+    <value>Byte distribution (0x00–0xFF)</value>
+  </data>
 </root>

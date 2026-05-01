@@ -191,4 +191,64 @@
     <comment>GridViewColumn header for package download count</comment>
   </data>
 
+  <data name="PluginDev_ClearLog" xml:space="preserve">
+    <value>Clear log</value>
+  </data>
+  <data name="PluginDev_FilterBySource" xml:space="preserve">
+    <value>Filter by source</value>
+  </data>
+  <data name="PluginDev_ExportLog" xml:space="preserve">
+    <value>Export log to file</value>
+  </data>
+  <data name="PluginDev_AutoScroll" xml:space="preserve">
+    <value>Auto-scroll to latest entry</value>
+  </data>
+  <data name="PluginDev_ColTime" xml:space="preserve">
+    <value>Time</value>
+  </data>
+  <data name="PluginDev_ColLevel" xml:space="preserve">
+    <value>Level</value>
+  </data>
+  <data name="PluginDev_ColSource" xml:space="preserve">
+    <value>Source</value>
+  </data>
+  <data name="PluginDev_ColMessage" xml:space="preserve">
+    <value>Message</value>
+  </data>
+  <data name="PluginDev_AutoRebuild" xml:space="preserve">
+    <value>Rebuild plugin automatically on file save</value>
+  </data>
+  <data name="PluginDev_CopyOutput" xml:space="preserve">
+    <value>Copy output to plugin directory after successful build</value>
+  </data>
+  <data name="PluginDev_LogLevelLabel" xml:space="preserve">
+    <value>Log level:</value>
+  </data>
+  <data name="PluginDev_LogDebug" xml:space="preserve">
+    <value>Debug</value>
+  </data>
+  <data name="PluginDev_LogInfo" xml:space="preserve">
+    <value>Info</value>
+  </data>
+  <data name="PluginDev_LogWarning" xml:space="preserve">
+    <value>Warning</value>
+  </data>
+  <data name="PluginDev_LogError" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="PluginDev_SandboxModeLabel" xml:space="preserve">
+    <value>Sandbox mode:</value>
+  </data>
+  <data name="PluginDev_SandboxLight" xml:space="preserve">
+    <value>Light (in-process, catch exceptions)</value>
+  </data>
+  <data name="PluginDev_SandboxFull" xml:space="preserve">
+    <value>Full (out-of-process Named Pipe)</value>
+  </data>
+  <data name="PluginDev_InitTimeout" xml:space="preserve">
+    <value>Init timeout (ms):</value>
+  </data>
+  <data name="PluginDev_ShowDevMode" xml:space="preserve">
+    <value>Show 'Plugin Dev Mode' indicator in status bar</value>
+  </data>
 </root>

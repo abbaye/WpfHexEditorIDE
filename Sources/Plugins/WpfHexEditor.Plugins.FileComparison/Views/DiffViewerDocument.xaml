@@ -5,12 +5,12 @@
              xmlns:views="clr-namespace:WpfHexEditor.Plugins.FileComparison.Views"
              xmlns:ctrl="clr-namespace:WpfHexEditor.Plugins.FileComparison.Views.Controls"
              xmlns:conv="clr-namespace:WpfHexEditor.Plugins.FileComparison.Converters"
-             xmlns:fcSvc="clr-namespace:WpfHexEditor.Plugins.FileComparison.Services;assembly=WpfHexEditor.Plugins.FileComparison">
+             xmlns:fcSvc="clr-namespace:WpfHexEditor.Plugins.FileComparison.Services">
 
     <UserControl.Resources>
             <ResourceDictionary>
                 <ResourceDictionary.MergedDictionaries>
-                    <xmlns:fcSvc:FileComparisonLocalizedDictionary/>
+                    <fcSvc:FileComparisonLocalizedDictionary/>
                 </ResourceDictionary.MergedDictionaries>
 
         <conv:BoolToVisibilityConverter    x:Key="BoolToVis"/>

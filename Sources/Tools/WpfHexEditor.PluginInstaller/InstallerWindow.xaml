@@ -11,13 +11,21 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:pb="clr-namespace:WpfHexEditor.ProgressBar.Controls;assembly=WpfHexEditor.ProgressBar"
-        Title="Plugin Installer — WpfHexEditor"
+        {DynamicResource Installer_Title}
         Width="540" Height="480"
         MinWidth="460" MinHeight="420"
         WindowStartupLocation="CenterScreen"
         ResizeMode="CanResize"
         Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
-        Foreground="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}">
+        Foreground="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}"
+             xmlns:instSvc="clr-namespace:WpfHexEditor.PluginInstaller;assembly=WpfHexEditor.PluginInstaller">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <xmlns:instSvc:InstallerLocalizedDictionary/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
 
     <Window.Resources>
         <!-- Badge styles -->
@@ -67,7 +75,7 @@
                        VerticalAlignment="Center"/>
             <Border x:Name="TrustBadge" Margin="10,0,0,0" VerticalAlignment="Center"
                     Style="{StaticResource TrustedBadgeStyle}">
-                <TextBlock x:Name="TrustLabel" Text="Trusted Publisher" Style="{StaticResource BadgeText}"/>
+                <TextBlock x:Name="TrustLabel" {DynamicResource Installer_TrustedPublisher} Style="{StaticResource BadgeText}"/>
             </Border>
         </StackPanel>
 
@@ -85,19 +93,19 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <TextBlock Grid.Row="0" Grid.Column="0" Text="Version"     VerticalAlignment="Center" Margin="0,3" Opacity=".7"/>
+            <TextBlock Grid.Row="0" Grid.Column="0" {DynamicResource Installer_Version}     VerticalAlignment="Center" Margin="0,3" Opacity=".7"/>
             <TextBlock Grid.Row="0" Grid.Column="1" x:Name="TxtVersion" VerticalAlignment="Center" Margin="4,3"/>
 
-            <TextBlock Grid.Row="1" Grid.Column="0" Text="Author"      VerticalAlignment="Center" Margin="0,3" Opacity=".7"/>
+            <TextBlock Grid.Row="1" Grid.Column="0" {DynamicResource Installer_Author}      VerticalAlignment="Center" Margin="0,3" Opacity=".7"/>
             <TextBlock Grid.Row="1" Grid.Column="1" x:Name="TxtAuthor"  VerticalAlignment="Center" Margin="4,3"/>
 
-            <TextBlock Grid.Row="2" Grid.Column="0" Text="Min IDE"     VerticalAlignment="Center" Margin="0,3" Opacity=".7"/>
+            <TextBlock Grid.Row="2" Grid.Column="0" {DynamicResource Installer_MinIde}     VerticalAlignment="Center" Margin="0,3" Opacity=".7"/>
             <TextBlock Grid.Row="2" Grid.Column="1" x:Name="TxtMinIde"  VerticalAlignment="Center" Margin="4,3"/>
 
-            <TextBlock Grid.Row="3" Grid.Column="0" Text="Assembly"    VerticalAlignment="Center" Margin="0,3" Opacity=".7"/>
+            <TextBlock Grid.Row="3" Grid.Column="0" {DynamicResource Installer_Assembly}    VerticalAlignment="Center" Margin="0,3" Opacity=".7"/>
             <TextBlock Grid.Row="3" Grid.Column="1" x:Name="TxtAssembly" VerticalAlignment="Center" Margin="4,3" TextTrimming="CharacterEllipsis"/>
 
-            <TextBlock Grid.Row="4" Grid.Column="0" Text="Description" VerticalAlignment="Top"    Margin="0,3" Opacity=".7"/>
+            <TextBlock Grid.Row="4" Grid.Column="0" {DynamicResource Installer_Description} VerticalAlignment="Top"    Margin="0,3" Opacity=".7"/>
             <TextBlock Grid.Row="4" Grid.Column="1" x:Name="TxtDescription"
                        VerticalAlignment="Top" Margin="4,3" TextWrapping="Wrap" MaxHeight="48"
                        TextTrimming="CharacterEllipsis"/>
@@ -106,23 +114,23 @@
         <!-- ── Row 2 : Permissions list + SHA section ── -->
         <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" Margin="0,0,0,4">
             <StackPanel>
-                <TextBlock Text="Permissions Requested" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                <TextBlock {DynamicResource Installer_Permissions} FontWeight="SemiBold" Margin="0,0,0,4"/>
 
                 <Border x:Name="PermHexEditor"     Style="{StaticResource PermRowStyle}">
-                    <TextBlock Text="Access Hex Editor content (read bytes, selection, offset)"/>
+                    <TextBlock {DynamicResource Installer_Perm_HexContent}/>
                 </Border>
                 <Border x:Name="PermFileSystem"    Style="{StaticResource PermRowStyle}">
-                    <TextBlock Text="Access File System (read/write local files)"/>
+                    <TextBlock {DynamicResource Installer_Perm_FileSystem}/>
                 </Border>
                 <Border x:Name="PermRegisterMenus" Style="{StaticResource PermRowStyle}">
-                    <TextBlock Text="Register menus and toolbar items"/>
+                    <TextBlock {DynamicResource Installer_Perm_Menus}/>
                 </Border>
                 <Border x:Name="PermWriteOutput"   Style="{StaticResource PermRowStyle}">
-                    <TextBlock Text="Write to Output panel"/>
+                    <TextBlock {DynamicResource Installer_Perm_Output}/>
                 </Border>
 
                 <!-- Hash verification row -->
-                <TextBlock Text="Integrity" FontWeight="SemiBold" Margin="0,12,0,4"/>
+                <TextBlock {DynamicResource Installer_Integrity} FontWeight="SemiBold" Margin="0,12,0,4"/>
                 <Border Style="{StaticResource PermRowStyle}">
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -130,7 +138,7 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <TextBlock x:Name="TxtHashLabel" Grid.Column="0"
-                                   Text="SHA-256 verification pending…"
+                                   {DynamicResource Installer_Sha256Pending}
                                    VerticalAlignment="Center"/>
                         <TextBlock x:Name="TxtHashBadge" Grid.Column="1"
                                    Margin="8,0,0,0" FontWeight="SemiBold"
@@ -161,10 +169,10 @@
                                   Visibility="Collapsed"/>
 
             <Button x:Name="BtnInstall" Grid.Column="1"
-                    Content="Install" Width="90" Height="28"
+                    {DynamicResource Installer_InstallButton} Width="90" Height="28"
                     IsDefault="True" Click="OnInstallClick"/>
             <Button x:Name="BtnClose"   Grid.Column="3"
-                    Content="Cancel"  Width="90" Height="28"
+                    {DynamicResource Installer_CancelButton}  Width="90" Height="28"
                     IsCancel="True"  Click="OnCloseClick"/>
         </Grid>
     </Grid>

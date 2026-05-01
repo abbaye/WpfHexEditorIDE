@@ -16,12 +16,12 @@
              d:DesignHeight="450" d:DesignWidth="700"
              KeyDown="UserControl_KeyDown"
              PreviewMouseWheel="UserControl_PreviewMouseWheel"
-             xmlns:tblSvc="clr-namespace:WpfHexEditor.Editor.TblEditor.Services;assembly=WpfHexEditor.Editor.TblEditor">
+             xmlns:tblSvc="clr-namespace:WpfHexEditor.Editor.TblEditor.Services">
 
     <UserControl.Resources>
             <ResourceDictionary>
                 <ResourceDictionary.MergedDictionaries>
-                    <xmlns:tblSvc:TblEditorLocalizedDictionary/>
+                    <tblSvc:TblEditorLocalizedDictionary/>
                 </ResourceDictionary.MergedDictionaries>
 
         <!-- Bool → Visibility -->

@@ -8,12 +8,12 @@
     Foreground="{DynamicResource DT_PanelForeground}"
     FontFamily="Segoe UI"
     FontSize="12"
-             xmlns:dtSvc="clr-namespace:WpfHexEditor.Plugins.DiagnosticTools.Services;assembly=WpfHexEditor.Plugins.DiagnosticTools">
+             xmlns:dtSvc="clr-namespace:WpfHexEditor.Plugins.DiagnosticTools.Services">
 
     <UserControl.Resources>
             <ResourceDictionary>
                 <ResourceDictionary.MergedDictionaries>
-                    <xmlns:dtSvc:DiagnosticToolsLocalizedDictionary/>
+                    <dtSvc:DiagnosticToolsLocalizedDictionary/>
                 </ResourceDictionary.MergedDictionaries>
 
 

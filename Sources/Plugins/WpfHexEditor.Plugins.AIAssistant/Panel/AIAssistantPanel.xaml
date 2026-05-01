@@ -8,11 +8,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:tabs="clr-namespace:WpfHexEditor.Plugins.AIAssistant.Panel.Tabs"
              MinWidth="320" MinHeight="200"
-             xmlns:aiSvc="clr-namespace:WpfHexEditor.Plugins.AIAssistant.Services;assembly=WpfHexEditor.Plugins.AIAssistant">
+             xmlns:aiSvc="clr-namespace:WpfHexEditor.Plugins.AIAssistant.Services">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <xmlns:aiSvc:AIAssistantLocalizedDictionary/>
+                <aiSvc:AIAssistantLocalizedDictionary/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>

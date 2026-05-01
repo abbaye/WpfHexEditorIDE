@@ -23,12 +23,12 @@
              Background="{DynamicResource PFP_PanelBackgroundBrush}"
              Foreground="{DynamicResource PFP_TextBrush}"
              Loaded="OnLoaded"
-             xmlns:aeSvc="clr-namespace:WpfHexEditor.Plugins.AssemblyExplorer.Services;assembly=WpfHexEditor.Plugins.AssemblyExplorer">
+             xmlns:aeSvc="clr-namespace:WpfHexEditor.Plugins.AssemblyExplorer.Services">
 
     <UserControl.Resources>
             <ResourceDictionary>
                 <ResourceDictionary.MergedDictionaries>
-                    <xmlns:aeSvc:AssemblyExplorerLocalizedDictionary/>
+                    <aeSvc:AssemblyExplorerLocalizedDictionary/>
                 </ResourceDictionary.MergedDictionaries>
 
         <!-- DiffKind → row background converter -->

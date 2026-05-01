@@ -6,12 +6,12 @@
     xmlns:vm="clr-namespace:WpfHexEditor.Plugins.Git.ViewModels"
     Background="{DynamicResource DockBackgroundBrush}"
     Foreground="{DynamicResource DockMenuForegroundBrush}"
-             xmlns:gitSvc="clr-namespace:WpfHexEditor.Plugins.Git.Services;assembly=WpfHexEditor.Plugins.Git">
+             xmlns:gitSvc="clr-namespace:WpfHexEditor.Plugins.Git.Services">
 
     <UserControl.Resources>
             <ResourceDictionary>
                 <ResourceDictionary.MergedDictionaries>
-                    <xmlns:gitSvc:GitPluginLocalizedDictionary/>
+                    <gitSvc:GitPluginLocalizedDictionary/>
                 </ResourceDictionary.MergedDictionaries>
 
         <BooleanToVisibilityConverter x:Key="BoolToVis" />

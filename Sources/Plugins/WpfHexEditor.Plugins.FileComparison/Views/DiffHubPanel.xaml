@@ -4,12 +4,12 @@
              xmlns:pb="clr-namespace:WpfHexEditor.ProgressBar.Controls;assembly=WpfHexEditor.ProgressBar"
              xmlns:vm="clr-namespace:WpfHexEditor.Plugins.FileComparison.ViewModels"
              xmlns:conv="clr-namespace:WpfHexEditor.Plugins.FileComparison.Converters"
-             xmlns:fcSvc="clr-namespace:WpfHexEditor.Plugins.FileComparison.Services;assembly=WpfHexEditor.Plugins.FileComparison">
+             xmlns:fcSvc="clr-namespace:WpfHexEditor.Plugins.FileComparison.Services">
 
     <UserControl.Resources>
             <ResourceDictionary>
                 <ResourceDictionary.MergedDictionaries>
-                    <xmlns:fcSvc:FileComparisonLocalizedDictionary/>
+                    <fcSvc:FileComparisonLocalizedDictionary/>
                 </ResourceDictionary.MergedDictionaries>
 
         <conv:BoolToVisibilityConverter x:Key="BoolToVis"/>

@@ -13,11 +13,11 @@
              xmlns:ui="clr-namespace:WpfHexEditor.SDK.UI;assembly=WpfHexEditor.SDK"
              mc:Ignorable="d"
              d:DesignHeight="600" d:DesignWidth="350"
-             xmlns:soSvc="clr-namespace:WpfHexEditor.Plugins.StructureOverlay.Services;assembly=WpfHexEditor.Plugins.StructureOverlay">
+             xmlns:soSvc="clr-namespace:WpfHexEditor.Plugins.StructureOverlay.Services">
     <UserControl.Resources>
             <ResourceDictionary>
                 <ResourceDictionary.MergedDictionaries>
-                    <xmlns:soSvc:StructureOverlayLocalizedDictionary/>
+                    <soSvc:StructureOverlayLocalizedDictionary/>
                 </ResourceDictionary.MergedDictionaries>
 
         <Style x:Key="StructureItemStyle" TargetType="TreeViewItem"

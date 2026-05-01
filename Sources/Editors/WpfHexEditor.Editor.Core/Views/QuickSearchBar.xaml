@@ -13,7 +13,7 @@
              mc:Ignorable="d"
              MinWidth="380"
              d:DesignHeight="86" d:DesignWidth="520"
-             xmlns:ecSvc="clr-namespace:WpfHexEditor.Editor.Core.Services;assembly=WpfHexEditor.Editor.Core">
+             xmlns:ecSvc="clr-namespace:WpfHexEditor.Editor.Core.Services">
 
     <UserControl.Resources>
         <ResourceDictionary>

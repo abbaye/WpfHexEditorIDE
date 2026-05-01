@@ -13,7 +13,7 @@
              xmlns:ui="clr-namespace:WpfHexEditor.SDK.UI;assembly=WpfHexEditor.SDK"
              mc:Ignorable="d"
              d:DesignHeight="600" d:DesignWidth="300"
-             xmlns:fsSvc="clr-namespace:WpfHexEditor.Plugins.FileStatistics.Services;assembly=WpfHexEditor.Plugins.FileStatistics">
+             xmlns:fsSvc="clr-namespace:WpfHexEditor.Plugins.FileStatistics.Services">
 
     <UserControl.Resources>
         <ResourceDictionary>

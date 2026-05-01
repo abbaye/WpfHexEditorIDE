@@ -14,13 +14,21 @@
 <Window x:Class="WpfHexEditor.Core.WorkspaceTemplates.Views.NewProjectDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="New Project"
+        {DynamicResource NewProject_Title}
         Width="760" Height="520"
         WindowStartupLocation="CenterOwner"
         ResizeMode="NoResize"
         ShowInTaskbar="False"
         Background="{DynamicResource DockMenuBackgroundBrush}"
-        Foreground="{DynamicResource DockMenuForegroundBrush}">
+        Foreground="{DynamicResource DockMenuForegroundBrush}"
+             xmlns:wtSvc="clr-namespace:WpfHexEditor.Core.WorkspaceTemplates.Services;assembly=WpfHexEditor.Core.WorkspaceTemplates">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <xmlns:wtSvc:WorkspaceTemplatesLocalizedDictionary/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
 
     <Window.Resources>
         <!-- Step indicator style -->
@@ -96,13 +104,13 @@
                 BorderBrush="{DynamicResource DockBorderBrush}"
                 BorderThickness="0,0,0,1">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <TextBlock x:Name="StepLabel1" Text="1  Template"
+                <TextBlock x:Name="StepLabel1" {DynamicResource NewProject_Step1}
                            Style="{StaticResource ActiveStepStyle}"/>
                 <TextBlock Text="›" Style="{StaticResource StepLabelStyle}" Margin="0,0,12,0"/>
-                <TextBlock x:Name="StepLabel2" Text="2  Configure"
+                <TextBlock x:Name="StepLabel2" {DynamicResource NewProject_Step2}
                            Style="{StaticResource StepLabelStyle}"/>
                 <TextBlock Text="›" Style="{StaticResource StepLabelStyle}" Margin="0,0,12,0"/>
-                <TextBlock x:Name="StepLabel3" Text="3  Plugins"
+                <TextBlock x:Name="StepLabel3" {DynamicResource NewProject_Step3}
                            Style="{StaticResource StepLabelStyle}"/>
             </StackPanel>
         </Border>
@@ -114,7 +122,7 @@
                 Background="{DynamicResource DockMenuBackgroundBrush}"
                 Padding="16,0">
             <TextBlock x:Name="StepTitle"
-                       Text="Select a template"
+                       {DynamicResource NewProject_SelectTemplate}
                        VerticalAlignment="Center"
                        FontSize="14" FontWeight="SemiBold"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
@@ -138,8 +146,8 @@
                      Grid.Column="0" Grid.Row="0" Margin="0,0,4,4"
                      Style="{StaticResource DialogTextBoxStyle}"
                      Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged}"
-                     Tag="Search templates..."
-                     ToolTip="Filter templates"/>
+                     {DynamicResource NewProject_SearchPlaceholder}
+                     {DynamicResource NewProject_FilterTooltip}/>
 
             <!-- Template list -->
             <ListBox x:Name="LbTemplates"
@@ -169,7 +177,7 @@
                     <Separator Margin="0,12" Background="{DynamicResource DockBorderBrush}"/>
                     <TextBlock FontSize="10" Opacity="0.6"
                                Foreground="{DynamicResource DockMenuForegroundBrush}">
-                        <Run Text="Default language: "/>
+                        <Run {DynamicResource NewProject_DefaultLanguage}/>
                         <Run Text="{Binding DefaultLanguage, FallbackValue='—'}"/>
                     </TextBlock>
                 </StackPanel>
@@ -195,7 +203,7 @@
             </Grid.ColumnDefinitions>
 
             <!-- Project name -->
-            <TextBlock Grid.Row="0" Grid.Column="0" Text="Project name:"
+            <TextBlock Grid.Row="0" Grid.Column="0" {DynamicResource NewProject_NameLabel}
                        VerticalAlignment="Center" Margin="0,0,8,8"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             <TextBox x:Name="TbProjectName"
@@ -204,7 +212,7 @@
                      Text="{Binding ProjectName, UpdateSourceTrigger=PropertyChanged}"/>
 
             <!-- Parent directory -->
-            <TextBlock Grid.Row="1" Grid.Column="0" Text="Location:"
+            <TextBlock Grid.Row="1" Grid.Column="0" {DynamicResource NewProject_LocationLabel}
                        VerticalAlignment="Center" Margin="0,0,8,8"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             <TextBox x:Name="TbParentDir"
@@ -212,13 +220,13 @@
                      Style="{StaticResource DialogTextBoxStyle}"
                      Text="{Binding ParentDirectory, UpdateSourceTrigger=PropertyChanged}"/>
             <Button x:Name="BtnBrowse" Grid.Row="1" Grid.Column="2"
-                    Content="Browse..."
+                    {DynamicResource NewProject_BrowseButton}
                     Style="{StaticResource DialogButtonStyle}"
                     Width="76" Margin="0,0,0,8"
                     Click="OnBrowseDirectory"/>
 
             <!-- Language override -->
-            <TextBlock Grid.Row="2" Grid.Column="0" Text="Language:"
+            <TextBlock Grid.Row="2" Grid.Column="0" {DynamicResource NewProject_LanguageLabel}
                        VerticalAlignment="Center" Margin="0,0,8,8"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             <ComboBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2"
@@ -230,7 +238,7 @@
                       Height="24" Margin="0,0,0,8"/>
 
             <!-- Project path preview -->
-            <TextBlock Grid.Row="3" Grid.Column="0" Text="Project path:"
+            <TextBlock Grid.Row="3" Grid.Column="0" {DynamicResource NewProject_PathLabel}
                        VerticalAlignment="Center" Margin="0,0,8,8"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             <TextBlock Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2"
@@ -250,7 +258,7 @@
             </Grid.RowDefinitions>
 
             <TextBlock Grid.Row="0" Margin="0,0,0,8"
-                       Text="Select optional plugins to include with this project:"
+                       {DynamicResource NewProject_PluginsHint}
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
 
             <Border Grid.Row="1"
@@ -273,20 +281,20 @@
              ================================================================ -->
         <Grid Grid.Row="4" Margin="12,0">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
-                <Button x:Name="BtnBack" Content="← Back"
+                <Button x:Name="BtnBack" {DynamicResource NewProject_Back}
                         Style="{StaticResource DialogButtonStyle}"
                         IsEnabled="{Binding CanGoBack}"
                         Click="OnBack"/>
-                <Button x:Name="BtnNext" Content="Next →"
+                <Button x:Name="BtnNext" {DynamicResource NewProject_Next}
                         Style="{StaticResource DialogButtonStyle}"
                         IsEnabled="{Binding CanGoNext}"
                         Click="OnNext"/>
-                <Button x:Name="BtnFinish" Content="Finish"
+                <Button x:Name="BtnFinish" {DynamicResource NewProject_Finish}
                         Style="{StaticResource DialogButtonStyle}"
                         IsEnabled="{Binding CanFinish}"
                         Visibility="Collapsed"
                         Click="OnFinish"/>
-                <Button Content="Cancel" IsCancel="True"
+                <Button {DynamicResource NewProject_Cancel} IsCancel="True"
                         Style="{StaticResource DialogButtonStyle}"
                         Click="OnCancel"/>
             </StackPanel>

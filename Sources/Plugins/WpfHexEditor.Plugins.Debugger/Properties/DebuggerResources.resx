@@ -185,4 +185,73 @@
   <data name="DBG_MoreOptionsTooltip" xml:space="preserve">
     <value>More options</value>
   </data>
+  <data name="DBG_LaunchConfigTitle" xml:space="preserve">
+    <value>Debug Launch Configurations</value>
+  </data>
+  <data name="DBG_OpenWhdbgTooltip" xml:space="preserve">
+    <value>Open .whdbg file</value>
+  </data>
+  <data name="DBG_OpenButton" xml:space="preserve">
+    <value>Open</value>
+  </data>
+  <data name="DBG_SaveTooltip" xml:space="preserve">
+    <value>Save launch configuration</value>
+  </data>
+  <data name="DBG_SaveButton" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="DBG_EditInIdeTooltip" xml:space="preserve">
+    <value>Open this .whdbg file in the main CodeEditor for full JSON editing</value>
+  </data>
+  <data name="DBG_EditInIde" xml:space="preserve">
+    <value>Edit in IDE</value>
+  </data>
+  <data name="DBG_LaunchTooltip" xml:space="preserve">
+    <value>Launch selected configuration (F5)</value>
+  </data>
+  <data name="DBG_LaunchButton" xml:space="preserve">
+    <value>Launch</value>
+  </data>
+  <data name="DBG_ConfigLabel" xml:space="preserve">
+    <value>Configuration:</value>
+  </data>
+  <data name="DBG_LaunchHint" xml:space="preserve">
+    <value>Click Open to load a .whdbg file, select a configuration, then click Launch. Use Edit in IDE to edit the JSON with full syntax highlighting and schema validation.</value>
+  </data>
+  <data name="DBG_NoFileOpen" xml:space="preserve">
+    <value>No file open — click Open to load a .whdbg configuration.</value>
+  </data>
+  <data name="DBG_BreakpointSettings" xml:space="preserve">
+    <value>Breakpoint Settings</value>
+  </data>
+  <data name="DBG_ConditionsLabel" xml:space="preserve">
+    <value>Conditions</value>
+  </data>
+  <data name="DBG_AddCondition" xml:space="preserve">
+    <value>+ Add a condition</value>
+  </data>
+  <data name="DBG_ActionsLabel" xml:space="preserve">
+    <value>Actions</value>
+  </data>
+  <data name="DBG_LogMessage" xml:space="preserve">
+    <value>Log a message to Output window:</value>
+  </data>
+  <data name="DBG_LogHint" xml:space="preserve">
+    <value>Use $FUNCTION for method name, {expression} for values, $ADDRESS, $CALLER</value>
+  </data>
+  <data name="DBG_ContinueExecution" xml:space="preserve">
+    <value>Continue code execution</value>
+  </data>
+  <data name="DBG_DisableOnHit" xml:space="preserve">
+    <value>Disable breakpoint once hit</value>
+  </data>
+  <data name="DBG_OnlyWhen" xml:space="preserve">
+    <value>Only enable when following breakpoint is hit:</value>
+  </data>
+  <data name="DBG_ResetButton" xml:space="preserve">
+    <value>Reset</value>
+  </data>
+  <data name="DBG_CloseButton" xml:space="preserve">
+    <value>Close</value>
+  </data>
 </root>

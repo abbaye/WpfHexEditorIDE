@@ -149,4 +149,25 @@
     <value>No recent comparisons.
 Compare two files to build history.</value>
   </data>
+  <data name="FileComparison_LoadFile2" xml:space="preserve">
+    <value>Load File 2…</value>
+  </data>
+  <data name="FileComparison_LoadFile1" xml:space="preserve">
+    <value>Load File 1…</value>
+  </data>
+  <data name="FileComparison_File1" xml:space="preserve">
+    <value>File 1</value>
+  </data>
+  <data name="FileComparison_File2" xml:space="preserve">
+    <value>File 2</value>
+  </data>
+  <data name="FileComparison_Added" xml:space="preserve">
+    <value>Added</value>
+  </data>
+  <data name="FileComparison_Modified" xml:space="preserve">
+    <value>Modified</value>
+  </data>
+  <data name="FileComparison_Removed" xml:space="preserve">
+    <value>Removed</value>
+  </data>
 </root>

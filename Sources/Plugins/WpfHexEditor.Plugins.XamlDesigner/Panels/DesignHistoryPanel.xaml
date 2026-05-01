@@ -19,12 +19,12 @@
              xmlns:vm="clr-namespace:WpfHexEditor.Plugins.XamlDesigner.ViewModels"
              MinHeight="80"
              Background="{DynamicResource XD_HistoryPanelBackground}"
-             xmlns:xdSvc="clr-namespace:WpfHexEditor.Plugins.XamlDesigner.Services;assembly=WpfHexEditor.Plugins.XamlDesigner">
+             xmlns:xdSvc="clr-namespace:WpfHexEditor.Plugins.XamlDesigner.Services">
 
     <UserControl.Resources>
             <ResourceDictionary>
                 <ResourceDictionary.MergedDictionaries>
-                    <xmlns:xdSvc:XamlDesignerLocalizedDictionary/>
+                    <xdSvc:XamlDesignerLocalizedDictionary/>
                 </ResourceDictionary.MergedDictionaries>
 
 
