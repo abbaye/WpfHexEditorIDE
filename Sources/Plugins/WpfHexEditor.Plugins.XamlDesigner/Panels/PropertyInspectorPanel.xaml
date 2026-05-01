@@ -24,12 +24,12 @@
              xmlns:models="clr-namespace:WpfHexEditor.Editor.XamlDesigner.Models;assembly=WpfHexEditor.Editor.XamlDesigner"
              xmlns:editors="clr-namespace:WpfHexEditor.Editor.XamlDesigner.Controls.Editors;assembly=WpfHexEditor.Editor.XamlDesigner"
              Background="{DynamicResource DockBackgroundBrush}"
-             xmlns:xdSvc="clr-namespace:WpfHexEditor.Plugins.XamlDesigner.Services;assembly=WpfHexEditor.Plugins.XamlDesigner">
+             xmlns:xdSvc="clr-namespace:WpfHexEditor.Plugins.XamlDesigner.Services">
 
     <UserControl.Resources>
             <ResourceDictionary>
                 <ResourceDictionary.MergedDictionaries>
-                    <xmlns:xdSvc:XamlDesignerLocalizedDictionary/>
+                    <xdSvc:XamlDesignerLocalizedDictionary/>
                 </ResourceDictionary.MergedDictionaries>
 
         <BooleanToVisibilityConverter x:Key="BoolToVis"/>

@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:WpfHexEditor.Plugins.XamlDesigner.ViewModels"
              xmlns:models="clr-namespace:WpfHexEditor.Editor.XamlDesigner.Models;assembly=WpfHexEditor.Editor.XamlDesigner"
-             xmlns:xdSvc="clr-namespace:WpfHexEditor.Plugins.XamlDesigner.Services;assembly=WpfHexEditor.Plugins.XamlDesigner">
+             xmlns:xdSvc="clr-namespace:WpfHexEditor.Plugins.XamlDesigner.Services">
 
     <!-- ==========================================================
          Project: WpfHexEditor.Plugins.XamlDesigner
@@ -23,7 +23,7 @@
     <UserControl.Resources>
             <ResourceDictionary>
                 <ResourceDictionary.MergedDictionaries>
-                    <xmlns:xdSvc:XamlDesignerLocalizedDictionary/>
+                    <xdSvc:XamlDesignerLocalizedDictionary/>
                 </ResourceDictionary.MergedDictionaries>
 
 

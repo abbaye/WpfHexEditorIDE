@@ -1,7 +1,15 @@
 <UserControl x:Class="WpfHexEditor.Editor.XamlDesigner.Controls.Editors.ThicknessEditor"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             Height="22">
+             Height="22"
+             xmlns:xdeSvc="clr-namespace:WpfHexEditor.Editor.XamlDesigner.Services;assembly=WpfHexEditor.Editor.XamlDesigner">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <xmlns:xdeSvc:XamlDesignerEditorLocalizedDictionary/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
 
     <!-- ==========================================================
          File: ThicknessEditor.xaml
@@ -12,25 +20,25 @@
 
     <StackPanel Orientation="Horizontal">
         <TextBox x:Name="TbLeft"   Width="32" Height="18" Margin="0,0,2,0" FontSize="10"
-                 ToolTip="Left"
+                 {DynamicResource XamlDesigEd_Left}
                  Text="{Binding Left,  RelativeSource={RelativeSource AncestorType=UserControl}, UpdateSourceTrigger=LostFocus}"
                  Background="Transparent" Foreground="{DynamicResource XD_PropertyValueForeground}"
                  BorderBrush="{DynamicResource DockBorderBrush}" BorderThickness="1"
                  VerticalContentAlignment="Center" Padding="2,0"/>
         <TextBox x:Name="TbTop"    Width="32" Height="18" Margin="0,0,2,0" FontSize="10"
-                 ToolTip="Top"
+                 {DynamicResource XamlDesigEd_Top}
                  Text="{Binding Top,   RelativeSource={RelativeSource AncestorType=UserControl}, UpdateSourceTrigger=LostFocus}"
                  Background="Transparent" Foreground="{DynamicResource XD_PropertyValueForeground}"
                  BorderBrush="{DynamicResource DockBorderBrush}" BorderThickness="1"
                  VerticalContentAlignment="Center" Padding="2,0"/>
         <TextBox x:Name="TbRight"  Width="32" Height="18" Margin="0,0,2,0" FontSize="10"
-                 ToolTip="Right"
+                 {DynamicResource XamlDesigEd_Right}
                  Text="{Binding Right, RelativeSource={RelativeSource AncestorType=UserControl}, UpdateSourceTrigger=LostFocus}"
                  Background="Transparent" Foreground="{DynamicResource XD_PropertyValueForeground}"
                  BorderBrush="{DynamicResource DockBorderBrush}" BorderThickness="1"
                  VerticalContentAlignment="Center" Padding="2,0"/>
         <TextBox x:Name="TbBottom" Width="32" Height="18" Margin="0,0,4,0" FontSize="10"
-                 ToolTip="Bottom"
+                 {DynamicResource XamlDesigEd_Bottom}
                  Text="{Binding Bottom,RelativeSource={RelativeSource AncestorType=UserControl}, UpdateSourceTrigger=LostFocus}"
                  Background="Transparent" Foreground="{DynamicResource XD_PropertyValueForeground}"
                  BorderBrush="{DynamicResource DockBorderBrush}" BorderThickness="1"
@@ -38,7 +46,7 @@
         <!-- Link toggle -->
         <ToggleButton x:Name="BtnLink" Width="18" Height="18"
                       Content="\uE71B" FontFamily="Segoe MDL2 Assets" FontSize="10"
-                      ToolTip="Link all sides"
+                      {DynamicResource XamlDesigEd_LinkAllSides}
                       IsChecked="{Binding Linked, RelativeSource={RelativeSource AncestorType=UserControl}}"
                       Background="Transparent"
                       Foreground="{DynamicResource XD_PropertyNameForeground}"

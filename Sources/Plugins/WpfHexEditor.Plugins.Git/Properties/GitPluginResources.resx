@@ -137,4 +137,22 @@
   <data name="Git_NoChanges" xml:space="preserve">
     <value>No changes detected.</value>
   </data>
+  <data name="Git_FileLabel" xml:space="preserve">
+    <value>File:</value>
+  </data>
+  <data name="Git_FilterByFilePath" xml:space="preserve">
+    <value>Filter by file path (leave empty for all commits)</value>
+  </data>
+  <data name="Git_AuthorLabel" xml:space="preserve">
+    <value>Author:</value>
+  </data>
+  <data name="Git_FilterByAuthor" xml:space="preserve">
+    <value>Filter by author name</value>
+  </data>
+  <data name="Git_MaxLabel" xml:space="preserve">
+    <value>Max:</value>
+  </data>
+  <data name="Git_HistoryRefresh" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
 </root>

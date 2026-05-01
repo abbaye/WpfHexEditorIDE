@@ -15,11 +15,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              Background="Transparent"
              Foreground="{DynamicResource PFP_TextBrush}"
-             xmlns:phSvc="clr-namespace:WpfHexEditor.PluginHost.Services;assembly=WpfHexEditor.PluginHost">
+             xmlns:phSvc="clr-namespace:WpfHexEditor.PluginHost.Services">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <xmlns:phSvc:PluginHostLocalizedDictionary/>
+                <phSvc:PluginHostLocalizedDictionary/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>

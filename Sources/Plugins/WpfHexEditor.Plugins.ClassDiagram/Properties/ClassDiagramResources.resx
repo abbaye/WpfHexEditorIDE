@@ -193,4 +193,31 @@
   <data name="ClassDiagram_ColorMemberDots" xml:space="preserve">
     <value>Color member dots by visibility (green / orange / red)</value>
   </data>
+  <data name="ClassDiagram_ExportCsv" xml:space="preserve">
+    <value>Export CSV</value>
+  </data>
+  <data name="ClassDiagram_SortByLabel" xml:space="preserve">
+    <value>Sort by:</value>
+  </data>
+  <data name="ClassDiagram_SortInstability" xml:space="preserve">
+    <value>Instability</value>
+  </data>
+  <data name="ClassDiagram_SortAfferentCa" xml:space="preserve">
+    <value>Afferent Coupling (Ca)</value>
+  </data>
+  <data name="ClassDiagram_SortEfferentCe" xml:space="preserve">
+    <value>Efferent Coupling (Ce)</value>
+  </data>
+  <data name="ClassDiagram_SortMemberCount" xml:space="preserve">
+    <value>Member Count</value>
+  </data>
+  <data name="ClassDiagram_ColClassName" xml:space="preserve">
+    <value>Class Name</value>
+  </data>
+  <data name="ClassDiagram_ColKind" xml:space="preserve">
+    <value>Kind</value>
+  </data>
+  <data name="ClassDiagram_ColMembers" xml:space="preserve">
+    <value>Members</value>
+  </data>
 </root>

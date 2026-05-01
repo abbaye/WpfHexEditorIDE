@@ -74,4 +74,37 @@
     <value>Type Hierarchy</value>
   </data>
 
+  <data name="LspTools_RefreshTooltip" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
+  <data name="LspTools_ShowBaseTypes" xml:space="preserve">
+    <value>Show base types / interfaces</value>
+  </data>
+  <data name="LspTools_Supertypes" xml:space="preserve">
+    <value>Supertypes</value>
+  </data>
+  <data name="LspTools_ShowDerivedTypes" xml:space="preserve">
+    <value>Show derived types / implementors</value>
+  </data>
+  <data name="LspTools_Subtypes" xml:space="preserve">
+    <value>Subtypes</value>
+  </data>
+  <data name="LspTools_NoTypeHierarchy" xml:space="preserve">
+    <value>No type hierarchy. Place caret on a type and press Ctrl+F12.</value>
+  </data>
+  <data name="LspTools_ShowIncoming" xml:space="preserve">
+    <value>Show incoming calls (callers)</value>
+  </data>
+  <data name="LspTools_Incoming" xml:space="preserve">
+    <value>Incoming</value>
+  </data>
+  <data name="LspTools_ShowOutgoing" xml:space="preserve">
+    <value>Show outgoing calls (callees)</value>
+  </data>
+  <data name="LspTools_Outgoing" xml:space="preserve">
+    <value>Outgoing</value>
+  </data>
+  <data name="LspTools_NoCallHierarchy" xml:space="preserve">
+    <value>No call hierarchy. Place caret on a method and press Shift+Alt+H.</value>
+  </data>
 </root>

@@ -16,13 +16,24 @@
         ResizeMode="NoResize"
         Background="{DynamicResource DockWindowBackgroundBrush}">
 
-    <Window.Resources>
+    <ec:ThemedDialog.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <aeSvc:ArchiveExplorerLocalizedDictionary/>
             </ResourceDictionary.MergedDictionaries>
+            <Style x:Key="PropLabelStyle" TargetType="TextBlock">
+                <Setter Property="Foreground"   Value="{DynamicResource PFP_SubTextBrush}"/>
+                <Setter Property="FontSize"     Value="12"/>
+                <Setter Property="Margin"       Value="0,3,8,3"/>
+                <Setter Property="VerticalAlignment" Value="Top"/>
+            </Style>
+            <Style x:Key="PropValueStyle" TargetType="TextBlock">
+                <Setter Property="Foreground"   Value="{DynamicResource DockMenuForegroundBrush}"/>
+                <Setter Property="FontSize"     Value="12"/>
+                <Setter Property="Margin"       Value="0,3,0,3"/>
+            </Style>
         </ResourceDictionary>
-    </Window.Resources>
+    </ec:ThemedDialog.Resources>
 
     <Grid Margin="15">
         <Grid.RowDefinitions>
@@ -88,18 +99,5 @@
                 Click="OnCloseClick"/>
     </Grid>
 
-    <ec:ThemedDialog.Resources>
-        <Style x:Key="PropLabelStyle" TargetType="TextBlock">
-            <Setter Property="Foreground"   Value="{DynamicResource PFP_SubTextBrush}"/>
-            <Setter Property="FontSize"     Value="12"/>
-            <Setter Property="Margin"       Value="0,3,8,3"/>
-            <Setter Property="VerticalAlignment" Value="Top"/>
-        </Style>
-        <Style x:Key="PropValueStyle" TargetType="TextBlock">
-            <Setter Property="Foreground"   Value="{DynamicResource DockMenuForegroundBrush}"/>
-            <Setter Property="FontSize"     Value="12"/>
-            <Setter Property="Margin"       Value="0,3,0,3"/>
-        </Style>
-    </ec:ThemedDialog.Resources>
 
 </ec:ThemedDialog>

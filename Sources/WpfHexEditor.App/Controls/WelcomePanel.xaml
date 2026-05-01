@@ -14,7 +14,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              Background="{DynamicResource DockBackgroundBrush}"
              FontFamily="Segoe UI, Arial"
-             xmlns:appSvc="clr-namespace:WpfHexEditor.App.Services;assembly=WpfHexEditor.App">
+             xmlns:appSvc="clr-namespace:WpfHexEditor.App.Services">
 
     <UserControl.Resources>
         <ResourceDictionary>

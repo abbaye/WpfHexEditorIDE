@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:WpfHexEditor.Plugins.DocumentStructure.ViewModels"
              xmlns:conv="clr-namespace:WpfHexEditor.Plugins.DocumentStructure.Converters"
-             xmlns:dsSvc="clr-namespace:WpfHexEditor.Plugins.DocumentStructure.Services;assembly=WpfHexEditor.Plugins.DocumentStructure">
+             xmlns:dsSvc="clr-namespace:WpfHexEditor.Plugins.DocumentStructure.Services">
 
     <UserControl.Resources>
         <ResourceDictionary>

@@ -15,19 +15,27 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              Background="Transparent"
              Foreground="{DynamicResource PFP_TextBrush}"
-             Padding="12">
+             Padding="12"
+             xmlns:synSvc="clr-namespace:WpfHexEditor.Plugins.SynalysisGrammar.Services;assembly=WpfHexEditor.Plugins.SynalysisGrammar">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <xmlns:synSvc:SynalysisGrammarLocalizedDictionary/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
 
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
         <StackPanel>
 
         <!-- Section: Behaviour -->
-        <TextBlock Text="Behaviour"
+        <TextBlock {DynamicResource Synalysis_BehaviourSection}
                    FontSize="12" FontWeight="SemiBold"
                    Foreground="{DynamicResource PFP_AccentBrush}"
                    Margin="0,0,0,6"/>
 
         <CheckBox x:Name="ChkAutoApply"
-                  Content="Auto-apply grammar when a file is opened"
+                  {DynamicResource Synalysis_AutoApplyOnOpen}
                   Foreground="{DynamicResource PFP_TextBrush}"
                   Margin="0,0,0,4"/>
 
@@ -37,7 +45,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <TextBlock Grid.Column="0"
-                       Text="Max sample size (KB):"
+                       {DynamicResource Synalysis_MaxSampleSize}
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource PFP_TextBrush}"/>
             <StackPanel Grid.Column="1" Orientation="Horizontal">
@@ -56,34 +64,34 @@
         </Grid>
 
         <!-- Section: Filter -->
-        <TextBlock Text="Grammar List Filter"
+        <TextBlock {DynamicResource Synalysis_GrammarListFilter}
                    FontSize="12" FontWeight="SemiBold"
                    Foreground="{DynamicResource PFP_AccentBrush}"
                    Margin="0,0,0,6"/>
 
         <CheckBox x:Name="ChkShowEmbedded"
-                  Content="Show built-in grammars (shipped with WpfHexEditor)"
+                  {DynamicResource Synalysis_ShowBuiltIn}
                   Foreground="{DynamicResource PFP_TextBrush}"
                   Margin="0,0,0,4"/>
 
         <CheckBox x:Name="ChkShowFile"
-                  Content="Show grammars loaded from disk"
+                  {DynamicResource Synalysis_ShowFromDisk}
                   Foreground="{DynamicResource PFP_TextBrush}"
                   Margin="0,0,0,4"/>
 
         <CheckBox x:Name="ChkShowPlugin"
-                  Content="Show grammars contributed by plugins"
+                  {DynamicResource Synalysis_ShowFromPlugins}
                   Foreground="{DynamicResource PFP_TextBrush}"
                   Margin="0,0,0,16"/>
 
         <!-- Section: Overlay -->
-        <TextBlock Text="Overlay"
+        <TextBlock {DynamicResource Synalysis_OverlaySection}
                    FontSize="12" FontWeight="SemiBold"
                    Foreground="{DynamicResource PFP_AccentBrush}"
                    Margin="0,0,0,6"/>
 
         <CheckBox x:Name="ChkClearOverlayOnRemoval"
-                  Content="Clear hex view overlay when a grammar is removed from the list"
+                  {DynamicResource Synalysis_ClearOnRemove}
                   Foreground="{DynamicResource PFP_TextBrush}"
                   Margin="0,0,0,4"/>
 

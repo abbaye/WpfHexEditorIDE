@@ -170,4 +170,28 @@ Compare two files to build history.</value>
   <data name="FileComparison_Removed" xml:space="preserve">
     <value>Removed</value>
   </data>
+  <data name="FileComparison_FormatSelectionTitle" xml:space="preserve">
+    <value>Format Selection</value>
+  </data>
+  <data name="FileComparison_MultipleFormatsHeader" xml:space="preserve">
+    <value>Multiple File Formats Detected</value>
+  </data>
+  <data name="FileComparison_MultipleFormatsMessage" xml:space="preserve">
+    <value>Multiple file formats match this file. Please select the most appropriate format:</value>
+  </data>
+  <data name="FileComparison_ConfidenceTip" xml:space="preserve">
+    <value>ℹ Tip: Higher confidence scores indicate a better match.</value>
+  </data>
+  <data name="FileComparison_SelectFormatInfo" xml:space="preserve">
+    <value>Select the format that best matches your file type.</value>
+  </data>
+  <data name="FileComparison_SelectFormatButton" xml:space="preserve">
+    <value>Select Format</value>
+  </data>
+  <data name="FileComparison_BlocksParsed" xml:space="preserve">
+    <value>blocks parsed</value>
+  </data>
+  <data name="FileComparison_TierLabel" xml:space="preserve">
+    <value>Tier:</value>
+  </data>
 </root>

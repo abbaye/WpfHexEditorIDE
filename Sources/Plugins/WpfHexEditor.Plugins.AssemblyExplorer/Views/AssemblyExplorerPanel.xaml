@@ -26,11 +26,11 @@
              Focusable="True"
              KeyDown="OnPanelKeyDown"
              Loaded="OnLoaded"
-             xmlns:aeSvc="clr-namespace:WpfHexEditor.Plugins.AssemblyExplorer.Services;assembly=WpfHexEditor.Plugins.AssemblyExplorer">
+             xmlns:aeSvc="clr-namespace:WpfHexEditor.Plugins.AssemblyExplorer.Services">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <xmlns:aeSvc:AssemblyExplorerLocalizedDictionary/>
+                <aeSvc:AssemblyExplorerLocalizedDictionary/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>

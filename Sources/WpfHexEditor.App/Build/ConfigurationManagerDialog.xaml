@@ -21,11 +21,11 @@
         WindowStartupLocation="CenterOwner"
         Background="{DynamicResource DockWindowBackgroundBrush}"
         Foreground="{DynamicResource DockMenuForegroundBrush}"
-             xmlns:appSvc="clr-namespace:WpfHexEditor.App.Services;assembly=WpfHexEditor.App">
+             xmlns:appSvc="clr-namespace:WpfHexEditor.App.Services">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <xmlns:appSvc:AppLocalizedDictionary/>
+                <appSvc:AppLocalizedDictionary/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>

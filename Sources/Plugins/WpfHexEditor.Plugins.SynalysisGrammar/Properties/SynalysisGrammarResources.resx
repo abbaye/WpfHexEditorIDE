@@ -110,4 +110,31 @@
   <data name="Synalysis_TabStructure" xml:space="preserve">
     <value>Structure</value>
   </data>
+  <data name="Synalysis_BehaviourSection" xml:space="preserve">
+    <value>Behaviour</value>
+  </data>
+  <data name="Synalysis_AutoApplyOnOpen" xml:space="preserve">
+    <value>Auto-apply grammar when a file is opened</value>
+  </data>
+  <data name="Synalysis_MaxSampleSize" xml:space="preserve">
+    <value>Max sample size (KB):</value>
+  </data>
+  <data name="Synalysis_GrammarListFilter" xml:space="preserve">
+    <value>Grammar List Filter</value>
+  </data>
+  <data name="Synalysis_ShowBuiltIn" xml:space="preserve">
+    <value>Show built-in grammars (shipped with WpfHexEditor)</value>
+  </data>
+  <data name="Synalysis_ShowFromDisk" xml:space="preserve">
+    <value>Show grammars loaded from disk</value>
+  </data>
+  <data name="Synalysis_ShowFromPlugins" xml:space="preserve">
+    <value>Show grammars contributed by plugins</value>
+  </data>
+  <data name="Synalysis_OverlaySection" xml:space="preserve">
+    <value>Overlay</value>
+  </data>
+  <data name="Synalysis_ClearOnRemove" xml:space="preserve">
+    <value>Clear hex view overlay when a grammar is removed from the list</value>
+  </data>
 </root>

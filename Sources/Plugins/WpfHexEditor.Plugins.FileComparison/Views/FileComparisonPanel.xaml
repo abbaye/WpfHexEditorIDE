@@ -11,11 +11,11 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
              d:DesignHeight="600" d:DesignWidth="800"
-             xmlns:fcSvc="clr-namespace:WpfHexEditor.Plugins.FileComparison.Services;assembly=WpfHexEditor.Plugins.FileComparison">
+             xmlns:fcSvc="clr-namespace:WpfHexEditor.Plugins.FileComparison.Services">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <xmlns:fcSvc:FileComparisonLocalizedDictionary/>
+                <fcSvc:FileComparisonLocalizedDictionary/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>

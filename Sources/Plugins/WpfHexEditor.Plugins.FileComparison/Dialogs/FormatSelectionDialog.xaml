@@ -17,11 +17,19 @@
         xmlns:conv="clr-namespace:WpfHexEditor.Plugins.FileComparison.Converters"
         xmlns:ec="clr-namespace:WpfHexEditor.Editor.Core.Views;assembly=WpfHexEditor.Editor.Core"
         mc:Ignorable="d"
-        Title="Format Selection"
+        {DynamicResource FileComparison_FormatSelectionTitle}
         Height="500" Width="650"
         Background="{DynamicResource DockWindowBackgroundBrush}">
 
-    <Window.Resources>
+    <Window.Resources
+             xmlns:fcSvc="clr-namespace:WpfHexEditor.Plugins.FileComparison.Services;assembly=WpfHexEditor.Plugins.FileComparison">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <xmlns:fcSvc:FileComparisonLocalizedDictionary/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
         <conv:ConfidenceToPercentageConverter x:Key="ConfidenceConverter"/>
         <conv:NullToBooleanConverter x:Key="NullToBoolConverter"/>
     </Window.Resources>
@@ -36,12 +44,12 @@
 
         <!-- Header -->
         <StackPanel Grid.Row="0" Margin="0,0,0,15">
-            <TextBlock Text="Multiple File Formats Detected"
+            <TextBlock {DynamicResource FileComparison_MultipleFormatsHeader}
                        FontSize="16"
                        FontWeight="Bold"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
             <TextBlock x:Name="MessageText"
-                       Text="Multiple file formats match this file. Please select the most appropriate format:"
+                       {DynamicResource FileComparison_MultipleFormatsMessage}
                        TextWrapping="Wrap"
                        Margin="0,5,0,0"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
@@ -56,10 +64,10 @@
                 Padding="10"
                 Margin="0,0,0,10">
             <StackPanel>
-                <TextBlock Text="&#x2139; Tip: Higher confidence scores indicate a better match."
+                <TextBlock Text="{DynamicResource FileComparison_ConfidenceTip}"
                            FontSize="12"
                            Foreground="{DynamicResource DockMenuForegroundBrush}"/>
-                <TextBlock Text="Select the format that best matches your file type."
+                <TextBlock {DynamicResource FileComparison_SelectFormatInfo}
                            FontSize="12"
                            Foreground="{DynamicResource DockMenuForegroundBrush}"
                            Margin="0,2,0,0"/>
@@ -134,11 +142,11 @@
                                        Margin="0,5,0,0"
                                        FontSize="11"
                                        Foreground="{DynamicResource PFP_SubTextBrush}">
-                                <Run Text="Tier:"/>
+                                <Run Text="{DynamicResource FileComparison_TierLabel}"/>
                                 <Run Text="{Binding Tier}" FontWeight="SemiBold"/>
                                 <Run Text=" • "/>
                                 <Run Text="{Binding Blocks.Count, Mode=OneWay}" FontWeight="SemiBold"/>
-                                <Run Text="blocks parsed"/>
+                                <Run Text="{DynamicResource FileComparison_BlocksParsed}"/>
                             </TextBlock>
 
                             <!-- Confidence Factors -->
@@ -166,7 +174,7 @@
                     HorizontalAlignment="Right"
                     Margin="0,15,0,0">
             <Button x:Name="SelectButton"
-                    Content="Select Format"
+                    {DynamicResource FileComparison_SelectFormatButton}
                     Width="120"
                     Height="30"
                     Margin="0,0,10,0"
@@ -174,7 +182,7 @@
                     IsEnabled="{Binding SelectedItem, ElementName=CandidatesListView, Converter={StaticResource NullToBoolConverter}}"
                     Click="SelectButton_Click"/>
             <Button x:Name="CancelButton"
-                    Content="Cancel"
+                    {DynamicResource FileComparison_CancelButton}
                     Width="100"
                     Height="30"
                     IsCancel="True"

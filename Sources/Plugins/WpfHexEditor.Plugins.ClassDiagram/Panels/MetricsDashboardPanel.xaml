@@ -14,7 +14,15 @@
 <UserControl x:Class="WpfHexEditor.Plugins.ClassDiagram.Panels.MetricsDashboardPanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             Background="{DynamicResource DockMenuBackgroundBrush}">
+             Background="{DynamicResource DockMenuBackgroundBrush}"
+             xmlns:cdSvc="clr-namespace:WpfHexEditor.Plugins.ClassDiagram.Services;assembly=WpfHexEditor.Plugins.ClassDiagram">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <xmlns:cdSvc:ClassDiagramLocalizedDictionary/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
 
     <DockPanel>
 
@@ -28,7 +36,7 @@
 
                 <!-- Export CSV button — docked right -->
                 <Button DockPanel.Dock="Right"
-                        Content="Export CSV"
+                        {DynamicResource ClassDiagram_ExportCsv}
                         Padding="8,2"
                         Margin="4,0,0,0"
                         Click="OnExportCsvClicked"
@@ -39,7 +47,7 @@
 
                 <!-- Sort mode selector -->
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                    <TextBlock Text="Sort by:"
+                    <TextBlock {DynamicResource ClassDiagram_SortByLabel}
                                VerticalAlignment="Center"
                                Margin="0,0,6,0"
                                Foreground="{DynamicResource CD_PropertyNameForeground}"
@@ -50,10 +58,10 @@
                               Foreground="{DynamicResource CD_PropertyValueForeground}"
                               Background="{DynamicResource DockMenuBackgroundBrush}"
                               BorderBrush="{DynamicResource DockToolBarBorderBrush}">
-                        <ComboBoxItem Content="Instability" />
-                        <ComboBoxItem Content="Afferent Coupling (Ca)" />
-                        <ComboBoxItem Content="Efferent Coupling (Ce)" />
-                        <ComboBoxItem Content="Member Count" />
+                        <ComboBoxItem {DynamicResource ClassDiagram_SortInstability} />
+                        <ComboBoxItem {DynamicResource ClassDiagram_SortAfferentCa} />
+                        <ComboBoxItem {DynamicResource ClassDiagram_SortEfferentCe} />
+                        <ComboBoxItem {DynamicResource ClassDiagram_SortMemberCount} />
                     </ComboBox>
                 </StackPanel>
 
@@ -74,7 +82,7 @@
             <ListView.View>
                 <GridView>
 
-                    <GridViewColumn Header="Class Name" Width="160">
+                    <GridViewColumn {DynamicResource ClassDiagram_ColClassName} Width="160">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Name}"
@@ -85,7 +93,7 @@
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
 
-                    <GridViewColumn Header="Kind" Width="80">
+                    <GridViewColumn {DynamicResource ClassDiagram_ColKind} Width="80">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Kind}"
@@ -128,7 +136,7 @@
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
 
-                    <GridViewColumn Header="Members" Width="70">
+                    <GridViewColumn {DynamicResource ClassDiagram_ColMembers} Width="70">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding MemberCount}"

@@ -303,4 +303,37 @@
   <data name="AIAssistant_Remove" xml:space="preserve">
     <value>Remove</value>
   </data>
+  <data name="AIAssistant_TitleBarTooltip" xml:space="preserve">
+    <value>AI Assistant (Ctrl+Shift+A)</value>
+  </data>
+  <data name="AIAssistant_CliBadge" xml:space="preserve">
+    <value>CLI</value>
+  </data>
+  <data name="AIAssistant_AskAboutSelection" xml:space="preserve">
+    <value>Ask About Selection</value>
+  </data>
+  <data name="AIAssistant_FixErrors2" xml:space="preserve">
+    <value>Fix Errors</value>
+  </data>
+  <data name="AIAssistant_AccountUsage2" xml:space="preserve">
+    <value>Account &amp; Usage...</value>
+  </data>
+  <data name="AIAssistant_ManageConnections2" xml:space="preserve">
+    <value>Manage Connections...</value>
+  </data>
+  <data name="AIAssistant_Options2" xml:space="preserve">
+    <value>Options...</value>
+  </data>
+  <data name="AIAssistant_Apply" xml:space="preserve">
+    <value>Apply</value>
+  </data>
+  <data name="AIAssistant_ApplyTooltip" xml:space="preserve">
+    <value>Apply code changes (Phase 7+)</value>
+  </data>
+  <data name="AIAssistant_OpenInTab" xml:space="preserve">
+    <value>Open in Tab</value>
+  </data>
+  <data name="AIAssistant_Dismiss" xml:space="preserve">
+    <value>Dismiss</value>
+  </data>
 </root>

@@ -12,11 +12,11 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              Background="{DynamicResource DockBackgroundBrush}"
-             xmlns:dbgSvc="clr-namespace:WpfHexEditor.Plugins.Debugger.Services;assembly=WpfHexEditor.Plugins.Debugger">
+             xmlns:dbgSvc="clr-namespace:WpfHexEditor.Plugins.Debugger.Services">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <xmlns:dbgSvc:DebuggerLocalizedDictionary/>
+                <dbgSvc:DebuggerLocalizedDictionary/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>

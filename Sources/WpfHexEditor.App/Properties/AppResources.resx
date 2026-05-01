@@ -1075,4 +1075,19 @@
   <data name="APP_PlatformCol" xml:space="preserve">
     <value>Platform</value>
   </data>
+  <data name="APP_ShowOutputFrom" xml:space="preserve">
+    <value>Show output from:</value>
+  </data>
+  <data name="APP_ClearAll" xml:space="preserve">
+    <value>Clear All</value>
+  </data>
+  <data name="APP_ToggleWordWrap" xml:space="preserve">
+    <value>Toggle Word Wrap</value>
+  </data>
+  <data name="APP_CopyAll" xml:space="preserve">
+    <value>Copy All</value>
+  </data>
+  <data name="APP_ToggleAutoScroll" xml:space="preserve">
+    <value>Toggle Auto-Scroll</value>
+  </data>
 </root>

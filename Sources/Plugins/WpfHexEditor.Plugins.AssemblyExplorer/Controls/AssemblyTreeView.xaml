@@ -16,12 +16,12 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:WpfHexEditor.Plugins.AssemblyExplorer.ViewModels"
              xmlns:conv="clr-namespace:WpfHexEditor.Plugins.AssemblyExplorer.Converters"
-             xmlns:aeSvc="clr-namespace:WpfHexEditor.Plugins.AssemblyExplorer.Services;assembly=WpfHexEditor.Plugins.AssemblyExplorer">
+             xmlns:aeSvc="clr-namespace:WpfHexEditor.Plugins.AssemblyExplorer.Services">
 
     <UserControl.Resources>
             <ResourceDictionary>
                 <ResourceDictionary.MergedDictionaries>
-                    <xmlns:aeSvc:AssemblyExplorerLocalizedDictionary/>
+                    <aeSvc:AssemblyExplorerLocalizedDictionary/>
                 </ResourceDictionary.MergedDictionaries>
 
         <conv:NodeTypeToIconConverter x:Key="NodeIconConverter"/>

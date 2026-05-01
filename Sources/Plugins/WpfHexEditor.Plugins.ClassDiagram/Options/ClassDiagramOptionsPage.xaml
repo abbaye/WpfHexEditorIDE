@@ -17,11 +17,11 @@
              Background="Transparent"
              Foreground="{DynamicResource PFP_TextBrush}"
              Padding="12"
-             xmlns:cdSvc="clr-namespace:WpfHexEditor.Plugins.ClassDiagram.Services;assembly=WpfHexEditor.Plugins.ClassDiagram">
+             xmlns:cdSvc="clr-namespace:WpfHexEditor.Plugins.ClassDiagram.Services">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <xmlns:cdSvc:ClassDiagramLocalizedDictionary/>
+                <cdSvc:ClassDiagramLocalizedDictionary/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>

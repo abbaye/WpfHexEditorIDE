@@ -5,11 +5,18 @@
     xmlns:pb="clr-namespace:WpfHexEditor.ProgressBar.Controls;assembly=WpfHexEditor.ProgressBar"
     xmlns:vm="clr-namespace:WpfHexEditor.Plugins.Git.ViewModels"
     Background="{DynamicResource DockBackgroundBrush}"
-    Foreground="{DynamicResource DockMenuForegroundBrush}">
+    Foreground="{DynamicResource DockMenuForegroundBrush}"
+             xmlns:gitSvc="clr-namespace:WpfHexEditor.Plugins.Git.Services;assembly=WpfHexEditor.Plugins.Git">
 
     <UserControl.Resources>
+            <ResourceDictionary>
+                <ResourceDictionary.MergedDictionaries>
+                    <xmlns:gitSvc:GitPluginLocalizedDictionary/>
+                </ResourceDictionary.MergedDictionaries>
+
         <BooleanToVisibilityConverter x:Key="BoolToVis"/>
-    </UserControl.Resources>
+                </ResourceDictionary>
+        </UserControl.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
@@ -30,12 +37,12 @@
                 <Button Style="{StaticResource PanelIconButtonStyle}"
                         Content="&#xE72C;"
                         Command="{Binding RefreshCommand}"
-                        ToolTip="Refresh"/>
+                        {DynamicResource Git_HistoryRefresh}/>
                 <Separator Width="1" Margin="2,4"
                            Background="{DynamicResource Panel_ToolbarBorderBrush}"/>
 
                 <!-- File filter -->
-                <TextBlock Text="File:" VerticalAlignment="Center" FontSize="11" Margin="4,0,4,0"
+                <TextBlock {DynamicResource Git_FileLabel} VerticalAlignment="Center" FontSize="11" Margin="4,0,4,0"
                            Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                 <TextBox Text="{Binding FileFilter, UpdateSourceTrigger=PropertyChanged}"
                          Width="110" Height="18" VerticalContentAlignment="Center"
@@ -44,14 +51,14 @@
                          Foreground="{DynamicResource DockMenuForegroundBrush}"
                          CaretBrush="{DynamicResource DockMenuForegroundBrush}"
                          BorderBrush="{DynamicResource DockBorderBrush}" BorderThickness="1"
-                         ToolTip="Filter by file path (leave empty for all commits)">
+                         {DynamicResource Git_FilterByFilePath}>
                     <TextBox.InputBindings>
                         <KeyBinding Key="Return" Command="{Binding RefreshCommand}"/>
                     </TextBox.InputBindings>
                 </TextBox>
 
                 <!-- Author filter -->
-                <TextBlock Text="Author:" VerticalAlignment="Center" FontSize="11" Margin="6,0,4,0"
+                <TextBlock {DynamicResource Git_AuthorLabel} VerticalAlignment="Center" FontSize="11" Margin="6,0,4,0"
                            Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                 <TextBox Text="{Binding AuthorFilter, UpdateSourceTrigger=PropertyChanged}"
                          Width="80" Height="18" VerticalContentAlignment="Center"
@@ -60,14 +67,14 @@
                          Foreground="{DynamicResource DockMenuForegroundBrush}"
                          CaretBrush="{DynamicResource DockMenuForegroundBrush}"
                          BorderBrush="{DynamicResource DockBorderBrush}" BorderThickness="1"
-                         ToolTip="Filter by author name">
+                         {DynamicResource Git_FilterByAuthor}>
                     <TextBox.InputBindings>
                         <KeyBinding Key="Return" Command="{Binding RefreshCommand}"/>
                     </TextBox.InputBindings>
                 </TextBox>
 
                 <!-- Max count -->
-                <TextBlock Text="Max:" VerticalAlignment="Center" FontSize="11" Margin="6,0,4,0"
+                <TextBlock {DynamicResource Git_MaxLabel} VerticalAlignment="Center" FontSize="11" Margin="6,0,4,0"
                            Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                 <ComboBox SelectedValue="{Binding MaxCount}" Width="52" Height="18"
                           FontSize="11"

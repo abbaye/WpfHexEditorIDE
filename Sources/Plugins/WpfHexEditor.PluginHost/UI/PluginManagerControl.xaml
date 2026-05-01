@@ -24,7 +24,7 @@
              Drop="OnPanelDrop"
              DragOver="OnPanelDragOver"
              DragLeave="OnPanelDragLeave"
-             xmlns:phSvc="clr-namespace:WpfHexEditor.PluginHost.Services;assembly=WpfHexEditor.PluginHost">
+             xmlns:phSvc="clr-namespace:WpfHexEditor.PluginHost.Services">
 
     <UserControl.Resources>
         <ResourceDictionary>

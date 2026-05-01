@@ -10,11 +10,11 @@
              xmlns:ev="clr-namespace:WpfHexEditor.Editor.EntropyViewer.Controls"
              Background="{DynamicResource TE_Background}"
              Focusable="True"
-             xmlns:evSvc="clr-namespace:WpfHexEditor.Editor.EntropyViewer.Services;assembly=WpfHexEditor.Editor.EntropyViewer">
+             xmlns:evSvc="clr-namespace:WpfHexEditor.Editor.EntropyViewer.Services">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <xmlns:evSvc:EntropyViewerLocalizedDictionary/>
+                <evSvc:EntropyViewerLocalizedDictionary/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>

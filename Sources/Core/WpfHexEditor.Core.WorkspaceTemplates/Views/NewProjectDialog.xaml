@@ -21,11 +21,11 @@
         ShowInTaskbar="False"
         Background="{DynamicResource DockMenuBackgroundBrush}"
         Foreground="{DynamicResource DockMenuForegroundBrush}"
-             xmlns:wtSvc="clr-namespace:WpfHexEditor.Core.WorkspaceTemplates.Services;assembly=WpfHexEditor.Core.WorkspaceTemplates">
+             xmlns:wtSvc="clr-namespace:WpfHexEditor.Core.WorkspaceTemplates.Services">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <xmlns:wtSvc:WorkspaceTemplatesLocalizedDictionary/>
+                <wtSvc:WorkspaceTemplatesLocalizedDictionary/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>

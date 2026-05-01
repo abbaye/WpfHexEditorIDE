@@ -7,7 +7,15 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:WpfHexEditor.Editor.ChangesetEditor.ViewModels"
-             Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}">
+             Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
+             xmlns:ceSvc="clr-namespace:WpfHexEditor.Editor.ChangesetEditor.Services;assembly=WpfHexEditor.Editor.ChangesetEditor">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <xmlns:ceSvc:ChangesetEditorLocalizedDictionary/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
@@ -32,7 +40,7 @@
                           CanUserDeleteRows="False">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Offset" Binding="{Binding Offset}" Width="120"/>
-                        <DataGridTextColumn Header="Values (hex)"  Binding="{Binding Values}" Width="*"/>
+                        <DataGridTextColumn {DynamicResource ChangesetEditor_ColValuesHex}  Binding="{Binding Values}" Width="*"/>
                     </DataGrid.Columns>
                 </DataGrid>
             </TabItem>
@@ -50,8 +58,8 @@
                           CanUserAddRows="False"
                           CanUserDeleteRows="False">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="After Offset" Binding="{Binding Offset}" Width="120"/>
-                        <DataGridTextColumn Header="Bytes (hex)"  Binding="{Binding Bytes}"  Width="*"/>
+                        <DataGridTextColumn {DynamicResource ChangesetEditor_ColAfterOffset} Binding="{Binding Offset}" Width="120"/>
+                        <DataGridTextColumn {DynamicResource ChangesetEditor_ColBytesHex}  Binding="{Binding Bytes}"  Width="*"/>
                     </DataGrid.Columns>
                 </DataGrid>
             </TabItem>
@@ -69,8 +77,8 @@
                           CanUserAddRows="False"
                           CanUserDeleteRows="False">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Start"  Binding="{Binding Start}" Width="120"/>
-                        <DataGridTextColumn Header="Count"  Binding="{Binding Count}" Width="80"/>
+                        <DataGridTextColumn {DynamicResource ChangesetEditor_ColStart}  Binding="{Binding Start}" Width="120"/>
+                        <DataGridTextColumn {DynamicResource ChangesetEditor_ColCount}  Binding="{Binding Count}" Width="80"/>
                     </DataGrid.Columns>
                 </DataGrid>
             </TabItem>

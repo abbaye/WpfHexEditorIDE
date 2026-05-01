@@ -16,12 +16,12 @@
              xmlns:local="clr-namespace:WpfHexEditor.PluginDev.Panels"
              Background="{DynamicResource DockMenuBackgroundBrush}"
              Foreground="{DynamicResource DockMenuForegroundBrush}"
-             xmlns:pdSvc="clr-namespace:WpfHexEditor.PluginDev.Services;assembly=WpfHexEditor.PluginDev">
+             xmlns:pdSvc="clr-namespace:WpfHexEditor.PluginDev.Services">
 
     <UserControl.Resources>
             <ResourceDictionary>
                 <ResourceDictionary.MergedDictionaries>
-                    <xmlns:pdSvc:PluginDevLocalizedDictionary/>
+                    <pdSvc:PluginDevLocalizedDictionary/>
                 </ResourceDictionary.MergedDictionaries>
 
         <!-- Level badge converter -->
