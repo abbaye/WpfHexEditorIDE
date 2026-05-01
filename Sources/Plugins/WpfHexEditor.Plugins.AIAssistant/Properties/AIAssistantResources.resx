@@ -144,4 +144,163 @@
     <value>Rename Conversation</value>
   </data>
 
+  <data name="AIAssistant_Title" xml:space="preserve">
+    <value>AI Assistant</value>
+  </data>
+  <data name="AIAssistant_Subtitle" xml:space="preserve">
+    <value>Ask questions, get code help, or explore your data.</value>
+  </data>
+  <data name="AIAssistant_ExplainSelection" xml:space="preserve">
+    <value>Explain selection</value>
+  </data>
+  <data name="AIAssistant_FixErrors" xml:space="preserve">
+    <value>Fix errors</value>
+  </data>
+  <data name="AIAssistant_GenerateTests" xml:space="preserve">
+    <value>Generate tests</value>
+  </data>
+  <data name="AIAssistant_ExplainHex" xml:space="preserve">
+    <value>Explain hex data</value>
+  </data>
+  <data name="AIAssistant_Copy" xml:space="preserve">
+    <value>Copy</value>
+  </data>
+  <data name="AIAssistant_CopyAsMarkdown" xml:space="preserve">
+    <value>Copy as Markdown</value>
+  </data>
+  <data name="AIAssistant_RegenerateResponse" xml:space="preserve">
+    <value>Regenerate response</value>
+  </data>
+  <data name="AIAssistant_DeleteMessage" xml:space="preserve">
+    <value>Delete message</value>
+  </data>
+  <data name="AIAssistant_Thinking" xml:space="preserve">
+    <value>Thinking...</value>
+  </data>
+  <data name="AIAssistant_Arguments" xml:space="preserve">
+    <value>Arguments:</value>
+  </data>
+  <data name="AIAssistant_Result" xml:space="preserve">
+    <value>Result:</value>
+  </data>
+  <data name="AIAssistant_InputHint" xml:space="preserve">
+    <value>Ask AI anything... (@ to mention, Alt+Enter to send)</value>
+  </data>
+  <data name="AIAssistant_Send" xml:space="preserve">
+    <value>Send (Alt+Enter)</value>
+  </data>
+  <data name="AIAssistant_Stop" xml:space="preserve">
+    <value>Stop (Escape)</value>
+  </data>
+  <data name="AIAssistant_SwitchProvider" xml:space="preserve">
+    <value>Switch provider / model</value>
+  </data>
+  <data name="AIAssistant_AccountUsage" xml:space="preserve">
+    <value>Account &amp; Usage</value>
+  </data>
+  <data name="AIAssistant_ConversationHistory" xml:space="preserve">
+    <value>Conversation history</value>
+  </data>
+  <data name="AIAssistant_NewConversation" xml:space="preserve">
+    <value>New conversation (Ctrl+Shift+Alt+A)</value>
+  </data>
+  <data name="AIAssistant_MoreActions" xml:space="preserve">
+    <value>More actions</value>
+  </data>
+  <data name="AIAssistant_ManageConnections" xml:space="preserve">
+    <value>Manage Connections...</value>
+  </data>
+  <data name="AIAssistant_PromptPresets" xml:space="preserve">
+    <value>Prompt Presets...</value>
+  </data>
+  <data name="AIAssistant_Options" xml:space="preserve">
+    <value>Options...</value>
+  </data>
+  <data name="AIAssistant_Rename" xml:space="preserve">
+    <value>Rename</value>
+  </data>
+  <data name="AIAssistant_Close" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="AIAssistant_CloseOthers" xml:space="preserve">
+    <value>Close Others</value>
+  </data>
+  <data name="AIAssistant_CloseAll" xml:space="preserve">
+    <value>Close All</value>
+  </data>
+  <data name="AIAssistant_AnthropicClaude" xml:space="preserve">
+    <value>Anthropic Claude</value>
+  </data>
+  <data name="AIAssistant_ApiKeyLabel" xml:space="preserve">
+    <value>API Key:</value>
+  </data>
+  <data name="AIAssistant_TestButton" xml:space="preserve">
+    <value>Test</value>
+  </data>
+  <data name="AIAssistant_OpenAI" xml:space="preserve">
+    <value>OpenAI</value>
+  </data>
+  <data name="AIAssistant_AzureOpenAI" xml:space="preserve">
+    <value>Azure OpenAI</value>
+  </data>
+  <data name="AIAssistant_EndpointLabel" xml:space="preserve">
+    <value>Endpoint:</value>
+  </data>
+  <data name="AIAssistant_DeploymentLabel" xml:space="preserve">
+    <value>Deployment:</value>
+  </data>
+  <data name="AIAssistant_GoogleGemini" xml:space="preserve">
+    <value>Google Gemini</value>
+  </data>
+  <data name="AIAssistant_OllamaLocal" xml:space="preserve">
+    <value>Ollama (Local)</value>
+  </data>
+  <data name="AIAssistant_BaseUrlLabel" xml:space="preserve">
+    <value>Base URL:</value>
+  </data>
+  <data name="AIAssistant_DefaultsSection" xml:space="preserve">
+    <value>Defaults</value>
+  </data>
+  <data name="AIAssistant_ProviderLabel" xml:space="preserve">
+    <value>Provider:</value>
+  </data>
+  <data name="AIAssistant_ModelLabel" xml:space="preserve">
+    <value>Model:</value>
+  </data>
+  <data name="AIAssistant_EnableThinkingOption" xml:space="preserve">
+    <value>Enable Extended Thinking (Anthropic only)</value>
+  </data>
+  <data name="AIAssistant_ThinkingBudget" xml:space="preserve">
+    <value>Thinking budget:</value>
+  </data>
+  <data name="AIAssistant_MaxTokens" xml:space="preserve">
+    <value>Max tokens:</value>
+  </data>
+  <data name="AIAssistant_ShowToolCalls" xml:space="preserve">
+    <value>Show tool calls inline</value>
+  </data>
+  <data name="AIAssistant_McpServers" xml:space="preserve">
+    <value>MCP Servers</value>
+  </data>
+  <data name="AIAssistant_ColEnabled" xml:space="preserve">
+    <value>Enabled</value>
+  </data>
+  <data name="AIAssistant_ColName" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="AIAssistant_ColCommand" xml:space="preserve">
+    <value>Command</value>
+  </data>
+  <data name="AIAssistant_ColDisplayName" xml:space="preserve">
+    <value>Display Name</value>
+  </data>
+  <data name="AIAssistant_ColArgs" xml:space="preserve">
+    <value>Args (comma-separated)</value>
+  </data>
+  <data name="AIAssistant_Add" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="AIAssistant_Remove" xml:space="preserve">
+    <value>Remove</value>
+  </data>
 </root>

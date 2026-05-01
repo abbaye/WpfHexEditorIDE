@@ -91,4 +91,460 @@
     <value>Live Visual Tree</value>
   </data>
 
+  <data name="XamlDesigner_CollapseAll" xml:space="preserve">
+    <value>Collapse All</value>
+  </data>
+  <data name="XamlDesigner_MoreOptions" xml:space="preserve">
+    <value>More options</value>
+  </data>
+  <data name="XamlDesigner_RefreshVisualTree" xml:space="preserve">
+    <value>Refresh visual tree</value>
+  </data>
+  <data name="XamlDesigner_AutoRefresh" xml:space="preserve">
+    <value>Auto-refresh on canvas render</value>
+  </data>
+  <data name="XamlDesigner_LogicalTreeView" xml:space="preserve">
+    <value>Switch to Logical Tree view</value>
+  </data>
+  <data name="XamlDesigner_ExpandScrollSelected" xml:space="preserve">
+    <value>Expand and scroll to selected element</value>
+  </data>
+  <data name="XamlDesigner_ExpandAll" xml:space="preserve">
+    <value>Expand All</value>
+  </data>
+  <data name="XamlDesigner_SearchElements" xml:space="preserve">
+    <value>Search elements (Ctrl+F)</value>
+  </data>
+  <data name="XamlDesigner_SetAsRoot" xml:space="preserve">
+    <value>Set selected element as tree root (inspect subtree)</value>
+  </data>
+  <data name="XamlDesigner_ResetFullTree" xml:space="preserve">
+    <value>Reset to full tree view</value>
+  </data>
+  <data name="XamlDesigner_PickElement" xml:space="preserve">
+    <value>Pick Element — click canvas to navigate tree</value>
+  </data>
+  <data name="XamlDesigner_TrackSelection" xml:space="preserve">
+    <value>Track active canvas selection in tree</value>
+  </data>
+  <data name="XamlDesigner_ShowDimensions" xml:space="preserve">
+    <value>Show/hide element dimensions</value>
+  </data>
+  <data name="XamlDesigner_FilterPresets" xml:space="preserve">
+    <value>Filter presets</value>
+  </data>
+  <data name="XamlDesigner_AllElements" xml:space="preserve">
+    <value>All Elements</value>
+  </data>
+  <data name="XamlDesigner_HiddenCollapsed" xml:space="preserve">
+    <value>Hidden / Collapsed</value>
+  </data>
+  <data name="XamlDesigner_DisabledOnly" xml:space="preserve">
+    <value>Disabled Only</value>
+  </data>
+  <data name="XamlDesigner_NamedElementsOnly" xml:space="preserve">
+    <value>Named Elements Only</value>
+  </data>
+  <data name="XamlDesigner_ClearFilter" xml:space="preserve">
+    <value>Clear filter</value>
+  </data>
+  <data name="XamlDesigner_PreviousMatch" xml:space="preserve">
+    <value>Previous match (Shift+F3)</value>
+  </data>
+  <data name="XamlDesigner_NextMatch" xml:space="preserve">
+    <value>Next match (F3)</value>
+  </data>
+  <data name="XamlDesigner_CloseSearch" xml:space="preserve">
+    <value>Close search (Esc)</value>
+  </data>
+  <data name="XamlDesigner_ReturnFullTree" xml:space="preserve">
+    <value>Return to full tree</value>
+  </data>
+  <data name="XamlDesigner_DisabledLabel" xml:space="preserve">
+    <value>disabled</value>
+  </data>
+  <data name="XamlDesigner_SetAsInspectRoot" xml:space="preserve">
+    <value>Set as Inspect Root</value>
+  </data>
+  <data name="XamlDesigner_CopyTypeName" xml:space="preserve">
+    <value>Copy Type Name</value>
+  </data>
+  <data name="XamlDesigner_CopyXName" xml:space="preserve">
+    <value>Copy x:Name</value>
+  </data>
+  <data name="XamlDesigner_CopyFullPath" xml:space="preserve">
+    <value>Copy Full Path</value>
+  </data>
+  <data name="XamlDesigner_CopyXamlSnippet" xml:space="preserve">
+    <value>Copy XAML Snippet</value>
+  </data>
+  <data name="XamlDesigner_SelectOnCanvas" xml:space="preserve">
+    <value>Select on Canvas</value>
+  </data>
+  <data name="XamlDesigner_NavigateToXaml" xml:space="preserve">
+    <value>Navigate to XAML</value>
+  </data>
+  <data name="XamlDesigner_ExpandAllChildren" xml:space="preserve">
+    <value>Expand All Children</value>
+  </data>
+  <data name="XamlDesigner_TotalElements" xml:space="preserve">
+    <value>Total elements in outline</value>
+  </data>
+  <data name="XamlDesigner_SyncToCodeEditor" xml:space="preserve">
+    <value>Sync selection to code editor</value>
+  </data>
+  <data name="XamlDesigner_RebuildOutline" xml:space="preserve">
+    <value>Rebuild outline from current XAML</value>
+  </data>
+  <data name="XamlDesigner_SelectParent" xml:space="preserve">
+    <value>Select parent element</value>
+  </data>
+  <data name="XamlDesigner_CopyXamlPath" xml:space="preserve">
+    <value>Copy element XAML path to clipboard</value>
+  </data>
+  <data name="XamlDesigner_FilterByNameTag" xml:space="preserve">
+    <value>Filter elements by name or tag</value>
+  </data>
+  <data name="XamlDesigner_Rename" xml:space="preserve">
+    <value>Rename</value>
+  </data>
+  <data name="XamlDesigner_Delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="XamlDesigner_MoveUp" xml:space="preserve">
+    <value>Move Up</value>
+  </data>
+  <data name="XamlDesigner_MoveDown" xml:space="preserve">
+    <value>Move Down</value>
+  </data>
+  <data name="XamlDesigner_WrapInGrid" xml:space="preserve">
+    <value>Wrap in Grid</value>
+  </data>
+  <data name="XamlDesigner_WrapInStackPanel" xml:space="preserve">
+    <value>Wrap in StackPanel</value>
+  </data>
+  <data name="XamlDesigner_WrapInBorder" xml:space="preserve">
+    <value>Wrap in Border</value>
+  </data>
+  <data name="XamlDesigner_FilterResources" xml:space="preserve">
+    <value>Filter resources</value>
+  </data>
+  <data name="XamlDesigner_ScanResources" xml:space="preserve">
+    <value>Scan resources</value>
+  </data>
+  <data name="XamlDesigner_FindUsages" xml:space="preserve">
+    <value>Find usages of selected resource</value>
+  </data>
+  <data name="XamlDesigner_GoToDefinition" xml:space="preserve">
+    <value>Go to definition</value>
+  </data>
+  <data name="XamlDesigner_CopyResourceKey" xml:space="preserve">
+    <value>Copy resource key</value>
+  </data>
+  <data name="XamlDesigner_AddNewResource" xml:space="preserve">
+    <value>Add new resource entry</value>
+  </data>
+  <data name="XamlDesigner_SortResources" xml:space="preserve">
+    <value>Sort resources by…</value>
+  </data>
+  <data name="XamlDesigner_SortNameAZ" xml:space="preserve">
+    <value>Name (A–Z)</value>
+  </data>
+  <data name="XamlDesigner_SortByType" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="XamlDesigner_SortByUsage" xml:space="preserve">
+    <value>Usage Count</value>
+  </data>
+  <data name="XamlDesigner_FilterByScope" xml:space="preserve">
+    <value>Filter by scope…</value>
+  </data>
+  <data name="XamlDesigner_ScopeAll" xml:space="preserve">
+    <value>All Scopes</value>
+  </data>
+  <data name="XamlDesigner_ScopeLocal" xml:space="preserve">
+    <value>Local</value>
+  </data>
+  <data name="XamlDesigner_ScopeMerged" xml:space="preserve">
+    <value>Merged</value>
+  </data>
+  <data name="XamlDesigner_ScopeApp" xml:space="preserve">
+    <value>App</value>
+  </data>
+  <data name="XamlDesigner_ColPreview" xml:space="preserve">
+    <value>Preview</value>
+  </data>
+  <data name="XamlDesigner_ColKey" xml:space="preserve">
+    <value>Key</value>
+  </data>
+  <data name="XamlDesigner_ColUsage" xml:space="preserve">
+    <value>Usage</value>
+  </data>
+  <data name="XamlDesigner_DuplicateValue" xml:space="preserve">
+    <value>Duplicate value detected</value>
+  </data>
+  <data name="XamlDesigner_GoToDefinitionMenu" xml:space="preserve">
+    <value>Go to Definition</value>
+  </data>
+  <data name="XamlDesigner_FindUsagesMenu" xml:space="preserve">
+    <value>Find Usages</value>
+  </data>
+  <data name="XamlDesigner_RenameF2" xml:space="preserve">
+    <value>Rename (F2)</value>
+  </data>
+  <data name="XamlDesigner_CopyKey" xml:space="preserve">
+    <value>Copy Key</value>
+  </data>
+  <data name="XamlDesigner_CopyValue" xml:space="preserve">
+    <value>Copy Value</value>
+  </data>
+  <data name="XamlDesigner_CopyBindingExpr" xml:space="preserve">
+    <value>Copy binding expression to clipboard</value>
+  </data>
+  <data name="XamlDesigner_RefreshBindings" xml:space="preserve">
+    <value>Refresh bindings</value>
+  </data>
+  <data name="XamlDesigner_ShowBrokenOnly" xml:space="preserve">
+    <value>Show only broken bindings</value>
+  </data>
+  <data name="XamlDesigner_ReEvaluateAll" xml:space="preserve">
+    <value>Re-evaluate all binding statuses</value>
+  </data>
+  <data name="XamlDesigner_FilterBindings" xml:space="preserve">
+    <value>Filter bindings…</value>
+  </data>
+  <data name="XamlDesigner_CopyBindingMenu" xml:space="preserve">
+    <value>Copy Binding Expression</value>
+  </data>
+  <data name="XamlDesigner_GoToSource" xml:space="preserve">
+    <value>Go to Source</value>
+  </data>
+  <data name="XamlDesigner_InspectConverter" xml:space="preserve">
+    <value>Inspect Converter</value>
+  </data>
+  <data name="XamlDesigner_ColProperty" xml:space="preserve">
+    <value>Property</value>
+  </data>
+  <data name="XamlDesigner_ColPath" xml:space="preserve">
+    <value>Path</value>
+  </data>
+  <data name="XamlDesigner_ColMode" xml:space="preserve">
+    <value>Mode</value>
+  </data>
+  <data name="XamlDesigner_ColSource" xml:space="preserve">
+    <value>Source</value>
+  </data>
+  <data name="XamlDesigner_ColConverter" xml:space="preserve">
+    <value>Converter</value>
+  </data>
+  <data name="XamlDesigner_FallbackLabel" xml:space="preserve">
+    <value>Fallback: </value>
+  </data>
+  <data name="XamlDesigner_TargetNullLabel" xml:space="preserve">
+    <value>TargetNull: </value>
+  </data>
+  <data name="XamlDesigner_ValidatesErrors" xml:space="preserve">
+    <value>Validates on data/notify errors</value>
+  </data>
+  <data name="XamlDesigner_Details" xml:space="preserve">
+    <value>Details</value>
+  </data>
+  <data name="XamlDesigner_ShowDefaultValues" xml:space="preserve">
+    <value>Show properties with default values</value>
+  </data>
+  <data name="XamlDesigner_ToggleGrouped" xml:space="preserve">
+    <value>Toggle grouped / flat view</value>
+  </data>
+  <data name="XamlDesigner_ResetAllProps" xml:space="preserve">
+    <value>Reset all locally-set properties to default</value>
+  </data>
+  <data name="XamlDesigner_CopyProperties" xml:space="preserve">
+    <value>Copy visible properties to clipboard</value>
+  </data>
+  <data name="XamlDesigner_ShowAttached" xml:space="preserve">
+    <value>Show/hide attached and system properties</value>
+  </data>
+  <data name="XamlDesigner_FilterProperties" xml:space="preserve">
+    <value>Filter properties…</value>
+  </data>
+  <data name="XamlDesigner_NoSelection" xml:space="preserve">
+    <value>(no selection)</value>
+  </data>
+  <data name="XamlDesigner_Inherited" xml:space="preserve">
+    <value> (inherited)</value>
+  </data>
+  <data name="XamlDesigner_ResetToDefault" xml:space="preserve">
+    <value>Reset to default</value>
+  </data>
+  <data name="XamlDesigner_HasBinding" xml:space="preserve">
+    <value>Has active data binding — click to inspect</value>
+  </data>
+  <data name="XamlDesigner_PropertyAnimated" xml:space="preserve">
+    <value>Property is animated</value>
+  </data>
+  <data name="XamlDesigner_ColValue" xml:space="preserve">
+    <value>Value</value>
+  </data>
+  <data name="XamlDesigner_ShowFavorites" xml:space="preserve">
+    <value>Show favorites</value>
+  </data>
+  <data name="XamlDesigner_ClearRecentItems" xml:space="preserve">
+    <value>Clear recently used items</value>
+  </data>
+  <data name="XamlDesigner_CollapseAllCategories" xml:space="preserve">
+    <value>Collapse all categories</value>
+  </data>
+  <data name="XamlDesigner_ExpandAllCategories" xml:space="preserve">
+    <value>Expand all categories</value>
+  </data>
+  <data name="XamlDesigner_SortToolbox" xml:space="preserve">
+    <value>Sort toolbox items</value>
+  </data>
+  <data name="XamlDesigner_SortByCategory" xml:space="preserve">
+    <value>By Category</value>
+  </data>
+  <data name="XamlDesigner_SortRecentlyUsed" xml:space="preserve">
+    <value>Recently Used</value>
+  </data>
+  <data name="XamlDesigner_SearchControls" xml:space="preserve">
+    <value>Search controls…</value>
+  </data>
+  <data name="XamlDesigner_FavoritesLabel" xml:space="preserve">
+    <value>Favorites</value>
+  </data>
+  <data name="XamlDesigner_RecentLabel" xml:space="preserve">
+    <value>Recent</value>
+  </data>
+  <data name="XamlDesigner_AddToFavorites" xml:space="preserve">
+    <value>Add to Favorites</value>
+  </data>
+  <data name="XamlDesigner_RemoveFromFavorites" xml:space="preserve">
+    <value>Remove from Favorites</value>
+  </data>
+  <data name="XamlDesigner_InsertAtSelection" xml:space="preserve">
+    <value>Insert at Selection</value>
+  </data>
+  <data name="XamlDesigner_CopyTag" xml:space="preserve">
+    <value>Copy Tag</value>
+  </data>
+  <data name="XamlDesigner_EntriesCapacity" xml:space="preserve">
+    <value>Entries / Max capacity</value>
+  </data>
+  <data name="XamlDesigner_ClearHistory" xml:space="preserve">
+    <value>Clear history</value>
+  </data>
+  <data name="XamlDesigner_MarkCheckpoint" xml:space="preserve">
+    <value>Mark current state as checkpoint</value>
+  </data>
+  <data name="XamlDesigner_JumpOldest" xml:space="preserve">
+    <value>Jump to oldest state</value>
+  </data>
+  <data name="XamlDesigner_JumpNewest" xml:space="preserve">
+    <value>Jump to most recent state</value>
+  </data>
+  <data name="XamlDesigner_CopyHistory" xml:space="preserve">
+    <value>Copy history list to clipboard</value>
+  </data>
+  <data name="XamlDesigner_CheckpointsOnly" xml:space="preserve">
+    <value>Show checkpoints only</value>
+  </data>
+  <data name="XamlDesigner_FilterHistory" xml:space="preserve">
+    <value>Filter history…</value>
+  </data>
+  <data name="XamlDesigner_ToggleCheckpoint" xml:space="preserve">
+    <value>Toggle Checkpoint</value>
+  </data>
+  <data name="XamlDesigner_JumpToState" xml:space="preserve">
+    <value>Jump to State</value>
+  </data>
+  <data name="XamlDesigner_NoDesignData" xml:space="preserve">
+    <value>(no design data)</value>
+  </data>
+  <data name="XamlDesigner_RefreshDesignData" xml:space="preserve">
+    <value>Refresh design data</value>
+  </data>
+  <data name="XamlDesigner_GenerateMockData" xml:space="preserve">
+    <value>Generate mock data</value>
+  </data>
+  <data name="XamlDesigner_PickDesignDataType" xml:space="preserve">
+    <value>Pick design data type…</value>
+  </data>
+  <data name="XamlDesigner_SearchTypes" xml:space="preserve">
+    <value>Search types…</value>
+  </data>
+  <data name="XamlDesigner_PropertiesTab" xml:space="preserve">
+    <value>Properties</value>
+  </data>
+  <data name="XamlDesigner_NoDesignInstance" xml:space="preserve">
+    <value>No d:DesignInstance detected in current XAML.</value>
+  </data>
+  <data name="XamlDesigner_JsonTab" xml:space="preserve">
+    <value>JSON</value>
+  </data>
+  <data name="XamlDesigner_NoDataAvailable" xml:space="preserve">
+    <value>No data available.</value>
+  </data>
+  <data name="XamlDesigner_XamlTab" xml:space="preserve">
+    <value>XAML</value>
+  </data>
+  <data name="XamlDesigner_NoDesignInstanceShort" xml:space="preserve">
+    <value>No d:DesignInstance detected.</value>
+  </data>
+  <data name="XamlDesigner_CopyInstanceJson" xml:space="preserve">
+    <value>Copy instance JSON to clipboard</value>
+  </data>
+  <data name="XamlDesigner_ClearDesignInstance" xml:space="preserve">
+    <value>Clear current design instance</value>
+  </data>
+  <data name="XamlDesigner_PasteJson" xml:space="preserve">
+    <value>Paste JSON from clipboard</value>
+  </data>
+  <data name="XamlDesigner_ActiveStoryboard" xml:space="preserve">
+    <value>Active storyboard</value>
+  </data>
+  <data name="XamlDesigner_DurLabel" xml:space="preserve">
+    <value>Dur:</value>
+  </data>
+  <data name="XamlDesigner_Stop" xml:space="preserve">
+    <value>Stop</value>
+  </data>
+  <data name="XamlDesigner_PlayPause" xml:space="preserve">
+    <value>Play / Pause</value>
+  </data>
+  <data name="XamlDesigner_AddKeyframe" xml:space="preserve">
+    <value>Add Keyframe at current time</value>
+  </data>
+  <data name="XamlDesigner_DeleteKeyframe" xml:space="preserve">
+    <value>Delete selected keyframe</value>
+  </data>
+  <data name="XamlDesigner_LoopPlayback" xml:space="preserve">
+    <value>Loop playback</value>
+  </data>
+  <data name="XamlDesigner_AutoReverse" xml:space="preserve">
+    <value>Auto-reverse</value>
+  </data>
+  <data name="XamlDesigner_PlaybackSpeed" xml:space="preserve">
+    <value>Playback speed multiplier</value>
+  </data>
+  <data name="XamlDesigner_ZoomInTimeline" xml:space="preserve">
+    <value>Zoom in timeline</value>
+  </data>
+  <data name="XamlDesigner_ZoomOutTimeline" xml:space="preserve">
+    <value>Zoom out timeline</value>
+  </data>
+  <data name="XamlDesigner_FrameRate" xml:space="preserve">
+    <value>Frame rate</value>
+  </data>
+  <data name="XamlDesigner_ExportStoryboard" xml:space="preserve">
+    <value>Export storyboard to clipboard</value>
+  </data>
+  <data name="XamlDesigner_AddTrack" xml:space="preserve">
+    <value>Add track</value>
+  </data>
+  <data name="XamlDesigner_RemoveTrack" xml:space="preserve">
+    <value>Remove track</value>
+  </data>
+  <data name="XamlDesigner_RenameF2_Tooltip" xml:space="preserve">
+    <value>Rename selected resource (F2)</value>
+  </data>
 </root>

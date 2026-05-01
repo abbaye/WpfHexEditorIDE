@@ -118,4 +118,10 @@
   <data name="AE_LastModified" xml:space="preserve"><value>Last Modified:</value></data>
   <data name="AE_Crc32" xml:space="preserve"><value>CRC32:</value></data>
   <data name="AE_Close" xml:space="preserve"><value>Close</value></data>
+  <data name="AE_PreviewMenuItem" xml:space="preserve">
+    <value>Preview</value>
+  </data>
+  <data name="AE_FilterTag" xml:space="preserve">
+    <value>Filter…</value>
+  </data>
 </root>

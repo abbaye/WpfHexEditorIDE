@@ -8,8 +8,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:msgs="clr-namespace:WpfHexEditor.Plugins.AIAssistant.Panel.Messages"
              xmlns:conv="clr-namespace:WpfHexEditor.Plugins.AIAssistant.Panel.Converters"
-             xmlns:input="clr-namespace:WpfHexEditor.Plugins.AIAssistant.Panel.Input">
+             xmlns:input="clr-namespace:WpfHexEditor.Plugins.AIAssistant.Panel.Input"
+             xmlns:aiSvc="clr-namespace:WpfHexEditor.Plugins.AIAssistant.Services;assembly=WpfHexEditor.Plugins.AIAssistant">
     <UserControl.Resources>
+            <ResourceDictionary>
+                <ResourceDictionary.MergedDictionaries>
+                    <xmlns:aiSvc:AIAssistantLocalizedDictionary/>
+                </ResourceDictionary.MergedDictionaries>
+
         <BooleanToVisibilityConverter x:Key="BoolToVis"/>
         <conv:InverseBoolToVisibilityConverter x:Key="InvBoolToVis"/>
         <conv:ToolCallStatusToGlyphConverter x:Key="StatusToGlyph"/>
@@ -23,7 +29,8 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
-    </UserControl.Resources>
+                </ResourceDictionary>
+        </UserControl.Resources>
 
     <Grid Background="{DynamicResource DockBackgroundBrush}" AllowDrop="True" Drop="OnFileDrop">
         <Grid.RowDefinitions>
@@ -39,10 +46,10 @@
             <TextBlock Text="&#xE734;" FontFamily="Segoe MDL2 Assets" FontSize="36"
                        Foreground="{DynamicResource CA_AccentBrandingBrush}"
                        HorizontalAlignment="Center" Margin="0,0,0,12"/>
-            <TextBlock Text="AI Assistant" FontSize="16" FontWeight="SemiBold"
+            <TextBlock {DynamicResource AIAssistant_Title} FontSize="16" FontWeight="SemiBold"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"
                        HorizontalAlignment="Center" Margin="0,0,0,4"/>
-            <TextBlock Text="Ask questions, get code help, or explore your data."
+            <TextBlock {DynamicResource AIAssistant_Subtitle}
                        FontSize="12" Opacity="0.6"
                        Foreground="{DynamicResource DockMenuForegroundBrush}"
                        HorizontalAlignment="Center" Margin="0,0,0,16"/>
@@ -55,7 +62,7 @@
                         <TextBlock Text="&#xE945;" FontFamily="Segoe MDL2 Assets" FontSize="11"
                                    Foreground="{DynamicResource CA_AccentBrandingBrush}" Margin="0,0,5,0"
                                    VerticalAlignment="Center"/>
-                        <TextBlock Text="Explain selection" FontSize="11"
+                        <TextBlock {DynamicResource AIAssistant_ExplainSelection} FontSize="11"
                                    Foreground="{DynamicResource CA_ToolCallForegroundBrush}"
                                    VerticalAlignment="Center"/>
                     </StackPanel>
@@ -67,7 +74,7 @@
                         <TextBlock Text="&#xE90F;" FontFamily="Segoe MDL2 Assets" FontSize="11"
                                    Foreground="{DynamicResource CA_AccentBrandingBrush}" Margin="0,0,5,0"
                                    VerticalAlignment="Center"/>
-                        <TextBlock Text="Fix errors" FontSize="11"
+                        <TextBlock {DynamicResource AIAssistant_FixErrors} FontSize="11"
                                    Foreground="{DynamicResource CA_ToolCallForegroundBrush}"
                                    VerticalAlignment="Center"/>
                     </StackPanel>
@@ -79,7 +86,7 @@
                         <TextBlock Text="&#xE8A1;" FontFamily="Segoe MDL2 Assets" FontSize="11"
                                    Foreground="{DynamicResource CA_AccentBrandingBrush}" Margin="0,0,5,0"
                                    VerticalAlignment="Center"/>
-                        <TextBlock Text="Generate tests" FontSize="11"
+                        <TextBlock {DynamicResource AIAssistant_GenerateTests} FontSize="11"
                                    Foreground="{DynamicResource CA_ToolCallForegroundBrush}"
                                    VerticalAlignment="Center"/>
                     </StackPanel>
@@ -91,7 +98,7 @@
                         <TextBlock Text="&#xE9D9;" FontFamily="Segoe MDL2 Assets" FontSize="11"
                                    Foreground="{DynamicResource CA_AccentBrandingBrush}" Margin="0,0,5,0"
                                    VerticalAlignment="Center"/>
-                        <TextBlock Text="Explain hex data" FontSize="11"
+                        <TextBlock {DynamicResource AIAssistant_ExplainHex} FontSize="11"
                                    Foreground="{DynamicResource CA_ToolCallForegroundBrush}"
                                    VerticalAlignment="Center"/>
                     </StackPanel>
@@ -169,17 +176,17 @@
                             <Grid Grid.Column="1" Margin="4,0,0,0" Background="Transparent">
                             <Grid.ContextMenu>
                                 <ContextMenu>
-                                    <MenuItem Header="Copy" Click="OnCopyMessageClick" InputGestureText="Ctrl+C">
+                                    <MenuItem {DynamicResource AIAssistant_Copy} Click="OnCopyMessageClick" InputGestureText="Ctrl+C">
                                         <MenuItem.Icon><TextBlock Text="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="14"/></MenuItem.Icon>
                                     </MenuItem>
-                                    <MenuItem Header="Copy as Markdown" Click="OnCopyMarkdownClick">
+                                    <MenuItem {DynamicResource AIAssistant_CopyAsMarkdown} Click="OnCopyMarkdownClick">
                                         <MenuItem.Icon><TextBlock Text="&#xE8A5;" FontFamily="Segoe MDL2 Assets" FontSize="14"/></MenuItem.Icon>
                                     </MenuItem>
                                     <Separator/>
-                                    <MenuItem Header="Regenerate response" Click="OnRegenerateClick">
+                                    <MenuItem {DynamicResource AIAssistant_RegenerateResponse} Click="OnRegenerateClick">
                                         <MenuItem.Icon><TextBlock Text="&#xE72C;" FontFamily="Segoe MDL2 Assets" FontSize="14"/></MenuItem.Icon>
                                     </MenuItem>
-                                    <MenuItem Header="Delete message" Click="OnDeleteMessageClick">
+                                    <MenuItem {DynamicResource AIAssistant_DeleteMessage} Click="OnDeleteMessageClick">
                                         <MenuItem.Icon><TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="14"/></MenuItem.Icon>
                                     </MenuItem>
                                 </ContextMenu>
@@ -224,7 +231,7 @@
                                     <Expander Visibility="{Binding HasThinking, Converter={StaticResource BoolToVis}}"
                                               IsExpanded="False" Margin="0,0,0,4">
                                         <Expander.Header>
-                                            <TextBlock Text="Thinking..." FontStyle="Italic" FontSize="11"
+                                            <TextBlock {DynamicResource AIAssistant_Thinking} FontStyle="Italic" FontSize="11"
                                                        Foreground="{DynamicResource CA_ThinkingForegroundBrush}"/>
                                         </Expander.Header>
                                         <TextBlock Text="{Binding ThinkingText}" TextWrapping="Wrap"
@@ -265,7 +272,7 @@
                                                         </Expander.Header>
                                                         <StackPanel Margin="8,4,8,8">
                                                             <!-- Args JSON -->
-                                                            <TextBlock Text="Arguments:" FontSize="10" FontWeight="SemiBold"
+                                                            <TextBlock {DynamicResource AIAssistant_Arguments} FontSize="10" FontWeight="SemiBold"
                                                                        Foreground="{DynamicResource CA_ToolCallForegroundBrush}"
                                                                        Margin="0,0,0,2"/>
                                                             <TextBox Text="{Binding ArgsJson, Mode=OneWay}" IsReadOnly="True"
@@ -276,7 +283,7 @@
                                                                      BorderThickness="0" Padding="6,4"
                                                                      VerticalScrollBarVisibility="Auto"/>
                                                             <!-- Result JSON -->
-                                                            <TextBlock Text="Result:" FontSize="10" FontWeight="SemiBold"
+                                                            <TextBlock {DynamicResource AIAssistant_Result} FontSize="10" FontWeight="SemiBold"
                                                                        Foreground="{DynamicResource CA_ToolCallForegroundBrush}"
                                                                        Margin="0,6,0,2"
                                                                        Visibility="{Binding IsDone, Converter={StaticResource BoolToVis}}"/>
@@ -360,7 +367,7 @@
                         <Grid>
                             <!-- Watermark -->
                             <TextBlock x:Name="InputWatermark"
-                                       Text="Ask AI anything... (@ to mention, Alt+Enter to send)"
+                                       {DynamicResource AIAssistant_InputHint}
                                        FontSize="12" Opacity="0.4" IsHitTestVisible="False"
                                        Foreground="{DynamicResource CA_InputForegroundBrush}"
                                        VerticalAlignment="Center" Margin="10,0,0,0"/>
@@ -383,7 +390,7 @@
                             Margin="6,0,0,0" Cursor="Hand" VerticalAlignment="Bottom"
                             Background="{DynamicResource CA_AccentBrandingBrush}"
                             MouseLeftButtonDown="OnSendClick"
-                            ToolTip="Send (Alt+Enter)">
+                            {DynamicResource AIAssistant_Send}>
                         <TextBlock Text="&#xE724;" FontFamily="Segoe MDL2 Assets" FontSize="12"
                                    Foreground="{DynamicResource DockMenuForegroundBrush}"
                                    HorizontalAlignment="Center" VerticalAlignment="Center"/>
@@ -395,7 +402,7 @@
                             Background="{DynamicResource CA_ErrorBrush}"
                             Visibility="{Binding IsStreaming, Converter={StaticResource BoolToVis}}"
                             MouseLeftButtonDown="OnCancelClick"
-                            ToolTip="Stop (Escape)">
+                            {DynamicResource AIAssistant_Stop}>
                         <TextBlock Text="&#xE71A;" FontFamily="Segoe MDL2 Assets" FontSize="12"
                                    Foreground="{DynamicResource DockMenuForegroundBrush}"
                                    HorizontalAlignment="Center" VerticalAlignment="Center"/>

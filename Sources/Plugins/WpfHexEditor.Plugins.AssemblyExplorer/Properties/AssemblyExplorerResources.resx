@@ -171,4 +171,202 @@
   <data name="AE_ClearRecentButton" xml:space="preserve">
     <value>Clear All Recent</value>
   </data>
+  <data name="AsmExplorer_MoreOptions" xml:space="preserve">
+    <value>More options</value>
+  </data>
+  <data name="AsmExplorer_SearchPlaceholder" xml:space="preserve">
+    <value>Search types and members...</value>
+  </data>
+  <data name="AsmExplorer_SearchTooltip" xml:space="preserve">
+    <value>Search types and members across all loaded assemblies</value>
+  </data>
+  <data name="AsmExplorer_FilterByKind" xml:space="preserve">
+    <value>Filter by type kind</value>
+  </data>
+  <data name="AsmExplorer_PublicOnly" xml:space="preserve">
+    <value>Show public members only</value>
+  </data>
+  <data name="AsmExplorer_PublicLabel" xml:space="preserve">
+    <value>Public</value>
+  </data>
+  <data name="AsmExplorer_IncludeMembers" xml:space="preserve">
+    <value>Include methods, fields, properties, events in results</value>
+  </data>
+  <data name="AsmExplorer_MembersLabel" xml:space="preserve">
+    <value>Members</value>
+  </data>
+  <data name="AsmExplorer_RunSearch" xml:space="preserve">
+    <value>Run search (Enter)</value>
+  </data>
+  <data name="AsmExplorer_SearchButton" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="AsmExplorer_ClearResults" xml:space="preserve">
+    <value>Clear results</value>
+  </data>
+  <data name="AsmExplorer_ColAssembly" xml:space="preserve">
+    <value>Assembly</value>
+  </data>
+  <data name="AsmExplorer_ColNamespace" xml:space="preserve">
+    <value>Namespace</value>
+  </data>
+  <data name="AsmExplorer_ColType" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="AsmExplorer_ColMember" xml:space="preserve">
+    <value>Member</value>
+  </data>
+  <data name="AsmExplorer_ColKind" xml:space="preserve">
+    <value>Kind</value>
+  </data>
+  <data name="AsmExplorer_ColToken" xml:space="preserve">
+    <value>Token</value>
+  </data>
+  <data name="AsmExplorer_NoResults" xml:space="preserve">
+    <value>No results — type a search term above.</value>
+  </data>
+  <data name="AsmExplorer_ExtractCode" xml:space="preserve">
+    <value>Extract decompiled code to the loaded project</value>
+  </data>
+  <data name="AsmExplorer_Extract" xml:space="preserve">
+    <value>Extract</value>
+  </data>
+  <data name="AsmExplorer_TabCode" xml:space="preserve">
+    <value>Code</value>
+  </data>
+  <data name="AsmExplorer_TabIL" xml:space="preserve">
+    <value>IL</value>
+  </data>
+  <data name="AsmExplorer_ILPlaceholder" xml:space="preserve">
+    <value>// Select a method node to view IL disassembly.</value>
+  </data>
+  <data name="AsmExplorer_TabInfo" xml:space="preserve">
+    <value>Info</value>
+  </data>
+  <data name="AsmExplorer_TabHex" xml:space="preserve">
+    <value>Hex</value>
+  </data>
+  <data name="AsmExplorer_TabCfg" xml:space="preserve">
+    <value>CFG</value>
+  </data>
+  <data name="AsmExplorer_CfgPlaceholder" xml:space="preserve">
+    <value>// Select a method node to view the Control Flow Graph.</value>
+  </data>
+  <data name="AsmExplorer_TabXRefs" xml:space="preserve">
+    <value>XRefs</value>
+  </data>
+  <data name="AsmExplorer_XRefsPlaceholder" xml:space="preserve">
+    <value>// Select a method or field node to view cross-references.</value>
+  </data>
+  <data name="AsmExplorer_ScanningXRefs" xml:space="preserve">
+    <value>Scanning XRefs…</value>
+  </data>
+  <data name="AsmExplorer_OpenSourceLink" xml:space="preserve">
+    <value>Open in browser via SourceLink</value>
+  </data>
+  <data name="AsmExplorer_SourceLink" xml:space="preserve">
+    <value>SourceLink</value>
+  </data>
+  <data name="AsmExplorer_OpenLocalSource" xml:space="preserve">
+    <value>Open local source file in the text editor</value>
+  </data>
+  <data name="AsmExplorer_GoToSource" xml:space="preserve">
+    <value>Go to Source</value>
+  </data>
+  <data name="AsmExplorer_TabSource" xml:space="preserve">
+    <value>Source</value>
+  </data>
+  <data name="AsmExplorer_ReadingPdb" xml:space="preserve">
+    <value>Reading PDB…</value>
+  </data>
+  <data name="AsmExplorer_NoPdbMethod" xml:space="preserve">
+    <value>// No portable PDB found for this method.</value>
+  </data>
+  <data name="AsmExplorer_ColILOffset" xml:space="preserve">
+    <value>IL Offset</value>
+  </data>
+  <data name="AsmExplorer_ColLine" xml:space="preserve">
+    <value>Line</value>
+  </data>
+  <data name="AsmExplorer_ColCol" xml:space="preserve">
+    <value>Col</value>
+  </data>
+  <data name="AsmExplorer_ColSourceFile" xml:space="preserve">
+    <value>Source File</value>
+  </data>
+  <data name="AsmExplorer_BaselineLabel" xml:space="preserve">
+    <value>Baseline:</value>
+  </data>
+  <data name="AsmExplorer_SelectBaseline" xml:space="preserve">
+    <value>Select the baseline (left) assembly</value>
+  </data>
+  <data name="AsmExplorer_TargetLabel" xml:space="preserve">
+    <value>Target:</value>
+  </data>
+  <data name="AsmExplorer_SelectTarget" xml:space="preserve">
+    <value>Select the target (right) assembly</value>
+  </data>
+  <data name="AsmExplorer_FilterByChange" xml:space="preserve">
+    <value>Filter results by change kind</value>
+  </data>
+  <data name="AsmExplorer_RunDiff" xml:space="preserve">
+    <value>Run diff comparison</value>
+  </data>
+  <data name="AsmExplorer_CompareButton" xml:space="preserve">
+    <value>Compare</value>
+  </data>
+  <data name="AsmExplorer_ClearResultsDiff" xml:space="preserve">
+    <value>Clear results</value>
+  </data>
+  <data name="AsmExplorer_ColChange" xml:space="preserve">
+    <value>Change</value>
+  </data>
+  <data name="AsmExplorer_BaselineTab" xml:space="preserve">
+    <value>Baseline</value>
+  </data>
+  <data name="AsmExplorer_UnifiedDiff" xml:space="preserve">
+    <value>Unified Diff</value>
+  </data>
+  <data name="AsmExplorer_TargetTab" xml:space="preserve">
+    <value>Target</value>
+  </data>
+  <data name="AsmExplorer_OpenAssemblyTitle" xml:space="preserve">
+    <value>Open Assembly</value>
+  </data>
+  <data name="AsmExplorer_AssemblyPathHint" xml:space="preserve">
+    <value>Assembly path — type, paste (Ctrl+V) or drag a .dll / .exe</value>
+  </data>
+  <data name="AsmExplorer_BrowseButton" xml:space="preserve">
+    <value>Browse…</value>
+  </data>
+  <data name="AsmExplorer_NoRecentAssemblies" xml:space="preserve">
+    <value>No recent assemblies</value>
+  </data>
+  <data name="AsmExplorer_RemoveFromRecent" xml:space="preserve">
+    <value>Remove from recent list</value>
+  </data>
+  <data name="AsmExplorer_RecentLabel" xml:space="preserve">
+    <value>Recent</value>
+  </data>
+  <data name="AsmExplorer_DotNetRuntimes" xml:space="preserve">
+    <value>.NET Runtimes</value>
+  </data>
+  <data name="AsmExplorer_FilterAssemblies" xml:space="preserve">
+    <value>Filter assemblies by name</value>
+  </data>
+  <data name="AsmExplorer_NoRuntimes" xml:space="preserve">
+    <value>No installed .NET runtimes found</value>
+  </data>
+  <data name="AsmExplorer_DropHint" xml:space="preserve">
+    <value>Drop a .dll or .exe anywhere</value>
+  </data>
+  <data name="AsmExplorer_Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="AsmExplorer_OpenAssembly" xml:space="preserve">
+    <value>Open Assembly</value>
+  </data>
+  <data name="AsmExplorer_BuildingCfg" xml:space="preserve">
+    <value>Building CFG…</value>
+  </data>
 </root>

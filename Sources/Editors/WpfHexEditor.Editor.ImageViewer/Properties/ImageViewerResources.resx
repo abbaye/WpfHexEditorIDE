@@ -28,4 +28,43 @@
   <data name="ImageViewer_SaveImageAs" xml:space="preserve"><value>Save Image As</value></data>
   <data name="ImageViewer_LoadingImage" xml:space="preserve"><value>Loading image&#x2026;</value></data>
 
+  <data name="ImageViewer_TransformHeader" xml:space="preserve">
+    <value>TRANSFORM</value>
+  </data>
+  <data name="ImageViewer_RotateRight" xml:space="preserve">
+    <value>Rotate Right</value>
+  </data>
+  <data name="ImageViewer_RotateLeft" xml:space="preserve">
+    <value>Rotate Left</value>
+  </data>
+  <data name="ImageViewer_FlipHorizontal" xml:space="preserve">
+    <value>Flip Horizontal</value>
+  </data>
+  <data name="ImageViewer_FlipVertical" xml:space="preserve">
+    <value>Flip Vertical</value>
+  </data>
+  <data name="ImageViewer_CropResize" xml:space="preserve">
+    <value>CROP &amp; RESIZE</value>
+  </data>
+  <data name="ImageViewer_CropMode" xml:space="preserve">
+    <value>Crop Mode</value>
+  </data>
+  <data name="ImageViewer_Resize" xml:space="preserve">
+    <value>Resize...</value>
+  </data>
+  <data name="ImageViewer_ExportHeader" xml:space="preserve">
+    <value>EXPORT</value>
+  </data>
+  <data name="ImageViewer_Export" xml:space="preserve">
+    <value>Export...</value>
+  </data>
+  <data name="ImageViewer_CopyToClipboard" xml:space="preserve">
+    <value>Copy to Clipboard</value>
+  </data>
+  <data name="ImageViewer_ResetImage" xml:space="preserve">
+    <value>Reset to Original Image</value>
+  </data>
+  <data name="ImageViewer_CropHint" xml:space="preserve">
+    <value>Crop Mode — Draw a selection, then press Enter to apply or Escape to cancel</value>
+  </data>
 </root>

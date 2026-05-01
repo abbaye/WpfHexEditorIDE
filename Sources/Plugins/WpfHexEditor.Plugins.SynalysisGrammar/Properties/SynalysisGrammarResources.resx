@@ -74,4 +74,40 @@
     <value>Open Grammar File</value>
   </data>
 
+  <data name="Synalysis_ApplyGrammar" xml:space="preserve">
+    <value>Apply Grammar</value>
+  </data>
+  <data name="Synalysis_CopyName" xml:space="preserve">
+    <value>Copy Name</value>
+  </data>
+  <data name="Synalysis_CopyExtensions" xml:space="preserve">
+    <value>Copy Extensions</value>
+  </data>
+  <data name="Synalysis_RemoveGrammar" xml:space="preserve">
+    <value>Remove Grammar</value>
+  </data>
+  <data name="Synalysis_LoadFromDisk" xml:space="preserve">
+    <value>Load grammar from disk (.grammar file)</value>
+  </data>
+  <data name="Synalysis_ReloadList" xml:space="preserve">
+    <value>Reload grammar list (F5)</value>
+  </data>
+  <data name="Synalysis_ApplySelected" xml:space="preserve">
+    <value>Apply selected grammar (Enter)</value>
+  </data>
+  <data name="Synalysis_ClearOverlay" xml:space="preserve">
+    <value>Clear grammar overlay from hex view</value>
+  </data>
+  <data name="Synalysis_AutoApply" xml:space="preserve">
+    <value>Auto-apply grammar on file open</value>
+  </data>
+  <data name="Synalysis_SearchGrammars" xml:space="preserve">
+    <value>Search grammars…</value>
+  </data>
+  <data name="Synalysis_TabInfo" xml:space="preserve">
+    <value>Info</value>
+  </data>
+  <data name="Synalysis_TabStructure" xml:space="preserve">
+    <value>Structure</value>
+  </data>
 </root>

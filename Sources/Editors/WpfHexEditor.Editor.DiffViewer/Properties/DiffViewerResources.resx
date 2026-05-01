@@ -60,4 +60,31 @@
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
 
   <data name="DiffViewer_Comparing" xml:space="preserve"><value>Comparing…</value></data>
+  <data name="DiffViewer_PrevDiff" xml:space="preserve">
+    <value>Previous difference (Shift+F8)</value>
+  </data>
+  <data name="DiffViewer_NextDiff" xml:space="preserve">
+    <value>Next difference (F8)</value>
+  </data>
+  <data name="DiffViewer_DiffList" xml:space="preserve">
+    <value>Diff List</value>
+  </data>
+  <data name="DiffViewer_ShowHideDiffList" xml:space="preserve">
+    <value>Show/hide the diff regions list</value>
+  </data>
+  <data name="DiffViewer_ColType" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="DiffViewer_ColLength" xml:space="preserve">
+    <value>Length</value>
+  </data>
+  <data name="DiffViewer_ColLeftBytes" xml:space="preserve">
+    <value>Left bytes</value>
+  </data>
+  <data name="DiffViewer_ColRightBytes" xml:space="preserve">
+    <value>Right bytes</value>
+  </data>
+  <data name="DiffViewer_OpenFilesHint" xml:space="preserve">
+    <value>Open two files via View &gt; Compare Files…</value>
+  </data>
 </root>

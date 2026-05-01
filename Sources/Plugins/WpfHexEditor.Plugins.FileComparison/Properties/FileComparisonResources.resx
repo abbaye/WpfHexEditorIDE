@@ -52,4 +52,101 @@
   <data name="FileComparison_SelectFile" xml:space="preserve">
     <value>Select file to compare</value>
   </data>
+  <data name="FileComparison_PrevDiff" xml:space="preserve">
+    <value>Previous difference (Alt+Up)</value>
+  </data>
+  <data name="FileComparison_NextDiff" xml:space="preserve">
+    <value>Next difference (Alt+Down)</value>
+  </data>
+  <data name="FileComparison_SideBySideUnified" xml:space="preserve">
+    <value>Side by side / Unified</value>
+  </data>
+  <data name="FileComparison_SideBySide" xml:space="preserve">
+    <value>Side by side</value>
+  </data>
+  <data name="FileComparison_IgnoreWS" xml:space="preserve">
+    <value>Ignore leading/trailing whitespace when comparing lines</value>
+  </data>
+  <data name="FileComparison_IgnoreWSLabel" xml:space="preserve">
+    <value>Ignore WS</value>
+  </data>
+  <data name="FileComparison_ContextLabel" xml:space="preserve">
+    <value>Context:</value>
+  </data>
+  <data name="FileComparison_Context0Lines" xml:space="preserve">
+    <value>0 lines</value>
+  </data>
+  <data name="FileComparison_Context3Lines" xml:space="preserve">
+    <value>3 lines</value>
+  </data>
+  <data name="FileComparison_Context8Lines" xml:space="preserve">
+    <value>8 lines</value>
+  </data>
+  <data name="FileComparison_ContextAll" xml:space="preserve">
+    <value>All</value>
+  </data>
+  <data name="FileComparison_CopyHexDump" xml:space="preserve">
+    <value>Copy hex dump to clipboard</value>
+  </data>
+  <data name="FileComparison_BlockAlignedTooltip" xml:space="preserve">
+    <value>Block-aligned diff: detects true byte insertions/deletions (slower)</value>
+  </data>
+  <data name="FileComparison_BlockAligned" xml:space="preserve">
+    <value>Block-aligned</value>
+  </data>
+  <data name="FileComparison_ToggleStats" xml:space="preserve">
+    <value>Show/hide entropy and frequency stats</value>
+  </data>
+  <data name="FileComparison_ToggleFormatOverlay" xml:space="preserve">
+    <value>Toggle whfmt format-field color overlay</value>
+  </data>
+  <data name="FileComparison_StructureDiff" xml:space="preserve">
+    <value>Show field-level structure diff (requires same format on both sides)</value>
+  </data>
+  <data name="FileComparison_Structure" xml:space="preserve">
+    <value>Structure</value>
+  </data>
+  <data name="FileComparison_BuildingRows" xml:space="preserve">
+    <value>Building hex rows…</value>
+  </data>
+  <data name="FileComparison_SwapFiles" xml:space="preserve">
+    <value>Swap files</value>
+  </data>
+  <data name="FileComparison_RunComparison" xml:space="preserve">
+    <value>Run comparison (Ctrl+Enter)</value>
+  </data>
+  <data name="FileComparison_Compare" xml:space="preserve">
+    <value>Compare</value>
+  </data>
+  <data name="FileComparison_ClearInputs" xml:space="preserve">
+    <value>Clear inputs</value>
+  </data>
+  <data name="FileComparison_File1Label" xml:space="preserve">
+    <value>File 1 (Left)</value>
+  </data>
+  <data name="FileComparison_File2Label" xml:space="preserve">
+    <value>File 2 (Right)</value>
+  </data>
+  <data name="FileComparison_Browse" xml:space="preserve">
+    <value>Browse…</value>
+  </data>
+  <data name="FileComparison_RecentComparisons" xml:space="preserve">
+    <value>Recent Comparisons</value>
+  </data>
+  <data name="FileComparison_ColLeft" xml:space="preserve">
+    <value>Left</value>
+  </data>
+  <data name="FileComparison_ColRight" xml:space="preserve">
+    <value>Right</value>
+  </data>
+  <data name="FileComparison_ColMode" xml:space="preserve">
+    <value>Mode</value>
+  </data>
+  <data name="FileComparison_ColLastUsed" xml:space="preserve">
+    <value>Last Used</value>
+  </data>
+  <data name="FileComparison_NoRecentComparisons" xml:space="preserve">
+    <value>No recent comparisons.
+Compare two files to build history.</value>
+  </data>
 </root>

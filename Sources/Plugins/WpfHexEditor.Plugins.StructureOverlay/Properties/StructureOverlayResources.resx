@@ -85,4 +85,34 @@
     <value>Remove all structure overlays?</value>
   </data>
 
+  <data name="StructureOverlay_ToggleVisibility" xml:space="preserve">
+    <value>Toggle visibility</value>
+  </data>
+  <data name="StructureOverlay_FormatLabel" xml:space="preserve">
+    <value>Format:</value>
+  </data>
+  <data name="StructureOverlay_MoreOptions" xml:space="preserve">
+    <value>More options</value>
+  </data>
+  <data name="StructureOverlay_AddOverlayHeader" xml:space="preserve">
+    <value>Add Structure Overlay</value>
+  </data>
+  <data name="StructureOverlay_AddOverlayTooltip" xml:space="preserve">
+    <value>Add structure overlay</value>
+  </data>
+  <data name="StructureOverlay_StructureOverlayLabel" xml:space="preserve">
+    <value>Structure Overlay</value>
+  </data>
+  <data name="StructureOverlay_LoadFormatTooltip" xml:space="preserve">
+    <value>Load structure from format definition</value>
+  </data>
+  <data name="StructureOverlay_ClearAll" xml:space="preserve">
+    <value>Clear All</value>
+  </data>
+  <data name="StructureOverlay_ClearAllTooltip" xml:space="preserve">
+    <value>Remove all structure overlays</value>
+  </data>
+  <data name="StructureOverlay_StructuresLabel" xml:space="preserve">
+    <value>Structures: </value>
+  </data>
 </root>

@@ -5,7 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:vm="clr-namespace:WpfHexEditor.Plugins.SynalysisGrammar.ViewModels"
              mc:Ignorable="d"
-             d:DesignHeight="500" d:DesignWidth="340">
+             d:DesignHeight="500" d:DesignWidth="340"
+             xmlns:synSvc="clr-namespace:WpfHexEditor.Plugins.SynalysisGrammar.Services;assembly=WpfHexEditor.Plugins.SynalysisGrammar">
 
     <!--
         Theme : All colours via DynamicResource tokens from the global IDE theme.
@@ -15,6 +16,11 @@
     -->
 
     <UserControl.Resources>
+            <ResourceDictionary>
+                <ResourceDictionary.MergedDictionaries>
+                    <xmlns:synSvc:SynalysisGrammarLocalizedDictionary/>
+                </ResourceDictionary.MergedDictionaries>
+
         <!-- Explicit styles: plugin AssemblyLoadContext cannot reach Application.Resources in popups -->
         <Style TargetType="{x:Type ContextMenu}" BasedOn="{StaticResource DockDarkContextMenuStyle}"/>
         <Style TargetType="{x:Type MenuItem}"    BasedOn="{StaticResource DockDarkMenuItemStyle}"/>
@@ -157,7 +163,7 @@
         </Style>
 
         <ContextMenu x:Key="GrammarItemMenu" Opened="OnContextMenuOpened">
-            <MenuItem Header="Apply Grammar"    InputGestureText="Enter"
+            <MenuItem {DynamicResource Synalysis_ApplyGrammar}    InputGestureText="Enter"
                       Command="{Binding DataContext.ApplyGrammarCommand,
                                         RelativeSource={RelativeSource AncestorType=UserControl}}">
                 <MenuItem.Icon>
@@ -165,24 +171,25 @@
                 </MenuItem.Icon>
             </MenuItem>
             <Separator/>
-            <MenuItem Header="Copy Name"        x:Name="MenuCopyName"       Click="OnContextCopyName">
+            <MenuItem {DynamicResource Synalysis_CopyName}        x:Name="MenuCopyName"       Click="OnContextCopyName">
                 <MenuItem.Icon>
                     <TextBlock Text="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
                 </MenuItem.Icon>
             </MenuItem>
-            <MenuItem Header="Copy Extensions"  x:Name="MenuCopyExtensions" Click="OnContextCopyExtensions">
+            <MenuItem {DynamicResource Synalysis_CopyExtensions}  x:Name="MenuCopyExtensions" Click="OnContextCopyExtensions">
                 <MenuItem.Icon>
                     <TextBlock Text="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
                 </MenuItem.Icon>
             </MenuItem>
             <Separator/>
-            <MenuItem Header="Remove Grammar"   x:Name="MenuRemoveGrammar"  Click="OnContextRemoveGrammar">
+            <MenuItem {DynamicResource Synalysis_RemoveGrammar}   x:Name="MenuRemoveGrammar"  Click="OnContextRemoveGrammar">
                 <MenuItem.Icon>
                     <TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
                 </MenuItem.Icon>
             </MenuItem>
         </ContextMenu>
-    </UserControl.Resources>
+                </ResourceDictionary>
+        </UserControl.Resources>
 
     <UserControl.InputBindings>
         <!-- Enter = Apply, F5 = Refresh -->
@@ -211,7 +218,7 @@
                     <StackPanel Orientation="Horizontal">
                         <!-- Load from disk: OpenFile \uE8DA -->
                         <Button Command="{Binding LoadFromDiskCommand}"
-                                ToolTip="Load grammar from disk (.grammar file)"
+                                {DynamicResource Synalysis_LoadFromDisk}
                                 Style="{StaticResource DockDarkToolBarButtonStyle}">
                             <TextBlock Text="&#xE8DA;" FontFamily="Segoe MDL2 Assets" FontSize="14"
                                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
@@ -219,7 +226,7 @@
                         <Separator Style="{StaticResource DockToolBarPodDividerStyle}"/>
                         <!-- Refresh list: Refresh \uE72C -->
                         <Button Command="{Binding RefreshCommand}"
-                                ToolTip="Reload grammar list (F5)"
+                                {DynamicResource Synalysis_ReloadList}
                                 Style="{StaticResource DockDarkToolBarButtonStyle}">
                             <TextBlock Text="&#xE72C;" FontFamily="Segoe MDL2 Assets" FontSize="14"
                                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
@@ -234,7 +241,7 @@
                     <StackPanel Orientation="Horizontal">
                         <!-- Apply: Play \uE768 (accent colour) -->
                         <Button Command="{Binding ApplyGrammarCommand}"
-                                ToolTip="Apply selected grammar (Enter)"
+                                {DynamicResource Synalysis_ApplySelected}
                                 Style="{StaticResource DockDarkToolBarButtonStyle}">
                             <TextBlock Text="&#xE768;" FontFamily="Segoe MDL2 Assets" FontSize="14"
                                        Foreground="{DynamicResource DockAccentBrush}"/>
@@ -242,7 +249,7 @@
                         <Separator Style="{StaticResource DockToolBarPodDividerStyle}"/>
                         <!-- Clear overlay: Delete \uE74D -->
                         <Button Command="{Binding ClearGrammarCommand}"
-                                ToolTip="Clear grammar overlay from hex view"
+                                {DynamicResource Synalysis_ClearOverlay}
                                 Style="{StaticResource DockDarkToolBarButtonStyle}">
                             <TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="14"
                                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
@@ -250,7 +257,7 @@
                         <Separator Style="{StaticResource DockToolBarPodDividerStyle}"/>
                         <!-- Auto-apply toggle: SyncFolder \uE9A4 -->
                         <ToggleButton IsChecked="{Binding IsAutoApply}"
-                                      ToolTip="Auto-apply grammar on file open"
+                                      {DynamicResource Synalysis_AutoApply}
                                       Style="{StaticResource DockToolBarToggleButtonStyle}">
                             <TextBlock Text="&#xE9A4;" FontFamily="Segoe MDL2 Assets" FontSize="14"
                                        Foreground="{DynamicResource DockMenuForegroundBrush}"/>
@@ -292,7 +299,7 @@
                         <Style TargetType="TextBox">
                             <Style.Triggers>
                                 <Trigger Property="Text" Value="">
-                                    <Setter Property="Tag" Value="Search grammars…"/>
+                                    <Setter Property="Tag" Value="{DynamicResource Synalysis_SearchGrammars}"/>
                                 </Trigger>
                             </Style.Triggers>
                         </Style>
@@ -372,7 +379,7 @@
                     MinHeight="80" MaxHeight="220">
 
             <!-- Tab 1: Info -->
-            <TabItem Header="Info" Style="{StaticResource GETabItemStyle}">
+            <TabItem Header="{DynamicResource Synalysis_TabInfo}" Style="{StaticResource GETabItemStyle}">
                 <ScrollViewer VerticalScrollBarVisibility="Auto"
                               Background="{DynamicResource DockMenuBackgroundBrush}">
                     <StackPanel Margin="8,6">
@@ -391,7 +398,7 @@
             </TabItem>
 
             <!-- Tab 2: Structure — UfwbStructure hierarchy TreeView -->
-            <TabItem Header="Structure" Style="{StaticResource GETabItemStyle}">
+            <TabItem Header="{DynamicResource Synalysis_TabStructure}" Style="{StaticResource GETabItemStyle}">
                 <TreeView ItemsSource="{Binding StructureNodes}"
                           Background="{DynamicResource DockBackgroundBrush}"
                           BorderThickness="0"

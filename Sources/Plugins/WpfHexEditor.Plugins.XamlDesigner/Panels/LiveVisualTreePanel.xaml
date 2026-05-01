@@ -32,9 +32,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:WpfHexEditor.Plugins.XamlDesigner.ViewModels"
              xmlns:models="clr-namespace:WpfHexEditor.Editor.XamlDesigner.Models;assembly=WpfHexEditor.Editor.XamlDesigner"
-             Background="{DynamicResource DockBackgroundBrush}">
+             Background="{DynamicResource DockBackgroundBrush}"
+             xmlns:xdSvc="clr-namespace:WpfHexEditor.Plugins.XamlDesigner.Services;assembly=WpfHexEditor.Plugins.XamlDesigner">
 
     <UserControl.Resources>
+            <ResourceDictionary>
+                <ResourceDictionary.MergedDictionaries>
+                    <xmlns:xdSvc:XamlDesignerLocalizedDictionary/>
+                </ResourceDictionary.MergedDictionaries>
+
         <!-- Icon button style — same pattern as XamlOutlinePanel -->
         <Style x:Key="XD_LiveTreeIconButton" TargetType="Button">
             <Setter Property="Background"      Value="Transparent"/>
@@ -135,7 +141,8 @@
             </Setter>
         </Style>
 
-    </UserControl.Resources>
+                </ResourceDictionary>
+        </UserControl.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
@@ -162,14 +169,14 @@
                             Orientation="Horizontal" Margin="0,0,2,0">
                     <!-- Collapse all nodes -->
                     <Button x:Name="BtnCollapseAll" Style="{StaticResource XD_LiveTreeIconButton}"
-                            Content="&#xE972;" ToolTip="Collapse All"/>
+                            Content="&#xE972;" {DynamicResource XamlDesigner_CollapseAll}/>
                     <!-- Overflow toggle (managed by ToolbarOverflowManager — initially hidden) -->
                     <ToggleButton x:Name="ToolbarOverflowButton"
                                   Width="22" Height="22" Padding="3"
                                   Background="Transparent" BorderThickness="0"
                                   FontFamily="Segoe MDL2 Assets" FontSize="11"
                                   Foreground="{DynamicResource DockMenuForegroundBrush}"
-                                  Content="&#xE712;" ToolTip="More options"
+                                  Content="&#xE712;" {DynamicResource XamlDesigner_MoreOptions}
                                   Visibility="Collapsed"/>
                 </StackPanel>
 
@@ -178,39 +185,39 @@
                             Orientation="Horizontal" Margin="2,2,0,2">
                     <!-- Refresh visual tree -->
                     <Button x:Name="BtnRefresh" Style="{StaticResource XD_LiveTreeIconButton}"
-                            Content="&#xE72C;" ToolTip="Refresh visual tree"/>
+                            Content="&#xE72C;" {DynamicResource XamlDesigner_RefreshVisualTree}/>
 
                     <!-- Auto-refresh on render toggle -->
                     <ToggleButton x:Name="BtnAutoRefresh" Style="{StaticResource XD_LiveTreeToggleButton}"
                                   Content="&#xE8BD;"
-                                  ToolTip="Auto-refresh on canvas render"
+                                  {DynamicResource XamlDesigner_AutoRefresh}
                                   IsChecked="{Binding AutoRefresh, Mode=TwoWay}"/>
 
                     <!-- Visual / Logical tree toggle -->
                     <ToggleButton x:Name="BtnLogicalTree" Style="{StaticResource XD_LiveTreeToggleButton}"
                                   Content="&#xE8A0;"
-                                  ToolTip="Switch to Logical Tree view"
+                                  {DynamicResource XamlDesigner_LogicalTreeView}
                                   IsChecked="{Binding UseLogicalTree, Mode=TwoWay}"/>
 
                     <!-- Expand to selected element -->
                     <Button x:Name="BtnExpandToSelected" Style="{StaticResource XD_LiveTreeIconButton}"
-                            Content="&#xE8A4;" ToolTip="Expand and scroll to selected element"/>
+                            Content="&#xE8A4;" {DynamicResource XamlDesigner_ExpandScrollSelected}/>
 
                     <!-- A: Expand All -->
                     <Button x:Name="BtnExpandAll" Style="{StaticResource XD_LiveTreeIconButton}"
-                            Content="&#xE9A6;" ToolTip="Expand All"/>
+                            Content="&#xE9A6;" {DynamicResource XamlDesigner_ExpandAll}/>
 
                     <!-- B: Toggle Search bar (Ctrl+F) -->
                     <Button x:Name="BtnSearch" Style="{StaticResource XD_LiveTreeIconButton}"
-                            Content="&#xE721;" ToolTip="Search elements (Ctrl+F)"/>
+                            Content="&#xE721;" {DynamicResource XamlDesigner_SearchElements}/>
 
                     <!-- C: Set selected node as inspect root -->
                     <Button x:Name="BtnSetAsRoot" Style="{StaticResource XD_LiveTreeIconButton}"
-                            Content="&#xE89A;" ToolTip="Set selected element as tree root (inspect subtree)"/>
+                            Content="&#xE89A;" {DynamicResource XamlDesigner_SetAsRoot}/>
 
                     <!-- C: Reset to full tree (visible only in inspect mode) -->
                     <Button x:Name="BtnResetRoot"
-                            Content="&#xE8B3;" ToolTip="Reset to full tree view">
+                            Content="&#xE8B3;" {DynamicResource XamlDesigner_ResetFullTree}>
                         <Button.Style>
                             <Style TargetType="Button" BasedOn="{StaticResource XD_LiveTreeIconButton}">
                                 <Setter Property="Visibility" Value="Collapsed"/>
@@ -226,30 +233,30 @@
                     <!-- D: Pick Element eyedropper mode -->
                     <ToggleButton x:Name="BtnPickMode" Style="{StaticResource XD_LiveTreeToggleButton}"
                                   Content="&#xEF3C;"
-                                  ToolTip="Pick Element — click canvas to navigate tree"
+                                  {DynamicResource XamlDesigner_PickElement}
                                   IsChecked="{Binding IsPickMode, Mode=TwoWay}"/>
 
                     <!-- E: Track Selection toggle -->
                     <ToggleButton x:Name="BtnTrackSelection" Style="{StaticResource XD_LiveTreeToggleButton}"
                                   Content="&#xE8CB;"
-                                  ToolTip="Track active canvas selection in tree"
+                                  {DynamicResource XamlDesigner_TrackSelection}
                                   IsChecked="{Binding TrackSelection, Mode=TwoWay}"/>
 
                     <!-- G: Show/Hide Dimensions toggle -->
                     <ToggleButton x:Name="BtnShowDimensions" Style="{StaticResource XD_LiveTreeToggleButton}"
                                   Content="&#xE9B9;"
-                                  ToolTip="Show/hide element dimensions"
+                                  {DynamicResource XamlDesigner_ShowDimensions}
                                   IsChecked="{Binding ShowDimensions, Mode=TwoWay}"/>
 
                     <!-- F: Filter Preset dropdown button — left-click opens ContextMenu -->
                     <Button x:Name="BtnFilterPreset" Style="{StaticResource XD_LiveTreeIconButton}"
-                            Content="&#xE71C;" ToolTip="Filter presets">
+                            Content="&#xE71C;" {DynamicResource XamlDesigner_FilterPresets}>
                         <Button.ContextMenu>
                             <ContextMenu>
-                                <MenuItem Header="All Elements"          Tag="All"          Click="OnFilterPresetItem"/>
-                                <MenuItem Header="Hidden / Collapsed"    Tag="HiddenOnly"   Click="OnFilterPresetItem"/>
-                                <MenuItem Header="Disabled Only"         Tag="DisabledOnly" Click="OnFilterPresetItem"/>
-                                <MenuItem Header="Named Elements Only"   Tag="NamedOnly"    Click="OnFilterPresetItem"/>
+                                <MenuItem {DynamicResource XamlDesigner_AllElements}          Tag="All"          Click="OnFilterPresetItem"/>
+                                <MenuItem {DynamicResource XamlDesigner_HiddenCollapsed}    Tag="HiddenOnly"   Click="OnFilterPresetItem"/>
+                                <MenuItem {DynamicResource XamlDesigner_DisabledOnly}         Tag="DisabledOnly" Click="OnFilterPresetItem"/>
+                                <MenuItem {DynamicResource XamlDesigner_NamedElementsOnly}   Tag="NamedOnly"    Click="OnFilterPresetItem"/>
                             </ContextMenu>
                         </Button.ContextMenu>
                     </Button>
@@ -268,7 +275,7 @@
                             FontSize="8"
                             Padding="1"
                             Content="&#xE711;"
-                            ToolTip="Clear filter">
+                            {DynamicResource XamlDesigner_ClearFilter}>
                         <Button.Style>
                             <Style TargetType="Button" BasedOn="{StaticResource XD_LiveTreeIconButton}">
                                 <Setter Property="Width"      Value="14"/>
@@ -342,15 +349,15 @@
                     <Button x:Name="BtnSearchPrev"
                             Style="{StaticResource XD_LiveTreeIconButton}"
                             Width="18" Height="18" FontSize="10"
-                            Content="&#xE76B;" ToolTip="Previous match (Shift+F3)"/>
+                            Content="&#xE76B;" {DynamicResource XamlDesigner_PreviousMatch}/>
                     <Button x:Name="BtnSearchNext"
                             Style="{StaticResource XD_LiveTreeIconButton}"
                             Width="18" Height="18" FontSize="10"
-                            Content="&#xE76C;" ToolTip="Next match (F3)"/>
+                            Content="&#xE76C;" {DynamicResource XamlDesigner_NextMatch}/>
                     <Button x:Name="BtnSearchClose"
                             Style="{StaticResource XD_LiveTreeIconButton}"
                             Width="18" Height="18" FontSize="10"
-                            Content="&#xE711;" ToolTip="Close search (Esc)"/>
+                            Content="&#xE711;" {DynamicResource XamlDesigner_CloseSearch}/>
                 </StackPanel>
                 <!-- Search TextBox -->
                 <TextBox x:Name="TbxSearch"
@@ -384,7 +391,7 @@
                 <Button DockPanel.Dock="Right"
                         Style="{StaticResource XD_LiveTreeIconButton}"
                         Width="16" Height="16" FontSize="9"
-                        Content="&#xE8B3;" ToolTip="Return to full tree"
+                        Content="&#xE8B3;" {DynamicResource XamlDesigner_ReturnFullTree}
                         Click="OnResetRoot"/>
                 <TextBlock Text="{Binding InspectRootLabel}"
                            FontSize="10"
@@ -496,7 +503,7 @@
                                     Padding="4,1"
                                     Margin="5,0,0,0"
                                     VerticalAlignment="Center">
-                                <TextBlock Text="disabled"
+                                <TextBlock {DynamicResource XamlDesigner_DisabledLabel}
                                            Foreground="{DynamicResource LVT_BadgeTextBrush}"
                                            FontSize="9"
                                            FontWeight="SemiBold"
@@ -524,25 +531,25 @@
                             <StackPanel.ContextMenu>
                                 <ContextMenu>
                                     <!-- C: Set as Inspect Root -->
-                                    <MenuItem Header="Set as Inspect Root"
+                                    <MenuItem {DynamicResource XamlDesigner_SetAsInspectRoot}
                                               Click="OnContextSetAsRoot"/>
                                     <Separator/>
-                                    <MenuItem Header="Copy Type Name"
+                                    <MenuItem {DynamicResource XamlDesigner_CopyTypeName}
                                               Command="{Binding CopyTypeNameCommand}"/>
-                                    <MenuItem Header="Copy x:Name"
+                                    <MenuItem {DynamicResource XamlDesigner_CopyXName}
                                               Command="{Binding CopyElementNameCommand}"/>
-                                    <MenuItem Header="Copy Full Path"
+                                    <MenuItem {DynamicResource XamlDesigner_CopyFullPath}
                                               Command="{Binding CopyFullPathCommand}"/>
                                     <!-- H: Copy XAML Snippet -->
-                                    <MenuItem Header="Copy XAML Snippet"
+                                    <MenuItem {DynamicResource XamlDesigner_CopyXamlSnippet}
                                               Command="{Binding CopyXamlSnippetCommand}"/>
                                     <Separator/>
-                                    <MenuItem x:Name="MiSelectOnCanvas" Header="Select on Canvas"
+                                    <MenuItem x:Name="MiSelectOnCanvas" {DynamicResource XamlDesigner_SelectOnCanvas}
                                               Click="OnContextSelectOnCanvas"/>
-                                    <MenuItem x:Name="MiNavigateToXaml" Header="Navigate to XAML"
+                                    <MenuItem x:Name="MiNavigateToXaml" {DynamicResource XamlDesigner_NavigateToXaml}
                                               Click="OnContextNavigateToXaml"/>
                                     <Separator/>
-                                    <MenuItem x:Name="MiExpandChildren" Header="Expand All Children"
+                                    <MenuItem x:Name="MiExpandChildren" {DynamicResource XamlDesigner_ExpandAllChildren}
                                               Click="OnContextExpandAllChildren"/>
                                 </ContextMenu>
                             </StackPanel.ContextMenu>

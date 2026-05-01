@@ -103,4 +103,94 @@
     <value>Export Metrics CSV</value>
   </data>
 
+  <data name="ClassDiagram_LayoutSection" xml:space="preserve">
+    <value>Layout</value>
+  </data>
+  <data name="ClassDiagram_AutoLayout" xml:space="preserve">
+    <value>Auto-layout nodes when opening a generated diagram</value>
+  </data>
+  <data name="ClassDiagram_GroupByNamespace" xml:space="preserve">
+    <value>Group nodes by namespace during auto-layout</value>
+  </data>
+  <data name="ClassDiagram_DefaultNodeWidth" xml:space="preserve">
+    <value>Default node width (px):</value>
+  </data>
+  <data name="ClassDiagram_PxLabel" xml:space="preserve">
+    <value>px</value>
+  </data>
+  <data name="ClassDiagram_DefaultNodeHeight" xml:space="preserve">
+    <value>Default node height (px):</value>
+  </data>
+  <data name="ClassDiagram_CanvasSection" xml:space="preserve">
+    <value>Canvas</value>
+  </data>
+  <data name="ClassDiagram_ShowDotGrid" xml:space="preserve">
+    <value>Show dot-grid by default</value>
+  </data>
+  <data name="ClassDiagram_SnapToGrid" xml:space="preserve">
+    <value>Enable snap-to-grid by default</value>
+  </data>
+  <data name="ClassDiagram_GridSnapSize" xml:space="preserve">
+    <value>Grid snap size (px):</value>
+  </data>
+  <data name="ClassDiagram_SourceAnalysis" xml:space="preserve">
+    <value>Source Analysis</value>
+  </data>
+  <data name="ClassDiagram_IncludePrivate" xml:space="preserve">
+    <value>Include private and protected members</value>
+  </data>
+  <data name="ClassDiagram_IncludeInherited" xml:space="preserve">
+    <value>Include inherited members (requires full analysis)</value>
+  </data>
+  <data name="ClassDiagram_MinimapSection" xml:space="preserve">
+    <value>Minimap</value>
+  </data>
+  <data name="ClassDiagram_ShowMinimap" xml:space="preserve">
+    <value>Show minimap when diagram opens</value>
+  </data>
+  <data name="ClassDiagram_OutlinePanel" xml:space="preserve">
+    <value>Outline Panel</value>
+  </data>
+  <data name="ClassDiagram_ShowMemberSubItems" xml:space="preserve">
+    <value>Show expandable member sub-items</value>
+  </data>
+  <data name="ClassDiagram_HoverTooltips" xml:space="preserve">
+    <value>Hover Tooltips</value>
+  </data>
+  <data name="ClassDiagram_ShowDetailTooltip" xml:space="preserve">
+    <value>Show detail tooltip on node hover</value>
+  </data>
+  <data name="ClassDiagram_TooltipDelay" xml:space="preserve">
+    <value>Tooltip delay (ms):</value>
+  </data>
+  <data name="ClassDiagram_SessionSection" xml:space="preserve">
+    <value>Session</value>
+  </data>
+  <data name="ClassDiagram_RestoreSession" xml:space="preserve">
+    <value>Restore zoom, pan, selection, and minimap position on reopen</value>
+  </data>
+  <data name="ClassDiagram_SolutionGeneration" xml:space="preserve">
+    <value>Solution Generation</value>
+  </data>
+  <data name="ClassDiagram_ShowSwimlanes" xml:space="preserve">
+    <value>Show per-project swimlanes by default</value>
+  </data>
+  <data name="ClassDiagram_IncludePrivateSolution" xml:space="preserve">
+    <value>Include private and protected members</value>
+  </data>
+  <data name="ClassDiagram_IncludeInternal" xml:space="preserve">
+    <value>Include internal (non-public) types</value>
+  </data>
+  <data name="ClassDiagram_ExcludeTestProjects" xml:space="preserve">
+    <value>Auto-exclude test projects (names containing Test, Tests, Spec)</value>
+  </data>
+  <data name="ClassDiagram_WarnThreshold" xml:space="preserve">
+    <value>Warn when solution exceeds (files):</value>
+  </data>
+  <data name="ClassDiagram_FilesNeverLabel" xml:space="preserve">
+    <value>files (0 = never)</value>
+  </data>
+  <data name="ClassDiagram_ColorMemberDots" xml:space="preserve">
+    <value>Color member dots by visibility (green / orange / red)</value>
+  </data>
 </root>

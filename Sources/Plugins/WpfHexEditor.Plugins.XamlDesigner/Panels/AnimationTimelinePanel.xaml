@@ -6,7 +6,8 @@
     xmlns:vm="clr-namespace:WpfHexEditor.Plugins.XamlDesigner.ViewModels"
     xmlns:models="clr-namespace:WpfHexEditor.Editor.XamlDesigner.Models;assembly=WpfHexEditor.Editor.XamlDesigner"
     xmlns:ctrl="clr-namespace:WpfHexEditor.Editor.XamlDesigner.Controls;assembly=WpfHexEditor.Editor.XamlDesigner"
-    MinHeight="140">
+    MinHeight="140"
+             xmlns:xdSvc="clr-namespace:WpfHexEditor.Plugins.XamlDesigner.Services;assembly=WpfHexEditor.Plugins.XamlDesigner">
 
     <!-- ==========================================================
          Project: WpfHexEditor.Plugins.XamlDesigner
@@ -23,6 +24,11 @@
          ========================================================== -->
 
     <UserControl.Resources>
+            <ResourceDictionary>
+                <ResourceDictionary.MergedDictionaries>
+                    <xmlns:xdSvc:XamlDesignerLocalizedDictionary/>
+                </ResourceDictionary.MergedDictionaries>
+
 
         <!-- Shared toolbar button style -->
         <Style x:Key="TlButtonStyle" TargetType="Button">
@@ -146,7 +152,8 @@
             </Setter>
         </Style>
 
-    </UserControl.Resources>
+                </ResourceDictionary>
+        </UserControl.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
@@ -172,7 +179,7 @@
                               Background="Transparent"
                               Foreground="{DynamicResource DockMenuForegroundBrush}"
                               BorderBrush="{DynamicResource DockBorderBrush}"
-                              ToolTip="Active storyboard"
+                              {DynamicResource XamlDesigner_ActiveStoryboard}
                               Margin="4,0"/>
 
                     <Separator Style="{StaticResource TlSepStyle}"/>
@@ -180,7 +187,7 @@
                     <!-- Duration display -->
                     <TextBlock VerticalAlignment="Center" FontSize="10"
                                Foreground="{DynamicResource DockMenuForegroundBrush}" Margin="4,0,0,0">
-                        <Run Text="Dur:"/>
+                        <Run {DynamicResource XamlDesigner_DurLabel}/>
                         <Run Text="{Binding Duration, StringFormat={}{0:mm\\:ss\\.ff}, Mode=OneWay}"/>
                     </TextBlock>
 
@@ -197,12 +204,12 @@
 
                     <!-- Stop -->
                     <Button Style="{StaticResource TlButtonStyle}"
-                            Content="&#xE71A;" ToolTip="Stop"
+                            Content="&#xE71A;" {DynamicResource XamlDesigner_Stop}
                             Command="{Binding StopCommand}"/>
 
                     <!-- Play / Pause toggle -->
                     <Button Style="{StaticResource TlButtonStyle}"
-                            ToolTip="Play / Pause"
+                            {DynamicResource XamlDesigner_PlayPause}
                             Command="{Binding PlayCommand}"
                             x:Name="BtnPlay">
                         <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="12">
@@ -223,13 +230,13 @@
 
                     <!-- Add Keyframe -->
                     <Button Style="{StaticResource TlButtonStyle}"
-                            Content="&#xE710;" ToolTip="Add Keyframe at current time"
+                            Content="&#xE710;" {DynamicResource XamlDesigner_AddKeyframe}
                             Command="{Binding AddKeyframeCommand}"
                             Click="OnAddKeyframeClick"/>
 
                     <!-- Delete Keyframe -->
                     <Button Style="{StaticResource TlButtonStyle}"
-                            Content="&#xE74D;" ToolTip="Delete selected keyframe"
+                            Content="&#xE74D;" {DynamicResource XamlDesigner_DeleteKeyframe}
                             Command="{Binding DeleteKeyframeCommand}"
                             Click="OnDeleteKeyframeClick"/>
 
@@ -237,12 +244,12 @@
 
                     <!-- Loop toggle -->
                     <ToggleButton Style="{StaticResource TlToggleButtonStyle}"
-                                  Content="&#xE8EE;" ToolTip="Loop playback"
+                                  Content="&#xE8EE;" {DynamicResource XamlDesigner_LoopPlayback}
                                   IsChecked="{Binding IsLooping, Mode=TwoWay}"/>
 
                     <!-- AutoReverse toggle -->
                     <ToggleButton Style="{StaticResource TlToggleButtonStyle}"
-                                  Content="&#xE7C4;" ToolTip="Auto-reverse"
+                                  Content="&#xE7C4;" {DynamicResource XamlDesigner_AutoReverse}
                                   IsChecked="{Binding AutoReverse, Mode=TwoWay}"/>
 
                     <Separator Style="{StaticResource TlSepStyle}"/>
@@ -251,7 +258,7 @@
                     <ComboBox x:Name="CbxPlaybackSpeed"
                               Width="55"
                               VerticalAlignment="Center"
-                              ToolTip="Playback speed multiplier"
+                              {DynamicResource XamlDesigner_PlaybackSpeed}
                               ItemsSource="{x:Static vm:AnimationTimelinePanelViewModel.AvailablePlaybackSpeeds}"
                               SelectedItem="{Binding PlaybackSpeed, Mode=TwoWay}"
                               Height="18" FontSize="10"
@@ -271,7 +278,7 @@
                     <!-- Zoom in timeline -->
                     <Button x:Name="BtnZoomIn"
                             Style="{StaticResource TlButtonStyle}"
-                            ToolTip="Zoom in timeline"
+                            {DynamicResource XamlDesigner_ZoomInTimeline}
                             Command="{Binding ZoomInCommand}">
                         <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="12" Text="&#xE8A3;"/>
                     </Button>
@@ -279,7 +286,7 @@
                     <!-- Zoom out timeline -->
                     <Button x:Name="BtnZoomOut"
                             Style="{StaticResource TlButtonStyle}"
-                            ToolTip="Zoom out timeline"
+                            {DynamicResource XamlDesigner_ZoomOutTimeline}
                             Command="{Binding ZoomOutCommand}">
                         <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="12" Text="&#xE71F;"/>
                     </Button>
@@ -293,7 +300,7 @@
                               Background="Transparent"
                               Foreground="{DynamicResource DockMenuForegroundBrush}"
                               BorderBrush="{DynamicResource DockBorderBrush}"
-                              ToolTip="Frame rate">
+                              {DynamicResource XamlDesigner_FrameRate}>
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
                                 <TextBlock FontSize="10">
@@ -308,12 +315,12 @@
 
                     <!-- Export to clipboard -->
                     <Button Style="{StaticResource TlButtonStyle}"
-                            Content="&#xE8C8;" ToolTip="Export storyboard to clipboard"
+                            Content="&#xE8C8;" {DynamicResource XamlDesigner_ExportStoryboard}
                             Command="{Binding ExportStoryboardCommand}"/>
 
                     <!-- Add track -->
                     <Button Style="{StaticResource TlButtonStyle}"
-                            Content="&#xE948;" ToolTip="Add track"
+                            Content="&#xE948;" {DynamicResource XamlDesigner_AddTrack}
                             Command="{Binding AddTrackCommand}"/>
 
                 </StackPanel>
@@ -384,7 +391,7 @@
                                     Background="Transparent" BorderThickness="0"
                                     Foreground="{DynamicResource DockMenuForegroundBrush}"
                                     Cursor="Hand" Visibility="Hidden"
-                                    ToolTip="Remove track"
+                                    {DynamicResource XamlDesigner_RemoveTrack}
                                     Command="{Binding DataContext.RemoveTrackCommand,
                                               RelativeSource={RelativeSource AncestorType=ListBox}}"
                                     CommandParameter="{Binding}"/>

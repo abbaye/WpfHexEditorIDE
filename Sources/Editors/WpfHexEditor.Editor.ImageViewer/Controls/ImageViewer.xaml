@@ -24,11 +24,13 @@ Architecture Notes:
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              Background="{DynamicResource TE_Background}"
              Focusable="True"
-             KeyDown="ImageViewer_KeyDown">
+             KeyDown="ImageViewer_KeyDown"
+             xmlns:ivSvc="clr-namespace:WpfHexEditor.Editor.ImageViewer.Services;assembly=WpfHexEditor.Editor.ImageViewer">
 
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
+                <xmlns:ivSvc:ImageViewerLocalizedDictionary/>
                 <ResourceDictionary Source="/WpfHexEditor.Editor.ImageViewer;component/Themes/ImageContextMenu.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
@@ -39,9 +41,9 @@ Architecture Notes:
         <ContextMenu Style="{StaticResource IV_ContextMenuStyle}">
 
             <!-- TRANSFORM group -->
-            <MenuItem Header="TRANSFORM" Style="{StaticResource IV_GroupHeaderStyle}"/>
+            <MenuItem {DynamicResource ImageViewer_TransformHeader} Style="{StaticResource IV_GroupHeaderStyle}"/>
             <MenuItem x:Name="CmRotateRight"
-                      Header="Rotate Right"
+                      {DynamicResource ImageViewer_RotateRight}
                       InputGestureText="Ctrl+R"
                       Click="OnContextRotateRight">
                 <MenuItem.Icon>
@@ -49,7 +51,7 @@ Architecture Notes:
                 </MenuItem.Icon>
             </MenuItem>
             <MenuItem x:Name="CmRotateLeft"
-                      Header="Rotate Left"
+                      {DynamicResource ImageViewer_RotateLeft}
                       InputGestureText="Ctrl+Shift+R"
                       Click="OnContextRotateLeft">
                 <MenuItem.Icon>
@@ -57,7 +59,7 @@ Architecture Notes:
                 </MenuItem.Icon>
             </MenuItem>
             <MenuItem x:Name="CmFlipH"
-                      Header="Flip Horizontal"
+                      {DynamicResource ImageViewer_FlipHorizontal}
                       InputGestureText="Ctrl+H"
                       Click="OnContextFlipH">
                 <MenuItem.Icon>
@@ -65,7 +67,7 @@ Architecture Notes:
                 </MenuItem.Icon>
             </MenuItem>
             <MenuItem x:Name="CmFlipV"
-                      Header="Flip Vertical"
+                      {DynamicResource ImageViewer_FlipVertical}
                       InputGestureText="Ctrl+Shift+H"
                       Click="OnContextFlipV">
                 <MenuItem.Icon>
@@ -76,9 +78,9 @@ Architecture Notes:
             <Separator Style="{StaticResource IV_GroupSeparatorStyle}"/>
 
             <!-- CROP & RESIZE group -->
-            <MenuItem Header="CROP &amp; RESIZE" Style="{StaticResource IV_GroupHeaderStyle}"/>
+            <MenuItem {DynamicResource ImageViewer_CropResize} Style="{StaticResource IV_GroupHeaderStyle}"/>
             <MenuItem x:Name="CmCropMode"
-                      Header="Crop Mode"
+                      {DynamicResource ImageViewer_CropMode}
                       InputGestureText="Ctrl+K"
                       Click="OnContextCropMode">
                 <MenuItem.Icon>
@@ -86,7 +88,7 @@ Architecture Notes:
                 </MenuItem.Icon>
             </MenuItem>
             <MenuItem x:Name="CmResize"
-                      Header="Resize..."
+                      {DynamicResource ImageViewer_Resize}
                       InputGestureText="Ctrl+Shift+Z"
                       Click="OnContextResize">
                 <MenuItem.Icon>
@@ -97,9 +99,9 @@ Architecture Notes:
             <Separator Style="{StaticResource IV_GroupSeparatorStyle}"/>
 
             <!-- EXPORT group -->
-            <MenuItem Header="EXPORT" Style="{StaticResource IV_GroupHeaderStyle}"/>
+            <MenuItem {DynamicResource ImageViewer_ExportHeader} Style="{StaticResource IV_GroupHeaderStyle}"/>
             <MenuItem x:Name="CmSaveAs"
-                      Header="Export..."
+                      {DynamicResource ImageViewer_Export}
                       InputGestureText="Ctrl+Shift+S"
                       Click="OnContextSaveAs">
                 <MenuItem.Icon>
@@ -107,7 +109,7 @@ Architecture Notes:
                 </MenuItem.Icon>
             </MenuItem>
             <MenuItem x:Name="CmCopy"
-                      Header="Copy to Clipboard"
+                      {DynamicResource ImageViewer_CopyToClipboard}
                       InputGestureText="Ctrl+C"
                       Click="OnContextCopy">
                 <MenuItem.Icon>
@@ -119,7 +121,7 @@ Architecture Notes:
 
             <!-- Reset -->
             <MenuItem x:Name="CmResetTransforms"
-                      Header="Reset to Original Image"
+                      {DynamicResource ImageViewer_ResetImage}
                       Click="OnContextResetTransforms">
                 <MenuItem.Icon>
                     <TextBlock Text="&#xE72C;" FontFamily="Segoe MDL2 Assets" FontSize="13"/>
@@ -259,7 +261,7 @@ Architecture Notes:
                 BorderThickness="1">
             <TextBlock Foreground="{DynamicResource DockMenuForegroundBrush}"
                        FontSize="11"
-                       Text="Crop Mode — Draw a selection, then press Enter to apply or Escape to cancel"/>
+                       {DynamicResource ImageViewer_CropHint}/>
         </Border>
     </Grid>
 </UserControl>

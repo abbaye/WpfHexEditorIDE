@@ -74,4 +74,67 @@
     <value>Git History</value>
   </data>
 
+  <data name="Git_Refresh" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
+  <data name="Git_StageAll" xml:space="preserve">
+    <value>Stage All</value>
+  </data>
+  <data name="Git_UnstageAll" xml:space="preserve">
+    <value>Unstage All</value>
+  </data>
+  <data name="Git_DiscardAll" xml:space="preserve">
+    <value>Discard All Changes</value>
+  </data>
+  <data name="Git_StashChanges" xml:space="preserve">
+    <value>Stash Changes</value>
+  </data>
+  <data name="Git_SyncPullPush" xml:space="preserve">
+    <value>Sync (Pull + Push)</value>
+  </data>
+  <data name="Git_Pull" xml:space="preserve">
+    <value>Pull</value>
+  </data>
+  <data name="Git_Push" xml:space="preserve">
+    <value>Push</value>
+  </data>
+  <data name="Git_Fetch" xml:space="preserve">
+    <value>Fetch</value>
+  </data>
+  <data name="Git_Stage" xml:space="preserve">
+    <value>Stage</value>
+  </data>
+  <data name="Git_Discard" xml:space="preserve">
+    <value>Discard</value>
+  </data>
+  <data name="Git_CommitMessageHint" xml:space="preserve">
+    <value>Commit message (Ctrl+Enter to commit)</value>
+  </data>
+  <data name="Git_PopStash" xml:space="preserve">
+    <value>Pop</value>
+  </data>
+  <data name="Git_DropStash" xml:space="preserve">
+    <value>Drop</value>
+  </data>
+  <data name="Git_Commit" xml:space="preserve">
+    <value>Commit</value>
+  </data>
+  <data name="Git_AmendLast" xml:space="preserve">
+    <value>Amend last</value>
+  </data>
+  <data name="Git_MergeConflicts" xml:space="preserve">
+    <value>MERGE CONFLICTS</value>
+  </data>
+  <data name="Git_StagedChanges" xml:space="preserve">
+    <value>STAGED CHANGES</value>
+  </data>
+  <data name="Git_UntrackedFiles" xml:space="preserve">
+    <value>UNTRACKED FILES</value>
+  </data>
+  <data name="Git_Stash" xml:space="preserve">
+    <value>STASH</value>
+  </data>
+  <data name="Git_NoChanges" xml:space="preserve">
+    <value>No changes detected.</value>
+  </data>
 </root>

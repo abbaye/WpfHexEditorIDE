@@ -12,8 +12,14 @@
              xmlns:local="clr-namespace:WpfHexEditor.Core.Models.StructureOverlay;assembly=WpfHexEditor.Core"
              xmlns:ui="clr-namespace:WpfHexEditor.SDK.UI;assembly=WpfHexEditor.SDK"
              mc:Ignorable="d"
-             d:DesignHeight="600" d:DesignWidth="350">
+             d:DesignHeight="600" d:DesignWidth="350"
+             xmlns:soSvc="clr-namespace:WpfHexEditor.Plugins.StructureOverlay.Services;assembly=WpfHexEditor.Plugins.StructureOverlay">
     <UserControl.Resources>
+            <ResourceDictionary>
+                <ResourceDictionary.MergedDictionaries>
+                    <xmlns:soSvc:StructureOverlayLocalizedDictionary/>
+                </ResourceDictionary.MergedDictionaries>
+
         <Style x:Key="StructureItemStyle" TargetType="TreeViewItem"
                BasedOn="{StaticResource PanelTreeViewItemStyle}">
             <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>
@@ -29,13 +35,13 @@
 
                 <CheckBox Grid.Column="0" IsChecked="{Binding IsVisible, Mode=TwoWay}"
                           Margin="0,0,5,0" VerticalAlignment="Center"
-                          ToolTip="Toggle visibility"/>
+                          {DynamicResource StructureOverlay_ToggleVisibility}/>
 
                 <StackPanel Grid.Column="1" Orientation="Vertical">
                     <TextBlock Text="{Binding Name}" FontWeight="Bold"
                                Foreground="{DynamicResource PFP_TextBrush}"/>
                     <TextBlock FontSize="10" Foreground="{DynamicResource PFP_SubTextBrush}">
-                        <Run Text="Format:"/>
+                        <Run {DynamicResource StructureOverlay_FormatLabel}/>
                         <Run Text="{Binding FormatType, Mode=OneWay}"/>
                         <Run Text=" | Offset:"/>
                         <Run Text="{Binding StartOffset, Mode=OneWay, StringFormat='{}{0:X}'}"/>
@@ -109,7 +115,8 @@
                 </Grid>
             </Border>
         </DataTemplate>
-    </UserControl.Resources>
+                </ResourceDictionary>
+        </UserControl.Resources>
 
     <Grid Background="{DynamicResource PFP_PanelBackgroundBrush}">
         <Grid.RowDefinitions>
@@ -136,13 +143,13 @@
                         DockPanel.Dock="Right"
                         Visibility="Collapsed"
                         Style="{StaticResource PanelIconButtonStyle}"
-                        ToolTip="More options"
+                        {DynamicResource StructureOverlay_MoreOptions}
                         Click="OnOverflowButtonClick">
                     <TextBlock Text="&#xE712;" FontFamily="Segoe MDL2 Assets" FontSize="13"
                                Foreground="{DynamicResource Panel_ToolbarForegroundBrush}"/>
                     <Button.ContextMenu>
                         <ContextMenu x:Name="OverflowContextMenu" Opened="OnOverflowMenuOpened">
-                            <MenuItem Header="Add Structure Overlay"
+                            <MenuItem {DynamicResource StructureOverlay_AddOverlayHeader}
                                       Tag="TbgStructureAdd"
                                       Click="AddStructureButton_Click"/>
                         </ContextMenu>
@@ -157,11 +164,11 @@
                     <Button x:Name="AddStructureButton"
                             Content="&#xE710;"
                             Style="{StaticResource PanelIconButtonStyle}"
-                            ToolTip="Add structure overlay"
+                            {DynamicResource StructureOverlay_AddOverlayTooltip}
                             Click="AddStructureButton_Click"/>
                 </StackPanel>
 
-                <TextBlock Text="Structure Overlay"
+                <TextBlock {DynamicResource StructureOverlay_StructureOverlayLabel}
                            VerticalAlignment="Center"
                            Margin="8,0,0,0"
                            FontWeight="SemiBold"
@@ -176,16 +183,16 @@
                 BorderThickness="0,0,0,1"
                 Padding="6,4">
             <StackPanel Orientation="Horizontal">
-                <Button x:Name="LoadFormatButton" Content="Load Format"
+                <Button x:Name="LoadFormatButton" {DynamicResource StructureOverlay_LoadFormat}
                         Style="{StaticResource PanelDropdownButtonStyle}"
                         Padding="8,3" Height="22" Margin="0,0,5,0"
                         Click="LoadFormatButton_Click"
-                        ToolTip="Load structure from format definition"/>
-                <Button x:Name="ClearAllButton" Content="Clear All"
+                        {DynamicResource StructureOverlay_LoadFormatTooltip}/>
+                <Button x:Name="ClearAllButton" {DynamicResource StructureOverlay_ClearAll}
                         Style="{StaticResource PanelDropdownButtonStyle}"
                         Padding="8,3" Height="22"
                         Click="ClearAllButton_Click"
-                        ToolTip="Remove all structure overlays"/>
+                        {DynamicResource StructureOverlay_ClearAllTooltip}/>
             </StackPanel>
         </Border>
 
@@ -217,7 +224,7 @@
                 BorderThickness="0,1,0,0"
                 Padding="8,4">
             <TextBlock FontSize="10" Foreground="{DynamicResource Panel_ToolbarForegroundBrush}">
-                <Run Text="Structures: "/>
+                <Run {DynamicResource StructureOverlay_StructuresLabel}/>
                 <Run Text="{Binding Structures.Count, Mode=OneWay}" FontWeight="Bold"/>
             </TextBlock>
         </Border>

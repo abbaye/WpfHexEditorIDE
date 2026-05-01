@@ -50,10 +50,10 @@
                       Command="{Binding ExtractSelectedCommand}"/>
             <Separator x:Name="OvfSep1"/>
             <MenuItem x:Name="OvfPreview"
-                      Header="Preview"
+                      {DynamicResource AE_PreviewMenuItem}
                       Command="{Binding PreviewCommand}"/>
             <MenuItem x:Name="OvfOpenRaw"
-                      Header="Open Raw in Hex"
+                      {DynamicResource AE_OpenRawInHex}
                       Command="{Binding OpenRawInHexCommand}"/>
         </ContextMenu>
             </ResourceDictionary>
@@ -179,7 +179,7 @@
                     <TextBox x:Name="FilterBox"
                              Width="140"
                              Style="{DynamicResource PanelSearchBoxStyle}"
-                             Tag="Filter…"
+                             {DynamicResource AE_FilterTag}
                              ToolTip="{DynamicResource AE_FilterEntries}"
                              Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged}"/>
                     <Button Style="{StaticResource PanelIconButtonStyle}"
@@ -294,7 +294,7 @@
                 <!-- Context menu -->
                 <TreeView.ContextMenu>
                     <ContextMenu>
-                        <MenuItem Header="Preview"
+                        <MenuItem Header="{DynamicResource AE_PreviewMenuItem}"
                                   Command="{Binding PlacementTarget.DataContext.PreviewCommand,
                                             RelativeSource={RelativeSource AncestorType=ContextMenu}}"
                                   InputGestureText="Enter">

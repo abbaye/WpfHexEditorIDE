@@ -8,7 +8,15 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              Background="{DynamicResource TE_Background}"
-             Focusable="True">
+             Focusable="True"
+             xmlns:dvSvc="clr-namespace:WpfHexEditor.Editor.DiffViewer.Services;assembly=WpfHexEditor.Editor.DiffViewer">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <xmlns:dvSvc:DiffViewerLocalizedDictionary/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
@@ -20,9 +28,9 @@
 
         <!-- Toolbar -->
         <ToolBar Grid.Row="0" Background="{DynamicResource TE_LineNumberBackground}">
-            <Button x:Name="BtnPrevDiff" Content="&#x25C4; Prev" ToolTip="Previous difference (Shift+F8)"
+            <Button x:Name="BtnPrevDiff" Content="&#x25C4; Prev" {DynamicResource DiffViewer_PrevDiff}
                     Click="BtnPrevDiff_Click" Padding="8,3" IsEnabled="False"/>
-            <Button x:Name="BtnNextDiff" Content="Next &#x25BA;" ToolTip="Next difference (F8)"
+            <Button x:Name="BtnNextDiff" Content="Next &#x25BA;" {DynamicResource DiffViewer_NextDiff}
                     Click="BtnNextDiff_Click" Padding="8,3" IsEnabled="False"/>
             <Separator/>
             <TextBlock x:Name="DiffCountText" Text="&#x2014;" VerticalAlignment="Center" Padding="4,0"
@@ -41,8 +49,8 @@
                 <TextBlock x:Name="DeletedText" Text="Deleted: 0" Foreground="{DynamicResource DiffViewer_BadgeForeground}" FontSize="11"/>
             </Border>
             <Separator/>
-            <ToggleButton x:Name="BtnDiffList" Content="Diff List" Padding="8,3"
-                          ToolTip="Show/hide the diff regions list"
+            <ToggleButton x:Name="BtnDiffList" {DynamicResource DiffViewer_DiffList} Padding="8,3"
+                          {DynamicResource DiffViewer_ShowHideDiffList}
                           Checked="OnDiffListToggled" Unchecked="OnDiffListToggled"/>
         </ToolBar>
 
@@ -119,11 +127,11 @@
                       BorderThickness="0"
                       SelectionChanged="OnDiffListSelectionChanged">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Type"        Binding="{Binding TypeLabel}"    Width="90"/>
+                    <DataGridTextColumn {DynamicResource DiffViewer_ColType}        Binding="{Binding TypeLabel}"    Width="90"/>
                     <DataGridTextColumn Header="Offset"      Binding="{Binding OffsetHex}"    Width="110"/>
-                    <DataGridTextColumn Header="Length"      Binding="{Binding LengthStr}"    Width="80"/>
-                    <DataGridTextColumn Header="Left bytes"  Binding="{Binding LeftPreview}"  Width="*"/>
-                    <DataGridTextColumn Header="Right bytes" Binding="{Binding RightPreview}" Width="*"/>
+                    <DataGridTextColumn {DynamicResource DiffViewer_ColLength}      Binding="{Binding LengthStr}"    Width="80"/>
+                    <DataGridTextColumn {DynamicResource DiffViewer_ColLeftBytes}  Binding="{Binding LeftPreview}"  Width="*"/>
+                    <DataGridTextColumn {DynamicResource DiffViewer_ColRightBytes} Binding="{Binding RightPreview}" Width="*"/>
                 </DataGrid.Columns>
             </DataGrid>
         </Grid>
@@ -134,7 +142,7 @@
                    Foreground="{DynamicResource TE_LineNumberForeground}"
                    Height="22">
             <StatusBarItem>
-                <TextBlock x:Name="StatusText" Text="Open two files via View > Compare Files&#x2026;" Padding="4,0"/>
+                <TextBlock x:Name="StatusText" Text="{DynamicResource DiffViewer_OpenFilesHint}" Padding="4,0"/>
             </StatusBarItem>
         </StatusBar>
     </Grid>

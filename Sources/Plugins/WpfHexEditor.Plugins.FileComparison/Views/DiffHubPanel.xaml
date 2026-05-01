@@ -3,9 +3,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:pb="clr-namespace:WpfHexEditor.ProgressBar.Controls;assembly=WpfHexEditor.ProgressBar"
              xmlns:vm="clr-namespace:WpfHexEditor.Plugins.FileComparison.ViewModels"
-             xmlns:conv="clr-namespace:WpfHexEditor.Plugins.FileComparison.Converters">
+             xmlns:conv="clr-namespace:WpfHexEditor.Plugins.FileComparison.Converters"
+             xmlns:fcSvc="clr-namespace:WpfHexEditor.Plugins.FileComparison.Services;assembly=WpfHexEditor.Plugins.FileComparison">
 
     <UserControl.Resources>
+            <ResourceDictionary>
+                <ResourceDictionary.MergedDictionaries>
+                    <xmlns:fcSvc:FileComparisonLocalizedDictionary/>
+                </ResourceDictionary.MergedDictionaries>
+
         <conv:BoolToVisibilityConverter x:Key="BoolToVis"/>
         <conv:KindToGlyphConverter      x:Key="KindToGlyph"/>
 
@@ -14,7 +20,8 @@
             <Setter Property="Padding"  Value="6,3,6,3"/>
             <Setter Property="FontSize" Value="11"/>
         </Style>
-    </UserControl.Resources>
+                </ResourceDictionary>
+        </UserControl.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
@@ -28,25 +35,25 @@
                  Background="{DynamicResource DockTabBackgroundBrush}">
 
             <Button Command="{Binding SwapCommand}"
-                    ToolTip="Swap files" Padding="6,2,6,2">
+                    {DynamicResource FileComparison_SwapFiles} Padding="6,2,6,2">
                 <TextBlock Text="&#xE8B1;" FontFamily="Segoe MDL2 Assets" FontSize="13"/>
             </Button>
 
             <Separator/>
 
             <Button Command="{Binding CompareCommand}"
-                    Padding="8,2,8,2" ToolTip="Run comparison (Ctrl+Enter)">
+                    Padding="8,2,8,2" {DynamicResource FileComparison_RunComparison}>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="&#xE8A5;" FontFamily="Segoe MDL2 Assets"
                                FontSize="12" Margin="0,0,4,0"/>
-                    <TextBlock Text="Compare"/>
+                    <TextBlock {DynamicResource FileComparison_Compare}/>
                 </StackPanel>
             </Button>
 
             <Separator/>
 
             <Button Command="{Binding ClearCommand}"
-                    ToolTip="Clear inputs" Padding="6,2,6,2">
+                    {DynamicResource FileComparison_ClearInputs} Padding="6,2,6,2">
                 <TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
             </Button>
 
@@ -69,7 +76,7 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <TextBlock Grid.Row="0" Text="File 1 (Left)" FontSize="10" Opacity="0.7" Margin="0,0,0,2"/>
+                <TextBlock Grid.Row="0" {DynamicResource FileComparison_File1Label} FontSize="10" Opacity="0.7" Margin="0,0,0,2"/>
                 <Grid Grid.Row="1">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -82,7 +89,7 @@
                              VerticalContentAlignment="Center"/>
                     <Button Grid.Column="1" Style="{DynamicResource XD_ToolbarIconButtonStyle}"
                             Width="26" Height="24" Margin="2,0,0,0"
-                            Click="OnBrowseFile1_Click" ToolTip="Browse…">
+                            Click="OnBrowseFile1_Click" {DynamicResource FileComparison_Browse}>
                         <TextBlock Text="&#xE8B7;" FontFamily="Segoe MDL2 Assets" FontSize="11"/>
                     </Button>
                 </Grid>
@@ -98,7 +105,7 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <TextBlock Grid.Row="0" Text="File 2 (Right)" FontSize="10" Opacity="0.7" Margin="0,0,0,2"/>
+                <TextBlock Grid.Row="0" {DynamicResource FileComparison_File2Label} FontSize="10" Opacity="0.7" Margin="0,0,0,2"/>
                 <Grid Grid.Row="1">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -111,7 +118,7 @@
                              VerticalContentAlignment="Center"/>
                     <Button Grid.Column="1" Style="{DynamicResource XD_ToolbarIconButtonStyle}"
                             Width="26" Height="24" Margin="2,0,0,0"
-                            Click="OnBrowseFile2_Click" ToolTip="Browse…">
+                            Click="OnBrowseFile2_Click" ToolTip="{DynamicResource FileComparison_Browse}">
                         <TextBlock Text="&#xE8B7;" FontFamily="Segoe MDL2 Assets" FontSize="11"/>
                     </Button>
                 </Grid>
@@ -131,7 +138,7 @@
                     BorderBrush="{DynamicResource DockBorderBrush}"
                     BorderThickness="0,1,0,1"
                     Padding="6,2">
-                <TextBlock Text="Recent Comparisons"
+                <TextBlock {DynamicResource FileComparison_RecentComparisons}
                            FontSize="10" FontWeight="SemiBold" Opacity="0.7"/>
             </Border>
 
@@ -142,7 +149,7 @@
                       ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                 <ListView.View>
                     <GridView>
-                        <GridViewColumn Header="Left" Width="140">
+                        <GridViewColumn {DynamicResource FileComparison_ColLeft} Width="140">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding LeftFileName}"
@@ -152,7 +159,7 @@
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
-                        <GridViewColumn Header="Right" Width="140">
+                        <GridViewColumn {DynamicResource FileComparison_ColRight} Width="140">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding RightFileName}"
@@ -162,9 +169,9 @@
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
-                        <GridViewColumn Header="Mode" Width="56"
+                        <GridViewColumn {DynamicResource FileComparison_ColMode} Width="56"
                                         DisplayMemberBinding="{Binding Mode}"/>
-                        <GridViewColumn Header="Last Used" Width="110"
+                        <GridViewColumn {DynamicResource FileComparison_ColLastUsed} Width="110"
                                         DisplayMemberBinding="{Binding LastUsed, StringFormat='{}{0:MM-dd HH:mm}'}"/>
                     </GridView>
                 </ListView.View>
@@ -178,7 +185,7 @@
                                     <Setter.Value>
                                         <ControlTemplate>
                                             <Border Padding="16">
-                                                <TextBlock Text="No recent comparisons.&#xA;Compare two files to build history."
+                                                <TextBlock {DynamicResource FileComparison_NoRecentComparisons}
                                                            TextAlignment="Center" Opacity="0.4"
                                                            FontSize="11" TextWrapping="Wrap"/>
                                             </Border>

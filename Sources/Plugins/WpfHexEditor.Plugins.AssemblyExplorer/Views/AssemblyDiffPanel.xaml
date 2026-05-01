@@ -22,12 +22,19 @@
              xmlns:svc="clr-namespace:WpfHexEditor.Core.AssemblyAnalysis.Services;assembly=WpfHexEditor.Core.AssemblyAnalysis"
              Background="{DynamicResource PFP_PanelBackgroundBrush}"
              Foreground="{DynamicResource PFP_TextBrush}"
-             Loaded="OnLoaded">
+             Loaded="OnLoaded"
+             xmlns:aeSvc="clr-namespace:WpfHexEditor.Plugins.AssemblyExplorer.Services;assembly=WpfHexEditor.Plugins.AssemblyExplorer">
 
     <UserControl.Resources>
+            <ResourceDictionary>
+                <ResourceDictionary.MergedDictionaries>
+                    <xmlns:aeSvc:AssemblyExplorerLocalizedDictionary/>
+                </ResourceDictionary.MergedDictionaries>
+
         <!-- DiffKind → row background converter -->
         <local:DiffKindToBrushConverter x:Key="DiffKindToBrush"/>
-    </UserControl.Resources>
+                </ResourceDictionary>
+        </UserControl.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
@@ -59,7 +66,7 @@
                 <Button x:Name="ToolbarOverflowButton"
                         DockPanel.Dock="Right"
                         Width="16"
-                        ToolTip="More options"
+                        {DynamicResource AsmExplorer_MoreOptions}
                         Click="OnOverflowButtonClick"
                         Background="Transparent"
                         BorderThickness="0"
@@ -84,7 +91,7 @@
                             Margin="0,2">
 
                     <!-- Baseline (left) -->
-                    <TextBlock Text="Baseline:" Foreground="{DynamicResource PFP_SubTextBrush}"
+                    <TextBlock {DynamicResource AsmExplorer_BaselineLabel} Foreground="{DynamicResource PFP_SubTextBrush}"
                                FontSize="10" VerticalAlignment="Center" Margin="2,0,3,0"/>
                     <ComboBox Width="120" Margin="0,1,4,1"
                               ItemsSource="{Binding AssemblyNames}"
@@ -92,7 +99,7 @@
                               Background="{DynamicResource PFP_SectionBackgroundBrush}"
                               Foreground="{DynamicResource PFP_TextBrush}"
                               BorderBrush="{DynamicResource DockBorderBrush}"
-                              ToolTip="Select the baseline (left) assembly"/>
+                              {DynamicResource AsmExplorer_SelectBaseline}/>
 
                     <!-- Arrow -->
                     <TextBlock Text="&#xE8B0;" FontFamily="Segoe MDL2 Assets" FontSize="10"
@@ -100,7 +107,7 @@
                                VerticalAlignment="Center" Margin="2,0"/>
 
                     <!-- Target (right) -->
-                    <TextBlock Text="Target:" Foreground="{DynamicResource PFP_SubTextBrush}"
+                    <TextBlock {DynamicResource AsmExplorer_TargetLabel} Foreground="{DynamicResource PFP_SubTextBrush}"
                                FontSize="10" VerticalAlignment="Center" Margin="3,0,3,0"/>
                     <ComboBox Width="120" Margin="0,1,8,1"
                               ItemsSource="{Binding AssemblyNames}"
@@ -108,7 +115,7 @@
                               Background="{DynamicResource PFP_SectionBackgroundBrush}"
                               Foreground="{DynamicResource PFP_TextBrush}"
                               BorderBrush="{DynamicResource DockBorderBrush}"
-                              ToolTip="Select the target (right) assembly"/>
+                              {DynamicResource AsmExplorer_SelectTarget}/>
 
                     <!-- Kind filter -->
                     <ComboBox Width="80" Margin="0,1,8,1"
@@ -117,7 +124,7 @@
                               Background="{DynamicResource PFP_SectionBackgroundBrush}"
                               Foreground="{DynamicResource PFP_TextBrush}"
                               BorderBrush="{DynamicResource DockBorderBrush}"
-                              ToolTip="Filter results by change kind"/>
+                              {DynamicResource AsmExplorer_FilterByChange}/>
 
                     <!-- Compare button -->
                     <Button Margin="0,1,4,1" Padding="8,1"
@@ -125,10 +132,10 @@
                             Background="{DynamicResource PFP_SectionBackgroundBrush}"
                             Foreground="{DynamicResource PFP_TextBrush}"
                             BorderBrush="{DynamicResource DockBorderBrush}"
-                            ToolTip="Run diff comparison">
+                            {DynamicResource AsmExplorer_RunDiff}>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="&#xE8AD;" FontFamily="Segoe MDL2 Assets" FontSize="10" Margin="0,0,3,0"/>
-                            <TextBlock Text="Compare" FontSize="10"/>
+                            <TextBlock {DynamicResource AsmExplorer_CompareButton} FontSize="10"/>
                         </StackPanel>
                     </Button>
 
@@ -138,7 +145,7 @@
                             Background="Transparent"
                             Foreground="{DynamicResource PFP_TextBrush}"
                             BorderBrush="Transparent"
-                            ToolTip="Clear results">
+                            {DynamicResource AsmExplorer_ClearResultsDiff}>
                         <TextBlock Text="&#xE894;" FontFamily="Segoe MDL2 Assets" FontSize="10"/>
                     </Button>
                 </StackPanel>
@@ -177,9 +184,9 @@
             </DataGrid.RowStyle>
 
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Change"  Binding="{Binding Kind}"        Width="70"/>
-                <DataGridTextColumn Header="Type"    Binding="{Binding TypeName}"    Width="200"/>
-                <DataGridTextColumn Header="Member"  Binding="{Binding MemberName}"  Width="*"/>
+                <DataGridTextColumn {DynamicResource AsmExplorer_ColChange}  Binding="{Binding Kind}"        Width="70"/>
+                <DataGridTextColumn {DynamicResource AsmExplorer_ColType}    Binding="{Binding TypeName}"    Width="200"/>
+                <DataGridTextColumn {DynamicResource AsmExplorer_ColMember}  Binding="{Binding MemberName}"  Width="*"/>
             </DataGrid.Columns>
         </DataGrid>
 
@@ -247,7 +254,7 @@
                 <!-- Baseline code -->
                 <DockPanel Grid.Column="0">
                     <TextBlock DockPanel.Dock="Top"
-                               Text="Baseline"
+                               {DynamicResource AsmExplorer_BaselineTab}
                                FontSize="10"
                                Foreground="{DynamicResource PFP_SubTextBrush}"
                                Padding="4,2"
@@ -277,7 +284,7 @@
                 <!-- Unified diff -->
                 <DockPanel Grid.Column="2">
                     <TextBlock DockPanel.Dock="Top"
-                               Text="Unified Diff"
+                               {DynamicResource AsmExplorer_UnifiedDiff}
                                FontSize="10"
                                Foreground="{DynamicResource PFP_SubTextBrush}"
                                Padding="4,2"
@@ -307,7 +314,7 @@
                 <!-- Target code -->
                 <DockPanel Grid.Column="4">
                     <TextBlock DockPanel.Dock="Top"
-                               Text="Target"
+                               {DynamicResource AsmExplorer_TargetTab}
                                FontSize="10"
                                Foreground="{DynamicResource PFP_SubTextBrush}"
                                Padding="4,2"

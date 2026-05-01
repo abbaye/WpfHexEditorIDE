@@ -18,9 +18,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:WpfHexEditor.Plugins.XamlDesigner.ViewModels"
              MinHeight="80"
-             Background="{DynamicResource XD_HistoryPanelBackground}">
+             Background="{DynamicResource XD_HistoryPanelBackground}"
+             xmlns:xdSvc="clr-namespace:WpfHexEditor.Plugins.XamlDesigner.Services;assembly=WpfHexEditor.Plugins.XamlDesigner">
 
     <UserControl.Resources>
+            <ResourceDictionary>
+                <ResourceDictionary.MergedDictionaries>
+                    <xmlns:xdSvc:XamlDesignerLocalizedDictionary/>
+                </ResourceDictionary.MergedDictionaries>
+
 
         <!-- ── Icon button style matching VS-Like panel standard ── -->
         <Style x:Key="XD_HistIconButton" TargetType="Button">
@@ -116,7 +122,8 @@
         <!-- ── BoolToVisibility ── -->
         <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
 
-    </UserControl.Resources>
+                </ResourceDictionary>
+        </UserControl.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
@@ -145,7 +152,7 @@
                            Margin="0,0,6,0"
                            Opacity="0.65"
                            Foreground="{DynamicResource DockMenuForegroundBrush}"
-                           ToolTip="Entries / Max capacity"/>
+                           {DynamicResource XamlDesigner_EntriesCapacity}/>
 
                 <!-- Left group: action buttons + filter -->
                 <StackPanel DockPanel.Dock="Left"
@@ -155,7 +162,7 @@
                     <!-- Clear History -->
                     <Button x:Name="BtnClearHistory"
                             Style="{StaticResource XD_HistIconButton}"
-                            Content="&#xE74D;" ToolTip="Clear history"
+                            Content="&#xE74D;" {DynamicResource XamlDesigner_ClearHistory}
                             Command="{Binding ClearHistoryCommand}"/>
 
                     <!-- Separator -->
@@ -165,25 +172,25 @@
 
                     <Button x:Name="BtnMarkCheckpoint"
                             Style="{StaticResource XD_HistIconButton}"
-                            ToolTip="Mark current state as checkpoint"
+                            {DynamicResource XamlDesigner_MarkCheckpoint}
                             Command="{Binding MarkCurrentCheckpointCommand}">
                         <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="12" Text="&#xE734;"/>
                     </Button>
                     <Button x:Name="BtnJumpFirst"
                             Style="{StaticResource XD_HistIconButton}"
-                            ToolTip="Jump to oldest state"
+                            {DynamicResource XamlDesigner_JumpOldest}
                             Command="{Binding JumpToFirstCommand}">
                         <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="12" Text="&#xE892;"/>
                     </Button>
                     <Button x:Name="BtnJumpLatest"
                             Style="{StaticResource XD_HistIconButton}"
-                            ToolTip="Jump to most recent state"
+                            {DynamicResource XamlDesigner_JumpNewest}
                             Command="{Binding JumpToLatestCommand}">
                         <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="12" Text="&#xE893;"/>
                     </Button>
                     <Button x:Name="BtnExportHistory"
                             Style="{StaticResource XD_HistIconButton}"
-                            ToolTip="Copy history list to clipboard"
+                            {DynamicResource XamlDesigner_CopyHistory}
                             Command="{Binding ExportHistoryCommand}">
                         <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="12" Text="&#xE8C8;"/>
                     </Button>
@@ -198,7 +205,7 @@
                                   Style="{StaticResource XD_HistToggleButton}"
                                   Content="&#xE734;"
                                   IsChecked="{Binding CheckpointsOnly, Mode=TwoWay}"
-                                  ToolTip="Show checkpoints only"/>
+                                  {DynamicResource XamlDesigner_CheckpointsOnly}/>
 
                     <!-- Separator -->
                     <Rectangle Width="1" Height="14" Margin="3,0"
@@ -209,9 +216,9 @@
                     <Grid VerticalAlignment="Center">
                         <TextBox x:Name="TbxFilter"
                                  Style="{StaticResource XD_HistFilterBox}"
-                                 ToolTip="Filter history entries"/>
+                                 ToolTip="{DynamicResource XamlDesigner_FilterHistory}"/>
                         <TextBlock x:Name="TbxFilterPlaceholder"
-                                   Text="Filter history…"
+                                   {DynamicResource XamlDesigner_FilterHistory}
                                    FontSize="11"
                                    Margin="5,0,0,0"
                                    Opacity="0.4"
@@ -324,7 +331,7 @@
                         <Grid.ContextMenu>
                             <ContextMenu>
                                 <MenuItem x:Name="CtxToggleCheckpoint"
-                                          Header="Toggle Checkpoint"
+                                          {DynamicResource XamlDesigner_ToggleCheckpoint}
                                           Tag="{Binding}">
                                     <MenuItem.Icon>
                                         <TextBlock Text="&#xE734;"
@@ -334,7 +341,7 @@
                                     </MenuItem.Icon>
                                 </MenuItem>
                                 <MenuItem x:Name="CtxJumpToState"
-                                          Header="Jump to State"
+                                          {DynamicResource XamlDesigner_JumpToState}
                                           Tag="{Binding}">
                                     <MenuItem.Icon>
                                         <TextBlock Text="&#xE72D;"
