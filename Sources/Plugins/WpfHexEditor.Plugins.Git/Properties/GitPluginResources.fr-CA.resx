@@ -5,7 +5,7 @@
     Contributors: Claude Sonnet 4.6
     Project     : WpfHexEditor.Plugins.Git
     File        : GitPluginResources.fr-CA.resx
-    Description : French-Canadian (fr-CA) translations for the Git Integration plugin.
+    Description : Localized UI strings for the Git Integration plugin.
 -->
 <root>
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
@@ -18,13 +18,12 @@
               <xsd:sequence>
                 <xsd:any minOccurs="0" />
               </xsd:sequence>
-              <xsd:attribute name="name" use="required" />
-              <xsd:attribute name="type" />
             </xsd:complexType>
           </xsd:element>
-          <xsd:element name="value">
+          <xsd:element name="assembly">
             <xsd:complexType>
-              <xsd:any minOccurs="0" maxOccurs="unbounded" />
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="data">
@@ -63,13 +62,22 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-
+  <data name="Git_FilterBranches" xml:space="preserve">
+    <value>Filtrer les branches</value>
+  </data>
+  <data name="Git_NewBranch" xml:space="preserve">
+    <value>+ Nouvelle branche…</value>
+  </data>
+  <data name="Git_NewBranchTooltip" xml:space="preserve">
+    <value>Nom de la nouvelle branche</value>
+  </data>
+  <data name="Git_CreateBranch" xml:space="preserve">
+    <value>Créer</value>
+  </data>
   <data name="Git_Changes" xml:space="preserve">
     <value>Modifications Git</value>
   </data>
-
   <data name="Git_History" xml:space="preserve">
     <value>Historique Git</value>
   </data>
-
 </root>

@@ -220,4 +220,13 @@
   <data name="ClassDiagram_ColMembers" xml:space="preserve">
     <value>Members</value>
   </data>
+  <data name="CD_PxUnit" xml:space="preserve">
+    <value>px</value>
+  </data>
+  <data name="CD_ParseHintFile" xml:space="preserve">
+    <value>Controls how C# source files are parsed when using &quot;View Class Diagram&quot; or &quot;Generate Class Diagram for Project&quot; from Solution Explorer.</value>
+  </data>
+  <data name="CD_SolutionHint" xml:space="preserve">
+    <value>Controls the behaviour of &quot;Generate Class Diagram for Solution&quot;. The generated diagram groups types by project with per-project swimlanes and persists its state to a .whscd twin file next to the solution.</value>
+  </data>
 </root>

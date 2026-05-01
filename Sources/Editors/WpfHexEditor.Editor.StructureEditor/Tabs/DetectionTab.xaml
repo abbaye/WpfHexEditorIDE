@@ -72,17 +72,17 @@
                            PreviewTextInput="OnHexOnly"
                            ToolTip="{DynamicResource StructureEditor_DetectionHexBytesToolTip}"/>
 
-                <TextBlock Grid.Row="1" Grid.Column="0" Text="Offset"     Style="{StaticResource Lbl}"/>
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="{DynamicResource SE_ColOffset}" Style="{StaticResource Lbl}"/>
                 <TextBox   Grid.Row="1" Grid.Column="1" Style="{StaticResource Fld}"
                            PreviewTextInput="OnNumericOnly"
                            Text="{Binding Offset, UpdateSourceTrigger=PropertyChanged}"/>
 
-                <TextBlock Grid.Row="2" Grid.Column="0" Text="Strength"   Style="{StaticResource Lbl}"/>
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="{DynamicResource SE_ColStrength}" Style="{StaticResource Lbl}"/>
                 <ComboBox  Grid.Row="2" Grid.Column="1" Style="{StaticResource Combo}"
                            ItemsSource="{Binding StrengthOptions}"
                            SelectedItem="{Binding Strength}"/>
 
-                <TextBlock Grid.Row="3" Grid.Column="0" Text="Required"   Style="{StaticResource Lbl}"/>
+                <TextBlock Grid.Row="3" Grid.Column="0" Text="{DynamicResource SE_ColRequired}" Style="{StaticResource Lbl}"/>
                 <CheckBox  Grid.Row="3" Grid.Column="1" IsChecked="{Binding Required}"
                            Foreground="{DynamicResource TE_Foreground}" FontSize="11" Margin="0,4"/>
             </Grid>

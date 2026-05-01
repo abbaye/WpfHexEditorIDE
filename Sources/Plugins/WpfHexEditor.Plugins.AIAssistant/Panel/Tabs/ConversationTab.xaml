@@ -333,7 +333,7 @@
                                     <StackPanel Orientation="Horizontal">
                                         <Button Content="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="11"
                                                 Width="26" Height="22" Padding="0" Cursor="Hand"
-                                                BorderThickness="0" ToolTip="Copy message"
+                                                BorderThickness="0" ToolTip="{DynamicResource AI_CopyMessage}"
                                                 Background="{DynamicResource CA_ToolCallBackgroundBrush}"
                                                 Foreground="{DynamicResource CA_ToolCallForegroundBrush}"
                                                 Click="OnCopyMessageClick"/>

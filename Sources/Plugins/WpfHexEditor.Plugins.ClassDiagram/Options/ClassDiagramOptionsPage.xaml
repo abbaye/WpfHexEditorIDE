@@ -65,7 +65,7 @@
                              FontSize="12"
                              MaxLength="5"
                              TextAlignment="Right"/>
-                    <TextBlock Text="px"
+                    <TextBlock Text="{DynamicResource CD_PxUnit}"
                                Margin="6,0,0,0"
                                VerticalAlignment="Center"
                                Foreground="{DynamicResource PFP_SubTextBrush}"
@@ -95,7 +95,7 @@
                              FontSize="12"
                              MaxLength="5"
                              TextAlignment="Right"/>
-                    <TextBlock Text="px"
+                    <TextBlock Text="{DynamicResource CD_PxUnit}"
                                Margin="6,0,0,0"
                                VerticalAlignment="Center"
                                Foreground="{DynamicResource PFP_SubTextBrush}"
@@ -153,14 +153,11 @@
                        Foreground="{DynamicResource PFP_AccentBrush}"
                        Margin="0,0,0,6"/>
 
-            <TextBlock TextWrapping="Wrap"
+            <TextBlock Text="{DynamicResource CD_ParseHintFile}"
+                       TextWrapping="Wrap"
                        Foreground="{DynamicResource PFP_SubTextBrush}"
                        FontSize="11"
-                       Margin="0,0,0,8">
-                Controls how C# source files are parsed when using
-                "View Class Diagram" or "Generate Class Diagram for Project"
-                from Solution Explorer.
-            </TextBlock>
+                       Margin="0,0,0,8"/>
 
             <CheckBox x:Name="ChkIncludePrivate" Content="{DynamicResource ClassDiagram_IncludePrivate}"
                       Foreground="{DynamicResource PFP_TextBrush}"
@@ -260,14 +257,11 @@
                        Foreground="{DynamicResource PFP_AccentBrush}"
                        Margin="0,0,0,6"/>
 
-            <TextBlock TextWrapping="Wrap"
+            <TextBlock Text="{DynamicResource CD_SolutionHint}"
+                       TextWrapping="Wrap"
                        Foreground="{DynamicResource PFP_SubTextBrush}"
                        FontSize="11"
-                       Margin="0,0,0,8">
-                Controls the behaviour of "Generate Class Diagram for Solution".
-                The generated diagram groups types by project with per-project swimlanes
-                and persists its state to a .whscd twin file next to the solution.
-            </TextBlock>
+                       Margin="0,0,0,8"/>
 
             <CheckBox x:Name="ChkSolutionShowSwimLanes" Content="{DynamicResource ClassDiagram_ShowSwimlanes}"
                       Foreground="{DynamicResource PFP_TextBrush}"

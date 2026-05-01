@@ -1,55 +1,125 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfHexEditor.Plugins.AIAssistant
+    File        : AIAssistantResources.de-DE.resx
+    Description : Localized UI strings for the AI Assistant plugin.
+-->
 <root>
-  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
-  <resheader name="version"><value>2.0</value></resheader>
-  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  <data name="AIAssistant_ConnectionTest_Title" xml:space="preserve">
-    <value>Verbindungstest</value>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:any minOccurs="0" />
+              </xsd:sequence>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AI_ConversationHistory" xml:space="preserve">
+    <value>Gesprächsverlauf</value>
   </data>
-  <data name="AIAssistant_ConnectionTest_Testing" xml:space="preserve">
-    <value>Teste läuft...</value>
+  <data name="AI_ClearAll" xml:space="preserve">
+    <value>Alle löschen</value>
   </data>
-  <data name="AIAssistant_Error_ProviderNotRegistered" xml:space="preserve">
-    <value>Anbieter '{0}' ist nicht registriert.</value>
+  <data name="AI_SearchConversations" xml:space="preserve">
+    <value>Gespräche suchen...</value>
   </data>
-  <data name="AIAssistant_ConnectionTest_Success" xml:space="preserve">
-    <value>Verbindung mit {0} erfolgreich!</value>
+  <data name="AI_CopyMessage" xml:space="preserve">
+    <value>Nachricht kopieren</value>
   </data>
-  <data name="AIAssistant_ConnectionTest_Failure" xml:space="preserve">
-    <value>Verbindung mit {0} fehlgeschlagen. Überprüfen Sie API-Schlüssel und Einstellungen.</value>
+  <data name="AIAssistant_ConnectionTest_Title" xml:space="preserve">
+    <value>Verbindungstest</value>
   </data>
-  <data name="AIAssistant_Error_Timeout" xml:space="preserve">
-    <value>Verbindungstest nach 10 Sekunden abgelaufen.</value>
+  <data name="AIAssistant_ConnectionTest_Testing" xml:space="preserve">
+    <value>Teste läuft...</value>
   </data>
-  <data name="AIAssistant_Error_NetworkError" xml:space="preserve">
-    <value>Netzwerkfehler: {0}</value>
+  <data name="AIAssistant_Error_ProviderNotRegistered" xml:space="preserve">
+    <value>Anbieter '{0}' ist nicht registriert.</value>
   </data>
-  <data name="AIAssistant_Error_Generic" xml:space="preserve">
-    <value>Fehler: {0}</value>
+  <data name="AIAssistant_ConnectionTest_Success" xml:space="preserve">
+    <value>Verbindung mit {0} erfolgreich!</value>
   </data>
-  <data name="AIAssistant_EnableThinking" xml:space="preserve">
-    <value>Denken aktivieren (nur Anthropic)</value>
+  <data name="AIAssistant_ConnectionTest_Failure" xml:space="preserve">
+    <value>Verbindung mit {0} fehlgeschlagen. Überprüfen Sie API-Schlüssel und Einstellungen.</value>
   </data>
-  <data name="AIAssistant_Copied" xml:space="preserve">
-    <value>Kopiert!</value>
+  <data name="AIAssistant_Error_Timeout" xml:space="preserve">
+    <value>Verbindungstest nach 10 Sekunden abgelaufen.</value>
   </data>
-  <data name="AIAssistant_CopyCode" xml:space="preserve">
-    <value>Code kopieren</value>
+  <data name="AIAssistant_Error_NetworkError" xml:space="preserve">
+    <value>Netzwerkfehler: {0}</value>
   </data>
-  <data name="AIAssistant_Testing" xml:space="preserve">
-    <value>Testen...</value>
+  <data name="AIAssistant_Error_Generic" xml:space="preserve">
+    <value>Fehler: {0}</value>
   </data>
-  <data name="AIAssistant_Connected" xml:space="preserve">
-    <value>Verbunden</value>
+  <data name="AIAssistant_EnableThinking" xml:space="preserve">
+    <value>Denken aktivieren (nur Anthropic)</value>
   </data>
-  <data name="AIAssistant_ConnectionFailed" xml:space="preserve">
-    <value>Verbindung fehlgeschlagen</value>
+  <data name="AIAssistant_Copied" xml:space="preserve">
+    <value>Kopiert!</value>
   </data>
-  <data name="AIAssistant_PluginName" xml:space="preserve">
-    <value>KI-Assistent</value>
+  <data name="AIAssistant_CopyCode" xml:space="preserve">
+    <value>Code kopieren</value>
   </data>
-  <data name="AIAssistant_RenameConversation" xml:space="preserve">
-    <value>Unterhaltung umbenennen</value>
+  <data name="AIAssistant_Testing" xml:space="preserve">
+    <value>Testen...</value>
+  </data>
+  <data name="AIAssistant_Connected" xml:space="preserve">
+    <value>Verbunden</value>
+  </data>
+  <data name="AIAssistant_ConnectionFailed" xml:space="preserve">
+    <value>Verbindung fehlgeschlagen</value>
+  </data>
+  <data name="AIAssistant_PluginName" xml:space="preserve">
+    <value>KI-Assistent</value>
+  </data>
+  <data name="AIAssistant_RenameConversation" xml:space="preserve">
+    <value>Unterhaltung umbenennen</value>
   </data>
 </root>

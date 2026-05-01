@@ -632,4 +632,13 @@
   <data name="StructureEd_ConditionRow_LengthLabel" xml:space="preserve">
     <value>Length:</value>
   </data>
+  <data name="SE_ColOffset" xml:space="preserve">
+    <value>Offset</value>
+  </data>
+  <data name="SE_ColStrength" xml:space="preserve">
+    <value>Strength</value>
+  </data>
+  <data name="SE_ColRequired" xml:space="preserve">
+    <value>Required</value>
+  </data>
 </root>

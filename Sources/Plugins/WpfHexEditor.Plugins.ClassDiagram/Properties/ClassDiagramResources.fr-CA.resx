@@ -5,7 +5,7 @@
     Contributors: Claude Sonnet 4.6
     Project     : WpfHexEditor.Plugins.ClassDiagram
     File        : ClassDiagramResources.fr-CA.resx
-    Description : French-Canadian (fr-CA) translations for the Class Diagram plugin.
+    Description : Localized UI strings for the Class Diagram plugin.
 -->
 <root>
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
@@ -18,13 +18,12 @@
               <xsd:sequence>
                 <xsd:any minOccurs="0" />
               </xsd:sequence>
-              <xsd:attribute name="name" use="required" />
-              <xsd:attribute name="type" />
             </xsd:complexType>
           </xsd:element>
-          <xsd:element name="value">
+          <xsd:element name="assembly">
             <xsd:complexType>
-              <xsd:any minOccurs="0" maxOccurs="unbounded" />
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="data">
@@ -63,6 +62,15 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="CD_PxUnit" xml:space="preserve">
+    <value>px</value>
+  </data>
+  <data name="CD_ParseHintFile" xml:space="preserve">
+    <value>Contrôle la façon dont les fichiers source C# sont analysés lors de l'utilisation de "Afficher le diagramme de classes" ou "Générer le diagramme de classes pour le projet" depuis l'Explorateur de solutions.</value>
+  </data>
+  <data name="CD_SolutionHint" xml:space="preserve">
+    <value>Contrôle le comportement de "Générer le diagramme de classes pour la solution". Le diagramme généré regroupe les types par projet avec des couloirs par projet et persiste son état dans un fichier jumeau .whscd à côté de la solution.</value>
+  </data>
   <data name="ClassDiagram_PluginName" xml:space="preserve">
     <value>Diagramme de classes</value>
   </data>
@@ -102,5 +110,4 @@
   <data name="ClassDiagram_ExportMetricsCSV" xml:space="preserve">
     <value>Exporter les métriques CSV</value>
   </data>
-
 </root>

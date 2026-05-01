@@ -685,7 +685,6 @@ public class DockTabHeader : StackPanel
     private bool _isReordering;
     // Increased from 20 to 40 px to reduce accidental undock on small mouse jitter (VS-like feel).
     private const double FloatThresholdY    = 40.0;
-    private const double FloatThresholdTool = 40.0;
 
     public event Action? CloseClicked;
     public event Action? DragStarted;
@@ -1188,52 +1187,38 @@ public class DockTabHeader : StackPanel
         // from its PresentationSource (HWND) during a drag/float transition.
         if (PresentationSource.FromVisual(this) is null) return;
 
-        if (_item.Owner is DocumentHostNode)
+        if (_isDragging) return;
+
+        var diff = e.GetPosition(this) - _dragStartPoint;
+
+        // Float takes priority: a large vertical move cancels any pending reorder and floats the tab.
+        // Checking this BEFORE _isReordering prevents the reorder state from permanently blocking float.
+        // Applies uniformly to document tabs and docked (tool-panel) tabs — see ADR-008.
+        if (Math.Abs(diff.Y) > FloatThresholdY)
         {
-            if (_isDragging) return;
-
-            var diff = e.GetPosition(this) - _dragStartPoint;
-
-            // Float takes priority: a large vertical move cancels any pending reorder and floats the tab.
-            // Checking this BEFORE _isReordering prevents the reorder state from permanently blocking float.
-            if (Math.Abs(diff.Y) > FloatThresholdY)
-            {
-                var wasReordering = _isReordering;
-                _isReordering = false;
-                _isDragging   = true;
-                ReleaseMouseCapture();
-                // Clean up the reorder ghost/adorner before starting the float.
-                // Without this, the Popup stays IsOpen=true and gets orphaned by RebuildVisualTree().
-                if (wasReordering)
-                    ReorderCancelled?.Invoke();
-                DragStarted?.Invoke();
-                return;
-            }
-
-            // Reorder: horizontal drag within the document tab strip.
-            if (_isReordering)
-            {
-                // Pass true screen coordinates for consistent hit-testing in DockTabControl
-                ReorderDragging?.Invoke(PointToScreen(e.GetPosition(this)));
-                return;
-            }
-            if (Math.Abs(diff.X) > SystemParameters.MinimumHorizontalDragDistance)
-            {
-                _isReordering = true;
-                ReorderDragging?.Invoke(PointToScreen(e.GetPosition(this)));
-            }
+            var wasReordering = _isReordering;
+            _isReordering = false;
+            _isDragging   = true;
+            ReleaseMouseCapture();
+            // Clean up the reorder ghost/adorner before starting the float.
+            // Without this, the Popup stays IsOpen=true and gets orphaned by RebuildVisualTree().
+            if (wasReordering)
+                ReorderCancelled?.Invoke();
+            DragStarted?.Invoke();
+            return;
         }
-        else
+
+        // Reorder: horizontal drag within the same tab strip (document or docked).
+        if (_isReordering)
         {
-            if (_isDragging) return;
-            var diff = e.GetPosition(this) - _dragStartPoint;
-            if (Math.Abs(diff.X) > FloatThresholdTool ||
-                Math.Abs(diff.Y) > FloatThresholdTool)
-            {
-                _isDragging = true;
-                ReleaseMouseCapture();
-                DragStarted?.Invoke();
-            }
+            // Pass true screen coordinates for consistent hit-testing in DockTabControl
+            ReorderDragging?.Invoke(PointToScreen(e.GetPosition(this)));
+            return;
+        }
+        if (Math.Abs(diff.X) > SystemParameters.MinimumHorizontalDragDistance)
+        {
+            _isReordering = true;
+            ReorderDragging?.Invoke(PointToScreen(e.GetPosition(this)));
         }
     }
 

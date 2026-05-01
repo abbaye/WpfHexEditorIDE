@@ -336,4 +336,16 @@
   <data name="AIAssistant_Dismiss" xml:space="preserve">
     <value>Dismiss</value>
   </data>
+  <data name="AI_ConversationHistory" xml:space="preserve">
+    <value>Conversation History</value>
+  </data>
+  <data name="AI_ClearAll" xml:space="preserve">
+    <value>Clear all</value>
+  </data>
+  <data name="AI_SearchConversations" xml:space="preserve">
+    <value>Search conversations...</value>
+  </data>
+  <data name="AI_CopyMessage" xml:space="preserve">
+    <value>Copy message</value>
+  </data>
 </root>

@@ -1,55 +1,125 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfHexEditor.Plugins.AIAssistant
+    File        : AIAssistantResources.hi-IN.resx
+    Description : Localized UI strings for the AI Assistant plugin.
+-->
 <root>
-  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
-  <resheader name="version"><value>2.0</value></resheader>
-  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  <data name="AIAssistant_ConnectionTest_Title" xml:space="preserve">
-    <value>कनेक्शन परीक्षण</value>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:any minOccurs="0" />
+              </xsd:sequence>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AI_ConversationHistory" xml:space="preserve">
+    <value>बातचीत इतिहास</value>
   </data>
-  <data name="AIAssistant_ConnectionTest_Testing" xml:space="preserve">
-    <value>परीक्षण हो रहा है...</value>
+  <data name="AI_ClearAll" xml:space="preserve">
+    <value>सब साफ़ करें</value>
   </data>
-  <data name="AIAssistant_Error_ProviderNotRegistered" xml:space="preserve">
-    <value>प्रदाता '{0}' पंजीकृत नहीं है।</value>
+  <data name="AI_SearchConversations" xml:space="preserve">
+    <value>बातचीत खोजें...</value>
   </data>
-  <data name="AIAssistant_ConnectionTest_Success" xml:space="preserve">
-    <value>{ 0} से कनेक्शन सफल!</value>
+  <data name="AI_CopyMessage" xml:space="preserve">
+    <value>संदेश कॉपी करें</value>
   </data>
-  <data name="AIAssistant_ConnectionTest_Failure" xml:space="preserve">
-    <value>{ 0} से कनेक्शन विफल। अपनी API कुंजी और सेटिंग जांचें।</value>
+  <data name="AIAssistant_ConnectionTest_Title" xml:space="preserve">
+    <value>कनेक्शन परीक्षण</value>
   </data>
-  <data name="AIAssistant_Error_Timeout" xml:space="preserve">
-    <value>कनेक्शन परीक्षण 10 सेकंड बाद समय समाप्त हो गया।</value>
+  <data name="AIAssistant_ConnectionTest_Testing" xml:space="preserve">
+    <value>परीक्षण हो रहा है...</value>
   </data>
-  <data name="AIAssistant_Error_NetworkError" xml:space="preserve">
-    <value>नेटवर्क त्रुटि: {0}</value>
+  <data name="AIAssistant_Error_ProviderNotRegistered" xml:space="preserve">
+    <value>प्रदाता '{0}' पंजीकृत नहीं है।</value>
   </data>
-  <data name="AIAssistant_Error_Generic" xml:space="preserve">
-    <value>त्रुटि: {0}</value>
+  <data name="AIAssistant_ConnectionTest_Success" xml:space="preserve">
+    <value>{ 0} से कनेक्शन सफल!</value>
   </data>
-  <data name="AIAssistant_EnableThinking" xml:space="preserve">
-    <value>थिंकिंग सक्षम करें (केवल Anthropic)</value>
+  <data name="AIAssistant_ConnectionTest_Failure" xml:space="preserve">
+    <value>{ 0} से कनेक्शन विफल। अपनी API कुंजी और सेटिंग जांचें।</value>
   </data>
-  <data name="AIAssistant_Copied" xml:space="preserve">
-    <value>कॉपी हो गया!</value>
+  <data name="AIAssistant_Error_Timeout" xml:space="preserve">
+    <value>कनेक्शन परीक्षण 10 सेकंड बाद समय समाप्त हो गया।</value>
   </data>
-  <data name="AIAssistant_CopyCode" xml:space="preserve">
-    <value>कोड कॉपी करें</value>
+  <data name="AIAssistant_Error_NetworkError" xml:space="preserve">
+    <value>नेटवर्क त्रुटि: {0}</value>
   </data>
-  <data name="AIAssistant_Testing" xml:space="preserve">
-    <value>परीक्षण...</value>
+  <data name="AIAssistant_Error_Generic" xml:space="preserve">
+    <value>त्रुटि: {0}</value>
   </data>
-  <data name="AIAssistant_Connected" xml:space="preserve">
-    <value>कनेक्ट</value>
+  <data name="AIAssistant_EnableThinking" xml:space="preserve">
+    <value>थिंकिंग सक्षम करें (केवल Anthropic)</value>
   </data>
-  <data name="AIAssistant_ConnectionFailed" xml:space="preserve">
-    <value>कनेक्शन विफल</value>
+  <data name="AIAssistant_Copied" xml:space="preserve">
+    <value>कॉपी हो गया!</value>
   </data>
-  <data name="AIAssistant_PluginName" xml:space="preserve">
-    <value>AI सहायक</value>
+  <data name="AIAssistant_CopyCode" xml:space="preserve">
+    <value>कोड कॉपी करें</value>
   </data>
-  <data name="AIAssistant_RenameConversation" xml:space="preserve">
-    <value>बातचीत का नाम बदलें</value>
+  <data name="AIAssistant_Testing" xml:space="preserve">
+    <value>परीक्षण...</value>
+  </data>
+  <data name="AIAssistant_Connected" xml:space="preserve">
+    <value>कनेक्ट</value>
+  </data>
+  <data name="AIAssistant_ConnectionFailed" xml:space="preserve">
+    <value>कनेक्शन विफल</value>
+  </data>
+  <data name="AIAssistant_PluginName" xml:space="preserve">
+    <value>AI सहायक</value>
+  </data>
+  <data name="AIAssistant_RenameConversation" xml:space="preserve">
+    <value>बातचीत का नाम बदलें</value>
   </data>
 </root>
