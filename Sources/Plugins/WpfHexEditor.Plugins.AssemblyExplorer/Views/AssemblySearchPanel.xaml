@@ -105,7 +105,7 @@
                                   IsChecked="{Binding IncludeMembers}"
                                   Background="Transparent"
                                   Foreground="{DynamicResource PFP_TextBrush}"
-                                  BorderBrush="{DynamicResource DockBorderBrush}" Content="{DynamicResource AsmExplorer_IncludeMembers}">
+                                  BorderBrush="{DynamicResource DockBorderBrush}" ToolTip="{DynamicResource AsmExplorer_IncludeMembers}">
                         <TextBlock Text="{DynamicResource AsmExplorer_MembersLabel}" FontSize="10"/>
                     </ToggleButton>
 
@@ -115,7 +115,7 @@
                             Command="{Binding SearchCommand}"
                             Background="{DynamicResource PFP_SectionBackgroundBrush}"
                             Foreground="{DynamicResource PFP_TextBrush}"
-                            BorderBrush="{DynamicResource DockBorderBrush}" Content="{DynamicResource AsmExplorer_RunSearch}">
+                            BorderBrush="{DynamicResource DockBorderBrush}" ToolTip="{DynamicResource AsmExplorer_RunSearch}">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="&#xE721;" FontFamily="Segoe MDL2 Assets" FontSize="10" Margin="0,0,3,0"/>
                             <TextBlock Text="{DynamicResource AsmExplorer_SearchButton}" FontSize="10"/>
@@ -128,7 +128,7 @@
                             Command="{Binding ClearCommand}"
                             Background="Transparent"
                             Foreground="{DynamicResource PFP_TextBrush}"
-                            BorderBrush="Transparent" Content="{DynamicResource AsmExplorer_ClearResults}">
+                            BorderBrush="Transparent" ToolTip="{DynamicResource AsmExplorer_ClearResults}">
                         <TextBlock Text="&#xE894;" FontFamily="Segoe MDL2 Assets" FontSize="10"/>
                     </Button>
                 </StackPanel>

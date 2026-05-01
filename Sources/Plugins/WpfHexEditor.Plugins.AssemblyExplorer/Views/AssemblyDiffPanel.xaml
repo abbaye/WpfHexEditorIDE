@@ -120,14 +120,14 @@
                               SelectedItem="{Binding FilterKind}"
                               Background="{DynamicResource PFP_SectionBackgroundBrush}"
                               Foreground="{DynamicResource PFP_TextBrush}"
-                              BorderBrush="{DynamicResource DockBorderBrush}" Content="{DynamicResource AsmExplorer_FilterByChange}"/>
+                              BorderBrush="{DynamicResource DockBorderBrush}" ToolTip="{DynamicResource AsmExplorer_FilterByChange}"/>
 
                     <!-- Compare button -->
                     <Button Margin="0,1,4,1" Padding="8,1"
                             Command="{Binding CompareCommand}"
                             Background="{DynamicResource PFP_SectionBackgroundBrush}"
                             Foreground="{DynamicResource PFP_TextBrush}"
-                            BorderBrush="{DynamicResource DockBorderBrush}" Content="{DynamicResource AsmExplorer_RunDiff}">
+                            BorderBrush="{DynamicResource DockBorderBrush}" ToolTip="{DynamicResource AsmExplorer_RunDiff}">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="&#xE8AD;" FontFamily="Segoe MDL2 Assets" FontSize="10" Margin="0,0,3,0"/>
                             <TextBlock Text="{DynamicResource AsmExplorer_CompareButton}" FontSize="10"/>
@@ -139,7 +139,7 @@
                             Command="{Binding ClearCommand}"
                             Background="Transparent"
                             Foreground="{DynamicResource PFP_TextBrush}"
-                            BorderBrush="Transparent" Content="{DynamicResource AsmExplorer_ClearResultsDiff}">
+                            BorderBrush="Transparent" ToolTip="{DynamicResource AsmExplorer_ClearResultsDiff}">
                         <TextBlock Text="&#xE894;" FontFamily="Segoe MDL2 Assets" FontSize="10"/>
                     </Button>
                 </StackPanel>

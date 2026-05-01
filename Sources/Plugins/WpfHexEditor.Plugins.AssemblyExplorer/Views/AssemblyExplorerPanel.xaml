@@ -101,7 +101,7 @@
                             Style="{StaticResource PanelIconButtonStyle}"
                             Content="&#xE8F4;"
                             FontFamily="Segoe MDL2 Assets"
-                            Width="22" Height="22" Content="{DynamicResource AsmExplorer_OpenInCodeEditor}"
+                            Width="22" Height="22" ToolTip="{DynamicResource AsmExplorer_OpenInCodeEditor}"
                             Command="{Binding OpenInEditorCommand}"/>
                 </StackPanel>
 
@@ -140,7 +140,7 @@
                                   Content="&#xE8CB;"
                                   FontFamily="Segoe MDL2 Assets"
                                   Width="22" Height="22"
-                                  IsChecked="{Binding SortAlphabetical}" Content="{DynamicResource AsmExplorer_SortAlpha}"/>
+                                  IsChecked="{Binding SortAlphabetical}" ToolTip="{DynamicResource AsmExplorer_SortAlpha}"/>
                 </StackPanel>
 
                 <!-- TbgSync [3] — sync with HexEditor toggle -->
@@ -153,7 +153,7 @@
                                   Content="&#xE8AB;"
                                   FontFamily="Segoe MDL2 Assets"
                                   Width="22" Height="22"
-                                  IsChecked="{Binding SyncWithHexEditor}" Content="{DynamicResource AsmExplorer_SyncHexEditor}"/>
+                                  IsChecked="{Binding SyncWithHexEditor}" ToolTip="{DynamicResource AsmExplorer_SyncHexEditor}"/>
                 </StackPanel>
 
                 <!-- TbgExpandCollapse [4] — expand / collapse all -->
@@ -165,12 +165,12 @@
                             Content="&#xE8A9;"
                             FontFamily="Segoe MDL2 Assets"
                             Width="22" Height="22"
-                            Command="{Binding ExpandAllCommand}" Content="{DynamicResource AsmExplorer_ExpandAll}"/>
+                            Command="{Binding ExpandAllCommand}" ToolTip="{DynamicResource AsmExplorer_ExpandAll}"/>
                     <Button Style="{StaticResource PanelIconButtonStyle}"
                             Content="&#xE8AA;"
                             FontFamily="Segoe MDL2 Assets"
                             Width="22" Height="22"
-                            Command="{Binding CollapseAllCommand}" Content="{DynamicResource AsmExplorer_CollapseAllPanel}"/>
+                            Command="{Binding CollapseAllCommand}" ToolTip="{DynamicResource AsmExplorer_CollapseAllPanel}"/>
                 </StackPanel>
 
                 <!-- TbgFilter [5] — last to collapse: filter TextBox -->
