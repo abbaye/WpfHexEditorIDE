@@ -189,11 +189,12 @@
                                         <Setter.Value>
                                             <VisualBrush Stretch="None" AlignmentX="Left" AlignmentY="Center">
                                                 <VisualBrush.Visual>
-                                                    <TextBlock Text="&#xE71E;  Search references…"
-                                                               Foreground="{DynamicResource DockMenuForegroundBrush}"
+                                                    <TextBlock Foreground="{DynamicResource DockMenuForegroundBrush}"
                                                                Opacity="0.4"
                                                                FontFamily="Segoe MDL2 Assets, Segoe UI"
-                                                               Margin="6,0,0,0"/>
+                                                               Margin="6,0,0,0">
+                                                        <Run Text="&#xE71E;  "/><Run Text="{DynamicResource PS_SearchReferences}"/>
+                                                    </TextBlock>
                                                 </VisualBrush.Visual>
                                             </VisualBrush>
                                         </Setter.Value>

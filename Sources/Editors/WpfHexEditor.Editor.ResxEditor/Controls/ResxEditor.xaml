@@ -16,6 +16,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:WpfHexEditor.Editor.ResxEditor.Controls"
              xmlns:vm="clr-namespace:WpfHexEditor.Editor.ResxEditor.ViewModels"
+             xmlns:reSvc="clr-namespace:WpfHexEditor.Editor.ResxEditor.Services;assembly=WpfHexEditor.Editor.ResxEditor"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800"
              Background="{DynamicResource RES_BackgroundBrush}"
@@ -23,6 +24,10 @@
              KeyDown="UserControl_KeyDown">
 
     <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <reSvc:ResxEditorLocalizedDictionary/>
+            </ResourceDictionary.MergedDictionaries>
         <BooleanToVisibilityConverter x:Key="BoolToVis"/>
 
         <!-- DataGrid column header style -->
@@ -156,7 +161,7 @@
             ImageTemplate="{StaticResource ImageCellTemplate}"
             BinaryTemplate="{StaticResource BinaryCellTemplate}"
             FileRefTemplate="{StaticResource FileRefCellTemplate}"/>
-
+        </ResourceDictionary>
     </UserControl.Resources>
 
     <Grid>
@@ -193,13 +198,13 @@
             <DataGrid.Columns>
 
                 <!-- Key (Name) column -->
-                <DataGridTextColumn Header="Name"
+                <DataGridTextColumn Header="{DynamicResource ResxEditor_ColName}"
                                     Binding="{Binding Name, UpdateSourceTrigger=LostFocus}"
                                     Width="200"
                                     MinWidth="80"/>
 
                 <!-- Type badge column (read-only) -->
-                <DataGridTemplateColumn Header="Type" Width="80" MinWidth="60" IsReadOnly="True">
+                <DataGridTemplateColumn Header="{DynamicResource ResxEditor_ColType}" Width="80" MinWidth="60" IsReadOnly="True">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Border Style="{StaticResource TypeBadgeStyle}"
@@ -214,13 +219,13 @@
                 </DataGridTemplateColumn>
 
                 <!-- Value column — type-aware template -->
-                <DataGridTemplateColumn Header="Value"
+                <DataGridTemplateColumn Header="{DynamicResource ResxEditor_ColValue}"
                                         Width="2*" MinWidth="120"
                                         CellTemplateSelector="{StaticResource CellSelector}">
                 </DataGridTemplateColumn>
 
                 <!-- Comment column — inline editable -->
-                <DataGridTemplateColumn Header="Comment"
+                <DataGridTemplateColumn Header="{DynamicResource ResxEditor_ColComment}"
                                         Width="*" MinWidth="80">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
