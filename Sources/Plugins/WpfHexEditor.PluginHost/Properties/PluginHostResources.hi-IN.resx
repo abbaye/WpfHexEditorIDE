@@ -583,4 +583,11 @@ or use Install to add a .whxplugin</value>
   <data name="PH_InstallFile" xml:space="preserve"><value>फ़ाइल इंस्टॉल करें…</value></data>
   <data name="PH_UpdatesAvailable" xml:space="preserve"><value>अपडेट उपलब्ध है</value></data>
   <data name="PH_ColEventType" xml:space="preserve"><value>इवेंट प्रकार</value></data>
+  <data name="PH_SettingsSaved" xml:space="preserve"><value>&#xE73E; सेटिंग्स सहेजी गईं।</value></data>
+  <data name="PH_SearchMarketplaceWithIcon" xml:space="preserve"><value>&#xE721;  मार्केटप्लेस खोजें…</value></data>
+  <data name="PH_LoadNow" xml:space="preserve"><value>&#xE768; अभी लोड करें</value></data>
+  <data name="PH_Suspend" xml:space="preserve"><value>&#xE769; निलंबित करें</value></data>
+  <data name="PH_Sandbox" xml:space="preserve"><value>&#xE72A; सैंडबॉक्स</value></data>
+  <data name="PH_Refresh" xml:space="preserve"><value>&#xE72C; ताज़ा करें</value></data>
+  <data name="PH_ClearLog" xml:space="preserve"><value>&#xE74D; लॉग साफ़ करें</value></data>
 </root>

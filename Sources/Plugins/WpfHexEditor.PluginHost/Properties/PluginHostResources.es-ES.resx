@@ -583,4 +583,11 @@ or use Install to add a .whxplugin</value>
   <data name="PH_InstallFile" xml:space="preserve"><value>Instalar archivo…</value></data>
   <data name="PH_UpdatesAvailable" xml:space="preserve"><value>actualización(es) disponible(s)</value></data>
   <data name="PH_ColEventType" xml:space="preserve"><value>Tipo de evento</value></data>
+  <data name="PH_SettingsSaved" xml:space="preserve"><value>&#xE73E; Configuración guardada.</value></data>
+  <data name="PH_SearchMarketplaceWithIcon" xml:space="preserve"><value>&#xE721;  Buscar en el marketplace…</value></data>
+  <data name="PH_LoadNow" xml:space="preserve"><value>&#xE768; Cargar ahora</value></data>
+  <data name="PH_Suspend" xml:space="preserve"><value>&#xE769; Suspender</value></data>
+  <data name="PH_Sandbox" xml:space="preserve"><value>&#xE72A; Aislamiento</value></data>
+  <data name="PH_Refresh" xml:space="preserve"><value>&#xE72C; Actualizar</value></data>
+  <data name="PH_ClearLog" xml:space="preserve"><value>&#xE74D; Borrar registro</value></data>
 </root>

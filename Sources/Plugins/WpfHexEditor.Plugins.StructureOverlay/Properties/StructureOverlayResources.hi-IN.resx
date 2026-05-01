@@ -20,4 +20,5 @@
     <value>सभी संरचना ओवरले हटाएं?</value>
   </data>
   <data name="SO_OffsetLabel" xml:space="preserve"><value>ऑफ़सेट:</value></data>
+  <data name="SO_LengthLabel" xml:space="preserve"><value>लंबाई:</value></data>
 </root>

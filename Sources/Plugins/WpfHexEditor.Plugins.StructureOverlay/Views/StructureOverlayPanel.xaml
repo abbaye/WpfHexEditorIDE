@@ -42,9 +42,11 @@
                     <TextBlock FontSize="10" Foreground="{DynamicResource PFP_SubTextBrush}">
                         <Run Text="{DynamicResource StructureOverlay_FormatLabel}"/>
                         <Run Text="{Binding FormatType, Mode=OneWay}"/>
-                        <Run Text=" | Offset:"/>
+                        <Run Text=" | "/>
+                        <Run Text="{DynamicResource SO_OffsetLabel}"/>
                         <Run Text="{Binding StartOffset, Mode=OneWay, StringFormat='{}{0:X}'}"/>
-                        <Run Text=" | Length:"/>
+                        <Run Text=" | "/>
+                        <Run Text="{DynamicResource SO_LengthLabel}"/>
                         <Run Text="{Binding TotalLength, Mode=OneWay}"/>
                     </TextBlock>
                 </StackPanel>
@@ -101,7 +103,8 @@
                         <TextBlock FontSize="9" Foreground="{DynamicResource PFP_SubTextBrush}">
                             <Run Text="{DynamicResource SO_OffsetLabel}"/>
                             <Run Text="{Binding Offset, Mode=OneWay, StringFormat='{}{0:X}'}"/>
-                            <Run Text=" | Length:"/>
+                            <Run Text=" | "/>
+                            <Run Text="{DynamicResource SO_LengthLabel}"/>
                             <Run Text="{Binding Length, Mode=OneWay}"/>
                         </TextBlock>
 

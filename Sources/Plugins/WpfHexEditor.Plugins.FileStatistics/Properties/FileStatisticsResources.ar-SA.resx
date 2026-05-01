@@ -103,4 +103,5 @@
   <data name="FS_HealthStatusDefault" xml:space="preserve"><value>بنية الملف صالحة وسليمة</value></data>
   <data name="FS_EntropyDescDefault" xml:space="preserve"><value>بيانات مضغوطة أو مشفرة على الأرجح</value></data>
   <data name="FS_TipMoreOptions" xml:space="preserve"><value>خيارات إضافية</value></data>
+  <data name="FS_NoIssuesDetected" xml:space="preserve"><value>&#x2705; لم يتم اكتشاف أي مشكلات</value></data>
 </root>

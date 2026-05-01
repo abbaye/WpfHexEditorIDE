@@ -20,4 +20,5 @@
     <value>Alle Strukturüberlagerungen entfernen?</value>
   </data>
   <data name="SO_OffsetLabel" xml:space="preserve"><value>Offset:</value></data>
+  <data name="SO_LengthLabel" xml:space="preserve"><value>Länge:</value></data>
 </root>

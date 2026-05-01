@@ -137,7 +137,7 @@
                                      BorderBrush="{DynamicResource DockBorderBrush}"
                                      CaretBrush="{DynamicResource DockMenuForegroundBrush}"
                                      Padding="4,0"/>
-                            <TextBlock Text="&#xE721;  Search marketplace…"
+                            <TextBlock Text="{DynamicResource PH_SearchMarketplaceWithIcon}"
                                        FontFamily="Segoe MDL2 Assets"
                                        Foreground="{DynamicResource DockMenuForegroundBrush}"
                                        Opacity="0.45" Margin="8,0,0,0"

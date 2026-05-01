@@ -43,4 +43,6 @@
   <data name="PatternAnalysis_NoData" xml:space="preserve">
     <value>无数据可分析。请在十六进制编辑器中选择范围。</value>
   </data>
+  <data name="PA_Anomalies" xml:space="preserve"><value>&#x26A0;&#xFE0F; 异常</value></data>
+  <data name="PA_NoAnomalies" xml:space="preserve"><value>&#x2705; 未检测到异常</value></data>
 </root>

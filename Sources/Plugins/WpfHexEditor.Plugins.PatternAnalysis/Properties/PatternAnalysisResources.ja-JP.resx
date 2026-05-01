@@ -43,4 +43,6 @@
   <data name="PatternAnalysis_NoData" xml:space="preserve">
     <value>分析するデータがありません。hex エディターで範囲を選択してください。</value>
   </data>
+  <data name="PA_Anomalies" xml:space="preserve"><value>&#x26A0;&#xFE0F; 異常</value></data>
+  <data name="PA_NoAnomalies" xml:space="preserve"><value>&#x2705; 異常は検出されませんでした</value></data>
 </root>

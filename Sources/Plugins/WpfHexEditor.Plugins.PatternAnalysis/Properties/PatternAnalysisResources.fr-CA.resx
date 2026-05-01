@@ -102,4 +102,6 @@
   <data name="PatternAnalysis_NoData" xml:space="preserve">
     <value>Aucune donn&#233;e &#224; analyser. S&#233;lectionnez une plage dans l&#39;&#233;diteur hexad&#233;cimal</value>
   </data>
+  <data name="PA_Anomalies" xml:space="preserve"><value>&#x26A0;&#xFE0F; Anomalies</value></data>
+  <data name="PA_NoAnomalies" xml:space="preserve"><value>&#x2705; Aucune anomalie détectée</value></data>
 </root>

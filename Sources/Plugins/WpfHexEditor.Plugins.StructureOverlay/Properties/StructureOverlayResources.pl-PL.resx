@@ -20,4 +20,5 @@
     <value>Usunąć wszystkie nakładki struktury?</value>
   </data>
   <data name="SO_OffsetLabel" xml:space="preserve"><value>Offset:</value></data>
+  <data name="SO_LengthLabel" xml:space="preserve"><value>Długość:</value></data>
 </root>

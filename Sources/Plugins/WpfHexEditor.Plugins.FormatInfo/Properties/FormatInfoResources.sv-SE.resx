@@ -85,4 +85,5 @@
   <data name="FI_OpenFileHint" xml:space="preserve">
     <value>Open a file to view format information</value>
   </data>
+  <data name="FI_OffsetLabel" xml:space="preserve"><value>Förskjutning:</value></data>
 </root>

@@ -804,7 +804,7 @@
                         Padding="8,6"
                         Visibility="{Binding FormatInfo.HasForensicAlerts, Converter={StaticResource BoolToVisibilityConverter}}">
                     <StackPanel>
-                        <TextBlock Text="&#xE7BA;  Forensic Alerts"
+                        <TextBlock Text="{DynamicResource PF_ForensicAlerts}"
                                    FontSize="10" FontWeight="SemiBold"
                                    Foreground="{DynamicResource WF_ForensicAlertBrush}"
                                    Margin="0,0,0,4"/>

@@ -489,7 +489,7 @@
                                            FontWeight="SemiBold" Foreground="White"/>
                             </Border>
                             <!-- Load Now: visible only for Dormant/Standby plugins -->
-                            <Button Content="&#xE768; Load Now"
+                            <Button Content="{DynamicResource PH_LoadNow}"
                                     Command="{Binding LoadNowCommand}"
                                     Visibility="{Binding IsDormant, Converter={StaticResource BoolToVis}}"
                                     Style="{DynamicResource PM_ActionButtonStyle}"
@@ -497,14 +497,14 @@
                                     Margin="0,0,0,4" Padding="8,3" FontSize="11"
                                     ToolTip="{DynamicResource PH_ActivateNowTooltip}"/>
                             <!-- Suspend: visible for Loaded lazy-load plugins (onStartup=false) -->
-                            <Button Content="&#xE769; Suspend"
+                            <Button Content="{DynamicResource PH_Suspend}"
                                     Command="{Binding SuspendCommand}"
                                     Style="{DynamicResource PM_ActionButtonStyle}"
                                     HorizontalAlignment="Right"
                                     Margin="0,0,0,4" Padding="8,3" FontSize="11"
                                     ToolTip="{DynamicResource PH_DeactivateTooltip}"/>
                             <!-- Move to Sandbox: visible only for InProcess + Loaded plugins -->
-                            <Button Content="&#xE72A; Sandbox"
+                            <Button Content="{DynamicResource PH_Sandbox}"
                                     Command="{Binding MigrateToSandboxCommand}"
                                     Visibility="{Binding CanMigrateToSandbox, Converter={StaticResource BoolToVis}}"
                                     Style="{DynamicResource PM_ActionButtonStyle}"

@@ -583,4 +583,11 @@ or use Install to add a .whxplugin</value>
   <data name="PH_InstallFile" xml:space="preserve"><value>Bestand installeren…</value></data>
   <data name="PH_UpdatesAvailable" xml:space="preserve"><value>update(s) beschikbaar</value></data>
   <data name="PH_ColEventType" xml:space="preserve"><value>Gebeurtenistype</value></data>
+  <data name="PH_SettingsSaved" xml:space="preserve"><value>&#xE73E; Instellingen opgeslagen.</value></data>
+  <data name="PH_SearchMarketplaceWithIcon" xml:space="preserve"><value>&#xE721;  Marktplaats doorzoeken…</value></data>
+  <data name="PH_LoadNow" xml:space="preserve"><value>&#xE768; Nu laden</value></data>
+  <data name="PH_Suspend" xml:space="preserve"><value>&#xE769; Onderbreken</value></data>
+  <data name="PH_Sandbox" xml:space="preserve"><value>&#xE72A; Sandbox</value></data>
+  <data name="PH_Refresh" xml:space="preserve"><value>&#xE72C; Vernieuwen</value></data>
+  <data name="PH_ClearLog" xml:space="preserve"><value>&#xE74D; Log wissen</value></data>
 </root>

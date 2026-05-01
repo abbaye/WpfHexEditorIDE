@@ -20,4 +20,5 @@
     <value>Tum yapi kaplamalarini kaldir?</value>
   </data>
   <data name="SO_OffsetLabel" xml:space="preserve"><value>Ofset:</value></data>
+  <data name="SO_LengthLabel" xml:space="preserve"><value>Uzunluk:</value></data>
 </root>

@@ -388,4 +388,7 @@ Open a file to see its structure.</value>
   <data name="PF_ActionsButton" xml:space="preserve">
     <value>Actions ▾</value>
   </data>
+  <data name="PF_ForensicAlerts" xml:space="preserve">
+    <value>&#xE7BA;  Forensic Alerts</value>
+  </data>
 </root>

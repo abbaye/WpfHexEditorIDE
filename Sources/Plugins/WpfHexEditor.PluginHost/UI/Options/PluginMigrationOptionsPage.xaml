@@ -194,7 +194,7 @@
 
             <!-- Save confirmation message -->
             <TextBlock x:Name="SavedMessage"
-                       Text="&#xE73E; Settings saved." FontSize="11"
+                       Text="{DynamicResource PH_SettingsSaved}" FontSize="11"
                        Foreground="{DynamicResource DockAccentBrush}"
                        Visibility="Collapsed" Margin="0,8,0,0"/>
 

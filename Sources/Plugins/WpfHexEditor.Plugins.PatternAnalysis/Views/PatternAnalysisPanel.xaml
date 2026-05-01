@@ -233,7 +233,7 @@
                 <!-- Anomalies Card -->
                 <Border Style="{StaticResource CardStyle}" x:Name="AnomaliesCard" Visibility="Collapsed">
                     <StackPanel>
-                        <TextBlock Text="&#x26A0;&#xFE0F; Anomalies" Style="{StaticResource SectionHeaderStyle}" Margin="0,0,0,8"/>
+                        <TextBlock Text="{DynamicResource PA_Anomalies}" Style="{StaticResource SectionHeaderStyle}" Margin="0,0,0,8"/>
 
                         <ItemsControl x:Name="AnomaliesListBox">
                             <ItemsControl.ItemTemplate>
@@ -256,7 +256,7 @@
                         </ItemsControl>
 
                         <TextBlock x:Name="NoAnomaliesText"
-                                   Text="&#x2705; No anomalies detected"
+                                   Text="{DynamicResource PA_NoAnomalies}"
                                    FontSize="10"
                                    Foreground="{DynamicResource PFP_AccentBrush}"
                                    Visibility="Collapsed"/>

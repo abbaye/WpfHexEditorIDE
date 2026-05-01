@@ -103,4 +103,5 @@
   <data name="FS_HealthStatusDefault" xml:space="preserve"><value>फ़ाइल संरचना वैध और स्वस्थ है</value></data>
   <data name="FS_EntropyDescDefault" xml:space="preserve"><value>संभवतः संपीड़ित या एन्क्रिप्टेड डेटा</value></data>
   <data name="FS_TipMoreOptions" xml:space="preserve"><value>और विकल्प</value></data>
+  <data name="FS_NoIssuesDetected" xml:space="preserve"><value>&#x2705; कोई समस्या नहीं मिली</value></data>
 </root>

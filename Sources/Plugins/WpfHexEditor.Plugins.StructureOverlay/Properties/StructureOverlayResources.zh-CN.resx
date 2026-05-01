@@ -20,4 +20,5 @@
     <value>删除所有结构覆盖？</value>
   </data>
   <data name="SO_OffsetLabel" xml:space="preserve"><value>偏移:</value></data>
+  <data name="SO_LengthLabel" xml:space="preserve"><value>长度:</value></data>
 </root>

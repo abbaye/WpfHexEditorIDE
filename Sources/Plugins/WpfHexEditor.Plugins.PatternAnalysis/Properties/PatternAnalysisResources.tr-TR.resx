@@ -43,4 +43,6 @@
   <data name="PatternAnalysis_NoData" xml:space="preserve">
     <value>Analiz edilecek veri yok. Hex editorde bir aralik secin.</value>
   </data>
+  <data name="PA_Anomalies" xml:space="preserve"><value>&#x26A0;&#xFE0F; Anormallikler</value></data>
+  <data name="PA_NoAnomalies" xml:space="preserve"><value>&#x2705; Anormallik tespit edilmedi</value></data>
 </root>

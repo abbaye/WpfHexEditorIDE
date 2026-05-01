@@ -583,4 +583,11 @@ or use Install to add a .whxplugin</value>
   <data name="PH_InstallFile" xml:space="preserve"><value>Installera fil…</value></data>
   <data name="PH_UpdatesAvailable" xml:space="preserve"><value>uppdatering(ar) tillgängliga</value></data>
   <data name="PH_ColEventType" xml:space="preserve"><value>Händelsetyp</value></data>
+  <data name="PH_SettingsSaved" xml:space="preserve"><value>&#xE73E; Inställningar sparade.</value></data>
+  <data name="PH_SearchMarketplaceWithIcon" xml:space="preserve"><value>&#xE721;  Sök på marknadsplatsen…</value></data>
+  <data name="PH_LoadNow" xml:space="preserve"><value>&#xE768; Läs in nu</value></data>
+  <data name="PH_Suspend" xml:space="preserve"><value>&#xE769; Pausa</value></data>
+  <data name="PH_Sandbox" xml:space="preserve"><value>&#xE72A; Sandlåda</value></data>
+  <data name="PH_Refresh" xml:space="preserve"><value>&#xE72C; Uppdatera</value></data>
+  <data name="PH_ClearLog" xml:space="preserve"><value>&#xE74D; Rensa logg</value></data>
 </root>

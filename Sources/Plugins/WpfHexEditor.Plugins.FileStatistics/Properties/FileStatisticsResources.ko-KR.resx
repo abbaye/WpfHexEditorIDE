@@ -103,4 +103,5 @@
   <data name="FS_HealthStatusDefault" xml:space="preserve"><value>파일 구조가 유효하고 정상입니다</value></data>
   <data name="FS_EntropyDescDefault" xml:space="preserve"><value>압축되거나 암호화된 데이터일 가능성이 높습니다</value></data>
   <data name="FS_TipMoreOptions" xml:space="preserve"><value>추가 옵션</value></data>
+  <data name="FS_NoIssuesDetected" xml:space="preserve"><value>&#x2705; 문제가 감지되지 않았습니다</value></data>
 </root>

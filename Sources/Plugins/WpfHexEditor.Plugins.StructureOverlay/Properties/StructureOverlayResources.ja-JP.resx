@@ -20,4 +20,5 @@
     <value>すべての構造オーバーレイを削除しますか?</value>
   </data>
   <data name="SO_OffsetLabel" xml:space="preserve"><value>オフセット:</value></data>
+  <data name="SO_LengthLabel" xml:space="preserve"><value>長さ:</value></data>
 </root>

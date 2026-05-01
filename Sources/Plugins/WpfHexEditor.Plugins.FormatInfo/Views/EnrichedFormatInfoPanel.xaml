@@ -251,7 +251,7 @@
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="Offset:" Style="{StaticResource InfoLabelStyle}"/>
+                            <TextBlock Grid.Column="0" Text="{DynamicResource FI_OffsetLabel}" Style="{StaticResource InfoLabelStyle}"/>
                             <TextBlock Grid.Column="1" x:Name="OffsetDisplayTextBlock"
                                        Text="N/A" Style="{StaticResource InfoValueStyle}" FontFamily="Consolas"/>
                         </Grid>

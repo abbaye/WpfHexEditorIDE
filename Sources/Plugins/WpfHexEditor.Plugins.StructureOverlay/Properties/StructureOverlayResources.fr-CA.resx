@@ -83,4 +83,5 @@
   </data>
 
   <data name="SO_OffsetLabel" xml:space="preserve"><value>Décalage :</value></data>
+  <data name="SO_LengthLabel" xml:space="preserve"><value>Longueur :</value></data>
 </root>

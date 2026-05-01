@@ -375,7 +375,7 @@
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
 
-                        <TextBlock x:Name="NoAnomaliesText" Text="&#x2705; No issues detected"
+                        <TextBlock x:Name="NoAnomaliesText" Text="{DynamicResource FS_NoIssuesDetected}"
                                    FontSize="10" Foreground="{StaticResource GoodBrush}"/>
                     </StackPanel>
                 </Border>

@@ -43,4 +43,6 @@
   <data name="PatternAnalysis_NoData" xml:space="preserve">
     <value>لا توجد بيانات للتحليل. حدد نطاقاً في محرر hex.</value>
   </data>
+  <data name="PA_Anomalies" xml:space="preserve"><value>&#x26A0;&#xFE0F; شذوذ</value></data>
+  <data name="PA_NoAnomalies" xml:space="preserve"><value>&#x2705; لم يتم اكتشاف أي شذوذ</value></data>
 </root>

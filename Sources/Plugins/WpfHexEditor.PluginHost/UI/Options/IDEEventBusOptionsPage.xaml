@@ -162,13 +162,13 @@
                            Foreground="{DynamicResource PFP_TextBrush}"
                            VerticalAlignment="Center"/>
                 <Button x:Name="RefreshButton"
-                        Content="&#xE72C; Refresh"
+                        Content="{DynamicResource PH_Refresh}"
                         Click="OnRefresh"
                         DockPanel.Dock="Right"
                         Padding="10,3" Margin="4,0,0,0"
                         Style="{StaticResource ToolbarButtonStyle}"/>
                 <Button x:Name="ClearLogButton"
-                        Content="&#xE74D; Clear Log"
+                        Content="{DynamicResource PH_ClearLog}"
                         Click="OnClearLog"
                         DockPanel.Dock="Right"
                         Padding="10,3"

@@ -91,4 +91,5 @@
     <value>Arborescence visuelle en direct</value>
   </data>
 
+  <data name="XD_ColType" xml:space="preserve"><value>Type</value></data>
 </root>

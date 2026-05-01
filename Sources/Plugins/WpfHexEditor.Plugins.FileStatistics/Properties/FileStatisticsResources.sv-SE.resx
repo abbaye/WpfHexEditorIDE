@@ -103,4 +103,5 @@
   <data name="FS_HealthStatusDefault" xml:space="preserve"><value>Filstrukturen är giltig och felfri</value></data>
   <data name="FS_EntropyDescDefault" xml:space="preserve"><value>Troligtvis komprimerad eller krypterad data</value></data>
   <data name="FS_TipMoreOptions" xml:space="preserve"><value>Fler alternativ</value></data>
+  <data name="FS_NoIssuesDetected" xml:space="preserve"><value>&#x2705; Inga problem upptäcktes</value></data>
 </root>

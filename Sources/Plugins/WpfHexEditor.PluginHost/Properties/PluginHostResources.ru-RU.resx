@@ -583,4 +583,11 @@ or use Install to add a .whxplugin</value>
   <data name="PH_InstallFile" xml:space="preserve"><value>Установить файл…</value></data>
   <data name="PH_UpdatesAvailable" xml:space="preserve"><value>обновлений доступно</value></data>
   <data name="PH_ColEventType" xml:space="preserve"><value>Тип события</value></data>
+  <data name="PH_SettingsSaved" xml:space="preserve"><value>&#xE73E; Настройки сохранены.</value></data>
+  <data name="PH_SearchMarketplaceWithIcon" xml:space="preserve"><value>&#xE721;  Поиск в маркетплейсе…</value></data>
+  <data name="PH_LoadNow" xml:space="preserve"><value>&#xE768; Загрузить сейчас</value></data>
+  <data name="PH_Suspend" xml:space="preserve"><value>&#xE769; Приостановить</value></data>
+  <data name="PH_Sandbox" xml:space="preserve"><value>&#xE72A; Песочница</value></data>
+  <data name="PH_Refresh" xml:space="preserve"><value>&#xE72C; Обновить</value></data>
+  <data name="PH_ClearLog" xml:space="preserve"><value>&#xE74D; Очистить журнал</value></data>
 </root>

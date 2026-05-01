@@ -20,4 +20,5 @@
     <value>Удалить все наложения структуры?</value>
   </data>
   <data name="SO_OffsetLabel" xml:space="preserve"><value>Смещение:</value></data>
+  <data name="SO_LengthLabel" xml:space="preserve"><value>Длина:</value></data>
 </root>

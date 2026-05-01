@@ -150,4 +150,10 @@
   <data name="PatternAnalysis_NoAnomalies" xml:space="preserve">
     <value>No anomalies detected</value>
   </data>
+  <data name="PA_Anomalies" xml:space="preserve">
+    <value>&#x26A0;&#xFE0F; Anomalies</value>
+  </data>
+  <data name="PA_NoAnomalies" xml:space="preserve">
+    <value>&#x2705; No anomalies detected</value>
+  </data>
 </root>

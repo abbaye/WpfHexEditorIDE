@@ -583,4 +583,11 @@ or use Install to add a .whxplugin</value>
   <data name="PH_InstallFile" xml:space="preserve"><value>从文件安装…</value></data>
   <data name="PH_UpdatesAvailable" xml:space="preserve"><value>个更新可用</value></data>
   <data name="PH_ColEventType" xml:space="preserve"><value>事件类型</value></data>
+  <data name="PH_SettingsSaved" xml:space="preserve"><value>&#xE73E; 设置已保存。</value></data>
+  <data name="PH_SearchMarketplaceWithIcon" xml:space="preserve"><value>&#xE721;  搜索市场…</value></data>
+  <data name="PH_LoadNow" xml:space="preserve"><value>&#xE768; 立即加载</value></data>
+  <data name="PH_Suspend" xml:space="preserve"><value>&#xE769; 挂起</value></data>
+  <data name="PH_Sandbox" xml:space="preserve"><value>&#xE72A; 沙盒</value></data>
+  <data name="PH_Refresh" xml:space="preserve"><value>&#xE72C; 刷新</value></data>
+  <data name="PH_ClearLog" xml:space="preserve"><value>&#xE74D; 清除日志</value></data>
 </root>

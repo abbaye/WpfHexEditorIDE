@@ -20,4 +20,5 @@
     <value>¿Quitar todas las superposiciones de estructura?</value>
   </data>
   <data name="SO_OffsetLabel" xml:space="preserve"><value>Desplazamiento:</value></data>
+  <data name="SO_LengthLabel" xml:space="preserve"><value>Longitud:</value></data>
 </root>

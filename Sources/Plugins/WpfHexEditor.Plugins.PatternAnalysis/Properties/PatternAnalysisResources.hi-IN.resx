@@ -43,4 +43,6 @@
   <data name="PatternAnalysis_NoData" xml:space="preserve">
     <value>विश्लेषण के लिए कोई डेटा नहीं। हेक्स संपादक में एक श्रेणी चुनें।</value>
   </data>
+  <data name="PA_Anomalies" xml:space="preserve"><value>&#x26A0;&#xFE0F; विसंगतियाँ</value></data>
+  <data name="PA_NoAnomalies" xml:space="preserve"><value>&#x2705; कोई विसंगति नहीं मिली</value></data>
 </root>

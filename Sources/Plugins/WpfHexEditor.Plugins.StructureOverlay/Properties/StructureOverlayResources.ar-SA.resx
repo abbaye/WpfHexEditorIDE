@@ -20,4 +20,5 @@
     <value>هل تريد إزالة جميع تراكبات الهيكل؟</value>
   </data>
   <data name="SO_OffsetLabel" xml:space="preserve"><value>إزاحة:</value></data>
+  <data name="SO_LengthLabel" xml:space="preserve"><value>الطول:</value></data>
 </root>

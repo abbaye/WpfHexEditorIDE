@@ -320,7 +320,7 @@
                     </GridViewColumn>
 
                     <!-- Type (80px) -->
-                    <GridViewColumn Header="Type" Width="80">
+                    <GridViewColumn Header="{DynamicResource XD_ColType}" Width="80">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate DataType="{x:Type models:ResourceEntryViewModel}">
                                 <TextBlock Text="{Binding ValueType}" FontSize="10"

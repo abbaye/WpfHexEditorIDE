@@ -103,4 +103,5 @@
   <data name="FS_HealthStatusDefault" xml:space="preserve"><value>文件结构有效且正常</value></data>
   <data name="FS_EntropyDescDefault" xml:space="preserve"><value>可能是压缩或加密的数据</value></data>
   <data name="FS_TipMoreOptions" xml:space="preserve"><value>更多选项</value></data>
+  <data name="FS_NoIssuesDetected" xml:space="preserve"><value>&#x2705; 未检测到问题</value></data>
 </root>

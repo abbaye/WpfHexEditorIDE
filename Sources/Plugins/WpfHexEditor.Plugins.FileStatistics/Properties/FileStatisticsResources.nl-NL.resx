@@ -103,4 +103,5 @@
   <data name="FS_HealthStatusDefault" xml:space="preserve"><value>Bestandsstructuur is geldig en gezond</value></data>
   <data name="FS_EntropyDescDefault" xml:space="preserve"><value>Waarschijnlijk gecomprimeerde of versleutelde gegevens</value></data>
   <data name="FS_TipMoreOptions" xml:space="preserve"><value>Meer opties</value></data>
+  <data name="FS_NoIssuesDetected" xml:space="preserve"><value>&#x2705; Geen problemen gedetecteerd</value></data>
 </root>

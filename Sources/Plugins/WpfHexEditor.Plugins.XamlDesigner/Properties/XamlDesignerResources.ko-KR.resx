@@ -31,4 +31,5 @@
   <data name="XamlDesigner_Panel_LiveVisualTree" xml:space="preserve">
     <value>라이브 시각적 트리</value>
   </data>
+  <data name="XD_ColType" xml:space="preserve"><value>유형</value></data>
 </root>

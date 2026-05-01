@@ -583,4 +583,11 @@ or use Install to add a .whxplugin</value>
   <data name="PH_InstallFile" xml:space="preserve"><value>تثبيت ملف…</value></data>
   <data name="PH_UpdatesAvailable" xml:space="preserve"><value>تحديث(ات) متاح(ة)</value></data>
   <data name="PH_ColEventType" xml:space="preserve"><value>نوع الحدث</value></data>
+  <data name="PH_SettingsSaved" xml:space="preserve"><value>&#xE73E; تم حفظ الإعدادات.</value></data>
+  <data name="PH_SearchMarketplaceWithIcon" xml:space="preserve"><value>&#xE721;  ابحث في السوق…</value></data>
+  <data name="PH_LoadNow" xml:space="preserve"><value>&#xE768; تحميل الآن</value></data>
+  <data name="PH_Suspend" xml:space="preserve"><value>&#xE769; تعليق</value></data>
+  <data name="PH_Sandbox" xml:space="preserve"><value>&#xE72A; وضع الحماية</value></data>
+  <data name="PH_Refresh" xml:space="preserve"><value>&#xE72C; تحديث</value></data>
+  <data name="PH_ClearLog" xml:space="preserve"><value>&#xE74D; مسح السجل</value></data>
 </root>

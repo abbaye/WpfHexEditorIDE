@@ -583,4 +583,11 @@ or use Install to add a .whxplugin</value>
   <data name="PH_InstallFile" xml:space="preserve"><value>파일 설치…</value></data>
   <data name="PH_UpdatesAvailable" xml:space="preserve"><value>개 업데이트 있음</value></data>
   <data name="PH_ColEventType" xml:space="preserve"><value>이벤트 유형</value></data>
+  <data name="PH_SettingsSaved" xml:space="preserve"><value>&#xE73E; 설정이 저장되었습니다.</value></data>
+  <data name="PH_SearchMarketplaceWithIcon" xml:space="preserve"><value>&#xE721;  마켓플레이스 검색…</value></data>
+  <data name="PH_LoadNow" xml:space="preserve"><value>&#xE768; 지금 로드</value></data>
+  <data name="PH_Suspend" xml:space="preserve"><value>&#xE769; 일시 중단</value></data>
+  <data name="PH_Sandbox" xml:space="preserve"><value>&#xE72A; 샌드박스</value></data>
+  <data name="PH_Refresh" xml:space="preserve"><value>&#xE72C; 새로 고침</value></data>
+  <data name="PH_ClearLog" xml:space="preserve"><value>&#xE74D; 로그 지우기</value></data>
 </root>

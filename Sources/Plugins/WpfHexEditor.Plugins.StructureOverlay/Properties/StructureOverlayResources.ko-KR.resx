@@ -20,4 +20,5 @@
     <value>모든 구조 오버레이를 제거하시겠습니까?</value>
   </data>
   <data name="SO_OffsetLabel" xml:space="preserve"><value>오프셋:</value></data>
+  <data name="SO_LengthLabel" xml:space="preserve"><value>길이:</value></data>
 </root>

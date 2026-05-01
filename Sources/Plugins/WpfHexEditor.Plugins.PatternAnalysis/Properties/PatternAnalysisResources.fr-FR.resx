@@ -43,4 +43,6 @@
   <data name="PatternAnalysis_NoData" xml:space="preserve">
     <value>Aucune donnée à analyser. Sélectionnez une plage dans l'éditeur hex.</value>
   </data>
+  <data name="PA_Anomalies" xml:space="preserve"><value>&#x26A0;&#xFE0F; Anomalies</value></data>
+  <data name="PA_NoAnomalies" xml:space="preserve"><value>&#x2705; Aucune anomalie détectée</value></data>
 </root>

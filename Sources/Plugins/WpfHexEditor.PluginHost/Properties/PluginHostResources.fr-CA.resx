@@ -584,4 +584,11 @@ or use Install to add a .whxplugin</value>
   <data name="PH_InstallFile" xml:space="preserve"><value>Installer un fichier…</value></data>
   <data name="PH_UpdatesAvailable" xml:space="preserve"><value>mise(s) à jour disponible(s)</value></data>
   <data name="PH_ColEventType" xml:space="preserve"><value>Type d'événement</value></data>
+  <data name="PH_SettingsSaved" xml:space="preserve"><value>&#xE73E; Paramètres enregistrés.</value></data>
+  <data name="PH_SearchMarketplaceWithIcon" xml:space="preserve"><value>&#xE721;  Rechercher dans la place de marché…</value></data>
+  <data name="PH_LoadNow" xml:space="preserve"><value>&#xE768; Charger maintenant</value></data>
+  <data name="PH_Suspend" xml:space="preserve"><value>&#xE769; Suspendre</value></data>
+  <data name="PH_Sandbox" xml:space="preserve"><value>&#xE72A; Bac à sable</value></data>
+  <data name="PH_Refresh" xml:space="preserve"><value>&#xE72C; Actualiser</value></data>
+  <data name="PH_ClearLog" xml:space="preserve"><value>&#xE74D; Effacer le journal</value></data>
 </root>

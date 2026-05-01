@@ -103,4 +103,5 @@
   <data name="FS_HealthStatusDefault" xml:space="preserve"><value>Dosya yapısı geçerli ve sağlıklı</value></data>
   <data name="FS_EntropyDescDefault" xml:space="preserve"><value>Muhtemelen sıkıştırılmış veya şifrelenmiş veriler</value></data>
   <data name="FS_TipMoreOptions" xml:space="preserve"><value>Daha fazla seçenek</value></data>
+  <data name="FS_NoIssuesDetected" xml:space="preserve"><value>&#x2705; Sorun tespit edilmedi</value></data>
 </root>
