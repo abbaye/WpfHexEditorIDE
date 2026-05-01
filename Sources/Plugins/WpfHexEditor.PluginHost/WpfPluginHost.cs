@@ -527,6 +527,31 @@ public sealed class WpfPluginHost : IAsyncDisposable
     }
 
     /// <summary>
+    /// Returns the IDs of Dormant plugins that declare at least one of the given
+    /// <paramref name="layoutContentIds"/> in their <c>uiElements</c> manifest field.
+    /// Used at startup to activate dormant plugins whose panels are present in the
+    /// saved dock layout even though they were not recorded in <c>LazyPluginsToRestore</c>
+    /// (e.g. hidden/auto-hide panels at last shutdown).
+    /// </summary>
+    public List<string> GetDormantPluginsInLayout(IEnumerable<string> layoutContentIds)
+    {
+        var idSet = new HashSet<string>(layoutContentIds, StringComparer.OrdinalIgnoreCase);
+        if (idSet.Count == 0) return [];
+
+        var result = new List<string>();
+        lock (_lock)
+        {
+            foreach (var (id, entry) in _entries)
+            {
+                if (entry.State != PluginState.Dormant) continue;
+                if (entry.Manifest.UiElements.Any(e => idSet.Contains(e)))
+                    result.Add(id);
+            }
+        }
+        return result;
+    }
+
+    /// <summary>
     /// Returns the IDs of lazy (originally Dormant) plugins that are currently Loaded
     /// and have at least one visible docked panel. Used to persist panel state across restarts.
     /// </summary>

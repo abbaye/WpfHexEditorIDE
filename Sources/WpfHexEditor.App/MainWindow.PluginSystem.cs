@@ -544,6 +544,27 @@ public partial class MainWindow
                     AppSettingsService.Instance.Current.LazyPluginsToRestore = failedToRestore;
                     AppSettingsService.Instance.Save();
                 }
+
+                // Layout-driven activation: activate dormant plugins whose panel ContentIds appear
+                // in the saved dock layout but were NOT captured in LazyPluginsToRestore (e.g. the
+                // panel was hidden or in auto-hide at shutdown so HasVisiblePanelForPlugin returned false).
+                if (_layout is not null && _layoutWasRestoredFromFile)
+                {
+                    var layoutContentIds = _layout.GetAllItems().Select(i => i.ContentId).ToList();
+                    var dormantInLayout  = _pluginHost.GetDormantPluginsInLayout(layoutContentIds);
+                    if (dormantInLayout.Count > 0)
+                    {
+                        OutputLogger.PluginInfo($"[PluginSystem] Layout-scan found {dormantInLayout.Count} dormant plugin(s) with panels in layout — activating.");
+                        foreach (var id in dormantInLayout)
+                        {
+                            try { await _pluginHost.ActivateDormantPluginAsync(id, CancellationToken.None).ConfigureAwait(false); }
+                            catch (Exception ex)
+                            {
+                                OutputLogger.PluginError($"[PluginSystem] Layout-scan activation failed for '{id}': {ex.Message}");
+                            }
+                        }
+                    }
+                }
             }
             finally
             {
