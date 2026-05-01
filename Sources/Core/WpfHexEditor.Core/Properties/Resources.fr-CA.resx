@@ -1803,4 +1803,133 @@ Remarque : L'intégration complète avec HexEditor nécessite de se connecter au
   <data name="TruncateReplacementString" xml:space="preserve"><value>Tronquer le remplacement à la longueur de la recherche</value></data>
   <data name="FindNextButtonLabel" xml:space="preserve"><value>Suivant</value></data>
   <data name="FindPreviousButtonLabel" xml:space="preserve"><value>Précédent</value></data>
+  <data name="HE_SearchDialogTitle" xml:space="preserve">
+    <value>Find / Replace</value>
+  </data>
+  <data name="HE_SearchModeTooltip" xml:space="preserve">
+    <value>Search mode</value>
+  </data>
+  <data name="HE_CaseSensitiveTooltip" xml:space="preserve">
+    <value>Match case (Alt+C)</value>
+  </data>
+  <data name="HE_WildcardTooltip" xml:space="preserve">
+    <value>Use wildcards ?? (Alt+E)</value>
+  </data>
+  <data name="HE_LoopSearch" xml:space="preserve">
+    <value>Loop</value>
+  </data>
+  <data name="HE_FindLabel" xml:space="preserve">
+    <value>Find:</value>
+  </data>
+  <data name="HE_ReplaceLabel" xml:space="preserve">
+    <value>Replace:</value>
+  </data>
+  <data name="HE_EncodingLabel" xml:space="preserve">
+    <value>Encoding:</value>
+  </data>
+  <data name="HE_MaxLabel" xml:space="preserve">
+    <value>Max:</value>
+  </data>
+  <data name="HE_StopButton" xml:space="preserve">
+    <value>Stop</value>
+  </data>
+  <data name="HE_PrevButton" xml:space="preserve">
+    <value>Prev.</value>
+  </data>
+  <data name="HE_NextButton" xml:space="preserve">
+    <value>Next</value>
+  </data>
+  <data name="HE_FindAllButton" xml:space="preserve">
+    <value>Find All</value>
+  </data>
+  <data name="HE_ReplaceButton" xml:space="preserve">
+    <value>Replace</value>
+  </data>
+  <data name="HE_ReplaceAllButton" xml:space="preserve">
+    <value>Replace All</value>
+  </data>
+  <data name="HE_ResultsLabel" xml:space="preserve">
+    <value>Results (</value>
+  </data>
+  <data name="HE_ExportButton" xml:space="preserve">
+    <value>Export ▾</value>
+  </data>
+  <data name="HE_OffsetHexColumn" xml:space="preserve">
+    <value>Offset (Hex)</value>
+  </data>
+  <data name="HE_OffsetDecColumn" xml:space="preserve">
+    <value>Offset (Dec)</value>
+  </data>
+  <data name="HE_PreviewColumn" xml:space="preserve">
+    <value>Preview</value>
+  </data>
+  <data name="HE_LengthColumn" xml:space="preserve">
+    <value>Len.</value>
+  </data>
+  <data name="HE_OccColumn" xml:space="preserve">
+    <value>Occ.</value>
+  </data>
+  <data name="HE_PrintPctColumn" xml:space="preserve">
+    <value>% Print.</value>
+  </data>
+  <data name="HE_ActionsColumn" xml:space="preserve">
+    <value>Actions</value>
+  </data>
+  <data name="HE_ExportTblButton" xml:space="preserve">
+    <value>Export TBL</value>
+  </data>
+  <data name="HE_ApplyButton" xml:space="preserve">
+    <value>Apply</value>
+  </data>
+  <data name="HE_SizeLabel" xml:space="preserve">
+    <value>Size: </value>
+  </data>
+  <data name="HE_BytesLabel" xml:space="preserve">
+    <value>bytes</value>
+  </data>
+  <data name="HE_LoadTblButton" xml:space="preserve">
+    <value>Load TBL...</value>
+  </data>
+  <data name="HE_LoadTblTooltip" xml:space="preserve">
+    <value>Load a TBL file (ROM character table)</value>
+  </data>
+  <data name="HE_TblLabel" xml:space="preserve">
+    <value>TBL: </value>
+  </data>
+  <data name="HE_CloseTblTooltip" xml:space="preserve">
+    <value>Close TBL file</value>
+  </data>
+  <data name="HE_ShowReplaceTooltip" xml:space="preserve">
+    <value>Show / hide replace (Ctrl+H)</value>
+  </data>
+  <data name="HE_SearchPlaceholder" xml:space="preserve">
+    <value>Search...</value>
+  </data>
+  <data name="HE_PrevResultTooltip" xml:space="preserve">
+    <value>Previous result (Shift+Enter)</value>
+  </data>
+  <data name="HE_NextResultTooltip" xml:space="preserve">
+    <value>Next result (Enter)</value>
+  </data>
+  <data name="HE_AdvancedSearchTooltip" xml:space="preserve">
+    <value>Advanced search (Ctrl+Shift+F)</value>
+  </data>
+  <data name="HE_CloseSearchTooltip" xml:space="preserve">
+    <value>Close (Esc)</value>
+  </data>
+  <data name="HE_ReplacePlaceholder" xml:space="preserve">
+    <value>Replace...</value>
+  </data>
+  <data name="HE_ReplaceOneTooltip" xml:space="preserve">
+    <value>Replace (Alt+R)</value>
+  </data>
+  <data name="HE_ReplaceAllTooltip" xml:space="preserve">
+    <value>Replace All (Alt+A)</value>
+  </data>
+  <data name="HE_HexModeTooltip" xml:space="preserve">
+    <value>Hexadecimal mode (Alt+H)</value>
+  </data>
+  <data name="HE_MoveBarTooltip" xml:space="preserve">
+    <value>Move search bar</value>
+  </data>
 </root>

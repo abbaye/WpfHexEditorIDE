@@ -12,9 +12,14 @@
              xmlns:local="clr-namespace:WpfHexEditor.Editor.Core.Views"
              mc:Ignorable="d"
              MinWidth="380"
-             d:DesignHeight="86" d:DesignWidth="520">
+             d:DesignHeight="86" d:DesignWidth="520"
+             xmlns:ecSvc="clr-namespace:WpfHexEditor.Editor.Core.Services;assembly=WpfHexEditor.Editor.Core">
 
     <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ecSvc:EditorCoreLocalizedDictionary/>
+            </ResourceDictionary.MergedDictionaries>
         <local:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <local:StringEmptyToVisibilityConverter x:Key="StringEmptyToVisibilityConverter"/>
 
@@ -131,6 +136,7 @@
             <Setter Property="FontSize"   Value="11"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
         </Style>
+            </ResourceDictionary>
     </UserControl.Resources>
 
     <!--
@@ -200,7 +206,7 @@
                                   Style="{StaticResource QuickToggleStyle}"
                                   Width="22" Height="22"
                                   Margin="3,0,2,0"
-                                  ToolTip="Afficher / masquer le remplacement (Ctrl+H)">
+                                  ToolTip="{DynamicResource EC_ShowReplaceTooltip}">
                         <TextBlock x:Name="ExpandIcon"
                                    Text="&#xE8AC;"
                                    FontFamily="Segoe MDL2 Assets"
@@ -278,14 +284,14 @@
                             Content="&#xE70E;"
                             Style="{StaticResource QuickButtonStyle}"
                             Command="{Binding FindPreviousCommand}"
-                            ToolTip="R&#233;sultat pr&#233;c&#233;dent (Maj+Entr&#233;e)"/>
+                            ToolTip="{DynamicResource EC_PrevResultTooltip}"/>
 
                     <!-- ── Col 4: Next ▼ (MDL2 ChevronDown &#xE70D;) ── -->
                     <Button Grid.Column="4"
                             Content="&#xE70D;"
                             Style="{StaticResource QuickButtonStyle}"
                             Command="{Binding FindNextCommand}"
-                            ToolTip="R&#233;sultat suivant (Entr&#233;e)"/>
+                            ToolTip="{DynamicResource EC_NextResultTooltip}"/>
 
                     <!-- ── Col 5: Separator before actions ── -->
                     <Rectangle x:Name="ActionsSeparator"
@@ -299,7 +305,7 @@
                             Content="&#xE712;"
                             x:Name="AdvancedSearchButton"
                             Style="{StaticResource QuickButtonStyle}"
-                            ToolTip="Recherche avanc&#233;e (Ctrl+Maj+F)"
+                            ToolTip="{DynamicResource EC_AdvancedSearchTooltip}"
                             Margin="1,0"/>
 
                     <!-- ── Col 7: Close ✕ (MDL2 ChromeClose &#xE8BB;) ── -->
@@ -307,7 +313,7 @@
                             Content="&#xE8BB;"
                             x:Name="CloseButton"
                             Style="{StaticResource QuickButtonStyle}"
-                            ToolTip="Fermer (Esc)"
+                            ToolTip="{DynamicResource EC_CloseSearchTooltip}"
                             Margin="1,0,4,0"/>
 
                     <!-- ── Progress indicator (bottom edge of Row 0) ── -->
@@ -415,7 +421,7 @@
                             x:Name="ReplaceNextButton"
                             Style="{StaticResource QuickReplaceButtonStyle}"
                             Command="{Binding ReplaceNextCommand}"
-                            ToolTip="Remplacer (Alt+R)"
+                            ToolTip="{DynamicResource EC_ReplaceOneTooltip}"
                             Margin="1,0">
                         <TextBlock FontFamily="Segoe UI" FontSize="11" Text="&#x2192;1"
                                    HorizontalAlignment="Center" VerticalAlignment="Center"/>
@@ -426,7 +432,7 @@
                             x:Name="ReplaceAllButton"
                             Style="{StaticResource QuickReplaceButtonStyle}"
                             Command="{Binding ReplaceAllCommand}"
-                            ToolTip="Remplacer tout (Alt+A)"
+                            ToolTip="{DynamicResource EC_ReplaceAllTooltip}"
                             Margin="1,0,4,0">
                         <TextBlock FontFamily="Segoe UI" FontSize="11" Text="&#x2192;&#x2200;"
                                    HorizontalAlignment="Center" VerticalAlignment="Center"/>
@@ -476,7 +482,7 @@
                                   Content="Ab"
                                   Style="{StaticResource QuickToggleStyle}"
                                   IsChecked="{Binding CaseSensitive}"
-                                  ToolTip="Respecter la casse (Alt+C)"/>
+                                  ToolTip="{DynamicResource EC_CaseSensitiveTooltip}"/>
 
                     <!-- ── Col 2: ab — Whole Word (alias for Wildcard in the ViewModel) ── -->
                     <ToggleButton Grid.Column="2"
@@ -484,14 +490,14 @@
                                   Content="ab"
                                   Style="{StaticResource QuickToggleStyle}"
                                   IsChecked="{Binding UseWildcard}"
-                                  ToolTip="Mot entier / Joker (Alt+W)"/>
+                                  ToolTip="{DynamicResource EC_WholeWordTooltip}"/>
 
                     <!-- ── Col 3: .* — Regex ── -->
                     <ToggleButton Grid.Column="3"
                                   x:Name="RegexToggle"
                                   Content=".*"
                                   Style="{StaticResource QuickToggleStyle}"
-                                  ToolTip="Expression r&#233;guli&#232;re (Alt+E)"/>
+                                  ToolTip="{DynamicResource EC_RegexTooltip}"/>
 
                     <!-- ── Col 4: 0x — Hex Mode (HexEditor only) ── -->
                     <ToggleButton Grid.Column="4"
@@ -499,7 +505,7 @@
                                   Content="0x"
                                   Style="{StaticResource QuickToggleStyle}"
                                   IsChecked="{Binding IsHexMode}"
-                                  ToolTip="Mode hexad&#233;cimal (Alt+H)"/>
+                                  ToolTip="{DynamicResource EC_HexModeTooltip}"/>
 
                     <!-- ── Col 5: Separator ── -->
                     <Rectangle x:Name="OptionsSeparator"
@@ -550,7 +556,7 @@
                VerticalAlignment="Bottom"
                Cursor="SizeAll"
                Panel.ZIndex="12"
-               ToolTip="D&#233;placer la barre de recherche">
+               ToolTip="{DynamicResource EC_MoveBarTooltip}">
             <Thumb.Template>
                 <ControlTemplate TargetType="Thumb">
                     <Border x:Name="GripBd"

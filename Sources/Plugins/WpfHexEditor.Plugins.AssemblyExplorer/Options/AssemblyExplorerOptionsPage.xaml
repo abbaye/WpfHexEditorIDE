@@ -14,12 +14,20 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              Background="Transparent"
              Foreground="{DynamicResource PFP_TextBrush}"
-             Padding="12">
+             Padding="12"
+             xmlns:aeSvc="clr-namespace:WpfHexEditor.Plugins.AssemblyExplorer.Services;assembly=WpfHexEditor.Plugins.AssemblyExplorer">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <aeSvc:AssemblyExplorerLocalizedDictionary/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
 
     <StackPanel>
 
         <!-- Section: Decompiler -->
-        <TextBlock Text="Decompiler"
+        <TextBlock Text="{DynamicResource AE_DecompilerSection}"
                    FontSize="12" FontWeight="SemiBold"
                    Foreground="{DynamicResource PFP_AccentBrush}"
                    Margin="0,0,0,6"/>
@@ -29,7 +37,7 @@
                 <ColumnDefinition Width="160"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="0" Text="Detail pane font size:"
+            <TextBlock Grid.Column="0" Text="{DynamicResource AE_DetailFontSizeLabel}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource PFP_TextBrush}"/>
             <StackPanel Grid.Column="1" Orientation="Horizontal">
@@ -52,7 +60,7 @@
                 <ColumnDefinition Width="160"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="0" Text="Decompiler backend:"
+            <TextBlock Grid.Column="0" Text="{DynamicResource AE_BackendLabel}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource PFP_TextBrush}"/>
             <ComboBox x:Name="BackendCombo"
@@ -62,8 +70,8 @@
                       Background="{DynamicResource PFP_SectionBackgroundBrush}"
                       Foreground="{DynamicResource PFP_TextBrush}"
                       BorderBrush="{DynamicResource PFP_BorderBrush}">
-                <ComboBoxItem Content="ILSpy engine" Tag="ILSpy" IsSelected="True"/>
-                <ComboBoxItem Content="Skeleton (BCL-only stubs)" Tag="Skeleton"/>
+                <ComboBoxItem Content="{DynamicResource AE_ILSpyOption}" Tag="ILSpy" IsSelected="True"/>
+                <ComboBoxItem Content="{DynamicResource AE_SkeletonOption}" Tag="Skeleton"/>
             </ComboBox>
         </Grid>
 
@@ -72,7 +80,7 @@
                 <ColumnDefinition Width="160"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="0" Text="Decompilation quality:"
+            <TextBlock Grid.Column="0" Text="{DynamicResource AE_QualityLabel}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource PFP_TextBrush}"/>
             <ComboBox x:Name="QualityCombo"
@@ -82,9 +90,9 @@
                       Background="{DynamicResource PFP_SectionBackgroundBrush}"
                       Foreground="{DynamicResource PFP_TextBrush}"
                       BorderBrush="{DynamicResource PFP_BorderBrush}">
-                <ComboBoxItem Content="Full (ILSpy + XML docs)"    Tag="Full" IsSelected="True"/>
-                <ComboBoxItem Content="Normal (ILSpy, no docs)"    Tag="Normal"/>
-                <ComboBoxItem Content="Skeleton (fast, BCL stubs)" Tag="Skeleton"/>
+                <ComboBoxItem Content="{DynamicResource AE_FullQuality}"    Tag="Full" IsSelected="True"/>
+                <ComboBoxItem Content="{DynamicResource AE_NormalQuality}"    Tag="Normal"/>
+                <ComboBoxItem Content="{DynamicResource AE_SkeletonQuality}" Tag="Skeleton"/>
             </ComboBox>
         </Grid>
 
@@ -93,7 +101,7 @@
                 <ColumnDefinition Width="160"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="0" Text="C# language version:"
+            <TextBlock Grid.Column="0" Text="{DynamicResource AE_LangVersionLabel}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource PFP_TextBrush}"/>
             <ComboBox x:Name="CSharpVersionCombo"
@@ -114,17 +122,17 @@
         </Grid>
 
         <CheckBox x:Name="ChkShowXmlDocs"
-                  Content="Show XML documentation comments in decompiled output"
+                  Content="{DynamicResource AE_ShowXmlDocs}"
                   Foreground="{DynamicResource PFP_TextBrush}"
                   Margin="0,0,0,4"/>
 
         <CheckBox x:Name="ChkShowHidden"
-                  Content="Show hidden (compiler-generated) members"
+                  Content="{DynamicResource AE_ShowHiddenMembers}"
                   Foreground="{DynamicResource PFP_TextBrush}"
                   Margin="0,0,0,4"/>
 
         <CheckBox x:Name="ChkEnablePdb"
-                  Content="Enable PDB integration (source mapping, local variable names)"
+                  Content="{DynamicResource AE_PdbIntegration}"
                   Foreground="{DynamicResource PFP_TextBrush}"
                   Margin="0,0,0,4"/>
 
@@ -133,7 +141,7 @@
                 <ColumnDefinition Width="160"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="0" Text="Decompile language:"
+            <TextBlock Grid.Column="0" Text="{DynamicResource AE_DecompileLangLabel}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource PFP_TextBrush}"/>
             <!-- Items populated dynamically in code-behind from DecompilationLanguageRegistry.All -->
@@ -150,48 +158,48 @@
         <Separator Background="{DynamicResource PFP_BorderBrush}" Margin="0,0,0,8"/>
 
         <!-- Section: Behaviour -->
-        <TextBlock Text="Behaviour"
+        <TextBlock Text="{DynamicResource AE_BehaviourSection}"
                    FontSize="12" FontWeight="SemiBold"
                    Foreground="{DynamicResource PFP_AccentBrush}"
                    Margin="0,0,0,6"/>
 
         <CheckBox x:Name="ChkAutoAnalyze"
-                  Content="Automatically analyze file when opened in HexEditor"
+                  Content="{DynamicResource AE_AutoAnalyzeOption}"
                   Foreground="{DynamicResource PFP_TextBrush}"
                   Margin="0,0,0,4"/>
 
         <CheckBox x:Name="ChkAutoSync"
-                  Content="Sync HexEditor cursor when selecting a tree node"
+                  Content="{DynamicResource AE_SyncCursorOption}"
                   Foreground="{DynamicResource PFP_TextBrush}"
                   Margin="0,0,0,4"/>
 
         <CheckBox x:Name="ChkShowResources"
-                  Content="Show Resources group in the tree"
+                  Content="{DynamicResource AE_ShowResourcesOption}"
                   Foreground="{DynamicResource PFP_TextBrush}"
                   Margin="0,0,0,4"/>
 
         <CheckBox x:Name="ChkShowMetadata"
-                  Content="Show Metadata Tables group in the tree"
+                  Content="{DynamicResource AE_ShowMetadataOption}"
                   Foreground="{DynamicResource PFP_TextBrush}"
                   Margin="0,0,0,4"/>
 
         <CheckBox x:Name="ChkInheritTheme"
-                  Content="Inherit IDE global theme"
+                  Content="{DynamicResource AE_InheritThemeOption}"
                   Foreground="{DynamicResource PFP_TextBrush}"
                   Margin="0,0,0,4"/>
 
         <CheckBox x:Name="ChkShowNonPublic"
-                  Content="Show non-public members (private, internal, protected)"
+                  Content="{DynamicResource AE_ShowNonPublicOption}"
                   Foreground="{DynamicResource PFP_TextBrush}"
                   Margin="0,0,0,4"/>
 
         <CheckBox x:Name="ChkShowInherited"
-                  Content="Show inherited members in type nodes"
+                  Content="{DynamicResource AE_ShowInheritedOption}"
                   Foreground="{DynamicResource PFP_TextBrush}"
                   Margin="0,0,0,4"/>
 
         <CheckBox x:Name="ChkPinAssemblies"
-                  Content="Pin loaded assemblies across active editor changes"
+                  Content="{DynamicResource AE_PinAssembliesOption}"
                   Foreground="{DynamicResource PFP_TextBrush}"
                   Margin="0,0,0,8"/>
 
@@ -200,7 +208,7 @@
                 <ColumnDefinition Width="160"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="0" Text="Max loaded assemblies:"
+            <TextBlock Grid.Column="0" Text="{DynamicResource AE_MaxAssembliesLabel}"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource PFP_TextBrush}"/>
             <StackPanel Grid.Column="1" Orientation="Horizontal">
@@ -228,7 +236,7 @@
         <Separator Background="{DynamicResource PFP_BorderBrush}" Margin="0,8,0,8"/>
 
         <!-- Section: Recent Files -->
-        <TextBlock Text="Recent Assemblies"
+        <TextBlock Text="{DynamicResource AE_RecentSection}"
                    FontSize="12" FontWeight="SemiBold"
                    Foreground="{DynamicResource PFP_AccentBrush}"
                    Margin="0,0,0,6"/>
@@ -250,7 +258,7 @@
         </Border>
 
         <Button x:Name="BtnClearRecent"
-                Content="Clear All Recent"
+                Content="{DynamicResource AE_ClearRecentButton}"
                 HorizontalAlignment="Left"
                 Padding="8,4"
                 FontSize="11"

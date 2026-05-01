@@ -19,4 +19,85 @@
   <data name="FileStats_NoFileLoaded" xml:space="preserve">
     <value>Aucun fichier chargé</value>
   </data>
+  <data name="FS_Title" xml:space="preserve">
+    <value>File Statistics</value>
+  </data>
+  <data name="FS_ReanalyzeButton" xml:space="preserve">
+    <value>Re-analyze</value>
+  </data>
+  <data name="FS_FileInfoSection" xml:space="preserve">
+    <value>File Information</value>
+  </data>
+  <data name="FS_NoFileLoaded" xml:space="preserve">
+    <value>No file loaded</value>
+  </data>
+  <data name="FS_SizeLabel" xml:space="preserve">
+    <value>Size:</value>
+  </data>
+  <data name="FS_ZeroBytesPlaceholder" xml:space="preserve">
+    <value>0 bytes</value>
+  </data>
+  <data name="FS_FormatLabel" xml:space="preserve">
+    <value>Format:</value>
+  </data>
+  <data name="FS_UnknownFormat" xml:space="preserve">
+    <value>Unknown</value>
+  </data>
+  <data name="FS_AnalyzedLabel" xml:space="preserve">
+    <value>Analyzed:</value>
+  </data>
+  <data name="FS_DetectedTypeSection" xml:space="preserve">
+    <value>Detected Data Type</value>
+  </data>
+  <data name="FS_ByteCompositionSection" xml:space="preserve">
+    <value>Byte Composition</value>
+  </data>
+  <data name="FS_NullBytesLabel" xml:space="preserve">
+    <value>Null bytes:</value>
+  </data>
+  <data name="FS_PrintableAsciiLabel" xml:space="preserve">
+    <value>Printable ASCII:</value>
+  </data>
+  <data name="FS_OtherBytesLabel" xml:space="preserve">
+    <value>Other bytes:</value>
+  </data>
+  <data name="FS_MostCommonLabel" xml:space="preserve">
+    <value>Most common:</value>
+  </data>
+  <data name="FS_UniqueBytesLabel" xml:space="preserve">
+    <value>Unique bytes:</value>
+  </data>
+  <data name="FS_HealthSection" xml:space="preserve">
+    <value>Overall Health</value>
+  </data>
+  <data name="FS_EntropySection" xml:space="preserve">
+    <value>Entropy Analysis</value>
+  </data>
+  <data name="FS_EntropyLevel" xml:space="preserve">
+    <value>Level:</value>
+  </data>
+  <data name="FS_ValidationSection" xml:space="preserve">
+    <value>Validation</value>
+  </data>
+  <data name="FS_StructureLabel" xml:space="preserve">
+    <value>Structure</value>
+  </data>
+  <data name="FS_ValidLabel" xml:space="preserve">
+    <value>Valid</value>
+  </data>
+  <data name="FS_ChecksumsLabel" xml:space="preserve">
+    <value>Checksums</value>
+  </data>
+  <data name="FS_AllPassLabel" xml:space="preserve">
+    <value>All pass</value>
+  </data>
+  <data name="FS_IssuesSection" xml:space="preserve">
+    <value>Detected Issues</value>
+  </data>
+  <data name="FS_NoIssuesText" xml:space="preserve">
+    <value>✅ No issues detected</value>
+  </data>
+  <data name="FS_AnalyzingLabel" xml:space="preserve">
+    <value>Analyzing file...</value>
+  </data>
 </root>

@@ -513,4 +513,70 @@ or use Install to add a .whxplugin</value>
   <data name="PH_WatchModeDesc" xml:space="preserve">
     <value>Hot-reload this plugin automatically when its DLL is rebuilt. Select the plugin's build output directory.</value>
   </data>
+  <data name="MKT_RefreshTooltip" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
+  <data name="MKT_RefreshButton" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
+  <data name="MKT_ShowVerifiedTooltip" xml:space="preserve">
+    <value>Show verified only</value>
+  </data>
+  <data name="MKT_VerifiedLabel" xml:space="preserve">
+    <value>Verified</value>
+  </data>
+  <data name="MKT_InstallFileTooltip" xml:space="preserve">
+    <value>Install plugin from local .whxplugin file</value>
+  </data>
+  <data name="MKT_InstallFileButton" xml:space="preserve">
+    <value>Install File…</value>
+  </data>
+  <data name="MKT_BrowseTab" xml:space="preserve">
+    <value>Browse</value>
+  </data>
+  <data name="MKT_SearchPlaceholder" xml:space="preserve">
+    <value>Search marketplace…</value>
+  </data>
+  <data name="MKT_InstalledTab" xml:space="preserve">
+    <value>Installed</value>
+  </data>
+  <data name="MKT_UpdatesTab" xml:space="preserve">
+    <value>Updates</value>
+  </data>
+  <data name="MKT_SelectPluginHint" xml:space="preserve">
+    <value>Select a plugin to see details.</value>
+  </data>
+  <data name="MKT_ReleaseNotesLabel" xml:space="preserve">
+    <value>Release Notes</value>
+  </data>
+  <data name="MKT_InstallButton" xml:space="preserve">
+    <value>Install</value>
+  </data>
+  <data name="MKT_RollbackButton" xml:space="preserve">
+    <value>Rollback</value>
+  </data>
+  <data name="MKT_RollbackTooltip" xml:space="preserve">
+    <value>Restore the previously installed version from backup</value>
+  </data>
+  <data name="MKT_UninstallButton" xml:space="preserve">
+    <value>Uninstall</value>
+  </data>
+  <data name="MKT_UpdateAllButton" xml:space="preserve">
+    <value>Update All</value>
+  </data>
+  <data name="MKT_UpdatesAvailable" xml:space="preserve">
+    <value>update(s) available</value>
+  </data>
+  <data name="MKT_AllUpToDate" xml:space="preserve">
+    <value>All plugins are up to date.</value>
+  </data>
+  <data name="MKT_UpdateButton" xml:space="preserve">
+    <value>Update</value>
+  </data>
+  <data name="MKT_VerifiedPublisherTooltip" xml:space="preserve">
+    <value>Verified publisher</value>
+  </data>
+  <data name="MKT_IntegrityTooltip" xml:space="preserve">
+    <value>Integrity verified</value>
+  </data>
 </root>

@@ -7,4 +7,73 @@
   <data name="DocStructure_PluginName" xml:space="preserve">
     <value>文档结构</value>
   </data>
+  <data name="DS_NavigateToMenu" xml:space="preserve">
+    <value>Navigate To</value>
+  </data>
+  <data name="DS_CopyNameMenu" xml:space="preserve">
+    <value>Copy Name</value>
+  </data>
+  <data name="DS_CopyQualifiedMenu" xml:space="preserve">
+    <value>Copy Qualified Name</value>
+  </data>
+  <data name="DS_ExpandAllMenu" xml:space="preserve">
+    <value>Expand All</value>
+  </data>
+  <data name="DS_CollapseAllMenu" xml:space="preserve">
+    <value>Collapse All</value>
+  </data>
+  <data name="DS_RefreshTooltip" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
+  <data name="DS_TreeViewTooltip" xml:space="preserve">
+    <value>Tree view</value>
+  </data>
+  <data name="DS_CollapseAllTooltip" xml:space="preserve">
+    <value>Collapse All</value>
+  </data>
+  <data name="DS_PinDocumentTooltip" xml:space="preserve">
+    <value>Pin document (keep structure while navigating)</value>
+  </data>
+  <data name="DS_SyncCursorTooltip" xml:space="preserve">
+    <value>Sync with editor cursor</value>
+  </data>
+  <data name="DS_SortOrderTooltip" xml:space="preserve">
+    <value>Sort order</value>
+  </data>
+  <data name="DS_SourceOrderOption" xml:space="preserve">
+    <value>Source Order</value>
+  </data>
+  <data name="DS_AlphabeticalOption" xml:space="preserve">
+    <value>Alphabetical</value>
+  </data>
+  <data name="DS_ByKindOption" xml:space="preserve">
+    <value>By Kind</value>
+  </data>
+  <data name="DS_MaxDepthTooltip" xml:space="preserve">
+    <value>Max tree depth</value>
+  </data>
+  <data name="DS_InfiniteDepth" xml:space="preserve">
+    <value>∞ Depth</value>
+  </data>
+  <data name="DS_Depth2" xml:space="preserve">
+    <value>2 Levels</value>
+  </data>
+  <data name="DS_Depth3" xml:space="preserve">
+    <value>3 Levels</value>
+  </data>
+  <data name="DS_Depth5" xml:space="preserve">
+    <value>5 Levels</value>
+  </data>
+  <data name="DS_Depth10" xml:space="preserve">
+    <value>10 Levels</value>
+  </data>
+  <data name="DS_MoreOptionsTooltip" xml:space="preserve">
+    <value>More options</value>
+  </data>
+  <data name="DS_NoDocumentText" xml:space="preserve">
+    <value>Open a document to see its structure</value>
+  </data>
+  <data name="DS_FilterPlaceholder" xml:space="preserve">
+    <value>Filter symbols…</value>
+  </data>
 </root>

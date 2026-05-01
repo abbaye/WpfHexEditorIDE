@@ -88,4 +88,85 @@
   <data name="AsmExplorer_Export_BrowseTitle" xml:space="preserve"><value>Choisir le dossier de sortie</value></data>
   <data name="AsmExplorer_Export_NoFolderSelected" xml:space="preserve"><value>Veuillez choisir un dossier de sortie.</value></data>
 
+  <data name="AE_DecompilerSection" xml:space="preserve">
+    <value>Decompiler</value>
+  </data>
+  <data name="AE_DetailFontSizeLabel" xml:space="preserve">
+    <value>Detail pane font size:</value>
+  </data>
+  <data name="AE_BackendLabel" xml:space="preserve">
+    <value>Decompiler backend:</value>
+  </data>
+  <data name="AE_ILSpyOption" xml:space="preserve">
+    <value>ILSpy engine</value>
+  </data>
+  <data name="AE_SkeletonOption" xml:space="preserve">
+    <value>Skeleton (BCL-only stubs)</value>
+  </data>
+  <data name="AE_QualityLabel" xml:space="preserve">
+    <value>Decompilation quality:</value>
+  </data>
+  <data name="AE_FullQuality" xml:space="preserve">
+    <value>Full (ILSpy + XML docs)</value>
+  </data>
+  <data name="AE_NormalQuality" xml:space="preserve">
+    <value>Normal (ILSpy, no docs)</value>
+  </data>
+  <data name="AE_SkeletonQuality" xml:space="preserve">
+    <value>Skeleton (fast, BCL stubs)</value>
+  </data>
+  <data name="AE_LangVersionLabel" xml:space="preserve">
+    <value>C# language version:</value>
+  </data>
+  <data name="AE_ShowXmlDocs" xml:space="preserve">
+    <value>Show XML documentation comments in decompiled output</value>
+  </data>
+  <data name="AE_ShowHiddenMembers" xml:space="preserve">
+    <value>Show hidden (compiler-generated) members</value>
+  </data>
+  <data name="AE_PdbIntegration" xml:space="preserve">
+    <value>Enable PDB integration (source mapping, local variable names)</value>
+  </data>
+  <data name="AE_DecompileLangLabel" xml:space="preserve">
+    <value>Decompile language:</value>
+  </data>
+  <data name="AE_BehaviourSection" xml:space="preserve">
+    <value>Behaviour</value>
+  </data>
+  <data name="AE_AutoAnalyzeOption" xml:space="preserve">
+    <value>Automatically analyze file when opened in HexEditor</value>
+  </data>
+  <data name="AE_SyncCursorOption" xml:space="preserve">
+    <value>Sync HexEditor cursor when selecting a tree node</value>
+  </data>
+  <data name="AE_ShowResourcesOption" xml:space="preserve">
+    <value>Show Resources group in the tree</value>
+  </data>
+  <data name="AE_ShowMetadataOption" xml:space="preserve">
+    <value>Show Metadata Tables group in the tree</value>
+  </data>
+  <data name="AE_InheritThemeOption" xml:space="preserve">
+    <value>Inherit IDE global theme</value>
+  </data>
+  <data name="AE_ShowNonPublicOption" xml:space="preserve">
+    <value>Show non-public members (private, internal, protected)</value>
+  </data>
+  <data name="AE_ShowInheritedOption" xml:space="preserve">
+    <value>Show inherited members in type nodes</value>
+  </data>
+  <data name="AE_PinAssembliesOption" xml:space="preserve">
+    <value>Pin loaded assemblies across active editor changes</value>
+  </data>
+  <data name="AE_MaxAssembliesLabel" xml:space="preserve">
+    <value>Max loaded assemblies:</value>
+  </data>
+  <data name="AE_MaxAssembliesRange" xml:space="preserve">
+    <value>(1 – 500)</value>
+  </data>
+  <data name="AE_RecentSection" xml:space="preserve">
+    <value>Recent Assemblies</value>
+  </data>
+  <data name="AE_ClearRecentButton" xml:space="preserve">
+    <value>Clear All Recent</value>
+  </data>
 </root>

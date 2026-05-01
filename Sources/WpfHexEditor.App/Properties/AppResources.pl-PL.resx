@@ -779,4 +779,64 @@
   <data name="App_Workspace_SaveFailed" xml:space="preserve">
     <value>Nie udało się zapisać obszaru roboczego:{0}{1}</value>
   </data>
+  <data name="APP_QuickActionsSection" xml:space="preserve">
+    <value>QUICK ACTIONS</value>
+  </data>
+  <data name="APP_NewFileButton" xml:space="preserve">
+    <value>New File</value>
+  </data>
+  <data name="APP_OpenFileButton" xml:space="preserve">
+    <value>Open File…</value>
+  </data>
+  <data name="APP_OpenProjectButton" xml:space="preserve">
+    <value>Open Project / Solution…</value>
+  </data>
+  <data name="APP_OptionsButton" xml:space="preserve">
+    <value>Options</value>
+  </data>
+  <data name="APP_RecentSection" xml:space="preserve">
+    <value>RECENT</value>
+  </data>
+  <data name="APP_NoRecentFiles" xml:space="preserve">
+    <value>No recent files</value>
+  </data>
+  <data name="APP_RecentProjectsSection" xml:space="preserve">
+    <value>RECENT PROJECTS</value>
+  </data>
+  <data name="APP_NoRecentProjects" xml:space="preserve">
+    <value>No recent projects</value>
+  </data>
+  <data name="APP_ResourcesSection" xml:space="preserve">
+    <value>RESOURCES</value>
+  </data>
+  <data name="APP_GitHubLink" xml:space="preserve">
+    <value>GitHub Repository ↗</value>
+  </data>
+  <data name="APP_WikiLink" xml:space="preserve">
+    <value>Wiki ↗</value>
+  </data>
+  <data name="APP_ReportIssueLink" xml:space="preserve">
+    <value>Report an Issue ↗</value>
+  </data>
+  <data name="APP_WhatsNewSection" xml:space="preserve">
+    <value>WHAT'S NEW</value>
+  </data>
+  <data name="APP_LoadingChangelog" xml:space="preserve">
+    <value>Loading changelog…</value>
+  </data>
+  <data name="APP_ChangelogNotAvailable" xml:space="preserve">
+    <value>Changelog not available.</value>
+  </data>
+  <data name="APP_GitHubButton" xml:space="preserve">
+    <value>GitHub</value>
+  </data>
+  <data name="APP_WikiButton" xml:space="preserve">
+    <value>Wiki</value>
+  </data>
+  <data name="APP_ReportIssueButton" xml:space="preserve">
+    <value>Report Issue</value>
+  </data>
+  <data name="APP_FullChangelogButton" xml:space="preserve">
+    <value>Full Changelog</value>
+  </data>
 </root>

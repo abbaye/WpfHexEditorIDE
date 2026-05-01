@@ -69,4 +69,82 @@
     <value>Format Info</value>
   </data>
 
+  <data name="FI_FormatNameLabel" xml:space="preserve">
+    <value>Format Name</value>
+  </data>
+  <data name="FI_PriorityLabel" xml:space="preserve">
+    <value>⭐ Priority</value>
+  </data>
+  <data name="FI_PriorityTooltip" xml:space="preserve">
+    <value>Priority Format — Top 100 most common formats</value>
+  </data>
+  <data name="FI_CategoryLabel" xml:space="preserve">
+    <value>Category</value>
+  </data>
+  <data name="FI_DescriptionLabel" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="FI_QualityLabel" xml:space="preserve">
+    <value>Quality:</value>
+  </data>
+  <data name="FI_DocLabel" xml:space="preserve">
+    <value>Documentation:</value>
+  </data>
+  <data name="FI_BasicLabel" xml:space="preserve">
+    <value>basic</value>
+  </data>
+  <data name="FI_ExtensionsLabel" xml:space="preserve">
+    <value>File Extensions</value>
+  </data>
+  <data name="FI_NaLabel" xml:space="preserve">
+    <value>N/A</value>
+  </data>
+  <data name="FI_MimeLabel" xml:space="preserve">
+    <value>MIME Types</value>
+  </data>
+  <data name="FI_SoftwareLabel" xml:space="preserve">
+    <value>Compatible Software</value>
+  </data>
+  <data name="FI_UseCasesLabel" xml:space="preserve">
+    <value>Common Use Cases</value>
+  </data>
+  <data name="FI_RefsSection" xml:space="preserve">
+    <value>📚 References & Documentation</value>
+  </data>
+  <data name="FI_SpecsLabel" xml:space="preserve">
+    <value>Specifications:</value>
+  </data>
+  <data name="FI_NoRefsText" xml:space="preserve">
+    <value>No references available for this format</value>
+  </data>
+  <data name="FI_TechnicalSection" xml:space="preserve">
+    <value>⚙️ Technical Details</value>
+  </data>
+  <data name="FI_RelatedSection" xml:space="preserve">
+    <value>🔗 Related Formats</value>
+  </data>
+  <data name="FI_DefinitionSection" xml:space="preserve">
+    <value>👤 Definition Info</value>
+  </data>
+  <data name="FI_VersionLabel" xml:space="preserve">
+    <value>Version:</value>
+  </data>
+  <data name="FI_AuthorLabel" xml:space="preserve">
+    <value>Author:</value>
+  </data>
+  <data name="FI_DetectionSection" xml:space="preserve">
+    <value>🔍 Detection Details</value>
+  </data>
+  <data name="FI_SignatureLabel" xml:space="preserve">
+    <value>Signature:</value>
+  </data>
+  <data name="FI_RequiredLabel" xml:space="preserve">
+    <value>Required:</value>
+  </data>
+  <data name="FI_NoFormatText" xml:space="preserve">
+    <value>No format detected</value>
+  </data>
+  <data name="FI_OpenFileHint" xml:space="preserve">
+    <value>Open a file to view format information</value>
+  </data>
 </root>
