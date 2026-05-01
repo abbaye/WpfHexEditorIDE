@@ -600,7 +600,7 @@ public sealed class ClassDiagramPlugin : IWpfHexEditorPlugin, IPluginWithOptions
         }
 
         // Highlight the arrow and select the source node.
-        _wiredHost.HighlightRelationship(rel.SourceId);
+        _wiredHost.HighlightRelationship($"{rel.SourceId}:{rel.TargetId}");
 
         var srcNode = _wiredHost.Document.Classes.FirstOrDefault(n => n.Id == rel.SourceId);
         if (srcNode is not null)

@@ -51,6 +51,14 @@ public sealed class DiagramCanvas : Canvas
 
     // ── Grid rendering (B1) ───────────────────────────────────────────────────
     private const double GridSpacing = 24.0;  // dot-grid spacing in logical px
+    private bool _showGrid = true;
+
+    /// <summary>Gets or sets whether the dot-grid background is visible.</summary>
+    public bool ShowGrid
+    {
+        get => _showGrid;
+        set { _showGrid = value; InvalidateVisual(); }
+    }
 
     // ── State ─────────────────────────────────────────────────────────────────
     private DiagramDocument?  _doc;
@@ -159,8 +167,9 @@ public sealed class DiagramCanvas : Canvas
 
         // Filter bar — top-center, hidden by default.
         _filterBar.Visibility  = Visibility.Collapsed;
-        _filterBar.FilterChanged  += OnFilterChanged;
-        _filterBar.CloseRequested += (_, _) => HideFilterBar();
+        _filterBar.FilterChanged   += OnFilterChanged;
+        _filterBar.CloseRequested  += (_, _) => HideFilterBar();
+        _filterBar.NavigateToMatch += OnFilterBarNavigate;
         Children.Add(_filterBar);
         Panel.SetZIndex(_filterBar, 200);
         SizeChanged += (_, _) => UpdateFilterBarPosition();
@@ -525,6 +534,10 @@ public sealed class DiagramCanvas : Canvas
         }
     }
 
+    // ── Dot-grid brush cache — rebuilt only when the theme token resolves to a different color ──
+    private Brush?  _cachedDotBrush;
+    private Color   _cachedDotColor;
+
     // B1 — Dot-grid background rendered in OnRender (only redraws when Canvas is invalidated)
     protected override void OnRender(DrawingContext dc)
     {
@@ -537,14 +550,22 @@ public sealed class DiagramCanvas : Canvas
 
         if (ActualWidth < 1 || ActualHeight < 1) return;
 
-        // Dot-grid: tiny circles spaced GridSpacing apart
-        Color gridColor = (TryFindResource("CD_CanvasGridLineBrush") as SolidColorBrush)?.Color
-                       ?? Color.FromArgb(80, 80, 85, 120);
-        var dotBrush = new SolidColorBrush(Color.FromArgb(gridColor.A, gridColor.R, gridColor.G, gridColor.B));
+        if (_showGrid)
+        {
+            // Dot-grid: tiny circles spaced GridSpacing apart
+            Color gridColor = (TryFindResource("CD_CanvasGridLineBrush") as SolidColorBrush)?.Color
+                           ?? Color.FromArgb(80, 80, 85, 120);
+            if (_cachedDotBrush is null || _cachedDotColor != gridColor)
+            {
+                _cachedDotColor = gridColor;
+                _cachedDotBrush = new SolidColorBrush(gridColor);
+                _cachedDotBrush.Freeze();
+            }
 
-        for (double x = GridSpacing; x < ActualWidth; x += GridSpacing)
-            for (double y = GridSpacing; y < ActualHeight; y += GridSpacing)
-                dc.DrawEllipse(dotBrush, null, new Point(x, y), 1.0, 1.0);
+            for (double x = GridSpacing; x < ActualWidth; x += GridSpacing)
+                for (double y = GridSpacing; y < ActualHeight; y += GridSpacing)
+                    dc.DrawEllipse(_cachedDotBrush, null, new Point(x, y), 1.0, 1.0);
+        }
     }
 
     // ── Filter bar (Phase 12) ─────────────────────────────────────────────────
@@ -616,8 +637,23 @@ public sealed class DiagramCanvas : Canvas
             }
         }
 
+        var orderedIds = _doc.Classes
+            .Where(n => matched.Contains(n.Id))
+            .OrderBy(n => n.Name)
+            .Select(n => n.Id)
+            .ToList();
+
         _filterBar.SetMatchCount(matched.Count, _doc.Classes.Count);
+        _filterBar.SetMatchedNodes(orderedIds);
         _layer.SetFocusNodes(args.FocusMode && matched.Count > 0 ? matched : null);
+    }
+
+    private void OnFilterBarNavigate(object? sender, string nodeId)
+    {
+        if (_doc is null) return;
+        var node = _doc.Classes.FirstOrDefault(n => n.Id == nodeId);
+        if (node is null) return;
+        ZoomToNodeRequested?.Invoke(this, node);
     }
 
     // ── Selection ─────────────────────────────────────────────────────────────

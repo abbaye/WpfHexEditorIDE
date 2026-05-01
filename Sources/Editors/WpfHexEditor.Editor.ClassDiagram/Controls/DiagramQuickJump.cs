@@ -204,15 +204,24 @@ public sealed class DiagramQuickJump : Border
         }
 
         int count = 0;
+        int total = 0;
         foreach (var node in candidates.OrderBy(n => n.Name))
         {
-            if (++count > MaxResults) break;
-            string? proj = GetNodeProject(node);
-            string subtitle = string.IsNullOrEmpty(node.Namespace)
-                ? (proj ?? string.Empty)
-                : $"{proj}  ·  {node.Namespace}";
-            _results.Items.Add(new QuickJumpItem(node, subtitle));
+            total++;
+            if (count < MaxResults)
+            {
+                string? proj = GetNodeProject(node);
+                string subtitle = string.IsNullOrEmpty(node.Namespace)
+                    ? (proj ?? string.Empty)
+                    : $"{proj}  ·  {node.Namespace}";
+                _results.Items.Add(new QuickJumpItem(node, subtitle));
+                count++;
+            }
         }
+
+        _hintLabel.Text = total > MaxResults
+            ? $"↑↓ navigate  ·  Enter jump  ·  Esc cancel  ({MaxResults}+ results, refine your search)"
+            : "↑↓ navigate  ·  Enter jump  ·  Esc cancel";
 
         if (_results.Items.Count > 0)
             _results.SelectedIndex = 0;
@@ -225,7 +234,8 @@ public sealed class DiagramQuickJump : Border
         int ti = 0;
         foreach (char c in name)
         {
-            if (char.IsUpper(c) && ti < term.Length && char.ToUpperInvariant(c) == char.ToUpperInvariant(term[ti]))
+            // c is already an upper-case letter — compare directly with the upper form of term[ti]
+            if (char.IsUpper(c) && ti < term.Length && c == char.ToUpperInvariant(term[ti]))
                 ti++;
         }
         return ti >= term.Length;

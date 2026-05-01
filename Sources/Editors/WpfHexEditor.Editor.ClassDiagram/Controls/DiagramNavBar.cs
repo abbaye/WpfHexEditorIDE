@@ -221,9 +221,10 @@ public sealed class DiagramNavBar : Border
     {
         if (_updating || _doc is null) return;
         if (_cboMember.SelectedItem is not NavMemberItem item) return;
+        if (item.Member is null) return;  // "—" sentinel
         var node = FindClassByName(SelectedText(_cboClass) ?? string.Empty);
         if (node is null) return;
-        ZoomToNodeRequested?.Invoke(this, node);
+        // Fire only ZoomToMemberRequested — host zooms to the node as part of that handler.
         ZoomToMemberRequested?.Invoke(this, (node, item.Member));
     }
 
@@ -361,7 +362,7 @@ public sealed class DiagramNavBar : Border
 
     // ── Inner type ────────────────────────────────────────────────────────────
 
-    private sealed record NavMemberItem(string Label, ClassMember Member)
+    private sealed record NavMemberItem(string Label, ClassMember? Member)
     {
         public override string ToString() => Label;
     }

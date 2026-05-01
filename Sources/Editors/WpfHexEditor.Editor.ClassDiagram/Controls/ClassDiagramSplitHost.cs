@@ -206,7 +206,8 @@ public sealed class ClassDiagramSplitHost : Grid,
         _canvas.SetUndoManager(_undoManager);
         _canvas.SetSnapEngine(_snap);
         _canvas.SelectedClassChanged     += OnCanvasSelectedClassChanged;
-        _canvas.HoveredClassChanged      += (_, _) => { };
+        _canvas.HoveredClassChanged      += OnCanvasHoveredClassChanged;
+        _canvas.RenameNodeRequested      += (_, args) => BeginRenameNode(args.Node);
         _canvas.ExportRequested          += OnCanvasExportRequested;
         _canvas.LayoutStrategyRequested  += (_, strategy) => _ = ApplyLayoutAsync(strategy);
         _canvas.FitToContentRequested    += (_, _) => _zoomPan.FitToContent();
@@ -357,7 +358,11 @@ public sealed class ClassDiagramSplitHost : Grid,
     public ICommand? SaveCommand      => new RelayCommand(() => Save());
     public ICommand? CopyCommand      => new RelayCommand(CopySelected, () => _canvas.SelectedIds.Count > 0);
     public ICommand? CutCommand       => new RelayCommand(CutSelected,  () => _canvas.SelectedIds.Count > 0);
-    public ICommand? PasteCommand     => new RelayCommand(PasteFromClipboard, () => Clipboard.ContainsText() && Clipboard.GetText().TrimStart().StartsWith("// classdiagram-clip"));
+    public ICommand? PasteCommand     => new RelayCommand(PasteFromClipboard, () =>
+    {
+        try { return Clipboard.ContainsText() && Clipboard.GetText().TrimStart().StartsWith("// classdiagram-clip"); }
+        catch { return false; }
+    });
     public ICommand? DeleteCommand    => new RelayCommand(() => { foreach (var id in _canvas.SelectedIds.ToList()) { var n = _document.Classes.FirstOrDefault(c => c.Id == id); if (n is not null) _canvas.DeleteSelectedNode(); } });
     public ICommand? SelectAllCommand => new RelayCommand(() => _canvas.SelectAll());
 
@@ -400,7 +405,7 @@ public sealed class ClassDiagramSplitHost : Grid,
     public void Cut()   => CutSelected();
     public void Paste() => PasteFromClipboard();
     public void Delete()     { DeleteSelected(); }
-    public void SelectAll()  { }
+    public void SelectAll()  => _canvas.SelectAll();
     public void CancelOperation() { }
 
     public void Close()
@@ -1234,10 +1239,11 @@ public sealed class ClassDiagramSplitHost : Grid,
         // Grid toggle
         ToolbarItems.Add(new EditorToolbarItem
         {
-            Icon     = "\uE80A",
-            Tooltip  = "Show grid",
-            IsToggle = true,
-            IsChecked = true
+            Icon      = "\uE80A",
+            Tooltip   = "Show grid",
+            IsToggle  = true,
+            IsChecked = true,
+            Command   = new RelayCommand(() => _canvas.ShowGrid = !_canvas.ShowGrid)
         });
 
         // Minimap toggle
@@ -1427,6 +1433,15 @@ public sealed class ClassDiagramSplitHost : Grid,
         SelectionChanged?.Invoke(this, EventArgs.Empty);
     }
 
+    private void OnCanvasHoveredClassChanged(object? sender, ClassNode? node)
+    {
+        if (_sbSelected is null) return;
+        // Show hovered node name in status bar when nothing is selected;
+        // keep the selected name when something IS selected so it doesn't flicker.
+        if (_canvas.SelectedNode is null)
+            _sbSelected.Value = node is not null ? $"↑ {node.Name}" : "None";
+    }
+
     // ---------------------------------------------------------------------------
     // DSL sync (canvas → DSL only; DSL pane is read-only)
     // ---------------------------------------------------------------------------
@@ -1586,33 +1601,51 @@ public sealed class ClassDiagramSplitHost : Grid,
         var result = ClassDiagramParser.Parse(dsl);
         if (!result.IsValid || result.Document.Classes.Count == 0) return;
 
-        // Offset pasted nodes so they don't land exactly on top of originals.
+        // Offset pasted nodes and build old→new ID map for relationship remapping.
         const double Offset = 40;
+        var idMap = new Dictionary<string, string>(StringComparer.Ordinal);
         foreach (var node in result.Document.Classes)
         {
-            node.Id  = Guid.NewGuid().ToString();
+            string oldId = node.Id;
+            string newId = Guid.NewGuid().ToString();
+            idMap[oldId] = newId;
+            node.Id  = newId;
             node.X  += Offset;
             node.Y  += Offset;
             _document.Classes.Add(node);
         }
-        // Re-map relationship source/target IDs to pasted copies.
-        // (Pasted relationships reference the original IDs in the clipboard DSL — skip for now;
-        //  full ID remapping would require tracking old→new ID pairs, deferred to next pass.)
+
+        // Remap relationship IDs so pasted arrows connect the new copies, not the originals.
+        var pastedRels = new List<ClassRelationship>();
+        foreach (var rel in result.Document.Relationships)
+        {
+            if (idMap.TryGetValue(rel.SourceId, out string? newSrc) &&
+                idMap.TryGetValue(rel.TargetId, out string? newTgt))
+            {
+                var remapped = rel with { SourceId = newSrc, TargetId = newTgt };
+                _document.Relationships.Add(remapped);
+                pastedRels.Add(remapped);
+            }
+        }
 
         _canvas.ApplyDocument(_document);
         SyncDslPane();
         SetDirty(true);
+
+        var pastedNodes = result.Document.Classes.ToList();
         _undoManager.Push(new SingleClassDiagramUndoEntry(
-            Description: $"Paste {result.Document.Classes.Count} node(s)",
+            Description: $"Paste {pastedNodes.Count} node(s)",
             UndoAction: () =>
             {
-                foreach (var n in result.Document.Classes) _document.Classes.Remove(n);
+                foreach (var n  in pastedNodes) _document.Classes.Remove(n);
+                foreach (var r  in pastedRels)  _document.Relationships.Remove(r);
                 _canvas.ApplyDocument(_document);
                 SyncDslPane();
             },
             RedoAction: () =>
             {
-                foreach (var n in result.Document.Classes) _document.Classes.Add(n);
+                foreach (var n  in pastedNodes) _document.Classes.Add(n);
+                foreach (var r  in pastedRels)  _document.Relationships.Add(r);
                 _canvas.ApplyDocument(_document);
                 SyncDslPane();
             }));
@@ -1660,7 +1693,113 @@ public sealed class ClassDiagramSplitHost : Grid,
         SetDirty(true);
     }
 
-    private void BeginRename() { /* Inline rename via ClassBoxControl */ }
+    private void BeginRename() => BeginRenameNode(_canvas.SelectedNode);
+
+    /// <summary>
+    /// Shows an inline TextBox popup positioned over the node header so the user
+    /// can rename the node in-place. Confirms on Enter/focus-loss, cancels on Escape.
+    /// </summary>
+    private void BeginRenameNode(ClassNode? node)
+    {
+        if (node is null) return;
+
+        // Convert the node header's diagram-space top-left to screen coords.
+        double zoom    = _zoomPan.ZoomFactor;
+        double offsetX = _zoomPan.OffsetX;
+        double offsetY = _zoomPan.OffsetY;
+
+        // screen_pt = diagram_pt * zoom + offset (ZoomPanCanvas internal transform)
+        var screenOrigin = _zoomPan.TranslatePoint(
+            new Point(node.X * zoom + offsetX, node.Y * zoom + offsetY),
+            this);
+
+        double popupW = Math.Max(node.Width * zoom, 160);
+
+        var tb = new TextBox
+        {
+            Text            = node.Name,
+            MinWidth        = popupW,
+            MaxWidth        = 320,
+            FontWeight      = FontWeights.Bold,
+            FontSize        = 13,
+            Padding         = new Thickness(6, 4, 6, 4),
+            BorderThickness = new Thickness(1),
+            SelectionStart  = 0,
+            SelectionLength = node.Name.Length
+        };
+        tb.SetResourceReference(TextBox.BackgroundProperty,  "CD_ClassBoxHeaderBackground");
+        tb.SetResourceReference(TextBox.ForegroundProperty,  "CD_ClassNameForeground");
+        tb.SetResourceReference(TextBox.BorderBrushProperty, "CD_ClassBoxSelectedBorderBrush");
+
+        var popup = new System.Windows.Controls.Primitives.Popup
+        {
+            Child              = new Border { Child = tb, CornerRadius = new CornerRadius(3), Padding = new Thickness(0) },
+            Placement          = System.Windows.Controls.Primitives.PlacementMode.AbsolutePoint,
+            HorizontalOffset   = screenOrigin.X,
+            VerticalOffset     = screenOrigin.Y,
+            AllowsTransparency = true,
+            StaysOpen          = true,
+            IsOpen             = true
+        };
+        tb.Focus();
+        tb.SelectAll();
+
+        void Commit()
+        {
+            if (!popup.IsOpen) return;
+            popup.IsOpen = false;
+
+            string newName = tb.Text.Trim();
+            if (newName.Length == 0 || newName == node.Name) return;
+
+            string beforeDsl = ClassDiagramSerializer.Serialize(_document);
+
+            // ClassNode.Name is init-only — replace with a cloned node carrying the new name.
+            var renamed = node.DeepClone();
+            renamed.Id = node.Id; // preserve stable ID so relationships remain valid
+            // patch Name by creating a new instance (init-only property)
+            var renamedFinal = new ClassNode
+            {
+                Name               = newName,
+                Kind               = renamed.Kind,
+                IsAbstract         = renamed.IsAbstract,
+                IsPartial          = renamed.IsPartial,
+                IsRecord           = renamed.IsRecord,
+                IsSealed           = renamed.IsSealed,
+                Namespace          = renamed.Namespace,
+                XmlDocSummary      = renamed.XmlDocSummary,
+                SourceFilePath     = renamed.SourceFilePath,
+                SourceLineOneBased = renamed.SourceLineOneBased,
+                Metrics            = renamed.Metrics,
+                X                  = renamed.X,
+                Y                  = renamed.Y,
+                Width              = renamed.Width,
+                Height             = renamed.Height,
+                CustomColor        = renamed.CustomColor
+            };
+            renamedFinal.Id = node.Id;
+            renamedFinal.Members.AddRange(renamed.Members);
+            renamedFinal.Attributes.AddRange(renamed.Attributes);
+
+            int idx = _document.Classes.IndexOf(node);
+            if (idx >= 0) _document.Classes[idx] = renamedFinal;
+
+            string afterDsl = ClassDiagramSerializer.Serialize(_document);
+            _undoManager.Push(new SnapshotClassDiagramUndoEntry(beforeDsl, afterDsl,
+                $"Rename → {newName}", ApplyDslSnapshot));
+
+            _canvas.ApplyDocument(_document);
+            SyncDslPane();
+            SetDirty(true);
+        }
+
+        tb.KeyDown   += (_, ke) =>
+        {
+            if (ke.Key == Key.Return)  { Commit();              ke.Handled = true; }
+            if (ke.Key == Key.Escape)  { popup.IsOpen = false;  ke.Handled = true; }
+        };
+        tb.LostFocus += (_, _) => Commit();
+    }
 
     // ---------------------------------------------------------------------------
     // Quick Jump (Ctrl+G)
@@ -2063,14 +2202,25 @@ public sealed class ClassDiagramSplitHost : Grid,
 
     private async Task CopyPngToClipboard()
     {
-        // Export to a temp file then load as BitmapImage
         string tmp = Path.GetTempFileName() + ".png";
-        await _exportService.ExportPngAsync(CurrentDocument, tmp);
-        if (!File.Exists(tmp)) return;
-        var bmp = new System.Windows.Media.Imaging.BitmapImage(new Uri(tmp));
-        Clipboard.SetImage(bmp);
-        File.Delete(tmp);
-        StatusMessage?.Invoke(this, "PNG copied to clipboard.");
+        try
+        {
+            await _exportService.ExportPngAsync(CurrentDocument, tmp);
+            if (!File.Exists(tmp)) return;
+            // OnLoad forces full decode before we delete the temp file.
+            var bmp = new System.Windows.Media.Imaging.BitmapImage();
+            bmp.BeginInit();
+            bmp.UriSource        = new Uri(tmp);
+            bmp.CacheOption      = System.Windows.Media.Imaging.BitmapCacheOption.OnLoad;
+            bmp.EndInit();
+            bmp.Freeze();
+            Clipboard.SetImage(bmp);
+            StatusMessage?.Invoke(this, "PNG copied to clipboard.");
+        }
+        finally
+        {
+            if (File.Exists(tmp)) File.Delete(tmp);
+        }
     }
 
     private void ShowExportDialog()

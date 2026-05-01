@@ -14,12 +14,12 @@
 //     DiagramCanvas applies focus mode via DiagramVisualLayer.SetFocusNodes.
 // ==========================================================
 
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
-using WpfHexEditor.Editor.ClassDiagram.Core.Model;
 
 namespace WpfHexEditor.Editor.ClassDiagram.Controls;
 
@@ -42,6 +42,11 @@ public sealed class DiagramFilterBar : Border
         Interval = TimeSpan.FromMilliseconds(150)
     };
 
+    // ── F3 navigation state ───────────────────────────────────────────────────
+
+    private List<string> _matchedNodeIds = [];
+    private int          _matchIndex     = -1;
+
     // ── Events ────────────────────────────────────────────────────────────────
 
     /// <summary>Fired when the filter text or focus-mode toggle changes.</summary>
@@ -50,12 +55,15 @@ public sealed class DiagramFilterBar : Border
     /// <summary>Fired when the user closes the bar (Escape or × button).</summary>
     public event EventHandler? CloseRequested;
 
+    /// <summary>Fired on F3/Shift+F3 with the node ID to navigate to.</summary>
+    public event EventHandler<string>? NavigateToMatch;
+
     // ── Constructor ───────────────────────────────────────────────────────────
 
     public DiagramFilterBar()
     {
-        Background  = new SolidColorBrush(Color.FromArgb(230, 35, 35, 45));
-        BorderBrush = new SolidColorBrush(Color.FromArgb(180, 100, 100, 140));
+        this.SetResourceReference(BackgroundProperty,   "CD_ClassBoxHeaderBackground");
+        this.SetResourceReference(BorderBrushProperty,  "CD_ClassBoxBorderBrush");
         BorderThickness = new Thickness(1);
         CornerRadius    = new CornerRadius(4);
         Padding         = new Thickness(6, 4, 6, 4);
@@ -64,31 +72,30 @@ public sealed class DiagramFilterBar : Border
         // Search box
         _searchBox.Width             = 220;
         _searchBox.Height            = 24;
-        _searchBox.Background        = new SolidColorBrush(Color.FromRgb(45, 45, 58));
-        _searchBox.Foreground        = Brushes.White;
-        _searchBox.CaretBrush        = Brushes.White;
-        _searchBox.BorderBrush       = new SolidColorBrush(Color.FromRgb(80, 80, 110));
         _searchBox.BorderThickness   = new Thickness(1);
         _searchBox.Padding           = new Thickness(4, 2, 4, 2);
         _searchBox.FontSize          = 12;
         _searchBox.VerticalContentAlignment = VerticalAlignment.Center;
+        _searchBox.SetResourceReference(Control.BackgroundProperty,  "CD_DslEditorBackground");
+        _searchBox.SetResourceReference(Control.ForegroundProperty,  "CD_ClassNameForeground");
+        _searchBox.SetResourceReference(Control.BorderBrushProperty, "CD_ClassBoxSelectedBorderBrush");
         _searchBox.TextChanged      += (_, _) => _debounce.Start();
         _searchBox.KeyDown          += OnSearchKeyDown;
 
         // Match count label
-        _matchLabel.Foreground = new SolidColorBrush(Color.FromRgb(160, 160, 200));
         _matchLabel.FontSize   = 11;
         _matchLabel.Margin     = new Thickness(6, 0, 0, 0);
         _matchLabel.VerticalAlignment = VerticalAlignment.Center;
         _matchLabel.Text       = string.Empty;
+        _matchLabel.SetResourceReference(TextBlock.ForegroundProperty, "CD_StereotypeForeground");
 
         // Focus mode check
         _focusCheck.Content             = "Focus";
-        _focusCheck.Foreground          = new SolidColorBrush(Color.FromRgb(200, 200, 220));
         _focusCheck.FontSize            = 11;
         _focusCheck.Margin              = new Thickness(8, 0, 0, 0);
         _focusCheck.VerticalAlignment   = VerticalAlignment.Center;
         _focusCheck.IsChecked           = true;
+        _focusCheck.SetResourceReference(Control.ForegroundProperty, "CD_ClassNameForeground");
         _focusCheck.Checked            += (_, _) => RaiseFilter();
         _focusCheck.Unchecked          += (_, _) => RaiseFilter();
 
@@ -99,10 +106,10 @@ public sealed class DiagramFilterBar : Border
         _closeBtn.Padding          = new Thickness(0);
         _closeBtn.FontSize         = 14;
         _closeBtn.Background       = Brushes.Transparent;
-        _closeBtn.Foreground       = new SolidColorBrush(Color.FromRgb(180, 180, 200));
         _closeBtn.BorderThickness  = new Thickness(0);
         _closeBtn.Margin           = new Thickness(6, 0, 0, 0);
         _closeBtn.VerticalAlignment = VerticalAlignment.Center;
+        _closeBtn.SetResourceReference(Control.ForegroundProperty, "CD_StereotypeForeground");
         _closeBtn.Click           += (_, _) => CloseRequested?.Invoke(this, EventArgs.Empty);
 
         // Layout: horizontal StackPanel
@@ -111,14 +118,15 @@ public sealed class DiagramFilterBar : Border
             Orientation = Orientation.Horizontal,
             VerticalAlignment = VerticalAlignment.Center
         };
-        panel.Children.Add(new TextBlock
+        var filterLabel = new TextBlock
         {
-            Text          = "Filter: ",
-            Foreground    = new SolidColorBrush(Color.FromRgb(180, 180, 200)),
-            FontSize      = 11,
+            Text              = "Filter: ",
+            FontSize          = 11,
             VerticalAlignment = VerticalAlignment.Center,
-            Margin        = new Thickness(0, 0, 4, 0)
-        });
+            Margin            = new Thickness(0, 0, 4, 0)
+        };
+        filterLabel.SetResourceReference(TextBlock.ForegroundProperty, "CD_StereotypeForeground");
+        panel.Children.Add(filterLabel);
         panel.Children.Add(_searchBox);
         panel.Children.Add(_matchLabel);
         panel.Children.Add(_focusCheck);
@@ -152,6 +160,16 @@ public sealed class DiagramFilterBar : Border
             : $"{matched}/{total}";
     }
 
+    /// <summary>
+    /// Supplies the ordered list of matched node IDs for F3/Shift+F3 navigation.
+    /// Call after each filter update from DiagramCanvas.
+    /// </summary>
+    public void SetMatchedNodes(IReadOnlyList<string> orderedIds)
+    {
+        _matchedNodeIds = [.. orderedIds];
+        _matchIndex     = _matchedNodeIds.Count > 0 ? 0 : -1;
+    }
+
     /// <summary>Clears the search text and hides the bar.</summary>
     public void Clear()
     {
@@ -162,10 +180,22 @@ public sealed class DiagramFilterBar : Border
 
     private void OnSearchKeyDown(object sender, KeyEventArgs e)
     {
-        if (e.Key == Key.Escape)
+        switch (e.Key)
         {
-            CloseRequested?.Invoke(this, EventArgs.Empty);
-            e.Handled = true;
+            case Key.Escape:
+                CloseRequested?.Invoke(this, EventArgs.Empty);
+                e.Handled = true;
+                break;
+
+            case Key.F3:
+                if (_matchedNodeIds.Count == 0) break;
+                if ((Keyboard.Modifiers & ModifierKeys.Shift) != 0)
+                    _matchIndex = (_matchIndex - 1 + _matchedNodeIds.Count) % _matchedNodeIds.Count;
+                else
+                    _matchIndex = (_matchIndex + 1) % _matchedNodeIds.Count;
+                NavigateToMatch?.Invoke(this, _matchedNodeIds[_matchIndex]);
+                e.Handled = true;
+                break;
         }
     }
 
