@@ -263,6 +263,87 @@
 
                 <Separator Style="{StaticResource DocToolbarSeparatorStyle}" DockPanel.Dock="Left"/>
 
+                <!-- Group 5b — Font family (Wave F) -->
+                <ComboBox x:Name="PART_FontFamilyDropdown"
+                          DockPanel.Dock="Left"
+                          Width="110"
+                          Height="22"
+                          FontSize="11"
+                          Margin="2,0"
+                          ToolTip="Font family"
+                          SelectionChanged="OnFontFamilyChanged">
+                    <ComboBoxItem Content="Georgia"      Tag="Georgia"/>
+                    <ComboBoxItem Content="Segoe UI"     Tag="Segoe UI"     IsSelected="True"/>
+                    <ComboBoxItem Content="Arial"        Tag="Arial"/>
+                    <ComboBoxItem Content="Courier New"  Tag="Courier New"/>
+                    <ComboBoxItem Content="Times New Roman" Tag="Times New Roman"/>
+                </ComboBox>
+
+                <!-- Group 5c — Font size (Wave F) -->
+                <ComboBox x:Name="PART_FontSizeDropdown"
+                          DockPanel.Dock="Left"
+                          Width="42"
+                          Height="22"
+                          FontSize="11"
+                          Margin="2,0"
+                          IsEditable="True"
+                          ToolTip="Font size"
+                          SelectionChanged="OnFontSizeChanged"
+                          LostFocus="OnFontSizeCommit">
+                    <ComboBoxItem Content="8"  Tag="8"/>
+                    <ComboBoxItem Content="9"  Tag="9"/>
+                    <ComboBoxItem Content="10" Tag="10"/>
+                    <ComboBoxItem Content="11" Tag="11"/>
+                    <ComboBoxItem Content="12" Tag="12" IsSelected="True"/>
+                    <ComboBoxItem Content="14" Tag="14"/>
+                    <ComboBoxItem Content="16" Tag="16"/>
+                    <ComboBoxItem Content="18" Tag="18"/>
+                    <ComboBoxItem Content="20" Tag="20"/>
+                    <ComboBoxItem Content="24" Tag="24"/>
+                    <ComboBoxItem Content="28" Tag="28"/>
+                    <ComboBoxItem Content="36" Tag="36"/>
+                    <ComboBoxItem Content="48" Tag="48"/>
+                    <ComboBoxItem Content="72" Tag="72"/>
+                </ComboBox>
+
+                <!-- Group 5d — Text color (Wave F) -->
+                <Button x:Name="PART_TextColorBtn"
+                        Style="{StaticResource DocActionButtonStyle}"
+                        DockPanel.Dock="Left"
+                        Margin="2,0,0,0"
+                        ToolTip="Text color"
+                        Click="OnTextColorBtnClicked">
+                    <Grid Width="18" Height="18">
+                        <TextBlock Text="A" FontSize="13" FontWeight="Bold"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <Rectangle x:Name="PART_ColorStripe"
+                                   Height="3"
+                                   VerticalAlignment="Bottom"
+                                   Fill="#FF0000"
+                                   Margin="0,0,0,1"/>
+                    </Grid>
+                </Button>
+
+                <Popup x:Name="PART_ColorPickerPopup"
+                       PlacementTarget="{Binding ElementName=PART_TextColorBtn}"
+                       Placement="Bottom"
+                       StaysOpen="False"
+                       AllowsTransparency="True">
+                    <Border Background="{DynamicResource DockBackgroundBrush}"
+                            BorderBrush="{DynamicResource DockBorderBrush}"
+                            BorderThickness="1"
+                            CornerRadius="2"
+                            Padding="6">
+                        <UniformGrid x:Name="PART_ColorSwatches"
+                                     Columns="8"
+                                     Rows="2"
+                                     Width="136"
+                                     Height="34"/>
+                    </Border>
+                </Popup>
+
+                <Separator Style="{StaticResource DocToolbarSeparatorStyle}" DockPanel.Dock="Left"/>
+
                 <!-- Group 6 — Paragraph formatting (Phase 15) -->
                 <ComboBox x:Name="PART_StyleDropdown"
                           DockPanel.Dock="Left"
