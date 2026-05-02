@@ -11,6 +11,14 @@ dotnet add package whfmt.FileFormatCatalog
 
 ---
 
+## What's New in 1.2.0
+
+- **Catalog**: 790+ definitions — schema v2.4, `formatId` on every entry, 57 language grammars.
+- **`FormatFileAnalyzer`**: `AnalyzeDirectory()` lazy batch scan now supports async enumeration (`IAsyncEnumerable`) in addition to the synchronous overload.
+- **`CatalogQuery`**: new `WithFormatId(string)` filter for exact `formatId` lookup; `Execute()` now returns `IReadOnlyList<EmbeddedFormatEntry>` (was `List<>`).
+- **`FormatMetadataExtensions`**: `GetAllMetadata()` exposed as a public API; `FormatMetadata` record now implements `IEquatable<FormatMetadata>`.
+- **Quality**: internal JSON parsers pre-size all list allocations via `GetArrayLength()` — reduced GC pressure on large batch scans.
+
 ## What's New in 1.1.1
 
 - **`CatalogQuery`** — 6 new terminal operations: `Any()`, `Select<T>()`, `ToDictionary<K,V>()`, `ToExtensionDictionary()`, `ToExtensionDictionary<V>()`, `GroupByCategory()`; new `HasPreferredEditor()` filter; internal `NormalizeExt` helper ensures consistent `.ext` normalization across all extension-keyed dictionaries
@@ -467,6 +475,14 @@ public class FormatService(IEmbeddedFormatCatalog catalog) { ... }
 ---
 
 ## Changelog
+
+### 1.2.0
+
+- **Catalog**: 790+ definitions, schema v2.4, `formatId` on every entry, 57 language grammars.
+- **`FormatFileAnalyzer`**: `AnalyzeDirectory()` supports async enumeration.
+- **`CatalogQuery`**: `WithFormatId(string)` filter; `Execute()` returns `IReadOnlyList<>`.
+- **`FormatMetadataExtensions`**: `FormatMetadata` record now implements `IEquatable<FormatMetadata>`.
+- **Quality**: pre-sized list allocations in all JSON parsers.
 
 ### 1.1.1
 

@@ -6,7 +6,7 @@
 
 [![.NET](https://img.shields.io/badge/.NET-8.0--windows-512BD4?logo=dotnet)](https://dotnet.microsoft.com/)
   [![Platform](https://img.shields.io/badge/Platform-Windows%20WPF-0078D4?logo=windows)](https://github.com/abbaye/WpfHexEditorIDE)
-  [![IDE Version](https://img.shields.io/badge/IDE-v0.6.4.82-6A0DAD?logo=visualstudiocode&logoColor=white)](https://github.com/abbaye/WpfHexEditorIDE/releases)
+  [![IDE Version](https://img.shields.io/badge/IDE-v0.6.5.15-6A0DAD?logo=visualstudiocode&logoColor=white)](https://github.com/abbaye/WpfHexEditorIDE/releases)
   [![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
   [![Status](https://img.shields.io/badge/Status-Active%20Development-orange)](https://github.com/abbaye/WpfHexEditorIDE/commits/master)
   [![Roadmap](https://img.shields.io/badge/Roadmap-ROADMAP.md-brightgreen)](docs/ROADMAP.md)
@@ -16,7 +16,7 @@
 
   > 🚧 **Active Development** — New features, editors and panels are added regularly. Contributions welcome!
   >
-  > 📅 *Last revised: 2026-04-15*
+  > 📅 *Last revised: 2026-05-01*
 
   <br/>
 
@@ -45,8 +45,8 @@ ${\color{#2E7BDE}\texttt{<}}{\color{#E87A20}\texttt{WpfHexEditor}}\ {\color{#2E7
 |---|---|
 | **🪟 Docking** *(100% in-house)* | Fully custom VS-style docking engine — float, dock, auto-hide, pin, colored tab strips, **16 built-in themes** (Dark, Light, VS2022Dark, DarkGlass, Dracula, Nord, Tokyo Night, Catppuccin Mocha/Latte, Gruvbox Dark, Forest, Matrix, Synthwave 84, Cyberpunk, High Contrast…), tab placement left/right/bottom, layout undo/redo (`Ctrl+Shift+Z/Y`), serializable workspace state, **VS-like drop overlay** with active-tab gap and placement-aware tab styles (top/bottom CornerRadius switch) |
 | **🏗️ Project System** | Open and build `.whsln`/`.whproj` native projects or Visual Studio `.sln`/`.csproj`/`.vbproj` solutions — MSBuild build/rebuild/clean with parallel project compilation, real-time build progress bar, virtual and physical folder organization, per-file editor state persistence, project template scaffolding |
-| **📐 `.whfmt` — Declaration-Driven IDE** | The ❤️ of the IDE — an in-house unified definition language that makes the entire application **data-driven, not code-driven**. **690+ definitions** ship built-in (schema v2.3). `.whfmt` decides: which editor opens a file (Hex, Code, Image, Audio, JSON, Markdown…) · how binary formats are parsed (repeating blocks, unions, versioned structures, pointers, checksums, assertions, forensic alerts, variables, references) · how source languages behave in the Code Editor (syntax highlighting for 55+ languages, folding, bracket pairs, comment toggles, auto-close, indentation, end-of-block hints, breakpoint validation, whitespace rendering) · how formats are detected (magic bytes, confidence scoring, multi-signature, MIME types). **Add a new file type? Write a `.whfmt` — no C# code needed.** Also available as a standalone cross-platform NuGet package: [`whfmt.FileFormatCatalog`](Sources/Core/WpfHexEditor.Core.Definitions/README.md). |
-| **🔍 Binary Intelligence** | Deep binary analysis toolkit — 690+ format auto-detection via magic bytes with confidence scoring, reactive Parsed Fields panel with expandable groups and FormatNavigator bookmark strip, format field color overlay directly on the hex view, Data Inspector showing 40+ type interpretations at caret (integers, floats, strings, GUIDs, dates, colors, IP addresses…), Assembly Explorer for .NET PE inspection with ILSpy C#/VB.NET decompilation |
+| **📐 `.whfmt` — Declaration-Driven IDE** | The ❤️ of the IDE — an in-house unified definition language that makes the entire application **data-driven, not code-driven**. **790+ definitions** ship built-in (schema v2.3). `.whfmt` decides: which editor opens a file (Hex, Code, Image, Audio, JSON, Markdown…) · how binary formats are parsed (repeating blocks, unions, versioned structures, pointers, checksums, assertions, forensic alerts, variables, references) · how source languages behave in the Code Editor (syntax highlighting for 57+ languages, folding, bracket pairs, comment toggles, auto-close, indentation, end-of-block hints, breakpoint validation, whitespace rendering) · how formats are detected (magic bytes, confidence scoring, multi-signature, MIME types). **Add a new file type? Write a `.whfmt` — no C# code needed.** Also available as a standalone cross-platform NuGet package: [`whfmt.FileFormatCatalog`](Sources/Core/WpfHexEditor.Core.Definitions/README.md). |
+| **🔍 Binary Intelligence** | Deep binary analysis toolkit — 790+ format auto-detection via magic bytes with confidence scoring, reactive Parsed Fields panel with expandable groups and FormatNavigator bookmark strip, format field color overlay directly on the hex view, Data Inspector showing 40+ type interpretations at caret (integers, floats, strings, GUIDs, dates, colors, IP addresses…), Assembly Explorer for .NET PE inspection with ILSpy C#/VB.NET decompilation |
 | **🧠 Code Intelligence** | **In-process Roslyn** for C#/VB.NET analysis — full LSP 3.17 client supporting 13 provider types: completion, hover, signature help, code actions, rename, inlay hints, code lens, semantic tokens, call hierarchy, type hierarchy, pull diagnostics, linked editing, breadcrumb navigation bar |
 | **🤖 AI Assistant** | Multi-provider AI chat panel — supports Anthropic, OpenAI, Google Gemini, Ollama, and Claude Code CLI out of the box, 25 MCP tools for deep IDE integration (build, debug, navigate, analyze), streaming responses with inline code apply, `@mentions` for context injection (`@file`/`@selection`/`@errors`/`@solution`), dedicated command palette (`Ctrl+Shift+A`), conversation history, customizable prompt presets |
 | **🔌 Plugin System** | Extensible plugin architecture — SDK 2.0.0 (API frozen, semver), `.whxplugin` package format, Plugin Manager UI, typed EventBus (39+ domain events), capability registry, extension points (menus, toolbar, titlebar, panels, status bar, terminal commands), dependency graph, plugin signing with signature validation, out-of-process sandbox with HWND embedding — **28 built-in plugins** ship with the IDE. **Lazy/Standby loading** — file-extension and command-based activation triggers; dormant plugins stay unloaded until invoked; manifest-driven stubs keep menus and Command Palette fully discoverable; open panel state persists across restarts |
@@ -63,9 +63,9 @@ Every editor is a standalone `IDocumentEditor` plugin — reusable outside the I
 
 | Editor | Progress | Description |
 |--------|----------|-------------|
-| **[Code Editor](Sources/WpfHexEditor.Editor.CodeEditor/README.md)** | ~87% | Advanced source editor — 55+ languages (incl. F# + VB.NET), **Roslyn in-process C#/VB.NET analysis**, full LSP 3.17 suite (13 providers: completion, hover, signature help, code actions, rename, inlay hints, code lens, semantic tokens, call/type hierarchy, linked editing, pull diagnostics), sticky scroll, Find All References (`Shift+F12`), multi-caret (`Ctrl+Alt+Click`), bracket-depth colorizer, color swatch preview, column rulers, format-on-save, split view, **Ctrl+Click links and emails** (toggleable, `ClickableLinksEnabled`/`ClickableEmailsEnabled`), **upgraded Roslyn semantic inline hints** (`IReferenceCountProvider`, whfmt-driven `CanProvide`) |
+| **[Code Editor](Sources/WpfHexEditor.Editor.CodeEditor/README.md)** | ~90% | Advanced source editor — 57+ languages (incl. F# + VB.NET), **Roslyn in-process C#/VB.NET analysis**, full LSP 3.17 suite (13 providers: completion, hover, signature help, code actions, rename, inlay hints, code lens, semantic tokens, call/type hierarchy, linked editing, pull diagnostics), sticky scroll, Find All References (`Shift+F12`), multi-caret (`Ctrl+Alt+Click`), bracket-depth colorizer, color swatch preview, column rulers, format-on-save, split view, **Ctrl+Click links and emails** (toggleable, `ClickableLinksEnabled`/`ClickableEmailsEnabled`), **upgraded Roslyn semantic inline hints** (`IReferenceCountProvider`, whfmt-driven `CanProvide`) |
 | **[TBL Editor](Sources/WpfHexEditor.Editor.TblEditor/README.md)** | ~75% | Character table editor — create and edit custom `.tbl` encoding tables for ROM hacking and retro game translation, bidirectional hex↔text preview |
-| **[Hex Editor](Sources/WpfHexEditor.HexEditor/README.md)** | ~65% | Full binary editor — insert/overwrite modes, 690+ format auto-detection, multi-mode search (hex/text/regex/wildcard/TBL), persistent bookmarks, custom encoding tables, block-level undo/redo with VS-style history dropdown |
+| **[Hex Editor](Sources/WpfHexEditor.HexEditor/README.md)** | ~70% | Full binary editor — insert/overwrite modes, 790+ format auto-detection, multi-mode search (hex/text/regex/wildcard/TBL), persistent bookmarks, custom encoding tables, block-level undo/redo with VS-style history dropdown, Go to offset dialog (`Ctrl+G`) |
 | **[Diff / Changeset Viewer](Sources/WpfHexEditor.Editor.DiffViewer/README.md)** | ~65% | File comparison tool — binary, text, and structure diff modes with GlyphRun canvas renderers for high performance, word-level highlighting, overview ruler, Myers/Binary/Semantic algorithms, format field overlay for binary diffs |
 | **[Markdown Editor](Sources/WpfHexEditor.Editor.MarkdownEditor/README.md)** | ~50% | Markdown authoring — live side-by-side preview, mermaid.js diagram rendering, image paste from clipboard, document outline panel, adaptive render debounce, off-thread word count |
 | **[XAML Designer](Sources/WpfHexEditor.Editor.XamlDesigner/README.md)** | ~40% | Visual WPF designer — live canvas with bidirectional XAML↔design sync, move/resize/rotate handles, property inspector (`F4`), alignment guides, snap grid, 4 split layouts, undo/redo, Toolbox panel |
@@ -97,26 +97,28 @@ All controls are **independently reusable** — no IDE required.
 
 | Control | NuGet | Description |
 |---------|-------|-------------|
-| **[Hex Editor](Sources/WpfHexEditor.HexEditor/README.md)** | [![NuGet](https://img.shields.io/nuget/v/WPFHexaEditor?label=WPFHexaEditor)](https://www.nuget.org/packages/WPFHexaEditor/) | Full-featured binary editor — insert/overwrite modes, 690+ format auto-detection, multi-mode search, bookmarks, TBL encoding, block undo/redo |
-| **[Code Editor](Sources/WpfHexEditor.Editor.CodeEditor/README.md)** | [![NuGet](https://img.shields.io/nuget/v/WpfCodeEditor?label=WpfCodeEditor)](https://www.nuget.org/packages/WpfCodeEditor/) | Advanced source editor — 55+ languages, LSP 3.17, folding, multi-caret, minimap, split view, inline hints |
-| **[Docking](Sources/Docking/WpfHexEditor.Docking.Wpf/README.md)** | [![NuGet](https://img.shields.io/nuget/v/WpfDocking?label=WpfDocking)](https://www.nuget.org/packages/WpfDocking/) | VS Code-style docking — panels, documents, drag-and-drop, 16 themes, layout persistence |
+| **[Hex Editor](Sources/WpfHexEditor.HexEditor/README.md)** | [![NuGet](https://img.shields.io/nuget/v/WPFHexaEditor?label=WPFHexaEditor)](https://www.nuget.org/packages/WPFHexaEditor/) | Full-featured binary editor — insert/overwrite modes, 790+ format auto-detection, multi-mode search, bookmarks, TBL encoding, block undo/redo, Go to offset (`Ctrl+G`) · [Guide](https://github.com/abbaye/WpfHexEditorIDE/blob/master/Sources/Editors/WpfHexEditor.HexEditor/WPFHexaEditor-guide.md) |
+| **[Code Editor](Sources/WpfHexEditor.Editor.CodeEditor/README.md)** | [![NuGet](https://img.shields.io/nuget/v/WpfCodeEditor?label=WpfCodeEditor)](https://www.nuget.org/packages/WpfCodeEditor/) | Advanced source editor — 57+ languages, LSP 3.17, folding, multi-caret, minimap, split view, inline hints · [Guide](https://github.com/abbaye/WpfHexEditorIDE/blob/master/Sources/Editors/WpfHexEditor.Editor.CodeEditor/WpfCodeEditor-guide.md) |
+| **[Docking](Sources/Docking/WpfHexEditor.Docking.Wpf/README.md)** | [![NuGet](https://img.shields.io/nuget/v/WpfDocking?label=WpfDocking)](https://www.nuget.org/packages/WpfDocking/) | VS Code-style docking — panels, documents, tab groups, drag-and-drop, 16 themes, layout persistence · [Guide](https://github.com/abbaye/WpfHexEditorIDE/blob/master/Sources/Docking/WpfHexEditor.Docking.Wpf/WpfDocking-guide.md) |
 | **[Color Picker](Sources/WpfHexEditor.ColorPicker/README.md)** | [![NuGet](https://img.shields.io/nuget/v/WpfColorPicker?label=WpfColorPicker)](https://www.nuget.org/packages/WpfColorPicker/) | HSV wheel, RGB/HSL sliders, hex input, palettes, eyedropper, opacity support |
-| **[Terminal](Sources/WpfHexEditor.Terminal/README.md)** | [![NuGet](https://img.shields.io/nuget/v/WpfTerminal?label=WpfTerminal)](https://www.nuget.org/packages/WpfTerminal/) | Multi-tab shell emulator — cmd/PowerShell/bash, 39 built-in commands, macros, scripting |
-| **[FileFormatCatalog](Sources/Core/WpfHexEditor.Core.Definitions/README.md)** | [![NuGet](https://img.shields.io/badge/NuGet-whfmt.FileFormatCatalog-004880?logo=nuget)](https://www.nuget.org/packages/whfmt.FileFormatCatalog/) | 690+ embedded format definitions — extension/MIME/magic-byte detection, 35 syntax grammars, 27 categories; **cross-platform `net8.0`** |
+| **[Terminal](Sources/WpfHexEditor.Terminal/README.md)** | [![NuGet](https://img.shields.io/nuget/v/WpfTerminal?label=WpfTerminal)](https://www.nuget.org/packages/WpfTerminal/) | Multi-tab shell emulator — cmd/PowerShell/bash, 39 built-in commands, macros, HxScript scripting · [Guide](https://github.com/abbaye/WpfHexEditorIDE/blob/master/Sources/Controls/WpfHexEditor.Terminal/WpfTerminal-guide.md) |
+| **[ByteProvider](Sources/Core/WpfHexEditor.Core.ByteProvider/README.md)** | [![NuGet](https://img.shields.io/nuget/v/WpfHexEditor.Core.ByteProvider?label=ByteProvider)](https://www.nuget.org/packages/WpfHexEditor.Core.ByteProvider/) | Standalone byte provider — stream/file/memory backends, `IByteProvider` abstraction, **cross-platform `net8.0`** |
+| **[FileFormatCatalog](Sources/Core/WpfHexEditor.Core.Definitions/README.md)** | [![NuGet](https://img.shields.io/badge/NuGet-whfmt.FileFormatCatalog-004880?logo=nuget)](https://www.nuget.org/packages/whfmt.FileFormatCatalog/) | 790+ embedded format definitions — extension/MIME/magic-byte detection, 57 syntax grammars, 27 categories; **cross-platform `net8.0`** · [Guide](https://github.com/abbaye/WpfHexEditorIDE/blob/master/docs/features/whfmt-FileFormatCatalog-guide.md) |
 | **[HexBox](Sources/WpfHexEditor.HexBox/README.md)** | — | Lightweight single-value hex input field — drop-in TextBox replacement |
 | **[ProgressBar](Sources/WpfHexEditor.ProgressBar/README.md)** | — | Animated progress indicator — determinate/indeterminate modes, themeable |
 
 ```bash
 # Install via .NET CLI
-dotnet add package WPFHexaEditor              # Hex editor control
-dotnet add package WpfCodeEditor              # Code editor control
-dotnet add package WpfDocking                 # Docking framework
+dotnet add package WPFHexaEditor              # Hex editor control (v3.2.0)
+dotnet add package WpfCodeEditor              # Code editor control (v0.9.8.0)
+dotnet add package WpfDocking                 # Docking framework (v0.9.7.0)
 dotnet add package WpfColorPicker             # Color picker control
-dotnet add package WpfTerminal                # Terminal control
-dotnet add package whfmt.FileFormatCatalog    # 690+ format definitions (cross-platform net8.0)
+dotnet add package WpfTerminal                # Terminal control (v0.9.7.0)
+dotnet add package WpfHexEditor.Core.ByteProvider   # Byte provider (v1.1.0, cross-platform)
+dotnet add package whfmt.FileFormatCatalog    # 790+ format definitions (cross-platform net8.0)
 ```
 
-> UI control packages target **.NET 8.0-windows** · `whfmt.FileFormatCatalog` targets **cross-platform `net8.0`**. All packages bundle their dependencies (zero external NuGet deps) and include XML IntelliSense + SourceLink.
+> UI control packages target **.NET 8.0-windows** · `ByteProvider` and `whfmt.FileFormatCatalog` target **cross-platform `net8.0`**. All packages bundle their dependencies (zero external NuGet deps) and include XML IntelliSense + SourceLink.
 
 ### Libraries
 
@@ -124,8 +126,8 @@ dotnet add package whfmt.FileFormatCatalog    # 690+ format definitions (cross-p
 |---------|-------------|
 | **[Core](Sources/WpfHexEditor.Core/README.md)** | Foundation library — ByteProvider (stream-based byte management), 16 injectable services (search, replace, copy, bookmark, undo…), format detection, data layer |
 | **[Editor.Core](Sources/WpfHexEditor.Editor.Core/README.md)** | Shared editor infrastructure — `IDocumentEditor` plugin contract, editor registry, changeset tracking, shared `UndoEngine`, middle-click pan mode |
-| **[BinaryAnalysis](Sources/WpfHexEditor.BinaryAnalysis/README.md)** | Binary intelligence engine — 690+ format signatures, `.whfmt` v2.0 template parser, type decoders, checksum/assertion validation, DataInspector (40+ types) |
-| **[Definitions](Sources/Core/WpfHexEditor.Core.Definitions/README.md)** | Embedded catalog — 690+ binary format definitions (schema v2.3), 35 syntax grammars, 27 categories, magic-byte detection, MIME lookup; published as [`whfmt.FileFormatCatalog`](https://www.nuget.org/packages/whfmt.FileFormatCatalog/) cross-platform NuGet |
+| **[BinaryAnalysis](Sources/WpfHexEditor.BinaryAnalysis/README.md)** | Binary intelligence engine — 790+ format signatures, `.whfmt` v2.0 template parser, type decoders, checksum/assertion validation, DataInspector (40+ types) |
+| **[Definitions](Sources/Core/WpfHexEditor.Core.Definitions/README.md)** | Embedded catalog — 690+ binary format definitions (schema v2.3), 57 syntax grammars, 27 categories, magic-byte detection, MIME lookup; published as [`whfmt.FileFormatCatalog`](https://www.nuget.org/packages/whfmt.FileFormatCatalog/) cross-platform NuGet |
 | **[Events](Sources/WpfHexEditor.Events/README.md)** | Typed pub/sub event bus — 39+ domain events, weak references to prevent leaks, cross-process IPC bridge for sandboxed plugins |
 | **[SDK](Sources/WpfHexEditor.SDK/README.md)** | **Plugin SDK (SemVer 2.0.0 frozen)** — `IWpfHexEditorPlugin` entry point, `IIDEHostContext` host services, 15+ contracts (menus, toolbar, titlebar, panels, status bar, settings, terminal commands) |
 | **[Core.Roslyn](Sources/WpfHexEditor.Core.Roslyn/README.md)** | In-process Roslyn integration — C#/VB.NET incremental analysis, replaces external OmniSharp process for faster and more reliable code intelligence |
@@ -162,7 +164,7 @@ dotnet add package whfmt.FileFormatCatalog    # 690+ format definitions (cross-p
 | **[Call Hierarchy](Sources/Plugins/WpfHexEditor.Plugins.LSPTools/README.md)** | ~65% | Call chain navigator — view all incoming and outgoing function calls for any symbol via LSP 3.17, expandable tree with file locations (`Shift+Alt+H`) |
 | **[Type Hierarchy](Sources/Plugins/WpfHexEditor.Plugins.LSPTools/README.md)** | ~65% | Inheritance viewer — explore supertypes (base classes) and subtypes (derived classes) for any type via LSP 3.17, click to navigate (`Ctrl+Alt+F12`) |
 | **[Error List](Sources/WpfHexEditor.Panels.IDE/README.md)** | ~65% | Diagnostic aggregator — collects errors and warnings from all open editors and build results, click any entry to jump directly to the source file and line |
-| **[Terminal](Sources/WpfHexEditor.Terminal/README.md)** | ~65% | Integrated terminal — multi-tab shell sessions (`Ctrl+\``), 35+ built-in commands, ANSI color support, extensible by plugins via `ITerminalService` API |
+| **[Terminal](Sources/WpfHexEditor.Terminal/README.md)** | ~70% | Integrated terminal — multi-tab shell sessions (`Ctrl+\``), 39 built-in commands, ANSI color support, HxScript scripting, macro record/replay, extensible by plugins via `ITerminalService` API |
 | **[Unit Testing](Sources/Plugins/WpfHexEditor.Plugins.UnitTesting/README.md)** | ~60% | Test runner panel — auto-detects xunit, nunit, and mstest projects, runs tests via `dotnet test`, displays results with pass/fail/skip counters and duration, auto-run on build success |
 | **Quick Search** | ~60% | Inline find overlay (`Ctrl+F`) — find next/previous with regex toggle, match highlighting across the document |
 | **[File Comparison](Sources/Plugins/WpfHexEditor.Plugins.FileComparison/README.md)** | ~55% | File diff launcher — compare any two files with synchronized scrolling, DiffHub panel for quick access to recent comparisons, opens full diff viewer document |
@@ -197,7 +199,7 @@ dotnet add package whfmt.FileFormatCatalog    # 690+ format definitions (cross-p
 
 | | |
 |---|---|
-| <a href="Images/App-ParsedFields.png"><img src="Images/App-ParsedFields.png" alt="Parsed Fields" width="440"/></a><br/><sub>🔬 Parsed Fields — 690+ format detection</sub> | <a href="Images/App-Editors.png"><img src="Images/App-Editors.png" alt="Multiple Editors" width="440"/></a><br/><sub>📝 Multi-Editor Tabs</sub> |
+| <a href="Images/App-ParsedFields.png"><img src="Images/App-ParsedFields.png" alt="Parsed Fields" width="440"/></a><br/><sub>🔬 Parsed Fields — 790+ format detection</sub> | <a href="Images/App-Editors.png"><img src="Images/App-Editors.png" alt="Multiple Editors" width="440"/></a><br/><sub>📝 Multi-Editor Tabs</sub> |
 | <a href="Images/App-SolutionExplorer.png"><img src="Images/App-SolutionExplorer.png" alt="Solution Explorer" width="440"/></a><br/><sub>🗂️ Solution Explorer</sub> | <a href="Images/App-Theme-Light.png"><img src="Images/App-Theme-Light.png" alt="Light Theme" width="440"/></a><br/><sub>☀️ Light Theme (16 built-in themes)</sub> |
 | <a href="Images/App-Output.png"><img src="Images/App-Output.png" alt="Output Panel" width="440"/></a><br/><sub>📤 Output Panel</sub> | <a href="Images/App-ErrorList.png"><img src="Images/App-ErrorList.png" alt="Error Panel" width="440"/></a><br/><sub>🔴 Error Panel</sub> |
 | <a href="Images/App-TBLEditor.png"><img src="Images/App-TBLEditor.png" alt="TBL Editor" width="440"/></a><br/><sub>📋 TBL Editor</sub> | <a href="Images/TBLExplain.png"><img src="Images/TBLExplain.png" alt="TBL Explained" width="440"/></a><br/><sub>🎮 TBL Format</sub> |
@@ -241,15 +243,16 @@ Open `WpfHexEditorControl.sln`, set **WpfHexEditor.App** as startup project, pre
 
 | Feature | Status | # |
 |---------|--------|---|
-| **Code Editor** — most features shipped; remaining: inline value hints (debug variable overlay) | 🔧 ~75% | #84 |
-| **LSP Engine / SmartComplete** — remaining: inline value hints, pull-diagnostics | 🔧 ~65% | #85–86 |
-| **MSBuild & VS Solution** — remaining: VB.NET item group editing, nested solution folders | 🔧 ~70% | #101–103 |
+| **Code Editor** — most features shipped; remaining: inline value hints (debug variable overlay) | 🔧 ~90% | #84 |
+| **LSP Engine / SmartComplete** — remaining: inline value hints, pull-diagnostics | 🔧 ~70% | #85–86 |
+| **MSBuild & VS Solution** — remaining: VB.NET item group editing, nested solution folders | 🔧 ~75% | #101–103 |
 | **Assembly Explorer + Decompilation** — remaining: plugin panel improvements, PDB source-link matching | 🔧 ~55% | #104–106 |
-| **Document Model** — HexEditor ↔ CodeEditor shared undo engine ✅; remaining: multi-editor collaboration | 🔧 ~50% | #107 |
+| **Document Model** — HexEditor ↔ CodeEditor shared undo engine ✅; remaining: multi-editor collaboration | 🔧 ~55% | #107 |
 | **Plugin Sandbox** — remaining: gRPC migration, hot-reload from sandbox | 🔧 ~40% | #81 |
-| **Structure Editor** — block DataGrid, drag-drop, validation, undo/redo, TestTab, SmartComplete; remaining: live binary sync, complex types | 🔧 ~30% | #172 |
+| **Structure Editor** — block DataGrid, drag-drop, validation, undo/redo, TestTab, SmartComplete; remaining: live binary sync, complex types | 🔧 ~35% | #172 |
 | **.NET Debugger** — UI complete (menus, toolbar, breakpoints, explorer), remaining: runtime attach and debug launch | 🔧 ~30% | #44, #90 |
 | **Git Integration** — UI in place (changes panel, history, blame gutter, branch picker, stash), not yet integration-tested | 🔧 ~40% | #91 |
+| **IDE Localization** — Phase 6 complete (77.9% DynamicResource coverage), 17 languages, all panels + menus translated; remaining: remaining code-behind strings | 🔧 ~78% | #100 |
 
 **Planned:**
 
@@ -266,9 +269,15 @@ Open `WpfHexEditorControl.sln`, set **WpfHexEditor.App** as startup project, pre
 
 | Feature | Version |
 |---------|---------|
+| **NuGet release wave** — standalone packages: WPFHexaEditor 3.2.0, WpfCodeEditor 0.9.8.0, WpfDocking 0.9.7.0, WpfTerminal 0.9.7.0, ByteProvider 1.1.0, whfmt.FileFormatCatalog 1.1.0; full guide docs bundled; satellite assembly contamination fix; `_BundledProjectDll` isolation pattern | v0.6.5.15 |
+| **Phase 6 Localization** — 77.9% DynamicResource coverage; all panels, menus, context menus, dialogs, and toolbar buttons translated into 17 languages (waves 1–25); per-assembly `LocalizedResourceDictionary` pattern | v0.6.5.15 |
+| **WpfDocking 0.9.7.0** — horizontal tab reorder for docked panels, tab-switch triple-fire eliminated (perf), StaticResource toolbar labels fix, full Phase 5+6 localization wired | v0.6.5.15 |
+| **790+ .whfmt format definitions** — +100 new definitions (waves 155+), Groups C–J completed, all validated against schema v2.3; `FormatSchemaValidator` wired at load time | v0.6.5.15 |
+| **whfmt.FileFormatCatalog v1.1.0 NuGet** — `FormatMatcher`, `FormatFileAnalyzer`, `CatalogQuery`, `FormatMetadataExtensions`, `FormatSummaryBuilder` utility layer added; `EmbeddedFormatCatalog` returns `IReadOnlySet<T>` backed by `FrozenSet<T>` | v0.6.5.15 |
+| **WPFHexaEditor 3.2.0** — Go to offset dialog (`Ctrl+G`), unified `UndoEngine`, drag-selection auto-scroll fix, column highlight defaults, BreadcrumbBar freeze + double-rebuild fix | v0.6.5.15 |
 | **whfmt.FileFormatCatalog v1.0.0 NuGet** — cross-platform `net8.0` package with `EmbeddedFormatCatalog`, `DetectFromBytes`, `GetByCategory(FormatCategory)`, `GetSchemaJson(SchemaName)`, zero dependencies | v0.6.4.75 |
 | **WpfHexEditor.Core.Contracts** — `IEmbeddedFormatCatalog`, `EmbeddedFormatEntry`, `FormatSignature`, `FormatCategory` enum (27 categories), `SchemaName` enum (5 schemas) | v0.6.4.75 |
-| **690+ .whfmt format definitions** — +230 new definitions, schema v2.3, forensic patterns, variables, references blocks, 35 syntax grammars | v0.6.4.75 |
+| **790+ .whfmt format definitions** — +330 new definitions total, schema v2.3, forensic patterns, variables, references blocks, 57 syntax grammars | v0.6.5.15 |
 | **Structure Editor** — visual `.whfmt` template editor with block DataGrid, drag-drop, validation pipeline, undo/redo, TestTab, SmartComplete, ForensicPattern converter | v0.6.4.75 |
 | **WhfmtExplorer browser panels** — WhfmtBrowserPanel + WhfmtCatalogDocument for browsing all embedded format definitions | v0.6.4.75 |
 | **Format detection hardening** — thread-safe cache, TIER scoring, SignatureStrength converter, corrupted whfmt crash guard, PR #230 integration | v0.6.4.75 |
@@ -328,6 +337,10 @@ Open `WpfHexEditorControl.sln`, set **WpfHexEditor.App** as startup project, pre
 | **[MIGRATION.md](docs/migration/MIGRATION.md)** | Legacy V1 → V2 migration |
 | **[Architecture Overview](docs/architecture/Overview.md)** | Services, MVVM, data flow |
 | **[whfmt.FileFormatCatalog Guide](docs/features/whfmt-FileFormatCatalog-guide.md)** | Full API reference, architecture, L1–L3 integration guides, .whfmt format specification |
+| **[WPFHexaEditor Guide](https://github.com/abbaye/WpfHexEditorIDE/blob/master/Sources/Editors/WpfHexEditor.HexEditor/WPFHexaEditor-guide.md)** | HexEditor control — architecture, API reference, L1–L4 integration guides, settings reference |
+| **[WpfCodeEditor Guide](https://github.com/abbaye/WpfHexEditorIDE/blob/master/Sources/Editors/WpfHexEditor.Editor.CodeEditor/WpfCodeEditor-guide.md)** | Code editor control — LSP, folding, themes, L1–L4 integration |
+| **[WpfDocking Guide](https://github.com/abbaye/WpfHexEditorIDE/blob/master/Sources/Docking/WpfHexEditor.Docking.Wpf/WpfDocking-guide.md)** | Docking framework — panels, tab groups, layout persistence, L1–L4 integration |
+| **[WpfTerminal Guide](https://github.com/abbaye/WpfHexEditorIDE/blob/master/Sources/Controls/WpfHexEditor.Terminal/WpfTerminal-guide.md)** | Terminal control — sessions, macros, HxScript, built-in commands, L1–L4 integration |
 | **[API Reference](docs/api-reference/)** | Full API docs with examples |
 | **[Wiki](https://github.com/abbaye/WpfHexEditorIDE/wiki/Getting-Started)** | Getting started |
 
@@ -337,7 +350,7 @@ Open `WpfHexEditorControl.sln`, set **WpfHexEditor.App** as startup project, pre
 
 **.NET 8.0-windows** — Span\<T\>, SIMD, PGO. .NET Framework 4.8 is no longer supported (use legacy NuGet `WPFHexaEditor` for .NET Framework).
 
-**HexEditor control** supports 19 UI languages (English · French · Spanish · German · Italian · Japanese · Korean · Dutch · Polish · Portuguese · Russian · Swedish · Turkish · Chinese · Arabic · Hindi · and more) with instant runtime switching. IDE UI is English only — localization engine planned (#100).
+**HexEditor control** supports 18 UI languages (ar-SA · de-DE · es-419 · es-ES · fr-CA · fr-FR · hi-IN · it-IT · ja-JP · ko-KR · nl-NL · pl-PL · pt-BR · pt-PT · ru-RU · sv-SE · tr-TR · zh-CN) with instant runtime switching. **IDE UI localization** — Phase 6 complete (77.9% coverage, 17 languages wired); remaining code-behind strings planned (#100).
 
 ---
 

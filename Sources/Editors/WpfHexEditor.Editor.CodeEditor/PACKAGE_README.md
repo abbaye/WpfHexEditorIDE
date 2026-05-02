@@ -75,7 +75,7 @@ Use `CodeEditorSplitHost` for syntax highlighting, folding, search, and LSP.
 - Unified undo/redo engine (coalescence)
 
 ### Syntax & Languages
-- 400+ language definitions (.whfmt format, embedded in the package)
+- 57 language grammars for syntax highlighting (.whfmt, embedded in the package)
 - Syntax highlighting with customizable themes
 - LSP semantic token coloring
 - Code folding — braces, regions, tags
@@ -142,13 +142,23 @@ All bundled inside the package — zero external NuGet dependencies:
 | WpfHexEditor.Editor.Core | Shared editor abstractions |
 | WpfHexEditor.Core | Settings, format detection, services |
 | WpfHexEditor.Core.BinaryAnalysis | Binary analysis utilities |
-| WpfHexEditor.Core.Definitions | 400+ embedded language definitions |
+| WpfHexEditor.Core.Definitions | 57 language grammars for syntax highlighting + format detection catalog |
 | WpfHexEditor.Core.Events | Internal event bus |
 | WpfHexEditor.Core.ProjectSystem | Language registry |
 | WpfHexEditor.ColorPicker | Color picker (settings panel) |
 | WpfHexEditor.SDK | Plugin contracts (required internally) |
 
 ---
+
+## What's New in 0.9.8.0
+
+- **New**: LSP semantic token colorization — richer syntax coloring driven by the language server.
+- **New**: Zoom snap-to-pixel — GlyphRunRenderer snaps to pixel grid at each zoom level, eliminating sub-pixel blur on all font sizes.
+- **New**: Roslyn inline hints upgrade — `IReferenceCountProvider` SDK contract decouples reference-count hints from the Roslyn implementation; exposed via `IDEHostContext`.
+- **New**: Ctrl+Click links and emails — `ClickableLinksEnabled` / `ClickableEmailsEnabled` DPs; Ctrl+Click opens URLs in the default browser and email addresses in the mail client. Backported to `TextEditor` via `ScanLinksInText`.
+- **Fix**: Minimap scroll — scroll position in `MinimapControl` now tracks viewport changes correctly.
+- **Fix**: Satellite assemblies now correctly bundled — all 17 language `.resources.dll` files are included in the NuGet package (`IncludeSatelliteAssembliesInPackage` target added).
+- **Fix**: LSP burst-init calls downgraded to `DispatcherPriority.Background` — Roslyn workspace startup no longer blocks WPF frame rendering.
 
 ## What's New in 0.9.7.0
 

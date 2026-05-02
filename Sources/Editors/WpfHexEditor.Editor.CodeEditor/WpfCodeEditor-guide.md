@@ -25,7 +25,7 @@ WpfCodeEditor.nupkg
     ├── WpfHexEditor.Editor.Core.dll         — shared editor abstractions
     ├── WpfHexEditor.Core.dll                — settings, services, format detection
     ├── WpfHexEditor.Core.BinaryAnalysis.dll — binary analysis utilities
-    ├── WpfHexEditor.Core.Definitions.dll    — 400+ embedded .whfmt language definitions
+    ├── WpfHexEditor.Core.Definitions.dll    — 57 language grammars for syntax highlighting + format detection catalog
     ├── WpfHexEditor.Core.Events.dll         — internal event bus
     ├── WpfHexEditor.Core.ProjectSystem.dll  — language registry
     ├── WpfHexEditor.ColorPicker.dll         — color picker (settings panel)

@@ -9,13 +9,13 @@
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <NeutralLanguage>en-US</NeutralLanguage>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <NoWarn>$(NoWarn);1591</NoWarn>
+    <NoWarn>$(NoWarn);1591;NU5100</NoWarn>
 
     <!-- NuGet package metadata -->
     <PackageId>WPFHexaEditor</PackageId>
-    <Version>3.1.3</Version>
-    <AssemblyVersion>3.1.3.0</AssemblyVersion>
-    <FileVersion>3.1.3</FileVersion>
+    <Version>3.2.0</Version>
+    <AssemblyVersion>3.2.0.0</AssemblyVersion>
+    <FileVersion>3.2.0</FileVersion>
     <Authors>Derek Tremblay</Authors>
     <Company>Derek Tremblay (derektremblay666@gmail.com)</Company>
     <Product>WpfHexEditorControl</Product>
@@ -30,6 +30,7 @@
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageReadmeFile>PACKAGE_README.md</PackageReadmeFile>
     <PackageIcon>icon.png</PackageIcon>
+    <PackageReleaseNotes>3.2.0 — GoToPosition dialog; shared UndoEngine across HexEditor/CodeEditor (Ctrl+Z/Y); drag-selection window-level auto-scroll; BreadcrumbBar freeze + double-rebuild fixes; ShowColumnHighlight defaults to false.</PackageReleaseNotes>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
@@ -50,6 +51,7 @@
 
   <ItemGroup>
     <None Include="PACKAGE_README.md" Pack="true" PackagePath="\" />
+    <None Include="WPFHexaEditor-guide.md" Pack="true" PackagePath="\" />
     <None Include="icon.png" Pack="true" PackagePath="\" />
   </ItemGroup>
 
@@ -67,30 +69,56 @@
     <ProjectReference Include="..\..\Core\WpfHexEditor.Core.Definitions\WpfHexEditor.Core.Definitions.csproj" PrivateAssets="all" />
   </ItemGroup>
 
-  <!-- Bundle all dependency DLLs into the NuGet package -->
+  <!-- Bundle only the explicitly required dependency DLLs — whitelist prevents transitive
+       assemblies from unrelated solution projects polluting the package. -->
   <PropertyGroup>
     <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
   </PropertyGroup>
   <Target Name="CopyProjectReferencesToPackage" DependsOnTargets="ResolveReferences">
     <ItemGroup>
-      <!-- Bundle dependency DLLs -->
-      <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths-&gt;WithMetadataValue('ReferenceSourceTarget','ProjectReference'))" />
-      <!-- Bundle matching XML IntelliSense docs alongside each DLL -->
-      <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths-&gt;WithMetadataValue('ReferenceSourceTarget','ProjectReference')-&gt;'%(RootDir)%(Directory)%(Filename).xml')"
+      <!--
+        _ResolvedProjectReferencePaths contains PrivateAssets="all" project refs; ReferenceCopyLocalPaths does not.
+        We pull DLLs directly from each referenced project's output directory.
+      -->
+      <_BundledProjectDll Include="
+        $(OutputPath)WpfHexEditor.Core.dll;
+        $(OutputPath)WpfHexEditor.Core.BinaryAnalysis.dll;
+        $(OutputPath)WpfHexEditor.Core.Contracts.dll;
+        $(OutputPath)WpfHexEditor.Core.Definitions.dll;
+        $(OutputPath)WpfHexEditor.Core.Localization.dll;
+        $(OutputPath)WpfHexEditor.Editor.Core.dll;
+        $(OutputPath)WpfHexEditor.ColorPicker.dll;
+        $(OutputPath)WpfHexEditor.HexBox.dll;
+        $(OutputPath)WpfHexEditor.ProgressBar.dll" />
+
+      <BuildOutputInPackage Include="@(_BundledProjectDll)" Condition="Exists('%(Identity)')" />
+
+      <!-- XML IntelliSense docs -->
+      <BuildOutputInPackage Include="@(_BundledProjectDll->'%(RootDir)%(Directory)%(Filename).xml')"
                             Condition="Exists('%(RootDir)%(Directory)%(Filename).xml')" />
     </ItemGroup>
   </Target>
 
   <!--
-    Satellite assemblies (culture-specific .resources.dll) from bundled project references.
-    ReferenceCopyLocalPaths does not reliably propagate DestinationSubDirectory across PrivateAssets
-    project references, so we glob the build output directly.
-    %(RecursiveDir) gives the culture folder (e.g. "fr-FR\") which becomes the in-package sub-path
-    so NuGet places files at lib/net8.0-windows/fr-FR/WpfHexEditor.Core.resources.dll, etc.
+    Satellite assemblies: glob each culture subfolder in OutputPath — only the whitelisted
+    assembly satellites land in those subfolders when building this project standalone.
   -->
   <Target Name="IncludeSatelliteAssembliesInPackage" AfterTargets="CopyProjectReferencesToPackage">
     <ItemGroup>
-      <TfmSpecificPackageFile Include="$(OutputPath)**\*.resources.dll"
+      <!-- Glob all satellites then filter: keep only the whitelisted assembly names.
+           Single glob avoids NU5118 (NuGet collision on same %(RecursiveDir) across multiple items). -->
+      <_AllSatellites Include="$(OutputPath)*\*.resources.dll" />
+      <_AllSatellites Remove="$(OutputPath)*\WpfHexEditor.HexEditor.resources.dll" />
+      <TfmSpecificPackageFile Include="@(_AllSatellites)"
+                              Condition="'%(Filename)' == 'WpfHexEditor.Core.resources'
+                                      Or '%(Filename)' == 'WpfHexEditor.Core.BinaryAnalysis.resources'
+                                      Or '%(Filename)' == 'WpfHexEditor.Core.Contracts.resources'
+                                      Or '%(Filename)' == 'WpfHexEditor.Core.Definitions.resources'
+                                      Or '%(Filename)' == 'WpfHexEditor.Core.Localization.resources'
+                                      Or '%(Filename)' == 'WpfHexEditor.Editor.Core.resources'
+                                      Or '%(Filename)' == 'WpfHexEditor.ColorPicker.resources'
+                                      Or '%(Filename)' == 'WpfHexEditor.HexBox.resources'
+                                      Or '%(Filename)' == 'WpfHexEditor.ProgressBar.resources'"
                               PackagePath="%(RecursiveDir)%(Filename)%(Extension)" />
     </ItemGroup>
   </Target>

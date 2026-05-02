@@ -98,14 +98,35 @@ For custom VS Code-style chrome (borderless window):
 
 ## Included Assemblies
 
-Both bundled inside the package — zero external NuGet dependencies:
+All bundled inside the package — zero external NuGet dependencies:
 
 | Assembly | Purpose |
 |---|---|
-| WpfHexEditor.Docking.Wpf | WPF chrome, panels, documents, drag-drop |
+| WpfHexEditor.Docking.Wpf | WPF chrome, panels, documents, tab groups, drag-drop |
 | WpfHexEditor.Docking.Core | Platform-agnostic layout engine (no WPF dependency) |
+| WpfHexEditor.Core.Localization | 17-language satellite assemblies (ar-SA, de-DE, es, fr, it, ja, ko, nl, pl, pt-BR, pt-PT, ru, sv, tr, zh-CN, hi-IN, es-419) |
+
+**Localizations**: ar-SA, de-DE, es-419, es-ES, fr-CA, fr-FR, hi-IN, it-IT, ja-JP, ko-KR, nl-NL, pl-PL, pt-BR, pt-PT, ru-RU, sv-SE, tr-TR, zh-CN
 
 ---
+
+## What's New in 0.9.7.0
+
+- **New**: Horizontal reorder for docked tool-panel tabs — drag tabs left/right within the same edge to reorder panels without floating.
+- **Perf**: Tab-switch triple-fire eliminated — redundant layout passes on tab activation reduced from 3 to 1; measurable improvement on complex layouts with many panels.
+- **Fix**: Toolbar `StaticResource` labels — all Docking toolbar buttons now correctly resolve localized labels via `StaticResource`; pre-register output queue prevents race on first display.
+- **Feat**: Full Phase 5+6 localization — all Docking UI strings (panel headers, context menus, options pages) translated into 17 languages and wired to the language selector.
+
+## What's New in 0.9.6.0
+
+- **New**: Tab groups — split the document area horizontally or vertically (`Ctrl+Alt+→` / `Ctrl+Alt+↓`); move tabs between groups; close groups. Full `ITabGroupService` SDK contract.
+- **New**: 16 `TG_*` theme tokens (`TG_ActiveTabBrush`, `TG_InactiveTabBrush`, `TG_SplitterBrush`, `TG_BadgeBrush`…) across all built-in themes.
+- **New**: Tab group badges — document count badge on group headers.
+- **New**: Drag visual — `IsDocumentDrag` flag enables distinct drag-between-groups visual feedback.
+- **New**: `TabGroupsOptionsPage` — tab group behavior settings.
+- **Fix**: Tab drag semantics — document tabs and docked tabs share the same mouse-move logic (X=reorder, Y>40=float); no discriminator per tab type.
+- **Fix**: Docking overlay — VS-like border with active-tab gap; placement-aware tab styles for document host match Visual Studio drop-target feedback.
+- **Fix**: Satellite assemblies now correctly bundled — `WpfHexEditor.Core.Localization` marked `PrivateAssets=all`; all 17 language `.resources.dll` files are included in the NuGet package.
 
 ## What's New in 0.9.5.2
 
@@ -131,5 +152,6 @@ GNU Affero General Public License v3.0 (AGPL-3.0)
 
 ## Links
 
+- **Full documentation**: [WpfDocking-guide.md](https://github.com/abbaye/WpfHexEditorIDE/blob/master/Sources/Docking/WpfHexEditor.Docking.Wpf/WpfDocking-guide.md) — Architecture, API reference, integration guides (Level 1–4), layout persistence, and settings reference.
 - [GitHub Repository](https://github.com/abbaye/WpfHexEditorIDE)
 - [Report Issues](https://github.com/abbaye/WpfHexEditorIDE/issues)
