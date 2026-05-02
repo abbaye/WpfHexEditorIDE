@@ -85,7 +85,7 @@
     <value>Entropie foarte scăzută detectată</value>
   </data>
   <data name="PatternAnalysis_Entropy_VeryLow_Desc" xml:space="preserve">
-    <value>Datele conțin în principal octeți repetitivi sau nuli (entropie < 2,0 biți/octet)</value>
+    <value>Datele conțin în principal octeți repetitivi sau nuli (entropie &lt; 2,0 biți/octet)</value>
   </data>
   <data name="PatternAnalysis_Entropy_Low" xml:space="preserve">
     <value>Aleatorie scăzută — date repetitive sau structurate</value>

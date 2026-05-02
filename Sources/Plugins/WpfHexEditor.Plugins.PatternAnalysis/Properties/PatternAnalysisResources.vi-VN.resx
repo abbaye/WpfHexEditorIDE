@@ -85,7 +85,7 @@
     <value>Phát hiện entropy rất thấp</value>
   </data>
   <data name="PatternAnalysis_Entropy_VeryLow_Desc" xml:space="preserve">
-    <value>Dữ liệu chủ yếu là byte lặp lại hoặc rỗng (entropy < 2,0 bit/byte)</value>
+    <value>Dữ liệu chủ yếu là byte lặp lại hoặc rỗng (entropy &lt; 2,0 bit/byte)</value>
   </data>
   <data name="PatternAnalysis_Entropy_Low" xml:space="preserve">
     <value>Ngẫu nhiên thấp — dữ liệu lặp lại hoặc có cấu trúc</value>
