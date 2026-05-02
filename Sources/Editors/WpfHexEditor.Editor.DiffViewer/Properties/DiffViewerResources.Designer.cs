@@ -61,11 +61,191 @@ namespace WpfHexEditor.Editor.DiffViewer.Properties {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Offset.
+        /// </summary>
+        internal static string Common_ColOffset {
+            get {
+                return ResourceManager.GetString("Common_ColOffset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Added.
+        /// </summary>
+        internal static string DiffViewer_Added {
+            get {
+                return ResourceManager.GetString("DiffViewer_Added", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Added: 0.
+        /// </summary>
+        internal static string DiffViewer_AddedChip {
+            get {
+                return ResourceManager.GetString("DiffViewer_AddedChip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Left bytes.
+        /// </summary>
+        internal static string DiffViewer_ColLeftBytes {
+            get {
+                return ResourceManager.GetString("DiffViewer_ColLeftBytes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Length.
+        /// </summary>
+        internal static string DiffViewer_ColLength {
+            get {
+                return ResourceManager.GetString("DiffViewer_ColLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Right bytes.
+        /// </summary>
+        internal static string DiffViewer_ColRightBytes {
+            get {
+                return ResourceManager.GetString("DiffViewer_ColRightBytes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Type.
+        /// </summary>
+        internal static string DiffViewer_ColType {
+            get {
+                return ResourceManager.GetString("DiffViewer_ColType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Comparing….
         /// </summary>
         internal static string DiffViewer_Comparing {
             get {
                 return ResourceManager.GetString("DiffViewer_Comparing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Deleted.
+        /// </summary>
+        internal static string DiffViewer_Deleted {
+            get {
+                return ResourceManager.GetString("DiffViewer_Deleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Deleted: 0.
+        /// </summary>
+        internal static string DiffViewer_DeletedChip {
+            get {
+                return ResourceManager.GetString("DiffViewer_DeletedChip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Diff List.
+        /// </summary>
+        internal static string DiffViewer_DiffList {
+            get {
+                return ResourceManager.GetString("DiffViewer_DiffList", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à — (left).
+        /// </summary>
+        internal static string DiffViewer_LeftLabel {
+            get {
+                return ResourceManager.GetString("DiffViewer_LeftLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Modified.
+        /// </summary>
+        internal static string DiffViewer_Modified {
+            get {
+                return ResourceManager.GetString("DiffViewer_Modified", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Modified: 0.
+        /// </summary>
+        internal static string DiffViewer_ModifiedChip {
+            get {
+                return ResourceManager.GetString("DiffViewer_ModifiedChip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Next ►.
+        /// </summary>
+        internal static string DiffViewer_NextButton {
+            get {
+                return ResourceManager.GetString("DiffViewer_NextButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Next difference (F8).
+        /// </summary>
+        internal static string DiffViewer_NextDiff {
+            get {
+                return ResourceManager.GetString("DiffViewer_NextDiff", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Open two files via View &gt; Compare Files….
+        /// </summary>
+        internal static string DiffViewer_OpenFilesHint {
+            get {
+                return ResourceManager.GetString("DiffViewer_OpenFilesHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à ◄ Prev.
+        /// </summary>
+        internal static string DiffViewer_PrevButton {
+            get {
+                return ResourceManager.GetString("DiffViewer_PrevButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Previous difference (Shift+F8).
+        /// </summary>
+        internal static string DiffViewer_PrevDiff {
+            get {
+                return ResourceManager.GetString("DiffViewer_PrevDiff", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à — (right).
+        /// </summary>
+        internal static string DiffViewer_RightLabel {
+            get {
+                return ResourceManager.GetString("DiffViewer_RightLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Show/hide the diff regions list.
+        /// </summary>
+        internal static string DiffViewer_ShowHideDiffList {
+            get {
+                return ResourceManager.GetString("DiffViewer_ShowHideDiffList", resourceCulture);
             }
         }
     }

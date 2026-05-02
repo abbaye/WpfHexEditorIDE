@@ -1474,6 +1474,555 @@ namespace WpfHexEditor.Core.Options.Properties {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Build &amp; Run.
+        /// </summary>
+        internal static string Opt_Category_BuildRun {
+            get {
+                return ResourceManager.GetString("Opt_Category_BuildRun", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Code Editor.
+        /// </summary>
+        internal static string Opt_Category_CodeEditor {
+            get {
+                return ResourceManager.GetString("Opt_Category_CodeEditor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Debugger.
+        /// </summary>
+        internal static string Opt_Category_Debugger {
+            get {
+                return ResourceManager.GetString("Opt_Category_Debugger", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Environment.
+        /// </summary>
+        internal static string Opt_Category_Environment {
+            get {
+                return ResourceManager.GetString("Opt_Category_Environment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Extensions.
+        /// </summary>
+        internal static string Opt_Category_Extensions {
+            get {
+                return ResourceManager.GetString("Opt_Category_Extensions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Format Editor (.whfmt).
+        /// </summary>
+        internal static string Opt_Category_FormatEditor {
+            get {
+                return ResourceManager.GetString("Opt_Category_FormatEditor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Hex Editor.
+        /// </summary>
+        internal static string Opt_Category_HexEditor {
+            get {
+                return ResourceManager.GetString("Opt_Category_HexEditor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Plugin System.
+        /// </summary>
+        internal static string Opt_Category_PluginSystem {
+            get {
+                return ResourceManager.GetString("Opt_Category_PluginSystem", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Solution Explorer.
+        /// </summary>
+        internal static string Opt_Category_SolutionExplorer {
+            get {
+                return ResourceManager.GetString("Opt_Category_SolutionExplorer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Text Editor.
+        /// </summary>
+        internal static string Opt_Category_TextEditor {
+            get {
+                return ResourceManager.GetString("Opt_Category_TextEditor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Tools.
+        /// </summary>
+        internal static string Opt_Category_Tools {
+            get {
+                return ResourceManager.GetString("Opt_Category_Tools", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à big.
+        /// </summary>
+        internal static string Opt_Endian_Big {
+            get {
+                return ResourceManager.GetString("Opt_Endian_Big", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à little.
+        /// </summary>
+        internal static string Opt_Endian_Little {
+            get {
+                return ResourceManager.GetString("Opt_Endian_Little", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à 1 level  (4 spaces at root).
+        /// </summary>
+        internal static string Opt_IndentLevel_1 {
+            get {
+                return ResourceManager.GetString("Opt_IndentLevel_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à 2 levels (8 spaces at root) — VS default.
+        /// </summary>
+        internal static string Opt_IndentLevel_2 {
+            get {
+                return ResourceManager.GetString("Opt_IndentLevel_2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à 3 levels (12 spaces at root).
+        /// </summary>
+        internal static string Opt_IndentLevel_3 {
+            get {
+                return ResourceManager.GetString("Opt_IndentLevel_3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à EditorOnly.
+        /// </summary>
+        internal static string Opt_MdLayout_EditorOnly {
+            get {
+                return ResourceManager.GetString("Opt_MdLayout_EditorOnly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à PreviewBottom.
+        /// </summary>
+        internal static string Opt_MdLayout_PreviewBottom {
+            get {
+                return ResourceManager.GetString("Opt_MdLayout_PreviewBottom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à PreviewOnly.
+        /// </summary>
+        internal static string Opt_MdLayout_PreviewOnly {
+            get {
+                return ResourceManager.GetString("Opt_MdLayout_PreviewOnly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à PreviewRight.
+        /// </summary>
+        internal static string Opt_MdLayout_PreviewRight {
+            get {
+                return ResourceManager.GetString("Opt_MdLayout_PreviewRight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Not yet implemented.
+        /// </summary>
+        internal static string Opt_NotYetImplemented {
+            get {
+                return ResourceManager.GetString("Opt_NotYetImplemented", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Appearance &amp; Colors.
+        /// </summary>
+        internal static string Opt_Page_AppearanceColors {
+            get {
+                return ResourceManager.GetString("Opt_Page_AppearanceColors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Behavior.
+        /// </summary>
+        internal static string Opt_Page_Behavior {
+            get {
+                return ResourceManager.GetString("Opt_Page_Behavior", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Breakpoints.
+        /// </summary>
+        internal static string Opt_Page_Breakpoints {
+            get {
+                return ResourceManager.GetString("Opt_Page_Breakpoints", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Command Palette.
+        /// </summary>
+        internal static string Opt_Page_CommandPalette {
+            get {
+                return ResourceManager.GetString("Opt_Page_CommandPalette", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Compare Files.
+        /// </summary>
+        internal static string Opt_Page_CompareFiles {
+            get {
+                return ResourceManager.GetString("Opt_Page_CompareFiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Compiler.
+        /// </summary>
+        internal static string Opt_Page_Compiler {
+            get {
+                return ResourceManager.GetString("Opt_Page_Compiler", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Development.
+        /// </summary>
+        internal static string Opt_Page_Development {
+            get {
+                return ResourceManager.GetString("Opt_Page_Development", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Display.
+        /// </summary>
+        internal static string Opt_Page_Display {
+            get {
+                return ResourceManager.GetString("Opt_Page_Display", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Docking.
+        /// </summary>
+        internal static string Opt_Page_Docking {
+            get {
+                return ResourceManager.GetString("Opt_Page_Docking", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Documents.
+        /// </summary>
+        internal static string Opt_Page_Documents {
+            get {
+                return ResourceManager.GetString("Opt_Page_Documents", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Editing.
+        /// </summary>
+        internal static string Opt_Page_Editing {
+            get {
+                return ResourceManager.GetString("Opt_Page_Editing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Event Bus.
+        /// </summary>
+        internal static string Opt_Page_EventBus {
+            get {
+                return ResourceManager.GetString("Opt_Page_EventBus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Features.
+        /// </summary>
+        internal static string Opt_Page_Features {
+            get {
+                return ResourceManager.GetString("Opt_Page_Features", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Format Explorer.
+        /// </summary>
+        internal static string Opt_Page_FormatExplorer {
+            get {
+                return ResourceManager.GetString("Opt_Page_FormatExplorer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Formatting.
+        /// </summary>
+        internal static string Opt_Page_Formatting {
+            get {
+                return ResourceManager.GetString("Opt_Page_Formatting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à General.
+        /// </summary>
+        internal static string Opt_Page_General {
+            get {
+                return ResourceManager.GetString("Opt_Page_General", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Inline Hints.
+        /// </summary>
+        internal static string Opt_Page_InlineHints {
+            get {
+                return ResourceManager.GetString("Opt_Page_InlineHints", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Keyboard Shortcuts.
+        /// </summary>
+        internal static string Opt_Page_KeyboardShortcuts {
+            get {
+                return ResourceManager.GetString("Opt_Page_KeyboardShortcuts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Language Servers.
+        /// </summary>
+        internal static string Opt_Page_LanguageServers {
+            get {
+                return ResourceManager.GetString("Opt_Page_LanguageServers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Layout.
+        /// </summary>
+        internal static string Opt_Page_Layout {
+            get {
+                return ResourceManager.GetString("Opt_Page_Layout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Markdown.
+        /// </summary>
+        internal static string Opt_Page_Markdown {
+            get {
+                return ResourceManager.GetString("Opt_Page_Markdown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Marketplace.
+        /// </summary>
+        internal static string Opt_Page_Marketplace {
+            get {
+                return ResourceManager.GetString("Opt_Page_Marketplace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Migration.
+        /// </summary>
+        internal static string Opt_Page_Migration {
+            get {
+                return ResourceManager.GetString("Opt_Page_Migration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Navigation.
+        /// </summary>
+        internal static string Opt_Page_Navigation {
+            get {
+                return ResourceManager.GetString("Opt_Page_Navigation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Output.
+        /// </summary>
+        internal static string Opt_Page_Output {
+            get {
+                return ResourceManager.GetString("Opt_Page_Output", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Save.
+        /// </summary>
+        internal static string Opt_Page_Save {
+            get {
+                return ResourceManager.GetString("Opt_Page_Save", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Status Bar.
+        /// </summary>
+        internal static string Opt_Page_StatusBar {
+            get {
+                return ResourceManager.GetString("Opt_Page_StatusBar", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Tab Groups.
+        /// </summary>
+        internal static string Opt_Page_TabGroups {
+            get {
+                return ResourceManager.GetString("Opt_Page_TabGroups", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Tabs.
+        /// </summary>
+        internal static string Opt_Page_Tabs {
+            get {
+                return ResourceManager.GetString("Opt_Page_Tabs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à View Menu.
+        /// </summary>
+        internal static string Opt_Page_ViewMenu {
+            get {
+                return ResourceManager.GetString("Opt_Page_ViewMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Workspace.
+        /// </summary>
+        internal static string Opt_Page_Workspace {
+            get {
+                return ResourceManager.GetString("Opt_Page_Workspace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Select additional extensions directory.
+        /// </summary>
+        internal static string Opt_Plugin_SelectExtDir {
+            get {
+                return ResourceManager.GetString("Opt_Plugin_SelectExtDir", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Select Extension Output Directory.
+        /// </summary>
+        internal static string Opt_PluginDev_SelectOutputDir {
+            get {
+                return ResourceManager.GetString("Opt_PluginDev_SelectOutputDir", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Bottom.
+        /// </summary>
+        internal static string Opt_Position_Bottom {
+            get {
+                return ResourceManager.GetString("Opt_Position_Bottom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Left.
+        /// </summary>
+        internal static string Opt_Position_Left {
+            get {
+                return ResourceManager.GetString("Opt_Position_Left", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Right.
+        /// </summary>
+        internal static string Opt_Position_Right {
+            get {
+                return ResourceManager.GetString("Opt_Position_Right", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Top.
+        /// </summary>
+        internal static string Opt_Position_Top {
+            get {
+                return ResourceManager.GetString("Opt_Position_Top", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Preview.
+        /// </summary>
+        internal static string Opt_Preview_Label {
+            get {
+                return ResourceManager.GetString("Opt_Preview_Label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Flat.
+        /// </summary>
+        internal static string Opt_ViewMode_Flat {
+            get {
+                return ResourceManager.GetString("Opt_ViewMode_Flat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Tree.
+        /// </summary>
+        internal static string Opt_ViewMode_Tree {
+            get {
+                return ResourceManager.GetString("Opt_ViewMode_Tree", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Debug (DEBUG):.
         /// </summary>
         internal static string Output_DebugLabel {
@@ -2363,141 +2912,5 @@ namespace WpfHexEditor.Core.Options.Properties {
                 return ResourceManager.GetString("TextOpt_WordWrap", resourceCulture);
             }
         }
-
-        internal static string Opt_Category_Environment => ResourceManager.GetString("Opt_Category_Environment", resourceCulture);
-
-        internal static string Opt_Category_HexEditor => ResourceManager.GetString("Opt_Category_HexEditor", resourceCulture);
-
-        internal static string Opt_Category_SolutionExplorer => ResourceManager.GetString("Opt_Category_SolutionExplorer", resourceCulture);
-
-        internal static string Opt_Category_CodeEditor => ResourceManager.GetString("Opt_Category_CodeEditor", resourceCulture);
-
-        internal static string Opt_Category_TextEditor => ResourceManager.GetString("Opt_Category_TextEditor", resourceCulture);
-
-        internal static string Opt_Category_PluginSystem => ResourceManager.GetString("Opt_Category_PluginSystem", resourceCulture);
-
-        internal static string Opt_Category_BuildRun => ResourceManager.GetString("Opt_Category_BuildRun", resourceCulture);
-
-        internal static string Opt_Category_Debugger => ResourceManager.GetString("Opt_Category_Debugger", resourceCulture);
-
-        internal static string Opt_Category_Extensions => ResourceManager.GetString("Opt_Category_Extensions", resourceCulture);
-
-        internal static string Opt_Category_FormatEditor => ResourceManager.GetString("Opt_Category_FormatEditor", resourceCulture);
-
-        internal static string Opt_Category_Tools => ResourceManager.GetString("Opt_Category_Tools", resourceCulture);
-
-        internal static string Opt_Page_General => ResourceManager.GetString("Opt_Page_General", resourceCulture);
-
-        internal static string Opt_Page_Save => ResourceManager.GetString("Opt_Page_Save", resourceCulture);
-
-        internal static string Opt_Page_Output => ResourceManager.GetString("Opt_Page_Output", resourceCulture);
-
-        internal static string Opt_Page_TabGroups => ResourceManager.GetString("Opt_Page_TabGroups", resourceCulture);
-
-        internal static string Opt_Page_KeyboardShortcuts => ResourceManager.GetString("Opt_Page_KeyboardShortcuts", resourceCulture);
-
-        internal static string Opt_Page_Documents => ResourceManager.GetString("Opt_Page_Documents", resourceCulture);
-
-        internal static string Opt_Page_Workspace => ResourceManager.GetString("Opt_Page_Workspace", resourceCulture);
-
-        internal static string Opt_Page_Tabs => ResourceManager.GetString("Opt_Page_Tabs", resourceCulture);
-
-        internal static string Opt_Page_Layout => ResourceManager.GetString("Opt_Page_Layout", resourceCulture);
-
-        internal static string Opt_Page_Docking => ResourceManager.GetString("Opt_Page_Docking", resourceCulture);
-
-        internal static string Opt_Page_ViewMenu => ResourceManager.GetString("Opt_Page_ViewMenu", resourceCulture);
-
-        internal static string Opt_Page_Display => ResourceManager.GetString("Opt_Page_Display", resourceCulture);
-
-        internal static string Opt_Page_Editing => ResourceManager.GetString("Opt_Page_Editing", resourceCulture);
-
-        internal static string Opt_Page_StatusBar => ResourceManager.GetString("Opt_Page_StatusBar", resourceCulture);
-
-        internal static string Opt_Page_Behavior => ResourceManager.GetString("Opt_Page_Behavior", resourceCulture);
-
-        internal static string Opt_Page_AppearanceColors => ResourceManager.GetString("Opt_Page_AppearanceColors", resourceCulture);
-
-        internal static string Opt_Page_InlineHints => ResourceManager.GetString("Opt_Page_InlineHints", resourceCulture);
-
-        internal static string Opt_Page_Navigation => ResourceManager.GetString("Opt_Page_Navigation", resourceCulture);
-
-        internal static string Opt_Page_Formatting => ResourceManager.GetString("Opt_Page_Formatting", resourceCulture);
-
-        internal static string Opt_Page_Features => ResourceManager.GetString("Opt_Page_Features", resourceCulture);
-
-        internal static string Opt_Page_LanguageServers => ResourceManager.GetString("Opt_Page_LanguageServers", resourceCulture);
-
-        internal static string Opt_Page_Markdown => ResourceManager.GetString("Opt_Page_Markdown", resourceCulture);
-
-        internal static string Opt_Page_Development => ResourceManager.GetString("Opt_Page_Development", resourceCulture);
-
-        internal static string Opt_Page_Migration => ResourceManager.GetString("Opt_Page_Migration", resourceCulture);
-
-        internal static string Opt_Page_EventBus => ResourceManager.GetString("Opt_Page_EventBus", resourceCulture);
-
-        internal static string Opt_Page_Compiler => ResourceManager.GetString("Opt_Page_Compiler", resourceCulture);
-
-        internal static string Opt_Page_Breakpoints => ResourceManager.GetString("Opt_Page_Breakpoints", resourceCulture);
-
-        internal static string Opt_Page_Marketplace => ResourceManager.GetString("Opt_Page_Marketplace", resourceCulture);
-
-        internal static string Opt_Page_FormatExplorer => ResourceManager.GetString("Opt_Page_FormatExplorer", resourceCulture);
-
-        internal static string Opt_Page_CompareFiles => ResourceManager.GetString("Opt_Page_CompareFiles", resourceCulture);
-
-        internal static string Opt_Page_CommandPalette => ResourceManager.GetString("Opt_Page_CommandPalette", resourceCulture);
-
-        // ── Plugin System Options Page ────────────────────────────────────────
-
-        internal static string Opt_Plugin_SelectExtDir => ResourceManager.GetString("Opt_Plugin_SelectExtDir", resourceCulture);
-
-        // ── Plugin Dev Loader Options Page ────────────────────────────────────
-
-        internal static string Opt_PluginDev_SelectOutputDir => ResourceManager.GetString("Opt_PluginDev_SelectOutputDir", resourceCulture);
-
-        // ── Whfmt Explorer Options Page — view mode combo ─────────────────────
-
-        internal static string Opt_ViewMode_Tree => ResourceManager.GetString("Opt_ViewMode_Tree", resourceCulture);
-
-        internal static string Opt_ViewMode_Flat => ResourceManager.GetString("Opt_ViewMode_Flat", resourceCulture);
-
-        // ── Structure Editor Options Page — panel position combo ──────────────
-
-        internal static string Opt_Position_Right => ResourceManager.GetString("Opt_Position_Right", resourceCulture);
-
-        internal static string Opt_Position_Left => ResourceManager.GetString("Opt_Position_Left", resourceCulture);
-
-        internal static string Opt_Position_Bottom => ResourceManager.GetString("Opt_Position_Bottom", resourceCulture);
-
-        internal static string Opt_Position_Top => ResourceManager.GetString("Opt_Position_Top", resourceCulture);
-
-        // ── Structure Editor Options Page — endianness combo ──────────────────
-
-        internal static string Opt_Endian_Little => ResourceManager.GetString("Opt_Endian_Little", resourceCulture);
-
-        internal static string Opt_Endian_Big => ResourceManager.GetString("Opt_Endian_Big", resourceCulture);
-
-        // ── Code Editor Formatting Page — indentation levels combo ────────────
-
-        internal static string Opt_IndentLevel_1 => ResourceManager.GetString("Opt_IndentLevel_1", resourceCulture);
-
-        internal static string Opt_IndentLevel_2 => ResourceManager.GetString("Opt_IndentLevel_2", resourceCulture);
-
-        internal static string Opt_IndentLevel_3 => ResourceManager.GetString("Opt_IndentLevel_3", resourceCulture);
-
-        // ── Markdown Editor Options Page — layout combo ───────────────────────
-
-        internal static string Opt_MdLayout_PreviewRight => ResourceManager.GetString("Opt_MdLayout_PreviewRight", resourceCulture);
-
-        internal static string Opt_MdLayout_PreviewBottom => ResourceManager.GetString("Opt_MdLayout_PreviewBottom", resourceCulture);
-
-        internal static string Opt_MdLayout_EditorOnly => ResourceManager.GetString("Opt_MdLayout_EditorOnly", resourceCulture);
-
-        internal static string Opt_MdLayout_PreviewOnly => ResourceManager.GetString("Opt_MdLayout_PreviewOnly", resourceCulture);
-
-        // ── Formatting Preview Panel ──────────────────────────────────────────
-
-        internal static string Opt_Preview_Label => ResourceManager.GetString("Opt_Preview_Label", resourceCulture);
     }
 }

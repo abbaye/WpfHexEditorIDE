@@ -151,6 +151,114 @@ namespace WpfHexEditor.Editor.TextEditor.Properties {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à _Copy.
+        /// </summary>
+        internal static string TextEd_Menu_Copy {
+            get {
+                return ResourceManager.GetString("TextEd_Menu_Copy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Cu_t.
+        /// </summary>
+        internal static string TextEd_Menu_Cut {
+            get {
+                return ResourceManager.GetString("TextEd_Menu_Cut", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à _Delete.
+        /// </summary>
+        internal static string TextEd_Menu_Delete {
+            get {
+                return ResourceManager.GetString("TextEd_Menu_Delete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à _Paste.
+        /// </summary>
+        internal static string TextEd_Menu_Paste {
+            get {
+                return ResourceManager.GetString("TextEd_Menu_Paste", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à _Redo.
+        /// </summary>
+        internal static string TextEd_Menu_Redo {
+            get {
+                return ResourceManager.GetString("TextEd_Menu_Redo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Select _All.
+        /// </summary>
+        internal static string TextEd_Menu_SelectAll {
+            get {
+                return ResourceManager.GetString("TextEd_Menu_SelectAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Show _Whitespace.
+        /// </summary>
+        internal static string TextEd_Menu_ShowWhitespace {
+            get {
+                return ResourceManager.GetString("TextEd_Menu_ShowWhitespace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à _Undo.
+        /// </summary>
+        internal static string TextEd_Menu_Undo {
+            get {
+                return ResourceManager.GetString("TextEd_Menu_Undo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Always.
+        /// </summary>
+        internal static string TextEd_Menu_WrapAlways {
+            get {
+                return ResourceManager.GetString("TextEd_Menu_WrapAlways", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à None.
+        /// </summary>
+        internal static string TextEd_Menu_WrapNone {
+            get {
+                return ResourceManager.GetString("TextEd_Menu_WrapNone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Selection Only.
+        /// </summary>
+        internal static string TextEd_Menu_WrapSelectionOnly {
+            get {
+                return ResourceManager.GetString("TextEd_Menu_WrapSelectionOnly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Opening.
+        /// </summary>
+        internal static string TextEd_Status_Opening {
+            get {
+                return ResourceManager.GetString("TextEd_Status_Opening", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Plain Text.
         /// </summary>
         internal static string TextEditor_LanguageLabelPlainText {
@@ -174,114 +282,6 @@ namespace WpfHexEditor.Editor.TextEditor.Properties {
         internal static string TextEditor_StatusBarEncoding {
             get {
                 return ResourceManager.GetString("TextEditor_StatusBarEncoding", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Cu_t.
-        /// </summary>
-        internal static string TextEd_Menu_Cut {
-            get {
-                return ResourceManager.GetString("TextEd_Menu_Cut", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à _Copy.
-        /// </summary>
-        internal static string TextEd_Menu_Copy {
-            get {
-                return ResourceManager.GetString("TextEd_Menu_Copy", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à _Paste.
-        /// </summary>
-        internal static string TextEd_Menu_Paste {
-            get {
-                return ResourceManager.GetString("TextEd_Menu_Paste", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à _Undo.
-        /// </summary>
-        internal static string TextEd_Menu_Undo {
-            get {
-                return ResourceManager.GetString("TextEd_Menu_Undo", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à _Redo.
-        /// </summary>
-        internal static string TextEd_Menu_Redo {
-            get {
-                return ResourceManager.GetString("TextEd_Menu_Redo", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Select _All.
-        /// </summary>
-        internal static string TextEd_Menu_SelectAll {
-            get {
-                return ResourceManager.GetString("TextEd_Menu_SelectAll", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à _Delete.
-        /// </summary>
-        internal static string TextEd_Menu_Delete {
-            get {
-                return ResourceManager.GetString("TextEd_Menu_Delete", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Show _Whitespace.
-        /// </summary>
-        internal static string TextEd_Menu_ShowWhitespace {
-            get {
-                return ResourceManager.GetString("TextEd_Menu_ShowWhitespace", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à None.
-        /// </summary>
-        internal static string TextEd_Menu_WrapNone {
-            get {
-                return ResourceManager.GetString("TextEd_Menu_WrapNone", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Selection Only.
-        /// </summary>
-        internal static string TextEd_Menu_WrapSelectionOnly {
-            get {
-                return ResourceManager.GetString("TextEd_Menu_WrapSelectionOnly", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Always.
-        /// </summary>
-        internal static string TextEd_Menu_WrapAlways {
-            get {
-                return ResourceManager.GetString("TextEd_Menu_WrapAlways", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Opening.
-        /// </summary>
-        internal static string TextEd_Status_Opening {
-            get {
-                return ResourceManager.GetString("TextEd_Status_Opening", resourceCulture);
             }
         }
     }

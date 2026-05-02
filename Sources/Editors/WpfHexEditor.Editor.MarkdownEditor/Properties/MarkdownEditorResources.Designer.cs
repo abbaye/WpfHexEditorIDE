@@ -61,6 +61,24 @@ namespace WpfHexEditor.Editor.MarkdownEditor.Properties {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à No headings found..
+        /// </summary>
+        internal static string Md_NoHeadingsFound {
+            get {
+                return ResourceManager.GetString("Md_NoHeadingsFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Markdown Outline.
+        /// </summary>
+        internal static string Md_OutlineTitle {
+            get {
+                return ResourceManager.GetString("Md_OutlineTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Bold.
         /// </summary>
         internal static string MdCtx_Bold {
@@ -68,43 +86,7 @@ namespace WpfHexEditor.Editor.MarkdownEditor.Properties {
                 return ResourceManager.GetString("MdCtx_Bold", resourceCulture);
             }
         }
-
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à FORMAT.
-        /// </summary>
-        internal static string MdCtx_GroupFormat {
-            get {
-                return ResourceManager.GetString("MdCtx_GroupFormat", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à INSERT.
-        /// </summary>
-        internal static string MdCtx_GroupInsert {
-            get {
-                return ResourceManager.GetString("MdCtx_GroupInsert", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à EXPORT.
-        /// </summary>
-        internal static string MdCtx_GroupExport {
-            get {
-                return ResourceManager.GetString("MdCtx_GroupExport", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à VIEW.
-        /// </summary>
-        internal static string MdCtx_GroupView {
-            get {
-                return ResourceManager.GetString("MdCtx_GroupView", resourceCulture);
-            }
-        }
-
+        
         /// <summary>
         ///   Recherche une chaîne localisée semblable à Code Block.
         /// </summary>
@@ -129,6 +111,42 @@ namespace WpfHexEditor.Editor.MarkdownEditor.Properties {
         internal static string MdCtx_ExportPdf {
             get {
                 return ResourceManager.GetString("MdCtx_ExportPdf", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à EXPORT.
+        /// </summary>
+        internal static string MdCtx_GroupExport {
+            get {
+                return ResourceManager.GetString("MdCtx_GroupExport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à FORMAT.
+        /// </summary>
+        internal static string MdCtx_GroupFormat {
+            get {
+                return ResourceManager.GetString("MdCtx_GroupFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à INSERT.
+        /// </summary>
+        internal static string MdCtx_GroupInsert {
+            get {
+                return ResourceManager.GetString("MdCtx_GroupInsert", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à VIEW.
+        /// </summary>
+        internal static string MdCtx_GroupView {
+            get {
+                return ResourceManager.GetString("MdCtx_GroupView", resourceCulture);
             }
         }
         
@@ -340,6 +358,24 @@ namespace WpfHexEditor.Editor.MarkdownEditor.Properties {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à No Markdown file active..
+        /// </summary>
+        internal static string MdOut_NoActiveFile {
+            get {
+                return ResourceManager.GetString("MdOut_NoActiveFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Refresh outline (F5).
+        /// </summary>
+        internal static string MdOut_RefreshTooltip {
+            get {
+                return ResourceManager.GetString("MdOut_RefreshTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Copy.
         /// </summary>
         internal static string MdPrev_Copy {
@@ -376,6 +412,15 @@ namespace WpfHexEditor.Editor.MarkdownEditor.Properties {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Initializing preview….
+        /// </summary>
+        internal static string MdPrev_InitializingPreview {
+            get {
+                return ResourceManager.GetString("MdPrev_InitializingPreview", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Preview Only.
         /// </summary>
         internal static string MdPrev_PreviewOnly {
@@ -399,6 +444,24 @@ namespace WpfHexEditor.Editor.MarkdownEditor.Properties {
         internal static string MdPrev_ResetZoom {
             get {
                 return ResourceManager.GetString("MdPrev_ResetZoom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à The Markdown preview requires Microsoft Edge WebView2 Runtime. Download it from microsoft.com/edge/webview2..
+        /// </summary>
+        internal static string MdPrev_RuntimeNotFoundMsg {
+            get {
+                return ResourceManager.GetString("MdPrev_RuntimeNotFoundMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à WebView2 Runtime Not Found.
+        /// </summary>
+        internal static string MdPrev_RuntimeNotFoundTitle {
+            get {
+                return ResourceManager.GetString("MdPrev_RuntimeNotFoundTitle", resourceCulture);
             }
         }
         
@@ -678,15 +741,6 @@ namespace WpfHexEditor.Editor.MarkdownEditor.Properties {
         internal static string MdView_Split {
             get {
                 return ResourceManager.GetString("MdView_Split", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à No headings found.
-        /// </summary>
-        internal static string Md_NoHeadingsFound {
-            get {
-                return ResourceManager.GetString("Md_NoHeadingsFound", resourceCulture);
             }
         }
     }

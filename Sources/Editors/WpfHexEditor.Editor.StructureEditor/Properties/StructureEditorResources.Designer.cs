@@ -61,6 +61,1023 @@ namespace WpfHexEditor.Editor.StructureEditor.Properties {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à ＋ Add Assertion.
+        /// </summary>
+        internal static string SE_AddAssertion {
+            get {
+                return ResourceManager.GetString("SE_AddAssertion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à ＋ Add Checksum.
+        /// </summary>
+        internal static string SE_AddChecksum {
+            get {
+                return ResourceManager.GetString("SE_AddChecksum", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Action.
+        /// </summary>
+        internal static string SE_BE_Action {
+            get {
+                return ResourceManager.GetString("SE_BE_Action", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à ＋ Add Bitfield.
+        /// </summary>
+        internal static string SE_BE_AddBitfield {
+            get {
+                return ResourceManager.GetString("SE_BE_AddBitfield", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à ＋ Add Color.
+        /// </summary>
+        internal static string SE_BE_AddColor {
+            get {
+                return ResourceManager.GetString("SE_BE_AddColor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à ＋ Add Value Map Entry.
+        /// </summary>
+        internal static string SE_BE_AddValueMapEntry {
+            get {
+                return ResourceManager.GetString("SE_BE_AddValueMapEntry", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Array.
+        /// </summary>
+        internal static string SE_BE_Array {
+            get {
+                return ResourceManager.GetString("SE_BE_Array", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Bitfields.
+        /// </summary>
+        internal static string SE_BE_Bitfields {
+            get {
+                return ResourceManager.GetString("SE_BE_Bitfields", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Bits.
+        /// </summary>
+        internal static string SE_BE_Bits {
+            get {
+                return ResourceManager.GetString("SE_BE_Bits", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Bounds.
+        /// </summary>
+        internal static string SE_BE_Bounds {
+            get {
+                return ResourceManager.GetString("SE_BE_Bounds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Then / Else blocks are shown as children in the tree..
+        /// </summary>
+        internal static string SE_BE_BranchHint {
+            get {
+                return ResourceManager.GetString("SE_BE_BranchHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Branch Labels.
+        /// </summary>
+        internal static string SE_BE_BranchLabels {
+            get {
+                return ResourceManager.GetString("SE_BE_BranchLabels", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Browse….
+        /// </summary>
+        internal static string SE_BE_Browse {
+            get {
+                return ResourceManager.GetString("SE_BE_Browse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Child fields are shown in the block tree..
+        /// </summary>
+        internal static string SE_BE_ChildFieldsHint {
+            get {
+                return ResourceManager.GetString("SE_BE_ChildFieldsHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Children are shown in the block tree — use the tree to add/reorder child blocks..
+        /// </summary>
+        internal static string SE_BE_ChildrenInTreeHint {
+            get {
+                return ResourceManager.GetString("SE_BE_ChildrenInTreeHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Color Cycle.
+        /// </summary>
+        internal static string SE_BE_ColorCycle {
+            get {
+                return ResourceManager.GetString("SE_BE_ColorCycle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Computation.
+        /// </summary>
+        internal static string SE_BE_Computation {
+            get {
+                return ResourceManager.GetString("SE_BE_Computation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Condition.
+        /// </summary>
+        internal static string SE_BE_Condition {
+            get {
+                return ResourceManager.GetString("SE_BE_Condition", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Count.
+        /// </summary>
+        internal static string SE_BE_Count {
+            get {
+                return ResourceManager.GetString("SE_BE_Count", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Discriminant.
+        /// </summary>
+        internal static string SE_BE_Discriminant {
+            get {
+                return ResourceManager.GetString("SE_BE_Discriminant", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Entry fields are shown as children in the tree..
+        /// </summary>
+        internal static string SE_BE_EntryFieldsHint {
+            get {
+                return ResourceManager.GetString("SE_BE_EntryFieldsHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Entry Size.
+        /// </summary>
+        internal static string SE_BE_EntrySize {
+            get {
+                return ResourceManager.GetString("SE_BE_EntrySize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Error Message.
+        /// </summary>
+        internal static string SE_BE_ErrorMessage {
+            get {
+                return ResourceManager.GetString("SE_BE_ErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Expression.
+        /// </summary>
+        internal static string SE_BE_Expression {
+            get {
+                return ResourceManager.GetString("SE_BE_Expression", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à False Label.
+        /// </summary>
+        internal static string SE_BE_FalseLabel {
+            get {
+                return ResourceManager.GetString("SE_BE_FalseLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Group.
+        /// </summary>
+        internal static string SE_BE_Group {
+            get {
+                return ResourceManager.GetString("SE_BE_Group", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à A group visually labels a set of child fields with a color overlay. It does not consume bytes itself..
+        /// </summary>
+        internal static string SE_BE_GroupHint {
+            get {
+                return ResourceManager.GetString("SE_BE_GroupHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Index Var.
+        /// </summary>
+        internal static string SE_BE_IndexVar {
+            get {
+                return ResourceManager.GetString("SE_BE_IndexVar", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Label.
+        /// </summary>
+        internal static string SE_BE_Label {
+            get {
+                return ResourceManager.GetString("SE_BE_Label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Length.
+        /// </summary>
+        internal static string SE_BE_Length {
+            get {
+                return ResourceManager.GetString("SE_BE_Length", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Body blocks are shown as children in the tree..
+        /// </summary>
+        internal static string SE_BE_LoopBodyHint {
+            get {
+                return ResourceManager.GetString("SE_BE_LoopBodyHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Loop Condition.
+        /// </summary>
+        internal static string SE_BE_LoopCondition {
+            get {
+                return ResourceManager.GetString("SE_BE_LoopCondition", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Mapped Store As.
+        /// </summary>
+        internal static string SE_BE_MappedStoreAs {
+            get {
+                return ResourceManager.GetString("SE_BE_MappedStoreAs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Max Iterations.
+        /// </summary>
+        internal static string SE_BE_MaxIterations {
+            get {
+                return ResourceManager.GetString("SE_BE_MaxIterations", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Max Length.
+        /// </summary>
+        internal static string SE_BE_MaxLength {
+            get {
+                return ResourceManager.GetString("SE_BE_MaxLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Max Value.
+        /// </summary>
+        internal static string SE_BE_MaxValue {
+            get {
+                return ResourceManager.GetString("SE_BE_MaxValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Min Value.
+        /// </summary>
+        internal static string SE_BE_MinValue {
+            get {
+                return ResourceManager.GetString("SE_BE_MinValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Name.
+        /// </summary>
+        internal static string SE_BE_Name {
+            get {
+                return ResourceManager.GetString("SE_BE_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Nested Struct.
+        /// </summary>
+        internal static string SE_BE_NestedStruct {
+            get {
+                return ResourceManager.GetString("SE_BE_NestedStruct", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Offset.
+        /// </summary>
+        internal static string SE_BE_Offset {
+            get {
+                return ResourceManager.GetString("SE_BE_Offset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Offset Add.
+        /// </summary>
+        internal static string SE_BE_OffsetAdd {
+            get {
+                return ResourceManager.GetString("SE_BE_OffsetAdd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Offset From.
+        /// </summary>
+        internal static string SE_BE_OffsetFrom {
+            get {
+                return ResourceManager.GetString("SE_BE_OffsetFrom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Pattern (regex).
+        /// </summary>
+        internal static string SE_BE_PatternRegex {
+            get {
+                return ResourceManager.GetString("SE_BE_PatternRegex", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Pointer Location.
+        /// </summary>
+        internal static string SE_BE_PointerLocation {
+            get {
+                return ResourceManager.GetString("SE_BE_PointerLocation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Position.
+        /// </summary>
+        internal static string SE_BE_Position {
+            get {
+                return ResourceManager.GetString("SE_BE_Position", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Position &amp; Size.
+        /// </summary>
+        internal static string SE_BE_PositionSize {
+            get {
+                return ResourceManager.GetString("SE_BE_PositionSize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Marks a raw byte region with a color overlay. No value is extracted..
+        /// </summary>
+        internal static string SE_BE_RawDataDescription {
+            get {
+                return ResourceManager.GetString("SE_BE_RawDataDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Raw Data Region.
+        /// </summary>
+        internal static string SE_BE_RawDataRegion {
+            get {
+                return ResourceManager.GetString("SE_BE_RawDataRegion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Sentinel (Until).
+        /// </summary>
+        internal static string SE_BE_SentinelUntil {
+            get {
+                return ResourceManager.GetString("SE_BE_SentinelUntil", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Storage.
+        /// </summary>
+        internal static string SE_BE_Storage {
+            get {
+                return ResourceManager.GetString("SE_BE_Storage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Store As.
+        /// </summary>
+        internal static string SE_BE_StoreAs {
+            get {
+                return ResourceManager.GetString("SE_BE_StoreAs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Struct Ref.
+        /// </summary>
+        internal static string SE_BE_StructRef {
+            get {
+                return ResourceManager.GetString("SE_BE_StructRef", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Target &amp; Storage.
+        /// </summary>
+        internal static string SE_BE_TargetStorage {
+            get {
+                return ResourceManager.GetString("SE_BE_TargetStorage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Target Var.
+        /// </summary>
+        internal static string SE_BE_TargetVar {
+            get {
+                return ResourceManager.GetString("SE_BE_TargetVar", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Variable used as the base offset for this array.
+        /// </summary>
+        internal static string SE_BE_Tip_ArrayBaseVar {
+            get {
+                return ResourceManager.GetString("SE_BE_Tip_ArrayBaseVar", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à File offset where the array starts — Ctrl+Space for autocomplete.
+        /// </summary>
+        internal static string SE_BE_Tip_ArrayOffset {
+            get {
+                return ResourceManager.GetString("SE_BE_Tip_ArrayOffset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Bit range e.g. 7-6 or single bit e.g. 3.
+        /// </summary>
+        internal static string SE_BE_Tip_BitRange {
+            get {
+                return ResourceManager.GetString("SE_BE_Tip_BitRange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Edit this block as raw JSON.
+        /// </summary>
+        internal static string SE_BE_Tip_EditAsJson {
+            get {
+                return ResourceManager.GetString("SE_BE_Tip_EditAsJson", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Number of entries — Ctrl+Space for variable suggestions.
+        /// </summary>
+        internal static string SE_BE_Tip_EntryCount {
+            get {
+                return ResourceManager.GetString("SE_BE_Tip_EntryCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Size of each entry in bytes — Ctrl+Space for variable suggestions.
+        /// </summary>
+        internal static string SE_BE_Tip_EntrySize {
+            get {
+                return ResourceManager.GetString("SE_BE_Tip_EntrySize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Math expression using variables and functions — Ctrl+Space for autocomplete.
+        /// </summary>
+        internal static string SE_BE_Tip_Expression {
+            get {
+                return ResourceManager.GetString("SE_BE_Tip_Expression", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Format name or relative path to the .whfmt file.
+        /// </summary>
+        internal static string SE_BE_Tip_FormatPath {
+            get {
+                return ResourceManager.GetString("SE_BE_Tip_FormatPath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Ctrl+Space for autocomplete — integer, var:name, calc:expr.
+        /// </summary>
+        internal static string SE_BE_Tip_LengthAuto {
+            get {
+                return ResourceManager.GetString("SE_BE_Tip_LengthAuto", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Fixed integer or var:name — Ctrl+Space for suggestions.
+        /// </summary>
+        internal static string SE_BE_Tip_LoopCount {
+            get {
+                return ResourceManager.GetString("SE_BE_Tip_LoopCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Variable to store the iteration count after loop completes — Ctrl+Space for suggestions.
+        /// </summary>
+        internal static string SE_BE_Tip_LoopCountStore {
+            get {
+                return ResourceManager.GetString("SE_BE_Tip_LoopCountStore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Variable that receives the current iteration index (0-based).
+        /// </summary>
+        internal static string SE_BE_Tip_LoopIdxStore {
+            get {
+                return ResourceManager.GetString("SE_BE_Tip_LoopIdxStore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Loop index variable name (e.g. i).
+        /// </summary>
+        internal static string SE_BE_Tip_LoopIndex {
+            get {
+                return ResourceManager.GetString("SE_BE_Tip_LoopIndex", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Safety cap — integer.
+        /// </summary>
+        internal static string SE_BE_Tip_LoopMaxCap {
+            get {
+                return ResourceManager.GetString("SE_BE_Tip_LoopMaxCap", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Name of the variable this metadata block reads.
+        /// </summary>
+        internal static string SE_BE_Tip_MetaVarName {
+            get {
+                return ResourceManager.GetString("SE_BE_Tip_MetaVarName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Additional bytes added to OffsetFrom.
+        /// </summary>
+        internal static string SE_BE_Tip_OffsetAddBytes {
+            get {
+                return ResourceManager.GetString("SE_BE_Tip_OffsetAddBytes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Ctrl+Space for autocomplete — integer, var:name, calc:expr, offset:N.
+        /// </summary>
+        internal static string SE_BE_Tip_OffsetAuto {
+            get {
+                return ResourceManager.GetString("SE_BE_Tip_OffsetAuto", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Variable name whose value is the base offset — Ctrl+Space for suggestions.
+        /// </summary>
+        internal static string SE_BE_Tip_OffsetFromVar {
+            get {
+                return ResourceManager.GetString("SE_BE_Tip_OffsetFromVar", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Variable name used as the base offset.
+        /// </summary>
+        internal static string SE_BE_Tip_PtrBaseVar {
+            get {
+                return ResourceManager.GetString("SE_BE_Tip_PtrBaseVar", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Annotation label shown in the hex view.
+        /// </summary>
+        internal static string SE_BE_Tip_PtrLabel {
+            get {
+                return ResourceManager.GetString("SE_BE_Tip_PtrLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à File offset where the pointer value is read — Ctrl+Space for autocomplete.
+        /// </summary>
+        internal static string SE_BE_Tip_PtrOffset {
+            get {
+                return ResourceManager.GetString("SE_BE_Tip_PtrOffset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Size of the pointer value in bytes (e.g. 4 for uint32) — or var:name.
+        /// </summary>
+        internal static string SE_BE_Tip_PtrSize {
+            get {
+                return ResourceManager.GetString("SE_BE_Tip_PtrSize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Variable to store the raw pointer value.
+        /// </summary>
+        internal static string SE_BE_Tip_PtrStoreRaw {
+            get {
+                return ResourceManager.GetString("SE_BE_Tip_PtrStoreRaw", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Variable that will receive the resolved pointer address.
+        /// </summary>
+        internal static string SE_BE_Tip_PtrTargetVar {
+            get {
+                return ResourceManager.GetString("SE_BE_Tip_PtrTargetVar", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à raw=Display (e.g. 0=Grayscale).
+        /// </summary>
+        internal static string SE_BE_Tip_RawDisplayMap {
+            get {
+                return ResourceManager.GetString("SE_BE_Tip_RawDisplayMap", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Variable name to store the computed result — Ctrl+Space for suggestions.
+        /// </summary>
+        internal static string SE_BE_Tip_StoreExpr {
+            get {
+                return ResourceManager.GetString("SE_BE_Tip_StoreExpr", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Variable name for ValueMap-translated value — Ctrl+Space for suggestions.
+        /// </summary>
+        internal static string SE_BE_Tip_StoreMapped {
+            get {
+                return ResourceManager.GetString("SE_BE_Tip_StoreMapped", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Variable name to store parsed value — Ctrl+Space for suggestions.
+        /// </summary>
+        internal static string SE_BE_Tip_StoreParsed {
+            get {
+                return ResourceManager.GetString("SE_BE_Tip_StoreParsed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Hex pattern or var:name to stop reading at. Replaces Length when set..
+        /// </summary>
+        internal static string SE_BE_Tip_UntilPattern {
+            get {
+                return ResourceManager.GetString("SE_BE_Tip_UntilPattern", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Safety cap (bytes) if the Until pattern is never found. 0 = use interpreter default (4096)..
+        /// </summary>
+        internal static string SE_BE_Tip_UntilSafetyCap {
+            get {
+                return ResourceManager.GetString("SE_BE_Tip_UntilSafetyCap", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Variable that drives the variant selection — Ctrl+Space for suggestions.
+        /// </summary>
+        internal static string SE_BE_Tip_VariantVar {
+            get {
+                return ResourceManager.GetString("SE_BE_Tip_VariantVar", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Name of the variable to act on — type to see suggestions (Ctrl+Space).
+        /// </summary>
+        internal static string SE_BE_Tip_VarName {
+            get {
+                return ResourceManager.GetString("SE_BE_Tip_VarName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Value to set / amount to add or subtract — supports var:name.
+        /// </summary>
+        internal static string SE_BE_Tip_VarValue {
+            get {
+                return ResourceManager.GetString("SE_BE_Tip_VarValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à True Label.
+        /// </summary>
+        internal static string SE_BE_TrueLabel {
+            get {
+                return ResourceManager.GetString("SE_BE_TrueLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Union.
+        /// </summary>
+        internal static string SE_BE_Union {
+            get {
+                return ResourceManager.GetString("SE_BE_Union", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Until.
+        /// </summary>
+        internal static string SE_BE_Until {
+            get {
+                return ResourceManager.GetString("SE_BE_Until", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Until Inclusive (include pattern bytes in field length).
+        /// </summary>
+        internal static string SE_BE_UntilInclusive {
+            get {
+                return ResourceManager.GetString("SE_BE_UntilInclusive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Validation Rules.
+        /// </summary>
+        internal static string SE_BE_ValidationRules {
+            get {
+                return ResourceManager.GetString("SE_BE_ValidationRules", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Value.
+        /// </summary>
+        internal static string SE_BE_Value {
+            get {
+                return ResourceManager.GetString("SE_BE_Value", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Value Map.
+        /// </summary>
+        internal static string SE_BE_ValueMap {
+            get {
+                return ResourceManager.GetString("SE_BE_ValueMap", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Value Type.
+        /// </summary>
+        internal static string SE_BE_ValueType {
+            get {
+                return ResourceManager.GetString("SE_BE_ValueType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Variable.
+        /// </summary>
+        internal static string SE_BE_Variable {
+            get {
+                return ResourceManager.GetString("SE_BE_Variable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Variable Name.
+        /// </summary>
+        internal static string SE_BE_VariableName {
+            get {
+                return ResourceManager.GetString("SE_BE_VariableName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Variants.
+        /// </summary>
+        internal static string SE_BE_Variants {
+            get {
+                return ResourceManager.GetString("SE_BE_Variants", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Block Type.
+        /// </summary>
+        internal static string SE_BlockType {
+            get {
+                return ResourceManager.GetString("SE_BlockType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Offset.
+        /// </summary>
+        internal static string SE_ColOffset {
+            get {
+                return ResourceManager.GetString("SE_ColOffset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Required.
+        /// </summary>
+        internal static string SE_ColRequired {
+            get {
+                return ResourceManager.GetString("SE_ColRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Strength.
+        /// </summary>
+        internal static string SE_ColStrength {
+            get {
+                return ResourceManager.GetString("SE_ColStrength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Color.
+        /// </summary>
+        internal static string SE_PropColor {
+            get {
+                return ResourceManager.GetString("SE_PropColor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Description.
+        /// </summary>
+        internal static string SE_PropDescription {
+            get {
+                return ResourceManager.GetString("SE_PropDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Endianness.
+        /// </summary>
+        internal static string SE_PropEndianness {
+            get {
+                return ResourceManager.GetString("SE_PropEndianness", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Hidden.
+        /// </summary>
+        internal static string SE_PropHidden {
+            get {
+                return ResourceManager.GetString("SE_PropHidden", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Name.
+        /// </summary>
+        internal static string SE_PropName {
+            get {
+                return ResourceManager.GetString("SE_PropName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Opacity.
+        /// </summary>
+        internal static string SE_PropOpacity {
+            get {
+                return ResourceManager.GetString("SE_PropOpacity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Type.
+        /// </summary>
+        internal static string SE_PropType {
+            get {
+                return ResourceManager.GetString("SE_PropType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Show:.
+        /// </summary>
+        internal static string SE_ShowLabel {
+            get {
+                return ResourceManager.GetString("SE_ShowLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Hex digits only (e.g. FF, 4D5A).
+        /// </summary>
+        internal static string SE_TipHexDigitsOnly {
+            get {
+                return ResourceManager.GetString("SE_TipHexDigitsOnly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Struct name (C struct).
+        /// </summary>
+        internal static string SE_TipStructName {
+            get {
+                return ResourceManager.GetString("SE_TipStructName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Template Name.
+        /// </summary>
+        internal static string SE_TipTemplateName {
+            get {
+                return ResourceManager.GetString("SE_TipTemplateName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Code Bottom.
         /// </summary>
         internal static string StrLayout_CodeBottom {
@@ -174,6 +1191,15 @@ namespace WpfHexEditor.Editor.StructureEditor.Properties {
         internal static string StrTb_Validate {
             get {
                 return ResourceManager.GetString("StrTb_Validate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Length:.
+        /// </summary>
+        internal static string StructureEd_ConditionRow_LengthLabel {
+            get {
+                return ResourceManager.GetString("StructureEd_ConditionRow_LengthLabel", resourceCulture);
             }
         }
         
@@ -923,7 +1949,7 @@ namespace WpfHexEditor.Editor.StructureEditor.Properties {
                 return ResourceManager.GetString("StructureEditor_TestBrowseButton", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Recherche une chaîne localisée semblable à Select a binary file to test against.
         /// </summary>
@@ -932,7 +1958,7 @@ namespace WpfHexEditor.Editor.StructureEditor.Properties {
                 return ResourceManager.GetString("StructureEditor_TestBrowseDialogTitle", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Recherche une chaîne localisée semblable à Block Name.
         /// </summary>
@@ -1461,15 +2487,6 @@ namespace WpfHexEditor.Editor.StructureEditor.Properties {
         internal static string StructureEditor_VarsFilterToolTip {
             get {
                 return ResourceManager.GetString("StructureEditor_VarsFilterToolTip", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Length:.
-        /// </summary>
-        internal static string StructureEd_ConditionRow_LengthLabel {
-            get {
-                return ResourceManager.GetString("StructureEd_ConditionRow_LengthLabel", resourceCulture);
             }
         }
     }

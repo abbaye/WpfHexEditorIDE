@@ -1132,6 +1132,42 @@ namespace WpfHexEditor.Shell.Panels.Properties {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Add Format.
+        /// </summary>
+        internal static string Whfmt_AddFormatError {
+            get {
+                return ResourceManager.GetString("Whfmt_AddFormatError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Whfmt definitions (*.whfmt)|*.whfmt.
+        /// </summary>
+        internal static string Whfmt_AddFormatFilter {
+            get {
+                return ResourceManager.GetString("Whfmt_AddFormatFilter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Add Format Definition.
+        /// </summary>
+        internal static string Whfmt_AddFormatTitle {
+            get {
+                return ResourceManager.GetString("Whfmt_AddFormatTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Delete Format.
+        /// </summary>
+        internal static string Whfmt_DeleteFormatTitle {
+            get {
+                return ResourceManager.GetString("Whfmt_DeleteFormatTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Copy Path.
         /// </summary>
         internal static string WhfmtBrowser_CopyPath {
@@ -1389,6 +1425,42 @@ namespace WpfHexEditor.Shell.Panels.Properties {
         internal static string WhfmtCatalog_SourceHeader {
             get {
                 return ResourceManager.GetString("WhfmtCatalog_SourceHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Add format file….
+        /// </summary>
+        internal static string WhfmtCatalog_Tooltip_AddFormat {
+            get {
+                return ResourceManager.GetString("WhfmtCatalog_Tooltip_AddFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Export selected to file….
+        /// </summary>
+        internal static string WhfmtCatalog_Tooltip_ExportSelected {
+            get {
+                return ResourceManager.GetString("WhfmtCatalog_Tooltip_ExportSelected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Open selected.
+        /// </summary>
+        internal static string WhfmtCatalog_Tooltip_OpenSelected {
+            get {
+                return ResourceManager.GetString("WhfmtCatalog_Tooltip_OpenSelected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Refresh catalog (F5).
+        /// </summary>
+        internal static string WhfmtCatalog_Tooltip_Refresh {
+            get {
+                return ResourceManager.GetString("WhfmtCatalog_Tooltip_Refresh", resourceCulture);
             }
         }
         
@@ -1669,19 +1741,6 @@ namespace WpfHexEditor.Shell.Panels.Properties {
             get {
                 return ResourceManager.GetString("WhfmtDetail_WebLinksLabel", resourceCulture);
             }
-        }
-
-        internal static string Whfmt_AddFormatTitle {
-            get { return ResourceManager.GetString("Whfmt_AddFormatTitle", resourceCulture); }
-        }
-        internal static string Whfmt_AddFormatFilter {
-            get { return ResourceManager.GetString("Whfmt_AddFormatFilter", resourceCulture); }
-        }
-        internal static string Whfmt_AddFormatError {
-            get { return ResourceManager.GetString("Whfmt_AddFormatError", resourceCulture); }
-        }
-        internal static string Whfmt_DeleteFormatTitle {
-            get { return ResourceManager.GetString("Whfmt_DeleteFormatTitle", resourceCulture); }
         }
     }
 }

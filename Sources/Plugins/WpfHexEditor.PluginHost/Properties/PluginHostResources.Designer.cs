@@ -61,6 +61,1942 @@ namespace WpfHexEditor.PluginHost.Properties {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à All plugins are up to date..
+        /// </summary>
+        internal static string MKT_AllUpToDate {
+            get {
+                return ResourceManager.GetString("MKT_AllUpToDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Browse.
+        /// </summary>
+        internal static string MKT_BrowseTab {
+            get {
+                return ResourceManager.GetString("MKT_BrowseTab", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Install.
+        /// </summary>
+        internal static string MKT_InstallButton {
+            get {
+                return ResourceManager.GetString("MKT_InstallButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Installed.
+        /// </summary>
+        internal static string MKT_InstalledTab {
+            get {
+                return ResourceManager.GetString("MKT_InstalledTab", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Install File….
+        /// </summary>
+        internal static string MKT_InstallFileButton {
+            get {
+                return ResourceManager.GetString("MKT_InstallFileButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Install plugin from local .whxplugin file.
+        /// </summary>
+        internal static string MKT_InstallFileTooltip {
+            get {
+                return ResourceManager.GetString("MKT_InstallFileTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Integrity verified.
+        /// </summary>
+        internal static string MKT_IntegrityTooltip {
+            get {
+                return ResourceManager.GetString("MKT_IntegrityTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Refresh.
+        /// </summary>
+        internal static string MKT_RefreshButton {
+            get {
+                return ResourceManager.GetString("MKT_RefreshButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Refresh.
+        /// </summary>
+        internal static string MKT_RefreshTooltip {
+            get {
+                return ResourceManager.GetString("MKT_RefreshTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Release Notes.
+        /// </summary>
+        internal static string MKT_ReleaseNotesLabel {
+            get {
+                return ResourceManager.GetString("MKT_ReleaseNotesLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Rollback.
+        /// </summary>
+        internal static string MKT_RollbackButton {
+            get {
+                return ResourceManager.GetString("MKT_RollbackButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Restore the previously installed version from backup.
+        /// </summary>
+        internal static string MKT_RollbackTooltip {
+            get {
+                return ResourceManager.GetString("MKT_RollbackTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Search marketplace….
+        /// </summary>
+        internal static string MKT_SearchPlaceholder {
+            get {
+                return ResourceManager.GetString("MKT_SearchPlaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Select a plugin to see details..
+        /// </summary>
+        internal static string MKT_SelectPluginHint {
+            get {
+                return ResourceManager.GetString("MKT_SelectPluginHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Show verified only.
+        /// </summary>
+        internal static string MKT_ShowVerifiedTooltip {
+            get {
+                return ResourceManager.GetString("MKT_ShowVerifiedTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Uninstall.
+        /// </summary>
+        internal static string MKT_UninstallButton {
+            get {
+                return ResourceManager.GetString("MKT_UninstallButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Update All.
+        /// </summary>
+        internal static string MKT_UpdateAllButton {
+            get {
+                return ResourceManager.GetString("MKT_UpdateAllButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Update.
+        /// </summary>
+        internal static string MKT_UpdateButton {
+            get {
+                return ResourceManager.GetString("MKT_UpdateButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à update(s) available.
+        /// </summary>
+        internal static string MKT_UpdatesAvailable {
+            get {
+                return ResourceManager.GetString("MKT_UpdatesAvailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Updates.
+        /// </summary>
+        internal static string MKT_UpdatesTab {
+            get {
+                return ResourceManager.GetString("MKT_UpdatesTab", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Verified.
+        /// </summary>
+        internal static string MKT_VerifiedLabel {
+            get {
+                return ResourceManager.GetString("MKT_VerifiedLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Verified publisher.
+        /// </summary>
+        internal static string MKT_VerifiedPublisherTooltip {
+            get {
+                return ResourceManager.GetString("MKT_VerifiedPublisherTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à PLUGIN ACTIONS.
+        /// </summary>
+        internal static string PH_ActionsSectionHeader {
+            get {
+                return ResourceManager.GetString("PH_ActionsSectionHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Activate this plugin immediately (overrides lazy-load trigger).
+        /// </summary>
+        internal static string PH_ActivateNowTooltip {
+            get {
+                return ResourceManager.GetString("PH_ActivateNowTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Assemblies.
+        /// </summary>
+        internal static string PH_AlcAssembliesLabel {
+            get {
+                return ResourceManager.GetString("PH_AlcAssembliesLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Conflicts.
+        /// </summary>
+        internal static string PH_AlcConflictsLabel {
+            get {
+                return ResourceManager.GetString("PH_AlcConflictsLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à ALC Diagnostics.
+        /// </summary>
+        internal static string PH_AlcDiagnosticsSection {
+            get {
+                return ResourceManager.GetString("PH_AlcDiagnosticsSection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Resource alerts triggered.
+        /// </summary>
+        internal static string PH_AlertBadgeTooltip {
+            get {
+                return ResourceManager.GetString("PH_AlertBadgeTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Auto-Migrate at (MB):.
+        /// </summary>
+        internal static string PH_AutoMigrateAtMb {
+            get {
+                return ResourceManager.GetString("PH_AutoMigrateAtMb", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Auto-Migrate at (%):.
+        /// </summary>
+        internal static string PH_AutoMigrateAtPct {
+            get {
+                return ResourceManager.GetString("PH_AutoMigrateAtPct", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à  — automatically moves plugins to Sandbox when thresholds are exceeded..
+        /// </summary>
+        internal static string PH_AutoMigrateDesc {
+            get {
+                return ResourceManager.GetString("PH_AutoMigrateDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Effective mode chosen by Auto decision engine.
+        /// </summary>
+        internal static string PH_AutoModeTooltip {
+            get {
+                return ResourceManager.GetString("PH_AutoModeTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Avg Call.
+        /// </summary>
+        internal static string PH_AvgCallLabel {
+            get {
+                return ResourceManager.GetString("PH_AvgCallLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Avg CPU.
+        /// </summary>
+        internal static string PH_AvgCpuLabel {
+            get {
+                return ResourceManager.GetString("PH_AvgCpuLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Avg exec.
+        /// </summary>
+        internal static string PH_AvgExecLabel {
+            get {
+                return ResourceManager.GetString("PH_AvgExecLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Avg ms.
+        /// </summary>
+        internal static string PH_AvgMsColumn {
+            get {
+                return ResourceManager.GetString("PH_AvgMsColumn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Capabilities.
+        /// </summary>
+        internal static string PH_CapabilitiesSection {
+            get {
+                return ResourceManager.GetString("PH_CapabilitiesSection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Charts position relative to the plugin table.
+        /// </summary>
+        internal static string PH_ChartsPosition {
+            get {
+                return ResourceManager.GetString("PH_ChartsPosition", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à 📈 Charts.
+        /// </summary>
+        internal static string PH_ChartsTab {
+            get {
+                return ResourceManager.GetString("PH_ChartsTab", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Clear.
+        /// </summary>
+        internal static string PH_ClearButton {
+            get {
+                return ResourceManager.GetString("PH_ClearButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Clear event log.
+        /// </summary>
+        internal static string PH_ClearEventLogTooltip {
+            get {
+                return ResourceManager.GetString("PH_ClearEventLogTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Clear Filter.
+        /// </summary>
+        internal static string PH_ClearFilterButton {
+            get {
+                return ResourceManager.GetString("PH_ClearFilterButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à  Clear Log.
+        /// </summary>
+        internal static string PH_ClearLog {
+            get {
+                return ResourceManager.GetString("PH_ClearLog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Clear log.
+        /// </summary>
+        internal static string PH_ClearLogButton {
+            get {
+                return ResourceManager.GetString("PH_ClearLogButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Event Type.
+        /// </summary>
+        internal static string PH_ColEventType {
+            get {
+                return ResourceManager.GetString("PH_ColEventType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Export diagnostics.
+        /// </summary>
+        internal static string PH_ContextExportMenu {
+            get {
+                return ResourceManager.GetString("PH_ContextExportMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Install….
+        /// </summary>
+        internal static string PH_ContextInstallMenu {
+            get {
+                return ResourceManager.GetString("PH_ContextInstallMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Reload.
+        /// </summary>
+        internal static string PH_ContextReloadMenu {
+            get {
+                return ResourceManager.GetString("PH_ContextReloadMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Enable / Disable.
+        /// </summary>
+        internal static string PH_ContextToggleMenu {
+            get {
+                return ResourceManager.GetString("PH_ContextToggleMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Uninstall.
+        /// </summary>
+        internal static string PH_ContextUninstallMenu {
+            get {
+                return ResourceManager.GetString("PH_ContextUninstallMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Copy fault details.
+        /// </summary>
+        internal static string PH_CopyFaultContextMenu {
+            get {
+                return ResourceManager.GetString("PH_CopyFaultContextMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Copy plugin ID.
+        /// </summary>
+        internal static string PH_CopyIdContextMenu {
+            get {
+                return ResourceManager.GetString("PH_CopyIdContextMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Copy table.
+        /// </summary>
+        internal static string PH_CopyTable {
+            get {
+                return ResourceManager.GetString("PH_CopyTable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à CPU %.
+        /// </summary>
+        internal static string PH_CpuChartTitle {
+            get {
+                return ResourceManager.GetString("PH_CpuChartTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à CPU (est.)  .
+        /// </summary>
+        internal static string PH_CpuEstimatedLabel {
+            get {
+                return ResourceManager.GetString("PH_CpuEstimatedLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à CPU (est.).
+        /// </summary>
+        internal static string PH_CpuEstLabel {
+            get {
+                return ResourceManager.GetString("PH_CpuEstLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à CPU % — History.
+        /// </summary>
+        internal static string PH_CpuHistoryTitle {
+            get {
+                return ResourceManager.GetString("PH_CpuHistoryTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à CPU.
+        /// </summary>
+        internal static string PH_CpuMetric {
+            get {
+                return ResourceManager.GetString("PH_CpuMetric", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à CPU%.
+        /// </summary>
+        internal static string PH_CpuPctColumn {
+            get {
+                return ResourceManager.GetString("PH_CpuPctColumn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à CPU / RAM.
+        /// </summary>
+        internal static string PH_CpuRamSection {
+            get {
+                return ResourceManager.GetString("PH_CpuRamSection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à CPU Thresholds (sustained).
+        /// </summary>
+        internal static string PH_CpuThresholds {
+            get {
+                return ResourceManager.GetString("PH_CpuThresholds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Crash Threshold.
+        /// </summary>
+        internal static string PH_CrashThreshold {
+            get {
+                return ResourceManager.GetString("PH_CrashThreshold", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Unload plugin and return to Standby — re-activates on next trigger.
+        /// </summary>
+        internal static string PH_DeactivateTooltip {
+            get {
+                return ResourceManager.GetString("PH_DeactivateTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Declared.
+        /// </summary>
+        internal static string PH_DeclaredColumn {
+            get {
+                return ResourceManager.GetString("PH_DeclaredColumn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Dependency Errors.
+        /// </summary>
+        internal static string PH_DependencyErrorsSection {
+            get {
+                return ResourceManager.GetString("PH_DependencyErrorsSection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Description.
+        /// </summary>
+        internal static string PH_DescriptionColumn {
+            get {
+                return ResourceManager.GetString("PH_DescriptionColumn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à DIAGNOSTIC.
+        /// </summary>
+        internal static string PH_DiagnosticSectionHeader {
+            get {
+                return ResourceManager.GetString("PH_DiagnosticSectionHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Directory: .
+        /// </summary>
+        internal static string PH_DirectoryLabel {
+            get {
+                return ResourceManager.GetString("PH_DirectoryLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Disable.
+        /// </summary>
+        internal static string PH_DisableContextMenu {
+            get {
+                return ResourceManager.GetString("PH_DisableContextMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à  — no monitoring..
+        /// </summary>
+        internal static string PH_DisabledDesc {
+            get {
+                return ResourceManager.GetString("PH_DisabledDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Disabled.
+        /// </summary>
+        internal static string PH_DisabledStatus {
+            get {
+                return ResourceManager.GetString("PH_DisabledStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Dismiss suggestion.
+        /// </summary>
+        internal static string PH_DismissTooltip {
+            get {
+                return ResourceManager.GetString("PH_DismissTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à This plugin is dormant — it activates when a trigger is matched..
+        /// </summary>
+        internal static string PH_DormantDesc {
+            get {
+                return ResourceManager.GetString("PH_DormantDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à This plugin is dormant — it will load on first use..
+        /// </summary>
+        internal static string PH_DormantNote {
+            get {
+                return ResourceManager.GetString("PH_DormantNote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Drop .whxplugin to install.
+        /// </summary>
+        internal static string PH_DropHintText {
+            get {
+                return ResourceManager.GetString("PH_DropHintText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Enable.
+        /// </summary>
+        internal static string PH_EnableContextMenu {
+            get {
+                return ResourceManager.GetString("PH_EnableContextMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Event Log (last 100).
+        /// </summary>
+        internal static string PH_EventLog {
+            get {
+                return ResourceManager.GetString("PH_EventLog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à 📋 Events.
+        /// </summary>
+        internal static string PH_EventsTab {
+            get {
+                return ResourceManager.GetString("PH_EventsTab", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à EVENTS.
+        /// </summary>
+        internal static string PH_EventsTabLabel {
+            get {
+                return ResourceManager.GetString("PH_EventsTabLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Export crash report.
+        /// </summary>
+        internal static string PH_ExportCrashButton {
+            get {
+                return ResourceManager.GetString("PH_ExportCrashButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Export crash report.
+        /// </summary>
+        internal static string PH_ExportCrashContextMenu {
+            get {
+                return ResourceManager.GetString("PH_ExportCrashContextMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Export diagnostics.
+        /// </summary>
+        internal static string PH_ExportDiagnosticsButton {
+            get {
+                return ResourceManager.GetString("PH_ExportDiagnosticsButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Export diagnostics.
+        /// </summary>
+        internal static string PH_ExportDiagnosticsContextMenu {
+            get {
+                return ResourceManager.GetString("PH_ExportDiagnosticsContextMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Export event log.
+        /// </summary>
+        internal static string PH_ExportEventLog {
+            get {
+                return ResourceManager.GetString("PH_ExportEventLog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Export….
+        /// </summary>
+        internal static string PH_ExportMenuTooltip {
+            get {
+                return ResourceManager.GetString("PH_ExportMenuTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Export metrics as CSV.
+        /// </summary>
+        internal static string PH_ExportMetricsCsv {
+            get {
+                return ResourceManager.GetString("PH_ExportMetricsCsv", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Export metrics as JSON.
+        /// </summary>
+        internal static string PH_ExportMetricsJson {
+            get {
+                return ResourceManager.GetString("PH_ExportMetricsJson", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Extension Points.
+        /// </summary>
+        internal static string PH_ExtensionPointsSection {
+            get {
+                return ResourceManager.GetString("PH_ExtensionPointsSection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Faulted.
+        /// </summary>
+        internal static string PH_FaultedStatus {
+            get {
+                return ResourceManager.GetString("PH_FaultedStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Faults.
+        /// </summary>
+        internal static string PH_FaultsMetric {
+            get {
+                return ResourceManager.GetString("PH_FaultsMetric", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Disabled.
+        /// </summary>
+        internal static string PH_FilterDisabled {
+            get {
+                return ResourceManager.GetString("PH_FilterDisabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Faulted.
+        /// </summary>
+        internal static string PH_FilterFaulted {
+            get {
+                return ResourceManager.GetString("PH_FilterFaulted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Show only loaded plugins.
+        /// </summary>
+        internal static string PH_FilterLoaded {
+            get {
+                return ResourceManager.GetString("PH_FilterLoaded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Filter by name, ID or author….
+        /// </summary>
+        internal static string PH_FilterPlaceholder {
+            get {
+                return ResourceManager.GetString("PH_FilterPlaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Filter plugins….
+        /// </summary>
+        internal static string PH_FilterPluginsPlaceholder {
+            get {
+                return ResourceManager.GetString("PH_FilterPluginsPlaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Standby.
+        /// </summary>
+        internal static string PH_FilterStandby {
+            get {
+                return ResourceManager.GetString("PH_FilterStandby", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Warnings.
+        /// </summary>
+        internal static string PH_FilterWarnings {
+            get {
+                return ResourceManager.GetString("PH_FilterWarnings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Force GC collect (adds marker on chart).
+        /// </summary>
+        internal static string PH_ForceGcButton {
+            get {
+                return ResourceManager.GetString("PH_ForceGcButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Force GC Collect.
+        /// </summary>
+        internal static string PH_ForceGcMenu {
+            get {
+                return ResourceManager.GetString("PH_ForceGcMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Fast = IWpfHexEditorPluginV2.SupportsHotReload; Full = full unload+GC+reload cycle.
+        /// </summary>
+        internal static string PH_HotReloadTooltip {
+            get {
+                return ResourceManager.GetString("PH_HotReloadTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Info.
+        /// </summary>
+        internal static string PH_InfoSection {
+            get {
+                return ResourceManager.GetString("PH_InfoSection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Init.
+        /// </summary>
+        internal static string PH_InitLabel {
+            get {
+                return ResourceManager.GetString("PH_InitLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Init ms.
+        /// </summary>
+        internal static string PH_InitMsColumn {
+            get {
+                return ResourceManager.GetString("PH_InitMsColumn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Install.
+        /// </summary>
+        internal static string PH_InstallButton {
+            get {
+                return ResourceManager.GetString("PH_InstallButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Install File….
+        /// </summary>
+        internal static string PH_InstallFile {
+            get {
+                return ResourceManager.GetString("PH_InstallFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Installing….
+        /// </summary>
+        internal static string PH_InstallingMessage {
+            get {
+                return ResourceManager.GetString("PH_InstallingMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à 10 s.
+        /// </summary>
+        internal static string PH_Interval10s {
+            get {
+                return ResourceManager.GetString("PH_Interval10s", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à 1 s.
+        /// </summary>
+        internal static string PH_Interval1s {
+            get {
+                return ResourceManager.GetString("PH_Interval1s", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à 30 s.
+        /// </summary>
+        internal static string PH_Interval30s {
+            get {
+                return ResourceManager.GetString("PH_Interval30s", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à 5 s.
+        /// </summary>
+        internal static string PH_Interval5s {
+            get {
+                return ResourceManager.GetString("PH_Interval5s", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Interval:.
+        /// </summary>
+        internal static string PH_IntervalLabel {
+            get {
+                return ResourceManager.GetString("PH_IntervalLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Interval.
+        /// </summary>
+        internal static string PH_IntervalMenu {
+            get {
+                return ResourceManager.GetString("PH_IntervalMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Bottom.
+        /// </summary>
+        internal static string PH_LayoutBottom {
+            get {
+                return ResourceManager.GetString("PH_LayoutBottom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Layout:.
+        /// </summary>
+        internal static string PH_LayoutLabel {
+            get {
+                return ResourceManager.GetString("PH_LayoutLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Left.
+        /// </summary>
+        internal static string PH_LayoutLeft {
+            get {
+                return ResourceManager.GetString("PH_LayoutLeft", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Layout.
+        /// </summary>
+        internal static string PH_LayoutMenu {
+            get {
+                return ResourceManager.GetString("PH_LayoutMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Right.
+        /// </summary>
+        internal static string PH_LayoutRight {
+            get {
+                return ResourceManager.GetString("PH_LayoutRight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Top.
+        /// </summary>
+        internal static string PH_LayoutTop {
+            get {
+                return ResourceManager.GetString("PH_LayoutTop", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Lazy Loading.
+        /// </summary>
+        internal static string PH_LazyLoadingSection {
+            get {
+                return ResourceManager.GetString("PH_LazyLoadingSection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Loaded since: .
+        /// </summary>
+        internal static string PH_LoadedSinceLabel {
+            get {
+                return ResourceManager.GetString("PH_LoadedSinceLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Loaded.
+        /// </summary>
+        internal static string PH_LoadedStatus {
+            get {
+                return ResourceManager.GetString("PH_LoadedStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à  Load Now.
+        /// </summary>
+        internal static string PH_LoadNow {
+            get {
+                return ResourceManager.GetString("PH_LoadNow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Load Now.
+        /// </summary>
+        internal static string PH_LoadNowButton {
+            get {
+                return ResourceManager.GetString("PH_LoadNowButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Mem MB.
+        /// </summary>
+        internal static string PH_MemMbColumn {
+            get {
+                return ResourceManager.GetString("PH_MemMbColumn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Memory MB.
+        /// </summary>
+        internal static string PH_MemoryChartTitle {
+            get {
+                return ResourceManager.GetString("PH_MemoryChartTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Memory MB — History.
+        /// </summary>
+        internal static string PH_MemoryHistoryTitle {
+            get {
+                return ResourceManager.GetString("PH_MemoryHistoryTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Memory.
+        /// </summary>
+        internal static string PH_MemoryLabel {
+            get {
+                return ResourceManager.GetString("PH_MemoryLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Memory.
+        /// </summary>
+        internal static string PH_MemoryMetric {
+            get {
+                return ResourceManager.GetString("PH_MemoryMetric", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Memory  .
+        /// </summary>
+        internal static string PH_MemoryShortLabel {
+            get {
+                return ResourceManager.GetString("PH_MemoryShortLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Memory Thresholds.
+        /// </summary>
+        internal static string PH_MemoryThresholds {
+            get {
+                return ResourceManager.GetString("PH_MemoryThresholds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Mem.
+        /// </summary>
+        internal static string PH_MemShortLabel {
+            get {
+                return ResourceManager.GetString("PH_MemShortLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à METRICS.
+        /// </summary>
+        internal static string PH_MetricsSection {
+            get {
+                return ResourceManager.GetString("PH_MetricsSection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Migrate after N crashes:.
+        /// </summary>
+        internal static string PH_MigrateAfterCrashes {
+            get {
+                return ResourceManager.GetString("PH_MigrateAfterCrashes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Move to Sandbox.
+        /// </summary>
+        internal static string PH_MigrateToSandboxButton {
+            get {
+                return ResourceManager.GetString("PH_MigrateToSandboxButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Migration Mode.
+        /// </summary>
+        internal static string PH_MigrationMode {
+            get {
+                return ResourceManager.GetString("PH_MigrationMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Auto Migrate.
+        /// </summary>
+        internal static string PH_ModeAutoMigrate {
+            get {
+                return ResourceManager.GetString("PH_ModeAutoMigrate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Disabled.
+        /// </summary>
+        internal static string PH_ModeDisabled {
+            get {
+                return ResourceManager.GetString("PH_ModeDisabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Mode:.
+        /// </summary>
+        internal static string PH_ModeLabel {
+            get {
+                return ResourceManager.GetString("PH_ModeLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Suggest Only.
+        /// </summary>
+        internal static string PH_ModeSuggestOnly {
+            get {
+                return ResourceManager.GetString("PH_ModeSuggestOnly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à EXTENSIONS MONITOR.
+        /// </summary>
+        internal static string PH_MonitorTitle {
+            get {
+                return ResourceManager.GetString("PH_MonitorTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à More options.
+        /// </summary>
+        internal static string PH_MoreOptionsTooltip {
+            get {
+                return ResourceManager.GetString("PH_MoreOptionsTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Build the solution to copy plugins
+        ///or use Install to add a .whxplugin.
+        /// </summary>
+        internal static string PH_NoPluginsBody {
+            get {
+                return ResourceManager.GetString("PH_NoPluginsBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Drop a .whxplugin file here or use the Install button..
+        /// </summary>
+        internal static string PH_NoPluginsMessage {
+            get {
+                return ResourceManager.GetString("PH_NoPluginsMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à No plugins loaded.
+        /// </summary>
+        internal static string PH_NoPluginsTitle {
+            get {
+                return ResourceManager.GetString("PH_NoPluginsTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Select a plugin to view details.
+        /// </summary>
+        internal static string PH_NoSelectionPlaceholder {
+            get {
+                return ResourceManager.GetString("PH_NoSelectionPlaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à OFFICIAL.
+        /// </summary>
+        internal static string PH_OfficialBadge {
+            get {
+                return ResourceManager.GetString("PH_OfficialBadge", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Open Monitor.
+        /// </summary>
+        internal static string PH_OpenMonitorContextMenu {
+            get {
+                return ResourceManager.GetString("PH_OpenMonitorContextMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Overview.
+        /// </summary>
+        internal static string PH_OverviewSection {
+            get {
+                return ResourceManager.GetString("PH_OverviewSection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à 📊 Overview.
+        /// </summary>
+        internal static string PH_OverviewTab {
+            get {
+                return ResourceManager.GetString("PH_OverviewTab", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Pause Monitoring.
+        /// </summary>
+        internal static string PH_PauseMonitoring {
+            get {
+                return ResourceManager.GetString("PH_PauseMonitoring", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Peak CPU.
+        /// </summary>
+        internal static string PH_PeakCpuLabel {
+            get {
+                return ResourceManager.GetString("PH_PeakCpuLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à peak: .
+        /// </summary>
+        internal static string PH_PeakLabel {
+            get {
+                return ResourceManager.GetString("PH_PeakLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Peak%.
+        /// </summary>
+        internal static string PH_PeakPctColumn {
+            get {
+                return ResourceManager.GetString("PH_PeakPctColumn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à   peak: .
+        /// </summary>
+        internal static string PH_PeakShortLabel {
+            get {
+                return ResourceManager.GetString("PH_PeakShortLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Permission.
+        /// </summary>
+        internal static string PH_PermissionColumn {
+            get {
+                return ResourceManager.GetString("PH_PermissionColumn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Toggle individual permissions for this plugin. Changes take effect immediately..
+        /// </summary>
+        internal static string PH_PermissionsDesc {
+            get {
+                return ResourceManager.GetString("PH_PermissionsDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Permissions.
+        /// </summary>
+        internal static string PH_PermissionsLabel {
+            get {
+                return ResourceManager.GetString("PH_PermissionsLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Permission changes take effect after plugin reload..
+        /// </summary>
+        internal static string PH_PermissionsNote {
+            get {
+                return ResourceManager.GetString("PH_PermissionsNote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Permissions.
+        /// </summary>
+        internal static string PH_PermissionsSection {
+            get {
+                return ResourceManager.GetString("PH_PermissionsSection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à 🔒 Permissions.
+        /// </summary>
+        internal static string PH_PermissionsTab {
+            get {
+                return ResourceManager.GetString("PH_PermissionsTab", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à 🔒 Permissions.
+        /// </summary>
+        internal static string PH_PermissionsTabLabel {
+            get {
+                return ResourceManager.GetString("PH_PermissionsTabLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Permissions.
+        /// </summary>
+        internal static string PH_PermissionsTitle {
+            get {
+                return ResourceManager.GetString("PH_PermissionsTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Plugin.
+        /// </summary>
+        internal static string PH_PluginColumn {
+            get {
+                return ResourceManager.GetString("PH_PluginColumn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à PLUGINS.
+        /// </summary>
+        internal static string PH_PluginsTitle {
+            get {
+                return ResourceManager.GetString("PH_PluginsTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Proc. CPU.
+        /// </summary>
+        internal static string PH_ProcessCpu {
+            get {
+                return ResourceManager.GetString("PH_ProcessCpu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Process-level CPU — per-plugin isolation is not available in InProcess mode.
+        /// </summary>
+        internal static string PH_ProcessCpuTooltip {
+            get {
+                return ResourceManager.GetString("PH_ProcessCpuTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Proc. Heap.
+        /// </summary>
+        internal static string PH_ProcessHeap {
+            get {
+                return ResourceManager.GetString("PH_ProcessHeap", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Total managed heap (process-wide, not per-plugin).
+        /// </summary>
+        internal static string PH_ProcessHeapTooltip {
+            get {
+                return ResourceManager.GetString("PH_ProcessHeapTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à  Refresh.
+        /// </summary>
+        internal static string PH_Refresh {
+            get {
+                return ResourceManager.GetString("PH_Refresh", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Refresh.
+        /// </summary>
+        internal static string PH_RefreshButton {
+            get {
+                return ResourceManager.GetString("PH_RefreshButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Registered Event Types.
+        /// </summary>
+        internal static string PH_RegisteredEventTypes {
+            get {
+                return ResourceManager.GetString("PH_RegisteredEventTypes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Reload.
+        /// </summary>
+        internal static string PH_ReloadButton {
+            get {
+                return ResourceManager.GetString("PH_ReloadButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Reload.
+        /// </summary>
+        internal static string PH_ReloadColumn {
+            get {
+                return ResourceManager.GetString("PH_ReloadColumn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Reloading….
+        /// </summary>
+        internal static string PH_ReloadingLabel {
+            get {
+                return ResourceManager.GetString("PH_ReloadingLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Reloading plugin with new isolation mode….
+        /// </summary>
+        internal static string PH_ReloadingTooltip {
+            get {
+                return ResourceManager.GetString("PH_ReloadingTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Reset chart history and alerts.
+        /// </summary>
+        internal static string PH_ResetButton {
+            get {
+                return ResourceManager.GetString("PH_ResetButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Reset Chart History.
+        /// </summary>
+        internal static string PH_ResetChartHistory {
+            get {
+                return ResourceManager.GetString("PH_ResetChartHistory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Reset to Defaults.
+        /// </summary>
+        internal static string PH_ResetToDefaults {
+            get {
+                return ResourceManager.GetString("PH_ResetToDefaults", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Running in resolved mode.
+        /// </summary>
+        internal static string PH_ResolvedModeTooltip {
+            get {
+                return ResourceManager.GetString("PH_ResolvedModeTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Risk.
+        /// </summary>
+        internal static string PH_RiskColumn {
+            get {
+                return ResourceManager.GetString("PH_RiskColumn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Running.
+        /// </summary>
+        internal static string PH_RunningMetric {
+            get {
+                return ResourceManager.GetString("PH_RunningMetric", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à  Sandbox.
+        /// </summary>
+        internal static string PH_Sandbox {
+            get {
+                return ResourceManager.GetString("PH_Sandbox", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Sandbox.
+        /// </summary>
+        internal static string PH_SandboxButton {
+            get {
+                return ResourceManager.GetString("PH_SandboxButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Reload this plugin in an isolated out-of-process Sandbox.
+        /// </summary>
+        internal static string PH_SandboxTooltip {
+            get {
+                return ResourceManager.GetString("PH_SandboxTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Save.
+        /// </summary>
+        internal static string PH_SaveButton {
+            get {
+                return ResourceManager.GetString("PH_SaveButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à   Search marketplace….
+        /// </summary>
+        internal static string PH_SearchMarketplaceWithIcon {
+            get {
+                return ResourceManager.GetString("PH_SearchMarketplaceWithIcon", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à  · .
+        /// </summary>
+        internal static string PH_SeparatorLabel {
+            get {
+                return ResourceManager.GetString("PH_SeparatorLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à  Settings saved..
+        /// </summary>
+        internal static string PH_SettingsSaved {
+            get {
+                return ResourceManager.GetString("PH_SettingsSaved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Settings.
+        /// </summary>
+        internal static string PH_SettingsSection {
+            get {
+                return ResourceManager.GetString("PH_SettingsSection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à ⚙️ Settings.
+        /// </summary>
+        internal static string PH_SettingsTab {
+            get {
+                return ResourceManager.GetString("PH_SettingsTab", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Show Sparklines.
+        /// </summary>
+        internal static string PH_ShowSparklines {
+            get {
+                return ResourceManager.GetString("PH_ShowSparklines", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à SLOW.
+        /// </summary>
+        internal static string PH_SlowBadge {
+            get {
+                return ResourceManager.GetString("PH_SlowBadge", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Sort by.
+        /// </summary>
+        internal static string PH_SortTooltip {
+            get {
+                return ResourceManager.GetString("PH_SortTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à STANDBY.
+        /// </summary>
+        internal static string PH_StandbyBadge {
+            get {
+                return ResourceManager.GetString("PH_StandbyBadge", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à This plugin is in standby mode..
+        /// </summary>
+        internal static string PH_StandbyNote {
+            get {
+                return ResourceManager.GetString("PH_StandbyNote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Standby.
+        /// </summary>
+        internal static string PH_StandbyStatus {
+            get {
+                return ResourceManager.GetString("PH_StandbyStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à State.
+        /// </summary>
+        internal static string PH_StateColumn {
+            get {
+                return ResourceManager.GetString("PH_StateColumn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Suggest at (MB):.
+        /// </summary>
+        internal static string PH_SuggestAtMb {
+            get {
+                return ResourceManager.GetString("PH_SuggestAtMb", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Suggest at (%):.
+        /// </summary>
+        internal static string PH_SuggestAtPct {
+            get {
+                return ResourceManager.GetString("PH_SuggestAtPct", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à  — shows a banner when thresholds are exceeded. You decide..
+        /// </summary>
+        internal static string PH_SuggestOnlyDesc {
+            get {
+                return ResourceManager.GetString("PH_SuggestOnlyDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à  Suspend.
+        /// </summary>
+        internal static string PH_Suspend {
+            get {
+                return ResourceManager.GetString("PH_Suspend", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Sustained window (seconds):.
+        /// </summary>
+        internal static string PH_SustainedWindow {
+            get {
+                return ResourceManager.GetString("PH_SustainedWindow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Trusted Publisher.
+        /// </summary>
+        internal static string PH_TrustedPublisherTooltip {
+            get {
+                return ResourceManager.GetString("PH_TrustedPublisherTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Uninstall.
+        /// </summary>
+        internal static string PH_UninstallButton {
+            get {
+                return ResourceManager.GetString("PH_UninstallButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Uninstall….
+        /// </summary>
+        internal static string PH_UninstallContextMenu {
+            get {
+                return ResourceManager.GetString("PH_UninstallContextMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à update(s) available.
+        /// </summary>
+        internal static string PH_UpdatesAvailable {
+            get {
+                return ResourceManager.GetString("PH_UpdatesAvailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Uptime.
+        /// </summary>
+        internal static string PH_UptimeColumn {
+            get {
+                return ResourceManager.GetString("PH_UptimeColumn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Uptime.
+        /// </summary>
+        internal static string PH_UptimeLabel {
+            get {
+                return ResourceManager.GetString("PH_UptimeLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Watch.
+        /// </summary>
+        internal static string PH_WatchColumn {
+            get {
+                return ResourceManager.GetString("PH_WatchColumn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à 👁 = Plugin Dev Loader is watching this plugin&apos;s output directory for changes.
+        /// </summary>
+        internal static string PH_WatchColumnTooltip {
+            get {
+                return ResourceManager.GetString("PH_WatchColumnTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à ● WATCHING.
+        /// </summary>
+        internal static string PH_WatchingBadge {
+            get {
+                return ResourceManager.GetString("PH_WatchingBadge", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Watch Mode.
+        /// </summary>
+        internal static string PH_WatchModeContextMenu {
+            get {
+                return ResourceManager.GetString("PH_WatchModeContextMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Hot-reload this plugin automatically when its DLL is rebuilt. Select the plugin&apos;s build output directory..
+        /// </summary>
+        internal static string PH_WatchModeDesc {
+            get {
+                return ResourceManager.GetString("PH_WatchModeDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Changes to files in the watch directory will trigger an automatic reload..
+        /// </summary>
+        internal static string PH_WatchModeNote {
+            get {
+                return ResourceManager.GetString("PH_WatchModeNote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Watch Mode.
+        /// </summary>
+        internal static string PH_WatchModeSection {
+            get {
+                return ResourceManager.GetString("PH_WatchModeSection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Export Extension Diagnostics.
         /// </summary>
         internal static string PluginHost_ExportDiagnostics {

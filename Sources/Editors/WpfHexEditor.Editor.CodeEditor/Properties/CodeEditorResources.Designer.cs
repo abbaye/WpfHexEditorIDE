@@ -79,11 +79,191 @@ namespace WpfHexEditor.Editor.CodeEditor.Properties {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Collapse all.
+        /// </summary>
+        internal static string CodeEd_FindRef_CollapseAll {
+            get {
+                return ResourceManager.GetString("CodeEd_FindRef_CollapseAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à _Minimap.
+        /// </summary>
+        internal static string CodeEd_Minimap_MenuTitle {
+            get {
+                return ResourceManager.GetString("CodeEd_Minimap_MenuTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Render _Characters.
+        /// </summary>
+        internal static string CodeEd_Minimap_RenderChars {
+            get {
+                return ResourceManager.GetString("CodeEd_Minimap_RenderChars", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Si_de.
+        /// </summary>
+        internal static string CodeEd_Minimap_Side {
+            get {
+                return ResourceManager.GetString("CodeEd_Minimap_Side", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Left.
+        /// </summary>
+        internal static string CodeEd_Minimap_SideLeft {
+            get {
+                return ResourceManager.GetString("CodeEd_Minimap_SideLeft", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Right.
+        /// </summary>
+        internal static string CodeEd_Minimap_SideRight {
+            get {
+                return ResourceManager.GetString("CodeEd_Minimap_SideRight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Fill.
+        /// </summary>
+        internal static string CodeEd_Minimap_SizeFill {
+            get {
+                return ResourceManager.GetString("CodeEd_Minimap_SizeFill", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Fit.
+        /// </summary>
+        internal static string CodeEd_Minimap_SizeFit {
+            get {
+                return ResourceManager.GetString("CodeEd_Minimap_SizeFit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Proportional.
+        /// </summary>
+        internal static string CodeEd_Minimap_SizeProportional {
+            get {
+                return ResourceManager.GetString("CodeEd_Minimap_SizeProportional", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à S_lider.
+        /// </summary>
+        internal static string CodeEd_Minimap_Slider {
+            get {
+                return ResourceManager.GetString("CodeEd_Minimap_Slider", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Always.
+        /// </summary>
+        internal static string CodeEd_Minimap_SliderAlways {
+            get {
+                return ResourceManager.GetString("CodeEd_Minimap_SliderAlways", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Mouse Over.
+        /// </summary>
+        internal static string CodeEd_Minimap_SliderMouseOver {
+            get {
+                return ResourceManager.GetString("CodeEd_Minimap_SliderMouseOver", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à _Vertical size.
+        /// </summary>
+        internal static string CodeEd_Minimap_VerticalSize {
+            get {
+                return ResourceManager.GetString("CodeEd_Minimap_VerticalSize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Collapse all.
+        /// </summary>
+        internal static string CodeEd_Refs_CollapseAll {
+            get {
+                return ResourceManager.GetString("CodeEd_Refs_CollapseAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Expand all.
+        /// </summary>
+        internal static string CodeEd_Refs_ExpandAll {
+            get {
+                return ResourceManager.GetString("CodeEd_Refs_ExpandAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Refresh.
+        /// </summary>
+        internal static string CodeEd_Refs_Refresh {
+            get {
+                return ResourceManager.GetString("CodeEd_Refs_Refresh", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Condition:.
+        /// </summary>
+        internal static string CodeEditor_BreakpointConditionLabel {
+            get {
+                return ResourceManager.GetString("CodeEditor_BreakpointConditionLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Delete.
+        /// </summary>
+        internal static string CodeEditor_BreakpointDelete {
+            get {
+                return ResourceManager.GetString("CodeEditor_BreakpointDelete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Delete Breakpoint.
+        /// </summary>
+        internal static string CodeEditor_BreakpointDeleteBreakpoint {
+            get {
+                return ResourceManager.GetString("CodeEditor_BreakpointDeleteBreakpoint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Disable.
         /// </summary>
         internal static string CodeEditor_BreakpointDisable {
             get {
                 return ResourceManager.GetString("CodeEditor_BreakpointDisable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Edit Condition.
+        /// </summary>
+        internal static string CodeEditor_BreakpointEditCondition {
+            get {
+                return ResourceManager.GetString("CodeEditor_BreakpointEditCondition", resourceCulture);
             }
         }
         
@@ -106,11 +286,56 @@ namespace WpfHexEditor.Editor.CodeEditor.Properties {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Save.
+        /// </summary>
+        internal static string CodeEditor_BreakpointSave {
+            get {
+                return ResourceManager.GetString("CodeEditor_BreakpointSave", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Settings….
+        /// </summary>
+        internal static string CodeEditor_BreakpointSettings {
+            get {
+                return ResourceManager.GetString("CodeEditor_BreakpointSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Click to toggle breakpoint.
         /// </summary>
         internal static string CodeEditor_BreakpointToggleToolTip {
             get {
                 return ResourceManager.GetString("CodeEditor_BreakpointToggleToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Breakpoint.
+        /// </summary>
+        internal static string CodeEditor_BreakpointTypeBreakpoint {
+            get {
+                return ResourceManager.GetString("CodeEditor_BreakpointTypeBreakpoint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Conditional.
+        /// </summary>
+        internal static string CodeEditor_BreakpointTypeConditional {
+            get {
+                return ResourceManager.GetString("CodeEditor_BreakpointTypeConditional", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Disabled.
+        /// </summary>
+        internal static string CodeEditor_BreakpointTypeDisabled {
+            get {
+                return ResourceManager.GetString("CodeEditor_BreakpointTypeDisabled", resourceCulture);
             }
         }
         
@@ -412,6 +637,15 @@ namespace WpfHexEditor.Editor.CodeEditor.Properties {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Code Editor.
+        /// </summary>
+        internal static string CodeEditor_DisplayName {
+            get {
+                return ResourceManager.GetString("CodeEditor_DisplayName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Format Document.
         /// </summary>
         internal static string CodeEditor_FormatDocumentTransaction {
@@ -444,6 +678,15 @@ namespace WpfHexEditor.Editor.CodeEditor.Properties {
         internal static string CodeEditor_FormatSelectionTransaction {
             get {
                 return ResourceManager.GetString("CodeEditor_FormatSelectionTransaction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Go to Line.
+        /// </summary>
+        internal static string CodeEditor_GoToLine {
+            get {
+                return ResourceManager.GetString("CodeEditor_GoToLine", resourceCulture);
             }
         }
         
@@ -1686,249 +1929,6 @@ namespace WpfHexEditor.Editor.CodeEditor.Properties {
         internal static string FormatScriptEditor_WarningCountStatus {
             get {
                 return ResourceManager.GetString("FormatScriptEditor_WarningCountStatus", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Disabled.
-        /// </summary>
-        internal static string CodeEditor_BreakpointTypeDisabled {
-            get {
-                return ResourceManager.GetString("CodeEditor_BreakpointTypeDisabled", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Conditional.
-        /// </summary>
-        internal static string CodeEditor_BreakpointTypeConditional {
-            get {
-                return ResourceManager.GetString("CodeEditor_BreakpointTypeConditional", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Breakpoint.
-        /// </summary>
-        internal static string CodeEditor_BreakpointTypeBreakpoint {
-            get {
-                return ResourceManager.GetString("CodeEditor_BreakpointTypeBreakpoint", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Edit Condition.
-        /// </summary>
-        internal static string CodeEditor_BreakpointEditCondition {
-            get {
-                return ResourceManager.GetString("CodeEditor_BreakpointEditCondition", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Delete Breakpoint.
-        /// </summary>
-        internal static string CodeEditor_BreakpointDeleteBreakpoint {
-            get {
-                return ResourceManager.GetString("CodeEditor_BreakpointDeleteBreakpoint", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Delete.
-        /// </summary>
-        internal static string CodeEditor_BreakpointDelete {
-            get {
-                return ResourceManager.GetString("CodeEditor_BreakpointDelete", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Save.
-        /// </summary>
-        internal static string CodeEditor_BreakpointSave {
-            get {
-                return ResourceManager.GetString("CodeEditor_BreakpointSave", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Condition:.
-        /// </summary>
-        internal static string CodeEditor_BreakpointConditionLabel {
-            get {
-                return ResourceManager.GetString("CodeEditor_BreakpointConditionLabel", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Settings….
-        /// </summary>
-        internal static string CodeEditor_BreakpointSettings {
-            get {
-                return ResourceManager.GetString("CodeEditor_BreakpointSettings", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Code Editor.
-        /// </summary>
-        internal static string CodeEditor_DisplayName {
-            get {
-                return ResourceManager.GetString("CodeEditor_DisplayName", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Go to Line.
-        /// </summary>
-        internal static string CodeEditor_GoToLine {
-            get {
-                return ResourceManager.GetString("CodeEditor_GoToLine", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Collapse all.
-        /// </summary>
-        internal static string CodeEd_FindRef_CollapseAll {
-            get {
-                return ResourceManager.GetString("CodeEd_FindRef_CollapseAll", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à _Minimap.
-        /// </summary>
-        internal static string CodeEd_Minimap_MenuTitle {
-            get {
-                return ResourceManager.GetString("CodeEd_Minimap_MenuTitle", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Render _Characters.
-        /// </summary>
-        internal static string CodeEd_Minimap_RenderChars {
-            get {
-                return ResourceManager.GetString("CodeEd_Minimap_RenderChars", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à _Vertical size.
-        /// </summary>
-        internal static string CodeEd_Minimap_VerticalSize {
-            get {
-                return ResourceManager.GetString("CodeEd_Minimap_VerticalSize", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Proportional.
-        /// </summary>
-        internal static string CodeEd_Minimap_SizeProportional {
-            get {
-                return ResourceManager.GetString("CodeEd_Minimap_SizeProportional", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Fill.
-        /// </summary>
-        internal static string CodeEd_Minimap_SizeFill {
-            get {
-                return ResourceManager.GetString("CodeEd_Minimap_SizeFill", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Fit.
-        /// </summary>
-        internal static string CodeEd_Minimap_SizeFit {
-            get {
-                return ResourceManager.GetString("CodeEd_Minimap_SizeFit", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à S_lider.
-        /// </summary>
-        internal static string CodeEd_Minimap_Slider {
-            get {
-                return ResourceManager.GetString("CodeEd_Minimap_Slider", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Always.
-        /// </summary>
-        internal static string CodeEd_Minimap_SliderAlways {
-            get {
-                return ResourceManager.GetString("CodeEd_Minimap_SliderAlways", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Mouse Over.
-        /// </summary>
-        internal static string CodeEd_Minimap_SliderMouseOver {
-            get {
-                return ResourceManager.GetString("CodeEd_Minimap_SliderMouseOver", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Si_de.
-        /// </summary>
-        internal static string CodeEd_Minimap_Side {
-            get {
-                return ResourceManager.GetString("CodeEd_Minimap_Side", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Left.
-        /// </summary>
-        internal static string CodeEd_Minimap_SideLeft {
-            get {
-                return ResourceManager.GetString("CodeEd_Minimap_SideLeft", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Right.
-        /// </summary>
-        internal static string CodeEd_Minimap_SideRight {
-            get {
-                return ResourceManager.GetString("CodeEd_Minimap_SideRight", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Collapse all.
-        /// </summary>
-        internal static string CodeEd_Refs_CollapseAll {
-            get {
-                return ResourceManager.GetString("CodeEd_Refs_CollapseAll", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Refresh.
-        /// </summary>
-        internal static string CodeEd_Refs_Refresh {
-            get {
-                return ResourceManager.GetString("CodeEd_Refs_Refresh", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Expand all.
-        /// </summary>
-        internal static string CodeEd_Refs_ExpandAll {
-            get {
-                return ResourceManager.GetString("CodeEd_Refs_ExpandAll", resourceCulture);
             }
         }
     }

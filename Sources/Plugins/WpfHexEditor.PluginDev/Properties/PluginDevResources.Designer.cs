@@ -61,6 +61,24 @@ namespace WpfHexEditor.PluginDev.Properties {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Rebuild plugin automatically on file save.
+        /// </summary>
+        internal static string PluginDev_AutoRebuild {
+            get {
+                return ResourceManager.GetString("PluginDev_AutoRebuild", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Auto-scroll to latest entry.
+        /// </summary>
+        internal static string PluginDev_AutoScroll {
+            get {
+                return ResourceManager.GetString("PluginDev_AutoScroll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Browse….
         /// </summary>
         internal static string PluginDev_Browse {
@@ -79,6 +97,15 @@ namespace WpfHexEditor.PluginDev.Properties {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Clear log.
+        /// </summary>
+        internal static string PluginDev_ClearLog {
+            get {
+                return ResourceManager.GetString("PluginDev_ClearLog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Close.
         /// </summary>
         internal static string PluginDev_Close {
@@ -88,11 +115,101 @@ namespace WpfHexEditor.PluginDev.Properties {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Author.
+        /// </summary>
+        internal static string PluginDev_Col_Author {
+            get {
+                return ResourceManager.GetString("PluginDev_Col_Author", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Downloads.
+        /// </summary>
+        internal static string PluginDev_Col_Downloads {
+            get {
+                return ResourceManager.GetString("PluginDev_Col_Downloads", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Name.
+        /// </summary>
+        internal static string PluginDev_Col_Name {
+            get {
+                return ResourceManager.GetString("PluginDev_Col_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Rating.
+        /// </summary>
+        internal static string PluginDev_Col_Rating {
+            get {
+                return ResourceManager.GetString("PluginDev_Col_Rating", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Version.
+        /// </summary>
+        internal static string PluginDev_Col_Version {
+            get {
+                return ResourceManager.GetString("PluginDev_Col_Version", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Level.
+        /// </summary>
+        internal static string PluginDev_ColLevel {
+            get {
+                return ResourceManager.GetString("PluginDev_ColLevel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Message.
+        /// </summary>
+        internal static string PluginDev_ColMessage {
+            get {
+                return ResourceManager.GetString("PluginDev_ColMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Source.
+        /// </summary>
+        internal static string PluginDev_ColSource {
+            get {
+                return ResourceManager.GetString("PluginDev_ColSource", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Time.
+        /// </summary>
+        internal static string PluginDev_ColTime {
+            get {
+                return ResourceManager.GetString("PluginDev_ColTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Config:.
         /// </summary>
         internal static string PluginDev_ConfigLabel {
             get {
                 return ResourceManager.GetString("PluginDev_ConfigLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Copy output to plugin directory after successful build.
+        /// </summary>
+        internal static string PluginDev_CopyOutput {
+            get {
+                return ResourceManager.GetString("PluginDev_CopyOutput", resourceCulture);
             }
         }
         
@@ -124,6 +241,15 @@ namespace WpfHexEditor.PluginDev.Properties {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Export log to file.
+        /// </summary>
+        internal static string PluginDev_ExportLog {
+            get {
+                return ResourceManager.GetString("PluginDev_ExportLog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Extension:.
         /// </summary>
         internal static string PluginDev_ExtensionLabel {
@@ -138,6 +264,24 @@ namespace WpfHexEditor.PluginDev.Properties {
         internal static string PluginDev_ExtensionMarketplace {
             get {
                 return ResourceManager.GetString("PluginDev_ExtensionMarketplace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Filter by source.
+        /// </summary>
+        internal static string PluginDev_FilterBySource {
+            get {
+                return ResourceManager.GetString("PluginDev_FilterBySource", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Init timeout (ms):.
+        /// </summary>
+        internal static string PluginDev_InitTimeout {
+            get {
+                return ResourceManager.GetString("PluginDev_InitTimeout", resourceCulture);
             }
         }
         
@@ -165,6 +309,51 @@ namespace WpfHexEditor.PluginDev.Properties {
         internal static string PluginDev_LoadPriority {
             get {
                 return ResourceManager.GetString("PluginDev_LoadPriority", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Debug.
+        /// </summary>
+        internal static string PluginDev_LogDebug {
+            get {
+                return ResourceManager.GetString("PluginDev_LogDebug", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Error.
+        /// </summary>
+        internal static string PluginDev_LogError {
+            get {
+                return ResourceManager.GetString("PluginDev_LogError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Info.
+        /// </summary>
+        internal static string PluginDev_LogInfo {
+            get {
+                return ResourceManager.GetString("PluginDev_LogInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Log level:.
+        /// </summary>
+        internal static string PluginDev_LogLevelLabel {
+            get {
+                return ResourceManager.GetString("PluginDev_LogLevelLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Warning.
+        /// </summary>
+        internal static string PluginDev_LogWarning {
+            get {
+                return ResourceManager.GetString("PluginDev_LogWarning", resourceCulture);
             }
         }
         
@@ -241,6 +430,42 @@ namespace WpfHexEditor.PluginDev.Properties {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Refresh.
+        /// </summary>
+        internal static string PluginDev_Refresh {
+            get {
+                return ResourceManager.GetString("PluginDev_Refresh", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Full (out-of-process Named Pipe).
+        /// </summary>
+        internal static string PluginDev_SandboxFull {
+            get {
+                return ResourceManager.GetString("PluginDev_SandboxFull", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Light (in-process, catch exceptions).
+        /// </summary>
+        internal static string PluginDev_SandboxLight {
+            get {
+                return ResourceManager.GetString("PluginDev_SandboxLight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à Sandbox mode:.
+        /// </summary>
+        internal static string PluginDev_SandboxModeLabel {
+            get {
+                return ResourceManager.GetString("PluginDev_SandboxModeLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Search.
         /// </summary>
         internal static string PluginDev_Search {
@@ -268,6 +493,15 @@ namespace WpfHexEditor.PluginDev.Properties {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à Show &apos;Plugin Dev Mode&apos; indicator in status bar.
+        /// </summary>
+        internal static string PluginDev_ShowDevMode {
+            get {
+                return ResourceManager.GetString("PluginDev_ShowDevMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à Sign package before publishing.
         /// </summary>
         internal static string PluginDev_SignBeforePublish {
@@ -291,60 +525,6 @@ namespace WpfHexEditor.PluginDev.Properties {
         internal static string PluginDev_Updates {
             get {
                 return ResourceManager.GetString("PluginDev_Updates", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Refresh.
-        /// </summary>
-        internal static string PluginDev_Refresh {
-            get {
-                return ResourceManager.GetString("PluginDev_Refresh", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Name.
-        /// </summary>
-        internal static string PluginDev_Col_Name {
-            get {
-                return ResourceManager.GetString("PluginDev_Col_Name", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Author.
-        /// </summary>
-        internal static string PluginDev_Col_Author {
-            get {
-                return ResourceManager.GetString("PluginDev_Col_Author", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Version.
-        /// </summary>
-        internal static string PluginDev_Col_Version {
-            get {
-                return ResourceManager.GetString("PluginDev_Col_Version", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Rating.
-        /// </summary>
-        internal static string PluginDev_Col_Rating {
-            get {
-                return ResourceManager.GetString("PluginDev_Col_Rating", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Recherche une chaîne localisée semblable à Downloads.
-        /// </summary>
-        internal static string PluginDev_Col_Downloads {
-            get {
-                return ResourceManager.GetString("PluginDev_Col_Downloads", resourceCulture);
             }
         }
     }
