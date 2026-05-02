@@ -1,0 +1,735 @@
+<?xml version='1.0' encoding='utf-8'?>
+<root xmlns:ns1="urn:schemas-microsoft-com:xml-msdata" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:schema id="root">
+    <xs:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xs:element name="root" ns1:IsDataSet="true">
+      <xs:complexType>
+        <xs:choice maxOccurs="unbounded">
+          <xs:element name="metadata">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="value" type="xsd:string" minOccurs="0" />
+              </xs:sequence>
+              <xs:attribute name="name" use="required" type="xsd:string" />
+              <xs:attribute name="type" type="xsd:string" />
+              <xs:attribute name="mimetype" type="xsd:string" />
+              <xs:attribute ref="xml:space" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="assembly">
+            <xs:complexType>
+              <xs:attribute name="alias" type="xsd:string" />
+              <xs:attribute name="name" type="xsd:string" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="data">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="value" type="xsd:string" minOccurs="0" ns1:Ordinal="1" />
+                <xs:element name="comment" type="xsd:string" minOccurs="0" ns1:Ordinal="2" />
+              </xs:sequence>
+              <xs:attribute name="name" type="xsd:string" use="required" ns1:Ordinal="1" />
+              <xs:attribute name="type" type="xsd:string" ns1:Ordinal="3" />
+              <xs:attribute name="mimetype" type="xsd:string" ns1:Ordinal="4" />
+              <xs:attribute ref="xml:space" use="preserve" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="resheader">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="value" type="xsd:string" minOccurs="0" ns1:Ordinal="1" />
+              </xs:sequence>
+              <xs:attribute name="name" type="xsd:string" use="required" />
+            </xs:complexType>
+          </xs:element>
+        </xs:choice>
+      </xs:complexType>
+    </xs:element>
+  </xs:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="QAT_Save_Label" xml:space="preserve">
+    <value>Mentés</value>
+  </data>
+  <data name="QAT_Save_Tooltip" xml:space="preserve">
+    <value>Mentés (Ctrl+S)</value>
+  </data>
+  <data name="QAT_Undo_Label" xml:space="preserve">
+    <value>Visszavonás</value>
+  </data>
+  <data name="QAT_Undo_Tooltip" xml:space="preserve">
+    <value>Visszavonás (Ctrl+Z)</value>
+  </data>
+  <data name="QAT_Redo_Label" xml:space="preserve">
+    <value>Újra</value>
+  </data>
+  <data name="QAT_Redo_Tooltip" xml:space="preserve">
+    <value>Újra (Ctrl+Y)</value>
+  </data>
+  <data name="Ribbon_Home_Tab" xml:space="preserve">
+    <value>Kezdőlap</value>
+  </data>
+  <data name="Ribbon_Home_Clipboard_Group" xml:space="preserve">
+    <value>Vágólap</value>
+  </data>
+  <data name="Ribbon_Home_Paste" xml:space="preserve">
+    <value>Beillesztés</value>
+  </data>
+  <data name="Ribbon_Home_Cut" xml:space="preserve">
+    <value>Kivágás</value>
+  </data>
+  <data name="Ribbon_Home_Copy" xml:space="preserve">
+    <value>Másolás</value>
+  </data>
+  <data name="Ribbon_Home_Edit_Group" xml:space="preserve">
+    <value>Szerkesztés</value>
+  </data>
+  <data name="Ribbon_Home_Undo" xml:space="preserve">
+    <value>Visszavonás</value>
+  </data>
+  <data name="Ribbon_Home_Redo" xml:space="preserve">
+    <value>Újra</value>
+  </data>
+  <data name="Ribbon_Home_Selection_Group" xml:space="preserve">
+    <value>Kijelölés</value>
+  </data>
+  <data name="Ribbon_Home_SelectAll" xml:space="preserve">
+    <value>Összes kijelölése</value>
+  </data>
+  <data name="Ribbon_Home_Clear" xml:space="preserve">
+    <value>Törlés</value>
+  </data>
+  <data name="Ribbon_Home_Display_Group" xml:space="preserve">
+    <value>Nézet</value>
+  </data>
+  <data name="Ribbon_Home_16BytesPerLine" xml:space="preserve">
+    <value>16 bájt/sor</value>
+  </data>
+  <data name="Ribbon_Edit_Tab" xml:space="preserve">
+    <value>Szerkesztés</value>
+  </data>
+  <data name="Ribbon_Edit_Find_Group" xml:space="preserve">
+    <value>Rechercher</value>
+  </data>
+  <data name="Ribbon_Edit_Find" xml:space="preserve">
+    <value>Rechercher</value>
+  </data>
+  <data name="Ribbon_Edit_Navigate_Group" xml:space="preserve">
+    <value>Navigation</value>
+  </data>
+  <data name="Ribbon_Edit_GoTo" xml:space="preserve">
+    <value>Atteindre</value>
+  </data>
+  <data name="Ribbon_Edit_Bookmarks" xml:space="preserve">
+    <value>Könyvjelzők</value>
+  </data>
+  <data name="Ribbon_Edit_Modify_Group" xml:space="preserve">
+    <value>Modifier</value>
+  </data>
+  <data name="Ribbon_Edit_InsertByte" xml:space="preserve">
+    <value>Insérer octet</value>
+  </data>
+  <data name="Ribbon_Edit_DeleteByte" xml:space="preserve">
+    <value>Supprimer octet</value>
+  </data>
+  <data name="Ribbon_Edit_FillSelection" xml:space="preserve">
+    <value>Remplir sélection</value>
+  </data>
+  <data name="Ribbon_Edit_Mode_Group" xml:space="preserve">
+    <value>Mode</value>
+  </data>
+  <data name="Ribbon_Edit_Overwrite" xml:space="preserve">
+    <value>Remplacer</value>
+  </data>
+  <data name="Ribbon_Edit_Insert" xml:space="preserve">
+    <value>Insérer</value>
+  </data>
+  <data name="Ribbon_Edit_ReadOnly" xml:space="preserve">
+    <value>Lecture seule</value>
+  </data>
+  <data name="Ribbon_View_Tab" xml:space="preserve">
+    <value>Nézet</value>
+  </data>
+  <data name="Ribbon_View_Zoom_Group" xml:space="preserve">
+    <value>Zoom</value>
+  </data>
+  <data name="Ribbon_View_ZoomIn" xml:space="preserve">
+    <value>Nagyítás</value>
+  </data>
+  <data name="Ribbon_View_ZoomOut" xml:space="preserve">
+    <value>Kicsinyítés</value>
+  </data>
+  <data name="Ribbon_View_Zoom100" xml:space="preserve">
+    <value>100%</value>
+  </data>
+  <data name="Ribbon_View_DisplayOptions_Group" xml:space="preserve">
+    <value>Megjelenítési beállítások</value>
+  </data>
+  <data name="Ribbon_View_ShowTooltip" xml:space="preserve">
+    <value>Eszköztipp megjelenítése</value>
+  </data>
+  <data name="Ribbon_View_HighlightMatches" xml:space="preserve">
+    <value>Találatok kiemelése</value>
+  </data>
+  <data name="Ribbon_View_Themes_Group" xml:space="preserve">
+    <value>Témák</value>
+  </data>
+  <data name="Ribbon_View_SelectTheme" xml:space="preserve">
+    <value>Téma kiválasztása</value>
+  </data>
+  <data name="Ribbon_View_Theme_Office" xml:space="preserve">
+    <value>Office (Világos)</value>
+  </data>
+  <data name="Ribbon_View_Theme_DarkGlass" xml:space="preserve">
+    <value>Sötét üveg</value>
+  </data>
+  <data name="Ribbon_View_Theme_VisualStudio" xml:space="preserve">
+    <value>Visual Studio</value>
+  </data>
+  <data name="Ribbon_View_Theme_Minimal" xml:space="preserve">
+    <value>Minimal</value>
+  </data>
+  <data name="Ribbon_View_Panels_Group" xml:space="preserve">
+    <value>Panelek</value>
+  </data>
+  <data name="Ribbon_View_SettingsPanel" xml:space="preserve">
+    <value>Beállítások panel</value>
+  </data>
+  <data name="Ribbon_Data_Tab" xml:space="preserve">
+    <value>Adatok</value>
+  </data>
+  <data name="Ribbon_Data_Export_Group" xml:space="preserve">
+    <value>Exportálás</value>
+  </data>
+  <data name="Ribbon_Data_Export" xml:space="preserve">
+    <value>Exportálás</value>
+  </data>
+  <data name="Ribbon_Data_ExportAs" xml:space="preserve">
+    <value>Exportálás másként</value>
+  </data>
+  <data name="Ribbon_Data_ExportAs_CSharpByteArray" xml:space="preserve">
+    <value>C# bájttömb</value>
+  </data>
+  <data name="Ribbon_Data_ExportAs_CCode" xml:space="preserve">
+    <value>C kód</value>
+  </data>
+  <data name="Ribbon_Data_ExportAs_JavaCode" xml:space="preserve">
+    <value>Java kód</value>
+  </data>
+  <data name="Ribbon_Data_ExportAs_HexString" xml:space="preserve">
+    <value>Hexadecimális karakterlánc</value>
+  </data>
+  <data name="Ribbon_Data_Compare_Group" xml:space="preserve">
+    <value>Összehasonlítás</value>
+  </data>
+  <data name="Ribbon_Data_CompareFiles" xml:space="preserve">
+    <value>Fájlok összehasonlítása</value>
+  </data>
+  <data name="Ribbon_Data_Statistics_Group" xml:space="preserve">
+    <value>Statisztikák</value>
+  </data>
+  <data name="Ribbon_Data_ByteCount" xml:space="preserve">
+    <value>Bájtszámolás</value>
+  </data>
+  <data name="Ribbon_Data_Statistics" xml:space="preserve">
+    <value>Statisztikák</value>
+  </data>
+  <data name="Ribbon_Data_Entropy" xml:space="preserve">
+    <value>Entrópia</value>
+  </data>
+  <data name="Ribbon_Data_Advanced_Group" xml:space="preserve">
+    <value>Speciális</value>
+  </data>
+  <data name="Ribbon_Data_Checksum" xml:space="preserve">
+    <value>Ellenőrzőösszeg</value>
+  </data>
+  <data name="Ribbon_Data_Hash" xml:space="preserve">
+    <value>Kivonat (MD5/SHA)</value>
+  </data>
+  <data name="Ribbon_Tools_Tab" xml:space="preserve">
+    <value>Eszközök</value>
+  </data>
+  <data name="Ribbon_Tools_Options_Group" xml:space="preserve">
+    <value>Beállítások</value>
+  </data>
+  <data name="Ribbon_Tools_Settings" xml:space="preserve">
+    <value>Beállítások</value>
+  </data>
+  <data name="Ribbon_Tools_Language_Group" xml:space="preserve">
+    <value>Nyelv</value>
+  </data>
+  <data name="Ribbon_Tools_Language" xml:space="preserve">
+    <value>Nyelv</value>
+  </data>
+  <data name="Ribbon_Tools_Language_Tooltip" xml:space="preserve">
+    <value>Az alkalmazás nyelvének módosítása</value>
+  </data>
+  <data name="Ribbon_Tools_Help_Group" xml:space="preserve">
+    <value>Súgó</value>
+  </data>
+  <data name="Ribbon_Tools_Documentation" xml:space="preserve">
+    <value>Dokumentáció</value>
+  </data>
+  <data name="Ribbon_Tools_About" xml:space="preserve">
+    <value>Névjegy</value>
+  </data>
+  <data name="Options_Title" xml:space="preserve">
+    <value>Beállítások</value>
+  </data>
+  <data name="Options_Header_Title" xml:space="preserve">
+    <value>Alkalmazásbeállítások</value>
+  </data>
+  <data name="Options_Header_Subtitle" xml:space="preserve">
+    <value>Konfigurálja a hexadecimális szerkesztő beállításait</value>
+  </data>
+  <data name="Options_Tab_Language" xml:space="preserve">
+    <value>Nyelv</value>
+  </data>
+  <data name="Options_Tab_Appearance" xml:space="preserve">
+    <value>Megjelenés</value>
+  </data>
+  <data name="Options_Tab_Performance" xml:space="preserve">
+    <value>Teljesítmény</value>
+  </data>
+  <data name="Options_Language_Instructions" xml:space="preserve">
+    <value>Válassza ki a kívánt megjelenítési nyelvet:</value>
+  </data>
+  <data name="Options_Language_CurrentLanguage" xml:space="preserve">
+    <value>Jelenlegi nyelv</value>
+  </data>
+  <data name="Options_Language_ListView_Header_Language" xml:space="preserve">
+    <value>Nyelv</value>
+  </data>
+  <data name="Options_Language_ListView_Header_NativeName" xml:space="preserve">
+    <value>Natív név</value>
+  </data>
+  <data name="Options_Language_ListView_Header_Code" xml:space="preserve">
+    <value>Kód</value>
+  </data>
+  <data name="Options_Language_Warning" xml:space="preserve">
+    <value>Kérjük, indítsa újra az alkalmazást a nyelv megváltoztatása után.</value>
+  </data>
+  <data name="Options_ComingSoon" xml:space="preserve">
+    <value>Hamarosan...</value>
+  </data>
+  <data name="Options_Button_OK" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="Options_Button_Cancel" xml:space="preserve">
+    <value>Visszavonás</value>
+  </data>
+  <data name="Settings_Header" xml:space="preserve">
+    <value>BEÁLLÍTÁSOK</value>
+  </data>
+  <data name="Settings_Theme_Header" xml:space="preserve">
+    <value>🎨 Téma</value>
+  </data>
+  <data name="Settings_Language_Header" xml:space="preserve">
+    <value>🌐 Nyelv</value>
+  </data>
+  <data name="Settings_SearchOptions_Header" xml:space="preserve">
+    <value>🔍 Keresési beállítások</value>
+  </data>
+  <data name="Settings_SearchOptions_ParallelSearch" xml:space="preserve">
+    <value>Párhuzamos keresés engedélyezése (nagy fájloknál gyorsabb)</value>
+  </data>
+  <data name="Settings_SearchOptions_WildcardSearch" xml:space="preserve">
+    <value>Helyettesítő karakteres keresés engedélyezése (?? jelölés)</value>
+  </data>
+  <data name="Settings_SearchOptions_HighlightMatches" xml:space="preserve">
+    <value>Összes találat kiemelése</value>
+  </data>
+  <data name="Settings_SearchOptions_ResultLimit" xml:space="preserve">
+    <value>Keresési eredmények korlátja:</value>
+  </data>
+  <data name="Settings_DisplayOptions_Header" xml:space="preserve">
+    <value>📺 Megjelenítési beállítások</value>
+  </data>
+  <data name="Settings_DisplayOptions_LineNumbers" xml:space="preserve">
+    <value>Sorszámok megjelenítése</value>
+  </data>
+  <data name="Settings_DisplayOptions_ScrollMarkers" xml:space="preserve">
+    <value>Görgetési jelzők megjelenítése</value>
+  </data>
+  <data name="Settings_DisplayOptions_StatusBar" xml:space="preserve">
+    <value>Állapotsor megjelenítése</value>
+  </data>
+  <data name="Settings_DisplayOptions_BytesPerLine" xml:space="preserve">
+    <value>Bájtok soronként:</value>
+  </data>
+  <data name="Settings_Performance_Header" xml:space="preserve">
+    <value>⚡ Teljesítmény</value>
+  </data>
+  <data name="Settings_Performance_V2Active" xml:space="preserve">
+    <value>V2 MOTOR AKTÍV</value>
+  </data>
+  <data name="Settings_Performance_BoyerMoore" xml:space="preserve">
+    <value>• Boyer-Moore-Horspool algoritmus</value>
+  </data>
+  <data name="Settings_Performance_Parallel" xml:space="preserve">
+    <value>• Párhuzamos feldolgozás támogatása</value>
+  </data>
+  <data name="Settings_Performance_Faster" xml:space="preserve">
+    <value>• Akár 99%-kal gyorsabb, mint V1</value>
+  </data>
+  <data name="Settings_Button_ResetDefaults" xml:space="preserve">
+    <value>Alapértelmezések visszaállítása</value>
+  </data>
+  <data name="Settings_Button_Save" xml:space="preserve">
+    <value>Beállítások mentése</value>
+  </data>
+  <data name="Search_Mode_Text" xml:space="preserve">
+    <value>Szöveg</value>
+  </data>
+  <data name="Search_Mode_Hex" xml:space="preserve">
+    <value>Hexadecimális</value>
+  </data>
+  <data name="Search_Mode_Regex" xml:space="preserve">
+    <value>Regex</value>
+  </data>
+  <data name="Search_Clear_ToolTip" xml:space="preserve">
+    <value>Törlés</value>
+  </data>
+  <data name="Search_Button_Clear" xml:space="preserve">
+    <value>Törlés</value>
+  </data>
+  <data name="Search_Previous_ToolTip" xml:space="preserve">
+    <value>Előző (Shift+F3)</value>
+  </data>
+  <data name="Search_Button_Previous" xml:space="preserve">
+    <value>Előző (Shift+F3)</value>
+  </data>
+  <data name="Search_Next_ToolTip" xml:space="preserve">
+    <value>Következő (F3)</value>
+  </data>
+  <data name="Search_Button_Next" xml:space="preserve">
+    <value>Következő (F3)</value>
+  </data>
+  <data name="Search_FindAll" xml:space="preserve">
+    <value>Összes keresése</value>
+  </data>
+  <data name="Search_Button_FindAll" xml:space="preserve">
+    <value>Összes keresése</value>
+  </data>
+  <data name="Search_FindAll_ToolTip" xml:space="preserve">
+    <value>Összes előfordulás keresése</value>
+  </data>
+  <data name="Search_Button_FindAll_Tooltip" xml:space="preserve">
+    <value>Összes előfordulás keresése</value>
+  </data>
+  <data name="Search_Matches" xml:space="preserve">
+    <value>egyezés</value>
+  </data>
+  <data name="Search_Results_Matches" xml:space="preserve">
+    <value>egyezés</value>
+  </data>
+  <data name="Search_Results_V2Badge" xml:space="preserve">
+    <value>V2</value>
+  </data>
+  <data name="Message_FileOpenError" xml:space="preserve">
+    <value>Fájl megnyitása sikertelen: {0}</value>
+  </data>
+  <data name="Message_FileSaveError" xml:space="preserve">
+    <value>Fájl mentése sikertelen: {0}</value>
+  </data>
+  <data name="Message_ErrorTitle" xml:space="preserve">
+    <value>Hiba</value>
+  </data>
+  <data name="Message_LanguageUnchanged_Title" xml:space="preserve">
+    <value>Nyelv változatlan</value>
+  </data>
+  <data name="Message_LanguageUnchanged_Text" xml:space="preserve">
+    <value>A nyelv már {0}-ra van beállítva.</value>
+  </data>
+  <data name="Message_LanguageChanged_Title" xml:space="preserve">
+    <value>Nyelv módosítva</value>
+  </data>
+  <data name="Message_LanguageChanged_Text" xml:space="preserve">
+    <value>A nyelv sikeresen módosítva: {0}!</value>
+  </data>
+  <data name="Message_NoLanguageSelected_Title" xml:space="preserve">
+    <value>Nincs kiválasztott nyelv</value>
+  </data>
+  <data name="Message_NoLanguageSelected_Text" xml:space="preserve">
+    <value>Kérjük, válasszon nyelvet az OK gombra kattintás előtt.</value>
+  </data>
+  <data name="Settings_Title" xml:space="preserve">
+    <value>BEÁLLÍTÁSOK</value>
+  </data>
+  <data name="Settings_Theme_Title" xml:space="preserve">
+    <value>🎨 Téma</value>
+  </data>
+  <data name="Settings_Language_Title" xml:space="preserve">
+    <value>🌐 Nyelv</value>
+  </data>
+  <data name="Settings_Search_Title" xml:space="preserve">
+    <value>🔍 Keresési beállítások</value>
+  </data>
+  <data name="Settings_Search_EnableParallel" xml:space="preserve">
+    <value>Párhuzamos keresés engedélyezése (nagy fájloknál gyorsabb)</value>
+  </data>
+  <data name="Settings_Search_UseWildcard" xml:space="preserve">
+    <value>Helyettesítő karakteres keresés engedélyezése (?? jelölés)</value>
+  </data>
+  <data name="Settings_Search_HighlightMatches" xml:space="preserve">
+    <value>Összes egyezés kiemelése</value>
+  </data>
+  <data name="Settings_Search_ResultLimit" xml:space="preserve">
+    <value>Keresési eredmények korlátja:</value>
+  </data>
+  <data name="Settings_Display_Title" xml:space="preserve">
+    <value>📺 Megjelenítési beállítások</value>
+  </data>
+  <data name="Settings_Display_ShowLineNumbers" xml:space="preserve">
+    <value>Sorszámok megjelenítése</value>
+  </data>
+  <data name="Settings_Display_ShowScrollMarkers" xml:space="preserve">
+    <value>Görgetési jelzők megjelenítése</value>
+  </data>
+  <data name="Settings_Display_ShowStatusBar" xml:space="preserve">
+    <value>Állapotsor megjelenítése</value>
+  </data>
+  <data name="Settings_Display_BytesPerLine" xml:space="preserve">
+    <value>Bájtok soronként:</value>
+  </data>
+  <data name="Settings_Performance_Title" xml:space="preserve">
+    <value>⚡ Teljesítmény</value>
+  </data>
+  <data name="Settings_Performance_V2Active" xml:space="preserve">
+    <value>V2 MOTOR AKTÍV</value>
+  </data>
+  <data name="Settings_Performance_Feature1" xml:space="preserve">
+    <value>• Boyer-Moore-Horspool algoritmus</value>
+  </data>
+  <data name="Settings_Performance_Feature2" xml:space="preserve">
+    <value>• Párhuzamos feldolgozás támogatása</value>
+  </data>
+  <data name="Settings_Performance_Feature3" xml:space="preserve">
+    <value>• Akár 99%-kal gyorsabb, mint V1</value>
+  </data>
+  <data name="Settings_Button_ResetDefaults" xml:space="preserve">
+    <value>Alapértelmezések visszaállítása</value>
+  </data>
+  <data name="Settings_Button_SaveSettings" xml:space="preserve">
+    <value>Beállítások mentése</value>
+  </data>
+  <data name="Options_LanguageTab" xml:space="preserve">
+    <value>Nyelv</value>
+  </data>
+  <data name="Options_AppearanceTab" xml:space="preserve">
+    <value>Megjelenés</value>
+  </data>
+  <data name="Options_PerformanceTab" xml:space="preserve">
+    <value>Teljesítmény</value>
+  </data>
+  <data name="Options_Language_CurrentLabel" xml:space="preserve">
+    <value>Jelenlegi nyelv</value>
+  </data>
+  <data name="Options_Language_ColumnLanguage" xml:space="preserve">
+    <value>Nyelv</value>
+  </data>
+  <data name="Options_Language_ColumnNativeName" xml:space="preserve">
+    <value>Natív név</value>
+  </data>
+  <data name="Options_Language_ColumnCode" xml:space="preserve">
+    <value>Kód</value>
+  </data>
+  <data name="Options_Language_SystemLanguage_Name" xml:space="preserve">
+    <value>Rendszernyelv</value>
+    <comment>Options dialog - System Language option name</comment>
+  </data>
+  <data name="Options_Language_SystemLanguage_Description" xml:space="preserve">
+    <value>Rendszernyelv használata</value>
+    <comment>Options dialog - System Language option description</comment>
+  </data>
+  <data name="Options_Language_RestartWarning" xml:space="preserve">
+    <value>A nyelvváltás azonnal érvényes — újraindítás nem szükséges! 🚀</value>
+  </data>
+  <data name="Menu_File_Open" xml:space="preserve">
+    <value>Megnyitás</value>
+  </data>
+  <data name="Menu_File_Save" xml:space="preserve">
+    <value>Mentés</value>
+  </data>
+  <data name="Menu_File_SaveAs" xml:space="preserve">
+    <value>Mentés másként...</value>
+  </data>
+  <data name="Menu_File_Close" xml:space="preserve">
+    <value>Bezárás</value>
+  </data>
+  <data name="Menu_File_Exit" xml:space="preserve">
+    <value>Kilépés</value>
+  </data>
+  <data name="Menu_Edit" xml:space="preserve">
+    <value>Szerkesztés</value>
+  </data>
+  <data name="Menu_Edit_Undo" xml:space="preserve">
+    <value>Visszavonás</value>
+  </data>
+  <data name="Menu_Edit_Redo" xml:space="preserve">
+    <value>Újra</value>
+  </data>
+  <data name="Menu_Edit_Find" xml:space="preserve">
+    <value>Keresés...</value>
+  </data>
+  <data name="Menu_Edit_FindReplace" xml:space="preserve">
+    <value>Keresés és csere...</value>
+  </data>
+  <data name="Menu_Edit_Copy" xml:space="preserve">
+    <value>Másolás</value>
+  </data>
+  <data name="Menu_Edit_Paste" xml:space="preserve">
+    <value>Beillesztés</value>
+  </data>
+  <data name="Menu_Edit_DeleteSelection" xml:space="preserve">
+    <value>Kijelölés törlése</value>
+  </data>
+  <data name="Menu_Edit_SelectAll" xml:space="preserve">
+    <value>Sélectionner tout</value>
+  </data>
+  <data name="Menu_Edit_ClearSelection" xml:space="preserve">
+    <value>Kijelölés törlése</value>
+  </data>
+  <data name="Menu_Edit_Bookmarks" xml:space="preserve">
+    <value>Könyvjelzők</value>
+  </data>
+  <data name="Menu_Edit_ToggleBookmark" xml:space="preserve">
+    <value>Könyvjelző be-/kikapcsolása</value>
+  </data>
+  <data name="Menu_Edit_ClearAllBookmarks" xml:space="preserve">
+    <value>Összes könyvjelző törlése</value>
+  </data>
+  <data name="Menu_Search" xml:space="preserve">
+    <value>Keresés</value>
+  </data>
+  <data name="Menu_Search_FindNext" xml:space="preserve">
+    <value>Következő keresése</value>
+  </data>
+  <data name="Menu_Search_FindPrevious" xml:space="preserve">
+    <value>Előző keresése</value>
+  </data>
+  <data name="Menu_Tools" xml:space="preserve">
+    <value>Eszközök</value>
+  </data>
+  <data name="Menu_Tools_Bookmarks" xml:space="preserve">
+    <value>Könyvjelzők</value>
+  </data>
+  <data name="Menu_Tools_NextBookmark" xml:space="preserve">
+    <value>Következő könyvjelző</value>
+  </data>
+  <data name="Menu_Tools_PreviousBookmark" xml:space="preserve">
+    <value>Előző könyvjelző</value>
+  </data>
+  <data name="Menu_Tools_ShowAllBookmarks" xml:space="preserve">
+    <value>Összes könyvjelző megjelenítése...</value>
+  </data>
+  <data name="Menu_Position" xml:space="preserve">
+    <value>Pozíció</value>
+  </data>
+  <data name="Menu_Position_GoTo" xml:space="preserve">
+    <value>Ugrás pozícióra...</value>
+  </data>
+  <data name="Menu_View" xml:space="preserve">
+    <value>Nézet</value>
+  </data>
+  <data name="Menu_View_DisplayOptions" xml:space="preserve">
+    <value>Megjelenítési beállítások</value>
+  </data>
+  <data name="Menu_View_ShowStatusBar" xml:space="preserve">
+    <value>Állapotsor megjelenítése</value>
+  </data>
+  <data name="Menu_View_ShowHeader" xml:space="preserve">
+    <value>Fejléc megjelenítése</value>
+  </data>
+  <data name="Menu_View_ShowOffset" xml:space="preserve">
+    <value>Eltolás megjelenítése</value>
+  </data>
+  <data name="Menu_View_ShowASCII" xml:space="preserve">
+    <value>ASCII megjelenítése</value>
+  </data>
+  <data name="Menu_View_ShowParsedFields" xml:space="preserve">
+    <value>Elemzett mezők megjelenítése</value>
+  </data>
+  <data name="Menu_View_BytesPerLine" xml:space="preserve">
+    <value>Bájtok soronként</value>
+  </data>
+  <data name="Menu_Options" xml:space="preserve">
+    <value>Beállítások</value>
+  </data>
+  <data name="Menu_Options_SettingsPanel" xml:space="preserve">
+    <value>Beállítások panel...</value>
+  </data>
+  <data name="Menu_Options_Advanced" xml:space="preserve">
+    <value>Speciális beállítások (Téma, Nyelv)...</value>
+  </data>
+  <data name="Menu_Options_ContextMenu" xml:space="preserve">
+    <value>Helyi menü</value>
+  </data>
+  <data name="Menu_Options_ShowByteToolTip" xml:space="preserve">
+    <value>Bájt eszköztipp megjelenítése</value>
+  </data>
+  <data name="Menu_Options_AutoHighlight" xml:space="preserve">
+    <value>Automatikus kiemelés</value>
+  </data>
+  <data name="Menu_Options_CountSelected" xml:space="preserve">
+    <value>Kijelölt bájtok számlálása</value>
+  </data>
+  <data name="Menu_Help" xml:space="preserve">
+    <value>Súgó</value>
+  </data>
+  <data name="Menu_Help_About" xml:space="preserve">
+    <value>Névjegy</value>
+  </data>
+  <data name="Menu_Help_KeyboardShortcuts" xml:space="preserve">
+    <value>Billentyűparancsok</value>
+  </data>
+  <data name="Menu_File" xml:space="preserve">
+    <value>Fájl</value>
+  </data>
+  <data name="Toolbar_Open" xml:space="preserve">
+    <value>📂 Megnyitás</value>
+  </data>
+  <data name="Toolbar_Open_ToolTip" xml:space="preserve">
+    <value>Fájl megnyitása (Ctrl+O)</value>
+  </data>
+  <data name="Toolbar_Save" xml:space="preserve">
+    <value>💾 Mentés</value>
+  </data>
+  <data name="Toolbar_Save_ToolTip" xml:space="preserve">
+    <value>Fájl mentése (Ctrl+S)</value>
+  </data>
+  <data name="Toolbar_Undo" xml:space="preserve">
+    <value>↶ Visszavonás</value>
+  </data>
+  <data name="Toolbar_Undo_ToolTip" xml:space="preserve">
+    <value>Visszavonás (Ctrl+Z)</value>
+  </data>
+  <data name="Toolbar_Redo" xml:space="preserve">
+    <value>↷ Újra</value>
+  </data>
+  <data name="Toolbar_Redo_ToolTip" xml:space="preserve">
+    <value>Újra (Ctrl+Y)</value>
+  </data>
+  <data name="Toolbar_Insert" xml:space="preserve">
+    <value>INS</value>
+  </data>
+  <data name="Toolbar_Insert_ToolTip" xml:space="preserve">
+    <value>Beszúrás/felülírás mód váltása (Insert billentyű)</value>
+  </data>
+  <data name="Toolbar_ReadOnly" xml:space="preserve">
+    <value>OLV</value>
+  </data>
+  <data name="Toolbar_ReadOnly_ToolTip" xml:space="preserve">
+    <value>Csak olvasható mód váltása</value>
+  </data>
+<data name="HexSettings_SaveButton" xml:space="preserve"><value>Állapot mentése</value></data><data name="HexSettings_LoadButton" xml:space="preserve"><value>Állapot betöltése</value></data></root>

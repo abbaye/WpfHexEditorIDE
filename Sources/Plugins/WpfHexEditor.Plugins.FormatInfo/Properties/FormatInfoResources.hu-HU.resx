@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfHexEditor.Plugins.FormatInfo
+    File        : FormatInfoResources.hu-HU.resx
+    Description : Hungarian (Hungary) translations for the Format Info plugin.
+-->
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:any minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" />
+              <xsd:attribute name="type" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="value">
+            <xsd:complexType>
+              <xsd:any minOccurs="0" maxOccurs="unbounded" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <data name="FormatInfo_PluginName" xml:space="preserve">
+    <value>Formátuminformáció</value>
+  </data>
+
+  <data name="FI_FormatNameLabel" xml:space="preserve">
+    <value>Formátum neve</value>
+  </data>
+  <data name="FI_PriorityLabel" xml:space="preserve">
+    <value>⭐ Prioritás</value>
+  </data>
+  <data name="FI_PriorityTooltip" xml:space="preserve">
+    <value>Prioritásos formátum — Top 100 leggyakoribb formátum</value>
+  </data>
+  <data name="FI_CategoryLabel" xml:space="preserve">
+    <value>Kategória</value>
+  </data>
+  <data name="FI_DescriptionLabel" xml:space="preserve">
+    <value>Leírás</value>
+  </data>
+  <data name="FI_QualityLabel" xml:space="preserve">
+    <value>Minőség:</value>
+  </data>
+  <data name="FI_DocLabel" xml:space="preserve">
+    <value>Dokumentáció:</value>
+  </data>
+  <data name="FI_BasicLabel" xml:space="preserve">
+    <value>alap</value>
+  </data>
+  <data name="FI_ExtensionsLabel" xml:space="preserve">
+    <value>Fájlkiterjesztések</value>
+  </data>
+  <data name="FI_NaLabel" xml:space="preserve">
+    <value>N/A</value>
+  </data>
+  <data name="FI_MimeLabel" xml:space="preserve">
+    <value>MIME típusok</value>
+  </data>
+  <data name="FI_SoftwareLabel" xml:space="preserve">
+    <value>Kompatibilis szoftver</value>
+  </data>
+  <data name="FI_UseCasesLabel" xml:space="preserve">
+    <value>Tipikus felhasználási esetek</value>
+  </data>
+  <data name="FI_RefsSection" xml:space="preserve">
+    <value>📚 Hivatkozások &amp; Dokumentáció</value>
+  </data>
+  <data name="FI_SpecsLabel" xml:space="preserve">
+    <value>Specifikációk:</value>
+  </data>
+  <data name="FI_NoRefsText" xml:space="preserve">
+    <value>Ehhez a formátumhoz nem érhetők el hivatkozások</value>
+  </data>
+  <data name="FI_TechnicalSection" xml:space="preserve">
+    <value>⚙️ Technikai részletek</value>
+  </data>
+  <data name="FI_RelatedSection" xml:space="preserve">
+    <value>🔗 Kapcsolódó formátumok</value>
+  </data>
+  <data name="FI_DefinitionSection" xml:space="preserve">
+    <value>👤 Definíció-információ</value>
+  </data>
+  <data name="FI_VersionLabel" xml:space="preserve">
+    <value>Verzió:</value>
+  </data>
+  <data name="FI_AuthorLabel" xml:space="preserve">
+    <value>Szerző:</value>
+  </data>
+  <data name="FI_DetectionSection" xml:space="preserve">
+    <value>🔍 Felismerés részletei</value>
+  </data>
+  <data name="FI_SignatureLabel" xml:space="preserve">
+    <value>Aláírás:</value>
+  </data>
+  <data name="FI_RequiredLabel" xml:space="preserve">
+    <value>Kötelező:</value>
+  </data>
+  <data name="FI_NoFormatText" xml:space="preserve">
+    <value>Nem észlelhető formátum</value>
+  </data>
+  <data name="FI_OpenFileHint" xml:space="preserve">
+    <value>Nyisson meg egy fájlt a formátuminformáció megtekintéséhez</value>
+  </data>
+  <data name="FI_OffsetLabel" xml:space="preserve"><value>Eltolás:</value></data>
+</root>

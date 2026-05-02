@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfHexEditor.Plugins.AssemblyExplorer
+    File        : AssemblyExplorerResources.uk-UA.resx
+    Description : Ukrainian (Ukraine) translations for the Assembly Explorer plugin.
+-->
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+
+  <data name="AsmExplorer_PluginName" xml:space="preserve"><value>Провідник збірок</value></data>
+  <data name="AsmExplorer_PanelTitle" xml:space="preserve"><value>Провідник збірок</value></data>
+  <data name="AsmExplorer_SearchPanelTitle" xml:space="preserve"><value>Пошук у збірках</value></data>
+  <data name="AsmExplorer_DiffPanelTitle" xml:space="preserve"><value>Порівняння збірок</value></data>
+  <data name="AsmExplorer_ExportCancelled" xml:space="preserve"><value>Експорт скасовано.</value></data>
+  <data name="AsmExplorer_NoAssemblyLoaded" xml:space="preserve"><value>Жодної збірки не завантажено</value></data>
+  <data name="AsmExplorer_AnalysisCancelled" xml:space="preserve"><value>Аналіз скасовано.</value></data>
+  <data name="AsmExplorer_Searching" xml:space="preserve"><value>Пошук…</value></data>
+  <data name="AsmExplorer_Comparing" xml:space="preserve"><value>Порівняння…</value></data>
+  <data name="AsmExplorer_NoPdb" xml:space="preserve"><value>Поруч зі збіркою не знайдено портативний PDB.</value></data>
+  <data name="AsmExplorer_SelectMethod" xml:space="preserve"><value>Виберіть вузол методу для відображення вихідної інформації.</value></data>
+  <data name="AsmExplorer_Export_OutputFolderLabel" xml:space="preserve"><value>Вихідна папка :</value></data>
+  <data name="AsmExplorer_Export_ExportButton" xml:space="preserve"><value>Експортувати</value></data>
+  <data name="AsmExplorer_Export_CloseButton" xml:space="preserve"><value>Закрити</value></data>
+  <data name="AsmExplorer_Export_BrowseTitle" xml:space="preserve"><value>Вибрати вихідну папку</value></data>
+  <data name="AsmExplorer_Export_NoFolderSelected" xml:space="preserve"><value>Будь ласка, виберіть вихідну папку.</value></data>
+  <data name="AE_DecompilerSection" xml:space="preserve"><value>Декомпілятор</value></data>
+  <data name="AE_DetailFontSizeLabel" xml:space="preserve"><value>Розмір шрифту деталей:</value></data>
+  <data name="AE_BackendLabel" xml:space="preserve"><value>Бекенд декомпілятора:</value></data>
+  <data name="AE_ILSpyOption" xml:space="preserve"><value>Рушій ILSpy</value></data>
+  <data name="AE_SkeletonOption" xml:space="preserve"><value>Скелет (лише заглушки BCL)</value></data>
+  <data name="AE_QualityLabel" xml:space="preserve"><value>Якість декомпіляції:</value></data>
+  <data name="AE_FullQuality" xml:space="preserve"><value>Повна (ILSpy + XML документація)</value></data>
+  <data name="AE_NormalQuality" xml:space="preserve"><value>Звичайна (ILSpy, без документації)</value></data>
+  <data name="AE_SkeletonQuality" xml:space="preserve"><value>Скелет (швидко, заглушки BCL)</value></data>
+  <data name="AE_LangVersionLabel" xml:space="preserve"><value>Версія мови C#:</value></data>
+  <data name="AE_ShowXmlDocs" xml:space="preserve"><value>Показувати коментарі XML-документації у декомпільованому виводі</value></data>
+  <data name="AE_ShowHiddenMembers" xml:space="preserve"><value>Показувати приховані (згенеровані компілятором) члени</value></data>
+  <data name="AE_PdbIntegration" xml:space="preserve"><value>Увімкнути інтеграцію PDB (зіставлення джерел, імена локальних змінних)</value></data>
+  <data name="AE_DecompileLangLabel" xml:space="preserve"><value>Мова декомпіляції:</value></data>
+  <data name="AE_BehaviourSection" xml:space="preserve"><value>Поведінка</value></data>
+  <data name="AE_AutoAnalyzeOption" xml:space="preserve"><value>Автоматично аналізувати файл при відкритті в HexEditor</value></data>
+  <data name="AE_SyncCursorOption" xml:space="preserve"><value>Синхронізувати курсор HexEditor при виборі вузла дерева</value></data>
+  <data name="AE_ShowResourcesOption" xml:space="preserve"><value>Показувати групу «Ресурси» в дереві</value></data>
+  <data name="AE_ShowMetadataOption" xml:space="preserve"><value>Показувати групу «Таблиці метаданих» в дереві</value></data>
+  <data name="AE_InheritThemeOption" xml:space="preserve"><value>Наслідувати глобальну тему IDE</value></data>
+  <data name="AE_ShowNonPublicOption" xml:space="preserve"><value>Показувати непублічні члени (private, internal, protected)</value></data>
+  <data name="AE_ShowInheritedOption" xml:space="preserve"><value>Показувати успадковані члени у вузлах типів</value></data>
+  <data name="AE_PinAssembliesOption" xml:space="preserve"><value>Закріплювати завантажені збірки при зміні активного редактора</value></data>
+  <data name="AE_MaxAssembliesLabel" xml:space="preserve"><value>Макс. завантажених збірок:</value></data>
+  <data name="AE_MaxAssembliesRange" xml:space="preserve"><value>(1 – 500)</value></data>
+  <data name="AE_RecentSection" xml:space="preserve"><value>Нещодавні збірки</value></data>
+  <data name="AE_ClearRecentButton" xml:space="preserve"><value>Очистити всі нещодавні</value></data>
+  <data name="AsmExplorer_FilterTypes" xml:space="preserve"><value>Фільтрувати типи…</value></data>
+  <data name="AsmExplorer_SelectProject" xml:space="preserve"><value>Виберіть проєкт, до якого додати декомпільований файл :</value></data>
+  <data name="Common_ColOffset" xml:space="preserve"><value>Offset</value></data>
+  <data name="AsmExplorer_ClearFilter" xml:space="preserve"><value>Очистити фільтр</value></data>
+</root>

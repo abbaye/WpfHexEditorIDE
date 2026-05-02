@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfHexEditor.Plugins.DataInspector
+    File        : DataInspectorResources.fr-CA.resx
+    Description : French (Canada) localized UI strings for the Data Inspector plugin.
+-->
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:any minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" />
+              <xsd:attribute name="type" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="value">
+            <xsd:complexType>
+              <xsd:any minOccurs="0" maxOccurs="unbounded" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="DataInspector_PluginName" xml:space="preserve">
+    <value>Inspecteur de donn&#233;es</value>
+  </data>
+  <data name="DataInspector_OptionsCategory" xml:space="preserve">
+    <value>Analyse de donn&#233;es</value>
+  </data>
+  <data name="DataInspector_PanelTitle" xml:space="preserve">
+    <value>Inspecteur de donn&#233;es</value>
+  </data>
+  <data name="DataInspector_MenuItem" xml:space="preserve">
+    <value>_Inspecteur de donn&#233;es</value>
+  </data>
+  <data name="BarChart_NoData" xml:space="preserve">
+    <value>Žádná data k zobrazení</value>
+  </data>
+  <data name="BarChart_Total" xml:space="preserve">
+    <value>Total</value>
+  </data>
+  <data name="BarChart_Max" xml:space="preserve">
+    <value>Max</value>
+  </data>
+  <data name="BarChart_Entropy" xml:space="preserve">
+    <value>Entropie</value>
+  </data>
+  <data name="BarChart_BityPerByte" xml:space="preserve">
+    <value>bitů/bajt</value>
+  </data>
+  <data name="BarChart_Bytes" xml:space="preserve">
+    <value>bajtů</value>
+  </data>
+  <data name="DataInspector_EmptyState" xml:space="preserve">
+    <value>Žádný bajt není vybrán — vyberte bajty v hex editoru</value>
+  </data>
+  <data name="DataInspector_Scope_ActiveView" xml:space="preserve">
+    <value>Aktivní pohled</value>
+  </data>
+  <data name="DataInspector_Scope_WholeFile" xml:space="preserve">
+    <value>Celý soubor</value>
+  </data>
+  <data name="DataInspector_Scope_Selection" xml:space="preserve">
+    <value>S&#233;lection</value>
+  </data>
+  <data name="DataInspector_Mode_Frequency" xml:space="preserve">
+    <value>Fr&#233;quence</value>
+  </data>
+  <data name="DataInspector_Mode_Entropy" xml:space="preserve">
+    <value>Entropie</value>
+  </data>
+  <data name="DataInspector_Footer_NoData" xml:space="preserve">
+    <value>Žádná data</value>
+  </data>
+  <data name="DI_CategoryLabel" xml:space="preserve"><value>Kategorie:</value></data>
+  <data name="DI_CatAll" xml:space="preserve"><value>Vše</value></data>
+  <data name="DI_CatInteger" xml:space="preserve"><value>Celé číslo</value></data>
+  <data name="DI_CatFloat" xml:space="preserve"><value>Plovoucí</value></data>
+  <data name="DI_CatDateTime" xml:space="preserve"><value>Datum/Čas</value></data>
+  <data name="DI_CatNetwork" xml:space="preserve"><value>Síť</value></data>
+  <data name="DI_CatGuid" xml:space="preserve"><value>GUID</value></data>
+  <data name="DI_CatColor" xml:space="preserve"><value>Barva</value></data>
+  <data name="DI_CatDoleic" xml:space="preserve"><value>Základní</value></data>
+  <data name="DI_CatBity" xml:space="preserve"><value>Bity</value></data>
+  <data name="DI_AllFormats" xml:space="preserve"><value>Všechny formáty</value></data>
+  <data name="DI_MoreOptions" xml:space="preserve"><value>Další možnosti</value></data>
+  <data name="DI_ShowAxisLabels" xml:space="preserve"><value>Zobrazit popisky os</value></data>
+  <data name="DI_ShowGridLines" xml:space="preserve"><value>Zobrazit mřížkové čáry</value></data>
+  <data name="DI_ShowStatistics" xml:space="preserve"><value>Zobrazit statistiky</value></data>
+  <data name="DI_FrequencyDistribution" xml:space="preserve"><value>Frekvenční distribuce</value></data>
+  <data name="DI_EntropySliding" xml:space="preserve"><value>Entropie (posuvné okno)</value></data>
+  <data name="DI_ZoomIn" xml:space="preserve"><value>Přiblížit</value></data>
+  <data name="DI_ZoomOut" xml:space="preserve"><value>Oddálit</value></data>
+  <data name="DI_ResetZoom" xml:space="preserve"><value>Obnovit zoom</value></data>
+  <data name="DI_RefreshChart" xml:space="preserve"><value>Obnovit graf</value></data>
+  <data name="DI_CopyChartImage" xml:space="preserve"><value>Kopírovat obrázek grafu</value></data>
+  <data name="DI_Layout" xml:space="preserve"><value>Rozložení</value></data>
+  <data name="DI_PositionLeft" xml:space="preserve"><value>Vlevo</value></data>
+  <data name="DI_PositionRight" xml:space="preserve"><value>Vpravo</value></data>
+  <data name="DI_PositionTop" xml:space="preserve"><value>Nahoře</value></data>
+  <data name="DI_PositionBottom" xml:space="preserve"><value>Dole</value></data>
+  <data name="DI_ScopeLabel" xml:space="preserve"><value>Rozsah:</value></data>
+  <data name="DI_ScopeActiveView" xml:space="preserve"><value>Aktivní pohled</value></data>
+  <data name="DI_ScopeSelection" xml:space="preserve"><value>Výběr</value></data>
+  <data name="DI_ScopeWholeFile" xml:space="preserve"><value>Celý soubor</value></data>
+  <data name="DI_FrequencyLabel" xml:space="preserve"><value>Frekvence</value></data>
+  <data name="DI_LayoutLabel" xml:space="preserve"><value>Rozložení :</value></data>
+  <data name="DI_ChartPositionTooltip" xml:space="preserve"><value>Position du graphique par rapport à la liste d'interprétation</value></data>
+  <data name="DI_AnalyzingFile" xml:space="preserve"><value>Analyzování souboru…</value></data>
+  <data name="DI_InterpretationsLabel" xml:space="preserve"><value>Interpretace: </value></data>
+  <data name="DI_NoData" xml:space="preserve"><value>Žádná data</value></data>
+  <data name="DI_AutoRefresh" xml:space="preserve"><value>Automatická aktualizace při změně výběru</value></data>
+  <data name="DI_DefaultByteOrder" xml:space="preserve"><value>Ordre des bajtů par défaut : Little-Endian</value></data>
+  <data name="DI_ShowByteChart" xml:space="preserve"><value>Zobrazit panel grafu bajtů</value></data>
+  <data name="DI_ChartPosition" xml:space="preserve"><value>Pozice grafu:</value></data>
+  <data name="DI_MaxStringPreview" xml:space="preserve"><value>Max bajtů pro náhled řetězce:</value></data>
+</root>

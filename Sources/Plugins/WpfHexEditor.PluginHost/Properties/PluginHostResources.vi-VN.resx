@@ -1,0 +1,594 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+
+  <data name="PluginHost_Ready" xml:space="preserve">
+    <value>Sẵn sàng.</value>
+  </data>
+  <data name="PluginHost_LoadingMarketplace" xml:space="preserve">
+    <value>Đang tải chợ tiện ích…</value>
+  </data>
+  <data name="PluginHost_InstallExtension" xml:space="preserve">
+    <value>Cài đặt tiện ích</value>
+  </data>
+  <data name="PluginHost_ExportDiagnostics" xml:space="preserve">
+    <value>Xuất chẩn đoán tiện ích</value>
+  </data>
+  <data name="PluginHost_InstallPackage" xml:space="preserve">
+    <value>Cài đặt gói tiện ích</value>
+  </data>
+  <data name="PluginHost_ExportEventLog" xml:space="preserve">
+    <value>Xuất nhật ký sự kiện</value>
+  </data>
+  <data name="PluginHost_UninstallPlugin" xml:space="preserve">
+    <value>Gỡ cài đặt plugin</value>
+  </data>
+  <data name="PH_MonitorTitle" xml:space="preserve">
+    <value>THEO DÕI TIỆN ÍCH</value>
+  </data>
+  <data name="PH_AlertBadgeTooltip" xml:space="preserve">
+    <value>Cảnh báo tài nguyên được kích hoạt</value>
+  </data>
+  <data name="PH_FilterPluginsPlaceholder" xml:space="preserve">
+    <value>Lọc plugin…</value>
+  </data>
+  <data name="PH_ResetButton" xml:space="preserve">
+    <value>Đặt lại lịch sử biểu đồ và cảnh báo</value>
+  </data>
+  <data name="PH_ForceGcButton" xml:space="preserve">
+    <value>Buộc thu gom GC (thêm điểm đánh dấu trên biểu đồ)</value>
+  </data>
+  <data name="PH_IntervalLabel" xml:space="preserve">
+    <value>Khoảng thời gian:</value>
+  </data>
+  <data name="PH_Interval1s" xml:space="preserve">
+    <value>1 s</value>
+  </data>
+  <data name="PH_Interval5s" xml:space="preserve">
+    <value>5 s</value>
+  </data>
+  <data name="PH_Interval10s" xml:space="preserve">
+    <value>10 s</value>
+  </data>
+  <data name="PH_Interval30s" xml:space="preserve">
+    <value>30 s</value>
+  </data>
+  <data name="PH_LayoutLabel" xml:space="preserve">
+    <value>Bố cục:</value>
+  </data>
+  <data name="PH_LayoutTop" xml:space="preserve">
+    <value>Trên</value>
+  </data>
+  <data name="PH_LayoutBottom" xml:space="preserve">
+    <value>Dưới</value>
+  </data>
+  <data name="PH_LayoutLeft" xml:space="preserve">
+    <value>Trái</value>
+  </data>
+  <data name="PH_LayoutRight" xml:space="preserve">
+    <value>Phải</value>
+  </data>
+  <data name="PH_FilterLoaded" xml:space="preserve">
+    <value>Chỉ hiển thị plugin đã tải</value>
+  </data>
+  <data name="PH_FilterDisabled" xml:space="preserve">
+    <value>Đã tắt</value>
+  </data>
+  <data name="PH_FilterFaulted" xml:space="preserve">
+    <value>Lỗi</value>
+  </data>
+  <data name="PH_FilterStandby" xml:space="preserve">
+    <value>Chờ</value>
+  </data>
+  <data name="PH_FilterWarnings" xml:space="preserve">
+    <value>Cảnh báo</value>
+  </data>
+  <data name="PH_LoadedStatus" xml:space="preserve">
+    <value>Đã tải</value>
+  </data>
+  <data name="PH_DisabledStatus" xml:space="preserve">
+    <value>Đã tắt</value>
+  </data>
+  <data name="PH_FaultedStatus" xml:space="preserve">
+    <value>Lỗi</value>
+  </data>
+  <data name="PH_StandbyStatus" xml:space="preserve">
+    <value>Chờ</value>
+  </data>
+  <data name="PH_CpuMetric" xml:space="preserve">
+    <value>CPU</value>
+  </data>
+  <data name="PH_MemoryMetric" xml:space="preserve">
+    <value>Bộ nhớ</value>
+  </data>
+  <data name="PH_RunningMetric" xml:space="preserve">
+    <value>Đang chạy</value>
+  </data>
+  <data name="PH_FaultsMetric" xml:space="preserve">
+    <value>Lỗi</value>
+  </data>
+  <data name="PH_CpuChartTitle" xml:space="preserve">
+    <value>CPU %</value>
+  </data>
+  <data name="PH_MemoryChartTitle" xml:space="preserve">
+    <value>Memory MB</value>
+  </data>
+  <data name="PH_ReloadButton" xml:space="preserve">
+    <value>Tải lại</value>
+  </data>
+  <data name="PH_InstallButton" xml:space="preserve">
+    <value>Cài đặt</value>
+  </data>
+  <data name="PH_UninstallButton" xml:space="preserve">
+    <value>Gỡ cài đặt</value>
+  </data>
+  <data name="PH_ExportCrashButton" xml:space="preserve">
+    <value>Xuất báo cáo sự cố</value>
+  </data>
+  <data name="PH_ClearLogButton" xml:space="preserve">
+    <value>Xóa nhật ký</value>
+  </data>
+  <data name="PH_EventsTabLabel" xml:space="preserve">
+    <value>SỰ KIỆN</value>
+  </data>
+  <data name="PH_EventsTab" xml:space="preserve">
+    <value>📋 Events</value>
+  </data>
+  <data name="PH_OverviewTab" xml:space="preserve">
+    <value>📊 Overview</value>
+  </data>
+  <data name="PH_ChartsTab" xml:space="preserve">
+    <value>📈 Charts</value>
+  </data>
+  <data name="PH_PermissionsTab" xml:space="preserve">
+    <value>🔒 Permissions</value>
+  </data>
+  <data name="PH_SettingsTab" xml:space="preserve">
+    <value>⚙️ Settings</value>
+  </data>
+  <data name="PH_OverviewSection" xml:space="preserve">
+    <value>Tổng quan</value>
+  </data>
+  <data name="PH_CpuRamSection" xml:space="preserve">
+    <value>CPU / RAM</value>
+  </data>
+  <data name="PH_CpuEstLabel" xml:space="preserve">
+    <value>CPU (ước tính)</value>
+  </data>
+  <data name="PH_PeakLabel" xml:space="preserve">
+    <value>đỉnh: </value>
+  </data>
+  <data name="PH_MemoryLabel" xml:space="preserve">
+    <value>Bộ nhớ</value>
+  </data>
+  <data name="PH_UptimeLabel" xml:space="preserve">
+    <value>Thời gian hoạt động</value>
+  </data>
+  <data name="PH_InitLabel" xml:space="preserve">
+    <value>Khởi tạo</value>
+  </data>
+  <data name="PH_AvgExecLabel" xml:space="preserve">
+    <value>T.bình thực thi</value>
+  </data>
+  <data name="PH_PeakCpuLabel" xml:space="preserve">
+    <value>CPU đỉnh</value>
+  </data>
+  <data name="PH_AvgCpuLabel" xml:space="preserve">
+    <value>CPU trung bình</value>
+  </data>
+  <data name="PH_PermissionsSection" xml:space="preserve">
+    <value>Quyền hạn</value>
+  </data>
+  <data name="PH_PermissionsNote" xml:space="preserve">
+    <value>Thay đổi quyền có hiệu lực sau khi tải lại plugin.</value>
+  </data>
+  <data name="PH_PermissionColumn" xml:space="preserve">
+    <value>Quyền hạn</value>
+  </data>
+  <data name="PH_DeclaredColumn" xml:space="preserve">
+    <value>Đã khai báo</value>
+  </data>
+  <data name="PH_RiskColumn" xml:space="preserve">
+    <value>Rủi ro</value>
+  </data>
+  <data name="PH_DescriptionColumn" xml:space="preserve">
+    <value>Mô tả</value>
+  </data>
+  <data name="PH_ExportMetricsCsv" xml:space="preserve">
+    <value>Xuất số liệu dạng CSV</value>
+  </data>
+  <data name="PH_ExportMetricsJson" xml:space="preserve">
+    <value>Xuất số liệu dạng JSON</value>
+  </data>
+  <data name="PH_ExportEventLog" xml:space="preserve">
+    <value>Xuất nhật ký sự kiện</value>
+  </data>
+  <data name="PH_CopyTable" xml:space="preserve">
+    <value>Sao chép bảng</value>
+  </data>
+  <data name="PH_ContextReloadMenu" xml:space="preserve">
+    <value>Tải lại</value>
+  </data>
+  <data name="PH_ContextToggleMenu" xml:space="preserve">
+    <value>Bật / Tắt</value>
+  </data>
+  <data name="PH_ContextInstallMenu" xml:space="preserve">
+    <value>Cài đặt…</value>
+  </data>
+  <data name="PH_ContextUninstallMenu" xml:space="preserve">
+    <value>Gỡ cài đặt</value>
+  </data>
+  <data name="PH_ContextExportMenu" xml:space="preserve">
+    <value>Xuất chẩn đoán</value>
+  </data>
+  <data name="PH_PluginsTitle" xml:space="preserve">
+    <value>PLUGIN</value>
+  </data>
+  <data name="PH_RefreshButton" xml:space="preserve">
+    <value>Làm mới</value>
+  </data>
+  <data name="PH_ExportDiagnosticsButton" xml:space="preserve">
+    <value>Xuất chẩn đoán</value>
+  </data>
+  <data name="PH_FilterPlaceholder" xml:space="preserve">
+    <value>Lọc theo tên, ID hoặc tác giả…</value>
+  </data>
+  <data name="PH_ClearFilterButton" xml:space="preserve">
+    <value>Xóa bộ lọc</value>
+  </data>
+  <data name="PH_SortTooltip" xml:space="preserve">
+    <value>Sắp xếp theo</value>
+  </data>
+  <data name="PH_NoPluginsTitle" xml:space="preserve">
+    <value>Chưa tải plugin nào</value>
+  </data>
+  <data name="PH_NoPluginsMessage" xml:space="preserve">
+    <value>Kéo tệp .whxplugin vào đây hoặc dùng nút Cài đặt.</value>
+  </data>
+  <data name="PH_ActionsSectionHeader" xml:space="preserve">
+    <value>HÀNH ĐỘNG PLUGIN</value>
+  </data>
+  <data name="PH_EnableContextMenu" xml:space="preserve">
+    <value>Bật</value>
+  </data>
+  <data name="PH_DisableContextMenu" xml:space="preserve">
+    <value>Tắt</value>
+  </data>
+  <data name="PH_WatchModeContextMenu" xml:space="preserve">
+    <value>Chế độ theo dõi</value>
+  </data>
+  <data name="PH_DiagnosticSectionHeader" xml:space="preserve">
+    <value>CHẨN ĐOÁN</value>
+  </data>
+  <data name="PH_OpenMonitorContextMenu" xml:space="preserve">
+    <value>Mở màn hình theo dõi</value>
+  </data>
+  <data name="PH_ExportDiagnosticsContextMenu" xml:space="preserve">
+    <value>Xuất chẩn đoán</value>
+  </data>
+  <data name="PH_ExportCrashContextMenu" xml:space="preserve">
+    <value>Xuất báo cáo sự cố</value>
+  </data>
+  <data name="PH_CopyIdContextMenu" xml:space="preserve">
+    <value>Sao chép ID plugin</value>
+  </data>
+  <data name="PH_CopyFaultContextMenu" xml:space="preserve">
+    <value>Sao chép chi tiết lỗi</value>
+  </data>
+  <data name="PH_UninstallContextMenu" xml:space="preserve">
+    <value>Gỡ cài đặt…</value>
+  </data>
+  <data name="PH_NoSelectionPlaceholder" xml:space="preserve">
+    <value>Chọn một plugin để xem chi tiết</value>
+  </data>
+  <data name="PH_OfficialBadge" xml:space="preserve">
+    <value>CHÍNH THỨC</value>
+  </data>
+  <data name="PH_InfoSection" xml:space="preserve">
+    <value>Thông tin</value>
+  </data>
+  <data name="PH_MetricsSection" xml:space="preserve">
+    <value>SỐ LIỆU</value>
+  </data>
+  <data name="PH_ProcessCpu" xml:space="preserve">
+    <value>CPU tiến trình</value>
+  </data>
+  <data name="PH_ProcessHeap" xml:space="preserve">
+    <value>Heap tiến trình</value>
+  </data>
+  <data name="PH_AvgCallLabel" xml:space="preserve">
+    <value>T.bình lời gọi</value>
+  </data>
+  <data name="PH_LoadedSinceLabel" xml:space="preserve">
+    <value>Đã tải từ: </value>
+  </data>
+  <data name="PH_CpuHistoryTitle" xml:space="preserve">
+    <value>CPU % — Lịch sử</value>
+  </data>
+  <data name="PH_MemoryHistoryTitle" xml:space="preserve">
+    <value>RAM MB — Lịch sử</value>
+  </data>
+  <data name="PH_PermissionsTitle" xml:space="preserve">
+    <value>Quyền hạn</value>
+  </data>
+  <data name="PH_LazyLoadingSection" xml:space="preserve">
+    <value>Tải lười</value>
+  </data>
+  <data name="PH_DormantNote" xml:space="preserve">
+    <value>Plugin này đang ở trạng thái chờ — sẽ tải khi dùng lần đầu.</value>
+  </data>
+  <data name="PH_LoadNowButton" xml:space="preserve">
+    <value>Tải ngay</value>
+  </data>
+  <data name="PH_AlcDiagnosticsSection" xml:space="preserve">
+    <value>Chẩn đoán ALC</value>
+  </data>
+  <data name="PH_AlcAssembliesLabel" xml:space="preserve">
+    <value>Assemblies</value>
+  </data>
+  <data name="PH_AlcConflictsLabel" xml:space="preserve">
+    <value>Xung đột</value>
+  </data>
+  <data name="PH_CapabilitiesSection" xml:space="preserve">
+    <value>Khả năng</value>
+  </data>
+  <data name="PH_ExtensionPointsSection" xml:space="preserve">
+    <value>Điểm tiện ích</value>
+  </data>
+  <data name="PH_DependencyErrorsSection" xml:space="preserve">
+    <value>Lỗi phụ thuộc</value>
+  </data>
+  <data name="PH_WatchModeSection" xml:space="preserve">
+    <value>Chế độ theo dõi</value>
+  </data>
+  <data name="PH_WatchModeNote" xml:space="preserve">
+    <value>Thay đổi tệp trong thư mục theo dõi sẽ kích hoạt tải lại tự động.</value>
+  </data>
+  <data name="PH_WatchingBadge" xml:space="preserve">
+    <value>● ĐANG THEO DÕI</value>
+  </data>
+  <data name="PH_DirectoryLabel" xml:space="preserve">
+    <value>Thư mục: </value>
+  </data>
+  <data name="PH_SettingsSection" xml:space="preserve">
+    <value>Cài đặt</value>
+  </data>
+  <data name="PH_StandbyNote" xml:space="preserve">
+    <value>Plugin này đang ở chế độ chờ.</value>
+  </data>
+  <data name="PH_MigrateToSandboxButton" xml:space="preserve">
+    <value>Chuyển sang Sandbox</value>
+  </data>
+  <data name="PH_ReloadingLabel" xml:space="preserve">
+    <value>Đang tải lại…</value>
+  </data>
+  <data name="PH_ResolvedModeTooltip" xml:space="preserve">
+    <value>Đang chạy ở chế độ đã giải quyết</value>
+  </data>
+  <data name="PH_SandboxButton" xml:space="preserve">
+    <value>Sandbox</value>
+  </data>
+  <data name="PH_DropHintText" xml:space="preserve">
+    <value>Thả .whxplugin để cài đặt</value>
+  </data>
+  <data name="PH_InstallingMessage" xml:space="preserve">
+    <value>Đang cài đặt…</value>
+  </data>
+  <data name="PH_ShowSparklines" xml:space="preserve">
+    <value>Hiển thị Sparkline</value>
+  </data>
+  <data name="PH_LayoutMenu" xml:space="preserve">
+    <value>Bố cục</value>
+  </data>
+  <data name="PH_IntervalMenu" xml:space="preserve">
+    <value>Khoảng thời gian</value>
+  </data>
+  <data name="PH_PauseMonitoring" xml:space="preserve">
+    <value>Tạm dừng theo dõi</value>
+  </data>
+  <data name="PH_ResetChartHistory" xml:space="preserve">
+    <value>Đặt lại lịch sử biểu đồ</value>
+  </data>
+  <data name="PH_ForceGcMenu" xml:space="preserve">
+    <value>Buộc thu gom GC</value>
+  </data>
+  <data name="PH_ChartsPosition" xml:space="preserve">
+    <value>Vị trí biểu đồ so với bảng plugin</value>
+  </data>
+  <data name="PH_ExportMenuTooltip" xml:space="preserve">
+    <value>Xuất…</value>
+  </data>
+  <data name="PH_PluginColumn" xml:space="preserve">
+    <value>Plugin</value>
+  </data>
+  <data name="PH_StateColumn" xml:space="preserve">
+    <value>Trạng thái</value>
+  </data>
+  <data name="PH_CpuPctColumn" xml:space="preserve">
+    <value>CPU%</value>
+  </data>
+  <data name="PH_PeakPctColumn" xml:space="preserve">
+    <value>Peak%</value>
+  </data>
+  <data name="PH_MemMbColumn" xml:space="preserve">
+    <value>Mem MB</value>
+  </data>
+  <data name="PH_MemShortLabel" xml:space="preserve">
+    <value>Mem</value>
+  </data>
+  <data name="PH_UptimeColumn" xml:space="preserve">
+    <value>Thời gian hoạt động</value>
+  </data>
+  <data name="PH_AvgMsColumn" xml:space="preserve">
+    <value>Avg ms</value>
+  </data>
+  <data name="PH_InitMsColumn" xml:space="preserve">
+    <value>Init ms</value>
+  </data>
+  <data name="PH_ReloadColumn" xml:space="preserve">
+    <value>Tải lại</value>
+  </data>
+  <data name="PH_HotReloadTooltip" xml:space="preserve">
+    <value>Fast = IWpfHexEditorPluginV2.SupportsHotReload; Full = full unload+GC+reload cycle</value>
+  </data>
+  <data name="PH_WatchColumn" xml:space="preserve">
+    <value>Theo dõi</value>
+  </data>
+  <data name="PH_WatchColumnTooltip" xml:space="preserve">
+    <value>👁 = Plugin Dev Loader đang theo dõi thư mục đầu ra của plugin này để phát hiện thay đổi</value>
+  </data>
+  <data name="PH_ClearButton" xml:space="preserve">
+    <value>Xóa</value>
+  </data>
+  <data name="PH_ClearEventLogTooltip" xml:space="preserve">
+    <value>Xóa nhật ký sự kiện</value>
+  </data>
+  <data name="PH_CpuEstimatedLabel" xml:space="preserve">
+    <value>CPU (ước tính)  </value>
+  </data>
+  <data name="PH_PeakShortLabel" xml:space="preserve">
+    <value>  đỉnh: </value>
+  </data>
+  <data name="PH_MemoryShortLabel" xml:space="preserve">
+    <value>Bộ nhớ  </value>
+  </data>
+  <data name="PH_PermissionsTabLabel" xml:space="preserve">
+    <value>🔒 Permissions</value>
+  </data>
+  <data name="PH_PermissionsLabel" xml:space="preserve">
+    <value>Quyền hạn</value>
+  </data>
+  <data name="PH_MoreOptionsTooltip" xml:space="preserve">
+    <value>Thêm tùy chọn</value>
+  </data>
+  <data name="PH_NoPluginsBody" xml:space="preserve">
+    <value>Build solution để sao chép plugin
+hoặc dùng Cài đặt để thêm .whxplugin</value>
+  </data>
+  <data name="PH_SeparatorLabel" xml:space="preserve">
+    <value> · </value>
+  </data>
+  <data name="PH_StandbyBadge" xml:space="preserve">
+    <value>CHỜ</value>
+  </data>
+  <data name="PH_SlowBadge" xml:space="preserve">
+    <value>CHẬM</value>
+  </data>
+  <data name="PH_TrustedPublisherTooltip" xml:space="preserve">
+    <value>Nhà phát hành tin cậy</value>
+  </data>
+  <data name="PH_ReloadingTooltip" xml:space="preserve">
+    <value>Đang tải lại plugin với chế độ cô lập mới…</value>
+  </data>
+  <data name="PH_AutoModeTooltip" xml:space="preserve">
+    <value>Chế độ được chọn tự động bởi công cụ quyết định</value>
+  </data>
+  <data name="PH_ActivateNowTooltip" xml:space="preserve">
+    <value>Kích hoạt plugin ngay lập tức (ghi đè kích hoạt tải lười)</value>
+  </data>
+  <data name="PH_DeactivateTooltip" xml:space="preserve">
+    <value>Tải xuống plugin và trở về Chờ — kích hoạt lại khi có trigger tiếp theo</value>
+  </data>
+  <data name="PH_SandboxTooltip" xml:space="preserve">
+    <value>Tải lại plugin này trong Sandbox ngoài tiến trình</value>
+  </data>
+  <data name="PH_DismissTooltip" xml:space="preserve">
+    <value>Bỏ qua gợi ý</value>
+  </data>
+  <data name="PH_ProcessCpuTooltip" xml:space="preserve">
+    <value>CPU cấp tiến trình — không có cô lập per-plugin trong chế độ InProcess</value>
+  </data>
+  <data name="PH_ProcessHeapTooltip" xml:space="preserve">
+    <value>Tổng heap được quản lý (toàn tiến trình, không theo plugin)</value>
+  </data>
+  <data name="PH_PermissionsDesc" xml:space="preserve">
+    <value>Bật/tắt quyền riêng lẻ cho plugin này. Thay đổi có hiệu lực ngay.</value>
+  </data>
+  <data name="PH_DormantDesc" xml:space="preserve">
+    <value>Plugin này đang ở trạng thái chờ — kích hoạt khi có trigger phù hợp.</value>
+  </data>
+  <data name="PH_WatchModeDesc" xml:space="preserve">
+    <value>Tự động tải lại plugin khi DLL được xây dựng lại. Chọn thư mục đầu ra build của plugin.</value>
+  </data>
+  <data name="MKT_RefreshTooltip" xml:space="preserve">
+    <value>Làm mới</value>
+  </data>
+  <data name="MKT_RefreshButton" xml:space="preserve">
+    <value>Làm mới</value>
+  </data>
+  <data name="MKT_ShowVerifiedTooltip" xml:space="preserve">
+    <value>Chỉ hiển thị đã xác minh</value>
+  </data>
+  <data name="MKT_VerifiedLabel" xml:space="preserve">
+    <value>Đã xác minh</value>
+  </data>
+  <data name="MKT_InstallFileTooltip" xml:space="preserve">
+    <value>Cài đặt plugin từ tệp .whxplugin cục bộ</value>
+  </data>
+  <data name="MKT_InstallFileButton" xml:space="preserve">
+    <value>Cài đặt tệp…</value>
+  </data>
+  <data name="MKT_BrowseTab" xml:space="preserve">
+    <value>Duyệt</value>
+  </data>
+  <data name="MKT_SearchPlaceholder" xml:space="preserve">
+    <value>Tìm kiếm chợ tiện ích…</value>
+  </data>
+  <data name="MKT_InstalledTab" xml:space="preserve">
+    <value>Đã cài đặt</value>
+  </data>
+  <data name="MKT_UpdatesTab" xml:space="preserve">
+    <value>Cập nhật</value>
+  </data>
+  <data name="MKT_SelectPluginHint" xml:space="preserve">
+    <value>Chọn plugin để xem chi tiết.</value>
+  </data>
+  <data name="MKT_ReleaseNotesLabel" xml:space="preserve">
+    <value>Ghi chú phát hành</value>
+  </data>
+  <data name="MKT_InstallButton" xml:space="preserve">
+    <value>Cài đặt</value>
+  </data>
+  <data name="MKT_RollbackButton" xml:space="preserve">
+    <value>Hoàn nguyên</value>
+  </data>
+  <data name="MKT_RollbackTooltip" xml:space="preserve">
+    <value>Khôi phục phiên bản đã cài đặt trước từ bản sao lưu</value>
+  </data>
+  <data name="MKT_UninstallButton" xml:space="preserve">
+    <value>Gỡ cài đặt</value>
+  </data>
+  <data name="MKT_UpdateAllButton" xml:space="preserve">
+    <value>Cập nhật tất cả</value>
+  </data>
+  <data name="MKT_UpdatesAvailable" xml:space="preserve">
+    <value>cập nhật có sẵn</value>
+  </data>
+  <data name="MKT_AllUpToDate" xml:space="preserve">
+    <value>Tất cả plugin đã được cập nhật.</value>
+  </data>
+  <data name="MKT_UpdateButton" xml:space="preserve">
+    <value>Cập nhật</value>
+  </data>
+  <data name="MKT_VerifiedPublisherTooltip" xml:space="preserve">
+    <value>Nhà phát hành đã xác minh</value>
+  </data>
+  <data name="MKT_IntegrityTooltip" xml:space="preserve">
+    <value>Tính toàn vẹn đã xác minh</value>
+  </data>
+  <data name="PH_RegisteredEventTypes" xml:space="preserve"><value>Loại sự kiện đã đăng ký</value></data>
+  <data name="PH_EventLog" xml:space="preserve"><value>Nhật ký sự kiện (100 gần nhất)</value></data>
+  <data name="PH_InstallFile" xml:space="preserve"><value>Cài đặt tệp…</value></data>
+  <data name="PH_UpdatesAvailable" xml:space="preserve"><value>cập nhật có sẵn</value></data>
+  <data name="PH_ColEventType" xml:space="preserve"><value>Loại sự kiện</value></data>
+  <data name="PH_SettingsSaved" xml:space="preserve"><value>&#xE73E; Đã lưu cài đặt.</value></data>
+  <data name="PH_SearchMarketplaceWithIcon" xml:space="preserve"><value>&#xE721;  Tìm kiếm chợ tiện ích…</value></data>
+  <data name="PH_LoadNow" xml:space="preserve"><value>&#xE768; Tải ngay</value></data>
+  <data name="PH_Suspend" xml:space="preserve"><value>&#xE769; Tạm dừng</value></data>
+  <data name="PH_Sandbox" xml:space="preserve"><value>&#xE72A; Sandbox</value></data>
+  <data name="PH_Refresh" xml:space="preserve"><value>&#xE72C; Làm mới</value></data>
+  <data name="PH_ClearLog" xml:space="preserve"><value>&#xE74D; Xóa nhật ký</value></data>
+</root>

@@ -1,0 +1,1953 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <!-- French (Canada) -->
+  <data name="AppendByteConfirmationString" xml:space="preserve">
+    <value>Vous avez atteint la fin du fichier. Voulez-vous ajouter un octet ? Cette opération ne peut pas être annulée si vous continuez.</value>
+  </data>
+  <data name="BookmarksString" xml:space="preserve">
+    <value>Dấu trang</value>
+  </data>
+  <data name="ByteActionString" xml:space="preserve">
+    <value>Hành động byte</value>
+  </data>
+  <data name="ByteString" xml:space="preserve">
+    <value>Byte</value>
+  </data>
+  <data name="CancelLongProcessString" xml:space="preserve">
+    <value>Hủy tiến trình dài</value>
+  </data>
+  <data name="CancelLongProcessToolTipString" xml:space="preserve">
+    <value>Nhấp để hủy tiến trình dài.</value>
+  </data>
+  <data name="CancelString" xml:space="preserve">
+    <value>Hủy</value>
+  </data>
+  <data name="ClearBookMarkString" xml:space="preserve">
+    <value>Xóa dấu trang</value>
+  </data>
+  <data name="ClearString" xml:space="preserve">
+    <value>Xóa</value>
+  </data>
+  <data name="ClickToGoAtVị tríString" xml:space="preserve">
+    <value>Nhấp để đến vị trí.</value>
+  </data>
+  <data name="CloseString" xml:space="preserve">
+    <value>Đóng</value>
+  </data>
+  <data name="CopyAsASCIIString" xml:space="preserve">
+    <value>Sao chép dạng ASCII</value>
+  </data>
+  <data name="CopyAsDecimalString" xml:space="preserve">
+    <value>Sao chép dạng thập phân</value>
+  </data>
+  <data name="CopyAsHexadecimalString" xml:space="preserve">
+    <value>Sao chép dạng hex</value>
+  </data>
+  <data name="CopyAsTBLString" xml:space="preserve">
+    <value>Chuỗi TBL (tệp bảng ký tự đã tải)</value>
+  </data>
+  <data name="CopySelectionAsString" xml:space="preserve">
+    <value>Sao chép vùng chọn dạng...</value>
+  </data>
+  <data name="CountOfString" xml:space="preserve">
+    <value>Số lượng</value>
+  </data>
+  <data name="DefaultTBLString" xml:space="preserve">
+    <value>TBL mặc định</value>
+  </data>
+  <data name="DeleteString" xml:space="preserve">
+    <value>Xóa</value>
+  </data>
+  <data name="Mô tảString" xml:space="preserve">
+    <value>Mô tả</value>
+  </data>
+  <data name="EndTagString" xml:space="preserve">
+    <value>&lt;cuối&gt;</value>
+  </data>
+  <data name="EnterHexValueMsgString" xml:space="preserve">
+    <value>Nhập giá trị hex...</value>
+  </data>
+  <data name="FileDroppingConfirmationString" xml:space="preserve">
+    <value>Bạn có muốn đóng tệp hiện tại và mở : </value>
+  </data>
+  <data name="FillSelectionAloneString" xml:space="preserve">
+    <value>Lấp đầy vùng chọn bằng một byte</value>
+  </data>
+  <data name="FillSelectionString" xml:space="preserve">
+    <value>Lấp đầy vùng chọn bằng một byte...</value>
+  </data>
+  <data name="FindAllString" xml:space="preserve">
+    <value>Tìm tất cả</value>
+  </data>
+  <data name="FindAndReplaceString" xml:space="preserve">
+    <value>Tìm kiếm và thay thế</value>
+  </data>
+  <data name="FindByteString" xml:space="preserve">
+    <value>Byte à rechercher</value>
+  </data>
+  <data name="FindFirstString" xml:space="preserve">
+    <value>Tìm đầu tiên</value>
+  </data>
+  <data name="FindLastString" xml:space="preserve">
+    <value>Tìm cuối cùng</value>
+  </data>
+  <data name="FindNextString" xml:space="preserve">
+    <value>Tìm tiếp theo</value>
+  </data>
+  <data name="FindSelectionString" xml:space="preserve">
+    <value>Tìm tất cả lần xuất hiện của vùng chọn</value>
+  </data>
+  <data name="FindString" xml:space="preserve">
+    <value>Tìm kiếm</value>
+  </data>
+  <data name="FindWhatString" xml:space="preserve">
+    <value>Tìm kiếm :</value>
+  </data>
+  <data name="FirstByteString" xml:space="preserve">
+    <value>Byte đầu tiên</value>
+  </data>
+  <data name="HexString" xml:space="preserve">
+    <value>Hex</value>
+  </data>
+  <data name="KBTagString" xml:space="preserve">
+    <value>KB</value>
+  </data>
+  <data name="LengthString" xml:space="preserve">
+    <value>Độ dài</value>
+  </data>
+  <data name="LineStatusBarTagString" xml:space="preserve">
+    <value>Ln</value>
+  </data>
+  <data name="LineTagString" xml:space="preserve">
+    <value>&lt;ln&gt;</value>
+  </data>
+  <data name="LongString" xml:space="preserve">
+    <value>Long</value>
+  </data>
+  <data name="MBTagString" xml:space="preserve">
+    <value>MB</value>
+  </data>
+  <data name="OkString" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="PasteExtendByteConfirmationString" xml:space="preserve">
+    <value>Thao tác dán đã đến cuối tệp. Bạn có muốn mở rộng tệp để hoàn tất thao tác? Thao tác này không thể hoàn tác nếu tiếp tục.</value>
+  </data>
+  <data name="PasteFromClipboardString" xml:space="preserve">
+    <value>Dán từ clipboard</value>
+  </data>
+  <data name="PasteNotInsertString" xml:space="preserve">
+    <value>Dán không chèn</value>
+  </data>
+  <data name="Vị tríString" xml:space="preserve">
+    <value>Vị trí</value>
+  </data>
+  <data name="ReplaceAllString" xml:space="preserve">
+    <value>Thay thế tất cả</value>
+  </data>
+  <data name="ReplaceByByteString" xml:space="preserve">
+    <value>Thay thế bằng một byte</value>
+  </data>
+  <data name="ReplaceNextString" xml:space="preserve">
+    <value>Thay thế tiếp theo</value>
+  </data>
+  <data name="ReplaceSelectionString" xml:space="preserve">
+    <value>Thay thế byte trong vùng chọn...</value>
+  </data>
+  <data name="ReplaceString" xml:space="preserve">
+    <value>Thay thế</value>
+  </data>
+  <data name="ReplaceWithByteString" xml:space="preserve">
+    <value>Thay thế bằng một byte</value>
+  </data>
+  <data name="ReplaceWithString" xml:space="preserve">
+    <value>Thay thế par :</value>
+  </data>
+  <data name="ReplaceInSelectionOnlyString" xml:space="preserve">
+    <value>Thay thế trong vùng chọn uniquement</value>
+  </data>
+  <data name="ShowConfirmationString" xml:space="preserve">
+    <value>Hiển thị hộp thoại xác nhận</value>
+  </data>
+  <data name="PreviewString" xml:space="preserve">
+    <value>Xem trước :</value>
+  </data>
+  <data name="ValidationInvalidHexString" xml:space="preserve">
+    <value>Giá trị hex không hợp lệ</value>
+  </data>
+  <data name="ValidationRequiredString" xml:space="preserve">
+    <value>Giá trị bắt buộc</value>
+  </data>
+  <data name="OccurrencesFoundString" xml:space="preserve">
+    <value>{0} lần xuất hiện được tìm thấy</value>
+  </data>
+  <data name="ReplacementCompleteString" xml:space="preserve">
+    <value>{0} lần xuất hiện đã thay thế</value>
+  </data>
+  <data name="NoOccurrencesFoundString" xml:space="preserve">
+    <value>Không tìm thấy lần xuất hiện nào</value>
+  </data>
+  <data name="InSelectionString" xml:space="preserve">
+    <value>trong vùng chọn</value>
+  </data>
+  <data name="InFileString" xml:space="preserve">
+    <value>trong tệp</value>
+  </data>
+  <data name="SelectAllString" xml:space="preserve">
+    <value>Chọn tất cả</value>
+  </data>
+  <data name="SetBookMarkString" xml:space="preserve">
+    <value>Đặt dấu trang</value>
+  </data>
+  <data name="TBLString" xml:space="preserve">
+    <value>TBL</value>
+  </data>
+  <data name="ThisStringAreNotHexString" xml:space="preserve">
+    <value>Chuỗi này không phải hex</value>
+  </data>
+  <data name="UndoString" xml:space="preserve">
+    <value>Hủy</value>
+  </data>
+  <data name="ValueString" xml:space="preserve">
+    <value>Giá trị</value>
+  </data>
+  <data name="WritingErrorExeptionString" xml:space="preserve">
+    <value>Đã xảy ra lỗi khi ghi.</value>
+  </data>
+  <data name="HighLightSettingString" xml:space="preserve">
+    <value>Tô sáng tất cả dữ liệu tìm thấy</value>
+  </data>
+  <data name="ReplaceTrimSettingString" xml:space="preserve">
+    <value>Cắt bớt dữ liệu theo độ dài tìm kiếm khi thay thế</value>
+  </data>
+  <data name="ZoomResetString" xml:space="preserve">
+    <value>Đặt lại zoom về 100%</value>
+  </data>
+  <data name="ZoomString" xml:space="preserve">
+    <value>Zoom</value>
+  </data>
+  <data name="ConvertStringToLongErrorString" xml:space="preserve">
+    <value>Không thể chuyển đổi chuỗi này sang long</value>
+  </data>
+  <data name="OpenAsReadOnlyString" xml:space="preserve">
+    <value>Tệp bị khóa. Bạn có muốn mở ở chế độ chỉ đọc không?</value>
+  </data>
+  <data name="BytesTagString" xml:space="preserve">
+    <value>Bytes</value>
+  </data>
+  <data name="SearchCommandCenterString" xml:space="preserve">
+    <value>TRUNG TÂM LỆNH TÌM KIẾM</value>
+  </data>
+  <data name="SearchTextMBdeString" xml:space="preserve">
+    <value>Văn bản</value>
+  </data>
+  <data name="SearchHexMBdeString" xml:space="preserve">
+    <value>Hex</value>
+  </data>
+  <data name="SearchRegexMBdeString" xml:space="preserve">
+    <value>Regex</value>
+  </data>
+  <data name="SearchWildcardMBdeString" xml:space="preserve">
+    <value>Ký tự đại diện</value>
+  </data>
+  <data name="SearchPreviousString" xml:space="preserve">
+    <value>Trước đó</value>
+  </data>
+  <data name="SearchNextString" xml:space="preserve">
+    <value>Tiếp theo</value>
+  </data>
+  <data name="SearchFindAllString" xml:space="preserve">
+    <value>Tìm tất cả</value>
+  </data>
+  <data name="SearchMatchesString" xml:space="preserve">
+    <value>kết quả khớp</value>
+  </data>
+  <data name="SearchInString" xml:space="preserve">
+    <value>trong</value>
+  </data>
+  <data name="SearchNoMatchesString" xml:space="preserve">
+    <value>Không tìm thấy kết quả khớp</value>
+  </data>
+  <data name="SearchV2BadgeString" xml:space="preserve">
+    <value>NHANH HƠN 99% VỚI V2</value>
+  </data>
+  <data name="ClearSearchString" xml:space="preserve">
+    <value>Xóa</value>
+  </data>
+  <data name="CommandPaletteString" xml:space="preserve">
+    <value>Bảng lệnh</value>
+  </data>
+  <data name="PerformanceDashboardString" xml:space="preserve">
+    <value>Bảng điều khiển hiệu năng</value>
+  </data>
+  <data name="ThemeDarkGlassString" xml:space="preserve">
+    <value>Kính tối</value>
+  </data>
+  <data name="ThemeLightString" xml:space="preserve">
+    <value>Sáng</value>
+  </data>
+  <data name="ThemeCyberpunkString" xml:space="preserve">
+    <value>Cyberpunk</value>
+  </data>
+  <data name="ThemeMinimalString" xml:space="preserve">
+    <value>Tối giản</value>
+  </data>
+  <data name="CopyAsCSharpCodeString" xml:space="preserve">
+    <value>Sao chép dạng mã C#</value>
+  </data>
+  <data name="CopyAsCCodeString" xml:space="preserve">
+    <value>Sao chép dạng mã C</value>
+  </data>
+  <data name="CopyAsĐịnh dạngtedViewString" xml:space="preserve">
+    <value>Sao chép dạng xem đã định dạng</value>
+  </data>
+  <data name="CopyString" xml:space="preserve">
+    <value>Sao chép</value>
+  </data>
+  <data name="PasteString" xml:space="preserve">
+    <value>Dán</value>
+  </data>
+  <data name="FillWithByteString" xml:space="preserve">
+    <value>Remplir avec un octet...</value>
+  </data>
+  <data name="ReplaceByteMenuString" xml:space="preserve">
+    <value>Thay thế l'octet...</value>
+  </data>
+  <data name="ReverseSelectionString" xml:space="preserve">
+    <value>Đảo ngược vùng chọn</value>
+  </data>
+  <data name="InvertSelectionString" xml:space="preserve">
+    <value>Đảo ngược byte</value>
+  </data>
+  <data name="StatusMessageString" xml:space="preserve">
+    <value>Message d'état</value>
+  </data>
+  <data name="FileSizeString" xml:space="preserve">
+    <value>Taille du fichier</value>
+  </data>
+  <data name="SelectionInfoString" xml:space="preserve">
+    <value>Informations de sélection</value>
+  </data>
+  <data name="EditMBdeString" xml:space="preserve">
+    <value>MBde d'édition</value>
+  </data>
+  <data name="BytesPerLineString" xml:space="preserve">
+    <value>Bytes par ligne</value>
+  </data>
+  <data name="RefreshTimeString" xml:space="preserve">
+    <value>Temps de rafraîchissement</value>
+  </data>
+  <data name="OffsetString" xml:space="preserve">
+    <value>Offset</value>
+  </data>
+  <data name="ReadyString" xml:space="preserve">
+    <value>Sẵn sàng</value>
+  </data>
+  <data name="NoSelectionString" xml:space="preserve">
+    <value>Không có vùng chọn</value>
+  </data>
+  <data name="MBdeOverwriteString" xml:space="preserve">
+    <value>MBde : Écraser</value>
+  </data>
+  <data name="FindAndReplaceDialogTitle" xml:space="preserve">
+    <value>Tìm kiếm và thay thế</value>
+  </data>
+  <data name="FindGroupHeader" xml:space="preserve">
+    <value>Tìm kiếm</value>
+  </data>
+  <data name="ReplaceGroupHeader" xml:space="preserve">
+    <value>Thay thế</value>
+  </data>
+  <data name="ResultsGroupHeader" xml:space="preserve">
+    <value>Kết quả</value>
+  </data>
+  <data name="FindTextLabel" xml:space="preserve">
+    <value>Tìm kiếm :</value>
+  </data>
+  <data name="ReplaceTextLabel" xml:space="preserve">
+    <value>Thay thế par :</value>
+  </data>
+  <data name="FindPreviousButton" xml:space="preserve">
+    <value>Trước đó</value>
+  </data>
+  <data name="FindNextButton" xml:space="preserve">
+    <value>Tiếp theo</value>
+  </data>
+  <data name="FindAllButton" xml:space="preserve">
+    <value>Tìm tất cả</value>
+  </data>
+  <data name="ReplaceButton" xml:space="preserve">
+    <value>Thay thế</value>
+  </data>
+  <data name="ReplaceAllButton" xml:space="preserve">
+    <value>Thay thế tất cả</value>
+  </data>
+  <data name="CaseSensitiveCheckbox" xml:space="preserve">
+    <value>Respecter la casse</value>
+  </data>
+  <data name="WholeWordCheckbox" xml:space="preserve">
+    <value>MBt entier</value>
+  </data>
+  <data name="UseRegexCheckbox" xml:space="preserve">
+    <value>Utiliser les expressions régulières</value>
+  </data>
+  <data name="SearchInSelectionCheckbox" xml:space="preserve">
+    <value>Tìm kiếm uniquement trong vùng chọn</value>
+  </data>
+  <data name="HighlightAllCheckbox" xml:space="preserve">
+    <value>Surligner toutes les kết quả khớp</value>
+  </data>
+  <data name="CloseDialogButton" xml:space="preserve">
+    <value>Đóng</value>
+  </data>
+  <data name="NoResultsFound" xml:space="preserve">
+    <value>Không có kết quả trouvé</value>
+  </data>
+  <data name="MatchesFoundĐịnh dạng" xml:space="preserve">
+    <value>{0} kết quả khớp trouvées</value>
+  </data>
+  <data name="ReplacedĐịnh dạng" xml:space="preserve">
+    <value>{0} remplacés</value>
+  </data>
+  <data name="SearchPanelTitle" xml:space="preserve">
+    <value>Recherche</value>
+  </data>
+  <data name="SearchFindLabel" xml:space="preserve">
+    <value>Tìm kiếm :</value>
+  </data>
+  <data name="SearchMBdePlaceholder" xml:space="preserve">
+    <value>Entrez le texte de recherche...</value>
+  </data>
+  <data name="TextMBdeLabel" xml:space="preserve">
+    <value>Văn bản</value>
+  </data>
+  <data name="HexMBdeLabel" xml:space="preserve">
+    <value>Hex</value>
+  </data>
+  <data name="RegexMBdeLabel" xml:space="preserve">
+    <value>Regex</value>
+  </data>
+  <data name="WildcardMBdeLabel" xml:space="preserve">
+    <value>Ký tự đại diện</value>
+  </data>
+  <data name="MatchCaseLabel" xml:space="preserve">
+    <value>Respecter la casse</value>
+  </data>
+  <data name="WholeWordLabel" xml:space="preserve">
+    <value>MBt entier</value>
+  </data>
+  <data name="SearchOptionsLabel" xml:space="preserve">
+    <value>Options</value>
+  </data>
+  <data name="SearchResultsLabel" xml:space="preserve">
+    <value>Kết quả</value>
+  </data>
+  <data name="CurrentMatchLabel" xml:space="preserve">
+    <value>Correspondance actuelle</value>
+  </data>
+  <data name="TotalMatchesLabel" xml:space="preserve">
+    <value>Total de kết quả khớp</value>
+  </data>
+  <data name="QuickSearchTooltip" xml:space="preserve">
+    <value>Recherche rapide (Ctrl+F)</value>
+  </data>
+  <data name="PreviousMatchTooltip" xml:space="preserve">
+    <value>Correspondance précédente (Shift+F3)</value>
+  </data>
+  <data name="NextMatchTooltip" xml:space="preserve">
+    <value>Correspondance suivante (F3)</value>
+  </data>
+  <data name="CloseSearchTooltip" xml:space="preserve">
+    <value>Đóng la recherche (Esc)</value>
+  </data>
+  <data name="SearchOptionsTooltip" xml:space="preserve">
+    <value>Options de recherche</value>
+  </data>
+  <data name="StatusSearching" xml:space="preserve">
+    <value>Đang tìm kiếm...</value>
+  </data>
+  <data name="StatusSearchComplete" xml:space="preserve">
+    <value>Recherche terminée</value>
+  </data>
+  <data name="StatusFoundMatchesĐịnh dạng" xml:space="preserve">
+    <value>{0} kết quả khớp trouvées en {1} ms</value>
+  </data>
+  <data name="StatusMatchFoundAtĐịnh dạng" xml:space="preserve">
+    <value>Correspondance trouvée à la position 0x{0:X8}</value>
+  </data>
+  <data name="StatusNoMBreMatches" xml:space="preserve">
+    <value>Aucune autre correspondance trouvée</value>
+  </data>
+  <data name="StatusReachedEndOfFile" xml:space="preserve">
+    <value>Fin du fichier atteinte</value>
+  </data>
+  <data name="StatusReachedStartOfFile" xml:space="preserve">
+    <value>Début du fichier atteint</value>
+  </data>
+  <data name="StatusReplacing" xml:space="preserve">
+    <value>Remplacement en cours...</value>
+  </data>
+  <data name="StatusReplaceComplete" xml:space="preserve">
+    <value>Remplacement terminé</value>
+  </data>
+  <data name="StatusReplacedĐịnh dạng" xml:space="preserve">
+    <value>{0} lần xuất hiện đã thay thế</value>
+  </data>
+  <data name="StatusInvalidSearchPattern" xml:space="preserve">
+    <value>MBtif de recherche invalide</value>
+  </data>
+  <data name="StatusInvalidRegex" xml:space="preserve">
+    <value>Expression régulière invalide</value>
+  </data>
+  <data name="StatusSearchCancelled" xml:space="preserve">
+    <value>Đã hủy tìm kiếm</value>
+  </data>
+  <data name="StatusReplaceCancelled" xml:space="preserve">
+    <value>Remplacement annulé</value>
+  </data>
+  <data name="StatusCancelling" xml:space="preserve">
+    <value>Annulation...</value>
+  </data>
+  <data name="StatusError" xml:space="preserve">
+    <value>Lỗi : {0}</value>
+  </data>
+  <data name="StatusFoundMatchesWithSpeedĐịnh dạng" xml:space="preserve">
+    <value>{0} kết quả khớp trouvées en {1} ms ({2:F2} MB/s)</value>
+  </data>
+  <data name="StatusMatchFoundAtWrappedĐịnh dạng" xml:space="preserve">
+    <value>Correspondance trouvée à la position 0x{0:X8} (bouclée)</value>
+  </data>
+  <data name="StatusNoPreviousMatches" xml:space="preserve">
+    <value>Aucune correspondance précédente trouvée</value>
+  </data>
+  <data name="StatusMatchOfTotalĐịnh dạng" xml:space="preserve">
+    <value>Correspondance {0} sur {1} à la position 0x{2:X8}</value>
+  </data>
+  <data name="StatusReplacedAtĐịnh dạng" xml:space="preserve">
+    <value>Remplacé à la position 0x{0:X8} (Total : {1})</value>
+  </data>
+  <data name="StatusReplaceError" xml:space="preserve">
+    <value>Lỗi de remplacement : {0}</value>
+  </data>
+  <data name="StatusNoMatchesToReplace" xml:space="preserve">
+    <value>Aucune correspondance à remplacer</value>
+  </data>
+  <data name="StatusInvalidReplacementPattern" xml:space="preserve">
+    <value>MBtif de remplacement invalide</value>
+  </data>
+  <data name="StatusReplacedOccurrencesĐịnh dạng" xml:space="preserve">
+    <value>{0} occurrence(s) remplacée(s). Total des remplacements : {1}</value>
+  </data>
+  <data name="StatusReplaceAllError" xml:space="preserve">
+    <value>Lỗi de tout remplacer : {0}</value>
+  </data>
+  <data name="StatusNoMBreBookmarksAfter" xml:space="preserve">
+    <value>Aucun autre signet après la position actuelle</value>
+  </data>
+  <data name="StatusNoMBreBookmarksBefore" xml:space="preserve">
+    <value>Aucun autre signet avant la position actuelle</value>
+  </data>
+  <data name="BookmarkSetĐịnh dạng" xml:space="preserve">
+    <value>Signet défini à 0x{0:X8}</value>
+  </data>
+  <data name="BookmarkClearedĐịnh dạng" xml:space="preserve">
+    <value>Signet effacé à 0x{0:X8}</value>
+  </data>
+  <data name="BookmarkNavigatedĐịnh dạng" xml:space="preserve">
+    <value>Navigation vers le signet à 0x{0:X8}</value>
+  </data>
+  <data name="BookmarkAllCleared" xml:space="preserve">
+    <value>Tous les signets effacés</value>
+  </data>
+  <data name="CopySelectionString" xml:space="preserve">
+    <value>Sao chép la sélection</value>
+  </data>
+  <data name="CutSelectionString" xml:space="preserve">
+    <value>Cắt la sélection</value>
+  </data>
+  <data name="InsertByteString" xml:space="preserve">
+    <value>Insérer un octet...</value>
+  </data>
+  <data name="DeleteByteString" xml:space="preserve">
+    <value>Xóa l'octet</value>
+  </data>
+  <data name="DeleteSelectionString" xml:space="preserve">
+    <value>Xóa la sélection</value>
+  </data>
+  <data name="GoToOffsetString" xml:space="preserve">
+    <value>Aller au décalage...</value>
+  </data>
+  <data name="PropertiesString" xml:space="preserve">
+    <value>Propriétés</value>
+  </data>
+  <data name="ProgressButtonCancel" xml:space="preserve">
+    <value>Hủy</value>
+  </data>
+  <data name="ProgressMessageFileOpenedSuccessfully" xml:space="preserve">
+    <value>Tệp ouvert avec succès</value>
+  </data>
+  <data name="ProgressMessageFileSavedSuccessfully" xml:space="preserve">
+    <value>Tệp enregistré avec succès</value>
+  </data>
+  <data name="ProgressMessageFindingMatches" xml:space="preserve">
+    <value>Recherche des kết quả khớp...</value>
+  </data>
+  <data name="ProgressMessageFoundMatchesĐịnh dạng" xml:space="preserve">
+    <value>{0} kết quả khớp trouvées</value>
+  </data>
+  <data name="ProgressMessageLoadingFileData" xml:space="preserve">
+    <value>Chargement des données du fichier...</value>
+  </data>
+  <data name="ProgressMessageOpeningFileStream" xml:space="preserve">
+    <value>Ouverture du flux de fichier...</value>
+  </data>
+  <data name="ProgressMessagePreparingToSave" xml:space="preserve">
+    <value>Préparation de l'enregistrement...</value>
+  </data>
+  <data name="ProgressMessageReplacedĐịnh dạng" xml:space="preserve">
+    <value>{0} lần xuất hiện đã thay thế</value>
+  </data>
+  <data name="ProgressMessageReplacingĐịnh dạng" xml:space="preserve">
+    <value>{0} kết quả khớp trouvées. Remplacement...</value>
+  </data>
+  <data name="ProgressMessageSearchingFoundĐịnh dạng" xml:space="preserve">
+    <value>Recherche... {0} trouvées</value>
+  </data>
+  <data name="ProgressMessageStartingSearch" xml:space="preserve">
+    <value>Début de la recherche...</value>
+  </data>
+  <data name="ProgressTitleOpeningFile" xml:space="preserve">
+    <value>Ouverture du fichier</value>
+  </data>
+  <data name="ProgressTitleReplacing" xml:space="preserve">
+    <value>Remplacement</value>
+  </data>
+  <data name="ProgressTitleSavingFile" xml:space="preserve">
+    <value>Enregistrement du fichier</value>
+  </data>
+  <data name="ProgressTitleSearching" xml:space="preserve">
+    <value>Recherche</value>
+  </data>
+  <data name="FillWithByteTooltipString" xml:space="preserve">
+    <value>Lấp đầy vùng chọn avec une valeur d'octet spécifique</value>
+  </data>
+  <data name="ReplaceByteTooltipString" xml:space="preserve">
+    <value>Thay thế toutes les occurrences d'un octet par un autre</value>
+  </data>
+  <data name="ReverseSelectionTooltipString" xml:space="preserve">
+    <value>Inverser l'ordre des octets trong vùng chọn (conversion d'endianness)</value>
+  </data>
+  <data name="InvertSelectionTooltipString" xml:space="preserve">
+    <value>Inverser tous les bits de chaque octet (XOR avec 0xFF)</value>
+  </data>
+
+  <!-- TBL Editor Localizations -->
+  <data name="TblEditor_Title" xml:space="preserve">
+    <value>Éditeur de table de caractères TBL</value>
+    <comment>TBL Editor - Title</comment>
+  </data>
+  <data name="TblEditor_NoTblLoaded" xml:space="preserve">
+    <value>Chưa tải tệp TBL. Veuillez d'abord charger un fichier TBL.</value>
+    <comment>TBL Editor - NoTblLoaded</comment>
+  </data>
+  <data name="TblEditor_UnsavedChanges" xml:space="preserve">
+    <value>Vous avez des modifications non enregistrées. Voulez-vous enregistrer avant de fermer?</value>
+    <comment>TBL Editor - UnsavedChanges</comment>
+  </data>
+  <data name="TblEditor_ConfirmDelete" xml:space="preserve">
+    <value>Xóa {0} entrées?</value>
+    <comment>TBL Editor - ConfirmDelete</comment>
+  </data>
+  <data name="TblEditor_ErrorSaving" xml:space="preserve">
+    <value>Lỗi lors de l'enregistrement du TBL: {0}</value>
+    <comment>TBL Editor - ErrorSaving</comment>
+  </data>
+  <data name="TblEditor_SavedSuccessfully" xml:space="preserve">
+    <value>TBL enregistré avec succès</value>
+    <comment>TBL Editor - SavedSuccessfully</comment>
+  </data>
+  <data name="TblEditor_NoConflicts" xml:space="preserve">
+    <value>Aucun conflit détecté!</value>
+    <comment>TBL Editor - NoConflicts</comment>
+  </data>
+  <data name="TblEditor_ConflictsDetected" xml:space="preserve">
+    <value>{0} conflits détectés</value>
+    <comment>TBL Editor - ConflictsDetected</comment>
+  </data>
+  <data name="TblEditor_PrefixConflict" xml:space="preserve">
+    <value>L'entrée '{0}' est un préfixe de {1} entrées plus longues</value>
+    <comment>TBL Editor - PrefixConflict</comment>
+  </data>
+  <data name="TblEditor_DuplicateEntry" xml:space="preserve">
+    <value>Entrée dupliquée '{0}'</value>
+    <comment>TBL Editor - DuplicateEntry</comment>
+  </data>
+  <data name="TblEditor_Suggestion_RemoveShorter" xml:space="preserve">
+    <value>Xóa l'entrée la plus courte ou utiliser des valeurs d'octets différentes</value>
+    <comment>TBL Editor - Suggestion RemoveShorter</comment>
+  </data>
+  <data name="TblEditor_Suggestion_RemoveDuplicate" xml:space="preserve">
+    <value>Xóa le doublon ou fusionner les valeurs</value>
+    <comment>TBL Editor - Suggestion RemoveDuplicate</comment>
+  </data>
+  <data name="TblEditor_AddEntry" xml:space="preserve">
+    <value>Thêm une entrée</value>
+    <comment>TBL Editor - AddEntry</comment>
+  </data>
+  <data name="TblEditor_DeleteEntry" xml:space="preserve">
+    <value>Xóa l'entrée</value>
+    <comment>TBL Editor - DeleteEntry</comment>
+  </data>
+  <data name="TblEditor_DuplicateEntry_Button" xml:space="preserve">
+    <value>Dupliquer</value>
+    <comment>TBL Editor - DuplicateEntry Button</comment>
+  </data>
+  <data name="TblEditor_Save" xml:space="preserve">
+    <value>Lưu</value>
+    <comment>TBL Editor - Save</comment>
+  </data>
+  <data name="TblEditor_SaveAs" xml:space="preserve">
+    <value>Lưu sous</value>
+    <comment>TBL Editor - SaveAs</comment>
+  </data>
+  <data name="TblEditor_Validate" xml:space="preserve">
+    <value>Xác thực</value>
+    <comment>TBL Editor - Validate</comment>
+  </data>
+  <data name="TblEditor_Undo" xml:space="preserve">
+    <value>Hủy ({0})</value>
+    <comment>TBL Editor - Undo</comment>
+  </data>
+  <data name="TblEditor_Redo" xml:space="preserve">
+    <value>Rétablir ({0})</value>
+    <comment>TBL Editor - Redo</comment>
+  </data>
+  <data name="TblEditor_Search" xml:space="preserve">
+    <value>Tìm kiếm par valeur hexadécimale ou caractère</value>
+    <comment>TBL Editor - Search</comment>
+  </data>
+  <data name="TblEditor_FilterByType" xml:space="preserve">
+    <value>Type:</value>
+    <comment>TBL Editor - FilterByType</comment>
+  </data>
+  <data name="TblEditor_ConflictsOnly" xml:space="preserve">
+    <value>⚠ Conflits uniquement</value>
+    <comment>TBL Editor - ConflictsOnly</comment>
+  </data>
+  <data name="TblEditor_ClearFilters" xml:space="preserve">
+    <value>Xóa</value>
+    <comment>TBL Editor - ClearFilters</comment>
+  </data>
+  <data name="TblEditor_EntriesCount" xml:space="preserve">
+    <value>{0} entrées</value>
+    <comment>TBL Editor - EntriesCount</comment>
+  </data>
+  <data name="TblEditor_HexValue" xml:space="preserve">
+    <value>Giá trị hexadécimale</value>
+    <comment>TBL Editor - HexValue</comment>
+  </data>
+  <data name="TblEditor_Character" xml:space="preserve">
+    <value>Caractère(s)</value>
+    <comment>TBL Editor - Character</comment>
+  </data>
+  <data name="TblEditor_Type" xml:space="preserve">
+    <value>Type</value>
+    <comment>TBL Editor - Type</comment>
+  </data>
+  <data name="TblEditor_Bytes" xml:space="preserve">
+    <value>Bytes</value>
+    <comment>TBL Editor - Bytes</comment>
+  </data>
+  <data name="TblEditor_Details" xml:space="preserve">
+    <value>Chi tiết</value>
+    <comment>TBL Editor - Details</comment>
+  </data>
+  <data name="TblEditor_Statistics" xml:space="preserve">
+    <value>Thống kê</value>
+    <comment>TBL Editor - Statistics</comment>
+  </data>
+  <data name="TblEditor_Advanced" xml:space="preserve">
+    <value>Nâng cao</value>
+    <comment>TBL Editor - Advanced</comment>
+  </data>
+  <data name="TblEditor_MBdified" xml:space="preserve">
+    <value>● MBdifié</value>
+    <comment>TBL Editor - MBdified</comment>
+  </data>
+
+<data name="HexSettings_Display_LineNumbers" xml:space="preserve">
+    <value>Afficher numéros de ligne (temporaire)</value>
+  </data>
+<data name="HexSettings_Display_LineNumbers_Tooltip" xml:space="preserve">
+    <value>Cette fonctionnalité n'est pas encore disponible trong V2</value>
+  </data>
+<data name="HexSettings_Display_ByteTooltip" xml:space="preserve">
+    <value>Afficher info-bulle d'octet</value>
+  </data>
+
+
+
+<data name="HexSettings_Editing_InsertAnywhere" xml:space="preserve">
+    <value>Autoriser insertion n'importe où</value>
+  </data>
+<data name="HexSettings_Editing_DeleteByte" xml:space="preserve">
+    <value>Autoriser suppression d'octet</value>
+  </data>
+<data name="HexSettings_Editing_ExtendFile" xml:space="preserve">
+    <value>Autoriser extension du fichier</value>
+  </data>
+<data name="HexSettings_Editing_AppendConfirmation" xml:space="preserve">
+    <value>Ajout nécessite confirmation</value>
+  </data>
+
+<data name="HexSettings_Editing_Overwrite" xml:space="preserve">
+    <value>Thay thế</value>
+  </data>
+
+
+
+
+
+
+
+
+
+<data name="HexSettings_DragDrop_FileDrop" xml:space="preserve">
+    <value>Autoriser dépôt de fichier</value>
+  </data>
+<data name="HexSettings_DragDrop_FileConfirmation" xml:space="preserve">
+    <value>Confirmation de dépôt de fichier</value>
+  </data>
+<data name="HexSettings_DragDrop_TextDrop" xml:space="preserve">
+    <value>Autoriser dépôt de texte</value>
+  </data>
+
+<data name="HexSettings_Highlight_AutoSelect" xml:space="preserve">
+    <value>Sélection automatique du même octet (double-clic)</value>
+  </data>
+<data name="HexSettings_Highlight_MarkerNavigation" xml:space="preserve">
+    <value>Autoriser navigation par clic sur marqueur</value>
+  </data>
+<data name="HexSettings_Highlight_Color" xml:space="preserve">
+    <value>Màu sắc de surlignage automatique :</value>
+  </data>
+<data name="HexSettings_Search_ParallelSearch" xml:space="preserve">
+    <value>Bật recherche parallèle</value>
+  </data>
+<data name="HexSettings_Search_WildcardSearch" xml:space="preserve">
+    <value>Utiliser recherche avec caractères génériques (??)</value>
+  </data>
+<data name="HexSettings_Search_HighlightMatches" xml:space="preserve">
+    <value>Surligner tous les résultats</value>
+  </data>
+
+<data name="HexSettings_Statistics_ByteCount" xml:space="preserve">
+    <value>Autoriser compte d'octets</value>
+  </data>
+<data name="HexSettings_Advanced_ByteShift" xml:space="preserve">
+    <value>Offset d'octet à gauche :</value>
+  </data>
+
+
+<data name="HexSettings_Title" xml:space="preserve">
+    <value>PARAMÈTRES DE L'ÉDITEUR HEX</value>
+  </data>
+<data name="HexSettings_Display_Title" xml:space="preserve">
+    <value>📺 Options d'affichage</value>
+  </data>
+<data name="HexSettings_Display_ShowLineNumbers" xml:space="preserve">
+    <value>Afficher les numéros de ligne (placeholder)</value>
+  </data>
+<data name="HexSettings_Display_ShowLineNumbers_ToolTip" xml:space="preserve">
+    <value>Cette fonctionnalité n'est pas encore disponible trong V2</value>
+  </data>
+<data name="HexSettings_Display_ShowByteTooltip" xml:space="preserve">
+    <value>Afficher l'info-bulle d'octet</value>
+  </data>
+<data name="HexSettings_Display_BytesPerLine" xml:space="preserve">
+    <value>Bytes par ligne :</value>
+  </data>
+<data name="HexSettings_Display_ZoomScale" xml:space="preserve">
+    <value>Échelle de zoom :</value>
+  </data>
+<data name="HexSettings_Editing_Title" xml:space="preserve">
+    <value>✏️ Options d'édition</value>
+  </data>
+<data name="HexSettings_Editing_ReadOnly" xml:space="preserve">
+    <value>MBde lecture seule</value>
+  </data>
+<data name="HexSettings_Editing_AllowInsertAnywhere" xml:space="preserve">
+    <value>Permettre l'insertion n'importe où</value>
+  </data>
+<data name="HexSettings_Editing_AllowDeleteByte" xml:space="preserve">
+    <value>Permettre la suppression d'octet</value>
+  </data>
+<data name="HexSettings_Editing_AllowExtendFile" xml:space="preserve">
+    <value>Permettre l'extension du fichier</value>
+  </data>
+<data name="HexSettings_Editing_AppendNeedsConfirmation" xml:space="preserve">
+    <value>L'ajout nécessite une confirmation</value>
+  </data>
+<data name="HexSettings_Editing_EditMBde" xml:space="preserve">
+    <value>MBde d'édition :</value>
+  </data>
+
+<data name="HexSettings_Editing_Insert" xml:space="preserve">
+    <value>Insérer</value>
+  </data>
+<data name="HexSettings_Editing_CaretMBde" xml:space="preserve">
+    <value>MBde curseur :</value>
+  </data>
+<data name="HexSettings_Clipboard_Title" xml:space="preserve">
+    <value>📋 Options du presse-papiers</value>
+  </data>
+<data name="HexSettings_Clipboard_DefaultCopyMBde" xml:space="preserve">
+    <value>MBde de copie par défaut :</value>
+  </data>
+<data name="HexSettings_Clipboard_HexString" xml:space="preserve">
+    <value>Chaîne hexadécimale</value>
+  </data>
+<data name="HexSettings_Clipboard_ByteArray" xml:space="preserve">
+    <value>Tableau d'octets</value>
+  </data>
+<data name="HexSettings_Clipboard_CSharpCode" xml:space="preserve">
+    <value>Code C#</value>
+  </data>
+<data name="HexSettings_Clipboard_VBCode" xml:space="preserve">
+    <value>Code VB</value>
+  </data>
+<data name="HexSettings_Clipboard_CCode" xml:space="preserve">
+    <value>Code C</value>
+  </data>
+<data name="HexSettings_Clipboard_JavaCode" xml:space="preserve">
+    <value>Code Java</value>
+  </data>
+<data name="HexSettings_DragDrop_Title" xml:space="preserve">
+    <value>📎 Options de glisser-déposer</value>
+  </data>
+<data name="HexSettings_DragDrop_AllowFileDrop" xml:space="preserve">
+    <value>Permettre le dépôt de fichier</value>
+  </data>
+<data name="HexSettings_DragDrop_FileDropConfirmation" xml:space="preserve">
+    <value>Confirmation du dépôt de fichier</value>
+  </data>
+<data name="HexSettings_DragDrop_AllowTextDrop" xml:space="preserve">
+    <value>Permettre le dépôt de texte</value>
+  </data>
+<data name="HexSettings_Highlight_Title" xml:space="preserve">
+    <value>🎨 Surbrillance et sélection</value>
+  </data>
+<data name="HexSettings_Highlight_AutoHighlight" xml:space="preserve">
+    <value>Surligner automatiquement l'octet sélectionné</value>
+  </data>
+<data name="HexSettings_Highlight_AutoSelectDoubleClick" xml:space="preserve">
+    <value>Sélectionner automatiquement le même octet (double-clic)</value>
+  </data>
+<data name="HexSettings_Highlight_AllowMarkerClick" xml:space="preserve">
+    <value>Permettre la navigation par clic sur marqueur</value>
+  </data>
+<data name="HexSettings_Highlight_AutoHighlightColor" xml:space="preserve">
+    <value>Màu sắc de surbrillance automatique :</value>
+  </data>
+<data name="HexSettings_Search_Title" xml:space="preserve">
+    <value>🔍 Options de recherche</value>
+  </data>
+<data name="HexSettings_Search_EnableParallel" xml:space="preserve">
+    <value>Bật tìm kiếm song song</value>
+  </data>
+<data name="HexSettings_Search_UseWildcard" xml:space="preserve">
+    <value>Utiliser la recherche par joker (??)</value>
+  </data>
+
+<data name="HexSettings_Search_ResultLimit" xml:space="preserve">
+    <value>Giới hạn kết quả tìm kiếm :</value>
+  </data>
+<data name="HexSettings_Statistics_Title" xml:space="preserve">
+    <value>📊 Thống kê</value>
+  </data>
+<data name="HexSettings_Statistics_AllowByteCount" xml:space="preserve">
+    <value>Permettre le comptage d'octets</value>
+  </data>
+<data name="HexSettings_Advanced_Title" xml:space="preserve">
+    <value>⚙️ Options avancées</value>
+  </data>
+<data name="HexSettings_Advanced_ByteShiftLeft" xml:space="preserve">
+    <value>Offset d'octet à gauche :</value>
+  </data>
+<data name="HexSettings_Advanced_SaveState" xml:space="preserve">
+    <value>Lưu l'état actuel</value>
+  </data>
+<data name="HexSettings_Advanced_LoadState" xml:space="preserve">
+    <value>Charger l'état enregistré</value>
+  </data>
+<data name="HexSettings_ResetButton" xml:space="preserve">
+    <value>🔄 Réinitialiser tout par défaut</value>
+  </data>
+<data name="HexSettings_StatusBar_Title" xml:space="preserve">
+    <value>Barre d'état</value>
+  </data>
+<data name="HexSettings_Colors_Title" xml:space="preserve">
+    <value>Màu sắcs</value>
+  </data>
+<data name="HexSettings_ScrollMarkers_Title" xml:space="preserve">
+    <value>Marqueurs de défilement</value>
+    <comment>Hex editor settings - Scroll Markers category header</comment>
+  </data>
+<data name="HexSettings_ShowBookmarkMarkers" xml:space="preserve">
+    <value>Afficher les marqueurs de signets</value>
+    <comment>Hex editor settings - Toggle bookmark markers on scrollbar</comment>
+  </data>
+<data name="HexSettings_ShowMBdifiedMarkers" xml:space="preserve">
+    <value>Afficher les marqueurs d'octets modifiés</value>
+    <comment>Hex editor settings - Toggle modified byte markers on scrollbar</comment>
+  </data>
+<data name="HexSettings_ShowInsertedMarkers" xml:space="preserve">
+    <value>Afficher les marqueurs d'octets insérés</value>
+    <comment>Hex editor settings - Toggle inserted byte markers on scrollbar</comment>
+  </data>
+<data name="HexSettings_ShowDeletedMarkers" xml:space="preserve">
+    <value>Afficher les marqueurs d'octets supprimés</value>
+    <comment>Hex editor settings - Toggle deleted byte markers on scrollbar</comment>
+  </data>
+<data name="HexSettings_ShowSearchResultMarkers" xml:space="preserve">
+    <value>Afficher les marqueurs de résultats de recherche</value>
+    <comment>Hex editor settings - Toggle search result markers on scrollbar</comment>
+  </data>
+<data name="HexSettings_Behavior_Title" xml:space="preserve">
+    <value>Comportement</value>
+  </data>
+<data name="HexSettings_Data_Title" xml:space="preserve">
+    <value>Données</value>
+  </data>
+<data name="HexSettings_Visual_Title" xml:space="preserve">
+    <value>Visuel</value>
+  </data>
+<data name="HexSettings_Keyboard_Title" xml:space="preserve">
+    <value>Clavier</value>
+  </data>
+<data name="HexSettings_TBL_Title" xml:space="preserve">
+    <value>Table de caracteres</value>
+  </data>
+<data name="HexSettings_SaveButton" xml:space="preserve"><value>Sauvegarder l'état</value></data>
+<data name="HexSettings_LoadButton" xml:space="preserve"><value>Charger l'état</value></data>
+  <data name="HexSettings_BarChart_Title" xml:space="preserve">
+    <value>📈 Bar Chart</value>
+    <comment>Hex editor settings - Bar Chart category header</comment>
+  </data>
+  <data name="HexSettings_BarChart_PanelVisibility" xml:space="preserve">
+    <value>Panel Visibility</value>
+    <comment>Bar Chart - Show/hide the bar chart panel</comment>
+  </data>
+  <data name="HexSettings_BarChart_BarColor" xml:space="preserve">
+    <value>Bar Color</value>
+    <comment>Bar Chart - Color of the frequency bars</comment>
+  </data>
+  <data name="HexSettings_BarChart_BackgroundColor" xml:space="preserve">
+    <value>Background Color</value>
+    <comment>Bar Chart - Background color of the chart panel</comment>
+  </data>
+  <data name="HexSettings_BarChart_TextColor" xml:space="preserve">
+    <value>Text Color</value>
+    <comment>Bar Chart - Color for labels and statistics text</comment>
+  </data>
+  <data name="HexSettings_BarChart_PanelHeight" xml:space="preserve">
+    <value>Panel Height</value>
+    <comment>Bar Chart - Height of the chart panel in pixels</comment>
+  </data>
+  <data name="HexSettings_BarChart_ShowAxisLabels" xml:space="preserve">
+    <value>Show Axis Labels</value>
+    <comment>Bar Chart - Display byte value labels (00-FF)</comment>
+  </data>
+  <data name="HexSettings_BarChart_ShowGridLines" xml:space="preserve">
+    <value>Show Grid Lines</value>
+    <comment>Bar Chart - Display horizontal reference grid lines</comment>
+  </data>
+  <data name="HexSettings_BarChart_ShowStatistics" xml:space="preserve">
+    <value>Afficher les statistiques</value>
+    <comment>Bar Chart - Display statistics overlay (Total, Max, Entropy)</comment>
+  </data>
+
+  <!-- ByteValueTooltip labels -->
+  <data name="ByteTooltip_NoData" xml:space="preserve"><value>Aucune donnée</value></data>
+  <data name="ByteTooltip_Signed" xml:space="preserve"><value>Signé</value></data>
+  <data name="ByteTooltip_Binary" xml:space="preserve"><value>Binaire</value></data>
+  <data name="ByteTooltip_ASCII" xml:space="preserve"><value>ASCII</value></data>
+  <data name="ByteTooltip_NonPrintable" xml:space="preserve"><value>(non imprimable)</value></data>
+  <data name="ByteTooltip_Octal" xml:space="preserve"><value>Octal</value></data>
+
+  <!-- HexEditor status messages -->
+  <data name="StatusText_OperationCancelled" xml:space="preserve"><value>Opération annulée</value></data>
+  <data name="StatusText_FileAlreadyExists" xml:space="preserve"><value>Le fichier existe déjà</value></data>
+  <data name="StatusText_Ready" xml:space="preserve"><value>Sẵn sàng</value></data>
+  <data name="StatusText_FileSaved" xml:space="preserve"><value>Tệp enregistré</value></data>
+  <data name="StatusText_SearchMarkersCleared" xml:space="preserve"><value>Marqueurs de recherche effacés.</value></data>
+  <data name="StatusText_AllChangesCleared" xml:space="preserve"><value>Toutes les modifications effacées</value></data>
+  <data name="StatusText_TblClosedAscii" xml:space="preserve"><value>TBL fermé, utilisation ASCII</value></data>
+  <data name="StatusText_NoSelectionToReverse" xml:space="preserve"><value>Không có vùng chọn à inverser</value></data>
+  <data name="StatusText_SelectionIsEmpty" xml:space="preserve"><value>La sélection est vide</value></data>
+  <data name="StatusText_NoSelectionToInvert" xml:space="preserve"><value>Không có vùng chọn à inverser bit à bit</value></data>
+  <data name="StatusText_NoSelectionToFind" xml:space="preserve"><value>Không có vùng chọn à rechercher</value></data>
+  <data name="StatusText_NoMatchesFound" xml:space="preserve"><value>Không có kết quả trouvé.</value></data>
+  <data name="StatusBar_SizeEmpty" xml:space="preserve"><value>Kích thước : -</value></data>
+  <data name="StatusBar_NoSelection" xml:space="preserve"><value>Không có vùng chọn</value></data>
+  <data name="StatusBar_Vị tríZero" xml:space="preserve"><value>Vị trí : 0</value></data>
+  <data name="StatusBar_MBdeOverwrite" xml:space="preserve"><value>MBde : Ghi đè</value></data>
+  <data name="StatusBar_BytesPerLine" xml:space="preserve"><value>Bytes/Ligne : 16</value></data>
+
+  <!-- Search MBdule -->
+  <data name="Search_NoMatches" xml:space="preserve">
+    <value>Không có kết quả</value>
+  </data>
+  <data name="Search_Error_Title" xml:space="preserve">
+    <value>Lỗi de recherche</value>
+  </data>
+  <data name="Search_Error_Label" xml:space="preserve">
+    <value>Lỗi</value>
+  </data>
+  <data name="Search_Error_NoTBLLoaded" xml:space="preserve">
+    <value>Aucun TBL chargé. Impossible de rechercher du texte TBL.</value>
+  </data>
+  <data name="Search_Error_TBLRequired" xml:space="preserve">
+    <value>TBL requis</value>
+  </data>
+  <data name="Search_Error_NoTBLForReplacement" xml:space="preserve">
+    <value>Aucun TBL chargé. Impossible d'encoder les octets de remplacement en mode TBL TEXT.</value>
+  </data>
+  <data name="Search_Replace_Title" xml:space="preserve">
+    <value>Lỗi de remplacement</value>
+  </data>
+  <data name="Search_ReplaceAll_Title" xml:space="preserve">
+    <value>Thay thế tout</value>
+  </data>
+  <data name="Search_ExportDialog_Filter" xml:space="preserve">
+    <value>Tệps CSV (*.csv)|*.csv|Tệps texte (*.txt)|*.txt|Tệps JSON (*.json)|*.json</value>
+  </data>
+  <data name="Search_ExportTBL_Title" xml:space="preserve">
+    <value>Xuất le fichier TBL</value>
+  </data>
+  <data name="Search_TBLFileDialog_Filter" xml:space="preserve">
+    <value>Tệps TBL (*.tbl)|*.tbl|Tất cả tệp (*.*)|*.*</value>
+  </data>
+  <data name="Search_ExportTBL_Success" xml:space="preserve">
+    <value>Xuất thành công</value>
+  </data>
+  <data name="Search_ExportTBL_Error" xml:space="preserve">
+    <value>Lỗi d'exportation</value>
+  </data>
+  <data name="Search_EncodingApplied_Title" xml:space="preserve">
+    <value>Encodage appliqué</value>
+  </data>
+  <data name="Search_EncodingApplied_Message" xml:space="preserve">
+    <value>Encodage appliqué ! Vous pouvez maintenant utiliser le mode TBL TEXT.</value>
+  </data>
+  <data name="Search_LoadTBL_Title" xml:space="preserve">
+    <value>Sélectionner un fichier TBL (Table de caractères)</value>
+  </data>
+  <data name="Search_TBLLoaded_Title" xml:space="preserve">
+    <value>TBL chargé</value>
+  </data>
+  <data name="Search_ErrorLoadingTBL_Title" xml:space="preserve">
+    <value>Lỗi de chargement du TBL</value>
+  </data>
+  <data name="Search_CloseTBL_Title" xml:space="preserve">
+    <value>Đóng le TBL</value>
+  </data>
+  <!-- IPS Patcher -->
+  <data name="IPS_Error_NoFileOpen" xml:space="preserve">
+    <value>Veuillez d'abord ouvrir un fichier ROM avant d'appliquer un patch.</value>
+  </data>
+  <data name="IPS_Error_NoFileOpen_Title" xml:space="preserve">
+    <value>Chưa mở tệp nào</value>
+  </data>
+  <data name="IPS_ApplyPatch_Title" xml:space="preserve">
+    <value>Sélectionner le fichier de patch IPS</value>
+  </data>
+  <data name="IPS_FileDialog_Filter" xml:space="preserve">
+    <value>Tệps patch IPS (*.ips)|*.ips|Tất cả tệp (*.*)|*.*</value>
+  </data>
+  <data name="IPS_Error_InvalidFile" xml:space="preserve">
+    <value>Le fichier sélectionné n'est pas un patch IPS valide.</value>
+  </data>
+  <data name="IPS_Error_InvalidFile_Title" xml:space="preserve">
+    <value>Tệp IPS invalide</value>
+  </data>
+  <data name="IPS_ApplyPatch_Confirm_Title" xml:space="preserve">
+    <value>Áp dụng le patch IPS</value>
+  </data>
+  <data name="IPS_ApplyPatch_SaveReminder" xml:space="preserve">
+    <value>N'oubliez pas de sauvegarder le fichier !</value>
+  </data>
+  <data name="IPS_ApplyPatch_Success_Title" xml:space="preserve">
+    <value>Patch appliqué</value>
+  </data>
+  <data name="IPS_ApplyPatch_Error_Title" xml:space="preserve">
+    <value>Échec du patch</value>
+  </data>
+  <data name="IPS_CreatePatch_NoFileOpen" xml:space="preserve">
+    <value>Veuillez d'abord ouvrir un fichier ROM modifié.</value>
+  </data>
+  <data name="IPS_CreatePatch_SelectOriginal_Title" xml:space="preserve">
+    <value>Sélectionner le fichier ROM original (non modifié)</value>
+  </data>
+  <data name="IPS_ROMFileDialog_Filter" xml:space="preserve">
+    <value>Tệps ROM|*.nes;*.smc;*.sfc;*.gb;*.gbc;*.gba;*.n64;*.z64;*.md;*.bin;*.gen|Tất cả tệp (*.*)|*.*</value>
+  </data>
+  <data name="IPS_CreatePatch_SaveDialog_Title" xml:space="preserve">
+    <value>Lưu le patch IPS sous</value>
+  </data>
+  <data name="IPS_CreatePatch_Success_Title" xml:space="preserve">
+    <value>Patch créé</value>
+  </data>
+  <!-- Undo/Redo history popup -->
+  <data name="UndoHistory_Undo" xml:space="preserve">
+    <value>Hủy</value>
+  </data>
+  <data name="UndoHistory_Redo" xml:space="preserve">
+    <value>Rétablir</value>
+  </data>
+  <data name="UndoHistory_Action" xml:space="preserve">
+    <value>action</value>
+  </data>
+  <data name="UndoHistory_Actions" xml:space="preserve">
+    <value>actions</value>
+  </data>
+
+  <data name="DynSettings_Title" xml:space="preserve">
+    <value>Paramètres de l'éditeur hexadécimal</value>
+  </data>
+  <data name="DynSettings_SaveState" xml:space="preserve">
+    <value>Lưu l'état</value>
+  </data>
+  <data name="DynSettings_LoadState" xml:space="preserve">
+    <value>Charger l'état</value>
+  </data>
+  <data name="DynSettings_ResetDefaults" xml:space="preserve">
+    <value>Réinitialiser les valeurs par défaut</value>
+  </data>
+  <data name="UndoRedo_NothingToUndo" xml:space="preserve">
+    <value>Aucune opération à annuler</value>
+  </data>
+  <data name="UndoRedo_NothingToRedo" xml:space="preserve">
+    <value>Aucune opération à rétablir</value>
+  </data>
+  <data name="RelativeSearchMenuString" xml:space="preserve">
+    <value>Recherche relative...</value>
+  </data>
+  <data name="RelativeSearchString" xml:space="preserve">
+    <value>Recherche relative - Découverte d'encodage</value>
+  </data>
+  <data name="RelativeSearchKnownTextString" xml:space="preserve">
+    <value>Văn bản connu :</value>
+  </data>
+  <data name="RelativeSearchSearchButtonString" xml:space="preserve">
+    <value>Tìm kiếm</value>
+  </data>
+  <data name="RelativeSearchUseParallelString" xml:space="preserve">
+    <value>Utiliser la recherche parallèle</value>
+  </data>
+  <data name="RelativeSearchMinMatchesString" xml:space="preserve">
+    <value>Kết quả khớp min. :</value>
+  </data>
+  <data name="RelativeSearchMaxProposalsString" xml:space="preserve">
+    <value>Tối đa kết quả :</value>
+  </data>
+  <data name="RelativeSearchTblLoadedString" xml:space="preserve">
+    <value>TBL chargé : {0} entrées (utilisé pour la validation)</value>
+  </data>
+  <data name="RelativeSearchNoTblString" xml:space="preserve">
+    <value>Chưa tải TBL (các đề xuất được chấm điểm độc lập)</value>
+  </data>
+  <data name="RelativeSearchProposalsHeaderString" xml:space="preserve">
+    <value>Đề xuất mã hóa</value>
+  </data>
+  <data name="RelativeSearchOffsetColumnString" xml:space="preserve">
+    <value>Offset</value>
+  </data>
+  <data name="RelativeSearchĐiểmColumnString" xml:space="preserve">
+    <value>Điểm</value>
+  </data>
+  <data name="RelativeSearchMatchesColumnString" xml:space="preserve">
+    <value>Kết quả khớp</value>
+  </data>
+  <data name="RelativeSearchSampleColumnString" xml:space="preserve">
+    <value>Văn bản d'exemple</value>
+  </data>
+  <data name="RelativeSearchPreviewHeaderString" xml:space="preserve">
+    <value>Xem trước (văn bản đã giải mã)</value>
+  </data>
+  <data name="RelativeSearchMatchVị trísString" xml:space="preserve">
+    <value>Kết quả khớp à :</value>
+  </data>
+  <data name="RelativeSearchExportTblString" xml:space="preserve">
+    <value>Xuất vers TBL</value>
+  </data>
+  <data name="RelativeSearchNavigateString" xml:space="preserve">
+    <value>Điều hướng đến kết quả khớp</value>
+  </data>
+  <data name="RelativeSearchSearchingString" xml:space="preserve">
+    <value>Tìm kiếm 256 offset mã hóa...</value>
+  </data>
+  <data name="RelativeSearchFoundProposalsString" xml:space="preserve">
+    <value>{0} đề xuất tìm thấy trong {1} ms</value>
+  </data>
+  <data name="RelativeSearchFoundWithValidationString" xml:space="preserve">
+    <value>{0} đề xuất tìm thấy trong {1} ms (correspondance de tête validée par le TBL chargé !)</value>
+  </data>
+  <data name="RelativeSearchSearchingWithTblString" xml:space="preserve">
+    <value>Tìm kiếm 256 offset (xác thực với {0} mục TBL)...</value>
+  </data>
+  <data name="RelativeSearchCancelledString" xml:space="preserve">
+    <value>Đã hủy tìm kiếm</value>
+  </data>
+  <data name="RelativeSearchNoProposalsString" xml:space="preserve">
+    <value>Không tìm thấy đề xuất mã hóa nào. Hãy thử văn bản tìm kiếm khác.</value>
+  </data>
+  <data name="RelativeSearchNoFileOpenString" xml:space="preserve">
+    <value>Chưa mở tệp nào</value>
+  </data>
+  <data name="RelativeSearchKnownTextTooltipString" xml:space="preserve">
+    <value>Entrez du texte dont vous savez qu'il apparaît trong la ROM (ex. : "World", "Start", "Hero")</value>
+  </data>
+  <data name="RelativeSearchExportTooltipString" xml:space="preserve">
+    <value>Lưu la proposition d'encodage sélectionnée en tant que fichier TBL</value>
+  </data>
+  <data name="TblConflict_Title" xml:space="preserve">
+    <value>Báo cáo phân tích xung đột TBL</value>
+  </data>
+  <data name="TblConflict_TotalConflicts" xml:space="preserve">
+    <value>Tổng xung đột :</value>
+  </data>
+  <data name="TblConflict_Errors" xml:space="preserve">
+    <value>Lỗi :</value>
+  </data>
+  <data name="TblConflict_Warnings" xml:space="preserve">
+    <value>Cảnh báo :</value>
+  </data>
+  <data name="TblConflict_Info" xml:space="preserve">
+    <value>Thông tin :</value>
+  </data>
+  <data name="TblConflict_Mô tả" xml:space="preserve">
+    <value>Mô tả :</value>
+  </data>
+  <data name="TblConflict_Suggestion" xml:space="preserve">
+    <value>Giải pháp đề xuất :</value>
+  </data>
+  <data name="TblConflict_ConflictingEntries" xml:space="preserve">
+    <value>Mục xung đột :</value>
+  </data>
+  <data name="TblTemplate_Title" xml:space="preserve">
+    <value>MBdèles TBL</value>
+  </data>
+  <data name="TblTemplate_Categories" xml:space="preserve">
+    <value>Danh mục</value>
+  </data>
+  <data name="TblTemplate_AvailableTemplates" xml:space="preserve">
+    <value>MBdèles disponibles</value>
+  </data>
+  <data name="TblTemplate_Preview" xml:space="preserve">
+    <value>Xem trước</value>
+  </data>
+  <data name="TblTemplate_LoadTemplate" xml:space="preserve">
+    <value>Tải mẫu</value>
+  </data>
+  <data name="TblTemplate_MergeWithCurrent" xml:space="preserve">
+    <value>Hợp nhất với mẫu hiện tại</value>
+  </data>
+  <data name="TblTemplate_BuiltIn" xml:space="preserve">
+    <value>Tích hợp sẵn</value>
+  </data>
+  <data name="PatternAnalysis_Title" xml:space="preserve">
+    <value>Phân tích mẫu</value>
+  </data>
+  <data name="PatternAnalysis_Entropy" xml:space="preserve">
+    <value>Entropy</value>
+  </data>
+  <data name="PatternAnalysis_ByteDistribution" xml:space="preserve">
+    <value>Phân phối byte</value>
+  </data>
+  <data name="PatternAnalysis_DetectedPatterns" xml:space="preserve">
+    <value>MBdèles détectés</value>
+  </data>
+  <data name="PatternAnalysis_NoPatternsDetected" xml:space="preserve">
+    <value>Không phát hiện mẫu</value>
+  </data>
+  <data name="PatternAnalysis_Bất thường" xml:space="preserve">
+    <value>Bất thường</value>
+  </data>
+  <data name="PatternAnalysis_NoBất thường" xml:space="preserve">
+    <value>Không phát hiện bất thường</value>
+  </data>
+  <data name="PatternAnalysis_BitsPerByte" xml:space="preserve">
+    <value>bit/byte</value>
+  </data>
+  <data name="PatternAnalysis_HighEntropy" xml:space="preserve">
+    <value>Entropy élevée détectée</value>
+  </data>
+  <data name="PatternAnalysis_HighEntropyDesc" xml:space="preserve">
+    <value>Dữ liệu có vẻ đã nén hoặc mã hóa</value>
+  </data>
+  <data name="PatternAnalysis_LowEntropy" xml:space="preserve">
+    <value>Entropy très faible détectée</value>
+  </data>
+  <data name="PatternAnalysis_LowEntropyDesc" xml:space="preserve">
+    <value>Dữ liệu chứa nhiều byte lặp lại hoặc tương tự</value>
+  </data>
+  <data name="PatternAnalysis_SkewedDistribution" xml:space="preserve">
+    <value>Phân phối byte lệch</value>
+  </data>
+  <data name="PatternAnalysis_SkewedDesc" xml:space="preserve">
+    <value>Một giá trị byte xuất hiện hơn 20% thời gian</value>
+  </data>
+  <data name="PatternAnalysis_NullBytes" xml:space="preserve">
+    <value>Bytes NULL (0x00)</value>
+  </data>
+  <data name="PatternAnalysis_RepeatedSequence" xml:space="preserve">
+    <value>Chuỗi lặp lại</value>
+  </data>
+  <data name="PatternAnalysis_AsciiText" xml:space="preserve">
+    <value>Văn bản ASCII détecté</value>
+  </data>
+  <data name="FileStats_Title" xml:space="preserve">
+    <value>Thống kê du fichier</value>
+  </data>
+  <data name="FileStats_OverallHealth" xml:space="preserve">
+    <value>Tình trạng tổng thể</value>
+  </data>
+  <data name="FileStats_HealthyCấu trúc" xml:space="preserve">
+    <value>Cấu trúc tệp hợp lệ và lành mạnh</value>
+  </data>
+  <data name="FileStats_Cấu trúc" xml:space="preserve">
+    <value>Cấu trúc</value>
+  </data>
+  <data name="FileStats_Valid" xml:space="preserve">
+    <value>Hợp lệ</value>
+  </data>
+  <data name="FileStats_Invalid" xml:space="preserve">
+    <value>Không hợp lệ</value>
+  </data>
+  <data name="FileStats_Checksums" xml:space="preserve">
+    <value>Tổng kiểm tra</value>
+  </data>
+  <data name="FileStats_AllPass" xml:space="preserve">
+    <value>Tất cả hợp lệ</value>
+  </data>
+  <data name="FileStats_SomeFailed" xml:space="preserve">
+    <value>Một số tổng kiểm tra thất bại</value>
+  </data>
+  <data name="FileStats_Nén" xml:space="preserve">
+    <value>Nén</value>
+  </data>
+  <data name="FileStats_Ratio" xml:space="preserve">
+    <value>Tỷ lệ :</value>
+  </data>
+  <data name="FileStats_SubOptimalNén" xml:space="preserve">
+    <value>Nén sous-optimale</value>
+  </data>
+  <data name="FileStats_EntropyAnalysis" xml:space="preserve">
+    <value>Phân tích Entropy</value>
+  </data>
+  <data name="FileStats_Level" xml:space="preserve">
+    <value>Mức :</value>
+  </data>
+  <data name="FileStats_CompressedOrEncrypted" xml:space="preserve">
+    <value>Dữ liệu có thể đã nén hoặc mã hóa</value>
+  </data>
+  <data name="FileStats_DetectedIssues" xml:space="preserve">
+    <value>Vấn đề phát hiện</value>
+  </data>
+  <data name="FileStats_NoIssues" xml:space="preserve">
+    <value>Không phát hiện vấn đề</value>
+  </data>
+  <data name="FileStats_FileInformation" xml:space="preserve">
+    <value>Thông tin tệp</value>
+  </data>
+  <data name="FileStats_Size" xml:space="preserve">
+    <value>Kích thước :</value>
+  </data>
+  <data name="FileStats_Fields" xml:space="preserve">
+    <value>Trường :</value>
+  </data>
+  <data name="FileStats_Định dạng" xml:space="preserve">
+    <value>Định dạng :</value>
+  </data>
+  <data name="FileStats_Unknown" xml:space="preserve">
+    <value>Không xác định</value>
+  </data>
+  <data name="ArchiveCấu trúc_Title" xml:space="preserve">
+    <value>Cấu trúc de l'archive</value>
+  </data>
+  <data name="ArchiveCấu trúc_NoArchive" xml:space="preserve">
+    <value>Chưa tải kho lưu trữ nào</value>
+  </data>
+  <data name="ArchiveCấu trúc_Extract" xml:space="preserve">
+    <value>Giải nén...</value>
+  </data>
+  <data name="ArchiveCấu trúc_ViewDetails" xml:space="preserve">
+    <value>Xem chi tiết</value>
+  </data>
+  <data name="ArchiveCấu trúc_ExpandAll" xml:space="preserve">
+    <value>Mở rộng tất cả</value>
+  </data>
+  <data name="ArchiveCấu trúc_CollapseAll" xml:space="preserve">
+    <value>Thu gọn tất cả</value>
+  </data>
+  <data name="ArchiveCấu trúc_Files" xml:space="preserve">
+    <value>tệp</value>
+  </data>
+  <data name="ArchiveCấu trúc_Folders" xml:space="preserve">
+    <value>thư mục</value>
+  </data>
+  <data name="ArchiveCấu trúc_TotalSize" xml:space="preserve">
+    <value>Tổng kích thước :</value>
+  </data>
+  <data name="ArchiveCấu trúc_NénRatio" xml:space="preserve">
+    <value>Tỷ lệ :</value>
+  </data>
+  <data name="ArchiveCấu trúc_ExtractFunctionality" xml:space="preserve">
+    <value>Tính năng giải nén — cần triển khai với thư viện lưu trữ</value>
+  </data>
+  <data name="ArchiveCấu trúc_ExtractTitle" xml:space="preserve">
+    <value>Giải nén</value>
+  </data>
+  <data name="ArchiveCấu trúc_DetailsTitle" xml:space="preserve">
+    <value>Chi tiết</value>
+  </data>
+  <data name="ArchiveCấu trúc_DetailName" xml:space="preserve">
+    <value>Tên :</value>
+  </data>
+  <data name="ArchiveCấu trúc_DetailType" xml:space="preserve">
+    <value>Kiểu :</value>
+  </data>
+  <data name="ArchiveCấu trúc_DetailFolder" xml:space="preserve">
+    <value>Thư mục</value>
+  </data>
+  <data name="ArchiveCấu trúc_DetailFile" xml:space="preserve">
+    <value>Tệp</value>
+  </data>
+  <data name="ArchiveCấu trúc_DetailCompressed" xml:space="preserve">
+    <value>Đã nén :</value>
+  </data>
+  <data name="ArchiveCấu trúc_DetailCRC" xml:space="preserve">
+    <value>CRC :</value>
+  </data>
+  <data name="ArchiveCấu trúc_DetailMethod" xml:space="preserve">
+    <value>Phương thức :</value>
+  </data>
+  <data name="FileComparison_Title" xml:space="preserve">
+    <value>Comparaison de tệp</value>
+  </data>
+  <data name="FileComparison_SelectFiles" xml:space="preserve">
+    <value>Sélectionner des tệp à comparer</value>
+  </data>
+  <data name="FileComparison_LoadFile1" xml:space="preserve">
+    <value>Tải tệp 1...</value>
+  </data>
+  <data name="FileComparison_LoadFile2" xml:space="preserve">
+    <value>Tải tệp 2...</value>
+  </data>
+  <data name="FileComparison_File1" xml:space="preserve">
+    <value>Tệp 1</value>
+  </data>
+  <data name="FileComparison_File2" xml:space="preserve">
+    <value>Tệp 2</value>
+  </data>
+  <data name="FileComparison_Matching" xml:space="preserve">
+    <value>Khớp :</value>
+  </data>
+  <data name="FileComparison_Added" xml:space="preserve">
+    <value>Đã thêm :</value>
+  </data>
+  <data name="FileComparison_MBdified" xml:space="preserve">
+    <value>MBdifiés :</value>
+  </data>
+  <data name="FileComparison_Removed" xml:space="preserve">
+    <value>Đã xóa :</value>
+  </data>
+  <data name="FileComparison_SelectFile1" xml:space="preserve">
+    <value>Chọn tệp 1 để so sánh</value>
+  </data>
+  <data name="FileComparison_SelectFile2" xml:space="preserve">
+    <value>Chọn tệp 2 để so sánh</value>
+  </data>
+  <data name="FileComparison_AllFiles" xml:space="preserve">
+    <value>Tất cả tệp (*.*)|*.*</value>
+  </data>
+  <data name="FileComparison_ErrorLoading" xml:space="preserve">
+    <value>Lỗi khi tải tệp : {0}</value>
+  </data>
+  <data name="FileComparison_Error" xml:space="preserve">
+    <value>Lỗi</value>
+  </data>
+  <data name="FileComparison_SelectBothFiles" xml:space="preserve">
+    <value>Sélectionner les deux tệp à comparer</value>
+  </data>
+  <data name="FileComparison_Comparing" xml:space="preserve">
+    <value>So sánh {0} ↔ {1}</value>
+  </data>
+  <data name="CustomTemplate_Title" xml:space="preserve">
+    <value>MBdèles</value>
+  </data>
+  <data name="CustomTemplate_NewTemplate" xml:space="preserve">
+    <value>Mới modèle</value>
+  </data>
+  <data name="CustomTemplate_DeleteTemplate" xml:space="preserve">
+    <value>Xóa le modèle</value>
+  </data>
+  <data name="CustomTemplate_EditorTitle" xml:space="preserve">
+    <value>Trình chỉnh sửa mẫu</value>
+  </data>
+  <data name="CustomTemplate_Name" xml:space="preserve">
+    <value>Tên :</value>
+  </data>
+  <data name="CustomTemplate_Mô tả" xml:space="preserve">
+    <value>Mô tả :</value>
+  </data>
+  <data name="CustomTemplate_Extensions" xml:space="preserve">
+    <value>Phần mở rộng :</value>
+  </data>
+  <data name="CustomTemplate_ExtensionsTooltip" xml:space="preserve">
+    <value>Phân cách bằng dấu phẩy, vd: .bin,.dat</value>
+  </data>
+  <data name="CustomTemplate_SaveTemplate" xml:space="preserve">
+    <value>Lưu le modèle</value>
+  </data>
+  <data name="CustomTemplate_Định dạngBlocks" xml:space="preserve">
+    <value>Khối định dạng</value>
+  </data>
+  <data name="CustomTemplate_AddBlock" xml:space="preserve">
+    <value>Thêm un bloc</value>
+  </data>
+  <data name="CustomTemplate_RemoveBlock" xml:space="preserve">
+    <value>Xóa le bloc</value>
+  </data>
+  <data name="CustomTemplate_ApplyToFile" xml:space="preserve">
+    <value>Áp dụng au fichier actuel</value>
+  </data>
+  <data name="CustomTemplate_ApplyMô tả" xml:space="preserve">
+    <value>Áp dụng ce modèle pour analyser le fichier actuellement chargé trong l'éditeur hexadécimal.</value>
+  </data>
+  <data name="CustomTemplate_ApplyButton" xml:space="preserve">
+    <value>Áp dụng le modèle au fichier</value>
+  </data>
+  <data name="CustomTemplate_ExportImport" xml:space="preserve">
+    <value>Xuất/Nhập</value>
+  </data>
+  <data name="CustomTemplate_ExportJSON" xml:space="preserve">
+    <value>Xuất en JSON</value>
+  </data>
+  <data name="CustomTemplate_ImportJSON" xml:space="preserve">
+    <value>Nhập depuis JSON</value>
+  </data>
+  <data name="CustomTemplate_NoTemplateSelected" xml:space="preserve">
+    <value>Chưa chọn mẫu để lưu.</value>
+  </data>
+  <data name="CustomTemplate_SavedSuccessfully" xml:space="preserve">
+    <value>MBdèle '{0}' enregistré avec succès !</value>
+  </data>
+  <data name="CustomTemplate_ErrorSaving" xml:space="preserve">
+    <value>Lỗi lors de l'enregistrement du modèle : {0}</value>
+  </data>
+  <data name="CustomTemplate_SelectOrCreate" xml:space="preserve">
+    <value>Hãy chọn hoặc tạo mẫu trước.</value>
+  </data>
+  <data name="CustomTemplate_AddBlockTitle" xml:space="preserve">
+    <value>Thêm un bloc</value>
+  </data>
+  <data name="CustomTemplate_DeleteConfirm" xml:space="preserve">
+    <value>Xóa le modèle '{0}' ?</value>
+  </data>
+  <data name="CustomTemplate_ConfirmDelete" xml:space="preserve">
+    <value>Xác nhận xóa</value>
+  </data>
+  <data name="CustomTemplate_ErrorDeleting" xml:space="preserve">
+    <value>Lỗi lors de la suppression du fichier : {0}</value>
+  </data>
+  <data name="CustomTemplate_DeleteError" xml:space="preserve">
+    <value>Lỗi de suppression</value>
+  </data>
+  <data name="CustomTemplate_ApplyingTemplate" xml:space="preserve">
+    <value>Đang áp dụng mẫu '{0}' cho tệp hiện tại.
+
+Sẽ phân tích {1} khối theo định nghĩa mẫu của bạn.
+
+Lưu ý : Tích hợp đầy đủ với HexEditor cần kết nối với mô hình view chính.</value>
+  </data>
+  <data name="CustomTemplate_ApplyTitle" xml:space="preserve">
+    <value>Áp dụng le modèle</value>
+  </data>
+  <data name="CustomTemplate_NoTemplateToApply" xml:space="preserve">
+    <value>Chưa chọn mẫu để áp dụng.</value>
+  </data>
+  <data name="CustomTemplate_ExportTitle" xml:space="preserve">
+    <value>Xuất le modèle en JSON</value>
+  </data>
+  <data name="CustomTemplate_JSONFiles" xml:space="preserve">
+    <value>Tệps JSON (*.json)|*.json</value>
+  </data>
+  <data name="CustomTemplate_ExportedTo" xml:space="preserve">
+    <value>MBdèle exporté vers :
+{0}</value>
+  </data>
+  <data name="CustomTemplate_ExportSuccess" xml:space="preserve">
+    <value>Xuất thành công</value>
+  </data>
+  <data name="CustomTemplate_ErrorExporting" xml:space="preserve">
+    <value>Lỗi lors de l'exportation du modèle : {0}</value>
+  </data>
+  <data name="CustomTemplate_ExportError" xml:space="preserve">
+    <value>Lỗi d'exportation</value>
+  </data>
+  <data name="CustomTemplate_ImportTitle" xml:space="preserve">
+    <value>Nhập un modèle depuis JSON</value>
+  </data>
+  <data name="CustomTemplate_ImportedSuccessfully" xml:space="preserve">
+    <value>MBdèle '{0}' importé avec succès !</value>
+  </data>
+  <data name="CustomTemplate_ImportSuccess" xml:space="preserve">
+    <value>Nhập thành công</value>
+  </data>
+  <data name="CustomTemplate_ErrorImporting" xml:space="preserve">
+    <value>Lỗi lors de l'importation du modèle : {0}</value>
+  </data>
+  <data name="CustomTemplate_ImportError" xml:space="preserve">
+    <value>Lỗi d'importation</value>
+  </data>
+  <data name="CustomTemplate_ColumnName" xml:space="preserve">
+    <value>Nom</value>
+  </data>
+  <data name="CustomTemplate_ColumnOffset" xml:space="preserve">
+    <value>Offset</value>
+  </data>
+  <data name="CustomTemplate_ColumnLength" xml:space="preserve">
+    <value>Độ dài</value>
+  </data>
+  <data name="CustomTemplate_ColumnType" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="CustomTemplate_ColumnColor" xml:space="preserve">
+    <value>Màu sắc</value>
+  </data>
+  <data name="CustomTemplate_ColumnMô tả" xml:space="preserve">
+    <value>Mô tả</value>
+  </data>
+  <data name="CopyAsAutoString" xml:space="preserve">
+    <value>Sao chép (auto)</value>
+  </data>
+  <data name="WrapAroundString" xml:space="preserve"><value>Vòng lặp tìm kiếm</value></data>
+  <data name="EncodingLabel" xml:space="preserve"><value>Mã hóa :</value></data>
+  <data name="HexadecimalString" xml:space="preserve"><value>Thập lục phân</value></data>
+  <data name="DecimalString" xml:space="preserve"><value>Thập phân</value></data>
+  <data name="GoToVị tríTitle" xml:space="preserve"><value>Đến vị trí</value></data>
+  <data name="GoToVị tríHeader" xml:space="preserve"><value>Vị trí</value></data>
+  <data name="GoToVị tríPlaceholder" xml:space="preserve"><value>0x00000000 hoặc thập phân</value></data>
+  <data name="WildcardCheckbox" xml:space="preserve"><value>Ký tự đại diện (??)</value></data>
+  <data name="TruncateReplacementString" xml:space="preserve"><value>Cắt bớt phần thay thế theo độ dài tìm kiếm</value></data>
+  <data name="FindNextButtonLabel" xml:space="preserve"><value>Tiếp theo</value></data>
+  <data name="FindPreviousButtonLabel" xml:space="preserve"><value>Trước đó</value></data>
+  <data name="HE_SearchDialogTitle" xml:space="preserve">
+    <value>Find / Replace</value>
+  </data>
+  <data name="HE_SearchMBdeTooltip" xml:space="preserve">
+    <value>Search mode</value>
+  </data>
+  <data name="HE_CaseSensitiveTooltip" xml:space="preserve">
+    <value>Match case (Alt+C)</value>
+  </data>
+  <data name="HE_WildcardTooltip" xml:space="preserve">
+    <value>Use wildcards ?? (Alt+E)</value>
+  </data>
+  <data name="HE_LoopSearch" xml:space="preserve">
+    <value>Loop</value>
+  </data>
+  <data name="HE_FindLabel" xml:space="preserve">
+    <value>Find:</value>
+  </data>
+  <data name="HE_ReplaceLabel" xml:space="preserve">
+    <value>Replace:</value>
+  </data>
+  <data name="HE_EncodingLabel" xml:space="preserve">
+    <value>Encoding:</value>
+  </data>
+  <data name="HE_MaxLabel" xml:space="preserve">
+    <value>Max:</value>
+  </data>
+  <data name="HE_StopButton" xml:space="preserve">
+    <value>Stop</value>
+  </data>
+  <data name="HE_PrevButton" xml:space="preserve">
+    <value>Prev.</value>
+  </data>
+  <data name="HE_NextButton" xml:space="preserve">
+    <value>Next</value>
+  </data>
+  <data name="HE_FindAllButton" xml:space="preserve">
+    <value>Find All</value>
+  </data>
+  <data name="HE_ReplaceButton" xml:space="preserve">
+    <value>Replace</value>
+  </data>
+  <data name="HE_ReplaceAllButton" xml:space="preserve">
+    <value>Replace All</value>
+  </data>
+  <data name="HE_ResultsLabel" xml:space="preserve">
+    <value>Results (</value>
+  </data>
+  <data name="HE_ExportButton" xml:space="preserve">
+    <value>Export ▾</value>
+  </data>
+  <data name="HE_OffsetHexColumn" xml:space="preserve">
+    <value>Offset (Hex)</value>
+  </data>
+  <data name="HE_OffsetDecColumn" xml:space="preserve">
+    <value>Offset (Dec)</value>
+  </data>
+  <data name="HE_PreviewColumn" xml:space="preserve">
+    <value>Preview</value>
+  </data>
+  <data name="HE_LengthColumn" xml:space="preserve">
+    <value>Len.</value>
+  </data>
+  <data name="HE_OccColumn" xml:space="preserve">
+    <value>Occ.</value>
+  </data>
+  <data name="HE_PrintPctColumn" xml:space="preserve">
+    <value>% Print.</value>
+  </data>
+  <data name="HE_ActionsColumn" xml:space="preserve">
+    <value>Actions</value>
+  </data>
+  <data name="HE_ExportTblButton" xml:space="preserve">
+    <value>Export TBL</value>
+  </data>
+  <data name="HE_ApplyButton" xml:space="preserve">
+    <value>Apply</value>
+  </data>
+  <data name="HE_SizeLabel" xml:space="preserve">
+    <value>Size: </value>
+  </data>
+  <data name="HE_BytesLabel" xml:space="preserve">
+    <value>bytes</value>
+  </data>
+  <data name="HE_LoadTblButton" xml:space="preserve">
+    <value>Load TBL...</value>
+  </data>
+  <data name="HE_LoadTblTooltip" xml:space="preserve">
+    <value>Load a TBL file (ROM character table)</value>
+  </data>
+  <data name="HE_TblLabel" xml:space="preserve">
+    <value>TBL: </value>
+  </data>
+  <data name="HE_CloseTblTooltip" xml:space="preserve">
+    <value>Close TBL file</value>
+  </data>
+  <data name="HE_ShowReplaceTooltip" xml:space="preserve">
+    <value>Show / hide replace (Ctrl+H)</value>
+  </data>
+  <data name="HE_SearchPlaceholder" xml:space="preserve">
+    <value>Search...</value>
+  </data>
+  <data name="HE_PrevResultTooltip" xml:space="preserve">
+    <value>Previous result (Shift+Enter)</value>
+  </data>
+  <data name="HE_NextResultTooltip" xml:space="preserve">
+    <value>Next result (Enter)</value>
+  </data>
+  <data name="HE_AdvancedSearchTooltip" xml:space="preserve">
+    <value>Advanced search (Ctrl+Shift+F)</value>
+  </data>
+  <data name="HE_CloseSearchTooltip" xml:space="preserve">
+    <value>Close (Esc)</value>
+  </data>
+  <data name="HE_ReplacePlaceholder" xml:space="preserve">
+    <value>Replace...</value>
+  </data>
+  <data name="HE_ReplaceOneTooltip" xml:space="preserve">
+    <value>Replace (Alt+R)</value>
+  </data>
+  <data name="HE_ReplaceAllTooltip" xml:space="preserve">
+    <value>Replace All (Alt+A)</value>
+  </data>
+  <data name="HE_HexMBdeTooltip" xml:space="preserve">
+    <value>Hexadecimal mode (Alt+H)</value>
+  </data>
+  <data name="HE_MBveBarTooltip" xml:space="preserve">
+    <value>MBve search bar</value>
+  </data>
+  <data name="HE_CompareFileWith" xml:space="preserve"><value>So sánh tệp với…</value></data>
+  <data name="HE_CompareSelectionLeft" xml:space="preserve"><value>So sánh vùng chọn bên trái…</value></data>
+  <data name="HE_NoTblLoaded" xml:space="preserve"><value>Chưa tải tệp TBL</value></data>
+  <data name="HE_SearchTypeText" xml:space="preserve"><value>TEXTE</value></data>
+  <data name="HE_SearchTypeHex" xml:space="preserve"><value>HEX</value></data>
+  <data name="HE_SearchTypeWildcard" xml:space="preserve"><value>JOKER</value></data>
+  <data name="HE_SearchTypeTbl" xml:space="preserve"><value>TEXTE TBL</value></data>
+  <data name="HE_SearchTypeRelative" xml:space="preserve"><value>RELATIF</value></data>
+  <data name="HE_Toolbar_DetectedĐịnh dạng" xml:space="preserve"><value>Định dạng tệp đã phát hiện</value></data>
+  <data name="HE_Toolbar_ConfidenceĐiểm" xml:space="preserve"><value>Điểm độ tin cậy phát hiện</value></data>
+  <data name="HE_Toolbar_ConfidenceĐịnh dạng" xml:space="preserve"><value>Độ tin cậy phát hiện : {0}</value></data>
+  <data name="HE_Toolbar_ChangeĐịnh dạng" xml:space="preserve"><value>Định dạng</value></data>
+  <data name="HE_Toolbar_ChangeĐịnh dạngTooltip" xml:space="preserve"><value>Thay đổi định dạng đã phát hiện</value></data>
+  <data name="HE_TipSearchAllOccurrences" xml:space="preserve"><value>Tìm tất cả lần xuất hiện với lớp phủ tiến trình</value></data>
+  <data name="HE_ColOffset"               xml:space="preserve"><value>Offset</value></data>
+  <data name="HE_ResultsHeader" xml:space="preserve">
+    <value>Kết quả</value>
+  </data>
+</root>

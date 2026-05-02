@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfHexEditor.Plugins.Git
+    File        : GitPluginResources.uk-UA.resx
+    Description : Ukrainian (Ukraine) UI strings for the Git Integration plugin.
+-->
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+
+  <data name="Git_FilterBranches" xml:space="preserve"><value>Фільтрувати гілки</value></data>
+  <data name="Git_NewBranch" xml:space="preserve"><value>+ Нова гілка…</value></data>
+  <data name="Git_NewBranchTooltip" xml:space="preserve"><value>Ім'я нової гілки</value></data>
+  <data name="Git_CreateBranch" xml:space="preserve"><value>Створити</value></data>
+  <data name="Git_Changes" xml:space="preserve"><value>Зміни Git</value></data>
+  <data name="Git_History" xml:space="preserve"><value>Журнал Git</value></data>
+</root>

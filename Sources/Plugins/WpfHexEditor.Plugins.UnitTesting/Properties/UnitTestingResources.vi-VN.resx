@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfHexEditor.Plugins.UnitTesting
+    File        : UnitTestingResources.vi-VN.resx
+    Description : Vietnamese (vi-VN) translations for the Unit Testing plugin.
+-->
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:any minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" />
+              <xsd:attribute name="type" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="value">
+            <xsd:complexType>
+              <xsd:any minOccurs="0" maxOccurs="unbounded" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <data name="UnitTest_NoTestProjects" xml:space="preserve">
+    <value>Không tìm thấy dự án kiểm thử nào trong giải pháp hiện tại</value>
+  </data>
+  <data name="UnitTest_RunCancelled" xml:space="preserve">
+    <value>Đã hủy chạy</value>
+  </data>
+  <data name="UnitTest_RunFailed" xml:space="preserve">
+    <value>Chạy thất bại — xem bảng đầu ra</value>
+  </data>
+  <data name="UnitTest_Ready" xml:space="preserve">
+    <value>Sẵn sàng</value>
+  </data>
+  <data name="UnitTest_OpenInCodeEditor" xml:space="preserve">
+    <value>Mở trong trình soạn thảo mã</value>
+  </data>
+  <data name="UnitTest_OpenInHexEditor" xml:space="preserve">
+    <value>Mở trong trình soạn thảo hex</value>
+  </data>
+
+  <data name="UT_RunAllButton" xml:space="preserve">
+    <value>Chạy tất cả kiểm thử</value>
+  </data>
+  <data name="UT_RunAllLabel" xml:space="preserve">
+    <value>Chạy tất cả</value>
+  </data>
+  <data name="UT_RunFailedButton" xml:space="preserve">
+    <value>Chạy kiểm thử lỗi</value>
+  </data>
+  <data name="UT_RunFailedLabel" xml:space="preserve">
+    <value>Chạy lại lỗi</value>
+  </data>
+  <data name="UT_RefreshButton" xml:space="preserve">
+    <value>Làm mới (chạy lại tất cả)</value>
+  </data>
+  <data name="UT_StopButton" xml:space="preserve">
+    <value>Dừng kiểm thử</value>
+  </data>
+  <data name="UT_ClearButton" xml:space="preserve">
+    <value>Xóa kết quả</value>
+  </data>
+  <data name="UT_FilterAllTooltip" xml:space="preserve">
+    <value>Hiện tất cả kiểm thử</value>
+  </data>
+  <data name="UT_FilterPassedTooltip" xml:space="preserve">
+    <value>Chỉ hiện kiểm thử đã qua</value>
+  </data>
+  <data name="UT_FilterFailedTooltip" xml:space="preserve">
+    <value>Chỉ hiện kiểm thử thất bại</value>
+  </data>
+  <data name="UT_FilterSkippedTooltip" xml:space="preserve">
+    <value>Chỉ hiện kiểm thử bị bỏ qua</value>
+  </data>
+  <data name="UT_CollapseAllButton" xml:space="preserve">
+    <value>Thu gọn tất cả</value>
+  </data>
+  <data name="UT_ExpandAllButton" xml:space="preserve">
+    <value>Mở rộng tất cả</value>
+  </data>
+  <data name="UT_LayoutButton" xml:space="preserve">
+    <value>Bố cục bảng chi tiết</value>
+  </data>
+  <data name="UT_SettingsButton" xml:space="preserve">
+    <value>Cài đặt kiểm thử đơn vị</value>
+  </data>
+  <data name="UT_LayoutTopBottom" xml:space="preserve">
+    <value>Trên / Dưới</value>
+  </data>
+  <data name="UT_LayoutLeftRight" xml:space="preserve">
+    <value>Trái / Phải</value>
+  </data>
+  <data name="UT_AutoRunOption" xml:space="preserve">
+    <value>Tự động chạy khi build</value>
+  </data>
+  <data name="UT_AutoExpandOption" xml:space="preserve">
+    <value>Tự động mở chi tiết khi thất bại</value>
+  </data>
+  <data name="UT_RatioBarOption" xml:space="preserve">
+    <value>Hiện thanh tỷ lệ</value>
+  </data>
+  <data name="UT_SearchPlaceholder" xml:space="preserve">
+    <value>Tìm kiếm (Ctrl+I)…</value>
+  </data>
+  <data name="UT_ClearSearchButton" xml:space="preserve">
+    <value>Xóa tìm kiếm</value>
+  </data>
+  <data name="UT_AddSearchFilter" xml:space="preserve">
+    <value>Thêm bộ lọc tìm kiếm</value>
+  </data>
+  <data name="UT_FilterState" xml:space="preserve">
+    <value>Trạng thái</value>
+  </data>
+  <data name="UT_FilterFullName" xml:space="preserve">
+    <value>Tên đầy đủ</value>
+  </data>
+  <data name="UT_FilterClass" xml:space="preserve">
+    <value>Lớp</value>
+  </data>
+  <data name="UT_FilterProject" xml:space="preserve">
+    <value>Dự án</value>
+  </data>
+  <data name="UT_FilterError" xml:space="preserve">
+    <value>Thông báo lỗi</value>
+  </data>
+  <data name="UT_FilterNamespace" xml:space="preserve">
+    <value>Namespace</value>
+  </data>
+  <data name="UT_TestColumn" xml:space="preserve">
+    <value>Kiểm thử</value>
+  </data>
+  <data name="UT_DurationColumn" xml:space="preserve">
+    <value>Thời gian</value>
+  </data>
+  <data name="UT_CharacteristicsColumn" xml:space="preserve">
+    <value>Đặc tính</value>
+  </data>
+  <data name="UT_ErrorMessageColumn" xml:space="preserve">
+    <value>Thông báo lỗi</value>
+  </data>
+  <data name="UT_RunThisMenu" xml:space="preserve">
+    <value>Chạy kiểm thử này</value>
+  </data>
+  <data name="UT_CopyNameMenu" xml:space="preserve">
+    <value>Sao chép tên kiểm thử</value>
+  </data>
+  <data name="UT_CopyStackMenu" xml:space="preserve">
+    <value>Sao chép stack trace</value>
+  </data>
+  <data name="UT_GroupSummaryLabel" xml:space="preserve">
+    <value>Tóm tắt nhóm</value>
+  </data>
+  <data name="UT_TestsInGroupLabel" xml:space="preserve">
+    <value>Kiểm thử trong nhóm: </value>
+  </data>
+  <data name="UT_TotalDurationLabel" xml:space="preserve">
+    <value>Tổng thời gian: </value>
+  </data>
+  <data name="UT_ResultsLabel" xml:space="preserve">
+    <value>Kết quả</value>
+  </data>
+  <data name="UT_PassedLabel" xml:space="preserve">
+    <value>Đã qua</value>
+  </data>
+  <data name="UT_FailedLabel" xml:space="preserve">
+    <value>Thất bại</value>
+  </data>
+  <data name="UT_TestDetailLabel" xml:space="preserve">
+    <value>Chi tiết kiểm thử</value>
+  </data>
+  <data name="UT_SourceLabel" xml:space="preserve">
+    <value>Nguồn: </value>
+  </data>
+  <data name="UT_DurationLabel" xml:space="preserve">
+    <value>Thời gian: </value>
+  </data>
+  <data name="UT_RunButton" xml:space="preserve">
+    <value>Chạy</value>
+  </data>
+</root>

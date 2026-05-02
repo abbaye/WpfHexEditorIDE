@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfHexEditor.Core.Localization
+    File        : CommonResources.ro-RO.resx
+    Description : ro-RO translations for common UI strings.
+-->
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <data name="OkString" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="CancelString" xml:space="preserve">
+    <value>Anulare</value>
+  </data>
+  <data name="CloseString" xml:space="preserve">
+    <value>Închidere</value>
+  </data>
+  <data name="DeleteString" xml:space="preserve">
+    <value>Ștergere</value>
+  </data>
+  <data name="ClearString" xml:space="preserve">
+    <value>Golire</value>
+  </data>
+  <data name="CopyString" xml:space="preserve">
+    <value>Copiere</value>
+  </data>
+  <data name="PasteString" xml:space="preserve">
+    <value>Lipire</value>
+  </data>
+  <data name="UndoString" xml:space="preserve">
+    <value>Anulare</value>
+  </data>
+  <data name="SelectAllString" xml:space="preserve">
+    <value>Selectează tot</value>
+  </data>
+  <data name="ProgressButtonCancel" xml:space="preserve">
+    <value>Anulare</value>
+  </data>
+  <data name="FindString" xml:space="preserve">
+    <value>Căutare</value>
+  </data>
+  <data name="ReplaceString" xml:space="preserve">
+    <value>Înlocuire</value>
+  </data>
+  <data name="FindNextString" xml:space="preserve">
+    <value>Găsește următorul</value>
+  </data>
+  <data name="FindPreviousButton" xml:space="preserve">
+    <value>Anterior</value>
+  </data>
+  <data name="FindAllString" xml:space="preserve">
+    <value>Găsește toate</value>
+  </data>
+  <data name="ReplaceAllString" xml:space="preserve">
+    <value>Înlocuiește toate</value>
+  </data>
+  <data name="ReplaceNextString" xml:space="preserve">
+    <value>Înlocuiește următorul</value>
+  </data>
+  <data name="CopyAsHexadecimalString" xml:space="preserve">
+    <value>Copiază ca hexadecimal</value>
+  </data>
+  <data name="CopyAsDecimalString" xml:space="preserve">
+    <value>Copiază ca zecimal</value>
+  </data>
+  <data name="CopyAsASCIIString" xml:space="preserve">
+    <value>Copiază ca ASCII</value>
+  </data>
+  <data name="CutSelectionString" xml:space="preserve">
+    <value>Taie selecția</value>
+  </data>
+  <data name="CopySelectionString" xml:space="preserve">
+    <value>Copiază selecția</value>
+  </data>
+  <data name="DeleteByteString" xml:space="preserve">
+    <value>Șterge octetul</value>
+  </data>
+  <data name="InsertByteString" xml:space="preserve">
+    <value>Inserează octet...</value>
+  </data>
+  <data name="InvertSelectionString" xml:space="preserve">
+    <value>Inversează octeții</value>
+  </data>
+  <data name="GoToOffsetString" xml:space="preserve">
+    <value>Salt la offset...</value>
+  </data>
+  <data name="EditModeString" xml:space="preserve">
+    <value>Mod editare</value>
+  </data>
+  <data name="ModeOverwriteString" xml:space="preserve">
+    <value>Mod: Suprascriere</value>
+  </data>
+  <data name="ValueString" xml:space="preserve">
+    <value>Valoare</value>
+  </data>
+  <data name="DescriptionString" xml:space="preserve">
+    <value>Descriere</value>
+  </data>
+  <data name="LengthString" xml:space="preserve">
+    <value>Lungime</value>
+  </data>
+  <data name="PositionString" xml:space="preserve">
+    <value>Poziție</value>
+  </data>
+  <data name="OffsetString" xml:space="preserve">
+    <value>Offset</value>
+  </data>
+  <data name="CountOfString" xml:space="preserve">
+    <value>Număr de</value>
+  </data>
+  <data name="HexString" xml:space="preserve">
+    <value>Hex</value>
+  </data>
+  <data name="FileSizeString" xml:space="preserve">
+    <value>Dimensiune fișier</value>
+  </data>
+  <data name="ReadyString" xml:space="preserve">
+    <value>Gata</value>
+  </data>
+  <data name="PreviewString" xml:space="preserve">
+    <value>Previzualizare:</value>
+  </data>
+  <data name="PropertiesString" xml:space="preserve">
+    <value>Proprietăți</value>
+  </data>
+  <data name="ZoomString" xml:space="preserve">
+    <value>Zoom</value>
+  </data>
+  <data name="ZoomResetString" xml:space="preserve">
+    <value>Resetează zoom la 100%</value>
+  </data>
+  <data name="StatusMessageString" xml:space="preserve">
+    <value>Mesaj stare</value>
+  </data>
+  <data name="CommandPaletteString" xml:space="preserve">
+    <value>Paletă de comenzi</value>
+  </data>
+  <data name="ShowConfirmationString" xml:space="preserve">
+    <value>Afișează dialogul de confirmare</value>
+  </data>
+  <data name="ByteString" xml:space="preserve">
+    <value>Octet</value>
+  </data>
+  <data name="BytesTagString" xml:space="preserve">
+    <value>Octeți</value>
+  </data>
+  <data name="KBTagString" xml:space="preserve">
+    <value>KB</value>
+  </data>
+  <data name="MBTagString" xml:space="preserve">
+    <value>MB</value>
+  </data>
+  <data name="LongString" xml:space="preserve">
+    <value>Long</value>
+  </data>
+  <data name="EndTagString" xml:space="preserve">
+    <value>&lt;sfârșit&gt;</value>
+  </data>
+  <data name="LineTagString" xml:space="preserve">
+    <value>&lt;linie&gt;</value>
+  </data>
+  <data name="LineStatusBarTagString" xml:space="preserve">
+    <value>Lin</value>
+  </data>
+  <data name="FirstByteString" xml:space="preserve">
+    <value>Primul octet</value>
+  </data>
+  <data name="ValidationInvalidHexString" xml:space="preserve">
+    <value>Valoare hexadecimală invalidă</value>
+  </data>
+  <data name="ValidationRequiredString" xml:space="preserve">
+    <value>Valoare obligatorie</value>
+  </data>
+  <data name="StatusError" xml:space="preserve">
+    <value>Eroare: {0}</value>
+  </data>
+  <data name="WritingErrorExeptionString" xml:space="preserve">
+    <value>A apărut o eroare la scriere.</value>
+  </data>
+  <data name="ConvertStringToLongErrorString" xml:space="preserve">
+    <value>Nu se poate converti șirul la tip long</value>
+  </data>
+  <data name="FileDroppingConfirmationString" xml:space="preserve">
+    <value>Doriți să închideți fișierul curent și să deschideți: </value>
+  </data>
+  <data name="OpenAsReadOnlyString" xml:space="preserve">
+    <value>Fișierul este blocat. Doriți să îl deschideți doar pentru citire?</value>
+  </data>
+
+</root>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+
+  <data name="FileComparison_PanelTitle" xml:space="preserve"><value>Центр відмінностей</value></data>
+  <data name="FileComparison_SelectFile1" xml:space="preserve"><value>Вибрати файл 1 для порівняння</value></data>
+  <data name="FileComparison_SelectFile2" xml:space="preserve"><value>Вибрати файл 2 для порівняння</value></data>
+  <data name="FileComparison_SelectFilesHint" xml:space="preserve"><value>Вибрати файли для порівняння</value></data>
+  <data name="FileComparison_SelectBothFiles" xml:space="preserve"><value>Виберіть обидва файли для порівняння</value></data>
+  <data name="FileComparison_SelectFiles" xml:space="preserve"><value>Вибрати файли для порівняння</value></data>
+  <data name="FileComparison_Comparing" xml:space="preserve"><value>Порівняння&#x2026;</value></data>
+  <data name="FileComparison_Cancelled" xml:space="preserve"><value>Скасовано</value></data>
+  <data name="FileComparison_SelectTwoFiles" xml:space="preserve"><value>Виберіть два файли та натисніть «Порівняти»</value></data>
+  <data name="FileComparison_MultipleFormats" xml:space="preserve"><value>Виявлено кілька форматів</value></data>
+  <data name="FileComparison_SelectFile" xml:space="preserve"><value>Вибрати файл для порівняння</value></data>
+  <data name="FileComparison_FilesSection" xml:space="preserve"><value>ФАЙЛИ</value></data>
+  <data name="FileComparison_DiffSummary" xml:space="preserve"><value>ЗВЕДЕННЯ ВІДМІННОСТЕЙ</value></data>
+  <data name="FileComparison_ModifiedLabel" xml:space="preserve"><value>Змінено</value></data>
+  <data name="FileComparison_InsertedLabel" xml:space="preserve"><value>Вставлено</value></data>
+  <data name="FileComparison_DeletedLabel" xml:space="preserve"><value>Видалено</value></data>
+  <data name="FileComparison_ByteFrequency" xml:space="preserve"><value>ЧАСТОТА БАЙТІВ (ТЕТРАДИ)</value></data>
+  <data name="FileComparison_ShannonEntropy" xml:space="preserve"><value>ЕНТРОПІЯ ШЕННОНА (блок по 256 байт)</value></data>
+</root>

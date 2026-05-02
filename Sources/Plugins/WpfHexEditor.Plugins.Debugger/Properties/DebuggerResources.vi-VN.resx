@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+
+  <data name="Debugger_BreakpointsPanelTitle" xml:space="preserve"><value>Điểm dừng</value></data>
+  <data name="Debugger_CallStackPanelTitle" xml:space="preserve"><value>Ngăn xếp lời gọi</value></data>
+  <data name="Debugger_LocalsPanelTitle" xml:space="preserve"><value>Biến cục bộ</value></data>
+  <data name="Debugger_WatchPanelTitle" xml:space="preserve"><value>Theo dõi</value></data>
+  <data name="Debugger_ConsolePanelTitle" xml:space="preserve"><value>Bảng điều khiển gỡ lỗi</value></data>
+  <data name="Debugger_NoValidBreakpoints" xml:space="preserve"><value>Không tìm thấy điểm dừng hợp lệ nào trong tệp.</value></data>
+  <data name="Debugger_LaunchConfigTitle" xml:space="preserve"><value>Cấu hình khởi chạy (.whdbg)</value></data>
+  <data name="Debugger_NoFileLoaded" xml:space="preserve"><value>Chưa tải tệp nào. Vui lòng nhấp Mở trước.</value></data>
+  <data name="Debugger_ServiceNotAvailable" xml:space="preserve"><value>IDebuggerService không khả dụng.</value></data>
+  <data name="Debugger_NoConfigLoaded" xml:space="preserve"><value>Chưa tải cấu hình nào.</value></data>
+  <data name="Debugger_NoConfigsArray" xml:space="preserve"><value>Không tìm thấy mảng 'configurations' trong tệp .whdbg.</value></data>
+  <data name="Debugger_NoMatchingConfig" xml:space="preserve"><value>Không tìm thấy cấu hình phù hợp.</value></data>
+  <data name="Debugger_ImportBreakpoints" xml:space="preserve"><value>Nhập điểm dừng từ VS XML</value></data>
+  <data name="Debugger_ExportBreakpoints" xml:space="preserve"><value>Xuất điểm dừng sang VS XML</value></data>
+  <data name="Debugger_Menu_Continue" xml:space="preserve"><value>_Tiếp tục</value></data>
+  <data name="Debugger_Menu_StepOver" xml:space="preserve"><value>_Bước qua</value></data>
+  <data name="Debugger_Menu_StepInto" xml:space="preserve"><value>Bước _vào</value></data>
+  <data name="DBG_EnableAll" xml:space="preserve">
+    <value>Bật tất cả</value>
+  </data>
+  <data name="DBG_DisableAll" xml:space="preserve">
+    <value>Tắt tất cả</value>
+  </data>
+  <data name="DBG_DeleteAll" xml:space="preserve">
+    <value>Xóa tất cả</value>
+  </data>
+  <data name="DBG_EditCondition" xml:space="preserve">
+    <value>Chỉnh sửa điều kiện…</value>
+  </data>
+  <data name="DBG_ImportBreakpoints" xml:space="preserve">
+    <value>Nhập từ VS XML…</value>
+  </data>
+  <data name="DBG_ExportBreakpoints" xml:space="preserve">
+    <value>Xuất tất cả sang VS XML…</value>
+  </data>
+  <data name="DBG_GroupNone" xml:space="preserve">
+    <value>Không</value>
+  </data>
+  <data name="DBG_GroupFile" xml:space="preserve">
+    <value>Tệp</value>
+  </data>
+  <data name="DBG_GroupType" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="DBG_GroupEnabled" xml:space="preserve">
+    <value>Bật/Tắt</value>
+  </data>
+  <data name="DBG_GroupProject" xml:space="preserve">
+    <value>Dự án</value>
+  </data>
+  <data name="DBG_DetailRight" xml:space="preserve">
+    <value>Chi tiết: Phải</value>
+  </data>
+  <data name="DBG_DetailBottom" xml:space="preserve">
+    <value>Chi tiết: Dưới</value>
+  </data>
+  <data name="DBG_DetailHidden" xml:space="preserve">
+    <value>Chi tiết: Ẩn</value>
+  </data>
+  <data name="DBG_SearchPlaceholder" xml:space="preserve">
+    <value>Tìm kiếm điểm dừng...</value>
+  </data>
+  <data name="DBG_EnableAllTooltip" xml:space="preserve">
+    <value>Bật tất cả điểm dừng</value>
+  </data>
+  <data name="DBG_DisableAllTooltip" xml:space="preserve">
+    <value>Tắt tất cả điểm dừng</value>
+  </data>
+  <data name="DBG_DeleteAllTooltip" xml:space="preserve">
+    <value>Xóa tất cả điểm dừng</value>
+  </data>
+  <data name="DBG_EditConditionTooltip" xml:space="preserve">
+    <value>Chỉnh sửa điều kiện điểm dừng đã chọn</value>
+  </data>
+  <data name="DBG_ImportTooltip" xml:space="preserve">
+    <value>Nhập điểm dừng từ tệp XML Visual Studio</value>
+  </data>
+  <data name="DBG_ExportTooltip" xml:space="preserve">
+    <value>Xuất tất cả điểm dừng sang tệp XML Visual Studio</value>
+  </data>
+  <data name="DBG_GroupLabel" xml:space="preserve">
+    <value>Nhóm:</value>
+  </data>
+  <data name="DBG_LayoutTooltip" xml:space="preserve">
+    <value>Bố cục bảng chi tiết</value>
+  </data>
+  <data name="DBG_LocationColumn" xml:space="preserve">
+    <value>Vị trí</value>
+  </data>
+  <data name="DBG_ConditionColumn" xml:space="preserve">
+    <value>Điều kiện</value>
+  </data>
+  <data name="DBG_HitsColumn" xml:space="preserve">
+    <value>Lần trúng</value>
+  </data>
+  <data name="DBG_GoToSourceMenu" xml:space="preserve">
+    <value>Đến nguồn</value>
+  </data>
+  <data name="DBG_EditConditionMenu" xml:space="preserve">
+    <value>Chỉnh sửa điều kiện…</value>
+  </data>
+  <data name="DBG_ToggleEnabledMenu" xml:space="preserve">
+    <value>Bật/Tắt</value>
+  </data>
+  <data name="DBG_CopyLocationMenu" xml:space="preserve">
+    <value>Sao chép vị trí</value>
+  </data>
+  <data name="DBG_DeleteMenu" xml:space="preserve">
+    <value>Xóa</value>
+  </data>
+  <data name="DBG_EnableGroupMenu" xml:space="preserve">
+    <value>Bật nhóm</value>
+  </data>
+  <data name="DBG_DisableGroupMenu" xml:space="preserve">
+    <value>Tắt nhóm</value>
+  </data>
+  <data name="DBG_DeleteGroupMenu" xml:space="preserve">
+    <value>Xóa nhóm</value>
+  </data>
+  <data name="DBG_UnverifiedBadge" xml:space="preserve">
+    <value>Chưa xác minh</value>
+  </data>
+  <data name="DBG_UnverifiedTooltip" xml:space="preserve">
+    <value>Không thể xác minh điểm dừng này tại vị trí hiện tại.</value>
+  </data>
+  <data name="DBG_EnabledField" xml:space="preserve">
+    <value>Đã bật</value>
+  </data>
+  <data name="DBG_TypeField" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="DBG_VerifiedField" xml:space="preserve">
+    <value>Đã xác minh</value>
+  </data>
+  <data name="DBG_ConditionField" xml:space="preserve">
+    <value>Điều kiện</value>
+  </data>
+  <data name="DBG_GoToSourceText" xml:space="preserve">
+    <value>Đến nguồn</value>
+  </data>
+  <data name="DBG_EditText" xml:space="preserve">
+    <value>Chỉnh sửa…</value>
+  </data>
+  <data name="DBG_DeleteText" xml:space="preserve">
+    <value>Xóa</value>
+  </data>
+  <data name="DBG_HitsLabel" xml:space="preserve">
+    <value>Lần trúng: </value>
+  </data>
+  <data name="DBG_MoreOptionsTooltip" xml:space="preserve">
+    <value>Thêm tùy chọn</value>
+  </data>
+  <data name="DBG_AddWatch" xml:space="preserve"><value>Thêm theo dõi</value></data>
+  <data name="DBG_ColValue" xml:space="preserve"><value>Giá trị</value></data>
+  <data name="DBG_ColType" xml:space="preserve"><value>Type</value></data>
+  <data name="DBG_ColName" xml:space="preserve"><value>Tên</value></data>
+  <data name="DBG_ColFile" xml:space="preserve"><value>Tệp</value></data>
+</root>

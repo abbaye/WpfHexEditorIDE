@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfHexEditor.Editor.StructureEditor
+    File        : StructureEditorResources.fr-CA.resx
+    Description : Localized UI strings for the Structure Editor.
+-->
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:any minOccurs="0" />
+              </xsd:sequence>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="SE_ColOffset" xml:space="preserve">
+    <value>Offset</value>
+  </data>
+  <data name="SE_ColStrength" xml:space="preserve">
+    <value>Síla</value>
+  </data>
+  <data name="SE_ColRequired" xml:space="preserve">
+    <value>Povinné</value>
+  </data>
+  <data name="StructureEditor_AddBlockTitle" xml:space="preserve"><value>Přidat blok</value></data>
+  <data name="StructureEditor_AddBlockButton" xml:space="preserve"><value>Přidat</value></data>
+  <data name="StructureEditor_AddBlockCancel" xml:space="preserve"><value>Zrušit</value></data>
+  <data name="StructureEditor_TabMetadata" xml:space="preserve"><value>Metadata</value></data>
+  <data name="StructureEditor_TabDetection" xml:space="preserve"><value>Detekce</value></data>
+  <data name="StructureEditor_TabBlocks" xml:space="preserve"><value>Bloky</value></data>
+  <data name="StructureEditor_TabVariables" xml:space="preserve"><value>Proměnné</value></data>
+  <data name="StructureEditor_TabAdvanced" xml:space="preserve"><value>Pokročilé</value></data>
+  <data name="StructureEditor_TabQuality" xml:space="preserve"><value>Kvalita</value></data>
+  <data name="StructureEditor_TabTest" xml:space="preserve"><value>Test</value></data>
+  <data name="StructureEditor_SaveToolTip" xml:space="preserve"><value>Uložit (Ctrl+S)</value></data>
+  <data name="StructureEditor_ValidateToolTip" xml:space="preserve"><value>Ověřit (Ctrl+Shift+V)</value></data>
+  <data name="StructureEditor_UndoToolTip" xml:space="preserve"><value>Zpět (Ctrl+Z)</value></data>
+  <data name="StructureEditor_RedoToolTip" xml:space="preserve"><value>Znovu (Ctrl+Y)</value></data>
+  <data name="StructureEditor_LiveCodeViewToolTip" xml:space="preserve"><value>Přepnout zobrazení živého kódu</value></data>
+  <data name="StructureEditor_AddBlockToolTip" xml:space="preserve"><value>Přidat blok (Ctrl+N)</value></data>
+  <data name="StructureEditor_DuplicateBlockToolTip" xml:space="preserve"><value>Duplikovat blok (Ctrl+D)</value></data>
+  <data name="StructureEditor_UnsavedChangesToolTip" xml:space="preserve"><value>Neuložené změny</value></data>
+  <data name="StructureEditor_BlocksFilterToolTip" xml:space="preserve"><value>Filtrovat bloky podle názvu</value></data>
+  <data name="StructureEditor_BlocksAddMenuItem" xml:space="preserve"><value>Přidat blok…</value></data>
+  <data name="StructureEditor_BlocksDuplicateMenuItem" xml:space="preserve"><value>Duplikovat</value></data>
+  <data name="StructureEditor_BlocksRemoveMenuItem" xml:space="preserve"><value>Odstranit</value></data>
+  <data name="StructureEditor_BlocksMoveUpMenuItem" xml:space="preserve"><value>Nahoru</value></data>
+  <data name="StructureEditor_BlocksMoveDownMenuItem" xml:space="preserve"><value>Dolů</value></data>
+  <data name="StructureEditor_BlocksCopyJsonMenuItem" xml:space="preserve"><value>Kopírovat jako JSON</value></data>
+  <data name="StructureEditor_BlocksPasteMenuItem" xml:space="preserve"><value>Vložit blok</value></data>
+  <data name="StructureEditor_BlocksEmptyLine1" xml:space="preserve"><value>Vyberte blok pro úpravu jeho vlastností,</value></data>
+  <data name="StructureEditor_BlocksEmptyLine2" xml:space="preserve"><value>nebo stiskněte Ctrl+N / klikněte pravým tlačítkem pro přidání nového bloku.</value></data>
+  <data name="StructureEditor_DetectionHexSigLabel" xml:space="preserve"><value>Hexadecimální podpis</value></data>
+  <data name="StructureEditor_DetectionHexBytesToolTip" xml:space="preserve"><value>Hex bajty bez mezer, např. 89504E47 pro PNG</value></data>
+  <data name="StructureEditor_DetectionSigLabel" xml:space="preserve"><value>Podpis</value></data>
+  <data name="StructureEditor_DetectionV2SigsLabel" xml:space="preserve"><value>Podpisy v2.0</value></data>
+  <data name="StructureEditor_DetectionMatchModeLabel" xml:space="preserve"><value>Režim shody</value></data>
+  <data name="StructureEditor_DetectionHexValueToolTip" xml:space="preserve"><value>Hex hodnota</value></data>
+  <data name="StructureEditor_DetectionOffsetToolTip" xml:space="preserve"><value>Offset</value></data>
+  <data name="StructureEditor_DetectionLabelToolTip" xml:space="preserve"><value>Popisek</value></data>
+  <data name="StructureEditor_DetectionAddSigButton" xml:space="preserve"><value>＋ Přidat podpis</value></data>
+  <data name="StructureEditor_DetectionEntropyLabel" xml:space="preserve"><value>Index entropie</value></data>
+  <data name="StructureEditor_DetectionMinEntropyLabel" xml:space="preserve"><value>Minimální entropie</value></data>
+  <data name="StructureEditor_DetectionMaxEntropyLabel" xml:space="preserve"><value>Maximální entropie</value></data>
+  <data name="StructureEditor_DetectionMinScoreLabel" xml:space="preserve"><value>Minimální skóre</value></data>
+  <data name="StructureEditor_DetectionScoreThresholdLabel" xml:space="preserve"><value>Práh skóre</value></data>
+  <data name="StructureEditor_DetectionContentPatternsLabel" xml:space="preserve"><value>Vzory obsahu (textové formáty)</value></data>
+  <data name="StructureEditor_DetectionRegexToolTip" xml:space="preserve"><value>Vzor Regex</value></data>
+  <data name="StructureEditor_DetectionAddPatternButton" xml:space="preserve"><value>＋ Přidat vzor</value></data>
+  <data name="StructureEditor_MetaCoreSection" xml:space="preserve"><value>Obecné</value></data>
+  <data name="StructureEditor_MetaNameLabel" xml:space="preserve"><value>Název formátu</value></data>
+  <data name="StructureEditor_MetaNameToolTip" xml:space="preserve"><value>Čitelný název formátu (např. 'Archiv ZIP', 'Obrázek PNG')</value></data>
+  <data name="StructureEditor_MetaVersionLabel" xml:space="preserve"><value>Verze</value></data>
+  <data name="StructureEditor_MetaVersionToolTip" xml:space="preserve"><value>Verze této definice (např. '1.0', '2.0')</value></data>
+  <data name="StructureEditor_MetaAuthorLabel" xml:space="preserve"><value>Autor</value></data>
+  <data name="StructureEditor_MetaAuthorToolTip" xml:space="preserve"><value>Autor tohoto definičního souboru</value></data>
+  <data name="StructureEditor_MetaCategoryLabel" xml:space="preserve"><value>Kategorie</value></data>
+  <data name="StructureEditor_MetaCategoryToolTip" xml:space="preserve"><value>Kategorie (nastavuje se automaticky ze struktury složek: Archivy, Obrázky, Zvuk, Video atd.)</value></data>
+  <data name="StructureEditor_MetaDiffModeLabel" xml:space="preserve"><value>Režim diff</value></data>
+  <data name="StructureEditor_MetaDiffModeToolTip" xml:space="preserve"><value>Preferovaný diff algoritmus pro DiffViewer</value></data>
+  <data name="StructureEditor_MetaPreferredEditorLabel" xml:space="preserve"><value>Preferovaný editor</value></data>
+  <data name="StructureEditor_MetaPreferredEditorToolTip" xml:space="preserve"><value>ID továrny preferovaného editoru pro soubory odpovídající tomuto formátu</value></data>
+  <data name="StructureEditor_MetaDescriptionLabel" xml:space="preserve"><value>Popis</value></data>
+  <data name="StructureEditor_MetaIsTextFormat" xml:space="preserve"><value>Textový formát (otevírá se ve výchozím editoru kódu)</value></data>
+  <data name="StructureEditor_MetaExtensionsLabel" xml:space="preserve"><value>Přípony souborů</value></data>
+  <data name="StructureEditor_MetaAddExtensionButton" xml:space="preserve"><value>＋ Přidat příponu</value></data>
+  <data name="StructureEditor_MetaMimeTypesLabel" xml:space="preserve"><value>Typy MIME</value></data>
+  <data name="StructureEditor_MetaAddMimeButton" xml:space="preserve"><value>＋ Přidat typ MIME</value></data>
+  <data name="StructureEditor_MetaSoftwareLabel" xml:space="preserve"><value>Software</value></data>
+  <data name="StructureEditor_MetaAddSoftwareButton" xml:space="preserve"><value>＋ Přidat software</value></data>
+  <data name="StructureEditor_QualityComputedSection" xml:space="preserve"><value>Vypočítané metriky</value></data>
+  <data name="StructureEditor_QualityBlockCoverage" xml:space="preserve"><value>Pokrytí bloků</value></data>
+  <data name="StructureEditor_QualityCompletenessScore" xml:space="preserve"><value>Skóre úplnosti</value></data>
+  <data name="StructureEditor_QualityTypeDistribution" xml:space="preserve"><value>Rozložení typů</value></data>
+  <data name="StructureEditor_QualityBlocksLabel" xml:space="preserve"><value>Bloky</value></data>
+  <data name="StructureEditor_QualityDepthLabel" xml:space="preserve"><value>Hloubka</value></data>
+  <data name="StructureEditor_QualityVariablesLabel" xml:space="preserve"><value>Proměnné</value></data>
+  <data name="StructureEditor_QualityRulesLabel" xml:space="preserve"><value>Pravidla</value></data>
+  <data name="StructureEditor_QualityMetadataLabel" xml:space="preserve"><value>Metadata</value></data>
+  <data name="StructureEditor_QualityDocLevel" xml:space="preserve"><value>Úroveň dokumentace</value></data>
+  <data name="StructureEditor_QualityLastUpdated" xml:space="preserve"><value>Poslední aktualizace</value></data>
+  <data name="StructureEditor_QualityLastUpdatedToolTip" xml:space="preserve"><value>Formát: RRRR-MM-DD (vyplňuje se automaticky při uložení)</value></data>
+  <data name="StructureEditor_QualityPriorityFormat" xml:space="preserve"><value>Prioritní formát (top 100)</value></data>
+  <data name="StructureEditor_QualityAutoRefined" xml:space="preserve"><value>Automaticky upřesněno (obohaceno skriptem — pouze pro čtení)</value></data>
+  <data name="StructureEditor_TestSection" xml:space="preserve"><value>Otestovat formát na souboru</value></data>
+  <data name="StructureEditor_TestFilePathToolTip" xml:space="preserve"><value>Cesta k binárnímu souboru k testování</value></data>
+  <data name="StructureEditor_TestBrowseButton" xml:space="preserve"><value>Procházet…</value></data>
+  <data name="StructureEditor_TestBrowseDialogTitle" xml:space="preserve"><value>Vyberte binární soubor k testování</value></data>
+  <data name="StructureEditor_TestRunButton" xml:space="preserve"><value>▶ Spustit test</value></data>
+  <data name="StructureEditor_TestCopyToolTip" xml:space="preserve"><value>Kopírovat výsledky do schránky (TSV)</value></data>
+  <data name="StructureEditor_TestEmptyMessage" xml:space="preserve"><value>Vyberte soubor a klikněte na ▶ Spustit test pro testování aktuální definice formátu.</value></data>
+  <data name="StructureEditor_TestColStatus" xml:space="preserve"><value>Stav</value></data>
+  <data name="StructureEditor_TestColBlockName" xml:space="preserve"><value>Název bloku</value></data>
+  <data name="StructureEditor_TestColType" xml:space="preserve"><value>Typ</value></data>
+  <data name="StructureEditor_TestColOffset" xml:space="preserve"><value>Offset</value></data>
+  <data name="StructureEditor_TestColLen" xml:space="preserve"><value>Délka</value></data>
+  <data name="StructureEditor_TestColRaw" xml:space="preserve"><value>Surový (hex)</value></data>
+  <data name="StructureEditor_TestColParsed" xml:space="preserve"><value>Analyzovaná hodnota</value></data>
+  <data name="StructureEditor_TestColNote" xml:space="preserve"><value>Poznámka</value></data>
+  <data name="StructureEditor_TestFilterOk" xml:space="preserve"><value>✓ OK</value></data>
+  <data name="StructureEditor_TestFilterWarning" xml:space="preserve"><value>⚠ Varování</value></data>
+  <data name="StructureEditor_TestFilterError" xml:space="preserve"><value>✕ Chyba</value></data>
+  <data name="StructureEditor_TestFilterSkipped" xml:space="preserve"><value>⊘ Přeskočeno</value></data>
+  <data name="StructureEditor_VarsDescription" xml:space="preserve"><value>Počáteční proměnné dostupné pro interpretr bloků (např. čítače smyček, vypočítané offsety).</value></data>
+  <data name="StructureEditor_VarsFilterToolTip" xml:space="preserve"><value>Filtrovat proměnné podle názvu</value></data>
+  <data name="StructureEditor_VarsColName" xml:space="preserve"><value>Název proměnné</value></data>
+  <data name="StructureEditor_VarsColType" xml:space="preserve"><value>Typ</value></data>
+  <data name="StructureEditor_VarsColInitialValue" xml:space="preserve"><value>Počáteční hodnota</value></data>
+  <data name="StructureEditor_VarsColDescription" xml:space="preserve"><value>Popis</value></data>
+  <data name="StructureEditor_VarsAddButton" xml:space="preserve"><value>＋ Přidat proměnnou</value></data>
+  <data name="StructureEditor_V2AssertionsHeader" xml:space="preserve"><value>Výrazy assertion</value></data>
+  <data name="StructureEditor_V2AssertionPlaceholder" xml:space="preserve"><value>var:name equals 0 or calc:expr</value></data>
+  <data name="StructureEditor_V2AssertionToolTip" xml:space="preserve"><value>Booleovský výraz — Ctrl+Space pro funkce a proměnné</value></data>
+  <data name="StructureEditor_V2ChecksumsHeader" xml:space="preserve"><value>Kontrolní součty</value></data>
+  <data name="StructureEditor_V2VersioningHeader" xml:space="preserve"><value>Správa verzí (VersionDetection / VersionedBlocks)</value></data>
+  <data name="StructureEditor_V2ImportsHeader" xml:space="preserve"><value>Importy ($ref Composition)</value></data>
+  <data name="StructureEditor_V2ImportsDescription" xml:space="preserve"><value>ref = název formátu (nebo structs/Název), as = alias používaný v blocích structRef.</value></data>
+  <data name="StructureEditor_V2ImportRefToolTip" xml:space="preserve"><value>Reference formátu, např. structs/PE_OptionalHeader</value></data>
+  <data name="StructureEditor_V2ImportAliasToolTip" xml:space="preserve"><value>Alias používaný v structRef, např. PEOpt</value></data>
+  <data name="StructureEditor_V2AddImportButton" xml:space="preserve"><value>+ Přidat import</value></data>
+  <data name="StructureEditor_V2ForensicHeader" xml:space="preserve"><value>Forenzní analýza</value></data>
+  <data name="StructureEditor_V2NavBookmarksHeader" xml:space="preserve"><value>Záložky navigace</value></data>
+  <data name="StructureEditor_V2BookmarkPlaceholder" xml:space="preserve"><value>nazevPromenne</value></data>
+  <data name="StructureEditor_V2BookmarkToolTip" xml:space="preserve"><value>Proměnná obsahující offset v bajtech — Ctrl+Space pro návrhy</value></data>
+  <data name="StructureEditor_V2AddBookmarkButton" xml:space="preserve"><value>＋ Přidat záložku</value></data>
+  <data name="StructureEditor_V2InspectorLayoutHeader" xml:space="preserve"><value>Rozložení inspektoru</value></data>
+  <data name="StructureEditor_V2ExportTemplatesHeader" xml:space="preserve"><value>Šablony exportu</value></data>
+  <data name="StructureEditor_V2AddTemplateButton" xml:space="preserve"><value>＋ Přidat šablonu</value></data>
+  <data name="StructureEditor_V2AIHintsHeader" xml:space="preserve"><value>Návrhy AI</value></data>
+  <data name="StructureEditor_TypeHintField" xml:space="preserve"><value>Binární pole s pevným nebo proměnným offsetem a délkou.</value></data>
+  <data name="StructureEditor_TypeHintSignature" xml:space="preserve"><value>Magické bajty identifikující formát na konkrétním offsetu.</value></data>
+  <data name="StructureEditor_TypeHintMetadata" xml:space="preserve"><value>Čte hodnotu proměnné nebo symbolické délky do pojmenované proměnné.</value></data>
+  <data name="StructureEditor_TypeHintConditional" xml:space="preserve"><value>Podmíněně analyzuje bloky na základě hodnoty pole nebo proměnné.</value></data>
+  <data name="StructureEditor_TypeHintLoop" xml:space="preserve"><value>Opakuje tělo bloku dokud je splněna podmínka.</value></data>
+  <data name="StructureEditor_TypeHintAction" xml:space="preserve"><value>Upravuje proměnnou (zvýšit, snížit, nastavitProměnnou).</value></data>
+  <data name="StructureEditor_TypeHintCompute" xml:space="preserve"><value>Vyhodnocuje matematický výraz a ukládá výsledek.</value></data>
+  <data name="StructureEditor_TypeHintRepeating" xml:space="preserve"><value>Analyzuje pole s pevným počtem strukturovaných záznamů.</value></data>
+  <data name="StructureEditor_TypeHintUnion" xml:space="preserve"><value>Vybírá sadu variantních bloků na základě diskriminační proměnné.</value></data>
+  <data name="StructureEditor_TypeHintNested" xml:space="preserve"><value>Vkládá externí definici struktury odkazem.</value></data>
+  <data name="StructureEditor_TypeHintPointer" xml:space="preserve"><value>Vytváří navigační anotaci k odkazovanému offsetu.</value></data>
+  <data name="StructureEditor_ValidationErrorCount" xml:space="preserve"><value>{0} chyba/chyb</value></data>
+  <data name="StructureEditor_ValidationWarningCount" xml:space="preserve"><value>{0} varování</value></data>
+  <data name="StructureEditor_RawJsonTitle" xml:space="preserve"><value>Surový JSON — {0}</value></data>
+  <data name="StructureEditor_RawJsonApply" xml:space="preserve"><value>Použít</value></data>
+  <data name="StructureEditor_RawJsonCancel" xml:space="preserve"><value>Zrušit</value></data>
+  <data name="StructureEditor_FactoryDisplayName" xml:space="preserve"><value>Editor struktury</value></data>
+  <data name="StructureEditor_FactoryDescription" xml:space="preserve"><value>Vizuální editor pro soubory definice struktury .whfmt. Upravujte bloky, typy, offsety, délky a barvy v DataGrid.</value></data>
+  <data name="StructureEd_ConditionRow_LengthLabel" xml:space="preserve"><value>Délka:</value></data>
+  <data name="StrTb_Validate" xml:space="preserve"><value>Ověřit (Ctrl+Shift+V)</value></data>
+  <data name="StrTb_AddBlock" xml:space="preserve"><value>Přidat blok (Ctrl+N)</value></data>
+  <data name="StrTb_ToggleLiveCode" xml:space="preserve"><value>Přepnout zobrazení živého kódu</value></data>
+  <data name="StrTb_LayoutLabel" xml:space="preserve"><value>Rozložení</value></data>
+  <data name="StrTb_LayoutTooltip" xml:space="preserve"><value>Rozložení zobrazení kódu</value></data>
+  <data name="StrLayout_CodeRight" xml:space="preserve"><value>Kód vpravo</value></data>
+  <data name="StrLayout_CodeLeft" xml:space="preserve"><value>Kód vlevo</value></data>
+  <data name="StrLayout_CodeBottom" xml:space="preserve"><value>Kód dole</value></data>
+  <data name="StrLayout_CodeTop" xml:space="preserve"><value>Kód nahoře</value></data>
+  <data name="StrSb_FormatLabel" xml:space="preserve"><value>Formát</value></data>
+  <data name="StrSb_TabLabel" xml:space="preserve"><value>Záložka</value></data>
+  <data name="StrSb_BlocksLabel" xml:space="preserve"><value>Bloky</value></data>
+  <data name="StrSb_ValidationLabel" xml:space="preserve"><value>Ověření</value></data>
+  <data name="SE_PropName" xml:space="preserve"><value>Název</value></data>
+  <data name="SE_PropType" xml:space="preserve"><value>Typ</value></data>
+  <data name="SE_PropColor" xml:space="preserve"><value>Barva</value></data>
+  <data name="SE_PropOpacity" xml:space="preserve"><value>Průhlednost</value></data>
+  <data name="SE_PropDescription" xml:space="preserve"><value>Popis</value></data>
+  <data name="SE_PropHidden" xml:space="preserve"><value>Skryté</value></data>
+  <data name="SE_PropEndianness" xml:space="preserve"><value>Endianita</value></data>
+  <data name="SE_BlockType" xml:space="preserve"><value>Typ bloku</value></data>
+  <data name="SE_BE_Action" xml:space="preserve"><value>Akce</value></data>
+  <data name="SE_BE_Variable" xml:space="preserve"><value>Proměnná</value></data>
+  <data name="SE_BE_Value" xml:space="preserve"><value>Hodnota</value></data>
+  <data name="SE_BE_Computation" xml:space="preserve"><value>Výpočet</value></data>
+  <data name="SE_BE_Expression" xml:space="preserve"><value>Výraz</value></data>
+  <data name="SE_BE_StoreAs" xml:space="preserve"><value>Uložit jako</value></data>
+  <data name="SE_BE_Position" xml:space="preserve"><value>Pozice</value></data>
+  <data name="SE_BE_Offset" xml:space="preserve"><value>Offset</value></data>
+  <data name="SE_BE_OffsetFrom" xml:space="preserve"><value>Offset od</value></data>
+  <data name="SE_BE_OffsetAdd" xml:space="preserve"><value>Přidaný offset</value></data>
+  <data name="SE_BE_Length" xml:space="preserve"><value>Délka</value></data>
+  <data name="SE_BE_ValueType" xml:space="preserve"><value>Typ hodnoty</value></data>
+  <data name="SE_BE_Array" xml:space="preserve"><value>Pole</value></data>
+  <data name="SE_BE_Count" xml:space="preserve"><value>Počet</value></data>
+  <data name="SE_BE_EntrySize" xml:space="preserve"><value>Velikost záznamu</value></data>
+  <data name="SE_BE_IndexVar" xml:space="preserve"><value>Indexová proměnná</value></data>
+  <data name="SE_BE_ColorCycle" xml:space="preserve"><value>Cyklus barev</value></data>
+  <data name="SE_BE_EntryFieldsHint" xml:space="preserve"><value>Pole záznamu jsou zobrazena jako podřízené prvky stromu.</value></data>
+  <data name="SE_BE_Union" xml:space="preserve"><value>Union</value></data>
+  <data name="SE_BE_Discriminant" xml:space="preserve"><value>Diskriminant</value></data>
+  <data name="SE_BE_Variants" xml:space="preserve"><value>Varianty</value></data>
+  <data name="SE_BE_NestedStruct" xml:space="preserve"><value>Vnořená struktura</value></data>
+  <data name="SE_BE_StructRef" xml:space="preserve"><value>Ref. struktury</value></data>
+  <data name="SE_BE_PointerLocation" xml:space="preserve"><value>Umístění ukazatele</value></data>
+  <data name="SE_BE_TargetStorage" xml:space="preserve"><value>Cíl a úložiště</value></data>
+  <data name="SE_BE_TargetVar" xml:space="preserve"><value>Cílová proměnná</value></data>
+  <data name="SE_BE_Label" xml:space="preserve"><value>Popisek</value></data>
+  <data name="SE_BE_PositionSize" xml:space="preserve"><value>Pozice a velikost</value></data>
+  <data name="SE_BE_Storage" xml:space="preserve"><value>Úložiště</value></data>
+  <data name="SE_BE_MappedStoreAs" xml:space="preserve"><value>Mapované úložiště</value></data>
+  <data name="SE_BE_ValueMap" xml:space="preserve"><value>Mapování hodnot</value></data>
+  <data name="SE_BE_Bitfields" xml:space="preserve"><value>Bitová pole</value></data>
+  <data name="SE_BE_Name" xml:space="preserve"><value>Název</value></data>
+  <data name="SE_BE_Bits" xml:space="preserve"><value>Bity</value></data>
+  <data name="SE_BE_Until" xml:space="preserve"><value>Do</value></data>
+  <data name="SE_BE_MaxLength" xml:space="preserve"><value>Max. délka</value></data>
+  <data name="SE_BE_MinValue" xml:space="preserve"><value>Min. hodnota</value></data>
+  <data name="SE_BE_MaxValue" xml:space="preserve"><value>Max. hodnota</value></data>
+  <data name="SE_BE_PatternRegex" xml:space="preserve"><value>Vzor (regex)</value></data>
+  <data name="SE_BE_ErrorMessage" xml:space="preserve"><value>Chybová zpráva</value></data>
+  <data name="SE_BE_VariableName" xml:space="preserve"><value>Název proměnné</value></data>
+  <data name="SE_BE_Group" xml:space="preserve"><value>Skupina</value></data>
+  <data name="SE_BE_GroupHint" xml:space="preserve"><value>Skupina vizuálně označuje sadu podřízených polí barevnou vrstvou. Nespotřebovává žádné bajty.</value></data>
+  <data name="SE_BE_ChildrenInTreeHint" xml:space="preserve"><value>Podřízené prvky jsou zobrazeny ve stromu bloků — použijte strom pro přidání/přeuspořádání podřízených bloků.</value></data>
+  <data name="SE_BE_ChildFieldsHint" xml:space="preserve"><value>Podřízená pole jsou zobrazena ve stromu bloků.</value></data>
+  <data name="SE_BE_RawDataRegion" xml:space="preserve"><value>Oblast surových dat</value></data>
+  <data name="SE_BE_RawDataDescription" xml:space="preserve"><value>Označuje oblast surových bajtů barevnou vrstvou. Žádná hodnota není extrahována.</value></data>
+  <data name="SE_BE_Condition" xml:space="preserve"><value>Podmínka</value></data>
+  <data name="SE_BE_BranchLabels" xml:space="preserve"><value>Popisky větví</value></data>
+  <data name="SE_BE_TrueLabel" xml:space="preserve"><value>Popisek „Pravda“</value></data>
+  <data name="SE_BE_FalseLabel" xml:space="preserve"><value>Popisek „Nepravda“</value></data>
+  <data name="SE_BE_BranchHint" xml:space="preserve"><value>Bloky Then / Else jsou zobrazeny jako podřízené prvky stromu.</value></data>
+  <data name="SE_BE_LoopCondition" xml:space="preserve"><value>Podmínka smyčky</value></data>
+  <data name="SE_BE_Bounds" xml:space="preserve"><value>Hranice</value></data>
+  <data name="SE_BE_MaxIterations" xml:space="preserve"><value>Max. iterace</value></data>
+  <data name="SE_BE_LoopBodyHint" xml:space="preserve"><value>Bloky těla jsou zobrazeny jako podřízené prvky stromu.</value></data>
+  <data name="SE_BE_Tip_VarName" xml:space="preserve"><value>Název proměnné k úpravě — zadejte pro zobrazení návrhů (Ctrl+Space)</value></data>
+  <data name="SE_BE_Tip_VarValue" xml:space="preserve"><value>Hodnota k nastavení / množství k přidání nebo odečtení — přijímá var:název</value></data>
+  <data name="SE_BE_Tip_Expression" xml:space="preserve"><value>Matematický výraz s proměnnými a funkcemi — Ctrl+Space pro automatické doplňování</value></data>
+  <data name="SE_BE_Tip_StoreExpr" xml:space="preserve"><value>Název proměnné pro uložení vypočítaného výsledku — Ctrl+Space pro návrhy</value></data>
+  <data name="SE_BE_Tip_ArrayOffset" xml:space="preserve"><value>Offset souboru kde začíná pole — Ctrl+Space pro automatické doplňování</value></data>
+  <data name="SE_BE_Tip_ArrayBaseVar" xml:space="preserve"><value>Proměnná použitá jako základní offset pro toto pole</value></data>
+  <data name="SE_BE_Tip_EntryCount" xml:space="preserve"><value>Počet záznamů — Ctrl+Space pro návrhy proměnných</value></data>
+  <data name="SE_BE_Tip_EntrySize" xml:space="preserve"><value>Velikost každého záznamu v bajtech — Ctrl+Space pro návrhy proměnných</value></data>
+  <data name="SE_BE_Tip_LoopIndex" xml:space="preserve"><value>Název indexové proměnné smyčky (např. i)</value></data>
+  <data name="SE_BE_AddColor" xml:space="preserve"><value>＋ Přidat barvu</value></data>
+  <data name="SE_BE_Tip_VariantVar" xml:space="preserve"><value>Proměnná řídící výběr varianty — Ctrl+Space pro návrhy</value></data>
+  <data name="SE_BE_Tip_FormatPath" xml:space="preserve"><value>Název formátu nebo relativní cesta k souboru .whfmt</value></data>
+  <data name="SE_BE_Browse" xml:space="preserve"><value>Procházet…</value></data>
+  <data name="SE_BE_Tip_PtrOffset" xml:space="preserve"><value>Offset souboru odkud se čte hodnota ukazatele — Ctrl+Space pro automatické doplňování</value></data>
+  <data name="SE_BE_Tip_PtrBaseVar" xml:space="preserve"><value>Název proměnné použité jako základní offset</value></data>
+  <data name="SE_BE_Tip_PtrSize" xml:space="preserve"><value>Velikost hodnoty ukazatele v bajtech (např. 4 pro uint32) — nebo var:název</value></data>
+  <data name="SE_BE_Tip_PtrTargetVar" xml:space="preserve"><value>Proměnná která obdrží vyřešenou adresu ukazatele</value></data>
+  <data name="SE_BE_Tip_PtrStoreRaw" xml:space="preserve"><value>Proměnná pro uložení surové hodnoty ukazatele</value></data>
+  <data name="SE_BE_Tip_PtrLabel" xml:space="preserve"><value>Anotační popisek zobrazený v hex zobrazení</value></data>
+  <data name="SE_BE_Tip_OffsetAuto" xml:space="preserve"><value>Ctrl+Space pro automatické doplňování — celé číslo, var:název, calc:výraz, offset:N</value></data>
+  <data name="SE_BE_Tip_OffsetFromVar" xml:space="preserve"><value>Název proměnné jejíž hodnota je základní offset — Ctrl+Space pro návrhy</value></data>
+  <data name="SE_BE_Tip_OffsetAddBytes" xml:space="preserve"><value>Dodatečné bajty přidané k OffsetFrom</value></data>
+  <data name="SE_BE_Tip_LengthAuto" xml:space="preserve"><value>Ctrl+Space pro automatické doplňování — celé číslo, var:název, calc:výraz</value></data>
+  <data name="SE_BE_Tip_StoreParsed" xml:space="preserve"><value>Název proměnné pro uložení analyzované hodnoty — Ctrl+Space pro návrhy</value></data>
+  <data name="SE_BE_Tip_StoreMapped" xml:space="preserve"><value>Název proměnné pro hodnotu přeloženou přes ValueMap — Ctrl+Space pro návrhy</value></data>
+  <data name="SE_BE_Tip_RawDisplayMap" xml:space="preserve"><value>surový=Zobrazení (např. 0=Odstíny šedé)</value></data>
+  <data name="SE_BE_AddValueMapEntry" xml:space="preserve"><value>＋ Přidat záznam ValueMap</value></data>
+  <data name="SE_BE_Tip_BitRange" xml:space="preserve"><value>Rozsah bitů např. 7-6 nebo jeden bit např. 3</value></data>
+  <data name="SE_BE_AddBitfield" xml:space="preserve"><value>＋ Přidat bitové pole</value></data>
+  <data name="SE_BE_SentinelUntil" xml:space="preserve"><value>Zarážka (Until)</value></data>
+  <data name="SE_BE_Tip_UntilPattern" xml:space="preserve"><value>Hex vzor nebo var:název kde zastavit čtení. Nahrazuje Length pokud je definován.</value></data>
+  <data name="SE_BE_Tip_UntilSafetyCap" xml:space="preserve"><value>Bezpečnostní limit (bajty) pokud vzor Until není nalezen. 0 = výchozí interpretr (4096).</value></data>
+  <data name="SE_BE_UntilInclusive" xml:space="preserve"><value>Until inkluzivní (zahrnout bajty vzoru do délky pole)</value></data>
+  <data name="SE_BE_ValidationRules" xml:space="preserve"><value>Pravidla ověření</value></data>
+  <data name="SE_BE_Tip_MetaVarName" xml:space="preserve"><value>Název proměnné čtené tímto blokem metadat</value></data>
+  <data name="SE_BE_Tip_LoopCount" xml:space="preserve"><value>Pevné celé číslo nebo var:název — Ctrl+Space pro návrhy</value></data>
+  <data name="SE_BE_Tip_LoopMaxCap" xml:space="preserve"><value>Bezpečnostní limit — celé číslo</value></data>
+  <data name="SE_BE_Tip_LoopIdxStore" xml:space="preserve"><value>Proměnná která přijímá aktuální index iterace (základ 0)</value></data>
+  <data name="SE_BE_Tip_LoopCountStore" xml:space="preserve"><value>Proměnná pro uložení počtu iterací po smyčce — Ctrl+Space pro návrhy</value></data>
+  <data name="SE_BE_Tip_EditAsJson" xml:space="preserve"><value>Upravit tento blok jako surový JSON</value></data>
+  <data name="SE_AddAssertion" xml:space="preserve"><value>＋ Přidat assertion</value></data>
+  <data name="SE_AddChecksum" xml:space="preserve"><value>＋ Přidat kontrolní součet</value></data>
+  <data name="SE_TipTemplateName" xml:space="preserve"><value>Název šablony</value></data>
+  <data name="SE_TipStructName" xml:space="preserve"><value>Název struktury (struct C)</value></data>
+  <data name="SE_TipHexDigitsOnly" xml:space="preserve"><value>Pouze hexadecimální číslice (např. FF, 4D5A)</value></data>
+  <data name="SE_ShowLabel" xml:space="preserve"><value>Zobrazit:</value></data>
+</root>

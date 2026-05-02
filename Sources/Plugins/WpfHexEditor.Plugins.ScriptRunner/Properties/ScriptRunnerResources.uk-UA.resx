@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfHexEditor.Plugins.ScriptRunner
+    File        : ScriptRunnerResources.uk-UA.resx
+    Description : Ukrainian (Ukraine) translations for the Script Runner plugin.
+-->
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+
+  <data name="ScriptRunner_EngineNotAvailable" xml:space="preserve"><value>Рушій скриптів недоступний</value></data>
+  <data name="ScriptRunner_Running" xml:space="preserve"><value>Виконання&#x2026;</value></data>
+  <data name="ScriptRunner_Cancelled" xml:space="preserve"><value>Скасовано</value></data>
+  <data name="ScriptRunner_Error" xml:space="preserve"><value>Помилка &#x2014; дивіться вивід</value></data>
+  <data name="ScriptRunner_Cancelling" xml:space="preserve"><value>Скасування&#x2026;</value></data>
+  <data name="ScriptRunner_Ready" xml:space="preserve"><value>Готово</value></data>
+  <data name="ScriptRunner_LangCSharp" xml:space="preserve"><value>CSharp</value></data>
+  <data name="ScriptRunner_LangFSharp" xml:space="preserve"><value>FSharp</value></data>
+  <data name="ScriptRunner_LangVBNet" xml:space="preserve"><value>VBNet</value></data>
+  <data name="SR_TipRunScript" xml:space="preserve"><value>Виконати скрипт (F5)</value></data>
+  <data name="SR_TipCancel" xml:space="preserve"><value>Скасувати</value></data>
+  <data name="SR_TipClearOutput" xml:space="preserve"><value>Очистити вивід</value></data>
+</root>

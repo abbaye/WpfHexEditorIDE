@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="DocFindReplace_Title" xml:space="preserve"><value>Căutare și înlocuire</value></data>
+  <data name="DocFindReplace_FindLabel" xml:space="preserve"><value>Căutare:</value></data>
+  <data name="DocFindReplace_ReplaceLabel" xml:space="preserve"><value>Înlocuire:</value></data>
+  <data name="DocFindReplace_MatchCase" xml:space="preserve"><value>Respectare majuscule</value></data>
+  <data name="DocFindReplace_WholeWord" xml:space="preserve"><value>Cuvânt întreg</value></data>
+  <data name="DocFindReplace_Regex" xml:space="preserve"><value>Regex</value></data>
+  <data name="DocFindReplace_FindAll" xml:space="preserve"><value>Căutare tot</value></data>
+  <data name="DocFindReplace_FindNext" xml:space="preserve"><value>Următor</value></data>
+  <data name="DocFindReplace_FindPrev" xml:space="preserve"><value>Anterior</value></data>
+  <data name="DocFindReplace_Replace" xml:space="preserve"><value>Înlocuire</value></data>
+  <data name="DocFindReplace_ReplaceAll" xml:space="preserve"><value>Înlocuire tot</value></data>
+  <data name="DocFindReplace_Close" xml:space="preserve"><value>Închidere</value></data>
+  <data name="DocHexPane_HexLabel" xml:space="preserve"><value>Hex</value></data>
+  <data name="DocPageSettings_PageTab" xml:space="preserve"><value>Pagină</value></data>
+  <data name="DocPageSettings_FormatLabel" xml:space="preserve"><value>Format:</value></data>
+  <data name="DocPageSettings_A4Option" xml:space="preserve"><value>A4  (21 × 29.7 cm)</value></data>
+  <data name="DocPageSettings_A3Option" xml:space="preserve"><value>A3  (29.7 × 42 cm)</value></data>
+  <data name="DocPageSettings_A5Option" xml:space="preserve"><value>A5  (14.8 × 21 cm)</value></data>
+  <data name="DocPageSettings_LetterOption" xml:space="preserve"><value>Letter (8.5 × 11 in)</value></data>
+  <data name="DocPageSettings_LegalOption" xml:space="preserve"><value>Legal  (8.5 × 14 in)</value></data>
+  <data name="DocPageSettings_CustomOption" xml:space="preserve"><value>Personalizat</value></data>
+  <data name="DocPageSettings_OrientationLabel" xml:space="preserve"><value>Orientare:</value></data>
+  <data name="DocPageSettings_Portrait" xml:space="preserve"><value>Portret</value></data>
+  <data name="DocPageSettings_Landscape" xml:space="preserve"><value>Peisaj</value></data>
+  <data name="DocPageSettings_ColumnsTab" xml:space="preserve"><value>Coloane</value></data>
+  <data name="DocPageSettings_EqualWidths" xml:space="preserve"><value>Lățimi egale ale coloanelor</value></data>
+  <data name="DocPageSettings_ShowSeparator" xml:space="preserve"><value>Afișare linie separatoare între coloane</value></data>
+  <data name="DocPageSettings_HeaderFooterTab" xml:space="preserve"><value>Antet/Subsol</value></data>
+  <data name="DocPageSettings_HeaderGroup" xml:space="preserve"><value>Antet</value></data>
+  <data name="DocPageSettings_EnableHeader" xml:space="preserve"><value>Activare antet</value></data>
+  <data name="DocPageSettings_DifferentFirstPage" xml:space="preserve"><value>Conținut diferit pe prima pagină</value></data>
+  <data name="DocPageSettings_SameHeaderLR" xml:space="preserve"><value>Același antet pe paginile stânga/dreapta</value></data>
+  <data name="DocPageSettings_FooterGroup" xml:space="preserve"><value>Subsol</value></data>
+  <data name="DocPageSettings_EnableFooter" xml:space="preserve"><value>Activare subsol</value></data>
+  <data name="DocPageSettings_BorderTab" xml:space="preserve"><value>Bordură</value></data>
+  <data name="DocPageSettings_BorderNone" xml:space="preserve"><value>Niciuna</value></data>
+  <data name="DocPageSettings_BorderBox" xml:space="preserve"><value>Chenar</value></data>
+  <data name="DocPageSettings_BorderShadow" xml:space="preserve"><value>Umbră</value></data>
+  <data name="DocPageSettings_CancelButton" xml:space="preserve"><value>Anulare</value></data>
+  <data name="DocPageSettings_ApplyButton" xml:space="preserve"><value>Aplicare</value></data>
+  <data name="DocPageSettings_InsideMargin" xml:space="preserve"><value>Interior:</value></data>
+  <data name="DocPageSettings_OutsideMargin" xml:space="preserve"><value>Exterior:</value></data>
+  <data name="DocPageSettings_LeftMargin" xml:space="preserve"><value>Stânga:</value></data>
+  <data name="DocPageSettings_RightMargin" xml:space="preserve"><value>Dreapta:</value></data>
+  <data name="DocEditorHost_TextViewToolTip" xml:space="preserve"><value>Vizualizare text</value></data>
+  <data name="DocEditorHost_SplitViewToolTip" xml:space="preserve"><value>Vizualizare divizată (text + Hex)</value></data>
+  <data name="DocEditorHost_HexViewToolTip" xml:space="preserve"><value>Vizualizare Hex</value></data>
+  <data name="DocEditorHost_StructureViewToolTip" xml:space="preserve"><value>Vizualizare arbore structură</value></data>
+  <data name="DocEditorHost_FullViewToolTip" xml:space="preserve"><value>Vizualizare completă (text + structură + Hex)</value></data>
+  <data name="DocEditorHost_FocusModeToolTip" xml:space="preserve"><value>Mod focalizat — scriere zen (Ctrl+Shift+F)</value></data>
+  <data name="DocEditorHost_TextModeLabel" xml:space="preserve"><value>Text</value></data>
+  <data name="DocEditorHost_SplitModeLabel" xml:space="preserve"><value>Divizat</value></data>
+  <data name="DocEditorHost_HexModeLabel" xml:space="preserve"><value>Hex</value></data>
+  <data name="DocEditorHost_StructureModeLabel" xml:space="preserve"><value>Structură</value></data>
+  <data name="DocEditorHost_FullModeLabel" xml:space="preserve"><value>Complet</value></data>
+  <data name="DocEditorHost_FocusModeLabel" xml:space="preserve"><value>Focalizat</value></data>
+  <data name="DocEditorHost_PageViewToolTip" xml:space="preserve"><value>Vizualizare pagină — coli A4/Letter paginate</value></data>
+  <data name="DocEditorHost_DraftViewToolTip" xml:space="preserve"><value>Vizualizare ciornă — derulare continuă, margini compacte</value></data>
+  <data name="DocEditorHost_OutlineViewToolTip" xml:space="preserve"><value>Vizualizare schiță — arbore structură centrat</value></data>
+  <data name="DocEditorHost_ForensicModeToolTip" xml:space="preserve"><value>Mod analiză criminalistică</value></data>
+  <data name="DocEditorHost_ForensicModeLabel" xml:space="preserve"><value>Criminalistic</value></data>
+  <data name="DocEditorHost_BoldToolTip" xml:space="preserve"><value>Îngroșat (Ctrl+B)</value></data>
+  <data name="DocEditorHost_ItalicToolTip" xml:space="preserve"><value>Italic (Ctrl+I)</value></data>
+  <data name="DocEditorHost_UnderlineToolTip" xml:space="preserve"><value>Subliniat (Ctrl+U)</value></data>
+  <data name="DocEditorHost_StrikethroughToolTip" xml:space="preserve"><value>Tăiat</value></data>
+  <data name="DocEditorHost_AlignLeftToolTip" xml:space="preserve"><value>Aliniere la stânga</value></data>
+  <data name="DocEditorHost_AlignCenterToolTip" xml:space="preserve"><value>Centrare</value></data>
+  <data name="DocEditorHost_AlignRightToolTip" xml:space="preserve"><value>Aliniere la dreapta</value></data>
+  <data name="DocEditorHost_StyleDropdownToolTip" xml:space="preserve"><value>Stil paragraf</value></data>
+  <data name="DocEditorHost_StyleNormal" xml:space="preserve"><value>Normal</value></data>
+  <data name="DocEditorHost_StyleH1" xml:space="preserve"><value>H1</value></data>
+  <data name="DocEditorHost_StyleH2" xml:space="preserve"><value>H2</value></data>
+  <data name="DocEditorHost_StyleH3" xml:space="preserve"><value>H3</value></data>
+  <data name="DocEditorHost_StyleH4" xml:space="preserve"><value>H4</value></data>
+  <data name="DocEditorHost_StyleH5" xml:space="preserve"><value>H5</value></data>
+  <data name="DocEditorHost_StyleH6" xml:space="preserve"><value>H6</value></data>
+  <data name="DocEditorHost_StyleQuote" xml:space="preserve"><value>Citat</value></data>
+  <data name="DocEditorHost_StyleCode" xml:space="preserve"><value>Code</value></data>
+  <data name="DocEditorHost_StylesPanelToolTip" xml:space="preserve"><value>Stiluri paragraf (Ctrl+Alt+S)</value></data>
+  <data name="DocEditorHost_PageSetupToolTip" xml:space="preserve"><value>Configurare pagină (format hârtie, margini, coloane…)</value></data>
+  <data name="DocEditorHost_ZoomOutToolTip" xml:space="preserve"><value>Mărire -</value></data>
+  <data name="DocEditorHost_ZoomDefault" xml:space="preserve"><value>100%</value></data>
+  <data name="DocEditorHost_ZoomInToolTip" xml:space="preserve"><value>Mărire +</value></data>
+  <data name="DocEditorHost_ReadOnlyToolTip" xml:space="preserve"><value>Doar citire</value></data>
+  <data name="DocEditorHost_MetadataToolTip" xml:space="preserve"><value>Metadate document</value></data>
+  <data name="DocEditorHost_ExportToolTip" xml:space="preserve"><value>Exportare document</value></data>
+  <data name="DocEditorHost_SaveToolTip" xml:space="preserve"><value>Salvare</value></data>
+  <data name="DocEditorHost_MetaTitleLabel" xml:space="preserve"><value>Titlu</value></data>
+  <data name="DocEditorHost_MetaAuthorLabel" xml:space="preserve"><value>Autor</value></data>
+  <data name="DocEditorHost_MetaFormatLabel" xml:space="preserve"><value>Format</value></data>
+  <data name="DocEditorHost_MetaMimeLabel" xml:space="preserve"><value>MIME</value></data>
+  <data name="DocEditorHost_MetaCreatedLabel" xml:space="preserve"><value>Creat</value></data>
+  <data name="DocEditorHost_MetaModifiedLabel" xml:space="preserve"><value>Modificat</value></data>
+  <data name="DocEditorHost_MetaMacrosLabel" xml:space="preserve"><value>Macrocomenzi</value></data>
+  <data name="DocPopToolbar_BoldToolTip" xml:space="preserve"><value>Îngroșat (Ctrl+B)</value></data>
+  <data name="DocPopToolbar_ItalicToolTip" xml:space="preserve"><value>Italic (Ctrl+I)</value></data>
+  <data name="DocPopToolbar_UnderlineToolTip" xml:space="preserve"><value>Subliniat (Ctrl+U)</value></data>
+  <data name="DocPopToolbar_CopyTextToolTip" xml:space="preserve"><value>Copiere text selectat</value></data>
+  <data name="DocPopToolbar_CopyHexToolTip" xml:space="preserve"><value>Copiere ca octeți Hex</value></data>
+  <data name="DocPopToolbar_InspectToolTip" xml:space="preserve"><value>Inspectare bloc în panoul Structură</value></data>
+  <data name="DocPopToolbar_JumpHexToolTip" xml:space="preserve"><value>Salt la decalaj în panoul Hex</value></data>
+  <data name="DocStatusBar_PageCountToolTip" xml:space="preserve"><value>Număr de pagini</value></data>
+  <data name="DocStatusBar_WordCountToolTip" xml:space="preserve"><value>Număr de cuvinte</value></data>
+  <data name="DocStatusBar_ZoomToolTip" xml:space="preserve"><value>Nivel de mărire</value></data>
+  <data name="DocStatusBar_ForensicBadgeToolTip" xml:space="preserve"><value>Clic pentru deschidere panou criminalistic</value></data>
+  <data name="DocStructure_Header" xml:space="preserve"><value>Structură</value></data>
+  <data name="DocStructure_CollapseAllToolTip" xml:space="preserve"><value>Restrângere tot</value></data>
+  <data name="DocStructure_ExpandAllToolTip" xml:space="preserve"><value>Extindere tot</value></data>
+  <data name="DocStructure_FilterPlaceholder" xml:space="preserve"><value>Filtrare blocuri…</value></data>
+  <data name="DocStructure_ClearFilterToolTip" xml:space="preserve"><value>Ștergere filtru</value></data>
+  <data name="DocStructure_NavigateMenuHeader" xml:space="preserve"><value>Salt la text</value></data>
+  <data name="DocStructure_JumpHexMenuHeader" xml:space="preserve"><value>Salt la decalaj Hex</value></data>
+  <data name="DocStructure_CopyTextMenuHeader" xml:space="preserve"><value>Copiere text bloc</value></data>
+  <data name="DocStructure_CopyOffsetMenuHeader" xml:space="preserve"><value>Copiere decalaj</value></data>
+  <data name="DocEditorHost_DocumentTitle" xml:space="preserve"><value>Document</value></data>
+  <data name="DocEditorHost_SavedStatus" xml:space="preserve"><value>Salvat — {0}</value></data>
+  <data name="DocEditorHost_SaveFailedStatus" xml:space="preserve"><value>Eșec salvare: {0}</value></data>
+  <data name="DocEditorHost_NoSaverStatus" xml:space="preserve"><value>Niciun salvator înregistrat pentru acest tip de fișier.</value></data>
+  <data name="DocEditorHost_LoadingMessage" xml:space="preserve"><value>Încărcare document…</value></data>
+  <data name="DocEditorHost_WaitingForIDE" xml:space="preserve"><value>Așteptare inițializare IDE…</value></data>
+  <data name="DocEditorHost_LoadErrorMessage" xml:space="preserve"><value>Imposibil de deschis documentul: {0}</value></data>
+  <data name="DocEditorHost_ExportDialogTitle" xml:space="preserve"><value>Exportare document</value></data>
+  <data name="DocEditorHost_ExportFailedStatus" xml:space="preserve"><value>Eșec exportare: {0}</value></data>
+  <data name="DocEditorHost_ExportedStatus" xml:space="preserve"><value>Exportat — {0}</value></data>
+  <data name="DocEditorHost_NoSaverForExport" xml:space="preserve"><value>Niciun salvator înregistrat pentru '{0}'.</value></data>
+  <data name="DocEditorHost_MetaEmptyValue" xml:space="preserve"><value>—</value></data>
+  <data name="DocEditorHost_MetaYesValue" xml:space="preserve"><value>Da</value></data>
+  <data name="DocEditorHost_MetaNoValue" xml:space="preserve"><value>Nu</value></data>
+  <data name="DocEditorHost_ViewModeText" xml:space="preserve"><value>Text</value></data>
+  <data name="DocEditorHost_ViewModeSplit" xml:space="preserve"><value>Divizat</value></data>
+  <data name="DocEditorHost_ViewModeHex" xml:space="preserve"><value>Hex</value></data>
+  <data name="DocEditorHost_ViewModeStructure" xml:space="preserve"><value>Structură</value></data>
+  <data name="DocEditorHost_ViewModeFull" xml:space="preserve"><value>Complet</value></data>
+  <data name="DocEditorHost_ViewModeFocus" xml:space="preserve"><value>Focalizat</value></data>
+  <data name="DocEditorHost_ReadOnlySuffix" xml:space="preserve"><value> | Doar citire</value></data>
+  <data name="DocStatusBar_DefaultPage" xml:space="preserve"><value>Pagina 1</value></data>
+  <data name="DocStatusBar_DefaultWordCount" xml:space="preserve"><value>0 cuvinte</value></data>
+  <data name="DocStatusBar_DefaultZoom" xml:space="preserve"><value>100%</value></data>
+  <data name="DocStatusBar_DefaultViewMode" xml:space="preserve"><value>Divizat</value></data>
+  <data name="DocStatusBar_FormatPattern" xml:space="preserve"><value>Format: {0} ({1})</value></data>
+  <data name="DocStatusBar_WordCountPattern" xml:space="preserve"><value>{0:N0} cuvinte</value></data>
+  <data name="DocStatusBar_PagePattern" xml:space="preserve"><value>Pagina 1 / {0}</value></data>
+  <data name="DocStatusBar_ZoomPattern" xml:space="preserve"><value>{0:0}%</value></data>
+  <data name="DocHexPane_OffsetPattern" xml:space="preserve"><value>Hex  |  0x{0:X8}</value></data>
+  <data name="DocStyles_Normal" xml:space="preserve"><value>Normal</value></data>
+  <data name="DocStyles_Heading1" xml:space="preserve"><value>Titlu 1</value></data>
+  <data name="DocStyles_Heading2" xml:space="preserve"><value>Titlu 2</value></data>
+  <data name="DocStyles_Heading3" xml:space="preserve"><value>Titlu 3</value></data>
+  <data name="DocStyles_Heading4" xml:space="preserve"><value>Titlu 4</value></data>
+  <data name="DocStyles_Heading5" xml:space="preserve"><value>Titlu 5</value></data>
+  <data name="DocStyles_Heading6" xml:space="preserve"><value>Titlu 6</value></data>
+  <data name="DocStyles_Quote" xml:space="preserve"><value>Citat</value></data>
+  <data name="DocStyles_Code" xml:space="preserve"><value>Code</value></data>
+  <data name="DocStyles_Caption" xml:space="preserve"><value>Legendă</value></data>
+  <data name="DocStyles_ListParagraph" xml:space="preserve"><value>Paragraf de listă</value></data>
+  <data name="DocStyles_IntenseQuote" xml:space="preserve"><value>Citat intens</value></data>
+  <data name="DocSb_AlertsLabel" xml:space="preserve">
+    <value>Alerte</value>
+  </data>
+  <data name="DocSb_BlocksLabel" xml:space="preserve">
+    <value>Blocuri</value>
+  </data>
+  <data name="DocSb_FormatLabel" xml:space="preserve">
+    <value>Format</value>
+  </data>
+  <data name="DocSb_SelectionLabel" xml:space="preserve">
+    <value>Selecție</value>
+  </data>
+  <data name="DocSb_VersionLabel" xml:space="preserve">
+    <value>Version</value>
+  </data>
+  <data name="DocSb_ViewLabel" xml:space="preserve">
+    <value>Vizualizare</value>
+  </data>
+  <data name="DocTb_ForensicMode" xml:space="preserve">
+    <value>Mod criminalistic</value>
+  </data>
+  <data name="DocTb_HexView" xml:space="preserve">
+    <value>Vizualizare hexadecimală</value>
+  </data>
+  <data name="DocTb_Save" xml:space="preserve">
+    <value>Salvare</value>
+  </data>
+  <data name="DocTb_SplitView" xml:space="preserve">
+    <value>Vizualizare divizată</value>
+  </data>
+  <data name="DocTb_StructureView" xml:space="preserve">
+    <value>Vizualizare structură</value>
+  </data>
+  <data name="DocTb_TextView" xml:space="preserve">
+    <value>Vizualizare text</value>
+  </data>
+</root>

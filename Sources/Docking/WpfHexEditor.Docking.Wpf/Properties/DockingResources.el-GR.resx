@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+
+  <data name="Docking_TabSettings_Title" xml:space="preserve">
+    <value>Επιλογές καρτελών εγγράφου</value>
+  </data>
+  <data name="Docking_TabSettings_TabStripPlacement" xml:space="preserve">
+    <value>Θέση γραμμής καρτελών</value>
+  </data>
+  <data name="Docking_TabSettings_Top" xml:space="preserve">
+    <value>Πάνω (προεπιλογή)</value>
+  </data>
+  <data name="Docking_TabSettings_Left" xml:space="preserve">
+    <value>Αριστερά</value>
+  </data>
+  <data name="Docking_TabSettings_Right" xml:space="preserve">
+    <value>Δεξιά</value>
+  </data>
+  <data name="Docking_TabSettings_ColorBy" xml:space="preserve">
+    <value>Χρωματισμός καρτελών εγγράφου κατά</value>
+  </data>
+  <data name="Docking_TabSettings_NoColorization" xml:space="preserve">
+    <value>Χωρίς χρωματισμό</value>
+  </data>
+  <data name="Docking_TabSettings_FileExtension" xml:space="preserve">
+    <value>Επέκταση αρχείου</value>
+  </data>
+  <data name="Docking_TabSettings_Project" xml:space="preserve">
+    <value>Έργο</value>
+  </data>
+  <data name="Docking_TabSettings_RegexRules" xml:space="preserve">
+    <value>Κανόνες regex</value>
+  </data>
+  <data name="Docking_TabSettings_RegexFirstMatch" xml:space="preserve">
+    <value>Κανόνες regex — νικά η πρώτη αντιστοιχία:</value>
+  </data>
+  <data name="Docking_TabSettings_PatternColumn" xml:space="preserve">
+    <value>Μοτίβο (regex)</value>
+  </data>
+  <data name="Docking_TabSettings_ColorColumn" xml:space="preserve">
+    <value>Χρώμα</value>
+  </data>
+  <data name="Docking_TabSettings_HexColorTooltip" xml:space="preserve">
+    <value>Εισάγετε hex χρώμα: #RRGGBB ή #AARRGGBB</value>
+  </data>
+  <data name="Docking_TabSettings_PressDelete" xml:space="preserve">
+    <value>Πατήστε Delete για διαγραφή της επιλεγμένης γραμμής.</value>
+  </data>
+  <data name="Docking_TabSettings_TabRows" xml:space="preserve">
+    <value>Σειρές καρτελών</value>
+  </data>
+  <data name="Docking_TabSettings_ShowMultipleRows" xml:space="preserve">
+    <value>Εμφάνιση καρτελών σε πολλές σειρές</value>
+  </data>
+  <data name="Docking_TabSettings_ToggleWithWheel" xml:space="preserve">
+    <value>Εναλλαγή σειρών με τον τροχό</value>
+  </data>
+
+  <data name="Dock_FloatWin_Maximize" xml:space="preserve">
+    <value>Μεγιστοποίηση</value>
+  </data>
+  <data name="Dock_FloatWin_Restore" xml:space="preserve">
+    <value>Επαναφορά</value>
+  </data>
+  <data name="Dock_LSP_Connecting" xml:space="preserve">
+    <value>Διακομιστής γλώσσας: σύνδεση σε εξέλιξη…</value>
+  </data>
+  <data name="Dock_LSP_Ready" xml:space="preserve">
+    <value>Διακομιστής γλώσσας: έτοιμος</value>
+  </data>
+  <data name="Dock_LSP_Error" xml:space="preserve">
+    <value>Διακομιστής γλώσσας: σφάλμα</value>
+  </data>
+  <data name="Dock_AutoHide_Show" xml:space="preserve">
+    <value>Εμφάνιση</value>
+  </data>
+  <data name="Dock_AutoHide_Float" xml:space="preserve">
+    <value>Κυμαινόμενο</value>
+  </data>
+  <data name="Dock_AutoHide_Close" xml:space="preserve">
+    <value>Κλείσιμο</value>
+  </data>
+  <data name="Dock_AutoHide_Dock" xml:space="preserve">
+    <value>Αγκύρωση</value>
+  </data>
+  <data name="Dock_TabConfig_ColorBy" xml:space="preserve">
+    <value>Χρωματισμός καρτελών εγγράφου κατά</value>
+  </data>
+  <data name="Dock_TabConfig_Options" xml:space="preserve">
+    <value>Επιλογές…</value>
+  </data>
+  <data name="Dock_TabConfig_MultipleRows" xml:space="preserve">
+    <value>Εμφάνιση καρτελών σε πολλές γραμμές</value>
+  </data>
+  <data name="Dock_Menu_NewVerticalTabGroup" xml:space="preserve">
+    <value>Νέα κατακόρυφη ομάδα καρτελών</value>
+  </data>
+  <data name="Dock_Menu_NewHorizontalTabGroup" xml:space="preserve">
+    <value>Νέα οριζόντια ομάδα καρτελών</value>
+  </data>
+  <data name="Dock_Menu_CloseTabGroup" xml:space="preserve">
+    <value>Κλείσιμο ομάδας καρτελών</value>
+  </data>
+  <data name="Dock_Menu_Float" xml:space="preserve">
+    <value>Κυμαινόμενο</value>
+  </data>
+  <data name="Dock_Menu_DockAsTabbed" xml:space="preserve">
+    <value>Αγκύρωση ως έγγραφο με καρτέλες</value>
+  </data>
+  <data name="Dock_Menu_DockAsToolWindow" xml:space="preserve">
+    <value>Αγκύρωση ως παράθυρο εργαλείου</value>
+  </data>
+  <data name="Dock_Menu_Hide" xml:space="preserve">
+    <value>Απόκρυψη</value>
+  </data>
+  <data name="Dock_Menu_CloseAll" xml:space="preserve">
+    <value>Κλείσιμο όλων</value>
+  </data>
+  <data name="Dock_Menu_CloseAllButThis" xml:space="preserve">
+    <value>Κλείσιμο όλων εκτός αυτού</value>
+  </data>
+  <data name="Dock_Menu_CloseAllButPinned" xml:space="preserve">
+    <value>Κλείσιμο όλων εκτός καρφιτσωμένων</value>
+  </data>
+  <data name="Dock_Placeholder_OpenDocument" xml:space="preserve">
+    <value>Ανοίξτε ένα έγγραφο για να ξεκινήσετε</value>
+  </data>
+  <data name="Dock_Tab_Start" xml:space="preserve">
+    <value>Έναρξη</value>
+  </data>
+</root>

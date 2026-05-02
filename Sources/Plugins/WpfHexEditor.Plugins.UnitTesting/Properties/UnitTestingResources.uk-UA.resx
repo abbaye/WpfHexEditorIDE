@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfHexEditor.Plugins.UnitTesting
+    File        : UnitTestingResources.uk-UA.resx
+    Description : Ukrainian (Ukraine) translations for the Unit Testing plugin.
+-->
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+
+  <data name="UnitTest_NoTestProjects" xml:space="preserve"><value>У поточному рішенні не знайдено тестових проєктів</value></data>
+  <data name="UnitTest_RunCancelled" xml:space="preserve"><value>Запуск скасовано</value></data>
+  <data name="UnitTest_RunFailed" xml:space="preserve"><value>Запуск не вдався &#x2014; дивіться панель виводу</value></data>
+  <data name="UnitTest_Ready" xml:space="preserve"><value>Готово</value></data>
+  <data name="UnitTest_OpenInCodeEditor" xml:space="preserve"><value>Відкрити в редакторі коду</value></data>
+  <data name="UnitTest_OpenInHexEditor" xml:space="preserve"><value>Відкрити в редакторі Hex</value></data>
+  <data name="UT_RunAllButton" xml:space="preserve"><value>Запустити всі тести</value></data>
+  <data name="UT_RunAllLabel" xml:space="preserve"><value>Запустити всі</value></data>
+  <data name="UT_RunFailedButton" xml:space="preserve"><value>Запустити невдалі тести</value></data>
+  <data name="UT_RunFailedLabel" xml:space="preserve"><value>Запустити невдалі</value></data>
+  <data name="UT_RefreshButton" xml:space="preserve"><value>Оновити (повторно запустити всі)</value></data>
+  <data name="UT_StopButton" xml:space="preserve"><value>Зупинити тести</value></data>
+  <data name="UT_ClearButton" xml:space="preserve"><value>Очистити результати</value></data>
+  <data name="UT_FilterAllTooltip" xml:space="preserve"><value>Показати всі тести</value></data>
+  <data name="UT_FilterPassedTooltip" xml:space="preserve"><value>Показати лише успішні тести</value></data>
+  <data name="UT_FilterFailedTooltip" xml:space="preserve"><value>Показати лише невдалі тести</value></data>
+  <data name="UT_FilterSkippedTooltip" xml:space="preserve"><value>Показати лише пропущені тести</value></data>
+  <data name="UT_CollapseAllButton" xml:space="preserve"><value>Згорнути все</value></data>
+  <data name="UT_ExpandAllButton" xml:space="preserve"><value>Розгорнути все</value></data>
+  <data name="UT_LayoutButton" xml:space="preserve"><value>Розташування панелі деталей</value></data>
+  <data name="UT_SettingsButton" xml:space="preserve"><value>Налаштування модульного тестування</value></data>
+  <data name="UT_LayoutTopBottom" xml:space="preserve"><value>Зверху / Знизу</value></data>
+  <data name="UT_LayoutLeftRight" xml:space="preserve"><value>Ліворуч / Праворуч</value></data>
+  <data name="UT_AutoRunOption" xml:space="preserve"><value>Автозапуск після збирання</value></data>
+  <data name="UT_AutoExpandOption" xml:space="preserve"><value>Авторозгортання деталей при невдачі</value></data>
+  <data name="UT_RatioBarOption" xml:space="preserve"><value>Показати рядок співвідношення</value></data>
+  <data name="UT_SearchPlaceholder" xml:space="preserve"><value>Пошук (Ctrl+I)…</value></data>
+  <data name="UT_ClearSearchButton" xml:space="preserve"><value>Очистити пошук</value></data>
+  <data name="UT_AddSearchFilter" xml:space="preserve"><value>Додати фільтр пошуку</value></data>
+  <data name="UT_FilterState" xml:space="preserve"><value>Стан</value></data>
+  <data name="UT_FilterFullName" xml:space="preserve"><value>Повне ім'я</value></data>
+  <data name="UT_FilterClass" xml:space="preserve"><value>Клас</value></data>
+  <data name="UT_FilterProject" xml:space="preserve"><value>Проєкт</value></data>
+  <data name="UT_FilterError" xml:space="preserve"><value>Повідомлення про помилку</value></data>
+  <data name="UT_FilterNamespace" xml:space="preserve"><value>Простір імен</value></data>
+  <data name="UT_TestColumn" xml:space="preserve"><value>Тест</value></data>
+  <data name="UT_DurationColumn" xml:space="preserve"><value>Тривалість</value></data>
+  <data name="UT_CharacteristicsColumn" xml:space="preserve"><value>Характеристики</value></data>
+  <data name="UT_ErrorMessageColumn" xml:space="preserve"><value>Повідомлення про помилку</value></data>
+  <data name="UT_RunThisMenu" xml:space="preserve"><value>Запустити цей тест</value></data>
+  <data name="UT_CopyNameMenu" xml:space="preserve"><value>Копіювати ім'я тесту</value></data>
+  <data name="UT_CopyStackMenu" xml:space="preserve"><value>Копіювати трасування стека</value></data>
+  <data name="UT_GroupSummaryLabel" xml:space="preserve"><value>Зведення групи</value></data>
+  <data name="UT_TestsInGroupLabel" xml:space="preserve"><value>Тестів у групі: </value></data>
+  <data name="UT_TotalDurationLabel" xml:space="preserve"><value>Загальна тривалість: </value></data>
+  <data name="UT_ResultsLabel" xml:space="preserve"><value>Результати</value></data>
+  <data name="UT_PassedLabel" xml:space="preserve"><value>Пройдено</value></data>
+  <data name="UT_FailedLabel" xml:space="preserve"><value>Невдало</value></data>
+  <data name="UT_TestDetailLabel" xml:space="preserve"><value>Деталі тесту</value></data>
+  <data name="UT_SourceLabel" xml:space="preserve"><value>Джерело: </value></data>
+  <data name="UT_DurationLabel" xml:space="preserve"><value>Тривалість: </value></data>
+  <data name="UT_RunButton" xml:space="preserve"><value>Запустити</value></data>
+</root>

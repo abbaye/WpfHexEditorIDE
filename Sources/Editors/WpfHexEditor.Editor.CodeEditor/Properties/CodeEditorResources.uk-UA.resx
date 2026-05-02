@@ -1,0 +1,562 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="CodeEditorSettings_ResetButtonContent" xml:space="preserve">
+    <value>Скинути параметри</value>
+  </data>
+  <data name="CodeEditorSettings_ExportButtonContent" xml:space="preserve">
+    <value>Експортувати параметри</value>
+  </data>
+  <data name="CodeEditorSettings_ImportButtonContent" xml:space="preserve">
+    <value>Імпортувати параметри</value>
+  </data>
+  <data name="CodeEditorSettings_ResetButtonToolTip" xml:space="preserve">
+    <value>Скинути всі параметри до значень за замовчуванням</value>
+  </data>
+  <data name="CodeEditorSettings_ExportButtonToolTip" xml:space="preserve">
+    <value>Експортувати параметри у файл JSON</value>
+  </data>
+  <data name="CodeEditorSettings_ImportButtonToolTip" xml:space="preserve">
+    <value>Імпортувати параметри з файлу JSON</value>
+  </data>
+  <data name="CodeEditorSettings_PreviewHeader" xml:space="preserve">
+    <value>Перегляд у реальному часі</value>
+  </data>
+  <data name="CodeEditorSettings_PreviewPlaceholder" xml:space="preserve">
+    <value>Попередній перегляд з'явиться тут, коли підключено CodeEditor</value>
+  </data>
+  <data name="CodeEditorOptions_FontSection" xml:space="preserve">
+    <value>Шрифт</value>
+  </data>
+  <data name="CodeEditorOptions_FontFamilyLabel" xml:space="preserve">
+    <value>Сімейство шрифтів:</value>
+  </data>
+  <data name="CodeEditorOptions_FontSizeLabel" xml:space="preserve">
+    <value>Розмір:</value>
+  </data>
+  <data name="CodeEditorOptions_IndentationSection" xml:space="preserve">
+    <value>Відступи</value>
+  </data>
+  <data name="CodeEditorOptions_TabSizeLabel" xml:space="preserve">
+    <value>Розмір табуляції:</value>
+  </data>
+  <data name="CodeEditorOptions_ConvertTabsContent" xml:space="preserve">
+    <value>Перетворювати табуляції на пробіли</value>
+  </data>
+  <data name="CodeEditorOptions_AutoIndentLabel" xml:space="preserve">
+    <value>Автовідступ:</value>
+  </data>
+  <data name="CodeEditorOptions_DisplaySection" xml:space="preserve">
+    <value>Відображення</value>
+  </data>
+  <data name="CodeEditorOptions_ShowLineNumbersContent" xml:space="preserve">
+    <value>Показувати номери рядків</value>
+  </data>
+  <data name="CodeEditorOptions_ShowWhitespaceLabel" xml:space="preserve">
+    <value>Показувати пробіли:</value>
+  </data>
+  <data name="CodeEditorOptions_CodeFoldingContent" xml:space="preserve">
+    <value>Увімкнути згортання коду</value>
+  </data>
+  <data name="CodeEditorOptions_FoldToggleContent" xml:space="preserve">
+    <value>Перемикати згорнуті ділянки подвійним клацанням</value>
+  </data>
+  <data name="CodeEditorOptions_ScopeGuidesContent" xml:space="preserve">
+    <value>Показувати напрямні областей</value>
+  </data>
+  <data name="CodeEditorOptions_FeaturesSection" xml:space="preserve">
+    <value>Функції</value>
+  </data>
+  <data name="CodeEditorOptions_SmartCompleteContent" xml:space="preserve">
+    <value>Увімкнути SmartComplete</value>
+  </data>
+  <data name="CodeEditorOptions_SnippetsContent" xml:space="preserve">
+    <value>Увімкнути фрагменти коду</value>
+  </data>
+  <data name="CodeEditorOptions_MultiCaretContent" xml:space="preserve">
+    <value>Увімкнути мультиредагування (Alt+Click)</value>
+  </data>
+  <data name="CodeEditorOptions_FindAllRefsContent" xml:space="preserve">
+    <value>Увімкнути «Знайти всі посилання» (Shift+F12)</value>
+  </data>
+  <data name="CodeEditorOptions_FindAllRefsToolTip" xml:space="preserve">
+    <value>Потрібен активний мовний сервер (LSP) для поточного типу файлу</value>
+  </data>
+  <data name="CodeEditorOptions_CodeLensContent" xml:space="preserve">
+    <value>Показувати Code Lens (лічильники посилань у рядку)</value>
+  </data>
+  <data name="CodeEditorOptions_CodeLensToolTip" xml:space="preserve">
+    <value>Відображає кількість посилань над кожним оголошенням. Натисніть на підказку, щоб відкрити спливаюче вікно Посилань.</value>
+  </data>
+  <data name="CodeEditorOptions_WordHighlightContent" xml:space="preserve">
+    <value>Підсвічувати слово під курсором</value>
+  </data>
+  <data name="CodeEditorOptions_WordHighlightToolTip" xml:space="preserve">
+    <value>Підсвічує всі входження слова під курсором і показує позначки на смузі прокрутки</value>
+  </data>
+  <data name="CodeEditorOptions_BracketColorizeContent" xml:space="preserve">
+    <value>Розфарбовування пар дужок</value>
+  </data>
+  <data name="CodeEditorOptions_BracketColorizeToolTip" xml:space="preserve">
+    <value>Розфарбовує дужки CE_Bracket_1/2/3/4 залежно від глибини вкладеності (потрібна bracketPairs у .whfmt мови)</value>
+  </data>
+  <data name="CodeEditorOptions_ColorSwatchContent" xml:space="preserve">
+    <value>Попередній перегляд кольорових зразків</value>
+  </data>
+  <data name="CodeEditorOptions_ColorSwatchToolTip" xml:space="preserve">
+    <value>Показує зразок 12×12 поруч із кольоровими літералами (наприклад #FF5733) у файлах CSS, XAML, C#</value>
+  </data>
+  <data name="CodeEditorOptions_FormatOnSaveContent" xml:space="preserve">
+    <value>Форматувати при збереженні (Ctrl+S)</value>
+  </data>
+  <data name="CodeEditorOptions_FormatOnSaveToolTip" xml:space="preserve">
+    <value>Автоматично форматує документ при збереженні. Використовує форматування LSP, якщо доступне, інакше застосовує правила відступів .whfmt.</value>
+  </data>
+  <data name="CodeEditorOptions_CodeFormattingSection" xml:space="preserve">
+    <value>Форматування коду</value>
+  </data>
+  <data name="CodeEditorOptions_CodeFormattingInfo" xml:space="preserve">
+    <value>Ці параметри замінюють значення за замовчуванням з .whfmt мови. Залиште прапорці в проміжному стані для успадкування правил мови.</value>
+  </data>
+  <data name="CodeEditorOptions_TrimTrailingContent" xml:space="preserve">
+    <value>Видаляти пробіли в кінці рядків</value>
+  </data>
+  <data name="CodeEditorOptions_TrimTrailingToolTip" xml:space="preserve">
+    <value>Видаляє пробіли/табуляції в кінці кожного рядка. Проміжний = значення за замовчуванням .whfmt.</value>
+  </data>
+  <data name="CodeEditorOptions_InsertFinalNewlineContent" xml:space="preserve">
+    <value>Вставляти фінальний рядок</value>
+  </data>
+  <data name="CodeEditorOptions_InsertFinalNewlineToolTip" xml:space="preserve">
+    <value>Забезпечує завершення файлу рівно одним рядком. Проміжний = значення за замовчуванням .whfmt.</value>
+  </data>
+  <data name="CodeEditorOptions_SpaceAfterKeywordsContent" xml:space="preserve">
+    <value>Пробіл після ключових слів (if, for, while)</value>
+  </data>
+  <data name="CodeEditorOptions_SpaceAfterKeywordsToolTip" xml:space="preserve">
+    <value>Вставляє пробіл між ключовими словами керування та відкриваючою дужкою. Проміжний = значення за замовчуванням .whfmt.</value>
+  </data>
+  <data name="CodeEditorOptions_SpaceAroundOpsContent" xml:space="preserve">
+    <value>Пробіли навколо бінарних операторів</value>
+  </data>
+  <data name="CodeEditorOptions_SpaceAroundOpsToolTip" xml:space="preserve">
+    <value>Вставляє пробіли навколо +, -, *, /, == тощо. Проміжний = значення за замовчуванням .whfmt.</value>
+  </data>
+  <data name="CodeEditorOptions_SpaceAfterCommaContent" xml:space="preserve">
+    <value>Пробіл після ком</value>
+  </data>
+  <data name="CodeEditorOptions_SpaceAfterCommaToolTip" xml:space="preserve">
+    <value>Вставляє пробіл після ком у списках аргументів/параметрів. Проміжний = значення за замовчуванням .whfmt.</value>
+  </data>
+  <data name="CodeEditorOptions_IndentCaseLabelsContent" xml:space="preserve">
+    <value>Відступ для міток case/when</value>
+  </data>
+  <data name="CodeEditorOptions_IndentCaseLabelsToolTip" xml:space="preserve">
+    <value>Додає рівень відступу для міток case/when у switch. Проміжний = значення за замовчуванням .whfmt.</value>
+  </data>
+  <data name="CodeEditorOptions_OrganizeImportsContent" xml:space="preserve">
+    <value>Упорядковувати імпорти при форматуванні</value>
+  </data>
+  <data name="CodeEditorOptions_OrganizeImportsToolTip" xml:space="preserve">
+    <value>Сортує директиви using/import за алфавітом при форматуванні. Проміжний = значення за замовчуванням .whfmt.</value>
+  </data>
+  <data name="CodeEditorOptions_SyntaxColorsSection" xml:space="preserve">
+    <value>Кольори синтаксису</value>
+  </data>
+  <data name="CodeEditorOptions_ResetColorsButton" xml:space="preserve">
+    <value>Скинути до теми</value>
+  </data>
+  <data name="CodeEditorOptions_ColorPickButton" xml:space="preserve">
+    <value>Вибрати</value>
+  </data>
+  <data name="FormatScriptEditor_NewToolTip" xml:space="preserve">
+    <value>Нове визначення формату</value>
+  </data>
+  <data name="FormatScriptEditor_OpenToolTip" xml:space="preserve">
+    <value>Відкрити визначення формату</value>
+  </data>
+  <data name="FormatScriptEditor_SaveToolTip" xml:space="preserve">
+    <value>Зберегти поточний файл</value>
+  </data>
+  <data name="FormatScriptEditor_UndoToolTip" xml:space="preserve">
+    <value>Скасувати (Ctrl+Z)</value>
+  </data>
+  <data name="FormatScriptEditor_RedoToolTip" xml:space="preserve">
+    <value>Повторити (Ctrl+Y)</value>
+  </data>
+  <data name="FormatScriptEditor_FormatToolTip" xml:space="preserve">
+    <value>Форматувати JSON (Ctrl+Shift+F)</value>
+  </data>
+  <data name="FormatScriptEditor_ValidateToolTip" xml:space="preserve">
+    <value>Перевірити визначення формату</value>
+  </data>
+  <data name="FormatScriptEditor_NoFileLoaded" xml:space="preserve">
+    <value>Файл не завантажено</value>
+  </data>
+  <data name="FormatScriptEditor_EmbeddedFormatsHeader" xml:space="preserve">
+    <value>Вбудовані формати</value>
+  </data>
+  <data name="FormatScriptEditor_EditorTabHeader" xml:space="preserve">
+    <value>Редактор</value>
+  </data>
+  <data name="FormatScriptEditor_PreviewPlaceholder" xml:space="preserve">
+    <value>Завантажте визначення формату для попереднього перегляду...</value>
+  </data>
+  <data name="FormatScriptEditor_ValidationTabHeader" xml:space="preserve">
+    <value>Перевірка</value>
+  </data>
+  <data name="FormatScriptEditor_ValidationResultsHeader" xml:space="preserve">
+    <value>Результати перевірки</value>
+  </data>
+  <data name="FormatScriptEditor_SelectTestFileButton" xml:space="preserve">
+    <value>Вибрати тестовий файл...</value>
+  </data>
+  <data name="FormatScriptEditor_RunTestButton" xml:space="preserve">
+    <value>Запустити тест</value>
+  </data>
+  <data name="FormatScriptEditor_TestInstructions" xml:space="preserve">
+    <value>Тестуйте визначення формату з прикладами файлів тут.\n\nВиберіть файл і натисніть «Запустити тест» для перегляду результатів.</value>
+  </data>
+  <data name="CodeEditorSettings_NoEditorMessage" xml:space="preserve">
+    <value>Жоден елемент керування CodeEditor не підключено.</value>
+  </data>
+  <data name="CodeEditorSettings_NoEditorTitle" xml:space="preserve">
+    <value>Помилка</value>
+  </data>
+  <data name="CodeEditorSettings_ResetConfirmMessage" xml:space="preserve">
+    <value>Ви впевнені, що хочете скинути всі параметри до значень за замовчуванням?</value>
+  </data>
+  <data name="CodeEditorSettings_ResetConfirmTitle" xml:space="preserve">
+    <value>Підтвердити скидання</value>
+  </data>
+  <data name="CodeEditorSettings_ExportDialogTitle" xml:space="preserve">
+    <value>Експортувати параметри</value>
+  </data>
+  <data name="CodeEditorSettings_ExportSuccessMessage" xml:space="preserve">
+    <value>Параметри успішно експортовано до:\n{0}</value>
+  </data>
+  <data name="CodeEditorSettings_ExportSuccessTitle" xml:space="preserve">
+    <value>Експортування успішне</value>
+  </data>
+  <data name="CodeEditorSettings_ExportFailedMessage" xml:space="preserve">
+    <value>Не вдалося експортувати параметри:\n{0}</value>
+  </data>
+  <data name="CodeEditorSettings_ExportFailedTitle" xml:space="preserve">
+    <value>Помилка експортування</value>
+  </data>
+  <data name="CodeEditorSettings_ImportDialogTitle" xml:space="preserve">
+    <value>Імпортувати параметри</value>
+  </data>
+  <data name="CodeEditorSettings_ImportSuccessMessage" xml:space="preserve">
+    <value>Параметри успішно імпортовано з:\n{0}</value>
+  </data>
+  <data name="CodeEditorSettings_ImportSuccessTitle" xml:space="preserve">
+    <value>Імпортування успішне</value>
+  </data>
+  <data name="CodeEditorSettings_ImportFailedMessage" xml:space="preserve">
+    <value>Не вдалося імпортувати параметри:\n{0}</value>
+  </data>
+  <data name="CodeEditorSettings_ImportFailedTitle" xml:space="preserve">
+    <value>Помилка імпортування</value>
+  </data>
+  <data name="CodeEditorSettings_ResetCompleteMessage" xml:space="preserve">
+    <value>Всі параметри скинуто до значень за замовчуванням.</value>
+  </data>
+  <data name="CodeEditorSettings_ResetCompleteTitle" xml:space="preserve">
+    <value>Скидання завершено</value>
+  </data>
+  <data name="FormatScriptEditor_LoadFormatsError" xml:space="preserve">
+    <value>Не вдалося завантажити вбудовані формати: {0}</value>
+  </data>
+  <data name="FormatScriptEditor_OpenDialogTitle" xml:space="preserve">
+    <value>Відкрити визначення формату</value>
+  </data>
+  <data name="FormatScriptEditor_SaveDialogTitle" xml:space="preserve">
+    <value>Зберегти визначення формату</value>
+  </data>
+  <data name="FormatScriptEditor_FormatJsonError" xml:space="preserve">
+    <value>Не вдалося форматувати JSON: {0}</value>
+  </data>
+  <data name="FormatScriptEditor_FormatJsonErrorTitle" xml:space="preserve">
+    <value>Помилка форматування</value>
+  </data>
+  <data name="FormatScriptEditor_LoadFileError" xml:space="preserve">
+    <value>Не вдалося завантажити файл: {0}</value>
+  </data>
+  <data name="FormatScriptEditor_LoadEmbeddedError" xml:space="preserve">
+    <value>Не вдалося завантажити вбудований формат: {0}</value>
+  </data>
+  <data name="FormatScriptEditor_SaveSuccessMessage" xml:space="preserve">
+    <value>Файл успішно збережено!</value>
+  </data>
+  <data name="FormatScriptEditor_SaveSuccessTitle" xml:space="preserve">
+    <value>Успіх</value>
+  </data>
+  <data name="FormatScriptEditor_SaveFailedMessage" xml:space="preserve">
+    <value>Не вдалося зберегти файл: {0}</value>
+  </data>
+  <data name="FormatScriptEditor_SaveChangesMessage" xml:space="preserve">
+    <value>Зберегти зміни поточного файлу?</value>
+  </data>
+  <data name="FormatScriptEditor_SaveChangesTitle" xml:space="preserve">
+    <value>Зберегти зміни</value>
+  </data>
+  <data name="FormatScriptEditor_StatusErrors" xml:space="preserve">
+    <value>{0} помилок</value>
+  </data>
+  <data name="FormatScriptEditor_StatusWarnings" xml:space="preserve">
+    <value>{0} попереджень</value>
+  </data>
+  <data name="CodeEditor_ContextMenuSelectAll" xml:space="preserve">
+    <value>Вибрати все</value>
+  </data>
+  <data name="CodeEditor_ContextMenuDelete" xml:space="preserve">
+    <value>Видалити</value>
+  </data>
+  <data name="CodeEditor_ContextMenuFind" xml:space="preserve">
+    <value>Знайти...</value>
+  </data>
+  <data name="CodeEditor_ContextMenuReplace" xml:space="preserve">
+    <value>Замінити...</value>
+  </data>
+  <data name="CodeEditor_ContextMenuFindAllRefs" xml:space="preserve">
+    <value>Знайти всі посилання</value>
+  </data>
+  <data name="CodeEditor_ContextMenuQuickFix" xml:space="preserve">
+    <value>Швидке виправлення…</value>
+  </data>
+  <data name="CodeEditor_ContextMenuRenameSymbol" xml:space="preserve">
+    <value>Перейменувати символ</value>
+  </data>
+  <data name="CodeEditor_ContextMenuGoToDefinition" xml:space="preserve">
+    <value>Перейти до визначення</value>
+  </data>
+  <data name="CodeEditor_ContextMenuGoToImplementation" xml:space="preserve">
+    <value>Перейти до реалізації</value>
+  </data>
+  <data name="CodeEditor_ContextMenuPeekDefinition" xml:space="preserve">
+    <value>Попередній перегляд визначення</value>
+  </data>
+  <data name="CodeEditor_ContextMenuShowCallHierarchy" xml:space="preserve">
+    <value>Показати ієрархію викликів</value>
+  </data>
+  <data name="CodeEditor_ContextMenuShowTypeHierarchy" xml:space="preserve">
+    <value>Показати ієрархію типів</value>
+  </data>
+  <data name="CodeEditor_ContextMenuFormatting" xml:space="preserve">
+    <value>Форматування</value>
+  </data>
+  <data name="CodeEditor_ContextMenuFormatDocument" xml:space="preserve">
+    <value>Форматувати документ</value>
+  </data>
+  <data name="CodeEditor_ContextMenuFormatSelection" xml:space="preserve">
+    <value>Форматувати виділення</value>
+  </data>
+  <data name="CodeEditor_ContextMenuOutlining" xml:space="preserve">
+    <value>Структура</value>
+  </data>
+  <data name="CodeEditor_ContextMenuToggleOutlining" xml:space="preserve">
+    <value>Перемкнути структуру</value>
+  </data>
+  <data name="CodeEditor_ContextMenuToggleAllOutlining" xml:space="preserve">
+    <value>Перемкнути всю структуру</value>
+  </data>
+  <data name="CodeEditor_ContextMenuStopOutlining" xml:space="preserve">
+    <value>Зупинити структуру</value>
+  </data>
+  <data name="CodeEditor_ContextMenuStopHidingCurrent" xml:space="preserve">
+    <value>Зупинити приховування поточного</value>
+  </data>
+  <data name="CodeEditor_ContextMenuCollapseToDefs" xml:space="preserve">
+    <value>Згорнути до визначень</value>
+  </data>
+  <data name="CodeEditor_ContextMenuWordWrap" xml:space="preserve">
+    <value>Перенесення рядків</value>
+  </data>
+  <data name="CodeEditor_ContextMenuColumnRulers" xml:space="preserve">
+    <value>Лінійки стовпців</value>
+  </data>
+  <data name="CodeEditor_ContextMenuShowWhitespace" xml:space="preserve">
+    <value>Показати пробіли</value>
+  </data>
+  <data name="CodeEditor_ContextMenuWhitespaceNone" xml:space="preserve">
+    <value>Немає</value>
+  </data>
+  <data name="CodeEditor_ContextMenuWhitespaceSelection" xml:space="preserve">
+    <value>Лише виділення</value>
+  </data>
+  <data name="CodeEditor_ContextMenuWhitespaceAlways" xml:space="preserve">
+    <value>Завжди</value>
+  </data>
+  <data name="CodeEditor_ContextMenuRefreshHighlights" xml:space="preserve">
+    <value>Оновити підсвічування</value>
+  </data>
+  <data name="CodeEditor_ContextMenuReanalyzeFolding" xml:space="preserve">
+    <value>Переаналізувати згортання</value>
+  </data>
+  <data name="CodeEditor_ContextMenuWordHighlight" xml:space="preserve">
+    <value>Підсвічування слова</value>
+  </data>
+  <data name="CodeEditor_FormatDocumentTransaction" xml:space="preserve">
+    <value>Форматувати документ</value>
+  </data>
+  <data name="CodeEditor_FormatSelectionTransaction" xml:space="preserve">
+    <value>Форматувати виділення</value>
+  </data>
+  <data name="CodeEditor_FormatJsonError" xml:space="preserve">
+    <value>Неможливо форматувати — недійсний JSON:\n{0}</value>
+  </data>
+  <data name="CodeEditor_FormatJsonErrorTitle" xml:space="preserve">
+    <value>Помилка форматування</value>
+  </data>
+  <data name="CodeEditor_ValidateJsonSuccess" xml:space="preserve">
+    <value>JSON дійсний.</value>
+  </data>
+  <data name="CodeEditor_ValidateJsonTitle" xml:space="preserve">
+    <value>Перевірка</value>
+  </data>
+  <data name="CodeEditor_ValidateJsonError" xml:space="preserve">
+    <value>Недійсний JSON: {0}</value>
+  </data>
+  <data name="CodeEditor_ValidateJsonErrorTitle" xml:space="preserve">
+    <value>Помилка перевірки</value>
+  </data>
+  <data name="CodeEditor_GoToLineTitle" xml:space="preserve">
+    <value>Перейти до рядка</value>
+  </data>
+  <data name="CodeEditor_GoToLineLabel" xml:space="preserve">
+    <value>Номер рядка (1 - {0}):</value>
+  </data>
+  <data name="CodeEditor_GoToLineButton" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="CodeEditor_BreakpointToggleToolTip" xml:space="preserve">
+    <value>Натисніть для перемикання точки зупину</value>
+  </data>
+  <data name="CodeEditor_BreakpointInvalidToolTip" xml:space="preserve">
+    <value>Неможливо встановити точку зупину на цьому рядку</value>
+  </data>
+  <data name="CodeEditor_UrlTooltipEmail" xml:space="preserve">
+    <value>Ctrl+Click для надсилання листа</value>
+  </data>
+  <data name="CodeEditor_UrlTooltipLink" xml:space="preserve">
+    <value>Ctrl+Click для відкриття</value>
+  </data>
+  <data name="CodeEditor_ReferencesCollapseAll" xml:space="preserve">
+    <value>Згорнути все</value>
+  </data>
+  <data name="CodeEditor_ReferencesExpandAll" xml:space="preserve">
+    <value>Розгорнути все</value>
+  </data>
+  <data name="CodeEditor_ReferencesTitle" xml:space="preserve">
+    <value>Посилання — {0}</value>
+  </data>
+  <data name="CodeEditor_ReferencesCounter" xml:space="preserve">
+    <value>{0} посилань</value>
+  </data>
+  <data name="CodeEditor_ReferencesRefresh" xml:space="preserve">
+    <value>Оновити</value>
+  </data>
+  <data name="CodeEditor_ReferencesPinTooltip" xml:space="preserve">
+    <value>Закріпити на панелі «Знайти посилання»</value>
+  </data>
+  <data name="CodeEditor_BreakpointDisable" xml:space="preserve">
+    <value>Вимкнути</value>
+  </data>
+  <data name="CodeEditor_BreakpointEnable" xml:space="preserve">
+    <value>Увімкнути</value>
+  </data>
+  <data name="CodeEditor_BreakpointTypeDisabled" xml:space="preserve">
+    <value>Вимкнено</value>
+  </data>
+  <data name="CodeEditor_BreakpointTypeConditional" xml:space="preserve">
+    <value>Умовна</value>
+  </data>
+  <data name="CodeEditor_BreakpointTypeBreakpoint" xml:space="preserve">
+    <value>Точка зупину</value>
+  </data>
+  <data name="CodeEditor_BreakpointEditCondition" xml:space="preserve">
+    <value>Редагувати умову</value>
+  </data>
+  <data name="CodeEditor_BreakpointDeleteBreakpoint" xml:space="preserve">
+    <value>Видалити точку зупину</value>
+  </data>
+  <data name="CodeEditor_BreakpointDelete" xml:space="preserve">
+    <value>Видалити</value>
+  </data>
+  <data name="CodeEditor_BreakpointSave" xml:space="preserve">
+    <value>Зберегти</value>
+  </data>
+  <data name="CodeEditor_BreakpointConditionLabel" xml:space="preserve">
+    <value>Умова:</value>
+  </data>
+  <data name="CodeEditor_BreakpointSettings" xml:space="preserve">
+    <value>Параметри…</value>
+  </data>
+  <data name="CodeEditor_DisplayName" xml:space="preserve">
+    <value>Редактор коду</value>
+  </data>
+  <data name="CodeEditor_GoToLine" xml:space="preserve">
+    <value>Перейти до рядка</value>
+  </data>
+  <data name="CodeEd_FindRef_CollapseAll" xml:space="preserve">
+    <value>Згорнути все</value>
+  </data>
+  <data name="CodeEd_Minimap_MenuTitle" xml:space="preserve">
+    <value>_Мінікарта</value>
+  </data>
+  <data name="CodeEd_Minimap_RenderChars" xml:space="preserve">
+    <value>Показати _символи</value>
+  </data>
+  <data name="CodeEd_Minimap_VerticalSize" xml:space="preserve">
+    <value>_Вертикальний розмір</value>
+  </data>
+  <data name="CodeEd_Minimap_SizeProportional" xml:space="preserve">
+    <value>Пропорційний</value>
+  </data>
+  <data name="CodeEd_Minimap_SizeFill" xml:space="preserve">
+    <value>Заповнити</value>
+  </data>
+  <data name="CodeEd_Minimap_SizeFit" xml:space="preserve">
+    <value>Вмістити</value>
+  </data>
+  <data name="CodeEd_Minimap_Slider" xml:space="preserve">
+    <value>_Повзунок</value>
+  </data>
+  <data name="CodeEd_Minimap_SliderAlways" xml:space="preserve">
+    <value>Завжди</value>
+  </data>
+  <data name="CodeEd_Minimap_SliderMouseOver" xml:space="preserve">
+    <value>При наведенні</value>
+  </data>
+  <data name="CodeEd_Minimap_Side" xml:space="preserve">
+    <value>_Сторона</value>
+  </data>
+  <data name="CodeEd_Minimap_SideLeft" xml:space="preserve">
+    <value>Ліворуч</value>
+  </data>
+  <data name="CodeEd_Minimap_SideRight" xml:space="preserve">
+    <value>Праворуч</value>
+  </data>
+  <data name="CodeEd_Refs_CollapseAll" xml:space="preserve">
+    <value>Згорнути все</value>
+  </data>
+  <data name="CodeEd_Refs_Refresh" xml:space="preserve">
+    <value>Оновити</value>
+  </data>
+  <data name="CodeEd_Refs_ExpandAll" xml:space="preserve">
+    <value>Розгорнути все</value>
+  </data>
+
+</root>

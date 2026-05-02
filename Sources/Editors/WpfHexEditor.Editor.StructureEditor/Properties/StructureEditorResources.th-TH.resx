@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfHexEditor.Editor.StructureEditor
+    File        : StructureEditorResources.fr-CA.resx
+    Description : Localized UI strings for the Structure Editor.
+-->
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:any minOccurs="0" />
+              </xsd:sequence>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="SE_ColOffset" xml:space="preserve">
+    <value>Offset</value>
+  </data>
+  <data name="SE_ColStrength" xml:space="preserve">
+    <value>ความแข็งแกร่ง</value>
+  </data>
+  <data name="SE_ColRequired" xml:space="preserve">
+    <value>จำเป็น</value>
+  </data>
+  <data name="StructureEditor_AddBlockTitle" xml:space="preserve"><value>เพิ่มบล็อก</value></data>
+  <data name="StructureEditor_AddBlockButton" xml:space="preserve"><value>เพิ่ม</value></data>
+  <data name="StructureEditor_AddBlockCancel" xml:space="preserve"><value>เลิกทำ</value></data>
+  <data name="StructureEditor_TabMetadata" xml:space="preserve"><value>ข้อมูลเมตา</value></data>
+  <data name="StructureEditor_TabDetection" xml:space="preserve"><value>การตรวจจับ</value></data>
+  <data name="StructureEditor_TabBlocks" xml:space="preserve"><value>บล็อก</value></data>
+  <data name="StructureEditor_TabVariables" xml:space="preserve"><value>ตัวแปร</value></data>
+  <data name="StructureEditor_TabAdvanced" xml:space="preserve"><value>ขั้นสูง</value></data>
+  <data name="StructureEditor_TabQuality" xml:space="preserve"><value>คุณภาพ</value></data>
+  <data name="StructureEditor_TabTest" xml:space="preserve"><value>Test</value></data>
+  <data name="StructureEditor_SaveToolTip" xml:space="preserve"><value>บันทึก (Ctrl+S)</value></data>
+  <data name="StructureEditor_ValidateToolTip" xml:space="preserve"><value>ตรวจสอบ (Ctrl+Shift+V)</value></data>
+  <data name="StructureEditor_UndoToolTip" xml:space="preserve"><value>เลิกทำ (Ctrl+Z)</value></data>
+  <data name="StructureEditor_RedoToolTip" xml:space="preserve"><value>ทำซ้ำ (Ctrl+Y)</value></data>
+  <data name="StructureEditor_LiveCodeViewToolTip" xml:space="preserve"><value>สลับมุมมองโค้ดสด</value></data>
+  <data name="StructureEditor_AddBlockToolTip" xml:space="preserve"><value>เพิ่มบล็อก (Ctrl+N)</value></data>
+  <data name="StructureEditor_DuplicateBlockToolTip" xml:space="preserve"><value>ทำซ้ำบล็อก (Ctrl+D)</value></data>
+  <data name="StructureEditor_UnsavedChangesToolTip" xml:space="preserve"><value>การเปลี่ยนแปลงที่ยังไม่ได้บันทึก</value></data>
+  <data name="StructureEditor_BlocksFilterToolTip" xml:space="preserve"><value>กรองบล็อกตามชื่อ</value></data>
+  <data name="StructureEditor_BlocksAddMenuItem" xml:space="preserve"><value>เพิ่มบล็อก...</value></data>
+  <data name="StructureEditor_BlocksDuplicateMenuItem" xml:space="preserve"><value>ทำซ้ำ</value></data>
+  <data name="StructureEditor_BlocksRemoveMenuItem" xml:space="preserve"><value>ลบ</value></data>
+  <data name="StructureEditor_BlocksMoveUpMenuItem" xml:space="preserve"><value>ขึ้น</value></data>
+  <data name="StructureEditor_BlocksMoveDownMenuItem" xml:space="preserve"><value>ลง</value></data>
+  <data name="StructureEditor_BlocksCopyJsonMenuItem" xml:space="preserve"><value>คัดลอกเป็น JSON</value></data>
+  <data name="StructureEditor_BlocksPasteMenuItem" xml:space="preserve"><value>วางบล็อก</value></data>
+  <data name="StructureEditor_BlocksEmptyLine1" xml:space="preserve"><value>เลือกบล็อกเพื่อแก้ไขคุณสมบัติ</value></data>
+  <data name="StructureEditor_BlocksEmptyLine2" xml:space="preserve"><value>หรือกด Ctrl+N / คลิกขวาเพื่อเพิ่มบล็อกใหม่</value></data>
+  <data name="StructureEditor_DetectionHexSigLabel" xml:space="preserve"><value>ลายเซ็นเลขฐานสิบหก</value></data>
+  <data name="StructureEditor_DetectionHexBytesToolTip" xml:space="preserve"><value>ไบต์ hex ไม่มีช่องว่าง เช่น 89504E47 สำหรับ PNG</value></data>
+  <data name="StructureEditor_DetectionSigLabel" xml:space="preserve"><value>ลายเซ็น</value></data>
+  <data name="StructureEditor_DetectionV2SigsLabel" xml:space="preserve"><value>ลายเซ็น v2.0</value></data>
+  <data name="StructureEditor_DetectionMatchModeLabel" xml:space="preserve"><value>โหมดการจับคู่</value></data>
+  <data name="StructureEditor_DetectionHexValueToolTip" xml:space="preserve"><value>ค่า hex</value></data>
+  <data name="StructureEditor_DetectionOffsetToolTip" xml:space="preserve"><value>Offset</value></data>
+  <data name="StructureEditor_DetectionLabelToolTip" xml:space="preserve"><value>ป้ายกำกับ</value></data>
+  <data name="StructureEditor_DetectionAddSigButton" xml:space="preserve"><value>＋ เพิ่มลายเซ็น</value></data>
+  <data name="StructureEditor_DetectionEntropyLabel" xml:space="preserve"><value>ดัชนีเอนโทรปี</value></data>
+  <data name="StructureEditor_DetectionMinEntropyLabel" xml:space="preserve"><value>เอนโทรปีต่ำสุด</value></data>
+  <data name="StructureEditor_DetectionMaxEntropyLabel" xml:space="preserve"><value>เอนโทรปีสูงสุด</value></data>
+  <data name="StructureEditor_DetectionMinScoreLabel" xml:space="preserve"><value>คะแนนต่ำสุด</value></data>
+  <data name="StructureEditor_DetectionScoreThresholdLabel" xml:space="preserve"><value>เกณฑ์คะแนน</value></data>
+  <data name="StructureEditor_DetectionContentPatternsLabel" xml:space="preserve"><value>รูปแบบเนื้อหา (รูปแบบข้อความ)</value></data>
+  <data name="StructureEditor_DetectionRegexToolTip" xml:space="preserve"><value>รูปแบบ Regex</value></data>
+  <data name="StructureEditor_DetectionAddPatternButton" xml:space="preserve"><value>＋ เพิ่มรูปแบบ</value></data>
+  <data name="StructureEditor_MetaCoreSection" xml:space="preserve"><value>ทั่วไป</value></data>
+  <data name="StructureEditor_MetaNameLabel" xml:space="preserve"><value>ชื่อรูปแบบ</value></data>
+  <data name="StructureEditor_MetaNameToolTip" xml:space="preserve"><value>ชื่อรูปแบบที่อ่านได้ (เช่น 'ZIP Archive', 'PNG Image')</value></data>
+  <data name="StructureEditor_MetaVersionLabel" xml:space="preserve"><value>Version</value></data>
+  <data name="StructureEditor_MetaVersionToolTip" xml:space="preserve"><value>เวอร์ชันของนิยามนี้ (เช่น '1.0', '2.0')</value></data>
+  <data name="StructureEditor_MetaAuthorLabel" xml:space="preserve"><value>Auteur</value></data>
+  <data name="StructureEditor_MetaAuthorToolTip" xml:space="preserve"><value>ผู้เขียนไฟล์นิยามนี้</value></data>
+  <data name="StructureEditor_MetaCategoryLabel" xml:space="preserve"><value>หมวดหมู่</value></data>
+  <data name="StructureEditor_MetaCategoryToolTip" xml:space="preserve"><value>หมวดหมู่ (กำหนดอัตโนมัติจากโครงสร้างโฟลเดอร์: Archives, Images, Audio, Video เป็นต้น)</value></data>
+  <data name="StructureEditor_MetaDiffModeLabel" xml:space="preserve"><value>โหมด diff</value></data>
+  <data name="StructureEditor_MetaDiffModeToolTip" xml:space="preserve"><value>อัลกอริทึม diff ที่ต้องการสำหรับ DiffViewer</value></data>
+  <data name="StructureEditor_MetaPreferredEditorLabel" xml:space="preserve"><value>ตัวแก้ไขที่ต้องการ</value></data>
+  <data name="StructureEditor_MetaPreferredEditorToolTip" xml:space="preserve"><value>รหัสโรงงานตัวแก้ไขที่ต้องการสำหรับไฟล์ที่ตรงกับรูปแบบนี้</value></data>
+  <data name="StructureEditor_MetaDescriptionLabel" xml:space="preserve"><value>คำอธิบาย</value></data>
+  <data name="StructureEditor_MetaIsTextFormat" xml:space="preserve"><value>รูปแบบข้อความ (เปิดในตัวแก้ไขโค้ดตามค่าเริ่มต้น)</value></data>
+  <data name="StructureEditor_MetaExtensionsLabel" xml:space="preserve"><value>นามสกุลไฟล์</value></data>
+  <data name="StructureEditor_MetaAddExtensionButton" xml:space="preserve"><value>＋ เพิ่มนามสกุล</value></data>
+  <data name="StructureEditor_MetaMimeTypesLabel" xml:space="preserve"><value>ประเภท MIME</value></data>
+  <data name="StructureEditor_MetaAddMimeButton" xml:space="preserve"><value>＋ เพิ่มประเภท MIME</value></data>
+  <data name="StructureEditor_MetaSoftwareLabel" xml:space="preserve"><value>ซอฟต์แวร์</value></data>
+  <data name="StructureEditor_MetaAddSoftwareButton" xml:space="preserve"><value>＋ เพิ่มซอฟต์แวร์</value></data>
+  <data name="StructureEditor_QualityComputedSection" xml:space="preserve"><value>เมตริกที่คำนวณ</value></data>
+  <data name="StructureEditor_QualityBlockCoverage" xml:space="preserve"><value>ความครอบคลุมบล็อก</value></data>
+  <data name="StructureEditor_QualityCompletenessScore" xml:space="preserve"><value>คะแนนความสมบูรณ์</value></data>
+  <data name="StructureEditor_QualityTypeDistribution" xml:space="preserve"><value>การกระจายประเภท</value></data>
+  <data name="StructureEditor_QualityBlocksLabel" xml:space="preserve"><value>บล็อก</value></data>
+  <data name="StructureEditor_QualityDepthLabel" xml:space="preserve"><value>ความลึก</value></data>
+  <data name="StructureEditor_QualityVariablesLabel" xml:space="preserve"><value>ตัวแปร</value></data>
+  <data name="StructureEditor_QualityRulesLabel" xml:space="preserve"><value>กฎ</value></data>
+  <data name="StructureEditor_QualityMetadataLabel" xml:space="preserve"><value>ข้อมูลเมตา</value></data>
+  <data name="StructureEditor_QualityDocLevel" xml:space="preserve"><value>ระดับเอกสาร</value></data>
+  <data name="StructureEditor_QualityLastUpdated" xml:space="preserve"><value>อัปเดตล่าสุด</value></data>
+  <data name="StructureEditor_QualityLastUpdatedToolTip" xml:space="preserve"><value>รูปแบบ: YYYY-MM-DD (เติมอัตโนมัติเมื่อบันทึก)</value></data>
+  <data name="StructureEditor_QualityPriorityFormat" xml:space="preserve"><value>รูปแบบลำดับความสำคัญ (100 อันดับแรก)</value></data>
+  <data name="StructureEditor_QualityAutoRefined" xml:space="preserve"><value>ปรับแต่งอัตโนมัติ (เสริมด้วยสคริปต์ — อ่านอย่างเดียว)</value></data>
+  <data name="StructureEditor_TestSection" xml:space="preserve"><value>ทดสอบรูปแบบบนไฟล์</value></data>
+  <data name="StructureEditor_TestFilePathToolTip" xml:space="preserve"><value>พาธไปยังไฟล์ไบนารีที่จะทดสอบ</value></data>
+  <data name="StructureEditor_TestBrowseButton" xml:space="preserve"><value>เรียกดู…</value></data>
+  <data name="StructureEditor_TestBrowseDialogTitle" xml:space="preserve"><value>เลือกไฟล์ไบนารีที่จะทดสอบ</value></data>
+  <data name="StructureEditor_TestRunButton" xml:space="preserve"><value>▶ เรียกใช้การทดสอบ</value></data>
+  <data name="StructureEditor_TestCopyToolTip" xml:space="preserve"><value>คัดลอกผลลัพธ์ไปยัง clipboard (TSV)</value></data>
+  <data name="StructureEditor_TestEmptyMessage" xml:space="preserve"><value>เลือกไฟล์แล้วคลิก ▶ เรียกใช้การทดสอบ เพื่อทดสอบนิยามรูปแบบปัจจุบัน</value></data>
+  <data name="StructureEditor_TestColStatus" xml:space="preserve"><value>สถานะ</value></data>
+  <data name="StructureEditor_TestColBlockName" xml:space="preserve"><value>ชื่อบล็อก</value></data>
+  <data name="StructureEditor_TestColType" xml:space="preserve"><value>Type</value></data>
+  <data name="StructureEditor_TestColOffset" xml:space="preserve"><value>Offset</value></data>
+  <data name="StructureEditor_TestColLen" xml:space="preserve"><value>Long.</value></data>
+  <data name="StructureEditor_TestColRaw" xml:space="preserve"><value>ดิบ (hex)</value></data>
+  <data name="StructureEditor_TestColParsed" xml:space="preserve"><value>ค่าที่วิเคราะห์</value></data>
+  <data name="StructureEditor_TestColNote" xml:space="preserve"><value>Note</value></data>
+  <data name="StructureEditor_TestFilterOk" xml:space="preserve"><value>✓ ตกลง</value></data>
+  <data name="StructureEditor_TestFilterWarning" xml:space="preserve"><value>⚠ คำเตือน</value></data>
+  <data name="StructureEditor_TestFilterError" xml:space="preserve"><value>✕ ข้อผิดพลาด</value></data>
+  <data name="StructureEditor_TestFilterSkipped" xml:space="preserve"><value>⊘ ข้ามไป</value></data>
+  <data name="StructureEditor_VarsDescription" xml:space="preserve"><value>ตัวแปรเริ่มต้นที่ใช้ได้สำหรับ interpreter บล็อก (เช่น ตัวนับลูป, offset ที่คำนวณ)</value></data>
+  <data name="StructureEditor_VarsFilterToolTip" xml:space="preserve"><value>กรองตัวแปรตามชื่อ</value></data>
+  <data name="StructureEditor_VarsColName" xml:space="preserve"><value>ชื่อตัวแปร</value></data>
+  <data name="StructureEditor_VarsColType" xml:space="preserve"><value>Type</value></data>
+  <data name="StructureEditor_VarsColInitialValue" xml:space="preserve"><value>ค่าเริ่มต้น</value></data>
+  <data name="StructureEditor_VarsColDescription" xml:space="preserve"><value>คำอธิบาย</value></data>
+  <data name="StructureEditor_VarsAddButton" xml:space="preserve"><value>＋ เพิ่มตัวแปร</value></data>
+  <data name="StructureEditor_V2AssertionsHeader" xml:space="preserve"><value>Assertions</value></data>
+  <data name="StructureEditor_V2AssertionPlaceholder" xml:space="preserve"><value>var:nom equals 0 or calc:expr</value></data>
+  <data name="StructureEditor_V2AssertionToolTip" xml:space="preserve"><value>Expression booléenne — Ctrl+Space pour les fonctions et variables</value></data>
+  <data name="StructureEditor_V2ChecksumsHeader" xml:space="preserve"><value>เช็คซัม</value></data>
+  <data name="StructureEditor_V2VersioningHeader" xml:space="preserve"><value>การจัดการเวอร์ชัน (VersionDetection / VersionedBlocks)</value></data>
+  <data name="StructureEditor_V2ImportsHeader" xml:space="preserve"><value>การนำเข้า ($ref Composition)</value></data>
+  <data name="StructureEditor_V2ImportsDescription" xml:space="preserve"><value>ref = ชื่อรูปแบบ (หรือ structs/ชื่อ), as = นามแฝงที่ใช้ในบล็อก structRef</value></data>
+  <data name="StructureEditor_V2ImportRefToolTip" xml:space="preserve"><value>การอ้างอิงรูปแบบ เช่น structs/PE_OptionalHeader</value></data>
+  <data name="StructureEditor_V2ImportAliasToolTip" xml:space="preserve"><value>นามแฝงที่ใช้ใน structRef เช่น PEOpt</value></data>
+  <data name="StructureEditor_V2AddImportButton" xml:space="preserve"><value>+ เพิ่มการนำเข้า</value></data>
+  <data name="StructureEditor_V2ForensicHeader" xml:space="preserve"><value>นิติวิทยาศาสตร์</value></data>
+  <data name="StructureEditor_V2NavBookmarksHeader" xml:space="preserve"><value>bookmark นำทาง</value></data>
+  <data name="StructureEditor_V2BookmarkPlaceholder" xml:space="preserve"><value>ชื่อตัวแปร</value></data>
+  <data name="StructureEditor_V2BookmarkToolTip" xml:space="preserve"><value>ตัวแปรที่มี offset ไบต์ — Ctrl+Space สำหรับคำแนะนำ</value></data>
+  <data name="StructureEditor_V2AddBookmarkButton" xml:space="preserve"><value>＋ เพิ่ม bookmark</value></data>
+  <data name="StructureEditor_V2InspectorLayoutHeader" xml:space="preserve"><value>เค้าโครง inspector</value></data>
+  <data name="StructureEditor_V2ExportTemplatesHeader" xml:space="preserve"><value>เทมเพลตการส่งออก</value></data>
+  <data name="StructureEditor_V2AddTemplateButton" xml:space="preserve"><value>＋ เพิ่มเทมเพลต</value></data>
+  <data name="StructureEditor_V2AIHintsHeader" xml:space="preserve"><value>คำแนะนำ AI</value></data>
+  <data name="StructureEditor_TypeHintField" xml:space="preserve"><value>ฟิลด์ไบนารีที่มี offset และความยาวคงที่หรือตัวแปร</value></data>
+  <data name="StructureEditor_TypeHintSignature" xml:space="preserve"><value>ไบต์วิเศษที่ระบุรูปแบบที่ offset เฉพาะ</value></data>
+  <data name="StructureEditor_TypeHintMetadata" xml:space="preserve"><value>อ่านค่าความยาวตัวแปรหรือสัญลักษณ์เข้าไปในตัวแปรที่มีชื่อ</value></data>
+  <data name="StructureEditor_TypeHintConditional" xml:space="preserve"><value>วิเคราะห์บล็อกตามเงื่อนไขตามค่าฟิลด์หรือตัวแปร</value></data>
+  <data name="StructureEditor_TypeHintLoop" xml:space="preserve"><value>ทำซ้ำเนื้อหาบล็อกตราบเท่าที่เงื่อนไขเป็นจริง</value></data>
+  <data name="StructureEditor_TypeHintAction" xml:space="preserve"><value>แก้ไขตัวแปร (เพิ่ม, ลด, setVariable)</value></data>
+  <data name="StructureEditor_TypeHintCompute" xml:space="preserve"><value>ประเมินนิพจน์ทางคณิตศาสตร์และเก็บผลลัพธ์</value></data>
+  <data name="StructureEditor_TypeHintRepeating" xml:space="preserve"><value>วิเคราะห์อาร์เรย์ที่มีจำนวนรายการที่มีโครงสร้างคงที่</value></data>
+  <data name="StructureEditor_TypeHintUnion" xml:space="preserve"><value>เลือกชุดบล็อก variant ตามตัวแปร discriminant</value></data>
+  <data name="StructureEditor_TypeHintNested" xml:space="preserve"><value>รวมนิยามโครงสร้างภายนอกผ่านการอ้างอิง</value></data>
+  <data name="StructureEditor_TypeHintPointer" xml:space="preserve"><value>สร้างคำอธิบายประกอบการนำทางไปยัง offset ที่ชี้</value></data>
+  <data name="StructureEditor_ValidationErrorCount" xml:space="preserve"><value>{0} ข้อผิดพลาด</value></data>
+  <data name="StructureEditor_ValidationWarningCount" xml:space="preserve"><value>{0} คำเตือน</value></data>
+  <data name="StructureEditor_RawJsonTitle" xml:space="preserve"><value>JSON ดิบ — {0}</value></data>
+  <data name="StructureEditor_RawJsonApply" xml:space="preserve"><value>ใช้</value></data>
+  <data name="StructureEditor_RawJsonCancel" xml:space="preserve"><value>เลิกทำ</value></data>
+  <data name="StructureEditor_FactoryDisplayName" xml:space="preserve"><value>ตัวแก้ไขโครงสร้าง</value></data>
+  <data name="StructureEditor_FactoryDescription" xml:space="preserve"><value>ตัวแก้ไขภาพสำหรับไฟล์นิยามโครงสร้าง .whfmt แก้ไขบล็อก ประเภท offset ความยาว และสีในตาราง</value></data>
+  <data name="StructureEd_ConditionRow_LengthLabel" xml:space="preserve"><value>ความยาว:</value></data>
+  <data name="StrTb_Validate" xml:space="preserve"><value>ตรวจสอบ (Ctrl+Shift+V)</value></data>
+  <data name="StrTb_AddBlock" xml:space="preserve"><value>เพิ่มบล็อก (Ctrl+N)</value></data>
+  <data name="StrTb_ToggleLiveCode" xml:space="preserve"><value>สลับมุมมองโค้ดสด</value></data>
+  <data name="StrTb_LayoutLabel" xml:space="preserve"><value>เค้าโครง</value></data>
+  <data name="StrTb_LayoutTooltip" xml:space="preserve"><value>เค้าโครงมุมมองโค้ด</value></data>
+  <data name="StrLayout_CodeRight" xml:space="preserve"><value>โค้ดด้านขวา</value></data>
+  <data name="StrLayout_CodeLeft" xml:space="preserve"><value>โค้ดด้านซ้าย</value></data>
+  <data name="StrLayout_CodeBottom" xml:space="preserve"><value>โค้ดด้านล่าง</value></data>
+  <data name="StrLayout_CodeTop" xml:space="preserve"><value>โค้ดด้านบน</value></data>
+  <data name="StrSb_FormatLabel" xml:space="preserve"><value>รูปแบบ</value></data>
+  <data name="StrSb_TabLabel" xml:space="preserve"><value>แท็บ</value></data>
+  <data name="StrSb_BlocksLabel" xml:space="preserve"><value>บล็อก</value></data>
+  <data name="StrSb_ValidationLabel" xml:space="preserve"><value>การตรวจสอบ</value></data>
+  <data name="SE_PropName" xml:space="preserve"><value>ชื่อ</value></data>
+  <data name="SE_PropType" xml:space="preserve"><value>Type</value></data>
+  <data name="SE_PropColor" xml:space="preserve"><value>สี</value></data>
+  <data name="SE_PropOpacity" xml:space="preserve"><value>ความทึบ</value></data>
+  <data name="SE_PropDescription" xml:space="preserve"><value>คำอธิบาย</value></data>
+  <data name="SE_PropHidden" xml:space="preserve"><value>ซ่อน</value></data>
+  <data name="SE_PropEndianness" xml:space="preserve"><value>Endianness</value></data>
+  <data name="SE_BlockType" xml:space="preserve"><value>ประเภทบล็อก</value></data>
+  <data name="SE_BE_Action" xml:space="preserve"><value>Action</value></data>
+  <data name="SE_BE_Variable" xml:space="preserve"><value>Variable</value></data>
+  <data name="SE_BE_Value" xml:space="preserve"><value>ค่า</value></data>
+  <data name="SE_BE_Computation" xml:space="preserve"><value>การคำนวณ</value></data>
+  <data name="SE_BE_Expression" xml:space="preserve"><value>นิพจน์</value></data>
+  <data name="SE_BE_StoreAs" xml:space="preserve"><value>เก็บเป็น</value></data>
+  <data name="SE_BE_Position" xml:space="preserve"><value>ตำแหน่ง</value></data>
+  <data name="SE_BE_Offset" xml:space="preserve"><value>Offset</value></data>
+  <data name="SE_BE_OffsetFrom" xml:space="preserve"><value>Offset จาก</value></data>
+  <data name="SE_BE_OffsetAdd" xml:space="preserve"><value>Offset ที่เพิ่ม</value></data>
+  <data name="SE_BE_Length" xml:space="preserve"><value>ความยาว</value></data>
+  <data name="SE_BE_ValueType" xml:space="preserve"><value>ประเภทค่า</value></data>
+  <data name="SE_BE_Array" xml:space="preserve"><value>อาร์เรย์</value></data>
+  <data name="SE_BE_Count" xml:space="preserve"><value>จำนวน</value></data>
+  <data name="SE_BE_EntrySize" xml:space="preserve"><value>ขนาดรายการ</value></data>
+  <data name="SE_BE_IndexVar" xml:space="preserve"><value>ตัวแปรดัชนี</value></data>
+  <data name="SE_BE_ColorCycle" xml:space="preserve"><value>วัฏจักรสี</value></data>
+  <data name="SE_BE_EntryFieldsHint" xml:space="preserve"><value>ฟิลด์รายการจะแสดงเป็นลูกในแผนผัง</value></data>
+  <data name="SE_BE_Union" xml:space="preserve"><value>Union</value></data>
+  <data name="SE_BE_Discriminant" xml:space="preserve"><value>Discriminant</value></data>
+  <data name="SE_BE_Variants" xml:space="preserve"><value>ตัวแปร</value></data>
+  <data name="SE_BE_NestedStruct" xml:space="preserve"><value>โครงสร้างซ้อนกัน</value></data>
+  <data name="SE_BE_StructRef" xml:space="preserve"><value>อ้างอิงโครงสร้าง</value></data>
+  <data name="SE_BE_PointerLocation" xml:space="preserve"><value>ตำแหน่งตัวชี้</value></data>
+  <data name="SE_BE_TargetStorage" xml:space="preserve"><value>เป้าหมายและที่เก็บ</value></data>
+  <data name="SE_BE_TargetVar" xml:space="preserve"><value>ตัวแปรเป้าหมาย</value></data>
+  <data name="SE_BE_Label" xml:space="preserve"><value>ป้ายกำกับ</value></data>
+  <data name="SE_BE_PositionSize" xml:space="preserve"><value>ตำแหน่งและขนาด</value></data>
+  <data name="SE_BE_Storage" xml:space="preserve"><value>ที่เก็บ</value></data>
+  <data name="SE_BE_MappedStoreAs" xml:space="preserve"><value>ที่เก็บที่แมป</value></data>
+  <data name="SE_BE_ValueMap" xml:space="preserve"><value>การแมปค่า</value></data>
+  <data name="SE_BE_Bitfields" xml:space="preserve"><value>ฟิลด์บิต</value></data>
+  <data name="SE_BE_Name" xml:space="preserve"><value>ชื่อ</value></data>
+  <data name="SE_BE_Bits" xml:space="preserve"><value>บิต</value></data>
+  <data name="SE_BE_Until" xml:space="preserve"><value>จนถึง</value></data>
+  <data name="SE_BE_MaxLength" xml:space="preserve"><value>ความยาวสูงสุด</value></data>
+  <data name="SE_BE_MinValue" xml:space="preserve"><value>ค่าต่ำสุด</value></data>
+  <data name="SE_BE_MaxValue" xml:space="preserve"><value>ค่าสูงสุด</value></data>
+  <data name="SE_BE_PatternRegex" xml:space="preserve"><value>รูปแบบ (regex)</value></data>
+  <data name="SE_BE_ErrorMessage" xml:space="preserve"><value>ข้อความข้อผิดพลาด</value></data>
+  <data name="SE_BE_VariableName" xml:space="preserve"><value>ชื่อตัวแปร</value></data>
+  <data name="SE_BE_Group" xml:space="preserve"><value>กลุ่ม</value></data>
+  <data name="SE_BE_GroupHint" xml:space="preserve"><value>กลุ่มจะติดป้ายกำกับชุดฟิลด์ลูกด้วยชั้นสี ไม่ใช้ไบต์</value></data>
+  <data name="SE_BE_ChildrenInTreeHint" xml:space="preserve"><value>ลูกจะแสดงในแผนผังบล็อก — ใช้แผนผังเพื่อเพิ่ม/จัดเรียงบล็อกลูกใหม่</value></data>
+  <data name="SE_BE_ChildFieldsHint" xml:space="preserve"><value>ฟิลด์ลูกจะแสดงในแผนผังบล็อก</value></data>
+  <data name="SE_BE_RawDataRegion" xml:space="preserve"><value>พื้นที่ข้อมูลดิบ</value></data>
+  <data name="SE_BE_RawDataDescription" xml:space="preserve"><value>ทำเครื่องหมายพื้นที่ไบต์ดิบด้วยชั้นสี ไม่มีการดึงค่าออก</value></data>
+  <data name="SE_BE_Condition" xml:space="preserve"><value>เงื่อนไข</value></data>
+  <data name="SE_BE_BranchLabels" xml:space="preserve"><value>ป้ายกำกับสาขา</value></data>
+  <data name="SE_BE_TrueLabel" xml:space="preserve"><value>ป้ายกำกับ "จริง"</value></data>
+  <data name="SE_BE_FalseLabel" xml:space="preserve"><value>ป้ายกำกับ "เท็จ"</value></data>
+  <data name="SE_BE_BranchHint" xml:space="preserve"><value>บล็อก Then / Else จะแสดงเป็นลูกในแผนผัง</value></data>
+  <data name="SE_BE_LoopCondition" xml:space="preserve"><value>เงื่อนไขลูป</value></data>
+  <data name="SE_BE_Bounds" xml:space="preserve"><value>ขอบเขต</value></data>
+  <data name="SE_BE_MaxIterations" xml:space="preserve"><value>การวนซ้ำสูงสุด</value></data>
+  <data name="SE_BE_LoopBodyHint" xml:space="preserve"><value>บล็อกเนื้อหาจะแสดงเป็นลูกในแผนผัง</value></data>
+  <data name="SE_BE_Tip_VarName" xml:space="preserve"><value>ชื่อตัวแปรที่จะแก้ไข — พิมพ์เพื่อดูคำแนะนำ (Ctrl+Space)</value></data>
+  <data name="SE_BE_Tip_VarValue" xml:space="preserve"><value>ค่าที่จะตั้ง / ปริมาณที่จะบวกหรือลบ — รับ var:ชื่อ</value></data>
+  <data name="SE_BE_Tip_Expression" xml:space="preserve"><value>นิพจน์ทางคณิตศาสตร์พร้อมตัวแปรและฟังก์ชัน — Ctrl+Space สำหรับการเติมอัตโนมัติ</value></data>
+  <data name="SE_BE_Tip_StoreExpr" xml:space="preserve"><value>ชื่อตัวแปรเพื่อเก็บผลลัพธ์ที่คำนวณ — Ctrl+Space สำหรับคำแนะนำ</value></data>
+  <data name="SE_BE_Tip_ArrayOffset" xml:space="preserve"><value>Offset ไฟล์ที่อาร์เรย์เริ่มต้น — Ctrl+Space สำหรับการเติมอัตโนมัติ</value></data>
+  <data name="SE_BE_Tip_ArrayBaseVar" xml:space="preserve"><value>ตัวแปรที่ใช้เป็น offset ฐานสำหรับอาร์เรย์นี้</value></data>
+  <data name="SE_BE_Tip_EntryCount" xml:space="preserve"><value>จำนวนรายการ — Ctrl+Space สำหรับคำแนะนำตัวแปร</value></data>
+  <data name="SE_BE_Tip_EntrySize" xml:space="preserve"><value>ขนาดของแต่ละรายการในหน่วยไบต์ — Ctrl+Space สำหรับคำแนะนำตัวแปร</value></data>
+  <data name="SE_BE_Tip_LoopIndex" xml:space="preserve"><value>ชื่อตัวแปรดัชนีลูป (เช่น i)</value></data>
+  <data name="SE_BE_AddColor" xml:space="preserve"><value>＋ เพิ่มสี</value></data>
+  <data name="SE_BE_Tip_VariantVar" xml:space="preserve"><value>ตัวแปรที่ควบคุมการเลือก variant — Ctrl+Space สำหรับคำแนะนำ</value></data>
+  <data name="SE_BE_Tip_FormatPath" xml:space="preserve"><value>ชื่อรูปแบบหรือพาธสัมพันธ์ไปยังไฟล์ .whfmt</value></data>
+  <data name="SE_BE_Browse" xml:space="preserve"><value>เรียกดู…</value></data>
+  <data name="SE_BE_Tip_PtrOffset" xml:space="preserve"><value>Offset ไฟล์ที่อ่านค่าตัวชี้ — Ctrl+Space สำหรับการเติมอัตโนมัติ</value></data>
+  <data name="SE_BE_Tip_PtrBaseVar" xml:space="preserve"><value>ชื่อตัวแปรที่ใช้เป็น offset ฐาน</value></data>
+  <data name="SE_BE_Tip_PtrSize" xml:space="preserve"><value>ขนาดค่าตัวชี้ในหน่วยไบต์ (เช่น 4 สำหรับ uint32) — หรือ var:ชื่อ</value></data>
+  <data name="SE_BE_Tip_PtrTargetVar" xml:space="preserve"><value>ตัวแปรที่จะรับที่อยู่ที่แก้ไขของตัวชี้</value></data>
+  <data name="SE_BE_Tip_PtrStoreRaw" xml:space="preserve"><value>ตัวแปรเพื่อเก็บค่าดิบของตัวชี้</value></data>
+  <data name="SE_BE_Tip_PtrLabel" xml:space="preserve"><value>ป้ายกำกับคำอธิบายประกอบที่แสดงในมุมมอง hex</value></data>
+  <data name="SE_BE_Tip_OffsetAuto" xml:space="preserve"><value>Ctrl+Space สำหรับการเติมอัตโนมัติ — จำนวนเต็ม, var:ชื่อ, calc:expr, offset:N</value></data>
+  <data name="SE_BE_Tip_OffsetFromVar" xml:space="preserve"><value>ชื่อตัวแปรที่มีค่าเป็น offset ฐาน — Ctrl+Space สำหรับคำแนะนำ</value></data>
+  <data name="SE_BE_Tip_OffsetAddBytes" xml:space="preserve"><value>ไบต์เพิ่มเติมที่เพิ่มใน OffsetFrom</value></data>
+  <data name="SE_BE_Tip_LengthAuto" xml:space="preserve"><value>Ctrl+Space สำหรับการเติมอัตโนมัติ — จำนวนเต็ม, var:ชื่อ, calc:expr</value></data>
+  <data name="SE_BE_Tip_StoreParsed" xml:space="preserve"><value>ชื่อตัวแปรเพื่อเก็บค่าที่วิเคราะห์ — Ctrl+Space สำหรับคำแนะนำ</value></data>
+  <data name="SE_BE_Tip_StoreMapped" xml:space="preserve"><value>ชื่อตัวแปรสำหรับค่าที่แปลโดย ValueMap — Ctrl+Space สำหรับคำแนะนำ</value></data>
+  <data name="SE_BE_Tip_RawDisplayMap" xml:space="preserve"><value>ดิบ=การแสดงผล (เช่น 0=สีเทา)</value></data>
+  <data name="SE_BE_AddValueMapEntry" xml:space="preserve"><value>＋ เพิ่มรายการ ValueMap</value></data>
+  <data name="SE_BE_Tip_BitRange" xml:space="preserve"><value>ช่วงบิต เช่น 7-6 หรือบิตเดี่ยว เช่น 3</value></data>
+  <data name="SE_BE_AddBitfield" xml:space="preserve"><value>＋ เพิ่มฟิลด์บิต</value></data>
+  <data name="SE_BE_SentinelUntil" xml:space="preserve"><value>Sentinel (Until)</value></data>
+  <data name="SE_BE_Tip_UntilPattern" xml:space="preserve"><value>รูปแบบ hex หรือ var:ชื่อ ที่จะหยุดอ่าน แทนที่ Length เมื่อกำหนด</value></data>
+  <data name="SE_BE_Tip_UntilSafetyCap" xml:space="preserve"><value>ขีดจำกัดความปลอดภัย (ไบต์) หากไม่พบรูปแบบ Until 0 = ค่าเริ่มต้น interpreter (4096)</value></data>
+  <data name="SE_BE_UntilInclusive" xml:space="preserve"><value>Until แบบรวม (รวมไบต์รูปแบบในความยาวฟิลด์)</value></data>
+  <data name="SE_BE_ValidationRules" xml:space="preserve"><value>กฎการตรวจสอบ</value></data>
+  <data name="SE_BE_Tip_MetaVarName" xml:space="preserve"><value>ชื่อตัวแปรที่อ่านโดยบล็อกข้อมูลเมตานี้</value></data>
+  <data name="SE_BE_Tip_LoopCount" xml:space="preserve"><value>จำนวนเต็มคงที่หรือ var:ชื่อ — Ctrl+Space สำหรับคำแนะนำ</value></data>
+  <data name="SE_BE_Tip_LoopMaxCap" xml:space="preserve"><value>ขีดจำกัดความปลอดภัย — จำนวนเต็ม</value></data>
+  <data name="SE_BE_Tip_LoopIdxStore" xml:space="preserve"><value>ตัวแปรที่รับดัชนีการวนซ้ำปัจจุบัน (ฐาน 0)</value></data>
+  <data name="SE_BE_Tip_LoopCountStore" xml:space="preserve"><value>ตัวแปรเพื่อเก็บจำนวนการวนซ้ำหลังลูป — Ctrl+Space สำหรับคำแนะนำ</value></data>
+  <data name="SE_BE_Tip_EditAsJson" xml:space="preserve"><value>แก้ไขบล็อกนี้ใน JSON ดิบ</value></data>
+  <data name="SE_AddAssertion" xml:space="preserve"><value>＋ เพิ่มการยืนยัน</value></data>
+  <data name="SE_AddChecksum" xml:space="preserve"><value>＋ เพิ่มเช็คซัม</value></data>
+  <data name="SE_TipTemplateName" xml:space="preserve"><value>ชื่อเทมเพลต</value></data>
+  <data name="SE_TipStructName" xml:space="preserve"><value>ชื่อโครงสร้าง (struct C)</value></data>
+  <data name="SE_TipHexDigitsOnly" xml:space="preserve"><value>เลขฐานสิบหกเท่านั้น (เช่น FF, 4D5A)</value></data>
+  <data name="SE_ShowLabel" xml:space="preserve"><value>แสดง:</value></data>
+</root>

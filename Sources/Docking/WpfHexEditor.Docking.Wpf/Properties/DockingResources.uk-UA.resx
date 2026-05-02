@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+
+  <data name="Docking_TabSettings_Title" xml:space="preserve">
+    <value>Параметри вкладок документа</value>
+  </data>
+  <data name="Docking_TabSettings_TabStripPlacement" xml:space="preserve">
+    <value>Розташування панелі вкладок</value>
+  </data>
+  <data name="Docking_TabSettings_Top" xml:space="preserve">
+    <value>Зверху (за замовчуванням)</value>
+  </data>
+  <data name="Docking_TabSettings_Left" xml:space="preserve">
+    <value>Ліворуч</value>
+  </data>
+  <data name="Docking_TabSettings_Right" xml:space="preserve">
+    <value>Праворуч</value>
+  </data>
+  <data name="Docking_TabSettings_ColorBy" xml:space="preserve">
+    <value>Розфарбовувати вкладки документів за</value>
+  </data>
+  <data name="Docking_TabSettings_NoColorization" xml:space="preserve">
+    <value>Без розфарбовування</value>
+  </data>
+  <data name="Docking_TabSettings_FileExtension" xml:space="preserve">
+    <value>Розширенням файлу</value>
+  </data>
+  <data name="Docking_TabSettings_Project" xml:space="preserve">
+    <value>Проектом</value>
+  </data>
+  <data name="Docking_TabSettings_RegexRules" xml:space="preserve">
+    <value>Правилами regex</value>
+  </data>
+  <data name="Docking_TabSettings_RegexFirstMatch" xml:space="preserve">
+    <value>Правила regex — перший збіг виграє:</value>
+  </data>
+  <data name="Docking_TabSettings_PatternColumn" xml:space="preserve">
+    <value>Шаблон (regex)</value>
+  </data>
+  <data name="Docking_TabSettings_ColorColumn" xml:space="preserve">
+    <value>Колір</value>
+  </data>
+  <data name="Docking_TabSettings_HexColorTooltip" xml:space="preserve">
+    <value>Введіть Hex-колір: #RRGGBB або #AARRGGBB</value>
+  </data>
+  <data name="Docking_TabSettings_PressDelete" xml:space="preserve">
+    <value>Натисніть Delete для видалення вибраного рядка.</value>
+  </data>
+  <data name="Docking_TabSettings_TabRows" xml:space="preserve">
+    <value>Рядки вкладок</value>
+  </data>
+  <data name="Docking_TabSettings_ShowMultipleRows" xml:space="preserve">
+    <value>Показувати вкладки у кількох рядках</value>
+  </data>
+  <data name="Docking_TabSettings_ToggleWithWheel" xml:space="preserve">
+    <value>Перемикати рядки колесом миші</value>
+  </data>
+
+  <data name="Dock_FloatWin_Maximize" xml:space="preserve">
+    <value>Розгорнути</value>
+  </data>
+  <data name="Dock_FloatWin_Restore" xml:space="preserve">
+    <value>Відновити</value>
+  </data>
+  <data name="Dock_LSP_Connecting" xml:space="preserve">
+    <value>Мовний сервер: підключення…</value>
+  </data>
+  <data name="Dock_LSP_Ready" xml:space="preserve">
+    <value>Мовний сервер: готовий</value>
+  </data>
+  <data name="Dock_LSP_Error" xml:space="preserve">
+    <value>Мовний сервер: помилка</value>
+  </data>
+  <data name="Dock_AutoHide_Show" xml:space="preserve">
+    <value>Показати</value>
+  </data>
+  <data name="Dock_AutoHide_Float" xml:space="preserve">
+    <value>Плаваюче</value>
+  </data>
+  <data name="Dock_AutoHide_Close" xml:space="preserve">
+    <value>Закрити</value>
+  </data>
+  <data name="Dock_AutoHide_Dock" xml:space="preserve">
+    <value>Прикріпити</value>
+  </data>
+  <data name="Dock_TabConfig_ColorBy" xml:space="preserve">
+    <value>Розфарбовувати вкладки документів за</value>
+  </data>
+  <data name="Dock_TabConfig_Options" xml:space="preserve">
+    <value>Параметри…</value>
+  </data>
+  <data name="Dock_TabConfig_MultipleRows" xml:space="preserve">
+    <value>Показувати вкладки у кількох рядках</value>
+  </data>
+  <data name="Dock_Menu_NewVerticalTabGroup" xml:space="preserve">
+    <value>Нова вертикальна група вкладок</value>
+  </data>
+  <data name="Dock_Menu_NewHorizontalTabGroup" xml:space="preserve">
+    <value>Нова горизонтальна група вкладок</value>
+  </data>
+  <data name="Dock_Menu_CloseTabGroup" xml:space="preserve">
+    <value>Закрити групу вкладок</value>
+  </data>
+  <data name="Dock_Menu_Float" xml:space="preserve">
+    <value>Плаваюче</value>
+  </data>
+  <data name="Dock_Menu_DockAsTabbed" xml:space="preserve">
+    <value>Прикріпити як документ з вкладками</value>
+  </data>
+  <data name="Dock_Menu_DockAsToolWindow" xml:space="preserve">
+    <value>Прикріпити як вікно інструментів</value>
+  </data>
+  <data name="Dock_Menu_Hide" xml:space="preserve">
+    <value>Приховати</value>
+  </data>
+  <data name="Dock_Menu_CloseAll" xml:space="preserve">
+    <value>Закрити всі</value>
+  </data>
+  <data name="Dock_Menu_CloseAllButThis" xml:space="preserve">
+    <value>Закрити всі, крім цього</value>
+  </data>
+  <data name="Dock_Menu_CloseAllButPinned" xml:space="preserve">
+    <value>Закрити всі, крім закріплених</value>
+  </data>
+  <data name="Dock_Placeholder_OpenDocument" xml:space="preserve">
+    <value>Відкрийте документ для початку роботи</value>
+  </data>
+  <data name="Dock_Tab_Start" xml:space="preserve">
+    <value>Початок</value>
+  </data>
+</root>

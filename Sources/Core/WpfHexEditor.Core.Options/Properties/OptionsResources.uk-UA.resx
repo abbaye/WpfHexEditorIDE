@@ -1,0 +1,611 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="EnvGeneral_AppearanceSection" xml:space="preserve"><value>ЗОВНІШНІЙ ВИГЛЯД</value></data>
+  <data name="EnvGeneral_ColorThemeLabel" xml:space="preserve"><value>Кольорова тема:</value></data>
+  <data name="EnvGeneral_ThemePreviewNote" xml:space="preserve"><value>Перегляд застосовується миттєво.</value></data>
+  <data name="EnvGeneral_LanguageSection" xml:space="preserve"><value>МОВА</value></data>
+  <data name="EnvGeneral_IdeLanguageLabel" xml:space="preserve"><value>Мова IDE:</value></data>
+  <data name="EnvGeneral_LanguageRestartNote" xml:space="preserve"><value>Для повного застосування нової мови потрібен перезапуск.</value></data>
+  <data name="Mkt_GitHubSection" xml:space="preserve"><value>GITHUB API</value></data>
+  <data name="Mkt_PatDescription" xml:space="preserve"><value>Personal Access Token (PAT) — підвищує ліміт запитів GitHub з 60 до 5 000 на годину. Залиште порожнім для анонімного доступу.</value></data>
+  <data name="Mkt_PatWarning" xml:space="preserve"><value>Токен зберігається у відкритому вигляді у файлі налаштувань. Не використовуйте токен із правами запису.</value></data>
+  <data name="Mkt_AutoUpdateSection" xml:space="preserve"><value>АВТОМАТИЧНІ ОНОВЛЕННЯ</value></data>
+  <data name="Mkt_AutoUpdate" xml:space="preserve"><value>Автоматично перевіряти оновлення плагінів під час запуску</value></data>
+  <data name="Mkt_UpdateIntervalLabel" xml:space="preserve"><value>Інтервал перевірки оновлень (годин):</value></data>
+  <data name="Mkt_UpdateIntervalNote" xml:space="preserve"><value>Мінімальний інтервал: 1 година.</value></data>
+  <data name="Output_Section" xml:space="preserve"><value>КОЛЬОРИ РІВНІВ ЖУРНАЛУ</value></data>
+  <data name="Output_Note" xml:space="preserve"><value>Налаштуйте колір для кожного рівня журналу на панелі виводу. INFO успадковує колір теми та не може бути змінений.</value></data>
+  <data name="Output_WarnLabel" xml:space="preserve"><value>Попередження (WARN):</value></data>
+  <data name="Output_ErrorLabel" xml:space="preserve"><value>Помилка (ERROR):</value></data>
+  <data name="Output_DebugLabel" xml:space="preserve"><value>Налагодження (DEBUG):</value></data>
+  <data name="Output_SuccessLabel" xml:space="preserve"><value>Успіх (OK):</value></data>
+  <data name="Output_ResetColors" xml:space="preserve"><value>Скинути до стандартних кольорів</value></data>
+  <data name="PluginDev_Section" xml:space="preserve"><value>ЗАВАНТАЖУВАЧ РОЗРОБНИКА ПЛАГІНІВ</value></data>
+  <data name="PluginDev_Enable" xml:space="preserve"><value>Увімкнути завантажувач розробника плагінів (режим спостереження доступний у диспетчері плагінів)</value></data>
+  <data name="PluginDev_DebounceSection" xml:space="preserve"><value>ДЕБОУНС</value></data>
+  <data name="PluginDev_DebounceNote" xml:space="preserve"><value>Затримка перед запуском гарячого перезавантаження після зміни файлу (мс):</value></data>
+  <data name="PluginDev_DebounceDefault" xml:space="preserve"><value>мс  (за замовчуванням: 500)</value></data>
+  <data name="PluginDev_WatchedSection" xml:space="preserve"><value>ВІДСТЕЖУВАНІ ТЕКИ</value></data>
+  <data name="PluginDev_WatchedNote" xml:space="preserve"><value>Додаткові вихідні теки для спостереження (через крапку з комою). Плагіни в цих теках перезавантажуються гаряче при зміні DLL.</value></data>
+  <data name="PluginDev_Browse" xml:space="preserve"><value>Огляд…</value></data>
+  <data name="PluginDev_Example" xml:space="preserve"><value>Приклад: C:\MyPlugin\bin\Debug\net8.0-windows;D:\AnotherPlugin\bin\Debug\net8.0-windows</value></data>
+  <data name="Plugin_GeneralSection" xml:space="preserve"><value>ЗАГАЛЬНЕ</value></data>
+  <data name="Plugin_AutoLoad" xml:space="preserve"><value>Автоматично завантажувати всі виявлені плагіни під час запуску</value></data>
+  <data name="Plugin_PluginsDirNote" xml:space="preserve"><value>Додаткова тека плагінів (залиште порожнім для %AppData%\WpfHexEditor\Plugins):</value></data>
+  <data name="Plugin_Browse" xml:space="preserve"><value>Огляд…</value></data>
+  <data name="Plugin_WatchdogSection" xml:space="preserve"><value>СТОРОЖОВИЙ ПРОЦЕС</value></data>
+  <data name="Plugin_EnableWatchdog" xml:space="preserve"><value>Увімкнути сторожовий процес плагінів (відстежує тайм-аути викликів)</value></data>
+  <data name="Plugin_WatchdogTimeoutLabel" xml:space="preserve"><value>Тайм-аут сторожового процесу (секунд):</value></data>
+  <data name="Plugin_DiagnosticsSection" xml:space="preserve"><value>ДІАГНОСТИКА ТА СЕМПЛІНГ</value></data>
+  <data name="Plugin_DiagSamplingLabel" xml:space="preserve"><value>Інтервал діагностичного семплінгу (секунд):</value></data>
+  <data name="Plugin_DiagNote" xml:space="preserve"><value>Визначає швидкість оновлення графіка CPU/пам'яті монітора плагінів.</value></data>
+  <data name="Plugin_SlowDetectionSection" xml:space="preserve"><value>ВИЯВЛЕННЯ ПОВІЛЬНИХ ПЛАГІНІВ</value></data>
+  <data name="Plugin_MonitorIntervalLabel" xml:space="preserve"><value>Інтервал моніторингу (секунд):</value></data>
+  <data name="Plugin_ResponseTimeLabel" xml:space="preserve"><value>Поріг часу відповіді (мс):</value></data>
+  <data name="Plugin_CpuThresholdLabel" xml:space="preserve"><value>Поріг CPU (%):</value></data>
+  <data name="Plugin_MemoryAlertSection" xml:space="preserve"><value>ПОРОГИ СПОВІЩЕНЬ ПАМ'ЯТІ</value></data>
+  <data name="Plugin_EnableMemoryAlerts" xml:space="preserve"><value>Увімкнути сповіщення про використання пам'яті та значки</value></data>
+  <data name="Plugin_ShowColorGradation" xml:space="preserve"><value>Показувати кольорову градацію в моніторах (зелений/жовтий/помаранчевий/червоний)</value></data>
+  <data name="Plugin_MemWarningLabel" xml:space="preserve"><value>⚠️ Поріг попередження (жовтий):</value></data>
+  <data name="Plugin_MemHighLabel" xml:space="preserve"><value>🟠 Високий поріг (помаранчевий):</value></data>
+  <data name="Plugin_MemCriticalLabel" xml:space="preserve"><value>🔴 Критичний поріг (червоний):</value></data>
+  <data name="Plugin_MB" xml:space="preserve"><value> МБ</value></data>
+  <data name="Plugin_MemThresholdNote" xml:space="preserve"><value>Примітка: пороги мають бути у порядку зростання (Попередження &lt; Високий &lt; Критичний).</value></data>
+  <data name="Plugin_MemColorSection" xml:space="preserve"><value>КОЛЬОРИ СПОВІЩЕНЬ ПАМ'ЯТІ</value></data>
+  <data name="Plugin_MemColorNote" xml:space="preserve"><value>Налаштуйте кольори значків для кожного рівня порогу пам'яті.</value></data>
+  <data name="Plugin_MemNormalColor" xml:space="preserve"><value>🟢 Нормальний поріг:</value></data>
+  <data name="Plugin_MemWarningColor" xml:space="preserve"><value>🟡 Поріг попередження:</value></data>
+  <data name="Plugin_MemHighColor" xml:space="preserve"><value>🟠 Високий поріг:</value></data>
+  <data name="Plugin_MemCriticalColor" xml:space="preserve"><value>🔴 Критичний поріг:</value></data>
+  <data name="Plugin_ResetColors" xml:space="preserve"><value>Скинути до стандартних кольорів</value></data>
+  <data name="SolExp_NavigationSection" xml:space="preserve"><value>НАВІГАЦІЯ</value></data>
+  <data name="SolExp_TrackActive" xml:space="preserve"><value>Автоматично виділяти активний документ у дереві</value></data>
+  <data name="SolExp_PersistCollapse" xml:space="preserve"><value>Запам'ятовувати стан розгортання/згортання між сеансами</value></data>
+  <data name="SolExp_NotificationsSection" xml:space="preserve"><value>СПОВІЩЕННЯ</value></data>
+  <data name="SolExp_ShowNotifications" xml:space="preserve"><value>Показувати контекстні сповіщення (зовнішні зміни, конфлікти вставлення…)</value></data>
+  <data name="SolExp_DefaultsSection" xml:space="preserve"><value>СТАНДАРТНІ ПАРАМЕТРИ ПРИ ВІДКРИТТІ РІШЕННЯ</value></data>
+  <data name="SolExp_DefaultSortLabel" xml:space="preserve"><value>Сортування за замовчуванням:</value></data>
+  <data name="SolExp_SortNone" xml:space="preserve"><value>Без сортування</value></data>
+  <data name="SolExp_SortName" xml:space="preserve"><value>Назва</value></data>
+  <data name="SolExp_SortType" xml:space="preserve"><value>Тип</value></data>
+  <data name="SolExp_SortDateModified" xml:space="preserve"><value>Дата зміни</value></data>
+  <data name="SolExp_SortSize" xml:space="preserve"><value>Розмір</value></data>
+  <data name="SolExp_DefaultFilterLabel" xml:space="preserve"><value>Фільтр за замовчуванням:</value></data>
+  <data name="SolExp_FilterAll" xml:space="preserve"><value>Усі</value></data>
+  <data name="SolExp_FilterBinary" xml:space="preserve"><value>Двійкові</value></data>
+  <data name="SolExp_FilterText" xml:space="preserve"><value>Текстові</value></data>
+  <data name="SolExp_FilterImage" xml:space="preserve"><value>Зображення</value></data>
+  <data name="SolExp_FilterLanguage" xml:space="preserve"><value>Мова</value></data>
+  <data name="TabGroups_SplitSection" xml:space="preserve"><value>ПОВЕДІНКА РОЗДІЛЕННЯ</value></data>
+  <data name="TabGroups_EnforceEqualSize" xml:space="preserve"><value>Рівний розмір панелей при розділенні (50/50)</value></data>
+  <data name="TabGroups_MinWidthLabel" xml:space="preserve"><value>Мінімальна ширина панелі (пкс):</value></data>
+  <data name="TabGroups_MinHeightLabel" xml:space="preserve"><value>Мінімальна висота панелі (пкс):</value></data>
+  <data name="TabGroups_VisualSection" xml:space="preserve"><value>ВІЗУАЛЬНЕ</value></data>
+  <data name="TabGroups_ShowGroupBadge" xml:space="preserve"><value>Показувати значок «Група N» на панелі вкладок при відкритті кількох груп</value></data>
+  <data name="TabGroups_PersistSection" xml:space="preserve"><value>ЗБЕРЕЖЕННЯ</value></data>
+  <data name="TabGroups_PersistLayout" xml:space="preserve"><value>Включати розташування груп вкладок у збереження робочого простору</value></data>
+  <data name="TextOpt_FontSection" xml:space="preserve"><value>ШРИФТ</value></data>
+  <data name="TextOpt_FontFamilyLabel" xml:space="preserve"><value>Сімейство шрифтів:</value></data>
+  <data name="TextOpt_FontSizeLabel" xml:space="preserve"><value>Розмір шрифту (пт):</value></data>
+  <data name="TextOpt_IndentSection" xml:space="preserve"><value>ВІДСТУП</value></data>
+  <data name="TextOpt_IndentSizeLabel" xml:space="preserve"><value>Розмір відступу:</value></data>
+  <data name="TextOpt_UseSpaces" xml:space="preserve"><value>Вставляти пробіли замість табуляції</value></data>
+  <data name="TextOpt_FeaturesSection" xml:space="preserve"><value>МОЖЛИВОСТІ</value></data>
+  <data name="TextOpt_ShowLineNumbers" xml:space="preserve"><value>Показувати номери рядків</value></data>
+  <data name="TextOpt_ShowRefreshRate" xml:space="preserve"><value>Показувати частоту оновлення у рядку стану (час кадру рендерингу)</value></data>
+  <data name="TextOpt_WordWrap" xml:space="preserve"><value>Перенос рядків (Alt+Z)</value></data>
+  <data name="TextOpt_ClickableLinks" xml:space="preserve"><value>Увімкнути Ctrl+Click для відкриття веб-посилань (http/https)</value></data>
+  <data name="TextOpt_ClickableEmails" xml:space="preserve"><value>Увімкнути Ctrl+Click для створення листа</value></data>
+  <data name="TextOpt_DefaultZoomLabel" xml:space="preserve"><value>Масштаб за замовчуванням (%):</value></data>
+  <data name="TextOpt_MouseWheelLabel" xml:space="preserve"><value>Швидкість колеса миші:</value></data>
+  <data name="TextOpt_ChangesetSection" xml:space="preserve"><value>НАБІР ЗМІН (.WHCHG)</value></data>
+  <data name="TextOpt_TrackEdits" xml:space="preserve"><value>Відстежувати редагування у супровідному файлі .whchg (потребує режиму відстежуваного збереження)</value></data>
+  <data name="TextOpt_SyntaxSection" xml:space="preserve"><value>ПЕРЕВИЗНАЧЕННЯ КОЛЬОРІВ СИНТАКСИСУ</value></data>
+  <data name="TextOpt_SyntaxNote" xml:space="preserve"><value>Увімкніть колір, щоб замінити стандартний колір активної теми.</value></data>
+  <data name="TextOpt_Background" xml:space="preserve"><value>Фон:</value></data>
+  <data name="TextOpt_Foreground" xml:space="preserve"><value>Колір тексту:</value></data>
+  <data name="TextOpt_Keyword" xml:space="preserve"><value>Ключове слово:</value></data>
+  <data name="TextOpt_String" xml:space="preserve"><value>Рядок:</value></data>
+  <data name="TextOpt_Comment" xml:space="preserve"><value>Коментар:</value></data>
+  <data name="TextOpt_Number" xml:space="preserve"><value>Число:</value></data>
+  <data name="TextOpt_Type" xml:space="preserve"><value>Тип:</value></data>
+  <data name="TextOpt_Preprocessor" xml:space="preserve"><value>Препроцесор:</value></data>
+  <data name="TextOpt_Operator" xml:space="preserve"><value>Оператор:</value></data>
+  <data name="TextOpt_Identifier" xml:space="preserve"><value>Ідентифікатор:</value></data>
+  <data name="Opt_Category_Environment"      xml:space="preserve"><value>Середовище</value></data>
+  <data name="Opt_Category_HexEditor"        xml:space="preserve"><value>Hex-редактор</value></data>
+  <data name="Opt_Category_SolutionExplorer" xml:space="preserve"><value>Провідник рішень</value></data>
+  <data name="Opt_Category_CodeEditor"       xml:space="preserve"><value>Редактор коду</value></data>
+  <data name="Opt_Category_TextEditor"       xml:space="preserve"><value>Текстовий редактор</value></data>
+  <data name="Opt_Category_PluginSystem"     xml:space="preserve"><value>Система плагінів</value></data>
+  <data name="Opt_Category_BuildRun"         xml:space="preserve"><value>Збирання та запуск</value></data>
+  <data name="Opt_Category_Debugger"         xml:space="preserve"><value>Налагоджувач</value></data>
+  <data name="Opt_Category_Extensions"       xml:space="preserve"><value>Розширення</value></data>
+  <data name="Opt_Category_FormatEditor"     xml:space="preserve"><value>Редактор форматів (.whfmt)</value></data>
+  <data name="Opt_Category_Tools"            xml:space="preserve"><value>Інструменти</value></data>
+  <data name="Opt_Page_General"              xml:space="preserve"><value>Загальне</value></data>
+  <data name="Opt_Page_Save"                 xml:space="preserve"><value>Збереження</value></data>
+  <data name="Opt_Page_Output"               xml:space="preserve"><value>Вивід</value></data>
+  <data name="Opt_Page_TabGroups"            xml:space="preserve"><value>Групи вкладок</value></data>
+  <data name="Opt_Page_KeyboardShortcuts"    xml:space="preserve"><value>Клавіатурні скорочення</value></data>
+  <data name="Opt_Page_Documents"            xml:space="preserve"><value>Документи</value></data>
+  <data name="Opt_Page_Workspace"            xml:space="preserve"><value>Робочий простір</value></data>
+  <data name="Opt_Page_Tabs"                 xml:space="preserve"><value>Вкладки</value></data>
+  <data name="Opt_Page_Layout"               xml:space="preserve"><value>Розташування</value></data>
+  <data name="Opt_Page_Docking"              xml:space="preserve"><value>Прикріплення</value></data>
+  <data name="Opt_Page_ViewMenu"             xml:space="preserve"><value>Меню перегляду</value></data>
+  <data name="Opt_Page_Display"              xml:space="preserve"><value>Відображення</value></data>
+  <data name="Opt_Page_Editing"              xml:space="preserve"><value>Редагування</value></data>
+  <data name="Opt_Page_StatusBar"            xml:space="preserve"><value>Рядок стану</value></data>
+  <data name="Opt_Page_Behavior"             xml:space="preserve"><value>Поведінка</value></data>
+  <data name="Opt_Page_AppearanceColors"     xml:space="preserve"><value>Зовнішній вигляд і кольори</value></data>
+  <data name="Opt_Page_InlineHints"          xml:space="preserve"><value>Вбудовані підказки</value></data>
+  <data name="Opt_Page_Navigation"           xml:space="preserve"><value>Навігація</value></data>
+  <data name="Opt_Page_Formatting"           xml:space="preserve"><value>Форматування</value></data>
+  <data name="Opt_Page_Features"             xml:space="preserve"><value>Можливості</value></data>
+  <data name="Opt_Page_LanguageServers"      xml:space="preserve"><value>Мовні сервери</value></data>
+  <data name="Opt_Page_Markdown"             xml:space="preserve"><value>Markdown</value></data>
+  <data name="Opt_Page_Development"          xml:space="preserve"><value>Розробка</value></data>
+  <data name="Opt_Page_Migration"            xml:space="preserve"><value>Міграція</value></data>
+  <data name="Opt_Page_EventBus"             xml:space="preserve"><value>Шина подій</value></data>
+  <data name="Opt_Page_Compiler"             xml:space="preserve"><value>Компілятор</value></data>
+  <data name="Opt_Page_Breakpoints"          xml:space="preserve"><value>Точки зупинки</value></data>
+  <data name="Opt_Page_Marketplace"          xml:space="preserve"><value>Marketplace</value></data>
+  <data name="Opt_Page_FormatExplorer"       xml:space="preserve"><value>Провідник форматів</value></data>
+  <data name="Opt_Page_CompareFiles"         xml:space="preserve"><value>Порівняння файлів</value></data>
+  <data name="Opt_Page_CommandPalette"       xml:space="preserve"><value>Палітра команд</value></data>
+  <data name="Opt_Plugin_SelectExtDir"       xml:space="preserve"><value>Вибрати теку додаткових розширень</value></data>
+  <data name="Opt_PluginDev_SelectOutputDir" xml:space="preserve"><value>Вибрати вихідну теку розширення</value></data>
+  <data name="Opt_ViewMode_Tree"             xml:space="preserve"><value>Дерево</value></data>
+  <data name="Opt_ViewMode_Flat"             xml:space="preserve"><value>Плоский</value></data>
+  <data name="Opt_Position_Right"            xml:space="preserve"><value>Праворуч</value></data>
+  <data name="Opt_Position_Left"             xml:space="preserve"><value>Ліворуч</value></data>
+  <data name="Opt_Position_Bottom"           xml:space="preserve"><value>Знизу</value></data>
+  <data name="Opt_Position_Top"              xml:space="preserve"><value>Зверху</value></data>
+  <data name="Opt_Endian_Little"             xml:space="preserve"><value>молодший байт першим</value></data>
+  <data name="Opt_Endian_Big"                xml:space="preserve"><value>старший байт першим</value></data>
+  <data name="Opt_IndentLevel_1"             xml:space="preserve"><value>1 рівень (4 пробіли в корені)</value></data>
+  <data name="Opt_IndentLevel_2"             xml:space="preserve"><value>2 рівні (8 пробілів у корені) — за замовчуванням VS</value></data>
+  <data name="Opt_IndentLevel_3"             xml:space="preserve"><value>3 рівні (12 пробілів у корені)</value></data>
+  <data name="Opt_MdLayout_PreviewRight"     xml:space="preserve"><value>Перегляд праворуч</value></data>
+  <data name="Opt_MdLayout_PreviewBottom"    xml:space="preserve"><value>Перегляд знизу</value></data>
+  <data name="Opt_MdLayout_EditorOnly"       xml:space="preserve"><value>Лише редактор</value></data>
+  <data name="Opt_MdLayout_PreviewOnly"      xml:space="preserve"><value>Лише перегляд</value></data>
+  <data name="Opt_Preview_Label"             xml:space="preserve"><value>Перегляд</value></data>
+  <data name="BuildCompiler_CSharpSection" xml:space="preserve">
+    <value>СТАНДАРТНІ ЗНАЧЕННЯ C# / .NET</value>
+  </data>
+  <data name="BuildCompiler_NullableCheck" xml:space="preserve">
+    <value>Трактувати nullable-попередження як помилки (C# 8+)</value>
+  </data>
+  <data name="BuildCompiler_ImplicitUsings" xml:space="preserve">
+    <value>Увімкнути неявні using (C# 10+)</value>
+  </data>
+  <data name="BuildCompiler_GenerateDocs" xml:space="preserve">
+    <value>Генерувати файл XML-документації</value>
+  </data>
+  <data name="BuildCompiler_WarningsSection" xml:space="preserve">
+    <value>ПОПЕРЕДЖЕННЯ</value>
+  </data>
+  <data name="BuildCompiler_WarnLevelLabel" xml:space="preserve">
+    <value>Стандартний рівень попереджень (0–9):</value>
+  </data>
+  <data name="BuildRun_GeneralSection" xml:space="preserve">
+    <value>ЗАГАЛЬНЕ</value>
+  </data>
+  <data name="BuildRun_SaveBeforeBuild" xml:space="preserve">
+    <value>Зберігати всі зміни перед збиранням</value>
+  </data>
+  <data name="BuildRun_VerbosityLabel" xml:space="preserve">
+    <value>Деталізація виводу збирання:</value>
+  </data>
+  <data name="BuildRun_VerbQuiet" xml:space="preserve">
+    <value>Тихий</value>
+  </data>
+  <data name="BuildRun_VerbMinimal" xml:space="preserve">
+    <value>Мінімальний</value>
+  </data>
+  <data name="BuildRun_VerbNormal" xml:space="preserve">
+    <value>Нормальний</value>
+  </data>
+  <data name="BuildRun_VerbDetailed" xml:space="preserve">
+    <value>Детальний</value>
+  </data>
+  <data name="BuildRun_VerbDiagnostic" xml:space="preserve">
+    <value>Діагностика</value>
+  </data>
+  <data name="BuildRun_RunInProcess" xml:space="preserve">
+    <value>Запускати MSBuild у процесі (швидше, рекомендовано)</value>
+  </data>
+  <data name="BuildRun_MaxParallelLabel" xml:space="preserve">
+    <value>Макс. кількість паралельних збирань:</value>
+  </data>
+  <data name="BuildRun_OutputSection" xml:space="preserve">
+    <value>ВІКНО ВИВОДУ</value>
+  </data>
+  <data name="BuildRun_ShowOnStart" xml:space="preserve">
+    <value>Відкривати вікно виводу на початку збирання</value>
+  </data>
+  <data name="BuildRun_ShowOnError" xml:space="preserve">
+    <value>Відкривати вікно виводу при помилці збирання</value>
+  </data>
+  <data name="BuildRun_RunSection" xml:space="preserve">
+    <value>ЗАПУСК</value>
+  </data>
+  <data name="BuildRun_OnRunBuildErrorLabel" xml:space="preserve">
+    <value>При запуску, якщо виникли помилки збирання:</value>
+  </data>
+  <data name="BuildRun_DoNotLaunch" xml:space="preserve">
+    <value>Не запускати</value>
+  </data>
+  <data name="BuildRun_Launch" xml:space="preserve">
+    <value>Запустити</value>
+  </data>
+  <data name="BuildRun_ShowOutputOnRun" xml:space="preserve">
+    <value>Відкривати вікно виводу під час запуску</value>
+  </data>
+  <data name="CodeInlineHints_Section" xml:space="preserve">
+    <value>ВБУДОВАНІ ПІДКАЗКИ</value>
+  </data>
+  <data name="CodeInlineHints_EnableHints" xml:space="preserve">
+    <value>Увімкнути вбудовані підказки (показувати кількість посилань над оголошеннями)</value>
+  </data>
+  <data name="CodeInlineHints_SourceLabel" xml:space="preserve">
+    <value>Джерело посилань:</value>
+  </data>
+  <data name="CodeInlineHints_SourceAuto" xml:space="preserve">
+    <value>Авто (Roslyn якщо доступно, інакше regex)</value>
+  </data>
+  <data name="CodeInlineHints_SourceRoslyn" xml:space="preserve">
+    <value>Лише Roslyn (C# / VB.NET)</value>
+  </data>
+  <data name="CodeInlineHints_SourceRegex" xml:space="preserve">
+    <value>Завжди regex</value>
+  </data>
+  <data name="CodeInlineHints_RoslynSection" xml:space="preserve">
+    <value>СЕМАНТИЧНІ ПІДКАЗКИ ROSLYN (C# / VB.NET)</value>
+  </data>
+  <data name="CodeInlineHints_RoslynNote" xml:space="preserve">
+    <value>Показувати виведені типи та типи повернення вбудовано, коли Roslyn є активним мовним клієнтом.</value>
+  </data>
+  <data name="CodeInlineHints_ShowVarType" xml:space="preserve">
+    <value>Показувати виведений тип для оголошень var (напр. var x = … → : List&amp;lt;int&amp;gt;)</value>
+  </data>
+  <data name="CodeInlineHints_ShowLambdaReturn" xml:space="preserve">
+    <value>Показувати тип повернення для лямбда-виразів (напр. x =&amp;gt; x * 2 → int)</value>
+  </data>
+  <data name="CodeInlineHints_KindsSection" xml:space="preserve">
+    <value>ПОКАЗУВАТИ ПІДКАЗКИ ДЛЯ ТИПІВ СИМВОЛІВ:</value>
+  </data>
+  <data name="CodeInlineHints_KindsNote" xml:space="preserve">
+    <value>Зніміть позначку з типу, щоб приховати підказки кількості посилань для нього, зберігаючи підказки для інших.</value>
+  </data>
+  <data name="CodeInlineHints_TypesGroup" xml:space="preserve">
+    <value>Типи</value>
+  </data>
+  <data name="CodeInlineHints_Class" xml:space="preserve">
+    <value>Клас</value>
+  </data>
+  <data name="CodeInlineHints_Interface" xml:space="preserve">
+    <value>Інтерфейс</value>
+  </data>
+  <data name="CodeInlineHints_Struct" xml:space="preserve">
+    <value>Структура</value>
+  </data>
+  <data name="CodeInlineHints_Enum" xml:space="preserve">
+    <value>Перелік</value>
+  </data>
+  <data name="CodeInlineHints_Record" xml:space="preserve">
+    <value>Запис</value>
+  </data>
+  <data name="CodeInlineHints_Delegate" xml:space="preserve">
+    <value>Делегат</value>
+  </data>
+  <data name="CodeInlineHints_MembersGroup" xml:space="preserve">
+    <value>Члени</value>
+  </data>
+  <data name="CodeInlineHints_Method" xml:space="preserve">
+    <value>Метод</value>
+  </data>
+  <data name="CodeInlineHints_Constructor" xml:space="preserve">
+    <value>Конструктор</value>
+  </data>
+  <data name="CodeInlineHints_Property" xml:space="preserve">
+    <value>Властивість</value>
+  </data>
+  <data name="CodeInlineHints_Field" xml:space="preserve">
+    <value>Поле</value>
+  </data>
+  <data name="CodeInlineHints_Event" xml:space="preserve">
+    <value>Подія</value>
+  </data>
+  <data name="CodeInlineHints_OtherGroup" xml:space="preserve">
+    <value>Інше</value>
+  </data>
+  <data name="CodeInlineHints_LocalVar" xml:space="preserve">
+    <value>Локальна змінна</value>
+  </data>
+  <data name="CodeInlineHints_Parameter" xml:space="preserve">
+    <value>Параметр</value>
+  </data>
+  <data name="CodeInlineHints_TypeParam" xml:space="preserve">
+    <value>Параметр типу</value>
+  </data>
+  <data name="CodeInlineHints_Namespace" xml:space="preserve">
+    <value>Простір імен</value>
+  </data>
+  <data name="CodeInlineHints_SelectAll" xml:space="preserve">
+    <value>Вибрати все</value>
+  </data>
+  <data name="CodeInlineHints_ClearAll" xml:space="preserve">
+    <value>Зняти все</value>
+  </data>
+  <data name="CodeOpt_FontSection" xml:space="preserve">
+    <value>ШРИФТ</value>
+  </data>
+  <data name="CodeOpt_FontFamilyLabel" xml:space="preserve">
+    <value>Сімейство шрифтів:</value>
+  </data>
+  <data name="CodeOpt_FontSizeLabel" xml:space="preserve">
+    <value>Розмір шрифту (пт):</value>
+  </data>
+  <data name="CodeOpt_IndentSection" xml:space="preserve">
+    <value>ВІДСТУП</value>
+  </data>
+  <data name="CodeOpt_IndentSizeLabel" xml:space="preserve">
+    <value>Розмір відступу:</value>
+  </data>
+  <data name="CodeOpt_UseSpaces" xml:space="preserve">
+    <value>Вставляти пробіли замість табуляції</value>
+  </data>
+  <data name="CodeOpt_FeaturesSection" xml:space="preserve">
+    <value>МОЖЛИВОСТІ</value>
+  </data>
+  <data name="CodeOpt_ShowLineNumbers" xml:space="preserve">
+    <value>Показувати номери рядків</value>
+  </data>
+  <data name="CodeOpt_HighlightCurrentLine" xml:space="preserve">
+    <value>Виділяти поточний рядок</value>
+  </data>
+  <data name="CodeOpt_CtrlClickLinks" xml:space="preserve">
+    <value>Увімкнути Ctrl+Click для переходу до визначення / відкриття посилань</value>
+  </data>
+  <data name="CodeOpt_DefaultZoomLabel" xml:space="preserve">
+    <value>Масштаб за замовчуванням (%):</value>
+  </data>
+  <data name="CodeOpt_MouseWheelLabel" xml:space="preserve">
+    <value>Швидкість колеса миші:</value>
+  </data>
+  <data name="CodeOpt_ChangesetSection" xml:space="preserve">
+    <value>НАБІР ЗМІН (.WHCHG)</value>
+  </data>
+  <data name="CodeOpt_TrackEdits" xml:space="preserve">
+    <value>Відстежувати зміни у супровідному файлі .whchg (потребує режиму відстежуваного збереження)</value>
+  </data>
+  <data name="CodeOpt_SyntaxSection" xml:space="preserve">
+    <value>ПЕРЕВИЗНАЧЕННЯ КОЛЬОРІВ СИНТАКСИСУ</value>
+  </data>
+  <data name="CodeOpt_SyntaxNote" xml:space="preserve">
+    <value>Увімкніть колір, щоб замінити стандартний колір активної теми.</value>
+  </data>
+  <data name="CodeOpt_Background" xml:space="preserve">
+    <value>Фон:</value>
+  </data>
+  <data name="CodeOpt_Foreground" xml:space="preserve">
+    <value>Колір тексту:</value>
+  </data>
+  <data name="CodeOpt_Keyword" xml:space="preserve">
+    <value>Ключове слово:</value>
+  </data>
+  <data name="CodeOpt_String" xml:space="preserve">
+    <value>Рядок:</value>
+  </data>
+  <data name="CodeOpt_Comment" xml:space="preserve">
+    <value>Коментар:</value>
+  </data>
+  <data name="CodeOpt_Number" xml:space="preserve">
+    <value>Число:</value>
+  </data>
+  <data name="CodeOpt_Type" xml:space="preserve">
+    <value>Тип:</value>
+  </data>
+  <data name="CodeOpt_Preprocessor" xml:space="preserve">
+    <value>Препроцесор:</value>
+  </data>
+  <data name="CodeOpt_Operator" xml:space="preserve">
+    <value>Оператор:</value>
+  </data>
+  <data name="CodeOpt_Identifier" xml:space="preserve">
+    <value>Ідентифікатор:</value>
+  </data>
+  <data name="CodeOpt_ResetColors" xml:space="preserve">
+    <value>Відновити стандартні кольори теми</value>
+  </data>
+  <data name="EnvSave_SaveModeSection" xml:space="preserve">
+    <value>Режим збереження</value>
+  </data>
+  <data name="EnvSave_DirectMode" xml:space="preserve">
+    <value>Прямий режим</value>
+  </data>
+  <data name="EnvSave_TrackedMode" xml:space="preserve">
+    <value>Режим відстеження</value>
+  </data>
+  <data name="EnvSave_AutoSaveSection" xml:space="preserve">
+    <value>Автозбереження</value>
+  </data>
+  <data name="EnvSave_AutoSerialize" xml:space="preserve">
+    <value>Увімкнути автозбереження</value>
+  </data>
+  <data name="EnvSave_IntervalLabel" xml:space="preserve">
+    <value>Інтервал (секунд)</value>
+  </data>
+  <data name="EnvSave_StandaloneSection" xml:space="preserve">
+    <value>Автономний режим</value>
+  </data>
+  <data name="EnvSave_StandaloneNote" xml:space="preserve">
+    <value>В автономному режимі кожен редактор керує своїм способом збереження.</value>
+  </data>
+  <data name="EnvSave_HexEditorDirect" xml:space="preserve">
+    <value>Hex-редактор: прямий режим</value>
+  </data>
+  <data name="EnvSave_CodeEditorDirect" xml:space="preserve">
+    <value>Редактор коду: прямий режим</value>
+  </data>
+  <data name="EnvSave_TextEditorDirect" xml:space="preserve">
+    <value>Текстовий редактор: прямий режим</value>
+  </data>
+  <data name="EnvSave_TblEditorDirect" xml:space="preserve">
+    <value>TBL-редактор: прямий режим</value>
+  </data>
+  <data name="EnvSave_ImageViewerDirect" xml:space="preserve">
+    <value>Переглядач зображень: прямий режим</value>
+  </data>
+  <data name="EnvSave_SaveAsNote" xml:space="preserve">
+    <value>«Зберегти як» потребує вибору нового шляху.</value>
+  </data>
+  <data name="HexBehavior_Section" xml:space="preserve">
+    <value>Поведінка Hex-редактора</value>
+  </data>
+  <data name="HexBehavior_AllowAutoHighLight" xml:space="preserve">
+    <value>Увімкнути автоматичне підсвічування</value>
+  </data>
+  <data name="HexBehavior_AllowAutoSelectDoubleClick" xml:space="preserve">
+    <value>Автоматичний вибір подвійним кліком</value>
+  </data>
+  <data name="HexBehavior_AllowContextMenu" xml:space="preserve">
+    <value>Увімкнути контекстне меню</value>
+  </data>
+  <data name="HexBehavior_AllowDeleteByte" xml:space="preserve">
+    <value>Дозволити видалення байта</value>
+  </data>
+  <data name="HexBehavior_AllowExtend" xml:space="preserve">
+    <value>Дозволити розширення</value>
+  </data>
+  <data name="HexBehavior_FileDroppingConfirmation" xml:space="preserve">
+    <value>Підтвердження при перетягуванні файлу</value>
+  </data>
+  <data name="HexBehavior_PreloadModeLabel" xml:space="preserve">
+    <value>Режим попереднього завантаження</value>
+  </data>
+  <data name="HexDisplay_DisplaySection" xml:space="preserve">
+    <value>Параметри відображення</value>
+  </data>
+  <data name="HexDisplay_BytesPerLineLabel" xml:space="preserve">
+    <value>Байтів на рядок</value>
+  </data>
+  <data name="HexDisplay_ShowOffset" xml:space="preserve">
+    <value>Показувати зміщення</value>
+  </data>
+  <data name="HexDisplay_ShowAscii" xml:space="preserve">
+    <value>Показувати колонку ASCII</value>
+  </data>
+  <data name="HexDisplay_MouseWheelLabel" xml:space="preserve">
+    <value>Колесо миші</value>
+  </data>
+  <data name="HexDisplay_ByteTooltipLabel" xml:space="preserve">
+    <value>Підказка байта</value>
+  </data>
+  <data name="HexDisplay_FormatSection" xml:space="preserve">
+    <value>Формат</value>
+  </data>
+  <data name="HexDisplay_ValueFormatLabel" xml:space="preserve">
+    <value>Формат значення</value>
+  </data>
+  <data name="HexDisplay_OffsetFormatLabel" xml:space="preserve">
+    <value>Формат зміщення</value>
+  </data>
+  <data name="HexDisplay_ByteGroupingLabel" xml:space="preserve">
+    <value>Групування байтів</value>
+  </data>
+  <data name="HexDisplay_SpacerPositionLabel" xml:space="preserve">
+    <value>Позиція роздільника</value>
+  </data>
+  <data name="HexDisplay_ScrollMarkersSection" xml:space="preserve">
+    <value>Маркери прокрутки</value>
+  </data>
+  <data name="HexDisplay_ShowBookmarkMarkers" xml:space="preserve">
+    <value>Показувати маркери закладок</value>
+  </data>
+  <data name="HexDisplay_ShowModifiedMarkers" xml:space="preserve">
+    <value>Показувати маркери змін</value>
+  </data>
+  <data name="HexDisplay_ShowInsertedMarkers" xml:space="preserve">
+    <value>Показувати маркери вставок</value>
+  </data>
+  <data name="HexDisplay_ShowDeletedMarkers" xml:space="preserve">
+    <value>Показувати маркери видалень</value>
+  </data>
+  <data name="HexDisplay_ShowSearchResultMarkers" xml:space="preserve">
+    <value>Показувати маркери результатів пошуку</value>
+  </data>
+  <data name="HexDisplay_ColumnRowSection" xml:space="preserve">
+    <value>Підсвічування стовпців і рядків</value>
+  </data>
+  <data name="HexDisplay_ShowColumnHighlight" xml:space="preserve">
+    <value>Показувати підсвічування стовпця</value>
+  </data>
+  <data name="HexDisplay_ShowAsciiColumnHighlight" xml:space="preserve">
+    <value>Показувати підсвічування стовпця ASCII</value>
+  </data>
+  <data name="HexDisplay_ShowRowHighlight" xml:space="preserve">
+    <value>Показувати підсвічування рядка</value>
+  </data>
+  <data name="HexEdit_EditingSection" xml:space="preserve">
+    <value>Параметри редагування</value>
+  </data>
+  <data name="HexEdit_DefaultEditModeLabel" xml:space="preserve">
+    <value>Режим редагування за замовчуванням</value>
+  </data>
+  <data name="HexEdit_MouseWheelLabel" xml:space="preserve">
+    <value>Колесо миші</value>
+  </data>
+  <data name="HexEdit_AllowZoom" xml:space="preserve">
+    <value>Дозволити масштабування</value>
+  </data>
+  <data name="HexEdit_AllowFileDrop" xml:space="preserve">
+    <value>Дозволити перетягування файлів</value>
+  </data>
+  <data name="HexEdit_DataSection" xml:space="preserve">
+    <value>Параметри даних</value>
+  </data>
+  <data name="HexEdit_ByteSizeLabel" xml:space="preserve">
+    <value>Розмір байта</value>
+  </data>
+  <data name="HexEdit_ByteOrderLabel" xml:space="preserve">
+    <value>Порядок байтів</value>
+  </data>
+  <data name="HexEdit_DefaultCopyFormatLabel" xml:space="preserve">
+    <value>Формат копіювання за замовчуванням</value>
+  </data>
+  <data name="HexEdit_SpacerVisualLabel" xml:space="preserve">
+    <value>Вигляд роздільника</value>
+  </data>
+  <data name="HexStatus_Section" xml:space="preserve">
+    <value>Рядок стану</value>
+  </data>
+  <data name="HexStatus_ShowStatusMessage" xml:space="preserve">
+    <value>Показувати повідомлення стану</value>
+  </data>
+  <data name="HexStatus_ShowFileSize" xml:space="preserve">
+    <value>Показувати розмір файлу</value>
+  </data>
+  <data name="HexStatus_ShowSelection" xml:space="preserve">
+    <value>Показувати виділення</value>
+  </data>
+  <data name="HexStatus_ShowPosition" xml:space="preserve">
+    <value>Показувати позицію</value>
+  </data>
+  <data name="HexStatus_ShowEditMode" xml:space="preserve">
+    <value>Показувати режим редагування</value>
+  </data>
+  <data name="HexStatus_ShowBytesPerLine" xml:space="preserve">
+    <value>Показувати байтів на рядок</value>
+  </data>
+  <data name="HexStatus_ShowRefreshRate" xml:space="preserve">
+    <value>Показувати частоту оновлення</value>
+  </data>
+</root>

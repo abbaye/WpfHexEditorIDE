@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <data name="EC_ShowReplaceTooltip" xml:space="preserve">
+    <value>Показати / приховати заміну (Ctrl+H)</value>
+  </data>
+  <data name="EC_SearchPlaceholder" xml:space="preserve">
+    <value>Пошук...</value>
+  </data>
+  <data name="EC_PrevResultTooltip" xml:space="preserve">
+    <value>Попередній результат (Shift+Enter)</value>
+  </data>
+  <data name="EC_NextResultTooltip" xml:space="preserve">
+    <value>Наступний результат (Enter)</value>
+  </data>
+  <data name="EC_AdvancedSearchTooltip" xml:space="preserve">
+    <value>Розширений пошук (Ctrl+Shift+F)</value>
+  </data>
+  <data name="EC_CloseSearchTooltip" xml:space="preserve">
+    <value>Закрити (Esc)</value>
+  </data>
+  <data name="EC_ReplacePlaceholder" xml:space="preserve">
+    <value>Замінити...</value>
+  </data>
+  <data name="EC_ReplaceOneTooltip" xml:space="preserve">
+    <value>Замінити (Alt+R)</value>
+  </data>
+  <data name="EC_ReplaceAllTooltip" xml:space="preserve">
+    <value>Замінити все (Alt+A)</value>
+  </data>
+  <data name="EC_CaseSensitiveTooltip" xml:space="preserve">
+    <value>З урахуванням регістру (Alt+C)</value>
+  </data>
+  <data name="EC_WholeWordTooltip" xml:space="preserve">
+    <value>Ціле слово / Шаблон (Alt+W)</value>
+  </data>
+  <data name="EC_RegexTooltip" xml:space="preserve">
+    <value>Регулярний вираз (Alt+E)</value>
+  </data>
+  <data name="EC_HexModeTooltip" xml:space="preserve">
+    <value>Шістнадцятковий режим (Alt+H)</value>
+  </data>
+  <data name="EC_MoveBarTooltip" xml:space="preserve">
+    <value>Перемістити рядок пошуку</value>
+  </data>
+</root>

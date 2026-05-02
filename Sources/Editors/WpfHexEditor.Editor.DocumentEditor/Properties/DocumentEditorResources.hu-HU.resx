@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="DocFindReplace_Title" xml:space="preserve"><value>Keresés és csere</value></data>
+  <data name="DocFindReplace_FindLabel" xml:space="preserve"><value>Keresés:</value></data>
+  <data name="DocFindReplace_ReplaceLabel" xml:space="preserve"><value>Csere:</value></data>
+  <data name="DocFindReplace_MatchCase" xml:space="preserve"><value>Kis-/nagybetű érzékeny</value></data>
+  <data name="DocFindReplace_WholeWord" xml:space="preserve"><value>Egész szó</value></data>
+  <data name="DocFindReplace_Regex" xml:space="preserve"><value>Regex</value></data>
+  <data name="DocFindReplace_FindAll" xml:space="preserve"><value>Összes keresése</value></data>
+  <data name="DocFindReplace_FindNext" xml:space="preserve"><value>Következő</value></data>
+  <data name="DocFindReplace_FindPrev" xml:space="preserve"><value>Előző</value></data>
+  <data name="DocFindReplace_Replace" xml:space="preserve"><value>Csere</value></data>
+  <data name="DocFindReplace_ReplaceAll" xml:space="preserve"><value>Összes cseréje</value></data>
+  <data name="DocFindReplace_Close" xml:space="preserve"><value>Bezárás</value></data>
+  <data name="DocHexPane_HexLabel" xml:space="preserve"><value>Hex</value></data>
+  <data name="DocPageSettings_PageTab" xml:space="preserve"><value>Oldal</value></data>
+  <data name="DocPageSettings_FormatLabel" xml:space="preserve"><value>Formátum:</value></data>
+  <data name="DocPageSettings_A4Option" xml:space="preserve"><value>A4  (21 × 29.7 cm)</value></data>
+  <data name="DocPageSettings_A3Option" xml:space="preserve"><value>A3  (29.7 × 42 cm)</value></data>
+  <data name="DocPageSettings_A5Option" xml:space="preserve"><value>A5  (14.8 × 21 cm)</value></data>
+  <data name="DocPageSettings_LetterOption" xml:space="preserve"><value>Letter (8.5 × 11 in)</value></data>
+  <data name="DocPageSettings_LegalOption" xml:space="preserve"><value>Legal  (8.5 × 14 in)</value></data>
+  <data name="DocPageSettings_CustomOption" xml:space="preserve"><value>Egyéni</value></data>
+  <data name="DocPageSettings_OrientationLabel" xml:space="preserve"><value>Tájolás:</value></data>
+  <data name="DocPageSettings_Portrait" xml:space="preserve"><value>Álló</value></data>
+  <data name="DocPageSettings_Landscape" xml:space="preserve"><value>Fekvő</value></data>
+  <data name="DocPageSettings_ColumnsTab" xml:space="preserve"><value>Oszlopok</value></data>
+  <data name="DocPageSettings_EqualWidths" xml:space="preserve"><value>Egyenlő oszlopszélességek</value></data>
+  <data name="DocPageSettings_ShowSeparator" xml:space="preserve"><value>Elválasztó vonal megjelenítése az oszlopok között</value></data>
+  <data name="DocPageSettings_HeaderFooterTab" xml:space="preserve"><value>Fejléc/Lábléc</value></data>
+  <data name="DocPageSettings_HeaderGroup" xml:space="preserve"><value>Fejléc</value></data>
+  <data name="DocPageSettings_EnableHeader" xml:space="preserve"><value>Fejléc engedélyezése</value></data>
+  <data name="DocPageSettings_DifferentFirstPage" xml:space="preserve"><value>Eltérő tartalom az első oldalon</value></data>
+  <data name="DocPageSettings_SameHeaderLR" xml:space="preserve"><value>Azonos fejléc a bal/jobb oldalakon</value></data>
+  <data name="DocPageSettings_FooterGroup" xml:space="preserve"><value>Lábléc</value></data>
+  <data name="DocPageSettings_EnableFooter" xml:space="preserve"><value>Lábléc engedélyezése</value></data>
+  <data name="DocPageSettings_BorderTab" xml:space="preserve"><value>Keret</value></data>
+  <data name="DocPageSettings_BorderNone" xml:space="preserve"><value>Nincs</value></data>
+  <data name="DocPageSettings_BorderBox" xml:space="preserve"><value>Keret</value></data>
+  <data name="DocPageSettings_BorderShadow" xml:space="preserve"><value>Árnyék</value></data>
+  <data name="DocPageSettings_CancelButton" xml:space="preserve"><value>Mégse</value></data>
+  <data name="DocPageSettings_ApplyButton" xml:space="preserve"><value>Alkalmaz</value></data>
+  <data name="DocPageSettings_InsideMargin" xml:space="preserve"><value>Belső:</value></data>
+  <data name="DocPageSettings_OutsideMargin" xml:space="preserve"><value>Külső:</value></data>
+  <data name="DocPageSettings_LeftMargin" xml:space="preserve"><value>Bal:</value></data>
+  <data name="DocPageSettings_RightMargin" xml:space="preserve"><value>Jobb:</value></data>
+  <data name="DocEditorHost_TextViewToolTip" xml:space="preserve"><value>Szövegnézet</value></data>
+  <data name="DocEditorHost_SplitViewToolTip" xml:space="preserve"><value>Osztott nézet (szöveg + Hex)</value></data>
+  <data name="DocEditorHost_HexViewToolTip" xml:space="preserve"><value>Hex-nézet</value></data>
+  <data name="DocEditorHost_StructureViewToolTip" xml:space="preserve"><value>Struktúra-fanézet</value></data>
+  <data name="DocEditorHost_FullViewToolTip" xml:space="preserve"><value>Teljes nézet (szöveg + struktúra + Hex)</value></data>
+  <data name="DocEditorHost_FocusModeToolTip" xml:space="preserve"><value>Fókuszmód — zen-írás (Ctrl+Shift+F)</value></data>
+  <data name="DocEditorHost_TextModeLabel" xml:space="preserve"><value>Szöveg</value></data>
+  <data name="DocEditorHost_SplitModeLabel" xml:space="preserve"><value>Osztott</value></data>
+  <data name="DocEditorHost_HexModeLabel" xml:space="preserve"><value>Hex</value></data>
+  <data name="DocEditorHost_StructureModeLabel" xml:space="preserve"><value>Struktúra</value></data>
+  <data name="DocEditorHost_FullModeLabel" xml:space="preserve"><value>Teljes</value></data>
+  <data name="DocEditorHost_FocusModeLabel" xml:space="preserve"><value>Fókusz</value></data>
+  <data name="DocEditorHost_PageViewToolTip" xml:space="preserve"><value>Oldalnézet — lapozott A4/Letter kártyák</value></data>
+  <data name="DocEditorHost_DraftViewToolTip" xml:space="preserve"><value>Vázlatnézet — folyamatos görgetés, kompakt margók</value></data>
+  <data name="DocEditorHost_OutlineViewToolTip" xml:space="preserve"><value>Vázlat nézet — struktúra-fa középen</value></data>
+  <data name="DocEditorHost_ForensicModeToolTip" xml:space="preserve"><value>Törvényszéki elemzési mód</value></data>
+  <data name="DocEditorHost_ForensicModeLabel" xml:space="preserve"><value>Törvényszéki</value></data>
+  <data name="DocEditorHost_BoldToolTip" xml:space="preserve"><value>Félkövér (Ctrl+B)</value></data>
+  <data name="DocEditorHost_ItalicToolTip" xml:space="preserve"><value>Dőlt (Ctrl+I)</value></data>
+  <data name="DocEditorHost_UnderlineToolTip" xml:space="preserve"><value>Aláhúzott (Ctrl+U)</value></data>
+  <data name="DocEditorHost_StrikethroughToolTip" xml:space="preserve"><value>Áthúzott</value></data>
+  <data name="DocEditorHost_AlignLeftToolTip" xml:space="preserve"><value>Balra igazítás</value></data>
+  <data name="DocEditorHost_AlignCenterToolTip" xml:space="preserve"><value>Középre igazítás</value></data>
+  <data name="DocEditorHost_AlignRightToolTip" xml:space="preserve"><value>Jobbra igazítás</value></data>
+  <data name="DocEditorHost_StyleDropdownToolTip" xml:space="preserve"><value>Bekezdésstílus</value></data>
+  <data name="DocEditorHost_StyleNormal" xml:space="preserve"><value>Normal</value></data>
+  <data name="DocEditorHost_StyleH1" xml:space="preserve"><value>H1</value></data>
+  <data name="DocEditorHost_StyleH2" xml:space="preserve"><value>H2</value></data>
+  <data name="DocEditorHost_StyleH3" xml:space="preserve"><value>H3</value></data>
+  <data name="DocEditorHost_StyleH4" xml:space="preserve"><value>H4</value></data>
+  <data name="DocEditorHost_StyleH5" xml:space="preserve"><value>H5</value></data>
+  <data name="DocEditorHost_StyleH6" xml:space="preserve"><value>H6</value></data>
+  <data name="DocEditorHost_StyleQuote" xml:space="preserve"><value>Idézet</value></data>
+  <data name="DocEditorHost_StyleCode" xml:space="preserve"><value>Code</value></data>
+  <data name="DocEditorHost_StylesPanelToolTip" xml:space="preserve"><value>Bekezdésstílusok (Ctrl+Alt+S)</value></data>
+  <data name="DocEditorHost_PageSetupToolTip" xml:space="preserve"><value>Oldalbeállítás (papírméret, margók, oszlopok…)</value></data>
+  <data name="DocEditorHost_ZoomOutToolTip" xml:space="preserve"><value>Kicsinyítés</value></data>
+  <data name="DocEditorHost_ZoomDefault" xml:space="preserve"><value>100%</value></data>
+  <data name="DocEditorHost_ZoomInToolTip" xml:space="preserve"><value>Nagyítás</value></data>
+  <data name="DocEditorHost_ReadOnlyToolTip" xml:space="preserve"><value>Csak olvasható</value></data>
+  <data name="DocEditorHost_MetadataToolTip" xml:space="preserve"><value>Dokumentum metaadatai</value></data>
+  <data name="DocEditorHost_ExportToolTip" xml:space="preserve"><value>Dokumentum exportálása</value></data>
+  <data name="DocEditorHost_SaveToolTip" xml:space="preserve"><value>Mentés</value></data>
+  <data name="DocEditorHost_MetaTitleLabel" xml:space="preserve"><value>Cím</value></data>
+  <data name="DocEditorHost_MetaAuthorLabel" xml:space="preserve"><value>Szerző</value></data>
+  <data name="DocEditorHost_MetaFormatLabel" xml:space="preserve"><value>Formátum</value></data>
+  <data name="DocEditorHost_MetaMimeLabel" xml:space="preserve"><value>MIME</value></data>
+  <data name="DocEditorHost_MetaCreatedLabel" xml:space="preserve"><value>Létrehozva</value></data>
+  <data name="DocEditorHost_MetaModifiedLabel" xml:space="preserve"><value>Módosítva</value></data>
+  <data name="DocEditorHost_MetaMacrosLabel" xml:space="preserve"><value>Makrók</value></data>
+  <data name="DocPopToolbar_BoldToolTip" xml:space="preserve"><value>Félkövér (Ctrl+B)</value></data>
+  <data name="DocPopToolbar_ItalicToolTip" xml:space="preserve"><value>Dőlt (Ctrl+I)</value></data>
+  <data name="DocPopToolbar_UnderlineToolTip" xml:space="preserve"><value>Aláhúzott (Ctrl+U)</value></data>
+  <data name="DocPopToolbar_CopyTextToolTip" xml:space="preserve"><value>Kijelölt szöveg másolása</value></data>
+  <data name="DocPopToolbar_CopyHexToolTip" xml:space="preserve"><value>Másolás Hex bájtokként</value></data>
+  <data name="DocPopToolbar_InspectToolTip" xml:space="preserve"><value>Blokk vizsgálata a Struktúra panelen</value></data>
+  <data name="DocPopToolbar_JumpHexToolTip" xml:space="preserve"><value>Ugrás az eltoláshoz a Hex panelen</value></data>
+  <data name="DocStatusBar_PageCountToolTip" xml:space="preserve"><value>Oldalszám</value></data>
+  <data name="DocStatusBar_WordCountToolTip" xml:space="preserve"><value>Szószám</value></data>
+  <data name="DocStatusBar_ZoomToolTip" xml:space="preserve"><value>Nagyítási szint</value></data>
+  <data name="DocStatusBar_ForensicBadgeToolTip" xml:space="preserve"><value>Kattintson a törvényszéki panel megnyitásához</value></data>
+  <data name="DocStructure_Header" xml:space="preserve"><value>Struktúra</value></data>
+  <data name="DocStructure_CollapseAllToolTip" xml:space="preserve"><value>Összes összecsukása</value></data>
+  <data name="DocStructure_ExpandAllToolTip" xml:space="preserve"><value>Összes kibontása</value></data>
+  <data name="DocStructure_FilterPlaceholder" xml:space="preserve"><value>Blokkok szűrése…</value></data>
+  <data name="DocStructure_ClearFilterToolTip" xml:space="preserve"><value>Szűrő törlése</value></data>
+  <data name="DocStructure_NavigateMenuHeader" xml:space="preserve"><value>Ugrás a szöveghez</value></data>
+  <data name="DocStructure_JumpHexMenuHeader" xml:space="preserve"><value>Ugrás a Hex eltoláshoz</value></data>
+  <data name="DocStructure_CopyTextMenuHeader" xml:space="preserve"><value>Blokk szövegének másolása</value></data>
+  <data name="DocStructure_CopyOffsetMenuHeader" xml:space="preserve"><value>Eltolás másolása</value></data>
+  <data name="DocEditorHost_DocumentTitle" xml:space="preserve"><value>Dokumentum</value></data>
+  <data name="DocEditorHost_SavedStatus" xml:space="preserve"><value>Mentve — {0}</value></data>
+  <data name="DocEditorHost_SaveFailedStatus" xml:space="preserve"><value>Mentés sikertelen: {0}</value></data>
+  <data name="DocEditorHost_NoSaverStatus" xml:space="preserve"><value>Nincs regisztrált mentési kezelő ehhez a fájltípushoz.</value></data>
+  <data name="DocEditorHost_LoadingMessage" xml:space="preserve"><value>Dokumentum betöltése…</value></data>
+  <data name="DocEditorHost_WaitingForIDE" xml:space="preserve"><value>Várakozás az IDE inicializálására…</value></data>
+  <data name="DocEditorHost_LoadErrorMessage" xml:space="preserve"><value>Nem sikerült megnyitni a dokumentumot: {0}</value></data>
+  <data name="DocEditorHost_ExportDialogTitle" xml:space="preserve"><value>Dokumentum exportálása</value></data>
+  <data name="DocEditorHost_ExportFailedStatus" xml:space="preserve"><value>Exportálás sikertelen: {0}</value></data>
+  <data name="DocEditorHost_ExportedStatus" xml:space="preserve"><value>Exportálva — {0}</value></data>
+  <data name="DocEditorHost_NoSaverForExport" xml:space="preserve"><value>Nincs regisztrált mentési kezelő a(z) '{0}' típushoz.</value></data>
+  <data name="DocEditorHost_MetaEmptyValue" xml:space="preserve"><value>—</value></data>
+  <data name="DocEditorHost_MetaYesValue" xml:space="preserve"><value>Igen</value></data>
+  <data name="DocEditorHost_MetaNoValue" xml:space="preserve"><value>Nem</value></data>
+  <data name="DocEditorHost_ViewModeText" xml:space="preserve"><value>Szöveg</value></data>
+  <data name="DocEditorHost_ViewModeSplit" xml:space="preserve"><value>Osztott</value></data>
+  <data name="DocEditorHost_ViewModeHex" xml:space="preserve"><value>Hex</value></data>
+  <data name="DocEditorHost_ViewModeStructure" xml:space="preserve"><value>Struktúra</value></data>
+  <data name="DocEditorHost_ViewModeFull" xml:space="preserve"><value>Teljes</value></data>
+  <data name="DocEditorHost_ViewModeFocus" xml:space="preserve"><value>Fókusz</value></data>
+  <data name="DocEditorHost_ReadOnlySuffix" xml:space="preserve"><value> | Csak olvasható</value></data>
+  <data name="DocStatusBar_DefaultPage" xml:space="preserve"><value>1. oldal</value></data>
+  <data name="DocStatusBar_DefaultWordCount" xml:space="preserve"><value>0 szó</value></data>
+  <data name="DocStatusBar_DefaultZoom" xml:space="preserve"><value>100%</value></data>
+  <data name="DocStatusBar_DefaultViewMode" xml:space="preserve"><value>Osztott</value></data>
+  <data name="DocStatusBar_FormatPattern" xml:space="preserve"><value>Formátum: {0} ({1})</value></data>
+  <data name="DocStatusBar_WordCountPattern" xml:space="preserve"><value>{0:N0} szó</value></data>
+  <data name="DocStatusBar_PagePattern" xml:space="preserve"><value>1 / {0}. oldal</value></data>
+  <data name="DocStatusBar_ZoomPattern" xml:space="preserve"><value>{0:0}%</value></data>
+  <data name="DocHexPane_OffsetPattern" xml:space="preserve"><value>Hex  |  0x{0:X8}</value></data>
+  <data name="DocStyles_Normal" xml:space="preserve"><value>Normal</value></data>
+  <data name="DocStyles_Heading1" xml:space="preserve"><value>1. fejléc</value></data>
+  <data name="DocStyles_Heading2" xml:space="preserve"><value>2. fejléc</value></data>
+  <data name="DocStyles_Heading3" xml:space="preserve"><value>3. fejléc</value></data>
+  <data name="DocStyles_Heading4" xml:space="preserve"><value>4. fejléc</value></data>
+  <data name="DocStyles_Heading5" xml:space="preserve"><value>5. fejléc</value></data>
+  <data name="DocStyles_Heading6" xml:space="preserve"><value>6. fejléc</value></data>
+  <data name="DocStyles_Quote" xml:space="preserve"><value>Idézet</value></data>
+  <data name="DocStyles_Code" xml:space="preserve"><value>Code</value></data>
+  <data name="DocStyles_Caption" xml:space="preserve"><value>Felirat</value></data>
+  <data name="DocStyles_ListParagraph" xml:space="preserve"><value>Listabékezdés</value></data>
+  <data name="DocStyles_IntenseQuote" xml:space="preserve"><value>Hangsúlyos idézet</value></data>
+  <data name="DocSb_AlertsLabel" xml:space="preserve">
+    <value>Riasztások</value>
+  </data>
+  <data name="DocSb_BlocksLabel" xml:space="preserve">
+    <value>Blokkok</value>
+  </data>
+  <data name="DocSb_FormatLabel" xml:space="preserve">
+    <value>Formátum</value>
+  </data>
+  <data name="DocSb_SelectionLabel" xml:space="preserve">
+    <value>Kijelölés</value>
+  </data>
+  <data name="DocSb_VersionLabel" xml:space="preserve">
+    <value>Verzió</value>
+  </data>
+  <data name="DocSb_ViewLabel" xml:space="preserve">
+    <value>Nézet</value>
+  </data>
+  <data name="DocTb_ForensicMode" xml:space="preserve">
+    <value>Törvényszéki mód</value>
+  </data>
+  <data name="DocTb_HexView" xml:space="preserve">
+    <value>Hexadecimális nézet</value>
+  </data>
+  <data name="DocTb_Save" xml:space="preserve">
+    <value>Mentés</value>
+  </data>
+  <data name="DocTb_SplitView" xml:space="preserve">
+    <value>Osztott nézet</value>
+  </data>
+  <data name="DocTb_StructureView" xml:space="preserve">
+    <value>Struktúranézet</value>
+  </data>
+  <data name="DocTb_TextView" xml:space="preserve">
+    <value>Szövegnézet</value>
+  </data>
+</root>

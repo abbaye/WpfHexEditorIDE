@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfHexEditor.Editor.StructureEditor
+    File        : StructureEditorResources.fr-CA.resx
+    Description : Localized UI strings for the Structure Editor.
+-->
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:any minOccurs="0" />
+              </xsd:sequence>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="SE_ColOffset" xml:space="preserve">
+    <value>Offset</value>
+  </data>
+  <data name="SE_ColStrength" xml:space="preserve">
+    <value>Kekuatan</value>
+  </data>
+  <data name="SE_ColRequired" xml:space="preserve">
+    <value>Diperlukan</value>
+  </data>
+  <data name="StructureEditor_AddBlockTitle" xml:space="preserve"><value>Tambahkan blok</value></data>
+  <data name="StructureEditor_AddBlockButton" xml:space="preserve"><value>Tambah</value></data>
+  <data name="StructureEditor_AddBlockCancel" xml:space="preserve"><value>Batal</value></data>
+  <data name="StructureEditor_TabMetadata" xml:space="preserve"><value>Metadata</value></data>
+  <data name="StructureEditor_TabDetection" xml:space="preserve"><value>Deteksi</value></data>
+  <data name="StructureEditor_TabBlocks" xml:space="preserve"><value>Blok</value></data>
+  <data name="StructureEditor_TabVariables" xml:space="preserve"><value>Variabel</value></data>
+  <data name="StructureEditor_TabAdvanced" xml:space="preserve"><value>Lanjutan</value></data>
+  <data name="StructureEditor_TabQuality" xml:space="preserve"><value>Kualitas</value></data>
+  <data name="StructureEditor_TabTest" xml:space="preserve"><value>Test</value></data>
+  <data name="StructureEditor_SaveToolTip" xml:space="preserve"><value>Simpan (Ctrl+S)</value></data>
+  <data name="StructureEditor_ValidateToolTip" xml:space="preserve"><value>Validasi (Ctrl+Shift+V)</value></data>
+  <data name="StructureEditor_UndoToolTip" xml:space="preserve"><value>Batal (Ctrl+Z)</value></data>
+  <data name="StructureEditor_RedoToolTip" xml:space="preserve"><value>Ulangi (Ctrl+Y)</value></data>
+  <data name="StructureEditor_LiveCodeViewToolTip" xml:space="preserve"><value>Alihkan tampilan kode langsung</value></data>
+  <data name="StructureEditor_AddBlockToolTip" xml:space="preserve"><value>Tambahkan blok (Ctrl+N)</value></data>
+  <data name="StructureEditor_DuplicateBlockToolTip" xml:space="preserve"><value>Duplikasi blok (Ctrl+D)</value></data>
+  <data name="StructureEditor_UnsavedChangesToolTip" xml:space="preserve"><value>Perubahan belum disimpan</value></data>
+  <data name="StructureEditor_BlocksFilterToolTip" xml:space="preserve"><value>Filter blok berdasarkan nama</value></data>
+  <data name="StructureEditor_BlocksAddMenuItem" xml:space="preserve"><value>Tambahkan blok...</value></data>
+  <data name="StructureEditor_BlocksDuplicateMenuItem" xml:space="preserve"><value>Duplikasi</value></data>
+  <data name="StructureEditor_BlocksRemoveMenuItem" xml:space="preserve"><value>Hapus</value></data>
+  <data name="StructureEditor_BlocksMoveUpMenuItem" xml:space="preserve"><value>Naik</value></data>
+  <data name="StructureEditor_BlocksMoveDownMenuItem" xml:space="preserve"><value>Turun</value></data>
+  <data name="StructureEditor_BlocksCopyJsonMenuItem" xml:space="preserve"><value>Salin sebagai JSON</value></data>
+  <data name="StructureEditor_BlocksPasteMenuItem" xml:space="preserve"><value>Tempel blok</value></data>
+  <data name="StructureEditor_BlocksEmptyLine1" xml:space="preserve"><value>Pilih blok untuk mengubah propertinya,</value></data>
+  <data name="StructureEditor_BlocksEmptyLine2" xml:space="preserve"><value>atau tekan Ctrl+N / klik kanan untuk menambahkan blok baru.</value></data>
+  <data name="StructureEditor_DetectionHexSigLabel" xml:space="preserve"><value>Tanda tangan heksadesimal</value></data>
+  <data name="StructureEditor_DetectionHexBytesToolTip" xml:space="preserve"><value>Byte hex tanpa spasi, cth. 89504E47 untuk PNG</value></data>
+  <data name="StructureEditor_DetectionSigLabel" xml:space="preserve"><value>Tanda tangan</value></data>
+  <data name="StructureEditor_DetectionV2SigsLabel" xml:space="preserve"><value>Tanda tangan v2.0</value></data>
+  <data name="StructureEditor_DetectionMatchModeLabel" xml:space="preserve"><value>Mode pencocokan</value></data>
+  <data name="StructureEditor_DetectionHexValueToolTip" xml:space="preserve"><value>Nilai hex</value></data>
+  <data name="StructureEditor_DetectionOffsetToolTip" xml:space="preserve"><value>Offset</value></data>
+  <data name="StructureEditor_DetectionLabelToolTip" xml:space="preserve"><value>Label</value></data>
+  <data name="StructureEditor_DetectionAddSigButton" xml:space="preserve"><value>＋ Tambahkan tanda tangan</value></data>
+  <data name="StructureEditor_DetectionEntropyLabel" xml:space="preserve"><value>Indeks entropi</value></data>
+  <data name="StructureEditor_DetectionMinEntropyLabel" xml:space="preserve"><value>Entropi minimum</value></data>
+  <data name="StructureEditor_DetectionMaxEntropyLabel" xml:space="preserve"><value>Entropi maksimum</value></data>
+  <data name="StructureEditor_DetectionMinScoreLabel" xml:space="preserve"><value>Skor minimum</value></data>
+  <data name="StructureEditor_DetectionScoreThresholdLabel" xml:space="preserve"><value>Ambang skor</value></data>
+  <data name="StructureEditor_DetectionContentPatternsLabel" xml:space="preserve"><value>Pola konten (format teks)</value></data>
+  <data name="StructureEditor_DetectionRegexToolTip" xml:space="preserve"><value>Pola Regex</value></data>
+  <data name="StructureEditor_DetectionAddPatternButton" xml:space="preserve"><value>＋ Tambahkan pola</value></data>
+  <data name="StructureEditor_MetaCoreSection" xml:space="preserve"><value>Umum</value></data>
+  <data name="StructureEditor_MetaNameLabel" xml:space="preserve"><value>Nama format</value></data>
+  <data name="StructureEditor_MetaNameToolTip" xml:space="preserve"><value>Nama format yang mudah dibaca (cth. 'Arsip ZIP', 'Gambar PNG')</value></data>
+  <data name="StructureEditor_MetaVersionLabel" xml:space="preserve"><value>Version</value></data>
+  <data name="StructureEditor_MetaVersionToolTip" xml:space="preserve"><value>Versi definisi ini (cth. '1.0', '2.0')</value></data>
+  <data name="StructureEditor_MetaAuthorLabel" xml:space="preserve"><value>Auteur</value></data>
+  <data name="StructureEditor_MetaAuthorToolTip" xml:space="preserve"><value>Penulis file definisi ini</value></data>
+  <data name="StructureEditor_MetaCategoryLabel" xml:space="preserve"><value>Kategori</value></data>
+  <data name="StructureEditor_MetaCategoryToolTip" xml:space="preserve"><value>Kategori (ditetapkan otomatis dari struktur folder: Arsip, Gambar, Audio, Video, dll.)</value></data>
+  <data name="StructureEditor_MetaDiffModeLabel" xml:space="preserve"><value>Mode diff</value></data>
+  <data name="StructureEditor_MetaDiffModeToolTip" xml:space="preserve"><value>Algoritma diff yang disukai untuk DiffViewer</value></data>
+  <data name="StructureEditor_MetaPreferredEditorLabel" xml:space="preserve"><value>Editor yang disukai</value></data>
+  <data name="StructureEditor_MetaPreferredEditorToolTip" xml:space="preserve"><value>ID pabrik editor yang disukai untuk file yang cocok dengan format ini</value></data>
+  <data name="StructureEditor_MetaDescriptionLabel" xml:space="preserve"><value>Deskripsi</value></data>
+  <data name="StructureEditor_MetaIsTextFormat" xml:space="preserve"><value>Format teks (dibuka di editor kode secara default)</value></data>
+  <data name="StructureEditor_MetaExtensionsLabel" xml:space="preserve"><value>Ekstensi file</value></data>
+  <data name="StructureEditor_MetaAddExtensionButton" xml:space="preserve"><value>＋ Tambahkan ekstensi</value></data>
+  <data name="StructureEditor_MetaMimeTypesLabel" xml:space="preserve"><value>Tipe MIME</value></data>
+  <data name="StructureEditor_MetaAddMimeButton" xml:space="preserve"><value>＋ Tambahkan tipe MIME</value></data>
+  <data name="StructureEditor_MetaSoftwareLabel" xml:space="preserve"><value>Perangkat lunak</value></data>
+  <data name="StructureEditor_MetaAddSoftwareButton" xml:space="preserve"><value>＋ Tambahkan perangkat lunak</value></data>
+  <data name="StructureEditor_QualityComputedSection" xml:space="preserve"><value>Metrik yang dihitung</value></data>
+  <data name="StructureEditor_QualityBlockCoverage" xml:space="preserve"><value>Cakupan blok</value></data>
+  <data name="StructureEditor_QualityCompletenessScore" xml:space="preserve"><value>Skor kelengkapan</value></data>
+  <data name="StructureEditor_QualityTypeDistribution" xml:space="preserve"><value>Distribusi tipe</value></data>
+  <data name="StructureEditor_QualityBlocksLabel" xml:space="preserve"><value>Blok</value></data>
+  <data name="StructureEditor_QualityDepthLabel" xml:space="preserve"><value>Kedalaman</value></data>
+  <data name="StructureEditor_QualityVariablesLabel" xml:space="preserve"><value>Variabel</value></data>
+  <data name="StructureEditor_QualityRulesLabel" xml:space="preserve"><value>Aturan</value></data>
+  <data name="StructureEditor_QualityMetadataLabel" xml:space="preserve"><value>Metadata</value></data>
+  <data name="StructureEditor_QualityDocLevel" xml:space="preserve"><value>Tingkat dokumentasi</value></data>
+  <data name="StructureEditor_QualityLastUpdated" xml:space="preserve"><value>Terakhir diperbarui</value></data>
+  <data name="StructureEditor_QualityLastUpdatedToolTip" xml:space="preserve"><value>Format: YYYY-MM-DD (diisi otomatis saat disimpan)</value></data>
+  <data name="StructureEditor_QualityPriorityFormat" xml:space="preserve"><value>Format prioritas (top 100)</value></data>
+  <data name="StructureEditor_QualityAutoRefined" xml:space="preserve"><value>Disempurnakan secara otomatis (diperkaya oleh skrip — hanya baca)</value></data>
+  <data name="StructureEditor_TestSection" xml:space="preserve"><value>Uji format pada file</value></data>
+  <data name="StructureEditor_TestFilePathToolTip" xml:space="preserve"><value>Jalur ke file biner yang akan diuji</value></data>
+  <data name="StructureEditor_TestBrowseButton" xml:space="preserve"><value>Jelajahi…</value></data>
+  <data name="StructureEditor_TestBrowseDialogTitle" xml:space="preserve"><value>Pilih file biner untuk diuji</value></data>
+  <data name="StructureEditor_TestRunButton" xml:space="preserve"><value>▶ Jalankan tes</value></data>
+  <data name="StructureEditor_TestCopyToolTip" xml:space="preserve"><value>Salin hasil ke clipboard (TSV)</value></data>
+  <data name="StructureEditor_TestEmptyMessage" xml:space="preserve"><value>Pilih file dan klik ▶ Jalankan tes untuk menguji definisi format saat ini.</value></data>
+  <data name="StructureEditor_TestColStatus" xml:space="preserve"><value>Status</value></data>
+  <data name="StructureEditor_TestColBlockName" xml:space="preserve"><value>Nama blok</value></data>
+  <data name="StructureEditor_TestColType" xml:space="preserve"><value>Type</value></data>
+  <data name="StructureEditor_TestColOffset" xml:space="preserve"><value>Offset</value></data>
+  <data name="StructureEditor_TestColLen" xml:space="preserve"><value>Long.</value></data>
+  <data name="StructureEditor_TestColRaw" xml:space="preserve"><value>Mentah (hex)</value></data>
+  <data name="StructureEditor_TestColParsed" xml:space="preserve"><value>Nilai yang diurai</value></data>
+  <data name="StructureEditor_TestColNote" xml:space="preserve"><value>Note</value></data>
+  <data name="StructureEditor_TestFilterOk" xml:space="preserve"><value>✓ OK</value></data>
+  <data name="StructureEditor_TestFilterWarning" xml:space="preserve"><value>⚠ Peringatan</value></data>
+  <data name="StructureEditor_TestFilterError" xml:space="preserve"><value>✕ Kesalahan</value></data>
+  <data name="StructureEditor_TestFilterSkipped" xml:space="preserve"><value>⊘ Diabaikan</value></data>
+  <data name="StructureEditor_VarsDescription" xml:space="preserve"><value>Variabel awal tersedia untuk interpreter blok (cth. penghitung loop, offset yang dihitung).</value></data>
+  <data name="StructureEditor_VarsFilterToolTip" xml:space="preserve"><value>Filter variabel berdasarkan nama</value></data>
+  <data name="StructureEditor_VarsColName" xml:space="preserve"><value>Nama variabel</value></data>
+  <data name="StructureEditor_VarsColType" xml:space="preserve"><value>Type</value></data>
+  <data name="StructureEditor_VarsColInitialValue" xml:space="preserve"><value>Nilai awal</value></data>
+  <data name="StructureEditor_VarsColDescription" xml:space="preserve"><value>Deskripsi</value></data>
+  <data name="StructureEditor_VarsAddButton" xml:space="preserve"><value>＋ Tambahkan variabel</value></data>
+  <data name="StructureEditor_V2AssertionsHeader" xml:space="preserve"><value>Assertions</value></data>
+  <data name="StructureEditor_V2AssertionPlaceholder" xml:space="preserve"><value>var:nom equals 0 or calc:expr</value></data>
+  <data name="StructureEditor_V2AssertionToolTip" xml:space="preserve"><value>Expression booléenne — Ctrl+Space pour les fonctions et variables</value></data>
+  <data name="StructureEditor_V2ChecksumsHeader" xml:space="preserve"><value>Checksum</value></data>
+  <data name="StructureEditor_V2VersioningHeader" xml:space="preserve"><value>Manajemen versi (VersionDetection / VersionedBlocks)</value></data>
+  <data name="StructureEditor_V2ImportsHeader" xml:space="preserve"><value>Impor ($ref Komposisi)</value></data>
+  <data name="StructureEditor_V2ImportsDescription" xml:space="preserve"><value>ref = nama format (atau structs/Nama), as = alias yang digunakan dalam blok structRef.</value></data>
+  <data name="StructureEditor_V2ImportRefToolTip" xml:space="preserve"><value>Referensi format, cth. structs/PE_OptionalHeader</value></data>
+  <data name="StructureEditor_V2ImportAliasToolTip" xml:space="preserve"><value>Alias yang digunakan dalam structRef, cth. PEOpt</value></data>
+  <data name="StructureEditor_V2AddImportButton" xml:space="preserve"><value>+ Tambahkan impor</value></data>
+  <data name="StructureEditor_V2ForensicHeader" xml:space="preserve"><value>Forensik</value></data>
+  <data name="StructureEditor_V2NavBookmarksHeader" xml:space="preserve"><value>Bookmark navigasi</value></data>
+  <data name="StructureEditor_V2BookmarkPlaceholder" xml:space="preserve"><value>namaVariabel</value></data>
+  <data name="StructureEditor_V2BookmarkToolTip" xml:space="preserve"><value>Variabel yang berisi offset byte — Ctrl+Space untuk saran</value></data>
+  <data name="StructureEditor_V2AddBookmarkButton" xml:space="preserve"><value>＋ Tambahkan bookmark</value></data>
+  <data name="StructureEditor_V2InspectorLayoutHeader" xml:space="preserve"><value>Tata letak inspector</value></data>
+  <data name="StructureEditor_V2ExportTemplatesHeader" xml:space="preserve"><value>Template ekspor</value></data>
+  <data name="StructureEditor_V2AddTemplateButton" xml:space="preserve"><value>＋ Tambahkan template</value></data>
+  <data name="StructureEditor_V2AIHintsHeader" xml:space="preserve"><value>Petunjuk AI</value></data>
+  <data name="StructureEditor_TypeHintField" xml:space="preserve"><value>Field biner dengan offset dan panjang tetap atau variabel.</value></data>
+  <data name="StructureEditor_TypeHintSignature" xml:space="preserve"><value>Byte ajaib yang mengidentifikasi format pada offset tertentu.</value></data>
+  <data name="StructureEditor_TypeHintMetadata" xml:space="preserve"><value>Membaca nilai panjang variabel atau simbolik ke dalam variabel bernama.</value></data>
+  <data name="StructureEditor_TypeHintConditional" xml:space="preserve"><value>Menganalisis blok secara kondisional berdasarkan nilai field atau variabel.</value></data>
+  <data name="StructureEditor_TypeHintLoop" xml:space="preserve"><value>Mengulangi isi blok selama kondisi benar.</value></data>
+  <data name="StructureEditor_TypeHintAction" xml:space="preserve"><value>Memodifikasi variabel (increment, decrement, setVariable).</value></data>
+  <data name="StructureEditor_TypeHintCompute" xml:space="preserve"><value>Mengevaluasi ekspresi matematika dan menyimpan hasilnya.</value></data>
+  <data name="StructureEditor_TypeHintRepeating" xml:space="preserve"><value>Menganalisis array dengan jumlah entri terstruktur tetap.</value></data>
+  <data name="StructureEditor_TypeHintUnion" xml:space="preserve"><value>Memilih satu set blok varian berdasarkan variabel diskriminan.</value></data>
+  <data name="StructureEditor_TypeHintNested" xml:space="preserve"><value>Mengintegrasikan definisi struktur eksternal melalui referensi.</value></data>
+  <data name="StructureEditor_TypeHintPointer" xml:space="preserve"><value>Membuat anotasi navigasi ke offset yang ditunjuk.</value></data>
+  <data name="StructureEditor_ValidationErrorCount" xml:space="preserve"><value>{0} kesalahan</value></data>
+  <data name="StructureEditor_ValidationWarningCount" xml:space="preserve"><value>{0} peringatan</value></data>
+  <data name="StructureEditor_RawJsonTitle" xml:space="preserve"><value>JSON mentah — {0}</value></data>
+  <data name="StructureEditor_RawJsonApply" xml:space="preserve"><value>Terapkan</value></data>
+  <data name="StructureEditor_RawJsonCancel" xml:space="preserve"><value>Batal</value></data>
+  <data name="StructureEditor_FactoryDisplayName" xml:space="preserve"><value>Editor struktur</value></data>
+  <data name="StructureEditor_FactoryDescription" xml:space="preserve"><value>Editor visual untuk file definisi struktur .whfmt. Edit blok, tipe, offset, panjang, dan warna dalam DataGrid.</value></data>
+  <data name="StructureEd_ConditionRow_LengthLabel" xml:space="preserve"><value>Panjang:</value></data>
+  <data name="StrTb_Validate" xml:space="preserve"><value>Validasi (Ctrl+Shift+V)</value></data>
+  <data name="StrTb_AddBlock" xml:space="preserve"><value>Tambahkan blok (Ctrl+N)</value></data>
+  <data name="StrTb_ToggleLiveCode" xml:space="preserve"><value>Alihkan tampilan kode langsung</value></data>
+  <data name="StrTb_LayoutLabel" xml:space="preserve"><value>Tata letak</value></data>
+  <data name="StrTb_LayoutTooltip" xml:space="preserve"><value>Tata letak tampilan kode</value></data>
+  <data name="StrLayout_CodeRight" xml:space="preserve"><value>Kode di kanan</value></data>
+  <data name="StrLayout_CodeLeft" xml:space="preserve"><value>Kode di kiri</value></data>
+  <data name="StrLayout_CodeBottom" xml:space="preserve"><value>Kode di bawah</value></data>
+  <data name="StrLayout_CodeTop" xml:space="preserve"><value>Kode di atas</value></data>
+  <data name="StrSb_FormatLabel" xml:space="preserve"><value>Format</value></data>
+  <data name="StrSb_TabLabel" xml:space="preserve"><value>Tab</value></data>
+  <data name="StrSb_BlocksLabel" xml:space="preserve"><value>Blok</value></data>
+  <data name="StrSb_ValidationLabel" xml:space="preserve"><value>Validasi</value></data>
+  <data name="SE_PropName" xml:space="preserve"><value>Nama</value></data>
+  <data name="SE_PropType" xml:space="preserve"><value>Type</value></data>
+  <data name="SE_PropColor" xml:space="preserve"><value>Warna</value></data>
+  <data name="SE_PropOpacity" xml:space="preserve"><value>Opasitas</value></data>
+  <data name="SE_PropDescription" xml:space="preserve"><value>Deskripsi</value></data>
+  <data name="SE_PropHidden" xml:space="preserve"><value>Tersembunyi</value></data>
+  <data name="SE_PropEndianness" xml:space="preserve"><value>Endianness</value></data>
+  <data name="SE_BlockType" xml:space="preserve"><value>Tipe blok</value></data>
+  <data name="SE_BE_Action" xml:space="preserve"><value>Action</value></data>
+  <data name="SE_BE_Variable" xml:space="preserve"><value>Variable</value></data>
+  <data name="SE_BE_Value" xml:space="preserve"><value>Nilai</value></data>
+  <data name="SE_BE_Computation" xml:space="preserve"><value>Perhitungan</value></data>
+  <data name="SE_BE_Expression" xml:space="preserve"><value>Ekspresi</value></data>
+  <data name="SE_BE_StoreAs" xml:space="preserve"><value>Simpan sebagai</value></data>
+  <data name="SE_BE_Position" xml:space="preserve"><value>Posisi</value></data>
+  <data name="SE_BE_Offset" xml:space="preserve"><value>Offset</value></data>
+  <data name="SE_BE_OffsetFrom" xml:space="preserve"><value>Offset dari</value></data>
+  <data name="SE_BE_OffsetAdd" xml:space="preserve"><value>Offset ditambahkan</value></data>
+  <data name="SE_BE_Length" xml:space="preserve"><value>Panjang</value></data>
+  <data name="SE_BE_ValueType" xml:space="preserve"><value>Tipe nilai</value></data>
+  <data name="SE_BE_Array" xml:space="preserve"><value>Array</value></data>
+  <data name="SE_BE_Count" xml:space="preserve"><value>Jumlah</value></data>
+  <data name="SE_BE_EntrySize" xml:space="preserve"><value>Ukuran entri</value></data>
+  <data name="SE_BE_IndexVar" xml:space="preserve"><value>Variabel indeks</value></data>
+  <data name="SE_BE_ColorCycle" xml:space="preserve"><value>Siklus warna</value></data>
+  <data name="SE_BE_EntryFieldsHint" xml:space="preserve"><value>Field entri ditampilkan sebagai anak di pohon.</value></data>
+  <data name="SE_BE_Union" xml:space="preserve"><value>Union</value></data>
+  <data name="SE_BE_Discriminant" xml:space="preserve"><value>Diskriminan</value></data>
+  <data name="SE_BE_Variants" xml:space="preserve"><value>Varian</value></data>
+  <data name="SE_BE_NestedStruct" xml:space="preserve"><value>Struktur bersarang</value></data>
+  <data name="SE_BE_StructRef" xml:space="preserve"><value>Ref. struktur</value></data>
+  <data name="SE_BE_PointerLocation" xml:space="preserve"><value>Lokasi pointer</value></data>
+  <data name="SE_BE_TargetStorage" xml:space="preserve"><value>Target dan penyimpanan</value></data>
+  <data name="SE_BE_TargetVar" xml:space="preserve"><value>Variabel target</value></data>
+  <data name="SE_BE_Label" xml:space="preserve"><value>Label</value></data>
+  <data name="SE_BE_PositionSize" xml:space="preserve"><value>Posisi dan ukuran</value></data>
+  <data name="SE_BE_Storage" xml:space="preserve"><value>Penyimpanan</value></data>
+  <data name="SE_BE_MappedStoreAs" xml:space="preserve"><value>Penyimpanan yang dipetakan</value></data>
+  <data name="SE_BE_ValueMap" xml:space="preserve"><value>Pemetaan nilai</value></data>
+  <data name="SE_BE_Bitfields" xml:space="preserve"><value>Field bit</value></data>
+  <data name="SE_BE_Name" xml:space="preserve"><value>Nama</value></data>
+  <data name="SE_BE_Bits" xml:space="preserve"><value>Bit</value></data>
+  <data name="SE_BE_Until" xml:space="preserve"><value>Sampai</value></data>
+  <data name="SE_BE_MaxLength" xml:space="preserve"><value>Panjang maks.</value></data>
+  <data name="SE_BE_MinValue" xml:space="preserve"><value>Nilai min.</value></data>
+  <data name="SE_BE_MaxValue" xml:space="preserve"><value>Nilai maks.</value></data>
+  <data name="SE_BE_PatternRegex" xml:space="preserve"><value>Pola (regex)</value></data>
+  <data name="SE_BE_ErrorMessage" xml:space="preserve"><value>Pesan kesalahan</value></data>
+  <data name="SE_BE_VariableName" xml:space="preserve"><value>Nama variabel</value></data>
+  <data name="SE_BE_Group" xml:space="preserve"><value>Grup</value></data>
+  <data name="SE_BE_GroupHint" xml:space="preserve"><value>Grup menandai secara visual sekumpulan field anak dengan lapisan warna. Tidak menggunakan byte.</value></data>
+  <data name="SE_BE_ChildrenInTreeHint" xml:space="preserve"><value>Anak-anak ditampilkan di pohon blok — gunakan pohon untuk menambah/mengatur ulang blok anak.</value></data>
+  <data name="SE_BE_ChildFieldsHint" xml:space="preserve"><value>Field anak ditampilkan di pohon blok.</value></data>
+  <data name="SE_BE_RawDataRegion" xml:space="preserve"><value>Wilayah data mentah</value></data>
+  <data name="SE_BE_RawDataDescription" xml:space="preserve"><value>Menandai wilayah byte mentah dengan lapisan warna. Tidak ada nilai yang diekstrak.</value></data>
+  <data name="SE_BE_Condition" xml:space="preserve"><value>Kondisi</value></data>
+  <data name="SE_BE_BranchLabels" xml:space="preserve"><value>Label cabang</value></data>
+  <data name="SE_BE_TrueLabel" xml:space="preserve"><value>Label "Benar"</value></data>
+  <data name="SE_BE_FalseLabel" xml:space="preserve"><value>Label "Salah"</value></data>
+  <data name="SE_BE_BranchHint" xml:space="preserve"><value>Blok Then / Else ditampilkan sebagai anak di pohon.</value></data>
+  <data name="SE_BE_LoopCondition" xml:space="preserve"><value>Kondisi loop</value></data>
+  <data name="SE_BE_Bounds" xml:space="preserve"><value>Batas</value></data>
+  <data name="SE_BE_MaxIterations" xml:space="preserve"><value>Iterasi maks.</value></data>
+  <data name="SE_BE_LoopBodyHint" xml:space="preserve"><value>Blok isi ditampilkan sebagai anak di pohon.</value></data>
+  <data name="SE_BE_Tip_VarName" xml:space="preserve"><value>Nama variabel yang akan dimodifikasi — ketik untuk melihat saran (Ctrl+Space)</value></data>
+  <data name="SE_BE_Tip_VarValue" xml:space="preserve"><value>Nilai yang akan ditetapkan / jumlah yang akan ditambah atau dikurang — menerima var:nama</value></data>
+  <data name="SE_BE_Tip_Expression" xml:space="preserve"><value>Ekspresi matematika dengan variabel dan fungsi — Ctrl+Space untuk pelengkap otomatis</value></data>
+  <data name="SE_BE_Tip_StoreExpr" xml:space="preserve"><value>Nama variabel untuk menyimpan hasil yang dihitung — Ctrl+Space untuk saran</value></data>
+  <data name="SE_BE_Tip_ArrayOffset" xml:space="preserve"><value>Offset file di mana array dimulai — Ctrl+Space untuk pelengkap otomatis</value></data>
+  <data name="SE_BE_Tip_ArrayBaseVar" xml:space="preserve"><value>Variabel yang digunakan sebagai offset dasar untuk array ini</value></data>
+  <data name="SE_BE_Tip_EntryCount" xml:space="preserve"><value>Jumlah entri — Ctrl+Space untuk saran variabel</value></data>
+  <data name="SE_BE_Tip_EntrySize" xml:space="preserve"><value>Ukuran setiap entri dalam byte — Ctrl+Space untuk saran variabel</value></data>
+  <data name="SE_BE_Tip_LoopIndex" xml:space="preserve"><value>Nama variabel indeks loop (cth. i)</value></data>
+  <data name="SE_BE_AddColor" xml:space="preserve"><value>＋ Tambahkan warna</value></data>
+  <data name="SE_BE_Tip_VariantVar" xml:space="preserve"><value>Variabel yang mengendalikan pemilihan varian — Ctrl+Space untuk saran</value></data>
+  <data name="SE_BE_Tip_FormatPath" xml:space="preserve"><value>Nama format atau jalur relatif ke file .whfmt</value></data>
+  <data name="SE_BE_Browse" xml:space="preserve"><value>Jelajahi…</value></data>
+  <data name="SE_BE_Tip_PtrOffset" xml:space="preserve"><value>Offset file di mana nilai pointer dibaca — Ctrl+Space untuk pelengkap otomatis</value></data>
+  <data name="SE_BE_Tip_PtrBaseVar" xml:space="preserve"><value>Nama variabel yang digunakan sebagai offset dasar</value></data>
+  <data name="SE_BE_Tip_PtrSize" xml:space="preserve"><value>Ukuran nilai pointer dalam byte (cth. 4 untuk uint32) — atau var:nama</value></data>
+  <data name="SE_BE_Tip_PtrTargetVar" xml:space="preserve"><value>Variabel yang akan menerima alamat pointer yang diselesaikan</value></data>
+  <data name="SE_BE_Tip_PtrStoreRaw" xml:space="preserve"><value>Variabel untuk menyimpan nilai mentah pointer</value></data>
+  <data name="SE_BE_Tip_PtrLabel" xml:space="preserve"><value>Label anotasi yang ditampilkan di tampilan hex</value></data>
+  <data name="SE_BE_Tip_OffsetAuto" xml:space="preserve"><value>Ctrl+Space untuk pelengkap otomatis — integer, var:nama, calc:expr, offset:N</value></data>
+  <data name="SE_BE_Tip_OffsetFromVar" xml:space="preserve"><value>Nama variabel yang nilainya adalah offset dasar — Ctrl+Space untuk saran</value></data>
+  <data name="SE_BE_Tip_OffsetAddBytes" xml:space="preserve"><value>Byte tambahan ditambahkan ke OffsetFrom</value></data>
+  <data name="SE_BE_Tip_LengthAuto" xml:space="preserve"><value>Ctrl+Space untuk pelengkap otomatis — integer, var:nama, calc:expr</value></data>
+  <data name="SE_BE_Tip_StoreParsed" xml:space="preserve"><value>Nama variabel untuk menyimpan nilai yang diurai — Ctrl+Space untuk saran</value></data>
+  <data name="SE_BE_Tip_StoreMapped" xml:space="preserve"><value>Nama variabel untuk nilai yang diterjemahkan oleh ValueMap — Ctrl+Space untuk saran</value></data>
+  <data name="SE_BE_Tip_RawDisplayMap" xml:space="preserve"><value>mentah=Tampilan (cth. 0=Skala abu-abu)</value></data>
+  <data name="SE_BE_AddValueMapEntry" xml:space="preserve"><value>＋ Tambahkan entri ValueMap</value></data>
+  <data name="SE_BE_Tip_BitRange" xml:space="preserve"><value>Rentang bit cth. 7-6 atau bit tunggal cth. 3</value></data>
+  <data name="SE_BE_AddBitfield" xml:space="preserve"><value>＋ Tambahkan field bit</value></data>
+  <data name="SE_BE_SentinelUntil" xml:space="preserve"><value>Sentinel (Until)</value></data>
+  <data name="SE_BE_Tip_UntilPattern" xml:space="preserve"><value>Pola hex atau var:nama di mana membaca berhenti. Menggantikan Length saat ditetapkan.</value></data>
+  <data name="SE_BE_Tip_UntilSafetyCap" xml:space="preserve"><value>Batas keamanan (byte) jika pola Until tidak ditemukan. 0 = default interpreter (4096).</value></data>
+  <data name="SE_BE_UntilInclusive" xml:space="preserve"><value>Until inklusif (sertakan byte pola dalam panjang field)</value></data>
+  <data name="SE_BE_ValidationRules" xml:space="preserve"><value>Aturan validasi</value></data>
+  <data name="SE_BE_Tip_MetaVarName" xml:space="preserve"><value>Nama variabel yang dibaca oleh blok metadata ini</value></data>
+  <data name="SE_BE_Tip_LoopCount" xml:space="preserve"><value>Integer tetap atau var:nama — Ctrl+Space untuk saran</value></data>
+  <data name="SE_BE_Tip_LoopMaxCap" xml:space="preserve"><value>Batas keamanan — integer</value></data>
+  <data name="SE_BE_Tip_LoopIdxStore" xml:space="preserve"><value>Variabel yang menerima indeks iterasi saat ini (basis 0)</value></data>
+  <data name="SE_BE_Tip_LoopCountStore" xml:space="preserve"><value>Variabel untuk menyimpan jumlah iterasi setelah loop — Ctrl+Space untuk saran</value></data>
+  <data name="SE_BE_Tip_EditAsJson" xml:space="preserve"><value>Edit blok ini dalam JSON mentah</value></data>
+  <data name="SE_AddAssertion" xml:space="preserve"><value>＋ Tambahkan pernyataan</value></data>
+  <data name="SE_AddChecksum" xml:space="preserve"><value>＋ Tambahkan checksum</value></data>
+  <data name="SE_TipTemplateName" xml:space="preserve"><value>Nama template</value></data>
+  <data name="SE_TipStructName" xml:space="preserve"><value>Nama struktur (struct C)</value></data>
+  <data name="SE_TipHexDigitsOnly" xml:space="preserve"><value>Digit heksadesimal saja (cth. FF, 4D5A)</value></data>
+  <data name="SE_ShowLabel" xml:space="preserve"><value>Tampilkan:</value></data>
+</root>

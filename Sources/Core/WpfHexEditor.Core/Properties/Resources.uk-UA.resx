@@ -1,0 +1,1933 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <data name="AppendByteConfirmationString" xml:space="preserve">
+    <value>Ви досягли кінця файлу. Додати байт? Цю операцію не можна скасувати після продовження.</value>
+  </data>
+  <data name="BookmarksString" xml:space="preserve">
+    <value>Закладки</value>
+  </data>
+  <data name="ByteActionString" xml:space="preserve">
+    <value>Дія з байтом</value>
+  </data>
+  <data name="ByteString" xml:space="preserve">
+    <value>Байт</value>
+  </data>
+  <data name="CancelLongProcessString" xml:space="preserve">
+    <value>Скасувати тривалий процес</value>
+  </data>
+  <data name="CancelLongProcessToolTipString" xml:space="preserve">
+    <value>Натисніть, щоб скасувати тривалий процес.</value>
+  </data>
+  <data name="CancelString" xml:space="preserve">
+    <value>Скасувати</value>
+  </data>
+  <data name="ClearBookMarkString" xml:space="preserve">
+    <value>Очистити закладку</value>
+  </data>
+  <data name="ClearString" xml:space="preserve">
+    <value>Очистити</value>
+  </data>
+  <data name="ClickToGoAtPositionString" xml:space="preserve">
+    <value>Натисніть для переходу до позиції.</value>
+  </data>
+  <data name="CloseString" xml:space="preserve">
+    <value>Закрити</value>
+  </data>
+  <data name="CopyAsASCIIString" xml:space="preserve">
+    <value>Копіювати як ASCII</value>
+  </data>
+  <data name="CopyAsDecimalString" xml:space="preserve">
+    <value>Копіювати як десяткове</value>
+  </data>
+  <data name="CopyAsHexadecimalString" xml:space="preserve">
+    <value>Копіювати як Hex</value>
+  </data>
+  <data name="CopyAsTBLString" xml:space="preserve">
+    <value>Рядок TBL (завантажений файл символів)</value>
+  </data>
+  <data name="CopySelectionAsString" xml:space="preserve">
+    <value>Копіювати виділення як...</value>
+  </data>
+  <data name="CountOfString" xml:space="preserve">
+    <value>Кількість</value>
+  </data>
+  <data name="DefaultTBLString" xml:space="preserve">
+    <value>TBL за замовчуванням</value>
+  </data>
+  <data name="DeleteString" xml:space="preserve">
+    <value>Видалити</value>
+  </data>
+  <data name="DescriptionString" xml:space="preserve">
+    <value>Опис</value>
+  </data>
+  <data name="EndTagString" xml:space="preserve">
+    <value>&lt;кін&gt;</value>
+  </data>
+  <data name="EnterHexValueMsgString" xml:space="preserve">
+    <value>Введіть Hex-значення...</value>
+  </data>
+  <data name="FileDroppingConfirmationString" xml:space="preserve">
+    <value>Закрити поточний файл і відкрити: </value>
+  </data>
+  <data name="FillSelectionAloneString" xml:space="preserve">
+    <value>Заповнити виділення байтом</value>
+  </data>
+  <data name="FillSelectionString" xml:space="preserve">
+    <value>Заповнити виділення байтом...</value>
+  </data>
+  <data name="FindAllString" xml:space="preserve">
+    <value>Знайти все</value>
+  </data>
+  <data name="FindAndReplaceString" xml:space="preserve">
+    <value>Знайти і замінити</value>
+  </data>
+  <data name="FindByteString" xml:space="preserve">
+    <value>Байт для пошуку</value>
+  </data>
+  <data name="FindFirstString" xml:space="preserve">
+    <value>Знайти перше</value>
+  </data>
+  <data name="FindLastString" xml:space="preserve">
+    <value>Знайти останнє</value>
+  </data>
+  <data name="FindNextString" xml:space="preserve">
+    <value>Знайти наступне</value>
+  </data>
+  <data name="FindSelectionString" xml:space="preserve">
+    <value>Знайти всі входження виділення</value>
+  </data>
+  <data name="FindString" xml:space="preserve">
+    <value>Знайти</value>
+  </data>
+  <data name="FindWhatString" xml:space="preserve">
+    <value>Знайти:</value>
+  </data>
+  <data name="FirstByteString" xml:space="preserve">
+    <value>Перший байт</value>
+  </data>
+  <data name="HexString" xml:space="preserve">
+    <value>Hex</value>
+  </data>
+  <data name="KBTagString" xml:space="preserve">
+    <value>КБ</value>
+  </data>
+  <data name="LengthString" xml:space="preserve">
+    <value>Довжина</value>
+  </data>
+  <data name="LineStatusBarTagString" xml:space="preserve">
+    <value>Рядок</value>
+  </data>
+  <data name="LineTagString" xml:space="preserve">
+    <value>&lt;рядок&gt;</value>
+  </data>
+  <data name="LongString" xml:space="preserve">
+    <value>Long</value>
+  </data>
+  <data name="MBTagString" xml:space="preserve">
+    <value>МБ</value>
+  </data>
+  <data name="OkString" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="PasteExtendByteConfirmationString" xml:space="preserve">
+    <value>Операція вставлення досягла кінця файлу. Розширити файл для завершення операції? Цю операцію не можна скасувати після продовження.</value>
+  </data>
+  <data name="PasteFromClipboardString" xml:space="preserve">
+    <value>Вставити з буфера обміну</value>
+  </data>
+  <data name="PasteNotInsertString" xml:space="preserve">
+    <value>Вставити без вставки</value>
+  </data>
+  <data name="PositionString" xml:space="preserve">
+    <value>Позиція</value>
+  </data>
+  <data name="ReplaceAllString" xml:space="preserve">
+    <value>Замінити все</value>
+  </data>
+  <data name="ReplaceByByteString" xml:space="preserve">
+    <value>Замінити байтом</value>
+  </data>
+  <data name="ReplaceNextString" xml:space="preserve">
+    <value>Замінити наступне</value>
+  </data>
+  <data name="ReplaceSelectionString" xml:space="preserve">
+    <value>Замінити байт у виділенні...</value>
+  </data>
+  <data name="ReplaceString" xml:space="preserve">
+    <value>Замінити</value>
+  </data>
+  <data name="ReplaceWithByteString" xml:space="preserve">
+    <value>Замінити байтом</value>
+  </data>
+  <data name="ReplaceWithString" xml:space="preserve">
+    <value>Замінити на:</value>
+  </data>
+  <data name="ReplaceInSelectionOnlyString" xml:space="preserve">
+    <value>Замінити лише у виділенні</value>
+  </data>
+  <data name="ShowConfirmationString" xml:space="preserve">
+    <value>Показати діалог підтвердження</value>
+  </data>
+  <data name="PreviewString" xml:space="preserve">
+    <value>Перегляд:</value>
+  </data>
+  <data name="ValidationInvalidHexString" xml:space="preserve">
+    <value>Недійсне Hex-значення</value>
+  </data>
+  <data name="ValidationRequiredString" xml:space="preserve">
+    <value>Обов'язкове значення</value>
+  </data>
+  <data name="OccurrencesFoundString" xml:space="preserve">
+    <value>Знайдено {0} входжень</value>
+  </data>
+  <data name="ReplacementCompleteString" xml:space="preserve">
+    <value>Замінено {0} входжень</value>
+  </data>
+  <data name="NoOccurrencesFoundString" xml:space="preserve">
+    <value>Входжень не знайдено</value>
+  </data>
+  <data name="InSelectionString" xml:space="preserve">
+    <value>у виділенні</value>
+  </data>
+  <data name="InFileString" xml:space="preserve">
+    <value>у файлі</value>
+  </data>
+  <data name="SelectAllString" xml:space="preserve">
+    <value>Вибрати все</value>
+  </data>
+  <data name="SetBookMarkString" xml:space="preserve">
+    <value>Встановити закладку</value>
+  </data>
+  <data name="TBLString" xml:space="preserve">
+    <value>TBL</value>
+  </data>
+  <data name="ThisStringAreNotHexString" xml:space="preserve">
+    <value>Цей рядок не є шістнадцятковим</value>
+  </data>
+  <data name="UndoString" xml:space="preserve">
+    <value>Скасувати</value>
+  </data>
+  <data name="ValueString" xml:space="preserve">
+    <value>Значення</value>
+  </data>
+  <data name="WritingErrorExeptionString" xml:space="preserve">
+    <value>Сталася помилка під час запису.</value>
+  </data>
+  <data name="HighLightSettingString" xml:space="preserve">
+    <value>Виділити всі знайдені дані</value>
+  </data>
+  <data name="ReplaceTrimSettingString" xml:space="preserve">
+    <value>Скорочувати дані до довжини пошуку при заміні</value>
+  </data>
+  <data name="ZoomResetString" xml:space="preserve">
+    <value>Скинути масштаб до 100%</value>
+  </data>
+  <data name="ZoomString" xml:space="preserve">
+    <value>Масштаб</value>
+  </data>
+  <data name="ConvertStringToLongErrorString" xml:space="preserve">
+    <value>Неможливо перетворити цей рядок у long</value>
+  </data>
+  <data name="OpenAsReadOnlyString" xml:space="preserve">
+    <value>Файл заблокований. Відкрити у режимі лише для читання?</value>
+  </data>
+  <data name="BytesTagString" xml:space="preserve">
+    <value>Байти</value>
+  </data>
+  <data name="SearchCommandCenterString" xml:space="preserve">
+    <value>ЦЕНТР КОМАНД ПОШУКУ</value>
+  </data>
+  <data name="SearchTextModeString" xml:space="preserve">
+    <value>Текст</value>
+  </data>
+  <data name="SearchHexModeString" xml:space="preserve">
+    <value>Hex</value>
+  </data>
+  <data name="SearchRegexModeString" xml:space="preserve">
+    <value>Regex</value>
+  </data>
+  <data name="SearchWildcardModeString" xml:space="preserve">
+    <value>Символ підстановки</value>
+  </data>
+  <data name="SearchPreviousString" xml:space="preserve">
+    <value>Попереднє</value>
+  </data>
+  <data name="SearchNextString" xml:space="preserve">
+    <value>Наступне</value>
+  </data>
+  <data name="SearchFindAllString" xml:space="preserve">
+    <value>Знайти все</value>
+  </data>
+  <data name="SearchMatchesString" xml:space="preserve">
+    <value>збігів</value>
+  </data>
+  <data name="SearchInString" xml:space="preserve">
+    <value>у</value>
+  </data>
+  <data name="SearchNoMatchesString" xml:space="preserve">
+    <value>Збігів не знайдено</value>
+  </data>
+  <data name="SearchV2BadgeString" xml:space="preserve">
+    <value>НА 99% ШВИДШЕ З V2</value>
+  </data>
+  <data name="ClearSearchString" xml:space="preserve">
+    <value>Очистити</value>
+  </data>
+  <data name="CommandPaletteString" xml:space="preserve">
+    <value>Палітра команд</value>
+  </data>
+  <data name="PerformanceDashboardString" xml:space="preserve">
+    <value>Панель продуктивності</value>
+  </data>
+  <data name="ThemeDarkGlassString" xml:space="preserve">
+    <value>Темне скло</value>
+  </data>
+  <data name="ThemeLightString" xml:space="preserve">
+    <value>Світла</value>
+  </data>
+  <data name="ThemeCyberpunkString" xml:space="preserve">
+    <value>Cyberpunk</value>
+  </data>
+  <data name="ThemeMinimalString" xml:space="preserve">
+    <value>Мінімалістична</value>
+  </data>
+  <data name="CopyAsCSharpCodeString" xml:space="preserve">
+    <value>Копіювати як код C#</value>
+  </data>
+  <data name="CopyAsCCodeString" xml:space="preserve">
+    <value>Копіювати як код C</value>
+  </data>
+  <data name="CopyAsFormattedViewString" xml:space="preserve">
+    <value>Копіювати у форматованому вигляді</value>
+  </data>
+  <data name="CopyString" xml:space="preserve">
+    <value>Копіювати</value>
+  </data>
+  <data name="PasteString" xml:space="preserve">
+    <value>Вставити</value>
+  </data>
+  <data name="FillWithByteString" xml:space="preserve">
+    <value>Заповнити байтом...</value>
+  </data>
+  <data name="ReplaceByteMenuString" xml:space="preserve">
+    <value>Замінити байт...</value>
+  </data>
+  <data name="ReverseSelectionString" xml:space="preserve">
+    <value>Обернути виділення</value>
+  </data>
+  <data name="InvertSelectionString" xml:space="preserve">
+    <value>Інвертувати байти</value>
+  </data>
+  <data name="StatusMessageString" xml:space="preserve">
+    <value>Повідомлення стану</value>
+  </data>
+  <data name="FileSizeString" xml:space="preserve">
+    <value>Розмір файлу</value>
+  </data>
+  <data name="SelectionInfoString" xml:space="preserve">
+    <value>Інформація про виділення</value>
+  </data>
+  <data name="EditModeString" xml:space="preserve">
+    <value>Режим редагування</value>
+  </data>
+  <data name="BytesPerLineString" xml:space="preserve">
+    <value>Байтів на рядок</value>
+  </data>
+  <data name="RefreshTimeString" xml:space="preserve">
+    <value>Час оновлення</value>
+  </data>
+  <data name="OffsetString" xml:space="preserve">
+    <value>Offset</value>
+  </data>
+  <data name="ReadyString" xml:space="preserve">
+    <value>Готово</value>
+  </data>
+  <data name="NoSelectionString" xml:space="preserve">
+    <value>Немає виділення</value>
+  </data>
+  <data name="ModeOverwriteString" xml:space="preserve">
+    <value>Режим: Перезапис</value>
+  </data>
+  <data name="FindAndReplaceDialogTitle" xml:space="preserve">
+    <value>Знайти і замінити</value>
+  </data>
+  <data name="FindGroupHeader" xml:space="preserve">
+    <value>Знайти</value>
+  </data>
+  <data name="ReplaceGroupHeader" xml:space="preserve">
+    <value>Замінити</value>
+  </data>
+  <data name="ResultsGroupHeader" xml:space="preserve">
+    <value>Результати</value>
+  </data>
+  <data name="FindTextLabel" xml:space="preserve">
+    <value>Знайти:</value>
+  </data>
+  <data name="ReplaceTextLabel" xml:space="preserve">
+    <value>Замінити на:</value>
+  </data>
+  <data name="FindPreviousButton" xml:space="preserve">
+    <value>Попереднє</value>
+  </data>
+  <data name="FindNextButton" xml:space="preserve">
+    <value>Наступне</value>
+  </data>
+  <data name="FindAllButton" xml:space="preserve">
+    <value>Знайти все</value>
+  </data>
+  <data name="ReplaceButton" xml:space="preserve">
+    <value>Замінити</value>
+  </data>
+  <data name="ReplaceAllButton" xml:space="preserve">
+    <value>Замінити все</value>
+  </data>
+  <data name="CaseSensitiveCheckbox" xml:space="preserve">
+    <value>З урахуванням регістру</value>
+  </data>
+  <data name="WholeWordCheckbox" xml:space="preserve">
+    <value>Ціле слово</value>
+  </data>
+  <data name="UseRegexCheckbox" xml:space="preserve">
+    <value>Використовувати регулярні вирази</value>
+  </data>
+  <data name="SearchInSelectionCheckbox" xml:space="preserve">
+    <value>Шукати лише у виділенні</value>
+  </data>
+  <data name="HighlightAllCheckbox" xml:space="preserve">
+    <value>Виділити всі збіги</value>
+  </data>
+  <data name="CloseDialogButton" xml:space="preserve">
+    <value>Закрити</value>
+  </data>
+  <data name="NoResultsFound" xml:space="preserve">
+    <value>Результатів не знайдено</value>
+  </data>
+  <data name="MatchesFoundFormat" xml:space="preserve">
+    <value>Знайдено {0} збігів</value>
+  </data>
+  <data name="ReplacedFormat" xml:space="preserve">
+    <value>Замінено {0}</value>
+  </data>
+  <data name="SearchPanelTitle" xml:space="preserve">
+    <value>Пошук</value>
+  </data>
+  <data name="SearchFindLabel" xml:space="preserve">
+    <value>Знайти:</value>
+  </data>
+  <data name="SearchModePlaceholder" xml:space="preserve">
+    <value>Введіть текст для пошуку...</value>
+  </data>
+  <data name="TextModeLabel" xml:space="preserve">
+    <value>Текст</value>
+  </data>
+  <data name="HexModeLabel" xml:space="preserve">
+    <value>Hex</value>
+  </data>
+  <data name="RegexModeLabel" xml:space="preserve">
+    <value>Regex</value>
+  </data>
+  <data name="WildcardModeLabel" xml:space="preserve">
+    <value>Символ підстановки</value>
+  </data>
+  <data name="MatchCaseLabel" xml:space="preserve">
+    <value>З урахуванням регістру</value>
+  </data>
+  <data name="WholeWordLabel" xml:space="preserve">
+    <value>Ціле слово</value>
+  </data>
+  <data name="SearchOptionsLabel" xml:space="preserve">
+    <value>Параметри</value>
+  </data>
+  <data name="SearchResultsLabel" xml:space="preserve">
+    <value>Результати</value>
+  </data>
+  <data name="CurrentMatchLabel" xml:space="preserve">
+    <value>Поточний збіг</value>
+  </data>
+  <data name="TotalMatchesLabel" xml:space="preserve">
+    <value>Всього збігів</value>
+  </data>
+  <data name="QuickSearchTooltip" xml:space="preserve">
+    <value>Швидкий пошук (Ctrl+F)</value>
+  </data>
+  <data name="PreviousMatchTooltip" xml:space="preserve">
+    <value>Попередній збіг (Shift+F3)</value>
+  </data>
+  <data name="NextMatchTooltip" xml:space="preserve">
+    <value>Наступний збіг (F3)</value>
+  </data>
+  <data name="CloseSearchTooltip" xml:space="preserve">
+    <value>Закрити пошук (Esc)</value>
+  </data>
+  <data name="SearchOptionsTooltip" xml:space="preserve">
+    <value>Параметри пошуку</value>
+  </data>
+  <data name="StatusSearching" xml:space="preserve">
+    <value>Пошук...</value>
+  </data>
+  <data name="StatusSearchComplete" xml:space="preserve">
+    <value>Пошук завершено</value>
+  </data>
+  <data name="StatusFoundMatchesFormat" xml:space="preserve">
+    <value>Знайдено {0} збігів за {1} мс</value>
+  </data>
+  <data name="StatusMatchFoundAtFormat" xml:space="preserve">
+    <value>Збіг знайдено на позиції 0x{0:X8}</value>
+  </data>
+  <data name="StatusNoMoreMatches" xml:space="preserve">
+    <value>Більше збігів не знайдено</value>
+  </data>
+  <data name="StatusReachedEndOfFile" xml:space="preserve">
+    <value>Досягнуто кінця файлу</value>
+  </data>
+  <data name="StatusReachedStartOfFile" xml:space="preserve">
+    <value>Досягнуто початку файлу</value>
+  </data>
+  <data name="StatusReplacing" xml:space="preserve">
+    <value>Заміна...</value>
+  </data>
+  <data name="StatusReplaceComplete" xml:space="preserve">
+    <value>Заміну завершено</value>
+  </data>
+  <data name="StatusReplacedFormat" xml:space="preserve">
+    <value>Замінено {0} входжень</value>
+  </data>
+  <data name="StatusInvalidSearchPattern" xml:space="preserve">
+    <value>Недійсний шаблон пошуку</value>
+  </data>
+  <data name="StatusInvalidRegex" xml:space="preserve">
+    <value>Недійсний регулярний вираз</value>
+  </data>
+  <data name="StatusSearchCancelled" xml:space="preserve">
+    <value>Пошук скасовано</value>
+  </data>
+  <data name="StatusReplaceCancelled" xml:space="preserve">
+    <value>Заміну скасовано</value>
+  </data>
+  <data name="StatusCancelling" xml:space="preserve">
+    <value>Скасування...</value>
+  </data>
+  <data name="StatusError" xml:space="preserve">
+    <value>Помилка: {0}</value>
+  </data>
+  <data name="StatusFoundMatchesWithSpeedFormat" xml:space="preserve">
+    <value>Знайдено {0} збігів за {1} мс ({2:F2} МБ/с)</value>
+  </data>
+  <data name="StatusMatchFoundAtWrappedFormat" xml:space="preserve">
+    <value>Збіг знайдено на позиції 0x{0:X8} (з початку)</value>
+  </data>
+  <data name="StatusNoPreviousMatches" xml:space="preserve">
+    <value>Попередніх збігів не знайдено</value>
+  </data>
+  <data name="StatusMatchOfTotalFormat" xml:space="preserve">
+    <value>Збіг {0} з {1} на позиції 0x{2:X8}</value>
+  </data>
+  <data name="StatusReplacedAtFormat" xml:space="preserve">
+    <value>Замінено на позиції 0x{0:X8} (Всього: {1})</value>
+  </data>
+  <data name="StatusReplaceError" xml:space="preserve">
+    <value>Помилка заміни: {0}</value>
+  </data>
+  <data name="StatusNoMatchesToReplace" xml:space="preserve">
+    <value>Немає збігів для заміни</value>
+  </data>
+  <data name="StatusInvalidReplacementPattern" xml:space="preserve">
+    <value>Недійсний шаблон заміни</value>
+  </data>
+  <data name="StatusReplacedOccurrencesFormat" xml:space="preserve">
+    <value>Замінено {0} входжень. Всього замін: {1}</value>
+  </data>
+  <data name="StatusReplaceAllError" xml:space="preserve">
+    <value>Помилка заміни всього: {0}</value>
+  </data>
+  <data name="StatusNoMoreBookmarksAfter" xml:space="preserve">
+    <value>Більше закладок після поточної позиції немає</value>
+  </data>
+  <data name="StatusNoMoreBookmarksBefore" xml:space="preserve">
+    <value>Більше закладок перед поточною позицією немає</value>
+  </data>
+  <data name="BookmarkSetFormat" xml:space="preserve">
+    <value>Закладку встановлено на 0x{0:X8}</value>
+  </data>
+  <data name="BookmarkClearedFormat" xml:space="preserve">
+    <value>Закладку очищено на 0x{0:X8}</value>
+  </data>
+  <data name="BookmarkNavigatedFormat" xml:space="preserve">
+    <value>Перехід до закладки на 0x{0:X8}</value>
+  </data>
+  <data name="BookmarkAllCleared" xml:space="preserve">
+    <value>Всі закладки очищено</value>
+  </data>
+  <data name="CopySelectionString" xml:space="preserve">
+    <value>Копіювати виділення</value>
+  </data>
+  <data name="CutSelectionString" xml:space="preserve">
+    <value>Вирізати виділення</value>
+  </data>
+  <data name="InsertByteString" xml:space="preserve">
+    <value>Вставити байт...</value>
+  </data>
+  <data name="DeleteByteString" xml:space="preserve">
+    <value>Видалити байт</value>
+  </data>
+  <data name="DeleteSelectionString" xml:space="preserve">
+    <value>Видалити виділення</value>
+  </data>
+  <data name="GoToOffsetString" xml:space="preserve">
+    <value>Перейти до зміщення...</value>
+  </data>
+  <data name="PropertiesString" xml:space="preserve">
+    <value>Властивості</value>
+  </data>
+  <data name="ProgressButtonCancel" xml:space="preserve">
+    <value>Скасувати</value>
+  </data>
+  <data name="ProgressMessageFileOpenedSuccessfully" xml:space="preserve">
+    <value>Файл успішно відкрито</value>
+  </data>
+  <data name="ProgressMessageFileSavedSuccessfully" xml:space="preserve">
+    <value>Файл успішно збережено</value>
+  </data>
+  <data name="ProgressMessageFindingMatches" xml:space="preserve">
+    <value>Пошук збігів...</value>
+  </data>
+  <data name="ProgressMessageFoundMatchesFormat" xml:space="preserve">
+    <value>Знайдено {0} збігів</value>
+  </data>
+  <data name="ProgressMessageLoadingFileData" xml:space="preserve">
+    <value>Завантаження даних файлу...</value>
+  </data>
+  <data name="ProgressMessageOpeningFileStream" xml:space="preserve">
+    <value>Відкриття потоку файлу...</value>
+  </data>
+  <data name="ProgressMessagePreparingToSave" xml:space="preserve">
+    <value>Підготовка до збереження...</value>
+  </data>
+  <data name="ProgressMessageReplacedFormat" xml:space="preserve">
+    <value>Замінено {0} входжень</value>
+  </data>
+  <data name="ProgressMessageReplacingFormat" xml:space="preserve">
+    <value>Знайдено {0} збігів. Заміна...</value>
+  </data>
+  <data name="ProgressMessageSearchingFoundFormat" xml:space="preserve">
+    <value>Пошук... знайдено {0}</value>
+  </data>
+  <data name="ProgressMessageStartingSearch" xml:space="preserve">
+    <value>Початок пошуку...</value>
+  </data>
+  <data name="ProgressTitleOpeningFile" xml:space="preserve">
+    <value>Відкриття файлу</value>
+  </data>
+  <data name="ProgressTitleReplacing" xml:space="preserve">
+    <value>Заміна</value>
+  </data>
+  <data name="ProgressTitleSavingFile" xml:space="preserve">
+    <value>Збереження файлу</value>
+  </data>
+  <data name="ProgressTitleSearching" xml:space="preserve">
+    <value>Пошук</value>
+  </data>
+  <data name="FillWithByteTooltipString" xml:space="preserve">
+    <value>Заповнити виділення конкретним значенням байта</value>
+  </data>
+  <data name="ReplaceByteTooltipString" xml:space="preserve">
+    <value>Замінити всі входження одного байта іншим</value>
+  </data>
+  <data name="ReverseSelectionTooltipString" xml:space="preserve">
+    <value>Обернути порядок байтів у виділенні (перетворення порядку байтів)</value>
+  </data>
+  <data name="InvertSelectionTooltipString" xml:space="preserve">
+    <value>Інвертувати всі біти кожного байта (XOR з 0xFF)</value>
+  </data>
+
+  <!-- TBL Editor -->
+  <data name="TblEditor_Title" xml:space="preserve">
+    <value>Редактор таблиці символів TBL</value>
+    <comment>TBL Editor - Title</comment>
+  </data>
+  <data name="TblEditor_NoTblLoaded" xml:space="preserve">
+    <value>Файл TBL не завантажено. Спочатку завантажте файл TBL.</value>
+    <comment>TBL Editor - NoTblLoaded</comment>
+  </data>
+  <data name="TblEditor_UnsavedChanges" xml:space="preserve">
+    <value>Є незбережені зміни. Зберегти перед закриттям?</value>
+    <comment>TBL Editor - UnsavedChanges</comment>
+  </data>
+  <data name="TblEditor_ConfirmDelete" xml:space="preserve">
+    <value>Видалити {0} записів?</value>
+    <comment>TBL Editor - ConfirmDelete</comment>
+  </data>
+  <data name="TblEditor_ErrorSaving" xml:space="preserve">
+    <value>Помилка збереження TBL: {0}</value>
+    <comment>TBL Editor - ErrorSaving</comment>
+  </data>
+  <data name="TblEditor_SavedSuccessfully" xml:space="preserve">
+    <value>TBL успішно збережено</value>
+    <comment>TBL Editor - SavedSuccessfully</comment>
+  </data>
+  <data name="TblEditor_NoConflicts" xml:space="preserve">
+    <value>Конфліктів не виявлено!</value>
+    <comment>TBL Editor - NoConflicts</comment>
+  </data>
+  <data name="TblEditor_ConflictsDetected" xml:space="preserve">
+    <value>Виявлено {0} конфліктів</value>
+    <comment>TBL Editor - ConflictsDetected</comment>
+  </data>
+  <data name="TblEditor_PrefixConflict" xml:space="preserve">
+    <value>Запис '{0}' є префіксом {1} довших записів</value>
+    <comment>TBL Editor - PrefixConflict</comment>
+  </data>
+  <data name="TblEditor_DuplicateEntry" xml:space="preserve">
+    <value>Дублікат запису '{0}'</value>
+    <comment>TBL Editor - DuplicateEntry</comment>
+  </data>
+  <data name="TblEditor_Suggestion_RemoveShorter" xml:space="preserve">
+    <value>Видаліть коротший запис або використовуйте різні значення байтів</value>
+    <comment>TBL Editor - Suggestion RemoveShorter</comment>
+  </data>
+  <data name="TblEditor_Suggestion_RemoveDuplicate" xml:space="preserve">
+    <value>Видаліть дублікат або об'єднайте значення</value>
+    <comment>TBL Editor - Suggestion RemoveDuplicate</comment>
+  </data>
+  <data name="TblEditor_AddEntry" xml:space="preserve">
+    <value>Додати запис</value>
+    <comment>TBL Editor - AddEntry</comment>
+  </data>
+  <data name="TblEditor_DeleteEntry" xml:space="preserve">
+    <value>Видалити запис</value>
+    <comment>TBL Editor - DeleteEntry</comment>
+  </data>
+  <data name="TblEditor_DuplicateEntry_Button" xml:space="preserve">
+    <value>Дублювати</value>
+    <comment>TBL Editor - DuplicateEntry Button</comment>
+  </data>
+  <data name="TblEditor_Save" xml:space="preserve">
+    <value>Зберегти</value>
+    <comment>TBL Editor - Save</comment>
+  </data>
+  <data name="TblEditor_SaveAs" xml:space="preserve">
+    <value>Зберегти як</value>
+    <comment>TBL Editor - SaveAs</comment>
+  </data>
+  <data name="TblEditor_Validate" xml:space="preserve">
+    <value>Перевірити</value>
+    <comment>TBL Editor - Validate</comment>
+  </data>
+  <data name="TblEditor_Undo" xml:space="preserve">
+    <value>Скасувати ({0})</value>
+    <comment>TBL Editor - Undo</comment>
+  </data>
+  <data name="TblEditor_Redo" xml:space="preserve">
+    <value>Повторити ({0})</value>
+    <comment>TBL Editor - Redo</comment>
+  </data>
+  <data name="TblEditor_Search" xml:space="preserve">
+    <value>Пошук за Hex-значенням або символом</value>
+    <comment>TBL Editor - Search</comment>
+  </data>
+  <data name="TblEditor_FilterByType" xml:space="preserve">
+    <value>Тип:</value>
+    <comment>TBL Editor - FilterByType</comment>
+  </data>
+  <data name="TblEditor_ConflictsOnly" xml:space="preserve">
+    <value>⚠ Лише конфлікти</value>
+    <comment>TBL Editor - ConflictsOnly</comment>
+  </data>
+  <data name="TblEditor_ClearFilters" xml:space="preserve">
+    <value>Очистити</value>
+    <comment>TBL Editor - ClearFilters</comment>
+  </data>
+  <data name="TblEditor_EntriesCount" xml:space="preserve">
+    <value>{0} записів</value>
+    <comment>TBL Editor - EntriesCount</comment>
+  </data>
+  <data name="TblEditor_HexValue" xml:space="preserve">
+    <value>Hex-значення</value>
+    <comment>TBL Editor - HexValue</comment>
+  </data>
+  <data name="TblEditor_Character" xml:space="preserve">
+    <value>Символ(и)</value>
+    <comment>TBL Editor - Character</comment>
+  </data>
+  <data name="TblEditor_Type" xml:space="preserve">
+    <value>Тип</value>
+    <comment>TBL Editor - Type</comment>
+  </data>
+  <data name="TblEditor_Bytes" xml:space="preserve">
+    <value>Байти</value>
+    <comment>TBL Editor - Bytes</comment>
+  </data>
+  <data name="TblEditor_Details" xml:space="preserve">
+    <value>Деталі</value>
+    <comment>TBL Editor - Details</comment>
+  </data>
+  <data name="TblEditor_Statistics" xml:space="preserve">
+    <value>Статистика</value>
+    <comment>TBL Editor - Statistics</comment>
+  </data>
+  <data name="TblEditor_Advanced" xml:space="preserve">
+    <value>Розширені</value>
+    <comment>TBL Editor - Advanced</comment>
+  </data>
+  <data name="TblEditor_Modified" xml:space="preserve">
+    <value>● Змінено</value>
+    <comment>TBL Editor - Modified</comment>
+  </data>
+
+<data name="HexSettings_Display_LineNumbers" xml:space="preserve">
+    <value>Показати номери рядків (тимчасово)</value>
+  </data>
+<data name="HexSettings_Display_LineNumbers_Tooltip" xml:space="preserve">
+    <value>Ця функція ще недоступна у V2</value>
+  </data>
+<data name="HexSettings_Display_ByteTooltip" xml:space="preserve">
+    <value>Показати підказку байта</value>
+  </data>
+<data name="HexSettings_Editing_InsertAnywhere" xml:space="preserve">
+    <value>Дозволити вставку будь-де</value>
+  </data>
+<data name="HexSettings_Editing_DeleteByte" xml:space="preserve">
+    <value>Дозволити видалення байта</value>
+  </data>
+<data name="HexSettings_Editing_ExtendFile" xml:space="preserve">
+    <value>Дозволити розширення файлу</value>
+  </data>
+<data name="HexSettings_Editing_AppendConfirmation" xml:space="preserve">
+    <value>Додавання потребує підтвердження</value>
+  </data>
+<data name="HexSettings_Editing_Overwrite" xml:space="preserve">
+    <value>Перезаписати</value>
+  </data>
+<data name="HexSettings_DragDrop_FileDrop" xml:space="preserve">
+    <value>Дозволити перетягування файлів</value>
+  </data>
+<data name="HexSettings_DragDrop_FileConfirmation" xml:space="preserve">
+    <value>Підтвердження перетягування файлу</value>
+  </data>
+<data name="HexSettings_DragDrop_TextDrop" xml:space="preserve">
+    <value>Дозволити перетягування тексту</value>
+  </data>
+<data name="HexSettings_Highlight_AutoSelect" xml:space="preserve">
+    <value>Автоматичний вибір того самого байта (подвійний клік)</value>
+  </data>
+<data name="HexSettings_Highlight_MarkerNavigation" xml:space="preserve">
+    <value>Дозволити навігацію кліком по маркеру</value>
+  </data>
+<data name="HexSettings_Highlight_Color" xml:space="preserve">
+    <value>Колір автопідсвічування:</value>
+  </data>
+<data name="HexSettings_Search_ParallelSearch" xml:space="preserve">
+    <value>Увімкнути паралельний пошук</value>
+  </data>
+<data name="HexSettings_Search_WildcardSearch" xml:space="preserve">
+    <value>Використовувати пошук з підстановочними символами (??)</value>
+  </data>
+<data name="HexSettings_Search_HighlightMatches" xml:space="preserve">
+    <value>Виділити всі результати</value>
+  </data>
+<data name="HexSettings_Statistics_ByteCount" xml:space="preserve">
+    <value>Дозволити підрахунок байтів</value>
+  </data>
+<data name="HexSettings_Advanced_ByteShift" xml:space="preserve">
+    <value>Зсув байта вліво:</value>
+  </data>
+<data name="HexSettings_Title" xml:space="preserve">
+    <value>ПАРАМЕТРИ HEX-РЕДАКТОРА</value>
+  </data>
+<data name="HexSettings_Display_Title" xml:space="preserve">
+    <value>📺 Параметри відображення</value>
+  </data>
+<data name="HexSettings_Display_ShowLineNumbers" xml:space="preserve">
+    <value>Показати номери рядків (заповнювач)</value>
+  </data>
+<data name="HexSettings_Display_ShowLineNumbers_ToolTip" xml:space="preserve">
+    <value>Ця функція ще недоступна у V2</value>
+  </data>
+<data name="HexSettings_Display_ShowByteTooltip" xml:space="preserve">
+    <value>Показати підказку байта</value>
+  </data>
+<data name="HexSettings_Display_BytesPerLine" xml:space="preserve">
+    <value>Байтів на рядок:</value>
+  </data>
+<data name="HexSettings_Display_ZoomScale" xml:space="preserve">
+    <value>Масштаб:</value>
+  </data>
+<data name="HexSettings_Editing_Title" xml:space="preserve">
+    <value>✏️ Параметри редагування</value>
+  </data>
+<data name="HexSettings_Editing_ReadOnly" xml:space="preserve">
+    <value>Режим лише для читання</value>
+  </data>
+<data name="HexSettings_Editing_AllowInsertAnywhere" xml:space="preserve">
+    <value>Дозволити вставку будь-де</value>
+  </data>
+<data name="HexSettings_Editing_AllowDeleteByte" xml:space="preserve">
+    <value>Дозволити видалення байта</value>
+  </data>
+<data name="HexSettings_Editing_AllowExtendFile" xml:space="preserve">
+    <value>Дозволити розширення файлу</value>
+  </data>
+<data name="HexSettings_Editing_AppendNeedsConfirmation" xml:space="preserve">
+    <value>Додавання потребує підтвердження</value>
+  </data>
+<data name="HexSettings_Editing_EditMode" xml:space="preserve">
+    <value>Режим редагування:</value>
+  </data>
+<data name="HexSettings_Editing_Insert" xml:space="preserve">
+    <value>Вставка</value>
+  </data>
+<data name="HexSettings_Editing_CaretMode" xml:space="preserve">
+    <value>Режим курсору:</value>
+  </data>
+<data name="HexSettings_Clipboard_Title" xml:space="preserve">
+    <value>📋 Параметри буфера обміну</value>
+  </data>
+<data name="HexSettings_Clipboard_DefaultCopyMode" xml:space="preserve">
+    <value>Режим копіювання за замовчуванням:</value>
+  </data>
+<data name="HexSettings_Clipboard_HexString" xml:space="preserve">
+    <value>Hex-рядок</value>
+  </data>
+<data name="HexSettings_Clipboard_ByteArray" xml:space="preserve">
+    <value>Масив байтів</value>
+  </data>
+<data name="HexSettings_Clipboard_CSharpCode" xml:space="preserve">
+    <value>Код C#</value>
+  </data>
+<data name="HexSettings_Clipboard_VBCode" xml:space="preserve">
+    <value>Код VB</value>
+  </data>
+<data name="HexSettings_Clipboard_CCode" xml:space="preserve">
+    <value>Код C</value>
+  </data>
+<data name="HexSettings_Clipboard_JavaCode" xml:space="preserve">
+    <value>Код Java</value>
+  </data>
+<data name="HexSettings_DragDrop_Title" xml:space="preserve">
+    <value>📎 Параметри перетягування</value>
+  </data>
+<data name="HexSettings_DragDrop_AllowFileDrop" xml:space="preserve">
+    <value>Дозволити перетягування файлів</value>
+  </data>
+<data name="HexSettings_DragDrop_FileDropConfirmation" xml:space="preserve">
+    <value>Підтвердження перетягування файлу</value>
+  </data>
+<data name="HexSettings_DragDrop_AllowTextDrop" xml:space="preserve">
+    <value>Дозволити перетягування тексту</value>
+  </data>
+<data name="HexSettings_Highlight_Title" xml:space="preserve">
+    <value>🎨 Підсвічування і виділення</value>
+  </data>
+<data name="HexSettings_Highlight_AutoHighlight" xml:space="preserve">
+    <value>Автоматично виділяти вибраний байт</value>
+  </data>
+<data name="HexSettings_Highlight_AutoSelectDoubleClick" xml:space="preserve">
+    <value>Автоматично вибирати той самий байт (подвійний клік)</value>
+  </data>
+<data name="HexSettings_Highlight_AllowMarkerClick" xml:space="preserve">
+    <value>Дозволити навігацію кліком по маркеру</value>
+  </data>
+<data name="HexSettings_Highlight_AutoHighlightColor" xml:space="preserve">
+    <value>Колір автопідсвічування:</value>
+  </data>
+<data name="HexSettings_Search_Title" xml:space="preserve">
+    <value>🔍 Параметри пошуку</value>
+  </data>
+<data name="HexSettings_Search_EnableParallel" xml:space="preserve">
+    <value>Увімкнути паралельний пошук</value>
+  </data>
+<data name="HexSettings_Search_UseWildcard" xml:space="preserve">
+    <value>Використовувати пошук з підстановкою (??)</value>
+  </data>
+<data name="HexSettings_Search_ResultLimit" xml:space="preserve">
+    <value>Ліміт результатів пошуку:</value>
+  </data>
+<data name="HexSettings_Statistics_Title" xml:space="preserve">
+    <value>📊 Статистика</value>
+  </data>
+<data name="HexSettings_Statistics_AllowByteCount" xml:space="preserve">
+    <value>Дозволити підрахунок байтів</value>
+  </data>
+<data name="HexSettings_Advanced_Title" xml:space="preserve">
+    <value>⚙️ Розширені параметри</value>
+  </data>
+<data name="HexSettings_Advanced_ByteShiftLeft" xml:space="preserve">
+    <value>Зсув байта вліво:</value>
+  </data>
+<data name="HexSettings_Advanced_SaveState" xml:space="preserve">
+    <value>Зберегти поточний стан</value>
+  </data>
+<data name="HexSettings_Advanced_LoadState" xml:space="preserve">
+    <value>Завантажити збережений стан</value>
+  </data>
+<data name="HexSettings_ResetButton" xml:space="preserve">
+    <value>🔄 Скинути все до стандартних значень</value>
+  </data>
+<data name="HexSettings_StatusBar_Title" xml:space="preserve">
+    <value>Рядок стану</value>
+  </data>
+<data name="HexSettings_Colors_Title" xml:space="preserve">
+    <value>Кольори</value>
+  </data>
+<data name="HexSettings_ScrollMarkers_Title" xml:space="preserve">
+    <value>Маркери прокрутки</value>
+    <comment>Hex editor settings - Scroll Markers category header</comment>
+  </data>
+<data name="HexSettings_ShowBookmarkMarkers" xml:space="preserve">
+    <value>Показувати маркери закладок</value>
+    <comment>Hex editor settings - Toggle bookmark markers on scrollbar</comment>
+  </data>
+<data name="HexSettings_ShowModifiedMarkers" xml:space="preserve">
+    <value>Показувати маркери змінених байтів</value>
+    <comment>Hex editor settings - Toggle modified byte markers on scrollbar</comment>
+  </data>
+<data name="HexSettings_ShowInsertedMarkers" xml:space="preserve">
+    <value>Показувати маркери вставлених байтів</value>
+    <comment>Hex editor settings - Toggle inserted byte markers on scrollbar</comment>
+  </data>
+<data name="HexSettings_ShowDeletedMarkers" xml:space="preserve">
+    <value>Показувати маркери видалених байтів</value>
+    <comment>Hex editor settings - Toggle deleted byte markers on scrollbar</comment>
+  </data>
+<data name="HexSettings_ShowSearchResultMarkers" xml:space="preserve">
+    <value>Показувати маркери результатів пошуку</value>
+    <comment>Hex editor settings - Toggle search result markers on scrollbar</comment>
+  </data>
+<data name="HexSettings_Behavior_Title" xml:space="preserve">
+    <value>Поведінка</value>
+  </data>
+<data name="HexSettings_Data_Title" xml:space="preserve">
+    <value>Дані</value>
+  </data>
+<data name="HexSettings_Visual_Title" xml:space="preserve">
+    <value>Візуальне</value>
+  </data>
+<data name="HexSettings_Keyboard_Title" xml:space="preserve">
+    <value>Клавіатура</value>
+  </data>
+<data name="HexSettings_TBL_Title" xml:space="preserve">
+    <value>Таблиця символів</value>
+  </data>
+<data name="HexSettings_SaveButton" xml:space="preserve"><value>Зберегти стан</value></data>
+<data name="HexSettings_LoadButton" xml:space="preserve"><value>Завантажити стан</value></data>
+  <data name="HexSettings_BarChart_Title" xml:space="preserve">
+    <value>📈 Стовпчаста діаграма</value>
+    <comment>Hex editor settings - Bar Chart category header</comment>
+  </data>
+  <data name="HexSettings_BarChart_PanelVisibility" xml:space="preserve">
+    <value>Видимість панелі</value>
+    <comment>Bar Chart - Show/hide the bar chart panel</comment>
+  </data>
+  <data name="HexSettings_BarChart_BarColor" xml:space="preserve">
+    <value>Колір стовпців</value>
+    <comment>Bar Chart - Color of the frequency bars</comment>
+  </data>
+  <data name="HexSettings_BarChart_BackgroundColor" xml:space="preserve">
+    <value>Колір фону</value>
+    <comment>Bar Chart - Background color of the chart panel</comment>
+  </data>
+  <data name="HexSettings_BarChart_TextColor" xml:space="preserve">
+    <value>Колір тексту</value>
+    <comment>Bar Chart - Color for labels and statistics text</comment>
+  </data>
+  <data name="HexSettings_BarChart_PanelHeight" xml:space="preserve">
+    <value>Висота панелі</value>
+    <comment>Bar Chart - Height of the chart panel in pixels</comment>
+  </data>
+  <data name="HexSettings_BarChart_ShowAxisLabels" xml:space="preserve">
+    <value>Показувати підписи осей</value>
+    <comment>Bar Chart - Display byte value labels (00-FF)</comment>
+  </data>
+  <data name="HexSettings_BarChart_ShowGridLines" xml:space="preserve">
+    <value>Показувати лінії сітки</value>
+    <comment>Bar Chart - Display horizontal reference grid lines</comment>
+  </data>
+  <data name="HexSettings_BarChart_ShowStatistics" xml:space="preserve">
+    <value>Показувати статистику</value>
+    <comment>Bar Chart - Display statistics overlay (Total, Max, Entropy)</comment>
+  </data>
+
+  <!-- ByteValueTooltip labels -->
+  <data name="ByteTooltip_NoData" xml:space="preserve"><value>Немає даних</value></data>
+  <data name="ByteTooltip_Signed" xml:space="preserve"><value>Зі знаком</value></data>
+  <data name="ByteTooltip_Binary" xml:space="preserve"><value>Двійковий</value></data>
+  <data name="ByteTooltip_ASCII" xml:space="preserve"><value>ASCII</value></data>
+  <data name="ByteTooltip_NonPrintable" xml:space="preserve"><value>(не друкується)</value></data>
+  <data name="ByteTooltip_Octal" xml:space="preserve"><value>Вісімковий</value></data>
+
+  <!-- HexEditor status messages -->
+  <data name="StatusText_OperationCancelled" xml:space="preserve"><value>Операцію скасовано</value></data>
+  <data name="StatusText_FileAlreadyExists" xml:space="preserve"><value>Файл вже існує</value></data>
+  <data name="StatusText_Ready" xml:space="preserve"><value>Готово</value></data>
+  <data name="StatusText_FileSaved" xml:space="preserve"><value>Файл збережено</value></data>
+  <data name="StatusText_SearchMarkersCleared" xml:space="preserve"><value>Маркери пошуку очищено.</value></data>
+  <data name="StatusText_AllChangesCleared" xml:space="preserve"><value>Всі зміни очищено</value></data>
+  <data name="StatusText_TblClosedAscii" xml:space="preserve"><value>TBL закрито, використовується ASCII</value></data>
+  <data name="StatusText_NoSelectionToReverse" xml:space="preserve"><value>Немає виділення для обертання</value></data>
+  <data name="StatusText_SelectionIsEmpty" xml:space="preserve"><value>Виділення порожнє</value></data>
+  <data name="StatusText_NoSelectionToInvert" xml:space="preserve"><value>Немає виділення для побітового інвертування</value></data>
+  <data name="StatusText_NoSelectionToFind" xml:space="preserve"><value>Немає виділення для пошуку</value></data>
+  <data name="StatusText_NoMatchesFound" xml:space="preserve"><value>Результатів не знайдено.</value></data>
+  <data name="StatusBar_SizeEmpty" xml:space="preserve"><value>Розмір: -</value></data>
+  <data name="StatusBar_NoSelection" xml:space="preserve"><value>Немає виділення</value></data>
+  <data name="StatusBar_PositionZero" xml:space="preserve"><value>Позиція: 0</value></data>
+  <data name="StatusBar_ModeOverwrite" xml:space="preserve"><value>Режим: Перезапис</value></data>
+  <data name="StatusBar_BytesPerLine" xml:space="preserve"><value>Байт/Рядок: 16</value></data>
+
+  <!-- Search Module -->
+  <data name="Search_NoMatches" xml:space="preserve">
+    <value>Немає збігів</value>
+  </data>
+  <data name="Search_Error_Title" xml:space="preserve">
+    <value>Помилка пошуку</value>
+  </data>
+  <data name="Search_Error_Label" xml:space="preserve">
+    <value>Помилка</value>
+  </data>
+  <data name="Search_Error_NoTBLLoaded" xml:space="preserve">
+    <value>TBL не завантажено. Неможливо шукати текст TBL.</value>
+  </data>
+  <data name="Search_Error_TBLRequired" xml:space="preserve">
+    <value>Потрібен TBL</value>
+  </data>
+  <data name="Search_Error_NoTBLForReplacement" xml:space="preserve">
+    <value>TBL не завантажено. Неможливо кодувати замінні байти у режимі TBL TEXT.</value>
+  </data>
+  <data name="Search_Replace_Title" xml:space="preserve">
+    <value>Помилка заміни</value>
+  </data>
+  <data name="Search_ReplaceAll_Title" xml:space="preserve">
+    <value>Замінити все</value>
+  </data>
+  <data name="Search_ExportDialog_Filter" xml:space="preserve">
+    <value>Файли CSV (*.csv)|*.csv|Текстові файли (*.txt)|*.txt|Файли JSON (*.json)|*.json</value>
+  </data>
+  <data name="Search_ExportTBL_Title" xml:space="preserve">
+    <value>Експортувати файл TBL</value>
+  </data>
+  <data name="Search_TBLFileDialog_Filter" xml:space="preserve">
+    <value>Файли TBL (*.tbl)|*.tbl|Усі файли (*.*)|*.*</value>
+  </data>
+  <data name="Search_ExportTBL_Success" xml:space="preserve">
+    <value>Успішно експортовано</value>
+  </data>
+  <data name="Search_ExportTBL_Error" xml:space="preserve">
+    <value>Помилка експорту</value>
+  </data>
+  <data name="Search_EncodingApplied_Title" xml:space="preserve">
+    <value>Кодування застосовано</value>
+  </data>
+  <data name="Search_EncodingApplied_Message" xml:space="preserve">
+    <value>Кодування застосовано! Тепер можна використовувати режим TBL TEXT.</value>
+  </data>
+  <data name="Search_LoadTBL_Title" xml:space="preserve">
+    <value>Вибрати файл TBL (таблицю символів)</value>
+  </data>
+  <data name="Search_TBLLoaded_Title" xml:space="preserve">
+    <value>TBL завантажено</value>
+  </data>
+  <data name="Search_ErrorLoadingTBL_Title" xml:space="preserve">
+    <value>Помилка завантаження TBL</value>
+  </data>
+  <data name="Search_CloseTBL_Title" xml:space="preserve">
+    <value>Закрити TBL</value>
+  </data>
+  <!-- IPS Patcher -->
+  <data name="IPS_Error_NoFileOpen" xml:space="preserve">
+    <value>Спочатку відкрийте файл ROM перед застосуванням патча.</value>
+  </data>
+  <data name="IPS_Error_NoFileOpen_Title" xml:space="preserve">
+    <value>Немає відкритого файлу</value>
+  </data>
+  <data name="IPS_ApplyPatch_Title" xml:space="preserve">
+    <value>Вибрати файл патча IPS</value>
+  </data>
+  <data name="IPS_FileDialog_Filter" xml:space="preserve">
+    <value>Файли патчів IPS (*.ips)|*.ips|Усі файли (*.*)|*.*</value>
+  </data>
+  <data name="IPS_Error_InvalidFile" xml:space="preserve">
+    <value>Вибраний файл не є дійсним патчем IPS.</value>
+  </data>
+  <data name="IPS_Error_InvalidFile_Title" xml:space="preserve">
+    <value>Недійсний файл IPS</value>
+  </data>
+  <data name="IPS_ApplyPatch_Confirm_Title" xml:space="preserve">
+    <value>Застосувати патч IPS</value>
+  </data>
+  <data name="IPS_ApplyPatch_SaveReminder" xml:space="preserve">
+    <value>Не забудьте зберегти файл!</value>
+  </data>
+  <data name="IPS_ApplyPatch_Success_Title" xml:space="preserve">
+    <value>Патч застосовано</value>
+  </data>
+  <data name="IPS_ApplyPatch_Error_Title" xml:space="preserve">
+    <value>Помилка патчу</value>
+  </data>
+  <data name="IPS_CreatePatch_NoFileOpen" xml:space="preserve">
+    <value>Спочатку відкрийте змінений файл ROM.</value>
+  </data>
+  <data name="IPS_CreatePatch_SelectOriginal_Title" xml:space="preserve">
+    <value>Вибрати оригінальний (незмінений) файл ROM</value>
+  </data>
+  <data name="IPS_ROMFileDialog_Filter" xml:space="preserve">
+    <value>Файли ROM|*.nes;*.smc;*.sfc;*.gb;*.gbc;*.gba;*.n64;*.z64;*.md;*.bin;*.gen|Усі файли (*.*)|*.*</value>
+  </data>
+  <data name="IPS_CreatePatch_SaveDialog_Title" xml:space="preserve">
+    <value>Зберегти патч IPS як</value>
+  </data>
+  <data name="IPS_CreatePatch_Success_Title" xml:space="preserve">
+    <value>Патч створено</value>
+  </data>
+  <!-- Undo/Redo history popup -->
+  <data name="UndoHistory_Undo" xml:space="preserve">
+    <value>Скасувати</value>
+  </data>
+  <data name="UndoHistory_Redo" xml:space="preserve">
+    <value>Повторити</value>
+  </data>
+  <data name="UndoHistory_Action" xml:space="preserve">
+    <value>дія</value>
+  </data>
+  <data name="UndoHistory_Actions" xml:space="preserve">
+    <value>дії</value>
+  </data>
+
+  <data name="DynSettings_Title" xml:space="preserve">
+    <value>Параметри Hex-редактора</value>
+  </data>
+  <data name="DynSettings_SaveState" xml:space="preserve">
+    <value>Зберегти стан</value>
+  </data>
+  <data name="DynSettings_LoadState" xml:space="preserve">
+    <value>Завантажити стан</value>
+  </data>
+  <data name="DynSettings_ResetDefaults" xml:space="preserve">
+    <value>Скинути до стандартних значень</value>
+  </data>
+  <data name="UndoRedo_NothingToUndo" xml:space="preserve">
+    <value>Немає операцій для скасування</value>
+  </data>
+  <data name="UndoRedo_NothingToRedo" xml:space="preserve">
+    <value>Немає операцій для повторення</value>
+  </data>
+  <data name="RelativeSearchMenuString" xml:space="preserve">
+    <value>Відносний пошук...</value>
+  </data>
+  <data name="RelativeSearchString" xml:space="preserve">
+    <value>Відносний пошук — виявлення кодування</value>
+  </data>
+  <data name="RelativeSearchKnownTextString" xml:space="preserve">
+    <value>Відомий текст:</value>
+  </data>
+  <data name="RelativeSearchSearchButtonString" xml:space="preserve">
+    <value>Шукати</value>
+  </data>
+  <data name="RelativeSearchUseParallelString" xml:space="preserve">
+    <value>Використовувати паралельний пошук</value>
+  </data>
+  <data name="RelativeSearchMinMatchesString" xml:space="preserve">
+    <value>Мін. збігів:</value>
+  </data>
+  <data name="RelativeSearchMaxProposalsString" xml:space="preserve">
+    <value>Макс. пропозицій:</value>
+  </data>
+  <data name="RelativeSearchTblLoadedString" xml:space="preserve">
+    <value>TBL завантажено: {0} записів (використовується для перевірки)</value>
+  </data>
+  <data name="RelativeSearchNoTblString" xml:space="preserve">
+    <value>TBL не завантажено (пропозиції оцінюються незалежно)</value>
+  </data>
+  <data name="RelativeSearchProposalsHeaderString" xml:space="preserve">
+    <value>Пропозиції кодування</value>
+  </data>
+  <data name="RelativeSearchOffsetColumnString" xml:space="preserve">
+    <value>Зміщення</value>
+  </data>
+  <data name="RelativeSearchScoreColumnString" xml:space="preserve">
+    <value>Оцінка</value>
+  </data>
+  <data name="RelativeSearchMatchesColumnString" xml:space="preserve">
+    <value>Збіги</value>
+  </data>
+  <data name="RelativeSearchSampleColumnString" xml:space="preserve">
+    <value>Приклад тексту</value>
+  </data>
+  <data name="RelativeSearchPreviewHeaderString" xml:space="preserve">
+    <value>Перегляд (декодований текст)</value>
+  </data>
+  <data name="RelativeSearchMatchPositionsString" xml:space="preserve">
+    <value>Збіги на:</value>
+  </data>
+  <data name="RelativeSearchExportTblString" xml:space="preserve">
+    <value>Експортувати у TBL</value>
+  </data>
+  <data name="RelativeSearchNavigateString" xml:space="preserve">
+    <value>Перейти до збігу</value>
+  </data>
+  <data name="RelativeSearchSearchingString" xml:space="preserve">
+    <value>Пошук 256 зміщень кодування...</value>
+  </data>
+  <data name="RelativeSearchFoundProposalsString" xml:space="preserve">
+    <value>Знайдено {0} пропозицій за {1} мс</value>
+  </data>
+  <data name="RelativeSearchFoundWithValidationString" xml:space="preserve">
+    <value>Знайдено {0} пропозицій за {1} мс (перша пропозиція підтверджена завантаженим TBL!)</value>
+  </data>
+  <data name="RelativeSearchSearchingWithTblString" xml:space="preserve">
+    <value>Пошук 256 зміщень (перевірка проти {0} записів TBL)...</value>
+  </data>
+  <data name="RelativeSearchCancelledString" xml:space="preserve">
+    <value>Пошук скасовано</value>
+  </data>
+  <data name="RelativeSearchNoProposalsString" xml:space="preserve">
+    <value>Пропозицій кодування не знайдено. Спробуйте інший текст для пошуку.</value>
+  </data>
+  <data name="RelativeSearchNoFileOpenString" xml:space="preserve">
+    <value>Немає відкритого файлу</value>
+  </data>
+  <data name="RelativeSearchKnownTextTooltipString" xml:space="preserve">
+    <value>Введіть текст, який, як ви знаєте, є у ROM (напр.: "World", "Start", "Hero")</value>
+  </data>
+  <data name="RelativeSearchExportTooltipString" xml:space="preserve">
+    <value>Зберегти вибрану пропозицію кодування як файл TBL</value>
+  </data>
+  <data name="TblConflict_Title" xml:space="preserve">
+    <value>Звіт аналізу конфліктів TBL</value>
+  </data>
+  <data name="TblConflict_TotalConflicts" xml:space="preserve">
+    <value>Всього конфліктів:</value>
+  </data>
+  <data name="TblConflict_Errors" xml:space="preserve">
+    <value>Помилки:</value>
+  </data>
+  <data name="TblConflict_Warnings" xml:space="preserve">
+    <value>Попередження:</value>
+  </data>
+  <data name="TblConflict_Info" xml:space="preserve">
+    <value>Інфо:</value>
+  </data>
+  <data name="TblConflict_Description" xml:space="preserve">
+    <value>Опис:</value>
+  </data>
+  <data name="TblConflict_Suggestion" xml:space="preserve">
+    <value>Запропонований розв'язок:</value>
+  </data>
+  <data name="TblConflict_ConflictingEntries" xml:space="preserve">
+    <value>Конфліктуючі записи:</value>
+  </data>
+  <data name="TblTemplate_Title" xml:space="preserve">
+    <value>Шаблони TBL</value>
+  </data>
+  <data name="TblTemplate_Categories" xml:space="preserve">
+    <value>Категорії</value>
+  </data>
+  <data name="TblTemplate_AvailableTemplates" xml:space="preserve">
+    <value>Доступні шаблони</value>
+  </data>
+  <data name="TblTemplate_Preview" xml:space="preserve">
+    <value>Перегляд</value>
+  </data>
+  <data name="TblTemplate_LoadTemplate" xml:space="preserve">
+    <value>Завантажити шаблон</value>
+  </data>
+  <data name="TblTemplate_MergeWithCurrent" xml:space="preserve">
+    <value>Об'єднати з поточним</value>
+  </data>
+  <data name="TblTemplate_BuiltIn" xml:space="preserve">
+    <value>Вбудований</value>
+  </data>
+  <data name="PatternAnalysis_Title" xml:space="preserve">
+    <value>Аналіз шаблонів</value>
+  </data>
+  <data name="PatternAnalysis_Entropy" xml:space="preserve">
+    <value>Ентропія</value>
+  </data>
+  <data name="PatternAnalysis_ByteDistribution" xml:space="preserve">
+    <value>Розподіл байтів</value>
+  </data>
+  <data name="PatternAnalysis_DetectedPatterns" xml:space="preserve">
+    <value>Виявлені шаблони</value>
+  </data>
+  <data name="PatternAnalysis_NoPatternsDetected" xml:space="preserve">
+    <value>Шаблонів не виявлено</value>
+  </data>
+  <data name="PatternAnalysis_Anomalies" xml:space="preserve">
+    <value>Аномалії</value>
+  </data>
+  <data name="PatternAnalysis_NoAnomalies" xml:space="preserve">
+    <value>Аномалій не виявлено</value>
+  </data>
+  <data name="PatternAnalysis_BitsPerByte" xml:space="preserve">
+    <value>бітів/байт</value>
+  </data>
+  <data name="PatternAnalysis_HighEntropy" xml:space="preserve">
+    <value>Виявлено високу ентропію</value>
+  </data>
+  <data name="PatternAnalysis_HighEntropyDesc" xml:space="preserve">
+    <value>Дані, схоже, стиснені або зашифровані</value>
+  </data>
+  <data name="PatternAnalysis_LowEntropy" xml:space="preserve">
+    <value>Виявлено дуже низьку ентропію</value>
+  </data>
+  <data name="PatternAnalysis_LowEntropyDesc" xml:space="preserve">
+    <value>Дані містять багато повторюваних або схожих байтів</value>
+  </data>
+  <data name="PatternAnalysis_SkewedDistribution" xml:space="preserve">
+    <value>Нерівномірний розподіл байтів</value>
+  </data>
+  <data name="PatternAnalysis_SkewedDesc" xml:space="preserve">
+    <value>Одне значення байта зустрічається більше 20% часу</value>
+  </data>
+  <data name="PatternAnalysis_NullBytes" xml:space="preserve">
+    <value>NULL-байти (0x00)</value>
+  </data>
+  <data name="PatternAnalysis_RepeatedSequence" xml:space="preserve">
+    <value>Повторювана послідовність</value>
+  </data>
+  <data name="PatternAnalysis_AsciiText" xml:space="preserve">
+    <value>Виявлено текст ASCII</value>
+  </data>
+  <data name="FileStats_Title" xml:space="preserve">
+    <value>Статистика файлу</value>
+  </data>
+  <data name="FileStats_OverallHealth" xml:space="preserve">
+    <value>Загальний стан</value>
+  </data>
+  <data name="FileStats_HealthyStructure" xml:space="preserve">
+    <value>Структура файлу дійсна і справна</value>
+  </data>
+  <data name="FileStats_Structure" xml:space="preserve">
+    <value>Структура</value>
+  </data>
+  <data name="FileStats_Valid" xml:space="preserve">
+    <value>Дійсна</value>
+  </data>
+  <data name="FileStats_Invalid" xml:space="preserve">
+    <value>Недійсна</value>
+  </data>
+  <data name="FileStats_Checksums" xml:space="preserve">
+    <value>Контрольні суми</value>
+  </data>
+  <data name="FileStats_AllPass" xml:space="preserve">
+    <value>Всі пройшли</value>
+  </data>
+  <data name="FileStats_SomeFailed" xml:space="preserve">
+    <value>Деякі контрольні суми не пройшли</value>
+  </data>
+  <data name="FileStats_Compression" xml:space="preserve">
+    <value>Стиснення</value>
+  </data>
+  <data name="FileStats_Ratio" xml:space="preserve">
+    <value>Коефіцієнт:</value>
+  </data>
+  <data name="FileStats_SubOptimalCompression" xml:space="preserve">
+    <value>Неоптимальне стиснення</value>
+  </data>
+  <data name="FileStats_EntropyAnalysis" xml:space="preserve">
+    <value>Аналіз ентропії</value>
+  </data>
+  <data name="FileStats_Level" xml:space="preserve">
+    <value>Рівень:</value>
+  </data>
+  <data name="FileStats_CompressedOrEncrypted" xml:space="preserve">
+    <value>Дані, ймовірно, стиснені або зашифровані</value>
+  </data>
+  <data name="FileStats_DetectedIssues" xml:space="preserve">
+    <value>Виявлені проблеми</value>
+  </data>
+  <data name="FileStats_NoIssues" xml:space="preserve">
+    <value>Проблем не виявлено</value>
+  </data>
+  <data name="FileStats_FileInformation" xml:space="preserve">
+    <value>Інформація про файл</value>
+  </data>
+  <data name="FileStats_Size" xml:space="preserve">
+    <value>Розмір:</value>
+  </data>
+  <data name="FileStats_Fields" xml:space="preserve">
+    <value>Поля:</value>
+  </data>
+  <data name="FileStats_Format" xml:space="preserve">
+    <value>Формат:</value>
+  </data>
+  <data name="FileStats_Unknown" xml:space="preserve">
+    <value>Невідомо</value>
+  </data>
+  <data name="ArchiveStructure_Title" xml:space="preserve">
+    <value>Структура архіву</value>
+  </data>
+  <data name="ArchiveStructure_NoArchive" xml:space="preserve">
+    <value>Архів не завантажено</value>
+  </data>
+  <data name="ArchiveStructure_Extract" xml:space="preserve">
+    <value>Розпакувати...</value>
+  </data>
+  <data name="ArchiveStructure_ViewDetails" xml:space="preserve">
+    <value>Переглянути деталі</value>
+  </data>
+  <data name="ArchiveStructure_ExpandAll" xml:space="preserve">
+    <value>Розгорнути все</value>
+  </data>
+  <data name="ArchiveStructure_CollapseAll" xml:space="preserve">
+    <value>Згорнути все</value>
+  </data>
+  <data name="ArchiveStructure_Files" xml:space="preserve">
+    <value>файлів</value>
+  </data>
+  <data name="ArchiveStructure_Folders" xml:space="preserve">
+    <value>тек</value>
+  </data>
+  <data name="ArchiveStructure_TotalSize" xml:space="preserve">
+    <value>Загальний розмір:</value>
+  </data>
+  <data name="ArchiveStructure_CompressionRatio" xml:space="preserve">
+    <value>Коефіцієнт:</value>
+  </data>
+  <data name="ArchiveStructure_ExtractFunctionality" xml:space="preserve">
+    <value>Функціонал розпакування — реалізувати з бібліотекою архівів</value>
+  </data>
+  <data name="ArchiveStructure_ExtractTitle" xml:space="preserve">
+    <value>Розпакувати</value>
+  </data>
+  <data name="ArchiveStructure_DetailsTitle" xml:space="preserve">
+    <value>Деталі</value>
+  </data>
+  <data name="ArchiveStructure_DetailName" xml:space="preserve">
+    <value>Назва:</value>
+  </data>
+  <data name="ArchiveStructure_DetailType" xml:space="preserve">
+    <value>Тип:</value>
+  </data>
+  <data name="ArchiveStructure_DetailFolder" xml:space="preserve">
+    <value>Тека</value>
+  </data>
+  <data name="ArchiveStructure_DetailFile" xml:space="preserve">
+    <value>Файл</value>
+  </data>
+  <data name="ArchiveStructure_DetailCompressed" xml:space="preserve">
+    <value>Стиснено:</value>
+  </data>
+  <data name="ArchiveStructure_DetailCRC" xml:space="preserve">
+    <value>CRC:</value>
+  </data>
+  <data name="ArchiveStructure_DetailMethod" xml:space="preserve">
+    <value>Метод:</value>
+  </data>
+  <data name="FileComparison_Title" xml:space="preserve">
+    <value>Порівняння файлів</value>
+  </data>
+  <data name="FileComparison_SelectFiles" xml:space="preserve">
+    <value>Вибрати файли для порівняння</value>
+  </data>
+  <data name="FileComparison_LoadFile1" xml:space="preserve">
+    <value>Завантажити файл 1...</value>
+  </data>
+  <data name="FileComparison_LoadFile2" xml:space="preserve">
+    <value>Завантажити файл 2...</value>
+  </data>
+  <data name="FileComparison_File1" xml:space="preserve">
+    <value>Файл 1</value>
+  </data>
+  <data name="FileComparison_File2" xml:space="preserve">
+    <value>Файл 2</value>
+  </data>
+  <data name="FileComparison_Matching" xml:space="preserve">
+    <value>Збіги:</value>
+  </data>
+  <data name="FileComparison_Added" xml:space="preserve">
+    <value>Додано:</value>
+  </data>
+  <data name="FileComparison_Modified" xml:space="preserve">
+    <value>Змінено:</value>
+  </data>
+  <data name="FileComparison_Removed" xml:space="preserve">
+    <value>Видалено:</value>
+  </data>
+  <data name="FileComparison_SelectFile1" xml:space="preserve">
+    <value>Вибрати файл 1 для порівняння</value>
+  </data>
+  <data name="FileComparison_SelectFile2" xml:space="preserve">
+    <value>Вибрати файл 2 для порівняння</value>
+  </data>
+  <data name="FileComparison_AllFiles" xml:space="preserve">
+    <value>Усі файли (*.*)|*.*</value>
+  </data>
+  <data name="FileComparison_ErrorLoading" xml:space="preserve">
+    <value>Помилка завантаження файлу: {0}</value>
+  </data>
+  <data name="FileComparison_Error" xml:space="preserve">
+    <value>Помилка</value>
+  </data>
+  <data name="FileComparison_SelectBothFiles" xml:space="preserve">
+    <value>Вибрати обидва файли для порівняння</value>
+  </data>
+  <data name="FileComparison_Comparing" xml:space="preserve">
+    <value>Порівняння {0} ↔ {1}</value>
+  </data>
+  <data name="CustomTemplate_Title" xml:space="preserve">
+    <value>Шаблони</value>
+  </data>
+  <data name="CustomTemplate_NewTemplate" xml:space="preserve">
+    <value>Новий шаблон</value>
+  </data>
+  <data name="CustomTemplate_DeleteTemplate" xml:space="preserve">
+    <value>Видалити шаблон</value>
+  </data>
+  <data name="CustomTemplate_EditorTitle" xml:space="preserve">
+    <value>Редактор шаблонів</value>
+  </data>
+  <data name="CustomTemplate_Name" xml:space="preserve">
+    <value>Назва:</value>
+  </data>
+  <data name="CustomTemplate_Description" xml:space="preserve">
+    <value>Опис:</value>
+  </data>
+  <data name="CustomTemplate_Extensions" xml:space="preserve">
+    <value>Розширення:</value>
+  </data>
+  <data name="CustomTemplate_ExtensionsTooltip" xml:space="preserve">
+    <value>Розділені комами, напр.: .bin,.dat</value>
+  </data>
+  <data name="CustomTemplate_SaveTemplate" xml:space="preserve">
+    <value>Зберегти шаблон</value>
+  </data>
+  <data name="CustomTemplate_FormatBlocks" xml:space="preserve">
+    <value>Блоки формату</value>
+  </data>
+  <data name="CustomTemplate_AddBlock" xml:space="preserve">
+    <value>Додати блок</value>
+  </data>
+  <data name="CustomTemplate_RemoveBlock" xml:space="preserve">
+    <value>Видалити блок</value>
+  </data>
+  <data name="CustomTemplate_ApplyToFile" xml:space="preserve">
+    <value>Застосувати до поточного файлу</value>
+  </data>
+  <data name="CustomTemplate_ApplyDescription" xml:space="preserve">
+    <value>Застосувати цей шаблон для аналізу файлу, що наразі завантажений у Hex-редакторі.</value>
+  </data>
+  <data name="CustomTemplate_ApplyButton" xml:space="preserve">
+    <value>Застосувати шаблон до файлу</value>
+  </data>
+  <data name="CustomTemplate_ExportImport" xml:space="preserve">
+    <value>Експорт/Імпорт</value>
+  </data>
+  <data name="CustomTemplate_ExportJSON" xml:space="preserve">
+    <value>Експортувати у JSON</value>
+  </data>
+  <data name="CustomTemplate_ImportJSON" xml:space="preserve">
+    <value>Імпортувати з JSON</value>
+  </data>
+  <data name="CustomTemplate_NoTemplateSelected" xml:space="preserve">
+    <value>Шаблон не вибрано для збереження.</value>
+  </data>
+  <data name="CustomTemplate_SavedSuccessfully" xml:space="preserve">
+    <value>Шаблон '{0}' успішно збережено!</value>
+  </data>
+  <data name="CustomTemplate_ErrorSaving" xml:space="preserve">
+    <value>Помилка збереження шаблону: {0}</value>
+  </data>
+  <data name="CustomTemplate_SelectOrCreate" xml:space="preserve">
+    <value>Спочатку виберіть або створіть шаблон.</value>
+  </data>
+  <data name="CustomTemplate_AddBlockTitle" xml:space="preserve">
+    <value>Додати блок</value>
+  </data>
+  <data name="CustomTemplate_DeleteConfirm" xml:space="preserve">
+    <value>Видалити шаблон '{0}'?</value>
+  </data>
+  <data name="CustomTemplate_ConfirmDelete" xml:space="preserve">
+    <value>Підтвердити видалення</value>
+  </data>
+  <data name="CustomTemplate_ErrorDeleting" xml:space="preserve">
+    <value>Помилка видалення файлу: {0}</value>
+  </data>
+  <data name="CustomTemplate_DeleteError" xml:space="preserve">
+    <value>Помилка видалення</value>
+  </data>
+  <data name="CustomTemplate_ApplyingTemplate" xml:space="preserve">
+    <value>Застосування шаблону '{0}' до поточного файлу.
+
+Це проаналізує {1} блоків згідно з вашим визначенням шаблону.
+
+Примітка: Повна інтеграція з HexEditor потребує підключення до основної моделі представлення.</value>
+  </data>
+  <data name="CustomTemplate_ApplyTitle" xml:space="preserve">
+    <value>Застосувати шаблон</value>
+  </data>
+  <data name="CustomTemplate_NoTemplateToApply" xml:space="preserve">
+    <value>Шаблон не вибрано для застосування.</value>
+  </data>
+  <data name="CustomTemplate_ExportTitle" xml:space="preserve">
+    <value>Експортувати шаблон у JSON</value>
+  </data>
+  <data name="CustomTemplate_JSONFiles" xml:space="preserve">
+    <value>Файли JSON (*.json)|*.json</value>
+  </data>
+  <data name="CustomTemplate_ExportedTo" xml:space="preserve">
+    <value>Шаблон експортовано до:
+{0}</value>
+  </data>
+  <data name="CustomTemplate_ExportSuccess" xml:space="preserve">
+    <value>Успішно експортовано</value>
+  </data>
+  <data name="CustomTemplate_ErrorExporting" xml:space="preserve">
+    <value>Помилка експорту шаблону: {0}</value>
+  </data>
+  <data name="CustomTemplate_ExportError" xml:space="preserve">
+    <value>Помилка експорту</value>
+  </data>
+  <data name="CustomTemplate_ImportTitle" xml:space="preserve">
+    <value>Імпортувати шаблон з JSON</value>
+  </data>
+  <data name="CustomTemplate_ImportedSuccessfully" xml:space="preserve">
+    <value>Шаблон '{0}' успішно імпортовано!</value>
+  </data>
+  <data name="CustomTemplate_ImportSuccess" xml:space="preserve">
+    <value>Успішно імпортовано</value>
+  </data>
+  <data name="CustomTemplate_ErrorImporting" xml:space="preserve">
+    <value>Помилка імпорту шаблону: {0}</value>
+  </data>
+  <data name="CustomTemplate_ImportError" xml:space="preserve">
+    <value>Помилка імпорту</value>
+  </data>
+  <data name="CustomTemplate_ColumnName" xml:space="preserve">
+    <value>Назва</value>
+  </data>
+  <data name="CustomTemplate_ColumnOffset" xml:space="preserve">
+    <value>Зміщення</value>
+  </data>
+  <data name="CustomTemplate_ColumnLength" xml:space="preserve">
+    <value>Довжина</value>
+  </data>
+  <data name="CustomTemplate_ColumnType" xml:space="preserve">
+    <value>Тип</value>
+  </data>
+  <data name="CustomTemplate_ColumnColor" xml:space="preserve">
+    <value>Колір</value>
+  </data>
+  <data name="CustomTemplate_ColumnDescription" xml:space="preserve">
+    <value>Опис</value>
+  </data>
+  <data name="CopyAsAutoString" xml:space="preserve">
+    <value>Копіювати (авто)</value>
+  </data>
+  <data name="WrapAroundString" xml:space="preserve"><value>Циклічний пошук</value></data>
+  <data name="EncodingLabel" xml:space="preserve"><value>Кодування:</value></data>
+  <data name="HexadecimalString" xml:space="preserve"><value>Шістнадцятковий</value></data>
+  <data name="DecimalString" xml:space="preserve"><value>Десятковий</value></data>
+  <data name="GoToPositionTitle" xml:space="preserve"><value>Перейти до позиції</value></data>
+  <data name="GoToPositionHeader" xml:space="preserve"><value>Позиція</value></data>
+  <data name="GoToPositionPlaceholder" xml:space="preserve"><value>0x00000000 або десяткове</value></data>
+  <data name="WildcardCheckbox" xml:space="preserve"><value>Підстановка (??)</value></data>
+  <data name="TruncateReplacementString" xml:space="preserve"><value>Скорочувати заміну до довжини пошуку</value></data>
+  <data name="FindNextButtonLabel" xml:space="preserve"><value>Наступне</value></data>
+  <data name="FindPreviousButtonLabel" xml:space="preserve"><value>Попереднє</value></data>
+  <data name="HE_SearchDialogTitle" xml:space="preserve">
+    <value>Знайти / Замінити</value>
+  </data>
+  <data name="HE_SearchModeTooltip" xml:space="preserve">
+    <value>Режим пошуку</value>
+  </data>
+  <data name="HE_CaseSensitiveTooltip" xml:space="preserve">
+    <value>З урахуванням регістру (Alt+C)</value>
+  </data>
+  <data name="HE_WildcardTooltip" xml:space="preserve">
+    <value>Використовувати підстановку ?? (Alt+E)</value>
+  </data>
+  <data name="HE_LoopSearch" xml:space="preserve">
+    <value>Цикл</value>
+  </data>
+  <data name="HE_FindLabel" xml:space="preserve">
+    <value>Знайти:</value>
+  </data>
+  <data name="HE_ReplaceLabel" xml:space="preserve">
+    <value>Замінити:</value>
+  </data>
+  <data name="HE_EncodingLabel" xml:space="preserve">
+    <value>Кодування:</value>
+  </data>
+  <data name="HE_MaxLabel" xml:space="preserve">
+    <value>Макс.:</value>
+  </data>
+  <data name="HE_StopButton" xml:space="preserve">
+    <value>Стоп</value>
+  </data>
+  <data name="HE_PrevButton" xml:space="preserve">
+    <value>Попер.</value>
+  </data>
+  <data name="HE_NextButton" xml:space="preserve">
+    <value>Наст.</value>
+  </data>
+  <data name="HE_FindAllButton" xml:space="preserve">
+    <value>Знайти все</value>
+  </data>
+  <data name="HE_ReplaceButton" xml:space="preserve">
+    <value>Замінити</value>
+  </data>
+  <data name="HE_ReplaceAllButton" xml:space="preserve">
+    <value>Замінити все</value>
+  </data>
+  <data name="HE_ResultsLabel" xml:space="preserve">
+    <value>Результати (</value>
+  </data>
+  <data name="HE_ExportButton" xml:space="preserve">
+    <value>Експорт ▾</value>
+  </data>
+  <data name="HE_OffsetHexColumn" xml:space="preserve">
+    <value>Offset (Hex)</value>
+  </data>
+  <data name="HE_OffsetDecColumn" xml:space="preserve">
+    <value>Offset (Dec)</value>
+  </data>
+  <data name="HE_PreviewColumn" xml:space="preserve">
+    <value>Перегляд</value>
+  </data>
+  <data name="HE_LengthColumn" xml:space="preserve">
+    <value>Дов.</value>
+  </data>
+  <data name="HE_OccColumn" xml:space="preserve">
+    <value>Вхо.</value>
+  </data>
+  <data name="HE_PrintPctColumn" xml:space="preserve">
+    <value>% Друк.</value>
+  </data>
+  <data name="HE_ActionsColumn" xml:space="preserve">
+    <value>Дії</value>
+  </data>
+  <data name="HE_ExportTblButton" xml:space="preserve">
+    <value>Експорт TBL</value>
+  </data>
+  <data name="HE_ApplyButton" xml:space="preserve">
+    <value>Застосувати</value>
+  </data>
+  <data name="HE_SizeLabel" xml:space="preserve">
+    <value>Розмір: </value>
+  </data>
+  <data name="HE_BytesLabel" xml:space="preserve">
+    <value>байтів</value>
+  </data>
+  <data name="HE_LoadTblButton" xml:space="preserve">
+    <value>Завантажити TBL...</value>
+  </data>
+  <data name="HE_LoadTblTooltip" xml:space="preserve">
+    <value>Завантажити файл TBL (таблицю символів ROM)</value>
+  </data>
+  <data name="HE_TblLabel" xml:space="preserve">
+    <value>TBL: </value>
+  </data>
+  <data name="HE_CloseTblTooltip" xml:space="preserve">
+    <value>Закрити файл TBL</value>
+  </data>
+  <data name="HE_ShowReplaceTooltip" xml:space="preserve">
+    <value>Показати / приховати заміну (Ctrl+H)</value>
+  </data>
+  <data name="HE_SearchPlaceholder" xml:space="preserve">
+    <value>Пошук...</value>
+  </data>
+  <data name="HE_PrevResultTooltip" xml:space="preserve">
+    <value>Попередній результат (Shift+Enter)</value>
+  </data>
+  <data name="HE_NextResultTooltip" xml:space="preserve">
+    <value>Наступний результат (Enter)</value>
+  </data>
+  <data name="HE_AdvancedSearchTooltip" xml:space="preserve">
+    <value>Розширений пошук (Ctrl+Shift+F)</value>
+  </data>
+  <data name="HE_CloseSearchTooltip" xml:space="preserve">
+    <value>Закрити (Esc)</value>
+  </data>
+  <data name="HE_ReplacePlaceholder" xml:space="preserve">
+    <value>Замінити...</value>
+  </data>
+  <data name="HE_ReplaceOneTooltip" xml:space="preserve">
+    <value>Замінити (Alt+R)</value>
+  </data>
+  <data name="HE_ReplaceAllTooltip" xml:space="preserve">
+    <value>Замінити все (Alt+A)</value>
+  </data>
+  <data name="HE_HexModeTooltip" xml:space="preserve">
+    <value>Шістнадцятковий режим (Alt+H)</value>
+  </data>
+  <data name="HE_MoveBarTooltip" xml:space="preserve">
+    <value>Перемістити панель пошуку</value>
+  </data>
+  <data name="HE_CompareFileWith" xml:space="preserve"><value>Порівняти файл з…</value></data>
+  <data name="HE_CompareSelectionLeft" xml:space="preserve"><value>Порівняти виділення ліворуч…</value></data>
+  <data name="HE_NoTblLoaded" xml:space="preserve"><value>Файл TBL не завантажено</value></data>
+  <data name="HE_SearchTypeText" xml:space="preserve"><value>ТЕКСТ</value></data>
+  <data name="HE_SearchTypeHex" xml:space="preserve"><value>HEX</value></data>
+  <data name="HE_SearchTypeWildcard" xml:space="preserve"><value>ПІДСТАНОВКА</value></data>
+  <data name="HE_SearchTypeTbl" xml:space="preserve"><value>ТЕКСТ TBL</value></data>
+  <data name="HE_SearchTypeRelative" xml:space="preserve"><value>ВІДНОСНИЙ</value></data>
+  <data name="HE_Toolbar_DetectedFormat" xml:space="preserve"><value>Виявлений формат файлу</value></data>
+  <data name="HE_Toolbar_ConfidenceScore" xml:space="preserve"><value>Рейтинг достовірності виявлення</value></data>
+  <data name="HE_Toolbar_ConfidenceFormat" xml:space="preserve"><value>Достовірність виявлення: {0}</value></data>
+  <data name="HE_Toolbar_ChangeFormat" xml:space="preserve"><value>Формат</value></data>
+  <data name="HE_Toolbar_ChangeFormatTooltip" xml:space="preserve"><value>Змінити виявлений формат</value></data>
+  <data name="HE_TipSearchAllOccurrences" xml:space="preserve"><value>Пошук усіх входжень з накладенням прогресу</value></data>
+  <data name="HE_ColOffset"               xml:space="preserve"><value>Зміщення</value></data>
+  <data name="HE_ResultsHeader" xml:space="preserve">
+    <value>Результати</value>
+  </data>
+</root>

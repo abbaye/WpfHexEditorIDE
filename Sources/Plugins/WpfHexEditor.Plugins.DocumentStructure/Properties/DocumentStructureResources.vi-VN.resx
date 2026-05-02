@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfHexEditor.Plugins.DocumentStructure
+    File        : DocumentStructureResources.vi-VN.resx
+    Description : Vietnamese (vi-VN) translations for the Document Structure plugin.
+-->
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:any minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" />
+              <xsd:attribute name="type" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="value">
+            <xsd:complexType>
+              <xsd:any minOccurs="0" maxOccurs="unbounded" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <data name="DocStructure_PluginName" xml:space="preserve">
+    <value>Cấu trúc tài liệu</value>
+  </data>
+
+  <data name="DS_NavigateToMenu" xml:space="preserve">
+    <value>Điều hướng đến</value>
+  </data>
+  <data name="DS_CopyNameMenu" xml:space="preserve">
+    <value>Sao chép tên</value>
+  </data>
+  <data name="DS_CopyQualifiedMenu" xml:space="preserve">
+    <value>Sao chép tên đủ điều kiện</value>
+  </data>
+  <data name="DS_ExpandAllMenu" xml:space="preserve">
+    <value>Mở rộng tất cả</value>
+  </data>
+  <data name="DS_CollapseAllMenu" xml:space="preserve">
+    <value>Thu gọn tất cả</value>
+  </data>
+  <data name="DS_RefreshTooltip" xml:space="preserve">
+    <value>Làm mới</value>
+  </data>
+  <data name="DS_TreeViewTooltip" xml:space="preserve">
+    <value>Xem dạng cây</value>
+  </data>
+  <data name="DS_CollapseAllTooltip" xml:space="preserve">
+    <value>Thu gọn tất cả</value>
+  </data>
+  <data name="DS_PinDocumentTooltip" xml:space="preserve">
+    <value>Ghim tài liệu (giữ cấu trúc khi điều hướng)</value>
+  </data>
+  <data name="DS_SyncCursorTooltip" xml:space="preserve">
+    <value>Đồng bộ với con trỏ trình soạn thảo</value>
+  </data>
+  <data name="DS_SortOrderTooltip" xml:space="preserve">
+    <value>Thứ tự sắp xếp</value>
+  </data>
+  <data name="DS_SourceOrderOption" xml:space="preserve">
+    <value>Thứ tự nguồn</value>
+  </data>
+  <data name="DS_AlphabeticalOption" xml:space="preserve">
+    <value>Thứ tự chữ cái</value>
+  </data>
+  <data name="DS_ByKindOption" xml:space="preserve">
+    <value>Theo loại</value>
+  </data>
+  <data name="DS_MaxDepthTooltip" xml:space="preserve">
+    <value>Độ sâu cây tối đa</value>
+  </data>
+  <data name="DS_InfiniteDepth" xml:space="preserve">
+    <value>∞ Độ sâu</value>
+  </data>
+  <data name="DS_Depth2" xml:space="preserve">
+    <value>2 cấp</value>
+  </data>
+  <data name="DS_Depth3" xml:space="preserve">
+    <value>3 cấp</value>
+  </data>
+  <data name="DS_Depth5" xml:space="preserve">
+    <value>5 cấp</value>
+  </data>
+  <data name="DS_Depth10" xml:space="preserve">
+    <value>10 cấp</value>
+  </data>
+  <data name="DS_MoreOptionsTooltip" xml:space="preserve">
+    <value>Thêm tùy chọn</value>
+  </data>
+  <data name="DS_NoDocumentText" xml:space="preserve">
+    <value>Mở tài liệu để xem cấu trúc</value>
+  </data>
+  <data name="DS_FilterPlaceholder" xml:space="preserve">
+    <value>Lọc ký hiệu…</value>
+  </data>
+</root>

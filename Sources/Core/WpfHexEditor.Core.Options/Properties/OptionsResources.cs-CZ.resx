@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="EnvGeneral_AppearanceSection" xml:space="preserve"><value>VZHLED</value></data>
+  <data name="EnvGeneral_ColorThemeLabel" xml:space="preserve"><value>Barevné téma:</value></data>
+  <data name="EnvGeneral_ThemePreviewNote" xml:space="preserve"><value>Náhled se použije ihned.</value></data>
+  <data name="EnvGeneral_LanguageSection" xml:space="preserve"><value>JAZYK</value></data>
+  <data name="EnvGeneral_IdeLanguageLabel" xml:space="preserve"><value>Jazyk IDE:</value></data>
+  <data name="EnvGeneral_LanguageRestartNote" xml:space="preserve"><value>Pro úplné použití nového jazyka je nutný restart.</value></data>
+  <!-- MARKETPLACE OPTIONS PAGE -->
+  <data name="Mkt_GitHubSection" xml:space="preserve"><value>GITHUB API</value></data>
+  <data name="Mkt_PatDescription" xml:space="preserve"><value>Personal Access Token (PAT) — zvyšuje limit požadavků GitHub z 60 na 5 000 za hodinu. Pro anonymní přístup ponechte prázdné.</value></data>
+  <data name="Mkt_PatWarning" xml:space="preserve"><value>Token je uložen v čitelném textu v souboru nastavení. Nepoužívejte token s oprávněním k zápisu.</value></data>
+  <data name="Mkt_AutoUpdateSection" xml:space="preserve"><value>AUTOMATICKÉ AKTUALIZACE</value></data>
+  <data name="Mkt_AutoUpdate" xml:space="preserve"><value>Automaticky kontrolovat aktualizace pluginů při spuštění</value></data>
+  <data name="Mkt_UpdateIntervalLabel" xml:space="preserve"><value>Interval kontroly aktualizací (hodiny):</value></data>
+  <data name="Mkt_UpdateIntervalNote" xml:space="preserve"><value>Minimální interval: 1 hodina.</value></data>
+  <!-- OUTPUT OPTIONS PAGE -->
+  <data name="Output_Section" xml:space="preserve"><value>BARVY ÚROVNÍ PROTOKOLU</value></data>
+  <data name="Output_Note" xml:space="preserve"><value>Přizpůsobte barvu každé úrovně protokolu na panelu Výstup. INFO dědí barvu popředí aktivního tématu a nelze ji změnit.</value></data>
+  <data name="Output_WarnLabel" xml:space="preserve"><value>Upozornění (WARN):</value></data>
+  <data name="Output_ErrorLabel" xml:space="preserve"><value>Chyba (ERROR):</value></data>
+  <data name="Output_DebugLabel" xml:space="preserve"><value>Ladění (DEBUG):</value></data>
+  <data name="Output_SuccessLabel" xml:space="preserve"><value>Úspěch (OK):</value></data>
+  <data name="Output_ResetColors" xml:space="preserve"><value>Obnovit výchozí barvy</value></data>
+  <!-- PLUGIN DEV LOADER OPTIONS PAGE -->
+  <data name="PluginDev_Section" xml:space="preserve"><value>PLUGIN DEV LOADER</value></data>
+  <data name="PluginDev_Enable" xml:space="preserve"><value>Povolit Plugin Dev Loader (režim sledování dostupný ve Správci pluginů)</value></data>
+  <data name="PluginDev_DebounceSection" xml:space="preserve"><value>DEBOUNCE</value></data>
+  <data name="PluginDev_DebounceNote" xml:space="preserve"><value>Prodleva před spuštěním hot-reload po změně souboru (ms):</value></data>
+  <data name="PluginDev_DebounceDefault" xml:space="preserve"><value>ms  (výchozí: 500)</value></data>
+  <data name="PluginDev_WatchedSection" xml:space="preserve"><value>SLEDOVANÉ SLOŽKY</value></data>
+  <data name="PluginDev_WatchedNote" xml:space="preserve"><value>Další výstupní adresáře ke sledování (oddělené středníkem). Pluginy v těchto složkách jsou hot-reloaded při změně DLL.</value></data>
+  <data name="PluginDev_Browse" xml:space="preserve"><value>Procházet…</value></data>
+  <data name="PluginDev_Example" xml:space="preserve"><value>Příklad: C:\MyPlugin\bin\Debug\net8.0-windows;D:\AnotherPlugin\bin\Debug\net8.0-windows</value></data>
+  <!-- PLUGIN SYSTEM OPTIONS PAGE -->
+  <data name="Plugin_GeneralSection" xml:space="preserve"><value>OBECNÉ</value></data>
+  <data name="Plugin_AutoLoad" xml:space="preserve"><value>Automaticky načíst všechny nalezené pluginy při spuštění</value></data>
+  <data name="Plugin_PluginsDirNote" xml:space="preserve"><value>Další adresář pluginů (ponechte prázdné pro %AppData%\WpfHexEditor\Plugins):</value></data>
+  <data name="Plugin_Browse" xml:space="preserve"><value>Procházet…</value></data>
+  <data name="Plugin_WatchdogSection" xml:space="preserve"><value>WATCHDOG</value></data>
+  <data name="Plugin_EnableWatchdog" xml:space="preserve"><value>Povolit watchdog pluginů (monitoruje časové limity volání)</value></data>
+  <data name="Plugin_WatchdogTimeoutLabel" xml:space="preserve"><value>Časový limit watchdog (sekundy):</value></data>
+  <data name="Plugin_DiagnosticsSection" xml:space="preserve"><value>DIAGNOSTIKA &amp; VZORKOVÁNÍ</value></data>
+  <data name="Plugin_DiagSamplingLabel" xml:space="preserve"><value>Interval diagnostického vzorkování (sekundy):</value></data>
+  <data name="Plugin_DiagNote" xml:space="preserve"><value>Určuje frekvenci obnovení grafu CPU/Paměť monitoru pluginů.</value></data>
+  <data name="Plugin_SlowDetectionSection" xml:space="preserve"><value>DETEKCE POMALÝCH PLUGINŮ</value></data>
+  <data name="Plugin_MonitorIntervalLabel" xml:space="preserve"><value>Interval monitorování (sekundy):</value></data>
+  <data name="Plugin_ResponseTimeLabel" xml:space="preserve"><value>Prahová hodnota odezvy (ms):</value></data>
+  <data name="Plugin_CpuThresholdLabel" xml:space="preserve"><value>Prahová hodnota CPU (%):</value></data>
+  <data name="Plugin_MemoryAlertSection" xml:space="preserve"><value>PRAHOVÉ HODNOTY UPOZORNĚNÍ PAMĚTI</value></data>
+  <data name="Plugin_EnableMemoryAlerts" xml:space="preserve"><value>Povolit upozornění a odznaky využití paměti</value></data>
+  <data name="Plugin_ShowColorGradation" xml:space="preserve"><value>Zobrazit barevnou gradaci v monitorech (zelená/žlutá/oranžová/červená)</value></data>
+  <data name="Plugin_MemWarningLabel" xml:space="preserve"><value>⚠️ Prahová hodnota upozornění (žlutá):</value></data>
+  <data name="Plugin_MemHighLabel" xml:space="preserve"><value>🟠 Vysoká prahová hodnota (oranžová):</value></data>
+  <data name="Plugin_MemCriticalLabel" xml:space="preserve"><value>🔴 Kritická prahová hodnota (červená):</value></data>
+  <data name="Plugin_MB" xml:space="preserve"><value> MB</value></data>
+  <data name="Plugin_MemThresholdNote" xml:space="preserve"><value>Poznámka: Prahové hodnoty by měly být ve vzestupném pořadí (Upozornění &lt; Vysoká &lt; Kritická).</value></data>
+  <data name="Plugin_MemColorSection" xml:space="preserve"><value>BARVY UPOZORNĚNÍ PAMĚTI</value></data>
+  <data name="Plugin_MemColorNote" xml:space="preserve"><value>Přizpůsobte barvy odznaků pro každou úroveň prahové hodnoty paměti.</value></data>
+  <data name="Plugin_MemNormalColor" xml:space="preserve"><value>🟢 Normální prahová hodnota:</value></data>
+  <data name="Plugin_MemWarningColor" xml:space="preserve"><value>🟡 Prahová hodnota upozornění:</value></data>
+  <data name="Plugin_MemHighColor" xml:space="preserve"><value>🟠 Vysoká prahová hodnota:</value></data>
+  <data name="Plugin_MemCriticalColor" xml:space="preserve"><value>🔴 Kritická prahová hodnota:</value></data>
+  <data name="Plugin_ResetColors" xml:space="preserve"><value>Obnovit výchozí barvy</value></data>
+  <!-- SOLUTION EXPLORER OPTIONS PAGE -->
+  <data name="SolExp_NavigationSection" xml:space="preserve"><value>NAVIGACE</value></data>
+  <data name="SolExp_TrackActive" xml:space="preserve"><value>Automaticky zvýraznit aktivní dokument ve stromě</value></data>
+  <data name="SolExp_PersistCollapse" xml:space="preserve"><value>Pamatovat si rozbalený/sbalený stav mezi relacemi</value></data>
+  <data name="SolExp_NotificationsSection" xml:space="preserve"><value>OZNÁMENÍ</value></data>
+  <data name="SolExp_ShowNotifications" xml:space="preserve"><value>Zobrazit kontextová oznámení (externí změny, konflikty vkládání…)</value></data>
+  <data name="SolExp_DefaultsSection" xml:space="preserve"><value>VÝCHOZÍ HODNOTY PŘI OTEVŘENÍ ŘEŠENÍ</value></data>
+  <data name="SolExp_DefaultSortLabel" xml:space="preserve"><value>Výchozí řazení:</value></data>
+  <data name="SolExp_SortNone" xml:space="preserve"><value>Žádné</value></data>
+  <data name="SolExp_SortName" xml:space="preserve"><value>Název</value></data>
+  <data name="SolExp_SortType" xml:space="preserve"><value>Typ</value></data>
+  <data name="SolExp_SortDateModified" xml:space="preserve"><value>Datum úpravy</value></data>
+  <data name="SolExp_SortSize" xml:space="preserve"><value>Velikost</value></data>
+  <data name="SolExp_DefaultFilterLabel" xml:space="preserve"><value>Výchozí filtr:</value></data>
+  <data name="SolExp_FilterAll" xml:space="preserve"><value>Vše</value></data>
+  <data name="SolExp_FilterBinary" xml:space="preserve"><value>Binární</value></data>
+  <data name="SolExp_FilterText" xml:space="preserve"><value>Text</value></data>
+  <data name="SolExp_FilterImage" xml:space="preserve"><value>Obrázek</value></data>
+  <data name="SolExp_FilterLanguage" xml:space="preserve"><value>Jazyk</value></data>
+  <!-- TAB GROUPS OPTIONS PAGE -->
+  <data name="TabGroups_SplitSection" xml:space="preserve"><value>CHOVÁNÍ ROZDĚLENÍ</value></data>
+  <data name="TabGroups_EnforceEqualSize" xml:space="preserve"><value>Vynutit stejnou velikost podoken při rozdělení (50 / 50)</value></data>
+  <data name="TabGroups_MinWidthLabel" xml:space="preserve"><value>Minimální šířka podokna (px):</value></data>
+  <data name="TabGroups_MinHeightLabel" xml:space="preserve"><value>Minimální výška podokna (px):</value></data>
+  <data name="TabGroups_VisualSection" xml:space="preserve"><value>VIZUÁLNÍ</value></data>
+  <data name="TabGroups_ShowGroupBadge" xml:space="preserve"><value>Zobrazit odznak ‘Skupina N’ na liště karet při otevření více skupin</value></data>
+  <data name="TabGroups_PersistSection" xml:space="preserve"><value>TRVALOST</value></data>
+  <data name="TabGroups_PersistLayout" xml:space="preserve"><value>Zahrnout rozvržení skupin karet do ukládání pracovního prostoru</value></data>
+  <!-- TEXT EDITOR OPTIONS PAGE -->
+  <data name="TextOpt_FontSection" xml:space="preserve"><value>PÍSMO</value></data>
+  <data name="TextOpt_FontFamilyLabel" xml:space="preserve"><value>Rodina písma:</value></data>
+  <data name="TextOpt_FontSizeLabel" xml:space="preserve"><value>Velikost písma (pt):</value></data>
+  <data name="TextOpt_IndentSection" xml:space="preserve"><value>ODSAZENÍ</value></data>
+  <data name="TextOpt_IndentSizeLabel" xml:space="preserve"><value>Velikost odsazení:</value></data>
+  <data name="TextOpt_UseSpaces" xml:space="preserve"><value>Vkládat mezery místo tabulátorů</value></data>
+  <data name="TextOpt_FeaturesSection" xml:space="preserve"><value>FUNKCE</value></data>
+  <data name="TextOpt_ShowLineNumbers" xml:space="preserve"><value>Zobrazit čísla řádků</value></data>
+  <data name="TextOpt_ShowRefreshRate" xml:space="preserve"><value>Zobrazit frekvenci obnovení ve stavovém řádku (čas renderovacího snímku)</value></data>
+  <data name="TextOpt_WordWrap" xml:space="preserve"><value>Zalamování řádků (Alt+Z)</value></data>
+  <data name="TextOpt_ClickableLinks" xml:space="preserve"><value>Povolit Ctrl+klik pro otevření webových odkazů (http/https)</value></data>
+  <data name="TextOpt_ClickableEmails" xml:space="preserve"><value>Povolit Ctrl+klik pro vytvoření e-mailu</value></data>
+  <data name="TextOpt_DefaultZoomLabel" xml:space="preserve"><value>Výchozí zoom (%):</value></data>
+  <data name="TextOpt_MouseWheelLabel" xml:space="preserve"><value>Rychlost kolečka myši:</value></data>
+  <data name="TextOpt_ChangesetSection" xml:space="preserve"><value>SADA ZMĚN (.WHCHG)</value></data>
+  <data name="TextOpt_TrackEdits" xml:space="preserve"><value>Sledovat úpravy v doprovodném souboru .whchg (vyžaduje sledovaný režim ukládání)</value></data>
+  <data name="TextOpt_SyntaxSection" xml:space="preserve"><value>PŘEPISY BAREV SYNTAXE</value></data>
+  <data name="TextOpt_SyntaxNote" xml:space="preserve"><value>Povolte barvu pro přepsání výchozí hodnoty aktivního tématu.</value></data>
+  <data name="TextOpt_Background" xml:space="preserve"><value>Pozadí:</value></data>
+  <data name="TextOpt_Foreground" xml:space="preserve"><value>Popředí:</value></data>
+  <data name="TextOpt_Keyword" xml:space="preserve"><value>Klíčové slovo:</value></data>
+  <data name="TextOpt_String" xml:space="preserve"><value>Řetězec:</value></data>
+  <data name="TextOpt_Comment" xml:space="preserve"><value>Komentář:</value></data>
+  <data name="TextOpt_Number" xml:space="preserve"><value>Číslo:</value></data>
+  <data name="TextOpt_Type" xml:space="preserve"><value>Typ:</value></data>
+  <data name="TextOpt_Preprocessor" xml:space="preserve"><value>Preprocesor:</value></data>
+  <data name="TextOpt_Operator" xml:space="preserve"><value>Operátor:</value></data>
+  <data name="TextOpt_Identifier" xml:space="preserve"><value>Identifikátor:</value></data>
+
+  <!-- Options categories -->
+  <data name="Opt_Category_Environment"      xml:space="preserve"><value>Prostředí</value></data>
+  <data name="Opt_Category_HexEditor"        xml:space="preserve"><value>Hex editor</value></data>
+  <data name="Opt_Category_SolutionExplorer" xml:space="preserve"><value>Průzkumník řešení</value></data>
+  <data name="Opt_Category_CodeEditor"       xml:space="preserve"><value>Editor kódu</value></data>
+  <data name="Opt_Category_TextEditor"       xml:space="preserve"><value>Textový editor</value></data>
+  <data name="Opt_Category_PluginSystem"     xml:space="preserve"><value>Systém pluginů</value></data>
+  <data name="Opt_Category_BuildRun"         xml:space="preserve"><value>Sestavit a spustit</value></data>
+  <data name="Opt_Category_Debugger"         xml:space="preserve"><value>Ladicí program</value></data>
+  <data name="Opt_Category_Extensions"       xml:space="preserve"><value>Rozšíření</value></data>
+  <data name="Opt_Category_FormatEditor"     xml:space="preserve"><value>Editor formátů (.whfmt)</value></data>
+  <data name="Opt_Category_Tools"            xml:space="preserve"><value>Nástroje</value></data>
+
+  <!-- Options page names -->
+  <data name="Opt_Page_General"              xml:space="preserve"><value>Obecné</value></data>
+  <data name="Opt_Page_Save"                 xml:space="preserve"><value>Ukládání</value></data>
+  <data name="Opt_Page_Output"               xml:space="preserve"><value>Výstup</value></data>
+  <data name="Opt_Page_TabGroups"            xml:space="preserve"><value>Skupiny karet</value></data>
+  <data name="Opt_Page_KeyboardShortcuts"    xml:space="preserve"><value>Klávesové zkratky</value></data>
+  <data name="Opt_Page_Documents"            xml:space="preserve"><value>Dokumenty</value></data>
+  <data name="Opt_Page_Workspace"            xml:space="preserve"><value>Pracovní prostor</value></data>
+  <data name="Opt_Page_Tabs"                 xml:space="preserve"><value>Karty</value></data>
+  <data name="Opt_Page_Layout"               xml:space="preserve"><value>Rozvržení</value></data>
+  <data name="Opt_Page_Docking"              xml:space="preserve"><value>Ukotvení</value></data>
+  <data name="Opt_Page_ViewMenu"             xml:space="preserve"><value>Nabídka Zobrazení</value></data>
+  <data name="Opt_Page_Display"              xml:space="preserve"><value>Zobrazení</value></data>
+  <data name="Opt_Page_Editing"              xml:space="preserve"><value>Úpravy</value></data>
+  <data name="Opt_Page_StatusBar"            xml:space="preserve"><value>Stavový řádek</value></data>
+  <data name="Opt_Page_Behavior"             xml:space="preserve"><value>Chování</value></data>
+  <data name="Opt_Page_AppearanceColors"     xml:space="preserve"><value>Vzhled a barvy</value></data>
+  <data name="Opt_Page_InlineHints"          xml:space="preserve"><value>Integrované rady</value></data>
+  <data name="Opt_Page_Navigation"           xml:space="preserve"><value>Navigace</value></data>
+  <data name="Opt_Page_Formatting"           xml:space="preserve"><value>Formátování</value></data>
+  <data name="Opt_Page_Features"             xml:space="preserve"><value>Funkce</value></data>
+  <data name="Opt_Page_LanguageServers"      xml:space="preserve"><value>Jazykové servery</value></data>
+  <data name="Opt_Page_Markdown"             xml:space="preserve"><value>Markdown</value></data>
+  <data name="Opt_Page_Development"          xml:space="preserve"><value>Vývoj</value></data>
+  <data name="Opt_Page_Migration"            xml:space="preserve"><value>Migrace</value></data>
+  <data name="Opt_Page_EventBus"             xml:space="preserve"><value>Sběrnice událostí</value></data>
+  <data name="Opt_Page_Compiler"             xml:space="preserve"><value>Kompilátor</value></data>
+  <data name="Opt_Page_Breakpoints"          xml:space="preserve"><value>Zarážky</value></data>
+  <data name="Opt_Page_Marketplace"          xml:space="preserve"><value>Marketplace</value></data>
+  <data name="Opt_Page_FormatExplorer"       xml:space="preserve"><value>Průzkumník formátů</value></data>
+  <data name="Opt_Page_CompareFiles"         xml:space="preserve"><value>Porovnání souborů</value></data>
+  <data name="Opt_Page_CommandPalette"       xml:space="preserve"><value>Paleta příkazů</value></data>
+
+  <!-- Plugin System Options Page — folder picker dialog -->
+  <data name="Opt_Plugin_SelectExtDir"       xml:space="preserve"><value>Vybrat adresář dalších rozšíření</value></data>
+
+  <!-- Plugin Dev Loader Options Page — folder picker dialog -->
+  <data name="Opt_PluginDev_SelectOutputDir" xml:space="preserve"><value>Vybrat výstupní adresář rozšíření</value></data>
+
+  <!-- Whfmt Explorer Options Page — view mode combo -->
+  <data name="Opt_ViewMode_Tree"             xml:space="preserve"><value>Stromové zobrazení</value></data>
+  <data name="Opt_ViewMode_Flat"             xml:space="preserve"><value>Ploché</value></data>
+
+  <!-- Structure Editor Options Page — panel position combo -->
+  <data name="Opt_Position_Right"            xml:space="preserve"><value>Vpravo</value></data>
+  <data name="Opt_Position_Left"             xml:space="preserve"><value>Vlevo</value></data>
+  <data name="Opt_Position_Bottom"           xml:space="preserve"><value>Dole</value></data>
+  <data name="Opt_Position_Top"              xml:space="preserve"><value>Nahoře</value></data>
+
+  <!-- Structure Editor Options Page — endianness combo -->
+  <data name="Opt_Endian_Little"             xml:space="preserve"><value>little-endian</value></data>
+  <data name="Opt_Endian_Big"                xml:space="preserve"><value>big-endian</value></data>
+
+  <!-- Code Editor Formatting Page — indentation levels combo -->
+  <data name="Opt_IndentLevel_1"             xml:space="preserve"><value>1 úroveň (4 mezery v kořenu)</value></data>
+  <data name="Opt_IndentLevel_2"             xml:space="preserve"><value>2 úrovně (8 mezer v kořenu) — výchozí VS</value></data>
+  <data name="Opt_IndentLevel_3"             xml:space="preserve"><value>3 úrovně (12 mezer v kořenu)</value></data>
+
+  <!-- Markdown Editor Options Page — layout combo -->
+  <data name="Opt_MdLayout_PreviewRight"     xml:space="preserve"><value>Náhled vpravo</value></data>
+  <data name="Opt_MdLayout_PreviewBottom"    xml:space="preserve"><value>Náhled dole</value></data>
+  <data name="Opt_MdLayout_EditorOnly"       xml:space="preserve"><value>Pouze editor</value></data>
+  <data name="Opt_MdLayout_PreviewOnly"      xml:space="preserve"><value>Pouze náhled</value></data>
+  <data name="Opt_Preview_Label"             xml:space="preserve"><value>Náhled</value></data>
+  <data name="BuildCompiler_CSharpSection" xml:space="preserve"><value>VÝCHOZÍ HODNOTY C# / .NET</value></data>
+  <data name="BuildCompiler_NullableCheck" xml:space="preserve"><value>Zpracovat upozornění nullable jako chyby (C# 8+)</value></data>
+  <data name="BuildCompiler_ImplicitUsings" xml:space="preserve"><value>Povolit implicitní using (C# 10+)</value></data>
+  <data name="BuildCompiler_GenerateDocs" xml:space="preserve"><value>Generovat soubor XML dokumentace</value></data>
+  <data name="BuildCompiler_WarningsSection" xml:space="preserve"><value>UPOZORNĚNÍ</value></data>
+  <data name="BuildCompiler_WarnLevelLabel" xml:space="preserve"><value>Výchozí úroveň upozornění (0–9):</value></data>
+  <data name="BuildRun_GeneralSection" xml:space="preserve"><value>OBECNÉ</value></data>
+  <data name="BuildRun_SaveBeforeBuild" xml:space="preserve"><value>Uložit všechny změny před sestavením</value></data>
+  <data name="BuildRun_VerbosityLabel" xml:space="preserve"><value>Podrobnost výstupu sestavení:</value></data>
+  <data name="BuildRun_VerbQuiet" xml:space="preserve"><value>Tiché</value></data>
+  <data name="BuildRun_VerbMinimal" xml:space="preserve"><value>Minimální</value></data>
+  <data name="BuildRun_VerbNormal" xml:space="preserve"><value>Normální</value></data>
+  <data name="BuildRun_VerbDetailed" xml:space="preserve"><value>Podrobné</value></data>
+  <data name="BuildRun_VerbDiagnostic" xml:space="preserve"><value>Diagnostické</value></data>
+  <data name="BuildRun_RunInProcess" xml:space="preserve"><value>Spustit MSBuild v procesu (rychlejší, doporučeno)</value></data>
+  <data name="BuildRun_MaxParallelLabel" xml:space="preserve"><value>Max. počet paralelních sestavení:</value></data>
+  <data name="BuildRun_OutputSection" xml:space="preserve"><value>OKNO VÝSTUPU</value></data>
+  <data name="BuildRun_ShowOnStart" xml:space="preserve"><value>Zobrazit okno výstupu při spuštění sestavení</value></data>
+  <data name="BuildRun_ShowOnError" xml:space="preserve"><value>Zobrazit okno výstupu při chybě sestavení</value></data>
+  <data name="BuildRun_RunSection" xml:space="preserve"><value>SPUSTIT</value></data>
+  <data name="BuildRun_OnRunBuildErrorLabel" xml:space="preserve"><value>Při spuštění, pokud dojde k chybám sestavení:</value></data>
+  <data name="BuildRun_DoNotLaunch" xml:space="preserve"><value>Nespouštět</value></data>
+  <data name="BuildRun_Launch" xml:space="preserve"><value>Spustit</value></data>
+  <data name="BuildRun_ShowOutputOnRun" xml:space="preserve"><value>Zobrazit okno výstupu při spuštění</value></data>
+  <data name="CodeInlineHints_Section" xml:space="preserve"><value>INTEGROVANÉ RADY</value></data>
+  <data name="CodeInlineHints_EnableHints" xml:space="preserve"><value>Povolit integrované rady (zobrazovat počty odkazů nad deklaracemi)</value></data>
+  <data name="CodeInlineHints_SourceLabel" xml:space="preserve"><value>Zdroj referencí:</value></data>
+  <data name="CodeInlineHints_SourceAuto" xml:space="preserve"><value>Automaticky (Roslyn pokud dostupný, jinak regex)</value></data>
+  <data name="CodeInlineHints_SourceRoslyn" xml:space="preserve"><value>Pouze Roslyn (C# / VB.NET)</value></data>
+  <data name="CodeInlineHints_SourceRegex" xml:space="preserve"><value>Vždy regex</value></data>
+  <data name="CodeInlineHints_RoslynSection" xml:space="preserve"><value>SÉMANTICKÉ RADY ROSLYN (C# / VB.NET)</value></data>
+  <data name="CodeInlineHints_RoslynNote" xml:space="preserve"><value>Zobrazovat odvozené typy a návratové typy inline, pokud je Roslyn aktivním jazykovým klientem.</value></data>
+  <data name="CodeInlineHints_ShowVarType" xml:space="preserve"><value>Zobrazit odvozený typ pro deklarace var (např. var x = … → : List&amp;lt;int&amp;gt;)</value></data>
+  <data name="CodeInlineHints_ShowLambdaReturn" xml:space="preserve"><value>Zobrazit návratový typ pro lambda výrazy (např. x =&amp;gt; x * 2 → int)</value></data>
+  <data name="CodeInlineHints_KindsSection" xml:space="preserve"><value>ZOBRAZIT RADY PRO TYPY SYMBOLŮ:</value></data>
+  <data name="CodeInlineHints_KindsNote" xml:space="preserve"><value>Zrušte zaškrtnutí typu pro skrytí jeho rad počtu odkazů při zachování rad pro ostatní.</value></data>
+  <data name="CodeInlineHints_TypesGroup" xml:space="preserve"><value>Typy</value></data>
+  <data name="CodeInlineHints_Class" xml:space="preserve"><value>Třída</value></data>
+  <data name="CodeInlineHints_Interface" xml:space="preserve"><value>Rozhraní</value></data>
+  <data name="CodeInlineHints_Struct" xml:space="preserve"><value>Struktura</value></data>
+  <data name="CodeInlineHints_Enum" xml:space="preserve"><value>Výčet</value></data>
+  <data name="CodeInlineHints_Record" xml:space="preserve"><value>Záznam</value></data>
+  <data name="CodeInlineHints_Delegate" xml:space="preserve"><value>Delegát</value></data>
+  <data name="CodeInlineHints_MembersGroup" xml:space="preserve"><value>Členové</value></data>
+  <data name="CodeInlineHints_Method" xml:space="preserve"><value>Metoda</value></data>
+  <data name="CodeInlineHints_Constructor" xml:space="preserve"><value>Konstruktor</value></data>
+  <data name="CodeInlineHints_Property" xml:space="preserve"><value>Vlastnost</value></data>
+  <data name="CodeInlineHints_Field" xml:space="preserve"><value>Pole</value></data>
+  <data name="CodeInlineHints_Event" xml:space="preserve"><value>Událost</value></data>
+  <data name="CodeInlineHints_OtherGroup" xml:space="preserve"><value>Ostatní</value></data>
+  <data name="CodeInlineHints_LocalVar" xml:space="preserve"><value>Lokální proměnná</value></data>
+  <data name="CodeInlineHints_Parameter" xml:space="preserve"><value>Parametr</value></data>
+  <data name="CodeInlineHints_TypeParam" xml:space="preserve"><value>Typový parametr</value></data>
+  <data name="CodeInlineHints_Namespace" xml:space="preserve"><value>Obor názvů</value></data>
+  <data name="CodeInlineHints_SelectAll" xml:space="preserve"><value>Vybrat vše</value></data>
+  <data name="CodeInlineHints_ClearAll" xml:space="preserve"><value>Vymazat vše</value></data>
+  <data name="CodeOpt_FontSection" xml:space="preserve"><value>PÍSMO</value></data>
+  <data name="CodeOpt_FontFamilyLabel" xml:space="preserve"><value>Rodina písma:</value></data>
+  <data name="CodeOpt_FontSizeLabel" xml:space="preserve"><value>Velikost písma (pt):</value></data>
+  <data name="CodeOpt_IndentSection" xml:space="preserve"><value>ODSAZENÍ</value></data>
+  <data name="CodeOpt_IndentSizeLabel" xml:space="preserve"><value>Velikost odsazení:</value></data>
+  <data name="CodeOpt_UseSpaces" xml:space="preserve"><value>Vkládat mezery místo tabulátorů</value></data>
+  <data name="CodeOpt_FeaturesSection" xml:space="preserve"><value>FUNKCE</value></data>
+  <data name="CodeOpt_ShowLineNumbers" xml:space="preserve"><value>Zobrazit čísla řádků</value></data>
+  <data name="CodeOpt_HighlightCurrentLine" xml:space="preserve"><value>Zvýraznit aktuální řádek</value></data>
+  <data name="CodeOpt_CtrlClickLinks" xml:space="preserve"><value>Povolit Ctrl+klik pro přechod na definici / otevření odkazů</value></data>
+  <data name="CodeOpt_DefaultZoomLabel" xml:space="preserve"><value>Výchozí zoom (%):</value></data>
+  <data name="CodeOpt_MouseWheelLabel" xml:space="preserve"><value>Rychlost kolečka myši:</value></data>
+  <data name="CodeOpt_ChangesetSection" xml:space="preserve"><value>SADA ZMĚN (.WHCHG)</value></data>
+  <data name="CodeOpt_TrackEdits" xml:space="preserve"><value>Sledovat úpravy v doprovodném souboru .whchg (vyžaduje sledovaný režim ukládání)</value></data>
+  <data name="CodeOpt_SyntaxSection" xml:space="preserve"><value>PŘEPISY BAREV SYNTAXE</value></data>
+  <data name="CodeOpt_SyntaxNote" xml:space="preserve"><value>Povolte barvu pro přepsání výchozí hodnoty aktivního tématu.</value></data>
+  <data name="CodeOpt_Background" xml:space="preserve"><value>Pozadí:</value></data>
+  <data name="CodeOpt_Foreground" xml:space="preserve"><value>Popředí:</value></data>
+  <data name="CodeOpt_Keyword" xml:space="preserve"><value>Klíčové slovo:</value></data>
+  <data name="CodeOpt_String" xml:space="preserve"><value>Řetězec:</value></data>
+  <data name="CodeOpt_Comment" xml:space="preserve"><value>Komentář:</value></data>
+  <data name="CodeOpt_Number" xml:space="preserve"><value>Číslo:</value></data>
+  <data name="CodeOpt_Type" xml:space="preserve"><value>Typ:</value></data>
+  <data name="CodeOpt_Preprocessor" xml:space="preserve"><value>Preprocesor:</value></data>
+  <data name="CodeOpt_Operator" xml:space="preserve"><value>Operátor:</value></data>
+  <data name="CodeOpt_Identifier" xml:space="preserve"><value>Identifikátor:</value></data>
+  <data name="CodeOpt_ResetColors" xml:space="preserve"><value>Obnovit výchozí barvy tématu</value></data>
+  <data name="EnvSave_SaveModeSection" xml:space="preserve"><value>Režim ukládání</value></data>
+  <data name="EnvSave_DirectMode" xml:space="preserve"><value>Přímý režim</value></data>
+  <data name="EnvSave_TrackedMode" xml:space="preserve"><value>Sledovaný režim</value></data>
+  <data name="EnvSave_AutoSaveSection" xml:space="preserve"><value>Automatické ukládání</value></data>
+  <data name="EnvSave_AutoSerialize" xml:space="preserve"><value>Povolit automatické ukládání</value></data>
+  <data name="EnvSave_IntervalLabel" xml:space="preserve"><value>Interval (sekundy)</value></data>
+  <data name="EnvSave_StandaloneSection" xml:space="preserve"><value>Samostatný režim</value></data>
+  <data name="EnvSave_StandaloneNote" xml:space="preserve"><value>V samostatném režimu každý editor řídí způsob ukládání.</value></data>
+  <data name="EnvSave_HexEditorDirect" xml:space="preserve"><value>Hex editor: Přímý režim</value></data>
+  <data name="EnvSave_CodeEditorDirect" xml:space="preserve"><value>Editor kódu: Přímý režim</value></data>
+  <data name="EnvSave_TextEditorDirect" xml:space="preserve"><value>Textový editor: Přímý režim</value></data>
+  <data name="EnvSave_TblEditorDirect" xml:space="preserve"><value>TBL editor: Přímý režim</value></data>
+  <data name="EnvSave_ImageViewerDirect" xml:space="preserve"><value>Prohlížeč obrázků: Přímý režim</value></data>
+  <data name="EnvSave_SaveAsNote" xml:space="preserve"><value>„Uložit jako" vyžaduje výběr nové cesty.</value></data>
+  <data name="HexBehavior_Section" xml:space="preserve"><value>Chování Hex editoru</value></data>
+  <data name="HexBehavior_AllowAutoHighLight" xml:space="preserve"><value>Povolit automatické zvýraznění</value></data>
+  <data name="HexBehavior_AllowAutoSelectDoubleClick" xml:space="preserve"><value>Automatický výběr dvojklikem</value></data>
+  <data name="HexBehavior_AllowContextMenu" xml:space="preserve"><value>Povolit kontextové menu</value></data>
+  <data name="HexBehavior_AllowDeleteByte" xml:space="preserve"><value>Povolit mazání bajtů</value></data>
+  <data name="HexBehavior_AllowExtend" xml:space="preserve"><value>Povolit rozšíření</value></data>
+  <data name="HexBehavior_FileDroppingConfirmation" xml:space="preserve"><value>Potvrzení při přetažení souboru</value></data>
+  <data name="HexBehavior_PreloadModeLabel" xml:space="preserve"><value>Režim předběžného načítání</value></data>
+  <data name="HexDisplay_DisplaySection" xml:space="preserve"><value>Nastavení zobrazení</value></data>
+  <data name="HexDisplay_BytesPerLineLabel" xml:space="preserve"><value>Bajty na řádek</value></data>
+  <data name="HexDisplay_ShowOffset" xml:space="preserve"><value>Zobrazit offset</value></data>
+  <data name="HexDisplay_ShowAscii" xml:space="preserve"><value>Zobrazit sloupec ASCII</value></data>
+  <data name="HexDisplay_MouseWheelLabel" xml:space="preserve"><value>Kolečko myši</value></data>
+  <data name="HexDisplay_ByteTooltipLabel" xml:space="preserve"><value>Popisek bajtu</value></data>
+  <data name="HexDisplay_FormatSection" xml:space="preserve"><value>Formát</value></data>
+  <data name="HexDisplay_ValueFormatLabel" xml:space="preserve"><value>Formát hodnoty</value></data>
+  <data name="HexDisplay_OffsetFormatLabel" xml:space="preserve"><value>Formát offsetu</value></data>
+  <data name="HexDisplay_ByteGroupingLabel" xml:space="preserve"><value>Seskupení bajtů</value></data>
+  <data name="HexDisplay_SpacerPositionLabel" xml:space="preserve"><value>Pozice oddělovače</value></data>
+  <data name="HexDisplay_ScrollMarkersSection" xml:space="preserve"><value>Značky posouvání</value></data>
+  <data name="HexDisplay_ShowBookmarkMarkers" xml:space="preserve"><value>Zobrazit značky záložek</value></data>
+  <data name="HexDisplay_ShowModifiedMarkers" xml:space="preserve"><value>Zobrazit značky úprav</value></data>
+  <data name="HexDisplay_ShowInsertedMarkers" xml:space="preserve"><value>Zobrazit značky vložení</value></data>
+  <data name="HexDisplay_ShowDeletedMarkers" xml:space="preserve"><value>Zobrazit značky smazání</value></data>
+  <data name="HexDisplay_ShowSearchResultMarkers" xml:space="preserve"><value>Zobrazit značky výsledků hledání</value></data>
+  <data name="HexDisplay_ColumnRowSection" xml:space="preserve"><value>Zvýraznění sloupců a řádků</value></data>
+  <data name="HexDisplay_ShowColumnHighlight" xml:space="preserve"><value>Zobrazit zvýraznění sloupce</value></data>
+  <data name="HexDisplay_ShowAsciiColumnHighlight" xml:space="preserve"><value>Zobrazit zvýraznění sloupce ASCII</value></data>
+  <data name="HexDisplay_ShowRowHighlight" xml:space="preserve"><value>Zobrazit zvýraznění řádku</value></data>
+  <data name="HexEdit_EditingSection" xml:space="preserve"><value>Nastavení úprav</value></data>
+  <data name="HexEdit_DefaultEditModeLabel" xml:space="preserve"><value>Výchozí režim úprav</value></data>
+  <data name="HexEdit_MouseWheelLabel" xml:space="preserve"><value>Kolečko myši</value></data>
+  <data name="HexEdit_AllowZoom" xml:space="preserve"><value>Povolit zoom</value></data>
+  <data name="HexEdit_AllowFileDrop" xml:space="preserve"><value>Povolit přetažení souboru</value></data>
+  <data name="HexEdit_DataSection" xml:space="preserve"><value>Nastavení dat</value></data>
+  <data name="HexEdit_ByteSizeLabel" xml:space="preserve"><value>Velikost bajtu</value></data>
+  <data name="HexEdit_ByteOrderLabel" xml:space="preserve"><value>Pořadí bajtů</value></data>
+  <data name="HexEdit_DefaultCopyFormatLabel" xml:space="preserve"><value>Výchozí formát kopírování</value></data>
+  <data name="HexEdit_SpacerVisualLabel" xml:space="preserve"><value>Vzhled oddělovače</value></data>
+  <data name="HexStatus_Section" xml:space="preserve"><value>Stavový řádek</value></data>
+  <data name="HexStatus_ShowStatusMessage" xml:space="preserve"><value>Zobrazit stavovou zprávu</value></data>
+  <data name="HexStatus_ShowFileSize" xml:space="preserve"><value>Zobrazit velikost souboru</value></data>
+  <data name="HexStatus_ShowSelection" xml:space="preserve"><value>Zobrazit výběr</value></data>
+  <data name="HexStatus_ShowPosition" xml:space="preserve"><value>Zobrazit pozici</value></data>
+  <data name="HexStatus_ShowEditMode" xml:space="preserve"><value>Zobrazit režim úprav</value></data>
+  <data name="HexStatus_ShowBytesPerLine" xml:space="preserve"><value>Zobrazit bajty na řádek</value></data>
+  <data name="HexStatus_ShowRefreshRate" xml:space="preserve"><value>Zobrazit frekvenci obnovení</value></data>
+</root>

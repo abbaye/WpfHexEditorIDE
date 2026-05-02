@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="BookmarksPanel_RefreshToolTip" xml:space="preserve"><value>Reîmprospătare marcaje</value></data>
+  <data name="BookmarksPanel_ClearAllToolTip" xml:space="preserve"><value>Ștergere toate marcajele</value></data>
+  <data name="BookmarksPanel_EmptyCount" xml:space="preserve"><value>0 marcaje</value></data>
+  <data name="BookmarksPanel_OffsetHeader" xml:space="preserve"><value>Offset</value></data>
+  <data name="BookmarksPanel_DescriptionHeader" xml:space="preserve"><value>Descriere</value></data>
+  <data name="BookmarksPanel_CategoryHeader" xml:space="preserve"><value>Categorie</value></data>
+  <data name="BookmarksPanel_EmptyMessage" xml:space="preserve"><value>Niciun marcaj. Apăsați Ctrl+F2 pentru a activa/dezactiva un marcaj în editorul activ.</value></data>
+  <data name="ErrorPanel_ScopeEntireSolution" xml:space="preserve"><value>Întreaga soluție</value></data>
+  <data name="ErrorPanel_ScopeCurrentProject" xml:space="preserve"><value>Proiectul curent</value></data>
+  <data name="ErrorPanel_ScopeCurrentDocument" xml:space="preserve"><value>Documentul curent</value></data>
+  <data name="ErrorPanel_ScopeOpenDocuments" xml:space="preserve"><value>Documente deschise</value></data>
+  <data name="ErrorPanel_ScopeChangedDocuments" xml:space="preserve"><value>Documente modificate</value></data>
+  <data name="ErrorPanel_OverflowButtonToolTip" xml:space="preserve"><value>Mai multe opțiuni</value></data>
+  <data name="ErrorPanel_ShowErrorsMenu" xml:space="preserve"><value>Afișare erori</value></data>
+  <data name="ErrorPanel_ShowWarningsMenu" xml:space="preserve"><value>Afișare avertizări</value></data>
+  <data name="ErrorPanel_ShowMessagesMenu" xml:space="preserve"><value>Afișare mesaje</value></data>
+  <data name="ErrorPanel_SearchPlaceholder" xml:space="preserve"><value>Căutare...</value></data>
+  <data name="ErrorPanel_ErrorToggleToolTip" xml:space="preserve"><value>Afișare/ascundere erori</value></data>
+  <data name="ErrorPanel_ErrorCountText" xml:space="preserve"><value>0 erori</value></data>
+  <data name="ErrorPanel_WarningToggleToolTip" xml:space="preserve"><value>Afișare/ascundere avertizări</value></data>
+  <data name="ErrorPanel_WarningCountText" xml:space="preserve"><value>0 avertizări</value></data>
+  <data name="ErrorPanel_MessageToggleToolTip" xml:space="preserve"><value>Afișare/ascundere mesaje</value></data>
+  <data name="ErrorPanel_MessageCountText" xml:space="preserve"><value>0 mesaje</value></data>
+  <data name="ErrorPanel_CodeHeader" xml:space="preserve"><value>Cod</value></data>
+  <data name="ErrorPanel_DescriptionHeader" xml:space="preserve"><value>Descriere</value></data>
+  <data name="ErrorPanel_ProjectHeader" xml:space="preserve"><value>Proiect</value></data>
+  <data name="ErrorPanel_FileHeader" xml:space="preserve"><value>Fișier</value></data>
+  <data name="ErrorPanel_OffsetHeader" xml:space="preserve"><value>Offset</value></data>
+  <data name="ErrorPanel_LineColHeader" xml:space="preserve"><value>Linie:Col</value></data>
+  <data name="PropertiesPanel_ContextLabel" xml:space="preserve"><value>Proprietăți</value></data>
+  <data name="PropertiesPanel_RefreshToolTip" xml:space="preserve"><value>Reîmprospătare proprietăți</value></data>
+  <data name="PropertiesPanel_OverflowToolTip" xml:space="preserve"><value>Mai multe opțiuni</value></data>
+  <data name="PropertiesPanel_SortAlphabetically" xml:space="preserve"><value>Sortare alfabetică</value></data>
+  <data name="PropertiesPanel_CopyValue" xml:space="preserve"><value>Copiere valoare</value></data>
+  <data name="PropertiesPanel_SortToggleToolTip" xml:space="preserve"><value>Sortare proprietăți alfabetic</value></data>
+  <data name="PropertiesPanel_CopyButtonToolTip" xml:space="preserve"><value>Copiere valoare proprietate selectată</value></data>
+  <data name="PropertiesPanel_SearchPlaceholder" xml:space="preserve"><value>Filtrare proprietăți…</value></data>
+  <data name="PropertiesPanel_OpenFolderToolTip" xml:space="preserve"><value>Deschidere dosar în Explorer</value></data>
+  <data name="PropertiesPanel_ThicknessLeft" xml:space="preserve"><value>Stânga</value></data>
+  <data name="PropertiesPanel_ThicknessTop" xml:space="preserve"><value>Sus</value></data>
+  <data name="PropertiesPanel_ThicknessRight" xml:space="preserve"><value>Dreapta</value></data>
+  <data name="PropertiesPanel_ThicknessBottom" xml:space="preserve"><value>Jos</value></data>
+  <data name="PropertiesPanel_ThicknessLLabel" xml:space="preserve"><value>S</value></data>
+  <data name="PropertiesPanel_ThicknessTLabel" xml:space="preserve"><value>V</value></data>
+  <data name="PropertiesPanel_ThicknessRLabel" xml:space="preserve"><value>D</value></data>
+  <data name="PropertiesPanel_ThicknessBLabel" xml:space="preserve"><value>J</value></data>
+  <data name="PropertiesPanel_ContextMenu_CopyValue" xml:space="preserve"><value>Copiere valoare</value></data>
+  <data name="PropertiesPanel_ContextMenu_CopyName" xml:space="preserve"><value>Copiere nume</value></data>
+  <data name="PropertiesPanel_ResetToDefaultToolTip" xml:space="preserve"><value>Resetare la valoarea implicită</value></data>
+  <data name="SolutionExplorer_ShowAllFilesToolTip" xml:space="preserve"><value>Afișare toate fișierele</value></data>
+  <data name="SolutionExplorer_CollapseAllToolTip" xml:space="preserve"><value>Restrângere tot</value></data>
+  <data name="SolutionExplorer_SyncWithActiveDocToolTip" xml:space="preserve"><value>Sincronizare cu documentul activ</value></data>
+  <data name="SolutionExplorer_RefreshToolTip" xml:space="preserve"><value>Reîmprospătare</value></data>
+  <data name="SolutionExplorer_SortToolTip" xml:space="preserve"><value>Sortare</value></data>
+  <data name="SolutionExplorer_SortNone" xml:space="preserve"><value>Niciunul</value></data>
+  <data name="SolutionExplorer_SortName" xml:space="preserve"><value>Nume</value></data>
+  <data name="SolutionExplorer_SortType" xml:space="preserve"><value>Tip</value></data>
+  <data name="SolutionExplorer_SortDateModified" xml:space="preserve"><value>Data modificării</value></data>
+  <data name="SolutionExplorer_SortSize" xml:space="preserve"><value>Dimensiune</value></data>
+  <data name="SolutionExplorer_FilterToolTip" xml:space="preserve"><value>Filtrare</value></data>
+  <data name="SolutionExplorer_FilterAll" xml:space="preserve"><value>Toate</value></data>
+  <data name="SolutionExplorer_FilterBinary" xml:space="preserve"><value>Binar</value></data>
+  <data name="SolutionExplorer_FilterText" xml:space="preserve"><value>Text</value></data>
+  <data name="SolutionExplorer_FilterImages" xml:space="preserve"><value>Imagini</value></data>
+  <data name="SolutionExplorer_FilterLanguage" xml:space="preserve"><value>Limbaj</value></data>
+  <data name="SolutionExplorer_SearchPlaceholder" xml:space="preserve"><value>Căutare în Exploratorul soluției (Ctrl+;)</value></data>
+  <data name="SolutionExplorer_SearchModeFileName" xml:space="preserve"><value>Nume fișier</value></data>
+  <data name="SolutionExplorer_SearchModeNameContent" xml:space="preserve"><value>Nume + Conținut</value></data>
+  <data name="SolutionExplorer_SearchModeContentOnly" xml:space="preserve"><value>Doar conținut</value></data>
+  <data name="SolutionExplorer_SearchModeRegex" xml:space="preserve"><value>Regex (nume fișier)</value></data>
+  <data name="SolutionExplorer_SolutionFolderTooltip" xml:space="preserve"><value>Dosar soluție (logic)</value></data>
+  <data name="SolutionExplorer_PhysicalFolderTooltip" xml:space="preserve"><value>Dosar fizic</value></data>
+  <data name="SolutionExplorer_PropertiesFolderTooltip" xml:space="preserve"><value>Dosar proprietăți</value></data>
+  <data name="SolutionExplorer_BuildDirtyIndicator" xml:space="preserve"><value>Proiectul are modificări de la ultima compilare (Ctrl+Alt+F7 pentru compilare)</value></data>
+  <data name="SolutionExplorer_UnsavedModifications" xml:space="preserve"><value>Modificări nesalvate</value></data>
+  <data name="SolutionExplorer_ExternalFileIndicator" xml:space="preserve"><value>Fișierul este în afara directorului proiectului</value></data>
+  <data name="SolutionExplorer_ExternalModIndicator" xml:space="preserve"><value>Modificat extern — reîncărcare recomandată</value></data>
+  <data name="SolutionExplorer_LoadingIndicator" xml:space="preserve"><value>Se încarcă…</value></data>
+  <data name="SolutionExplorer_GoToDefinition" xml:space="preserve"><value>Salt la definiție</value></data>
+  <data name="SolutionExplorer_Open" xml:space="preserve"><value>Deschidere</value></data>
+  <data name="SolutionExplorer_OpenWith" xml:space="preserve"><value>Deschidere cu</value></data>
+  <data name="SolutionExplorer_OpenWithHexEditor" xml:space="preserve"><value>Editor hexazecimal</value></data>
+  <data name="SolutionExplorer_Add" xml:space="preserve"><value>Adăugare</value></data>
+  <data name="SolutionExplorer_AddNewItem" xml:space="preserve"><value>Adăugare element nou...</value></data>
+  <data name="SolutionExplorer_AddExistingItem" xml:space="preserve"><value>Adăugare element existent...</value></data>
+  <data name="SolutionExplorer_ImportFormat" xml:space="preserve"><value>Importare format încorporat...</value></data>
+  <data name="SolutionExplorer_ImportSyntax" xml:space="preserve"><value>Importare sintaxă încorporată...</value></data>
+  <data name="SolutionExplorer_NewFolder" xml:space="preserve"><value>Dosar nou</value></data>
+  <data name="SolutionExplorer_NewSolutionFolder" xml:space="preserve"><value>Dosar soluție nou</value></data>
+  <data name="SolutionExplorer_AddExistingFolder" xml:space="preserve"><value>Adăugare dosar existent...</value></data>
+  <data name="SolutionExplorer_IncludeInProject" xml:space="preserve"><value>Includere în proiect</value></data>
+  <data name="SolutionExplorer_SetDefaultTbl" xml:space="preserve"><value>Setare ca TBL implicit</value></data>
+  <data name="SolutionExplorer_ClearDefaultTbl" xml:space="preserve"><value>Ștergere TBL implicit</value></data>
+  <data name="SolutionExplorer_ConvertToTblx" xml:space="preserve"><value>Conversie în TBLX...</value></data>
+  <data name="SolutionExplorer_ApplyTblToActive" xml:space="preserve"><value>Aplicare la documentul activ</value></data>
+  <data name="SolutionExplorer_ApplyTblToAll" xml:space="preserve"><value>Aplicare la toate documentele</value></data>
+  <data name="SolutionExplorer_OpenInExplorer" xml:space="preserve"><value>Deschidere în Explorer</value></data>
+  <data name="SolutionExplorer_CopyPath" xml:space="preserve"><value>Copiere cale</value></data>
+  <data name="SolutionExplorer_Copy" xml:space="preserve"><value>Copiere</value></data>
+  <data name="SolutionExplorer_Cut" xml:space="preserve"><value>Decupare</value></data>
+  <data name="SolutionExplorer_Paste" xml:space="preserve"><value>Lipire</value></data>
+  <data name="SolutionExplorer_Rename" xml:space="preserve"><value>Redenumire</value></data>
+  <data name="SolutionExplorer_RemoveFromProject" xml:space="preserve"><value>Eliminare din proiect</value></data>
+  <data name="SolutionExplorer_Delete" xml:space="preserve"><value>Ștergere</value></data>
+  <data name="SolutionExplorer_ExcludeFromProject" xml:space="preserve"><value>Excludere din proiect</value></data>
+  <data name="SolutionExplorer_ImportIntoProject" xml:space="preserve"><value>Importare în proiect...</value></data>
+  <data name="SolutionExplorer_ApplyToDisk" xml:space="preserve"><value>Aplicare pe disc</value></data>
+  <data name="SolutionExplorer_DiscardChanges" xml:space="preserve"><value>Renunțare la modificări</value></data>
+  <data name="SolutionExplorer_Build" xml:space="preserve"><value>Compilare</value></data>
+  <data name="SolutionExplorer_Rebuild" xml:space="preserve"><value>Recompilare</value></data>
+  <data name="SolutionExplorer_Clean" xml:space="preserve"><value>Curățare</value></data>
+  <data name="SolutionExplorer_SetAsStartup" xml:space="preserve"><value>Setare ca proiect de pornire</value></data>
+  <data name="SolutionExplorer_AddReference" xml:space="preserve"><value>Adăugare referință…</value></data>
+  <data name="SolutionExplorer_RemoveUnusedReferences" xml:space="preserve"><value>Eliminare referințe neutilizate…</value></data>
+  <data name="SolutionExplorer_ManageNugetPackages" xml:space="preserve"><value>Gestionare pachete NuGet…</value></data>
+  <data name="SolutionExplorer_ManageNugetPackagesSolution" xml:space="preserve"><value>Gestionare pachete NuGet pentru soluție…</value></data>
+  <data name="SolutionExplorer_Properties" xml:space="preserve"><value>Proprietăți</value></data>
+  <data name="SolutionExplorer_SaveAll" xml:space="preserve"><value>Salvare tot</value></data>
+  <data name="SolutionExplorer_CloseSolution" xml:space="preserve"><value>Închidere soluție</value></data>
+  <data name="WhfmtBrowser_LoadFailureIndicator" xml:space="preserve"><value>Unul sau mai multe formate nu au putut fi încărcate</value></data>
+  <data name="WhfmtBrowser_OpenInEditorToolTip" xml:space="preserve"><value>Deschidere în editorul de structuri</value></data>
+  <data name="WhfmtBrowser_ExportToFileToolTip" xml:space="preserve"><value>Exportare în fișier…</value></data>
+  <data name="WhfmtBrowser_ViewJsonToolTip" xml:space="preserve"><value>Vizualizare JSON</value></data>
+  <data name="WhfmtBrowser_Open" xml:space="preserve"><value>Deschidere</value></data>
+  <data name="WhfmtBrowser_OpenReadOnly" xml:space="preserve"><value>Deschidere doar pentru citire</value></data>
+  <data name="WhfmtBrowser_ExportToFile" xml:space="preserve"><value>Exportare în fișier…</value></data>
+  <data name="WhfmtBrowser_ViewJson" xml:space="preserve"><value>Vizualizare JSON</value></data>
+  <data name="WhfmtBrowser_CopyPath" xml:space="preserve"><value>Copiere cale</value></data>
+  <data name="WhfmtBrowser_Delete" xml:space="preserve"><value>Ștergere</value></data>
+  <data name="WhfmtBrowser_RevealInExplorer" xml:space="preserve"><value>Afișare în Explorer</value></data>
+  <data name="WhfmtBrowser_DuplicateFormat" xml:space="preserve"><value>Duplicare format…</value></data>
+  <data name="WhfmtBrowser_EditInCodeEditor" xml:space="preserve"><value>Editare în editorul de cod</value></data>
+  <data name="WhfmtCatalog_NameHeader" xml:space="preserve"><value>Nume</value></data>
+  <data name="WhfmtCatalog_CategoryHeader" xml:space="preserve"><value>Categorie</value></data>
+  <data name="WhfmtCatalog_ExtensionsHeader" xml:space="preserve"><value>Extensii</value></data>
+  <data name="WhfmtCatalog_VersionHeader" xml:space="preserve"><value>Versiune</value></data>
+  <data name="WhfmtCatalog_QualityHeader" xml:space="preserve"><value>Calitate</value></data>
+  <data name="WhfmtCatalog_AuthorHeader" xml:space="preserve"><value>Autor</value></data>
+  <data name="WhfmtCatalog_SourceHeader" xml:space="preserve"><value>Sursă</value></data>
+  <data name="WhfmtCatalog_Open" xml:space="preserve"><value>Deschidere</value></data>
+  <data name="WhfmtCatalog_OpenReadOnly" xml:space="preserve"><value>Deschidere doar pentru citire</value></data>
+  <data name="WhfmtCatalog_ExportToFile" xml:space="preserve"><value>Exportare în fișier…</value></data>
+  <data name="WhfmtCatalog_ViewJson" xml:space="preserve"><value>Vizualizare JSON</value></data>
+  <data name="WhfmtCatalog_RevealInExplorer" xml:space="preserve"><value>Afișare în Explorer</value></data>
+  <data name="WhfmtCatalog_ErrorText" xml:space="preserve"><value> Eroare</value></data>
+  <data name="WhfmtDetail_EmptyPlaceholder" xml:space="preserve"><value>Selectați un format pentru a afișa detaliile.</value></data>
+  <data name="WhfmtDetail_OpenInEditorToolTip" xml:space="preserve"><value>Deschidere în editorul de structuri</value></data>
+  <data name="WhfmtDetail_ExportToFileToolTip" xml:space="preserve"><value>Exportare în fișier…</value></data>
+  <data name="WhfmtDetail_ViewRawJsonToolTip" xml:space="preserve"><value>Vizualizare JSON brut</value></data>
+  <data name="WhfmtDetail_RetryLoadToolTip" xml:space="preserve"><value>Reîncercare încărcare format</value></data>
+  <data name="WhfmtDetail_ExcludeFromCatalogToolTip" xml:space="preserve"><value>Excludere format din catalog</value></data>
+  <data name="WhfmtDetail_FormatLoadedSuccessfully" xml:space="preserve"><value>Format încărcat cu succes</value></data>
+  <data name="WhfmtDetail_FormatLoadFailed" xml:space="preserve"><value>Încărcarea formatului a eșuat</value></data>
+  <data name="WhfmtDetail_OverviewTab" xml:space="preserve"><value>Prezentare generală</value></data>
+  <data name="WhfmtDetail_VersionLabel" xml:space="preserve"><value>Versiune</value></data>
+  <data name="WhfmtDetail_AuthorLabel" xml:space="preserve"><value>Autor</value></data>
+  <data name="WhfmtDetail_CategoryLabel" xml:space="preserve"><value>Categorie</value></data>
+  <data name="WhfmtDetail_PlatformLabel" xml:space="preserve"><value>Platformă</value></data>
+  <data name="WhfmtDetail_EditorLabel" xml:space="preserve"><value>Editor</value></data>
+  <data name="WhfmtDetail_DiffLabel" xml:space="preserve"><value>Diff</value></data>
+  <data name="WhfmtDetail_StatusLabel" xml:space="preserve"><value>Stare</value></data>
+  <data name="WhfmtDetail_ExtensionsLabel" xml:space="preserve"><value>Extensii</value></data>
+  <data name="WhfmtDetail_QualityScoreLabel" xml:space="preserve"><value>Scor calitate</value></data>
+  <data name="WhfmtDetail_DetectionLabel" xml:space="preserve"><value>Detecție</value></data>
+  <data name="WhfmtDetail_BlocksLabel" xml:space="preserve"><value>Blocuri</value></data>
+  <data name="WhfmtDetail_LoadErrorTitle" xml:space="preserve"><value>Eroare de încărcare</value></data>
+  <data name="WhfmtDetail_ReferencesTab" xml:space="preserve"><value>Referințe</value></data>
+  <data name="WhfmtDetail_SpecificationsLabel" xml:space="preserve"><value>Specificații</value></data>
+  <data name="WhfmtDetail_WebLinksLabel" xml:space="preserve"><value>Linkuri web</value></data>
+  <data name="WhfmtDetail_AssertionsTab" xml:space="preserve"><value>Aserțiuni</value></data>
+  <data name="WhfmtDetail_AIHintsTab" xml:space="preserve"><value>Sugestii AI</value></data>
+  <data name="WhfmtDetail_AnalysisContextLabel" xml:space="preserve"><value>Context analiză</value></data>
+  <data name="WhfmtDetail_KnownVulnerabilitiesLabel" xml:space="preserve"><value>Vulnerabilități cunoscute</value></data>
+  <data name="WhfmtDetail_JsonTab" xml:space="preserve"><value>JSON</value></data>
+  <!-- Whfmt add/delete format dialogs -->
+  <data name="Whfmt_AddFormatTitle" xml:space="preserve"><value>Adăugare definiție format</value></data>
+  <data name="Whfmt_AddFormatFilter" xml:space="preserve"><value>Definiții Whfmt (*.whfmt)|*.whfmt</value></data>
+  <data name="Whfmt_AddFormatError" xml:space="preserve"><value>Adăugare format</value></data>
+  <data name="Whfmt_DeleteFormatTitle" xml:space="preserve"><value>Ștergere format</value></data>
+  <data name="WhfmtCatalog_Tooltip_OpenSelected" xml:space="preserve"><value>Deschidere selecție</value></data>
+  <data name="WhfmtCatalog_Tooltip_ExportSelected" xml:space="preserve"><value>Exportare selecție în fișier…</value></data>
+  <data name="WhfmtCatalog_Tooltip_AddFormat" xml:space="preserve"><value>Adăugare fișier format…</value></data>
+  <data name="WhfmtCatalog_Tooltip_Refresh" xml:space="preserve"><value>Reîmprospătare catalog (F5)</value></data>
+  <data name="WhfmtCatalog_LayoutTooltip" xml:space="preserve"><value>Poziție panou detalii</value></data>
+  <data name="WhfmtCatalog_LayoutRight" xml:space="preserve"><value>Detalii la dreapta</value></data>
+  <data name="WhfmtCatalog_LayoutLeft" xml:space="preserve"><value>Detalii la stânga</value></data>
+  <data name="WhfmtCatalog_LayoutBottom" xml:space="preserve"><value>Detalii jos</value></data>
+  <data name="WhfmtCatalog_LayoutTop" xml:space="preserve"><value>Detalii sus</value></data>
+</root>

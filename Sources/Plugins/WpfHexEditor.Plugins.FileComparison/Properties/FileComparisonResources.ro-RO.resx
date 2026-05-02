@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+
+  <data name="FileComparison_PanelTitle" xml:space="preserve"><value>Centru de diferențe</value></data>
+  <data name="FileComparison_SelectFile1" xml:space="preserve"><value>Selectați fișierul 1 de comparat</value></data>
+  <data name="FileComparison_SelectFile2" xml:space="preserve"><value>Selectați fișierul 2 de comparat</value></data>
+  <data name="FileComparison_SelectFilesHint" xml:space="preserve"><value>Selectați fișiere de comparat</value></data>
+  <data name="FileComparison_SelectBothFiles" xml:space="preserve"><value>Selectați ambele fișiere de comparat</value></data>
+  <data name="FileComparison_SelectFiles" xml:space="preserve"><value>Selectați fișiere de comparat</value></data>
+  <data name="FileComparison_Comparing" xml:space="preserve"><value>Comparare în curs…</value></data>
+  <data name="FileComparison_Cancelled" xml:space="preserve"><value>Anulat</value></data>
+  <data name="FileComparison_SelectTwoFiles" xml:space="preserve"><value>Selectați două fișiere și faceți clic pe Comparare</value></data>
+  <data name="FileComparison_MultipleFormats" xml:space="preserve"><value>Mai multe formate detectate</value></data>
+  <data name="FileComparison_SelectFile" xml:space="preserve"><value>Selectați un fișier de comparat</value></data>
+  <data name="FileComparison_FilesSection" xml:space="preserve"><value>FIȘIERE</value></data>
+  <data name="FileComparison_DiffSummary" xml:space="preserve"><value>REZUMAT DIFERENȚE</value></data>
+  <data name="FileComparison_ModifiedLabel" xml:space="preserve"><value>Modificat</value></data>
+  <data name="FileComparison_InsertedLabel" xml:space="preserve"><value>Inserat</value></data>
+  <data name="FileComparison_DeletedLabel" xml:space="preserve"><value>Șters</value></data>
+  <data name="FileComparison_ByteFrequency" xml:space="preserve"><value>FRECVENȚA OCTEȚILOR (NIBBLE-URI)</value></data>
+  <data name="FileComparison_ShannonEntropy" xml:space="preserve"><value>ENTROPIA SHANNON (pe bloc de 256 octeți)</value></data>
+</root>

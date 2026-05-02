@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="DocFindReplace_Title" xml:space="preserve"><value>Najít a nahradit</value></data>
+  <data name="DocFindReplace_FindLabel" xml:space="preserve"><value>Hledat:</value></data>
+  <data name="DocFindReplace_ReplaceLabel" xml:space="preserve"><value>Nahradit:</value></data>
+  <data name="DocFindReplace_MatchCase" xml:space="preserve"><value>Rozlišovat velikost písmen</value></data>
+  <data name="DocFindReplace_WholeWord" xml:space="preserve"><value>Celé slovo</value></data>
+  <data name="DocFindReplace_Regex" xml:space="preserve"><value>Regex</value></data>
+  <data name="DocFindReplace_FindAll" xml:space="preserve"><value>Najít vše</value></data>
+  <data name="DocFindReplace_FindNext" xml:space="preserve"><value>Další</value></data>
+  <data name="DocFindReplace_FindPrev" xml:space="preserve"><value>Předchozí</value></data>
+  <data name="DocFindReplace_Replace" xml:space="preserve"><value>Nahradit</value></data>
+  <data name="DocFindReplace_ReplaceAll" xml:space="preserve"><value>Nahradit vše</value></data>
+  <data name="DocFindReplace_Close" xml:space="preserve"><value>Zavřít</value></data>
+  <data name="DocHexPane_HexLabel" xml:space="preserve"><value>Hex</value></data>
+  <data name="DocPageSettings_PageTab" xml:space="preserve"><value>Stránka</value></data>
+  <data name="DocPageSettings_FormatLabel" xml:space="preserve"><value>Formát:</value></data>
+  <data name="DocPageSettings_A4Option" xml:space="preserve"><value>A4  (21 × 29.7 cm)</value></data>
+  <data name="DocPageSettings_A3Option" xml:space="preserve"><value>A3  (29.7 × 42 cm)</value></data>
+  <data name="DocPageSettings_A5Option" xml:space="preserve"><value>A5  (14.8 × 21 cm)</value></data>
+  <data name="DocPageSettings_LetterOption" xml:space="preserve"><value>Letter (8.5 × 11 in)</value></data>
+  <data name="DocPageSettings_LegalOption" xml:space="preserve"><value>Legal  (8.5 × 14 in)</value></data>
+  <data name="DocPageSettings_CustomOption" xml:space="preserve"><value>Vlastní</value></data>
+  <data name="DocPageSettings_OrientationLabel" xml:space="preserve"><value>Orientace:</value></data>
+  <data name="DocPageSettings_Portrait" xml:space="preserve"><value>Na výšku</value></data>
+  <data name="DocPageSettings_Landscape" xml:space="preserve"><value>Na šířku</value></data>
+  <data name="DocPageSettings_ColumnsTab" xml:space="preserve"><value>Sloupce</value></data>
+  <data name="DocPageSettings_EqualWidths" xml:space="preserve"><value>Stejná šířka sloupců</value></data>
+  <data name="DocPageSettings_ShowSeparator" xml:space="preserve"><value>Zobrazit oddělovač mezi sloupci</value></data>
+  <data name="DocPageSettings_HeaderFooterTab" xml:space="preserve"><value>Záhlaví / zápatí</value></data>
+  <data name="DocPageSettings_HeaderGroup" xml:space="preserve"><value>Záhlaví</value></data>
+  <data name="DocPageSettings_EnableHeader" xml:space="preserve"><value>Povolit záhlaví</value></data>
+  <data name="DocPageSettings_DifferentFirstPage" xml:space="preserve"><value>Jiný obsah na první stránce</value></data>
+  <data name="DocPageSettings_SameHeaderLR" xml:space="preserve"><value>Stejné záhlaví na levé/pravé stránce</value></data>
+  <data name="DocPageSettings_FooterGroup" xml:space="preserve"><value>Zápatí</value></data>
+  <data name="DocPageSettings_EnableFooter" xml:space="preserve"><value>Povolit zápatí</value></data>
+  <data name="DocPageSettings_BorderTab" xml:space="preserve"><value>Ohraničení</value></data>
+  <data name="DocPageSettings_BorderNone" xml:space="preserve"><value>Žádné</value></data>
+  <data name="DocPageSettings_BorderBox" xml:space="preserve"><value>Rámeček</value></data>
+  <data name="DocPageSettings_BorderShadow" xml:space="preserve"><value>Stín</value></data>
+  <data name="DocPageSettings_CancelButton" xml:space="preserve"><value>Zrušit</value></data>
+  <data name="DocPageSettings_ApplyButton" xml:space="preserve"><value>Použít</value></data>
+  <data name="DocPageSettings_InsideMargin" xml:space="preserve"><value>Vnitřní okraj:</value></data>
+  <data name="DocPageSettings_OutsideMargin" xml:space="preserve"><value>Vnější okraj:</value></data>
+  <data name="DocPageSettings_LeftMargin" xml:space="preserve"><value>Levý okraj:</value></data>
+  <data name="DocPageSettings_RightMargin" xml:space="preserve"><value>Pravý okraj:</value></data>
+  <data name="DocEditorHost_TextViewToolTip" xml:space="preserve"><value>Textové zobrazení</value></data>
+  <data name="DocEditorHost_SplitViewToolTip" xml:space="preserve"><value>Rozdělené zobrazení (text + Hex)</value></data>
+  <data name="DocEditorHost_HexViewToolTip" xml:space="preserve"><value>Hex zobrazení</value></data>
+  <data name="DocEditorHost_StructureViewToolTip" xml:space="preserve"><value>Stromové zobrazení struktury</value></data>
+  <data name="DocEditorHost_FullViewToolTip" xml:space="preserve"><value>Úplné zobrazení (text + struktura + Hex)</value></data>
+  <data name="DocEditorHost_FocusModeToolTip" xml:space="preserve"><value>Režim soustředění — zen psaní (Ctrl+Shift+F)</value></data>
+  <data name="DocEditorHost_TextModeLabel" xml:space="preserve"><value>Text</value></data>
+  <data name="DocEditorHost_SplitModeLabel" xml:space="preserve"><value>Rozděleno</value></data>
+  <data name="DocEditorHost_HexModeLabel" xml:space="preserve"><value>Hex</value></data>
+  <data name="DocEditorHost_StructureModeLabel" xml:space="preserve"><value>Struktura</value></data>
+  <data name="DocEditorHost_FullModeLabel" xml:space="preserve"><value>Úplné</value></data>
+  <data name="DocEditorHost_FocusModeLabel" xml:space="preserve"><value>Soustředění</value></data>
+  <data name="DocEditorHost_PageViewToolTip" xml:space="preserve"><value>Zobrazení stránek — stránkované karty A4/Letter</value></data>
+  <data name="DocEditorHost_DraftViewToolTip" xml:space="preserve"><value>Zobrazení návrhu — plynulé posouvání, kompaktní okraje</value></data>
+  <data name="DocEditorHost_OutlineViewToolTip" xml:space="preserve"><value>Zobrazení osnovy — strom struktury na střed</value></data>
+  <data name="DocEditorHost_ForensicModeToolTip" xml:space="preserve"><value>Forenzní analytický režim</value></data>
+  <data name="DocEditorHost_ForensicModeLabel" xml:space="preserve"><value>Forenzní</value></data>
+  <data name="DocEditorHost_BoldToolTip" xml:space="preserve"><value>Tučné (Ctrl+B)</value></data>
+  <data name="DocEditorHost_ItalicToolTip" xml:space="preserve"><value>Kurzíva (Ctrl+I)</value></data>
+  <data name="DocEditorHost_UnderlineToolTip" xml:space="preserve"><value>Podtržené (Ctrl+U)</value></data>
+  <data name="DocEditorHost_StrikethroughToolTip" xml:space="preserve"><value>Přeškrtnuté</value></data>
+  <data name="DocEditorHost_AlignLeftToolTip" xml:space="preserve"><value>Zarovnat vlevo</value></data>
+  <data name="DocEditorHost_AlignCenterToolTip" xml:space="preserve"><value>Zarovnat na střed</value></data>
+  <data name="DocEditorHost_AlignRightToolTip" xml:space="preserve"><value>Zarovnat vpravo</value></data>
+  <data name="DocEditorHost_StyleDropdownToolTip" xml:space="preserve"><value>Styl odstavce</value></data>
+  <data name="DocEditorHost_StyleNormal" xml:space="preserve"><value>Normální</value></data>
+  <data name="DocEditorHost_StyleH1" xml:space="preserve"><value>H1</value></data>
+  <data name="DocEditorHost_StyleH2" xml:space="preserve"><value>H2</value></data>
+  <data name="DocEditorHost_StyleH3" xml:space="preserve"><value>H3</value></data>
+  <data name="DocEditorHost_StyleH4" xml:space="preserve"><value>H4</value></data>
+  <data name="DocEditorHost_StyleH5" xml:space="preserve"><value>H5</value></data>
+  <data name="DocEditorHost_StyleH6" xml:space="preserve"><value>H6</value></data>
+  <data name="DocEditorHost_StyleQuote" xml:space="preserve"><value>Citát</value></data>
+  <data name="DocEditorHost_StyleCode" xml:space="preserve"><value>Code</value></data>
+  <data name="DocEditorHost_StylesPanelToolTip" xml:space="preserve"><value>Styly odstavce (Ctrl+Alt+S)</value></data>
+  <data name="DocEditorHost_PageSetupToolTip" xml:space="preserve"><value>Nastavení stránky (formát papíru, okraje, sloupce…)</value></data>
+  <data name="DocEditorHost_ZoomOutToolTip" xml:space="preserve"><value>Oddálit</value></data>
+  <data name="DocEditorHost_ZoomDefault" xml:space="preserve"><value>100%</value></data>
+  <data name="DocEditorHost_ZoomInToolTip" xml:space="preserve"><value>Přiblížit</value></data>
+  <data name="DocEditorHost_ReadOnlyToolTip" xml:space="preserve"><value>Pouze pro čtení</value></data>
+  <data name="DocEditorHost_MetadataToolTip" xml:space="preserve"><value>Metadata dokumentu</value></data>
+  <data name="DocEditorHost_ExportToolTip" xml:space="preserve"><value>Exportovat dokument</value></data>
+  <data name="DocEditorHost_SaveToolTip" xml:space="preserve"><value>Uložit</value></data>
+  <data name="DocEditorHost_MetaTitleLabel" xml:space="preserve"><value>Název</value></data>
+  <data name="DocEditorHost_MetaAuthorLabel" xml:space="preserve"><value>Autor</value></data>
+  <data name="DocEditorHost_MetaFormatLabel" xml:space="preserve"><value>Format</value></data>
+  <data name="DocEditorHost_MetaMimeLabel" xml:space="preserve"><value>MIME</value></data>
+  <data name="DocEditorHost_MetaCreatedLabel" xml:space="preserve"><value>Vytvořeno</value></data>
+  <data name="DocEditorHost_MetaModifiedLabel" xml:space="preserve"><value>Upraveno</value></data>
+  <data name="DocEditorHost_MetaMacrosLabel" xml:space="preserve"><value>Makra</value></data>
+  <data name="DocPopToolbar_BoldToolTip" xml:space="preserve"><value>Tučné (Ctrl+B)</value></data>
+  <data name="DocPopToolbar_ItalicToolTip" xml:space="preserve"><value>Kurzíva (Ctrl+I)</value></data>
+  <data name="DocPopToolbar_UnderlineToolTip" xml:space="preserve"><value>Podtržené (Ctrl+U)</value></data>
+  <data name="DocPopToolbar_CopyTextToolTip" xml:space="preserve"><value>Kopírovat vybraný text</value></data>
+  <data name="DocPopToolbar_CopyHexToolTip" xml:space="preserve"><value>Kopírovat jako Hex bajty</value></data>
+  <data name="DocPopToolbar_InspectToolTip" xml:space="preserve"><value>Prozkoumat blok v panelu Struktura</value></data>
+  <data name="DocPopToolbar_JumpHexToolTip" xml:space="preserve"><value>Přejít na offset v panelu Hex</value></data>
+  <data name="DocStatusBar_PageCountToolTip" xml:space="preserve"><value>Počet stránek</value></data>
+  <data name="DocStatusBar_WordCountToolTip" xml:space="preserve"><value>Počet slov</value></data>
+  <data name="DocStatusBar_ZoomToolTip" xml:space="preserve"><value>Úroveň přiblížení</value></data>
+  <data name="DocStatusBar_ForensicBadgeToolTip" xml:space="preserve"><value>Kliknutím otevřete forenzní panel</value></data>
+  <data name="DocStructure_Header" xml:space="preserve"><value>Structure</value></data>
+  <data name="DocStructure_CollapseAllToolTip" xml:space="preserve"><value>Sbalit vše</value></data>
+  <data name="DocStructure_ExpandAllToolTip" xml:space="preserve"><value>Rozbalit vše</value></data>
+  <data name="DocStructure_FilterPlaceholder" xml:space="preserve"><value>Filtrovat bloky…</value></data>
+  <data name="DocStructure_ClearFilterToolTip" xml:space="preserve"><value>Vymazat filtr</value></data>
+  <data name="DocStructure_NavigateMenuHeader" xml:space="preserve"><value>Přejít na text</value></data>
+  <data name="DocStructure_JumpHexMenuHeader" xml:space="preserve"><value>Přejít na Hex offset</value></data>
+  <data name="DocStructure_CopyTextMenuHeader" xml:space="preserve"><value>Kopírovat text bloku</value></data>
+  <data name="DocStructure_CopyOffsetMenuHeader" xml:space="preserve"><value>Kopírovat offset</value></data>
+  <data name="DocEditorHost_DocumentTitle" xml:space="preserve"><value>Document</value></data>
+  <data name="DocEditorHost_SavedStatus" xml:space="preserve"><value>Uloženo — {0}</value></data>
+  <data name="DocEditorHost_SaveFailedStatus" xml:space="preserve"><value>Ukládání selhalo: {0}</value></data>
+  <data name="DocEditorHost_NoSaverStatus" xml:space="preserve"><value>Pro tento typ souboru není registrován žádný ukladač.</value></data>
+  <data name="DocEditorHost_LoadingMessage" xml:space="preserve"><value>Načítání dokumentu…</value></data>
+  <data name="DocEditorHost_WaitingForIDE" xml:space="preserve"><value>Čekání na inicializaci IDE…</value></data>
+  <data name="DocEditorHost_LoadErrorMessage" xml:space="preserve"><value>Nelze otevřít dokument: {0}</value></data>
+  <data name="DocEditorHost_ExportDialogTitle" xml:space="preserve"><value>Exportovat dokument</value></data>
+  <data name="DocEditorHost_ExportFailedStatus" xml:space="preserve"><value>Export selhal: {0}</value></data>
+  <data name="DocEditorHost_ExportedStatus" xml:space="preserve"><value>Exportováno — {0}</value></data>
+  <data name="DocEditorHost_NoSaverForExport" xml:space="preserve"><value>Pro '{0}' není registrován žádný ukladač.</value></data>
+  <data name="DocEditorHost_MetaEmptyValue" xml:space="preserve"><value>—</value></data>
+  <data name="DocEditorHost_MetaYesValue" xml:space="preserve"><value>Ano</value></data>
+  <data name="DocEditorHost_MetaNoValue" xml:space="preserve"><value>Ne</value></data>
+  <data name="DocEditorHost_ViewModeText" xml:space="preserve"><value>Text</value></data>
+  <data name="DocEditorHost_ViewModeSplit" xml:space="preserve"><value>Rozděleno</value></data>
+  <data name="DocEditorHost_ViewModeHex" xml:space="preserve"><value>Hex</value></data>
+  <data name="DocEditorHost_ViewModeStructure" xml:space="preserve"><value>Structure</value></data>
+  <data name="DocEditorHost_ViewModeFull" xml:space="preserve"><value>Úplné</value></data>
+  <data name="DocEditorHost_ViewModeFocus" xml:space="preserve"><value>Soustředění</value></data>
+  <data name="DocEditorHost_ReadOnlySuffix" xml:space="preserve"><value> | Pouze pro čtení</value></data>
+  <data name="DocStatusBar_DefaultPage" xml:space="preserve"><value>Strana 1</value></data>
+  <data name="DocStatusBar_DefaultWordCount" xml:space="preserve"><value>0 slov</value></data>
+  <data name="DocStatusBar_DefaultZoom" xml:space="preserve"><value>100%</value></data>
+  <data name="DocStatusBar_DefaultViewMode" xml:space="preserve"><value>Rozděleno</value></data>
+  <data name="DocStatusBar_FormatPattern" xml:space="preserve"><value>Formát: {0} ({1})</value></data>
+  <data name="DocStatusBar_WordCountPattern" xml:space="preserve"><value>{0:N0} slov</value></data>
+  <data name="DocStatusBar_PagePattern" xml:space="preserve"><value>Strana 1 / {0}</value></data>
+  <data name="DocStatusBar_ZoomPattern" xml:space="preserve"><value>{0:0}%</value></data>
+  <data name="DocHexPane_OffsetPattern" xml:space="preserve"><value>Hex  |  0x{0:X8}</value></data>
+  <data name="DocStyles_Normal" xml:space="preserve"><value>Normal</value></data>
+  <data name="DocStyles_Heading1" xml:space="preserve"><value>Nadpis 1</value></data>
+  <data name="DocStyles_Heading2" xml:space="preserve"><value>Nadpis 2</value></data>
+  <data name="DocStyles_Heading3" xml:space="preserve"><value>Nadpis 3</value></data>
+  <data name="DocStyles_Heading4" xml:space="preserve"><value>Nadpis 4</value></data>
+  <data name="DocStyles_Heading5" xml:space="preserve"><value>Nadpis 5</value></data>
+  <data name="DocStyles_Heading6" xml:space="preserve"><value>Nadpis 6</value></data>
+  <data name="DocStyles_Quote" xml:space="preserve"><value>Citát</value></data>
+  <data name="DocStyles_Code" xml:space="preserve"><value>Code</value></data>
+  <data name="DocStyles_Caption" xml:space="preserve"><value>Popisek</value></data>
+  <data name="DocStyles_ListParagraph" xml:space="preserve"><value>Odstavec seznamu</value></data>
+  <data name="DocStyles_IntenseQuote" xml:space="preserve"><value>Intenzivní citát</value></data>
+  <data name="DocSb_AlertsLabel" xml:space="preserve">
+    <value>Upozornění</value>
+  </data>
+  <data name="DocSb_BlocksLabel" xml:space="preserve">
+    <value>Bloky</value>
+  </data>
+  <data name="DocSb_FormatLabel" xml:space="preserve">
+    <value>Format</value>
+  </data>
+  <data name="DocSb_SelectionLabel" xml:space="preserve">
+    <value>Výběr</value>
+  </data>
+  <data name="DocSb_VersionLabel" xml:space="preserve">
+    <value>Version</value>
+  </data>
+  <data name="DocSb_ViewLabel" xml:space="preserve">
+    <value>Zobrazení</value>
+  </data>
+  <data name="DocTb_ForensicMode" xml:space="preserve">
+    <value>Forenzní režim</value>
+  </data>
+  <data name="DocTb_HexView" xml:space="preserve">
+    <value>Hexadecimální zobrazení</value>
+  </data>
+  <data name="DocTb_Save" xml:space="preserve">
+    <value>Uložit</value>
+  </data>
+  <data name="DocTb_SplitView" xml:space="preserve">
+    <value>Rozdělené zobrazení</value>
+  </data>
+  <data name="DocTb_StructureView" xml:space="preserve">
+    <value>Zobrazení struktury</value>
+  </data>
+  <data name="DocTb_TextView" xml:space="preserve">
+    <value>Textové zobrazení</value>
+  </data>
+</root>

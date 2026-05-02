@@ -1,0 +1,592 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+
+  <data name="App_MinimizeToolTip" xml:space="preserve"><value>Réduire</value></data>
+  <data name="App_MaximizeToolTip" xml:space="preserve"><value>Agrandir</value></data>
+  <data name="App_CloseToolTip" xml:space="preserve"><value>Bezárás</value></data>
+  <data name="App_NotificationsToolTip" xml:space="preserve"><value>Értesítések</value></data>
+  <data name="App_CustomizeLayoutToolTip" xml:space="preserve"><value>Personnaliser la disposition (Ctrl+Shift+L)</value></data>
+  <data name="App_CommandPaletteToolTip" xml:space="preserve"><value>Palette de commandes (Ctrl+Shift+P)</value></data>
+  <data name="App_WelcomePageToolTip" xml:space="preserve"><value>Page d'accueil</value></data>
+
+  <data name="App_Menu_File" xml:space="preserve"><value>_Fichier</value></data>
+  <data name="App_Menu_New" xml:space="preserve"><value>_Nouveau</value></data>
+  <data name="App_Menu_NewSolution" xml:space="preserve"><value>_Solution...</value></data>
+  <data name="App_Menu_NewProject" xml:space="preserve"><value>_Projet...</value></data>
+  <data name="App_Menu_NewFile" xml:space="preserve"><value>_Fichier...</value></data>
+  <data name="App_Menu_Open" xml:space="preserve"><value>_Ouvrir</value></data>
+  <data name="App_Menu_OpenSolutionProject" xml:space="preserve"><value>_Solution/Projet...</value></data>
+  <data name="App_Menu_OpenFolder" xml:space="preserve"><value>_Dossier...</value></data>
+  <data name="App_Menu_OpenFile" xml:space="preserve"><value>_Fichier...</value></data>
+  <data name="App_Menu_Close" xml:space="preserve"><value>_Fermer</value></data>
+  <data name="App_Menu_CloseAllDocuments" xml:space="preserve"><value>Összes _dokumentum bezárása</value></data>
+  <data name="App_Menu_CloseSolution" xml:space="preserve"><value>Fermer la _solution</value></data>
+  <data name="App_Menu_Save" xml:space="preserve"><value>_Enregistrer</value></data>
+  <data name="App_Menu_SaveAll" xml:space="preserve"><value>Enregistrer _tout</value></data>
+  <data name="App_Menu_WriteToDisk" xml:space="preserve"><value>_Écrire sur le disque</value></data>
+  <data name="App_Menu_Workspace" xml:space="preserve"><value>_Espace de travail</value></data>
+  <data name="App_Menu_NewWorkspace" xml:space="preserve"><value>_Nouvel espace de travail…</value></data>
+  <data name="App_Menu_OpenWorkspace" xml:space="preserve"><value>_Ouvrir un espace de travail…</value></data>
+  <data name="App_Menu_SaveWorkspace" xml:space="preserve"><value>_Enregistrer l'espace de travail</value></data>
+  <data name="App_Menu_SaveWorkspaceAs" xml:space="preserve"><value>Enregistrer l'espace de travail _sous…</value></data>
+  <data name="App_Menu_CloseWorkspace" xml:space="preserve"><value>F_ermer l'espace de travail</value></data>
+  <data name="App_Menu_RecentSolutions" xml:space="preserve"><value>_Solutions récentes</value></data>
+  <data name="App_Menu_RecentFiles" xml:space="preserve"><value>_Fichiers récents</value></data>
+  <data name="App_Menu_Exit" xml:space="preserve"><value>_Quitter</value></data>
+
+  <data name="App_Menu_Edit" xml:space="preserve"><value>_Édition</value></data>
+  <data name="App_Menu_Cut" xml:space="preserve"><value>Co_uper</value></data>
+  <data name="App_Menu_Copy" xml:space="preserve"><value>_Copier</value></data>
+  <data name="App_Menu_Paste" xml:space="preserve"><value>_Coller</value></data>
+  <data name="App_Menu_Delete" xml:space="preserve"><value>_Supprimer</value></data>
+  <data name="App_Menu_SelectAll" xml:space="preserve"><value>Sélectionner _tout</value></data>
+  <data name="App_Menu_Find" xml:space="preserve"><value>_Rechercher...</value></data>
+  <data name="App_Menu_AdvancedFindReplace" xml:space="preserve"><value>_Recherche/remplacement avancé...</value></data>
+  <data name="App_Menu_FindNext" xml:space="preserve"><value>Rechercher _suivant</value></data>
+  <data name="App_Menu_FindPrevious" xml:space="preserve"><value>Rechercher _précédent</value></data>
+  <data name="App_Menu_GoToOffset" xml:space="preserve"><value>_Aller au décalage…</value></data>
+  <data name="App_Menu_FormatDocument" xml:space="preserve"><value>Mettre en forme le _document</value></data>
+  <data name="App_Menu_FormatSelection" xml:space="preserve"><value>Mettre en forme la _sélection</value></data>
+
+  <data name="App_Menu_View" xml:space="preserve"><value>_Nézet</value></data>
+  <data name="App_Menu_Project" xml:space="preserve"><value>_Projekt</value></data>
+  <data name="App_Menu_AddNewItem" xml:space="preserve"><value>Új _elem hozzáadása...</value></data>
+  <data name="App_Menu_AddExistingItem" xml:space="preserve"><value>Meglévő elem hozzáadása...</value></data>
+  <data name="App_Menu_AddNewProject" xml:space="preserve"><value>Új _projekt hozzáadása...</value></data>
+  <data name="App_Menu_Properties" xml:space="preserve"><value>_Tulajdonságok...</value></data>
+  <data name="App_Menu_Build" xml:space="preserve"><value>_Fordítás</value></data>
+  <data name="App_Menu_BuildSolution" xml:space="preserve"><value>_Megoldás fordítása</value></data>
+  <data name="App_Menu_BuildProject" xml:space="preserve"><value>_Projekt fordítása</value></data>
+  <data name="App_Menu_RebuildSolution" xml:space="preserve"><value>_Újrafordítás (megoldás)</value></data>
+  <data name="App_Menu_RebuildProject" xml:space="preserve"><value>Újrafordítás (_projekt)</value></data>
+  <data name="App_Menu_CleanSolution" xml:space="preserve"><value>_Tisztítás (megoldás)</value></data>
+  <data name="App_Menu_CleanProject" xml:space="preserve"><value>Tisztítás (_projekt)</value></data>
+  <data name="App_Menu_CancelBuild" xml:space="preserve"><value>Fordítás meg_szakítása</value></data>
+  <data name="App_Menu_ConfigurationManager" xml:space="preserve"><value>_Konfigurációkezelő...</value></data>
+  <data name="App_Menu_Debug" xml:space="preserve"><value>_Hibakeresés</value></data>
+
+  <data name="App_Menu_Window" xml:space="preserve"><value>_Ablak</value></data>
+  <data name="App_Menu_CloseDocument" xml:space="preserve"><value>Dokumentum _bezárása</value></data>
+  <data name="App_Menu_CloseAllButThis" xml:space="preserve"><value>Összes bezárása, _kivéve ezt</value></data>
+  <data name="App_Menu_CloseAllDocuments2" xml:space="preserve"><value>Összes _dokumentum bezárása</value></data>
+  <data name="App_Menu_NextDocument" xml:space="preserve"><value>_Következő dokumentum</value></data>
+  <data name="App_Menu_PreviousDocument" xml:space="preserve"><value>_Előző dokumentum</value></data>
+  <data name="App_Menu_FullScreen" xml:space="preserve"><value>_Teljes képernyő</value></data>
+  <data name="App_Menu_TabGroups" xml:space="preserve"><value>_Lapcsoportok</value></data>
+  <data name="App_Menu_NewVerticalTabGroup" xml:space="preserve"><value>Új _függőleges lapcsoport</value></data>
+  <data name="App_Menu_NewHorizontalTabGroup" xml:space="preserve"><value>Új _vízszintes lapcsoport</value></data>
+  <data name="App_Menu_MoveToNextTabGroup" xml:space="preserve"><value>Áthelyezés a _következő lapcsoportba</value></data>
+  <data name="App_Menu_MoveToPreviousTabGroup" xml:space="preserve"><value>Áthelyezés az _előző lapcsoportba</value></data>
+  <data name="App_Menu_CloseTabGroup" xml:space="preserve"><value>_Lapcsoport bezárása</value></data>
+  <data name="App_Menu_CloseAllTabGroups" xml:space="preserve"><value>Összes lapcsoport _bezárása</value></data>
+  <data name="App_Menu_Layout" xml:space="preserve"><value>_Elrendezés</value></data>
+  <data name="App_Menu_SaveLayout" xml:space="preserve"><value>_Elrendezés mentése</value></data>
+  <data name="App_Menu_LoadLayout" xml:space="preserve"><value>Elrendezés _betöltése</value></data>
+  <data name="App_Menu_ResetLayout" xml:space="preserve"><value>Elrendezés _visszaállítása</value></data>
+  <data name="App_Menu_ToggleLockedLayout" xml:space="preserve"><value>Elrendezés zárolásának _átváltása</value></data>
+
+  <data name="App_Menu_Tools" xml:space="preserve"><value>_Eszközök</value></data>
+  <data name="App_Menu_Terminal" xml:space="preserve"><value>_Terminál</value></data>
+  <data name="App_Menu_Options" xml:space="preserve"><value>_Beállítások...</value></data>
+  <data name="App_Menu_Extensions" xml:space="preserve"><value>_Bővítmények</value></data>
+  <data name="App_Menu_ExtensionManager" xml:space="preserve"><value>_Bővítménykezelő</value></data>
+  <data name="App_Menu_ExtensionsMonitor" xml:space="preserve"><value>_Bővítményfigyelő</value></data>
+  <data name="App_Menu_ExtensionMarketplace" xml:space="preserve"><value>Bővítmény-_marketplace</value></data>
+  <data name="App_Menu_InstallFromFile" xml:space="preserve"><value>_Telepítés fájlból...</value></data>
+  <data name="App_Menu_RefreshAllExtensions" xml:space="preserve"><value>Összes bővítmény _frissítése</value></data>
+  <data name="App_Menu_ExtensionDevWatch" xml:space="preserve"><value>Bővítmény _Dev figyelése...</value></data>
+  <data name="App_Menu_ExtensionSystemSettings" xml:space="preserve"><value>Bővítmények rendszer-_beállításai...</value></data>
+  <data name="App_Menu_Theme" xml:space="preserve"><value>_Téma</value></data>
+  <data name="App_Menu_ThemeDark" xml:space="preserve"><value>_Sötét</value></data>
+  <data name="App_Menu_ThemeVS2022Dark" xml:space="preserve"><value>VS2022 _Sötét</value></data>
+  <data name="App_Menu_ThemeVisualStudio" xml:space="preserve"><value>_Visual Studio</value></data>
+  <data name="App_Menu_ThemeDarkGlass" xml:space="preserve"><value>Sötét _üveg</value></data>
+  <data name="App_Menu_ThemeCyberpunk" xml:space="preserve"><value>_Cyberpunk</value></data>
+  <data name="App_Menu_ThemeSynthwave" xml:space="preserve"><value>Synthwave '8_4</value></data>
+  <data name="App_Menu_ThemeMatrix" xml:space="preserve"><value>Matri_x / Terminal</value></data>
+  <data name="App_Menu_ThemeNord" xml:space="preserve"><value>_Nord</value></data>
+  <data name="App_Menu_ThemeDracula" xml:space="preserve"><value>Dr_acula</value></data>
+  <data name="App_Menu_ThemeGruvbox" xml:space="preserve"><value>Gruvbo_x Sötét</value></data>
+  <data name="App_Menu_ThemeCatppuccinMocha" xml:space="preserve"><value>Catppuccin _Mocha</value></data>
+  <data name="App_Menu_ThemeTokyoNight" xml:space="preserve"><value>Tokyo _Night</value></data>
+  <data name="App_Menu_ThemeLight" xml:space="preserve"><value>_Világos</value></data>
+  <data name="App_Menu_ThemeOffice" xml:space="preserve"><value>_Office</value></data>
+  <data name="App_Menu_ThemeCatppuccinLatte" xml:space="preserve"><value>Catppuccin _Latte</value></data>
+  <data name="App_Menu_ThemeMinimal" xml:space="preserve"><value>_Minimális</value></data>
+  <data name="App_Menu_ThemeForest" xml:space="preserve"><value>_Erdő</value></data>
+  <data name="App_Menu_ThemeHighContrast" xml:space="preserve"><value>_Nagy kontraszt</value></data>
+
+  <data name="App_Menu_Image" xml:space="preserve"><value>_Kép</value></data>
+  <data name="App_Menu_RotateRight" xml:space="preserve"><value>Forgatás _jobbra</value></data>
+  <data name="App_Menu_RotateLeft" xml:space="preserve"><value>Forgatás _balra</value></data>
+  <data name="App_Menu_FlipHorizontal" xml:space="preserve"><value>Tükrözés _vízszintesen</value></data>
+  <data name="App_Menu_FlipVertical" xml:space="preserve"><value>Tükrözés _függőlegesen</value></data>
+  <data name="App_Menu_CropMode" xml:space="preserve"><value>_Vágási mód</value></data>
+  <data name="App_Menu_Resize" xml:space="preserve"><value>Át_méretezés...</value></data>
+  <data name="App_Menu_Export" xml:space="preserve"><value>_Exportálás...</value></data>
+  <data name="App_Menu_ResetImage" xml:space="preserve"><value>Eredeti _kép visszaállítása</value></data>
+
+  <data name="App_OptionsEditJsonToolTip" xml:space="preserve"><value>Felhasználói beállítások szerkesztése JSON-ban</value></data>
+  <data name="App_OptionsAppliesToLabel" xml:space="preserve"><value>Vonatkozik:</value></data>
+  <data name="App_OptionsUserInstallation" xml:space="preserve"><value>Felhasználó (telepítés)</value></data>
+  <data name="App_OptionsFilterLabel" xml:space="preserve"><value>Szűrő:</value></data>
+  <data name="App_OptionsSearchPlaceholder" xml:space="preserve"><value>Beállítások keresése (Ctrl+F)…</value></data>
+  <data name="App_OptionsClearToolTip" xml:space="preserve"><value>Törlés (Esc)</value></data>
+  <data name="App_OptionsNoResults" xml:space="preserve"><value>Nem található beállítás.</value></data>
+
+  <data name="App_PasteConflict_Title" xml:space="preserve"><value>A fájl már létezik</value></data>
+  <data name="App_PasteConflict_Rename" xml:space="preserve"><value>Átnevezés</value></data>
+  <data name="App_PasteConflict_Skip" xml:space="preserve"><value>Kihagyás</value></data>
+  <data name="App_PasteConflict_CancelAll" xml:space="preserve"><value>Összes visszavonása</value></data>
+  <data name="App_PasteConflict_AlreadyExists1" xml:space="preserve"><value>Egy ilyen nevű fájl</value></data>
+  <data name="App_PasteConflict_AlreadyExists2" xml:space="preserve"><value>már létezik a célmappában.</value></data>
+  <data name="App_PasteConflict_Instructions" xml:space="preserve"><value>Adjon meg új nevet a beillesztett fájl átnevezéséhez, vagy válasszon az alábbi műveletek közül.</value></data>
+  <data name="App_PasteConflict_NewNameLabel" xml:space="preserve"><value>Új név:</value></data>
+
+  <data name="App_SaveChanges_Title" xml:space="preserve"><value>Módosítások mentése</value></data>
+  <data name="App_SaveChanges_SelectAll" xml:space="preserve"><value>Összes kijelölése</value></data>
+  <data name="App_SaveChanges_Save" xml:space="preserve"><value>Mentés</value></data>
+  <data name="App_SaveChanges_DontSave" xml:space="preserve"><value>Nem ment</value></data>
+  <data name="App_SaveChanges_Cancel" xml:space="preserve"><value>Mégse</value></data>
+
+  <data name="App_GoToOffset_Title" xml:space="preserve"><value>Ugrás az eltoláshoz</value></data>
+  <data name="App_GoToOffset_EnterOffset" xml:space="preserve"><value>Adja meg az eltolást:</value></data>
+  <data name="App_GoToOffset_Hexadecimal" xml:space="preserve"><value>Hexadecimális (0x…)</value></data>
+  <data name="App_GoToOffset_Decimal" xml:space="preserve"><value>Decimális</value></data>
+  <data name="App_GoToOffset_Go" xml:space="preserve"><value>Ugrás</value></data>
+  <data name="App_GoToOffset_Cancel" xml:space="preserve"><value>Mégse</value></data>
+
+  <data name="App_ImportFormat_Title" xml:space="preserve"><value>Beépített formátumdefiníció importálása</value></data>
+  <data name="App_ImportFormat_VersionLabel" xml:space="preserve"><value>Verzió:</value></data>
+  <data name="App_ImportFormat_AuthorLabel" xml:space="preserve"><value>Szerző:</value></data>
+  <data name="App_ImportFormat_ExtensionsLabel" xml:space="preserve"><value>Kiterjesztések</value></data>
+  <data name="App_ImportFormat_QualityLabel" xml:space="preserve"><value>Minőség</value></data>
+  <data name="App_ImportFormat_PreviewLabel" xml:space="preserve"><value>Előnézet</value></data>
+  <data name="App_ImportFormat_DestinationFolder" xml:space="preserve"><value>_Célmappa:</value></data>
+  <data name="App_ImportFormat_Import" xml:space="preserve"><value>_Importálás</value></data>
+  <data name="App_ImportFormat_Cancel" xml:space="preserve"><value>Mégse</value></data>
+
+  <data name="App_ImportSyntax_Title" xml:space="preserve"><value>Beépített szintaxisdefiníció importálása</value></data>
+  <data name="App_ImportSyntax_ShowPreview" xml:space="preserve"><value>Előnézet megjelenítése</value></data>
+  <data name="App_ImportSyntax_ExtensionsLabel" xml:space="preserve"><value>Kiterjesztések</value></data>
+  <data name="App_ImportSyntax_DestinationFolder" xml:space="preserve"><value>_Célmappa:</value></data>
+  <data name="App_ImportSyntax_Import" xml:space="preserve"><value>_Importálás</value></data>
+  <data name="App_ImportSyntax_Cancel" xml:space="preserve"><value>Mégse</value></data>
+
+  <data name="App_PanelWelcome" xml:space="preserve"><value>Üdvözlés</value></data>
+  <data name="App_PanelSolutionExplorer" xml:space="preserve"><value>Megoldásböngésző</value></data>
+  <data name="App_PanelErrorList" xml:space="preserve"><value>Hibák listája</value></data>
+  <data name="App_PanelExtensionsMonitor" xml:space="preserve"><value>Bővítményfigyelő</value></data>
+  <data name="App_PanelOutput" xml:space="preserve"><value>Kimenet</value></data>
+  <data name="App_ExportFormatDefinitionTitle" xml:space="preserve"><value>Formátumdefiníció exportálása</value></data>
+  <data name="App_FormatUpgradeRequired" xml:space="preserve"><value>Formátumfrissítés szükséges</value></data>
+  <data name="App_FormatUpgrade" xml:space="preserve"><value>Formátumfrissítés</value></data>
+  <data name="App_ConvertTbl" xml:space="preserve"><value>TBL konvertálása</value></data>
+  <data name="App_RemoveFromProject" xml:space="preserve"><value>Eltávolítás a projektből</value></data>
+  <data name="App_RemoveFromProjectMessage" xml:space="preserve"><value>Eltávolítja a(z) '{0}' elemet a projektből?\n(A lemezen lévő fájl nem törlődik.)</value></data>
+  <data name="App_DeleteFile" xml:space="preserve"><value>Fájl törlése</value></data>
+  <data name="App_DeleteFileMessage" xml:space="preserve"><value>Törli a(z) '{0}' fájlt és a lomtárba küldi?</value></data>
+  <data name="App_RemoveFolder" xml:space="preserve"><value>Mappa törlése</value></data>
+  <data name="App_RemoveSolutionFolder" xml:space="preserve"><value>Megoldásmappa törlése</value></data>
+  <data name="App_SelectImportFolder" xml:space="preserve"><value>Importálandó mappa kiválasztása</value></data>
+  <data name="App_OpenSolutionProject" xml:space="preserve"><value>Megoldás vagy projekt megnyitása</value></data>
+  <data name="App_OpenFolder" xml:space="preserve"><value>Mappa megnyitása</value></data>
+  <data name="App_FailedCreateSolution" xml:space="preserve"><value>Megoldás létrehozása sikertelen:\n{0}</value></data>
+  <data name="App_FailedOpenSolution" xml:space="preserve"><value>Megoldás megnyitása sikertelen:\n{0}</value></data>
+  <data name="App_RenameTitle" xml:space="preserve"><value>Átnevezés</value></data>
+
+  <!-- DockItem titles -->
+  <data name="App_DockTitle_ExtensionManager" xml:space="preserve"><value>Bővítménykezelő</value></data>
+  <data name="App_DockTitle_ExtensionsMonitor" xml:space="preserve"><value>Bővítményfigyelő</value></data>
+  <data name="App_DockTitle_ExtensionMarketplace" xml:space="preserve"><value>Bővítmény-marketplace</value></data>
+  <data name="App_DockTitle_Terminal" xml:space="preserve"><value>Terminal</value></data>
+  <data name="App_DockTitle_SettingsJson" xml:space="preserve"><value>settings.json</value></data>
+  <data name="App_DockTitle_Properties" xml:space="preserve"><value>{0} — Tulajdonságok</value></data>
+  <data name="App_DockTitle_NuGet" xml:space="preserve"><value>NuGet — {0}</value></data>
+  <data name="App_DockTitle_NuGetSolution" xml:space="preserve"><value>NuGet — {0} (Megoldás)</value></data>
+  <data name="App_DockTitle_References" xml:space="preserve"><value>Hivatkozások — {0}</value></data>
+  <data name="App_DockTitle_ReadOnly" xml:space="preserve"><value>WpfHexEditor — {0} [csak olvasható formátum v{1}]</value></data>
+
+  <!-- Context menus -->
+  <data name="App_ContextMenu_None" xml:space="preserve"><value>(nincs)</value></data>
+  <data name="App_ContextMenu_CompareWithActive" xml:space="preserve"><value>Összehasonlítás az aktív szerkesztővel</value></data>
+  <data name="App_ContextMenu_CompareWithAnother" xml:space="preserve"><value>Összehasonlítás egy másik fájllal…</value></data>
+  <data name="App_JumpList_RecentProjects" xml:space="preserve"><value>Legutóbbi projektek</value></data>
+  <data name="App_JumpList_RecentFiles" xml:space="preserve"><value>Legutóbbi fájlok</value></data>
+
+  <!-- Workspace dialogs -->
+  <data name="App_Workspace_NewTitle" xml:space="preserve"><value>Új munkaterület</value></data>
+  <data name="App_Workspace_NewFailed" xml:space="preserve"><value>Munkaterület létrehozása sikertelen:{0}{1}</value></data>
+  <data name="App_Workspace_OpenTitle" xml:space="preserve"><value>Munkaterület megnyitása</value></data>
+  <data name="App_Workspace_OpenFailed" xml:space="preserve"><value>Munkaterület megnyitása sikertelen:{0}{1}</value></data>
+  <data name="App_Workspace_SaveFailed" xml:space="preserve"><value>Munkaterület mentése sikertelen:{0}{1}</value></data>
+  <data name="App_Workspace_SaveAsTitle" xml:space="preserve"><value>Munkaterület mentése másként</value></data>
+  <data name="App_Workspace_CloseTitle" xml:space="preserve"><value>Munkaterület bezárása</value></data>
+  <data name="App_Workspace_CloseSavePrompt" xml:space="preserve"><value>Menti a(z) '{0}' munkaterületet bezárás előtt?</value></data>
+
+  <!-- Debugger dialogs -->
+  <data name="App_Debug_AttachTitle" xml:space="preserve"><value>Csatolás folyamathoz</value></data>
+  <data name="App_Debug_AttachNotAvailable" xml:space="preserve"><value>A hibakeresési szolgáltatás nem érhető el.</value></data>
+  <data name="App_Debug_AttachPidPrompt" xml:space="preserve"><value>Adja meg a csatolandó folyamat azonosítóját (PID):</value></data>
+  <data name="App_Debug_StartTitle" xml:space="preserve"><value>Hibakeresés indítása</value></data>
+  <data name="App_Debug_NoStartupProject" xml:space="preserve"><value>Nincs indítási projekt megadva. Kérjük, adjon meg indítási projektet a hibakeresés előtt.</value></data>
+  <data name="App_Debug_BuildFailed" xml:space="preserve"><value>Fordítás sikertelen. Javítsa ki a hibákat a hibakeresés előtt.</value></data>
+  <data name="App_Debug_ExeNotFound" xml:space="preserve"><value>Nem található a hibakeresendő program:{0}{1}{0}{0}A projekt fordítva lett, de a kimeneti futtatható fájl nem található.</value></data>
+
+  <!-- TBL import -->
+  <data name="App_TblImport_Failed" xml:space="preserve"><value>TBL fájl betöltése sikertelen:{0}{1}</value></data>
+
+  <!-- Extensions -->
+  <data name="App_Extensions_SelectOutputDir" xml:space="preserve"><value>A bővítmény kimeneti könyvtárának kiválasztása</value></data>
+
+  <!-- Solution Convert dialogs -->
+  <data name="App_Convert_Title" xml:space="preserve"><value>Megoldás formátumának konvertálása</value></data>
+  <data name="App_Convert_NoSolution" xml:space="preserve"><value>Jelenleg nincs megnyitott megoldás.</value></data>
+  <data name="App_Convert_NotSln" xml:space="preserve"><value>A jelenlegi megoldás nem .sln fájl.</value></data>
+  <data name="App_Convert_NotSlnx" xml:space="preserve"><value>A jelenlegi megoldás nem .slnx fájl.</value></data>
+  <data name="App_Convert_AlreadyWhsln" xml:space="preserve"><value>A jelenlegi megoldás már .whsln fájl.</value></data>
+  <data name="App_Convert_Confirm" xml:space="preserve"><value>Konvertálja a(z) « {0} » → « {1} » fájlt?{2}{2}Az eredeti fájl megmarad.</value></data>
+  <data name="App_Convert_NoLoader" xml:space="preserve"><value>Nincs regisztrált betöltő a(z) {0} formátumhoz. Győződjön meg arról, hogy a VS Solution Loader plugin aktív.</value></data>
+  <data name="App_Convert_NoLoaderSimple" xml:space="preserve"><value>Nincs regisztrált betöltő a(z) {0} formátumhoz.</value></data>
+  <data name="App_Convert_Success" xml:space="preserve"><value>Konvertálva: « {0} ».{1}{1}Megnyitja most a konvertált megoldást?</value></data>
+  <data name="App_Convert_Failed" xml:space="preserve"><value>Konverzió sikertelen:{0}{1}</value></data>
+
+  <!-- Compare dialog -->
+  <data name="App_Compare_SelectFile" xml:space="preserve"><value>Összehasonlítandó fájl kiválasztása</value></data>
+
+  <!-- Document/Editor labels -->
+  <data name="App_Editor_HexEditor" xml:space="preserve"><value>Hexszerkesztő</value></data>
+  <data name="App_Editor_Encodings" xml:space="preserve"><value>Kódolások</value></data>
+  <data name="App_Editor_ProjectTables" xml:space="preserve"><value>Projekt táblái</value></data>
+  <data name="App_Editor_FileNotFound" xml:space="preserve"><value>Fájl nem található:{0}{1}</value></data>
+  <data name="App_Editor_NewDocumentText" xml:space="preserve"><value>Ez a dokumentum: {0}{1}{1}Szerkessze ezt a szöveget...</value></data>
+  <data name="App_Editor_RefreshPrefix" xml:space="preserve"><value>Frissítés: </value></data>
+
+  <!-- LSP / navigation messages -->
+  <data name="App_LSP_TryOpenFile" xml:space="preserve"><value>Próbálja meg közvetlenül megnyitni a deklaráló fájlt, vagy győződjön meg arról, hogy az LSP szerver fut.</value></data>
+  <data name="App_LSP_LoadAssembly" xml:space="preserve"><value>Töltse be az assembly-t az assembly-böngészőbe a dekompilált forrás eléréséhez.</value></data>
+
+  <!-- Breadcrumb "not found" labels -->
+  <data name="App_Breadcrumb_ProjectNotFound" xml:space="preserve"><value>Projekt nem található.</value></data>
+  <data name="App_Breadcrumb_SolutionNotLoaded" xml:space="preserve"><value>Megoldás nincs betöltve.</value></data>
+
+  <!-- Debugger service messages -->
+  <data name="App_Debugger_AdapterNotFound" xml:space="preserve"><value>Hibakeresési adapter (netcoredbg) nem található.{0}Telepítse, vagy adja meg az útvonalát a Beállítások → Hibakereső menüben.</value></data>
+  <data name="App_Debugger_AdapterMissing" xml:space="preserve"><value>Telepítse a megfelelő adapter plugint, vagy konfiguráljon egyéni adaptert.</value></data>
+  <data name="App_Debugger_Title" xml:space="preserve"><value>Hibakereső</value></data>
+
+  <!-- Toolbar tooltips -->
+  <data name="App_Toolbar_New" xml:space="preserve"><value>Új…</value></data>
+  <data name="App_Toolbar_Open" xml:space="preserve"><value>Megnyitás…</value></data>
+  <data name="App_Toolbar_Save" xml:space="preserve"><value>Mentés (Ctrl+S)</value></data>
+  <data name="App_Toolbar_SaveAll" xml:space="preserve"><value>Összes mentése (Ctrl+Shift+S)</value></data>
+  <data name="App_Toolbar_Cut" xml:space="preserve"><value>Kivágás (Ctrl+X)</value></data>
+  <data name="App_Toolbar_Copy" xml:space="preserve"><value>Másolás (Ctrl+C)</value></data>
+  <data name="App_Toolbar_Paste" xml:space="preserve"><value>Beillesztés (Ctrl+V)</value></data>
+  <data name="App_Toolbar_Find" xml:space="preserve"><value>Keresés… (Ctrl+F)</value></data>
+  <data name="App_Toolbar_FindNext" xml:space="preserve"><value>Következő (F3)</value></data>
+  <data name="App_Toolbar_FindPrevious" xml:space="preserve"><value>Előző (Shift+F3)</value></data>
+  <data name="App_Toolbar_SolutionExplorer" xml:space="preserve"><value>Megoldásböngésző (Ctrl+Alt+L)</value></data>
+  <data name="App_Toolbar_ParsedFields" xml:space="preserve"><value>Elemzett mezők</value></data>
+  <data name="App_Toolbar_Properties" xml:space="preserve"><value>Tulajdonságok (F4)</value></data>
+  <data name="App_Toolbar_Output" xml:space="preserve"><value>Kimenet</value></data>
+  <data name="App_Toolbar_CharacterTable" xml:space="preserve"><value>Karaktertábla</value></data>
+  <data name="App_Toolbar_ActiveCharTable" xml:space="preserve"><value>Aktív karaktertábla</value></data>
+  <data name="App_Toolbar_BuildConfig" xml:space="preserve"><value>Build-konfiguráció</value></data>
+  <data name="App_Toolbar_TargetPlatform" xml:space="preserve"><value>Célplatform</value></data>
+  <data name="App_Toolbar_StartupProject" xml:space="preserve"><value>Indítási projekt — elindítja a ▶ Indítás (Ctrl+F5)</value></data>
+  <data name="App_Toolbar_StartNoDebug" xml:space="preserve"><value>Indítás hibakeresés nélkül (Ctrl+F5)</value></data>
+  <data name="App_Toolbar_BuildSolution" xml:space="preserve"><value>Megoldás fordítása (Ctrl+Shift+B)</value></data>
+  <data name="App_Toolbar_RebuildSolution" xml:space="preserve"><value>Megoldás újrafordítása</value></data>
+  <data name="App_Toolbar_CleanSolution" xml:space="preserve"><value>Megoldás tisztítása</value></data>
+  <data name="App_Toolbar_CancelBuild" xml:space="preserve"><value>Fordítás megszakítása</value></data>
+  <data name="App_Toolbar_Continue" xml:space="preserve"><value>Folytatás (F5)</value></data>
+  <data name="App_Toolbar_Pause" xml:space="preserve"><value>Szüneteltetés</value></data>
+  <data name="App_Toolbar_StopDebugging" xml:space="preserve"><value>Hibakeresés leállítása (Shift+F5)</value></data>
+  <data name="App_Toolbar_StepOver" xml:space="preserve"><value>Átlépés (F10)</value></data>
+  <data name="App_Toolbar_StepInto" xml:space="preserve"><value>Belépés (F11)</value></data>
+  <data name="App_Toolbar_StepOut" xml:space="preserve"><value>Kilépés (Shift+F11)</value></data>
+  <data name="App_Toolbar_Dismiss" xml:space="preserve"><value>Kihagyás</value></data>
+  <data name="App_Toolbar_CancelOperation" xml:space="preserve"><value>Művelet megszakítása</value></data>
+  <data name="App_Toolbar_SwitchBranch" xml:space="preserve"><value>Kattintson az ágváltáshoz</value></data>
+  <data name="App_Toolbar_UncommittedChanges" xml:space="preserve"><value>Nem véglegesített módosítások</value></data>
+  <data name="App_Toolbar_PluginUpdates" xml:space="preserve"><value>Pluginfrissítések elérhetők — kattintson a Marketplace megnyitásához</value></data>
+
+  <!-- Shell / project / misc -->
+  <data name="App_Error" xml:space="preserve"><value>Hiba</value></data>
+  <data name="App_SaveAs" xml:space="preserve"><value>Mentés másként</value></data>
+  <data name="App_AddExistingItem" xml:space="preserve"><value>Meglévő elem hozzáadása</value></data>
+  <data name="App_PanelOptions" xml:space="preserve"><value>Beállítások</value></data>
+  <data name="App_PanelFormatCatalog" xml:space="preserve"><value>Formátumkatalógus</value></data>
+  <data name="App_SelectEntropyFile" xml:space="preserve"><value>Fájl kiválasztása entrópiaelemzéshez</value></data>
+  <data name="App_RemoveFolderMessage" xml:space="preserve"><value>Törli a(z) « {0} » mappát a projektből?{1}A benne lévő elemek a projekt gyökerében maradnak. A fizikai könyvtár nem törlődik.</value></data>
+  <data name="App_RemoveSolutionFolderMessage" xml:space="preserve"><value>Törli a(z) « {0} » megoldásmappát?{1}A benne lévő projektek a megoldás gyökerében maradnak.</value></data>
+  <data name="App_ImportIntoProject" xml:space="preserve"><value>Importálás a projektbe</value></data>
+  <data name="App_ImportIntoProjectMessage" xml:space="preserve"><value>Másolja a(z) « {0} » elemet a projekt könyvtárába?{1}{2}{1}Az eredeti fájl nem törlődik.</value></data>
+  <data name="App_FailedCreateProject" xml:space="preserve"><value>Projekt létrehozása sikertelen:{0}{1}</value></data>
+  <data name="App_FailedCreateFile" xml:space="preserve"><value>Fájl létrehozása sikertelen:{0}{1}</value></data>
+  <data name="App_FailedLoadLayout" xml:space="preserve"><value>Elrendezés betöltése sikertelen:{0}{1}</value></data>
+  <data name="App_FailedWriteTblx" xml:space="preserve"><value>TBLX fájl írása sikertelen:{0}{1}</value></data>
+  <data name="App_CompareWithHead" xml:space="preserve"><value>Összehasonlítás HEAD-del</value></data>
+  <data name="App_CompareWithHeadNoRepo" xml:space="preserve"><value>Nem található git repó ehhez a fájlhoz.</value></data>
+  <data name="App_CompareWithHeadNoVersion" xml:space="preserve"><value>Nem lehet kinyerni a HEAD verziót a gitből.</value></data>
+  <data name="App_UpgradeMessagePattern" xml:space="preserve"><value>A következő fájlok régi formátumot (v{0}) használnak, amelyek v{1}-re frissülnek:{2}{2}  • {3}{2}{2}Minden fájlhoz biztonsági másolat (.v{0}.bak) készül.{2}{2}Frissíti most?</value></data>
+  <data name="App_UpgradeFailedMessage" xml:space="preserve"><value>Frissítés sikertelen: {0}</value></data>
+  <data name="App_InfoBar_Disable" xml:space="preserve"><value>Letiltás</value></data>
+  <data name="App_InfoBar_Restart" xml:space="preserve"><value>Újraindítás</value></data>
+  <data name="App_InfoBar_Ignore" xml:space="preserve"><value>Kihagyás</value></data>
+  <data name="App_InfoBar_Reload" xml:space="preserve"><value>Újratöltés</value></data>
+  <data name="App_InfoBar_KeepEdits" xml:space="preserve"><value>Módosítások megtartása</value></data>
+
+  <!-- ── Options panel strings ─────────────────────────────────────────── -->
+  <data name="App_Options_ClearAll" xml:space="preserve"><value>Összes törlése</value></data>
+  <data name="App_Options_ResetToDefaults" xml:space="preserve"><value>Visszaállítás alapértelmezettre</value></data>
+  <data name="App_Options_ClearHistory" xml:space="preserve"><value>Előzmények törlése</value></data>
+  <data name="App_Options_Save" xml:space="preserve"><value>Mentés</value></data>
+  <data name="App_Options_Browse" xml:space="preserve"><value>Tallózás…</value></data>
+  <data name="App_Options_SavedComparisons" xml:space="preserve"><value>mentett összehasonlítás</value></data>
+  <data name="App_Options_ShowMinimap" xml:space="preserve"><value>Miniatűr térkép megjelenítése</value></data>
+  <data name="App_Options_HighlightCharDiff" xml:space="preserve"><value>Karakterszintű különbségek kiemelése a módosított sorokban (≤ 500 kar.)</value></data>
+  <data name="App_Options_CollapseIdentical" xml:space="preserve"><value>Azonos régiók összecsukása</value></data>
+  <data name="App_Options_StopAtEntry" xml:space="preserve"><value>Megállás a program belépési pontjánál (Main)</value></data>
+  <data name="App_Options_ShowReturnValues" xml:space="preserve"><value>Visszatérési értékek megjelenítése a helyi változóknál minden lépés után</value></data>
+  <data name="App_Options_HighlightBreakpoints" xml:space="preserve"><value>Töréspontsorok kiemelése a szerkesztőben (piros/narancs/szürke árnyalat)</value></data>
+  <data name="App_Options_AutoImportBreakpoints" xml:space="preserve"><value>VS töréspontok automatikus importálása a megoldás első megnyitásakor</value></data>
+  <data name="App_Options_AutoExportBreakpoints" xml:space="preserve"><value>Töréspontok automatikus exportálása VS XML-be mentéskor</value></data>
+  <data name="App_Options_DetectExternalChanges" xml:space="preserve"><value>Az IDE-n kívüli fájlmódosítások észlelése</value></data>
+  <data name="App_Options_AutoReload" xml:space="preserve"><value>Módosított fájlok automatikus újratöltése megerősítés nélkül</value></data>
+  <data name="App_Options_EnableDockAnimations" xml:space="preserve"><value>Dokkolási animációk engedélyezése</value></data>
+  <data name="App_Options_WrapTabs" xml:space="preserve"><value>Lapok elosztása több sorban</value></data>
+  <data name="App_Options_ScrollTabRows" xml:space="preserve"><value>Lapsorok görgetése az egérgörgővel</value></data>
+  <data name="App_Options_EnableTabPreview" xml:space="preserve"><value>Lap előnézetének engedélyezése rámutatáskor</value></data>
+  <data name="App_Options_ShowFilenameFooter" xml:space="preserve"><value>Fájlnév megjelenítése a lábléc területen</value></data>
+  <data name="App_Options_RestoreSolution" xml:space="preserve"><value>Megoldás visszaállítása</value></data>
+  <data name="App_Options_RestoreTabs" xml:space="preserve"><value>Megnyitott szerkesztő lapok visszaállítása</value></data>
+  <data name="App_Options_RestoreTheme" xml:space="preserve"><value>Téma visszaállítása</value></data>
+  <data name="App_Options_PromptSaveWorkspace" xml:space="preserve"><value>Kérjen megerősítést a munkaterület mentéséhez bezárás előtt</value></data>
+  <data name="App_Options_EnableTabPreviewHover" xml:space="preserve"><value>Lap előnézetének engedélyezése rámutatáskor</value></data>
+  <data name="App_Options_ShowFileNameBelowPreview" xml:space="preserve"><value>Afficher le nom de fichier sous l'aperçu</value></data>
+  <data name="App_Options_KbCategory" xml:space="preserve"><value>Kategória</value></data>
+  <data name="App_Options_KbCommand" xml:space="preserve"><value>Parancs</value></data>
+  <data name="App_Options_KbDefault" xml:space="preserve"><value>Alapértelmezett</value></data>
+  <data name="App_Options_KbShortcut" xml:space="preserve"><value>Billentyűparancs</value></data>
+  <data name="App_Options_LspEnabled" xml:space="preserve"><value>Engedélyezve</value></data>
+  <data name="App_Options_LspLanguageId" xml:space="preserve"><value>Nyelvazonosító</value></data>
+  <data name="App_Options_LspExtensions" xml:space="preserve"><value>Kiterjesztések</value></data>
+  <data name="App_Options_LspExecutable" xml:space="preserve"><value>Futtatható</value></data>
+  <data name="App_Options_LspArguments" xml:space="preserve"><value>Argumentumok</value></data>
+  <data name="App_Options_LspSource" xml:space="preserve"><value>Forrás</value></data>
+  <data name="App_Options_AllSettings" xml:space="preserve"><value>Összes beállítás</value></data>
+  <data name="App_Options_ResetOverrides" xml:space="preserve"><value>Felülbírálatok visszaállítása</value></data>
+  <data name="App_Options_ResetAllOverrides" xml:space="preserve"><value>Összes felülbírálat visszaállítása</value></data>
+  <data name="App_Options_DockedPanel" xml:space="preserve"><value>Dokkolt panel (alapértelmezett)</value></data>
+  <data name="App_Options_InlinePopup" xml:space="preserve"><value>Integrált felugró ablak</value></data>
+  <data name="App_Options_CommandsDefault" xml:space="preserve"><value>Parancsok (alapértelmezett)</value></data>
+  <data name="App_Options_LspNotActive" xml:space="preserve"><value>LSP inaktív</value></data>
+  <data name="App_Options_LspTypeToSearch" xml:space="preserve"><value>Gépeljen a munkaterület szimbolumainak kereséséhez</value></data>
+  <data name="App_Options_LspSearching" xml:space="preserve"><value>Keresés folyamatban…</value></data>
+
+  <data name="App_Lsp_CppNotInstalled" xml:space="preserve"><value>C/C++ LSP szerver nincs telepítve</value></data>
+  <data name="App_Lsp_ClangdReady" xml:space="preserve"><value>clangd kész</value></data>
+  <data name="App_Lsp_ClangdFailed" xml:space="preserve"><value>clangd letöltése sikertelen</value></data>
+  <!-- Welcome Panel -->
+  <data name="App_Welcome_ChangelogUnavailable" xml:space="preserve"><value>Változásnapló nem elérhető — ellenőrizze a kapcsolatot.</value></data>
+  <data name="App_Welcome_VersionDev" xml:space="preserve"><value>Fejlesztői verzió</value></data>
+  <!-- View Menu Organizer -->
+  <data name="App_ViewMenu_OrganizeBy" xml:space="preserve"><value>Rendezés _szerint…</value></data>
+  <data name="App_ViewMenu_Flat" xml:space="preserve"><value>_Sík (klasszikus)</value></data>
+  <data name="App_ViewMenu_Categorized" xml:space="preserve"><value>_Kategória szerint</value></data>
+  <data name="App_ViewMenu_ByDockSide" xml:space="preserve"><value>_Dokkolási oldal szerint</value></data>
+  <data name="App_ViewMenu_PinToViewMenu" xml:space="preserve"><value>_Rögzítés a Nézet menühöz</value></data>
+  <data name="App_ViewMenu_UnpinFromViewMenu" xml:space="preserve"><value>_Rögzítés megszüntetése a Nézet menüből</value></data>
+  <!-- Document InfoBar -->
+  <data name="App_InfoBar_HexEditor" xml:space="preserve"><value>Hexszerkesztő</value></data>
+  <!-- Notification Center -->
+  <data name="App_Notifications_Title" xml:space="preserve"><value>Értesítések</value></data>
+  <data name="App_Notifications_Empty" xml:space="preserve"><value>Nincs értesítés</value></data>
+  <data name="App_Notifications_ClearAll" xml:space="preserve"><value>Összes törlése</value></data>
+  <!-- Source Files Page -->
+  <data name="App_SourceFiles_SelectFolder" xml:space="preserve"><value>Forrásmappa kiválasztása</value></data>
+  <!-- Configuration Properties Page -->
+  <data name="App_ConfigPage_BuildAll" xml:space="preserve"><value>Összes fordítása</value></data>
+  <data name="App_ConfigPage_DeployAll" xml:space="preserve"><value>Összes telepítése</value></data>
+  <!-- Startup Projects Page -->
+  <data name="App_StartupProjects_CurrentSelection" xml:space="preserve"><value>Aktuális kijelölés</value></data>
+  <data name="App_StartupProjects_SingleProject" xml:space="preserve"><value>Egyetlen indítási projekt:</value></data>
+  <data name="App_StartupProjects_MultipleProjects" xml:space="preserve"><value>Több indítási projekt:</value></data>
+  <data name="App_StartupProjects_LaunchProfiles" xml:space="preserve"><value>Indítási profilok</value></data>
+  <!-- Options Pages -->
+  <data name="App_Options_SelectDebugAdapter" xml:space="preserve"><value>Hibakeresési adapter futtatható fájljának kiválasztása</value></data>
+  <data name="App_Options_SelectLspExecutable" xml:space="preserve"><value>LSP szerver futtatható fájljának kiválasztása</value></data>
+  <!-- LSP Status -->
+  <data name="App_Lsp_ErrorTitle" xml:space="preserve"><value>LSP hiba</value></data>
+
+  <!-- Options combo items — View Menu sort order -->
+  <data name="App_ViewMenu_SortAlphabetical"      xml:space="preserve"><value>Ábécé sorrend</value></data>
+  <data name="App_ViewMenu_SortByFrequency"       xml:space="preserve"><value>Gyakoriság szerint</value></data>
+  <data name="App_ViewMenu_SortCustom"            xml:space="preserve"><value>Egyéni</value></data>
+
+  <!-- Options combo items — Tabs placement -->
+  <data name="App_Tabs_PositionTop"               xml:space="preserve"><value>Felül</value></data>
+  <data name="App_Tabs_PositionLeft"              xml:space="preserve"><value>Balra</value></data>
+  <data name="App_Tabs_PositionRight"             xml:space="preserve"><value>Jobbra</value></data>
+  <data name="App_Tabs_PositionNone"              xml:space="preserve"><value>Aucun</value></data>
+
+  <!-- Options combo items — Tabs color mode (group by) -->
+  <data name="App_Tabs_GroupByProject"            xml:space="preserve"><value>Projekt szerint</value></data>
+  <data name="App_Tabs_GroupByExtension"          xml:space="preserve"><value>Fájlkiterjesztés szerint</value></data>
+  <data name="App_Tabs_GroupByRegex"              xml:space="preserve"><value>Regex szabály szerint</value></data>
+
+  <!-- Options combo items — Docking shadow/highlight mode -->
+  <data name="App_Docking_ShadowNone"             xml:space="preserve"><value>Aucune</value></data>
+  <data name="App_Docking_ShadowTopBar"           xml:space="preserve"><value>Felső sáv</value></data>
+  <data name="App_Docking_ShadowFullBorder"       xml:space="preserve"><value>Teljes szegély</value></data>
+  <data name="App_Docking_ShadowGlow"             xml:space="preserve"><value>Ragyogás</value></data>
+
+  <!-- Options combo items — Docking corner radius scope -->
+  <data name="App_Docking_CornerNormal"           xml:space="preserve"><value>Normál (éles sarkok)</value></data>
+  <data name="App_Docking_CornerRoundedContent"   xml:space="preserve"><value>Lekerekített — csak tartalom</value></data>
+  <data name="App_Docking_CornerRoundedFull"      xml:space="preserve"><value>Lekerekített — teljes panel</value></data>
+
+  <!-- Options combo items — Comparison view mode -->
+  <data name="App_Comparison_ModeSideBySide"      xml:space="preserve"><value>Egymás mellett</value></data>
+  <data name="App_Comparison_ModeInline"          xml:space="preserve"><value>Soron belül</value></data>
+  <data name="App_Comparison_ModeHexText"         xml:space="preserve"><value>HexSzöveg</value></data>
+
+  <!-- Options combo items — Code Editor minimap side -->
+  <data name="App_CodeEditor_MinimapRight"        xml:space="preserve"><value>Jobbra</value></data>
+  <data name="App_CodeEditor_MinimapLeft"         xml:space="preserve"><value>Balra</value></data>
+
+  <!-- Options combo items — Code Editor minimap vertical size -->
+  <data name="App_CodeEditor_MinimapProportional" xml:space="preserve"><value>Proportionnel</value></data>
+  <data name="App_CodeEditor_MinimapFill"         xml:space="preserve"><value>Remplir</value></data>
+  <data name="App_CodeEditor_MinimapFit"          xml:space="preserve"><value>Ajuster</value></data>
+
+  <!-- GoToOffsetDialog validation messages -->
+  <data name="App_GoTo_EnterOffset" xml:space="preserve"><value>Kérjük, adjon meg egy eltolást.</value></data>
+  <data name="App_GoTo_InvalidHex" xml:space="preserve"><value>Érvénytelen hexadecimális érték.</value></data>
+  <data name="App_GoTo_InvalidDecimal" xml:space="preserve"><value>Érvénytelen decimális érték.</value></data>
+  <data name="App_GoTo_OffsetNonNegative" xml:space="preserve"><value>Az eltolásnak nem negatívnak kell lennie.</value></data>
+
+  <!-- PasteConflictDialog validation messages -->
+  <data name="App_PasteConflict_EnterFileName" xml:space="preserve"><value>Kérjük, adjon meg egy fájlnevet.</value></data>
+  <data name="App_PasteConflict_InvalidChars" xml:space="preserve"><value>A név érvénytelen karaktereket tartalmaz.</value></data>
+  <data name="APP_QuickActionsSection" xml:space="preserve">
+    <value>QUICK ACTIONS</value>
+  </data>
+  <data name="APP_NewFileButton" xml:space="preserve">
+    <value>New File</value>
+  </data>
+  <data name="APP_OpenFileButton" xml:space="preserve">
+    <value>Open File…</value>
+  </data>
+  <data name="APP_OpenProjectButton" xml:space="preserve">
+    <value>Open Project / Solution…</value>
+  </data>
+  <data name="APP_OptionsButton" xml:space="preserve">
+    <value>Beállítások</value>
+  </data>
+  <data name="APP_RecentSection" xml:space="preserve">
+    <value>RECENT</value>
+  </data>
+  <data name="APP_NoRecentFiles" xml:space="preserve">
+    <value>No recent files</value>
+  </data>
+  <data name="APP_RecentProjectsSection" xml:space="preserve">
+    <value>RECENT PROJECTS</value>
+  </data>
+  <data name="APP_NoRecentProjects" xml:space="preserve">
+    <value>No recent projects</value>
+  </data>
+  <data name="APP_ResourcesSection" xml:space="preserve">
+    <value>RESOURCES</value>
+  </data>
+  <data name="APP_GitHubLink" xml:space="preserve">
+    <value>GitHub Repository ↗</value>
+  </data>
+  <data name="APP_WikiLink" xml:space="preserve">
+    <value>Wiki ↗</value>
+  </data>
+  <data name="APP_ReportIssueLink" xml:space="preserve">
+    <value>Report an Issue ↗</value>
+  </data>
+  <data name="APP_WhatsNewSection" xml:space="preserve">
+    <value>WHAT'S NEW</value>
+  </data>
+  <data name="APP_LoadingChangelog" xml:space="preserve">
+    <value>Loading changelog…</value>
+  </data>
+  <data name="APP_ChangelogNotAvailable" xml:space="preserve">
+    <value>Changelog not available.</value>
+  </data>
+  <data name="APP_GitHubButton" xml:space="preserve">
+    <value>GitHub</value>
+  </data>
+  <data name="APP_WikiButton" xml:space="preserve">
+    <value>Wiki</value>
+  </data>
+  <data name="APP_ReportIssueButton" xml:space="preserve">
+    <value>Report Issue</value>
+  </data>
+  <data name="APP_FullChangelogButton" xml:space="preserve">
+    <value>Full Changelog</value>
+  </data>
+  <data name="APP_Dismiss" xml:space="preserve"><value>Bezárás</value></data>
+  <data name="APP_ViewIn" xml:space="preserve"><value>Megjelenítés itt:</value></data>
+  <data name="APP_UnsavedChanges" xml:space="preserve"><value>Nem mentett módosítások</value></data>
+  <data name="APP_ReadOnly" xml:space="preserve"><value>Csak olvasható</value></data>
+  <data name="APP_ExtensionSystem" xml:space="preserve"><value>BŐVÍTMÉNY-RENDSZER</value></data>
+  <data name="APP_SlowBadge" xml:space="preserve"><value>LENT</value></data>
+  <data name="APP_Copy" xml:space="preserve"><value>Copier</value></data>
+  <data name="APP_SelectAll" xml:space="preserve"><value>Összes kijelölése</value></data>
+  <data name="APP_SaveOutputAs" xml:space="preserve"><value>Enregistrer la sortie sous...</value></data>
+  <data name="APP_CopyAll" xml:space="preserve"><value>Tout copier</value></data>
+  <data name="APP_ClearAll" xml:space="preserve"><value>Összes törlése</value></data>
+  <data name="APP_ToggleWordWrap" xml:space="preserve"><value>Activer/désactiver le retour à la ligne</value></data>
+  <data name="APP_ToggleAutoScroll" xml:space="preserve"><value>Activer/désactiver le défilement automatique</value></data>
+  <data name="APP_ToolbarFind" xml:space="preserve"><value>Trouver</value></data>
+  <data name="APP_ToolbarExplorer" xml:space="preserve"><value>Explorateur</value></data>
+  <data name="APP_BuildStart" xml:space="preserve"><value>Démarrer</value></data>
+  <data name="APP_BuildBuild" xml:space="preserve"><value>Générer</value></data>
+  <data name="APP_BuildRebuild" xml:space="preserve"><value>Régénérer</value></data>
+  <data name="APP_BuildClean" xml:space="preserve"><value>Nettoyer</value></data>
+  <data name="APP_BuildStop" xml:space="preserve"><value>Arrêter</value></data>
+  <data name="App_Editor_BuiltInTables" xml:space="preserve"><value>Beépített táblák</value></data>
+  <data name="App_Editor_DefaultAscii" xml:space="preserve"><value>Alapértelmezett (ASCII)</value></data>
+  <data name="APP_InstallEllipsis" xml:space="preserve"><value>Installer...</value></data>
+  <data name="APP_DBG_StartDebugging" xml:space="preserve"><value>Start _Debugging</value></data>
+  <data name="APP_DBG_StartWithoutDebugging" xml:space="preserve"><value>Start _Without Debugging</value></data>
+  <data name="APP_DBG_StopDebugging" xml:space="preserve"><value>S_top Debugging</value></data>
+  <data name="APP_DBG_Restart" xml:space="preserve"><value>_Restart</value></data>
+  <data name="APP_DBG_Continue" xml:space="preserve"><value>_Continue</value></data>
+  <data name="APP_DBG_Pause" xml:space="preserve"><value>_Pause</value></data>
+  <data name="APP_DBG_AttachToProcess" xml:space="preserve"><value>_Attach to Process…</value></data>
+  <data name="APP_DBG_StepOver" xml:space="preserve"><value>Step _Over</value></data>
+  <data name="APP_DBG_StepInto" xml:space="preserve"><value>Step _Into</value></data>
+  <data name="APP_DBG_StepOut" xml:space="preserve"><value>Step O_ut</value></data>
+  <data name="APP_DBG_ToggleBreakpoint" xml:space="preserve"><value>Toggle _Breakpoint</value></data>
+  <data name="APP_DBG_DeleteAllBreakpoints" xml:space="preserve"><value>_Delete All Breakpoints</value></data>
+  <data name="APP_DBG_ShowBreakpoints" xml:space="preserve"><value>Show _Breakpoints</value></data>
+  <data name="APP_DBG_ShowCallStack" xml:space="preserve"><value>Show _Call Stack</value></data>
+  <data name="APP_DBG_ShowLocals" xml:space="preserve"><value>Show _Locals</value></data>
+  <data name="APP_DBG_ShowWatch" xml:space="preserve"><value>Show _Watch</value></data>
+  <data name="APP_VM_CommandPalette" xml:space="preserve"><value>_Command Palette</value></data>
+  <data name="APP_VM_SolutionExplorer" xml:space="preserve"><value>_Solution Explorer</value></data>
+  <data name="APP_VM_Properties" xml:space="preserve"><value>_Properties</value></data>
+  <data name="APP_VM_Output" xml:space="preserve"><value>_Output</value></data>
+  <data name="APP_VM_ErrorList" xml:space="preserve"><value>_Error List</value></data>
+  <data name="APP_VM_Terminal" xml:space="preserve"><value>_Terminál</value></data>
+  <data name="APP_VM_MarkdownOutline" xml:space="preserve"><value>_Markdown Outline</value></data>
+  <data name="APP_VM_CompareFiles" xml:space="preserve"><value>_Compare Files…</value></data>
+  <data name="APP_VM_FormatBrowser" xml:space="preserve"><value>_Format Browser</value></data>
+  <data name="APP_VM_FormatCatalog" xml:space="preserve"><value>_Format Catalog</value></data>
+  <data name="APP_VM_EntropyAnalysis" xml:space="preserve"><value>_Entropy Analysis…</value></data>
+  <data name="APP_VM_TipMarkdown" xml:space="preserve"><value>Show Markdown Outline panel (heading navigator)</value></data>
+  <data name="APP_VM_TipFormatBrowser" xml:space="preserve"><value>Browse and manage built-in and user .whfmt format definitions</value></data>
+  <data name="APP_VM_TipFormatCatalog" xml:space="preserve"><value>Open the Format Catalog document tab (all formats in a sortable grid)</value></data>
+  <data name="APP_VM_TipEntropy" xml:space="preserve"><value>Analyse entropy and byte distribution of the active file</value></data>
+</root>

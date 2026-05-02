@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfHexEditor.Core.Localization
+    File        : CommonResources.fr-CA.resx
+    Description : fr-CA translations for common UI strings.
+-->
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <data name="OkString" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="CancelString" xml:space="preserve">
+    <value>Batal</value>
+  </data>
+  <data name="CloseString" xml:space="preserve">
+    <value>Tutup</value>
+  </data>
+  <data name="DeleteString" xml:space="preserve">
+    <value>Hapus</value>
+  </data>
+  <data name="ClearString" xml:space="preserve">
+    <value>Hapus</value>
+  </data>
+  <data name="CopyString" xml:space="preserve">
+    <value>Salin</value>
+  </data>
+  <data name="PasteString" xml:space="preserve">
+    <value>Tempel</value>
+  </data>
+  <data name="UndoString" xml:space="preserve">
+    <value>Batal</value>
+  </data>
+  <data name="SelectAllString" xml:space="preserve">
+    <value>Pilih semua</value>
+  </data>
+  <data name="ProgressButtonCancel" xml:space="preserve">
+    <value>Batal</value>
+  </data>
+  <data name="FindString" xml:space="preserve">
+    <value>Cari</value>
+  </data>
+  <data name="ReplaceString" xml:space="preserve">
+    <value>Ganti</value>
+  </data>
+  <data name="FindNextString" xml:space="preserve">
+    <value>Cari berikutnya</value>
+  </data>
+  <data name="FindPreviousButton" xml:space="preserve">
+    <value>Sebelumnya</value>
+  </data>
+  <data name="FindAllString" xml:space="preserve">
+    <value>Temukan semua</value>
+  </data>
+  <data name="ReplaceAllString" xml:space="preserve">
+    <value>Ganti semua</value>
+  </data>
+  <data name="ReplaceNextString" xml:space="preserve">
+    <value>Ganti berikutnya</value>
+  </data>
+  <data name="CopyAsHexadecimalString" xml:space="preserve">
+    <value>Salin sebagai heksadesimal</value>
+  </data>
+  <data name="CopyAsDecimalString" xml:space="preserve">
+    <value>Salin sebagai desimal</value>
+  </data>
+  <data name="CopyAsASCIIString" xml:space="preserve">
+    <value>Salin sebagai ASCII</value>
+  </data>
+  <data name="CutSelectionString" xml:space="preserve">
+    <value>Potong pilihan</value>
+  </data>
+  <data name="CopySelectionString" xml:space="preserve">
+    <value>Salin pilihan</value>
+  </data>
+  <data name="DeleteByteString" xml:space="preserve">
+    <value>Hapus byte</value>
+  </data>
+  <data name="InsertByteString" xml:space="preserve">
+    <value>Sisipkan byte...</value>
+  </data>
+  <data name="InvertSelectionString" xml:space="preserve">
+    <value>Balik byte</value>
+  </data>
+  <data name="GoToOffsetString" xml:space="preserve">
+    <value>Pergi ke offset...</value>
+  </data>
+  <data name="EditModeString" xml:space="preserve">
+    <value>Mode edit</value>
+  </data>
+  <data name="ModeOverwriteString" xml:space="preserve">
+    <value>Mode: Timpa</value>
+  </data>
+  <data name="ValueString" xml:space="preserve">
+    <value>Nilai</value>
+  </data>
+  <data name="DescriptionString" xml:space="preserve">
+    <value>Deskripsi</value>
+  </data>
+  <data name="LengthString" xml:space="preserve">
+    <value>Panjang</value>
+  </data>
+  <data name="PositionString" xml:space="preserve">
+    <value>Posisi</value>
+  </data>
+  <data name="OffsetString" xml:space="preserve">
+    <value>Offset</value>
+  </data>
+  <data name="CountOfString" xml:space="preserve">
+    <value>Jumlah</value>
+  </data>
+  <data name="HexString" xml:space="preserve">
+    <value>Hex</value>
+  </data>
+  <data name="FileSizeString" xml:space="preserve">
+    <value>Ukuran file</value>
+  </data>
+  <data name="ReadyString" xml:space="preserve">
+    <value>Siap</value>
+  </data>
+  <data name="PreviewString" xml:space="preserve">
+    <value>Pratinjau:</value>
+  </data>
+  <data name="PropertiesString" xml:space="preserve">
+    <value>Properti</value>
+  </data>
+  <data name="ZoomString" xml:space="preserve">
+    <value>Zoom</value>
+  </data>
+  <data name="ZoomResetString" xml:space="preserve">
+    <value>Reset zoom ke 100%</value>
+  </data>
+  <data name="StatusMessageString" xml:space="preserve">
+    <value>Pesan status</value>
+  </data>
+  <data name="CommandPaletteString" xml:space="preserve">
+    <value>Palet perintah</value>
+  </data>
+  <data name="ShowConfirmationString" xml:space="preserve">
+    <value>Tampilkan dialog konfirmasi</value>
+  </data>
+  <data name="ByteString" xml:space="preserve">
+    <value>Byte</value>
+  </data>
+  <data name="BytesTagString" xml:space="preserve">
+    <value>Byte</value>
+  </data>
+  <data name="KBTagString" xml:space="preserve">
+    <value>KB</value>
+  </data>
+  <data name="MBTagString" xml:space="preserve">
+    <value>MB</value>
+  </data>
+  <data name="LongString" xml:space="preserve">
+    <value>Long</value>
+  </data>
+  <data name="EndTagString" xml:space="preserve">
+    <value>&lt;akhir&gt;</value>
+  </data>
+  <data name="LineTagString" xml:space="preserve">
+    <value>&lt;br&gt;</value>
+  </data>
+  <data name="LineStatusBarTagString" xml:space="preserve">
+    <value>Ln</value>
+  </data>
+  <data name="FirstByteString" xml:space="preserve">
+    <value>Byte pertama</value>
+  </data>
+  <data name="ValidationInvalidHexString" xml:space="preserve">
+    <value>Nilai heksadesimal tidak valid</value>
+  </data>
+  <data name="ValidationRequiredString" xml:space="preserve">
+    <value>Nilai diperlukan</value>
+  </data>
+  <data name="StatusError" xml:space="preserve">
+    <value>Kesalahan: {0}</value>
+  </data>
+  <data name="WritingErrorExeptionString" xml:space="preserve">
+    <value>Terjadi kesalahan saat menulis.</value>
+  </data>
+  <data name="ConvertStringToLongErrorString" xml:space="preserve">
+    <value>Tidak dapat mengonversi string ini ke long</value>
+  </data>
+  <data name="FileDroppingConfirmationString" xml:space="preserve">
+    <value>Voulez-vous fermer le fichier actuel et ouvrir : </value>
+  </data>
+  <data name="OpenAsReadOnlyString" xml:space="preserve">
+    <value>File terkunci. Apakah Anda ingin membukanya dalam mode baca saja?</value>
+  </data>
+
+</root>

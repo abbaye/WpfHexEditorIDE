@@ -1,0 +1,615 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfHexEditor.Editor.CodeEditor
+    File        : CodeEditorResources.fr-CA.resx
+    Description : fr-CA translations for CodeEditor UI strings.
+-->
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="CodeEditorSettings_ResetButtonContent" xml:space="preserve">
+    <value>Obnovit nastavení</value>
+  </data>
+  <data name="CodeEditorSettings_ExportButtonContent" xml:space="preserve">
+    <value>Exportovat nastavení</value>
+  </data>
+  <data name="CodeEditorSettings_ImportButtonContent" xml:space="preserve">
+    <value>Importovat nastavení</value>
+  </data>
+  <data name="CodeEditorSettings_ResetButtonToolTip" xml:space="preserve">
+    <value>Obnovit všechna nastavení na výchozí hodnoty</value>
+  </data>
+  <data name="CodeEditorSettings_ExportButtonToolTip" xml:space="preserve">
+    <value>Exportovat nastavení do souboru JSON</value>
+  </data>
+  <data name="CodeEditorSettings_ImportButtonToolTip" xml:space="preserve">
+    <value>Importovat nastavení ze souboru JSON</value>
+  </data>
+  <data name="CodeEditorSettings_PreviewHeader" xml:space="preserve">
+    <value>Živý náhled</value>
+  </data>
+  <data name="CodeEditorSettings_PreviewPlaceholder" xml:space="preserve">
+    <value>Náhled se zobrazí zde, když je připojen CodeEditor</value>
+  </data>
+  <data name="CodeEditorOptions_FontSection" xml:space="preserve">
+    <value>Písmo</value>
+  </data>
+  <data name="CodeEditorOptions_FontFamilyLabel" xml:space="preserve">
+    <value>Famille de police :</value>
+  </data>
+  <data name="CodeEditorOptions_FontSizeLabel" xml:space="preserve">
+    <value>Taille :</value>
+  </data>
+  <data name="CodeEditorOptions_OdsazeníSection" xml:space="preserve">
+    <value>Odsazení</value>
+  </data>
+  <data name="CodeEditorOptions_TabSizeLabel" xml:space="preserve">
+    <value>Taille de tabulation :</value>
+  </data>
+  <data name="CodeEditorOptions_ConvertTabsContent" xml:space="preserve">
+    <value>Převést tabulátory na mezery</value>
+  </data>
+  <data name="CodeEditorOptions_AutoIndentLabel" xml:space="preserve">
+    <value>Odsazení automatique :</value>
+  </data>
+  <data name="CodeEditorOptions_DisplaySection" xml:space="preserve">
+    <value>Zobrazení</value>
+  </data>
+  <data name="CodeEditorOptions_ShowLineNumbersContent" xml:space="preserve">
+    <value>Zobrazit čísla řádků</value>
+  </data>
+  <data name="CodeEditorOptions_ShowWhitespaceLabel" xml:space="preserve">
+    <value>Zobrazit mezery :</value>
+  </data>
+  <data name="CodeEditorOptions_CodeFoldingContent" xml:space="preserve">
+    <value>Povolit sbalování kódu</value>
+  </data>
+  <data name="CodeEditorOptions_FoldToggleContent" xml:space="preserve">
+    <value>Přepínat sbalené oblasti dvojklikem</value>
+  </data>
+  <data name="CodeEditorOptions_ScopeGuidesContent" xml:space="preserve">
+    <value>Zobrazit vodítka oboru</value>
+  </data>
+  <data name="CodeEditorOptions_FeaturesSection" xml:space="preserve">
+    <value>Funkce</value>
+  </data>
+  <data name="CodeEditorOptions_SmartCompleteContent" xml:space="preserve">
+    <value>Povolit SmartComplete</value>
+  </data>
+  <data name="CodeEditorOptions_SnippetsContent" xml:space="preserve">
+    <value>Povolit fragmenty kódu</value>
+  </data>
+  <data name="CodeEditorOptions_MultiCaretContent" xml:space="preserve">
+    <value>Povolit multi-editaci (Alt+Klik)</value>
+  </data>
+  <data name="CodeEditorOptions_FindAllRefsContent" xml:space="preserve">
+    <value>Povolit Najít všechny reference (Shift+F12)</value>
+  </data>
+  <data name="CodeEditorOptions_FindAllRefsToolTip" xml:space="preserve">
+    <value>Vyžaduje aktivní jazykový server (LSP) pro aktuální typ souboru</value>
+  </data>
+  <data name="CodeEditorOptions_CodeLensContent" xml:space="preserve">
+    <value>Zobrazit Code Lens (inline počítadla referencí)</value>
+  </data>
+  <data name="CodeEditorOptions_CodeLensToolTip" xml:space="preserve">
+    <value>Zobrazuje počet referencí nad každou deklarací. Kliknutím na indikaci otevřete vyskakovací okno Referencí.</value>
+  </data>
+  <data name="CodeEditorOptions_WordHighlightContent" xml:space="preserve">
+    <value>Zvýraznit slovo pod kurzorem</value>
+  </data>
+  <data name="CodeEditorOptions_WordHighlightToolTip" xml:space="preserve">
+    <value>Zvýrazní všechny výskyty slova pod kurzorem a zobrazí značky na posuvníku</value>
+  </data>
+  <data name="CodeEditorOptions_BracketColorizeContent" xml:space="preserve">
+    <value>Barvení párů závorek</value>
+  </data>
+  <data name="CodeEditorOptions_BracketColorizeToolTip" xml:space="preserve">
+    <value>Barví závorky pomocí CE_Bracket_1/2/3/4 dle hloubky vnoření (vyžaduje bracketPairs v .whfmt jazyka)</value>
+  </data>
+  <data name="CodeEditorOptions_ColorSwatchContent" xml:space="preserve">
+    <value>Náhled vzorníku barev</value>
+  </data>
+  <data name="CodeEditorOptions_ColorSwatchToolTip" xml:space="preserve">
+    <value>Zobrazuje vzorník 12×12 vedle barevných literálů (např. #FF5733) v souborech CSS, XAML, C#</value>
+  </data>
+  <data name="CodeEditorOptions_FormatOnSaveContent" xml:space="preserve">
+    <value>Formátovat při uložení (Ctrl+S)</value>
+  </data>
+  <data name="CodeEditorOptions_FormatOnSaveToolTip" xml:space="preserve">
+    <value>Automaticky formátuje dokument při uložení. Používá formátování LSP, pokud je k dispozici, jinak aplikuje pravidla odsazení .whfmt.</value>
+  </data>
+  <data name="CodeEditorOptions_CodeFormattingSection" xml:space="preserve">
+    <value>Formátování kódu</value>
+  </data>
+  <data name="CodeEditorOptions_CodeFormattingInfo" xml:space="preserve">
+    <value>Tato nastavení přepisují výchozí hodnoty .whfmt jazyka. Nechejte nezaškrtnutá políčka v neurčitém stavu pro dědění pravidel jazyka.</value>
+  </data>
+  <data name="CodeEditorOptions_TrimTrailingContent" xml:space="preserve">
+    <value>Odstranit mezery na konci řádku</value>
+  </data>
+  <data name="CodeEditorOptions_TrimTrailingToolTip" xml:space="preserve">
+    <value>Odstraňuje mezery/tabulátory na konci každého řádku. Neurčitý = výchozí hodnota .whfmt.</value>
+  </data>
+  <data name="CodeEditorOptions_InsertFinalNewlineContent" xml:space="preserve">
+    <value>Vložit závěrečný nový řádek</value>
+  </data>
+  <data name="CodeEditorOptions_InsertFinalNewlineToolTip" xml:space="preserve">
+    <value>Zajistí, že soubor končí přesně jedním novým řádkem. Neurčitý = výchozí hodnota .whfmt.</value>
+  </data>
+  <data name="CodeEditorOptions_SpaceAfterKeywordsContent" xml:space="preserve">
+    <value>Mezera za klíčovými slovy (if, for, while)</value>
+  </data>
+  <data name="CodeEditorOptions_SpaceAfterKeywordsToolTip" xml:space="preserve">
+    <value>Vloží mezeru mezi řídicí klíčová slova a otevírající závorku. Neurčitý = výchozí hodnota .whfmt.</value>
+  </data>
+  <data name="CodeEditorOptions_SpaceAroundOpsContent" xml:space="preserve">
+    <value>Mezera kolem binárních operátorů</value>
+  </data>
+  <data name="CodeEditorOptions_SpaceAroundOpsToolTip" xml:space="preserve">
+    <value>Vloží mezery kolem +, -, *, /, ==, atd. Neurčitý = výchozí hodnota .whfmt.</value>
+  </data>
+  <data name="CodeEditorOptions_SpaceAfterCommaContent" xml:space="preserve">
+    <value>Mezera za čárkami</value>
+  </data>
+  <data name="CodeEditorOptions_SpaceAfterCommaToolTip" xml:space="preserve">
+    <value>Vloží mezeru za čárky v seznamech argumentů/parametrů. Neurčitý = výchozí hodnota .whfmt.</value>
+  </data>
+  <data name="CodeEditorOptions_IndentCaseLabelsContent" xml:space="preserve">
+    <value>Odsadit návěští case/when</value>
+  </data>
+  <data name="CodeEditorOptions_IndentCaseLabelsToolTip" xml:space="preserve">
+    <value>Přidá úroveň odsazení k návěštím case/when ve switch. Neurčitý = výchozí hodnota .whfmt.</value>
+
+  </data>
+  <data name="CodeEditorOptions_OrganizeImportsContent" xml:space="preserve">
+    <value>Uspořádat importy při formátování</value>
+  </data>
+  <data name="CodeEditorOptions_OrganizeImportsToolTip" xml:space="preserve">
+    <value>Třídí direktivy using/import abecedně při formátování. Neurčitý = výchozí hodnota .whfmt.</value>
+  </data>
+  <data name="CodeEditorOptions_SyntaxColorsSection" xml:space="preserve">
+    <value>Barvy syntaxe</value>
+  </data>
+  <data name="CodeEditorOptions_ResetColorsButton" xml:space="preserve">
+    <value>Obnovit dle motivu</value>
+  </data>
+  <data name="CodeEditorOptions_ColorPickButton" xml:space="preserve">
+    <value>Vybrat</value>
+  </data>
+  <data name="FormatScriptEditor_NewToolTip" xml:space="preserve">
+    <value>Nová definice formátu</value>
+  </data>
+  <data name="FormatScriptEditor_OpenToolTip" xml:space="preserve">
+    <value>Otevřít definici formátu</value>
+  </data>
+  <data name="FormatScriptEditor_SaveToolTip" xml:space="preserve">
+    <value>Uložit aktuální soubor</value>
+  </data>
+  <data name="FormatScriptEditor_UndoToolTip" xml:space="preserve">
+    <value>Zrušit (Ctrl+Z)</value>
+  </data>
+  <data name="FormatScriptEditor_RedoToolTip" xml:space="preserve">
+    <value>Znovu (Ctrl+Y)</value>
+  </data>
+  <data name="FormatScriptEditor_FormatToolTip" xml:space="preserve">
+    <value>Formátovat JSON (Ctrl+Shift+F)</value>
+  </data>
+  <data name="FormatScriptEditor_ValidateToolTip" xml:space="preserve">
+    <value>Ověřit definici formátu</value>
+  </data>
+  <data name="FormatScriptEditor_NoFileLoaded" xml:space="preserve">
+    <value>Žádný soubor není načten</value>
+  </data>
+  <data name="FormatScriptEditor_EmbeddedFormatsHeader" xml:space="preserve">
+    <value>Vestavěné formáty</value>
+  </data>
+  <data name="FormatScriptEditor_EditorTabHeader" xml:space="preserve">
+    <value>Éditeur</value>
+  </data>
+  <data name="FormatScriptEditor_PreviewPlaceholder" xml:space="preserve">
+    <value>Načtěte definici formátu pro zobrazení náhledu…</value>
+  </data>
+  <data name="FormatScriptEditor_OvěřeníTabHeader" xml:space="preserve">
+    <value>Ověření</value>
+  </data>
+  <data name="FormatScriptEditor_OvěřeníResultsHeader" xml:space="preserve">
+    <value>Výsledky ověření</value>
+  </data>
+  <data name="FormatScriptEditor_SelectTestFileButton" xml:space="preserve">
+    <value>Vybrat testovací soubor…</value>
+  </data>
+  <data name="FormatScriptEditor_RunTestButton" xml:space="preserve">
+    <value>Spustit test</value>
+  </data>
+  <data name="FormatScriptEditor_TestInstructions" xml:space="preserve">
+    <value>Otestujte definici formátu s ukázkovými soubory zde.\n\nVyberte soubor a klikněte na 'Spustit test' pro zobrazení výsledků.</value>
+  </data>
+  <data name="CodeEditorSettings_NoEditorMessage" xml:space="preserve">
+    <value>Žádný ovládací prvek CodeEditor není připojen.</value>
+  </data>
+  <data name="CodeEditorSettings_NoEditorTitle" xml:space="preserve">
+    <value>Chyba</value>
+  </data>
+  <data name="CodeEditorSettings_ResetConfirmMessage" xml:space="preserve">
+    <value>Opravdu chcete obnovit všechna nastavení na výchozí hodnoty?</value>
+  </data>
+  <data name="CodeEditorSettings_ResetConfirmTitle" xml:space="preserve">
+    <value>Potvrdit obnovení</value>
+  </data>
+  <data name="CodeEditorSettings_ExportDialogTitle" xml:space="preserve">
+    <value>Exportovat nastavení</value>
+  </data>
+  <data name="CodeEditorSettings_ExportSuccessMessage" xml:space="preserve">
+    <value>Nastavení úspěšně exportována do:
+{0}</value>
+
+  </data>
+  <data name="CodeEditorSettings_ExportSuccessTitle" xml:space="preserve">
+    <value>Export úspěšný</value>
+  </data>
+  <data name="CodeEditorSettings_ExportFailedMessage" xml:space="preserve">
+    <value>Export nastavení selhal:
+{0}</value>
+
+  </data>
+  <data name="CodeEditorSettings_ExportFailedTitle" xml:space="preserve">
+    <value>Export selhal</value>
+
+  </data>
+  <data name="CodeEditorSettings_ImportDialogTitle" xml:space="preserve">
+    <value>Importovat nastavení</value>
+  </data>
+  <data name="CodeEditorSettings_ImportSuccessMessage" xml:space="preserve">
+    <value>Nastavení úspěšně importována z:
+{0}</value>
+
+  </data>
+  <data name="CodeEditorSettings_ImportSuccessTitle" xml:space="preserve">
+    <value>Import úspěšný</value>
+  </data>
+  <data name="CodeEditorSettings_ImportFailedMessage" xml:space="preserve">
+    <value>Import nastavení selhal:
+{0}</value>
+
+  </data>
+  <data name="CodeEditorSettings_ImportFailedTitle" xml:space="preserve">
+    <value>Import selhal</value>
+
+  </data>
+  <data name="CodeEditorSettings_ResetCompleteMessage" xml:space="preserve">
+    <value>Všechna nastavení byla obnovena na výchozí hodnoty.</value>
+  </data>
+  <data name="CodeEditorSettings_ResetCompleteTitle" xml:space="preserve">
+    <value>Obnovení dokončeno</value>
+  </data>
+  <data name="FormatScriptEditor_LoadFormatsError" xml:space="preserve">
+    <value>Načtení vestavěných formátů selhalo: {0}</value>
+
+  </data>
+  <data name="FormatScriptEditor_OpenDialogTitle" xml:space="preserve">
+    <value>Otevřít definici formátu</value>
+  </data>
+  <data name="FormatScriptEditor_SaveDialogTitle" xml:space="preserve">
+    <value>Uložit la définition de format</value>
+  </data>
+  <data name="FormatScriptEditor_FormatJsonError" xml:space="preserve">
+    <value>Formátování JSON selhalo: {0}</value>
+
+  </data>
+  <data name="FormatScriptEditor_FormatJsonErrorTitle" xml:space="preserve">
+    <value>Chyba de formatage</value>
+  </data>
+  <data name="FormatScriptEditor_LoadFileError" xml:space="preserve">
+    <value>Načtení souboru selhalo: {0}</value>
+
+  </data>
+  <data name="FormatScriptEditor_LoadEmbeddedError" xml:space="preserve">
+    <value>Načtení vestavěného formátu selhalo: {0}</value>
+
+  </data>
+  <data name="FormatScriptEditor_SaveSuccessMessage" xml:space="preserve">
+    <value>Soubor úspěšně uložen!</value>
+
+  </data>
+  <data name="FormatScriptEditor_SaveSuccessTitle" xml:space="preserve">
+    <value>Úspěch</value>
+  </data>
+  <data name="FormatScriptEditor_SaveFailedMessage" xml:space="preserve">
+    <value>Uložení souboru selhalo: {0}</value>
+
+  </data>
+  <data name="FormatScriptEditor_SaveChangesMessage" xml:space="preserve">
+    <value>Chcete uložit změny aktuálního souboru?</value>
+
+  </data>
+  <data name="FormatScriptEditor_SaveChangesTitle" xml:space="preserve">
+    <value>Uložit změny</value>
+  </data>
+  <data name="FormatScriptEditor_StatusErrors" xml:space="preserve">
+    <value>{0} Chyba(s)</value>
+  </data>
+  <data name="FormatScriptEditor_StatusWarnings" xml:space="preserve">
+    <value>{0} upozornění</value>
+  </data>
+  <data name="CodeEditor_ContextMenuSelectAll" xml:space="preserve">
+    <value>Vybrat vše</value>
+  </data>
+  <data name="CodeEditor_ContextMenuDelete" xml:space="preserve">
+    <value>Odstranit</value>
+  </data>
+  <data name="CodeEditor_ContextMenuFind" xml:space="preserve">
+    <value>Hledat…</value>
+  </data>
+  <data name="CodeEditor_ContextMenuReplace" xml:space="preserve">
+    <value>Nahradit…</value>
+  </data>
+  <data name="CodeEditor_ContextMenuFindAllRefs" xml:space="preserve">
+    <value>Najít všechny reference</value>
+  </data>
+  <data name="CodeEditor_ContextMenuQuickFix" xml:space="preserve">
+    <value>Rychlá oprava…</value>
+  </data>
+  <data name="CodeEditor_ContextMenuRenameSymbol" xml:space="preserve">
+    <value>Přejmenovat symbol</value>
+  </data>
+  <data name="CodeEditor_ContextMenuGoToDefinition" xml:space="preserve">
+    <value>Přejít na definici</value>
+  </data>
+  <data name="CodeEditor_ContextMenuGoToImplementation" xml:space="preserve">
+    <value>Aller à l'implémentation</value>
+  </data>
+  <data name="CodeEditor_ContextMenuPeekDefinition" xml:space="preserve">
+    <value>Náhled definice</value>
+  </data>
+  <data name="CodeEditor_ContextMenuShowCallHierarchy" xml:space="preserve">
+    <value>Zobrazit hierarchii volání</value>
+  </data>
+  <data name="CodeEditor_ContextMenuShowTypeHierarchy" xml:space="preserve">
+    <value>Zobrazit hierarchii typů</value>
+  </data>
+  <data name="CodeEditor_ContextMenuFormatting" xml:space="preserve">
+    <value>Formátování</value>
+  </data>
+  <data name="CodeEditor_ContextMenuFormatDocument" xml:space="preserve">
+    <value>Formátovat dokument</value>
+  </data>
+  <data name="CodeEditor_ContextMenuFormatSelection" xml:space="preserve">
+    <value>Formátovat výběr</value>
+  </data>
+  <data name="CodeEditor_ContextMenuOutlining" xml:space="preserve">
+    <value>Strukturní pohled</value>
+  </data>
+  <data name="CodeEditor_ContextMenuToggleOutlining" xml:space="preserve">
+    <value>Přepnout strukturní pohled</value>
+  </data>
+  <data name="CodeEditor_ContextMenuToggleAllOutlining" xml:space="preserve">
+    <value>Přepnout vše ve strukturním pohledu</value>
+  </data>
+  <data name="CodeEditor_ContextMenuStopOutlining" xml:space="preserve">
+    <value>Zastavit strukturní pohled</value>
+  </data>
+  <data name="CodeEditor_ContextMenuStopHidingCurrent" xml:space="preserve">
+    <value>Přestat skrývat aktuální</value>
+  </data>
+  <data name="CodeEditor_ContextMenuCollapseToDefs" xml:space="preserve">
+    <value>Sbalit na definice</value>
+  </data>
+  <data name="CodeEditor_ContextMenuWordWrap" xml:space="preserve">
+    <value>Automatický řádkový zlom</value>
+  </data>
+  <data name="CodeEditor_ContextMenuColumnRulers" xml:space="preserve">
+    <value>Pravítka sloupců</value>
+  </data>
+  <data name="CodeEditor_ContextMenuShowWhitespace" xml:space="preserve">
+    <value>Zobrazit mezery</value>
+  </data>
+  <data name="CodeEditor_ContextMenuWhitespaceNone" xml:space="preserve">
+    <value>Žádné</value>
+  </data>
+  <data name="CodeEditor_ContextMenuWhitespaceSelection" xml:space="preserve">
+    <value>Pouze výběr</value>
+  </data>
+  <data name="CodeEditor_ContextMenuWhitespaceAlways" xml:space="preserve">
+    <value>Vždy</value>
+  </data>
+  <data name="CodeEditor_ContextMenuRefreshHighlights" xml:space="preserve">
+    <value>Obnovit zvýraznění</value>
+  </data>
+  <data name="CodeEditor_ContextMenuReanalyzeFolding" xml:space="preserve">
+    <value>Znovu analyzovat sbalování</value>
+  </data>
+  <data name="CodeEditor_ContextMenuWordHighlight" xml:space="preserve">
+    <value>Zvýraznění slova</value>
+  </data>
+  <data name="CodeEditor_FormatDocumentTransaction" xml:space="preserve">
+    <value>Formátovat dokument</value>
+  </data>
+  <data name="CodeEditor_FormatSelectionTransaction" xml:space="preserve">
+    <value>Formátovat výběr</value>
+  </data>
+  <data name="CodeEditor_FormatJsonError" xml:space="preserve">
+    <value>Impossible de formater — JSON invalide :\n{0}</value>
+  </data>
+  <data name="CodeEditor_FormatJsonErrorTitle" xml:space="preserve">
+    <value>Chyba de formatage</value>
+  </data>
+  <data name="CodeEditor_ValidateJsonSuccess" xml:space="preserve">
+    <value>JSON je platný.</value>
+  </data>
+  <data name="CodeEditor_ValidateJsonTitle" xml:space="preserve">
+    <value>Ověření</value>
+  </data>
+  <data name="CodeEditor_ValidateJsonError" xml:space="preserve">
+    <value>JSON invalide : {0}</value>
+  </data>
+  <data name="CodeEditor_ValidateJsonErrorTitle" xml:space="preserve">
+    <value>Chyba de validation</value>
+  </data>
+  <data name="CodeEditor_GoToLineTitle" xml:space="preserve">
+    <value>Přejít na řádek</value>
+  </data>
+  <data name="CodeEditor_GoToLineLabel" xml:space="preserve">
+    <value>Numéro de ligne (1 - {0}) :</value>
+  </data>
+  <data name="CodeEditor_GoToLineButton" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="CodeEditor_BreakpointToggleToolTip" xml:space="preserve">
+    <value>Cliquer pour basculer le point d'arrêt</value>
+  </data>
+  <data name="CodeEditor_BreakpointInvalidToolTip" xml:space="preserve">
+    <value>Na tento řádek nelze umístit zarážku</value>
+  </data>
+  <data name="CodeEditor_UrlTooltipEmail" xml:space="preserve">
+    <value>Ctrl+Klik pro odeslání e-mailu</value>
+  </data>
+  <data name="CodeEditor_UrlTooltipLink" xml:space="preserve">
+    <value>Ctrl+Klik pro otevření</value>
+  </data>
+  <data name="CodeEditor_ReferencesCollapseAll" xml:space="preserve">
+    <value>Sbalit vše</value>
+  </data>
+  <data name="CodeEditor_ReferencesExpandAll" xml:space="preserve">
+    <value>Rozbalit vše</value>
+  </data>
+  <data name="CodeEditor_ReferencesTitle" xml:space="preserve">
+    <value>Reference — {0}</value>
+  </data>
+  <data name="CodeEditor_ReferencesCounter" xml:space="preserve">
+    <value>{0} reference(í)</value>
+  </data>
+  <data name="CodeEditor_ReferencesRefresh" xml:space="preserve">
+    <value>Obnovit</value>
+  </data>
+  <data name="CodeEditor_ReferencesPinTooltip" xml:space="preserve">
+    <value>Připnout na panel Najít reference</value>
+  </data>
+  <data name="CodeEditor_BreakpointDisable" xml:space="preserve">
+    <value>Deaktivovat</value>
+  </data>
+  <data name="CodeEditor_BreakpointEnable" xml:space="preserve">
+    <value>Aktivovat</value>
+  </data>
+  <data name="CodeEditor_BreakpointTypeDisabled" xml:space="preserve">
+    <value>Deaktivováno</value>
+  </data>
+  <data name="CodeEditor_BreakpointTypeConditional" xml:space="preserve">
+    <value>Podmíněný</value>
+  </data>
+  <data name="CodeEditor_BreakpointTypeBreakpoint" xml:space="preserve">
+    <value>Point d'arrêt</value>
+  </data>
+  <data name="CodeEditor_BreakpointEditCondition" xml:space="preserve">
+    <value>Upravit podmínku</value>
+  </data>
+  <data name="CodeEditor_BreakpointDeleteBreakpoint" xml:space="preserve">
+    <value>Odstranit le point d'arrêt</value>
+  </data>
+  <data name="CodeEditor_BreakpointDelete" xml:space="preserve">
+    <value>Odstranit</value>
+  </data>
+  <data name="CodeEditor_BreakpointSave" xml:space="preserve">
+    <value>Uložit</value>
+  </data>
+  <data name="CodeEditor_BreakpointConditionLabel" xml:space="preserve">
+    <value>Podmínka:</value>
+  </data>
+  <data name="CodeEditor_BreakpointSettings" xml:space="preserve">
+    <value>Nastavení…</value>
+  </data>
+  <data name="CodeEditor_DisplayName" xml:space="preserve">
+    <value>Editor kódu</value>
+  </data>
+  <data name="CodeEditor_GoToLine" xml:space="preserve">
+    <value>Přejít na řádek</value>
+  </data>
+  <data name="CodeEd_FindRef_CollapseAll" xml:space="preserve">
+    <value>Sbalit vše</value>
+  </data>
+  <data name="CodeEd_Minimap_MenuTitle" xml:space="preserve">
+    <value>_Miniaturní mapa</value>
+  </data>
+  <data name="CodeEd_Minimap_RenderChars" xml:space="preserve">
+    <value>Zobrazit _znaky</value>
+  </data>
+  <data name="CodeEd_Minimap_VerticalSize" xml:space="preserve">
+    <value>_Vertikální velikost</value>
+  </data>
+  <data name="CodeEd_Minimap_SizeProportional" xml:space="preserve">
+    <value>Proporcionální</value>
+  </data>
+  <data name="CodeEd_Minimap_SizeFill" xml:space="preserve">
+    <value>Vyplnit</value>
+  </data>
+  <data name="CodeEd_Minimap_SizeFit" xml:space="preserve">
+    <value>Přizpůsobit</value>
+  </data>
+  <data name="CodeEd_Minimap_Slider" xml:space="preserve">
+    <value>P_osuvník</value>
+  </data>
+  <data name="CodeEd_Minimap_SliderAlways" xml:space="preserve">
+    <value>Vždy</value>
+  </data>
+  <data name="CodeEd_Minimap_SliderMouseOver" xml:space="preserve">
+    <value>Při přejíždění</value>
+  </data>
+  <data name="CodeEd_Minimap_Side" xml:space="preserve">
+    <value>_Strana</value>
+  </data>
+  <data name="CodeEd_Minimap_SideLeft" xml:space="preserve">
+    <value>Vlevo</value>
+  </data>
+  <data name="CodeEd_Minimap_SideRight" xml:space="preserve">
+    <value>Vpravo</value>
+  </data>
+  <data name="CodeEd_Refs_CollapseAll" xml:space="preserve">
+    <value>Sbalit vše</value>
+  </data>
+  <data name="CodeEd_Refs_Refresh" xml:space="preserve">
+    <value>Obnovit</value>
+  </data>
+  <data name="CodeEd_Refs_ExpandAll" xml:space="preserve">
+    <value>Rozbalit vše</value>
+  </data>
+
+</root>

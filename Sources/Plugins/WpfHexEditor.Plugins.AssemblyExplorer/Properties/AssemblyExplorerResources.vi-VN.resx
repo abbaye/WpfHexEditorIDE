@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfHexEditor.Plugins.AssemblyExplorer
+    File        : AssemblyExplorerResources.vi-VN.resx
+    Description : Vietnamese (vi-VN) translations for the Assembly Explorer plugin.
+-->
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:any minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" />
+              <xsd:attribute name="type" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="value">
+            <xsd:complexType>
+              <xsd:any minOccurs="0" maxOccurs="unbounded" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AsmExplorer_PluginName" xml:space="preserve">
+    <value>Trình khám phá assembly</value>
+  </data>
+  <data name="AsmExplorer_PanelTitle" xml:space="preserve">
+    <value>Trình khám phá assembly</value>
+  </data>
+  <data name="AsmExplorer_SearchPanelTitle" xml:space="preserve">
+    <value>Tìm kiếm assembly</value>
+  </data>
+  <data name="AsmExplorer_DiffPanelTitle" xml:space="preserve">
+    <value>So sánh assembly</value>
+  </data>
+  <data name="AsmExplorer_ExportCancelled" xml:space="preserve"><value>Xuất đã hủy.</value></data>
+  <data name="AsmExplorer_NoAssemblyLoaded" xml:space="preserve"><value>Chưa tải assembly nào</value></data>
+  <data name="AsmExplorer_AnalysisCancelled" xml:space="preserve"><value>Phân tích đã hủy.</value></data>
+  <data name="AsmExplorer_Searching" xml:space="preserve"><value>Đang tìm kiếm…</value></data>
+  <data name="AsmExplorer_Comparing" xml:space="preserve"><value>Đang so sánh…</value></data>
+  <data name="AsmExplorer_NoPdb" xml:space="preserve"><value>Không tìm thấy PDB di động bên cạnh assembly.</value></data>
+  <data name="AsmExplorer_SelectMethod" xml:space="preserve"><value>Chọn một nút phương thức để hiển thị thông tin nguồn.</value></data>
+  <data name="AsmExplorer_Export_OutputFolderLabel" xml:space="preserve"><value>Thư mục đầu ra :</value></data>
+  <data name="AsmExplorer_Export_ExportButton" xml:space="preserve"><value>Xuất</value></data>
+  <data name="AsmExplorer_Export_CloseButton" xml:space="preserve"><value>Đóng</value></data>
+  <data name="AsmExplorer_Export_BrowseTitle" xml:space="preserve"><value>Chọn thư mục đầu ra</value></data>
+  <data name="AsmExplorer_Export_NoFolderSelected" xml:space="preserve"><value>Vui lòng chọn thư mục đầu ra.</value></data>
+
+  <data name="AE_DecompilerSection" xml:space="preserve">
+    <value>Trình dịch ngược</value>
+  </data>
+  <data name="AE_DetailFontSizeLabel" xml:space="preserve">
+    <value>Cỡ phông bảng chi tiết:</value>
+  </data>
+  <data name="AE_BackendLabel" xml:space="preserve">
+    <value>Engine dịch ngược:</value>
+  </data>
+  <data name="AE_ILSpyOption" xml:space="preserve">
+    <value>Engine ILSpy</value>
+  </data>
+  <data name="AE_SkeletonOption" xml:space="preserve">
+    <value>Skeleton (chỉ stub BCL)</value>
+  </data>
+  <data name="AE_QualityLabel" xml:space="preserve">
+    <value>Chất lượng dịch ngược:</value>
+  </data>
+  <data name="AE_FullQuality" xml:space="preserve">
+    <value>Đầy đủ (ILSpy + tài liệu XML)</value>
+  </data>
+  <data name="AE_NormalQuality" xml:space="preserve">
+    <value>Bình thường (ILSpy, không có tài liệu)</value>
+  </data>
+  <data name="AE_SkeletonQuality" xml:space="preserve">
+    <value>Skeleton (nhanh, stub BCL)</value>
+  </data>
+  <data name="AE_LangVersionLabel" xml:space="preserve">
+    <value>Phiên bản ngôn ngữ C#:</value>
+  </data>
+  <data name="AE_ShowXmlDocs" xml:space="preserve">
+    <value>Hiển thị chú thích tài liệu XML trong đầu ra dịch ngược</value>
+  </data>
+  <data name="AE_ShowHiddenMembers" xml:space="preserve">
+    <value>Hiển thị thành viên ẩn (do trình biên dịch tạo)</value>
+  </data>
+  <data name="AE_PdbIntegration" xml:space="preserve">
+    <value>Bật tích hợp PDB (ánh xạ nguồn, tên biến cục bộ)</value>
+  </data>
+  <data name="AE_DecompileLangLabel" xml:space="preserve">
+    <value>Ngôn ngữ dịch ngược:</value>
+  </data>
+  <data name="AE_BehaviourSection" xml:space="preserve">
+    <value>Hành vi</value>
+  </data>
+  <data name="AE_AutoAnalyzeOption" xml:space="preserve">
+    <value>Tự động phân tích tệp khi mở trong HexEditor</value>
+  </data>
+  <data name="AE_SyncCursorOption" xml:space="preserve">
+    <value>Đồng bộ con trỏ HexEditor khi chọn nút cây</value>
+  </data>
+  <data name="AE_ShowResourcesOption" xml:space="preserve">
+    <value>Hiển thị nhóm Resources trong cây</value>
+  </data>
+  <data name="AE_ShowMetadataOption" xml:space="preserve">
+    <value>Hiển thị nhóm Metadata Tables trong cây</value>
+  </data>
+  <data name="AE_InheritThemeOption" xml:space="preserve">
+    <value>Kế thừa chủ đề toàn cục IDE</value>
+  </data>
+  <data name="AE_ShowNonPublicOption" xml:space="preserve">
+    <value>Hiển thị thành viên không công khai (private, internal, protected)</value>
+  </data>
+  <data name="AE_ShowInheritedOption" xml:space="preserve">
+    <value>Hiển thị thành viên kế thừa trong nút kiểu</value>
+  </data>
+  <data name="AE_PinAssembliesOption" xml:space="preserve">
+    <value>Ghim assembly đã tải khi thay đổi trình soạn thảo</value>
+  </data>
+  <data name="AE_MaxAssembliesLabel" xml:space="preserve">
+    <value>Số assembly tối đa:</value>
+  </data>
+  <data name="AE_MaxAssembliesRange" xml:space="preserve">
+    <value>(1 – 500)</value>
+  </data>
+  <data name="AE_RecentSection" xml:space="preserve">
+    <value>Assembly gần đây</value>
+  </data>
+  <data name="AE_ClearRecentButton" xml:space="preserve">
+    <value>Xóa tất cả gần đây</value>
+  </data>
+  <data name="AsmExplorer_FilterTypes" xml:space="preserve"><value>Lọc kiểu…</value></data>
+  <data name="AsmExplorer_SelectProject" xml:space="preserve"><value>Chọn dự án để thêm tệp đã dịch ngược vào :</value></data>
+  <data name="Common_ColOffset" xml:space="preserve"><value>Offset</value></data>
+  <data name="AsmExplorer_ClearFilter" xml:space="preserve"><value>Xóa bộ lọc</value></data>
+</root>

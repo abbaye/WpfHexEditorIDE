@@ -1,0 +1,398 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:any minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" />
+              <xsd:attribute name="type" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="value">
+            <xsd:complexType>
+              <xsd:any minOccurs="0" maxOccurs="unbounded" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Validation_ProjectNameEmpty" xml:space="preserve">
+    <value>A projekt neve nem lehet üres.</value>
+  </data>
+  <data name="Dialog_ValidationTitle" xml:space="preserve">
+    <value>Érvényesítés</value>
+  </data>
+  <data name="Error_RenameProjectFailed" xml:space="preserve">
+    <value>A projekt átnevezése sikertelen:</value>
+  </data>
+  <data name="Dialog_ErrorTitle" xml:space="preserve">
+    <value>Hiba</value>
+  </data>
+  <data name="Error_CannotCreateOutputFolder" xml:space="preserve">
+    <value>Nem sikerült létrehozni a kimeneti mappát:</value>
+  </data>
+  <data name="Dialog_ConvertTblTitle" xml:space="preserve">
+    <value>TBL konvertálása</value>
+  </data>
+  <data name="Error_OutputPathIdenticalToSource" xml:space="preserve">
+    <value>A kimeneti útvonal megegyezik a forrással. Válasszon másik mappát.</value>
+  </data>
+  <data name="Dialog_RemoveReferenceTitle" xml:space="preserve">
+    <value>Hivatkozás eltávolítása</value>
+  </data>
+  <data name="Message_NoUnusedReferences" xml:space="preserve">
+    <value>Nem található nem használt assembly-hivatkozás.</value>
+  </data>
+  <data name="Dialog_RemoveUnusedReferencesTitle" xml:space="preserve">
+    <value>Nem használt hivatkozások eltávolítása</value>
+  </data>
+  <data name="Confirm_RemoveUnusedReferences" xml:space="preserve">
+    <value>Eltávolítja a következő nem használt assembly-hivatkozásokat?</value>
+  </data>
+  <data name="Dialog_SelectFilesToAdd" xml:space="preserve">
+    <value>Válassza ki a hozzáadandó fájl(oka)t</value>
+  </data>
+  <data name="Filter_AllFiles" xml:space="preserve">
+    <value>Minden fájl (*.*)|*.*</value>
+  </data>
+  <data name="Dialog_SelectProjectFolder" xml:space="preserve">
+    <value>Válassza ki az új projekt szülőmappáját</value>
+  </data>
+  <data name="Dialog_SelectFileFolder" xml:space="preserve">
+    <value>Válassza ki az új fájl mappáját</value>
+  </data>
+  <data name="Dialog_SelectSolutionFolder" xml:space="preserve">
+    <value>Válassza ki az új megoldás szülőmappáját</value>
+  </data>
+  <data name="Dialog_SelectConvertOutputFolder" xml:space="preserve">
+    <value>Válassza ki a konvertált TBLX fájl kimeneti mappáját</value>
+  </data>
+  <data name="Dialog_AddProjectReference" xml:space="preserve">
+    <value>Projekthivatkozás hozzáadása</value>
+  </data>
+  <data name="Filter_ProjectFiles" xml:space="preserve">
+    <value>Projektfájlok (*.csproj;*.vbproj;*.fsproj)|*.csproj;*.vbproj;*.fsproj|Minden fájl (*.*)|*.*</value>
+  </data>
+  <data name="Dialog_AddAssemblyReference" xml:space="preserve">
+    <value>Assembly-hivatkozás hozzáadása</value>
+  </data>
+  <data name="Filter_AssemblyFiles" xml:space="preserve">
+    <value>Assembly-fájlok (*.dll;*.exe)|*.dll;*.exe|Minden fájl (*.*)|*.*</value>
+  </data>
+  <data name="Dialog_SelectOutputDirectory" xml:space="preserve">
+    <value>Válassza ki a kimeneti könyvtárat</value>
+  </data>
+  <data name="Dialog_SelectIcon" xml:space="preserve">
+    <value>Ikon kiválasztása</value>
+  </data>
+  <data name="Filter_IconFiles" xml:space="preserve">
+    <value>Ikonok (*.ico)|*.ico|Minden fájl (*.*)|*.*</value>
+  </data>
+  <data name="Dialog_SelectProjectToReference" xml:space="preserve">
+    <value>Válasszon egy projektet hivatkozáshoz</value>
+  </data>
+  <data name="Filter_CsharpProjects" xml:space="preserve">
+    <value>C# projektek (*.csproj)|*.csproj|Minden projekt (*.csproj;*.vbproj;*.fsproj)|*.csproj;*.vbproj;*.fsproj</value>
+  </data>
+  <data name="ProjectSystem_Ref_ProjectReferences" xml:space="preserve">
+    <value>Projekthivatkozások</value>
+  </data>
+  <data name="ProjectSystem_Ref_Assemblies" xml:space="preserve">
+    <value>Assembly-k</value>
+  </data>
+  <data name="ProjectSystem_Ref_Analyzers" xml:space="preserve">
+    <value>Elemzők</value>
+  </data>
+  <data name="ProjectSystem_Ref_NoReferenceSupport" xml:space="preserve">
+    <value>Ez a projekttípus nem támogatja a hivatkozások kezelését.</value>
+  </data>
+  <data name="PS_OK" xml:space="preserve"><value>OK</value></data>
+  <data name="PS_Cancel" xml:space="preserve"><value>Mégse</value></data>
+  <data name="PS_Add" xml:space="preserve"><value>Hozzáadás</value></data>
+  <data name="PS_Browse" xml:space="preserve"><value>Tallózás…</value></data>
+  <data name="PS_Remove" xml:space="preserve"><value>Eltávolítás</value></data>
+  <data name="PS_Save" xml:space="preserve"><value>Mentés</value></data>
+  <data name="PS_AddNewItemTitle" xml:space="preserve"><value>Új elem hozzáadása</value></data>
+  <data name="PS_TemplateLabel" xml:space="preserve"><value>Sablon:</value></data>
+  <data name="PS_NameLabel" xml:space="preserve"><value>Név:</value></data>
+  <data name="PS_FolderLabel" xml:space="preserve"><value>Mappa:</value></data>
+  <data name="PS_AddExistingItemTitle" xml:space="preserve"><value>Meglévő elem hozzáadása</value></data>
+  <data name="PS_FilesLabel" xml:space="preserve"><value>Fájl(ok):</value></data>
+  <data name="PS_RemoveFileTooltip" xml:space="preserve"><value>Fájl eltávolítása a kijelölésből</value></data>
+  <data name="PS_DetectedTypeLabel" xml:space="preserve"><value>Észlelt típus:</value></data>
+  <data name="PS_ConvertTblTitle" xml:space="preserve"><value>TBL konvertálása TBLX-re</value></data>
+  <data name="PS_ConversionSection" xml:space="preserve"><value>Konverzió</value></data>
+  <data name="PS_SourceLabel" xml:space="preserve"><value>Forrás:</value></data>
+  <data name="PS_TargetLabel" xml:space="preserve"><value>Cél:</value></data>
+  <data name="PS_GameMetadataSection" xml:space="preserve"><value>Játék metaadatai (opcionális)</value></data>
+  <data name="PS_RomDetectedLabel" xml:space="preserve"><value>Észlelt ROM:</value></data>
+  <data name="PS_AutoFill" xml:space="preserve"><value>Automatikus kitöltés</value></data>
+  <data name="PS_GameTitleLabel" xml:space="preserve"><value>Játék neve:</value></data>
+  <data name="PS_PlatformLabel" xml:space="preserve"><value>Platform:</value></data>
+  <data name="PS_RegionLabel" xml:space="preserve"><value>Régió:</value></data>
+  <data name="PS_AuthorLabel" xml:space="preserve"><value>Szerző:</value></data>
+  <data name="PS_YearLabel" xml:space="preserve"><value>Év:</value></data>
+  <data name="PS_NewFileTitle" xml:space="preserve"><value>Új fájl</value></data>
+  <data name="PS_SortLabel" xml:space="preserve"><value>Rendezés:</value></data>
+  <data name="PS_SortName" xml:space="preserve"><value>Név</value></data>
+  <data name="PS_SortCategory" xml:space="preserve"><value>Kategória</value></data>
+  <data name="PS_SortExtension" xml:space="preserve"><value>Kiterjesztés</value></data>
+  <data name="PS_GridView" xml:space="preserve"><value>Rácsnézet</value></data>
+  <data name="PS_ListView" xml:space="preserve"><value>Listanézet</value></data>
+  <data name="PS_SearchTemplates" xml:space="preserve"><value>Sablonok keresése…</value></data>
+  <data name="PS_BrowseForFolder" xml:space="preserve"><value>Mappa tallózása</value></data>
+  <data name="PS_CreateInMemory" xml:space="preserve"><value>Dokumentum létrehozása memóriában; hely kiválasztása az első Ctrl+S megnyomásakor</value></data>
+  <data name="PS_NewProjectTitle" xml:space="preserve"><value>Új projekt</value></data>
+  <data name="PS_NewSolutionTitle" xml:space="preserve"><value>Új megoldás</value></data>
+  <data name="PS_LocationLabel" xml:space="preserve"><value>Hely:</value></data>
+  <data name="PS_WillCreateLabel" xml:space="preserve"><value>Létrehozza:</value></data>
+  <data name="PS_ProjectPropertiesTitle" xml:space="preserve"><value>Projekt tulajdonságai</value></data>
+  <data name="PS_ApplicationTab" xml:space="preserve"><value>Alkalmazás</value></data>
+  <data name="PS_BuildTab" xml:space="preserve"><value>Fordítás</value></data>
+  <data name="PS_ItemsTab" xml:space="preserve"><value>Elemek</value></data>
+  <data name="PS_ReferencesTab" xml:space="preserve"><value>Hivatkozások</value></data>
+  <data name="PS_ProjectFileLabel" xml:space="preserve"><value>Projektfájl:</value></data>
+  <data name="PS_DirectoryLabel" xml:space="preserve"><value>Könyvtár:</value></data>
+  <data name="PS_FilterSections" xml:space="preserve"><value>Szakaszok szűrése</value></data>
+  <data name="PP_NavApplication" xml:space="preserve"><value>Alkalmazás</value></data>
+  <data name="PP_NavGeneral" xml:space="preserve"><value>Általános</value></data>
+  <data name="PP_ProjectName" xml:space="preserve"><value>Projekt neve</value></data>
+  <data name="PP_ProjectNameDesc" xml:space="preserve"><value>A Solution Explorerben használt logikai név.</value></data>
+  <data name="PP_AssemblyName" xml:space="preserve"><value>Assembly neve</value></data>
+  <data name="PP_AssemblyNameDesc" xml:space="preserve"><value>A lefordított kimeneti fájl neve (kiterjesztés nélkül).</value></data>
+  <data name="PP_DefaultNamespace" xml:space="preserve"><value>Alapértelmezett névtér</value></data>
+  <data name="PP_DefaultNamespaceDesc" xml:space="preserve"><value>Az új fájlokhoz használt gyökér névtér.</value></data>
+  <data name="PP_TargetFramework" xml:space="preserve"><value>Célkeretrendszer</value></data>
+  <data name="PP_TargetFrameworkDesc" xml:space="preserve"><value>A projekt által megcélzott .NET futtatókörnyezet verziója.</value></data>
+  <data name="PP_OutputType" xml:space="preserve"><value>Kimenet típusa</value></data>
+  <data name="PP_OutputTypeDesc" xml:space="preserve"><value>Meghatározza, hogy a projekt .exe, .dll vagy WinExe kimenetet állít elő.</value></data>
+  <data name="PP_OutputTypeLibrary" xml:space="preserve"><value>Osztálytár</value></data>
+  <data name="PP_OutputTypeConsole" xml:space="preserve"><value>Konzolalkalmazás</value></data>
+  <data name="PP_OutputTypeWinApp" xml:space="preserve"><value>Windows-alkalmazás</value></data>
+  <data name="PP_ProjectFile" xml:space="preserve"><value>Projektfájl</value></data>
+  <data name="PP_Directory" xml:space="preserve"><value>Könyvtár</value></data>
+  <data name="PP_ProjectType" xml:space="preserve"><value>Projekt típusa</value></data>
+  <data name="PP_NavBuild" xml:space="preserve"><value>Fordítás</value></data>
+  <data name="PP_Configuration" xml:space="preserve"><value>Konfiguráció</value></data>
+  <data name="PP_ConfigurationDesc" xml:space="preserve"><value>Aktív build-profil (Debug = szimbólumok, Release = optimalizált).</value></data>
+  <data name="PP_Platform" xml:space="preserve"><value>Platform</value></data>
+  <data name="PP_PlatformDesc" xml:space="preserve"><value>A lefordított bináris célarchitektúrája.</value></data>
+  <data name="PP_OutputPath" xml:space="preserve"><value>Kimeneti útvonal</value></data>
+  <data name="PP_OutputPathDesc" xml:space="preserve"><value>A projekt gyökeréhez képest relatív kimeneti könyvtár.</value></data>
+  <data name="PP_OptimizeCode" xml:space="preserve"><value>Kód optimalizálása</value></data>
+  <data name="PP_OptimizeCodeDesc" xml:space="preserve"><value>Engedélyezi a fordítóoptimalizálásokat (Debug esetén konvenció szerint kikapcsolva).</value></data>
+  <data name="PP_WarningsAsErrors" xml:space="preserve"><value>Figyelmeztetések kezelése hibaként</value></data>
+  <data name="PP_NavDependencies" xml:space="preserve"><value>Függőségek</value></data>
+  <data name="PP_DependenciesDesc" xml:space="preserve"><value>A projektben deklarált projekthivatkozások és NuGet-csomagok.</value></data>
+  <data name="PP_ColName" xml:space="preserve"><value>Név</value></data>
+  <data name="PP_ColType" xml:space="preserve"><value>Típus</value></data>
+  <data name="PP_NavGlobalUsings" xml:space="preserve"><value>Globális using-ok</value></data>
+  <data name="PP_GlobalUsingsDesc" xml:space="preserve"><value>A projektben deklarált implicit using-direktívák (ImplicitUsings).</value></data>
+  <data name="PP_ColNamespace" xml:space="preserve"><value>Névtér</value></data>
+  <data name="PP_NavItems" xml:space="preserve"><value>Elemek</value></data>
+  <data name="PP_ColPath" xml:space="preserve"><value>Útvonal</value></data>
+  <data name="PP_NavReferences" xml:space="preserve"><value>Hivatkozások</value></data>
+  <data name="PP_AddNuGet" xml:space="preserve"><value>+ NuGet…</value></data>
+  <data name="PP_AddProject" xml:space="preserve"><value>+ Projekt…</value></data>
+  <data name="PP_NavWin32Resources" xml:space="preserve"><value>Win32 erőforrások</value></data>
+  <data name="PP_AppIcon" xml:space="preserve"><value>Alkalmazásikon</value></data>
+  <data name="PP_AppIconDesc" xml:space="preserve"><value>Az assembly-be beágyazott .ico fájl Win32 erőforrásként.</value></data>
+  <data name="PP_AppManifest" xml:space="preserve"><value>Alkalmazásmanifeszt</value></data>
+  <data name="PP_ManifestDefault" xml:space="preserve"><value>Alapértelmezett beállítások</value></data>
+  <data name="PP_ManifestCreate" xml:space="preserve"><value>Új manifeszt létrehozása</value></data>
+  <data name="PP_ManifestNone" xml:space="preserve"><value>Nincs manifeszt</value></data>
+  <data name="PP_ManifestDesc" xml:space="preserve"><value>Az app.manifest fájl, amely az UAC végrehajtási szintet és a DPI-t szabályozza.</value></data>
+  <data name="PP_NavPackage" xml:space="preserve"><value>Csomag</value></data>
+  <data name="PP_PackageDesc" xml:space="preserve"><value>A csomag közzétételekor generált NuGet-metaadatok.</value></data>
+  <data name="PP_PackageId" xml:space="preserve"><value>Csomag azonosítója</value></data>
+  <data name="PP_PackageIdDesc" xml:space="preserve"><value>A csomag egyedi azonosítója a NuGet.org-on.</value></data>
+  <data name="PP_VersionLabel" xml:space="preserve"><value>Verzió</value></data>
+  <data name="PP_AuthorsLabel" xml:space="preserve"><value>Szerzők</value></data>
+  <data name="PP_DescriptionLabel" xml:space="preserve"><value>Leírás</value></data>
+  <data name="PP_NavDebug" xml:space="preserve"><value>Hibakeresés</value></data>
+  <data name="PP_DebugDesc" xml:space="preserve"><value>Az indítási profil konfigurálása.</value></data>
+  <data name="PP_LaunchProfile" xml:space="preserve"><value>Indítási profil</value></data>
+  <data name="PP_LaunchProfileDesc" xml:space="preserve"><value>A launchSettings.json fájlban meghatározott profil.</value></data>
+  <data name="PP_CommandLineArgs" xml:space="preserve"><value>Parancssori argumentumok</value></data>
+  <data name="PP_WorkingDirectory" xml:space="preserve"><value>Munkakönyvtár</value></data>
+  <data name="PS_PackageSourceLabel" xml:space="preserve"><value>Csomag forrása:</value></data>
+  <data name="PS_IncludePrerelease" xml:space="preserve"><value>Előzetes verziók belefoglalása</value></data>
+  <data name="PS_NuGetBrowseTab" xml:space="preserve"><value>Tallózás</value></data>
+  <data name="PS_NuGetInstalledTab" xml:space="preserve"><value>Telepítve</value></data>
+  <data name="PS_NuGetUpdatesTab" xml:space="preserve"><value>Frissítések</value></data>
+  <data name="PS_NuGetLoadMore" xml:space="preserve"><value>Több betöltése…</value></data>
+  <data name="PS_SelectPackageHint" xml:space="preserve"><value>Válasszon egy csomagot a részletek megtekintéséhez.</value></data>
+  <data name="PS_NuGetConsolidateTab" xml:space="preserve"><value>Konszolidálás</value></data>
+  <data name="PS_ProjectsLabel" xml:space="preserve"><value>Projektek</value></data>
+  <data name="PS_VersionLabel" xml:space="preserve"><value>Verzió:</value></data>
+  <data name="PS_AddProjectRef" xml:space="preserve"><value>Projekthivatkozás hozzáadása…</value></data>
+  <data name="PS_AddAssemblyRef" xml:space="preserve"><value>Assembly-hivatkozás hozzáadása…</value></data>
+  <data name="PS_RemoveUnused" xml:space="preserve"><value>Nem használtak eltávolítása…</value></data>
+  <data name="PS_SearchReferences" xml:space="preserve"><value>Hivatkozások keresése…</value></data>
+  <data name="PS_Close" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="PS_Convert" xml:space="preserve">
+    <value>Convert</value>
+  </data>
+  <data name="PS_Install" xml:space="preserve">
+    <value>Install</value>
+  </data>
+  <data name="PS_Update" xml:space="preserve">
+    <value>Update</value>
+  </data>
+  <data name="PS_Uninstall" xml:space="preserve">
+    <value>Uninstall</value>
+  </data>
+  <data name="PS_CopyOptionsSection" xml:space="preserve">
+    <value>Copy options</value>
+  </data>
+  <data name="PS_KeepOriginalLocation" xml:space="preserve">
+    <value>Keep original location  (reference only)</value>
+  </data>
+  <data name="PS_CopyIntoProject" xml:space="preserve">
+    <value>Copy into project</value>
+  </data>
+  <data name="PS_DestinationFolder" xml:space="preserve">
+    <value>Destination folder</value>
+  </data>
+  <data name="PS_PhysicalSubfolder" xml:space="preserve">
+    <value>Physical subfolder</value>
+  </data>
+  <data name="PS_KeepInPlace" xml:space="preserve">
+    <value>Keep in place</value>
+  </data>
+  <data name="PS_NewFolderTooltip" xml:space="preserve">
+    <value>New physical folder in the selected directory</value>
+  </data>
+  <data name="PS_ConfirmNewFolder" xml:space="preserve">
+    <value>Confirm new folder</value>
+  </data>
+  <data name="PS_PreviewSection" xml:space="preserve">
+    <value>Preview</value>
+  </data>
+  <data name="PS_DestinationLabel" xml:space="preserve">
+    <value>Destination:</value>
+  </data>
+  <data name="PS_AutoFillTooltip" xml:space="preserve">
+    <value>Pre-fill Platform, Region and Title from the selected ROM</value>
+  </data>
+  <data name="PS_OutputSection" xml:space="preserve">
+    <value>Output</value>
+  </data>
+  <data name="PS_SameFolderAsSource" xml:space="preserve">
+    <value>Same folder as source</value>
+  </data>
+  <data name="PS_CustomFolder" xml:space="preserve">
+    <value>Custom folder</value>
+  </data>
+  <data name="PS_AddConvertedToProject" xml:space="preserve">
+    <value>Add converted file to project</value>
+  </data>
+  <data name="PS_OpenAfterConversion" xml:space="preserve">
+    <value>Open in TBL Editor after conversion</value>
+  </data>
+  <data name="PS_AddToProject" xml:space="preserve">
+    <value>Add to project:</value>
+  </data>
+  <data name="PS_CreateInMemoryTooltip" xml:space="preserve">
+    <value>Create document in memory; choose location on first Ctrl+S</value>
+  </data>
+  <data name="PS_PackageDescription" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="PS_PackageDownloads" xml:space="preserve">
+    <value>Downloads:</value>
+  </data>
+  <data name="PS_PackagesLabel" xml:space="preserve">
+    <value> package(s)</value>
+  </data>
+  <data name="PS_InstalledVersion" xml:space="preserve">
+    <value>Installed: v</value>
+  </data>
+  <data name="PP_ReferencesLabel" xml:space="preserve">
+    <value>Project and package references:</value>
+  </data>
+  <data name="PP_Save" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="PP_FilterSections" xml:space="preserve">
+    <value>Filter sections</value>
+  </data>
+  <data name="PP_TypeColumn" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="PP_PathColumn" xml:space="preserve">
+    <value>Path</value>
+  </data>
+  <data name="PP_ValueColumn" xml:space="preserve">
+    <value>Value</value>
+  </data>
+  <data name="PP_NamespaceColumn" xml:space="preserve">
+    <value>Namespace</value>
+  </data>
+  <data name="PP_EnvVars" xml:space="preserve">
+    <value>Environment variables</value>
+  </data>
+  <data name="PP_NavCodeAnalysis" xml:space="preserve">
+    <value>Code Analysis</value>
+  </data>
+  <data name="PP_EnableCodeAnalysis" xml:space="preserve">
+    <value>Enable code analysis on build</value>
+  </data>
+  <data name="PP_EnableCodeAnalysisDesc" xml:space="preserve">
+    <value>Enables Roslyn analyzers on every build.</value>
+  </data>
+  <data name="PP_ReleaseOnlyAnalysis" xml:space="preserve">
+    <value>Enable only on Release configuration</value>
+  </data>
+  <data name="PP_CodeAnalysisDesc" xml:space="preserve">
+    <value>Static code analysis settings.</value>
+  </data>
+  <data name="PP_ChangesSaved" xml:space="preserve">
+    <value>✓ Changes saved</value>
+  </data>
+  <data name="PP_AppManifestDesc" xml:space="preserve">
+    <value>The app.manifest file that controls UAC execution level and DPI.</value>
+  </data>
+  <data name="NG_TipSearch" xml:space="preserve"><value>Rechercher</value></data>
+</root>

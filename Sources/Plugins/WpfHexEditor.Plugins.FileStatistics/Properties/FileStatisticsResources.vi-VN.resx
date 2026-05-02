@@ -1,0 +1,168 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfHexEditor.Plugins.FileStatistics
+    File        : FileStatisticsResources.vi-VN.resx
+    Description : Vietnamese (vi-VN) translations for the Thống kê tệp plugin.
+-->
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:any minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" />
+              <xsd:attribute name="type" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="value">
+            <xsd:complexType>
+              <xsd:any minOccurs="0" maxOccurs="unbounded" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <data name="FileStats_PluginName" xml:space="preserve">
+    <value>Thống kê tệp</value>
+  </data>
+  <data name="FileStats_HighNullRatio" xml:space="preserve">
+    <value>Tỷ lệ byte rỗng cao</value>
+  </data>
+  <data name="FileStats_VeryHighEntropy" xml:space="preserve">
+    <value>Entropy rất cao</value>
+  </data>
+  <data name="FileStats_MayBeEncrypted" xml:space="preserve">
+    <value>Dữ liệu có thể đã được mã hóa hoặc nén</value>
+  </data>
+  <data name="FileStats_NoFileLoaded" xml:space="preserve">
+    <value>Chưa tải tệp nào</value>
+  </data>
+
+  <data name="FS_Title" xml:space="preserve">
+    <value>Thống kê tệp</value>
+  </data>
+  <data name="FS_ReanalyzeButton" xml:space="preserve">
+    <value>Phân tích lại</value>
+  </data>
+  <data name="FS_FileInfoSection" xml:space="preserve">
+    <value>Thông tin tệp</value>
+  </data>
+  <data name="FS_NoFileLoaded" xml:space="preserve">
+    <value>Chưa tải tệp nào</value>
+  </data>
+  <data name="FS_SizeLabel" xml:space="preserve">
+    <value>Kích thước:</value>
+  </data>
+  <data name="FS_ZeroBytesPlaceholder" xml:space="preserve">
+    <value>0 byte</value>
+  </data>
+  <data name="FS_FormatLabel" xml:space="preserve">
+    <value>Định dạng:</value>
+  </data>
+  <data name="FS_UnknownFormat" xml:space="preserve">
+    <value>Không xác định</value>
+  </data>
+  <data name="FS_AnalyzedLabel" xml:space="preserve">
+    <value>Đã phân tích:</value>
+  </data>
+  <data name="FS_DetectedTypeSection" xml:space="preserve">
+    <value>Loại dữ liệu phát hiện</value>
+  </data>
+  <data name="FS_ByteCompositionSection" xml:space="preserve">
+    <value>Thành phần byte</value>
+  </data>
+  <data name="FS_NullBytesLabel" xml:space="preserve">
+    <value>Byte rỗng:</value>
+  </data>
+  <data name="FS_PrintableAsciiLabel" xml:space="preserve">
+    <value>ASCII in được:</value>
+  </data>
+  <data name="FS_OtherBytesLabel" xml:space="preserve">
+    <value>Byte khác:</value>
+  </data>
+  <data name="FS_MostCommonLabel" xml:space="preserve">
+    <value>Phổ biến nhất:</value>
+  </data>
+  <data name="FS_UniqueBytesLabel" xml:space="preserve">
+    <value>Byte duy nhất:</value>
+  </data>
+  <data name="FS_HealthSection" xml:space="preserve">
+    <value>Tình trạng tổng thể</value>
+  </data>
+  <data name="FS_EntropySection" xml:space="preserve">
+    <value>Phân tích Entropy</value>
+  </data>
+  <data name="FS_EntropyLevel" xml:space="preserve">
+    <value>Mức:</value>
+  </data>
+  <data name="FS_ValidationSection" xml:space="preserve">
+    <value>Xác thực</value>
+  </data>
+  <data name="FS_StructureLabel" xml:space="preserve">
+    <value>Cấu trúc</value>
+  </data>
+  <data name="FS_ValidLabel" xml:space="preserve">
+    <value>Hợp lệ</value>
+  </data>
+  <data name="FS_ChecksumsLabel" xml:space="preserve">
+    <value>Tổng kiểm tra</value>
+  </data>
+  <data name="FS_AllPassLabel" xml:space="preserve">
+    <value>Tất cả hợp lệ</value>
+  </data>
+  <data name="FS_IssuesSection" xml:space="preserve">
+    <value>Vấn đề phát hiện</value>
+  </data>
+  <data name="FS_NoIssuesText" xml:space="preserve">
+    <value>✅ Không phát hiện vấn đề</value>
+  </data>
+  <data name="FS_AnalyzingLabel" xml:space="preserve">
+    <value>Đang phân tích tệp...</value>
+  </data>
+  <data name="FS_HealthStatusDefault" xml:space="preserve"><value>Cấu trúc tệp hợp lệ và lành mạnh</value></data>
+  <data name="FS_EntropyDescDefault" xml:space="preserve"><value>Dữ liệu có thể đã được nén hoặc mã hóa</value></data>
+  <data name="FS_TipMoreOptions" xml:space="preserve"><value>Thêm tùy chọn</value></data>
+  <data name="FS_NoIssuesDetected" xml:space="preserve"><value>✅ Không phát hiện vấn đề</value></data>
+</root>

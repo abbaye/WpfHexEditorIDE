@@ -1,0 +1,735 @@
+<?xml version='1.0' encoding='utf-8'?>
+<root xmlns:ns1="urn:schemas-microsoft-com:xml-msdata" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:schema id="root">
+    <xs:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xs:element name="root" ns1:IsDataSet="true">
+      <xs:complexType>
+        <xs:choice maxOccurs="unbounded">
+          <xs:element name="metadata">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="value" type="xsd:string" minOccurs="0" />
+              </xs:sequence>
+              <xs:attribute name="name" use="required" type="xsd:string" />
+              <xs:attribute name="type" type="xsd:string" />
+              <xs:attribute name="mimetype" type="xsd:string" />
+              <xs:attribute ref="xml:space" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="assembly">
+            <xs:complexType>
+              <xs:attribute name="alias" type="xsd:string" />
+              <xs:attribute name="name" type="xsd:string" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="data">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="value" type="xsd:string" minOccurs="0" ns1:Ordinal="1" />
+                <xs:element name="comment" type="xsd:string" minOccurs="0" ns1:Ordinal="2" />
+              </xs:sequence>
+              <xs:attribute name="name" type="xsd:string" use="required" ns1:Ordinal="1" />
+              <xs:attribute name="type" type="xsd:string" ns1:Ordinal="3" />
+              <xs:attribute name="mimetype" type="xsd:string" ns1:Ordinal="4" />
+              <xs:attribute ref="xml:space" use="preserve" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="resheader">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="value" type="xsd:string" minOccurs="0" ns1:Ordinal="1" />
+              </xs:sequence>
+              <xs:attribute name="name" type="xsd:string" use="required" />
+            </xs:complexType>
+          </xs:element>
+        </xs:choice>
+      </xs:complexType>
+    </xs:element>
+  </xs:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="QAT_Save_Label" xml:space="preserve">
+    <value>Lưu</value>
+  </data>
+  <data name="QAT_Save_Tooltip" xml:space="preserve">
+    <value>Lưu (Ctrl+S)</value>
+  </data>
+  <data name="QAT_Undo_Label" xml:space="preserve">
+    <value>Hoàn tác</value>
+  </data>
+  <data name="QAT_Undo_Tooltip" xml:space="preserve">
+    <value>Hoàn tác (Ctrl+Z)</value>
+  </data>
+  <data name="QAT_Redo_Label" xml:space="preserve">
+    <value>Làm lại</value>
+  </data>
+  <data name="QAT_Redo_Tooltip" xml:space="preserve">
+    <value>Làm lại (Ctrl+Y)</value>
+  </data>
+  <data name="Ribbon_Home_Tab" xml:space="preserve">
+    <value>Trang chủ</value>
+  </data>
+  <data name="Ribbon_Home_Clipboard_Group" xml:space="preserve">
+    <value>Clipboard</value>
+  </data>
+  <data name="Ribbon_Home_Paste" xml:space="preserve">
+    <value>Dán</value>
+  </data>
+  <data name="Ribbon_Home_Cut" xml:space="preserve">
+    <value>Cắt</value>
+  </data>
+  <data name="Ribbon_Home_Copy" xml:space="preserve">
+    <value>Sao chép</value>
+  </data>
+  <data name="Ribbon_Home_Edit_Group" xml:space="preserve">
+    <value>Chỉnh sửa</value>
+  </data>
+  <data name="Ribbon_Home_Undo" xml:space="preserve">
+    <value>Hoàn tác</value>
+  </data>
+  <data name="Ribbon_Home_Redo" xml:space="preserve">
+    <value>Làm lại</value>
+  </data>
+  <data name="Ribbon_Home_Selection_Group" xml:space="preserve">
+    <value>Vùng chọn</value>
+  </data>
+  <data name="Ribbon_Home_SelectAll" xml:space="preserve">
+    <value>Chọn tất cả</value>
+  </data>
+  <data name="Ribbon_Home_Clear" xml:space="preserve">
+    <value>Xóa</value>
+  </data>
+  <data name="Ribbon_Home_Display_Group" xml:space="preserve">
+    <value>Hiển thị</value>
+  </data>
+  <data name="Ribbon_Home_16BytesPerLine" xml:space="preserve">
+    <value>16 byte/dòng</value>
+  </data>
+  <data name="Ribbon_Edit_Tab" xml:space="preserve">
+    <value>Chỉnh sửa</value>
+  </data>
+  <data name="Ribbon_Edit_Find_Group" xml:space="preserve">
+    <value>Tìm kiếm</value>
+  </data>
+  <data name="Ribbon_Edit_Find" xml:space="preserve">
+    <value>Tìm kiếm</value>
+  </data>
+  <data name="Ribbon_Edit_Navigate_Group" xml:space="preserve">
+    <value>Điều hướng</value>
+  </data>
+  <data name="Ribbon_Edit_GoTo" xml:space="preserve">
+    <value>Đến vị trí</value>
+  </data>
+  <data name="Ribbon_Edit_Bookmarks" xml:space="preserve">
+    <value>Dấu trang</value>
+  </data>
+  <data name="Ribbon_Edit_Modify_Group" xml:space="preserve">
+    <value>Sửa đổi</value>
+  </data>
+  <data name="Ribbon_Edit_InsertByte" xml:space="preserve">
+    <value>Chèn byte</value>
+  </data>
+  <data name="Ribbon_Edit_DeleteByte" xml:space="preserve">
+    <value>Xóa byte</value>
+  </data>
+  <data name="Ribbon_Edit_FillSelection" xml:space="preserve">
+    <value>Lấp đầy vùng chọn</value>
+  </data>
+  <data name="Ribbon_Edit_Chế độ_Group" xml:space="preserve">
+    <value>Chế độ</value>
+  </data>
+  <data name="Ribbon_Edit_Overwrite" xml:space="preserve">
+    <value>Ghi đè</value>
+  </data>
+  <data name="Ribbon_Edit_Insert" xml:space="preserve">
+    <value>Chèn</value>
+  </data>
+  <data name="Ribbon_Edit_ReadOnly" xml:space="preserve">
+    <value>Chỉ đọc</value>
+  </data>
+  <data name="Ribbon_View_Tab" xml:space="preserve">
+    <value>Hiển thị</value>
+  </data>
+  <data name="Ribbon_View_Zoom_Group" xml:space="preserve">
+    <value>Zoom</value>
+  </data>
+  <data name="Ribbon_View_ZoomIn" xml:space="preserve">
+    <value>Phóng to</value>
+  </data>
+  <data name="Ribbon_View_ZoomOut" xml:space="preserve">
+    <value>Thu nhỏ</value>
+  </data>
+  <data name="Ribbon_View_Zoom100" xml:space="preserve">
+    <value>100%</value>
+  </data>
+  <data name="Ribbon_View_DisplayTùy chọn_Group" xml:space="preserve">
+    <value>Tùy chọn hiển thị</value>
+  </data>
+  <data name="Ribbon_View_ShowTooltip" xml:space="preserve">
+    <value>Hiển thị chú thích</value>
+  </data>
+  <data name="Ribbon_View_HighlightMatches" xml:space="preserve">
+    <value>Tô sáng kết quả</value>
+  </data>
+  <data name="Ribbon_View_Themes_Group" xml:space="preserve">
+    <value>Chủ đề</value>
+  </data>
+  <data name="Ribbon_View_SelectTheme" xml:space="preserve">
+    <value>Vùng chọnner thème</value>
+  </data>
+  <data name="Ribbon_View_Theme_Office" xml:space="preserve">
+    <value>Office (Sáng)</value>
+  </data>
+  <data name="Ribbon_View_Theme_DarkGlass" xml:space="preserve">
+    <value>Kính tối</value>
+  </data>
+  <data name="Ribbon_View_Theme_VisualStudio" xml:space="preserve">
+    <value>Visual Studio</value>
+  </data>
+  <data name="Ribbon_View_Theme_Minimal" xml:space="preserve">
+    <value>Minimal</value>
+  </data>
+  <data name="Ribbon_View_Panels_Group" xml:space="preserve">
+    <value>Bảng</value>
+  </data>
+  <data name="Ribbon_View_SettingsPanel" xml:space="preserve">
+    <value>Bảng cài đặt</value>
+  </data>
+  <data name="Ribbon_Data_Tab" xml:space="preserve">
+    <value>Dữ liệu</value>
+  </data>
+  <data name="Ribbon_Data_Export_Group" xml:space="preserve">
+    <value>Xuất</value>
+  </data>
+  <data name="Ribbon_Data_Export" xml:space="preserve">
+    <value>Xuất</value>
+  </data>
+  <data name="Ribbon_Data_ExportAs" xml:space="preserve">
+    <value>Xuất sous</value>
+  </data>
+  <data name="Ribbon_Data_ExportAs_CSharpByteArray" xml:space="preserve">
+    <value>Mảng byte C#</value>
+  </data>
+  <data name="Ribbon_Data_ExportAs_CMã" xml:space="preserve">
+    <value>Mã C</value>
+  </data>
+  <data name="Ribbon_Data_ExportAs_JavaMã" xml:space="preserve">
+    <value>Mã Java</value>
+  </data>
+  <data name="Ribbon_Data_ExportAs_HexString" xml:space="preserve">
+    <value>Chuỗi hex</value>
+  </data>
+  <data name="Ribbon_Data_Compare_Group" xml:space="preserve">
+    <value>So sánh</value>
+  </data>
+  <data name="Ribbon_Data_CompareFiles" xml:space="preserve">
+    <value>So sánh fichiers</value>
+  </data>
+  <data name="Ribbon_Data_Statistics_Group" xml:space="preserve">
+    <value>Thống kê</value>
+  </data>
+  <data name="Ribbon_Data_ByteCount" xml:space="preserve">
+    <value>Đếm byte</value>
+  </data>
+  <data name="Ribbon_Data_Statistics" xml:space="preserve">
+    <value>Thống kê</value>
+  </data>
+  <data name="Ribbon_Data_Entropy" xml:space="preserve">
+    <value>Entropy</value>
+  </data>
+  <data name="Ribbon_Data_Advanced_Group" xml:space="preserve">
+    <value>Nâng cao</value>
+  </data>
+  <data name="Ribbon_Data_Checksum" xml:space="preserve">
+    <value>Tổng kiểm tra</value>
+  </data>
+  <data name="Ribbon_Data_Hash" xml:space="preserve">
+    <value>Băm (MD5/SHA)</value>
+  </data>
+  <data name="Ribbon_Tools_Tab" xml:space="preserve">
+    <value>Công cụ</value>
+  </data>
+  <data name="Ribbon_Tools_Tùy chọn_Group" xml:space="preserve">
+    <value>Tùy chọn</value>
+  </data>
+  <data name="Ribbon_Tools_Settings" xml:space="preserve">
+    <value>Cài đặt</value>
+  </data>
+  <data name="Ribbon_Tools_Language_Group" xml:space="preserve">
+    <value>Ngôn ngữ</value>
+  </data>
+  <data name="Ribbon_Tools_Language" xml:space="preserve">
+    <value>Ngôn ngữ</value>
+  </data>
+  <data name="Ribbon_Tools_Language_Tooltip" xml:space="preserve">
+    <value>Sửa đổi la langue de l'application</value>
+  </data>
+  <data name="Ribbon_Tools_Help_Group" xml:space="preserve">
+    <value>Trợ giúp</value>
+  </data>
+  <data name="Ribbon_Tools_Tài liệu" xml:space="preserve">
+    <value>Tài liệu</value>
+  </data>
+  <data name="Ribbon_Tools_About" xml:space="preserve">
+    <value>Giới thiệu</value>
+  </data>
+  <data name="Tùy chọn_Title" xml:space="preserve">
+    <value>Tùy chọn</value>
+  </data>
+  <data name="Tùy chọn_Header_Title" xml:space="preserve">
+    <value>Tùy chọn de l'application</value>
+  </data>
+  <data name="Tùy chọn_Header_Subtitle" xml:space="preserve">
+    <value>Cấu hình tùy chọn trình soạn thảo hex của bạn</value>
+  </data>
+  <data name="Tùy chọn_Tab_Language" xml:space="preserve">
+    <value>Ngôn ngữ</value>
+  </data>
+  <data name="Tùy chọn_Tab_Appearance" xml:space="preserve">
+    <value>Giao diện</value>
+  </data>
+  <data name="Tùy chọn_Tab_Hiệu năng" xml:space="preserve">
+    <value>Hiệu năng</value>
+  </data>
+  <data name="Tùy chọn_Language_Instructions" xml:space="preserve">
+    <value>Vùng chọnnez votre langue d'affichage préférée :</value>
+  </data>
+  <data name="Tùy chọn_Language_CurrentLanguage" xml:space="preserve">
+    <value>Ngôn ngữ actuelle</value>
+  </data>
+  <data name="Tùy chọn_Language_ListView_Header_Language" xml:space="preserve">
+    <value>Ngôn ngữ</value>
+  </data>
+  <data name="Tùy chọn_Language_ListView_Header_NativeName" xml:space="preserve">
+    <value>Tên bản ngữ</value>
+  </data>
+  <data name="Tùy chọn_Language_ListView_Header_Mã" xml:space="preserve">
+    <value>Mã</value>
+  </data>
+  <data name="Tùy chọn_Language_Warning" xml:space="preserve">
+    <value>Vui lòng khởi động lại ứng dụng sau khi thay đổi ngôn ngữ.</value>
+  </data>
+  <data name="Tùy chọn_ComingSoon" xml:space="preserve">
+    <value>Sắp có...</value>
+  </data>
+  <data name="Tùy chọn_Button_OK" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="Tùy chọn_Button_Cancel" xml:space="preserve">
+    <value>Hoàn tác</value>
+  </data>
+  <data name="Settings_Header" xml:space="preserve">
+    <value>CÀI ĐẶT</value>
+  </data>
+  <data name="Settings_Theme_Header" xml:space="preserve">
+    <value>🎨 Thème</value>
+  </data>
+  <data name="Settings_Language_Header" xml:space="preserve">
+    <value>🌐 Ngôn ngữ</value>
+  </data>
+  <data name="Settings_SearchTùy chọn_Header" xml:space="preserve">
+    <value>🔍 Tùy chọn de recherche</value>
+  </data>
+  <data name="Settings_SearchTùy chọn_ParallelSearch" xml:space="preserve">
+    <value>Bật tìm kiếm song song (nhanh hơn cho tệp lớn)</value>
+  </data>
+  <data name="Settings_SearchTùy chọn_WildcardSearch" xml:space="preserve">
+    <value>Dùng tìm kiếm ký tự đại diện (ký hiệu ??)</value>
+  </data>
+  <data name="Settings_SearchTùy chọn_HighlightMatches" xml:space="preserve">
+    <value>Tô sáng tất cả kết quả</value>
+  </data>
+  <data name="Settings_SearchTùy chọn_ResultLimit" xml:space="preserve">
+    <value>Giới hạn kết quả tìm kiếm :</value>
+  </data>
+  <data name="Settings_DisplayTùy chọn_Header" xml:space="preserve">
+    <value>📺 Tùy chọn hiển thị</value>
+  </data>
+  <data name="Settings_DisplayTùy chọn_LineNumbers" xml:space="preserve">
+    <value>Hiển thị số dòng</value>
+  </data>
+  <data name="Settings_DisplayTùy chọn_ScrollMarkers" xml:space="preserve">
+    <value>Hiển thị dấu cuộn</value>
+  </data>
+  <data name="Settings_DisplayTùy chọn_StatusBar" xml:space="preserve">
+    <value>Hiển thị thanh trạng thái</value>
+  </data>
+  <data name="Settings_DisplayTùy chọn_BytesPerLine" xml:space="preserve">
+    <value>Byte mỗi dòng :</value>
+  </data>
+  <data name="Settings_Hiệu năng_Header" xml:space="preserve">
+    <value>⚡ Hiệu năng</value>
+  </data>
+  <data name="Settings_Hiệu năng_V2Active" xml:space="preserve">
+    <value>ĐỘNG CƠ V2 ĐANG HOẠT ĐỘNG</value>
+  </data>
+  <data name="Settings_Hiệu năng_BoyerMoore" xml:space="preserve">
+    <value>• Thuật toán Boyer-Moore-Horspool</value>
+  </data>
+  <data name="Settings_Hiệu năng_Parallel" xml:space="preserve">
+    <value>• Hỗ trợ xử lý song song</value>
+  </data>
+  <data name="Settings_Hiệu năng_Faster" xml:space="preserve">
+    <value>• Nhanh hơn V1 tới 99%</value>
+  </data>
+  <data name="Settings_Button_ResetDefaults" xml:space="preserve">
+    <value>Đặt lại mặc định</value>
+  </data>
+  <data name="Settings_Button_Save" xml:space="preserve">
+    <value>Lưu paramètres</value>
+  </data>
+  <data name="Search_Chế độ_Text" xml:space="preserve">
+    <value>Văn bản</value>
+  </data>
+  <data name="Search_Chế độ_Hex" xml:space="preserve">
+    <value>Thập lục phân</value>
+  </data>
+  <data name="Search_Chế độ_Regex" xml:space="preserve">
+    <value>Regex</value>
+  </data>
+  <data name="Search_Clear_ToolTip" xml:space="preserve">
+    <value>Xóa</value>
+  </data>
+  <data name="Search_Button_Clear" xml:space="preserve">
+    <value>Xóa</value>
+  </data>
+  <data name="Search_Previous_ToolTip" xml:space="preserve">
+    <value>Trước đó (Shift+F3)</value>
+  </data>
+  <data name="Search_Button_Previous" xml:space="preserve">
+    <value>Trước đó (Shift+F3)</value>
+  </data>
+  <data name="Search_Next_ToolTip" xml:space="preserve">
+    <value>Tiếp theo (F3)</value>
+  </data>
+  <data name="Search_Button_Next" xml:space="preserve">
+    <value>Tiếp theo (F3)</value>
+  </data>
+  <data name="Search_FindAll" xml:space="preserve">
+    <value>Tìm tất cả</value>
+  </data>
+  <data name="Search_Button_FindAll" xml:space="preserve">
+    <value>Tìm tất cả</value>
+  </data>
+  <data name="Search_FindAll_ToolTip" xml:space="preserve">
+    <value>Tìm kiếm toutes les occurrences</value>
+  </data>
+  <data name="Search_Button_FindAll_Tooltip" xml:space="preserve">
+    <value>Tìm kiếm toutes les occurrences</value>
+  </data>
+  <data name="Search_Matches" xml:space="preserve">
+    <value>kết quả khớp</value>
+  </data>
+  <data name="Search_Results_Matches" xml:space="preserve">
+    <value>kết quả khớp</value>
+  </data>
+  <data name="Search_Results_V2Badge" xml:space="preserve">
+    <value>V2</value>
+  </data>
+  <data name="Message_FileOpenError" xml:space="preserve">
+    <value>Không mở được tệp : {0}</value>
+  </data>
+  <data name="Message_FileSaveError" xml:space="preserve">
+    <value>Không lưu được tệp : {0}</value>
+  </data>
+  <data name="Message_ErrorTitle" xml:space="preserve">
+    <value>Lỗi</value>
+  </data>
+  <data name="Message_LanguageUnchanged_Title" xml:space="preserve">
+    <value>Ngôn ngữ inchangée</value>
+  </data>
+  <data name="Message_LanguageUnchanged_Text" xml:space="preserve">
+    <value>Ngôn ngữ đã được đặt thành {0}.</value>
+  </data>
+  <data name="Message_LanguageChanged_Title" xml:space="preserve">
+    <value>Ngôn ngữ modifiée</value>
+  </data>
+  <data name="Message_LanguageChanged_Text" xml:space="preserve">
+    <value>Ngôn ngữ changée avec succès en {0} !</value>
+  </data>
+  <data name="Message_NoLanguageSelected_Title" xml:space="preserve">
+    <value>Chưa chọn ngôn ngữ</value>
+  </data>
+  <data name="Message_NoLanguageSelected_Text" xml:space="preserve">
+    <value>Vui lòng chọn ngôn ngữ trước khi nhấp OK.</value>
+  </data>
+  <data name="Settings_Title" xml:space="preserve">
+    <value>CÀI ĐẶT</value>
+  </data>
+  <data name="Settings_Theme_Title" xml:space="preserve">
+    <value>🎨 Thème</value>
+  </data>
+  <data name="Settings_Language_Title" xml:space="preserve">
+    <value>🌐 Ngôn ngữ</value>
+  </data>
+  <data name="Settings_Search_Title" xml:space="preserve">
+    <value>🔍 Tùy chọn de recherche</value>
+  </data>
+  <data name="Settings_Search_EnableParallel" xml:space="preserve">
+    <value>Bật tìm kiếm song song (nhanh hơn cho tệp lớn)</value>
+  </data>
+  <data name="Settings_Search_UseWildcard" xml:space="preserve">
+    <value>Dùng tìm kiếm ký tự đại diện (ký hiệu ??)</value>
+  </data>
+  <data name="Settings_Search_HighlightMatches" xml:space="preserve">
+    <value>Surligner toutes les kết quả khớp</value>
+  </data>
+  <data name="Settings_Search_ResultLimit" xml:space="preserve">
+    <value>Giới hạn kết quả tìm kiếm :</value>
+  </data>
+  <data name="Settings_Display_Title" xml:space="preserve">
+    <value>📺 Tùy chọn hiển thị</value>
+  </data>
+  <data name="Settings_Display_ShowLineNumbers" xml:space="preserve">
+    <value>Hiển thị số dòng</value>
+  </data>
+  <data name="Settings_Display_ShowScrollMarkers" xml:space="preserve">
+    <value>Hiển thị dấu cuộn</value>
+  </data>
+  <data name="Settings_Display_ShowStatusBar" xml:space="preserve">
+    <value>Hiển thị thanh trạng thái</value>
+  </data>
+  <data name="Settings_Display_BytesPerLine" xml:space="preserve">
+    <value>Byte mỗi dòng :</value>
+  </data>
+  <data name="Settings_Hiệu năng_Title" xml:space="preserve">
+    <value>⚡ Hiệu năng</value>
+  </data>
+  <data name="Settings_Hiệu năng_V2Active" xml:space="preserve">
+    <value>ĐỘNG CƠ V2 ĐANG HOẠT ĐỘNG</value>
+  </data>
+  <data name="Settings_Hiệu năng_Feature1" xml:space="preserve">
+    <value>• Thuật toán Boyer-Moore-Horspool</value>
+  </data>
+  <data name="Settings_Hiệu năng_Feature2" xml:space="preserve">
+    <value>• Hỗ trợ xử lý song song</value>
+  </data>
+  <data name="Settings_Hiệu năng_Feature3" xml:space="preserve">
+    <value>• Nhanh hơn V1 tới 99%</value>
+  </data>
+  <data name="Settings_Button_ResetDefaults" xml:space="preserve">
+    <value>Đặt lại mặc định</value>
+  </data>
+  <data name="Settings_Button_SaveSettings" xml:space="preserve">
+    <value>Lưu les paramètres</value>
+  </data>
+  <data name="Tùy chọn_LanguageTab" xml:space="preserve">
+    <value>Ngôn ngữ</value>
+  </data>
+  <data name="Tùy chọn_AppearanceTab" xml:space="preserve">
+    <value>Giao diện</value>
+  </data>
+  <data name="Tùy chọn_Hiệu năngTab" xml:space="preserve">
+    <value>Hiệu năng</value>
+  </data>
+  <data name="Tùy chọn_Language_CurrentLabel" xml:space="preserve">
+    <value>Ngôn ngữ actuelle</value>
+  </data>
+  <data name="Tùy chọn_Language_ColumnLanguage" xml:space="preserve">
+    <value>Ngôn ngữ</value>
+  </data>
+  <data name="Tùy chọn_Language_ColumnNativeName" xml:space="preserve">
+    <value>Tên bản ngữ</value>
+  </data>
+  <data name="Tùy chọn_Language_ColumnMã" xml:space="preserve">
+    <value>Mã</value>
+  </data>
+  <data name="Tùy chọn_Language_SystemLanguage_Name" xml:space="preserve">
+    <value>Ngôn ngữ système</value>
+    <comment>Tùy chọn dialog - System Language option name</comment>
+  </data>
+  <data name="Tùy chọn_Language_SystemLanguage_Description" xml:space="preserve">
+    <value>Dùng ngôn ngữ hệ thống</value>
+    <comment>Tùy chọn dialog - System Language option description</comment>
+  </data>
+  <data name="Tùy chọn_Language_RestartWarning" xml:space="preserve">
+    <value>Thay đổi ngôn ngữ được áp dụng ngay — không cần khởi động lại! 🚀</value>
+  </data>
+  <data name="Menu_File_Open" xml:space="preserve">
+    <value>Mở</value>
+  </data>
+  <data name="Menu_File_Save" xml:space="preserve">
+    <value>Lưu</value>
+  </data>
+  <data name="Menu_File_SaveAs" xml:space="preserve">
+    <value>Lưu sous...</value>
+  </data>
+  <data name="Menu_File_Close" xml:space="preserve">
+    <value>Đóng</value>
+  </data>
+  <data name="Menu_File_Exit" xml:space="preserve">
+    <value>Thoát</value>
+  </data>
+  <data name="Menu_Edit" xml:space="preserve">
+    <value>Chỉnh sửa</value>
+  </data>
+  <data name="Menu_Edit_Undo" xml:space="preserve">
+    <value>Hoàn tác</value>
+  </data>
+  <data name="Menu_Edit_Redo" xml:space="preserve">
+    <value>Làm lại</value>
+  </data>
+  <data name="Menu_Edit_Find" xml:space="preserve">
+    <value>Tìm kiếm...</value>
+  </data>
+  <data name="Menu_Edit_FindReplace" xml:space="preserve">
+    <value>Tìm kiếm et remplacer...</value>
+  </data>
+  <data name="Menu_Edit_Copy" xml:space="preserve">
+    <value>Sao chép</value>
+  </data>
+  <data name="Menu_Edit_Paste" xml:space="preserve">
+    <value>Dán</value>
+  </data>
+  <data name="Menu_Edit_DeleteSelection" xml:space="preserve">
+    <value>Xóa vùng chọn</value>
+  </data>
+  <data name="Menu_Edit_SelectAll" xml:space="preserve">
+    <value>Vùng chọnner tout</value>
+  </data>
+  <data name="Menu_Edit_ClearSelection" xml:space="preserve">
+    <value>Xóa la sélection</value>
+  </data>
+  <data name="Menu_Edit_Bookmarks" xml:space="preserve">
+    <value>Dấu trang</value>
+  </data>
+  <data name="Menu_Edit_ToggleBookmark" xml:space="preserve">
+    <value>Bật/tắt dấu trang</value>
+  </data>
+  <data name="Menu_Edit_ClearAllBookmarks" xml:space="preserve">
+    <value>Xóa tous les signets</value>
+  </data>
+  <data name="Menu_Search" xml:space="preserve">
+    <value>Tìm kiếm</value>
+  </data>
+  <data name="Menu_Search_FindNext" xml:space="preserve">
+    <value>Tìm kiếm le suivant</value>
+  </data>
+  <data name="Menu_Search_FindPrevious" xml:space="preserve">
+    <value>Tìm kiếm le précédent</value>
+  </data>
+  <data name="Menu_Tools" xml:space="preserve">
+    <value>Công cụ</value>
+  </data>
+  <data name="Menu_Tools_Bookmarks" xml:space="preserve">
+    <value>Dấu trang</value>
+  </data>
+  <data name="Menu_Tools_NextBookmark" xml:space="preserve">
+    <value>Dấu trang tiếp theo</value>
+  </data>
+  <data name="Menu_Tools_PreviousBookmark" xml:space="preserve">
+    <value>Dấu trang trước đó</value>
+  </data>
+  <data name="Menu_Tools_ShowAllBookmarks" xml:space="preserve">
+    <value>Hiển thị tất cả dấu trang...</value>
+  </data>
+  <data name="Menu_Vị trí" xml:space="preserve">
+    <value>Vị trí</value>
+  </data>
+  <data name="Menu_Vị trí_GoTo" xml:space="preserve">
+    <value>Đến vị trí...</value>
+  </data>
+  <data name="Menu_View" xml:space="preserve">
+    <value>Hiển thị</value>
+  </data>
+  <data name="Menu_View_DisplayTùy chọn" xml:space="preserve">
+    <value>Tùy chọn hiển thị</value>
+  </data>
+  <data name="Menu_View_ShowStatusBar" xml:space="preserve">
+    <value>Hiển thị thanh trạng thái</value>
+  </data>
+  <data name="Menu_View_ShowHeader" xml:space="preserve">
+    <value>Hiển thị tiêu đề</value>
+  </data>
+  <data name="Menu_View_ShowOffset" xml:space="preserve">
+    <value>Hiển thị Offset</value>
+  </data>
+  <data name="Menu_View_ShowASCII" xml:space="preserve">
+    <value>Hiển thị ASCII</value>
+  </data>
+  <data name="Menu_View_ShowParsedFields" xml:space="preserve">
+    <value>Hiển thị trường đã phân tích</value>
+  </data>
+  <data name="Menu_View_BytesPerLine" xml:space="preserve">
+    <value>Byte mỗi dòng</value>
+  </data>
+  <data name="Menu_Tùy chọn" xml:space="preserve">
+    <value>Tùy chọn</value>
+  </data>
+  <data name="Menu_Tùy chọn_SettingsPanel" xml:space="preserve">
+    <value>Bảng cài đặt...</value>
+  </data>
+  <data name="Menu_Tùy chọn_Advanced" xml:space="preserve">
+    <value>Tùy chọn avancées (Thème, Ngôn ngữ)...</value>
+  </data>
+  <data name="Menu_Tùy chọn_ContextMenu" xml:space="preserve">
+    <value>Menu ngữ cảnh</value>
+  </data>
+  <data name="Menu_Tùy chọn_ShowByteToolTip" xml:space="preserve">
+    <value>Hiển thị chú thích byte</value>
+  </data>
+  <data name="Menu_Tùy chọn_AutoHighlight" xml:space="preserve">
+    <value>Tô sáng tự động</value>
+  </data>
+  <data name="Menu_Tùy chọn_CountSelected" xml:space="preserve">
+    <value>Đếm byte đã chọn</value>
+  </data>
+  <data name="Menu_Help" xml:space="preserve">
+    <value>Trợ giúp</value>
+  </data>
+  <data name="Menu_Help_About" xml:space="preserve">
+    <value>Giới thiệu</value>
+  </data>
+  <data name="Menu_Help_KeyboardShortcuts" xml:space="preserve">
+    <value>Phím tắt</value>
+  </data>
+  <data name="Menu_File" xml:space="preserve">
+    <value>Tệp</value>
+  </data>
+  <data name="Toolbar_Open" xml:space="preserve">
+    <value>📂 Mở</value>
+  </data>
+  <data name="Toolbar_Open_ToolTip" xml:space="preserve">
+    <value>Mở un fichier (Ctrl+O)</value>
+  </data>
+  <data name="Toolbar_Save" xml:space="preserve">
+    <value>💾 Lưu</value>
+  </data>
+  <data name="Toolbar_Save_ToolTip" xml:space="preserve">
+    <value>Lưu le fichier (Ctrl+S)</value>
+  </data>
+  <data name="Toolbar_Undo" xml:space="preserve">
+    <value>↶ Hoàn tác</value>
+  </data>
+  <data name="Toolbar_Undo_ToolTip" xml:space="preserve">
+    <value>Hoàn tác (Ctrl+Z)</value>
+  </data>
+  <data name="Toolbar_Redo" xml:space="preserve">
+    <value>↷ Làm lại</value>
+  </data>
+  <data name="Toolbar_Redo_ToolTip" xml:space="preserve">
+    <value>Làm lại (Ctrl+Y)</value>
+  </data>
+  <data name="Toolbar_Insert" xml:space="preserve">
+    <value>INS</value>
+  </data>
+  <data name="Toolbar_Insert_ToolTip" xml:space="preserve">
+    <value>Bật/tắt chế độ Chèn/Ghi đè (Phím Insert)</value>
+  </data>
+  <data name="Toolbar_ReadOnly" xml:space="preserve">
+    <value>LEC</value>
+  </data>
+  <data name="Toolbar_ReadOnly_ToolTip" xml:space="preserve">
+    <value>Basculer mode Chỉ đọc</value>
+  </data>
+<data name="HexSettings_SaveButton" xml:space="preserve"><value>Lưu trạng thái</value></data><data name="HexSettings_LoadButton" xml:space="preserve"><value>Tải trạng thái</value></data></root>

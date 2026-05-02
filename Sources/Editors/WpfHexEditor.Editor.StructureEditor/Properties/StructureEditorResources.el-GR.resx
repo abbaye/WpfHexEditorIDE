@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfHexEditor.Editor.StructureEditor
+    File        : StructureEditorResources.el-GR.resx
+    Description : Localized UI strings for the Structure Editor — Greek (Greece).
+-->
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:any minOccurs="0" />
+              </xsd:sequence>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="SE_ColOffset" xml:space="preserve">
+    <value>Offset</value>
+  </data>
+  <data name="SE_ColStrength" xml:space="preserve">
+    <value>Ισχύς</value>
+  </data>
+  <data name="SE_ColRequired" xml:space="preserve">
+    <value>Απαιτείται</value>
+  </data>
+  <data name="StructureEditor_AddBlockTitle" xml:space="preserve"><value>Προσθήκη μπλοκ</value></data>
+  <data name="StructureEditor_AddBlockButton" xml:space="preserve"><value>Προσθήκη</value></data>
+  <data name="StructureEditor_AddBlockCancel" xml:space="preserve"><value>Ακύρωση</value></data>
+  <data name="StructureEditor_TabMetadata" xml:space="preserve"><value>Μεταδεδομένα</value></data>
+  <data name="StructureEditor_TabDetection" xml:space="preserve"><value>Εντοπισμός</value></data>
+  <data name="StructureEditor_TabBlocks" xml:space="preserve"><value>Μπλοκ</value></data>
+  <data name="StructureEditor_TabVariables" xml:space="preserve"><value>Μεταβλητές</value></data>
+  <data name="StructureEditor_TabAdvanced" xml:space="preserve"><value>Για προχωρημένους</value></data>
+  <data name="StructureEditor_TabQuality" xml:space="preserve"><value>Ποιότητα</value></data>
+  <data name="StructureEditor_TabTest" xml:space="preserve"><value>Δοκιμή</value></data>
+  <data name="StructureEditor_SaveToolTip" xml:space="preserve"><value>Αποθήκευση (Ctrl+S)</value></data>
+  <data name="StructureEditor_ValidateToolTip" xml:space="preserve"><value>Επικύρωση (Ctrl+Shift+V)</value></data>
+  <data name="StructureEditor_UndoToolTip" xml:space="preserve"><value>Αναίρεση (Ctrl+Z)</value></data>
+  <data name="StructureEditor_RedoToolTip" xml:space="preserve"><value>Επανάληψη (Ctrl+Y)</value></data>
+  <data name="StructureEditor_LiveCodeViewToolTip" xml:space="preserve"><value>Εναλλαγή ζωντανής προβολής κώδικα</value></data>
+  <data name="StructureEditor_AddBlockToolTip" xml:space="preserve"><value>Προσθήκη μπλοκ (Ctrl+N)</value></data>
+  <data name="StructureEditor_DuplicateBlockToolTip" xml:space="preserve"><value>Αντιγραφή μπλοκ (Ctrl+D)</value></data>
+  <data name="StructureEditor_UnsavedChangesToolTip" xml:space="preserve"><value>Μη αποθηκευμένες αλλαγές</value></data>
+  <data name="StructureEditor_BlocksFilterToolTip" xml:space="preserve"><value>Φιλτράρισμα μπλοκ κατά όνομα</value></data>
+  <data name="StructureEditor_BlocksAddMenuItem" xml:space="preserve"><value>Προσθήκη μπλοκ...</value></data>
+  <data name="StructureEditor_BlocksDuplicateMenuItem" xml:space="preserve"><value>Αντιγραφή</value></data>
+  <data name="StructureEditor_BlocksRemoveMenuItem" xml:space="preserve"><value>Διαγραφή</value></data>
+  <data name="StructureEditor_BlocksMoveUpMenuItem" xml:space="preserve"><value>Μετακίνηση πάνω</value></data>
+  <data name="StructureEditor_BlocksMoveDownMenuItem" xml:space="preserve"><value>Μετακίνηση κάτω</value></data>
+  <data name="StructureEditor_BlocksCopyJsonMenuItem" xml:space="preserve"><value>Αντιγραφή ως JSON</value></data>
+  <data name="StructureEditor_BlocksPasteMenuItem" xml:space="preserve"><value>Επικόλληση μπλοκ</value></data>
+  <data name="StructureEditor_BlocksEmptyLine1" xml:space="preserve"><value>Επιλέξτε ένα μπλοκ για να τροποποιήσετε τις ιδιότητές του,</value></data>
+  <data name="StructureEditor_BlocksEmptyLine2" xml:space="preserve"><value>ή πατήστε Ctrl+N / δεξί κλικ για να προσθέσετε νέο μπλοκ.</value></data>
+  <data name="StructureEditor_DetectionHexSigLabel" xml:space="preserve"><value>Υπογραφή hex</value></data>
+  <data name="StructureEditor_DetectionHexBytesToolTip" xml:space="preserve"><value>Bytes hex χωρίς κενά, π.χ. 89504E47 για PNG</value></data>
+  <data name="StructureEditor_DetectionSigLabel" xml:space="preserve"><value>Υπογραφή</value></data>
+  <data name="StructureEditor_DetectionV2SigsLabel" xml:space="preserve"><value>Υπογραφές v2.0</value></data>
+  <data name="StructureEditor_DetectionMatchModeLabel" xml:space="preserve"><value>Λειτουργία αντιστοίχισης</value></data>
+  <data name="StructureEditor_DetectionHexValueToolTip" xml:space="preserve"><value>Τιμή hex</value></data>
+  <data name="StructureEditor_DetectionOffsetToolTip" xml:space="preserve"><value>Offset</value></data>
+  <data name="StructureEditor_DetectionLabelToolTip" xml:space="preserve"><value>Ετικέτα</value></data>
+  <data name="StructureEditor_DetectionAddSigButton" xml:space="preserve"><value>＋ Προσθήκη υπογραφής</value></data>
+  <data name="StructureEditor_DetectionEntropyLabel" xml:space="preserve"><value>Δείκτης εντροπίας</value></data>
+  <data name="StructureEditor_DetectionMinEntropyLabel" xml:space="preserve"><value>Ελάχιστη εντροπία</value></data>
+  <data name="StructureEditor_DetectionMaxEntropyLabel" xml:space="preserve"><value>Μέγιστη εντροπία</value></data>
+  <data name="StructureEditor_DetectionMinScoreLabel" xml:space="preserve"><value>Ελάχιστη βαθμολογία</value></data>
+  <data name="StructureEditor_DetectionScoreThresholdLabel" xml:space="preserve"><value>Κατώφλι βαθμολογίας</value></data>
+  <data name="StructureEditor_DetectionContentPatternsLabel" xml:space="preserve"><value>Μοτίβα περιεχομένου (μορφές κειμένου)</value></data>
+  <data name="StructureEditor_DetectionRegexToolTip" xml:space="preserve"><value>Μοτίβο Regex</value></data>
+  <data name="StructureEditor_DetectionAddPatternButton" xml:space="preserve"><value>＋ Προσθήκη μοτίβου</value></data>
+  <data name="StructureEditor_MetaCoreSection" xml:space="preserve"><value>Γενικά</value></data>
+  <data name="StructureEditor_MetaNameLabel" xml:space="preserve"><value>Όνομα μορφής</value></data>
+  <data name="StructureEditor_MetaNameToolTip" xml:space="preserve"><value>Αναγνώσιμο όνομα μορφής (π.χ. 'ZIP Archive', 'PNG Image')</value></data>
+  <data name="StructureEditor_MetaVersionLabel" xml:space="preserve"><value>Έκδοση</value></data>
+  <data name="StructureEditor_MetaVersionToolTip" xml:space="preserve"><value>Έκδοση αυτού του ορισμού (π.χ. '1.0', '2.0')</value></data>
+  <data name="StructureEditor_MetaAuthorLabel" xml:space="preserve"><value>Συγγραφέας</value></data>
+  <data name="StructureEditor_MetaAuthorToolTip" xml:space="preserve"><value>Συγγραφέας αυτού του αρχείου ορισμού</value></data>
+  <data name="StructureEditor_MetaCategoryLabel" xml:space="preserve"><value>Κατηγορία</value></data>
+  <data name="StructureEditor_MetaCategoryToolTip" xml:space="preserve"><value>Κατηγορία (ορίζεται αυτόματα από τη δομή φακέλων: Archives, Images, Audio, Video, κ.λπ.)</value></data>
+  <data name="StructureEditor_MetaDiffModeLabel" xml:space="preserve"><value>Λειτουργία diff</value></data>
+  <data name="StructureEditor_MetaDiffModeToolTip" xml:space="preserve"><value>Προτιμώμενος αλγόριθμος diff για το DiffViewer</value></data>
+  <data name="StructureEditor_MetaPreferredEditorLabel" xml:space="preserve"><value>Προτιμώμενος επεξεργαστής</value></data>
+  <data name="StructureEditor_MetaPreferredEditorToolTip" xml:space="preserve"><value>ID εργοστασίου προτιμώμενου επεξεργαστή για αρχεία αυτής της μορφής</value></data>
+  <data name="StructureEditor_MetaDescriptionLabel" xml:space="preserve"><value>Περιγραφή</value></data>
+  <data name="StructureEditor_MetaIsTextFormat" xml:space="preserve"><value>Μορφή κειμένου (ανοίγει στον επεξεργαστή κώδικα από προεπιλογή)</value></data>
+  <data name="StructureEditor_MetaExtensionsLabel" xml:space="preserve"><value>Επεκτάσεις αρχείου</value></data>
+  <data name="StructureEditor_MetaAddExtensionButton" xml:space="preserve"><value>＋ Προσθήκη επέκτασης</value></data>
+  <data name="StructureEditor_MetaMimeTypesLabel" xml:space="preserve"><value>Τύποι MIME</value></data>
+  <data name="StructureEditor_MetaAddMimeButton" xml:space="preserve"><value>＋ Προσθήκη τύπου MIME</value></data>
+  <data name="StructureEditor_MetaSoftwareLabel" xml:space="preserve"><value>Λογισμικά</value></data>
+  <data name="StructureEditor_MetaAddSoftwareButton" xml:space="preserve"><value>＋ Προσθήκη λογισμικού</value></data>
+  <data name="StructureEditor_QualityComputedSection" xml:space="preserve"><value>Υπολογισμένες μετρικές</value></data>
+  <data name="StructureEditor_QualityBlockCoverage" xml:space="preserve"><value>Κάλυψη μπλοκ</value></data>
+  <data name="StructureEditor_QualityCompletenessScore" xml:space="preserve"><value>Βαθμολογία πληρότητας</value></data>
+  <data name="StructureEditor_QualityTypeDistribution" xml:space="preserve"><value>Κατανομή τύπων</value></data>
+  <data name="StructureEditor_QualityBlocksLabel" xml:space="preserve"><value>Μπλοκ</value></data>
+  <data name="StructureEditor_QualityDepthLabel" xml:space="preserve"><value>Βάθος</value></data>
+  <data name="StructureEditor_QualityVariablesLabel" xml:space="preserve"><value>Μεταβλητές</value></data>
+  <data name="StructureEditor_QualityRulesLabel" xml:space="preserve"><value>Κανόνες</value></data>
+  <data name="StructureEditor_QualityMetadataLabel" xml:space="preserve"><value>Μεταδεδομένα</value></data>
+  <data name="StructureEditor_QualityDocLevel" xml:space="preserve"><value>Επίπεδο τεκμηρίωσης</value></data>
+  <data name="StructureEditor_QualityLastUpdated" xml:space="preserve"><value>Τελευταία ενημέρωση</value></data>
+  <data name="StructureEditor_QualityLastUpdatedToolTip" xml:space="preserve"><value>Μορφή: YYYY-MM-DD (συμπληρώνεται αυτόματα κατά την αποθήκευση)</value></data>
+  <data name="StructureEditor_QualityPriorityFormat" xml:space="preserve"><value>Μορφή προτεραιότητας (top 100)</value></data>
+  <data name="StructureEditor_QualityAutoRefined" xml:space="preserve"><value>Αυτόματα βελτιωμένο (εμπλουτισμένο από script — μόνο ανάγνωση)</value></data>
+  <data name="StructureEditor_TestSection" xml:space="preserve"><value>Δοκιμή μορφής σε αρχείο</value></data>
+  <data name="StructureEditor_TestFilePathToolTip" xml:space="preserve"><value>Διαδρομή προς το δυαδικό αρχείο δοκιμής</value></data>
+  <data name="StructureEditor_TestBrowseButton" xml:space="preserve"><value>Αναζήτηση…</value></data>
+  <data name="StructureEditor_TestBrowseDialogTitle" xml:space="preserve"><value>Επιλέξτε δυαδικό αρχείο για δοκιμή</value></data>
+  <data name="StructureEditor_TestRunButton" xml:space="preserve"><value>▶ Εκτέλεση δοκιμής</value></data>
+  <data name="StructureEditor_TestCopyToolTip" xml:space="preserve"><value>Αντιγραφή αποτελεσμάτων στο πρόχειρο (TSV)</value></data>
+  <data name="StructureEditor_TestEmptyMessage" xml:space="preserve"><value>Επιλέξτε αρχείο και κάντε κλικ στο ▶ Εκτέλεση δοκιμής για να δοκιμάσετε τον τρέχοντα ορισμό μορφής.</value></data>
+  <data name="StructureEditor_TestColStatus" xml:space="preserve"><value>Κατάσταση</value></data>
+  <data name="StructureEditor_TestColBlockName" xml:space="preserve"><value>Όνομα μπλοκ</value></data>
+  <data name="StructureEditor_TestColType" xml:space="preserve"><value>Τύπος</value></data>
+  <data name="StructureEditor_TestColOffset" xml:space="preserve"><value>Offset</value></data>
+  <data name="StructureEditor_TestColLen" xml:space="preserve"><value>Μήκ.</value></data>
+  <data name="StructureEditor_TestColRaw" xml:space="preserve"><value>Ακατέργαστο (hex)</value></data>
+  <data name="StructureEditor_TestColParsed" xml:space="preserve"><value>Ανεπεξέργαστη τιμή</value></data>
+  <data name="StructureEditor_TestColNote" xml:space="preserve"><value>Σημείωση</value></data>
+  <data name="StructureEditor_TestFilterOk" xml:space="preserve"><value>✓ OK</value></data>
+  <data name="StructureEditor_TestFilterWarning" xml:space="preserve"><value>⚠ Προειδοποίηση</value></data>
+  <data name="StructureEditor_TestFilterError" xml:space="preserve"><value>✕ Σφάλμα</value></data>
+  <data name="StructureEditor_TestFilterSkipped" xml:space="preserve"><value>⊘ Παραλείφθηκε</value></data>
+  <data name="StructureEditor_VarsDescription" xml:space="preserve"><value>Αρχικές μεταβλητές διαθέσιμες στον διερμηνέα μπλοκ (π.χ. μετρητές βρόχου, υπολογισμένα offsets).</value></data>
+  <data name="StructureEditor_VarsFilterToolTip" xml:space="preserve"><value>Φιλτράρισμα μεταβλητών κατά όνομα</value></data>
+  <data name="StructureEditor_VarsColName" xml:space="preserve"><value>Όνομα μεταβλητής</value></data>
+  <data name="StructureEditor_VarsColType" xml:space="preserve"><value>Τύπος</value></data>
+  <data name="StructureEditor_VarsColInitialValue" xml:space="preserve"><value>Αρχική τιμή</value></data>
+  <data name="StructureEditor_VarsColDescription" xml:space="preserve"><value>Περιγραφή</value></data>
+  <data name="StructureEditor_VarsAddButton" xml:space="preserve"><value>＋ Προσθήκη μεταβλητής</value></data>
+  <data name="StructureEditor_V2AssertionsHeader" xml:space="preserve"><value>Assertions</value></data>
+  <data name="StructureEditor_V2AssertionPlaceholder" xml:space="preserve"><value>var:όνομα equals 0 or calc:έκφραση</value></data>
+  <data name="StructureEditor_V2AssertionToolTip" xml:space="preserve"><value>Λογική έκφραση — Ctrl+Space για συναρτήσεις και μεταβλητές</value></data>
+  <data name="StructureEditor_V2ChecksumsHeader" xml:space="preserve"><value>Αθροίσματα ελέγχου</value></data>
+  <data name="StructureEditor_V2VersioningHeader" xml:space="preserve"><value>Διαχείριση εκδόσεων (VersionDetection / VersionedBlocks)</value></data>
+  <data name="StructureEditor_V2ImportsHeader" xml:space="preserve"><value>Imports ($ref Composition)</value></data>
+  <data name="StructureEditor_V2ImportsDescription" xml:space="preserve"><value>ref = όνομα μορφής (ή structs/Όνομα), as = alias που χρησιμοποιείται στα μπλοκ structRef.</value></data>
+  <data name="StructureEditor_V2ImportRefToolTip" xml:space="preserve"><value>Αναφορά μορφής, π.χ. structs/PE_OptionalHeader</value></data>
+  <data name="StructureEditor_V2ImportAliasToolTip" xml:space="preserve"><value>Alias που χρησιμοποιείται στο structRef, π.χ. PEOpt</value></data>
+  <data name="StructureEditor_V2AddImportButton" xml:space="preserve"><value>+ Προσθήκη import</value></data>
+  <data name="StructureEditor_V2ForensicHeader" xml:space="preserve"><value>Forensic</value></data>
+  <data name="StructureEditor_V2NavBookmarksHeader" xml:space="preserve"><value>Σελιδοδείκτες πλοήγησης</value></data>
+  <data name="StructureEditor_V2BookmarkPlaceholder" xml:space="preserve"><value>όνομαΜεταβλητής</value></data>
+  <data name="StructureEditor_V2BookmarkToolTip" xml:space="preserve"><value>Μεταβλητή που περιέχει το offset σε bytes — Ctrl+Space για προτάσεις</value></data>
+  <data name="StructureEditor_V2AddBookmarkButton" xml:space="preserve"><value>＋ Προσθήκη σελιδοδείκτη</value></data>
+  <data name="StructureEditor_V2InspectorLayoutHeader" xml:space="preserve"><value>Διάταξη επιθεωρητή</value></data>
+  <data name="StructureEditor_V2ExportTemplatesHeader" xml:space="preserve"><value>Πρότυπα εξαγωγής</value></data>
+  <data name="StructureEditor_V2AddTemplateButton" xml:space="preserve"><value>＋ Προσθήκη προτύπου</value></data>
+  <data name="StructureEditor_V2AIHintsHeader" xml:space="preserve"><value>Υποδείξεις AI</value></data>
+  <data name="StructureEditor_TypeHintField" xml:space="preserve"><value>Δυαδικό πεδίο με σταθερό ή μεταβλητό offset και μήκος.</value></data>
+  <data name="StructureEditor_TypeHintSignature" xml:space="preserve"><value>Magic bytes που αναγνωρίζουν τη μορφή σε συγκεκριμένο offset.</value></data>
+  <data name="StructureEditor_TypeHintMetadata" xml:space="preserve"><value>Διαβάζει τιμή μεταβλητού ή συμβολικού μήκους σε ονομαστή μεταβλητή.</value></data>
+  <data name="StructureEditor_TypeHintConditional" xml:space="preserve"><value>Αναλύει υπό συνθήκη μπλοκ βάσει τιμής πεδίου ή μεταβλητής.</value></data>
+  <data name="StructureEditor_TypeHintLoop" xml:space="preserve"><value>Επαναλαμβάνει σώμα μπλοκ όσο μια συνθήκη είναι αληθής.</value></data>
+  <data name="StructureEditor_TypeHintAction" xml:space="preserve"><value>Τροποποιεί μεταβλητή (αύξηση, μείωση, ορισμόςΜεταβλητής).</value></data>
+  <data name="StructureEditor_TypeHintCompute" xml:space="preserve"><value>Υπολογίζει μαθηματική έκφραση και αποθηκεύει το αποτέλεσμα.</value></data>
+  <data name="StructureEditor_TypeHintRepeating" xml:space="preserve"><value>Αναλύει πίνακα με σταθερό αριθμό δομημένων εγγραφών.</value></data>
+  <data name="StructureEditor_TypeHintUnion" xml:space="preserve"><value>Επιλέγει σύνολο μπλοκ παραλλαγών βάσει διακριτής μεταβλητής.</value></data>
+  <data name="StructureEditor_TypeHintNested" xml:space="preserve"><value>Ενσωματώνει εξωτερικό ορισμό δομής μέσω αναφοράς.</value></data>
+  <data name="StructureEditor_TypeHintPointer" xml:space="preserve"><value>Δημιουργεί σχόλιο πλοήγησης προς offset που δείχνει ο δείκτης.</value></data>
+  <data name="StructureEditor_ValidationErrorCount" xml:space="preserve"><value>{0} σφάλμα(τα)</value></data>
+  <data name="StructureEditor_ValidationWarningCount" xml:space="preserve"><value>{0} προειδοποίηση(εις)</value></data>
+  <data name="StructureEditor_RawJsonTitle" xml:space="preserve"><value>Ακατέργαστο JSON — {0}</value></data>
+  <data name="StructureEditor_RawJsonApply" xml:space="preserve"><value>Εφαρμογή</value></data>
+  <data name="StructureEditor_RawJsonCancel" xml:space="preserve"><value>Ακύρωση</value></data>
+  <data name="StructureEditor_FactoryDisplayName" xml:space="preserve"><value>Επεξεργαστής δομής</value></data>
+  <data name="StructureEditor_FactoryDescription" xml:space="preserve"><value>Οπτικός επεξεργαστής για αρχεία ορισμού δομής .whfmt. Τροποποιήστε μπλοκ, τύπους, offsets, μήκη και χρώματα σε DataGrid.</value></data>
+  <data name="StructureEd_ConditionRow_LengthLabel" xml:space="preserve"><value>Μήκος:</value></data>
+  <data name="StrTb_Validate" xml:space="preserve"><value>Επικύρωση (Ctrl+Shift+V)</value></data>
+  <data name="StrTb_AddBlock" xml:space="preserve"><value>Προσθήκη μπλοκ (Ctrl+N)</value></data>
+  <data name="StrTb_ToggleLiveCode" xml:space="preserve"><value>Εναλλαγή ζωντανής προβολής κώδικα</value></data>
+  <data name="StrTb_LayoutLabel" xml:space="preserve"><value>Διάταξη</value></data>
+  <data name="StrTb_LayoutTooltip" xml:space="preserve"><value>Διάταξη προβολής κώδικα</value></data>
+  <data name="StrLayout_CodeRight" xml:space="preserve"><value>Κώδικας δεξιά</value></data>
+  <data name="StrLayout_CodeLeft" xml:space="preserve"><value>Κώδικας αριστερά</value></data>
+  <data name="StrLayout_CodeBottom" xml:space="preserve"><value>Κώδικας κάτω</value></data>
+  <data name="StrLayout_CodeTop" xml:space="preserve"><value>Κώδικας πάνω</value></data>
+  <data name="StrSb_FormatLabel" xml:space="preserve"><value>Μορφή</value></data>
+  <data name="StrSb_TabLabel" xml:space="preserve"><value>Καρτέλα</value></data>
+  <data name="StrSb_BlocksLabel" xml:space="preserve"><value>Μπλοκ</value></data>
+  <data name="StrSb_ValidationLabel" xml:space="preserve"><value>Επικύρωση</value></data>
+  <data name="SE_PropName" xml:space="preserve"><value>Όνομα</value></data>
+  <data name="SE_PropType" xml:space="preserve"><value>Τύπος</value></data>
+  <data name="SE_PropColor" xml:space="preserve"><value>Χρώμα</value></data>
+  <data name="SE_PropOpacity" xml:space="preserve"><value>Αδιαφάνεια</value></data>
+  <data name="SE_PropDescription" xml:space="preserve"><value>Περιγραφή</value></data>
+  <data name="SE_PropHidden" xml:space="preserve"><value>Κρυφό</value></data>
+  <data name="SE_PropEndianness" xml:space="preserve"><value>Endianness</value></data>
+  <data name="SE_BlockType" xml:space="preserve"><value>Τύπος μπλοκ</value></data>
+  <data name="SE_BE_Action" xml:space="preserve"><value>Ενέργεια</value></data>
+  <data name="SE_BE_Variable" xml:space="preserve"><value>Μεταβλητή</value></data>
+  <data name="SE_BE_Value" xml:space="preserve"><value>Τιμή</value></data>
+  <data name="SE_BE_Computation" xml:space="preserve"><value>Υπολογισμός</value></data>
+  <data name="SE_BE_Expression" xml:space="preserve"><value>Έκφραση</value></data>
+  <data name="SE_BE_StoreAs" xml:space="preserve"><value>Αποθήκευση ως</value></data>
+  <data name="SE_BE_Position" xml:space="preserve"><value>Θέση</value></data>
+  <data name="SE_BE_Offset" xml:space="preserve"><value>Offset</value></data>
+  <data name="SE_BE_OffsetFrom" xml:space="preserve"><value>Offset από</value></data>
+  <data name="SE_BE_OffsetAdd" xml:space="preserve"><value>Πρόσθετο offset</value></data>
+  <data name="SE_BE_Length" xml:space="preserve"><value>Μήκος</value></data>
+  <data name="SE_BE_ValueType" xml:space="preserve"><value>Τύπος τιμής</value></data>
+  <data name="SE_BE_Array" xml:space="preserve"><value>Πίνακας</value></data>
+  <data name="SE_BE_Count" xml:space="preserve"><value>Πλήθος</value></data>
+  <data name="SE_BE_EntrySize" xml:space="preserve"><value>Μέγεθος εγγραφής</value></data>
+  <data name="SE_BE_IndexVar" xml:space="preserve"><value>Μεταβλητή ευρετηρίου</value></data>
+  <data name="SE_BE_ColorCycle" xml:space="preserve"><value>Κύκλος χρωμάτων</value></data>
+  <data name="SE_BE_EntryFieldsHint" xml:space="preserve"><value>Τα πεδία εγγραφής εμφανίζονται ως θυγατρικά στο δέντρο.</value></data>
+  <data name="SE_BE_Union" xml:space="preserve"><value>Union</value></data>
+  <data name="SE_BE_Discriminant" xml:space="preserve"><value>Διακριτής</value></data>
+  <data name="SE_BE_Variants" xml:space="preserve"><value>Παραλλαγές</value></data>
+  <data name="SE_BE_NestedStruct" xml:space="preserve"><value>Εμφωλευμένη δομή</value></data>
+  <data name="SE_BE_StructRef" xml:space="preserve"><value>Αναφ. δομής</value></data>
+  <data name="SE_BE_PointerLocation" xml:space="preserve"><value>Θέση δείκτη</value></data>
+  <data name="SE_BE_TargetStorage" xml:space="preserve"><value>Στόχος και αποθήκευση</value></data>
+  <data name="SE_BE_TargetVar" xml:space="preserve"><value>Μεταβλητή στόχος</value></data>
+  <data name="SE_BE_Label" xml:space="preserve"><value>Ετικέτα</value></data>
+  <data name="SE_BE_PositionSize" xml:space="preserve"><value>Θέση και μέγεθος</value></data>
+  <data name="SE_BE_Storage" xml:space="preserve"><value>Αποθήκευση</value></data>
+  <data name="SE_BE_MappedStoreAs" xml:space="preserve"><value>Αντιστοιχισμένη αποθήκευση</value></data>
+  <data name="SE_BE_ValueMap" xml:space="preserve"><value>Αντιστοίχιση τιμών</value></data>
+  <data name="SE_BE_Bitfields" xml:space="preserve"><value>Πεδία bits</value></data>
+  <data name="SE_BE_Name" xml:space="preserve"><value>Όνομα</value></data>
+  <data name="SE_BE_Bits" xml:space="preserve"><value>Bits</value></data>
+  <data name="SE_BE_Until" xml:space="preserve"><value>Μέχρι</value></data>
+  <data name="SE_BE_MaxLength" xml:space="preserve"><value>Μέγ. μήκος</value></data>
+  <data name="SE_BE_MinValue" xml:space="preserve"><value>Ελάχ. τιμή</value></data>
+  <data name="SE_BE_MaxValue" xml:space="preserve"><value>Μέγ. τιμή</value></data>
+  <data name="SE_BE_PatternRegex" xml:space="preserve"><value>Μοτίβο (regex)</value></data>
+  <data name="SE_BE_ErrorMessage" xml:space="preserve"><value>Μήνυμα σφάλματος</value></data>
+  <data name="SE_BE_VariableName" xml:space="preserve"><value>Όνομα μεταβλητής</value></data>
+  <data name="SE_BE_Group" xml:space="preserve"><value>Ομάδα</value></data>
+  <data name="SE_BE_GroupHint" xml:space="preserve"><value>Μια ομάδα επισημαίνει οπτικά ένα σύνολο θυγατρικών πεδίων με στρώμα χρώματος. Δεν καταναλώνει bytes.</value></data>
+  <data name="SE_BE_ChildrenInTreeHint" xml:space="preserve"><value>Τα θυγατρικά εμφανίζονται στο δέντρο μπλοκ — χρησιμοποιήστε το δέντρο για προσθήκη/αναδιάταξη θυγατρικών μπλοκ.</value></data>
+  <data name="SE_BE_ChildFieldsHint" xml:space="preserve"><value>Τα θυγατρικά πεδία εμφανίζονται στο δέντρο μπλοκ.</value></data>
+  <data name="SE_BE_RawDataRegion" xml:space="preserve"><value>Περιοχή ακατέργαστων δεδομένων</value></data>
+  <data name="SE_BE_RawDataDescription" xml:space="preserve"><value>Επισημαίνει μια περιοχή ακατέργαστων bytes με στρώμα χρώματος. Δεν εξάγεται καμία τιμή.</value></data>
+  <data name="SE_BE_Condition" xml:space="preserve"><value>Συνθήκη</value></data>
+  <data name="SE_BE_BranchLabels" xml:space="preserve"><value>Ετικέτες κλάδου</value></data>
+  <data name="SE_BE_TrueLabel" xml:space="preserve"><value>Ετικέτα «Αληθής»</value></data>
+  <data name="SE_BE_FalseLabel" xml:space="preserve"><value>Ετικέτα «Ψευδής»</value></data>
+  <data name="SE_BE_BranchHint" xml:space="preserve"><value>Τα μπλοκ Then / Else εμφανίζονται ως θυγατρικά στο δέντρο.</value></data>
+  <data name="SE_BE_LoopCondition" xml:space="preserve"><value>Συνθήκη βρόχου</value></data>
+  <data name="SE_BE_Bounds" xml:space="preserve"><value>Όρια</value></data>
+  <data name="SE_BE_MaxIterations" xml:space="preserve"><value>Μέγ. επαναλήψεις</value></data>
+  <data name="SE_BE_LoopBodyHint" xml:space="preserve"><value>Τα μπλοκ σώματος εμφανίζονται ως θυγατρικά στο δέντρο.</value></data>
+  <data name="SE_BE_Tip_VarName" xml:space="preserve"><value>Όνομα μεταβλητής προς τροποποίηση — πληκτρολογήστε για προτάσεις (Ctrl+Space)</value></data>
+  <data name="SE_BE_Tip_VarValue" xml:space="preserve"><value>Τιμή για ορισμό / ποσό για πρόσθεση ή αφαίρεση — δέχεται var:όνομα</value></data>
+  <data name="SE_BE_Tip_Expression" xml:space="preserve"><value>Μαθηματική έκφραση με μεταβλητές και συναρτήσεις — Ctrl+Space για αυτοσυμπλήρωση</value></data>
+  <data name="SE_BE_Tip_StoreExpr" xml:space="preserve"><value>Όνομα μεταβλητής αποθήκευσης υπολογισμένου αποτελέσματος — Ctrl+Space για προτάσεις</value></data>
+  <data name="SE_BE_Tip_ArrayOffset" xml:space="preserve"><value>File offset όπου ξεκινά ο πίνακας — Ctrl+Space για αυτοσυμπλήρωση</value></data>
+  <data name="SE_BE_Tip_ArrayBaseVar" xml:space="preserve"><value>Μεταβλητή που χρησιμοποιείται ως βασικό offset για αυτόν τον πίνακα</value></data>
+  <data name="SE_BE_Tip_EntryCount" xml:space="preserve"><value>Αριθμός εγγραφών — Ctrl+Space για προτάσεις μεταβλητών</value></data>
+  <data name="SE_BE_Tip_EntrySize" xml:space="preserve"><value>Μέγεθος κάθε εγγραφής σε bytes — Ctrl+Space για προτάσεις μεταβλητών</value></data>
+  <data name="SE_BE_Tip_LoopIndex" xml:space="preserve"><value>Όνομα μεταβλητής ευρετηρίου βρόχου (π.χ. i)</value></data>
+  <data name="SE_BE_AddColor" xml:space="preserve"><value>＋ Προσθήκη χρώματος</value></data>
+  <data name="SE_BE_Tip_VariantVar" xml:space="preserve"><value>Μεταβλητή που οδηγεί την επιλογή παραλλαγής — Ctrl+Space για προτάσεις</value></data>
+  <data name="SE_BE_Tip_FormatPath" xml:space="preserve"><value>Όνομα μορφής ή σχετική διαδρομή προς το αρχείο .whfmt</value></data>
+  <data name="SE_BE_Browse" xml:space="preserve"><value>Αναζήτηση…</value></data>
+  <data name="SE_BE_Tip_PtrOffset" xml:space="preserve"><value>File offset όπου διαβάζεται η τιμή δείκτη — Ctrl+Space για αυτοσυμπλήρωση</value></data>
+  <data name="SE_BE_Tip_PtrBaseVar" xml:space="preserve"><value>Όνομα μεταβλητής που χρησιμοποιείται ως βασικό offset</value></data>
+  <data name="SE_BE_Tip_PtrSize" xml:space="preserve"><value>Μέγεθος τιμής δείκτη σε bytes (π.χ. 4 για uint32) — ή var:όνομα</value></data>
+  <data name="SE_BE_Tip_PtrTargetVar" xml:space="preserve"><value>Μεταβλητή που θα λάβει την επιλυμένη διεύθυνση δείκτη</value></data>
+  <data name="SE_BE_Tip_PtrStoreRaw" xml:space="preserve"><value>Μεταβλητή για αποθήκευση ακατέργαστης τιμής δείκτη</value></data>
+  <data name="SE_BE_Tip_PtrLabel" xml:space="preserve"><value>Ετικέτα σχολίου που εμφανίζεται στην hex προβολή</value></data>
+  <data name="SE_BE_Tip_OffsetAuto" xml:space="preserve"><value>Ctrl+Space για αυτοσυμπλήρωση — ακέραιος, var:όνομα, calc:έκφραση, offset:N</value></data>
+  <data name="SE_BE_Tip_OffsetFromVar" xml:space="preserve"><value>Όνομα μεταβλητής της οποίας η τιμή είναι το βασικό offset — Ctrl+Space για προτάσεις</value></data>
+  <data name="SE_BE_Tip_OffsetAddBytes" xml:space="preserve"><value>Επιπλέον bytes που προστίθενται στο OffsetFrom</value></data>
+  <data name="SE_BE_Tip_LengthAuto" xml:space="preserve"><value>Ctrl+Space για αυτοσυμπλήρωση — ακέραιος, var:όνομα, calc:έκφραση</value></data>
+  <data name="SE_BE_Tip_StoreParsed" xml:space="preserve"><value>Όνομα μεταβλητής για αποθήκευση ανεπεξέργαστης τιμής — Ctrl+Space για προτάσεις</value></data>
+  <data name="SE_BE_Tip_StoreMapped" xml:space="preserve"><value>Όνομα μεταβλητής για μεταφρασμένη τιμή ValueMap — Ctrl+Space για προτάσεις</value></data>
+  <data name="SE_BE_Tip_RawDisplayMap" xml:space="preserve"><value>ακατέργαστο=Εμφάνιση (π.χ. 0=Grayscale)</value></data>
+  <data name="SE_BE_AddValueMapEntry" xml:space="preserve"><value>＋ Προσθήκη εγγραφής ValueMap</value></data>
+  <data name="SE_BE_Tip_BitRange" xml:space="preserve"><value>Εύρος bits π.χ. 7-6 ή μεμονωμένο bit π.χ. 3</value></data>
+  <data name="SE_BE_AddBitfield" xml:space="preserve"><value>＋ Προσθήκη πεδίου bits</value></data>
+  <data name="SE_BE_SentinelUntil" xml:space="preserve"><value>Sentinel (Until)</value></data>
+  <data name="SE_BE_Tip_UntilPattern" xml:space="preserve"><value>Μοτίβο hex ή var:όνομα όπου σταματά η ανάγνωση. Αντικαθιστά το Length όταν ορίζεται.</value></data>
+  <data name="SE_BE_Tip_UntilSafetyCap" xml:space="preserve"><value>Όριο ασφαλείας (bytes) αν το μοτίβο Until δεν βρεθεί. 0 = προεπιλογή διερμηνέα (4096).</value></data>
+  <data name="SE_BE_UntilInclusive" xml:space="preserve"><value>Until inclusive (συμπερίληψη bytes μοτίβου στο μήκος πεδίου)</value></data>
+  <data name="SE_BE_ValidationRules" xml:space="preserve"><value>Κανόνες επικύρωσης</value></data>
+  <data name="SE_BE_Tip_MetaVarName" xml:space="preserve"><value>Όνομα μεταβλητής που διαβάζεται από αυτό το μπλοκ μεταδεδομένων</value></data>
+  <data name="SE_BE_Tip_LoopCount" xml:space="preserve"><value>Σταθερός ακέραιος ή var:όνομα — Ctrl+Space για προτάσεις</value></data>
+  <data name="SE_BE_Tip_LoopMaxCap" xml:space="preserve"><value>Όριο ασφαλείας — ακέραιος</value></data>
+  <data name="SE_BE_Tip_LoopIdxStore" xml:space="preserve"><value>Μεταβλητή που λαμβάνει τον τρέχοντα δείκτη επανάληψης (βάση 0)</value></data>
+  <data name="SE_BE_Tip_LoopCountStore" xml:space="preserve"><value>Μεταβλητή για αποθήκευση αριθμού επαναλήψεων μετά τον βρόχο — Ctrl+Space για προτάσεις</value></data>
+  <data name="SE_BE_Tip_EditAsJson" xml:space="preserve"><value>Επεξεργασία αυτού του μπλοκ ως ακατέργαστο JSON</value></data>
+  <data name="SE_AddAssertion" xml:space="preserve"><value>＋ Προσθήκη assertion</value></data>
+  <data name="SE_AddChecksum" xml:space="preserve"><value>＋ Προσθήκη αθροίσματος ελέγχου</value></data>
+  <data name="SE_TipTemplateName" xml:space="preserve"><value>Όνομα προτύπου</value></data>
+  <data name="SE_TipStructName" xml:space="preserve"><value>Όνομα δομής (C struct)</value></data>
+  <data name="SE_TipHexDigitsOnly" xml:space="preserve"><value>Μόνο ψηφία hex (π.χ. FF, 4D5A)</value></data>
+  <data name="SE_ShowLabel" xml:space="preserve"><value>Εμφάνιση:</value></data>
+</root>

@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GNU Affero General Public License v3.0  2026
+    Author : Derek Tremblay (derektremblay666@gmail.com)
+    Contributors: Claude Sonnet 4.6
+    Project     : WpfHexEditor.Plugins.DataInspector
+    File        : DataInspectorResources.fr-CA.resx
+    Description : French (Canada) localized UI strings for the Data Inspector plugin.
+-->
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:any minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" />
+              <xsd:attribute name="type" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="value">
+            <xsd:complexType>
+              <xsd:any minOccurs="0" maxOccurs="unbounded" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="DataInspector_PluginName" xml:space="preserve">
+    <value>ตัวตรวจสอบข้อมูล</value>
+  </data>
+  <data name="DataInspector_OptionsCategory" xml:space="preserve">
+    <value>การวิเคราะห์ข้อมูล</value>
+  </data>
+  <data name="DataInspector_PanelTitle" xml:space="preserve">
+    <value>ตัวตรวจสอบข้อมูล</value>
+  </data>
+  <data name="DataInspector_MenuItem" xml:space="preserve">
+    <value>_ตัวตรวจสอบข้อมูล</value>
+  </data>
+  <data name="BarChart_NoData" xml:space="preserve">
+    <value>ไม่มีข้อมูลที่จะแสดง</value>
+  </data>
+  <data name="BarChart_Total" xml:space="preserve">
+    <value>ยอดรวม</value>
+  </data>
+  <data name="BarChart_Max" xml:space="preserve">
+    <value>สูงสุด</value>
+  </data>
+  <data name="BarChart_Entropy" xml:space="preserve">
+    <value>เอนโทรปี</value>
+  </data>
+  <data name="BarChart_BitsPerByte" xml:space="preserve">
+    <value>บิต/ไบต์</value>
+  </data>
+  <data name="BarChart_Bytes" xml:space="preserve">
+    <value>ไบต์</value>
+  </data>
+  <data name="DataInspector_EmptyState" xml:space="preserve">
+    <value>ไม่ได้เลือกไบต์ — เลือกไบต์ในตัวแก้ไขเลขฐานสิบหก</value>
+  </data>
+  <data name="DataInspector_Scope_ActiveView" xml:space="preserve">
+    <value>มุมมองที่ใช้งาน</value>
+  </data>
+  <data name="DataInspector_Scope_WholeFile" xml:space="preserve">
+    <value>ทั้งไฟล์</value>
+  </data>
+  <data name="DataInspector_Scope_Selection" xml:space="preserve">
+    <value>การเลือก</value>
+  </data>
+  <data name="DataInspector_Mode_Frequency" xml:space="preserve">
+    <value>ความถี่</value>
+  </data>
+  <data name="DataInspector_Mode_Entropy" xml:space="preserve">
+    <value>เอนโทรปี</value>
+  </data>
+  <data name="DataInspector_Footer_NoData" xml:space="preserve">
+    <value>ไม่มีข้อมูล</value>
+  </data>
+  <data name="DI_CategoryLabel" xml:space="preserve"><value>หมวดหมู่:</value></data>
+  <data name="DI_CatAll" xml:space="preserve"><value>ทั้งหมด</value></data>
+  <data name="DI_CatInteger" xml:space="preserve"><value>จำนวนเต็ม</value></data>
+  <data name="DI_CatFloat" xml:space="preserve"><value>ลอย</value></data>
+  <data name="DI_CatDateTime" xml:space="preserve"><value>วันที่/เวลา</value></data>
+  <data name="DI_CatNetwork" xml:space="preserve"><value>เครือข่าย</value></data>
+  <data name="DI_CatGuid" xml:space="preserve"><value>GUID</value></data>
+  <data name="DI_CatColor" xml:space="preserve"><value>สี</value></data>
+  <data name="DI_CatBasic" xml:space="preserve"><value>พื้นฐาน</value></data>
+  <data name="DI_CatBits" xml:space="preserve"><value>บิต</value></data>
+  <data name="DI_AllFormats" xml:space="preserve"><value>รูปแบบทั้งหมด</value></data>
+  <data name="DI_MoreOptions" xml:space="preserve"><value>ตัวเลือกเพิ่มเติม</value></data>
+  <data name="DI_ShowAxisLabels" xml:space="preserve"><value>แสดงป้ายกำกับแกน</value></data>
+  <data name="DI_ShowGridLines" xml:space="preserve"><value>แสดงเส้นตาราง</value></data>
+  <data name="DI_ShowStatistics" xml:space="preserve"><value>แสดงสถิติ</value></data>
+  <data name="DI_FrequencyDistribution" xml:space="preserve"><value>การกระจายความถี่</value></data>
+  <data name="DI_EntropySliding" xml:space="preserve"><value>เอนโทรปี (หน้าต่างเลื่อน)</value></data>
+  <data name="DI_ZoomIn" xml:space="preserve"><value>ซูมเข้า</value></data>
+  <data name="DI_ZoomOut" xml:space="preserve"><value>ซูมออก</value></data>
+  <data name="DI_ResetZoom" xml:space="preserve"><value>รีเซ็ตซูม</value></data>
+  <data name="DI_RefreshChart" xml:space="preserve"><value>รีเฟรชกราฟ</value></data>
+  <data name="DI_CopyChartImage" xml:space="preserve"><value>คัดลอกรูปภาพกราฟ</value></data>
+  <data name="DI_Layout" xml:space="preserve"><value>เค้าโครง</value></data>
+  <data name="DI_PositionLeft" xml:space="preserve"><value>ซ้าย</value></data>
+  <data name="DI_PositionRight" xml:space="preserve"><value>ขวา</value></data>
+  <data name="DI_PositionTop" xml:space="preserve"><value>บน</value></data>
+  <data name="DI_PositionBottom" xml:space="preserve"><value>ล่าง</value></data>
+  <data name="DI_ScopeLabel" xml:space="preserve"><value>ขอบเขต:</value></data>
+  <data name="DI_ScopeActiveView" xml:space="preserve"><value>มุมมองที่ใช้งาน</value></data>
+  <data name="DI_ScopeSelection" xml:space="preserve"><value>การเลือก</value></data>
+  <data name="DI_ScopeWholeFile" xml:space="preserve"><value>ทั้งไฟล์</value></data>
+  <data name="DI_FrequencyLabel" xml:space="preserve"><value>ความถี่</value></data>
+  <data name="DI_LayoutLabel" xml:space="preserve"><value>เค้าโครง:</value></data>
+  <data name="DI_ChartPositionTooltip" xml:space="preserve"><value>ตำแหน่งกราฟเทียบกับรายการการตีความ</value></data>
+  <data name="DI_AnalyzingFile" xml:space="preserve"><value>กำลังวิเคราะห์ไฟล์...</value></data>
+  <data name="DI_InterpretationsLabel" xml:space="preserve"><value>การตีความ: </value></data>
+  <data name="DI_NoData" xml:space="preserve"><value>ไม่มีข้อมูล</value></data>
+  <data name="DI_AutoRefresh" xml:space="preserve"><value>รีเฟรชอัตโนมัติเมื่อการเลือกเปลี่ยน</value></data>
+  <data name="DI_DefaultByteOrder" xml:space="preserve"><value>ลำดับไบต์เริ่มต้น: Little-Endian</value></data>
+  <data name="DI_ShowByteChart" xml:space="preserve"><value>แสดงแผงกราฟไบต์</value></data>
+  <data name="DI_ChartPosition" xml:space="preserve"><value>ตำแหน่งกราฟ:</value></data>
+  <data name="DI_MaxStringPreview" xml:space="preserve"><value>ไบต์สูงสุดสำหรับตัวอย่างสตริง:</value></data>
+</root>

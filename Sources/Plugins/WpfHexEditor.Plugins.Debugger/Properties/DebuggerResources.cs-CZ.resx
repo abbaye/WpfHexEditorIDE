@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+
+  <data name="Debugger_BreakpointsPanelTitle" xml:space="preserve"><value>Zarážky</value></data>
+  <data name="Debugger_CallStackPanelTitle" xml:space="preserve"><value>Zásobník volání</value></data>
+  <data name="Debugger_LocalsPanelTitle" xml:space="preserve"><value>Místní proměnné</value></data>
+  <data name="Debugger_WatchPanelTitle" xml:space="preserve"><value>Hlídání</value></data>
+  <data name="Debugger_ConsolePanelTitle" xml:space="preserve"><value>Konzole ladění</value></data>
+  <data name="Debugger_NoValidBreakpoints" xml:space="preserve"><value>Žádná platná zarážka nenalezena v souboruichier.</value></data>
+  <data name="Debugger_LaunchConfigTitle" xml:space="preserve"><value>Konfigurace spuštění (.whdbg)</value></data>
+  <data name="Debugger_NoFileLoaded" xml:space="preserve"><value>Žádný soubor není načten. Nejprve klikněte na Otevřít.</value></data>
+  <data name="Debugger_ServiceNotAvailable" xml:space="preserve"><value>IDebuggerService není dostupný.</value></data>
+  <data name="Debugger_NoConfigLoaded" xml:space="preserve"><value>Žádná konfigurace není načtena.</value></data>
+  <data name="Debugger_NoConfigsArray" xml:space="preserve"><value>Žádné pole 'configurations' nenalezeno v souboru .whdbg.</value></data>
+  <data name="Debugger_NoMatchingConfig" xml:space="preserve"><value>Žádná odpovídající konfigurace nenalezena.</value></data>
+  <data name="Debugger_ImportBreakpoints" xml:space="preserve"><value>Importovat zarážky z VS XML</value></data>
+  <data name="Debugger_ExportBreakpoints" xml:space="preserve"><value>Exportovat zarážky do VS XML</value></data>
+  <data name="Debugger_Menu_Continue" xml:space="preserve"><value>_Pokračovat</value></data>
+  <data name="Debugger_Menu_StepOver" xml:space="preserve"><value>_Krokovat přes</value></data>
+  <data name="Debugger_Menu_StepInto" xml:space="preserve"><value>Krokovat _do</value></data>
+  <data name="DBG_EnableAll" xml:space="preserve">
+    <value>Enable All</value>
+  </data>
+  <data name="DBG_DisableAll" xml:space="preserve">
+    <value>Disable All</value>
+  </data>
+  <data name="DBG_DeleteAll" xml:space="preserve">
+    <value>Delete All</value>
+  </data>
+  <data name="DBG_EditCondition" xml:space="preserve">
+    <value>Edit Condition…</value>
+  </data>
+  <data name="DBG_ImportBreakpoints" xml:space="preserve">
+    <value>Import from VS XML…</value>
+  </data>
+  <data name="DBG_ExportBreakpoints" xml:space="preserve">
+    <value>Export All to VS XML…</value>
+  </data>
+  <data name="DBG_GroupNone" xml:space="preserve">
+    <value>None</value>
+  </data>
+  <data name="DBG_GroupFile" xml:space="preserve">
+    <value>File</value>
+  </data>
+  <data name="DBG_GroupType" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="DBG_GroupEnabled" xml:space="preserve">
+    <value>Enabled/Disabled</value>
+  </data>
+  <data name="DBG_GroupProject" xml:space="preserve">
+    <value>Project</value>
+  </data>
+  <data name="DBG_DetailRight" xml:space="preserve">
+    <value>Detail: Right</value>
+  </data>
+  <data name="DBG_DetailBottom" xml:space="preserve">
+    <value>Detail: Bottom</value>
+  </data>
+  <data name="DBG_DetailHidden" xml:space="preserve">
+    <value>Detail: Hidden</value>
+  </data>
+  <data name="DBG_SearchPlaceholder" xml:space="preserve">
+    <value>Search breakpoints...</value>
+  </data>
+  <data name="DBG_EnableAllTooltip" xml:space="preserve">
+    <value>Enable all breakpoints</value>
+  </data>
+  <data name="DBG_DisableAllTooltip" xml:space="preserve">
+    <value>Disable all breakpoints</value>
+  </data>
+  <data name="DBG_DeleteAllTooltip" xml:space="preserve">
+    <value>Delete all breakpoints</value>
+  </data>
+  <data name="DBG_EditConditionTooltip" xml:space="preserve">
+    <value>Edit condition of selected breakpoint</value>
+  </data>
+  <data name="DBG_ImportTooltip" xml:space="preserve">
+    <value>Import breakpoints from Visual Studio XML file</value>
+  </data>
+  <data name="DBG_ExportTooltip" xml:space="preserve">
+    <value>Export all breakpoints to Visual Studio XML file</value>
+  </data>
+  <data name="DBG_GroupLabel" xml:space="preserve">
+    <value>Group:</value>
+  </data>
+  <data name="DBG_LayoutTooltip" xml:space="preserve">
+    <value>Detail panel layout</value>
+  </data>
+  <data name="DBG_LocationColumn" xml:space="preserve">
+    <value>Location</value>
+  </data>
+  <data name="DBG_ConditionColumn" xml:space="preserve">
+    <value>Condition</value>
+  </data>
+  <data name="DBG_HitsColumn" xml:space="preserve">
+    <value>Hits</value>
+  </data>
+  <data name="DBG_GoToSourceMenu" xml:space="preserve">
+    <value>Go to Source</value>
+  </data>
+  <data name="DBG_EditConditionMenu" xml:space="preserve">
+    <value>Edit Condition…</value>
+  </data>
+  <data name="DBG_ToggleEnabledMenu" xml:space="preserve">
+    <value>Toggle Enabled</value>
+  </data>
+  <data name="DBG_CopyLocationMenu" xml:space="preserve">
+    <value>Copy Location</value>
+  </data>
+  <data name="DBG_DeleteMenu" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="DBG_EnableGroupMenu" xml:space="preserve">
+    <value>Enable Group</value>
+  </data>
+  <data name="DBG_DisableGroupMenu" xml:space="preserve">
+    <value>Disable Group</value>
+  </data>
+  <data name="DBG_DeleteGroupMenu" xml:space="preserve">
+    <value>Delete Group</value>
+  </data>
+  <data name="DBG_UnverifiedBadge" xml:space="preserve">
+    <value>Unverified</value>
+  </data>
+  <data name="DBG_UnverifiedTooltip" xml:space="preserve">
+    <value>This breakpoint could not be verified at the current location.</value>
+  </data>
+  <data name="DBG_EnabledField" xml:space="preserve">
+    <value>Enabled</value>
+  </data>
+  <data name="DBG_TypeField" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="DBG_VerifiedField" xml:space="preserve">
+    <value>Verified</value>
+  </data>
+  <data name="DBG_ConditionField" xml:space="preserve">
+    <value>Condition</value>
+  </data>
+  <data name="DBG_GoToSourceText" xml:space="preserve">
+    <value>Go To Source</value>
+  </data>
+  <data name="DBG_EditText" xml:space="preserve">
+    <value>Edit…</value>
+  </data>
+  <data name="DBG_DeleteText" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="DBG_HitsLabel" xml:space="preserve">
+    <value>Hits: </value>
+  </data>
+  <data name="DBG_MoreOptionsTooltip" xml:space="preserve">
+    <value>More options</value>
+  </data>
+  <data name="DBG_AddWatch" xml:space="preserve"><value>Přidat hlídání</value></data>
+  <data name="DBG_ColValue" xml:space="preserve"><value>Hodnota</value></data>
+  <data name="DBG_ColType" xml:space="preserve"><value>Type</value></data>
+  <data name="DBG_ColName" xml:space="preserve"><value>Nom</value></data>
+  <data name="DBG_ColFile" xml:space="preserve"><value>Soubor</value></data>
+</root>

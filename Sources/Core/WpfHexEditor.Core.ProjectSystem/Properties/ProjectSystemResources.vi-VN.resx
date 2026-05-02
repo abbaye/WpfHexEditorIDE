@@ -1,0 +1,398 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:any minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" />
+              <xsd:attribute name="type" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="value">
+            <xsd:complexType>
+              <xsd:any minOccurs="0" maxOccurs="unbounded" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Validation_ProjectNameEmpty" xml:space="preserve">
+    <value>Tên dự án không được để trống.</value>
+  </data>
+  <data name="Dialog_ValidationTitle" xml:space="preserve">
+    <value>Xác thực</value>
+  </data>
+  <data name="Error_RenameProjectFailed" xml:space="preserve">
+    <value>Không thể đổi tên dự án :</value>
+  </data>
+  <data name="Dialog_ErrorTitle" xml:space="preserve">
+    <value>Lỗi</value>
+  </data>
+  <data name="Error_CannotCreateOutputFolder" xml:space="preserve">
+    <value>Không thể tạo thư mục đầu ra :</value>
+  </data>
+  <data name="Dialog_ConvertTblTitle" xml:space="preserve">
+    <value>Chuyển đổi TBL</value>
+  </data>
+  <data name="Error_OutputPathIdenticalToSource" xml:space="preserve">
+    <value>Đường dẫn đầu ra trùng với nguồn. Vui lòng chọn thư mục khác.</value>
+  </data>
+  <data name="Dialog_RemoveReferenceTitle" xml:space="preserve">
+    <value>Xóa tham chiếu</value>
+  </data>
+  <data name="Message_NoUnusedReferences" xml:space="preserve">
+    <value>Không tìm thấy tham chiếu assembly nào không sử dụng.</value>
+  </data>
+  <data name="Dialog_RemoveUnusedReferencesTitle" xml:space="preserve">
+    <value>Xóa tham chiếu không sử dụng</value>
+  </data>
+  <data name="Confirm_RemoveUnusedReferences" xml:space="preserve">
+    <value>Xóa các tham chiếu assembly không sử dụng sau đây?</value>
+  </data>
+  <data name="Dialog_SelectFilesToAdd" xml:space="preserve">
+    <value>Chọn tệp cần thêm</value>
+  </data>
+  <data name="Filter_AllFiles" xml:space="preserve">
+    <value>Tất cả tệp (*.*)|*.*</value>
+  </data>
+  <data name="Dialog_SelectProjectFolder" xml:space="preserve">
+    <value>Chọn thư mục cha cho dự án mới</value>
+  </data>
+  <data name="Dialog_SelectFileFolder" xml:space="preserve">
+    <value>Chọn thư mục cho tệp mới</value>
+  </data>
+  <data name="Dialog_SelectSolutionFolder" xml:space="preserve">
+    <value>Chọn thư mục cha cho giải pháp mới</value>
+  </data>
+  <data name="Dialog_SelectConvertOutputFolder" xml:space="preserve">
+    <value>Chọn thư mục đầu ra cho tệp TBLX đã chuyển đổi</value>
+  </data>
+  <data name="Dialog_AddProjectReference" xml:space="preserve">
+    <value>Thêm tham chiếu dự án</value>
+  </data>
+  <data name="Filter_ProjectFiles" xml:space="preserve">
+    <value>Tệp dự án (*.csproj;*.vbproj;*.fsproj)|*.csproj;*.vbproj;*.fsproj|Tất cả tệp (*.*)|*.*</value>
+  </data>
+  <data name="Dialog_AddAssemblyReference" xml:space="preserve">
+    <value>Thêm tham chiếu assembly</value>
+  </data>
+  <data name="Filter_AssemblyFiles" xml:space="preserve">
+    <value>Tệp assembly (*.dll;*.exe)|*.dll;*.exe|Tất cả tệp (*.*)|*.*</value>
+  </data>
+  <data name="Dialog_SelectOutputDirectory" xml:space="preserve">
+    <value>Chọn thư mục đầu ra</value>
+  </data>
+  <data name="Dialog_SelectIcon" xml:space="preserve">
+    <value>Chọn biểu tượng</value>
+  </data>
+  <data name="Filter_IconFiles" xml:space="preserve">
+    <value>Biểu tượng (*.ico)|*.ico|Tất cả tệp (*.*)|*.*</value>
+  </data>
+  <data name="Dialog_SelectProjectToReference" xml:space="preserve">
+    <value>Chọn dự án để tham chiếu</value>
+  </data>
+  <data name="Filter_CsharpProjects" xml:space="preserve">
+    <value>Dự án C# (*.csproj)|*.csproj|Tất cả dự án (*.csproj;*.vbproj;*.fsproj)|*.csproj;*.vbproj;*.fsproj</value>
+  </data>
+  <data name="ProjectSystem_Ref_ProjectReferences" xml:space="preserve">
+    <value>Tham chiếu dự án</value>
+  </data>
+  <data name="ProjectSystem_Ref_Assemblies" xml:space="preserve">
+    <value>Assembly</value>
+  </data>
+  <data name="ProjectSystem_Ref_Analyzers" xml:space="preserve">
+    <value>Bộ phân tích</value>
+  </data>
+  <data name="ProjectSystem_Ref_NoReferenceSupport" xml:space="preserve">
+    <value>Loại dự án này không hỗ trợ quản lý tham chiếu.</value>
+  </data>
+  <data name="PS_OK" xml:space="preserve"><value>OK</value></data>
+  <data name="PS_Cancel" xml:space="preserve"><value>Hủy</value></data>
+  <data name="PS_Add" xml:space="preserve"><value>Thêm</value></data>
+  <data name="PS_Browse" xml:space="preserve"><value>Duyệt…</value></data>
+  <data name="PS_Remove" xml:space="preserve"><value>Xóa</value></data>
+  <data name="PS_Save" xml:space="preserve"><value>Lưu</value></data>
+  <data name="PS_AddNewItemTitle" xml:space="preserve"><value>Thêm mục mới</value></data>
+  <data name="PS_TemplateLabel" xml:space="preserve"><value>Mẫu :</value></data>
+  <data name="PS_NameLabel" xml:space="preserve"><value>Tên :</value></data>
+  <data name="PS_FolderLabel" xml:space="preserve"><value>Thư mục :</value></data>
+  <data name="PS_AddExistingItemTitle" xml:space="preserve"><value>Thêm mục hiện có</value></data>
+  <data name="PS_FilesLabel" xml:space="preserve"><value>Tệp :</value></data>
+  <data name="PS_RemoveFileTooltip" xml:space="preserve"><value>Xóa tệp này khỏi vùng chọn</value></data>
+  <data name="PS_DetectedTypeLabel" xml:space="preserve"><value>Loại phát hiện :</value></data>
+  <data name="PS_ConvertTblTitle" xml:space="preserve"><value>Chuyển TBL sang TBLX</value></data>
+  <data name="PS_ConversionSection" xml:space="preserve"><value>Chuyển đổi</value></data>
+  <data name="PS_SourceLabel" xml:space="preserve"><value>Nguồn :</value></data>
+  <data name="PS_TargetLabel" xml:space="preserve"><value>Đích :</value></data>
+  <data name="PS_GameMetadataSection" xml:space="preserve"><value>Siêu dữ liệu game (tùy chọn)</value></data>
+  <data name="PS_RomDetectedLabel" xml:space="preserve"><value>ROM phát hiện :</value></data>
+  <data name="PS_AutoFill" xml:space="preserve"><value>Tự động điền</value></data>
+  <data name="PS_GameTitleLabel" xml:space="preserve"><value>Tên game :</value></data>
+  <data name="PS_PlatformLabel" xml:space="preserve"><value>Nền tảng :</value></data>
+  <data name="PS_RegionLabel" xml:space="preserve"><value>Khu vực :</value></data>
+  <data name="PS_AuthorLabel" xml:space="preserve"><value>Tác giả :</value></data>
+  <data name="PS_YearLabel" xml:space="preserve"><value>Năm :</value></data>
+  <data name="PS_NewFileTitle" xml:space="preserve"><value>Tệp mới</value></data>
+  <data name="PS_SortLabel" xml:space="preserve"><value>Sắp xếp :</value></data>
+  <data name="PS_SortName" xml:space="preserve"><value>Tên</value></data>
+  <data name="PS_SortCategory" xml:space="preserve"><value>Danh mục</value></data>
+  <data name="PS_SortExtension" xml:space="preserve"><value>Phần mở rộng</value></data>
+  <data name="PS_GridView" xml:space="preserve"><value>Dạng lưới</value></data>
+  <data name="PS_ListView" xml:space="preserve"><value>Dạng danh sách</value></data>
+  <data name="PS_SearchTemplates" xml:space="preserve"><value>Tìm kiếm mẫu…</value></data>
+  <data name="PS_BrowseForFolder" xml:space="preserve"><value>Duyệt thư mục</value></data>
+  <data name="PS_CreateInMemory" xml:space="preserve"><value>Tạo tài liệu trong bộ nhớ; chọn vị trí khi nhấn Ctrl+S lần đầu</value></data>
+  <data name="PS_NewProjectTitle" xml:space="preserve"><value>Dự án mới</value></data>
+  <data name="PS_NewSolutionTitle" xml:space="preserve"><value>Giải pháp mới</value></data>
+  <data name="PS_LocationLabel" xml:space="preserve"><value>Vị trí :</value></data>
+  <data name="PS_WillCreateLabel" xml:space="preserve"><value>Sẽ tạo :</value></data>
+  <data name="PS_ProjectPropertiesTitle" xml:space="preserve"><value>Thuộc tính dự án</value></data>
+  <data name="PS_ApplicationTab" xml:space="preserve"><value>Ứng dụng</value></data>
+  <data name="PS_BuildTab" xml:space="preserve"><value>Build</value></data>
+  <data name="PS_ItemsTab" xml:space="preserve"><value>Mục</value></data>
+  <data name="PS_ReferencesTab" xml:space="preserve"><value>Tham chiếu</value></data>
+  <data name="PS_ProjectFileLabel" xml:space="preserve"><value>Tệp dự án :</value></data>
+  <data name="PS_DirectoryLabel" xml:space="preserve"><value>Thư mục :</value></data>
+  <data name="PS_FilterSections" xml:space="preserve"><value>Lọc các phần</value></data>
+  <data name="PP_NavApplication" xml:space="preserve"><value>Ứng dụng</value></data>
+  <data name="PP_NavGeneral" xml:space="preserve"><value>Chung</value></data>
+  <data name="PP_ProjectName" xml:space="preserve"><value>Tên dự án</value></data>
+  <data name="PP_ProjectNameDesc" xml:space="preserve"><value>Tên logic hiển thị trong Solution Explorer.</value></data>
+  <data name="PP_AssemblyName" xml:space="preserve"><value>Tên assembly</value></data>
+  <data name="PP_AssemblyNameDesc" xml:space="preserve"><value>Tên tệp đầu ra đã biên dịch (không có phần mở rộng).</value></data>
+  <data name="PP_DefaultNamespace" xml:space="preserve"><value>Namespace mặc định</value></data>
+  <data name="PP_DefaultNamespaceDesc" xml:space="preserve"><value>Namespace gốc dùng cho các tệp mới.</value></data>
+  <data name="PP_TargetFramework" xml:space="preserve"><value>Framework mục tiêu</value></data>
+  <data name="PP_TargetFrameworkDesc" xml:space="preserve"><value>Phiên bản runtime .NET mà dự án này hướng tới.</value></data>
+  <data name="PP_OutputType" xml:space="preserve"><value>Loại đầu ra</value></data>
+  <data name="PP_OutputTypeDesc" xml:space="preserve"><value>Xác định dự án tạo ra .exe, .dll hay WinExe.</value></data>
+  <data name="PP_OutputTypeLibrary" xml:space="preserve"><value>Thư viện lớp</value></data>
+  <data name="PP_OutputTypeConsole" xml:space="preserve"><value>Ứng dụng console</value></data>
+  <data name="PP_OutputTypeWinApp" xml:space="preserve"><value>Ứng dụng Windows</value></data>
+  <data name="PP_ProjectFile" xml:space="preserve"><value>Tệp dự án</value></data>
+  <data name="PP_Directory" xml:space="preserve"><value>Thư mục</value></data>
+  <data name="PP_ProjectType" xml:space="preserve"><value>Loại dự án</value></data>
+  <data name="PP_NavBuild" xml:space="preserve"><value>Build</value></data>
+  <data name="PP_Configuration" xml:space="preserve"><value>Cấu hình</value></data>
+  <data name="PP_ConfigurationDesc" xml:space="preserve"><value>Cấu hình build đang hoạt động (Debug = ký hiệu, Release = tối ưu hóa).</value></data>
+  <data name="PP_Platform" xml:space="preserve"><value>Nền tảng</value></data>
+  <data name="PP_PlatformDesc" xml:space="preserve"><value>Kiến trúc mục tiêu của tệp nhị phân đã biên dịch.</value></data>
+  <data name="PP_OutputPath" xml:space="preserve"><value>Đường dẫn đầu ra</value></data>
+  <data name="PP_OutputPathDesc" xml:space="preserve"><value>Thư mục đầu ra tương đối so với gốc dự án.</value></data>
+  <data name="PP_OptimizeCode" xml:space="preserve"><value>Tối ưu hóa mã</value></data>
+  <data name="PP_OptimizeCodeDesc" xml:space="preserve"><value>Bật tối ưu hóa trình biên dịch (thường tắt ở Debug).</value></data>
+  <data name="PP_WarningsAsErrors" xml:space="preserve"><value>Coi cảnh báo là lỗi</value></data>
+  <data name="PP_NavDependencies" xml:space="preserve"><value>Phụ thuộc</value></data>
+  <data name="PP_DependenciesDesc" xml:space="preserve"><value>Tham chiếu dự án và gói NuGet được khai báo trong dự án này.</value></data>
+  <data name="PP_ColName" xml:space="preserve"><value>Tên</value></data>
+  <data name="PP_ColType" xml:space="preserve"><value>Loại</value></data>
+  <data name="PP_NavGlobalUsings" xml:space="preserve"><value>Using toàn cục</value></data>
+  <data name="PP_GlobalUsingsDesc" xml:space="preserve"><value>Các chỉ thị using ngầm định được khai báo trong dự án (ImplicitUsings).</value></data>
+  <data name="PP_ColNamespace" xml:space="preserve"><value>Namespace</value></data>
+  <data name="PP_NavItems" xml:space="preserve"><value>Mục</value></data>
+  <data name="PP_ColPath" xml:space="preserve"><value>Đường dẫn</value></data>
+  <data name="PP_NavReferences" xml:space="preserve"><value>Tham chiếu</value></data>
+  <data name="PP_AddNuGet" xml:space="preserve"><value>+ NuGet…</value></data>
+  <data name="PP_AddProject" xml:space="preserve"><value>+ Dự án…</value></data>
+  <data name="PP_NavWin32Resources" xml:space="preserve"><value>Tài nguyên Win32</value></data>
+  <data name="PP_AppIcon" xml:space="preserve"><value>Biểu tượng ứng dụng</value></data>
+  <data name="PP_AppIconDesc" xml:space="preserve"><value>Tệp .ico được nhúng trong assembly làm tài nguyên Win32.</value></data>
+  <data name="PP_AppManifest" xml:space="preserve"><value>Manifest ứng dụng</value></data>
+  <data name="PP_ManifestDefault" xml:space="preserve"><value>Cài đặt mặc định</value></data>
+  <data name="PP_ManifestCreate" xml:space="preserve"><value>Tạo manifest mới</value></data>
+  <data name="PP_ManifestNone" xml:space="preserve"><value>Không có manifest</value></data>
+  <data name="PP_ManifestDesc" xml:space="preserve"><value>Tệp app.manifest kiểm soát mức thực thi UAC và DPI.</value></data>
+  <data name="PP_NavPackage" xml:space="preserve"><value>Gói</value></data>
+  <data name="PP_PackageDesc" xml:space="preserve"><value>Siêu dữ liệu NuGet được tạo khi xuất bản gói.</value></data>
+  <data name="PP_PackageId" xml:space="preserve"><value>ID gói</value></data>
+  <data name="PP_PackageIdDesc" xml:space="preserve"><value>Định danh duy nhất của gói trên NuGet.org.</value></data>
+  <data name="PP_VersionLabel" xml:space="preserve"><value>Phiên bản</value></data>
+  <data name="PP_AuthorsLabel" xml:space="preserve"><value>Tác giả</value></data>
+  <data name="PP_DescriptionLabel" xml:space="preserve"><value>Mô tả</value></data>
+  <data name="PP_NavDebug" xml:space="preserve"><value>Gỡ lỗi</value></data>
+  <data name="PP_DebugDesc" xml:space="preserve"><value>Cấu hình cấu hình khởi chạy.</value></data>
+  <data name="PP_LaunchProfile" xml:space="preserve"><value>Cấu hình khởi chạy</value></data>
+  <data name="PP_LaunchProfileDesc" xml:space="preserve"><value>Cấu hình được định nghĩa trong launchSettings.json.</value></data>
+  <data name="PP_CommandLineArgs" xml:space="preserve"><value>Đối số dòng lệnh</value></data>
+  <data name="PP_WorkingDirectory" xml:space="preserve"><value>Thư mục làm việc</value></data>
+  <data name="PS_PackageSourceLabel" xml:space="preserve"><value>Nguồn gói :</value></data>
+  <data name="PS_IncludePrerelease" xml:space="preserve"><value>Bao gồm bản phát hành trước</value></data>
+  <data name="PS_NuGetBrowseTab" xml:space="preserve"><value>Duyệt</value></data>
+  <data name="PS_NuGetInstalledTab" xml:space="preserve"><value>Đã cài đặt</value></data>
+  <data name="PS_NuGetUpdatesTab" xml:space="preserve"><value>Cập nhật</value></data>
+  <data name="PS_NuGetLoadMore" xml:space="preserve"><value>Tải thêm…</value></data>
+  <data name="PS_SelectPackageHint" xml:space="preserve"><value>Chọn gói để xem chi tiết.</value></data>
+  <data name="PS_NuGetConsolidateTab" xml:space="preserve"><value>Hợp nhất</value></data>
+  <data name="PS_ProjectsLabel" xml:space="preserve"><value>Dự án</value></data>
+  <data name="PS_VersionLabel" xml:space="preserve"><value>Phiên bản :</value></data>
+  <data name="PS_AddProjectRef" xml:space="preserve"><value>Thêm tham chiếu dự án…</value></data>
+  <data name="PS_AddAssemblyRef" xml:space="preserve"><value>Thêm tham chiếu assembly…</value></data>
+  <data name="PS_RemoveUnused" xml:space="preserve"><value>Xóa không sử dụng…</value></data>
+  <data name="PS_SearchReferences" xml:space="preserve"><value>Tìm kiếm tham chiếu…</value></data>
+  <data name="PS_Close" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="PS_Convert" xml:space="preserve">
+    <value>Convert</value>
+  </data>
+  <data name="PS_Install" xml:space="preserve">
+    <value>Install</value>
+  </data>
+  <data name="PS_Update" xml:space="preserve">
+    <value>Update</value>
+  </data>
+  <data name="PS_Uninstall" xml:space="preserve">
+    <value>Uninstall</value>
+  </data>
+  <data name="PS_CopyOptionsSection" xml:space="preserve">
+    <value>Copy options</value>
+  </data>
+  <data name="PS_KeepOriginalLocation" xml:space="preserve">
+    <value>Keep original location  (reference only)</value>
+  </data>
+  <data name="PS_CopyIntoProject" xml:space="preserve">
+    <value>Copy into project</value>
+  </data>
+  <data name="PS_DestinationFolder" xml:space="preserve">
+    <value>Destination folder</value>
+  </data>
+  <data name="PS_PhysicalSubfolder" xml:space="preserve">
+    <value>Physical subfolder</value>
+  </data>
+  <data name="PS_KeepInPlace" xml:space="preserve">
+    <value>Keep in place</value>
+  </data>
+  <data name="PS_NewFolderTooltip" xml:space="preserve">
+    <value>New physical folder in the selected directory</value>
+  </data>
+  <data name="PS_ConfirmNewFolder" xml:space="preserve">
+    <value>Confirm new folder</value>
+  </data>
+  <data name="PS_PreviewSection" xml:space="preserve">
+    <value>Preview</value>
+  </data>
+  <data name="PS_DestinationLabel" xml:space="preserve">
+    <value>Destination:</value>
+  </data>
+  <data name="PS_AutoFillTooltip" xml:space="preserve">
+    <value>Pre-fill Platform, Region and Title from the selected ROM</value>
+  </data>
+  <data name="PS_OutputSection" xml:space="preserve">
+    <value>Output</value>
+  </data>
+  <data name="PS_SameFolderAsSource" xml:space="preserve">
+    <value>Same folder as source</value>
+  </data>
+  <data name="PS_CustomFolder" xml:space="preserve">
+    <value>Custom folder</value>
+  </data>
+  <data name="PS_AddConvertedToProject" xml:space="preserve">
+    <value>Add converted file to project</value>
+  </data>
+  <data name="PS_OpenAfterConversion" xml:space="preserve">
+    <value>Open in TBL Editor after conversion</value>
+  </data>
+  <data name="PS_AddToProject" xml:space="preserve">
+    <value>Add to project:</value>
+  </data>
+  <data name="PS_CreateInMemoryTooltip" xml:space="preserve">
+    <value>Create document in memory; choose location on first Ctrl+S</value>
+  </data>
+  <data name="PS_PackageDescription" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="PS_PackageDownloads" xml:space="preserve">
+    <value>Downloads:</value>
+  </data>
+  <data name="PS_PackagesLabel" xml:space="preserve">
+    <value> package(s)</value>
+  </data>
+  <data name="PS_InstalledVersion" xml:space="preserve">
+    <value>Installed: v</value>
+  </data>
+  <data name="PP_ReferencesLabel" xml:space="preserve">
+    <value>Project and package references:</value>
+  </data>
+  <data name="PP_Save" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="PP_FilterSections" xml:space="preserve">
+    <value>Filter sections</value>
+  </data>
+  <data name="PP_TypeColumn" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="PP_PathColumn" xml:space="preserve">
+    <value>Path</value>
+  </data>
+  <data name="PP_ValueColumn" xml:space="preserve">
+    <value>Value</value>
+  </data>
+  <data name="PP_NamespaceColumn" xml:space="preserve">
+    <value>Namespace</value>
+  </data>
+  <data name="PP_EnvVars" xml:space="preserve">
+    <value>Environment variables</value>
+  </data>
+  <data name="PP_NavCodeAnalysis" xml:space="preserve">
+    <value>Code Analysis</value>
+  </data>
+  <data name="PP_EnableCodeAnalysis" xml:space="preserve">
+    <value>Enable code analysis on build</value>
+  </data>
+  <data name="PP_EnableCodeAnalysisDesc" xml:space="preserve">
+    <value>Enables Roslyn analyzers on every build.</value>
+  </data>
+  <data name="PP_ReleaseOnlyAnalysis" xml:space="preserve">
+    <value>Enable only on Release configuration</value>
+  </data>
+  <data name="PP_CodeAnalysisDesc" xml:space="preserve">
+    <value>Static code analysis settings.</value>
+  </data>
+  <data name="PP_ChangesSaved" xml:space="preserve">
+    <value>✓ Changes saved</value>
+  </data>
+  <data name="PP_AppManifestDesc" xml:space="preserve">
+    <value>The app.manifest file that controls UAC execution level and DPI.</value>
+  </data>
+  <data name="NG_TipSearch" xml:space="preserve"><value>Tìm kiếm</value></data>
+</root>
